@@ -1731,7 +1731,7 @@ ACE_TMAIN(int argc_in,
   RPG_TRACE(ACE_TEXT("::main"));
 
   // step0: init ACE
-  // *PORTABILITY*: on Windows, we need to init ACE...
+  // *PORTABILITY*: on Windows, ACE needs initialization...
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
   if (ACE::init() == -1)
   {
@@ -1747,6 +1747,11 @@ ACE_TMAIN(int argc_in,
 //  state.hover_lock();
   state.hover_time = 0;
   state.debug = SDL_GUI_DEF_DEBUG;
+  state.style.floor = RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE;
+  state.style.edge = RPG_CLIENT_DEF_GRAPHICS_EDGESTYLE;
+  state.style.wall = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE;
+  state.style.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
+  state.style.door = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
 
   // step1a set defaults
   std::string configuration_path = RPG_Common_File_Tools::getWorkingDirectory();

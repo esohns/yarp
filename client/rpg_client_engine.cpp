@@ -62,11 +62,11 @@ RPG_Client_Engine::RPG_Client_Engine()
   // use member message queue...
 //   inherited::msg_queue(&myQueue);
 
-	myRuntimeState.style.door = RPG_GRAPHICS_DOORSTYLE_INVALID;
-	myRuntimeState.style.edge = RPG_GRAPHICS_EDGESTYLE_INVALID;
-	myRuntimeState.style.floor = RPG_GRAPHICS_FLOORSTYLE_INVALID;
+	myRuntimeState.style.door = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
+	myRuntimeState.style.edge = RPG_CLIENT_DEF_GRAPHICS_EDGESTYLE;
+	myRuntimeState.style.floor = RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE;
 	myRuntimeState.style.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
-	myRuntimeState.style.wall = RPG_GRAPHICS_WALLSTYLE_INVALID;
+	myRuntimeState.style.wall = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE;
 
 	// set group ID for worker thread(s)
   inherited::grp_id(RPG_CLIENT_TASK_GROUP_ID);
@@ -269,27 +269,6 @@ RPG_Client_Engine::unlock()
   if (myScreenLock.release() == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Thread_Mutex::release: \"%m\", continuing\n")));
-}
-
-void
-RPG_Client_Engine::initMap()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Client_Engine::initMap"));
-
-  // sanity check
-  ACE_ASSERT(myWindow);
-
-  RPG_Client_Action new_action;
-  new_action.command = COMMAND_WINDOW_INIT;
-  new_action.position =
-      std::make_pair(std::numeric_limits<unsigned int>::max(),
-                     std::numeric_limits<unsigned int>::max());
-  new_action.window = myWindow;
-  new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
-  new_action.entity_id = 0;
-  new_action.radius = 0;
-
-  action(new_action);
 }
 
 void
@@ -518,6 +497,31 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       
       break;
     }
+    case COMMAND_E2C_ENTITY_REMOVE:
+    {
+      client_action.command = COMMAND_ENTITY_REMOVE;
+      client_action.window = myWindow;
+      client_action.entity_id = parameters_in.entity_id;
+      ACE_ASSERT(client_action.entity_id);
+      action(client_action);
+
+      // fini seen positions
+      {
+        ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+        ACE_ASSERT(mySeenPositions.find(client_action.entity_id) !=
+            mySeenPositions.end());
+        mySeenPositions.erase(client_action.entity_id);
+      } // end lock scope
+
+      if (client_action.entity_id == myEngine->getActive(true))
+        do_action = false; // don't play a sound...
+
+      client_action.command = COMMAND_PLAY_SOUND;
+      client_action.sound = EVENT_CONDITION_WEAK;
+
+      break;
+    }
     case COMMAND_E2C_ENTITY_HIT:
     case COMMAND_E2C_ENTITY_MISS:
     {
@@ -529,6 +533,11 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
           ((command_in == COMMAND_E2C_ENTITY_HIT) ? EVENT_SWORD_HIT
                                                   : EVENT_SWORD_MISS);
 
+      break;
+    }
+    case COMMAND_E2C_ENTITY_CONDITION:
+    {
+      // *TODO*
       break;
     }
     case COMMAND_E2C_ENTITY_POSITION:
@@ -660,31 +669,6 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
 
       break;
     }
-    case COMMAND_E2C_ENTITY_REMOVE:
-    {
-      client_action.command = COMMAND_ENTITY_REMOVE;
-      client_action.window = myWindow;
-      client_action.entity_id = parameters_in.entity_id;
-      ACE_ASSERT(client_action.entity_id);
-      action(client_action);
-
-      // fini seen positions
-      {
-        ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
-
-        ACE_ASSERT(mySeenPositions.find(client_action.entity_id) !=
-            mySeenPositions.end());
-        mySeenPositions.erase(client_action.entity_id);
-      } // end lock scope
-
-      if (client_action.entity_id == myEngine->getActive(true))
-        do_action = false; // don't play a sound...
-
-      client_action.command = COMMAND_PLAY_SOUND;
-      client_action.sound = EVENT_CONDITION_WEAK;
-
-      break;
-    }
     case COMMAND_E2C_ENTITY_VISION:
     {
       client_action.window = myWindow;
@@ -726,6 +710,18 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
 
       break;
     }
+    case COMMAND_E2C_ENTITY_LEVEL_UP:
+    {
+      // *TODO*
+      break;
+    }
+    case COMMAND_E2C_INIT:
+    {
+      client_action.command = COMMAND_WINDOW_INIT;
+      client_action.window = myWindow;
+
+      break;
+    }
     case COMMAND_E2C_MESSAGE:
     {
       client_action.command = COMMAND_WINDOW_UPDATE_MESSAGEWINDOW;
@@ -738,6 +734,7 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     {
       if (myWidgets)
       {
+        // *TODO*: delegate this to the worker thread
         gdk_threads_enter();
         GtkWidget* widget = glade_xml_get_widget(myWidgets,
                                                  ACE_TEXT_ALWAYS_CHAR("part"));
@@ -1423,6 +1420,7 @@ RPG_Client_Engine::handleActions()
         // step1: init/(re)draw window
         myEngine->lock();
         RPG_Map_Position_t center = myEngine->getSize(false);
+        setStyle(RPG_Client_Common_Tools::environment2Style(myEngine->getMetaData(false).environment));
         myEngine->unlock();
         center.first >>= 1;
         center.second >>= 1;

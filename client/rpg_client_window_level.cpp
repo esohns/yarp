@@ -399,7 +399,7 @@ RPG_Client_Window_Level::toggleShowCoordinates()
 }
 #endif
 
-void
+bool
 RPG_Client_Window_Level::init(RPG_Client_Engine* clientEngine_in,
                               RPG_Engine* engine_in)
 {
@@ -415,11 +415,17 @@ RPG_Client_Window_Level::init(RPG_Client_Engine* clientEngine_in,
   // init edge, wall, door tiles
   init(myClient->getStyle());
 
-  // init minimap
-  initMiniMap();
+  // init minimap/message windows
+  if (!initMiniMap() ||
+      !initMessageWindow())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to initialize sub-windows, aborting\n")));
 
-  // init message window
-  initMessageWindow();
+    return false;
+  } // end IF
+
+  return true;
 }
 
 void
@@ -505,16 +511,24 @@ RPG_Client_Window_Level::init(const RPG_Graphics_Style& style_in)
   RPG_Graphics_StyleUnion style;
   style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
   style.floorstyle = style_in.floor;
-  setStyle(style);
+  if (!setStyle(style))
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Client_Window_Level::setStyle(FLOORSTYLE), continuing\n")));
   style.discriminator = RPG_Graphics_StyleUnion::EDGESTYLE;
   style.edgestyle = style_in.edge;
-  setStyle(style);
+  if (!setStyle(style))
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Client_Window_Level::setStyle(EDGESTYLE), continuing\n")));
   style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
   style.wallstyle = style_in.wall;
-  setStyle(style);
+  if (!setStyle(style))
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Client_Window_Level::setStyle(WALLSTYLE), continuing\n")));
   style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
   style.doorstyle = style_in.door;
-  setStyle(style);
+  if (!setStyle(style))
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Client_Window_Level::setStyle(DOORSTYLE), continuing\n")));
 
   // init tiles / position
   RPG_Client_Common_Tools::initFloorEdges(*myEngine,
@@ -526,20 +540,6 @@ RPG_Client_Window_Level::init(const RPG_Graphics_Style& style_in)
   RPG_Client_Common_Tools::initDoors(*myEngine,
                                      myCurrentDoorSet,
                                      myDoorTiles);
-
-  //// init view (--> center)
-  //RPG_Map_Size_t size = myEngine->getSize();
-  //myView = myEngine->getSize();
-  //myView.first >>= 1;
-  //myView.second >>= 1;
-
-  //// *NOTE*: fiddling with the view invalidates the cursor/highlight BG !
-  //myClientAction.command = COMMAND_CURSOR_INVALIDATE_BG;
-  //myClient->action(myClientAction);
-  //myClientAction.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
-  //myClientAction.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-  //                                         std::numeric_limits<unsigned int>::max());
-  //myClient->action(myClientAction);
 }
 
 void
@@ -2349,7 +2349,7 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
                              dirtyRegion_out);
 }
 
-void
+bool
 RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::setStyle"));
@@ -2414,7 +2414,7 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
                    ACE_TEXT("wall-style \"%s\" is incomplete, aborting\n"),
                    ACE_TEXT(RPG_Graphics_WallStyleHelper::RPG_Graphics_WallStyleToString(style_in.wallstyle).c_str())));
 
-        return;
+        return false;
       } // end IF
 
       initWallBlend(myClient->getStyle().half_height_walls);
@@ -2427,7 +2427,7 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::copy(), aborting\n")));
 
-        return;
+        return false;
       } // end IF
       if (SDL_BlitSurface(myWallBlend,
                           NULL,
@@ -2441,7 +2441,7 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
         // clean up
         SDL_FreeSurface(copy);
 
-        return;
+        return false;
       } // end IF
       SDL_FreeSurface(myCurrentWallSet.west.surface);
       myCurrentWallSet.west.surface = copy;
@@ -2453,7 +2453,7 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::copy(), aborting\n")));
 
-        return;
+        return false;
       } // end IF
       if (SDL_BlitSurface(myWallBlend,
                           NULL,
@@ -2467,7 +2467,7 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
         // clean up
         SDL_FreeSurface(copy);
 
-        return;
+        return false;
       } // end IF
       SDL_FreeSurface(myCurrentWallSet.north.surface);
       myCurrentWallSet.north.surface = copy;
@@ -2483,7 +2483,7 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
                    ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
                    static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE))));
 
-        return;
+        return false;
       } // end IF
       SDL_FreeSurface(myCurrentWallSet.east.surface);
       myCurrentWallSet.east.surface = shaded_wall;
@@ -2497,7 +2497,7 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
                    ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
                    static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
-        return;
+        return false;
       } // end IF
       SDL_FreeSurface(myCurrentWallSet.west.surface);
       myCurrentWallSet.west.surface = shaded_wall;
@@ -2511,7 +2511,7 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
                    ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
                    static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE))));
 
-        return;
+        return false;
       } // end IF
       SDL_FreeSurface(myCurrentWallSet.south.surface);
       myCurrentWallSet.south.surface = shaded_wall;
@@ -2525,7 +2525,7 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
                    ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
                    static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
-        return;
+        return false;
       } // end IF
       SDL_FreeSurface(myCurrentWallSet.north.surface);
       myCurrentWallSet.north.surface = shaded_wall;
@@ -2541,15 +2541,17 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
       RPG_Graphics_Common_Tools::loadDoorTileSet(style_in.doorstyle,
                                                  myCurrentDoorSet);
       // sanity check
-      if ((myCurrentDoorSet.horizontal_open.surface == NULL) ||
-          (myCurrentDoorSet.vertical_open.surface == NULL) ||
+      if ((myCurrentDoorSet.horizontal_open.surface == NULL)   ||
+          (myCurrentDoorSet.vertical_open.surface == NULL)     ||
           (myCurrentDoorSet.horizontal_closed.surface == NULL) ||
-          (myCurrentDoorSet.vertical_closed.surface == NULL) ||
+          (myCurrentDoorSet.vertical_closed.surface == NULL)   ||
           (myCurrentDoorSet.broken.surface == NULL))
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("door-style \"%s\" is incomplete, continuing\n"),
+                   ACE_TEXT("door-style \"%s\" is incomplete, aborting\n"),
                    ACE_TEXT(RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString(style_in.doorstyle).c_str())));
+
+        return false;
       } // end IF
 
       // init door tiles / position
@@ -2565,9 +2567,11 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
                  ACE_TEXT("invalid style (was: %d), aborting\n"),
                  style_in.discriminator));
 
-      break;
+      return false;
     }
   } // end SWITCH
+
+  return true;
 }
 
 void
@@ -2663,7 +2667,7 @@ RPG_Client_Window_Level::initWallBlend(const bool& halfHeightWalls_in)
   } // end IF
 }
 
-void
+bool
 RPG_Client_Window_Level::initMiniMap()
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::initMiniMap"));
@@ -2676,22 +2680,25 @@ RPG_Client_Window_Level::initMiniMap()
   RPG_Graphics_Offset_t offset(RPG_CLIENT_DEF_MINIMAP_OFFSET_X,
                                RPG_CLIENT_DEF_MINIMAP_OFFSET_Y);
   RPG_Client_Window_MiniMap* minimap_window = NULL;
-  minimap_window = new(std::nothrow) RPG_Client_Window_MiniMap(*this,
-                                                               offset);
+  ACE_NEW_NORETURN(minimap_window,
+                   RPG_Client_Window_MiniMap(*this,
+                                             offset));
   if (!minimap_window)
   {
     ACE_DEBUG((LM_CRITICAL,
                ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
                sizeof(RPG_Client_Window_MiniMap)));
 
-    return;
+    return false;
   } // end IF
 
   minimap_window->init(myClient, myEngine);
   minimap_window->setScreen(inherited::myScreen);
+
+  return true;
 }
 
-void
+bool
 RPG_Client_Window_Level::initMessageWindow()
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::initMessageWindow"));
@@ -2709,11 +2716,13 @@ RPG_Client_Window_Level::initMessageWindow()
                ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
                sizeof(RPG_Client_Window_Message)));
 
-    return;
+    return false;
   } // end IF
 
   message_window->init(myClient,
                        RPG_CLIENT_MESSAGE_FONT,
                        RPG_CLIENT_DEF_MESSAGE_LINES);
   message_window->setScreen(inherited::myScreen);
+
+  return true;
 }

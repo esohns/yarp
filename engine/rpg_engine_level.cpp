@@ -762,12 +762,18 @@ RPG_Engine_Level::toLevelXML() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::toLevelXML"));
 
-  RPG_Common_Environment_XMLTree_Type environment(RPG_Common_PlaneHelper::RPG_Common_PlaneToString(myMetaData.environment.plane),
-                                                  RPG_Common_TerrainHelper::RPG_Common_TerrainToString(myMetaData.environment.terrain),
-                                                  RPG_Common_ClimateHelper::RPG_Common_ClimateToString(myMetaData.environment.climate),
-                                                  RPG_Common_TimeOfDayHelper::RPG_Common_TimeOfDayToString(myMetaData.environment.time),
-                                                  RPG_Common_AmbientLightingHelper::RPG_Common_AmbientLightingToString(myMetaData.environment.lighting),
-                                                  myMetaData.environment.outdoors);
+  RPG_Common_Environment_XMLTree_Type environment;
+  if (myMetaData.environment.plane != RPG_COMMON_PLANE_INVALID)
+    environment.plane(static_cast<RPG_Common_Plane_XMLTree_Type::value>(myMetaData.environment.plane));
+  if (myMetaData.environment.terrain != RPG_COMMON_TERRAIN_INVALID)
+    environment.terrain(static_cast<RPG_Common_Terrain_XMLTree_Type::value>(myMetaData.environment.terrain));
+  if (myMetaData.environment.climate != RPG_COMMON_CLIMATE_INVALID)
+    environment.climate(static_cast<RPG_Common_Climate_XMLTree_Type::value>(myMetaData.environment.climate));
+  if (myMetaData.environment.time != RPG_COMMON_TIMEOFDAY_INVALID)
+    environment.time(static_cast<RPG_Common_TimeOfDay_XMLTree_Type::value>(myMetaData.environment.time));
+  if (myMetaData.environment.lighting != RPG_COMMON_AMBIENTLIGHTING_INVALID)
+    environment.lighting(static_cast<RPG_Common_AmbientLighting_XMLTree_Type::value>(myMetaData.environment.lighting));
+  environment.outdoors(myMetaData.environment.outdoors);
 
   RPG_Common_FixedPeriod_XMLTree_Type spawn_interval(static_cast<unsigned int>(myMetaData.spawn_interval.sec()),
                                                      static_cast<unsigned int>(myMetaData.spawn_interval.usec()));
@@ -824,17 +830,31 @@ RPG_Engine_Level::levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type& level_in)
 
   const RPG_Common_Environment_XMLTree_Type& environment =
       level_in.environment();
-  result.metadata.environment.climate =
-      RPG_Common_ClimateHelper::stringToRPG_Common_Climate(environment.climate());
-  result.metadata.environment.lighting =
-      RPG_Common_AmbientLightingHelper::stringToRPG_Common_AmbientLighting(environment.lighting());
-  result.metadata.environment.outdoors = environment.outdoors();
-  result.metadata.environment.plane =
-      RPG_Common_PlaneHelper::stringToRPG_Common_Plane(environment.plane());
-  result.metadata.environment.terrain =
-      RPG_Common_TerrainHelper::stringToRPG_Common_Terrain(environment.terrain());
-  result.metadata.environment.time =
-      RPG_Common_TimeOfDayHelper::stringToRPG_Common_TimeOfDay(environment.time());
+  result.metadata.environment.climate = RPG_COMMON_CLIMATE_INVALID;
+  if (environment.climate().present())
+    result.metadata.environment.climate =
+        RPG_Common_ClimateHelper::stringToRPG_Common_Climate(environment.climate().get());
+  result.metadata.environment.lighting = RPG_COMMON_AMBIENTLIGHTING_INVALID;
+  if (environment.lighting().present())
+    result.metadata.environment.lighting =
+        RPG_Common_AmbientLightingHelper::stringToRPG_Common_AmbientLighting(environment.lighting().get());
+  result.metadata.environment.plane = RPG_COMMON_PLANE_INVALID;
+  if (environment.plane().present())
+    result.metadata.environment.plane =
+        RPG_Common_PlaneHelper::stringToRPG_Common_Plane(environment.plane().get());
+  result.metadata.environment.terrain = RPG_COMMON_TERRAIN_INVALID;
+  if (environment.terrain().present())
+    result.metadata.environment.terrain =
+        RPG_Common_TerrainHelper::stringToRPG_Common_Terrain(environment.terrain().get());
+  result.metadata.environment.time = RPG_COMMON_TIMEOFDAY_INVALID;
+  if (environment.time().present())
+    result.metadata.environment.time =
+        RPG_Common_TimeOfDayHelper::stringToRPG_Common_TimeOfDay(environment.time().get());
+  if (environment.outdoors().present())
+    result.metadata.environment.outdoors = environment.outdoors().get();
+  else
+    ACE_DEBUG((LM_WARNING,
+               ACE_TEXT("environment.outdoors not set (assuming \"false\"), continuing\n")));
 
   for (RPG_Engine_Level_XMLTree_Type::monster_const_iterator iterator =
        level_in.monster().begin();

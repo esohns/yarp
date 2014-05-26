@@ -104,7 +104,7 @@ RPG_Graphics_SDL_Tools::preInitVideo(const RPG_Graphics_SDL_VideoConfiguration_t
              wm_info.hglrc));
 #else
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("*** wm info (SDL version: %s) ***\nsubsystem:\t\t\t\t%d\ndisplay:\t\t\t\t%@\nwindow:\t\t\t\t%u\nfull-screen window:\t\t\t%u\nmanaged input window:\t\t\t%u\nrender display:\t\t\t%@\n"),
+             ACE_TEXT("*** wm info (SDL version: %s) ***\nsubsystem:\t\t\t\t%d\ndisplay:\t\t\t\t%@\nwindow:\t\t\t\t\t%u\nfull-screen window:\t\t\t%u\nmanaged input window:\t\t\t%u\nrender display:\t\t\t\t%@\n"),
              ACE_TEXT(version_number.str().c_str()),
              wm_info.subsystem,
              wm_info.info.x11.display,
@@ -215,7 +215,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
   videoInfo = SDL_GetVideoInfo();
   ACE_ASSERT(videoInfo);
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("*** video capabilities (driver: \"%s\") ***\nHW surfaces:\t\t\t\"%s\"\nwindow manager:\t\t\t\"%s\"\naccelerated HW --> HW [blits/colorkey/alpha]:\t\"%s\"/\"%s\"/\"%s\"\naccelerated SW --> HW [blits/colorkey/alpha]:\t\"%s\"/\"%s\"/\"%s\"\ncolor fills accelerated:\t\t\"%s\"\nvideo memory:\t\t\t%d kBytes\n*** (suggested) video mode ***\npalette:\t\t\t\t%@\nbits[bytes]/pixel:\t\t\t%d[%d]\nmask[RGBA]:\t\t\t\t%x %x %x %x\nshift[RGBA]:\t\t\t%d %d %d %d\nloss[RGBA]:\t\t\t\t%d %d %d %d\ntransparent colorkey:\t\t\t%d\noverall surface alpha:\t\t\t%d\n"),
+             ACE_TEXT("*** video capabilities (driver: \"%s\") ***\nHW surfaces:\t\t\t\"%s\"\nwindow manager:\t\t\t\"%s\"\naccelerated HW --> HW [blits/colorkey/alpha]:\t\"%s\"/\"%s\"/\"%s\"\naccelerated SW --> HW [blits/colorkey/alpha]:\t\"%s\"/\"%s\"/\"%s\"\ncolor fills accelerated:\t\t\"%s\"\nvideo memory:\t\t\t\t%d kBytes\n*** (suggested) video mode ***\npalette:\t\t\t\t%@\nbits[bytes]/pixel:\t\t\t%d[%d]\nmask[RGBA]:\t\t\t\t%x %x %x %x\nshift[RGBA]:\t\t\t\t%d %d %d %d\nloss[RGBA]:\t\t\t\t%d %d %d %d\ntransparent colorkey:\t\t\t%d\noverall surface alpha:\t\t\t%d\n"),
              driver,
              (videoInfo->hw_available ? ACE_TEXT("yes") : ACE_TEXT("no")),
              (videoInfo->wm_available ? ACE_TEXT("yes") : ACE_TEXT("no")),
@@ -330,21 +330,21 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
     failed |= return_value;
     if (return_value)
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
                  SDL_GL_RED_SIZE, 5,
                  ACE_TEXT(SDL_GetError())));
     return_value = SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
     failed |= return_value;
     if (return_value)
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
                  SDL_GL_GREEN_SIZE, 5,
                  ACE_TEXT(SDL_GetError())));
     return_value = SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
     failed |= return_value;
     if (return_value)
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
                  SDL_GL_BLUE_SIZE, 5,
                  ACE_TEXT(SDL_GetError())));
 
@@ -352,7 +352,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
 //    failed |= return_value;
 //    if (return_value)
 //      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
 //                 SDL_GL_ALPHA_SIZE, 0,
 //                 ACE_TEXT(SDL_GetError())));
 
@@ -360,7 +360,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
 //    failed |= return_value;
 //    if (return_value)
 //      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
 //                 SDL_GL_BUFFER_SIZE, 0,
 //                 ACE_TEXT(SDL_GetError())));
 
@@ -370,7 +370,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
     failed |= return_value;
     if (return_value)
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
                  SDL_GL_DOUBLEBUFFER,
                  (configuration_in.double_buffer ? 1
                                                  : 0),
@@ -380,7 +380,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
 //    failed |= return_value;
 //    if (return_value)
 //      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
 //                 SDL_GL_DEPTH_SIZE, 16,
 //                 ACE_TEXT(SDL_GetError())));
 
@@ -388,7 +388,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
 //    failed |= return_value;
 //    if (return_value)
 //      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
 //                 SDL_GL_STENCIL_SIZE, 0,
 //                 ACE_TEXT(SDL_GetError())));
 
@@ -396,21 +396,21 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
 //    failed |= return_value;
 //    if (return_value)
 //      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
 //                 SDL_GL_ACCUM_RED_SIZE, 0,
 //                 ACE_TEXT(SDL_GetError())));
 //    return_value = SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE, 0);
 //    failed |= return_value;
 //    if (return_value)
 //      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
 //                 SDL_GL_ACCUM_GREEN_SIZE, 0,
 //                 ACE_TEXT(SDL_GetError())));
 //    return_value = SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE, 0);
 //    failed |= return_value;
 //    if (return_value)
 //      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
 //                 SDL_GL_ACCUM_BLUE_SIZE, 0,
 //                 ACE_TEXT(SDL_GetError())));
 
@@ -418,7 +418,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
 //    failed |= return_value;
 //    if (return_value)
 //      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
 //                 SDL_GL_ACCUM_ALPHA_SIZE, 0,
 //                 ACE_TEXT(SDL_GetError())));
 
@@ -426,7 +426,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
 //    failed |= return_value;
 //    if (return_value)
 //      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
 //                 SDL_GL_STEREO, 0,
 //                 ACE_TEXT(SDL_GetError())));
 
@@ -434,14 +434,14 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
 //    failed |= return_value;
 //    if (return_value)
 //      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
 //                 SDL_GL_MULTISAMPLEBUFFERS, 0,
 //                 ACE_TEXT(SDL_GetError())));
 //    return_value = SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
 //    failed |= return_value;
 //    if (return_value)
 //      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
 //                 SDL_GL_MULTISAMPLESAMPLES, 0,
 //                 ACE_TEXT(SDL_GetError())));
 
@@ -451,7 +451,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
     failed |= return_value;
     if (return_value)
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
                  SDL_GL_ACCELERATED_VISUAL,
                  (RPG_GRAPHICS_DEF_OPENGL_HW_ACCELERATION ? 1
                                                           : 0),
@@ -461,7 +461,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
 //    failed |= return_value;
 //    if (return_value)
 //      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
 //                 SDL_GL_SWAP_CONTROL, 1,
 //                 ACE_TEXT(SDL_GetError())));
 
@@ -469,7 +469,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
 //    failed |= return_value;
 //    if (return_value)
 //      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
 //                 SDL_GL_RETAINED_BACKING, 0,
 //                 ACE_TEXT(SDL_GetError())));
 
@@ -477,14 +477,14 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
 //    failed |= return_value;
 //    if (return_value)
 //      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
 //                 SDL_GL_CONTEXT_MAJOR_VERSION, 0,
 //                 ACE_TEXT(SDL_GetError())));
 //    return_value = SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 //    failed |= return_value;
 //    if (return_value)
 //      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
 //                 SDL_GL_CONTEXT_MINOR_VERSION, 0,
 //                 ACE_TEXT(SDL_GetError())));
 
@@ -502,7 +502,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
 //    failed |= return_value;
 //    if (return_value)
 //      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, 0x%x): \"%s\", aborting\n"),
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, 0x%x): \"%s\", continuing\n"),
 //                 SDL_GL_CONTEXT_FLAGS, context_flags,
 //                 ACE_TEXT(SDL_GetError())));
 //    context_flags =
@@ -513,7 +513,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
 //    failed |= return_value;
 //    if (return_value)
 //      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, 0x%x): \"%s\", aborting\n"),
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, 0x%x): \"%s\", continuing\n"),
 //                 SDL_GL_CONTEXT_PROFILE_MASK, context_flags,
 //                 ACE_TEXT(SDL_GetError())));
 
@@ -521,7 +521,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
 //    failed |= return_value;
 //    if (return_value)
 //      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
 //                 SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 0,
 //                 ACE_TEXT(SDL_GetError())));
 
@@ -529,7 +529,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
 //    failed |= return_value;
 //    if (return_value)
 //      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
 //                 SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 0,
 //                 ACE_TEXT(SDL_GetError())));
 
@@ -537,7 +537,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
 //    failed |= return_value;
 //    if (return_value)
 //      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", aborting\n"),
+//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
 //                 SDL_GL_CONTEXT_EGL, 0,
 //                 ACE_TEXT(SDL_GetError())));
 
@@ -565,7 +565,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
   } // end IF
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("*** screen flags ***\nsurface:\t\t\t\t%sRAM\nasynch blits:\t\t\t\"%s\"\nany video depth/pixel-format:\t\t\"%s\"\nsurface has exclusive palette:\t\t\"%s\"\ndouble-buffered:\t\t\t\"%s\"\nblit uses HW acceleration:\t\t\"%s\"\nblit uses a source color key:\t\t\"%s\"\nsurface is RLE encoded:\t\t\"%s\"\nblit uses source alpha blending:\t\t\"%s\"\nsurface uses preallocated memory:\t\t\"%s\"\n"),
+             ACE_TEXT("*** screen flags ***\nsurface:\t\t\t\t%sRAM\nasynch blits:\t\t\t\t\"%s\"\nany video depth/pixel-format:\t\t\"%s\"\nsurface has exclusive palette:\t\t\"%s\"\ndouble-buffered:\t\t\t\"%s\"\nblit uses HW acceleration:\t\t\"%s\"\nblit uses a source color key:\t\t\"%s\"\nsurface is RLE encoded:\t\t\t\"%s\"\nblit uses source alpha blending:\t\"%s\"\nsurface uses preallocated memory:\t\"%s\"\n"),
              ((screen->flags & SDL_HWSURFACE)   ? ACE_TEXT("Video") : ACE_TEXT("")),
              ((screen->flags & SDL_ASYNCBLIT)   ? ACE_TEXT("yes")   : ACE_TEXT("no")),
              ((screen->flags & SDL_ANYFORMAT)   ? ACE_TEXT("yes")   : ACE_TEXT("no")),

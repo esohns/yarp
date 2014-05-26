@@ -11,6 +11,7 @@
  (see https://issues.apache.org/jira/browse/XERCESC-1975)]
 - [client/UI] excessive CPU usage (probably AI-related)
 - [client/UI] excessive CPU usage (probably SDL-related: improve event loop logic)
+- [graphics] refactor isometric 2D client
 
 [GENERAL - MODERATE]
 - [magic] define more (low-level) spells, player generation fails sometimes...
@@ -31,10 +32,12 @@
 - [engine] refine entity sprite concept
 - [graphics] refactor/encapsulate window system
 - evaluate *TODO* tags
+- rethink DEBUG_RELEASE macro: support debugging out of the source tree ?
 
 [MISCELLANEOUS]
-- define coding (style) guidelines
-- API documentation
+- [doc] define coding (style) guidelines
+- [doc] API documentation
+- consider introducing exceptions for (non-)critical error-handling
 
 ################################################################################
 

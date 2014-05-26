@@ -55,7 +55,7 @@ class RPG_Client_Export RPG_Client_Window_Level
   virtual ~RPG_Client_Window_Level();
 
   // init level properties
-  void init(RPG_Client_Engine*, // engine handle
+  bool init(RPG_Client_Engine*, // engine handle
             RPG_Engine*);       // (level) state handle
 
   void toggleMiniMap();
@@ -71,7 +71,7 @@ class RPG_Client_Export RPG_Client_Window_Level
   virtual void drawBorder(SDL_Surface* = NULL,      // target surface (default: screen)
                           const unsigned int& = 0,  // offset x (top-left = [0,0])
                           const unsigned int& = 0); // offset y (top-left = [0,0])
-  virtual void init(const RPG_Graphics_Style&); // map style
+  virtual void init(const RPG_Graphics_Style&); // style
   virtual void setView(const RPG_Map_Position_t&); // view (map coordinates)
   virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
   virtual void toggleDoor(const RPG_Map_Position_t&); // door position
@@ -101,12 +101,12 @@ class RPG_Client_Export RPG_Client_Window_Level
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Level& operator=(const RPG_Client_Window_Level&));
 
   // helper methods
-  void setStyle(const RPG_Graphics_StyleUnion&);
+  bool setStyle(const RPG_Graphics_StyleUnion&); // style
 
   void initCeiling();
   void initWallBlend(const bool&); // half-height walls ?
-  void initMiniMap();
-  void initMessageWindow();
+  bool initMiniMap();
+  bool initMessageWindow();
 
   void drawChild(const RPG_Graphics_WindowType&, // (child) type
                  SDL_Surface* = NULL,            // target surface (default: screen)

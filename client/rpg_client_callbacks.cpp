@@ -2192,8 +2192,6 @@ create_map_clicked_GTK_cb(GtkWidget* widget_in,
   if (data->level_engine->isRunning())
     data->level_engine->stop();
 	data->level_engine->set(level);
-	data->client_engine->setStyle(RPG_Client_Common_Tools::environment2Style(data->level_metadata.environment));
-  data->client_engine->initMap();
   data->level_engine->start();
 
   // make "this" insensitive
@@ -2265,7 +2263,6 @@ drop_map_clicked_GTK_cb(GtkWidget* widget_in,
   data->level_engine->stop();
   // assign empty map to level engine
   data->level_engine->set(level);
-  data->client_engine->initMap();
 
   // make "this" insensitive
   gtk_widget_set_sensitive(widget_in, FALSE);
@@ -2343,7 +2340,6 @@ load_map_clicked_GTK_cb(GtkWidget* widget_in,
   if (data->level_engine->isRunning())
     data->level_engine->stop();
   data->level_engine->set(level);
-  data->client_engine->initMap();
   data->level_engine->start();
 
   // make create button insensitive (if it's not already)
@@ -2486,7 +2482,6 @@ map_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   if (data->level_engine->isRunning())
     data->level_engine->stop();
   data->level_engine->set(level);
-  data->client_engine->initMap();
   data->level_engine->start();
 
   // make map_save button insensitive (if it's not already)

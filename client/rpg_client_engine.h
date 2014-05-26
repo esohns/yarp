@@ -91,7 +91,6 @@ class RPG_Client_Export RPG_Client_Engine
   virtual void notify(const RPG_Engine_Command&,
                       const RPG_Engine_ClientNotificationParameters_t&);
 
-  void initMap();
   // *WARNING*: window handle needs to be of WINDOW_MAP type !!!
   void init(RPG_Engine*,               // (level) state
             RPG_Graphics_IWindowBase*, // window handle

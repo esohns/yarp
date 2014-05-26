@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="urn:rpg"
+            xmlns="urn:rpg"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+<!-- include graphics schema -->
+  <xsd:include schemaLocation="rpg_graphics.xsd"/>
+
+<!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
+<!--   import graphics schema (as declared above) -->
+<!--   <xsd:import namespace="urn:rpg" schemaLocation="rpg_graphics.xsd"/> -->
+
+  <xsd:annotation>
+    <xsd:documentation xml:lang="en">
+      RPG_Client: client-related types XML schema
+    </xsd:documentation>
+  </xsd:annotation>
+
+  <xsd:complexType name="RPG_Client_RuntimeState_Type">
+    <xsd:sequence>
+      <xsd:element name="style" type="RPG_Graphics_Style_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="entities" type="RPG_Graphics_Sprite_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+</xsd:schema>

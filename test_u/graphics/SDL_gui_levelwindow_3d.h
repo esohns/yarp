@@ -77,7 +77,7 @@ class SDL_GUI_LevelWindow_3D
   virtual void updateMinimap();
   virtual void updateMessageWindow(const std::string&); // message
 
-  void setStyle(const RPG_Graphics_StyleUnion&);
+  bool setStyle(const RPG_Graphics_StyleUnion&);
 
   // implement RPG_Client_IWindow
   virtual void drawBorder(SDL_Surface* = NULL,      // target surface (default: screen)

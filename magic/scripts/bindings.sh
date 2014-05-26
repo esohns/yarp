@@ -26,8 +26,8 @@ XML2CppCode -d RPG_Magic_Export -e -f ./magic/rpg_magic.xsd -i -o ./magic -s -u 
 
 # XML Parser/Tree
 # generate "XMLSchema" namespace include file (rpg_magic.xsd)
-xsdcxx cxx-parser --char-type char --output-dir ./magic --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ./magic/rpg_XMLSchema_XML_types.xsd
-[ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
+#xsdcxx cxx-parser --char-type char --output-dir ./magic --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ./magic/rpg_XMLSchema_XML_types.xsd
+#[ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
 
 # generate parser include/implementation (rpg_magic.xsd)
 xsdcxx cxx-parser --type-map ./magic/rpg_magic.map --char-type char --output-dir ./magic --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc --export-symbol "RPG_Magic_Export" --hxx-prologue "#include \"rpg_magic_exports.h\"" ./magic/rpg_magic.xsd

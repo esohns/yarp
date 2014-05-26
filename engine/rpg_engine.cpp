@@ -701,8 +701,10 @@ RPG_Engine::action(const RPG_Engine_EntityID_t& id_in,
         else
         {
           // stop attacking
-          while (((*iterator).second->actions.front().command == COMMAND_ATTACK_FULL) ||
-                 ((*iterator).second->actions.front().command == COMMAND_ATTACK_STANDARD))
+          while (((*iterator).second->actions.front().command ==
+                  COMMAND_ATTACK_FULL)                           ||
+                 ((*iterator).second->actions.front().command ==
+                  COMMAND_ATTACK_STANDARD))
             (*iterator).second->actions.pop_front();
         } // end ELSE
 
@@ -1247,15 +1249,16 @@ RPG_Engine::getVisibleRadius(const RPG_Engine_EntityID_t& id_in,
   // step3: consider equipment (ambient lighting conditions)
   unsigned short lit_radius = 0;
   if (equipped_light_source != RPG_ITEM_COMMODITYLIGHT_INVALID)
-    lit_radius = RPG_Item_Common_Tools::lightingItem2Radius(equipped_light_source,
-                                                            (inherited2::myMetaData.environment.lighting == AMBIENCE_BRIGHT));
+    lit_radius =
+        RPG_Item_Common_Tools::lightingItem2Radius(equipped_light_source,
+                                                   (inherited2::myMetaData.environment.lighting == AMBIENCE_BRIGHT));
 
   if (lockedAccess_in)
     myLock.release();
 
   // step4: consider low-light vision
   // *TODO*: consider monsters as well...
-  if (RPG_Character_Race_Common_Tools::hasRace(race, RACE_ELF) ||
+  if (RPG_Character_Race_Common_Tools::hasRace(race, RACE_ELF)   ||
       RPG_Character_Race_Common_Tools::hasRace(race, RACE_GNOME))
     lit_radius *= 2;
 

@@ -26,8 +26,8 @@ XML2CppCode -d RPG_Monster_Export -e -f ./character/monster/rpg_monster.xsd -i -
 
 # XML Parser
 # generate "XMLSchema" namespace include file
-xsdcxx cxx-parser --char-type char --output-dir ./character/monster --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ./character/monster/rpg_XMLSchema_XML_types.xsd
-[ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
+#xsdcxx cxx-parser --char-type char --output-dir ./character/monster --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ./character/monster/rpg_XMLSchema_XML_types.xsd
+#[ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
 
 # generate include/implementation
 xsdcxx cxx-parser --type-map ./character/monster/rpg_monster.map --char-type char --output-dir ./character/monster --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc ./character/monster/rpg_monster.xsd

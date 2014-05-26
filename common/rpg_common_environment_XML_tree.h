@@ -468,16 +468,20 @@ class RPG_Common_Export RPG_Common_Environment_XMLTree_Type: public ::xml_schema
   // plane
   // 
   typedef ::RPG_Common_Plane_XMLTree_Type plane_type;
+  typedef ::xsd::cxx::tree::optional< plane_type > plane_optional;
   typedef ::xsd::cxx::tree::traits< plane_type, char > plane_traits;
 
-  const plane_type&
+  const plane_optional&
   plane () const;
 
-  plane_type&
+  plane_optional&
   plane ();
 
   void
   plane (const plane_type& x);
+
+  void
+  plane (const plane_optional& x);
 
   void
   plane (::std::auto_ptr< plane_type > p);
@@ -485,16 +489,20 @@ class RPG_Common_Export RPG_Common_Environment_XMLTree_Type: public ::xml_schema
   // terrain
   // 
   typedef ::RPG_Common_Terrain_XMLTree_Type terrain_type;
+  typedef ::xsd::cxx::tree::optional< terrain_type > terrain_optional;
   typedef ::xsd::cxx::tree::traits< terrain_type, char > terrain_traits;
 
-  const terrain_type&
+  const terrain_optional&
   terrain () const;
 
-  terrain_type&
+  terrain_optional&
   terrain ();
 
   void
   terrain (const terrain_type& x);
+
+  void
+  terrain (const terrain_optional& x);
 
   void
   terrain (::std::auto_ptr< terrain_type > p);
@@ -502,16 +510,20 @@ class RPG_Common_Export RPG_Common_Environment_XMLTree_Type: public ::xml_schema
   // climate
   // 
   typedef ::RPG_Common_Climate_XMLTree_Type climate_type;
+  typedef ::xsd::cxx::tree::optional< climate_type > climate_optional;
   typedef ::xsd::cxx::tree::traits< climate_type, char > climate_traits;
 
-  const climate_type&
+  const climate_optional&
   climate () const;
 
-  climate_type&
+  climate_optional&
   climate ();
 
   void
   climate (const climate_type& x);
+
+  void
+  climate (const climate_optional& x);
 
   void
   climate (::std::auto_ptr< climate_type > p);
@@ -519,16 +531,20 @@ class RPG_Common_Export RPG_Common_Environment_XMLTree_Type: public ::xml_schema
   // time
   // 
   typedef ::RPG_Common_TimeOfDay_XMLTree_Type time_type;
+  typedef ::xsd::cxx::tree::optional< time_type > time_optional;
   typedef ::xsd::cxx::tree::traits< time_type, char > time_traits;
 
-  const time_type&
+  const time_optional&
   time () const;
 
-  time_type&
+  time_optional&
   time ();
 
   void
   time (const time_type& x);
+
+  void
+  time (const time_optional& x);
 
   void
   time (::std::auto_ptr< time_type > p);
@@ -536,16 +552,20 @@ class RPG_Common_Export RPG_Common_Environment_XMLTree_Type: public ::xml_schema
   // lighting
   // 
   typedef ::RPG_Common_AmbientLighting_XMLTree_Type lighting_type;
+  typedef ::xsd::cxx::tree::optional< lighting_type > lighting_optional;
   typedef ::xsd::cxx::tree::traits< lighting_type, char > lighting_traits;
 
-  const lighting_type&
+  const lighting_optional&
   lighting () const;
 
-  lighting_type&
+  lighting_optional&
   lighting ();
 
   void
   lighting (const lighting_type& x);
+
+  void
+  lighting (const lighting_optional& x);
 
   void
   lighting (::std::auto_ptr< lighting_type > p);
@@ -553,25 +573,24 @@ class RPG_Common_Export RPG_Common_Environment_XMLTree_Type: public ::xml_schema
   // outdoors
   // 
   typedef ::xml_schema::boolean outdoors_type;
+  typedef ::xsd::cxx::tree::optional< outdoors_type > outdoors_optional;
   typedef ::xsd::cxx::tree::traits< outdoors_type, char > outdoors_traits;
 
-  const outdoors_type&
+  const outdoors_optional&
   outdoors () const;
 
-  outdoors_type&
+  outdoors_optional&
   outdoors ();
 
   void
   outdoors (const outdoors_type& x);
 
+  void
+  outdoors (const outdoors_optional& x);
+
   // Constructors.
   //
-  RPG_Common_Environment_XMLTree_Type (const plane_type&,
-                                       const terrain_type&,
-                                       const climate_type&,
-                                       const time_type&,
-                                       const lighting_type&,
-                                       const outdoors_type&);
+  RPG_Common_Environment_XMLTree_Type ();
 
   RPG_Common_Environment_XMLTree_Type (const ::xercesc::DOMElement& e,
                                        ::xml_schema::flags f = 0,
@@ -596,12 +615,12 @@ class RPG_Common_Export RPG_Common_Environment_XMLTree_Type: public ::xml_schema
          ::xml_schema::flags);
 
   protected:
-  ::xsd::cxx::tree::one< plane_type > plane_;
-  ::xsd::cxx::tree::one< terrain_type > terrain_;
-  ::xsd::cxx::tree::one< climate_type > climate_;
-  ::xsd::cxx::tree::one< time_type > time_;
-  ::xsd::cxx::tree::one< lighting_type > lighting_;
-  ::xsd::cxx::tree::one< outdoors_type > outdoors_;
+  plane_optional plane_;
+  terrain_optional terrain_;
+  climate_optional climate_;
+  time_optional time_;
+  lighting_optional lighting_;
+  outdoors_optional outdoors_;
 };
 
 RPG_Common_Export

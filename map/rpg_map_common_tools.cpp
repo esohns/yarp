@@ -20,7 +20,9 @@
 #include "stdafx.h"
 
 // *NOTE*: workaround for MSVC quirk with min/max
+#if defined (_MSC_VER)
 #define NOMINMAX
+#endif
 
 #include "rpg_map_common_tools.h"
 
@@ -44,7 +46,8 @@
 #include <iterator>
 
 // init statics
-RPG_Map_DoorStateToStringTable_t RPG_Map_DoorStateHelper::myRPG_Map_DoorStateToStringTable;
+RPG_Map_DoorStateToStringTable_t
+RPG_Map_DoorStateHelper::myRPG_Map_DoorStateToStringTable;
 
 void
 RPG_Map_Common_Tools::initStringConversionTables()
@@ -228,7 +231,8 @@ RPG_Map_Common_Tools::createFloorPlan(const unsigned int& dimensionX_in,
                                       1,
                                       roll_result);
       std::advance(area_iterator, roll_result.front() - 1);
-    } while ((*boundaries_iter).find(*area_iterator) != (*boundaries_iter).end()); // try again ?
+    } while ((*boundaries_iter).find(*area_iterator) !=
+             (*boundaries_iter).end()); // try again ?
 
     seedPositions_out.insert(*area_iterator);
   } // end FOR
@@ -283,8 +287,8 @@ RPG_Map_Common_Tools::makePartition(const unsigned int& dimensionX_in,
   // ideas:
   // - one way would be to compare the areas of the resulting partition
   // for rough equality
-  // - another would be to do it at this stage (by enforcing some minimal distance
-  // between the seed points ?)
+  // - another would be to do it at this stage (by enforcing some minimal
+  //   distance between the seed points ?)
 
   // *NOTE*; the min. avg. distance is zero (the general case) and
   // *NOTE*: the max avg. distance depends on x/y and n
@@ -373,7 +377,8 @@ RPG_Map_Common_Tools::makePartition(const unsigned int& dimensionX_in,
         for (partition_iter = partition_out.begin();
              partition_iter != partition_out.end();
              partition_iter++)
-          if ((*partition_iter).area.find(*neighbours.begin()) != (*partition_iter).area.end())
+          if ((*partition_iter).area.find(*neighbours.begin()) !=
+              (*partition_iter).area.end())
           {
             (*partition_iter).area.insert(current_position);
             break;
@@ -406,7 +411,8 @@ RPG_Map_Common_Tools::makePartition(const unsigned int& dimensionX_in,
         for (partition_iter = partition_out.begin();
              partition_iter != partition_out.end();
              partition_iter++)
-          if ((*partition_iter).area.find(*nearest_neighbour) != (*partition_iter).area.end())
+          if ((*partition_iter).area.find(*nearest_neighbour) !=
+              (*partition_iter).area.end())
           {
             (*partition_iter).area.insert(current_position);
             break;
@@ -441,13 +447,15 @@ RPG_Map_Common_Tools::makePartition(const unsigned int& dimensionX_in,
       for (member_partition = partition_out.begin();
            member_partition != partition_out.end();
            member_partition++)
-        if ((*member_partition).area.find(*conflicts_out.begin()) != (*member_partition).area.end())
+        if ((*member_partition).area.find(*conflicts_out.begin()) !=
+            (*member_partition).area.end())
           break;
       // sanity check
       ACE_ASSERT(member_partition != partition_out.end());
 
       // has it become an "island" ?
-      // --> iff the (compact) area has been cut off from the seed cell ("mainland")
+      // --> iff the (compact) area has been cut off from the seed cell
+      // ("mainland")
 
       // step1: "grow" the cell
       current_island.clear();
@@ -513,7 +521,8 @@ RPG_Map_Common_Tools::makePartition(const unsigned int& dimensionX_in,
           for (neighbour_partition = partition_out.begin();
                neighbour_partition != partition_out.end();
                neighbour_partition++)
-            if ((*neighbour_partition).area.find(*current_neighbour_iter) != (*neighbour_partition).area.end())
+            if ((*neighbour_partition).area.find(*current_neighbour_iter) !=
+                (*neighbour_partition).area.end())
               break;
           // sanity check
           ACE_ASSERT(neighbour_partition != partition_out.end());
@@ -580,7 +589,8 @@ RPG_Map_Common_Tools::makePartition(const unsigned int& dimensionX_in,
              partition_iter != partition_out.end();
              partition_iter++)
         {
-          if ((*partition_iter).area.find(*nearest_neighbour) != (*partition_iter).area.end())
+          if ((*partition_iter).area.find(*nearest_neighbour) !=
+              (*partition_iter).area.end())
             break;
         } // end FOR
         // sanity check
@@ -1028,8 +1038,10 @@ RPG_Map_Common_Tools::makeRooms(const unsigned int& dimensionX_in,
       {
         // compute neighbours
         up = *area_iter; up.second -= ((up.second == 0) ? 0 : 1);
-        right = *area_iter; right.first += ((right.first == (dimensionX_in - 1)) ? 0 : 1);
-        down = *area_iter; down.second += ((down.second == (dimensionY_in - 1)) ? 0 : 1);
+        right =
+            *area_iter; right.first += ((right.first == (dimensionX_in - 1)) ? 0 : 1);
+        down =
+            *area_iter; down.second += ((down.second == (dimensionY_in - 1)) ? 0 : 1);
         left = *area_iter; left.first -= ((left.first == 0) ? 0 : 1);
 
         // (direct) contact with ANOTHER room ?
@@ -1318,7 +1330,8 @@ RPG_Map_Common_Tools::makeDoors(const unsigned int& dimensionX_in,
   // *NOTE*: every room needs at least one (possibly secret) door
   // *NOTE*: doors cannot be situated on the boundary of the level
   // *NOTE*: doors can connect rooms directly (i.e. without a corridor)
-  // *NOTE*: to ensure connectivity for n rooms, we need at least (n-1)*2 doors...
+  // *NOTE*: to ensure connectivity for n rooms, at least (n-1)*2 doors are
+  //         needed...
   unsigned int total_doors = 0;
   unsigned int index = 0;
 
@@ -1605,8 +1618,8 @@ RPG_Map_Common_Tools::connectRooms(const unsigned int& dimensionX_in,
         // connectivity established ? --> relax constraints
         if (used_positions.size() == level_out.doors.size())
         {
-          // check: when minimal connectivity has been reached (i.e. every door has
-          //        been attached to some corridor), relax this constraint
+          // check: when minimal connectivity has been reached (i.e. every door
+          //        has been attached to some corridor), relax this constraint
           used_positions.clear();
 
 //           ACE_DEBUG((LM_DEBUG,
@@ -1796,7 +1809,7 @@ RPG_Map_Common_Tools::buildCorridor(const RPG_Map_Path_t& path_in,
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                     RPG_Map_Common_Tools::direction2String(last_direction).c_str()));
+                     ACE_TEXT(RPG_Map_Common_Tools::direction2String(last_direction).c_str())));
 
           break;
         }
@@ -1817,7 +1830,7 @@ RPG_Map_Common_Tools::buildCorridor(const RPG_Map_Path_t& path_in,
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                     RPG_Map_Common_Tools::direction2String((*path_iter).second).c_str()));
+                     ACE_TEXT(RPG_Map_Common_Tools::direction2String((*path_iter).second).c_str())));
 
           break;
         }
@@ -1850,7 +1863,7 @@ RPG_Map_Common_Tools::buildCorridor(const RPG_Map_Path_t& path_in,
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                     RPG_Map_Common_Tools::direction2String((*path_iter).second).c_str()));
+                     ACE_TEXT(RPG_Map_Common_Tools::direction2String((*path_iter).second).c_str())));
 
           break;
         }
@@ -2021,12 +2034,14 @@ RPG_Map_Common_Tools::buildCircle(const RPG_Map_Position_t& center_in,
   // *CONSIDER*: calculating the positions by mirroring the positions of
   // just one quadrant...
 
-  unsigned char* circle_radius_p = RPG_Map_CircleData + RPG_Map_CircleStart[radius_in];
+  unsigned char* circle_radius_p =
+      RPG_Map_CircleData + RPG_Map_CircleStart[radius_in];
   unsigned int i, j, current_y = center_in.second;
   // *WARNING*: no bounds are checked right-/downwards...
   // first quadrant (CCW)
   for (i = 0;
-       ((i <= radius_in) && (current_y != std::numeric_limits<unsigned int>::max()));
+       ((i <= radius_in) &&
+        (current_y != std::numeric_limits<unsigned int>::max()));
        i++, current_y--)
   {
     if (fillArea_in)
@@ -2034,7 +2049,8 @@ RPG_Map_Common_Tools::buildCircle(const RPG_Map_Position_t& center_in,
            j < *(circle_radius_p + i);
            j++)
         area_out.insert(std::make_pair(center_in.first + j, current_y));
-    area_out.insert(std::make_pair(center_in.first + *(circle_radius_p + i), current_y));
+    area_out.insert(std::make_pair(center_in.first + *(circle_radius_p + i),
+                                   current_y));
   } // end FOR
   i--;
   current_y++;
@@ -2046,7 +2062,8 @@ RPG_Map_Common_Tools::buildCircle(const RPG_Map_Position_t& center_in,
   // second quadrant (CCW)
   if (!fillArea_in)
     for (j = 1;
-         ((j < *(circle_radius_p + i)) && ((center_in.first - j) != std::numeric_limits<unsigned int>::max()));
+         ((j < *(circle_radius_p + i)) &&
+          ((center_in.first - j) != std::numeric_limits<unsigned int>::max()));
          j++)
       area_out.insert(std::make_pair(center_in.first - j, current_y));
   for (;
@@ -2055,7 +2072,9 @@ RPG_Map_Common_Tools::buildCircle(const RPG_Map_Position_t& center_in,
   {
     if (fillArea_in)
       for (j = 1;
-           ((j < *(circle_radius_p + i)) && ((center_in.first - j) != std::numeric_limits<unsigned int>::max()));
+           ((j < *(circle_radius_p + i)) &&
+            ((center_in.first - j) !=
+             std::numeric_limits<unsigned int>::max()));
            j++)
         area_out.insert(std::make_pair(center_in.first - j, current_y));
     // *NOTE*: edge-clamp (left) here
@@ -2072,7 +2091,9 @@ RPG_Map_Common_Tools::buildCircle(const RPG_Map_Position_t& center_in,
   {
     if (fillArea_in)
       for (j = 1;
-           ((j < *(circle_radius_p + i)) && ((center_in.first - j) != std::numeric_limits<unsigned int>::max()));
+           ((j < *(circle_radius_p + i)) &&
+            ((center_in.first - j) !=
+             std::numeric_limits<unsigned int>::max()));
            j++)
         area_out.insert(std::make_pair(center_in.first - j, current_y));
     // *NOTE*: edge-clamp (left) here
@@ -2104,7 +2125,8 @@ RPG_Map_Common_Tools::buildCircle(const RPG_Map_Position_t& center_in,
            j < *(circle_radius_p + i);
            j++)
         area_out.insert(std::make_pair(center_in.first + j, current_y));
-    area_out.insert(std::make_pair(center_in.first + *(circle_radius_p + i), current_y));
+    area_out.insert(std::make_pair(center_in.first + *(circle_radius_p + i),
+                                   current_y));
   } // end FOR
   ACE_ASSERT((i == 0) &&
              (current_y == center_in.second));
@@ -2137,8 +2159,10 @@ RPG_Map_Common_Tools::distance(const RPG_Map_Position_t& position1_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::distance"));
 
-  return (::abs(static_cast<int>(position1_in.first)  - static_cast<int>(position2_in.first)) +
-          ::abs(static_cast<int>(position1_in.second) - static_cast<int>(position2_in.second)));
+  return (::abs(static_cast<int>(position1_in.first)  -
+                static_cast<int>(position2_in.first)) +
+          ::abs(static_cast<int>(position1_in.second) -
+                static_cast<int>(position2_in.second)));
 }
 
 unsigned int
@@ -2147,8 +2171,10 @@ RPG_Map_Common_Tools::distanceMax(const RPG_Map_Position_t& position1_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::distanceMax"));
 
-  unsigned int distance_1 = ::abs(static_cast<int>(position1_in.first)  - static_cast<int>(position2_in.first));
-  unsigned int distance_2 = ::abs(static_cast<int>(position1_in.second) - static_cast<int>(position2_in.second));
+  unsigned int distance_1 = ::abs(static_cast<int>(position1_in.first)  -
+                                  static_cast<int>(position2_in.first));
+  unsigned int distance_2 = ::abs(static_cast<int>(position1_in.second) -
+                                  static_cast<int>(position2_in.second));
 
   return ((distance_1 > distance_2) ? distance_1 : distance_2);
 }
@@ -2250,9 +2276,11 @@ RPG_Map_Common_Tools::map2String(const RPG_Map_t& map_in)
         result += 'X';
       else if (map_in.seeds.find(current_position) != map_in.seeds.end())
         result += '@';
-      else if (map_in.plan.unmapped.find(current_position) != map_in.plan.unmapped.end())
+      else if (map_in.plan.unmapped.find(current_position) !=
+               map_in.plan.unmapped.end())
         result += ' ';
-      else if (map_in.plan.walls.find(current_position) != map_in.plan.walls.end())
+      else if (map_in.plan.walls.find(current_position) !=
+               map_in.plan.walls.end())
         result += '#';
       else
       {
@@ -2320,7 +2348,8 @@ RPG_Map_Common_Tools::door2exitDirection(const RPG_Map_Position_t& position_in, 
   //   - iff (!) either (!) area has only a SINGLE DOOR, it's INSIDE
   //   --> BOTH areas have more than a SINGLE DOOR:
   //   [--> *NOTE*: at this point, we start guessing !]
-  //     - if one area is SQUARE and the other is NON-SQUARE, the NON-SQUARE one is OUTSIDE
+  //     - if one area is SQUARE and the other is NON-SQUARE, the NON-SQUARE one
+  //       is OUTSIDE
   //     - else (BOTH areas are SQUARE-SHAPED or NON-SQUARE-SHAPED):
   //     --> the SMALLER area is INSIDE
 
@@ -2351,9 +2380,9 @@ RPG_Map_Common_Tools::door2exitDirection(const RPG_Map_Position_t& position_in, 
       position_1.first--; position_2.first++; break;
     default:
     {
-      ACE_DEBUG((LM_CRITICAL,
+      ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid orientation (was: \"%s\"), aborting\n"),
-                 RPG_Map_Common_Tools::orientation2String(orientation).c_str()));
+                 ACE_TEXT(RPG_Map_Common_Tools::orientation2String(orientation).c_str())));
       ACE_ASSERT(false);
       
       return DIRECTION_INVALID;
@@ -2384,9 +2413,9 @@ compare_shape:
           return (area_1_is_square ? DIRECTION_RIGHT : DIRECTION_LEFT);
         default:
         {
-          ACE_DEBUG((LM_CRITICAL,
+          ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid orientation (was: \"%s\"), aborting\n"),
-                     RPG_Map_Common_Tools::orientation2String(orientation).c_str()));
+                     ACE_TEXT(RPG_Map_Common_Tools::orientation2String(orientation).c_str())));
           ACE_ASSERT(false);
 
           return DIRECTION_INVALID;
@@ -2400,12 +2429,13 @@ compare_size:
       case MAP_ORIENTATION_HORIZONTAL:
         return (area_1.size() <= area_2.size() ? DIRECTION_DOWN : DIRECTION_UP);
       case MAP_ORIENTATION_VERTICAL:
-        return (area_1.size() <= area_2.size() ? DIRECTION_RIGHT : DIRECTION_LEFT);
+        return (area_1.size() <= area_2.size() ? DIRECTION_RIGHT
+                                               : DIRECTION_LEFT);
       default:
       {
-        ACE_DEBUG((LM_CRITICAL,
+        ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid orientation (was: \"%s\"), aborting\n"),
-                   RPG_Map_Common_Tools::orientation2String(orientation).c_str()));
+                   ACE_TEXT(RPG_Map_Common_Tools::orientation2String(orientation).c_str())));
         ACE_ASSERT(false);
 
         return DIRECTION_INVALID;
@@ -2431,9 +2461,9 @@ compare_size:
         return ((area_1_num_doors == 1) ? DIRECTION_RIGHT : DIRECTION_LEFT);
       default:
       {
-        ACE_DEBUG((LM_CRITICAL,
+        ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid orientation (was: \"%s\"), aborting\n"),
-                   RPG_Map_Common_Tools::orientation2String(orientation).c_str()));
+                   ACE_TEXT(RPG_Map_Common_Tools::orientation2String(orientation).c_str())));
         ACE_ASSERT(false);
 
         return DIRECTION_INVALID;
@@ -2459,9 +2489,11 @@ RPG_Map_Common_Tools::isFloor(const RPG_Map_Position_t& position_in,
 
   RPG_Map_Door_t position_door;
   position_door.position = position_in;
-  return ((floorPlan_in.doors.find(position_door) == floorPlan_in.doors.end()) &&
+  return ((floorPlan_in.doors.find(position_door) ==
+           floorPlan_in.doors.end())                                         &&
           (floorPlan_in.walls.find(position_in) == floorPlan_in.walls.end()) &&
-          (floorPlan_in.unmapped.find(position_in) == floorPlan_in.unmapped.end()));
+          (floorPlan_in.unmapped.find(position_in) ==
+           floorPlan_in.unmapped.end()));
 }
 
 bool
@@ -2496,7 +2528,8 @@ RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
   RPG_Map_Position_t door = std::make_pair(0, 0);
   RPG_Map_Position_t start_position = *area.begin();
   start_position.first--; start_position.second--;
-  ACE_ASSERT(floorPlan_in.walls.find(start_position) != floorPlan_in.walls.end());
+  ACE_ASSERT(floorPlan_in.walls.find(start_position) !=
+             floorPlan_in.walls.end());
   RPG_Map_Position_t current = start_position;
   RPG_Map_Direction next = DIRECTION_RIGHT;
   RPG_Map_Direction origin = DIRECTION_DOWN;
@@ -2612,7 +2645,7 @@ RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid origin (was \"%s\"), continuing\n"),
-                     RPG_Map_Common_Tools::direction2String(origin).c_str()));
+                     ACE_TEXT(RPG_Map_Common_Tools::direction2String(origin).c_str())));
 
           ACE_ASSERT(false);
 
@@ -2651,7 +2684,7 @@ RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                   RPG_Map_Common_Tools::direction2String(next).c_str()));
+                   ACE_TEXT(RPG_Map_Common_Tools::direction2String(next).c_str())));
 
         ACE_ASSERT(false);
 
@@ -2671,7 +2704,8 @@ RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
 
   // step3: test doors' notion of "outside"
   position_door.position = door;
-  RPG_Map_DoorsConstIterator_t current_door_iterator = floorPlan_in.doors.find(position_door);
+  RPG_Map_DoorsConstIterator_t current_door_iterator =
+      floorPlan_in.doors.find(position_door);
   ACE_ASSERT((current_door_iterator != floorPlan_in.doors.end()) &&
              ((*current_door_iterator).position == door));
   // compute position just INSIDE of the door
@@ -2691,7 +2725,7 @@ RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                 RPG_Map_Common_Tools::direction2String((*current_door_iterator).outside).c_str()));
+                 ACE_TEXT(RPG_Map_Common_Tools::direction2String((*current_door_iterator).outside).c_str())));
 
       ACE_ASSERT(false);
 
@@ -2758,8 +2792,10 @@ RPG_Map_Common_Tools::area2Positions(const RPG_Map_Position_t& position1_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::area2Positions"));
 
-  return ((::abs(static_cast<int>(position1_in.first)  - static_cast<int>(position2_in.first))  + 1) *
-          (::abs(static_cast<int>(position1_in.second) - static_cast<int>(position2_in.second)) + 1));
+  return ((::abs(static_cast<int>(position1_in.first)  -
+                 static_cast<int>(position2_in.first))  + 1) *
+          (::abs(static_cast<int>(position1_in.second) -
+                 static_cast<int>(position2_in.second)) + 1));
 }
 
 bool
@@ -2907,8 +2943,7 @@ RPG_Map_Common_Tools::crawlToPosition(const RPG_Map_Area_t& map_in,
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid origin (was \"%s\"), continuing\n"),
-                     RPG_Map_Common_Tools::direction2String(origin).c_str()));
-
+                     ACE_TEXT(RPG_Map_Common_Tools::direction2String(origin).c_str())));
           ACE_ASSERT(false);
 
           break;
@@ -2952,8 +2987,7 @@ RPG_Map_Common_Tools::crawlToPosition(const RPG_Map_Area_t& map_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                   RPG_Map_Common_Tools::direction2String(next).c_str()));
-
+                   ACE_TEXT(RPG_Map_Common_Tools::direction2String(next).c_str())));
         ACE_ASSERT(false);
 
         break;
@@ -3311,11 +3345,16 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Area_t& map_in,
     case DIRECTION_UP:
     {
       if ((directions.find(DIRECTION_DOWN) == directions.end()) || // corner
-          (directions.find((clockwise_in ? DIRECTION_RIGHT : DIRECTION_LEFT)) != directions.end())) // intersection
+          (directions.find((clockwise_in ? DIRECTION_RIGHT
+                                         : DIRECTION_LEFT)) !=
+           directions.end())) // intersection
       {
         // determine next direction
-        if (directions.find((clockwise_in ? DIRECTION_RIGHT : DIRECTION_LEFT)) != directions.end())
-          next_out = (clockwise_in ? DIRECTION_RIGHT : DIRECTION_LEFT); // intersection, turn left/right
+        if (directions.find((clockwise_in ? DIRECTION_RIGHT
+                                          : DIRECTION_LEFT)) !=
+            directions.end())
+          next_out =
+              (clockwise_in ? DIRECTION_RIGHT : DIRECTION_LEFT); // intersection, turn left/right
         else
         {
           next_out = (clockwise_in ? DIRECTION_LEFT : DIRECTION_RIGHT); // corner, turn right/left
@@ -3331,10 +3370,12 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Area_t& map_in,
     case DIRECTION_RIGHT:
     {
       if ((directions.find(DIRECTION_LEFT) == directions.end()) || // corner
-          (directions.find((clockwise_in ? DIRECTION_DOWN : DIRECTION_UP)) != directions.end())) // intersection
+          (directions.find((clockwise_in ? DIRECTION_DOWN
+                                         : DIRECTION_UP)) != directions.end())) // intersection
       {
         // determine next direction
-        if (directions.find((clockwise_in ? DIRECTION_DOWN : DIRECTION_UP)) != directions.end())
+        if (directions.find((clockwise_in ? DIRECTION_DOWN : DIRECTION_UP)) !=
+            directions.end())
           next_out = (clockwise_in ? DIRECTION_DOWN : DIRECTION_UP); // intersection, turn left/right
         else
         {
@@ -3351,10 +3392,14 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Area_t& map_in,
     case DIRECTION_DOWN:
     {
       if ((directions.find(DIRECTION_UP) == directions.end()) || // corner
-          (directions.find((clockwise_in ? DIRECTION_LEFT : DIRECTION_RIGHT)) != directions.end())) // intersection
+          (directions.find((clockwise_in ? DIRECTION_LEFT
+                                         : DIRECTION_RIGHT)) !=
+           directions.end())) // intersection
       {
         // determine next direction
-        if (directions.find((clockwise_in ? DIRECTION_LEFT : DIRECTION_RIGHT)) != directions.end())
+        if (directions.find((clockwise_in ? DIRECTION_LEFT
+                                          : DIRECTION_RIGHT)) !=
+            directions.end())
           next_out = (clockwise_in ? DIRECTION_LEFT : DIRECTION_RIGHT); // intersection, turn left/right
         else
         {
@@ -3371,10 +3416,14 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Area_t& map_in,
     case DIRECTION_LEFT:
     {
       if ((directions.find(DIRECTION_RIGHT) == directions.end()) || // corner
-          (directions.find((clockwise_in ? DIRECTION_UP : DIRECTION_DOWN)) != directions.end())) // intersection
+          (directions.find((clockwise_in ? DIRECTION_UP
+                                         : DIRECTION_DOWN)) !=
+           directions.end())) // intersection
       {
         // determine next direction
-        if (directions.find((clockwise_in ? DIRECTION_UP : DIRECTION_DOWN)) != directions.end())
+        if (directions.find((clockwise_in ? DIRECTION_UP
+                                          : DIRECTION_DOWN)) !=
+            directions.end())
           next_out = (clockwise_in ? DIRECTION_UP : DIRECTION_DOWN); // intersection, turn left/right
         else
         {
@@ -3390,9 +3439,9 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Area_t& map_in,
     }
     default:
     {
-      ACE_DEBUG((LM_CRITICAL,
+      ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid origin (was \"%s\"), continuing\n"),
-                 RPG_Map_Common_Tools::direction2String(origin_in).c_str()));
+                 ACE_TEXT(RPG_Map_Common_Tools::direction2String(origin_in).c_str())));
       ACE_ASSERT(false);
 
       break;
@@ -3416,11 +3465,12 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Area_t& room_in,
   if (room_in.empty())
     return; // nothing to do
 
-  // *NOTE*: constraints depend on whether doors fill a whole position [] or just
-  // "adorn" the side of a wall (implements the notion that walls are
+  // *NOTE*: constraints depend on whether doors fill a whole position [] or
+  // just "adorn" the side of a wall (implements the notion that walls are
   // infinitely thin - which is essentially a design *DECISION*)
   // - corners/intersections are unsuitable positions
-  // - enforce a minimal distance [i.e. to allow corridors_bounds] between any 2 doors
+  // - enforce a minimal distance [i.e. to allow corridors_bounds] between any 2
+  //   doors
   RPG_Map_Position_t current = *(room_in.begin());
   RPG_Map_Direction next = DIRECTION_RIGHT;
   ORIGIN origin = DIRECTION_DOWN;
@@ -3492,7 +3542,7 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Area_t& room_in,
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                     RPG_Map_Common_Tools::direction2String(next).c_str()));
+                     ACE_TEXT(RPG_Map_Common_Tools::direction2String(next).c_str())));
 
           ACE_ASSERT(false);
 
@@ -3562,8 +3612,7 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Area_t& room_in,
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                     RPG_Map_Common_Tools::direction2String(next).c_str()));
-
+                     ACE_TEXT(RPG_Map_Common_Tools::direction2String(next).c_str())));
           ACE_ASSERT(false);
 
           break;
@@ -3627,7 +3676,7 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Area_t& room_in,
           {
             ACE_DEBUG((LM_ERROR,
                        ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                       RPG_Map_Common_Tools::direction2String(next).c_str()));
+                       ACE_TEXT(RPG_Map_Common_Tools::direction2String(next).c_str())));
 
             ACE_ASSERT(false);
 
@@ -4079,8 +4128,9 @@ RPG_Map_Common_Tools::getMapsDirectory()
 
   std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
-  data_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-		                                                               false);
+  data_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           false);
 #endif // #ifdef BASEDIR
 	result = data_path;
 	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -4098,7 +4148,7 @@ RPG_Map_Common_Tools::getMapsDirectory()
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Common_File_Tools::createDirectory(\"%s\"), falling back\n"),
-                 result.c_str()));
+                 ACE_TEXT(result.c_str())));
 
       // fallback
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
@@ -4110,7 +4160,7 @@ RPG_Map_Common_Tools::getMapsDirectory()
     else
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("created maps directory \"%s\"\n"),
-                 result.c_str()));
+                 ACE_TEXT(result.c_str())));
   } // end IF
 
   return result;

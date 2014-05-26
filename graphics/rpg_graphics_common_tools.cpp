@@ -620,7 +620,7 @@ RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in,
         default:
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid door-style (was: \"%s\"), aborting\n"),
+                     ACE_TEXT("unsupported door-style (was: \"%s\"), aborting\n"),
                      ACE_TEXT(RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString(style_in.doorstyle).c_str())));
 
           return result;

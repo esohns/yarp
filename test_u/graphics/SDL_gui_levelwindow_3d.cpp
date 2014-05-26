@@ -1046,16 +1046,24 @@ SDL_GUI_LevelWindow_3D::init(const RPG_Graphics_Style& style_in)
   RPG_Graphics_StyleUnion style;
   style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
   style.floorstyle = style_in.floor;
-  setStyle(style);
+  if (!setStyle(style))
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_GUI_LevelWindow_Isometric::setStyle(FLOORSTYLE), continuing\n")));
   style.discriminator = RPG_Graphics_StyleUnion::EDGESTYLE;
   style.edgestyle = style_in.edge;
-  setStyle(style);
+  if (!setStyle(style))
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_GUI_LevelWindow_Isometric::setStyle(EDGESTYLE), continuing\n")));
   style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
   style.wallstyle = style_in.wall;
-  setStyle(style);
+  if (!setStyle(style))
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_GUI_LevelWindow_Isometric::setStyle(WALLSTYLE), continuing\n")));
   style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
   style.doorstyle = style_in.door;
-  setStyle(style);
+  if (!setStyle(style))
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to SDL_GUI_LevelWindow_Isometric::setStyle(DOORSTYLE), continuing\n")));
 
   // init tiles / position
   RPG_Client_Common_Tools::initFloorEdges(*myEngine,
@@ -1067,20 +1075,6 @@ SDL_GUI_LevelWindow_3D::init(const RPG_Graphics_Style& style_in)
   RPG_Client_Common_Tools::initDoors(*myEngine,
                                      myCurrentDoorSet,
                                      myDoorTiles);
-
-  //// init view (--> center)
-  //RPG_Map_Size_t size = myEngine->getSize();
-  //myView = myEngine->getSize();
-  //myView.first >>= 1;
-  //myView.second >>= 1;
-
-  //// *NOTE*: fiddling with the view invalidates the cursor/highlight BG !
-  //myClientAction.command = COMMAND_CURSOR_INVALIDATE_BG;
-  //myClient->action(myClientAction);
-  //myClientAction.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
-  //myClientAction.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-  //                                         std::numeric_limits<unsigned int>::max());
-  //myClient->action(myClientAction);
 }
 
 void
@@ -1332,7 +1326,7 @@ SDL_GUI_LevelWindow_3D::clear()
   invalidate(myClipRect);
 }
 
-void
+bool
 SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::setStyle"));
@@ -1356,9 +1350,13 @@ SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
           (myCurrentFloorEdgeSet.right.surface == NULL)      &&
           (myCurrentFloorEdgeSet.left.surface == NULL)       &&
           (myCurrentFloorEdgeSet.bottom.surface == NULL))
+      {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("edge-style \"%s\" has no tiles, continuing\n"),
-                   RPG_Graphics_EdgeStyleHelper::RPG_Graphics_EdgeStyleToString(style_in.edgestyle).c_str()));
+                   ACE_TEXT(RPG_Graphics_EdgeStyleHelper::RPG_Graphics_EdgeStyleToString(style_in.edgestyle).c_str())));
+
+        return false;
+      } // end IF
       myState->style.edge = style_in.edgestyle;
 
       // update floor edge tiles / position
@@ -1373,9 +1371,13 @@ SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
                                                   myCurrentFloorSet);
       // sanity check
       if (myCurrentFloorSet.tiles.empty())
+      {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("floor-style \"%s\" has no tiles, continuing\n"),
-                   RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString(style_in.floorstyle).c_str()));
+                   ACE_TEXT(RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString(style_in.floorstyle).c_str())));
+
+        return false;
+      } // end IF
       myState->style.floor = style_in.floorstyle;
 
       break;
@@ -1393,14 +1395,13 @@ SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("wall-style \"%s\" is incomplete, aborting\n"),
-                   RPG_Graphics_WallStyleHelper::RPG_Graphics_WallStyleToString(style_in.wallstyle).c_str()));
+                   ACE_TEXT(RPG_Graphics_WallStyleHelper::RPG_Graphics_WallStyleToString(style_in.wallstyle).c_str())));
 
-        return;
+        return false;
       } // end IF
 
       initWallBlend(myState->style.half_height_walls);
 
-//      // debug info
 //#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
 //      std::string dump_path_base = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
 //#else
@@ -1437,7 +1438,7 @@ SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::copy(), aborting\n")));
 
-        return;
+        return false;
       } // end IF
       if (SDL_BlitSurface(myWallBlend,
                           NULL,
@@ -1445,13 +1446,13 @@ SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
                           NULL))
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-                   SDL_GetError()));
+                   ACE_TEXT("failed to SDL_BlitSurface(): \"%s\", aborting\n"),
+                   ACE_TEXT(SDL_GetError())));
 
         // clean up
         SDL_FreeSurface(copy);
 
-        return;
+        return false;
       } // end IF
       SDL_FreeSurface(myCurrentWallSet.west.surface);
       myCurrentWallSet.west.surface = copy;
@@ -1463,7 +1464,7 @@ SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::copy(), aborting\n")));
 
-        return;
+        return false;
       } // end IF
       if (SDL_BlitSurface(myWallBlend,
                           NULL,
@@ -1471,13 +1472,13 @@ SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
                           NULL))
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-                   SDL_GetError()));
+                   ACE_TEXT("failed to SDL_BlitSurface(): \"%s\", aborting\n"),
+                   ACE_TEXT(SDL_GetError())));
 
         // clean up
         SDL_FreeSurface(copy);
 
-        return;
+        return false;
       } // end IF
       SDL_FreeSurface(myCurrentWallSet.north.surface);
       myCurrentWallSet.north.surface = copy;
@@ -1505,57 +1506,61 @@ SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
 
       // adjust EAST wall opacity
       SDL_Surface* shaded_wall = NULL;
-      shaded_wall = RPG_Graphics_Surface::alpha(*myCurrentWallSet.east.surface,
-                                                static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
+      shaded_wall =
+          RPG_Graphics_Surface::alpha(*myCurrentWallSet.east.surface,
+                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
                    static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE))));
 
-        return;
+        return false;
       } // end IF
       SDL_FreeSurface(myCurrentWallSet.east.surface);
       myCurrentWallSet.east.surface = shaded_wall;
 
       // adjust WEST wall opacity
-      shaded_wall = RPG_Graphics_Surface::alpha(*myCurrentWallSet.west.surface,
-                                                static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+      shaded_wall =
+          RPG_Graphics_Surface::alpha(*myCurrentWallSet.west.surface,
+                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
                    static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
-        return;
+        return false;
       } // end IF
       SDL_FreeSurface(myCurrentWallSet.west.surface);
       myCurrentWallSet.west.surface = shaded_wall;
 
       // adjust SOUTH wall opacity
-      shaded_wall = RPG_Graphics_Surface::alpha(*myCurrentWallSet.south.surface,
-                                                static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
+      shaded_wall =
+          RPG_Graphics_Surface::alpha(*myCurrentWallSet.south.surface,
+                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
                    static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE))));
 
-        return;
+        return false;
       } // end IF
       SDL_FreeSurface(myCurrentWallSet.south.surface);
       myCurrentWallSet.south.surface = shaded_wall;
 
       // adjust NORTH wall opacity
-      shaded_wall = RPG_Graphics_Surface::alpha(*myCurrentWallSet.north.surface,
-                                                static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+      shaded_wall =
+          RPG_Graphics_Surface::alpha(*myCurrentWallSet.north.surface,
+                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
                    static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
-        return;
+        return false;
       } // end IF
       SDL_FreeSurface(myCurrentWallSet.north.surface);
       myCurrentWallSet.north.surface = shaded_wall;
@@ -1599,9 +1604,13 @@ SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
           (myCurrentDoorSet.horizontal_closed.surface == NULL) ||
           (myCurrentDoorSet.vertical_closed.surface == NULL)   ||
           (myCurrentDoorSet.broken.surface == NULL))
+      {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("door-style \"%s\" is incomplete, continuing\n"),
-                   RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString(style_in.doorstyle).c_str()));
+                   ACE_TEXT("door-style \"%s\" is incomplete, aborting\n"),
+                   ACE_TEXT(RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString(style_in.doorstyle).c_str())));
+
+        return false;
+      } // end IF
 
       // update door tiles / position
       RPG_Client_Common_Tools::updateDoors(myCurrentDoorSet,
@@ -1618,9 +1627,11 @@ SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
                  ACE_TEXT("invalid style (was: %d), aborting\n"),
                  style_in.discriminator));
 
-      return;
+      return false;
     }
   } // end SWITCH
+
+  return true;
 }
 
 void
