@@ -179,6 +179,8 @@ File "..\..\magic\rpg_magic.xsd"
 File "..\..\item\rpg_item.xsd"
 File "..\..\graphics\rpg_graphics.xsd"
 File "..\..\character\monster\rpg_monster.xsd"
+File "..\..\combat\rpg_combat.xsd"
+File "..\..\sound\rpg_sound.xsd"
 
 ; Config - glade
 File "..\..\client\rpg_client.glade"

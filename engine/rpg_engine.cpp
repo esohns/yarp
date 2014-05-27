@@ -452,7 +452,7 @@ RPG_Engine::dump_state() const
 }
 
 void
-RPG_Engine::lock()
+RPG_Engine::lock() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::lock"));
 
@@ -460,7 +460,7 @@ RPG_Engine::lock()
 }
 
 void
-RPG_Engine::unlock()
+RPG_Engine::unlock() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::unlock"));
 

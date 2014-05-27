@@ -32,6 +32,7 @@
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
 #include "rpg_common_xsderrorhandler.h"
+#include "rpg_common_tools.h"
 #include "rpg_common_file_tools.h"
 
 #include "rpg_dice_common.h"
@@ -175,28 +176,33 @@ RPG_Engine_Level::load(const std::string& filename_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Common_File_Tools::isDirectory(\"%s\"), aborting\n"),
-                 schemaRepository_in.c_str()));
+                 ACE_TEXT(schemaRepository_in.c_str())));
 
       return false;
     } // end IF
 
     base_path = schemaRepository_in;
   } // end ELSE
-  std::string schemaFile = base_path;
-  schemaFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schemaFile += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_SCHEMA_FILE);
+  std::string schema_filename = base_path;
+  schema_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_SCHEMA_FILE);
   // sanity check(s)
-  if (!RPG_Common_File_Tools::isReadable(schemaFile))
+  if (!RPG_Common_File_Tools::isReadable(schema_filename))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
-               schemaFile.c_str()));
+               ACE_TEXT(schema_filename.c_str())));
 
     return false;
   } // end IF
+	// *NOTE*: support paths with spaces
+	schema_filename = RPG_Common_Tools::sanitizeURI(schema_filename);
+	schema_filename.insert(0, ACE_TEXT_ALWAYS_CHAR("file:///"));
 
-  props.schema_location(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE),
-                        schemaFile);
+	std::string target_name_space =
+		ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE);
+  props.schema_location(target_name_space,
+                        schema_filename);
 //   props.no_namespace_schema_location(RPG_CHARACTER_PLAYER_SCHEMA_FILE);
 //   props.schema_location("http://www.w3.org/XML/1998/namespace", "xml.xsd");
 

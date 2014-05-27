@@ -76,6 +76,8 @@ class RPG_Common_Export RPG_Common_Tools
   static bool period2String(const ACE_Time_Value&, // period
                             std::string&);         // return value: corresp. string
 
+	static std::string sanitizeURI(const std::string&); // URI
+
   // ---------------------------------------------------------------------------
 
   static bool isLinux();

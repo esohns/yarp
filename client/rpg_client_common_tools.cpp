@@ -480,7 +480,8 @@ RPG_Client_Common_Tools::initDoors(const RPG_Engine& engine_in,
 
   RPG_Graphics_Tile_t current_tile;
   RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-  RPG_Map_Positions_t doors = engine_in.getDoors();
+	engine_in.lock();
+  RPG_Map_Positions_t doors = engine_in.getDoors(false);
   RPG_Map_DoorState door_state = RPG_MAP_DOORSTATE_INVALID;
   for (RPG_Map_PositionsConstIterator_t iterator = doors.begin();
        iterator != doors.end();
@@ -492,7 +493,8 @@ RPG_Client_Common_Tools::initDoors(const RPG_Engine& engine_in,
     orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
     door_state = RPG_MAP_DOORSTATE_INVALID;
 
-    door_state = engine_in.state(*iterator);
+    door_state = engine_in.state(*iterator,
+			                           false);
     ACE_ASSERT(door_state != RPG_MAP_DOORSTATE_INVALID);
     if (door_state == DOORSTATE_BROKEN)
     {
@@ -521,7 +523,7 @@ RPG_Client_Common_Tools::initDoors(const RPG_Engine& engine_in,
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid door [%u,%u] orientation (was: \"%s\"), continuing\n"),
                    (*iterator).first, (*iterator).second,
-                   RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str()));
+                   ACE_TEXT(RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str())));
 
         continue;
       }
@@ -529,6 +531,7 @@ RPG_Client_Common_Tools::initDoors(const RPG_Engine& engine_in,
 
     doorTiles_out.insert(std::make_pair(*iterator, current_tile));
   } // end FOR
+	engine_in.unlock();
 }
 
 void
@@ -541,6 +544,7 @@ RPG_Client_Common_Tools::updateDoors(const RPG_Graphics_DoorTileSet_t& tileSet_i
   RPG_Graphics_Tile_t current_tile;
   RPG_Graphics_Orientation orientation;
   RPG_Map_DoorState door_state;
+	engine_in.lock();
   for (RPG_Graphics_DoorTileMapIterator_t iterator = doorTiles_inout.begin();
        iterator != doorTiles_inout.end();
        iterator++)
@@ -551,7 +555,8 @@ RPG_Client_Common_Tools::updateDoors(const RPG_Graphics_DoorTileSet_t& tileSet_i
     orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
     door_state = RPG_MAP_DOORSTATE_INVALID;
 
-    door_state = engine_in.state((*iterator).first);
+    door_state = engine_in.state((*iterator).first,
+			                           false);
     ACE_ASSERT(door_state != RPG_MAP_DOORSTATE_INVALID);
     if (door_state == DOORSTATE_BROKEN)
     {
@@ -588,6 +593,7 @@ RPG_Client_Common_Tools::updateDoors(const RPG_Graphics_DoorTileSet_t& tileSet_i
 
     (*iterator).second = current_tile;
   } // end FOR
+	engine_in.unlock();
 }
 
 RPG_Graphics_Sprite

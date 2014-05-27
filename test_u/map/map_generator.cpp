@@ -20,7 +20,9 @@
 #include "stdafx.h"
 
 // *NOTE*: workaround quirky MSVC...
+#ifdef _MSC_VER
 #define NOMINMAX
+#endif
 
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
@@ -44,6 +46,9 @@
 #include "rpg_common_file_tools.h"
 
 #include <ace/ACE.h>
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#include <ace/Init_ACE.h>
+#endif
 #include <ace/Log_Msg.h>
 #include <ace/Get_Opt.h>
 #include <ace/High_Res_Timer.h>
@@ -547,6 +552,17 @@ ACE_TMAIN(int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::main"));
 
+	// *PORTABILITY*: on Windows, need to init ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+	if (ACE::init() == -1)
+	{
+		ACE_DEBUG((LM_ERROR,
+			         ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
+
+    return EXIT_FAILURE;
+	} // end IF
+#endif
+
   std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
 #ifdef BASEDIR
   data_path =
@@ -617,6 +633,13 @@ ACE_TMAIN(int argc_in,
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv_in[0])));
 
+		// *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+		if (ACE::fini() == -1)
+			ACE_DEBUG((LM_ERROR,
+			           ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
+
     return EXIT_FAILURE;
   } // end IF
   if (random)
@@ -661,6 +684,13 @@ ACE_TMAIN(int argc_in,
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv_in[0])));
 
+		// *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+		if (ACE::fini() == -1)
+			ACE_DEBUG((LM_ERROR,
+			           ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
+
     return EXIT_FAILURE;
   } // end IF
 
@@ -677,7 +707,7 @@ ACE_TMAIN(int argc_in,
                ACE_TEXT("failed to RPG_Common_Tools::initLogging(), aborting\n")));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
     if (ACE::fini() == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
@@ -690,6 +720,13 @@ ACE_TMAIN(int argc_in,
   if (printVersionAndExit)
   {
     do_printVersion(std::string(ACE::basename(argv_in[0])));
+
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_SUCCESS;
   } // end IF
@@ -716,6 +753,13 @@ ACE_TMAIN(int argc_in,
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
              working_time_string.c_str()));
+
+	// *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+	if (ACE::fini() == -1)
+		ACE_DEBUG((LM_ERROR,
+		           ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
   return EXIT_SUCCESS;
 } // end main

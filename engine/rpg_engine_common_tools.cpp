@@ -68,11 +68,18 @@
 #include "rpg_dice.h"
 #include "rpg_dice_common_tools.h"
 
+//#include <xercesc/util/XMLString.hpp>
+//#include <xercesc/util/XMLUri.hpp>
+//#include <xercesc/util/XMLURL.hpp>
+
 #include <ace/Log_Msg.h>
 
+#include <algorithm>
 #include <fstream>
 #include <string>
 #include <math.h>
+
+using namespace xercesc;
 
 // init statics
 RPG_Engine_CommandToStringTable_t RPG_Engine_CommandHelper::myRPG_Engine_CommandToStringTable;
@@ -220,7 +227,7 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
-               filename_in.c_str()));
+               ACE_TEXT(filename_in.c_str())));
 
     return result;
   } // end IF
@@ -242,28 +249,33 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Common_File_Tools::isDirectory(\"%s\"), aborting\n"),
-                 schemaRepository_in.c_str()));
+                 ACE_TEXT(schemaRepository_in.c_str())));
 
       return result;
     } // end IF
 
     base_path = schemaRepository_in;
   } // end ELSE
-  std::string schemaFile = base_path;
-  schemaFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schemaFile += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_SCHEMA_FILE);
+  std::string schema_filename = base_path;
+  schema_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_SCHEMA_FILE);
   // sanity check(s)
-  if (!RPG_Common_File_Tools::isReadable(schemaFile))
+  if (!RPG_Common_File_Tools::isReadable(schema_filename))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
-               schemaFile.c_str()));
+               ACE_TEXT(schema_filename.c_str())));
 
     return result;
   } // end IF
+	// *NOTE*: support paths with spaces
+	schema_filename = RPG_Common_Tools::sanitizeURI(schema_filename);
+	schema_filename.insert(0, ACE_TEXT_ALWAYS_CHAR("file:///"));
 
-  props.schema_location(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE),
-                        schemaFile);
+	std::string target_name_space =
+		ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE);
+  props.schema_location(target_name_space,
+                        schema_filename);
 //   props.no_namespace_schema_location(RPG_CHARACTER_PLAYER_SCHEMA_FILE);
 //   props.schema_location("http://www.w3.org/XML/1998/namespace", "xml.xsd");
 
@@ -271,7 +283,7 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
   std::auto_ptr<RPG_Engine_Player_XMLTree_Type> engine_player_p;
   try
   {
-    ifs.open(filename_in.c_str(),
+    ifs.open(filename_in,
              std::ios_base::in);
 
     engine_player_p = ::engine_player_t(ifs,
@@ -285,8 +297,8 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
-               filename_in.c_str(),
-               exception.what()));
+               ACE_TEXT(filename_in.c_str()),
+               ACE_TEXT(exception.what())));
 
     return result;
   }
@@ -296,8 +308,8 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
     converter << exception;
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
-               filename_in.c_str(),
-               converter.str().c_str()));
+               ACE_TEXT(filename_in.c_str()),
+               ACE_TEXT(converter.str().c_str())));
 
     return result;
   }
@@ -308,20 +320,20 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
     // *NOTE*: maybe this was a CHARACTER profile (expected ENTITY profile)
     // --> try parsing that instead...
     ::xml_schema::properties props_alt;
-    schemaFile = base_path;
-    schemaFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schemaFile += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_SCHEMA_FILE);
+    schema_filename = base_path;
+    schema_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    schema_filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_SCHEMA_FILE);
     // sanity check(s)
-    if (!RPG_Common_File_Tools::isReadable(schemaFile))
+    if (!RPG_Common_File_Tools::isReadable(schema_filename))
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
-                 schemaFile.c_str()));
+                 ACE_TEXT(schema_filename.c_str())));
 
       return result;
     } // end IF
-    props_alt.schema_location(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE),
-                              schemaFile);
+    props_alt.schema_location(target_name_space,
+                              schema_filename);
     try
     {
       // reset read pointer
@@ -337,8 +349,8 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
-                 filename_in.c_str(),
-                 exception.what()));
+                 ACE_TEXT(filename_in.c_str()),
+                 ACE_TEXT(exception.what())));
 
       return result;
     }
@@ -348,8 +360,8 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
       converter << exception;
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
-                 filename_in.c_str(),
-                 converter.str().c_str()));
+                 ACE_TEXT(filename_in.c_str()),
+                 ACE_TEXT(converter.str().c_str())));
 
       return result;
     }
@@ -359,8 +371,8 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
       converter << exception;
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
-                 filename_in.c_str(),
-                 converter.str().c_str()));
+                 ACE_TEXT(filename_in.c_str()),
+                 ACE_TEXT(converter.str().c_str())));
 
       return result;
     }
@@ -372,7 +384,7 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred, aborting\n"),
-               filename_in.c_str()));
+               ACE_TEXT(filename_in.c_str())));
 
     return result;
   }
@@ -418,7 +430,7 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity_t& entity_in,
 //     {
 //       ACE_DEBUG((LM_ERROR,
 //                  ACE_TEXT("failed to RPG_Common_File_Tools::deleteFile(\"%s\"), aborting\n"),
-//                  filename_in.c_str()));
+//                  ACE_TEXT(filename_in.c_str())));
     //
 //       return false;
 //     } // end IF
@@ -471,7 +483,7 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity_t& entity_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("\"%s\": unable to open or write error, aborting\n"),
-               filename_in.c_str()));
+               ACE_TEXT(filename_in.c_str())));
 
     // clean up
     delete player_xml_p;
@@ -486,8 +498,8 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity_t& entity_in,
     std::string text = converter.str();
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Engine_Common_Tools::saveEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
-               filename_in.c_str(),
-               text.c_str()));
+               ACE_TEXT(filename_in.c_str()),
+               ACE_TEXT(text.c_str())));
 
     // clean up
     delete player_xml_p;
@@ -499,7 +511,7 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity_t& entity_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Engine_Common_Tools::saveEntity(\"%s\"): exception occurred, aborting\n"),
-               filename_in.c_str()));
+               ACE_TEXT(filename_in.c_str())));
 
     // clean up
     delete player_xml_p;
@@ -514,8 +526,8 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity_t& entity_in,
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("saved entity \"%s\" to file: \"%s\"\n"),
-             entity_in.character->getName().c_str(),
-             filename_in.c_str()));
+             ACE_TEXT(entity_in.character->getName().c_str()),
+             ACE_TEXT(filename_in.c_str())));
 
   return true;
 }
@@ -857,7 +869,7 @@ RPG_Engine_Common_Tools::generateStandardItems(const RPG_Common_SubClass& subCla
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid subclass \"%s\", aborting\n"),
-                   RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str()));
+                   ACE_TEXT(RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str())));
 
         break;
       }
@@ -867,7 +879,7 @@ RPG_Engine_Common_Tools::generateStandardItems(const RPG_Common_SubClass& subCla
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("generate_standard_items(): caught exception: \"%s\", aborting\n"),
-               exception.what()));
+               ACE_TEXT(exception.what())));
   }
 
   return result;
@@ -1087,7 +1099,7 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Player_Party_t& party_in
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("combatant #%d: name: \"%s\", DEXModifier: %d, initiative: %d\n"),
                i,
-               (*iterator).handle->getName().c_str(),
+               ACE_TEXT((*iterator).handle->getName().c_str()),
                (*iterator).DEXModifier,
                (*iterator).initiative));
 }
@@ -1140,10 +1152,10 @@ RPG_Engine_Common_Tools::performCombatRound(const RPG_Combat_AttackSituation& at
     // step2: attack foe !
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("\"%s\" (HP: %d/%d) attacks \"%s\" (HP: %d/%d)...\n"),
-//                (*iterator).handle->getName().c_str(),
+//                ACE_TEXT((*iterator).handle->getName().c_str()),
 //                (*iterator).handle->getNumCurrentHitPoints(),
 //                (*iterator).handle->getNumTotalHitPoints(),
-//                (*foeFinder).handle->getName().c_str(),
+//                ACE_TEXT((*foeFinder).handle->getName().c_str()),
 //                (*foeFinder).handle->getNumCurrentHitPoints(),
 //                (*foeFinder).handle->getNumTotalHitPoints()));
 
@@ -1415,7 +1427,7 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
 //     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("player: \"%s\" attack #%d: base attack bonus: %d\n"),
-//                  player_base->getName().c_str(),
+//                  ACE_TEXT(player_base->getName().c_str()),
 //                  index,
 //                  static_cast<int>(*iterator)));
 //     } // end FOR
@@ -1482,11 +1494,11 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
     {
       ACE_DEBUG((LM_INFO,
                  ACE_TEXT("player \"%s\": primary weapon (min/max. reach: %d/%d) is not within range %d of \"%s\", returning\n"),
-                 player_base->getName().c_str(),
+                 ACE_TEXT(player_base->getName().c_str()),
                  minReach,
                  maxReach,
                  distance_in,
-                 monster->getName().c_str()));
+                 ACE_TEXT(monster->getName().c_str())));
 
       // *TODO*: consider the possibility of throwing a melee weapon...
 //       maxReach = 50; // not really meant to be thrown...
@@ -1602,12 +1614,12 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
 
       ACE_DEBUG((LM_INFO,
                  ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) with %s and hits: %d%s...\n"),
-                 player_base->getName().c_str(),
-                 monster->getName().c_str(),
+                 ACE_TEXT(player_base->getName().c_str()),
+                 ACE_TEXT(monster->getName().c_str()),
                  targetArmorClass,
-                 RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon_type).c_str(),
+                 ACE_TEXT(RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon_type).c_str()),
                  (attack_roll + currentAttackBonus),
-                 (is_critical_hit ? ACE_TEXT_ALWAYS_CHAR(" (critical)") : ACE_TEXT_ALWAYS_CHAR(""))));
+                 (is_critical_hit ? ACE_TEXT(" (critical)") : ACE_TEXT(""))));
 
       target_inout->sustainDamage(damage);
 
@@ -1626,10 +1638,10 @@ RPG_Engine_Common_Tools::attack(const RPG_Player_Base* const attacker_in,
 is_player_miss:
       ACE_DEBUG((LM_INFO,
                  ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) with %s and misses: %d...\n"),
-                 player_base->getName().c_str(),
-                 monster->getName().c_str(),
+                 ACE_TEXT(player_base->getName().c_str()),
+                 ACE_TEXT(monster->getName().c_str()),
                  targetArmorClass,
-                 RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon_type).c_str(),
+                 ACE_TEXT(RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon_type).c_str()),
                  (attack_roll + currentAttackBonus)));
 
       // if this was a Standard Action --> done
@@ -1789,7 +1801,7 @@ init_monster_special_attack:
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("found no suitable special attack for monster \"%s\", aborting\n"),
-                 monster->getName().c_str()));
+                 ACE_TEXT(monster->getName().c_str())));
 
       return false;
     } // end IF
@@ -1971,12 +1983,12 @@ monster_perform_single_action:
 
       ACE_DEBUG((LM_INFO,
                  ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) with %s and hits: %d%s...\n"),
-                 monster->getName().c_str(),
-                 player_base->getName().c_str(),
+                 ACE_TEXT(monster->getName().c_str()),
+                 ACE_TEXT(player_base->getName().c_str()),
                  targetArmorClass,
-                 RPG_Monster_Common_Tools::weaponTypeToString(current_action->weapon).c_str(),
+                 ACE_TEXT(RPG_Monster_Common_Tools::weaponTypeToString(current_action->weapon).c_str()),
                  (attack_roll + currentAttackBonus),
-                 (is_critical_hit ? ACE_TEXT_ALWAYS_CHAR(" (critical)") : ACE_TEXT_ALWAYS_CHAR(""))));
+                 (is_critical_hit ? ACE_TEXT(" (critical)") : ACE_TEXT(""))));
 
       target_inout->sustainDamage(damage);
 
@@ -1995,10 +2007,10 @@ monster_perform_single_action:
 is_monster_miss:
       ACE_DEBUG((LM_INFO,
                  ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) with %s and misses: %d...\n"),
-                 monster->getName().c_str(),
-                 player_base->getName().c_str(),
+                 ACE_TEXT(monster->getName().c_str()),
+                 ACE_TEXT(player_base->getName().c_str()),
                  targetArmorClass,
-                 RPG_Monster_Common_Tools::weaponTypeToString(current_action->weapon).c_str(),
+                 ACE_TEXT(RPG_Monster_Common_Tools::weaponTypeToString(current_action->weapon).c_str()),
                  (attack_roll + currentAttackBonus)));
     } // end FOR
 

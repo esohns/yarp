@@ -51,6 +51,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_magic_parser", "..\test_u\test_u_magic_parser.vcxproj", "{0993BCA1-BB57-4DEE-A0A0-BE8C625AFAD4}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_map_generator", "..\test_u\test_u_map_generator.vcxproj", "{FC5BD0A7-0E8B-4B63-98C0-B3CC12686B77}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DC39B751-377F-4093-9F76-4821F97F4DE5} = {DC39B751-377F-4093-9F76-4821F97F4DE5}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_map_parser", "..\test_u\test_u_map_parser.vcxproj", "{A4BE779E-A2D6-4D2F-B93B-6D3A0DB4C6F7}"
 EndProject

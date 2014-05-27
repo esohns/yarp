@@ -2285,8 +2285,9 @@ RPG_Graphics_Common_Tools::map2Screen(const RPG_Graphics_Position_t& position_in
       std::make_pair(std::numeric_limits<int>::max(),
                      std::numeric_limits<int>::max());
 
-  RPG_Graphics_Position_t map_center = std::make_pair(windowSize_in.first / 2,
-                                                      windowSize_in.second / 2);
+  RPG_Graphics_Position_t map_center =
+		std::make_pair(windowSize_in.first / 2,
+		               windowSize_in.second / 2);
   result.first = map_center.first +
                  (RPG_GRAPHICS_TILE_WIDTH_MOD *
                   (position_in.first -

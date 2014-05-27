@@ -14,6 +14,7 @@ noinst_HEADERS = \
 include_HEADERS = \
   rpg_graphics_SDL_tools.h \
   rpg_graphics_SDL_window_base.h \
+  rpg_graphics_SDL_window_interface.h \
   rpg_graphics_SDL_window_sub.h \
   rpg_graphics_XML_parser.h \
   rpg_graphics_XML_tree.h \
@@ -62,10 +63,14 @@ include_HEADERS = \
 lib_LTLIBRARIES = libRPG_Graphics.la
 
 libRPG_Graphics_la_SOURCES = \
+dnl stdafx.cpp \
+  stdafx.h \
   rpg_graphics_SDL_tools.cpp \
   rpg_graphics_SDL_tools.h \
   rpg_graphics_SDL_window_base.cpp \
   rpg_graphics_SDL_window_base.h \
+  rpg_graphics_SDL_window_interface.cpp \
+  rpg_graphics_SDL_window_interface.h \
   rpg_graphics_SDL_window_sub.cpp \
   rpg_graphics_SDL_window_sub.h \
   rpg_graphics_XML_parser.cpp \

@@ -69,8 +69,8 @@ class RPG_Engine_Export RPG_Engine
   virtual void dump_state() const;
 
 	// *WARNING*: handle with care !
-  void lock();
-  void unlock();
+  void lock() const;
+  void unlock() const;
 
   void init(RPG_Engine_IClient*); // client interface handle
   // *WARNING*: DO NOT USE while the engine isRunning() !

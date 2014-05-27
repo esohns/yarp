@@ -731,7 +731,7 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
 
   // *NOTE*: without the "+-1" small corners within the viewport are not drawn
   int diff = top_right.first - top_right.second - 1;
-  int sum = top_right.first + top_right.second + 1;
+  int sum  = top_right.first + top_right.second + 1;
 
   // *NOTE*: draw (visible !) tiles order according to the painter's algorithm
   // --> "back-to-front"
@@ -795,16 +795,12 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
   RPG_Graphics_FloorEdgeTileMapIterator_t floor_edge_iterator =
       myFloorEdgeTiles.end();
 
-  // debug info
   //SDL_Rect rect = {0, 0, 0, 0};
   std::ostringstream converter;
   std::string tile_text;
   RPG_Graphics_TextSize_t tile_text_size;
 //   RPG_Map_Position_t map_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
 //                                                    std::numeric_limits<unsigned int>::max());
-
-  //// "clear" map "window"
-  //clear();
 
   // pass 1
   myClient->lock();
@@ -850,8 +846,8 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
 //       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
       screen_position =
           RPG_Graphics_Common_Tools::map2Screen(current_map_position,
-                                                std::make_pair(myClipRect.h,
-                                                               myClipRect.w),
+                                                std::make_pair(myClipRect.w,
+                                                               myClipRect.h),
                                                 myView);
 
       // step1: unmapped areas
@@ -1118,8 +1114,8 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
   RPG_Graphics_DoorTileMapIterator_t door_iterator = myDoorTiles.end();
   RPG_Engine_EntityID_t entity_id = 0;
   for (i = -static_cast<int>(top_right.second);
-        i <= static_cast<int>(top_right.second);
-        i++)
+       i <= static_cast<int>(top_right.second);
+       i++)
   {
     current_map_position.second = myView.second + i;
 
@@ -1147,8 +1143,8 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
 //       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
       screen_position =
           RPG_Graphics_Common_Tools::map2Screen(current_map_position,
-                                                std::make_pair(myClipRect.h,
-                                                               myClipRect.w),
+                                                std::make_pair(myClipRect.w,
+                                                               myClipRect.h),
                                                 myView);
 
       wall_iterator = myWallTiles.find(current_map_position);
