@@ -314,7 +314,7 @@ SDL_GUI_LevelWindow_Isometric::draw(SDL_Surface* targetSurface_in,
 
   // *NOTE*: without the "+-1" small corners within the viewport are not drawn
   int diff = top_right.first - top_right.second - 1;
-  int sum = top_right.first + top_right.second + 1;
+  int sum  = top_right.first + top_right.second + 1;
 
 	inherited::clear(COLOR_BLACK, // color
 		               false);      // don't clip
@@ -1396,7 +1396,7 @@ SDL_GUI_LevelWindow_Isometric::notify(const RPG_Engine_Command& command_in,
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid door orientation \"%s\", aborting\n"),
-                     RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str()));
+                     ACE_TEXT(RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str())));
 
           return;
         }
@@ -1479,7 +1479,7 @@ SDL_GUI_LevelWindow_Isometric::notify(const RPG_Engine_Command& command_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid command (was: \"%s\", aborting\n"),
-                 RPG_Engine_CommandHelper::RPG_Engine_CommandToString(command_in).c_str()));
+                 ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(command_in).c_str())));
 
       return;
     }
@@ -1588,7 +1588,7 @@ SDL_GUI_LevelWindow_Isometric::clear()
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF
@@ -1598,7 +1598,7 @@ SDL_GUI_LevelWindow_Isometric::clear()
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     return;
   } // end IF
@@ -1937,7 +1937,7 @@ SDL_GUI_LevelWindow_Isometric::initCeiling()
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
-               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
+               ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type).c_str())));
 
     return;
   } // end IF
@@ -1998,7 +1998,7 @@ SDL_GUI_LevelWindow_Isometric::initWallBlend(const bool& halfHeightWalls_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     // clean up
     SDL_FreeSurface(myWallBlend);
@@ -2007,7 +2007,6 @@ SDL_GUI_LevelWindow_Isometric::initWallBlend(const bool& halfHeightWalls_in)
     return;
   } // end IF
 
-//   // debug info
 //   std::string dump_path_base = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
 //   dump_path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 //   std::string dump_path = dump_path_base;

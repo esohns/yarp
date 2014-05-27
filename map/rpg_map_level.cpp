@@ -223,8 +223,7 @@ RPG_Map_Level::random(const RPG_Map_FloorPlan_Configuration_t& floorPlanConfigur
   if (map_configuration.max_num_doors_per_room == 0) // <-- ! don't care
   {
     result.clear();
-// *TODO*
-    RPG_Dice::generateRandomNumbers(RAND_MAX + 1, // *PORTABILITY*
+    RPG_Dice::generateRandomNumbers(static_cast<unsigned int>(RAND_MAX) + 1,
                                     1,
                                     result);
     map_configuration.max_num_doors_per_room = (result.front() - 1);

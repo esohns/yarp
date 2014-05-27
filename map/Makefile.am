@@ -10,7 +10,6 @@ SUBDIRS = scripts . data
 
 noinst_HEADERS = \
   stdafx.h
-#  rpg_XMLSchema_XML_tree.h
 include_HEADERS = \
   rpg_map_common_tools.h \
   rpg_map_common.h \
@@ -30,6 +29,8 @@ include_HEADERS = \
 lib_LTLIBRARIES = libRPG_Map.la
 
 libRPG_Map_la_SOURCES = \
+dnl  stdafx.cpp \
+  stdafx.h \
   rpg_map_common_tools.cpp \
   rpg_map_common_tools.h \
   rpg_map_common.h \
@@ -51,10 +52,12 @@ libRPG_Map_la_SOURCES = \
   rpg_map_scanner.h \
   rpg_map_XML_tree.cpp \
   rpg_map_XML_tree.h
+libRPG_Map_la_CPPFLAGS	= \
+  $(AM_CPPFLAGS) \
+  -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 
 pkgdatadir = $(datadir)/@META_PACKAGE@
 configdir = $(pkgdatadir)/config
 config_DATA = rpg_map.xsd
 
 EXTRA_DIST = $(config_DATA)
-
