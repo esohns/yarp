@@ -128,7 +128,6 @@ RPG_Client_Window_Message::draw(SDL_Surface* targetSurface_in,
   ACE_ASSERT(target_surface);
   ACE_UNUSED_ARG(offsetX_in);
   ACE_UNUSED_ARG(offsetY_in);
-  ACE_ASSERT(myBG);
   ACE_ASSERT(myParent);
 
   SDL_Rect dirty_region;

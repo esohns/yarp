@@ -143,7 +143,7 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
 //     {
 //       ACE_DEBUG((LM_ERROR,
 //                  ACE_TEXT("received unknown event (was: %u)...\n"),
-//                  static_cast<unsigned long> (event_in.type)));
+//                  static_cast<unsigned int>(event_in.type)));
 //
 //       break;
 //     }
@@ -172,12 +172,11 @@ RPG_Graphics_HotSpot::draw(SDL_Surface* targetSurface_in,
 //   {
 //     ACE_DEBUG((LM_ERROR,
 //                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-//                SDL_GetError()));
+//                ACE_TEXT(SDL_GetError())));
 //
 //     return;
 //   } // end IF
 
-   // debug info
   if (myDebug)
     RPG_Graphics_Surface::putRect(myClipRect,                            // rectangle
                                   RPG_GRAPHICS_WINDOW_HOTSPOT_DEF_COLOR, // color
@@ -197,7 +196,7 @@ RPG_Graphics_HotSpot::init(const RPG_Graphics_SDLWindowBase& parent_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::init"));
 
-  //*NOTE*: hotspot registers automagically
+  // *NOTE*: hotspot registers automagically
   RPG_Graphics_HotSpot* hotspot = NULL;
   ACE_NEW_NORETURN(hotspot,
                    RPG_Graphics_HotSpot(parent_in,

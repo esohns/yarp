@@ -29,7 +29,7 @@
 #include "rpg_graphics_edgestyle.h"
 #include "rpg_graphics_wallstyle.h"
 #include "rpg_graphics_doorstyle.h"
-#include "rpg_graphics_mapstyle.h"
+#include "rpg_graphics_style.h"
 
 #include "rpg_map_common.h"
 

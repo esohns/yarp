@@ -29,7 +29,7 @@
 #include "rpg_engine_iclient.h"
 
 #include "rpg_graphics_common.h"
-#include "rpg_graphics_mapstyle.h"
+#include "rpg_graphics_style.h"
 #include "rpg_graphics_styleunion.h"
 #include "rpg_graphics_SDL_window_base.h"
 

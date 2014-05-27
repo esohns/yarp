@@ -98,7 +98,7 @@ RPG_Graphics_SDL_Tools::preInitVideo(const RPG_Graphics_SDL_VideoConfiguration_t
   version_number << static_cast<unsigned int>(wm_info.version.patch);
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("*** wm info (SDL version: %s) ***\nwindow: %d\nOpenGL context: %d\n"),
+             ACE_TEXT("*** wm info (SDL version: %s) ***\nwindow: \t\t%@\nOpenGL context: \t\t%@\n"),
              ACE_TEXT(version_number.str().c_str()),
              wm_info.window,
              wm_info.hglrc));
@@ -215,7 +215,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
   videoInfo = SDL_GetVideoInfo();
   ACE_ASSERT(videoInfo);
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("*** video capabilities (driver: \"%s\") ***\nHW surfaces:\t\t\t\"%s\"\nwindow manager:\t\t\t\"%s\"\naccelerated HW --> HW [blits/colorkey/alpha]:\t\"%s\"/\"%s\"/\"%s\"\naccelerated SW --> HW [blits/colorkey/alpha]:\t\"%s\"/\"%s\"/\"%s\"\ncolor fills accelerated:\t\t\"%s\"\nvideo memory:\t\t\t\t%d kBytes\n*** (suggested) video mode ***\npalette:\t\t\t\t%@\nbits[bytes]/pixel:\t\t\t%d[%d]\nmask[RGBA]:\t\t\t\t%x %x %x %x\nshift[RGBA]:\t\t\t\t%d %d %d %d\nloss[RGBA]:\t\t\t\t%d %d %d %d\ntransparent colorkey:\t\t\t%d\noverall surface alpha:\t\t\t%d\n"),
+             ACE_TEXT("*** video capabilities (driver: \"%s\") ***\nHW surfaces:\t\t\t\t\"%s\"\nwindow manager:\t\t\t\t\"%s\"\naccelerated HW --> HW [blits/colorkey/alpha]:\t\"%s\"/\"%s\"/\"%s\"\naccelerated SW --> HW [blits/colorkey/alpha]:\t\"%s\"/\"%s\"/\"%s\"\ncolor fills accelerated:\t\t\"%s\"\nvideo memory:\t\t\t\t%d kBytes\n*** (suggested) video mode ***\npalette:\t\t\t\t%@\nbits[bytes]/pixel:\t\t\t%d[%d]\nmask[RGBA]:\t\t\t\t%x %x %x %x\nshift[RGBA]:\t\t\t\t%d %d %d %d\nloss[RGBA]:\t\t\t\t%d %d %d %d\ntransparent colorkey:\t\t\t%d\noverall surface alpha:\t\t\t%d\n"),
              driver,
              (videoInfo->hw_available ? ACE_TEXT("yes") : ACE_TEXT("no")),
              (videoInfo->wm_available ? ACE_TEXT("yes") : ACE_TEXT("no")),
@@ -325,7 +325,7 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
   // init OpenGL flags
   if (configuration_in.use_OpenGL)
   {
-    bool failed = false;
+    int failed = 0;
     int return_value = SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
     failed |= return_value;
     if (return_value)
@@ -896,10 +896,14 @@ RPG_Graphics_SDL_Tools::intersect(const SDL_Rect& rect1_in,
   ACE_OS::memset(&result, 0, sizeof(SDL_Rect));
 
   // test for intersection first
-  if ((((rect1_in.x >= rect2_in.x) && (rect1_in.x <= (rect2_in.x + rect2_in.w))) ||
-       ((rect2_in.x >= rect1_in.x) && (rect2_in.x <= (rect1_in.x + rect1_in.w)))) &&
-      (((rect1_in.y >= rect2_in.y) && (rect1_in.y <= (rect2_in.y + rect2_in.h))) ||
-       ((rect2_in.y >= rect1_in.y) && (rect2_in.y <= (rect1_in.y + rect1_in.h)))))
+  if ((((rect1_in.x >= rect2_in.x) &&
+		    (rect1_in.x <= (rect2_in.x + rect2_in.w))) ||
+       ((rect2_in.x >= rect1_in.x) &&
+			 (rect2_in.x <= (rect1_in.x + rect1_in.w)))) &&
+      (((rect1_in.y >= rect2_in.y) &&
+			(rect1_in.y <= (rect2_in.y + rect2_in.h))) ||
+       ((rect2_in.y >= rect1_in.y) &&
+			 (rect2_in.y <= (rect1_in.y + rect1_in.h)))))
   {
     // compute overlap
     result.x =

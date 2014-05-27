@@ -50,9 +50,9 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   virtual SDL_Surface* getScreen() const; // (default) screen
 
   virtual RPG_Graphics_WindowType getType() const;
-  virtual RPG_Graphics_Size_t getSize(const bool& = false) const; // top-level ?
 
-  virtual void clear(const RPG_Graphics_ColorName& = COLOR_BLACK);
+  virtual void clear(const RPG_Graphics_ColorName& = COLOR_BLACK,
+		                 const bool& = true);
   //virtual void drawChild(const RPG_Graphics_WindowType&, // child type
   //                       SDL_Surface* = NULL,            // target surface (default: screen)
   //                       const unsigned int& = 0,        // offset x (top-left = [0,0])
@@ -64,20 +64,21 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   virtual void clip(SDL_Surface* = NULL,      // target surface (default: screen)
                     const unsigned int& = 0,  // offset x (top-left = [0,0])
                     const unsigned int& = 0); // offset y (top-left = [0,0]));
-  virtual void unclip(SDL_Surface* = NULL) const; // target surface (default: screen)
-  virtual void getArea(SDL_Rect&) const; // return value: window area
+  virtual void unclip(SDL_Surface* = NULL); // target surface (default: screen)
+  virtual void getArea(SDL_Rect&,                  // return value: window area
+		                   const bool& = false) const; // toplevel ?
 
   virtual void handleEvent(const SDL_Event&,          // event
                            RPG_Graphics_IWindowBase*, // target window (NULL: this)
                            SDL_Rect&);                // return value: "dirty" region
   virtual void notify(const RPG_Graphics_Cursor&) const;
 
-  RPG_Graphics_IWindowBase* getWindow(const RPG_Graphics_Position_t&); // position (e.g. mouse-)
+  RPG_Graphics_IWindowBase* getWindow(const RPG_Graphics_Position_t&) const; // position (e.g. mouse-)
 
  protected:
   // *NOTE*: window assumes responsibility for its background surface
-  RPG_Graphics_SDLWindowBase(const RPG_Graphics_Size_t&,     // size
-                             const RPG_Graphics_WindowType&, // type
+  RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowType&, // type
+		                         const RPG_Graphics_Size_t&,     // size
                              const std::string&);            // title
 //                              SDL_Surface* = NULL);             // background
   // embedded ("child") window(s)

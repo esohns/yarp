@@ -28,7 +28,6 @@
 
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
-//#include "rpg_common_xsderrorhandler.h"
 #include "rpg_common_XML_tools.h"
 #include "rpg_common_XML_parser.h"
 #include "rpg_common_tools.h"
@@ -54,7 +53,7 @@ RPG_Magic_Dictionary::~RPG_Magic_Dictionary()
 
 }
 
-void
+bool
 RPG_Magic_Dictionary::init(const std::string& filename_in,
                            const bool& validateXML_in)
 {
@@ -266,24 +265,26 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
     converter << exception;
     std::string text = converter.str();
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Magic_Dictionary::init(): exception occurred: \"%s\", returning\n"),
-               text.c_str()));
+               ACE_TEXT("RPG_Magic_Dictionary::init(): exception occurred: \"%s\", aborting\n"),
+               ACE_TEXT(text.c_str())));
 
-    return;
+    return false;
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Magic_Dictionary::init(): exception occurred, returning\n")));
+               ACE_TEXT("RPG_Magic_Dictionary::init(): exception occurred, aborting\n")));
 
-    return;
+    return false;
   }
 
   dictionary_p.post_RPG_Magic_Dictionary_Type();
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("finished parsing magic dictionary file \"%s\"...\n"),
-//              filename_in.c_str()));
+//              ACE_TEXT(filename_in.c_str())));
+
+	return true;
 }
 
 RPG_Magic_Spell_Properties

@@ -33,11 +33,12 @@ class RPG_Graphics_IWindow
 {
  public:
   // exposed interface
-  virtual RPG_Graphics_Size_t getSize(const bool& = false) const = 0; // top-level ?
+  //virtual RPG_Graphics_Size_t getSize(const bool& = false) const = 0; // top-level ?
   //virtual void setView(const RPG_Graphics_Position_t&) = 0; // view (map coordinates !)
   //virtual RPG_Graphics_Position_t getView() const = 0; // return value: view (map coordinates !)
 
-  virtual void clear(const RPG_Graphics_ColorName& = COLOR_BLACK) = 0;
+  virtual void clear(const RPG_Graphics_ColorName& = COLOR_BLACK, // color
+		                 const bool& = true) = 0;                     // clip ?
   virtual RPG_Graphics_IWindowBase* child(const RPG_Graphics_WindowType&) = 0; // type
 
   virtual void notify(const RPG_Graphics_Cursor&) const = 0;

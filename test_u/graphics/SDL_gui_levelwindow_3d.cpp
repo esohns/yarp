@@ -42,7 +42,7 @@
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
 
-#include <SDL/SDL_opengl.h>
+#include <SDL_opengl.h>
 
 #include <ace/Log_Msg.h>
 
@@ -1167,7 +1167,8 @@ SDL_GUI_LevelWindow_3D::notify(const RPG_Engine_Command& command_in,
       ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put(parameters_in.entity_id,
                                                            RPG_Graphics_Common_Tools::map2Screen(parameters_in.position,
-                                                                                                 getSize(false),
+                                                                                                 std::make_pair(myClipRect.w,
+																																																                myClipRect.h),
                                                                                                  getView()),
                                                            dirty_region);
 

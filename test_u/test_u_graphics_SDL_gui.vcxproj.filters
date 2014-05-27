@@ -21,21 +21,24 @@
     <ClInclude Include="graphics\SDL_gui_defines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\SDL_gui_levelwindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="graphics\SDL_gui_mainwindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="graphics\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="graphics\SDL_gui_common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\SDL_gui_levelwindow_3d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\SDL_gui_levelwindow_isometric.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="graphics\SDL_gui.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="graphics\SDL_gui_levelwindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="graphics\SDL_gui_mainwindow.cpp">
@@ -45,6 +48,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="graphics\stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\SDL_gui_levelwindow_3d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\SDL_gui_levelwindow_isometric.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -16,6 +16,7 @@
 [GENERAL - MODERATE]
 - [magic] define more (low-level) spells, player generation fails sometimes...
 - [client/UI] switch from libglade to GtkBuilder
+- [client/UI] introduce tabbed interface
 - [(xerces) XML parser] handle all defined SAXParser exceptions
 
 [GENERAL - EASY]
@@ -33,6 +34,8 @@
 - [graphics] refactor/encapsulate window system
 - evaluate *TODO* tags
 - rethink DEBUG_RELEASE macro: support debugging out of the source tree ?
+- [build] automate/validate generation of (platform-dependant) bindings
+- [PLATFORM/installation/Win] introduce application data directory
 
 [MISCELLANEOUS]
 - [doc] define coding (style) guidelines

@@ -31,11 +31,12 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__COMMON_RPG_COMMON_XML_TYPES_H
-#define CXX__COMMON_RPG_COMMON_XML_TYPES_H
+#ifndef CXX___RPG_COMMON_XML_TYPES_H
+#define CXX___RPG_COMMON_XML_TYPES_H
 
 // Begin prologue.
 //
+#include "rpg_common_exports.h"
 //
 // End prologue.
 
@@ -89,7 +90,7 @@ class RPG_Common_Camp_Type_pskel;
 
 #include "rpg_dice_XML_types.h"
 
-class RPG_Common_CreatureMetaType_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Common_Export RPG_Common_CreatureMetaType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -101,7 +102,7 @@ class RPG_Common_CreatureMetaType_Type_pskel: public virtual ::xml_schema::strin
   post_RPG_Common_CreatureMetaType_Type () = 0;
 };
 
-class RPG_Common_CreatureSubType_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Common_Export RPG_Common_CreatureSubType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -113,7 +114,7 @@ class RPG_Common_CreatureSubType_Type_pskel: public virtual ::xml_schema::string
   post_RPG_Common_CreatureSubType_Type () = 0;
 };
 
-class RPG_Common_CreatureType_Type_pskel: public ::xml_schema::complex_content
+class RPG_Common_Export RPG_Common_CreatureType_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -163,7 +164,7 @@ class RPG_Common_CreatureType_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Common_CreatureSubType_Type_pskel* subType_parser_;
 };
 
-class RPG_Common_SubClass_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Common_Export RPG_Common_SubClass_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -175,7 +176,7 @@ class RPG_Common_SubClass_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Common_SubClass_Type () = 0;
 };
 
-class RPG_Common_Attribute_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Common_Export RPG_Common_Attribute_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -187,7 +188,7 @@ class RPG_Common_Attribute_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Common_Attribute_Type () = 0;
 };
 
-class RPG_Common_Size_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Common_Export RPG_Common_Size_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -199,7 +200,7 @@ class RPG_Common_Size_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Common_Size_Type () = 0;
 };
 
-class RPG_Common_Condition_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Common_Export RPG_Common_Condition_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -211,7 +212,7 @@ class RPG_Common_Condition_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Common_Condition_Type () = 0;
 };
 
-class RPG_Common_Skill_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Common_Export RPG_Common_Skill_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -223,7 +224,7 @@ class RPG_Common_Skill_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Common_Skill_Type () = 0;
 };
 
-class RPG_Common_PhysicalDamageType_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Common_Export RPG_Common_PhysicalDamageType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -235,7 +236,7 @@ class RPG_Common_PhysicalDamageType_Type_pskel: public virtual ::xml_schema::str
   post_RPG_Common_PhysicalDamageType_Type () = 0;
 };
 
-class RPG_Common_ActionType_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Common_Export RPG_Common_ActionType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -247,7 +248,7 @@ class RPG_Common_ActionType_Type_pskel: public virtual ::xml_schema::string_pske
   post_RPG_Common_ActionType_Type () = 0;
 };
 
-class RPG_Common_AreaOfEffect_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Common_Export RPG_Common_AreaOfEffect_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -259,7 +260,7 @@ class RPG_Common_AreaOfEffect_Type_pskel: public virtual ::xml_schema::string_ps
   post_RPG_Common_AreaOfEffect_Type () = 0;
 };
 
-class RPG_Common_EffectType_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Common_Export RPG_Common_EffectType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -271,7 +272,7 @@ class RPG_Common_EffectType_Type_pskel: public virtual ::xml_schema::string_pske
   post_RPG_Common_EffectType_Type () = 0;
 };
 
-class RPG_Common_CounterMeasure_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Common_Export RPG_Common_CounterMeasure_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -283,7 +284,7 @@ class RPG_Common_CounterMeasure_Type_pskel: public virtual ::xml_schema::string_
   post_RPG_Common_CounterMeasure_Type () = 0;
 };
 
-class RPG_Common_CheckType_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Common_Export RPG_Common_CheckType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -295,7 +296,7 @@ class RPG_Common_CheckType_Type_pskel: public virtual ::xml_schema::string_pskel
   post_RPG_Common_CheckType_Type () = 0;
 };
 
-class RPG_Common_SavingThrow_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Common_Export RPG_Common_SavingThrow_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -307,7 +308,7 @@ class RPG_Common_SavingThrow_Type_pskel: public virtual ::xml_schema::string_psk
   post_RPG_Common_SavingThrow_Type () = 0;
 };
 
-class RPG_Common_BaseCheckTypeUnion_Type_pskel: public ::xml_schema::simple_content
+class RPG_Common_Export RPG_Common_BaseCheckTypeUnion_Type_pskel: public ::xml_schema::simple_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -322,7 +323,7 @@ class RPG_Common_BaseCheckTypeUnion_Type_pskel: public ::xml_schema::simple_cont
   post_RPG_Common_BaseCheckTypeUnion_Type () = 0;
 };
 
-class RPG_Common_SaveReductionType_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Common_Export RPG_Common_SaveReductionType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -334,7 +335,7 @@ class RPG_Common_SaveReductionType_Type_pskel: public virtual ::xml_schema::stri
   post_RPG_Common_SaveReductionType_Type () = 0;
 };
 
-class RPG_Common_SavingThrowCheck_Type_pskel: public ::xml_schema::complex_content
+class RPG_Common_Export RPG_Common_SavingThrowCheck_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -405,7 +406,7 @@ class RPG_Common_SavingThrowCheck_Type_pskel: public ::xml_schema::complex_conte
   ::RPG_Common_SaveReductionType_Type_pskel* reduction_parser_;
 };
 
-class RPG_Common_Amount_Type_pskel: public ::xml_schema::complex_content
+class RPG_Common_Export RPG_Common_Amount_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -455,7 +456,7 @@ class RPG_Common_Amount_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Dice_Roll_Type_pskel* range_parser_;
 };
 
-class RPG_Common_Usage_Type_pskel: public ::xml_schema::complex_content
+class RPG_Common_Export RPG_Common_Usage_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -513,7 +514,7 @@ class RPG_Common_Usage_Type_pskel: public ::xml_schema::complex_content
   ::RPG_Dice_Roll_Type_pskel* interval_parser_;
 };
 
-class RPG_Common_FixedPeriod_Type_pskel: public ::xml_schema::complex_content
+class RPG_Common_Export RPG_Common_FixedPeriod_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -563,7 +564,7 @@ class RPG_Common_FixedPeriod_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::unsigned_int_pskel* u_seconds_parser_;
 };
 
-class RPG_Common_Duration_Type_pskel: public ::xml_schema::complex_content
+class RPG_Common_Export RPG_Common_Duration_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -621,7 +622,7 @@ class RPG_Common_Duration_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::unsigned_int_pskel* total_parser_;
 };
 
-class RPG_Common_EffectDuration_Type_pskel: public ::xml_schema::complex_content
+class RPG_Common_Export RPG_Common_EffectDuration_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -708,7 +709,7 @@ class RPG_Common_EffectDuration_Type_pskel: public ::xml_schema::complex_content
   ::xml_schema::boolean_pskel* incrementIsInHD_parser_;
 };
 
-class RPG_Common_Camp_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Common_Export RPG_Common_Camp_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -727,4 +728,4 @@ class RPG_Common_Camp_Type_pskel: public virtual ::xml_schema::string_pskel
 //
 // End epilogue.
 
-#endif // CXX__COMMON_RPG_COMMON_XML_TYPES_H
+#endif // CXX___RPG_COMMON_XML_TYPES_H

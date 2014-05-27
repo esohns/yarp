@@ -58,7 +58,7 @@ RPG_Monster_Dictionary::~RPG_Monster_Dictionary()
 
 }
 
-void
+bool
 RPG_Monster_Dictionary::init(const std::string& filename_in,
                              const bool& validateXML_in)
 {
@@ -394,24 +394,26 @@ RPG_Monster_Dictionary::init(const std::string& filename_in,
     converter << exception;
     std::string text = converter.str();
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Monster_Dictionary::initMonsterDictionary(): exception occurred: \"%s\", returning\n"),
-               text.c_str()));
+               ACE_TEXT("RPG_Monster_Dictionary::initMonsterDictionary(): exception occurred: \"%s\", aborting\n"),
+               ACE_TEXT(text.c_str())));
 
-    return;
+    return false;
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Monster_Dictionary::initMonsterDictionary(): exception occurred, returning\n")));
+               ACE_TEXT("RPG_Monster_Dictionary::initMonsterDictionary(): exception occurred, aborting\n")));
 
-    return;
+    return false;
   }
 
   dictionary_p.post_RPG_Monster_Dictionary_Type();
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("finished parsing character dictionary file \"%s\"...\n"),
-//              filename_in.c_str()));
+//              ACE_TEXT(filename_in.c_str())));
+
+	return true;
 }
 
 RPG_Monster_Properties
@@ -424,7 +426,7 @@ RPG_Monster_Dictionary::getProperties(const std::string& name_in) const
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid monster \"%s\", aborting\n"),
-               name_in.c_str()));
+               ACE_TEXT(name_in.c_str())));
 
     ACE_ASSERT(false);
   } // end IF

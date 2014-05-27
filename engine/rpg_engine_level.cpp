@@ -453,10 +453,10 @@ RPG_Engine_Level::random(const RPG_Engine_LevelMetaData_t& metaData_in,
     RPG_Dice::generateRandomNumbers(100,
                                     1,
                                     result);
-    level_out.metadata.spawn_probability = (result.front() / 100);
+    level_out.metadata.spawn_probability = (static_cast<float>(result.front()) / 100.0F);
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("generated spawn probability: %0.f%%\n"),
-               (level_out.metadata.spawn_probability * 100)));
+               (level_out.metadata.spawn_probability * 100.0F)));
   } // end IF
 
   // step11: max # spawned
@@ -482,10 +482,10 @@ RPG_Engine_Level::random(const RPG_Engine_LevelMetaData_t& metaData_in,
     RPG_Dice::generateRandomNumbers(100 + 1,
                                     1,
                                     result);
-    level_out.metadata.amble_probability = (result.front() - 1) / 100;
+    level_out.metadata.amble_probability = (static_cast<float>(result.front() - 1) / 100.0F);
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("generated amble probability: %0.f%%\n"),
-               (level_out.metadata.amble_probability * 100)));
+               (level_out.metadata.amble_probability * 100.0F)));
   } // end IF
 
   // step13: map

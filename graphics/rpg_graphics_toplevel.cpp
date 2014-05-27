@@ -31,15 +31,15 @@ RPG_Graphics_TopLevel::RPG_Graphics_TopLevel(const RPG_Graphics_Size_t& size_in,
                                              const RPG_Graphics_GraphicTypeUnion& elementType_in,
                                              const std::string& title_in)
 //                                              SDL_Surface* backGround_in)
- : inherited(size_in,
-             WINDOW_MAIN,
+ : inherited(WINDOW_MAIN,
+             size_in,
              title_in),
 //              backGround_in),
    myElementGraphicsType(elementType_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_TopLevel::RPG_Graphics_TopLevel"));
 
-  // (try to) load interface element graphics
+  // (try to) load (interface) element graphics
   if (!loadGraphics(myElementGraphicsType))
   {
     ACE_DEBUG((LM_ERROR,
@@ -47,6 +47,24 @@ RPG_Graphics_TopLevel::RPG_Graphics_TopLevel(const RPG_Graphics_Size_t& size_in,
 
     return;
   } // end IF
+
+	// set borders (if any)
+	RPG_Graphics_InterfaceElementsConstIterator_t iterator =
+		myElementGraphics.find(INTERFACEELEMENT_BORDER_TOP);
+	if (iterator != myElementGraphics.end())
+		myBorderTop = (*iterator).second->h;
+	iterator =
+		myElementGraphics.find(INTERFACEELEMENT_BORDER_LEFT);
+	if (iterator != myElementGraphics.end())
+		myBorderLeft = (*iterator).second->w;
+	iterator =
+		myElementGraphics.find(INTERFACEELEMENT_BORDER_RIGHT);
+	if (iterator != myElementGraphics.end())
+		myBorderRight = (*iterator).second->w;
+	iterator =
+		myElementGraphics.find(INTERFACEELEMENT_BORDER_BOTTOM);
+	if (iterator != myElementGraphics.end())
+		myBorderBottom = (*iterator).second->h;
 }
 
 RPG_Graphics_TopLevel::~RPG_Graphics_TopLevel()
@@ -96,7 +114,7 @@ RPG_Graphics_TopLevel::loadGraphics(const RPG_Graphics_GraphicTypeUnion& type_in
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Dictionary::get(\"%s\"), aborting\n"),
-               RPG_Graphics_Common_Tools::typeToString(type_in).c_str()));
+               ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type_in).c_str())));
 
     return false;
   } // end IF
@@ -109,7 +127,7 @@ RPG_Graphics_TopLevel::loadGraphics(const RPG_Graphics_GraphicTypeUnion& type_in
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
-               RPG_Graphics_Common_Tools::typeToString(type_in).c_str()));
+               ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type_in).c_str())));
 
     return false;
   } // end IF
@@ -140,7 +158,7 @@ RPG_Graphics_TopLevel::loadGraphics(const RPG_Graphics_GraphicTypeUnion& type_in
                    (*iterator).offsetY,
                    ((*iterator).offsetX + (*iterator).width),
                    ((*iterator).offsetY + (*iterator).height),
-                   RPG_Graphics_Common_Tools::typeToString(type_in).c_str()));
+                   ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type_in).c_str())));
 
         // clean up
         SDL_FreeSurface(interface_image);
@@ -152,16 +170,6 @@ RPG_Graphics_TopLevel::loadGraphics(const RPG_Graphics_GraphicTypeUnion& type_in
 
         return false;
       } // end IF
-
-      // store border sizes
-      if ((*iterator).type.interfaceelementtype == INTERFACEELEMENT_BORDER_TOP)
-        myBorderTop = element_image->h;
-      else if ((*iterator).type.interfaceelementtype == INTERFACEELEMENT_BORDER_BOTTOM)
-        myBorderBottom = element_image->h;
-      else if ((*iterator).type.interfaceelementtype == INTERFACEELEMENT_BORDER_LEFT)
-        myBorderLeft = element_image->w;
-      else if ((*iterator).type.interfaceelementtype == INTERFACEELEMENT_BORDER_RIGHT)
-        myBorderRight = element_image->w;
 
       // store surface handle
       myElementGraphics.insert(std::make_pair((*iterator).type.interfaceelementtype,
@@ -175,7 +183,7 @@ RPG_Graphics_TopLevel::loadGraphics(const RPG_Graphics_GraphicTypeUnion& type_in
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("loaded %u interface element graphic(s) from \"%s\"...\n"),
              myElementGraphics.size(),
-             RPG_Graphics_Common_Tools::typeToString(type_in).c_str()));
+             ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type_in).c_str())));
 
   return true;
 }

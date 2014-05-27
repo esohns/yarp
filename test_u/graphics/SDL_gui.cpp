@@ -1458,11 +1458,11 @@ do_work(const mode_t& mode_in,
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE;
   std::string title = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
-  SDL_GUI_MainWindow mainWindow(RPG_Graphics_Size_t(state.screen->w,
-                                                    state.screen->h), // size
-                                type,                                 // interface elements
-                                title,                                // title (== caption)
-                                FONT_MAIN_LARGE);                     // title font
+	SDL_GUI_MainWindow mainWindow(std::make_pair(state.screen->w,
+		                                           state.screen->h), // size
+                                type,                            // interface elements
+                                title,                           // title (== caption)
+                                FONT_MAIN_LARGE);                // title font
   mainWindow.setScreen(state.screen);
 
   // ***** mouse setup *****

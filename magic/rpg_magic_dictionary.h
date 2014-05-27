@@ -47,7 +47,7 @@ class RPG_Magic_Export RPG_Magic_Dictionary
 
  public:
   // init magic dictionary
-  void init(const std::string&,   // filename
+  bool init(const std::string&,   // filename
             const bool& = false); // validate XML ?
 
   RPG_Magic_Spell_Properties getSpellProperties(const std::string&) const; // name of spell
@@ -57,10 +57,9 @@ class RPG_Magic_Export RPG_Magic_Dictionary
                                    const unsigned char& = 0xFF) const; // spell level (default: ALL)
 
   // debug info
-  void dump(const bool&) const; // group Levels ?
+  void dump(const bool& = true) const; // group Levels ?
 
  private:
-  // safety measures
   RPG_Magic_Dictionary();
   virtual ~RPG_Magic_Dictionary();
   ACE_UNIMPLEMENTED_FUNC(RPG_Magic_Dictionary(const RPG_Magic_Dictionary&));

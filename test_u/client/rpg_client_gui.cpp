@@ -2044,12 +2044,12 @@ ACE_TMAIN(int argc_in,
 
   // step2a: init SDL
   Uint32 SDL_init_flags = 0;
-  SDL_init_flags |= SDL_INIT_TIMER;                                                // timers
-  SDL_init_flags |= (configuration.audio_configuration.mute ? 0 : SDL_INIT_AUDIO); // audio
-  //SDL_init_flags |= SDL_INIT_VIDEO;                                              // video
+  SDL_init_flags |= SDL_INIT_TIMER;                                                     // timers
+  SDL_init_flags |= (configuration.audio_configuration.mute ? 0 : SDL_INIT_AUDIO);      // audio
+  //SDL_init_flags |= SDL_INIT_VIDEO;                                                   // video
   SDL_init_flags |= ((configuration.audio_configuration.mute ||
                       !configuration.audio_configuration.use_CD) ? 0 : SDL_INIT_CDROM); // audioCD playback
-  //SDL_init_flags |= SDL_INIT_JOYSTICK;                                           // joystick
+  //SDL_init_flags |= SDL_INIT_JOYSTICK;                                                // joystick
   SDL_init_flags |= SDL_INIT_NOPARACHUTE;                                        /**< Don't catch fatal signals */
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   SDL_init_flags |= SDL_INIT_EVENTTHREAD;                                        /**< Not supported on all OS's */

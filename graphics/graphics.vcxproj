@@ -134,6 +134,7 @@ popd</Command>
     <ClInclude Include="rpg_graphics_orientation.h" />
     <ClInclude Include="rpg_graphics_SDL_tools.h" />
     <ClInclude Include="rpg_graphics_SDL_window_base.h" />
+    <ClInclude Include="rpg_graphics_SDL_window_interface.h" />
     <ClInclude Include="rpg_graphics_SDL_window_sub.h" />
     <ClInclude Include="rpg_graphics_sprite.h" />
     <ClInclude Include="rpg_graphics_stairsstyle.h" />
@@ -162,6 +163,7 @@ popd</Command>
     <ClCompile Include="rpg_graphics_hotspot.cpp" />
     <ClCompile Include="rpg_graphics_SDL_tools.cpp" />
     <ClCompile Include="rpg_graphics_SDL_window_base.cpp" />
+    <ClCompile Include="rpg_graphics_SDL_window_interface.cpp" />
     <ClCompile Include="rpg_graphics_SDL_window_sub.cpp" />
     <ClCompile Include="rpg_graphics_surface.cpp" />
     <ClCompile Include="rpg_graphics_toplevel.cpp" />

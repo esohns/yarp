@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__COMMON_RPG_XMLSCHEMA_XML_TREE_H
-#define CXX__COMMON_RPG_XMLSCHEMA_XML_TREE_H
+#ifndef CXX___RPG_XMLSCHEMA_XML_TREE_H
+#define CXX___RPG_XMLSCHEMA_XML_TREE_H
 
 // Begin prologue.
 //
@@ -93,6 +93,12 @@
 #include <xsd/cxx/tree/serialization/float.hxx>
 #include <xsd/cxx/tree/serialization/double.hxx>
 #include <xsd/cxx/tree/serialization/decimal.hxx>
+
+#include <xsd/cxx/tree/ace-cdr-stream-insertion.hxx>
+#include <xsd/cxx/tree/stream-insertion.hxx>
+
+#include <xsd/cxx/tree/ace-cdr-stream-extraction.hxx>
+#include <xsd/cxx/tree/stream-extraction.hxx>
 
 namespace xml_schema
 {
@@ -199,6 +205,14 @@ namespace xml_schema
   typedef ::xsd::cxx::tree::as_decimal< decimal > as_decimal;
   typedef ::xsd::cxx::tree::facet facet;
 
+  // Data representation output stream template.
+  //
+  using ::xsd::cxx::tree::ostream;
+
+  // Data representation input stream template.
+  //
+  using ::xsd::cxx::tree::istream;
+
   // Flags and properties.
   //
   typedef ::xsd::cxx::tree::flags flags;
@@ -249,4 +263,4 @@ namespace xml_schema
 //
 // End epilogue.
 
-#endif // CXX__COMMON_RPG_XMLSCHEMA_XML_TREE_H
+#endif // CXX___RPG_XMLSCHEMA_XML_TREE_H

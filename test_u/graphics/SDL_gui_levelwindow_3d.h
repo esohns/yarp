@@ -29,7 +29,7 @@
 #include "rpg_engine_iclient.h"
 
 #include "rpg_graphics_common.h"
-#include "rpg_graphics_mapstyle.h"
+#include "rpg_graphics_style.h"
 #include "rpg_graphics_styleunion.h"
 #include "rpg_graphics_SDL_window_base.h"
 
@@ -120,7 +120,7 @@ class SDL_GUI_LevelWindow_3D
   state_t*                        myState;
   RPG_Engine*                     myEngine;
 
-  RPG_Graphics_MapStyle           myCurrentMapStyle;
+  RPG_Graphics_Style              myCurrentMapStyle;
   RPG_Graphics_FloorTileSet_t     myCurrentFloorSet;
   RPG_Graphics_FloorEdgeTileSet_t myCurrentFloorEdgeSet;
   RPG_Graphics_WallTileSet_t      myCurrentWallSet;

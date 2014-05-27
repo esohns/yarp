@@ -38,6 +38,9 @@
 #include "rpg_common_XML_tools.h"
 
 #include <ace/ACE.h>
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#include <ace/Init_ACE.h>
+#endif
 #include <ace/Log_Msg.h>
 #include <ace/Get_Opt.h>
 #include <ace/High_Res_Timer.h>
@@ -280,21 +283,21 @@ do_printVersion(const std::string& programName_in)
 
 int
 ACE_TMAIN(int argc_in,
-          ACE_TCHAR* argv_in[])
+          ACE_TCHAR** argv_in)
 {
   RPG_TRACE(ACE_TEXT("::main"));
 
   // step0: init ACE
-//  // *PORTABILITY*: on Windows, we need to init ACE...
-//#if defined (ACE_WIN32) || defined (ACE_WIN64)
-//  if (ACE::init() == -1)
-//  {
-//    ACE_DEBUG((LM_ERROR,
-//               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
-//
-//    return EXIT_FAILURE;
-//  } // end IF
-//#endif
+  // *PORTABILITY*: on Windows, init ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+  if (ACE::init() == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
+
+    return EXIT_FAILURE;
+  } // end IF
+#endif
 
   // step1: init
   // step1a set defaults
@@ -332,12 +335,12 @@ ACE_TMAIN(int argc_in,
     // make 'em learn...
     do_printUsage(std::string(ACE::basename(argv_in[0])));
 
-//    // *PORTABILITY*: on Windows, we must fini ACE...
-//#if defined (ACE_WIN32) || defined (ACE_WIN64)
-//    if (ACE::fini() == -1)
-//      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-//#endif
+		// *PORTABILITY*: on Windows, fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+		if (ACE::fini() == -1)
+			ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -352,12 +355,12 @@ ACE_TMAIN(int argc_in,
     // make 'em learn...
     do_printUsage(std::string(ACE::basename(argv_in[0])));
 
-//    // *PORTABILITY*: on Windows, we must fini ACE...
-//#if defined (ACE_WIN32) || defined (ACE_WIN64)
-//    if (ACE::fini() == -1)
-//      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-//#endif
+		// *PORTABILITY*: on Windows, fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+		if (ACE::fini() == -1)
+			ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -374,11 +377,11 @@ ACE_TMAIN(int argc_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Common_Tools::initLogging(), aborting\n")));
 
-    // *PORTABILITY*: on Windows, need to fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+		// *PORTABILITY*: on Windows, fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+		if (ACE::fini() == -1)
+			ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -413,16 +416,16 @@ ACE_TMAIN(int argc_in,
   TTF_Quit();
   SDL_Quit();
 
-//  // *PORTABILITY*: on Windows, we must fini ACE...
-//#if defined (ACE_WIN32) || defined (ACE_WIN64)
-//  if (ACE::fini() == -1)
-//  {
-//    ACE_DEBUG((LM_ERROR,
-//               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
-//
-//    return EXIT_FAILURE;
-//  } // end IF
-//#endif
+  // *PORTABILITY*: on Windows, fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+  if (ACE::fini() == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+
+    return EXIT_FAILURE;
+  } // end IF
+#endif
 
   return EXIT_SUCCESS;
 } // end main

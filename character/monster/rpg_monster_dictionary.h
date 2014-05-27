@@ -46,7 +46,7 @@ class RPG_Monster_Export RPG_Monster_Dictionary
 
  public:
   // init dictionary
-  void init(const std::string&,   // (XML) dictionary filename
+  bool init(const std::string&,   // (XML) dictionary filename
             const bool& = false); // validate XML ?
 
   RPG_Monster_Properties getProperties(const std::string&) const; // name of monster
@@ -75,6 +75,8 @@ class RPG_Monster_Export RPG_Monster_Dictionary
 
 typedef ACE_Singleton<RPG_Monster_Dictionary,
                       ACE_Thread_Mutex> RPG_MONSTER_DICTIONARY_SINGLETON;
-RPG_MONSTER_SINGLETON_DECLARE(ACE_Singleton, RPG_Monster_Dictionary, ACE_Thread_Mutex);
+RPG_MONSTER_SINGLETON_DECLARE(ACE_Singleton,
+	                            RPG_Monster_Dictionary,
+	                            ACE_Thread_Mutex);
 
 #endif

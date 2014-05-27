@@ -32,7 +32,7 @@ class RPG_Graphics_IWindowBase
   virtual void clip(SDL_Surface* = NULL,          // target surface (default: screen)
                     const unsigned int& = 0,      // offset x (top-left = [0,0])
                     const unsigned int& = 0) = 0; // offset y (top-left = [0,0]));
-  virtual void unclip(SDL_Surface* = NULL) const = 0; // target surface (default: screen)
+  virtual void unclip(SDL_Surface* = NULL) = 0; // target surface (default: screen)
 
   virtual void draw(SDL_Surface* = NULL,          // target surface (default: screen)
                     const unsigned int& = 0,      // offset x (top-left = [0,0])
@@ -45,7 +45,8 @@ class RPG_Graphics_IWindowBase
   virtual SDL_Surface* getScreen() const = 0; // (default) screen
 
   virtual RPG_Graphics_WindowType getType() const = 0;
-  virtual void getArea(SDL_Rect&) const = 0; // return value: window area
+  virtual void getArea(SDL_Rect&,                      // return value: window area
+		                   const bool& = false) const = 0; // toplevel ?
 
   virtual void handleEvent(const SDL_Event&,          // event
                            RPG_Graphics_IWindowBase*, // target window (NULL: this)

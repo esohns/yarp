@@ -55,7 +55,6 @@ SDL_GUI_LevelWindow_Isometric::SDL_GUI_LevelWindow_Isometric(const RPG_Graphics_
 //              NULL),                // background
    myState(NULL),
    myEngine(engine_in),
-//   myState->style
 //    myCurrentFloorSet(),
 //    myCurrentWallSet(),
    myCurrentCeilingTile(NULL),
@@ -78,11 +77,9 @@ SDL_GUI_LevelWindow_Isometric::SDL_GUI_LevelWindow_Isometric(const RPG_Graphics_
 
 	myEngine->init(this);
 
-	myEngine->lock();
-	RPG_Map_Size_t map_size = myEngine->getSize(false);
-	myEngine->unlock();
-	myView = std::make_pair(map_size.first / 2,
-													map_size.second / 2);
+	RPG_Map_Size_t map_size = myEngine->getSize(true);
+	myView = std::make_pair(map_size.first  >> 1,
+													map_size.second >> 1);
 
 //   initWallBlend(false);
 
@@ -99,7 +96,7 @@ SDL_GUI_LevelWindow_Isometric::SDL_GUI_LevelWindow_Isometric(const RPG_Graphics_
   if (!myCurrentOffMapTile)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
-               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
+               ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type).c_str())));
 
   // init tiles / position
   ACE_OS::memset(&myCurrentFloorEdgeSet,
@@ -294,8 +291,6 @@ SDL_GUI_LevelWindow_Isometric::draw(SDL_Surface* targetSurface_in,
        offsetX_in,
        offsetY_in);
 
-	inherited::clear();
-
   // position of the top right corner
   RPG_Graphics_Position_t top_right = std::make_pair(0, 0);
 //   top_right.first = (((-RPG_GRAPHICS_TILE_HEIGHT_MOD * ((targetSurface->w / 2) + 50)) +
@@ -320,6 +315,9 @@ SDL_GUI_LevelWindow_Isometric::draw(SDL_Surface* targetSurface_in,
   // *NOTE*: without the "+-1" small corners within the viewport are not drawn
   int diff = top_right.first - top_right.second - 1;
   int sum = top_right.first + top_right.second + 1;
+
+	inherited::clear(COLOR_BLACK, // color
+		               false);      // don't clip
 
   // draw tiles
   // pass 1:
@@ -348,7 +346,6 @@ SDL_GUI_LevelWindow_Isometric::draw(SDL_Surface* targetSurface_in,
   unsigned int floor_index = 0;
   RPG_Position_t screen_position = std::make_pair(0, 0);
   SDL_Rect dirty_region;
-  // debug info
   SDL_Rect rect;
   std::ostringstream converter;
   std::string tile_text;
@@ -360,8 +357,6 @@ SDL_GUI_LevelWindow_Isometric::draw(SDL_Surface* targetSurface_in,
   if (inherited::myScreenLock)
     inherited::myScreenLock->lock();
   myEngine->lock();
-//  // "clear" map "window"
-//  clear();
 
   // pass 1
   RPG_Map_Size_t map_size = myEngine->getSize(false);
@@ -1451,7 +1446,8 @@ SDL_GUI_LevelWindow_Isometric::notify(const RPG_Engine_Command& command_in,
       ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put(parameters_in.entity_id,
                                                            RPG_Graphics_Common_Tools::map2Screen(parameters_in.position,
-                                                                                                 getSize(false),
+                                                                                                 std::make_pair(myClipRect.w,
+																																																                myClipRect.h),
                                                                                                  getView()),
                                                            dirty_region);
 
