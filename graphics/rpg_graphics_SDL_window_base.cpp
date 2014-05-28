@@ -51,6 +51,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
                                          std::numeric_limits<unsigned int>::max())),
 //    myClipRect(),
 //    myInvalidRegions(),
+   myFlip(false),
    myType(type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase"));
@@ -80,6 +81,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
                                           std::numeric_limits<unsigned int>::max())),
 //    myClipRect(),
 //    myInvalidRegions(),
+    myFlip(false),
     myType(type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase"));
@@ -165,7 +167,8 @@ RPG_Graphics_SDLWindowBase::clean()
 }
 
 void
-RPG_Graphics_SDLWindowBase::init(RPG_Common_ILock* screenLock_in)
+RPG_Graphics_SDLWindowBase::init(RPG_Common_ILock* screenLock_in,
+                                 const bool& flip_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::init"));
 
@@ -176,6 +179,8 @@ RPG_Graphics_SDLWindowBase::init(RPG_Common_ILock* screenLock_in)
 		   iterator != myChildren.end();
 			 iterator++)
 	  (*iterator)->init(screenLock_in);
+
+	myFlip = flip_in;
 }
 
 void
@@ -399,11 +404,20 @@ RPG_Graphics_SDLWindowBase::update(SDL_Surface* targetSurface_in)
 
   if (myScreenLock)
     myScreenLock->lock();
-  SDL_UpdateRect(target_surface,
-                 dirty_region.x,
-                 dirty_region.y,
-                 dirty_region.w,
-                 dirty_region.h);
+  if (myFlip)
+  {
+    if (SDL_Flip(target_surface) == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to SDL_Flip(%@): \"%s\", continuing\n"),
+                 target_surface,
+                 ACE_TEXT(SDL_GetError())));
+  } // end IF
+  else
+    SDL_UpdateRect(target_surface,
+                   dirty_region.x,
+                   dirty_region.y,
+                   dirty_region.w,
+                   dirty_region.h);
   if (myScreenLock)
     myScreenLock->unlock();
 
@@ -596,7 +610,7 @@ RPG_Graphics_SDLWindowBase::handleEvent(const SDL_Event& event_in,
        iterator != myChildren.rend();
        iterator++)
   {
-    // covered ?
+    // visible ?
     sub_window = NULL;
 		try
 		{
@@ -607,10 +621,12 @@ RPG_Graphics_SDLWindowBase::handleEvent(const SDL_Event& event_in,
 //      ACE_DEBUG((LM_ERROR,
 //                 ACE_TEXT("failed to dynamic_cast<RPG_Graphics_SDLWindowSub*>(%@), continuing\n"),
 //                 *iterator));
-		}
+    }
     if (sub_window &&
         !sub_window->visible())
       continue;
+
+    // covered ?
     try
     {
       (*iterator)->getArea(window_area);

@@ -1299,6 +1299,9 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
       case SDL_MOUSEMOTION:
       case RPG_GRAPHICS_SDL_HOVEREVENT:
       {
+        // sanity check
+        ACE_ASSERT(window);
+
         // map has changed, cursor MAY have been drawn over...
         // --> redraw cursor
         client_action.command = COMMAND_CURSOR_DRAW;

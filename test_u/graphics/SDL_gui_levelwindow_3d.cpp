@@ -47,6 +47,7 @@
 #include <ace/Log_Msg.h>
 
 #include <sstream>
+#include <math.h>
 
 SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D(const RPG_Graphics_SDLWindowBase& parent_in,
                                                RPG_Engine* engine_in)
@@ -232,36 +233,104 @@ SDL_GUI_LevelWindow_3D::init(state_t* state_in,
   ACE_ASSERT(state_in);
 
   myState = state_in;
-  inherited::init(screenLock_in);
+  inherited::init(screenLock_in,
+                  (state_in->screen->flags & SDL_DOUBLEBUF));
 
-	float ratio = (static_cast<float>(myClipRect.w) /
-								 static_cast<float>(myClipRect.h));
+	GLfloat ratio = (static_cast<float>(myClipRect.w) /
+									 static_cast<float>(myClipRect.h));
 
+  GLenum gl_error = GL_NO_ERROR;
   /* Our shading model--Gouraud (smooth). */
   glShadeModel(GL_SMOOTH);
+  gl_error = glGetError();
+  if (gl_error != GL_NO_ERROR)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glShadeModel: \"%s\", continuing\n"),
+               ACE_TEXT(gluErrorString(gl_error))));
 
   /* Culling. */
   glCullFace(GL_BACK);
+  gl_error = glGetError();
+  if (gl_error != GL_NO_ERROR)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glCullFace: \"%s\", continuing\n"),
+               ACE_TEXT(gluErrorString(gl_error))));
   glFrontFace(GL_CCW);
+  gl_error = glGetError();
+  if (gl_error != GL_NO_ERROR)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glFrontFace: \"%s\", continuing\n"),
+               ACE_TEXT(gluErrorString(gl_error))));
   glEnable(GL_CULL_FACE);
+  gl_error = glGetError();
+  if (gl_error != GL_NO_ERROR)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glEnable: \"%s\", continuing\n"),
+               ACE_TEXT(gluErrorString(gl_error))));
 
   /* Set the clear color. */
   glClearColor(0, 0, 0, 0);
+  gl_error = glGetError();
+  if (gl_error != GL_NO_ERROR)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glClearColor: \"%s\", continuing\n"),
+               ACE_TEXT(gluErrorString(gl_error))));
 
   /* Setup our viewport. */
+//  ACE_ASSERT(myParent);
+//  SDL_Rect parent_area;
+//  myParent->getArea(parent_area,
+//                    false);
+//  myParent->getBorders(myBorderTop,
+//                       myBorderBottom,
+//                       myBorderLeft,
+//                       myBorderRight,
+//                       false);
+//  glViewport(myClipRect.x,
+//             (parent_area.w - myBorderBottom),
+//             myClipRect.w,
+//             myClipRect.h);
+//  myBorderTop = myBorderBottom = myBorderLeft = myBorderRight = 0;
   glViewport(myClipRect.x, myClipRect.y, myClipRect.w, myClipRect.h);
+  gl_error = glGetError();
+  if (gl_error != GL_NO_ERROR)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glViewport: \"%s\", continuing\n"),
+               ACE_TEXT(gluErrorString(gl_error))));
 
   /*
    * Change to the projection matrix and set
    * our viewing volume.
    */
   glMatrixMode(GL_PROJECTION);
+  gl_error = glGetError();
+  if (gl_error != GL_NO_ERROR)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glMatrixMode: \"%s\", continuing\n"),
+               ACE_TEXT(gluErrorString(gl_error))));
   glLoadIdentity();
+  gl_error = glGetError();
+  if (gl_error != GL_NO_ERROR)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glLoadIdentity: \"%s\", continuing\n"),
+               ACE_TEXT(gluErrorString(gl_error))));
+
   /*
    * EXERCISE:
    * Replace this with a call to glFrustum.
    */
-  gluPerspective(60.0, ratio, 1.0, 1024.0);
+  GLdouble fovY = 60.0F;
+  GLdouble zNear = 1.0F;
+  GLdouble zFar = 1024.0F;
+  //  gluPerspective(fovY, ratio, zNear, zFar);
+  GLdouble fH = ::tan(fovY / 360.0F * M_PI) * zNear;
+  GLdouble fW = fH * ratio;
+  glFrustum(-fW, fW, -fH, fH, zNear, zFar);
+  gl_error = glGetError();
+  if (gl_error != GL_NO_ERROR)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glFrustum: \"%s\", continuing\n"),
+               ACE_TEXT(gluErrorString(gl_error))));
 
   // init style
   RPG_Graphics_StyleUnion style;
@@ -307,8 +376,9 @@ SDL_GUI_LevelWindow_3D::draw(SDL_Surface* targetSurface_in,
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
                                                   : myScreen);
   ACE_ASSERT(target_surface);
-  ACE_ASSERT(myCurrentOffMapTile);
-//   ACE_ASSERT(myCurrentCeilingTile);
+  ACE_ASSERT(myState);
+//  ACE_ASSERT(myCurrentOffMapTile);
+//  ACE_ASSERT(myCurrentCeilingTile);
   ACE_ASSERT(static_cast<int>(offsetX_in) <= target_surface->w);
   ACE_ASSERT(static_cast<int>(offsetY_in) <= target_surface->h);
 
@@ -319,11 +389,9 @@ SDL_GUI_LevelWindow_3D::draw(SDL_Surface* targetSurface_in,
 
   if (inherited::myScreenLock)
     inherited::myScreenLock->lock();
-  // "clear" map "window"
-//  inherited::clear();
 
   /* Our angle of rotation. */
-  static float angle = 0.0f;
+//  static GLfloat angle = 0.0F;
 
   /*
    * EXERCISE:
@@ -337,133 +405,165 @@ SDL_GUI_LevelWindow_3D::draw(SDL_Surface* targetSurface_in,
    * EXERCISE:
    * Verify my windings are correct here ;).
    */
-  static GLfloat v0[] = { -1.0f, -1.0f,  1.0f };
-  static GLfloat v1[] = {  1.0f, -1.0f,  1.0f };
-  static GLfloat v2[] = {  1.0f,  1.0f,  1.0f };
-  static GLfloat v3[] = { -1.0f,  1.0f,  1.0f };
-  static GLfloat v4[] = { -1.0f, -1.0f, -1.0f };
-  static GLfloat v5[] = {  1.0f, -1.0f, -1.0f };
-  static GLfloat v6[] = {  1.0f,  1.0f, -1.0f };
-  static GLfloat v7[] = { -1.0f,  1.0f, -1.0f };
-  static GLubyte red[]    = { 255,   0,   0, 255 };
-  static GLubyte green[]  = {   0, 255,   0, 255 };
-  static GLubyte blue[]   = {   0,   0, 255, 255 };
-  static GLubyte white[]  = { 255, 255, 255, 255 };
-  static GLubyte yellow[] = {   0, 255, 255, 255 };
-  static GLubyte black[]  = {   0,   0,   0, 255 };
-  static GLubyte orange[] = { 255, 255,   0, 255 };
-  static GLubyte purple[] = { 255,   0, 255,   0 };
+  static GLfloat v0[] = {-1.0F, -1.0F,  1.0F};
+  static GLfloat v1[] = { 1.0F, -1.0F,  1.0F};
+  static GLfloat v2[] = { 1.0F,  1.0F,  1.0F};
+  static GLfloat v3[] = {-1.0F,  1.0F,  1.0F};
+  static GLfloat v4[] = {-1.0F, -1.0F, -1.0F};
+  static GLfloat v5[] = { 1.0F, -1.0F, -1.0F};
+  static GLfloat v6[] = { 1.0F,  1.0F, -1.0F};
+  static GLfloat v7[] = {-1.0F,  1.0F, -1.0F};
+  static GLubyte red[]    = {255,   0,   0, 255};
+  static GLubyte green[]  = {  0, 255,   0, 255};
+  static GLubyte blue[]   = {  0,   0, 255, 255};
+  static GLubyte white[]  = {255, 255, 255, 255};
+  static GLubyte yellow[] = {  0, 255, 255, 255};
+  static GLubyte black[]  = {  0,   0,   0, 255};
+  static GLubyte orange[] = {255, 255,   0, 255};
+  static GLubyte purple[] = {255,   0, 255,   0};
 
   /* Clear the color and depth buffers. */
-  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+  glClear(GL_COLOR_BUFFER_BIT |
+          GL_DEPTH_BUFFER_BIT);
+  GLenum gl_error = glGetError();
+  if (gl_error != GL_NO_ERROR)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glClear: \"%s\", continuing\n"),
+               ACE_TEXT(gluErrorString(gl_error))));
 
   /* We don't want to modify the projection matrix. */
-  glMatrixMode( GL_MODELVIEW );
-  glLoadIdentity( );
+  glMatrixMode(GL_MODELVIEW);
+  gl_error = glGetError();
+  if (gl_error != GL_NO_ERROR)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glMatrixMode: \"%s\", continuing\n"),
+               ACE_TEXT(gluErrorString(gl_error))));
+  glLoadIdentity();
+  gl_error = glGetError();
+  if (gl_error != GL_NO_ERROR)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glLoadIdentity: \"%s\", continuing\n"),
+               ACE_TEXT(gluErrorString(gl_error))));
 
   /* Move down the z-axis. */
-  glTranslatef( 0.0, 0.0, -5.0 );
+  glTranslatef(0.0, 0.0, -5.0);
+  gl_error = glGetError();
+  if (gl_error != GL_NO_ERROR)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glTranslatef: \"%s\", continuing\n"),
+               ACE_TEXT(gluErrorString(gl_error))));
 
   /* Rotate. */
-  glRotatef( angle, 0.0, 1.0, 0.0 );
+  glRotatef(myState->angle, 0.0, 1.0, 0.0);
+  gl_error = glGetError();
+  if (gl_error != GL_NO_ERROR)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glRotatef: \"%s\", continuing\n"),
+               ACE_TEXT(gluErrorString(gl_error))));
 
-  static GLboolean should_rotate = GL_TRUE;
-  if( should_rotate ) {
-
-      if( ++angle > 360.0f ) {
-          angle = 0.0f;
-      }
-
-  }
+//  static GLboolean should_rotate = GL_TRUE;
+//  if (should_rotate &&
+//      (++(myState->angle) > 360.0F))
+//    myState->angle = 0.0F;
 
   /* Send our triangle data to the pipeline. */
-  glBegin( GL_TRIANGLES );
+  glBegin(GL_TRIANGLES);
+  gl_error = glGetError();
+  if (gl_error != GL_NO_ERROR)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to glBegin: \"%s\", continuing\n"),
+               ACE_TEXT(gluErrorString(gl_error))));
 
-  glColor4ubv( red );
-  glVertex3fv( v0 );
-  glColor4ubv( green );
-  glVertex3fv( v1 );
-  glColor4ubv( blue );
-  glVertex3fv( v2 );
+  glColor4ubv(red);
+  glVertex3fv(v0);
+  glColor4ubv(green);
+  glVertex3fv(v1);
+  glColor4ubv(blue);
+  glVertex3fv(v2);
 
-  glColor4ubv( red );
-  glVertex3fv( v0 );
-  glColor4ubv( blue );
-  glVertex3fv( v2 );
-  glColor4ubv( white );
-  glVertex3fv( v3 );
+  glColor4ubv(red);
+  glVertex3fv(v0);
+  glColor4ubv(blue);
+  glVertex3fv(v2);
+  glColor4ubv(white);
+  glVertex3fv(v3);
 
-  glColor4ubv( green );
-  glVertex3fv( v1 );
-  glColor4ubv( black );
-  glVertex3fv( v5 );
-  glColor4ubv( orange );
-  glVertex3fv( v6 );
+  glColor4ubv(green);
+  glVertex3fv(v1);
+  glColor4ubv(black);
+  glVertex3fv(v5);
+  glColor4ubv(orange);
+  glVertex3fv(v6);
 
-  glColor4ubv( green );
-  glVertex3fv( v1 );
-  glColor4ubv( orange );
-  glVertex3fv( v6 );
-  glColor4ubv( blue );
-  glVertex3fv( v2 );
+  glColor4ubv(green);
+  glVertex3fv(v1);
+  glColor4ubv(orange);
+  glVertex3fv(v6);
+  glColor4ubv(blue);
+  glVertex3fv(v2);
 
-  glColor4ubv( black );
-  glVertex3fv( v5 );
-  glColor4ubv( yellow );
-  glVertex3fv( v4 );
-  glColor4ubv( purple );
-  glVertex3fv( v7 );
+  glColor4ubv(black);
+  glVertex3fv(v5);
+  glColor4ubv(yellow);
+  glVertex3fv(v4);
+  glColor4ubv(purple);
+  glVertex3fv(v7);
 
-  glColor4ubv( black );
-  glVertex3fv( v5 );
-  glColor4ubv( purple );
-  glVertex3fv( v7 );
-  glColor4ubv( orange );
-  glVertex3fv( v6 );
+  glColor4ubv(black);
+  glVertex3fv(v5);
+  glColor4ubv(purple);
+  glVertex3fv(v7);
+  glColor4ubv(orange);
+  glVertex3fv(v6);
 
-  glColor4ubv( yellow );
-  glVertex3fv( v4 );
-  glColor4ubv( red );
-  glVertex3fv( v0 );
-  glColor4ubv( white );
-  glVertex3fv( v3 );
+  glColor4ubv(yellow);
+  glVertex3fv(v4);
+  glColor4ubv(red);
+  glVertex3fv(v0);
+  glColor4ubv(white);
+  glVertex3fv(v3);
 
-  glColor4ubv( yellow );
-  glVertex3fv( v4 );
-  glColor4ubv( white );
-  glVertex3fv( v3 );
-  glColor4ubv( purple );
-  glVertex3fv( v7 );
+  glColor4ubv(yellow);
+  glVertex3fv(v4);
+  glColor4ubv(white);
+  glVertex3fv(v3);
+  glColor4ubv(purple);
+  glVertex3fv(v7);
 
-  glColor4ubv( white );
-  glVertex3fv( v3 );
-  glColor4ubv( blue );
-  glVertex3fv( v2 );
-  glColor4ubv( orange );
-  glVertex3fv( v6 );
+  glColor4ubv(white);
+  glVertex3fv(v3);
+  glColor4ubv(blue);
+  glVertex3fv(v2);
+  glColor4ubv(orange);
+  glVertex3fv(v6);
 
-  glColor4ubv( white );
-  glVertex3fv( v3 );
-  glColor4ubv( orange );
-  glVertex3fv( v6 );
-  glColor4ubv( purple );
-  glVertex3fv( v7 );
+  glColor4ubv(white);
+  glVertex3fv(v3);
+  glColor4ubv(orange);
+  glVertex3fv(v6);
+  glColor4ubv(purple);
+  glVertex3fv(v7);
 
-  glColor4ubv( green );
-  glVertex3fv( v1 );
-  glColor4ubv( red );
-  glVertex3fv( v0 );
-  glColor4ubv( yellow );
-  glVertex3fv( v4 );
+  glColor4ubv(green);
+  glVertex3fv(v1);
+  glColor4ubv(red);
+  glVertex3fv(v0);
+  glColor4ubv(yellow);
+  glVertex3fv(v4);
 
-  glColor4ubv( green );
-  glVertex3fv( v1 );
-  glColor4ubv( yellow );
-  glVertex3fv( v4 );
-  glColor4ubv( black );
-  glVertex3fv( v5 );
+  glColor4ubv(green);
+  glVertex3fv(v1);
+  glColor4ubv(yellow);
+  glVertex3fv(v4);
+  glColor4ubv(black);
+  glVertex3fv(v5);
 
-  glEnd( );
+  glEnd();
+//  gl_error = glGetError();
+//  if (gl_error != GL_NO_ERROR)
+//    ACE_DEBUG((LM_ERROR,
+//               ACE_TEXT("failed to glEnd: \"%s\", continuing\n"),
+//               ACE_TEXT(gluErrorString(gl_error))));
 
   /*
    * EXERCISE:
@@ -471,18 +571,6 @@ SDL_GUI_LevelWindow_3D::draw(SDL_Surface* targetSurface_in,
    * pauses the rotation and 'Esc' quits.
    * Do it using vetors and textured quads.
    */
-
-  /*
-   * Swap the buffers. This this tells the driver to
-   * render the next frame from the contents of the
-   * back-buffer, and to set all rendering operations
-   * to occur on what was the front-buffer.
-   *
-   * Double buffering prevents nasty visual tearing
-   * from the application drawing on areas of the
-   * screen that are being updated at the same time.
-   */
-  SDL_GL_SwapBuffers();
 
   if (inherited::myScreenLock)
     inherited::myScreenLock->unlock();
@@ -512,17 +600,34 @@ SDL_GUI_LevelWindow_3D::draw(SDL_Surface* targetSurface_in,
   // reset clipping area
   unclip(target_surface);
 
-  // whole viewport needs a refresh...
-  invalidate(myClipRect);
-
   // remember position of last realization
   myLastAbsolutePosition = std::make_pair(myClipRect.x,
                                           myClipRect.y);
 }
 
 void
+SDL_GUI_LevelWindow_3D::update(SDL_Surface* targetSurface_in)
+{
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::update"));
+
+  ACE_UNUSED_ARG(targetSurface_in);
+
+  /*
+   * Swap the buffers. This this tells the driver to
+   * render the next frame from the contents of the
+   * back-buffer, and to set all rendering operations
+   * to occur on what was the front-buffer.
+   *
+   * Double buffering prevents nasty visual tearing
+   * from the application drawing on areas of the
+   * screen that are being updated at the same time.
+   */
+  SDL_GL_SwapBuffers();
+}
+
+void
 SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
-                                    RPG_Graphics_IWindow* window_in,
+                                    RPG_Graphics_IWindowBase* window_in,
                                     SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::handleEvent"));
@@ -751,6 +856,7 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
             // redraw
             draw();
             getArea(dirtyRegion_out);
+            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
             break;
           } // end IF
@@ -1083,6 +1189,9 @@ SDL_GUI_LevelWindow_3D::notify(const RPG_Engine_Command& command_in,
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::notify"));
 
+  // sanity check(s)
+  ACE_ASSERT(myEngine);
+
   switch (command_in)
   {
     case COMMAND_ATTACK:
@@ -1090,13 +1199,16 @@ SDL_GUI_LevelWindow_3D::notify(const RPG_Engine_Command& command_in,
     case COMMAND_DOOR_CLOSE:
     case COMMAND_DOOR_OPEN:
     {
+      myEngine->lock();
       RPG_Map_DoorState door_state =
-          myEngine->state(parameters_in.position, true);
+          myEngine->state(parameters_in.position, false);
 
       // change tile accordingly
       RPG_Graphics_Orientation orientation =
-          RPG_Client_Common_Tools::getDoorOrientation(*myEngine,
-                                                      parameters_in.position);
+          RPG_Client_Common_Tools::getDoorOrientation(parameters_in.position,
+                                                      *myEngine,
+                                                      false);
+      myEngine->unlock();
       switch (orientation)
       {
         case ORIENTATION_HORIZONTAL:
@@ -1117,7 +1229,7 @@ SDL_GUI_LevelWindow_3D::notify(const RPG_Engine_Command& command_in,
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid door orientation \"%s\", aborting\n"),
-                     RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str()));
+                     ACE_TEXT(RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str())));
 
           return;
         }
@@ -1200,7 +1312,7 @@ SDL_GUI_LevelWindow_3D::notify(const RPG_Engine_Command& command_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid command (was: \"%s\", aborting\n"),
-                 RPG_Engine_CommandHelper::RPG_Engine_CommandToString(command_in).c_str()));
+                 ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(command_in).c_str())));
 
       return;
     }
@@ -1214,20 +1326,34 @@ SDL_GUI_LevelWindow_3D::toggleDoor(const RPG_Map_Position_t& position_in)
 
   ACE_ASSERT(myEngine);
 
-  bool is_open = (myEngine->state(position_in) == DOORSTATE_OPEN);
+  myEngine->lock();
+  bool is_open = (myEngine->state(position_in,
+                                  false) == DOORSTATE_OPEN);
 
   // change tile accordingly
   RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-  orientation = RPG_Client_Common_Tools::getDoorOrientation(*myEngine,
-                                                            position_in);
+  orientation = RPG_Client_Common_Tools::getDoorOrientation(position_in,
+                                                            *myEngine,
+                                                            false);
+  myEngine->unlock();
   switch (orientation)
   {
     case ORIENTATION_HORIZONTAL:
-      myDoorTiles[position_in] = (is_open ? myCurrentDoorSet.horizontal_open
-                                          : myCurrentDoorSet.horizontal_closed); break;
+    {
+      myDoorTiles[position_in] =
+          (is_open ? myCurrentDoorSet.horizontal_open
+                   : myCurrentDoorSet.horizontal_closed);
+
+      break;
+    }
     case ORIENTATION_VERTICAL:
-      myDoorTiles[position_in] = (is_open ? myCurrentDoorSet.vertical_open
-                                          : myCurrentDoorSet.vertical_closed); break;
+    {
+      myDoorTiles[position_in] =
+          (is_open ? myCurrentDoorSet.vertical_open
+                   : myCurrentDoorSet.vertical_closed);
+
+      break;
+    }
     default:
     {
       ACE_DEBUG((LM_ERROR,

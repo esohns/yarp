@@ -46,10 +46,11 @@ RPG_Graphics_HotSpot::RPG_Graphics_HotSpot(const RPG_Graphics_SDLWindowBase& par
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::RPG_Graphics_HotSpot"));
 
-  // *NOTE*: hotspots don't have borders
-  // --> overwrite size
-  myClipRect.w = static_cast<uint16_t>(size_in.first);
-  myClipRect.h = static_cast<uint16_t>(size_in.second);
+  // init clipping rectangle
+  inherited::myClipRect.x = static_cast<int16_t>(offset_in.first);
+  inherited::myClipRect.y = static_cast<int16_t>(offset_in.second);
+  inherited::myClipRect.w = static_cast<uint16_t>(size_in.first);
+  inherited::myClipRect.h = static_cast<uint16_t>(size_in.second);
 }
 
 RPG_Graphics_HotSpot::~RPG_Graphics_HotSpot()
@@ -88,7 +89,16 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("RPG_Graphics_HotSpot::handleEvent(%s)\n"),
-//              RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(myType).c_str()));
+//              ACE_TEXT(RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(myType).c_str())));
+
+  RPG_Graphics_SDLWindowBase* parent = getParent();
+  if (!parent)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Graphics_SDLWindowBase::getParent(), returning\n")));
+
+    return;
+  } // end IF
 
   switch (event_in.type)
   {
@@ -96,7 +106,15 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
     case RPG_GRAPHICS_SDL_MOUSEMOVEOUT:
     {
       // reset cursor
-      getParent()->notify(CURSOR_NORMAL);
+      try
+      {
+        parent->notify(CURSOR_NORMAL);
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::notify(), continuing\n")));
+      }
 
       myCursorHasBeenSet = false;
 
@@ -107,7 +125,15 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
       // upon entry, set appropriate cursor
       if (!myCursorHasBeenSet)
       {
-        getParent()->notify(myCursorType);
+        try
+        {
+          parent->notify(myCursorType);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindow::notify(), continuing\n")));
+        }
 
         myCursorHasBeenSet = true;
       } // end IF
@@ -133,9 +159,17 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
     default:
     {
       // delegate these to the parent...
-      getParent()->handleEvent(event_in,
-                               window_in,
-                               dirtyRegion_out);
+      try
+      {
+        parent->handleEvent(event_in,
+                            window_in,
+                            dirtyRegion_out);
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::handleEvent(), continuing\n")));
+      }
 
       break;
     }
@@ -158,7 +192,10 @@ RPG_Graphics_HotSpot::draw(SDL_Surface* targetSurface_in,
   RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::draw"));
 
   // sanity check(s)
-  ACE_ASSERT(targetSurface_in);
+  // sanity check(s)
+  SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
+                                                  : myScreen);
+  ACE_ASSERT(target_surface);
   ACE_UNUSED_ARG(offsetX_in);
   ACE_UNUSED_ARG(offsetY_in);
 
@@ -180,7 +217,7 @@ RPG_Graphics_HotSpot::draw(SDL_Surface* targetSurface_in,
   if (myDebug)
     RPG_Graphics_Surface::putRect(myClipRect,                            // rectangle
                                   RPG_GRAPHICS_WINDOW_HOTSPOT_DEF_COLOR, // color
-                                  targetSurface_in);                     // target surface
+                                  target_surface);                       // target surface
 
   // remember position of last realization
   myLastAbsolutePosition = std::make_pair(myClipRect.x,

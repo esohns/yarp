@@ -890,14 +890,24 @@ RPG_Client_Engine::handleActions()
   {
     switch ((*iterator).command)
     {
-      // sanity check(s)
-      ACE_ASSERT((*iterator).window);
-
       case COMMAND_CURSOR_DRAW:
       {
+        // sanity check(s)
+        ACE_ASSERT((*iterator).window);
+
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putCursor((*iterator).position,
                                                                      dirty_region);
-        (*iterator).window->invalidate(dirty_region);
+        try
+        {
+          (*iterator).window->invalidate(dirty_region);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+
+          break;
+        }
 
         break;
       }
@@ -911,6 +921,7 @@ RPG_Client_Engine::handleActions()
       {
         // sanity check(s)
         ACE_ASSERT((*iterator).window);
+
         RPG_Graphics_Cursor current_type =
             RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type();
         if (current_type == (*iterator).cursor)
@@ -919,7 +930,17 @@ RPG_Client_Engine::handleActions()
         // set new cursor
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->setCursor((*iterator).cursor,
                                                                      dirty_region);
-        (*iterator).window->invalidate(dirty_region);
+        try
+        {
+          (*iterator).window->invalidate(dirty_region);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+
+          break;
+        }
 
         break;
       }
@@ -962,7 +983,17 @@ RPG_Client_Engine::handleActions()
                                                                                                                   map_area.h),
                                                                                                    level_window->getView()),
                                                              dirty_region);
-        (*iterator).window->invalidate(dirty_region);
+        try
+        {
+          (*iterator).window->invalidate(dirty_region);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+
+          break;
+        }
 
         break;
       }
@@ -974,7 +1005,17 @@ RPG_Client_Engine::handleActions()
 
         RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove((*iterator).entity_id,
                                                                 dirty_region);
-        (*iterator).window->invalidate(dirty_region);
+        try
+        {
+          (*iterator).window->invalidate(dirty_region);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+
+          break;
+        }
 
         break;
       }
@@ -997,6 +1038,7 @@ RPG_Client_Engine::handleActions()
       {
         // sanity check
         ACE_ASSERT((*iterator).window);
+
         RPG_Client_IWindowLevel* level_window = NULL;
         try
         {
@@ -1036,7 +1078,17 @@ RPG_Client_Engine::handleActions()
         }
 
         // --> update whole window
-        (*iterator).window->invalidate(dirty_region);
+        try
+        {
+          (*iterator).window->invalidate(dirty_region);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+
+          break;
+        }
 
         break;
       }
@@ -1084,7 +1136,17 @@ RPG_Client_Engine::handleActions()
         }
 
         // --> update whole window
-        (*iterator).window->invalidate(dirty_region);
+        try
+        {
+          (*iterator).window->invalidate(dirty_region);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+
+          break;
+        }
 
         break;
       }
@@ -1171,7 +1233,17 @@ RPG_Client_Engine::handleActions()
                                                                            dirty_region);
         } // end ELSE
 
-        (*iterator).window->invalidate(dirty_region);
+        try
+        {
+          (*iterator).window->invalidate(dirty_region);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+
+          break;
+        }
 
         break;
       }
@@ -1210,7 +1282,17 @@ RPG_Client_Engine::handleActions()
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(level_window->getView(),
                                                                               dirty_region);
 
-        (*iterator).window->invalidate(dirty_region);
+        try
+        {
+          (*iterator).window->invalidate(dirty_region);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+
+          break;
+        }
 
         break;
       }
@@ -1273,6 +1355,7 @@ RPG_Client_Engine::handleActions()
       {
         // sanity check(s)
         ACE_ASSERT((*iterator).window);
+
         RPG_Client_IWindowLevel* level_window = NULL;
         try
         {
@@ -1311,7 +1394,17 @@ RPG_Client_Engine::handleActions()
         }
 
         // --> update whole window
-        (*iterator).window->invalidate(dirty_region);
+        try
+        {
+          (*iterator).window->invalidate(dirty_region);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+
+          break;
+        }
 
         break;
       }
@@ -1319,6 +1412,7 @@ RPG_Client_Engine::handleActions()
       {
         // sanity check
         ACE_ASSERT((*iterator).window);
+
         RPG_Client_IWindow* client_window = NULL;
         try
         {
@@ -1357,7 +1451,17 @@ RPG_Client_Engine::handleActions()
         }
 
         // --> update whole window
-        (*iterator).window->invalidate(dirty_region);
+        try
+        {
+          (*iterator).window->invalidate(dirty_region);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+
+          break;
+        }
 
         break;
       }
@@ -1380,15 +1484,13 @@ RPG_Client_Engine::handleActions()
           return;
         }
 
-        // --> update whole window
-        (*iterator).window->invalidate(dirty_region);
-
         break;
       }
       case COMMAND_WINDOW_INIT:
       {
         // sanity check(s)
         ACE_ASSERT((*iterator).window);
+
         RPG_Client_IWindowLevel* level_window = NULL;
         try
         {
@@ -1456,19 +1558,16 @@ RPG_Client_Engine::handleActions()
           if (SDL_WM_IconifyWindow() == 0)
             ACE_DEBUG((LM_ERROR,
                        ACE_TEXT("failed to SDL_WM_IconifyWindow(): \"%s\", continuing\n"),
-                       SDL_GetError()));
+                       ACE_TEXT(SDL_GetError())));
         } // end IF
         gchar* caption_utf8 = RPG_Client_UI_Tools::Locale2UTF8(caption);
 // *TODO*: this will not return on VS2010...
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
         SDL_WM_SetCaption(caption_utf8,  // window caption
                           caption_utf8); // icon caption
 #endif
         // clean up
         g_free(caption_utf8);
-
-        // --> update whole window
-        (*iterator).window->invalidate(dirty_region);
 
         break;
       }
@@ -1478,7 +1577,18 @@ RPG_Client_Engine::handleActions()
         ACE_ASSERT((*iterator).window);
 
         // --> update whole window
-        (*iterator).window->invalidate(dirty_region);
+        (*iterator).window->getArea(dirty_region);
+        try
+        {
+          (*iterator).window->invalidate(dirty_region);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+
+          break;
+        }
 
         break;
       }
@@ -1487,6 +1597,7 @@ RPG_Client_Engine::handleActions()
         // sanity check(s)
         ACE_ASSERT((*iterator).window);
         ACE_ASSERT(!(*iterator).message.empty());
+
         RPG_Client_IWindowLevel* level_window = NULL;
         try
         {
@@ -1523,15 +1634,13 @@ RPG_Client_Engine::handleActions()
           return;
         }
 
-        // --> update whole window
-        (*iterator).window->invalidate(dirty_region);
-
         break;
       }
       case COMMAND_WINDOW_UPDATE_MINIMAP:
       {
         // sanity check
         ACE_ASSERT((*iterator).window);
+
         RPG_Client_IWindowLevel* level_window = NULL;
         try
         {
@@ -1566,9 +1675,6 @@ RPG_Client_Engine::handleActions()
 
           return;
         }
-
-        // --> update whole window
-        (*iterator).window->invalidate(dirty_region);
 
         break;
       }

@@ -283,7 +283,7 @@ RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
   std::auto_ptr<RPG_Engine_Player_XMLTree_Type> engine_player_p;
   try
   {
-    ifs.open(filename_in,
+    ifs.open(filename_in.c_str(),
              std::ios_base::in);
 
     engine_player_p = ::engine_player_t(ifs,

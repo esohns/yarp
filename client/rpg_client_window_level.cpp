@@ -353,12 +353,16 @@ RPG_Client_Window_Level::toggleDoor(const RPG_Map_Position_t& position_in)
 
   ACE_ASSERT(myEngine);
 
-  bool is_open = (myEngine->state(position_in) == DOORSTATE_OPEN);
+  myEngine->lock();
+  bool is_open = (myEngine->state(position_in,
+                                  false) == DOORSTATE_OPEN);
 
   // change tile accordingly
   RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-  orientation = RPG_Client_Common_Tools::getDoorOrientation(*myEngine,
-                                                            position_in);
+  orientation = RPG_Client_Common_Tools::getDoorOrientation(position_in,
+                                                            *myEngine,
+                                                            false);
+  myEngine->unlock();
 
   ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
@@ -460,8 +464,8 @@ RPG_Client_Window_Level::drawChild(const RPG_Graphics_WindowType& child_in,
   ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
   // set target surface
-  SDL_Surface* targetSurface = (targetSurface_in ? targetSurface_in
-                                                 : myScreen);
+  SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
+                                                  : myScreen);
 
   // draw any child(ren) of a specific type
   for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
@@ -475,7 +479,7 @@ RPG_Client_Window_Level::drawChild(const RPG_Graphics_WindowType& child_in,
 
     try
     {
-      (*iterator)->draw(targetSurface,
+      (*iterator)->draw(target_surface,
                         offsetX_in,
                         offsetY_in);
     }
@@ -489,7 +493,7 @@ RPG_Client_Window_Level::drawChild(const RPG_Graphics_WindowType& child_in,
     {
       try
       {
-        (*iterator)->update(targetSurface);
+        (*iterator)->update(target_surface);
       }
       catch (...)
       {

@@ -70,7 +70,7 @@ SDL_GUI_MainWindow::~SDL_GUI_MainWindow()
 void
 SDL_GUI_MainWindow::init(state_t* state_in,
                          RPG_Engine* engine_in,
-                         const graphicsMode_t& mode_in)
+                         const RPG_Client_GraphicsMode& mode_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::init"));
 
@@ -195,7 +195,7 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
 
 void
 SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
-                                RPG_Graphics_IWindow* window_in,
+                                RPG_Graphics_IWindowBase* window_in,
                                 SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::handleEvent"));
@@ -289,7 +289,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         {
           std::ostringstream converter;
           converter << myScreenshotIndex++;
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
           std::string dump_path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
 #else
           std::string dump_path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR));
@@ -358,9 +358,9 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
             break;
         } // end FOR
         ACE_ASSERT((*iterator)->getType() == WINDOW_MAP);
-        SDL_GUI_LevelWindow_Isometric* levelWindow = NULL;
-        levelWindow = dynamic_cast<SDL_GUI_LevelWindow_Isometric*>(*iterator);
-        if (!levelWindow)
+        RPG_Client_IWindowLevel* level_window = NULL;
+        level_window = dynamic_cast<RPG_Client_IWindowLevel*>(*iterator);
+        if (!level_window)
         {
           ACE_DEBUG((LM_ERROR,
                     ACE_TEXT("dynamic downcast failed, aborting\n")));
@@ -372,65 +372,65 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         {
           case CURSOR_SCROLL_UL:
           {
-            levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
-            levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                  -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                  RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
             break;
           }
           case CURSOR_SCROLL_U:
           {
-            levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                  -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
             break;
           }
           case CURSOR_SCROLL_UR:
           {
-            levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
-            levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                  -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                  -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
             break;
           }
           case CURSOR_SCROLL_L:
           {
-            levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                  RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
             break;
           }
           case CURSOR_SCROLL_R:
           {
-            levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                  -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
             break;
           }
           case CURSOR_SCROLL_DL:
           {
-            levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
-            levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                  RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                  RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
             break;
           }
           case CURSOR_SCROLL_D:
           {
-            levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                  RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
             break;
           }
           case CURSOR_SCROLL_DR:
           {
-            levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
-            levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                                 -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                  RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+            level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                  -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
             break;
           }
@@ -445,8 +445,17 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         } // end SWITCH
 
         // redraw
-        levelWindow->draw();
-        levelWindow->getArea(dirtyRegion_out);
+        try
+        {
+          level_window->draw();
+          level_window->getArea(dirtyRegion_out);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                    ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::draw/getArea, continuing\n")));
+        }
+
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
 
   //       ACE_DEBUG((LM_DEBUG,
@@ -544,9 +553,9 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
       } // end FOR
       ACE_ASSERT((iterator != myChildren.end()) &&
 				         (*iterator)->getType() == WINDOW_MAP);
-			SDL_GUI_LevelWindow_Isometric* levelWindow = NULL;
-			levelWindow = dynamic_cast<SDL_GUI_LevelWindow_Isometric*>(*iterator);
-      if (!levelWindow)
+			RPG_Client_IWindowLevel* level_window = NULL;
+			level_window = dynamic_cast<RPG_Client_IWindowLevel*>(*iterator);
+			if (!level_window)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("dynamic downcast failed, aborting\n")));
@@ -566,65 +575,65 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
       {
         case CURSOR_SCROLL_UL:
         {
-          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
-          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case CURSOR_SCROLL_U:
         {
-          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case CURSOR_SCROLL_UR:
         {
-          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
-          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case CURSOR_SCROLL_L:
         {
-          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case CURSOR_SCROLL_R:
         {
-          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case CURSOR_SCROLL_DL:
         {
-          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
-          levelWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          level_window->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case CURSOR_SCROLL_D:
         {
-          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
         case CURSOR_SCROLL_DR:
         {
-          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
-          levelWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                               -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+          level_window->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                                -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
 
           break;
         }
@@ -639,8 +648,17 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
       } // end SWITCH
 
       // redraw
-      levelWindow->draw();
-      levelWindow->getArea(dirtyRegion_out);
+      try
+      {
+        level_window->draw();
+        level_window->getArea(dirtyRegion_out);
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                  ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::draw/getArea, continuing\n")));
+      }
+
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset(true);
 
 //       ACE_DEBUG((LM_DEBUG,
@@ -670,14 +688,17 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
   if (event_in.type != RPG_GRAPHICS_SDL_HOVEREVENT)
     myLastHoverTime = 0;
 
-  // pass events to any children
-  SDL_Rect dirty_region;
-  ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
-  inherited::handleEvent(event_in,
-                         window_in,
-                         dirty_region);
-  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-                                                        dirtyRegion_out);
+  // pass events to any children ?
+  if (window_in == this)
+  {
+    SDL_Rect dirty_region;
+    ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
+    inherited::handleEvent(event_in,
+                           window_in,
+                           dirty_region);
+    dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+                                                          dirtyRegion_out);
+  } // end IF
 }
 
 void
@@ -699,9 +720,7 @@ SDL_GUI_MainWindow::notify(const RPG_Graphics_Cursor& cursor_in) const
       ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->setCursor(cursor_in,
                                                                    dirty_region);
-      if ((dirty_region.x != 0) ||
-          (dirty_region.y != 0) ||
-          (dirty_region.w != 0) ||
+      if ((dirty_region.w != 0) ||
           (dirty_region.h != 0))
         const_cast<SDL_GUI_MainWindow*>(this)->invalidate(dirty_region);
 
@@ -744,7 +763,8 @@ SDL_GUI_MainWindow::initScrollSpots()
                              CURSOR_SCROLL_UL); // (hover) cursor graphic
   // up
   RPG_Graphics_HotSpot::init(*this,             // parent
-                             std::make_pair(myClipRect.w - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
+                             std::make_pair((myClipRect.w -
+                                             (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)),
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             0), // offset
@@ -753,21 +773,25 @@ SDL_GUI_MainWindow::initScrollSpots()
   RPG_Graphics_HotSpot::init(*this,             // parent
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
-                             std::make_pair(myClipRect.w - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
+                             std::make_pair((myClipRect.w -
+                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
                                             0), // offset
                              CURSOR_SCROLL_UR); // (hover) cursor graphic
   // left
   RPG_Graphics_HotSpot::init(*this,            // parent
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            myClipRect.h - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)), // size
+                                            (myClipRect.h -
+                                             (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN))), // size
                              std::make_pair(0,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
                              CURSOR_SCROLL_L); // (hover) cursor graphic
   // right
   RPG_Graphics_HotSpot::init(*this,            // parent
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            myClipRect.h - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)), // size
-                             std::make_pair(myClipRect.w - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
+                                            (myClipRect.h -
+                                             (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN))), // size
+                             std::make_pair((myClipRect.w -
+                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
                              CURSOR_SCROLL_R); // (hover) cursor graphic
   // lower left
@@ -775,35 +799,40 @@ SDL_GUI_MainWindow::initScrollSpots()
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
                              std::make_pair(0,
-                                            myClipRect.h - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
+                                            (myClipRect.h -
+                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)), // offset
                              CURSOR_SCROLL_DL); // (hover) cursor graphic
   // down
   RPG_Graphics_HotSpot::init(*this,            // parent
-                             std::make_pair(myClipRect.w - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
+                             std::make_pair(myClipRect.w -
+                                            (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            myClipRect.h - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
+                                            (myClipRect.h -
+                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)), // offset
                              CURSOR_SCROLL_D); // (hover) cursor graphic
   // lower right
   RPG_Graphics_HotSpot::init(*this,             // parent
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
-                             std::make_pair(myClipRect.w - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            myClipRect.h - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
+                             std::make_pair((myClipRect.w -
+                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
+                                            (myClipRect.h -
+                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)), // offset
                              CURSOR_SCROLL_DR); // (hover) cursor graphic
 }
 
 bool
 SDL_GUI_MainWindow::initMap(state_t* state_in,
                             RPG_Engine* engine_in,
-                            const graphicsMode_t& mode_in)
+                            const RPG_Client_GraphicsMode& mode_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::initMap"));
 
   RPG_Graphics_IWindowBase* window_base = NULL;
   switch (mode_in)
   {
-    case SDL_GUI_GRAPHICSMODE_ISOMETRIC:
+    case GRAPHICSMODE_2D_ISOMETRIC:
     {
       ACE_NEW_NORETURN(window_base,
                        SDL_GUI_LevelWindow_Isometric(*this,
@@ -818,7 +847,7 @@ SDL_GUI_MainWindow::initMap(state_t* state_in,
 
       break;
     }
-    case SDL_GUI_GRAPHICSMODE_3D:
+    case GRAPHICSMODE_2D_OPENGL:
     {
       ACE_NEW_NORETURN(window_base,
                        SDL_GUI_LevelWindow_3D(*this,
@@ -833,11 +862,12 @@ SDL_GUI_MainWindow::initMap(state_t* state_in,
 
       break;
     }
+    case GRAPHICSMODE_3D: // *TODO*
     default:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid graphics mode (was: %d), aborting\n"),
-                 mode_in));
+                 ACE_TEXT("invalid graphics mode (was: \"%s\"), aborting\n"),
+                 ACE_TEXT(RPG_Client_GraphicsModeHelper::RPG_Client_GraphicsModeToString(mode_in).c_str())));
 
      return false;
     }
@@ -882,7 +912,8 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
 	// step1: draw border elements
   clip_rect.x = static_cast<Sint16>(offsetX_in + myBorderLeft);
   clip_rect.y = static_cast<Sint16>(offsetY_in);
-	clip_rect.w = static_cast<Uint16>(myClipRect.w - (myBorderLeft + myBorderRight));
+  clip_rect.w = static_cast<Uint16>(myClipRect.w -
+                                    (myBorderLeft + myBorderRight));
   clip_rect.h = static_cast<Uint16>(myBorderTop);
 	if (!SDL_SetClipRect(target_surface, &clip_rect))
   {
@@ -944,7 +975,8 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
 
   clip_rect.x = static_cast<Sint16>(offsetX_in + myBorderLeft);
   clip_rect.y = static_cast<Sint16>(offsetY_in + myClipRect.h - myBorderBottom);
-	clip_rect.w = static_cast<Uint16>(myClipRect.w - (myBorderLeft + myBorderRight));
+  clip_rect.w = static_cast<Uint16>(myClipRect.w -
+                                    (myBorderLeft + myBorderRight));
   clip_rect.h = static_cast<Uint16>(myBorderBottom);
 	if (!SDL_SetClipRect(target_surface, &clip_rect))
   {
@@ -961,7 +993,8 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
        i += (*iterator).second->w)
 	{
     RPG_Graphics_Surface::put(std::make_pair(i,
-                                             (offsetY_in + myClipRect.h - myBorderBottom)),
+                                             (offsetY_in +
+                                              (myClipRect.h - myBorderBottom))),
                               *(*iterator).second,
                               target_surface,
                               dirty_region);
@@ -990,7 +1023,8 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   // NE
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_TOP_RIGHT);
   ACE_ASSERT(iterator != myElementGraphics.end());
-  RPG_Graphics_Surface::put(std::make_pair((myClipRect.w - (*iterator).second->w),
+  RPG_Graphics_Surface::put(std::make_pair((myClipRect.w -
+                                            (*iterator).second->w),
                                            offsetY_in),
                             *(*iterator).second,
                             target_surface,
@@ -1001,7 +1035,8 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_BOTTOM_LEFT);
   ACE_ASSERT(iterator != myElementGraphics.end());
   RPG_Graphics_Surface::put(std::make_pair(offsetX_in,
-                                           (myClipRect.h - (*iterator).second->h)),
+                                           (myClipRect.h -
+                                            (*iterator).second->h)),
                             *(*iterator).second,
                             target_surface,
                             dirty_region);
@@ -1010,8 +1045,10 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   // SE
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_BOTTOM_RIGHT);
   ACE_ASSERT(iterator != myElementGraphics.end());
-  RPG_Graphics_Surface::put(std::make_pair((myClipRect.w - (*iterator).second->w),
-                                           (myClipRect.h - (*iterator).second->h)),
+  RPG_Graphics_Surface::put(std::make_pair((myClipRect.w -
+                                            (*iterator).second->w),
+                                           (myClipRect.h -
+                                            (*iterator).second->h)),
                             *(*iterator).second,
                             target_surface,
                             dirty_region);

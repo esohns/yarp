@@ -43,7 +43,8 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
  public:
   virtual ~RPG_Graphics_SDLWindowBase();
 
-  void init(RPG_Common_ILock* = NULL); // screen lock interface handle
+  void init(RPG_Common_ILock* = NULL, // screen lock interface handle
+            const bool& = false);     // double-buffered screen ?
 
   // implement (part of) RPG_Graphics_IWindow
   virtual void setScreen(SDL_Surface*);   // (default) screen
@@ -74,6 +75,11 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   virtual void notify(const RPG_Graphics_Cursor&) const;
 
   RPG_Graphics_IWindowBase* getWindow(const RPG_Graphics_Position_t&) const; // position (e.g. mouse-)
+  void getBorders(unsigned int&,             // return value: size (top)
+                  unsigned int&,             // return value: size (bottom)
+                  unsigned int&,             // return value: size (left)
+                  unsigned int&,             // return value: size (right)
+                  const bool& = true) const; // recursive ?
 
  protected:
   // *NOTE*: window assumes responsibility for its background surface
@@ -116,11 +122,6 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   typedef RPG_Graphics_Windows_t::const_reverse_iterator RPG_Graphics_WindowsRIterator_t;
 
   // helper methods
-  void getBorders(unsigned int&,             // return value: size (top)
-                  unsigned int&,             // return value: size (bottom)
-                  unsigned int&,             // return value: size (left)
-                  unsigned int&,             // return value: size (right)
-                  const bool& = true) const; // recursive ?
   RPG_Graphics_SDLWindowBase* getParent() const;
 
   std::string                      myTitle;
@@ -149,6 +150,7 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
 
   // "dirty" region(s)
   RPG_Graphics_InvalidRegions_t    myInvalidRegions;
+  bool                             myFlip;
 
   RPG_Graphics_WindowType          myType;
 };

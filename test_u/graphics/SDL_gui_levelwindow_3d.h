@@ -61,17 +61,19 @@ class SDL_GUI_LevelWindow_3D
   void init(state_t*,           // state handle
             RPG_Common_ILock*); // screen lock interface handle
 
+  // implement (part of) RPG_Client_IWindowLevel
+  virtual void init(const RPG_Graphics_Style&); // style
+
   // adjust viewport
   // implement (part of) RPG_Client_IWindowLevel
-  void setView(const int&,
-               const int&); // view (relative map coordinates)
-  virtual void setView(const RPG_Map_Position_t&);
+  virtual void setView(const int&,  // offset x (map coordinates !)
+                       const int&); // offset x (map coordinates !)
+  virtual void setView(const RPG_Map_Position_t&); // position
   virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
 	void center();
 
   // (re-)init / set level properties
   // implement (part of) RPG_Client_IWindowLevel
-  virtual void init(const RPG_Graphics_Style&); // style
   virtual void toggleDoor(const RPG_Map_Position_t&); // door position
   virtual void setBlendRadius(const unsigned char&); // radius
   virtual void updateMinimap();
@@ -87,9 +89,10 @@ class SDL_GUI_LevelWindow_3D
   virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)
                     const unsigned int& = 0,  // offset x (top-left = [0,0])
                     const unsigned int& = 0); // offset y (top-left = [0,0])
-  virtual void handleEvent(const SDL_Event&,      // event
-                           RPG_Graphics_IWindow*, // target window (NULL: this)
-                           SDL_Rect&);            // return value: "dirty" region
+  virtual void update(SDL_Surface* = NULL); // target surface (default: screen)
+  virtual void handleEvent(const SDL_Event&,          // event
+                           RPG_Graphics_IWindowBase*, // target window (NULL: this)
+                           SDL_Rect&);                // return value: "dirty" region
 
   // implement RPG_Engine_IClient
   //virtual void redraw();

@@ -974,10 +974,7 @@ RPG_Engine::findValid(const RPG_Map_Position_t& center_in,
     return result; // failed
   } // end IF
   else if (possible.size() == 1)
-  {
-    ACE_ASSERT(*possible.begin() == center_in);
-    return center_in; // exact
-  } // end IF
+    return *possible.begin();
 
   // step3: choose a random position
   RPG_Map_PositionsConstIterator_t iterator = possible.begin();

@@ -28,6 +28,7 @@
 #include "rpg_graphics_style.h"
 
 #include <SDL.h>
+#include <SDL_opengl.h>
 
 #include <ace/Synch.h>
 
@@ -38,6 +39,8 @@ struct state_t
  unsigned int       hover_time;
  bool               debug;
  RPG_Graphics_Style style;
+ //
+ GLfloat            angle;
 };
 
 enum userMode_t
@@ -47,15 +50,6 @@ enum userMode_t
   //
   SDL_GUI_USERMODE_MAX,
   SDL_GUI_USERMODE_INVALID,
-};
-
-enum graphicsMode_t
-{
-  SDL_GUI_GRAPHICSMODE_ISOMETRIC = 0, // isometric perspective (2.5D)
-  SDL_GUI_GRAPHICSMODE_3D,            // 3D (OpenGL)
-  //
-  SDL_GUI_GRAPHICSMODE_MAX,
-  SDL_GUI_GRAPHICSMODE_INAVLID
 };
 
 #endif

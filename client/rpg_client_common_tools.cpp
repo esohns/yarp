@@ -22,6 +22,7 @@
 #include "rpg_client_common_tools.h"
 
 #include "rpg_client_defines.h"
+#include "rpg_client_graphicsmode.h"
 
 #include "rpg_sound_defines.h"
 #include "rpg_sound_dictionary.h"
@@ -44,6 +45,9 @@
 #include "rpg_common_file_tools.h"
 
 #include <ace/Global_Macros.h>
+
+// init statics
+RPG_Client_GraphicsModeToStringTable_t RPG_Client_GraphicsModeHelper::myRPG_Client_GraphicsModeToStringTable;
 
 bool
 RPG_Client_Common_Tools::initSDLInput(const RPG_Client_SDL_InputConfiguration_t& SDLInputConfiguration_in)
@@ -123,7 +127,10 @@ RPG_Client_Common_Tools::init(const RPG_Client_SDL_InputConfiguration_t& inputCo
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::init"));
 
-	// step0a: init input
+  // step0a: init string conversion facilities
+  RPG_Client_GraphicsModeHelper::init();
+
+	// step0b: init input
 	if (!RPG_Client_Common_Tools::initSDLInput(inputConfiguration_in))
   {
     ACE_DEBUG((LM_ERROR,
@@ -132,7 +139,7 @@ RPG_Client_Common_Tools::init(const RPG_Client_SDL_InputConfiguration_t& inputCo
     return false;
   } // end IF
 
-  // step0b: init audio/video, string conversion facilities and other static data
+  // step0c: init audio/video, string conversion facilities and other static data
   if (!RPG_Sound_Common_Tools::init(audioConfiguration_in,
                                     soundDirectory_in,
                                     useCD_in,
@@ -502,20 +509,23 @@ RPG_Client_Common_Tools::initDoors(const RPG_Engine& engine_in,
       continue;
     } // end IF
 
-    orientation = RPG_Client_Common_Tools::getDoorOrientation(engine_in,
-                                                              *iterator);
+    orientation = RPG_Client_Common_Tools::getDoorOrientation(*iterator,
+                                                              engine_in,
+                                                              false);
     switch (orientation)
     {
       case ORIENTATION_HORIZONTAL:
       {
-        current_tile = ((door_state == DOORSTATE_OPEN) ? tileSet_in.horizontal_open
-                                                       : tileSet_in.horizontal_closed);
+        current_tile =
+            ((door_state == DOORSTATE_OPEN) ? tileSet_in.horizontal_open
+                                            : tileSet_in.horizontal_closed);
         break;
       }
       case ORIENTATION_VERTICAL:
       {
-        current_tile = ((door_state == DOORSTATE_OPEN) ? tileSet_in.vertical_open
-                                                       : tileSet_in.vertical_closed);
+        current_tile =
+            ((door_state == DOORSTATE_OPEN) ? tileSet_in.vertical_open
+                                            : tileSet_in.vertical_closed);
         break;
       }
       default:
@@ -564,20 +574,23 @@ RPG_Client_Common_Tools::updateDoors(const RPG_Graphics_DoorTileSet_t& tileSet_i
       continue;
     } // end IF
 
-    orientation = RPG_Client_Common_Tools::getDoorOrientation(engine_in,
-                                                              (*iterator).first);
+    orientation = RPG_Client_Common_Tools::getDoorOrientation((*iterator).first,
+                                                              engine_in,
+                                                              false);
     switch (orientation)
     {
       case ORIENTATION_HORIZONTAL:
       {
-        current_tile = ((door_state == DOORSTATE_OPEN) ? tileSet_in.horizontal_open
-                                                       : tileSet_in.horizontal_closed);
+        current_tile =
+            ((door_state == DOORSTATE_OPEN) ? tileSet_in.horizontal_open
+                                            : tileSet_in.horizontal_closed);
         break;
       }
       case ORIENTATION_VERTICAL:
       {
-        current_tile = ((door_state == DOORSTATE_OPEN) ? tileSet_in.vertical_open
-                                                       : tileSet_in.vertical_closed);
+        current_tile =
+            ((door_state == DOORSTATE_OPEN) ? tileSet_in.vertical_open
+                                            : tileSet_in.vertical_closed);
         break;
       }
       default:
@@ -585,7 +598,7 @@ RPG_Client_Common_Tools::updateDoors(const RPG_Graphics_DoorTileSet_t& tileSet_i
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid door [%u,%u] orientation (was: \"%s\"), continuing\n"),
                    (*iterator).first.first, (*iterator).first.second,
-                   RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str()));
+                   ACE_TEXT(RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str())));
 
         continue;
       }
@@ -646,20 +659,22 @@ RPG_Client_Common_Tools::hasCeiling(const RPG_Map_Position_t& position_in,
   south = position_in;
   south.second++;
   RPG_Map_Element element_east, element_west, element_north, element_south;
+  if (lockedAccess_in)
+    engine_in.lock();
   element_east  = engine_in.getElement(east,
-                                       lockedAccess_in);
+                                       false);
   element_west  = engine_in.getElement(west,
-                                       lockedAccess_in);
+                                       false);
   element_north = engine_in.getElement(north,
-                                       lockedAccess_in);
+                                       false);
   element_south = engine_in.getElement(south,
-                                       lockedAccess_in);
+                                       false);
+  if (lockedAccess_in)
+    engine_in.unlock();
 
   // *NOTE*: walls should get a ceiling if they're either:
   // - "internal" (e.g. (single) strength room/corridor walls)
   // - "outer" walls get a (single strength) ceiling "margin"
-
-
 
   // "corridors"
   // vertical
@@ -676,6 +691,10 @@ RPG_Client_Common_Tools::hasCeiling(const RPG_Map_Position_t& position_in,
     return true;
 
   // (internal) "corners"
+  bool is_corner_east, is_corner_west, is_corner_north, is_corner_south;
+  bool has_ceiling_east, has_ceiling_west, has_ceiling_north, has_ceiling_south;
+  if (lockedAccess_in)
+    engine_in.lock();
   // SW
   if (((element_west == MAPELEMENT_FLOOR) ||
        (element_west == MAPELEMENT_DOOR)) &&
@@ -685,10 +704,22 @@ RPG_Client_Common_Tools::hasCeiling(const RPG_Map_Position_t& position_in,
        (element_north == MAPELEMENT_WALL)) &&
       ((element_east == MAPELEMENT_UNMAPPED) ||
        (element_east == MAPELEMENT_WALL)))
-    return (engine_in.isCorner(north, lockedAccess_in) ||
-            engine_in.isCorner(east, lockedAccess_in) ||
-            RPG_Client_Common_Tools::hasCeiling(north, engine_in, lockedAccess_in) ||
-            RPG_Client_Common_Tools::hasCeiling(east, engine_in, lockedAccess_in));
+  {
+    is_corner_north = engine_in.isCorner(north, false);
+    is_corner_east  = engine_in.isCorner(east, false);
+    has_ceiling_north = RPG_Client_Common_Tools::hasCeiling(north,
+                                                            engine_in,
+                                                            false);
+    has_ceiling_east  = RPG_Client_Common_Tools::hasCeiling(east,
+                                                            engine_in,
+                                                            false);
+    if (lockedAccess_in)
+      engine_in.unlock();
+    return (is_corner_north   ||
+            is_corner_east    ||
+            has_ceiling_north ||
+            has_ceiling_east);
+  } // end IF
   // SE
   if (((element_east == MAPELEMENT_FLOOR) ||
        (element_east == MAPELEMENT_DOOR)) &&
@@ -698,10 +729,22 @@ RPG_Client_Common_Tools::hasCeiling(const RPG_Map_Position_t& position_in,
        (element_north == MAPELEMENT_WALL)) &&
       ((element_west == MAPELEMENT_UNMAPPED) ||
        (element_west == MAPELEMENT_WALL)))
-    return (engine_in.isCorner(north, lockedAccess_in) ||
-            engine_in.isCorner(west, lockedAccess_in) ||
-            RPG_Client_Common_Tools::hasCeiling(north, engine_in, lockedAccess_in) ||
-            RPG_Client_Common_Tools::hasCeiling(west, engine_in, lockedAccess_in));
+  {
+    is_corner_north = engine_in.isCorner(north, false);
+    is_corner_west  = engine_in.isCorner(west, false);
+    has_ceiling_north = RPG_Client_Common_Tools::hasCeiling(north,
+                                                            engine_in,
+                                                            false);
+    has_ceiling_west  = RPG_Client_Common_Tools::hasCeiling(west,
+                                                            engine_in,
+                                                            false);
+    if (lockedAccess_in)
+      engine_in.unlock();
+    return (is_corner_north   ||
+            is_corner_west    ||
+            has_ceiling_north ||
+            has_ceiling_west);
+  } // end IF
   // NW
   if (((element_west == MAPELEMENT_FLOOR) ||
        (element_west == MAPELEMENT_DOOR)) &&
@@ -711,10 +754,22 @@ RPG_Client_Common_Tools::hasCeiling(const RPG_Map_Position_t& position_in,
        (element_south == MAPELEMENT_WALL)) &&
       ((element_east == MAPELEMENT_UNMAPPED) ||
        (element_east == MAPELEMENT_WALL)))
-    return (engine_in.isCorner(south, lockedAccess_in) ||
-            engine_in.isCorner(east, lockedAccess_in) ||
-            RPG_Client_Common_Tools::hasCeiling(south, engine_in, lockedAccess_in) ||
-            RPG_Client_Common_Tools::hasCeiling(east, engine_in, lockedAccess_in));
+  {
+    is_corner_south = engine_in.isCorner(south, false);
+    is_corner_east  = engine_in.isCorner(east, false);
+    has_ceiling_south = RPG_Client_Common_Tools::hasCeiling(south,
+                                                            engine_in,
+                                                            false);
+    has_ceiling_east  = RPG_Client_Common_Tools::hasCeiling(east,
+                                                            engine_in,
+                                                            false);
+    if (lockedAccess_in)
+      engine_in.unlock();
+    return (is_corner_south   ||
+            is_corner_east    ||
+            has_ceiling_south ||
+            has_ceiling_east);
+  } // end IF
   // NE
   if (((element_east == MAPELEMENT_FLOOR) ||
        (element_east == MAPELEMENT_DOOR)) &&
@@ -724,17 +779,32 @@ RPG_Client_Common_Tools::hasCeiling(const RPG_Map_Position_t& position_in,
        (element_south == MAPELEMENT_WALL)) &&
       ((element_west == MAPELEMENT_UNMAPPED) ||
        (element_west == MAPELEMENT_WALL)))
-    return (engine_in.isCorner(south, lockedAccess_in) ||
-            engine_in.isCorner(west, lockedAccess_in) ||
-            RPG_Client_Common_Tools::hasCeiling(south, engine_in, lockedAccess_in) ||
-            RPG_Client_Common_Tools::hasCeiling(west, engine_in, lockedAccess_in));
+  {
+    is_corner_south = engine_in.isCorner(south, false);
+    is_corner_west  = engine_in.isCorner(west, false);
+    has_ceiling_south = RPG_Client_Common_Tools::hasCeiling(south,
+                                                            engine_in,
+                                                            false);
+    has_ceiling_west  = RPG_Client_Common_Tools::hasCeiling(west,
+                                                            engine_in,
+                                                            false);
+    if (lockedAccess_in)
+      engine_in.unlock();
+    return (is_corner_south   ||
+            is_corner_west    ||
+            has_ceiling_south ||
+            has_ceiling_west);
+  } // end IF
+  if (lockedAccess_in)
+    engine_in.unlock();
 
   return false;
 }
 
 RPG_Graphics_Orientation
-RPG_Client_Common_Tools::getDoorOrientation(const RPG_Engine& engine_in,
-                                            const RPG_Map_Position_t& position_in)
+RPG_Client_Common_Tools::getDoorOrientation(const RPG_Map_Position_t& position_in,
+                                            const RPG_Engine& engine_in,
+                                            const bool& lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::getDoorOrientation"));
 
@@ -744,7 +814,8 @@ RPG_Client_Common_Tools::getDoorOrientation(const RPG_Engine& engine_in,
 //   south = position_in;
 //   south.second++;
 
-  if (engine_in.getElement(east) == MAPELEMENT_WALL) // &&
+  if (engine_in.getElement(east,
+                           lockedAccess_in) == MAPELEMENT_WALL) // &&
 //     (engine_in.getElement(west) == MAPELEMENT_WALL))
   {
     return ORIENTATION_HORIZONTAL;
@@ -811,8 +882,8 @@ RPG_Client_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
   {
     RPG_Map_DoorState door_state = engine_in.state(position_in, lockedAcces_in);
     if (((door_state == DOORSTATE_CLOSED) ||
-         (door_state == DOORSTATE_LOCKED)) &&
-        id_in &&
+         (door_state == DOORSTATE_LOCKED))               &&
+        id_in                                            &&
         RPG_Map_Common_Tools::isAdjacent(entity_position,
                                          position_in))
       return CURSOR_DOOR_OPEN;

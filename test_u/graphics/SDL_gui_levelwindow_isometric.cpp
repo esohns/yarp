@@ -227,7 +227,8 @@ SDL_GUI_LevelWindow_Isometric::init(state_t* state_in,
   ACE_ASSERT(state_in);
 
   myState = state_in;
-  inherited::init(screenLock_in);
+  inherited::init(screenLock_in,
+                  (state_in->screen->flags & SDL_DOUBLEBUF));
 
   // init style
   RPG_Graphics_StyleUnion style;
@@ -801,7 +802,7 @@ SDL_GUI_LevelWindow_Isometric::draw(SDL_Surface* targetSurface_in,
 
 void
 SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
-                                           RPG_Graphics_IWindow* window_in,
+                                           RPG_Graphics_IWindowBase* window_in,
                                            SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::handleEvent"));
@@ -1362,6 +1363,9 @@ SDL_GUI_LevelWindow_Isometric::notify(const RPG_Engine_Command& command_in,
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::notify"));
 
+  // sanity check(s)
+  ACE_ASSERT(myEngine);
+
   switch (command_in)
   {
     case COMMAND_ATTACK:
@@ -1369,13 +1373,16 @@ SDL_GUI_LevelWindow_Isometric::notify(const RPG_Engine_Command& command_in,
     case COMMAND_DOOR_CLOSE:
     case COMMAND_DOOR_OPEN:
     {
+      myEngine->lock();
       RPG_Map_DoorState door_state =
-          myEngine->state(parameters_in.position, true);
+          myEngine->state(parameters_in.position, false);
 
       // change tile accordingly
       RPG_Graphics_Orientation orientation =
-          RPG_Client_Common_Tools::getDoorOrientation(*myEngine,
-                                                      parameters_in.position);
+          RPG_Client_Common_Tools::getDoorOrientation(parameters_in.position,
+                                                      *myEngine,
+                                                      false);
+      myEngine->unlock();
       switch (orientation)
       {
         case ORIENTATION_HORIZONTAL:
@@ -1491,22 +1498,37 @@ SDL_GUI_LevelWindow_Isometric::toggleDoor(const RPG_Map_Position_t& position_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::toggleDoor"));
 
+  // sanity check(s)
   ACE_ASSERT(myEngine);
 
-  bool is_open = (myEngine->state(position_in) == DOORSTATE_OPEN);
+  myEngine->lock();
+  bool is_open = (myEngine->state(position_in,
+                                  false) == DOORSTATE_OPEN);
 
   // change tile accordingly
   RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-  orientation = RPG_Client_Common_Tools::getDoorOrientation(*myEngine,
-                                                            position_in);
+  orientation = RPG_Client_Common_Tools::getDoorOrientation(position_in,
+                                                            *myEngine,
+                                                            false);
+  myEngine->unlock();
   switch (orientation)
   {
     case ORIENTATION_HORIZONTAL:
-      myDoorTiles[position_in] = (is_open ? myCurrentDoorSet.horizontal_open
-                                          : myCurrentDoorSet.horizontal_closed); break;
+    {
+      myDoorTiles[position_in] =
+          (is_open ? myCurrentDoorSet.horizontal_open
+                   : myCurrentDoorSet.horizontal_closed);
+
+      break;
+    }
     case ORIENTATION_VERTICAL:
-      myDoorTiles[position_in] = (is_open ? myCurrentDoorSet.vertical_open
-                                          : myCurrentDoorSet.vertical_closed); break;
+    {
+      myDoorTiles[position_in] =
+          (is_open ? myCurrentDoorSet.vertical_open
+                   : myCurrentDoorSet.vertical_closed);
+
+      break;
+    }
     default:
     {
       ACE_DEBUG((LM_ERROR,

@@ -82,8 +82,10 @@ class RPG_Client_Export RPG_Client_Common_Tools
   static bool hasCeiling(const RPG_Map_Position_t&, // position
                          const RPG_Engine&,         // state / engine
                          const bool& = true);       // locked access ?
-  static RPG_Graphics_Orientation getDoorOrientation(const RPG_Engine&,          // state / engine
-                                                     const RPG_Map_Position_t&); // door
+  static RPG_Graphics_Orientation getDoorOrientation(const RPG_Map_Position_t&, // door position
+                                                     const RPG_Engine&,         // state / engine
+                                                     const bool& = true);       // locked access ?
+
   static RPG_Graphics_Cursor getCursor(const RPG_Map_Position_t&,       // position
                                        const RPG_Engine_EntityID_t&,    // active player
                                        const bool&,                     // has player seen this position ?

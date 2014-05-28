@@ -63,7 +63,6 @@ include_HEADERS = \
 lib_LTLIBRARIES = libRPG_Graphics.la
 
 libRPG_Graphics_la_SOURCES = \
-dnl stdafx.cpp \
   stdafx.h \
   rpg_graphics_SDL_tools.cpp \
   rpg_graphics_SDL_tools.h \

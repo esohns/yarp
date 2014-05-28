@@ -19,6 +19,14 @@
     </xsd:documentation>
   </xsd:annotation>
 
+  <xsd:simpleType name="RPG_Client_GraphicsMode_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="GRAPHICSMODE_2D_ISOMETRIC"/>
+      <xsd:enumeration value="GRAPHICSMODE_2D_OPENGL"/>
+      <xsd:enumeration value="GRAPHICSMODE_3D"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
   <xsd:complexType name="RPG_Client_RuntimeState_Type">
     <xsd:sequence>
       <xsd:element name="style" type="RPG_Graphics_Style_Type" minOccurs="1" maxOccurs="1"/>

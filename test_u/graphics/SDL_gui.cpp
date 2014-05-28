@@ -79,6 +79,7 @@
 
 #include "rpg_client_defines.h"
 #include "rpg_client_common.h"
+#include "rpg_client_graphicsmode.h"
 #include "rpg_client_iwindow_level.h"
 #include "rpg_client_entity_manager.h"
 #include "rpg_client_common_tools.h"
@@ -116,6 +117,10 @@ event_timer_SDL_cb(Uint32 interval_in,
                    ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
                    ACE_TEXT(SDL_GetError())));
     } // end IF
+
+    state_p->angle++;
+    if (state_p->angle > 360.0F)
+      state_p->angle = 0.0F;
   } // end lock scope
 
   // re-schedule
@@ -343,7 +348,7 @@ do_printUsage(const std::string& programName_in)
             << SDL_GUI_DEF_VALIDATE_XML
             << ACE_TEXT("]")
             << std::endl;
-} // end print_usage
+}
 
 bool
 do_processArguments(const int argc_in,
@@ -378,7 +383,7 @@ do_processArguments(const int argc_in,
                                                            false);
 #endif // #ifdef BASEDIR
 
-  magicDictionary_out = configuration_path;
+  magicDictionary_out     = configuration_path;
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if (defined _DEBUG) || (defined DEBUG_RELEASE)
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR("magic");
@@ -386,9 +391,9 @@ do_processArguments(const int argc_in,
 #endif
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
-  height_out = SDL_GUI_DEF_VIDEO_H;
+  height_out              = SDL_GUI_DEF_VIDEO_H;
 
-  itemsDictionary_out = configuration_path;
+  itemsDictionary_out     = configuration_path;
   itemsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   itemsDictionary_out += ACE_TEXT_ALWAYS_CHAR("item");
@@ -396,7 +401,7 @@ do_processArguments(const int argc_in,
 #endif
   itemsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
-  monsterDictionary_out = configuration_path;
+  monsterDictionary_out   = configuration_path;
   monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   monsterDictionary_out += ACE_TEXT_ALWAYS_CHAR("character");
@@ -409,7 +414,7 @@ do_processArguments(const int argc_in,
 
   debugMode_out = SDL_GUI_DEF_DEBUG;
 
-  directory_out = data_path;
+  directory_out           = data_path;
   directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   directory_out += ACE_TEXT_ALWAYS_CHAR("graphics");
@@ -419,7 +424,7 @@ do_processArguments(const int argc_in,
   directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
 #endif
 
-  graphicsDictionary_out = configuration_path;
+  graphicsDictionary_out  = configuration_path;
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR("graphics");
@@ -428,14 +433,15 @@ do_processArguments(const int argc_in,
   graphicsDictionary_out +=
       ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
-  entityFile_out = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
+  entityFile_out          =
+      RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   entityFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   entityFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_DEF_FILE);
   entityFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
 
-  openGLMode_out = false;
+  openGLMode_out          = false;
 
-  mapFile_out = data_path;
+  mapFile_out             = data_path;
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   mapFile_out += ACE_TEXT_ALWAYS_CHAR("map");
@@ -449,12 +455,12 @@ do_processArguments(const int argc_in,
   mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
   mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
-  slideShowMode_out = (SDL_GUI_DEF_MODE == SDL_GUI_USERMODE_SLIDESHOW);
-  traceInformation_out = false;
+  slideShowMode_out       = (SDL_GUI_DEF_MODE == SDL_GUI_USERMODE_SLIDESHOW);
+  traceInformation_out    = false;
   printVersionAndExit_out = false;
-  width_out = SDL_GUI_DEF_VIDEO_W;
+  width_out               = SDL_GUI_DEF_VIDEO_W;
 
-  validateXML_out = SDL_GUI_DEF_VALIDATE_XML;
+  validateXML_out         = SDL_GUI_DEF_VALIDATE_XML;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
@@ -953,6 +959,7 @@ do_UI(RPG_Engine_Entity_t& entity_in,
       const RPG_Engine_Level_t& level_in,
       const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
       SDL_GUI_MainWindow* mainWindow_in,
+      const bool& openGL_in,
       const bool& debug_in)
 {
   RPG_TRACE(ACE_TEXT("::do_UI"));
@@ -960,6 +967,9 @@ do_UI(RPG_Engine_Entity_t& entity_in,
   SDL_Event sdl_event;
   bool event_handled = false;
   bool done = false;
+  RPG_Client_IWindowLevel* map_window =
+      dynamic_cast<RPG_Client_IWindowLevel*>(mainWindow_in->child(WINDOW_MAP));
+  ACE_ASSERT(map_window);
   RPG_Graphics_IWindowBase* window = NULL;
   RPG_Graphics_IWindowBase* previous_window = NULL;
   RPG_Graphics_Position_t mouse_position;
@@ -1040,9 +1050,9 @@ do_UI(RPG_Engine_Entity_t& entity_in,
             engine_in->start();
 
             // center map window...
-            RPG_Client_IWindowLevel* map_window =
-                dynamic_cast<RPG_Client_IWindowLevel*>(mainWindow_in->child(WINDOW_MAP));
-            ACE_ASSERT(map_window);
+//            RPG_Client_IWindowLevel* map_window =
+//                dynamic_cast<RPG_Client_IWindowLevel*>(mainWindow_in->child(WINDOW_MAP));
+//            ACE_ASSERT(map_window);
 						try
             {
               map_window->setView(entity_in.position);
@@ -1067,9 +1077,9 @@ do_UI(RPG_Engine_Entity_t& entity_in,
           }
           case SDLK_r:
           {
-            RPG_Client_IWindowLevel* map_window =
-                dynamic_cast<RPG_Client_IWindowLevel*>(mainWindow_in->child(WINDOW_MAP));
-            ACE_ASSERT(map_window);
+//            RPG_Client_IWindowLevel* map_window =
+//                dynamic_cast<RPG_Client_IWindowLevel*>(mainWindow_in->child(WINDOW_MAP));
+//            ACE_ASSERT(map_window);
 
             try
             {
@@ -1336,9 +1346,7 @@ do_UI(RPG_Engine_Entity_t& entity_in,
       case SDL_MOUSEBUTTONDOWN:
       {
         // map hasn't changed --> no need to redraw
-        if ((dirty_region.x == 0) &&
-            (dirty_region.y == 0) &&
-            (dirty_region.w == 0) &&
+        if ((dirty_region.w == 0) &&
             (dirty_region.h == 0))
           break;
 
@@ -1366,14 +1374,17 @@ do_UI(RPG_Engine_Entity_t& entity_in,
     } // end SWITCH
 
     // update screen ?
-    if ((dirty_region.x != 0) ||
-        (dirty_region.y != 0) ||
-        (dirty_region.w != 0) ||
+    if ((dirty_region.w != 0) ||
         (dirty_region.h != 0))
     {
       try
       {
         mainWindow_in->update();
+        if (openGL_in)
+        {
+          map_window->draw();
+          map_window->update();
+        } // end IF
       }
       catch (...)
       {
@@ -1567,7 +1578,9 @@ do_work(const mode_t& mode_in,
       // step4: init sub-windows (level window, hotspots, minimap, ...)
       RPG_Engine level_engine;
       mainWindow.init(&state,
-                      &level_engine);
+                      &level_engine,
+                      (videoConfiguration_in.use_OpenGL ? GRAPHICSMODE_2D_OPENGL
+                                                        : GRAPHICSMODE_2D_ISOMETRIC));
       // step4a: draw main window borders...
       try
       {
@@ -1599,7 +1612,7 @@ do_work(const mode_t& mode_in,
       // --> but as we're not using the client engine, it doesn't redraw...
       level_engine.setActive(entity_ID);
 
-      // step5a: redraw map window...
+      // step5a: draw map window...
       try
       {
         map_window->setView(level_engine.getPosition(level_engine.getActive()));
@@ -1633,6 +1646,7 @@ do_work(const mode_t& mode_in,
             level,
             mapConfiguration_in,
             &mainWindow,
+            videoConfiguration_in.use_OpenGL,
             debugMode_in);
 
       // clean up
@@ -1752,6 +1766,7 @@ ACE_TMAIN(int argc_in,
   state.style.wall = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE;
   state.style.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
   state.style.door = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
+  state.angle = 0.0F;
 
   // step1a set defaults
   std::string configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
@@ -1857,7 +1872,7 @@ ACE_TMAIN(int argc_in,
 //   video_configuration.screen_flags      = ;
   video_configuration.double_buffer     = SDL_GUI_DEF_VIDEO_DOUBLEBUFFER;
   video_configuration.use_OpenGL        = (SDL_GUI_DEF_GRAPHICS_MODE ==
-                                           SDL_GUI_GRAPHICSMODE_3D);
+                                           GRAPHICSMODE_2D_OPENGL);
   video_configuration.full_screen       = SDL_GUI_DEF_VIDEO_FULLSCREEN;
 
   // step1b: parse/process/validate configuration

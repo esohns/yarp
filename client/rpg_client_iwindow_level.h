@@ -40,6 +40,8 @@ class RPG_Client_IWindowLevel
  public:
   // exposed interface
   virtual void init(const RPG_Graphics_Style&) = 0; // style
+  virtual void setView(const int&,      // offset x (map coordinates !)
+                       const int&) = 0; // offset y (map coordinates !)
   virtual void setView(const RPG_Map_Position_t&) = 0; // view (map coordinates !)
 	virtual RPG_Graphics_Position_t getView() const = 0; // return value: view (map coordinates !)
 
