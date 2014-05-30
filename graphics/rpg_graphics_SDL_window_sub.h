@@ -46,9 +46,14 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowSub
 //                             SDL_Surface* = NULL);              // background
   virtual ~RPG_Graphics_SDLWindowSub();
 
-  // close (& destroy)
-  void close(SDL_Rect&); // return value: "dirty" region
+  // implement (part of) RPG_Graphics_IWindow
+  virtual void show(SDL_Rect&); // return value: "dirty" region
+  virtual void hide(SDL_Rect&); // return value: "dirty" region
+
   bool visible() const;
+
+  // overload RPG_Graphics_SDLWindowBase::getWindow
+  virtual RPG_Graphics_IWindowBase* getWindow(const RPG_Graphics_Position_t&) const; // position (e.g. mouse-)
 
  protected:
   using RPG_Graphics_SDLWindowBase::myClipRect;

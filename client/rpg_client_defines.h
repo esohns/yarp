@@ -24,8 +24,10 @@
 #include "rpg_graphics_colorname.h"
 
 // task-specific
-#define RPG_CLIENT_TASK_GROUP_ID                   104
-#define RPG_CLIENT_TASK_THREAD_NAME                "RPG graphics engine"
+#define RPG_CLIENT_UI_THREAD_GROUP_ID              102
+#define RPG_CLIENT_UI_THREAD_NAME                  "RPG UI dispatch"
+#define RPG_CLIENT_ENGINE_THREAD_GROUP_ID          104
+#define RPG_CLIENT_ENGINE_THREAD_NAME              "RPG graphics engine"
 #define RPG_CLIENT_MAX_QUEUE_SLOTS                 100
 
 #define RPG_CLIENT_GNOME_APPLICATION_ID            "rpg_client"
@@ -42,6 +44,7 @@
 #define RPG_CLIENT_GNOME_CHARBOX_NAME              "character_repository_combobox"
 #define RPG_CLIENT_GNOME_MAPBOX_NAME               "map_repository_combobox"
 #define RPG_CLIENT_GNOME_SERVERBOX_NAME            "server_repository_combobox"
+#define RPG_CLIENT_GNOME_PARTBUTTON_NAME           "part"
 
 // CONFIGDIR-specific
 #define RPG_CLIENT_CONFIG_SUB                      "client"
@@ -102,8 +105,7 @@
 #define RPG_CLIENT_DEF_MESSAGE_CACHE_SIZE          50
 
 // minimap window
-#define RPG_CLIENT_MINIMAP_OFFSET                  3
-// minimap colors
+// colors
 #define RPG_CLIENT_MINIMAPCOLOR_UNMAPPED           COLOR_BLACK
 #define RPG_CLIENT_MINIMAPCOLOR_CORRIDOR           COLOR_PURPLE44
 #define RPG_CLIENT_MINIMAPCOLOR_DOOR               COLOR_BROWN
@@ -113,8 +115,7 @@
 #define RPG_CLIENT_MINIMAPCOLOR_PLAYER_ACTIVE      COLOR_WHITE
 #define RPG_CLIENT_MINIMAPCOLOR_STAIRS             COLOR_LIGHTPINK
 #define RPG_CLIENT_MINIMAPCOLOR_WALL               COLOR_BLACK
-
-// (initial) minimap position (*NOTE*: offset_x from right side !)
+// (initial) position (*NOTE*: offset_x from right side !)
 #define RPG_CLIENT_DEF_MINIMAP_ISON                false
 #define RPG_CLIENT_DEF_MINIMAP_OFFSET_X            10
 #define RPG_CLIENT_DEF_MINIMAP_OFFSET_Y            10
@@ -126,5 +127,7 @@
 #define RPG_CLIENT_DEF_SCREENSHOT_EXT              ".png"
 
 #define RPG_CLIENT_DEF_WINDOW_EDGE_AUTOSCROLL      false
+
+#define RPG_CLIENT_DEF_DEBUG                       false
 
 #endif

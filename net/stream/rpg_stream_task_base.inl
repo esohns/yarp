@@ -24,6 +24,7 @@
 
 #include "rpg_common_macros.h"
 
+#include "rpg_stream_defines.h"
 #include "rpg_stream_message_base.h"
 #include "rpg_stream_session_message_base.h"
 
@@ -35,7 +36,10 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
                     TimePolicyType,
                     SessionMessageType,
                     ProtocolMessageType>::RPG_Stream_TaskBase()
- : inherited(false) // auto-start ?
+ : inherited(ACE_TEXT_ALWAYS_CHAR(RPG_STREAM_DEF_HANDLER_THREAD_NAME), // thread name
+             RPG_STREAM_TASK_GROUP_ID,                                 // group id
+             1,                                                        // # thread(s)
+             false)                                                    // auto-start ?
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::RPG_Stream_TaskBase"));
 
@@ -92,7 +96,7 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
         if (inherited::module())
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("module \"%s\": caught exception in dump_state(), continuing\n"),
-                     ACE_TEXT_ALWAYS_CHAR(inherited::name())));
+                     ACE_TEXT(inherited::name())));
         else
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("caught exception in dump_state(), continuing\n")));
@@ -109,7 +113,7 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
                                                            type_string);
       ACE_DEBUG((LM_WARNING,
                  ACE_TEXT("invalid/unknown session message (type: \"%s\")\n"),
-                 type_string.c_str()));
+                 ACE_TEXT(type_string.c_str())));
 
       break;
     }
@@ -133,7 +137,7 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
   if (inherited::module())
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("module: \"%s\": failed to process message, continuing\n"),
-               ACE_TEXT_ALWAYS_CHAR(inherited::name())));
+               ACE_TEXT(inherited::name())));
   else
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to process message, continuing\n")));
@@ -152,9 +156,9 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
   RPG_TRACE(ACE_TEXT("RPG_Stream_TaskBase::dump_state"));
 
 //   if (module())
-//     ACE_DEBUG((LM_DEBUG,
+//     ACE_DEBUG((LM_WARNING,
 //                ACE_TEXT(" ***** MODULE: \"%s\" has not implemented the dump_state() API *****\n"),
-//                ACE_TEXT_ALWAYS_CHAR(name())));
+//                ACE_TEXT(inherited::name())));
 //   else
 //     ACE_DEBUG((LM_WARNING,
 //                ACE_TEXT("dump_state() API not implemented\n")));
@@ -191,7 +195,7 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
       // downcast message
       message = dynamic_cast<ProtocolMessageType*>(mb_in);
 //       // *OPTIMIZATION*: not as safe, but (arguably) a lot faster !...
-//       message = static_cast<RPG_Stream_MessageBase*> (//                                 mb_in);
+//       message = static_cast<RPG_Stream_MessageBase*>(mb_in);
       if (!message)
       {
         std::string type;
@@ -200,13 +204,15 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
 
         if (inherited::module())
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("module \"%s\": dynamic_cast<RPG_Stream_MessageBase)> (type: \"%s\" failed, aborting\n"),
-                     ACE_TEXT_ALWAYS_CHAR(inherited::module()->name()),
-                     type.c_str()));
+                     ACE_TEXT("module \"%s\": dynamic_cast<ProtocolMessageType*>(%@) failed (type was: \"%s\"), aborting\n"),
+                     ACE_TEXT(inherited::module()->name()),
+                     mb_in,
+                     ACE_TEXT(type.c_str())));
         else
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("dynamic_cast<RPG_Stream_MessageBase)> (type: \"%s\" failed, aborting\n"),
-                     type.c_str()));
+                     ACE_TEXT("dynamic_cast<ProtocolMessageType*>(%@) failed (type was: \"%s\"), aborting\n"),
+                     mb_in,
+                     ACE_TEXT(type.c_str())));
 
         // clean up
         mb_in->release();
@@ -218,8 +224,9 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
       try
       {
         // invoke specific implementation...
-        // *WARNING*: need to invoke our OWN implementation here, otherwise, the ld linker
-        // complains about a missing reference to StreamITaskBase::handleDataMessage...
+        // *WARNING*: need to invoke our OWN implementation here, otherwise, the
+        // ld linker complains about a missing reference to
+        // StreamITaskBase::handleDataMessage...
 //         inherited2::handleDataMessage(message,
 //                                       passMessageDownstream);
         this->handleDataMessage(message,
@@ -230,7 +237,7 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
         if (inherited::module())
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("module \"%s\": caught an exception in handleDataMessage() (message ID: %u), continuing\n"),
-                     ACE_TEXT_ALWAYS_CHAR(inherited::name()),
+                     ACE_TEXT(inherited::name()),
                      message->getID()));
         else
           ACE_DEBUG((LM_ERROR,
@@ -259,13 +266,13 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
 
         if (inherited::module())
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("module \"%s\": caught an exception in handleControlMessage() (type: \"%s\"), continuing\n"),
-                     ACE_TEXT_ALWAYS_CHAR(inherited::name()),
-                     type.c_str()));
+                     ACE_TEXT("module \"%s\": caught an exception in handleControlMessage() (type was: \"%s\"), continuing\n"),
+                     ACE_TEXT(inherited::name()),
+                     ACE_TEXT(type.c_str())));
         else
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("caught an exception in handleControlMessage() (type: \"%s\"), continuing\n"),
-                     type.c_str()));
+                     ACE_TEXT(type.c_str())));
       }
 
       break;
@@ -326,12 +333,14 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
       {
         if (inherited::module())
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("module \"%s\": dynamic_cast<type: %d) failed> (aborting\n"),
-                     ACE_TEXT_ALWAYS_CHAR(inherited::name()),
+                     ACE_TEXT("module \"%s\": dynamic_cast<SessionMessageType*>(%@) failed (type was: %d) ,aborting\n"),
+                     ACE_TEXT(inherited::name()),
+                     controlMessage_in,
                      controlMessage_in->msg_type()));
         else
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("dynamic_cast<type: %d) failed> (aborting\n"),
+                     ACE_TEXT("dynamic_cast<SessionMessageType*>(%@) failed (type was: %d) ,aborting\n"),
+                     controlMessage_in,
                      controlMessage_in->msg_type()));
 
         // clean up
@@ -354,7 +363,7 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
         if (inherited::module())
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("module \"%s\": caught an exception in handleSessionMessage(), continuing\n"),
-                     ACE_TEXT_ALWAYS_CHAR(inherited::name())));
+                     ACE_TEXT(inherited::name())));
         else
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("caught an exception in handleSessionMessage(), continuing\n")));
@@ -362,7 +371,8 @@ RPG_Stream_TaskBase<TaskSynchStrategyType,
 
       // *NOTE*: if this was a RPG_Stream_SessionMessage::SESSION_END, we need to
       // stop processing (see above) !
-      if (sessionMessage->getType() == RPG_Stream_SessionMessage::MB_STREAM_SESSION_END)
+      if (sessionMessage->getType() ==
+          RPG_Stream_SessionMessage::MB_STREAM_SESSION_END)
       {
         // OK: tell our worker thread to stop whatever it's doing ASAP...
         stopProcessing_out = true;

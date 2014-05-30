@@ -21,14 +21,23 @@
 #ifndef RPG_GRAPHICS_IWINDOWBASE_H
 #define RPG_GRAPHICS_IWINDOWBASE_H
 
+#include "rpg_graphics_common.h"
 #include "rpg_graphics_windowtype.h"
 
 #include <SDL.h>
 
+// forward declarations;
+class RPG_Common_ILock;
+
 class RPG_Graphics_IWindowBase
 {
  public:
+//  virtual ~RPG_Graphics_IWindowBase() = 0;
+
   // exposed interface
+  virtual void init(RPG_Common_ILock* = NULL, // screen lock interface handle
+                    const bool& = false) = 0; // double-buffered screen ?
+
   virtual void clip(SDL_Surface* = NULL,          // target surface (default: screen)
                     const unsigned int& = 0,      // offset x (top-left = [0,0])
                     const unsigned int& = 0) = 0; // offset y (top-left = [0,0]));
@@ -39,14 +48,25 @@ class RPG_Graphics_IWindowBase
                     const unsigned int& = 0) = 0; // offset y (top-left = [0,0])
 
   virtual void invalidate(const SDL_Rect&) = 0; // "dirty" area
+  virtual SDL_Rect getDirty() const = 0; // return value: "dirty" area
   virtual void update(SDL_Surface* = NULL) = 0; // target surface (default: screen)
 
   virtual void setScreen(SDL_Surface*) = 0; // (default) screen
   virtual SDL_Surface* getScreen() const = 0; // (default) screen
+  virtual RPG_Graphics_IWindowBase* getParent() const = 0; // return value: parent window handle (if any)
+
+  virtual void addChild(RPG_Graphics_IWindowBase*) = 0; // window handle
+  virtual void removeChild(RPG_Graphics_IWindowBase*) = 0; // window handle
 
   virtual RPG_Graphics_WindowType getType() const = 0;
   virtual void getArea(SDL_Rect&,                      // return value: window area
 		                   const bool& = false) const = 0; // toplevel ?
+	virtual void getBorders(unsigned int&,                 // return value: size (top)
+													unsigned int&,                 // return value: size (bottom)
+													unsigned int&,                 // return value: size (left)
+													unsigned int&,                 // return value: size (right)
+													const bool& = true) const = 0; // recursive ?
+	virtual RPG_Graphics_IWindowBase* getWindow(const RPG_Graphics_Position_t&) const = 0; // position (e.g. mouse-)
 
   virtual void handleEvent(const SDL_Event&,          // event
                            RPG_Graphics_IWindowBase*, // target window (NULL: this)

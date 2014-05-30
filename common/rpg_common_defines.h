@@ -43,8 +43,6 @@
 #define RPG_COMMON_TIMER_THREAD_NAME              "RPG timer dispatch"
 #define RPG_COMMON_EVENT_DISPATCH_THREAD_GROUP_ID 101
 #define RPG_COMMON_EVENT_DISPATCH_THREAD_NAME     "RPG event dispatch"
-#define RPG_COMMON_UI_THREAD_GROUP_ID             102
-#define RPG_COMMON_UI_THREAD_NAME                 "RPG UI dispatch"
 // *IMPORTANT NOTE*: currently used for (initial) slot pre-allocation only;
 // ultimately, the total number of available concurrent slots depends on the
 // actual implementation --> check the code, don't rely on ACE_DEFAULT_TIMERS

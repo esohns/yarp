@@ -68,7 +68,8 @@ RPG_Common_Timer_Manager::RPG_Common_Timer_Manager()
   thread_handles[0] = 0;
   char thread_name[RPG_COMMON_BUFSIZE];
   ACE_OS::memset(thread_name, 0, sizeof(thread_name));
-  ACE_OS::strcpy(thread_name, RPG_COMMON_TIMER_THREAD_NAME);
+  ACE_OS::strcpy(thread_name,
+                 ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_TIMER_THREAD_NAME));
   const char* thread_names[1];
   thread_names[0] = thread_name;
   if (inherited::activate((THR_NEW_LWP |
@@ -84,13 +85,18 @@ RPG_Common_Timer_Manager::RPG_Common_Timer_Manager()
                           NULL,                             // stack size(s)
                           thread_ids,                       // thread id(s)
                           thread_names) == -1)              // thread name(s)
+  {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Thread_Timer_Queue_Adapter::activate(): \"%m\", continuing\n")));
-   else
-     ACE_DEBUG((LM_DEBUG,
-                ACE_TEXT("spawned timer dispatch thread (ID: %u, group: %d)\n"),
-                thread_ids[0],
-                RPG_COMMON_TIMER_THREAD_GROUP_ID));
+               ACE_TEXT("failed to ACE_Thread_Timer_Queue_Adapter::activate(): \"%m\", returning\n")));
+
+    return;
+  } // end IF
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("(%s) spawned worker thread (group: %d, id: %u)...\n"),
+             ACE_TEXT(RPG_COMMON_TIMER_THREAD_NAME),
+             RPG_COMMON_TIMER_THREAD_GROUP_ID,
+             thread_ids[0]));
 }
 
 RPG_Common_Timer_Manager::~RPG_Common_Timer_Manager()

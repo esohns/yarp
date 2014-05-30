@@ -54,8 +54,8 @@ tp_event_dispatcher_func(void* args_in)
 
   bool use_reactor = *reinterpret_cast<bool*>(args_in);
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("(%t) worker starting...\n")));
+//  ACE_DEBUG((LM_DEBUG,
+//             ACE_TEXT("(%t) worker starting...\n")));
 
 	// *IMPORTANT NOTE*: "The signal disposition is a per-process attribute: in a multithreaded
   //                   application, the disposition of a particular signal is the same for
@@ -198,35 +198,16 @@ RPG_Net_Common_Tools::startEventDispatch(const bool& useReactor_in,
   groupID_out = -1;
 
   // spawn worker(s) ?
+  // *NOTE*: if #dispatch threads == 1, event dispatch takes place in the main
+  // thread --> do NOT spawn any workers here...
   if (numDispatchThreads_in > 1)
   {
     // start a (group of) worker thread(s)...
-		ACE_hthread_t* thread_handles = NULL;
-		thread_handles = new(std::nothrow) ACE_hthread_t[numDispatchThreads_in];
-//    ACE_NEW_NORETURN(thread_handles,
-//                     ACE_hthread_t[numThreadPoolThreads_in]);
-    if (!thread_handles)
-    {
-      ACE_DEBUG((LM_CRITICAL,
-                 ACE_TEXT("failed to allocate memory, aborting\n")));
-
-      return false;
-    } // end IF
+    ACE_hthread_t thread_handles[numDispatchThreads_in];
 		ACE_OS::memset(thread_handles, 0, sizeof(thread_handles));
-    const char** thread_names = NULL;
-    thread_names = new(std::nothrow) const char*[numDispatchThreads_in];
-//    ACE_NEW_NORETURN(thread_names,
-//                     const char*[numThreadPoolThreads_in]);
-    if (!thread_names)
-    {
-      ACE_DEBUG((LM_CRITICAL,
-                 ACE_TEXT("failed to allocate memory, aborting\n")));
 
-			// clean up
-			delete [] thread_handles;
-
-      return false;
-    } // end IF
+    const char* thread_names[numDispatchThreads_in];
+    ACE_OS::memset(thread_names, 0, sizeof(thread_names));
     char* thread_name = NULL;
 		std::string buffer;
     std::ostringstream converter;
@@ -244,37 +225,36 @@ RPG_Net_Common_Tools::startEventDispatch(const bool& useReactor_in,
                    ACE_TEXT("failed to allocate memory, aborting\n")));
 
         // clean up
-				delete [] thread_handles;
 				for (unsigned int j = 0; j < i; j++)
           delete [] thread_names[j];
-        delete [] thread_names;
 
         return false;
       } // end IF
+      ACE_OS::memset(thread_name, 0, sizeof(thread_name));
       converter.clear();
       converter.str(ACE_TEXT_ALWAYS_CHAR(""));
       converter << (i + 1);
-      buffer = RPG_COMMON_EVENT_DISPATCH_THREAD_NAME;
+      buffer = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_EVENT_DISPATCH_THREAD_NAME);
       buffer += ACE_TEXT_ALWAYS_CHAR(" #");
       buffer += converter.str();
-      ACE_OS::memset(thread_name, 0, sizeof(thread_name));
       ACE_OS::strcpy(thread_name,
 				             buffer.c_str());
       thread_names[i] = thread_name;
     } // end FOR
-    groupID_out = ACE_Thread_Manager::instance()->spawn_n(numDispatchThreads_in,                     // # threads
-                                                          ::tp_event_dispatcher_func,                // function
-                                                          &const_cast<bool&>(useReactor_in),         // argument
-                                                          (THR_NEW_LWP |
-																													 THR_JOINABLE |
-																													 THR_INHERIT_SCHED),                       // flags
-                                                          ACE_DEFAULT_THREAD_PRIORITY,               // priority
-                                                          RPG_COMMON_EVENT_DISPATCH_THREAD_GROUP_ID, // group id
-                                                          NULL,                                      // task
-                                                          thread_handles,                            // handle(s)
-                                                          NULL,                                      // stack(s)
-                                                          NULL,                                      // stack size(s)
-                                                          thread_names);                             // name(s)
+    groupID_out =
+        ACE_Thread_Manager::instance()->spawn_n(numDispatchThreads_in,                     // # threads
+                                                ::tp_event_dispatcher_func,                // function
+                                                &const_cast<bool&>(useReactor_in),         // argument
+                                                (THR_NEW_LWP |
+                                                 THR_JOINABLE |
+                                                 THR_INHERIT_SCHED),                       // flags
+                                                ACE_DEFAULT_THREAD_PRIORITY,               // priority
+                                                RPG_COMMON_EVENT_DISPATCH_THREAD_GROUP_ID, // group id
+                                                NULL,                                      // task
+                                                thread_handles,                            // handle(s)
+                                                NULL,                                      // stack(s)
+                                                NULL,                                      // stack size(s)
+                                                thread_names);                             // name(s)
     if (groupID_out == -1)
     {
       ACE_DEBUG((LM_ERROR,
@@ -282,24 +262,31 @@ RPG_Net_Common_Tools::startEventDispatch(const bool& useReactor_in,
                  numDispatchThreads_in));
 
       // clean up
-			delete [] thread_handles;
 			for (unsigned int i = 0; i < numDispatchThreads_in; i++)
         delete [] thread_names[i];
-      delete [] thread_names;
 
       return false;
     } // end IF
 
-    // clean up
-		delete [] thread_handles;
+		// clean up
+		converter.clear();
+		converter.str(ACE_TEXT_ALWAYS_CHAR(""));
 		for (unsigned int i = 0; i < numDispatchThreads_in; i++)
-      delete [] thread_names[i];
-    delete [] thread_names;
+		{
+			converter << ACE_TEXT_ALWAYS_CHAR("#") << (i + 1)
+								<< ACE_TEXT_ALWAYS_CHAR(" ")
+								<< thread_handles[i]
+								<< ACE_TEXT_ALWAYS_CHAR("\n");
+			delete [] thread_names[i];
+		} // end IF
 
+    buffer = converter.str();
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("spawned %u event handlers (group ID: %d)...\n"),
+               ACE_TEXT("(%s) spawned %u worker thread(s) (group: %d):\n%s"),
+               ACE_TEXT(RPG_COMMON_EVENT_DISPATCH_THREAD_NAME),
                numDispatchThreads_in,
-               groupID_out));
+               groupID_out,
+               ACE_TEXT(buffer.c_str())));
   } // end IF
 
   return true;

@@ -325,19 +325,20 @@ RPG_Client_Common_Tools::initFloorEdges(const RPG_Engine& engine_in,
         current_floor_edges.bottom = tileSet_in.bottom;
     } // end ELSE
 
-    if (current_floor_edges.east.surface ||
-        current_floor_edges.north.surface ||
-        current_floor_edges.west.surface ||
-        current_floor_edges.south.surface ||
+    if (current_floor_edges.east.surface       ||
+        current_floor_edges.north.surface      ||
+        current_floor_edges.west.surface       ||
+        current_floor_edges.south.surface      ||
         current_floor_edges.south_east.surface ||
         current_floor_edges.south_west.surface ||
         current_floor_edges.north_west.surface ||
         current_floor_edges.north_east.surface ||
-        current_floor_edges.top.surface ||
-        current_floor_edges.right.surface ||
-        current_floor_edges.left.surface ||
+        current_floor_edges.top.surface        ||
+        current_floor_edges.right.surface      ||
+        current_floor_edges.left.surface       ||
         current_floor_edges.bottom.surface)
-      floorEdgeTiles_out.insert(std::make_pair(current_position, current_floor_edges));
+      floorEdgeTiles_out.insert(std::make_pair(current_position,
+                                               current_floor_edges));
   } // end FOR
 }
 
@@ -836,8 +837,9 @@ RPG_Client_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
 
   RPG_Graphics_Cursor result = CURSOR_NORMAL;
 
-  RPG_Map_Position_t entity_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                      std::numeric_limits<unsigned int>::max());
+  RPG_Map_Position_t entity_position =
+      std::make_pair(std::numeric_limits<unsigned int>::max(),
+                     std::numeric_limits<unsigned int>::max());
   if (id_in)
     entity_position = engine_in.getPosition(id_in, lockedAcces_in);
 
@@ -871,7 +873,8 @@ RPG_Client_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
   } // end SWITCH
 
   // monster ?
-  RPG_Engine_EntityID_t entity_id = engine_in.hasEntity(position_in, lockedAcces_in);
+  RPG_Engine_EntityID_t entity_id =
+      engine_in.hasEntity(position_in, lockedAcces_in);
   if (id_in &&
       entity_id &&
       engine_in.isMonster(entity_id, lockedAcces_in))

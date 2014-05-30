@@ -75,7 +75,7 @@ SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D(const RPG_Graphics_SDLWindowBase&
 //                                        myEngine->getSize().second / 2)),
 //   myHighlightBG(NULL),
 //   myHighlightTile(NULL),
-   myMinimapIsOn(SDL_GUI_DEF_GRAPHICS_MINIMAP_ISON)
+   myMinimapIsOn(RPG_CLIENT_DEF_MINIMAP_ISON)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow"));
 
@@ -559,7 +559,7 @@ SDL_GUI_LevelWindow_3D::draw(SDL_Surface* targetSurface_in,
   glVertex3fv(v5);
 
   glEnd();
-//  gl_error = glGetError();
+  gl_error = glGetError();
 //  if (gl_error != GL_NO_ERROR)
 //    ACE_DEBUG((LM_ERROR,
 //               ACE_TEXT("failed to glEnd: \"%s\", continuing\n"),
@@ -1869,10 +1869,9 @@ SDL_GUI_LevelWindow_3D::initMiniMap(RPG_Engine* engine_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::initMiniMap"));
 
-  RPG_Graphics_Offset_t offset;
-  offset.first = SDL_GUI_DEF_GRAPHICS_MINIMAP_OFFSET_X;
-  offset.second = SDL_GUI_DEF_GRAPHICS_MINIMAP_OFFSET_Y;
-
+  RPG_Graphics_Offset_t offset =
+      std::make_pair(std::numeric_limits<int>::max(),
+                     std::numeric_limits<int>::max());
   SDL_GUI_MinimapWindow* minimap_window = NULL;
   ACE_NEW_NORETURN(minimap_window,
                    SDL_GUI_MinimapWindow(*this,

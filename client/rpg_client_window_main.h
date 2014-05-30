@@ -58,9 +58,10 @@ class RPG_Client_Export RPG_Client_Window_Main
 
   // initialize different hotspots
   // *WARNING*: call this AFTER setScreen() !
-  void init(RPG_Client_Engine*, // engine handle
-            const bool&,        // do automatic edge scroll ?
-            RPG_Engine*);       // (level) state handle
+  void init(RPG_Client_Engine*,   // engine handle
+            const bool&,          // do automatic edge scroll ?
+            RPG_Engine*,          // (level) state handle
+            const bool& = false); // debug ?
 
   // implement RPG_Client_IWindow
   virtual void drawBorder(SDL_Surface* = NULL,      // target surface (default: screen)
@@ -85,8 +86,9 @@ class RPG_Client_Export RPG_Client_Window_Main
 
   // helper methods
   void initScrollSpots();
-  void initMap(RPG_Client_Engine*, // engine handle
-               RPG_Engine*);       // (level) state handle
+  void initMap(RPG_Client_Engine*,   // engine handle
+               RPG_Engine*,          // (level) state handle
+               const bool& = false); // debug ?
 
   RPG_Client_Engine* myEngine;
 

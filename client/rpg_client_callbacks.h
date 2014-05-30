@@ -24,7 +24,7 @@
 #include "rpg_client_exports.h"
 
 #include "rpg_client_common.h"
-#include "rpg_client_iinitGTKUI.h"
+#include "rpg_client_iGTK_ui.h"
 
 #include "rpg_engine_common.h"
 
@@ -53,6 +53,7 @@ extern "C"
 {
 #endif /* __cplusplus */
 G_MODULE_EXPORT gboolean idle_init_UI_cb(gpointer);
+G_MODULE_EXPORT gboolean idle_fini_UI_cb(gpointer);
 // -----------------------------------------------------------------------------
 G_MODULE_EXPORT gint about_clicked_GTK_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT gint quit_clicked_GTK_cb(GtkWidget*, gpointer);
@@ -84,16 +85,19 @@ G_MODULE_EXPORT gint server_repository_button_clicked_GTK_cb(GtkWidget*, gpointe
 RPG_Client_Export bool
 init_UI_client(const std::string&,        // UI definiton file
                RPG_Client_GTK_CBData_t&); // GTK cb data (inout)
+RPG_Client_Export void
+fini_UI_client(RPG_Client_GTK_CBData_t&); // GTK cb data (inout)
 
 class RPG_Client_Export RPG_Client_GTKUIDefinition
- : public RPG_Client_IInitGTKUI
+ : public RPG_Client_IGTKUI
 {
  public:
   RPG_Client_GTKUIDefinition(RPG_Client_GTK_CBData_t*); // GTK cb data handle
   virtual ~RPG_Client_GTKUIDefinition();
 
-	// implement RPG_Client_IInitGTKUI
+	// implement RPG_Client_IGTKUI
 	virtual bool init(const std::string&); // definiton filename
+	virtual void fini();
 
  private:
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_GTKUIDefinition());

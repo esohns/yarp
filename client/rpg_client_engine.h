@@ -34,8 +34,6 @@
 #include "rpg_common_idumpstate.h"
 #include "rpg_common_ilock.h"
 
-#include <glade/glade.h>
-
 #include <ace/Global_Macros.h>
 #include <ace/Task.h>
 #include <ace/Atomic_Op_T.h>
@@ -44,6 +42,7 @@
 
 // forward declaration(s)
 class RPG_Engine;
+class RPG_Client_IWidgetUI;
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -94,7 +93,8 @@ class RPG_Client_Export RPG_Client_Engine
   // *WARNING*: window handle needs to be of WINDOW_MAP type !!!
   void init(RPG_Engine*,               // (level) state
             RPG_Graphics_IWindowBase*, // window handle
-            GladeXML*);                // widget tree handle
+            RPG_Client_IWidgetUI*,     // widget UI interface handle
+            const bool& = false);      // debug ?
   void action(const RPG_Client_Action&); // action
 
   void mode(const RPG_Client_SelectionMode&); // set mode
@@ -133,7 +133,7 @@ class RPG_Client_Export RPG_Client_Engine
 
   RPG_Engine*                     myEngine;
   RPG_Graphics_IWindowBase*       myWindow;
-  GladeXML*                       myWidgets;
+  RPG_Client_IWidgetUI*           myWidgetInterface;
 
   RPG_Client_Actions_t            myActions;
   RPG_Client_State_t              myRuntimeState;
@@ -142,6 +142,7 @@ class RPG_Client_Export RPG_Client_Engine
   RPG_Client_SeenPositions_t      mySeenPositions;
   bool                            myCenterOnActivePlayer;
   ACE_Thread_Mutex                myScreenLock;
+  bool                            myDebug;
 };
 
 #endif

@@ -23,7 +23,7 @@
 
 #include <gtk/gtk.h>
 
-#include "rpg_client_iinitGTKUI.h"
+#include "rpg_client_iGTK_ui.h"
 
 #include "net_common.h"
 
@@ -56,10 +56,10 @@ bool init_UI_client(const std::string&, // UI definiton file
 bool init_UI_server(const std::string&, // UI definiton file
 	                  const bool&,        // allow runtime stats trigger ?
                     Net_GTK_CBData_t&); // GTK cb data (inout)
-
+void fini_UI(Net_GTK_CBData_t&); // GTK cb data (inout)
 
 class Net_GTKUIDefinition
- : public RPG_Client_IInitGTKUI
+ : public RPG_Client_IGTKUI
 {
  public:
 	enum Role_t
@@ -76,8 +76,9 @@ class Net_GTKUIDefinition
 		                  Net_GTK_CBData_t*); // GTK cb data
   virtual ~Net_GTKUIDefinition();
 
-	// implement RPG_Client_IInitGTKUI
+	// implement RPG_Client_IGTKUI
 	virtual bool init(const std::string&); // definiton filename
+	virtual void fini();
 
  private:
   ACE_UNIMPLEMENTED_FUNC(Net_GTKUIDefinition());

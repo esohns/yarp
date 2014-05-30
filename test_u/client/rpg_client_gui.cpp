@@ -107,7 +107,8 @@ event_timer_SDL_cb(Uint32 interval_in,
 {
   RPG_TRACE(ACE_TEXT("::event_timer_SDL_cb"));
 
-  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(argument_in);
+  RPG_Client_GTK_CBData_t* data =
+      static_cast<RPG_Client_GTK_CBData_t*>(argument_in);
   ACE_ASSERT(data);
 
   SDL_Event sdl_event;
@@ -273,7 +274,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("client");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -283,9 +284,14 @@ do_printUsage(const std::string& programName_in)
             << ACE_TEXT(path.c_str())
             << ACE_TEXT("\"]")
             << std::endl;
+  std::cout << ACE_TEXT("-d         : debug mode")
+            << ACE_TEXT(" [")
+            << RPG_CLIENT_DEF_DEBUG
+            << ACE_TEXT("]")
+            << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("character");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("monster");
@@ -299,7 +305,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("map");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("data");
@@ -347,7 +353,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("magic");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -358,7 +364,7 @@ do_printUsage(const std::string& programName_in)
             << ACE_TEXT("\"]")
             << std::endl;
   path = configuration_path;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
@@ -374,7 +380,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("sound");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -391,7 +397,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("client");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -421,6 +427,7 @@ do_processArguments(const int& argc_in,
                     ACE_TCHAR** argv_in, // cannot be const...
                     bool& mute_out,
                     std::string& iniFile_out,
+                    bool& debug_out,
                     std::string& monsterDictionary_out,
                     std::string& floorPlan_out,
                     std::string& graphicsDictionary_out,
@@ -452,17 +459,19 @@ do_processArguments(const int& argc_in,
                                                            false);
 #endif // #ifdef BASEDIR
 
-  iniFile_out = configuration_path;
+  iniFile_out             = configuration_path;
   iniFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   iniFile_out += ACE_TEXT_ALWAYS_CHAR("client");
   iniFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   iniFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_INI_FILE);
 
-  monsterDictionary_out = configuration_path;
+  debug_out               = RPG_CLIENT_DEF_DEBUG;
+
+  monsterDictionary_out   = configuration_path;
   monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   monsterDictionary_out += ACE_TEXT_ALWAYS_CHAR("character");
   monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monsterDictionary_out += ACE_TEXT_ALWAYS_CHAR("monster");
@@ -471,9 +480,9 @@ do_processArguments(const int& argc_in,
   monsterDictionary_out +=
       ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
 
-  floorPlan_out = data_path;
+  floorPlan_out           = data_path;
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR("map");
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
@@ -485,68 +494,68 @@ do_processArguments(const int& argc_in,
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
-  graphicsDictionary_out = configuration_path;
+  graphicsDictionary_out  = configuration_path;
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   graphicsDictionary_out +=
       ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
-  itemDictionary_out = configuration_path;
+  itemDictionary_out      = configuration_path;
   itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   itemDictionary_out += ACE_TEXT_ALWAYS_CHAR("item");
   itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   itemDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
-  logToFile_out            = false;
+  logToFile_out           = false;
 
-  magicDictionary_out = configuration_path;
+  magicDictionary_out     = configuration_path;
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR("magic");
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
-  skipIntro_out            = false;
+  skipIntro_out           = false;
 
-  schemaRepository_out = configuration_path;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  schemaRepository_out    = configuration_path;
+#if defined(DEBUG_DEBUGGER)
   schemaRepository_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   schemaRepository_out += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
 
-  soundDictionary_out = configuration_path;
+  soundDictionary_out     = configuration_path;
   soundDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   soundDictionary_out += ACE_TEXT_ALWAYS_CHAR("sound");
   soundDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   soundDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DICTIONARY_FILE);
 
-  traceInformation_out     = false;
+  traceInformation_out    = false;
 
-  UIfile_out = configuration_path;
+  UIfile_out              = configuration_path;
   UIfile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   UIfile_out += ACE_TEXT_ALWAYS_CHAR("client");
   UIfile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   UIfile_out += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_UI_FILE);
 
-  printVersionAndExit_out  = false;
+  printVersionAndExit_out = false;
 
-  numDispatchThreads_out = RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS;
+  numDispatchThreads_out  = RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS;
 
-  videoDriver_out = RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME;
+  videoDriver_out         = RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("ac:e:f:g:i:lm:nr:s:tu:vx:z:"),
+                             ACE_TEXT("ac:de:f:g:i:lm:nr:s:tu:vx:z:"),
                              1,                         // skip command name
                              1,                         // report parsing errors
                              ACE_Get_Opt::PERMUTE_ARGS, // ordering
@@ -567,6 +576,12 @@ do_processArguments(const int& argc_in,
       case 'c':
       {
         iniFile_out = argumentParser.opt_arg();
+
+        break;
+      }
+      case 'd':
+      {
+        debug_out = true;
 
         break;
       }
@@ -764,7 +779,8 @@ void
 do_work(const RPG_Client_Configuration_t& configuration_in,
         const std::string& schemaRepository_in,
         RPG_Client_GTK_CBData_t& GTKUserData_in,
-        const bool& skipIntro_in)
+        const bool& skipIntro_in,
+        const bool& debug_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
@@ -880,12 +896,15 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
   main_window.setScreen(GTKUserData_in.screen);
   main_window.init(&client_engine,
                    RPG_CLIENT_DEF_WINDOW_EDGE_AUTOSCROLL,
-                   &level_engine);
+                   &level_engine,
+                   debug_in);
 
   // step4b: client engine
+  RPG_Client_GTKUIDefinition ui_definition(&GTKUserData_in);
   client_engine.init(&level_engine,
                      main_window.child(WINDOW_MAP),
-                     GTKUserData_in.XML);
+                     &ui_definition,
+                     debug_in);
 
   // step4c: queue initial drawing
   RPG_Client_Action client_action;
@@ -1182,6 +1201,12 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
           }
         } // end SWITCH
         window = main_window.getWindow(mouse_position);
+        if (!window)
+        {
+          ACE_DEBUG((LM_DEBUG,
+                     ACE_TEXT("failed to RPG_Graphics_SDLWindowBase::getWindow(%u,%u), continuing\n"),
+                     mouse_position.first, mouse_position.second));
+        } // end IF
 
         // first steps on mouse motion:
         // 0. (re-)draw cursor (handled below)
@@ -1271,9 +1296,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
     } // end SWITCH
 
     // update screen ?
-    if ((dirty_region.x != 0) ||
-        (dirty_region.y != 0) ||
-        (dirty_region.w != 0) ||
+    if ((dirty_region.w != 0) ||
         (dirty_region.h != 0))
     {
       client_action.command = COMMAND_WINDOW_REFRESH;
@@ -1288,9 +1311,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
       case SDL_MOUSEBUTTONDOWN:
       {
         // map hasn't changed --> no need to redraw
-        if ((dirty_region.x == 0) &&
-            (dirty_region.y == 0) &&
-            (dirty_region.w == 0) &&
+        if ((dirty_region.w == 0) &&
             (dirty_region.h == 0))
           break;
 
@@ -1300,7 +1321,8 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
       case RPG_GRAPHICS_SDL_HOVEREVENT:
       {
         // sanity check
-        ACE_ASSERT(window);
+        if (!window)
+          break; // nothing to do...
 
         // map has changed, cursor MAY have been drawn over...
         // --> redraw cursor
@@ -1725,8 +1747,9 @@ ACE_TMAIN(int argc_in,
   // step1a: process commandline arguments
   bool mute_sound = false;
   std::string ini_file = configuration_path;
+  bool debug = RPG_CLIENT_DEF_DEBUG;
   ini_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   ini_file += ACE_TEXT_ALWAYS_CHAR("client");
   ini_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -1734,7 +1757,7 @@ ACE_TMAIN(int argc_in,
 
   std::string monster_dictionary = configuration_path;
   monster_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   monster_dictionary += ACE_TEXT_ALWAYS_CHAR("character");
   monster_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monster_dictionary += ACE_TEXT_ALWAYS_CHAR("monster");
@@ -1744,7 +1767,7 @@ ACE_TMAIN(int argc_in,
 
   std::string graphics_dictionary = configuration_path;
   graphics_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   graphics_dictionary += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphics_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -1752,7 +1775,7 @@ ACE_TMAIN(int argc_in,
 
   std::string item_dictionary = configuration_path;
   item_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   item_dictionary += ACE_TEXT_ALWAYS_CHAR("item");
   item_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -1760,7 +1783,7 @@ ACE_TMAIN(int argc_in,
 
   std::string magic_dictionary = configuration_path;
   magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   magic_dictionary += ACE_TEXT_ALWAYS_CHAR("magic");
   magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -1768,7 +1791,7 @@ ACE_TMAIN(int argc_in,
 
   std::string sound_dictionary = configuration_path;
   sound_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   sound_dictionary += ACE_TEXT_ALWAYS_CHAR("sound");
   sound_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -1776,21 +1799,21 @@ ACE_TMAIN(int argc_in,
 
   std::string UI_file = configuration_path;
   UI_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   UI_file += ACE_TEXT_ALWAYS_CHAR("client");
   UI_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   UI_file += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_UI_FILE);
 
   std::string schema_repository = configuration_path;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   schema_repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   schema_repository += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
 
   std::string floor_plan = data_path;
   floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   floor_plan += ACE_TEXT_ALWAYS_CHAR("map");
   floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
@@ -1812,6 +1835,7 @@ ACE_TMAIN(int argc_in,
                            argv_in,
                            mute_sound,
                            ini_file,
+                           debug,
                            monster_dictionary,
                            floor_plan,
                            graphics_dictionary,
@@ -1964,7 +1988,7 @@ ACE_TMAIN(int argc_in,
   configuration.audio_configuration.repository                  = data_path;
   configuration.audio_configuration.repository +=
       ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   configuration.audio_configuration.repository += ACE_TEXT_ALWAYS_CHAR("sound");
   configuration.audio_configuration.repository +=
       ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -1990,7 +2014,7 @@ ACE_TMAIN(int argc_in,
   configuration.video_configuration.video_driver      = video_driver;
   configuration.graphics_directory   = data_path;
   configuration.graphics_directory   += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   configuration.graphics_directory   += ACE_TEXT_ALWAYS_CHAR("graphics");
   configuration.graphics_directory   += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   configuration.graphics_directory   +=
@@ -2092,7 +2116,8 @@ ACE_TMAIN(int argc_in,
   do_work(configuration,
           schema_repository,
           GTK_user_data,
-          skip_intro);
+          skip_intro,
+          debug);
   timer.stop();
   // debug info
   std::string working_time_string;

@@ -63,7 +63,8 @@ class RPG_Client_Export RPG_Client_Entity_Manager
   // draw the entity
   void put(const RPG_Engine_EntityID_t&,   // id
            const RPG_Graphics_Position_t&, // target tile (screen coordinates !)
-           SDL_Rect&);                     // return value: "dirty" region
+           SDL_Rect&,                      // return value: "dirty" region
+           const bool& = true);            // locked access ?
 
   // clear the stored BG
   void invalidateBG(const RPG_Engine_EntityID_t&); // id
@@ -89,7 +90,8 @@ class RPG_Client_Export RPG_Client_Entity_Manager
   // helper methods
   // restore the BG
   void restoreBG(const RPG_Engine_EntityID_t&, // id
-                 SDL_Rect&);                   // return value: "dirty" region
+                 SDL_Rect&,                    // return value: "dirty" region
+                 const bool& = true);          // locked access ?
 
   RPG_Common_ILock*         myScreenLock;
   RPG_Graphics_IWindowBase* myWindow;

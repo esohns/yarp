@@ -24,17 +24,24 @@
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
 
+#include <sstream>
+
 template <typename TaskSynchStrategyType,
           typename TimePolicyType>
 RPG_Common_TaskBase<TaskSynchStrategyType,
-                    TimePolicyType>::RPG_Common_TaskBase(const bool& autoStart_in)
- : inherited(NULL, // thread manager instance
-             NULL) // message queue handle
+                    TimePolicyType>::RPG_Common_TaskBase(const std::string& threadName_in,
+                                                         const int& threadGroupID_in,
+                                                         const unsigned int& numThreads_in,
+                                                         const bool& autoStart_in)
+ : inherited(NULL,  // thread manager instance
+             NULL), // message queue handle
+   myThreadName(threadName_in),
+   myNumThreads(numThreads_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_TaskBase::RPG_Common_TaskBase"));
 
   // set group ID for worker thread(s)
-  inherited::grp_id(RPG_COMMON_UI_THREAD_GROUP_ID);
+  inherited::grp_id(threadGroupID_in);
 
   // auto-start ?
   if (autoStart_in)
@@ -76,37 +83,91 @@ RPG_Common_TaskBase<TaskSynchStrategyType,
   if (inherited::thr_count() > 0)
     return 0; // nothing to do
 
-	// spawn the dispatching worker thread
-	ACE_thread_t thread_ids[1];
-	thread_ids[0] = 0;
-	ACE_hthread_t thread_handles[1];
-	thread_handles[0] = 0;
-	char thread_name[RPG_COMMON_BUFSIZE];
-	ACE_OS::memset(thread_name, 0, sizeof(thread_name));
-	ACE_OS::strcpy(thread_name, RPG_COMMON_UI_THREAD_NAME);
-	const char* thread_names[1];
-	thread_names[0] = thread_name;
+	// spawn the dispatching worker thread(s)
+	ACE_thread_t thread_ids[myNumThreads];
+	ACE_OS::memset(thread_ids, 0, sizeof(thread_ids));
+	ACE_hthread_t thread_handles[myNumThreads];
+	ACE_OS::memset(thread_handles, 0, sizeof(thread_handles));
+	const char* thread_names[myNumThreads];
+	ACE_OS::memset(thread_names, 0, sizeof(thread_names));
+	char* thread_name = NULL;
+	std::string buffer;
+	std::ostringstream converter;
+	for (unsigned int i = 0;
+			 i < myNumThreads;
+			 i++)
+	{
+		thread_name = NULL;
+		thread_name = new(std::nothrow) char[RPG_COMMON_BUFSIZE];
+//      ACE_NEW_NORETURN(thread_name,
+//                       char[RPG_COMMON_BUFSIZE]);
+    if (!thread_name)
+    {
+      ACE_DEBUG((LM_CRITICAL,
+                 ACE_TEXT("failed to allocate memory, aborting\n")));
+
+			// clean up
+			for (unsigned int j = 0; j < i; j++)
+				delete [] thread_names[j];
+
+      return false;
+    } // end IF
+    ACE_OS::memset(thread_name, 0, sizeof(thread_name));
+    converter.clear();
+    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+    converter << (i + 1);
+    buffer = myThreadName;
+    buffer += ACE_TEXT_ALWAYS_CHAR(" #");
+    buffer += converter.str();
+    ACE_OS::strcpy(thread_name,
+                   buffer.c_str());
+    thread_names[i] = thread_name;
+  } // end FOR
 	int result = inherited::activate((THR_NEW_LWP |
 																		THR_JOINABLE |
-																		THR_INHERIT_SCHED),           // flags
-																	 1,                             // # threads --> 1
-																	 0,                             // force active ?
-																	 ACE_DEFAULT_THREAD_PRIORITY,   // priority
-																	 inherited::grp_id(),           // group id (see above)
-																	 NULL,                          // task base
-																	 thread_handles,                // thread handle(s)
-																	 NULL,                          // stack(s)
-																	 NULL,                          // stack size(s)
-																	 thread_ids,                    // thread id(s)
-																	 thread_names);                 // thread name(s)
+																		THR_INHERIT_SCHED),         // flags
+																	 myNumThreads,                // # threads
+																	 0,                           // force active ?
+																	 ACE_DEFAULT_THREAD_PRIORITY, // priority
+																	 inherited::grp_id(),         // group id (see above)
+																	 NULL,                        // task base
+																	 thread_handles,              // thread handle(s)
+																	 NULL,                        // stack(s)
+																	 NULL,                        // stack size(s)
+																	 thread_ids,                  // thread id(s)
+																	 thread_names);               // thread name(s)
 	if (result == -1)
+	{
 		ACE_DEBUG((LM_ERROR,
 							 ACE_TEXT("failed to ACE_Task::activate(): \"%m\", aborting\n")));
-	 else
-		 ACE_DEBUG((LM_DEBUG,
-								ACE_TEXT("spawned UI dispatch thread (ID: %u, group: %d)\n"),
-								thread_ids[0],
-								RPG_COMMON_UI_THREAD_GROUP_ID));
+
+		// clean up
+		for (unsigned int i = 0; i < myNumThreads; i++)
+			delete [] thread_names[i];
+
+		return result;
+	} // end IF
+
+	std::ostringstream string_stream;
+	for (unsigned int i = 0;
+			 i < myNumThreads;
+			 i++)
+	{
+		string_stream << ACE_TEXT_ALWAYS_CHAR("#") << (i + 1)
+									<< ACE_TEXT_ALWAYS_CHAR(" ")
+									<< thread_ids[i]
+									<< ACE_TEXT_ALWAYS_CHAR("\n");
+
+		// clean up
+		delete [] thread_names[i];
+	} // end FOR
+	std::string thread_ids_string = string_stream.str();
+	ACE_DEBUG((LM_DEBUG,
+						 ACE_TEXT("(%s) spawned %u worker thread(s) (group: %d):\n%s"),
+						 ACE_TEXT(myThreadName.c_str()),
+						 myNumThreads,
+						 inherited::grp_id(),
+						 ACE_TEXT(thread_ids_string.c_str())));
 
 	return result;
 }
@@ -120,8 +181,8 @@ RPG_Common_TaskBase<TaskSynchStrategyType,
   RPG_TRACE(ACE_TEXT("RPG_Common_TaskBase::close"));
 
   // *NOTE*: this method may be invoked
-  // - by an external thread closing down the active object
-  // - by the worker thread which calls this after returning from svc()
+  // - by an external thread closing down the active object (1)
+  // - by the worker thread which calls this after returning from svc() (0)
   //    --> in this case, this should be a NOP...
   switch (arg_in)
   {
@@ -136,7 +197,7 @@ RPG_Common_TaskBase<TaskSynchStrategyType,
     case 1:
     {
       if (inherited::thr_count() == 0)
-        return 0; // nothing to do
+        break; // nothing to do
 
       shutdown();
 
@@ -188,8 +249,22 @@ RPG_Common_TaskBase<TaskSynchStrategyType,
 
     if (ace_mb->msg_type() == ACE_Message_Block::MB_STOP)
     {
-      // clean up
-      ace_mb->release();
+      if (inherited::thr_count() > 1)
+      {
+        if (inherited::putq(ace_mb, NULL) == -1)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to ACE_Task::putq(): \"%m\", continuing\n")));
+
+          // clean up
+          ace_mb->release();
+        } // end IF
+      } // end IF
+      else
+      {
+        // clean up
+        ace_mb->release();
+      } // end ELSE
 
       return 0; // done
     } // end IF
@@ -259,7 +334,7 @@ RPG_Common_TaskBase<TaskSynchStrategyType,
   if (!stop_mb)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate ACE_Message_Block: \"%m\", aborting\n")));
+               ACE_TEXT("failed to allocate ACE_Message_Block: \"%m\", returning\n")));
 
     return;
   } // end IF

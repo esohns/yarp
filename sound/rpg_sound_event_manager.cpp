@@ -160,7 +160,8 @@ RPG_Sound_Event_Manager::start()
   ACE_ASSERT(myTimerID == -1);
 
   RPG_Common_TimerHandler* timer_handler = NULL;
-  timer_handler = new(std::nothrow) RPG_Common_TimerHandler(this);
+  ACE_NEW_NORETURN(timer_handler,
+                   RPG_Common_TimerHandler(this));
   if (!timer_handler)
   {
     ACE_DEBUG((LM_CRITICAL,
@@ -261,7 +262,7 @@ RPG_Sound_Event_Manager::handleTimeout(const void* act_in)
     if (myTrackOrChannel == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Sound_Common_Tools::playRandomTrack, aborting\n")));
+                 ACE_TEXT("failed to RPG_Sound_Common_Tools::playRandomTrack, returning")));
 
       return;
     } // end IF
@@ -282,7 +283,7 @@ RPG_Sound_Event_Manager::handleTimeout(const void* act_in)
                      &RPG_Sound_Event_Manager::dirent_comparator) == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Dirent_Selector::open(\"%s\"): \"%m\", aborting\n"),
+                 ACE_TEXT("failed to ACE_Dirent_Selector::open(\"%s\"): \"%m\", returning"),
                  ACE_TEXT(myRepository.c_str())));
 
       return;
@@ -302,26 +303,28 @@ RPG_Sound_Event_Manager::handleTimeout(const void* act_in)
     if (sample_repository.empty())
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("no ambient sounds, aborting\n")));
+                 ACE_TEXT("no ambient sounds, returning")));
 
       return;
     } // end IF
 
     // choose a random file...
-    RPG_Sound_SampleRepositoryConstIterator_t iterator = sample_repository.begin();
+    RPG_Sound_SampleRepositoryConstIterator_t iterator =
+        sample_repository.begin();
     RPG_Dice_RollResult_t roll_result;
     RPG_Dice::generateRandomNumbers(sample_repository.size(),
                                     1,
                                     roll_result);
     std::advance(iterator, roll_result.front() - 1);
 
-    myTrackOrChannel = RPG_Sound_Common_Tools::play(*iterator,
-                                                    RPG_SOUND_DEF_AMBIENT_VOLUME,
-                                                    length);
+    myTrackOrChannel =
+        RPG_Sound_Common_Tools::play(*iterator,
+                                     RPG_SOUND_DEF_AMBIENT_VOLUME,
+                                     length);
     if (myTrackOrChannel == -1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Sound_Common_Tools::play(\"%s\"), aborting\n"),
+                 ACE_TEXT("failed to RPG_Sound_Common_Tools::play(\"%s\"), returning"),
                  ACE_TEXT((*iterator).c_str())));
 
       return;
@@ -330,11 +333,12 @@ RPG_Sound_Event_Manager::handleTimeout(const void* act_in)
   ACE_ASSERT(length != ACE_Time_Value::max_time);
 
   RPG_Common_TimerHandler* timer_handler = NULL;
-  timer_handler = new(std::nothrow) RPG_Common_TimerHandler(this, true);
+  ACE_NEW_NORETURN(timer_handler,
+                   RPG_Common_TimerHandler(this, true));
   if (!timer_handler)
   {
     ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate RPG_Common_TimerHandler, aborting\n")));
+               ACE_TEXT("failed to allocate RPG_Common_TimerHandler, returning")));
 
     return;
   } // end IF
@@ -358,8 +362,6 @@ void
 RPG_Sound_Event_Manager::initCD(const int& drive_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Event_Manager::initCD"));
-
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
   if (myInitialized)
     return;

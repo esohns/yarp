@@ -129,8 +129,28 @@ RPG_Graphics_SDLWindowBase::~RPG_Graphics_SDLWindowBase()
     myParent->removeChild(this);
 
   // free any children (front-to-back)
+  RPG_Graphics_SDLWindowBase* window = NULL;
   while (!myChildren.empty())
-    delete myChildren.back(); // *NOTE*: this will invoke removeChild() on us (see above !)
+  {
+    try
+    {
+      window = dynamic_cast<RPG_Graphics_SDLWindowBase*>(myChildren.back());
+    }
+    catch (...)
+    {
+      window = NULL;
+    }
+    if (!window)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to dynamic_cast<RPG_Graphics_SDLWindowBase*>(%@), continuing\n"),
+                 myChildren.back()));
+
+      continue;
+    } // end IF
+
+    delete window; // *NOTE*: this will invoke removeChild() on us (see above !)
+  } // end WHILE
 
 //   // free surface
 //   if (myBackGround)
@@ -160,10 +180,31 @@ RPG_Graphics_SDLWindowBase::clean()
   myInvalidRegions.clear();
 
   // recurse into any children
+  RPG_Graphics_SDLWindowBase* window = NULL;
   for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
        iterator != myChildren.end();
        iterator++)
-    (*iterator)->clean();
+  {
+    window = NULL;
+    try
+    {
+      window = dynamic_cast<RPG_Graphics_SDLWindowBase*>(*iterator);
+    }
+    catch (...)
+    {
+      // clean up
+      window = NULL;
+    }
+    if (!window)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to dynamic_cast<RPG_Graphics_SDLWindowBase*>(%@), continuing\n"),
+                 *iterator));
+
+      continue;
+    } // end IF
+    window->clean();
+  } // end FOR
 }
 
 void
@@ -173,14 +214,14 @@ RPG_Graphics_SDLWindowBase::init(RPG_Common_ILock* screenLock_in,
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::init"));
 
   myScreenLock = screenLock_in;
+  myFlip = flip_in;
 
   // recurse into any children
 	for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
 		   iterator != myChildren.end();
 			 iterator++)
-	  (*iterator)->init(screenLock_in);
-
-	myFlip = flip_in;
+		(*iterator)->init(screenLock_in,
+											flip_in);
 }
 
 void
@@ -205,7 +246,7 @@ RPG_Graphics_SDLWindowBase::getBorders(unsigned int& borderTop_out,
     unsigned int borderBottom;
     unsigned int borderLeft;
     unsigned int borderRight;
-    for (const RPG_Graphics_SDLWindowBase* current = myParent;
+    for (const RPG_Graphics_IWindowBase* current = myParent;
          current != NULL;
          current = current->getParent())
     {
@@ -221,7 +262,7 @@ RPG_Graphics_SDLWindowBase::getBorders(unsigned int& borderTop_out,
   } // end IF
 }
 
-RPG_Graphics_SDLWindowBase*
+RPG_Graphics_IWindowBase*
 RPG_Graphics_SDLWindowBase::getParent() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getParent"));
@@ -258,7 +299,7 @@ RPG_Graphics_SDLWindowBase::invalidate(const SDL_Rect& rect_in)
 }
 
 void
-RPG_Graphics_SDLWindowBase::addChild(RPG_Graphics_SDLWindowBase* child_in)
+RPG_Graphics_SDLWindowBase::addChild(RPG_Graphics_IWindowBase* child_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::addChild"));
 
@@ -266,7 +307,7 @@ RPG_Graphics_SDLWindowBase::addChild(RPG_Graphics_SDLWindowBase* child_in)
 }
 
 void
-RPG_Graphics_SDLWindowBase::removeChild(RPG_Graphics_SDLWindowBase* child_in)
+RPG_Graphics_SDLWindowBase::removeChild(RPG_Graphics_IWindowBase* child_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::removeChild"));
 
@@ -300,6 +341,26 @@ RPG_Graphics_SDLWindowBase::getScreen() const
 
   return (myScreen ? myScreen
                    : SDL_GetVideoSurface());
+}
+
+void
+RPG_Graphics_SDLWindowBase::show(SDL_Rect& dirtyRegion_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::show"));
+
+  draw();
+
+  dirtyRegion_out = myClipRect;
+}
+
+void
+RPG_Graphics_SDLWindowBase::hide(SDL_Rect& dirtyRegion_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::hide"));
+
+  clear();
+
+  dirtyRegion_out = myClipRect;
 }
 
 void
@@ -696,14 +757,13 @@ RPG_Graphics_SDLWindowBase::getWindow(const RPG_Graphics_Position_t& position_in
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::getWindow"));
 
-  if ((position_in.first  < myLastAbsolutePosition.first)                     ||
-      (position_in.second < myLastAbsolutePosition.second)                    ||
-      (position_in.first  >= (myLastAbsolutePosition.first  + myClipRect.w))  ||
-      (position_in.second >= (myLastAbsolutePosition.second + myClipRect.h)))
+  if ((position_in.first  < static_cast<unsigned int>(myClipRect.x))                   ||
+      (position_in.second < static_cast<unsigned int>(myClipRect.y))                   ||
+      (position_in.first  >= (static_cast<unsigned int>(myClipRect.x) + myClipRect.w)) ||
+      (position_in.second >= (static_cast<unsigned int>(myClipRect.y) + myClipRect.h)))
     return NULL;
 
   // OK "this" currently "owns" position_in
-  // *TODO*: ...unless it's minimized/hidden
   // --> check any children
 
   // *NOTE*: check in reverse order, because "newer", overlapping children are
@@ -749,19 +809,17 @@ RPG_Graphics_SDLWindowBase::clip(SDL_Surface* targetSurface_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::clip"));
 
-  // set target surface
+  // sanity check(s)
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
                                                   : myScreen);
+  ACE_ASSERT(target_surface);
 
 	SDL_Rect clip_rectangle = myClipRect;
 
   // retain previous clip rect
   SDL_GetClipRect(target_surface, &myClipRect);
 
-	if (!SDL_SetClipRect(target_surface, &clip_rectangle))
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, continuing\n"),
-               ACE_TEXT(SDL_GetError())));
+  SDL_SetClipRect(target_surface, &clip_rectangle);
 }
 
 void
@@ -769,18 +827,16 @@ RPG_Graphics_SDLWindowBase::unclip(SDL_Surface* targetSurface_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::unclip"));
 
-  // set target surface
+  // sanity check(s)
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
                                                   : myScreen);
+  ACE_ASSERT(target_surface);
 
   // restore previous clip rect
 	SDL_Rect clip_rectangle = myClipRect;
   SDL_GetClipRect(target_surface, &myClipRect);
 
-  if (!SDL_SetClipRect(target_surface, &clip_rectangle))
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, continuing\n"),
-               ACE_TEXT(SDL_GetError())));
+  SDL_SetClipRect(target_surface, &clip_rectangle);
 }
 
 void

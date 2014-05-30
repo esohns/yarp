@@ -34,6 +34,7 @@
 #include "rpg_map_common.h"
 #include "rpg_map_common_tools.h"
 
+#include "rpg_common.h"
 #include "rpg_common_icontrol.h"
 
 #include <ace/Global_Macros.h>
@@ -47,7 +48,7 @@
         @author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Engine_Export RPG_Engine
- : public ACE_Task<ACE_MT_SYNCH>,
+ : public ACE_Task<ACE_MT_SYNCH, RPG_Common_TimePolicy_t>,
    public RPG_Common_IControl,
    public RPG_Engine_Level
 {
@@ -145,7 +146,7 @@ class RPG_Engine_Export RPG_Engine
   RPG_Map_Positions_t getDoors(const bool& = true) const; // locked access ?
 
  private:
-  typedef ACE_Task<ACE_MT_SYNCH> inherited;
+  typedef ACE_Task<ACE_MT_SYNCH, RPG_Common_TimePolicy_t> inherited;
   typedef RPG_Engine_Level inherited2;
 
   // hide unwanted funcionality
@@ -184,6 +185,8 @@ class RPG_Engine_Export RPG_Engine
   typedef std::vector<std::pair<RPG_Engine_Command,
                                 RPG_Engine_ClientNotificationParameters_t> > RPG_Engine_ClientNotifications_t;
   typedef RPG_Engine_ClientNotifications_t::const_iterator RPG_Engine_ClientNotificationsConstIterator_t;
+  typedef ACE_Message_Queue<ACE_MT_SYNCH,
+                            RPG_Common_TimePolicy_t> RPG_Engine_MessageQueue_t;
 
   // atomic ID generator
   static ACE_Atomic_Op<ACE_Thread_Mutex,

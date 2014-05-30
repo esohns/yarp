@@ -68,17 +68,27 @@ RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap(const RPG_Graphics_SDLWindo
   // adjust position, size
   SDL_Rect parent_area;
   ACE_ASSERT(myParent);
-  myParent->getArea(parent_area);
-  myClipRect.x = ((offset_in.first == 0) ? ((parent_area.x + parent_area.w) -
-                                            (myBorderRight + myBG->w)       -
-                                            RPG_CLIENT_MINIMAP_OFFSET)
-                                         : offset_in.first);
-  myClipRect.y = ((offset_in.second == 0) ? (parent_area.y +
-                                             myBorderTop +
-                                             RPG_CLIENT_MINIMAP_OFFSET)
-                                          : offset_in.second);
+  myParent->getArea(parent_area, true);
+  myParent->getBorders(myBorderTop,
+                       myBorderBottom,
+                       myBorderLeft,
+                       myBorderRight,
+                       true);
+  myClipRect.x =
+      ((offset_in.first == std::numeric_limits<int>::max()) ? ((parent_area.w - 1)             -
+                                                               myBorderRight                   -
+                                                               myBG->w                         -
+                                                               RPG_CLIENT_DEF_MINIMAP_OFFSET_X)
+                                                            : offset_in.first);
+  myClipRect.y =
+      ((offset_in.second == std::numeric_limits<int>::max()) ? (parent_area.y                   +
+                                                                myBorderTop                     +
+                                                                RPG_CLIENT_DEF_MINIMAP_OFFSET_Y)
+                                                             : offset_in.second);
   myClipRect.w = mySurface->w;
   myClipRect.h = mySurface->h;
+
+  myBorderTop = myBorderBottom = myBorderLeft = myBorderRight = 0;
 }
 
 RPG_Client_Window_MiniMap::~RPG_Client_Window_MiniMap()
@@ -173,14 +183,7 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
   // init clipping
   SDL_Rect clip_rect_orig;
   SDL_GetClipRect(target_surface, &clip_rect_orig);
-  if (!SDL_SetClipRect(target_surface, &myClipRect))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
-
-    return;
-  } // end IF
+  SDL_SetClipRect(target_surface, &myClipRect);
 
   // init surface
   SDL_Rect dirty_region;
@@ -347,15 +350,7 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
     inherited::myScreenLock->unlock();
 
   // reset clipping
-//    unclip(targetSurface);
-  if (!SDL_SetClipRect(target_surface, &clip_rect_orig))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               ACE_TEXT(SDL_GetError())));
-
-    return;
-  } // end IF
+  SDL_SetClipRect(target_surface, &clip_rect_orig);
 
   // invalidate dirty region
   invalidate(dirty_region);
@@ -364,7 +359,6 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
   myLastAbsolutePosition = std::make_pair(myClipRect.x,
                                           myClipRect.y);
 
-  // debug info
   if (myDebug)
   {
     std::string path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);

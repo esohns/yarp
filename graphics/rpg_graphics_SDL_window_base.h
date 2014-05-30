@@ -43,43 +43,47 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
  public:
   virtual ~RPG_Graphics_SDLWindowBase();
 
-  void init(RPG_Common_ILock* = NULL, // screen lock interface handle
-            const bool& = false);     // double-buffered screen ?
-
   // implement (part of) RPG_Graphics_IWindow
-  virtual void setScreen(SDL_Surface*);   // (default) screen
-  virtual SDL_Surface* getScreen() const; // (default) screen
-
-  virtual RPG_Graphics_WindowType getType() const;
-
+  virtual void show(SDL_Rect&); // return value: "dirty" region
+  virtual void hide(SDL_Rect&); // return value: "dirty" region
   virtual void clear(const RPG_Graphics_ColorName& = COLOR_BLACK,
-		                 const bool& = true);
-  //virtual void drawChild(const RPG_Graphics_WindowType&, // child type
-  //                       SDL_Surface* = NULL,            // target surface (default: screen)
-  //                       const unsigned int& = 0,        // offset x (top-left = [0,0])
-  //                       const unsigned int& = 0) = 0;   // offset y (top-left = [0,0])
-  virtual void update(SDL_Surface* = NULL); // target surface (default: screen)
-  virtual void invalidate(const SDL_Rect&); // "dirty" area
+                     const bool& = true);
+
   virtual RPG_Graphics_IWindowBase* child(const RPG_Graphics_WindowType&); // type
+
+  virtual void notify(const RPG_Graphics_Cursor&) const;
+
+  // implement (part of) RPG_Graphics_IWindowBase
+  virtual void init(RPG_Common_ILock* = NULL, // screen lock interface handle
+                    const bool& = false);     // double-buffered screen ?
 
   virtual void clip(SDL_Surface* = NULL,      // target surface (default: screen)
                     const unsigned int& = 0,  // offset x (top-left = [0,0])
                     const unsigned int& = 0); // offset y (top-left = [0,0]));
   virtual void unclip(SDL_Surface* = NULL); // target surface (default: screen)
+
+  virtual void update(SDL_Surface* = NULL); // target surface (default: screen)
+  virtual void invalidate(const SDL_Rect&); // "dirty" area
+
+  virtual void setScreen(SDL_Surface*);   // (default) screen
+  virtual SDL_Surface* getScreen() const; // (default) screen
+
+  virtual RPG_Graphics_WindowType getType() const;
+
   virtual void getArea(SDL_Rect&,                  // return value: window area
 		                   const bool& = false) const; // toplevel ?
 
   virtual void handleEvent(const SDL_Event&,          // event
                            RPG_Graphics_IWindowBase*, // target window (NULL: this)
                            SDL_Rect&);                // return value: "dirty" region
-  virtual void notify(const RPG_Graphics_Cursor&) const;
 
-  RPG_Graphics_IWindowBase* getWindow(const RPG_Graphics_Position_t&) const; // position (e.g. mouse-)
-  void getBorders(unsigned int&,             // return value: size (top)
-                  unsigned int&,             // return value: size (bottom)
-                  unsigned int&,             // return value: size (left)
-                  unsigned int&,             // return value: size (right)
-                  const bool& = true) const; // recursive ?
+  virtual RPG_Graphics_IWindowBase* getWindow(const RPG_Graphics_Position_t&) const; // position (e.g. mouse-)
+
+  virtual void getBorders(unsigned int&,             // return value: size (top)
+                          unsigned int&,             // return value: size (bottom)
+                          unsigned int&,             // return value: size (left)
+                          unsigned int&,             // return value: size (right)
+                          const bool& = true) const; // recursive ?
 
  protected:
   // *NOTE*: window assumes responsibility for its background surface
@@ -96,7 +100,7 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
                              const std::string&);               // title
 //                              SDL_Surface* = NULL);              // background
 
-  SDL_Rect getDirty() const; // "dirty" area
+  virtual SDL_Rect getDirty() const; // "dirty" area
   void clean();
 
   // default screen
@@ -116,18 +120,18 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   // helper types
   typedef std::vector<SDL_Rect> RPG_Graphics_DirtyRegions_t;
   typedef RPG_Graphics_DirtyRegions_t::const_iterator RPG_Graphics_DirtyRegionsConstIterator_t;
-  typedef std::vector<RPG_Graphics_SDLWindowBase*> RPG_Graphics_Windows_t;
+  typedef std::vector<RPG_Graphics_IWindowBase*> RPG_Graphics_Windows_t;
   typedef RPG_Graphics_Windows_t::const_iterator RPG_Graphics_WindowsConstIterator_t;
   typedef RPG_Graphics_Windows_t::iterator RPG_Graphics_WindowsIterator_t;
   typedef RPG_Graphics_Windows_t::const_reverse_iterator RPG_Graphics_WindowsRIterator_t;
 
   // helper methods
-  RPG_Graphics_SDLWindowBase* getParent() const;
+  virtual RPG_Graphics_IWindowBase* getParent() const;
 
   std::string                      myTitle;
 //   SDL_Surface*                     myBackGround;
 
-  RPG_Graphics_SDLWindowBase*      myParent;
+  RPG_Graphics_IWindowBase*        myParent;
   RPG_Graphics_Windows_t           myChildren;
 
   RPG_Graphics_Position_t          myLastAbsolutePosition;
@@ -145,8 +149,8 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDLWindowBase& operator=(const RPG_Graphics_SDLWindowBase&));
 
   // helper methods
-  void addChild(RPG_Graphics_SDLWindowBase*); // window handle
-  void removeChild(RPG_Graphics_SDLWindowBase*); // window handle
+  virtual void addChild(RPG_Graphics_IWindowBase*); // window handle
+  virtual void removeChild(RPG_Graphics_IWindowBase*); // window handle
 
   // "dirty" region(s)
   RPG_Graphics_InvalidRegions_t    myInvalidRegions;

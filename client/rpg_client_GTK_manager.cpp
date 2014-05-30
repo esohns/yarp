@@ -31,15 +31,18 @@
 #include "rpg_common_timer_manager.h"
 
 #include "rpg_client_defines.h"
-#include "rpg_client_iinitGTKUI.h"
+#include "rpg_client_iGTK_ui.h"
 
 RPG_Client_GTK_Manager::RPG_Client_GTK_Manager()
- : inherited(false), // do NOT auto-start !
+ : inherited(std::string(ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_UI_THREAD_NAME)), // thread name
+             RPG_CLIENT_UI_THREAD_GROUP_ID,                                // group id
+             1,                                                            // # threads
+             false),                                                       // do NOT auto-start !
    myGTKIsInitialized(false),
 	 myArgc(0),
 	 myArgv(NULL),
 	 myUIDefinitionFile(),
-   myInit(NULL)
+	 myWidgetInterface(NULL)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_GTK_Manager::RPG_Client_GTK_Manager"));
 
@@ -55,14 +58,14 @@ void
 RPG_Client_GTK_Manager::init(const int& argc_in,
                              ACE_TCHAR** argv_in,
 														 const std::string& filename_in,
-                             RPG_Client_IInitGTKUI* init_in)
+														 RPG_Client_IGTKUI* widgetInterface_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_GTK_Manager::init"));
 
 	myArgc = argc_in;
 	myArgv = argv_in;
 	myUIDefinitionFile = filename_in;
-  myInit = init_in;
+	myWidgetInterface = widgetInterface_in;
 }
 
 void
@@ -187,12 +190,12 @@ RPG_Client_GTK_Manager::svc(void)
 		//  ACE_ASSERT(gnomeProgram);
 
 		// step3: init client window
-		if (myInit)
+		if (myWidgetInterface)
 		{
 			bool result = false;
 			try
 			{
-				result = myInit->init(myUIDefinitionFile);
+				result = myWidgetInterface->init(myUIDefinitionFile);
 			}
 			catch (...)
 			{

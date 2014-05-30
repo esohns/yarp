@@ -1564,6 +1564,32 @@ idle_init_UI_cb(gpointer act_in)
 	return FALSE; // G_SOURCE_REMOVE
 }
 
+G_MODULE_EXPORT gboolean
+idle_fini_UI_cb(gpointer act_in)
+{
+  RPG_TRACE(ACE_TEXT("::idle_fini_UI_cb"));
+
+  RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(act_in);
+  ACE_ASSERT(data);
+
+  // sanity check(s)
+  ACE_ASSERT(data->XML);
+
+  GtkWidget* widget =
+      glade_xml_get_widget(data->XML,
+                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_PARTBUTTON_NAME));
+  ACE_ASSERT(widget);
+  // raise dialog window
+  GdkWindow* toplevel = gtk_widget_get_parent_window(widget);
+  ACE_ASSERT(toplevel);
+  gdk_window_deiconify(toplevel);
+  // emit a signal...
+  gtk_button_clicked(GTK_BUTTON(widget));
+
+	// one-shot action
+	return FALSE; // G_SOURCE_REMOVE
+}
+
 G_MODULE_EXPORT gint
 about_clicked_GTK_cb(GtkWidget* widget_in,
                      gpointer userData_in)
@@ -3752,6 +3778,20 @@ init_UI_client(const std::string& UIFile_in,
   return true;
 }
 
+void
+fini_UI_client(RPG_Client_GTK_CBData_t& userData_in)
+{
+	RPG_TRACE(ACE_TEXT("::fini_UI_client"));
+
+	// schedule UI finalization
+	gpointer userData_p = const_cast<RPG_Client_GTK_CBData_t*>(&userData_in);
+	guint event_source_id = g_idle_add(idle_fini_UI_cb,
+																		 userData_p);
+	if (event_source_id == 0)
+		ACE_DEBUG((LM_ERROR,
+							 ACE_TEXT("failed to g_idle_add(): \"%m\", continuing\n")));
+}
+
 RPG_Client_GTKUIDefinition::RPG_Client_GTKUIDefinition(RPG_Client_GTK_CBData_t* GTKCBData_in)
 : myGTKCBData(GTKCBData_in)
 {
@@ -3773,4 +3813,12 @@ RPG_Client_GTKUIDefinition::init(const std::string& filename_in)
 
 	return init_UI_client(filename_in,
 			                  *myGTKCBData);
+}
+
+void
+RPG_Client_GTKUIDefinition::fini()
+{
+	RPG_TRACE(ACE_TEXT("RPG_Client_GTKUIDefinition::fini"));
+
+	fini_UI_client(*myGTKCBData);
 }

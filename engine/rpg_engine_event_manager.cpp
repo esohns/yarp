@@ -75,8 +75,8 @@ RPG_Engine_Event_Manager::open(void* args_in)
   // from within the default ctor; this sets it into an ACTIVATED state, which
   // is expected.
   // Subsequently (i.e. after stop()ping/start()ing, the queue
-  // will have been deactivate()d in the process, and getq() (see svc()) will fail
-  // (ESHUTDOWN) --> (re-)activate() the queue !
+  // will have been deactivate()d in the process, and getq() (see svc()) will
+  // fail (ESHUTDOWN) --> (re-)activate() the queue !
   // step1: (re-)activate() the queue
   if (inherited::msg_queue()->activate() == -1)
   {
@@ -93,9 +93,8 @@ RPG_Engine_Event_Manager::open(void* args_in)
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in start() method, aborting\n")));
+               ACE_TEXT("caught exception in RPG_Engine_Event_Manager::start() method, aborting\n")));
 
-    // what else can we do here ?
     return -1;
   }
 
@@ -117,7 +116,8 @@ RPG_Engine_Event_Manager::close(u_long arg_in)
     case 0:
     {
       ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("(AI engine) worker thread (ID: %t) leaving...\n")));
+                 ACE_TEXT("(%s) worker thread (ID: %t) leaving...\n"),
+                 ACE_TEXT(RPG_ENGINE_AI_TASK_THREAD_NAME)));
 
       // don't do anything...
       break;
@@ -200,7 +200,8 @@ RPG_Engine_Event_Manager::add(const RPG_Engine_EntityID_t& id_in,
   if (!activation_event)
   {
     ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate memory, aborting\n")));
+               ACE_TEXT("failed to allocate memory(%u), aborting\n"),
+               sizeof(RPG_Engine_Event_t)));
 
     return;
   } // end IF
@@ -359,7 +360,7 @@ RPG_Engine_Event_Manager::start()
     converter.clear();
     converter.str(ACE_TEXT_ALWAYS_CHAR(""));
     converter << (i + 1);
-    buffer = RPG_ENGINE_AI_TASK_THREAD_NAME;
+    buffer = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_AI_TASK_THREAD_NAME);
     buffer += ACE_TEXT_ALWAYS_CHAR(" #");
     buffer += converter.str();
     ACE_OS::memset(thread_name, 0, sizeof(thread_name));
@@ -383,13 +384,39 @@ RPG_Engine_Event_Manager::start()
 															 thread_ids,                    // thread id(s)
 															 thread_names);                 // thread names(s)
   if (result == -1)
+  {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Task_Base::activate(): \"%m\", continuing\n")));
-  else
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("(AI engine) started worker thread (group: %d, id: %u)...\n"),
-               inherited::grp_id(),
-               thread_ids[0]));
+               ACE_TEXT("failed to ACE_Task_Base::activate(): \"%m\", returning\n")));
+
+    // clean up
+    for (unsigned int i = 0; i < RPG_ENGINE_AI_DEF_NUM_THREADS; i++)
+      delete [] thread_names[i];
+
+    return;
+  }
+
+  std::string thread_ids_string;
+  converter.clear();
+  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+  for (unsigned int i = 0;
+        i < RPG_ENGINE_AI_DEF_NUM_THREADS;
+        i++)
+  {
+    // clean up
+    delete [] thread_names[i];
+
+    converter << ACE_TEXT_ALWAYS_CHAR("#") << (i + 1)
+              << ACE_TEXT_ALWAYS_CHAR(" ")
+              << thread_ids[i]
+              << ACE_TEXT_ALWAYS_CHAR("\n");
+  } // end FOR
+  thread_ids_string = converter.str();
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("(%s) started %u worker thread(s) (group: %d):\n%s"),
+             ACE_TEXT(RPG_ENGINE_AI_TASK_THREAD_NAME),
+             RPG_ENGINE_AI_DEF_NUM_THREADS,
+             inherited::grp_id(),
+             ACE_TEXT(thread_ids_string.c_str())));
 }
 
 void
@@ -637,7 +664,8 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       {
         bool is_idle = (*iterator).second->actions.empty();
         if (!is_idle)
-          is_idle = ((*iterator).second->actions.front().command == COMMAND_IDLE);
+          is_idle =
+              ((*iterator).second->actions.front().command == COMMAND_IDLE);
         if (is_idle)
         {
           // step1: sort targets by distance
@@ -851,8 +879,10 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
               break; // stop & cancel path...
             } // end IF
             ACE_ASSERT(!current_action.path.empty());
-            ACE_ASSERT((current_action.path.front().first == (*iterator).second->position) &&
-                        (current_action.path.back().first == current_action.position));
+            ACE_ASSERT((current_action.path.front().first ==
+                        (*iterator).second->position) &&
+                        (current_action.path.back().first ==
+                         current_action.position));
             current_action.path.pop_front();
 
             (*iterator).second->modes.insert(ENTITYMODE_TRAVELLING);
@@ -968,7 +998,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
 
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("spawned \"%s\" [id: %u] @ [%u,%u]...\n"),
-                 monster_type.c_str(),
+                 ACE_TEXT(monster_type.c_str()),
                  id,
                  entity->position.first, entity->position.second));
 

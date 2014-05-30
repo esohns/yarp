@@ -56,9 +56,21 @@ RPG_Graphics_SDLWindowSub::~RPG_Graphics_SDLWindowSub()
 }
 
 void
-RPG_Graphics_SDLWindowSub::close(SDL_Rect& dirtyRegion_out)
+RPG_Graphics_SDLWindowSub::show(SDL_Rect& dirtyRegion_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::close"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::show"));
+
+  myIsVisible = true;
+
+  inherited::show(dirtyRegion_out);
+}
+
+void
+RPG_Graphics_SDLWindowSub::hide(SDL_Rect& dirtyRegion_out)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::hide"));
+
+  myIsVisible = false;
 
   // step0: init return value(s)
   ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
@@ -71,9 +83,9 @@ RPG_Graphics_SDLWindowSub::close(SDL_Rect& dirtyRegion_out)
     restoreBG(dirtyRegion_out);
     if (inherited::myScreenLock)
       myScreenLock->unlock();
-  } // end IF
 
-  delete this;
+    invalidate(dirtyRegion_out);
+  } // end IF
 }
 
 bool
@@ -82,6 +94,17 @@ RPG_Graphics_SDLWindowSub::visible() const
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::visible"));
 
   return myIsVisible;
+}
+
+RPG_Graphics_IWindowBase*
+RPG_Graphics_SDLWindowSub::getWindow(const RPG_Graphics_Position_t& position_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::getWindow"));
+
+  if (!myIsVisible)
+    return NULL;
+
+  return inherited::getWindow(position_in);
 }
 
 void

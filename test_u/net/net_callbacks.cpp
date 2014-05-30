@@ -979,6 +979,13 @@ init_UI_server(const std::string& UIFile_in,
   return true;
 }
 
+void
+fini_UI(Net_GTK_CBData_t& userData_out)
+{
+	RPG_TRACE(ACE_TEXT("::fini_UI"));
+
+}
+
 Net_GTKUIDefinition::Net_GTKUIDefinition(const Role_t& role_in,
 	                                       const bool& allowRuntimeInteraction_in,
 	                                       Net_GTK_CBData_t* gtkCBData_in)
@@ -1021,4 +1028,12 @@ Net_GTKUIDefinition::init(const std::string& filename_in)
 	} // end SWITCH
 
 	return false;
+}
+
+void
+Net_GTKUIDefinition::fini()
+{
+	RPG_TRACE(ACE_TEXT("Net_GTKUIDefinition::fini"));
+
+	fini_UI(*myGTKCBData);
 }

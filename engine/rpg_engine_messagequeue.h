@@ -19,30 +19,34 @@
 #ifndef RPG_ENGINE_MESSAGEQUEUE_H
 #define RPG_ENGINE_MESSAGEQUEUE_H
 
+#include "rpg_common.h"
+
 #include <ace/Global_Macros.h>
 #include <ace/Synch.h>
 #include <ace/Message_Queue.h>
 
 class RPG_Engine_MessageQueue
- : public ACE_Message_Queue<ACE_MT_SYNCH>
+ : public ACE_Message_Queue<ACE_MT_SYNCH, RPG_Common_TimePolicy_t>
 {
  public:
-  RPG_Engine_MessageQueue(const unsigned long&); // max number of queued items
+  RPG_Engine_MessageQueue(const size_t&); // max number of queued items
   virtual ~RPG_Engine_MessageQueue();
 
  protected:
   // define some convenient types...
-  typedef ACE_Message_Queue<ACE_MT_SYNCH> MESSAGEQUEUE_TYPE;
-  typedef ACE_Message_Queue_Iterator<ACE_MT_SYNCH> MESSAGEQUEUEITERATOR_TYPE;
+  typedef ACE_Message_Queue<ACE_MT_SYNCH,
+                            RPG_Common_TimePolicy_t> MESSAGEQUEUE_TYPE;
+  typedef ACE_Message_Queue_Iterator<ACE_MT_SYNCH,
+                                     RPG_Common_TimePolicy_t> MESSAGEQUEUEITERATOR_TYPE;
 
   // *IMPORTANT NOTE*: override this so that it considers the number of enqueued
   // items (instead of the amount of enqueued bytes) to determine its water mark...
   virtual bool is_full_i(void);
 
  private:
-  typedef ACE_Message_Queue<ACE_MT_SYNCH> inherited;
+  typedef ACE_Message_Queue<ACE_MT_SYNCH,
+                            RPG_Common_TimePolicy_t> inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine_MessageQueue());
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine_MessageQueue(const RPG_Engine_MessageQueue&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine_MessageQueue& operator=(const RPG_Engine_MessageQueue&));

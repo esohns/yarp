@@ -21,7 +21,7 @@
 
 #include <rpg_common_macros.h>
 
-RPG_Engine_MessageQueue::RPG_Engine_MessageQueue(const unsigned long& maxMessages_in)
+RPG_Engine_MessageQueue::RPG_Engine_MessageQueue(const size_t& maxMessages_in)
 : inherited(maxMessages_in, // high water mark
             maxMessages_in, // low water mark
             NULL)           // notification strategy

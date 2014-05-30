@@ -69,7 +69,8 @@ RPG_Client_Window_Main::~RPG_Client_Window_Main()
 void
 RPG_Client_Window_Main::init(RPG_Client_Engine* clientEngine_in,
                              const bool& doAutoEdgeScroll_in,
-                             RPG_Engine* engine_in)
+                             RPG_Engine* engine_in,
+                             const bool& debug_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Main::init"));
 
@@ -84,7 +85,8 @@ RPG_Client_Window_Main::init(RPG_Client_Engine* clientEngine_in,
 
   // init map
   initMap(clientEngine_in,
-          engine_in);
+          engine_in,
+          debug_in);
 }
 
 void
@@ -820,7 +822,8 @@ RPG_Client_Window_Main::initScrollSpots()
 
 void
 RPG_Client_Window_Main::initMap(RPG_Client_Engine* clientEngine_in,
-                               RPG_Engine* engine_in)
+                                RPG_Engine* engine_in,
+                                const bool& debug_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Main::initMap"));
 
@@ -837,7 +840,8 @@ RPG_Client_Window_Main::initMap(RPG_Client_Engine* clientEngine_in,
 
   // init window
   map_window->init(clientEngine_in,
-                   engine_in);
+                   engine_in,
+                   debug_in);
   map_window->setScreen(myScreen);
 }
 

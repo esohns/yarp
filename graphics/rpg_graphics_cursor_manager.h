@@ -54,7 +54,7 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
   void reset(const bool& = false); // update cursor BG ? : clear
 
   RPG_Graphics_Cursor type() const;
-  RPG_Graphics_Position_t position() const;
+  RPG_Graphics_Position_t position(const bool& = false) const; // highlight ?
 
   void put(const RPG_Graphics_Position_t&, // viewport (map coords !)
            const RPG_Map_Size_t&,          // (current) map size
@@ -67,8 +67,9 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
                  SDL_Rect&,                    // return value: "dirty" region
                  const bool& = false);         // debug ?
   // restore/update/clear the BG
-  void restoreBG(SDL_Rect&,               // return value: "dirty" region
-                 const SDL_Rect* = NULL); // clip area (default: don't clip)
+  void restoreBG(SDL_Rect&,              // return value: "dirty" region
+                 const SDL_Rect* = NULL, // clip area (default: don't clip)
+                 const bool& = true);    // locked access ?
   void updateBG(const SDL_Rect* = NULL); // clip area (default: don't clip)
   void invalidateBG(const SDL_Rect* = NULL); // clip area (default: don't clip)
 
@@ -83,7 +84,8 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
                      const RPG_Graphics_Position_t&,  // viewport (map coords !)
                      SDL_Rect&);                      // return value: "dirty" region
   void restoreHighlightBG(const RPG_Graphics_Position_t&, // viewport (map coords !)
-                          SDL_Rect&);                     // return value: "dirty" region
+                          SDL_Rect&,                      // return value: "dirty" region
+                          const bool& = true);            // locked access ?
   void resetHighlightBG(const RPG_Graphics_Position_t&); // reset to (single) initial position (map coords !)
 
  private:
@@ -99,9 +101,11 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
   // helper methods
   void storeHighlightBG(const RPG_Map_Position_t&,    // position (map coords !)
                         const RPG_Graphics_Offset_t&, // position (screen coords !)
-                        SDL_Rect&);                   // return value: "dirty" region
-  void storeHighlightBG(const RPG_Map_PositionList_t&,  // positions (map coords !)
-                        const RPG_Graphics_Offsets_t&); // positions (screen coords !)
+                        SDL_Rect&,                    // return value: "dirty" region
+                        const bool& = true);          // locked access ?
+  void storeHighlightBG(const RPG_Map_PositionList_t&, // positions (map coords !)
+                        const RPG_Graphics_Offsets_t&, // positions (screen coords !)
+                        const bool& = true);           // locked access ?
 
   RPG_Graphics_Cursor         myCurrentType;
   SDL_Surface*                myCurrentGraphic;

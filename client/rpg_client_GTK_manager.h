@@ -33,7 +33,7 @@
 #include <string>
 
 // forward declarations
-class RPG_Client_IInitGTKUI;
+class RPG_Client_IGTKUI;
 
 /**
   @author Erik Sohns <erik.sohns@web.de>
@@ -48,10 +48,10 @@ class RPG_Client_Export RPG_Client_GTK_Manager
                              ACE_Recursive_Thread_Mutex>;
 
  public:
-	virtual void init(const int&,              // argc
-		                ACE_TCHAR** ,            // argv
-										const std::string&,      // UI definition filename
-		                RPG_Client_IInitGTKUI*); // initializer handle
+  virtual void init(const int&,          // argc
+                    ACE_TCHAR** ,        // argv
+                    const std::string&,  // UI definition filename
+                    RPG_Client_IGTKUI*); // widget UI interface handle
   // implement RPG_Common_IControl
   virtual void start();
   virtual void stop();
@@ -70,11 +70,11 @@ class RPG_Client_Export RPG_Client_GTK_Manager
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_GTK_Manager(const RPG_Client_GTK_Manager&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_GTK_Manager& operator=(const RPG_Client_GTK_Manager&));
 
-	bool                   myGTKIsInitialized;
-	int                    myArgc;
-	ACE_TCHAR**            myArgv;
-	std::string            myUIDefinitionFile;
-	RPG_Client_IInitGTKUI* myInit;
+	bool               myGTKIsInitialized;
+	int                myArgc;
+	ACE_TCHAR**        myArgv;
+	std::string        myUIDefinitionFile;
+	RPG_Client_IGTKUI* myWidgetInterface;
 };
 
 typedef ACE_Singleton<RPG_Client_GTK_Manager,

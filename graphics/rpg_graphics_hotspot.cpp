@@ -91,11 +91,20 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
 //              ACE_TEXT("RPG_Graphics_HotSpot::handleEvent(%s)\n"),
 //              ACE_TEXT(RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(myType).c_str())));
 
-  RPG_Graphics_SDLWindowBase* parent = getParent();
+  RPG_Graphics_IWindow* parent = NULL;
+  try
+  {
+    parent = dynamic_cast<RPG_Graphics_IWindow*>(getParent());
+  }
+  catch (...)
+  {
+    parent = NULL;
+  }
   if (!parent)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_SDLWindowBase::getParent(), returning\n")));
+               ACE_TEXT("failed to dynamic_cast<RPG_Graphics_IWindow*>(%@), returning\n"),
+               getParent()));
 
     return;
   } // end IF

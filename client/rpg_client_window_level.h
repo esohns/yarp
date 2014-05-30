@@ -55,8 +55,9 @@ class RPG_Client_Export RPG_Client_Window_Level
   virtual ~RPG_Client_Window_Level();
 
   // init level properties
-  bool init(RPG_Client_Engine*, // engine handle
-            RPG_Engine*);       // (level) state handle
+  bool init(RPG_Client_Engine*,   // engine handle
+            RPG_Engine*,          // (level) state handle
+            const bool& = false); // debug ?
 
   void toggleMiniMap();
   bool showMiniMap() const;
@@ -105,7 +106,7 @@ class RPG_Client_Export RPG_Client_Window_Level
 
   void initCeiling();
   void initWallBlend(const bool&); // half-height walls ?
-  bool initMiniMap();
+  bool initMiniMap(const bool& = false); // debug ?
   bool initMessageWindow();
 
   void drawChild(const RPG_Graphics_WindowType&, // (child) type

@@ -192,17 +192,21 @@ RPG_Engine::svc(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::svc"));
 
+  // sanity check(s)
+  RPG_Engine_MessageQueue_t* message_queue = inherited::msg_queue();
+  ACE_ASSERT(message_queue);
+
   ACE_Message_Block* ace_mb = NULL;
 	int result = -1;
   while (true)
   {
 		// step1: wait for activity
 		ace_mb = NULL;
-		result = inherited::msg_queue()->peek_dequeue_head(ace_mb,
-			                                                 NULL); // block
+		result = message_queue->peek_dequeue_head(ace_mb,
+																							NULL); // block
 		if (result == -1)
 		{
-			if (inherited::msg_queue()->deactivated())
+			if (message_queue->deactivated())
 			{
 				ACE_DEBUG((LM_WARNING,
 					         ACE_TEXT("message queue was deactivated, aborting\n")));
@@ -279,25 +283,26 @@ RPG_Engine::start()
   thread_ids[0] = 0;
 	const char* thread_names[1];
 	thread_names[0] = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_TASK_THREAD_NAME);
-	int ret = inherited::activate((THR_NEW_LWP  |
-																 THR_JOINABLE |
-																 THR_INHERIT_SCHED),         // flags
-																1,                           // number of threads
-																0,                           // force spawning
-																ACE_DEFAULT_THREAD_PRIORITY, // priority
-																inherited::grp_id(),         // group id --> has been set (see above)
-																NULL,                        // corresp. task --> use 'this'
-																thread_handles,              // thread handle(s)
-																NULL,                        // thread stack(s)
-																NULL,                        // thread stack size(s)
-																thread_ids,                  // thread id(s)
-																thread_names);               // thread names(s)
-  if (ret == -1)
+	int result = inherited::activate((THR_NEW_LWP  |
+																		THR_JOINABLE |
+																		THR_INHERIT_SCHED),         // flags
+																	 1,                           // number of threads
+																	 0,                           // force spawning
+																	 ACE_DEFAULT_THREAD_PRIORITY, // priority
+																	 inherited::grp_id(),         // group id --> has been set (see above)
+																	 NULL,                        // corresp. task --> use 'this'
+																	 thread_handles,              // thread handle(s)
+																	 NULL,                        // thread stack(s)
+																	 NULL,                        // thread stack size(s)
+																	 thread_ids,                  // thread id(s)
+																	 thread_names);               // thread names(s)
+	if (result == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Task_Base::activate(): \"%m\", continuing\n")));
   else
     ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("(state engine) started worker thread (group: %d, id: %u)...\n"),
+               ACE_TEXT("(%s) started worker thread (group: %d, id: %u)...\n"),
+               ACE_TEXT(RPG_ENGINE_TASK_THREAD_NAME),
                inherited::grp_id(),
                thread_ids[0]));
 
@@ -550,9 +555,7 @@ RPG_Engine::add(RPG_Engine_Entity_t* entity_in)
   RPG_Engine_ClientNotificationParameters_t parameters;
   parameters.entity_id = id;
 	parameters.condition = RPG_COMMON_CONDITION_INVALID;
-	parameters.position =
-			std::make_pair(std::numeric_limits<unsigned int>::max(),
-										 std::numeric_limits<unsigned int>::max());
+	parameters.position = entity_in->position;
 	parameters.previous_position =
 			std::make_pair(std::numeric_limits<unsigned int>::max(),
 										 std::numeric_limits<unsigned int>::max());

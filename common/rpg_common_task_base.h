@@ -26,6 +26,8 @@
 #include <ace/Global_Macros.h>
 #include <ace/Task.h>
 
+#include <string>
+
 // forward declaration(s)
 class ACE_Message_Block;
 class ACE_Time_Value;
@@ -41,7 +43,6 @@ class RPG_Common_TaskBase
   virtual ~RPG_Common_TaskBase();
 
   // override ACE_Task_Base members
-  virtual int open(void* = NULL);
   virtual int close(u_long = 0);
 
   // implement RPG_Common_IDumpState
@@ -49,7 +50,13 @@ class RPG_Common_TaskBase
   virtual void dump_state() const;
 
  protected:
-  RPG_Common_TaskBase(const bool& = true); // auto-start ?
+  RPG_Common_TaskBase(const std::string&,      // thread name
+                      const int&,              // thread group id
+                      const unsigned int& = 1, // # thread(s)
+                      const bool& = true);     // auto-start ?
+
+  // override ACE_Task_Base members
+  virtual int open(void* = NULL);
 
   // helper methods
   void shutdown();
@@ -67,6 +74,9 @@ class RPG_Common_TaskBase
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_TaskBase());
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_TaskBase(const RPG_Common_TaskBase&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_TaskBase& operator=(const RPG_Common_TaskBase&));
+
+  std::string  myThreadName;
+  unsigned int myNumThreads;
 };
 
 // include template implementation

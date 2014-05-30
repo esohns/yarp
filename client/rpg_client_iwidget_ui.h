@@ -18,30 +18,20 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_GRAPHICS_IWINDOW_H
-#define RPG_GRAPHICS_IWINDOW_H
+#ifndef RPG_CLIENT_IWIDGET_UI_H
+#define RPG_CLIENT_IWIDGET_UI_H
 
-#include "rpg_graphics_common.h"
-#include "rpg_graphics_iwindow_base.h"
-#include "rpg_graphics_colorname.h"
-#include "rpg_graphics_cursor.h"
+#include <string>
 
-#include <SDL.h>
-
-class RPG_Graphics_IWindow
- : public virtual RPG_Graphics_IWindowBase
+class RPG_Client_IWidgetUI
 {
  public:
+  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
+  // -Wno-non-virtual-dtor in the project settings...
+
   // exposed interface
-  virtual void show(SDL_Rect&) = 0; // return value: "dirty" region
-  virtual void hide(SDL_Rect&) = 0; // return value: "dirty" region
-
-  virtual void clear(const RPG_Graphics_ColorName& = COLOR_BLACK, // color
-		                 const bool& = true) = 0;                     // clip ?
-
-  virtual RPG_Graphics_IWindowBase* child(const RPG_Graphics_WindowType&) = 0; // type
-
-  virtual void notify(const RPG_Graphics_Cursor&) const = 0;
+  virtual bool init(const std::string&) = 0; // UI definition filename
+  virtual void fini() = 0;
 };
 
 #endif
