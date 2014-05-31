@@ -130,263 +130,171 @@ operator= (value v)
 }
 
 
-// RPG_Engine_Player_XMLTree_Type
+// RPG_Engine_EntityState_XMLTree_Type
 // 
 
-const RPG_Engine_Player_XMLTree_Type::position_type& RPG_Engine_Player_XMLTree_Type::
+const RPG_Engine_EntityState_XMLTree_Type::player_optional& RPG_Engine_EntityState_XMLTree_Type::
+player () const
+{
+  return this->player_;
+}
+
+RPG_Engine_EntityState_XMLTree_Type::player_optional& RPG_Engine_EntityState_XMLTree_Type::
+player ()
+{
+  return this->player_;
+}
+
+void RPG_Engine_EntityState_XMLTree_Type::
+player (const player_type& x)
+{
+  this->player_.set (x);
+}
+
+void RPG_Engine_EntityState_XMLTree_Type::
+player (const player_optional& x)
+{
+  this->player_ = x;
+}
+
+void RPG_Engine_EntityState_XMLTree_Type::
+player (::std::auto_ptr< player_type > x)
+{
+  this->player_.set (x);
+}
+
+const RPG_Engine_EntityState_XMLTree_Type::monster_optional& RPG_Engine_EntityState_XMLTree_Type::
+monster () const
+{
+  return this->monster_;
+}
+
+RPG_Engine_EntityState_XMLTree_Type::monster_optional& RPG_Engine_EntityState_XMLTree_Type::
+monster ()
+{
+  return this->monster_;
+}
+
+void RPG_Engine_EntityState_XMLTree_Type::
+monster (const monster_type& x)
+{
+  this->monster_.set (x);
+}
+
+void RPG_Engine_EntityState_XMLTree_Type::
+monster (const monster_optional& x)
+{
+  this->monster_ = x;
+}
+
+void RPG_Engine_EntityState_XMLTree_Type::
+monster (::std::auto_ptr< monster_type > x)
+{
+  this->monster_.set (x);
+}
+
+const RPG_Engine_EntityState_XMLTree_Type::position_type& RPG_Engine_EntityState_XMLTree_Type::
 position () const
 {
   return this->position_.get ();
 }
 
-RPG_Engine_Player_XMLTree_Type::position_type& RPG_Engine_Player_XMLTree_Type::
+RPG_Engine_EntityState_XMLTree_Type::position_type& RPG_Engine_EntityState_XMLTree_Type::
 position ()
 {
   return this->position_.get ();
 }
 
-void RPG_Engine_Player_XMLTree_Type::
+void RPG_Engine_EntityState_XMLTree_Type::
 position (const position_type& x)
 {
   this->position_.set (x);
 }
 
-void RPG_Engine_Player_XMLTree_Type::
+void RPG_Engine_EntityState_XMLTree_Type::
 position (::std::auto_ptr< position_type > x)
 {
   this->position_.set (x);
 }
 
-const RPG_Engine_Player_XMLTree_Type::mode_sequence& RPG_Engine_Player_XMLTree_Type::
+const RPG_Engine_EntityState_XMLTree_Type::mode_sequence& RPG_Engine_EntityState_XMLTree_Type::
 mode () const
 {
   return this->mode_;
 }
 
-RPG_Engine_Player_XMLTree_Type::mode_sequence& RPG_Engine_Player_XMLTree_Type::
+RPG_Engine_EntityState_XMLTree_Type::mode_sequence& RPG_Engine_EntityState_XMLTree_Type::
 mode ()
 {
   return this->mode_;
 }
 
-void RPG_Engine_Player_XMLTree_Type::
+void RPG_Engine_EntityState_XMLTree_Type::
 mode (const mode_sequence& s)
 {
   this->mode_ = s;
-}
-
-const RPG_Engine_Player_XMLTree_Type::sprite_type& RPG_Engine_Player_XMLTree_Type::
-sprite () const
-{
-  return this->sprite_.get ();
-}
-
-RPG_Engine_Player_XMLTree_Type::sprite_type& RPG_Engine_Player_XMLTree_Type::
-sprite ()
-{
-  return this->sprite_.get ();
-}
-
-void RPG_Engine_Player_XMLTree_Type::
-sprite (const sprite_type& x)
-{
-  this->sprite_.set (x);
-}
-
-void RPG_Engine_Player_XMLTree_Type::
-sprite (::std::auto_ptr< sprite_type > x)
-{
-  this->sprite_.set (x);
 }
 
 
 // RPG_Engine_Level_XMLTree_Type
 // 
 
-const RPG_Engine_Level_XMLTree_Type::name_type& RPG_Engine_Level_XMLTree_Type::
-name () const
+const RPG_Engine_Level_XMLTree_Type::spawn_sequence& RPG_Engine_Level_XMLTree_Type::
+spawn () const
 {
-  return this->name_.get ();
+  return this->spawn_;
 }
 
-RPG_Engine_Level_XMLTree_Type::name_type& RPG_Engine_Level_XMLTree_Type::
-name ()
+RPG_Engine_Level_XMLTree_Type::spawn_sequence& RPG_Engine_Level_XMLTree_Type::
+spawn ()
 {
-  return this->name_.get ();
-}
-
-void RPG_Engine_Level_XMLTree_Type::
-name (const name_type& x)
-{
-  this->name_.set (x);
+  return this->spawn_;
 }
 
 void RPG_Engine_Level_XMLTree_Type::
-name (::std::auto_ptr< name_type > x)
+spawn (const spawn_sequence& s)
 {
-  this->name_.set (x);
+  this->spawn_ = s;
 }
 
-const RPG_Engine_Level_XMLTree_Type::environment_type& RPG_Engine_Level_XMLTree_Type::
-environment () const
+const RPG_Engine_Level_XMLTree_Type::max_num_spawned_type& RPG_Engine_Level_XMLTree_Type::
+max_num_spawned () const
 {
-  return this->environment_.get ();
+  return this->max_num_spawned_.get ();
 }
 
-RPG_Engine_Level_XMLTree_Type::environment_type& RPG_Engine_Level_XMLTree_Type::
-environment ()
+RPG_Engine_Level_XMLTree_Type::max_num_spawned_type& RPG_Engine_Level_XMLTree_Type::
+max_num_spawned ()
 {
-  return this->environment_.get ();
-}
-
-void RPG_Engine_Level_XMLTree_Type::
-environment (const environment_type& x)
-{
-  this->environment_.set (x);
+  return this->max_num_spawned_.get ();
 }
 
 void RPG_Engine_Level_XMLTree_Type::
-environment (::std::auto_ptr< environment_type > x)
+max_num_spawned (const max_num_spawned_type& x)
 {
-  this->environment_.set (x);
+  this->max_num_spawned_.set (x);
 }
 
-const RPG_Engine_Level_XMLTree_Type::monster_sequence& RPG_Engine_Level_XMLTree_Type::
-monster () const
+
+// RPG_Engine_State_XMLTree_Type
+// 
+
+const RPG_Engine_State_XMLTree_Type::entities_sequence& RPG_Engine_State_XMLTree_Type::
+entities () const
 {
-  return this->monster_;
+  return this->entities_;
 }
 
-RPG_Engine_Level_XMLTree_Type::monster_sequence& RPG_Engine_Level_XMLTree_Type::
-monster ()
+RPG_Engine_State_XMLTree_Type::entities_sequence& RPG_Engine_State_XMLTree_Type::
+entities ()
 {
-  return this->monster_;
+  return this->entities_;
 }
 
-void RPG_Engine_Level_XMLTree_Type::
-monster (const monster_sequence& s)
+void RPG_Engine_State_XMLTree_Type::
+entities (const entities_sequence& s)
 {
-  this->monster_ = s;
-}
-
-const RPG_Engine_Level_XMLTree_Type::spawn_interval_type& RPG_Engine_Level_XMLTree_Type::
-spawn_interval () const
-{
-  return this->spawn_interval_.get ();
-}
-
-RPG_Engine_Level_XMLTree_Type::spawn_interval_type& RPG_Engine_Level_XMLTree_Type::
-spawn_interval ()
-{
-  return this->spawn_interval_.get ();
-}
-
-void RPG_Engine_Level_XMLTree_Type::
-spawn_interval (const spawn_interval_type& x)
-{
-  this->spawn_interval_.set (x);
-}
-
-void RPG_Engine_Level_XMLTree_Type::
-spawn_interval (::std::auto_ptr< spawn_interval_type > x)
-{
-  this->spawn_interval_.set (x);
-}
-
-const RPG_Engine_Level_XMLTree_Type::spawn_probability_type& RPG_Engine_Level_XMLTree_Type::
-spawn_probability () const
-{
-  return this->spawn_probability_.get ();
-}
-
-RPG_Engine_Level_XMLTree_Type::spawn_probability_type& RPG_Engine_Level_XMLTree_Type::
-spawn_probability ()
-{
-  return this->spawn_probability_.get ();
-}
-
-void RPG_Engine_Level_XMLTree_Type::
-spawn_probability (const spawn_probability_type& x)
-{
-  this->spawn_probability_.set (x);
-}
-
-const RPG_Engine_Level_XMLTree_Type::max_spawned_type& RPG_Engine_Level_XMLTree_Type::
-max_spawned () const
-{
-  return this->max_spawned_.get ();
-}
-
-RPG_Engine_Level_XMLTree_Type::max_spawned_type& RPG_Engine_Level_XMLTree_Type::
-max_spawned ()
-{
-  return this->max_spawned_.get ();
-}
-
-void RPG_Engine_Level_XMLTree_Type::
-max_spawned (const max_spawned_type& x)
-{
-  this->max_spawned_.set (x);
-}
-
-const RPG_Engine_Level_XMLTree_Type::amble_probability_type& RPG_Engine_Level_XMLTree_Type::
-amble_probability () const
-{
-  return this->amble_probability_.get ();
-}
-
-RPG_Engine_Level_XMLTree_Type::amble_probability_type& RPG_Engine_Level_XMLTree_Type::
-amble_probability ()
-{
-  return this->amble_probability_.get ();
-}
-
-void RPG_Engine_Level_XMLTree_Type::
-amble_probability (const amble_probability_type& x)
-{
-  this->amble_probability_.set (x);
-}
-
-const RPG_Engine_Level_XMLTree_Type::map_type& RPG_Engine_Level_XMLTree_Type::
-map () const
-{
-  return this->map_.get ();
-}
-
-RPG_Engine_Level_XMLTree_Type::map_type& RPG_Engine_Level_XMLTree_Type::
-map ()
-{
-  return this->map_.get ();
-}
-
-void RPG_Engine_Level_XMLTree_Type::
-map (const map_type& x)
-{
-  this->map_.set (x);
-}
-
-void RPG_Engine_Level_XMLTree_Type::
-map (::std::auto_ptr< map_type > x)
-{
-  this->map_.set (x);
-}
-
-const RPG_Engine_Level_XMLTree_Type::door_sequence& RPG_Engine_Level_XMLTree_Type::
-door () const
-{
-  return this->door_;
-}
-
-RPG_Engine_Level_XMLTree_Type::door_sequence& RPG_Engine_Level_XMLTree_Type::
-door ()
-{
-  return this->door_;
-}
-
-void RPG_Engine_Level_XMLTree_Type::
-door (const door_sequence& s)
-{
-  this->door_ = s;
+  this->entities_ = s;
 }
 
 
@@ -576,98 +484,50 @@ _xsd_RPG_Engine_EntityMode_XMLTree_Type_indexes_[4] =
   ::RPG_Engine_EntityMode_XMLTree_Type::ENTITYMODE_TRAVELLING
 };
 
-// RPG_Engine_Player_XMLTree_Type
+// RPG_Engine_EntityState_XMLTree_Type
 //
 
-RPG_Engine_Player_XMLTree_Type::
-RPG_Engine_Player_XMLTree_Type (const name_type& name,
-                                const alignment_type& alignment,
-                                const attributes_type& attributes,
-                                const defaultSize_type& defaultSize,
-                                const maxHP_type& maxHP,
-                                const conditions_type& conditions,
-                                const HP_type& HP,
-                                const XP_type& XP,
-                                const gold_type& gold,
-                                const inventory_type& inventory,
-                                const gender_type& gender,
-                                const classXML_type& classXML,
-                                const offhand_type& offhand,
-                                const position_type& position,
-                                const sprite_type& sprite)
-: ::RPG_Player_PlayerXML_XMLTree_Type (name,
-                                       alignment,
-                                       attributes,
-                                       defaultSize,
-                                       maxHP,
-                                       conditions,
-                                       HP,
-                                       XP,
-                                       gold,
-                                       inventory,
-                                       gender,
-                                       classXML,
-                                       offhand),
+RPG_Engine_EntityState_XMLTree_Type::
+RPG_Engine_EntityState_XMLTree_Type (const position_type& position)
+: ::xml_schema::type (),
+  player_ (::xml_schema::flags (), this),
+  monster_ (::xml_schema::flags (), this),
   position_ (position, ::xml_schema::flags (), this),
-  mode_ (::xml_schema::flags (), this),
-  sprite_ (sprite, ::xml_schema::flags (), this)
+  mode_ (::xml_schema::flags (), this)
 {
 }
 
-RPG_Engine_Player_XMLTree_Type::
-RPG_Engine_Player_XMLTree_Type (const name_type& name,
-                                ::std::auto_ptr< alignment_type >& alignment,
-                                ::std::auto_ptr< attributes_type >& attributes,
-                                const defaultSize_type& defaultSize,
-                                const maxHP_type& maxHP,
-                                ::std::auto_ptr< conditions_type >& conditions,
-                                const HP_type& HP,
-                                const XP_type& XP,
-                                const gold_type& gold,
-                                ::std::auto_ptr< inventory_type >& inventory,
-                                const gender_type& gender,
-                                ::std::auto_ptr< classXML_type >& classXML,
-                                const offhand_type& offhand,
-                                ::std::auto_ptr< position_type >& position,
-                                const sprite_type& sprite)
-: ::RPG_Player_PlayerXML_XMLTree_Type (name,
-                                       alignment,
-                                       attributes,
-                                       defaultSize,
-                                       maxHP,
-                                       conditions,
-                                       HP,
-                                       XP,
-                                       gold,
-                                       inventory,
-                                       gender,
-                                       classXML,
-                                       offhand),
+RPG_Engine_EntityState_XMLTree_Type::
+RPG_Engine_EntityState_XMLTree_Type (::std::auto_ptr< position_type >& position)
+: ::xml_schema::type (),
+  player_ (::xml_schema::flags (), this),
+  monster_ (::xml_schema::flags (), this),
   position_ (position, ::xml_schema::flags (), this),
-  mode_ (::xml_schema::flags (), this),
-  sprite_ (sprite, ::xml_schema::flags (), this)
+  mode_ (::xml_schema::flags (), this)
 {
 }
 
-RPG_Engine_Player_XMLTree_Type::
-RPG_Engine_Player_XMLTree_Type (const RPG_Engine_Player_XMLTree_Type& x,
-                                ::xml_schema::flags f,
-                                ::xml_schema::container* c)
-: ::RPG_Player_PlayerXML_XMLTree_Type (x, f, c),
+RPG_Engine_EntityState_XMLTree_Type::
+RPG_Engine_EntityState_XMLTree_Type (const RPG_Engine_EntityState_XMLTree_Type& x,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  player_ (x.player_, f, this),
+  monster_ (x.monster_, f, this),
   position_ (x.position_, f, this),
-  mode_ (x.mode_, f, this),
-  sprite_ (x.sprite_, f, this)
+  mode_ (x.mode_, f, this)
 {
 }
 
-RPG_Engine_Player_XMLTree_Type::
-RPG_Engine_Player_XMLTree_Type (const ::xercesc::DOMElement& e,
-                                ::xml_schema::flags f,
-                                ::xml_schema::container* c)
-: ::RPG_Player_PlayerXML_XMLTree_Type (e, f | ::xml_schema::flags::base, c),
+RPG_Engine_EntityState_XMLTree_Type::
+RPG_Engine_EntityState_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  player_ (f, this),
+  monster_ (f, this),
   position_ (f, this),
-  mode_ (f, this),
-  sprite_ (f, this)
+  mode_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -676,17 +536,43 @@ RPG_Engine_Player_XMLTree_Type (const ::xercesc::DOMElement& e,
   }
 }
 
-void RPG_Engine_Player_XMLTree_Type::
+void RPG_Engine_EntityState_XMLTree_Type::
 parse (::xsd::cxx::xml::dom::parser< char >& p,
        ::xml_schema::flags f)
 {
-  this->::RPG_Player_PlayerXML_XMLTree_Type::parse (p, f);
-
   for (; p.more_elements (); p.next_element ())
   {
     const ::xercesc::DOMElement& i (p.cur_element ());
     const ::xsd::cxx::xml::qualified_name< char > n (
       ::xsd::cxx::xml::dom::name< char > (i));
+
+    // player
+    //
+    if (n.name () == "player" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< player_type > r (
+        player_traits::create (i, f, this));
+
+      if (!this->player_)
+      {
+        this->player_.set (r);
+        continue;
+      }
+    }
+
+    // monster
+    //
+    if (n.name () == "monster" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< monster_type > r (
+        monster_traits::create (i, f, this));
+
+      if (!this->monster_)
+      {
+        this->monster_.set (r);
+        continue;
+      }
+    }
 
     // position
     //
@@ -713,20 +599,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       continue;
     }
 
-    // sprite
-    //
-    if (n.name () == "sprite" && n.namespace_ () == "urn:rpg")
-    {
-      ::std::auto_ptr< sprite_type > r (
-        sprite_traits::create (i, f, this));
-
-      if (!sprite_.present ())
-      {
-        this->sprite_.set (r);
-        continue;
-      }
-    }
-
     break;
   }
 
@@ -736,32 +608,27 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       "position",
       "urn:rpg");
   }
-
-  if (!sprite_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "sprite",
-      "urn:rpg");
-  }
 }
 
-RPG_Engine_Player_XMLTree_Type* RPG_Engine_Player_XMLTree_Type::
+RPG_Engine_EntityState_XMLTree_Type* RPG_Engine_EntityState_XMLTree_Type::
 _clone (::xml_schema::flags f,
         ::xml_schema::container* c) const
 {
-  return new class RPG_Engine_Player_XMLTree_Type (*this, f, c);
+  return new class RPG_Engine_EntityState_XMLTree_Type (*this, f, c);
 }
 
-RPG_Engine_Player_XMLTree_Type::
-~RPG_Engine_Player_XMLTree_Type ()
+RPG_Engine_EntityState_XMLTree_Type::
+~RPG_Engine_EntityState_XMLTree_Type ()
 {
 }
 
 bool
-operator== (const RPG_Engine_Player_XMLTree_Type& x, const RPG_Engine_Player_XMLTree_Type& y)
+operator== (const RPG_Engine_EntityState_XMLTree_Type& x, const RPG_Engine_EntityState_XMLTree_Type& y)
 {
-  if (!(static_cast< const ::RPG_Player_PlayerXML_XMLTree_Type& > (x) ==
-        static_cast< const ::RPG_Player_PlayerXML_XMLTree_Type& > (y)))
+  if (!(x.player () == y.player ()))
+    return false;
+
+  if (!(x.monster () == y.monster ()))
     return false;
 
   if (!(x.position () == y.position ()))
@@ -770,14 +637,11 @@ operator== (const RPG_Engine_Player_XMLTree_Type& x, const RPG_Engine_Player_XML
   if (!(x.mode () == y.mode ()))
     return false;
 
-  if (!(x.sprite () == y.sprite ()))
-    return false;
-
   return true;
 }
 
 bool
-operator!= (const RPG_Engine_Player_XMLTree_Type& x, const RPG_Engine_Player_XMLTree_Type& y)
+operator!= (const RPG_Engine_EntityState_XMLTree_Type& x, const RPG_Engine_EntityState_XMLTree_Type& y)
 {
   return !(x == y);
 }
@@ -788,42 +652,26 @@ operator!= (const RPG_Engine_Player_XMLTree_Type& x, const RPG_Engine_Player_XML
 RPG_Engine_Level_XMLTree_Type::
 RPG_Engine_Level_XMLTree_Type (const name_type& name,
                                const environment_type& environment,
-                               const spawn_interval_type& spawn_interval,
-                               const spawn_probability_type& spawn_probability,
-                               const max_spawned_type& max_spawned,
-                               const amble_probability_type& amble_probability,
-                               const map_type& map)
-: ::xml_schema::type (),
-  name_ (name, ::xml_schema::flags (), this),
-  environment_ (environment, ::xml_schema::flags (), this),
-  monster_ (::xml_schema::flags (), this),
-  spawn_interval_ (spawn_interval, ::xml_schema::flags (), this),
-  spawn_probability_ (spawn_probability, ::xml_schema::flags (), this),
-  max_spawned_ (max_spawned, ::xml_schema::flags (), this),
-  amble_probability_ (amble_probability, ::xml_schema::flags (), this),
-  map_ (map, ::xml_schema::flags (), this),
-  door_ (::xml_schema::flags (), this)
+                               const map_type& map,
+                               const max_num_spawned_type& max_num_spawned)
+: ::RPG_Map_Level_XMLTree_Type (name,
+                                environment,
+                                map),
+  spawn_ (::xml_schema::flags (), this),
+  max_num_spawned_ (max_num_spawned, ::xml_schema::flags (), this)
 {
 }
 
 RPG_Engine_Level_XMLTree_Type::
 RPG_Engine_Level_XMLTree_Type (const name_type& name,
                                ::std::auto_ptr< environment_type >& environment,
-                               ::std::auto_ptr< spawn_interval_type >& spawn_interval,
-                               const spawn_probability_type& spawn_probability,
-                               const max_spawned_type& max_spawned,
-                               const amble_probability_type& amble_probability,
-                               const map_type& map)
-: ::xml_schema::type (),
-  name_ (name, ::xml_schema::flags (), this),
-  environment_ (environment, ::xml_schema::flags (), this),
-  monster_ (::xml_schema::flags (), this),
-  spawn_interval_ (spawn_interval, ::xml_schema::flags (), this),
-  spawn_probability_ (spawn_probability, ::xml_schema::flags (), this),
-  max_spawned_ (max_spawned, ::xml_schema::flags (), this),
-  amble_probability_ (amble_probability, ::xml_schema::flags (), this),
-  map_ (map, ::xml_schema::flags (), this),
-  door_ (::xml_schema::flags (), this)
+                               const map_type& map,
+                               const max_num_spawned_type& max_num_spawned)
+: ::RPG_Map_Level_XMLTree_Type (name,
+                                environment,
+                                map),
+  spawn_ (::xml_schema::flags (), this),
+  max_num_spawned_ (max_num_spawned, ::xml_schema::flags (), this)
 {
 }
 
@@ -831,16 +679,9 @@ RPG_Engine_Level_XMLTree_Type::
 RPG_Engine_Level_XMLTree_Type (const RPG_Engine_Level_XMLTree_Type& x,
                                ::xml_schema::flags f,
                                ::xml_schema::container* c)
-: ::xml_schema::type (x, f, c),
-  name_ (x.name_, f, this),
-  environment_ (x.environment_, f, this),
-  monster_ (x.monster_, f, this),
-  spawn_interval_ (x.spawn_interval_, f, this),
-  spawn_probability_ (x.spawn_probability_, f, this),
-  max_spawned_ (x.max_spawned_, f, this),
-  amble_probability_ (x.amble_probability_, f, this),
-  map_ (x.map_, f, this),
-  door_ (x.door_, f, this)
+: ::RPG_Map_Level_XMLTree_Type (x, f, c),
+  spawn_ (x.spawn_, f, this),
+  max_num_spawned_ (x.max_num_spawned_, f, this)
 {
 }
 
@@ -848,16 +689,9 @@ RPG_Engine_Level_XMLTree_Type::
 RPG_Engine_Level_XMLTree_Type (const ::xercesc::DOMElement& e,
                                ::xml_schema::flags f,
                                ::xml_schema::container* c)
-: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  name_ (f, this),
-  environment_ (f, this),
-  monster_ (f, this),
-  spawn_interval_ (f, this),
-  spawn_probability_ (f, this),
-  max_spawned_ (f, this),
-  amble_probability_ (f, this),
-  map_ (f, this),
-  door_ (f, this)
+: ::RPG_Map_Level_XMLTree_Type (e, f | ::xml_schema::flags::base, c),
+  spawn_ (f, this),
+  max_num_spawned_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -870,172 +704,43 @@ void RPG_Engine_Level_XMLTree_Type::
 parse (::xsd::cxx::xml::dom::parser< char >& p,
        ::xml_schema::flags f)
 {
+  this->::RPG_Map_Level_XMLTree_Type::parse (p, f);
+
   for (; p.more_elements (); p.next_element ())
   {
     const ::xercesc::DOMElement& i (p.cur_element ());
     const ::xsd::cxx::xml::qualified_name< char > n (
       ::xsd::cxx::xml::dom::name< char > (i));
 
-    // name
+    // spawn
     //
-    if (n.name () == "name" && n.namespace_ () == "urn:rpg")
+    if (n.name () == "spawn" && n.namespace_ () == "urn:rpg")
     {
-      ::std::auto_ptr< name_type > r (
-        name_traits::create (i, f, this));
+      ::std::auto_ptr< spawn_type > r (
+        spawn_traits::create (i, f, this));
 
-      if (!name_.present ())
-      {
-        this->name_.set (r);
-        continue;
-      }
-    }
-
-    // environment
-    //
-    if (n.name () == "environment" && n.namespace_ () == "urn:rpg")
-    {
-      ::std::auto_ptr< environment_type > r (
-        environment_traits::create (i, f, this));
-
-      if (!environment_.present ())
-      {
-        this->environment_.set (r);
-        continue;
-      }
-    }
-
-    // monster
-    //
-    if (n.name () == "monster" && n.namespace_ () == "urn:rpg")
-    {
-      ::std::auto_ptr< monster_type > r (
-        monster_traits::create (i, f, this));
-
-      this->monster_.push_back (r);
+      this->spawn_.push_back (r);
       continue;
     }
 
-    // spawn_interval
+    // max_num_spawned
     //
-    if (n.name () == "spawn_interval" && n.namespace_ () == "urn:rpg")
+    if (n.name () == "max_num_spawned" && n.namespace_ () == "urn:rpg")
     {
-      ::std::auto_ptr< spawn_interval_type > r (
-        spawn_interval_traits::create (i, f, this));
-
-      if (!spawn_interval_.present ())
+      if (!max_num_spawned_.present ())
       {
-        this->spawn_interval_.set (r);
+        this->max_num_spawned_.set (max_num_spawned_traits::create (i, f, this));
         continue;
       }
-    }
-
-    // spawn_probability
-    //
-    if (n.name () == "spawn_probability" && n.namespace_ () == "urn:rpg")
-    {
-      if (!spawn_probability_.present ())
-      {
-        this->spawn_probability_.set (spawn_probability_traits::create (i, f, this));
-        continue;
-      }
-    }
-
-    // max_spawned
-    //
-    if (n.name () == "max_spawned" && n.namespace_ () == "urn:rpg")
-    {
-      if (!max_spawned_.present ())
-      {
-        this->max_spawned_.set (max_spawned_traits::create (i, f, this));
-        continue;
-      }
-    }
-
-    // amble_probability
-    //
-    if (n.name () == "amble_probability" && n.namespace_ () == "urn:rpg")
-    {
-      if (!amble_probability_.present ())
-      {
-        this->amble_probability_.set (amble_probability_traits::create (i, f, this));
-        continue;
-      }
-    }
-
-    // map
-    //
-    if (n.name () == "map" && n.namespace_ () == "urn:rpg")
-    {
-      ::std::auto_ptr< map_type > r (
-        map_traits::create (i, f, this));
-
-      if (!map_.present ())
-      {
-        this->map_.set (r);
-        continue;
-      }
-    }
-
-    // door
-    //
-    if (n.name () == "door" && n.namespace_ () == "urn:rpg")
-    {
-      ::std::auto_ptr< door_type > r (
-        door_traits::create (i, f, this));
-
-      this->door_.push_back (r);
-      continue;
     }
 
     break;
   }
 
-  if (!name_.present ())
+  if (!max_num_spawned_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
-      "name",
-      "urn:rpg");
-  }
-
-  if (!environment_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "environment",
-      "urn:rpg");
-  }
-
-  if (!spawn_interval_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "spawn_interval",
-      "urn:rpg");
-  }
-
-  if (!spawn_probability_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "spawn_probability",
-      "urn:rpg");
-  }
-
-  if (!max_spawned_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "max_spawned",
-      "urn:rpg");
-  }
-
-  if (!amble_probability_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "amble_probability",
-      "urn:rpg");
-  }
-
-  if (!map_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "map",
+      "max_num_spawned",
       "urn:rpg");
   }
 }
@@ -1055,31 +760,14 @@ RPG_Engine_Level_XMLTree_Type::
 bool
 operator== (const RPG_Engine_Level_XMLTree_Type& x, const RPG_Engine_Level_XMLTree_Type& y)
 {
-  if (!(x.name () == y.name ()))
+  if (!(static_cast< const ::RPG_Map_Level_XMLTree_Type& > (x) ==
+        static_cast< const ::RPG_Map_Level_XMLTree_Type& > (y)))
     return false;
 
-  if (!(x.environment () == y.environment ()))
+  if (!(x.spawn () == y.spawn ()))
     return false;
 
-  if (!(x.monster () == y.monster ()))
-    return false;
-
-  if (!(x.spawn_interval () == y.spawn_interval ()))
-    return false;
-
-  if (!(x.spawn_probability () == y.spawn_probability ()))
-    return false;
-
-  if (!(x.max_spawned () == y.max_spawned ()))
-    return false;
-
-  if (!(x.amble_probability () == y.amble_probability ()))
-    return false;
-
-  if (!(x.map () == y.map ()))
-    return false;
-
-  if (!(x.door () == y.door ()))
+  if (!(x.max_num_spawned () == y.max_num_spawned ()))
     return false;
 
   return true;
@@ -1087,6 +775,97 @@ operator== (const RPG_Engine_Level_XMLTree_Type& x, const RPG_Engine_Level_XMLTr
 
 bool
 operator!= (const RPG_Engine_Level_XMLTree_Type& x, const RPG_Engine_Level_XMLTree_Type& y)
+{
+  return !(x == y);
+}
+
+// RPG_Engine_State_XMLTree_Type
+//
+
+RPG_Engine_State_XMLTree_Type::
+RPG_Engine_State_XMLTree_Type (const file_type& file)
+: ::RPG_Map_State_XMLTree_Type (file),
+  entities_ (::xml_schema::flags (), this)
+{
+}
+
+RPG_Engine_State_XMLTree_Type::
+RPG_Engine_State_XMLTree_Type (const RPG_Engine_State_XMLTree_Type& x,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
+: ::RPG_Map_State_XMLTree_Type (x, f, c),
+  entities_ (x.entities_, f, this)
+{
+}
+
+RPG_Engine_State_XMLTree_Type::
+RPG_Engine_State_XMLTree_Type (const ::xercesc::DOMElement& e,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
+: ::RPG_Map_State_XMLTree_Type (e, f | ::xml_schema::flags::base, c),
+  entities_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+    this->parse (p, f);
+  }
+}
+
+void RPG_Engine_State_XMLTree_Type::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  this->::RPG_Map_State_XMLTree_Type::parse (p, f);
+
+  for (; p.more_elements (); p.next_element ())
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // entities
+    //
+    if (n.name () == "entities" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< entities_type > r (
+        entities_traits::create (i, f, this));
+
+      this->entities_.push_back (r);
+      continue;
+    }
+
+    break;
+  }
+}
+
+RPG_Engine_State_XMLTree_Type* RPG_Engine_State_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Engine_State_XMLTree_Type (*this, f, c);
+}
+
+RPG_Engine_State_XMLTree_Type::
+~RPG_Engine_State_XMLTree_Type ()
+{
+}
+
+bool
+operator== (const RPG_Engine_State_XMLTree_Type& x, const RPG_Engine_State_XMLTree_Type& y)
+{
+  if (!(static_cast< const ::RPG_Map_State_XMLTree_Type& > (x) ==
+        static_cast< const ::RPG_Map_State_XMLTree_Type& > (y)))
+    return false;
+
+  if (!(x.entities () == y.entities ()))
+    return false;
+
+  return true;
+}
+
+bool
+operator!= (const RPG_Engine_State_XMLTree_Type& x, const RPG_Engine_State_XMLTree_Type& y)
 {
   return !(x == y);
 }
@@ -1118,44 +897,55 @@ operator<< (::std::ostream& o, const RPG_Engine_EntityMode_XMLTree_Type& i)
 }
 
 ::std::ostream&
-operator<< (::std::ostream& o, const RPG_Engine_Player_XMLTree_Type& i)
+operator<< (::std::ostream& o, const RPG_Engine_EntityState_XMLTree_Type& i)
 {
-  o << static_cast< const ::RPG_Player_PlayerXML_XMLTree_Type& > (i);
+  if (i.player ())
+  {
+    o << ::std::endl << "player: " << *i.player ();
+  }
+
+  if (i.monster ())
+  {
+    o << ::std::endl << "monster: " << *i.monster ();
+  }
 
   o << ::std::endl << "position: " << i.position ();
-  for (RPG_Engine_Player_XMLTree_Type::mode_const_iterator
+  for (RPG_Engine_EntityState_XMLTree_Type::mode_const_iterator
        b (i.mode ().begin ()), e (i.mode ().end ());
        b != e; ++b)
   {
     o << ::std::endl << "mode: " << *b;
   }
 
-  o << ::std::endl << "sprite: " << i.sprite ();
   return o;
 }
 
 ::std::ostream&
 operator<< (::std::ostream& o, const RPG_Engine_Level_XMLTree_Type& i)
 {
-  o << ::std::endl << "name: " << i.name ();
-  o << ::std::endl << "environment: " << i.environment ();
-  for (RPG_Engine_Level_XMLTree_Type::monster_const_iterator
-       b (i.monster ().begin ()), e (i.monster ().end ());
+  o << static_cast< const ::RPG_Map_Level_XMLTree_Type& > (i);
+
+  for (RPG_Engine_Level_XMLTree_Type::spawn_const_iterator
+       b (i.spawn ().begin ()), e (i.spawn ().end ());
        b != e; ++b)
   {
-    o << ::std::endl << "monster: " << *b;
+    o << ::std::endl << "spawn: " << *b;
   }
 
-  o << ::std::endl << "spawn_interval: " << i.spawn_interval ();
-  o << ::std::endl << "spawn_probability: " << i.spawn_probability ();
-  o << ::std::endl << "max_spawned: " << i.max_spawned ();
-  o << ::std::endl << "amble_probability: " << i.amble_probability ();
-  o << ::std::endl << "map: " << i.map ();
-  for (RPG_Engine_Level_XMLTree_Type::door_const_iterator
-       b (i.door ().begin ()), e (i.door ().end ());
+  o << ::std::endl << "max_num_spawned: " << i.max_num_spawned ();
+  return o;
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Engine_State_XMLTree_Type& i)
+{
+  o << static_cast< const ::RPG_Map_State_XMLTree_Type& > (i);
+
+  for (RPG_Engine_State_XMLTree_Type::entities_const_iterator
+       b (i.entities ().begin ()), e (i.entities ().end ());
        b != e; ++b)
   {
-    o << ::std::endl << "door: " << *b;
+    o << ::std::endl << "entities: " << *b;
   }
 
   return o;
@@ -1165,7 +955,7 @@ operator<< (::std::ostream& o, const RPG_Engine_Level_XMLTree_Type& i)
 #include <xsd/cxx/xml/sax/std-input-source.hxx>
 #include <xsd/cxx/tree/error-handler.hxx>
 
-::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
+::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type >
 engine_player_t (const ::std::string& u,
                  ::xml_schema::flags f,
                  const ::xml_schema::properties& p)
@@ -1182,14 +972,14 @@ engine_player_t (const ::std::string& u,
 
   h.throw_if_failed< ::xsd::cxx::tree::parsing< char > > ();
 
-  ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type > r (
+  ::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type > r (
     ::engine_player_t (
       d, f | ::xml_schema::flags::own_dom, p));
 
   return r;
 }
 
-::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
+::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type >
 engine_player_t (const ::std::string& u,
                  ::xml_schema::error_handler& h,
                  ::xml_schema::flags f,
@@ -1206,14 +996,14 @@ engine_player_t (const ::std::string& u,
   if (!d.get ())
     throw ::xsd::cxx::tree::parsing< char > ();
 
-  ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type > r (
+  ::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type > r (
     ::engine_player_t (
       d, f | ::xml_schema::flags::own_dom, p));
 
   return r;
 }
 
-::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
+::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type >
 engine_player_t (const ::std::string& u,
                  ::xercesc::DOMErrorHandler& h,
                  ::xml_schema::flags f,
@@ -1226,14 +1016,14 @@ engine_player_t (const ::std::string& u,
   if (!d.get ())
     throw ::xsd::cxx::tree::parsing< char > ();
 
-  ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type > r (
+  ::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type > r (
     ::engine_player_t (
       d, f | ::xml_schema::flags::own_dom, p));
 
   return r;
 }
 
-::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
+::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type >
 engine_player_t (::std::istream& is,
                  ::xml_schema::flags f,
                  const ::xml_schema::properties& p)
@@ -1246,7 +1036,7 @@ engine_player_t (::std::istream& is,
   return ::engine_player_t (isrc, f, p);
 }
 
-::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
+::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type >
 engine_player_t (::std::istream& is,
                  ::xml_schema::error_handler& h,
                  ::xml_schema::flags f,
@@ -1260,7 +1050,7 @@ engine_player_t (::std::istream& is,
   return ::engine_player_t (isrc, h, f, p);
 }
 
-::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
+::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type >
 engine_player_t (::std::istream& is,
                  ::xercesc::DOMErrorHandler& h,
                  ::xml_schema::flags f,
@@ -1270,7 +1060,7 @@ engine_player_t (::std::istream& is,
   return ::engine_player_t (isrc, h, f, p);
 }
 
-::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
+::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type >
 engine_player_t (::std::istream& is,
                  const ::std::string& sid,
                  ::xml_schema::flags f,
@@ -1284,7 +1074,7 @@ engine_player_t (::std::istream& is,
   return ::engine_player_t (isrc, f, p);
 }
 
-::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
+::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type >
 engine_player_t (::std::istream& is,
                  const ::std::string& sid,
                  ::xml_schema::error_handler& h,
@@ -1299,7 +1089,7 @@ engine_player_t (::std::istream& is,
   return ::engine_player_t (isrc, h, f, p);
 }
 
-::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
+::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type >
 engine_player_t (::std::istream& is,
                  const ::std::string& sid,
                  ::xercesc::DOMErrorHandler& h,
@@ -1310,7 +1100,7 @@ engine_player_t (::std::istream& is,
   return ::engine_player_t (isrc, h, f, p);
 }
 
-::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
+::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type >
 engine_player_t (::xercesc::InputSource& i,
                  ::xml_schema::flags f,
                  const ::xml_schema::properties& p)
@@ -1323,14 +1113,14 @@ engine_player_t (::xercesc::InputSource& i,
 
   h.throw_if_failed< ::xsd::cxx::tree::parsing< char > > ();
 
-  ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type > r (
+  ::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type > r (
     ::engine_player_t (
       d, f | ::xml_schema::flags::own_dom, p));
 
   return r;
 }
 
-::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
+::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type >
 engine_player_t (::xercesc::InputSource& i,
                  ::xml_schema::error_handler& h,
                  ::xml_schema::flags f,
@@ -1343,14 +1133,14 @@ engine_player_t (::xercesc::InputSource& i,
   if (!d.get ())
     throw ::xsd::cxx::tree::parsing< char > ();
 
-  ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type > r (
+  ::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type > r (
     ::engine_player_t (
       d, f | ::xml_schema::flags::own_dom, p));
 
   return r;
 }
 
-::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
+::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type >
 engine_player_t (::xercesc::InputSource& i,
                  ::xercesc::DOMErrorHandler& h,
                  ::xml_schema::flags f,
@@ -1363,14 +1153,14 @@ engine_player_t (::xercesc::InputSource& i,
   if (!d.get ())
     throw ::xsd::cxx::tree::parsing< char > ();
 
-  ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type > r (
+  ::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type > r (
     ::engine_player_t (
       d, f | ::xml_schema::flags::own_dom, p));
 
   return r;
 }
 
-::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
+::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type >
 engine_player_t (const ::xercesc::DOMDocument& d,
                  ::xml_schema::flags f,
                  const ::xml_schema::properties& p)
@@ -1380,7 +1170,7 @@ engine_player_t (const ::xercesc::DOMDocument& d,
     ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > c (
       static_cast< ::xercesc::DOMDocument* > (d.cloneNode (true)));
 
-    ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type > r (
+    ::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type > r (
       ::engine_player_t (
         c, f | ::xml_schema::flags::own_dom, p));
 
@@ -1394,8 +1184,8 @@ engine_player_t (const ::xercesc::DOMDocument& d,
   if (n.name () == "engine_player_t" &&
       n.namespace_ () == "urn:rpg")
   {
-    ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type > r (
-      ::xsd::cxx::tree::traits< ::RPG_Engine_Player_XMLTree_Type, char >::create (
+    ::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type > r (
+      ::xsd::cxx::tree::traits< ::RPG_Engine_EntityState_XMLTree_Type, char >::create (
         e, f, 0));
     return r;
   }
@@ -1407,7 +1197,7 @@ engine_player_t (const ::xercesc::DOMDocument& d,
     "urn:rpg");
 }
 
-::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type >
+::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type >
 engine_player_t (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
                  ::xml_schema::flags f,
                  const ::xml_schema::properties&)
@@ -1432,8 +1222,8 @@ engine_player_t (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
   if (n.name () == "engine_player_t" &&
       n.namespace_ () == "urn:rpg")
   {
-    ::std::auto_ptr< ::RPG_Engine_Player_XMLTree_Type > r (
-      ::xsd::cxx::tree::traits< ::RPG_Engine_Player_XMLTree_Type, char >::create (
+    ::std::auto_ptr< ::RPG_Engine_EntityState_XMLTree_Type > r (
+      ::xsd::cxx::tree::traits< ::RPG_Engine_EntityState_XMLTree_Type, char >::create (
         e, f, 0));
     return r;
   }
@@ -1725,6 +1515,286 @@ engine_level_t (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
     "urn:rpg");
 }
 
+::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type >
+engine_state_t (const ::std::string& u,
+                ::xml_schema::flags f,
+                const ::xml_schema::properties& p)
+{
+  ::xsd::cxx::xml::auto_initializer i (
+    (f & ::xml_schema::flags::dont_initialize) == 0,
+    (f & ::xml_schema::flags::keep_dom) == 0);
+
+  ::xsd::cxx::tree::error_handler< char > h;
+
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xsd::cxx::xml::dom::parse< char > (
+      u, h, p, f));
+
+  h.throw_if_failed< ::xsd::cxx::tree::parsing< char > > ();
+
+  ::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type > r (
+    ::engine_state_t (
+      d, f | ::xml_schema::flags::own_dom, p));
+
+  return r;
+}
+
+::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type >
+engine_state_t (const ::std::string& u,
+                ::xml_schema::error_handler& h,
+                ::xml_schema::flags f,
+                const ::xml_schema::properties& p)
+{
+  ::xsd::cxx::xml::auto_initializer i (
+    (f & ::xml_schema::flags::dont_initialize) == 0,
+    (f & ::xml_schema::flags::keep_dom) == 0);
+
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xsd::cxx::xml::dom::parse< char > (
+      u, h, p, f));
+
+  if (!d.get ())
+    throw ::xsd::cxx::tree::parsing< char > ();
+
+  ::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type > r (
+    ::engine_state_t (
+      d, f | ::xml_schema::flags::own_dom, p));
+
+  return r;
+}
+
+::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type >
+engine_state_t (const ::std::string& u,
+                ::xercesc::DOMErrorHandler& h,
+                ::xml_schema::flags f,
+                const ::xml_schema::properties& p)
+{
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xsd::cxx::xml::dom::parse< char > (
+      u, h, p, f));
+
+  if (!d.get ())
+    throw ::xsd::cxx::tree::parsing< char > ();
+
+  ::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type > r (
+    ::engine_state_t (
+      d, f | ::xml_schema::flags::own_dom, p));
+
+  return r;
+}
+
+::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type >
+engine_state_t (::std::istream& is,
+                ::xml_schema::flags f,
+                const ::xml_schema::properties& p)
+{
+  ::xsd::cxx::xml::auto_initializer i (
+    (f & ::xml_schema::flags::dont_initialize) == 0,
+    (f & ::xml_schema::flags::keep_dom) == 0);
+
+  ::xsd::cxx::xml::sax::std_input_source isrc (is);
+  return ::engine_state_t (isrc, f, p);
+}
+
+::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type >
+engine_state_t (::std::istream& is,
+                ::xml_schema::error_handler& h,
+                ::xml_schema::flags f,
+                const ::xml_schema::properties& p)
+{
+  ::xsd::cxx::xml::auto_initializer i (
+    (f & ::xml_schema::flags::dont_initialize) == 0,
+    (f & ::xml_schema::flags::keep_dom) == 0);
+
+  ::xsd::cxx::xml::sax::std_input_source isrc (is);
+  return ::engine_state_t (isrc, h, f, p);
+}
+
+::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type >
+engine_state_t (::std::istream& is,
+                ::xercesc::DOMErrorHandler& h,
+                ::xml_schema::flags f,
+                const ::xml_schema::properties& p)
+{
+  ::xsd::cxx::xml::sax::std_input_source isrc (is);
+  return ::engine_state_t (isrc, h, f, p);
+}
+
+::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type >
+engine_state_t (::std::istream& is,
+                const ::std::string& sid,
+                ::xml_schema::flags f,
+                const ::xml_schema::properties& p)
+{
+  ::xsd::cxx::xml::auto_initializer i (
+    (f & ::xml_schema::flags::dont_initialize) == 0,
+    (f & ::xml_schema::flags::keep_dom) == 0);
+
+  ::xsd::cxx::xml::sax::std_input_source isrc (is, sid);
+  return ::engine_state_t (isrc, f, p);
+}
+
+::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type >
+engine_state_t (::std::istream& is,
+                const ::std::string& sid,
+                ::xml_schema::error_handler& h,
+                ::xml_schema::flags f,
+                const ::xml_schema::properties& p)
+{
+  ::xsd::cxx::xml::auto_initializer i (
+    (f & ::xml_schema::flags::dont_initialize) == 0,
+    (f & ::xml_schema::flags::keep_dom) == 0);
+
+  ::xsd::cxx::xml::sax::std_input_source isrc (is, sid);
+  return ::engine_state_t (isrc, h, f, p);
+}
+
+::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type >
+engine_state_t (::std::istream& is,
+                const ::std::string& sid,
+                ::xercesc::DOMErrorHandler& h,
+                ::xml_schema::flags f,
+                const ::xml_schema::properties& p)
+{
+  ::xsd::cxx::xml::sax::std_input_source isrc (is, sid);
+  return ::engine_state_t (isrc, h, f, p);
+}
+
+::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type >
+engine_state_t (::xercesc::InputSource& i,
+                ::xml_schema::flags f,
+                const ::xml_schema::properties& p)
+{
+  ::xsd::cxx::tree::error_handler< char > h;
+
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xsd::cxx::xml::dom::parse< char > (
+      i, h, p, f));
+
+  h.throw_if_failed< ::xsd::cxx::tree::parsing< char > > ();
+
+  ::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type > r (
+    ::engine_state_t (
+      d, f | ::xml_schema::flags::own_dom, p));
+
+  return r;
+}
+
+::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type >
+engine_state_t (::xercesc::InputSource& i,
+                ::xml_schema::error_handler& h,
+                ::xml_schema::flags f,
+                const ::xml_schema::properties& p)
+{
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xsd::cxx::xml::dom::parse< char > (
+      i, h, p, f));
+
+  if (!d.get ())
+    throw ::xsd::cxx::tree::parsing< char > ();
+
+  ::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type > r (
+    ::engine_state_t (
+      d, f | ::xml_schema::flags::own_dom, p));
+
+  return r;
+}
+
+::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type >
+engine_state_t (::xercesc::InputSource& i,
+                ::xercesc::DOMErrorHandler& h,
+                ::xml_schema::flags f,
+                const ::xml_schema::properties& p)
+{
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xsd::cxx::xml::dom::parse< char > (
+      i, h, p, f));
+
+  if (!d.get ())
+    throw ::xsd::cxx::tree::parsing< char > ();
+
+  ::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type > r (
+    ::engine_state_t (
+      d, f | ::xml_schema::flags::own_dom, p));
+
+  return r;
+}
+
+::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type >
+engine_state_t (const ::xercesc::DOMDocument& d,
+                ::xml_schema::flags f,
+                const ::xml_schema::properties& p)
+{
+  if (f & ::xml_schema::flags::keep_dom)
+  {
+    ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > c (
+      static_cast< ::xercesc::DOMDocument* > (d.cloneNode (true)));
+
+    ::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type > r (
+      ::engine_state_t (
+        c, f | ::xml_schema::flags::own_dom, p));
+
+    return r;
+  }
+
+  const ::xercesc::DOMElement& e (*d.getDocumentElement ());
+  const ::xsd::cxx::xml::qualified_name< char > n (
+    ::xsd::cxx::xml::dom::name< char > (e));
+
+  if (n.name () == "engine_state_t" &&
+      n.namespace_ () == "urn:rpg")
+  {
+    ::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type > r (
+      ::xsd::cxx::tree::traits< ::RPG_Engine_State_XMLTree_Type, char >::create (
+        e, f, 0));
+    return r;
+  }
+
+  throw ::xsd::cxx::tree::unexpected_element < char > (
+    n.name (),
+    n.namespace_ (),
+    "engine_state_t",
+    "urn:rpg");
+}
+
+::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type >
+engine_state_t (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
+                ::xml_schema::flags f,
+                const ::xml_schema::properties&)
+{
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > c (
+    ((f & ::xml_schema::flags::keep_dom) &&
+     !(f & ::xml_schema::flags::own_dom))
+    ? static_cast< ::xercesc::DOMDocument* > (d->cloneNode (true))
+    : 0);
+
+  ::xercesc::DOMDocument& doc (c.get () ? *c : *d);
+  const ::xercesc::DOMElement& e (*doc.getDocumentElement ());
+
+  const ::xsd::cxx::xml::qualified_name< char > n (
+    ::xsd::cxx::xml::dom::name< char > (e));
+
+  if (f & ::xml_schema::flags::keep_dom)
+    doc.setUserData (::xml_schema::dom::tree_node_key,
+                     (c.get () ? &c : &d),
+                     0);
+
+  if (n.name () == "engine_state_t" &&
+      n.namespace_ () == "urn:rpg")
+  {
+    ::std::auto_ptr< ::RPG_Engine_State_XMLTree_Type > r (
+      ::xsd::cxx::tree::traits< ::RPG_Engine_State_XMLTree_Type, char >::create (
+        e, f, 0));
+    return r;
+  }
+
+  throw ::xsd::cxx::tree::unexpected_element < char > (
+    n.name (),
+    n.namespace_ (),
+    "engine_state_t",
+    "urn:rpg");
+}
+
 #include <ostream>
 #include <xsd/cxx/tree/error-handler.hxx>
 #include <xsd/cxx/xml/dom/serialization-source.hxx>
@@ -1768,9 +1838,35 @@ operator<< (::xml_schema::list_stream& l,
 }
 
 void
-operator<< (::xercesc::DOMElement& e, const RPG_Engine_Player_XMLTree_Type& i)
+operator<< (::xercesc::DOMElement& e, const RPG_Engine_EntityState_XMLTree_Type& i)
 {
-  e << static_cast< const ::RPG_Player_PlayerXML_XMLTree_Type& > (i);
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // player
+  //
+  if (i.player ())
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "player",
+        "urn:rpg",
+        e));
+
+    s << *i.player ();
+  }
+
+  // monster
+  //
+  if (i.monster ())
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "monster",
+        "urn:rpg",
+        e));
+
+    s << *i.monster ();
+  }
 
   // position
   //
@@ -1786,7 +1882,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Engine_Player_XMLTree_Type& i)
 
   // mode
   //
-  for (RPG_Engine_Player_XMLTree_Type::mode_const_iterator
+  for (RPG_Engine_EntityState_XMLTree_Type::mode_const_iterator
        b (i.mode ().begin ()), n (i.mode ().end ());
        b != n; ++b)
   {
@@ -1798,133 +1894,55 @@ operator<< (::xercesc::DOMElement& e, const RPG_Engine_Player_XMLTree_Type& i)
 
     s << *b;
   }
-
-  // sprite
-  //
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "sprite",
-        "urn:rpg",
-        e));
-
-    s << i.sprite ();
-  }
 }
 
 void
 operator<< (::xercesc::DOMElement& e, const RPG_Engine_Level_XMLTree_Type& i)
 {
-  e << static_cast< const ::xml_schema::type& > (i);
+  e << static_cast< const ::RPG_Map_Level_XMLTree_Type& > (i);
 
-  // name
+  // spawn
   //
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "name",
-        "urn:rpg",
-        e));
-
-    s << i.name ();
-  }
-
-  // environment
-  //
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "environment",
-        "urn:rpg",
-        e));
-
-    s << i.environment ();
-  }
-
-  // monster
-  //
-  for (RPG_Engine_Level_XMLTree_Type::monster_const_iterator
-       b (i.monster ().begin ()), n (i.monster ().end ());
+  for (RPG_Engine_Level_XMLTree_Type::spawn_const_iterator
+       b (i.spawn ().begin ()), n (i.spawn ().end ());
        b != n; ++b)
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
-        "monster",
+        "spawn",
         "urn:rpg",
         e));
 
     s << *b;
   }
 
-  // spawn_interval
+  // max_num_spawned
   //
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
-        "spawn_interval",
+        "max_num_spawned",
         "urn:rpg",
         e));
 
-    s << i.spawn_interval ();
+    s << i.max_num_spawned ();
   }
+}
 
-  // spawn_probability
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Engine_State_XMLTree_Type& i)
+{
+  e << static_cast< const ::RPG_Map_State_XMLTree_Type& > (i);
+
+  // entities
   //
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "spawn_probability",
-        "urn:rpg",
-        e));
-
-    s << i.spawn_probability ();
-  }
-
-  // max_spawned
-  //
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "max_spawned",
-        "urn:rpg",
-        e));
-
-    s << i.max_spawned ();
-  }
-
-  // amble_probability
-  //
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "amble_probability",
-        "urn:rpg",
-        e));
-
-    s << i.amble_probability ();
-  }
-
-  // map
-  //
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "map",
-        "urn:rpg",
-        e));
-
-    s << i.map ();
-  }
-
-  // door
-  //
-  for (RPG_Engine_Level_XMLTree_Type::door_const_iterator
-       b (i.door ().begin ()), n (i.door ().end ());
+  for (RPG_Engine_State_XMLTree_Type::entities_const_iterator
+       b (i.entities ().begin ()), n (i.entities ().end ());
        b != n; ++b)
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
-        "door",
+        "entities",
         "urn:rpg",
         e));
 
@@ -1934,7 +1952,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Engine_Level_XMLTree_Type& i)
 
 void
 engine_player_t (::std::ostream& o,
-                 const ::RPG_Engine_Player_XMLTree_Type& s,
+                 const ::RPG_Engine_EntityState_XMLTree_Type& s,
                  const ::xml_schema::namespace_infomap& m,
                  const ::std::string& e,
                  ::xml_schema::flags f)
@@ -1956,7 +1974,7 @@ engine_player_t (::std::ostream& o,
 
 void
 engine_player_t (::std::ostream& o,
-                 const ::RPG_Engine_Player_XMLTree_Type& s,
+                 const ::RPG_Engine_EntityState_XMLTree_Type& s,
                  ::xml_schema::error_handler& h,
                  const ::xml_schema::namespace_infomap& m,
                  const ::std::string& e,
@@ -1976,7 +1994,7 @@ engine_player_t (::std::ostream& o,
 
 void
 engine_player_t (::std::ostream& o,
-                 const ::RPG_Engine_Player_XMLTree_Type& s,
+                 const ::RPG_Engine_EntityState_XMLTree_Type& s,
                  ::xercesc::DOMErrorHandler& h,
                  const ::xml_schema::namespace_infomap& m,
                  const ::std::string& e,
@@ -1993,7 +2011,7 @@ engine_player_t (::std::ostream& o,
 
 void
 engine_player_t (::xercesc::XMLFormatTarget& t,
-                 const ::RPG_Engine_Player_XMLTree_Type& s,
+                 const ::RPG_Engine_EntityState_XMLTree_Type& s,
                  const ::xml_schema::namespace_infomap& m,
                  const ::std::string& e,
                  ::xml_schema::flags f)
@@ -2011,7 +2029,7 @@ engine_player_t (::xercesc::XMLFormatTarget& t,
 
 void
 engine_player_t (::xercesc::XMLFormatTarget& t,
-                 const ::RPG_Engine_Player_XMLTree_Type& s,
+                 const ::RPG_Engine_EntityState_XMLTree_Type& s,
                  ::xml_schema::error_handler& h,
                  const ::xml_schema::namespace_infomap& m,
                  const ::std::string& e,
@@ -2027,7 +2045,7 @@ engine_player_t (::xercesc::XMLFormatTarget& t,
 
 void
 engine_player_t (::xercesc::XMLFormatTarget& t,
-                 const ::RPG_Engine_Player_XMLTree_Type& s,
+                 const ::RPG_Engine_EntityState_XMLTree_Type& s,
                  ::xercesc::DOMErrorHandler& h,
                  const ::xml_schema::namespace_infomap& m,
                  const ::std::string& e,
@@ -2043,7 +2061,7 @@ engine_player_t (::xercesc::XMLFormatTarget& t,
 
 void
 engine_player_t (::xercesc::DOMDocument& d,
-                 const ::RPG_Engine_Player_XMLTree_Type& s,
+                 const ::RPG_Engine_EntityState_XMLTree_Type& s,
                  ::xml_schema::flags)
 {
   ::xercesc::DOMElement& e (*d.getDocumentElement ());
@@ -2066,7 +2084,7 @@ engine_player_t (::xercesc::DOMDocument& d,
 }
 
 ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >
-engine_player_t (const ::RPG_Engine_Player_XMLTree_Type& s,
+engine_player_t (const ::RPG_Engine_EntityState_XMLTree_Type& s,
                  const ::xml_schema::namespace_infomap& m,
                  ::xml_schema::flags f)
 {
@@ -2225,6 +2243,154 @@ engine_level_t (const ::RPG_Engine_Level_XMLTree_Type& s,
       m, f));
 
   ::engine_level_t (*d, s, f);
+  return d;
+}
+
+void
+engine_state_t (::std::ostream& o,
+                const ::RPG_Engine_State_XMLTree_Type& s,
+                const ::xml_schema::namespace_infomap& m,
+                const ::std::string& e,
+                ::xml_schema::flags f)
+{
+  ::xsd::cxx::xml::auto_initializer i (
+    (f & ::xml_schema::flags::dont_initialize) == 0);
+
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::engine_state_t (s, m, f));
+
+  ::xsd::cxx::tree::error_handler< char > h;
+
+  ::xsd::cxx::xml::dom::ostream_format_target t (o);
+  if (!::xsd::cxx::xml::dom::serialize (t, *d, e, h, f))
+  {
+    h.throw_if_failed< ::xsd::cxx::tree::serialization< char > > ();
+  }
+}
+
+void
+engine_state_t (::std::ostream& o,
+                const ::RPG_Engine_State_XMLTree_Type& s,
+                ::xml_schema::error_handler& h,
+                const ::xml_schema::namespace_infomap& m,
+                const ::std::string& e,
+                ::xml_schema::flags f)
+{
+  ::xsd::cxx::xml::auto_initializer i (
+    (f & ::xml_schema::flags::dont_initialize) == 0);
+
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::engine_state_t (s, m, f));
+  ::xsd::cxx::xml::dom::ostream_format_target t (o);
+  if (!::xsd::cxx::xml::dom::serialize (t, *d, e, h, f))
+  {
+    throw ::xsd::cxx::tree::serialization< char > ();
+  }
+}
+
+void
+engine_state_t (::std::ostream& o,
+                const ::RPG_Engine_State_XMLTree_Type& s,
+                ::xercesc::DOMErrorHandler& h,
+                const ::xml_schema::namespace_infomap& m,
+                const ::std::string& e,
+                ::xml_schema::flags f)
+{
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::engine_state_t (s, m, f));
+  ::xsd::cxx::xml::dom::ostream_format_target t (o);
+  if (!::xsd::cxx::xml::dom::serialize (t, *d, e, h, f))
+  {
+    throw ::xsd::cxx::tree::serialization< char > ();
+  }
+}
+
+void
+engine_state_t (::xercesc::XMLFormatTarget& t,
+                const ::RPG_Engine_State_XMLTree_Type& s,
+                const ::xml_schema::namespace_infomap& m,
+                const ::std::string& e,
+                ::xml_schema::flags f)
+{
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::engine_state_t (s, m, f));
+
+  ::xsd::cxx::tree::error_handler< char > h;
+
+  if (!::xsd::cxx::xml::dom::serialize (t, *d, e, h, f))
+  {
+    h.throw_if_failed< ::xsd::cxx::tree::serialization< char > > ();
+  }
+}
+
+void
+engine_state_t (::xercesc::XMLFormatTarget& t,
+                const ::RPG_Engine_State_XMLTree_Type& s,
+                ::xml_schema::error_handler& h,
+                const ::xml_schema::namespace_infomap& m,
+                const ::std::string& e,
+                ::xml_schema::flags f)
+{
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::engine_state_t (s, m, f));
+  if (!::xsd::cxx::xml::dom::serialize (t, *d, e, h, f))
+  {
+    throw ::xsd::cxx::tree::serialization< char > ();
+  }
+}
+
+void
+engine_state_t (::xercesc::XMLFormatTarget& t,
+                const ::RPG_Engine_State_XMLTree_Type& s,
+                ::xercesc::DOMErrorHandler& h,
+                const ::xml_schema::namespace_infomap& m,
+                const ::std::string& e,
+                ::xml_schema::flags f)
+{
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::engine_state_t (s, m, f));
+  if (!::xsd::cxx::xml::dom::serialize (t, *d, e, h, f))
+  {
+    throw ::xsd::cxx::tree::serialization< char > ();
+  }
+}
+
+void
+engine_state_t (::xercesc::DOMDocument& d,
+                const ::RPG_Engine_State_XMLTree_Type& s,
+                ::xml_schema::flags)
+{
+  ::xercesc::DOMElement& e (*d.getDocumentElement ());
+  const ::xsd::cxx::xml::qualified_name< char > n (
+    ::xsd::cxx::xml::dom::name< char > (e));
+
+  if (n.name () == "engine_state_t" &&
+      n.namespace_ () == "urn:rpg")
+  {
+    e << s;
+  }
+  else
+  {
+    throw ::xsd::cxx::tree::unexpected_element < char > (
+      n.name (),
+      n.namespace_ (),
+      "engine_state_t",
+      "urn:rpg");
+  }
+}
+
+::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >
+engine_state_t (const ::RPG_Engine_State_XMLTree_Type& s,
+                const ::xml_schema::namespace_infomap& m,
+                ::xml_schema::flags f)
+{
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xsd::cxx::xml::dom::serialize< char > (
+      "engine_state_t",
+      "urn:rpg",
+      m, f));
+
+  ::engine_state_t (*d, s, f);
   return d;
 }
 

@@ -223,7 +223,9 @@ RPG_Player_Player_Base::getLevel(const RPG_Common_SubClass& subClass_in) const
 
   unsigned char result = 0;
 
-  result = static_cast<unsigned char>(ACE_OS::floor((1.0 + ::sqrt(static_cast<double>(myExperience / 125) + 1.0)) / 2.0));
+  result =
+      static_cast<unsigned char>(ACE_OS::floor((1.0 +
+                                                ::sqrt(static_cast<double>(myExperience / 125) + 1.0)) / 2.0));
 
   return result;
 }
@@ -253,7 +255,8 @@ RPG_Player_Player_Base::getAttackBonus(const RPG_Common_Attribute& modifier_in,
   ACE_ASSERT((modifier_in == ATTRIBUTE_DEXTERITY) ||
              (modifier_in == ATTRIBUTE_STRENGTH));
 
-  // Attack Bonus = base attack bonus + STR/DEX modifier + size modifier [+ range penalty + other modifiers]
+  // *NOTE*: Attack Bonus = base attack bonus + STR/DEX modifier + size modifier
+  //         [+ range penalty + other modifiers]
   RPG_Character_BaseAttackBonus_t result;
 
   // attack bonusses stack for multiclass characters...
@@ -261,8 +264,9 @@ RPG_Player_Player_Base::getAttackBonus(const RPG_Common_Attribute& modifier_in,
        iterator != myClass.subClasses.end();
        iterator++)
   {
-    RPG_Character_BaseAttackBonus_t bonus = RPG_Character_Common_Tools::getBaseAttackBonus(*iterator,
-                                                                                           getLevel(*iterator));
+    RPG_Character_BaseAttackBonus_t bonus =
+        RPG_Character_Common_Tools::getBaseAttackBonus(*iterator,
+                                                       getLevel(*iterator));
     // append necessary entries
     for (int diff = (bonus.size() - result.size());
          diff > 0;
@@ -275,7 +279,8 @@ RPG_Player_Player_Base::getAttackBonus(const RPG_Common_Attribute& modifier_in,
       result[index] += *iterator2;
   } // end FOR
 
-  int abilityModifier = RPG_Character_Common_Tools::getAttributeAbilityModifier(getAttribute(modifier_in));
+  int abilityModifier =
+      RPG_Character_Common_Tools::getAttributeAbilityModifier(getAttribute(modifier_in));
   int sizeModifier = RPG_Common_Tools::getSizeModifier(getSize());
   for (RPG_Character_BaseAttackBonusIterator_t iterator = result.begin();
        iterator != result.end();
@@ -293,7 +298,8 @@ RPG_Player_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defense
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getArmorClass"));
 
-  // AC = 10 + armor bonus + shield bonus + DEX modifier + size modifier [+ other modifiers]
+  // *NOTE*: AC = 10 + armor bonus + shield bonus + DEX modifier + size modifier
+  //         [+ other modifiers]
   signed char result = 10;
 
   // retrieve equipped armor type
@@ -302,7 +308,8 @@ RPG_Player_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defense
   ACE_OS::memset(&properties, 0, sizeof(properties));
   if (type != ARMOR_NONE)
   {
-    properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
+    properties =
+        RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
     result += properties.baseBonus;
   } // end IF
   result += getShieldBonus();
@@ -311,13 +318,17 @@ RPG_Player_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defense
   int DEX_modifier = 0;
   if (defenseSituation_in != DEFENSE_FLATFOOTED)
   {
-    DEX_modifier = RPG_Character_Common_Tools::getAttributeAbilityModifier(getAttribute(ATTRIBUTE_DEXTERITY));
+    DEX_modifier =
+        RPG_Character_Common_Tools::getAttributeAbilityModifier(getAttribute(ATTRIBUTE_DEXTERITY));
     if (type != ARMOR_NONE)
-      DEX_modifier = std::min<int>(static_cast<int>(properties.maxDexterityBonus), DEX_modifier);
+      DEX_modifier =
+          std::min<int>(static_cast<int>(properties.maxDexterityBonus),
+                        DEX_modifier);
   } // end IF
   result += DEX_modifier;
 
-  // usually, this is irrelevant (SIZE_MEDIUM --> +/-0), but may have changed temporarily, magically etc...
+  // *NOTE*: usually, this is irrelevant (SIZE_MEDIUM --> +/-0), but may have
+  // changed temporarily, magically etc...
   result += RPG_Common_Tools::getSizeModifier(getSize());
 
   return result;
@@ -341,13 +352,15 @@ RPG_Player_Player_Base::getReach(unsigned short& baseRange_out,
   if (weapon_type == RPG_ITEM_WEAPONTYPE_INVALID)
     return result;
 
-  const RPG_Item_WeaponProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_type);
+  const RPG_Item_WeaponProperties& properties =
+      RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_type);
   if (RPG_Item_Common_Tools::isMeleeWeapon(weapon_type))
   {
     if (properties.isReachWeapon)
     {
       result *= 2;
-      reachIsAbsolute_out = RPG_Item_Common_Tools::hasAbsoluteReach(weapon_type);
+      reachIsAbsolute_out =
+          RPG_Item_Common_Tools::hasAbsoluteReach(weapon_type);
     } // end IF
   } // end IF
   else
@@ -397,7 +410,8 @@ RPG_Player_Player_Base::getSpeed(const bool& isRunning_in,
        index++, race_index++)
     if (myRace.test(index))
     {
-      base_speed = RPG_Character_Race_Common_Tools::race2Speed(static_cast<RPG_Character_Race>(race_index));
+      base_speed =
+          RPG_Character_Race_Common_Tools::race2Speed(static_cast<RPG_Character_Race>(race_index));
       if (base_speed > result)
         result = base_speed;
     } // end IF
@@ -405,10 +419,12 @@ RPG_Player_Player_Base::getSpeed(const bool& isRunning_in,
 
   // step2: consider encumbrance (armor / load)
   RPG_Character_Encumbrance encumbrance_by_armor = LOAD_LIGHT;
-  RPG_Item_ArmorType armor_type = const_cast<RPG_Player_Player_Base*>(this)->getEquipment().getBodyArmor();
+  RPG_Item_ArmorType armor_type =
+      const_cast<RPG_Player_Player_Base*>(this)->getEquipment().getBodyArmor();
   if (armor_type != ARMOR_NONE)
   {
-    const RPG_Item_ArmorProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_type);
+    const RPG_Item_ArmorProperties& properties =
+        RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_type);
     switch (properties.category)
     {
       case ARMORCATEGORY_LIGHT:
@@ -431,10 +447,11 @@ RPG_Player_Player_Base::getSpeed(const bool& isRunning_in,
   if (RPG_Character_Race_Common_Tools::hasRace(myRace, RACE_DWARF))
     encumbrance_by_armor = LOAD_LIGHT;
   // *TODO*: consider non-bipeds...
-  RPG_Character_Encumbrance encumbrance_by_load = RPG_Character_Common_Tools::getEncumbrance(getAttribute(ATTRIBUTE_STRENGTH),
-                                                                                             getSize(),
-                                                                                             getInventory().getTotalWeight(),
-                                                                                             true);
+  RPG_Character_Encumbrance encumbrance_by_load =
+      RPG_Character_Common_Tools::getEncumbrance(getAttribute(ATTRIBUTE_STRENGTH),
+                                                 getSize(),
+                                                 getInventory().getTotalWeight(),
+                                                 true);
   signed char maxDexModifierAC = std::numeric_limits<signed char>::max();
   signed char armorCheckPenalty = 0;
   unsigned char runModifier = RPG_CHARACTER_DEF_RUN_MODIFIER_MEDIUM;
@@ -448,7 +465,8 @@ RPG_Player_Player_Base::getSpeed(const bool& isRunning_in,
 
   float modifier = 1.0F;
   // step3: consider vision [equipment / ambient lighting]
-  if ((const_cast<RPG_Player_Player_Base*>(this)->getEquipment().getLightSource() == RPG_ITEM_COMMODITYLIGHT_INVALID) &&
+  if ((const_cast<RPG_Player_Player_Base*>(this)->getEquipment().getLightSource() ==
+       RPG_ITEM_COMMODITYLIGHT_INVALID) &&
       (lighting_in == AMBIENCE_DARKNESS))
     modifier *= 0.5F;
 
@@ -612,12 +630,15 @@ RPG_Player_Player_Base::defaultEquip()
       }
       case ITEM_COMMODITY:
       {
-        RPG_Item_Commodity* commodity = dynamic_cast<RPG_Item_Commodity*>(handle);
+        RPG_Item_Commodity* commodity =
+            dynamic_cast<RPG_Item_Commodity*>(handle);
         ACE_ASSERT(commodity);
-        RPG_Item_CommodityUnion commodity_type = commodity->getCommoditySubType();
+        RPG_Item_CommodityUnion commodity_type =
+            commodity->getCommoditySubType();
         //RPG_Item_CommodityProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getCommodityProperties(commodity->getCommoditySubType());
         // - by default, equip light sources only
-        if (commodity_type.discriminator != RPG_Item_CommodityUnion::COMMODITYLIGHT)
+        if (commodity_type.discriminator !=
+            RPG_Item_CommodityUnion::COMMODITYLIGHT)
           break;
         //if (myEquipment.isEquipped(slot, item_id))
         //  break; // cannot equip...
@@ -652,7 +673,7 @@ RPG_Player_Player_Base::defaultEquip()
         //ACE_DEBUG((LM_DEBUG,
         //           ACE_TEXT("item ID %d: invalid type: \"%s\", continuing\n"),
         //           *iterator,
-        //           RPG_Item_TypeHelper::RPG_Item_TypeToString(handle->getType()).c_str()));
+        //           ACE_TEXT(RPG_Item_TypeHelper::RPG_Item_TypeToString(handle->getType()).c_str())));
 
         break;
       }
@@ -710,6 +731,7 @@ RPG_Player_Player_Base::getShieldBonus() const
   if (type == ARMOR_NONE)
     return 0;
 
-  const RPG_Item_ArmorProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
+  const RPG_Item_ArmorProperties& properties =
+      RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
   return properties.baseBonus;
 }

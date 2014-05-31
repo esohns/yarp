@@ -48,6 +48,8 @@ class RPG_Engine_Export RPG_Engine_Level
   static bool load(const std::string&,   // FQ filename
                    const std::string&,   // schema repository (directory)
                    RPG_Engine_Level_t&); // return value: level
+  static bool save(const std::string&,         // FQ filename
+                   const RPG_Engine_Level_t&); // level
   static void random(const RPG_Engine_LevelMetaData_t&,        // metadata
                      const RPG_Map_FloorPlan_Configuration_t&, // floor plan config
                      RPG_Engine_Level_t&);                     // return value: level
@@ -94,9 +96,8 @@ class RPG_Engine_Export RPG_Engine_Level
 
   // helper methods
   // *WARNING*: result needs to be delete()d !
-  RPG_Engine_Level_XMLTree_Type* toLevelXML() const;
-  static RPG_Engine_Level_t
-  levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type&);
+  static RPG_Engine_Level_XMLTree_Type* levelToLevelXML(const RPG_Engine_Level_t&);
+  static RPG_Engine_Level_t levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type&);
 
   // hide unwanted funcionality
   using RPG_Map_Level::save;

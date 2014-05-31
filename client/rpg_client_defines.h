@@ -30,8 +30,10 @@
 #define RPG_CLIENT_ENGINE_THREAD_NAME              "RPG graphics engine"
 #define RPG_CLIENT_MAX_QUEUE_SLOTS                 100
 
+// gtk
 #define RPG_CLIENT_GNOME_APPLICATION_ID            "rpg_client"
 #define RPG_CLIENT_GNOME_UI_FILE                   "rpg_client.glade"
+// gtk widget names
 #define RPG_CLIENT_GNOME_MAINENTRYDIALOG_TITLE     "please insert data..."
 #define RPG_CLIENT_GNOME_MAINENTRYDIALOG_NAME      "main_entry_dialog"
 #define RPG_CLIENT_GNOME_MAINENTRYDIALOGENTRY_NAME "main_entry_dialog_entry"
@@ -44,6 +46,13 @@
 #define RPG_CLIENT_GNOME_CHARBOX_NAME              "character_repository_combobox"
 #define RPG_CLIENT_GNOME_MAPBOX_NAME               "map_repository_combobox"
 #define RPG_CLIENT_GNOME_SERVERBOX_NAME            "server_repository_combobox"
+#define RPG_CLIENT_GNOME_CREATEBUTTON_NAME         "create"
+#define RPG_CLIENT_GNOME_DROPBUTTON_NAME           "drop"
+#define RPG_CLIENT_GNOME_LOADBUTTON_NAME           "load"
+#define RPG_CLIENT_GNOME_SAVEBUTTON_NAME           "save"
+#define RPG_CLIENT_GNOME_REFRESHBUTTON_NAME        "refresh"
+#define RPG_CLIENT_GNOME_QUITBUTTON_NAME           "quit"
+#define RPG_CLIENT_GNOME_ABOUTBUTTON_NAME          "about"
 #define RPG_CLIENT_GNOME_PARTBUTTON_NAME           "part"
 
 // CONFIGDIR-specific

@@ -68,6 +68,19 @@ if %ERRORLEVEL% NEQ 0 (
  goto Failed
 )
 
+@rem generate "XMLSchema" namespace include file (tree)
+@rem "%XsdEXE%" cxx-tree --char-type char --output-dir .\.. --generate-serialization --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --generate-xml-schema --hxx-suffix .h --show-anonymous --show-sloc ..\rpg_XMLSchema_XML_tree.xsd
+@rem "%XsdEXE%" cxx-tree --char-type char --output-dir .\.. --generate-serialization --generate-xml-schema --hxx-suffix .h --show-anonymous --show-sloc ..\rpg_XMLSchema_XML_tree.xsd
+
+@rem generate tree include/implementation
+@rem "%XsdEXE%" cxx-tree --generate-polymorphic --generate-serialization --generate-ostream --generate-comparison --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --type-regex "/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/" --char-type char --output-dir .\.. --namespace-map urn:rpg= --export-xml-schema --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc --export-symbol "RPG_Player_Export" --hxx-prologue "#include \"rpg_player_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp .\..\rpg_player.xsd
+"%XsdEXE%" cxx-tree --generate-polymorphic --generate-serialization --generate-ostream --generate-comparison --type-regex "/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/" --char-type char --output-dir .\.. --namespace-map urn:rpg= --export-xml-schema --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc --export-symbol "RPG_Combat_Export" --hxx-prologue "#include \"rpg_combat_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp .\..\rpg_combat.xsd
+if %ERRORLEVEL% NEQ 0 (
+ echo failed to generate XML tree code^, exiting
+ set RC=%ERRORLEVEL%
+ goto Failed
+)
+
 goto Clean_Up
 
 :Failed

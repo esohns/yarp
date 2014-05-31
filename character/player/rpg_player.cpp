@@ -150,7 +150,7 @@ RPG_Player::create()
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("generated name: \"%s\"\n"),
-//              name.c_str()));
+//              ACE_TEXT(name.c_str())));
 
   // step2: gender
   RPG_Character_Gender gender = RPG_CHARACTER_GENDER_INVALID;
@@ -194,7 +194,8 @@ RPG_Player::create()
                                   1,
                                   result);
   player_subclass = static_cast<RPG_Common_SubClass>(result.front());
-  player_class.metaClass = RPG_Character_Class_Common_Tools::subClassToMetaClass(player_subclass);
+  player_class.metaClass =
+      RPG_Character_Class_Common_Tools::subClassToMetaClass(player_subclass);
   player_class.subClasses.insert(player_subclass);
 	if (RPG_Dice::probability(RPG_PLAYER_MULTICLASS_PROBABILITY))
 	{
@@ -220,7 +221,8 @@ RPG_Player::create()
 			                              		1,
 					                              result);
 				player_subclass_temp = static_cast<RPG_Common_SubClass>(result.front());
-			} while (player_class.subClasses.find(player_subclass_temp) != player_class.subClasses.end());
+			} while (player_class.subClasses.find(player_subclass_temp) !=
+							 player_class.subClasses.end());
 			player_class.subClasses.insert(player_subclass_temp);
 		} // end FOR
 	} // end IF
@@ -394,8 +396,9 @@ RPG_Player::create()
           numKnownSpells = 0;
 
           // step1: get list of available spells
-          available = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
-                                                                            i);
+          available =
+              RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
+                                                                    i);
 
           // step2: compute # known spells
           numKnownSpells = RPG_Magic_Common_Tools::getNumKnownSpells(*iterator,
@@ -405,7 +408,7 @@ RPG_Player::create()
           //         ACE_DEBUG((LM_DEBUG,
           //                    ACE_TEXT("number of initial known spells (lvl %d) for subClass \"%s\" is: %d...\n"),
           //                    i,
-          //                    RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str(),
+          //                    ACE_TEXT(RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str()),
           //                    numKnownSpells));
 
           // make sure we have enough variety...
@@ -435,7 +438,7 @@ RPG_Player::create()
               ACE_DEBUG((LM_DEBUG,
                          ACE_TEXT("chose known spell #%d: \"%s\"\n"),
                          numChosen + 1,
-                         RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str()));
+                         ACE_TEXT(RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str())));
 
               knownSpells.insert(*available_iterator);
               numChosen++;
@@ -457,8 +460,9 @@ RPG_Player::create()
           numSpells = 0;
 
           // step1: get list of available spells
-          available = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
-                                                                            i);
+          available =
+              RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
+                                                                    i);
 
           // step2: compute # prepared spells
           numSpells = RPG_Magic_Common_Tools::getNumSpells(*iterator,
@@ -468,7 +472,7 @@ RPG_Player::create()
     //       ACE_DEBUG((LM_DEBUG,
     //                  ACE_TEXT("number of initial memorized/prepared spells (lvl %d) for subClass \"%s\" is: %d...\n"),
     //                  i,
-    //                  RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str(),
+    //                  ACE_TEXT(RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str()),
     //                  numSpells));
 
           // step3: choose prepared spells
@@ -485,14 +489,15 @@ RPG_Player::create()
                iterator2 != result.end();
                iterator2++, index++)
           {
-            available_iterator = (RPG_Magic_Common_Tools::isDivineCasterClass(*iterator) ? available.begin()
-                                                                                         : knownSpells.begin());
+            available_iterator =
+                (RPG_Magic_Common_Tools::isDivineCasterClass(*iterator) ? available.begin()
+                                                                        : knownSpells.begin());
             std::advance(available_iterator, *iterator2 - 1);
 
             ACE_DEBUG((LM_DEBUG,
                        ACE_TEXT("chose prepared spell #%d: \"%s\"\n"),
                        index + 1,
-                       RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str()));
+                       ACE_TEXT(RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str())));
 
             spells.push_back(*available_iterator);
           } // end FOR
@@ -520,8 +525,9 @@ RPG_Player::create()
             break; // done
           } // end FOR
 
-          current = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
-                                                                          i);
+          current =
+              RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
+                                                                    i);
           available.insert(current.begin(), current.end());
         } // end FOR
 
@@ -546,7 +552,7 @@ RPG_Player::create()
             ACE_DEBUG((LM_DEBUG,
                        ACE_TEXT("chose known spell #%d: \"%s\"\n"),
                        numChosen + 1,
-                       RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str()));
+                       ACE_TEXT(RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str())));
 
             knownSpells.insert(*available_iterator);
             numChosen++;
@@ -563,8 +569,9 @@ RPG_Player::create()
                                                             j);
           ACE_ASSERT(numSpells);
 
-          current = RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
-                                                                          j);
+          current =
+              RPG_MAGIC_DICTIONARY_SINGLETON::instance()->getSpells(casterClass,
+                                                                    j);
           available.clear();
           for (RPG_Magic_SpellTypesIterator_t iterator2 = current.begin();
                iterator2 != current.end();
@@ -594,7 +601,7 @@ RPG_Player::create()
             ACE_DEBUG((LM_DEBUG,
                        ACE_TEXT("chose prepared spell #%d: \"%s\"\n"),
                        index + 1,
-                       RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str()));
+                       ACE_TEXT(RPG_Magic_Common_Tools::spellToName(*available_iterator).c_str())));
 
             spells.push_back(*available_iterator);
           } // end FOR
@@ -608,7 +615,7 @@ RPG_Player::create()
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid class (was: %s), aborting\n"),
-                   RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str()));
+                   ACE_TEXT(RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str())));
 
         break;
       }
@@ -629,18 +636,21 @@ RPG_Player::create()
     {
       case SUBCLASS_FIGHTER:
       {
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-                                                                          ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                    ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-                                                                          ARMOR_MAIL_SPLINT);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                    ARMOR_MAIL_SPLINT);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-                                                                          ARMOR_SHIELD_HEAVY_WOODEN);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                    ARMOR_SHIELD_HEAVY_WOODEN);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
@@ -649,18 +659,21 @@ RPG_Player::create()
       case SUBCLASS_PALADIN:
 //       case SUBCLASS_WARLORD:
       {
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-                                                                          ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                    ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-                                                                          ARMOR_PLATE_FULL);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                    ARMOR_PLATE_FULL);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-                                                                          ARMOR_SHIELD_HEAVY_STEEL);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                    ARMOR_SHIELD_HEAVY_STEEL);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
@@ -668,18 +681,21 @@ RPG_Player::create()
       }
       case SUBCLASS_RANGER:
       {
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-                                                                          ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                    ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-                                                                          RANGED_WEAPON_BOW_LONG);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                    RANGED_WEAPON_BOW_LONG);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-                                                                          ARMOR_HIDE);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                    ARMOR_HIDE);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
@@ -705,8 +721,9 @@ RPG_Player::create()
       case SUBCLASS_SORCERER:
 //       case SUBCLASS_WARLOCK:
       {
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-                                                                          TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                    TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
@@ -716,18 +733,21 @@ RPG_Player::create()
 //       case SUBCLASS_AVENGER:
 //       case SUBCLASS_INVOKER:
       {
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-                                                                          ONE_HANDED_MELEE_WEAPON_MACE_HEAVY);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                    ONE_HANDED_MELEE_WEAPON_MACE_HEAVY);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-                                                                          ARMOR_MAIL_CHAIN);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                    ARMOR_MAIL_CHAIN);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-                                                                          ARMOR_SHIELD_HEAVY_WOODEN);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                    ARMOR_SHIELD_HEAVY_WOODEN);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
@@ -736,18 +756,21 @@ RPG_Player::create()
       case SUBCLASS_DRUID:
 //       case SUBCLASS_SHAMAN:
       {
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-                                                                          LIGHT_MELEE_WEAPON_SICKLE);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                    LIGHT_MELEE_WEAPON_SICKLE);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-                                                                          ARMOR_HIDE);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                    ARMOR_HIDE);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-                                                                          ARMOR_SHIELD_LIGHT_WOODEN);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                    ARMOR_SHIELD_LIGHT_WOODEN);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
@@ -765,18 +788,21 @@ RPG_Player::create()
       case SUBCLASS_THIEF:
       case SUBCLASS_BARD:
       {
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
-                                                                          LIGHT_MELEE_WEAPON_SWORD_SHORT);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
+                                                                    LIGHT_MELEE_WEAPON_SWORD_SHORT);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-                                                                          ARMOR_LEATHER);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                    ARMOR_LEATHER);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
-        current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
-                                                                          ARMOR_SHIELD_LIGHT_STEEL);
+        current =
+            RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
+                                                                    ARMOR_SHIELD_LIGHT_STEEL);
         ACE_ASSERT(current);
         items.insert(current->getID());
 
@@ -786,17 +812,19 @@ RPG_Player::create()
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid subclass \"%s\", aborting\n"),
-                   RPG_Common_SubClassHelper::RPG_Common_SubClassToString(player_subclass).c_str()));
+                   ACE_TEXT(RPG_Common_SubClassHelper::RPG_Common_SubClassToString(player_subclass).c_str())));
 
         break;
       }
     } // end SWITCH
 
     // ...and everybody gets a torch
-    unsigned int subtype = (0 | (COMMODITY_LIGHT << (sizeof(unsigned int) * 4)));
+    unsigned int subtype =
+        (0 | (COMMODITY_LIGHT << (sizeof(unsigned int) * 4)));
     subtype |= COMMODITY_LIGHT_TORCH;
-    current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_COMMODITY,
-                                                                      subtype);
+    current =
+        RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_COMMODITY,
+                                                                subtype);
     ACE_ASSERT(current);
     items.insert(current->getID());
   }
@@ -804,34 +832,35 @@ RPG_Player::create()
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Player::create(): caught exception: \"%s\", continuing\n"),
-               exception.what()));
+               ACE_TEXT(exception.what())));
   }
 
   // step14: instantiate player character
   RPG_Player* player_p = NULL;
-  player_p = new(std::nothrow) RPG_Player(name,
-                                          gender,
-                                          player_race,
-                                          player_class,
-                                          alignment,
-                                          attributes,
-                                          skills,
-                                          feats,
-                                          abilities,
-                                          offHand,
-                                          hitpoints,
-                                          knownSpells,
-                                          condition,
-                                          hitpoints, // start healthy
-                                          0,
-                                          RPG_PLAYER_START_MONEY,
-                                          spells,
-                                          items);
-  ACE_ASSERT(player_p);
+  ACE_NEW_NORETURN(player_p,
+                   RPG_Player(name,
+                              gender,
+                              player_race,
+                              player_class,
+                              alignment,
+                              attributes,
+                              skills,
+                              feats,
+                              abilities,
+                              offHand,
+                              hitpoints,
+                              knownSpells,
+                              condition,
+                              hitpoints, // start healthy
+                              0,
+                              RPG_PLAYER_START_MONEY,
+                              spells,
+                              items));
   if (!player_p)
   {
     ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate memory, aborting\n")));
+               ACE_TEXT("failed to allocate memory(%u), aborting\n"),
+               sizeof(RPG_Player)));
 
     return NULL;
   } // end IF
@@ -850,7 +879,7 @@ RPG_Player::load(const std::string& filename_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
-               filename_in.c_str()));
+               ACE_TEXT(filename_in.c_str())));
 
     return NULL;
   } // end IF
@@ -871,7 +900,7 @@ RPG_Player::load(const std::string& filename_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Common_File_Tools::isDirectory(\"%s\"), aborting\n"),
-                 schemaRepository_in.c_str()));
+                 ACE_TEXT(schemaRepository_in.c_str())));
 
       return NULL;
     } // end IF
@@ -885,7 +914,7 @@ RPG_Player::load(const std::string& filename_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
-               path.c_str()));
+               ACE_TEXT(path.c_str())));
 
     return NULL;
   } // end IF
@@ -910,8 +939,8 @@ RPG_Player::load(const std::string& filename_in,
 
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("loaded player \"%s\" from file: \"%s\"\n"),
-//                player.getName().c_str(),
-//                filename_in.c_str()));
+//                ACE_TEXT(player.getName().c_str()),
+//                ACE_TEXT(filename_in.c_str())));
 
     return RPG_Player_Common_Tools::playerXMLToPlayer(*player_p);
   }
@@ -919,7 +948,7 @@ RPG_Player::load(const std::string& filename_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("\"%s\": unable to open or read error, aborting\n"),
-               filename_in.c_str()));
+               ACE_TEXT(filename_in.c_str())));
   }
   catch (const ::xml_schema::parsing& exception)
   {
@@ -928,8 +957,8 @@ RPG_Player::load(const std::string& filename_in,
     std::string text = converter.str();
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Player::load(\"%s\"): exception occurred: \"%s\", aborting\n"),
-               filename_in.c_str(),
-               text.c_str()));
+               ACE_TEXT(filename_in.c_str()),
+               ACE_TEXT(text.c_str())));
   }
   catch (const ::xml_schema::exception& exception)
   {
@@ -938,14 +967,14 @@ RPG_Player::load(const std::string& filename_in,
     std::string text = converter.str();
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Player::load(\"%s\"): exception occurred: \"%s\", aborting\n"),
-               filename_in.c_str(),
-               text.c_str()));
+               ACE_TEXT(filename_in.c_str()),
+               ACE_TEXT(text.c_str())));
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Player::load(\"%s\"): exception occurred, aborting\n"),
-               filename_in.c_str()));
+               ACE_TEXT(filename_in.c_str())));
   }
 
   return NULL;
@@ -964,7 +993,7 @@ RPG_Player::save(const std::string& filename_in) const
 //     {
 //       ACE_DEBUG((LM_ERROR,
 //                  ACE_TEXT("failed to RPG_Common_File_Tools::deleteFile(\"%s\"), aborting\n"),
-//                  filename_in.c_str()));
+//                  ACE_TEXT(filename_in.c_str())));
 //
 //       return false;
 //     } // end IF
@@ -1000,7 +1029,7 @@ RPG_Player::save(const std::string& filename_in) const
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("\"%s\": unable to open or write error, aborting\n"),
-               filename_in.c_str()));
+               ACE_TEXT(filename_in.c_str())));
 
     throw exception;
   }
@@ -1011,8 +1040,8 @@ RPG_Player::save(const std::string& filename_in) const
     std::string text = converter.str();
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Player::save(\"%s\"): exception occurred: \"%s\", aborting\n"),
-               filename_in.c_str(),
-               text.c_str()));
+               ACE_TEXT(filename_in.c_str()),
+               ACE_TEXT(text.c_str())));
 
     throw exception;
   }
@@ -1020,15 +1049,15 @@ RPG_Player::save(const std::string& filename_in) const
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Player::save(\"%s\"): exception occurred, aborting\n"),
-               filename_in.c_str()));
+               ACE_TEXT(filename_in.c_str())));
 
     throw;
   }
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("saved player \"%s\" to file: \"%s\"\n"),
-             getName().c_str(),
-             filename_in.c_str()));
+             ACE_TEXT(getName().c_str()),
+             ACE_TEXT(filename_in.c_str())));
 
   // clean up
   delete player_model;
@@ -1065,9 +1094,8 @@ RPG_Player::dummy()
   RPG_Item_List_t items;
 
   RPG_Player* player_p = NULL;
-  try
-  {
-    player_p = new RPG_Player(// base attributes
+  ACE_NEW_NORETURN(player_p,
+                   RPG_Player(// base attributes
                               name,
                               GENDER_NONE,
                               RACE_NONE,
@@ -1086,24 +1114,15 @@ RPG_Player::dummy()
                               0,
                               0,
                               preparedSpells,
-                              items);
-  }
-  catch (const std::bad_alloc& exception)
+                              items));
+  if (!player_p)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Player::dummy(): exception occurred: \"%s\", aborting\n"),
-               exception.what()));
+    ACE_DEBUG((LM_CRITICAL,
+               ACE_TEXT("failed to allocate memory(%u), aborting\n"),
+               sizeof(RPG_Player)));
 
-    return player_p;
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Player::dummy(): exception occurred, aborting\n")));
-
-    return player_p;
-  }
-  ACE_ASSERT(player_p);
+    return NULL;
+  } // end IF
 
   return player_p;
 }

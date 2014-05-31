@@ -128,8 +128,8 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
   static bool isCompatibleMonsterAttackAction(const RPG_Combat_AttackForm&,
                                               const RPG_Monster_AttackAction&);
 
-  // *WARNING*: result needs to be delete()d !
-  static RPG_Engine_Player_XMLTree_Type* playerXMLToEntityXML(const RPG_Player_PlayerXML_XMLTree_Type&);
+//  // *WARNING*: result needs to be delete()d !
+//  static RPG_Engine_EntityState_XMLTree_Type* playerXMLToEntityStateXML(const RPG_Player_PlayerXML_XMLTree_Type&);
 
   static RPG_Engine_CR2ExperienceMap_t myCR2ExperienceMap;
 };

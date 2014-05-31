@@ -6,22 +6,14 @@
             elementFormDefault="qualified"
             attributeFormDefault="unqualified">
 
-<!-- include chance_dice schema -->
-<!--   <xsd:include schemaLocation="rpg_dice.xsd"/> -->
 <!-- include common environment schema -->
   <xsd:include schemaLocation="rpg_common_environment.xsd"/>
 <!-- include character player schema -->
   <xsd:include schemaLocation="rpg_player.xsd"/>
+<!-- include monster schema -->
+  <xsd:include schemaLocation="rpg_monster.xsd"/>
 <!-- include map schema -->
   <xsd:include schemaLocation="rpg_map.xsd"/>
-<!-- include graphics schema -->
-  <xsd:include schemaLocation="rpg_graphics.xsd"/>
-
-<!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
-<!--   import chance_dice schema (as declared above) -->
-<!--   <xsd:import namespace="urn:rpg" schemaLocation="rpg_dice.xsd"/> -->
-<!--   import item schema (as declared above) -->
-<!--   <xsd:import namespace="urn:rpg" schemaLocation="rpg_item.xsd"/> -->
 
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
@@ -66,34 +58,43 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:complexType name="RPG_Engine_Player_Type" id="skip0">
+  <xsd:complexType name="RPG_Engine_EntityState_Type" id="skip0">
+<!--      <xsd:choice>-->
+<!--        <xsd:element name="player" type="RPG_Player_State_Type"/>-->
+<!--        <xsd:element name="monster" type="RPG_Monster_State_Type"/>-->
+<!--      </xsd:choice>-->
+    <xsd:sequence>
+      <xsd:element name="player" type="RPG_Player_State_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="monster" type="RPG_Monster_State_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="position" type="RPG_Map_Position_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="mode" type="RPG_Engine_EntityMode_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Engine_Level_Type" id="skip1">
     <xsd:complexContent>
-      <xsd:extension base="RPG_Player_PlayerXML_Type">
+      <xsd:extension base="RPG_Map_Level_Type">
         <xsd:sequence>
-          <xsd:element name="position" type="RPG_Map_Position_Type" minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="mode" type="RPG_Engine_EntityMode_Type" minOccurs="0" maxOccurs="unbounded"/>
-          <xsd:element name="sprite" type="RPG_Graphics_Sprite_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="spawn" type="RPG_Monster_Spawn_Type" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element name="max_num_spawned" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
 
-  <xsd:complexType name="RPG_Engine_Level_Type" id="skip2">
-    <xsd:sequence>
-      <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="environment" type="RPG_Common_Environment_Type" minOccurs="1" maxOccurs="1"/>      
-      <xsd:element name="monster" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="spawn_interval" type="RPG_Common_FixedPeriod_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="spawn_probability" type="xsd:float" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="max_spawned" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="amble_probability" type="xsd:float" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="map" type="xsd:string" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="door" type="RPG_Map_Door_Type" minOccurs="0" maxOccurs="unbounded"/>
-    </xsd:sequence>
+  <xsd:complexType name="RPG_Engine_State_Type" id="skip2">
+    <xsd:complexContent>
+      <xsd:extension base="RPG_Map_State_Type">
+        <xsd:sequence>
+          <xsd:element name="entities" type="RPG_Engine_EntityState_Type" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
   </xsd:complexType>
 
   <!-- substitution group roots -->
-  <xsd:element name="engine_player_t" type="RPG_Engine_Player_Type"/>
+  <xsd:element name="engine_player_t" type="RPG_Engine_EntityState_Type"/>
   <xsd:element name="engine_level_t" type="RPG_Engine_Level_Type"/>
+  <xsd:element name="engine_state_t" type="RPG_Engine_State_Type"/>
 
 </xsd:schema>

@@ -850,6 +850,43 @@ RPG_Common_File_Tools::getUserConfigurationDirectory()
 }
 
 std::string
+RPG_Common_File_Tools::getDumpDirectory()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::getDumpDirectory"));
+
+  // init return value(s)
+  std::string result;
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  result = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR));
+#else
+  result = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
+#endif
+
+  // sanity check(s): directory exists ?
+  // No ? --> try to create it then !
+  if (!RPG_Common_File_Tools::isDirectory(result))
+  {
+    if (!RPG_Common_File_Tools::createDirectory(result))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Common_File_Tools::createDirectory(\"%s\"), aborting\n"),
+                 ACE_TEXT(result.c_str())));
+
+      // clean up
+      result.clear();
+
+      return result;
+    } // end IF
+
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("created directory: \"%s\"...\n"),
+               ACE_TEXT(result.c_str())));
+  } // end IF
+
+  return result;
+}
+
+std::string
 RPG_Common_File_Tools::getLogFilename(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::getLogFilename"));

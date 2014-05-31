@@ -6,20 +6,14 @@
             elementFormDefault="qualified"
             attributeFormDefault="qualified">
 
-  <!-- include common schema -->
+<!-- include common schema -->
   <xsd:include schemaLocation="rpg_common.xsd"/>
-  <!-- include magic schema -->
+<!-- include magic schema -->
   <xsd:include schemaLocation="rpg_magic.xsd"/>
-  <!-- include item schema -->
+<!-- include item schema -->
   <xsd:include schemaLocation="rpg_item.xsd"/>
-  <!-- include character schema -->
+<!-- include character schema -->
   <xsd:include schemaLocation="rpg_character.xsd"/>
- 
-<!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
-<!--   import chance_dice schema (as declared above) -->
-<!--   <xsd:import namespace="urn:rpg" schemaLocation="rpg_dice.xsd"/> -->
-<!--   import item schema (as declared above) -->
-<!--   <xsd:import namespace="urn:rpg" schemaLocation="rpg_item.xsd"/> -->
 
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
@@ -45,7 +39,7 @@
    </xsd:sequence>
  </xsd:complexType>
 
-  <xsd:complexType name="RPG_Player_BaseXML_Type">
+  <xsd:complexType name="RPG_Player_CharacterBaseXML_Type">
     <xsd:sequence>
       <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="alignment" type="RPG_Character_Alignment_Type" minOccurs="1" maxOccurs="1"/>
@@ -56,18 +50,12 @@
       <xsd:element name="defaultSize" type="RPG_Common_Size_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="maxHP" type="xsd:unsignedShort" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="knownSpells" type="RPG_Player_Spells_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="conditions" type="RPG_Player_Conditions_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="HP" type="xsd:short" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="XP" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="gold" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="spells" type="RPG_Player_Spells_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="inventory" type="RPG_Item_InventoryXML_Type" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:complexType name="RPG_Player_PlayerXML_Type">
+  <xsd:complexType name="RPG_Player_CharacterXML_Type">
     <xsd:complexContent>
-      <xsd:extension base="RPG_Player_BaseXML_Type">
+      <xsd:extension base="RPG_Player_CharacterBaseXML_Type">
         <xsd:sequence>
           <xsd:element name="gender" type="RPG_Character_Gender_Type" minOccurs="1" maxOccurs="1"/>
           <xsd:element name="race" type="RPG_Character_Race_Type" minOccurs="1" maxOccurs="2"/>
@@ -78,7 +66,28 @@
     </xsd:complexContent>
   </xsd:complexType>
 
-  <!-- substitution group root -->
+  <xsd:complexType name="RPG_Player_PlayerXML_Type">
+    <xsd:complexContent>
+      <xsd:extension base="RPG_Player_CharacterXML_Type">
+        <xsd:sequence>        
+          <xsd:element name="XP" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="conditions" type="RPG_Player_Conditions_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="HP" type="xsd:short" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="spells" type="RPG_Player_Spells_Type" minOccurs="0" maxOccurs="1"/>
+          <xsd:element name="inventory" type="RPG_Item_InventoryXML_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="gold" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+ <xsd:complexType name="RPG_Player_State_Type">
+   <xsd:sequence>
+     <xsd:element name="file" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+   </xsd:sequence>
+ </xsd:complexType>
+
+<!-- substitution group root -->
   <xsd:element name="player_t" type="RPG_Player_PlayerXML_Type"/>
 
 </xsd:schema>

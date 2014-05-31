@@ -1252,14 +1252,13 @@ SDL_GUI_LevelWindow_3D::notify(const RPG_Engine_Command& command_in,
       SDL_Surface* sprite_graphic = NULL;
       RPG_Graphics_GraphicTypeUnion type;
       type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-      if (!myEngine->isMonster(parameters_in.entity_id, true))
-        type.sprite = parameters_in.sprite;
-      else
-      {
-        type.sprite =
-            RPG_Client_Common_Tools::monster2Sprite(myEngine->getName(parameters_in.entity_id,
-                                                                      true));
-      } // end ELSE
+      myEngine->lock();
+      type.sprite =
+          (myEngine->isMonster(parameters_in.entity_id, false) ? RPG_Client_Common_Tools::class2Sprite(myEngine->getClass(parameters_in.entity_id,
+                                                                                                                          false))
+                                                               : RPG_Client_Common_Tools::monster2Sprite(myEngine->getName(parameters_in.entity_id,
+                                                                                                                           false)));
+      myEngine->unlock();
       sprite_graphic =
           RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
                                                  true,   // convert to display format

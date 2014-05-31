@@ -43,7 +43,6 @@ class RPG_Player_Export RPG_Player_Common_Tools
   static std::string getPlayerProfilesDirectory();
 
  private:
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Player_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(~RPG_Player_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Player_Common_Tools(const RPG_Player_Common_Tools&));

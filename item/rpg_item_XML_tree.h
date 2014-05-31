@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX___RPG_ITEM_XML_TREE_H
-#define CXX___RPG_ITEM_XML_TREE_H
+#ifndef CXX__ITEM_RPG_ITEM_XML_TREE_H
+#define CXX__ITEM_RPG_ITEM_XML_TREE_H
 
 // Begin prologue.
 //
@@ -82,7 +82,7 @@ class RPG_Item_ArmorCategory_XMLTree_Type;
 class RPG_Item_ArmorType_XMLTree_Type;
 class RPG_Item_ArmorPropertiesBase_XMLTree_Type;
 class RPG_Item_ArmorPropertiesXML_XMLTree_Type;
-class RPG_Item_XML_XMLTree_Type;
+class RPG_Item_BaseXML_XMLTree_Type;
 class RPG_Item_InventoryXML_XMLTree_Type;
 class RPG_Item_DictionaryXML_XMLTree_Type;
 
@@ -1958,7 +1958,7 @@ bool
 operator!= (const RPG_Item_ArmorPropertiesXML_XMLTree_Type&, const RPG_Item_ArmorPropertiesXML_XMLTree_Type&);
 
 
-class RPG_Item_Export RPG_Item_XML_XMLTree_Type: public ::xml_schema::type
+class RPG_Item_Export RPG_Item_BaseXML_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // type
@@ -2043,22 +2043,22 @@ class RPG_Item_Export RPG_Item_XML_XMLTree_Type: public ::xml_schema::type
 
   // Constructors.
   //
-  RPG_Item_XML_XMLTree_Type (const type_type&);
+  RPG_Item_BaseXML_XMLTree_Type (const type_type&);
 
-  RPG_Item_XML_XMLTree_Type (const ::xercesc::DOMElement& e,
-                             ::xml_schema::flags f = 0,
-                             ::xml_schema::container* c = 0);
+  RPG_Item_BaseXML_XMLTree_Type (const ::xercesc::DOMElement& e,
+                                 ::xml_schema::flags f = 0,
+                                 ::xml_schema::container* c = 0);
 
-  RPG_Item_XML_XMLTree_Type (const RPG_Item_XML_XMLTree_Type& x,
-                             ::xml_schema::flags f = 0,
-                             ::xml_schema::container* c = 0);
+  RPG_Item_BaseXML_XMLTree_Type (const RPG_Item_BaseXML_XMLTree_Type& x,
+                                 ::xml_schema::flags f = 0,
+                                 ::xml_schema::container* c = 0);
 
-  virtual RPG_Item_XML_XMLTree_Type*
+  virtual RPG_Item_BaseXML_XMLTree_Type*
   _clone (::xml_schema::flags f = 0,
           ::xml_schema::container* c = 0) const;
 
   virtual 
-  ~RPG_Item_XML_XMLTree_Type ();
+  ~RPG_Item_BaseXML_XMLTree_Type ();
 
   // Implementation.
   //
@@ -2076,11 +2076,11 @@ class RPG_Item_Export RPG_Item_XML_XMLTree_Type: public ::xml_schema::type
 
 RPG_Item_Export
 bool
-operator== (const RPG_Item_XML_XMLTree_Type&, const RPG_Item_XML_XMLTree_Type&);
+operator== (const RPG_Item_BaseXML_XMLTree_Type&, const RPG_Item_BaseXML_XMLTree_Type&);
 
 RPG_Item_Export
 bool
-operator!= (const RPG_Item_XML_XMLTree_Type&, const RPG_Item_XML_XMLTree_Type&);
+operator!= (const RPG_Item_BaseXML_XMLTree_Type&, const RPG_Item_BaseXML_XMLTree_Type&);
 
 
 class RPG_Item_Export RPG_Item_InventoryXML_XMLTree_Type: public ::xml_schema::type
@@ -2088,7 +2088,7 @@ class RPG_Item_Export RPG_Item_InventoryXML_XMLTree_Type: public ::xml_schema::t
   public:
   // item
   // 
-  typedef ::RPG_Item_XML_XMLTree_Type item_type;
+  typedef ::RPG_Item_BaseXML_XMLTree_Type item_type;
   typedef ::xsd::cxx::tree::sequence< item_type > item_sequence;
   typedef item_sequence::iterator item_iterator;
   typedef item_sequence::const_iterator item_const_iterator;
@@ -2373,7 +2373,7 @@ operator<< (::std::ostream&, const RPG_Item_ArmorPropertiesXML_XMLTree_Type&);
 
 RPG_Item_Export
 ::std::ostream&
-operator<< (::std::ostream&, const RPG_Item_XML_XMLTree_Type&);
+operator<< (::std::ostream&, const RPG_Item_BaseXML_XMLTree_Type&);
 
 RPG_Item_Export
 ::std::ostream&
@@ -2586,7 +2586,7 @@ operator<< (::xercesc::DOMElement&, const RPG_Item_ArmorPropertiesXML_XMLTree_Ty
 
 RPG_Item_Export
 void
-operator<< (::xercesc::DOMElement&, const RPG_Item_XML_XMLTree_Type&);
+operator<< (::xercesc::DOMElement&, const RPG_Item_BaseXML_XMLTree_Type&);
 
 RPG_Item_Export
 void
@@ -2603,4 +2603,4 @@ operator<< (::xercesc::DOMElement&, const RPG_Item_DictionaryXML_XMLTree_Type&);
 //
 // End epilogue.
 
-#endif // CXX___RPG_ITEM_XML_TREE_H
+#endif // CXX__ITEM_RPG_ITEM_XML_TREE_H

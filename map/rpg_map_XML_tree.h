@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX___RPG_MAP_XML_TREE_H
-#define CXX___RPG_MAP_XML_TREE_H
+#ifndef CXX__MAP_RPG_MAP_XML_TREE_H
+#define CXX__MAP_RPG_MAP_XML_TREE_H
 
 // Begin prologue.
 //
@@ -63,6 +63,8 @@
 class RPG_Map_DoorState_XMLTree_Type;
 class RPG_Map_Position_XMLTree_Type;
 class RPG_Map_Door_XMLTree_Type;
+class RPG_Map_Level_XMLTree_Type;
+class RPG_Map_State_XMLTree_Type;
 
 #include <memory>    // std::auto_ptr
 #include <limits>    // std::numeric_limits
@@ -76,6 +78,8 @@ class RPG_Map_Door_XMLTree_Type;
 #include <xsd/cxx/tree/list.hxx>
 
 #include <xsd/cxx/xml/dom/parsing-header.hxx>
+
+#include "rpg_common_environment_XML_tree.h"
 
 class RPG_Map_Export RPG_Map_DoorState_XMLTree_Type: public ::xml_schema::string
 {
@@ -288,6 +292,184 @@ bool
 operator!= (const RPG_Map_Door_XMLTree_Type&, const RPG_Map_Door_XMLTree_Type&);
 
 
+class RPG_Map_Export RPG_Map_Level_XMLTree_Type: public ::xml_schema::type
+{
+  public:
+  // name
+  // 
+  typedef ::xml_schema::string name_type;
+  typedef ::xsd::cxx::tree::traits< name_type, char > name_traits;
+
+  const name_type&
+  name () const;
+
+  name_type&
+  name ();
+
+  void
+  name (const name_type& x);
+
+  void
+  name (::std::auto_ptr< name_type > p);
+
+  // environment
+  // 
+  typedef ::RPG_Common_Environment_XMLTree_Type environment_type;
+  typedef ::xsd::cxx::tree::traits< environment_type, char > environment_traits;
+
+  const environment_type&
+  environment () const;
+
+  environment_type&
+  environment ();
+
+  void
+  environment (const environment_type& x);
+
+  void
+  environment (::std::auto_ptr< environment_type > p);
+
+  // map
+  // 
+  typedef ::xml_schema::string map_type;
+  typedef ::xsd::cxx::tree::traits< map_type, char > map_traits;
+
+  const map_type&
+  map () const;
+
+  map_type&
+  map ();
+
+  void
+  map (const map_type& x);
+
+  void
+  map (::std::auto_ptr< map_type > p);
+
+  // Constructors.
+  //
+  RPG_Map_Level_XMLTree_Type (const name_type&,
+                              const environment_type&,
+                              const map_type&);
+
+  RPG_Map_Level_XMLTree_Type (const name_type&,
+                              ::std::auto_ptr< environment_type >&,
+                              const map_type&);
+
+  RPG_Map_Level_XMLTree_Type (const ::xercesc::DOMElement& e,
+                              ::xml_schema::flags f = 0,
+                              ::xml_schema::container* c = 0);
+
+  RPG_Map_Level_XMLTree_Type (const RPG_Map_Level_XMLTree_Type& x,
+                              ::xml_schema::flags f = 0,
+                              ::xml_schema::container* c = 0);
+
+  virtual RPG_Map_Level_XMLTree_Type*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  virtual 
+  ~RPG_Map_Level_XMLTree_Type ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  ::xsd::cxx::tree::one< name_type > name_;
+  ::xsd::cxx::tree::one< environment_type > environment_;
+  ::xsd::cxx::tree::one< map_type > map_;
+};
+
+RPG_Map_Export
+bool
+operator== (const RPG_Map_Level_XMLTree_Type&, const RPG_Map_Level_XMLTree_Type&);
+
+RPG_Map_Export
+bool
+operator!= (const RPG_Map_Level_XMLTree_Type&, const RPG_Map_Level_XMLTree_Type&);
+
+
+class RPG_Map_Export RPG_Map_State_XMLTree_Type: public ::xml_schema::type
+{
+  public:
+  // file
+  // 
+  typedef ::xml_schema::string file_type;
+  typedef ::xsd::cxx::tree::traits< file_type, char > file_traits;
+
+  const file_type&
+  file () const;
+
+  file_type&
+  file ();
+
+  void
+  file (const file_type& x);
+
+  void
+  file (::std::auto_ptr< file_type > p);
+
+  // door
+  // 
+  typedef ::RPG_Map_Door_XMLTree_Type door_type;
+  typedef ::xsd::cxx::tree::sequence< door_type > door_sequence;
+  typedef door_sequence::iterator door_iterator;
+  typedef door_sequence::const_iterator door_const_iterator;
+  typedef ::xsd::cxx::tree::traits< door_type, char > door_traits;
+
+  const door_sequence&
+  door () const;
+
+  door_sequence&
+  door ();
+
+  void
+  door (const door_sequence& s);
+
+  // Constructors.
+  //
+  RPG_Map_State_XMLTree_Type (const file_type&);
+
+  RPG_Map_State_XMLTree_Type (const ::xercesc::DOMElement& e,
+                              ::xml_schema::flags f = 0,
+                              ::xml_schema::container* c = 0);
+
+  RPG_Map_State_XMLTree_Type (const RPG_Map_State_XMLTree_Type& x,
+                              ::xml_schema::flags f = 0,
+                              ::xml_schema::container* c = 0);
+
+  virtual RPG_Map_State_XMLTree_Type*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  virtual 
+  ~RPG_Map_State_XMLTree_Type ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  ::xsd::cxx::tree::one< file_type > file_;
+  door_sequence door_;
+};
+
+RPG_Map_Export
+bool
+operator== (const RPG_Map_State_XMLTree_Type&, const RPG_Map_State_XMLTree_Type&);
+
+RPG_Map_Export
+bool
+operator!= (const RPG_Map_State_XMLTree_Type&, const RPG_Map_State_XMLTree_Type&);
+
+
 #include <iosfwd>
 
 RPG_Map_Export
@@ -306,11 +488,126 @@ RPG_Map_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Map_Door_XMLTree_Type&);
 
+RPG_Map_Export
+::std::ostream&
+operator<< (::std::ostream&, const RPG_Map_Level_XMLTree_Type&);
+
+RPG_Map_Export
+::std::ostream&
+operator<< (::std::ostream&, const RPG_Map_State_XMLTree_Type&);
+
 #include <iosfwd>
 
 #include <xercesc/sax/InputSource.hpp>
 #include <xercesc/dom/DOMDocument.hpp>
 #include <xercesc/dom/DOMErrorHandler.hpp>
+
+// Parse a URI or a local file.
+//
+
+RPG_Map_Export
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (const ::std::string& uri,
+       ::xml_schema::flags f = 0,
+       const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+RPG_Map_Export
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (const ::std::string& uri,
+       ::xml_schema::error_handler& eh,
+       ::xml_schema::flags f = 0,
+       const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+RPG_Map_Export
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (const ::std::string& uri,
+       ::xercesc::DOMErrorHandler& eh,
+       ::xml_schema::flags f = 0,
+       const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+// Parse std::istream.
+//
+
+RPG_Map_Export
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (::std::istream& is,
+       ::xml_schema::flags f = 0,
+       const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+RPG_Map_Export
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (::std::istream& is,
+       ::xml_schema::error_handler& eh,
+       ::xml_schema::flags f = 0,
+       const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+RPG_Map_Export
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (::std::istream& is,
+       ::xercesc::DOMErrorHandler& eh,
+       ::xml_schema::flags f = 0,
+       const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+RPG_Map_Export
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (::std::istream& is,
+       const ::std::string& id,
+       ::xml_schema::flags f = 0,
+       const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+RPG_Map_Export
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (::std::istream& is,
+       const ::std::string& id,
+       ::xml_schema::error_handler& eh,
+       ::xml_schema::flags f = 0,
+       const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+RPG_Map_Export
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (::std::istream& is,
+       const ::std::string& id,
+       ::xercesc::DOMErrorHandler& eh,
+       ::xml_schema::flags f = 0,
+       const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+// Parse xercesc::InputSource.
+//
+
+RPG_Map_Export
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (::xercesc::InputSource& is,
+       ::xml_schema::flags f = 0,
+       const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+RPG_Map_Export
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (::xercesc::InputSource& is,
+       ::xml_schema::error_handler& eh,
+       ::xml_schema::flags f = 0,
+       const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+RPG_Map_Export
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (::xercesc::InputSource& is,
+       ::xercesc::DOMErrorHandler& eh,
+       ::xml_schema::flags f = 0,
+       const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+// Parse xercesc::DOMDocument.
+//
+
+RPG_Map_Export
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (const ::xercesc::DOMDocument& d,
+       ::xml_schema::flags f = 0,
+       const ::xml_schema::properties& p = ::xml_schema::properties ());
+
+RPG_Map_Export
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
+       ::xml_schema::flags f = 0,
+       const ::xml_schema::properties& p = ::xml_schema::properties ());
 
 #include <iosfwd>
 
@@ -341,6 +638,90 @@ RPG_Map_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Map_Door_XMLTree_Type&);
 
+RPG_Map_Export
+void
+operator<< (::xercesc::DOMElement&, const RPG_Map_Level_XMLTree_Type&);
+
+RPG_Map_Export
+void
+operator<< (::xercesc::DOMElement&, const RPG_Map_State_XMLTree_Type&);
+
+// Serialize to std::ostream.
+//
+
+RPG_Map_Export
+void
+map_t (::std::ostream& os,
+       const ::RPG_Map_Level_XMLTree_Type& x, 
+       const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
+       const ::std::string& e = "UTF-8",
+       ::xml_schema::flags f = 0);
+
+RPG_Map_Export
+void
+map_t (::std::ostream& os,
+       const ::RPG_Map_Level_XMLTree_Type& x, 
+       ::xml_schema::error_handler& eh,
+       const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
+       const ::std::string& e = "UTF-8",
+       ::xml_schema::flags f = 0);
+
+RPG_Map_Export
+void
+map_t (::std::ostream& os,
+       const ::RPG_Map_Level_XMLTree_Type& x, 
+       ::xercesc::DOMErrorHandler& eh,
+       const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
+       const ::std::string& e = "UTF-8",
+       ::xml_schema::flags f = 0);
+
+// Serialize to xercesc::XMLFormatTarget.
+//
+
+RPG_Map_Export
+void
+map_t (::xercesc::XMLFormatTarget& ft,
+       const ::RPG_Map_Level_XMLTree_Type& x, 
+       const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
+       const ::std::string& e = "UTF-8",
+       ::xml_schema::flags f = 0);
+
+RPG_Map_Export
+void
+map_t (::xercesc::XMLFormatTarget& ft,
+       const ::RPG_Map_Level_XMLTree_Type& x, 
+       ::xml_schema::error_handler& eh,
+       const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
+       const ::std::string& e = "UTF-8",
+       ::xml_schema::flags f = 0);
+
+RPG_Map_Export
+void
+map_t (::xercesc::XMLFormatTarget& ft,
+       const ::RPG_Map_Level_XMLTree_Type& x, 
+       ::xercesc::DOMErrorHandler& eh,
+       const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
+       const ::std::string& e = "UTF-8",
+       ::xml_schema::flags f = 0);
+
+// Serialize to an existing xercesc::DOMDocument.
+//
+
+RPG_Map_Export
+void
+map_t (::xercesc::DOMDocument& d,
+       const ::RPG_Map_Level_XMLTree_Type& x,
+       ::xml_schema::flags f = 0);
+
+// Serialize to a new xercesc::DOMDocument.
+//
+
+RPG_Map_Export
+::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >
+map_t (const ::RPG_Map_Level_XMLTree_Type& x, 
+       const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
+       ::xml_schema::flags f = 0);
+
 #include <xsd/cxx/post.hxx>
 
 // Begin epilogue.
@@ -348,4 +729,4 @@ operator<< (::xercesc::DOMElement&, const RPG_Map_Door_XMLTree_Type&);
 //
 // End epilogue.
 
-#endif // CXX___RPG_MAP_XML_TREE_H
+#endif // CXX__MAP_RPG_MAP_XML_TREE_H

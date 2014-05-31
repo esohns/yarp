@@ -38,9 +38,12 @@ struct GTK_cb_data_t
   GladeXML*                                       xml;
   std::string                                     schema_repository;
   RPG_Engine_Entity_t                             entity;
-  Character_Generator_GUI_SpriteGalleryIterator_t current_sprite;
+  RPG_Graphics_Sprite                             current_sprite;
+  Character_Generator_GUI_SpriteGalleryIterator_t sprite_gallery_iterator;
   Character_Generator_GUI_SpriteGallery_t         sprite_gallery;
 	bool                                            is_transient;
 };
+
+#define CHARACTER_GENERATOR_DEF_ENTITY_SPRITE SPRITE_HUMAN
 
 #endif

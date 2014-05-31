@@ -308,37 +308,43 @@ RPG_Engine::start()
 
   // start AI...
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->start();
-  // ...spawn roaming monsters ?
-  if (inherited2::myMetaData.spawn_interval != ACE_Time_Value::zero)
-  {
-		RPG_Engine_Event_t* spawn_event = NULL;
-		ACE_NEW_NORETURN(spawn_event,
-		                 RPG_Engine_Event_t());
-		if (!spawn_event)
-		{
-		  ACE_DEBUG((LM_CRITICAL,
-		             ACE_TEXT("failed to allocate memory, aborting\n")));
+  // ...auto-spawn (roaming) monsters ?
+  if ((inherited2::myMetaData.max_num_spawned > 0) &&
+      !inherited2::myMetaData.spawns.empty())
+    for (RPG_Engine_SpawnsIterator_t iterator = inherited2::myMetaData.spawns.begin();
+         iterator != inherited2::myMetaData.spawns.end();
+         iterator++)
+    {
+      RPG_Engine_Event_t* spawn_event = NULL;
+      ACE_NEW_NORETURN(spawn_event,
+                       RPG_Engine_Event_t());
+      if (!spawn_event)
+      {
+        ACE_DEBUG((LM_CRITICAL,
+                   ACE_TEXT("failed to allocate memory(%u), aborting\n"),
+                   sizeof(RPG_Engine_Event_t)));
 
-		  return;
-		} // end IF
-		spawn_event->type = EVENT_ENTITY_SPAWN;
-		spawn_event->entity_id = -1;
-		spawn_event->timer_id = -1;
+        return;
+      } // end IF
+      spawn_event->type = EVENT_ENTITY_SPAWN;
+      spawn_event->entity_id = -1;
+      spawn_event->timer_id = -1;
 
-		ACE_ASSERT(inherited2::myMetaData.spawn_timer == -1);
-		// *NOTE*: fire&forget API for spawn_event
-		inherited2::myMetaData.spawn_timer =
-				RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->schedule(spawn_event,
-																																 inherited2::myMetaData.spawn_interval,
-																																 false);
-    if (inherited2::myMetaData.spawn_timer == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to schedule spawn event, continuing\n")));
+			ACE_ASSERT((*iterator).timer_id == -1);
+			// *NOTE*: fire&forget API for spawn_event
+			(*iterator).timer_id =
+					RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->schedule(spawn_event,
+																																	 ACE_Time_Value((*iterator).spawn.interval.seconds,
+																																									(*iterator).spawn.interval.u_seconds),
+																																	 false);
+			if ((*iterator).timer_id == -1)
+				ACE_DEBUG((LM_ERROR,
+									 ACE_TEXT("failed to schedule spawn event, continuing\n")));
 
-		ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("scheduled spawn event (ID: %d)...\n"),
-							 inherited2::myMetaData.spawn_timer));
-  } // end IF
+			ACE_DEBUG((LM_DEBUG,
+								 ACE_TEXT("scheduled spawn event (ID: %d)...\n"),
+								 (*iterator).timer_id));
+		} // end FOR
 }
 
 void
@@ -351,12 +357,17 @@ RPG_Engine::stop()
     return;
 
   // stop AI (&& monster spawning)
-  ACE_ASSERT(inherited2::myMetaData.spawn_timer != -1);
-  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->cancel(inherited2::myMetaData.spawn_timer);
-	ACE_DEBUG((LM_DEBUG,
-            ACE_TEXT("cancelled spawn event (ID: %d)...\n"),
-						inherited2::myMetaData.spawn_timer));
-  inherited2::myMetaData.spawn_timer = -1;
+  for (RPG_Engine_SpawnsIterator_t iterator = inherited2::myMetaData.spawns.begin();
+       iterator != inherited2::myMetaData.spawns.end();
+       iterator++)
+    if ((*iterator).timer_id != -1)
+    {
+      RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->cancel((*iterator).timer_id);
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("cancelled spawn event (ID: %d)...\n"),
+                 (*iterator).timer_id));
+      (*iterator).timer_id = -1;
+    } // end IF
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->stop();
 
   // drop control message into the queue...
@@ -506,7 +517,6 @@ RPG_Engine::set(const RPG_Engine_Level_t& level_in)
 			std::make_pair(std::numeric_limits<unsigned int>::max(),
 										 std::numeric_limits<unsigned int>::max());
 	parameters.visible_radius = 0;
-  parameters.sprite = RPG_GRAPHICS_SPRITE_INVALID;
   try
   {
     myClient->notify(COMMAND_E2C_INIT,
@@ -521,7 +531,8 @@ RPG_Engine::set(const RPG_Engine_Level_t& level_in)
 }
 
 RPG_Engine_EntityID_t
-RPG_Engine::add(RPG_Engine_Entity_t* entity_in)
+RPG_Engine::add(RPG_Engine_Entity_t* entity_in,
+                const bool& lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::add"));
 
@@ -531,11 +542,12 @@ RPG_Engine::add(RPG_Engine_Entity_t* entity_in)
   ACE_ASSERT(myClient);
 
   RPG_Engine_EntityID_t id = myCurrentID++;
-  {
-    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-    myEntities[id] = entity_in;
-  } // end lock scope
+  if (lockedAccess_in)
+    myLock.acquire();
+  myEntities[id] = entity_in;
+  if (lockedAccess_in)
+    myLock.release();
 
   // notify AI
   unsigned char temp =
@@ -560,7 +572,6 @@ RPG_Engine::add(RPG_Engine_Entity_t* entity_in)
 			std::make_pair(std::numeric_limits<unsigned int>::max(),
 										 std::numeric_limits<unsigned int>::max());
 	parameters.visible_radius = 0;
-  parameters.sprite = entity_in->sprite;
   try
   {
     myClient->notify(COMMAND_E2C_ENTITY_ADD,
@@ -623,7 +634,6 @@ RPG_Engine::remove(const RPG_Engine_EntityID_t& id_in)
 			std::make_pair(std::numeric_limits<unsigned int>::max(),
 										 std::numeric_limits<unsigned int>::max());
 	parameters.visible_radius = 0;
-	parameters.sprite = RPG_GRAPHICS_SPRITE_INVALID;
   try
   {
     myClient->notify(COMMAND_E2C_ENTITY_REMOVE,
@@ -796,7 +806,6 @@ RPG_Engine::setActive(const RPG_Engine_EntityID_t& id_in)
 				std::make_pair(std::numeric_limits<unsigned int>::max(),
 											 std::numeric_limits<unsigned int>::max());
 		parameters.visible_radius = visible_radius;
-		parameters.sprite = RPG_GRAPHICS_SPRITE_INVALID;
     try
     {
       myClient->notify(COMMAND_E2C_ENTITY_VISION, parameters);
@@ -923,7 +932,8 @@ RPG_Engine::getPosition(const RPG_Engine_EntityID_t& id_in,
 
 RPG_Map_Position_t
 RPG_Engine::findValid(const RPG_Map_Position_t& center_in,
-                      const unsigned int& radius_in) const
+                      const unsigned int& radius_in,
+                      const bool& lockedAccess_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::findValid"));
 
@@ -932,7 +942,8 @@ RPG_Engine::findValid(const RPG_Map_Position_t& center_in,
       std::make_pair(std::numeric_limits<unsigned int>::max(),
                      std::numeric_limits<unsigned int>::max());
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  if (lockedAccess_in)
+    myLock.acquire();
 
   RPG_Map_Positions_t valid, occupied, possible;
   for (RPG_Engine_EntitiesConstIterator_t iterator = myEntities.begin();
@@ -966,6 +977,9 @@ RPG_Engine::findValid(const RPG_Map_Position_t& center_in,
     if (!possible.empty())
       break;
   } // end FOR
+
+  if (lockedAccess_in)
+    myLock.release();
 
   if (possible.empty())
   {
@@ -1128,6 +1142,65 @@ RPG_Engine::getName(const RPG_Engine_EntityID_t& id_in,
   } // end IF
 
   result = (*iterator).second->character->getName();
+
+  if (lockedAccess_in)
+    myLock.release();
+
+  return result;
+}
+
+RPG_Character_Class
+RPG_Engine::getClass(const RPG_Engine_EntityID_t& id_in,
+                     const bool& lockedAccess_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::getName"));
+
+  RPG_Character_Class result;
+  result.metaClass = RPG_CHARACTER_METACLASS_INVALID;
+//  result.subClasses.clear();
+
+  if (lockedAccess_in)
+    myLock.acquire();
+
+  RPG_Engine_EntitiesConstIterator_t iterator = myEntities.find(id_in);
+  ACE_ASSERT(iterator != myEntities.end());
+  if (iterator == myEntities.end())
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
+               id_in));
+
+    if (lockedAccess_in)
+      myLock.release();
+
+    // *CONSIDER*: --> false negative ?
+    return result;
+  } // end IF
+
+  RPG_Player_Player_Base* player_base = NULL;
+  try
+  {
+    player_base =
+        dynamic_cast<RPG_Player_Player_Base*>((*iterator).second->character);
+  }
+  catch (...)
+  {
+    player_base = NULL;
+  }
+  if (!player_base)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to dynamic_cast<RPG_Player_Player_Base*>(%@), returning\n"),
+               (*iterator).second->character));
+
+    // clean up
+    if (lockedAccess_in)
+      myLock.release();
+
+    return result;
+  } // end IF
+
+  result = player_base->getClass();
 
   if (lockedAccess_in)
     myLock.release();
@@ -1476,19 +1549,26 @@ RPG_Engine::canSee(const RPG_Engine_EntityID_t& id_in,
 }
 
 unsigned int
-RPG_Engine::numSpawned() const
+RPG_Engine::numSpawned(const std::string& type_in,
+                       const bool& lockedAccess_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::numSpawned"));
 
   unsigned int result = 0;
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  if (lockedAccess_in)
+    myLock.acquire();
 
   for (RPG_Engine_EntitiesConstIterator_t iterator = myEntities.begin();
        iterator != myEntities.end();
        iterator++)
-    if ((*iterator).second->is_spawned)
+    if ((*iterator).second->is_spawned &&
+        (type_in.empty() ||
+         (type_in == (*iterator).second->character->getName())))
       result++;
+
+  if (lockedAccess_in)
+    myLock.release();
 
   return result;
 }
@@ -1597,6 +1677,24 @@ RPG_Engine::getStartPosition(const bool& lockedAccess_in) const
     myLock.acquire();
 
   result = inherited2::getStartPosition();
+
+  if (lockedAccess_in)
+    myLock.release();
+
+  return result;
+}
+
+RPG_Map_Positions_t
+RPG_Engine::getSeedPoints(const bool& lockedAccess_in) const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::getSeedPoints"));
+
+  RPG_Map_Positions_t result;
+
+  if (lockedAccess_in)
+    myLock.acquire();
+
+  result = inherited2::getSeedPoints();
 
   if (lockedAccess_in)
     myLock.release();
@@ -1836,7 +1934,6 @@ RPG_Engine::handleEntities()
 						std::make_pair(std::numeric_limits<unsigned int>::max(),
 						               std::numeric_limits<unsigned int>::max());
 					parameters.visible_radius = 0;
-					parameters.sprite = RPG_GRAPHICS_SPRITE_INVALID;
           // *TODO*: implement combat situations, in-turn-movement, ...
           bool hit =
 						RPG_Engine_Common_Tools::attack((*iterator).second->character,
@@ -1931,7 +2028,6 @@ RPG_Engine::handleEntities()
 							std::make_pair(std::numeric_limits<unsigned int>::max(),
 							               std::numeric_limits<unsigned int>::max());
 						parameters.visible_radius = 0;
-						parameters.sprite = RPG_GRAPHICS_SPRITE_INVALID;
 						notifications.push_back(std::make_pair(current_action.command,
 																									 parameters));
           } // end IF
@@ -2050,7 +2146,6 @@ RPG_Engine::handleEntities()
           parameters.position = current_action.position;
 					parameters.previous_position = (*iterator).second->position;
 					parameters.visible_radius = 0;
-					parameters.sprite = RPG_GRAPHICS_SPRITE_INVALID;
           notifications.push_back(std::make_pair(COMMAND_E2C_ENTITY_POSITION,
 						                                     parameters));
 
@@ -2130,7 +2225,6 @@ RPG_Engine::handleEntities()
           std::make_pair(std::numeric_limits<unsigned int>::max(),
                          std::numeric_limits<unsigned int>::max());
       parameters.visible_radius = 0;
-      parameters.sprite = RPG_GRAPHICS_SPRITE_INVALID;
       try
       {
         myClient->notify(COMMAND_E2C_QUIT, parameters);

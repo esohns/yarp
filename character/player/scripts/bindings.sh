@@ -24,6 +24,15 @@ perl ${PERL_SCRIPT} -n RPG_Player > ./character/player/rpg_player_exports.h
 XML2CppCode -d RPG_Player_Export -e -f ./character/player/rpg_player.xsd -i -o ./character/player -s -u -x RPG_Player
 [ $? -ne 0 ] && echo "ERROR: failed to XML2CppCode, aborting" && exit 1
 
+# XML Parser/Map
+xsdcxx cxx-parser --type-map ./character/player/rpg_player.map --char-type char --output-dir ./character/player --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc ./character/player/rpg_player.xsd
+[ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
+# *NOTE*: xsdcxx improperly rearranges the included headers from the map file
+# --> move a repaired version back into the project directory
+# *IMPORTANT NOTE*: needs to be updated after every change
+cp -f ./character/player/scripts/rpg_player_XML_types.h ./item
+[ $? -ne 0 ] && echo "ERROR: failed to cp, aborting" && exit 1
+
 # XML Parser/Tree
 ## generate "XMLSchema" namespace include file (tree)
 #xsdcxx cxx-tree --char-type char --output-dir ./character/player --generate-serialization --generate-xml-schema --hxx-#suffix .h --show-anonymous --show-sloc ./character/player/rpg_XMLSchema_XML_tree.xsd

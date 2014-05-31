@@ -1,0 +1,35 @@
+namespace urn:rpg
+{
+  include "rpg_dice_incl.h";
+  include "rpg_common_incl.h";
+  include "rpg_common_environment_incl.h";
+  include "rpg_magic_incl.h";
+  include "rpg_item_incl.h";
+  include "rpg_character_incl.h";
+  include "rpg_player_incl.h";
+
+  RPG_Common_Condition_Type        RPG_Common_Condition;
+  RPG_Common_Size_Type             RPG_Common_Size;
+
+  RPG_Magic_SpellType_Type         RPG_Magic_SpellType;
+
+  RPG_Item_InventoryXML_Type       RPG_Item_InventoryXML;
+
+  RPG_Character_Ability_Type       RPG_Character_Ability;
+  RPG_Character_Alignment_Type     RPG_Character_Alignment;
+  RPG_Character_Attributes_Type    RPG_Character_Attributes;
+  RPG_Character_ClassXML_Type      RPG_Character_ClassXML;
+  RPG_Character_Feats_Type         RPG_Character_Feats;
+  RPG_Character_Gender_Type        RPG_Character_Gender;
+  RPG_Character_OffHand_Type       RPG_Character_OffHand;
+  RPG_Character_Race_Type          RPG_Character_Race;
+  RPG_Character_Skills_Type        RPG_Character_Skills;
+
+  RPG_Player_Abilities_Type        RPG_Player_Abilities;
+  RPG_Player_CharacterBaseXML_Type RPG_Player_CharacterBaseXML;
+  RPG_Player_CharacterXML_Type     RPG_Player_CharacterXML;
+  RPG_Player_Conditions_Type       RPG_Player_Conditions;
+  RPG_Player_PlayerXML_Type        RPG_Player_PlayerXML;
+  RPG_Player_Spells_Type           RPG_Player_Spells;
+  RPG_Player_State_Type            RPG_Player_State;
+}

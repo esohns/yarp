@@ -1115,8 +1115,7 @@ do_generatePlayer()
 }
 
 RPG_Engine_Entity_t
-do_generateEntity(const RPG_Player& player_in,
-                  const RPG_Graphics_Sprite& sprite_in)
+do_generateEntity(const RPG_Player& player_in)
 {
   RPG_TRACE(ACE_TEXT("::do_generateEntity"));
 
@@ -1124,7 +1123,6 @@ do_generateEntity(const RPG_Player& player_in,
   result.character = &const_cast<RPG_Player&>(player_in);
   result.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                    std::numeric_limits<unsigned int>::max());
-  result.sprite = sprite_in;
   result.is_spawned = false;
 
   return result;
@@ -1249,20 +1247,19 @@ do_work(const bool& generateEntity_in,
 
             if (generateEntity_in)
             {
-              entity = do_generateEntity(*player_p,
-                                         RPG_ENGINE_DEF_ENTITY_SPRITE);
+              entity = do_generateEntity(*player_p);
               if (!RPG_Engine_Common_Tools::saveEntity(entity,
                                                        path))
                 ACE_DEBUG((LM_ERROR,
                            ACE_TEXT("failed to RPG_Engine_Common_Tools::saveEntity(\"%s\"), continuing\n"),
-                           path.c_str()));
+                           ACE_TEXT(path.c_str())));
             } // end IF
             else
             {
               if (!player_p->save(path))
                 ACE_DEBUG((LM_ERROR,
                            ACE_TEXT("failed to RPG_Character_Player::save(\"%s\"), continuing\n"),
-                           path.c_str()));
+                           ACE_TEXT(path.c_str())));
             } // end ELSE
 
             break;
@@ -1296,30 +1293,29 @@ do_work(const bool& generateEntity_in,
 
       if (generateEntity_in)
       {
-        entity = do_generateEntity(*player_p,
-                                   RPG_ENGINE_DEF_ENTITY_SPRITE);
+        entity = do_generateEntity(*player_p);
         if (!RPG_Engine_Common_Tools::saveEntity(entity,
                                                  path))
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to RPG_Engine_Common_Tools::saveEntity(\"%s\"), continuing\n"),
-                     path.c_str()));
+                     ACE_TEXT(path.c_str())));
         else
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("saved entity \"%s\" to file: \"%s\"\n"),
-                     player_p->getName().c_str(),
-                     path.c_str()));
+                     ACE_TEXT(player_p->getName().c_str()),
+                     ACE_TEXT(path.c_str())));
       } // end IF
       else
       {
         if (!player_p->save(path))
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to RPG_Character_Player::save(\"%s\"), continuing\n"),
-                     path.c_str()));
+                     ACE_TEXT(path.c_str())));
         else
           ACE_DEBUG((LM_DEBUG,
                      ACE_TEXT("saved player \"%s\" to file: \"%s\"\n"),
-                     player_p->getName().c_str(),
-                     path.c_str()));
+                     ACE_TEXT(player_p->getName().c_str()),
+                     ACE_TEXT(path.c_str())));
       } // end ELSE
 
       num_players++;

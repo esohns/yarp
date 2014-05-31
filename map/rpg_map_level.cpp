@@ -193,10 +193,11 @@ RPG_Map_Level::random(const RPG_Map_FloorPlan_Configuration_t& floorPlanConfigur
       floorPlanConfiguration_in;
 
   // step1: min room size
-  if (map_configuration.min_room_size == 0) // <-- ! don't care
+  if (map_configuration.min_room_size ==
+      std::numeric_limits<unsigned int>::max())
   {
     result.clear();
-    RPG_Dice::generateRandomNumbers(RPG_MAP_ROOM_SIZE_MAX + 1,
+    RPG_Dice::generateRandomNumbers(RPG_MAP_DEF_MIN_ROOM_SIZE_MAX + 1,
                                     1,
                                     result);
     map_configuration.min_room_size = (result.front() - 1);
@@ -243,7 +244,7 @@ RPG_Map_Level::random(const RPG_Map_FloorPlan_Configuration_t& floorPlanConfigur
   if (map_configuration.num_areas == 0)
   {
     result.clear();
-    RPG_Dice::generateRandomNumbers(RPG_MAP_NUM_AREAS_MAX,
+    RPG_Dice::generateRandomNumbers(RPG_MAP_DEF_NUM_AREAS_MAX,
                                     1,
                                     result);
     map_configuration.num_areas = result.front();
@@ -264,15 +265,15 @@ RPG_Map_Level::random(const RPG_Map_FloorPlan_Configuration_t& floorPlanConfigur
       (map_configuration.map_size_y == 0))
   {
     result.clear();
-    RPG_Dice::generateRandomNumbers(RPG_MAP_SIZE_MAX + 1 -
-                                    RPG_MAP_SIZE_MIN,
+    RPG_Dice::generateRandomNumbers(RPG_MAP_DEF_SIZE_MAX + 1 -
+                                    RPG_MAP_DEF_SIZE_MIN,
                                     2,
                                     result);
     if (map_configuration.map_size_x == 0)
-      map_configuration.map_size_x = (RPG_MAP_SIZE_MIN +
+      map_configuration.map_size_x = (RPG_MAP_DEF_SIZE_MIN +
                                       result.front() - 1);
     if (map_configuration.map_size_y == 0)
-      map_configuration.map_size_y = (RPG_MAP_SIZE_MIN +
+      map_configuration.map_size_y = (RPG_MAP_DEF_SIZE_MIN +
                                       result.back() - 1);
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("generated size: [%u,%u]\n"),

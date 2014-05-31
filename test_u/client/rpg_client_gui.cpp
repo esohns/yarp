@@ -132,35 +132,7 @@ event_timer_SDL_cb(Uint32 interval_in,
                    ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
                    ACE_TEXT(SDL_GetError())));
     } // end IF
-
-    //// dispatch GTK events (if any ?)
-    //if (data->gtk_time < RPG_CLIENT_SDL_GTKEVENT_RESOLUTION)
-    //  return interval_in; // re-schedule
-
-    //data->gtk_time = 0;
   } // end lock scope
-
-  //// dispatch a pending GTK event
-  //gdk_threads_enter();
-  //if (gtk_events_pending())
-  //{
-  //  // there are pending GTK events --> trigger an event
-  //  sdl_event.type = RPG_CLIENT_SDL_GTKEVENT;
-
-  //  if (SDL_PushEvent(&sdl_event))
-  //    ACE_DEBUG((LM_ERROR,
-  //               ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
-  //               ACE_TEXT(SDL_GetError())));
-  //} // end IF
-  //gdk_threads_leave();
-
-  //// trigger regular screen refreshes
-  //sdl_event.type = RPG_CLIENT_SDL_TIMEREVENT;
-
-  //if (SDL_PushEvent(&sdl_event))
-  //  ACE_DEBUG((LM_ERROR,
-  //             ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
-  //             ACE_TEXT(SDL_GetError())));
 
   // re-schedule
   return interval_in;
@@ -1105,7 +1077,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
 //
 //       break;
 //     } // end IF
-    if (SDL_WaitEvent(&sdl_event) != 1)
+    if (SDL_WaitEvent(&sdl_event) == 0)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
@@ -1853,6 +1825,14 @@ ACE_TMAIN(int argc_in,
   {
     do_printUsage(std::string(ACE::basename(argv_in[0])));
 
+    // clean up
+    // *PORTABILITY*: on Windows, must fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+      if (ACE::fini() == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#endif
+
     return EXIT_FAILURE;
   } // end IF
 
@@ -1882,6 +1862,14 @@ ACE_TMAIN(int argc_in,
     // make 'em learn...
     do_printUsage(std::string(ACE::basename(argv_in[0])));
 
+    // clean up
+    // *PORTABILITY*: on Windows, must fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+      if (ACE::fini() == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#endif
+
     return EXIT_FAILURE;
   } // end IF
 
@@ -1889,6 +1877,14 @@ ACE_TMAIN(int argc_in,
   if (print_version_and_exit)
   {
     do_printVersion(std::string(ACE::basename(argv_in[0])));
+
+    // clean up
+    // *PORTABILITY*: on Windows, must fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+      if (ACE::fini() == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#endif
 
     return EXIT_SUCCESS;
   } // end IF
@@ -1910,17 +1906,18 @@ ACE_TMAIN(int argc_in,
 	GTK_user_data.level_metadata.environment.outdoors =
 			RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_OUTDOORS;
 	//
-	GTK_user_data.level_metadata.roaming_monsters.push_back(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TYPE));
-	GTK_user_data.level_metadata.spawn_interval.set(RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TIMER_INTERVAL,
-																									0);
-	GTK_user_data.level_metadata.spawn_probability    =
-			RPG_ENGINE_LEVEL_AI_DEF_SPAWN_PROBABILITY;
-	GTK_user_data.level_metadata.max_spawned          =
-			RPG_ENGINE_LEVEL_AI_NUM_SPAWNED_MAX;
-	GTK_user_data.level_metadata.spawn_timer          = -1;
-	GTK_user_data.level_metadata.amble_probability    =
-			RPG_ENGINE_LEVEL_AI_DEF_AMBLE_PROBABILITY;
-
+	RPG_Engine_Spawn_t spawn;
+	spawn.spawn.type = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TYPE);
+	spawn.spawn.interval.seconds = RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TIMER_INTERVAL;
+	spawn.spawn.interval.u_seconds = 0;
+	spawn.spawn.probability =	RPG_ENGINE_LEVEL_AI_DEF_SPAWN_PROBABILITY;
+	spawn.spawn.max_num_spawned =	RPG_ENGINE_LEVEL_AI_DEF_NUM_SPAWNED_MAX;
+	spawn.spawn.amble_probability = RPG_ENGINE_LEVEL_AI_DEF_AMBLE_PROBABILITY;
+	spawn.timer_id = -1;
+	GTK_user_data.level_metadata.spawns.push_back(spawn);
+	GTK_user_data.level_metadata.max_num_spawned =
+			RPG_ENGINE_LEVEL_AI_DEF_NUM_SPAWNED_MAX;
+	//
   GTK_user_data.map_configuration.min_room_size          =
       RPG_CLIENT_DEF_MAP_MIN_ROOM_SIZE;
   GTK_user_data.map_configuration.doors                  =
@@ -1956,7 +1953,15 @@ ACE_TMAIN(int argc_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Common_Tools::initLogging(), aborting\n")));
 
-    return EXIT_SUCCESS;
+    // clean up
+    // *PORTABILITY*: on Windows, must fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+      if (ACE::fini() == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#endif
+
+    return EXIT_FAILURE;
   } // end IF
 
   // step1da: init configuration object
@@ -2088,6 +2093,14 @@ ACE_TMAIN(int argc_in,
                SDL_init_flags,
                ACE_TEXT(SDL_GetError())));
 
+    // clean up
+    // *PORTABILITY*: on Windows, must fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+      if (ACE::fini() == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#endif
+
     return EXIT_FAILURE;
   } // end IF
   if (TTF_Init() == -1)
@@ -2099,6 +2112,12 @@ ACE_TMAIN(int argc_in,
 		// clean up
 		SDL_VideoQuit();
 		SDL_Quit();
+		// *PORTABILITY*: on Windows, must fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+      if (ACE::fini() == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -2148,6 +2167,14 @@ ACE_TMAIN(int argc_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Profile_Timer::elapsed_time: \"%m\", aborting\n")));
 
+    // clean up
+    // *PORTABILITY*: on Windows, must fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+      if (ACE::fini() == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+    #endif
+
     return EXIT_FAILURE;
   } // end IF
   ACE_Profile_Timer::Rusage elapsed_rusage;
@@ -2195,10 +2222,9 @@ ACE_TMAIN(int argc_in,
              ACE_TEXT(system_time_string.c_str())));
 #endif
 
-// *PORTABILITY*: on Windows, we must fini ACE...
+// *PORTABILITY*: on Windows, must fini ACE...
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
   if (ACE::fini() == -1)
-  {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
 

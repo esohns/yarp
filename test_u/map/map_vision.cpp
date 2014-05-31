@@ -207,8 +207,16 @@ do_work(const bool& debugParser_in,
 
   // step1: load floor plan
   RPG_Engine_Level_t level;
-  level = RPG_Engine_Level::load(filename_in,
-                                 schemaRepository_in);
+  if (!RPG_Engine_Level::load(filename_in,
+                              schemaRepository_in,
+                              level))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to load level plan (was: \"%s\"), aborting\n"),
+               ACE_TEXT(filename_in.c_str())));
+
+    return;
+  } // end IF
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("loaded level plan %s\n"),
@@ -443,7 +451,7 @@ ACE_TMAIN(int argc_in,
                            debug_parser,
                            floor_plan,
                            trace_information,
-                           print_version_and_exit)))
+                           print_version_and_exit))
   {
     // make 'em learn...
     do_printUsage(std::string(ACE::basename(argv_in[0])));
@@ -496,9 +504,9 @@ ACE_TMAIN(int argc_in,
   ACE_High_Res_Timer timer;
   timer.start();
   // step2: do actual work
-  do_work(debugParser,
-          floorPlan,
-          schemaRepository);
+  do_work(debug_parser,
+          floor_plan,
+          schema_repository);
   timer.stop();
 
   // debug info

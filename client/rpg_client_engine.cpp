@@ -495,12 +495,11 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       RPG_Graphics_GraphicTypeUnion type;
       type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
       myEngine->lock();
-      if (!myEngine->isMonster(parameters_in.entity_id, false))
-        type.sprite = parameters_in.sprite;
-      else
-        type.sprite =
-            RPG_Client_Common_Tools::monster2Sprite(myEngine->getName(parameters_in.entity_id,
-                                                                      false));
+      type.sprite =
+          (myEngine->isMonster(parameters_in.entity_id, false) ? RPG_Client_Common_Tools::class2Sprite(myEngine->getClass(parameters_in.entity_id,
+                                                                                                                          false))
+                                                               : RPG_Client_Common_Tools::monster2Sprite(myEngine->getName(parameters_in.entity_id,
+                                                                                                                           false)));
       sprite_graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
                                                               true,   // convert to display format
                                                               false); // don't cache

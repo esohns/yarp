@@ -24,18 +24,11 @@
 #include "rpg_engine_command.h"
 #include "rpg_engine_entitymode.h"
 
-#include "rpg_graphics_sprite.h"
-#include "rpg_graphics_floorstyle.h"
-#include "rpg_graphics_edgestyle.h"
-#include "rpg_graphics_wallstyle.h"
-#include "rpg_graphics_doorstyle.h"
-#include "rpg_graphics_style.h"
-
 #include "rpg_map_common.h"
 
-#include "rpg_monster_common.h"
-
 #include "rpg_player_base.h"
+
+#include "rpg_monster_common.h"
 
 #include "rpg_common_environment.h"
 #include "rpg_common_condition.h"
@@ -70,11 +63,9 @@ typedef RPG_Engine_Actions_t::const_iterator RPG_Engine_ActionsConstIterator_t;
 struct RPG_Engine_Entity_t
 {
   RPG_Player_Base*        character;
-  RPG_Map_Position_t      position;
   RPG_Engine_EntityMode_t modes;
+  RPG_Map_Position_t      position;
   RPG_Engine_Actions_t    actions;
-  // *TODO*: this does not really belong here...
-  RPG_Graphics_Sprite     sprite;
   // monster - onlies
   bool                    is_spawned;
 };
@@ -86,20 +77,23 @@ typedef std::list<RPG_Engine_EntityID_t> RPG_Engine_EntityList_t;
 typedef RPG_Engine_EntityList_t::iterator RPG_Engine_EntityListIterator_t;
 typedef RPG_Engine_EntityList_t::const_iterator RPG_Engine_EntityListConstIterator_t;
 
+struct RPG_Engine_Spawn_t
+{
+  RPG_Monster_Spawn spawn;
+  long              timer_id;
+};
+typedef std::vector<RPG_Engine_Spawn_t> RPG_Engine_Spawns_t;
+typedef RPG_Engine_Spawns_t::iterator RPG_Engine_SpawnsIterator_t;
+typedef RPG_Engine_Spawns_t::const_iterator RPG_Engine_SpawnsConstIterator_t;
 struct RPG_Engine_LevelMetaData_t
 {
   std::string            name;
+
   RPG_Common_Environment environment;
 
-  // roaming monsters
-  // *TODO*: rather, define "toughness" (HD)
-  RPG_Monster_List_t     roaming_monsters;
-  ACE_Time_Value         spawn_interval; // == rate
-  float                  spawn_probability; // % [0.0 - 1.0]
-  // *NOTE*: # concurrent (!) instances
-  unsigned int           max_spawned; // 0: don't auto-spawn
-  long                   spawn_timer;
-  float                  amble_probability; // % [0.0 - 1.0]
+  // (roaming) monsters
+  RPG_Engine_Spawns_t    spawns;
+  unsigned int           max_num_spawned; // 0: don't auto-spawn, INT_MAX: unlimited
 };
 struct RPG_Engine_Level_t
 {
@@ -226,7 +220,6 @@ struct RPG_Engine_ClientNotificationParameters_t
 	RPG_Map_Position_t    position;
 	RPG_Map_Position_t    previous_position;
 	unsigned char         visible_radius;
-	RPG_Graphics_Sprite   sprite;
 	std::string           message;
 };
 //typedef std::vector<void*> RPG_Engine_ClientParameters_t;

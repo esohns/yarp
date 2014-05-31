@@ -67,7 +67,6 @@ class RPG_Player_Export RPG_Player
  private:
   typedef RPG_Player_Player_Base inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Player());
   ACE_UNIMPLEMENTED_FUNC(RPG_Player& operator=(const RPG_Player&));
 };

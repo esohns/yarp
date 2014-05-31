@@ -50,15 +50,15 @@ enum RPG_Map_Element
 
 struct RPG_Map_FloorPlan_Configuration_t
 {
-  unsigned int min_room_size; // 0: don't care
   bool         doors;
   bool         corridors;
-  unsigned int max_num_doors_per_room; // 0: don't care
-  bool         maximize_rooms;
-  unsigned int num_areas;
-  bool         square_rooms;
   unsigned int map_size_x;
   unsigned int map_size_y;
+  unsigned int max_num_doors_per_room; // 0: don't care
+  bool         maximize_rooms;
+  unsigned int min_room_size;          // 0: don't care
+  unsigned int num_areas;
+  bool         square_rooms;
 };
 
 typedef std::pair<unsigned int, unsigned int> RPG_Map_Size_t;

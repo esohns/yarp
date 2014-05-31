@@ -78,7 +78,8 @@ class RPG_Engine_Export RPG_Engine
   void set(const RPG_Engine_Level_t&); // level
 
   // *WARNING*: fire&forget API, added NPC (!) entities are controlled by the engine
-  RPG_Engine_EntityID_t add(RPG_Engine_Entity_t*); // entity
+  RPG_Engine_EntityID_t add(RPG_Engine_Entity_t*, // entity handle
+                            const bool& = true);  // locked access ?
   void remove(const RPG_Engine_EntityID_t&); // id
   bool exists(const RPG_Engine_EntityID_t&) const; // id
   void action(const RPG_Engine_EntityID_t&, // id
@@ -94,7 +95,8 @@ class RPG_Engine_Export RPG_Engine
   RPG_Map_Position_t getPosition(const RPG_Engine_EntityID_t&, // id
                                  const bool& = true) const;    // locked access ?
   RPG_Map_Position_t findValid(const RPG_Map_Position_t&,      // center
-                               const unsigned int& = 0) const; // max (square !) radius [0: whereever]
+                               const unsigned int& = 0,        // max (square !) radius [0: whereever]
+                               const bool& = true) const;      // locked access ?
   RPG_Engine_EntityID_t hasEntity(const RPG_Map_Position_t&, // position
                                   const bool& = true) const; // locked access ?
   RPG_Engine_EntityList_t entities(const RPG_Map_Position_t&, // sort: position (closest first)
@@ -103,7 +105,10 @@ class RPG_Engine_Export RPG_Engine
                  const bool& = true) const;    // locked access ?
   std::string getName(const RPG_Engine_EntityID_t&, // id
                       const bool& = true) const;    // locked access ?
-  unsigned int numSpawned() const;
+  RPG_Character_Class getClass(const RPG_Engine_EntityID_t&, // id
+                               const bool& = true) const;    // locked access ?
+  unsigned int numSpawned(const std::string&,        // type (empty: total)
+                          const bool& = true) const; // locked access ?
 
   // vision
   unsigned char getVisibleRadius(const RPG_Engine_EntityID_t&, // id
@@ -130,6 +135,7 @@ class RPG_Engine_Export RPG_Engine
   // map
   RPG_Engine_LevelMetaData_t getMetaData(const bool& = true) const; // locked access ?
   RPG_Map_Position_t getStartPosition(const bool& = true) const; // locked access ?
+  RPG_Map_Positions_t getSeedPoints(const bool& = true) const; // locked access ?
   RPG_Map_Size_t getSize(const bool& = true) const; // locked access ?
   RPG_Map_DoorState state(const RPG_Map_Position_t&, // position
                           const bool& = true) const; // locked access ?
@@ -152,6 +158,7 @@ class RPG_Engine_Export RPG_Engine
   // hide unwanted funcionality
   using RPG_Engine_Level::init;
   using RPG_Engine_Level::getMetaData;
+  using RPG_Engine_Level::getSeedPoints;
   using RPG_Engine_Level::findPath;
 
   ACE_UNIMPLEMENTED_FUNC(RPG_Engine(const RPG_Engine&));

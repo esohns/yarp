@@ -24,13 +24,15 @@
 #include <ace/Default_Constants.h>
 //#include <limits>
 
-// *** trace log ***
 // *PORTABILITY*: pathnames are not portable --> (try to) use %TEMP% on Windows
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-#define RPG_COMMON_DEF_LOG_DIRECTORY              "TEMP"
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+#define RPG_COMMON_DEF_DUMP_DIR                   "/var/tmp"
 #else
-#define RPG_COMMON_DEF_LOG_DIRECTORY              "/var/tmp"
+#define RPG_COMMON_DEF_DUMP_DIR                   "TEMP" // environment
 #endif
+
+// *** trace log ***
+#define RPG_COMMON_DEF_LOG_DIRECTORY              RPG_COMMON_DEF_DUMP_DIR
 #define RPG_COMMON_LOG_FILENAME_SUFFIX            ".log"
 #define RPG_COMMON_LOG_VERBOSE                    false
 
@@ -67,12 +69,6 @@
 // BASEDIR-specific
 #define RPG_COMMON_DATA_SUB                       "data"
 #define RPG_COMMON_CONFIG_SUB                     "config"
-
-#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
-#define RPG_COMMON_DEF_DUMP_DIR                   "/var/tmp"
-#else
-#define RPG_COMMON_DEF_DUMP_DIR                   "TEMP" // environment
-#endif
 
 #if !defined(ACE_WIN32) && !defined(ACE_WIN64)
 #define RPG_COMMON_DEF_USER_LOGIN_BASE            "LOGNAME" // environment

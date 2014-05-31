@@ -54,6 +54,8 @@ class RPG_Common_Export RPG_Common_File_Tools
   // *NOTE*: (try to) create the directory if it doesn't exist
   static std::string getUserConfigurationDirectory();
 
+  static std::string getDumpDirectory();
+
   static std::string getLogFilename(const std::string&); // program name
 
  private:

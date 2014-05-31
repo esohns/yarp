@@ -176,7 +176,7 @@ RPG_Map_Common_Tools::createFloorPlan(const unsigned int& dimensionX_in,
     index++;
   } while (some_rooms_empty);
 
-  if (wantCorridors_in)
+  if (!rooms.empty() && wantCorridors_in)
   {
 //     displayRooms(dimensionX_in,
 //                  dimensionY_in,
@@ -213,28 +213,51 @@ RPG_Map_Common_Tools::createFloorPlan(const unsigned int& dimensionX_in,
        iterator != partition.end();
        iterator++, rooms_iter++, boundaries_iter++)
   {
-    // *NOTE*: iff the actual seed position does not lie within (!) the
-    // corresponding room, choose a random position that does...
-    if (((*rooms_iter).find((*iterator).seed) != (*rooms_iter).end()) &&
-        ((*boundaries_iter).find((*iterator).seed) == (*boundaries_iter).end()))
+    if (rooms.empty())
     {
-      seedPositions_out.insert((*iterator).seed);
-      continue;
-    } // end IF
+      RPG_Map_Positions_t partition_area, perimeter;
+      RPG_Map_PositionList_t valid_area;
+      RPG_Map_Common_Tools::perimeter((*iterator).area, perimeter);
+      partition_area.insert((*iterator).area.begin(), (*iterator).area.end());
+      RPG_Map_PositionListIterator_t area_iterator2 =
+          std::set_difference(partition_area.begin(), partition_area.end(),
+                              perimeter.begin(), perimeter.end(),
+                              valid_area.begin());
 
-    // find a position within (!) the room...
-    do
-    {
+      // find a position within (!) the partition...
       roll_result.clear();
-      area_iterator = (*rooms_iter).begin();
-      RPG_Dice::generateRandomNumbers((*rooms_iter).size(),
+      RPG_Dice::generateRandomNumbers(valid_area.size(),
                                       1,
                                       roll_result);
-      std::advance(area_iterator, roll_result.front() - 1);
-    } while ((*boundaries_iter).find(*area_iterator) !=
-             (*boundaries_iter).end()); // try again ?
+      std::advance(area_iterator2, roll_result.front() - 1);
 
-    seedPositions_out.insert(*area_iterator);
+      seedPositions_out.insert(*area_iterator2);
+    } // end IF
+    else
+    {
+      // *NOTE*: iff the actual seed position does not lie within (!) the
+      // corresponding room, choose a random position that does...
+      if (((*rooms_iter).find((*iterator).seed)      != (*rooms_iter).end())      &&
+          ((*boundaries_iter).find((*iterator).seed) == (*boundaries_iter).end()))
+      {
+        seedPositions_out.insert((*iterator).seed);
+        continue;
+      } // end IF
+
+      // find a position within (!) the room...
+      do
+      {
+        roll_result.clear();
+        area_iterator = (*rooms_iter).begin();
+        RPG_Dice::generateRandomNumbers((*rooms_iter).size(),
+                                        1,
+                                        roll_result);
+        std::advance(area_iterator, roll_result.front() - 1);
+      } while ((*boundaries_iter).find(*area_iterator) !=
+               (*boundaries_iter).end()); // try again ?
+
+      seedPositions_out.insert(*area_iterator);
+    } // end ELSE
   } // end FOR
 }
 
@@ -868,13 +891,12 @@ RPG_Map_Common_Tools::makeRooms(const unsigned int& dimensionX_in,
     if (cropAreas_in)
     {
       // *NOTE*: crop until the size is stable
-      // i.e. if (min. breadth/width is <3/3), the whole room will be cropped
+      // i.e. if (min. breadth/width is < 3/3), the whole room will be cropped
       // --> too slim/flat...
       do
       {
         last_size = current_area.size();
 
-        //// debug info
         //displayRoom(dimensionX_in,
         //            dimensionY_in,
         //            current_zone);
@@ -1193,7 +1215,7 @@ RPG_Map_Common_Tools::makeRooms(const unsigned int& dimensionX_in,
             {
               ACE_DEBUG((LM_ERROR,
                          ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                         RPG_Map_Common_Tools::direction2String(*crop_iter).c_str()));
+                         ACE_TEXT(RPG_Map_Common_Tools::direction2String(*crop_iter).c_str())));
 
               ACE_ASSERT(false);
 
@@ -1202,7 +1224,6 @@ RPG_Map_Common_Tools::makeRooms(const unsigned int& dimensionX_in,
           } // end SWITCH
         } // end FOR
 
-        //// debug info
         //displayRoom(dimensionX_in,
         //            dimensionY_in,
         //            *zones_iter);
@@ -1229,12 +1250,14 @@ RPG_Map_Common_Tools::makeRooms(const unsigned int& dimensionX_in,
   } // end IF
 
   // step3: compute the perimeter
+  RPG_Map_Positions_t positions;
   for (arealist_iter = rooms_out.begin();
        arealist_iter != rooms_out.end();
        arealist_iter++)
   {
     current_area.clear();
-    perimeter(*arealist_iter, current_area);
+    perimeter(*arealist_iter, positions);
+    current_area.insert(positions.begin(), positions.end());
     boundaries_out.push_back(current_area);
   } // end FOR
 }
@@ -3956,7 +3979,7 @@ RPG_Map_Common_Tools::isSquare(const RPG_Map_Positions_t& area_in)
 
 void
 RPG_Map_Common_Tools::perimeter(const RPG_Map_Area_t& room_in,
-                                RPG_Map_Area_t& perimeter_out)
+                                RPG_Map_Positions_t& perimeter_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::perimeter"));
 

@@ -24,9 +24,9 @@ perl ${PERL_SCRIPT} -n RPG_Item > ./item/rpg_item_exports.h
 XML2CppCode -d RPG_Item_Export -e -f ./item/rpg_item.xsd -i -o ./item -s -u -x RPG_Item
 [ $? -ne 0 ] && echo "ERROR: failed to XML2CppCode, aborting" && exit 1
 
-# generate "XMLSchema" namespace include file (rpg_item.xsd)
-xsdcxx cxx-parser --char-type char --output-dir ./item --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ./item/rpg_XMLSchema_XML_types.xsd
-[ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
+## generate "XMLSchema" namespace include file (rpg_item.xsd)
+#xsdcxx cxx-parser --char-type char --output-dir ./item --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ./item/rpg_XMLSchema_XML_types.xsd
+#[ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
 
 # generate parser include/implementation (rpg_item.xsd)
 xsdcxx cxx-parser --type-map ./item/rpg_item.map --char-type char --output-dir ./item --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc --export-symbol "RPG_Item_Export" --hxx-prologue "#include \"rpg_item_exports.h\"" ./item/rpg_item.xsd

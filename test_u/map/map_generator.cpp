@@ -29,6 +29,8 @@
 #include "rpg_config.h"
 #endif
 
+#include "map_generator_defines.h"
+
 #include "rpg_graphics_common_tools.h"
 
 #include "rpg_engine_defines.h"
@@ -57,18 +59,6 @@
 #include <set>
 #include <sstream>
 #include <iostream>
-
-#define MAP_GENERATOR_DEF_MIN_ROOMSIZE          0
-#define MAP_GENERATOR_DEF_DOORS                 true
-#define MAP_GENERATOR_DEF_CORRIDORS             true
-#define MAP_GENERATOR_DEF_LEVEL                 false
-#define MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM 3
-#define MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE     true
-#define MAP_GENERATOR_DEF_DUMP                  false
-#define MAP_GENERATOR_DEF_NUM_AREAS             5
-#define MAP_GENERATOR_DEF_SQUARE_ROOMS          true
-#define MAP_GENERATOR_DEF_DIMENSION_X           80
-#define MAP_GENERATOR_DEF_DIMENSION_Y           40
 
 typedef std::set<char> Map_Generator_Options_t;
 typedef Map_Generator_Options_t::const_iterator Map_Generator_OptionsIterator_t;
@@ -413,11 +403,9 @@ do_work(const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
       level.metadata.environment.lighting = RPG_COMMON_AMBIENTLIGHTING_INVALID;
       level.metadata.environment.outdoors = false;
 
-      level.metadata.spawn_interval       = ACE_Time_Value::zero;
-      level.metadata.spawn_probability    = 0.0F;
-      level.metadata.max_spawned          = 0;
-      level.metadata.spawn_timer          = -1;
-      level.metadata.amble_probability    = 0.0F;
+      level.metadata.max_num_spawned      = 0;
+      level.metadata.name.clear();
+      level.metadata.spawns.clear();
 
       RPG_Engine_Level::random(level.metadata,
                                mapConfig_in,
@@ -441,15 +429,18 @@ do_work(const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
       level.metadata.environment.outdoors =
           RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_OUTDOORS;
 
-      level.metadata.roaming_monsters.push_back(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TYPE));
-      level.metadata.spawn_interval.set(RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TIMER_INTERVAL,
-                                        0);
-      level.metadata.spawn_probability    =
-          RPG_ENGINE_LEVEL_AI_DEF_SPAWN_PROBABILITY;
-      level.metadata.max_spawned          = RPG_ENGINE_LEVEL_AI_NUM_SPAWNED_MAX;
-      level.metadata.spawn_timer          = -1;
-      level.metadata.amble_probability    =
-          RPG_ENGINE_LEVEL_AI_DEF_AMBLE_PROBABILITY;
+      RPG_Engine_Spawn_t spawn;
+      spawn.spawn.amble_probability = RPG_ENGINE_LEVEL_AI_DEF_AMBLE_PROBABILITY;
+      spawn.spawn.interval.seconds =
+          RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TIMER_INTERVAL;
+      spawn.spawn.interval.u_seconds = 0;
+      spawn.spawn.max_num_spawned = RPG_ENGINE_LEVEL_AI_DEF_NUM_SPAWNED_MAX;
+      spawn.spawn.probability = RPG_ENGINE_LEVEL_AI_DEF_SPAWN_PROBABILITY;
+      spawn.spawn.type =
+          ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TYPE);
+      spawn.timer_id = -1;
+      level.metadata.spawns.push_back(spawn);
+      level.metadata.max_num_spawned = RPG_ENGINE_LEVEL_AI_DEF_NUM_SPAWNED_MAX;
 
       RPG_Engine_Level::create(mapConfig_in,
                                level);

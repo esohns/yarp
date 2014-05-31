@@ -33,7 +33,6 @@
 
 // Begin prologue.
 //
-#include "stdafx.h"
 //
 // End prologue.
 
@@ -175,6 +174,128 @@ void RPG_Map_Door_XMLTree_Type::
 state (::std::auto_ptr< state_type > x)
 {
   this->state_.set (x);
+}
+
+
+// RPG_Map_Level_XMLTree_Type
+// 
+
+const RPG_Map_Level_XMLTree_Type::name_type& RPG_Map_Level_XMLTree_Type::
+name () const
+{
+  return this->name_.get ();
+}
+
+RPG_Map_Level_XMLTree_Type::name_type& RPG_Map_Level_XMLTree_Type::
+name ()
+{
+  return this->name_.get ();
+}
+
+void RPG_Map_Level_XMLTree_Type::
+name (const name_type& x)
+{
+  this->name_.set (x);
+}
+
+void RPG_Map_Level_XMLTree_Type::
+name (::std::auto_ptr< name_type > x)
+{
+  this->name_.set (x);
+}
+
+const RPG_Map_Level_XMLTree_Type::environment_type& RPG_Map_Level_XMLTree_Type::
+environment () const
+{
+  return this->environment_.get ();
+}
+
+RPG_Map_Level_XMLTree_Type::environment_type& RPG_Map_Level_XMLTree_Type::
+environment ()
+{
+  return this->environment_.get ();
+}
+
+void RPG_Map_Level_XMLTree_Type::
+environment (const environment_type& x)
+{
+  this->environment_.set (x);
+}
+
+void RPG_Map_Level_XMLTree_Type::
+environment (::std::auto_ptr< environment_type > x)
+{
+  this->environment_.set (x);
+}
+
+const RPG_Map_Level_XMLTree_Type::map_type& RPG_Map_Level_XMLTree_Type::
+map () const
+{
+  return this->map_.get ();
+}
+
+RPG_Map_Level_XMLTree_Type::map_type& RPG_Map_Level_XMLTree_Type::
+map ()
+{
+  return this->map_.get ();
+}
+
+void RPG_Map_Level_XMLTree_Type::
+map (const map_type& x)
+{
+  this->map_.set (x);
+}
+
+void RPG_Map_Level_XMLTree_Type::
+map (::std::auto_ptr< map_type > x)
+{
+  this->map_.set (x);
+}
+
+
+// RPG_Map_State_XMLTree_Type
+// 
+
+const RPG_Map_State_XMLTree_Type::file_type& RPG_Map_State_XMLTree_Type::
+file () const
+{
+  return this->file_.get ();
+}
+
+RPG_Map_State_XMLTree_Type::file_type& RPG_Map_State_XMLTree_Type::
+file ()
+{
+  return this->file_.get ();
+}
+
+void RPG_Map_State_XMLTree_Type::
+file (const file_type& x)
+{
+  this->file_.set (x);
+}
+
+void RPG_Map_State_XMLTree_Type::
+file (::std::auto_ptr< file_type > x)
+{
+  this->file_.set (x);
+}
+
+const RPG_Map_State_XMLTree_Type::door_sequence& RPG_Map_State_XMLTree_Type::
+door () const
+{
+  return this->door_;
+}
+
+RPG_Map_State_XMLTree_Type::door_sequence& RPG_Map_State_XMLTree_Type::
+door ()
+{
+  return this->door_;
+}
+
+void RPG_Map_State_XMLTree_Type::
+door (const door_sequence& s)
+{
+  this->door_ = s;
 }
 
 
@@ -503,6 +624,280 @@ operator!= (const RPG_Map_Door_XMLTree_Type& x, const RPG_Map_Door_XMLTree_Type&
   return !(x == y);
 }
 
+// RPG_Map_Level_XMLTree_Type
+//
+
+RPG_Map_Level_XMLTree_Type::
+RPG_Map_Level_XMLTree_Type (const name_type& name,
+                            const environment_type& environment,
+                            const map_type& map)
+: ::xml_schema::type (),
+  name_ (name, ::xml_schema::flags (), this),
+  environment_ (environment, ::xml_schema::flags (), this),
+  map_ (map, ::xml_schema::flags (), this)
+{
+}
+
+RPG_Map_Level_XMLTree_Type::
+RPG_Map_Level_XMLTree_Type (const name_type& name,
+                            ::std::auto_ptr< environment_type >& environment,
+                            const map_type& map)
+: ::xml_schema::type (),
+  name_ (name, ::xml_schema::flags (), this),
+  environment_ (environment, ::xml_schema::flags (), this),
+  map_ (map, ::xml_schema::flags (), this)
+{
+}
+
+RPG_Map_Level_XMLTree_Type::
+RPG_Map_Level_XMLTree_Type (const RPG_Map_Level_XMLTree_Type& x,
+                            ::xml_schema::flags f,
+                            ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  name_ (x.name_, f, this),
+  environment_ (x.environment_, f, this),
+  map_ (x.map_, f, this)
+{
+}
+
+RPG_Map_Level_XMLTree_Type::
+RPG_Map_Level_XMLTree_Type (const ::xercesc::DOMElement& e,
+                            ::xml_schema::flags f,
+                            ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  name_ (f, this),
+  environment_ (f, this),
+  map_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+    this->parse (p, f);
+  }
+}
+
+void RPG_Map_Level_XMLTree_Type::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_elements (); p.next_element ())
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // name
+    //
+    if (n.name () == "name" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< name_type > r (
+        name_traits::create (i, f, this));
+
+      if (!name_.present ())
+      {
+        this->name_.set (r);
+        continue;
+      }
+    }
+
+    // environment
+    //
+    if (n.name () == "environment" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< environment_type > r (
+        environment_traits::create (i, f, this));
+
+      if (!environment_.present ())
+      {
+        this->environment_.set (r);
+        continue;
+      }
+    }
+
+    // map
+    //
+    if (n.name () == "map" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< map_type > r (
+        map_traits::create (i, f, this));
+
+      if (!map_.present ())
+      {
+        this->map_.set (r);
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!name_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "name",
+      "urn:rpg");
+  }
+
+  if (!environment_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "environment",
+      "urn:rpg");
+  }
+
+  if (!map_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "map",
+      "urn:rpg");
+  }
+}
+
+RPG_Map_Level_XMLTree_Type* RPG_Map_Level_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Map_Level_XMLTree_Type (*this, f, c);
+}
+
+RPG_Map_Level_XMLTree_Type::
+~RPG_Map_Level_XMLTree_Type ()
+{
+}
+
+bool
+operator== (const RPG_Map_Level_XMLTree_Type& x, const RPG_Map_Level_XMLTree_Type& y)
+{
+  if (!(x.name () == y.name ()))
+    return false;
+
+  if (!(x.environment () == y.environment ()))
+    return false;
+
+  if (!(x.map () == y.map ()))
+    return false;
+
+  return true;
+}
+
+bool
+operator!= (const RPG_Map_Level_XMLTree_Type& x, const RPG_Map_Level_XMLTree_Type& y)
+{
+  return !(x == y);
+}
+
+// RPG_Map_State_XMLTree_Type
+//
+
+RPG_Map_State_XMLTree_Type::
+RPG_Map_State_XMLTree_Type (const file_type& file)
+: ::xml_schema::type (),
+  file_ (file, ::xml_schema::flags (), this),
+  door_ (::xml_schema::flags (), this)
+{
+}
+
+RPG_Map_State_XMLTree_Type::
+RPG_Map_State_XMLTree_Type (const RPG_Map_State_XMLTree_Type& x,
+                            ::xml_schema::flags f,
+                            ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  file_ (x.file_, f, this),
+  door_ (x.door_, f, this)
+{
+}
+
+RPG_Map_State_XMLTree_Type::
+RPG_Map_State_XMLTree_Type (const ::xercesc::DOMElement& e,
+                            ::xml_schema::flags f,
+                            ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  file_ (f, this),
+  door_ (f, this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+    this->parse (p, f);
+  }
+}
+
+void RPG_Map_State_XMLTree_Type::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_elements (); p.next_element ())
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // file
+    //
+    if (n.name () == "file" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< file_type > r (
+        file_traits::create (i, f, this));
+
+      if (!file_.present ())
+      {
+        this->file_.set (r);
+        continue;
+      }
+    }
+
+    // door
+    //
+    if (n.name () == "door" && n.namespace_ () == "urn:rpg")
+    {
+      ::std::auto_ptr< door_type > r (
+        door_traits::create (i, f, this));
+
+      this->door_.push_back (r);
+      continue;
+    }
+
+    break;
+  }
+
+  if (!file_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "file",
+      "urn:rpg");
+  }
+}
+
+RPG_Map_State_XMLTree_Type* RPG_Map_State_XMLTree_Type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class RPG_Map_State_XMLTree_Type (*this, f, c);
+}
+
+RPG_Map_State_XMLTree_Type::
+~RPG_Map_State_XMLTree_Type ()
+{
+}
+
+bool
+operator== (const RPG_Map_State_XMLTree_Type& x, const RPG_Map_State_XMLTree_Type& y)
+{
+  if (!(x.file () == y.file ()))
+    return false;
+
+  if (!(x.door () == y.door ()))
+    return false;
+
+  return true;
+}
+
+bool
+operator!= (const RPG_Map_State_XMLTree_Type& x, const RPG_Map_State_XMLTree_Type& y)
+{
+  return !(x == y);
+}
+
 #include <ostream>
 
 ::std::ostream&
@@ -533,9 +928,312 @@ operator<< (::std::ostream& o, const RPG_Map_Door_XMLTree_Type& i)
   return o;
 }
 
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Map_Level_XMLTree_Type& i)
+{
+  o << ::std::endl << "name: " << i.name ();
+  o << ::std::endl << "environment: " << i.environment ();
+  o << ::std::endl << "map: " << i.map ();
+  return o;
+}
+
+::std::ostream&
+operator<< (::std::ostream& o, const RPG_Map_State_XMLTree_Type& i)
+{
+  o << ::std::endl << "file: " << i.file ();
+  for (RPG_Map_State_XMLTree_Type::door_const_iterator
+       b (i.door ().begin ()), e (i.door ().end ());
+       b != e; ++b)
+  {
+    o << ::std::endl << "door: " << *b;
+  }
+
+  return o;
+}
+
 #include <istream>
 #include <xsd/cxx/xml/sax/std-input-source.hxx>
 #include <xsd/cxx/tree/error-handler.hxx>
+
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (const ::std::string& u,
+       ::xml_schema::flags f,
+       const ::xml_schema::properties& p)
+{
+  ::xsd::cxx::xml::auto_initializer i (
+    (f & ::xml_schema::flags::dont_initialize) == 0,
+    (f & ::xml_schema::flags::keep_dom) == 0);
+
+  ::xsd::cxx::tree::error_handler< char > h;
+
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xsd::cxx::xml::dom::parse< char > (
+      u, h, p, f));
+
+  h.throw_if_failed< ::xsd::cxx::tree::parsing< char > > ();
+
+  ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type > r (
+    ::map_t (
+      d, f | ::xml_schema::flags::own_dom, p));
+
+  return r;
+}
+
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (const ::std::string& u,
+       ::xml_schema::error_handler& h,
+       ::xml_schema::flags f,
+       const ::xml_schema::properties& p)
+{
+  ::xsd::cxx::xml::auto_initializer i (
+    (f & ::xml_schema::flags::dont_initialize) == 0,
+    (f & ::xml_schema::flags::keep_dom) == 0);
+
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xsd::cxx::xml::dom::parse< char > (
+      u, h, p, f));
+
+  if (!d.get ())
+    throw ::xsd::cxx::tree::parsing< char > ();
+
+  ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type > r (
+    ::map_t (
+      d, f | ::xml_schema::flags::own_dom, p));
+
+  return r;
+}
+
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (const ::std::string& u,
+       ::xercesc::DOMErrorHandler& h,
+       ::xml_schema::flags f,
+       const ::xml_schema::properties& p)
+{
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xsd::cxx::xml::dom::parse< char > (
+      u, h, p, f));
+
+  if (!d.get ())
+    throw ::xsd::cxx::tree::parsing< char > ();
+
+  ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type > r (
+    ::map_t (
+      d, f | ::xml_schema::flags::own_dom, p));
+
+  return r;
+}
+
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (::std::istream& is,
+       ::xml_schema::flags f,
+       const ::xml_schema::properties& p)
+{
+  ::xsd::cxx::xml::auto_initializer i (
+    (f & ::xml_schema::flags::dont_initialize) == 0,
+    (f & ::xml_schema::flags::keep_dom) == 0);
+
+  ::xsd::cxx::xml::sax::std_input_source isrc (is);
+  return ::map_t (isrc, f, p);
+}
+
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (::std::istream& is,
+       ::xml_schema::error_handler& h,
+       ::xml_schema::flags f,
+       const ::xml_schema::properties& p)
+{
+  ::xsd::cxx::xml::auto_initializer i (
+    (f & ::xml_schema::flags::dont_initialize) == 0,
+    (f & ::xml_schema::flags::keep_dom) == 0);
+
+  ::xsd::cxx::xml::sax::std_input_source isrc (is);
+  return ::map_t (isrc, h, f, p);
+}
+
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (::std::istream& is,
+       ::xercesc::DOMErrorHandler& h,
+       ::xml_schema::flags f,
+       const ::xml_schema::properties& p)
+{
+  ::xsd::cxx::xml::sax::std_input_source isrc (is);
+  return ::map_t (isrc, h, f, p);
+}
+
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (::std::istream& is,
+       const ::std::string& sid,
+       ::xml_schema::flags f,
+       const ::xml_schema::properties& p)
+{
+  ::xsd::cxx::xml::auto_initializer i (
+    (f & ::xml_schema::flags::dont_initialize) == 0,
+    (f & ::xml_schema::flags::keep_dom) == 0);
+
+  ::xsd::cxx::xml::sax::std_input_source isrc (is, sid);
+  return ::map_t (isrc, f, p);
+}
+
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (::std::istream& is,
+       const ::std::string& sid,
+       ::xml_schema::error_handler& h,
+       ::xml_schema::flags f,
+       const ::xml_schema::properties& p)
+{
+  ::xsd::cxx::xml::auto_initializer i (
+    (f & ::xml_schema::flags::dont_initialize) == 0,
+    (f & ::xml_schema::flags::keep_dom) == 0);
+
+  ::xsd::cxx::xml::sax::std_input_source isrc (is, sid);
+  return ::map_t (isrc, h, f, p);
+}
+
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (::std::istream& is,
+       const ::std::string& sid,
+       ::xercesc::DOMErrorHandler& h,
+       ::xml_schema::flags f,
+       const ::xml_schema::properties& p)
+{
+  ::xsd::cxx::xml::sax::std_input_source isrc (is, sid);
+  return ::map_t (isrc, h, f, p);
+}
+
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (::xercesc::InputSource& i,
+       ::xml_schema::flags f,
+       const ::xml_schema::properties& p)
+{
+  ::xsd::cxx::tree::error_handler< char > h;
+
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xsd::cxx::xml::dom::parse< char > (
+      i, h, p, f));
+
+  h.throw_if_failed< ::xsd::cxx::tree::parsing< char > > ();
+
+  ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type > r (
+    ::map_t (
+      d, f | ::xml_schema::flags::own_dom, p));
+
+  return r;
+}
+
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (::xercesc::InputSource& i,
+       ::xml_schema::error_handler& h,
+       ::xml_schema::flags f,
+       const ::xml_schema::properties& p)
+{
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xsd::cxx::xml::dom::parse< char > (
+      i, h, p, f));
+
+  if (!d.get ())
+    throw ::xsd::cxx::tree::parsing< char > ();
+
+  ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type > r (
+    ::map_t (
+      d, f | ::xml_schema::flags::own_dom, p));
+
+  return r;
+}
+
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (::xercesc::InputSource& i,
+       ::xercesc::DOMErrorHandler& h,
+       ::xml_schema::flags f,
+       const ::xml_schema::properties& p)
+{
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xsd::cxx::xml::dom::parse< char > (
+      i, h, p, f));
+
+  if (!d.get ())
+    throw ::xsd::cxx::tree::parsing< char > ();
+
+  ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type > r (
+    ::map_t (
+      d, f | ::xml_schema::flags::own_dom, p));
+
+  return r;
+}
+
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (const ::xercesc::DOMDocument& d,
+       ::xml_schema::flags f,
+       const ::xml_schema::properties& p)
+{
+  if (f & ::xml_schema::flags::keep_dom)
+  {
+    ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > c (
+      static_cast< ::xercesc::DOMDocument* > (d.cloneNode (true)));
+
+    ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type > r (
+      ::map_t (
+        c, f | ::xml_schema::flags::own_dom, p));
+
+    return r;
+  }
+
+  const ::xercesc::DOMElement& e (*d.getDocumentElement ());
+  const ::xsd::cxx::xml::qualified_name< char > n (
+    ::xsd::cxx::xml::dom::name< char > (e));
+
+  if (n.name () == "map_t" &&
+      n.namespace_ () == "urn:rpg")
+  {
+    ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type > r (
+      ::xsd::cxx::tree::traits< ::RPG_Map_Level_XMLTree_Type, char >::create (
+        e, f, 0));
+    return r;
+  }
+
+  throw ::xsd::cxx::tree::unexpected_element < char > (
+    n.name (),
+    n.namespace_ (),
+    "map_t",
+    "urn:rpg");
+}
+
+::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
+map_t (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
+       ::xml_schema::flags f,
+       const ::xml_schema::properties&)
+{
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > c (
+    ((f & ::xml_schema::flags::keep_dom) &&
+     !(f & ::xml_schema::flags::own_dom))
+    ? static_cast< ::xercesc::DOMDocument* > (d->cloneNode (true))
+    : 0);
+
+  ::xercesc::DOMDocument& doc (c.get () ? *c : *d);
+  const ::xercesc::DOMElement& e (*doc.getDocumentElement ());
+
+  const ::xsd::cxx::xml::qualified_name< char > n (
+    ::xsd::cxx::xml::dom::name< char > (e));
+
+  if (f & ::xml_schema::flags::keep_dom)
+    doc.setUserData (::xml_schema::dom::tree_node_key,
+                     (c.get () ? &c : &d),
+                     0);
+
+  if (n.name () == "map_t" &&
+      n.namespace_ () == "urn:rpg")
+  {
+    ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type > r (
+      ::xsd::cxx::tree::traits< ::RPG_Map_Level_XMLTree_Type, char >::create (
+        e, f, 0));
+    return r;
+  }
+
+  throw ::xsd::cxx::tree::unexpected_element < char > (
+    n.name (),
+    n.namespace_ (),
+    "map_t",
+    "urn:rpg");
+}
 
 #include <ostream>
 #include <xsd/cxx/tree/error-handler.hxx>
@@ -618,6 +1316,229 @@ operator<< (::xercesc::DOMElement& e, const RPG_Map_Door_XMLTree_Type& i)
 
     s << i.state ();
   }
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Map_Level_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // name
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "name",
+        "urn:rpg",
+        e));
+
+    s << i.name ();
+  }
+
+  // environment
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "environment",
+        "urn:rpg",
+        e));
+
+    s << i.environment ();
+  }
+
+  // map
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "map",
+        "urn:rpg",
+        e));
+
+    s << i.map ();
+  }
+}
+
+void
+operator<< (::xercesc::DOMElement& e, const RPG_Map_State_XMLTree_Type& i)
+{
+  e << static_cast< const ::xml_schema::type& > (i);
+
+  // file
+  //
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "file",
+        "urn:rpg",
+        e));
+
+    s << i.file ();
+  }
+
+  // door
+  //
+  for (RPG_Map_State_XMLTree_Type::door_const_iterator
+       b (i.door ().begin ()), n (i.door ().end ());
+       b != n; ++b)
+  {
+    ::xercesc::DOMElement& s (
+      ::xsd::cxx::xml::dom::create_element (
+        "door",
+        "urn:rpg",
+        e));
+
+    s << *b;
+  }
+}
+
+void
+map_t (::std::ostream& o,
+       const ::RPG_Map_Level_XMLTree_Type& s,
+       const ::xml_schema::namespace_infomap& m,
+       const ::std::string& e,
+       ::xml_schema::flags f)
+{
+  ::xsd::cxx::xml::auto_initializer i (
+    (f & ::xml_schema::flags::dont_initialize) == 0);
+
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::map_t (s, m, f));
+
+  ::xsd::cxx::tree::error_handler< char > h;
+
+  ::xsd::cxx::xml::dom::ostream_format_target t (o);
+  if (!::xsd::cxx::xml::dom::serialize (t, *d, e, h, f))
+  {
+    h.throw_if_failed< ::xsd::cxx::tree::serialization< char > > ();
+  }
+}
+
+void
+map_t (::std::ostream& o,
+       const ::RPG_Map_Level_XMLTree_Type& s,
+       ::xml_schema::error_handler& h,
+       const ::xml_schema::namespace_infomap& m,
+       const ::std::string& e,
+       ::xml_schema::flags f)
+{
+  ::xsd::cxx::xml::auto_initializer i (
+    (f & ::xml_schema::flags::dont_initialize) == 0);
+
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::map_t (s, m, f));
+  ::xsd::cxx::xml::dom::ostream_format_target t (o);
+  if (!::xsd::cxx::xml::dom::serialize (t, *d, e, h, f))
+  {
+    throw ::xsd::cxx::tree::serialization< char > ();
+  }
+}
+
+void
+map_t (::std::ostream& o,
+       const ::RPG_Map_Level_XMLTree_Type& s,
+       ::xercesc::DOMErrorHandler& h,
+       const ::xml_schema::namespace_infomap& m,
+       const ::std::string& e,
+       ::xml_schema::flags f)
+{
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::map_t (s, m, f));
+  ::xsd::cxx::xml::dom::ostream_format_target t (o);
+  if (!::xsd::cxx::xml::dom::serialize (t, *d, e, h, f))
+  {
+    throw ::xsd::cxx::tree::serialization< char > ();
+  }
+}
+
+void
+map_t (::xercesc::XMLFormatTarget& t,
+       const ::RPG_Map_Level_XMLTree_Type& s,
+       const ::xml_schema::namespace_infomap& m,
+       const ::std::string& e,
+       ::xml_schema::flags f)
+{
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::map_t (s, m, f));
+
+  ::xsd::cxx::tree::error_handler< char > h;
+
+  if (!::xsd::cxx::xml::dom::serialize (t, *d, e, h, f))
+  {
+    h.throw_if_failed< ::xsd::cxx::tree::serialization< char > > ();
+  }
+}
+
+void
+map_t (::xercesc::XMLFormatTarget& t,
+       const ::RPG_Map_Level_XMLTree_Type& s,
+       ::xml_schema::error_handler& h,
+       const ::xml_schema::namespace_infomap& m,
+       const ::std::string& e,
+       ::xml_schema::flags f)
+{
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::map_t (s, m, f));
+  if (!::xsd::cxx::xml::dom::serialize (t, *d, e, h, f))
+  {
+    throw ::xsd::cxx::tree::serialization< char > ();
+  }
+}
+
+void
+map_t (::xercesc::XMLFormatTarget& t,
+       const ::RPG_Map_Level_XMLTree_Type& s,
+       ::xercesc::DOMErrorHandler& h,
+       const ::xml_schema::namespace_infomap& m,
+       const ::std::string& e,
+       ::xml_schema::flags f)
+{
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::map_t (s, m, f));
+  if (!::xsd::cxx::xml::dom::serialize (t, *d, e, h, f))
+  {
+    throw ::xsd::cxx::tree::serialization< char > ();
+  }
+}
+
+void
+map_t (::xercesc::DOMDocument& d,
+       const ::RPG_Map_Level_XMLTree_Type& s,
+       ::xml_schema::flags)
+{
+  ::xercesc::DOMElement& e (*d.getDocumentElement ());
+  const ::xsd::cxx::xml::qualified_name< char > n (
+    ::xsd::cxx::xml::dom::name< char > (e));
+
+  if (n.name () == "map_t" &&
+      n.namespace_ () == "urn:rpg")
+  {
+    e << s;
+  }
+  else
+  {
+    throw ::xsd::cxx::tree::unexpected_element < char > (
+      n.name (),
+      n.namespace_ (),
+      "map_t",
+      "urn:rpg");
+  }
+}
+
+::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >
+map_t (const ::RPG_Map_Level_XMLTree_Type& s,
+       const ::xml_schema::namespace_infomap& m,
+       ::xml_schema::flags f)
+{
+  ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument > d (
+    ::xsd::cxx::xml::dom::serialize< char > (
+      "map_t",
+      "urn:rpg",
+      m, f));
+
+  ::map_t (*d, s, f);
+  return d;
 }
 
 #include <xsd/cxx/post.hxx>

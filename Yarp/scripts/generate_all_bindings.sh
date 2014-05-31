@@ -24,7 +24,6 @@ PROJECT_DIR=${DEFAULT_PROJECT_DIR}
 
 echo "generating .so exports headers..."
 ${PROJECT_DIR}/chance/scripts/exports.sh
-${PROJECT_DIR}/client/scripts/exports.sh
 ${PROJECT_DIR}/net/scripts/exports.sh
 ${PROJECT_DIR}/net/protocol/scripts/exports.sh
 ${PROJECT_DIR}/net/stream/scripts/exports.sh
@@ -46,6 +45,7 @@ ${PROJECT_DIR}/item/scripts/bindings.sh
 ${PROJECT_DIR}/magic/scripts/bindings.sh
 ${PROJECT_DIR}/map/scripts/bindings.sh
 ${PROJECT_DIR}/sound/scripts/bindings.sh
+${PROJECT_DIR}/client/scripts/bindings.sh
 [ $? -ne 0 ] && echo "ERROR: failed generating XML data bindings, aborting" && exit 1
 echo "generating XML data bindings...DONE"
 

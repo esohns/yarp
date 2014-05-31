@@ -6,15 +6,8 @@
             elementFormDefault="qualified"
             attributeFormDefault="unqualified">
 
-<!-- include chance_dice schema -->
-<!--   <xsd:include schemaLocation="rpg_dice.xsd"/> -->
-<!-- include common schema -->
-<!--   <xsd:include schemaLocation="rpg_common.xsd"/> -->
-<!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
-<!--   import chance_dice schema (as declared above) -->
-<!--   <xsd:import namespace="urn:rpg" schemaLocation="rpg_dice.xsd"/> -->
-<!--   import item schema (as declared above) -->
-<!--   <xsd:import namespace="urn:rpg" schemaLocation="rpg_item.xsd"/> -->
+<!-- include common environment schema -->
+  <xsd:include schemaLocation="rpg_common_environment.xsd"/>
 
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
@@ -44,5 +37,24 @@
       <xsd:element name="state" type="RPG_Map_DoorState_Type" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
+
+  <xsd:complexType name="RPG_Map_Level_Type" id="skip2">
+    <xsd:sequence>
+      <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="environment" type="RPG_Common_Environment_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="map" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Map_State_Type" id="skip3">
+    <xsd:sequence>
+      <xsd:element name="file" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="door" type="RPG_Map_Door_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+<!-- substitution group roots -->
+  <xsd:element name="map_t" type="RPG_Map_Level_Type"/>
+<!--  <xsd:element name="map_state_t" type="RPG_Map_State_Type"/>-->
 
 </xsd:schema>

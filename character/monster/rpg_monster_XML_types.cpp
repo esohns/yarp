@@ -1124,6 +1124,151 @@ RPG_Monster_PropertiesXML_Type_pskel ()
 {
 }
 
+// RPG_Monster_StateBase_Type_pskel
+//
+
+void RPG_Monster_StateBase_Type_pskel::
+conditions_parser (::RPG_Player_Conditions_Type_pskel& p)
+{
+  this->conditions_parser_ = &p;
+}
+
+void RPG_Monster_StateBase_Type_pskel::
+HP_parser (::xml_schema::short_pskel& p)
+{
+  this->HP_parser_ = &p;
+}
+
+void RPG_Monster_StateBase_Type_pskel::
+gold_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->gold_parser_ = &p;
+}
+
+void RPG_Monster_StateBase_Type_pskel::
+spells_parser (::RPG_Player_Spells_Type_pskel& p)
+{
+  this->spells_parser_ = &p;
+}
+
+void RPG_Monster_StateBase_Type_pskel::
+inventory_parser (::RPG_Item_InventoryXML_Type_pskel& p)
+{
+  this->inventory_parser_ = &p;
+}
+
+void RPG_Monster_StateBase_Type_pskel::
+parsers (::RPG_Player_Conditions_Type_pskel& conditions,
+         ::xml_schema::short_pskel& HP,
+         ::xml_schema::unsigned_int_pskel& gold,
+         ::RPG_Player_Spells_Type_pskel& spells,
+         ::RPG_Item_InventoryXML_Type_pskel& inventory)
+{
+  this->conditions_parser_ = &conditions;
+  this->HP_parser_ = &HP;
+  this->gold_parser_ = &gold;
+  this->spells_parser_ = &spells;
+  this->inventory_parser_ = &inventory;
+}
+
+RPG_Monster_StateBase_Type_pskel::
+RPG_Monster_StateBase_Type_pskel ()
+: conditions_parser_ (0),
+  HP_parser_ (0),
+  gold_parser_ (0),
+  spells_parser_ (0),
+  inventory_parser_ (0)
+{
+}
+
+// RPG_Monster_State_Type_pskel
+//
+
+void RPG_Monster_State_Type_pskel::
+monster_parser (::xml_schema::string_pskel& p)
+{
+  this->monster_parser_ = &p;
+}
+
+void RPG_Monster_State_Type_pskel::
+parsers (::RPG_Player_Conditions_Type_pskel& conditions,
+         ::xml_schema::short_pskel& HP,
+         ::xml_schema::unsigned_int_pskel& gold,
+         ::RPG_Player_Spells_Type_pskel& spells,
+         ::RPG_Item_InventoryXML_Type_pskel& inventory,
+         ::xml_schema::string_pskel& monster)
+{
+  this->conditions_parser_ = &conditions;
+  this->HP_parser_ = &HP;
+  this->gold_parser_ = &gold;
+  this->spells_parser_ = &spells;
+  this->inventory_parser_ = &inventory;
+  this->monster_parser_ = &monster;
+}
+
+RPG_Monster_State_Type_pskel::
+RPG_Monster_State_Type_pskel ()
+: monster_parser_ (0)
+{
+}
+
+// RPG_Monster_Spawn_Type_pskel
+//
+
+void RPG_Monster_Spawn_Type_pskel::
+type_parser (::xml_schema::string_pskel& p)
+{
+  this->type_parser_ = &p;
+}
+
+void RPG_Monster_Spawn_Type_pskel::
+interval_parser (::RPG_Common_FixedPeriod_Type_pskel& p)
+{
+  this->interval_parser_ = &p;
+}
+
+void RPG_Monster_Spawn_Type_pskel::
+probability_parser (::xml_schema::float_pskel& p)
+{
+  this->probability_parser_ = &p;
+}
+
+void RPG_Monster_Spawn_Type_pskel::
+max_num_spawned_parser (::xml_schema::unsigned_int_pskel& p)
+{
+  this->max_num_spawned_parser_ = &p;
+}
+
+void RPG_Monster_Spawn_Type_pskel::
+amble_probability_parser (::xml_schema::float_pskel& p)
+{
+  this->amble_probability_parser_ = &p;
+}
+
+void RPG_Monster_Spawn_Type_pskel::
+parsers (::xml_schema::string_pskel& type,
+         ::RPG_Common_FixedPeriod_Type_pskel& interval,
+         ::xml_schema::float_pskel& probability,
+         ::xml_schema::unsigned_int_pskel& max_num_spawned,
+         ::xml_schema::float_pskel& amble_probability)
+{
+  this->type_parser_ = &type;
+  this->interval_parser_ = &interval;
+  this->probability_parser_ = &probability;
+  this->max_num_spawned_parser_ = &max_num_spawned;
+  this->amble_probability_parser_ = &amble_probability;
+}
+
+RPG_Monster_Spawn_Type_pskel::
+RPG_Monster_Spawn_Type_pskel ()
+: type_parser_ (0),
+  interval_parser_ (0),
+  probability_parser_ (0),
+  max_num_spawned_parser_ (0),
+  amble_probability_parser_ (0)
+{
+}
+
 // RPG_Monster_Dictionary_Type_pskel
 //
 
@@ -3781,6 +3926,360 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->levelAdjustment_parser_)
       this->levelAdjustment (this->levelAdjustment_parser_->post_unsigned_byte ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Monster_StateBase_Type_pskel
+//
+
+void RPG_Monster_StateBase_Type_pskel::
+conditions ()
+{
+}
+
+void RPG_Monster_StateBase_Type_pskel::
+HP (short)
+{
+}
+
+void RPG_Monster_StateBase_Type_pskel::
+gold (unsigned int)
+{
+}
+
+void RPG_Monster_StateBase_Type_pskel::
+spells ()
+{
+}
+
+void RPG_Monster_StateBase_Type_pskel::
+inventory ()
+{
+}
+
+void RPG_Monster_StateBase_Type_pskel::
+post_RPG_Monster_StateBase_Type ()
+{
+}
+
+bool RPG_Monster_StateBase_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "conditions" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->conditions_parser_;
+
+    if (this->conditions_parser_)
+      this->conditions_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "HP" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->HP_parser_;
+
+    if (this->HP_parser_)
+      this->HP_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "gold" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->gold_parser_;
+
+    if (this->gold_parser_)
+      this->gold_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "spells" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->spells_parser_;
+
+    if (this->spells_parser_)
+      this->spells_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "inventory" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->inventory_parser_;
+
+    if (this->inventory_parser_)
+      this->inventory_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Monster_StateBase_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "conditions" && ns == "urn:rpg")
+  {
+    if (this->conditions_parser_)
+    {
+      this->conditions_parser_->post_RPG_Player_Conditions_Type ();
+      this->conditions ();
+    }
+
+    return true;
+  }
+
+  if (n == "HP" && ns == "urn:rpg")
+  {
+    if (this->HP_parser_)
+      this->HP (this->HP_parser_->post_short ());
+
+    return true;
+  }
+
+  if (n == "gold" && ns == "urn:rpg")
+  {
+    if (this->gold_parser_)
+      this->gold (this->gold_parser_->post_unsigned_int ());
+
+    return true;
+  }
+
+  if (n == "spells" && ns == "urn:rpg")
+  {
+    if (this->spells_parser_)
+    {
+      this->spells_parser_->post_RPG_Player_Spells_Type ();
+      this->spells ();
+    }
+
+    return true;
+  }
+
+  if (n == "inventory" && ns == "urn:rpg")
+  {
+    if (this->inventory_parser_)
+    {
+      this->inventory_parser_->post_RPG_Item_InventoryXML_Type ();
+      this->inventory ();
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Monster_State_Type_pskel
+//
+
+void RPG_Monster_State_Type_pskel::
+monster (const ::std::string&)
+{
+}
+
+void RPG_Monster_State_Type_pskel::
+post_RPG_Monster_State_Type ()
+{
+  post_RPG_Monster_StateBase_Type ();
+}
+
+bool RPG_Monster_State_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::RPG_Monster_StateBase_Type_pskel::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "monster" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->monster_parser_;
+
+    if (this->monster_parser_)
+      this->monster_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Monster_State_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::RPG_Monster_StateBase_Type_pskel::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "monster" && ns == "urn:rpg")
+  {
+    if (this->monster_parser_)
+      this->monster (this->monster_parser_->post_string ());
+
+    return true;
+  }
+
+  return false;
+}
+
+// RPG_Monster_Spawn_Type_pskel
+//
+
+void RPG_Monster_Spawn_Type_pskel::
+type (const ::std::string&)
+{
+}
+
+void RPG_Monster_Spawn_Type_pskel::
+interval ()
+{
+}
+
+void RPG_Monster_Spawn_Type_pskel::
+probability (float)
+{
+}
+
+void RPG_Monster_Spawn_Type_pskel::
+max_num_spawned (unsigned int)
+{
+}
+
+void RPG_Monster_Spawn_Type_pskel::
+amble_probability (float)
+{
+}
+
+bool RPG_Monster_Spawn_Type_pskel::
+_start_element_impl (const ::xml_schema::ro_string& ns,
+                     const ::xml_schema::ro_string& n,
+                     const ::xml_schema::ro_string* t)
+{
+  XSD_UNUSED (t);
+
+  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+    return true;
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->type_parser_;
+
+    if (this->type_parser_)
+      this->type_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "interval" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->interval_parser_;
+
+    if (this->interval_parser_)
+      this->interval_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "probability" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->probability_parser_;
+
+    if (this->probability_parser_)
+      this->probability_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "max_num_spawned" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->max_num_spawned_parser_;
+
+    if (this->max_num_spawned_parser_)
+      this->max_num_spawned_parser_->pre ();
+
+    return true;
+  }
+
+  if (n == "amble_probability" && ns == "urn:rpg")
+  {
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->amble_probability_parser_;
+
+    if (this->amble_probability_parser_)
+      this->amble_probability_parser_->pre ();
+
+    return true;
+  }
+
+  return false;
+}
+
+bool RPG_Monster_Spawn_Type_pskel::
+_end_element_impl (const ::xml_schema::ro_string& ns,
+                   const ::xml_schema::ro_string& n)
+{
+  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+    return true;
+
+  if (n == "type" && ns == "urn:rpg")
+  {
+    if (this->type_parser_)
+      this->type (this->type_parser_->post_string ());
+
+    return true;
+  }
+
+  if (n == "interval" && ns == "urn:rpg")
+  {
+    if (this->interval_parser_)
+    {
+      this->interval_parser_->post_RPG_Common_FixedPeriod_Type ();
+      this->interval ();
+    }
+
+    return true;
+  }
+
+  if (n == "probability" && ns == "urn:rpg")
+  {
+    if (this->probability_parser_)
+      this->probability (this->probability_parser_->post_float ());
+
+    return true;
+  }
+
+  if (n == "max_num_spawned" && ns == "urn:rpg")
+  {
+    if (this->max_num_spawned_parser_)
+      this->max_num_spawned (this->max_num_spawned_parser_->post_unsigned_int ());
+
+    return true;
+  }
+
+  if (n == "amble_probability" && ns == "urn:rpg")
+  {
+    if (this->amble_probability_parser_)
+      this->amble_probability (this->amble_probability_parser_->post_float ());
 
     return true;
   }

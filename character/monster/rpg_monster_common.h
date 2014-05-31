@@ -32,7 +32,7 @@
 
 #include "rpg_monster.h"
 
-#include <rpg_character_skills_common.h>
+#include "rpg_character_skills_common.h"
 
 #include <string>
 #include <vector>
@@ -82,6 +82,9 @@ struct RPG_Monster_Properties
   RPG_Monster_Advancement_t advancements;
   unsigned char levelAdjustment;
 };
+
+typedef std::vector<RPG_Monster_Spawn> RPG_Monster_Spawns_t;
+typedef RPG_Monster_Spawns_t::const_iterator RPG_Monster_SpawnsConstIterator_t;
 
 typedef std::vector<RPG_Monster*> RPG_Monster_Group_t;
 typedef RPG_Monster_Group_t::const_iterator RPG_Monster_GroupIterator_t;

@@ -643,17 +643,16 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       next_action.target = 0;
 
       myEngine->lock();
-
       // step1: check pending action (if any)
       RPG_Engine_EntitiesIterator_t iterator =
           myEngine->myEntities.find(event_in.entity_id);
-      ACE_ASSERT(iterator != myEngine->myEntities.end());
       if (iterator == myEngine->myEntities.end())
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
                    event_in.entity_id));
 
+        // clean up
         myEngine->unlock();
 
         break;
@@ -662,10 +661,8 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       // idle monster ? --> choose strategy
       if (!(*iterator).second->character->isPlayerCharacter())
       {
-        bool is_idle = (*iterator).second->actions.empty();
-        if (!is_idle)
-          is_idle =
-              ((*iterator).second->actions.front().command == COMMAND_IDLE);
+        bool is_idle = ((*iterator).second->actions.empty() ||
+                        ((*iterator).second->actions.front().command == COMMAND_IDLE));
         if (is_idle)
         {
           // step1: sort targets by distance
@@ -716,6 +713,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       // idle ? --> nothing to do this round then...
       if ((*iterator).second->actions.empty())
       {
+        // clean up
         myEngine->unlock();
         
         break;
@@ -765,13 +763,26 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
         }
         case COMMAND_IDLE:
         {
-          // amble around a little bit...
-          RPG_Engine_LevelMetaData_t level_metadata =
+          // amble a little bit ?
+          const RPG_Engine_LevelMetaData_t& level_metadata =
               myEngine->getMetaData(false);
-          if (!RPG_Dice::probability(level_metadata.amble_probability))
+          bool do_amble = false;
+          RPG_Engine_SpawnsConstIterator_t iterator2 = level_metadata.spawns.begin();
+          for (;
+               iterator2 != level_metadata.spawns.end();
+               iterator2++)
+            if (((*iterator2).spawn.type ==
+                 (*iterator).second->character->getName()) &&
+                !RPG_Dice::probability((*iterator2).spawn.amble_probability))
+            {
+              do_amble = true;
+              break;
+            } // end IF
+          if (!do_amble)
             break; // not this time...
-          do_next_action = true;
 
+          // OK: amble about !
+          do_next_action = true;
           next_action.command = COMMAND_STEP;
           // choose random direction
           RPG_Map_Direction direction;
@@ -922,13 +933,44 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
     }
     case EVENT_ENTITY_SPAWN:
     {
+      myEngine->lock();
       const RPG_Engine_LevelMetaData_t& level_metadata =
-          myEngine->getMetaData(true);
+          myEngine->getMetaData(false);
 
-      if (level_metadata.roaming_monsters.empty()                  ||
-          (myEngine->numSpawned() >= level_metadata.max_spawned)   ||
-          !RPG_Dice::probability(level_metadata.spawn_probability))
+      RPG_Engine_EntitiesIterator_t iterator =
+          myEngine->myEntities.find(event_in.entity_id);
+      if (iterator == myEngine->myEntities.end())
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
+                   event_in.entity_id));
+
+        // clean up
+        myEngine->unlock();
+
+        break;
+      } // end IF
+
+      RPG_Engine_SpawnsConstIterator_t iterator2 =
+          level_metadata.spawns.begin();
+      for (;
+           iterator2 != level_metadata.spawns.end();
+           iterator2++)
+        if (event_in.timer_id == (*iterator2).timer_id)
+          break;
+      if ((iterator2 == level_metadata.spawns.end())                          ||
+          (myEngine->numSpawned(std::string(),
+                                false) >= level_metadata.max_num_spawned)     ||
+          (myEngine->numSpawned((*iterator).second->character->getName(),
+                                false) >= (*iterator2).spawn.max_num_spawned) ||
+          !RPG_Dice::probability((*iterator2).spawn.probability))
+      {
+        // clean up
+        myEngine->unlock();
+
         break; // not this time...
+      } // end IF
+      myEngine->unlock();
 
       // OK: spawn an instance
       RPG_Engine_Entity_t* entity = NULL;
@@ -937,70 +979,73 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       if (!entity)
       {
         ACE_DEBUG((LM_CRITICAL,
-                   ACE_TEXT("unable to allocate memory, aborting\n")));
+                   ACE_TEXT("unable to allocate memory(%u), aborting\n"),
+                   sizeof(RPG_Engine_Entity_t)));
 
-        return;
+        break;
       } // end IF
-
-      RPG_Dice_RollResult_t roll_result;
-      std::string monster_type;
-      if (level_metadata.roaming_monsters.size() == 1)
-        monster_type = level_metadata.roaming_monsters.front();
-      else
-      {
-        // choose a random type
-        RPG_Monster_ListConstIterator_t iterator =
-            level_metadata.roaming_monsters.begin();
-        RPG_Dice::generateRandomNumbers(level_metadata.roaming_monsters.size(),
-                                        1,
-                                        roll_result);
-        std::advance(iterator, roll_result.front() - 1);
-        monster_type = *iterator;
-      } // end ELSE
-
-      *entity = RPG_Engine_Common_Tools::createEntity(monster_type);
-      entity->is_spawned = true;
-      ACE_ASSERT(entity->character);
+      *entity = RPG_Engine_Common_Tools::createEntity((*iterator2).spawn.type);
       if (!entity->character)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to RPG_Engine_Common_Tools::createEntity, aborting\n")));
+                   ACE_TEXT("failed to RPG_Engine_Common_Tools::createEntity(\"%s\"), aborting\n"),
+                   ACE_TEXT((*iterator2).spawn.type.c_str())));
 
         // clean up
         delete entity;
 
-        return;
+        break;
       } // end IF
+      entity->is_spawned = true;
 
       // choose random entry point
-      const RPG_Map_Positions_t& seed_points = myEngine->getSeedPoints();
-      ACE_ASSERT(!seed_points.empty());
-      RPG_Map_PositionsConstIterator_t iterator = seed_points.begin();
-      roll_result.clear();
+      myEngine->lock();
+      const RPG_Map_Positions_t& seed_points = myEngine->getSeedPoints(false);
+      RPG_Map_PositionsConstIterator_t iterator3 = seed_points.begin();
+      if (iterator3 == seed_points.end())
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("current map has no seed points, aborting\n")));
+
+        // clean up
+        myEngine->unlock();
+        delete entity;
+
+        break;
+      } // end IF
+      RPG_Dice_RollResult_t roll_result;
       RPG_Dice::generateRandomNumbers(seed_points.size(),
                                       1,
                                       roll_result);
-      std::advance(iterator, roll_result.front() - 1);
-      entity->position = myEngine->findValid(*iterator, 0);
+      std::advance(iterator3, roll_result.front() - 1);
+
+      // find empty position
+      entity->position = myEngine->findValid(*iterator3,
+                                             0,
+                                             false);
       if (entity->position ==
           std::make_pair(std::numeric_limits<unsigned int>::max(),
                          std::numeric_limits<unsigned int>::max()))
       {
-				// --> map is full !
+        // --> map full ?
+//        ACE_DEBUG((LM_ERROR,
+//                   ACE_TEXT("failed to RPG_Engine::findValid([%u,%u]), aborting\n"),
+//                   (*iterator3).first, (*iterator3).second));
 
 				// clean up
-        delete entity;
+				myEngine->unlock();
+				delete entity;
 
-        return;
+        break;
       } // end IF
 
-      RPG_Engine_EntityID_t id = myEngine->add(entity);
-
+      RPG_Engine_EntityID_t id = myEngine->add(entity, false);
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("spawned \"%s\" [id: %u] @ [%u,%u]...\n"),
-                 ACE_TEXT(monster_type.c_str()),
+                 ACE_TEXT((*iterator2).spawn.type.c_str()),
                  id,
                  entity->position.first, entity->position.second));
+      myEngine->unlock();
 
       break;
     }
@@ -1021,7 +1066,6 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
 
     RPG_Engine_EventTimersConstIterator_t iterator =
         myTimers.find(event_in.timer_id);
-    ACE_ASSERT(iterator != myTimers.end());
     if (iterator == myTimers.end())
     {
       ACE_DEBUG((LM_ERROR,

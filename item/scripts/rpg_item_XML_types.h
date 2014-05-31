@@ -72,7 +72,7 @@ class RPG_Item_ArmorCategory_Type_pskel;
 class RPG_Item_ArmorType_Type_pskel;
 class RPG_Item_ArmorPropertiesBase_Type_pskel;
 class RPG_Item_ArmorPropertiesXML_Type_pskel;
-class RPG_Item_XML_Type_pskel;
+class RPG_Item_BaseXML_Type_pskel;
 class RPG_Item_InventoryXML_Type_pskel;
 class RPG_Item_DictionaryXML_Type_pskel;
 
@@ -923,7 +923,7 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesXML_Type_pskel: public virtual ::R
   ::xml_schema::byte_pskel* defenseModifier_parser_;
 };
 
-class RPG_Item_Export RPG_Item_XML_Type_pskel: public ::xml_schema::complex_content
+class RPG_Item_Export RPG_Item_BaseXML_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -943,8 +943,8 @@ class RPG_Item_Export RPG_Item_XML_Type_pskel: public ::xml_schema::complex_cont
   virtual void
   weapon (const RPG_Item_WeaponPropertiesXML&);
 
-  virtual void
-  post_RPG_Item_XML_Type ();
+  virtual RPG_Item_BaseXML
+  post_RPG_Item_BaseXML_Type () = 0;
 
   // Parser construction API.
   //
@@ -968,7 +968,7 @@ class RPG_Item_Export RPG_Item_XML_Type_pskel: public ::xml_schema::complex_cont
 
   // Constructor.
   //
-  RPG_Item_XML_Type_pskel ();
+  RPG_Item_BaseXML_Type_pskel ();
 
   // Implementation.
   //
@@ -998,18 +998,18 @@ class RPG_Item_Export RPG_Item_InventoryXML_Type_pskel: public ::xml_schema::com
   // pre ();
 
   virtual void
-  item ();
+  item (const RPG_Item_BaseXML&);
 
-  virtual void
-  post_RPG_Item_InventoryXML_Type ();
+  virtual RPG_Item_InventoryXML
+  post_RPG_Item_InventoryXML_Type () = 0;
 
   // Parser construction API.
   //
   void
-  item_parser (::RPG_Item_XML_Type_pskel&);
+  item_parser (::RPG_Item_BaseXML_Type_pskel&);
 
   void
-  parsers (::RPG_Item_XML_Type_pskel& /* item */);
+  parsers (::RPG_Item_BaseXML_Type_pskel& /* item */);
 
   // Constructor.
   //
@@ -1028,7 +1028,7 @@ class RPG_Item_Export RPG_Item_InventoryXML_Type_pskel: public ::xml_schema::com
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::RPG_Item_XML_Type_pskel* item_parser_;
+  ::RPG_Item_BaseXML_Type_pskel* item_parser_;
 };
 
 class RPG_Item_Export RPG_Item_DictionaryXML_Type_pskel: public ::xml_schema::complex_content

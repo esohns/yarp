@@ -617,28 +617,28 @@ test_u_main::do_work(const std::string& schemaDirectory_in,
 																graphics_dictionary_in,
                                 false); // don't init SDL
 
-  GTK_cb_data_t userData;
-  userData.xml               = NULL;
-  userData.schema_repository = schemaDirectory_in;
-  userData.entity.character  = NULL;
-  userData.entity.position   =
+  GTK_cb_data_t user_data;
+  user_data.xml               = NULL;
+  user_data.schema_repository = schemaDirectory_in;
+  user_data.entity.character  = NULL;
+  user_data.entity.position   =
       std::make_pair(std::numeric_limits<unsigned int>::max(),
                      std::numeric_limits<unsigned int>::max());
-  userData.entity.modes.clear();
-  userData.entity.actions.clear();
-  userData.entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
-  userData.entity.is_spawned = false;
+  user_data.entity.modes.clear();
+  user_data.entity.actions.clear();
+  user_data.entity.is_spawned = false;
   // init sprite gallery
   for (int index = 0;
        index < RPG_GRAPHICS_SPRITE_MAX;
        index++)
-    userData.sprite_gallery.push_back(static_cast<RPG_Graphics_Sprite>(index));
-  userData.current_sprite = userData.sprite_gallery.begin();
-  userData.is_transient = false;
+    user_data.sprite_gallery.push_back(static_cast<RPG_Graphics_Sprite>(index));
+  user_data.sprite_gallery_iterator = user_data.sprite_gallery.begin();
+  user_data.current_sprite = RPG_GRAPHICS_SPRITE_INVALID;
+  user_data.is_transient = false;
 
   if (!init_GUI(graphics_directory_in, // graphics directory
                 UI_file_in,            // glade file
-								userData))            // GTK cb data
+                user_data))            // GTK cb data
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize UI, aborting\n")));

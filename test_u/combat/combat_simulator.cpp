@@ -298,7 +298,6 @@ do_battle(RPG_Player_Party_t& party_in,
                                    std::numeric_limits<unsigned int>::max());
   //entity.modes();
   //entity.actions();
-  entity.sprite = RPG_ENGINE_DEF_ENTITY_SPRITE;
   entity.is_spawned = true;
   for (RPG_Monster_EncounterConstIterator_t iterator = encounter_in.begin();
        iterator != encounter_in.end();
@@ -312,7 +311,6 @@ do_battle(RPG_Player_Party_t& party_in,
       monster_p = NULL;
       entity.character = NULL;
       entity = RPG_Engine_Common_Tools::createEntity((*iterator).first);
-      ACE_ASSERT(entity.character);
       if (!entity.character)
       {
         ACE_DEBUG((LM_ERROR,

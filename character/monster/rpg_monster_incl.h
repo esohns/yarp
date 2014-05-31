@@ -33,5 +33,6 @@
 #include "rpg_monster_advancementstep.h"
 #include "rpg_monster_advancement.h"
 #include "rpg_monster_propertiesxml.h"
+#include "rpg_monster_spawn.h"
 
 #endif

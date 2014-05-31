@@ -236,7 +236,7 @@ class RPG_Map_Export RPG_Map_Common_Tools
 
   static bool isSquare(const RPG_Map_Positions_t&); // area
   static void perimeter(const RPG_Map_Area_t&, // room
-                        RPG_Map_Area_t&);      // return value: perimeter
+                        RPG_Map_Positions_t&); // return value: perimeter
   static unsigned int countAdjacentDoors(const RPG_Map_Positions_t&,  // area
                                          const RPG_Map_FloorPlan_t&); // floor plan
 };

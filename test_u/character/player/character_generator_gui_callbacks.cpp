@@ -24,6 +24,7 @@
 #include "character_generator_gui_common.h"
 
 #include "rpg_client_defines.h"
+#include "rpg_client_common_tools.h"
 #include "rpg_client_callbacks.h"
 
 #include "rpg_engine_defines.h"
@@ -62,17 +63,17 @@ update_sprite_gallery(GTK_cb_data_t& CBData_in)
 {
   RPG_TRACE(ACE_TEXT("::update_sprite_gallery"));
 
-  for (CBData_in.current_sprite = CBData_in.sprite_gallery.begin();
-       CBData_in.current_sprite != CBData_in.sprite_gallery.end();
-       CBData_in.current_sprite++)
-    if (*CBData_in.current_sprite == CBData_in.entity.sprite)
+  for (CBData_in.sprite_gallery_iterator = CBData_in.sprite_gallery.begin();
+       CBData_in.sprite_gallery_iterator != CBData_in.sprite_gallery.end();
+       CBData_in.sprite_gallery_iterator++)
+    if (*CBData_in.sprite_gallery_iterator == CBData_in.current_sprite)
       break;
 
   // sanity check
-  if (*CBData_in.current_sprite != CBData_in.entity.sprite)
+  if (*CBData_in.sprite_gallery_iterator != CBData_in.current_sprite)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("sprite (was: \"%s\") not in gallery (%u entries), aborting\n"),
-               RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(CBData_in.entity.sprite).c_str(),
+               ACE_TEXT(RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(CBData_in.current_sprite).c_str()),
                CBData_in.sprite_gallery.size()));
 }
 
@@ -192,12 +193,12 @@ create_character_clicked_GTK_cb(GtkWidget* widget_in,
                        std::numeric_limits<unsigned int>::max());
     data->entity.modes.clear();
     data->entity.actions.clear();
-    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
     data->entity.is_spawned = false;
   } // end IF
   data->entity = RPG_Engine_Common_Tools::createEntity();
   ACE_ASSERT(data->entity.character);
-	data->is_transient = true;
+  data->current_sprite = RPG_GRAPHICS_SPRITE_INVALID;
+  data->is_transient = true;
 
   // update entity profile widgets
   ::update_entity_profile(data->entity,
@@ -322,15 +323,14 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
                        std::numeric_limits<unsigned int>::max());
     data->entity.modes.clear();
     data->entity.actions.clear();
-    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
     data->entity.is_spawned = false;
   } // end IF
 
   // reset profile widgets
   ::reset_entity_profile(data->xml);
-  data->entity.sprite = RPG_ENGINE_DEF_ENTITY_SPRITE;
+  data->current_sprite = CHARACTER_GENERATOR_DEF_ENTITY_SPRITE;
   ::update_sprite_gallery(*data);
-  ::set_current_image(data->entity.sprite,
+  ::set_current_image(data->current_sprite,
                       data->xml);
 
 	// load active combobox entry (if any)
@@ -448,7 +448,6 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
                        std::numeric_limits<unsigned int>::max());
     data->entity.modes.clear();
     data->entity.actions.clear();
-    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
     data->entity.is_spawned = false;
   } // end IF
 
@@ -456,7 +455,34 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   std::string filename(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(filechooser_dialog)));
   data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
                                                      data->schema_repository);
-  ACE_ASSERT(data->entity.character);
+  if (!data->entity.character)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Engine_Common_Tools::loadEntity(\"%s\"), aborting\n"),
+               ACE_TEXT(filename.c_str())));
+
+    return FALSE;
+  } // end IF
+  RPG_Player_Player_Base* player_base = NULL;
+  try
+  {
+    player_base =
+        dynamic_cast<RPG_Player_Player_Base*>(data->entity.character);
+  }
+  catch (...)
+  {
+    player_base = NULL;
+  }
+  if (!player_base)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to dynamic_cast<RPG_Player_Player_Base*>(%@), aborting\n"),
+               data->entity.character));
+
+    return FALSE;
+  } // end IF
+  data->current_sprite =
+      RPG_Client_Common_Tools::class2Sprite(player_base->getClass());
   data->is_transient = false;
 
   // update entity profile widgets
@@ -508,19 +534,16 @@ save_character_clicked_GTK_cb(GtkWidget* widget_in,
   // sanity check(s)
   ACE_ASSERT(data->entity.character);
 
-  // set active sprite
-  data->entity.sprite = *(data->current_sprite);
-
   // assemble target filename
-  std::string filename = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
+  std::string filename = RPG_Common_File_Tools::getDumpDirectory();
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  filename += data->entity.character->getName();
+  filename += RPG_ENGINE_ENTITY_DEF_FILE;
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
   if (!RPG_Engine_Common_Tools::saveEntity(data->entity,
                                            filename))
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Engine_Common_Tools::saveEntity(\"%s\"), continuing\n"),
-               filename.c_str()));
+               ACE_TEXT(filename.c_str())));
 	data->is_transient = false;
 
   // make save button in-sensitive
@@ -577,7 +600,6 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
                        std::numeric_limits<unsigned int>::max());
     data->entity.modes.clear();
     data->entity.actions.clear();
-    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
     data->entity.is_spawned = false;
   } // end IF
 
@@ -589,7 +611,34 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   // load entity profile
   data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
                                                      data->schema_repository);
-  ACE_ASSERT(data->entity.character);
+  if (!data->entity.character)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Engine_Common_Tools::loadEntity(\"%s\"), aborting\n"),
+               ACE_TEXT(filename.c_str())));
+
+    return FALSE;
+  } // end IF
+  RPG_Player_Player_Base* player_base = NULL;
+  try
+  {
+    player_base =
+        dynamic_cast<RPG_Player_Player_Base*>(data->entity.character);
+  }
+  catch (...)
+  {
+    player_base = NULL;
+  }
+  if (!player_base)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to dynamic_cast<RPG_Player_Player_Base*>(%@), aborting\n"),
+               data->entity.character));
+
+    return FALSE;
+  } // end IF
+  data->current_sprite =
+      RPG_Client_Common_Tools::class2Sprite(player_base->getClass());
 	data->is_transient = false;
 
   // update entity profile widgets
@@ -673,11 +722,11 @@ prev_image_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(!data->sprite_gallery.empty());
 
   // update image
-  if (data->current_sprite == data->sprite_gallery.begin())
-    data->current_sprite = data->sprite_gallery.end();
-  data->current_sprite--;
+  if (data->sprite_gallery_iterator == data->sprite_gallery.begin())
+    data->sprite_gallery_iterator = data->sprite_gallery.end();
+  data->sprite_gallery_iterator--;
 
-  ::set_current_image(*(data->current_sprite),
+  ::set_current_image(*(data->sprite_gallery_iterator),
                       data->xml);
 
   // make character save button sensitive (if it's not already)
@@ -703,11 +752,11 @@ next_image_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(!data->sprite_gallery.empty());
 
   // update image
-  data->current_sprite++;
-  if (data->current_sprite == data->sprite_gallery.end())
-    data->current_sprite = data->sprite_gallery.begin();
+  data->sprite_gallery_iterator++;
+  if (data->sprite_gallery_iterator == data->sprite_gallery.end())
+    data->sprite_gallery_iterator = data->sprite_gallery.begin();
 
-  ::set_current_image(*(data->current_sprite),
+  ::set_current_image(*(data->sprite_gallery_iterator),
                       data->xml);
 
   // make character save button sensitive (if it's not already)

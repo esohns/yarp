@@ -34,24 +34,25 @@
 #define RPG_ENGINE_ROUND_INTERVAL                    6 // s
 #define RPG_ENGINE_FEET_PER_SQUARE                   5
 
-#define RPG_ENGINE_DEF_ENTITY_SPRITE                 SPRITE_HUMAN
+//#define RPG_ENGINE_DEF_ENTITY_SPRITE                 SPRITE_HUMAN
 
 // level-specific
 #define RPG_ENGINE_LEVEL_DEF_NAME                    "default level"
 
+// *TODO*: remove these...
 #define RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_PLANE       PLANE_MATERIAL
 #define RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_TERRAIN     TERRAIN_UNDER_GROUND
 #define RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_CLIMATE     CLIMATE_TEMPERATE
 #define RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_TIMEOFDAY   TIMEOFDAY_DAYTIME
 #define RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_LIGHTING    AMBIENCE_DARKNESS
 #define RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_OUTDOORS    false
-
-#define RPG_ENGINE_LEVEL_AI_SPAWN_TYPES_MAX          3
+// *TODO*: remove these...
+#define RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TYPES_MAX      3
 #define RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TYPE           "Bugbear"
 #define RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TIMER_INTERVAL 10 // second(s)
-#define RPG_ENGINE_LEVEL_AI_SPAWN_TIMER_INTERVAL_MAX 60 // second(s)
+#define RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TIMER_INTERVAL_MAX 60 // second(s)
 #define RPG_ENGINE_LEVEL_AI_DEF_SPAWN_PROBABILITY    0.3F // --> 30 %
-#define RPG_ENGINE_LEVEL_AI_NUM_SPAWNED_MAX          50 // [0 --> unlimited]
+#define RPG_ENGINE_LEVEL_AI_DEF_NUM_SPAWNED_MAX      50 // [0 --> unlimited]
 #define RPG_ENGINE_LEVEL_AI_DEF_AMBLE_PROBABILITY    0.5F // --> 50 %
 
 // XML-specific
@@ -60,7 +61,7 @@
 #define RPG_ENGINE_DEF_LEVEL_FILE                    "dungeon_one"
 #define RPG_ENGINE_LEVEL_FILE_EXT                    ".level"
 // *TODO*: convert if necessary...
-#define RPG_ENGINE_ENTITY_DEF_FILE                   "default_player"
+#define RPG_ENGINE_ENTITY_DEF_FILE                   "default_entity"
 #define RPG_ENGINE_ENTITY_PROFILE_EXT                ".entity"
 // default (profiles) data directory tree organization
 #define RPG_ENGINE_ENTITY_SUB                        "profiles"
@@ -73,5 +74,8 @@
 #define RPG_ENGINE_DEF_NETWORK_USER                  "user"
 #define RPG_ENGINE_DEF_NETWORK_REALNAME              "Ronnie Reagan"
 #define RPG_ENGINE_DEF_NETWORK_CHANNEL               "#foobar"
+
+// gtk
+#define RPG_ENGINE_GTK_LEVEL_FILTER                  "levels"
 
 #endif

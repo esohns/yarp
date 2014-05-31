@@ -150,7 +150,7 @@ RPG_Player_Common_Tools::restParty(RPG_Player_Party_t& party_in)
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("#%d] \"%s\" (lvl: %d), HP: %d/%d --> %s\n"),
                index,
-               (*iterator)->getName().c_str(),
+               ACE_TEXT((*iterator)->getName().c_str()),
                (*iterator)->getLevel(),
                (*iterator)->getNumHitPoints(),
                (*iterator)->getNumTotalHitPoints(),
@@ -170,7 +170,8 @@ RPG_Player_Common_Tools::restParty(RPG_Player_Party_t& party_in)
     if ((*iterator)->getNumHitPoints() < 0)
       continue;
 
-    diff = ((*iterator)->getNumTotalHitPoints() - (*iterator)->getNumHitPoints());
+    diff = ((*iterator)->getNumTotalHitPoints() -
+            (*iterator)->getNumHitPoints());
     fraction = (diff % ((*iterator)->getLevel() * 2));
     diff -= fraction;
     recoveryTime = ((diff / ((*iterator)->getLevel() * 2)) + // days of complete bed-rest +
@@ -201,8 +202,10 @@ RPG_Player_Common_Tools::playerXMLToPlayer(const RPG_Player_PlayerXML_XMLTree_Ty
   RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::playerXMLToPlayer"));
 
   RPG_Character_Alignment alignment;
-  alignment.civic = RPG_Character_AlignmentCivicHelper::stringToRPG_Character_AlignmentCivic(player_in.alignment().civic());
-  alignment.ethic = RPG_Character_AlignmentEthicHelper::stringToRPG_Character_AlignmentEthic(player_in.alignment().ethic());
+  alignment.civic =
+      RPG_Character_AlignmentCivicHelper::stringToRPG_Character_AlignmentCivic(player_in.alignment().civic());
+  alignment.ethic =
+      RPG_Character_AlignmentEthicHelper::stringToRPG_Character_AlignmentEthic(player_in.alignment().ethic());
   RPG_Character_Attributes attributes;
   attributes.strength = player_in.attributes().strength();
   attributes.dexterity = player_in.attributes().dexterity();
@@ -212,24 +215,28 @@ RPG_Player_Common_Tools::playerXMLToPlayer(const RPG_Player_PlayerXML_XMLTree_Ty
   attributes.charisma = player_in.attributes().charisma();
   RPG_Character_Skills_t skills;
   if (player_in.skills().present())
-    skills = RPG_Character_XML_Tools::skillsXMLTreeToSkills(player_in.skills().get());
+    skills =
+        RPG_Character_XML_Tools::skillsXMLTreeToSkills(player_in.skills().get());
   RPG_Character_Feats_t feats;
   if (player_in.feats().present())
-    feats = RPG_Character_XML_Tools::featsXMLTreeToFeats(player_in.feats().get());
+    feats =
+        RPG_Character_XML_Tools::featsXMLTreeToFeats(player_in.feats().get());
   RPG_Character_Abilities_t abilities;
   if (player_in.abilities().present())
-    abilities = RPG_Player_Common_Tools::abilitiesXMLTreeToAbilities(player_in.abilities().get());
+    abilities =
+        RPG_Player_Common_Tools::abilitiesXMLTreeToAbilities(player_in.abilities().get());
   RPG_Magic_SpellTypes_t known_spells;
   if (player_in.knownSpells().present())
-    known_spells = RPG_Player_Common_Tools::spellsXMLTreeToSpellTypes(player_in.knownSpells().get());
+    known_spells =
+        RPG_Player_Common_Tools::spellsXMLTreeToSpellTypes(player_in.knownSpells().get());
   RPG_Magic_Spells_t spells;
   if (player_in.spells().present())
-    spells = RPG_Player_Common_Tools::spellsXMLTreeToSpells(player_in.spells().get());
+    spells =
+        RPG_Player_Common_Tools::spellsXMLTreeToSpells(player_in.spells().get());
 
   RPG_Player* player_p = NULL;
-  try
-  {
-    player_p = new RPG_Player(player_in.name(),
+  ACE_NEW_NORETURN(player_p,
+                   RPG_Player(player_in.name(),
                               RPG_Character_GenderHelper::stringToRPG_Character_Gender(player_in.gender()),
                               RPG_Player_Common_Tools::raceXMLTreeToRace(player_in.race()),
                               RPG_Character_Class_Common_Tools::classXMLTreeToClass(player_in.classXML()),
@@ -246,23 +253,15 @@ RPG_Player_Common_Tools::playerXMLToPlayer(const RPG_Player_PlayerXML_XMLTree_Ty
                               player_in.XP(),
                               player_in.gold(),
                               spells,
-                              RPG_Item_Common_XML_Tools::instantiate(player_in.inventory()));
-  }
-  catch (const std::bad_alloc& exception)
+                              RPG_Item_Common_XML_Tools::instantiate(player_in.inventory())));
+  if (!player_p)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Player_Common_Tools::playerXMLToPlayer(): exception occurred: \"%s\", aborting\n"),
-               exception.what()));
+    ACE_DEBUG((LM_CRITICAL,
+               ACE_TEXT("failed to allocate memory(%u), aborting\n"),
+               sizeof(RPG_Player)));
 
-    return player_p;
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Player_Common_Tools::playerXMLToPlayer(): exception occurred, aborting\n")));
-
-    return player_p;
-  }
+    return NULL;
+  } // end IF
   ACE_ASSERT(player_p);
 
   return player_p;
@@ -301,7 +300,7 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
     RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(*iterator,
                                                          item_base);
     ACE_ASSERT(item_base);
-    RPG_Item_XML_XMLTree_Type item(RPG_Item_TypeHelper::RPG_Item_TypeToString(item_base->getType()));
+    RPG_Item_BaseXML_XMLTree_Type item(RPG_Item_TypeHelper::RPG_Item_TypeToString(item_base->getType()));
     switch (item_base->getType())
     {
       case ITEM_ARMOR:
@@ -309,7 +308,8 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
         RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(item_base);
         ACE_ASSERT(armor);
 
-        RPG_Item_ArmorProperties armor_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor->getArmorType());
+        RPG_Item_ArmorProperties armor_properties =
+            RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor->getArmorType());
 
         RPG_Item_StorePrice_XMLTree_Type store_price;
         if (armor_properties.baseStorePrice.numGoldPieces)
@@ -356,7 +356,8 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
         RPG_Item_Commodity* commodity = dynamic_cast<RPG_Item_Commodity*>(item_base);
         ACE_ASSERT(commodity);
 
-        RPG_Item_CommodityProperties commodity_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getCommodityProperties(commodity->getCommoditySubType());
+        RPG_Item_CommodityProperties commodity_properties =
+            RPG_ITEM_DICTIONARY_SINGLETON::instance()->getCommodityProperties(commodity->getCommoditySubType());
 
         RPG_Item_StorePrice_XMLTree_Type store_price;
         if (commodity_properties.baseStorePrice.numGoldPieces)
@@ -404,9 +405,10 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
         RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*>(item_base);
         ACE_ASSERT(weapon);
 
-        RPG_Item_WeaponProperties weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon->getWeaponType());
+        RPG_Item_WeaponProperties weapon_properties =
+            RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon->getWeaponType());
 
-        RPG_Item_XML_XMLTree_Type item(RPG_Item_TypeHelper::RPG_Item_TypeToString(item_base->getType()));
+        RPG_Item_BaseXML_XMLTree_Type item(RPG_Item_TypeHelper::RPG_Item_TypeToString(item_base->getType()));
         RPG_Item_StorePrice_XMLTree_Type store_price;
         if (weapon_properties.baseStorePrice.numGoldPieces)
           store_price.numGoldPieces(weapon_properties.baseStorePrice.numGoldPieces);
@@ -469,7 +471,7 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid item type (was: \"%s\"), aborting\n"),
-                   RPG_Item_TypeHelper::RPG_Item_TypeToString(item_base->getType()).c_str()));
+                   ACE_TEXT(RPG_Item_TypeHelper::RPG_Item_TypeToString(item_base->getType()).c_str())));
 
         return NULL;
       }
@@ -484,37 +486,28 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
     classXML.subClass().push_back(RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator));
 
   RPG_Player_PlayerXML_XMLTree_Type* player_p = NULL;
-  try
-  {
-    player_p = new RPG_Player_PlayerXML_XMLTree_Type(player_in.getName(),
+  ACE_NEW_NORETURN(player_p,
+                   RPG_Player_PlayerXML_XMLTree_Type(player_in.getName(),
                                                      alignment,
                                                      attributes,
                                                      RPG_Common_SizeHelper::RPG_Common_SizeToString(player_in.getSize()),
                                                      player_in.getNumTotalHitPoints(),
-                                                     conditions,
-                                                     player_in.getNumHitPoints(),
-                                                     player_in.getExperience(),
-                                                     player_in.getWealth(),
-                                                     inventory,
                                                      RPG_Character_GenderHelper::RPG_Character_GenderToString(player_in.getGender()),
                                                      classXML,
-                                                     RPG_Character_OffHandHelper::RPG_Character_OffHandToString(player_in.getOffHand()));
-  }
-  catch (const std::bad_alloc& exception)
+                                                     RPG_Character_OffHandHelper::RPG_Character_OffHandToString(player_in.getOffHand()),
+                                                     player_in.getExperience(),
+                                                     conditions,
+                                                     player_in.getNumHitPoints(),
+                                                     inventory,
+                                                     player_in.getWealth()));
+  if (!player_p)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Player_Common_Tools::playerToPlayerXML(): exception occurred: \"%s\", aborting\n"),
-               exception.what()));
+    ACE_DEBUG((LM_CRITICAL,
+               ACE_TEXT("failed to allocate memory(%u), aborting\n"),
+               sizeof(RPG_Player_PlayerXML_XMLTree_Type)));
 
-    return player_p;
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Player_Common_Tools::playerToPlayerXML(): exception occurred, aborting\n")));
-
-    return player_p;
-  }
+    return NULL;
+  } // end IF
   ACE_ASSERT(player_p);
 
   // *NOTE*: add race, skills, feats, abilities, known spells, prepared spells sequences "manually"
@@ -588,15 +581,16 @@ RPG_Player_Common_Tools::getPlayerProfilesDirectory()
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Common_File_Tools::createDirectory(\"%s\"), falling back\n"),
-                 result.c_str()));
+                 ACE_TEXT(result.c_str())));
 
       // fallback
-      result = ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DEF_DUMP_DIR)));
+      result =
+          ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DEF_DUMP_DIR)));
     } // end IF
     else
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("created player profiles directory \"%s\"\n"),
-                 result.c_str()));
+                 ACE_TEXT(result.c_str())));
   } // end IF
 
   return result;

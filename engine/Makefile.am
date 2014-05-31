@@ -11,7 +11,6 @@ AM_CPPFLAGS = \
   -I$(srcdir)/../character \
   -I$(srcdir)/../item \
   -I$(srcdir)/../map \
-  -I$(srcdir)/../graphics \
   -I$(srcdir)/../combat \
   -I$(srcdir)/../character/monster \
   -I$(srcdir)/../chance \

@@ -33,7 +33,6 @@
 
 // Begin prologue.
 //
-#include "stdafx.h"
 //
 // End prologue.
 
@@ -1336,118 +1335,118 @@ defenseModifier (const defenseModifier_optional& x)
 }
 
 
-// RPG_Item_XML_XMLTree_Type
+// RPG_Item_BaseXML_XMLTree_Type
 // 
 
-const RPG_Item_XML_XMLTree_Type::type_type& RPG_Item_XML_XMLTree_Type::
+const RPG_Item_BaseXML_XMLTree_Type::type_type& RPG_Item_BaseXML_XMLTree_Type::
 type () const
 {
   return this->type_.get ();
 }
 
-RPG_Item_XML_XMLTree_Type::type_type& RPG_Item_XML_XMLTree_Type::
+RPG_Item_BaseXML_XMLTree_Type::type_type& RPG_Item_BaseXML_XMLTree_Type::
 type ()
 {
   return this->type_.get ();
 }
 
-void RPG_Item_XML_XMLTree_Type::
+void RPG_Item_BaseXML_XMLTree_Type::
 type (const type_type& x)
 {
   this->type_.set (x);
 }
 
-void RPG_Item_XML_XMLTree_Type::
+void RPG_Item_BaseXML_XMLTree_Type::
 type (::std::auto_ptr< type_type > x)
 {
   this->type_.set (x);
 }
 
-const RPG_Item_XML_XMLTree_Type::armor_optional& RPG_Item_XML_XMLTree_Type::
+const RPG_Item_BaseXML_XMLTree_Type::armor_optional& RPG_Item_BaseXML_XMLTree_Type::
 armor () const
 {
   return this->armor_;
 }
 
-RPG_Item_XML_XMLTree_Type::armor_optional& RPG_Item_XML_XMLTree_Type::
+RPG_Item_BaseXML_XMLTree_Type::armor_optional& RPG_Item_BaseXML_XMLTree_Type::
 armor ()
 {
   return this->armor_;
 }
 
-void RPG_Item_XML_XMLTree_Type::
+void RPG_Item_BaseXML_XMLTree_Type::
 armor (const armor_type& x)
 {
   this->armor_.set (x);
 }
 
-void RPG_Item_XML_XMLTree_Type::
+void RPG_Item_BaseXML_XMLTree_Type::
 armor (const armor_optional& x)
 {
   this->armor_ = x;
 }
 
-void RPG_Item_XML_XMLTree_Type::
+void RPG_Item_BaseXML_XMLTree_Type::
 armor (::std::auto_ptr< armor_type > x)
 {
   this->armor_.set (x);
 }
 
-const RPG_Item_XML_XMLTree_Type::commodity_optional& RPG_Item_XML_XMLTree_Type::
+const RPG_Item_BaseXML_XMLTree_Type::commodity_optional& RPG_Item_BaseXML_XMLTree_Type::
 commodity () const
 {
   return this->commodity_;
 }
 
-RPG_Item_XML_XMLTree_Type::commodity_optional& RPG_Item_XML_XMLTree_Type::
+RPG_Item_BaseXML_XMLTree_Type::commodity_optional& RPG_Item_BaseXML_XMLTree_Type::
 commodity ()
 {
   return this->commodity_;
 }
 
-void RPG_Item_XML_XMLTree_Type::
+void RPG_Item_BaseXML_XMLTree_Type::
 commodity (const commodity_type& x)
 {
   this->commodity_.set (x);
 }
 
-void RPG_Item_XML_XMLTree_Type::
+void RPG_Item_BaseXML_XMLTree_Type::
 commodity (const commodity_optional& x)
 {
   this->commodity_ = x;
 }
 
-void RPG_Item_XML_XMLTree_Type::
+void RPG_Item_BaseXML_XMLTree_Type::
 commodity (::std::auto_ptr< commodity_type > x)
 {
   this->commodity_.set (x);
 }
 
-const RPG_Item_XML_XMLTree_Type::weapon_optional& RPG_Item_XML_XMLTree_Type::
+const RPG_Item_BaseXML_XMLTree_Type::weapon_optional& RPG_Item_BaseXML_XMLTree_Type::
 weapon () const
 {
   return this->weapon_;
 }
 
-RPG_Item_XML_XMLTree_Type::weapon_optional& RPG_Item_XML_XMLTree_Type::
+RPG_Item_BaseXML_XMLTree_Type::weapon_optional& RPG_Item_BaseXML_XMLTree_Type::
 weapon ()
 {
   return this->weapon_;
 }
 
-void RPG_Item_XML_XMLTree_Type::
+void RPG_Item_BaseXML_XMLTree_Type::
 weapon (const weapon_type& x)
 {
   this->weapon_.set (x);
 }
 
-void RPG_Item_XML_XMLTree_Type::
+void RPG_Item_BaseXML_XMLTree_Type::
 weapon (const weapon_optional& x)
 {
   this->weapon_ = x;
 }
 
-void RPG_Item_XML_XMLTree_Type::
+void RPG_Item_BaseXML_XMLTree_Type::
 weapon (::std::auto_ptr< weapon_type > x)
 {
   this->weapon_.set (x);
@@ -4224,11 +4223,11 @@ operator!= (const RPG_Item_ArmorPropertiesXML_XMLTree_Type& x, const RPG_Item_Ar
   return !(x == y);
 }
 
-// RPG_Item_XML_XMLTree_Type
+// RPG_Item_BaseXML_XMLTree_Type
 //
 
-RPG_Item_XML_XMLTree_Type::
-RPG_Item_XML_XMLTree_Type (const type_type& type)
+RPG_Item_BaseXML_XMLTree_Type::
+RPG_Item_BaseXML_XMLTree_Type (const type_type& type)
 : ::xml_schema::type (),
   type_ (type, ::xml_schema::flags (), this),
   armor_ (::xml_schema::flags (), this),
@@ -4237,10 +4236,10 @@ RPG_Item_XML_XMLTree_Type (const type_type& type)
 {
 }
 
-RPG_Item_XML_XMLTree_Type::
-RPG_Item_XML_XMLTree_Type (const RPG_Item_XML_XMLTree_Type& x,
-                           ::xml_schema::flags f,
-                           ::xml_schema::container* c)
+RPG_Item_BaseXML_XMLTree_Type::
+RPG_Item_BaseXML_XMLTree_Type (const RPG_Item_BaseXML_XMLTree_Type& x,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
   type_ (x.type_, f, this),
   armor_ (x.armor_, f, this),
@@ -4249,10 +4248,10 @@ RPG_Item_XML_XMLTree_Type (const RPG_Item_XML_XMLTree_Type& x,
 {
 }
 
-RPG_Item_XML_XMLTree_Type::
-RPG_Item_XML_XMLTree_Type (const ::xercesc::DOMElement& e,
-                           ::xml_schema::flags f,
-                           ::xml_schema::container* c)
+RPG_Item_BaseXML_XMLTree_Type::
+RPG_Item_BaseXML_XMLTree_Type (const ::xercesc::DOMElement& e,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   type_ (f, this),
   armor_ (f, this),
@@ -4266,7 +4265,7 @@ RPG_Item_XML_XMLTree_Type (const ::xercesc::DOMElement& e,
   }
 }
 
-void RPG_Item_XML_XMLTree_Type::
+void RPG_Item_BaseXML_XMLTree_Type::
 parse (::xsd::cxx::xml::dom::parser< char >& p,
        ::xml_schema::flags f)
 {
@@ -4343,20 +4342,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
   }
 }
 
-RPG_Item_XML_XMLTree_Type* RPG_Item_XML_XMLTree_Type::
+RPG_Item_BaseXML_XMLTree_Type* RPG_Item_BaseXML_XMLTree_Type::
 _clone (::xml_schema::flags f,
         ::xml_schema::container* c) const
 {
-  return new class RPG_Item_XML_XMLTree_Type (*this, f, c);
+  return new class RPG_Item_BaseXML_XMLTree_Type (*this, f, c);
 }
 
-RPG_Item_XML_XMLTree_Type::
-~RPG_Item_XML_XMLTree_Type ()
+RPG_Item_BaseXML_XMLTree_Type::
+~RPG_Item_BaseXML_XMLTree_Type ()
 {
 }
 
 bool
-operator== (const RPG_Item_XML_XMLTree_Type& x, const RPG_Item_XML_XMLTree_Type& y)
+operator== (const RPG_Item_BaseXML_XMLTree_Type& x, const RPG_Item_BaseXML_XMLTree_Type& y)
 {
   if (!(x.type () == y.type ()))
     return false;
@@ -4374,7 +4373,7 @@ operator== (const RPG_Item_XML_XMLTree_Type& x, const RPG_Item_XML_XMLTree_Type&
 }
 
 bool
-operator!= (const RPG_Item_XML_XMLTree_Type& x, const RPG_Item_XML_XMLTree_Type& y)
+operator!= (const RPG_Item_BaseXML_XMLTree_Type& x, const RPG_Item_BaseXML_XMLTree_Type& y)
 {
   return !(x == y);
 }
@@ -4879,7 +4878,7 @@ operator<< (::std::ostream& o, const RPG_Item_ArmorPropertiesXML_XMLTree_Type& i
 }
 
 ::std::ostream&
-operator<< (::std::ostream& o, const RPG_Item_XML_XMLTree_Type& i)
+operator<< (::std::ostream& o, const RPG_Item_BaseXML_XMLTree_Type& i)
 {
   o << ::std::endl << "type: " << i.type ();
   if (i.armor ())
@@ -5631,7 +5630,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_ArmorPropertiesXML_XMLTree_
 }
 
 void
-operator<< (::xercesc::DOMElement& e, const RPG_Item_XML_XMLTree_Type& i)
+operator<< (::xercesc::DOMElement& e, const RPG_Item_BaseXML_XMLTree_Type& i)
 {
   e << static_cast< const ::xml_schema::type& > (i);
 

@@ -85,7 +85,7 @@ class RPG_Client_Export RPG_Client_Window_Main
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Main& operator=(const RPG_Client_Window_Main&));
 
   // helper methods
-  void initScrollSpots();
+  void initScrollSpots(const bool& = false); // debug ?
   void initMap(RPG_Client_Engine*,   // engine handle
                RPG_Engine*,          // (level) state handle
                const bool& = false); // debug ?

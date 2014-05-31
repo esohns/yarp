@@ -22,27 +22,31 @@
 #define RPG_MAP_DEFINES_H
 
 // min distance between any 2 doors of a single room
-#define RPG_MAP_DOOR_SEPARATION    1
+#define RPG_MAP_DOOR_SEPARATION       1
 
-#define RPG_MAP_CIRCLE_MAX_RADIUS  15
+#define RPG_MAP_CIRCLE_MAX_RADIUS     15
 
 // output more debugging information
-#define RPG_MAP_DEF_TRACE_SCANNING false
-#define RPG_MAP_DEF_TRACE_PARSING  false
+#define RPG_MAP_DEF_TRACE_SCANNING    false
+#define RPG_MAP_DEF_TRACE_PARSING     false
 
-#define RPG_MAP_SCANNER_BUFSIZE    16384 // == to YY_BUF_SIZE
+#define RPG_MAP_SCANNER_BUFSIZE       16384 // == to YY_BUF_SIZE
 
-#define RPG_MAP_FILE_EXT           ".txt"
+#define RPG_MAP_FILE_EXT              ".txt"
 
-#define RPG_MAP_MAP_SUB            "map"
+#define RPG_MAP_MAP_SUB               "map"
 // default (maps) data directory tree organization
-#define RPG_MAP_MAPS_SUB           "maps"
+#define RPG_MAP_MAPS_SUB              "maps"
 
-#define RPG_MAP_DEF_MAP_FILE       "dungeon_one"
+#define RPG_MAP_DEF_MAP_FILE          "dungeon_one"
 
-#define RPG_MAP_ROOM_SIZE_MAX      30
-#define RPG_MAP_NUM_AREAS_MAX      30
-#define RPG_MAP_SIZE_MIN           40
-#define RPG_MAP_SIZE_MAX           512
+// sane configuration limits
+#define RPG_MAP_DEF_SIZE_MIN          40
+#define RPG_MAP_DEF_SIZE_MAX          512
+#define RPG_MAP_DEF_MIN_ROOM_SIZE_MAX 30
+#define RPG_MAP_DEF_NUM_AREAS_MAX     50
+
+// gtk
+#define RPG_MAP_GTK_MAP_FILTER     "maps"
 
 #endif

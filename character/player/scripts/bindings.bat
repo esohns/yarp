@@ -48,6 +48,24 @@ if NOT exist "%XsdEXE%" (
  echo invalid file ^(was: "%XsdEXE%"^)^, exiting
  goto Failed
 )
+
+@rem generate parser include/implementation
+"%XsdEXE%" cxx-parser --type-map .\..\rpg_player.map --char-type char --output-dir .\.. --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc --export-symbol "RPG_Player_Export" --hxx-prologue "#include \"rpg_player_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp .\..\rpg_player.xsd
+if %ERRORLEVEL% NEQ 0 (
+ echo failed to generate XML parser code^, exiting
+ set RC=%ERRORLEVEL%
+ goto Failed
+)
+@rem *NOTE*: xsd improperly rearranges the included headers from the map file
+@rem --> move a repaired version back into the project directory
+@rem *IMPORTANT NOTE*: needs to be updated after every change
+copy /Y rpg_player_XML_types.h .\.. >NUL 2>&1
+if %ERRORLEVEL% NEQ 0 (
+ echo failed to copy header file^, exiting
+ set RC=%ERRORLEVEL%
+ goto Failed
+)
+
 @rem generate "XMLSchema" namespace include file (tree)
 @rem "%XsdEXE%" cxx-tree --char-type char --output-dir .\.. --generate-serialization --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --generate-xml-schema --hxx-suffix .h --show-anonymous --show-sloc ..\rpg_XMLSchema_XML_tree.xsd
 @rem "%XsdEXE%" cxx-tree --char-type char --output-dir .\.. --generate-serialization --generate-xml-schema --hxx-suffix .h --show-anonymous --show-sloc ..\rpg_XMLSchema_XML_tree.xsd

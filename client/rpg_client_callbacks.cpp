@@ -945,8 +945,26 @@ update_character_profile(const RPG_Player& player_in,
     {
       case ITEM_ARMOR:
       {
-        RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(item);
-        ACE_ASSERT(armor);
+        RPG_Item_Armor* armor = NULL;
+        try
+        {
+          armor = dynamic_cast<RPG_Item_Armor*>(item);
+        }
+        catch (...)
+        {
+          armor = NULL;
+        }
+        if (!armor)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Item_Armor*>(%@), continuing\n"),
+                     item));
+
+          // clean up
+          text.clear();
+
+          break;
+        } // end IF
 
         text =
             RPG_Common_Tools::enumToString(RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->getArmorType()));
@@ -955,8 +973,26 @@ update_character_profile(const RPG_Player& player_in,
       }
       case ITEM_COMMODITY:
       {
-        RPG_Item_Commodity* commodity = dynamic_cast<RPG_Item_Commodity*>(item);
-        ACE_ASSERT(commodity);
+        RPG_Item_Commodity* commodity = NULL;
+        try
+        {
+          commodity = dynamic_cast<RPG_Item_Commodity*>(item);
+        }
+        catch (...)
+        {
+          commodity = NULL;
+        }
+        if (!commodity)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Item_Commodity*>(%@), continuing\n"),
+                     item));
+
+          // clean up
+          text.clear();
+
+          break;
+        } // end IF
 
         RPG_Item_CommodityUnion commodity_type =
             commodity->getCommoditySubType();
@@ -990,8 +1026,26 @@ update_character_profile(const RPG_Player& player_in,
       }
       case ITEM_WEAPON:
       {
-        RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*>(item);
-        ACE_ASSERT(weapon);
+        RPG_Item_Weapon* weapon = NULL;
+        try
+        {
+          weapon = dynamic_cast<RPG_Item_Weapon*>(item);
+        }
+        catch (...)
+        {
+          weapon = NULL;
+        }
+        if (!weapon)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to dynamic_cast<RPG_Item_Weapon*>(%@), continuing\n"),
+                     item));
+
+          // clean up
+          text.clear();
+
+          break;
+        } // end IF
 
         // *TODO*: pretty-print this string
         text =
@@ -1003,7 +1057,7 @@ update_character_profile(const RPG_Player& player_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid item type (was: \"%s\"), aborting\n"),
-                   RPG_Item_TypeHelper::RPG_Item_TypeToString(item->getType()).c_str()));
+                   ACE_TEXT(RPG_Item_TypeHelper::RPG_Item_TypeToString(item->getType()).c_str())));
 
         break;
       }
@@ -1011,7 +1065,7 @@ update_character_profile(const RPG_Player& player_in,
 
     // equipped ? --> add '*'
     if (player_equipment.isEquipped(*iterator, equipment_slot))
-      text += ACE_TEXT_ALWAYS_CHAR("*");
+      text += ACE_TEXT_ALWAYS_CHAR('*');
 
     label = NULL;
     label = gtk_label_new(text.c_str());
@@ -1047,18 +1101,37 @@ update_entity_profile(const RPG_Engine_Entity_t& entity_in,
       GTK_IMAGE(glade_xml_get_widget(xml_in,
                                      ACE_TEXT_ALWAYS_CHAR("image_sprite")));
   ACE_ASSERT(image);
-  std::string filename;
-  if (entity_in.sprite != RPG_GRAPHICS_SPRITE_INVALID)
+
+  // retrieve character handle
+  RPG_Player_Player_Base* player_base = NULL;
+  try
   {
-    RPG_Graphics_GraphicTypeUnion type;
+    player_base = dynamic_cast<RPG_Player_Player_Base*>(entity_in.character);
+  }
+  catch (...)
+  {
+    player_base = NULL;
+  }
+  if (!player_base)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to dynamic_cast<RPG_Player_Player_Base*>(%@), returning\n"),
+               entity_in.character));
+
+    return;
+  } // end IF
+  std::string filename;
+  RPG_Graphics_GraphicTypeUnion type;
+  type.sprite = RPG_Client_Common_Tools::class2Sprite(player_base->getClass());
+  if (type.sprite != RPG_GRAPHICS_SPRITE_INVALID)
+  {
     type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-    type.sprite = entity_in.sprite;
     RPG_Graphics_t graphic;
     graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
     graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
     // retrieve properties from the dictionary
     graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
-    ACE_ASSERT((graphic.type.sprite == entity_in.sprite) &&
+    ACE_ASSERT((graphic.type.sprite == type.sprite) &&
                (graphic.type.discriminator ==
                 RPG_Graphics_GraphicTypeUnion::SPRITE));
     // sanity check
@@ -1066,7 +1139,7 @@ update_entity_profile(const RPG_Engine_Entity_t& entity_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid category (was: \"%s\"), not a sprite type, aborting\n"),
-                 RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str()));
+                 ACE_TEXT(RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str())));
 
       return;
     } // end IF
@@ -1079,7 +1152,7 @@ update_entity_profile(const RPG_Engine_Entity_t& entity_in,
     {
       ACE_DEBUG((LM_ERROR,
                   ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
-                  filename.c_str()));
+                  ACE_TEXT(filename.c_str())));
 
       return;
     } // end IF
@@ -1380,7 +1453,7 @@ dirent_selector_profiles(const dirent* entry_in)
   {
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("ignoring \"%s\"...\n"),
-//                entry_in->d_name));
+//                ACE_TEXT(entry_in->d_name)));
 
     return 0;
   } // end IF
@@ -1404,7 +1477,7 @@ dirent_selector_maps(const dirent* entry_in)
   {
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("ignoring \"%s\"...\n"),
-//                entry_in->d_name));
+//                ACE_TEXT(entry_in->d_name)));
 
     return 0;
   } // end IF
@@ -1437,7 +1510,7 @@ load_files(const std::string& repository_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to load_character_profiles(\"%s\"), not a directory, aborting\n"),
-               repository_in.c_str()));
+               ACE_TEXT(repository_in.c_str())));
 
     return 0;
   } // end IF
@@ -1451,7 +1524,7 @@ load_files(const std::string& repository_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Dirent_Selector::open(\"%s\"): \"%m\", aborting\n"),
-               repository_in.c_str()));
+               ACE_TEXT(repository_in.c_str())));
 
     return 0;
   } // end IF
@@ -1482,14 +1555,16 @@ load_files(const std::string& repository_in,
     // append new (text) entry
     gtk_list_store_append(listStore_in, &iter);
     gtk_list_store_set(listStore_in, &iter,
-                       0, entry.c_str(), // column 0
+                       0, ACE_TEXT(entry.c_str()), // column 0
                        -1);
 
     return_value++;
   } // end FOR
 
   // clean up
-  entries.close();
+  if (entries.close() == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Dirent_Selector::close: \"%m\", continuing\n")));
 
   // debug info
   GValue value;
@@ -1504,7 +1579,7 @@ load_files(const std::string& repository_in,
   ACE_DEBUG((LM_DEBUG,
              (loadPlayerProfiles_in ? ACE_TEXT("profile[0]: %s\n")
                                     : ACE_TEXT("map[0]: %s\n")),
-             std::string(text).c_str()));
+             ACE_TEXT(text)));
   g_value_unset(&value);
   for (unsigned int i = 1;
        gtk_tree_model_iter_next(GTK_TREE_MODEL(listStore_in),
@@ -1523,7 +1598,7 @@ load_files(const std::string& repository_in,
                (loadPlayerProfiles_in ? ACE_TEXT("profile[%u]: %s\n")
                                       : ACE_TEXT("map[%u]: %s\n")),
                i,
-               std::string(text).c_str()));
+               ACE_TEXT(text)));
 
     g_value_unset(&value);
   } // end FOR
@@ -1683,7 +1758,6 @@ create_character_clicked_GTK_cb(GtkWidget* widget_in,
                      std::numeric_limits<unsigned int>::max());
   data->entity.modes.clear();
   data->entity.actions.clear();
-  data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
   data->entity.is_spawned = false;
 
   data->entity = RPG_Engine_Common_Tools::createEntity();
@@ -1760,7 +1834,6 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
                        std::numeric_limits<unsigned int>::max());
     data->entity.modes.clear();
     data->entity.actions.clear();
-    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
     data->entity.is_spawned = false;
   } // end IF
 
@@ -1864,7 +1937,6 @@ load_character_clicked_GTK_cb(GtkWidget* widget_in,
                        std::numeric_limits<unsigned int>::max());
     data->entity.modes.clear();
     data->entity.actions.clear();
-    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
     data->entity.is_spawned = false;
   } // end IF
 
@@ -2029,7 +2101,6 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
                        std::numeric_limits<unsigned int>::max());
     data->entity.modes.clear();
     data->entity.actions.clear();
-    data->entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
     data->entity.is_spawned = false;
   } // end IF
 
@@ -2877,7 +2948,6 @@ item_toggled_GTK_cb(GtkWidget* widget_in,
 					std::make_pair(std::numeric_limits<unsigned int>::max(),
 												 std::numeric_limits<unsigned int>::max());
 			parameters.visible_radius = visible_radius_after;
-			parameters.sprite = RPG_GRAPHICS_SPRITE_INVALID;
       try
       {
         data->client_engine->notify(COMMAND_E2C_ENTITY_VISION, parameters);
@@ -2886,7 +2956,7 @@ item_toggled_GTK_cb(GtkWidget* widget_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
-                   RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_VISION).c_str()));
+                   ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_VISION).c_str())));
       }
     } // end IF
   } // end IF

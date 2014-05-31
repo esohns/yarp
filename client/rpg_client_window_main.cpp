@@ -81,7 +81,7 @@ RPG_Client_Window_Main::init(RPG_Client_Engine* clientEngine_in,
   myAutoEdgeScroll = doAutoEdgeScroll_in;
 
   // init scroll margins
-  initScrollSpots();
+  initScrollSpots(debug_in);
 
   // init map
   initMap(clientEngine_in,
@@ -349,7 +349,6 @@ RPG_Client_Window_Main::handleEvent(const SDL_Event& event_in,
 					parameters.previous_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
 				                                                std::numeric_limits<unsigned int>::max());
 					parameters.visible_radius = 0;
-					parameters.sprite = RPG_GRAPHICS_SPRITE_INVALID;
 					try
 					{
 						myEngine->notify(COMMAND_E2C_QUIT, parameters);
@@ -758,66 +757,90 @@ RPG_Client_Window_Main::notify(const RPG_Graphics_Cursor& cursor_in) const
 }
 
 void
-RPG_Client_Window_Main::initScrollSpots()
+RPG_Client_Window_Main::initScrollSpots(const bool& debug_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Main::initScrollSpots"));
 
   // upper left
-  RPG_Graphics_HotSpot::init(*this,                  // parent
+  RPG_Graphics_HotSpot::init(*this,                                                     // parent
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
                              std::make_pair(0,
-                                            0),      // offset
-                             CURSOR_SCROLL_UL); // (hover) cursor graphic
+                                            0),                                         // offset
+                             CURSOR_SCROLL_UL,                                          // (hover) cursor graphic
+                             debug_in);                                                 // debug ?
   // up
-  RPG_Graphics_HotSpot::init(*this,                 // parent
-                             std::make_pair(myClipRect.h - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
-                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
+  RPG_Graphics_HotSpot::init(*this,
+                             std::make_pair((myClipRect.w -
+                                             (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)),
+                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            0),     // offset
-                             CURSOR_SCROLL_U); // (hover) cursor graphic
+                                            0),
+                             CURSOR_SCROLL_U,
+                             debug_in);
+
   // upper right
-  RPG_Graphics_HotSpot::init(*this,                  // parent
+  RPG_Graphics_HotSpot::init(*this,
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
-                             std::make_pair(myClipRect.h - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            0),      // offset
-                             CURSOR_SCROLL_UR); // (hover) cursor graphic
+                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
+                             std::make_pair((myClipRect.w -
+                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
+                                            0),
+                             CURSOR_SCROLL_UR,
+                             debug_in);
+
   // left
-  RPG_Graphics_HotSpot::init(*this,                 // parent
+  RPG_Graphics_HotSpot::init(*this,
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            myClipRect.w - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)), // size
+                                            (myClipRect.h -
+                                             (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN))),
                              std::make_pair(0,
-                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
-                             CURSOR_SCROLL_L); // (hover) cursor graphic
+                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
+                             CURSOR_SCROLL_L,
+                             debug_in);
+
   // right
-  RPG_Graphics_HotSpot::init(*this,                 // parent
+  RPG_Graphics_HotSpot::init(*this,
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            myClipRect.w - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)), // size
-                             std::make_pair(myClipRect.h - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
-                             CURSOR_SCROLL_R); // (hover) cursor graphic
+                                            (myClipRect.h -
+                                             (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN))),
+                             std::make_pair((myClipRect.h -
+                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
+                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
+                             CURSOR_SCROLL_R,
+                             debug_in);
+
   // lower left
-  RPG_Graphics_HotSpot::init(*this,                  // parent
+  RPG_Graphics_HotSpot::init(*this,
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
+                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
                              std::make_pair(0,
-                                            myClipRect.w - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
-                             CURSOR_SCROLL_DL); // (hover) cursor graphic
+                                            (myClipRect.h -
+                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)),
+                             CURSOR_SCROLL_DL,
+                             debug_in);
+
   // down
-  RPG_Graphics_HotSpot::init(*this,                 // parent
-                             std::make_pair(myClipRect.h - (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
-                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
+  RPG_Graphics_HotSpot::init(*this,
+                             std::make_pair((myClipRect.w -
+                                             (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)),
+                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            myClipRect.w - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
-                             CURSOR_SCROLL_D); // (hover) cursor graphic
+                                            (myClipRect.h -
+                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)),
+                             CURSOR_SCROLL_D,
+                             debug_in);
+
   // lower right
-  RPG_Graphics_HotSpot::init(*this,                  // parent
+  RPG_Graphics_HotSpot::init(*this,
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
-                             std::make_pair(myClipRect.h - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            myClipRect.w - RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
-                             CURSOR_SCROLL_DR); // (hover) cursor graphic
+                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
+                             std::make_pair((myClipRect.w -
+                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
+                                            (myClipRect.h -
+                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)),
+                             CURSOR_SCROLL_DR,
+                             debug_in);
 }
 
 void

@@ -6,26 +6,20 @@
             elementFormDefault="qualified"
             attributeFormDefault="unqualified">
 
-  <!-- include chance_dice schema -->
+<!-- include chance_dice schema -->
   <xsd:include schemaLocation="rpg_dice.xsd"/>
-  <!-- include common schema -->
+<!-- include common schema -->
   <xsd:include schemaLocation="rpg_common.xsd"/>
-  <!-- include common environment schema -->
+<!-- include common environment schema -->
   <xsd:include schemaLocation="rpg_common_environment.xsd"/>
-  <!-- include magic schema -->
+<!-- include magic schema -->
   <xsd:include schemaLocation="rpg_magic.xsd"/>
-  <!-- include item schema -->
+<!-- include item schema -->
   <xsd:include schemaLocation="rpg_item.xsd"/>
-  <!-- include combat schema -->
+<!-- include combat schema -->
   <xsd:include schemaLocation="rpg_combat.xsd"/>
-  <!-- include character schema -->
-  <!--<xsd:include schemaLocation="rpg_character.xsd"/>-->
- 
-<!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
-<!--   import chance_dice schema (as declared above) -->
-<!--   <xsd:import namespace="urn:rpg" schemaLocation="rpg_dice.xsd"/> -->
-<!--   import item schema (as declared above) -->
-<!--   <xsd:import namespace="urn:rpg" schemaLocation="rpg_item.xsd"/> -->
+<!-- include player schema -->
+  <xsd:include schemaLocation="rpg_player.xsd"/>
 
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
@@ -66,8 +60,10 @@
       <xsd:enumeration value="NATURALWEAPON_ANY"/>
       <xsd:enumeration value="NATURALWEAPON_BITE"/>
       <xsd:enumeration value="NATURALWEAPON_BLAST"/>
+<!--       <xsd:enumeration value="NATURALWEAPON_BREATH"/> -->
       <xsd:enumeration value="NATURALWEAPON_CLAW_TALON"/>
       <xsd:enumeration value="NATURALWEAPON_CONSTRICT"/>
+<!--       <xsd:enumeration value="NATURALWEAPON_GAZE"/> -->
       <xsd:enumeration value="NATURALWEAPON_GORE"/>
       <xsd:enumeration value="NATURALWEAPON_HOOF"/>
       <xsd:enumeration value="NATURALWEAPON_PINCER"/>
@@ -78,8 +74,6 @@
       <xsd:enumeration value="NATURALWEAPON_TAIL"/>
       <xsd:enumeration value="NATURALWEAPON_TENTACLE"/>
       <xsd:enumeration value="NATURALWEAPON_WEB"/>
-      <!--       <xsd:enumeration value="NATURALWEAPON_GAZE"/> -->
-      <!--       <xsd:enumeration value="NATURALWEAPON_BREATH"/> -->
     </xsd:restriction>
   </xsd:simpleType>
 
@@ -241,7 +235,6 @@
   <xsd:complexType name="RPG_Monster_OrganizationSlaverStep_Type">
     <xsd:sequence>
       <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
-      <!--       <xsd:element name="range" type="rpg_chance_dice:RPG_Chance_ValueRange_Type" minOccurs="1" maxOccurs="1"/> -->
       <xsd:element name="range" type="RPG_Dice_ValueRange_Type" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
@@ -249,7 +242,6 @@
   <xsd:complexType name="RPG_Monster_OrganizationStep_Type">
     <xsd:sequence>
       <xsd:element name="type" type="RPG_Monster_Organization_Type" minOccurs="1" maxOccurs="1"/>
-      <!--       <xsd:element name="range" type="rpg_chance_dice:RPG_Chance_ValueRange_Type" minOccurs="1" maxOccurs="1"/> -->
       <xsd:element name="range" type="RPG_Dice_ValueRange_Type" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="slaves" type="RPG_Monster_OrganizationSlaverStep_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
@@ -264,7 +256,6 @@
   <xsd:complexType name="RPG_Monster_AdvancementStep_Type">
     <xsd:sequence>
       <xsd:element name="size" type="RPG_Common_Size_Type" minOccurs="1" maxOccurs="1"/>
-<!--       <xsd:element name="range" type="rpg_chance_dice:RPG_Chance_ValueRange_Type" minOccurs="1" maxOccurs="1"/> -->
       <xsd:element name="range" type="RPG_Dice_ValueRange_Type" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
@@ -280,7 +271,6 @@
       <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="size" type="RPG_Monster_Size_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="type" type="RPG_Common_CreatureType_Type" minOccurs="1" maxOccurs="1"/>
-<!--       <xsd:element name="hitDice" type="rpg_chance_dice:RPG_Chance_DiceRoll_Type" minOccurs="1" maxOccurs="1"/> -->
       <xsd:element name="hitDice" type="RPG_Dice_Roll_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="initiative" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="speed" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
@@ -305,13 +295,43 @@
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:complexType name="RPG_Monster_Dictionary_Type" id="skip0">
+  <xsd:complexType name="RPG_Monster_StateBase_Type" id="skip0">
+    <xsd:sequence>
+      <xsd:element name="conditions" type="RPG_Player_Conditions_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="HP" type="xsd:short" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="gold" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="spells" type="RPG_Player_Spells_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="inventory" type="RPG_Item_InventoryXML_Type" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_State_Type" id="skip1">
+    <xsd:complexContent>
+      <xsd:extension base="RPG_Monster_StateBase_Type">
+        <xsd:sequence>
+          <xsd:element name="monster" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_Spawn_Type">
+    <xsd:sequence>
+      <xsd:element name="monster" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="spawn_interval" type="RPG_Common_FixedPeriod_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="spawn_probability" type="xsd:float" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="max_spawned" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="amble_probability" type="xsd:float" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_Dictionary_Type" id="skip2">
     <xsd:sequence>
       <xsd:element name="monster" type="RPG_Monster_PropertiesXML_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 
-  <!-- xml instance document(s) will contain a dictionary of different types of monsters -->
+<!-- xml instance document(s) will contain a dictionary of different types of monsters -->
   <xsd:element name="monsterDictionary" type="RPG_Monster_Dictionary_Type"/>
 
 </xsd:schema>

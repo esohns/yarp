@@ -25,7 +25,6 @@ set Yarp_dir=.
 
 echo generating DLL exports headers...
 call %Yarp_dir%\chance\scripts\exports.bat
-call %Yarp_dir%\client\scripts\exports.bat
 call %Yarp_dir%\net\scripts\exports.bat
 call %Yarp_dir%\net\protocol\scripts\exports.bat
 call %Yarp_dir%\net\stream\scripts\exports.bat
@@ -51,6 +50,7 @@ call %Yarp_dir%\item\scripts\bindings.bat
 call %Yarp_dir%\magic\scripts\bindings.bat
 call %Yarp_dir%\map\scripts\bindings.bat
 call %Yarp_dir%\sound\scripts\bindings.bat
+call %Yarp_dir%\client\scripts\bindings.bat
 
 if %ERRORLEVEL% NEQ 0 (
  echo failed generating XML data bindings

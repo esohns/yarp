@@ -235,7 +235,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("graphics");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
@@ -255,7 +255,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("graphics");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -271,7 +271,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("item");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -283,7 +283,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("magic");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -295,7 +295,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   path = config_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("character");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 	path += ACE_TEXT_ALWAYS_CHAR("monster");
@@ -309,7 +309,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
 	path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("map");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("data");
@@ -395,7 +395,7 @@ do_processArguments(const int argc_in,
 
   itemsDictionary_out     = configuration_path;
   itemsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   itemsDictionary_out += ACE_TEXT_ALWAYS_CHAR("item");
   itemsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -403,7 +403,7 @@ do_processArguments(const int argc_in,
 
   monsterDictionary_out   = configuration_path;
   monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   monsterDictionary_out += ACE_TEXT_ALWAYS_CHAR("character");
   monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monsterDictionary_out += ACE_TEXT_ALWAYS_CHAR("monster");
@@ -416,7 +416,7 @@ do_processArguments(const int argc_in,
 
   directory_out           = data_path;
   directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   directory_out += ACE_TEXT_ALWAYS_CHAR("graphics");
   directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
@@ -426,7 +426,7 @@ do_processArguments(const int argc_in,
 
   graphicsDictionary_out  = configuration_path;
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -443,7 +443,7 @@ do_processArguments(const int argc_in,
 
   mapFile_out             = data_path;
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   mapFile_out += ACE_TEXT_ALWAYS_CHAR("map");
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   mapFile_out += ACE_TEXT_ALWAYS_CHAR("data");
@@ -1509,7 +1509,7 @@ do_work(const mode_t& mode_in,
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to RPG_Engine_Level::load(\"%s\"), aborting\n"),
-                     map_in.c_str()));
+                     ACE_TEXT(map_in.c_str())));
 
           break;
         } // end IF
@@ -1537,7 +1537,7 @@ do_work(const mode_t& mode_in,
 #endif // #ifdef BASEDIR
       std::string schemaRepository = configuration_path;
       schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
       schemaRepository += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
 
@@ -1547,13 +1547,19 @@ do_work(const mode_t& mode_in,
       entity.position =
           std::make_pair(std::numeric_limits<unsigned int>::max(),
                          std::numeric_limits<unsigned int>::max());
-      entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;
       if (entity_in.empty())
       {
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("generating entity...\n")));
-
         entity = RPG_Engine_Common_Tools::createEntity();
+        if (!entity.character)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to RPG_Engine_Common_Tools::createEntity(), aborting\n")));
+
+          break;
+        } // end IF
+
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("generated entity...\n")));
       } // end IF
       else
       {
@@ -1782,7 +1788,7 @@ ACE_TMAIN(int argc_in,
 
   std::string magic_dictionary = configuration_path;
   magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   magic_dictionary += ACE_TEXT_ALWAYS_CHAR("magic");
   magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -1790,7 +1796,7 @@ ACE_TMAIN(int argc_in,
 
   std::string items_dictionary = configuration_path;
   items_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   items_dictionary += ACE_TEXT_ALWAYS_CHAR("item");
   items_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -1798,7 +1804,7 @@ ACE_TMAIN(int argc_in,
 
   std::string monster_dictionary = configuration_path;
   monster_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   monster_dictionary += ACE_TEXT_ALWAYS_CHAR("character");
   monster_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monster_dictionary += ACE_TEXT_ALWAYS_CHAR("monster");
@@ -1808,7 +1814,7 @@ ACE_TMAIN(int argc_in,
 
   std::string graphics_directory = data_path;
   graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   graphics_directory += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
@@ -1819,7 +1825,7 @@ ACE_TMAIN(int argc_in,
 
   std::string graphics_dictionary = configuration_path;
   graphics_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   graphics_dictionary += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphics_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -1835,7 +1841,7 @@ ACE_TMAIN(int argc_in,
 
   std::string map_filename = data_path;
   map_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   map_filename += ACE_TEXT_ALWAYS_CHAR("map");
   map_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   map_filename += ACE_TEXT_ALWAYS_CHAR("data");

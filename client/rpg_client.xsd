@@ -6,6 +6,8 @@
             elementFormDefault="qualified"
             attributeFormDefault="unqualified">
 
+<!-- include engine schema -->
+  <xsd:include schemaLocation="rpg_engine.xsd"/>
 <!-- include graphics schema -->
   <xsd:include schemaLocation="rpg_graphics.xsd"/>
 
@@ -27,10 +29,29 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:complexType name="RPG_Client_PlayerEntity_Type" id="skip0">
+    <xsd:complexContent>
+      <xsd:extension base="RPG_Engine_Player_Type">
+        <xsd:sequence>
+          <xsd:element name="sprite" type="RPG_Graphics_Sprite_Type" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Client_Entity_Type" id="skip1">
+    <xsd:complexContent>
+      <xsd:choice>
+        <xsd:element name="player" type="RPG_Client_PlayerEntity_Type"/>
+        <xsd:element name="monster" type="RPG_Graphics_Sprite_Type" minOccurs="1" maxOccurs="1"/>
+      </xsd:choice>
+    </xsd:complexContent>
+  </xsd:complexType>
+
   <xsd:complexType name="RPG_Client_RuntimeState_Type">
     <xsd:sequence>
       <xsd:element name="style" type="RPG_Graphics_Style_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="entities" type="RPG_Graphics_Sprite_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="entities" type="RPG_Client_Entity_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 
