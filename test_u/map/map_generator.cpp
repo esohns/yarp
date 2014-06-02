@@ -74,6 +74,9 @@ do_printUsage(const std::string& programName_in)
   std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            false);
+#if defined(DEBUG_DEBUGGER)
+  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif
 
   std::cout << ACE_TEXT("usage: ")
             << programName_in
@@ -126,7 +129,7 @@ do_printUsage(const std::string& programName_in)
                                : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT));
   std::cout << ACE_TEXT("-o [FILE]   : output file")
             << ACE_TEXT(" [")
-            << path.c_str()
+            << path
             << ACE_TEXT("]")
             << std::endl;
   std::cout << ACE_TEXT("-p          : print (==dump) result")
@@ -188,6 +191,9 @@ do_processArguments(const int argc_in,
   std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            false);
+#if defined(DEBUG_DEBUGGER)
+  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif
 
   // init results
   minRoomSize_out         = MAP_GENERATOR_DEF_MIN_ROOMSIZE;
@@ -551,6 +557,9 @@ ACE_TMAIN(int argc_in,
   std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            false);
+#if defined(DEBUG_DEBUGGER)
+  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif
 
   // step1: init
   // step1a set defaults
@@ -737,12 +746,17 @@ ACE_TMAIN(int argc_in,
              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
              ACE_TEXT(working_time_string.c_str())));
 
-	// *PORTABILITY*: on Windows, need to fini ACE...
+  // *PORTABILITY*: on Windows, fini ACE...
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-	if (ACE::fini() == -1)
-		ACE_DEBUG((LM_ERROR,
-		           ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+  if (ACE::fini() == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+
+    return EXIT_FAILURE;
+  } // end IF
 #endif
+
 
   return EXIT_SUCCESS;
 } // end main

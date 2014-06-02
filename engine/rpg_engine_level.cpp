@@ -709,10 +709,10 @@ RPG_Engine_Level::print(const RPG_Engine_Level_t& level_in)
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::print"));
 
   ACE_DEBUG((LM_INFO,
-             ACE_TEXT("level: \"%s\"\n"),
+             ACE_TEXT("level:\t\t\"%s\"\n"),
              ACE_TEXT(level_in.metadata.name.c_str())));
   ACE_DEBUG((LM_INFO,
-             ACE_TEXT("environment:\n\tplane: %s\n\tterrain: %s\n\tclimate: %s\n\ttime: %s\n\tlighting: %s\n\toutdoors: %s\n"),
+             ACE_TEXT("environment:\n\tplane:\t%s\n\tterrain:\t%s\n\tclimate:\t%s\n\ttime:\t%s\n\tlighting:\t%s\n\toutdoors:\t%s\n"),
              ACE_TEXT(RPG_Common_PlaneHelper::RPG_Common_PlaneToString(level_in.metadata.environment.plane).c_str()),
              ACE_TEXT(RPG_Common_TerrainHelper::RPG_Common_TerrainToString(level_in.metadata.environment.terrain).c_str()),
              ACE_TEXT(RPG_Common_ClimateHelper::RPG_Common_ClimateToString(level_in.metadata.environment.climate).c_str()),
@@ -721,7 +721,7 @@ RPG_Engine_Level::print(const RPG_Engine_Level_t& level_in)
              (level_in.metadata.environment.outdoors ? ACE_TEXT("true")
                                                      : ACE_TEXT("false"))));
   ACE_DEBUG((LM_INFO,
-             ACE_TEXT("monsters:\n\tspawns [interval(sec,usec), probability(%%), max #, amble probability(%%), timer ID]:\n")));
+             ACE_TEXT("monsters:\nspawns\t[interval(sec,usec), probability(%%), max #, amble probability(%%), timer ID]:\n")));
   unsigned int i = 1;
   ACE_Time_Value time_value;
   for (RPG_Engine_SpawnsConstIterator_t iterator =
@@ -732,7 +732,7 @@ RPG_Engine_Level::print(const RPG_Engine_Level_t& level_in)
     time_value.set((*iterator).spawn.interval.seconds,
                    (*iterator).spawn.interval.u_seconds);
      ACE_DEBUG((LM_INFO,
-                ACE_TEXT("\t\t#%u %s: %#T\t%.0f\t%u\t%.0f\t%d\n"),
+                ACE_TEXT("\t#%u %s: %#T\t%.0f\t%u\t%.0f\t%d\n"),
                 i, ACE_TEXT((*iterator).spawn.type.c_str()),
                 &time_value,
                 ((*iterator).spawn.probability * 100.0F),
@@ -741,7 +741,7 @@ RPG_Engine_Level::print(const RPG_Engine_Level_t& level_in)
                 (*iterator).timer_id));
   } // end FOR
   ACE_DEBUG((LM_INFO,
-             ACE_TEXT("\tmax # (total): %u\n"),
+             ACE_TEXT("max # (total): %u\n"),
              level_in.metadata.max_num_spawned));
 
   RPG_Map_Level::print(level_in.map);

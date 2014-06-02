@@ -1623,13 +1623,13 @@ idle_init_UI_cb(gpointer act_in)
 	// activate first repository entry (if any)
 	GtkComboBox* combobox =
 			GTK_COMBO_BOX(glade_xml_get_widget(data->XML,
-																				 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARBOX_NAME)));
+																				 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
   ACE_ASSERT(combobox);
   if (gtk_widget_is_sensitive(GTK_WIDGET(combobox)))
     gtk_combo_box_set_active(combobox, 0);
   combobox =
       GTK_COMBO_BOX(glade_xml_get_widget(data->XML,
-                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAPBOX_NAME)));
+                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_MAP_NAME)));
   ACE_ASSERT(combobox);
   if (gtk_widget_is_sensitive(GTK_WIDGET(combobox)))
     gtk_combo_box_set_active(combobox, 0);
@@ -1651,7 +1651,7 @@ idle_fini_UI_cb(gpointer act_in)
 
   GtkWidget* widget =
       glade_xml_get_widget(data->XML,
-                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_PARTBUTTON_NAME));
+                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_PART_NAME));
   ACE_ASSERT(widget);
   // raise dialog window
   GdkWindow* toplevel = gtk_widget_get_parent_window(widget);
@@ -1680,13 +1680,13 @@ about_clicked_GTK_cb(GtkWidget* widget_in,
   // retrieve about dialog handle
   GtkWidget* about_dialog =
       GTK_WIDGET(glade_xml_get_widget(data->XML,
-                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_ABOUTDIALOG_NAME)));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_ABOUT_NAME)));
   ACE_ASSERT(about_dialog);
   if (!about_dialog)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_ABOUTDIALOG_NAME)));
+               ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_ABOUT_NAME)));
 
     return TRUE; // propagate
   } // end IF
@@ -1769,38 +1769,38 @@ create_character_clicked_GTK_cb(GtkWidget* widget_in,
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_frame =
       GTK_FRAME(glade_xml_get_widget(data->XML,
-                                     ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARFRAME_NAME)));
+                                     ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
   ACE_ASSERT(character_frame);
   gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
 
   // make drop button sensitive (if it's not already)
   GtkButton* button =
       GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                      ACE_TEXT_ALWAYS_CHAR("drop")));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_DROP_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   // make save button sensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("save")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_SAVE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   // make load button insensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("load")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_LOAD_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
   // make join button sensitive (if appropriate)
   GtkComboBox* repository_combobox =
       GTK_COMBO_BOX(glade_xml_get_widget(data->XML,
-                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAPBOX_NAME)));
+                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_MAP_NAME)));
   ACE_ASSERT(repository_combobox);
   if (gtk_combo_box_get_active(repository_combobox) != -1)
   {
     button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                             ACE_TEXT_ALWAYS_CHAR("join")));
+                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_JOIN_NAME)));
     ACE_ASSERT(button);
     gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
   } // end IF
@@ -1842,32 +1842,32 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
   // make character display frame insensitive (if it's not already)
   GtkFrame* character_frame =
       GTK_FRAME(glade_xml_get_widget(data->XML,
-                                     ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARFRAME_NAME)));
+                                     ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
   ACE_ASSERT(character_frame);
   gtk_widget_set_sensitive(GTK_WIDGET(character_frame), FALSE);
 
   // make create button sensitive (if it's not already)
   GtkButton* button =
       GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                      ACE_TEXT_ALWAYS_CHAR("create")));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_CREATE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   // make save button insensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("save")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_SAVE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
   // make load button sensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("load")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_LOAD_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   // make join button insensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("join")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_JOIN_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
@@ -1876,13 +1876,13 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
 
   // make equip button insensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("equip")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_EQUIP_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
   // make rest button insensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("rest")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_REST_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
@@ -1905,7 +1905,7 @@ load_character_clicked_GTK_cb(GtkWidget* widget_in,
   // step1a: retrieve file chooser dialog handle
   GtkFileChooserDialog* filechooser_dialog =
       GTK_FILE_CHOOSER_DIALOG(glade_xml_get_widget(data->XML,
-                                                   ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_FILECHOOSERDIALOG_NAME)));
+                                                   ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_FILECHOOSER_NAME)));
   ACE_ASSERT(filechooser_dialog);
 
   // step1b: setup chooser dialog
@@ -1957,20 +1957,20 @@ load_character_clicked_GTK_cb(GtkWidget* widget_in,
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_frame =
       GTK_FRAME(glade_xml_get_widget(data->XML,
-                                     ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARFRAME_NAME)));
+                                     ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
   ACE_ASSERT(character_frame);
   gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
 
   // make create button insensitive (if it's not already)
   GtkButton* button =
       GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                      ACE_TEXT_ALWAYS_CHAR("create")));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_CREATE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
   // make drop button sensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("drop")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_DROP_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
@@ -1979,27 +1979,22 @@ load_character_clicked_GTK_cb(GtkWidget* widget_in,
 
   // make save button insensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("save")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_SAVE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
   // make join button sensitive (if appropriate)
   GtkComboBox* repository_combobox =
       GTK_COMBO_BOX(glade_xml_get_widget(data->XML,
-                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAPBOX_NAME)));
+                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_MAP_NAME)));
   ACE_ASSERT(repository_combobox);
   if (gtk_combo_box_get_active(repository_combobox) != -1)
   {
     button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                             ACE_TEXT_ALWAYS_CHAR("join")));
+                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_JOIN_NAME)));
     ACE_ASSERT(button);
     gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
   } // end IF
-
-  button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("join")));
-  ACE_ASSERT(button);
-  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   return FALSE;
 }
@@ -2035,13 +2030,13 @@ save_character_clicked_GTK_cb(GtkWidget* widget_in,
   // make create button sensitive (if it's not already)
   GtkButton* button =
       GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                      ACE_TEXT_ALWAYS_CHAR("create")));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_CREATE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   // make drop button insensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("drop")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_DROP_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
@@ -2118,7 +2113,7 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to load entity profile: \"%s\", aborting\n"),
-               filename.c_str()));
+               ACE_TEXT(filename.c_str())));
 
     return FALSE;
   } // end IF
@@ -2130,21 +2125,21 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_frame =
       GTK_FRAME(glade_xml_get_widget(data->XML,
-                                     ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARFRAME_NAME)));
+                                     ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
   ACE_ASSERT(character_frame);
   gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
 
   // make join button sensitive IFF player is not disabled
   GtkButton* button =
       GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                      ACE_TEXT_ALWAYS_CHAR("join")));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_JOIN_NAME)));
   ACE_ASSERT(button);
   if (!RPG_Engine_Common_Tools::isCharacterDisabled(data->entity.character))
     gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   // make equip button sensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("equip")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_EQUIP_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
@@ -2168,7 +2163,7 @@ character_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
   // retrieve tree model
   GtkComboBox* repository_combobox =
       GTK_COMBO_BOX(glade_xml_get_widget(data->XML,
-                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARBOX_NAME)));
+                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
   ACE_ASSERT(repository_combobox);
   GtkTreeModel* model = gtk_combo_box_get_model(repository_combobox);
   ACE_ASSERT(model);
@@ -2182,7 +2177,7 @@ character_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
   // set sensitive as appropriate
   GtkFrame* character_frame =
       GTK_FRAME(glade_xml_get_widget(data->XML,
-                                     ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARFRAME_NAME)));
+                                     ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
   ACE_ASSERT(character_frame);
 
   // ... sensitize/activate widgets as appropriate
@@ -2199,13 +2194,13 @@ character_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
     // make create button sensitive (if it's not already)
     GtkButton* button =
         GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                        ACE_TEXT_ALWAYS_CHAR("create")));
+                                        ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_CREATE_NAME)));
     ACE_ASSERT(button);
     gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
     // make load button sensitive (if it's not already)
     button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                             ACE_TEXT_ALWAYS_CHAR("load")));
+                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_LOAD_NAME)));
     ACE_ASSERT(button);
     gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
   } // end ELSE
@@ -2231,7 +2226,7 @@ create_map_clicked_GTK_cb(GtkWidget* widget_in,
   // step1a: setup entry dialog
   GtkEntry* main_entry_dialog_entry =
 		GTK_ENTRY(glade_xml_get_widget(data->XML,
-		                               ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAINENTRYDIALOGENTRY_NAME)));
+																	 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_ENTRY_ENTRY_NAME)));
   ACE_ASSERT(main_entry_dialog_entry);
   gtk_entry_buffer_delete_text(gtk_entry_get_buffer(main_entry_dialog_entry),
                                0, -1);
@@ -2247,7 +2242,7 @@ create_map_clicked_GTK_cb(GtkWidget* widget_in,
   // step1b: retrieve entry dialog handle
   GtkDialog* main_entry_dialog =
 		GTK_DIALOG(glade_xml_get_widget(data->XML,
-		                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAINENTRYDIALOG_NAME)));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_ENTRY_NAME)));
   ACE_ASSERT(main_entry_dialog);
   // step1c: run entry dialog
   gint response_id = gtk_dialog_run(main_entry_dialog);
@@ -2268,7 +2263,7 @@ create_map_clicked_GTK_cb(GtkWidget* widget_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to convert string: \"%s\", continuing\n"),
-               conversion_error->message));
+               ACE_TEXT(conversion_error->message)));
 
     // clean up
     g_error_free(conversion_error);
@@ -2296,33 +2291,33 @@ create_map_clicked_GTK_cb(GtkWidget* widget_in,
   // make drop button sensitive (if it's not already)
   GtkButton* button =
       GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                      ACE_TEXT_ALWAYS_CHAR("map_drop_button")));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_DROP_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   // make save button sensitive (if it's not already)
   button =
       GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                      ACE_TEXT_ALWAYS_CHAR("map_save_button")));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_SAVE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   // make load button insensitive (if it's not already)
   button =
       GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                      ACE_TEXT_ALWAYS_CHAR("map_load_button")));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_LOAD_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
   // make join button sensitive (if appropriate)
   GtkComboBox* repository_combobox =
 		GTK_COMBO_BOX(glade_xml_get_widget(data->XML,
-		                                   ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARBOX_NAME)));
+																			 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
   ACE_ASSERT(repository_combobox);
   if (gtk_combo_box_get_active(repository_combobox) != -1)
   {
     button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                             ACE_TEXT_ALWAYS_CHAR("join")));
+                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_JOIN_NAME)));
     ACE_ASSERT(button);
     gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
   } // end IF
@@ -2366,20 +2361,20 @@ drop_map_clicked_GTK_cb(GtkWidget* widget_in,
   // make create_map button sensitive (if it's not already)
   GtkButton* button =
 		GTK_BUTTON(glade_xml_get_widget(data->XML,
-		                                ACE_TEXT_ALWAYS_CHAR("map_create_button")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_CREATE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   // make map_load button sensitive (if it's not already)
   button =
 		GTK_BUTTON(glade_xml_get_widget(data->XML,
-		                                ACE_TEXT_ALWAYS_CHAR("map_load_button")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_LOAD_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   // make join button insensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("join")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_JOIN_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
@@ -2402,7 +2397,7 @@ load_map_clicked_GTK_cb(GtkWidget* widget_in,
   // step1a: retrieve file chooser dialog handle
   GtkFileChooserDialog* filechooser_dialog =
 		GTK_FILE_CHOOSER_DIALOG(glade_xml_get_widget(data->XML,
-		                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_FILECHOOSERDIALOG_NAME)));
+																								 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_FILECHOOSER_NAME)));
   ACE_ASSERT(filechooser_dialog);
 
   // step1b: setup chooser dialog
@@ -2429,7 +2424,7 @@ load_map_clicked_GTK_cb(GtkWidget* widget_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Engine_Level::load(\"%s\"), aborting"),
-               filename.c_str()));
+               ACE_TEXT(filename.c_str())));
 
     return FALSE;
   } // end IF
@@ -2441,14 +2436,14 @@ load_map_clicked_GTK_cb(GtkWidget* widget_in,
   // make create button insensitive (if it's not already)
   GtkButton* button =
 		GTK_BUTTON(glade_xml_get_widget(data->XML,
-		                                ACE_TEXT_ALWAYS_CHAR("map_create_button")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_CREATE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
   // make map_drop button sensitive (if it's not already)
   button =
 		GTK_BUTTON(glade_xml_get_widget(data->XML,
-		                                ACE_TEXT_ALWAYS_CHAR("map_drop_button")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_DROP_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
@@ -2458,19 +2453,19 @@ load_map_clicked_GTK_cb(GtkWidget* widget_in,
   // make map_save button insensitive (if it's not already)
   button =
 		GTK_BUTTON(glade_xml_get_widget(data->XML,
-		                                ACE_TEXT_ALWAYS_CHAR("map_save_button")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_SAVE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
   // make join button sensitive (if appropriate)
   GtkComboBox* repository_combobox =
 		GTK_COMBO_BOX(glade_xml_get_widget(data->XML,
-		                                   ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARBOX_NAME)));
+																			 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
   ACE_ASSERT(repository_combobox);
   if (gtk_combo_box_get_active(repository_combobox) != -1)
   {
     button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                             ACE_TEXT_ALWAYS_CHAR("join")));
+                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_JOIN_NAME)));
     ACE_ASSERT(button);
     gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
   } // end IF
@@ -2499,14 +2494,14 @@ save_map_clicked_GTK_cb(GtkWidget* widget_in,
   // make create button sensitive (if it's not already)
   GtkButton* button =
 		GTK_BUTTON(glade_xml_get_widget(data->XML,
-		                                ACE_TEXT_ALWAYS_CHAR("map_create_button")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_CREATE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   // make drop button insensitive (if it's not already)
   button =
 		GTK_BUTTON(glade_xml_get_widget(data->XML,
-		                                ACE_TEXT_ALWAYS_CHAR("map_drop_button")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_DROP_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
@@ -2571,7 +2566,7 @@ map_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Engine_Level::load(\"%s\"), aborting"),
-               filename.c_str()));
+               ACE_TEXT(filename.c_str())));
 
     return FALSE;
   } // end IF
@@ -2583,7 +2578,7 @@ map_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   // make map_save button insensitive (if it's not already)
   GtkButton* button =
 		GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                    ACE_TEXT_ALWAYS_CHAR("map_save_button")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_SAVE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
@@ -2605,7 +2600,7 @@ map_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
   // retrieve tree model
   GtkComboBox* repository_combobox =
       GTK_COMBO_BOX(glade_xml_get_widget(data->XML,
-                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAPBOX_NAME)));
+                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_MAP_NAME)));
   ACE_ASSERT(repository_combobox);
   GtkTreeModel* model = gtk_combo_box_get_model(repository_combobox);
   ACE_ASSERT(model);
@@ -2627,7 +2622,7 @@ map_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
     // make join button insensitive (if it's not already)
     GtkButton* button =
         GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                        ACE_TEXT_ALWAYS_CHAR("join")));
+                                        ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_JOIN_NAME)));
     ACE_ASSERT(button);
     gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
   } // end ELSE
@@ -2673,79 +2668,79 @@ join_game_clicked_GTK_cb(GtkWidget* widget_in,
   // make part button sensitive
   GtkButton* button =
       GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                      ACE_TEXT_ALWAYS_CHAR("part")));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_PART_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   // make create button insensitive
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("create")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_CREATE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
   // make drop button insensitive
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("drop")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_DROP_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
   // make load button insensitive
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("load")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_LOAD_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
   // make save button insensitive
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("save")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_SAVE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
   // make create_map button insensitive
   button =
       GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                      ACE_TEXT_ALWAYS_CHAR("map_create_button")));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_CREATE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
   // make drop_map button insensitive
   button =
       GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                      ACE_TEXT_ALWAYS_CHAR("map_drop_button")));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_DROP_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
   // make load_map button insensitive
   button =
       GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                      ACE_TEXT_ALWAYS_CHAR("map_load_button")));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_LOAD_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
   // make save_map button insensitive
   button =
       GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                      ACE_TEXT_ALWAYS_CHAR("map_save_button")));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_SAVE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
   // make character combox insensitive
   GtkComboBox* combo_box =
       GTK_COMBO_BOX(glade_xml_get_widget(data->XML,
-                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARBOX_NAME)));
+                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
   ACE_ASSERT(combo_box);
   gtk_widget_set_sensitive(GTK_WIDGET(combo_box), FALSE);
 
   // make map combobox insensitive
   combo_box =
       GTK_COMBO_BOX(glade_xml_get_widget(data->XML,
-                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAPBOX_NAME)));
+                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_MAP_NAME)));
   ACE_ASSERT(combo_box);
   gtk_widget_set_sensitive(GTK_WIDGET(combo_box), FALSE);
 
   // make quit button insensitive
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("quit")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_QUIT_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
@@ -2789,54 +2784,54 @@ part_game_clicked_GTK_cb(GtkWidget* widget_in,
   // make join button sensitive IFF player is not disabled
   GtkButton* button =
       GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                      ACE_TEXT_ALWAYS_CHAR("join")));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_JOIN_NAME)));
   ACE_ASSERT(button);
   if (!RPG_Engine_Common_Tools::isCharacterDisabled(data->entity.character))
     gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   // make drop button sensitive
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("drop")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_DROP_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   // make save button sensitive
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("save")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_SAVE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   // make map create button sensitive
   button =
       GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                      ACE_TEXT_ALWAYS_CHAR("map_create_button")));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_CREATE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   // make map load button sensitive
   button =
       GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                      ACE_TEXT_ALWAYS_CHAR("map_load_button")));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_LOAD_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   // make character combox sensitive
   GtkComboBox* combo_box =
       GTK_COMBO_BOX(glade_xml_get_widget(data->XML,
-                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARBOX_NAME)));
+                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
   ACE_ASSERT(combo_box);
   gtk_widget_set_sensitive(GTK_WIDGET(combo_box), TRUE);
 
   // make map combobox sensitive
   combo_box =
       GTK_COMBO_BOX(glade_xml_get_widget(data->XML,
-                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAPBOX_NAME)));
+                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_MAP_NAME)));
   ACE_ASSERT(combo_box);
   gtk_widget_set_sensitive(GTK_WIDGET(combo_box), TRUE);
 
   // make quit button insensitive
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR("quit")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_QUIT_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
@@ -2864,13 +2859,13 @@ equip_clicked_GTK_cb(GtkWidget* widget_in,
   // retrieve about dialog handle
   GtkWidget* equipment_dialog =
       GTK_WIDGET(glade_xml_get_widget(data->XML,
-                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_EQUIPMENTDIALOG_NAME)));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_EQUIPMENT_NAME)));
   ACE_ASSERT(equipment_dialog);
   if (!equipment_dialog)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_EQUIPMENTDIALOG_NAME)));
+               ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_EQUIPMENT_NAME)));
 
     return TRUE; // propagate
   } // end IF
@@ -3037,13 +3032,13 @@ server_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 //
 //   // make character display frame sensitive (if it's not already)
 //   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->XML,
-//                                                              ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARFRAME_NAME)));
+//                                                              ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
 //   ACE_ASSERT(character_frame);
 //   gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
 //
 //   // make join button sensitive (if it's not already)
 //   GtkButton* join_game = GTK_BUTTON(glade_xml_get_widget(data->XML,
-//                                                          ACE_TEXT_ALWAYS_CHAR("join")));
+//                                                          ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_JOIN_NAME)));
 //   ACE_ASSERT(join_game);
 //   gtk_widget_set_sensitive(GTK_WIDGET(join_game), TRUE);
 
@@ -3065,7 +3060,7 @@ server_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
 //
 //   // retrieve tree model
 //   GtkComboBox* repository_combobox = GTK_COMBO_BOX(glade_xml_get_widget(data->XML,
-//                                                                          ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARBOX_NAME)));
+//                                                                          ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
 //   ACE_ASSERT(repository_combobox);
 //   GtkTreeModel* model = gtk_combo_box_get_model(repository_combobox);
 //   ACE_ASSERT(model);
@@ -3076,7 +3071,7 @@ server_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
 //
 //   // set sensitive as appropriate
 //   GtkFrame* character_frame = GTK_FRAME(glade_xml_get_widget(data->XML,
-//                                                              ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARFRAME_NAME)));
+//                                                              ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
 //   ACE_ASSERT(character_frame);
 //   if (g_list_length(gtk_container_get_children(GTK_CONTAINER(repository_combobox))))
 //   {
@@ -3329,7 +3324,7 @@ server_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
 // {
 //   RPG_TRACE(ACE_TEXT("::gtk_quit_handler_cb"));
 //
-//   RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*> (userData_in);
+//   RPG_Client_GTK_CBData_t* data = static_cast<RPG_Client_GTK_CBData_t*>(userData_in);
 //   ACE_ASSERT(data);
 //
 //   // synch access
@@ -3380,7 +3375,7 @@ init_UI_client(const std::string& UIFile_in,
   // step2: init dialog windows
   GtkFileChooserDialog* filechooser_dialog =
 		GTK_FILE_CHOOSER_DIALOG(glade_xml_get_widget(userData_in.XML,
-		                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_FILECHOOSERDIALOG_NAME)));
+																								 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_FILECHOOSER_NAME)));
   ACE_ASSERT(filechooser_dialog);
   userData_in.map_filter = gtk_file_filter_new();
   ACE_ASSERT(userData_in.map_filter);
@@ -3428,18 +3423,18 @@ init_UI_client(const std::string& UIFile_in,
 
   GtkWidget* about_dialog =
 		GTK_WIDGET(glade_xml_get_widget(userData_in.XML,
-                                    ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_ABOUTDIALOG_NAME)));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_ABOUT_NAME)));
   ACE_ASSERT(about_dialog);
 
   GtkWidget* equipment_dialog =
 		GTK_WIDGET(glade_xml_get_widget(userData_in.XML,
-                                    ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_EQUIPMENTDIALOG_NAME)));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_EQUIPMENT_NAME)));
   ACE_ASSERT(equipment_dialog);
 
 	// set window icon
   GtkWidget* main_dialog =
 		GTK_WIDGET(glade_xml_get_widget(userData_in.XML,
-                                    ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAINDIALOG_NAME)));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_MAIN_NAME)));
   ACE_ASSERT(main_dialog);
 	RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
@@ -3462,11 +3457,11 @@ init_UI_client(const std::string& UIFile_in,
 
   GtkWidget* main_entry_dialog =
 		GTK_WIDGET(glade_xml_get_widget(userData_in.XML,
-                                    ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAINENTRYDIALOG_NAME)));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_ENTRY_NAME)));
   ACE_ASSERT(main_entry_dialog);
   GtkEntry* entry =
 		GTK_ENTRY(glade_xml_get_widget(userData_in.XML,
-                                   ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAINENTRYDIALOGENTRY_NAME)));
+																	 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_ENTRY_ENTRY_NAME)));
   ACE_ASSERT(entry);
   GtkEntryBuffer* entry_buffer =
     gtk_entry_buffer_new(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME), // text
@@ -3490,7 +3485,7 @@ init_UI_client(const std::string& UIFile_in,
   // step3a: character repository
   GtkComboBox* combobox =
 		GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,
-                                       ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARBOX_NAME)));
+																			 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
   ACE_ASSERT(combobox);
   gtk_cell_layout_clear(GTK_CELL_LAYOUT(combobox));
   GtkCellRenderer* renderer = gtk_cell_renderer_text_new();
@@ -3541,20 +3536,20 @@ init_UI_client(const std::string& UIFile_in,
     // make create button sensitive (if it's not already)
     GtkButton* button =
 			GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                      ACE_TEXT_ALWAYS_CHAR("create")));
+																			ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_CREATE_NAME)));
     ACE_ASSERT(button);
     gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
     // make load button sensitive (if it's not already)
     button = GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                             ACE_TEXT_ALWAYS_CHAR("load")));
+                                             ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_LOAD_NAME)));
     ACE_ASSERT(button);
     gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
   } // end ELSE
   // step3b: maps repository
   combobox =
 		GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,
-                                       ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAPBOX_NAME)));
+																			 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_MAP_NAME)));
   ACE_ASSERT(combobox);
   gtk_cell_layout_clear(GTK_CELL_LAYOUT(combobox));
   renderer = gtk_cell_renderer_text_new();
@@ -3602,14 +3597,14 @@ init_UI_client(const std::string& UIFile_in,
     // make create button sensitive (if it's not already)
     GtkButton* button =
 			GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                      ACE_TEXT_ALWAYS_CHAR("map_create_button")));
+																			ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_CREATE_NAME)));
     ACE_ASSERT(button);
     gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
     // make load button sensitive (if it's not already)
     button =
 			GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                      ACE_TEXT_ALWAYS_CHAR("map_load_button")));
+																			ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_LOAD_NAME)));
     ACE_ASSERT(button);
     gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
   } // end ELSE
@@ -3650,7 +3645,7 @@ init_UI_client(const std::string& UIFile_in,
    // step4b: connect custom signals
   GtkButton* button = NULL;
   button = GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                           ACE_TEXT_ALWAYS_CHAR("create")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_CREATE_NAME)));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
@@ -3658,7 +3653,7 @@ init_UI_client(const std::string& UIFile_in,
                    userData_p);
 
   button = GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                           ACE_TEXT_ALWAYS_CHAR("drop")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_DROP_NAME)));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
@@ -3666,7 +3661,7 @@ init_UI_client(const std::string& UIFile_in,
                    userData_p);
 
   button = GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                           ACE_TEXT_ALWAYS_CHAR("load")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_LOAD_NAME)));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
@@ -3674,7 +3669,7 @@ init_UI_client(const std::string& UIFile_in,
                    userData_p);
 
   button = GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                           ACE_TEXT_ALWAYS_CHAR("save")));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_SAVE_NAME)));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
@@ -3683,7 +3678,7 @@ init_UI_client(const std::string& UIFile_in,
 
   combobox =
 		GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,
-                                       ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARBOX_NAME)));
+																			 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
   ACE_ASSERT(combobox);
   g_signal_connect(combobox,
                    ACE_TEXT_ALWAYS_CHAR("changed"),
@@ -3692,7 +3687,7 @@ init_UI_client(const std::string& UIFile_in,
 
   button =
 		GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                    ACE_TEXT_ALWAYS_CHAR("character_repository_button")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_REFRESH_NAME)));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
@@ -3701,7 +3696,7 @@ init_UI_client(const std::string& UIFile_in,
 
   button =
 		GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                    ACE_TEXT_ALWAYS_CHAR("map_create_button")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_CREATE_NAME)));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
@@ -3710,7 +3705,7 @@ init_UI_client(const std::string& UIFile_in,
 
   button =
 		GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                    ACE_TEXT_ALWAYS_CHAR("map_drop_button")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_DROP_NAME)));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
@@ -3719,7 +3714,7 @@ init_UI_client(const std::string& UIFile_in,
 
   button =
 		GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                    ACE_TEXT_ALWAYS_CHAR("map_load_button")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_LOAD_NAME)));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
@@ -3728,7 +3723,7 @@ init_UI_client(const std::string& UIFile_in,
 
   button =
 		GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                    ACE_TEXT_ALWAYS_CHAR("map_save_button")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_SAVE_NAME)));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
@@ -3737,7 +3732,7 @@ init_UI_client(const std::string& UIFile_in,
 
   combobox =
 		GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,
-                                       ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAPBOX_NAME)));
+																			 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_MAP_NAME)));
   ACE_ASSERT(combobox);
   g_signal_connect(combobox,
                    ACE_TEXT_ALWAYS_CHAR("changed"),
@@ -3746,7 +3741,7 @@ init_UI_client(const std::string& UIFile_in,
 
   button =
 		GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                    ACE_TEXT_ALWAYS_CHAR("map_repository_button")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_REFRESH_NAME)));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
@@ -3755,7 +3750,7 @@ init_UI_client(const std::string& UIFile_in,
 
   button =
 		GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                    ACE_TEXT_ALWAYS_CHAR("join")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_JOIN_NAME)));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
@@ -3764,7 +3759,7 @@ init_UI_client(const std::string& UIFile_in,
 
   button =
 		GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                    ACE_TEXT_ALWAYS_CHAR("part")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_PART_NAME)));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
@@ -3773,7 +3768,7 @@ init_UI_client(const std::string& UIFile_in,
 
   button =
 		GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                    ACE_TEXT_ALWAYS_CHAR("equip")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_EQUIP_NAME)));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
@@ -3782,7 +3777,7 @@ init_UI_client(const std::string& UIFile_in,
 
   button =
 		GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                    ACE_TEXT_ALWAYS_CHAR("rest")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_REST_NAME)));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
@@ -3791,7 +3786,7 @@ init_UI_client(const std::string& UIFile_in,
 
   combobox =
 		GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,
-                                       ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_SERVERBOX_NAME)));
+																			 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_SERVER_NAME)));
   ACE_ASSERT(combobox);
   g_signal_connect(combobox,
                    ACE_TEXT_ALWAYS_CHAR("changed"),
@@ -3800,7 +3795,7 @@ init_UI_client(const std::string& UIFile_in,
 
   button =
 		GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                    ACE_TEXT_ALWAYS_CHAR("server_repository_button")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_SERVER_REFRESH_NAME)));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
@@ -3809,7 +3804,7 @@ init_UI_client(const std::string& UIFile_in,
 
   button =
 		GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                    ACE_TEXT_ALWAYS_CHAR("about")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_ABOUT_NAME)));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
@@ -3818,7 +3813,7 @@ init_UI_client(const std::string& UIFile_in,
 
   button =
 		GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                    ACE_TEXT_ALWAYS_CHAR("quit")));
+																		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_QUIT_NAME)));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),

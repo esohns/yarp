@@ -212,6 +212,10 @@ do_printUsage(const std::string& programName_in)
   std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            false);
+#if defined(DEBUG_DEBUGGER)
+  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif
 
   std::cout << ACE_TEXT("usage: ")
             << programName_in
@@ -237,11 +241,11 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DATA_SUB);
 #endif
   std::cout << ACE_TEXT("-d [DIR]   : graphics directory")
             << ACE_TEXT(" [\"")
-            << path.c_str()
+            << path
             << ACE_TEXT("\"]")
             << std::endl;
   std::cout << ACE_TEXT("-f         : debug")
@@ -255,7 +259,7 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR("graphics");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-g [FILE]  : graphics dictionary (*.xml)")
             << ACE_TEXT(" [\"")
             << path.c_str()
@@ -271,7 +275,7 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR("item");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-i [FILE]  : items dictionary (*.xml)")
             << ACE_TEXT(" [\"")
             << path.c_str()
@@ -283,7 +287,7 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR("magic");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-m [FILE]  : magic dictionary (*.xml)")
             << ACE_TEXT(" [\"")
             << path.c_str()
@@ -297,7 +301,7 @@ do_printUsage(const std::string& programName_in)
 	path += ACE_TEXT_ALWAYS_CHAR("monster");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-n [FILE]  : monster dictionary (*.xml)")
             << ACE_TEXT(" [\"")
             << path.c_str()
@@ -374,6 +378,10 @@ do_processArguments(const int argc_in,
   std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            false);
+#if defined(DEBUG_DEBUGGER)
+  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif
 
   magicDictionary_out     = configuration_path;
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -381,7 +389,7 @@ do_processArguments(const int argc_in,
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR("magic");
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
+  magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
 
   height_out              = SDL_GUI_DEF_VIDEO_H;
 
@@ -391,7 +399,7 @@ do_processArguments(const int argc_in,
   itemsDictionary_out += ACE_TEXT_ALWAYS_CHAR("item");
   itemsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  itemsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
+  itemsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DICTIONARY_FILE);
 
   monsterDictionary_out   = configuration_path;
   monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -402,7 +410,7 @@ do_processArguments(const int argc_in,
   monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   monsterDictionary_out +=
-      ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
+      ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DICTIONARY_FILE);
 
   debugMode_out           = SDL_GUI_DEF_DEBUG;
 
@@ -413,7 +421,7 @@ do_processArguments(const int argc_in,
   directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
 #else
-  directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
+  directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DATA_SUB);
 #endif
 
   graphicsDictionary_out  = configuration_path;
@@ -423,7 +431,7 @@ do_processArguments(const int argc_in,
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   graphicsDictionary_out +=
-      ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
+      ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DICTIONARY_FILE);
 
   entityFile_out          =
       RPG_Player_Common_Tools::getPlayerProfilesDirectory();
@@ -1773,6 +1781,10 @@ ACE_TMAIN(int argc_in,
   std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            false);
+#if defined(DEBUG_DEBUGGER)
+  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif
 
   std::string magic_dictionary    = configuration_path;
   magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -1780,7 +1792,7 @@ ACE_TMAIN(int argc_in,
   magic_dictionary += ACE_TEXT_ALWAYS_CHAR("magic");
   magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  magic_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
+  magic_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
 
   std::string items_dictionary    = configuration_path;
   items_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -1788,7 +1800,7 @@ ACE_TMAIN(int argc_in,
   items_dictionary += ACE_TEXT_ALWAYS_CHAR("item");
   items_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  items_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
+  items_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DICTIONARY_FILE);
 
   std::string monster_dictionary  = configuration_path;
   monster_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -1798,7 +1810,7 @@ ACE_TMAIN(int argc_in,
   monster_dictionary += ACE_TEXT_ALWAYS_CHAR("monster");
   monster_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  monster_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
+  monster_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DICTIONARY_FILE);
 
   std::string graphics_directory  = data_path;
   graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -1807,7 +1819,7 @@ ACE_TMAIN(int argc_in,
   graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
 #endif
-  graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
+  graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DATA_SUB);
 
   unsigned int cache_size         = SDL_GUI_DEF_GRAPHICS_CACHESIZE;
 
@@ -1817,7 +1829,7 @@ ACE_TMAIN(int argc_in,
   graphics_dictionary += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphics_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  graphics_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
+  graphics_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DICTIONARY_FILE);
 
   mode_t mode                     = SDL_GUI_DEF_MODE;
 
@@ -2058,11 +2070,15 @@ ACE_TMAIN(int argc_in,
   // step4: clean up
   TTF_Quit();
   SDL_Quit();
-  // *PORTABILITY*: on Windows, need to fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  // *PORTABILITY*: on Windows, fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
   if (ACE::fini() == -1)
+  {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+
+    return EXIT_FAILURE;
+  } // end IF
 #endif
 
   return EXIT_SUCCESS;

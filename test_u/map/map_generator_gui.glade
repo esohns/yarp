@@ -6,7 +6,6 @@
     <property name="can_focus">False</property>
     <property name="no_show_all">True</property>
     <property name="border_width">5</property>
-    <property name="type">popup</property>
     <property name="title" translatable="yes">about</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
@@ -98,10 +97,104 @@
             <property name="layout_style">end</property>
           </widget>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="pack_type">end</property>
             <property name="position">0</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkDialog" id="entry_dialog">
+    <property name="can_focus">False</property>
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">please enter a name...</property>
+    <property name="resizable">False</property>
+    <property name="modal">True</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="icon">../data/graphics/images/image_icon.png</property>
+    <property name="type_hint">dialog</property>
+    <property name="skip_taskbar_hint">True</property>
+    <property name="skip_pager_hint">True</property>
+    <property name="deletable">False</property>
+    <signal name="response" handler="entry_dialog_response_cb" swapped="no"/>
+    <child internal-child="vbox">
+      <widget class="GtkVBox" id="entry_vbox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <widget class="GtkHButtonBox" id="entry_action_area">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+            <child>
+              <widget class="GtkButton" id="cancel_button">
+                <property name="label">gtk-close</property>
+                <property name="response_id">-1</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="receives_default">True</property>
+                <property name="relief">half</property>
+                <property name="use_stock">True</property>
+                <property name="focus_on_click">False</property>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkButton" id="accept_button">
+                <property name="label">gtk-ok</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="receives_default">True</property>
+                <property name="relief">half</property>
+                <property name="use_stock">True</property>
+                <property name="focus_on_click">False</property>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkEntry" id="name_entry">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="has_focus">True</property>
+            <property name="is_focus">True</property>
+            <property name="can_default">True</property>
+            <property name="has_default">True</property>
+            <property name="receives_default">True</property>
+            <property name="max_length">30</property>
+            <property name="invisible_char">●</property>
+            <property name="activates_default">True</property>
+            <property name="width_chars">30</property>
+            <property name="truncate_multiline">True</property>
+            <property name="caps_lock_warning">False</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
           </packing>
         </child>
       </widget>
@@ -111,7 +204,6 @@
     <property name="can_focus">False</property>
     <property name="no_show_all">True</property>
     <property name="border_width">5</property>
-    <property name="type">popup</property>
     <property name="title" translatable="yes">please choose a file...</property>
     <property name="modal">True</property>
     <property name="destroy_with_parent">True</property>
@@ -163,6 +255,7 @@
     <property name="border_width">5</property>
     <property name="title" translatable="yes">character generator</property>
     <property name="resizable">False</property>
+    <property name="icon">../data/graphics/images/image_icon.png</property>
     <property name="type_hint">normal</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="main_vbox">

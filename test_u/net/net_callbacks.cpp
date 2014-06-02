@@ -30,6 +30,7 @@
 
 #include "rpg_net_common.h"
 
+#include "rpg_client_defines.h"
 #include "rpg_client_ui_tools.h"
 
 #include "rpg_net_server_ilistener.h"
@@ -54,12 +55,12 @@ idle_update_log_display_cb(gpointer act_in)
 
   GtkTextView* view =
       GTK_TEXT_VIEW(glade_xml_get_widget(data->xml,
-                                         ACE_TEXT_ALWAYS_CHAR(NET_UI_TEXTVIEW_NAME)));
+                                         ACE_TEXT_ALWAYS_CHAR(NET_UI_GTK_TEXTVIEW_NAME)));
   if (!view)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_UI_TEXTVIEW_NAME)));
+               ACE_TEXT_ALWAYS_CHAR(NET_UI_GTK_TEXTVIEW_NAME)));
 
     return FALSE; // G_SOURCE_REMOVE
   } // end IF
@@ -96,7 +97,7 @@ idle_update_log_display_cb(gpointer act_in)
 			{
 				ACE_DEBUG((LM_ERROR,
 					         ACE_TEXT("failed to convert message text (was: \"%s\"), aborting\n"),
-					         (*iterator2).c_str()));
+									 ACE_TEXT((*iterator2).c_str())));
 
 				return FALSE; // G_SOURCE_REMOVE
 			} // end IF
@@ -124,7 +125,7 @@ idle_update_log_display_cb(gpointer act_in)
   // because it has "right" gravity
   GtkTextMark* mark =
       gtk_text_buffer_get_mark(buffer,
-                               ACE_TEXT_ALWAYS_CHAR(NET_UI_SCROLLMARK_NAME));
+                               ACE_TEXT_ALWAYS_CHAR(NET_UI_GTK_SCROLLMARK_NAME));
 //  gtk_text_buffer_move_mark(buffer,
 //                            mark,
 //                            &iterator);
@@ -148,12 +149,12 @@ idle_update_info_display_cb(gpointer act_in)
 
   GtkSpinButton* spinbutton =
       GTK_SPIN_BUTTON(glade_xml_get_widget(data->xml,
-                                          ACE_TEXT_ALWAYS_CHAR(NET_UI_NUMCONNECTIONS_NAME)));
+                                          ACE_TEXT_ALWAYS_CHAR(NET_UI_GTK_SPINBUTTON_NUMCONNECTIONS_NAME)));
   if (!spinbutton)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_UI_NUMCONNECTIONS_NAME)));
+               ACE_TEXT(NET_UI_GTK_SPINBUTTON_NUMCONNECTIONS_NAME)));
 
     return FALSE; // G_SOURCE_REMOVE
   } // end IF
@@ -210,32 +211,33 @@ idle_update_info_display_cb(gpointer act_in)
   {
     widget =
         GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                        ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEBUTTON_NAME)));
+                                        ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_GTK_BUTTON_CLOSE_NAME)));
     if (!widget)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-                 ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEBUTTON_NAME)));
+                 ACE_TEXT(NET_CLIENT_UI_GTK_BUTTON_CLOSE_NAME)));
     else
       gtk_widget_set_sensitive(widget,
                                (current_value > 0));
   } // end IF
   widget =
       GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                      ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEALLBUTTON_NAME)));
+                                      ACE_TEXT_ALWAYS_CHAR(NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
   if (!widget)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEALLBUTTON_NAME)));
+               ACE_TEXT(NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
   else
     gtk_widget_set_sensitive(widget, (current_value > 0));
   if (data->listener_handle == NULL) // <-- client
   {
-    widget = GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                             ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_PINGBUTTON_NAME)));
+    widget =
+        GTK_WIDGET(glade_xml_get_widget(data->xml,
+                                        ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_GTK_BUTTON_PING_NAME)));
     if (!widget)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-                 ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_PINGBUTTON_NAME)));
+                 ACE_TEXT(NET_CLIENT_UI_GTK_BUTTON_PING_NAME)));
     else
       gtk_widget_set_sensitive(widget, (current_value > 0));
   } // end IF
@@ -341,7 +343,7 @@ button_ping_clicked_cb(GtkWidget* widget_in,
 																	1,
 																	result);
 	const RPG_Net_Connection_Manager_t::CONNECTION_TYPE* connection_handler =
-		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->operator [](result.front() - 1);
+		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->operator[](result.front() - 1);
 	if (!connection_handler)
 	{
 //				ACE_DEBUG((LM_ERROR,
@@ -417,11 +419,11 @@ togglebutton_stress_toggled_cb(GtkWidget* widget_in,
   // toggle buttons
   GtkWidget* widget =
       GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                      ACE_TEXT_ALWAYS_CHAR(NET_UI_ACTIONS_NAME)));
+                                      ACE_TEXT_ALWAYS_CHAR(NET_UI_GTK_BUTTONBOX_ACTIONS_NAME)));
   if (!widget)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_UI_ACTIONS_NAME)));
+               ACE_TEXT_ALWAYS_CHAR(NET_UI_GTK_BUTTONBOX_ACTIONS_NAME)));
   else
     gtk_widget_set_sensitive(widget,
                              !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget_in)));
@@ -512,20 +514,21 @@ button_about_clicked_cb(GtkWidget* widget_in,
   ACE_ASSERT(data->xml);
 
   // retrieve about dialog handle
-  GtkWidget* about_dialog = GTK_WIDGET(glade_xml_get_widget(data->xml,
-                                                            ACE_TEXT_ALWAYS_CHAR(NET_UI_ABOUTDIALOG_NAME)));
+  GtkDialog* about_dialog =
+      GTK_DIALOG(glade_xml_get_widget(data->xml,
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_ABOUT_NAME)));
   ACE_ASSERT(about_dialog);
   if (!about_dialog)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               ACE_TEXT_ALWAYS_CHAR(NET_UI_ABOUTDIALOG_NAME)));
+               ACE_TEXT(RPG_CLIENT_GTK_DIALOG_ABOUT_NAME)));
 
     return TRUE; // propagate
   } // end IF
 
   // run dialog
-  gint result = gtk_dialog_run(GTK_DIALOG(about_dialog));
+  gint result = gtk_dialog_run(about_dialog);
   switch (result)
   {
     case GTK_RESPONSE_ACCEPT:
@@ -533,9 +536,7 @@ button_about_clicked_cb(GtkWidget* widget_in,
     default:
       break;
   } // end SWITCH
-
-  // clean up
-  gtk_widget_hide(about_dialog);
+  gtk_widget_hide(GTK_WIDGET(about_dialog));
 
   return FALSE;
 } // button_about_clicked_cb
@@ -609,8 +610,9 @@ init_UI_client(const std::string& UIFile_in,
   } // end IF
 
   // step2: init dialog window(s)
-  GtkWidget* dialog = GTK_WIDGET(glade_xml_get_widget(userData_out.xml,
-                                                      ACE_TEXT_ALWAYS_CHAR(NET_UI_DIALOG_NAME)));
+  GtkWidget* dialog =
+      GTK_WIDGET(glade_xml_get_widget(userData_out.xml,
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_MAIN_NAME)));
   ACE_ASSERT(dialog);
 //  GtkWidget* image_icon = gtk_image_new_from_file(path.c_str());
 //  ACE_ASSERT(image_icon);
@@ -620,13 +622,15 @@ init_UI_client(const std::string& UIFile_in,
   //gtk_window_set_title(,
   //                     caption.c_str());
 
-  GtkWidget* about_dialog = GTK_WIDGET(glade_xml_get_widget(userData_out.xml,
-                                                            ACE_TEXT_ALWAYS_CHAR(NET_UI_ABOUTDIALOG_NAME)));
+  GtkWidget* about_dialog =
+      GTK_WIDGET(glade_xml_get_widget(userData_out.xml,
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_ABOUT_NAME)));
   ACE_ASSERT(about_dialog);
 
   // step3: init info view
-  GtkSpinButton* spinbutton = GTK_SPIN_BUTTON(glade_xml_get_widget(userData_out.xml,
-                                                                   ACE_TEXT_ALWAYS_CHAR(NET_UI_NUMCONNECTIONS_NAME)));
+  GtkSpinButton* spinbutton =
+      GTK_SPIN_BUTTON(glade_xml_get_widget(userData_out.xml,
+                                           ACE_TEXT_ALWAYS_CHAR(NET_UI_GTK_SPINBUTTON_NUMCONNECTIONS_NAME)));
   ACE_ASSERT(spinbutton);
   gtk_spin_button_set_range(spinbutton,
                             0.0,
@@ -637,8 +641,9 @@ init_UI_client(const std::string& UIFile_in,
   // step4: init text view, setup auto-scrolling
   GtkTextBuffer* buffer = gtk_text_buffer_new(NULL); // text tag table --> create new
   ACE_ASSERT(buffer);
-  GtkTextView* view = GTK_TEXT_VIEW(glade_xml_get_widget(userData_out.xml,
-                                                         ACE_TEXT_ALWAYS_CHAR(NET_UI_TEXTVIEW_NAME)));
+  GtkTextView* view =
+      GTK_TEXT_VIEW(glade_xml_get_widget(userData_out.xml,
+                                         ACE_TEXT_ALWAYS_CHAR(NET_UI_GTK_TEXTVIEW_NAME)));
   ACE_ASSERT(view);
   gtk_text_view_set_buffer(view, buffer);
   PangoFontDescription* font_description =
@@ -668,8 +673,9 @@ init_UI_client(const std::string& UIFile_in,
   gdk_color_parse(ACE_TEXT_ALWAYS_CHAR(NET_UI_LOG_TEXT),
                   &text_colour);
   rc_style->text[GTK_STATE_NORMAL] = text_colour;
-  rc_style->color_flags[GTK_STATE_NORMAL] = static_cast<GtkRcFlags>(GTK_RC_BASE |
-                                                                    GTK_RC_TEXT);
+  rc_style->color_flags[GTK_STATE_NORMAL] =
+      static_cast<GtkRcFlags>(GTK_RC_BASE |
+                              GTK_RC_TEXT);
   gtk_widget_modify_style(GTK_WIDGET(view),
                           rc_style);
   gtk_rc_style_unref(rc_style);
@@ -794,8 +800,9 @@ init_UI_server(const std::string& UIFile_in,
   } // end IF
 
   // step2: init dialog window(s)
-  GtkWidget* dialog = GTK_WIDGET(glade_xml_get_widget(userData_out.xml,
-                                                      ACE_TEXT_ALWAYS_CHAR(NET_UI_DIALOG_NAME)));
+  GtkWidget* dialog =
+      GTK_WIDGET(glade_xml_get_widget(userData_out.xml,
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_MAIN_NAME)));
   ACE_ASSERT(dialog);
 //  GtkWidget* image_icon = gtk_image_new_from_file(path.c_str());
 //  ACE_ASSERT(image_icon);
@@ -805,13 +812,15 @@ init_UI_server(const std::string& UIFile_in,
   //gtk_window_set_title(,
   //                     caption.c_str());
 
-  GtkWidget* about_dialog = GTK_WIDGET(glade_xml_get_widget(userData_out.xml,
-                                                            ACE_TEXT_ALWAYS_CHAR(NET_UI_ABOUTDIALOG_NAME)));
+  GtkWidget* about_dialog =
+      GTK_WIDGET(glade_xml_get_widget(userData_out.xml,
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_ABOUT_NAME)));
   ACE_ASSERT(about_dialog);
 
   // step3: init info view
-  GtkSpinButton* spinbutton = GTK_SPIN_BUTTON(glade_xml_get_widget(userData_out.xml,
-                                                                   ACE_TEXT_ALWAYS_CHAR(NET_UI_NUMCONNECTIONS_NAME)));
+  GtkSpinButton* spinbutton =
+      GTK_SPIN_BUTTON(glade_xml_get_widget(userData_out.xml,
+                                           ACE_TEXT_ALWAYS_CHAR(NET_UI_GTK_SPINBUTTON_NUMCONNECTIONS_NAME)));
   ACE_ASSERT(spinbutton);
   gtk_spin_button_set_range(spinbutton,
                             0.0,
@@ -822,8 +831,9 @@ init_UI_server(const std::string& UIFile_in,
   // step4: init text view, setup auto-scrolling
   GtkTextBuffer* buffer = gtk_text_buffer_new(NULL); // text tag table --> create new
   ACE_ASSERT(buffer);
-  GtkTextView* view = GTK_TEXT_VIEW(glade_xml_get_widget(userData_out.xml,
-                                                         ACE_TEXT_ALWAYS_CHAR(NET_UI_TEXTVIEW_NAME)));
+  GtkTextView* view =
+      GTK_TEXT_VIEW(glade_xml_get_widget(userData_out.xml,
+                                         ACE_TEXT_ALWAYS_CHAR(NET_UI_GTK_TEXTVIEW_NAME)));
   ACE_ASSERT(view);
   gtk_text_view_set_buffer(view,
                            buffer);
@@ -862,8 +872,9 @@ init_UI_server(const std::string& UIFile_in,
   gdk_color_parse(ACE_TEXT_ALWAYS_CHAR(NET_UI_LOG_TEXT),
                   &text_colour);
   rc_style->text[GTK_STATE_NORMAL] = text_colour;
-  rc_style->color_flags[GTK_STATE_NORMAL] = static_cast<GtkRcFlags>(GTK_RC_BASE |
-                                                                    GTK_RC_TEXT);
+  rc_style->color_flags[GTK_STATE_NORMAL] =
+      static_cast<GtkRcFlags>(GTK_RC_BASE |
+                              GTK_RC_TEXT);
   gtk_widget_modify_style(GTK_WIDGET(view),
                           rc_style);
   gtk_rc_style_unref(rc_style);
@@ -896,8 +907,9 @@ init_UI_server(const std::string& UIFile_in,
   } // end ELSE
 
   // step5: disable some functions ?
-  GtkButton* button = GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
-                                                      ACE_TEXT_ALWAYS_CHAR(NET_SERVER_UI_REPORTBUTTON_NAME)));
+  GtkButton* button =
+      GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
+                                      ACE_TEXT_ALWAYS_CHAR(NET_UI_GTK_BUTTON_REPORT_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button),
                            allowUserRuntimeStats_in);
@@ -920,40 +932,45 @@ init_UI_server(const std::string& UIFile_in,
   //                              ACE_TEXT_ALWAYS_CHAR("togglebutton_listen_toggled_cb"),
   //                              G_CALLBACK(togglebutton_listen_toggled_cb),
   //                              &userData_out);
-	GtkToggleButton* togglebutton = GTK_TOGGLE_BUTTON(glade_xml_get_widget(userData_out.xml,
-		                                                                     ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_LISTENBUTTON_NAME)));
+  GtkToggleButton* togglebutton =
+      GTK_TOGGLE_BUTTON(glade_xml_get_widget(userData_out.xml,
+                                             ACE_TEXT_ALWAYS_CHAR(NET_SERVER_UI_GTK_BUTTON_LISTEN_NAME)));
 	ACE_ASSERT(togglebutton);
 	success = (success &&
              (g_signal_connect(togglebutton,
 						                   ACE_TEXT_ALWAYS_CHAR("toggled"),
 									             G_CALLBACK(togglebutton_listen_toggled_cb),
 									             &userData_out) > 0));
-	button = GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
-		                                       ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_CLOSEALLBUTTON_NAME)));
+	button =
+			GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
+																			ACE_TEXT_ALWAYS_CHAR(NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
   ACE_ASSERT(button);
 	success = (success &&
              (g_signal_connect(button,
 						                   ACE_TEXT_ALWAYS_CHAR("clicked"),
 									             G_CALLBACK(button_close_all_clicked_cb),
 									             &userData_out) > 0));
-	button = GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
-		                                       ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_REPORTBUTTON_NAME)));
+	button =
+			GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
+																			ACE_TEXT_ALWAYS_CHAR(NET_UI_GTK_BUTTON_REPORT_NAME)));
   ACE_ASSERT(button);
 	success = (success &&
              (g_signal_connect(button,
 						                   ACE_TEXT_ALWAYS_CHAR("clicked"),
 									             G_CALLBACK(button_report_clicked_cb),
 									             &userData_out) > 0));
-	button = GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
-		                                       ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_ABOUTBUTTON_NAME)));
+	button =
+			GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
+																			ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_ABOUT_NAME)));
   ACE_ASSERT(button);
 	success = (success &&
              (g_signal_connect(button,
 						                   ACE_TEXT_ALWAYS_CHAR("clicked"),
 									             G_CALLBACK(button_about_clicked_cb),
 									             &userData_out) > 0));
-	button = GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
-		                                       ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_QUITBUTTON_NAME)));
+	button =
+			GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
+																			ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_QUIT_NAME)));
   ACE_ASSERT(button);
 	success = (success &&
              (g_signal_connect(button,

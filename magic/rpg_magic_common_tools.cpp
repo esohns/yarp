@@ -20,7 +20,9 @@
 #include "stdafx.h"
 
 // *NOTE*: workaround quirky MSVC...
+#ifdef _MSC_VER
 #define NOMINMAX
+#endif
 
 #include "rpg_magic_common_tools.h"
 

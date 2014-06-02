@@ -78,11 +78,10 @@ for DIR in $SUB_DIRS
 do
  LIB="${BUILD_DIR}/${DIR}/${LIB_DIR}/${LIBS[$i]}"
  [ ! -r "${LIB}" ] && echo "ERROR: invalid library file (was: \"${LIB}\"), aborting" && exit 1
- i=$i+1
-
- cp ${LIB} ${TARGET_DIR}
+ cp ${LIB} "${TARGET_DIR}/${LIBS[$i]}.0"
  [ $? -ne 0 ] && echo "ERROR: failed to copy \"${LIB}\" to \"${TARGET_DIR}\": $?, aborting" && exit 1
-
  echo "copied \"$LIB\"..."
+
+ i=$i+1
 done
 

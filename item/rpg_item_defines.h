@@ -21,6 +21,6 @@
 #ifndef RPG_ITEM_DEFINES_H
 #define RPG_ITEM_DEFINES_H
 
-#define RPG_ITEM_DEF_DICTIONARY_FILE "rpg_item.xml"
+#define RPG_ITEM_DICTIONARY_FILE "rpg_item.xml"
 
 #endif

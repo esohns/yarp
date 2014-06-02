@@ -49,12 +49,13 @@
 #define MAP_GENERATOR_GNOME_ENCOUNTERS_MAXNUMSPAWNED_SPINBUTTON_NAME      "max_num_spawned_spinbutton"
 #define MAP_GENERATOR_GNOME_ENCOUNTERS_AMBLEPROBABILITY_SPINBUTTON_NAME   "amble_probability_spinbutton"
 #define MAP_GENERATOR_GNOME_LAYOUT_MAP_TEXTVIEW_NAME                      "map_layout_textview"
-#define MAP_GENERATOR_GNOME_LAYOUT_BOX_NAME                               "map_hbox"
+//#define MAP_GENERATOR_GNOME_LAYOUT_BOX_NAME                               "map_hbox"
+#define MAP_GENERATOR_GNOME_DIALOG_ENTRY_NAME                             "map_layout_textview"
 
 #define MAP_GENERATOR_GNOME_SCROLLMARK_NAME                               "insert"
 
 // widget style
-#define MAP_GENERATOR_GNOME_TEXTVIEW_FONTDESCRIPTION                      "Monospace 10"
+#define MAP_GENERATOR_GNOME_TEXTVIEW_FONTDESCRIPTION                      "Monospace 9"
 #define MAP_GENERATOR_GNOME_TEXTVIEW_BASE                                 "#000000" // black
 #define MAP_GENERATOR_GNOME_TEXTVIEW_TEXT                                 "#FFFFFF" // white
 

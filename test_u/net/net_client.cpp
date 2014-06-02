@@ -80,89 +80,134 @@
 #include "net_client_signalhandler.h"
 
 void
-print_usage(const std::string& programName_in)
+do_printUsage(const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::print_usage"));
+  RPG_TRACE(ACE_TEXT("::do_printUsage"));
 
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
-  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
-//#ifdef BASEDIR
-//  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-//                                                              true);
-//#endif // #ifdef BASEDIR
+  std::string configuration_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                           true);
+#if defined(DEBUG_DEBUGGER)
+  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif // #ifdef BASEDIR
 
-  std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
+  std::cout << ACE_TEXT("usage: ")
+            << programName_in
+            << ACE_TEXT(" [OPTIONS]")
+            << std::endl
+            << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-a           : alternating mode [") << false << "]" << std::endl;
-  std::cout << ACE_TEXT("-c [VALUE]   : max #connections [") << NET_CLIENT_DEF_MAX_NUM_OPEN_CONNECTIONS << "] {0 --> unlimited}" << std::endl;
-  std::cout << ACE_TEXT("-h [STRING]  : server hostname [\"") << NET_CLIENT_DEF_SERVER_HOSTNAME << "\"]" << std::endl;
-  std::cout << ACE_TEXT("-i [VALUE]   : connection interval (second(s)) [") << NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL << ACE_TEXT("] {0 --> OFF}") << std::endl;
-  std::cout << ACE_TEXT("-l           : log to a file [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-p [VALUE]   : server port [") << RPG_NET_SERVER_DEF_LISTENING_PORT << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-r           : use reactor [") << RPG_NET_USES_REACTOR << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-s           : server ping interval (millisecond(s)) [") << NET_CLIENT_DEF_SERVER_PING_INTERVAL << ACE_TEXT("] {0 --> OFF}") << std::endl;
-  std::cout << ACE_TEXT("-t           : trace information [") << false << ACE_TEXT("]") << std::endl;
-  std::string path = config_path;
+  std::cout << ACE_TEXT("-a           : alternating mode [")
+            << false
+            << ACE_TEXT("]")
+            << std::endl;
+  std::cout << ACE_TEXT("-c [VALUE]   : max #connections [")
+            << NET_CLIENT_DEF_MAX_NUM_OPEN_CONNECTIONS
+            << ACE_TEXT("] {0 --> unlimited}")
+            << std::endl;
+  std::cout << ACE_TEXT("-h [STRING]  : server hostname [\"")
+            << NET_CLIENT_DEF_SERVER_HOSTNAME
+            << ACE_TEXT("\"]")
+            << std::endl;
+  std::cout << ACE_TEXT("-i [VALUE]   : connection interval (second(s)) [")
+            << NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL
+            << ACE_TEXT("] {0 --> OFF}")
+            << std::endl;
+  std::cout << ACE_TEXT("-l           : log to a file [")
+            << false
+            << ACE_TEXT("]")
+            << std::endl;
+  std::cout << ACE_TEXT("-p [VALUE]   : server port [")
+            << RPG_NET_SERVER_DEF_LISTENING_PORT
+            << ACE_TEXT("]")
+            << std::endl;
+  std::cout << ACE_TEXT("-r           : use reactor [")
+            << RPG_NET_USES_REACTOR
+            << ACE_TEXT("]")
+            << std::endl;
+  std::cout << ACE_TEXT("-s           : server ping interval (millisecond(s)) [")
+            << NET_CLIENT_DEF_SERVER_PING_INTERVAL
+            << ACE_TEXT("] {0 --> OFF}")
+            << std::endl;
+  std::cout << ACE_TEXT("-t           : trace information [")
+            << false
+            << ACE_TEXT("]")
+            << std::endl;
+  std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 //#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
 //  path += ACE_TEXT_ALWAYS_CHAR("net");
 //  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 //#endif
-  path += ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_DEF_UI_FILE);
-  std::cout << ACE_TEXT("-u [[STRING]]: UI file [\"") << path.c_str() << "\"] {\"\" --> no GUI}" << std::endl;
-  std::cout << ACE_TEXT("-v           : print version information and exit [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-x [VALUE]   : #dispatch threads [") << RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-y           : run stress-test [") << false << ACE_TEXT("]") << std::endl;
-} // end print_usage
+  path += ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_FILE);
+  std::cout << ACE_TEXT("-u [[STRING]]: UI file [\"")
+            << path
+            << ACE_TEXT("\"] {\"\" --> no GUI}")
+            << std::endl;
+  std::cout << ACE_TEXT("-v           : print version information and exit [")
+            << false
+            << ACE_TEXT("]")
+            << std::endl;
+  std::cout << ACE_TEXT("-x [VALUE]   : #dispatch threads [")
+            << RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS
+            << ACE_TEXT("]")
+            << std::endl;
+  std::cout << ACE_TEXT("-y           : run stress-test [")
+            << false
+            << ACE_TEXT("]")
+            << std::endl;
+}
 
 bool
-process_arguments(const int argc_in,
-                  ACE_TCHAR* argv_in[], // cannot be const...
-									bool& alternatingMode_out,
-                  unsigned int& maxNumConnections_out,
-                  std::string& serverHostname_out,
-                  unsigned int& connectionInterval_out,
-                  bool& logToFile_out,
-                  unsigned short& serverPortNumber_out,
-                  bool& useReactor_out,
-                  unsigned int& serverPingInterval_out,
-                  bool& traceInformation_out,
-                  std::string& UIFile_out,
-                  bool& printVersionAndExit_out,
-									unsigned int& numDispatchThreads_out,
-                  bool& runStressTest_out)
+do_processArguments(const int& argc_in,
+										ACE_TCHAR** argv_in, // cannot be const...
+										bool& alternatingMode_out,
+										unsigned int& maxNumConnections_out,
+										std::string& serverHostname_out,
+										unsigned int& connectionInterval_out,
+										bool& logToFile_out,
+										unsigned short& serverPortNumber_out,
+										bool& useReactor_out,
+										unsigned int& serverPingInterval_out,
+										bool& traceInformation_out,
+										std::string& UIFile_out,
+										bool& printVersionAndExit_out,
+										unsigned int& numDispatchThreads_out,
+										bool& runStressTest_out)
 {
-  RPG_TRACE(ACE_TEXT("::process_arguments"));
+	RPG_TRACE(ACE_TEXT("::do_processArguments"));
 
-  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
-//#ifdef BASEDIR
-//  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-//                                                              true);
-//#endif // #ifdef BASEDIR
+  std::string configuration_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                           true);
+#if defined(DEBUG_DEBUGGER)
+  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif // #ifdef BASEDIR
 
   // init results
-	alternatingMode_out = false;
-  maxNumConnections_out = NET_CLIENT_DEF_MAX_NUM_OPEN_CONNECTIONS;
-  serverHostname_out = NET_CLIENT_DEF_SERVER_HOSTNAME;
-  connectionInterval_out = NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL;
-  logToFile_out = false;
-  serverPortNumber_out = RPG_NET_SERVER_DEF_LISTENING_PORT;
-  useReactor_out = RPG_NET_USES_REACTOR;
-  serverPingInterval_out = NET_CLIENT_DEF_SERVER_PING_INTERVAL;
-  traceInformation_out = false;
-  std::string path = config_path;
+  alternatingMode_out     = false;
+  maxNumConnections_out   = NET_CLIENT_DEF_MAX_NUM_OPEN_CONNECTIONS;
+  serverHostname_out      = NET_CLIENT_DEF_SERVER_HOSTNAME;
+  connectionInterval_out  = NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL;
+  logToFile_out           = false;
+  serverPortNumber_out    = RPG_NET_SERVER_DEF_LISTENING_PORT;
+  useReactor_out          = RPG_NET_USES_REACTOR;
+  serverPingInterval_out  = NET_CLIENT_DEF_SERVER_PING_INTERVAL;
+  traceInformation_out    = false;
+  std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 //#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
 //  path += ACE_TEXT_ALWAYS_CHAR("net");
 //  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 //#endif
-  path += ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_DEF_UI_FILE);
-  UIFile_out = path;
+  path += ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_FILE);
+  UIFile_out              = path;
   printVersionAndExit_out = false;
-	numDispatchThreads_out = RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS;
-  runStressTest_out = false;
+  numDispatchThreads_out  = RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS;
+  runStressTest_out       = false;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
@@ -288,7 +333,7 @@ process_arguments(const int argc_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("unrecognized option \"%s\", aborting\n"),
-                   argumentParser.last_option()));
+                   ACE_TEXT(argumentParser.last_option())));
 
         return false;
       }
@@ -296,7 +341,7 @@ process_arguments(const int argc_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("found long option \"%s\", aborting\n"),
-                   argumentParser.long_option()));
+                   ACE_TEXT(argumentParser.long_option())));
 
         return false;
       }
@@ -681,8 +726,9 @@ do_printVersion(const std::string& programName_in)
             << std::endl;
 
   // create version string...
-  // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
-  // number... We need this, as the library soname is compared to this string.
+  // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta
+  // version number... Need this, as the library soname is compared to this
+  // string
   std::ostringstream version_number;
   version_number << ACE::major_version();
   version_number << ACE_TEXT(".");
@@ -718,11 +764,12 @@ ACE_TMAIN(int argc_in,
   // start profile timer...
   process_profile.start();
 
-  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
-//#ifdef BASEDIR
-//  config_path = RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-//                                                              true);
-//#endif // #ifdef BASEDIR
+  std::string configuration_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                           true);
+#if defined(DEBUG_DEBUGGER)
+  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif // #ifdef BASEDIR
 
   // step1a set defaults
   Net_Client_TimeoutHandler::ActionMode_t action_mode = Net_Client_TimeoutHandler::ACTION_NORMAL;
@@ -735,37 +782,44 @@ ACE_TMAIN(int argc_in,
   bool use_reactor                                    = RPG_NET_USES_REACTOR;
   unsigned int server_ping_interval                   = NET_CLIENT_DEF_SERVER_PING_INTERVAL;
   bool trace_information                              = false;
-  std::string path = config_path;
+  std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 //#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
 //  path += ACE_TEXT_ALWAYS_CHAR("net");
 //  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 //#endif
-  path += ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_DEF_UI_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_FILE);
   std::string UI_file                                 = path;
   bool print_version_and_exit                         = false;
   unsigned int num_dispatch_threads                   = RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS;
   bool run_stress_test                                = false;
 
   // step1b: parse/process/validate configuration
-  if (!process_arguments(argc_in,
-                         argv_in,
-                         alternating_mode,
-                         max_num_connections,
-                         server_hostname,
-                         connection_interval,
-                         log_to_file,
-                         server_port_number,
-                         use_reactor,
-                         server_ping_interval,
-                         trace_information,
-                         UI_file,
-                         print_version_and_exit,
-                         num_dispatch_threads,
-                         run_stress_test))
+  if (!do_processArguments(argc_in,
+                           argv_in,
+                           alternating_mode,
+                           max_num_connections,
+                           server_hostname,
+                           connection_interval,
+                           log_to_file,
+                           server_port_number,
+                           use_reactor,
+                           server_ping_interval,
+                           trace_information,
+                           UI_file,
+                           print_version_and_exit,
+                           num_dispatch_threads,
+                           run_stress_test))
   {
     // make 'em learn...
-    print_usage(ACE::basename(argv_in[0]));
+    do_printUsage(ACE::basename(argv_in[0]));
+
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+		if (ACE::fini() == -1)
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -779,7 +833,14 @@ ACE_TMAIN(int argc_in,
                ACE_TEXT("invalid arguments, aborting\n")));
 
 		// make 'em learn...
-		print_usage(ACE::basename(argv_in[0]));
+		do_printUsage(ACE::basename(argv_in[0]));
+
+		// *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+		if (ACE::fini() == -1)
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
 		return EXIT_FAILURE;
 	} // end IF
@@ -789,6 +850,13 @@ ACE_TMAIN(int argc_in,
 		ACE_DEBUG((LM_ERROR,
 							 ACE_TEXT("invalid UI definition file (was: %s), aborting\n"),
 							 ACE_TEXT(UI_file.c_str())));
+
+		// *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+		if (ACE::fini() == -1)
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -813,6 +881,13 @@ ACE_TMAIN(int argc_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Common_Tools::preInitSignals(), aborting\n")));
 
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+		if (ACE::fini() == -1)
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
+
     return EXIT_SUCCESS;
   } // end IF
 
@@ -834,13 +909,27 @@ ACE_TMAIN(int argc_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Common_Tools::initLogging(), aborting\n")));
 
-    return EXIT_SUCCESS;
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+		if (ACE::fini() == -1)
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
+
+    return EXIT_FAILURE;
   } // end IF
 
   // step1f: handle specific program modes
   if (print_version_and_exit)
   {
     do_printVersion(ACE::basename(argv_in[0]));
+
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+		if (ACE::fini() == -1)
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_SUCCESS;
   } // end IF
@@ -857,6 +946,13 @@ ACE_TMAIN(int argc_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Common_Tools::initResourceLimits(), aborting\n")));
+
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+		if (ACE::fini() == -1)
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -899,7 +995,7 @@ ACE_TMAIN(int argc_in,
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
-             working_time_string.c_str()));
+             ACE_TEXT(working_time_string.c_str())));
 
   // stop profile timer...
   process_profile.stop();
@@ -913,6 +1009,13 @@ ACE_TMAIN(int argc_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Profile_Timer::elapsed_time: \"%m\", aborting\n")));
+
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+		if (ACE::fini() == -1)
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF

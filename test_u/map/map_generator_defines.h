@@ -40,4 +40,7 @@
 #define MAP_GENERATOR_DEF_ROOM_SIZE_MAX         30
 #define MAP_GENERATOR_DEF_NUM_AREAS_MAX         50
 
+#define MAP_GENERATOR_GUI_GNOME_UI_FILE         "map_generator_gui.glade"
+#define MAP_GENERATOR_GUI_GNOME_APPLICATION_ID  "map generator"
+
 #endif

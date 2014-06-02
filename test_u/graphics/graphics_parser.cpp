@@ -55,27 +55,37 @@ do_printUsage(const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::do_printUsage"));
 
-  std::string configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  configuration_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                            true);
-#endif // #ifdef BASEDIR
+  std::string configuration_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           true);
+#if defined(DEBUG_DEBUGGER)
+  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif
 
-  std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
+  std::cout << ACE_TEXT("usage: ")
+            << programName_in
+            << ACE_TEXT(" [OPTIONS]")
+            << std::endl
+            << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-d       : dump dictionary") << std::endl;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("graphics");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-g [FILE]: graphics dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+#endif
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DICTIONARY_FILE);
+  std::cout << ACE_TEXT("-g [FILE]: graphics dictionary (*.xml)")
+            << ACE_TEXT(" [\"")
+            << path
+            << ACE_TEXT("\"]")
+            << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
-  std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
+  std::cout << ACE_TEXT("-v       : print version information and exit")
+            << std::endl;
   std::cout << ACE_TEXT("-x       : do NOT validate XML") << std::endl;
-} // end do_printUsage
+}
 
 bool
 do_processArguments(const int argc_in,
@@ -88,26 +98,27 @@ do_processArguments(const int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::do_processArguments"));
 
-  std::string configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  configuration_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                            true);
-#endif // #ifdef BASEDIR
+  std::string configuration_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           true);
+#if defined(DEBUG_DEBUGGER)
+  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif
 
   // init configuration
-  dumpDictionary_out = false;
+  dumpDictionary_out      = false;
 
-  filename_out = configuration_path;
+  filename_out            = configuration_path;
   filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   filename_out += ACE_TEXT_ALWAYS_CHAR("graphics");
   filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
-  filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
+#endif
+  filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DICTIONARY_FILE);
 
-  traceInformation_out = false;
+  traceInformation_out    = false;
   printVersionAndExit_out = false;
-  validateXML_out = true;
+  validateXML_out         = true;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
@@ -153,7 +164,7 @@ do_processArguments(const int argc_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("unrecognized option \"%s\", aborting\n"),
-                   argumentParser.last_option()));
+                   ACE_TEXT(argumentParser.last_option())));
 
         return false;
       }
@@ -181,21 +192,19 @@ do_work(const bool& dumpDictionary_in,
   // step0: init: random seed, string conversion facilities, ...
   RPG_Dice::init();
   RPG_Dice_Common_Tools::initStringConversionTables();
-  std::string schema_directory = RPG_Common_File_Tools::getWorkingDirectory();
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE) // running a debugger ?
-//  schema_directory = RPG_Common_File_Tools::getWorkingDirectory();
-#else
-#ifdef BASEDIR
-  schema_directory = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                          true);
-#endif // #ifdef BASEDIR
+
+  std::string schema_directory =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           true);
+#if defined(DEBUG_DEBUGGER)
+  schema_directory = RPG_Common_File_Tools::getWorkingDirectory();
 #endif
   schema_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE) // running a debugger ?
+#if defined(DEBUG_DEBUGGER) // running a debugger ?
   schema_directory += ACE_TEXT_ALWAYS_CHAR("graphics");
   schema_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
-#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
+#endif
   RPG_Common_XML_Tools::init(schema_directory);
   std::string directory;
   RPG_Graphics_Common_Tools::init(directory,
@@ -238,8 +247,9 @@ do_printVersion(const std::string& programName_in)
             << std::endl;
 
   // create version string...
-  // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
-  // number... We need this, as the library soname is compared to this string.
+  // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta
+  // version number... Need this, as the library soname is compared to this
+  // string
   std::ostringstream version_number;
   if (version_number << ACE::major_version())
   {
@@ -301,36 +311,36 @@ ACE_TMAIN(int argc_in,
 
   // step1: init
   // step1a set defaults
-  std::string configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  configuration_path =
+  std::string configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            true);
-#endif // #ifdef BASEDIR
+#if defined(DEBUG_DEBUGGER)
+  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif
 
   // init configuration
   bool dump_dictionary           = false;
 
-  std::string filename = configuration_path;
+  std::string filename           = configuration_path;
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   filename += ACE_TEXT_ALWAYS_CHAR("graphics");
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
+#endif
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DICTIONARY_FILE);
 
   bool trace_information         = false;
   bool print_version_and_exit    = false;
   bool validate_XML              = true;
 
   // step1b: parse/process/validate configuration
-  if (!(do_processArguments(argc_in,
-                            argv_in,
-                            dump_dictionary,
-                            filename,
-                            trace_information,
-                            print_version_and_exit,
-                            validate_XML)))
+  if (!do_processArguments(argc_in,
+                           argv_in,
+                           dump_dictionary,
+                           filename,
+                           trace_information,
+                           print_version_and_exit,
+                           validate_XML))
   {
     // make 'em learn...
     do_printUsage(std::string(ACE::basename(argv_in[0])));
@@ -350,7 +360,7 @@ ACE_TMAIN(int argc_in,
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid (XML) filename \"%s\", aborting\n"),
-               filename.c_str()));
+               ACE_TEXT(filename.c_str())));
 
     // make 'em learn...
     do_printUsage(std::string(ACE::basename(argv_in[0])));
@@ -392,6 +402,13 @@ ACE_TMAIN(int argc_in,
   {
     do_printVersion(std::string(ACE::basename(argv_in[0])));
 
+    // *PORTABILITY*: on Windows, fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+		if (ACE::fini() == -1)
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#endif
+
     return EXIT_SUCCESS;
   } // end IF
 
@@ -410,7 +427,7 @@ ACE_TMAIN(int argc_in,
                                   working_time_string);
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
-             working_time_string.c_str()));
+             ACE_TEXT(working_time_string.c_str())));
 
   // step4a: fini SDL
   TTF_Quit();

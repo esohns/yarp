@@ -3067,6 +3067,7 @@ RPG_Map_Common_Tools::crop(RPG_Map_Area_t& room_inout)
       // --> remove any previous sequence of less than 3 consecutive cells
       if (count < 3)
       {
+        // *BUG* here
         // *NOTE*: std::set::erase removes [first, last) !
         room_inout.erase(begin_sequence, line_iterator);
       } // end IF

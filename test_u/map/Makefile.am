@@ -14,7 +14,8 @@ AM_CPPFLAGS = \
   -I$(srcdir)/../../combat \
   -I$(srcdir)/../../character/player
 
-bin_PROGRAMS = map_generator \
+bin_PROGRAMS = \
+  map_generator \
   map_generator_gui \
   map_vision \
   map_vision_ui \
@@ -61,7 +62,8 @@ map_generator_gui_SOURCES = \
 map_generator_gui_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   $(pkg_libs_CFLAGS) \
-  -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
+  -DBASEDIR=\"$(datadir)/@META_PACKAGE@\" \
+  -DDEBUG_DEBUGGER
 #map_generator_gui_LDFLAGS = $(pkg_libs_LIBS)
 map_generator_gui_LDADD = \
   -lRPG_Client_GUI \
@@ -157,4 +159,5 @@ configdir = $(datadir)/@META_PACKAGE@/config
 config_DATA = \
   map_generator_gui.glade
 
-EXTRA_DIST = $(config_DATA)
+EXTRA_DIST = \
+  $(config_DATA)

@@ -75,113 +75,152 @@
 #define COMBAT_SIMULATOR_DEF_STRESS_TEST   false
 
 void
-print_usage(const std::string& programName_in)
+do_printUsage(const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::print_usage"));
+  RPG_TRACE(ACE_TEXT("::do_printUsage"));
 
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
-  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                     true);
+  std::string configuration_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                           true);
+#if defined(DEBUG_DEBUGGER)
+  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
 #endif // #ifdef BASEDIR
 
-  std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
+  std::cout << ACE_TEXT("usage: ")
+            << programName_in
+            << ACE_TEXT(" [OPTIONS]")
+            << std::endl
+            << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-b [VALUE]: number of battles")  << ACE_TEXT(" [") << COMBAT_SIMULATOR_DEF_NUM_BATTLES << ACE_TEXT("]") << ACE_TEXT(" (0: endless)") << std::endl;
-  std::cout << ACE_TEXT("-f [VALUE]: total number of foes")  << ACE_TEXT(" [") << COMBAT_SIMULATOR_DEF_NUM_FOES << ACE_TEXT("]") << ACE_TEXT(" (0: random)") << std::endl;
-  std::string path = config_path;
+  std::cout << ACE_TEXT("-b [VALUE]: number of battles")
+            << ACE_TEXT(" [")
+            << COMBAT_SIMULATOR_DEF_NUM_BATTLES
+            << ACE_TEXT("] (0: endless)")
+            << std::endl;
+  std::cout << ACE_TEXT("-f [VALUE]: total number of foes")
+            << ACE_TEXT(" [")
+            << COMBAT_SIMULATOR_DEF_NUM_FOES
+            << ACE_TEXT("] (0: random)")
+            << std::endl;
+  std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("item");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-i [FILE] : item dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  path = config_path;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DICTIONARY_FILE);
+  std::cout << ACE_TEXT("-i [FILE] : item dictionary (*.xml)")
+            << ACE_TEXT(" [\"")
+            << path
+            << ACE_TEXT("\"]")
+            << std::endl;
+  path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("character");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("monster");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-m [FILE] : monster dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-n [VALUE]: number of different monster types") << ACE_TEXT(" [") << COMBAT_SIMULATOR_DEF_NUM_FOE_TYPES << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-p [VALUE]: number of players") << ACE_TEXT(" [") << COMBAT_SIMULATOR_DEF_NUM_PLAYERS << ACE_TEXT("]") << std::endl;
-  path = config_path;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DICTIONARY_FILE);
+  std::cout << ACE_TEXT("-m [FILE] : monster dictionary (*.xml)")
+            << ACE_TEXT(" [\"")
+            << path
+            << ACE_TEXT("\"]")
+            << std::endl;
+  std::cout << ACE_TEXT("-n [VALUE]: number of different monster types")
+            << ACE_TEXT(" [")
+            << COMBAT_SIMULATOR_DEF_NUM_FOE_TYPES
+            << ACE_TEXT("]")
+            << std::endl;
+  std::cout << ACE_TEXT("-p [VALUE]: number of players")
+            << ACE_TEXT(" [")
+            << COMBAT_SIMULATOR_DEF_NUM_PLAYERS
+            << ACE_TEXT("]")
+            << std::endl;
+  path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("magic");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-s [FILE] : magic dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
+  std::cout << ACE_TEXT("-s [FILE] : magic dictionary (*.xml)")
+            << ACE_TEXT(" [\"")
+            << path
+            << ACE_TEXT("\"]")
+            << std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
-  std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
-  std::cout << ACE_TEXT("-x        : stress-test") << ACE_TEXT(" [") << COMBAT_SIMULATOR_DEF_STRESS_TEST << ACE_TEXT("]") << std::endl;
-} // end print_usage
+  std::cout << ACE_TEXT("-v        : print version information and exit")
+            << std::endl;
+  std::cout << ACE_TEXT("-x        : stress-test")
+            << ACE_TEXT(" [")
+            << COMBAT_SIMULATOR_DEF_STRESS_TEST
+            << ACE_TEXT("]")
+            << std::endl;
+}
 
 bool
-process_arguments(const int argc_in,
-                  ACE_TCHAR* argv_in[], // cannot be const...
-                  unsigned int& numBattles_out,
-                  unsigned int& numFoes_out,
-                  std::string& magicDictionaryFilename_out,
-                  std::string& itemDictionaryFilename_out,
-                  std::string& monsterDictionaryFilename_out,
-                  unsigned int& numMonsterTypes_out,
-                  unsigned int& numPlayers_out,
-                  bool& traceInformation_out,
-                  bool& printVersionAndExit_out,
-                  bool& stressTest_out)
+do_processArguments(const int& argc_in,
+                    ACE_TCHAR* argv_in[], // cannot be const...
+                    unsigned int& numBattles_out,
+                    unsigned int& numFoes_out,
+                    std::string& magicDictionaryFilename_out,
+                    std::string& itemDictionaryFilename_out,
+                    std::string& monsterDictionaryFilename_out,
+                    unsigned int& numMonsterTypes_out,
+                    unsigned int& numPlayers_out,
+                    bool& traceInformation_out,
+                    bool& printVersionAndExit_out,
+                    bool& stressTest_out)
 {
-  RPG_TRACE(ACE_TEXT("::process_arguments"));
+  RPG_TRACE(ACE_TEXT("::do_processArguments"));
 
-  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                     true);
+  std::string configuration_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                           true);
+#if defined(DEBUG_DEBUGGER)
+  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
 #endif // #ifdef BASEDIR
 
   // init results
   numBattles_out = COMBAT_SIMULATOR_DEF_NUM_BATTLES;
   numFoes_out = COMBAT_SIMULATOR_DEF_NUM_FOES;
 
-  magicDictionaryFilename_out = config_path;
+  magicDictionaryFilename_out   = configuration_path;
   magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR("magic");
   magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
+  magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
 
-  itemDictionaryFilename_out = config_path;
+  itemDictionaryFilename_out    = configuration_path;
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR("item");
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
+  itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DICTIONARY_FILE);
 
-  monsterDictionaryFilename_out = config_path;
+  monsterDictionaryFilename_out = configuration_path;
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR("character");
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR("monster");
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
+  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DICTIONARY_FILE);
 
-  numMonsterTypes_out = COMBAT_SIMULATOR_DEF_NUM_FOE_TYPES;
-  numPlayers_out = COMBAT_SIMULATOR_DEF_NUM_PLAYERS;
-  traceInformation_out = false;
-  printVersionAndExit_out = false;
-  stressTest_out = COMBAT_SIMULATOR_DEF_STRESS_TEST;
+  numMonsterTypes_out           = COMBAT_SIMULATOR_DEF_NUM_FOE_TYPES;
+  numPlayers_out                = COMBAT_SIMULATOR_DEF_NUM_PLAYERS;
+  traceInformation_out          = false;
+  printVersionAndExit_out       = false;
+  stressTest_out                = COMBAT_SIMULATOR_DEF_STRESS_TEST;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
@@ -264,7 +303,7 @@ process_arguments(const int argc_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("unrecognized option \"%s\", aborting\n"),
-                   argumentParser.last_option()));
+                   ACE_TEXT(argumentParser.last_option())));
 
         return false;
       }
@@ -528,8 +567,9 @@ do_printVersion(const std::string& programName_in)
             << std::endl;
 
   // create version string...
-  // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
-  // number... We need this, as the library soname is compared to this string.
+  // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta
+  // version number... Need this, as the library soname is compared to this
+  // string
   std::ostringstream version_number;
   if (version_number << ACE::major_version())
   {
@@ -572,118 +612,147 @@ do_printVersion(const std::string& programName_in)
 }
 
 int
-ACE_TMAIN(int argc,
-          ACE_TCHAR* argv[])
+ACE_TMAIN(int argc_in,
+          ACE_TCHAR** argv_in)
 {
   RPG_TRACE(ACE_TEXT("::main"));
 
+  // *PORTABILITY*: on Windows, need to init ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+	if (ACE::init() == -1)
+	{
+		ACE_DEBUG((LM_ERROR,
+							 ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
+
+		return EXIT_FAILURE;
+	} // end IF
+#endif
+
   // step1: init
   // step1a set defaults
-  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                     true);
+  std::string configuration_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                                           true);
+#if defined(DEBUG_DEBUGGER)
+  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
 #endif // #ifdef BASEDIR
 
   // init configuration
-  std::string itemDictionaryFilename = config_path;
-  itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR("item");
-  itemDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  std::string item_dictionary_filename    = configuration_path;
+  item_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(DEBUG_DEBUGGER)
+  item_dictionary_filename += ACE_TEXT_ALWAYS_CHAR("item");
+  item_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  itemDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
+  item_dictionary_filename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DICTIONARY_FILE);
 
-  std::string magicDictionaryFilename = config_path;
-  magicDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  magicDictionaryFilename += ACE_TEXT_ALWAYS_CHAR("magic");
-  magicDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  std::string magic_dictionary_filename   = configuration_path;
+  magic_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(DEBUG_DEBUGGER)
+  magic_dictionary_filename += ACE_TEXT_ALWAYS_CHAR("magic");
+  magic_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  magicDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
+  magic_dictionary_filename += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
 
-  std::string monsterDictionaryFilename = config_path;
-  monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR("character");
-  monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR("monster");
-  monsterDictionaryFilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  std::string monster_dictionary_filename = configuration_path;
+  monster_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(DEBUG_DEBUGGER)
+  monster_dictionary_filename += ACE_TEXT_ALWAYS_CHAR("character");
+  monster_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  monster_dictionary_filename += ACE_TEXT_ALWAYS_CHAR("monster");
+  monster_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  monsterDictionaryFilename += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DEF_DICTIONARY_FILE);
+  monster_dictionary_filename += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DICTIONARY_FILE);
  
-  unsigned int numFoes = COMBAT_SIMULATOR_DEF_NUM_FOES;
-  unsigned int numMonsterTypes = COMBAT_SIMULATOR_DEF_NUM_FOE_TYPES;
-  unsigned int numPlayers = COMBAT_SIMULATOR_DEF_NUM_PLAYERS;
-  unsigned int numBattles = COMBAT_SIMULATOR_DEF_NUM_BATTLES;
-  bool traceInformation = false;
-  bool printVersionAndExit = false;
-  bool stressTest = COMBAT_SIMULATOR_DEF_STRESS_TEST;
+  unsigned int num_foes                   = COMBAT_SIMULATOR_DEF_NUM_FOES;
+  unsigned int num_monster_types          = COMBAT_SIMULATOR_DEF_NUM_FOE_TYPES;
+  unsigned int num_players                = COMBAT_SIMULATOR_DEF_NUM_PLAYERS;
+  unsigned int num_battles                = COMBAT_SIMULATOR_DEF_NUM_BATTLES;
+  bool trace_information                  = false;
+  bool print_version_and_exit             = false;
+  bool stress_test                        = COMBAT_SIMULATOR_DEF_STRESS_TEST;
 
   // step1b: parse/process/validate configuration
-  if (!(process_arguments(argc,
-                          argv,
-                          numBattles,
-                          numFoes,
-                          magicDictionaryFilename,
-                          itemDictionaryFilename,
-                          monsterDictionaryFilename,
-                          numMonsterTypes,
-                          numPlayers,
-                          traceInformation,
-                          printVersionAndExit,
-                          stressTest)))
+  if (!do_processArguments(argc_in,
+                           argv_in,
+                           num_battles,
+                           num_foes,
+                           magic_dictionary_filename,
+                           item_dictionary_filename,
+                           monster_dictionary_filename,
+                           num_monster_types,
+                           num_players,
+                           trace_information,
+                           print_version_and_exit,
+                           stress_test))
   {
     // make 'em learn...
-    print_usage(std::string(ACE::basename(argv[0])));
+    do_printUsage(std::string(ACE::basename(argv_in[0])));
+
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+		if (ACE::fini() == -1)
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
 
   // step1b: validate arguments
-  if (!RPG_Common_File_Tools::isReadable(magicDictionaryFilename) ||
-      !RPG_Common_File_Tools::isReadable(itemDictionaryFilename) ||
-      !RPG_Common_File_Tools::isReadable(monsterDictionaryFilename))
+  if (!RPG_Common_File_Tools::isReadable(magic_dictionary_filename)   ||
+      !RPG_Common_File_Tools::isReadable(item_dictionary_filename)    ||
+      !RPG_Common_File_Tools::isReadable(monster_dictionary_filename))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid (XML) filename, aborting\n")));
 
     // make 'em learn...
-    print_usage(std::string(ACE::basename(argv[0])));
+    do_printUsage(std::string(ACE::basename(argv_in[0])));
+
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+		if (ACE::fini() == -1)
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
 
-  // step1c: set correct trace level
-  //ACE_Trace::start_tracing();
-  if (!traceInformation)
+  // step1c: initialize logging and/or tracing
+  std::string log_file;
+  if (!RPG_Common_Tools::initLogging(ACE::basename(argv_in[0]),   // program name
+                                     log_file,                    // logfile
+                                     false,                       // log to syslog ?
+                                     false,                       // trace messages ?
+                                     trace_information,           // debug messages ?
+                                     NULL))                       // logger
   {
-    u_long process_priority_mask = (LM_SHUTDOWN |
-                                    //LM_INFO |  // <-- DISABLE trace messages !
-                                    //LM_DEBUG |
-                                    LM_INFO |
-                                    LM_NOTICE |
-                                    LM_WARNING |
-                                    LM_STARTUP |
-                                    LM_ERROR |
-                                    LM_CRITICAL |
-                                    LM_ALERT |
-                                    LM_EMERGENCY);
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Common_Tools::initLogging(), aborting\n")));
 
-    // set new mask...
-    ACE_LOG_MSG->priority_mask(process_priority_mask,
-                               ACE_Log_Msg::PROCESS);
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
-    //ACE_LOG_MSG->stop_tracing();
-
-    // don't go VERBOSE...
-    //ACE_LOG_MSG->clr_flags(ACE_Log_Msg::VERBOSE_LITE);
+    return EXIT_FAILURE;
   } // end IF
 
   // step1d: handle specific program modes
-  if (printVersionAndExit)
+  if (print_version_and_exit)
   {
-    do_printVersion(std::string(ACE::basename(argv[0])));
+    do_printVersion(std::string(ACE::basename(argv_in[0])));
+
+    // *PORTABILITY*: on Windows, need to fini ACE...
+  #if defined(ACE_WIN32) || defined(ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+  #endif
 
     return EXIT_SUCCESS;
   } // end IF
@@ -692,14 +761,14 @@ ACE_TMAIN(int argc,
   timer.start();
 
   // step2: do actual work
-  do_work(magicDictionaryFilename,
-          itemDictionaryFilename,
-          monsterDictionaryFilename,
-          numMonsterTypes,
-          numFoes,
-          numPlayers,
-          numBattles,
-          stressTest);
+  do_work(magic_dictionary_filename,
+          item_dictionary_filename,
+          monster_dictionary_filename,
+          num_monster_types,
+          num_foes,
+          num_players,
+          num_battles,
+          stress_test);
 
   timer.stop();
 
@@ -712,7 +781,14 @@ ACE_TMAIN(int argc,
 //
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
-//              working_time_string.c_str()));
+//              ACE_TEXT(working_time_string.c_str())));
+
+	// *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+	if (ACE::fini() == -1)
+		ACE_DEBUG((LM_ERROR,
+							 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
   return EXIT_SUCCESS;
 } // end main

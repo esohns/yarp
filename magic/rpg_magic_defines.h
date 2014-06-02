@@ -23,6 +23,6 @@
 
 #define RPG_MAGIC_DEF_NUM_NEW_SPELLS_PER_LEVEL 2
 
-#define RPG_MAGIC_DEF_DICTIONARY_FILE          "rpg_magic.xml"
+#define RPG_MAGIC_DICTIONARY_FILE              "rpg_magic.xml"
 
 #endif

@@ -21,45 +21,39 @@
 #ifndef NET_DEFINES_H
 #define NET_DEFINES_H
 
-#define NET_UI_GTKEVENT_RESOLUTION              200 // ms --> 5 FPS
-#define NET_UI_DIALOG_NAME                      "dialog"
-#define NET_UI_ABOUTDIALOG_NAME                 "aboutdialog"
-#define NET_UI_NUMCONNECTIONS_NAME              "spinbutton"
-#define NET_UI_TEXTVIEW_NAME                    "textview"
-#define NET_UI_SCROLLMARK_NAME                  "insert"
-#define NET_UI_ACTIONS_NAME                     "vbuttonbox"
-#define NET_UI_LOG_FONTDESCRIPTION              "Monospace 10"
-#define NET_UI_LOG_BASE                         "#000000" // black
-#define NET_UI_LOG_TEXT                         "#FFFFFF" // white
+#define NET_UI_GTKEVENT_RESOLUTION                200 // ms --> 5 FPS
+#define NET_UI_GTK_SPINBUTTON_NUMCONNECTIONS_NAME "spinbutton"
+#define NET_UI_GTK_TEXTVIEW_NAME                  "textview"
+#define NET_UI_GTK_SCROLLMARK_NAME                "insert"
+#define NET_UI_GTK_BUTTONBOX_ACTIONS_NAME         "vbuttonbox"
+#define NET_UI_GTK_BUTTON_CLOSEALL_NAME           "close_all"
+#define NET_UI_GTK_BUTTON_REPORT_NAME             "report"
+#define NET_UI_LOG_FONTDESCRIPTION                "Monospace 10"
+#define NET_UI_LOG_BASE                           "#000000" // black
+#define NET_UI_LOG_TEXT                           "#FFFFFF" // white
 
 // -----------------------------------------------------------------------------
 
-#define NET_CLIENT_DEF_MAX_NUM_OPEN_CONNECTIONS 0
-#define NET_CLIENT_DEF_SERVER_HOSTNAME          ACE_LOCALHOST
-#define NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL  0
-#define NET_CLIENT_DEF_SERVER_PING_INTERVAL     0 // ms {0 --> OFF}
-#define NET_CLIENT_DEF_SERVER_STRESS_INTERVAL   50 // ms
+#define NET_CLIENT_DEF_MAX_NUM_OPEN_CONNECTIONS   0
+#define NET_CLIENT_DEF_SERVER_HOSTNAME            ACE_LOCALHOST
+#define NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL    0
+#define NET_CLIENT_DEF_SERVER_PING_INTERVAL       0 // ms {0 --> OFF}
+#define NET_CLIENT_DEF_SERVER_STRESS_INTERVAL     50 // ms
 
-#define NET_CLIENT_DEF_UI_FILE                  "net_client.glade"
-#define NET_CLIENT_UI_LISTENBUTTON_NAME         "togglebutton_listen"
-#define NET_CLIENT_UI_CONNECTBUTTON_NAME        "button_connect"
-#define NET_CLIENT_UI_CLOSEBUTTON_NAME          "button_close"
-#define NET_CLIENT_UI_CLOSEALLBUTTON_NAME       "button_close_all"
-#define NET_CLIENT_UI_PINGBUTTON_NAME           "button_ping"
-#define NET_CLIENT_UI_REPORTBUTTON_NAME         "button_report"
-#define NET_CLIENT_UI_ABOUTBUTTON_NAME          "button_about"
-#define NET_CLIENT_UI_QUITBUTTON_NAME           "button_quit"
+#define NET_CLIENT_UI_FILE                        "net_client.glade"
+#define NET_CLIENT_UI_GTK_BUTTON_CONNECT_NAME     "connect"
+#define NET_CLIENT_UI_GTK_BUTTON_CLOSE_NAME       "close"
+#define NET_CLIENT_UI_GTK_BUTTON_PING_NAME        "ping"
 
 // define behaviour
-#define NET_CLIENT_U_TEST_CONNECT_PROBABILITY   0.2F // 20%
-#define NET_CLIENT_U_TEST_ABORT_PROBABILITY     0.1F // 10%
+#define NET_CLIENT_U_TEST_CONNECT_PROBABILITY     0.2F // 20%
+#define NET_CLIENT_U_TEST_ABORT_PROBABILITY       0.1F // 10%
 
 // -----------------------------------------------------------------------------
 
-#define NET_SERVER_DEF_UI_FILE                  "net_server.glade"
-#define NET_SERVER_UI_STARTBUTTON_NAME          "button_start"
-#define NET_SERVER_UI_STOPBUTTON_NAME           "button_stop"
-#define NET_SERVER_UI_CLOSEALLBUTTON_NAME       "button_close_all"
-#define NET_SERVER_UI_REPORTBUTTON_NAME         "button_report"
+#define NET_SERVER_UI_FILE                        "net_server.glade"
+#define NET_SERVER_UI_GTK_BUTTON_START_NAME       "start"
+#define NET_SERVER_UI_GTK_BUTTON_STOP_NAME        "stop"
+#define NET_SERVER_UI_GTK_BUTTON_LISTEN_NAME      "listen"
 
 #endif

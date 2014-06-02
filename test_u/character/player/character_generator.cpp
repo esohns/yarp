@@ -93,6 +93,9 @@ do_printUsage(const std::string& programName_in)
   std::string configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            true);
+#if defined(DEBUG_DEBUGGER)
+  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif
 
   std::cout << ACE_TEXT("usage: ")
             << programName_in
@@ -107,10 +110,10 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR("graphics"); // directory
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-g [FILE]  : graphics dictionary (*.xml)")
             << ACE_TEXT(" [\"")
-            << path.c_str()
+            << path
             << ACE_TEXT("\"]")
             << std::endl;
   path = configuration_path;
@@ -119,10 +122,10 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR("item"); // directory
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-i [FILE]  : item dictionary (*.xml)")
             << ACE_TEXT(" [\"")
-            << path.c_str()
+            << path
             << ACE_TEXT("\"]")
             << std::endl;
   path = configuration_path;
@@ -131,10 +134,10 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR("magic"); // directory
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-m [FILE]  : magic dictionary (*.xml)")
             << ACE_TEXT(" [\"")
-            << path.c_str()
+            << path
             << ACE_TEXT("\"]")
             << std::endl;
   std::cout << ACE_TEXT("-n [VALUE] : generate (party of) #players")
@@ -148,7 +151,7 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
   std::cout << ACE_TEXT("-o <[FILE]>: output file")
             << ACE_TEXT(" [")
-            << path.c_str()
+            << path
             << ACE_TEXT("]")
             << std::endl;
   std::cout << ACE_TEXT("-r         : random (non-interactive)")
@@ -160,11 +163,11 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   std::cout << ACE_TEXT("-v         : print version information and exit")
             << std::endl;
-} // end print_usage
+}
 
 bool
-do_processArguments(const int argc_in,
-                    ACE_TCHAR* argv_in[], // cannot be const...
+do_processArguments(const int& argc_in,
+                    ACE_TCHAR** argv_in, // cannot be const...
                     std::string& itemDictionary_out,
                     std::string& magicDictionary_out,
                     std::string& graphicsDictionary_out,
@@ -179,6 +182,9 @@ do_processArguments(const int argc_in,
   std::string configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            true);
+#if defined(DEBUG_DEBUGGER)
+  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif
 
   // init results
   itemDictionary_out      = configuration_path;
@@ -187,7 +193,7 @@ do_processArguments(const int argc_in,
   itemDictionary_out += ACE_TEXT_ALWAYS_CHAR("item");
   itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  itemDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
+  itemDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DICTIONARY_FILE);
 
   magicDictionary_out     = configuration_path;
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -195,7 +201,7 @@ do_processArguments(const int argc_in,
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR("magic");
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
+  magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
 
   graphicsDictionary_out  = configuration_path;
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -203,7 +209,7 @@ do_processArguments(const int argc_in,
   graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
+  graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DICTIONARY_FILE);
 
   generateParty_out       = CHARACTER_GENERATOR_DEF_GENERATE_PARTY;
 
@@ -325,7 +331,8 @@ do_printSkillsTable(RPG_Character_Skills_t& skills_in)
          i++, iterator++, index++)
     {
       // finished ?
-      if (iterator == RPG_Common_SkillHelper::myRPG_Common_SkillToStringTable.end())
+      if (iterator ==
+          RPG_Common_SkillHelper::myRPG_Common_SkillToStringTable.end())
       {
         break;
       } // end IF
@@ -384,13 +391,15 @@ do_printSkillsTable(RPG_Character_Skills_t& skills_in)
   // increase skill rank
   choice -= 1;
   iterator = RPG_Common_SkillHelper::myRPG_Common_SkillToStringTable.begin();
-  ACE_ASSERT(RPG_Common_SkillHelper::myRPG_Common_SkillToStringTable.size() >= choice);
+  ACE_ASSERT(RPG_Common_SkillHelper::myRPG_Common_SkillToStringTable.size() >=
+             choice);
   std::advance(iterator, choice);
   skills_iterator = skills_in.find(iterator->first);
   if (skills_iterator != skills_in.end())
     (skills_iterator->second)++;
   else
-    skills_in.insert(std::make_pair(iterator->first, static_cast<unsigned char>(1)));
+    skills_in.insert(std::make_pair(iterator->first,
+                                    static_cast<unsigned char>(1)));
 
   return true;
 }
@@ -477,7 +486,8 @@ do_printFeatsTable(const RPG_Common_SubClass& subClass_in,
   choice -= 1;
   iterator =
       RPG_Character_FeatHelper::myRPG_Character_FeatToStringTable.begin();
-  ACE_ASSERT(RPG_Character_FeatHelper::myRPG_Character_FeatToStringTable.size() >= choice);
+  ACE_ASSERT(RPG_Character_FeatHelper::myRPG_Character_FeatToStringTable.size() >=
+             choice);
   std::advance(iterator, choice);
 
   feats_iterator = feats_inout.find(iterator->first);
@@ -805,7 +815,7 @@ do_generatePlayer()
     } while ((sum <= RPG_PLAYER_ATTRIBUTE_MINIMUM_SUM) ||
              (*(std::min_element(result.begin(),
                                  result.end())) <= 9) ||
-             (result[3] < 3)); // Note: this is already covered by the last case...
+             (result[3] < 3)); // Note: this is already covered by the last case
     for (int i = 0;
          i < 6;
          i++, p++)
@@ -1037,7 +1047,7 @@ do_generatePlayer()
 
         if (do_printSpellsTable((RPG_Magic_Common_Tools::isDivineCasterClass(*iterator) ? available
                                                                                         : known_spells),
-                               chosen_spell))
+                                chosen_spell))
         {
           spells.push_back(chosen_spell);
           num_chosen++;
@@ -1328,6 +1338,10 @@ ACE_TMAIN(int argc_in,
   std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            false);
+#if defined(DEBUG_DEBUGGER)
+  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif
 
   // init configuration
   std::string schema_repository            = configuration_path;
@@ -1342,7 +1356,7 @@ ACE_TMAIN(int argc_in,
   item_dictionary_filename += ACE_TEXT_ALWAYS_CHAR("item");
   item_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  item_dictionary_filename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
+  item_dictionary_filename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DICTIONARY_FILE);
 
   std::string magic_dictionary_filename    = configuration_path;
   magic_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -1351,7 +1365,7 @@ ACE_TMAIN(int argc_in,
   magic_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   magic_dictionary_filename +=
-      ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
+      ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
 
   std::string graphics_dictionary_filename = configuration_path;
   graphics_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -1360,7 +1374,7 @@ ACE_TMAIN(int argc_in,
   graphics_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   graphics_dictionary_filename +=
-      ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
+      ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DICTIONARY_FILE);
 
   std::string graphics_directory           = data_path;
   graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -1369,16 +1383,18 @@ ACE_TMAIN(int argc_in,
   graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
 #else
-  graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
+  graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DATA_SUB);
 #endif
 
 	unsigned int num_party_members           =
 			CHARACTER_GENERATOR_DEF_GENERATE_PARTY;
+
 	std::string output_filename              =
 			RPG_Player_Common_Tools::getPlayerProfilesDirectory();
 	output_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 	output_filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE);
 	output_filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+
 	bool random                              = CHARACTER_GENERATOR_DEF_RANDOM;
 	bool trace_information                   = false;
 	bool print_version_and_exit              = false;

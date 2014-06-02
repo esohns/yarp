@@ -21,6 +21,6 @@
 #ifndef RPG_MONSTER_DEFINES_H
 #define RPG_MONSTER_DEFINES_H
 
-#define RPG_MONSTER_DEF_DICTIONARY_FILE "rpg_monster.xml"
+#define RPG_MONSTER_DICTIONARY_FILE "rpg_monster.xml"
 
 #endif

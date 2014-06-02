@@ -298,10 +298,10 @@
   <xsd:complexType name="RPG_Monster_StateBase_Type" id="skip0">
     <xsd:sequence>
       <xsd:element name="conditions" type="RPG_Player_Conditions_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="HP" type="xsd:short" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="gold" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="spells" type="RPG_Player_Spells_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="HP" type="xsd:short" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="inventory" type="RPG_Item_InventoryXML_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="spells" type="RPG_Player_Spells_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -309,7 +309,7 @@
     <xsd:complexContent>
       <xsd:extension base="RPG_Monster_StateBase_Type">
         <xsd:sequence>
-          <xsd:element name="monster" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="type" type="xsd:string" minOccurs="1" maxOccurs="1"/>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
@@ -317,10 +317,10 @@
 
   <xsd:complexType name="RPG_Monster_Spawn_Type">
     <xsd:sequence>
-      <xsd:element name="monster" type="xsd:string" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="spawn_interval" type="RPG_Common_FixedPeriod_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="spawn_probability" type="xsd:float" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="max_spawned" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="type" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="interval" type="RPG_Common_FixedPeriod_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="probability" type="xsd:float" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="max_num_spawned" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="amble_probability" type="xsd:float" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>

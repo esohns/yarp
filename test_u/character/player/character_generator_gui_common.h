@@ -30,6 +30,9 @@
 #include <string>
 #include <vector>
 
+#define CHARACTER_GENERATOR_GTK_BUTTON_IMAGENEXT_NAME "image_button_next"
+#define CHARACTER_GENERATOR_GTK_BUTTON_IMAGEPREV_NAME "image_button_prev"
+
 typedef std::vector<RPG_Graphics_Sprite> Character_Generator_GUI_SpriteGallery_t;
 typedef Character_Generator_GUI_SpriteGallery_t::const_iterator Character_Generator_GUI_SpriteGalleryIterator_t;
 
