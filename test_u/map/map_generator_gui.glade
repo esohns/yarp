@@ -488,6 +488,7 @@
                                 <property name="receives_default">False</property>
                                 <property name="relief">half</property>
                                 <property name="focus_on_click">False</property>
+                                <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                               </widget>
                               <packing>
@@ -502,6 +503,7 @@
                                 <property name="receives_default">False</property>
                                 <property name="relief">half</property>
                                 <property name="focus_on_click">False</property>
+                                <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                               </widget>
                               <packing>
@@ -569,7 +571,7 @@
                                 <property name="secondary_icon_activatable">False</property>
                                 <property name="primary_icon_sensitive">True</property>
                                 <property name="secondary_icon_sensitive">True</property>
-                                <property name="adjustment">10 0 100 1 10 0</property>
+                                <property name="adjustment">3 0 100 1 10 0</property>
                                 <property name="numeric">True</property>
                                 <property name="update_policy">if-valid</property>
                               </widget>
@@ -587,6 +589,7 @@
                                 <property name="receives_default">False</property>
                                 <property name="relief">half</property>
                                 <property name="focus_on_click">False</property>
+                                <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                               </widget>
                               <packing>
@@ -608,6 +611,7 @@
                                 <property name="secondary_icon_activatable">False</property>
                                 <property name="primary_icon_sensitive">True</property>
                                 <property name="secondary_icon_sensitive">True</property>
+                                <property name="adjustment">0 0 100 1 10 0</property>
                                 <property name="numeric">True</property>
                                 <property name="update_policy">if-valid</property>
                               </widget>
@@ -630,7 +634,7 @@
                                 <property name="secondary_icon_activatable">False</property>
                                 <property name="primary_icon_sensitive">True</property>
                                 <property name="secondary_icon_sensitive">True</property>
-                                <property name="adjustment">5 5 100 1 10 0</property>
+                                <property name="adjustment">5 1 100 1 10 0</property>
                                 <property name="numeric">True</property>
                               </widget>
                               <packing>
@@ -647,6 +651,7 @@
                                 <property name="receives_default">False</property>
                                 <property name="relief">half</property>
                                 <property name="focus_on_click">False</property>
+                                <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                               </widget>
                               <packing>
@@ -907,7 +912,7 @@
                                           <widget class="GtkLabel" id="spawn_interval_label">
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
-                                            <property name="label" translatable="yes">spawn interval</property>
+                                            <property name="label" translatable="yes">spawn interval (s)</property>
                                           </widget>
                                           <packing>
                                             <property name="top_attach">1</property>
@@ -918,7 +923,7 @@
                                           <widget class="GtkLabel" id="spawn_probability_label">
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
-                                            <property name="label" translatable="yes">spawn probability</property>
+                                            <property name="label" translatable="yes">spawn probability (%)</property>
                                           </widget>
                                           <packing>
                                             <property name="top_attach">2</property>
@@ -940,7 +945,7 @@
                                           <widget class="GtkLabel" id="amble_probability_label">
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
-                                            <property name="label" translatable="yes">amble probability</property>
+                                            <property name="label" translatable="yes">amble probability (%)</property>
                                           </widget>
                                           <packing>
                                             <property name="top_attach">4</property>
@@ -987,6 +992,7 @@
                                           <widget class="GtkSpinButton" id="spawn_probability_spinbutton">
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
+                                            <property name="editable">False</property>
                                             <property name="has_frame">False</property>
                                             <property name="invisible_char">●</property>
                                             <property name="caps_lock_warning">False</property>
@@ -994,7 +1000,7 @@
                                             <property name="secondary_icon_activatable">False</property>
                                             <property name="primary_icon_sensitive">True</property>
                                             <property name="secondary_icon_sensitive">True</property>
-                                            <property name="digits">2</property>
+                                            <property name="adjustment">30 0 100 1 10 0</property>
                                             <property name="numeric">True</property>
                                             <property name="update_policy">if-valid</property>
                                           </widget>
@@ -1040,7 +1046,7 @@
                                             <property name="secondary_icon_activatable">False</property>
                                             <property name="primary_icon_sensitive">True</property>
                                             <property name="secondary_icon_sensitive">True</property>
-                                            <property name="digits">2</property>
+                                            <property name="adjustment">50 0 100 1 10 0</property>
                                             <property name="numeric">True</property>
                                             <property name="update_policy">if-valid</property>
                                           </widget>
@@ -1110,7 +1116,9 @@
                         <child>
                           <widget class="GtkTextView" id="map_layout_textview">
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">False</property>
+                            <property name="accepts_tab">False</property>
                             <signal name="insert_at_cursor" handler="map_layout_textview_changed_cb" swapped="no"/>
                             <signal name="delete_from_cursor" handler="map_layout_textview_changed_cb" swapped="no"/>
                           </widget>

@@ -26,10 +26,11 @@ namespace urn:rpg
   RPG_Character_Skills_Type        RPG_Character_Skills;
 
   RPG_Player_Abilities_Type        RPG_Player_Abilities;
+  RPG_Player_Conditions_Type       RPG_Player_Conditions;
+  RPG_Player_Spells_Type           RPG_Player_Spells;
   RPG_Player_CharacterBaseXML_Type RPG_Player_CharacterBaseXML;
   RPG_Player_CharacterXML_Type     RPG_Player_CharacterXML;
-  RPG_Player_Conditions_Type       RPG_Player_Conditions;
   RPG_Player_PlayerXML_Type        RPG_Player_PlayerXML;
-  RPG_Player_Spells_Type           RPG_Player_Spells;
-  RPG_Player_State_Type            RPG_Player_State;
+#  RPG_Player_StateBase_Type        RPG_Player_StateBase;
+#  RPG_Player_State_Type            RPG_Player_State;
 }

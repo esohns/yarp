@@ -28,12 +28,12 @@
 
 // XML-specific
 #define RPG_PLAYER_SCHEMA_FILE            "rpg_player.xsd"
-#define RPG_PLAYER_PROFILE_EXT            ".player"
+#define RPG_PLAYER_PROFILE_EXT            ".profile"
 
 #define RPG_PLAYER_DEF_NAME               "default player"
 // *TODO*: convert if necessary...
 #define RPG_PLAYER_DEF_FILE               "default_player"
 
-#define RPG_PLAYER_DEF_PROFILES_SUB       "profiles"
+#define RPG_PLAYER_PROFILES_SUB           "profiles"
 
 #endif

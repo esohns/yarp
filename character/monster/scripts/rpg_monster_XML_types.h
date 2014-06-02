@@ -96,8 +96,8 @@ class RPG_Monster_Dictionary_Type_pskel;
 #include "rpg_magic_incl.h"
 #include "rpg_item_incl.h"
 #include "rpg_combat_incl.h"
-#include "rpg_player_incl.h"
 #include "rpg_monster_incl.h"
+#include "rpg_player_incl.h"
 
 #include "rpg_dice_XML_types.h"
 
@@ -1650,16 +1650,16 @@ class RPG_Monster_StateBase_Type_pskel: public ::xml_schema::complex_content
   conditions ();
 
   virtual void
-  HP (short);
-
-  virtual void
   gold (unsigned int);
 
   virtual void
-  spells ();
+  HP (short);
 
   virtual void
   inventory ();
+
+  virtual void
+  spells ();
 
   virtual void
   post_RPG_Monster_StateBase_Type ();
@@ -1670,23 +1670,23 @@ class RPG_Monster_StateBase_Type_pskel: public ::xml_schema::complex_content
   conditions_parser (::RPG_Player_Conditions_Type_pskel&);
 
   void
-  HP_parser (::xml_schema::short_pskel&);
-
-  void
   gold_parser (::xml_schema::unsigned_int_pskel&);
 
   void
-  spells_parser (::RPG_Player_Spells_Type_pskel&);
+  HP_parser (::xml_schema::short_pskel&);
 
   void
   inventory_parser (::RPG_Item_InventoryXML_Type_pskel&);
 
   void
+  spells_parser (::RPG_Player_Spells_Type_pskel&);
+
+  void
   parsers (::RPG_Player_Conditions_Type_pskel& /* conditions */,
-           ::xml_schema::short_pskel& /* HP */,
            ::xml_schema::unsigned_int_pskel& /* gold */,
-           ::RPG_Player_Spells_Type_pskel& /* spells */,
-           ::RPG_Item_InventoryXML_Type_pskel& /* inventory */);
+           ::xml_schema::short_pskel& /* HP */,
+           ::RPG_Item_InventoryXML_Type_pskel& /* inventory */,
+           ::RPG_Player_Spells_Type_pskel& /* spells */);
 
   // Constructor.
   //
@@ -1706,10 +1706,10 @@ class RPG_Monster_StateBase_Type_pskel: public ::xml_schema::complex_content
 
   protected:
   ::RPG_Player_Conditions_Type_pskel* conditions_parser_;
-  ::xml_schema::short_pskel* HP_parser_;
   ::xml_schema::unsigned_int_pskel* gold_parser_;
-  ::RPG_Player_Spells_Type_pskel* spells_parser_;
+  ::xml_schema::short_pskel* HP_parser_;
   ::RPG_Item_InventoryXML_Type_pskel* inventory_parser_;
+  ::RPG_Player_Spells_Type_pskel* spells_parser_;
 };
 
 class RPG_Monster_State_Type_pskel: public virtual ::RPG_Monster_StateBase_Type_pskel
@@ -1721,7 +1721,7 @@ class RPG_Monster_State_Type_pskel: public virtual ::RPG_Monster_StateBase_Type_
   // pre ();
 
   virtual void
-  monster (const ::std::string&);
+  type (const ::std::string&);
 
   virtual void
   post_RPG_Monster_State_Type ();
@@ -1729,15 +1729,15 @@ class RPG_Monster_State_Type_pskel: public virtual ::RPG_Monster_StateBase_Type_
   // Parser construction API.
   //
   void
-  monster_parser (::xml_schema::string_pskel&);
+  type_parser (::xml_schema::string_pskel&);
 
   void
   parsers (::RPG_Player_Conditions_Type_pskel& /* conditions */,
-           ::xml_schema::short_pskel& /* HP */,
            ::xml_schema::unsigned_int_pskel& /* gold */,
-           ::RPG_Player_Spells_Type_pskel& /* spells */,
+           ::xml_schema::short_pskel& /* HP */,
            ::RPG_Item_InventoryXML_Type_pskel& /* inventory */,
-           ::xml_schema::string_pskel& /* monster */);
+           ::RPG_Player_Spells_Type_pskel& /* spells */,
+           ::xml_schema::string_pskel& /* type */);
 
   // Constructor.
   //
@@ -1756,7 +1756,7 @@ class RPG_Monster_State_Type_pskel: public virtual ::RPG_Monster_StateBase_Type_
                      const ::xml_schema::ro_string&);
 
   protected:
-  ::xml_schema::string_pskel* monster_parser_;
+  ::xml_schema::string_pskel* type_parser_;
 };
 
 class RPG_Monster_Spawn_Type_pskel: public ::xml_schema::complex_content

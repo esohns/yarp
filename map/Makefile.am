@@ -52,7 +52,7 @@ libRPG_Map_la_SOURCES = \
   rpg_map_XML_tree.h \
   stdafx.cpp \
   stdafx.h \
-libRPG_Map_la_CPPFLAGS	= \
+libRPG_Map_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 

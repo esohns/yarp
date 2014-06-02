@@ -31,11 +31,14 @@
 #include "rpg_common_macros.h"
 #include "rpg_common.h"
 #include "rpg_common_tools.h"
+#include "rpg_common_file_tools.h"
 
 #include "rpg_character_race_common_tools.h"
 
 #include "rpg_item_dictionary.h"
 #include "rpg_item_common_tools.h"
+
+#include "rpg_player_defines.h"
 
 #include "rpg_map_common_tools.h"
 #include "rpg_map_pathfinding_tools.h"
@@ -779,6 +782,287 @@ RPG_Engine::action(const RPG_Engine_EntityID_t& id_in,
 
 	// wake up the engine
 	inherited::msg_queue()->pulse();
+}
+
+bool
+RPG_Engine::save(const std::string& descriptor_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::save"));
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+  // step1: save active player profile (if any)
+  RPG_Engine_EntitiesIterator_t iterator = myEntities.find(myActivePlayer);
+  if (myActivePlayer)
+  {
+    // sanity check(s)
+    ACE_ASSERT(iterator != myEntities.end());
+
+    RPG_Player* player_p = NULL;
+    try
+    {
+      player_p = dynamic_cast<RPG_Player*>((*iterator).second->character);
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to dynamic_cast<RPG_Player*>(%@), aborting\n"),
+                 (*iterator).second->character));
+
+      return false;
+    }
+    if (!player_p->save(std::string()))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Player::save(\"%s\"), aborting\n"),
+                 ACE_TEXT((*iterator).second->character->getName().c_str())));
+
+      return false;
+    } // end IF
+  } // end IF
+
+  // step2: save state
+  if (inherited2::myMetaData.name.empty())
+    return true; // nothing to do...
+
+  std::string filename = RPG_Engine_Common_Tools::getSavedStateDirectory();
+  filename += myMetaData.name;
+  if (iterator != myEntities.end())
+  {
+    filename += ACE_TEXT_ALWAYS_CHAR("_");
+    filename += (*iterator).second->character->getName();
+  } // end IF
+  if (!descriptor_in.empty())
+  {
+    filename += ACE_TEXT_ALWAYS_CHAR("_");
+    filename += descriptor_in;
+  } // end IF
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_SAVEDSTATE_EXT);
+  if (RPG_Common_File_Tools::isReadable(filename))
+  {
+    // *TODO*: warn user ?
+//     if (!RPG_Common_File_Tools::deleteFile(filename))
+//     {
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("failed to RPG_Common_File_Tools::deleteFile(\"%s\"), aborting\n"),
+//                  ACE_TEXT(filename.c_str())));
+    //
+//       return false;
+//     } // end IF
+  } // end IF
+
+  std::ofstream ofs;
+  ofs.exceptions(std::ofstream::badbit | std::ofstream::failbit);
+  try
+  {
+    ofs.open(filename.c_str(),
+             (std::ios_base::out | std::ios_base::trunc));
+  }
+  catch (std::ios_base::failure exception)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to std::ofstream::open(\"%s\"): \"%s\", aborting\n"),
+               ACE_TEXT(filename.c_str()),
+               ACE_TEXT(exception.what())));
+
+    return false;
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to std::ofstream::open(\"%s\"), aborting\n"),
+               ACE_TEXT(filename.c_str())));
+
+    return false;
+  }
+
+  RPG_Engine_State_XMLTree_Type level_state_model(RPG_Common_Tools::sanitize(inherited2::myMetaData.name));
+
+  RPG_Map_State_XMLTree_Type::door_sequence& doors = level_state_model.door();
+  for (RPG_Map_DoorsConstIterator_t iterator = inherited2::myMap.plan.doors.begin();
+       iterator != inherited2::myMap.plan.doors.end();
+       iterator++)
+  {
+    RPG_Map_Door_XMLTree_Type door(RPG_Map_Position_XMLTree_Type((*iterator).position.first,
+                                                                 (*iterator).position.first),
+                                   RPG_Map_DoorState_XMLTree_Type(static_cast<RPG_Map_DoorState_XMLTree_Type::value>((*iterator).state)));
+    doors.push_back(door);
+  } // end FOR
+  level_state_model.door(doors);
+
+  RPG_Engine_State_XMLTree_Type::entities_sequence& entities =
+      level_state_model.entities();
+  for (RPG_Engine_EntitiesConstIterator_t iterator = myEntities.begin();
+       iterator != myEntities.end();
+       iterator++)
+  {
+    RPG_Engine_EntityState_XMLTree_Type entity_state(RPG_Map_Position_XMLTree_Type((*iterator).second->position.first,
+                                                                                   (*iterator).second->position.second));
+
+    const RPG_Character_Conditions_t& condition =
+        (*iterator).second->character->getCondition();
+    RPG_Player_Conditions_XMLTree_Type condition_xml;
+    RPG_Player_Conditions_XMLTree_Type::condition_sequence& conditions =
+        condition_xml.condition();
+    for (RPG_Character_ConditionsIterator_t iterator2 = condition.begin();
+         iterator2 != condition.end();
+         iterator2++)
+      conditions.push_back(RPG_Common_Condition_XMLTree_Type(static_cast<RPG_Common_Condition_XMLTree_Type::value>(*iterator2)));
+    if ((*iterator).second->character->isPlayerCharacter())
+    {
+      std::string filename =
+          RPG_Common_Tools::sanitize((*iterator).second->character->getName());
+      filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+      RPG_Player_State_XMLTree_Type player_state(condition_xml,
+                                                 (*iterator).second->character->getNumHitPoints(),
+                                                 filename);
+
+      entity_state.player(player_state);
+    } // end IF
+    else
+    {
+      RPG_Monster_State_XMLTree_Type monster_state(condition_xml,
+                                                   (*iterator).second->character->getNumHitPoints(),
+                                                   (*iterator).second->character->getWealth(),
+                                                   (*iterator).second->character->getName());
+
+      entity_state.monster(monster_state);
+    } // end ELSE
+
+    RPG_Engine_EntityState_XMLTree_Type::mode_sequence& modes = entity_state.mode();
+    for (RPG_Engine_EntityModeConstIterator_t iterator2 = (*iterator).second->modes.begin();
+         iterator2 != (*iterator).second->modes.end();
+         iterator2++)
+      modes.push_back(RPG_Engine_EntityMode_XMLTree_Type(static_cast<RPG_Engine_EntityMode_XMLTree_Type::value>(*iterator2)));
+    entity_state.mode(modes);
+
+    entities.push_back(entity_state);
+  } // end FOR
+  level_state_model.entities(entities);
+
+  ::xml_schema::namespace_infomap map;
+  map[""].name = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE);
+  map[""].schema = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_SCHEMA_FILE);
+  std::string character_set(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_SCHEMA_CHARSET));
+  //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
+  ::xml_schema::flags flags = 0;
+  try
+  {
+    ::engine_state_t(ofs,
+                     level_state_model,
+                     map,
+                     character_set,
+                     flags);
+  }
+  catch (std::ios_base::failure exception)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ::engine_state_t(\"%s\"): \"%s\", aborting\n"),
+               ACE_TEXT(filename.c_str()),
+               ACE_TEXT(exception.what())));
+
+    // clean up
+    try
+    {
+      ofs.close();
+    }
+    catch (std::ios_base::failure exception)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ofstream::close(\"%s\"): \"%s\", aborting\n"),
+                 ACE_TEXT(filename.c_str()),
+                 ACE_TEXT(exception.what())));
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ofstream::close(\"%s\"), aborting\n"),
+                 ACE_TEXT(filename.c_str())));
+    }
+
+    return false;
+  }
+  catch (::xml_schema::serialization& exception)
+  {
+    std::ostringstream converter;
+    converter << exception;
+    std::string text = converter.str();
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ::engine_state_t(\"%s\"): \"%s\", aborting\n"),
+               ACE_TEXT(filename.c_str()),
+               ACE_TEXT(text.c_str())));
+
+    // clean up
+    try
+    {
+      ofs.close();
+    }
+    catch (std::ios_base::failure exception)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ofstream::close(\"%s\"): \"%s\", aborting\n"),
+                 ACE_TEXT(filename.c_str()),
+                 ACE_TEXT(exception.what())));
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ofstream::close(\"%s\"), aborting\n"),
+                 ACE_TEXT(filename.c_str())));
+    }
+
+    return false;
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ::engine_state_t(\"%s\"), aborting\n"),
+               ACE_TEXT(filename.c_str())));
+
+    // clean up
+    try
+    {
+      ofs.close();
+    }
+    catch (std::ios_base::failure exception)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ofstream::close(\"%s\"): \"%s\", aborting\n"),
+                 ACE_TEXT(filename.c_str()),
+                 ACE_TEXT(exception.what())));
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ofstream::close(\"%s\"), aborting\n"),
+                 ACE_TEXT(filename.c_str())));
+    }
+
+    return false;
+  }
+  try
+  {
+    ofs.close();
+  }
+  catch (std::ios_base::failure exception)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to std::ofstream::close(\"%s\"): \"%s\", aborting\n"),
+               ACE_TEXT(filename.c_str()),
+               ACE_TEXT(exception.what())));
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to std::ofstream::close(\"%s\"), aborting\n"),
+               ACE_TEXT(filename.c_str())));
+  }
+
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("saved state to file: \"%s\"\n"),
+             ACE_TEXT(filename.c_str())));
+
+  return true;
 }
 
 void

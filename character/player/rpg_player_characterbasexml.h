@@ -12,14 +12,14 @@
 struct RPG_Player_Export RPG_Player_CharacterBaseXML
 {
   std::string name;
+  RPG_Player_Abilities abilities;
   RPG_Character_Alignment alignment;
   RPG_Character_Attributes attributes;
-  RPG_Character_Skills skills;
-  RPG_Character_Feats feats;
-  RPG_Player_Abilities abilities;
   RPG_Common_Size defaultSize;
-  unsigned short int maxHP;
+  RPG_Character_Feats feats;
   RPG_Player_Spells knownSpells;
+  unsigned short int maxHP;
+  RPG_Character_Skills skills;
 };
 
 #endif

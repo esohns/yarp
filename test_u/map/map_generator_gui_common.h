@@ -51,6 +51,13 @@
 #define MAP_GENERATOR_GNOME_LAYOUT_MAP_TEXTVIEW_NAME                      "map_layout_textview"
 #define MAP_GENERATOR_GNOME_LAYOUT_BOX_NAME                               "map_hbox"
 
+#define MAP_GENERATOR_GNOME_SCROLLMARK_NAME                               "insert"
+
+// widget style
+#define MAP_GENERATOR_GNOME_TEXTVIEW_FONTDESCRIPTION                      "Monospace 10"
+#define MAP_GENERATOR_GNOME_TEXTVIEW_BASE                                 "#000000" // black
+#define MAP_GENERATOR_GNOME_TEXTVIEW_TEXT                                 "#FFFFFF" // white
+
 struct GTK_cb_data_t
 {
   GladeXML*                         XML;

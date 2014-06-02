@@ -66,6 +66,7 @@ G_MODULE_EXPORT gint map_repository_button_clicked_GTK_cb(GtkWidget*, gpointer);
 //G_MODULE_EXPORT gint lighting_combobox_changed_cb(GtkWidget*, gpointer);
 //G_MODULE_EXPORT gint outdoors_checkbutton_toggled_cb(GtkWidget*, gpointer);
 ////
+G_MODULE_EXPORT gint encounter_selection_changed_GTK_cb(GtkWidget*, gpointer);
 //G_MODULE_EXPORT gint spawn_interval_spinbutton_value_changed_cb(GtkWidget*, gpointer);
 //G_MODULE_EXPORT gint spawn_probability_spinbutton_value_changed_cb(GtkWidget*, gpointer);
 //G_MODULE_EXPORT gint max_num_spawned_spinbutton_value_changed_cb(GtkWidget*, gpointer);

@@ -98,11 +98,9 @@ do_printUsage(const std::string& programName_in)
   std::cout << ACE_TEXT("currently available options:") << std::endl;
 	std::string path = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_DEF_FILE);
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
   std::cout << ACE_TEXT("-f [FILE]: player profile (*")
-            << ACE_TEXT(RPG_ENGINE_ENTITY_PROFILE_EXT)
-            << ACE_TEXT("|*")
             << ACE_TEXT(RPG_PLAYER_PROFILE_EXT)
             << ACE_TEXT(") [\"")
             << ACE_TEXT(path.c_str())
@@ -156,12 +154,12 @@ do_processArguments(const int argc_in,
 #endif // #ifdef BASEDIR
 
   // init configuration
-  player_filename_out = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
+  player_filename_out           = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   player_filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  player_filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_DEF_FILE);
-  player_filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
+  player_filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE);
+  player_filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
-  item_dictionary_filename_out = configuration_path;
+  item_dictionary_filename_out  = configuration_path;
   item_dictionary_filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   item_dictionary_filename_out += ACE_TEXT_ALWAYS_CHAR("item");
@@ -179,8 +177,8 @@ do_processArguments(const int argc_in,
   magic_dictionary_filename_out +=
       ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
-  traceInformation_out = false;
-  printVersionAndExit_out = false;
+  traceInformation_out          = false;
+  printVersionAndExit_out       = false;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
@@ -226,7 +224,7 @@ do_processArguments(const int argc_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("unrecognized option \"%s\", aborting\n"),
-                   argumentParser.last_option()));
+                   ACE_TEXT(argumentParser.last_option())));
 
         return false;
       }
@@ -371,30 +369,31 @@ ACE_TMAIN(int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::main"));
 
-    // *PORTABILITY*: on Windows, need to init ACE...
+  // *PORTABILITY*: on Windows, need to init ACE...
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-    if (ACE::init() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::init(): \"%m\", continuing\n")));
+  if (ACE::init() == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
+
+    return EXIT_FAILURE;
+  } // end IF
 #endif
 
   // step1: init
   // step1a set defaults
-  std::string configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  configuration_path =
+  std::string configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            true);
-#endif // #ifdef BASEDIR
 
   // init configuration
-  std::string player_filename =
+  std::string player_filename           =
       RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   player_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  player_filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_DEF_FILE);
-  player_filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
+  player_filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE);
+  player_filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
-  std::string item_dictionary_filename = configuration_path;
+  std::string item_dictionary_filename  = configuration_path;
   item_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   item_dictionary_filename += ACE_TEXT_ALWAYS_CHAR("item");
@@ -410,21 +409,21 @@ ACE_TMAIN(int argc_in,
 #endif
   magic_dictionary_filename += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
-  std::string schema_repository = configuration_path;
+  std::string schema_repository         = configuration_path;
 #if defined(_DEBUG) && !defined(DEBUG_RELEASE)
   schema_repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   schema_repository += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
 
-  bool trace_information = false;
-  bool print_version_and_exit = false;
+  bool trace_information                = false;
+  bool print_version_and_exit           = false;
 
   // sanity check
   if (!RPG_Common_File_Tools::isDirectory(schema_repository))
   {
     ACE_DEBUG((LM_WARNING,
                ACE_TEXT("invalid XML schema repository (was: \"%s\"), continuing\n"),
-               schema_repository.c_str()));
+               ACE_TEXT(schema_repository.c_str())));
 
     // try fallback
     schema_repository.clear();

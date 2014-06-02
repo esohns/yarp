@@ -12,10 +12,10 @@
 struct RPG_Player_Export RPG_Player_CharacterXML
  : public RPG_Player_CharacterBaseXML
 {
-  RPG_Character_Gender gender;
-  std::vector<RPG_Character_Race> races;
   RPG_Character_ClassXML classXML;
+  RPG_Character_Gender gender;
   RPG_Character_OffHand offhand;
+  std::vector<RPG_Character_Race> races;
 };
 
 #endif

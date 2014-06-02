@@ -1444,7 +1444,7 @@ dirent_selector_profiles(const dirent* entry_in)
 
   // *NOTE*: select player profiles
   std::string filename(entry_in->d_name);
-  std::string extension(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT));
+  std::string extension(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT));
   std::string::size_type position =
       filename.rfind(extension, std::string::npos);
   if ((position == std::string::npos) ||
@@ -1536,7 +1536,7 @@ load_files(const std::string& repository_in,
   // iterate over entries
   std::string entry;
   std::string extension =
-      (loadPlayerProfiles_in ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT)
+      (loadPlayerProfiles_in ? ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT)
                              : ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT));
   GtkTreeIter iter;
   size_t position = -1;
@@ -1586,9 +1586,7 @@ load_files(const std::string& repository_in,
                                 &iter);
        i++)
   {
-    ACE_OS::memset(&value,
-                   0,
-                   sizeof(value));
+    ACE_OS::memset(&value, 0, sizeof(value));
     text = NULL;
 
     gtk_tree_model_get_value(GTK_TREE_MODEL(listStore_in), &iter,
@@ -1600,6 +1598,7 @@ load_files(const std::string& repository_in,
                i,
                ACE_TEXT(text)));
 
+    // clean up
     g_value_unset(&value);
   } // end FOR
 
@@ -2025,7 +2024,7 @@ save_character_clicked_GTK_cb(GtkWidget* widget_in,
   std::string filename = profiles_directory;
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += data->entity.character->getName();
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
   if (!RPG_Engine_Common_Tools::saveEntity(data->entity,
                                            filename))
@@ -2110,7 +2109,7 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   std::string filename = profiles_directory;
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += active_item;
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
   // load player profile
   data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
@@ -3418,9 +3417,9 @@ init_UI_client(const std::string& UIFile_in,
     return false;
   } // end IF
 	gtk_file_filter_set_name(userData_in.entity_filter,
-		                       ACE_TEXT(RPG_ENGINE_ENTITY_PROFILE_EXT));
+													 ACE_TEXT(RPG_PLAYER_PROFILE_EXT));
   pattern = ACE_TEXT_ALWAYS_CHAR("*");
-  pattern += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
+  pattern += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
   gtk_file_filter_add_pattern(userData_in.entity_filter,
 		                          ACE_TEXT(pattern.c_str()));
   //gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(filechooser_dialog),

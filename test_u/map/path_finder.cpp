@@ -50,26 +50,36 @@
 #define PATH_FINDER_DEF_DEBUG_PARSER false
 
 void
-print_usage(const std::string& programName_in)
+do_printUsage(const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::print_usage"));
+  RPG_TRACE(ACE_TEXT("::do_printUsage"));
 
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
-  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  data_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                   false);
-#endif // #ifdef BASEDIR
+  std::string data_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           false);
 
-  std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
+  std::cout << ACE_TEXT("usage: ")
+            << programName_in
+            << ACE_TEXT(" [OPTIONS]")
+            << std::endl
+            << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-b       : build corridors") << ACE_TEXT(" [") << PATH_FINDER_DEF_CORRIDORS << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-d       : debug parser") << ACE_TEXT(" [") << PATH_FINDER_DEF_DEBUG_PARSER << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT("-b       : build corridors")
+            << ACE_TEXT(" [")
+            << PATH_FINDER_DEF_CORRIDORS
+            << ACE_TEXT("]")
+            << std::endl;
+  std::cout << ACE_TEXT("-d       : debug parser")
+            << ACE_TEXT(" [")
+            << PATH_FINDER_DEF_DEBUG_PARSER
+            << ACE_TEXT("]")
+            << std::endl;
   std::string path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("map");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("data");
@@ -78,37 +88,40 @@ print_usage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
-  std::cout << ACE_TEXT("-p [FILE]: level plan (*") << ACE_TEXT(RPG_ENGINE_LEVEL_FILE_EXT) << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+  std::cout << ACE_TEXT("-p [FILE]: level plan (*")
+            << ACE_TEXT(RPG_ENGINE_LEVEL_FILE_EXT)
+            << ACE_TEXT(" [\"")
+            << path
+            << ACE_TEXT("\"]")
+            << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
   std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
 } // end print_usage
 
 bool
-process_arguments(const int argc_in,
-                  ACE_TCHAR* argv_in[], // cannot be const...
-                  bool& buildCorridors_out,
-                  bool& debugParser_out,
-                  std::string& floorPlan_out,
-                  bool& traceInformation_out,
-                  bool& printVersionAndExit_out)
+do_processArguments(const int argc_in,
+                    ACE_TCHAR** argv_in, // cannot be const...
+                    bool& buildCorridors_out,
+                    bool& debugParser_out,
+                    std::string& floorPlan_out,
+                    bool& traceInformation_out,
+                    bool& printVersionAndExit_out)
 {
-  RPG_TRACE(ACE_TEXT("::process_arguments"));
+  RPG_TRACE(ACE_TEXT("::do_processArguments"));
 
-  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  data_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                   false);
-#endif // #ifdef BASEDIR
+  std::string data_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           false);
 
   // init results
   buildCorridors_out      = PATH_FINDER_DEF_CORRIDORS;
   debugParser_out         = PATH_FINDER_DEF_DEBUG_PARSER;
 
-  floorPlan_out = data_path;
+  floorPlan_out           = data_path;
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR("map");
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR("data");
@@ -117,7 +130,7 @@ process_arguments(const int argc_in,
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   traceInformation_out    = false;
@@ -167,7 +180,7 @@ process_arguments(const int argc_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("unrecognized option \"%s\", aborting\n"),
-                   argumentParser.last_option()));
+                   ACE_TEXT(argumentParser.last_option())));
 
         return false;
       }
@@ -206,15 +219,15 @@ do_work(const bool& buildCorridors_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to load floor plan \"%s\", aborting\n"),
-               filename_in.c_str()));
+               ACE_TEXT(filename_in.c_str())));
 
     return;
   } // end IF
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("loaded floor plan %s\n"),
-             filename_in.c_str(),
-             RPG_Map_Level::info(map).c_str()));
+             ACE_TEXT(filename_in.c_str()),
+             ACE_TEXT(RPG_Map_Level::info(map).c_str())));
 
   // step2: process doors
   RPG_Map_Positions_t door_positions;
@@ -224,8 +237,9 @@ do_work(const bool& buildCorridors_in,
   {
     // *WARNING*: set iterators are CONST for a good reason !
     // --> (but we know what we're doing)...
-    const_cast<RPG_Map_Door_t&>(*iterator).outside = RPG_Map_Common_Tools::door2exitDirection((*iterator).position,
-                                                                                              map.plan);
+    const_cast<RPG_Map_Door_t&>(*iterator).outside =
+        RPG_Map_Common_Tools::door2exitDirection((*iterator).position,
+                                                 map.plan);
 
     door_positions.insert((*iterator).position);
   } // end FOR
@@ -340,7 +354,8 @@ do_work(const bool& buildCorridors_in,
         converter << ACE_TEXT(" "); // unmapped
       else if (map.plan.walls.find(current_position) != map.plan.walls.end())
         converter << ACE_TEXT("#"); // wall
-      else if (map.plan.doors.find(current_position_door) != map.plan.doors.end())
+      else if (map.plan.doors.find(current_position_door) !=
+               map.plan.doors.end())
         converter << ACE_TEXT("="); // door
       else
       {
@@ -392,8 +407,9 @@ do_printVersion(const std::string& programName_in)
             << std::endl;
 
   // create version string...
-  // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
-  // number... We need this, as the library soname is compared to this string.
+  // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta
+  // version number... Need this, as the library soname is compared to this
+  // string
   std::ostringstream version_number;
   if (version_number << ACE::major_version())
   {
@@ -435,96 +451,123 @@ do_printVersion(const std::string& programName_in)
 }
 
 int
-ACE_TMAIN(int argc,
-          ACE_TCHAR* argv[])
+ACE_TMAIN(int argc_in,
+          ACE_TCHAR** argv_in)
 {
   RPG_TRACE(ACE_TEXT("::main"));
 
-  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  data_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                   false);
-#endif // #ifdef BASEDIR
+  // step1: init ACE
+// *PORTABILITY*: on Windows, need to init ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+  if (ACE::init() == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
+
+    return EXIT_FAILURE;
+  } // end IF
+#endif
+
+  std::string data_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           false);
 
   // step1: init
   // step1a set defaults
-  bool buildCorridors      = PATH_FINDER_DEF_CORRIDORS;
-  bool debugParser         = PATH_FINDER_DEF_DEBUG_PARSER;
+  bool build_corridors        = PATH_FINDER_DEF_CORRIDORS;
+  bool debug_parser           = PATH_FINDER_DEF_DEBUG_PARSER;
 
-  std::string floorPlan = data_path;
-  floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  floorPlan += ACE_TEXT_ALWAYS_CHAR("map");
-  floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  floorPlan += ACE_TEXT_ALWAYS_CHAR("data");
-  floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  std::string floor_plan      = data_path;
+  floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(DEBUG_DEBUGGER)
+  floor_plan += ACE_TEXT_ALWAYS_CHAR("map");
+  floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  floor_plan += ACE_TEXT_ALWAYS_CHAR("data");
+  floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
-  floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
-  floorPlan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
+  floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
-  floorPlan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
+  floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
+  floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
-  bool traceInformation    = false;
-  bool printVersionAndExit = false;
+  bool trace_information      = false;
+  bool print_version_and_exit = false;
 
   // step1ba: parse/process/validate configuration
-  if (!(process_arguments(argc,
-                          argv,
-                          buildCorridors,
-                          debugParser,
-                          floorPlan,
-                          traceInformation,
-                          printVersionAndExit)))
+  if (!do_processArguments(argc_in,
+                           argv_in,
+                           build_corridors,
+                           debug_parser,
+                           floor_plan,
+                           trace_information,
+                           print_version_and_exit))
   {
     // make 'em learn...
-    print_usage(std::string(ACE::basename(argv[0])));
+    do_printUsage(std::string(ACE::basename(argv_in[0])));
+
+    // *PORTABILITY*: on Windows, must fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+      if (ACE::fini() == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
 
   // step1bb: validate arguments
-  if (!RPG_Common_File_Tools::isReadable(floorPlan))
+  if (!RPG_Common_File_Tools::isReadable(floor_plan))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid argument(s), aborting\n")));
 
     // make 'em learn...
-    print_usage(std::string(ACE::basename(argv[0])));
+    do_printUsage(std::string(ACE::basename(argv_in[0])));
+
+    // *PORTABILITY*: on Windows, must fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+      if (ACE::fini() == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
 
-  // step1c: set correct trace level
-  //ACE_Trace::start_tracing();
-  if (!traceInformation)
+  // step1c: initialize logging and/or tracing
+  std::string log_file;
+  if (!RPG_Common_Tools::initLogging(ACE::basename(argv_in[0]), // program name
+                                     log_file,                  // logfile
+                                     false,                     // log to syslog ?
+                                     false,                     // trace messages ?
+                                     trace_information,         // debug messages ?
+                                     NULL))                     // logger
   {
-    u_long process_priority_mask = (LM_SHUTDOWN |
-                                    //LM_INFO |  // <-- DISABLE trace messages !
-                                    //LM_DEBUG |
-                                    LM_INFO |
-                                    LM_NOTICE |
-                                    LM_WARNING |
-                                    LM_STARTUP |
-                                    LM_ERROR |
-                                    LM_CRITICAL |
-                                    LM_ALERT |
-                                    LM_EMERGENCY);
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Common_Tools::initLogging(), aborting\n")));
 
-    // set new mask...
-    ACE_LOG_MSG->priority_mask(process_priority_mask,
-                               ACE_Log_Msg::PROCESS);
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
-    //ACE_LOG_MSG->stop_tracing();
-
-    // don't go VERBOSE...
-    //ACE_LOG_MSG->clr_flags(ACE_Log_Msg::VERBOSE_LITE);
+    return EXIT_FAILURE;
   } // end IF
 
   // step1d: handle specific program modes
-  if (printVersionAndExit)
+  if (print_version_and_exit)
   {
-    do_printVersion(std::string(ACE::basename(argv[0])));
+    do_printVersion(std::string(ACE::basename(argv_in[0])));
+
+    // *PORTABILITY*: on Windows, must fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+      if (ACE::fini() == -1)
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#endif
 
     return EXIT_SUCCESS;
   } // end IF
@@ -532,9 +575,9 @@ ACE_TMAIN(int argc,
   ACE_High_Res_Timer timer;
   timer.start();
   // step2: do actual work
-  do_work(buildCorridors,
-          debugParser,
-          floorPlan);
+  do_work(build_corridors,
+          debug_parser,
+          floor_plan);
   timer.stop();
 
   // debug info
@@ -546,7 +589,14 @@ ACE_TMAIN(int argc,
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
-             working_time_string.c_str()));
+             ACE_TEXT(working_time_string.c_str())));
+
+  // *PORTABILITY*: on Windows, must fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#endif
 
   return EXIT_SUCCESS;
 } // end main

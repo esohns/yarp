@@ -70,6 +70,9 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
 	// ***** event-related *****
 	static bool isOneShotEvent(const RPG_Engine_EventType&);
 
+  // ***** state-related *****
+  static std::string getSavedStateDirectory();
+
   // ***** entity-related *****
   // *NOTE*: entity.character must be deleted() by the caller !
   static RPG_Engine_Entity_t loadEntity(const std::string&,  // FQ filename

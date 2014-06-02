@@ -134,16 +134,12 @@ do_printUsage(const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
-  std::string configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
-  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  configuration_path =
-      RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                    true);
-  data_path =
-      RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                    false);
-#endif // #ifdef BASEDIR
+  std::string configuration_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           true);
+  std::string data_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           false);
 
   std::cout << ACE_TEXT("usage: ")
             << programName_in
@@ -191,7 +187,7 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
   std::cout << ACE_TEXT("-l [FILE]: level map (*")
             << ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
@@ -216,10 +212,10 @@ do_printUsage(const std::string& programName_in)
 	path = data_path;
 	path += RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_DEF_FILE);
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
   std::cout << ACE_TEXT("-p [FILE]: entity profile (*")
-            << ACE_TEXT(RPG_ENGINE_ENTITY_PROFILE_EXT)
+            << ACE_TEXT(RPG_PLAYER_PROFILE_EXT)
             << ACE_TEXT(") [\"")
             << path
             << ACE_TEXT("\"]")
@@ -243,16 +239,12 @@ do_processArguments(const int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::do_processArguments"));
 
-  std::string configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
-  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  configuration_path =
-      RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                    true);
-  data_path =
-      RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                    false);
-#endif // #ifdef BASEDIR
+  std::string configuration_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           true);
+  std::string data_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           false);
 
   // init results
   debug_out               = RPG_CLIENT_DEF_DEBUG;
@@ -285,7 +277,7 @@ do_processArguments(const int argc_in,
   levelMap_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   levelMap_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  levelMap_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+  levelMap_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
   levelMap_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   monsterDictionary_out   = configuration_path;
@@ -301,8 +293,8 @@ do_processArguments(const int argc_in,
 	entityProfile_out       = data_path;
 	entityProfile_out += RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   entityProfile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  entityProfile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_DEF_FILE);
-  entityProfile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
+  entityProfile_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE);
+  entityProfile_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
   traceInformation_out    = false;
   printVersionAndExit_out = false;
@@ -1145,16 +1137,12 @@ ACE_TMAIN(int argc_in,
   } // end IF
 #endif
 
-  std::string configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
-  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  configuration_path =
-      RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                    true);
-  data_path =
-      RPG_Common_File_Tools::getConfigDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                    false);
-#endif // #ifdef BASEDIR
+  std::string configuration_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           true);
+  std::string data_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           false);
 
   // step1: init
   // step1a set defaults
@@ -1197,16 +1185,16 @@ ACE_TMAIN(int argc_in,
   level_map += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   level_map += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  level_map += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+  level_map += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
   level_map += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
 	std::string entity_profile      = data_path;
 	entity_profile += RPG_Player_Common_Tools::getPlayerProfilesDirectory();
 	entity_profile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-	entity_profile += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_DEF_FILE);
-	entity_profile += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
+	entity_profile += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE);
+	entity_profile += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
-  std::string UI_file = configuration_path;
+  std::string UI_file             = configuration_path;
   UI_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(DEBUG_DEBUGGER)
   UI_file += ACE_TEXT_ALWAYS_CHAR("client");

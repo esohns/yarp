@@ -28,7 +28,8 @@ map_generator_SOURCES = \
   map_generator.cpp
 map_generator_CPPFLAGS = \
   $(AM_CPPFLAGS) \
-  $(pkg_libs_CFLAGS)
+  $(pkg_libs_CFLAGS) \
+  -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 #map_generator_LDFLAGS = $(pkg_libs_LIBS)
 map_generator_LDADD = \
   -lRPG_Engine \
@@ -59,7 +60,8 @@ map_generator_gui_SOURCES = \
   map_generator_gui.cpp
 map_generator_gui_CPPFLAGS = \
   $(AM_CPPFLAGS) \
-  $(pkg_libs_CFLAGS)
+  $(pkg_libs_CFLAGS) \
+  -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 #map_generator_gui_LDFLAGS = $(pkg_libs_LIBS)
 map_generator_gui_LDADD = \
   -lRPG_Client_GUI \
@@ -87,7 +89,8 @@ map_vision_SOURCES = \
   map_vision.cpp
 map_vision_CPPFLAGS = \
   $(AM_CPPFLAGS) \
-  $(pkg_libs_CFLAGS)
+  $(pkg_libs_CFLAGS) \
+  -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 #map_vision_LDFLAGS = $(pkg_libs_LIBS)
 map_vision_LDADD = \
   -lRPG_Engine \
@@ -113,7 +116,8 @@ map_vision_ui_SOURCES = \
   map_vision_ui.cpp
 map_vision_ui_CPPFLAGS = \
   $(AM_CPPFLAGS) \
-  $(pkg_libs_CFLAGS)
+  $(pkg_libs_CFLAGS) \
+  -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 #map_vision_ui_LDFLAGS = $(pkg_libs_LIBS)
 map_vision_ui_LDADD = \
   -lRPG_Client_GUI \
@@ -139,7 +143,9 @@ path_finder_SOURCES = \
   stdafx.cpp \
   stdafx.h \
   path_finder.cpp
-path_finder_CPPFLAGS = $(AM_CPPFLAGS)
+path_finder_CPPFLAGS = \
+  $(AM_CPPFLAGS) \
+  -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 #path_finder_LDFLAGS = $(pkg_libs_LIBS)
 path_finder_LDADD = \
   -lRPG_Map \
@@ -148,7 +154,7 @@ path_finder_LDADD = \
   $(pkg_libs_LIBS)
 
 configdir = $(datadir)/@META_PACKAGE@/config
-config_DATA = map_generator_gui.glade
+config_DATA = \
+  map_generator_gui.glade
 
 EXTRA_DIST = $(config_DATA)
-

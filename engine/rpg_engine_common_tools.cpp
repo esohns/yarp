@@ -208,6 +208,35 @@ RPG_Engine_Common_Tools::isOneShotEvent(const RPG_Engine_EventType& eventType_in
 	return true;
 }
 
+std::string
+RPG_Engine_Common_Tools::getSavedStateDirectory()
+{
+	RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::getSavedStateDirectory"));
+
+	std::string result = RPG_Common_File_Tools::getUserConfigurationDirectory();
+	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+	result += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_SAVEDSTATE_SUB);
+
+  if (!RPG_Common_File_Tools::isDirectory(result))
+  {
+    if (!RPG_Common_File_Tools::createDirectory(result))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Common_File_Tools::createDirectory(\"%s\"), falling back\n"),
+                 ACE_TEXT(result.c_str())));
+
+      // fallback
+      result = RPG_Common_File_Tools::getDumpDirectory();
+    } // end IF
+    else
+      ACE_DEBUG((LM_DEBUG,
+                 ACE_TEXT("created player profiles directory \"%s\"\n"),
+                 ACE_TEXT(result.c_str())));
+  } // end IF
+
+  return result;
+}
+
 RPG_Engine_Entity_t
 RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
                                     const std::string& schemaRepository_in)
@@ -439,7 +468,7 @@ RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity_t& entity_in,
   std::string filename = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   filename += ACE_DIRECTORY_SEPARATOR_CHAR;
   filename += player_p->getName();
-  filename += RPG_ENGINE_ENTITY_PROFILE_EXT;
+  filename += RPG_PLAYER_PROFILE_EXT;
   if (!player_p->save(filename))
   {
     ACE_DEBUG((LM_ERROR,

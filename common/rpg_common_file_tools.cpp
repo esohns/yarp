@@ -894,36 +894,8 @@ RPG_Common_File_Tools::getLogFilename(const std::string& programName_in)
   // sanity check(s)
   ACE_ASSERT(!programName_in.empty());
 
-  // init return value(s)
-  std::string result;
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-  result = ACE_OS::getenv(RPG_COMMON_DEF_LOG_DIRECTORY);
-#else
-  result = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_LOG_DIRECTORY);
-#endif
-
-  // sanity check(s): log directory exists ?
-  // No ? --> try to create it then !
-  if (!RPG_Common_File_Tools::isDirectory(result))
-  {
-    if (!RPG_Common_File_Tools::createDirectory(result))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Common_File_Tools::createDirectory(\"%s\"), aborting\n"),
-                 ACE_TEXT(result.c_str())));
-
-      // clean up
-      result.clear();
-
-      return result;
-    } // end IF
-
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("created directory: \"%s\"...\n"),
-               ACE_TEXT(result.c_str())));
-  } // end IF
-
   // construct correct logfilename...
+  std::string result = RPG_Common_File_Tools::getLogDirectory();
   result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   result += programName_in;
   result += RPG_COMMON_LOG_FILENAME_SUFFIX;
@@ -946,6 +918,43 @@ RPG_Common_File_Tools::getLogFilename(const std::string& programName_in)
 
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("deleted file: \"%s\"...\n"),
+               ACE_TEXT(result.c_str())));
+  } // end IF
+
+  return result;
+}
+
+std::string
+RPG_Common_File_Tools::getLogDirectory()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_File_Tools::getLogDirectory"));
+
+  // init return value(s)
+  std::string result;
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  result = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_LOG_DIRECTORY));
+#else
+  result = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_LOG_DIRECTORY);
+#endif
+
+  // sanity check(s): directory exists ?
+  // No ? --> try to create it then !
+  if (!RPG_Common_File_Tools::isDirectory(result))
+  {
+    if (!RPG_Common_File_Tools::createDirectory(result))
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Common_File_Tools::createDirectory(\"%s\"), aborting\n"),
+                 ACE_TEXT(result.c_str())));
+
+      // clean up
+      result.clear();
+
+      return result;
+    } // end IF
+
+    ACE_DEBUG((LM_DEBUG,
+               ACE_TEXT("created directory: \"%s\"...\n"),
                ACE_TEXT(result.c_str())));
   } // end IF
 

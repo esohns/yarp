@@ -878,6 +878,18 @@ RPG_Common_Tools::sanitizeURI(const std::string& uri_in)
 	return result;
 }
 
+std::string
+RPG_Common_Tools::sanitize(const std::string& string_in)
+{
+	std::string result = string_in;
+
+	std::replace(result.begin(),
+							 result.end(),
+							 ' ', '_');
+
+	return result;
+}
+
 bool
 RPG_Common_Tools::isLinux()
 {

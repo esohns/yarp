@@ -321,40 +321,18 @@ RPG_Map_Level::print(const RPG_Map_t& map_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::print"));
 
-  ACE_DEBUG((LM_INFO,
-             ACE_TEXT("map:\n\tstart position: [%u,%u]\n"),
-             map_in.start.first,
-             map_in.start.second));
-  ACE_DEBUG((LM_INFO,
-             ACE_TEXT("\tseed point(s)[%u]: ["),
-             map_in.seeds.size()));
-  RPG_Map_PositionsConstIterator_t next = map_in.seeds.begin();
-  for (RPG_Map_PositionsConstIterator_t iterator = map_in.seeds.begin();
-       iterator != map_in.seeds.end();
-       iterator++)
-  {
-    ACE_DEBUG((LM_INFO,
-               ACE_TEXT("[%u,%u]"),
-               (*iterator).first,
-               (*iterator).second));
+  std::string map_string = RPG_Map_Level::info(map_in);
+  std::cout << map_string;
+  map_string = RPG_Map_Level::string(map_in);
+  std::cout << map_string << std::endl;
+}
 
-    next = iterator;
-    std::advance(next, 1);
-    if (next != map_in.seeds.end())
-      ACE_DEBUG((LM_INFO,
-                 ACE_TEXT(", ")));
-  } // end FOR
-  ACE_DEBUG((LM_INFO,
-             ACE_TEXT("]\n")));
+std::string
+RPG_Map_Level::string(const RPG_Map_t& map_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Map_Level::string"));
 
-  ACE_DEBUG((LM_INFO,
-             ACE_TEXT("\tplan ([%ux%u] - %u unmapped, %u walls, %u doors)\n"),
-             map_in.plan.size_x,
-             map_in.plan.size_y,
-             map_in.plan.unmapped.size(),
-             map_in.plan.walls.size(),
-             map_in.plan.doors.size()));
-
+  std::ostringstream converter;
   RPG_Map_Position_t current_position;
   RPG_Map_Door_t current_position_door;
   for (unsigned int y = 0;
@@ -367,28 +345,30 @@ RPG_Map_Level::print(const RPG_Map_t& map_in)
     {
       current_position = std::make_pair(x, y);
       if (current_position == map_in.start)
-        std::cout << 'X';
+        converter << 'X';
       else if (map_in.seeds.find(current_position) != map_in.seeds.end())
-        std::cout << '@';
+        converter << '@';
       else
       {
         // unmapped, floor, wall, or door ?
         current_position_door.position = current_position;
         if (map_in.plan.unmapped.find(current_position) !=
             map_in.plan.unmapped.end())
-          std::cout << ' '; // unmapped
+          converter << ' '; // unmapped
         else if (map_in.plan.walls.find(current_position) !=
                  map_in.plan.walls.end())
-          std::cout << '#'; // wall
+          converter << '#'; // wall
         else if (map_in.plan.doors.find(current_position_door) !=
                  map_in.plan.doors.end())
-          std::cout << '='; // door
+          converter << '='; // door
         else
-          std::cout << '.'; // floor
+          converter << '.'; // floor
       } // end ELSE
     } // end FOR
-    std::cout << std::endl;
+    converter << std::endl;
   } // end FOR
+
+  return converter.str();
 }
 
 std::string
@@ -480,7 +460,7 @@ RPG_Map_Level::info(const RPG_Map_t& map_in)
     if (next_door != map_in.plan.doors.end())
       result += ACE_TEXT(", ");
   } // end FOR
-  result += ACE_TEXT("]");
+  result += ACE_TEXT("]\n");
 
   return result;
 }

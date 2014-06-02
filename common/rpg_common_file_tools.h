@@ -68,6 +68,7 @@ class RPG_Common_Export RPG_Common_File_Tools
 //  static int dirent_selector(const dirent*);
 //  static int dirent_comparator(const dirent**,
 //                               const dirent**);
+  static std::string getLogDirectory();
 };
 
 #endif

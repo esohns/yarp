@@ -38,7 +38,7 @@
 // default (maps) data directory tree organization
 #define RPG_MAP_MAPS_SUB              "maps"
 
-#define RPG_MAP_DEF_MAP_FILE          "dungeon_one"
+#define RPG_MAP_DEF_MAP_FILE          "default_map"
 
 // sane configuration limits
 #define RPG_MAP_DEF_SIZE_MIN          40
@@ -46,7 +46,7 @@
 #define RPG_MAP_DEF_MIN_ROOM_SIZE_MAX 30
 #define RPG_MAP_DEF_NUM_AREAS_MAX     50
 
-// gtk
-#define RPG_MAP_GTK_MAP_FILTER     "maps"
+// GTK
+#define RPG_MAP_GTK_MAP_FILTER_NAME   "maps"
 
 #endif

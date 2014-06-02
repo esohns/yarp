@@ -25,6 +25,7 @@
 
 #include "rpg_client_defines.h"
 #include "rpg_client_callbacks.h"
+#include "rpg_client_ui_tools.h"
 
 #include "rpg_engine_defines.h"
 #include "rpg_engine_common.h"
@@ -38,6 +39,7 @@
 
 #include "rpg_map_defines.h"
 #include "rpg_map_common_tools.h"
+#include "rpg_map_level.h"
 
 #include "rpg_player_defines.h"
 #include "rpg_player_common_tools.h"
@@ -66,6 +68,227 @@ reset_layout(GTK_cb_data_t& userData_in)
 {
 	RPG_TRACE(ACE_TEXT("::reset_layout"));
 
+  // sanity check(s)
+  ACE_ASSERT(userData_in.XML);
+
+  GtkComboBox* combobox =
+      GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,
+                                         ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENVIRONMENT_PLANE_COMBOBOX_NAME)));
+  ACE_ASSERT(combobox);
+  gtk_combo_box_set_active(combobox, -1);
+
+  combobox =
+        GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,
+                                           ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENVIRONMENT_TERRAIN_COMBOBOX_NAME)));
+  ACE_ASSERT(combobox);
+  gtk_combo_box_set_active(combobox, -1);
+
+  combobox =
+        GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,
+                                           ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENVIRONMENT_CLIMATE_COMBOBOX_NAME)));
+  ACE_ASSERT(combobox);
+  gtk_combo_box_set_active(combobox, -1);
+
+  combobox =
+        GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,
+                                           ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENVIRONMENT_TIMEOFDAY_COMBOBOX_NAME)));
+  ACE_ASSERT(combobox);
+  gtk_combo_box_set_active(combobox, -1);
+
+  combobox =
+        GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,
+                                           ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENVIRONMENT_LIGHTING_COMBOBOX_NAME)));
+  ACE_ASSERT(combobox);
+  gtk_combo_box_set_active(combobox, -1);
+
+	GtkToggleButton* togglebutton =
+			GTK_TOGGLE_BUTTON(glade_xml_get_widget(userData_in.XML,
+																						 ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENVIRONMENT_OUTDOORS_CHECKBUTTON_NAME)));
+	ACE_ASSERT(togglebutton);
+	gtk_toggle_button_set_active(togglebutton,
+															 RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_OUTDOORS);
+
+  GtkTreeView* treeview =
+        GTK_TREE_VIEW(glade_xml_get_widget(userData_in.XML,
+                                           ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENCOUNTERS_MONSTERS_TREEVIEW_NAME)));
+  ACE_ASSERT(treeview);
+  GtkListStore* liststore = GTK_LIST_STORE(gtk_tree_view_get_model(treeview));
+  ACE_ASSERT(liststore);
+  gtk_list_store_clear(liststore);
+
+	GtkSpinButton* spinbutton =
+			GTK_SPIN_BUTTON(glade_xml_get_widget(userData_in.XML,
+																					 ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENCOUNTERS_SPAWNINTERVAL_SPINBUTTON_NAME)));
+	ACE_ASSERT(spinbutton);
+	gtk_spin_button_set_value(spinbutton,
+														RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TIMER_INTERVAL);
+
+	spinbutton =
+			GTK_SPIN_BUTTON(glade_xml_get_widget(userData_in.XML,
+																					 ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENCOUNTERS_SPAWNPROBABILITY_SPINBUTTON_NAME)));
+	ACE_ASSERT(spinbutton);
+	gtk_spin_button_set_value(spinbutton,
+														RPG_ENGINE_LEVEL_AI_DEF_SPAWN_PROBABILITY);
+
+	spinbutton =
+			GTK_SPIN_BUTTON(glade_xml_get_widget(userData_in.XML,
+																					 ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENCOUNTERS_MAXNUMSPAWNED_SPINBUTTON_NAME)));
+	ACE_ASSERT(spinbutton);
+	gtk_spin_button_set_value(spinbutton,
+														RPG_ENGINE_LEVEL_AI_DEF_NUM_SPAWNED_MAX);
+
+	spinbutton =
+			GTK_SPIN_BUTTON(glade_xml_get_widget(userData_in.XML,
+																					 ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENCOUNTERS_AMBLEPROBABILITY_SPINBUTTON_NAME)));
+	ACE_ASSERT(spinbutton);
+	gtk_spin_button_set_value(spinbutton,
+														RPG_ENGINE_LEVEL_AI_DEF_AMBLE_PROBABILITY);
+
+  GtkTextView* view =
+      GTK_TEXT_VIEW(glade_xml_get_widget(userData_in.XML,
+                                         ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_LAYOUT_MAP_TEXTVIEW_NAME)));
+  ACE_ASSERT(view);
+  GtkTextBuffer* buffer = gtk_text_view_get_buffer(view);
+  ACE_ASSERT(buffer);
+
+  GtkTextIter start, end;
+  gtk_text_buffer_get_start_iter(buffer, &start);
+  gtk_text_buffer_get_end_iter(buffer, &end);
+  gtk_text_buffer_delete(buffer, &start, &end);
+
+  // scroll the view accordingly
+  // move the iterator to the beginning of line, so it doesn't scroll
+  // in horizontal direction
+  gtk_text_iter_set_line_offset(&end, 0);
+
+  // ...and place the mark at iter. The mark will stay there after insertion
+  // because it has "right" gravity
+  GtkTextMark* mark =
+      gtk_text_buffer_get_mark(buffer,
+                               ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_SCROLLMARK_NAME));
+  //  gtk_text_buffer_move_mark(buffer,
+  //                            mark,
+  //                            &end);
+
+  // scroll the mark onscreen
+  gtk_text_view_scroll_mark_onscreen(view,
+                                     mark);
+}
+
+G_MODULE_EXPORT void
+update_layout(GTK_cb_data_t& userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::update_layout"));
+
+  // sanity check(s)
+  ACE_ASSERT(userData_in.XML);
+
+  GtkComboBox* combobox =
+      GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,
+                                         ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENVIRONMENT_PLANE_COMBOBOX_NAME)));
+  ACE_ASSERT(combobox);
+  gtk_combo_box_set_active(combobox,
+                           userData_in.current_level.metadata.environment.plane);
+
+  combobox =
+        GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,
+                                           ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENVIRONMENT_TERRAIN_COMBOBOX_NAME)));
+  ACE_ASSERT(combobox);
+  gtk_combo_box_set_active(combobox,
+                           userData_in.current_level.metadata.environment.terrain);
+
+  combobox =
+        GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,
+                                           ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENVIRONMENT_CLIMATE_COMBOBOX_NAME)));
+  ACE_ASSERT(combobox);
+  gtk_combo_box_set_active(combobox,
+                           userData_in.current_level.metadata.environment.climate);
+
+  combobox =
+        GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,
+                                           ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENVIRONMENT_TIMEOFDAY_COMBOBOX_NAME)));
+  ACE_ASSERT(combobox);
+  gtk_combo_box_set_active(combobox,
+                           userData_in.current_level.metadata.environment.time);
+
+  combobox =
+        GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,
+                                           ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENVIRONMENT_LIGHTING_COMBOBOX_NAME)));
+  ACE_ASSERT(combobox);
+  gtk_combo_box_set_active(combobox,
+                           userData_in.current_level.metadata.environment.lighting);
+
+	GtkToggleButton* togglebutton =
+			GTK_TOGGLE_BUTTON(glade_xml_get_widget(userData_in.XML,
+																						 ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENVIRONMENT_OUTDOORS_CHECKBUTTON_NAME)));
+	ACE_ASSERT(togglebutton);
+	gtk_toggle_button_set_active(togglebutton,
+															 userData_in.current_level.metadata.environment.outdoors);
+
+  GtkTreeView* treeview =
+      GTK_TREE_VIEW(glade_xml_get_widget(userData_in.XML,
+                                         ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENCOUNTERS_MONSTERS_TREEVIEW_NAME)));
+  ACE_ASSERT(treeview);
+  GtkListStore* liststore = GTK_LIST_STORE(gtk_tree_view_get_model(treeview));
+  ACE_ASSERT(liststore);
+  gtk_list_store_clear(liststore);
+  GtkTreeIter treeiterator;
+  for (RPG_Engine_SpawnsConstIterator_t iterator = userData_in.current_level.metadata.spawns.begin();
+       iterator != userData_in.current_level.metadata.spawns.end();
+       iterator++)
+  {
+    // append new (text) entry
+    gtk_list_store_append(liststore, &treeiterator);
+    gtk_list_store_set(liststore, &treeiterator,
+                       0, ACE_TEXT((*iterator).spawn.type.c_str()), // column 0
+                       -1);
+  } // end FOR
+
+  GtkTextView* view =
+      GTK_TEXT_VIEW(glade_xml_get_widget(userData_in.XML,
+                                         ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_LAYOUT_MAP_TEXTVIEW_NAME)));
+  ACE_ASSERT(view);
+  GtkTextBuffer* buffer = gtk_text_view_get_buffer(view);
+  ACE_ASSERT(buffer);
+  GtkTextIter iterator;
+  gtk_text_buffer_get_end_iter(buffer,
+                               &iterator);
+
+  gchar* converted_text = NULL;
+  converted_text =
+      RPG_Client_UI_Tools::Locale2UTF8(RPG_Map_Level::string(userData_in.current_level.map));
+  if (!converted_text)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to convert map to text, returning\n")));
+
+		return;
+	} // end IF
+
+	// display text
+	gtk_text_buffer_insert(buffer,
+												 &iterator,
+												 converted_text,
+												 -1);
+	g_free(converted_text);
+
+  // scroll the view accordingly
+  // move the iterator to the beginning of line, so it doesn't scroll
+  // in horizontal direction
+  gtk_text_iter_set_line_offset(&iterator, 0);
+
+  // ...and place the mark at iter. The mark will stay there after insertion
+  // because it has "right" gravity
+  GtkTextMark* mark =
+      gtk_text_buffer_get_mark(buffer,
+                               ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_SCROLLMARK_NAME));
+  //  gtk_text_buffer_move_mark(buffer,
+  //                            mark,
+  //                            &iterator);
+
+  // scroll the mark onscreen
+  gtk_text_view_scroll_mark_onscreen(view,
+                                     mark);
 }
 
 G_MODULE_EXPORT void
@@ -135,14 +358,6 @@ update_configuration(GTK_cb_data_t& userData_in)
 	ACE_ASSERT(togglebutton);
 	gtk_toggle_button_set_active(togglebutton,
 															 userData_in.map_configuration.square_rooms);
-}
-
-G_MODULE_EXPORT void
-update_layout(GTK_cb_data_t& userData_in)
-{
-	RPG_TRACE(ACE_TEXT("::update_layout"));
-
-
 }
 
 G_MODULE_EXPORT gint
@@ -321,7 +536,7 @@ drop_map_clicked_GTK_cb(GtkWidget* widget_in,
 			// retrieve active item
 			GtkComboBox* repository_combobox =
 					GTK_COMBO_BOX(glade_xml_get_widget(data->XML,
-																						 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_CHARBOX_NAME)));
+																						 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAPBOX_NAME)));
 			ACE_ASSERT(repository_combobox);
 			std::string active_item;
 			GtkTreeIter selected;
@@ -337,9 +552,7 @@ drop_map_clicked_GTK_cb(GtkWidget* widget_in,
 			} // end IF
 			model = gtk_combo_box_get_model(repository_combobox);
 			ACE_ASSERT(model);
-			ACE_OS::memset(&value,
-										 0,
-										 sizeof(value));
+			ACE_OS::memset(&value, 0, sizeof(value));
 			gtk_tree_model_get_value(model, &selected,
 															 0, &value);
 			text = g_value_get_string(&value);
@@ -644,7 +857,8 @@ map_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
       GTK_BUTTON(glade_xml_get_widget(data->XML,
                                       ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_DROPBUTTON_NAME)));
   ACE_ASSERT(button);
-  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+  gtk_widget_set_sensitive(GTK_WIDGET(button),
+                           (active_item != ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE)));
   // make save button in-sensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
                                            ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_SAVEBUTTON_NAME)));
@@ -694,6 +908,82 @@ map_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
     gtk_combo_box_set_active(repository_combobox, 0);
 
   return FALSE;
+}
+
+G_MODULE_EXPORT gint
+encounter_selection_changed_GTK_cb(GtkWidget* widget_in,
+                                   gpointer userData_in)
+{
+  RPG_TRACE(ACE_TEXT("::encounter_selection_changed_GTK_cb"));
+
+  ACE_UNUSED_ARG(widget_in);
+  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*>(userData_in);
+  ACE_ASSERT(data);
+
+  // sanity check(s)
+  ACE_ASSERT(data->XML);
+
+  GtkTreeView* treeview =
+        GTK_TREE_VIEW(glade_xml_get_widget(data->XML,
+                                           ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENCOUNTERS_MONSTERS_TREEVIEW_NAME)));
+  ACE_ASSERT(treeview);
+  GtkTreeSelection* treeselection = gtk_tree_view_get_selection(treeview);
+  ACE_ASSERT(treeselection);
+//  GtkListStore* liststore = GTK_LIST_STORE(gtk_tree_view_get_model(treeview));
+//  ACE_ASSERT(liststore);
+  GtkTreeModel* treemodel = NULL;
+  GtkTreeIter iterator;
+  if (!gtk_tree_selection_get_selected(treeselection,
+                                       &treemodel,
+                                       &iterator))
+    return FALSE; // nothing selected
+
+  gchar* selected_item = NULL;
+  gtk_tree_model_get(treemodel,
+                     &iterator,
+                     0, &selected_item,
+                     -1);
+//  g_print ("selected row is: %s\n", name);
+  std::string selection = ACE_TEXT_ALWAYS_CHAR(selected_item);
+  g_free(selected_item);
+  RPG_Engine_SpawnsConstIterator_t iterator2 =
+      data->current_level.metadata.spawns.begin();
+  for (;
+       iterator2 != data->current_level.metadata.spawns.end();
+       iterator2++)
+    if ((*iterator2).spawn.type == selection)
+      break;
+  ACE_ASSERT(iterator2 != data->current_level.metadata.spawns.end());
+
+	GtkSpinButton* spinbutton =
+			GTK_SPIN_BUTTON(glade_xml_get_widget(data->XML,
+																					 ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENCOUNTERS_SPAWNINTERVAL_SPINBUTTON_NAME)));
+	ACE_ASSERT(spinbutton);
+	gtk_spin_button_set_value(spinbutton,
+														(*iterator2).spawn.interval.seconds);
+
+	spinbutton =
+			GTK_SPIN_BUTTON(glade_xml_get_widget(data->XML,
+																					 ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENCOUNTERS_SPAWNPROBABILITY_SPINBUTTON_NAME)));
+	ACE_ASSERT(spinbutton);
+	gtk_spin_button_set_value(spinbutton,
+														(*iterator2).spawn.probability);
+
+	spinbutton =
+			GTK_SPIN_BUTTON(glade_xml_get_widget(data->XML,
+																					 ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENCOUNTERS_MAXNUMSPAWNED_SPINBUTTON_NAME)));
+	ACE_ASSERT(spinbutton);
+	gtk_spin_button_set_value(spinbutton,
+														(*iterator2).spawn.max_num_spawned);
+
+	spinbutton =
+			GTK_SPIN_BUTTON(glade_xml_get_widget(data->XML,
+																					 ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENCOUNTERS_AMBLEPROBABILITY_SPINBUTTON_NAME)));
+	ACE_ASSERT(spinbutton);
+	gtk_spin_button_set_value(spinbutton,
+														(*iterator2).spawn.amble_probability);
+
+	return FALSE;
 }
 
 #ifdef __cplusplus

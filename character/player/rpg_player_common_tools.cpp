@@ -234,6 +234,8 @@ RPG_Player_Common_Tools::playerXMLToPlayer(const RPG_Player_PlayerXML_XMLTree_Ty
     spells =
         RPG_Player_Common_Tools::spellsXMLTreeToSpells(player_in.spells().get());
 
+  RPG_Character_Conditions_t condition;
+  condition.insert(CONDITION_NORMAL);
   RPG_Player* player_p = NULL;
   ACE_NEW_NORETURN(player_p,
                    RPG_Player(player_in.name(),
@@ -248,8 +250,8 @@ RPG_Player_Common_Tools::playerXMLToPlayer(const RPG_Player_PlayerXML_XMLTree_Ty
                               RPG_Character_OffHandHelper::stringToRPG_Character_OffHand(player_in.offhand()),
                               player_in.maxHP(),
                               known_spells,
-                              RPG_Player_Common_Tools::conditionsXMLTreeToConditions(player_in.conditions()),
-                              player_in.HP(),
+                              condition,
+                              player_in.maxHP(),
                               player_in.XP(),
                               player_in.gold(),
                               spells,
@@ -479,27 +481,25 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
   } // end FOR
 
   RPG_Character_Class character_class = player_in.getClass();
-  RPG_Character_ClassXML_XMLTree_Type classXML(RPG_Character_MetaClassHelper::RPG_Character_MetaClassToString(character_class.metaClass));
+  RPG_Character_ClassXML_XMLTree_Type classXML(RPG_Character_MetaClass_XMLTree_Type(static_cast<RPG_Character_MetaClass_XMLTree_Type::value>(character_class.metaClass)));
   for (RPG_Character_SubClassesIterator_t iterator = character_class.subClasses.begin();
        iterator != character_class.subClasses.end();
        iterator++)
-    classXML.subClass().push_back(RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator));
+    classXML.subClass().push_back(RPG_Common_SubClass_XMLTree_Type(static_cast<RPG_Common_SubClass_XMLTree_Type::value>(*iterator)));
 
   RPG_Player_PlayerXML_XMLTree_Type* player_p = NULL;
   ACE_NEW_NORETURN(player_p,
                    RPG_Player_PlayerXML_XMLTree_Type(player_in.getName(),
                                                      alignment,
                                                      attributes,
-                                                     RPG_Common_SizeHelper::RPG_Common_SizeToString(player_in.getSize()),
+                                                     RPG_Common_Size_XMLTree_Type(static_cast<RPG_Common_Size_XMLTree_Type::value>(player_in.getSize())),
                                                      player_in.getNumTotalHitPoints(),
-                                                     RPG_Character_GenderHelper::RPG_Character_GenderToString(player_in.getGender()),
                                                      classXML,
-                                                     RPG_Character_OffHandHelper::RPG_Character_OffHandToString(player_in.getOffHand()),
-                                                     player_in.getExperience(),
-                                                     conditions,
-                                                     player_in.getNumHitPoints(),
+                                                     RPG_Character_Gender_XMLTree_Type(static_cast<RPG_Character_Gender_XMLTree_Type::value>(player_in.getGender())),
+                                                     RPG_Character_OffHand_XMLTree_Type(static_cast<RPG_Character_OffHand_XMLTree_Type::value>(player_in.getOffHand())),
+                                                     player_in.getWealth(),
                                                      inventory,
-                                                     player_in.getWealth()));
+                                                     player_in.getExperience()));
   if (!player_p)
   {
     ACE_DEBUG((LM_CRITICAL,
@@ -573,7 +573,7 @@ RPG_Player_Common_Tools::getPlayerProfilesDirectory()
 
 	std::string result = RPG_Common_File_Tools::getUserConfigurationDirectory();
 	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  result += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_PROFILES_SUB);
+	result += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILES_SUB);
 
   if (!RPG_Common_File_Tools::isDirectory(result))
   {
@@ -584,8 +584,7 @@ RPG_Player_Common_Tools::getPlayerProfilesDirectory()
                  ACE_TEXT(result.c_str())));
 
       // fallback
-      result =
-          ACE_TEXT_ALWAYS_CHAR(ACE_OS::getenv(ACE_TEXT(RPG_COMMON_DEF_DUMP_DIR)));
+      result = RPG_Common_File_Tools::getDumpDirectory();
     } // end IF
     else
       ACE_DEBUG((LM_DEBUG,

@@ -16,9 +16,9 @@
 
 #include "rpg_sound_defines.h"
 
-#include "rpg_engine_defines.h"
 #include "rpg_engine_common_tools.h"
 
+#include "rpg_player_defines.h"
 #include "rpg_player_common_tools.h"
 
 #include "rpg_item_defines.h"
@@ -80,7 +80,7 @@ test_u_main::print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::string path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("graphics");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
@@ -94,7 +94,7 @@ test_u_main::print_usage(const std::string& programName_in)
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("graphics");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -106,7 +106,7 @@ test_u_main::print_usage(const std::string& programName_in)
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("item");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -123,7 +123,7 @@ test_u_main::print_usage(const std::string& programName_in)
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("magic");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -140,7 +140,7 @@ test_u_main::print_usage(const std::string& programName_in)
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("test_u");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("character");
@@ -189,7 +189,7 @@ test_u_main::process_arguments(const int argc_in,
 
   graphics_dictionary_out = configuration_path;
   graphics_dictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   graphics_dictionary_out += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphics_dictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -198,7 +198,7 @@ test_u_main::process_arguments(const int argc_in,
 
   item_dictionary_out = configuration_path;
   item_dictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   item_dictionary_out += ACE_TEXT_ALWAYS_CHAR("item");
   item_dictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -208,7 +208,7 @@ test_u_main::process_arguments(const int argc_in,
 
   magic_dictionary_out = configuration_path;
   magic_dictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   magic_dictionary_out += ACE_TEXT_ALWAYS_CHAR("magic");
   magic_dictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -218,7 +218,7 @@ test_u_main::process_arguments(const int argc_in,
 
   UI_file_out = configuration_path;
   UI_file_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   UI_file_out += ACE_TEXT_ALWAYS_CHAR("test_u");
   UI_file_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   UI_file_out += ACE_TEXT_ALWAYS_CHAR("character");
@@ -230,7 +230,7 @@ test_u_main::process_arguments(const int argc_in,
 
   graphics_directory_out = data_path;
   graphics_directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   graphics_directory_out += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphics_directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   graphics_directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
@@ -465,9 +465,9 @@ test_u_main::init_GUI(const std::string& graphics_directory_in,
     return false;
   } // end IF
   gtk_file_filter_set_name(file_filter,
-                           ACE_TEXT(RPG_ENGINE_ENTITY_PROFILE_EXT));
+                           ACE_TEXT(RPG_PLAYER_PROFILE_EXT));
   std::string pattern = ACE_TEXT_ALWAYS_CHAR("*");
-  pattern += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
+  pattern += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
   gtk_file_filter_add_pattern(file_filter, ACE_TEXT(pattern.c_str()));
   gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(filechooser_dialog),
                               file_filter);
@@ -693,46 +693,53 @@ test_u_main::run_i(int argc_in,
 {
 	RPG_TRACE(ACE_TEXT("test_u_main::run_i"));
 
+	// *PORTABILITY*: on Windows, need to init ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+  if (ACE::init() == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
+
+    return EXIT_FAILURE;
+  } // end IF
+#endif
+
   // step1 init/validate configuration
-  std::string configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
-  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  configuration_path =
+  std::string configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            true);
-  data_path =
+  std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            false);
-#endif // #ifdef BASEDIR
 
   // step1a: process commandline arguments
   std::string graphics_dictionary = configuration_path;
   graphics_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   graphics_dictionary += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphics_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   graphics_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
-  std::string item_dictionary = configuration_path;
+  std::string item_dictionary     = configuration_path;
   item_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   item_dictionary += ACE_TEXT_ALWAYS_CHAR("item");
   item_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   item_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
-  std::string magic_dictionary = configuration_path;
+  std::string magic_dictionary    = configuration_path;
   magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   magic_dictionary += ACE_TEXT_ALWAYS_CHAR("magic");
   magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   magic_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
-  std::string UI_file = configuration_path;
+  std::string UI_file             = configuration_path;
   UI_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   UI_file += ACE_TEXT_ALWAYS_CHAR("test_u");
   UI_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   UI_file += ACE_TEXT_ALWAYS_CHAR("character");
@@ -742,15 +749,15 @@ test_u_main::run_i(int argc_in,
 #endif
   UI_file += RPG_CHARACTER_GENERATOR_GUI_DEF_GNOME_UI_file;
 
-  std::string schema_repository = configuration_path;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  std::string schema_repository   = configuration_path;
+#if defined(DEBUG_DEBUGGER)
   schema_repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   schema_repository += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
 
-  std::string graphics_directory = data_path;
+  std::string graphics_directory  = data_path;
   graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
 #else
   graphics_directory += ACE_TEXT_ALWAYS_CHAR("graphics");
@@ -763,7 +770,7 @@ test_u_main::run_i(int argc_in,
   {
     ACE_DEBUG((LM_WARNING,
                ACE_TEXT("invalid XML schema repository (was: \"%s\"), continuing\n"),
-               schema_repository.c_str()));
+               ACE_TEXT(schema_repository.c_str())));
 
     // try fallback
     schema_repository.clear();
@@ -786,6 +793,13 @@ test_u_main::run_i(int argc_in,
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv_in[0])));
 
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
+
     return EXIT_FAILURE;
   } // end IF
 
@@ -799,6 +813,13 @@ test_u_main::run_i(int argc_in,
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv_in[0])));
 
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
+
     return EXIT_FAILURE;
   } // end IF
 
@@ -806,6 +827,13 @@ test_u_main::run_i(int argc_in,
   if (print_version_and_exit)
   {
     print_version(std::string(ACE::basename(argv_in[0])));
+
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_SUCCESS;
   } // end IF
@@ -823,7 +851,7 @@ test_u_main::run_i(int argc_in,
                ACE_TEXT("failed to RPG_Common_Tools::initLogging(), aborting\n")));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
     if (ACE::fini() == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
@@ -876,7 +904,14 @@ test_u_main::run_i(int argc_in,
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
-             working_time_string.c_str()));
+             ACE_TEXT(working_time_string.c_str())));
+
+  // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+  if (ACE::fini() == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
   return EXIT_SUCCESS;
 }

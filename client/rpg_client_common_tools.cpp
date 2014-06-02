@@ -99,10 +99,10 @@ RPG_Client_Common_Tools::initUserProfiles()
 				RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
 																														 false);
 		default_profile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-		default_profile += RPG_ENGINE_ENTITY_SUB;
+		default_profile += RPG_PLAYER_PROFILES_SUB;
 		default_profile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-		default_profile += RPG_ENGINE_ENTITY_DEF_FILE;
-		default_profile += RPG_ENGINE_ENTITY_PROFILE_EXT;
+		default_profile += RPG_PLAYER_DEF_FILE;
+		default_profile += RPG_PLAYER_PROFILE_EXT;
 		if (!RPG_Common_File_Tools::copyFile(default_profile,
 																				 profiles_directory))
 			ACE_DEBUG((LM_ERROR,

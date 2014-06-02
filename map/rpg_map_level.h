@@ -51,6 +51,7 @@ class RPG_Map_Export RPG_Map_Level
   static void random(const RPG_Map_FloorPlan_Configuration_t&, // floor plan config
                      RPG_Map_t&);                              // return value: map  
   static void print(const RPG_Map_t&); // map
+  static std::string string(const RPG_Map_t&); // map
   static std::string info(const RPG_Map_t&); // map
 
   void init(const RPG_Map_t&); // map

@@ -9,11 +9,10 @@
 
 #include <vector>
 #include "rpg_player_abilities.h"
-#include "rpg_player_spells.h"
 #include "rpg_player_conditions.h"
+#include "rpg_player_spells.h"
 #include "rpg_player_characterbasexml.h"
 #include "rpg_player_characterxml.h"
 #include "rpg_player_playerxml.h"
-#include "rpg_player_state.h"
 
 #endif

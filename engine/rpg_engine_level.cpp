@@ -303,55 +303,129 @@ RPG_Engine_Level::save(const std::string& filename_in,
 
   std::ofstream ofs;
   ofs.exceptions(std::ofstream::badbit | std::ofstream::failbit);
+  try
+  {
+    ofs.open(filename_in.c_str(),
+             (std::ios_base::out | std::ios_base::trunc));
+  }
+  catch (std::ios_base::failure exception)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to std::ofstream::open(\"%s\"): \"%s\", aborting\n"),
+               ACE_TEXT(filename_in.c_str()),
+               ACE_TEXT(exception.what())));
+
+    return false;
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to std::ofstream::open(\"%s\"), aborting\n"),
+               ACE_TEXT(filename_in.c_str())));
+
+    return false;
+  }
+
+  RPG_Engine_Level_XMLTree_Type* level_xml_p =
+      RPG_Engine_Level::levelToLevelXML(level_in);
+  if (!level_xml_p)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Engine_Level::levelToLevelXML(), aborting\n")));
+
+    // clean up
+    try
+    {
+      ofs.close();
+    }
+    catch (std::ios_base::failure exception)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ofstream::close(\"%s\"): \"%s\", aborting\n"),
+                 ACE_TEXT(filename_in.c_str()),
+                 ACE_TEXT(exception.what())));
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ofstream::close(\"%s\"), aborting\n"),
+                 ACE_TEXT(filename_in.c_str())));
+    }
+
+    return false;
+  } // end IF
+
   ::xml_schema::namespace_infomap map;
   map[""].name = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE);
   map[""].schema = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_SCHEMA_FILE);
   std::string character_set(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_SCHEMA_CHARSET));
   //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
   ::xml_schema::flags flags = 0;
-
-  RPG_Engine_Level_XMLTree_Type* level_xml_p =
-      RPG_Engine_Level::levelToLevelXML(level_in);
-  ACE_ASSERT(level_xml_p);
-
   try
   {
-    ofs.open(filename_in.c_str(),
-             (std::ios_base::out | std::ios_base::trunc));
-
     ::engine_level_t(ofs,
                      *level_xml_p,
                      map,
                      character_set,
                      flags);
-
-    ofs.close();
   }
-  catch (const std::ofstream::failure& exception)
+  catch (std::ios_base::failure exception)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Engine_Level::save(\"%s\"): \"%s\", aborting\n"),
+               ACE_TEXT("failed to ::engine_level_t(\"%s\"): \"%s\", aborting\n"),
                ACE_TEXT(filename_in.c_str()),
                ACE_TEXT(exception.what())));
 
     // clean up
-    ofs.close();
+    try
+    {
+      ofs.close();
+    }
+    catch (std::ios_base::failure exception)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ofstream::close(\"%s\"): \"%s\", aborting\n"),
+                 ACE_TEXT(filename_in.c_str()),
+                 ACE_TEXT(exception.what())));
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ofstream::close(\"%s\"), aborting\n"),
+                 ACE_TEXT(filename_in.c_str())));
+    }
     delete level_xml_p;
 
     return false;
   }
-  catch (const ::xml_schema::serialization& exception)
+  catch (::xml_schema::serialization& exception)
   {
     std::ostringstream converter;
     converter << exception;
     std::string text = converter.str();
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Engine_Level::save(\"%s\"): caught exception: \"%s\", aborting\n"),
+               ACE_TEXT("failed to ::engine_level_t(\"%s\"): \"%s\", aborting\n"),
                ACE_TEXT(filename_in.c_str()),
                ACE_TEXT(text.c_str())));
 
     // clean up
-    ofs.close();
+    try
+    {
+      ofs.close();
+    }
+    catch (std::ios_base::failure exception)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ofstream::close(\"%s\"): \"%s\", aborting\n"),
+                 ACE_TEXT(filename_in.c_str()),
+                 ACE_TEXT(exception.what())));
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ofstream::close(\"%s\"), aborting\n"),
+                 ACE_TEXT(filename_in.c_str())));
+    }
     delete level_xml_p;
 
     return false;
@@ -359,16 +433,48 @@ RPG_Engine_Level::save(const std::string& filename_in,
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Engine_Level::save(\"%s\"): caught exception, aborting\n"),
+               ACE_TEXT("failed to ::engine_level_t(\"%s\"), aborting\n"),
                ACE_TEXT(filename_in.c_str())));
 
     // clean up
-    ofs.close();
+    try
+    {
+      ofs.close();
+    }
+    catch (std::ios_base::failure exception)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ofstream::close(\"%s\"): \"%s\", aborting\n"),
+                 ACE_TEXT(filename_in.c_str()),
+                 ACE_TEXT(exception.what())));
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ofstream::close(\"%s\"), aborting\n"),
+                 ACE_TEXT(filename_in.c_str())));
+    }
     delete level_xml_p;
 
     return false;
   }
-  ofs.close();
+  try
+  {
+    ofs.close();
+  }
+  catch (std::ios_base::failure exception)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to std::ofstream::close(\"%s\"): \"%s\", aborting\n"),
+               ACE_TEXT(filename_in.c_str()),
+               ACE_TEXT(exception.what())));
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to std::ofstream::close(\"%s\"), aborting\n"),
+               ACE_TEXT(filename_in.c_str())));
+  }
   delete level_xml_p;
 
   ACE_DEBUG((LM_DEBUG,

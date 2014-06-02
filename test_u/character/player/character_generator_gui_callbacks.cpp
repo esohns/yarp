@@ -290,13 +290,13 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
 					RPG_Player_Common_Tools::getPlayerProfilesDirectory();
 			filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 			filename += active_item;
-			filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
+			filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
 			// remove file
 			if (!RPG_Common_File_Tools::deleteFile(filename))
 				ACE_DEBUG((LM_ERROR,
 									 ACE_TEXT("failed to RPG_Common_File_Tools::deleteFile(\"%s\"), aborting\n"),
-									 filename.c_str()));
+									 ACE_TEXT(filename.c_str())));
 			else
 			{
 				// refresh combobox
@@ -537,8 +537,8 @@ save_character_clicked_GTK_cb(GtkWidget* widget_in,
   // assemble target filename
   std::string filename = RPG_Common_File_Tools::getDumpDirectory();
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  filename += RPG_ENGINE_ENTITY_DEF_FILE;
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
+  filename += RPG_PLAYER_DEF_FILE;
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
   if (!RPG_Engine_Common_Tools::saveEntity(data->entity,
                                            filename))
     ACE_DEBUG((LM_ERROR,
@@ -607,7 +607,7 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 	std::string filename = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += active_item;
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENTITY_PROFILE_EXT);
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
   // load entity profile
   data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
                                                      data->schema_repository);

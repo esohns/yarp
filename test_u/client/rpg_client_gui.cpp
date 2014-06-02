@@ -286,7 +286,7 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
   std::cout << ACE_TEXT("-f [FILE]  : level plan (*")
             << ACE_TEXT(RPG_ENGINE_LEVEL_FILE_EXT)
@@ -463,7 +463,7 @@ do_processArguments(const int& argc_in,
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   graphicsDictionary_out  = configuration_path;
@@ -1682,7 +1682,7 @@ SDL_main(int argc_in,
 #else
 int
 ACE_TMAIN(int argc_in,
-          ACE_TCHAR* argv_in[])
+          ACE_TCHAR** argv_in)
 #endif
 {
   RPG_TRACE(ACE_TEXT("::main"));
@@ -1705,20 +1705,16 @@ ACE_TMAIN(int argc_in,
   process_profile.start();
 
   // step1 init/validate configuration
-  std::string configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
-  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  configuration_path =
+  std::string configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            true);
-  data_path =
+  std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            false);
-#endif // #ifdef BASEDIR
 
   // step1a: process commandline arguments
   bool mute_sound = false;
-  std::string ini_file = configuration_path;
+  std::string ini_file              = configuration_path;
   bool debug = RPG_CLIENT_DEF_DEBUG;
   ini_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(DEBUG_DEBUGGER)
@@ -1727,7 +1723,7 @@ ACE_TMAIN(int argc_in,
 #endif
   ini_file += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_INI_FILE);
 
-  std::string monster_dictionary = configuration_path;
+  std::string monster_dictionary    = configuration_path;
   monster_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(DEBUG_DEBUGGER)
   monster_dictionary += ACE_TEXT_ALWAYS_CHAR("character");
@@ -1737,7 +1733,7 @@ ACE_TMAIN(int argc_in,
 #endif
   monster_dictionary += RPG_MONSTER_DEF_DICTIONARY_FILE;
 
-  std::string graphics_dictionary = configuration_path;
+  std::string graphics_dictionary   = configuration_path;
   graphics_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(DEBUG_DEBUGGER)
   graphics_dictionary += ACE_TEXT_ALWAYS_CHAR("graphics");
@@ -1745,7 +1741,7 @@ ACE_TMAIN(int argc_in,
 #endif
   graphics_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_FILE);
 
-  std::string item_dictionary = configuration_path;
+  std::string item_dictionary       = configuration_path;
   item_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(DEBUG_DEBUGGER)
   item_dictionary += ACE_TEXT_ALWAYS_CHAR("item");
@@ -1753,7 +1749,7 @@ ACE_TMAIN(int argc_in,
 #endif
   item_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DEF_DICTIONARY_FILE);
 
-  std::string magic_dictionary = configuration_path;
+  std::string magic_dictionary      = configuration_path;
   magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(DEBUG_DEBUGGER)
   magic_dictionary += ACE_TEXT_ALWAYS_CHAR("magic");
@@ -1761,7 +1757,7 @@ ACE_TMAIN(int argc_in,
 #endif
   magic_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DEF_DICTIONARY_FILE);
 
-  std::string sound_dictionary = configuration_path;
+  std::string sound_dictionary      = configuration_path;
   sound_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(DEBUG_DEBUGGER)
   sound_dictionary += ACE_TEXT_ALWAYS_CHAR("sound");
@@ -1769,7 +1765,7 @@ ACE_TMAIN(int argc_in,
 #endif
   sound_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DICTIONARY_FILE);
 
-  std::string UI_file = configuration_path;
+  std::string UI_file               = configuration_path;
   UI_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(DEBUG_DEBUGGER)
   UI_file += ACE_TEXT_ALWAYS_CHAR("client");
@@ -1777,13 +1773,13 @@ ACE_TMAIN(int argc_in,
 #endif
   UI_file += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_UI_FILE);
 
-  std::string schema_repository = configuration_path;
+  std::string schema_repository     = configuration_path;
 #if defined(DEBUG_DEBUGGER)
   schema_repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   schema_repository += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
 
-  std::string floor_plan = data_path;
+  std::string floor_plan            = data_path;
   floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(DEBUG_DEBUGGER)
   floor_plan += ACE_TEXT_ALWAYS_CHAR("map");
@@ -1794,7 +1790,7 @@ ACE_TMAIN(int argc_in,
   floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_DEF_LEVEL_FILE);
+  floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
   floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   bool log_to_file                  = false;

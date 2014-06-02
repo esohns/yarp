@@ -157,7 +157,6 @@ class RPG_Player_Export RPG_Player_Base
   RPG_Character_Skills_t     mySkills;
 
  private:
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Player_Base());
   ACE_UNIMPLEMENTED_FUNC(RPG_Player_Base& operator=(const RPG_Player_Base&));
 

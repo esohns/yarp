@@ -64,16 +64,12 @@ test_u_main::print_usage(const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
-  std::string configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
-  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  configuration_path =
+  std::string configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            true);
-  data_path =
+  std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            false);
-#endif // #ifdef BASEDIR
 
   std::cout << ACE_TEXT("usage: ")
             << programName_in
@@ -457,6 +453,195 @@ test_u_main::init_GUI(const std::string& graphics_directory_in,
                        -1);
   } // end FOR
 
+  combobox =
+      GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,
+                                         ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENVIRONMENT_TERRAIN_COMBOBOX_NAME)));
+  ACE_ASSERT(combobox);
+  gtk_cell_layout_clear(GTK_CELL_LAYOUT(combobox));
+  renderer = gtk_cell_renderer_text_new();
+  ACE_ASSERT(renderer);
+  gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox), renderer,
+                             TRUE); // expand ?
+  //   gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(combobox), renderer,
+//                                 ACE_TEXT_ALWAYS_CHAR("text"), 0);
+  gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox), renderer,
+                                 ACE_TEXT_ALWAYS_CHAR("text"), 0,
+                                 NULL);
+  list = gtk_list_store_new(1,
+                            G_TYPE_STRING);
+  ACE_ASSERT(list);
+  gtk_combo_box_set_model(combobox,
+                          GTK_TREE_MODEL(list));
+  g_object_unref(G_OBJECT(list));
+  for (int i = 0;
+       i < RPG_COMMON_TERRAIN_MAX;
+       i++)
+  {
+    // append new (text) entry
+    gtk_list_store_append(list, &tree_iterator);
+    gtk_list_store_set(list, &tree_iterator,
+                       0, ACE_TEXT(RPG_Common_Tools::enumToString(RPG_Common_TerrainHelper::RPG_Common_TerrainToString(static_cast<RPG_Common_Terrain>(i)),
+                                                                  true).c_str()), // column 0
+                       -1);
+  } // end FOR
+
+  combobox =
+      GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,
+                                         ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENVIRONMENT_CLIMATE_COMBOBOX_NAME)));
+  ACE_ASSERT(combobox);
+  gtk_cell_layout_clear(GTK_CELL_LAYOUT(combobox));
+  renderer = gtk_cell_renderer_text_new();
+  ACE_ASSERT(renderer);
+  gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox), renderer,
+                             TRUE); // expand ?
+  //   gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(combobox), renderer,
+//                                 ACE_TEXT_ALWAYS_CHAR("text"), 0);
+  gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox), renderer,
+                                 ACE_TEXT_ALWAYS_CHAR("text"), 0,
+                                 NULL);
+  list = gtk_list_store_new(1,
+                            G_TYPE_STRING);
+  ACE_ASSERT(list);
+  gtk_combo_box_set_model(combobox,
+                          GTK_TREE_MODEL(list));
+  g_object_unref(G_OBJECT(list));
+  for (int i = 0;
+       i < RPG_COMMON_CLIMATE_MAX;
+       i++)
+  {
+    // append new (text) entry
+    gtk_list_store_append(list, &tree_iterator);
+    gtk_list_store_set(list, &tree_iterator,
+                       0, ACE_TEXT(RPG_Common_Tools::enumToString(RPG_Common_ClimateHelper::RPG_Common_ClimateToString(static_cast<RPG_Common_Climate>(i)),
+                                                                  true).c_str()), // column 0
+                       -1);
+  } // end FOR
+
+  combobox =
+      GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,
+                                         ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENVIRONMENT_TIMEOFDAY_COMBOBOX_NAME)));
+  ACE_ASSERT(combobox);
+  gtk_cell_layout_clear(GTK_CELL_LAYOUT(combobox));
+  renderer = gtk_cell_renderer_text_new();
+  ACE_ASSERT(renderer);
+  gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox), renderer,
+                             TRUE); // expand ?
+  //   gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(combobox), renderer,
+//                                 ACE_TEXT_ALWAYS_CHAR("text"), 0);
+  gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox), renderer,
+                                 ACE_TEXT_ALWAYS_CHAR("text"), 0,
+                                 NULL);
+  list = gtk_list_store_new(1,
+                            G_TYPE_STRING);
+  ACE_ASSERT(list);
+  gtk_combo_box_set_model(combobox,
+                          GTK_TREE_MODEL(list));
+  g_object_unref(G_OBJECT(list));
+  for (int i = 0;
+       i < RPG_COMMON_TIMEOFDAY_MAX;
+       i++)
+  {
+    // append new (text) entry
+    gtk_list_store_append(list, &tree_iterator);
+    gtk_list_store_set(list, &tree_iterator,
+                       0, ACE_TEXT(RPG_Common_Tools::enumToString(RPG_Common_TimeOfDayHelper::RPG_Common_TimeOfDayToString(static_cast<RPG_Common_TimeOfDay>(i)),
+                                                                  true).c_str()), // column 0
+                       -1);
+  } // end FOR
+
+  combobox =
+      GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,
+                                         ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENVIRONMENT_LIGHTING_COMBOBOX_NAME)));
+  ACE_ASSERT(combobox);
+  gtk_cell_layout_clear(GTK_CELL_LAYOUT(combobox));
+  renderer = gtk_cell_renderer_text_new();
+  ACE_ASSERT(renderer);
+  gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox), renderer,
+                             TRUE); // expand ?
+  //   gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(combobox), renderer,
+//                                 ACE_TEXT_ALWAYS_CHAR("text"), 0);
+  gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox), renderer,
+                                 ACE_TEXT_ALWAYS_CHAR("text"), 0,
+                                 NULL);
+  list = gtk_list_store_new(1,
+                            G_TYPE_STRING);
+  ACE_ASSERT(list);
+  gtk_combo_box_set_model(combobox,
+                          GTK_TREE_MODEL(list));
+  g_object_unref(G_OBJECT(list));
+  for (int i = 0;
+       i < RPG_COMMON_AMBIENTLIGHTING_MAX;
+       i++)
+  {
+    // append new (text) entry
+    gtk_list_store_append(list, &tree_iterator);
+    gtk_list_store_set(list, &tree_iterator,
+                       0, ACE_TEXT(RPG_Common_Tools::enumToString(RPG_Common_AmbientLightingHelper::RPG_Common_AmbientLightingToString(static_cast<RPG_Common_AmbientLighting>(i)),
+                                                                  true).c_str()), // column 0
+                       -1);
+  } // end FOR
+
+  GtkTreeView* treeview =
+      GTK_TREE_VIEW(glade_xml_get_widget(userData_in.XML,
+                                         ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENCOUNTERS_MONSTERS_TREEVIEW_NAME)));
+  ACE_ASSERT(treeview);
+  list = gtk_list_store_new(1,
+                            G_TYPE_STRING);
+  ACE_ASSERT(list);
+  gtk_tree_view_set_model(treeview,
+                          GTK_TREE_MODEL(list));
+  g_object_unref(G_OBJECT(list));
+
+  // init text view
+  GtkTextBuffer* buffer = gtk_text_buffer_new(NULL); // text tag table --> create new
+  ACE_ASSERT(buffer);
+  GtkTextView* view =
+      GTK_TEXT_VIEW(glade_xml_get_widget(userData_in.XML,
+                                         ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_LAYOUT_MAP_TEXTVIEW_NAME)));
+  ACE_ASSERT(view);
+  gtk_text_view_set_buffer(view,
+                           buffer);
+  //  GtkTextIter iterator;
+  //  gtk_text_buffer_get_end_iter(buffer,
+  //                               &iterator);
+  //  gtk_text_buffer_create_mark(buffer,
+  //                              ACE_TEXT_ALWAYS_CHAR(NET_UI_SCROLLMARK_NAME),
+  //                              &iterator,
+  //                              TRUE);
+  g_object_unref(buffer);
+  PangoFontDescription* font_description =
+      pango_font_description_from_string(ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_TEXTVIEW_FONTDESCRIPTION));
+  if (!font_description)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to pango_font_description_from_string(\"%s\"): \"%m\", aborting\n"),
+               ACE_TEXT(MAP_GENERATOR_GNOME_TEXTVIEW_FONTDESCRIPTION)));
+
+    return false;
+  } // end IF
+  // apply font
+  GtkRcStyle* rc_style = gtk_rc_style_new();
+  if (!rc_style)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to gtk_rc_style_new(): \"%m\", aborting\n")));
+
+    return false;
+  } // end IF
+  rc_style->font_desc = font_description;
+  GdkColor base_colour, text_colour;
+  gdk_color_parse(ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_TEXTVIEW_BASE),
+                  &base_colour);
+  rc_style->base[GTK_STATE_NORMAL] = base_colour;
+  gdk_color_parse(ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_TEXTVIEW_TEXT),
+                  &text_colour);
+  rc_style->text[GTK_STATE_NORMAL] = text_colour;
+  rc_style->color_flags[GTK_STATE_NORMAL] = static_cast<GtkRcFlags>(GTK_RC_BASE |
+                                                                    GTK_RC_TEXT);
+  gtk_widget_modify_style(GTK_WIDGET(view),
+                          rc_style);
+  gtk_rc_style_unref(rc_style);
+
   // step4a: connect default signals
   gpointer userData_p = const_cast<GTK_cb_data_t*>(&userData_in);
   g_signal_connect(main_dialog,
@@ -523,7 +708,7 @@ test_u_main::init_GUI(const std::string& graphics_directory_in,
     return false;
   } // end IF
   gtk_file_filter_set_name(file_filter,
-                           ACE_TEXT(RPG_MAP_GTK_MAP_FILTER));
+                           ACE_TEXT(RPG_MAP_GTK_MAP_FILTER_NAME));
   pattern = ACE_TEXT_ALWAYS_CHAR('*');
   pattern += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT);
   gtk_file_filter_add_pattern(file_filter, ACE_TEXT(pattern.c_str()));
@@ -554,6 +739,10 @@ test_u_main::init_GUI(const std::string& graphics_directory_in,
                    G_CALLBACK(save_map_clicked_GTK_cb),
                    userData_p);
 
+  combobox =
+      GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,
+                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GNOME_MAPBOX_NAME)));
+  ACE_ASSERT(combobox);
   g_signal_connect(combobox,
                    ACE_TEXT_ALWAYS_CHAR("changed"),
                    G_CALLBACK(map_repository_combobox_changed_GTK_cb),
@@ -565,7 +754,7 @@ test_u_main::init_GUI(const std::string& graphics_directory_in,
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(character_repository_button_clicked_GTK_cb),
+                   G_CALLBACK(map_repository_button_clicked_GTK_cb),
                    userData_p);
 
   button = GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
@@ -664,6 +853,18 @@ test_u_main::init_GUI(const std::string& graphics_directory_in,
 //                       ACE_TEXT_ALWAYS_CHAR("toggled"),
 //                       G_CALLBACK(square_rooms_checkbutton_toggled_cb),
 //                       userData_p);
+
+  treeview =
+      GTK_TREE_VIEW(glade_xml_get_widget(userData_in.XML,
+                                         ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENCOUNTERS_MONSTERS_TREEVIEW_NAME)));
+  ACE_ASSERT(treeview);
+  GtkTreeSelection* treeselection = gtk_tree_view_get_selection(treeview);
+  ACE_ASSERT(treeselection);
+  gtk_tree_selection_set_mode(treeselection, GTK_SELECTION_SINGLE);
+  g_signal_connect(treeselection,
+                   ACE_TEXT_ALWAYS_CHAR("changed"),
+                   G_CALLBACK(encounter_selection_changed_GTK_cb),
+                   userData_p);
 
   // step5: auto-connect signals/slots
 //   glade_xml_signal_autoconnect(userData_in.XML);

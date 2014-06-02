@@ -34,11 +34,6 @@
 #define RPG_ENGINE_ROUND_INTERVAL                    6 // s
 #define RPG_ENGINE_FEET_PER_SQUARE                   5
 
-//#define RPG_ENGINE_DEF_ENTITY_SPRITE                 SPRITE_HUMAN
-
-// level-specific
-#define RPG_ENGINE_LEVEL_DEF_NAME                    "default level"
-
 // *TODO*: remove these...
 #define RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_PLANE       PLANE_MATERIAL
 #define RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_TERRAIN     TERRAIN_UNDER_GROUND
@@ -57,14 +52,14 @@
 
 // XML-specific
 #define RPG_ENGINE_SCHEMA_FILE                       "rpg_engine.xsd"
+// level-specific
+#define RPG_ENGINE_LEVEL_DEF_NAME                    "default level"
 #define RPG_ENGINE_LEVEL_NAME_MAX_LENGTH             30
-#define RPG_ENGINE_DEF_LEVEL_FILE                    "dungeon_one"
 #define RPG_ENGINE_LEVEL_FILE_EXT                    ".level"
-// *TODO*: convert if necessary...
-#define RPG_ENGINE_ENTITY_DEF_FILE                   "default_entity"
-#define RPG_ENGINE_ENTITY_PROFILE_EXT                ".entity"
-// default (profiles) data directory tree organization
-#define RPG_ENGINE_ENTITY_SUB                        "profiles"
+#define RPG_ENGINE_LEVEL_DEF_FILE                    "dungeon_one"
+// state-specific
+#define RPG_ENGINE_SAVEDSTATE_EXT                    ".state"
+#define RPG_ENGINE_SAVEDSTATE_SUB                    "saved_state"
 
 // network-specific
 #define RPG_ENGINE_DEF_NETWORK_SERVER                "localhost"

@@ -3218,20 +3218,6 @@ class RPG_Monster_Export RPG_Monster_StateBase_XMLTree_Type: public ::xml_schema
   void
   conditions (::std::auto_ptr< conditions_type > p);
 
-  // HP
-  // 
-  typedef ::xml_schema::short_ HP_type;
-  typedef ::xsd::cxx::tree::traits< HP_type, char > HP_traits;
-
-  const HP_type&
-  HP () const;
-
-  HP_type&
-  HP ();
-
-  void
-  HP (const HP_type& x);
-
   // gold
   // 
   typedef ::xml_schema::unsigned_int gold_type;
@@ -3246,26 +3232,19 @@ class RPG_Monster_Export RPG_Monster_StateBase_XMLTree_Type: public ::xml_schema
   void
   gold (const gold_type& x);
 
-  // spells
+  // HP
   // 
-  typedef ::RPG_Player_Spells_XMLTree_Type spells_type;
-  typedef ::xsd::cxx::tree::optional< spells_type > spells_optional;
-  typedef ::xsd::cxx::tree::traits< spells_type, char > spells_traits;
+  typedef ::xml_schema::short_ HP_type;
+  typedef ::xsd::cxx::tree::traits< HP_type, char > HP_traits;
 
-  const spells_optional&
-  spells () const;
+  const HP_type&
+  HP () const;
 
-  spells_optional&
-  spells ();
-
-  void
-  spells (const spells_type& x);
+  HP_type&
+  HP ();
 
   void
-  spells (const spells_optional& x);
-
-  void
-  spells (::std::auto_ptr< spells_type > p);
+  HP (const HP_type& x);
 
   // inventory
   // 
@@ -3288,15 +3267,36 @@ class RPG_Monster_Export RPG_Monster_StateBase_XMLTree_Type: public ::xml_schema
   void
   inventory (::std::auto_ptr< inventory_type > p);
 
+  // spells
+  // 
+  typedef ::RPG_Player_Spells_XMLTree_Type spells_type;
+  typedef ::xsd::cxx::tree::optional< spells_type > spells_optional;
+  typedef ::xsd::cxx::tree::traits< spells_type, char > spells_traits;
+
+  const spells_optional&
+  spells () const;
+
+  spells_optional&
+  spells ();
+
+  void
+  spells (const spells_type& x);
+
+  void
+  spells (const spells_optional& x);
+
+  void
+  spells (::std::auto_ptr< spells_type > p);
+
   // Constructors.
   //
   RPG_Monster_StateBase_XMLTree_Type (const conditions_type&,
-                                      const HP_type&,
-                                      const gold_type&);
+                                      const gold_type&,
+                                      const HP_type&);
 
   RPG_Monster_StateBase_XMLTree_Type (::std::auto_ptr< conditions_type >&,
-                                      const HP_type&,
-                                      const gold_type&);
+                                      const gold_type&,
+                                      const HP_type&);
 
   RPG_Monster_StateBase_XMLTree_Type (const ::xercesc::DOMElement& e,
                                       ::xml_schema::flags f = 0,
@@ -3322,10 +3322,10 @@ class RPG_Monster_Export RPG_Monster_StateBase_XMLTree_Type: public ::xml_schema
 
   protected:
   ::xsd::cxx::tree::one< conditions_type > conditions_;
-  ::xsd::cxx::tree::one< HP_type > HP_;
   ::xsd::cxx::tree::one< gold_type > gold_;
-  spells_optional spells_;
+  ::xsd::cxx::tree::one< HP_type > HP_;
   inventory_optional inventory_;
+  spells_optional spells_;
 };
 
 RPG_Monster_Export
@@ -3340,34 +3340,34 @@ operator!= (const RPG_Monster_StateBase_XMLTree_Type&, const RPG_Monster_StateBa
 class RPG_Monster_Export RPG_Monster_State_XMLTree_Type: public ::RPG_Monster_StateBase_XMLTree_Type
 {
   public:
-  // monster
+  // type
   // 
-  typedef ::xml_schema::string monster_type;
-  typedef ::xsd::cxx::tree::traits< monster_type, char > monster_traits;
+  typedef ::xml_schema::string type_type;
+  typedef ::xsd::cxx::tree::traits< type_type, char > type_traits;
 
-  const monster_type&
-  monster () const;
+  const type_type&
+  type () const;
 
-  monster_type&
-  monster ();
-
-  void
-  monster (const monster_type& x);
+  type_type&
+  type ();
 
   void
-  monster (::std::auto_ptr< monster_type > p);
+  type (const type_type& x);
+
+  void
+  type (::std::auto_ptr< type_type > p);
 
   // Constructors.
   //
   RPG_Monster_State_XMLTree_Type (const conditions_type&,
-                                  const HP_type&,
                                   const gold_type&,
-                                  const monster_type&);
+                                  const HP_type&,
+                                  const type_type&);
 
   RPG_Monster_State_XMLTree_Type (::std::auto_ptr< conditions_type >&,
-                                  const HP_type&,
                                   const gold_type&,
-                                  const monster_type&);
+                                  const HP_type&,
+                                  const type_type&);
 
   RPG_Monster_State_XMLTree_Type (const ::xercesc::DOMElement& e,
                                   ::xml_schema::flags f = 0,
@@ -3392,7 +3392,7 @@ class RPG_Monster_Export RPG_Monster_State_XMLTree_Type: public ::RPG_Monster_St
          ::xml_schema::flags);
 
   protected:
-  ::xsd::cxx::tree::one< monster_type > monster_;
+  ::xsd::cxx::tree::one< type_type > type_;
 };
 
 RPG_Monster_Export

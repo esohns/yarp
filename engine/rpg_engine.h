@@ -86,6 +86,10 @@ class RPG_Engine_Export RPG_Engine
               const RPG_Engine_Action_t&,   // action
               const bool& = true);          // locked access ?
 
+  // state
+  bool load(const std::string&); // FQ filename
+  bool save(const std::string&); // descriptor
+
   void setActive(const RPG_Engine_EntityID_t&); // id
   RPG_Engine_EntityID_t getActive(const bool& = true) const; // locked access ?
   void mode(const RPG_Engine_EntityMode&); // add mode (to active entity)

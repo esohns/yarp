@@ -62,7 +62,7 @@ class RPG_Player_Export RPG_Player
   // *WARNING*: result needs to be deleted(d) !
   static RPG_Player* load(const std::string&,  // FQ filename
                           const std::string&); // schema repository (directory)
-  const bool save(const std::string&) const; // FQ filename
+  bool save(const std::string&) const; // FQ filename
 
  private:
   typedef RPG_Player_Player_Base inherited;

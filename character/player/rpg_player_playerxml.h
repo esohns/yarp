@@ -12,12 +12,10 @@
 struct RPG_Player_Export RPG_Player_PlayerXML
  : public RPG_Player_CharacterXML
 {
-  unsigned int XP;
-  RPG_Player_Conditions conditions;
-  short int HP;
-  RPG_Player_Spells spells;
-  RPG_Item_InventoryXML inventory;
   unsigned int gold;
+  RPG_Item_InventoryXML inventory;
+  RPG_Player_Spells spells;
+  unsigned int XP;
 };
 
 #endif
