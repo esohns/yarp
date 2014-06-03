@@ -36,7 +36,10 @@ class RPG_Player_Export RPG_Player_Common_Tools
   static unsigned int restParty(RPG_Player_Party_t&); // party of players
 
   // *WARNING*: result needs to be delete()d !
-  static RPG_Player* playerXMLToPlayer(const RPG_Player_PlayerXML_XMLTree_Type&);
+  static RPG_Player* playerXMLToPlayer(const RPG_Player_PlayerXML_XMLTree_Type&, // player model
+                                       // current status
+                                       const RPG_Character_Conditions_t&,        // condition
+                                       const short int&);                        // HP
   // *WARNING*: result needs to be delete()d !
   static RPG_Player_PlayerXML_XMLTree_Type* playerToPlayerXML(const RPG_Player&);
 

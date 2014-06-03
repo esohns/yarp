@@ -9,6 +9,7 @@
 #include "character_generator_gui_callbacks.h"
 
 #include "rpg_client_defines.h"
+#include "rpg_client_common.h"
 #include "rpg_client_callbacks.h"
 #include "rpg_client_common_tools.h"
 
@@ -410,10 +411,7 @@ test_u_main::init_GUI(const std::string& graphics_directory_in,
   gtk_combo_box_set_model(combobox,
                           GTK_TREE_MODEL(list));
   g_object_unref(G_OBJECT(list));
-  std::string profiles_directory =
-      RPG_Player_Common_Tools::getPlayerProfilesDirectory();
-	unsigned int num_entries = ::load_files(profiles_directory,
-																					true,
+  unsigned int num_entries = ::load_files(REPOSITORY_PROFILES,
 																					list);
 
   // step4a: connect default signals

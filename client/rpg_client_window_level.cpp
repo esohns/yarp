@@ -1752,7 +1752,7 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
         case SDLK_LEFT:
         case SDLK_RIGHT:
         {
-          RPG_Map_Direction direction = DIRECTION_INVALID;
+          RPG_Map_Direction direction = RPG_MAP_DIRECTION_INVALID;
           myClientAction.position = getView();
           switch (event_in.key.keysym.sym)
           {
@@ -1865,7 +1865,7 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
               {
                 ACE_DEBUG((LM_ERROR,
                            ACE_TEXT("invalid direction (was: \"%s\"), aborting\n"),
-                           ACE_TEXT(RPG_Map_Common_Tools::direction2String(direction).c_str())));
+                           ACE_TEXT(RPG_Map_DirectionHelper::RPG_Map_DirectionToString(direction).c_str())));
 
                 break;
               }

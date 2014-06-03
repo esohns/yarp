@@ -15,6 +15,7 @@ include_HEADERS = \
   rpg_map_common_tools.h \
   rpg_map_data.h \
   rpg_map_defines.h \
+  rpg_map_direction.h \
   rpg_map_doorstate.h \
   rpg_map_exports.h \
   rpg_map_incl.h \

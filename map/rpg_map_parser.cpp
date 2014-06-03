@@ -519,7 +519,7 @@ namespace yy {
                                       {
                                         RPG_Map_Door_t door;
                                         door.position = driver->myCurrentPosition;
-                                        door.outside = DIRECTION_INVALID;
+                                        door.outside = RPG_MAP_DIRECTION_INVALID;
                                         door.state = RPG_MAP_DOORSTATE_INVALID;
                                         driver->myCurrentPlan->doors.insert(door);
                                         driver->myCurrentPosition.first++;

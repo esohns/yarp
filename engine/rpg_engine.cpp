@@ -30,6 +30,7 @@
 
 #include "rpg_common_macros.h"
 #include "rpg_common.h"
+#include "rpg_common_condition.h"
 #include "rpg_common_tools.h"
 #include "rpg_common_file_tools.h"
 
@@ -39,6 +40,7 @@
 #include "rpg_item_common_tools.h"
 
 #include "rpg_player_defines.h"
+#include "rpg_player_common_tools.h"
 
 #include "rpg_map_common_tools.h"
 #include "rpg_map_pathfinding_tools.h"
@@ -507,7 +509,15 @@ RPG_Engine::set(const RPG_Engine_Level_t& level_in)
 	// sanity check(s)
 	ACE_ASSERT(myClient);
 
+  // initialize state
   inherited2::init(level_in);
+  // initialize any missing door state(s) (doors remain uninitialized when
+  // loading level files)...
+  for (RPG_Map_DoorsIterator_t iterator = inherited2::myMap.plan.doors.begin();
+       iterator != inherited2::myMap.plan.doors.end();
+       iterator++)
+    if ((*iterator).state == RPG_MAP_DOORSTATE_INVALID)
+      (*iterator).state = DOORSTATE_CLOSED;
 
   // notify client / window
   RPG_Engine_ClientNotificationParameters_t parameters;
@@ -785,6 +795,372 @@ RPG_Engine::action(const RPG_Engine_EntityID_t& id_in,
 }
 
 bool
+RPG_Engine::load(const std::string& filename_in,
+                 const std::string& schemaRepository_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Engine::load"));
+
+  // sanity check(s)
+  if (!RPG_Common_File_Tools::isReadable(filename_in))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
+               ACE_TEXT(filename_in.c_str())));
+
+    return false;
+  } // end IF
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+
+  bool restart = isRunning();
+  stop();
+
+  // step1: load level state model
+  std::ifstream ifs;
+  ifs.exceptions(std::ifstream::badbit | std::ifstream::failbit);
+  try
+  {
+    ifs.open(filename_in.c_str(),
+             std::ios_base::in);
+  }
+  catch (std::ios_base::failure exception)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to std::ifstream::open(\"%s\"): caught exception: \"%s\", aborting\n"),
+               ACE_TEXT(filename_in.c_str()),
+               ACE_TEXT(exception.what())));
+
+    return false;
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to std::ifstream::open(\"%s\"): caught exception, aborting\n"),
+               ACE_TEXT(filename_in.c_str())));
+
+    return false;
+  }
+
+  //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
+  ::xml_schema::flags flags = 0;
+  ::xml_schema::properties props;
+  std::string base_path;
+  // *NOTE*: use the working directory as a fallback...
+  if (schemaRepository_in.empty())
+    base_path = RPG_Common_File_Tools::getWorkingDirectory();
+  else
+    base_path = schemaRepository_in;
+  std::string schema_filename = base_path;
+  schema_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_SCHEMA_FILE);
+  // sanity check(s)
+  if (!RPG_Common_File_Tools::isReadable(schema_filename))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
+               ACE_TEXT(schema_filename.c_str())));
+
+    // clean up
+    try
+    {
+      ifs.close();
+    }
+    catch (std::ios_base::failure exception)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ifstream::close(\"%s\"): caught exception: \"%s\", aborting\n"),
+                 ACE_TEXT(filename_in.c_str()),
+                 ACE_TEXT(exception.what())));
+
+      return false;
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ifstream::close(\"%s\"): caught exception, aborting\n"),
+                 ACE_TEXT(filename_in.c_str())));
+
+      return false;
+    }
+
+    return false;
+  } // end IF
+  // *NOTE*: support paths with spaces
+  schema_filename = RPG_Common_Tools::sanitizeURI(schema_filename);
+  schema_filename.insert(0, ACE_TEXT_ALWAYS_CHAR("file:///"));
+
+	std::string target_name_space =
+		ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE);
+	props.schema_location(target_name_space,
+												schema_filename);
+//   props.no_namespace_schema_location(RPG_ENGINE_SCHEMA_FILE);
+//   props.schema_location("http://www.w3.org/XML/1998/namespace", "xml.xsd");
+  std::auto_ptr<RPG_Engine_State_XMLTree_Type> engine_state_p;
+  try
+  {
+    engine_state_p = ::engine_state_t(ifs,
+                                      RPG_XSDErrorHandler,
+                                      flags,
+                                      props);
+  }
+  catch (::xml_schema::parsing const& exception)
+  {
+    std::ostringstream converter;
+    converter << exception;
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to engine_state_t(\"%s\"): exception occurred: \"%s\", aborting\n"),
+               ACE_TEXT(filename_in.c_str()),
+               ACE_TEXT(converter.str().c_str())));
+
+    // clean up
+    try
+    {
+      ifs.close();
+    }
+    catch (std::ios_base::failure exception)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ifstream::close(\"%s\"): caught exception: \"%s\", aborting\n"),
+                 ACE_TEXT(filename_in.c_str()),
+                 ACE_TEXT(exception.what())));
+
+      return false;
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ifstream::close(\"%s\"): caught exception, aborting\n"),
+                 ACE_TEXT(filename_in.c_str())));
+
+      return false;
+    }
+
+    return false;
+  }
+  catch (::xml_schema::exception const& exception)
+  {
+    std::ostringstream converter;
+    converter << exception;
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to engine_state_t(\"%s\"): exception occurred: \"%s\", aborting\n"),
+               ACE_TEXT(filename_in.c_str()),
+               ACE_TEXT(converter.str().c_str())));
+
+    // clean up
+    try
+    {
+      ifs.close();
+    }
+    catch (std::ios_base::failure exception)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ifstream::close(\"%s\"): caught exception: \"%s\", aborting\n"),
+                 ACE_TEXT(filename_in.c_str()),
+                 ACE_TEXT(exception.what())));
+
+      return false;
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ifstream::close(\"%s\"): caught exception, aborting\n"),
+                 ACE_TEXT(filename_in.c_str())));
+
+      return false;
+    }
+
+    return false;
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to engine_state_t(\"%s\"): exception occurred, aborting\n"),
+               ACE_TEXT(filename_in.c_str())));
+
+    // clean up
+    try
+    {
+      ifs.close();
+    }
+    catch (std::ios_base::failure exception)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ifstream::close(\"%s\"): caught exception: \"%s\", aborting\n"),
+                 ACE_TEXT(filename_in.c_str()),
+                 ACE_TEXT(exception.what())));
+
+      return false;
+    }
+    catch (...)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to std::ifstream::close(\"%s\"): caught exception, aborting\n"),
+                 ACE_TEXT(filename_in.c_str())));
+
+      return false;
+    }
+
+    return false;
+  }
+
+  try
+  {
+    ifs.close();
+  }
+  catch (std::ios_base::failure exception)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to std::ifstream::close(\"%s\"): caught exception: \"%s\", aborting\n"),
+               ACE_TEXT(filename_in.c_str()),
+               ACE_TEXT(exception.what())));
+
+    return false;
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to std::ifstream::close(\"%s\"): caught exception, aborting\n"),
+               ACE_TEXT(filename_in.c_str())));
+
+    return false;
+  }
+
+  // initialize level
+  RPG_Engine_Level_t level;
+  RPG_Engine_State_XMLTree_Type::entities_sequence& entities =
+      engine_state_p->entities();
+  base_path = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
+  std::string filename;
+  RPG_Character_Conditions_t condition;
+  RPG_Engine_EntityID_t entity_id = 0;
+  RPG_Engine_Entity_t* entity = NULL;
+  for (RPG_Engine_State_XMLTree_Type::entities_const_iterator iterator = entities.begin();
+       iterator != entities.end();
+       iterator++)
+  {
+    entity = NULL;
+    ACE_NEW_NORETURN(entity,
+                     RPG_Engine_Entity_t());
+    if (!entity)
+    {
+      ACE_DEBUG((LM_CRITICAL,
+                 ACE_TEXT("failed to allocate memory(%u), aborting\n"),
+                 sizeof(RPG_Engine_Entity_t)));
+
+      return false;
+    } // end IF
+
+    if ((*iterator).player().present())
+    {
+      const RPG_Player_State_XMLTree_Type& player_state =
+          (*iterator).player().get();
+      filename = base_path;
+      filename += ACE_DIRECTORY_SEPARATOR_CHAR;
+      filename += player_state.file();
+      condition.clear();
+      const RPG_Player_Conditions_XMLTree_Type::condition_sequence& condition_xml =
+          player_state.conditions().condition();
+      for (RPG_Player_Conditions_XMLTree_Type::condition_const_iterator iterator2 = condition_xml.begin();
+           iterator2 != condition_xml.end();
+           iterator2++)
+        condition.insert(RPG_Common_ConditionHelper::stringToRPG_Common_Condition(*iterator2));
+      entity->character = RPG_Player::load(filename,
+                                           schemaRepository_in,
+                                           condition,
+                                           player_state.HP());
+      if (!entity->character)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to RPG_Player::load(\"%s\"), aborting\n"),
+                   ACE_TEXT(filename.c_str())));
+
+        // clean up
+        delete entity;
+
+        return false;
+      } // end IF
+      entity->is_spawned = false;
+    } // end IF
+    else
+    {
+      const RPG_Monster_State_XMLTree_Type& monster_state =
+          (*iterator).monster().get();
+
+      *entity = RPG_Engine_Common_Tools::createEntity(monster_state.type());
+      if (!entity->character)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to RPG_Engine_Common_Tools::createEntity(\"%s\"), aborting\n"),
+                   ACE_TEXT(monster_state.type().c_str())));
+
+        // clean up
+        delete entity;
+
+        return false;
+      } // end IF
+      condition.clear();
+      const RPG_Player_Conditions_XMLTree_Type::condition_sequence& condition_xml =
+          monster_state.conditions().condition();
+      for (RPG_Player_Conditions_XMLTree_Type::condition_const_iterator iterator2 = condition_xml.begin();
+           iterator2 != condition_xml.end();
+           iterator2++)
+        condition.insert(RPG_Common_ConditionHelper::stringToRPG_Common_Condition(*iterator2));
+    } // end ELSE
+    const RPG_Engine_EntityState_XMLTree_Type::mode_sequence& modes = (*iterator).mode();
+    for (RPG_Engine_EntityState_XMLTree_Type::mode_const_iterator iterator2 = modes.begin();
+         iterator2 != modes.end();
+         iterator2++)
+      entity->modes.insert(RPG_Engine_EntityModeHelper::stringToRPG_Engine_EntityMode(*iterator2));
+    const RPG_Map_Position_XMLTree_Type& position = (*iterator).position();
+    entity->position = std::make_pair(position.x(),
+                                      position.y());
+
+    entity_id = add(entity,
+                    false);
+  } // end FOR
+  ACE_DEBUG((LM_DEBUG,
+             ACE_TEXT("loaded %u entities...\n"),
+             ACE_TEXT(entities.size())));
+
+//  level.metadata.name.clear();
+  level.metadata.environment.climate = RPG_COMMON_CLIMATE_INVALID;
+  level.metadata.environment.lighting = RPG_COMMON_AMBIENTLIGHTING_INVALID;
+  level.metadata.environment.outdoors = false;
+  level.metadata.environment.plane = RPG_COMMON_PLANE_INVALID;
+  level.metadata.environment.terrain = RPG_COMMON_TERRAIN_INVALID;
+  level.metadata.environment.time = RPG_COMMON_TIMEOFDAY_INVALID;
+
+//  level.metadata.spawns.clear();
+  level.metadata.max_num_spawned = 0;
+
+  level.map.start =
+      std::make_pair(std::numeric_limits<unsigned int>::max(),
+                     std::numeric_limits<unsigned int>::max());
+  level.map.seeds.clear();
+  level.map.plan.size_x = 0;
+  level.map.plan.size_y = 0;
+  level.map.plan.unmapped.clear();
+  level.map.plan.walls.clear();
+  level.map.plan.doors.clear();
+  level.map.plan.rooms_are_square = false;
+  if (!RPG_Engine_Level::load(filename_in,
+                              schemaRepository_in,
+                              level))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Engine_Level::load(\"%s\"), aborting\n"),
+               ACE_TEXT(filename_in.c_str())));
+
+    return false;
+  } // end IF
+
+  if (restart)
+    start();
+
+  return true;
+}
+
+bool
 RPG_Engine::save(const std::string& descriptor_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::save"));
@@ -883,9 +1259,9 @@ RPG_Engine::save(const std::string& descriptor_in)
        iterator != inherited2::myMap.plan.doors.end();
        iterator++)
   {
-    RPG_Map_Door_XMLTree_Type door(RPG_Map_Position_XMLTree_Type((*iterator).position.first,
-                                                                 (*iterator).position.first),
-                                   RPG_Map_DoorState_XMLTree_Type(static_cast<RPG_Map_DoorState_XMLTree_Type::value>((*iterator).state)));
+    RPG_Map_Door_State_XMLTree_Type door(RPG_Map_Position_XMLTree_Type((*iterator).position.first,
+                                                                       (*iterator).position.first),
+                                         RPG_Map_DoorState_XMLTree_Type(static_cast<RPG_Map_DoorState_XMLTree_Type::value>((*iterator).state)));
     doors.push_back(door);
   } // end FOR
   level_state_model.door(doors);

@@ -197,7 +197,10 @@ RPG_Player_Common_Tools::restParty(RPG_Player_Party_t& party_in)
 }
 
 RPG_Player*
-RPG_Player_Common_Tools::playerXMLToPlayer(const RPG_Player_PlayerXML_XMLTree_Type& player_in)
+RPG_Player_Common_Tools::playerXMLToPlayer(const RPG_Player_PlayerXML_XMLTree_Type& player_in,
+                                           // current status
+                                           const RPG_Character_Conditions_t& condition_in,
+                                           const short int& HP_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::playerXMLToPlayer"));
 
@@ -234,11 +237,13 @@ RPG_Player_Common_Tools::playerXMLToPlayer(const RPG_Player_PlayerXML_XMLTree_Ty
     spells =
         RPG_Player_Common_Tools::spellsXMLTreeToSpells(player_in.spells().get());
 
-  RPG_Character_Conditions_t condition;
-  condition.insert(CONDITION_NORMAL);
+  RPG_Character_Conditions_t condition = condition_in;
+  if (condition.empty())
+    condition.insert(CONDITION_NORMAL);
   RPG_Player* player_p = NULL;
   ACE_NEW_NORETURN(player_p,
-                   RPG_Player(player_in.name(),
+                   RPG_Player(// base attributes
+                              player_in.name(),
                               RPG_Character_GenderHelper::stringToRPG_Character_Gender(player_in.gender()),
                               RPG_Player_Common_Tools::raceXMLTreeToRace(player_in.race()),
                               RPG_Character_Class_Common_Tools::classXMLTreeToClass(player_in.classXML()),
@@ -250,12 +255,15 @@ RPG_Player_Common_Tools::playerXMLToPlayer(const RPG_Player_PlayerXML_XMLTree_Ty
                               RPG_Character_OffHandHelper::stringToRPG_Character_OffHand(player_in.offhand()),
                               player_in.maxHP(),
                               known_spells,
-                              condition,
-                              player_in.maxHP(),
+                              // extended data
                               player_in.XP(),
                               player_in.gold(),
                               spells,
-                              RPG_Item_Common_XML_Tools::instantiate(player_in.inventory())));
+                              RPG_Item_Common_XML_Tools::instantiate(player_in.inventory()),
+                              // current status
+                              condition,
+                              ((HP_in == std::numeric_limits<short int>::max()) ? player_in.maxHP()
+                                                                                : HP_in)));
   if (!player_p)
   {
     ACE_DEBUG((LM_CRITICAL,

@@ -45,7 +45,6 @@ class RPG_Map_Export RPG_Map_Common_Tools
                                   const RPG_Map_Position_t&); // position 2
   static bool isAdjacent(const RPG_Map_Position_t&,  // position 1
                          const RPG_Map_Position_t&); // position 2
-  static std::string direction2String(const RPG_Map_Direction&);
   static std::string orientation2String(const RPG_Map_Orientation&);
   static std::string map2String(const RPG_Map_t&);
   static std::string mapElement2String(const RPG_Map_Element&);

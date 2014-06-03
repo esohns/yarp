@@ -817,7 +817,7 @@ RPG_Map_Level::state(const RPG_Map_Position_t& position_in) const
 
   RPG_Map_Door_t position_door;
   position_door.position = position_in;
-  position_door.outside = DIRECTION_INVALID;
+  position_door.outside = RPG_MAP_DIRECTION_INVALID;
   position_door.state = RPG_MAP_DOORSTATE_INVALID;
 
   RPG_Map_DoorsConstIterator_t iterator = myMap.plan.doors.find(position_door);
@@ -871,7 +871,7 @@ RPG_Map_Level::findPath(const RPG_Map_Position_t& start_in,
   RPG_Map_Pathfinding_Tools::findPath(getSize(),
                                       getObstacles(), // walls & closed doors
                                       start_in,
-                                      DIRECTION_INVALID,
+                                      RPG_MAP_DIRECTION_INVALID,
                                       end_in,
                                       path_out);
 

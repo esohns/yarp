@@ -74,14 +74,17 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
   static std::string getSavedStateDirectory();
 
   // ***** entity-related *****
-  // *NOTE*: entity.character must be deleted() by the caller !
-  static RPG_Engine_Entity_t loadEntity(const std::string&,  // FQ filename
-                                        const std::string&); // schema repository (directory)
-  static bool saveEntity(const RPG_Engine_Entity_t&, // entity
-                         const std::string&);        // FQ filename
-  // *NOTE*: return value entity.character must be delete()d by the caller !
   static RPG_Engine_Entity_t createEntity();
-  static RPG_Engine_Entity_t createEntity(const std::string&); // creature type
+  static RPG_Engine_Entity_t createEntity(// base attributes
+                                          const std::string&,                // creature type
+                                          const unsigned short int&,         // max HP
+                                          // extended data
+                                          const unsigned int&,               // wealth (GP)
+                                          const RPG_Magic_Spells_t&,         // set of memorized/prepared spells (if any)
+                                          const RPG_Item_List_t&,            // list of (carried) items
+                                          // current status
+                                          const RPG_Character_Conditions_t&, // condition
+                                          const short int&);                 // HP
   static std::string info(const RPG_Engine_Entity_t&); // entity
   static RPG_Item_List_t generateStandardItems(const RPG_Common_SubClass&);
 

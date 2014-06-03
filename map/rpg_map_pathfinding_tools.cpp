@@ -23,7 +23,7 @@
 
 #include "rpg_map_common_tools.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <ace/Log_Msg.h>
 
@@ -31,10 +31,10 @@
 
 void
 RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Size_t& size_in,
-                                    const RPG_Map_Positions_t& obstacles_in, // walls / closed doors
-                                    const RPG_Map_Position_t& start_in, // start position
+                                    const RPG_Map_Positions_t& obstacles_in,    // walls / closed doors
+                                    const RPG_Map_Position_t& start_in,         // start position
                                     const RPG_Map_Direction& startDirection_in, // initial direction
-                                    const RPG_Map_Position_t& end_in, // end position
+                                    const RPG_Map_Position_t& end_in,           // end position
                                     RPG_Map_Path_t& path_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Pathfinding_Tools::findPath"));
@@ -54,7 +54,8 @@ RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Size_t& size_in,
   start.position = start_in;
   start.last_position = start_in;
   openPath.insert(std::make_pair(start,
-                                 RPG_Map_Common_Tools::distance(start_in, end_in)));
+                                 RPG_Map_Common_Tools::distance(start_in,
+                                                                end_in)));
 
   RPG_Map_AStar_Node_t up, right, down, left;
   RPG_Map_AStar_NodeList_t neighbours;
@@ -76,10 +77,12 @@ RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Size_t& size_in,
     up.first.position.second -= ((up.first.position.second == 0) ? 0 : 1);
     right.first = (*openPath.begin()).first;
     right.first.last_position = (*openPath.begin()).first.position;
-    right.first.position.first += ((right.first.position.first == (size_in.first - 1)) ? 0 : 1);
+    right.first.position.first += ((right.first.position.first ==
+                                    (size_in.first - 1)) ? 0 : 1);
     down.first = (*openPath.begin()).first;
     down.first.last_position = (*openPath.begin()).first.position;
-    down.first.position.second += ((down.first.position.second == (size_in.second - 1)) ? 0 : 1);
+    down.first.position.second += ((down.first.position.second ==
+                                    (size_in.second - 1)) ? 0 : 1);
     left.first = (*openPath.begin()).first;
     left.first.last_position = (*openPath.begin()).first.position;
     left.first.position.first -= ((left.first.position.first == 0) ? 0 : 1);
@@ -92,7 +95,7 @@ RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Size_t& size_in,
     // --> "leave" a room to find another door
     // start position ?
     if ((closedPath.back().first.position == start_in) &&
-        (startDirection_in != DIRECTION_INVALID))
+        (startDirection_in != RPG_MAP_DIRECTION_INVALID))
     {
       switch (startDirection_in)
       {
@@ -120,7 +123,7 @@ RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Size_t& size_in,
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                     RPG_Map_Common_Tools::direction2String(startDirection_in).c_str()));
+                     ACE_TEXT(RPG_Map_DirectionHelper::RPG_Map_DirectionToString(startDirection_in).c_str())));
 
           ACE_ASSERT(false);
 
@@ -238,7 +241,7 @@ RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Size_t& size_in,
   } // end IF
 
   unsigned int index = 0;
-  RPG_Map_Direction direction = DIRECTION_INVALID;
+  RPG_Map_Direction direction = RPG_MAP_DIRECTION_INVALID;
   // start at the end
   RPG_Map_AStar_NodeListConstIterator_t current_node = closedPath.end();
   current_node--;
@@ -250,7 +253,8 @@ RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Size_t& size_in,
 //              (*current_node).first.position.second,
 //              (*current_node).second));
   RPG_Map_AStar_NodeListConstIterator_t previous_node = closedPath.begin();
-  path_out.push_front(std::make_pair((*current_node).first.position, DIRECTION_INVALID));
+  path_out.push_front(std::make_pair((*current_node).first.position,
+                                     RPG_MAP_DIRECTION_INVALID));
   for (;
        (*current_node).first.position != start_in;
        index++)
@@ -259,18 +263,22 @@ RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Size_t& size_in,
     for (previous_node = closedPath.begin();
          previous_node != closedPath.end();
          previous_node++)
-      if ((*previous_node).first.position == (*current_node).first.last_position)
+      if ((*previous_node).first.position ==
+          (*current_node).first.last_position)
         break;
     ACE_ASSERT(previous_node != closedPath.end());
 
     // compute direction
-    if ((*current_node).first.position.second == (*previous_node).first.position.second)
-      if ((*current_node).first.position.first == ((*previous_node).first.position.first + 1))
+    if ((*current_node).first.position.second ==
+        (*previous_node).first.position.second)
+      if ((*current_node).first.position.first ==
+          ((*previous_node).first.position.first + 1))
         direction = DIRECTION_RIGHT;
       else
         direction = DIRECTION_LEFT;
     else
-      if ((*current_node).first.position.second == ((*previous_node).first.position.second + 1))
+      if ((*current_node).first.position.second ==
+          ((*previous_node).first.position.second + 1))
         direction = DIRECTION_DOWN;
       else
         direction = DIRECTION_UP;
@@ -283,7 +291,8 @@ RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Size_t& size_in,
 //                (*previous_node).second,
 //                RPG_Map_Common_Tools::direction2String(direction).c_str()));
 
-    path_out.push_front(std::make_pair((*previous_node).first.position, direction));
+    path_out.push_front(std::make_pair((*previous_node).first.position,
+                                       direction));
 
     current_node = previous_node;
   } // end FOR
@@ -309,8 +318,10 @@ RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Position_t& start_in,
   // init return value(s)
   path_out.clear();
 
-  int dx    = ::abs(static_cast<int>(end_in.first)  - static_cast<int>(start_in.first));
-  int dy    = ::abs(static_cast<int>(end_in.second) - static_cast<int>(start_in.second));
+  int dx    = ::abs(static_cast<int>(end_in.first)  -
+                    static_cast<int>(start_in.first));
+  int dy    = ::abs(static_cast<int>(end_in.second) -
+                    static_cast<int>(start_in.second));
   int x     = start_in.first;
   int y     = start_in.second;
   int n     = 1 + dx + dy;
@@ -347,10 +358,12 @@ RPG_Map_Pathfinding_Tools::getDirection(const RPG_Map_Position_t& startPosition_
 
   // sanity check
   if (startPosition_in == endPosition_in)
-    return DIRECTION_INVALID;
+    return RPG_MAP_DIRECTION_INVALID;
 
-  int distance_x = std::abs(static_cast<int>(startPosition_in.first - endPosition_in.first));
-  int distance_y = std::abs(static_cast<int>(startPosition_in.second - endPosition_in.second));
+  int distance_x = std::abs(static_cast<int>(startPosition_in.first -
+                                             endPosition_in.first));
+  int distance_y = std::abs(static_cast<int>(startPosition_in.second -
+                                             endPosition_in.second));
 
   if (startPosition_in.first > endPosition_in.first)
   {
@@ -364,7 +377,8 @@ RPG_Map_Pathfinding_Tools::getDirection(const RPG_Map_Position_t& startPosition_
   } // end IF
 
   if (startPosition_in.first == endPosition_in.first)
-    return (startPosition_in.second > endPosition_in.second ? DIRECTION_UP : DIRECTION_DOWN);
+    return (startPosition_in.second > endPosition_in.second ? DIRECTION_UP
+                                                            : DIRECTION_DOWN);
 
   if (startPosition_in.second > endPosition_in.second)
     return (distance_x >= distance_y ? DIRECTION_RIGHT : DIRECTION_UP);

@@ -45,23 +45,28 @@ class RPG_Player_Export RPG_Player
              const RPG_Character_OffHand&,      // off-hand
              const unsigned short int&,         // max HP
              const RPG_Magic_SpellTypes_t&,     // set of known spells (if any)
-             // current status
-             const RPG_Character_Conditions_t&, // condition
-             const short int&,                  // HP
+             // extended data
              const unsigned int&,               // XP
              const unsigned int&,               // wealth (GP)
              const RPG_Magic_Spells_t&,         // list of prepared spells (if any)
-             const RPG_Item_List_t&);           // list of (carried) items
+             const RPG_Item_List_t&,            // list of (carried) items
+             // current status
+             const RPG_Character_Conditions_t&, // condition
+             const short int&);                 // HP
   RPG_Player(const RPG_Player&);
   virtual ~RPG_Player();
 
   // *WARNING*: result needs to be delete()d !
-  static RPG_Player* create(); // return value: (random) player
+  static RPG_Player* random(); // return value: (random) player
   // *WARNING*: result needs to be deleted(d) !
   static RPG_Player* dummy();
   // *WARNING*: result needs to be deleted(d) !
-  static RPG_Player* load(const std::string&,  // FQ filename
-                          const std::string&); // schema repository (directory)
+  static RPG_Player* load(const std::string&,                // FQ filename
+                          const std::string&,                // schema repository (directory)
+                          // current status
+                          const RPG_Character_Conditions_t&, // condition
+                          const short int&);                 // HP
+
   bool save(const std::string&) const; // FQ filename
 
  private:

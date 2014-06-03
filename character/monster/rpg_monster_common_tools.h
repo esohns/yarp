@@ -24,15 +24,15 @@
 #include "rpg_monster_exports.h"
 #include "rpg_monster_common.h"
 
-#include <rpg_dice_incl.h>
+#include "rpg_dice_incl.h"
 
-#include <rpg_common.h>
-#include <rpg_common_incl.h>
-#include <rpg_common_environment_incl.h>
-#include <rpg_item_weapontype.h>
-#include <rpg_character_incl.h>
-#include <rpg_magic_incl.h>
-#include <rpg_combat_incl.h>
+#include "rpg_common.h"
+#include "rpg_common_incl.h"
+#include "rpg_common_environment_incl.h"
+#include "rpg_item_weapontype.h"
+#include "rpg_character_incl.h"
+#include "rpg_magic_incl.h"
+#include "rpg_combat_incl.h"
 #include "rpg_monster_incl.h"
 
 #include <ace/Global_Macros.h>
@@ -64,7 +64,6 @@ class RPG_Monster_Export RPG_Monster_Common_Tools
                                       RPG_Monster_Encounter_t&);            // return value: encounter
 
  private:
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(~RPG_Monster_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Common_Tools(const RPG_Monster_Common_Tools&));

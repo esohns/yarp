@@ -23,6 +23,7 @@
 
 #include "rpg_engine_defines.h"
 
+#include "rpg_map_direction.h"
 #include "rpg_map_parser_driver.h"
 #include "rpg_map_common_tools.h"
 #include "rpg_map_pathfinding_tools.h"
@@ -797,7 +798,7 @@ RPG_Engine_Level::handleDoor(const RPG_Map_Position_t& position_in,
 
   RPG_Map_Door_t position_door;
   position_door.position = position_in;
-  position_door.outside = DIRECTION_INVALID;
+  position_door.outside = RPG_MAP_DIRECTION_INVALID;
   position_door.state = RPG_MAP_DOORSTATE_INVALID;
   RPG_Map_DoorsIterator_t iterator = myMap.plan.doors.find(position_door);
   // sanity check
@@ -890,7 +891,7 @@ RPG_Engine_Level::findPath(const RPG_Map_Position_t& start_in,
   RPG_Map_Pathfinding_Tools::findPath(getSize(),
                                       obstacles_in,
                                       start_in,
-                                      DIRECTION_INVALID,
+                                      RPG_MAP_DIRECTION_INVALID,
                                       end_in,
                                       path_out);
 

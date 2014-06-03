@@ -24,6 +24,7 @@
 #include "character_generator_gui_common.h"
 
 #include "rpg_client_defines.h"
+#include "rpg_client_common.h"
 #include "rpg_client_common_tools.h"
 #include "rpg_client_callbacks.h"
 
@@ -691,8 +692,7 @@ character_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
   // re-load profile data
   std::string profiles_directory =
       RPG_Player_Common_Tools::getPlayerProfilesDirectory();
-  unsigned int num_entries = ::load_files(profiles_directory,
-                                          true,
+  unsigned int num_entries = ::load_files(REPOSITORY_PROFILES,
                                           GTK_LIST_STORE(model));
 
   // set sensitive as appropriate

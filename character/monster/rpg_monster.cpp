@@ -47,12 +47,14 @@ RPG_Monster::RPG_Monster(// base attributes
                          const RPG_Monster_Size& defaultSize_in,
                          const unsigned short int& maxHitPoints_in,
                          const RPG_Magic_SpellTypes_t& knownSpells_in,
-                         // current status
-                         const RPG_Character_Conditions_t& condition_in,
-                         const unsigned short int& hitpoints_in,
+                         // extended data
                          const unsigned int& wealth_in,
                          const RPG_Magic_Spells_t& spells_in,
                          const RPG_Item_List_t& inventory_in,
+                         // current status
+                         const RPG_Character_Conditions_t& condition_in,
+                         const unsigned short int& hitpoints_in,
+                         // ...more extended data
                          const bool& isSummoned_in)
  : inherited(// base attributes
              name_in,

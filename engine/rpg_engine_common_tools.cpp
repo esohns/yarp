@@ -238,329 +238,6 @@ RPG_Engine_Common_Tools::getSavedStateDirectory()
 }
 
 RPG_Engine_Entity_t
-RPG_Engine_Common_Tools::loadEntity(const std::string& filename_in,
-                                    const std::string& schemaRepository_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::loadEntity"));
-
-  RPG_Engine_Entity_t result;
-  result.character = NULL;
-  result.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                   std::numeric_limits<unsigned int>::max());
-//  result.actions.clear();
-  result.is_spawned = false;
-
-  // sanity check(s)
-  if (!RPG_Common_File_Tools::isReadable(filename_in))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
-               ACE_TEXT(filename_in.c_str())));
-
-    return result;
-  } // end IF
-
-  // step1: load player character
-  std::ifstream ifs;
-  ifs.exceptions(std::ifstream::badbit | std::ifstream::failbit);
-//   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
-  ::xml_schema::flags flags = 0;
-  ::xml_schema::properties props;
-  std::string base_path;
-  // *NOTE*: use the working directory as a fallback...
-  if (schemaRepository_in.empty())
-    base_path = RPG_Common_File_Tools::getWorkingDirectory();
-  else
-  {
-    // sanity check(s)
-    if (!RPG_Common_File_Tools::isDirectory(schemaRepository_in))
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Common_File_Tools::isDirectory(\"%s\"), aborting\n"),
-                 ACE_TEXT(schemaRepository_in.c_str())));
-
-      return result;
-    } // end IF
-
-    base_path = schemaRepository_in;
-  } // end ELSE
-  std::string schema_filename = base_path;
-  schema_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_SCHEMA_FILE);
-  // sanity check(s)
-  if (!RPG_Common_File_Tools::isReadable(schema_filename))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
-               ACE_TEXT(schema_filename.c_str())));
-
-    return result;
-  } // end IF
-	// *NOTE*: support paths with spaces
-	schema_filename = RPG_Common_Tools::sanitizeURI(schema_filename);
-	schema_filename.insert(0, ACE_TEXT_ALWAYS_CHAR("file:///"));
-
-	std::string target_name_space =
-		ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE);
-  props.schema_location(target_name_space,
-                        schema_filename);
-//   props.no_namespace_schema_location(RPG_CHARACTER_PLAYER_SCHEMA_FILE);
-//   props.schema_location("http://www.w3.org/XML/1998/namespace", "xml.xsd");
-
-  std::auto_ptr<RPG_Engine_EntityState_XMLTree_Type> engine_player_p;
-  bool is_entity = true;
-  try
-  {
-    ifs.open(filename_in.c_str(),
-             std::ios_base::in);
-
-    engine_player_p = ::engine_player_t(ifs,
-                                        RPG_XSDErrorHandler,
-                                        flags,
-                                        props);
-  }
-  catch (std::ifstream::failure const& exception)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
-               ACE_TEXT(filename_in.c_str()),
-               ACE_TEXT(exception.what())));
-
-    // clean up
-    ifs.close();
-
-    return result;
-  }
-  catch (::xml_schema::parsing const& exception)
-  {
-    std::ostringstream converter;
-    converter << exception;
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
-               ACE_TEXT(filename_in.c_str()),
-               ACE_TEXT(converter.str().c_str())));
-
-    // clean up
-    ifs.close();
-
-    return result;
-  }
-  catch (::xml_schema::exception const& exception)
-  {
-    ACE_UNUSED_ARG(exception);
-
-    // *NOTE*: maybe this was a CHARACTER profile (expected ENTITY profile)
-    // --> try parsing that instead...
-    result.character = RPG_Player::load(filename_in,
-                                        schemaRepository_in);
-    if (!result.character)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Player::load(\"%s\"), aborting\n"),
-                 ACE_TEXT(filename_in.c_str())));
-
-      // clean up
-      ifs.close();
-
-      return result;
-    } // end IF
-
-    is_entity = false;
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Engine_Common_Tools::loadEntity(\"%s\"): exception occurred, aborting\n"),
-               ACE_TEXT(filename_in.c_str())));
-
-    // clean up
-    ifs.close();
-
-    return result;
-  }
-  ifs.close();
-
-  if (is_entity)
-  {
-    // sanity check
-    if (!engine_player_p.get()->player().present())
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid entity file (was: \"%s\"), aborting\n"),
-                 ACE_TEXT(filename_in.c_str())));
-
-      return result;
-    } // end IF
-
-    // step1: load file --> player
-    std::string filename =
-        RPG_Player_Common_Tools::getPlayerProfilesDirectory();
-    filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    filename += engine_player_p.get()->player().get().file();
-    result.character = RPG_Player::load(filename,
-                                        schemaRepository_in);
-    if (!result.character)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Player::load(\"%s\"), aborting\n"),
-                 ACE_TEXT(filename.c_str())));
-
-      return result;
-    } // end IF
-
-    // step2: load player mode(s)
-    RPG_Engine_EntityState_XMLTree_Type::mode_sequence& modes =
-        engine_player_p.get()->mode();
-    for (RPG_Engine_EntityState_XMLTree_Type::mode_iterator iterator = modes.begin();
-         iterator != modes.end();
-         iterator++)
-      result.modes.insert(RPG_Engine_EntityModeHelper::stringToRPG_Engine_EntityMode(*iterator));
-
-    // step3: load player position
-    RPG_Map_Position_XMLTree_Type& position = engine_player_p.get()->position();
-    result.position = std::make_pair(position.x(),
-                                     position.y());
-  } // end IF
-
-  return result;
-}
-
-bool
-RPG_Engine_Common_Tools::saveEntity(const RPG_Engine_Entity_t& entity_in,
-                                    const std::string& filename_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::saveEntity"));
-
-  // sanity check(s)
-  ACE_ASSERT(entity_in.character);
-  if (RPG_Common_File_Tools::isReadable(filename_in) ||
-      !entity_in.character->isPlayerCharacter())
-  {
-    // *TODO*: warn user ?
-//     if (!RPG_Common_File_Tools::deleteFile(filename_in))
-//     {
-//       ACE_DEBUG((LM_ERROR,
-//                  ACE_TEXT("failed to RPG_Common_File_Tools::deleteFile(\"%s\"), aborting\n"),
-//                  ACE_TEXT(filename_in.c_str())));
-    //
-//       return false;
-//     } // end IF
-  } // end IF
-
-  // step1: save player profile
-  RPG_Player* player_p = NULL;
-  try
-  {
-    player_p = dynamic_cast<RPG_Player*>(entity_in.character);
-  }
-  catch (...)
-  {
-    player_p = NULL;
-  }
-  if (!player_p)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to dynamic_cast<RPG_Player*>(%@), aborting\n"),
-               entity_in.character));
-
-    return false;
-  } // end IF
-  std::string filename = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
-  filename += ACE_DIRECTORY_SEPARATOR_CHAR;
-  filename += player_p->getName();
-  filename += RPG_PLAYER_PROFILE_EXT;
-  if (!player_p->save(filename))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Player::save(\"%s\"), aborting\n"),
-               ACE_TEXT(filename.c_str())));
-
-    return false;
-  } // end IF
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("saved entity \"%s\" to file: \"%s\"\n"),
-             ACE_TEXT(entity_in.character->getName().c_str()),
-             ACE_TEXT(filename.c_str())));
-
-  // step2: save entity state
-  std::ofstream ofs;
-  ofs.exceptions(std::ofstream::badbit | std::ofstream::failbit);
-  ::xml_schema::namespace_infomap map;
-  map[""].name = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE);
-  map[""].schema = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_SCHEMA_FILE);
-  std::string character_set(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_SCHEMA_CHARSET));
-  //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
-  ::xml_schema::flags flags = 0;
-
-  RPG_Map_Position_XMLTree_Type position(entity_in.position.first,
-                                         entity_in.position.second);
-  RPG_Engine_EntityState_XMLTree_Type engine_entity(position);
-  RPG_Engine_EntityState_XMLTree_Type::mode_sequence& modes = engine_entity.mode();
-  for (RPG_Engine_EntityModeConstIterator_t iterator = entity_in.modes.begin();
-       iterator != entity_in.modes.end();
-       iterator++)
-    modes.push_back(RPG_Engine_EntityMode_XMLTree_Type(static_cast<RPG_Engine_EntityMode_XMLTree_Type::value>(*iterator)));
-
-  try
-  {
-    ofs.open(filename_in.c_str(),
-             (std::ios_base::out | std::ios_base::trunc));
-
-    ::engine_player_t(ofs,
-                      engine_entity,
-                      map,
-                      character_set,
-                      flags);
-  }
-  catch (const std::ofstream::failure& exception)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("\"%s\": unable to open or write error: \"%s\", aborting\n"),
-               ACE_TEXT(filename_in.c_str()),
-               ACE_TEXT(exception.what())));
-
-    // clean up
-    ofs.close();
-
-    return false;
-  }
-  catch (const ::xml_schema::serialization& exception)
-  {
-    std::ostringstream converter;
-    converter << exception;
-    std::string text = converter.str();
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Engine_Common_Tools::saveEntity(\"%s\"): exception occurred: \"%s\", aborting\n"),
-               ACE_TEXT(filename_in.c_str()),
-               ACE_TEXT(text.c_str())));
-
-    // clean up
-    ofs.close();
-
-    return false;
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Engine_Common_Tools::saveEntity(\"%s\"): exception occurred, aborting\n"),
-               ACE_TEXT(filename_in.c_str())));
-
-    // clean up
-    ofs.close();
-
-    return false;
-  }
-  ofs.close();
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("saved entity state to file: \"%s\"\n"),
-             ACE_TEXT(filename_in.c_str())));
-
-  return true;
-}
-
-RPG_Engine_Entity_t
 RPG_Engine_Common_Tools::createEntity()
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::createEntity"));
@@ -574,11 +251,11 @@ RPG_Engine_Common_Tools::createEntity()
   result.is_spawned = false;
 
   // generate player
-  RPG_Player* player_p = RPG_Player::create();
+  RPG_Player* player_p = RPG_Player::random();
   if (!player_p)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Player::create(), returning\n")));
+               ACE_TEXT("failed to RPG_Player::random(), returning\n")));
 
     return result;
   } // end IF
@@ -588,7 +265,16 @@ RPG_Engine_Common_Tools::createEntity()
 }
 
 RPG_Engine_Entity_t
-RPG_Engine_Common_Tools::createEntity(const std::string& type_in)
+RPG_Engine_Common_Tools::createEntity(// base attributes
+                                      const std::string& type_in,                     // type
+                                      const unsigned short int& maxHP_in,             // max HP
+                                      // extended data
+                                      const unsigned int& wealth_in,                  // wealth (GP)
+                                      const RPG_Magic_Spells_t& spells_in,            // set of memorized/prepared spells (if any)
+                                      const RPG_Item_List_t& items_in,                // list of (carried) items
+                                      // current status
+                                      const RPG_Character_Conditions_t& condition_in, // condition
+                                      const short int& HP_in)                         // HP
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::createEntity"));
 
@@ -602,20 +288,22 @@ RPG_Engine_Common_Tools::createEntity(const std::string& type_in)
 
   RPG_Monster_Properties properties =
       RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(type_in);
-  // compute individual hitpoints
-  RPG_Dice_RollResult_t result_values;
-  RPG_Dice::simulateRoll(properties.hitDice,
-                         1,
-                         result_values);
-  RPG_Character_Conditions_t condition;
-  condition.insert(CONDITION_NORMAL);
-  // *TODO*: define monster abilities, spells, wealth, inventory (i.e. treasure)
-  // ...
+  // compute individual hitpoints ?
+  unsigned int max_HP = maxHP_in;
+  if (max_HP == 0)
+  {
+    RPG_Dice_RollResult_t result_values;
+    RPG_Dice::simulateRoll(properties.hitDice,
+                           1,
+                           result_values);
+    max_HP = result_values.front();
+  } // end IF
+  RPG_Character_Conditions_t condition = condition_in;
+  if (condition.empty())
+    condition.insert(CONDITION_NORMAL);
+  // *TODO*: define monster abilities, known spells, ...
   RPG_Character_Abilities_t abilities;
   RPG_Magic_SpellTypes_t known_spells;
-  unsigned int wealth = 0;
-  RPG_Magic_Spells_t spells;
-  RPG_Item_List_t items;
 
   ACE_NEW_NORETURN(result.character,
                    RPG_Monster(// base attributes
@@ -627,14 +315,17 @@ RPG_Engine_Common_Tools::createEntity(const std::string& type_in)
                                properties.feats,
                                abilities,
                                properties.size,
-                               result_values.front(),
+                               max_HP,
                                known_spells,
+                               // extended data
+                               wealth_in,
+                               spells_in,
+                               items_in,
                                // current status
                                condition,
-                               result_values.front(),
-                               wealth,
-                               spells,
-                               items,
+                               ((HP_in == std::numeric_limits<short int>::max()) ? max_HP
+                                                                                 : HP_in),
+                               // ...more extended data
                                false));
   if (!result.character)
   {

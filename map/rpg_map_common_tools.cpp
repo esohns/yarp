@@ -26,6 +26,7 @@
 
 #include "rpg_map_common_tools.h"
 
+#include "rpg_map_direction.h"
 #include "rpg_map_doorstate.h"
 #include "rpg_map_data.h"
 #include "rpg_map_parser_driver.h"
@@ -46,6 +47,8 @@
 #include <iterator>
 
 // init statics
+RPG_Map_DirectionToStringTable_t
+RPG_Map_DirectionHelper::myRPG_Map_DirectionToStringTable;
 RPG_Map_DoorStateToStringTable_t
 RPG_Map_DoorStateHelper::myRPG_Map_DoorStateToStringTable;
 
@@ -54,6 +57,7 @@ RPG_Map_Common_Tools::initStringConversionTables()
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::initStringConversionTables"));
 
+  RPG_Map_DirectionHelper::init();
   RPG_Map_DoorStateHelper::init();
 
   ACE_DEBUG((LM_DEBUG,
@@ -1215,7 +1219,7 @@ RPG_Map_Common_Tools::makeRooms(const unsigned int& dimensionX_in,
             {
               ACE_DEBUG((LM_ERROR,
                          ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                         ACE_TEXT(RPG_Map_Common_Tools::direction2String(*crop_iter).c_str())));
+                         ACE_TEXT(RPG_Map_DirectionHelper::RPG_Map_DirectionToString(*crop_iter).c_str())));
 
               ACE_ASSERT(false);
 
@@ -1495,7 +1499,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned int& dimensionX_in,
   RPG_Map_Door_t door;
   door.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                  std::numeric_limits<unsigned int>::max());
-  door.outside = DIRECTION_INVALID;
+  door.outside = RPG_MAP_DIRECTION_INVALID;
   door.state = DOORSTATE_CLOSED; // *TODO*
   RPG_Map_AreaConstIterator_t doors_iterator;
   RPG_Map_AreaListConstIterator_t rooms_iter;
@@ -1827,12 +1831,12 @@ RPG_Map_Common_Tools::buildCorridor(const RPG_Map_Path_t& path_in,
 
           break;
         }
-        case DIRECTION_INVALID:
+        case RPG_MAP_DIRECTION_INVALID:
         default:
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                     ACE_TEXT(RPG_Map_Common_Tools::direction2String(last_direction).c_str())));
+                     ACE_TEXT(RPG_Map_DirectionHelper::RPG_Map_DirectionToString(last_direction).c_str())));
 
           break;
         }
@@ -1848,12 +1852,12 @@ RPG_Map_Common_Tools::buildCorridor(const RPG_Map_Path_t& path_in,
           wall_position_2.first--; break;
         case DIRECTION_LEFT:
           wall_position_2.first++; break;
-        case DIRECTION_INVALID:
+        case RPG_MAP_DIRECTION_INVALID:
         default:
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                     ACE_TEXT(RPG_Map_Common_Tools::direction2String((*path_iter).second).c_str())));
+                     ACE_TEXT(RPG_Map_DirectionHelper::RPG_Map_DirectionToString((*path_iter).second).c_str())));
 
           break;
         }
@@ -1881,12 +1885,12 @@ RPG_Map_Common_Tools::buildCorridor(const RPG_Map_Path_t& path_in,
 
           break;
         }
-        case DIRECTION_INVALID:
+        case RPG_MAP_DIRECTION_INVALID:
         default:
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                     ACE_TEXT(RPG_Map_Common_Tools::direction2String((*path_iter).second).c_str())));
+                     ACE_TEXT(RPG_Map_DirectionHelper::RPG_Map_DirectionToString((*path_iter).second).c_str())));
 
           break;
         }
@@ -2212,40 +2216,6 @@ RPG_Map_Common_Tools::isAdjacent(const RPG_Map_Position_t& position1_in,
 }
 
 std::string
-RPG_Map_Common_Tools::direction2String(const RPG_Map_Direction& direction_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::direction2String"));
-
-  switch (direction_in)
-  {
-    case DIRECTION_UP:
-      return std::string("DIRECTION_UP");
-    case DIRECTION_RIGHT:
-      return std::string("DIRECTION_RIGHT");
-    case DIRECTION_DOWN:
-      return std::string("DIRECTION_DOWN");
-    case DIRECTION_LEFT:
-      return std::string("DIRECTION_LEFT");
-    case DIRECTION_INVALID:
-      return std::string("DIRECTION_INVALID");
-    case DIRECTION_MAX:
-      return std::string("DIRECTION_MAX");
-    default:
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid direction (was %u), aborting\n"),
-                 direction_in));
-
-      ACE_ASSERT(false);
-
-      break;
-    }
-  } // end SWITCH
-
-  return std::string("DIRECTION_INVALID");
-}
-
-std::string
 RPG_Map_Common_Tools::orientation2String(const RPG_Map_Orientation& orientation_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::orientation2String"));
@@ -2381,7 +2351,7 @@ RPG_Map_Common_Tools::door2exitDirection(const RPG_Map_Position_t& position_in, 
   position_door.position = position_in;
   RPG_Map_DoorsIterator_t iterator = floorPlan_in.doors.find(position_door);
   if (iterator == floorPlan_in.doors.end())
-    return DIRECTION_INVALID;
+    return RPG_MAP_DIRECTION_INVALID;
 
   // determine orientation
   RPG_Map_Position_t east;
@@ -2408,7 +2378,7 @@ RPG_Map_Common_Tools::door2exitDirection(const RPG_Map_Position_t& position_in, 
                  ACE_TEXT(RPG_Map_Common_Tools::orientation2String(orientation).c_str())));
       ACE_ASSERT(false);
       
-      return DIRECTION_INVALID;
+      return RPG_MAP_DIRECTION_INVALID;
     }
   } // end SWITCH
 
@@ -2441,7 +2411,7 @@ compare_shape:
                      ACE_TEXT(RPG_Map_Common_Tools::orientation2String(orientation).c_str())));
           ACE_ASSERT(false);
 
-          return DIRECTION_INVALID;
+          return RPG_MAP_DIRECTION_INVALID;
         }
       } // end SWITCH
     } // end IF
@@ -2461,7 +2431,7 @@ compare_size:
                    ACE_TEXT(RPG_Map_Common_Tools::orientation2String(orientation).c_str())));
         ACE_ASSERT(false);
 
-        return DIRECTION_INVALID;
+        return RPG_MAP_DIRECTION_INVALID;
       }
     } // end SWITCH
   } // end IF
@@ -2489,7 +2459,7 @@ compare_size:
                    ACE_TEXT(RPG_Map_Common_Tools::orientation2String(orientation).c_str())));
         ACE_ASSERT(false);
 
-        return DIRECTION_INVALID;
+        return RPG_MAP_DIRECTION_INVALID;
       }
     } // end SWITCH
   } // end IF
@@ -2501,7 +2471,7 @@ compare_size:
   goto compare_size;
 
   ACE_ASSERT(false);
-  ACE_NOTREACHED(return DIRECTION_INVALID;)
+  ACE_NOTREACHED(return RPG_MAP_DIRECTION_INVALID;)
 }
 
 bool
@@ -2668,7 +2638,7 @@ RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid origin (was \"%s\"), continuing\n"),
-                     ACE_TEXT(RPG_Map_Common_Tools::direction2String(origin).c_str())));
+                     ACE_TEXT(RPG_Map_DirectionHelper::RPG_Map_DirectionToString(origin).c_str())));
 
           ACE_ASSERT(false);
 
@@ -2707,7 +2677,7 @@ RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                   ACE_TEXT(RPG_Map_Common_Tools::direction2String(next).c_str())));
+                   ACE_TEXT(RPG_Map_DirectionHelper::RPG_Map_DirectionToString(next).c_str())));
 
         ACE_ASSERT(false);
 
@@ -2743,12 +2713,12 @@ RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
       current.second--; break;
     case DIRECTION_LEFT:
       current.first++; break;
-    case DIRECTION_INVALID:
+    case RPG_MAP_DIRECTION_INVALID:
     default:
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                 ACE_TEXT(RPG_Map_Common_Tools::direction2String((*current_door_iterator).outside).c_str())));
+                 ACE_TEXT(RPG_Map_DirectionHelper::RPG_Map_DirectionToString((*current_door_iterator).outside).c_str())));
 
       ACE_ASSERT(false);
 
@@ -2844,7 +2814,7 @@ RPG_Map_Common_Tools::intersect(const RPG_Map_Area_t& map_in,
 
   // init return value(s)
   directions_out.clear();
-  next_out = DIRECTION_INVALID;
+  next_out = RPG_MAP_DIRECTION_INVALID;
 
   RPG_Map_Position_t up, right, down, left;
   up = position_in; up.second--;
@@ -2898,7 +2868,7 @@ RPG_Map_Common_Tools::crawlToPosition(const RPG_Map_Area_t& map_in,
   trail_out.clear();
 
   ORIGIN origin = startOrigin_in;
-  RPG_Map_Direction next = DIRECTION_INVALID;
+  RPG_Map_Direction next = RPG_MAP_DIRECTION_INVALID;
   RPG_Map_Directions_t directions;
 
   // start at origin
@@ -2966,7 +2936,7 @@ RPG_Map_Common_Tools::crawlToPosition(const RPG_Map_Area_t& map_in,
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid origin (was \"%s\"), continuing\n"),
-                     ACE_TEXT(RPG_Map_Common_Tools::direction2String(origin).c_str())));
+                     ACE_TEXT(RPG_Map_DirectionHelper::RPG_Map_DirectionToString(origin).c_str())));
           ACE_ASSERT(false);
 
           break;
@@ -3010,7 +2980,7 @@ RPG_Map_Common_Tools::crawlToPosition(const RPG_Map_Area_t& map_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                   ACE_TEXT(RPG_Map_Common_Tools::direction2String(next).c_str())));
+                   ACE_TEXT(RPG_Map_DirectionHelper::RPG_Map_DirectionToString(next).c_str())));
         ACE_ASSERT(false);
 
         break;
@@ -3465,7 +3435,7 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Area_t& map_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid origin (was \"%s\"), continuing\n"),
-                 ACE_TEXT(RPG_Map_Common_Tools::direction2String(origin_in).c_str())));
+                 ACE_TEXT(RPG_Map_DirectionHelper::RPG_Map_DirectionToString(origin_in).c_str())));
       ACE_ASSERT(false);
 
       break;
@@ -3566,7 +3536,7 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Area_t& room_in,
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                     ACE_TEXT(RPG_Map_Common_Tools::direction2String(next).c_str())));
+                     ACE_TEXT(RPG_Map_DirectionHelper::RPG_Map_DirectionToString(next).c_str())));
 
           ACE_ASSERT(false);
 
@@ -3636,7 +3606,7 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Area_t& room_in,
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                     ACE_TEXT(RPG_Map_Common_Tools::direction2String(next).c_str())));
+                     ACE_TEXT(RPG_Map_DirectionHelper::RPG_Map_DirectionToString(next).c_str())));
           ACE_ASSERT(false);
 
           break;
@@ -3700,7 +3670,7 @@ RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Area_t& room_in,
           {
             ACE_DEBUG((LM_ERROR,
                        ACE_TEXT("invalid direction (was \"%s\"), continuing\n"),
-                       ACE_TEXT(RPG_Map_Common_Tools::direction2String(next).c_str())));
+                       ACE_TEXT(RPG_Map_DirectionHelper::RPG_Map_DirectionToString(next).c_str())));
 
             ACE_ASSERT(false);
 

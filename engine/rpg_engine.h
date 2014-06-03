@@ -87,7 +87,8 @@ class RPG_Engine_Export RPG_Engine
               const bool& = true);          // locked access ?
 
   // state
-  bool load(const std::string&); // FQ filename
+  bool load(const std::string&,  // FQ filename
+            const std::string&); // schema repository
   bool save(const std::string&); // descriptor
 
   void setActive(const RPG_Engine_EntityID_t&); // id

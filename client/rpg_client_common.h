@@ -94,6 +94,7 @@ struct RPG_Client_GTK_CBData_t
 	RPG_Client_MessageStack_t         log_stack;
   GtkFileFilter*                    entity_filter;
   GtkFileFilter*                    map_filter;
+  GtkFileFilter*                    savedstate_filter;
   SDL_Surface*                      screen;
   ACE_Thread_Mutex                  screen_lock; // video access
   SDL_TimerID                       event_timer;
@@ -184,6 +185,16 @@ enum RPG_Client_Command
   //
   RPG_CLIENT_COMMAND_MAX,
   RPG_CLIENT_COMMAND_INVALID
+};
+
+enum RPG_Client_Repository
+{
+  REPOSITORY_PROFILES = 0,
+  REPOSITORY_MAPS,
+  REPOSITORY_SAVEDSTATE,
+  //
+  RPG_CLIENT_REPOSITORY_MAX,
+  RPG_CLIENT_REPOSITORY_INVALID
 };
 
 typedef std::pair<int, int> RPG_Client_SignedPosition_t;

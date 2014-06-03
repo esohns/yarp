@@ -21,6 +21,7 @@
 #ifndef RPG_MAP_COMMON_H
 #define RPG_MAP_COMMON_H
 
+#include "rpg_map_direction.h"
 #include "rpg_map_doorstate.h"
 
 #include <string>
@@ -71,16 +72,6 @@ typedef std::list<RPG_Map_Position_t> RPG_Map_PositionList_t;
 typedef RPG_Map_PositionList_t::const_iterator RPG_Map_PositionListConstIterator_t;
 typedef RPG_Map_PositionList_t::iterator RPG_Map_PositionListIterator_t;
 
-enum RPG_Map_Direction
-{
-  DIRECTION_UP = 0,
-  DIRECTION_RIGHT,
-  DIRECTION_DOWN,
-  DIRECTION_LEFT,
-  //
-  DIRECTION_MAX,
-  DIRECTION_INVALID
-};
 typedef std::set<RPG_Map_Direction> RPG_Map_Directions_t;
 typedef RPG_Map_Directions_t::const_iterator RPG_Map_DirectionsConstIterator_t;
 

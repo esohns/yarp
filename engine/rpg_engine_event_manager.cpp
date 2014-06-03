@@ -789,13 +789,13 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
           RPG_Dice_RollResult_t roll_result;
           do
           {
-            direction = DIRECTION_INVALID;
+            direction = RPG_MAP_DIRECTION_INVALID;
             roll_result.clear();
-            RPG_Dice::generateRandomNumbers(DIRECTION_MAX,
+            RPG_Dice::generateRandomNumbers(RPG_MAP_DIRECTION_MAX,
                                             1,
                                             roll_result);
             direction = static_cast<RPG_Map_Direction>(roll_result.front() - 1);
-            ACE_ASSERT(direction < DIRECTION_MAX);
+            ACE_ASSERT(direction < RPG_MAP_DIRECTION_MAX);
 
             next_action.position =
                 myEngine->getPosition((*iterator).first, false);
@@ -812,8 +812,8 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
               default:
               {
                 ACE_DEBUG((LM_ERROR,
-                           ACE_TEXT("invalid direction (was: %u), aborting\n"),
-                           direction));
+                           ACE_TEXT("invalid direction (was: \"%s\"), aborting\n"),
+                           ACE_TEXT(RPG_Map_DirectionHelper::RPG_Map_DirectionToString(direction).c_str())));
 
                 break;
               }

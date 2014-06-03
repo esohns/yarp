@@ -301,6 +301,7 @@
       <xsd:element name="gold" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="HP" type="xsd:short" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="inventory" type="RPG_Item_InventoryXML_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="maxHP" type="xsd:unsignedShort" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="spells" type="RPG_Player_Spells_Type" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
   </xsd:complexType>
