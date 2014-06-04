@@ -72,11 +72,11 @@ RPG_Player::RPG_Player(// base attributes
                        // extended data
                        const unsigned int& experience_in,
                        const unsigned int& wealth_in,
-                       const RPG_Magic_Spells_t& spells_in,
                        const RPG_Item_List_t& inventory_in,
                        // current status
                        const RPG_Character_Conditions_t& condition_in,
-                       const short int& hitpoints_in)
+                       const short int& hitpoints_in,
+                       const RPG_Magic_Spells_t& spells_in)
  : inherited(// base attributes
              name_in,
              gender_in,
@@ -856,11 +856,11 @@ RPG_Player::random()
                               // extended data
                               0,
                               RPG_PLAYER_START_MONEY,
-                              spells,
                               items,
                               // current status
                               condition,
-                              hitpoints)); // start healthy
+                              hitpoints, // start healthy
+                              spells));
   if (!player_p)
   {
     ACE_DEBUG((LM_CRITICAL,
@@ -876,8 +876,10 @@ RPG_Player::random()
 RPG_Player*
 RPG_Player::load(const std::string& filename_in,
                  const std::string& schemaRepository_in,
+                 // current status
                  const RPG_Character_Conditions_t& condition_in,
-                 const short int& HP_in)
+                 const short int& HP_in,
+                 const RPG_Magic_Spells_t& spells_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player::load"));
 
@@ -1081,7 +1083,8 @@ RPG_Player::load(const std::string& filename_in,
 
   return RPG_Player_Common_Tools::playerXMLToPlayer(*player_p,
                                                     condition_in,
-                                                    HP_in);
+                                                    HP_in,
+                                                    spells_in);
 }
 
 bool
@@ -1324,11 +1327,11 @@ RPG_Player::dummy()
                               // extended data
                               0,
                               0,
-                              preparedSpells,
                               items,
                               // current status
                               condition,
-                              1));
+                              1,
+                              preparedSpells));
   if (!player_p)
   {
     ACE_DEBUG((LM_CRITICAL,

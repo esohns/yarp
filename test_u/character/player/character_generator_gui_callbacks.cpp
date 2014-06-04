@@ -454,12 +454,19 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
 
   // load entity
   std::string filename(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(filechooser_dialog)));
-  data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
-                                                     data->schema_repository);
+  RPG_Character_Conditions_t condition;
+  condition.insert(CONDITION_NORMAL);
+  short int hitpoints = std::numeric_limits<short int>::max();
+  RPG_Magic_Spells_t spells;
+  data->entity.character = RPG_Player::load(filename,
+                                            data->schema_repository,
+                                            condition,
+                                            hitpoints,
+                                            spells);
   if (!data->entity.character)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Engine_Common_Tools::loadEntity(\"%s\"), aborting\n"),
+               ACE_TEXT("failed to RPG_Player::load(\"%s\"), aborting\n"),
                ACE_TEXT(filename.c_str())));
 
     return FALSE;
@@ -540,10 +547,30 @@ save_character_clicked_GTK_cb(GtkWidget* widget_in,
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += RPG_PLAYER_DEF_FILE;
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
-  if (!RPG_Engine_Common_Tools::saveEntity(data->entity,
-                                           filename))
+  RPG_Player* player_p = NULL;
+  try
+  {
+    player_p = dynamic_cast<RPG_Player*>(data->entity.character);
+  }
+  catch (...)
+  {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Engine_Common_Tools::saveEntity(\"%s\"), continuing\n"),
+               ACE_TEXT("caught exception in dynamic_cast<RPG_Player*>(%@), aborting\n"),
+               data->entity.character));
+
+    return FALSE;
+  }
+  if (!player_p)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to dynamic_cast<RPG_Player*>(%@), aborting\n"),
+               data->entity.character));
+
+    return FALSE;
+  }
+  if (!player_p->save(filename))
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Player::save(\"%s\"), continuing\n"),
                ACE_TEXT(filename.c_str())));
 	data->is_transient = false;
 
@@ -610,12 +637,18 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   filename += active_item;
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
   // load entity profile
-  data->entity = RPG_Engine_Common_Tools::loadEntity(filename,
-                                                     data->schema_repository);
+  RPG_Character_Conditions_t condition;
+  short int hitpoints = std::numeric_limits<short int>::max();
+  RPG_Magic_Spells_t spells;
+  data->entity.character = RPG_Player::load(filename,
+                                            data->schema_repository,
+                                            condition,
+                                            hitpoints,
+                                            spells);
   if (!data->entity.character)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Engine_Common_Tools::loadEntity(\"%s\"), aborting\n"),
+               ACE_TEXT("failed to RPG_Player::load(\"%s\"), aborting\n"),
                ACE_TEXT(filename.c_str())));
 
     return FALSE;

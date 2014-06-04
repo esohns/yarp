@@ -36,26 +36,27 @@ class Handle_XMLSequence
 {
  public:
   Handle_XMLSequence(std::ofstream&,      // target file stream
+                     const unsigned int&, // nesting level
                      const std::string&,  // base type
-					 const std::string&,  // type prefix
+                     const std::string&,  // type prefix
                      const std::string&,  // type postfix
-					 const std::string&); // emit class qualifier (DLL symbol import/export) ?
+                     const std::string&); // emit class qualifier (DLL symbol import/export) ?
 //                      const bool& = false); // adjust for "tagged" unions
   virtual ~Handle_XMLSequence();
 
   virtual void startElement(const std::string&); // name of sequence
-  virtual void handleData(const std::string&); // sequence value
+  virtual void handleData(const std::string&); // sequence item
   virtual void endElement();
 
  private:
   typedef IXML_Definition_Handler inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(Handle_XMLSequence());
   ACE_UNIMPLEMENTED_FUNC(Handle_XMLSequence(const Handle_XMLSequence&));
   ACE_UNIMPLEMENTED_FUNC(Handle_XMLSequence& operator=(const Handle_XMLSequence&));
 
   std::ofstream& myOutputFile;
+  unsigned int   myNestingLevel;
   std::string    myBaseType;
   std::string    myTypePrefix;
   std::string    myTypePostfix;

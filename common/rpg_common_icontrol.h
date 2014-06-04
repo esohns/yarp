@@ -28,7 +28,7 @@ class RPG_Common_IControl
 
   // exposed interface
   virtual void start() = 0;
-  virtual void stop() = 0;
+  virtual void stop(const bool& = true) = 0; // locked access ?
   virtual bool isRunning() const = 0;
 };
 

@@ -1080,13 +1080,14 @@ do_generatePlayer()
                               off_hand,
                               hit_points,
                               known_spells,
+                              // extended data
+                              0,
+                              RPG_PLAYER_START_MONEY,
+                              items,
                               // current status
                               condition,
                               hit_points,
-                              0,
-                              RPG_PLAYER_START_MONEY,
-                              spells,
-                              items));
+                              spells));
   if (!player_p)
   {
     ACE_DEBUG((LM_CRITICAL,
@@ -1149,7 +1150,7 @@ do_work(const std::string& schemaDirectory_in,
     } // end IF
 
     // step1: generate new player character
-    player_p = (random_in ? RPG_Player::create()
+    player_p = (random_in ? RPG_Player::random()
                           : do_generatePlayer());
     ACE_ASSERT(player_p);
     player_p->dump();

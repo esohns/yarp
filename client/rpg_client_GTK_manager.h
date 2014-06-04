@@ -54,7 +54,7 @@ class RPG_Client_Export RPG_Client_GTK_Manager
                     RPG_Client_IGTKUI*); // widget UI interface handle
   // implement RPG_Common_IControl
   virtual void start();
-  virtual void stop();
+  virtual void stop(const bool& = true); // locked access ?
   virtual bool isRunning() const;
 
  private:

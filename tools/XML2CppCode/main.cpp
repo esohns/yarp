@@ -414,8 +414,8 @@ ACE_TMAIN(int argc_in,
 
   // step1b: validate arguments
   if (!validate_arguments(emitClassQualifier,
-	                      emitStringConversionUtilities,
-						  emitTaggedUnions,
+                          emitStringConversionUtilities,
+                          emitTaggedUnions,
                           filename,
                           generateIncludeHeader,
                           directory,

@@ -60,7 +60,7 @@ class RPG_Client_Export RPG_Client_Engine
 
   // implement RPG_Common_IControl
   virtual void start();
-  virtual void stop();
+  virtual void stop(const bool& = true); // locked access ?
   virtual bool isRunning() const;
 
   // implement RPG_Common_IDumpState

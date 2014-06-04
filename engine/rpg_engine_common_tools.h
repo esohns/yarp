@@ -80,11 +80,12 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
                                           const unsigned short int&,         // max HP
                                           // extended data
                                           const unsigned int&,               // wealth (GP)
-                                          const RPG_Magic_Spells_t&,         // set of memorized/prepared spells (if any)
                                           const RPG_Item_List_t&,            // list of (carried) items
                                           // current status
                                           const RPG_Character_Conditions_t&, // condition
-                                          const short int&);                 // HP
+                                          const short int&,                  // HP
+                                          const RPG_Magic_Spells_t&);        // set of memorized/prepared spells (if any)
+
   static std::string info(const RPG_Engine_Entity_t&); // entity
   static RPG_Item_List_t generateStandardItems(const RPG_Common_SubClass&);
 

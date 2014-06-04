@@ -483,9 +483,11 @@ RPG_Stream_HeadModuleTaskBase<TaskSynchType,
                               DataType,
                               SessionConfigType,
                               SessionMessageType,
-                              ProtocolMessageType>::stop()
+                              ProtocolMessageType>::stop(const bool& lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_HeadModuleTaskBase::stop"));
+
+  ACE_UNUSED_ARG(lockedAccess_in);
 
   // (try to) change state
   changeState(inherited2::STOPPED);

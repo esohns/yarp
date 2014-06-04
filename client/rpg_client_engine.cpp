@@ -214,7 +214,7 @@ RPG_Client_Engine::start()
 }
 
 void
-RPG_Client_Engine::stop()
+RPG_Client_Engine::stop(const bool& lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::stop"));
 
@@ -222,14 +222,16 @@ RPG_Client_Engine::stop()
   if (!isRunning())
     return;
 
-  myLock.acquire();
+  if (lockedAccess_in)
+    myLock.acquire();
 
   myStop = true;
 
   // wake up the (waiting) worker thread(s)
   myCondition.broadcast();
 
-  myLock.release();
+  if (lockedAccess_in)
+    myLock.release();
 
   // ... and wait for the worker thread to join
   if (inherited::wait() == -1)

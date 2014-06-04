@@ -349,7 +349,20 @@ do_battle(RPG_Player_Party_t& party_in,
     {
       monster_p = NULL;
       entity.character = NULL;
-      entity = RPG_Engine_Common_Tools::createEntity((*iterator).first);
+      unsigned short int max_HP = 1;
+      unsigned int wealth = 0;
+      RPG_Item_List_t items;
+      RPG_Character_Conditions_t condition;
+      condition.insert(CONDITION_NORMAL);
+      short int HP = max_HP;
+      RPG_Magic_Spells_t spells;
+      entity = RPG_Engine_Common_Tools::createEntity((*iterator).first,
+                                                     max_HP,
+                                                     wealth,
+                                                     items,
+                                                     condition,
+                                                     HP,
+                                                     spells);
       if (!entity.character)
       {
         ACE_DEBUG((LM_ERROR,
@@ -491,7 +504,14 @@ do_work(const std::string& magicDictionaryFilename_in,
          i < numPlayers_in;
          i++)
     {
-      player_p = RPG_Player::create();
+      player_p = RPG_Player::random();
+      if (!player_p)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to RPG_Player::random(), continuing\n")));
+
+        continue;
+      } // end IF
       ACE_ASSERT(player_p);
 //       player_p->dump();
 
@@ -500,7 +520,7 @@ do_work(const std::string& magicDictionaryFilename_in,
 
     ACE_DEBUG((LM_INFO,
                ACE_TEXT("generated (random) party of %d player(s)...\n"),
-               numPlayers_in));
+               party.size()));
 
     unsigned int numBattle = 1;
     do

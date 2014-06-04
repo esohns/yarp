@@ -48,11 +48,11 @@ class RPG_Player_Export RPG_Player
              // extended data
              const unsigned int&,               // XP
              const unsigned int&,               // wealth (GP)
-             const RPG_Magic_Spells_t&,         // list of prepared spells (if any)
              const RPG_Item_List_t&,            // list of (carried) items
              // current status
              const RPG_Character_Conditions_t&, // condition
-             const short int&);                 // HP
+             const short int&,                  // HP
+             const RPG_Magic_Spells_t&);        // list of prepared spells (if any)
   RPG_Player(const RPG_Player&);
   virtual ~RPG_Player();
 
@@ -65,8 +65,8 @@ class RPG_Player_Export RPG_Player
                           const std::string&,                // schema repository (directory)
                           // current status
                           const RPG_Character_Conditions_t&, // condition
-                          const short int&);                 // HP
-
+                          const short int&,                  // HP
+                          const RPG_Magic_Spells_t&);        // list of prepared spells (if any)
   bool save(const std::string&) const; // FQ filename
 
  private:

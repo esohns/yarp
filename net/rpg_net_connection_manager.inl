@@ -113,13 +113,15 @@ template <typename ConfigurationType,
           typename StatisticsContainerType>
 void
 RPG_Net_Connection_Manager<ConfigurationType,
-                           StatisticsContainerType>::stop()
+                           StatisticsContainerType>::stop(const bool& lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Connection_Manager::stop"));
 
-  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
-
+  if (lockedAccess_in)
+    myLock.acquire();
   myIsActive = false;
+  if (lockedAccess_in)
+    myLock.release();
 }
 
 template <typename ConfigurationType,

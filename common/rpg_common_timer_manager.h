@@ -46,7 +46,7 @@ class RPG_Common_Export RPG_Common_Timer_Manager
                      const ACE_Time_Value&); // interval
 
   // implement RPG_Common_IControl
-  virtual void stop();
+  virtual void stop(const bool& = true);
   virtual bool isRunning() const;
 
   // implement RPG_Common_IDumpState

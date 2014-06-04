@@ -63,7 +63,7 @@ class RPG_Stream_Base
   // implement RPG_Stream_IStreamControl
   // *NOTE*: delegate these calls to the head module which also implements that API...
   virtual void start();
-  virtual void stop();
+  virtual void stop(const bool& = true); // locked access ?
   virtual bool isRunning() const;
   virtual void pause();
   virtual void rewind();

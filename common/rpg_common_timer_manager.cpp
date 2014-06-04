@@ -123,7 +123,7 @@ RPG_Common_Timer_Manager::start()
 }
 
 void
-RPG_Common_Timer_Manager::stop()
+RPG_Common_Timer_Manager::stop(const bool& lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::stop"));
 
@@ -134,9 +134,11 @@ RPG_Common_Timer_Manager::stop()
              ACE_TEXT("joined timer dispatch thread...\n")));
 
 	// clean up
-  inherited::mutex().lock();
+	if (lockedAccess_in)
+		inherited::mutex().lock();
   fini_timers();
-  inherited::mutex().release();
+  if (lockedAccess_in)
+    inherited::mutex().release();
 }
 
 bool

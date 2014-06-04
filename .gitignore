@@ -17,7 +17,7 @@ CMakeFiles
 aclocal.m4
 config.h.in
 Makefile.in
-Makefile.am.user.*
+Makefile.am.user
 configure
 
 scanner_report.txt

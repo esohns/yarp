@@ -38,6 +38,7 @@
 
 #include "rpg_item_dictionary.h"
 #include "rpg_item_common_tools.h"
+#include "rpg_item_common_XML_tools.h"
 
 #include "rpg_player_defines.h"
 #include "rpg_player_common_tools.h"
@@ -144,7 +145,6 @@ RPG_Engine::open(void* args_in)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in start() method, aborting\n")));
 
-    // what else can we do here ?
     return -1;
   }
 
@@ -353,7 +353,7 @@ RPG_Engine::start()
 }
 
 void
-RPG_Engine::stop()
+RPG_Engine::stop(const bool& lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::stop"));
 
@@ -394,7 +394,6 @@ RPG_Engine::stop()
     ACE_DEBUG((LM_CRITICAL,
                ACE_TEXT("unable to allocate memory, returning\n")));
 
-    // *TODO*: what else can we do ?
     return;
   } // end IF
 
@@ -420,9 +419,11 @@ RPG_Engine::stop()
   } // end IF
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("joined (state engine) worker thread...\n")));
+             ACE_TEXT("(%s) worker thread(s) have joined...\n"),
+             ACE_TEXT(RPG_ENGINE_TASK_THREAD_NAME)));
 
-  clearEntityActions(0);
+  clearEntityActions(0,
+                     lockedAccess_in);
 }
 
 bool
@@ -813,7 +814,19 @@ RPG_Engine::load(const std::string& filename_in,
   ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
   bool restart = isRunning();
-  stop();
+  stop(false);
+
+	// step0: clean up
+	for (RPG_Engine_EntitiesIterator_t iterator = myEntities.begin();
+			 iterator != myEntities.end();
+			 iterator++)
+		if (!(*iterator).second->character->isPlayerCharacter())
+		{
+			// clean up NPC entities...
+			delete (*iterator).second->character;
+			delete (*iterator).second;
+		} // end IF
+	myEntities.clear();
 
   // step1: load level state model
   std::ifstream ifs;
@@ -1031,8 +1044,8 @@ RPG_Engine::load(const std::string& filename_in,
       engine_state_p->entities();
   base_path = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   std::string filename;
+  RPG_Magic_Spells_t spells;
   RPG_Character_Conditions_t condition;
-  RPG_Engine_EntityID_t entity_id = 0;
   RPG_Engine_Entity_t* entity = NULL;
   for (RPG_Engine_State_XMLTree_Type::entities_const_iterator iterator = entities.begin();
        iterator != entities.end();
@@ -1057,17 +1070,22 @@ RPG_Engine::load(const std::string& filename_in,
       filename = base_path;
       filename += ACE_DIRECTORY_SEPARATOR_CHAR;
       filename += player_state.file();
-      condition.clear();
       const RPG_Player_Conditions_XMLTree_Type::condition_sequence& condition_xml =
           player_state.conditions().condition();
       for (RPG_Player_Conditions_XMLTree_Type::condition_const_iterator iterator2 = condition_xml.begin();
            iterator2 != condition_xml.end();
            iterator2++)
         condition.insert(RPG_Common_ConditionHelper::stringToRPG_Common_Condition(*iterator2));
+      spells.clear();
+//      if (player_state.spells().present())
+//        spells =
+//            RPG_Player_Common_Tools::spellsXMLTreeToSpells(player_state.spells().get());
+      condition.clear();
       entity->character = RPG_Player::load(filename,
                                            schemaRepository_in,
                                            condition,
-                                           player_state.HP());
+                                           player_state.HP(),
+                                           spells);
       if (!entity->character)
       {
         ACE_DEBUG((LM_ERROR,
@@ -1085,8 +1103,27 @@ RPG_Engine::load(const std::string& filename_in,
     {
       const RPG_Monster_State_XMLTree_Type& monster_state =
           (*iterator).monster().get();
-
-      *entity = RPG_Engine_Common_Tools::createEntity(monster_state.type());
+      RPG_Item_List_t items;
+      if (monster_state.inventory().present())
+        items = RPG_Item_Common_XML_Tools::instantiate(monster_state.inventory().get());
+      condition.clear();
+      const RPG_Player_Conditions_XMLTree_Type::condition_sequence& condition_xml =
+          monster_state.conditions().condition();
+      for (RPG_Player_Conditions_XMLTree_Type::condition_const_iterator iterator2 = condition_xml.begin();
+           iterator2 != condition_xml.end();
+           iterator2++)
+        condition.insert(RPG_Common_ConditionHelper::stringToRPG_Common_Condition(*iterator2));
+      spells.clear();
+//      if (monster_state.spells().present())
+//        spells =
+//            RPG_Player_Common_Tools::spellsXMLTreeToSpells(monster_state.spells().get());
+      *entity = RPG_Engine_Common_Tools::createEntity(monster_state.type(),
+                                                      monster_state.maxHP(),
+                                                      monster_state.gold(),
+                                                      items,
+                                                      condition,
+                                                      monster_state.HP(),
+                                                      spells);
       if (!entity->character)
       {
         ACE_DEBUG((LM_ERROR,
@@ -1098,13 +1135,6 @@ RPG_Engine::load(const std::string& filename_in,
 
         return false;
       } // end IF
-      condition.clear();
-      const RPG_Player_Conditions_XMLTree_Type::condition_sequence& condition_xml =
-          monster_state.conditions().condition();
-      for (RPG_Player_Conditions_XMLTree_Type::condition_const_iterator iterator2 = condition_xml.begin();
-           iterator2 != condition_xml.end();
-           iterator2++)
-        condition.insert(RPG_Common_ConditionHelper::stringToRPG_Common_Condition(*iterator2));
     } // end ELSE
     const RPG_Engine_EntityState_XMLTree_Type::mode_sequence& modes = (*iterator).mode();
     for (RPG_Engine_EntityState_XMLTree_Type::mode_const_iterator iterator2 = modes.begin();
@@ -1115,8 +1145,8 @@ RPG_Engine::load(const std::string& filename_in,
     entity->position = std::make_pair(position.x(),
                                       position.y());
 
-    entity_id = add(entity,
-                    false);
+    add(entity,
+        false);
   } // end FOR
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("loaded %u entities...\n"),
@@ -1300,6 +1330,7 @@ RPG_Engine::save(const std::string& descriptor_in)
       RPG_Monster_State_XMLTree_Type monster_state(condition_xml,
                                                    (*iterator).second->character->getNumHitPoints(),
                                                    (*iterator).second->character->getWealth(),
+                                                   (*iterator).second->character->getNumTotalHitPoints(),
                                                    (*iterator).second->character->getName());
 
       entity_state.monster(monster_state);
@@ -2521,11 +2552,13 @@ RPG_Engine::getDoors(const bool& lockedAccess_in) const
 }
 
 void
-RPG_Engine::clearEntityActions(const RPG_Engine_EntityID_t& id_in)
+RPG_Engine::clearEntityActions(const RPG_Engine_EntityID_t& id_in,
+                               const bool& lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::clearEntityActions"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  if (lockedAccess_in)
+    myLock.acquire();
 
   RPG_Engine_EntitiesIterator_t iterator;
   if (id_in)
@@ -2539,6 +2572,9 @@ RPG_Engine::clearEntityActions(const RPG_Engine_EntityID_t& id_in)
          iterator != myEntities.end();
          iterator++)
       (*iterator).second->actions.clear();
+
+  if (lockedAccess_in)
+    myLock.release();
 }
 
 void

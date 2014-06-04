@@ -420,9 +420,11 @@ RPG_Engine_Event_Manager::start()
 }
 
 void
-RPG_Engine_Event_Manager::stop()
+RPG_Engine_Event_Manager::stop(const bool& lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::stop"));
+
+  ACE_UNUSED_ARG(lockedAccess_in);
 
   // sanity check
   if (!isRunning())
@@ -478,7 +480,8 @@ RPG_Engine_Event_Manager::stop()
   } // end IF
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("worker thread(s) has/have joined...\n")));
+             ACE_TEXT("(%s) worker thread(s) has/have joined...\n"),
+             ACE_TEXT(RPG_ENGINE_AI_TASK_THREAD_NAME)));
 }
 
 bool
@@ -984,7 +987,21 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
 
         break;
       } // end IF
-      *entity = RPG_Engine_Common_Tools::createEntity((*iterator2).spawn.type);
+      // *TODO*: define max HP, treasure (gold, items, ...), spells
+      unsigned short max_hitpoints = 0;
+      unsigned int gold = 0;
+      RPG_Item_List_t items;
+      RPG_Character_Conditions_t condition;
+      condition.insert(CONDITION_NORMAL);
+      short int hitpoints = 1;
+      RPG_Magic_Spells_t spells;
+      *entity = RPG_Engine_Common_Tools::createEntity((*iterator2).spawn.type,
+                                                      max_hitpoints,
+                                                      gold,
+                                                      items,
+                                                      condition,
+                                                      hitpoints,
+                                                      spells);
       if (!entity->character)
       {
         ACE_DEBUG((LM_ERROR,

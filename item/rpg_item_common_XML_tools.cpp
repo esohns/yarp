@@ -29,7 +29,7 @@
 #include "rpg_item_instance_manager.h"
 #include "rpg_item_common_tools.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 #include <ace/Log_Msg.h>
 

@@ -1,4 +1,4 @@
- /***************************************************************************
+/***************************************************************************
  *   Copyright (C) 2009 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
@@ -18,10 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-// *NOTE*: workaround quirky MSVC...
-#define NOMINMAX
-
-#include "handle_xmlsequence.h"
+#include "handle_xmlchoice.h"
 
 #include "xml2cppcode.h"
 #include "xml2cppcode_common_tools.h"
@@ -33,40 +30,39 @@
 #include <sstream>
 #include <algorithm>
 #include <locale>
-#include <functional>
 
-Handle_XMLSequence::Handle_XMLSequence(std::ofstream& targetFile_in,
-                                       const unsigned int& nestingLevel_in,
-                                       const std::string& baseType_in,
-                                       const std::string& typePrefix_in,
-                                       const std::string& typePostfix_in,
-                                       const std::string& emitClassQualifier_in)
-//                                        const bool& adjustForTaggedUnions_in)
+Handle_XMLChoice::Handle_XMLChoice(std::ofstream& targetFile_in,
+                                   const unsigned int& nestingLevel_in,
+                                   const std::string& emitClassQualifier_in,
+                                   const std::string& typePrefix_in,
+                                   const std::string& typePostfix_in,
+                                   const bool& isVector_in,
+                                   const bool& emitIteratorTypes_in)
  : myOutputFile(targetFile_in),
    myNestingLevel(nestingLevel_in),
-   myBaseType(baseType_in),
+   myEmitClassQualifier(emitClassQualifier_in),
    myTypePrefix(typePrefix_in),
    myTypePostfix(typePostfix_in),
-   myEmitClassQualifier(emitClassQualifier_in)
-//    myAdjustForTaggedUnions(adjustForTaggedUnions_in)
-//    myStructName()
+   myIsVector(isVector_in),
+   myEmitIteratorTypes(emitIteratorTypes_in)
+//   myTypeName()
 {
-  ACE_TRACE(ACE_TEXT("Handle_XMLSequence::Handle_XMLSequence"));
+  ACE_TRACE(ACE_TEXT("Handle_XMLChoice::Handle_XMLChoice"));
 
 }
 
-Handle_XMLSequence::~Handle_XMLSequence()
+Handle_XMLChoice::~Handle_XMLChoice()
 {
-  ACE_TRACE(ACE_TEXT("Handle_XMLSequence::~Handle_XMLSequence"));
+  ACE_TRACE(ACE_TEXT("Handle_XMLChoice::~Handle_XMLChoice"));
 
 }
 
 void
-Handle_XMLSequence::startElement(const std::string& struct_in)
+Handle_XMLChoice::startElement(const std::string& typeName_in)
 {
-  ACE_TRACE(ACE_TEXT("Handle_XMLSequence::startElement"));
+  ACE_TRACE(ACE_TEXT("Handle_XMLChoice::startElement"));
 
-  myStructName = struct_in;
+  myTypeName = typeName_in;
 
   if ((myNestingLevel == 0) &&
       !myEmitClassQualifier.empty())
@@ -82,32 +78,26 @@ Handle_XMLSequence::startElement(const std::string& struct_in)
                    std::bind2nd(std::ptr_fun(&std::tolower<char>),
                                 std::locale("")));
 
-    myOutputFile << ACE_TEXT_ALWAYS_CHAR("#include \"");
-    myOutputFile << exports_filename;
-    myOutputFile << ACE_TEXT_ALWAYS_CHAR("\"") << std::endl << std::endl;
+		myOutputFile << ACE_TEXT_ALWAYS_CHAR("#include \"");
+		myOutputFile << exports_filename.c_str();
+		myOutputFile << ACE_TEXT_ALWAYS_CHAR("\"") << std::endl << std::endl;
   } // end IF
 
   if (myNestingLevel)
     myOutputFile << std::setw(XML2CPPCODE_INDENT * myNestingLevel)
                  << ACE_TEXT_ALWAYS_CHAR(" ");
-  myOutputFile << ACE_TEXT_ALWAYS_CHAR("struct ");
+  myOutputFile << ACE_TEXT_ALWAYS_CHAR("union ");
   if ((myNestingLevel == 0) &&
       !myEmitClassQualifier.empty())
   {
     myOutputFile << myEmitClassQualifier;
     myOutputFile << ACE_TEXT_ALWAYS_CHAR(" ");
   } // end IF
-  myOutputFile << myStructName
+  std::string type_name = myTypeName;
+  if (myIsVector)
+    type_name += ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_DEFAULTCHOICEPOSTFIX);
+  myOutputFile << type_name
                << std::endl;
-  if (!myBaseType.empty())
-  {
-    if (myNestingLevel)
-      myOutputFile << std::setw(XML2CPPCODE_INDENT * myNestingLevel)
-                   << ACE_TEXT_ALWAYS_CHAR(" ");
-    myOutputFile << ACE_TEXT_ALWAYS_CHAR(" : public ")
-                 << myBaseType
-                 << std::endl;
-  } // end IF
   if (myNestingLevel)
     myOutputFile << std::setw(XML2CPPCODE_INDENT * myNestingLevel)
                  << ACE_TEXT_ALWAYS_CHAR(" ");
@@ -116,19 +106,18 @@ Handle_XMLSequence::startElement(const std::string& struct_in)
 }
 
 void
-Handle_XMLSequence::handleData(const std::string& structElement_in)
+Handle_XMLChoice::handleData(const std::string& unionElement_in)
 {
-  ACE_TRACE(ACE_TEXT("Handle_XMLSequence::handleData"));
+  ACE_TRACE(ACE_TEXT("Handle_XMLChoice::handleData"));
 
-  std::string::size_type position = structElement_in.find(ACE_TEXT_ALWAYS_CHAR(" "), 0);
-  std::string type = structElement_in.substr(0, position);
+  std::string::size_type position =
+      unionElement_in.find(ACE_TEXT_ALWAYS_CHAR(" "), 0);
+  std::string type = unionElement_in.substr(0, position);
 
   // strip leading namespace, if any
   std::string::size_type colon = type.find(ACE_TEXT_ALWAYS_CHAR(":"));
   if (colon != std::string::npos)
-  {
     type = type.substr(colon + 1, std::string::npos);
-  } // end IF
   if (!myTypePostfix.empty())
   {  // strip trailing "_Type", if any
     std::string::size_type type_position = type.rfind(myTypePostfix,
@@ -138,44 +127,34 @@ Handle_XMLSequence::handleData(const std::string& structElement_in)
   } // end IF
   XML2CppCode_Common_Tools::XMLintegratedtypeToString(type, type);
 
-//   // adjust for "tagged" unions
-//   if (myAdjustForTaggedUnions)
-//   {
-//     std::string::size_type union_position = type.rfind(ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_DEFAULTUNIONPOSTFIX), std::string::npos);
-//     if (union_position != std::string::npos)
-//     {
-//       type.insert(union_position, ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_DEFAULTTAGGEDUNIONINFIX));
-//     } // end IF
-//   } // end IF
-
   // find name
   std::string::size_type next_position =
-      structElement_in.find(ACE_TEXT_ALWAYS_CHAR(" "), position + 1);
-  std::string name = structElement_in.substr(position + 1,
-                                             (next_position - (position + 1)));
+      unionElement_in.find(ACE_TEXT_ALWAYS_CHAR(" "), position + 1);
+  std::string name = unionElement_in.substr(position + 1,
+                                            (next_position - (position + 1)));
 
   // find minOccurs
-  position = structElement_in.find(ACE_TEXT_ALWAYS_CHAR(" "),
-                                   next_position + 1);
-  std::string minOccurs =
-      structElement_in.substr(next_position + 1,
-                              (position - (next_position + 1)));
+  position = unionElement_in.find(ACE_TEXT_ALWAYS_CHAR(" "),
+                                  next_position + 1);
+  std::string min_occurs =
+      unionElement_in.substr(next_position + 1,
+                             (position - (next_position + 1)));
   // find maxOccurs
-  std::string maxOccurs = structElement_in.substr(position + 1,
+  std::string max_occurs = unionElement_in.substr(position + 1,
                                                   std::string::npos);
 
   // emit code
-  int maxNumElements = 0;
-  if (maxOccurs == ACE_TEXT_ALWAYS_CHAR("unbounded"))
-    maxNumElements = std::numeric_limits<int>::max();
+  int max_num_elements = 0;
+  if (max_occurs == ACE_TEXT_ALWAYS_CHAR("unbounded"))
+    max_num_elements = std::numeric_limits<int>::max();
   else
   {
-    std::istringstream converter(maxOccurs);
-    converter >> maxNumElements;
+    std::istringstream converter(max_occurs);
+    converter >> max_num_elements;
   } // end ELSE
   // *IMPORTANT NOTE*: at this stage, cannot go back and predefine necessary
   // typedefs...
-  if (maxNumElements > 1)
+  if (max_num_elements > 1)
   {
     // (perhaps) append "s" to the name (it's a vector !)
     // (perhaps) append "ies" to the name with terminating "y" (it's a vector !)
@@ -217,9 +196,9 @@ Handle_XMLSequence::handleData(const std::string& structElement_in)
 }
 
 void
-Handle_XMLSequence::endElement()
+Handle_XMLChoice::endElement()
 {
-  ACE_TRACE(ACE_TEXT("Handle_XMLSequence::endElement"));
+  ACE_TRACE(ACE_TEXT("Handle_XMLChoice::endElement"));
 
   if (myNestingLevel)
     myOutputFile << std::setw(XML2CPPCODE_INDENT * myNestingLevel)
@@ -227,4 +206,46 @@ Handle_XMLSequence::endElement()
   myOutputFile << ACE_TEXT_ALWAYS_CHAR("};")
                << std::endl
                << std::endl;
+
+  if (myIsVector)
+  {
+    // emit typedef(s)
+    std::string type_name = ACE_TEXT_ALWAYS_CHAR("std::vector<");
+    type_name += myTypeName;
+    type_name += ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_DEFAULTCHOICEPOSTFIX);
+    type_name += ACE_TEXT_ALWAYS_CHAR(">");
+    std::string type_definition = ACE_TEXT_ALWAYS_CHAR("typedef ");
+    type_definition += type_name;
+    type_definition += ACE_TEXT_ALWAYS_CHAR(" ");
+    type_definition += myTypeName;
+    type_definition += ACE_TEXT_ALWAYS_CHAR("_t;");
+    if (myNestingLevel)
+      myOutputFile << std::setw(XML2CPPCODE_INDENT * myNestingLevel)
+                   << ACE_TEXT_ALWAYS_CHAR(" ");
+    myOutputFile << type_definition
+                 << std::endl;
+    if (myEmitIteratorTypes)
+    {
+      type_definition = ACE_TEXT_ALWAYS_CHAR("typedef ");
+      type_definition += type_name;
+      type_definition += ACE_TEXT_ALWAYS_CHAR("::const_iterator ");
+      type_definition += myTypeName;
+      type_definition += ACE_TEXT_ALWAYS_CHAR("ConstIterator_t;");
+      if (myNestingLevel)
+        myOutputFile << std::setw(XML2CPPCODE_INDENT * myNestingLevel)
+                     << ACE_TEXT_ALWAYS_CHAR(" ");
+      myOutputFile << type_definition
+                   << std::endl;
+      type_definition = ACE_TEXT_ALWAYS_CHAR("typedef ");
+      type_definition += type_name;
+      type_definition += ACE_TEXT_ALWAYS_CHAR("::iterator ");
+      type_definition += myTypeName;
+      type_definition += ACE_TEXT_ALWAYS_CHAR("Iterator_t;");
+      if (myNestingLevel)
+        myOutputFile << std::setw(XML2CPPCODE_INDENT * myNestingLevel)
+                     << ACE_TEXT_ALWAYS_CHAR(" ");
+      myOutputFile << type_definition
+                   << std::endl;
+    } // end IF
+  } // end IF
 }

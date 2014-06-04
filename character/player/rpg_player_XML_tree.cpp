@@ -483,36 +483,6 @@ inventory (::std::auto_ptr< inventory_type > x)
   this->inventory_.set (x);
 }
 
-const RPG_Player_PlayerXML_XMLTree_Type::spells_optional& RPG_Player_PlayerXML_XMLTree_Type::
-spells () const
-{
-  return this->spells_;
-}
-
-RPG_Player_PlayerXML_XMLTree_Type::spells_optional& RPG_Player_PlayerXML_XMLTree_Type::
-spells ()
-{
-  return this->spells_;
-}
-
-void RPG_Player_PlayerXML_XMLTree_Type::
-spells (const spells_type& x)
-{
-  this->spells_.set (x);
-}
-
-void RPG_Player_PlayerXML_XMLTree_Type::
-spells (const spells_optional& x)
-{
-  this->spells_ = x;
-}
-
-void RPG_Player_PlayerXML_XMLTree_Type::
-spells (::std::auto_ptr< spells_type > x)
-{
-  this->spells_.set (x);
-}
-
 const RPG_Player_PlayerXML_XMLTree_Type::XP_type& RPG_Player_PlayerXML_XMLTree_Type::
 XP () const
 {
@@ -1395,7 +1365,6 @@ RPG_Player_PlayerXML_XMLTree_Type (const name_type& name,
                                           offhand),
   gold_ (gold, ::xml_schema::flags (), this),
   inventory_ (inventory, ::xml_schema::flags (), this),
-  spells_ (::xml_schema::flags (), this),
   XP_ (XP, ::xml_schema::flags (), this)
 {
 }
@@ -1422,7 +1391,6 @@ RPG_Player_PlayerXML_XMLTree_Type (const name_type& name,
                                           offhand),
   gold_ (gold, ::xml_schema::flags (), this),
   inventory_ (inventory, ::xml_schema::flags (), this),
-  spells_ (::xml_schema::flags (), this),
   XP_ (XP, ::xml_schema::flags (), this)
 {
 }
@@ -1434,7 +1402,6 @@ RPG_Player_PlayerXML_XMLTree_Type (const RPG_Player_PlayerXML_XMLTree_Type& x,
 : ::RPG_Player_CharacterXML_XMLTree_Type (x, f, c),
   gold_ (x.gold_, f, this),
   inventory_ (x.inventory_, f, this),
-  spells_ (x.spells_, f, this),
   XP_ (x.XP_, f, this)
 {
 }
@@ -1446,7 +1413,6 @@ RPG_Player_PlayerXML_XMLTree_Type (const ::xercesc::DOMElement& e,
 : ::RPG_Player_CharacterXML_XMLTree_Type (e, f | ::xml_schema::flags::base, c),
   gold_ (f, this),
   inventory_ (f, this),
-  spells_ (f, this),
   XP_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
@@ -1489,20 +1455,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       if (!inventory_.present ())
       {
         this->inventory_.set (r);
-        continue;
-      }
-    }
-
-    // spells
-    //
-    if (n.name () == "spells" && n.namespace_ () == "urn:rpg")
-    {
-      ::std::auto_ptr< spells_type > r (
-        spells_traits::create (i, f, this));
-
-      if (!this->spells_)
-      {
-        this->spells_.set (r);
         continue;
       }
     }
@@ -1566,9 +1518,6 @@ operator== (const RPG_Player_PlayerXML_XMLTree_Type& x, const RPG_Player_PlayerX
     return false;
 
   if (!(x.inventory () == y.inventory ()))
-    return false;
-
-  if (!(x.spells () == y.spells ()))
     return false;
 
   if (!(x.XP () == y.XP ()))
@@ -1923,11 +1872,6 @@ operator<< (::std::ostream& o, const RPG_Player_PlayerXML_XMLTree_Type& i)
 
   o << ::std::endl << "gold: " << i.gold ();
   o << ::std::endl << "inventory: " << i.inventory ();
-  if (i.spells ())
-  {
-    o << ::std::endl << "spells: " << *i.spells ();
-  }
-
   o << ::std::endl << "XP: " << i.XP ();
   return o;
 }
@@ -2502,19 +2446,6 @@ operator<< (::xercesc::DOMElement& e, const RPG_Player_PlayerXML_XMLTree_Type& i
         e));
 
     s << i.inventory ();
-  }
-
-  // spells
-  //
-  if (i.spells ())
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "spells",
-        "urn:rpg",
-        e));
-
-    s << *i.spells ();
   }
 
   // XP

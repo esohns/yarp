@@ -61,7 +61,7 @@ class RPG_Engine_Export RPG_Engine
 
   // implement RPG_Common_IControl
   virtual void start();
-  virtual void stop();
+  virtual void stop(const bool& = true); // locked access ?
   virtual bool isRunning() const;
 
   static void wait_all();
@@ -188,7 +188,8 @@ class RPG_Engine_Export RPG_Engine
     bool operator()(const RPG_Engine_EntityID_t&, const RPG_Engine_EntityID_t&);
   };
 
-  void clearEntityActions(const RPG_Engine_EntityID_t& = 0); // entity ID (default: ALL)
+  void clearEntityActions(const RPG_Engine_EntityID_t& = 0, // entity ID (default: ALL)
+                          const bool& = true);              // locked access ?
 
   // perform (one round of) actions
   void handleEntities();

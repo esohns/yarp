@@ -270,11 +270,11 @@ RPG_Engine_Common_Tools::createEntity(// base attributes
                                       const unsigned short int& maxHP_in,             // max HP
                                       // extended data
                                       const unsigned int& wealth_in,                  // wealth (GP)
-                                      const RPG_Magic_Spells_t& spells_in,            // set of memorized/prepared spells (if any)
                                       const RPG_Item_List_t& items_in,                // list of (carried) items
                                       // current status
                                       const RPG_Character_Conditions_t& condition_in, // condition
-                                      const short int& HP_in)                         // HP
+                                      const short int& HP_in,                         // HP
+                                      const RPG_Magic_Spells_t& spells_in)            // set of memorized/prepared spells (if any)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::createEntity"));
 

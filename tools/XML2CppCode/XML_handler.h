@@ -30,6 +30,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <stack>
 
 // forward declarations
 class Handle_XMLEnumeration;
@@ -84,25 +85,25 @@ class XML_Handler
  private:
   typedef XML_Handler_Base inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(XML_Handler(const XML_Handler&));
   ACE_UNIMPLEMENTED_FUNC(XML_Handler& operator=(const XML_Handler&));
 
   enum XMLElementType
   {
-    XML_SCHEMA = 0,
-    XML_ANNOTATION,
-    XML_DOCUMENTATION,
-    XML_SIMPLETYPE,
-    XML_RESTRICTION,
-    XML_ENUMERATION,
-    XML_COMPLEXTYPE,
-    XML_COMPLEXCONTENT,
-    XML_SEQUENCE,
+    XML_ANNOTATION = 0,
     XML_ATTRIBUTE,
+    XML_CHOICE,
+    XML_COMPLEXCONTENT,
+    XML_COMPLEXTYPE,
+    XML_DOCUMENTATION,
     XML_ELEMENT,
-    XML_INCLUDE,
+    XML_ENUMERATION,
     XML_EXTENSION,
+    XML_INCLUDE,
+    XML_RESTRICTION,
+    XML_SCHEMA,
+    XML_SEQUENCE,
+    XML_SIMPLETYPE,
     XML_UNION,
     //
     XML_INVALID
@@ -115,15 +116,17 @@ class XML_Handler
                                        const std::string&, // (header) filename
                                        std::ofstream&);    // file stream
   void insertPostscript(std::ofstream&); // file stream
-
-  // helper types
   typedef std::vector<std::string> XML2CppCode_Headers_t;
-  typedef XML2CppCode_Headers_t::const_iterator XML2CppCode_HeadersIterator_t;
   void insertIncludeHeaders(const XML2CppCode_Headers_t&, // headers
                             const bool&,                  // include <vector>
                             std::ofstream&);              // file stream
 
-  IXML_Definition_Handler* myCurrentDefinitionHandler;
+  // helper types
+  typedef XML2CppCode_Headers_t::const_iterator XML2CppCode_HeadersIterator_t;
+  typedef std::stack<IXML_Definition_Handler*> XML2CppCode_Handlers_t;
+
+   XML2CppCode_Handlers_t  myDefinitionHandlers;
+
   std::ofstream            myIncludeHeaderFile;
   std::ofstream            myCurrentOutputFile;
   std::string              myCurrentExtension;
@@ -143,6 +146,7 @@ class XML_Handler
 //   bool                     myIgnoreCharacters;
   XML2CppCode_Headers_t    myHeaders;
   bool                     myHeadersUseStdVector;
+  unsigned int             myCurrentNestingLevel;
 };
 
 #endif

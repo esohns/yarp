@@ -2341,30 +2341,6 @@ levelAdjustment (const levelAdjustment_type& x)
 // RPG_Monster_StateBase_XMLTree_Type
 // 
 
-const RPG_Monster_StateBase_XMLTree_Type::conditions_type& RPG_Monster_StateBase_XMLTree_Type::
-conditions () const
-{
-  return this->conditions_.get ();
-}
-
-RPG_Monster_StateBase_XMLTree_Type::conditions_type& RPG_Monster_StateBase_XMLTree_Type::
-conditions ()
-{
-  return this->conditions_.get ();
-}
-
-void RPG_Monster_StateBase_XMLTree_Type::
-conditions (const conditions_type& x)
-{
-  this->conditions_.set (x);
-}
-
-void RPG_Monster_StateBase_XMLTree_Type::
-conditions (::std::auto_ptr< conditions_type > x)
-{
-  this->conditions_.set (x);
-}
-
 const RPG_Monster_StateBase_XMLTree_Type::gold_type& RPG_Monster_StateBase_XMLTree_Type::
 gold () const
 {
@@ -2381,24 +2357,6 @@ void RPG_Monster_StateBase_XMLTree_Type::
 gold (const gold_type& x)
 {
   this->gold_.set (x);
-}
-
-const RPG_Monster_StateBase_XMLTree_Type::HP_type& RPG_Monster_StateBase_XMLTree_Type::
-HP () const
-{
-  return this->HP_.get ();
-}
-
-RPG_Monster_StateBase_XMLTree_Type::HP_type& RPG_Monster_StateBase_XMLTree_Type::
-HP ()
-{
-  return this->HP_.get ();
-}
-
-void RPG_Monster_StateBase_XMLTree_Type::
-HP (const HP_type& x)
-{
-  this->HP_.set (x);
 }
 
 const RPG_Monster_StateBase_XMLTree_Type::inventory_optional& RPG_Monster_StateBase_XMLTree_Type::
@@ -2431,34 +2389,22 @@ inventory (::std::auto_ptr< inventory_type > x)
   this->inventory_.set (x);
 }
 
-const RPG_Monster_StateBase_XMLTree_Type::spells_optional& RPG_Monster_StateBase_XMLTree_Type::
-spells () const
+const RPG_Monster_StateBase_XMLTree_Type::maxHP_type& RPG_Monster_StateBase_XMLTree_Type::
+maxHP () const
 {
-  return this->spells_;
+  return this->maxHP_.get ();
 }
 
-RPG_Monster_StateBase_XMLTree_Type::spells_optional& RPG_Monster_StateBase_XMLTree_Type::
-spells ()
+RPG_Monster_StateBase_XMLTree_Type::maxHP_type& RPG_Monster_StateBase_XMLTree_Type::
+maxHP ()
 {
-  return this->spells_;
-}
-
-void RPG_Monster_StateBase_XMLTree_Type::
-spells (const spells_type& x)
-{
-  this->spells_.set (x);
+  return this->maxHP_.get ();
 }
 
 void RPG_Monster_StateBase_XMLTree_Type::
-spells (const spells_optional& x)
+maxHP (const maxHP_type& x)
 {
-  this->spells_ = x;
-}
-
-void RPG_Monster_StateBase_XMLTree_Type::
-spells (::std::auto_ptr< spells_type > x)
-{
-  this->spells_.set (x);
+  this->maxHP_.set (x);
 }
 
 
@@ -7025,27 +6971,27 @@ operator!= (const RPG_Monster_PropertiesXML_XMLTree_Type& x, const RPG_Monster_P
 
 RPG_Monster_StateBase_XMLTree_Type::
 RPG_Monster_StateBase_XMLTree_Type (const conditions_type& conditions,
+                                    const HP_type& HP,
                                     const gold_type& gold,
-                                    const HP_type& HP)
-: ::xml_schema::type (),
-  conditions_ (conditions, ::xml_schema::flags (), this),
+                                    const maxHP_type& maxHP)
+: ::RPG_Player_StateBase_XMLTree_Type (conditions,
+                                       HP),
   gold_ (gold, ::xml_schema::flags (), this),
-  HP_ (HP, ::xml_schema::flags (), this),
   inventory_ (::xml_schema::flags (), this),
-  spells_ (::xml_schema::flags (), this)
+  maxHP_ (maxHP, ::xml_schema::flags (), this)
 {
 }
 
 RPG_Monster_StateBase_XMLTree_Type::
 RPG_Monster_StateBase_XMLTree_Type (::std::auto_ptr< conditions_type >& conditions,
+                                    const HP_type& HP,
                                     const gold_type& gold,
-                                    const HP_type& HP)
-: ::xml_schema::type (),
-  conditions_ (conditions, ::xml_schema::flags (), this),
+                                    const maxHP_type& maxHP)
+: ::RPG_Player_StateBase_XMLTree_Type (conditions,
+                                       HP),
   gold_ (gold, ::xml_schema::flags (), this),
-  HP_ (HP, ::xml_schema::flags (), this),
   inventory_ (::xml_schema::flags (), this),
-  spells_ (::xml_schema::flags (), this)
+  maxHP_ (maxHP, ::xml_schema::flags (), this)
 {
 }
 
@@ -7053,12 +6999,10 @@ RPG_Monster_StateBase_XMLTree_Type::
 RPG_Monster_StateBase_XMLTree_Type (const RPG_Monster_StateBase_XMLTree_Type& x,
                                     ::xml_schema::flags f,
                                     ::xml_schema::container* c)
-: ::xml_schema::type (x, f, c),
-  conditions_ (x.conditions_, f, this),
+: ::RPG_Player_StateBase_XMLTree_Type (x, f, c),
   gold_ (x.gold_, f, this),
-  HP_ (x.HP_, f, this),
   inventory_ (x.inventory_, f, this),
-  spells_ (x.spells_, f, this)
+  maxHP_ (x.maxHP_, f, this)
 {
 }
 
@@ -7066,12 +7010,10 @@ RPG_Monster_StateBase_XMLTree_Type::
 RPG_Monster_StateBase_XMLTree_Type (const ::xercesc::DOMElement& e,
                                     ::xml_schema::flags f,
                                     ::xml_schema::container* c)
-: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  conditions_ (f, this),
+: ::RPG_Player_StateBase_XMLTree_Type (e, f | ::xml_schema::flags::base, c),
   gold_ (f, this),
-  HP_ (f, this),
   inventory_ (f, this),
-  spells_ (f, this)
+  maxHP_ (f, this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -7084,25 +7026,13 @@ void RPG_Monster_StateBase_XMLTree_Type::
 parse (::xsd::cxx::xml::dom::parser< char >& p,
        ::xml_schema::flags f)
 {
+  this->::RPG_Player_StateBase_XMLTree_Type::parse (p, f);
+
   for (; p.more_elements (); p.next_element ())
   {
     const ::xercesc::DOMElement& i (p.cur_element ());
     const ::xsd::cxx::xml::qualified_name< char > n (
       ::xsd::cxx::xml::dom::name< char > (i));
-
-    // conditions
-    //
-    if (n.name () == "conditions" && n.namespace_ () == "urn:rpg")
-    {
-      ::std::auto_ptr< conditions_type > r (
-        conditions_traits::create (i, f, this));
-
-      if (!conditions_.present ())
-      {
-        this->conditions_.set (r);
-        continue;
-      }
-    }
 
     // gold
     //
@@ -7111,17 +7041,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       if (!gold_.present ())
       {
         this->gold_.set (gold_traits::create (i, f, this));
-        continue;
-      }
-    }
-
-    // HP
-    //
-    if (n.name () == "HP" && n.namespace_ () == "urn:rpg")
-    {
-      if (!HP_.present ())
-      {
-        this->HP_.set (HP_traits::create (i, f, this));
         continue;
       }
     }
@@ -7140,28 +7059,18 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
-    // spells
+    // maxHP
     //
-    if (n.name () == "spells" && n.namespace_ () == "urn:rpg")
+    if (n.name () == "maxHP" && n.namespace_ () == "urn:rpg")
     {
-      ::std::auto_ptr< spells_type > r (
-        spells_traits::create (i, f, this));
-
-      if (!this->spells_)
+      if (!maxHP_.present ())
       {
-        this->spells_.set (r);
+        this->maxHP_.set (maxHP_traits::create (i, f, this));
         continue;
       }
     }
 
     break;
-  }
-
-  if (!conditions_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "conditions",
-      "urn:rpg");
   }
 
   if (!gold_.present ())
@@ -7171,10 +7080,10 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       "urn:rpg");
   }
 
-  if (!HP_.present ())
+  if (!maxHP_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
-      "HP",
+      "maxHP",
       "urn:rpg");
   }
 }
@@ -7194,19 +7103,17 @@ RPG_Monster_StateBase_XMLTree_Type::
 bool
 operator== (const RPG_Monster_StateBase_XMLTree_Type& x, const RPG_Monster_StateBase_XMLTree_Type& y)
 {
-  if (!(x.conditions () == y.conditions ()))
+  if (!(static_cast< const ::RPG_Player_StateBase_XMLTree_Type& > (x) ==
+        static_cast< const ::RPG_Player_StateBase_XMLTree_Type& > (y)))
     return false;
 
   if (!(x.gold () == y.gold ()))
     return false;
 
-  if (!(x.HP () == y.HP ()))
-    return false;
-
   if (!(x.inventory () == y.inventory ()))
     return false;
 
-  if (!(x.spells () == y.spells ()))
+  if (!(x.maxHP () == y.maxHP ()))
     return false;
 
   return true;
@@ -7223,24 +7130,28 @@ operator!= (const RPG_Monster_StateBase_XMLTree_Type& x, const RPG_Monster_State
 
 RPG_Monster_State_XMLTree_Type::
 RPG_Monster_State_XMLTree_Type (const conditions_type& conditions,
-                                const gold_type& gold,
                                 const HP_type& HP,
+                                const gold_type& gold,
+                                const maxHP_type& maxHP,
                                 const type_type& type)
 : ::RPG_Monster_StateBase_XMLTree_Type (conditions,
+                                        HP,
                                         gold,
-                                        HP),
+                                        maxHP),
   type_ (type, ::xml_schema::flags (), this)
 {
 }
 
 RPG_Monster_State_XMLTree_Type::
 RPG_Monster_State_XMLTree_Type (::std::auto_ptr< conditions_type >& conditions,
-                                const gold_type& gold,
                                 const HP_type& HP,
+                                const gold_type& gold,
+                                const maxHP_type& maxHP,
                                 const type_type& type)
 : ::RPG_Monster_StateBase_XMLTree_Type (conditions,
+                                        HP,
                                         gold,
-                                        HP),
+                                        maxHP),
   type_ (type, ::xml_schema::flags (), this)
 {
 }
@@ -8123,19 +8034,15 @@ operator<< (::std::ostream& o, const RPG_Monster_PropertiesXML_XMLTree_Type& i)
 ::std::ostream&
 operator<< (::std::ostream& o, const RPG_Monster_StateBase_XMLTree_Type& i)
 {
-  o << ::std::endl << "conditions: " << i.conditions ();
+  o << static_cast< const ::RPG_Player_StateBase_XMLTree_Type& > (i);
+
   o << ::std::endl << "gold: " << i.gold ();
-  o << ::std::endl << "HP: " << i.HP ();
   if (i.inventory ())
   {
     o << ::std::endl << "inventory: " << *i.inventory ();
   }
 
-  if (i.spells ())
-  {
-    o << ::std::endl << "spells: " << *i.spells ();
-  }
-
+  o << ::std::endl << "maxHP: " << i.maxHP ();
   return o;
 }
 
@@ -9826,19 +9733,7 @@ operator<< (::xercesc::DOMElement& e, const RPG_Monster_PropertiesXML_XMLTree_Ty
 void
 operator<< (::xercesc::DOMElement& e, const RPG_Monster_StateBase_XMLTree_Type& i)
 {
-  e << static_cast< const ::xml_schema::type& > (i);
-
-  // conditions
-  //
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "conditions",
-        "urn:rpg",
-        e));
-
-    s << i.conditions ();
-  }
+  e << static_cast< const ::RPG_Player_StateBase_XMLTree_Type& > (i);
 
   // gold
   //
@@ -9850,18 +9745,6 @@ operator<< (::xercesc::DOMElement& e, const RPG_Monster_StateBase_XMLTree_Type& 
         e));
 
     s << i.gold ();
-  }
-
-  // HP
-  //
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "HP",
-        "urn:rpg",
-        e));
-
-    s << i.HP ();
   }
 
   // inventory
@@ -9877,17 +9760,16 @@ operator<< (::xercesc::DOMElement& e, const RPG_Monster_StateBase_XMLTree_Type& 
     s << *i.inventory ();
   }
 
-  // spells
+  // maxHP
   //
-  if (i.spells ())
   {
     ::xercesc::DOMElement& s (
       ::xsd::cxx::xml::dom::create_element (
-        "spells",
+        "maxHP",
         "urn:rpg",
         e));
 
-    s << *i.spells ();
+    s << i.maxHP ();
   }
 }
 

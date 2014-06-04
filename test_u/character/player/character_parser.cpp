@@ -292,13 +292,26 @@ do_work(const std::string& magic_dictionary_filename_in,
   }
 
   // load file
-//   RPG_Character_Player player = RPG_Character_Player::load(player_filename_in,
-//                                                            schema_repository_in);
-  RPG_Engine_Entity_t entity =
-      RPG_Engine_Common_Tools::loadEntity(profileFilename_in,
-                                          schema_repository_in);
-  ACE_ASSERT(entity.character);
-  entity.character->dump();
+  RPG_Character_Conditions_t condition;
+  condition.insert(CONDITION_NORMAL);
+  short int hitpoints = std::numeric_limits<short int>::max();
+  RPG_Magic_Spells_t spells;
+  RPG_Player* player_p = RPG_Player::load(profileFilename_in,
+                                          schema_repository_in,
+                                          condition,
+                                          hitpoints,
+                                          spells);
+  if (!player_p)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Player::load(\"%s\"), returning\n"),
+               ACE_TEXT(profileFilename_in.c_str())));
+
+    return;
+  } // end IF
+  player_p->dump();
+
+  delete player_p;
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));

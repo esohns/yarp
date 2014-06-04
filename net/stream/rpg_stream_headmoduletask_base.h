@@ -72,7 +72,7 @@ class RPG_Stream_HeadModuleTaskBase
 
   // implement RPG_Stream_IStreamControl
   virtual void start();
-  virtual void stop();
+  virtual void stop(const bool& = true); // locked access ?
   virtual void pause();
   virtual void rewind();
   // *NOTE*: for the time being, this simply waits for any worker threads to join

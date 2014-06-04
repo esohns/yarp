@@ -214,6 +214,6 @@ XML_Parser::parseFile(const std::string& emitClassQualifier_in,
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("parsing (XML) file \"%s\"...finished (%d errors)\n"),
-             filename_in.c_str(),
+             ACE_TEXT(filename_in.c_str()),
              errorCount));
 }

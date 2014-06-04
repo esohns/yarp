@@ -406,9 +406,6 @@ class RPG_Player_PlayerXML_Type_pskel: public virtual ::RPG_Player_CharacterXML_
   inventory (const RPG_Item_InventoryXML&);
 
   virtual void
-  spells (const RPG_Player_Spells&);
-
-  virtual void
   XP (unsigned int);
 
   virtual RPG_Player_PlayerXML
@@ -421,9 +418,6 @@ class RPG_Player_PlayerXML_Type_pskel: public virtual ::RPG_Player_CharacterXML_
 
   void
   inventory_parser (::RPG_Item_InventoryXML_Type_pskel&);
-
-  void
-  spells_parser (::RPG_Player_Spells_Type_pskel&);
 
   void
   XP_parser (::xml_schema::unsigned_int_pskel&);
@@ -444,7 +438,6 @@ class RPG_Player_PlayerXML_Type_pskel: public virtual ::RPG_Player_CharacterXML_
            ::RPG_Character_Race_Type_pskel& /* race */,
            ::xml_schema::unsigned_int_pskel& /* gold */,
            ::RPG_Item_InventoryXML_Type_pskel& /* inventory */,
-           ::RPG_Player_Spells_Type_pskel& /* spells */,
            ::xml_schema::unsigned_int_pskel& /* XP */);
 
   // Constructor.
@@ -466,7 +459,6 @@ class RPG_Player_PlayerXML_Type_pskel: public virtual ::RPG_Player_CharacterXML_
   protected:
   ::xml_schema::unsigned_int_pskel* gold_parser_;
   ::RPG_Item_InventoryXML_Type_pskel* inventory_parser_;
-  ::RPG_Player_Spells_Type_pskel* spells_parser_;
   ::xml_schema::unsigned_int_pskel* XP_parser_;
 };
 

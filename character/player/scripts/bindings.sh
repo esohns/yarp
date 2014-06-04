@@ -30,7 +30,7 @@ xsdcxx cxx-parser --type-map ./character/player/rpg_player.map --char-type char 
 # *NOTE*: xsdcxx improperly rearranges the included headers from the map file
 # --> move a repaired version back into the project directory
 # *IMPORTANT NOTE*: needs to be updated after every change
-cp -f ./character/player/scripts/rpg_player_XML_types.h ./item
+cp -f ./character/player/scripts/rpg_player_XML_types.h ./character/player
 [ $? -ne 0 ] && echo "ERROR: failed to cp, aborting" && exit 1
 
 # XML Parser/Tree

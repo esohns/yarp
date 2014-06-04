@@ -58,7 +58,7 @@ class RPG_Net_Server_Export RPG_Net_Server_AsynchListener
   // implement RPG_Common_IControl
   // *WARNING*: this API is NOT re-entrant !
   virtual void start();
-  virtual void stop();
+  virtual void stop(const bool& = true); // locked access ?
   virtual bool isRunning() const;
 
   // implement RPG_Common_IDumpState

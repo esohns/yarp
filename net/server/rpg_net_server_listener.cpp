@@ -161,9 +161,11 @@ RPG_Net_Server_Listener::start()
 }
 
 void
-RPG_Net_Server_Listener::stop()
+RPG_Net_Server_Listener::stop(const bool& lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::stop"));
+
+  ACE_UNUSED_ARG(lockedAccess_in);
 
   // sanity check(s)
   if (!myIsListening)

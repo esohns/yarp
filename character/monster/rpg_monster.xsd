@@ -296,14 +296,15 @@
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Monster_StateBase_Type" id="skip0">
-    <xsd:sequence>
-      <xsd:element name="conditions" type="RPG_Player_Conditions_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="gold" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="HP" type="xsd:short" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="inventory" type="RPG_Item_InventoryXML_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="maxHP" type="xsd:unsignedShort" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="spells" type="RPG_Player_Spells_Type" minOccurs="0" maxOccurs="1"/>
-    </xsd:sequence>
+    <xsd:complexContent>
+      <xsd:extension base="RPG_Player_StateBase_Type">
+        <xsd:sequence>
+          <xsd:element name="gold" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="inventory" type="RPG_Item_InventoryXML_Type" minOccurs="0" maxOccurs="1"/>
+          <xsd:element name="maxHP" type="xsd:unsignedShort" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:complexType name="RPG_Monster_State_Type" id="skip1">

@@ -31,6 +31,9 @@
 #define XML2CPPCODE_DEFAULTUNIONPOSTFIX       "Union"
 // #define XML2CPPCODE_DEFAULTTAGGEDUNIONINFIX "Tagged"
 
+// default choice postfix
+#define XML2CPPCODE_DEFAULTCHOICEPOSTFIX      "Element"
+
 // defaul minOccurs/maxOccurs
 #define XML2CPPCODE_DEFAULTMINOCCURS          "1"
 #define XML2CPPCODE_DEFAULTMAXOCCURS          "1"
@@ -39,7 +42,7 @@
 #define XML2CPPCODE_HEADER_EXTENSION          ".h"
 #define XML2CPPCODE_HEADER_APPENDIX           "_incl"
 
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
 #define XML2CPPCODE_DLL_EXPORT_QUALIFIER      "__declspec(dllexport)"
 #else
 #define XML2CPPCODE_DLL_EXPORT_QUALIFIER      ""

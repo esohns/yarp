@@ -179,7 +179,7 @@ Handle_XMLUnion::handleData(const std::string& memberTypes_in)
              ACE_TEXT(myUnionName.c_str()),
              myTypeList.size()));
 
-  // step2: emit types (we need to generate individual identifiers...)
+  // step2: emit types (generate individual identifiers...)
   bool isBaseType = false;
   std::string current_identifier;
   for (std::vector<std::string>::const_iterator iterator = myTypeList.begin();
@@ -265,7 +265,7 @@ Handle_XMLUnion::endElement()
                  << ACE_TEXT_ALWAYS_CHAR("{")
                  << std::endl;
 
-    // emit types (we need to generate individual identifiers...)
+    // emit types (generate individual identifiers...)
     // *TODO*: ensure no two element types are equal...
     bool isBaseType = false;
     std::string current_identifier;

@@ -24,6 +24,7 @@
 #include "XML_handler.h"
 
 #include "xml2cppcode.h"
+#include "handle_xmlchoice.h"
 #include "handle_xmlenumeration.h"
 #include "handle_xmlsequence.h"
 #include "handle_xmlunion.h"
@@ -62,7 +63,6 @@ XML_Handler::XML_Handler(const std::string& emitClassQualifiers_in,
                          const std::string& typePrefix_in,
                          const std::string& typePostfix_in)
  : inherited(),
-   myCurrentDefinitionHandler(NULL),
 //    myIncludeHeaderFile(),
 //    myCurrentOutputFile(),
 //    myCurrentExtension(),
@@ -79,9 +79,10 @@ XML_Handler::XML_Handler(const std::string& emitClassQualifiers_in,
    myTypePrefix(typePrefix_in),
    myTypePostfix(typePostfix_in),
    myLocator(NULL),
-   myHeadersUseStdVector(false)
-//    myHeaders()
-//    myIgnoreCharacters(true)
+//   myIgnoreCharacters(true),
+//   myHeaders(),
+   myHeadersUseStdVector(false),
+   myCurrentNestingLevel(0)
 {
   ACE_TRACE(ACE_TEXT("XML_Handler::XML_Handler"));
 
@@ -149,9 +150,9 @@ XML_Handler::endElement(const XMLCh* const uri_in,
 //   char* qname = XMLString::transcode(qname_in);
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("endElement: \"%s\", \"%s\", \"%s\"\n"),
-//              uri,
-//              localname,
-//              qname));
+//              ACE_TEXT(uri),
+//              ACE_TEXT(localname),
+//              ACE_TEXT(qname)));
 //   XMLString::release(&uri);
   std::string element = localname;
   XMLString::release(&localname);
@@ -160,19 +161,14 @@ XML_Handler::endElement(const XMLCh* const uri_in,
   XMLElementType type = stringToXMLElementType(element);
   switch (type)
   {
-    case XML_SCHEMA:
+    case XML_ATTRIBUTE:
     case XML_ANNOTATION:
     case XML_DOCUMENTATION:
-    case XML_RESTRICTION:
-    case XML_ENUMERATION:
-    case XML_SEQUENCE:
-    case XML_ATTRIBUTE:
     case XML_ELEMENT:
+    case XML_ENUMERATION: // --> handled in SIMPLETYPE case !
     case XML_INCLUDE:
-    case XML_EXTENSION:
-    {
-      myCurrentExtension.resize(0);
-    }
+    case XML_RESTRICTION:
+    case XML_SCHEMA:
     case XML_COMPLEXCONTENT:
     case XML_UNION:
     {
@@ -180,18 +176,45 @@ XML_Handler::endElement(const XMLCh* const uri_in,
 
       break;
     }
+    case XML_EXTENSION:
+    {
+      myCurrentExtension.resize(0);
+
+      break;
+    }
+    case XML_CHOICE:
+    case XML_SEQUENCE:
     case XML_SIMPLETYPE:
+    {
+      ACE_ASSERT(!myDefinitionHandlers.empty());
+
+      // notify & delete current handler
+      IXML_Definition_Handler* handler = myDefinitionHandlers.top();
+      ACE_ASSERT(handler);
+      try
+      {
+        handler->endElement();
+      } // end IF
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in IXML_Definition_Handler::endElement, continuing\n")));
+      }
+      myDefinitionHandlers.pop();
+      delete handler;
+
+      if ((type == XML_CHOICE) ||
+          (type == XML_SEQUENCE))
+      {
+        myCurrentNestingLevel--;
+
+        break;
+      }
+
+      // *WARNING*: falls through !
+    }
     case XML_COMPLEXTYPE:
     {
-      // notify & delete our handler (if any)
-      if (myCurrentDefinitionHandler)
-      {
-        myCurrentDefinitionHandler->endElement();
-
-        delete myCurrentDefinitionHandler;
-        myCurrentDefinitionHandler = NULL;
-      } // end IF
-
       // next relevant element will be the first...
       myIsFirstRelevantElement = true;
 
@@ -206,7 +229,7 @@ XML_Handler::endElement(const XMLCh* const uri_in,
 
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("closed file: \"%s\"...\n"),
-//                myFilename.c_str()));
+//                ACE_TEXT(myFilename.c_str())));
       } // end IF
 
       break;
@@ -261,7 +284,7 @@ XML_Handler::startDocument()
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to create/open file: \"%s\", aborting\n"),
-                 FQFilename.c_str()));
+                 ACE_TEXT(FQFilename.c_str())));
 
       XMLCh* message =
           XMLString::transcode(ACE_TEXT("failed to create/open file, aborting\n"));
@@ -275,7 +298,7 @@ XML_Handler::startDocument()
 
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("created file: \"%s\"...\n"),
-               targetFilename.c_str()));
+               ACE_TEXT(targetFilename.c_str())));
 
     // write preamble/include protection
     insertPreamble(myCurrentOutputFile);
@@ -299,7 +322,7 @@ XML_Handler::startDocument()
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to create/open file: \"%s\", aborting\n"),
-                 FQFilename.c_str()));
+                 ACE_TEXT(FQFilename.c_str())));
 
       XMLCh* message =
           XMLString::transcode(ACE_TEXT("failed to create/open file, aborting\n"));
@@ -313,7 +336,7 @@ XML_Handler::startDocument()
 
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("created file: \"%s\"...\n"),
-               targetFilename.c_str()));
+               ACE_TEXT(targetFilename.c_str())));
 
     // write preamble/include protection
     insertPreamble(myIncludeHeaderFile);
@@ -336,19 +359,105 @@ XML_Handler::startElement(const XMLCh* const uri_in,
 //   char* qname = XMLString::transcode(qname_in);
   std::string element = localname;
   XMLString::release(&localname);
-
   XMLElementType typeOfElement = stringToXMLElementType(element);
   switch (typeOfElement)
   {
-    case XML_SCHEMA:
     case XML_ANNOTATION:
-    case XML_DOCUMENTATION:
-    case XML_RESTRICTION:
-    case XML_SEQUENCE:
-    case XML_INCLUDE:
     case XML_COMPLEXCONTENT:
+    case XML_DOCUMENTATION:
+    case XML_INCLUDE:
+    case XML_RESTRICTION:
+    case XML_SCHEMA:
     {
 //       myIgnoreCharacters = true;
+
+      break;
+    }
+    case XML_CHOICE:
+    {
+      unsigned int min_occurs, max_occurs;
+      min_occurs = max_occurs = 1;
+      // extract cardinalities (if any)
+      // "type id minOccurs maxOccurs"
+      XMLCh* min_occurs_string_xml =
+          XMLString::transcode(ACE_TEXT_ALWAYS_CHAR("minOccurs"));
+      char* min_occurs_string =
+          XMLString::transcode(attributes_in.getValue(min_occurs_string_xml));
+      XMLString::release(&min_occurs_string_xml);
+      XMLCh* max_occurs_string_xml =
+          XMLString::transcode(ACE_TEXT_ALWAYS_CHAR("maxOccurs"));
+      char* max_occurs_string =
+          XMLString::transcode(attributes_in.getValue(max_occurs_string_xml));
+      XMLString::release(&max_occurs_string_xml);
+      std::istringstream converter;
+      if (min_occurs_string)
+      {
+        converter.str(min_occurs_string);
+        if (ACE_OS::strcmp(min_occurs_string,
+                           ACE_TEXT_ALWAYS_CHAR("unbounded")) == 0)
+          min_occurs = std::numeric_limits<unsigned int>::max();
+        else
+          converter >> min_occurs;
+        XMLString::release(&min_occurs_string);
+      } // end IF
+      converter.clear();
+      if (max_occurs_string)
+      {
+        converter.str(max_occurs_string);
+        if (ACE_OS::strcmp(max_occurs_string,
+                           ACE_TEXT_ALWAYS_CHAR("unbounded")) == 0)
+          max_occurs = std::numeric_limits<unsigned int>::max();
+        else
+          converter >> max_occurs;
+        XMLString::release(&max_occurs_string);
+      } // end IF
+
+      // check for multiplicity --> include <vector>
+      if (myGenerateIncludeHeader &&
+          ((min_occurs != 1) && (max_occurs != 1)))
+        myHeadersUseStdVector = true;
+
+      // the union members come in the "element" attributes of this element
+      IXML_Definition_Handler* handler = NULL;
+      ACE_NEW_NORETURN(handler,
+                       Handle_XMLChoice(myCurrentOutputFile,
+                                        myCurrentNestingLevel,
+                                        myEmitClassQualifiers,
+                                        myTypePrefix,
+                                        myTypePostfix,
+                                        ((min_occurs != 1) && (max_occurs != 1))));
+      if (!handler)
+      {
+        ACE_DEBUG((LM_CRITICAL,
+                   ACE_TEXT("failed to allocate memory(%), aborting\n"),
+                   sizeof(Handle_XMLChoice)));
+
+        OutOfMemoryException exception;
+        throw exception;
+      } // end IF
+
+      // init handler
+      std::string type_name = myCurrentElementName;
+      if (myCurrentNestingLevel)
+      {
+        type_name += ACE_TEXT_ALWAYS_CHAR("Union");
+        type_name += ACE_TEXT_ALWAYS_CHAR("_");
+        std::ostringstream converter2;
+        converter2 << myCurrentNestingLevel;
+        type_name += converter2.str();
+      } // end IF
+      try
+      {
+        handler->startElement(type_name);
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in IXML_Definition_Handler::startElement, continuing\n")));
+      }
+      myDefinitionHandlers.push(handler);
+
+      myCurrentNestingLevel++;
 
       break;
     }
@@ -404,7 +513,7 @@ XML_Handler::startElement(const XMLCh* const uri_in,
         XMLString::release(&id);
         if (id_temp.find(ACE_TEXT_ALWAYS_CHAR("skip"), 0) == 0)
         {
-          // we'll skip this one...
+          // skip this one...
           XMLCh* name_string =
               XMLString::transcode(ACE_TEXT_ALWAYS_CHAR("name"));
           char* name =
@@ -449,11 +558,11 @@ XML_Handler::startElement(const XMLCh* const uri_in,
         targetFilename += extension;
         FQfilename += targetFilename;
         // transform to lowercase
-		std::transform(FQfilename.begin(),
-									 FQfilename.end(),
-									 FQfilename.begin(),
-									 std::bind2nd(std::ptr_fun(&std::tolower<char>),
-																std::locale("")));
+        std::transform(FQfilename.begin(),
+                       FQfilename.end(),
+                       FQfilename.begin(),
+                       std::bind2nd(std::ptr_fun(&std::tolower<char>),
+                                    std::locale("")));
 
         // try to open file
         try
@@ -511,34 +620,56 @@ XML_Handler::startElement(const XMLCh* const uri_in,
     }
     case XML_ENUMERATION:
     {
+      IXML_Definition_Handler* handler = NULL;
       if (myIsFirstRelevantElement)
       {
-        ACE_NEW_NORETURN(myCurrentDefinitionHandler,
+        ACE_NEW_NORETURN(handler,
                          Handle_XMLEnumeration(myCurrentOutputFile,
                                                myTypePrefix,
                                                myEmitStringConversionUtilities,
                                                myEmitClassQualifiers));
-        if (!myCurrentDefinitionHandler)
+        if (!handler)
         {
           ACE_DEBUG((LM_CRITICAL,
-                     ACE_TEXT("failed to allocate memory, aborting\n")));
+                     ACE_TEXT("failed to allocate memory(%u), aborting\n"),
+                     sizeof(Handle_XMLEnumeration)));
 
           OutOfMemoryException exception;
           throw exception;
         } // end IF
+        myDefinitionHandlers.push(handler);
 
         // init handler
-        myCurrentDefinitionHandler->startElement(myCurrentElementName);
+        try
+        {
+          handler->startElement(myCurrentElementName);
+        }
+        catch (...)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("caught exception in IXML_Definition_Handler::startElement(), continuing\n")));
+        }
 
         // more interesting elements will follow...
         myIsFirstRelevantElement = false;
       } // end IF
+      else
+        handler = myDefinitionHandlers.top();
+      ACE_ASSERT(handler);
 
       // extract value
       XMLCh* value_string = XMLString::transcode(ACE_TEXT_ALWAYS_CHAR("value"));
       char* value = XMLString::transcode(attributes_in.getValue(value_string));
       XMLString::release(&value_string);
-      myCurrentDefinitionHandler->handleData(std::string(value));
+      try
+      {
+        handler->handleData(std::string(value));
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in IXML_Definition_Handler::handleData(), continuing\n")));
+      }
       XMLString::release(&value);
 
       break;
@@ -553,30 +684,30 @@ XML_Handler::startElement(const XMLCh* const uri_in,
         break;
       } // end IF
 
-      if (myIsFirstRelevantElement)
-      {
-        ACE_NEW_NORETURN(myCurrentDefinitionHandler,
-                         Handle_XMLSequence(myCurrentOutputFile,
-                                            myCurrentExtension,
-                                            myTypePrefix,
-                                            myTypePostfix,
-                                            myEmitClassQualifiers));
-        //                                  myEmitTaggedUnions));
-        if (!myCurrentDefinitionHandler)
-        {
-          ACE_DEBUG((LM_CRITICAL,
-                     ACE_TEXT("failed to allocate memory, aborting\n")));
+//      if (myIsFirstRelevantElement)
+//      {
+//        ACE_NEW_NORETURN(myCurrentDefinitionHandler,
+//                         Handle_XMLSequence(myCurrentOutputFile,
+//                                            myCurrentExtension,
+//                                            myTypePrefix,
+//                                            myTypePostfix,
+//                                            myEmitClassQualifiers));
+//        //                                  myEmitTaggedUnions));
+//        if (!myCurrentDefinitionHandler)
+//        {
+//          ACE_DEBUG((LM_CRITICAL,
+//                     ACE_TEXT("failed to allocate memory, aborting\n")));
 
-          OutOfMemoryException exception;
-          throw exception;
-        } // end IF
+//          OutOfMemoryException exception;
+//          throw exception;
+//        } // end IF
 
-        // init handler
-        myCurrentDefinitionHandler->startElement(myCurrentElementName);
+//        // init handler
+//        myCurrentDefinitionHandler->startElement(myCurrentElementName);
 
-        // more interesting elements will follow...
-        myIsFirstRelevantElement = false;
-      } // end IF
+//        // more interesting elements will follow...
+//        myIsFirstRelevantElement = false;
+//      } // end IF
 
       // extract name/type
       std::string definition;
@@ -612,11 +743,11 @@ XML_Handler::startElement(const XMLCh* const uri_in,
                        : ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_DEFAULTMINOCCURS));
         XMLString::release(&minOccurs);
         definition += ACE_TEXT_ALWAYS_CHAR(" ");
-        definition +=
+        std::string string_maxoccurs =
             (maxOccurs ? maxOccurs
                        : ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_DEFAULTMAXOCCURS));
-        std::string string_maxoccurs = maxOccurs;
         XMLString::release(&maxOccurs);
+        definition += string_maxoccurs;
 
         // check for multiplicity --> include <vector>
         if (myGenerateIncludeHeader)
@@ -657,32 +788,99 @@ XML_Handler::startElement(const XMLCh* const uri_in,
         definition += ACE_TEXT_ALWAYS_CHAR("1");
       } // end ELSE
 
-      myCurrentDefinitionHandler->handleData(definition);
+      IXML_Definition_Handler* handler = myDefinitionHandlers.top();
+      ACE_ASSERT(handler);
+      try
+      {
+        handler->handleData(definition);
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in IXML_Definition_Handler::handleData(), continuing\n")));
+      }
+
+      break;
+    }
+    case XML_SEQUENCE:
+    {
+      IXML_Definition_Handler* handler = NULL;
+      ACE_NEW_NORETURN(handler,
+                       Handle_XMLSequence(myCurrentOutputFile,
+                                          myCurrentNestingLevel,
+                                          myCurrentExtension,
+                                          myTypePrefix,
+                                          myTypePostfix,
+                                          myEmitClassQualifiers));
+        //                                  myEmitTaggedUnions));
+      if (!handler)
+      {
+        ACE_DEBUG((LM_CRITICAL,
+                   ACE_TEXT("failed to allocate memory(%u), aborting\n"),
+                   sizeof(Handle_XMLSequence)));
+
+        OutOfMemoryException exception;
+        throw exception;
+      } // end IF
+      myDefinitionHandlers.push(handler);
+
+      // init handler
+      std::string type_name = myCurrentElementName;
+      if (myCurrentNestingLevel)
+      {
+        type_name += ACE_TEXT_ALWAYS_CHAR("Struct");
+        type_name += ACE_TEXT_ALWAYS_CHAR("_");
+        std::ostringstream converter2;
+        converter2 << myCurrentNestingLevel;
+        type_name += converter2.str();
+      } // end IF
+      try
+      {
+        handler->startElement(type_name);
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in IXML_Definition_Handler::startElement(), continuing\n")));
+      }
+
+      myCurrentNestingLevel++;
 
       break;
     }
     case XML_UNION:
     {
-      // the union members come in the "memberTypes" attribute of this element
-      ACE_NEW_NORETURN(myCurrentDefinitionHandler,
+      IXML_Definition_Handler* handler = NULL;
+      ACE_NEW_NORETURN(handler,
                        Handle_XMLUnion(myCurrentOutputFile,
                                        myEmitTaggedUnions,
                                        myEmitClassQualifiers,
                                        myTypePrefix,
                                        myTypePostfix));
-      if (!myCurrentDefinitionHandler)
+      if (!handler)
       {
         ACE_DEBUG((LM_CRITICAL,
-                    ACE_TEXT("failed to allocate memory, aborting\n")));
+                   ACE_TEXT("failed to allocate memory(%u), aborting\n"),
+                   sizeof(Handle_XMLUnion)));
 
         OutOfMemoryException exception;
         throw exception;
       } // end IF
+      myDefinitionHandlers.push(handler);
 
       // init handler
-      myCurrentDefinitionHandler->startElement(myCurrentElementName);
+      try
+      {
+        handler->startElement(myCurrentElementName);
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in IXML_Definition_Handler::startElement(), continuing\n")));
+      }
 
-      // extract memberTypes attribute
+      // *NOTE*: the union members come in the "memberTypes" attribute of this element
+      // --> extract memberTypes attribute
       XMLCh* memberTypes_string =
           XMLString::transcode(ACE_TEXT_ALWAYS_CHAR("memberTypes"));
       char* memberTypes =
@@ -691,8 +889,15 @@ XML_Handler::startElement(const XMLCh* const uri_in,
 
       std::string definition = memberTypes;
       XMLString::release(&memberTypes);
-
-      myCurrentDefinitionHandler->handleData(definition);
+      try
+      {
+        handler->handleData(definition);
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in IXML_Definition_Handler::handleData(), continuing\n")));
+      }
 
       break;
     }
@@ -773,6 +978,8 @@ XML_Handler::stringToXMLElementType(const std::string& elementString_in) const
     return XML_SCHEMA;
   else if (elementString_in == ACE_TEXT_ALWAYS_CHAR("annotation"))
     return XML_ANNOTATION;
+  else if (elementString_in == ACE_TEXT_ALWAYS_CHAR("choice"))
+    return XML_CHOICE;
   else if (elementString_in == ACE_TEXT_ALWAYS_CHAR("documentation"))
     return XML_DOCUMENTATION;
   else if (elementString_in == ACE_TEXT_ALWAYS_CHAR("simpleType"))
@@ -799,7 +1006,7 @@ XML_Handler::stringToXMLElementType(const std::string& elementString_in) const
     return XML_UNION;
   else
   {
-    ACE_DEBUG((LM_DEBUG,
+    ACE_DEBUG((LM_WARNING,
                ACE_TEXT("unknown XML element type: \"%s\", aborting\n"),
                ACE_TEXT(elementString_in.c_str())));
   } // end ELSE

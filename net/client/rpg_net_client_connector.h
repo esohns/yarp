@@ -50,7 +50,6 @@ class RPG_Net_Client_Export RPG_Net_Client_Connector
   typedef ACE_Connector<RPG_Net_StreamHandler_t,
                         ACE_SOCK_CONNECTOR> inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_Connector(const RPG_Net_Client_Connector&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_Connector& operator=(const RPG_Net_Client_Connector&));
 };

@@ -139,9 +139,11 @@ RPG_Net_Server_AsynchListener::start()
 }
 
 void
-RPG_Net_Server_AsynchListener::stop()
+RPG_Net_Server_AsynchListener::stop(const bool& lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::stop"));
+
+  ACE_UNUSED_ARG(lockedAccess_in);
 
   if (!myIsListening)
   {
@@ -152,12 +154,25 @@ RPG_Net_Server_AsynchListener::stop()
   } // end IF
 
 #if !defined(ACE_WIN32) && !defined(ACE_WIN64)
-  ACE_POSIX_Asynch_Accept* accept =
-      dynamic_cast<ACE_POSIX_Asynch_Accept*>(inherited::asynch_accept().implementation());
+  ACE_POSIX_Asynch_Accept* accept = NULL;
+  try
+  {
+    accept =
+        dynamic_cast<ACE_POSIX_Asynch_Accept*>(inherited::asynch_accept().implementation());
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("dynamic_cast<ACE_POSIX_Asynch_Accept*>(%@) failed, aborting\n"),
+               inherited::asynch_accept().implementation()));
+
+    accept = NULL;
+  }
   if (!accept)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("dynamic_cast<ACE_POSIX_Asynch_Accept> failed, aborting\n")));
+               ACE_TEXT("dynamic_cast<ACE_POSIX_Asynch_Accept*>(%@) failed, aborting\n"),
+               inherited::asynch_accept().implementation()));
 
     return;
   }

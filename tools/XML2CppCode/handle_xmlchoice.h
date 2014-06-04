@@ -17,22 +17,54 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef IXML_DEFINITION_HANDLER_H
-#define IXML_DEFINITION_HANDLER_H
+
+#ifndef HANDLE_XMLCHOICE_H
+#define HANDLE_XMLCHOICE_H
+
+#include "iXML_definition_handler.h"
 
 #include <ace/Global_Macros.h>
 
 #include <string>
+#include <fstream>
+#include <vector>
 
-class IXML_Definition_Handler
+/**
+	@author Erik Sohns <erik.sohns@web.de>
+*/
+class Handle_XMLChoice
+ : public IXML_Definition_Handler
 {
  public:
-  // make sure base class dtors are called !
-  inline virtual ~IXML_Definition_Handler() {};
+  Handle_XMLChoice(std::ofstream&,      // target file stream
+                   const unsigned int&, // nesting level
+                   const std::string&,  // emit class qualifier (DLL import/export symbols) ?
+                   const std::string&,  // type prefix
+                   const std::string&,  // type postfix
+                   const bool&,         // is vector-type ?
+                   const bool& = true); // emit iterator type(s), if applicable ?
+  virtual ~Handle_XMLChoice();
 
-  virtual void startElement(const std::string&) = 0; // name
-  virtual void handleData(const std::string&) = 0; // value
-  virtual void endElement() = 0;
+  virtual void startElement(const std::string&); // type name
+  virtual void handleData(const std::string&); // union item
+  virtual void endElement();
+
+ private:
+  typedef IXML_Definition_Handler inherited;
+
+  ACE_UNIMPLEMENTED_FUNC(Handle_XMLChoice());
+  ACE_UNIMPLEMENTED_FUNC(Handle_XMLChoice(const Handle_XMLChoice&));
+  ACE_UNIMPLEMENTED_FUNC(Handle_XMLChoice& operator=(const Handle_XMLChoice&));
+
+  std::ofstream& myOutputFile;
+  unsigned int   myNestingLevel;
+  std::string    myEmitClassQualifier;
+  std::string    myTypePrefix;
+  std::string    myTypePostfix;
+
+  bool           myIsVector;
+  bool           myEmitIteratorTypes;
+  std::string    myTypeName;
 };
 
 #endif

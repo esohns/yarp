@@ -200,7 +200,8 @@ RPG_Player*
 RPG_Player_Common_Tools::playerXMLToPlayer(const RPG_Player_PlayerXML_XMLTree_Type& player_in,
                                            // current status
                                            const RPG_Character_Conditions_t& condition_in,
-                                           const short int& HP_in)
+                                           const short int& HP_in,
+                                           const RPG_Magic_Spells_t& spells_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::playerXMLToPlayer"));
 
@@ -232,10 +233,6 @@ RPG_Player_Common_Tools::playerXMLToPlayer(const RPG_Player_PlayerXML_XMLTree_Ty
   if (player_in.knownSpells().present())
     known_spells =
         RPG_Player_Common_Tools::spellsXMLTreeToSpellTypes(player_in.knownSpells().get());
-  RPG_Magic_Spells_t spells;
-  if (player_in.spells().present())
-    spells =
-        RPG_Player_Common_Tools::spellsXMLTreeToSpells(player_in.spells().get());
 
   RPG_Character_Conditions_t condition = condition_in;
   if (condition.empty())
@@ -258,12 +255,12 @@ RPG_Player_Common_Tools::playerXMLToPlayer(const RPG_Player_PlayerXML_XMLTree_Ty
                               // extended data
                               player_in.XP(),
                               player_in.gold(),
-                              spells,
                               RPG_Item_Common_XML_Tools::instantiate(player_in.inventory()),
                               // current status
                               condition,
                               ((HP_in == std::numeric_limits<short int>::max()) ? player_in.maxHP()
-                                                                                : HP_in)));
+                                                                                : HP_in),
+                              spells_in));
   if (!player_p)
   {
     ACE_DEBUG((LM_CRITICAL,
@@ -562,14 +559,6 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
        iterator++)
     spell_list.spell().push_back(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
   player_p->knownSpells().set(spell_list);
-
-  spell_list.spell().clear();
-  RPG_Magic_Spells_t character_spells = player_in.getSpells();
-  for (RPG_Magic_SpellsIterator_t iterator = character_spells.begin();
-       iterator != character_spells.end();
-       iterator++)
-    spell_list.spell().push_back(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
-  player_p->spells().set(spell_list);
 
   return player_p;
 }

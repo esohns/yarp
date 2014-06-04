@@ -781,7 +781,7 @@ save_map_clicked_GTK_cb(GtkWidget* widget_in,
   // step1a: setup entry dialog
   GtkEntry* entry =
     GTK_ENTRY(glade_xml_get_widget(data->XML,
-                                   ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_ENTRY_ENTRY_NAME)));
+                                   ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_ENTRY_NAME)));
   ACE_ASSERT(entry);
   gtk_entry_buffer_delete_text(gtk_entry_get_buffer(entry),
                                0, -1);
@@ -955,10 +955,7 @@ map_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(model);
 
   // re-load map data
-  std::string level_directory =
-      RPG_Map_Common_Tools::getMapsDirectory();
-  unsigned int num_entries = ::load_files(level_directory,
-                                          false,
+  unsigned int num_entries = ::load_files(REPOSITORY_MAPS,
                                           GTK_LIST_STORE(model));
 
   // ... sensitize/activate widgets as appropriate

@@ -6,8 +6,6 @@
             elementFormDefault="qualified"
             attributeFormDefault="unqualified">
 
-<!-- include common environment schema -->
-  <xsd:include schemaLocation="rpg_common_environment.xsd"/>
 <!-- include character player schema -->
   <xsd:include schemaLocation="rpg_player.xsd"/>
 <!-- include monster schema -->
@@ -59,15 +57,15 @@
   </xsd:simpleType>
 
   <xsd:complexType name="RPG_Engine_EntityState_Type" id="skip0">
-<!--      <xsd:choice>-->
-<!--        <xsd:element name="player" type="RPG_Player_State_Type"/>-->
-<!--        <xsd:element name="monster" type="RPG_Monster_State_Type"/>-->
-<!--      </xsd:choice>-->
     <xsd:sequence>
-      <xsd:element name="player" type="RPG_Player_State_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="monster" type="RPG_Monster_State_Type" minOccurs="0" maxOccurs="1"/>
-      <xsd:element name="position" type="RPG_Map_Position_Type" minOccurs="1" maxOccurs="1"/>
-      <xsd:element name="mode" type="RPG_Engine_EntityMode_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:choice  minOccurs="1" maxOccurs="1">
+        <xsd:element name="player" type="RPG_Player_State_Type"/>
+        <xsd:element name="monster" type="RPG_Monster_State_Type"/>
+      </xsd:choice>
+      <xsd:sequence>
+        <xsd:element name="position" type="RPG_Map_Position_Type" minOccurs="1" maxOccurs="1"/>
+        <xsd:element name="mode" type="RPG_Engine_EntityMode_Type" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -93,7 +91,7 @@
   </xsd:complexType>
 
   <!-- substitution group roots -->
-  <xsd:element name="engine_player_t" type="RPG_Engine_EntityState_Type"/>
+<!--  <xsd:element name="engine_player_t" type="RPG_Engine_EntityState_Type"/>-->
   <xsd:element name="engine_level_t" type="RPG_Engine_Level_Type"/>
   <xsd:element name="engine_state_t" type="RPG_Engine_State_Type"/>
 

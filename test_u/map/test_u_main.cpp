@@ -408,14 +408,11 @@ test_u_main::init_GUI(const std::string& graphics_directory_in,
   GtkListStore* list = gtk_list_store_new(1,
                                           G_TYPE_STRING);
   ACE_ASSERT(list);
-  gtk_combo_box_set_model(combobox,
-                          GTK_TREE_MODEL(list));
-  g_object_unref(G_OBJECT(list));
-  std::string maps_directory =
-      RPG_Map_Common_Tools::getMapsDirectory();
-  unsigned int num_entries = ::load_files(maps_directory,
-                                          false,
+  unsigned int num_entries = ::load_files(REPOSITORY_MAPS,
 																					list);
+	gtk_combo_box_set_model(combobox,
+													GTK_TREE_MODEL(list));
+	g_object_unref(G_OBJECT(list));
 
   combobox =
       GTK_COMBO_BOX(glade_xml_get_widget(userData_in.XML,

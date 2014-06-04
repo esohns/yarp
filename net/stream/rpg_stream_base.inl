@@ -308,9 +308,11 @@ RPG_Stream_Base<TaskSynchType,
                 DataType,
                 SessionConfigType,
                 SessionMessageType,
-                ProtocolMessageType>::stop()
+                ProtocolMessageType>::stop(const bool& lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Stream_Base::stop"));
+
+  ACE_UNUSED_ARG(lockedAccess_in);
 
   // sanity check: is running ?
   if (!isRunning())

@@ -6,12 +6,8 @@ AM_CPPFLAGS = -DACE_HAS_DLL
 bin_PROGRAMS = XML2CppCode
 
 XML2CppCode_SOURCES = \
-  XML_handler.cpp \
-  XML_handler.h \
-  XML_handler_base.cpp \
-  XML_handler_base.h \
-  XML_parser.cpp \
-  XML_parser.h \
+  handle_xmlchoice.cpp \
+  handle_xmlchoice.h \
   handle_xmlenumeration.cpp \
   handle_xmlenumeration.h \
   handle_xmlsequence.cpp \
@@ -22,7 +18,13 @@ XML2CppCode_SOURCES = \
   main.cpp \
   xml2cppcode_common_tools.cpp \
   xml2cppcode_common_tools.h \
-  xml2cppcode.h
+  xml2cppcode.h \
+  XML_handler.cpp \
+  XML_handler.h \
+  XML_handler_base.cpp \
+  XML_handler_base.h \
+  XML_parser.cpp \
+  XML_parser.h
 XML2CppCode_CPPFLAGS = $(AM_CPPFLAGS)
 XML2CppCode_LDFLAGS = -L/usr/local/lib
 XML2CppCode_LDADD = -lACE -lpthread -lxerces-c

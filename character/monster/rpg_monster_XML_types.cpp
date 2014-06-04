@@ -1128,21 +1128,9 @@ RPG_Monster_PropertiesXML_Type_pskel ()
 //
 
 void RPG_Monster_StateBase_Type_pskel::
-conditions_parser (::RPG_Player_Conditions_Type_pskel& p)
-{
-  this->conditions_parser_ = &p;
-}
-
-void RPG_Monster_StateBase_Type_pskel::
 gold_parser (::xml_schema::unsigned_int_pskel& p)
 {
   this->gold_parser_ = &p;
-}
-
-void RPG_Monster_StateBase_Type_pskel::
-HP_parser (::xml_schema::short_pskel& p)
-{
-  this->HP_parser_ = &p;
 }
 
 void RPG_Monster_StateBase_Type_pskel::
@@ -1152,32 +1140,30 @@ inventory_parser (::RPG_Item_InventoryXML_Type_pskel& p)
 }
 
 void RPG_Monster_StateBase_Type_pskel::
-spells_parser (::RPG_Player_Spells_Type_pskel& p)
+maxHP_parser (::xml_schema::unsigned_short_pskel& p)
 {
-  this->spells_parser_ = &p;
+  this->maxHP_parser_ = &p;
 }
 
 void RPG_Monster_StateBase_Type_pskel::
 parsers (::RPG_Player_Conditions_Type_pskel& conditions,
-         ::xml_schema::unsigned_int_pskel& gold,
          ::xml_schema::short_pskel& HP,
+         ::xml_schema::unsigned_int_pskel& gold,
          ::RPG_Item_InventoryXML_Type_pskel& inventory,
-         ::RPG_Player_Spells_Type_pskel& spells)
+         ::xml_schema::unsigned_short_pskel& maxHP)
 {
   this->conditions_parser_ = &conditions;
-  this->gold_parser_ = &gold;
   this->HP_parser_ = &HP;
+  this->gold_parser_ = &gold;
   this->inventory_parser_ = &inventory;
-  this->spells_parser_ = &spells;
+  this->maxHP_parser_ = &maxHP;
 }
 
 RPG_Monster_StateBase_Type_pskel::
 RPG_Monster_StateBase_Type_pskel ()
-: conditions_parser_ (0),
-  gold_parser_ (0),
-  HP_parser_ (0),
+: gold_parser_ (0),
   inventory_parser_ (0),
-  spells_parser_ (0)
+  maxHP_parser_ (0)
 {
 }
 
@@ -1192,17 +1178,17 @@ type_parser (::xml_schema::string_pskel& p)
 
 void RPG_Monster_State_Type_pskel::
 parsers (::RPG_Player_Conditions_Type_pskel& conditions,
-         ::xml_schema::unsigned_int_pskel& gold,
          ::xml_schema::short_pskel& HP,
+         ::xml_schema::unsigned_int_pskel& gold,
          ::RPG_Item_InventoryXML_Type_pskel& inventory,
-         ::RPG_Player_Spells_Type_pskel& spells,
+         ::xml_schema::unsigned_short_pskel& maxHP,
          ::xml_schema::string_pskel& type)
 {
   this->conditions_parser_ = &conditions;
-  this->gold_parser_ = &gold;
   this->HP_parser_ = &HP;
+  this->gold_parser_ = &gold;
   this->inventory_parser_ = &inventory;
-  this->spells_parser_ = &spells;
+  this->maxHP_parser_ = &maxHP;
   this->type_parser_ = &type;
 }
 
@@ -3937,27 +3923,17 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
 //
 
 void RPG_Monster_StateBase_Type_pskel::
-conditions ()
-{
-}
-
-void RPG_Monster_StateBase_Type_pskel::
 gold (unsigned int)
 {
 }
 
 void RPG_Monster_StateBase_Type_pskel::
-HP (short)
+inventory (const RPG_Item_InventoryXML&)
 {
 }
 
 void RPG_Monster_StateBase_Type_pskel::
-inventory ()
-{
-}
-
-void RPG_Monster_StateBase_Type_pskel::
-spells ()
+maxHP (unsigned short)
 {
 }
 
@@ -3973,18 +3949,8 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 {
   XSD_UNUSED (t);
 
-  if (this->::xml_schema::complex_content::_start_element_impl (ns, n, t))
+  if (this->::RPG_Player_StateBase_Type_pskel::_start_element_impl (ns, n, t))
     return true;
-
-  if (n == "conditions" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->conditions_parser_;
-
-    if (this->conditions_parser_)
-      this->conditions_parser_->pre ();
-
-    return true;
-  }
 
   if (n == "gold" && ns == "urn:rpg")
   {
@@ -3992,16 +3958,6 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 
     if (this->gold_parser_)
       this->gold_parser_->pre ();
-
-    return true;
-  }
-
-  if (n == "HP" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->HP_parser_;
-
-    if (this->HP_parser_)
-      this->HP_parser_->pre ();
 
     return true;
   }
@@ -4016,12 +3972,12 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "spells" && ns == "urn:rpg")
+  if (n == "maxHP" && ns == "urn:rpg")
   {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->spells_parser_;
+    this->::xml_schema::complex_content::context_.top ().parser_ = this->maxHP_parser_;
 
-    if (this->spells_parser_)
-      this->spells_parser_->pre ();
+    if (this->maxHP_parser_)
+      this->maxHP_parser_->pre ();
 
     return true;
   }
@@ -4033,19 +3989,8 @@ bool RPG_Monster_StateBase_Type_pskel::
 _end_element_impl (const ::xml_schema::ro_string& ns,
                    const ::xml_schema::ro_string& n)
 {
-  if (this->::xml_schema::complex_content::_end_element_impl (ns, n))
+  if (this->::RPG_Player_StateBase_Type_pskel::_end_element_impl (ns, n))
     return true;
-
-  if (n == "conditions" && ns == "urn:rpg")
-  {
-    if (this->conditions_parser_)
-    {
-      this->conditions_parser_->post_RPG_Player_Conditions_Type ();
-      this->conditions ();
-    }
-
-    return true;
-  }
 
   if (n == "gold" && ns == "urn:rpg")
   {
@@ -4055,32 +4000,18 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
     return true;
   }
 
-  if (n == "HP" && ns == "urn:rpg")
-  {
-    if (this->HP_parser_)
-      this->HP (this->HP_parser_->post_short ());
-
-    return true;
-  }
-
   if (n == "inventory" && ns == "urn:rpg")
   {
     if (this->inventory_parser_)
-    {
-      this->inventory_parser_->post_RPG_Item_InventoryXML_Type ();
-      this->inventory ();
-    }
+      this->inventory (this->inventory_parser_->post_RPG_Item_InventoryXML_Type ());
 
     return true;
   }
 
-  if (n == "spells" && ns == "urn:rpg")
+  if (n == "maxHP" && ns == "urn:rpg")
   {
-    if (this->spells_parser_)
-    {
-      this->spells_parser_->post_RPG_Player_Spells_Type ();
-      this->spells ();
-    }
+    if (this->maxHP_parser_)
+      this->maxHP (this->maxHP_parser_->post_unsigned_short ());
 
     return true;
   }
@@ -4152,7 +4083,7 @@ type (const ::std::string&)
 }
 
 void RPG_Monster_Spawn_Type_pskel::
-interval ()
+interval (const RPG_Common_FixedPeriod&)
 {
 }
 
@@ -4252,10 +4183,7 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   if (n == "interval" && ns == "urn:rpg")
   {
     if (this->interval_parser_)
-    {
-      this->interval_parser_->post_RPG_Common_FixedPeriod_Type ();
-      this->interval ();
-    }
+      this->interval (this->interval_parser_->post_RPG_Common_FixedPeriod_Type ());
 
     return true;
   }

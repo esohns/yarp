@@ -656,27 +656,6 @@ class RPG_Player_Export RPG_Player_PlayerXML_XMLTree_Type: public ::RPG_Player_C
   void
   inventory (::std::auto_ptr< inventory_type > p);
 
-  // spells
-  // 
-  typedef ::RPG_Player_Spells_XMLTree_Type spells_type;
-  typedef ::xsd::cxx::tree::optional< spells_type > spells_optional;
-  typedef ::xsd::cxx::tree::traits< spells_type, char > spells_traits;
-
-  const spells_optional&
-  spells () const;
-
-  spells_optional&
-  spells ();
-
-  void
-  spells (const spells_type& x);
-
-  void
-  spells (const spells_optional& x);
-
-  void
-  spells (::std::auto_ptr< spells_type > p);
-
   // XP
   // 
   typedef ::xml_schema::unsigned_int XP_type;
@@ -742,7 +721,6 @@ class RPG_Player_Export RPG_Player_PlayerXML_XMLTree_Type: public ::RPG_Player_C
   protected:
   ::xsd::cxx::tree::one< gold_type > gold_;
   ::xsd::cxx::tree::one< inventory_type > inventory_;
-  spells_optional spells_;
   ::xsd::cxx::tree::one< XP_type > XP_;
 };
 

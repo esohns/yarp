@@ -77,9 +77,11 @@ RPG_Client_GTK_Manager::start()
 }
 
 void
-RPG_Client_GTK_Manager::stop()
+RPG_Client_GTK_Manager::stop(const bool& lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_GTK_Manager::stop"));
+
+  ACE_UNUSED_ARG(lockedAccess_in);
 
   if (close(0) == -1)
     ACE_DEBUG((LM_ERROR,

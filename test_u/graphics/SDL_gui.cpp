@@ -1018,11 +1018,31 @@ do_UI(RPG_Engine_Entity_t& entity_in,
             dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
             dump_path += entity_in.character->getName();
             dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
-            if (!RPG_Engine_Common_Tools::saveEntity(entity_in,
-                                                     dump_path))
+            RPG_Player* player_p = NULL;
+            try
+            {
+              player_p = dynamic_cast<RPG_Player*>(entity_in.character);
+            }
+            catch (...)
             {
               ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("failed to RPG_Engine_Common_Tools::saveEntity(\"%s\"), aborting\n"),
+                         ACE_TEXT("caught exception in dynamic_cast<RPG_Player*>(%@), aborting\n"),
+                         entity_in.character));
+
+              player_p = NULL;
+            }
+            if (!player_p)
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("failed to dynamic_cast<RPG_Player*>(%@), returning\n"),
+                         entity_in.character));
+
+              return;
+            } // end IF
+            if (!player_p->save(dump_path))
+            {
+              ACE_DEBUG((LM_ERROR,
+                         ACE_TEXT("failed to RPG_Player::save(\"%s\"), aborting\n"),
                          ACE_TEXT(dump_path.c_str())));
 
               return;
@@ -1563,12 +1583,19 @@ do_work(const mode_t& mode_in,
       } // end IF
       else
       {
-        entity = RPG_Engine_Common_Tools::loadEntity(entity_in,
-                                                     schemaRepository);
+        RPG_Character_Conditions_t condition;
+        condition.insert(CONDITION_NORMAL);
+        short int HP = std::numeric_limits<short int>::max();
+        RPG_Magic_Spells_t spells;
+        entity.character = RPG_Player::load(entity_in,
+                                            schemaRepository,
+                                            condition,
+                                            HP,
+                                            spells);
         if (!entity.character)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to RPG_Engine_Common_Tools::loadEntity(\"%s\"), aborting\n"),
+                     ACE_TEXT("failed to RPG_Player::load(\"%s\"), returning\n"),
                      ACE_TEXT(entity_in.c_str())));
 
           return;

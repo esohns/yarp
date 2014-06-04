@@ -577,9 +577,23 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
                                 configuration_in.graphics_dictionary,
                                 true);
 
-  userData_in.entity = RPG_Engine_Common_Tools::loadEntity(playerProfile_in,
-                                                           schemaRepository_in);
-  ACE_ASSERT(userData_in.entity.character);
+  RPG_Character_Conditions_t condition;
+  condition.insert(CONDITION_NORMAL);
+  short int HP = std::numeric_limits<short int>::max();
+  RPG_Magic_Spells_t spells;
+  userData_in.entity.character = RPG_Player::load(playerProfile_in,
+                                                  schemaRepository_in,
+                                                  condition,
+                                                  HP,
+                                                  spells);
+  if (!userData_in.entity.character)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Player::load(\"%s\"), aborting\n"),
+               ACE_TEXT(playerProfile_in.c_str())));
+
+    return;
+  } // end IF
   userData_in.entity.position = level.map.start;
 //   userData_in.entity.actions();
   //userData_in.entity.sprite = RPG_GRAPHICS_SPRITE_INVALID;

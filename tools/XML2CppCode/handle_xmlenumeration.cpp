@@ -105,9 +105,7 @@ void Handle_XMLEnumeration::endElement()
   myOutputFile << std::endl;
 
   if (myEmitStringConversionHelper)
-  {
     emitStringConversionTable();
-  } // end IF
 }
 
 void Handle_XMLEnumeration::emitStringConversionTable()

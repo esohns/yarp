@@ -38,7 +38,7 @@ class Handle_XMLUnion
  public:
   Handle_XMLUnion(std::ofstream&,      // target file stream
                   const bool&,         // emit "tagged" union
-				  const std::string&,  // emit class qualifier (DLL import/export symbols) ?
+                  const std::string&,  // emit class qualifier (DLL import/export symbols) ?
                   const std::string&,  // type prefix
                   const std::string&); // type postfix
   virtual ~Handle_XMLUnion();
@@ -50,7 +50,6 @@ class Handle_XMLUnion
  private:
   typedef IXML_Definition_Handler inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(Handle_XMLUnion());
   ACE_UNIMPLEMENTED_FUNC(Handle_XMLUnion(const Handle_XMLUnion&));
   ACE_UNIMPLEMENTED_FUNC(Handle_XMLUnion& operator=(const Handle_XMLUnion&));

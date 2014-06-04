@@ -14,7 +14,6 @@ struct RPG_Player_Export RPG_Player_PlayerXML
 {
   unsigned int gold;
   RPG_Item_InventoryXML inventory;
-  RPG_Player_Spells spells;
   unsigned int XP;
 };
 

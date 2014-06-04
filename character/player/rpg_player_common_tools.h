@@ -39,7 +39,8 @@ class RPG_Player_Export RPG_Player_Common_Tools
   static RPG_Player* playerXMLToPlayer(const RPG_Player_PlayerXML_XMLTree_Type&, // player model
                                        // current status
                                        const RPG_Character_Conditions_t&,        // condition
-                                       const short int&);                        // HP
+                                       const short int&,                         // HP
+                                       const RPG_Magic_Spells_t&);               // list of prepared spells (if any)
   // *WARNING*: result needs to be delete()d !
   static RPG_Player_PlayerXML_XMLTree_Type* playerToPlayerXML(const RPG_Player&);
 

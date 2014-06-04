@@ -276,12 +276,6 @@ inventory_parser (::RPG_Item_InventoryXML_Type_pskel& p)
 }
 
 void RPG_Player_PlayerXML_Type_pskel::
-spells_parser (::RPG_Player_Spells_Type_pskel& p)
-{
-  this->spells_parser_ = &p;
-}
-
-void RPG_Player_PlayerXML_Type_pskel::
 XP_parser (::xml_schema::unsigned_int_pskel& p)
 {
   this->XP_parser_ = &p;
@@ -303,7 +297,6 @@ parsers (::xml_schema::string_pskel& name,
          ::RPG_Character_Race_Type_pskel& race,
          ::xml_schema::unsigned_int_pskel& gold,
          ::RPG_Item_InventoryXML_Type_pskel& inventory,
-         ::RPG_Player_Spells_Type_pskel& spells,
          ::xml_schema::unsigned_int_pskel& XP)
 {
   this->name_parser_ = &name;
@@ -321,7 +314,6 @@ parsers (::xml_schema::string_pskel& name,
   this->race_parser_ = &race;
   this->gold_parser_ = &gold;
   this->inventory_parser_ = &inventory;
-  this->spells_parser_ = &spells;
   this->XP_parser_ = &XP;
 }
 
@@ -329,7 +321,6 @@ RPG_Player_PlayerXML_Type_pskel::
 RPG_Player_PlayerXML_Type_pskel ()
 : gold_parser_ (0),
   inventory_parser_ (0),
-  spells_parser_ (0),
   XP_parser_ (0)
 {
 }
@@ -901,11 +892,6 @@ inventory (const RPG_Item_InventoryXML&)
 }
 
 void RPG_Player_PlayerXML_Type_pskel::
-spells (const RPG_Player_Spells&)
-{
-}
-
-void RPG_Player_PlayerXML_Type_pskel::
 XP (unsigned int)
 {
 }
@@ -936,16 +922,6 @@ _start_element_impl (const ::xml_schema::ro_string& ns,
 
     if (this->inventory_parser_)
       this->inventory_parser_->pre ();
-
-    return true;
-  }
-
-  if (n == "spells" && ns == "urn:rpg")
-  {
-    this->::xml_schema::complex_content::context_.top ().parser_ = this->spells_parser_;
-
-    if (this->spells_parser_)
-      this->spells_parser_->pre ();
 
     return true;
   }
@@ -982,14 +958,6 @@ _end_element_impl (const ::xml_schema::ro_string& ns,
   {
     if (this->inventory_parser_)
       this->inventory (this->inventory_parser_->post_RPG_Item_InventoryXML_Type ());
-
-    return true;
-  }
-
-  if (n == "spells" && ns == "urn:rpg")
-  {
-    if (this->spells_parser_)
-      this->spells (this->spells_parser_->post_RPG_Player_Spells_Type ());
 
     return true;
   }
