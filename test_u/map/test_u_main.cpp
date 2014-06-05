@@ -726,7 +726,7 @@ test_u_main::init_GUI(const std::string& graphics_directory_in,
 
   button =
       GTK_BUTTON(glade_xml_get_widget(userData_in.XML,
-                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_SAVE_NAME)));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_STORE_NAME)));
   ACE_ASSERT(button);
   g_signal_connect(button,
                    ACE_TEXT_ALWAYS_CHAR("clicked"),

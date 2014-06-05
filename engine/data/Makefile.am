@@ -1,6 +1,13 @@
 pkgdatadir = $(datadir)/@META_PACKAGE@
-enginedir = $(pkgdatadir)/data/profiles
-engine_DATA = default_player.entity
+engineprofiledir = $(pkgdatadir)/data/profiles
+engineprofile_DATA = \
+  default_player.profile
 
-EXTRA_DIST = $(engine_DATA)
+engineleveldir = $(pkgdatadir)/data/maps
+enginelevel_DATA = \
+  default_level.level
+
+EXTRA_DIST = \
+  $(engineprofile_DATA) \
+  $(enginelevel_DATA)
 

@@ -60,6 +60,9 @@ do_printUsage(const std::string& programName_in)
   std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            false);
+#if defined(DEBUG_DEBUGGER)
+  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif
 
   std::cout << ACE_TEXT("usage: ")
             << programName_in
@@ -88,7 +91,8 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
+  path +=
+      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME));
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
   std::cout << ACE_TEXT("-p [FILE]: level plan (*")
             << ACE_TEXT(RPG_ENGINE_LEVEL_FILE_EXT)
@@ -114,6 +118,9 @@ do_processArguments(const int argc_in,
   std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            false);
+#if defined(DEBUG_DEBUGGER)
+  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif
 
   // init results
   buildCorridors_out      = PATH_FINDER_DEF_CORRIDORS;
@@ -130,7 +137,8 @@ do_processArguments(const int argc_in,
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
+  floorPlan_out +=
+      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME));
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   traceInformation_out    = false;
@@ -471,6 +479,9 @@ ACE_TMAIN(int argc_in,
   std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            false);
+#if defined(DEBUG_DEBUGGER)
+  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif
 
   // step1: init
   // step1a set defaults
@@ -488,7 +499,8 @@ ACE_TMAIN(int argc_in,
   floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
+  floor_plan +=
+      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME));
   floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   bool trace_information      = false;

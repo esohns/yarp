@@ -209,13 +209,13 @@ RPG_Engine_Common_Tools::isOneShotEvent(const RPG_Engine_EventType& eventType_in
 }
 
 std::string
-RPG_Engine_Common_Tools::getSavedStateDirectory()
+RPG_Engine_Common_Tools::getEngineStateDirectory()
 {
-	RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::getSavedStateDirectory"));
+	RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::getEngineStateDirectory"));
 
 	std::string result = RPG_Common_File_Tools::getUserConfigurationDirectory();
 	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-	result += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_SAVEDSTATE_SUB);
+	result += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_STATE_SUB);
 
   if (!RPG_Common_File_Tools::isDirectory(result))
   {

@@ -278,7 +278,7 @@ do_printUsage(const std::string& programName_in)
   path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR("map");
+  path += ACE_TEXT_ALWAYS_CHAR("engine");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("data");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -286,12 +286,12 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
+  path += RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME));
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
   std::cout << ACE_TEXT("-f [FILE]  : level plan (*")
             << ACE_TEXT(RPG_ENGINE_LEVEL_FILE_EXT)
             << ACE_TEXT(") [\"")
-            << ACE_TEXT(path.c_str())
+            << path
             << ACE_TEXT("\"]")
             << std::endl;
   path = configuration_path;
@@ -455,15 +455,15 @@ do_processArguments(const int& argc_in,
   floorPlan_out           = data_path;
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(DEBUG_DEBUGGER)
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR("map");
+  floorPlan_out += ACE_TEXT_ALWAYS_CHAR("engine");
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
+  floorPlan_out += ACE_TEXT_ALWAYS_CHAR("data");
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
+  floorPlan_out += RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME));
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   graphicsDictionary_out  = configuration_path;
@@ -547,7 +547,7 @@ do_processArguments(const int& argc_in,
       }
       case 'c':
       {
-        iniFile_out = argumentParser.opt_arg();
+        iniFile_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
@@ -559,25 +559,25 @@ do_processArguments(const int& argc_in,
       }
       case 'e':
       {
-        monsterDictionary_out = argumentParser.opt_arg();
+        monsterDictionary_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
       case 'f':
       {
-        floorPlan_out = argumentParser.opt_arg();
+        floorPlan_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
       case 'g':
       {
-        graphicsDictionary_out = argumentParser.opt_arg();
+        graphicsDictionary_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
       case 'i':
       {
-        itemDictionary_out = argumentParser.opt_arg();
+        itemDictionary_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
@@ -589,7 +589,7 @@ do_processArguments(const int& argc_in,
       }
       case 'm':
       {
-        magicDictionary_out = argumentParser.opt_arg();
+        magicDictionary_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
@@ -601,13 +601,13 @@ do_processArguments(const int& argc_in,
       }
       case 'r':
       {
-        schemaRepository_out = argumentParser.opt_arg();
+        schemaRepository_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
       case 's':
       {
-        soundDictionary_out = argumentParser.opt_arg();
+        soundDictionary_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
@@ -619,7 +619,7 @@ do_processArguments(const int& argc_in,
       }
       case 'u':
       {
-        UIfile_out = argumentParser.opt_arg();
+        UIfile_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
@@ -633,14 +633,14 @@ do_processArguments(const int& argc_in,
       {
         converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-        converter << argumentParser.opt_arg();
+        converter << ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
         converter >> numDispatchThreads_out;
 
         break;
       }
       case 'z':
       {
-        videoDriver_out = argumentParser.opt_arg();
+        videoDriver_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
@@ -1786,7 +1786,7 @@ ACE_TMAIN(int argc_in,
   std::string floor_plan            = data_path;
   floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(DEBUG_DEBUGGER)
-  floor_plan += ACE_TEXT_ALWAYS_CHAR("map");
+  floor_plan += ACE_TEXT_ALWAYS_CHAR("engine");
   floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
   floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -1794,14 +1794,16 @@ ACE_TMAIN(int argc_in,
   floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
+  floor_plan +=
+      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME));
   floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   bool log_to_file                  = false;
   bool trace_information            = false;
   bool print_version_and_exit       = false;
   unsigned int num_dispatch_threads = RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS;
-  std::string video_driver          = RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME;
+  std::string video_driver          =
+      ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME);
   bool skip_intro                   = false;
   if (!do_processArguments(argc_in,
                            argv_in,
@@ -1894,29 +1896,29 @@ ACE_TMAIN(int argc_in,
 			ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME);
 	//
 	GTK_user_data.level_metadata.environment.plane    =
-			RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_PLANE;
+			RPG_ENGINE_ENVIRONMENT_DEF_PLANE;
 	GTK_user_data.level_metadata.environment.terrain  =
-			RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_TERRAIN;
+			RPG_ENGINE_ENVIRONMENT_DEF_TERRAIN;
 	GTK_user_data.level_metadata.environment.climate  =
-			RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_CLIMATE;
+			RPG_ENGINE_ENVIRONMENT_DEF_CLIMATE;
 	GTK_user_data.level_metadata.environment.time     =
-			RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_TIMEOFDAY;
+			RPG_ENGINE_ENVIRONMENT_DEF_TIMEOFDAY;
 	GTK_user_data.level_metadata.environment.lighting =
-			RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_LIGHTING;
+			RPG_ENGINE_ENVIRONMENT_DEF_LIGHTING;
 	GTK_user_data.level_metadata.environment.outdoors =
-			RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_OUTDOORS;
+			RPG_ENGINE_ENVIRONMENT_DEF_OUTDOORS;
 	//
 	RPG_Engine_Spawn_t spawn;
-	spawn.spawn.type = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TYPE);
-	spawn.spawn.interval.seconds = RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TIMER_INTERVAL;
+	spawn.spawn.type = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENCOUNTER_DEF_TYPE);
+	spawn.spawn.interval.seconds = RPG_ENGINE_ENCOUNTER_DEF_TIMER_INTERVAL;
 	spawn.spawn.interval.u_seconds = 0;
-	spawn.spawn.probability =	RPG_ENGINE_LEVEL_AI_DEF_SPAWN_PROBABILITY;
-	spawn.spawn.max_num_spawned =	RPG_ENGINE_LEVEL_AI_DEF_NUM_SPAWNED_MAX;
-	spawn.spawn.amble_probability = RPG_ENGINE_LEVEL_AI_DEF_AMBLE_PROBABILITY;
+	spawn.spawn.probability =	RPG_ENGINE_ENCOUNTER_DEF_PROBABILITY;
+	spawn.spawn.max_num_spawned =	RPG_ENGINE_ENCOUNTER_DEF_NUM_SPAWNED_MAX;
+	spawn.spawn.amble_probability = RPG_ENGINE_ENCOUNTER_DEF_AMBLE_PROBABILITY;
 	spawn.timer_id = -1;
 	GTK_user_data.level_metadata.spawns.push_back(spawn);
 	GTK_user_data.level_metadata.max_num_spawned =
-			RPG_ENGINE_LEVEL_AI_DEF_NUM_SPAWNED_MAX;
+			RPG_ENGINE_ENCOUNTER_DEF_NUM_SPAWNED_MAX;
 	//
   GTK_user_data.map_configuration.min_room_size          =
       RPG_CLIENT_DEF_MAP_MIN_ROOM_SIZE;

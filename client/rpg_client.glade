@@ -413,7 +413,7 @@
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkButton" id="save">
+                              <widget class="GtkButton" id="store">
                                 <property name="label">gtk-save</property>
                                 <property name="visible">True</property>
                                 <property name="sensitive">False</property>
@@ -602,7 +602,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <widget class="GtkButton" id="map_save">
+                                  <widget class="GtkButton" id="map_store">
                                     <property name="label">gtk-save</property>
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
@@ -760,7 +760,7 @@
                                         <property name="homogeneous">True</property>
                                         <property name="layout_style">spread</property>
                                         <child>
-                                          <widget class="GtkButton" id="state_load">
+                                          <widget class="GtkButton" id="engine_state_load">
                                             <property name="label">gtk-open</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
@@ -777,7 +777,7 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <widget class="GtkButton" id="state_save">
+                                          <widget class="GtkButton" id="engine_state_store">
                                             <property name="label">gtk-save</property>
                                             <property name="visible">True</property>
                                             <property name="sensitive">False</property>
@@ -816,7 +816,7 @@
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">False</property>
                                                 <child>
-                                                  <widget class="GtkComboBox" id="savedstate_repository_combobox">
+                                                  <widget class="GtkComboBox" id="engine_state_repository_combobox">
                                                     <property name="visible">True</property>
                                                     <property name="sensitive">False</property>
                                                     <property name="can_focus">True</property>
@@ -831,7 +831,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <widget class="GtkButton" id="savedstate_refresh">
+                                                  <widget class="GtkButton" id="engine_state_refresh">
                                                     <property name="label">gtk-refresh</property>
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
@@ -900,7 +900,7 @@
                             <property name="homogeneous">True</property>
                             <property name="layout_style">spread</property>
                             <child>
-                              <widget class="GtkButton" id="join">
+                              <widget class="GtkButton" id="server_join">
                                 <property name="label">gtk-connect</property>
                                 <property name="visible">True</property>
                                 <property name="sensitive">False</property>
@@ -921,7 +921,7 @@
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkButton" id="part">
+                              <widget class="GtkButton" id="server_part">
                                 <property name="label">gtk-disconnect</property>
                                 <property name="visible">True</property>
                                 <property name="sensitive">False</property>

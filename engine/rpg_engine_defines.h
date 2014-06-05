@@ -22,55 +22,54 @@
 #define RPG_ENGINE_DEFINES_H
 
 // task-specific
-#define RPG_ENGINE_TASK_GROUP_ID                     102
-#define RPG_ENGINE_TASK_THREAD_NAME                  "RPG state engine"
-#define RPG_ENGINE_AI_TASK_GROUP_ID                  103
-#define RPG_ENGINE_AI_TASK_THREAD_NAME               "RPG AI"
-#define RPG_ENGINE_AI_DEF_NUM_THREADS                3
-#define RPG_ENGINE_MAX_QUEUE_SLOTS                   100
+#define RPG_ENGINE_TASK_GROUP_ID                    102
+#define RPG_ENGINE_TASK_THREAD_NAME                 "RPG state engine"
+#define RPG_ENGINE_AI_TASK_GROUP_ID                 103
+#define RPG_ENGINE_AI_TASK_THREAD_NAME              "RPG AI"
+#define RPG_ENGINE_AI_DEF_NUM_THREADS               3
+#define RPG_ENGINE_MAX_QUEUE_SLOTS                  100
 //#define RPG_ENGINE_EVENT_PEEK_INTERVAL      50 // ms
 
-#define RPG_ENGINE_SPEED_MODIFIER                    20 // --> 1/20 speed <==> normal
-#define RPG_ENGINE_ROUND_INTERVAL                    6 // s
-#define RPG_ENGINE_FEET_PER_SQUARE                   5
+#define RPG_ENGINE_SPEED_MODIFIER                   20 // --> 1/20 speed <==> normal
+#define RPG_ENGINE_ROUND_INTERVAL                   6 // s
+#define RPG_ENGINE_FEET_PER_SQUARE                  5
 
 // *TODO*: remove these...
-#define RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_PLANE       PLANE_MATERIAL
-#define RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_TERRAIN     TERRAIN_UNDER_GROUND
-#define RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_CLIMATE     CLIMATE_TEMPERATE
-#define RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_TIMEOFDAY   TIMEOFDAY_DAYTIME
-#define RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_LIGHTING    AMBIENCE_DARKNESS
-#define RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_OUTDOORS    false
+#define RPG_ENGINE_ENVIRONMENT_DEF_PLANE            PLANE_MATERIAL
+#define RPG_ENGINE_ENVIRONMENT_DEF_TERRAIN          TERRAIN_UNDER_GROUND
+#define RPG_ENGINE_ENVIRONMENT_DEF_CLIMATE          CLIMATE_TEMPERATE
+#define RPG_ENGINE_ENVIRONMENT_DEF_TIMEOFDAY        TIMEOFDAY_DAYTIME
+#define RPG_ENGINE_ENVIRONMENT_DEF_LIGHTING         AMBIENCE_DARKNESS
+#define RPG_ENGINE_ENVIRONMENT_DEF_OUTDOORS         false
 // *TODO*: remove these...
-#define RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TYPES_MAX      3
-#define RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TYPE           "Bugbear"
-#define RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TIMER_INTERVAL 10 // second(s)
-#define RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TIMER_INTERVAL_MAX 60 // second(s)
-#define RPG_ENGINE_LEVEL_AI_DEF_SPAWN_PROBABILITY    0.3F // --> 30 %
-#define RPG_ENGINE_LEVEL_AI_DEF_NUM_SPAWNED_MAX      50 // [0 --> unlimited]
-#define RPG_ENGINE_LEVEL_AI_DEF_AMBLE_PROBABILITY    0.5F // --> 50 %
+#define RPG_ENGINE_ENCOUNTER_DEF_TYPES_MAX          3
+#define RPG_ENGINE_ENCOUNTER_DEF_TYPE               "Bugbear"
+#define RPG_ENGINE_ENCOUNTER_DEF_TIMER_INTERVAL     10 // second(s)
+#define RPG_ENGINE_ENCOUNTER_DEF_TIMER_INTERVAL_MAX 60 // second(s)
+#define RPG_ENGINE_ENCOUNTER_DEF_PROBABILITY        0.3F // --> 30 %
+#define RPG_ENGINE_ENCOUNTER_DEF_NUM_SPAWNED_MAX    50 // [0 --> unlimited]
+#define RPG_ENGINE_ENCOUNTER_DEF_AMBLE_PROBABILITY  0.5F // --> 50 %
 
 // XML-specific
-#define RPG_ENGINE_SCHEMA_FILE                       "rpg_engine.xsd"
+#define RPG_ENGINE_SCHEMA_FILE                      "rpg_engine.xsd"
 // level-specific
-#define RPG_ENGINE_LEVEL_DEF_NAME                    "default level"
-#define RPG_ENGINE_LEVEL_NAME_MAX_LENGTH             30
-#define RPG_ENGINE_LEVEL_FILE_EXT                    ".level"
-#define RPG_ENGINE_LEVEL_DEF_FILE                    "dungeon_one"
+#define RPG_ENGINE_LEVEL_DEF_NAME                   "default level"
+#define RPG_ENGINE_LEVEL_NAME_MAX_LENGTH            30
+#define RPG_ENGINE_LEVEL_FILE_EXT                   ".level"
 // state-specific
-#define RPG_ENGINE_SAVEDSTATE_EXT                    ".state"
-#define RPG_ENGINE_SAVEDSTATE_SUB                    "saved_state"
+#define RPG_ENGINE_STATE_EXT                        ".state"
+#define RPG_ENGINE_STATE_SUB                        "engine_state"
 
 // network-specific
-#define RPG_ENGINE_DEF_NETWORK_SERVER                "localhost"
-#define RPG_ENGINE_DEF_NETWORK_PORT                  6667
-#define RPG_ENGINE_DEF_NETWORK_PASSWORD              "secretpasswordhere"
-#define RPG_ENGINE_DEF_NETWORK_NICK                  "Wiz"
-#define RPG_ENGINE_DEF_NETWORK_USER                  "user"
-#define RPG_ENGINE_DEF_NETWORK_REALNAME              "Ronnie Reagan"
-#define RPG_ENGINE_DEF_NETWORK_CHANNEL               "#foobar"
+#define RPG_ENGINE_DEF_NETWORK_SERVER               "localhost"
+#define RPG_ENGINE_DEF_NETWORK_PORT                 6667
+#define RPG_ENGINE_DEF_NETWORK_PASSWORD             "secretpasswordhere"
+#define RPG_ENGINE_DEF_NETWORK_NICK                 "Wiz"
+#define RPG_ENGINE_DEF_NETWORK_USER                 "user"
+#define RPG_ENGINE_DEF_NETWORK_REALNAME             "Ronnie Reagan"
+#define RPG_ENGINE_DEF_NETWORK_CHANNEL              "#foobar"
 
 // gtk
-#define RPG_ENGINE_GTK_LEVEL_FILTER                  "levels"
+#define RPG_ENGINE_GTK_LEVEL_FILTER                 "levels"
 
 #endif

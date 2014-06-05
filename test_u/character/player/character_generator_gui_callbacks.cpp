@@ -219,7 +219,7 @@ create_character_clicked_GTK_cb(GtkWidget* widget_in,
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
   // make save button sensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->xml,
-                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_SAVE_NAME)));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_STORE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
   // make load button in-sensitive (if it's not already)
@@ -364,7 +364,7 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
   // make save button in-sensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->xml,
-                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_SAVE_NAME)));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_STORE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
   // make load button sensitive (if it's not already)
@@ -517,7 +517,7 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
   // make save button in-sensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->xml,
-                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_SAVE_NAME)));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_STORE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
   // make load button in-sensitive (if it's not already)
@@ -694,7 +694,7 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
   // make save button in-sensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->xml,
-                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_SAVE_NAME)));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_STORE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
@@ -765,7 +765,7 @@ prev_image_clicked_GTK_cb(GtkWidget* widget_in,
   // make character save button sensitive (if it's not already)
   GtkButton* save =
       GTK_BUTTON(glade_xml_get_widget(data->xml,
-                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_SAVE_NAME)));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_STORE_NAME)));
   ACE_ASSERT(save);
   gtk_widget_set_sensitive(GTK_WIDGET(save), TRUE);
 
@@ -795,7 +795,7 @@ next_image_clicked_GTK_cb(GtkWidget* widget_in,
   // make character save button sensitive (if it's not already)
   GtkButton* save =
       GTK_BUTTON(glade_xml_get_widget(data->xml,
-                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_SAVE_NAME)));
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_STORE_NAME)));
   ACE_ASSERT(save);
   gtk_widget_set_sensitive(GTK_WIDGET(save), TRUE);
 

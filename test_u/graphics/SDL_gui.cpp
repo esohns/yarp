@@ -318,7 +318,8 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
+  path +=
+      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME));
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
   std::cout << ACE_TEXT("-o         : OpenGL mode")
             << ACE_TEXT(" [")
@@ -452,7 +453,8 @@ do_processArguments(const int argc_in,
   mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
+  mapFile_out +=
+      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME));
   mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   slideShowMode_out       = (SDL_GUI_DEF_MODE == SDL_GUI_USERMODE_SLIDESHOW);
@@ -1877,7 +1879,8 @@ ACE_TMAIN(int argc_in,
   map_filename += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   map_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  map_filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
+  map_filename +=
+      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME));
   map_filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   bool slideshow_mode             = (SDL_GUI_DEF_MODE ==

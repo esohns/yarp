@@ -939,34 +939,19 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       myEngine->lock();
       const RPG_Engine_LevelMetaData_t& level_metadata =
           myEngine->getMetaData(false);
-
-      RPG_Engine_EntitiesIterator_t iterator =
-          myEngine->myEntities.find(event_in.entity_id);
-      if (iterator == myEngine->myEntities.end())
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
-                   event_in.entity_id));
-
-        // clean up
-        myEngine->unlock();
-
-        break;
-      } // end IF
-
-      RPG_Engine_SpawnsConstIterator_t iterator2 =
+      RPG_Engine_SpawnsConstIterator_t iterator =
           level_metadata.spawns.begin();
       for (;
-           iterator2 != level_metadata.spawns.end();
-           iterator2++)
-        if (event_in.timer_id == (*iterator2).timer_id)
+           iterator != level_metadata.spawns.end();
+           iterator++)
+        if (event_in.timer_id == (*iterator).timer_id)
           break;
-      if ((iterator2 == level_metadata.spawns.end())                          ||
+      if ((iterator == level_metadata.spawns.end())                          ||
           (myEngine->numSpawned(std::string(),
                                 false) >= level_metadata.max_num_spawned)     ||
-          (myEngine->numSpawned((*iterator).second->character->getName(),
-                                false) >= (*iterator2).spawn.max_num_spawned) ||
-          !RPG_Dice::probability((*iterator2).spawn.probability))
+          (myEngine->numSpawned((*iterator).spawn.type,
+                                false) >= (*iterator).spawn.max_num_spawned) ||
+          !RPG_Dice::probability((*iterator).spawn.probability))
       {
         // clean up
         myEngine->unlock();
@@ -995,7 +980,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       condition.insert(CONDITION_NORMAL);
       short int hitpoints = 1;
       RPG_Magic_Spells_t spells;
-      *entity = RPG_Engine_Common_Tools::createEntity((*iterator2).spawn.type,
+      *entity = RPG_Engine_Common_Tools::createEntity((*iterator).spawn.type,
                                                       max_hitpoints,
                                                       gold,
                                                       items,
@@ -1006,7 +991,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Engine_Common_Tools::createEntity(\"%s\"), aborting\n"),
-                   ACE_TEXT((*iterator2).spawn.type.c_str())));
+                   ACE_TEXT((*iterator).spawn.type.c_str())));
 
         // clean up
         delete entity;
@@ -1018,8 +1003,8 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       // choose random entry point
       myEngine->lock();
       const RPG_Map_Positions_t& seed_points = myEngine->getSeedPoints(false);
-      RPG_Map_PositionsConstIterator_t iterator3 = seed_points.begin();
-      if (iterator3 == seed_points.end())
+      RPG_Map_PositionsConstIterator_t iterator2 = seed_points.begin();
+      if (iterator2 == seed_points.end())
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("current map has no seed points, aborting\n")));
@@ -1034,10 +1019,10 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       RPG_Dice::generateRandomNumbers(seed_points.size(),
                                       1,
                                       roll_result);
-      std::advance(iterator3, roll_result.front() - 1);
+      std::advance(iterator2, roll_result.front() - 1);
 
       // find empty position
-      entity->position = myEngine->findValid(*iterator3,
+      entity->position = myEngine->findValid(*iterator2,
                                              0,
                                              false);
       if (entity->position ==
@@ -1059,7 +1044,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       RPG_Engine_EntityID_t id = myEngine->add(entity, false);
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("spawned \"%s\" [id: %u] @ [%u,%u]...\n"),
-                 ACE_TEXT((*iterator2).spawn.type.c_str()),
+                 ACE_TEXT((*iterator).spawn.type.c_str()),
                  id,
                  entity->position.first, entity->position.second));
       myEngine->unlock();

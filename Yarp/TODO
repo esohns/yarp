@@ -41,6 +41,9 @@
 - [doc] define coding (style) guidelines
 - [doc] API documentation
 - consider introducing exceptions for (non-)critical error-handling
+- reorganize/refactor (player) character libraries, should be merged to a consistent entity concept
+- support wide character stdout
+- evaluate/repair pre-compiled headers
 
 ################################################################################
 

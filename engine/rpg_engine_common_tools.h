@@ -71,7 +71,7 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
 	static bool isOneShotEvent(const RPG_Engine_EventType&);
 
   // ***** state-related *****
-  static std::string getSavedStateDirectory();
+  static std::string getEngineStateDirectory();
 
   // ***** entity-related *****
   static RPG_Engine_Entity_t createEntity();

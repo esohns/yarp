@@ -191,7 +191,8 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
+  path +=
+      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME));
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
   std::cout << ACE_TEXT("-l [FILE]: level map (*")
             << ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
@@ -285,7 +286,8 @@ do_processArguments(const int& argc_in,
   levelMap_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   levelMap_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  levelMap_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
+  levelMap_out +=
+      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME));
   levelMap_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   monsterDictionary_out   = configuration_path;
@@ -516,8 +518,8 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("loaded level map: \"%s\"\n%s\n"),
-             levelFilename_in.c_str(),
-             RPG_Map_Level::info(level.map).c_str()));
+             ACE_TEXT(levelFilename_in.c_str()),
+             ACE_TEXT(RPG_Map_Level::info(level.map).c_str())));
 
   // step2: process doors
   RPG_Map_Positions_t door_positions;
@@ -709,7 +711,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_AddTimer(%u): \"%s\", aborting\n"),
                RPG_CLIENT_SDL_EVENT_TIMEOUT,
-               SDL_GetError()));
+               ACE_TEXT(SDL_GetError())));
 
     // clean up
     level_engine.stop();
@@ -759,7 +761,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
 //     {
 //       ACE_DEBUG((LM_ERROR,
 //                  ACE_TEXT("failed to SDL_PollEvent(): \"%s\", aborting\n"),
-//                  SDL_GetError()));
+//                  ACE_TEXT(SDL_GetError())));
 //
 //       return;
 //     } // end IF
@@ -767,7 +769,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
-                 SDL_GetError()));
+                 ACE_TEXT(SDL_GetError())));
 
       // clean up
       level_engine.stop();
@@ -1211,7 +1213,8 @@ ACE_TMAIN(int argc_in,
   level_map += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   level_map += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  level_map += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
+  level_map +=
+      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME));
   level_map += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
 	std::string entity_profile      = data_path;
@@ -1459,7 +1462,7 @@ ACE_TMAIN(int argc_in,
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
-             working_time_string.c_str()));
+             ACE_TEXT(working_time_string.c_str())));
 
 // *PORTABILITY*: on Windows, must fini ACE...
 #if defined(ACE_WIN32) || defined(ACE_WIN64)

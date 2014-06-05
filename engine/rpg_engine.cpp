@@ -1231,7 +1231,7 @@ RPG_Engine::save(const std::string& descriptor_in)
   if (inherited2::myMetaData.name.empty())
     return true; // nothing to do...
 
-  std::string filename = RPG_Engine_Common_Tools::getSavedStateDirectory();
+  std::string filename = RPG_Engine_Common_Tools::getEngineStateDirectory();
   filename += myMetaData.name;
   if (iterator != myEntities.end())
   {
@@ -1243,7 +1243,7 @@ RPG_Engine::save(const std::string& descriptor_in)
     filename += ACE_TEXT_ALWAYS_CHAR("_");
     filename += descriptor_in;
   } // end IF
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_SAVEDSTATE_EXT);
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_STATE_EXT);
   if (RPG_Common_File_Tools::isReadable(filename))
   {
     // *TODO*: warn user ?

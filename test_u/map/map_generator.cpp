@@ -122,7 +122,7 @@ do_printUsage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path +=
-      (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE)
+      (MAP_GENERATOR_DEF_LEVEL ? RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME))
                                : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP_FILE));
   path +=
       (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
@@ -365,7 +365,7 @@ do_processArguments(const int argc_in,
   if (default_output_path == outputFile_out)
 	{
 		outputFile_out +=
-				(level_out ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE)
+				(level_out ? RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME))
 									 : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP_FILE));
 		outputFile_out +=
 				(level_out ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
@@ -417,30 +417,30 @@ do_work(const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
           ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME);
 
       level.metadata.environment.plane    =
-          RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_PLANE;
+          RPG_ENGINE_ENVIRONMENT_DEF_PLANE;
       level.metadata.environment.terrain  =
-          RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_TERRAIN;
+          RPG_ENGINE_ENVIRONMENT_DEF_TERRAIN;
       level.metadata.environment.climate  =
-          RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_CLIMATE;
+          RPG_ENGINE_ENVIRONMENT_DEF_CLIMATE;
       level.metadata.environment.time     =
-          RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_TIMEOFDAY;
+          RPG_ENGINE_ENVIRONMENT_DEF_TIMEOFDAY;
       level.metadata.environment.lighting =
-          RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_LIGHTING;
+          RPG_ENGINE_ENVIRONMENT_DEF_LIGHTING;
       level.metadata.environment.outdoors =
-          RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_OUTDOORS;
+          RPG_ENGINE_ENVIRONMENT_DEF_OUTDOORS;
 
       RPG_Engine_Spawn_t spawn;
-      spawn.spawn.amble_probability = RPG_ENGINE_LEVEL_AI_DEF_AMBLE_PROBABILITY;
+      spawn.spawn.amble_probability = RPG_ENGINE_ENCOUNTER_DEF_AMBLE_PROBABILITY;
       spawn.spawn.interval.seconds =
-          RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TIMER_INTERVAL;
+          RPG_ENGINE_ENCOUNTER_DEF_TIMER_INTERVAL;
       spawn.spawn.interval.u_seconds = 0;
-      spawn.spawn.max_num_spawned = RPG_ENGINE_LEVEL_AI_DEF_NUM_SPAWNED_MAX;
-      spawn.spawn.probability = RPG_ENGINE_LEVEL_AI_DEF_SPAWN_PROBABILITY;
+      spawn.spawn.max_num_spawned = RPG_ENGINE_ENCOUNTER_DEF_NUM_SPAWNED_MAX;
+      spawn.spawn.probability = RPG_ENGINE_ENCOUNTER_DEF_PROBABILITY;
       spawn.spawn.type =
-          ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TYPE);
+          ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENCOUNTER_DEF_TYPE);
       spawn.timer_id = -1;
       level.metadata.spawns.push_back(spawn);
-      level.metadata.max_num_spawned = RPG_ENGINE_LEVEL_AI_DEF_NUM_SPAWNED_MAX;
+      level.metadata.max_num_spawned = RPG_ENGINE_ENCOUNTER_DEF_NUM_SPAWNED_MAX;
 
       RPG_Engine_Level::create(mapConfig_in,
                                level);
@@ -589,7 +589,7 @@ ACE_TMAIN(int argc_in,
 #endif
   std::string default_output_file = output_file;
   default_output_file +=
-      (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE)
+      (MAP_GENERATOR_DEF_LEVEL ? RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME))
                                : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP_FILE));
   default_output_file +=
       (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
@@ -756,7 +756,6 @@ ACE_TMAIN(int argc_in,
     return EXIT_FAILURE;
   } // end IF
 #endif
-
 
   return EXIT_SUCCESS;
 } // end main

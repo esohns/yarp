@@ -4120,18 +4120,19 @@ RPG_Map_Common_Tools::getMapsDirectory()
 
   std::string result;
 
-  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  data_path =
+  std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            false);
-#endif // #ifdef BASEDIR
+#if defined(DEBUG_DEBUGGER)
+  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif
+
 	result = data_path;
 	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-	result += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAP_SUB);
+#if defined(DEBUG_DEBUGGER)
+	result += ACE_TEXT_ALWAYS_CHAR("engine");
 	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-	result += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
+	result += ACE_TEXT_ALWAYS_CHAR("data");
 #else
   result += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
 #endif

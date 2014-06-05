@@ -106,7 +106,7 @@ reset_layout(GTK_cb_data_t& userData_in)
 																						 ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENVIRONMENT_OUTDOORS_CHECKBUTTON_NAME)));
 	ACE_ASSERT(togglebutton);
 	gtk_toggle_button_set_active(togglebutton,
-															 RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_OUTDOORS);
+															 RPG_ENGINE_ENVIRONMENT_DEF_OUTDOORS);
 
   GtkTreeView* treeview =
         GTK_TREE_VIEW(glade_xml_get_widget(userData_in.XML,
@@ -121,28 +121,28 @@ reset_layout(GTK_cb_data_t& userData_in)
 																					 ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENCOUNTERS_SPAWNINTERVAL_SPINBUTTON_NAME)));
 	ACE_ASSERT(spinbutton);
 	gtk_spin_button_set_value(spinbutton,
-														RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TIMER_INTERVAL);
+														RPG_ENGINE_ENCOUNTER_DEF_TIMER_INTERVAL);
 
 	spinbutton =
 			GTK_SPIN_BUTTON(glade_xml_get_widget(userData_in.XML,
 																					 ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENCOUNTERS_SPAWNPROBABILITY_SPINBUTTON_NAME)));
 	ACE_ASSERT(spinbutton);
 	gtk_spin_button_set_value(spinbutton,
-														RPG_ENGINE_LEVEL_AI_DEF_SPAWN_PROBABILITY);
+														RPG_ENGINE_ENCOUNTER_DEF_PROBABILITY);
 
 	spinbutton =
 			GTK_SPIN_BUTTON(glade_xml_get_widget(userData_in.XML,
 																					 ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENCOUNTERS_MAXNUMSPAWNED_SPINBUTTON_NAME)));
 	ACE_ASSERT(spinbutton);
 	gtk_spin_button_set_value(spinbutton,
-														RPG_ENGINE_LEVEL_AI_DEF_NUM_SPAWNED_MAX);
+														RPG_ENGINE_ENCOUNTER_DEF_NUM_SPAWNED_MAX);
 
 	spinbutton =
 			GTK_SPIN_BUTTON(glade_xml_get_widget(userData_in.XML,
 																					 ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENCOUNTERS_AMBLEPROBABILITY_SPINBUTTON_NAME)));
 	ACE_ASSERT(spinbutton);
 	gtk_spin_button_set_value(spinbutton,
-														RPG_ENGINE_LEVEL_AI_DEF_AMBLE_PROBABILITY);
+														RPG_ENGINE_ENCOUNTER_DEF_AMBLE_PROBABILITY);
 
   GtkTextView* view =
       GTK_TEXT_VIEW(glade_xml_get_widget(userData_in.XML,
@@ -503,13 +503,15 @@ create_map_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
   // make save button sensitive (if it's not already)
-  button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_SAVE_NAME)));
+  button =
+      GTK_BUTTON(glade_xml_get_widget(data->XML,
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_STORE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
   // make load button in-sensitive (if it's not already)
-  button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_LOAD_NAME)));
+  button =
+      GTK_BUTTON(glade_xml_get_widget(data->XML,
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_LOAD_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
   // make this in-sensitive
@@ -644,7 +646,7 @@ drop_map_clicked_GTK_cb(GtkWidget* widget_in,
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
   // make save button in-sensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_SAVE_NAME)));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_STORE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
   // make load button sensitive (if it's not already)
@@ -683,7 +685,7 @@ load_map_clicked_GTK_cb(GtkWidget* widget_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
-               ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_FILECHOOSER_NAME)));
+               ACE_TEXT(RPG_CLIENT_GTK_DIALOG_FILECHOOSER_NAME)));
 
     return FALSE;
   } // end IF
@@ -756,7 +758,7 @@ map_file_activated_GTK_cb(GtkWidget* widget_in,
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
   // make save button in-sensitive (if it's not already)
   button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_SAVE_NAME)));
+                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_STORE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
@@ -842,14 +844,16 @@ save_map_clicked_GTK_cb(GtkWidget* widget_in,
 	data->is_transient = false;
 
   // make new button sensitive
-  GtkButton* button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_CREATE_NAME)));
+  GtkButton* button =
+      GTK_BUTTON(glade_xml_get_widget(data->XML,
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_CREATE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
   // make save button in-sensitive
   gtk_widget_set_sensitive(widget_in, FALSE);
-  button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_LOAD_NAME)));
+  button =
+      GTK_BUTTON(glade_xml_get_widget(data->XML,
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_LOAD_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
@@ -923,10 +927,11 @@ map_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
                                       ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_DROP_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button),
-                           (active_item != ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE)));
+                           (active_item != RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME))));
   // make save button in-sensitive (if it's not already)
-  button = GTK_BUTTON(glade_xml_get_widget(data->XML,
-                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_SAVE_NAME)));
+  button =
+      GTK_BUTTON(glade_xml_get_widget(data->XML,
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_STORE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 

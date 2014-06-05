@@ -77,28 +77,28 @@ RPG_Engine_Level::create(const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
   level_out.metadata.name = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME);
 
   level_out.metadata.environment.climate =
-      RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_CLIMATE;
+      RPG_ENGINE_ENVIRONMENT_DEF_CLIMATE;
   level_out.metadata.environment.lighting =
-      RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_LIGHTING;
+      RPG_ENGINE_ENVIRONMENT_DEF_LIGHTING;
   level_out.metadata.environment.outdoors =
-      RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_OUTDOORS;
-  level_out.metadata.environment.plane = RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_PLANE;
+      RPG_ENGINE_ENVIRONMENT_DEF_OUTDOORS;
+  level_out.metadata.environment.plane = RPG_ENGINE_ENVIRONMENT_DEF_PLANE;
   level_out.metadata.environment.terrain =
-      RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_TERRAIN;
+      RPG_ENGINE_ENVIRONMENT_DEF_TERRAIN;
   level_out.metadata.environment.time =
-      RPG_ENGINE_LEVEL_ENVIRONMENT_DEF_TIMEOFDAY;
+      RPG_ENGINE_ENVIRONMENT_DEF_TIMEOFDAY;
 
   level_out.metadata.spawns.clear();
   RPG_Engine_Spawn_t default_spawn;
-  default_spawn.spawn.type = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TYPE);
-  default_spawn.spawn.interval.seconds = RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TIMER_INTERVAL;
+  default_spawn.spawn.type = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENCOUNTER_DEF_TYPE);
+  default_spawn.spawn.interval.seconds = RPG_ENGINE_ENCOUNTER_DEF_TIMER_INTERVAL;
   default_spawn.spawn.interval.u_seconds = 0;
-  default_spawn.spawn.probability = RPG_ENGINE_LEVEL_AI_DEF_SPAWN_PROBABILITY;
-  default_spawn.spawn.max_num_spawned = RPG_ENGINE_LEVEL_AI_DEF_NUM_SPAWNED_MAX;
-  default_spawn.spawn.amble_probability = RPG_ENGINE_LEVEL_AI_DEF_AMBLE_PROBABILITY;
+  default_spawn.spawn.probability = RPG_ENGINE_ENCOUNTER_DEF_PROBABILITY;
+  default_spawn.spawn.max_num_spawned = RPG_ENGINE_ENCOUNTER_DEF_NUM_SPAWNED_MAX;
+  default_spawn.spawn.amble_probability = RPG_ENGINE_ENCOUNTER_DEF_AMBLE_PROBABILITY;
   default_spawn.timer_id = -1;
   level_out.metadata.spawns.push_back(default_spawn);
-  level_out.metadata.max_num_spawned = RPG_ENGINE_LEVEL_AI_DEF_NUM_SPAWNED_MAX;
+  level_out.metadata.max_num_spawned = RPG_ENGINE_ENCOUNTER_DEF_NUM_SPAWNED_MAX;
 
   level_out.map.start =
       std::make_pair(std::numeric_limits<unsigned int>::max(),
@@ -626,8 +626,8 @@ RPG_Engine_Level::random(const RPG_Engine_LevelMetaData_t& metaData_in,
   if (!possible.empty())
   {
     unsigned int number = 0;
-    RPG_Dice::generateRandomNumbers((possible.size() < RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TYPES_MAX) ? (possible.size() + 1)
-                                                                                                : (RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TYPES_MAX + 1),
+    RPG_Dice::generateRandomNumbers((possible.size() < RPG_ENGINE_ENCOUNTER_DEF_TYPES_MAX) ? (possible.size() + 1)
+                                                                                           : (RPG_ENGINE_ENCOUNTER_DEF_TYPES_MAX + 1),
                                     1,
                                     result);
     number = (result.front() - 1);
@@ -658,7 +658,7 @@ RPG_Engine_Level::random(const RPG_Engine_LevelMetaData_t& metaData_in,
       spawn.spawn.type = *iterator;
 
       result.clear();
-      RPG_Dice::generateRandomNumbers(RPG_ENGINE_LEVEL_AI_DEF_SPAWN_TIMER_INTERVAL_MAX,
+      RPG_Dice::generateRandomNumbers(RPG_ENGINE_ENCOUNTER_DEF_TIMER_INTERVAL_MAX,
                                       1,
                                       result);
       spawn.spawn.interval.seconds = result.front();
@@ -671,7 +671,7 @@ RPG_Engine_Level::random(const RPG_Engine_LevelMetaData_t& metaData_in,
       spawn.spawn.probability = (static_cast<float>(result.front()) / 100.0F);
 
       result.clear();
-      RPG_Dice::generateRandomNumbers(RPG_ENGINE_LEVEL_AI_DEF_NUM_SPAWNED_MAX,
+      RPG_Dice::generateRandomNumbers(RPG_ENGINE_ENCOUNTER_DEF_NUM_SPAWNED_MAX,
                                       1,
                                       result);
       spawn.spawn.max_num_spawned = result.front();
@@ -694,7 +694,7 @@ RPG_Engine_Level::random(const RPG_Engine_LevelMetaData_t& metaData_in,
 
   // step9: max # spawned (total)
   result.clear();
-  RPG_Dice::generateRandomNumbers(RPG_ENGINE_LEVEL_AI_DEF_NUM_SPAWNED_MAX + 1,
+  RPG_Dice::generateRandomNumbers(RPG_ENGINE_ENCOUNTER_DEF_NUM_SPAWNED_MAX + 1,
                                   1,
                                   result);
   level_out.metadata.max_num_spawned = (result.front() - 1);

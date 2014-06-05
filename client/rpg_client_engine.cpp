@@ -97,9 +97,9 @@ RPG_Client_Engine::close(u_long arg_in)
     // called from ACE_Task_Base on clean-up
     case 0:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("(%s) worker thread (ID: %t) leaving...\n"),
-                 ACE_TEXT(RPG_CLIENT_ENGINE_THREAD_NAME)));
+//      ACE_DEBUG((LM_DEBUG,
+//                 ACE_TEXT("(%s) worker thread (ID: %t) leaving...\n"),
+//                 ACE_TEXT(RPG_CLIENT_ENGINE_THREAD_NAME)));
 
       return 0;
     }

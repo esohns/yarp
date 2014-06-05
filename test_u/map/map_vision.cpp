@@ -58,12 +58,12 @@ do_printUsage(const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
-  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  data_path =
-		RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-		                                                     false);
-#endif // #ifdef BASEDIR
+  std::string data_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           false);
+#if defined(DEBUG_DEBUGGER)
+  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif
 
   std::cout << ACE_TEXT("usage: ")
 		        << programName_in
@@ -87,12 +87,13 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
+  path +=
+      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME));
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
   std::cout << ACE_TEXT("-p [FILE] : level plan (*")
 		        << ACE_TEXT(RPG_ENGINE_LEVEL_FILE_EXT)
 						<< ACE_TEXT(") [\"")
-						<< ACE_TEXT(path.c_str())
+						<< path
 						<< ACE_TEXT("\"]")
 						<< std::endl;
   std::cout << ACE_TEXT("-t        : trace information") << std::endl;
@@ -110,12 +111,12 @@ do_processArguments(const int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::do_processArguments"));
 
-  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  data_path =
-		RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                         false);
-#endif // #ifdef BASEDIR
+  std::string data_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+                                                           false);
+#if defined(DEBUG_DEBUGGER)
+  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif
 
   // init results
   debugParser_out         = MAP_VISION_DEF_DEBUG_PARSER;
@@ -131,7 +132,8 @@ do_processArguments(const int argc_in,
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
+  floorPlan_out +=
+      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME));
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   traceInformation_out    = false;
@@ -175,7 +177,7 @@ do_processArguments(const int argc_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("unrecognized option \"%s\", aborting\n"),
-                   argumentParser.last_option()));
+                   ACE_TEXT(argumentParser.last_option())));
 
         return false;
       }
@@ -413,6 +415,10 @@ ACE_TMAIN(int argc_in,
   std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            false);
+#if defined(DEBUG_DEBUGGER)
+  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif
 
   // step1: init
   // step1a set defaults
@@ -429,7 +435,8 @@ ACE_TMAIN(int argc_in,
   floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_FILE);
+  floor_plan +=
+      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME));
   floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   std::string schema_repository = configuration_path;

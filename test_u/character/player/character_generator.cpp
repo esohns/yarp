@@ -26,12 +26,9 @@
 
 #include "rpg_client_defines.h"
 
-#include "rpg_engine_defines.h"
-#include "rpg_engine_common.h"
 #include "rpg_engine_common_tools.h"
 
 #include "rpg_graphics_defines.h"
-#include "rpg_graphics_incl.h"
 #include "rpg_graphics_dictionary.h"
 #include "rpg_graphics_common_tools.h"
 
@@ -79,8 +76,8 @@
 #include <algorithm>
 #include <numeric>
 
-#define CHARACTER_GENERATOR_DEF_GENERATE_PARTY  0
-#define CHARACTER_GENERATOR_DEF_RANDOM          false
+#define CHARACTER_GENERATOR_DEF_NUM_PLAYERS 1
+#define CHARACTER_GENERATOR_DEF_RANDOM      false
 
 void
 do_printUsage(const std::string& programName_in)
@@ -140,9 +137,9 @@ do_printUsage(const std::string& programName_in)
             << path
             << ACE_TEXT("\"]")
             << std::endl;
-  std::cout << ACE_TEXT("-n [VALUE] : generate (party of) #players")
+  std::cout << ACE_TEXT("-n [VALUE] : (auto-)generate #players")
             << ACE_TEXT(" [")
-            << CHARACTER_GENERATOR_DEF_GENERATE_PARTY
+            << CHARACTER_GENERATOR_DEF_NUM_PLAYERS
             << ACE_TEXT("; 0:off]")
             << std::endl;
   path = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
@@ -171,7 +168,7 @@ do_processArguments(const int& argc_in,
                     std::string& itemDictionary_out,
                     std::string& magicDictionary_out,
                     std::string& graphicsDictionary_out,
-                    unsigned int& generateParty_out,
+                    unsigned int& numPlayers_out,
                     std::string& outputFile_out,
                     bool& random_out,
                     bool& traceInformation_out,
@@ -211,7 +208,7 @@ do_processArguments(const int& argc_in,
 #endif
   graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DICTIONARY_FILE);
 
-  generateParty_out       = CHARACTER_GENERATOR_DEF_GENERATE_PARTY;
+  numPlayers_out          = CHARACTER_GENERATOR_DEF_NUM_PLAYERS;
 
   outputFile_out          =
       RPG_Player_Common_Tools::getPlayerProfilesDirectory();
@@ -234,19 +231,19 @@ do_processArguments(const int& argc_in,
     {
       case 'g':
       {
-        graphicsDictionary_out = argumentParser.opt_arg();
+        graphicsDictionary_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
       case 'i':
       {
-        itemDictionary_out = argumentParser.opt_arg();
+        itemDictionary_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
       case 'm':
       {
-        magicDictionary_out = argumentParser.opt_arg();
+        magicDictionary_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
@@ -254,14 +251,16 @@ do_processArguments(const int& argc_in,
       {
         converter.clear();
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-        converter << argumentParser.opt_arg();
-        converter >> generateParty_out;
+        converter << ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
+        converter >> numPlayers_out;
 
         break;
       }
       case 'o':
       {
-        outputFile_out = argumentParser.opt_arg();
+        ACE_TCHAR* output_file = argumentParser.opt_arg();
+        if (output_file)
+          outputFile_out = ACE_TEXT_ALWAYS_CHAR(output_file);
 
         break;
       }
@@ -1107,7 +1106,7 @@ do_work(const std::string& schemaDirectory_in,
         const std::string& graphicsDictionary_in,
         const std::string& graphicsDirectory_in,
         const unsigned int& graphicsCacheSize_in,
-        const unsigned int& numPartyMembers_in,
+        const unsigned int& numPlayers_in,
 				const std::string outputFile_in,
         const bool& random_in)
 {
@@ -1140,7 +1139,6 @@ do_work(const std::string& schemaDirectory_in,
   char c = ' ';
   unsigned int num_players = 0;
   RPG_Player* player_p = NULL;
-  RPG_Engine_Entity_t entity;
   do
   {
     if (player_p)
@@ -1155,7 +1153,7 @@ do_work(const std::string& schemaDirectory_in,
     ACE_ASSERT(player_p);
     player_p->dump();
 
-    if (numPartyMembers_in == 0)
+    if (!random_in)
     {
       // step2: display menu options
       c = ' ';
@@ -1250,21 +1248,21 @@ do_work(const std::string& schemaDirectory_in,
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Character_Player::save(\"%s\"), continuing\n"),
                    ACE_TEXT(path.c_str())));
-      else
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("saved player \"%s\" to file: \"%s\"\n"),
-                   ACE_TEXT(player_p->getName().c_str()),
-                   ACE_TEXT(path.c_str())));
+//      else
+//        ACE_DEBUG((LM_DEBUG,
+//                   ACE_TEXT("saved player \"%s\" to file: \"%s\"\n"),
+//                   ACE_TEXT(player_p->getName().c_str()),
+//                   ACE_TEXT(path.c_str())));
 
       num_players++;
-      if (num_players == numPartyMembers_in)
+      if (num_players == numPlayers_in)
         done = true;
     } // end ELSE
   } while (!done);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
-} // end do_work
+}
 
 void
 do_printVersion(const std::string& programName_in)
@@ -1331,6 +1329,17 @@ ACE_TMAIN(int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::main"));
 
+  // *PORTABILITY*: on Windows, need to init ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+	if (ACE::init() == -1)
+	{
+		ACE_DEBUG((LM_ERROR,
+							 ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
+
+		return EXIT_FAILURE;
+	} // end IF
+#endif
+
   // step1: init
   // step1a set defaults
   std::string configuration_path =
@@ -1387,8 +1396,8 @@ ACE_TMAIN(int argc_in,
   graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DATA_SUB);
 #endif
 
-	unsigned int num_party_members           =
-			CHARACTER_GENERATOR_DEF_GENERATE_PARTY;
+	unsigned int num_players                 =
+			CHARACTER_GENERATOR_DEF_NUM_PLAYERS;
 
 	std::string output_filename              =
 			RPG_Player_Common_Tools::getPlayerProfilesDirectory();
@@ -1406,7 +1415,7 @@ ACE_TMAIN(int argc_in,
                            item_dictionary_filename,
                            magic_dictionary_filename,
                            graphics_dictionary_filename,
-                           num_party_members,
+                           num_players,
                            output_filename,
                            random,
                            trace_information,
@@ -1414,6 +1423,13 @@ ACE_TMAIN(int argc_in,
   {
     // make 'em learn...
     do_printUsage(std::string(ACE::basename(argv_in[0])));
+
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+		if (ACE::fini() == -1)
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -1426,6 +1442,13 @@ ACE_TMAIN(int argc_in,
   {
     // make 'em learn...
     do_printUsage(std::string(ACE::basename(argv_in[0])));
+
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+		if (ACE::fini() == -1)
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -1457,6 +1480,13 @@ ACE_TMAIN(int argc_in,
   {
     do_printVersion(std::string(ACE::basename(argv_in[0])));
 
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+		if (ACE::fini() == -1)
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
+
     return EXIT_SUCCESS;
   } // end IF
 
@@ -1470,7 +1500,7 @@ ACE_TMAIN(int argc_in,
           graphics_dictionary_filename,
           graphics_directory,
           RPG_CLIENT_DEF_GRAPHICS_CACHESIZE,
-          num_party_members,
+          num_players,
           output_filename,
           random);
 
@@ -1485,7 +1515,18 @@ ACE_TMAIN(int argc_in,
 //
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
-//              working_time_string.c_str()));
+//              ACE_TEXT(working_time_string.c_str())));
+
+  // *PORTABILITY*: on Windows, fini ACE...
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+  if (ACE::fini() == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+
+    return EXIT_FAILURE;
+  } // end IF
+#endif
 
   return EXIT_SUCCESS;
-} // end main
+}

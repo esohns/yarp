@@ -131,7 +131,8 @@ RPG_Common_Timer_Manager::stop(const bool& lockedAccess_in)
   // make sure the dispatcher thread has joined...
   inherited::wait();
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("joined timer dispatch thread...\n")));
+             ACE_TEXT("(%s) joined worker thread...\n"),
+             ACE_TEXT(RPG_COMMON_TIMER_THREAD_NAME)));
 
 	// clean up
 	if (lockedAccess_in)
