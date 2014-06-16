@@ -103,10 +103,10 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
 
   // Parse the document to obtain the object model.
   //
-  ::xml_schema::document doc_p(dictionary_p,                                               // parser
-                               ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE),      // namespace
-                               ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DICTIONARY_INSTANCE), // root element name
-															 false);                                                     // polymorphic ?
+  ::xml_schema::document doc_p(dictionary_p,                                           // parser
+                               ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE),  // namespace
+                               ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DICTIONARY_INSTANCE), // root element name
+                               false);                                                 // polymorphic ?
 
   dictionary_p.pre();
 
@@ -132,7 +132,7 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
     std::string text = converter.str();
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Graphics_Dictionary::init(): exception occurred: \"%s\", returning\n"),
-               text.c_str()));
+               ACE_TEXT(text.c_str())));
 
     throw(exception);
   }
@@ -148,7 +148,7 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("finished parsing graphics dictionary file \"%s\"...\n"),
-//              filename_in.c_str()));
+//              ACE_TEXT(filename_in.c_str())));
 }
 
 const RPG_Graphics_t
@@ -218,7 +218,7 @@ RPG_Graphics_Dictionary::get(const RPG_Graphics_GraphicTypeUnion& type_in) const
 
   ACE_DEBUG((LM_ERROR,
              ACE_TEXT("type \"%s\" not found, aborting\n"),
-             RPG_Graphics_Common_Tools::typeToString(type_in).c_str()));
+             ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type_in).c_str())));
 
   ACE_ASSERT(false);
   RPG_Graphics_t dummy;
@@ -268,33 +268,33 @@ RPG_Graphics_Dictionary::dump() const
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("Graphic[#%u]:\n%s===========================\n"),
                index,
-               RPG_Graphics_Common_Tools::graphicToString((*iterator).second).c_str()));
+               ACE_TEXT(RPG_Graphics_Common_Tools::graphicToString((*iterator).second).c_str())));
   for (RPG_Graphics_FontDictionaryIterator_t iterator = myDictionary.fonts.begin();
        iterator != myDictionary.fonts.end();
        iterator++, index++)
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("Graphic[#%u]:\n%s===========================\n"),
                index,
-               RPG_Graphics_Common_Tools::graphicToString((*iterator).second).c_str()));
+               ACE_TEXT(RPG_Graphics_Common_Tools::graphicToString((*iterator).second).c_str())));
   for (RPG_Graphics_ImageDictionaryIterator_t iterator = myDictionary.images.begin();
        iterator != myDictionary.images.end();
        iterator++, index++)
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("Graphic[#%u]:\n%s===========================\n"),
                index,
-               RPG_Graphics_Common_Tools::graphicToString((*iterator).second).c_str()));
+               ACE_TEXT(RPG_Graphics_Common_Tools::graphicToString((*iterator).second).c_str())));
   for (RPG_Graphics_TileDictionaryIterator_t iterator = myDictionary.tiles.begin();
        iterator != myDictionary.tiles.end();
        iterator++, index++)
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("Graphic[#%u]:\n%s===========================\n"),
                index,
-               RPG_Graphics_Common_Tools::graphicToString((*iterator).second).c_str()));
+               ACE_TEXT(RPG_Graphics_Common_Tools::graphicToString((*iterator).second).c_str())));
   for (RPG_Graphics_TileSetDictionaryIterator_t iterator = myDictionary.tilesets.begin();
        iterator != myDictionary.tilesets.end();
        iterator++, index++)
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("Graphic[#%u]:\n%s===========================\n"),
                index,
-               RPG_Graphics_Common_Tools::graphicToString((*iterator).second).c_str()));
+               ACE_TEXT(RPG_Graphics_Common_Tools::graphicToString((*iterator).second).c_str())));
 }

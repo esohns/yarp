@@ -38,6 +38,7 @@
 
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
+#include "rpg_common_file_tools.h"
 
 #include <ace/Log_Msg.h>
 
@@ -289,16 +290,12 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         {
           std::ostringstream converter;
           converter << myScreenshotIndex++;
-#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
-          std::string dump_path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
-#else
-          std::string dump_path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR));
-#endif
+          std::string dump_path = RPG_Common_File_Tools::getDumpDirectory();
           dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-          dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_SCREENSHOT_PREFIX);
+          dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_SCREENSHOT_DEF_PREFIX);
           dump_path += ACE_TEXT_ALWAYS_CHAR("_");
           dump_path += converter.str();
-          dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_SCREENSHOT_EXT);
+          dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_SCREENSHOT_DEF_EXT);
           RPG_Graphics_Surface::savePNG(*SDL_GetVideoSurface(), // image
                                         dump_path,              // file
                                         false);                 // no alpha

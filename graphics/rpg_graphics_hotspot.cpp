@@ -224,9 +224,10 @@ RPG_Graphics_HotSpot::draw(SDL_Surface* targetSurface_in,
 //   } // end IF
 
   if (myDebug)
-    RPG_Graphics_Surface::putRect(myClipRect,                            // rectangle
-                                  RPG_GRAPHICS_WINDOW_HOTSPOT_DEF_COLOR, // color
-                                  target_surface);                       // target surface
+    RPG_Graphics_Surface::putRect(myClipRect,      // rectangle
+                                  RPG_Graphics_SDL_Tools::getColor(RPG_GRAPHICS_WINDOW_HOTSPOT_DEF_COLOR, // color
+                                                                   *target_surface),
+                                  target_surface); // target surface
 
   // remember position of last realization
   myLastAbsolutePosition = std::make_pair(myClipRect.x,

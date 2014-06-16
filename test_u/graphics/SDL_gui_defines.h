@@ -56,7 +56,6 @@
 // *WARNING*: apparently, the maximum SDL timer resolution is 10 ms
 #define SDL_GUI_SDL_EVENT_TIMEOUT              50 // ms
 
-#define SDL_GUI_DEF_DEBUG                      false
 #define SDL_GUI_DEF_TILE_FRAME_COLOR           COLOR_BLACK_A70
 #define SDL_GUI_DEF_TILE_INDEX_COLOR           COLOR_RED
 

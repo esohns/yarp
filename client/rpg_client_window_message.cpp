@@ -35,7 +35,7 @@ RPG_Client_Window_Message::RPG_Client_Window_Message(const RPG_Graphics_SDLWindo
              ACE_TEXT_ALWAYS_CHAR("")), // title
 //             NULL),                     // background
    myFont(RPG_CLIENT_MESSAGE_FONT),
-   myNumLines(RPG_CLIENT_DEF_MESSAGE_LINES),
+   myNumLines(RPG_CLIENT_MESSAGE_DEF_NUM_LINES),
 //   myLock(),
 //   myMessages(),
    myBG(NULL)
@@ -292,7 +292,7 @@ RPG_Client_Window_Message::push(const std::string& message_in)
   ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
   // age cache ?
-  if (myMessages.size() == RPG_CLIENT_DEF_MESSAGE_CACHE_SIZE)
+  if (myMessages.size() == RPG_CLIENT_MESSAGE_CACHE_SIZE)
     myMessages.pop_back();
   myMessages.push_front(message_in);
 }

@@ -905,9 +905,7 @@ RPG_Graphics_Surface::putRect(const SDL_Rect& rectangle_in,
   // sanity check(s)
   ACE_ASSERT(targetSurface_in);
   SDL_Rect intersection;
-  ACE_OS::memset(&intersection,
-                 0,
-                 sizeof(SDL_Rect));
+  ACE_OS::memset(&intersection, 0, sizeof(SDL_Rect));
   intersection = RPG_Graphics_SDL_Tools::intersect(rectangle_in,
                                                    targetSurface_in->clip_rect);
   if ((intersection.w == 0) || (intersection.h == 0))

@@ -452,7 +452,7 @@ do_initGUI(const std::string& graphicsDictionary_in,
   ACE_ASSERT(icon_graphic.type.image == IMAGE_WM_ICON);
   std::string path = graphicsDirectory_in;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_IMAGES_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_IMAGES_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += icon_graphic.file;
   SDL_Surface* icon_image = NULL;

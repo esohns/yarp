@@ -21,19 +21,19 @@
 #ifndef RPG_SOUND_DEFINES_H
 #define RPG_SOUND_DEFINES_H
 
-#define RPG_SOUND_DEF_AUDIO_FREQUENCY       44100
-#define RPG_SOUND_DEF_AUDIO_FORMAT          AUDIO_S16SYS
-#define RPG_SOUND_DEF_AUDIO_CHANNELS        2 // *NOTE*: 1: mono, 2: stereo
-#define RPG_SOUND_DEF_AUDIO_CHUNKSIZE       4096
-#define RPG_SOUND_DEF_AUDIO_PLAY_CHANNELS   5
+#define RPG_SOUND_AUDIO_DEF_FREQUENCY       44100
+#define RPG_SOUND_AUDIO_DEF_FORMAT          AUDIO_S16SYS
+#define RPG_SOUND_AUDIO_DEF_CHANNELS        2 // *NOTE*: 1: mono, 2: stereo
+#define RPG_SOUND_AUDIO_DEF_CHUNKSIZE       4096
+#define RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS   5
 
-#define RPG_SOUND_DEF_AMBIENT_USE_CD        false
-#define RPG_SOUND_DEF_AMBIENT_VOLUME        8 // (0-128)
+#define RPG_SOUND_AMBIENT_DEF_USE_CD        false
+#define RPG_SOUND_AMBIENT_DEF_VOLUME        8 // (0-128)
 
-#define RPG_SOUND_DEF_CDTRACK_PAD           3 // allow an extra 3 seconds between tracks
+#define RPG_SOUND_CDTRACK_DEF_PAD           3 // allow an extra 3 seconds between tracks
 #define RPG_SOUND_DEF_CACHESIZE             50
 
-#define RPG_SOUND_SDL_AUDIO_DRIVER_ENV_VAR  "SDL_AUDIODRIVER"
+#define RPG_SOUND_SDL_AUDIODRIVER_ENV_VAR   "SDL_AUDIODRIVER"
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
 #define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME "dsound"
 //#define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME "waveout"
@@ -50,7 +50,7 @@
 #define RPG_SOUND_DICTIONARY_FILE           "rpg_sound.xml"
 #define RPG_SOUND_DICTIONARY_INSTANCE       "soundDictionary"
 
-// BASEDIR-specific
+// directory organization
 #define RPG_SOUND_DATA_SUB                  "sound"
 #define RPG_SOUND_AMBIENT_SUB               "ambient"
 #define RPG_SOUND_EFFECT_SUB                "effect"

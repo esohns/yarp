@@ -47,7 +47,7 @@ class RPG_Sound_Export RPG_Sound_Event_Manager
 
  public:
   void init(const std::string&,                          // (ambient) sound directory
-            const bool& = RPG_SOUND_DEF_AMBIENT_USE_CD); // use audio CD for ambient sound ?
+            const bool& = RPG_SOUND_AMBIENT_DEF_USE_CD); // use audio CD for ambient sound ?
   void fini();
 
   // handle ambient music

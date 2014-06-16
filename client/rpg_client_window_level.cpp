@@ -56,11 +56,11 @@ RPG_Client_Window_Level::RPG_Client_Window_Level(const RPG_Graphics_SDLWindowBas
    myEngine(NULL),
    myClient(NULL),
 //   myClientAction(),
-   myDrawMinimap(RPG_CLIENT_DEF_MINIMAP_ISON),
+   myDrawMinimap(RPG_CLIENT_MINIMAP_DEF_ISON),
 #ifdef _DEBUG
    myShowCoordinates(false),
 #endif
-   myShowMessages(RPG_CLIENT_DEF_MESSAGE_ISON),
+   myShowMessages(RPG_CLIENT_MESSAGE_DEF_ISON),
 //   myCurrentMapStyle(mapStyle_in),
 //   myCurrentFloorSet(),
 //   myCurrentFloorEdgeSet(),
@@ -157,7 +157,7 @@ RPG_Client_Window_Level::RPG_Client_Window_Level(const RPG_Graphics_SDLWindowBas
 
     return;
   } // end IF
-  RPG_Graphics_Surface::alpha(static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_PREV_SEEN_OPACITY * SDL_ALPHA_OPAQUE)),
+  RPG_Graphics_Surface::alpha(static_cast<Uint8>((RPG_GRAPHICS_TILE_PREVSEEN_DEF_OPACITY * SDL_ALPHA_OPAQUE)),
                               *myVisionBlendTile);
   myVisionTempTile =
       RPG_Graphics_Surface::create(RPG_GRAPHICS_TILE_FLOOR_WIDTH,
@@ -2464,12 +2464,12 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
       SDL_Surface* shaded_wall = NULL;
       shaded_wall =
           RPG_Graphics_Surface::alpha(*myCurrentWallSet.east.surface,
-                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
+                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
-                   static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE))));
+                   static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY * SDL_ALPHA_OPAQUE))));
 
         return false;
       } // end IF
@@ -2478,12 +2478,12 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
 
       shaded_wall =
           RPG_Graphics_Surface::alpha(*myCurrentWallSet.west.surface,
-                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
-                   static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
+                   static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
         return false;
       } // end IF
@@ -2492,12 +2492,12 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
 
       shaded_wall =
           RPG_Graphics_Surface::alpha(*myCurrentWallSet.south.surface,
-                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
+                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
-                   static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE))));
+                   static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY * SDL_ALPHA_OPAQUE))));
 
         return false;
       } // end IF
@@ -2506,12 +2506,12 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
 
       shaded_wall =
           RPG_Graphics_Surface::alpha(*myCurrentWallSet.north.surface,
-                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
-                   static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
+                   static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
         return false;
       } // end IF
@@ -2593,12 +2593,12 @@ RPG_Client_Window_Level::initCeiling()
   SDL_Surface* shaded_ceiling = NULL;
   shaded_ceiling =
       RPG_Graphics_Surface::alpha(*myCeilingTile,
-                                  static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+                                  static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE)));
   if (!shaded_ceiling)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
-               static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
+               static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
     // clean up
     SDL_FreeSurface(myCeilingTile);
@@ -2711,7 +2711,7 @@ RPG_Client_Window_Level::initMessageWindow()
 
   message_window->init(myClient,
                        RPG_CLIENT_MESSAGE_FONT,
-                       RPG_CLIENT_DEF_MESSAGE_LINES);
+                       RPG_CLIENT_MESSAGE_DEF_NUM_LINES);
   message_window->setScreen(inherited::myScreen);
 
   return true;

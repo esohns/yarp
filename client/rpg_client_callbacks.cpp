@@ -2812,7 +2812,7 @@ save_state_clicked_GTK_cb(GtkWidget* widget_in,
 //   gtk_entry_set_width_chars(entry,
 //                             -1); // reset to default
   gtk_entry_set_text(entry,
-                     ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_SAVEGAME_DESCRIPTOR));
+                     ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_STATE_DEF_DESCRIPTOR));
   gtk_editable_select_region(GTK_EDITABLE(entry),
                              0, -1);
   // step1b: retrieve entry dialog handle
@@ -3799,7 +3799,7 @@ init_UI_client(const std::string& UIFile_in,
   ACE_ASSERT(icon_graphic.type.image == IMAGE_WM_ICON);
   std::string path = RPG_Graphics_Common_Tools::getGraphicsDirectory();
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_IMAGES_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_IMAGES_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += icon_graphic.file;
   GtkWidget* image_icon = gtk_image_new_from_file(path.c_str());

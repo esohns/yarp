@@ -301,13 +301,13 @@ do_work(const bool& dumpDictionary_in,
 
   // step1: init: sound directory, cache, ...
   RPG_Sound_SDLConfiguration_t sound_config;
-	sound_config.frequency = RPG_SOUND_DEF_AUDIO_FREQUENCY;
-	sound_config.format = RPG_SOUND_DEF_AUDIO_FORMAT;
-	sound_config.channels = RPG_SOUND_DEF_AUDIO_CHANNELS;
-	sound_config.chunksize = RPG_SOUND_DEF_AUDIO_CHUNKSIZE;
+  sound_config.frequency = RPG_SOUND_AUDIO_DEF_FREQUENCY;
+  sound_config.format = RPG_SOUND_AUDIO_DEF_FORMAT;
+  sound_config.channels = RPG_SOUND_AUDIO_DEF_CHANNELS;
+  sound_config.chunksize = RPG_SOUND_AUDIO_DEF_CHUNKSIZE;
   if (!RPG_Sound_Common_Tools::init(sound_config,
                                     path_in,
-                                    RPG_SOUND_DEF_AMBIENT_USE_CD,
+                                    RPG_SOUND_AMBIENT_DEF_USE_CD,
                                     RPG_SOUND_DEF_CACHESIZE,
                                     false))
 	{

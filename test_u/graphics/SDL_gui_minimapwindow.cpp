@@ -72,11 +72,11 @@ SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase& p
   myClipRect.x =
       ((offset_in.first == std::numeric_limits<int>::max()) ? ((parent_area.w - 1)             -
                                                                myBG->w                         -
-                                                               RPG_CLIENT_DEF_MINIMAP_OFFSET_X)
+                                                               RPG_CLIENT_MINIMAP_DEF_OFFSET_X)
                                                             : offset_in.first);
   myClipRect.y =
       ((offset_in.second == std::numeric_limits<int>::max()) ? (parent_area.y                   +
-                                                                RPG_CLIENT_DEF_MINIMAP_OFFSET_Y)
+                                                                RPG_CLIENT_MINIMAP_DEF_OFFSET_Y)
                                                              : offset_in.second);
   myClipRect.w = mySurface->w;
   myClipRect.h = mySurface->h;

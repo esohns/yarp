@@ -53,7 +53,7 @@ RPG_Client_Window_Main::RPG_Client_Window_Main(const RPG_Graphics_Size_t& size_i
    myEngine(NULL),
    myScreenshotIndex(1),
    myLastHoverTime(0),
-   myAutoEdgeScroll(RPG_CLIENT_DEF_WINDOW_EDGE_AUTOSCROLL),
+   myAutoEdgeScroll(RPG_CLIENT_WINDOW_DEF_EDGE_AUTOSCROLL),
    myTitleFont(font_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Main::RPG_Client_Window_Main"));
@@ -186,17 +186,21 @@ RPG_Client_Window_Main::draw(SDL_Surface* targetSurface_in,
       return;
     } // end IF
 
-    RPG_Graphics_TextSize_t title_size = RPG_Graphics_Common_Tools::textSize(myTitleFont,
-                                                                             myTitle);
+    RPG_Graphics_TextSize_t title_size =
+        RPG_Graphics_Common_Tools::textSize(myTitleFont,
+                                            myTitle);
     RPG_Graphics_Surface::putText(myTitleFont,
                                   myTitle,
-                                  RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_COLOR,
+                                  RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_Graphics_SDL_Tools::getColor(RPG_GRAPHICS_FONT_DEF_COLOR,
+                                                                                                           *target_surface),
                                                                           *target_surface),
                                   true, // add shade
-                                  RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
+                                  RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_Graphics_SDL_Tools::getColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
+                                                                                                           *target_surface),
                                                                           *target_surface),
                                   std::make_pair(myBorderLeft, // top left
-                                                 ((myBorderTop - title_size.second) / 2)), // center of top border
+                                                 ((myBorderTop -
+                                                   title_size.second) / 2)), // center of top border
                                   target_surface,
                                   dirty_region);
 //    invalidate(clip_rect);
@@ -257,8 +261,9 @@ RPG_Client_Window_Main::handleEvent(const SDL_Event& event_in,
 
   RPG_Client_Action client_action;
   client_action.command = RPG_CLIENT_COMMAND_INVALID;
-  client_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                          std::numeric_limits<unsigned int>::max());
+  client_action.position =
+      std::make_pair(std::numeric_limits<unsigned int>::max(),
+                     std::numeric_limits<unsigned int>::max());
   client_action.window = this;
   client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   client_action.entity_id = 0;
@@ -344,10 +349,12 @@ RPG_Client_Window_Main::handleEvent(const SDL_Event& event_in,
           RPG_Engine_ClientNotificationParameters_t parameters;
 					parameters.entity_id = 0;
 					parameters.condition = RPG_COMMON_CONDITION_INVALID;
-				  parameters.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-				                                       std::numeric_limits<unsigned int>::max());
-					parameters.previous_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-				                                                std::numeric_limits<unsigned int>::max());
+					parameters.position =
+							std::make_pair(std::numeric_limits<unsigned int>::max(),
+														 std::numeric_limits<unsigned int>::max());
+					parameters.previous_position =
+							std::make_pair(std::numeric_limits<unsigned int>::max(),
+														 std::numeric_limits<unsigned int>::max());
 					parameters.visible_radius = 0;
 					try
 					{
@@ -369,12 +376,13 @@ RPG_Client_Window_Main::handleEvent(const SDL_Event& event_in,
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
           std::string dump_path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
 #else
-          std::string dump_path = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR));
+          std::string dump_path =
+              ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR));
 #endif
           dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-          dump_path += ACE_TEXT(RPG_CLIENT_DEF_SCREENSHOT_PREFIX);
+          dump_path += ACE_TEXT(RPG_CLIENT_SCREENSHOT_DEF_PREFIX);
           dump_path += converter.str();
-          dump_path += ACE_TEXT(RPG_CLIENT_DEF_SCREENSHOT_EXT);
+          dump_path += ACE_TEXT(RPG_CLIENT_SCREENSHOT_DEF_EXT);
           RPG_Graphics_Surface::savePNG(*myScreen, // image
                                         dump_path, // file
                                         false);    // no alpha
@@ -409,8 +417,8 @@ RPG_Client_Window_Main::handleEvent(const SDL_Event& event_in,
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse button [%u,%u] pressed\n"),
-//                  static_cast<unsigned long> (event_in.button.which),
-//                  static_cast<unsigned long> (event_in.button.button)));
+//                  static_cast<unsigned int>(event_in.button.which),
+//                  static_cast<unsigned int>(event_in.button.button)));
 
       // (left-)clicking on a hotspot (edge) area triggers a scroll of the viewport
       if ((window_in->getType() == WINDOW_HOTSPOT) &&
@@ -424,7 +432,8 @@ RPG_Client_Window_Main::handleEvent(const SDL_Event& event_in,
         // retrieve map window handle
         client_action.command = COMMAND_SET_VIEW;
         client_action.window = child(WINDOW_MAP);
-        RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>(client_action.window);
+        RPG_Client_IWindowLevel* level_window =
+            dynamic_cast<RPG_Client_IWindowLevel*>(client_action.window);
         ACE_ASSERT(level_window);
         client_action.position = level_window->getView();
         switch (hotspot->getCursorType())
@@ -535,8 +544,8 @@ RPG_Client_Window_Main::handleEvent(const SDL_Event& event_in,
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse button [%u,%u] released...\n"),
-//                  static_cast<unsigned long> (event_in.button.which),
-//                  static_cast<unsigned long> (event_in.button.button)));
+//                  static_cast<unsigned int>(event_in.button.which),
+//                  static_cast<unsigned int>(event_in.button.button)));
 
       break;
     }
@@ -594,7 +603,8 @@ RPG_Client_Window_Main::handleEvent(const SDL_Event& event_in,
       if (myLastHoverTime)
       {
         // throttle scrolling
-        if ((event_in.user.code - myLastHoverTime) < RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_SCROLL_DELAY)
+        if ((event_in.user.code - myLastHoverTime) <
+            RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_SCROLL_DELAY)
           break; // don't scroll this time
       } // end ELSE
       myLastHoverTime = event_in.user.code;
@@ -603,7 +613,8 @@ RPG_Client_Window_Main::handleEvent(const SDL_Event& event_in,
 
       // retrieve map window handle
       client_action.window = child(WINDOW_MAP);
-      RPG_Client_IWindowLevel* level_window = dynamic_cast<RPG_Client_IWindowLevel*>(client_action.window);
+      RPG_Client_IWindowLevel* level_window =
+          dynamic_cast<RPG_Client_IWindowLevel*>(client_action.window);
       ACE_ASSERT(level_window);
 
       // retrieve hotspot window handle
@@ -744,8 +755,9 @@ RPG_Client_Window_Main::notify(const RPG_Graphics_Cursor& cursor_in) const
 
   RPG_Client_Action client_action;
   client_action.command = RPG_CLIENT_COMMAND_INVALID;
-  client_action.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                          std::numeric_limits<unsigned int>::max());
+  client_action.position =
+      std::make_pair(std::numeric_limits<unsigned int>::max(),
+                     std::numeric_limits<unsigned int>::max());
   client_action.window = const_cast<RPG_Client_Window_Main*>(this);
   client_action.cursor = cursor_in;
   client_action.entity_id = 0;
@@ -783,7 +795,7 @@ RPG_Client_Window_Main::initScrollSpots(const bool& debug_in)
   RPG_Graphics_HotSpot::init(*this,
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
-                             std::make_pair((myClipRect.w -
+                             std::make_pair(((myClipRect.w - 1) -
                                              RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
                                             0),
                              CURSOR_SCROLL_UR,
@@ -804,7 +816,7 @@ RPG_Client_Window_Main::initScrollSpots(const bool& debug_in)
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             (myClipRect.h -
                                              (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN))),
-                             std::make_pair((myClipRect.h -
+                             std::make_pair(((myClipRect.w - 1) -
                                              RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
                              CURSOR_SCROLL_R,
@@ -815,7 +827,7 @@ RPG_Client_Window_Main::initScrollSpots(const bool& debug_in)
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
                              std::make_pair(0,
-                                            (myClipRect.h -
+                                            ((myClipRect.h - 1) -
                                              RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)),
                              CURSOR_SCROLL_DL,
                              debug_in);
@@ -826,7 +838,7 @@ RPG_Client_Window_Main::initScrollSpots(const bool& debug_in)
                                              (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)),
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            (myClipRect.h -
+                                            ((myClipRect.h - 1) -
                                              RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)),
                              CURSOR_SCROLL_D,
                              debug_in);
@@ -835,9 +847,9 @@ RPG_Client_Window_Main::initScrollSpots(const bool& debug_in)
   RPG_Graphics_HotSpot::init(*this,
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
-                             std::make_pair((myClipRect.w -
+                             std::make_pair(((myClipRect.w - 1) -
                                              RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
-                                            (myClipRect.h -
+                                            ((myClipRect.h - 1) -
                                              RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)),
                              CURSOR_SCROLL_DR,
                              debug_in);
@@ -960,7 +972,8 @@ RPG_Client_Window_Main::drawBorder(SDL_Surface* targetSurface_in,
   for (i = (offsetY_in + myBorderTop);
        i < (static_cast<unsigned int>(target_surface->h) - myBorderBottom);
        i += (*iterator).second->h)
-    RPG_Graphics_Surface::put(std::make_pair((target_surface->w - myBorderRight),
+    RPG_Graphics_Surface::put(std::make_pair((target_surface->w -
+                                              myBorderRight),
                                              i),
                                *(*iterator).second,
                                target_surface,
@@ -986,7 +999,8 @@ RPG_Client_Window_Main::drawBorder(SDL_Surface* targetSurface_in,
        i < (target_surface->w - myBorderRight);
        i += (*iterator).second->w)
     RPG_Graphics_Surface::put(std::make_pair(i,
-                                             (target_surface->h - myBorderBottom)),
+                                             (target_surface->h -
+                                              myBorderBottom)),
                               *(*iterator).second,
                               target_surface,
                               dirty_region);
@@ -1031,7 +1045,8 @@ RPG_Client_Window_Main::drawBorder(SDL_Surface* targetSurface_in,
 
     return;
   } // end IF
-  RPG_Graphics_Surface::put(std::make_pair((target_surface->w - (*iterator).second->w),
+  RPG_Graphics_Surface::put(std::make_pair((target_surface->w -
+                                            (*iterator).second->w),
                                            offsetY_in),
                             *(*iterator).second,
                             target_surface,
@@ -1054,7 +1069,8 @@ RPG_Client_Window_Main::drawBorder(SDL_Surface* targetSurface_in,
     return;
   } // end IF
   RPG_Graphics_Surface::put(std::make_pair(offsetX_in,
-                                           (target_surface->h - (*iterator).second->h)),
+                                           (target_surface->h -
+                                            (*iterator).second->h)),
                             *(*iterator).second,
                             target_surface,
                             dirty_region);
@@ -1075,8 +1091,10 @@ RPG_Client_Window_Main::drawBorder(SDL_Surface* targetSurface_in,
 
     return;
   } // end IF
-  RPG_Graphics_Surface::put(std::make_pair((target_surface->w - (*iterator).second->w),
-                                           (target_surface->h - (*iterator).second->h)),
+  RPG_Graphics_Surface::put(std::make_pair((target_surface->w -
+                                            (*iterator).second->w),
+                                           (target_surface->h -
+                                            (*iterator).second->h)),
                             *(*iterator).second,
                             target_surface,
                             dirty_region);

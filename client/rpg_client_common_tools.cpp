@@ -904,11 +904,11 @@ RPG_Client_Common_Tools::environment2Style(const RPG_Common_Environment& environ
   ACE_UNUSED_ARG(environment_in);
 
   RPG_Graphics_Style result;
-  result.door = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
-  result.edge = RPG_CLIENT_DEF_GRAPHICS_EDGESTYLE;
-  result.floor = RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE;
-  result.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
-  result.wall = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE;
+  result.door = RPG_CLIENT_GRAPHICS_DEF_DOORSTYLE;
+  result.edge = RPG_CLIENT_GRAPHICS_DEF_EDGESTYLE;
+  result.floor = RPG_CLIENT_GRAPHICS_DEF_FLOORSTYLE;
+  result.half_height_walls = RPG_CLIENT_GRAPHICS_DEF_WALLSTYLE_HALF;
+  result.wall = RPG_CLIENT_GRAPHICS_DEF_WALLSTYLE;
 
   return result;
 }

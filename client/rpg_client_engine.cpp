@@ -65,11 +65,11 @@ RPG_Client_Engine::RPG_Client_Engine()
   // use member message queue...
 //   inherited::msg_queue(&myQueue);
 
-	myRuntimeState.style.door = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
-	myRuntimeState.style.edge = RPG_CLIENT_DEF_GRAPHICS_EDGESTYLE;
-	myRuntimeState.style.floor = RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE;
-	myRuntimeState.style.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
-	myRuntimeState.style.wall = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE;
+	myRuntimeState.style.door = RPG_CLIENT_GRAPHICS_DEF_DOORSTYLE;
+	myRuntimeState.style.edge = RPG_CLIENT_GRAPHICS_DEF_EDGESTYLE;
+	myRuntimeState.style.floor = RPG_CLIENT_GRAPHICS_DEF_FLOORSTYLE;
+	myRuntimeState.style.half_height_walls = RPG_CLIENT_GRAPHICS_DEF_WALLSTYLE_HALF;
+	myRuntimeState.style.wall = RPG_CLIENT_GRAPHICS_DEF_WALLSTYLE;
 
 	// set group ID for worker thread(s)
 	inherited::grp_id(RPG_CLIENT_ENGINE_THREAD_GROUP_ID);
@@ -1608,7 +1608,7 @@ RPG_Client_Engine::handleActions()
 
         // step2: (re)set window title caption/iconify
         std::string caption =
-            ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
+            ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);
         const std::string& level_name = myEngine->getMetaData(true).name;
         if (!level_name.empty())
         {

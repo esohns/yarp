@@ -61,13 +61,13 @@
 #define RPG_ENGINE_STATE_SUB                        "engine_state"
 
 // network-specific
-#define RPG_ENGINE_DEF_NETWORK_SERVER               "localhost"
-#define RPG_ENGINE_DEF_NETWORK_PORT                 6667
-#define RPG_ENGINE_DEF_NETWORK_PASSWORD             "secretpasswordhere"
-#define RPG_ENGINE_DEF_NETWORK_NICK                 "Wiz"
-#define RPG_ENGINE_DEF_NETWORK_USER                 "user"
-#define RPG_ENGINE_DEF_NETWORK_REALNAME             "Ronnie Reagan"
-#define RPG_ENGINE_DEF_NETWORK_CHANNEL              "#foobar"
+#define RPG_ENGINE_NETWORK_DEF_SERVER               "localhost"
+#define RPG_ENGINE_NETWORK_DEF_PORT                 6667
+#define RPG_ENGINE_NETWORK_DEF_PASSWORD             "secretpasswordhere"
+#define RPG_ENGINE_NETWORK_DEF_NICKNAME             "Wiz"
+#define RPG_ENGINE_NETWORK_DEF_USERNAME             "user"
+#define RPG_ENGINE_NETWORK_DEF_REALNAME             "Ronnie Reagan"
+#define RPG_ENGINE_NETWORK_DEF_CHANNEL              "#foobar"
 
 // gtk
 #define RPG_ENGINE_GTK_LEVEL_FILTER                 "levels"

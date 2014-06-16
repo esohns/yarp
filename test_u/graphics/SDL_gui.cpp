@@ -250,7 +250,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   std::cout << ACE_TEXT("-f         : debug")
             << ACE_TEXT(" [\"")
-            << SDL_GUI_DEF_DEBUG
+            << RPG_CLIENT_DEF_DEBUG
             << ACE_TEXT("\"]")
             << std::endl;
   path = configuration_path;
@@ -413,7 +413,7 @@ do_processArguments(const int argc_in,
   monsterDictionary_out +=
       ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DICTIONARY_FILE);
 
-  debugMode_out           = SDL_GUI_DEF_DEBUG;
+  debugMode_out           = RPG_CLIENT_DEF_DEBUG;
 
   directory_out           = data_path;
   directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -809,17 +809,18 @@ do_slideshow(const std::string& graphicsDirectory_in,
         {
           case TILESETTYPE_DOOR:
           {
-            filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_DOORS_SUB);
+            filename +=
+                ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DOORS_SUB);
             break;
           }
           case TILESETTYPE_FLOOR:
           {
-            filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_FLOORS_SUB);
+            filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_FLOORS_SUB);
             break;
           }
           case TILESETTYPE_WALL:
           {
-            filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_WALLS_SUB);
+            filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_WALLS_SUB);
             break;
           }
           default:
@@ -1490,7 +1491,7 @@ do_work(const mode_t& mode_in,
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE;
-  std::string title = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
+  std::string title = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);
 	SDL_GUI_MainWindow mainWindow(std::make_pair(state.screen->w,
 		                                           state.screen->h), // size
                                 type,                            // interface elements
@@ -1795,12 +1796,12 @@ ACE_TMAIN(int argc_in,
   state.screen = NULL;
 //  state.hover_lock();
   state.hover_time = 0;
-  state.debug = SDL_GUI_DEF_DEBUG;
-  state.style.floor = RPG_CLIENT_DEF_GRAPHICS_FLOORSTYLE;
-  state.style.edge = RPG_CLIENT_DEF_GRAPHICS_EDGESTYLE;
-  state.style.wall = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE;
-  state.style.half_height_walls = RPG_CLIENT_DEF_GRAPHICS_WALLSTYLE_HALF;
-  state.style.door = RPG_CLIENT_DEF_GRAPHICS_DOORSTYLE;
+  state.debug = RPG_CLIENT_DEF_DEBUG;
+  state.style.floor = RPG_CLIENT_GRAPHICS_DEF_FLOORSTYLE;
+  state.style.edge = RPG_CLIENT_GRAPHICS_DEF_EDGESTYLE;
+  state.style.wall = RPG_CLIENT_GRAPHICS_DEF_WALLSTYLE;
+  state.style.half_height_walls = RPG_CLIENT_GRAPHICS_DEF_WALLSTYLE_HALF;
+  state.style.door = RPG_CLIENT_GRAPHICS_DEF_DOORSTYLE;
   state.angle = 0.0F;
 
   // step1a set defaults
@@ -1846,11 +1847,11 @@ ACE_TMAIN(int argc_in,
 #if defined(DEBUG_DEBUGGER)
   graphics_directory += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
+  graphics_directory += ACE_TEXT_ALWAYS_CHAR("data");
 #endif
   graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DATA_SUB);
 
-  unsigned int cache_size         = SDL_GUI_DEF_GRAPHICS_CACHESIZE;
+  unsigned int cache_size         = RPG_CLIENT_GRAPHICS_DEF_CACHESIZE;
 
   std::string graphics_dictionary = configuration_path;
   graphics_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;

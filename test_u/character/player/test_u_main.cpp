@@ -598,20 +598,20 @@ test_u_main::do_work(const std::string& schemaDirectory_in,
 	input_configuration.key_repeat_interval = SDL_DEFAULT_REPEAT_INTERVAL;
 	input_configuration.use_UNICODE = true;
 	RPG_Sound_SDLConfiguration_t sound_configuration;
-	sound_configuration.frequency = RPG_SOUND_DEF_AUDIO_FREQUENCY;
-	sound_configuration.format = RPG_SOUND_DEF_AUDIO_FORMAT;
-	sound_configuration.channels = RPG_SOUND_DEF_AUDIO_CHANNELS;
-	sound_configuration.chunksize = RPG_SOUND_DEF_AUDIO_CHUNKSIZE;
+	sound_configuration.frequency = RPG_SOUND_AUDIO_DEF_FREQUENCY;
+	sound_configuration.format = RPG_SOUND_AUDIO_DEF_FORMAT;
+	sound_configuration.channels = RPG_SOUND_AUDIO_DEF_CHANNELS;
+	sound_configuration.chunksize = RPG_SOUND_AUDIO_DEF_CHUNKSIZE;
   RPG_Client_Common_Tools::init(input_configuration,
 		                            sound_configuration,
                                 empty,
-                                RPG_SOUND_DEF_AMBIENT_USE_CD,
+                                RPG_SOUND_AMBIENT_DEF_USE_CD,
                                 RPG_SOUND_DEF_CACHESIZE,
                                 false,
                                 empty,
                                 //
                                 graphics_directory_in,
-																RPG_CLIENT_DEF_GRAPHICS_CACHESIZE,
+                                RPG_GRAPHICS_DEF_CACHESIZE,
 																graphics_dictionary_in,
                                 false); // don't init SDL
 
@@ -640,8 +640,6 @@ test_u_main::do_work(const std::string& schemaDirectory_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize UI, aborting\n")));
-
-    gdk_threads_leave();
 
     return;
   } // end IF

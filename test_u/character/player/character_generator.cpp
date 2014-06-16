@@ -1499,7 +1499,7 @@ ACE_TMAIN(int argc_in,
           item_dictionary_filename,
           graphics_dictionary_filename,
           graphics_directory,
-          RPG_CLIENT_DEF_GRAPHICS_CACHESIZE,
+          RPG_GRAPHICS_DEF_CACHESIZE,
           num_players,
           output_filename,
           random);

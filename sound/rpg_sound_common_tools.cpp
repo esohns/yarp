@@ -74,7 +74,7 @@ RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfiguration_t& config_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid argument \"%s\": not a directory, aborting\n"),
-                   directory_in.c_str()));
+                   ACE_TEXT(directory_in.c_str())));
 
         return false;
       } // end IF
@@ -85,7 +85,8 @@ RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfiguration_t& config_in,
   myCacheSize = cacheSize_in;
 
   RPG_SOUND_EVENT_MANAGER_SINGLETON::instance()->init(directory_in,
-                                                      (mute_in ? false : useCD_in));
+                                                      (mute_in ? false
+                                                               : useCD_in));
 
   // init SDL audio handling
 	if (!mute_in)
@@ -103,7 +104,7 @@ RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfiguration_t& config_in,
 	//   {
 	//     ACE_DEBUG((LM_ERROR,
 	//                ACE_TEXT("failed to SDL_OpenAudio(): \"%s\", aborting\n"),
-	//                SDL_GetError()));
+	//                ACE_TEXT(SDL_GetError())));
 	//
 	//     return;
 	//   } // end IF
@@ -114,22 +115,23 @@ RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfiguration_t& config_in,
 		{
 			ACE_DEBUG((LM_ERROR,
 								 ACE_TEXT("failed to Mix_OpenAudio(): \"%s\", aborting\n"),
-								 Mix_GetError()));
+								 ACE_TEXT(Mix_GetError())));
 
 			return false;
 		} // end IF
-		if (Mix_AllocateChannels(RPG_SOUND_DEF_AUDIO_PLAY_CHANNELS) != RPG_SOUND_DEF_AUDIO_PLAY_CHANNELS)
+		if (Mix_AllocateChannels(RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS) !=
+				RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS)
 		{
 			ACE_DEBUG((LM_ERROR,
 								 ACE_TEXT("failed to Mix_AllocateChannels(%d): \"%s\", aborting\n"),
-								 RPG_SOUND_DEF_AUDIO_PLAY_CHANNELS,
-								 Mix_GetError()));
+								 RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS,
+								 ACE_TEXT(Mix_GetError())));
 
 			return false;
 		} // end IF
 		ACE_DEBUG((LM_DEBUG,
 							 ACE_TEXT("allocated %d audio channel(s)...\n"),
-							 RPG_SOUND_DEF_AUDIO_PLAY_CHANNELS));
+							 RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS));
 
 		RPG_Sound_Common_Tools::myConfig.frequency = 0;
 		RPG_Sound_Common_Tools::myConfig.format = 0;
@@ -142,7 +144,7 @@ RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfiguration_t& config_in,
 		{
 			ACE_DEBUG((LM_ERROR,
 								 ACE_TEXT("failed to Mix_QuerySpec(): \"%s\", aborting\n"),
-								 Mix_GetError()));
+								 ACE_TEXT(Mix_GetError())));
 
 			return false;
 		} // end IF
@@ -175,7 +177,7 @@ RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfiguration_t& config_in,
 		{
 			ACE_DEBUG((LM_ERROR,
 								 ACE_TEXT("failed to SDL_AudioDriverName(): \"%s\", aborting\n"),
-								 SDL_GetError()));
+								 ACE_TEXT(SDL_GetError())));
 
 			return false;
 		} // end IF
@@ -194,14 +196,14 @@ RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfiguration_t& config_in,
 		for (int i = 0; i < total; i++)
 			ACE_DEBUG((LM_DEBUG,
 								 ACE_TEXT("chunk decoder: [%s]\n"),
-								 Mix_GetChunkDecoder(i)));
+								 ACE_TEXT(Mix_GetChunkDecoder(i))));
 		total = Mix_GetNumMusicDecoders();
 		ACE_DEBUG((LM_DEBUG,
 							 ACE_TEXT("*** audio decoders (music) ***\n")));
 		for (int i = 0; i < total; i++)
 			ACE_DEBUG((LM_DEBUG,
 								 ACE_TEXT("music decoder: [%s]\n"),
-								 Mix_GetMusicDecoder(i)));
+								 ACE_TEXT(Mix_GetMusicDecoder(i))));
   } // end IF
 
   myInitialized = true;
@@ -273,7 +275,7 @@ RPG_Sound_Common_Tools::soundToFile(const RPG_Sound_t& sound_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid category (was: \"%s\"), aborting\n"),
-                 RPG_Sound_CategoryHelper::RPG_Sound_CategoryToString(sound_in.category).c_str()));
+                 ACE_TEXT(RPG_Sound_CategoryHelper::RPG_Sound_CategoryToString(sound_in.category).c_str())));
 
       file_out.clear();
 
@@ -328,7 +330,8 @@ RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in,
 
         return result;
       } // end IF
-			SDL_RWops* rw_ops = SDL_RWFromFile(node.sound_file.c_str(), "rb");
+      SDL_RWops* rw_ops = SDL_RWFromFile(node.sound_file.c_str(),
+                                         ACE_TEXT_ALWAYS_CHAR("rb"));
       if (!rw_ops)
       {
         ACE_DEBUG((LM_ERROR,
@@ -444,7 +447,8 @@ RPG_Sound_Common_Tools::play(const std::string& file_in,
 
         return result;
       } // end IF
-      SDL_RWops* rw_ops = SDL_RWFromFile(node.sound_file.c_str(), "rb");
+      SDL_RWops* rw_ops = SDL_RWFromFile(node.sound_file.c_str(),
+                                         ACE_TEXT_ALWAYS_CHAR("rb"));
       if (!rw_ops)
       {
         ACE_DEBUG((LM_ERROR,
@@ -610,7 +614,6 @@ RPG_Sound_Common_Tools::initStringConversionTables()
   RPG_Sound_CategoryHelper::init();
   RPG_Sound_EventHelper::init();
 
-  // debug info
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Sound_Common_Tools: initialized string conversion tables...\n")));
 }

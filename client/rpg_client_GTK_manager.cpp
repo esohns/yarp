@@ -34,10 +34,10 @@
 #include "rpg_client_iGTK_ui.h"
 
 RPG_Client_GTK_Manager::RPG_Client_GTK_Manager()
- : inherited(std::string(ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_UI_THREAD_NAME)), // thread name
-             RPG_CLIENT_UI_THREAD_GROUP_ID,                                // group id
-             1,                                                            // # threads
-             false),                                                       // do NOT auto-start !
+ : inherited(ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_UI_THREAD_NAME), // thread name
+             RPG_CLIENT_GTK_UI_THREAD_GROUP_ID,                   // group id
+             1,                                                   // # threads
+             false),                                              // do NOT auto-start !
    myGTKIsInitialized(false),
 	 myArgc(0),
 	 myArgv(NULL),

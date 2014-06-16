@@ -42,7 +42,7 @@ class RPG_Sound_Export RPG_Sound_Common_Tools
  public:
   static bool init(const RPG_Sound_SDLConfiguration_t&,           // SDL config parameters
                    const std::string&,                            // sound directory
-                   const bool& = RPG_SOUND_DEF_AMBIENT_USE_CD,    // use CD ?
+                   const bool& = RPG_SOUND_AMBIENT_DEF_USE_CD,    // use CD ?
                    const unsigned int& = RPG_SOUND_DEF_CACHESIZE, // cache size
                    const bool& = false);                          // mute ?
   static void fini();
@@ -64,7 +64,6 @@ class RPG_Sound_Export RPG_Sound_Common_Tools
   static int playRandomTrack(SDL_CD* = NULL); // CDROM handle
 
  private:
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(~RPG_Sound_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Common_Tools(const RPG_Sound_Common_Tools&));

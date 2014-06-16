@@ -154,7 +154,7 @@ RPG_Graphics_SDL_Tools::initVideo(const RPG_Graphics_SDL_VideoConfiguration_t& c
   ACE_ASSERT(icon_graphic.type.image == IMAGE_WM_ICON);
   std::string path = RPG_Graphics_Common_Tools::getGraphicsDirectory();
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DEF_IMAGES_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_IMAGES_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += icon_graphic.file;
   SDL_Surface* icon_image = NULL;
@@ -445,15 +445,16 @@ RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& 
 //                 SDL_GL_MULTISAMPLESAMPLES, 0,
 //                 ACE_TEXT(SDL_GetError())));
 
-    return_value = SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL,
-                                       (RPG_GRAPHICS_DEF_OPENGL_HW_ACCELERATION ? 1
-                                                                                : 0));
+    return_value =
+        SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL,
+                            (RPG_GRAPHICS_OPENGL_DEF_HW_ACCELERATION ? 1
+                                                                     : 0));
     failed |= return_value;
     if (return_value)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
                  SDL_GL_ACCELERATED_VISUAL,
-                 (RPG_GRAPHICS_DEF_OPENGL_HW_ACCELERATION ? 1
+                 (RPG_GRAPHICS_OPENGL_DEF_HW_ACCELERATION ? 1
                                                           : 0),
                  ACE_TEXT(SDL_GetError())));
 
@@ -876,11 +877,13 @@ RPG_Graphics_SDL_Tools::boundingBox(const SDL_Rect& rect1_in,
           static_cast<int16_t>((rect1_in.y < rect2_in.y) ? rect1_in.y
                                                          : rect2_in.y);
   result.w =
-          static_cast<uint16_t>((((rect1_in.x + rect1_in.w) > (rect2_in.x + rect2_in.w)) ? (rect1_in.x + rect1_in.w - 1)
-                                                                                         : (rect2_in.x + rect2_in.w - 1)) - result.x) + 1;
+          static_cast<uint16_t>((((rect1_in.x + rect1_in.w) >
+                                  (rect2_in.x + rect2_in.w)) ? (rect1_in.x + rect1_in.w - 1)
+                                                             : (rect2_in.x + rect2_in.w - 1)) - result.x) + 1;
   result.h =
-          static_cast<uint16_t>((((rect1_in.y + rect1_in.h) > (rect2_in.y + rect2_in.h)) ? (rect1_in.y + rect1_in.h - 1)
-                                                                                         : (rect2_in.y + rect2_in.h - 1)) - result.y) + 1;
+          static_cast<uint16_t>((((rect1_in.y + rect1_in.h) >
+                                  (rect2_in.y + rect2_in.h)) ? (rect1_in.y + rect1_in.h - 1)
+                                                             : (rect2_in.y + rect2_in.h - 1)) - result.y) + 1;
 
   return result;
 }
@@ -913,11 +916,13 @@ RPG_Graphics_SDL_Tools::intersect(const SDL_Rect& rect1_in,
           static_cast<int16_t>((rect1_in.y > rect2_in.y) ? rect1_in.y
                                                          : rect2_in.y);
     result.w =
-          static_cast<uint16_t>((((rect1_in.x + rect1_in.w) < (rect2_in.x + rect2_in.w)) ? (rect1_in.x + rect1_in.w - 1)
-                                                                                         : (rect2_in.x + rect2_in.w - 1)) - result.x) + 1;
+          static_cast<uint16_t>((((rect1_in.x + rect1_in.w) <
+                                  (rect2_in.x + rect2_in.w)) ? (rect1_in.x + rect1_in.w - 1)
+                                                             : (rect2_in.x + rect2_in.w - 1)) - result.x) + 1;
     result.h =
-          static_cast<uint16_t>((((rect1_in.y + rect1_in.h) < (rect2_in.y + rect2_in.h)) ? (rect1_in.y + rect1_in.h - 1)
-                                                                                         : (rect2_in.y + rect2_in.h - 1)) - result.y) + 1;
+          static_cast<uint16_t>((((rect1_in.y + rect1_in.h) <
+                                  (rect2_in.y + rect2_in.h)) ? (rect1_in.y + rect1_in.h - 1)
+                                                             : (rect2_in.y + rect2_in.h - 1)) - result.y) + 1;
   } // end IF
 
   return result;

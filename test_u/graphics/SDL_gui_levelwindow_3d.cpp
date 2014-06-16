@@ -75,9 +75,9 @@ SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D(const RPG_Graphics_SDLWindowBase&
 //                                        myEngine->getSize().second / 2)),
 //   myHighlightBG(NULL),
 //   myHighlightTile(NULL),
-   myMinimapIsOn(RPG_CLIENT_DEF_MINIMAP_ISON)
+   myMinimapIsOn(RPG_CLIENT_MINIMAP_DEF_ISON)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D"));
 
 	myEngine->init(this);
 
@@ -121,7 +121,7 @@ SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D(const RPG_Graphics_SDLWindowBase&
 
 SDL_GUI_LevelWindow_3D::~SDL_GUI_LevelWindow_3D()
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::~SDL_GUI_LevelWindow"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::~SDL_GUI_LevelWindow_3D"));
 
   // clean up
   for (RPG_Graphics_FloorTilesConstIterator_t iterator = myCurrentFloorSet.tiles.begin();
@@ -1634,12 +1634,12 @@ SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
       SDL_Surface* shaded_wall = NULL;
       shaded_wall =
           RPG_Graphics_Surface::alpha(*myCurrentWallSet.east.surface,
-                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
+                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
-                   static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE))));
+                   static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY * SDL_ALPHA_OPAQUE))));
 
         return false;
       } // end IF
@@ -1649,12 +1649,12 @@ SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
       // adjust WEST wall opacity
       shaded_wall =
           RPG_Graphics_Surface::alpha(*myCurrentWallSet.west.surface,
-                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
-                   static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
+                   static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
         return false;
       } // end IF
@@ -1664,12 +1664,12 @@ SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
       // adjust SOUTH wall opacity
       shaded_wall =
           RPG_Graphics_Surface::alpha(*myCurrentWallSet.south.surface,
-                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE)));
+                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
-                   static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_SE_OPACITY * SDL_ALPHA_OPAQUE))));
+                   static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY * SDL_ALPHA_OPAQUE))));
 
         return false;
       } // end IF
@@ -1679,12 +1679,12 @@ SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
       // adjust NORTH wall opacity
       shaded_wall =
           RPG_Graphics_Surface::alpha(*myCurrentWallSet.north.surface,
-                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
-                   static_cast<Uint8>((RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY * SDL_ALPHA_OPAQUE))));
+                   static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
         return false;
       } // end IF
@@ -1789,7 +1789,7 @@ SDL_GUI_LevelWindow_3D::initCeiling()
   } // end IF
 
   SDL_Surface* shaded_ceiling = NULL;
-  Uint8 opacity = static_cast<Uint8>(RPG_GRAPHICS_TILE_DEF_WALL_NW_OPACITY *
+  Uint8 opacity = static_cast<Uint8>(RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY *
                                      SDL_ALPHA_OPAQUE);
   shaded_ceiling = RPG_Graphics_Surface::alpha(*myCurrentCeilingTile,
                                                opacity);

@@ -69,7 +69,7 @@ RPG_Sound_Event_Manager::dirent_comparator(const dirent** entry1_in,
 RPG_Sound_Event_Manager::RPG_Sound_Event_Manager()
  : myTimerID(-1),
 //   myRepository(),
-   myUseCDROM(RPG_SOUND_DEF_AMBIENT_USE_CD),
+   myUseCDROM(RPG_SOUND_AMBIENT_DEF_USE_CD),
    myCDROM(NULL),
    myTrackOrChannel(-1),
    myInitialized(false)
@@ -272,7 +272,7 @@ RPG_Sound_Event_Manager::handleTimeout(const void* act_in)
     FRAMES_TO_MSF(myCDROM->track[myTrackOrChannel].length,
                   &minutes, &seconds, &frames);
     // *NOTE*: allow an extra little bit...
-    length.set((minutes * 60) + seconds + RPG_SOUND_DEF_CDTRACK_PAD, 0);
+    length.set((minutes * 60) + seconds + RPG_SOUND_CDTRACK_DEF_PAD, 0);
   } // end IF
   else
   {
@@ -319,7 +319,7 @@ RPG_Sound_Event_Manager::handleTimeout(const void* act_in)
 
     myTrackOrChannel =
         RPG_Sound_Common_Tools::play(*iterator,
-                                     RPG_SOUND_DEF_AMBIENT_VOLUME,
+                                     RPG_SOUND_AMBIENT_DEF_VOLUME,
                                      length);
     if (myTrackOrChannel == -1)
     {
