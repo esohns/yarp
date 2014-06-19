@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\projects\ACE_wrappers;C:\Program Files (x86)\CodeSynthesis XSD 3.3\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>D:\projects\ACE_wrappers\lib;C:\Program Files (x86)\CodeSynthesis XSD 3.3\lib\vc-10.0</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ACEd.lib;xerces-c_3D.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup />
+</Project>

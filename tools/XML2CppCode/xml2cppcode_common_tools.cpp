@@ -17,10 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "stdafx.h"
 
 #include "xml2cppcode_common_tools.h"
 
-#include <ace/Log_Msg.h>
+#include "ace/Log_Msg.h"
 
 const bool XML2CppCode_Common_Tools::XMLintegratedtypeToString(const std::string& typeSpecifier_in,
                                                                std::string& result_out)

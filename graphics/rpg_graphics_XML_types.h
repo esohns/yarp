@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__GRAPHICS_RPG_GRAPHICS_XML_TYPES_H
-#define CXX__GRAPHICS_RPG_GRAPHICS_XML_TYPES_H
+#ifndef CXX___RPG_GRAPHICS_XML_TYPES_H
+#define CXX___RPG_GRAPHICS_XML_TYPES_H
 
 // Begin prologue.
 //
@@ -913,4 +913,4 @@ class RPG_Graphics_Export RPG_Graphics_ColorRGBA_Type_pskel: public ::xml_schema
 //
 // End epilogue.
 
-#endif // CXX__GRAPHICS_RPG_GRAPHICS_XML_TYPES_H
+#endif // CXX___RPG_GRAPHICS_XML_TYPES_H

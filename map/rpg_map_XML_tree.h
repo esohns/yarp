@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__MAP_RPG_MAP_XML_TREE_H
-#define CXX__MAP_RPG_MAP_XML_TREE_H
+#ifndef CXX___RPG_MAP_XML_TREE_H
+#define CXX___RPG_MAP_XML_TREE_H
 
 // Begin prologue.
 //
@@ -917,4 +917,4 @@ map_t (const ::RPG_Map_Level_XMLTree_Type& x,
 //
 // End epilogue.
 
-#endif // CXX__MAP_RPG_MAP_XML_TREE_H
+#endif // CXX___RPG_MAP_XML_TREE_H

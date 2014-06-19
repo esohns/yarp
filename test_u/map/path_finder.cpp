@@ -38,10 +38,13 @@
 #include "rpg_dice.h"
 #include "rpg_dice_common_tools.h"
 
-#include <ace/ACE.h>
-#include <ace/High_Res_Timer.h>
-#include <ace/Get_Opt.h>
-#include <ace/Log_Msg.h>
+#include "ace/ACE.h"
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
+#include "ace/High_Res_Timer.h"
+#include "ace/Get_Opt.h"
+#include "ace/Log_Msg.h"
 
 #include <sstream>
 #include <iostream>
@@ -560,7 +563,7 @@ ACE_TMAIN(int argc_in,
                ACE_TEXT("failed to RPG_Common_Tools::initLogging(), aborting\n")));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
     if (ACE::fini() == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));

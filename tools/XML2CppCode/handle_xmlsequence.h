@@ -23,7 +23,7 @@
 
 #include "iXML_definition_handler.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <string>
 #include <fstream>
@@ -32,12 +32,11 @@
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class Handle_XMLSequence
-  : public IXML_Definition_Handler
+ : public IXML_Definition_Handler
 {
  public:
   Handle_XMLSequence(std::ofstream&,      // target file stream
                      const unsigned int&, // nesting level
-                     const std::string&,  // base type
                      const std::string&,  // type prefix
                      const std::string&,  // type postfix
                      const std::string&); // emit class qualifier (DLL symbol import/export) ?
@@ -48,6 +47,14 @@ class Handle_XMLSequence
   virtual void handleData(const std::string&); // sequence item
   virtual void endElement();
 
+ protected:
+  std::ofstream& myOutputFile;
+	std::string    myStructName;
+	std::string    myTypePrefix;
+	std::string    myTypePostfix;
+	std::string    myEmitClassQualifier;
+	//   bool           myAdjustForTaggedUnions;
+
  private:
   typedef IXML_Definition_Handler inherited;
 
@@ -55,14 +62,7 @@ class Handle_XMLSequence
   ACE_UNIMPLEMENTED_FUNC(Handle_XMLSequence(const Handle_XMLSequence&));
   ACE_UNIMPLEMENTED_FUNC(Handle_XMLSequence& operator=(const Handle_XMLSequence&));
 
-  std::ofstream& myOutputFile;
   unsigned int   myNestingLevel;
-  std::string    myBaseType;
-  std::string    myTypePrefix;
-  std::string    myTypePostfix;
-  std::string    myEmitClassQualifier;
-//   bool           myAdjustForTaggedUnions;
-  std::string    myStructName;
 };
 
 #endif

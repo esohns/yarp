@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C++ Express 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2013 for Windows Desktop
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "net", "..\net\net.vcxproj", "{AA720739-6711-4CFE-8E54-0D5ABFA83963}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stream", "..\net\stream\stream.vcxproj", "{EF66F896-AED2-4E31-8222-4424970E4357}"
@@ -27,6 +29,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_monster_parser", "..
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_client_gui", "..\test_u\test_u_client.vcxproj", "{3AE469E3-4F34-4D0A-9581-0B6467D1705B}"
 	ProjectSection(ProjectDependencies) = postProject
+		{A0066128-9E16-47C8-9697-78BE571B8445} = {A0066128-9E16-47C8-9697-78BE571B8445}
 		{AA720739-6711-4CFE-8E54-0D5ABFA83963} = {AA720739-6711-4CFE-8E54-0D5ABFA83963}
 		{DF9CE33E-5060-48A6-B105-0B61FEDF6AE6} = {DF9CE33E-5060-48A6-B105-0B61FEDF6AE6}
 		{47DB7C91-607E-4773-B139-A45ABAF3CA00} = {47DB7C91-607E-4773-B139-A45ABAF3CA00}
@@ -141,6 +144,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "net_client", "..\net\net_cl
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "client", "..\client\client.vcxproj", "{DF9CE33E-5060-48A6-B105-0B61FEDF6AE6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A0066128-9E16-47C8-9697-78BE571B8445} = {A0066128-9E16-47C8-9697-78BE571B8445}
+		{AA720739-6711-4CFE-8E54-0D5ABFA83963} = {AA720739-6711-4CFE-8E54-0D5ABFA83963}
+		{47DB7C91-607E-4773-B139-A45ABAF3CA00} = {47DB7C91-607E-4773-B139-A45ABAF3CA00}
+		{EF66F896-AED2-4E31-8222-4424970E4357} = {EF66F896-AED2-4E31-8222-4424970E4357}
+		{AB56C6B4-CDC5-4464-9B00-E798451096ED} = {AB56C6B4-CDC5-4464-9B00-E798451096ED}
+		{F306A4B7-0D19-4322-B891-11E528EBD50C} = {F306A4B7-0D19-4322-B891-11E528EBD50C}
+		{680D55C6-2821-4D27-ACD2-88873D145794} = {680D55C6-2821-4D27-ACD2-88873D145794}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "net_server", "..\net\server\net_server.vcxproj", "{9CBD2CEE-257D-42F2-A88F-AE6A4622F9AE}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -151,6 +163,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "net_server", "..\net\server
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XML2CppCode", "..\tools\XML2CppCode\XML2CppCode.vcxproj", "{7CFF8B93-971B-40AE-A875-2C83E1F37002}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5633F302-FF53-4014-8587-7BB1F35561CD} = {5633F302-FF53-4014-8587-7BB1F35561CD}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

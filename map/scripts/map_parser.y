@@ -7,6 +7,9 @@
 %skeleton         "lalr1.cc"
 /* %skeleton         "glr.c" */
 %token-table
+%code top {
+#include "stdafx.h"
+}
 %defines          "rpg_map_parser.h"
 %output           "rpg_map_parser.cpp"
 /* %define           api.pure */
@@ -51,7 +54,7 @@ typedef void* yyscan_t;
 
 #include "rpg_common_macros.h"
 
-#include <ace/Log_Msg.h>
+#include "ace/Log_Msg.h"
 
 #include <string>
 }
@@ -93,7 +96,7 @@ glyphs:                           /* empty */
                                       {
                                         RPG_Map_Door_t door;
                                         door.position = driver->myCurrentPosition;
-                                        door.outside = DIRECTION_INVALID;
+                                        door.outside = RPG_MAP_DIRECTION_INVALID;
                                         door.state = RPG_MAP_DOORSTATE_INVALID;
                                         driver->myCurrentPlan->doors.insert(door);
                                         driver->myCurrentPosition.first++;

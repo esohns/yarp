@@ -44,7 +44,7 @@
 
 #include "rpg_common_subclass.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <string>
 #include <deque>

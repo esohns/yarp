@@ -17,7 +17,7 @@ if NOT exist "%PerlEXE%" (
  echo invalid file ^(was: "%PerlEXE%"^)^, exiting
  goto Failed
 )
-set PerlScript=C:\Temp\ACE_wrappers\bin\generate_export_file.pl
+set PerlScript=D:\projects\ACE_wrappers\bin\generate_export_file.pl
 if NOT exist "%PerlScript%" (
  echo invalid file ^(was: "%PerlScript%"^)^, exiting
  goto Failed
@@ -43,16 +43,16 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 @rem XML Parser
-set XsdEXE=C:\Program Files\CodeSynthesis XSD 3.3\bin\xsd.exe
+@rem set XsdEXE=C:\Program Files\CodeSynthesis XSD 3.3\bin\xsd.exe
+set XsdEXE=C:\Program Files (x86)\CodeSynthesis XSD 3.3\bin\xsd.exe
 if NOT exist "%XsdEXE%" (
  echo invalid file ^(was: "%XsdEXE%"^)^, exiting
  goto Failed
 )
 @rem generate "XMLSchema" namespace include file (rpg_item.xsd)
 @rem "%XsdEXE%" cxx-parser --char-type char --output-dir .\.. --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ..\rpg_XMLSchema_XML_types.xsd
-
 @rem generate parser include/implementation (rpg_item.xsd)
-"%XsdEXE%" cxx-parser --type-map .\..\rpg_item.map --char-type char --output-dir .\.. --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc --export-symbol "RPG_Item_Export" --hxx-prologue "#include \"rpg_item_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp .\..\rpg_item.xsd
+"%XsdEXE%" cxx-parser --type-map .\..\rpg_item.map --output-dir .\.. --export-symbol "RPG_Item_Export" --hxx-prologue "#include \"rpg_item_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp --options-file .\..\..\scripts\xsdcxx_parser_options .\..\rpg_item.xsd
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate XML parser code^, exiting
  set RC=%ERRORLEVEL%
@@ -61,20 +61,19 @@ if %ERRORLEVEL% NEQ 0 (
 @rem *NOTE*: xsd improperly rearranges the included headers from the map file
 @rem --> move a repaired version back into the project directory
 @rem *IMPORTANT NOTE*: needs to be updated after every change
-copy /Y rpg_item_XML_types.h .\.. >NUL 2>&1
-if %ERRORLEVEL% NEQ 0 (
- echo failed to copy header file^, exiting
- set RC=%ERRORLEVEL%
- goto Failed
-)
+@rem copy /Y rpg_item_XML_types.h .\.. >NUL 2>&1
+@rem if %ERRORLEVEL% NEQ 0 (
+ @rem echo failed to copy header file^, exiting
+ @rem set RC=%ERRORLEVEL%
+ @rem goto Failed
+@rem )
 
 @rem generate "XMLSchema" namespace include file (tree)
 @rem "%XsdEXE%" cxx-tree --char-type char --output-dir .\.. --generate-serialization --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --generate-xml-schema --hxx-suffix .h --show-anonymous --show-sloc ..\rpg_XMLSchema_XML_tree.xsd
-"%XsdEXE%" cxx-tree --char-type char --output-dir .\.. --generate-serialization --generate-xml-schema --hxx-suffix .h --show-anonymous --show-sloc ..\rpg_XMLSchema_XML_tree.xsd
-
+@rem "%XsdEXE%" cxx-tree --char-type char --output-dir .\.. --generate-serialization --generate-xml-schema --hxx-suffix .h --show-anonymous --show-sloc ..\rpg_XMLSchema_XML_tree.xsd
 @rem generate tree include/implementation (rpg_item.xsd)
 @rem "%XsdEXE%" cxx-tree --generate-serialization --generate-ostream --generate-comparison --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --type-regex "/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/" --root-element-none --char-type char --output-dir .\.. --namespace-map urn:rpg= --export-xml-schema --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc --export-symbol "RPG_Item_Export" --hxx-prologue "#include \"rpg_item_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp ..\rpg_item.xsd
-"%XsdEXE%" cxx-tree --generate-serialization --generate-ostream --generate-comparison --type-regex "/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/" --root-element-none --char-type char --output-dir .\.. --namespace-map urn:rpg= --export-xml-schema --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc --export-symbol "RPG_Item_Export" --hxx-prologue "#include \"rpg_item_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp ..\rpg_item.xsd
+"%XsdEXE%" cxx-tree --root-element-none --output-dir .\.. --export-symbol "RPG_Item_Export" --hxx-prologue "#include \"rpg_item_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp --options-file .\..\..\scripts\xsdcxx_tree_options ..\rpg_item.xsd
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate XML parser code^, exiting
  set RC=%ERRORLEVEL%

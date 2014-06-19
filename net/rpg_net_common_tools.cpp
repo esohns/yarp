@@ -203,11 +203,29 @@ RPG_Net_Common_Tools::startEventDispatch(const bool& useReactor_in,
   if (numDispatchThreads_in > 1)
   {
     // start a (group of) worker thread(s)...
-    ACE_hthread_t thread_handles[numDispatchThreads_in];
-		ACE_OS::memset(thread_handles, 0, sizeof(thread_handles));
+		ACE_hthread_t* thread_handles = new(std::nothrow) ACE_hthread_t[numDispatchThreads_in];
+		if (!thread_handles)
+		{
+			ACE_DEBUG((LM_CRITICAL,
+								 ACE_TEXT("failed to allocate memory(%u), aborting\n"),
+								 (sizeof(ACE_hthread_t)* numDispatchThreads_in)));
 
-    const char* thread_names[numDispatchThreads_in];
-    ACE_OS::memset(thread_names, 0, sizeof(thread_names));
+			return false;
+		} // end IF
+		ACE_OS::memset(thread_handles, 0, sizeof(thread_handles));
+		const char** thread_names = new(std::nothrow) const char*[numDispatchThreads_in];
+		if (!thread_names)
+		{
+			ACE_DEBUG((LM_CRITICAL,
+								 ACE_TEXT("failed to allocate memory(%u), aborting\n"),
+								 (sizeof(const char*) * numDispatchThreads_in)));
+
+			// clean up
+			delete [] thread_handles;
+
+			return false;
+		} // end IF
+		ACE_OS::memset(thread_names, 0, sizeof(thread_names));
     char* thread_name = NULL;
 		std::string buffer;
     std::ostringstream converter;
@@ -225,8 +243,10 @@ RPG_Net_Common_Tools::startEventDispatch(const bool& useReactor_in,
                    ACE_TEXT("failed to allocate memory, aborting\n")));
 
         // clean up
+				delete[] thread_handles;
 				for (unsigned int j = 0; j < i; j++)
           delete [] thread_names[j];
+				delete [] thread_names;
 
         return false;
       } // end IF
@@ -262,13 +282,15 @@ RPG_Net_Common_Tools::startEventDispatch(const bool& useReactor_in,
                  numDispatchThreads_in));
 
       // clean up
+			delete[] thread_handles;
 			for (unsigned int i = 0; i < numDispatchThreads_in; i++)
         delete [] thread_names[i];
+			delete[] thread_names;
 
       return false;
     } // end IF
 
-		// clean up
+		// debug info
 		converter.clear();
 		converter.str(ACE_TEXT_ALWAYS_CHAR(""));
 		for (unsigned int i = 0; i < numDispatchThreads_in; i++)
@@ -287,6 +309,9 @@ RPG_Net_Common_Tools::startEventDispatch(const bool& useReactor_in,
                numDispatchThreads_in,
                groupID_out,
                ACE_TEXT(buffer.c_str())));
+
+		delete [] thread_handles;
+		delete [] thread_names;
   } // end IF
 
   return true;

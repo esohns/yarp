@@ -58,10 +58,13 @@
 #include "rpg_common_tools.h"
 #include "rpg_common_file_tools.h"
 
-#include <ace/ACE.h>
-#include <ace/Log_Msg.h>
-#include <ace/Get_Opt.h>
-#include <ace/High_Res_Timer.h>
+#include "ace/ACE.h"
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
+#include "ace/Log_Msg.h"
+#include "ace/Get_Opt.h"
+#include "ace/High_Res_Timer.h"
 
 #include <iostream>
 #include <iomanip>
@@ -84,7 +87,7 @@ do_printUsage(const std::string& programName_in)
 
   std::string configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                           true);
+																													 true);
 #if defined(DEBUG_DEBUGGER)
   configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
 #endif // #ifdef BASEDIR

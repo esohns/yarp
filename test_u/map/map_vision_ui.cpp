@@ -76,12 +76,15 @@
 #include "rpg_dice.h"
 #include "rpg_dice_common_tools.h"
 
-#include <ace/ACE.h>
-#include <ace/High_Res_Timer.h>
-#include <ace/Get_Opt.h>
-#include <ace/Log_Msg.h>
+#include "ace/ACE.h"
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
+#include "ace/High_Res_Timer.h"
+#include "ace/Get_Opt.h"
+#include "ace/Log_Msg.h"
 
-#include <SDL.h>
+#include "SDL.h"
 
 #include <string>
 #include <sstream>
@@ -217,7 +220,7 @@ do_printUsage(const std::string& programName_in)
 	path = data_path;
 	path += RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE);
+  path += RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_NAME));
   path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
   std::cout << ACE_TEXT("-p [FILE]: entity profile (*")
             << ACE_TEXT(RPG_PLAYER_PROFILE_EXT)
@@ -303,7 +306,7 @@ do_processArguments(const int& argc_in,
 	entityProfile_out       = data_path;
 	entityProfile_out += RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   entityProfile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  entityProfile_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE);
+  entityProfile_out += RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_NAME));
   entityProfile_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
   traceInformation_out    = false;
@@ -326,31 +329,31 @@ do_processArguments(const int& argc_in,
       }
       case 'g':
       {
-        graphicsDictionary_out = argumentParser.opt_arg();
+        graphicsDictionary_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
       case 'i':
       {
-        itemDictionary_out = argumentParser.opt_arg();
+				itemDictionary_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
       case 'l':
       {
-        levelMap_out = argumentParser.opt_arg();
+				levelMap_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
       case 'm':
       {
-        monsterDictionary_out = argumentParser.opt_arg();
+				monsterDictionary_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
       case 'p':
       {
-        entityProfile_out = argumentParser.opt_arg();
+				entityProfile_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
@@ -392,8 +395,8 @@ do_processArguments(const int& argc_in,
 bool
 do_initGUI(const std::string& graphicsDictionary_in,
            const std::string& graphicsDirectory_in,
-           RPG_Client_GTK_CBData_t& user_data_in,
-           const RPG_Graphics_SDL_VideoConfiguration_t& videoConfig_in)
+           RPG_Client_GTK_CBData_t& userData_in,
+           const RPG_Graphics_SDL_VideoConfiguration_t& videoConfiguration_in)
 {
   RPG_TRACE(ACE_TEXT("::do_initGUI"));
 
@@ -407,7 +410,7 @@ do_initGUI(const std::string& graphicsDictionary_in,
     return false;
   } // end IF
   RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
-                                  RPG_CLIENT_DEF_GRAPHICS_CACHESIZE,
+                                  RPG_CLIENT_GRAPHICS_DEF_CACHESIZE,
                                   false);
   RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(graphicsDictionary_in
 #ifdef _DEBUG
@@ -435,7 +438,7 @@ do_initGUI(const std::string& graphicsDictionary_in,
   // ***** window/screen setup *****
   // set window caption
   std::string caption;
-  caption = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
+	caption = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);
 //   caption += ACE_TEXT_ALWAYS_CHAR(" ");
 //   caption += RPG_VERSION;
   gchar* caption_utf8 = RPG_Client_UI_Tools::Locale2UTF8(caption);
@@ -471,15 +474,15 @@ do_initGUI(const std::string& graphicsDictionary_in,
 //   // don't show (double) cursor
 //   SDL_ShowCursor(SDL_DISABLE);
 
-  user_data_in.screen =
-      RPG_Graphics_SDL_Tools::initScreen(videoConfig_in);
-  if (!user_data_in.screen)
+	userData_in.screen =
+      RPG_Graphics_SDL_Tools::initScreen(videoConfiguration_in);
+	if (!userData_in.screen)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_SDL_Tools::initScreen(%d,%d,%d), aborting\n"),
-               videoConfig_in.screen_width,
-               videoConfig_in.screen_height,
-               videoConfig_in.screen_colordepth));
+							 videoConfiguration_in.screen_width,
+							 videoConfiguration_in.screen_height,
+							 videoConfiguration_in.screen_colordepth));
 
     return false;
   } // end IF
@@ -575,7 +578,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
                                 configuration_in.audio_configuration.mute,
                                 configuration_in.audio_configuration.dictionary,
                                 configuration_in.graphics_directory,
-                                RPG_CLIENT_DEF_GRAPHICS_CACHESIZE,
+                                RPG_CLIENT_GRAPHICS_DEF_CACHESIZE,
                                 configuration_in.graphics_dictionary,
                                 true);
 
@@ -639,9 +642,9 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
   // step5d: setup main "window"
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
-  type.image = RPG_CLIENT_DEF_GRAPHICS_WINDOWSTYLE_TYPE;
+	type.image = RPG_CLIENT_GRAPHICS_DEF_WINDOWSTYLE_TYPE;
   std::string title =
-      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_DEF_GRAPHICS_MAINWINDOW_TITLE);
+		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);
   RPG_Client_Window_Main main_window(RPG_Graphics_Size_t(userData_in.screen->w,
                                                          userData_in.screen->h), // size
                                      type,                                       // interface elements
@@ -649,14 +652,16 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
                                      FONT_MAIN_LARGE);                           // title font
   main_window.setScreen(userData_in.screen);
   main_window.init(&client_engine,
-                  RPG_CLIENT_DEF_WINDOW_EDGE_AUTOSCROLL,
-                  &level_engine);
+		               RPG_CLIENT_WINDOW_DEF_EDGE_AUTOSCROLL,
+                   &level_engine,
+									 false);
 
   // step5e: client engine
   RPG_Client_GTKUIDefinition ui_definition(&userData_in);
   client_engine.init(&level_engine,
                      main_window.child(WINDOW_MAP),
-                     &ui_definition);
+                     &ui_definition,
+										 false);
 
   // step5f: trigger initial drawing
   RPG_Client_Action client_action;
@@ -1220,7 +1225,7 @@ ACE_TMAIN(int argc_in,
 	std::string entity_profile      = data_path;
 	entity_profile += RPG_Player_Common_Tools::getPlayerProfilesDirectory();
 	entity_profile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-	entity_profile += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE);
+	entity_profile += RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_NAME));
 	entity_profile += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
   std::string UI_file             = configuration_path;
@@ -1350,11 +1355,13 @@ ACE_TMAIN(int argc_in,
   configuration.num_dispatch_threads                = 0;
 
   // *** graphics ***
-  configuration.video_configuration.screen_width      = RPG_CLIENT_DEF_VIDEO_W;
-  configuration.video_configuration.screen_height     = RPG_CLIENT_DEF_VIDEO_H;
-  configuration.video_configuration.screen_colordepth = RPG_CLIENT_DEF_VIDEO_BPP;
-  configuration.video_configuration.full_screen       = RPG_CLIENT_DEF_VIDEO_FULLSCREEN;
-  configuration.video_configuration.double_buffer     = RPG_CLIENT_DEF_VIDEO_DOUBLEBUFFER;
+	configuration.video_configuration.screen_width = RPG_CLIENT_VIDEO_DEF_WIDTH;
+	configuration.video_configuration.screen_height = RPG_CLIENT_VIDEO_DEF_HEIGHT;
+	configuration.video_configuration.screen_colordepth = RPG_CLIENT_VIDEO_DEF_BPP;
+	configuration.video_configuration.full_screen = RPG_CLIENT_VIDEO_DEF_FULLSCREEN;
+	configuration.video_configuration.double_buffer = RPG_CLIENT_VIDEO_DEF_DOUBLEBUFFER;
+	configuration.video_configuration.use_OpenGL = RPG_CLIENT_VIDEO_DEF_OPENGL;
+	//configuration.video_configuration.video_driver = ;
 
   configuration.graphics_directory = data_path;
   configuration.graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -1379,15 +1386,15 @@ ACE_TMAIN(int argc_in,
   configuration.monster_dictionary         = monster_dictionary;
 
   // *** map ***
-  configuration.map_configuration.min_room_size          = RPG_CLIENT_DEF_MAP_MIN_ROOM_SIZE;
-  configuration.map_configuration.doors                  = RPG_CLIENT_DEF_MAP_DOORS;
-  configuration.map_configuration.corridors              = RPG_CLIENT_DEF_MAP_CORRIDORS;
-  configuration.map_configuration.max_num_doors_per_room = RPG_CLIENT_DEF_MAP_MAX_NUM_DOORS_PER_ROOM;
-  configuration.map_configuration.maximize_rooms         = RPG_CLIENT_DEF_MAP_MAXIMIZE_ROOMS;
-  configuration.map_configuration.num_areas              = RPG_CLIENT_DEF_MAP_NUM_AREAS;
-  configuration.map_configuration.square_rooms           = RPG_CLIENT_DEF_MAP_SQUARE_ROOMS;
-  configuration.map_configuration.map_size_x             = RPG_CLIENT_DEF_MAP_SIZE_X;
-  configuration.map_configuration.map_size_y             = RPG_CLIENT_DEF_MAP_SIZE_Y;
+	configuration.map_configuration.min_room_size = RPG_CLIENT_MAP_DEF_MIN_ROOM_SIZE;
+	configuration.map_configuration.doors = RPG_CLIENT_MAP_DEF_DOORS;
+	configuration.map_configuration.corridors = RPG_CLIENT_MAP_DEF_CORRIDORS;
+	configuration.map_configuration.max_num_doors_per_room = RPG_CLIENT_MAP_DEF_MAX_NUM_DOORS_PER_ROOM;
+	configuration.map_configuration.maximize_rooms = RPG_CLIENT_MAP_DEF_MAXIMIZE_ROOMS;
+	configuration.map_configuration.num_areas = RPG_CLIENT_MAP_DEF_NUM_AREAS;
+	configuration.map_configuration.square_rooms = RPG_CLIENT_MAP_DEF_SQUARE_ROOMS;
+	configuration.map_configuration.map_size_x = RPG_CLIENT_MAP_DEF_SIZE_X;
+	configuration.map_configuration.map_size_y = RPG_CLIENT_MAP_DEF_SIZE_Y;
   configuration.map_file                                 = level_map;
 
   // step2a: init SDL

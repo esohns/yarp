@@ -17,16 +17,26 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
-// *NOTE*: workaround quirky MSVC...
-#define NOMINMAX
+#include "stdafx.h"
 
 #include "XML_handler.h"
+
+// *NOTE*: need this to import correct VERSION !
+#ifdef HAVE_CONFIG_H
+#if defined _MSC_VER
+#include "build/XML2CppCode-config.h"
+#else
+//// *TODO*: leave as-is for now (see Yarp/configure.ac)
+//#include "config.h"
+#include "XML2CppCode-config.h"
+#endif
+#endif
 
 #include "xml2cppcode.h"
 #include "handle_xmlchoice.h"
 #include "handle_xmlenumeration.h"
 #include "handle_xmlsequence.h"
+#include "handle_xmlstruct.h"
 #include "handle_xmlunion.h"
 
 #include <xercesc/util/XMLUniDefs.hpp>
@@ -34,12 +44,14 @@
 #include <xercesc/sax2/Attributes.hpp>
 
 #include <ace/ACE.h>
+#include <ace/OS.h>
 #include <ace/OS_Memory.h>
 #include <ace/Log_Msg.h>
 
 #include <algorithm>
 #include <sstream>
 #include <locale>
+#include <functional>
 
 // *NOTE*: need this to import correct PACKAGE_STRING !
 #ifdef HAVE_CONFIG_H
@@ -163,59 +175,48 @@ XML_Handler::endElement(const XMLCh* const uri_in,
   {
     case XML_ATTRIBUTE:
     case XML_ANNOTATION:
-    case XML_DOCUMENTATION:
+		case XML_COMPLEXCONTENT:
+		case XML_DOCUMENTATION:
     case XML_ELEMENT:
     case XML_ENUMERATION: // --> handled in SIMPLETYPE case !
-    case XML_INCLUDE:
+		case XML_EXTENSION:
+		case XML_INCLUDE:
     case XML_RESTRICTION:
     case XML_SCHEMA:
-    case XML_COMPLEXCONTENT:
     case XML_UNION:
     {
 //       myIgnoreCharacters = true;
 
       break;
     }
-    case XML_EXTENSION:
-    {
-      myCurrentExtension.resize(0);
-
-      break;
-    }
     case XML_CHOICE:
-    case XML_SEQUENCE:
+		case XML_SEQUENCE:
+		{
+			myCurrentNestingLevel--;
+
+			break;
+		}
     case XML_SIMPLETYPE:
-    {
-      ACE_ASSERT(!myDefinitionHandlers.empty());
-
-      // notify & delete current handler
-      IXML_Definition_Handler* handler = myDefinitionHandlers.top();
-      ACE_ASSERT(handler);
-      try
-      {
-        handler->endElement();
-      } // end IF
-      catch (...)
-      {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught exception in IXML_Definition_Handler::endElement, continuing\n")));
-      }
-      myDefinitionHandlers.pop();
-      delete handler;
-
-      if ((type == XML_CHOICE) ||
-          (type == XML_SEQUENCE))
-      {
-        myCurrentNestingLevel--;
-
-        break;
-      }
-
-      // *WARNING*: falls through !
-    }
     case XML_COMPLEXTYPE:
     {
-      // next relevant element will be the first...
+			ACE_ASSERT(!myDefinitionHandlers.empty());
+
+			// notify (& delete) current handler
+			IXML_Definition_Handler* handler = myDefinitionHandlers.top();
+			ACE_ASSERT(handler);
+			try
+			{
+				handler->endElement();
+			} // end IF
+			catch (...)
+			{
+				ACE_DEBUG((LM_ERROR,
+					         ACE_TEXT("caught exception in IXML_Definition_Handler::endElement, continuing\n")));
+			}
+			myDefinitionHandlers.pop();
+			delete handler;
+
+			// next relevant element will be the first...
       myIsFirstRelevantElement = true;
 
       // reset element name
@@ -363,7 +364,6 @@ XML_Handler::startElement(const XMLCh* const uri_in,
   switch (typeOfElement)
   {
     case XML_ANNOTATION:
-    case XML_COMPLEXCONTENT:
     case XML_DOCUMENTATION:
     case XML_INCLUDE:
     case XML_RESTRICTION:
@@ -466,9 +466,10 @@ XML_Handler::startElement(const XMLCh* const uri_in,
       XMLCh* base_string = XMLString::transcode(ACE_TEXT_ALWAYS_CHAR("base"));
       char* base = XMLString::transcode(attributes_in.getValue(base_string));
       XMLString::release(&base_string);
+			std::string base_class;
       if (base)
       {
-        myCurrentExtension = base;
+				base_class = base;
         XMLString::release(&base);
       } // end IF
 
@@ -476,10 +477,23 @@ XML_Handler::startElement(const XMLCh* const uri_in,
       if (!myTypePostfix.empty())
       {
         std::string::size_type position =
-            myCurrentExtension.rfind(myTypePostfix, std::string::npos);
+					base_class.rfind(myTypePostfix, std::string::npos);
         if (position != std::string::npos)
-          myCurrentExtension.erase(position, std::string::npos);
+					base_class.erase(position, std::string::npos);
       } // end IF
+
+			// init handler
+			IXML_Definition_Handler* handler = myDefinitionHandlers.top();
+			ACE_ASSERT(handler);
+			try
+			{
+				handler->handleData(base_class);
+			}
+			catch (...)
+			{
+				ACE_DEBUG((LM_ERROR,
+					         ACE_TEXT("caught exception in IXML_Definition_Handler::handleData(), continuing\n")));
+			}
 
       break;
     }
@@ -618,6 +632,39 @@ XML_Handler::startElement(const XMLCh* const uri_in,
 
       break;
     }
+		case XML_COMPLEXCONTENT:
+		{
+			IXML_Definition_Handler* handler = NULL;
+			ACE_NEW_NORETURN(handler,
+											 Handle_XMLStruct(myCurrentOutputFile,
+																			  myTypePrefix,
+											                  myTypePostfix,
+											                  myEmitClassQualifiers));
+			if (!handler)
+			{
+				ACE_DEBUG((LM_CRITICAL,
+									 ACE_TEXT("failed to allocate memory(%u), aborting\n"),
+									 sizeof(Handle_XMLStruct)));
+
+				OutOfMemoryException exception;
+				throw exception;
+			} // end IF
+
+			// init handler
+			try
+			{
+				handler->startElement(myCurrentElementName);
+			}
+			catch (...)
+			{
+				ACE_DEBUG((LM_ERROR,
+					ACE_TEXT("caught exception in IXML_Definition_Handler::startElement(), continuing\n")));
+			}
+
+			myDefinitionHandlers.push(handler);
+
+			break;
+		}
     case XML_ENUMERATION:
     {
       IXML_Definition_Handler* handler = NULL;
@@ -808,7 +855,6 @@ XML_Handler::startElement(const XMLCh* const uri_in,
       ACE_NEW_NORETURN(handler,
                        Handle_XMLSequence(myCurrentOutputFile,
                                           myCurrentNestingLevel,
-                                          myCurrentExtension,
                                           myTypePrefix,
                                           myTypePostfix,
                                           myEmitClassQualifiers));
@@ -1027,7 +1073,7 @@ XML_Handler::insertPreamble(std::ofstream& targetStream_inout)
   targetStream_inout << ACE_TEXT_ALWAYS_CHAR("// -------------------------------- * * * ----------------------------------- //") << std::endl;
   targetStream_inout << ACE_TEXT_ALWAYS_CHAR("// PLEASE NOTE: this file was/is generated by ");
 #if defined _MSC_VER
-  targetStream_inout << XML2CPPCODE_PACKAGE_STRING << std::endl;
+	targetStream_inout << XML2CPPCODE_PACKAGE_STRING << std::endl;
 #else
 //  // *TODO*: leave as-is for now (see Yarp/configure.ac)
 //  targetStream_inout << PACKAGE_STRING << std::endl;

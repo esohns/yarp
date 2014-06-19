@@ -29,6 +29,13 @@
    
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
+/* "%code top" blocks.  */
+
+
+#include "stdafx.h"
+
+
+
 
 // Take the name prefix into account.
 #define yylex   RPG_Map_Scanner_lex
@@ -52,7 +59,7 @@
 
 #include "rpg_common_macros.h"
 
-#include <ace/Log_Msg.h>
+#include "ace/Log_Msg.h"
 
 #include <string>
 
@@ -970,7 +977,7 @@ namespace yy {
   const unsigned char
   RPG_Map_Parser::yyrline_[] =
   {
-         0,    71,    71,    72,    73,   125
+         0,    74,    74,    75,    76,   128
   };
 
   // Print the state stack on the debug stream.

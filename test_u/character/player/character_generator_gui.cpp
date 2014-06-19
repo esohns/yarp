@@ -23,9 +23,9 @@
 
 #include "rpg_common_macros.h"
 
-#include <SDL.h>
+#include "SDL.h"
 
-#include <ace/OS_main.h>
+#include "ace/OS_main.h"
 
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
 #ifdef __cplusplus

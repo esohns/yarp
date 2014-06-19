@@ -42,9 +42,9 @@
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
 
-#include <SDL_opengl.h>
+#include "SDL_opengl.h"
 
-#include <ace/Log_Msg.h>
+#include "ace/Log_Msg.h"
 
 #include <sstream>
 #include <math.h>

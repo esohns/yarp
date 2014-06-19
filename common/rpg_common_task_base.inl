@@ -84,11 +84,42 @@ RPG_Common_TaskBase<TaskSynchStrategyType,
     return 0; // nothing to do
 
 	// spawn the dispatching worker thread(s)
-	ACE_thread_t thread_ids[myNumThreads];
+	ACE_thread_t* thread_ids = new(std::nothrow) ACE_thread_t[myNumThreads];
+	if (!thread_ids)
+	{
+		ACE_DEBUG((LM_CRITICAL,
+					     ACE_TEXT("failed to allocate memory(%u), aborting\n"),
+							 (sizeof(ACE_thread_t) * myNumThreads)));
+
+		return -1;
+	} // end IF
 	ACE_OS::memset(thread_ids, 0, sizeof(thread_ids));
-	ACE_hthread_t thread_handles[myNumThreads];
+	ACE_hthread_t* thread_handles = new(std::nothrow) ACE_hthread_t[myNumThreads];
+	if (!thread_handles)
+	{
+		ACE_DEBUG((LM_CRITICAL,
+						   ACE_TEXT("failed to allocate memory(%u), aborting\n"),
+			         (sizeof(ACE_hthread_t) * myNumThreads)));
+
+		// clean up
+		delete [] thread_ids;
+
+		return -1;
+	} // end IF
 	ACE_OS::memset(thread_handles, 0, sizeof(thread_handles));
-	const char* thread_names[myNumThreads];
+	const char** thread_names = new(std::nothrow) const char*[myNumThreads];
+	if (!thread_names)
+	{
+		ACE_DEBUG((LM_CRITICAL,
+							 ACE_TEXT("failed to allocate memory(%u), aborting\n"),
+				 			 (sizeof(const char*) * myNumThreads)));
+
+		// clean up
+		delete [] thread_ids;
+		delete [] thread_handles;
+
+		return -1;
+	} // end IF
 	ACE_OS::memset(thread_names, 0, sizeof(thread_names));
 	char* thread_name = NULL;
 	std::string buffer;
@@ -104,13 +135,17 @@ RPG_Common_TaskBase<TaskSynchStrategyType,
     if (!thread_name)
     {
       ACE_DEBUG((LM_CRITICAL,
-                 ACE_TEXT("failed to allocate memory, aborting\n")));
+                 ACE_TEXT("failed to allocate memory(%u), aborting\n"),
+								 (sizeof(char) * RPG_COMMON_BUFSIZE)));
 
 			// clean up
+			delete [] thread_ids;
+			delete [] thread_handles;
 			for (unsigned int j = 0; j < i; j++)
 				delete [] thread_names[j];
+			delete [] thread_names;
 
-      return false;
+      return -1;
     } // end IF
     ACE_OS::memset(thread_name, 0, sizeof(thread_name));
     converter.clear();
@@ -142,8 +177,11 @@ RPG_Common_TaskBase<TaskSynchStrategyType,
 							 ACE_TEXT("failed to ACE_Task::activate(): \"%m\", aborting\n")));
 
 		// clean up
+		delete [] thread_ids;
+		delete [] thread_handles;
 		for (unsigned int i = 0; i < myNumThreads; i++)
 			delete [] thread_names[i];
+		delete [] thread_names;
 
 		return result;
 	} // end IF
@@ -168,6 +206,10 @@ RPG_Common_TaskBase<TaskSynchStrategyType,
 						 myNumThreads,
 						 inherited::grp_id(),
 						 ACE_TEXT(thread_ids_string.c_str())));
+
+	delete [] thread_ids;
+	delete [] thread_handles;
+	delete [] thread_names;
 
 	return result;
 }

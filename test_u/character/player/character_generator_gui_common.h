@@ -25,21 +25,30 @@
 
 #include "rpg_graphics_sprite.h"
 
-#include <glade/glade.h>
+#include "glade/glade.h"
 
 #include <string>
 #include <vector>
+#include <map>
 
-#define CHARACTER_GENERATOR_GTK_BUTTON_IMAGENEXT_NAME "image_button_next"
-#define CHARACTER_GENERATOR_GTK_BUTTON_IMAGEPREV_NAME "image_button_prev"
+#define CHARACTER_GENERATOR_GTK_BUTTON_IMAGENEXT_NAME "next_button"
+#define CHARACTER_GENERATOR_GTK_BUTTON_IMAGEPREV_NAME "previous_button"
+#define CHARACTER_GENERATOR_GTK_HBOX_NAME             "hbox"
+
+#define CHARACTER_GENERATOR_GTK_GLADE_FILE            "character_generator_gui.glade"
 
 typedef std::vector<RPG_Graphics_Sprite> Character_Generator_GUI_SpriteGallery_t;
 typedef Character_Generator_GUI_SpriteGallery_t::const_iterator Character_Generator_GUI_SpriteGalleryIterator_t;
 
+typedef std::vector<std::string> Character_Generator_XMLFiles_t;
+typedef Character_Generator_XMLFiles_t::const_iterator Character_Generator_XMLFilesConstIterator_t;
+typedef std::map<std::string, GladeXML*> Character_Generator_XMLPool_t;
+typedef Character_Generator_XMLPool_t::iterator Character_Generator_XMLPoolIterator_t;
+
 struct GTK_cb_data_t
 {
-  GladeXML*                                       xml;
-  std::string                                     schema_repository;
+	Character_Generator_XMLPool_t                   XML_pool;
+	std::string                                     schema_repository;
   RPG_Engine_Entity_t                             entity;
   RPG_Graphics_Sprite                             current_sprite;
   Character_Generator_GUI_SpriteGalleryIterator_t sprite_gallery_iterator;

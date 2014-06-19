@@ -993,14 +993,14 @@ static yyconst flex_int16_t yy_rule_linenum[8] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 ".\\map_scanner.l"
-#line 2 ".\\map_scanner.l"
+#line 1 "./map_scanner.l"
+#line 2 "./map_scanner.l"
 #include "stdafx.h"
 
 #include <string>
 
-#include <ace/Log_Msg.h>
-#include <ace/OS_Memory.h>
+#include "ace/Log_Msg.h"
+#include "ace/OS_Memory.h"
 
 #include "rpg_map_parser.h"
 #include "rpg_map_parser_driver.h"
@@ -1021,7 +1021,7 @@ static yyconst flex_int16_t yy_rule_linenum[8] =
 */
 
 
-#line 45 ".\\map_scanner.l"
+#line 45 "./map_scanner.l"
 #define YY_USER_ACTION yylloc->columns(yyleng);
 #line 1027 "rpg_map_scanner.cpp"
 
@@ -1290,7 +1290,7 @@ YY_DECL
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 /* %% [7.0] user's declarations go here */
-#line 48 ".\\map_scanner.l"
+#line 48 "./map_scanner.l"
 
 
   yylloc->step();
@@ -1403,20 +1403,20 @@ case 1:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 55 ".\\map_scanner.l"
+#line 55 "./map_scanner.l"
 { BEGIN(row);
                              yyless(0); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 57 ".\\map_scanner.l"
+#line 57 "./map_scanner.l"
 { BEGIN(last_row);
                              yyless(0); }
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 59 ".\\map_scanner.l"
+#line 59 "./map_scanner.l"
 { yylloc->step();
                              (*line_count)++; }
 	YY_BREAK
@@ -1424,7 +1424,7 @@ YY_RULE_SETUP
 
 case 4:
 YY_RULE_SETUP
-#line 63 ".\\map_scanner.l"
+#line 63 "./map_scanner.l"
 { yylloc->step();
                              yylval->cval = yytext[0];
                              return yy::RPG_Map_Parser::token::GLYPH; }
@@ -1432,7 +1432,7 @@ YY_RULE_SETUP
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 66 ".\\map_scanner.l"
+#line 66 "./map_scanner.l"
 { yylloc->step();
                              BEGIN(INITIAL);
                              (*line_count)++;
@@ -1442,7 +1442,7 @@ YY_RULE_SETUP
 
 case 6:
 YY_RULE_SETUP
-#line 72 ".\\map_scanner.l"
+#line 72 "./map_scanner.l"
 { yylloc->step();
                              yylval->cval = yytext[0];
                              return yy::RPG_Map_Parser::token::GLYPH; }
@@ -1451,13 +1451,13 @@ YY_RULE_SETUP
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(row):
 case YY_STATE_EOF(last_row):
-#line 76 ".\\map_scanner.l"
+#line 76 "./map_scanner.l"
 { BEGIN(INITIAL);
                              yyterminate(); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 78 ".\\map_scanner.l"
+#line 78 "./map_scanner.l"
 { yylloc->step();
                              yylval->cval = yytext[0];
 
@@ -1472,7 +1472,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 89 ".\\map_scanner.l"
+#line 89 "./map_scanner.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
 #line 1479 "rpg_map_scanner.cpp"
@@ -2706,7 +2706,7 @@ void RPG_Map_Scanner_free (void * ptr , yyscan_t yyscanner)
 
 /* %ok-for-header */
 
-#line 89 ".\\map_scanner.l"
+#line 89 "./map_scanner.l"
 
 
 

@@ -13,13 +13,13 @@
 #endif
 
 // System Library Header Files
-#include <ace/OS.h>
-#include <ace/ACE.h>
-#include <ace/Log_Msg.h>
-#include <ace/Assert.h>
-#include <ace/Synch.h>
-#include <ace/Singleton.h>
-#include <ace/CDR_Stream.h>
+#include "ace/OS.h"
+#include "ace/ACE.h"
+#include "ace/Log_Msg.h"
+#include "ace/Assert.h"
+#include "ace/Synch.h"
+#include "ace/Singleton.h"
+#include "ace/CDR_Stream.h"
 
 // C RunTime Header Files
 #include <string>
@@ -33,8 +33,8 @@
 #include <functional>
 
 // Local Library Header Files
-#include <xsd/cxx/pre.hxx>
-#include <xsd/cxx/config.hxx>
+#include "xsd/cxx/pre.hxx"
+#include "xsd/cxx/config.hxx"
 
 // Local Header Files
 #include "rpg_common_macros.h"

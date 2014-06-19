@@ -169,6 +169,9 @@
     <ClInclude Include="rpg_graphics_SDL_window_interface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rpg_graphics_style.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rpg_graphics_common_tools.cpp">

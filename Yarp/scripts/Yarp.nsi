@@ -5,20 +5,24 @@
 ;!include "FileFunc.nsh"
 ;--------------------------------
 
+!define PROGRAM "Yarp"
+!define CONFIGURATION_SUBDIR "config"
+!define DATA_SUBDIR "data"
+
 ; Languages
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 
 ; The name of the installer
-Name "Yarp"
+Name ${PROGRAM}
 
 ; The file to write
 !searchparse /file "..\configure.ac" `AC_SUBST([YARP_API_VERSION], [` VER_MAJOR `.` VER_MINOR `])`
-VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "Yarp"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" ${PROGRAM}
 VIAddVersionKey /LANG=${LANG_ENGLISH} "Comments" "a RPG framework"
 ;VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName" ""
 !define /date NOW "%Y"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright" "© ${NOW}"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "Yarp installer"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "${PROGRAM} installer"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "${VER_MAJOR}.${VER_MINOR}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductVersion" "${VER_MAJOR}.${VER_MINOR}"
 ;VIAddVersionKey /LANG=${LANG_ENGLISH} "InternalName" ""
@@ -28,18 +32,18 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductVersion" "${VER_MAJOR}.${VER_MINOR
 ;VIAddVersionKey /LANG=${LANG_ENGLISH} "SpecialBuild" ""
 VIProductVersion "${VER_MAJOR}.${VER_MINOR}.0.0"
 
-OutFile "Yarp-${VER_MAJOR}.${VER_MINOR}.exe"
+OutFile "${PROGRAM}-${VER_MAJOR}.${VER_MINOR}.exe"
 
 ; The default installation directory
-;InstallDir $DESKTOP\Yarp
-InstallDir $PROGRAMFILES\Yarp
+;InstallDir $DESKTOP\${PROGRAM}
+InstallDir $PROGRAMFILES\${PROGRAM}
 
 ; Registry key to check for directory (so if you install again, it will 
 ; overwrite the old one automatically)
-InstallDirRegKey HKLM "Software\Yarp" "Install_Dir"
+InstallDirRegKey HKLM "Software\${PROGRAM}" "Install_Dir"
 
 ; Request application privileges for Windows Vista
-RequestExecutionLevel user
+RequestExecutionLevel admin
 
 ; License
 LicenseData "..\COPYING"
@@ -64,7 +68,7 @@ UninstPage instfiles
 ;--------------------------------
 
 ; the stuff to install
-Section "Yarp (required)"
+Section "${PROGRAM} (required)"
 
 SectionIn RO
   
@@ -73,92 +77,95 @@ SetOutPath $INSTDIR
 
 ; put files there (3rd party)
 !if ${release} == "Debug"
-File "C:\Temp\ACE_wrappers\lib\ACEd.dll"
+File "D:\software\Develop\msvcr100d.dll" ; *TODO*: remove this ASAP
+File "D:\projects\ACE_wrappers\lib\ACEd.dll"
 !else
-File "C:\Temp\ACE_wrappers\lib\ACE.dll"
+File "D:\projects\ACE_wrappers\lib\ACE.dll"
 !endif
-File "C:\Temp\Gtk\bin\freetype6.dll"
-File "C:\Temp\Gtk\bin\intl.dll"
-File "C:\Temp\Gtk\bin\libatk-1.0-0.dll"
-File "C:\Temp\Gtk\bin\libcairo-2.dll"
-File "C:\Temp\Gtk\bin\libexpat-1.dll"
-File "C:\Temp\Gtk\bin\libfontconfig-1.dll"
-File "C:\Temp\Gtk\bin\libgdk_pixbuf-2.0-0.dll"
-File "C:\Temp\Gtk\bin\libgdk-win32-2.0-0.dll"
-File "C:\Temp\Gtk\bin\libgio-2.0-0.dll"
-File "C:\Temp\Gtk\bin\libglib-2.0-0.dll"
-File "C:\Temp\Gtk\bin\libgmodule-2.0-0.dll"
-File "C:\Temp\Gtk\bin\libgobject-2.0-0.dll"
-File "C:\Temp\Gtk\bin\libgthread-2.0-0.dll"
-File "C:\Temp\Gtk\bin\libgtk-win32-2.0-0.dll"
-File "C:\Temp\Gtk\bin\libpango-1.0-0.dll"
-File "C:\Temp\Gtk\bin\libpangocairo-1.0-0.dll"
-File "C:\Temp\Gtk\bin\libpangoft2-1.0-0.dll"
-File "C:\Temp\Gtk\bin\libpangowin32-1.0-0.dll"
-File "C:\Temp\Gtk\bin\libpng14-14.dll"
-File "C:\Temp\Gtk\bin\zlib1.dll"
 
-File "C:\Temp\SDL\lib\x86\libfreetype-6.dll"
-File "C:\Temp\SDL\lib\x86\libogg-0.dll"
-File "C:\Temp\SDL\lib\x86\libvorbis-0.dll"
-File "C:\Temp\SDL\lib\x86\libvorbisfile-3.dll"
-File "C:\Temp\SDL\lib\x86\libmikmod-2.dll"
-File "C:\Temp\SDL\lib\x86\SDL.dll"
-File "C:\Temp\SDL\lib\x86\SDL_mixer.dll"
-File "C:\Temp\SDL\lib\x86\SDL_ttf.dll"
+File "D:\projects\SDL-1.2.15\VisualC\SDL\${release}\SDL.dll"
+File "D:\projects\SDL_mixer-1.2.12\lib\x86\libogg-0.dll"
+File "D:\projects\SDL_mixer-1.2.12\lib\x86\libvorbis-0.dll"
+File "D:\projects\SDL_mixer-1.2.12\lib\x86\libvorbisfile-3.dll"
+File "D:\projects\SDL_mixer-1.2.12\lib\x86\libmikmod-2.dll"
+File "D:\projects\SDL_mixer-1.2.12\lib\x86\SDL_mixer.dll"
+File "D:\projects\SDL_ttf-2.0.11\lib\x86\libfreetype-6.dll"
+File "D:\projects\SDL_ttf-2.0.11\lib\x86\SDL_ttf.dll"
 
-File "C:\Temp\libglade\bin\libglade-2.0-0.dll"
+File "D:\projects\lpng167\projects\vstudio\${release}\libpng16.dll"
 
-File "C:\Temp\lpng157\projects\vstudio\${release}\libpng15.dll"
+File "D:\projects\gtk\bin\freetype6.dll"
+File "D:\projects\gtk\bin\intl.dll"
+File "D:\projects\gtk\bin\libatk-1.0-0.dll"
+File "D:\projects\gtk\bin\libcairo-2.dll"
+File "D:\projects\gtk\bin\libexpat-1.dll"
+File "D:\projects\gtk\bin\libfontconfig-1.dll"
+File "D:\projects\gtk\bin\libgdk_pixbuf-2.0-0.dll"
+File "D:\projects\gtk\bin\libgdk-win32-2.0-0.dll"
+File "D:\projects\gtk\bin\libgio-2.0-0.dll"
+File "D:\projects\gtk\bin\libglib-2.0-0.dll"
+File "D:\projects\gtk\bin\libgmodule-2.0-0.dll"
+File "D:\projects\gtk\bin\libgobject-2.0-0.dll"
+File "D:\projects\gtk\bin\libgthread-2.0-0.dll"
+File "D:\projects\gtk\bin\libgtk-win32-2.0-0.dll"
+File "D:\projects\gtk\bin\libpango-1.0-0.dll"
+File "D:\projects\gtk\bin\libpangocairo-1.0-0.dll"
+File "D:\projects\gtk\bin\libpangoft2-1.0-0.dll"
+File "D:\projects\gtk\bin\libpangowin32-1.0-0.dll"
+File "D:\projects\gtk\bin\libpng14-14.dll"
+File "D:\projects\gtk\bin\zlib1.dll"
+
+File "D:\projects\libglade\bin\libglade-2.0-0.dll"
 
 File "D:\software\Develop\libiconv-2.dll"
 File "D:\software\Develop\libxml2-2.dll"
 
-File "..\${release}\dice.dll"
-File "..\${release}\chance.dll"
-File "..\${release}\common.dll"
-File "..\${release}\magic.dll"
-File "..\${release}\character.dll"
-File "..\${release}\item.dll"
-File "..\${release}\player.dll"
-File "..\${release}\monster.dll"
-File "..\${release}\combat.dll"
-File "..\${release}\map.dll"
-File "..\${release}\engine.dll"
-File "..\${release}\sound.dll"
-File "..\${release}\graphics.dll"
-File "..\${release}\stream.dll"
-File "..\${release}\net.dll"
-File "..\${release}\protocol.dll"
-File "..\${release}\client.dll"
+File "..\..\Yarp\${release}\rpg_dice.dll"
+File "..\..\Yarp\${release}\rpg_chance.dll"
+File "..\..\Yarp\${release}\rpg_common.dll"
+File "..\..\Yarp\${release}\rpg_magic.dll"
+File "..\..\Yarp\${release}\rpg_character.dll"
+File "..\..\Yarp\${release}\rpg_item.dll"
+File "..\..\Yarp\${release}\rpg_player.dll"
+File "..\..\Yarp\${release}\rpg_monster.dll"
+File "..\..\Yarp\${release}\rpg_combat.dll"
+File "..\..\Yarp\${release}\rpg_map.dll"
+File "..\..\Yarp\${release}\rpg_engine.dll"
+File "..\..\Yarp\${release}\rpg_sound.dll"
+File "..\..\Yarp\${release}\rpg_graphics.dll"
+File "..\..\Yarp\${release}\rpg_stream.dll"
+File "..\..\Yarp\${release}\rpg_net.dll"
+File "..\..\Yarp\${release}\rpg_protocol.dll"
+File "..\..\Yarp\${release}\rpg_net_client.dll"
+File "..\..\Yarp\${release}\rpg_client.dll"
 
-File "..\${release}\test_u_chance_dice.exe"
-File "..\${release}\test_u_chance_rangeToRoll.exe"
-File "..\${release}\test_u_character_generator.exe"
-File "..\${release}\test_u_character_generator_gui.exe"
-File "..\${release}\test_u_character_parser.exe"
-File "..\${release}\test_u_client_gui.exe"
-File "..\${release}\test_u_combat_simulator.exe"
-File "..\${release}\test_u_graphics_parser.exe"
-File "..\${release}\test_u_graphics_SDL_gui.exe"
-File "..\${release}\test_u_item_parser.exe"
-File "..\${release}\test_u_magic_parser.exe"
-File "..\${release}\test_u_map_generator.exe"
-File "..\${release}\test_u_map_parser.exe"
-File "..\${release}\test_u_map_path_finder.exe"
-File "..\${release}\test_u_map_path_finder_gui.exe"
-File "..\${release}\test_u_map_vision.exe"
-File "..\${release}\test_u_map_vision_gui.exe"
-File "..\${release}\test_u_monster_parser.exe"
-File "..\${release}\test_u_net_client.exe"
-File "..\${release}\test_u_net_protocol_client.exe"
-File "..\${release}\test_u_net_protocol_client_gui.exe"
-File "..\${release}\test_u_net_server.exe"
-File "..\${release}\test_u_sound_parser.exe"
+File "..\..\Yarp\${release}\test_u_chance_dice.exe"
+File "..\..\Yarp\${release}\test_u_chance_rangeToRoll.exe"
+File "..\..\Yarp\${release}\test_u_character_generator.exe"
+File "..\..\Yarp\${release}\test_u_character_generator_gui.exe"
+File "..\..\Yarp\${release}\test_u_character_parser.exe"
+File "..\..\Yarp\${release}\test_u_client_gui.exe"
+File "..\..\Yarp\${release}\test_u_combat_simulator.exe"
+File "..\..\Yarp\${release}\test_u_graphics_parser.exe"
+File "..\..\Yarp\${release}\test_u_graphics_SDL_gui.exe"
+File "..\..\Yarp\${release}\test_u_item_parser.exe"
+File "..\..\Yarp\${release}\test_u_magic_parser.exe"
+File "..\..\Yarp\${release}\test_u_map_generator.exe"
+File "..\..\Yarp\${release}\test_u_map_parser.exe"
+File "..\..\Yarp\${release}\test_u_map_path_finder.exe"
+File "..\..\Yarp\${release}\test_u_map_path_finder_gui.exe"
+File "..\..\Yarp\${release}\test_u_map_vision.exe"
+File "..\..\Yarp\${release}\test_u_map_vision_gui.exe"
+File "..\..\Yarp\${release}\test_u_monster_parser.exe"
+File "..\..\Yarp\${release}\test_u_net_client.exe"
+File "..\..\Yarp\${release}\test_u_net_protocol_client.exe"
+File "..\..\Yarp\${release}\test_u_net_protocol_client_gui.exe"
+File "..\..\Yarp\${release}\test_u_net_server.exe"
+File "..\..\Yarp\${release}\test_u_sound_parser.exe"
 
 ; Config
 ; set output path to the installation directory
-SetOutPath $INSTDIR\config
+SetOutPath $INSTDIR\${CONFIGURATION_SUBDIR}
 
 ; Config - XML
 File "..\..\magic\rpg_magic.xml"
@@ -190,20 +197,22 @@ File "..\..\test_u\net\protocol\IRC_client_main.glade"
 File "..\..\test_u\net\protocol\IRC_client_server_page.glade"
 
 ; Config - ini
+; set output path to the installation directory
+SetOutPath $APPDATA\${PROGRAM}
 File "..\..\client\rpg_client.ini"
 File "..\..\test_u\net\protocol\IRC_client.ini"
 File "..\..\test_u\net\protocol\servers.ini"
 
 ; Data
 ; set output path to the installation directory
-SetOutPath $INSTDIR\data\graphics\creatures
+SetOutPath $INSTDIR\${DATA_SUBDIR}\graphics\creatures
 
 File "..\..\graphics\data\creatures\goblin.png"
 File "..\..\graphics\data\creatures\human.png"
 File "..\..\graphics\data\creatures\priest.png"
 
 ; set output path to the installation directory
-SetOutPath $INSTDIR\data\graphics\cursors
+SetOutPath $INSTDIR\${DATA_SUBDIR}\graphics\cursors
 
 File "..\..\graphics\data\cursors\cursor_door_open.png"
 File "..\..\graphics\data\cursors\cursor_goblet.png"
@@ -224,7 +233,7 @@ File "..\..\graphics\data\cursors\cursor_target_invalid.png"
 File "..\..\graphics\data\cursors\cursor_target_red.png"
 
 ; set output path to the installation directory
-SetOutPath $INSTDIR\data\graphics\doors
+SetOutPath $INSTDIR\${DATA_SUBDIR}\graphics\doors
 
 File "..\..\graphics\data\doors\door_wood_broken.png"
 File "..\..\graphics\data\doors\door_wood_closed_h.png"
@@ -237,7 +246,7 @@ File "..\..\graphics\data\doors\drawbridge_wood_open_h.png"
 File "..\..\graphics\data\doors\drawbridge_wood_open_v.png"
 
 ; set output path to the installation directory
-SetOutPath $INSTDIR\data\graphics\floors
+SetOutPath $INSTDIR\${DATA_SUBDIR}\graphics\floors
 
 File "..\..\graphics\data\floors\floor_air_0_0.png"
 File "..\..\graphics\data\floors\floor_air_0_1.png"
@@ -380,12 +389,12 @@ File "..\..\graphics\data\floors\floor_water_2_1.png"
 File "..\..\graphics\data\floors\floor_water_2_2.png"
 
 ; set output path to the installation directory
-SetOutPath $INSTDIR\data\graphics\fonts
+SetOutPath $INSTDIR\${DATA_SUBDIR}\graphics\fonts
 
 File "..\..\graphics\data\fonts\font_main.ttf"
 
 ; set output path to the installation directory
-SetOutPath $INSTDIR\data\graphics\images
+SetOutPath $INSTDIR\${DATA_SUBDIR}\graphics\images
 
 File "..\..\graphics\data\images\image_icon.png"
 File "..\..\graphics\data\images\image_main_logo.png"
@@ -393,7 +402,7 @@ File "..\..\graphics\data\images\interface_elements.png"
 File "..\..\graphics\data\images\interface_minimap_bg.png"
 
 ; set output path to the installation directory
-SetOutPath $INSTDIR\data\graphics\walls
+SetOutPath $INSTDIR\${DATA_SUBDIR}\graphics\walls
 
 File "..\..\graphics\data\walls\wall_brick_banner_f_e.png"
 File "..\..\graphics\data\walls\wall_brick_banner_f_n.png"
@@ -495,12 +504,12 @@ File "..\..\graphics\data\walls\wall_vine_covered_h_s.png"
 File "..\..\graphics\data\walls\wall_vine_covered_h_w.png"
 
 ; set output path to the installation directory
-SetOutPath $INSTDIR\data\sound\ambient
+SetOutPath $INSTDIR\${DATA_SUBDIR}\sound\ambient
 
 File "..\..\sound\data\ambient\music_main_title.ogg"
 
 ; set output path to the installation directory
-SetOutPath $INSTDIR\data\sound\effect
+SetOutPath $INSTDIR\${DATA_SUBDIR}\sound\effect
 
 File "..\..\sound\data\effect\sound_bell.ogg"
 File "..\..\sound\data\effect\sound_condition_ill.ogg"
@@ -515,15 +524,15 @@ File "..\..\sound\data\effect\sound_walk.ogg"
 File "..\..\sound\data\effect\sound_xp_levelup.ogg"
 
 ; set output path to the installation directory
-SetOutPath $INSTDIR\data\maps
-File "..\..\map\data\dungeon_one.level"
+SetOutPath $INSTDIR\${DATA_SUBDIR}\maps
+File "..\..\engine\data\default_level.level"
 
 ; set output path to the application data directory
-SetOutPath $APPDATA\Yarp\profiles
-File "..\..\engine\data\default_player.entity"
+SetOutPath $APPDATA\${PROGRAM}\profiles
+File "..\..\engine\data\default_player.profile"
 
 ; Write the installation path into the registry
-WriteRegStr HKLM SOFTWARE\Yarp "Install_Dir" "$INSTDIR"
+WriteRegStr HKLM SOFTWARE\${PROGRAM} "Install_Dir" "$INSTDIR"
 
 ; Write the uninstall keys for Windows
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Yarp" "DisplayName" "Yarp"
@@ -531,7 +540,7 @@ WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Yarp" "Uni
 WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Yarp" "NoModify" 1
 WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Yarp" "NoRepair" 1
 WriteUninstaller "uninstall.exe"
-  
+
 SectionEnd
 
 ;--------------------------------
@@ -539,9 +548,9 @@ SectionEnd
 ; Optional section (can be disabled by the user)
 Section "Start Menu Shortcuts"
 
-CreateDirectory "$SMPROGRAMS\Yarp"
-CreateShortCut "$SMPROGRAMS\Yarp\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
-CreateShortCut "$SMPROGRAMS\Yarp\Yarp.lnk" "$INSTDIR\test_u_client_gui.exe" "" "$INSTDIR\test_u_client_gui.exe" 0
+CreateDirectory "$SMPROGRAMS\${PROGRAM}"
+CreateShortCut "$SMPROGRAMS\${PROGRAM}\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
+CreateShortCut "$SMPROGRAMS\${PROGRAM}\Yarp.lnk" "$INSTDIR\test_u_client_gui.exe" "" "$INSTDIR\test_u_client_gui.exe" 0
 
 SectionEnd
 
@@ -555,19 +564,19 @@ Section "Uninstall"
 SetAutoClose true
 
 ; Remove registry keys
-DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Yarp"
-DeleteRegKey HKLM SOFTWARE\Yarp
+DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM}"
+DeleteRegKey HKLM SOFTWARE\${PROGRAM}
 
 ; Remove files AND uninstaller (yes this works !!!)
 ;Delete "$INSTDIR\*.*"
-; Remove player profiles ? *TODO*
-RMDir /r "$APPDATA\Yarp"
+; Ask before removing player profiles ? *TODO*
+RMDir /r "$APPDATA\${PROGRAM}"
 
 ; Remove shortcuts, if any
-Delete "$SMPROGRAMS\Yarp\*.*"
+Delete "$SMPROGRAMS\${PROGRAM}\*.*"
 
 ; Remove directories used
 RMDir /r "$INSTDIR"
-RMDir "$SMPROGRAMS\Yarp"
+RMDir "$SMPROGRAMS\${PROGRAM}"
 
 SectionEnd

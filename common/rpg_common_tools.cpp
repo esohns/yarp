@@ -26,12 +26,12 @@
 #include <algorithm>
 #include <locale>
 
-#include <ace/OS.h>
-#include <ace/Log_Msg.h>
-#include <ace/Log_Msg_Backend.h>
-#include <ace/Proactor.h>
-#include <ace/POSIX_Proactor.h>
-#include <ace/Reactor.h>
+#include "ace/OS.h"
+#include "ace/Log_Msg.h"
+#include "ace/Log_Msg_Backend.h"
+#include "ace/Proactor.h"
+#include "ace/POSIX_Proactor.h"
+#include "ace/Reactor.h"
 
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
 #include <Security.h>
@@ -881,11 +881,32 @@ RPG_Common_Tools::sanitizeURI(const std::string& uri_in)
 std::string
 RPG_Common_Tools::sanitize(const std::string& string_in)
 {
+	RPG_TRACE(ACE_TEXT("RPG_Common_Tools::sanitize"));
+
 	std::string result = string_in;
 
 	std::replace(result.begin(),
 							 result.end(),
 							 ' ', '_');
+
+	return result;
+}
+
+std::string
+RPG_Common_Tools::strip(const std::string& string_in)
+{
+	RPG_TRACE(ACE_TEXT("RPG_Common_Tools::strip"));
+
+	std::string result = string_in;
+
+	// *TODO*: remove tabs & other non-printable characters
+	std::string::size_type current_space = std::string::npos;
+	while ((current_space = result.find(' ',
+		                                  0)) == 0)
+		result.erase(current_space, 1);
+	while ((current_space = result.rfind(' ',
+		                                   std::string::npos)) == (result.size() - 1))
+		result.erase(current_space, 1);
 
 	return result;
 }

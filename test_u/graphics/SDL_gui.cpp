@@ -24,15 +24,17 @@
 #include <sstream>
 #include <string>
 
-#include <ace/Init_ACE.h>
-#include <ace/Log_Msg.h>
-#include <ace/Get_Opt.h>
-#include <ace/High_Res_Timer.h>
-#include <ace/Synch.h>
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
+#include "ace/Log_Msg.h"
+#include "ace/Get_Opt.h"
+#include "ace/High_Res_Timer.h"
+#include "ace/Synch.h"
 
-#include <SDL.h>
-#include <SDL_syswm.h>
-#include <SDL_ttf.h>
+#include "SDL.h"
+#include "SDL_syswm.h"
+#include "SDL_ttf.h"
 
 // *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
 #ifdef HAVE_CONFIG_H

@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__CHARACTER_PLAYER_RPG_PLAYER_XML_TREE_H
-#define CXX__CHARACTER_PLAYER_RPG_PLAYER_XML_TREE_H
+#ifndef CXX___RPG_PLAYER_XML_TREE_H
+#define CXX___RPG_PLAYER_XML_TREE_H
 
 // Begin prologue.
 //
@@ -1146,4 +1146,4 @@ player_t (const ::RPG_Player_PlayerXML_XMLTree_Type& x,
 //
 // End epilogue.
 
-#endif // CXX__CHARACTER_PLAYER_RPG_PLAYER_XML_TREE_H
+#endif // CXX___RPG_PLAYER_XML_TREE_H

@@ -617,7 +617,7 @@ SDL_GUI_LevelWindow_Isometric::draw(SDL_Surface* targetSurface_in,
   RPG_Graphics_WallTileMapIterator_t wall_iterator = myWallTiles.end();
   RPG_Graphics_DoorTileMapIterator_t door_iterator = myDoorTiles.end();
   RPG_Engine_LevelMetaData_t level_metadata = myEngine->getMetaData(false);
-  RPG_Engine_EntityGraphicsConstIterator_t creature_iterator;
+  //RPG_Engine_EntityGraphicsConstIterator_t creature_iterator;
   for (i = -static_cast<int>(top_right.second);
        i <= static_cast<int>(top_right.second);
        i++)

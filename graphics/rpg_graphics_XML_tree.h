@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__GRAPHICS_RPG_GRAPHICS_XML_TREE_H
-#define CXX__GRAPHICS_RPG_GRAPHICS_XML_TREE_H
+#ifndef CXX___RPG_GRAPHICS_XML_TREE_H
+#define CXX___RPG_GRAPHICS_XML_TREE_H
 
 // Begin prologue.
 //
@@ -3266,4 +3266,4 @@ operator<< (::xercesc::DOMElement&, const RPG_Graphics_ColorRGBA_XMLTree_Type&);
 //
 // End epilogue.
 
-#endif // CXX__GRAPHICS_RPG_GRAPHICS_XML_TREE_H
+#endif // CXX___RPG_GRAPHICS_XML_TREE_H

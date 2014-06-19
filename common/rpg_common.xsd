@@ -313,7 +313,7 @@
   </xsd:simpleType>
 
   <xsd:simpleType name="RPG_Common_SaveReductionType_Type">
-    <xsd:restriction base="xsd:string">
+		<xsd:restriction base="xsd:string">
       <xsd:enumeration value="SAVEREDUCTION_HALF"/>
       <xsd:enumeration value="SAVEREDUCTION_NEGATES"/>
       <xsd:enumeration value="SAVEREDUCTION_PARTIAL"/>

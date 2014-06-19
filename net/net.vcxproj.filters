@@ -18,29 +18,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="rpg_net_stream_socket_base.i">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="rpg_net_connection_manager.i">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="rpg_net_module_runtimestatistic.i">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="rpg_net_sockethandler_base.i">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="rpg_net_statistichandler.i">
-      <Filter>Header Files</Filter>
-    </None>
     <None Include="scripts\exports.bat">
       <Filter>scripts</Filter>
-    </None>
-    <None Include="rpg_net_asynchsockethandler_t.i">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="rpg_net_asynchstreamhandler_t.i">
-      <Filter>Header Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -206,6 +185,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rpg_net_module_eventhandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_net_stream_socket_base.i">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_net_asynchsockethandler_t.i">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_net_asynchstreamhandler_t.i">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_net_connection_manager.i">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_net_module_runtimestatistic.i">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_net_sockethandler_base.i">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_net_statistichandler.i">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

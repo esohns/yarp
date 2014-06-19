@@ -24,14 +24,14 @@
 
 #include "character_generator_gui_common.h"
 
-#include <ace/OS.h>
-#include <ace/OS_main.h>
+#include "ace/OS.h"
+#include "ace/OS_main.h"
 
 #include <string>
 
 class test_u_main
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
- : public ACE_Main
+ : public ACE_Main_Base
 #endif
 {
  public:
@@ -42,10 +42,13 @@ class test_u_main
 		                char*[]); // argv
 
  private:
+	typedef ACE_Main_Base inherited;
+
 	// helper methods
   void print_usage(const std::string&);
-	bool process_arguments(const int,     // argc
-												 ACE_TCHAR*[],  // argv (*NOTE*: cannot be const)...
+	bool process_arguments(const int&,    // argc
+												 ACE_TCHAR**,   // argv (*NOTE*: cannot be const)...
+												 std::string&,  // client UI file
 												 std::string&,  // graphics dictionary
 												 std::string&,  // item dictionary,
 												 bool&,         // log to file ?
@@ -54,10 +57,11 @@ class test_u_main
 												 std::string&,  // UI definition file,
 												 std::string&,  // graphics directory,
 												 bool&);        // print program version only ?
-	bool init_GUI(const std::string&, // graphics directory
-		            const std::string&, // UI definition file
-								GTK_cb_data_t&);    // callback user data
+	bool init_GUI(const std::string&,                    // graphics directory
+								const Character_Generator_XMLFiles_t&, // UI definition files
+								GTK_cb_data_t&);                       // return value: callback user data
 	void do_work(const std::string&,  // schema directory
+							 const std::string&,  // client UI definition file
 		           const std::string&,  // magic dictionary
 							 const std::string&,  // item dictionary
 							 const std::string&,  // graphics dictionary

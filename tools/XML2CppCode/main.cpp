@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "stdafx.h"
 
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
@@ -264,7 +265,7 @@ do_printVersion(const std::string& programName_in)
 {
   ACE_TRACE(ACE_TEXT("::do_printVersion"));
 
-#if defined _MSC_VER
+#if defined(_MSC_VER)
   std::cout << programName_in << ACE_TEXT(" : ") << XML2CPPCODE_VERSION << std::endl;
 #else
 //  // *TODO*: leave as-is for now (see Yarp/configure.ac)

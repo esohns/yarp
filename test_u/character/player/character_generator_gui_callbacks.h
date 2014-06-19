@@ -23,7 +23,7 @@
 
 #include "character_generator_gui_common.h"
 
-#include <gtk/gtk.h>
+#include "gtk/gtk.h"
 
 void update_sprite_gallery(GTK_cb_data_t&);
 void set_current_image(const RPG_Graphics_Sprite&,
@@ -39,7 +39,7 @@ G_MODULE_EXPORT  gint create_character_clicked_GTK_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT  gint drop_character_clicked_GTK_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT  gint load_character_clicked_GTK_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT  gint character_file_activated_GTK_cb(GtkWidget*, gpointer);
-G_MODULE_EXPORT  gint save_character_clicked_GTK_cb(GtkWidget*, gpointer);
+G_MODULE_EXPORT  gint store_character_clicked_GTK_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT  gint character_repository_combobox_changed_GTK_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT  gint character_repository_button_clicked_GTK_cb(GtkWidget*, gpointer);
 G_MODULE_EXPORT  gint prev_image_clicked_GTK_cb(GtkWidget*, gpointer);

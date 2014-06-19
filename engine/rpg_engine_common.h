@@ -33,10 +33,10 @@
 #include "rpg_common_environment.h"
 #include "rpg_common_condition.h"
 
-#include <SDL.h>
+//#include "SDL.h"
 
-#include <ace/Time_Value.h>
-#include <ace/Log_Msg.h>
+#include "ace/Time_Value.h"
+#include "ace/Log_Msg.h"
 
 #include <set>
 #include <deque>
@@ -101,8 +101,8 @@ struct RPG_Engine_Level_t
   RPG_Map_t                  map;
 };
 
-typedef std::map<RPG_Map_Position_t, SDL_Surface*> RPG_Engine_EntityGraphics_t;
-typedef RPG_Engine_EntityGraphics_t::const_iterator RPG_Engine_EntityGraphicsConstIterator_t;
+//typedef std::map<RPG_Map_Position_t, SDL_Surface*> RPG_Engine_EntityGraphics_t;
+//typedef RPG_Engine_EntityGraphics_t::const_iterator RPG_Engine_EntityGraphicsConstIterator_t;
 
 struct RPG_Engine_CombatantSequenceElement_t
 {

@@ -28,9 +28,9 @@
 #include "rpg_common_exports.h"
 #include "rpg_common.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Time_Value.h>
-#include <ace/Signal.h>
+#include "ace/Global_Macros.h"
+#include "ace/Time_Value.h"
+#include "ace/Signal.h"
 
 #include <string>
 
@@ -78,6 +78,7 @@ class RPG_Common_Export RPG_Common_Tools
 
 	static std::string sanitizeURI(const std::string&); // URI
 	static std::string sanitize(const std::string&); // string
+	static std::string strip(const std::string&); // string
 
   // ---------------------------------------------------------------------------
 

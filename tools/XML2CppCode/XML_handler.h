@@ -129,7 +129,7 @@ class XML_Handler
 
   std::ofstream            myIncludeHeaderFile;
   std::ofstream            myCurrentOutputFile;
-  std::string              myCurrentExtension;
+  //std::string              myCurrentExtension;
   std::string              myCurrentElementName;
   bool                     myIsFirstRelevantElement;
   std::string              myTargetDirectory;

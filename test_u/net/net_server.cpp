@@ -25,14 +25,16 @@
 #include <sstream>
 #include <vector>
 
-#include <ace/Init_ACE.h>
-#include <ace/Version.h>
-#include <ace/Get_Opt.h>
-#include <ace/Profile_Timer.h>
-#include <ace/Signal.h>
-#include <ace/Sig_Handler.h>
-#include <ace/High_Res_Timer.h>
-#include <ace/POSIX_Proactor.h>
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
+#include "ace/Version.h"
+#include "ace/Get_Opt.h"
+#include "ace/Profile_Timer.h"
+#include "ace/Signal.h"
+#include "ace/Sig_Handler.h"
+#include "ace/High_Res_Timer.h"
+#include "ace/POSIX_Proactor.h"
 
 #ifdef RPG_ENABLE_VALGRIND_SUPPORT
 #include <valgrind/valgrind.h>
@@ -243,7 +245,7 @@ do_processArguments(const int& argc_in,
       }
       case 'n':
       {
-        networkInterface_out = argumentParser.opt_arg();
+				networkInterface_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }

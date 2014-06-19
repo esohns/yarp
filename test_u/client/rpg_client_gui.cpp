@@ -23,21 +23,23 @@
 #include <iostream>
 #include <sstream>
 
-#include <ace/Init_ACE.h>
-#include <ace/Global_Macros.h>
-#include <ace/Version.h>
-#include <ace/Get_Opt.h>
-#include <ace/Profile_Timer.h>
-#include <ace/Signal.h>
-#include <ace/Sig_Handler.h>
-#include <ace/High_Res_Timer.h>
-#include <ace/Configuration.h>
-#include <ace/Configuration_Import_Export.h>
-#include <ace/Thread_Manager.h>
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
+#include "ace/Global_Macros.h"
+#include "ace/Version.h"
+#include "ace/Get_Opt.h"
+#include "ace/Profile_Timer.h"
+#include "ace/Signal.h"
+#include "ace/Sig_Handler.h"
+#include "ace/High_Res_Timer.h"
+#include "ace/Configuration.h"
+#include "ace/Configuration_Import_Export.h"
+#include "ace/Thread_Manager.h"
 
-#include <SDL.h>
-#include <SDL_mixer.h>
-//#include <SDL/SDL_framerate.h>
+#include "SDL.h"
+#include "SDL_mixer.h"
+//#include "SDL/SDL_framerate.h"
 
 // *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
 #ifdef HAVE_CONFIG_H
@@ -2235,6 +2237,7 @@ ACE_TMAIN(int argc_in,
 // *PORTABILITY*: on Windows, must fini ACE...
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
   if (ACE::fini() == -1)
+	{
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
 

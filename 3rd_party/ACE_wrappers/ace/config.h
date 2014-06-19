@@ -1,6 +1,6 @@
 // *NOTE*: uncomment the line corresponding to your platform !
-//#include "ace/config-win32.h"
-#include "ace/config-linux.h"
+#include "ace/config-win32.h"
+//#include "ace/config-linux.h"
 
 // *NOTE*: don't use the regular pipe-based mechanism,
 // it has several drawbacks (see relevant documentation)

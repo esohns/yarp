@@ -953,7 +953,7 @@ extern int RPG_Map_Scanner_lex (yyscan_t yyscanner);
 #undef YY_DECL
 #endif
 
-#line 89 ".\\map_scanner.l"
+#line 89 "./map_scanner.l"
 
 
 #line 960 "rpg_map_scanner.h"

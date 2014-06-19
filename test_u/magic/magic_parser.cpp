@@ -37,9 +37,12 @@
 
 #include "rpg_dice_common_tools.h"
 
-#include <ace/ACE.h>
-#include <ace/Get_Opt.h>
-#include <ace/High_Res_Timer.h>
+#include "ace/ACE.h"
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
+#include "ace/Get_Opt.h"
+#include "ace/High_Res_Timer.h"
 
 #include <iostream>
 #include <sstream>

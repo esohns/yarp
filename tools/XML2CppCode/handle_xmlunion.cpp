@@ -17,19 +17,21 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "stdafx.h"
 
 #include "handle_xmlunion.h"
 
 #include "xml2cppcode.h"
 #include "xml2cppcode_common_tools.h"
 
-#include <ace/Log_Msg.h>
+#include "ace/Log_Msg.h"
 
 #include <limits>
 #include <iomanip>
 #include <sstream>
 #include <algorithm>
 #include <locale>
+#include <functional>
 
 Handle_XMLUnion::Handle_XMLUnion(std::ofstream& targetFile_in,
                                  const bool& emitTaggedUnion_in,
@@ -198,7 +200,7 @@ Handle_XMLUnion::handleData(const std::string& memberTypes_in)
     {
       // step1: remove any whitespaces...
       std::string::size_type current_space = std::string::npos;
-      while ((current_space = current_identifier.find(ACE_TEXT_ALWAYS_CHAR(" "),
+      while ((current_space = current_identifier.find(' ',
                                                       0)) != std::string::npos)
         current_identifier.erase(current_space, 1);
     } // end IF
@@ -281,7 +283,7 @@ Handle_XMLUnion::endElement()
       {
         // step1: remove any whitespaces...
         std::string::size_type current_space = std::string::npos;
-        while ((current_space = current_identifier.find(ACE_TEXT_ALWAYS_CHAR(" "),
+        while ((current_space = current_identifier.find(' ',
                                                         0)) != std::string::npos)
           current_identifier.erase(current_space, 1);
       } // end IF

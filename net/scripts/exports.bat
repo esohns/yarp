@@ -17,7 +17,7 @@ if NOT exist "%PerlEXE%" (
  echo invalid file ^(was: "%PerlEXE%"^)^, exiting
  goto Failed
 )
-set PerlScript=C:\Temp\ACE_wrappers\bin\generate_export_file.pl
+set PerlScript=D:\projects\ACE_wrappers\bin\generate_export_file.pl
 if NOT exist "%PerlScript%" (
  echo invalid file ^(was: "%PerlScript%"^)^, exiting
  goto Failed

@@ -17,19 +17,21 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "stdafx.h"
 
 #include "handle_xmlchoice.h"
 
 #include "xml2cppcode.h"
 #include "xml2cppcode_common_tools.h"
 
-#include <ace/Log_Msg.h>
+#include "ace/Log_Msg.h"
 
 #include <limits>
 #include <iomanip>
 #include <sstream>
 #include <algorithm>
 #include <locale>
+#include <functional>
 
 Handle_XMLChoice::Handle_XMLChoice(std::ofstream& targetFile_in,
                                    const unsigned int& nestingLevel_in,

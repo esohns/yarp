@@ -31,8 +31,6 @@
 #define RPG_PLAYER_PROFILE_EXT            ".profile"
 
 #define RPG_PLAYER_DEF_NAME               "default player"
-// *TODO*: convert if necessary...
-#define RPG_PLAYER_DEF_FILE               "default_player"
 
 #define RPG_PLAYER_PROFILES_SUB           "profiles"
 

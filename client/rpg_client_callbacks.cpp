@@ -2148,17 +2148,24 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   GtkTreeModel* model = NULL;
   GValue value;
   const gchar* text = NULL;
+	GtkFrame* frame =
+		GTK_FRAME(glade_xml_get_widget(data->XML,
+		                               ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
+	ACE_ASSERT(frame);
   if (!gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget_in), &selected))
   {
     // *WARNING*: refreshing the combobox triggers removal of items
     // which also generates this signal...
+
+		// remove character frame widget
+		gtk_widget_set_sensitive(GTK_WIDGET(frame), FALSE);
+		gtk_widget_hide(GTK_WIDGET(frame));
+
     return FALSE;
   } // end IF
   model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget_in));
   ACE_ASSERT(model);
-  ACE_OS::memset(&value,
-                 0,
-                 sizeof(value));
+  ACE_OS::memset(&value, 0, sizeof(value));
   gtk_tree_model_get_value(model, &selected,
                            0, &value);
   text = g_value_get_string(&value);
@@ -2211,12 +2218,9 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   ::update_entity_profile(data->entity,
                           data->XML);
 
-  // make character display frame sensitive (if it's not already)
-  GtkFrame* character_frame =
-      GTK_FRAME(glade_xml_get_widget(data->XML,
-                                     ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
-  ACE_ASSERT(character_frame);
-  gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
+  // make character frame visible/sensitive (if it's not already)
+	gtk_widget_show(GTK_WIDGET(frame));
+	gtk_widget_set_sensitive(GTK_WIDGET(frame), TRUE);
 
   // make join button sensitive IFF player is not disabled
   GtkButton* button =
@@ -3988,6 +3992,20 @@ init_UI_client(const std::string& UIFile_in,
                    list))
     gtk_widget_set_sensitive(GTK_WIDGET(combobox),
                              TRUE);
+
+	GtkHBox* hbox =
+		GTK_HBOX(glade_xml_get_widget(userData_in.XML,
+		                              ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_HBOX_MAIN_NAME)));
+	ACE_ASSERT(hbox);
+	GtkFrame* frame =
+		GTK_HBOX(glade_xml_get_widget(userData_in.XML,
+		                              ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
+	ACE_ASSERT(frame);
+	gtk_box_pack_end(GTK_BOX(hbox),
+									 GTK_WIDGET(frame),
+									 TRUE, // expand
+									 TRUE, // fill
+									 0);   // padding
 
   // step4: (auto-)connect signals/slots
 	// *NOTE*: glade_xml_signal_autoconnect doesn't work reliably

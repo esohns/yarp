@@ -17,13 +17,14 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "stdafx.h"
 
 #include "XML_handler_base.h"
 
-#include <xercesc/util/XMLUniDefs.hpp>
-#include <xercesc/sax2/Attributes.hpp>
+#include "xercesc/util/XMLUniDefs.hpp"
+#include "xercesc/sax2/Attributes.hpp"
 
-#include <ace/Log_Msg.h>
+#include "ace/Log_Msg.h"
 
 XML_Handler_Base::XML_Handler_Base()
  : inherited()

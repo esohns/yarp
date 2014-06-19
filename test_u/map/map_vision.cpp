@@ -39,10 +39,13 @@
 #include "rpg_dice.h"
 #include "rpg_dice_common_tools.h"
 
-#include <ace/ACE.h>
-#include <ace/High_Res_Timer.h>
-#include <ace/Get_Opt.h>
-#include <ace/Log_Msg.h>
+#include "ace/ACE.h"
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
+#include "ace/High_Res_Timer.h"
+#include "ace/Get_Opt.h"
+#include "ace/Log_Msg.h"
 
 #include <sstream>
 #include <iostream>
@@ -102,8 +105,8 @@ do_printUsage(const std::string& programName_in)
 }
 
 bool
-do_processArguments(const int argc_in,
-                    ACE_TCHAR* argv_in[], // cannot be const...
+do_processArguments(const int& argc_in,
+                    ACE_TCHAR** argv_in, // cannot be const...
 										bool& debugParser_out,
 										std::string& floorPlan_out,
 										bool& traceInformation_out,
@@ -156,7 +159,7 @@ do_processArguments(const int argc_in,
       }
       case 'p':
       {
-        floorPlan_out = argumentParser.opt_arg();
+        floorPlan_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }

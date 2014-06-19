@@ -52,6 +52,9 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="rpg_player_XML_types.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rpg_player.h">
@@ -105,13 +108,16 @@
     <ClInclude Include="rpg_player_XML_tree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rpg_XMLSchema_XML_tree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rpg_iplayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_player_state.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_player_XML_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

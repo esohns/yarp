@@ -25,9 +25,6 @@
 #include "rpg_engine_incl.h"
 #include "rpg_engine_XML_tree.h"
 
-#include "rpg_graphics_defines.h"
-#include "rpg_graphics_common_tools.h"
-
 #include "rpg_map_parser_driver.h"
 #include "rpg_map_common_tools.h"
 

@@ -23,10 +23,10 @@
 
 #include "rpg_graphics_incl.h"
 
-#include <SDL.h>
-#include <SDL_ttf.h>
+#include "SDL.h"
+#include "SDL_ttf.h"
 
-#include <ace/Log_Msg.h>
+#include "ace/Log_Msg.h"
 
 #include <string>
 #include <map>

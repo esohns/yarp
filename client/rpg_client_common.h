@@ -34,13 +34,13 @@
 
 #include "rpg_map_common.h"
 
-#include <glade/glade.h>
+#include "glade/glade.h"
 
-#include <gtk/gtk.h>
+#include "gtk/gtk.h"
 
-#include <SDL.h>
+#include "SDL.h"
 
-#include <ace/Synch.h>
+#include "ace/Synch.h"
 
 #include <map>
 #include <deque>

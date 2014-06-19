@@ -13,12 +13,12 @@
 #endif
 
 // System Library Header Files
-#include <ace/OS.h>
-#include <ace/ACE.h>
-#include <ace/Synch.h>
-#include <ace/Task.h>
-#include <ace/Log_Msg.h>
-#include <ace/Singleton.h>
+#include "ace/OS.h"
+#include "ace/ACE.h"
+#include "ace/Synch.h"
+#include "ace/Task.h"
+#include "ace/Log_Msg.h"
+#include "ace/Singleton.h"
 
 // C RunTime Header Files
 #include <string>
@@ -32,12 +32,12 @@
 #include <iostream>
 
 // Local Library Header Files
-#include <glade/glade.h>
-#include <gtk/gtk.h>
-#include <SDL.h>
-#include <SDL_ttf.h>
-#include <xsd/cxx/config.hxx>
-#include <xsd/cxx/pre.hxx>
+#include "glade/glade.h"
+#include "gtk/gtk.h"
+#include "SDL.h"
+#include "SDL_ttf.h"
+#include "xsd/cxx/config.hxx"
+#include "xsd/cxx/pre.hxx"
 
 // Local Header Files
 #include "rpg_dice_incl.h"

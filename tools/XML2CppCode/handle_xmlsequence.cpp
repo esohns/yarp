@@ -17,9 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
-// *NOTE*: workaround quirky MSVC...
-#define NOMINMAX
+#include "stdafx.h"
 
 #include "handle_xmlsequence.h"
 
@@ -37,14 +35,12 @@
 
 Handle_XMLSequence::Handle_XMLSequence(std::ofstream& targetFile_in,
                                        const unsigned int& nestingLevel_in,
-                                       const std::string& baseType_in,
                                        const std::string& typePrefix_in,
                                        const std::string& typePostfix_in,
                                        const std::string& emitClassQualifier_in)
 //                                        const bool& adjustForTaggedUnions_in)
  : myOutputFile(targetFile_in),
    myNestingLevel(nestingLevel_in),
-   myBaseType(baseType_in),
    myTypePrefix(typePrefix_in),
    myTypePostfix(typePostfix_in),
    myEmitClassQualifier(emitClassQualifier_in)
@@ -99,15 +95,6 @@ Handle_XMLSequence::startElement(const std::string& struct_in)
   } // end IF
   myOutputFile << myStructName
                << std::endl;
-  if (!myBaseType.empty())
-  {
-    if (myNestingLevel)
-      myOutputFile << std::setw(XML2CPPCODE_INDENT * myNestingLevel)
-                   << ACE_TEXT_ALWAYS_CHAR(" ");
-    myOutputFile << ACE_TEXT_ALWAYS_CHAR(" : public ")
-                 << myBaseType
-                 << std::endl;
-  } // end IF
   if (myNestingLevel)
     myOutputFile << std::setw(XML2CPPCODE_INDENT * myNestingLevel)
                  << ACE_TEXT_ALWAYS_CHAR(" ");
@@ -120,11 +107,11 @@ Handle_XMLSequence::handleData(const std::string& structElement_in)
 {
   ACE_TRACE(ACE_TEXT("Handle_XMLSequence::handleData"));
 
-  std::string::size_type position = structElement_in.find(ACE_TEXT_ALWAYS_CHAR(" "), 0);
+  std::string::size_type position = structElement_in.find(' ', 0);
   std::string type = structElement_in.substr(0, position);
 
   // strip leading namespace, if any
-  std::string::size_type colon = type.find(ACE_TEXT_ALWAYS_CHAR(":"));
+  std::string::size_type colon = type.find(':');
   if (colon != std::string::npos)
   {
     type = type.substr(colon + 1, std::string::npos);
@@ -150,12 +137,12 @@ Handle_XMLSequence::handleData(const std::string& structElement_in)
 
   // find name
   std::string::size_type next_position =
-      structElement_in.find(ACE_TEXT_ALWAYS_CHAR(" "), position + 1);
+      structElement_in.find(' ', position + 1);
   std::string name = structElement_in.substr(position + 1,
                                              (next_position - (position + 1)));
 
   // find minOccurs
-  position = structElement_in.find(ACE_TEXT_ALWAYS_CHAR(" "),
+  position = structElement_in.find(' ',
                                    next_position + 1);
   std::string minOccurs =
       structElement_in.substr(next_position + 1,
@@ -180,13 +167,13 @@ Handle_XMLSequence::handleData(const std::string& structElement_in)
     // (perhaps) append "s" to the name (it's a vector !)
     // (perhaps) append "ies" to the name with terminating "y" (it's a vector !)
     // (perhaps) append "es" to the name with terminating "s" (it's a vector !)
-    if (name.rfind(ACE_TEXT_ALWAYS_CHAR("y"),
+    if (name.rfind('y',
                    std::string::npos) == (name.size() - 1))
     {
       name.insert(name.size() - 1, ACE_TEXT_ALWAYS_CHAR("ies"));
       name.erase(--(name.end()));
     } // end IF
-    else if (name.rfind(ACE_TEXT_ALWAYS_CHAR("s"),
+    else if (name.rfind('s',
                         std::string::npos) == (name.size() - 1))
     {
       // make sure the ending isn't already just that...
@@ -194,7 +181,7 @@ Handle_XMLSequence::handleData(const std::string& structElement_in)
                      std::string::npos) != (name.size() - 2))
         name += ACE_TEXT_ALWAYS_CHAR("es");
     } // end IF
-    else if (name.rfind(ACE_TEXT_ALWAYS_CHAR("s"),
+    else if (name.rfind('s',
                         std::string::npos) != (name.size() - 1))
       name += ACE_TEXT_ALWAYS_CHAR("s");
     myOutputFile << std::setw(XML2CPPCODE_INDENT * (myNestingLevel ? (myNestingLevel + 1)

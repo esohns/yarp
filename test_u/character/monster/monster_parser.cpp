@@ -46,10 +46,13 @@
 #include "rpg_common_tools.h"
 #include "rpg_common_file_tools.h"
 
-#include <ace/ACE.h>
-#include <ace/Log_Msg.h>
-#include <ace/Get_Opt.h>
-#include <ace/High_Res_Timer.h>
+#include "ace/ACE.h"
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
+#include "ace/Log_Msg.h"
+#include "ace/Get_Opt.h"
+#include "ace/High_Res_Timer.h"
 
 #include <iostream>
 #include <iomanip>

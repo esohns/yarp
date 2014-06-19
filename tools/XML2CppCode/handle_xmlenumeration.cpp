@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "stdafx.h"
 
 #include "handle_xmlenumeration.h"
 
@@ -27,6 +28,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <locale>
+#include <functional>
 
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
 #include <bits/ios_base.h>

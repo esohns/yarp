@@ -139,6 +139,12 @@
     <ClInclude Include="rpg_monster_size.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rpg_monster_XML_tree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rpg_monster_spawn.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rpg_monster.cpp">
@@ -157,6 +163,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rpg_monster_XML_tree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

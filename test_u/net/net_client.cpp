@@ -24,15 +24,17 @@
 #include <sstream>
 #include <list>
 
-#include <ace/Init_ACE.h>
-#include <ace/Version.h>
-#include <ace/Get_Opt.h>
-#include <ace/Profile_Timer.h>
-#include <ace/Signal.h>
-#include <ace/Sig_Handler.h>
-#include <ace/Connector.h>
-#include <ace/SOCK_Connector.h>
-#include <ace/High_Res_Timer.h>
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
+#include "ace/Version.h"
+#include "ace/Get_Opt.h"
+#include "ace/Profile_Timer.h"
+#include "ace/Signal.h"
+#include "ace/Sig_Handler.h"
+#include "ace/Connector.h"
+#include "ace/SOCK_Connector.h"
+#include "ace/High_Res_Timer.h"
 
 #ifdef RPG_ENABLE_VALGRIND_SUPPORT
 #include <valgrind/valgrind.h>
@@ -1032,7 +1034,7 @@ ACE_TMAIN(int argc_in,
                                   system_time_string);
 
   // debug info
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT(" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\nmaximum resident set size = %d\nintegral shared memory size = %d\nintegral unshared data size = %d\nintegral unshared stack size = %d\npage reclaims = %d\npage faults = %d\nswaps = %d\nblock input operations = %d\nblock output operations = %d\nmessages sent = %d\nmessages received = %d\nsignals received = %d\nvoluntary context switches = %d\ninvoluntary context switches = %d\n"),
              elapsed_time.real_time,
@@ -1065,7 +1067,7 @@ ACE_TMAIN(int argc_in,
 #endif
 
 // *PORTABILITY*: on Windows, must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
   if (ACE::fini() == -1)
   {
     ACE_DEBUG((LM_ERROR,

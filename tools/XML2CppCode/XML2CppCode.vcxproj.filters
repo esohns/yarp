@@ -42,6 +42,18 @@
     <ClInclude Include="XML_handler_base.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="handle_xmlchoice.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="build\XML2CppCode-config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="handle_xmlstruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="handle_xmlenumeration.cpp">
@@ -66,6 +78,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="XML_parser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="handle_xmlchoice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="handle_xmlstruct.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

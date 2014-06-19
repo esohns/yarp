@@ -1,5 +1,6 @@
 --char-type char
 --cxx-suffix _XML_tree.cpp
+#--export-xml-schema
 --extern-xml-schema rpg_XMLSchema.h
 --generate-comparison
 --generate-ostream

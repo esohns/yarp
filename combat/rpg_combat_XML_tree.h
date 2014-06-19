@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__COMBAT_RPG_COMBAT_XML_TREE_H
-#define CXX__COMBAT_RPG_COMBAT_XML_TREE_H
+#ifndef CXX___RPG_COMBAT_XML_TREE_H
+#define CXX___RPG_COMBAT_XML_TREE_H
 
 // Begin prologue.
 //
@@ -1974,4 +1974,4 @@ operator<< (::xercesc::DOMElement&, const RPG_Combat_Damage_XMLTree_Type&);
 //
 // End epilogue.
 
-#endif // CXX__COMBAT_RPG_COMBAT_XML_TREE_H
+#endif // CXX___RPG_COMBAT_XML_TREE_H
