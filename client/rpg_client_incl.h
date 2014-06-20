@@ -7,8 +7,6 @@
 #ifndef RPG_CLIENT_INCL_H
 #define RPG_CLIENT_INCL_H
 
-#include <vector>
 #include "rpg_client_graphicsmode.h"
-#include "rpg_client_runtimestate.h"
 
 #endif

@@ -12,10 +12,6 @@
 struct RPG_Item_Export RPG_Item_PropertiesBase
  : public RPG_Item_BaseProperties
 {
-#include "rpg_item_exports.h"
-
-struct RPG_Item_Export RPG_Item_PropertiesBase
-{
   RPG_Magic_School aura;
   RPG_Item_MagicalPrerequisites prerequisites;
 };

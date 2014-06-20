@@ -5759,6 +5759,1047 @@ operator<< (::xercesc::DOMElement& e, const RPG_Item_DictionaryXML_XMLTree_Type&
   }
 }
 
+RPG_Item_Type_XMLTree_Type::
+RPG_Item_Type_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                            ::xml_schema::flags f,
+                            ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Item_Type_XMLTree_Type_convert ();
+}
+
+RPG_Item_CommodityType_XMLTree_Type::
+RPG_Item_CommodityType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Item_CommodityType_XMLTree_Type_convert ();
+}
+
+RPG_Item_CommodityBeverage_XMLTree_Type::
+RPG_Item_CommodityBeverage_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                         ::xml_schema::flags f,
+                                         ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Item_CommodityBeverage_XMLTree_Type_convert ();
+}
+
+RPG_Item_CommodityLight_XMLTree_Type::
+RPG_Item_CommodityLight_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Item_CommodityLight_XMLTree_Type_convert ();
+}
+
+RPG_Item_CommodityUnion_XMLTree_Type::
+RPG_Item_CommodityUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Item_CommodityUnion_XMLTree_Type_convert ();
+}
+
+RPG_Item_Money_XMLTree_Type::
+RPG_Item_Money_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                             ::xml_schema::flags f,
+                             ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Item_Money_XMLTree_Type_convert ();
+}
+
+RPG_Item_WeaponCategory_XMLTree_Type::
+RPG_Item_WeaponCategory_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Item_WeaponCategory_XMLTree_Type_convert ();
+}
+
+RPG_Item_WeaponClass_XMLTree_Type::
+RPG_Item_WeaponClass_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                   ::xml_schema::flags f,
+                                   ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Item_WeaponClass_XMLTree_Type_convert ();
+}
+
+RPG_Item_WeaponType_XMLTree_Type::
+RPG_Item_WeaponType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                  ::xml_schema::flags f,
+                                  ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Item_WeaponType_XMLTree_Type_convert ();
+}
+
+RPG_Item_StorePrice_XMLTree_Type::
+RPG_Item_StorePrice_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                  ::xml_schema::flags f,
+                                  ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  numGoldPieces_ (f, this),
+  numSilverPieces_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Item_StorePrice_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      numGoldPieces_type r;
+      s >> r;
+      this->numGoldPieces_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      numSilverPieces_type r;
+      s >> r;
+      this->numSilverPieces_.set (r);
+    }
+  }
+}
+
+RPG_Item_CriticalHitProperties_XMLTree_Type::
+RPG_Item_CriticalHitProperties_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                             ::xml_schema::flags f,
+                                             ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  minToHitRoll_ (f, this),
+  damageModifier_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Item_CriticalHitProperties_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    minToHitRoll_type r;
+    s >> r;
+    this->minToHitRoll_.set (r);
+  }
+
+  {
+    damageModifier_type r;
+    s >> r;
+    this->damageModifier_.set (r);
+  }
+}
+
+RPG_Item_CreationCost_XMLTree_Type::
+RPG_Item_CreationCost_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  numGoldPieces_ (f, this),
+  numExperiencePoints_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Item_CreationCost_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      numGoldPieces_type r;
+      s >> r;
+      this->numGoldPieces_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      numExperiencePoints_type r;
+      s >> r;
+      this->numExperiencePoints_.set (r);
+    }
+  }
+}
+
+RPG_Item_BaseProperties_XMLTree_Type::
+RPG_Item_BaseProperties_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  baseWeight_ (f, this),
+  baseStorePrice_ (f, this),
+  costToCreate_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Item_BaseProperties_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    baseWeight_type r;
+    s >> r;
+    this->baseWeight_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< baseStorePrice_type > r (new baseStorePrice_type (s, f, this));
+    this->baseStorePrice_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< costToCreate_type > r (new costToCreate_type (s, f, this));
+      this->costToCreate_.set (r);
+    }
+  }
+}
+
+RPG_Item_MagicalPrerequisites_XMLTree_Type::
+RPG_Item_MagicalPrerequisites_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                            ::xml_schema::flags f,
+                                            ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  minCasterLevel_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Item_MagicalPrerequisites_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      minCasterLevel_type r;
+      s >> r;
+      this->minCasterLevel_.set (r);
+    }
+  }
+}
+
+RPG_Item_PropertiesBase_XMLTree_Type::
+RPG_Item_PropertiesBase_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::RPG_Item_BaseProperties_XMLTree_Type (s, f, c),
+  aura_ (f, this),
+  prerequisites_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Item_PropertiesBase_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< aura_type > r (new aura_type (s, f, this));
+      this->aura_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< prerequisites_type > r (new prerequisites_type (s, f, this));
+      this->prerequisites_.set (r);
+    }
+  }
+}
+
+RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+RPG_Item_CommodityPropertiesBase_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                               ::xml_schema::flags f,
+                                               ::xml_schema::container* c)
+: ::RPG_Item_PropertiesBase_XMLTree_Type (s, f, c),
+  type_ (f, this),
+  subType_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Item_CommodityPropertiesBase_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
+    this->type_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< subType_type > r (new subType_type (s, f, this));
+    this->subType_.set (r);
+  }
+}
+
+RPG_Item_WeaponPropertiesBase_XMLTree_Type::
+RPG_Item_WeaponPropertiesBase_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                            ::xml_schema::flags f,
+                                            ::xml_schema::container* c)
+: ::RPG_Item_PropertiesBase_XMLTree_Type (s, f, c),
+  type_ (f, this),
+  category_ (f, this),
+  weaponClass_ (f, this),
+  baseDamage_ (f, this),
+  criticalHit_ (f, this),
+  rangeIncrement_ (f, this),
+  typeOfDamage_ (f, this),
+  isNonLethal_ (f, this),
+  isReachWeapon_ (f, this),
+  isDoubleWeapon_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Item_WeaponPropertiesBase_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
+    this->type_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< category_type > r (new category_type (s, f, this));
+    this->category_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< weaponClass_type > r (new weaponClass_type (s, f, this));
+    this->weaponClass_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< baseDamage_type > r (new baseDamage_type (s, f, this));
+    this->baseDamage_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< criticalHit_type > r (new criticalHit_type (s, f, this));
+    this->criticalHit_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      rangeIncrement_type r;
+      s >> r;
+      this->rangeIncrement_.set (r);
+    }
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      typeOfDamage_sequence& c (this->typeOfDamage_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< typeOfDamage_type > r (new typeOfDamage_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    isNonLethal_type r;
+    s >> r;
+    this->isNonLethal_.set (r);
+  }
+
+  {
+    isReachWeapon_type r;
+    s >> r;
+    this->isReachWeapon_.set (r);
+  }
+
+  {
+    isDoubleWeapon_type r;
+    s >> r;
+    this->isDoubleWeapon_.set (r);
+  }
+}
+
+RPG_Item_WeaponPropertiesXML_XMLTree_Type::
+RPG_Item_WeaponPropertiesXML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                           ::xml_schema::flags f,
+                                           ::xml_schema::container* c)
+: ::RPG_Item_WeaponPropertiesBase_XMLTree_Type (s, f, c),
+  toHitModifier_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Item_WeaponPropertiesXML_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      toHitModifier_type r;
+      s >> r;
+      this->toHitModifier_.set (r);
+    }
+  }
+}
+
+RPG_Item_ArmorCategory_XMLTree_Type::
+RPG_Item_ArmorCategory_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Item_ArmorCategory_XMLTree_Type_convert ();
+}
+
+RPG_Item_ArmorType_XMLTree_Type::
+RPG_Item_ArmorType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                 ::xml_schema::flags f,
+                                 ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Item_ArmorType_XMLTree_Type_convert ();
+}
+
+RPG_Item_ArmorPropertiesBase_XMLTree_Type::
+RPG_Item_ArmorPropertiesBase_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                           ::xml_schema::flags f,
+                                           ::xml_schema::container* c)
+: ::RPG_Item_PropertiesBase_XMLTree_Type (s, f, c),
+  type_ (f, this),
+  category_ (f, this),
+  baseBonus_ (f, this),
+  maxDexterityBonus_ (f, this),
+  checkPenalty_ (f, this),
+  arcaneSpellFailure_ (f, this),
+  baseSpeed_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Item_ArmorPropertiesBase_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
+    this->type_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< category_type > r (new category_type (s, f, this));
+    this->category_.set (r);
+  }
+
+  {
+    baseBonus_type r;
+    s >> r;
+    this->baseBonus_.set (r);
+  }
+
+  {
+    maxDexterityBonus_type r;
+    s >> r;
+    this->maxDexterityBonus_.set (r);
+  }
+
+  {
+    checkPenalty_type r;
+    s >> r;
+    this->checkPenalty_.set (r);
+  }
+
+  {
+    arcaneSpellFailure_type r;
+    s >> r;
+    this->arcaneSpellFailure_.set (r);
+  }
+
+  {
+    baseSpeed_type r;
+    s >> r;
+    this->baseSpeed_.set (r);
+  }
+}
+
+RPG_Item_ArmorPropertiesXML_XMLTree_Type::
+RPG_Item_ArmorPropertiesXML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                          ::xml_schema::flags f,
+                                          ::xml_schema::container* c)
+: ::RPG_Item_ArmorPropertiesBase_XMLTree_Type (s, f, c),
+  defenseModifier_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Item_ArmorPropertiesXML_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      defenseModifier_type r;
+      s >> r;
+      this->defenseModifier_.set (r);
+    }
+  }
+}
+
+RPG_Item_BaseXML_XMLTree_Type::
+RPG_Item_BaseXML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  type_ (f, this),
+  armor_ (f, this),
+  commodity_ (f, this),
+  weapon_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Item_BaseXML_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
+    this->type_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< armor_type > r (new armor_type (s, f, this));
+      this->armor_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< commodity_type > r (new commodity_type (s, f, this));
+      this->commodity_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< weapon_type > r (new weapon_type (s, f, this));
+      this->weapon_.set (r);
+    }
+  }
+}
+
+RPG_Item_InventoryXML_XMLTree_Type::
+RPG_Item_InventoryXML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  item_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Item_InventoryXML_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      item_sequence& c (this->item_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< item_type > r (new item_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
+RPG_Item_DictionaryXML_XMLTree_Type::
+RPG_Item_DictionaryXML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  armor_ (f, this),
+  commodity_ (f, this),
+  weapon_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Item_DictionaryXML_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      armor_sequence& c (this->armor_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< armor_type > r (new armor_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      commodity_sequence& c (this->commodity_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< commodity_type > r (new commodity_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      weapon_sequence& c (this->weapon_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< weapon_type > r (new weapon_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_Type_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_CommodityType_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_CommodityBeverage_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_CommodityLight_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_CommodityUnion_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_Money_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_WeaponCategory_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_WeaponClass_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_WeaponType_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_StorePrice_XMLTree_Type& x)
+{
+  {
+    bool p (x.numGoldPieces ());
+    s << p;
+    if (p)
+      s << *x.numGoldPieces ();
+  }
+
+  {
+    bool p (x.numSilverPieces ());
+    s << p;
+    if (p)
+      s << *x.numSilverPieces ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_CriticalHitProperties_XMLTree_Type& x)
+{
+  s << x.minToHitRoll ();
+  s << x.damageModifier ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_CreationCost_XMLTree_Type& x)
+{
+  {
+    bool p (x.numGoldPieces ());
+    s << p;
+    if (p)
+      s << *x.numGoldPieces ();
+  }
+
+  {
+    bool p (x.numExperiencePoints ());
+    s << p;
+    if (p)
+      s << *x.numExperiencePoints ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_BaseProperties_XMLTree_Type& x)
+{
+  s << x.baseWeight ();
+  s << x.baseStorePrice ();
+  {
+    bool p (x.costToCreate ());
+    s << p;
+    if (p)
+      s << *x.costToCreate ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_MagicalPrerequisites_XMLTree_Type& x)
+{
+  {
+    bool p (x.minCasterLevel ());
+    s << p;
+    if (p)
+      s << *x.minCasterLevel ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_PropertiesBase_XMLTree_Type& x)
+{
+  s << static_cast< const ::RPG_Item_BaseProperties_XMLTree_Type& > (x);
+  {
+    bool p (x.aura ());
+    s << p;
+    if (p)
+      s << *x.aura ();
+  }
+
+  {
+    bool p (x.prerequisites ());
+    s << p;
+    if (p)
+      s << *x.prerequisites ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_CommodityPropertiesBase_XMLTree_Type& x)
+{
+  s << static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (x);
+  s << x.type ();
+  s << x.subType ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_WeaponPropertiesBase_XMLTree_Type& x)
+{
+  s << static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (x);
+  s << x.type ();
+  s << x.category ();
+  s << x.weaponClass ();
+  s << x.baseDamage ();
+  s << x.criticalHit ();
+  {
+    bool p (x.rangeIncrement ());
+    s << p;
+    if (p)
+      s << *x.rangeIncrement ();
+  }
+
+  {
+    const RPG_Item_WeaponPropertiesBase_XMLTree_Type::typeOfDamage_sequence& c (x.typeOfDamage ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Item_WeaponPropertiesBase_XMLTree_Type::typeOfDamage_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  s << x.isNonLethal ();
+  s << x.isReachWeapon ();
+  s << x.isDoubleWeapon ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_WeaponPropertiesXML_XMLTree_Type& x)
+{
+  s << static_cast< const ::RPG_Item_WeaponPropertiesBase_XMLTree_Type& > (x);
+  {
+    bool p (x.toHitModifier ());
+    s << p;
+    if (p)
+      s << *x.toHitModifier ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_ArmorCategory_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_ArmorType_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_ArmorPropertiesBase_XMLTree_Type& x)
+{
+  s << static_cast< const ::RPG_Item_PropertiesBase_XMLTree_Type& > (x);
+  s << x.type ();
+  s << x.category ();
+  s << x.baseBonus ();
+  s << x.maxDexterityBonus ();
+  s << x.checkPenalty ();
+  s << x.arcaneSpellFailure ();
+  s << x.baseSpeed ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_ArmorPropertiesXML_XMLTree_Type& x)
+{
+  s << static_cast< const ::RPG_Item_ArmorPropertiesBase_XMLTree_Type& > (x);
+  {
+    bool p (x.defenseModifier ());
+    s << p;
+    if (p)
+      s << *x.defenseModifier ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_BaseXML_XMLTree_Type& x)
+{
+  s << x.type ();
+  {
+    bool p (x.armor ());
+    s << p;
+    if (p)
+      s << *x.armor ();
+  }
+
+  {
+    bool p (x.commodity ());
+    s << p;
+    if (p)
+      s << *x.commodity ();
+  }
+
+  {
+    bool p (x.weapon ());
+    s << p;
+    if (p)
+      s << *x.weapon ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_InventoryXML_XMLTree_Type& x)
+{
+  {
+    const RPG_Item_InventoryXML_XMLTree_Type::item_sequence& c (x.item ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Item_InventoryXML_XMLTree_Type::item_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Item_DictionaryXML_XMLTree_Type& x)
+{
+  {
+    const RPG_Item_DictionaryXML_XMLTree_Type::armor_sequence& c (x.armor ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Item_DictionaryXML_XMLTree_Type::armor_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  {
+    const RPG_Item_DictionaryXML_XMLTree_Type::commodity_sequence& c (x.commodity ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Item_DictionaryXML_XMLTree_Type::commodity_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  {
+    const RPG_Item_DictionaryXML_XMLTree_Type::weapon_sequence& c (x.weapon ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Item_DictionaryXML_XMLTree_Type::weapon_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
+}
+
 #include <xsd/cxx/post.hxx>
 
 // Begin epilogue.

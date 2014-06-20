@@ -29,7 +29,7 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:complexType name="RPG_Client_PlayerEntity_Type" id="skip0">
+  <!--<xsd:complexType name="RPG_Client_PlayerEntity_Type" id="skip0">
     <xsd:complexContent>
       <xsd:extension base="RPG_Engine_Player_Type">
         <xsd:sequence>
@@ -53,6 +53,6 @@
       <xsd:element name="style" type="RPG_Graphics_Style_Type" minOccurs="1" maxOccurs="1"/>
       <xsd:element name="entities" type="RPG_Client_Entity_Type" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
-  </xsd:complexType>
+  </xsd:complexType>-->
 
 </xsd:schema>

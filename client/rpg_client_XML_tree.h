@@ -31,11 +31,12 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__CLIENT_RPG_CLIENT_XML_TREE_H
-#define CXX__CLIENT_RPG_CLIENT_XML_TREE_H
+#ifndef CXX___RPG_CLIENT_XML_TREE_H
+#define CXX___RPG_CLIENT_XML_TREE_H
 
 // Begin prologue.
 //
+#include "rpg_client_exports.h"
 //
 // End prologue.
 
@@ -60,7 +61,6 @@
 // Forward declarations.
 //
 class RPG_Client_GraphicsMode_XMLTree_Type;
-class RPG_Client_RuntimeState_XMLTree_Type;
 
 #include <memory>    // std::auto_ptr
 #include <limits>    // std::numeric_limits
@@ -75,9 +75,13 @@ class RPG_Client_RuntimeState_XMLTree_Type;
 
 #include <xsd/cxx/xml/dom/parsing-header.hxx>
 
+#include <xsd/cxx/tree/istream-fwd.hxx>
+
+#include "rpg_engine_XML_tree.h"
+
 #include "rpg_graphics_XML_tree.h"
 
-class RPG_Client_GraphicsMode_XMLTree_Type: public ::xml_schema::string
+class RPG_Client_Export RPG_Client_GraphicsMode_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -94,6 +98,10 @@ class RPG_Client_GraphicsMode_XMLTree_Type: public ::xml_schema::string
   RPG_Client_GraphicsMode_XMLTree_Type (const ::std::string& v);
 
   RPG_Client_GraphicsMode_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Client_GraphicsMode_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
 
   RPG_Client_GraphicsMode_XMLTree_Type (const ::xercesc::DOMElement& e,
                                         ::xml_schema::flags f = 0,
@@ -134,93 +142,15 @@ class RPG_Client_GraphicsMode_XMLTree_Type: public ::xml_schema::string
   static const value _xsd_RPG_Client_GraphicsMode_XMLTree_Type_indexes_[3];
 };
 
-class RPG_Client_RuntimeState_XMLTree_Type: public ::xml_schema::type
-{
-  public:
-  // style
-  // 
-  typedef ::RPG_Graphics_Style_XMLTree_Type style_type;
-  typedef ::xsd::cxx::tree::traits< style_type, char > style_traits;
-
-  const style_type&
-  style () const;
-
-  style_type&
-  style ();
-
-  void
-  style (const style_type& x);
-
-  void
-  style (::std::auto_ptr< style_type > p);
-
-  // entities
-  // 
-  typedef ::RPG_Graphics_Sprite_XMLTree_Type entities_type;
-  typedef ::xsd::cxx::tree::sequence< entities_type > entities_sequence;
-  typedef entities_sequence::iterator entities_iterator;
-  typedef entities_sequence::const_iterator entities_const_iterator;
-  typedef ::xsd::cxx::tree::traits< entities_type, char > entities_traits;
-
-  const entities_sequence&
-  entities () const;
-
-  entities_sequence&
-  entities ();
-
-  void
-  entities (const entities_sequence& s);
-
-  // Constructors.
-  //
-  RPG_Client_RuntimeState_XMLTree_Type (const style_type&);
-
-  RPG_Client_RuntimeState_XMLTree_Type (::std::auto_ptr< style_type >&);
-
-  RPG_Client_RuntimeState_XMLTree_Type (const ::xercesc::DOMElement& e,
-                                        ::xml_schema::flags f = 0,
-                                        ::xml_schema::container* c = 0);
-
-  RPG_Client_RuntimeState_XMLTree_Type (const RPG_Client_RuntimeState_XMLTree_Type& x,
-                                        ::xml_schema::flags f = 0,
-                                        ::xml_schema::container* c = 0);
-
-  virtual RPG_Client_RuntimeState_XMLTree_Type*
-  _clone (::xml_schema::flags f = 0,
-          ::xml_schema::container* c = 0) const;
-
-  virtual 
-  ~RPG_Client_RuntimeState_XMLTree_Type ();
-
-  // Implementation.
-  //
-  protected:
-  void
-  parse (::xsd::cxx::xml::dom::parser< char >&,
-         ::xml_schema::flags);
-
-  protected:
-  ::xsd::cxx::tree::one< style_type > style_;
-  entities_sequence entities_;
-};
-
-bool
-operator== (const RPG_Client_RuntimeState_XMLTree_Type&, const RPG_Client_RuntimeState_XMLTree_Type&);
-
-bool
-operator!= (const RPG_Client_RuntimeState_XMLTree_Type&, const RPG_Client_RuntimeState_XMLTree_Type&);
-
-
 #include <iosfwd>
 
+RPG_Client_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Client_GraphicsMode_XMLTree_Type::value);
 
+RPG_Client_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Client_GraphicsMode_XMLTree_Type&);
-
-::std::ostream&
-operator<< (::std::ostream&, const RPG_Client_RuntimeState_XMLTree_Type&);
 
 #include <iosfwd>
 
@@ -236,18 +166,23 @@ operator<< (::std::ostream&, const RPG_Client_RuntimeState_XMLTree_Type&);
 
 #include <xsd/cxx/xml/dom/auto-ptr.hxx>
 
+RPG_Client_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Client_GraphicsMode_XMLTree_Type&);
 
+RPG_Client_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Client_GraphicsMode_XMLTree_Type&);
 
+RPG_Client_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Client_GraphicsMode_XMLTree_Type&);
 
-void
-operator<< (::xercesc::DOMElement&, const RPG_Client_RuntimeState_XMLTree_Type&);
+RPG_Client_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Client_GraphicsMode_XMLTree_Type&);
 
 #include <xsd/cxx/post.hxx>
 
@@ -256,4 +191,4 @@ operator<< (::xercesc::DOMElement&, const RPG_Client_RuntimeState_XMLTree_Type&)
 //
 // End epilogue.
 
-#endif // CXX__CLIENT_RPG_CLIENT_XML_TREE_H
+#endif // CXX___RPG_CLIENT_XML_TREE_H

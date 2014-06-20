@@ -33,6 +33,7 @@
 
 // Begin prologue.
 //
+#include "stdafx.h"
 //
 // End prologue.
 
@@ -10024,6 +10025,2054 @@ monsterDictionary (const ::RPG_Monster_Dictionary_XMLTree_Type& s,
 
   ::monsterDictionary (*d, s, f);
   return d;
+}
+
+RPG_Monster_Size_XMLTree_Type::
+RPG_Monster_Size_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  size_ (f, this),
+  isTall_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_Size_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< size_type > r (new size_type (s, f, this));
+    this->size_.set (r);
+  }
+
+  {
+    isTall_type r;
+    s >> r;
+    this->isTall_.set (r);
+  }
+}
+
+RPG_Monster_NaturalArmorClass_XMLTree_Type::
+RPG_Monster_NaturalArmorClass_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                            ::xml_schema::flags f,
+                                            ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  normal_ (f, this),
+  touch_ (f, this),
+  flatFooted_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_NaturalArmorClass_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    normal_type r;
+    s >> r;
+    this->normal_.set (r);
+  }
+
+  {
+    touch_type r;
+    s >> r;
+    this->touch_.set (r);
+  }
+
+  {
+    flatFooted_type r;
+    s >> r;
+    this->flatFooted_.set (r);
+  }
+}
+
+RPG_Monster_SpecialPropertyTypeUnion_XMLTree_Type::
+RPG_Monster_SpecialPropertyTypeUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                   ::xml_schema::flags f,
+                                                   ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Monster_SpecialPropertyTypeUnion_XMLTree_Type_convert ();
+}
+
+RPG_Monster_SpecialBaseProperties_XMLTree_Type::
+RPG_Monster_SpecialBaseProperties_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                ::xml_schema::flags f,
+                                                ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  abilityClass_ (f, this),
+  type_ (f, this),
+  actionType_ (f, this),
+  usage_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_SpecialBaseProperties_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< abilityClass_type > r (new abilityClass_type (s, f, this));
+    this->abilityClass_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
+    this->type_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< actionType_type > r (new actionType_type (s, f, this));
+    this->actionType_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< usage_type > r (new usage_type (s, f, this));
+      this->usage_.set (r);
+    }
+  }
+}
+
+RPG_Monster_NaturalWeapon_XMLTree_Type::
+RPG_Monster_NaturalWeapon_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f,
+                                        ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Monster_NaturalWeapon_XMLTree_Type_convert ();
+}
+
+RPG_Monster_WeaponTypeUnion_XMLTree_Type::
+RPG_Monster_WeaponTypeUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                          ::xml_schema::flags f,
+                                          ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Monster_WeaponTypeUnion_XMLTree_Type_convert ();
+}
+
+RPG_Monster_SpecialDefensePreCondition_XMLTree_Type::
+RPG_Monster_SpecialDefensePreCondition_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                     ::xml_schema::flags f,
+                                                     ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  weaponType_ (f, this),
+  ownCondition_ (f, this),
+  targetCondition_ (f, this),
+  isMagicalWeapon_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_SpecialDefensePreCondition_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      weaponType_sequence& c (this->weaponType_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< weaponType_type > r (new weaponType_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      ownCondition_sequence& c (this->ownCondition_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< ownCondition_type > r (new ownCondition_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      targetCondition_sequence& c (this->targetCondition_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< targetCondition_type > r (new targetCondition_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    isMagicalWeapon_type r;
+    s >> r;
+    this->isMagicalWeapon_.set (r);
+  }
+}
+
+RPG_Monster_DefenseAction_XMLTree_Type::
+RPG_Monster_DefenseAction_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f,
+                                        ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  preCondition_ (f, this),
+  damage_ (f, this),
+  ranged_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_DefenseAction_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      preCondition_sequence& c (this->preCondition_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< preCondition_type > r (new preCondition_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< damage_type > r (new damage_type (s, f, this));
+      this->damage_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< ranged_type > r (new ranged_type (s, f, this));
+      this->ranged_.set (r);
+    }
+  }
+}
+
+RPG_Monster_SpecialDefenseProperties_XMLTree_Type::
+RPG_Monster_SpecialDefenseProperties_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                   ::xml_schema::flags f,
+                                                   ::xml_schema::container* c)
+: ::RPG_Monster_SpecialBaseProperties_XMLTree_Type (s, f, c),
+  action_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_SpecialDefenseProperties_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      action_sequence& c (this->action_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< action_type > r (new action_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
+RPG_Monster_AttackAction_XMLTree_Type::
+RPG_Monster_AttackAction_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                       ::xml_schema::flags f,
+                                       ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  weapon_ (f, this),
+  attackBonus_ (f, this),
+  attackForm_ (f, this),
+  damage_ (f, this),
+  effect_ (f, this),
+  numAttacksPerRound_ (f, this),
+  ranged_ (f, this),
+  trigger_ (f, this),
+  allAdjacent_ (f, this),
+  fullAttackIncludesNextAction_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_AttackAction_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< weapon_type > r (new weapon_type (s, f, this));
+    this->weapon_.set (r);
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      attackBonus_sequence& c (this->attackBonus_);
+      c.reserve (n);
+      while (n--)
+      {
+        attackBonus_type r;
+        s >> r;
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      attackForm_sequence& c (this->attackForm_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< attackForm_type > r (new attackForm_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< damage_type > r (new damage_type (s, f, this));
+      this->damage_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< effect_type > r (new effect_type (s, f, this));
+      this->effect_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      numAttacksPerRound_type r;
+      s >> r;
+      this->numAttacksPerRound_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< ranged_type > r (new ranged_type (s, f, this));
+      this->ranged_.set (r);
+    }
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      trigger_sequence& c (this->trigger_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< trigger_type > r (new trigger_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    allAdjacent_type r;
+    s >> r;
+    this->allAdjacent_.set (r);
+  }
+
+  {
+    fullAttackIncludesNextAction_type r;
+    s >> r;
+    this->fullAttackIncludesNextAction_.set (r);
+  }
+}
+
+RPG_Monster_Attack_XMLTree_Type::
+RPG_Monster_Attack_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                 ::xml_schema::flags f,
+                                 ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  baseAttackBonus_ (f, this),
+  grappleBonus_ (f, this),
+  standardAttackAction_ (f, this),
+  fullAttackAction_ (f, this),
+  actionsAreInclusive_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_Attack_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    baseAttackBonus_type r;
+    s >> r;
+    this->baseAttackBonus_.set (r);
+  }
+
+  {
+    grappleBonus_type r;
+    s >> r;
+    this->grappleBonus_.set (r);
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      standardAttackAction_sequence& c (this->standardAttackAction_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< standardAttackAction_type > r (new standardAttackAction_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      fullAttackAction_sequence& c (this->fullAttackAction_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< fullAttackAction_type > r (new fullAttackAction_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    actionsAreInclusive_type r;
+    s >> r;
+    this->actionsAreInclusive_.set (r);
+  }
+}
+
+RPG_Monster_ActionTrigger_XMLTree_Type::
+RPG_Monster_ActionTrigger_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f,
+                                        ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  weapon_ (f, this),
+  numHits_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_ActionTrigger_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< weapon_type > r (new weapon_type (s, f, this));
+    this->weapon_.set (r);
+  }
+
+  {
+    numHits_type r;
+    s >> r;
+    this->numHits_.set (r);
+  }
+}
+
+RPG_Monster_SpecialAttackPreCondition_XMLTree_Type::
+RPG_Monster_SpecialAttackPreCondition_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                    ::xml_schema::flags f,
+                                                    ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  action_ (f, this),
+  targetAlignment_ (f, this),
+  ownCondition_ (f, this),
+  targetCondition_ (f, this),
+  minTargetSize_ (f, this),
+  maxTargetSize_ (f, this),
+  check_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_SpecialAttackPreCondition_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< action_type > r (new action_type (s, f, this));
+      this->action_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< targetAlignment_type > r (new targetAlignment_type (s, f, this));
+      this->targetAlignment_.set (r);
+    }
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      ownCondition_sequence& c (this->ownCondition_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< ownCondition_type > r (new ownCondition_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      targetCondition_sequence& c (this->targetCondition_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< targetCondition_type > r (new targetCondition_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< minTargetSize_type > r (new minTargetSize_type (s, f, this));
+      this->minTargetSize_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< maxTargetSize_type > r (new maxTargetSize_type (s, f, this));
+      this->maxTargetSize_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< check_type > r (new check_type (s, f, this));
+      this->check_.set (r);
+    }
+  }
+}
+
+RPG_Monster_SpecialAttackProperties_XMLTree_Type::
+RPG_Monster_SpecialAttackProperties_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                  ::xml_schema::flags f,
+                                                  ::xml_schema::container* c)
+: ::RPG_Monster_SpecialBaseProperties_XMLTree_Type (s, f, c),
+  preCondition_ (f, this),
+  action_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_SpecialAttackProperties_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      preCondition_sequence& c (this->preCondition_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< preCondition_type > r (new preCondition_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    ::std::auto_ptr< action_type > r (new action_type (s, f, this));
+    this->action_.set (r);
+  }
+}
+
+RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type::
+RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                     ::xml_schema::flags f,
+                                                     ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  targetCondition_ (f, this),
+  maxTargetSize_ (f, this),
+  check_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      targetCondition_sequence& c (this->targetCondition_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< targetCondition_type > r (new targetCondition_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< maxTargetSize_type > r (new maxTargetSize_type (s, f, this));
+      this->maxTargetSize_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< check_type > r (new check_type (s, f, this));
+      this->check_.set (r);
+    }
+  }
+}
+
+RPG_Monster_SummonMonster_XMLTree_Type::
+RPG_Monster_SummonMonster_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f,
+                                        ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  name_ (f, this),
+  amount_ (f, this),
+  successRate_ (f, this),
+  actionsAreInclusive_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_SummonMonster_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< name_type > r (new name_type (s, f, this));
+    this->name_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< amount_type > r (new amount_type (s, f, this));
+    this->amount_.set (r);
+  }
+
+  {
+    successRate_type r;
+    s >> r;
+    this->successRate_.set (r);
+  }
+
+  {
+    actionsAreInclusive_type r;
+    s >> r;
+    this->actionsAreInclusive_.set (r);
+  }
+}
+
+RPG_Monster_SpecialAbilityProperties_XMLTree_Type::
+RPG_Monster_SpecialAbilityProperties_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                   ::xml_schema::flags f,
+                                                   ::xml_schema::container* c)
+: ::RPG_Monster_SpecialBaseProperties_XMLTree_Type (s, f, c),
+  preCondition_ (f, this),
+  summon_ (f, this),
+  spell_ (f, this),
+  ranged_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_SpecialAbilityProperties_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      preCondition_sequence& c (this->preCondition_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< preCondition_type > r (new preCondition_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      summon_sequence& c (this->summon_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< summon_type > r (new summon_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      spell_sequence& c (this->spell_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< spell_type > r (new spell_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< ranged_type > r (new ranged_type (s, f, this));
+      this->ranged_.set (r);
+    }
+  }
+}
+
+RPG_Monster_SavingThrowModifiers_XMLTree_Type::
+RPG_Monster_SavingThrowModifiers_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                               ::xml_schema::flags f,
+                                               ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  fortitude_ (f, this),
+  reflex_ (f, this),
+  will_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_SavingThrowModifiers_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    fortitude_type r;
+    s >> r;
+    this->fortitude_.set (r);
+  }
+
+  {
+    reflex_type r;
+    s >> r;
+    this->reflex_.set (r);
+  }
+
+  {
+    will_type r;
+    s >> r;
+    this->will_.set (r);
+  }
+}
+
+RPG_Monster_Organization_XMLTree_Type::
+RPG_Monster_Organization_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                       ::xml_schema::flags f,
+                                       ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Monster_Organization_XMLTree_Type_convert ();
+}
+
+RPG_Monster_OrganizationSlaverStep_XMLTree_Type::
+RPG_Monster_OrganizationSlaverStep_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                 ::xml_schema::flags f,
+                                                 ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  name_ (f, this),
+  range_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_OrganizationSlaverStep_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< name_type > r (new name_type (s, f, this));
+    this->name_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< range_type > r (new range_type (s, f, this));
+    this->range_.set (r);
+  }
+}
+
+RPG_Monster_OrganizationStep_XMLTree_Type::
+RPG_Monster_OrganizationStep_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                           ::xml_schema::flags f,
+                                           ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  type_ (f, this),
+  range_ (f, this),
+  slaves_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_OrganizationStep_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
+    this->type_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< range_type > r (new range_type (s, f, this));
+      this->range_.set (r);
+    }
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      slaves_sequence& c (this->slaves_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< slaves_type > r (new slaves_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
+RPG_Monster_Organizations_XMLTree_Type::
+RPG_Monster_Organizations_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f,
+                                        ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  step_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_Organizations_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      step_sequence& c (this->step_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< step_type > r (new step_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
+RPG_Monster_AdvancementStep_XMLTree_Type::
+RPG_Monster_AdvancementStep_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                          ::xml_schema::flags f,
+                                          ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  size_ (f, this),
+  range_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_AdvancementStep_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< size_type > r (new size_type (s, f, this));
+    this->size_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< range_type > r (new range_type (s, f, this));
+    this->range_.set (r);
+  }
+}
+
+RPG_Monster_Advancement_XMLTree_Type::
+RPG_Monster_Advancement_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  step_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_Advancement_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      step_sequence& c (this->step_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< step_type > r (new step_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
+RPG_Monster_PropertiesXML_XMLTree_Type::
+RPG_Monster_PropertiesXML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f,
+                                        ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  name_ (f, this),
+  size_ (f, this),
+  type_ (f, this),
+  hitDice_ (f, this),
+  initiative_ (f, this),
+  speed_ (f, this),
+  armorClass_ (f, this),
+  specialDefense_ (f, this),
+  attack_ (f, this),
+  specialAttack_ (f, this),
+  specialAbility_ (f, this),
+  space_ (f, this),
+  reach_ (f, this),
+  saves_ (f, this),
+  attributes_ (f, this),
+  skills_ (f, this),
+  feats_ (f, this),
+  environment_ (f, this),
+  organizations_ (f, this),
+  challengeRating_ (f, this),
+  treasureModifier_ (f, this),
+  alignment_ (f, this),
+  advancements_ (f, this),
+  levelAdjustment_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_PropertiesXML_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< name_type > r (new name_type (s, f, this));
+    this->name_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< size_type > r (new size_type (s, f, this));
+    this->size_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
+    this->type_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< hitDice_type > r (new hitDice_type (s, f, this));
+    this->hitDice_.set (r);
+  }
+
+  {
+    initiative_type r;
+    s >> r;
+    this->initiative_.set (r);
+  }
+
+  {
+    speed_type r;
+    s >> r;
+    this->speed_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< armorClass_type > r (new armorClass_type (s, f, this));
+    this->armorClass_.set (r);
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      specialDefense_sequence& c (this->specialDefense_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< specialDefense_type > r (new specialDefense_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    ::std::auto_ptr< attack_type > r (new attack_type (s, f, this));
+    this->attack_.set (r);
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      specialAttack_sequence& c (this->specialAttack_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< specialAttack_type > r (new specialAttack_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      specialAbility_sequence& c (this->specialAbility_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< specialAbility_type > r (new specialAbility_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    space_type r;
+    s >> r;
+    this->space_.set (r);
+  }
+
+  {
+    reach_type r;
+    s >> r;
+    this->reach_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< saves_type > r (new saves_type (s, f, this));
+    this->saves_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< attributes_type > r (new attributes_type (s, f, this));
+    this->attributes_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< skills_type > r (new skills_type (s, f, this));
+      this->skills_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< feats_type > r (new feats_type (s, f, this));
+      this->feats_.set (r);
+    }
+  }
+
+  {
+    ::std::auto_ptr< environment_type > r (new environment_type (s, f, this));
+    this->environment_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< organizations_type > r (new organizations_type (s, f, this));
+    this->organizations_.set (r);
+  }
+
+  {
+    challengeRating_type r;
+    s >> r;
+    this->challengeRating_.set (r);
+  }
+
+  {
+    treasureModifier_type r;
+    s >> r;
+    this->treasureModifier_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< alignment_type > r (new alignment_type (s, f, this));
+    this->alignment_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< advancements_type > r (new advancements_type (s, f, this));
+      this->advancements_.set (r);
+    }
+  }
+
+  {
+    levelAdjustment_type r;
+    s >> r;
+    this->levelAdjustment_.set (r);
+  }
+}
+
+RPG_Monster_StateBase_XMLTree_Type::
+RPG_Monster_StateBase_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
+: ::RPG_Player_StateBase_XMLTree_Type (s, f, c),
+  gold_ (f, this),
+  inventory_ (f, this),
+  maxHP_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_StateBase_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    gold_type r;
+    s >> r;
+    this->gold_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< inventory_type > r (new inventory_type (s, f, this));
+      this->inventory_.set (r);
+    }
+  }
+
+  {
+    maxHP_type r;
+    s >> r;
+    this->maxHP_.set (r);
+  }
+}
+
+RPG_Monster_State_XMLTree_Type::
+RPG_Monster_State_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                ::xml_schema::flags f,
+                                ::xml_schema::container* c)
+: ::RPG_Monster_StateBase_XMLTree_Type (s, f, c),
+  type_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_State_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
+    this->type_.set (r);
+  }
+}
+
+RPG_Monster_Spawn_XMLTree_Type::
+RPG_Monster_Spawn_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                ::xml_schema::flags f,
+                                ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  type_ (f, this),
+  interval_ (f, this),
+  probability_ (f, this),
+  max_num_spawned_ (f, this),
+  amble_probability_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_Spawn_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
+    this->type_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< interval_type > r (new interval_type (s, f, this));
+    this->interval_.set (r);
+  }
+
+  {
+    probability_type r;
+    s >> r;
+    this->probability_.set (r);
+  }
+
+  {
+    max_num_spawned_type r;
+    s >> r;
+    this->max_num_spawned_.set (r);
+  }
+
+  {
+    amble_probability_type r;
+    s >> r;
+    this->amble_probability_.set (r);
+  }
+}
+
+RPG_Monster_Dictionary_XMLTree_Type::
+RPG_Monster_Dictionary_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  monster_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Monster_Dictionary_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      monster_sequence& c (this->monster_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< monster_type > r (new monster_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_Size_XMLTree_Type& x)
+{
+  s << x.size ();
+  s << x.isTall ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_NaturalArmorClass_XMLTree_Type& x)
+{
+  s << x.normal ();
+  s << x.touch ();
+  s << x.flatFooted ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_SpecialPropertyTypeUnion_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_SpecialBaseProperties_XMLTree_Type& x)
+{
+  s << x.abilityClass ();
+  s << x.type ();
+  s << x.actionType ();
+  {
+    bool p (x.usage ());
+    s << p;
+    if (p)
+      s << *x.usage ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_NaturalWeapon_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_WeaponTypeUnion_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_SpecialDefensePreCondition_XMLTree_Type& x)
+{
+  {
+    const RPG_Monster_SpecialDefensePreCondition_XMLTree_Type::weaponType_sequence& c (x.weaponType ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_SpecialDefensePreCondition_XMLTree_Type::weaponType_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  {
+    const RPG_Monster_SpecialDefensePreCondition_XMLTree_Type::ownCondition_sequence& c (x.ownCondition ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_SpecialDefensePreCondition_XMLTree_Type::ownCondition_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  {
+    const RPG_Monster_SpecialDefensePreCondition_XMLTree_Type::targetCondition_sequence& c (x.targetCondition ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_SpecialDefensePreCondition_XMLTree_Type::targetCondition_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  s << x.isMagicalWeapon ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_DefenseAction_XMLTree_Type& x)
+{
+  {
+    const RPG_Monster_DefenseAction_XMLTree_Type::preCondition_sequence& c (x.preCondition ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_DefenseAction_XMLTree_Type::preCondition_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  {
+    bool p (x.damage ());
+    s << p;
+    if (p)
+      s << *x.damage ();
+  }
+
+  {
+    bool p (x.ranged ());
+    s << p;
+    if (p)
+      s << *x.ranged ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_SpecialDefenseProperties_XMLTree_Type& x)
+{
+  s << static_cast< const ::RPG_Monster_SpecialBaseProperties_XMLTree_Type& > (x);
+  {
+    const RPG_Monster_SpecialDefenseProperties_XMLTree_Type::action_sequence& c (x.action ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_SpecialDefenseProperties_XMLTree_Type::action_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_AttackAction_XMLTree_Type& x)
+{
+  s << x.weapon ();
+  {
+    const RPG_Monster_AttackAction_XMLTree_Type::attackBonus_sequence& c (x.attackBonus ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_AttackAction_XMLTree_Type::attackBonus_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  {
+    const RPG_Monster_AttackAction_XMLTree_Type::attackForm_sequence& c (x.attackForm ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_AttackAction_XMLTree_Type::attackForm_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  {
+    bool p (x.damage ());
+    s << p;
+    if (p)
+      s << *x.damage ();
+  }
+
+  {
+    bool p (x.effect ());
+    s << p;
+    if (p)
+      s << *x.effect ();
+  }
+
+  {
+    bool p (x.numAttacksPerRound ());
+    s << p;
+    if (p)
+      s << *x.numAttacksPerRound ();
+  }
+
+  {
+    bool p (x.ranged ());
+    s << p;
+    if (p)
+      s << *x.ranged ();
+  }
+
+  {
+    const RPG_Monster_AttackAction_XMLTree_Type::trigger_sequence& c (x.trigger ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_AttackAction_XMLTree_Type::trigger_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  s << x.allAdjacent ();
+  s << x.fullAttackIncludesNextAction ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_Attack_XMLTree_Type& x)
+{
+  s << x.baseAttackBonus ();
+  s << x.grappleBonus ();
+  {
+    const RPG_Monster_Attack_XMLTree_Type::standardAttackAction_sequence& c (x.standardAttackAction ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_Attack_XMLTree_Type::standardAttackAction_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  {
+    const RPG_Monster_Attack_XMLTree_Type::fullAttackAction_sequence& c (x.fullAttackAction ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_Attack_XMLTree_Type::fullAttackAction_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  s << x.actionsAreInclusive ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_ActionTrigger_XMLTree_Type& x)
+{
+  s << x.weapon ();
+  s << x.numHits ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_SpecialAttackPreCondition_XMLTree_Type& x)
+{
+  {
+    bool p (x.action ());
+    s << p;
+    if (p)
+      s << *x.action ();
+  }
+
+  {
+    bool p (x.targetAlignment ());
+    s << p;
+    if (p)
+      s << *x.targetAlignment ();
+  }
+
+  {
+    const RPG_Monster_SpecialAttackPreCondition_XMLTree_Type::ownCondition_sequence& c (x.ownCondition ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_SpecialAttackPreCondition_XMLTree_Type::ownCondition_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  {
+    const RPG_Monster_SpecialAttackPreCondition_XMLTree_Type::targetCondition_sequence& c (x.targetCondition ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_SpecialAttackPreCondition_XMLTree_Type::targetCondition_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  {
+    bool p (x.minTargetSize ());
+    s << p;
+    if (p)
+      s << *x.minTargetSize ();
+  }
+
+  {
+    bool p (x.maxTargetSize ());
+    s << p;
+    if (p)
+      s << *x.maxTargetSize ();
+  }
+
+  {
+    bool p (x.check ());
+    s << p;
+    if (p)
+      s << *x.check ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_SpecialAttackProperties_XMLTree_Type& x)
+{
+  s << static_cast< const ::RPG_Monster_SpecialBaseProperties_XMLTree_Type& > (x);
+  {
+    const RPG_Monster_SpecialAttackProperties_XMLTree_Type::preCondition_sequence& c (x.preCondition ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_SpecialAttackProperties_XMLTree_Type::preCondition_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  s << x.action ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type& x)
+{
+  {
+    const RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type::targetCondition_sequence& c (x.targetCondition ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type::targetCondition_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  {
+    bool p (x.maxTargetSize ());
+    s << p;
+    if (p)
+      s << *x.maxTargetSize ();
+  }
+
+  {
+    bool p (x.check ());
+    s << p;
+    if (p)
+      s << *x.check ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_SummonMonster_XMLTree_Type& x)
+{
+  s << x.name ();
+  s << x.amount ();
+  s << x.successRate ();
+  s << x.actionsAreInclusive ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_SpecialAbilityProperties_XMLTree_Type& x)
+{
+  s << static_cast< const ::RPG_Monster_SpecialBaseProperties_XMLTree_Type& > (x);
+  {
+    const RPG_Monster_SpecialAbilityProperties_XMLTree_Type::preCondition_sequence& c (x.preCondition ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_SpecialAbilityProperties_XMLTree_Type::preCondition_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  {
+    const RPG_Monster_SpecialAbilityProperties_XMLTree_Type::summon_sequence& c (x.summon ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_SpecialAbilityProperties_XMLTree_Type::summon_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  {
+    const RPG_Monster_SpecialAbilityProperties_XMLTree_Type::spell_sequence& c (x.spell ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_SpecialAbilityProperties_XMLTree_Type::spell_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  {
+    bool p (x.ranged ());
+    s << p;
+    if (p)
+      s << *x.ranged ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_SavingThrowModifiers_XMLTree_Type& x)
+{
+  s << x.fortitude ();
+  s << x.reflex ();
+  s << x.will ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_Organization_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_OrganizationSlaverStep_XMLTree_Type& x)
+{
+  s << x.name ();
+  s << x.range ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_OrganizationStep_XMLTree_Type& x)
+{
+  s << x.type ();
+  {
+    bool p (x.range ());
+    s << p;
+    if (p)
+      s << *x.range ();
+  }
+
+  {
+    const RPG_Monster_OrganizationStep_XMLTree_Type::slaves_sequence& c (x.slaves ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_OrganizationStep_XMLTree_Type::slaves_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_Organizations_XMLTree_Type& x)
+{
+  {
+    const RPG_Monster_Organizations_XMLTree_Type::step_sequence& c (x.step ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_Organizations_XMLTree_Type::step_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_AdvancementStep_XMLTree_Type& x)
+{
+  s << x.size ();
+  s << x.range ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_Advancement_XMLTree_Type& x)
+{
+  {
+    const RPG_Monster_Advancement_XMLTree_Type::step_sequence& c (x.step ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_Advancement_XMLTree_Type::step_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_PropertiesXML_XMLTree_Type& x)
+{
+  s << x.name ();
+  s << x.size ();
+  s << x.type ();
+  s << x.hitDice ();
+  s << x.initiative ();
+  s << x.speed ();
+  s << x.armorClass ();
+  {
+    const RPG_Monster_PropertiesXML_XMLTree_Type::specialDefense_sequence& c (x.specialDefense ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_PropertiesXML_XMLTree_Type::specialDefense_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  s << x.attack ();
+  {
+    const RPG_Monster_PropertiesXML_XMLTree_Type::specialAttack_sequence& c (x.specialAttack ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_PropertiesXML_XMLTree_Type::specialAttack_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  {
+    const RPG_Monster_PropertiesXML_XMLTree_Type::specialAbility_sequence& c (x.specialAbility ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_PropertiesXML_XMLTree_Type::specialAbility_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  s << x.space ();
+  s << x.reach ();
+  s << x.saves ();
+  s << x.attributes ();
+  {
+    bool p (x.skills ());
+    s << p;
+    if (p)
+      s << *x.skills ();
+  }
+
+  {
+    bool p (x.feats ());
+    s << p;
+    if (p)
+      s << *x.feats ();
+  }
+
+  s << x.environment ();
+  s << x.organizations ();
+  s << x.challengeRating ();
+  s << x.treasureModifier ();
+  s << x.alignment ();
+  {
+    bool p (x.advancements ());
+    s << p;
+    if (p)
+      s << *x.advancements ();
+  }
+
+  s << x.levelAdjustment ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_StateBase_XMLTree_Type& x)
+{
+  s << static_cast< const ::RPG_Player_StateBase_XMLTree_Type& > (x);
+  s << x.gold ();
+  {
+    bool p (x.inventory ());
+    s << p;
+    if (p)
+      s << *x.inventory ();
+  }
+
+  s << x.maxHP ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_State_XMLTree_Type& x)
+{
+  s << static_cast< const ::RPG_Monster_StateBase_XMLTree_Type& > (x);
+  s << x.type ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_Spawn_XMLTree_Type& x)
+{
+  s << x.type ();
+  s << x.interval ();
+  s << x.probability ();
+  s << x.max_num_spawned ();
+  s << x.amble_probability ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Monster_Dictionary_XMLTree_Type& x)
+{
+  {
+    const RPG_Monster_Dictionary_XMLTree_Type::monster_sequence& c (x.monster ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Monster_Dictionary_XMLTree_Type::monster_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
 }
 
 #include <xsd/cxx/post.hxx>

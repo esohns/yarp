@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__CHARACTER_MONSTER_RPG_MONSTER_XML_TREE_H
-#define CXX__CHARACTER_MONSTER_RPG_MONSTER_XML_TREE_H
+#ifndef CXX___RPG_MONSTER_XML_TREE_H
+#define CXX___RPG_MONSTER_XML_TREE_H
 
 // Begin prologue.
 //
@@ -103,6 +103,8 @@ class RPG_Monster_Dictionary_XMLTree_Type;
 
 #include <xsd/cxx/xml/dom/parsing-header.hxx>
 
+#include <xsd/cxx/tree/istream-fwd.hxx>
+
 #include "rpg_dice_XML_tree.h"
 
 #include "rpg_common_XML_tree.h"
@@ -158,6 +160,10 @@ class RPG_Monster_Export RPG_Monster_Size_XMLTree_Type: public ::xml_schema::typ
   //
   RPG_Monster_Size_XMLTree_Type (const size_type&);
 
+  RPG_Monster_Size_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                 ::xml_schema::flags f = 0,
+                                 ::xml_schema::container* c = 0);
+
   RPG_Monster_Size_XMLTree_Type (const ::xercesc::DOMElement& e,
                                  ::xml_schema::flags f = 0,
                                  ::xml_schema::container* c = 0);
@@ -181,6 +187,10 @@ class RPG_Monster_Export RPG_Monster_Size_XMLTree_Type: public ::xml_schema::typ
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< size_type > size_;
   ::xsd::cxx::tree::one< isTall_type > isTall_;
 };
@@ -245,6 +255,10 @@ class RPG_Monster_Export RPG_Monster_NaturalArmorClass_XMLTree_Type: public ::xm
                                               const touch_type&,
                                               const flatFooted_type&);
 
+  RPG_Monster_NaturalArmorClass_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                              ::xml_schema::flags f = 0,
+                                              ::xml_schema::container* c = 0);
+
   RPG_Monster_NaturalArmorClass_XMLTree_Type (const ::xercesc::DOMElement& e,
                                               ::xml_schema::flags f = 0,
                                               ::xml_schema::container* c = 0);
@@ -268,6 +282,10 @@ class RPG_Monster_Export RPG_Monster_NaturalArmorClass_XMLTree_Type: public ::xm
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< normal_type > normal_;
   ::xsd::cxx::tree::one< touch_type > touch_;
   ::xsd::cxx::tree::one< flatFooted_type > flatFooted_;
@@ -378,6 +396,10 @@ class RPG_Monster_Export RPG_Monster_SpecialPropertyTypeUnion_XMLTree_Type: publ
   RPG_Monster_SpecialPropertyTypeUnion_XMLTree_Type (const ::std::string& v);
 
   RPG_Monster_SpecialPropertyTypeUnion_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Monster_SpecialPropertyTypeUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                     ::xml_schema::flags f = 0,
+                                                     ::xml_schema::container* c = 0);
 
   RPG_Monster_SpecialPropertyTypeUnion_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                      ::xml_schema::flags f = 0,
@@ -499,6 +521,10 @@ class RPG_Monster_Export RPG_Monster_SpecialBaseProperties_XMLTree_Type: public 
                                                   const type_type&,
                                                   const actionType_type&);
 
+  RPG_Monster_SpecialBaseProperties_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                  ::xml_schema::flags f = 0,
+                                                  ::xml_schema::container* c = 0);
+
   RPG_Monster_SpecialBaseProperties_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                   ::xml_schema::flags f = 0,
                                                   ::xml_schema::container* c = 0);
@@ -522,6 +548,10 @@ class RPG_Monster_Export RPG_Monster_SpecialBaseProperties_XMLTree_Type: public 
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< abilityClass_type > abilityClass_;
   ::xsd::cxx::tree::one< type_type > type_;
   ::xsd::cxx::tree::one< actionType_type > actionType_;
@@ -566,6 +596,10 @@ class RPG_Monster_Export RPG_Monster_NaturalWeapon_XMLTree_Type: public ::xml_sc
   RPG_Monster_NaturalWeapon_XMLTree_Type (const ::std::string& v);
 
   RPG_Monster_NaturalWeapon_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Monster_NaturalWeapon_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                          ::xml_schema::flags f = 0,
+                                          ::xml_schema::container* c = 0);
 
   RPG_Monster_NaturalWeapon_XMLTree_Type (const ::xercesc::DOMElement& e,
                                           ::xml_schema::flags f = 0,
@@ -790,6 +824,10 @@ class RPG_Monster_Export RPG_Monster_WeaponTypeUnion_XMLTree_Type: public ::xml_
 
   RPG_Monster_WeaponTypeUnion_XMLTree_Type (const ::xml_schema::string& v);
 
+  RPG_Monster_WeaponTypeUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                            ::xml_schema::flags f = 0,
+                                            ::xml_schema::container* c = 0);
+
   RPG_Monster_WeaponTypeUnion_XMLTree_Type (const ::xercesc::DOMElement& e,
                                             ::xml_schema::flags f = 0,
                                             ::xml_schema::container* c = 0);
@@ -904,6 +942,10 @@ class RPG_Monster_Export RPG_Monster_SpecialDefensePreCondition_XMLTree_Type: pu
   //
   RPG_Monster_SpecialDefensePreCondition_XMLTree_Type ();
 
+  RPG_Monster_SpecialDefensePreCondition_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                       ::xml_schema::flags f = 0,
+                                                       ::xml_schema::container* c = 0);
+
   RPG_Monster_SpecialDefensePreCondition_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                        ::xml_schema::flags f = 0,
                                                        ::xml_schema::container* c = 0);
@@ -927,6 +969,10 @@ class RPG_Monster_Export RPG_Monster_SpecialDefensePreCondition_XMLTree_Type: pu
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   weaponType_sequence weaponType_;
   ownCondition_sequence ownCondition_;
   targetCondition_sequence targetCondition_;
@@ -1008,6 +1054,10 @@ class RPG_Monster_Export RPG_Monster_DefenseAction_XMLTree_Type: public ::xml_sc
   //
   RPG_Monster_DefenseAction_XMLTree_Type ();
 
+  RPG_Monster_DefenseAction_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                          ::xml_schema::flags f = 0,
+                                          ::xml_schema::container* c = 0);
+
   RPG_Monster_DefenseAction_XMLTree_Type (const ::xercesc::DOMElement& e,
                                           ::xml_schema::flags f = 0,
                                           ::xml_schema::container* c = 0);
@@ -1031,6 +1081,10 @@ class RPG_Monster_Export RPG_Monster_DefenseAction_XMLTree_Type: public ::xml_sc
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   preCondition_sequence preCondition_;
   damage_optional damage_;
   ranged_optional ranged_;
@@ -1071,6 +1125,10 @@ class RPG_Monster_Export RPG_Monster_SpecialDefenseProperties_XMLTree_Type: publ
                                                      const type_type&,
                                                      const actionType_type&);
 
+  RPG_Monster_SpecialDefenseProperties_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                     ::xml_schema::flags f = 0,
+                                                     ::xml_schema::container* c = 0);
+
   RPG_Monster_SpecialDefenseProperties_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                      ::xml_schema::flags f = 0,
                                                      ::xml_schema::container* c = 0);
@@ -1094,6 +1152,10 @@ class RPG_Monster_Export RPG_Monster_SpecialDefenseProperties_XMLTree_Type: publ
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   action_sequence action_;
 };
 
@@ -1296,6 +1358,10 @@ class RPG_Monster_Export RPG_Monster_AttackAction_XMLTree_Type: public ::xml_sch
   //
   RPG_Monster_AttackAction_XMLTree_Type (const weapon_type&);
 
+  RPG_Monster_AttackAction_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                         ::xml_schema::flags f = 0,
+                                         ::xml_schema::container* c = 0);
+
   RPG_Monster_AttackAction_XMLTree_Type (const ::xercesc::DOMElement& e,
                                          ::xml_schema::flags f = 0,
                                          ::xml_schema::container* c = 0);
@@ -1319,6 +1385,10 @@ class RPG_Monster_Export RPG_Monster_AttackAction_XMLTree_Type: public ::xml_sch
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< weapon_type > weapon_;
   attackBonus_sequence attackBonus_;
   attackForm_sequence attackForm_;
@@ -1427,6 +1497,10 @@ class RPG_Monster_Export RPG_Monster_Attack_XMLTree_Type: public ::xml_schema::t
   RPG_Monster_Attack_XMLTree_Type (const baseAttackBonus_type&,
                                    const grappleBonus_type&);
 
+  RPG_Monster_Attack_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                   ::xml_schema::flags f = 0,
+                                   ::xml_schema::container* c = 0);
+
   RPG_Monster_Attack_XMLTree_Type (const ::xercesc::DOMElement& e,
                                    ::xml_schema::flags f = 0,
                                    ::xml_schema::container* c = 0);
@@ -1450,6 +1524,10 @@ class RPG_Monster_Export RPG_Monster_Attack_XMLTree_Type: public ::xml_schema::t
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< baseAttackBonus_type > baseAttackBonus_;
   ::xsd::cxx::tree::one< grappleBonus_type > grappleBonus_;
   standardAttackAction_sequence standardAttackAction_;
@@ -1505,6 +1583,10 @@ class RPG_Monster_Export RPG_Monster_ActionTrigger_XMLTree_Type: public ::xml_sc
   RPG_Monster_ActionTrigger_XMLTree_Type (const weapon_type&,
                                           const numHits_type&);
 
+  RPG_Monster_ActionTrigger_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                          ::xml_schema::flags f = 0,
+                                          ::xml_schema::container* c = 0);
+
   RPG_Monster_ActionTrigger_XMLTree_Type (const ::xercesc::DOMElement& e,
                                           ::xml_schema::flags f = 0,
                                           ::xml_schema::container* c = 0);
@@ -1528,6 +1610,10 @@ class RPG_Monster_Export RPG_Monster_ActionTrigger_XMLTree_Type: public ::xml_sc
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< weapon_type > weapon_;
   ::xsd::cxx::tree::one< numHits_type > numHits_;
 };
@@ -1687,6 +1773,10 @@ class RPG_Monster_Export RPG_Monster_SpecialAttackPreCondition_XMLTree_Type: pub
   //
   RPG_Monster_SpecialAttackPreCondition_XMLTree_Type ();
 
+  RPG_Monster_SpecialAttackPreCondition_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                      ::xml_schema::flags f = 0,
+                                                      ::xml_schema::container* c = 0);
+
   RPG_Monster_SpecialAttackPreCondition_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                       ::xml_schema::flags f = 0,
                                                       ::xml_schema::container* c = 0);
@@ -1710,6 +1800,10 @@ class RPG_Monster_Export RPG_Monster_SpecialAttackPreCondition_XMLTree_Type: pub
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   action_optional action_;
   targetAlignment_optional targetAlignment_;
   ownCondition_sequence ownCondition_;
@@ -1777,6 +1871,10 @@ class RPG_Monster_Export RPG_Monster_SpecialAttackProperties_XMLTree_Type: publi
                                                     const actionType_type&,
                                                     ::std::auto_ptr< action_type >&);
 
+  RPG_Monster_SpecialAttackProperties_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                    ::xml_schema::flags f = 0,
+                                                    ::xml_schema::container* c = 0);
+
   RPG_Monster_SpecialAttackProperties_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                     ::xml_schema::flags f = 0,
                                                     ::xml_schema::container* c = 0);
@@ -1800,6 +1898,10 @@ class RPG_Monster_Export RPG_Monster_SpecialAttackProperties_XMLTree_Type: publi
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   preCondition_sequence preCondition_;
   ::xsd::cxx::tree::one< action_type > action_;
 };
@@ -1879,6 +1981,10 @@ class RPG_Monster_Export RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type: pu
   //
   RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type ();
 
+  RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                       ::xml_schema::flags f = 0,
+                                                       ::xml_schema::container* c = 0);
+
   RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                        ::xml_schema::flags f = 0,
                                                        ::xml_schema::container* c = 0);
@@ -1902,6 +2008,10 @@ class RPG_Monster_Export RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type: pu
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   targetCondition_sequence targetCondition_;
   maxTargetSize_optional maxTargetSize_;
   check_optional check_;
@@ -1995,6 +2105,10 @@ class RPG_Monster_Export RPG_Monster_SummonMonster_XMLTree_Type: public ::xml_sc
   RPG_Monster_SummonMonster_XMLTree_Type (const name_type&,
                                           ::std::auto_ptr< amount_type >&);
 
+  RPG_Monster_SummonMonster_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                          ::xml_schema::flags f = 0,
+                                          ::xml_schema::container* c = 0);
+
   RPG_Monster_SummonMonster_XMLTree_Type (const ::xercesc::DOMElement& e,
                                           ::xml_schema::flags f = 0,
                                           ::xml_schema::container* c = 0);
@@ -2018,6 +2132,10 @@ class RPG_Monster_Export RPG_Monster_SummonMonster_XMLTree_Type: public ::xml_sc
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< name_type > name_;
   ::xsd::cxx::tree::one< amount_type > amount_;
   ::xsd::cxx::tree::one< successRate_type > successRate_;
@@ -2114,6 +2232,10 @@ class RPG_Monster_Export RPG_Monster_SpecialAbilityProperties_XMLTree_Type: publ
                                                      const type_type&,
                                                      const actionType_type&);
 
+  RPG_Monster_SpecialAbilityProperties_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                     ::xml_schema::flags f = 0,
+                                                     ::xml_schema::container* c = 0);
+
   RPG_Monster_SpecialAbilityProperties_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                      ::xml_schema::flags f = 0,
                                                      ::xml_schema::container* c = 0);
@@ -2137,6 +2259,10 @@ class RPG_Monster_Export RPG_Monster_SpecialAbilityProperties_XMLTree_Type: publ
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   preCondition_sequence preCondition_;
   summon_sequence summon_;
   spell_sequence spell_;
@@ -2203,6 +2329,10 @@ class RPG_Monster_Export RPG_Monster_SavingThrowModifiers_XMLTree_Type: public :
                                                  const reflex_type&,
                                                  const will_type&);
 
+  RPG_Monster_SavingThrowModifiers_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                 ::xml_schema::flags f = 0,
+                                                 ::xml_schema::container* c = 0);
+
   RPG_Monster_SavingThrowModifiers_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                  ::xml_schema::flags f = 0,
                                                  ::xml_schema::container* c = 0);
@@ -2226,6 +2356,10 @@ class RPG_Monster_Export RPG_Monster_SavingThrowModifiers_XMLTree_Type: public :
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< fortitude_type > fortitude_;
   ::xsd::cxx::tree::one< reflex_type > reflex_;
   ::xsd::cxx::tree::one< will_type > will_;
@@ -2279,6 +2413,10 @@ class RPG_Monster_Export RPG_Monster_Organization_XMLTree_Type: public ::xml_sch
   RPG_Monster_Organization_XMLTree_Type (const ::std::string& v);
 
   RPG_Monster_Organization_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Monster_Organization_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                         ::xml_schema::flags f = 0,
+                                         ::xml_schema::container* c = 0);
 
   RPG_Monster_Organization_XMLTree_Type (const ::xercesc::DOMElement& e,
                                          ::xml_schema::flags f = 0,
@@ -2364,6 +2502,10 @@ class RPG_Monster_Export RPG_Monster_OrganizationSlaverStep_XMLTree_Type: public
   RPG_Monster_OrganizationSlaverStep_XMLTree_Type (const name_type&,
                                                    ::std::auto_ptr< range_type >&);
 
+  RPG_Monster_OrganizationSlaverStep_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                   ::xml_schema::flags f = 0,
+                                                   ::xml_schema::container* c = 0);
+
   RPG_Monster_OrganizationSlaverStep_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                    ::xml_schema::flags f = 0,
                                                    ::xml_schema::container* c = 0);
@@ -2387,6 +2529,10 @@ class RPG_Monster_Export RPG_Monster_OrganizationSlaverStep_XMLTree_Type: public
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< name_type > name_;
   ::xsd::cxx::tree::one< range_type > range_;
 };
@@ -2462,6 +2608,10 @@ class RPG_Monster_Export RPG_Monster_OrganizationStep_XMLTree_Type: public ::xml
   //
   RPG_Monster_OrganizationStep_XMLTree_Type (const type_type&);
 
+  RPG_Monster_OrganizationStep_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                             ::xml_schema::flags f = 0,
+                                             ::xml_schema::container* c = 0);
+
   RPG_Monster_OrganizationStep_XMLTree_Type (const ::xercesc::DOMElement& e,
                                              ::xml_schema::flags f = 0,
                                              ::xml_schema::container* c = 0);
@@ -2485,6 +2635,10 @@ class RPG_Monster_Export RPG_Monster_OrganizationStep_XMLTree_Type: public ::xml
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< type_type > type_;
   range_optional range_;
   slaves_sequence slaves_;
@@ -2523,6 +2677,10 @@ class RPG_Monster_Export RPG_Monster_Organizations_XMLTree_Type: public ::xml_sc
   //
   RPG_Monster_Organizations_XMLTree_Type ();
 
+  RPG_Monster_Organizations_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                          ::xml_schema::flags f = 0,
+                                          ::xml_schema::container* c = 0);
+
   RPG_Monster_Organizations_XMLTree_Type (const ::xercesc::DOMElement& e,
                                           ::xml_schema::flags f = 0,
                                           ::xml_schema::container* c = 0);
@@ -2546,6 +2704,10 @@ class RPG_Monster_Export RPG_Monster_Organizations_XMLTree_Type: public ::xml_sc
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   step_sequence step_;
 };
 
@@ -2603,6 +2765,10 @@ class RPG_Monster_Export RPG_Monster_AdvancementStep_XMLTree_Type: public ::xml_
   RPG_Monster_AdvancementStep_XMLTree_Type (const size_type&,
                                             ::std::auto_ptr< range_type >&);
 
+  RPG_Monster_AdvancementStep_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                            ::xml_schema::flags f = 0,
+                                            ::xml_schema::container* c = 0);
+
   RPG_Monster_AdvancementStep_XMLTree_Type (const ::xercesc::DOMElement& e,
                                             ::xml_schema::flags f = 0,
                                             ::xml_schema::container* c = 0);
@@ -2626,6 +2792,10 @@ class RPG_Monster_Export RPG_Monster_AdvancementStep_XMLTree_Type: public ::xml_
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< size_type > size_;
   ::xsd::cxx::tree::one< range_type > range_;
 };
@@ -2663,6 +2833,10 @@ class RPG_Monster_Export RPG_Monster_Advancement_XMLTree_Type: public ::xml_sche
   //
   RPG_Monster_Advancement_XMLTree_Type ();
 
+  RPG_Monster_Advancement_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
+
   RPG_Monster_Advancement_XMLTree_Type (const ::xercesc::DOMElement& e,
                                         ::xml_schema::flags f = 0,
                                         ::xml_schema::container* c = 0);
@@ -2686,6 +2860,10 @@ class RPG_Monster_Export RPG_Monster_Advancement_XMLTree_Type: public ::xml_sche
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   step_sequence step_;
 };
 
@@ -3140,6 +3318,10 @@ class RPG_Monster_Export RPG_Monster_PropertiesXML_XMLTree_Type: public ::xml_sc
                                           ::std::auto_ptr< alignment_type >&,
                                           const levelAdjustment_type&);
 
+  RPG_Monster_PropertiesXML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                          ::xml_schema::flags f = 0,
+                                          ::xml_schema::container* c = 0);
+
   RPG_Monster_PropertiesXML_XMLTree_Type (const ::xercesc::DOMElement& e,
                                           ::xml_schema::flags f = 0,
                                           ::xml_schema::container* c = 0);
@@ -3163,6 +3345,10 @@ class RPG_Monster_Export RPG_Monster_PropertiesXML_XMLTree_Type: public ::xml_sc
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< name_type > name_;
   ::xsd::cxx::tree::one< size_type > size_;
   ::xsd::cxx::tree::one< type_type > type_;
@@ -3262,6 +3448,10 @@ class RPG_Monster_Export RPG_Monster_StateBase_XMLTree_Type: public ::RPG_Player
                                       const gold_type&,
                                       const maxHP_type&);
 
+  RPG_Monster_StateBase_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f = 0,
+                                      ::xml_schema::container* c = 0);
+
   RPG_Monster_StateBase_XMLTree_Type (const ::xercesc::DOMElement& e,
                                       ::xml_schema::flags f = 0,
                                       ::xml_schema::container* c = 0);
@@ -3285,6 +3475,10 @@ class RPG_Monster_Export RPG_Monster_StateBase_XMLTree_Type: public ::RPG_Player
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< gold_type > gold_;
   inventory_optional inventory_;
   ::xsd::cxx::tree::one< maxHP_type > maxHP_;
@@ -3333,6 +3527,10 @@ class RPG_Monster_Export RPG_Monster_State_XMLTree_Type: public ::RPG_Monster_St
                                   const maxHP_type&,
                                   const type_type&);
 
+  RPG_Monster_State_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                  ::xml_schema::flags f = 0,
+                                  ::xml_schema::container* c = 0);
+
   RPG_Monster_State_XMLTree_Type (const ::xercesc::DOMElement& e,
                                   ::xml_schema::flags f = 0,
                                   ::xml_schema::container* c = 0);
@@ -3356,6 +3554,10 @@ class RPG_Monster_Export RPG_Monster_State_XMLTree_Type: public ::RPG_Monster_St
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< type_type > type_;
 };
 
@@ -3461,6 +3663,10 @@ class RPG_Monster_Export RPG_Monster_Spawn_XMLTree_Type: public ::xml_schema::ty
                                   const max_num_spawned_type&,
                                   const amble_probability_type&);
 
+  RPG_Monster_Spawn_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                  ::xml_schema::flags f = 0,
+                                  ::xml_schema::container* c = 0);
+
   RPG_Monster_Spawn_XMLTree_Type (const ::xercesc::DOMElement& e,
                                   ::xml_schema::flags f = 0,
                                   ::xml_schema::container* c = 0);
@@ -3484,6 +3690,10 @@ class RPG_Monster_Export RPG_Monster_Spawn_XMLTree_Type: public ::xml_schema::ty
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< type_type > type_;
   ::xsd::cxx::tree::one< interval_type > interval_;
   ::xsd::cxx::tree::one< probability_type > probability_;
@@ -3524,6 +3734,10 @@ class RPG_Monster_Export RPG_Monster_Dictionary_XMLTree_Type: public ::xml_schem
   //
   RPG_Monster_Dictionary_XMLTree_Type ();
 
+  RPG_Monster_Dictionary_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                       ::xml_schema::flags f = 0,
+                                       ::xml_schema::container* c = 0);
+
   RPG_Monster_Dictionary_XMLTree_Type (const ::xercesc::DOMElement& e,
                                        ::xml_schema::flags f = 0,
                                        ::xml_schema::container* c = 0);
@@ -3547,6 +3761,10 @@ class RPG_Monster_Export RPG_Monster_Dictionary_XMLTree_Type: public ::xml_schem
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   monster_sequence monster_;
 };
 
@@ -4042,6 +4260,151 @@ monsterDictionary (const ::RPG_Monster_Dictionary_XMLTree_Type& x,
                    const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
                    ::xml_schema::flags f = 0);
 
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_Size_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_NaturalArmorClass_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_SpecialPropertyTypeUnion_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_SpecialBaseProperties_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_NaturalWeapon_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_WeaponTypeUnion_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_SpecialDefensePreCondition_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_DefenseAction_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_SpecialDefenseProperties_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_AttackAction_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_Attack_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_ActionTrigger_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_SpecialAttackPreCondition_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_SpecialAttackProperties_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_SummonMonster_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_SpecialAbilityProperties_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_SavingThrowModifiers_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_Organization_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_OrganizationSlaverStep_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_OrganizationStep_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_Organizations_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_AdvancementStep_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_Advancement_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_PropertiesXML_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_StateBase_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_State_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_Spawn_XMLTree_Type&);
+
+RPG_Monster_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Monster_Dictionary_XMLTree_Type&);
+
 #include <xsd/cxx/post.hxx>
 
 // Begin epilogue.
@@ -4049,4 +4412,4 @@ monsterDictionary (const ::RPG_Monster_Dictionary_XMLTree_Type& x,
 //
 // End epilogue.
 
-#endif // CXX__CHARACTER_MONSTER_RPG_MONSTER_XML_TREE_H
+#endif // CXX___RPG_MONSTER_XML_TREE_H

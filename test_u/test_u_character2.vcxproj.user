@@ -3,6 +3,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)..</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-e -n 0 -r -t</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-n 1 -o$(ProjectDir)..\engine\data\default_player.profile -r -t</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

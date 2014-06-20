@@ -1973,6 +1973,271 @@ map_t (const ::RPG_Map_Level_XMLTree_Type& s,
   return d;
 }
 
+RPG_Map_DoorState_XMLTree_Type::
+RPG_Map_DoorState_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                ::xml_schema::flags f,
+                                ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Map_DoorState_XMLTree_Type_convert ();
+}
+
+RPG_Map_Position_XMLTree_Type::
+RPG_Map_Position_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  x_ (f, this),
+  y_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Map_Position_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    x_type r;
+    s >> r;
+    this->x_.set (r);
+  }
+
+  {
+    y_type r;
+    s >> r;
+    this->y_.set (r);
+  }
+}
+
+RPG_Map_Direction_XMLTree_Type::
+RPG_Map_Direction_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                ::xml_schema::flags f,
+                                ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Map_Direction_XMLTree_Type_convert ();
+}
+
+RPG_Map_Door_XMLTree_Type::
+RPG_Map_Door_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                           ::xml_schema::flags f,
+                           ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  position_ (f, this),
+  outside_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Map_Door_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< position_type > r (new position_type (s, f, this));
+    this->position_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< outside_type > r (new outside_type (s, f, this));
+    this->outside_.set (r);
+  }
+}
+
+RPG_Map_Level_XMLTree_Type::
+RPG_Map_Level_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                            ::xml_schema::flags f,
+                            ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  name_ (f, this),
+  environment_ (f, this),
+  map_ (f, this),
+  door_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Map_Level_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< name_type > r (new name_type (s, f, this));
+    this->name_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< environment_type > r (new environment_type (s, f, this));
+    this->environment_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< map_type > r (new map_type (s, f, this));
+    this->map_.set (r);
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      door_sequence& c (this->door_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< door_type > r (new door_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
+RPG_Map_Door_State_XMLTree_Type::
+RPG_Map_Door_State_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                 ::xml_schema::flags f,
+                                 ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  position_ (f, this),
+  state_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Map_Door_State_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< position_type > r (new position_type (s, f, this));
+    this->position_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< state_type > r (new state_type (s, f, this));
+    this->state_.set (r);
+  }
+}
+
+RPG_Map_State_XMLTree_Type::
+RPG_Map_State_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                            ::xml_schema::flags f,
+                            ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  file_ (f, this),
+  door_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Map_State_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< file_type > r (new file_type (s, f, this));
+    this->file_.set (r);
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      door_sequence& c (this->door_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< door_type > r (new door_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Map_DoorState_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Map_Position_XMLTree_Type& x)
+{
+  s << x.x ();
+  s << x.y ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Map_Direction_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Map_Door_XMLTree_Type& x)
+{
+  s << x.position ();
+  s << x.outside ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Map_Level_XMLTree_Type& x)
+{
+  s << x.name ();
+  s << x.environment ();
+  s << x.map ();
+  {
+    const RPG_Map_Level_XMLTree_Type::door_sequence& c (x.door ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Map_Level_XMLTree_Type::door_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Map_Door_State_XMLTree_Type& x)
+{
+  s << x.position ();
+  s << x.state ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Map_State_XMLTree_Type& x)
+{
+  s << x.file ();
+  {
+    const RPG_Map_State_XMLTree_Type::door_sequence& c (x.door ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Map_State_XMLTree_Type::door_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
+}
+
 #include <xsd/cxx/post.hxx>
 
 // Begin epilogue.

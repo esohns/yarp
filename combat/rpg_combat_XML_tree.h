@@ -91,6 +91,8 @@ class RPG_Combat_Damage_XMLTree_Type;
 
 #include <xsd/cxx/xml/dom/parsing-header.hxx>
 
+#include <xsd/cxx/tree/istream-fwd.hxx>
+
 #include "rpg_dice_XML_tree.h"
 
 #include "rpg_common_XML_tree.h"
@@ -114,6 +116,10 @@ class RPG_Combat_Export RPG_Combat_AttackForm_XMLTree_Type: public ::xml_schema:
   RPG_Combat_AttackForm_XMLTree_Type (const ::std::string& v);
 
   RPG_Combat_AttackForm_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Combat_AttackForm_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f = 0,
+                                      ::xml_schema::container* c = 0);
 
   RPG_Combat_AttackForm_XMLTree_Type (const ::xercesc::DOMElement& e,
                                       ::xml_schema::flags f = 0,
@@ -185,6 +191,10 @@ class RPG_Combat_Export RPG_Combat_RangedEffectUnion_XMLTree_Type: public ::xml_
   RPG_Combat_RangedEffectUnion_XMLTree_Type (const ::std::string& v);
 
   RPG_Combat_RangedEffectUnion_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Combat_RangedEffectUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                             ::xml_schema::flags f = 0,
+                                             ::xml_schema::container* c = 0);
 
   RPG_Combat_RangedEffectUnion_XMLTree_Type (const ::xercesc::DOMElement& e,
                                              ::xml_schema::flags f = 0,
@@ -284,6 +294,10 @@ class RPG_Combat_Export RPG_Combat_RangedAttackProperties_XMLTree_Type: public :
   //
   RPG_Combat_RangedAttackProperties_XMLTree_Type (const maxRange_type&);
 
+  RPG_Combat_RangedAttackProperties_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                  ::xml_schema::flags f = 0,
+                                                  ::xml_schema::container* c = 0);
+
   RPG_Combat_RangedAttackProperties_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                   ::xml_schema::flags f = 0,
                                                   ::xml_schema::container* c = 0);
@@ -307,6 +321,10 @@ class RPG_Combat_Export RPG_Combat_RangedAttackProperties_XMLTree_Type: public :
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< maxRange_type > maxRange_;
   increment_optional increment_;
   ::xsd::cxx::tree::one< effect_type > effect_;
@@ -339,6 +357,10 @@ class RPG_Combat_Export RPG_Combat_AttackSituation_XMLTree_Type: public ::xml_sc
   RPG_Combat_AttackSituation_XMLTree_Type (const ::std::string& v);
 
   RPG_Combat_AttackSituation_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Combat_AttackSituation_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                           ::xml_schema::flags f = 0,
+                                           ::xml_schema::container* c = 0);
 
   RPG_Combat_AttackSituation_XMLTree_Type (const ::xercesc::DOMElement& e,
                                            ::xml_schema::flags f = 0,
@@ -397,6 +419,10 @@ class RPG_Combat_Export RPG_Combat_DefenseSituation_XMLTree_Type: public ::xml_s
 
   RPG_Combat_DefenseSituation_XMLTree_Type (const ::xml_schema::string& v);
 
+  RPG_Combat_DefenseSituation_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                            ::xml_schema::flags f = 0,
+                                            ::xml_schema::container* c = 0);
+
   RPG_Combat_DefenseSituation_XMLTree_Type (const ::xercesc::DOMElement& e,
                                             ::xml_schema::flags f = 0,
                                             ::xml_schema::container* c = 0);
@@ -452,6 +478,10 @@ class RPG_Combat_Export RPG_Combat_SpecialAttack_XMLTree_Type: public ::xml_sche
   RPG_Combat_SpecialAttack_XMLTree_Type (const ::std::string& v);
 
   RPG_Combat_SpecialAttack_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Combat_SpecialAttack_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                         ::xml_schema::flags f = 0,
+                                         ::xml_schema::container* c = 0);
 
   RPG_Combat_SpecialAttack_XMLTree_Type (const ::xercesc::DOMElement& e,
                                          ::xml_schema::flags f = 0,
@@ -522,6 +552,10 @@ class RPG_Combat_Export RPG_Combat_SpecialDamageType_XMLTree_Type: public ::xml_
   RPG_Combat_SpecialDamageType_XMLTree_Type (const ::std::string& v);
 
   RPG_Combat_SpecialDamageType_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Combat_SpecialDamageType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                             ::xml_schema::flags f = 0,
+                                             ::xml_schema::container* c = 0);
 
   RPG_Combat_SpecialDamageType_XMLTree_Type (const ::xercesc::DOMElement& e,
                                              ::xml_schema::flags f = 0,
@@ -598,6 +632,10 @@ class RPG_Combat_Export RPG_Combat_DamageTypeUnion_XMLTree_Type: public ::xml_sc
   RPG_Combat_DamageTypeUnion_XMLTree_Type (const ::std::string& v);
 
   RPG_Combat_DamageTypeUnion_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Combat_DamageTypeUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                           ::xml_schema::flags f = 0,
+                                           ::xml_schema::container* c = 0);
 
   RPG_Combat_DamageTypeUnion_XMLTree_Type (const ::xercesc::DOMElement& e,
                                            ::xml_schema::flags f = 0,
@@ -740,6 +778,10 @@ class RPG_Combat_Export RPG_Combat_DamageDuration_XMLTree_Type: public ::xml_sch
   //
   RPG_Combat_DamageDuration_XMLTree_Type ();
 
+  RPG_Combat_DamageDuration_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                          ::xml_schema::flags f = 0,
+                                          ::xml_schema::container* c = 0);
+
   RPG_Combat_DamageDuration_XMLTree_Type (const ::xercesc::DOMElement& e,
                                           ::xml_schema::flags f = 0,
                                           ::xml_schema::container* c = 0);
@@ -763,6 +805,10 @@ class RPG_Combat_Export RPG_Combat_DamageDuration_XMLTree_Type: public ::xml_sch
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   incubationPeriod_optional incubationPeriod_;
   totalPeriod_optional totalPeriod_;
   interval_optional interval_;
@@ -864,6 +910,10 @@ class RPG_Combat_Export RPG_Combat_CheckTypeUnion_XMLTree_Type: public ::xml_sch
   RPG_Combat_CheckTypeUnion_XMLTree_Type (const ::std::string& v);
 
   RPG_Combat_CheckTypeUnion_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Combat_CheckTypeUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                          ::xml_schema::flags f = 0,
+                                          ::xml_schema::container* c = 0);
 
   RPG_Combat_CheckTypeUnion_XMLTree_Type (const ::xercesc::DOMElement& e,
                                           ::xml_schema::flags f = 0,
@@ -967,6 +1017,10 @@ class RPG_Combat_Export RPG_Combat_Check_XMLTree_Type: public ::xml_schema::type
   //
   RPG_Combat_Check_XMLTree_Type (const type_type&);
 
+  RPG_Combat_Check_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                 ::xml_schema::flags f = 0,
+                                 ::xml_schema::container* c = 0);
+
   RPG_Combat_Check_XMLTree_Type (const ::xercesc::DOMElement& e,
                                  ::xml_schema::flags f = 0,
                                  ::xml_schema::container* c = 0);
@@ -990,6 +1044,10 @@ class RPG_Combat_Export RPG_Combat_Check_XMLTree_Type: public ::xml_schema::type
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< type_type > type_;
   attribute_optional attribute_;
   difficultyClass_optional difficultyClass_;
@@ -1022,6 +1080,10 @@ class RPG_Combat_Export RPG_Combat_DamageReductionType_XMLTree_Type: public ::xm
   RPG_Combat_DamageReductionType_XMLTree_Type (const ::std::string& v);
 
   RPG_Combat_DamageReductionType_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Combat_DamageReductionType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                               ::xml_schema::flags f = 0,
+                                               ::xml_schema::container* c = 0);
 
   RPG_Combat_DamageReductionType_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                ::xml_schema::flags f = 0,
@@ -1186,6 +1248,10 @@ class RPG_Combat_Export RPG_Combat_DamageCounterMeasure_XMLTree_Type: public ::x
   //
   RPG_Combat_DamageCounterMeasure_XMLTree_Type (const type_type&);
 
+  RPG_Combat_DamageCounterMeasure_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                ::xml_schema::flags f = 0,
+                                                ::xml_schema::container* c = 0);
+
   RPG_Combat_DamageCounterMeasure_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                 ::xml_schema::flags f = 0,
                                                 ::xml_schema::container* c = 0);
@@ -1209,6 +1275,10 @@ class RPG_Combat_Export RPG_Combat_DamageCounterMeasure_XMLTree_Type: public ::x
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< type_type > type_;
   check_optional check_;
   spell_sequence spell_;
@@ -1245,6 +1315,10 @@ class RPG_Combat_Export RPG_Combat_OtherDamageType_XMLTree_Type: public ::xml_sc
   RPG_Combat_OtherDamageType_XMLTree_Type (const ::std::string& v);
 
   RPG_Combat_OtherDamageType_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Combat_OtherDamageType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                           ::xml_schema::flags f = 0,
+                                           ::xml_schema::container* c = 0);
 
   RPG_Combat_OtherDamageType_XMLTree_Type (const ::xercesc::DOMElement& e,
                                            ::xml_schema::flags f = 0,
@@ -1344,6 +1418,10 @@ class RPG_Combat_Export RPG_Combat_OtherDamage_XMLTree_Type: public ::xml_schema
   //
   RPG_Combat_OtherDamage_XMLTree_Type (const type_type&);
 
+  RPG_Combat_OtherDamage_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                       ::xml_schema::flags f = 0,
+                                       ::xml_schema::container* c = 0);
+
   RPG_Combat_OtherDamage_XMLTree_Type (const ::xercesc::DOMElement& e,
                                        ::xml_schema::flags f = 0,
                                        ::xml_schema::container* c = 0);
@@ -1367,6 +1445,10 @@ class RPG_Combat_Export RPG_Combat_OtherDamage_XMLTree_Type: public ::xml_schema
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< type_type > type_;
   modifier_optional modifier_;
   counterMeasure_sequence counterMeasure_;
@@ -1564,6 +1646,10 @@ class RPG_Combat_Export RPG_Combat_DamageElement_XMLTree_Type: public ::xml_sche
   //
   RPG_Combat_DamageElement_XMLTree_Type ();
 
+  RPG_Combat_DamageElement_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                         ::xml_schema::flags f = 0,
+                                         ::xml_schema::container* c = 0);
+
   RPG_Combat_DamageElement_XMLTree_Type (const ::xercesc::DOMElement& e,
                                          ::xml_schema::flags f = 0,
                                          ::xml_schema::container* c = 0);
@@ -1587,6 +1673,10 @@ class RPG_Combat_Export RPG_Combat_DamageElement_XMLTree_Type: public ::xml_sche
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   type_sequence type_;
   amount_optional amount_;
   secondary_optional secondary_;
@@ -1649,6 +1739,10 @@ class RPG_Combat_Export RPG_Combat_Damage_XMLTree_Type: public ::xml_schema::typ
   //
   RPG_Combat_Damage_XMLTree_Type ();
 
+  RPG_Combat_Damage_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                  ::xml_schema::flags f = 0,
+                                  ::xml_schema::container* c = 0);
+
   RPG_Combat_Damage_XMLTree_Type (const ::xercesc::DOMElement& e,
                                   ::xml_schema::flags f = 0,
                                   ::xml_schema::container* c = 0);
@@ -1672,6 +1766,10 @@ class RPG_Combat_Export RPG_Combat_Damage_XMLTree_Type: public ::xml_schema::typ
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   element_sequence element_;
   ::xsd::cxx::tree::one< elementsAreInclusive_type > elementsAreInclusive_;
 };
@@ -1966,6 +2064,91 @@ operator<< (::xercesc::DOMElement&, const RPG_Combat_DamageElement_XMLTree_Type&
 RPG_Combat_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Combat_Damage_XMLTree_Type&);
+
+RPG_Combat_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Combat_AttackForm_XMLTree_Type&);
+
+RPG_Combat_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Combat_RangedEffectUnion_XMLTree_Type&);
+
+RPG_Combat_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Combat_RangedAttackProperties_XMLTree_Type&);
+
+RPG_Combat_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Combat_AttackSituation_XMLTree_Type&);
+
+RPG_Combat_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Combat_DefenseSituation_XMLTree_Type&);
+
+RPG_Combat_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Combat_SpecialAttack_XMLTree_Type&);
+
+RPG_Combat_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Combat_SpecialDamageType_XMLTree_Type&);
+
+RPG_Combat_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Combat_DamageTypeUnion_XMLTree_Type&);
+
+RPG_Combat_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Combat_DamageDuration_XMLTree_Type&);
+
+RPG_Combat_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Combat_CheckTypeUnion_XMLTree_Type&);
+
+RPG_Combat_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Combat_Check_XMLTree_Type&);
+
+RPG_Combat_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Combat_DamageReductionType_XMLTree_Type&);
+
+RPG_Combat_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Combat_DamageCounterMeasure_XMLTree_Type&);
+
+RPG_Combat_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Combat_OtherDamageType_XMLTree_Type&);
+
+RPG_Combat_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Combat_OtherDamage_XMLTree_Type&);
+
+RPG_Combat_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Combat_DamageElement_XMLTree_Type&);
+
+RPG_Combat_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Combat_Damage_XMLTree_Type&);
 
 #include <xsd/cxx/post.hxx>
 

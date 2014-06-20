@@ -7,6 +7,9 @@
 %skeleton         "lalr1.cc"
 /* %skeleton         "glr.c" */
 %token-table
+%code top {
+#include "stdafx.h"
+}
 %defines          "rpg_net_protocol_IRCparser.h"
 %output           "rpg_net_protocol_IRCparser.cpp"
 /* %define           api.pure */
@@ -54,7 +57,7 @@ typedef void* yyscan_t;
 
 #include "rpg_common_macros.h"
 
-#include <ace/Log_Msg.h>
+#include "ace/Log_Msg.h"
 
 #include <string>
 }

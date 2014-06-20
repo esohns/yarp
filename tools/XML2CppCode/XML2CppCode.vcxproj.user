@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>-d RPG_Magic_Export -e -f .\..\..\magic\rpg_magic.xsd -i -o .\..\..\magic -s -t -u -x RPG_Magic</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-d RPG_Item_Export -e -f .\..\..\item\rpg_item.xsd -i -o .\..\..\item -s -t -u -x RPG_Item</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

@@ -107,7 +107,7 @@ set_current_image(const RPG_Graphics_Sprite& sprite_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid category (was: \"%s\"), not a sprite type, aborting\n"),
-                 RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str()));
+								 ACE_TEXT(RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str())));
 
       return;
     } // end IF
@@ -190,6 +190,9 @@ create_character_clicked_GTK_cb(GtkWidget* widget_in,
 	Character_Generator_XMLPoolIterator_t iterator =
 		data->XML_pool.find(ACE_TEXT_ALWAYS_CHAR(CHARACTER_GENERATOR_GTK_GLADE_FILE));
 	ACE_ASSERT(iterator != data->XML_pool.end());
+	Character_Generator_XMLPoolIterator_t iterator_2 =
+		data->XML_pool.find(ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_UI_FILE));
+	ACE_ASSERT(iterator_2 != data->XML_pool.end());
 
 	// clean up
   if (data->entity.character)
@@ -210,11 +213,11 @@ create_character_clicked_GTK_cb(GtkWidget* widget_in,
 
   // update entity profile widgets
   ::update_entity_profile(data->entity,
-                          (*iterator).second);
+													(*iterator_2).second);
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_frame =
-		GTK_FRAME(glade_xml_get_widget((*iterator).second,
+		GTK_FRAME(glade_xml_get_widget((*iterator_2).second,
                                    ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
   ACE_ASSERT(character_frame);
   gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
@@ -257,6 +260,9 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
 	Character_Generator_XMLPoolIterator_t iterator =
 		data->XML_pool.find(ACE_TEXT_ALWAYS_CHAR(CHARACTER_GENERATOR_GTK_GLADE_FILE));
 	ACE_ASSERT(iterator != data->XML_pool.end());
+	Character_Generator_XMLPoolIterator_t iterator_2 =
+		data->XML_pool.find(ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_UI_FILE));
+	ACE_ASSERT(iterator_2 != data->XML_pool.end());
 
 	// delete file if non-transient ?
 	if (!data->is_transient)
@@ -342,7 +348,7 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
   } // end IF
 
   // reset profile widgets
-	::reset_entity_profile((*iterator).second);
+	::reset_entity_profile((*iterator_2).second);
   data->current_sprite = CHARACTER_GENERATOR_DEF_ENTITY_SPRITE;
   ::update_sprite_gallery(*data);
   ::set_current_image(data->current_sprite,
@@ -365,7 +371,7 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
 	if (desensitize_frame)
 	{
 		GtkFrame* character_frame =
-			GTK_FRAME(glade_xml_get_widget((*iterator).second,
+			GTK_FRAME(glade_xml_get_widget((*iterator_2).second,
 																		 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
     ACE_ASSERT(character_frame);
     gtk_widget_set_sensitive(GTK_WIDGET(character_frame), FALSE);
@@ -449,6 +455,9 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
 	Character_Generator_XMLPoolIterator_t iterator =
 		data->XML_pool.find(ACE_TEXT_ALWAYS_CHAR(CHARACTER_GENERATOR_GTK_GLADE_FILE));
 	ACE_ASSERT(iterator != data->XML_pool.end());
+	Character_Generator_XMLPoolIterator_t iterator_2 =
+		data->XML_pool.find(ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_UI_FILE));
+	ACE_ASSERT(iterator_2 != data->XML_pool.end());
 
   // retrieve file chooser dialog handle
   GtkFileChooserDialog* filechooser_dialog =
@@ -515,12 +524,12 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
 
   // update entity profile widgets
   ::update_entity_profile(data->entity,
-													(*iterator).second);
+													(*iterator_2).second);
   ::update_sprite_gallery(*data);
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_frame =
-		GTK_FRAME(glade_xml_get_widget((*iterator).second,
+		GTK_FRAME(glade_xml_get_widget((*iterator_2).second,
                                    ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
   ACE_ASSERT(character_frame);
   gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
@@ -617,6 +626,9 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 	Character_Generator_XMLPoolIterator_t iterator =
 		data->XML_pool.find(ACE_TEXT_ALWAYS_CHAR(CHARACTER_GENERATOR_GTK_GLADE_FILE));
 	ACE_ASSERT(iterator != data->XML_pool.end());
+	Character_Generator_XMLPoolIterator_t iterator_2 =
+		data->XML_pool.find(ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_UI_FILE));
+	ACE_ASSERT(iterator_2 != data->XML_pool.end());
 
   // retrieve active item
   std::string active_item;
@@ -678,36 +690,38 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 
     return FALSE;
   } // end IF
-  RPG_Player_Player_Base* player_base = NULL;
+  RPG_Player* player_p = NULL;
   try
   {
-    player_base =
-        dynamic_cast<RPG_Player_Player_Base*>(data->entity.character);
+    player_p =
+			dynamic_cast<RPG_Player*>(data->entity.character);
   }
   catch (...)
   {
-    player_base = NULL;
+    player_p = NULL;
   }
-  if (!player_base)
+  if (!player_p)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to dynamic_cast<RPG_Player_Player_Base*>(%@), aborting\n"),
+               ACE_TEXT("failed to dynamic_cast<RPG_Player*>(%@), aborting\n"),
                data->entity.character));
 
     return FALSE;
   } // end IF
   data->current_sprite =
-      RPG_Client_Common_Tools::class2Sprite(player_base->getClass());
+      RPG_Client_Common_Tools::class2Sprite(player_p->getClass());
 	data->is_transient = false;
 
   // update entity profile widgets
-  ::update_entity_profile(data->entity,
-                          (*iterator).second);
+	::update_character_profile(*player_p,
+													   (*iterator_2).second);
+	::set_current_image(data->current_sprite,
+								  		(*iterator).second);
   ::update_sprite_gallery(*data);
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_frame =
-		GTK_FRAME(glade_xml_get_widget((*iterator).second,
+		GTK_FRAME(glade_xml_get_widget((*iterator_2).second,
                                    ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
   ACE_ASSERT(character_frame);
   gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
@@ -755,12 +769,6 @@ character_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
       RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   unsigned int num_entries = ::load_files(REPOSITORY_PROFILES,
                                           GTK_LIST_STORE(model));
-
-  // set sensitive as appropriate
-  GtkFrame* character_frame =
-		GTK_FRAME(glade_xml_get_widget((*iterator).second,
-                                   ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
-  ACE_ASSERT(character_frame);
 
   // ... sensitize/activate widgets as appropriate
 	gtk_widget_set_sensitive(GTK_WIDGET(repository_combobox), (num_entries > 0));

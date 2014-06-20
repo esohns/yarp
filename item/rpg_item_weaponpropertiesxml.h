@@ -12,10 +12,6 @@
 struct RPG_Item_Export RPG_Item_WeaponPropertiesXML
  : public RPG_Item_WeaponPropertiesBase
 {
-#include "rpg_item_exports.h"
-
-struct RPG_Item_Export RPG_Item_WeaponPropertiesXML
-{
   signed char toHitModifier;
 };
 

@@ -1,15 +1,18 @@
 --char-type char
+#--char-encoding utf8
 --cxx-suffix _XML_tree.cpp
 #--export-xml-schema
 --extern-xml-schema rpg_XMLSchema.h
 --generate-comparison
+--generate-extraction ACE_InputCDR
+--generate-insertion ACE_OutputCDR
+#--generate-intellisense
 --generate-ostream
+#--generate-polymorphic
 --generate-serialization
-#--generate-insertion ACE_OutputCDR
-#--generate-extraction ACE_InputCDR
 --hxx-suffix _XML_tree.h
 --namespace-map urn:rpg=
---root-element-all
+#--root-element-all
 --show-anonymous
 --show-sloc
 --type-regex /(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/

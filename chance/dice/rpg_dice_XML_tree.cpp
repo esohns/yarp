@@ -676,6 +676,125 @@ operator<< (::xercesc::DOMElement& e, const RPG_Dice_ValueRange_XMLTree_Type& i)
   }
 }
 
+RPG_Dice_DieType_XMLTree_Type::
+RPG_Dice_DieType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Dice_DieType_XMLTree_Type_convert ();
+}
+
+RPG_Dice_Roll_XMLTree_Type::
+RPG_Dice_Roll_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                            ::xml_schema::flags f,
+                            ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  numDice_ (f, this),
+  typeDice_ (f, this),
+  modifier_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Dice_Roll_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      numDice_type r;
+      s >> r;
+      this->numDice_.set (r);
+    }
+  }
+
+  {
+    ::std::auto_ptr< typeDice_type > r (new typeDice_type (s, f, this));
+    this->typeDice_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      modifier_type r;
+      s >> r;
+      this->modifier_.set (r);
+    }
+  }
+}
+
+RPG_Dice_ValueRange_XMLTree_Type::
+RPG_Dice_ValueRange_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                  ::xml_schema::flags f,
+                                  ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  begin_ (f, this),
+  end_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Dice_ValueRange_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    begin_type r;
+    s >> r;
+    this->begin_.set (r);
+  }
+
+  {
+    end_type r;
+    s >> r;
+    this->end_.set (r);
+  }
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Dice_DieType_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Dice_Roll_XMLTree_Type& x)
+{
+  {
+    bool p (x.numDice ());
+    s << p;
+    if (p)
+      s << *x.numDice ();
+  }
+
+  s << x.typeDice ();
+  {
+    bool p (x.modifier ());
+    s << p;
+    if (p)
+      s << *x.modifier ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Dice_ValueRange_XMLTree_Type& x)
+{
+  s << x.begin ();
+  s << x.end ();
+  return s;
+}
+
 #include <xsd/cxx/post.hxx>
 
 // Begin epilogue.

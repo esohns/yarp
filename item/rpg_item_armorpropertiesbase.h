@@ -12,10 +12,6 @@
 struct RPG_Item_Export RPG_Item_ArmorPropertiesBase
  : public RPG_Item_PropertiesBase
 {
-#include "rpg_item_exports.h"
-
-struct RPG_Item_Export RPG_Item_ArmorPropertiesBase
-{
   RPG_Item_ArmorType type;
   RPG_Item_ArmorCategory category;
   unsigned char baseBonus;

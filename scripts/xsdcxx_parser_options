@@ -1,8 +1,11 @@
 --char-type char
+#--char-encoding utf8
 --cxx-suffix .cpp
 #--export-xml-schema
 --extern-xml-schema rpg_XMLSchema.h
 --force-overwrite
+#--generate-polymorphic
+#--generate-validation
 --hxx-suffix .h
 --namespace-map urn:rpg=
 --show-anonymous

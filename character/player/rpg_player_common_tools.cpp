@@ -568,9 +568,17 @@ RPG_Player_Common_Tools::getPlayerProfilesDirectory()
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::getPlayerProfilesDirectory"));
 
+#if defined(DEBUG_DEBUGGER)
+	std::string result = RPG_Common_File_Tools::getWorkingDirectory();
+	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+	result += ACE_TEXT_ALWAYS_CHAR("engine");
+	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+	result += ACE_TEXT_ALWAYS_CHAR("data");
+#else
 	std::string result = RPG_Common_File_Tools::getUserConfigurationDirectory();
 	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 	result += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILES_SUB);
+#endif
 
   if (!RPG_Common_File_Tools::isDirectory(result))
   {

@@ -37,7 +37,6 @@
 // Begin prologue.
 //
 #include "rpg_monster_exports.h"
-#include "rpg_monster_exports.h"
 //
 // End prologue.
 

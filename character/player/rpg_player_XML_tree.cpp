@@ -2658,6 +2658,463 @@ player_t (const ::RPG_Player_PlayerXML_XMLTree_Type& s,
   return d;
 }
 
+RPG_Player_Abilities_XMLTree_Type::
+RPG_Player_Abilities_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                   ::xml_schema::flags f,
+                                   ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  ability_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Player_Abilities_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      ability_sequence& c (this->ability_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< ability_type > r (new ability_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
+RPG_Player_Conditions_XMLTree_Type::
+RPG_Player_Conditions_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  condition_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Player_Conditions_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      condition_sequence& c (this->condition_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< condition_type > r (new condition_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
+RPG_Player_Spells_XMLTree_Type::
+RPG_Player_Spells_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                ::xml_schema::flags f,
+                                ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  spell_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Player_Spells_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      spell_sequence& c (this->spell_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< spell_type > r (new spell_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
+RPG_Player_CharacterBaseXML_XMLTree_Type::
+RPG_Player_CharacterBaseXML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                          ::xml_schema::flags f,
+                                          ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  name_ (f, this),
+  abilities_ (f, this),
+  alignment_ (f, this),
+  attributes_ (f, this),
+  defaultSize_ (f, this),
+  feats_ (f, this),
+  knownSpells_ (f, this),
+  maxHP_ (f, this),
+  skills_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Player_CharacterBaseXML_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< name_type > r (new name_type (s, f, this));
+    this->name_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< abilities_type > r (new abilities_type (s, f, this));
+      this->abilities_.set (r);
+    }
+  }
+
+  {
+    ::std::auto_ptr< alignment_type > r (new alignment_type (s, f, this));
+    this->alignment_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< attributes_type > r (new attributes_type (s, f, this));
+    this->attributes_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< defaultSize_type > r (new defaultSize_type (s, f, this));
+    this->defaultSize_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< feats_type > r (new feats_type (s, f, this));
+      this->feats_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< knownSpells_type > r (new knownSpells_type (s, f, this));
+      this->knownSpells_.set (r);
+    }
+  }
+
+  {
+    maxHP_type r;
+    s >> r;
+    this->maxHP_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< skills_type > r (new skills_type (s, f, this));
+      this->skills_.set (r);
+    }
+  }
+}
+
+RPG_Player_CharacterXML_XMLTree_Type::
+RPG_Player_CharacterXML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::RPG_Player_CharacterBaseXML_XMLTree_Type (s, f, c),
+  classXML_ (f, this),
+  gender_ (f, this),
+  offhand_ (f, this),
+  race_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Player_CharacterXML_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< classXML_type > r (new classXML_type (s, f, this));
+    this->classXML_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< gender_type > r (new gender_type (s, f, this));
+    this->gender_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< offhand_type > r (new offhand_type (s, f, this));
+    this->offhand_.set (r);
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      race_sequence& c (this->race_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< race_type > r (new race_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
+RPG_Player_PlayerXML_XMLTree_Type::
+RPG_Player_PlayerXML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                   ::xml_schema::flags f,
+                                   ::xml_schema::container* c)
+: ::RPG_Player_CharacterXML_XMLTree_Type (s, f, c),
+  gold_ (f, this),
+  inventory_ (f, this),
+  XP_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Player_PlayerXML_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    gold_type r;
+    s >> r;
+    this->gold_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< inventory_type > r (new inventory_type (s, f, this));
+    this->inventory_.set (r);
+  }
+
+  {
+    XP_type r;
+    s >> r;
+    this->XP_.set (r);
+  }
+}
+
+RPG_Player_StateBase_XMLTree_Type::
+RPG_Player_StateBase_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                   ::xml_schema::flags f,
+                                   ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  conditions_ (f, this),
+  HP_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Player_StateBase_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< conditions_type > r (new conditions_type (s, f, this));
+    this->conditions_.set (r);
+  }
+
+  {
+    HP_type r;
+    s >> r;
+    this->HP_.set (r);
+  }
+}
+
+RPG_Player_State_XMLTree_Type::
+RPG_Player_State_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
+: ::RPG_Player_StateBase_XMLTree_Type (s, f, c),
+  file_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Player_State_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< file_type > r (new file_type (s, f, this));
+    this->file_.set (r);
+  }
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Player_Abilities_XMLTree_Type& x)
+{
+  {
+    const RPG_Player_Abilities_XMLTree_Type::ability_sequence& c (x.ability ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Player_Abilities_XMLTree_Type::ability_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Player_Conditions_XMLTree_Type& x)
+{
+  {
+    const RPG_Player_Conditions_XMLTree_Type::condition_sequence& c (x.condition ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Player_Conditions_XMLTree_Type::condition_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Player_Spells_XMLTree_Type& x)
+{
+  {
+    const RPG_Player_Spells_XMLTree_Type::spell_sequence& c (x.spell ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Player_Spells_XMLTree_Type::spell_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Player_CharacterBaseXML_XMLTree_Type& x)
+{
+  s << x.name ();
+  {
+    bool p (x.abilities ());
+    s << p;
+    if (p)
+      s << *x.abilities ();
+  }
+
+  s << x.alignment ();
+  s << x.attributes ();
+  s << x.defaultSize ();
+  {
+    bool p (x.feats ());
+    s << p;
+    if (p)
+      s << *x.feats ();
+  }
+
+  {
+    bool p (x.knownSpells ());
+    s << p;
+    if (p)
+      s << *x.knownSpells ();
+  }
+
+  s << x.maxHP ();
+  {
+    bool p (x.skills ());
+    s << p;
+    if (p)
+      s << *x.skills ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Player_CharacterXML_XMLTree_Type& x)
+{
+  s << static_cast< const ::RPG_Player_CharacterBaseXML_XMLTree_Type& > (x);
+  s << x.classXML ();
+  s << x.gender ();
+  s << x.offhand ();
+  {
+    const RPG_Player_CharacterXML_XMLTree_Type::race_sequence& c (x.race ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Player_CharacterXML_XMLTree_Type::race_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Player_PlayerXML_XMLTree_Type& x)
+{
+  s << static_cast< const ::RPG_Player_CharacterXML_XMLTree_Type& > (x);
+  s << x.gold ();
+  s << x.inventory ();
+  s << x.XP ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Player_StateBase_XMLTree_Type& x)
+{
+  s << x.conditions ();
+  s << x.HP ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Player_State_XMLTree_Type& x)
+{
+  s << static_cast< const ::RPG_Player_StateBase_XMLTree_Type& > (x);
+  s << x.file ();
+  return s;
+}
+
 #include <xsd/cxx/post.hxx>
 
 // Begin epilogue.

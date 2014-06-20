@@ -13,8 +13,8 @@
 %defines          "rpg_map_parser.h"
 %output           "rpg_map_parser.cpp"
 /* %define           api.pure */
-/* %define api.push_pull */
-/* %define      parse.lac full */
+/* %define           api.push_pull */
+/* %define           parse.lac full */
 %define namespace "yy"
 %error-verbose
 %define parser_class_name "RPG_Map_Parser"
@@ -44,7 +44,7 @@ typedef void* yyscan_t;
 // symbols
 %union
 {
-  char         cval;
+  char cval;
 }
 
 %code {

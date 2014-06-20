@@ -33,6 +33,7 @@
 
 // Begin prologue.
 //
+#include "stdafx.h"
 //
 // End prologue.
 
@@ -1964,6 +1965,238 @@ engine_state_t (const ::RPG_Engine_State_XMLTree_Type& s,
 
   ::engine_state_t (*d, s, f);
   return d;
+}
+
+RPG_Engine_Command_XMLTree_Type::
+RPG_Engine_Command_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                 ::xml_schema::flags f,
+                                 ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Engine_Command_XMLTree_Type_convert ();
+}
+
+RPG_Engine_EntityMode_XMLTree_Type::
+RPG_Engine_EntityMode_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Engine_EntityMode_XMLTree_Type_convert ();
+}
+
+RPG_Engine_EntityState_XMLTree_Type::
+RPG_Engine_EntityState_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  player_ (f, this),
+  monster_ (f, this),
+  position_ (f, this),
+  mode_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Engine_EntityState_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< player_type > r (new player_type (s, f, this));
+      this->player_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< monster_type > r (new monster_type (s, f, this));
+      this->monster_.set (r);
+    }
+  }
+
+  {
+    ::std::auto_ptr< position_type > r (new position_type (s, f, this));
+    this->position_.set (r);
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      mode_sequence& c (this->mode_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< mode_type > r (new mode_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
+RPG_Engine_Level_XMLTree_Type::
+RPG_Engine_Level_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
+: ::RPG_Map_Level_XMLTree_Type (s, f, c),
+  spawn_ (f, this),
+  max_num_spawned_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Engine_Level_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      spawn_sequence& c (this->spawn_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< spawn_type > r (new spawn_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    max_num_spawned_type r;
+    s >> r;
+    this->max_num_spawned_.set (r);
+  }
+}
+
+RPG_Engine_State_XMLTree_Type::
+RPG_Engine_State_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
+: ::RPG_Map_State_XMLTree_Type (s, f, c),
+  entities_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Engine_State_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      entities_sequence& c (this->entities_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< entities_type > r (new entities_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Engine_Command_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Engine_EntityMode_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Engine_EntityState_XMLTree_Type& x)
+{
+  {
+    bool p (x.player ());
+    s << p;
+    if (p)
+      s << *x.player ();
+  }
+
+  {
+    bool p (x.monster ());
+    s << p;
+    if (p)
+      s << *x.monster ();
+  }
+
+  s << x.position ();
+  {
+    const RPG_Engine_EntityState_XMLTree_Type::mode_sequence& c (x.mode ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Engine_EntityState_XMLTree_Type::mode_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Engine_Level_XMLTree_Type& x)
+{
+  s << static_cast< const ::RPG_Map_Level_XMLTree_Type& > (x);
+  {
+    const RPG_Engine_Level_XMLTree_Type::spawn_sequence& c (x.spawn ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Engine_Level_XMLTree_Type::spawn_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  s << x.max_num_spawned ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Engine_State_XMLTree_Type& x)
+{
+  s << static_cast< const ::RPG_Map_State_XMLTree_Type& > (x);
+  {
+    const RPG_Engine_State_XMLTree_Type::entities_sequence& c (x.entities ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Engine_State_XMLTree_Type::entities_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
 }
 
 #include <xsd/cxx/post.hxx>

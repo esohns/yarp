@@ -12,7 +12,7 @@
 struct RPG_Client_Export RPG_Client_RuntimeState
 {
   RPG_Graphics_Style style;
-  std::vector<RPG_Graphics_Sprite> entities;
+  std::vector<RPG_Client_Entity> entities;
 };
 
 #endif

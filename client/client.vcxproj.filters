@@ -16,6 +16,9 @@
     <Filter Include="scripts">
       <UniqueIdentifier>{4b672775-6615-46d7-8c62-1a136102efcb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="XML">
+      <UniqueIdentifier>{b9a1fe68-5e80-4c6b-b69d-92e442b84624}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rpg_client_window_minimap.h">
@@ -133,5 +136,16 @@
     <None Include="scripts\exports.bat">
       <Filter>scripts</Filter>
     </None>
+    <None Include="scripts\bindings.bat">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="rpg_client.glade">
+      <Filter>XML</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CXX_Tree_Mapping_Rule Include="rpg_client.xsd">
+      <Filter>XML</Filter>
+    </CXX_Tree_Mapping_Rule>
   </ItemGroup>
 </Project>

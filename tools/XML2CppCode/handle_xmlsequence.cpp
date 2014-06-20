@@ -24,7 +24,7 @@
 #include "xml2cppcode.h"
 #include "xml2cppcode_common_tools.h"
 
-#include <ace/Log_Msg.h>
+#include "ace/Log_Msg.h"
 
 #include <limits>
 #include <iomanip>
@@ -37,15 +37,17 @@ Handle_XMLSequence::Handle_XMLSequence(std::ofstream& targetFile_in,
                                        const unsigned int& nestingLevel_in,
                                        const std::string& typePrefix_in,
                                        const std::string& typePostfix_in,
-                                       const std::string& emitClassQualifier_in)
+                                       const std::string& emitClassQualifier_in,
 //                                        const bool& adjustForTaggedUnions_in)
+                                       const bool& isBaseClass_in)
  : myOutputFile(targetFile_in),
+ //    myStructName(),
    myNestingLevel(nestingLevel_in),
    myTypePrefix(typePrefix_in),
    myTypePostfix(typePostfix_in),
-   myEmitClassQualifier(emitClassQualifier_in)
+   myEmitClassQualifier(emitClassQualifier_in),
 //    myAdjustForTaggedUnions(adjustForTaggedUnions_in)
-//    myStructName()
+   myIsBaseClass(isBaseClass_in)
 {
   ACE_TRACE(ACE_TEXT("Handle_XMLSequence::Handle_XMLSequence"));
 
@@ -63,6 +65,10 @@ Handle_XMLSequence::startElement(const std::string& struct_in)
   ACE_TRACE(ACE_TEXT("Handle_XMLSequence::startElement"));
 
   myStructName = struct_in;
+
+	// sanity check
+	if (myIsBaseClass)
+		return; // done
 
   if ((myNestingLevel == 0) &&
       !myEmitClassQualifier.empty())

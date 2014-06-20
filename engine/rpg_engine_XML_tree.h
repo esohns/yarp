@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__ENGINE_RPG_ENGINE_XML_TREE_H
-#define CXX__ENGINE_RPG_ENGINE_XML_TREE_H
+#ifndef CXX___RPG_ENGINE_XML_TREE_H
+#define CXX___RPG_ENGINE_XML_TREE_H
 
 // Begin prologue.
 //
@@ -79,6 +79,8 @@ class RPG_Engine_State_XMLTree_Type;
 
 #include <xsd/cxx/xml/dom/parsing-header.hxx>
 
+#include <xsd/cxx/tree/istream-fwd.hxx>
+
 #include "rpg_player_XML_tree.h"
 
 #include "rpg_monster_XML_tree.h"
@@ -121,6 +123,10 @@ class RPG_Engine_Export RPG_Engine_Command_XMLTree_Type: public ::xml_schema::st
   RPG_Engine_Command_XMLTree_Type (const ::std::string& v);
 
   RPG_Engine_Command_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Engine_Command_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                   ::xml_schema::flags f = 0,
+                                   ::xml_schema::container* c = 0);
 
   RPG_Engine_Command_XMLTree_Type (const ::xercesc::DOMElement& e,
                                    ::xml_schema::flags f = 0,
@@ -179,6 +185,10 @@ class RPG_Engine_Export RPG_Engine_EntityMode_XMLTree_Type: public ::xml_schema:
   RPG_Engine_EntityMode_XMLTree_Type (const ::std::string& v);
 
   RPG_Engine_EntityMode_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Engine_EntityMode_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f = 0,
+                                      ::xml_schema::container* c = 0);
 
   RPG_Engine_EntityMode_XMLTree_Type (const ::xercesc::DOMElement& e,
                                       ::xml_schema::flags f = 0,
@@ -304,6 +314,10 @@ class RPG_Engine_Export RPG_Engine_EntityState_XMLTree_Type: public ::xml_schema
 
   RPG_Engine_EntityState_XMLTree_Type (::std::auto_ptr< position_type >&);
 
+  RPG_Engine_EntityState_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                       ::xml_schema::flags f = 0,
+                                       ::xml_schema::container* c = 0);
+
   RPG_Engine_EntityState_XMLTree_Type (const ::xercesc::DOMElement& e,
                                        ::xml_schema::flags f = 0,
                                        ::xml_schema::container* c = 0);
@@ -327,6 +341,10 @@ class RPG_Engine_Export RPG_Engine_EntityState_XMLTree_Type: public ::xml_schema
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   player_optional player_;
   monster_optional monster_;
   ::xsd::cxx::tree::one< position_type > position_;
@@ -388,6 +406,10 @@ class RPG_Engine_Export RPG_Engine_Level_XMLTree_Type: public ::RPG_Map_Level_XM
                                  const map_type&,
                                  const max_num_spawned_type&);
 
+  RPG_Engine_Level_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                 ::xml_schema::flags f = 0,
+                                 ::xml_schema::container* c = 0);
+
   RPG_Engine_Level_XMLTree_Type (const ::xercesc::DOMElement& e,
                                  ::xml_schema::flags f = 0,
                                  ::xml_schema::container* c = 0);
@@ -411,6 +433,10 @@ class RPG_Engine_Export RPG_Engine_Level_XMLTree_Type: public ::RPG_Map_Level_XM
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   spawn_sequence spawn_;
   ::xsd::cxx::tree::one< max_num_spawned_type > max_num_spawned_;
 };
@@ -448,6 +474,10 @@ class RPG_Engine_Export RPG_Engine_State_XMLTree_Type: public ::RPG_Map_State_XM
   //
   RPG_Engine_State_XMLTree_Type (const file_type&);
 
+  RPG_Engine_State_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                 ::xml_schema::flags f = 0,
+                                 ::xml_schema::container* c = 0);
+
   RPG_Engine_State_XMLTree_Type (const ::xercesc::DOMElement& e,
                                  ::xml_schema::flags f = 0,
                                  ::xml_schema::container* c = 0);
@@ -471,6 +501,10 @@ class RPG_Engine_Export RPG_Engine_State_XMLTree_Type: public ::RPG_Map_State_XM
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   entities_sequence entities_;
 };
 
@@ -931,6 +965,31 @@ engine_state_t (const ::RPG_Engine_State_XMLTree_Type& x,
                 const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
                 ::xml_schema::flags f = 0);
 
+RPG_Engine_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Engine_Command_XMLTree_Type&);
+
+RPG_Engine_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Engine_EntityMode_XMLTree_Type&);
+
+RPG_Engine_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Engine_EntityState_XMLTree_Type&);
+
+RPG_Engine_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Engine_Level_XMLTree_Type&);
+
+RPG_Engine_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Engine_State_XMLTree_Type&);
+
 #include <xsd/cxx/post.hxx>
 
 // Begin epilogue.
@@ -938,4 +997,4 @@ engine_state_t (const ::RPG_Engine_State_XMLTree_Type& x,
 //
 // End epilogue.
 
-#endif // CXX__ENGINE_RPG_ENGINE_XML_TREE_H
+#endif // CXX___RPG_ENGINE_XML_TREE_H

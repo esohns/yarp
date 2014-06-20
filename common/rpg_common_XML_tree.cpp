@@ -33,7 +33,7 @@
 
 // Begin prologue.
 //
-#include "stdafx.h"
+#include "stdafx.h"
 //
 // End prologue.
 
@@ -4806,6 +4806,746 @@ operator<< (::xml_schema::list_stream& l,
             const RPG_Common_Camp_XMLTree_Type& i)
 {
   l << static_cast< const ::xml_schema::string& > (i);
+}
+
+RPG_Common_CreatureMetaType_XMLTree_Type::
+RPG_Common_CreatureMetaType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                          ::xml_schema::flags f,
+                                          ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Common_CreatureMetaType_XMLTree_Type_convert ();
+}
+
+RPG_Common_CreatureSubType_XMLTree_Type::
+RPG_Common_CreatureSubType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                         ::xml_schema::flags f,
+                                         ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Common_CreatureSubType_XMLTree_Type_convert ();
+}
+
+RPG_Common_CreatureType_XMLTree_Type::
+RPG_Common_CreatureType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  metaType_ (f, this),
+  subType_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Common_CreatureType_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< metaType_type > r (new metaType_type (s, f, this));
+    this->metaType_.set (r);
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      subType_sequence& c (this->subType_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< subType_type > r (new subType_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
+RPG_Common_SubClass_XMLTree_Type::
+RPG_Common_SubClass_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                  ::xml_schema::flags f,
+                                  ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Common_SubClass_XMLTree_Type_convert ();
+}
+
+RPG_Common_Attribute_XMLTree_Type::
+RPG_Common_Attribute_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                   ::xml_schema::flags f,
+                                   ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Common_Attribute_XMLTree_Type_convert ();
+}
+
+RPG_Common_Size_XMLTree_Type::
+RPG_Common_Size_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                              ::xml_schema::flags f,
+                              ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Common_Size_XMLTree_Type_convert ();
+}
+
+RPG_Common_Condition_XMLTree_Type::
+RPG_Common_Condition_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                   ::xml_schema::flags f,
+                                   ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Common_Condition_XMLTree_Type_convert ();
+}
+
+RPG_Common_Skill_XMLTree_Type::
+RPG_Common_Skill_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Common_Skill_XMLTree_Type_convert ();
+}
+
+RPG_Common_PhysicalDamageType_XMLTree_Type::
+RPG_Common_PhysicalDamageType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                            ::xml_schema::flags f,
+                                            ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_convert ();
+}
+
+RPG_Common_ActionType_XMLTree_Type::
+RPG_Common_ActionType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Common_ActionType_XMLTree_Type_convert ();
+}
+
+RPG_Common_AreaOfEffect_XMLTree_Type::
+RPG_Common_AreaOfEffect_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Common_AreaOfEffect_XMLTree_Type_convert ();
+}
+
+RPG_Common_EffectType_XMLTree_Type::
+RPG_Common_EffectType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Common_EffectType_XMLTree_Type_convert ();
+}
+
+RPG_Common_CounterMeasure_XMLTree_Type::
+RPG_Common_CounterMeasure_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f,
+                                        ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Common_CounterMeasure_XMLTree_Type_convert ();
+}
+
+RPG_Common_CheckType_XMLTree_Type::
+RPG_Common_CheckType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                   ::xml_schema::flags f,
+                                   ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Common_CheckType_XMLTree_Type_convert ();
+}
+
+RPG_Common_SavingThrow_XMLTree_Type::
+RPG_Common_SavingThrow_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Common_SavingThrow_XMLTree_Type_convert ();
+}
+
+RPG_Common_BaseCheckTypeUnion_XMLTree_Type::
+RPG_Common_BaseCheckTypeUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                            ::xml_schema::flags f,
+                                            ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Common_BaseCheckTypeUnion_XMLTree_Type_convert ();
+}
+
+RPG_Common_SaveReductionType_XMLTree_Type::
+RPG_Common_SaveReductionType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                           ::xml_schema::flags f,
+                                           ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Common_SaveReductionType_XMLTree_Type_convert ();
+}
+
+RPG_Common_SavingThrowCheck_XMLTree_Type::
+RPG_Common_SavingThrowCheck_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                          ::xml_schema::flags f,
+                                          ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  type_ (f, this),
+  attribute_ (f, this),
+  difficultyClass_ (f, this),
+  reduction_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Common_SavingThrowCheck_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
+    this->type_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< attribute_type > r (new attribute_type (s, f, this));
+      this->attribute_.set (r);
+    }
+  }
+
+  {
+    difficultyClass_type r;
+    s >> r;
+    this->difficultyClass_.set (r);
+  }
+
+  {
+    ::std::auto_ptr< reduction_type > r (new reduction_type (s, f, this));
+    this->reduction_.set (r);
+  }
+}
+
+RPG_Common_Amount_XMLTree_Type::
+RPG_Common_Amount_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                ::xml_schema::flags f,
+                                ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  value_ (f, this),
+  range_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Common_Amount_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      value_type r;
+      s >> r;
+      this->value_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< range_type > r (new range_type (s, f, this));
+      this->range_.set (r);
+    }
+  }
+}
+
+RPG_Common_Usage_XMLTree_Type::
+RPG_Common_Usage_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  numUses_ (f, this),
+  period_ (f, this),
+  interval_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Common_Usage_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    numUses_type r;
+    s >> r;
+    this->numUses_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      period_type r;
+      s >> r;
+      this->period_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< interval_type > r (new interval_type (s, f, this));
+      this->interval_.set (r);
+    }
+  }
+}
+
+RPG_Common_FixedPeriod_XMLTree_Type::
+RPG_Common_FixedPeriod_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  seconds_ (f, this),
+  u_seconds_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Common_FixedPeriod_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    seconds_type r;
+    s >> r;
+    this->seconds_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      u_seconds_type r;
+      s >> r;
+      this->u_seconds_.set (r);
+    }
+  }
+}
+
+RPG_Common_Duration_XMLTree_Type::
+RPG_Common_Duration_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                  ::xml_schema::flags f,
+                                  ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  activation_ (f, this),
+  interval_ (f, this),
+  total_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Common_Duration_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      activation_type r;
+      s >> r;
+      this->activation_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      interval_type r;
+      s >> r;
+      this->interval_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      total_type r;
+      s >> r;
+      this->total_.set (r);
+    }
+  }
+}
+
+RPG_Common_EffectDuration_XMLTree_Type::
+RPG_Common_EffectDuration_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f,
+                                        ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  base_ (f, this),
+  levelIncrement_ (f, this),
+  levelIncrementMax_ (f, this),
+  reciprocalIncrement_ (f, this),
+  isMaxDelay_ (f, this),
+  incrementIsInHD_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Common_EffectDuration_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< base_type > r (new base_type (s, f, this));
+      this->base_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      levelIncrement_type r;
+      s >> r;
+      this->levelIncrement_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      levelIncrementMax_type r;
+      s >> r;
+      this->levelIncrementMax_.set (r);
+    }
+  }
+
+  {
+    reciprocalIncrement_type r;
+    s >> r;
+    this->reciprocalIncrement_.set (r);
+  }
+
+  {
+    isMaxDelay_type r;
+    s >> r;
+    this->isMaxDelay_.set (r);
+  }
+
+  {
+    incrementIsInHD_type r;
+    s >> r;
+    this->incrementIsInHD_.set (r);
+  }
+}
+
+RPG_Common_Camp_XMLTree_Type::
+RPG_Common_Camp_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                              ::xml_schema::flags f,
+                              ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Common_Camp_XMLTree_Type_convert ();
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_CreatureMetaType_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_CreatureSubType_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_CreatureType_XMLTree_Type& x)
+{
+  s << x.metaType ();
+  {
+    const RPG_Common_CreatureType_XMLTree_Type::subType_sequence& c (x.subType ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Common_CreatureType_XMLTree_Type::subType_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_SubClass_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_Attribute_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_Size_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_Condition_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_Skill_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_PhysicalDamageType_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_ActionType_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_AreaOfEffect_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_EffectType_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_CounterMeasure_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_CheckType_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_SavingThrow_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_BaseCheckTypeUnion_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_SaveReductionType_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_SavingThrowCheck_XMLTree_Type& x)
+{
+  s << x.type ();
+  {
+    bool p (x.attribute ());
+    s << p;
+    if (p)
+      s << *x.attribute ();
+  }
+
+  s << x.difficultyClass ();
+  s << x.reduction ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_Amount_XMLTree_Type& x)
+{
+  {
+    bool p (x.value ());
+    s << p;
+    if (p)
+      s << *x.value ();
+  }
+
+  {
+    bool p (x.range ());
+    s << p;
+    if (p)
+      s << *x.range ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_Usage_XMLTree_Type& x)
+{
+  s << x.numUses ();
+  {
+    bool p (x.period ());
+    s << p;
+    if (p)
+      s << *x.period ();
+  }
+
+  {
+    bool p (x.interval ());
+    s << p;
+    if (p)
+      s << *x.interval ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_FixedPeriod_XMLTree_Type& x)
+{
+  s << x.seconds ();
+  {
+    bool p (x.u_seconds ());
+    s << p;
+    if (p)
+      s << *x.u_seconds ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_Duration_XMLTree_Type& x)
+{
+  {
+    bool p (x.activation ());
+    s << p;
+    if (p)
+      s << *x.activation ();
+  }
+
+  {
+    bool p (x.interval ());
+    s << p;
+    if (p)
+      s << *x.interval ();
+  }
+
+  {
+    bool p (x.total ());
+    s << p;
+    if (p)
+      s << *x.total ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_EffectDuration_XMLTree_Type& x)
+{
+  {
+    bool p (x.base ());
+    s << p;
+    if (p)
+      s << *x.base ();
+  }
+
+  {
+    bool p (x.levelIncrement ());
+    s << p;
+    if (p)
+      s << *x.levelIncrement ();
+  }
+
+  {
+    bool p (x.levelIncrementMax ());
+    s << p;
+    if (p)
+      s << *x.levelIncrementMax ();
+  }
+
+  s << x.reciprocalIncrement ();
+  s << x.isMaxDelay ();
+  s << x.incrementIsInHD ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Common_Camp_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
 }
 
 #include <xsd/cxx/post.hxx>

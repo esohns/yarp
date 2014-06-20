@@ -42,9 +42,10 @@
 
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
+#include "rpg_common_tools.h"
 #include "rpg_common_file_tools.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 // init statics
 RPG_Client_GraphicsModeToStringTable_t RPG_Client_GraphicsModeHelper::myRPG_Client_GraphicsModeToStringTable;
@@ -101,7 +102,7 @@ RPG_Client_Common_Tools::initUserProfiles()
 		default_profile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 		default_profile += RPG_PLAYER_PROFILES_SUB;
 		default_profile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-		default_profile += RPG_PLAYER_DEF_FILE;
+		default_profile += RPG_Common_Tools::sanitize(RPG_PLAYER_DEF_NAME);
 		default_profile += RPG_PLAYER_PROFILE_EXT;
 		if (!RPG_Common_File_Tools::copyFile(default_profile,
 																				 profiles_directory))

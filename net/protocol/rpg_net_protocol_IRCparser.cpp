@@ -29,6 +29,13 @@
    
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
+/* "%code top" blocks.  */
+
+
+#include "stdafx.h"
+
+
+
 
 // Take the name prefix into account.
 #define yylex   RPG_Net_Protocol_IRCScanner_lex
@@ -51,7 +58,7 @@
 
 #include "rpg_common_macros.h"
 
-#include <ace/Log_Msg.h>
+#include "ace/Log_Msg.h"
 
 #include <string>
 
@@ -1042,8 +1049,8 @@ namespace yy {
   const unsigned char
   RPG_Net_Protocol_IRCParser::yyrline_[] =
   {
-         0,    83,    83,    84,    85,    86,    91,    96,   101,   102,
-     103,   112,   118,   119,   120,   125,   126,   131
+         0,    86,    86,    87,    88,    89,    94,    99,   104,   105,
+     106,   115,   121,   122,   123,   128,   129,   134
   };
 
   // Print the state stack on the debug stream.

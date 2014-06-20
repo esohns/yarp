@@ -26,12 +26,12 @@
 #include "Shlobj.h"
 #endif
 
-#include <ace/ACE.h>
-#include <ace/OS.h>
-#include <ace/FILE_IO.h>
-#include <ace/FILE_Connector.h>
-#include <ace/Dirent_Selector.h>
-#include <ace/OS_NS_sys_sendfile.h>
+#include "ace/ACE.h"
+#include "ace/OS.h"
+#include "ace/FILE_IO.h"
+#include "ace/FILE_Connector.h"
+#include "ace/Dirent_Selector.h"
+#include "ace/OS_NS_sys_sendfile.h"
 
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
@@ -52,14 +52,15 @@ RPG_Common_File_Tools::isReadable(const std::string& filename_in)
   if (ACE_OS::stat(filename_in.c_str(),
                    &stat) == -1)
   {
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("failed to ACE_OS::stat(\"%s\"): \"%m\", aborting\n"),
-//                ACE_TEXT(filename_in.c_str())));
+    //ACE_DEBUG((LM_DEBUG,
+    //           ACE_TEXT("failed to ACE_OS::stat(\"%s\"): \"%m\", aborting\n"),
+    //           ACE_TEXT(filename_in.c_str())));
 
     return false;
   } // end IF
 
-  return true;
+	return (((stat.st_mode & S_IFMT) == S_IFREG) && // regular file ?
+					(stat.st_mode & S_IREAD));              // readable ?
 }
 
 bool
@@ -637,24 +638,61 @@ RPG_Common_File_Tools::getConfigurationDataDirectory(const std::string& baseDir_
 
   std::string result = baseDir_in;
 
-  if (baseDir_in.empty())
-    return RPG_Common_File_Tools::getWorkingDirectory();
+	if (baseDir_in.empty())
+	{
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+		TCHAR buffer[PATH_MAX];
+		ACE_OS::memset(buffer, 0, sizeof(buffer));
 
-  if (!RPG_Common_File_Tools::isDirectory(result))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("not a directory: \"%s\", aborting\n"),
-               ACE_TEXT(result.c_str())));
+		HRESULT win_result =
+			SHGetFolderPath(NULL,                                         // hwndOwner
+											CSIDL_PROGRAM_FILES | CSIDL_FLAG_DONT_VERIFY, // nFolder
+											NULL,                                         // hToken
+											SHGFP_TYPE_CURRENT,                           // dwFlags
+											buffer);                                      // pszPath
+		if (FAILED(win_result))
+		{
+			ACE_OS::memset(buffer, 0, sizeof(buffer));
+			if (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,                // dwFlags
+												NULL,                                      // lpSource
+												win_result,                                // dwMessageId
+												MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // dwLanguageId
+												buffer,                                    // lpBuffer
+												PATH_MAX,                                  // nSize
+												NULL) == 0)                                // Arguments
+				ACE_DEBUG((LM_ERROR,
+				           ACE_TEXT("failed to FormatMessage(%d): \"%m\", continuing\n"),
+				           win_result));
+			ACE_DEBUG((LM_ERROR,
+				         ACE_TEXT("failed to SHGetFolderPath(CSIDL_PROGRAM_FILES): \"%s\", falling back\n"),
+				         buffer));
 
-    // clean up
-    result.clear();
+			// fallback
+			return RPG_Common_File_Tools::getWorkingDirectory();
+		} // end IF
 
-    return result;
-  } // end IF
+		result = ACE_TEXT_ALWAYS_CHAR(buffer);
+		result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+		result += ACE_TEXT_ALWAYS_CHAR(RPG_PACKAGE);
+#else
+		return RPG_Common_File_Tools::getWorkingDirectory();
+#endif
+	} // end IF
 
   result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   result += (isConfig_in ? ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_CONFIG_SUB)
                          : ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB));
+
+	// sanity check(s)
+	if (!RPG_Common_File_Tools::isDirectory(result))
+	{
+		ACE_DEBUG((LM_ERROR,
+			         ACE_TEXT("not a directory: \"%s\", falling back\n"),
+			         ACE_TEXT(result.c_str())));
+
+		// fallback
+		return RPG_Common_File_Tools::getWorkingDirectory();
+	} // end IF
 
   return result;
 }

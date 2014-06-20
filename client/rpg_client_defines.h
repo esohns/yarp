@@ -21,6 +21,11 @@
 #ifndef RPG_CLIENT_DEFINES_H
 #define RPG_CLIENT_DEFINES_H
 
+// *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
+#ifdef HAVE_CONFIG_H
+#include "rpg_config.h"
+#endif
+
 #include "rpg_graphics_colorname.h"
 
 // task-specific
@@ -96,7 +101,7 @@
 
 #define RPG_CLIENT_GRAPHICS_DEF_CACHESIZE                 50
 #define RPG_CLIENT_GRAPHICS_DEF_WINDOWSTYLE_TYPE          IMAGE_INTERFACE_MAIN
-#define RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE         "Yarp"
+#define RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE         RPG_PACKAGE_STRING
 
 // default style
 #define RPG_CLIENT_GRAPHICS_DEF_FLOORSTYLE                FLOORSTYLE_STONE_COBBLED

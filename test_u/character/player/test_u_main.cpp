@@ -509,13 +509,15 @@ test_u_main::init_GUI(const std::string& graphics_directory_in,
 	ACE_ASSERT(hbox);
 	GtkFrame* frame =
 		GTK_FRAME(glade_xml_get_widget((*iterator_2).second,
-		ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
+		                               ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
 	ACE_ASSERT(frame);
-	gtk_box_pack_end(GTK_BOX(hbox),
-									 GTK_WIDGET(frame),
-									 TRUE, // expand
-									 TRUE, // fill
-									 0);   // padding
+	gtk_widget_ref(GTK_WIDGET(frame));
+	gtk_widget_unparent(GTK_WIDGET(frame));
+	gtk_box_pack_start(GTK_BOX(hbox),
+										 GTK_WIDGET(frame),
+										 FALSE, // expand
+										 FALSE, // fill
+										 0);    // padding
 
   // step4a: connect default signals
   gpointer userData_p = const_cast<GTK_cb_data_t*>(&userData_in);

@@ -33,6 +33,7 @@
 
 // Begin prologue.
 //
+#include "stdafx.h"
 //
 // End prologue.
 
@@ -82,52 +83,6 @@ operator= (value v)
   ::xml_schema::string (_xsd_RPG_Client_GraphicsMode_XMLTree_Type_literals_[v]);
 
   return *this;
-}
-
-
-// RPG_Client_RuntimeState_XMLTree_Type
-// 
-
-const RPG_Client_RuntimeState_XMLTree_Type::style_type& RPG_Client_RuntimeState_XMLTree_Type::
-style () const
-{
-  return this->style_.get ();
-}
-
-RPG_Client_RuntimeState_XMLTree_Type::style_type& RPG_Client_RuntimeState_XMLTree_Type::
-style ()
-{
-  return this->style_.get ();
-}
-
-void RPG_Client_RuntimeState_XMLTree_Type::
-style (const style_type& x)
-{
-  this->style_.set (x);
-}
-
-void RPG_Client_RuntimeState_XMLTree_Type::
-style (::std::auto_ptr< style_type > x)
-{
-  this->style_.set (x);
-}
-
-const RPG_Client_RuntimeState_XMLTree_Type::entities_sequence& RPG_Client_RuntimeState_XMLTree_Type::
-entities () const
-{
-  return this->entities_;
-}
-
-RPG_Client_RuntimeState_XMLTree_Type::entities_sequence& RPG_Client_RuntimeState_XMLTree_Type::
-entities ()
-{
-  return this->entities_;
-}
-
-void RPG_Client_RuntimeState_XMLTree_Type::
-entities (const entities_sequence& s)
-{
-  this->entities_ = s;
 }
 
 
@@ -205,126 +160,6 @@ _xsd_RPG_Client_GraphicsMode_XMLTree_Type_indexes_[3] =
   ::RPG_Client_GraphicsMode_XMLTree_Type::GRAPHICSMODE_3D
 };
 
-// RPG_Client_RuntimeState_XMLTree_Type
-//
-
-RPG_Client_RuntimeState_XMLTree_Type::
-RPG_Client_RuntimeState_XMLTree_Type (const style_type& style)
-: ::xml_schema::type (),
-  style_ (style, ::xml_schema::flags (), this),
-  entities_ (::xml_schema::flags (), this)
-{
-}
-
-RPG_Client_RuntimeState_XMLTree_Type::
-RPG_Client_RuntimeState_XMLTree_Type (::std::auto_ptr< style_type >& style)
-: ::xml_schema::type (),
-  style_ (style, ::xml_schema::flags (), this),
-  entities_ (::xml_schema::flags (), this)
-{
-}
-
-RPG_Client_RuntimeState_XMLTree_Type::
-RPG_Client_RuntimeState_XMLTree_Type (const RPG_Client_RuntimeState_XMLTree_Type& x,
-                                      ::xml_schema::flags f,
-                                      ::xml_schema::container* c)
-: ::xml_schema::type (x, f, c),
-  style_ (x.style_, f, this),
-  entities_ (x.entities_, f, this)
-{
-}
-
-RPG_Client_RuntimeState_XMLTree_Type::
-RPG_Client_RuntimeState_XMLTree_Type (const ::xercesc::DOMElement& e,
-                                      ::xml_schema::flags f,
-                                      ::xml_schema::container* c)
-: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  style_ (f, this),
-  entities_ (f, this)
-{
-  if ((f & ::xml_schema::flags::base) == 0)
-  {
-    ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
-    this->parse (p, f);
-  }
-}
-
-void RPG_Client_RuntimeState_XMLTree_Type::
-parse (::xsd::cxx::xml::dom::parser< char >& p,
-       ::xml_schema::flags f)
-{
-  for (; p.more_elements (); p.next_element ())
-  {
-    const ::xercesc::DOMElement& i (p.cur_element ());
-    const ::xsd::cxx::xml::qualified_name< char > n (
-      ::xsd::cxx::xml::dom::name< char > (i));
-
-    // style
-    //
-    if (n.name () == "style" && n.namespace_ () == "urn:rpg")
-    {
-      ::std::auto_ptr< style_type > r (
-        style_traits::create (i, f, this));
-
-      if (!style_.present ())
-      {
-        this->style_.set (r);
-        continue;
-      }
-    }
-
-    // entities
-    //
-    if (n.name () == "entities" && n.namespace_ () == "urn:rpg")
-    {
-      ::std::auto_ptr< entities_type > r (
-        entities_traits::create (i, f, this));
-
-      this->entities_.push_back (r);
-      continue;
-    }
-
-    break;
-  }
-
-  if (!style_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "style",
-      "urn:rpg");
-  }
-}
-
-RPG_Client_RuntimeState_XMLTree_Type* RPG_Client_RuntimeState_XMLTree_Type::
-_clone (::xml_schema::flags f,
-        ::xml_schema::container* c) const
-{
-  return new class RPG_Client_RuntimeState_XMLTree_Type (*this, f, c);
-}
-
-RPG_Client_RuntimeState_XMLTree_Type::
-~RPG_Client_RuntimeState_XMLTree_Type ()
-{
-}
-
-bool
-operator== (const RPG_Client_RuntimeState_XMLTree_Type& x, const RPG_Client_RuntimeState_XMLTree_Type& y)
-{
-  if (!(x.style () == y.style ()))
-    return false;
-
-  if (!(x.entities () == y.entities ()))
-    return false;
-
-  return true;
-}
-
-bool
-operator!= (const RPG_Client_RuntimeState_XMLTree_Type& x, const RPG_Client_RuntimeState_XMLTree_Type& y)
-{
-  return !(x == y);
-}
-
 #include <ostream>
 
 ::std::ostream&
@@ -337,20 +172,6 @@ operator<< (::std::ostream& o, RPG_Client_GraphicsMode_XMLTree_Type::value i)
 operator<< (::std::ostream& o, const RPG_Client_GraphicsMode_XMLTree_Type& i)
 {
   return o << static_cast< const ::xml_schema::string& > (i);
-}
-
-::std::ostream&
-operator<< (::std::ostream& o, const RPG_Client_RuntimeState_XMLTree_Type& i)
-{
-  o << ::std::endl << "style: " << i.style ();
-  for (RPG_Client_RuntimeState_XMLTree_Type::entities_const_iterator
-       b (i.entities ().begin ()), e (i.entities ().end ());
-       b != e; ++b)
-  {
-    o << ::std::endl << "entities: " << *b;
-  }
-
-  return o;
 }
 
 #include <istream>
@@ -380,37 +201,20 @@ operator<< (::xml_schema::list_stream& l,
   l << static_cast< const ::xml_schema::string& > (i);
 }
 
-void
-operator<< (::xercesc::DOMElement& e, const RPG_Client_RuntimeState_XMLTree_Type& i)
+RPG_Client_GraphicsMode_XMLTree_Type::
+RPG_Client_GraphicsMode_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f,
+                                      ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
 {
-  e << static_cast< const ::xml_schema::type& > (i);
+  _xsd_RPG_Client_GraphicsMode_XMLTree_Type_convert ();
+}
 
-  // style
-  //
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "style",
-        "urn:rpg",
-        e));
-
-    s << i.style ();
-  }
-
-  // entities
-  //
-  for (RPG_Client_RuntimeState_XMLTree_Type::entities_const_iterator
-       b (i.entities ().begin ()), n (i.entities ().end ());
-       b != n; ++b)
-  {
-    ::xercesc::DOMElement& s (
-      ::xsd::cxx::xml::dom::create_element (
-        "entities",
-        "urn:rpg",
-        e));
-
-    s << *b;
-  }
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Client_GraphicsMode_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
 }
 
 #include <xsd/cxx/post.hxx>

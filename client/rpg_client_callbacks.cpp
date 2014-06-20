@@ -771,14 +771,22 @@ update_character_profile(const RPG_Player& player_in,
   gtk_widget_show_all(current);
 
   // step16: spells
-  current =
-      GTK_WIDGET(glade_xml_get_widget(xml_in,
-                                      ACE_TEXT_ALWAYS_CHAR("spells_frame")));
+	GtkNotebook* notebook =
+		GTK_NOTEBOOK(glade_xml_get_widget(xml_in,
+		                                  ACE_TEXT_ALWAYS_CHAR("notebook")));
+	ACE_ASSERT(notebook);
+	current = gtk_notebook_get_nth_page(notebook,
+																			3);
+  //current =
+  //    GTK_WIDGET(glade_xml_get_widget(xml_in,
+  //                                    ACE_TEXT_ALWAYS_CHAR("spells_frame")));
   ACE_ASSERT(current);
-  if (!RPG_Magic_Common_Tools::hasCasterClass(player_class))
-    gtk_widget_hide_all(current);
-  else
-    gtk_widget_show_all(current);
+	gtk_widget_set_sensitive(current,
+													 RPG_Magic_Common_Tools::hasCasterClass(player_class));
+  //if (!RPG_Magic_Common_Tools::hasCasterClass(player_class))
+  //  gtk_widget_hide_all(current);
+  //else
+  //  gtk_widget_show_all(current);
 
   // divine casters know ALL spells from the levels they can cast...
   current =
@@ -3998,14 +4006,14 @@ init_UI_client(const std::string& UIFile_in,
 		                              ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_HBOX_MAIN_NAME)));
 	ACE_ASSERT(hbox);
 	GtkFrame* frame =
-		GTK_HBOX(glade_xml_get_widget(userData_in.XML,
-		                              ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
+		GTK_FRAME(glade_xml_get_widget(userData_in.XML,
+		                               ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
 	ACE_ASSERT(frame);
-	gtk_box_pack_end(GTK_BOX(hbox),
-									 GTK_WIDGET(frame),
-									 TRUE, // expand
-									 TRUE, // fill
-									 0);   // padding
+	gtk_box_pack_start(GTK_BOX(hbox),
+									   GTK_WIDGET(frame),
+									   FALSE, // expand
+									 	 FALSE, // fill
+									   0);    // padding
 
   // step4: (auto-)connect signals/slots
 	// *NOTE*: glade_xml_signal_autoconnect doesn't work reliably

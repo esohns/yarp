@@ -39,14 +39,14 @@
 #include "handle_xmlstruct.h"
 #include "handle_xmlunion.h"
 
-#include <xercesc/util/XMLUniDefs.hpp>
-#include <xercesc/util/OutOfMemoryException.hpp>
-#include <xercesc/sax2/Attributes.hpp>
+#include "xercesc/util/XMLUniDefs.hpp"
+#include "xercesc/util/OutOfMemoryException.hpp"
+#include "xercesc/sax2/Attributes.hpp"
 
-#include <ace/ACE.h>
-#include <ace/OS.h>
-#include <ace/OS_Memory.h>
-#include <ace/Log_Msg.h>
+#include "ace/ACE.h"
+#include "ace/OS.h"
+#include "ace/OS_Memory.h"
+#include "ace/Log_Msg.h"
 
 #include <algorithm>
 #include <sstream>
@@ -77,7 +77,7 @@ XML_Handler::XML_Handler(const std::string& emitClassQualifiers_in,
  : inherited(),
 //    myIncludeHeaderFile(),
 //    myCurrentOutputFile(),
-//    myCurrentExtension(),
+   myCurrentHasBaseClass(false),
 //    myCurrentElementName(),
    myIsFirstRelevantElement(true),
    myTargetDirectory(targetDirectory_in),
@@ -179,7 +179,6 @@ XML_Handler::endElement(const XMLCh* const uri_in,
 		case XML_DOCUMENTATION:
     case XML_ELEMENT:
     case XML_ENUMERATION: // --> handled in SIMPLETYPE case !
-		case XML_EXTENSION:
 		case XML_INCLUDE:
     case XML_RESTRICTION:
     case XML_SCHEMA:
@@ -189,6 +188,12 @@ XML_Handler::endElement(const XMLCh* const uri_in,
 
       break;
     }
+		case XML_EXTENSION:
+		{
+			myCurrentHasBaseClass = false;
+
+			break;
+		}
     case XML_CHOICE:
 		case XML_SEQUENCE:
 		{
@@ -472,6 +477,7 @@ XML_Handler::startElement(const XMLCh* const uri_in,
 				base_class = base;
         XMLString::release(&base);
       } // end IF
+			myCurrentHasBaseClass = true;
 
       // strip trailing type postfix, if any
       if (!myTypePostfix.empty())
@@ -852,13 +858,14 @@ XML_Handler::startElement(const XMLCh* const uri_in,
     case XML_SEQUENCE:
     {
       IXML_Definition_Handler* handler = NULL;
-      ACE_NEW_NORETURN(handler,
-                       Handle_XMLSequence(myCurrentOutputFile,
-                                          myCurrentNestingLevel,
-                                          myTypePrefix,
-                                          myTypePostfix,
-                                          myEmitClassQualifiers));
-        //                                  myEmitTaggedUnions));
+			ACE_NEW_NORETURN(handler,
+											 Handle_XMLSequence(myCurrentOutputFile,
+																					myCurrentNestingLevel,
+																					myTypePrefix,
+																					myTypePostfix,
+																					myEmitClassQualifiers,
+			//                                  myEmitTaggedUnions,
+																					myCurrentHasBaseClass));
       if (!handler)
       {
         ACE_DEBUG((LM_CRITICAL,

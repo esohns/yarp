@@ -103,6 +103,8 @@ class RPG_Magic_Dictionary_XMLTree_Type;
 
 #include <xsd/cxx/xml/dom/parsing-header.hxx>
 
+#include <xsd/cxx/tree/istream-fwd.hxx>
+
 #include "rpg_dice_XML_tree.h"
 
 #include "rpg_common_XML_tree.h"
@@ -134,6 +136,10 @@ class RPG_Magic_Export RPG_Magic_School_XMLTree_Type: public ::xml_schema::strin
   RPG_Magic_School_XMLTree_Type (const ::std::string& v);
 
   RPG_Magic_School_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Magic_School_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                 ::xml_schema::flags f = 0,
+                                 ::xml_schema::container* c = 0);
 
   RPG_Magic_School_XMLTree_Type (const ::xercesc::DOMElement& e,
                                  ::xml_schema::flags f = 0,
@@ -201,6 +207,10 @@ class RPG_Magic_Export RPG_Magic_SubSchool_XMLTree_Type: public ::xml_schema::st
   RPG_Magic_SubSchool_XMLTree_Type (const ::std::string& v);
 
   RPG_Magic_SubSchool_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Magic_SubSchool_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                    ::xml_schema::flags f = 0,
+                                    ::xml_schema::container* c = 0);
 
   RPG_Magic_SubSchool_XMLTree_Type (const ::xercesc::DOMElement& e,
                                     ::xml_schema::flags f = 0,
@@ -274,6 +284,10 @@ class RPG_Magic_Export RPG_Magic_Descriptor_XMLTree_Type: public ::xml_schema::s
   RPG_Magic_Descriptor_XMLTree_Type (const ::std::string& v);
 
   RPG_Magic_Descriptor_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Magic_Descriptor_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                     ::xml_schema::flags f = 0,
+                                     ::xml_schema::container* c = 0);
 
   RPG_Magic_Descriptor_XMLTree_Type (const ::xercesc::DOMElement& e,
                                      ::xml_schema::flags f = 0,
@@ -351,6 +365,10 @@ class RPG_Magic_Export RPG_Magic_Domain_XMLTree_Type: public ::xml_schema::strin
   RPG_Magic_Domain_XMLTree_Type (const ::std::string& v);
 
   RPG_Magic_Domain_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Magic_Domain_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                 ::xml_schema::flags f = 0,
+                                 ::xml_schema::container* c = 0);
 
   RPG_Magic_Domain_XMLTree_Type (const ::xercesc::DOMElement& e,
                                  ::xml_schema::flags f = 0,
@@ -641,6 +659,10 @@ class RPG_Magic_Export RPG_Magic_SpellType_XMLTree_Type: public ::xml_schema::st
 
   RPG_Magic_SpellType_XMLTree_Type (const ::xml_schema::string& v);
 
+  RPG_Magic_SpellType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                    ::xml_schema::flags f = 0,
+                                    ::xml_schema::container* c = 0);
+
   RPG_Magic_SpellType_XMLTree_Type (const ::xercesc::DOMElement& e,
                                     ::xml_schema::flags f = 0,
                                     ::xml_schema::container* c = 0);
@@ -698,6 +720,10 @@ class RPG_Magic_Export RPG_Magic_AbilityClass_XMLTree_Type: public ::xml_schema:
 
   RPG_Magic_AbilityClass_XMLTree_Type (const ::xml_schema::string& v);
 
+  RPG_Magic_AbilityClass_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                       ::xml_schema::flags f = 0,
+                                       ::xml_schema::container* c = 0);
+
   RPG_Magic_AbilityClass_XMLTree_Type (const ::xercesc::DOMElement& e,
                                        ::xml_schema::flags f = 0,
                                        ::xml_schema::container* c = 0);
@@ -754,6 +780,10 @@ class RPG_Magic_Export RPG_Magic_AbilityType_XMLTree_Type: public ::xml_schema::
   RPG_Magic_AbilityType_XMLTree_Type (const ::std::string& v);
 
   RPG_Magic_AbilityType_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Magic_AbilityType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f = 0,
+                                      ::xml_schema::container* c = 0);
 
   RPG_Magic_AbilityType_XMLTree_Type (const ::xercesc::DOMElement& e,
                                       ::xml_schema::flags f = 0,
@@ -894,6 +924,10 @@ class RPG_Magic_Export RPG_Magic_Spell_Type_XMLTree_Type: public ::xml_schema::t
   RPG_Magic_Spell_Type_XMLTree_Type (const type_type&,
                                      const school_type&);
 
+  RPG_Magic_Spell_Type_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                     ::xml_schema::flags f = 0,
+                                     ::xml_schema::container* c = 0);
+
   RPG_Magic_Spell_Type_XMLTree_Type (const ::xercesc::DOMElement& e,
                                      ::xml_schema::flags f = 0,
                                      ::xml_schema::container* c = 0);
@@ -917,6 +951,10 @@ class RPG_Magic_Export RPG_Magic_Spell_Type_XMLTree_Type: public ::xml_schema::t
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< type_type > type_;
   ::xsd::cxx::tree::one< school_type > school_;
   subSchool_optional subSchool_;
@@ -981,6 +1019,10 @@ class RPG_Magic_Export RPG_Magic_CasterClassUnion_XMLTree_Type: public ::xml_sch
   RPG_Magic_CasterClassUnion_XMLTree_Type (const ::std::string& v);
 
   RPG_Magic_CasterClassUnion_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Magic_CasterClassUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                           ::xml_schema::flags f = 0,
+                                           ::xml_schema::container* c = 0);
 
   RPG_Magic_CasterClassUnion_XMLTree_Type (const ::xercesc::DOMElement& e,
                                            ::xml_schema::flags f = 0,
@@ -1060,6 +1102,10 @@ class RPG_Magic_Export RPG_Magic_Spell_Level_XMLTree_Type: public ::xml_schema::
   RPG_Magic_Spell_Level_XMLTree_Type (const casterClass_type&,
                                       const level_type&);
 
+  RPG_Magic_Spell_Level_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f = 0,
+                                      ::xml_schema::container* c = 0);
+
   RPG_Magic_Spell_Level_XMLTree_Type (const ::xercesc::DOMElement& e,
                                       ::xml_schema::flags f = 0,
                                       ::xml_schema::container* c = 0);
@@ -1083,6 +1129,10 @@ class RPG_Magic_Export RPG_Magic_Spell_Level_XMLTree_Type: public ::xml_schema::
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< casterClass_type > casterClass_;
   ::xsd::cxx::tree::one< level_type > level_;
 };
@@ -1141,6 +1191,10 @@ class RPG_Magic_Export RPG_Magic_Spell_CastingTime_XMLTree_Type: public ::xml_sc
   //
   RPG_Magic_Spell_CastingTime_XMLTree_Type ();
 
+  RPG_Magic_Spell_CastingTime_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                            ::xml_schema::flags f = 0,
+                                            ::xml_schema::container* c = 0);
+
   RPG_Magic_Spell_CastingTime_XMLTree_Type (const ::xercesc::DOMElement& e,
                                             ::xml_schema::flags f = 0,
                                             ::xml_schema::container* c = 0);
@@ -1164,6 +1218,10 @@ class RPG_Magic_Export RPG_Magic_Spell_CastingTime_XMLTree_Type: public ::xml_sc
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   rounds_optional rounds_;
   ::xsd::cxx::tree::one< action_type > action_;
   static const action_type action_default_value_;
@@ -1199,6 +1257,10 @@ class RPG_Magic_Export RPG_Magic_Spell_RangeEffect_XMLTree_Type: public ::xml_sc
   RPG_Magic_Spell_RangeEffect_XMLTree_Type (const ::std::string& v);
 
   RPG_Magic_Spell_RangeEffect_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Magic_Spell_RangeEffect_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                            ::xml_schema::flags f = 0,
+                                            ::xml_schema::container* c = 0);
 
   RPG_Magic_Spell_RangeEffect_XMLTree_Type (const ::xercesc::DOMElement& e,
                                             ::xml_schema::flags f = 0,
@@ -1302,6 +1364,10 @@ class RPG_Magic_Export RPG_Magic_Spell_RangeProperties_XMLTree_Type: public ::xm
   //
   RPG_Magic_Spell_RangeProperties_XMLTree_Type ();
 
+  RPG_Magic_Spell_RangeProperties_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                ::xml_schema::flags f = 0,
+                                                ::xml_schema::container* c = 0);
+
   RPG_Magic_Spell_RangeProperties_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                 ::xml_schema::flags f = 0,
                                                 ::xml_schema::container* c = 0);
@@ -1325,6 +1391,10 @@ class RPG_Magic_Export RPG_Magic_Spell_RangeProperties_XMLTree_Type: public ::xm
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   maximum_optional maximum_;
   increment_optional increment_;
   ::xsd::cxx::tree::one< effect_type > effect_;
@@ -1359,6 +1429,10 @@ class RPG_Magic_Export RPG_Magic_Spell_Target_XMLTree_Type: public ::xml_schema:
   RPG_Magic_Spell_Target_XMLTree_Type (const ::std::string& v);
 
   RPG_Magic_Spell_Target_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Magic_Spell_Target_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                       ::xml_schema::flags f = 0,
+                                       ::xml_schema::container* c = 0);
 
   RPG_Magic_Spell_Target_XMLTree_Type (const ::xercesc::DOMElement& e,
                                        ::xml_schema::flags f = 0,
@@ -1416,6 +1490,10 @@ class RPG_Magic_Export RPG_Magic_Spell_AreaOfEffect_XMLTree_Type: public ::xml_s
   RPG_Magic_Spell_AreaOfEffect_XMLTree_Type (const ::std::string& v);
 
   RPG_Magic_Spell_AreaOfEffect_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Magic_Spell_AreaOfEffect_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                             ::xml_schema::flags f = 0,
+                                             ::xml_schema::container* c = 0);
 
   RPG_Magic_Spell_AreaOfEffect_XMLTree_Type (const ::xercesc::DOMElement& e,
                                              ::xml_schema::flags f = 0,
@@ -1669,6 +1747,10 @@ class RPG_Magic_Export RPG_Magic_Spell_TargetProperties_XMLTree_Type: public ::x
   //
   RPG_Magic_Spell_TargetProperties_XMLTree_Type ();
 
+  RPG_Magic_Spell_TargetProperties_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                 ::xml_schema::flags f = 0,
+                                                 ::xml_schema::container* c = 0);
+
   RPG_Magic_Spell_TargetProperties_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                  ::xml_schema::flags f = 0,
                                                  ::xml_schema::container* c = 0);
@@ -1692,6 +1774,10 @@ class RPG_Magic_Export RPG_Magic_Spell_TargetProperties_XMLTree_Type: public ::x
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   base_optional base_;
   levelIncrement_optional levelIncrement_;
   levelIncrementMax_optional levelIncrementMax_;
@@ -1734,6 +1820,10 @@ class RPG_Magic_Export RPG_Magic_Spell_Duration_XMLTree_Type: public ::xml_schem
   RPG_Magic_Spell_Duration_XMLTree_Type (const ::std::string& v);
 
   RPG_Magic_Spell_Duration_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Magic_Spell_Duration_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                         ::xml_schema::flags f = 0,
+                                         ::xml_schema::container* c = 0);
 
   RPG_Magic_Spell_Duration_XMLTree_Type (const ::xercesc::DOMElement& e,
                                          ::xml_schema::flags f = 0,
@@ -1818,6 +1908,10 @@ class RPG_Magic_Export RPG_Magic_Spell_DurationProperties_XMLTree_Type: public :
   //
   RPG_Magic_Spell_DurationProperties_XMLTree_Type ();
 
+  RPG_Magic_Spell_DurationProperties_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                   ::xml_schema::flags f = 0,
+                                                   ::xml_schema::container* c = 0);
+
   RPG_Magic_Spell_DurationProperties_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                    ::xml_schema::flags f = 0,
                                                    ::xml_schema::container* c = 0);
@@ -1841,6 +1935,10 @@ class RPG_Magic_Export RPG_Magic_Spell_DurationProperties_XMLTree_Type: public :
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< duration_type > duration_;
   static const duration_type duration_default_value_;
   ::xsd::cxx::tree::one< dismissible_type > dismissible_;
@@ -1888,6 +1986,10 @@ class RPG_Magic_Export RPG_Magic_Spell_Precondition_XMLTree_Type: public ::xml_s
   RPG_Magic_Spell_Precondition_XMLTree_Type (const ::std::string& v);
 
   RPG_Magic_Spell_Precondition_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Magic_Spell_Precondition_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                             ::xml_schema::flags f = 0,
+                                             ::xml_schema::container* c = 0);
 
   RPG_Magic_Spell_Precondition_XMLTree_Type (const ::xercesc::DOMElement& e,
                                              ::xml_schema::flags f = 0,
@@ -2162,6 +2264,10 @@ class RPG_Magic_Export RPG_Magic_Spell_PreconditionProperties_XMLTree_Type: publ
   //
   RPG_Magic_Spell_PreconditionProperties_XMLTree_Type (const type_type&);
 
+  RPG_Magic_Spell_PreconditionProperties_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                       ::xml_schema::flags f = 0,
+                                                       ::xml_schema::container* c = 0);
+
   RPG_Magic_Spell_PreconditionProperties_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                        ::xml_schema::flags f = 0,
                                                        ::xml_schema::container* c = 0);
@@ -2185,6 +2291,10 @@ class RPG_Magic_Export RPG_Magic_Spell_PreconditionProperties_XMLTree_Type: publ
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< type_type > type_;
   value_optional value_;
   levelIncrement_optional levelIncrement_;
@@ -2323,6 +2433,10 @@ class RPG_Magic_Export RPG_Magic_Spell_Effect_XMLTree_Type: public ::xml_schema:
 
   RPG_Magic_Spell_Effect_XMLTree_Type (const ::xml_schema::string& v);
 
+  RPG_Magic_Spell_Effect_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                       ::xml_schema::flags f = 0,
+                                       ::xml_schema::container* c = 0);
+
   RPG_Magic_Spell_Effect_XMLTree_Type (const ::xercesc::DOMElement& e,
                                        ::xml_schema::flags f = 0,
                                        ::xml_schema::container* c = 0);
@@ -2401,6 +2515,10 @@ class RPG_Magic_Export RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type: public ::xm
   RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type (const ::std::string& v);
 
   RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                ::xml_schema::flags f = 0,
+                                                ::xml_schema::container* c = 0);
 
   RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                 ::xml_schema::flags f = 0,
@@ -2526,6 +2644,10 @@ class RPG_Magic_Export RPG_Magic_CheckTypeUnion_XMLTree_Type: public ::xml_schem
   RPG_Magic_CheckTypeUnion_XMLTree_Type (const ::std::string& v);
 
   RPG_Magic_CheckTypeUnion_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Magic_CheckTypeUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                         ::xml_schema::flags f = 0,
+                                         ::xml_schema::container* c = 0);
 
   RPG_Magic_CheckTypeUnion_XMLTree_Type (const ::xercesc::DOMElement& e,
                                          ::xml_schema::flags f = 0,
@@ -2665,6 +2787,10 @@ class RPG_Magic_Export RPG_Magic_Check_XMLTree_Type: public ::xml_schema::type
   //
   RPG_Magic_Check_XMLTree_Type ();
 
+  RPG_Magic_Check_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                ::xml_schema::flags f = 0,
+                                ::xml_schema::container* c = 0);
+
   RPG_Magic_Check_XMLTree_Type (const ::xercesc::DOMElement& e,
                                 ::xml_schema::flags f = 0,
                                 ::xml_schema::container* c = 0);
@@ -2688,6 +2814,10 @@ class RPG_Magic_Export RPG_Magic_Check_XMLTree_Type: public ::xml_schema::type
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   type_optional type_;
   difficultyClass_optional difficultyClass_;
   modifier_optional modifier_;
@@ -2786,6 +2916,10 @@ class RPG_Magic_Export RPG_Magic_CounterMeasure_XMLTree_Type: public ::xml_schem
   //
   RPG_Magic_CounterMeasure_XMLTree_Type (const type_type&);
 
+  RPG_Magic_CounterMeasure_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                         ::xml_schema::flags f = 0,
+                                         ::xml_schema::container* c = 0);
+
   RPG_Magic_CounterMeasure_XMLTree_Type (const ::xercesc::DOMElement& e,
                                          ::xml_schema::flags f = 0,
                                          ::xml_schema::container* c = 0);
@@ -2809,6 +2943,10 @@ class RPG_Magic_Export RPG_Magic_CounterMeasure_XMLTree_Type: public ::xml_schem
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< type_type > type_;
   check_optional check_;
   spell_sequence spell_;
@@ -3118,6 +3256,10 @@ class RPG_Magic_Export RPG_Magic_Spell_EffectProperties_XMLTree_Type: public ::x
   //
   RPG_Magic_Spell_EffectProperties_XMLTree_Type (const type_type&);
 
+  RPG_Magic_Spell_EffectProperties_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                 ::xml_schema::flags f = 0,
+                                                 ::xml_schema::container* c = 0);
+
   RPG_Magic_Spell_EffectProperties_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                  ::xml_schema::flags f = 0,
                                                  ::xml_schema::container* c = 0);
@@ -3141,6 +3283,10 @@ class RPG_Magic_Export RPG_Magic_Spell_EffectProperties_XMLTree_Type: public ::x
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< type_type > type_;
   damage_optional damage_;
   base_optional base_;
@@ -3426,6 +3572,10 @@ class RPG_Magic_Export RPG_Magic_Spell_PropertiesXML_XMLTree_Type: public ::xml_
                                               ::std::auto_ptr< range_type >&,
                                               ::std::auto_ptr< duration_type >&);
 
+  RPG_Magic_Spell_PropertiesXML_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                              ::xml_schema::flags f = 0,
+                                              ::xml_schema::container* c = 0);
+
   RPG_Magic_Spell_PropertiesXML_XMLTree_Type (const ::xercesc::DOMElement& e,
                                               ::xml_schema::flags f = 0,
                                               ::xml_schema::container* c = 0);
@@ -3449,6 +3599,10 @@ class RPG_Magic_Export RPG_Magic_Spell_PropertiesXML_XMLTree_Type: public ::xml_
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< name_type > name_;
   ::xsd::cxx::tree::one< type_type > type_;
   level_sequence level_;
@@ -3556,6 +3710,10 @@ class RPG_Magic_Export RPG_Magic_SpellLikeProperties_XMLTree_Type: public ::xml_
   RPG_Magic_SpellLikeProperties_XMLTree_Type (const type_type&,
                                               const casterLevel_type&);
 
+  RPG_Magic_SpellLikeProperties_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                              ::xml_schema::flags f = 0,
+                                              ::xml_schema::container* c = 0);
+
   RPG_Magic_SpellLikeProperties_XMLTree_Type (const ::xercesc::DOMElement& e,
                                               ::xml_schema::flags f = 0,
                                               ::xml_schema::container* c = 0);
@@ -3579,6 +3737,10 @@ class RPG_Magic_Export RPG_Magic_SpellLikeProperties_XMLTree_Type: public ::xml_
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< type_type > type_;
   ::xsd::cxx::tree::one< casterLevel_type > casterLevel_;
   duration_optional duration_;
@@ -3618,6 +3780,10 @@ class RPG_Magic_Export RPG_Magic_Dictionary_XMLTree_Type: public ::xml_schema::t
   //
   RPG_Magic_Dictionary_XMLTree_Type ();
 
+  RPG_Magic_Dictionary_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                     ::xml_schema::flags f = 0,
+                                     ::xml_schema::container* c = 0);
+
   RPG_Magic_Dictionary_XMLTree_Type (const ::xercesc::DOMElement& e,
                                      ::xml_schema::flags f = 0,
                                      ::xml_schema::container* c = 0);
@@ -3641,6 +3807,10 @@ class RPG_Magic_Export RPG_Magic_Dictionary_XMLTree_Type: public ::xml_schema::t
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   spell_sequence spell_;
 };
 
@@ -4291,6 +4461,151 @@ RPG_Magic_Export
 spellDictionary (const ::RPG_Magic_Dictionary_XMLTree_Type& x, 
                  const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
                  ::xml_schema::flags f = 0);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_School_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_SubSchool_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_Descriptor_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_Domain_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_SpellType_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_AbilityClass_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_AbilityType_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_Spell_Type_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_CasterClassUnion_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_Spell_Level_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_Spell_CastingTime_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_Spell_RangeEffect_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_Spell_RangeProperties_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_Spell_Target_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_Spell_AreaOfEffect_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_Spell_TargetProperties_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_Spell_Duration_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_Spell_DurationProperties_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_Spell_Precondition_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_Spell_PreconditionProperties_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_Spell_Effect_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_CheckTypeUnion_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_Check_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_CounterMeasure_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_Spell_EffectProperties_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_Spell_PropertiesXML_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_SpellLikeProperties_XMLTree_Type&);
+
+RPG_Magic_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Magic_Dictionary_XMLTree_Type&);
 
 #include <xsd/cxx/post.hxx>
 

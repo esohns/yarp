@@ -4319,6 +4319,840 @@ operator<< (::xercesc::DOMElement& e, const RPG_Combat_Damage_XMLTree_Type& i)
   }
 }
 
+RPG_Combat_AttackForm_XMLTree_Type::
+RPG_Combat_AttackForm_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                    ::xml_schema::flags f,
+                                    ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Combat_AttackForm_XMLTree_Type_convert ();
+}
+
+RPG_Combat_RangedEffectUnion_XMLTree_Type::
+RPG_Combat_RangedEffectUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                           ::xml_schema::flags f,
+                                           ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Combat_RangedEffectUnion_XMLTree_Type_convert ();
+}
+
+RPG_Combat_RangedAttackProperties_XMLTree_Type::
+RPG_Combat_RangedAttackProperties_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                ::xml_schema::flags f,
+                                                ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  maxRange_ (f, this),
+  increment_ (f, this),
+  effect_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Combat_RangedAttackProperties_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    maxRange_type r;
+    s >> r;
+    this->maxRange_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      increment_type r;
+      s >> r;
+      this->increment_.set (r);
+    }
+  }
+
+  {
+    ::std::auto_ptr< effect_type > r (new effect_type (s, f, this));
+    this->effect_.set (r);
+  }
+}
+
+RPG_Combat_AttackSituation_XMLTree_Type::
+RPG_Combat_AttackSituation_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                         ::xml_schema::flags f,
+                                         ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Combat_AttackSituation_XMLTree_Type_convert ();
+}
+
+RPG_Combat_DefenseSituation_XMLTree_Type::
+RPG_Combat_DefenseSituation_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                          ::xml_schema::flags f,
+                                          ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Combat_DefenseSituation_XMLTree_Type_convert ();
+}
+
+RPG_Combat_SpecialAttack_XMLTree_Type::
+RPG_Combat_SpecialAttack_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                       ::xml_schema::flags f,
+                                       ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Combat_SpecialAttack_XMLTree_Type_convert ();
+}
+
+RPG_Combat_SpecialDamageType_XMLTree_Type::
+RPG_Combat_SpecialDamageType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                           ::xml_schema::flags f,
+                                           ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Combat_SpecialDamageType_XMLTree_Type_convert ();
+}
+
+RPG_Combat_DamageTypeUnion_XMLTree_Type::
+RPG_Combat_DamageTypeUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                         ::xml_schema::flags f,
+                                         ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Combat_DamageTypeUnion_XMLTree_Type_convert ();
+}
+
+RPG_Combat_DamageDuration_XMLTree_Type::
+RPG_Combat_DamageDuration_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f,
+                                        ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  incubationPeriod_ (f, this),
+  totalPeriod_ (f, this),
+  interval_ (f, this),
+  totalDuration_ (f, this),
+  vicinity_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Combat_DamageDuration_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< incubationPeriod_type > r (new incubationPeriod_type (s, f, this));
+      this->incubationPeriod_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< totalPeriod_type > r (new totalPeriod_type (s, f, this));
+      this->totalPeriod_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      interval_type r;
+      s >> r;
+      this->interval_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      totalDuration_type r;
+      s >> r;
+      this->totalDuration_.set (r);
+    }
+  }
+
+  {
+    vicinity_type r;
+    s >> r;
+    this->vicinity_.set (r);
+  }
+}
+
+RPG_Combat_CheckTypeUnion_XMLTree_Type::
+RPG_Combat_CheckTypeUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f,
+                                        ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Combat_CheckTypeUnion_XMLTree_Type_convert ();
+}
+
+RPG_Combat_Check_XMLTree_Type::
+RPG_Combat_Check_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  type_ (f, this),
+  attribute_ (f, this),
+  difficultyClass_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Combat_Check_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
+    this->type_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< attribute_type > r (new attribute_type (s, f, this));
+      this->attribute_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      difficultyClass_type r;
+      s >> r;
+      this->difficultyClass_.set (r);
+    }
+  }
+}
+
+RPG_Combat_DamageReductionType_XMLTree_Type::
+RPG_Combat_DamageReductionType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                             ::xml_schema::flags f,
+                                             ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Combat_DamageReductionType_XMLTree_Type_convert ();
+}
+
+RPG_Combat_DamageCounterMeasure_XMLTree_Type::
+RPG_Combat_DamageCounterMeasure_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                              ::xml_schema::flags f,
+                                              ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  type_ (f, this),
+  check_ (f, this),
+  spell_ (f, this),
+  duration_ (f, this),
+  condition_ (f, this),
+  reduction_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Combat_DamageCounterMeasure_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
+    this->type_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< check_type > r (new check_type (s, f, this));
+      this->check_.set (r);
+    }
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      spell_sequence& c (this->spell_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< spell_type > r (new spell_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< duration_type > r (new duration_type (s, f, this));
+      this->duration_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< condition_type > r (new condition_type (s, f, this));
+      this->condition_.set (r);
+    }
+  }
+
+  {
+    ::std::auto_ptr< reduction_type > r (new reduction_type (s, f, this));
+    this->reduction_.set (r);
+  }
+}
+
+RPG_Combat_OtherDamageType_XMLTree_Type::
+RPG_Combat_OtherDamageType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                         ::xml_schema::flags f,
+                                         ::xml_schema::container* c)
+: ::xml_schema::string (s, f, c)
+{
+  _xsd_RPG_Combat_OtherDamageType_XMLTree_Type_convert ();
+}
+
+RPG_Combat_OtherDamage_XMLTree_Type::
+RPG_Combat_OtherDamage_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                     ::xml_schema::flags f,
+                                     ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  type_ (f, this),
+  modifier_ (f, this),
+  counterMeasure_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Combat_OtherDamage_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::auto_ptr< type_type > r (new type_type (s, f, this));
+    this->type_.set (r);
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      modifier_type r;
+      s >> r;
+      this->modifier_.set (r);
+    }
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      counterMeasure_sequence& c (this->counterMeasure_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< counterMeasure_type > r (new counterMeasure_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+}
+
+RPG_Combat_DamageElement_XMLTree_Type::
+RPG_Combat_DamageElement_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                       ::xml_schema::flags f,
+                                       ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  type_ (f, this),
+  amount_ (f, this),
+  secondary_ (f, this),
+  attribute_ (f, this),
+  condition_ (f, this),
+  duration_ (f, this),
+  counterMeasure_ (f, this),
+  other_ (f, this),
+  effect_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Combat_DamageElement_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      type_sequence& c (this->type_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< type_type > r (new type_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< amount_type > r (new amount_type (s, f, this));
+      this->amount_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< secondary_type > r (new secondary_type (s, f, this));
+      this->secondary_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< attribute_type > r (new attribute_type (s, f, this));
+      this->attribute_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< condition_type > r (new condition_type (s, f, this));
+      this->condition_.set (r);
+    }
+  }
+
+  {
+    bool p;
+    s >> p;
+    if (p)
+    {
+      ::std::auto_ptr< duration_type > r (new duration_type (s, f, this));
+      this->duration_.set (r);
+    }
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      counterMeasure_sequence& c (this->counterMeasure_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< counterMeasure_type > r (new counterMeasure_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      other_sequence& c (this->other_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< other_type > r (new other_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    ::std::auto_ptr< effect_type > r (new effect_type (s, f, this));
+    this->effect_.set (r);
+  }
+}
+
+RPG_Combat_Damage_XMLTree_Type::
+RPG_Combat_Damage_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                ::xml_schema::flags f,
+                                ::xml_schema::container* c)
+: ::xml_schema::type (s, f, c),
+  element_ (f, this),
+  elementsAreInclusive_ (f, this)
+{
+  this->parse (s, f);
+}
+
+void RPG_Combat_Damage_XMLTree_Type::
+parse (::xml_schema::istream< ACE_InputCDR >& s,
+       ::xml_schema::flags f)
+{
+  {
+    ::std::size_t n;
+    ::xsd::cxx::tree::istream_common::as_size< ::std::size_t > as (n);
+    s >> as;
+    if (n > 0)
+    {
+      element_sequence& c (this->element_);
+      c.reserve (n);
+      while (n--)
+      {
+        ::std::auto_ptr< element_type > r (new element_type (s, f, this));
+        c.push_back (r);
+      }
+    }
+  }
+
+  {
+    elementsAreInclusive_type r;
+    s >> r;
+    this->elementsAreInclusive_.set (r);
+  }
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Combat_AttackForm_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Combat_RangedEffectUnion_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Combat_RangedAttackProperties_XMLTree_Type& x)
+{
+  s << x.maxRange ();
+  {
+    bool p (x.increment ());
+    s << p;
+    if (p)
+      s << *x.increment ();
+  }
+
+  s << x.effect ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Combat_AttackSituation_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Combat_DefenseSituation_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Combat_SpecialAttack_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Combat_SpecialDamageType_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Combat_DamageTypeUnion_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Combat_DamageDuration_XMLTree_Type& x)
+{
+  {
+    bool p (x.incubationPeriod ());
+    s << p;
+    if (p)
+      s << *x.incubationPeriod ();
+  }
+
+  {
+    bool p (x.totalPeriod ());
+    s << p;
+    if (p)
+      s << *x.totalPeriod ();
+  }
+
+  {
+    bool p (x.interval ());
+    s << p;
+    if (p)
+      s << *x.interval ();
+  }
+
+  {
+    bool p (x.totalDuration ());
+    s << p;
+    if (p)
+      s << *x.totalDuration ();
+  }
+
+  s << x.vicinity ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Combat_CheckTypeUnion_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Combat_Check_XMLTree_Type& x)
+{
+  s << x.type ();
+  {
+    bool p (x.attribute ());
+    s << p;
+    if (p)
+      s << *x.attribute ();
+  }
+
+  {
+    bool p (x.difficultyClass ());
+    s << p;
+    if (p)
+      s << *x.difficultyClass ();
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Combat_DamageReductionType_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Combat_DamageCounterMeasure_XMLTree_Type& x)
+{
+  s << x.type ();
+  {
+    bool p (x.check ());
+    s << p;
+    if (p)
+      s << *x.check ();
+  }
+
+  {
+    const RPG_Combat_DamageCounterMeasure_XMLTree_Type::spell_sequence& c (x.spell ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Combat_DamageCounterMeasure_XMLTree_Type::spell_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  {
+    bool p (x.duration ());
+    s << p;
+    if (p)
+      s << *x.duration ();
+  }
+
+  {
+    bool p (x.condition ());
+    s << p;
+    if (p)
+      s << *x.condition ();
+  }
+
+  s << x.reduction ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Combat_OtherDamageType_XMLTree_Type& x)
+{
+  return s << static_cast< const ::xml_schema::string& > (x);
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Combat_OtherDamage_XMLTree_Type& x)
+{
+  s << x.type ();
+  {
+    bool p (x.modifier ());
+    s << p;
+    if (p)
+      s << *x.modifier ();
+  }
+
+  {
+    const RPG_Combat_OtherDamage_XMLTree_Type::counterMeasure_sequence& c (x.counterMeasure ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Combat_OtherDamage_XMLTree_Type::counterMeasure_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Combat_DamageElement_XMLTree_Type& x)
+{
+  {
+    const RPG_Combat_DamageElement_XMLTree_Type::type_sequence& c (x.type ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Combat_DamageElement_XMLTree_Type::type_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  {
+    bool p (x.amount ());
+    s << p;
+    if (p)
+      s << *x.amount ();
+  }
+
+  {
+    bool p (x.secondary ());
+    s << p;
+    if (p)
+      s << *x.secondary ();
+  }
+
+  {
+    bool p (x.attribute ());
+    s << p;
+    if (p)
+      s << *x.attribute ();
+  }
+
+  {
+    bool p (x.condition ());
+    s << p;
+    if (p)
+      s << *x.condition ();
+  }
+
+  {
+    bool p (x.duration ());
+    s << p;
+    if (p)
+      s << *x.duration ();
+  }
+
+  {
+    const RPG_Combat_DamageElement_XMLTree_Type::counterMeasure_sequence& c (x.counterMeasure ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Combat_DamageElement_XMLTree_Type::counterMeasure_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  {
+    const RPG_Combat_DamageElement_XMLTree_Type::other_sequence& c (x.other ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Combat_DamageElement_XMLTree_Type::other_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  s << x.effect ();
+  return s;
+}
+
+::xsd::cxx::tree::ostream< ACE_OutputCDR >&
+operator<< (::xsd::cxx::tree::ostream< ACE_OutputCDR >& s,
+            const RPG_Combat_Damage_XMLTree_Type& x)
+{
+  {
+    const RPG_Combat_Damage_XMLTree_Type::element_sequence& c (x.element ());
+    s << ::xsd::cxx::tree::ostream_common::as_size< ::std::size_t > (c.size ());
+    for (RPG_Combat_Damage_XMLTree_Type::element_const_iterator
+         i (c.begin ()), e (c.end ());
+         i != e; ++i)
+    {
+      s << *i;
+    }
+  }
+
+  s << x.elementsAreInclusive ();
+  return s;
+}
+
 #include <xsd/cxx/post.hxx>
 
 // Begin epilogue.

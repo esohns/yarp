@@ -147,7 +147,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   path = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE);
+  path += RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_NAME));
   path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
   std::cout << ACE_TEXT("-o <[FILE]>: output file")
             << ACE_TEXT(" [")
@@ -307,7 +307,7 @@ do_processArguments(const int& argc_in,
 
 	if (outputFile_out == default_output_path)
 	{
-		outputFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE);
+		outputFile_out += RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_NAME));
 		outputFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 	} // end IF
 
@@ -1242,10 +1242,50 @@ do_work(const std::string& schemaDirectory_in,
     else
     {
       // save player
-      std::string path = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
-      path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-      path += player_p->getName();
-      path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+			std::string path = outputFile_in;
+			if (path.empty())
+			{
+				path = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
+				path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+				path += player_p->getName();
+				path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+			} // end IF
+
+			//// sanity check
+			//if (RPG_Common_File_Tools::isReadable(path))
+			//{
+			//	bool proceed = false;
+			//	c = ' ';
+			//	do
+			//	{
+			//		std::cout << ACE_TEXT("file \"")
+			//			<< path
+			//			<< ACE_TEXT("\" exists, overwrite ? (y/n): ");
+			//		std::cin >> c;
+			//		switch (c)
+			//		{
+			//			case 'y':
+			//			{
+			//				proceed = true;
+
+			//				break;
+			//			}
+			//			case 'n':
+			//				break;
+			//			default:
+			//			{
+			//				ACE_DEBUG((LM_ERROR,
+			//									 ACE_TEXT("unrecognized option \"%c\", try again\n"),
+			//								   c));
+			//				break;
+			//			}
+			//		} // end SWITCH
+			//	} while ((c != 'y') &&
+			//					 (c != 'n'));
+
+			//	if (!proceed)
+			//		continue;
+			//} // end IF
 
       if (!player_p->save(path))
         ACE_DEBUG((LM_ERROR,
@@ -1405,7 +1445,7 @@ ACE_TMAIN(int argc_in,
 	std::string output_filename              =
 			RPG_Player_Common_Tools::getPlayerProfilesDirectory();
 	output_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-	output_filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE);
+	output_filename += RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_NAME));
 	output_filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
 	bool random                              = CHARACTER_GENERATOR_DEF_RANDOM;
@@ -1495,7 +1535,6 @@ ACE_TMAIN(int argc_in,
 
   ACE_High_Res_Timer timer;
   timer.start();
-
   // step2: do actual work
   do_work(schema_repository,
           magic_dictionary_filename,
@@ -1506,7 +1545,6 @@ ACE_TMAIN(int argc_in,
           num_players,
           output_filename,
           random);
-
   timer.stop();
 
 //   // debug info

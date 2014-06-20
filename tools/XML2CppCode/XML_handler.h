@@ -25,7 +25,7 @@
 
 #include "iXML_definition_handler.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <string>
 #include <fstream>
@@ -50,7 +50,7 @@ class XML_Handler
 
  public:
   XML_Handler(const std::string&,  // emit class qualifier (DLL import/export symbols) ?
-			  const bool&,         // emit string conversion utilities ?
+							const bool&,         // emit string conversion utilities ?
               const bool&,         // emit "tagged" unions ?
               const std::string&,  // schema file
               const bool&,         // generate include header ?
@@ -125,11 +125,11 @@ class XML_Handler
   typedef XML2CppCode_Headers_t::const_iterator XML2CppCode_HeadersIterator_t;
   typedef std::stack<IXML_Definition_Handler*> XML2CppCode_Handlers_t;
 
-   XML2CppCode_Handlers_t  myDefinitionHandlers;
+  XML2CppCode_Handlers_t   myDefinitionHandlers;
 
   std::ofstream            myIncludeHeaderFile;
   std::ofstream            myCurrentOutputFile;
-  //std::string              myCurrentExtension;
+  bool                     myCurrentHasBaseClass;
   std::string              myCurrentElementName;
   bool                     myIsFirstRelevantElement;
   std::string              myTargetDirectory;

@@ -12,10 +12,6 @@
 struct RPG_Item_Export RPG_Item_WeaponPropertiesBase
  : public RPG_Item_PropertiesBase
 {
-#include "rpg_item_exports.h"
-
-struct RPG_Item_Export RPG_Item_WeaponPropertiesBase
-{
   RPG_Item_WeaponType type;
   RPG_Item_WeaponCategory category;
   RPG_Item_WeaponClass weaponClass;

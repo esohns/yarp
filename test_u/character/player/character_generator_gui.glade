@@ -83,7 +83,6 @@
     </child>
   </widget>
   <widget class="GtkDialog" id="main_dialog">
-    <property name="visible">True</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">character generator</property>
     <property name="resizable">False</property>
@@ -283,37 +282,57 @@
                   <widget class="GtkAlignment" id="image_alignment">
                     <property name="visible">True</property>
                     <child>
-                      <widget class="GtkHButtonBox" id="hbuttonbox">
+                      <widget class="GtkVBox" id="image_vbox">
                         <property name="visible">True</property>
-                        <property name="homogeneous">True</property>
-                        <property name="layout_style">spread</property>
+                        <property name="orientation">vertical</property>
                         <child>
-                          <widget class="GtkButton" id="previous_button">
-                            <property name="label" translatable="yes">gtk-go-back</property>
+                          <widget class="GtkImage" id="image_sprite">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="relief">half</property>
-                            <property name="use_stock">True</property>
-                            <property name="focus_on_click">False</property>
-                            <signal name="clicked" handler="previous_button_clicked_cb"/>
+                            <property name="stock">gtk-missing-image</property>
                           </widget>
                           <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkButton" id="next_button">
-                            <property name="label" translatable="yes">gtk-go-forward</property>
+                          <widget class="GtkHButtonBox" id="hbuttonbox">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="relief">half</property>
-                            <property name="use_stock">True</property>
-                            <property name="focus_on_click">False</property>
-                            <signal name="clicked" handler="next_button_clicked_cb"/>
+                            <property name="homogeneous">True</property>
+                            <property name="layout_style">spread</property>
+                            <child>
+                              <widget class="GtkButton" id="previous_button">
+                                <property name="label" translatable="yes">gtk-go-back</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="relief">half</property>
+                                <property name="use_stock">True</property>
+                                <property name="focus_on_click">False</property>
+                                <signal name="clicked" handler="previous_button_clicked_cb"/>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkButton" id="next_button">
+                                <property name="label" translatable="yes">gtk-go-forward</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="relief">half</property>
+                                <property name="use_stock">True</property>
+                                <property name="focus_on_click">False</property>
+                                <signal name="clicked" handler="next_button_clicked_cb"/>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
                           </widget>
                           <packing>
                             <property name="expand">False</property>

@@ -1,71 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<engine_player_t xmlns="urn:rpg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:rpg rpg_engine.xsd">
+<player_t xmlns="urn:rpg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:rpg rpg_player.xsd">
 
-  <name>JUynsm</name>
+  <name>default player</name>
+
+  <abilities>
+    <ability>ABILITY_SPELLS</ability>
+  </abilities>
 
   <alignment>
-    <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
-    <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
+    <civic>ALIGNMENTCIVIC_LAWFUL</civic>
+    <ethic>ALIGNMENTETHIC_GOOD</ethic>
   </alignment>
 
   <attributes>
     <strength>12</strength>
-    <dexterity>14</dexterity>
-    <constitution>16</constitution>
-    <intelligence>14</intelligence>
-    <wisdom>15</wisdom>
-    <charisma>10</charisma>
+    <dexterity>15</dexterity>
+    <constitution>15</constitution>
+    <intelligence>12</intelligence>
+    <wisdom>17</wisdom>
+    <charisma>12</charisma>
   </attributes>
 
-  <skills>
-    <skill>
-      <skill>SKILL_CRAFT_ALL</skill>
-      <rank>3</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_CRAFT_SMITH_ARMOR</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_CRAFT_TRAP</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_DECIPHER_SCRIPT</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_JUMP</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_KNOWLEDGE_DUNGEONS</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_OPEN_LOCK</skill>
-      <rank>2</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_SEARCH</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_SENSE_MOTIVE</skill>
-      <rank>2</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_SPOT</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_USE_MAGIC_DEVICE</skill>
-      <rank>2</rank>
-    </skill>
-  </skills>
+  <defaultSize>SIZE_MEDIUM</defaultSize>
 
   <feats>
-    <feat>FEAT_DODGE</feat>
+    <feat>FEAT_RAPID_RELOAD</feat>
     <feat>FEAT_PROFICIENCY_ARMOR_LIGHT</feat>
     <feat>FEAT_PROFICIENCY_ARMOR_MEDIUM</feat>
     <feat>FEAT_PROFICIENCY_ARMOR_HEAVY</feat>
@@ -74,27 +33,69 @@
     <feat>FEAT_PROFICIENCY_SIMPLE_WEAPONS</feat>
   </feats>
 
-  <abilities>
-    <ability>ABILITY_SPELLS</ability>
-  </abilities>
-
-  <defaultSize>SIZE_SMALL</defaultSize>
+  <knownSpells/>
 
   <maxHP>10</maxHP>
 
-  <knownSpells/>
+  <skills>
+    <skill>
+      <skill>SKILL_CRAFT_ANY</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_CRAFT_ALCHEMY</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_CRAFT_SMITH_WEAPON</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_HEAL</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_INTIMIDATE</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_JUMP</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_KNOWLEDGE_ALL</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_KNOWLEDGE_PLANES</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_PROFESSION</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_SPEAK_LANGUAGE</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_SWIM</skill>
+      <rank>2</rank>
+    </skill>
+  </skills>
 
-  <conditions>
-    <condition>CONDITION_NORMAL</condition>
-  </conditions>
+  <classXML>
+    <metaClass>METACLASS_WARRIOR</metaClass>
+    <subClass>SUBCLASS_PALADIN</subClass>
+  </classXML>
 
-  <HP>10</HP>
+  <gender>GENDER_FEMALE</gender>
 
-  <XP>0</XP>
+  <offhand>OFFHAND_RIGHT</offhand>
+
+  <race>RACE_ORC</race>
 
   <gold>0</gold>
-
-  <spells/>
 
   <inventory>
     <item>
@@ -163,22 +164,6 @@
     </item>
   </inventory>
 
-  <gender>GENDER_FEMALE</gender>
+  <XP>0</XP>
 
-  <race>RACE_GNOME</race>
-
-  <classXML>
-    <metaClass>METACLASS_WARRIOR</metaClass>
-    <subClass>SUBCLASS_PALADIN</subClass>
-  </classXML>
-
-  <offhand>OFFHAND_LEFT</offhand>
-
-  <position>
-    <x>4294967295</x>
-    <y>4294967295</y>
-  </position>
-
-  <sprite>SPRITE_HUMAN</sprite>
-
-</engine_player_t>
+</player_t>

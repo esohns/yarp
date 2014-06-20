@@ -12,10 +12,6 @@
 struct RPG_Item_Export RPG_Item_ArmorPropertiesXML
  : public RPG_Item_ArmorPropertiesBase
 {
-#include "rpg_item_exports.h"
-
-struct RPG_Item_Export RPG_Item_ArmorPropertiesXML
-{
   signed char defenseModifier;
 };
 
