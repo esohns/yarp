@@ -40,7 +40,7 @@
 #include "rpg_common_defines.h"
 #include "rpg_common_file_tools.h"
 
-#include <ace/Log_Msg.h>
+#include "ace/Log_Msg.h"
 
 #include <sstream>
 

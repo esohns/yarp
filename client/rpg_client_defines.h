@@ -81,6 +81,7 @@
 #define RPG_CLIENT_GTK_ENTRY_NAME                         "name_entry"
 //
 #define RPG_CLIENT_GTK_HBOX_MAIN_NAME                     "main_hbox"
+#define RPG_CLIENT_GTK_VBOX_TOOLS_NAME                    "tools_vbox"
 #define RPG_CLIENT_GTK_FRAME_CHARACTER_NAME               "character_frame"
 
 // CONFIGDIR-specific

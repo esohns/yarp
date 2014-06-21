@@ -76,7 +76,6 @@
     <child internal-child="vbox">
       <widget class="GtkVBox" id="entry_vbox">
         <property name="visible">True</property>
-        <property name="spacing">2</property>
         <child>
           <widget class="GtkEntry" id="name_entry">
             <property name="visible">True</property>
@@ -106,9 +105,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="relief">half</property>
                 <property name="use_stock">True</property>
-                <property name="focus_on_click">False</property>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -124,10 +121,8 @@
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="relief">half</property>
                 <property name="use_underline">True</property>
                 <property name="use_stock">True</property>
-                <property name="focus_on_click">False</property>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -159,7 +154,6 @@
     <child internal-child="vbox">
       <widget class="GtkVBox" id="equipment_dialog_vbox">
         <property name="visible">True</property>
-        <property name="spacing">2</property>
         <child>
           <widget class="GtkFrame" id="equipment_frame">
             <property name="visible">True</property>
@@ -168,11 +162,13 @@
             <child>
               <widget class="GtkAlignment" id="equipment_alignment">
                 <property name="visible">True</property>
-                <property name="left_padding">12</property>
                 <child>
-                  <widget class="GtkVBox" id="equipment_vbox">
+                  <widget class="GtkTable" id="equipment_table">
                     <property name="visible">True</property>
-                    <property name="homogeneous">True</property>
+                    <property name="n_columns">2</property>
+                    <child>
+                      <placeholder/>
+                    </child>
                     <child>
                       <placeholder/>
                     </child>
@@ -192,13 +188,14 @@
             </child>
           </widget>
           <packing>
-            <property name="position">2</property>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child internal-child="action_area">
           <widget class="GtkHButtonBox" id="equipment_actions">
             <property name="visible">True</property>
-            <property name="homogeneous">True</property>
             <property name="layout_style">end</property>
             <child>
               <widget class="GtkButton" id="equipment_dialog_accept_button">
@@ -217,8 +214,9 @@
           </widget>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">False</property>
             <property name="pack_type">end</property>
-            <property name="position">0</property>
+            <property name="position">1</property>
           </packing>
         </child>
       </widget>
@@ -231,24 +229,19 @@
     <property name="modal">True</property>
     <property name="destroy_with_parent">True</property>
     <property name="icon">../data/graphics/images/image_icon.png</property>
-    <property name="type_hint">dialog</property>
+    <property name="type_hint">normal</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="skip_pager_hint">True</property>
     <property name="deletable">False</property>
     <property name="show_hidden">True</property>
-    <property name="use_preview_label">False</property>
-    <property name="preview_widget_active">False</property>
     <property name="local_only">False</property>
+    <property name="preview_widget_active">False</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="filechooser_vbox">
         <property name="visible">True</property>
-        <property name="spacing">2</property>
         <child internal-child="action_area">
           <widget class="GtkHButtonBox" id="filechooser_actions">
             <property name="visible">True</property>
-            <property name="can_default">True</property>
-            <property name="has_default">True</property>
-            <property name="receives_default">True</property>
             <property name="layout_style">end</property>
             <child>
               <widget class="GtkButton" id="filechooser_dialog_cancel_button">
@@ -257,9 +250,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="relief">half</property>
                 <property name="use_stock">True</property>
-                <property name="focus_on_click">False</property>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -272,10 +263,10 @@
                 <property name="label">gtk-ok</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="relief">half</property>
                 <property name="use_stock">True</property>
-                <property name="focus_on_click">False</property>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -657,6 +648,8 @@
                 </child>
               </widget>
               <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
                 <property name="position">0</property>
               </packing>
             </child>
@@ -936,6 +929,8 @@
                 </child>
               </widget>
               <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -995,8 +990,10 @@
                                 <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <property name="relief">half</property>
                                 <property name="use_underline">True</property>
                                 <property name="focus_on_click">False</property>
+                                <signal name="clicked" handler="equip_clicked_GTK_cb"/>
                               </widget>
                               <packing>
                                 <property name="expand">False</property>
@@ -1011,8 +1008,10 @@
                                 <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <property name="relief">half</property>
                                 <property name="use_underline">True</property>
                                 <property name="focus_on_click">False</property>
+                                <signal name="clicked" handler="rest_clicked_GTK_cb"/>
                               </widget>
                               <packing>
                                 <property name="expand">False</property>
@@ -1043,6 +1042,8 @@
                 </child>
               </widget>
               <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
                 <property name="position">2</property>
               </packing>
             </child>
@@ -1057,14 +1058,12 @@
         <child>
           <widget class="GtkTextView" id="log_view">
             <property name="visible">True</property>
-            <property name="sensitive">False</property>
             <property name="editable">False</property>
             <property name="wrap_mode">word</property>
             <property name="cursor_visible">False</property>
             <property name="accepts_tab">False</property>
           </widget>
           <packing>
-            <property name="expand">False</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -1079,7 +1078,6 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-                <property name="focus_on_click">False</property>
                 <signal name="clicked" handler="about_clicked_GTK_cb"/>
               </widget>
               <packing>
@@ -1096,7 +1094,6 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-                <property name="focus_on_click">False</property>
                 <signal name="clicked" handler="quit_clicked_GTK_cb"/>
               </widget>
               <packing>
@@ -1109,6 +1106,7 @@
           </widget>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">False</property>
             <property name="pack_type">end</property>
             <property name="position">2</property>
           </packing>
@@ -1132,46 +1130,37 @@
               <widget class="GtkHBox" id="character_hbox">
                 <property name="visible">True</property>
                 <child>
-                  <widget class="GtkVBox" id="attributes_vbox">
+                  <widget class="GtkVBox" id="character_vbox">
                     <property name="visible">True</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <widget class="GtkHBox" id="name_hbox">
+                      <widget class="GtkTable" id="basic_table">
                         <property name="visible">True</property>
-                        <property name="homogeneous">True</property>
+                        <property name="n_rows">5</property>
+                        <property name="n_columns">2</property>
                         <child>
                           <widget class="GtkLabel" id="name_label">
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">Name:</property>
                           </widget>
-                          <packing>
-                            <property name="position">0</property>
-                          </packing>
                         </child>
                         <child>
                           <widget class="GtkLabel" id="name">
                             <property name="visible">True</property>
                           </widget>
                           <packing>
-                            <property name="position">1</property>
+                            <property name="left_attach">1</property>
+                            <property name="right_attach">2</property>
                           </packing>
                         </child>
-                      </widget>
-                      <packing>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkHBox" id="gender_hbox">
-                        <property name="visible">True</property>
-                        <property name="homogeneous">True</property>
                         <child>
                           <widget class="GtkLabel" id="gender_label">
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">Gender:</property>
                           </widget>
                           <packing>
-                            <property name="position">0</property>
+                            <property name="top_attach">1</property>
+                            <property name="bottom_attach">2</property>
                           </packing>
                         </child>
                         <child>
@@ -1179,25 +1168,20 @@
                             <property name="visible">True</property>
                           </widget>
                           <packing>
-                            <property name="position">1</property>
+                            <property name="left_attach">1</property>
+                            <property name="right_attach">2</property>
+                            <property name="top_attach">1</property>
+                            <property name="bottom_attach">2</property>
                           </packing>
                         </child>
-                      </widget>
-                      <packing>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkHBox" id="race_hbox">
-                        <property name="visible">True</property>
-                        <property name="homogeneous">True</property>
                         <child>
                           <widget class="GtkLabel" id="race_label">
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">Race:</property>
                           </widget>
                           <packing>
-                            <property name="position">0</property>
+                            <property name="top_attach">2</property>
+                            <property name="bottom_attach">3</property>
                           </packing>
                         </child>
                         <child>
@@ -1205,25 +1189,20 @@
                             <property name="visible">True</property>
                           </widget>
                           <packing>
-                            <property name="position">1</property>
+                            <property name="left_attach">1</property>
+                            <property name="right_attach">2</property>
+                            <property name="top_attach">2</property>
+                            <property name="bottom_attach">3</property>
                           </packing>
                         </child>
-                      </widget>
-                      <packing>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkHBox" id="class_hbox">
-                        <property name="visible">True</property>
-                        <property name="homogeneous">True</property>
                         <child>
                           <widget class="GtkLabel" id="class_label">
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">Class:</property>
                           </widget>
                           <packing>
-                            <property name="position">0</property>
+                            <property name="top_attach">3</property>
+                            <property name="bottom_attach">4</property>
                           </packing>
                         </child>
                         <child>
@@ -1231,25 +1210,20 @@
                             <property name="visible">True</property>
                           </widget>
                           <packing>
-                            <property name="position">1</property>
+                            <property name="left_attach">1</property>
+                            <property name="right_attach">2</property>
+                            <property name="top_attach">3</property>
+                            <property name="bottom_attach">4</property>
                           </packing>
                         </child>
-                      </widget>
-                      <packing>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkHBox" id="alignment_hbox">
-                        <property name="visible">True</property>
-                        <property name="homogeneous">True</property>
                         <child>
                           <widget class="GtkLabel" id="alignment_label">
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">Alignment:</property>
                           </widget>
                           <packing>
-                            <property name="position">0</property>
+                            <property name="top_attach">4</property>
+                            <property name="bottom_attach">5</property>
                           </packing>
                         </child>
                         <child>
@@ -1257,12 +1231,15 @@
                             <property name="visible">True</property>
                           </widget>
                           <packing>
-                            <property name="position">1</property>
+                            <property name="left_attach">1</property>
+                            <property name="right_attach">2</property>
+                            <property name="top_attach">4</property>
+                            <property name="bottom_attach">5</property>
                           </packing>
                         </child>
                       </widget>
                       <packing>
-                        <property name="position">4</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
@@ -1278,42 +1255,33 @@
                                 <property name="visible">True</property>
                                 <property name="orientation">vertical</property>
                                 <child>
-                                  <widget class="GtkHBox" id="hitpoints_hbox">
+                                  <widget class="GtkTable" id="status_table">
                                     <property name="visible">True</property>
-                                    <property name="homogeneous">True</property>
+                                    <property name="n_rows">5</property>
+                                    <property name="n_columns">2</property>
                                     <child>
                                       <widget class="GtkLabel" id="hitpoints_label">
                                         <property name="visible">True</property>
                                         <property name="label" translatable="yes">HP:</property>
                                       </widget>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
                                     </child>
                                     <child>
                                       <widget class="GtkLabel" id="hitpoints">
                                         <property name="visible">True</property>
                                       </widget>
                                       <packing>
-                                        <property name="position">1</property>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">2</property>
                                       </packing>
                                     </child>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkHBox" id="armorclass_hbox">
-                                    <property name="visible">True</property>
-                                    <property name="homogeneous">True</property>
                                     <child>
                                       <widget class="GtkLabel" id="armorclass_label">
                                         <property name="visible">True</property>
                                         <property name="label" translatable="yes">AC:</property>
                                       </widget>
                                       <packing>
-                                        <property name="position">0</property>
+                                        <property name="top_attach">1</property>
+                                        <property name="bottom_attach">2</property>
                                       </packing>
                                     </child>
                                     <child>
@@ -1321,25 +1289,20 @@
                                         <property name="visible">True</property>
                                       </widget>
                                       <packing>
-                                        <property name="position">1</property>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">2</property>
+                                        <property name="top_attach">1</property>
+                                        <property name="bottom_attach">2</property>
                                       </packing>
                                     </child>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkHBox" id="experience_hbox">
-                                    <property name="visible">True</property>
-                                    <property name="homogeneous">True</property>
                                     <child>
                                       <widget class="GtkLabel" id="experience_label">
                                         <property name="visible">True</property>
                                         <property name="label" translatable="yes">XP:</property>
                                       </widget>
                                       <packing>
-                                        <property name="position">0</property>
+                                        <property name="top_attach">2</property>
+                                        <property name="bottom_attach">3</property>
                                       </packing>
                                     </child>
                                     <child>
@@ -1347,25 +1310,20 @@
                                         <property name="visible">True</property>
                                       </widget>
                                       <packing>
-                                        <property name="position">1</property>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">2</property>
+                                        <property name="top_attach">2</property>
+                                        <property name="bottom_attach">3</property>
                                       </packing>
                                     </child>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">3</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkHBox" id="level_hbox">
-                                    <property name="visible">True</property>
-                                    <property name="homogeneous">True</property>
                                     <child>
                                       <widget class="GtkLabel" id="level_label">
                                         <property name="visible">True</property>
                                         <property name="label" translatable="yes">Level:</property>
                                       </widget>
                                       <packing>
-                                        <property name="position">0</property>
+                                        <property name="top_attach">3</property>
+                                        <property name="bottom_attach">4</property>
                                       </packing>
                                     </child>
                                     <child>
@@ -1373,25 +1331,20 @@
                                         <property name="visible">True</property>
                                       </widget>
                                       <packing>
-                                        <property name="position">1</property>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">2</property>
+                                        <property name="top_attach">3</property>
+                                        <property name="bottom_attach">4</property>
                                       </packing>
                                     </child>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">4</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkHBox" id="gold_hbox">
-                                    <property name="visible">True</property>
-                                    <property name="homogeneous">True</property>
                                     <child>
                                       <widget class="GtkLabel" id="gold_label">
                                         <property name="visible">True</property>
                                         <property name="label" translatable="yes">Gold:</property>
                                       </widget>
                                       <packing>
-                                        <property name="position">0</property>
+                                        <property name="top_attach">4</property>
+                                        <property name="bottom_attach">5</property>
                                       </packing>
                                     </child>
                                     <child>
@@ -1399,12 +1352,15 @@
                                         <property name="visible">True</property>
                                       </widget>
                                       <packing>
-                                        <property name="position">1</property>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">2</property>
+                                        <property name="top_attach">4</property>
+                                        <property name="bottom_attach">5</property>
                                       </packing>
                                     </child>
                                   </widget>
                                   <packing>
-                                    <property name="position">5</property>
+                                    <property name="position">0</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -1439,7 +1395,7 @@
                                     </child>
                                   </widget>
                                   <packing>
-                                    <property name="position">6</property>
+                                    <property name="position">1</property>
                                   </packing>
                                 </child>
                               </widget>
@@ -1458,7 +1414,7 @@
                         </child>
                       </widget>
                       <packing>
-                        <property name="position">5</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                     <child>
@@ -1470,164 +1426,129 @@
                           <widget class="GtkAlignment" id="attribute_alignment">
                             <property name="visible">True</property>
                             <child>
-                              <widget class="GtkVBox" id="attribute_vbox">
+                              <widget class="GtkTable" id="attributes_table">
                                 <property name="visible">True</property>
-                                <property name="orientation">vertical</property>
-                                <property name="homogeneous">True</property>
+                                <property name="n_rows">6</property>
+                                <property name="n_columns">2</property>
                                 <child>
-                                  <widget class="GtkHBox" id="strength_hbox">
+                                  <widget class="GtkLabel" id="charisma_label">
                                     <property name="visible">True</property>
-                                    <property name="homogeneous">True</property>
-                                    <child>
-                                      <widget class="GtkLabel" id="strength_label">
-                                        <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Strength:</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkLabel" id="strength">
-                                        <property name="visible">True</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
+                                    <property name="label" translatable="yes">Charisma:</property>
                                   </widget>
                                   <packing>
-                                    <property name="position">0</property>
+                                    <property name="top_attach">5</property>
+                                    <property name="bottom_attach">6</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <widget class="GtkHBox" id="dexterity_hbox">
+                                  <widget class="GtkLabel" id="charisma">
                                     <property name="visible">True</property>
-                                    <property name="homogeneous">True</property>
-                                    <child>
-                                      <widget class="GtkLabel" id="dexterity_label">
-                                        <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Dexterity:</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkLabel" id="dexterity">
-                                        <property name="visible">True</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
+                                    <property name="xpad">3</property>
                                   </widget>
                                   <packing>
-                                    <property name="position">1</property>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
+                                    <property name="top_attach">5</property>
+                                    <property name="bottom_attach">6</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <widget class="GtkHBox" id="constitution_hbox">
+                                  <widget class="GtkLabel" id="wisdom_label">
                                     <property name="visible">True</property>
-                                    <property name="homogeneous">True</property>
-                                    <child>
-                                      <widget class="GtkLabel" id="constitution_label">
-                                        <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Constitution:</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkLabel" id="constitution">
-                                        <property name="visible">True</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
+                                    <property name="label" translatable="yes">Wisdom:</property>
                                   </widget>
                                   <packing>
-                                    <property name="position">2</property>
+                                    <property name="top_attach">4</property>
+                                    <property name="bottom_attach">5</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <widget class="GtkHBox" id="intelligence_hbox">
+                                  <widget class="GtkLabel" id="wisdom">
                                     <property name="visible">True</property>
-                                    <property name="homogeneous">True</property>
-                                    <child>
-                                      <widget class="GtkLabel" id="intelligence_label">
-                                        <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Intelligence:</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkLabel" id="intelligence">
-                                        <property name="visible">True</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
                                   </widget>
                                   <packing>
-                                    <property name="position">3</property>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
+                                    <property name="top_attach">4</property>
+                                    <property name="bottom_attach">5</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <widget class="GtkHBox" id="wisdom_hbox">
+                                  <widget class="GtkLabel" id="intelligence_label">
                                     <property name="visible">True</property>
-                                    <property name="homogeneous">True</property>
-                                    <child>
-                                      <widget class="GtkLabel" id="wisdom_label">
-                                        <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Wisdom:</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkLabel" id="wisdom">
-                                        <property name="visible">True</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
+                                    <property name="label" translatable="yes">Intelligence:</property>
                                   </widget>
                                   <packing>
-                                    <property name="position">4</property>
+                                    <property name="top_attach">3</property>
+                                    <property name="bottom_attach">4</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <widget class="GtkHBox" id="charisma_hbox">
+                                  <widget class="GtkLabel" id="intelligence">
                                     <property name="visible">True</property>
-                                    <property name="homogeneous">True</property>
-                                    <child>
-                                      <widget class="GtkLabel" id="charisma_label">
-                                        <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Charisma:</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkLabel" id="charisma">
-                                        <property name="visible">True</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
                                   </widget>
                                   <packing>
-                                    <property name="position">5</property>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
+                                    <property name="top_attach">3</property>
+                                    <property name="bottom_attach">4</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="constitution_label">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">Constitution:</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="top_attach">2</property>
+                                    <property name="bottom_attach">3</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="constitution">
+                                    <property name="visible">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
+                                    <property name="top_attach">2</property>
+                                    <property name="bottom_attach">3</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="dexterity_label">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">Dexterity:</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="dexterity">
+                                    <property name="visible">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="strength_label">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">Strength:</property>
+                                  </widget>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="strength">
+                                    <property name="visible">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
                                   </packing>
                                 </child>
                               </widget>
@@ -1646,7 +1567,7 @@
                         </child>
                       </widget>
                       <packing>
-                        <property name="position">6</property>
+                        <property name="position">2</property>
                       </packing>
                     </child>
                   </widget>
@@ -1659,7 +1580,6 @@
                 <child>
                   <widget class="GtkNotebook" id="notebook">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="tab_pos">right</property>
                     <property name="show_border">False</property>
                     <property name="scrollable">True</property>
@@ -1680,7 +1600,6 @@
                               <widget class="GtkVBox" id="feats_vbox">
                                 <property name="visible">True</property>
                                 <property name="orientation">vertical</property>
-                                <property name="homogeneous">True</property>
                                 <child>
                                   <placeholder/>
                                 </child>
@@ -1701,6 +1620,7 @@
                       </widget>
                       <packing>
                         <property name="menu_label">feats</property>
+                        <property name="tab_expand">True</property>
                         <property name="tab_fill">False</property>
                       </packing>
                     </child>
@@ -1727,7 +1647,6 @@
                               <widget class="GtkVBox" id="abilities_vbox">
                                 <property name="visible">True</property>
                                 <property name="orientation">vertical</property>
-                                <property name="homogeneous">True</property>
                                 <child>
                                   <placeholder/>
                                 </child>
@@ -1749,6 +1668,7 @@
                       <packing>
                         <property name="menu_label">abilities</property>
                         <property name="position">1</property>
+                        <property name="tab_expand">True</property>
                         <property name="tab_fill">False</property>
                       </packing>
                     </child>
@@ -1773,10 +1693,12 @@
                           <widget class="GtkAlignment" id="skills_alignment">
                             <property name="visible">True</property>
                             <child>
-                              <widget class="GtkVBox" id="skills_vbox">
+                              <widget class="GtkTable" id="skills_table">
                                 <property name="visible">True</property>
-                                <property name="orientation">vertical</property>
-                                <property name="homogeneous">True</property>
+                                <property name="n_columns">2</property>
+                                <child>
+                                  <placeholder/>
+                                </child>
                                 <child>
                                   <placeholder/>
                                 </child>
@@ -1798,6 +1720,7 @@
                       <packing>
                         <property name="menu_label">skills</property>
                         <property name="position">2</property>
+                        <property name="tab_expand">True</property>
                         <property name="tab_fill">False</property>
                       </packing>
                     </child>
@@ -1825,7 +1748,6 @@
                               <widget class="GtkVBox" id="spells_vbox">
                                 <property name="visible">True</property>
                                 <property name="orientation">vertical</property>
-                                <property name="homogeneous">True</property>
                                 <child>
                                   <widget class="GtkFrame" id="known_spells_frame">
                                     <property name="visible">True</property>
@@ -1857,6 +1779,8 @@
                                     </child>
                                   </widget>
                                   <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
                                     <property name="position">0</property>
                                   </packing>
                                 </child>
@@ -1869,9 +1793,12 @@
                                       <widget class="GtkAlignment" id="prepared_spells_alignment">
                                         <property name="visible">True</property>
                                         <child>
-                                          <widget class="GtkVBox" id="prepared_spells_vbox">
+                                          <widget class="GtkTable" id="prepared_spells_table">
                                             <property name="visible">True</property>
-                                            <property name="orientation">vertical</property>
+                                            <property name="n_columns">2</property>
+                                            <child>
+                                              <placeholder/>
+                                            </child>
                                             <child>
                                               <placeholder/>
                                             </child>
@@ -1891,6 +1818,8 @@
                                     </child>
                                   </widget>
                                   <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
                                     <property name="position">1</property>
                                   </packing>
                                 </child>
@@ -1912,6 +1841,7 @@
                       <packing>
                         <property name="menu_label">spells</property>
                         <property name="position">3</property>
+                        <property name="tab_expand">True</property>
                         <property name="tab_fill">False</property>
                       </packing>
                     </child>
@@ -1939,7 +1869,6 @@
                               <widget class="GtkVBox" id="inventory_items_vbox">
                                 <property name="visible">True</property>
                                 <property name="orientation">vertical</property>
-                                <property name="homogeneous">True</property>
                                 <child>
                                   <placeholder/>
                                 </child>
@@ -1961,6 +1890,7 @@
                       <packing>
                         <property name="menu_label">inventory</property>
                         <property name="position">4</property>
+                        <property name="tab_expand">True</property>
                         <property name="tab_fill">False</property>
                       </packing>
                     </child>

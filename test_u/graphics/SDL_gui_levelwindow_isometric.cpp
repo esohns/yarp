@@ -42,7 +42,7 @@
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
 
-#include <ace/Log_Msg.h>
+#include "ace/Log_Msg.h"
 
 #include <sstream>
 
@@ -1061,12 +1061,14 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
     case SDL_MOUSEMOTION:
     {
       // find map square
+			SDL_Rect window_area;
+			getArea(window_area, true);
       RPG_Graphics_Position_t map_position =
           RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.motion.x,
                                                                event_in.motion.y),
                                                 myEngine->getSize(),
-                                                std::make_pair(myClipRect.w,
-                                                               myClipRect.h),
+																								std::make_pair(window_area.w,
+																								               window_area.h),
                                                 myView);
       // inside map ?
       if (map_position ==
@@ -1119,8 +1121,8 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
         {
           RPG_Graphics_Offset_t highlight_position =
             RPG_Graphics_Common_Tools::map2Screen(map_position,
-                                                  std::make_pair(myClipRect.w,
-                                                                 myClipRect.h),
+						                                      std::make_pair(window_area.w,
+																									               window_area.h),
                                                   myView);
           if (highlight_position !=
 						  std::make_pair(std::numeric_limits<int>::max(),
@@ -1186,12 +1188,15 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
 
       if (event_in.button.button == 1) // left-click
       {
+				SDL_Rect window_area;
+				getArea(window_area,
+								true);
         RPG_Graphics_Position_t map_position =
             RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.button.x,
                                                                  event_in.button.y),
                                                   myEngine->getSize(),
-                                                  std::make_pair(myClipRect.w,
-                                                                 myClipRect.h),
+																									std::make_pair(window_area.w,
+																									               window_area.h),
                                                   myView);
 
         ACE_DEBUG((LM_DEBUG,
@@ -1210,7 +1215,11 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
           action.command = ((door_state == DOORSTATE_OPEN) ? COMMAND_DOOR_CLOSE
                                                            : COMMAND_DOOR_OPEN);
           action.position = map_position;
-          myEngine->action(myEngine->getActive(), action);
+					myEngine->lock();
+          myEngine->action(myEngine->getActive(false),
+													 action,
+													 false);
+					myEngine->unlock();
         } // end IF
       } // end IF
 

@@ -3,6 +3,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)..</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-h 600 -t -w 800</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-f -h 600 -t -w 800</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

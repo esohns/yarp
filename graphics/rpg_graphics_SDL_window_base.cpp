@@ -30,7 +30,7 @@
 
 #include "rpg_common_macros.h"
 
-#include <ace/OS.h>
+#include "ace/OS.h"
 
 RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_WindowType& type_in,
 	                                                     const RPG_Graphics_Size_t& size_in,
@@ -97,7 +97,8 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase(const RPG_Graphics_Window
 											 false);
 	SDL_Rect clip_rectangle;
 	// get parent window clip area (if any)
-	myParent->getArea(clip_rectangle);
+	myParent->getArea(clip_rectangle,
+										false);
 	myClipRect = clip_rectangle;
 	if (offset_in.first)
 		myClipRect.x = static_cast<int16_t>(offset_in.first + 
@@ -372,13 +373,16 @@ RPG_Graphics_SDLWindowBase::clear(const RPG_Graphics_ColorName& color_in,
   // sanity check(s)
   ACE_ASSERT(myScreen);
 
+	// *NOTE*: SDL_FillRect may modify the dstrect argument --> save it first
+	SDL_Rect dstrect = myClipRect;
+
 	if (clip_in)
 		clip();
 
   if (myScreenLock)
     myScreenLock->lock();
   if (SDL_FillRect(myScreen,                                     // target surface
-                   &myClipRect,                                  // fill area
+		               &dstrect,                                     // fill area
                    RPG_Graphics_SDL_Tools::getColor(color_in,
                                                     *myScreen))) // color
   {
@@ -398,7 +402,7 @@ RPG_Graphics_SDLWindowBase::clear(const RPG_Graphics_ColorName& color_in,
 	if (clip_in)
 		unclip();
 
-  invalidate(myClipRect);
+	invalidate(dstrect);
 }
 
 //void

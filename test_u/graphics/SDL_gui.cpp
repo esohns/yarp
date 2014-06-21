@@ -227,12 +227,12 @@ do_printUsage(const std::string& programName_in)
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::string path = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE);
+  path += RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_NAME));
   path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
   std::cout << ACE_TEXT("-c ([FILE]): player profile (*")
             << ACE_TEXT(RPG_PLAYER_PROFILE_EXT)
             << ACE_TEXT(") [")
-            << path.c_str()
+            << path
             << ACE_TEXT("]")
             << std::endl;
   path = data_path;
@@ -240,7 +240,7 @@ do_printUsage(const std::string& programName_in)
 #if defined(DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("graphics");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR("data");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
   path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DATA_SUB);
@@ -264,7 +264,7 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-g [FILE]  : graphics dictionary (*.xml)")
             << ACE_TEXT(" [\"")
-            << path.c_str()
+            << path
             << ACE_TEXT("\"]")
             << std::endl;
   std::cout << ACE_TEXT("-h [HEIGHT]: height [")
@@ -280,7 +280,7 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-i [FILE]  : items dictionary (*.xml)")
             << ACE_TEXT(" [\"")
-            << path.c_str()
+            << path
             << ACE_TEXT("\"]")
             << std::endl;
   path = configuration_path;
@@ -292,7 +292,7 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-m [FILE]  : magic dictionary (*.xml)")
             << ACE_TEXT(" [\"")
-            << path.c_str()
+            << path
             << ACE_TEXT("\"]")
             << std::endl;
   path = configuration_path;
@@ -306,32 +306,32 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-n [FILE]  : monster dictionary (*.xml)")
             << ACE_TEXT(" [\"")
-            << path.c_str()
+            << path
             << ACE_TEXT("\"]")
             << std::endl;
-	path = data_path;
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR("map");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR("data");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#else
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
-  path +=
-      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME));
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
   std::cout << ACE_TEXT("-o         : OpenGL mode")
             << ACE_TEXT(" [")
             << false
             << ACE_TEXT("]")
             << std::endl;
+	path = data_path;
+	path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(DEBUG_DEBUGGER)
+	path += ACE_TEXT_ALWAYS_CHAR("engine");
+	path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+	path += ACE_TEXT_ALWAYS_CHAR("data");
+	path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#else
+	path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
+	path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif
+	path +=
+		RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME));
+	path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
   std::cout << ACE_TEXT("-p ([FILE]): map (*")
             << ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
             << ACE_TEXT(") [")
-            << path.c_str()
+            << path
             << ACE_TEXT("]")
             << std::endl;
   std::cout << ACE_TEXT("-s         : slideshow mode")
@@ -422,7 +422,7 @@ do_processArguments(const int argc_in,
 #if defined(DEBUG_DEBUGGER)
   directory_out += ACE_TEXT_ALWAYS_CHAR("graphics");
   directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
+  directory_out += ACE_TEXT_ALWAYS_CHAR("data");
 #else
   directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DATA_SUB);
 #endif
@@ -439,7 +439,7 @@ do_processArguments(const int argc_in,
   entityFile_out          =
       RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   entityFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  entityFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE);
+	entityFile_out += RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_NAME));
   entityFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
   openGLMode_out          = false;
@@ -447,7 +447,7 @@ do_processArguments(const int argc_in,
   mapFile_out             = data_path;
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(DEBUG_DEBUGGER)
-  mapFile_out += ACE_TEXT_ALWAYS_CHAR("map");
+  mapFile_out += ACE_TEXT_ALWAYS_CHAR("engine");
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   mapFile_out += ACE_TEXT_ALWAYS_CHAR("data");
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -1123,13 +1123,14 @@ do_UI(RPG_Engine_Entity_t& entity_in,
 						int x, y;
             SDL_GetMouseState(&x, &y);
             mouse_position = std::make_pair(x, y);
-            SDL_Rect map_area;
-            map_window->getArea(map_area);
+            SDL_Rect window_area;
+						map_window->getArea(window_area,
+																true);
 						RPG_Graphics_Position_t map_position =
 								RPG_Graphics_Common_Tools::screen2Map(mouse_position,
 																											engine_in->getSize(),
-																											std::make_pair(map_area.w,
-																																		 map_area.h),
+																											std::make_pair(window_area.w,
+																											               window_area.h),
 																											map_window->getView());
 						// inside map ?
 						if (map_position ==
@@ -1170,8 +1171,8 @@ do_UI(RPG_Engine_Entity_t& entity_in,
 							{
 								RPG_Graphics_Offset_t highlight_position =
 									RPG_Graphics_Common_Tools::map2Screen(map_position,
-																												std::make_pair(map_area.w,
-																																			 map_area.h),
+									                                      std::make_pair(window_area.w,
+																												               window_area.h),
 																												map_window->getView());
 								if (highlight_position !=
 										std::make_pair(std::numeric_limits<int>::max(),
@@ -1494,12 +1495,12 @@ do_work(const mode_t& mode_in,
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE;
   std::string title = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);
-	SDL_GUI_MainWindow mainWindow(std::make_pair(state.screen->w,
-		                                           state.screen->h), // size
-                                type,                            // interface elements
-                                title,                           // title (== caption)
-                                FONT_MAIN_LARGE);                // title font
-  mainWindow.setScreen(state.screen);
+	SDL_GUI_MainWindow main_window(std::make_pair(state.screen->w,
+		                                            state.screen->h), // size
+                                 type,                            // interface elements
+                                 title,                           // title (== caption)
+                                 FONT_MAIN_LARGE);                // title font
+	main_window.setScreen(state.screen);
 
   // ***** mouse setup *****
   SDL_WarpMouse((state.screen->w / 2),
@@ -1510,7 +1511,7 @@ do_work(const mode_t& mode_in,
     case SDL_GUI_USERMODE_SLIDESHOW:
     {
       do_slideshow(graphicsDirectory_in,
-                   &mainWindow);
+									 &main_window);
 
       break;
     }
@@ -1554,16 +1555,16 @@ do_work(const mode_t& mode_in,
                                                                    dirty_region);
 
       // step3: create/load initial entity
-      std::string configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-      configuration_path =
-          RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                               true);
-#endif // #ifdef BASEDIR
-      std::string schemaRepository = configuration_path;
-      schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+			std::string configuration_path =
+				RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
+				true);
 #if defined(DEBUG_DEBUGGER)
-      schemaRepository += ACE_TEXT_ALWAYS_CHAR("engine");
+			configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+#endif
+      std::string schema_repository = configuration_path;
+			schema_repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined(DEBUG_DEBUGGER)
+			schema_repository += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
 
       RPG_Engine_Entity_t entity;
@@ -1593,7 +1594,7 @@ do_work(const mode_t& mode_in,
         short int HP = std::numeric_limits<short int>::max();
         RPG_Magic_Spells_t spells;
         entity.character = RPG_Player::load(entity_in,
-                                            schemaRepository,
+																						schema_repository,
                                             condition,
                                             HP,
                                             spells);
@@ -1615,15 +1616,15 @@ do_work(const mode_t& mode_in,
 
       // step4: init sub-windows (level window, hotspots, minimap, ...)
       RPG_Engine level_engine;
-      mainWindow.init(&state,
-                      &level_engine,
-                      (videoConfiguration_in.use_OpenGL ? GRAPHICSMODE_2D_OPENGL
-                                                        : GRAPHICSMODE_2D_ISOMETRIC));
+			main_window.init(&state,
+                       &level_engine,
+                       (videoConfiguration_in.use_OpenGL ? GRAPHICSMODE_2D_OPENGL
+                                                         : GRAPHICSMODE_2D_ISOMETRIC));
       // step4a: draw main window borders...
       try
       {
-        mainWindow.draw();
-        mainWindow.update();
+				main_window.draw();
+				main_window.update();
       }
       catch (...)
       {
@@ -1633,12 +1634,12 @@ do_work(const mode_t& mode_in,
 
       // step5: init level state engine
       RPG_Client_IWindowLevel* map_window =
-          dynamic_cast<RPG_Client_IWindowLevel*>(mainWindow.child(WINDOW_MAP));
+				dynamic_cast<RPG_Client_IWindowLevel*>(main_window.child(WINDOW_MAP));
       ACE_ASSERT(map_window);
 			// init/add entity to the graphics cache
-			RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->init(&mainWindow,
+			RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->init(&main_window,
 																															map_window);
-			RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->init(&mainWindow,
+			RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->init(&main_window,
 																														map_window);
 
       // *NOTE*: triggers a center/draw/refresh...
@@ -1683,7 +1684,7 @@ do_work(const mode_t& mode_in,
             &level_engine,
             level,
             mapConfiguration_in,
-            &mainWindow,
+						&main_window,
             videoConfiguration_in.use_OpenGL,
             debugMode_in);
 
@@ -1850,8 +1851,9 @@ ACE_TMAIN(int argc_in,
   graphics_directory += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   graphics_directory += ACE_TEXT_ALWAYS_CHAR("data");
-#endif
+#else
   graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DATA_SUB);
+#endif
 
   unsigned int cache_size         = RPG_CLIENT_GRAPHICS_DEF_CACHESIZE;
 
@@ -1868,13 +1870,13 @@ ACE_TMAIN(int argc_in,
   std::string entity_filename     =
       RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   entity_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  entity_filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE);
+  entity_filename += RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_NAME));
   entity_filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
   std::string map_filename        = data_path;
   map_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(DEBUG_DEBUGGER)
-  map_filename += ACE_TEXT_ALWAYS_CHAR("map");
+  map_filename += ACE_TEXT_ALWAYS_CHAR("engine");
   map_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   map_filename += ACE_TEXT_ALWAYS_CHAR("data");
   map_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;

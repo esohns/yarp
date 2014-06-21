@@ -4,46 +4,46 @@
   <name>default player</name>
 
   <abilities>
+    <ability>ABILITY_NATURAL_WEAPONS</ability>
     <ability>ABILITY_SPELLS</ability>
+    <ability>ABILITY_ANIMAL_COMPANION</ability>
   </abilities>
 
   <alignment>
-    <civic>ALIGNMENTCIVIC_LAWFUL</civic>
-    <ethic>ALIGNMENTETHIC_GOOD</ethic>
+    <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
+    <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
   </alignment>
 
   <attributes>
-    <strength>12</strength>
-    <dexterity>15</dexterity>
+    <strength>16</strength>
+    <dexterity>12</dexterity>
     <constitution>15</constitution>
-    <intelligence>12</intelligence>
-    <wisdom>17</wisdom>
-    <charisma>12</charisma>
+    <intelligence>10</intelligence>
+    <wisdom>13</wisdom>
+    <charisma>17</charisma>
   </attributes>
 
   <defaultSize>SIZE_MEDIUM</defaultSize>
 
   <feats>
-    <feat>FEAT_RAPID_RELOAD</feat>
+    <feat>FEAT_CRAFT_WONDROUS_ITEM</feat>
     <feat>FEAT_PROFICIENCY_ARMOR_LIGHT</feat>
     <feat>FEAT_PROFICIENCY_ARMOR_MEDIUM</feat>
-    <feat>FEAT_PROFICIENCY_ARMOR_HEAVY</feat>
-    <feat>FEAT_PROFICIENCY_MARTIAL_WEAPONS</feat>
     <feat>FEAT_PROFICIENCY_SHIELD</feat>
     <feat>FEAT_PROFICIENCY_SIMPLE_WEAPONS</feat>
   </feats>
 
   <knownSpells/>
 
-  <maxHP>10</maxHP>
+  <maxHP>8</maxHP>
 
   <skills>
     <skill>
-      <skill>SKILL_CRAFT_ANY</skill>
+      <skill>SKILL_APPRAISE</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_CRAFT_ALCHEMY</skill>
+      <skill>SKILL_CRAFT_FLETCHER</skill>
       <rank>1</rank>
     </skill>
     <skill>
@@ -51,15 +51,15 @@
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_HEAL</skill>
+      <skill>SKILL_DISABLE_DEVICE</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_INTIMIDATE</skill>
+      <skill>SKILL_GATHER_INFORMATION</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_JUMP</skill>
+      <skill>SKILL_HIDE</skill>
       <rank>1</rank>
     </skill>
     <skill>
@@ -67,7 +67,15 @@
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_KNOWLEDGE_PLANES</skill>
+      <skill>SKILL_KNOWLEDGE_DUNGEONS</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_KNOWLEDGE_RELIGION</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_MOVE_SILENTLY</skill>
       <rank>1</rank>
     </skill>
     <skill>
@@ -75,25 +83,33 @@
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_SPEAK_LANGUAGE</skill>
+      <skill>SKILL_RIDE</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_SWIM</skill>
+      <skill>SKILL_SEARCH</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_SPELLCRAFT</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_TUMBLE</skill>
       <rank>2</rank>
     </skill>
   </skills>
 
   <classXML>
-    <metaClass>METACLASS_WARRIOR</metaClass>
-    <subClass>SUBCLASS_PALADIN</subClass>
+    <metaClass>METACLASS_PRIEST</metaClass>
+    <subClass>SUBCLASS_DRUID</subClass>
   </classXML>
 
   <gender>GENDER_FEMALE</gender>
 
-  <offhand>OFFHAND_RIGHT</offhand>
+  <offhand>OFFHAND_LEFT</offhand>
 
-  <race>RACE_ORC</race>
+  <race>RACE_DWARF</race>
 
   <gold>0</gold>
 
@@ -101,19 +117,19 @@
     <item>
       <type>ITEM_WEAPON</type>
       <weapon isDoubleWeapon="false" isNonLethal="false" isReachWeapon="false">
-        <baseWeight>4</baseWeight>
+        <baseWeight>2</baseWeight>
         <baseStorePrice>
-          <numGoldPieces>15</numGoldPieces>
+          <numGoldPieces>6</numGoldPieces>
         </baseStorePrice>
-        <type>ONE_HANDED_MELEE_WEAPON_SWORD_LONG</type>
-        <category>WEAPONCATEGORY_MARTIAL</category>
-        <weaponClass>WEAPONCLASS_ONE_HANDED_MELEE</weaponClass>
+        <type>LIGHT_MELEE_WEAPON_SICKLE</type>
+        <category>WEAPONCATEGORY_SIMPLE</category>
+        <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
         <baseDamage>
           <numDice>1</numDice>
-          <typeDice>D_8</typeDice>
+          <typeDice>D_6</typeDice>
         </baseDamage>
         <criticalHit>
-          <minToHitRoll>19</minToHitRoll>
+          <minToHitRoll>20</minToHitRoll>
           <damageModifier>2</damageModifier>
         </criticalHit>
         <typeOfDamage>PHYSICALDAMAGE_SLASHING</typeOfDamage>
@@ -122,32 +138,32 @@
     <item>
       <type>ITEM_ARMOR</type>
       <armor>
-        <baseWeight>50</baseWeight>
+        <baseWeight>25</baseWeight>
         <baseStorePrice>
-          <numGoldPieces>1500</numGoldPieces>
+          <numGoldPieces>15</numGoldPieces>
         </baseStorePrice>
-        <type>ARMOR_PLATE_FULL</type>
-        <category>ARMORCATEGORY_HEAVY</category>
-        <baseBonus>8</baseBonus>
-        <maxDexterityBonus>1</maxDexterityBonus>
-        <checkPenalty>-6</checkPenalty>
-        <arcaneSpellFailure>35</arcaneSpellFailure>
+        <type>ARMOR_HIDE</type>
+        <category>ARMORCATEGORY_MEDIUM</category>
+        <baseBonus>3</baseBonus>
+        <maxDexterityBonus>4</maxDexterityBonus>
+        <checkPenalty>-3</checkPenalty>
+        <arcaneSpellFailure>20</arcaneSpellFailure>
         <baseSpeed>20</baseSpeed>
       </armor>
     </item>
     <item>
       <type>ITEM_ARMOR</type>
       <armor>
-        <baseWeight>15</baseWeight>
+        <baseWeight>5</baseWeight>
         <baseStorePrice>
-          <numGoldPieces>20</numGoldPieces>
+          <numGoldPieces>3</numGoldPieces>
         </baseStorePrice>
-        <type>ARMOR_SHIELD_HEAVY_STEEL</type>
+        <type>ARMOR_SHIELD_LIGHT_WOODEN</type>
         <category>ARMORCATEGORY_SHIELD</category>
-        <baseBonus>2</baseBonus>
+        <baseBonus>1</baseBonus>
         <maxDexterityBonus>0</maxDexterityBonus>
-        <checkPenalty>-2</checkPenalty>
-        <arcaneSpellFailure>15</arcaneSpellFailure>
+        <checkPenalty>-1</checkPenalty>
+        <arcaneSpellFailure>5</arcaneSpellFailure>
         <baseSpeed>0</baseSpeed>
       </armor>
     </item>

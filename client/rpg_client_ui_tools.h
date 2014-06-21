@@ -23,22 +23,21 @@
 
 #include "rpg_client_exports.h"
 
-#include <gtk/gtk.h>
+#include "gtk/gtk.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <string>
 
 class RPG_Client_Export RPG_Client_UI_Tools
 {
  public:
-  static const std::string UTF82Locale(const gchar*,   // string
-                                       const gssize&); // length in bytes (-1: \0-terminated)
+  static std::string UTF82Locale(const gchar*,        // string
+                                 const gssize& = -1); // length in bytes (-1: \0-terminated)
   // *IMPORTANT NOTE*: return value needs to be g_free()'d !
   static gchar* Locale2UTF8(const std::string&); // string
 
  private:
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_UI_Tools());
   ACE_UNIMPLEMENTED_FUNC(~RPG_Client_UI_Tools());
   ACE_UNIMPLEMENTED_FUNC(RPG_Client_UI_Tools(const RPG_Client_UI_Tools&));

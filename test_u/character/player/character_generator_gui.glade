@@ -303,6 +303,7 @@
                               <widget class="GtkButton" id="previous_button">
                                 <property name="label" translatable="yes">gtk-go-back</property>
                                 <property name="visible">True</property>
+                                <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="relief">half</property>
@@ -320,6 +321,7 @@
                               <widget class="GtkButton" id="next_button">
                                 <property name="label" translatable="yes">gtk-go-forward</property>
                                 <property name="visible">True</property>
+                                <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="relief">half</property>

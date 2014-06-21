@@ -51,7 +51,7 @@
 #include "rpg_dice_common.h"
 #include "rpg_dice.h"
 
-#include <ace/Log_Msg.h>
+#include "ace/Log_Msg.h"
 
 #include <fstream>
 #include <numeric>

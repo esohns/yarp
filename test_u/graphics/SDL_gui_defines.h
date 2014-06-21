@@ -21,9 +21,10 @@
 #ifndef SDL_GUI_DEFINES_H
 #define SDL_GUI_DEFINES_H
 
-#include "rpg_client_graphicsmode.h"
-
 #include "rpg_graphics_colorname.h"
+
+#include "rpg_client_defines.h"
+#include "rpg_client_graphicsmode.h"
 
 #define SDL_GUI_DEF_CAPTION                    "SDL_gui"
 
@@ -54,7 +55,7 @@
 #define SDL_GUI_SDL_TIMEREVENT                 SDL_USEREVENT
 // *NOTE*: this defines the input resolution or "interactivity"
 // *WARNING*: apparently, the maximum SDL timer resolution is 10 ms
-#define SDL_GUI_SDL_EVENT_TIMEOUT              50 // ms
+#define SDL_GUI_SDL_EVENT_TIMEOUT              RPG_CLIENT_SDL_EVENT_TIMEOUT // ms
 
 #define SDL_GUI_DEF_TILE_FRAME_COLOR           COLOR_BLACK_A70
 #define SDL_GUI_DEF_TILE_INDEX_COLOR           COLOR_RED

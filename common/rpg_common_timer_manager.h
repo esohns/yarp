@@ -26,8 +26,8 @@
 #include "rpg_common_icontrol.h"
 #include "rpg_common_idumpstate.h"
 
-#include <ace/Singleton.h>
-#include <ace/Time_Value.h>
+#include "ace/Singleton.h"
+#include "ace/Time_Value.h"
 
 // *NOTE*: global time policy (supplies gettimeofday())
 static RPG_Common_TimePolicy_t RPG_COMMON_TIME_POLICY;

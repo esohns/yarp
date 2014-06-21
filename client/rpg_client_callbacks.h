@@ -30,17 +30,21 @@
 
 #include "rpg_player.h"
 
-#include <glade/glade.h>
-#include <gtk/gtk.h>
+#include "glade/glade.h"
+#include "gtk/gtk.h"
 
 #include <string>
 
 RPG_Client_Export void update_equipment(const RPG_Client_GTK_CBData_t&);
 RPG_Client_Export void update_character_profile(const RPG_Player&, GladeXML*);
 RPG_Client_Export void update_entity_profile(const RPG_Engine_Entity_t&, GladeXML*);
-RPG_Client_Export void reset_entity_profile(GladeXML*);
+RPG_Client_Export void reset_character_profile(GladeXML*);
 RPG_Client_Export unsigned int load_files(const RPG_Client_Repository&, // repository
                                           GtkListStore*);               // target liststore
+RPG_Client_Export gint combobox_sort_function(GtkTreeModel*, // model
+																					    GtkTreeIter*,  // row 1
+																					    GtkTreeIter*,  // row 2
+																					    gpointer);     // user data
 
 // GTK callback functions
 #ifdef __cplusplus

@@ -379,7 +379,7 @@ test_u_main::init_GUI(const std::string& graphics_directory_in,
   RPG_TRACE(ACE_TEXT("test_u_main::init_GUI"));
 
   // sanity check(s)
-  if (!RPG_Common_File_Tools::isDirectory(graphics_directory_in.c_str()))
+  if (!RPG_Common_File_Tools::isDirectory(graphics_directory_in))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid directory \"%s\", aborting\n"),
@@ -485,6 +485,14 @@ test_u_main::init_GUI(const std::string& graphics_directory_in,
   GtkListStore* list = gtk_list_store_new(1,
                                           G_TYPE_STRING);
   ACE_ASSERT(list);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(list),
+																	0,
+																	(GtkTreeIterCompareFunc)combobox_sort_function,
+																	GINT_TO_POINTER(0),
+																	(GDestroyNotify)NULL);
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(list),
+																			 0,
+																			 GTK_SORT_ASCENDING);
   gtk_combo_box_set_model(combobox,
                           GTK_TREE_MODEL(list));
   g_object_unref(G_OBJECT(list));

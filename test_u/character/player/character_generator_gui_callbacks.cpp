@@ -26,6 +26,7 @@
 #include "rpg_client_defines.h"
 #include "rpg_client_common.h"
 #include "rpg_client_common_tools.h"
+#include "rpg_client_ui_tools.h"
 #include "rpg_client_callbacks.h"
 
 #include "rpg_engine_defines.h"
@@ -348,7 +349,7 @@ drop_character_clicked_GTK_cb(GtkWidget* widget_in,
   } // end IF
 
   // reset profile widgets
-	::reset_entity_profile((*iterator_2).second);
+	::reset_character_profile((*iterator_2).second);
   data->current_sprite = CHARACTER_GENERATOR_DEF_ENTITY_SPRITE;
   ::update_sprite_gallery(*data);
   ::set_current_image(data->current_sprite,
@@ -448,10 +449,10 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::character_file_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
+
+	// sanity check(s)
   GTK_cb_data_t* data = static_cast<GTK_cb_data_t*>(userData_in);
   ACE_ASSERT(data);
-
-  // sanity check(s)
 	Character_Generator_XMLPoolIterator_t iterator =
 		data->XML_pool.find(ACE_TEXT_ALWAYS_CHAR(CHARACTER_GENERATOR_GTK_GLADE_FILE));
 	ACE_ASSERT(iterator != data->XML_pool.end());
@@ -459,14 +460,19 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
 		data->XML_pool.find(ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_UI_FILE));
 	ACE_ASSERT(iterator_2 != data->XML_pool.end());
 
-  // retrieve file chooser dialog handle
+  // retrieve file chooser dialog handle and hide widget
   GtkFileChooserDialog* filechooser_dialog =
 		GTK_FILE_CHOOSER_DIALOG(glade_xml_get_widget((*iterator).second,
                                                  ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_FILECHOOSER_NAME)));
   ACE_ASSERT(filechooser_dialog);
-
-  // hide widget
   gtk_widget_hide(GTK_WIDGET(filechooser_dialog));
+	std::string filename;
+	gchar* filename_utf8 =
+		gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(filechooser_dialog));
+	if (!filename_utf8)
+		return FALSE; // done
+	filename = RPG_Client_UI_Tools::UTF82Locale(filename_utf8);
+	g_free(filename_utf8);
 
   // clean up
   if (data->entity.character)
@@ -482,7 +488,6 @@ character_file_activated_GTK_cb(GtkWidget* widget_in,
   } // end IF
 
   // load entity
-  std::string filename(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(filechooser_dialog)));
   RPG_Character_Conditions_t condition;
   condition.insert(CONDITION_NORMAL);
   short int hitpoints = std::numeric_limits<short int>::max();
@@ -567,18 +572,17 @@ store_character_clicked_GTK_cb(GtkWidget* widget_in,
 {
   RPG_TRACE(ACE_TEXT("::store_character_clicked_GTK_cb"));
 
-  ACE_UNUSED_ARG(widget_in);
-  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*>(userData_in);
+	// sanity check(s)
+	GTK_cb_data_t* data = static_cast<GTK_cb_data_t*>(userData_in);
   ACE_ASSERT(data);
-
-  // sanity check(s)
   ACE_ASSERT(data->entity.character);
+	Character_Generator_XMLPoolIterator_t iterator =
+		data->XML_pool.find(ACE_TEXT_ALWAYS_CHAR(CHARACTER_GENERATOR_GTK_GLADE_FILE));
+	ACE_ASSERT(iterator != data->XML_pool.end());
 
   // assemble target filename
-  std::string filename = RPG_Common_File_Tools::getDumpDirectory();
+	std::string filename = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  filename += RPG_Common_Tools::sanitize(RPG_PLAYER_DEF_NAME);
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
   RPG_Player* player_p = NULL;
   try
   {
@@ -600,14 +604,30 @@ store_character_clicked_GTK_cb(GtkWidget* widget_in,
 
     return FALSE;
   }
+	filename += RPG_Common_Tools::sanitize(player_p->getName());
+	filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
   if (!player_p->save(filename))
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Player::save(\"%s\"), continuing\n"),
                ACE_TEXT(filename.c_str())));
 	data->is_transient = false;
 
-  // make save button in-sensitive
+	// make create button sensitive (if it's not already)
+	GtkButton* button =
+		GTK_BUTTON(glade_xml_get_widget((*iterator).second,
+		                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_CREATE_NAME)));
+	ACE_ASSERT(button);
+	gtk_widget_set_sensitive(GTK_WIDGET(button),
+													 TRUE);
+  // make store button in-sensitive
   gtk_widget_set_sensitive(widget_in, FALSE);
+	// make create button sensitive (if it's not already)
+	button =
+		GTK_BUTTON(glade_xml_get_widget((*iterator).second,
+	                                	ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_LOAD_NAME)));
+	ACE_ASSERT(button);
+	gtk_widget_set_sensitive(GTK_WIDGET(button),
+													 TRUE);
 
   return FALSE;
 }
@@ -730,7 +750,8 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 		GTK_BUTTON(glade_xml_get_widget((*iterator).second,
                                     ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_DROP_NAME)));
   ACE_ASSERT(button);
-  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+  gtk_widget_set_sensitive(GTK_WIDGET(button),
+													 (player_p->getName() != ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_NAME)));
   // make save button in-sensitive (if it's not already)
   button =
 		GTK_BUTTON(glade_xml_get_widget((*iterator).second,

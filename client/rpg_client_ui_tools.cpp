@@ -21,11 +21,11 @@
 
 #include "rpg_client_ui_tools.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
-#include <ace/Log_Msg.h>
+#include "ace/Log_Msg.h"
 
-const std::string
+std::string
 RPG_Client_UI_Tools::UTF82Locale(const gchar* string_in,
                                  const gssize& length_in)
 {
@@ -45,7 +45,7 @@ RPG_Client_UI_Tools::UTF82Locale(const gchar* string_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to convert string: \"%s\", aborting\n"),
-               conversion_error->message));
+							 ACE_TEXT_CHAR_TO_TCHAR(conversion_error->message)));
 
     // clean up
     g_error_free(conversion_error);
@@ -77,7 +77,7 @@ RPG_Client_UI_Tools::Locale2UTF8(const std::string& string_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to convert string: \"%s\", aborting\n"),
-               conversion_error->message));
+							 ACE_TEXT_CHAR_TO_TCHAR(conversion_error->message)));
 
       // clean up
     g_error_free(conversion_error);
