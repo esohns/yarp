@@ -144,14 +144,15 @@ RPG_Graphics_Cursor_Manager::position(const bool& highlight_in) const
     return myHighlightBGCache.front().first;
 
   int x, y;
-  SDL_GetMouseState(&x, &y);
+	Uint8 button_state = SDL_GetMouseState(&x, &y);
 
   return std::make_pair(static_cast<unsigned int>(x),
                         static_cast<unsigned int>(y));
 }
 
 void
-RPG_Graphics_Cursor_Manager::put(const RPG_Graphics_Position_t& view_in,
+RPG_Graphics_Cursor_Manager::put(const RPG_Graphics_Position_t& position_in,
+                                 const RPG_Graphics_Position_t& view_in,
                                  const RPG_Map_Size_t& mapSize_in,
                                  SDL_Rect& dirtyRegion_out)
 {
@@ -163,14 +164,17 @@ RPG_Graphics_Cursor_Manager::put(const RPG_Graphics_Position_t& view_in,
   // init return value
   ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
 
-  RPG_Graphics_Position_t input_position = position();
-  SDL_Rect map_area;
-  myHighlightWindow->getArea(map_area);
+  RPG_Graphics_Position_t input_position =
+		((position_in != std::make_pair(std::numeric_limits<unsigned int>::max(),
+		                                std::numeric_limits<unsigned int>::max())) ? position_in
+																		                                           : position(false));
+	SDL_Rect window_area = {0, 0, 0, 0};
+  myHighlightWindow->getArea(window_area, true);
   // step1: draw highlight
   putHighlight(RPG_Graphics_Common_Tools::screen2Map(input_position,
                                                      mapSize_in,
-                                                     std::make_pair(map_area.w,
-                                                                    map_area.h),
+																										 std::make_pair(window_area.w,
+																										                window_area.h),
                                                      view_in),
                input_position,
                view_in,
@@ -179,8 +183,7 @@ RPG_Graphics_Cursor_Manager::put(const RPG_Graphics_Position_t& view_in,
   // step2: draw cursor
   SDL_Rect dirty_region;
   ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
-  putCursor(std::make_pair(input_position.first,
-                           input_position.second),
+  putCursor(input_position,
             dirty_region);
 
   dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirtyRegion_out,
@@ -483,9 +486,9 @@ RPG_Graphics_Cursor_Manager::updateBG(const SDL_Rect* clipRect_in)
   map_bit_rect.y -= bg_rect.y;
 
   // step4: get a fresh copy from that part of the map
-  SDL_Surface* new_bg
-      = RPG_Graphics_Surface::create(static_cast<unsigned int>(myBG->w),
-                                     static_cast<unsigned int>(myBG->h));
+  SDL_Surface* new_bg =
+		RPG_Graphics_Surface::create(static_cast<unsigned int>(myBG->w),
+                                 static_cast<unsigned int>(myBG->h));
   ACE_ASSERT(new_bg);
   RPG_Graphics_Surface::get(myBGPosition,
                             true, // use (fast) blitting method

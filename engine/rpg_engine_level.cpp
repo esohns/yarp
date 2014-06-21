@@ -40,7 +40,7 @@
 #include "rpg_dice_common.h"
 #include "rpg_dice.h"
 
-#include <ace/Log_Msg.h>
+#include "ace/Log_Msg.h"
 
 RPG_Engine_Level::RPG_Engine_Level()
 // : inherited(),
@@ -1005,6 +1005,7 @@ RPG_Engine_Level::levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type& level_in)
     const RPG_Common_FixedPeriod_XMLTree_Type& interval =
         (*iterator).interval();
     spawn.spawn.interval.seconds = interval.seconds();
+		spawn.spawn.interval.u_seconds = 0;
     if (interval.u_seconds().present())
       spawn.spawn.interval.u_seconds = interval.u_seconds().get();
     spawn.spawn.probability = (*iterator).probability();

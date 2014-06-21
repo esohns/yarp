@@ -23,7 +23,7 @@
 
 #include <cmath>
 
-#include <ace/Log_Msg.h>
+#include "ace/Log_Msg.h"
 
 #include "rpg_dice_common.h"
 #include "rpg_dice.h"
@@ -337,10 +337,11 @@ RPG_Engine::start()
 
 			ACE_ASSERT((*iterator).timer_id == -1);
 			// *NOTE*: fire&forget API for spawn_event
+			ACE_Time_Value interval((*iterator).spawn.interval.seconds,
+															static_cast<suseconds_t>((*iterator).spawn.interval.u_seconds));
 			(*iterator).timer_id =
 					RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->schedule(spawn_event,
-																																	 ACE_Time_Value((*iterator).spawn.interval.seconds,
-																																									(*iterator).spawn.interval.u_seconds),
+					                                                         interval,
 																																	 false);
 			if ((*iterator).timer_id == -1)
 				ACE_DEBUG((LM_ERROR,
@@ -2154,15 +2155,7 @@ RPG_Engine::canSee(const RPG_Engine_EntityID_t& id_in,
     }
     catch (...)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to dynamic_cast<RPG_Player_Player_Base*>(%@), aborting\n"),
-                 (*iterator).second->character));
-
-      if (lockedAccess_in)
-        myLock.release();
-
-      // *CONSIDER*: false negative ?
-      return false;
+			player_base = NULL;
     }
     if (!player_base)
     {
@@ -2664,11 +2657,7 @@ RPG_Engine::handleEntities()
               }
               catch (...)
               {
-                ACE_DEBUG((LM_ERROR,
-                           ACE_TEXT("failed to dynamic_cast<RPG_Player_Player_Base*>(%@), continuing\n"),
-                           (*iterator).second->character));
-
-                break;
+								player_base = NULL;
               }
               if (!player_base)
               {

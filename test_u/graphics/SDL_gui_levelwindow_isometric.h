@@ -32,10 +32,11 @@
 #include "rpg_graphics_style.h"
 #include "rpg_graphics_styleunion.h"
 #include "rpg_graphics_SDL_window_base.h"
+#include "rpg_graphics_cursor_manager.h"
 
-#include <SDL.h>
+#include "SDL.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <string>
 
@@ -111,7 +112,9 @@ class SDL_GUI_LevelWindow_Isometric
   typedef std::pair<int, int> RPG_Position_t;
 
   // helper methods
-  void clear();
+  //void clear();
+	void redrawCursor(const RPG_Graphics_Position_t& =
+		RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position(false));
 
   void initCeiling();
   void initWallBlend(const bool&); // half-height walls ?

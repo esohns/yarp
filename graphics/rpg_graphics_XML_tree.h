@@ -103,6 +103,8 @@ class RPG_Graphics_ColorRGBA_XMLTree_Type;
 
 #include <xsd/cxx/xml/dom/parsing-header.hxx>
 
+#include <xsd/cxx/tree/istream-fwd.hxx>
+
 class RPG_Graphics_Export RPG_Graphics_Category_XMLTree_Type: public ::xml_schema::string
 {
   public:
@@ -124,6 +126,10 @@ class RPG_Graphics_Export RPG_Graphics_Category_XMLTree_Type: public ::xml_schem
   RPG_Graphics_Category_XMLTree_Type (const ::std::string& v);
 
   RPG_Graphics_Category_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Graphics_Category_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f = 0,
+                                      ::xml_schema::container* c = 0);
 
   RPG_Graphics_Category_XMLTree_Type (const ::xercesc::DOMElement& e,
                                       ::xml_schema::flags f = 0,
@@ -189,6 +195,10 @@ class RPG_Graphics_Export RPG_Graphics_Orientation_XMLTree_Type: public ::xml_sc
 
   RPG_Graphics_Orientation_XMLTree_Type (const ::xml_schema::string& v);
 
+  RPG_Graphics_Orientation_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                         ::xml_schema::flags f = 0,
+                                         ::xml_schema::container* c = 0);
+
   RPG_Graphics_Orientation_XMLTree_Type (const ::xercesc::DOMElement& e,
                                          ::xml_schema::flags f = 0,
                                          ::xml_schema::container* c = 0);
@@ -250,6 +260,10 @@ class RPG_Graphics_Export RPG_Graphics_TileType_XMLTree_Type: public ::xml_schem
   RPG_Graphics_TileType_XMLTree_Type (const ::std::string& v);
 
   RPG_Graphics_TileType_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Graphics_TileType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                      ::xml_schema::flags f = 0,
+                                      ::xml_schema::container* c = 0);
 
   RPG_Graphics_TileType_XMLTree_Type (const ::xercesc::DOMElement& e,
                                       ::xml_schema::flags f = 0,
@@ -319,6 +333,10 @@ class RPG_Graphics_Export RPG_Graphics_FloorStyle_XMLTree_Type: public ::xml_sch
 
   RPG_Graphics_FloorStyle_XMLTree_Type (const ::xml_schema::string& v);
 
+  RPG_Graphics_FloorStyle_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
+
   RPG_Graphics_FloorStyle_XMLTree_Type (const ::xercesc::DOMElement& e,
                                         ::xml_schema::flags f = 0,
                                         ::xml_schema::container* c = 0);
@@ -375,6 +393,10 @@ class RPG_Graphics_Export RPG_Graphics_StairsStyle_XMLTree_Type: public ::xml_sc
   RPG_Graphics_StairsStyle_XMLTree_Type (const ::std::string& v);
 
   RPG_Graphics_StairsStyle_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Graphics_StairsStyle_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                         ::xml_schema::flags f = 0,
+                                         ::xml_schema::container* c = 0);
 
   RPG_Graphics_StairsStyle_XMLTree_Type (const ::xercesc::DOMElement& e,
                                          ::xml_schema::flags f = 0,
@@ -441,6 +463,10 @@ class RPG_Graphics_Export RPG_Graphics_WallStyle_XMLTree_Type: public ::xml_sche
 
   RPG_Graphics_WallStyle_XMLTree_Type (const ::xml_schema::string& v);
 
+  RPG_Graphics_WallStyle_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                       ::xml_schema::flags f = 0,
+                                       ::xml_schema::container* c = 0);
+
   RPG_Graphics_WallStyle_XMLTree_Type (const ::xercesc::DOMElement& e,
                                        ::xml_schema::flags f = 0,
                                        ::xml_schema::container* c = 0);
@@ -495,6 +521,10 @@ class RPG_Graphics_Export RPG_Graphics_EdgeStyle_XMLTree_Type: public ::xml_sche
   RPG_Graphics_EdgeStyle_XMLTree_Type (const ::std::string& v);
 
   RPG_Graphics_EdgeStyle_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Graphics_EdgeStyle_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                       ::xml_schema::flags f = 0,
+                                       ::xml_schema::container* c = 0);
 
   RPG_Graphics_EdgeStyle_XMLTree_Type (const ::xercesc::DOMElement& e,
                                        ::xml_schema::flags f = 0,
@@ -552,6 +582,10 @@ class RPG_Graphics_Export RPG_Graphics_DoorStyle_XMLTree_Type: public ::xml_sche
   RPG_Graphics_DoorStyle_XMLTree_Type (const ::std::string& v);
 
   RPG_Graphics_DoorStyle_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Graphics_DoorStyle_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                       ::xml_schema::flags f = 0,
+                                       ::xml_schema::container* c = 0);
 
   RPG_Graphics_DoorStyle_XMLTree_Type (const ::xercesc::DOMElement& e,
                                        ::xml_schema::flags f = 0,
@@ -638,6 +672,10 @@ class RPG_Graphics_Export RPG_Graphics_StyleUnion_XMLTree_Type: public ::xml_sch
   RPG_Graphics_StyleUnion_XMLTree_Type (const ::std::string& v);
 
   RPG_Graphics_StyleUnion_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Graphics_StyleUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
 
   RPG_Graphics_StyleUnion_XMLTree_Type (const ::xercesc::DOMElement& e,
                                         ::xml_schema::flags f = 0,
@@ -774,6 +812,10 @@ class RPG_Graphics_Export RPG_Graphics_Style_XMLTree_Type: public ::xml_schema::
                                    const half_height_walls_type&,
                                    const door_type&);
 
+  RPG_Graphics_Style_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                   ::xml_schema::flags f = 0,
+                                   ::xml_schema::container* c = 0);
+
   RPG_Graphics_Style_XMLTree_Type (const ::xercesc::DOMElement& e,
                                    ::xml_schema::flags f = 0,
                                    ::xml_schema::container* c = 0);
@@ -797,6 +839,10 @@ class RPG_Graphics_Export RPG_Graphics_Style_XMLTree_Type: public ::xml_schema::
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< floor_type > floor_;
   edge_optional edge_;
   ::xsd::cxx::tree::one< wall_type > wall_;
@@ -842,6 +888,10 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_XMLTree_Type: public ::xml_schema:
   RPG_Graphics_Cursor_XMLTree_Type (const ::std::string& v);
 
   RPG_Graphics_Cursor_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Graphics_Cursor_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                    ::xml_schema::flags f = 0,
+                                    ::xml_schema::container* c = 0);
 
   RPG_Graphics_Cursor_XMLTree_Type (const ::xercesc::DOMElement& e,
                                     ::xml_schema::flags f = 0,
@@ -899,6 +949,10 @@ class RPG_Graphics_Export RPG_Graphics_Font_XMLTree_Type: public ::xml_schema::s
   RPG_Graphics_Font_XMLTree_Type (const ::std::string& v);
 
   RPG_Graphics_Font_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Graphics_Font_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                  ::xml_schema::flags f = 0,
+                                  ::xml_schema::container* c = 0);
 
   RPG_Graphics_Font_XMLTree_Type (const ::xercesc::DOMElement& e,
                                   ::xml_schema::flags f = 0,
@@ -958,6 +1012,10 @@ class RPG_Graphics_Export RPG_Graphics_Image_XMLTree_Type: public ::xml_schema::
 
   RPG_Graphics_Image_XMLTree_Type (const ::xml_schema::string& v);
 
+  RPG_Graphics_Image_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                   ::xml_schema::flags f = 0,
+                                   ::xml_schema::container* c = 0);
+
   RPG_Graphics_Image_XMLTree_Type (const ::xercesc::DOMElement& e,
                                    ::xml_schema::flags f = 0,
                                    ::xml_schema::container* c = 0);
@@ -1014,6 +1072,10 @@ class RPG_Graphics_Export RPG_Graphics_Sprite_XMLTree_Type: public ::xml_schema:
   RPG_Graphics_Sprite_XMLTree_Type (const ::std::string& v);
 
   RPG_Graphics_Sprite_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Graphics_Sprite_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                    ::xml_schema::flags f = 0,
+                                    ::xml_schema::container* c = 0);
 
   RPG_Graphics_Sprite_XMLTree_Type (const ::xercesc::DOMElement& e,
                                     ::xml_schema::flags f = 0,
@@ -1072,6 +1134,10 @@ class RPG_Graphics_Export RPG_Graphics_TileGraphic_XMLTree_Type: public ::xml_sc
   RPG_Graphics_TileGraphic_XMLTree_Type (const ::std::string& v);
 
   RPG_Graphics_TileGraphic_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Graphics_TileGraphic_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                         ::xml_schema::flags f = 0,
+                                         ::xml_schema::container* c = 0);
 
   RPG_Graphics_TileGraphic_XMLTree_Type (const ::xercesc::DOMElement& e,
                                          ::xml_schema::flags f = 0,
@@ -1164,6 +1230,10 @@ class RPG_Graphics_Export RPG_Graphics_TileSetGraphic_XMLTree_Type: public ::xml
   RPG_Graphics_TileSetGraphic_XMLTree_Type (const ::std::string& v);
 
   RPG_Graphics_TileSetGraphic_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Graphics_TileSetGraphic_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                            ::xml_schema::flags f = 0,
+                                            ::xml_schema::container* c = 0);
 
   RPG_Graphics_TileSetGraphic_XMLTree_Type (const ::xercesc::DOMElement& e,
                                             ::xml_schema::flags f = 0,
@@ -1286,6 +1356,10 @@ class RPG_Graphics_Export RPG_Graphics_GraphicTypeUnion_XMLTree_Type: public ::x
 
   RPG_Graphics_GraphicTypeUnion_XMLTree_Type (const ::xml_schema::string& v);
 
+  RPG_Graphics_GraphicTypeUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                              ::xml_schema::flags f = 0,
+                                              ::xml_schema::container* c = 0);
+
   RPG_Graphics_GraphicTypeUnion_XMLTree_Type (const ::xercesc::DOMElement& e,
                                               ::xml_schema::flags f = 0,
                                               ::xml_schema::container* c = 0);
@@ -1345,6 +1419,10 @@ class RPG_Graphics_Export RPG_Graphics_WindowType_XMLTree_Type: public ::xml_sch
   RPG_Graphics_WindowType_XMLTree_Type (const ::std::string& v);
 
   RPG_Graphics_WindowType_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Graphics_WindowType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
 
   RPG_Graphics_WindowType_XMLTree_Type (const ::xercesc::DOMElement& e,
                                         ::xml_schema::flags f = 0,
@@ -1410,6 +1488,10 @@ class RPG_Graphics_Export RPG_Graphics_InterfaceElementType_XMLTree_Type: public
 
   RPG_Graphics_InterfaceElementType_XMLTree_Type (const ::xml_schema::string& v);
 
+  RPG_Graphics_InterfaceElementType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                                  ::xml_schema::flags f = 0,
+                                                  ::xml_schema::container* c = 0);
+
   RPG_Graphics_InterfaceElementType_XMLTree_Type (const ::xercesc::DOMElement& e,
                                                   ::xml_schema::flags f = 0,
                                                   ::xml_schema::container* c = 0);
@@ -1465,6 +1547,10 @@ class RPG_Graphics_Export RPG_Graphics_HotspotType_XMLTree_Type: public ::xml_sc
   RPG_Graphics_HotspotType_XMLTree_Type (const ::std::string& v);
 
   RPG_Graphics_HotspotType_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Graphics_HotspotType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                         ::xml_schema::flags f = 0,
+                                         ::xml_schema::container* c = 0);
 
   RPG_Graphics_HotspotType_XMLTree_Type (const ::xercesc::DOMElement& e,
                                          ::xml_schema::flags f = 0,
@@ -1531,6 +1617,10 @@ class RPG_Graphics_Export RPG_Graphics_ElementTypeUnion_XMLTree_Type: public ::x
   RPG_Graphics_ElementTypeUnion_XMLTree_Type (const ::std::string& v);
 
   RPG_Graphics_ElementTypeUnion_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Graphics_ElementTypeUnion_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                              ::xml_schema::flags f = 0,
+                                              ::xml_schema::container* c = 0);
 
   RPG_Graphics_ElementTypeUnion_XMLTree_Type (const ::xercesc::DOMElement& e,
                                               ::xml_schema::flags f = 0,
@@ -1688,6 +1778,10 @@ class RPG_Graphics_Export RPG_Graphics_Element_XMLTree_Type: public ::xml_schema
   //
   RPG_Graphics_Element_XMLTree_Type (const type_type&);
 
+  RPG_Graphics_Element_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                     ::xml_schema::flags f = 0,
+                                     ::xml_schema::container* c = 0);
+
   RPG_Graphics_Element_XMLTree_Type (const ::xercesc::DOMElement& e,
                                      ::xml_schema::flags f = 0,
                                      ::xml_schema::container* c = 0);
@@ -1711,6 +1805,10 @@ class RPG_Graphics_Export RPG_Graphics_Element_XMLTree_Type: public ::xml_schema
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< type_type > type_;
   window_optional window_;
   offsetX_optional offsetX_;
@@ -1904,6 +2002,10 @@ class RPG_Graphics_Export RPG_Graphics_Tile_XMLTree_Type: public ::xml_schema::t
   //
   RPG_Graphics_Tile_XMLTree_Type (const type_type&);
 
+  RPG_Graphics_Tile_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                  ::xml_schema::flags f = 0,
+                                  ::xml_schema::container* c = 0);
+
   RPG_Graphics_Tile_XMLTree_Type (const ::xercesc::DOMElement& e,
                                   ::xml_schema::flags f = 0,
                                   ::xml_schema::container* c = 0);
@@ -1927,6 +2029,10 @@ class RPG_Graphics_Export RPG_Graphics_Tile_XMLTree_Type: public ::xml_schema::t
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< type_type > type_;
   reference_optional reference_;
   style_optional style_;
@@ -1965,6 +2071,10 @@ class RPG_Graphics_Export RPG_Graphics_TileSetType_XMLTree_Type: public ::xml_sc
   RPG_Graphics_TileSetType_XMLTree_Type (const ::std::string& v);
 
   RPG_Graphics_TileSetType_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Graphics_TileSetType_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                         ::xml_schema::flags f = 0,
+                                         ::xml_schema::container* c = 0);
 
   RPG_Graphics_TileSetType_XMLTree_Type (const ::xercesc::DOMElement& e,
                                          ::xml_schema::flags f = 0,
@@ -2084,6 +2194,10 @@ class RPG_Graphics_Export RPG_Graphics_TileSet_XMLTree_Type: public ::xml_schema
   //
   RPG_Graphics_TileSet_XMLTree_Type (const type_type&);
 
+  RPG_Graphics_TileSet_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                     ::xml_schema::flags f = 0,
+                                     ::xml_schema::container* c = 0);
+
   RPG_Graphics_TileSet_XMLTree_Type (const ::xercesc::DOMElement& e,
                                      ::xml_schema::flags f = 0,
                                      ::xml_schema::container* c = 0);
@@ -2107,6 +2221,10 @@ class RPG_Graphics_Export RPG_Graphics_TileSet_XMLTree_Type: public ::xml_schema
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< type_type > type_;
   style_optional style_;
   tile_sequence tile_;
@@ -2261,6 +2379,10 @@ class RPG_Graphics_Export RPG_Graphics_Graphic_XMLTree_Type: public ::xml_schema
   RPG_Graphics_Graphic_XMLTree_Type (const category_type&,
                                      const type_type&);
 
+  RPG_Graphics_Graphic_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                     ::xml_schema::flags f = 0,
+                                     ::xml_schema::container* c = 0);
+
   RPG_Graphics_Graphic_XMLTree_Type (const ::xercesc::DOMElement& e,
                                      ::xml_schema::flags f = 0,
                                      ::xml_schema::container* c = 0);
@@ -2284,6 +2406,10 @@ class RPG_Graphics_Export RPG_Graphics_Graphic_XMLTree_Type: public ::xml_schema
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< category_type > category_;
   ::xsd::cxx::tree::one< type_type > type_;
   tile_optional tile_;
@@ -2326,6 +2452,10 @@ class RPG_Graphics_Export RPG_Graphics_Dictionary_XMLTree_Type: public ::xml_sch
   //
   RPG_Graphics_Dictionary_XMLTree_Type ();
 
+  RPG_Graphics_Dictionary_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                        ::xml_schema::flags f = 0,
+                                        ::xml_schema::container* c = 0);
+
   RPG_Graphics_Dictionary_XMLTree_Type (const ::xercesc::DOMElement& e,
                                         ::xml_schema::flags f = 0,
                                         ::xml_schema::container* c = 0);
@@ -2349,6 +2479,10 @@ class RPG_Graphics_Export RPG_Graphics_Dictionary_XMLTree_Type: public ::xml_sch
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   graphic_sequence graphic_;
 };
 
@@ -2398,6 +2532,10 @@ class RPG_Graphics_Export RPG_Graphics_ColorName_XMLTree_Type: public ::xml_sche
   RPG_Graphics_ColorName_XMLTree_Type (const ::std::string& v);
 
   RPG_Graphics_ColorName_XMLTree_Type (const ::xml_schema::string& v);
+
+  RPG_Graphics_ColorName_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                       ::xml_schema::flags f = 0,
+                                       ::xml_schema::container* c = 0);
 
   RPG_Graphics_ColorName_XMLTree_Type (const ::xercesc::DOMElement& e,
                                        ::xml_schema::flags f = 0,
@@ -2504,6 +2642,10 @@ class RPG_Graphics_Export RPG_Graphics_ColorRGBA_XMLTree_Type: public ::xml_sche
                                        const b_type&,
                                        const a_type&);
 
+  RPG_Graphics_ColorRGBA_XMLTree_Type (::xml_schema::istream< ACE_InputCDR >& s,
+                                       ::xml_schema::flags f = 0,
+                                       ::xml_schema::container* c = 0);
+
   RPG_Graphics_ColorRGBA_XMLTree_Type (const ::xercesc::DOMElement& e,
                                        ::xml_schema::flags f = 0,
                                        ::xml_schema::container* c = 0);
@@ -2527,6 +2669,10 @@ class RPG_Graphics_Export RPG_Graphics_ColorRGBA_XMLTree_Type: public ::xml_sche
          ::xml_schema::flags);
 
   protected:
+  void
+  parse (::xml_schema::istream< ACE_InputCDR >&,
+         ::xml_schema::flags);
+
   ::xsd::cxx::tree::one< r_type > r_;
   ::xsd::cxx::tree::one< g_type > g_;
   ::xsd::cxx::tree::one< b_type > b_;
@@ -3258,6 +3404,151 @@ operator<< (::xml_schema::list_stream&,
 RPG_Graphics_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Graphics_ColorRGBA_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_Category_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_Orientation_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_TileType_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_FloorStyle_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_StairsStyle_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_WallStyle_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_EdgeStyle_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_DoorStyle_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_StyleUnion_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_Style_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_Cursor_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_Font_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_Image_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_Sprite_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_TileGraphic_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_TileSetGraphic_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_GraphicTypeUnion_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_WindowType_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_InterfaceElementType_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_HotspotType_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_ElementTypeUnion_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_Element_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_Tile_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_TileSetType_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_TileSet_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_Graphic_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_Dictionary_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_ColorName_XMLTree_Type&);
+
+RPG_Graphics_Export
+::xml_schema::ostream< ACE_OutputCDR >&
+operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
+            const RPG_Graphics_ColorRGBA_XMLTree_Type&);
 
 #include <xsd/cxx/post.hxx>
 

@@ -923,8 +923,8 @@ RPG_Graphics_Surface::putRect(const SDL_Rect& rectangle_in,
   } // end IF
 
   Uint32* pixels = static_cast<Uint32*>(targetSurface_in->pixels);
-  for (int y = rectangle_in.y;
-       y < (rectangle_in.y + rectangle_in.h);
+	for (int y = intersection.y;
+			 y < (intersection.y + intersection.h);
        y++)
   {
     // sanity check
@@ -934,11 +934,11 @@ RPG_Graphics_Surface::putRect(const SDL_Rect& rectangle_in,
       break;
 
     // top/bottom row(s)
-    if ((y == rectangle_in.y) ||
-        (y == (rectangle_in.y  + rectangle_in.h - 1)))
+		if ((y == intersection.y) ||
+				(y == (intersection.y + intersection.h - 1)))
     {
-      for (int x = rectangle_in.x;
-           x < (rectangle_in.x + rectangle_in.w);
+			for (int x = intersection.x;
+					 x < (intersection.x + intersection.w);
            x++)
       {
         // sanity check
@@ -954,14 +954,14 @@ RPG_Graphics_Surface::putRect(const SDL_Rect& rectangle_in,
     } // end IF
 
     // left/right column(s)
-    if (rectangle_in.x > 0) // sanity check
-      pixels[(targetSurface_in->w * y) + rectangle_in.x] = color_in;
+		if (intersection.x > 0) // sanity check
+			pixels[(targetSurface_in->w * y) + intersection.x] = color_in;
 
     // sanity check
-    if ((rectangle_in.x + rectangle_in.w) >= targetSurface_in->w)
+		if ((intersection.x + intersection.w) >= targetSurface_in->w)
       continue;
 
-    pixels[(targetSurface_in->w * y) + rectangle_in.x + (rectangle_in.w - 1)] = color_in;
+		pixels[(targetSurface_in->w * y) + intersection.x + (intersection.w - 1)] = color_in;
   } // end FOR
 
   if (SDL_MUSTLOCK(targetSurface_in))

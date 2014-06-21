@@ -30,11 +30,11 @@
 
 #include "rpg_common_ilock.h"
 
-#include <SDL.h>
+#include "SDL.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Singleton.h>
-#include <ace/Synch.h>
+#include "ace/Global_Macros.h"
+#include "ace/Singleton.h"
+#include "ace/Synch.h"
 
 #include <map>
 
@@ -64,6 +64,7 @@ class RPG_Client_Export RPG_Client_Entity_Manager
   void put(const RPG_Engine_EntityID_t&,   // id
            const RPG_Graphics_Position_t&, // target tile (screen coordinates !)
            SDL_Rect&,                      // return value: "dirty" region
+					 const bool& = true,             // clip target window ?
            const bool& = true);            // locked access ?
 
   // clear the stored BG
@@ -91,6 +92,7 @@ class RPG_Client_Export RPG_Client_Entity_Manager
   // restore the BG
   void restoreBG(const RPG_Engine_EntityID_t&, // id
                  SDL_Rect&,                    // return value: "dirty" region
+							   const bool& = true,           // clip target window ?
                  const bool& = true);          // locked access ?
 
   RPG_Common_ILock*         myScreenLock;

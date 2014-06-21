@@ -30,8 +30,8 @@
 
 #include "rpg_common_macros.h"
 
-#include <ace/OS.h>
-#include <ace/Log_Msg.h>
+#include "ace/OS.h"
+#include "ace/Log_Msg.h"
 
 #include <limits>
 
@@ -102,8 +102,7 @@ RPG_Client_Entity_Manager::add(const RPG_Engine_EntityID_t& id_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), aborting\n"),
-               surface_in->w,
-               surface_in->h));
+               surface_in->w, surface_in->h));
 
     // clean up
     if (free_on_remove_in)
@@ -164,6 +163,7 @@ void
 RPG_Client_Entity_Manager::put(const RPG_Engine_EntityID_t& id_in,
                                const RPG_Graphics_Position_t& tileCoordinates_in,
                                SDL_Rect& dirtyRegion_out,
+															 const bool& clipWindow_in,
                                const bool& lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::put"));
@@ -193,6 +193,7 @@ RPG_Client_Entity_Manager::put(const RPG_Engine_EntityID_t& id_in,
   // step1: restore old background
   restoreBG(id_in,
             dirtyRegion_out,
+						clipWindow_in,
             lockedAccess_in);
 
   // step2: get new background
@@ -203,7 +204,8 @@ RPG_Client_Entity_Manager::put(const RPG_Engine_EntityID_t& id_in,
                     ((RPG_GRAPHICS_TILE_FLOOR_WIDTH -
                       (*iterator).second.graphic->w) / 2)),
                    (tileCoordinates_in.second +
-                    (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2)));
+                    (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) -
+										(*iterator).second.graphic->h));
   RPG_Graphics_Surface::get(screen_coordinates,
                             true, // use (fast) blitting method
                             *target_surface,
@@ -227,7 +229,8 @@ RPG_Client_Entity_Manager::put(const RPG_Engine_EntityID_t& id_in,
         ((clip_rectangle.y + clip_rectangle.h) - target_surface->h);
 
   // place graphic
-  myWindow->clip();
+	if (clipWindow_in)
+		myWindow->clip();
   if (lockedAccess_in && myScreenLock)
     myScreenLock->lock();
   if (SDL_BlitSurface(const_cast<SDL_Surface*>((*iterator).second.graphic), // source
@@ -242,31 +245,30 @@ RPG_Client_Entity_Manager::put(const RPG_Engine_EntityID_t& id_in,
     // clean up
     if (lockedAccess_in && myScreenLock)
       myScreenLock->unlock();
-    myWindow->unclip();
+		if (clipWindow_in)
+			myWindow->unclip();
 
     return;
   } // end IF
   if (lockedAccess_in && myScreenLock)
     myScreenLock->unlock();
-  myWindow->unclip();
+	if (clipWindow_in)
+		myWindow->unclip();
 
   // *HACK*: somehow, SDL_BlitSurface zeroes dirtyRegion_out.w and
   // dirtyRegion_out.h... --> reset them
   clip_rectangle.w = (*iterator).second.graphic->w;
   clip_rectangle.h = (*iterator).second.graphic->h;
 
-  // if necessary, adjust dirty region
-  if ((dirtyRegion_out.w != 0) &&
-      (dirtyRegion_out.h != 0))
-    dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(clip_rectangle,
-                                                          dirtyRegion_out);
-  else
-    dirtyRegion_out = clip_rectangle;
+  // adjust dirty region
+  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(clip_rectangle,
+                                                        dirtyRegion_out);
 }
 
 void
 RPG_Client_Entity_Manager::restoreBG(const RPG_Engine_EntityID_t& id_in,
                                      SDL_Rect& dirtyRegion_out,
+																		 const bool& clipWindow_in,
                                      const bool& lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::restoreBG"));
@@ -304,7 +306,8 @@ RPG_Client_Entity_Manager::restoreBG(const RPG_Engine_EntityID_t& id_in,
         ((dirtyRegion_out.y + dirtyRegion_out.h) - target_surface->h);
 
   // restore/clear background
-  myWindow->clip();
+	if (clipWindow_in)
+		myWindow->clip();
   if (lockedAccess_in && myScreenLock)
     myScreenLock->lock();
   if (SDL_BlitSurface((*iterator).second.bg, // source
@@ -319,13 +322,15 @@ RPG_Client_Entity_Manager::restoreBG(const RPG_Engine_EntityID_t& id_in,
     // clean up
     if (lockedAccess_in && myScreenLock)
       myScreenLock->unlock();
-    myWindow->unclip();
+		if (clipWindow_in)
+			myWindow->unclip();
 
     return;
   } // end IF
   if (lockedAccess_in && myScreenLock)
     myScreenLock->unlock();
-  myWindow->unclip();
+	if (clipWindow_in)
+		myWindow->unclip();
 
   // *HACK*: somehow, SDL_BlitSurface zeroes dirtyRegion_out.w, dirtyRegion_out.h...
   // --> reset them

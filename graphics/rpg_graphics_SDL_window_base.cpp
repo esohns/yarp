@@ -193,7 +193,6 @@ RPG_Graphics_SDLWindowBase::clean()
     }
     catch (...)
     {
-      // clean up
       window = NULL;
     }
     if (!window)

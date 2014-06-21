@@ -21,6 +21,11 @@
 #ifndef RPG_GRAPHICS_CURSOR_MANAGER_H
 #define RPG_GRAPHICS_CURSOR_MANAGER_H
 
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+// *NOTE*: workaround quirky MSVC...
+#define NOMINMAX
+#endif
+
 #include "rpg_graphics_exports.h"
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_cursor.h"
@@ -30,13 +35,14 @@
 
 #include "rpg_common_ilock.h"
 
-#include <SDL.h>
+#include "SDL.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Singleton.h>
-#include <ace/Synch.h>
+#include "ace/Global_Macros.h"
+#include "ace/Singleton.h"
+#include "ace/Synch.h"
 
 #include <map>
+#include <limits>
 
 /**
   @author Erik Sohns <erik.sohns@web.de>
@@ -56,7 +62,8 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
   RPG_Graphics_Cursor type() const;
   RPG_Graphics_Position_t position(const bool& = false) const; // highlight ?
 
-  void put(const RPG_Graphics_Position_t&, // viewport (map coords !)
+	void put(const RPG_Graphics_Position_t&, // cursor position
+		       const RPG_Graphics_Position_t&, // viewport (map coords !)
            const RPG_Map_Size_t&,          // (current) map size
            SDL_Rect&);                     // return value: "dirty" region
 

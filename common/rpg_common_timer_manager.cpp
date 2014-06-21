@@ -170,7 +170,7 @@ RPG_Common_Timer_Manager::fini_timers()
                  ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                  timer_id));
 		else
-  	  ACE_DEBUG((LM_WARNING,
+  	  ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("cancelled timer (ID: %d)...\n"),
                  timer_id));
   } // end FOR

@@ -43,7 +43,7 @@
 
 #include "rpg_common_macros.h"
 
-#include <ace/Log_Msg.h>
+#include "ace/Log_Msg.h"
 
 #include <sstream>
 

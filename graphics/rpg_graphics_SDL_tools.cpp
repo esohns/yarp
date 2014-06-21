@@ -896,34 +896,38 @@ RPG_Graphics_SDL_Tools::intersect(const SDL_Rect& rect1_in,
 
   // init result
   SDL_Rect result;
-  ACE_OS::memset(&result, 0, sizeof(SDL_Rect));
+  ACE_OS::memset(&result, 0, sizeof(result));
 
-  // test for intersection first
-  if ((((rect1_in.x >= rect2_in.x) &&
-		    (rect1_in.x <= (rect2_in.x + rect2_in.w))) ||
-       ((rect2_in.x >= rect1_in.x) &&
-			 (rect2_in.x <= (rect1_in.x + rect1_in.w)))) &&
-      (((rect1_in.y >= rect2_in.y) &&
-			(rect1_in.y <= (rect2_in.y + rect2_in.h))) ||
-       ((rect2_in.y >= rect1_in.y) &&
-			 (rect2_in.y <= (rect1_in.y + rect1_in.h)))))
-  {
-    // compute overlap
-    result.x =
-          static_cast<int16_t>((rect1_in.x > rect2_in.x) ? rect1_in.x
-                                                         : rect2_in.x);
-    result.y =
-          static_cast<int16_t>((rect1_in.y > rect2_in.y) ? rect1_in.y
-                                                         : rect2_in.y);
-    result.w =
-          static_cast<uint16_t>((((rect1_in.x + rect1_in.w) <
-                                  (rect2_in.x + rect2_in.w)) ? (rect1_in.x + rect1_in.w - 1)
-                                                             : (rect2_in.x + rect2_in.w - 1)) - result.x) + 1;
-    result.h =
-          static_cast<uint16_t>((((rect1_in.y + rect1_in.h) <
-                                  (rect2_in.y + rect2_in.h)) ? (rect1_in.y + rect1_in.h - 1)
-                                                             : (rect2_in.y + rect2_in.h - 1)) - result.y) + 1;
-  } // end IF
+	// *NOTE*: adapted from SDL_surface.c (SDL 1.2.15)
+	int Amin, Amax, Bmin, Bmax;
+
+	// horizontal intersection
+	Amin = rect1_in.x;
+	Amax = Amin + rect1_in.w;
+	Bmin = rect2_in.x;
+	Bmax = Bmin + rect2_in.w;
+	if (Bmin > Amin)
+		Amin = Bmin;
+	result.x = Amin;
+	if (Bmax < Amax)
+		Amax = Bmax;
+	result.w = ((Amax - Amin > 0) ? (Amax - Amin) : 0);
+
+	// vertical intersection
+	Amin = rect1_in.y;
+	Amax = Amin + rect1_in.h;
+	Bmin = rect2_in.y;
+	Bmax = Bmin + rect2_in.h;
+	if (Bmin > Amin)
+		Amin = Bmin;
+	result.y = Amin;
+	if (Bmax < Amax)
+		Amax = Bmax;
+	result.h = ((Amax - Amin > 0) ? (Amax - Amin) : 0);
+
+	// no intersection ? --> clean up
+	if (!result.w || !result.h)
+		ACE_OS::memset(&result, 0, sizeof(result));
 
   return result;
 }
