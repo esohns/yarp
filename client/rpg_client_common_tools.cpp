@@ -32,6 +32,7 @@
 #include "rpg_graphics_dictionary.h"
 #include "rpg_graphics_cursor_manager.h"
 #include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_SDL_tools.h"
 
 #include "rpg_engine_common_tools.h"
 
@@ -801,6 +802,41 @@ RPG_Client_Common_Tools::hasCeiling(const RPG_Map_Position_t& position_in,
     engine_in.unlock();
 
   return false;
+}
+
+bool
+RPG_Client_Common_Tools::isVisible(const RPG_Graphics_Position_t& position_in,
+														 			 const RPG_Graphics_Size_t& windowSize_in,
+																	 const RPG_Graphics_Position_t& viewport_in,
+																	 const SDL_Rect& windowArea_in)
+{
+	RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::isVisible"));
+
+	RPG_Graphics_Offset_t screen_position =
+		RPG_Graphics_Common_Tools::map2Screen(position_in,
+																					windowSize_in,
+																					viewport_in);
+	SDL_Rect tile_area = {screen_position.first, screen_position.second,
+		                    RPG_GRAPHICS_TILE_FLOOR_WIDTH, RPG_GRAPHICS_TILE_FLOOR_HEIGHT};
+	SDL_Rect overlap = RPG_Graphics_SDL_Tools::intersect(windowArea_in,
+																											 tile_area);
+
+	return (overlap.w && overlap.h);
+}
+
+bool
+RPG_Client_Common_Tools::hasHighlight(const RPG_Map_Position_t& position_in,
+																			const RPG_Engine& engine_in,
+																			const bool& lockedAccess_in)
+{
+	RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::hasHighlight"));
+
+	RPG_Map_Element current_element = engine_in.getElement(position_in,
+																												 lockedAccess_in);
+
+	// highlight floors and doors
+	return ((current_element == MAPELEMENT_FLOOR) ||
+			    (current_element == MAPELEMENT_DOOR));
 }
 
 RPG_Graphics_Orientation

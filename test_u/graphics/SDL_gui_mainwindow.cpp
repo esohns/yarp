@@ -545,11 +545,19 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
 
       // retrieve hotspot window handle
       RPG_Graphics_HotSpot* hotspot = NULL;
-      hotspot = dynamic_cast<RPG_Graphics_HotSpot*>(window_in);
+			try
+			{
+				hotspot = dynamic_cast<RPG_Graphics_HotSpot*>(window_in);
+			}
+			catch (...)
+			{
+				hotspot = NULL;
+			}
       if (!hotspot)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("dynamic downcast failed, aborting\n")));
+                   ACE_TEXT("failed to dynamic_cast<RPG_Graphics_HotSpot*>(%@), aborting\n"),
+									 window_in));
 
         break;
       } // end IF
@@ -566,11 +574,19 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
       ACE_ASSERT((iterator != myChildren.end()) &&
 				         (*iterator)->getType() == WINDOW_MAP);
 			RPG_Client_IWindowLevel* level_window = NULL;
-			level_window = dynamic_cast<RPG_Client_IWindowLevel*>(*iterator);
+			try
+			{
+				level_window = dynamic_cast<RPG_Client_IWindowLevel*>(*iterator);
+			}
+			catch (...)
+			{
+				level_window = NULL;
+			}
 			if (!level_window)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("dynamic downcast failed, aborting\n")));
+                   ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), aborting\n"),
+									 *iterator));
 
         break;
       } // end IF
@@ -670,7 +686,6 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         ACE_DEBUG((LM_ERROR,
                   ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::draw/getArea, continuing\n")));
       }
-
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset(true);
 
 //       ACE_DEBUG((LM_DEBUG,

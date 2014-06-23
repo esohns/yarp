@@ -946,9 +946,8 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
     }
     case EVENT_ENTITY_SPAWN:
     {
-      myEngine->lock();
-      const RPG_Engine_LevelMetaData_t& level_metadata =
-          myEngine->getMetaData(false);
+      RPG_Engine_LevelMetaData_t level_metadata =
+          myEngine->getMetaData(true);
       RPG_Engine_SpawnsConstIterator_t iterator =
           level_metadata.spawns.begin();
       for (;
@@ -962,13 +961,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
           (myEngine->numSpawned((*iterator).spawn.type,
                                 false) >= (*iterator).spawn.max_num_spawned) ||
           !RPG_Dice::probability((*iterator).spawn.probability))
-      {
-        // clean up
-        myEngine->unlock();
-
         break; // not this time...
-      } // end IF
-      myEngine->unlock();
 
       // OK: spawn an instance
       RPG_Engine_Entity_t* entity = NULL;
@@ -1012,7 +1005,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
 
       // choose random entry point
       myEngine->lock();
-      const RPG_Map_Positions_t& seed_points = myEngine->getSeedPoints(false);
+      RPG_Map_Positions_t seed_points = myEngine->getSeedPoints(false);
       RPG_Map_PositionsConstIterator_t iterator2 = seed_points.begin();
       if (iterator2 == seed_points.end())
       {
@@ -1052,12 +1045,12 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       } // end IF
 
       RPG_Engine_EntityID_t id = myEngine->add(entity, false);
+			myEngine->unlock();
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("spawned \"%s\" [id: %u] @ [%u,%u]...\n"),
                  ACE_TEXT((*iterator).spawn.type.c_str()),
                  id,
                  entity->position.first, entity->position.second));
-      myEngine->unlock();
 
       break;
     }

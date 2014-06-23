@@ -62,10 +62,13 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
   RPG_Graphics_Cursor type() const;
   RPG_Graphics_Position_t position(const bool& = false) const; // highlight ?
 
+	// draw cursor (and highlight)
 	void put(const RPG_Graphics_Position_t&, // cursor position
 		       const RPG_Graphics_Position_t&, // viewport (map coords !)
            const RPG_Map_Size_t&,          // (current) map size
-           SDL_Rect&);                     // return value: "dirty" region
+           SDL_Rect&,                      // return value: "dirty" region
+					 const bool& = true,             // draw highlight ?
+					 const bool& = false);           // debug ?
 
   void setCursor(const RPG_Graphics_Cursor&, // cursor type
                  SDL_Rect&);                 // return value: "dirty" region
@@ -85,11 +88,13 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
                     const RPG_Graphics_Offset_t&,   // position (screen coords !)
                     const RPG_Graphics_Position_t&, // viewport (map coords !)
                     SDL_Rect&,                      // return value: "dirty" region
+										const bool& = true,             // locked access ?
                     const bool& = false);           // debug ?
-  void putHighlights(const RPG_Map_PositionList_t&,   // positions (map coords !)
-                     const RPG_Graphics_Offsets_t&,   // position(s) (screen coords !)
-                     const RPG_Graphics_Position_t&,  // viewport (map coords !)
-                     SDL_Rect&);                      // return value: "dirty" region
+	void putHighlights(const RPG_Map_PositionList_t&,   // positions (map coords !)
+										 const RPG_Graphics_Offsets_t&,   // position(s) (screen coords !)
+										 const RPG_Graphics_Position_t&,  // viewport (map coords !)
+										 SDL_Rect&,                       // return value: "dirty" region
+										 const bool& = true);             // locked access ?
   void restoreHighlightBG(const RPG_Graphics_Position_t&, // viewport (map coords !)
                           SDL_Rect&,                      // return value: "dirty" region
                           const bool& = true);            // locked access ?

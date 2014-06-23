@@ -36,10 +36,10 @@
 #include "rpg_dice_common.h"
 #include "rpg_dice.h"
 
-#include <ace/OS.h>
-#include <ace/Log_Msg.h>
+#include "ace/OS.h"
+#include "ace/Log_Msg.h"
 
-#include <png.h>
+#include "png.h"
 
 #include <sstream>
 #include <numeric>

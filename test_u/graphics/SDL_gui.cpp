@@ -1124,8 +1124,7 @@ do_UI(RPG_Engine_Entity_t& entity_in,
             SDL_GetMouseState(&x, &y);
             mouse_position = std::make_pair(x, y);
             SDL_Rect window_area;
-						map_window->getArea(window_area,
-																true);
+						map_window->getArea(window_area, true);
 						RPG_Graphics_Position_t map_position =
 								RPG_Graphics_Common_Tools::screen2Map(mouse_position,
 																											engine_in->getSize(),
@@ -1805,6 +1804,15 @@ ACE_TMAIN(int argc_in,
   state.style.wall = RPG_CLIENT_GRAPHICS_DEF_WALLSTYLE;
   state.style.half_height_walls = RPG_CLIENT_GRAPHICS_DEF_WALLSTYLE_HALF;
   state.style.door = RPG_CLIENT_GRAPHICS_DEF_DOORSTYLE;
+	state.selection_mode = SELECTIONMODE_NORMAL;
+	//state.seen_positions.clear();
+	//
+	//state.path.clear();
+	//state.positions.clear();
+	state.radius = 0;
+	state.source = std::make_pair(std::numeric_limits<unsigned int>::max(),
+																std::numeric_limits<unsigned int>::max());
+	//
   state.angle = 0.0F;
 
   // step1a set defaults

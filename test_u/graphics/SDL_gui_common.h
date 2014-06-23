@@ -21,26 +21,37 @@
 #ifndef SDL_GUI_COMMON_H
 #define SDL_GUI_COMMON_H
 
+#include "rpg_client_common.h"
+
 #include "rpg_graphics_floorstyle.h"
 #include "rpg_graphics_edgestyle.h"
 #include "rpg_graphics_wallstyle.h"
 #include "rpg_graphics_doorstyle.h"
 #include "rpg_graphics_style.h"
 
-#include <SDL.h>
-#include <SDL_opengl.h>
+#include "rpg_map_common.h"
 
-#include <ace/Synch.h>
+#include "SDL.h"
+#include "SDL_opengl.h"
+
+#include "ace/Synch.h"
 
 struct state_t
 {
- SDL_Surface*       screen;
- ACE_Thread_Mutex   hover_lock;
- unsigned int       hover_time;
- bool               debug;
- RPG_Graphics_Style style;
- //
- GLfloat            angle;
+  SDL_Surface*               screen;
+  ACE_Thread_Mutex           hover_lock;
+  unsigned int               hover_time;
+  bool                       debug;
+  RPG_Graphics_Style         style;
+	RPG_Client_SelectionMode   selection_mode;
+	RPG_Client_SeenPositions_t seen_positions;
+	//
+	RPG_Map_Path_t             path;
+	RPG_Map_Position_t         source;
+	RPG_Map_PositionList_t     positions;
+	unsigned char              radius; // map squares
+  //
+  GLfloat                    angle;
 };
 
 enum userMode_t

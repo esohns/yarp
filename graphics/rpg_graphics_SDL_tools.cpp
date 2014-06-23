@@ -21,10 +21,10 @@
 
 #include "rpg_graphics_SDL_tools.h"
 
-#include <ace/OS.h>
-#include <ace/Log_Msg.h>
+#include "ace/OS.h"
+#include "ace/Log_Msg.h"
 
-#include <SDL_syswm.h>
+#include "SDL_syswm.h"
 
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
@@ -871,19 +871,19 @@ RPG_Graphics_SDL_Tools::boundingBox(const SDL_Rect& rect1_in,
   ACE_OS::memset(&result, 0, sizeof(SDL_Rect));
 
   result.x =
-          static_cast<int16_t>((rect1_in.x < rect2_in.x) ? rect1_in.x
-                                                         : rect2_in.x);
+		static_cast<int16_t>((rect1_in.x < rect2_in.x) ? rect1_in.x
+                                                   : rect2_in.x);
   result.y =
-          static_cast<int16_t>((rect1_in.y < rect2_in.y) ? rect1_in.y
-                                                         : rect2_in.y);
+		static_cast<int16_t>((rect1_in.y < rect2_in.y) ? rect1_in.y
+                                                   : rect2_in.y);
   result.w =
-          static_cast<uint16_t>((((rect1_in.x + rect1_in.w) >
-                                  (rect2_in.x + rect2_in.w)) ? (rect1_in.x + rect1_in.w - 1)
-                                                             : (rect2_in.x + rect2_in.w - 1)) - result.x) + 1;
+		static_cast<uint16_t>((((rect1_in.x + rect1_in.w) >
+                            (rect2_in.x + rect2_in.w)) ? (rect1_in.x + rect1_in.w - 1)
+                                                       : (rect2_in.x + rect2_in.w - 1)) - result.x) + 1;
   result.h =
-          static_cast<uint16_t>((((rect1_in.y + rect1_in.h) >
-                                  (rect2_in.y + rect2_in.h)) ? (rect1_in.y + rect1_in.h - 1)
-                                                             : (rect2_in.y + rect2_in.h - 1)) - result.y) + 1;
+		static_cast<uint16_t>((((rect1_in.y + rect1_in.h) >
+                            (rect2_in.y + rect2_in.h)) ? (rect1_in.y + rect1_in.h - 1)
+                                                       : (rect2_in.y + rect2_in.h - 1)) - result.y) + 1;
 
   return result;
 }

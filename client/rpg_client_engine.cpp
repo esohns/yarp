@@ -975,8 +975,7 @@ RPG_Client_Engine::handleActions()
         ACE_ASSERT((*iterator).entity_id);
 
         SDL_Rect window_area;
-        (*iterator).window->getArea(window_area,
-																		true);
+        (*iterator).window->getArea(window_area, true);
         RPG_Client_IWindowLevel* level_window = NULL;
         try
         {

@@ -880,7 +880,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
       // --> store/draw the new tile highlight (BG)
 			client_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
 			SDL_Rect window_area = {0, 0, 0, 0};
-			level_window->getArea(window_area);
+			level_window->getArea(window_area, true);
       client_action.position = RPG_Graphics_Common_Tools::screen2Map(RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position(),
                                                                      level_engine.getSize(),
 																																		 std::make_pair(window_area.w,

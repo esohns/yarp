@@ -112,9 +112,11 @@ class SDL_GUI_LevelWindow_Isometric
   typedef std::pair<int, int> RPG_Position_t;
 
   // helper methods
-  //void clear();
+	bool hasSeen(const RPG_Engine_EntityID_t&,
+							 const RPG_Map_Position_t&) const;
 	void redrawCursor(const RPG_Graphics_Position_t& =
-		RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position(false));
+		RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position(false), // screen position
+		                const bool& = true);                                // restore BG ?
 
   void initCeiling();
   void initWallBlend(const bool&); // half-height walls ?

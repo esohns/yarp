@@ -1520,118 +1520,6 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
           break;
         }
         case SDLK_t:
-        {
-          myClientAction.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
-          myClient->action(myClientAction);
-
-          // find pointed-to map square
-          RPG_Graphics_Position_t cursor_position =
-              RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
-          RPG_Graphics_Position_t curent_view = getView();
-          myEngine->lock();
-          myClientAction.position =
-              RPG_Graphics_Common_Tools::screen2Map(cursor_position,
-                                                    myEngine->getSize(false),
-                                                    std::make_pair(myClipRect.w,
-                                                                   myClipRect.h),
-                                                    curent_view);
-          bool push_mousemove_event = myEngine->isValid(myClientAction.position,
-                                                        false);
-
-          // toggle path selection mode
-          switch (myClient->mode())
-          {
-            case SELECTIONMODE_PATH:
-            {
-              // --> switch off path selection
-
-              // clear cached path
-              myClientAction.path.clear();
-
-              myClient->mode(SELECTIONMODE_NORMAL);
-              push_mousemove_event = false;
-
-              break;
-            }
-            case SELECTIONMODE_AIM_CIRCLE:
-            case SELECTIONMODE_AIM_SQUARE:
-            {
-              // clear cached positions
-              myClientAction.source =
-                  std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                 std::numeric_limits<unsigned int>::max());
-              myClientAction.positions.clear();
-
-              // *WARNING*: falls through !
-            }
-            case SELECTIONMODE_NORMAL:
-            {
-              // --> switch on path selection
-
-              myClientAction.entity_id = myEngine->getActive(false);
-              if (myClientAction.entity_id == 0)
-                push_mousemove_event = false;
-
-              myClient->mode(SELECTIONMODE_PATH);
-
-              break;
-            }
-            default:
-            {
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("invalid selection mode (was: %u), continuing\n"),
-                         myClient->mode()));
-
-              push_mousemove_event = false;
-
-              break;
-            }
-          } // end SWITCH
-
-          // on the map ?
-          if (push_mousemove_event)
-          {
-            // redraw highlight / cursor --> push fake mouse-move event
-            SDL_Event sdl_event;
-            sdl_event.type = SDL_MOUSEMOTION;
-            sdl_event.motion.x = cursor_position.first;
-            sdl_event.motion.y = cursor_position.second;
-            if (SDL_PushEvent(&sdl_event))
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
-                         ACE_TEXT(SDL_GetError())));
-
-//            // step2: draw tile highlight
-//            myClientAction.command = COMMAND_TILE_HIGHLIGHT_DRAW;
-//            myClient->action(myClientAction);
-//            // *NOTE*: this MAY also invalidate the current cursor bg...
-//            myClientAction.command = COMMAND_CURSOR_INVALIDATE_BG;
-//            myClient->action(myClientAction);
-          } // end IF
-//          // step3: set/draw an appropriate cursor
-//          RPG_Graphics_Cursor cursor_type =
-//              RPG_Client_Common_Tools::getCursor(myClientAction.position,
-//                                                 myClientAction.entity_id,
-//                                                 myClient->hasSeen(myClientAction.entity_id,
-//                                                                   myClientAction.position,
-//                                                                   true),
-//                                                 myClient->mode(),
-//                                                 *myEngine,
-//                                                 false);
-          myEngine->unlock();
-//          if (cursor_type !=
-//              RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
-//          {
-//            myClientAction.command = COMMAND_CURSOR_SET;
-//            myClientAction.cursor = cursor_type;
-//            myClient->action(myClientAction);
-//          } // end IF
-//          myClientAction.command = COMMAND_CURSOR_DRAW;
-//          myClientAction.position = cursor_position;
-//          myClient->action(myClientAction);
-
-          break;
-        }
         case SDLK_x:
         {
           myClientAction.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
@@ -1641,16 +1529,19 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
           RPG_Graphics_Position_t cursor_position =
               RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
           RPG_Graphics_Position_t curent_view = getView();
-          myEngine->lock();
+					SDL_Rect window_area;
+					getArea(window_area, true);
+					myEngine->lock();
           myClientAction.position =
-              RPG_Graphics_Common_Tools::screen2Map(cursor_position,
-                                                    myEngine->getSize(false),
-                                                    std::make_pair(myClipRect.w,
-                                                                   myClipRect.h),
-                                                    curent_view);
+						RPG_Graphics_Common_Tools::screen2Map(cursor_position,
+                                                  myEngine->getSize(false),
+																									std::make_pair(window_area.w,
+																									               window_area.h),
+                                                  curent_view);
           bool push_mousemove_event = myEngine->isValid(myClientAction.position,
                                                         false);
 
+					myClientAction.entity_id = myEngine->getActive(false);
           // toggle path selection mode
           switch (myClient->mode())
           {
@@ -1668,7 +1559,10 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
               myClient->mode(SELECTIONMODE_NORMAL);
               push_mousemove_event = false;
 
-              break;
+							if (event_in.key.keysym.sym != SDLK_t)
+								break;
+
+							// *WARNING*: falls through !
             }
             case SELECTIONMODE_PATH:
             {
@@ -1679,16 +1573,24 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
             }
             case SELECTIONMODE_NORMAL:
             {
-              // --> switch on aim selection
+							if (myClientAction.entity_id == 0)
+								push_mousemove_event = false;
 
-              // retain source position
-              myClientAction.source = myClientAction.position;
+							if (event_in.key.keysym.sym == SDLK_t)
+								myClient->mode(SELECTIONMODE_PATH);	// --> switch on path selection
+							else
+							{
+								// --> switch on aim selection
 
-              // initial radius == 0
-              myClientAction.positions.insert(myClientAction.position);
+								// retain source position
+								myClientAction.source = myClientAction.position;
 
-              myClient->mode(((event_in.key.keysym.mod & KMOD_SHIFT) ? SELECTIONMODE_AIM_SQUARE
-                                                                     : SELECTIONMODE_AIM_CIRCLE));
+								// initial radius == 0
+								myClientAction.positions.insert(myClientAction.position);
+
+								myClient->mode(((event_in.key.keysym.mod & KMOD_SHIFT) ? SELECTIONMODE_AIM_SQUARE
+									                                                     : SELECTIONMODE_AIM_CIRCLE));
+							} // end ELSE
 
               break;
             }
@@ -2111,18 +2013,13 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
         bool has_seen = myClient->hasSeen(myClientAction.entity_id,
                                           map_position,
                                           true);
-        myEngine->lock();
         if ((myClientAction.entity_id == 0) ||
             !has_seen)
-        {
-          // clean up
-          myEngine->unlock();
-
           break; // --> no player/vision, no action...
-        } // end IF
 
+				myEngine->lock();
         myClientAction.position =
-            myEngine->getPosition(myClientAction.entity_id, false);
+          myEngine->getPosition(myClientAction.entity_id, false);
 
         RPG_Engine_Action_t player_action;
         player_action.command = RPG_ENGINE_COMMAND_INVALID;

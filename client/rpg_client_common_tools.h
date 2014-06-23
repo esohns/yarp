@@ -31,7 +31,7 @@
 
 #include "rpg_map_common.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <string>
 
@@ -82,6 +82,13 @@ class RPG_Client_Export RPG_Client_Common_Tools
   static bool hasCeiling(const RPG_Map_Position_t&, // position
                          const RPG_Engine&,         // state / engine
                          const bool& = true);       // locked access ?
+	static bool isVisible(const RPG_Graphics_Position_t&, // position (map coordinates !)
+												const RPG_Graphics_Size_t&,     // window size
+												const RPG_Graphics_Position_t&, // viewport (map coordinates !)
+												const SDL_Rect&);               // window area
+	static bool hasHighlight(const RPG_Map_Position_t&, // position
+												   const RPG_Engine&,         // state / engine
+												   const bool& = true);       // locked access ?
   static RPG_Graphics_Orientation getDoorOrientation(const RPG_Map_Position_t&, // door position
                                                      const RPG_Engine&,         // state / engine
                                                      const bool& = true);       // locked access ?

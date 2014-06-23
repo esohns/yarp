@@ -34,11 +34,11 @@
 #include "rpg_common_idumpstate.h"
 #include "rpg_common_ilock.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Task.h>
-#include <ace/Atomic_Op_T.h>
-#include <ace/Condition_T.h>
-#include <ace/Synch.h>
+#include "ace/Global_Macros.h"
+#include "ace/Task.h"
+#include "ace/Atomic_Op_T.h"
+#include "ace/Condition_T.h"
+#include "ace/Synch.h"
 
 // forward declaration(s)
 class RPG_Engine;

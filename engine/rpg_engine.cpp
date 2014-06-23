@@ -587,6 +587,9 @@ RPG_Engine::add(RPG_Engine_Entity_t* entity_in,
 			std::make_pair(std::numeric_limits<unsigned int>::max(),
 										 std::numeric_limits<unsigned int>::max());
 	parameters.visible_radius = 0;
+	// *WARNING*: avoid potential deadlock
+	if (!lockedAccess_in)
+		myLock.release();
   try
   {
     myClient->notify(COMMAND_E2C_ENTITY_ADD,
@@ -598,6 +601,8 @@ RPG_Engine::add(RPG_Engine_Entity_t* entity_in,
                ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
                ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_ADD).c_str())));
   }
+	if (!lockedAccess_in)
+		myLock.acquire();
 
   return id;
 }
@@ -614,6 +619,7 @@ RPG_Engine::remove(const RPG_Engine_EntityID_t& id_in)
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->remove(id_in);
 
   bool was_active = false;
+	RPG_Engine_ClientNotificationParameters_t parameters;
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
@@ -632,6 +638,7 @@ RPG_Engine::remove(const RPG_Engine_EntityID_t& id_in)
       delete (*iterator).second->character;
       delete (*iterator).second;
     } // end IF
+		parameters.position = (*iterator).second->position;
     myEntities.erase(iterator);
 
     if (id_in == myActivePlayer)
@@ -639,15 +646,11 @@ RPG_Engine::remove(const RPG_Engine_EntityID_t& id_in)
   } // end lock scope
 
   // notify client / window
-  RPG_Engine_ClientNotificationParameters_t parameters;
   parameters.entity_id = id_in;
 	parameters.condition = RPG_COMMON_CONDITION_INVALID;
-	parameters.position =
-			std::make_pair(std::numeric_limits<unsigned int>::max(),
-										 std::numeric_limits<unsigned int>::max());
 	parameters.previous_position =
-			std::make_pair(std::numeric_limits<unsigned int>::max(),
-										 std::numeric_limits<unsigned int>::max());
+		std::make_pair(std::numeric_limits<unsigned int>::max(),
+									 std::numeric_limits<unsigned int>::max());
 	parameters.visible_radius = 0;
   try
   {
@@ -699,6 +702,7 @@ RPG_Engine::action(const RPG_Engine_EntityID_t& id_in,
                ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
                id_in));
 
+		// clean up
     if (lockedAccess_in)
       myLock.release();
 
