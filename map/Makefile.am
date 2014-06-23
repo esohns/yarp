@@ -1,6 +1,6 @@
 METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = -I m4
+#ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = \
   -I$(srcdir)/../3rd_party/bison \
   -I$(srcdir)/../chance/dice \
@@ -62,3 +62,4 @@ configdir = $(pkgdatadir)/config
 config_DATA = rpg_map.xsd
 
 EXTRA_DIST = $(config_DATA)
+

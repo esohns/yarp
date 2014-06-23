@@ -1,6 +1,6 @@
 METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = -I m4 -I .
+#ACLOCAL_AMFLAGS = -I m4 -I .
 AM_CPPFLAGS = \
   -DRPG_GRAPHICS_BUILD_DLL \
   -I$(srcdir)/../common \
@@ -10,15 +10,7 @@ SUBDIRS = scripts data
 
 noinst_HEADERS = \
   stdafx.h
-
 include_HEADERS = \
-  rpg_graphics_SDL_tools.h \
-  rpg_graphics_SDL_window_base.h \
-  rpg_graphics_SDL_window_interface.h \
-  rpg_graphics_SDL_window_sub.h \
-  rpg_graphics_XML_parser.h \
-  rpg_graphics_XML_tree.h \
-  rpg_graphics_XML_types.h \
   rpg_graphics_category.h \
   rpg_graphics_colorname.h \
   rpg_graphics_colorrgba.h \
@@ -32,6 +24,7 @@ include_HEADERS = \
   rpg_graphics_edgestyle.h \
   rpg_graphics_element.h \
   rpg_graphics_elementtypeunion.h \
+  rpg_graphics_exports.h \
   rpg_graphics_floorstyle.h \
   rpg_graphics_font.h \
   rpg_graphics_graphic.h \
@@ -43,12 +36,16 @@ include_HEADERS = \
   rpg_graphics_interfaceelementtype.h \
   rpg_graphics_iwindow.h \
   rpg_graphics_iwindow_base.h \
-  rpg_graphics_style.h \
   rpg_graphics_orientation.h \
   rpg_graphics_sprite.h \
   rpg_graphics_stairsstyle.h \
+  rpg_graphics_style.h \
   rpg_graphics_styleunion.h \
   rpg_graphics_surface.h \
+  rpg_graphics_SDL_tools.h \
+  rpg_graphics_SDL_window_base.h \
+  rpg_graphics_SDL_window_interface.h \
+  rpg_graphics_SDL_window_sub.h \
   rpg_graphics_tile.h \
   rpg_graphics_tilegraphic.h \
   rpg_graphics_tileset.h \
@@ -57,27 +54,14 @@ include_HEADERS = \
   rpg_graphics_tiletype.h \
   rpg_graphics_toplevel.h \
   rpg_graphics_wallstyle.h \
-  rpg_graphics_exports.h \
-  rpg_graphics_windowtype.h
+  rpg_graphics_windowtype.h \
+  rpg_graphics_XML_parser.h \
+  rpg_graphics_XML_tree.h \
+  rpg_graphics_XML_types.h
 
 lib_LTLIBRARIES = libRPG_Graphics.la
 
 libRPG_Graphics_la_SOURCES = \
-  stdafx.h \
-  rpg_graphics_SDL_tools.cpp \
-  rpg_graphics_SDL_tools.h \
-  rpg_graphics_SDL_window_base.cpp \
-  rpg_graphics_SDL_window_base.h \
-  rpg_graphics_SDL_window_interface.cpp \
-  rpg_graphics_SDL_window_interface.h \
-  rpg_graphics_SDL_window_sub.cpp \
-  rpg_graphics_SDL_window_sub.h \
-  rpg_graphics_XML_parser.cpp \
-  rpg_graphics_XML_parser.h \
-  rpg_graphics_XML_tree.cpp \
-  rpg_graphics_XML_tree.h \
-  rpg_graphics_XML_types.cpp \
-  rpg_graphics_XML_types.h \
   rpg_graphics_category.h \
   rpg_graphics_colorname.h \
   rpg_graphics_colorrgba.h \
@@ -94,6 +78,7 @@ libRPG_Graphics_la_SOURCES = \
   rpg_graphics_edgestyle.h \
   rpg_graphics_element.h \
   rpg_graphics_elementtypeunion.h \
+  rpg_graphics_exports.h \
   rpg_graphics_floorstyle.h \
   rpg_graphics_font.h \
   rpg_graphics_graphic.h \
@@ -106,13 +91,21 @@ libRPG_Graphics_la_SOURCES = \
   rpg_graphics_interfaceelementtype.h \
   rpg_graphics_iwindow.h \
   rpg_graphics_iwindow_base.h \
-  rpg_graphics_style.h \
   rpg_graphics_orientation.h \
   rpg_graphics_sprite.h \
   rpg_graphics_stairsstyle.h \
+  rpg_graphics_style.h \
   rpg_graphics_styleunion.h \
   rpg_graphics_surface.cpp \
   rpg_graphics_surface.h \
+  rpg_graphics_SDL_tools.cpp \
+  rpg_graphics_SDL_tools.h \
+  rpg_graphics_SDL_window_base.cpp \
+  rpg_graphics_SDL_window_base.h \
+  rpg_graphics_SDL_window_interface.cpp \
+  rpg_graphics_SDL_window_interface.h \
+  rpg_graphics_SDL_window_sub.cpp \
+  rpg_graphics_SDL_window_sub.h \
   rpg_graphics_tile.h \
   rpg_graphics_tilegraphic.h \
   rpg_graphics_tileset.h \
@@ -122,8 +115,15 @@ libRPG_Graphics_la_SOURCES = \
   rpg_graphics_toplevel.cpp \
   rpg_graphics_toplevel.h \
   rpg_graphics_wallstyle.h \
-  rpg_graphics_exports.h \
-  rpg_graphics_windowtype.h
+  rpg_graphics_windowtype.h \
+  rpg_graphics_XML_parser.cpp \
+  rpg_graphics_XML_parser.h \
+  rpg_graphics_XML_tree.cpp \
+  rpg_graphics_XML_tree.h \
+  rpg_graphics_XML_types.cpp \
+  rpg_graphics_XML_types.h \
+  stdafx.cpp \
+  stdafx.h
 
 libRPG_Graphics_la_CPPFLAGS = $(AM_CPPFLAGS) $(pkg_libs_CFLAGS)
 libRPG_Graphics_la_LDFLAGS  = $(pkg_libs_LDFLAGS)
@@ -138,3 +138,4 @@ config_DATA = \
 EXTRA_DIST = \
   $(config_DATA) \
   rpg_graphics.map
+

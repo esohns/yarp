@@ -1,13 +1,21 @@
 METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = -I m4
-AM_CPPFLAGS = -DRPG_CLIENT_BUILD_DLL -I$(srcdir)/../common \
-              -I$(srcdir)/../chance/dice -I$(srcdir)/../character \
-              -I$(srcdir)/../magic -I$(srcdir)/../item -I$(srcdir)/../combat \
-              -I$(srcdir)/../graphics -I$(srcdir)/../net/client \
-              -I$(srcdir)/../engine -I$(srcdir)/../map \
-              -I$(srcdir)/../character/monster -I$(srcdir)/../character/player \
-              -I$(srcdir)/../sound
+#ACLOCAL_AMFLAGS = -I m4
+AM_CPPFLAGS = \
+  -DRPG_CLIENT_BUILD_DLL \
+  -I$(srcdir)/../common \
+  -I$(srcdir)/../chance/dice \
+  -I$(srcdir)/../character \
+  -I$(srcdir)/../magic \
+  -I$(srcdir)/../item \
+  -I$(srcdir)/../combat \
+  -I$(srcdir)/../graphics \
+  -I$(srcdir)/../net/client \
+  -I$(srcdir)/../engine \
+  -I$(srcdir)/../map \
+  -I$(srcdir)/../character/monster \
+  -I$(srcdir)/../character/player \
+  -I$(srcdir)/../sound
 
 SUBDIRS = scripts
 
@@ -17,10 +25,10 @@ include_HEADERS = \
   rpg_client_common.h \
   rpg_client_common_tools.h \
   rpg_client_defines.h \
-  rpg_client_graphicsmode.h \
   rpg_client_engine.h \
   rpg_client_entity_manager.h \
   rpg_client_exports.h \
+  rpg_client_graphicsmode.h \
   rpg_client_GTK_manager.h \
   rpg_client_iGTK_ui.h \
   rpg_client_incl.h \
@@ -38,21 +46,20 @@ include_HEADERS = \
 
 lib_LTLIBRARIES = libRPG_Client_GUI.la
 libRPG_Client_GUI_la_SOURCES = \
-  stdafx.h \
   rpg_client_callbacks.cpp \
   rpg_client_callbacks.h \
   rpg_client_common.h \
-  rpg_client_common_tools.h \
   rpg_client_common_tools.cpp \
+  rpg_client_common_tools.h \
   rpg_client_defines.h \
-  rpg_client_engine.h \
   rpg_client_engine.cpp \
-  rpg_client_entity_manager.h \
+  rpg_client_engine.h \
   rpg_client_entity_manager.cpp \
+  rpg_client_entity_manager.h \
   rpg_client_exports.h \
   rpg_client_graphicsmode.h \
-  rpg_client_GTK_manager.h \
   rpg_client_GTK_manager.cpp \
+  rpg_client_GTK_manager.h \
   rpg_client_iGTK_ui.h \
   rpg_client_incl.h \
   rpg_client_iwidget_ui.h \
@@ -61,18 +68,21 @@ libRPG_Client_GUI_la_SOURCES = \
   rpg_client_logger.h \
   rpg_client_logger.cpp \
   rpg_client_runtimestate.h \
-  rpg_client_ui_tools.h \
   rpg_client_ui_tools.cpp \
+  rpg_client_ui_tools.h \
   rpg_client_window_level.cpp \
   rpg_client_window_level.h \
   rpg_client_window_main.cpp \
   rpg_client_window_main.h \
-  rpg_client_window_message.h \
   rpg_client_window_message.cpp \
-  rpg_client_window_minimap.h \
+  rpg_client_window_message.h \
   rpg_client_window_minimap.cpp \
+  rpg_client_window_minimap.h \
   rpg_client_XML_tree.cpp \
-  rpg_client_XML_tree.h
+  rpg_client_XML_tree.h \
+  stdafx.cpp \
+  stdafx.h
+
 libRPG_Client_GUI_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   -DBASEDIR=\"$(datadir)/@META_PACKAGE@\" \
@@ -84,3 +94,4 @@ config_DATA = \
   rpg_client.ini
 
 EXTRA_DIST = $(config_DATA)
+

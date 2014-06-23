@@ -1,6 +1,6 @@
 METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = -I m4
+#ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = \
   -DRPG_COMMON_BUILD_DLL \
   -DMETA_PACKAGE=\"@META_PACKAGE@\" \
@@ -153,7 +153,9 @@ libRPG_Common_la_SOURCES = \
   rpg_common_xsderrorhandler.h \
   rpg_common.h \
   rpg_XMLSchema_XML_types.h \
-  rpg_XMLSchema_XML_tree.h
+  rpg_XMLSchema_XML_tree.h \
+  stdafx.cpp \
+  stdafx.h
 
 pkgdatadir = $(datadir)/@META_PACKAGE@
 configdir = $(pkgdatadir)/config

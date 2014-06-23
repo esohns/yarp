@@ -29,6 +29,7 @@ AC_PROG_MAKE_SET
 # AM_PROG_LIBTOOL
 AC_PROG_LEX
 AC_PROG_YACC
+AM_PROG_AR
 
 # init other tools.
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])

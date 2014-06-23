@@ -1,6 +1,6 @@
 METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = -I m4
+#ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = \
   -DRPG_NET_BUILD_DLL \
   -I$(srcdir)/../common \
@@ -17,16 +17,19 @@ server: .
 
 noinst_HEADERS = \
   stdafx.h
-
 include_HEADERS = \
-  rpg_net_common.h \
   rpg_net_asynchsockethandler_t.h \
+  rpg_net_asynchsockethandler_t.inl \
   rpg_net_asynchstreamhandler_t.h \
+  rpg_net_asynchstreamhandler_t.inl
+  rpg_net_common.h \
+  rpg_net_common_modules.h \
   rpg_net_common_tools.h \
   rpg_net_connection_manager.h \
   rpg_net_connection_manager.inl \
   rpg_net_controller_base.h \
   rpg_net_defines.h \
+  rpg_net_exports.h \
   rpg_net_inotify.h \
   rpg_net_iconnection.h \
   rpg_net_iconnectionmanager.h \
@@ -51,26 +54,23 @@ include_HEADERS = \
   rpg_net_statistichandler.h \
   rpg_net_statistichandler.inl \
   rpg_net_stream.h \
+  rpg_net_stream_common.h \
   rpg_net_stream_config.h \
   rpg_net_stream_messageallocator.h \
   rpg_net_stream_socket_base.h \
-  rpg_net_stream_socket_base.inl \
-  rpg_net_exports.h \
-  rpg_net_common_modules.h \
-  rpg_net_stream_common.h \
-  rpg_net_asynchsockethandler_t.inl \
-  rpg_net_asynchstreamhandler_t.inl
+  rpg_net_stream_socket_base.inl
 
 lib_LTLIBRARIES = libRPG_Net.la
 
 libRPG_Net_la_SOURCES = \
+  rpg_net_asynchsockethandler_t.cpp \
   rpg_net_asynchsockethandler_t.h \
   rpg_net_asynchsockethandler_t.inl \
-  rpg_net_asynchsockethandler_t.cpp \
+  rpg_net_asynchstreamhandler_t.cpp \
   rpg_net_asynchstreamhandler_t.h \
   rpg_net_asynchstreamhandler_t.inl \
-  rpg_net_asynchstreamhandler_t.cpp \
   rpg_net_common.h \
+  rpg_net_common_modules.h \
   rpg_net_common_tools.cpp \
   rpg_net_common_tools.h \
   rpg_net_connection_manager.cpp \
@@ -79,6 +79,7 @@ libRPG_Net_la_SOURCES = \
   rpg_net_controller_base.cpp \
   rpg_net_controller_base.h \
   rpg_net_defines.h \
+  rpg_net_exports.h \
   rpg_net_inotify.h \
   rpg_net_iconnection.h \
   rpg_net_iconnectionmanager.h \
@@ -117,6 +118,7 @@ libRPG_Net_la_SOURCES = \
   rpg_net_statistichandler.inl \
   rpg_net_stream.cpp \
   rpg_net_stream.h \
+  rpg_net_stream_common.h \
   rpg_net_stream_config.cpp \
   rpg_net_stream_config.h \
   rpg_net_stream_messageallocator.cpp \
@@ -124,7 +126,6 @@ libRPG_Net_la_SOURCES = \
   rpg_net_stream_socket_base.cpp \
   rpg_net_stream_socket_base.h \
   rpg_net_stream_socket_base.inl \
-  rpg_net_exports.h \
-  rpg_net_common_modules.h \
-  rpg_net_stream_common.h
+  stdafx.cpp \
+  stdafx.h
 

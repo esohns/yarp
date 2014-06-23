@@ -27,6 +27,7 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 # AC_PROG_RANLIB
 AM_PROG_LIBTOOL
+AM_PROG_AR
 
 # init other tools.
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
@@ -84,6 +85,7 @@ AC_CHECK_FUNCS([floor memset sqrt strerror])
 AC_CHECK_FUNCS([getcwd])
 
 AC_CONFIG_FILES([Makefile
+                 player/Makefile
 		 monster/Makefile])
 
 AC_OUTPUT

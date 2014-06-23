@@ -1,6 +1,6 @@
 METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = -I m4
+#ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -DACE_HAS_DLL
 
 bin_PROGRAMS = XML2CppCode
@@ -24,11 +24,14 @@ XML2CppCode_SOURCES = \
   XML_handler_base.cpp \
   XML_handler_base.h \
   XML_parser.cpp \
-  XML_parser.h
+  XML_parser.h \
+  stdafx.cpp \
+  stdafx.h
 XML2CppCode_CPPFLAGS = $(AM_CPPFLAGS)
-XML2CppCode_LDFLAGS = -L/usr/local/lib
+#XML2CppCode_LDFLAGS = -L/usr/local/lib
 XML2CppCode_LDADD = -lACE -lpthread -lxerces-c
 
 EXTRA_DIST = \
   configure.ac \
   m4/ax_prefix_config_h.m4
+

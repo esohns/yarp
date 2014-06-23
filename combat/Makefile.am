@@ -1,6 +1,6 @@
 METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = -I m4
+#ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = \
   -I$(srcdir)/../common \
   -I$(srcdir)/../chance/dice \
@@ -76,3 +76,4 @@ config_DATA = \
 EXTRA_DIST = \
   $(config_DATA) \
   rpg_combat.map
+
