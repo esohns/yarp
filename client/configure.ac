@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT([RPG_Client], [0.1], [erik.sohns@web.de], [RPG_GUI], [http://www.rpg.org])
+AC_INIT([RPG_Client], [0.1], [erik.sohns@web.de], [RPG_Client], [http://www.rpg.org])
 AC_PREREQ(2.63)
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_AUX_DIR([aux_config])
@@ -70,10 +70,10 @@ dnl AC_SUBST(pkg_libs_CFLAGS)
 dnl AC_SUBST(pkg_libs_LIBS)
 
 # checks for other libraries (non-pkg-config)
-# FIXME: Replace `main' with a function in `-lACE':
-AC_CHECK_LIB([ACE], [main])
 # FIXME: Replace `main' with a function in `-lpthread':
 AC_CHECK_LIB([pthread], [main])
+# FIXME: Replace `main' with a function in `-lACE':
+AC_CHECK_LIB([ACE], [main])
 
 # Checks for header files.
 AC_HEADER_STDBOOL
@@ -83,7 +83,8 @@ AC_HEADER_STDBOOL
 # Checks for library functions.
 AC_CHECK_FUNCS([memset])
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile
+                 scripts/Makefile])
 
 AC_OUTPUT
 

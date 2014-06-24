@@ -21,12 +21,9 @@
 #ifndef RPG_CLIENT_DEFINES_H
 #define RPG_CLIENT_DEFINES_H
 
-// *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
-#ifdef HAVE_CONFIG_H
-#include "rpg_config.h"
-#endif
-
 #include "rpg_graphics_colorname.h"
+
+#include "rpg_config.h"
 
 // task-specific
 #define RPG_CLIENT_GTK_UI_THREAD_GROUP_ID                 102

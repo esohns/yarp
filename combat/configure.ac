@@ -66,12 +66,13 @@ AC_SUBST(META_PACKAGE)
 AC_SUBST(CXXFLAGS)
 
 # Checks for libraries.
-# FIXME: Replace `main' with a function in `-lACE':
-AC_CHECK_LIB([ACE], [main])
 # FIXME: Replace `main' with a function in `-lpthread':
 AC_CHECK_LIB([pthread], [main])
+# FIXME: Replace `main' with a function in `-lACE':
+AC_CHECK_LIB([ACE], [main])
+PKG_CHECK_MODULES(pkg_libs, xerces-c)
 # FIXME: Replace `main' with a function in `-lxerces-c':
-AC_CHECK_LIB([xerces-c], [main])
+#AC_CHECK_LIB([xerces-c], [main])
 
 # Checks for header files.
 AC_HEADER_STDBOOL
@@ -82,6 +83,7 @@ AC_C_INLINE
 # Checks for library functions.
 AC_CHECK_FUNCS([strerror])
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile
+                 scripts/Makefile])
 
 AC_OUTPUT

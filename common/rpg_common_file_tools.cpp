@@ -37,10 +37,7 @@
 #include "rpg_common_defines.h"
 #include "rpg_common_tools.h"
 
-// *NOTE*: need this to import correct VERSION !
-#ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
-#endif
 
 bool
 RPG_Common_File_Tools::isReadable(const std::string& filename_in)

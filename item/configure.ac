@@ -84,5 +84,7 @@ AC_TYPE_SIZE_T
 AC_CHECK_FUNCS([strerror])
 AC_FUNC_ERROR_AT_LINE
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile
+                 scripts/Makefile])
+
 AC_OUTPUT

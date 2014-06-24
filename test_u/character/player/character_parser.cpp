@@ -19,10 +19,7 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-// *NOTE*: need this to import correct VERSION !
-#ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
-#endif
 
 #include "rpg_engine_defines.h"
 #include "rpg_engine_common.h"
@@ -63,13 +60,13 @@
 #include "rpg_common_file_tools.h"
 #include "rpg_common_XML_tools.h"
 
-#include <ace/ACE.h>
+#include "ace/ACE.h"
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-#include <ace/Init_ACE.h>
+#include "ace/Init_ACE.h"
 #endif
-#include <ace/Log_Msg.h>
-#include <ace/Get_Opt.h>
-#include <ace/High_Res_Timer.h>
+#include "ace/Log_Msg.h"
+#include "ace/Get_Opt.h"
+#include "ace/High_Res_Timer.h"
 
 #include <iostream>
 #include <iomanip>
@@ -98,12 +95,12 @@ do_printUsage(const std::string& programName_in)
   std::cout << ACE_TEXT("currently available options:") << std::endl;
 	std::string path = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE);
+  path += RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_NAME));
   path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
   std::cout << ACE_TEXT("-f [FILE]: player profile (*")
             << ACE_TEXT(RPG_PLAYER_PROFILE_EXT)
             << ACE_TEXT(") [\"")
-            << ACE_TEXT(path.c_str())
+            << path
             << ACE_TEXT("\"]")
             << std::endl;
   path = configuration_path;
@@ -115,7 +112,7 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-i [FILE]: item dictionary (*.xml)")
             << ACE_TEXT(" [\"")
-            << ACE_TEXT(path.c_str())
+            << path
             << ACE_TEXT("\"]")
             << std::endl;
   path = configuration_path;
@@ -127,7 +124,7 @@ do_printUsage(const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-m [FILE]: magic dictionary (*.xml)")
             << ACE_TEXT(" [\"")
-            << ACE_TEXT(path.c_str())
+            << path
             << ACE_TEXT("\"]")
             << std::endl;
   std::cout << ACE_TEXT("-t       : trace information") << std::endl;
@@ -154,9 +151,11 @@ do_processArguments(const int argc_in,
 #endif
 
   // init configuration
-  player_filename_out           = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
+  player_filename_out           =
+      RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   player_filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  player_filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE);
+  player_filename_out +=
+      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_NAME));
   player_filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
   item_dictionary_filename_out  = configuration_path;
@@ -406,7 +405,8 @@ ACE_TMAIN(int argc_in,
   std::string player_filename           =
       RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   player_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  player_filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_FILE);
+  player_filename +=
+      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_NAME));
   player_filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
   std::string item_dictionary_filename  = configuration_path;

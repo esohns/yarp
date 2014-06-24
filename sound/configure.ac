@@ -65,19 +65,16 @@ AC_SUBST(META_PACKAGE)
 AC_SUBST(CXXFLAGS)
 
 # checks for libraries
-PKG_CHECK_MODULES(pkg_libs, ACE xerces-c sdl SDL_mixer)
-dnl AC_SUBST(pkg_libs_CFLAGS)
-dnl AC_SUBST(pkg_libs_LIBS)
-
 # checks for other libraries (non-pkg-config)
-# FIXME: Replace `main' with a function in `-lACE':
-#AC_CHECK_LIB([ACE], [main])
 # FIXME: Replace `main' with a function in `-lpthread':
-#AC_CHECK_LIB([pthread], [main])
+AC_CHECK_LIB([pthread], [main])
+# FIXME: Replace `main' with a function in `-lACE':
+AC_CHECK_LIB([ACE], [main])
 # FIXME: Replace `main' with a function in `-lxerces-c':
 #AC_CHECK_LIB([xerces-c], [main])
 # FIXME: Replace `main' with a function in `-lSDL_mixer':
 #AC_CHECK_LIB([SDL_mixer], [main])
+PKG_CHECK_MODULES(pkg_libs, xerces-c sdl SDL_mixer)
 
 # Checks for header files.
 AC_HEADER_STDBOOL
@@ -90,6 +87,8 @@ AC_C_INLINE
 AC_CONFIG_FILES([Makefile
                  data/Makefile
                  data/ambient/Makefile
-                 data/effect/Makefile])
+                 data/effect/Makefile
+                 scripts/Makefile])
 
 AC_OUTPUT
+

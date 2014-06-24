@@ -21,7 +21,7 @@ include_HEADERS = \
   rpg_net_asynchsockethandler_t.h \
   rpg_net_asynchsockethandler_t.inl \
   rpg_net_asynchstreamhandler_t.h \
-  rpg_net_asynchstreamhandler_t.inl
+  rpg_net_asynchstreamhandler_t.inl \
   rpg_net_common.h \
   rpg_net_common_modules.h \
   rpg_net_common_tools.h \
@@ -128,4 +128,3 @@ libRPG_Net_la_SOURCES = \
   rpg_net_stream_socket_base.inl \
   stdafx.cpp \
   stdafx.h
-

@@ -72,13 +72,15 @@ AC_HEADER_STDBOOL
 AC_C_INLINE
 
 # Checks for libraries.
-# FIXME: Replace `main' with a function in `-lACE':
-AC_CHECK_LIB([ACE], [main])
 # FIXME: Replace `main' with a function in `-lpthread':
 AC_CHECK_LIB([pthread], [main])
+# FIXME: Replace `main' with a function in `-lACE':
+AC_CHECK_LIB([ACE], [main])
 
 # Checks for library functions.
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile
+                 data/Makefile
+                 scripts/Makefile])
 
 AC_OUTPUT

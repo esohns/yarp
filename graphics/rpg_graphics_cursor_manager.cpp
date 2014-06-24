@@ -146,6 +146,7 @@ RPG_Graphics_Cursor_Manager::position(const bool& highlight_in) const
 
   int x, y;
 	Uint8 button_state = SDL_GetMouseState(&x, &y);
+	ACE_UNUSED_ARG(button_state);
 
   return std::make_pair(static_cast<unsigned int>(x),
                         static_cast<unsigned int>(y));

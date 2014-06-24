@@ -20,7 +20,7 @@
 #ifndef XML2CPPCODE_COMMON_TOOLS_H
 #define XML2CPPCODE_COMMON_TOOLS_H
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <string>
 
@@ -30,11 +30,12 @@
 class XML2CppCode_Common_Tools
 {
  public:
-  static const bool XMLintegratedtypeToString(const std::string&, // (integrated) XML type
-                                              std::string&);      // C++ equivalent
+  static std::string strip(const std::string&); // string
+
+  static bool XMLintegratedtypeToString(const std::string&, // (integrated) XML type
+                                        std::string&);      // C++ equivalent
 
  private:
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(XML2CppCode_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(XML2CppCode_Common_Tools(const XML2CppCode_Common_Tools&));
   ACE_UNIMPLEMENTED_FUNC(XML2CppCode_Common_Tools& operator=(const XML2CppCode_Common_Tools&));

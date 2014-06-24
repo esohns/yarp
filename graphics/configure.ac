@@ -66,17 +66,14 @@ AC_SUBST(META_PACKAGE)
 AC_SUBST(CXXFLAGS)
 
 # checks for libraries
-PKG_CHECK_MODULES(pkg_libs, SDL libpng)
-dnl AC_SUBST(pkg_libs_CFLAGS)
-dnl AC_SUBST(pkg_libs_LIBS)
-
 # checks for other libraries (non-pkg-config)
 # FIXME: Replace `main' with a function in `-lpthread':
 AC_CHECK_LIB([pthread], [main])
 # FIXME: Replace `main' with a function in `-lACE':
 AC_CHECK_LIB([ACE], [main])
 # FIXME: Replace `main' with a function in `-lSDL_ttf':
-AC_CHECK_LIB([SDL_ttf], [main])
+#AC_CHECK_LIB([SDL_ttf], [main])
+PKG_CHECK_MODULES(pkg_libs, libpng sdl SDL_ttf)
 
 # checks for header files
 AC_HEADER_STDBOOL
@@ -95,6 +92,8 @@ AC_CONFIG_FILES([Makefile
                  data/floors/Makefile
                  data/fonts/Makefile
                  data/images/Makefile
-                 data/walls/Makefile])
+                 data/walls/Makefile
+                 scripts/Makefile])
 
 AC_OUTPUT
+

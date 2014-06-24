@@ -1,24 +1,27 @@
 *~
 *.orig
+*.bak
 
 libtool.m4
 ltoptions.m4
 ltsugar.m4
 ltversion.m4
 lt~obsolete.m4
+.deps/
+build/
+_configs.sed
 
 .anjuta_sym_db.db
 .kdev4
 autom4te.cache
-Debug
-Release
-aux_config
+aux_config/
 CMakeFiles
 aclocal.m4
 config.h.in
 Makefile.in
 Makefile.am.user
 configure
+Makefile
 
 scanner_report.txt
 lex.backup
@@ -31,13 +34,9 @@ IRCbisect_scanner_report.txt
 *.sdf
 *.suo
 *.opensdf
-Thumbs.db
-Debug
-Release
-ipch
+Debug/
+Release/
+ipch/
 
-/Yarp/build
+Thumbs.db
 .picasa.ini
-*.bak
-_configs.sed
-build

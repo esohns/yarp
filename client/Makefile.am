@@ -15,7 +15,8 @@ AM_CPPFLAGS = \
   -I$(srcdir)/../map \
   -I$(srcdir)/../character/monster \
   -I$(srcdir)/../character/player \
-  -I$(srcdir)/../sound
+  -I$(srcdir)/../sound \
+  -I$(srcdir)/../include
 
 SUBDIRS = scripts
 
@@ -94,4 +95,3 @@ config_DATA = \
   rpg_client.ini
 
 EXTRA_DIST = $(config_DATA)
-

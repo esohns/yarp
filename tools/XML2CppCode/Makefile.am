@@ -12,6 +12,8 @@ XML2CppCode_SOURCES = \
   handle_xmlenumeration.h \
   handle_xmlsequence.cpp \
   handle_xmlsequence.h \
+  handle_xmlstruct.cpp \
+  handle_xmlstruct.h \
   handle_xmlunion.cpp \
   handle_xmlunion.h \
   iXML_definition_handler.h \
@@ -34,4 +36,3 @@ XML2CppCode_LDADD = -lACE -lpthread -lxerces-c
 EXTRA_DIST = \
   configure.ac \
   m4/ax_prefix_config_h.m4
-

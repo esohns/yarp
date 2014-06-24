@@ -25,9 +25,9 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-# AC_PROG_RANLIB
+AC_PROG_RANLIB
 AM_PROG_LIBTOOL
-AM_PROG_AR
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 
 # init other tools.
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
@@ -41,7 +41,7 @@ AX_PREFIX_CONFIG_H
 # get the cpp compiler flags
 #CXXFLAGS="${CXXFLAGS=}"
 # reset the cpp compiler flags
-CXXFLAGS="-DRPG_MONSTER_BUILD_DLL"
+CXXFLAGS="-DRPG_CHARACTER_BUILD_DLL"
 # this macro is used to get the arguments supplied
 # to the configure script (./configure --enable-debug)
 # Check if we have enable debug support.
@@ -85,8 +85,11 @@ AC_CHECK_FUNCS([floor memset sqrt strerror])
 AC_CHECK_FUNCS([getcwd])
 
 AC_CONFIG_FILES([Makefile
+                 scripts/Makefile
                  player/Makefile
-		 monster/Makefile])
+                 player/scripts/Makefile
+                 monster/Makefile
+                 monster/scripts/Makefile])
 
 AC_OUTPUT
 

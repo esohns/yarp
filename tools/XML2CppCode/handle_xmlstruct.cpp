@@ -101,7 +101,7 @@ Handle_XMLStruct::handleData(const std::string& element_in)
 						 element_in.compare(ACE_TEXT_ALWAYS_CHAR(" ")));
 
 	// step0: strip any leading / trailing whitespace
-	std::string element = RPG_Common_Tools::strip(element_in);
+	std::string element = XML2CppCode_Common_Tools::strip(element_in);
 
 	// step1: determine if it's a base class
 	bool is_base_class = false;

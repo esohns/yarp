@@ -23,7 +23,26 @@
 
 #include "ace/Log_Msg.h"
 
-const bool XML2CppCode_Common_Tools::XMLintegratedtypeToString(const std::string& typeSpecifier_in,
+std::string
+XML2CppCode_Common_Tools::strip(const std::string& string_in)
+{
+	RPG_TRACE(ACE_TEXT("XML2CppCode_Common_Tools::strip"));
+
+	std::string result = string_in;
+
+	// *TODO*: remove tabs & other non-printable characters
+	std::string::size_type current_space = std::string::npos;
+	while ((current_space = result.find(' ',
+																			0)) == 0)
+		result.erase(current_space, 1);
+	while ((current_space = result.rfind(' ',
+																			 std::string::npos)) == (result.size() - 1))
+		result.erase(current_space, 1);
+
+	return result;
+}
+
+bool XML2CppCode_Common_Tools::XMLintegratedtypeToString(const std::string& typeSpecifier_in,
                                                                std::string& result_out)
 {
   ACE_TRACE(ACE_TEXT("XML2CppCode_Common_Tools::XMLintegratedtypeToString"));

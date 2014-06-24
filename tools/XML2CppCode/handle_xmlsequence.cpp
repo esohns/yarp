@@ -42,11 +42,11 @@ Handle_XMLSequence::Handle_XMLSequence(std::ofstream& targetFile_in,
                                        const bool& isBaseClass_in)
  : myOutputFile(targetFile_in),
  //    myStructName(),
-   myNestingLevel(nestingLevel_in),
    myTypePrefix(typePrefix_in),
    myTypePostfix(typePostfix_in),
    myEmitClassQualifier(emitClassQualifier_in),
-//    myAdjustForTaggedUnions(adjustForTaggedUnions_in)
+//    myAdjustForTaggedUnions(adjustForTaggedUnions_in),
+   myNestingLevel(nestingLevel_in),
    myIsBaseClass(isBaseClass_in)
 {
   ACE_TRACE(ACE_TEXT("Handle_XMLSequence::Handle_XMLSequence"));

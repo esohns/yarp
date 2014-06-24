@@ -4,6 +4,7 @@ METASOURCES = AUTO
 AM_CPPFLAGS = \
   -DRPG_COMMON_BUILD_DLL \
   -DMETA_PACKAGE=\"@META_PACKAGE@\" \
+  -I$(srcdir)/../include \
   -I$(srcdir)/../chance/dice
 
 SUBDIRS = scripts
@@ -154,8 +155,16 @@ libRPG_Common_la_SOURCES = \
   rpg_common.h \
   rpg_XMLSchema_XML_types.h \
   rpg_XMLSchema_XML_tree.h \
-  stdafx.cpp \
-  stdafx.h
+  stdafx.h \
+  stdafx.h.gch
+
+# (GNU-)make-rule for pch
+#%.h.gch: %.h
+#  $(CXX) -c $<
+#stdafx.h.gch: stdafx.h
+#   $(CXX) -c $<
+#stdafx.h.gch: Makefile
+#  $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(CXXFLAGS) $(libRPG_Common_la_CXXFLAGS) $(extra_CFLAGS_libRPG_Common_la) -c stdafx.h -o stdafx.h.gch
 
 pkgdatadir = $(datadir)/@META_PACKAGE@
 configdir = $(pkgdatadir)/config
@@ -167,4 +176,3 @@ EXTRA_DIST = \
   $(config_DATA) \
   rpg_common.map \
   rpg_common_environment.map
-

@@ -816,8 +816,10 @@ RPG_Client_Common_Tools::isVisible(const RPG_Graphics_Position_t& position_in,
 		RPG_Graphics_Common_Tools::map2Screen(position_in,
 																					windowSize_in,
 																					viewport_in);
-	SDL_Rect tile_area = {screen_position.first, screen_position.second,
-		                    RPG_GRAPHICS_TILE_FLOOR_WIDTH, RPG_GRAPHICS_TILE_FLOOR_HEIGHT};
+	SDL_Rect tile_area = {static_cast<Sint16>(screen_position.first),
+												static_cast<Sint16>(screen_position.second),
+												RPG_GRAPHICS_TILE_FLOOR_WIDTH,
+												RPG_GRAPHICS_TILE_FLOOR_HEIGHT};
 	SDL_Rect overlap = RPG_Graphics_SDL_Tools::intersect(windowArea_in,
 																											 tile_area);
 

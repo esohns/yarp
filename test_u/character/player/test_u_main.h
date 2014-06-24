@@ -42,7 +42,9 @@ class test_u_main
 		                char*[]); // argv
 
  private:
+ #if defined(ACE_WIN32) || defined(ACE_WIN64)
 	typedef ACE_Main_Base inherited;
+ #endif
 
 	// helper methods
   void print_usage(const std::string&);

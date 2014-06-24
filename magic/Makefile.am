@@ -29,7 +29,7 @@ include_HEADERS = \
   rpg_magic_school.h \
   rpg_magic_spell_areaofeffect.h \
   rpg_magic_spell_castingtime.h \
-  rpg_magic_spell_damagetypeunion.h
+  rpg_magic_spell_damagetypeunion.h \
   rpg_magic_spell_duration.h \
   rpg_magic_spell_durationproperties.h \
   rpg_magic_spell_effect.h \
@@ -107,4 +107,3 @@ config_DATA = \
 EXTRA_DIST = \
   $(config_DATA) \
   rpg_magic.map
-
