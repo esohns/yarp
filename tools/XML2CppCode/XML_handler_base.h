@@ -20,9 +20,9 @@
 #ifndef XML_HANDLER_BASE_H
 #define XML_HANDLER_BASE_H
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
-#include <xercesc/sax2/DefaultHandler.hpp>
+#include "xercesc/sax2/DefaultHandler.hpp"
 
 XERCES_CPP_NAMESPACE_USE
 

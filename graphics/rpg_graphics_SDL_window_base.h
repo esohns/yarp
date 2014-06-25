@@ -28,9 +28,9 @@
 
 #include "rpg_common_ilock.h"
 
-#include <SDL.h>
+#include "SDL.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <string>
 
@@ -46,8 +46,10 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   // implement (part of) RPG_Graphics_IWindow
   virtual void show(SDL_Rect&); // return value: "dirty" region
   virtual void hide(SDL_Rect&); // return value: "dirty" region
-  virtual void clear(const RPG_Graphics_ColorName& = COLOR_BLACK,
-                     const bool& = true);
+  virtual bool visible() const;
+
+  virtual void clear(const RPG_Graphics_ColorName& = COLOR_BLACK, // color
+                     const bool& = true);                         // clip ?
 
   virtual RPG_Graphics_IWindowBase* child(const RPG_Graphics_WindowType&); // type
 
@@ -102,20 +104,18 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
 
   virtual SDL_Rect getDirty() const; // "dirty" area
   void clean();
+	// implement (part of) RPG_Graphics_IWindowBase
+	virtual void refresh(SDL_Surface* = NULL); // target surface (default: screen)
 
   // default screen
-  SDL_Surface*                     myScreen;
-  RPG_Common_ILock*                myScreenLock;
+  SDL_Surface*                  myScreen;
+  RPG_Common_ILock*             myScreenLock;
 
   // border sizes
-  unsigned int                     myBorderTop;
-  unsigned int                     myBorderBottom;
-  unsigned int                     myBorderLeft;
-  unsigned int                     myBorderRight;
-
-//   // title sizes
-//   unsigned int                    myTitleWidth;
-//   unsigned int                    myTitleHeight;
+  unsigned int                  myBorderTop;
+  unsigned int                  myBorderBottom;
+  unsigned int                  myBorderLeft;
+  unsigned int                  myBorderRight;
 
   // helper types
   typedef std::vector<SDL_Rect> RPG_Graphics_DirtyRegions_t;
@@ -128,14 +128,13 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   // helper methods
   virtual RPG_Graphics_IWindowBase* getParent() const;
 
-  std::string                      myTitle;
-//   SDL_Surface*                     myBackGround;
+  std::string                   myTitle;
 
-  RPG_Graphics_IWindowBase*        myParent;
-  RPG_Graphics_Windows_t           myChildren;
+  RPG_Graphics_IWindowBase*     myParent;
+  RPG_Graphics_Windows_t        myChildren;
 
-  RPG_Graphics_Position_t          myLastAbsolutePosition;
-  SDL_Rect                         myClipRect;
+  RPG_Graphics_Position_t       myLastAbsolutePosition;
+  SDL_Rect                      myClipRect;
 
  private:
   typedef RPG_Graphics_IWindow inherited;
@@ -153,10 +152,10 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowBase
   virtual void removeChild(RPG_Graphics_IWindowBase*); // window handle
 
   // "dirty" region(s)
-  RPG_Graphics_InvalidRegions_t    myInvalidRegions;
-  bool                             myFlip;
+  RPG_Graphics_InvalidRegions_t myInvalidRegions;
+  bool                          myFlip;
 
-  RPG_Graphics_WindowType          myType;
+  RPG_Graphics_WindowType       myType;
 };
 
 #endif

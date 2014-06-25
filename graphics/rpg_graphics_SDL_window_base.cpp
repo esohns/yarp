@@ -208,6 +208,31 @@ RPG_Graphics_SDLWindowBase::clean()
 }
 
 void
+RPG_Graphics_SDLWindowBase::refresh(SDL_Surface* targetSurface_in)
+{
+	RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::refresh"));
+
+	// delegate (recurse into any children)
+	for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
+			 iterator != myChildren.end();
+			 iterator++)
+	{
+		try
+		{
+			(*iterator)->refresh(targetSurface_in);
+		}
+		catch (...)
+		{
+			ACE_DEBUG((LM_ERROR,
+								 ACE_TEXT("%@: caught exception in RPG_Graphics_IWindowBase::refresh(), continuing\n"),
+								 *iterator));
+
+			continue;
+		} // end IF
+	} // end FOR
+}
+
+void
 RPG_Graphics_SDLWindowBase::init(RPG_Common_ILock* screenLock_in,
                                  const bool& flip_in)
 {
@@ -363,6 +388,14 @@ RPG_Graphics_SDLWindowBase::hide(SDL_Rect& dirtyRegion_out)
   dirtyRegion_out = myClipRect;
 }
 
+bool
+RPG_Graphics_SDLWindowBase::visible() const
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::visible"));
+
+  return true;
+}
+
 void
 RPG_Graphics_SDLWindowBase::clear(const RPG_Graphics_ColorName& color_in,
                                   const bool& clip_in)
@@ -458,6 +491,9 @@ RPG_Graphics_SDLWindowBase::update(SDL_Surface* targetSurface_in)
        iterator++)
     dirty_region = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
                                                        (*iterator)->getDirty());
+	if (!dirty_region.w ||
+			!dirty_region.h)
+		return; // nothing to do...
 
   //ACE_DEBUG((LM_DEBUG,
   //           ACE_TEXT("refreshing bbox [[%d,%d][%d,%d]]...\n"),

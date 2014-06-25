@@ -63,7 +63,7 @@ RPG_Graphics_SDL_Tools::preInitVideo(const RPG_Graphics_SDL_VideoConfiguration_t
   {
     video_driver = ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME); // fallback
 
-    ACE_DEBUG((LM_INFO,
+    ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("using video driver: \"%s\"\n"),
                ACE_TEXT(video_driver.c_str())));
   } // end IF

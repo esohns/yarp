@@ -132,7 +132,7 @@ void Handle_XMLEnumeration::emitStringConversionTable()
 		myOutputFile << ACE_TEXT_ALWAYS_CHAR("\"") << std::endl << std::endl;
   } // end IF
 
-  myOutputFile << ACE_TEXT_ALWAYS_CHAR("#include <ace/Global_Macros.h>") << std::endl;
+  myOutputFile << ACE_TEXT_ALWAYS_CHAR("#include \"ace/Global_Macros.h\"") << std::endl;
   myOutputFile << std::endl;
   myOutputFile << ACE_TEXT_ALWAYS_CHAR("#include <map>") << std::endl;
   myOutputFile << ACE_TEXT_ALWAYS_CHAR("#include <string>") << std::endl;

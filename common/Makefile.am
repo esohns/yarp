@@ -76,7 +76,7 @@ include_HEADERS = \
   rpg_XMLSchema_XML_tree.h
 
 lib_LTLIBRARIES = libRPG_Common.la
-
+libRPG_Common_la_LDFLAGS = -version-info 0:1:0
 libRPG_Common_la_SOURCES = \
   rpg_common_actiontype.h \
   rpg_common_ambientlighting.h \

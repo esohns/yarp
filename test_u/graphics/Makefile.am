@@ -50,24 +50,25 @@ SDL_gui_CPPFLAGS = \
   $(pkg_libs_CFLAGS) \
   -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 #SDL_gui_LDFLAGS = $(pkg_libs_LIBS)
+#SDL_gui_LDFLAGS = $(RPG_CPPLDFLAGS)
 SDL_gui_LDADD = \
-  -lRPG_Client_GUI \
-  -lRPG_Engine \
-  -lRPG_Net_Client \
-  -lRPG_Net \
-  -lRPG_Stream \
-  -lRPG_Graphics \
-  -lRPG_Sound \
-  -lRPG_Map \
-  -lRPG_Monster \
-  -lRPG_Player \
-  -lRPG_Combat \
-  -lRPG_Character \
-  -lRPG_Item \
-  -lRPG_Magic \
-  -lRPG_Common \
-  -lRPG_Chance \
-  -lRPG_Dice \
+  $(builddir)/../../client/libRPG_Client_GUI.la \
+  $(builddir)/../../graphics/libRPG_Graphics.la \
+  $(builddir)/../../sound/libRPG_Sound.la \
+  $(builddir)/../../engine/libRPG_Engine.la \
+  $(builddir)/../../net/stream/libRPG_Stream.la \
+  $(builddir)/../../net/libRPG_Net.la \
+  $(builddir)/../../net/client/libRPG_Net_Client.la \
+  $(builddir)/../../map/libRPG_Map.la \
+  $(builddir)/../../character/monster/libRPG_Monster.la \
+  $(builddir)/../../character/player/libRPG_Player.la \
+  $(builddir)/../../combat/libRPG_Combat.la \
+  $(builddir)/../../character/libRPG_Character.la \
+  $(builddir)/../../item/libRPG_Item.la \
+  $(builddir)/../../magic/libRPG_Magic.la \
+  $(builddir)/../../common/libRPG_Common.la \
+  $(builddir)/../../chance/libRPG_Chance.la \
+  $(builddir)/../../chance/dice/libRPG_Dice.la \
   $(pkg_libs_LIBS) \
   -lSDL_mixer \
   -lGLU \

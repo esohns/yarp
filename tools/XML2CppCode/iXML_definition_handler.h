@@ -20,7 +20,7 @@
 #ifndef IXML_DEFINITION_HANDLER_H
 #define IXML_DEFINITION_HANDLER_H
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <string>
 

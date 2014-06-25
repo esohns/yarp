@@ -19,8 +19,6 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-// *NOTE*: need this to import correct VERSION !
-#ifdef HAVE_CONFIG_H
 #if defined _MSC_VER
 #include "build/XML2CppCode-config.h"
 #else
@@ -28,19 +26,18 @@
 //#include "config.h"
 #include "XML2CppCode-config.h"
 #endif
-#endif
 
 #include "xml2cppcode.h"
 #include "XML_parser.h"
 
-#include <xercesc/util/PlatformUtils.hpp>
-#include <xercesc/util/XMLString.hpp>
+#include "xercesc/util/PlatformUtils.hpp"
+#include "xercesc/util/XMLString.hpp"
 
-#include <ace/ACE.h>
-#include <ace/OS.h>
-#include <ace/Log_Msg.h>
-#include <ace/Get_Opt.h>
-#include <ace/High_Res_Timer.h>
+#include "ace/ACE.h"
+#include "ace/OS.h"
+#include "ace/Log_Msg.h"
+#include "ace/Get_Opt.h"
+#include "ace/High_Res_Timer.h"
 
 #include <iostream>
 #include <iomanip>
@@ -70,9 +67,9 @@ print_usage(const std::string& programName_in)
   std::cout << ACE_TEXT("-y [STRING] : remove (type) postfix") << std::endl;
 } // end print_usage
 
-const bool
-process_arguments(const int argc_in,
-                  ACE_TCHAR* argv_in[], // cannot be const...
+bool
+process_arguments(const int& argc_in,
+                  ACE_TCHAR** argv_in, // cannot be const...
                   std::string& emitClassQualifier_out,
                   bool& emitStringConversionUtilities_out,
                   bool& emitTaggedUnions_out,
@@ -111,9 +108,9 @@ process_arguments(const int argc_in,
   {
     switch (option)
     {
-	  case 'd':
+		  case 'd':
       {
-        emitClassQualifier_out = argumentParser.opt_arg();
+				emitClassQualifier_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
@@ -125,7 +122,7 @@ process_arguments(const int argc_in,
       }
       case 'f':
       {
-        filename_out = argumentParser.opt_arg();
+				filename_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
@@ -137,13 +134,13 @@ process_arguments(const int argc_in,
       }
       case 'o':
       {
-        directory_out = argumentParser.opt_arg();
+				directory_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
       case 'p':
       {
-        preamble_out = argumentParser.opt_arg();
+				preamble_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
@@ -173,13 +170,13 @@ process_arguments(const int argc_in,
       }
       case 'x':
       {
-        typePrefix_out = argumentParser.opt_arg();
+        typePrefix_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
       case 'y':
       {
-        typePostfix_out = argumentParser.opt_arg();
+				typePostfix_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
 
         break;
       }
@@ -188,7 +185,7 @@ process_arguments(const int argc_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("unrecognized option \"%s\", aborting\n"),
-                   argumentParser.last_option()));
+									 ACE_TEXT(argumentParser.last_option())));
 
         return false;
       }
@@ -317,10 +314,10 @@ do_printVersion(const std::string& programName_in)
 //             << std::endl;
 }
 
-const bool
+bool
 validate_arguments(const std::string& emitClassQualifier_in,
-				   const bool& emitStringConversionUtilities_in,
-				   const bool& emitTaggedUnions_in,
+									 const bool& emitStringConversionUtilities_in,
+									 const bool& emitTaggedUnions_in,
                    const std::string& filename_in,
                    const bool& generateIncludeHeader_in,
                    const std::string& directory_in,
@@ -335,7 +332,7 @@ validate_arguments(const std::string& emitClassQualifier_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid (XMLSchema) filename \"%s\", aborting\n"),
-               filename_in.c_str()));
+							 ACE_TEXT(filename_in.c_str())));
 
     return false;
   } // end IF
@@ -345,7 +342,7 @@ validate_arguments(const std::string& emitClassQualifier_in,
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid target directory \"%s\", aborting\n"),
-               directory_in.c_str()));
+							 ACE_TEXT(directory_in.c_str())));
 
     return false;
   } // end IF
@@ -355,7 +352,7 @@ validate_arguments(const std::string& emitClassQualifier_in,
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid preamble \"%s\", aborting\n"),
-               preamble_in.c_str()));
+							 ACE_TEXT(preamble_in.c_str())));
 
     return false;
   } // end IF
@@ -373,7 +370,7 @@ validate_arguments(const std::string& emitClassQualifier_in,
 
 int
 ACE_TMAIN(int argc_in,
-          ACE_TCHAR* argv_in[])
+          ACE_TCHAR** argv_in)
 {
   ACE_TRACE(ACE_TEXT("::main"));
 
@@ -392,23 +389,23 @@ ACE_TMAIN(int argc_in,
   bool printVersionAndExit = false;
 
   // step1b: parse/process/validate configuration
-  if (!(process_arguments(argc_in,
-                          argv_in,
-                          emitClassQualifier,
-                          emitStringConversionUtilities,
-                          emitTaggedUnions,
-                          filename,
-                          generateIncludeHeader,
-                          directory,
-                          preamble,
-                          filePerDefinition,
-                          traceInformation,
-                          printVersionAndExit,
-                          typePrefix,
-                          typePostfix)))
+  if (!process_arguments(argc_in,
+				                 argv_in,
+                         emitClassQualifier,
+                         emitStringConversionUtilities,
+                         emitTaggedUnions,
+                         filename,
+                         generateIncludeHeader,
+                         directory,
+                         preamble,
+                         filePerDefinition,
+                         traceInformation,
+                         printVersionAndExit,
+                         typePrefix,
+                         typePostfix))
   {
     // make 'em learn...
-    print_usage(std::string(ACE::basename(argv_in[0])));
+    print_usage(ACE::basename(argv_in[0]));
 
     return EXIT_FAILURE;
   } // end IF
@@ -424,7 +421,7 @@ ACE_TMAIN(int argc_in,
                           filePerDefinition))
   {
     // make 'em learn...
-    print_usage(std::string(ACE::basename(argv_in[0])));
+    print_usage(ACE::basename(argv_in[0]));
 
     return EXIT_FAILURE;
   } // end IF
@@ -458,7 +455,7 @@ ACE_TMAIN(int argc_in,
   // step1d: handle specific program modes
   if (printVersionAndExit)
   {
-    do_printVersion(std::string(ACE::basename(argv_in[0])));
+    do_printVersion(ACE::basename(argv_in[0]));
 
     return EXIT_SUCCESS;
   } // end IF
@@ -489,7 +486,7 @@ ACE_TMAIN(int argc_in,
   //
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
-//              working_time_string.c_str()));
+//              ACE_TEXT(working_time_string.c_str())));
 
   return EXIT_SUCCESS;
 } // end main

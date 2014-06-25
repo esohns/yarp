@@ -1029,8 +1029,8 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
       client_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
       client_engine.action(client_action);
 
-      // fiddling with the view (probably) invalidates (part of) the cursor BG
-      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG(NULL);
+//      // fiddling with the view (probably) invalidates (part of) the cursor BG
+//      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG(NULL);
     } // end IF
 
     // redraw cursor ?

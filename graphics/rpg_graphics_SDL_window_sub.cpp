@@ -25,7 +25,7 @@
 
 #include "rpg_common_macros.h"
 
-#include <ace/Log_Msg.h>
+#include "ace/Log_Msg.h"
 
 RPG_Graphics_SDLWindowSub::RPG_Graphics_SDLWindowSub(const RPG_Graphics_WindowType& type_in,
                                                      const RPG_Graphics_SDLWindowBase& parent_in,
@@ -60,6 +60,9 @@ RPG_Graphics_SDLWindowSub::show(SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::show"));
 
+	if (!myBGHasBeenSaved)
+		saveBG(std::make_pair(inherited::myClipRect.w,
+		                      inherited::myClipRect.h));
   myIsVisible = true;
 
   inherited::show(dirtyRegion_out);
@@ -77,13 +80,8 @@ RPG_Graphics_SDLWindowSub::hide(SDL_Rect& dirtyRegion_out)
 
   // restore saved background
   if (myBG)
-  {
-    if (inherited::myScreenLock)
-      myScreenLock->lock();
+	{
     restoreBG(dirtyRegion_out);
-    if (inherited::myScreenLock)
-      myScreenLock->unlock();
-
     invalidate(dirtyRegion_out);
   } // end IF
 }
@@ -108,41 +106,51 @@ RPG_Graphics_SDLWindowSub::getWindow(const RPG_Graphics_Position_t& position_in)
 }
 
 void
+RPG_Graphics_SDLWindowSub::refresh(SDL_Surface* targetSurface_in)
+{
+	RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::refresh"));
+
+	// sanity check(s)
+	if (!myIsVisible)
+		return; // nothing to do...
+	ACE_ASSERT(myBGHasBeenSaved);
+
+	saveBG();
+}
+
+void
 RPG_Graphics_SDLWindowSub::saveBG(const RPG_Graphics_Size_t& size_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::saveBG"));
 
-  // clean up ?
-  if (myBGHasBeenSaved)
+  if (size_in.first && size_in.second)
   {
-    ACE_ASSERT(myBG);
-    SDL_FreeSurface(myBG);
-    myBG = NULL;
+    // clean up ?
+    if (myBG)
+    {
+      SDL_FreeSurface(myBG);
+      myBG = NULL;
+    } // end IF
+    myBG = RPG_Graphics_Surface::create(size_in.first,
+                                        size_in.second);
+    if (!myBG)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), returning\n"),
+                 size_in.first, size_in.second));
+
+      return;
+    } // end IF
   } // end IF
-  ACE_ASSERT(myBG == NULL);
+	ACE_ASSERT(myBG);
 
-  myBG = RPG_Graphics_Surface::get(std::make_pair(myClipRect.x,
-                                                  myClipRect.y),
-                                   ((size_in.first == 0) ? myClipRect.h
-                                                         : size_in.first),
-                                   ((size_in.second == 0) ? myClipRect.w
-                                                          : size_in.second),
-                                   *inherited::myScreen);
-  if (!myBG)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Surface::get(%u,%u,%u,%u,%@), returning\n"),
-               myClipRect.x, myClipRect.y,
-               ((size_in.first == 0) ? inherited::myClipRect.h
-                                     : size_in.first),
-               ((size_in.second == 0) ? inherited::myClipRect.w
-                                      : size_in.second),
-               inherited::myScreen));
+  RPG_Graphics_Surface::get(std::make_pair(myClipRect.x,
+                                           myClipRect.y),
+                            true,
+                            *inherited::myScreen,
+                            *myBG);
 
-    return;
-  } // end IF
-
-  myBGHasBeenSaved = true;
+	myBGHasBeenSaved = true;
 }
 
 void
@@ -156,9 +164,13 @@ RPG_Graphics_SDLWindowSub::restoreBG(SDL_Rect& dirtyRegion_out)
   // sanity check(s)
   ACE_ASSERT(myBG);
 
+	if (inherited::myScreenLock)
+		myScreenLock->lock();
   RPG_Graphics_Surface::put(std::make_pair(myClipRect.x,
                                            myClipRect.y),
                             *myBG,
                             inherited::myScreen,
                             dirtyRegion_out);
+	if (inherited::myScreenLock)
+		myScreenLock->unlock();
 }

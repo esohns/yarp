@@ -80,7 +80,8 @@ RPG_Client_Entity_Manager::add(const RPG_Engine_EntityID_t& id_in,
 
   // sanity checks
   ACE_ASSERT(surface_in);
-  if (myCache.find(id_in) != myCache.end())
+	RPG_Client_EntityCacheConstIterator_t iterator = myCache.find(id_in);
+	if (iterator != myCache.end())
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("entity ID %u already cached, returning\n"),

@@ -1,11 +1,12 @@
 #!/bin/sh
 # author:      Erik Sohns <erik.sohns@web.de>
-# this script gathers the RPG libraries in one plac for in-source-tree debugging
+# this script gathers the RPG libraries in one place for in-source-tree
+# debugging
 # *NOTE*: it is neither portable nor particularly stable !
 # parameters:   - $1 [BUILD] {"debug" || "debug_tracing" || "release" || ...}
 # return value: - 0 success, 1 failure
 
-DEFAULT_PROJECT_DIR="/mnt/win_c/Temp/yarp/Yarp"
+DEFAULT_PROJECT_DIR="$(dirname $(readlink -f $0))/.."
 PROJECT_DIR=${DEFAULT_PROJECT_DIR}
 # sanity check(s)
 [ ! -d ${PROJECT_DIR} ] && echo "ERROR: invalid project dir (was: \"${PROJECT_DIR}\"), aborting" && exit 1

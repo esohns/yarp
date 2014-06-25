@@ -24,7 +24,7 @@
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_windowtype.h"
 
-#include <SDL.h>
+#include "SDL.h"
 
 // forward declarations;
 class RPG_Common_ILock;
@@ -57,6 +57,7 @@ class RPG_Graphics_IWindowBase
 
   virtual void addChild(RPG_Graphics_IWindowBase*) = 0; // window handle
   virtual void removeChild(RPG_Graphics_IWindowBase*) = 0; // window handle
+	virtual void refresh(SDL_Surface* = NULL) = 0; // target surface (default: screen)
 
   virtual RPG_Graphics_WindowType getType() const = 0;
   virtual void getArea(SDL_Rect&,                      // return value: window area

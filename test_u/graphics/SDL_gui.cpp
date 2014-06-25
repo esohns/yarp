@@ -36,10 +36,7 @@
 #include "SDL_syswm.h"
 #include "SDL_ttf.h"
 
-// *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
-#ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
-#endif
 
 #include "rpg_dice.h"
 #include "rpg_dice_common_tools.h"
@@ -348,7 +345,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   std::cout << ACE_TEXT("-x         : do NOT validate XML")
             << ACE_TEXT(" [")
-            << SDL_GUI_DEF_VALIDATE_XML
+            << !SDL_GUI_DEF_VALIDATE_XML
             << ACE_TEXT("]")
             << std::endl;
 }
@@ -388,7 +385,7 @@ do_processArguments(const int argc_in,
 
   magicDictionary_out     = configuration_path;
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR("magic");
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -982,6 +979,7 @@ do_UI(RPG_Engine_Entity_t& entity_in,
   std::ostringstream converter;
   RPG_Engine_Level_t current_level;
   SDL_Rect dirty_region;
+	bool has_hovered = false;
   do
   {
     event_handled = false;
@@ -989,6 +987,7 @@ do_UI(RPG_Engine_Entity_t& entity_in,
     mouse_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                     std::numeric_limits<unsigned int>::max());
     ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
+		has_hovered = false;
 
     // step1: retrieve next event
     if (SDL_WaitEvent(&sdl_event) != 1)
@@ -1192,8 +1191,8 @@ do_UI(RPG_Engine_Entity_t& entity_in,
 											RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
 																													dirty_region_2);
 
-									// invalidate cursor bg
-									RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG(NULL);
+//									// update cursor bg, as necessary
+//									RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG(dirty_region_2);
 								} // end IF
 							} // end IF
 						} // end IF
@@ -1237,9 +1236,9 @@ do_UI(RPG_Engine_Entity_t& entity_in,
           break; // leave
         // *WARNING*: falls through !
       }
-      case SDL_ACTIVEEVENT:
-      case SDL_MOUSEMOTION:
+			case SDL_ACTIVEEVENT:
       case SDL_MOUSEBUTTONDOWN:
+			case SDL_MOUSEMOTION:
       case RPG_GRAPHICS_SDL_HOVEREVENT: // hovering...
       {
         // find window
@@ -1293,6 +1292,26 @@ do_UI(RPG_Engine_Entity_t& entity_in,
         {
           SDL_Rect dirty_region_2;
           ACE_OS::memset(&dirty_region_2, 0, sizeof(dirty_region_2));
+          RPG_Graphics_IWindow* window_2 = NULL;
+          try
+          {
+            window_2 = dynamic_cast<RPG_Graphics_IWindow*>(window);
+          }
+          catch (...)
+          {
+            window_2 = NULL;
+          }
+          if (!window_2)
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("failed to dynamic_cast<RPG_Graphics_IWindow*>(%@), continuing\n"),
+                       window));
+
+            break;
+          } // end IF
+          if (!window_2->visible())
+            window = window->getParent();
+          ACE_ASSERT(window);
           try
           {
             window->handleEvent(sdl_event,
@@ -1306,6 +1325,10 @@ do_UI(RPG_Engine_Entity_t& entity_in,
           }
           dirty_region = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
                                                              dirty_region_2);
+
+					if ((sdl_event.type == RPG_GRAPHICS_SDL_HOVEREVENT) &&
+							(dirty_region_2.w && dirty_region_2.h))
+						has_hovered = true;
         } // end IF
 
         break;
@@ -1350,11 +1373,11 @@ do_UI(RPG_Engine_Entity_t& entity_in,
         break;
       case SDL_VIDEOEXPOSE:
       {
-        int x, y;
-        Uint8 button_state = SDL_GetMouseState(&x, &y);
-        ACE_UNUSED_ARG(button_state);
-        mouse_position = std::make_pair(x, y);
-        window = mainWindow_in->getWindow(mouse_position);
+        //int x, y;
+        //Uint8 button_state = SDL_GetMouseState(&x, &y);
+        //ACE_UNUSED_ARG(button_state);
+        //mouse_position = std::make_pair(x, y);
+        //window = mainWindow_in->getWindow(mouse_position);
 
         break;
       }
@@ -1378,8 +1401,13 @@ do_UI(RPG_Engine_Entity_t& entity_in,
         // *WARNING*: falls through !
       }
       case SDL_MOUSEMOTION:
-      case RPG_GRAPHICS_SDL_HOVEREVENT:
+			case RPG_GRAPHICS_SDL_HOVEREVENT:
       {
+				// sanity check
+				if ((sdl_event.type == RPG_GRAPHICS_SDL_HOVEREVENT) &&
+						!has_hovered)
+						break; // nothing to do...
+
         // map has changed, cursor MAY have been drawn over...
         // --> redraw cursor
         SDL_Rect dirty_region_2;
@@ -1387,6 +1415,7 @@ do_UI(RPG_Engine_Entity_t& entity_in,
 				RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putCursor(std::make_pair(mouse_position.first,
 					                                                                          mouse_position.second),
                                                                      dirty_region_2,
+                                                                     true,
                                                                      debug_in);
         dirty_region = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
                                                            dirty_region_2);
@@ -1399,24 +1428,24 @@ do_UI(RPG_Engine_Entity_t& entity_in,
     } // end SWITCH
 
     // update screen ?
-    if ((dirty_region.w != 0) ||
-        (dirty_region.h != 0))
-    {
+    //if ((dirty_region.w != 0) ||
+    //    (dirty_region.h != 0))
+    //{
       try
       {
         mainWindow_in->update();
-        if (openGL_in)
-        {
-          map_window->draw();
-          map_window->update();
-        } // end IF
+        //if (openGL_in)
+        //{
+        //  map_window->draw();
+        //  map_window->update();
+        //} // end IF
       }
       catch (...)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("caught exception in RPG_Graphics_IWindow::update(), continuing\n")));
       }
-    } // end IF
+    //} // end IF
   } while (!done);
 }
 
@@ -1567,8 +1596,10 @@ do_work(const mode_t& mode_in,
 #endif
 
       RPG_Engine_Entity_t entity;
-      entity.actions.clear();
+//      entity.actions.clear();
       entity.character = NULL;
+      entity.is_spawned = false;
+//      entity.modes.clear();
       entity.position =
           std::make_pair(std::numeric_limits<unsigned int>::max(),
                          std::numeric_limits<unsigned int>::max());
@@ -1984,7 +2015,7 @@ ACE_TMAIN(int argc_in,
   mode = (slideshow_mode ? SDL_GUI_USERMODE_SLIDESHOW : mode);
 
   std::string schema_repository = configuration_path;
-#if (defined _DEBUG) || (defined DEBUG_RELEASE)
+#if defined(DEBUG_DEBUGGER)
   schema_repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   schema_repository += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif

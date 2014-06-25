@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <player_t xmlns="urn:rpg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:rpg rpg_player.xsd">
 
-  <name>default player</name>
+  <name>aicJvgv</name>
 
   <abilities>
     <ability>ABILITY_NATURAL_WEAPONS</ability>
@@ -11,26 +11,26 @@
 
   <alignment>
     <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
-    <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
+    <ethic>ALIGNMENTETHIC_GOOD</ethic>
   </alignment>
 
   <attributes>
-    <strength>16</strength>
-    <dexterity>12</dexterity>
-    <constitution>15</constitution>
-    <intelligence>10</intelligence>
-    <wisdom>13</wisdom>
-    <charisma>17</charisma>
+    <strength>13</strength>
+    <dexterity>16</dexterity>
+    <constitution>12</constitution>
+    <intelligence>11</intelligence>
+    <wisdom>17</wisdom>
+    <charisma>14</charisma>
   </attributes>
 
   <defaultSize>SIZE_MEDIUM</defaultSize>
 
   <feats>
-    <feat>FEAT_CRAFT_WONDROUS_ITEM</feat>
     <feat>FEAT_PROFICIENCY_ARMOR_LIGHT</feat>
     <feat>FEAT_PROFICIENCY_ARMOR_MEDIUM</feat>
     <feat>FEAT_PROFICIENCY_SHIELD</feat>
     <feat>FEAT_PROFICIENCY_SIMPLE_WEAPONS</feat>
+    <feat>FEAT_MULTI_ATTACK</feat>
   </feats>
 
   <knownSpells/>
@@ -39,27 +39,35 @@
 
   <skills>
     <skill>
-      <skill>SKILL_APPRAISE</skill>
+      <skill>SKILL_BLUFF</skill>
+      <rank>3</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_CRAFT_ALCHEMY</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_CRAFT_FLETCHER</skill>
+      <skill>SKILL_CRAFT_SMITH_ARMOR</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_CRAFT_SMITH_WEAPON</skill>
+      <skill>SKILL_DECIPHER_SCRIPT</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_DISABLE_DEVICE</skill>
+      <skill>SKILL_DIPLOMACY</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_GATHER_INFORMATION</skill>
+      <skill>SKILL_DISGUISE</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_HIDE</skill>
+      <skill>SKILL_ESCAPE_ARTIST</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_INTIMIDATE</skill>
       <rank>1</rank>
     </skill>
     <skill>
@@ -67,27 +75,11 @@
       <rank>1</rank>
     </skill>
     <skill>
+      <skill>SKILL_KNOWLEDGE_ARCANA</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
       <skill>SKILL_KNOWLEDGE_DUNGEONS</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_KNOWLEDGE_RELIGION</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_MOVE_SILENTLY</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_PROFESSION</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_RIDE</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_SEARCH</skill>
       <rank>1</rank>
     </skill>
     <skill>
@@ -95,8 +87,12 @@
       <rank>1</rank>
     </skill>
     <skill>
+      <skill>SKILL_SPOT</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
       <skill>SKILL_TUMBLE</skill>
-      <rank>2</rank>
+      <rank>1</rank>
     </skill>
   </skills>
 
@@ -110,6 +106,8 @@
   <offhand>OFFHAND_LEFT</offhand>
 
   <race>RACE_DWARF</race>
+
+  <race>RACE_HALFLING</race>
 
   <gold>0</gold>
 

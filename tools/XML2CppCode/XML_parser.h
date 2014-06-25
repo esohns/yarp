@@ -21,9 +21,9 @@
 #ifndef XML_PARSER_H
 #define XML_PARSER_H
 
-#include <ace/Global_Macros.h>
-#include <ace/Singleton.h>
-#include <ace/Synch.h>
+#include "ace/Global_Macros.h"
+#include "ace/Singleton.h"
+#include "ace/Synch.h"
 
 #include <string>
 

@@ -26,7 +26,7 @@
 #include "rpg_graphics_colorname.h"
 #include "rpg_graphics_cursor.h"
 
-#include <SDL.h>
+#include "SDL.h"
 
 class RPG_Graphics_IWindow
  : public virtual RPG_Graphics_IWindowBase
@@ -35,6 +35,7 @@ class RPG_Graphics_IWindow
   // exposed interface
   virtual void show(SDL_Rect&) = 0; // return value: "dirty" region
   virtual void hide(SDL_Rect&) = 0; // return value: "dirty" region
+  virtual bool visible() const = 0;
 
   virtual void clear(const RPG_Graphics_ColorName& = COLOR_BLACK, // color
 		                 const bool& = true) = 0;                     // clip ?

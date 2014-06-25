@@ -33,21 +33,21 @@ map_generator_CPPFLAGS = \
   -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 #map_generator_LDFLAGS = $(pkg_libs_LIBS)
 map_generator_LDADD = \
-  -lRPG_Engine \
-  -lRPG_Net_Client \
-  -lRPG_Net \
-  -lRPG_Stream \
-  -lRPG_Graphics \
-  -lRPG_Map \
-  -lRPG_Monster \
-  -lRPG_Player \
-  -lRPG_Combat \
-  -lRPG_Magic \
-  -lRPG_Character \
-  -lRPG_Item \
-  -lRPG_Chance \
-  -lRPG_Common \
-  -lRPG_Dice \
+  $(builddir)/../../engine/libRPG_Engine.la \
+  $(builddir)/../../net/client/libRPG_Net_Client.la \
+  $(builddir)/../../net/libRPG_Net.la \
+  $(builddir)/../../net/stream/libRPG_Stream.la \
+  $(builddir)/../../graphics/libRPG_Graphics.la \
+  $(builddir)/../../map/libRPG_Map.la \
+  $(builddir)/../../character/monster/libRPG_Monster.la \
+  $(builddir)/../../character/player/libRPG_Player.la \
+  $(builddir)/../../combat/libRPG_Combat.la \
+  $(builddir)/../../magic/libRPG_Magic.la \
+  $(builddir)/../../character/libRPG_Character.la \
+  $(builddir)/../../item/libRPG_Item.la \
+  $(builddir)/../../chance/libRPG_Chance.la \
+  $(builddir)/../../common/libRPG_Common.la \
+  $(builddir)/../../chance/dice/libRPG_Dice.la \
   $(pkg_libs_LIBS)
 
 map_generator_gui_SOURCES = \
@@ -66,23 +66,23 @@ map_generator_gui_CPPFLAGS = \
   -DDEBUG_DEBUGGER
 #map_generator_gui_LDFLAGS = $(pkg_libs_LIBS)
 map_generator_gui_LDADD = \
-  -lRPG_Client_GUI \
-  -lRPG_Sound \
-  -lRPG_Engine \
-  -lRPG_Net_Client \
-  -lRPG_Net \
-  -lRPG_Stream \
-  -lRPG_Graphics \
-  -lRPG_Map \
-  -lRPG_Monster \
-  -lRPG_Player \
-  -lRPG_Combat \
-  -lRPG_Magic \
-  -lRPG_Character \
-  -lRPG_Item \
-  -lRPG_Chance \
-  -lRPG_Common \
-  -lRPG_Dice \
+  $(builddir)/../../client/libRPG_Client_GUI.la \
+  $(builddir)/../../graphics/libRPG_Graphics.la \
+  $(builddir)/../../sound/libRPG_Sound.la \
+  $(builddir)/../../engine/libRPG_Engine.la \
+  $(builddir)/../../net/stream/libRPG_Stream.la \
+  $(builddir)/../../net/libRPG_Net.la \
+  $(builddir)/../../net/client/libRPG_Net_Client.la \
+  $(builddir)/../../map/libRPG_Map.la \
+  $(builddir)/../../character/monster/libRPG_Monster.la \
+  $(builddir)/../../character/player/libRPG_Player.la \
+  $(builddir)/../../combat/libRPG_Combat.la \
+  $(builddir)/../../character/libRPG_Character.la \
+  $(builddir)/../../item/libRPG_Item.la \
+  $(builddir)/../../magic/libRPG_Magic.la \
+  $(builddir)/../../common/libRPG_Common.la \
+  $(builddir)/../../chance/libRPG_Chance.la \
+  $(builddir)/../../chance/dice/libRPG_Dice.la \
   $(pkg_libs_LIBS)
 
 map_vision_SOURCES = \
@@ -95,21 +95,21 @@ map_vision_CPPFLAGS = \
   -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 #map_vision_LDFLAGS = $(pkg_libs_LIBS)
 map_vision_LDADD = \
-  -lRPG_Engine \
-  -lRPG_Net_Client \
-  -lRPG_Net \
-  -lRPG_Stream \
-  -lRPG_Graphics \
-  -lRPG_Map \
-  -lRPG_Monster \
-  -lRPG_Player \
-  -lRPG_Combat \
-  -lRPG_Magic \
-  -lRPG_Character \
-  -lRPG_Item \
-  -lRPG_Chance \
-  -lRPG_Common \
-  -lRPG_Dice \
+  $(builddir)/../../graphics/libRPG_Graphics.la \
+  $(builddir)/../../engine/libRPG_Engine.la \
+  $(builddir)/../../net/stream/libRPG_Stream.la \
+  $(builddir)/../../net/libRPG_Net.la \
+  $(builddir)/../../net/client/libRPG_Net_Client.la \
+  $(builddir)/../../map/libRPG_Map.la \
+  $(builddir)/../../character/monster/libRPG_Monster.la \
+  $(builddir)/../../character/player/libRPG_Player.la \
+  $(builddir)/../../combat/libRPG_Combat.la \
+  $(builddir)/../../character/libRPG_Character.la \
+  $(builddir)/../../item/libRPG_Item.la \
+  $(builddir)/../../magic/libRPG_Magic.la \
+  $(builddir)/../../common/libRPG_Common.la \
+  $(builddir)/../../chance/libRPG_Chance.la \
+  $(builddir)/../../chance/dice/libRPG_Dice.la \
   $(pkg_libs_LIBS)
 
 map_vision_ui_SOURCES = \
@@ -122,23 +122,23 @@ map_vision_ui_CPPFLAGS = \
   -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 #map_vision_ui_LDFLAGS = $(pkg_libs_LIBS)
 map_vision_ui_LDADD = \
-  -lRPG_Client_GUI \
-  -lRPG_Net_Client \
-  -lRPG_Net \
-  -lRPG_Stream \
-  -lRPG_Sound \
-  -lRPG_Graphics \
-  -lRPG_Engine \
-  -lRPG_Player \
-  -lRPG_Monster \
-  -lRPG_Combat \
-  -lRPG_Map \
-  -lRPG_Item \
-  -lRPG_Magic \
-  -lRPG_Character \
-  -lRPG_Common \
-  -lRPG_Chance \
-  -lRPG_Dice \
+  $(builddir)/../../client/libRPG_Client_GUI.la \
+  $(builddir)/../../graphics/libRPG_Graphics.la \
+  $(builddir)/../../sound/libRPG_Sound.la \
+  $(builddir)/../../engine/libRPG_Engine.la \
+  $(builddir)/../../net/stream/libRPG_Stream.la \
+  $(builddir)/../../net/libRPG_Net.la \
+  $(builddir)/../../net/client/libRPG_Net_Client.la \
+  $(builddir)/../../map/libRPG_Map.la \
+  $(builddir)/../../character/monster/libRPG_Monster.la \
+  $(builddir)/../../character/player/libRPG_Player.la \
+  $(builddir)/../../combat/libRPG_Combat.la \
+  $(builddir)/../../character/libRPG_Character.la \
+  $(builddir)/../../item/libRPG_Item.la \
+  $(builddir)/../../magic/libRPG_Magic.la \
+  $(builddir)/../../common/libRPG_Common.la \
+  $(builddir)/../../chance/libRPG_Chance.la \
+  $(builddir)/../../chance/dice/libRPG_Dice.la \
   $(pkg_libs_LIBS)
 
 path_finder_SOURCES = \
@@ -150,9 +150,9 @@ path_finder_CPPFLAGS = \
   -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 #path_finder_LDFLAGS = $(pkg_libs_LIBS)
 path_finder_LDADD = \
-  -lRPG_Map \
-  -lRPG_Common \
-  -lRPG_Dice \
+  $(builddir)/../../map/libRPG_Map.la \
+  $(builddir)/../../common/libRPG_Common.la \
+  $(builddir)/../../chance/dice/libRPG_Dice.la \
   $(pkg_libs_LIBS)
 
 configdir = $(datadir)/@META_PACKAGE@/config

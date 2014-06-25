@@ -914,6 +914,8 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
 //                  map_position.first,
 //                  map_position.second));
 
+      myScreenLock->lock();
+
       // (re-)draw "active" tile highlight ?
       SDL_Rect dirty_region;
       ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
@@ -930,7 +932,9 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
             (map_element == MAPELEMENT_WALL))
         {
           RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(myView,
-                                                                                dirty_region);
+                                                                                dirty_region,
+                                                                                false,
+                                                                                myState->debug);
           if ((dirty_region.x != 0) ||
               (dirty_region.y != 0) ||
               (dirty_region.w != 0) ||
@@ -953,7 +957,8 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
 							               std::numeric_limits<int>::max()))
           {
 						RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(dirty_region,
-							                                                           NULL);
+																																				 NULL,
+																																				 false);
             dirtyRegion_out =
                 RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
                                                     dirtyRegion_out);
@@ -962,6 +967,7 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
                                                                             highlight_position,
                                                                             myView,
                                                                             dirty_region,
+                                                                            false,
                                                                             myState->debug);
             dirtyRegion_out =
                 RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
@@ -969,7 +975,10 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
             invalidate(dirty_region);
 
 						// invalidate cursor bg
-						RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG(NULL);
+						RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG(dirty_region,
+																																				NULL,
+																																				false,
+																																				myState->debug);
           } // end IF
         } // end IF
       } // end IF
@@ -988,10 +997,9 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
       {
         ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->setCursor(cursor_type,
-                                                                     dirty_region);
-        if ((dirty_region.x != 0) ||
-            (dirty_region.y != 0) ||
-            (dirty_region.w != 0) ||
+                                                                     dirty_region,
+                                                                     false);
+        if ((dirty_region.w != 0) ||
             (dirty_region.h != 0))
         {
           dirtyRegion_out =
@@ -1000,6 +1008,7 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
           invalidate(dirty_region);
         } // end IF
       } // end IF
+      myScreenLock->unlock();
 
       break;
     }

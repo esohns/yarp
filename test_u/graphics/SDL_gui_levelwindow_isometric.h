@@ -116,7 +116,8 @@ class SDL_GUI_LevelWindow_Isometric
 							 const RPG_Map_Position_t&) const;
 	void redrawCursor(const RPG_Graphics_Position_t& =
 		RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position(false), // screen position
-		                const bool& = true);                                // restore BG ?
+										const bool& = true,                                 // restore BG ?
+										const bool& = true);                                // locked access ?
 
   void initCeiling();
   void initWallBlend(const bool&); // half-height walls ?

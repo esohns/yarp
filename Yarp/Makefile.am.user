@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 3.1.1, 2014-06-23T23:10:36. -->
+<!-- Written by QtCreator 3.1.1, 2014-06-25T00:51:30. -->
 <qtcreator>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -58,8 +58,8 @@
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Desktop</value>
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">{71d84f03-4364-45d5-a19b-cbcdf4da6127}</value>
    <value type="int" key="ProjectExplorer.Target.ActiveBuildConfiguration">1</value>
-   <value type="int" key="ProjectExplorer.Target.ActiveDeployConfiguration">1</value>
-   <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">0</value>
+   <value type="int" key="ProjectExplorer.Target.ActiveDeployConfiguration">2</value>
+   <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">1</value>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.0">
     <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">build/optimized</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
@@ -133,17 +133,33 @@
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">AutotoolsProjectManager.ConfigureStep</value>
      </valuemap>
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.2">
-      <value type="QString" key="AutotoolsProjectManager.MakeStep.AdditionalArguments"></value>
-      <valuelist type="QVariantList" key="AutotoolsProjectManager.MakeStep.BuildTargets">
-       <value type="QString">all</value>
-      </valuelist>
+      <value type="QString" key="AutotoolsProjectManager.MakeStep.AdditionalArguments">libs</value>
+      <valuelist type="QVariantList" key="AutotoolsProjectManager.MakeStep.BuildTargets"/>
       <value type="bool" key="AutotoolsProjectManager.MakeStep.Clean">false</value>
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Make</value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">AutotoolsProjectManager.MakeStep</value>
      </valuemap>
-     <value type="int" key="ProjectExplorer.BuildStepList.StepsCount">3</value>
+     <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.3">
+      <value type="bool" key="ProjectExplorer.BuildStep.Enabled">false</value>
+      <value type="QString" key="ProjectExplorer.ProcessStep.Arguments">debug</value>
+      <value type="QString" key="ProjectExplorer.ProcessStep.Command">/mnt/win_d/projects/yarp/Yarp/scripts/copy_libs.sh</value>
+      <value type="QString" key="ProjectExplorer.ProcessStep.WorkingDirectory">%{buildDir}</value>
+      <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Custom Process Step</value>
+      <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
+      <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.ProcessStep</value>
+     </valuemap>
+     <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.4">
+      <value type="QString" key="AutotoolsProjectManager.MakeStep.AdditionalArguments">all</value>
+      <valuelist type="QVariantList" key="AutotoolsProjectManager.MakeStep.BuildTargets"/>
+      <value type="bool" key="AutotoolsProjectManager.MakeStep.Clean">false</value>
+      <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
+      <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Make</value>
+      <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
+      <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">AutotoolsProjectManager.MakeStep</value>
+     </valuemap>
+     <value type="int" key="ProjectExplorer.BuildStepList.StepsCount">5</value>
      <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Build</value>
      <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
      <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.BuildSteps.Build</value>
@@ -254,8 +270,8 @@
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
       <value type="QString" key="ProjectExplorer.ProcessStep.Arguments">debug</value>
-      <value type="QString" key="ProjectExplorer.ProcessStep.Command">/mnt/win_c/Temp/yarp/Yarp/scripts/copy_libs.sh</value>
-      <value type="QString" key="ProjectExplorer.ProcessStep.WorkingDirectory">%{buildDir}../../</value>
+      <value type="QString" key="ProjectExplorer.ProcessStep.Command">./scripts/copy_libs.sh</value>
+      <value type="QString" key="ProjectExplorer.ProcessStep.WorkingDirectory">%{buildDir}../../../</value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Custom Process Step</value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.ProcessStep</value>
@@ -322,7 +338,7 @@
     <value type="int" key="PE.EnvironmentAspect.Base">1</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes">
      <value type="QString">SDL_DEBUG=1</value>
-     <value type="QString">LD_LIBRARY_PATH=/mnt/win_c/Temp/yarp/Yarp/build/debug/lib:$LD_LIBRARY_PATH</value>
+     <value type="QString">LD_LIBRARY_PATH=/mnt/win_d/projects/yarp/Yarp/build/debug/lib:$LD_LIBRARY_PATH</value>
     </valuelist>
     <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-a -d -n -t</value>
     <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">/mnt/win_c/Temp/yarp/Yarp/build/debug/test_u/client/rpg_client_gui</value>
@@ -375,14 +391,15 @@
     </valuelist>
     <value type="int" key="PE.EnvironmentAspect.Base">0</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes">
-     <value type="QString">SDL_DEBUG=&lt;VALUE&gt;</value>
+     <value type="QString">SDL_DEBUG=1</value>
      <value type="QString">DISPLAY=:0</value>
+     <value type="QString">LD_LIBRARY_PATH=/mnt/win_d/projects/yarp/Yarp/build/debug/lib:$LD_LIBRARY_PATH</value>
     </valuelist>
     <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-f -h 600 -t -w 800</value>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">/mnt/win_c/Temp/yarp/Yarp/build/debug/test_u/graphics/SDL_gui</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">/mnt/win_d/projects/yarp/Yarp/build/debug/test_u/graphics/.libs/SDL_gui</value>
     <value type="bool" key="ProjectExplorer.CustomExecutableRunConfiguration.UseTerminal">false</value>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">/mnt/win_c/Temp/yarp</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Run /mnt/win_c/Temp/yarp/Yarp/build/debug/test_u/graphics/SDL_gui</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">/mnt/win_d/projects/yarp</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Run /mnt/win_d/projects/yarp/Yarp/build/debug/test_u/graphics/.libs/SDL_gui</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">SDL GUI</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.CustomExecutableRunConfiguration</value>
     <value type="uint" key="RunConfiguration.QmlDebugServerPort">3768</value>
@@ -638,11 +655,11 @@
      <value type="QString">SDL_DEBUG=1</value>
      <value type="QString">LD_LIBRARY_PATH=/mnt/win_c/Temp/yarp/Yarp/build/debug/lib:$LD_LIBRARY_PATH</value>
     </valuelist>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-o/mnt/win_c/Temp/yarp/engine/data/default_player.profile -r -t</value>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">/mnt/win_c/Temp/yarp/Yarp/build/debug/test_u/character/player/character_generator</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">-o/mnt/win_d/projects/yarp/engine/data/default_player.profile -r -t</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">/mnt/win_d/projects/yarp/Yarp/build/debug/test_u/character/player/character_generator</value>
     <value type="bool" key="ProjectExplorer.CustomExecutableRunConfiguration.UseTerminal">false</value>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">/mnt/win_c/Temp/yarp</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Run /mnt/win_c/Temp/yarp/Yarp/build/debug/test_u/character/player/character_generator</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">/mnt/win_d/projects/yarp</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Run /mnt/win_d/projects/yarp/Yarp/build/debug/test_u/character/player/character_generator</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">character generator</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.CustomExecutableRunConfiguration</value>
     <value type="uint" key="RunConfiguration.QmlDebugServerPort">3768</value>

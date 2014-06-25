@@ -23,7 +23,7 @@
 
 #include "iXML_definition_handler.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <string>
 #include <vector>

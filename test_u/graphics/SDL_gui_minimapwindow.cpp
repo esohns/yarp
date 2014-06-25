@@ -35,19 +35,19 @@
 
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
+#include "rpg_common_file_tools.h"
 
 SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase& parent_in,
                                              // *NOTE*: offset doesn't include any border(s) !
                                              const RPG_Graphics_Offset_t& offset_in,
-                                             RPG_Engine* engine_in,
-                                             const bool& debug_in)
+                                             RPG_Engine* engine_in)
  : inherited(WINDOW_MINIMAP, // type
              parent_in,      // parent
              offset_in,      // offset
              std::string()), // title
 //              NULL),          // background
    myEngine(engine_in),
-   myDebug(debug_in),
+   myState(NULL),
    myBG(NULL),
    mySurface(NULL)
 {
@@ -70,7 +70,7 @@ SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase& p
   ACE_ASSERT(myParent);
   myParent->getArea(parent_area);
   myClipRect.x =
-      ((offset_in.first == std::numeric_limits<int>::max()) ? ((parent_area.w - 1)             -
+      ((offset_in.first == std::numeric_limits<int>::max()) ? ((parent_area.x + parent_area.w) -
                                                                myBG->w                         -
                                                                RPG_CLIENT_MINIMAP_DEF_OFFSET_X)
                                                             : offset_in.first);
@@ -103,7 +103,7 @@ SDL_GUI_MinimapWindow::getView() const
 
 void
 SDL_GUI_MinimapWindow::handleEvent(const SDL_Event& event_in,
-                                   RPG_Graphics_IWindow* window_in,
+                                   RPG_Graphics_IWindowBase* window_in,
                                    SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::handleEvent"));
@@ -111,28 +111,23 @@ SDL_GUI_MinimapWindow::handleEvent(const SDL_Event& event_in,
   // init return value(s)
   ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
 
-  //   ACE_DEBUG((LM_DEBUG,
-  //              ACE_TEXT("SDL_GUI_MinimapWindow::handleEvent(%s)\n"),
-  //              RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(myType).c_str()));
-
   switch (event_in.type)
   {
     // *** mouse ***
+		case SDL_MOUSEBUTTONDOWN:
+		{
+			// *WARNING*: falls through !
+		}
     case RPG_GRAPHICS_SDL_MOUSEMOVEOUT:
     {
 
       break;
     }
-    case SDL_MOUSEMOTION:
-    {
-
-      // *WARNING*: falls through !
-    }
     case SDL_ACTIVEEVENT:
     case SDL_KEYDOWN:
     case SDL_KEYUP:
-    case SDL_MOUSEBUTTONDOWN:
     case SDL_MOUSEBUTTONUP:
+		case SDL_MOUSEMOTION:
     case SDL_JOYAXISMOTION:
     case SDL_JOYBALLMOTION:
     case SDL_JOYHATMOTION:
@@ -144,7 +139,6 @@ SDL_GUI_MinimapWindow::handleEvent(const SDL_Event& event_in,
     case SDL_VIDEOEXPOSE:
     case SDL_USEREVENT:
     case RPG_GRAPHICS_SDL_HOVEREVENT:
-    default:
     {
       // delegate these to the parent...
       getParent()->handleEvent(event_in,
@@ -153,15 +147,29 @@ SDL_GUI_MinimapWindow::handleEvent(const SDL_Event& event_in,
 
       break;
     }
-    //     default:
-    //     {
-      //       ACE_DEBUG((LM_ERROR,
-      //                  ACE_TEXT("received unknown event (was: %u)...\n"),
-      //                  static_cast<unsigned long> (event_in.type)));
-      //
-      //       break;
-      //     }
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("received unknown event (was: %u)...\n"),
+                 static_cast<unsigned int>(event_in.type)));
+      
+      break;
+    }
   } // end SWITCH
+}
+
+void
+SDL_GUI_MinimapWindow::init(state_t* state_in,
+                            RPG_Common_ILock* screenLock_in)
+{
+  RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::init"));
+
+  // sanity check(s)
+  ACE_ASSERT(state_in);
+
+  myState = state_in;
+  inherited::init(screenLock_in,
+                  (state_in->screen->flags & SDL_DOUBLEBUF));
 }
 
 void
@@ -204,19 +212,21 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
 
       return;
     } // end IF
-  RPG_Graphics_Surface::put(std::make_pair(0,
-                                           0),
+  RPG_Graphics_Surface::put(std::make_pair(0, 0),
                             *myBG,
                             mySurface,
                             dirty_region);
 
-  RPG_Map_Size_t size = myEngine->getSize();
   RPG_Map_Position_t map_position = std::make_pair(0, 0);
   RPG_Client_MiniMapTile tile = RPG_CLIENT_MINIMAPTILE_INVALID;
+  RPG_Graphics_ColorName color_name = RPG_GRAPHICS_COLORNAME_INVALID;
   Uint32 color = 0;
-  SDL_Rect destrect = {0, 0, 3, 2};
+  SDL_Rect destination_rectangle = {0, 0, 3, 2};
   Uint32* pixels = NULL;
-  RPG_Engine_EntityID_t entity_id = 0;
+  RPG_Engine_EntityID_t entity_id = 0, active_entity_id;
+  myEngine->lock();
+  RPG_Map_Size_t size = myEngine->getSize(false);
+  active_entity_id = myEngine->getActive(false);
   for (unsigned int y = 0;
        y < size.second;
        y++)
@@ -227,20 +237,20 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
       // step1: retrieve appropriate symbol
       map_position = std::make_pair(x, y);
       tile = RPG_CLIENT_MINIMAPTILE_INVALID;
-      entity_id = myEngine->hasEntity(map_position);
-      
+      entity_id = myEngine->hasEntity(map_position, false);
       if (entity_id)
       {
-        if (entity_id == myEngine->getActive())
+        if (entity_id == active_entity_id)
           tile = MINIMAPTILE_PLAYER_ACTIVE;
-        else if (!myEngine->isMonster(entity_id))
+        else if (!myEngine->isMonster(entity_id, false))
           tile = MINIMAPTILE_PLAYER;
         else
           tile = MINIMAPTILE_MONSTER;
       } // end IF
-      if (tile == RPG_CLIENT_MINIMAPTILE_INVALID)
+      else
       {
-        switch (myEngine->getElement(map_position))
+        RPG_Map_Element map_element = myEngine->getElement(map_position, false);
+        switch (map_element)
         {
           case MAPELEMENT_UNMAPPED:
           case MAPELEMENT_WALL:
@@ -255,9 +265,8 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
           {
             ACE_DEBUG((LM_ERROR,
                        ACE_TEXT("invalid map element ([%u,%u] was: %d), aborting\n"),
-                       x,
-                       y,
-                       myEngine->getElement(map_position)));
+                       x, y,
+                       map_element));
 
             return;
           }
@@ -265,21 +274,23 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
       } // end IF
 
       // step2: map symbol to color
-      color = 0;
+      color_name = RPG_GRAPHICS_COLORNAME_INVALID;
       switch (tile)
       {
         case MINIMAPTILE_NONE:
-          color = RPG_CLIENT_MINIMAPCOLOR_WALL; break;
+          color_name = RPG_CLIENT_MINIMAPCOLOR_WALL; break;
         case MINIMAPTILE_DOOR:
-          color = RPG_CLIENT_MINIMAPCOLOR_DOOR; break;
+          color_name = RPG_CLIENT_MINIMAPCOLOR_DOOR; break;
         case MINIMAPTILE_FLOOR:
-          color = RPG_CLIENT_MINIMAPCOLOR_FLOOR; break;
+          color_name = RPG_CLIENT_MINIMAPCOLOR_FLOOR; break;
         case MINIMAPTILE_MONSTER:
-          color = RPG_CLIENT_MINIMAPCOLOR_MONSTER; break;
+          color_name = RPG_CLIENT_MINIMAPCOLOR_MONSTER; break;
         case MINIMAPTILE_PLAYER:
-          color = RPG_CLIENT_MINIMAPCOLOR_PLAYER; break;
+          color_name = RPG_CLIENT_MINIMAPCOLOR_PLAYER; break;
+        case MINIMAPTILE_PLAYER_ACTIVE:
+          color_name = RPG_CLIENT_MINIMAPCOLOR_PLAYER_ACTIVE; break;
         case MINIMAPTILE_STAIRS:
-          color = RPG_CLIENT_MINIMAPCOLOR_STAIRS; break;
+          color_name = RPG_CLIENT_MINIMAPCOLOR_STAIRS; break;
         default:
         {
           ACE_DEBUG((LM_ERROR,
@@ -289,6 +300,8 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
           break;
         }
       } // end SWITCH
+      color = RPG_Graphics_SDL_Tools::getColor(color_name,
+                                               *mySurface);
 
       // step3: draw tile onto surface
       // *NOTE*: a minimap symbol has this shape: _ C _
@@ -297,27 +310,32 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
       ACE_ASSERT(mySurface->format->BytesPerPixel == 4);
 
       // step3a: row 1
-      destrect.x = 40 + (2 * x) - (2 * y);
-      destrect.y = x + y;
+      destination_rectangle.x = 40 + (2 * x) - (2 * y);
+      destination_rectangle.y = x + y;
       pixels = reinterpret_cast<Uint32*>(static_cast<char*>(mySurface->pixels) +
-                                         (mySurface->pitch * (destrect.y + 6)) +
-                                         ((destrect.x + 6) * 4));
+                                         (mySurface->pitch * (destination_rectangle.y + 6)) +
+                                         ((destination_rectangle.x + 6) * 4));
 //       pixels[0] = transparent -> dont write
       pixels[1] = color;
 //       pixels[2] = transparent -> dont write
       // step3b: row 2
       pixels = reinterpret_cast<Uint32*>(static_cast<char*>(mySurface->pixels) +
-                                         (mySurface->pitch * (destrect.y + 7)) +
-                                         ((destrect.x + 6) * 4));
+                                         (mySurface->pitch * (destination_rectangle.y + 7)) +
+                                         ((destination_rectangle.x + 6) * 4));
       pixels[0] = color;
       pixels[1] = color;
       pixels[2] = color;
     } // end FOR
-
+  myEngine->unlock();
   if (SDL_MUSTLOCK(mySurface))
     SDL_UnlockSurface(mySurface);
 
-  // step4: paint surface
+  // step4: save BG ?
+  if (!inherited::myBGHasBeenSaved)
+    inherited::saveBG(std::make_pair(myClipRect.w,
+                                     myClipRect.h));
+
+  // step5: paint surface
   if (inherited::myScreenLock)
     inherited::myScreenLock->lock();
   RPG_Graphics_Surface::put(std::make_pair(myClipRect.x,
@@ -349,9 +367,9 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
   inherited::myIsVisible = true;
 
   // debug info
-  if (myDebug)
+  if (myState->debug)
   {
-    std::string path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
+		std::string path = RPG_Common_File_Tools::getDumpDirectory();
     path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     path += ACE_TEXT_ALWAYS_CHAR("minimap.png");
     RPG_Graphics_Surface::savePNG(*mySurface,
