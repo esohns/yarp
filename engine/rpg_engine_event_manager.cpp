@@ -931,8 +931,13 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
 
           break;
         }
-        default:
-          break; // the engine executes these...
+				default:
+				{
+					// the engine executes these...
+					myEngine->msg_queue()->pulse();
+
+					break;
+				}
       } // end SWITCH
 
       if (done_current_action)

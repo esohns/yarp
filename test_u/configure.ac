@@ -31,7 +31,7 @@ AM_PROG_AR
 
 # init other tools.
 #AM_INIT_AUTOMAKE([gnu nostdinc -Wall])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([nostdinc])
 # build time sanity check...
 AM_SANITY_CHECK
 LT_INIT

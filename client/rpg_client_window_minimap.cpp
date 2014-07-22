@@ -35,6 +35,7 @@
 
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
+#include "rpg_common_file_tools.h"
 
 RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap(const RPG_Graphics_SDLWindowBase& parent_in,
                                                      // *NOTE*: offset doesn't include any border(s) !
@@ -181,9 +182,7 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
   ACE_ASSERT(mySurface);
 
   // init clipping
-  SDL_Rect clip_rect_orig;
-  SDL_GetClipRect(target_surface, &clip_rect_orig);
-  SDL_SetClipRect(target_surface, &myClipRect);
+  clip();
 
   // init surface
   SDL_Rect dirty_region;
@@ -192,13 +191,12 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
     if (SDL_LockSurface(mySurface))
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_LockSurface(): %s, aborting\n"),
-                 SDL_GetError()));
+                 ACE_TEXT("failed to SDL_LockSurface(): \"%s\", returning\n"),
+                 ACE_TEXT(SDL_GetError())));
 
       return;
     } // end IF
-  RPG_Graphics_Surface::put(std::make_pair(0,
-                                           0),
+  RPG_Graphics_Surface::put(std::make_pair(0, 0),
                             *myBG,
                             mySurface,
                             dirty_region);
@@ -264,11 +262,11 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
             default:
             {
               ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("invalid map element ([%u,%u] was: %d), aborting\n"),
+                         ACE_TEXT("invalid map element ([%u,%u] was: %d), continuing\n"),
                          x, y,
                          myEngine->getElement(map_position, false)));
 
-              return;
+              continue;
             }
           } // end SWITCH
         } // end IF
@@ -300,10 +298,10 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
         default:
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid minimap tile type (was: %d), aborting\n"),
+                     ACE_TEXT("invalid minimap tile type (was: %d), continuing\n"),
                      tile));
 
-          return;
+          continue;
         }
       } // end SWITCH
 
@@ -350,7 +348,7 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
     inherited::myScreenLock->unlock();
 
   // reset clipping
-  SDL_SetClipRect(target_surface, &clip_rect_orig);
+  unclip();
 
   // invalidate dirty region
   invalidate(dirty_region);
@@ -361,7 +359,7 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
 
   if (myDebug)
   {
-    std::string path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
+    std::string path = RPG_Common_File_Tools::getDumpDirectory();
     path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     path += ACE_TEXT_ALWAYS_CHAR("minimap.png");
     RPG_Graphics_Surface::savePNG(*mySurface,

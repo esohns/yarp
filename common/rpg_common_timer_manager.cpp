@@ -38,9 +38,17 @@ RPG_Common_Timer_Manager::RPG_Common_Timer_Manager()
   RPG_TRACE(ACE_TEXT("RPG_Common_Timer_Manager::RPG_Common_Timer_Manager"));
 
   // set time queue
+	//ACE_NEW_NORETURN(myTimerQueue,
+	//								 RPG_Common_TimerQueueImpl_t(RPG_COMMON_DEF_NUM_TIMER_SLOTS,     // preallocated slots
+	//																						 RPG_COMMON_PREALLOCATE_TIMER_SLOTS, // preallocate timer nodes ?
+	//																						 &myTimerHandler,                    // upcall functor
+	//																						 NULL,                               // freelist --> allocate
+	//																						 RPG_COMMON_TIME_POLICY));
 	ACE_NEW_NORETURN(myTimerQueue,
-									 RPG_Common_TimerQueueImpl_t(RPG_COMMON_DEF_NUM_TIMER_SLOTS,     // preallocated slotes
-																							 RPG_COMMON_PREALLOCATE_TIMER_SLOTS, // preallocate timer nodes ?
+									 RPG_Common_TimerQueueImpl_t(ACE_DEFAULT_TIMER_WHEEL_SIZE,
+									                             ACE_DEFAULT_TIMER_WHEEL_RESOLUTION,
+																							 (RPG_COMMON_PREALLOCATE_TIMER_SLOTS ? RPG_COMMON_DEF_NUM_TIMER_SLOTS
+																																									 : 0), // preallocate timer nodes ?
 																							 &myTimerHandler,                    // upcall functor
 																							 NULL,                               // freelist --> allocate
 																							 RPG_COMMON_TIME_POLICY));

@@ -19,13 +19,18 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-// *NOTE*: workaround quirky MSVC...
+// *NOTE*: work around quirky MSVC...
+#ifdef _MSC_VER
 #define NOMINMAX
+#endif
 
 #include "rpg_client_entity_manager.h"
 
+#include "rpg_client_iwindow_level.h"
+
 #include "rpg_graphics_defines.h"
 #include "rpg_graphics_surface.h"
+#include "rpg_graphics_cursor_manager.h"
 #include "rpg_graphics_SDL_tools.h"
 
 #include "rpg_common_macros.h"
@@ -102,7 +107,7 @@ RPG_Client_Entity_Manager::add(const RPG_Engine_EntityID_t& id_in,
   if (!new_entry.bg)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), aborting\n"),
+               ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), returning\n"),
                surface_in->w, surface_in->h));
 
     // clean up
@@ -110,7 +115,7 @@ RPG_Client_Entity_Manager::add(const RPG_Engine_EntityID_t& id_in,
       SDL_FreeSurface(surface_in);
 
     return;
-  };
+  } // end IF
   new_entry.bg_position =
       std::make_pair(std::numeric_limits<unsigned int>::max(),
                      std::numeric_limits<unsigned int>::max());
@@ -120,7 +125,9 @@ RPG_Client_Entity_Manager::add(const RPG_Engine_EntityID_t& id_in,
 
 void
 RPG_Client_Entity_Manager::remove(const RPG_Engine_EntityID_t& id_in,
-                                  SDL_Rect& dirtyRegion_out)
+                                  SDL_Rect& dirtyRegion_out,
+                                  const bool& lockedAccess_in,
+                                  const bool& debug_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::remove"));
 
@@ -132,15 +139,22 @@ RPG_Client_Entity_Manager::remove(const RPG_Engine_EntityID_t& id_in,
   if (iterator == myCache.end())
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
+               ACE_TEXT("invalid entity ID (was: %u), returning\n"),
                id_in));
 
     return;
   } // end IF
 
   // step0: restore old background
+  if (myScreenLock && lockedAccess_in)
+    myScreenLock->lock();
   restoreBG(id_in,
-            dirtyRegion_out);
+            dirtyRegion_out,
+            true,
+            false,
+            debug_in);
+  if (myScreenLock && lockedAccess_in)
+    myScreenLock->unlock();
 
   // clean up
   if ((*iterator).second.free_on_remove)
@@ -162,10 +176,11 @@ RPG_Client_Entity_Manager::cached(const RPG_Engine_EntityID_t& id_in) const
 
 void
 RPG_Client_Entity_Manager::put(const RPG_Engine_EntityID_t& id_in,
-                               const RPG_Graphics_Position_t& tileCoordinates_in,
+                               const RPG_Graphics_Position_t& position_in,
                                SDL_Rect& dirtyRegion_out,
-															 const bool& clipWindow_in,
-                               const bool& lockedAccess_in)
+                               const bool& clipWindow_in,
+                               const bool& lockedAccess_in,
+							   const bool& debug_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::put"));
 
@@ -176,37 +191,73 @@ RPG_Client_Entity_Manager::put(const RPG_Engine_EntityID_t& id_in,
   ACE_ASSERT(myWindow);
   SDL_Surface* target_surface = myWindow->getScreen();
   ACE_ASSERT(target_surface);
-  if ((tileCoordinates_in.first  >=
-       static_cast<unsigned int>(target_surface->w)) ||
-      (tileCoordinates_in.second >=
-       static_cast<unsigned int>(target_surface->h)))
-    return; // nothing to do
   RPG_Client_EntityCacheIterator_t iterator = myCache.find(id_in);
   if (iterator == myCache.end())
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
+               ACE_TEXT("invalid entity ID (was: %u), returning\n"),
                id_in));
 
     return;
   } // end IF
 
   // step1: restore old background
+	if (myScreenLock && lockedAccess_in)
+		myScreenLock->lock();
   restoreBG(id_in,
             dirtyRegion_out,
-						clipWindow_in,
-            lockedAccess_in);
+            clipWindow_in,
+            false,
+            debug_in);
 
   // step2: get new background
+	// step2a: restore cursor / highlight bg first
+	SDL_Rect clip_rectangle, dirty_region;
+	// *NOTE*: entities are drawn "centered" on the floor tile
+	clip_rectangle.x = (position_in.first +
+											((RPG_GRAPHICS_TILE_FLOOR_WIDTH -
+											(*iterator).second.graphic->w) / 2));
+	clip_rectangle.y = (position_in.second +
+											(RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) -
+											(*iterator).second.graphic->h);
+	clip_rectangle.w = (*iterator).second.graphic->w;
+	clip_rectangle.h = (*iterator).second.graphic->h;
+	RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(dirty_region,
+																															 &clip_rectangle,
+																															 false);
+	dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+																												dirtyRegion_out);
+	RPG_Client_IWindowLevel* window = NULL;
+	try
+	{
+		window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
+	}
+	catch (...)
+	{
+		window = NULL;
+	}
+	if (!window)
+	{
+		ACE_DEBUG((LM_ERROR,
+							 ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), returning\n"),
+							 myWindow));
 
-  // *NOTE*: creatures are drawn in the "middle" of the (floor) tile
+		// clean up
+		if (myScreenLock && lockedAccess_in)
+			myScreenLock->unlock();
+
+		return;
+	} // end IF
+	RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(window->getView(),
+																																				dirty_region,
+																																				&clip_rectangle,
+																																				false,
+																																				debug_in);
+	dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+																												dirtyRegion_out);
+	// step2b: load bg image
   RPG_Graphics_Position_t screen_coordinates =
-    std::make_pair((tileCoordinates_in.first +
-                    ((RPG_GRAPHICS_TILE_FLOOR_WIDTH -
-                      (*iterator).second.graphic->w) / 2)),
-                   (tileCoordinates_in.second +
-                    (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) -
-										(*iterator).second.graphic->h));
+		std::make_pair(clip_rectangle.x, clip_rectangle.y);
   RPG_Graphics_Surface::get(screen_coordinates,
                             true, // use (fast) blitting method
                             *target_surface,
@@ -215,62 +266,69 @@ RPG_Client_Entity_Manager::put(const RPG_Engine_EntityID_t& id_in,
 
   // step3: paint sprite graphic
 
-  // compute bounding box
-  SDL_Rect clip_rectangle;
-  clip_rectangle.x = static_cast<int16_t>(screen_coordinates.first);
-  clip_rectangle.y = static_cast<int16_t>(screen_coordinates.second);
-  clip_rectangle.w = static_cast<uint16_t>((*iterator).second.graphic->w);
-  clip_rectangle.h = static_cast<uint16_t>((*iterator).second.graphic->h);
-  // handle clipping
-  if ((clip_rectangle.x + clip_rectangle.w) > target_surface->w)
-    clip_rectangle.w -=
-        ((clip_rectangle.x + clip_rectangle.w) - target_surface->w);
-  if ((clip_rectangle.y + clip_rectangle.h) > target_surface->h)
-    clip_rectangle.h -=
-        ((clip_rectangle.y + clip_rectangle.h) - target_surface->h);
+  // compute dirty area
+  dirty_region = clip_rectangle;
+//  // *NOTE*: as it is (see implementation of clip()), this wouldn't work, as
+  // the target surface (myWindow) is already clipped to the SDL window area...
+//  myWindow->getArea(clip_rectangle, false);
+  clip_rectangle = target_surface->clip_rect;
+  dirty_region = RPG_Graphics_SDL_Tools::intersect(dirty_region,
+												   clip_rectangle);
 
   // place graphic
-	if (clipWindow_in)
-		myWindow->clip();
-  if (lockedAccess_in && myScreenLock)
-    myScreenLock->lock();
-  if (SDL_BlitSurface(const_cast<SDL_Surface*>((*iterator).second.graphic), // source
-                      NULL,                                                 // aspect (--> everything)
-                      target_surface,                                       // target
-                      &clip_rectangle))                                     // aspect
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-               ACE_TEXT(SDL_GetError())));
-
-    // clean up
-    if (lockedAccess_in && myScreenLock)
-      myScreenLock->unlock();
-		if (clipWindow_in)
-			myWindow->unclip();
-
-    return;
-  } // end IF
+  if (clipWindow_in)
+    myWindow->clip();
+  RPG_Graphics_Surface::put(screen_coordinates,
+                            *(*iterator).second.graphic,
+                            target_surface,
+                            dirty_region);
   if (lockedAccess_in && myScreenLock)
     myScreenLock->unlock();
-	if (clipWindow_in)
-		myWindow->unclip();
+  if (clipWindow_in)
+    myWindow->unclip();
+  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+														dirtyRegion_out);
 
-  // *HACK*: somehow, SDL_BlitSurface zeroes dirtyRegion_out.w and
-  // dirtyRegion_out.h... --> reset them
-  clip_rectangle.w = (*iterator).second.graphic->w;
-  clip_rectangle.h = (*iterator).second.graphic->h;
+  // update cursor / highlight(s)
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG(dirty_region,
+															  &dirtyRegion_out,
+															  lockedAccess_in,
+															  debug_in);
+  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+														dirtyRegion_out);
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateHighlightBG(window->getView(),
+																	   dirty_region,
+																	   &dirtyRegion_out,
+																	   lockedAccess_in,
+																	   debug_in);
+  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+	                                                    dirtyRegion_out);
 
-  // adjust dirty region
-  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(clip_rectangle,
-                                                        dirtyRegion_out);
+  if (debug_in)
+  {
+    // show entity bg in bottom right corner
+    ACE_ASSERT(target_surface->w >= (*iterator).second.bg->w);
+    ACE_ASSERT(target_surface->h >= (*iterator).second.bg->h);
+
+    RPG_Graphics_Surface::unclip();
+    RPG_Graphics_Surface::put(std::make_pair((target_surface->w - (*iterator).second.bg->w),
+                                             (target_surface->h - (*iterator).second.bg->h)),
+                              *(*iterator).second.bg,
+                              target_surface,
+                              dirty_region);
+    RPG_Graphics_Surface::clip();
+
+    dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+                                                          dirtyRegion_out);
+  } // end IF
 }
 
 void
 RPG_Client_Entity_Manager::restoreBG(const RPG_Engine_EntityID_t& id_in,
                                      SDL_Rect& dirtyRegion_out,
-																		 const bool& clipWindow_in,
-                                     const bool& lockedAccess_in)
+                                     const bool& clipWindow_in,
+                                     const bool& lockedAccess_in,
+																		 const bool& debug_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::restoreBG"));
 
@@ -282,7 +340,7 @@ RPG_Client_Entity_Manager::restoreBG(const RPG_Engine_EntityID_t& id_in,
   if (iterator == myCache.end())
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
+               ACE_TEXT("invalid entity ID (was: %u), returning\n"),
                id_in));
 
     return;
@@ -296,47 +354,72 @@ RPG_Client_Entity_Manager::restoreBG(const RPG_Engine_EntityID_t& id_in,
       static_cast<int16_t>((*iterator).second.bg_position.first);
   dirtyRegion_out.y =
       static_cast<int16_t>((*iterator).second.bg_position.second);
-  dirtyRegion_out.w = static_cast<uint16_t>((*iterator).second.bg->w);
-  dirtyRegion_out.h = static_cast<uint16_t>((*iterator).second.bg->h);
-  // handle clipping
-  if ((dirtyRegion_out.x + dirtyRegion_out.w) > target_surface->w)
-    dirtyRegion_out.w -=
-        ((dirtyRegion_out.x + dirtyRegion_out.w) - target_surface->w);
-  if ((dirtyRegion_out.y + dirtyRegion_out.h) > target_surface->h)
-    dirtyRegion_out.h -=
-        ((dirtyRegion_out.y + dirtyRegion_out.h) - target_surface->h);
+//  dirtyRegion_out.w = static_cast<uint16_t>((*iterator).second.bg->w);
+//  dirtyRegion_out.h = static_cast<uint16_t>((*iterator).second.bg->h);
+//	SDL_Rect clip_rectangle;
+//	myWindow->getArea(clip_rectangle, false);
+//	dirtyRegion_out = RPG_Graphics_SDL_Tools::intersect(dirtyRegion_out,
+//																											clip_rectangle);
 
   // restore/clear background
-	if (clipWindow_in)
-		myWindow->clip();
+  if (clipWindow_in)
+    myWindow->clip();
   if (lockedAccess_in && myScreenLock)
     myScreenLock->lock();
   if (SDL_BlitSurface((*iterator).second.bg, // source
                       NULL,                  // aspect (--> everything)
                       target_surface,        // target
-                      &dirtyRegion_out))     // aspect
+                      &dirtyRegion_out))     // position, result
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
+               ACE_TEXT("failed to SDL_BlitSurface(): \"%s\", returning\n"),
                ACE_TEXT(SDL_GetError())));
 
     // clean up
     if (lockedAccess_in && myScreenLock)
       myScreenLock->unlock();
-		if (clipWindow_in)
-			myWindow->unclip();
+    if (clipWindow_in)
+      myWindow->unclip();
 
     return;
   } // end IF
   if (lockedAccess_in && myScreenLock)
     myScreenLock->unlock();
-	if (clipWindow_in)
-		myWindow->unclip();
+  if (clipWindow_in)
+    myWindow->unclip();
 
-  // *HACK*: somehow, SDL_BlitSurface zeroes dirtyRegion_out.w, dirtyRegion_out.h...
-  // --> reset them
-  dirtyRegion_out.w = (*iterator).second.bg->w;
-  dirtyRegion_out.h = (*iterator).second.bg->h;
+	// update cursor / highlight(s) ?
+	SDL_Rect dirty_region;
+	RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG(dirty_region,
+																															&dirtyRegion_out,
+																															lockedAccess_in,
+																															debug_in);
+	dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+																												dirtyRegion_out);
+	RPG_Client_IWindowLevel* window = NULL;
+	try
+	{
+		window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
+	}
+	catch (...)
+	{
+		window = NULL;
+	}
+	if (!window)
+	{
+		ACE_DEBUG((LM_ERROR,
+							 ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), returning\n"),
+			         myWindow));
+
+		return;
+	} // end IF
+	RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateHighlightBG(window->getView(),
+		                                                                   dirty_region,
+																																			 &dirtyRegion_out,
+																																			 lockedAccess_in,
+																																			 debug_in);
+	dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+																												dirtyRegion_out);
 }
 
 void

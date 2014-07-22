@@ -25,9 +25,9 @@
 #include "rpg_common_irefcount.h"
 #include "rpg_common_idumpstate.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Condition_T.h>
-#include <ace/Synch.h>
+#include "ace/Global_Macros.h"
+#include "ace/Condition_T.h"
+#include "ace/Synch.h"
 
 class RPG_Common_Export RPG_Common_ReferenceCounterBase
  : virtual public RPG_Common_IRefCount,

@@ -401,9 +401,9 @@ RPG_Player_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
   } // end IF
 
   ACE_DEBUG((LM_INFO,
-             ACE_TEXT("character \"%s\" (HP: %d/%d) suffers damage of %d HP%s...\n"),
+             ACE_TEXT("\"%s\" (HP: %d/%d) suffers damage of %d HP%s...\n"),
              ACE_TEXT(getName().c_str()),
-             myNumHitPoints,
+             (myNumHitPoints + total_damage_value),
              myNumTotalHitPoints,
              total_damage_value,
              (!hasCondition(CONDITION_NORMAL) ? ACE_TEXT(" --> DOWN") : ACE_TEXT(""))));

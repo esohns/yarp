@@ -19,10 +19,7 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-// *NOTE*: need this to import correct VERSION !
-#ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
-#endif
 
 #include "rpg_client_defines.h"
 #include "rpg_client_callbacks.h"
@@ -679,7 +676,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
 
   // activate the current character
   RPG_Engine_EntityID_t id = level_engine.add(&(userData_in.entity));
-  level_engine.setActive(id);
+  level_engine.setActive(id, true);
   // init/add entity to the graphics cache
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->init(&client_engine,
                                                           level_window);

@@ -3,6 +3,7 @@ METASOURCES = AUTO
 #ACLOCAL_AMFLAGS = -I m4 -I .
 AM_CPPFLAGS = \
   -DRPG_GRAPHICS_BUILD_DLL \
+  -I$(srcdir)/../chance/dice \
   -I$(srcdir)/../common \
   -I$(srcdir)/../map
 

@@ -40,11 +40,6 @@
 #include <valgrind/valgrind.h>
 #endif
 
-// *NOTE*: need this to import correct VERSION !
-#ifdef HAVE_CONFIG_H
-#include "rpg_config.h"
-#endif
-
 #include "rpg_dice.h"
 
 #include "rpg_common_macros.h"
@@ -72,6 +67,8 @@
 #include "rpg_client_ui_tools.h"
 
 #include "rpg_net_server_defines.h"
+
+#include "rpg_config.h"
 
 #include "net_defines.h"
 #include "net_common.h"

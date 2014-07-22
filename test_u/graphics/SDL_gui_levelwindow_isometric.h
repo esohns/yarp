@@ -67,8 +67,9 @@ class SDL_GUI_LevelWindow_Isometric
 
   // adjust viewport
   // implement (part of) RPG_Client_IWindowLevel
-  virtual void setView(const int&,  // offset x (map coordinates !)
-                       const int&); // offset y (map coordinates !)
+  virtual void setView(const int&,          // offset x (map coordinates !)
+                       const int&,          // offset y (map coordinates !)
+                       const bool& = true); // locked access ?
   virtual void setView(const RPG_Map_Position_t&); // offset
   virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
 	void center();
@@ -115,9 +116,9 @@ class SDL_GUI_LevelWindow_Isometric
 	bool hasSeen(const RPG_Engine_EntityID_t&,
 							 const RPG_Map_Position_t&) const;
 	void redrawCursor(const RPG_Graphics_Position_t& =
-		RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position(false), // screen position
-										const bool& = true,                                 // restore BG ?
-										const bool& = true);                                // locked access ?
+										RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position(false), // screen position
+										const bool& = true,                                                 // update bg cache first ?
+										const bool& = true);                                                // locked access (engine) ?
 
   void initCeiling();
   void initWallBlend(const bool&); // half-height walls ?

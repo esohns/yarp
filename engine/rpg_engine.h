@@ -91,7 +91,8 @@ class RPG_Engine_Export RPG_Engine
             const std::string&); // schema repository
   bool save(const std::string&); // descriptor
 
-  void setActive(const RPG_Engine_EntityID_t&); // id
+  void setActive(const RPG_Engine_EntityID_t&, // id
+								 const bool& = true);          // locked access ?
   RPG_Engine_EntityID_t getActive(const bool& = true) const; // locked access ?
   void mode(const RPG_Engine_EntityMode&); // add mode (to active entity)
   void clear(const RPG_Engine_EntityMode&); // clear mode (from active entity)
@@ -208,7 +209,7 @@ class RPG_Engine_Export RPG_Engine
   // *IMPORTANT NOTE*: need this ONLY to handle control messages...
   RPG_Engine_MessageQueue                     myQueue;
 
-  // make our API re-entrant
+  // make API re-entrant
   mutable ACE_Thread_Mutex                    myLock;
   //// implement blocking wait...
   //ACE_Condition<ACE_Recursive_Thread_Mutex>   myCondition;

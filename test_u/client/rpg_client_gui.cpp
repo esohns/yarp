@@ -41,11 +41,6 @@
 #include "SDL_mixer.h"
 //#include "SDL/SDL_framerate.h"
 
-// *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
-#ifdef HAVE_CONFIG_H
-#include "rpg_config.h"
-#endif
-
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
 #include "rpg_common_timer_manager.h"
@@ -102,6 +97,8 @@
 #include "rpg_client_ui_tools.h"
 #include "rpg_client_logger.h"
 #include "rpg_client_GTK_manager.h"
+
+#include "rpg_config.h"
 
 Uint32
 event_timer_SDL_cb(Uint32 interval_in,
@@ -941,7 +938,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
                ACE_TEXT(SDL_GetError())));
 
     // clean up
-    level_engine.stop();
+//    level_engine.stop();
     client_engine.stop();
 		RPG_Client_Common_Tools::fini();
     RPG_Engine_Common_Tools::fini();
@@ -988,7 +985,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
                  ACE_TEXT(SDL_GetError())));
-    level_engine.stop();
+//    level_engine.stop();
     client_engine.stop();
 		RPG_Client_Common_Tools::fini();
     RPG_Engine_Common_Tools::fini();
@@ -1014,7 +1011,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
                  ACE_TEXT(SDL_GetError())));
-    level_engine.stop();
+//    level_engine.stop();
     client_engine.stop();
 		RPG_Client_Common_Tools::fini();
     RPG_Engine_Common_Tools::fini();
@@ -1037,7 +1034,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
 			ACE_DEBUG((LM_ERROR,
 								 ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
 								 ACE_TEXT(SDL_GetError())));
-		level_engine.stop();
+//		level_engine.stop();
 		client_engine.stop();
 		RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
 		RPG_Client_Common_Tools::fini();

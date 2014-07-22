@@ -19,15 +19,17 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-// *NOTE*: need this to import correct VERSION !
-#ifdef HAVE_CONFIG_H
-#include "rpg_config.h"
-#endif
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <string>
 
-#include "rpg_sound_defines.h"
-#include "rpg_sound_common.h"
-#include "rpg_sound_dictionary.h"
-#include "rpg_sound_common_tools.h"
+#include "ace/ACE.h"
+#include "ace/Log_Msg.h"
+#include "ace/Get_Opt.h"
+#include "ace/High_Res_Timer.h"
+
+#include "SDL.h"
 
 #include "rpg_dice.h"
 #include "rpg_dice_common_tools.h"
@@ -38,17 +40,12 @@
 #include "rpg_common_file_tools.h"
 #include "rpg_common_XML_tools.h"
 
-#include <SDL.h>
+#include "rpg_sound_defines.h"
+#include "rpg_sound_common.h"
+#include "rpg_sound_dictionary.h"
+#include "rpg_sound_common_tools.h"
 
-#include <ace/ACE.h>
-#include <ace/Log_Msg.h>
-#include <ace/Get_Opt.h>
-#include <ace/High_Res_Timer.h>
-
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <string>
+#include "rpg_config.h"
 
 #define SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS false
 #define SDL_TIMEREVENT                     SDL_USEREVENT

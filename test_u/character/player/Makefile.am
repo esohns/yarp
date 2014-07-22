@@ -4,6 +4,7 @@ ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = \
   -DRPG_NET_CLIENT_HAS_DLL \
   -DRPG_PLAYER_HAS_DLL \
+  -I$(builddir)/../../.. \
   -I$(srcdir)/../../../common \
   -I$(srcdir)/../../../chance/dice \
   -I$(srcdir)/../../../magic \

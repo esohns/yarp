@@ -3347,8 +3347,23 @@ item_toggled_GTK_cb(GtkWidget* widget_in,
   // sanity check(s)
   ACE_ASSERT(data->entity.character);
   ACE_ASSERT(data->entity.character->isPlayerCharacter());
-  RPG_Player* player = dynamic_cast<RPG_Player*>(data->entity.character);
-  ACE_ASSERT(player);
+	RPG_Player* player = NULL;
+	try
+	{
+		player = dynamic_cast<RPG_Player*>(data->entity.character);
+	}
+	catch (...)
+	{
+		player = NULL;
+	}
+	if (!player)
+	{
+		ACE_DEBUG((LM_ERROR,
+			         ACE_TEXT("failed to dynamic_cast<RPG_Player*>(%@), aborting\n"),
+							 data->entity.character));
+
+		return TRUE; // propagate
+	} // end IF
   ACE_ASSERT(data->level_engine);
   ACE_ASSERT(data->client_engine);
 
@@ -3360,15 +3375,17 @@ item_toggled_GTK_cb(GtkWidget* widget_in,
   {
     ACE_DEBUG((LM_ERROR,
               ACE_TEXT("failed to retrieve item id (was: \"%s\"), aborting\n"),
-              widget_name.c_str()));
+							ACE_TEXT(widget_name.c_str())));
 
     return TRUE; // propagate
   } // end IF
 
-  RPG_Engine_EntityID_t active_entity = data->level_engine->getActive();
+	data->level_engine->lock();
+  RPG_Engine_EntityID_t active_entity = data->level_engine->getActive(false);
   unsigned char visible_radius_before = 0;
   if (active_entity)
-    visible_radius_before = data->level_engine->getVisibleRadius(active_entity);
+    visible_radius_before = data->level_engine->getVisibleRadius(active_entity,
+		                                                             false);
 
   // *TODO*: where ?
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget_in)))
@@ -3378,24 +3395,24 @@ item_toggled_GTK_cb(GtkWidget* widget_in,
   else
     player->getEquipment().unequip(item_id);
 
-  // equipped light source --> update vision !
+  // equipped light source --> update vision ?
   if (active_entity)
   {
-    unsigned char visible_radius_after =
-        data->level_engine->getVisibleRadius(active_entity);
-    if (visible_radius_before != visible_radius_after)
+		RPG_Engine_ClientNotificationParameters_t parameters;
+		parameters.visible_radius =
+			data->level_engine->getVisibleRadius(active_entity, false);
+		if (visible_radius_before != parameters.visible_radius)
     {
       // notify client window
-		  RPG_Engine_ClientNotificationParameters_t parameters;
 			parameters.entity_id = active_entity;
 			parameters.condition = RPG_COMMON_CONDITION_INVALID;
-			parameters.position =
-					std::make_pair(std::numeric_limits<unsigned int>::max(),
-												 std::numeric_limits<unsigned int>::max());
+			data->level_engine->getVisiblePositions(active_entity,
+																							parameters.positions,
+																							false);
 			parameters.previous_position =
-					std::make_pair(std::numeric_limits<unsigned int>::max(),
-												 std::numeric_limits<unsigned int>::max());
-			parameters.visible_radius = visible_radius_after;
+				std::make_pair(std::numeric_limits<unsigned int>::max(),
+											 std::numeric_limits<unsigned int>::max());			
+			data->level_engine->unlock();
       try
       {
         data->client_engine->notify(COMMAND_E2C_ENTITY_VISION, parameters);
@@ -3406,8 +3423,10 @@ item_toggled_GTK_cb(GtkWidget* widget_in,
                    ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
                    ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_VISION).c_str())));
       }
+			data->level_engine->lock();
     } // end IF
   } // end IF
+	data->level_engine->unlock();
 
   ::update_equipment(*data);
 

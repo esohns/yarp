@@ -25,9 +25,9 @@
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_colorname.h"
 
-#include <SDL.h>
+#include "SDL.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <string>
 
@@ -52,8 +52,9 @@ class RPG_Graphics_Export RPG_Graphics_SDL_Tools
 
   static SDL_Color colorToSDLColor(const Uint32&,       // RGBA value
                                    const SDL_Surface&); // target surface
-  static Uint32 getColor(const RPG_Graphics_ColorName&, // color name
-                         const SDL_Surface&);           // target surface
+	static Uint32 getColor(const RPG_Graphics_ColorName&, // color name
+												 const SDL_Surface&,            // target surface
+												 const float& = 1.0F);          // blend factor (--> opacity)
 
   static SDL_Rect boundingBox(const SDL_Rect&,  // rect 1
                               const SDL_Rect&); // rect 2

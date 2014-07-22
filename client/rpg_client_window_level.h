@@ -31,10 +31,10 @@
 
 #include "rpg_map_common.h"
 
-#include <SDL.h>
+#include "SDL.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Thread_Mutex.h>
+#include "ace/Global_Macros.h"
+#include "ace/Thread_Mutex.h"
 
 #include <vector>
 
@@ -64,15 +64,14 @@ class RPG_Client_Export RPG_Client_Window_Level
   void toggleMessages();
   bool showMessages() const;
 
-  // adjust viewport
-  void setView(const int&,
-               const int&); // view (relative map coordinates)
-
   // implement RPG_Client_IWindowLevel
   virtual void drawBorder(SDL_Surface* = NULL,      // target surface (default: screen)
                           const unsigned int& = 0,  // offset x (top-left = [0,0])
                           const unsigned int& = 0); // offset y (top-left = [0,0])
   virtual void init(const RPG_Graphics_Style&); // style
+  virtual void setView(const int&,
+                       const int&,          // view (relative map coordinates)
+                       const bool& = true); // locked access ?
   virtual void setView(const RPG_Map_Position_t&); // view (map coordinates)
   virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
   virtual void toggleDoor(const RPG_Map_Position_t&); // door position

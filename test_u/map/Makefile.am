@@ -1,8 +1,10 @@
 METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = -I m4
+#ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = \
+  -I$(builddir)/../.. \
   -I$(srcdir)/../../common \
+  -I$(srcdir)/../../client \
   -I$(srcdir)/../../engine \
   -I$(srcdir)/../../graphics \
   -I$(srcdir)/../../map \
@@ -12,7 +14,9 @@ AM_CPPFLAGS = \
   -I$(srcdir)/../../magic \
   -I$(srcdir)/../../item \
   -I$(srcdir)/../../combat \
-  -I$(srcdir)/../../character/player
+  -I$(srcdir)/../../character/player \
+  -I$(srcdir)/../../net/client \
+  -I$(srcdir)/../../sound
 
 bin_PROGRAMS = \
   map_generator \

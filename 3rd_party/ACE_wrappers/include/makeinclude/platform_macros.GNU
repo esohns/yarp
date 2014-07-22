@@ -1,4 +1,5 @@
-include $(ACE_ROOT)/include/makeinclude/platform_linux.GNU
+include %ACE_ROOT%\include\makeinclude\platform_win32_msvc.GNU
+#include $(ACE_ROOT)/include/makeinclude/platform_linux.GNU
 
 INSTALL_PREFIX=/usr/local
 

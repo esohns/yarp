@@ -439,13 +439,14 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     {
       // sanity check(s)
       ACE_ASSERT(myWindow);
-      ACE_ASSERT(parameters_in.position !=
+			ACE_ASSERT(!parameters_in.positions.empty());
+			client_action.position = *parameters_in.positions.begin();
+			ACE_ASSERT(client_action.position !=
           std::make_pair(std::numeric_limits<unsigned int>::max(),
                          std::numeric_limits<unsigned int>::max()));
       ACE_ASSERT(parameters_in.entity_id);
 
       client_action.command = COMMAND_TOGGLE_DOOR;
-      client_action.position = parameters_in.position;
       client_action.window = myWindow;
       client_action.entity_id = parameters_in.entity_id;
       action(client_action);
@@ -483,12 +484,10 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       // sanity check(s)
       ACE_ASSERT(myWindow);
       ACE_ASSERT(parameters_in.entity_id);
-      ACE_ASSERT(parameters_in.position !=
-          std::make_pair(std::numeric_limits<unsigned int>::max(),
-                         std::numeric_limits<unsigned int>::max()));
+      ACE_ASSERT(!parameters_in.positions.empty());
 
       client_action.command = COMMAND_ENTITY_DRAW;
-      client_action.position = parameters_in.position;
+      client_action.position = *parameters_in.positions.begin();
       client_action.window = myWindow;
       client_action.entity_id = parameters_in.entity_id;
 
@@ -502,39 +501,32 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
                                                                                                                           false))
                                                                : RPG_Client_Common_Tools::monster2Sprite(myEngine->getName(parameters_in.entity_id,
                                                                                                                            false)));
+			myEngine->unlock();
       sprite_graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
                                                               true,   // convert to display format
                                                               false); // don't cache
       if (!sprite_graphic)
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(%s), continuing"),
+                   ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(%s), returning\n"),
                    ACE_TEXT(RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(type.sprite).c_str())));
 
-        // clean up
-        myEngine->unlock();
-
-        break;
+        return;
       } // end IF
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->add(parameters_in.entity_id,
                                                            sprite_graphic);
 
-      // step2: init seen positions
-      RPG_Map_Positions_t seen_positions;
-      myEngine->getVisiblePositions(parameters_in.entity_id,
-                                    seen_positions,
-                                    false);
-      myEngine->unlock();
+      // step2: init vision cache
       {
         ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
         ACE_ASSERT(mySeenPositions.find(parameters_in.entity_id) ==
                    mySeenPositions.end());
-        mySeenPositions.insert(std::make_pair(parameters_in.entity_id,
-                                              seen_positions));
+				RPG_Map_Positions_t positions;
+				mySeenPositions[parameters_in.entity_id] = positions;
       } // end lock scope
 
-      // step3: draw the sprite --> delegated to engine
+      // step3: draw the sprite --> delegate to the engine
 
       break;
     }
@@ -544,12 +536,13 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       ACE_ASSERT(myWindow);
       ACE_ASSERT(parameters_in.entity_id);
 
+			// step1: erase the sprite --> delegate to the engine
       client_action.command = COMMAND_ENTITY_REMOVE;
       client_action.window = myWindow;
       client_action.entity_id = parameters_in.entity_id;
       action(client_action);
 
-      // fini seen positions
+      // step2: update vision cache
       {
         ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
@@ -558,6 +551,7 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
         mySeenPositions.erase(parameters_in.entity_id);
       } // end lock scope
 
+			// step3: play a sound ? --> delegate to the engine
       if (parameters_in.entity_id == myEngine->getActive(true))
         do_action = false; // don't play a sound...
 
@@ -592,23 +586,35 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       // sanity check(s)
       ACE_ASSERT(myWindow);
       ACE_ASSERT(parameters_in.entity_id);
-      ACE_ASSERT(parameters_in.position !=
-          std::make_pair(std::numeric_limits<unsigned int>::max(),
-                         std::numeric_limits<unsigned int>::max()));
+      ACE_ASSERT(!parameters_in.positions.empty());
       ACE_ASSERT(parameters_in.previous_position !=
           std::make_pair(std::numeric_limits<unsigned int>::max(),
                          std::numeric_limits<unsigned int>::max()));
 
       client_action.entity_id = parameters_in.entity_id;
-      client_action.position  = parameters_in.position;
+      client_action.position  = *parameters_in.positions.begin();
       client_action.previous  = parameters_in.previous_position;
       client_action.window    = myWindow;
 
       // *NOTE*: when using (dynamic) lighting, redraw the whole window...
       RPG_Engine_EntityID_t active_entity_id = myEngine->getActive(true);
-      bool has_seen = hasSeen(active_entity_id,
-                              parameters_in.position,
-                              true);
+			RPG_Client_IWindowLevel* window = NULL;
+			try
+			{
+				window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
+			}
+			catch (...)
+			{
+				window = NULL;
+			}
+			if (!window)
+			{
+				ACE_DEBUG((LM_ERROR,
+					         ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), returning\n"),
+					         myWindow));
+
+				return;
+			} // end IF
       if (parameters_in.entity_id == active_entity_id)
       {
         // *NOTE*: re-drawing the window will invalidate cursor/hightlight BG...
@@ -617,11 +623,29 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
         client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
         action(client_action);
 
-        if (getCenterOnActive())
-          client_action.command = COMMAND_SET_VIEW;
-        else
-          client_action.command = COMMAND_WINDOW_DRAW;
-        action(client_action);
+				if (getCenterOnActive())
+				{
+					client_action.command = COMMAND_SET_VIEW;
+					action(client_action);
+				} // end IF
+				else
+				{
+					SDL_Rect window_area, map_area;
+					myWindow->getArea(window_area, true);
+					myWindow->getArea(map_area, false);
+					RPG_Graphics_Positions_t positions;
+					positions.push_back(client_action.position);
+					if (RPG_Client_Common_Tools::isVisible(positions,
+																								 std::make_pair(window_area.w,
+																								                window_area.h),
+																								 window->getView(),
+																								 map_area,
+																								 false)) // all
+					{
+						client_action.command = COMMAND_WINDOW_DRAW;
+						action(client_action);
+					} // end IF
+				} // end ELSE
 
         client_action.command = COMMAND_PLAY_SOUND;
         client_action.sound = EVENT_WALK;
@@ -633,55 +657,58 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
         action(client_action);
         client_action.command = COMMAND_CURSOR_DRAW;
       } // end IF
-      else
-      {
-        // update the minimap ?
-        if (active_entity_id &&
-            has_seen)
-        {
-          client_action.command = COMMAND_WINDOW_UPDATE_MINIMAP;
-          action(client_action);
-        } // end IF
+			else
+			{
+				// update the minimap ?
+				if (active_entity_id &&
+						hasSeen(active_entity_id,
+										client_action.position,
+										true))
+				{
+					client_action.command = COMMAND_WINDOW_UPDATE_MINIMAP;
+					action(client_action);
+				} // end IF
 
-        // --> (re)draw entity ?
-        client_action.command = COMMAND_ENTITY_DRAW;
-        if (active_entity_id)
-        {
-          myEngine->lock();
-          if (!myEngine->canSee(active_entity_id,
-                                parameters_in.position,
-                                false))
-          {
-            do_action = false; // entity not within field of view...
-            
-            if (myEngine->canSee(active_entity_id,
-                                 parameters_in.previous_position,
-                                 false))
-            {
-              // entity has left field of view...
-              client_action.command = COMMAND_ENTITY_REMOVE;
-              do_action = true;
-            } // end IF
-          } // end IF
-          myEngine->unlock();
-        } // end IF
-        else
-          do_action = false;
-      } // end ELSE
-
-      // update seen positions
-      RPG_Map_Positions_t seen_positions;
-      myEngine->getVisiblePositions(parameters_in.entity_id,
-                                    seen_positions,
-                                    true);
-      {
-        ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
-
-        ACE_ASSERT(mySeenPositions.find(parameters_in.entity_id) !=
-            mySeenPositions.end());
-        mySeenPositions[parameters_in.entity_id].insert(seen_positions.begin(),
-                                                        seen_positions.end());
-      } // end lock scope
+				// draw sprite ?
+				SDL_Rect window_area, map_area;
+				myWindow->getArea(window_area, true);
+				myWindow->getArea(map_area, false);
+				RPG_Graphics_Positions_t positions;
+				positions.insert(positions.begin(),
+					               parameters_in.positions.begin(),
+												 parameters_in.positions.end());
+				if (RPG_Client_Common_Tools::isVisible(positions,
+																							 std::make_pair(window_area.w,
+																							                window_area.h),
+																							 window->getView(),
+																							 map_area,
+																							 false)) // all
+				{
+					myEngine->lock();
+					RPG_Engine_EntityID_t active_entity_id = myEngine->getActive(false);
+					if ((active_entity_id == parameters_in.entity_id) ||
+							(active_entity_id &&
+							myEngine->canSee(active_entity_id,
+															 parameters_in.entity_id,
+															 false)) ||
+							myDebug)
+						client_action.command = COMMAND_ENTITY_DRAW;
+					myEngine->unlock();
+				} // end IF
+				else
+				{
+					// entity has left field of view...
+					RPG_Graphics_Positions_t positions;
+					positions.push_back(parameters_in.previous_position);
+					if (RPG_Client_Common_Tools::isVisible(positions,
+																								 std::make_pair(window_area.w,
+																									              window_area.h),
+																								 window->getView(),
+																								 map_area,
+																								 false)) // all
+						client_action.command = COMMAND_ENTITY_REMOVE;
+				} // end ELSE
+			} // end ELSE
 
       break;
     }
@@ -693,7 +720,7 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
 
       client_action.window    = myWindow;
       client_action.entity_id = parameters_in.entity_id;
-      client_action.radius    = parameters_in.visible_radius;
+			client_action.radius    = parameters_in.visible_radius;
 
       // *NOTE*: re-drawing the window invalidates cursor/hightlight BG...
       client_action.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
@@ -704,25 +731,60 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       client_action.command = COMMAND_SET_VISION_RADIUS;
       action(client_action);
 
-//      client_action.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
-//      action(client_action);
-      client_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
-      action(client_action);
-      client_action.command = COMMAND_CURSOR_DRAW;
+			// update vision cache
+			RPG_Graphics_Positions_t new_positions;
+			{
+				ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-      // update seen positions
-      RPG_Map_Positions_t seen_positions;
-      myEngine->getVisiblePositions(parameters_in.entity_id,
-                                    seen_positions,
-                                    true);
-      {
-        ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+				RPG_Client_SeenPositionsIterator_t iterator =
+					mySeenPositions.find(parameters_in.entity_id);
+				ACE_ASSERT(iterator != mySeenPositions.end());
+				std::set_difference(client_action.positions.begin(),
+														client_action.positions.end(),
+														(*iterator).second.begin(),
+														(*iterator).second.end(),
+														new_positions.begin());
+				(*iterator).second.insert(client_action.positions.begin(),
+																	client_action.positions.end());
+			} // end lock scope
 
-        ACE_ASSERT(mySeenPositions.find(parameters_in.entity_id) !=
-            mySeenPositions.end());
-        mySeenPositions[parameters_in.entity_id].insert(seen_positions.begin(),
-                                                        seen_positions.end());
-      } // end lock scope
+			// *NOTE*: schedule a draw iff any of the new positions are currently
+			// visible on-screen
+			SDL_Rect window_area, map_area;
+			myWindow->getArea(window_area, true);
+			myWindow->getArea(map_area, false);
+			RPG_Client_IWindowLevel* window = NULL;
+			try
+			{
+				window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
+			}
+			catch (...)
+			{
+				window = NULL;
+			}
+			if (!window)
+			{
+				ACE_DEBUG((LM_ERROR,
+									 ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), returning\n"),
+									 myWindow));
+
+				return;
+			} // end IF
+			if (RPG_Client_Common_Tools::isVisible(new_positions,
+																						 std::make_pair(window_area.w,
+																							              window_area.h),
+																						 window->getView(),
+																						 map_area,
+																						 true)) // any
+			{
+				client_action.command = COMMAND_WINDOW_DRAW;
+				action(client_action);
+			} // end IF
+
+			client_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
+			action(client_action);
+			client_action.command = COMMAND_CURSOR_DRAW;
+			action(client_action);
 
       break;
     }
@@ -763,7 +825,7 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in RPG_Client_IWidgetUI::fini, continuing\n")));
+                     ACE_TEXT("caught exception in RPG_Client_IWidgetUI::fini(), continuing\n")));
         }
       } // end IF
 
@@ -774,12 +836,10 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     default:
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid command (was: \"%s\", aborting\n"),
+                 ACE_TEXT("invalid command (was: \"%s\", returning\n"),
                  ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(command_in).c_str())));
 
-      do_action = false;
-
-      break;
+			return;
     }
   } // end SWITCH
 
@@ -904,7 +964,6 @@ RPG_Client_Engine::handleActions()
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::handleActions"));
 
   SDL_Rect dirty_region;
-  ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
   for (RPG_Client_ActionsIterator_t iterator = myActions.begin();
        iterator != myActions.end();
        iterator++)
@@ -925,9 +984,9 @@ RPG_Client_Engine::handleActions()
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate(), returning\n")));
 
-          break;
+          return;
         }
 
         break;
@@ -958,9 +1017,9 @@ RPG_Client_Engine::handleActions()
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate(), returning\n")));
 
-          break;
+          return;
         }
 
         break;
@@ -989,19 +1048,20 @@ RPG_Client_Engine::handleActions()
         if (!level_window)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), returning\n"),
                      (*iterator).window));
 
-          break;
+          return;
         }
-        RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put((*iterator).entity_id,
+        RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put((*iterator).entity_id, // entity ID
                                                              RPG_Graphics_Common_Tools::map2Screen((*iterator).position,
 																																																	 std::make_pair(window_area.w,
 																																																									window_area.h),
-                                                                                                   level_window->getView()),
-                                                             dirty_region,
-																														 true,
-																														 true);
+																																																	 level_window->getView()), // position
+																														 dirty_region,          // return value: "dirty" region
+																														 true,                  // clip window ?
+																														 false,                 // locked access ? (screen-lock)
+																														 myDebug);              // debug ?
         try
         {
           (*iterator).window->invalidate(dirty_region);
@@ -1009,9 +1069,9 @@ RPG_Client_Engine::handleActions()
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate(), returning\n")));
 
-          break;
+          return;
         }
 
         break;
@@ -1022,8 +1082,10 @@ RPG_Client_Engine::handleActions()
         ACE_ASSERT((*iterator).entity_id);
         ACE_ASSERT((*iterator).window);
 
-        RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove((*iterator).entity_id,
-                                                                dirty_region);
+        RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove((*iterator).entity_id, // entity ID
+                                                                dirty_region,          // return value: "dirty" region
+                                                                false,                 // locked access ? (screen-lock)
+                                                                myDebug);              // debug ?
         try
         {
           (*iterator).window->invalidate(dirty_region);
@@ -1031,9 +1093,9 @@ RPG_Client_Engine::handleActions()
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate(), returning\n")));
 
-          break;
+          return;
         }
 
         break;
@@ -1048,10 +1110,10 @@ RPG_Client_Engine::handleActions()
         channel = RPG_Sound_Common_Tools::play((*iterator).sound, length);
         if (channel == -1)
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to play sound (was: \"%s\"), continuing\n"),
+                     ACE_TEXT("failed to play sound (was: \"%s\"), returning\n"),
                      ACE_TEXT(RPG_Sound_EventHelper::RPG_Sound_EventToString((*iterator).sound).c_str())));
 
-        break;
+        return;
       }
       case COMMAND_SET_VIEW:
       {
@@ -1071,10 +1133,10 @@ RPG_Client_Engine::handleActions()
         if (!level_window)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), returning\n"),
                      (*iterator).window));
 
-          break;
+          return;
         }
         try
         {
@@ -1085,7 +1147,7 @@ RPG_Client_Engine::handleActions()
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in [%@]: RPG_Client_IWindowLevel::setView([%u,%u])/clear/draw(), aborting\n"),
+                     ACE_TEXT("caught exception in [%@]: RPG_Client_IWindowLevel::setView([%u,%u])/clear/draw(), returning\n"),
                      level_window,
                      (*iterator).position.first, (*iterator).position.second));
 
@@ -1100,9 +1162,9 @@ RPG_Client_Engine::handleActions()
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate(), returning\n")));
 
-          break;
+          return;
         }
 
         break;
@@ -1125,10 +1187,10 @@ RPG_Client_Engine::handleActions()
         if (!level_window)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), returning\n"),
                      (*iterator).window));
 
-          break;
+          return;
         }
         try
         {
@@ -1138,7 +1200,7 @@ RPG_Client_Engine::handleActions()
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in [%@]: RPG_Client_IWindowLevel::setBlendRadius(%u)/clear/draw(), aborting\n"),
+                     ACE_TEXT("caught exception in [%@]: RPG_Client_IWindowLevel::setBlendRadius(%u)/clear/draw(), returning\n"),
                      level_window,
                      (*iterator).radius));
 
@@ -1153,9 +1215,9 @@ RPG_Client_Engine::handleActions()
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate(), returning\n")));
 
-          break;
+          return;
         }
 
         break;
@@ -1180,65 +1242,58 @@ RPG_Client_Engine::handleActions()
         if (!level_window)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), returning\n"),
                      (*iterator).window));
 
-          break;
+          return;
         }
         RPG_Graphics_Position_t view = level_window->getView();
+				RPG_Map_PositionList_t positions;
+				RPG_Graphics_Offsets_t screen_positions;
         if ((*iterator).path.empty() &&
             (*iterator).positions.empty())
         {
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlight((*iterator).position,
-                                                                          RPG_Graphics_Common_Tools::map2Screen((*iterator).position,
-                                                                                                                std::make_pair(window_area.w,
-                                                                                                                               window_area.h),
-                                                                                                                view),
-                                                                          view,
-                                                                          dirty_region,
-                                                                          myDebug);
+					positions.push_back((*iterator).position);
+					screen_positions.push_back(RPG_Graphics_Common_Tools::map2Screen((*iterator).position,
+																																						std::make_pair(window_area.w,
+																																						               window_area.h),
+																																						view));
         } // end IF
         else if (!(*iterator).path.empty())
         {
           ACE_ASSERT((*iterator).positions.empty());
-          RPG_Map_PositionList_t map_positions;
-          RPG_Graphics_Offsets_t graphics_positions;
           for (RPG_Map_PathConstIterator_t iterator2 = (*iterator).path.begin();
                iterator2 != (*iterator).path.end();
                iterator2++)
           {
-            map_positions.push_back((*iterator2).first);
-            graphics_positions.push_back(RPG_Graphics_Common_Tools::map2Screen((*iterator2).first,
-                                                                               std::make_pair(window_area.w,
-                                                                                              window_area.h),
-                                                                               view));
+            positions.push_back((*iterator2).first);
+            screen_positions.push_back(RPG_Graphics_Common_Tools::map2Screen((*iterator2).first,
+                                                                              std::make_pair(window_area.w,
+                                                                                             window_area.h),
+                                                                              view));
           } // end FOR
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlights(map_positions,
-                                                                           graphics_positions,
-                                                                           view,
-                                                                           dirty_region);
         } // end ELSE
         else
         {
           ACE_ASSERT(!(*iterator).positions.empty());
-          RPG_Map_PositionList_t map_positions;
-          RPG_Graphics_Offsets_t graphics_positions;
           for (RPG_Map_PositionsConstIterator_t iterator2 =
                (*iterator).positions.begin();
                iterator2 != (*iterator).positions.end();
                iterator2++)
           {
-            map_positions.push_back(*iterator2);
-            graphics_positions.push_back(RPG_Graphics_Common_Tools::map2Screen(*iterator2,
-                                                                               std::make_pair(window_area.w,
-                                                                                              window_area.h),
-                                                                               view));
+            positions.push_back(*iterator2);
+            screen_positions.push_back(RPG_Graphics_Common_Tools::map2Screen(*iterator2,
+                                                                             std::make_pair(window_area.w,
+                                                                                            window_area.h),
+                                                                             view));
           } // end FOR
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlights(map_positions,
-                                                                           graphics_positions,
-                                                                           view,
-                                                                           dirty_region);
         } // end ELSE
+				RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlights(positions,
+																																				 screen_positions,
+																																				 view,
+																																				 dirty_region,
+																																				 true,
+																																				 myDebug);
 
         try
         {
@@ -1247,9 +1302,9 @@ RPG_Client_Engine::handleActions()
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate(), returning\n")));
 
-          break;
+          return;
         }
 
         break;
@@ -1277,14 +1332,16 @@ RPG_Client_Engine::handleActions()
         if (!level_window)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), returning\n"),
                      (*iterator).window));
 
-          break;
+          return;
         }
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(level_window->getView(),
                                                                               dirty_region,
-                                                                              true);
+																																							NULL,
+                                                                              true,
+																																							myDebug);
 
         try
         {
@@ -1293,9 +1350,9 @@ RPG_Client_Engine::handleActions()
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, returning\n")));
 
-          break;
+          return;
         }
 
         break;
@@ -1373,10 +1430,10 @@ RPG_Client_Engine::handleActions()
         if (!level_window)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), returning\n"),
                      (*iterator).window));
 
-          break;
+          return;
         }
         try
         {
@@ -1386,7 +1443,7 @@ RPG_Client_Engine::handleActions()
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in [%@]: RPG_Client_IWindowLevel::toggleDoor/clear/draw(), aborting\n"),
+                     ACE_TEXT("caught exception in [%@]: RPG_Client_IWindowLevel::toggleDoor/clear/draw(), returning\n"),
                      level_window));
 
           return;
@@ -1400,9 +1457,9 @@ RPG_Client_Engine::handleActions()
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate(), returning\n")));
 
-          break;
+          return;
         }
 
         break;
@@ -1425,10 +1482,10 @@ RPG_Client_Engine::handleActions()
         if (!client_window)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindow*>(%@), continuing\n"),
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindow*>(%@), returning\n"),
                      (*iterator).window));
 
-          break;
+          return;
         }
         try
         {
@@ -1439,7 +1496,7 @@ RPG_Client_Engine::handleActions()
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in [%@]: RPG_Client_IWindow::drawBorder(), aborting\n"),
+                     ACE_TEXT("caught exception in [%@]: RPG_Client_IWindow::drawBorder(), returning\n"),
                      client_window));
 
           return;
@@ -1453,9 +1510,9 @@ RPG_Client_Engine::handleActions()
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate(), returning\n")));
 
-          break;
+          return;
         }
 
         break;
@@ -1472,7 +1529,7 @@ RPG_Client_Engine::handleActions()
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in [%@]: RPG_Graphics_IWindow::draw(), aborting\n"),
+                     ACE_TEXT("caught exception in [%@]: RPG_Graphics_IWindow::draw(), returning\n"),
                      (*iterator).window));
 
           return;
@@ -1497,10 +1554,10 @@ RPG_Client_Engine::handleActions()
         if (!window)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to dynamic_cast<RPG_Graphics_IWindow*>(%@), continuing\n"),
+                     ACE_TEXT("failed to dynamic_cast<RPG_Graphics_IWindow*>(%@), returning\n"),
                      (*iterator).window));
 
-          break;
+          return;
         }
         SDL_Rect dirty_region;
         try
@@ -1510,10 +1567,10 @@ RPG_Client_Engine::handleActions()
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in [%@]: RPG_Graphics_IWindow::hide(), continuing\n"),
+                     ACE_TEXT("caught exception in [%@]: RPG_Graphics_IWindow::hide(), returning\n"),
                      window));
 
-          break;
+          return;
         }
 
         break;
@@ -1536,10 +1593,10 @@ RPG_Client_Engine::handleActions()
         if (!level_window)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), returning\n"),
                      (*iterator).window));
 
-          break;
+          return;
         }
 
         // step0: reset bg caches
@@ -1563,7 +1620,7 @@ RPG_Client_Engine::handleActions()
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in [%@]: RPG_Client_IWindowLevel::init/setView/clear/draw(), aborting\n"),
+                     ACE_TEXT("caught exception in [%@]: RPG_Client_IWindowLevel::init/setView/clear/draw(), returning\n"),
                      level_window));
 
           return;
@@ -1612,9 +1669,9 @@ RPG_Client_Engine::handleActions()
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
+                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::invalidate, returning\n")));
 
-          break;
+          return;
         }
 
         break;
@@ -1638,10 +1695,10 @@ RPG_Client_Engine::handleActions()
         if (!level_window)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), returning\n"),
                      (*iterator).window));
 
-          break;
+          return;
         }
         try
         {
@@ -1650,7 +1707,7 @@ RPG_Client_Engine::handleActions()
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in [%@]: RPG_Client_IWindowLevel::updateMessageWindow(\"%s\"), aborting\n"),
+                     ACE_TEXT("caught exception in [%@]: RPG_Client_IWindowLevel::updateMessageWindow(\"%s\"), returning\n"),
                      level_window,
                      ACE_TEXT((*iterator).message.c_str())));
 
@@ -1677,10 +1734,10 @@ RPG_Client_Engine::handleActions()
         if (!level_window)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
+                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), returning\n"),
                      (*iterator).window));
 
-          break;
+          return;
         }
         try
         {
@@ -1689,7 +1746,7 @@ RPG_Client_Engine::handleActions()
         catch (...)
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("caught exception in [%@]: RPG_Client_IWindowLevel::updateMinimap(), aborting\n"),
+                     ACE_TEXT("caught exception in [%@]: RPG_Client_IWindowLevel::updateMinimap(), returning\n"),
                      level_window));
 
           return;
@@ -1700,10 +1757,10 @@ RPG_Client_Engine::handleActions()
       default:
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid action (was: %d), continuing\n"),
+                   ACE_TEXT("invalid action (was: %d), returning\n"),
                    (*iterator).command));
 
-        break;
+        return;
       }
     } // end SWITCH
 

@@ -191,7 +191,8 @@ SDL_GUI_LevelWindow_3D::~SDL_GUI_LevelWindow_3D()
 
 void
 SDL_GUI_LevelWindow_3D::setView(const int& offsetX_in,
-                                const int& offsetY_in)
+                                const int& offsetY_in,
+                                const bool& lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::setView"));
 
@@ -208,7 +209,7 @@ SDL_GUI_LevelWindow_3D::setView(const int& offsetX_in,
   else
     myView.second += offsetY_in;
 
-  RPG_Map_Size_t map_size = myEngine->getSize(true);
+  RPG_Map_Size_t map_size = myEngine->getSize(lockedAccess_in);
   if (myView.first >= map_size.first)
     myView.first = (map_size.first - 1);
   if (myView.second >= map_size.second)
@@ -885,132 +886,248 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
     }
     // *** mouse ***
     case SDL_MOUSEMOTION:
-    {
-      // find map square
-      RPG_Graphics_Position_t map_position =
-          RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.motion.x,
-                                                               event_in.motion.y),
-                                                myEngine->getSize(),
-                                                std::make_pair(myClipRect.w,
-                                                               myClipRect.h),
-                                                myView);
-      // inside map ?
-      if (map_position ==
-          std::make_pair(std::numeric_limits<unsigned int>::max(),
-                         std::numeric_limits<unsigned int>::max()))
-      {
-        //// off the map --> remove "active" tile highlight
-        //RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(myView,
-        //                                                                      dirtyRegion_out);
-        //invalidate(dirtyRegion_out);
+		{
+			// find map square
+			SDL_Rect window_area;
+			getArea(window_area, true);
+			myEngine->lock();
+			RPG_Graphics_Position_t map_position =
+				RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.motion.x,
+																														 event_in.motion.y),
+																							myEngine->getSize(false),
+																							std::make_pair(window_area.w,
+																														 window_area.h),
+																							myView);
+			//       ACE_DEBUG((LM_DEBUG,
+			//                  ACE_TEXT("mouse position [%u,%u] --> [%u,%u]\n"),
+			//                  event_in.button.x, event_in.button.y,
+			//                  map_position.first, map_position.second));
 
-        break;
-      } // end IF
+			// inside map ?
+			if (map_position ==
+					std::make_pair(std::numeric_limits<unsigned int>::max(),
+												 std::numeric_limits<unsigned int>::max()))
+			{
+				// clean up
+				myEngine->unlock();
 
-//       ACE_DEBUG((LM_DEBUG,
-//                  ACE_TEXT("mouse position [%u,%u] --> [%u,%u]\n"),
-//                  event_in.button.x,
-//                  event_in.button.y,
-//                  map_position.first,
-//                  map_position.second));
+				break; // off-map
+			} // end IF
+			// (re-)draw "active" tile highlight(s) ?
+			if ((map_position ==
+					 RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->getHighlightBGPosition()) &&
+					(event_in.motion.which != std::numeric_limits<unsigned char>::max())) // fake event ?
+			{
+				// clean up
+				myEngine->unlock();
 
-      myScreenLock->lock();
+				break; // same map square/not initiating pathing --> nothing to do...
+			} // end IF
 
-      // (re-)draw "active" tile highlight ?
-      SDL_Rect dirty_region;
-      ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
-      if (map_position !=
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->getHighlightBGPosition())
-      {
-        // unmapped area ?
-        RPG_Map_Element map_element = myEngine->getElement(map_position);
-  //      ACE_DEBUG((LM_DEBUG,
-  //                 ACE_TEXT("map element [%u,%u]: \"%s\"\n"),
-  //                 map_position.first, map_position.second,
-  //                 ACE_TEXT(RPG_Map_Common_Tools::mapElement2String(map_element).c_str())));
-        if ((map_element == MAPELEMENT_UNMAPPED) ||
-            (map_element == MAPELEMENT_WALL))
-        {
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(myView,
-                                                                                dirty_region,
-                                                                                false,
-                                                                                myState->debug);
-          if ((dirty_region.x != 0) ||
-              (dirty_region.y != 0) ||
-              (dirty_region.w != 0) ||
-              (dirty_region.h != 0))
-          {
-            dirtyRegion_out =
-                RPG_Graphics_SDL_Tools::boundingBox(dirty_region, dirtyRegion_out);
-            invalidate(dirty_region);
-          } // end IF
-        } // end IF
-        else
-        {
-          RPG_Graphics_Offset_t highlight_position =
-            RPG_Graphics_Common_Tools::map2Screen(map_position,
-                                                  std::make_pair(myClipRect.w,
-                                                                 myClipRect.h),
-                                                  myView);
-          if (highlight_position !=
-						  std::make_pair(std::numeric_limits<int>::max(),
-							               std::numeric_limits<int>::max()))
-          {
-						RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(dirty_region,
-																																				 NULL,
-																																				 false);
-            dirtyRegion_out =
-                RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-                                                    dirtyRegion_out);
+			// *NOTE*: --> (re-)draw/remove tile highlight(s)...
 
-						RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlight(map_position,
-                                                                            highlight_position,
-                                                                            myView,
-                                                                            dirty_region,
-                                                                            false,
-                                                                            myState->debug);
-            dirtyRegion_out =
-                RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-                                                    dirtyRegion_out);
-            invalidate(dirty_region);
+			bool toggle_on = myEngine->isValid(map_position, false);
+			RPG_Map_Positions_t positions;
+			RPG_Graphics_Offsets_t screen_positions;
+			// unmapped area/invalid position ?
+			if (toggle_on)
+			{
+				// *NOTE*: essentially, this means:
+				// - the cursor bg is dirty, needs an update
+				// - the highlight needs to be redrawn
+				// - the cursor needs to be redrawn
+				// --> handled by the cursor manager
 
-						// invalidate cursor bg
-						RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG(dirty_region,
-																																				NULL,
-																																				false,
-																																				myState->debug);
-          } // end IF
-        } // end IF
-      } // end IF
+				// step1: determine the highlighted area
+				switch (myState->selection_mode)
+				{
+					case SELECTIONMODE_AIM_CIRCLE:
+					{
+						// step1: build circle
+						unsigned int selection_radius =
+								RPG_Map_Common_Tools::distanceMax(myState->source,
+																									map_position);
+						if (selection_radius > RPG_MAP_CIRCLE_MAX_RADIUS)
+							selection_radius = RPG_MAP_CIRCLE_MAX_RADIUS;
 
-      // set an appropriate cursor
-      RPG_Engine_EntityID_t entity_id = myEngine->getActive(true);
-      RPG_Graphics_Cursor cursor_type =
-          RPG_Client_Common_Tools::getCursor(map_position,
-                                             entity_id,
-                                             true,
-                                             SELECTIONMODE_NORMAL,
-                                             *myEngine,
-                                             true);
-      if (cursor_type !=
-            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
-      {
-        ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->setCursor(cursor_type,
-                                                                     dirty_region,
-                                                                     false);
-        if ((dirty_region.w != 0) ||
-            (dirty_region.h != 0))
-        {
-          dirtyRegion_out =
+						RPG_Map_Common_Tools::buildCircle(myState->source,
+																							myEngine->getSize(false),
+																							selection_radius,
+																							false, // don't fill
+																							positions);
+
+						// *WARNING*: falls through !
+					}
+					case SELECTIONMODE_AIM_SQUARE:
+					{
+						if (myState->selection_mode == SELECTIONMODE_AIM_SQUARE)
+						{
+							// step1: build square
+							unsigned int selection_radius =
+									RPG_Map_Common_Tools::distanceMax(myState->source,
+																										map_position);
+							RPG_Map_Common_Tools::buildSquare(myState->source,
+																								myEngine->getSize(false),
+																								selection_radius,
+																								false, // don't fill
+																								positions);
+						} // end IF
+
+						// step2: remove invalid positions
+						RPG_Map_Positions_t obstacles = myEngine->getObstacles(false,
+																																	 false);
+						// *WARNING*: this works for associative containers ONLY
+						for (RPG_Map_PositionsIterator_t iterator = positions.begin();
+								 iterator != positions.end();
+								 )
+							if (RPG_Map_Common_Tools::hasLineOfSight(myState->source,
+																											 *iterator,
+																											 obstacles,
+																											 false))
+								iterator++;
+							else
+								positions.erase(iterator++);
+						myState->positions.insert(myState->positions.begin(),
+																			positions.begin(),
+																			positions.end());
+
+						// *WARNING*: falls through !
+					}
+					case SELECTIONMODE_PATH:
+					{
+						if (myState->selection_mode == SELECTIONMODE_PATH)
+						{
+							//// step1: build path ?
+							//RPG_Engine_EntityID_t entity_id = myEngine->getActive(false);
+							//if (!entity_id ||
+							//		!hasSeen(entity_id,
+							//		map_position))
+							//{
+							//	toggle_on = false; // --> remove highlights
+
+							//	break;
+							//} // end IF
+
+							RPG_Map_Position_t current_position =
+									myEngine->getPosition(entity_id, false);
+							if (current_position != map_position)
+							{
+								if (!myEngine->findPath(current_position,
+																				map_position,
+																				myState->path,
+																				false))
+								{
+									ACE_DEBUG((LM_DEBUG,
+														 ACE_TEXT("could not find a path [%u,%u] --> [%u,%u], continuing\n"),
+														 current_position.first, current_position.second,
+														 map_position.first, map_position.second));
+
+									// pointing at an invalid (i.e. unreachable) position (still on the map though)
+									// --> erase cached path (and tile highlights)
+									//	RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG(map_position);
+									myState->path.clear();
+								} // end IF
+							} // end IF
+							else
+							{
+								// pointing at curent position
+								// --> erase cached path (and tile highlights)
+								//RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG(map_position);
+								myState->path.clear();
+							} // end ELSE
+
+							// step2: compute (screen) positions
+							myState->positions.clear();
+							for (RPG_Map_PathConstIterator_t iterator = myState->path.begin();
+									 iterator != myState->path.end();
+									 iterator++)
+							{
+								myState->positions.push_back((*iterator).first);
+								screen_positions.push_back(RPG_Graphics_Common_Tools::map2Screen((*iterator).first,
+																																								 std::make_pair(window_area.w,
+																																																window_area.h),
+																																								 myView));
+							} // end FOR
+						} // end IF
+						else
+						{
+							// step3: compute screen positions
+							for (RPG_Map_PositionListIterator_t iterator = myState->positions.begin();
+									 iterator != myState->positions.end();
+									 iterator++)
+								screen_positions.push_back(RPG_Graphics_Common_Tools::map2Screen(*iterator,
+																																								 std::make_pair(window_area.w,
+																																																window_area.h),
+																																								 myView));
+						} // end ELSE
+
+						break;
+					}
+					case SELECTIONMODE_NORMAL:
+					{
+						// step2: compute screen position
+						screen_positions.push_back(RPG_Graphics_Common_Tools::map2Screen(map_position,
+																																						 std::make_pair(window_area.w,
+																																														window_area.h),
+																																						 myView));
+						break;
+					}
+					default:
+					{
+						ACE_DEBUG((LM_ERROR,
+											 ACE_TEXT("invalid selection mode (was: %d), aborting\n"),
+											 myState->selection_mode));
+
+						// clean up
+						myEngine->unlock();
+
+						break;
+					}
+				} // end SWITCH
+			} // end IF
+
+			// step2: draw/remove highlight(s)
+			myScreenLock->lock();
+			if (toggle_on)
+				RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlights(myState->positions,
+																																				 screen_positions,
+																																				 myView,
+																																				 dirtyRegion_out,
+																																				 false,
+																																				 myState->debug);
+			else // --> moved into an "invalid" map position (i.e. unmapped, closed door, wall, ...)
+				RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(myView,
+																																							dirtyRegion_out,
+																																							NULL,
+																																							false,
+																																							myState->debug);
+			myScreenLock->unlock();
+			invalidate(dirtyRegion_out);
+
+			// step3: set an appropriate cursor
+			entity_id = myEngine->getActive(false);
+			RPG_Graphics_Cursor cursor_type =
+					RPG_Client_Common_Tools::getCursor(map_position,
+																						 entity_id,
+																						 true,
+																						 myState->selection_mode,
+																						 *myEngine,
+																						 false);
+			myEngine->unlock();
+			if (cursor_type !=
+					RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
+			{
+				ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
+				RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->setCursor(cursor_type,
+																																		 dirty_region,
+																																		 true);
+				dirtyRegion_out =
 						RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-						                                    dirtyRegion_out);
-          invalidate(dirty_region);
-        } // end IF
-      } // end IF
-      myScreenLock->unlock();
+																								dirtyRegion_out);
+				invalidate(dirty_region);
+			} // end IF
 
-      break;
+			break;
     }
     case SDL_MOUSEBUTTONDOWN:
     {
@@ -1208,13 +1325,13 @@ SDL_GUI_LevelWindow_3D::notify(const RPG_Engine_Command& command_in,
     case COMMAND_DOOR_CLOSE:
     case COMMAND_DOOR_OPEN:
     {
+			RPG_Map_Position_t position = *parameters_in.positions.begin();
       myEngine->lock();
-      RPG_Map_DoorState door_state =
-          myEngine->state(parameters_in.position, false);
+      RPG_Map_DoorState door_state = myEngine->state(position, false);
 
       // change tile accordingly
       RPG_Graphics_Orientation orientation =
-          RPG_Client_Common_Tools::getDoorOrientation(parameters_in.position,
+          RPG_Client_Common_Tools::getDoorOrientation(position,
                                                       *myEngine,
                                                       false);
       myEngine->unlock();
@@ -1222,14 +1339,14 @@ SDL_GUI_LevelWindow_3D::notify(const RPG_Engine_Command& command_in,
       {
         case ORIENTATION_HORIZONTAL:
         {
-          myDoorTiles[parameters_in.position] =
+          myDoorTiles[position] =
               ((door_state == DOORSTATE_OPEN) ? myCurrentDoorSet.horizontal_open
                                               : myCurrentDoorSet.horizontal_closed);
           break;
         }
         case ORIENTATION_VERTICAL:
         {
-          myDoorTiles[parameters_in.position] =
+          myDoorTiles[position] =
               ((door_state == DOORSTATE_OPEN) ? myCurrentDoorSet.vertical_open
                                               : myCurrentDoorSet.vertical_closed);
           break;
@@ -1237,7 +1354,7 @@ SDL_GUI_LevelWindow_3D::notify(const RPG_Engine_Command& command_in,
         default:
         {
           ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid door orientation \"%s\", aborting\n"),
+                     ACE_TEXT("invalid door orientation \"%s\", returning\n"),
                      ACE_TEXT(RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(orientation).c_str())));
 
           return;
@@ -1286,11 +1403,14 @@ SDL_GUI_LevelWindow_3D::notify(const RPG_Engine_Command& command_in,
       SDL_Rect dirty_region;
       ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put(parameters_in.entity_id,
-                                                           RPG_Graphics_Common_Tools::map2Screen(parameters_in.position,
+                                                           RPG_Graphics_Common_Tools::map2Screen(*parameters_in.positions.begin(),
                                                                                                  std::make_pair(myClipRect.w,
 																																																                myClipRect.h),
                                                                                                  getView()),
-                                                           dirty_region);
+                                                           dirty_region,
+                                                           true,
+                                                           true,
+                                                           myState->debug);
 
       RPG_Graphics_Surface::update(dirty_region,
                                    getScreen());
@@ -1302,7 +1422,9 @@ SDL_GUI_LevelWindow_3D::notify(const RPG_Engine_Command& command_in,
       SDL_Rect dirty_region;
       ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->remove(parameters_in.entity_id,
-                                                              dirty_region);
+                                                              dirty_region,
+                                                              true,
+                                                              myState->debug);
       RPG_Graphics_Surface::update(dirty_region,
                                    getScreen());
 

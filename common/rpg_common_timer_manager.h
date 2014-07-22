@@ -57,7 +57,6 @@ class RPG_Common_Export RPG_Common_Timer_Manager
 
   virtual void start();
 
-  // safety measures
   RPG_Common_Timer_Manager();
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_Timer_Manager(const RPG_Common_Timer_Manager&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_Timer_Manager& operator=(const RPG_Common_Timer_Manager&));

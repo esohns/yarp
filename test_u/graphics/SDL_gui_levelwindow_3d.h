@@ -33,9 +33,9 @@
 #include "rpg_graphics_styleunion.h"
 #include "rpg_graphics_SDL_window_base.h"
 
-#include <SDL.h>
+#include "SDL.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <string>
 
@@ -63,13 +63,12 @@ class SDL_GUI_LevelWindow_3D
 
   // implement (part of) RPG_Client_IWindowLevel
   virtual void init(const RPG_Graphics_Style&); // style
-
-  // adjust viewport
-  // implement (part of) RPG_Client_IWindowLevel
-  virtual void setView(const int&,  // offset x (map coordinates !)
-                       const int&); // offset x (map coordinates !)
+  virtual void setView(const int&,          // offset x (map coordinates !)
+                       const int&,          // offset x (map coordinates !)
+                       const bool& = true); // locked access ?
   virtual void setView(const RPG_Map_Position_t&); // position
   virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
+
 	void center();
 
   // (re-)init / set level properties

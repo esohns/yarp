@@ -32,9 +32,9 @@
 #include "rpg_graphics_graphictypeunion.h"
 #include "rpg_graphics_toplevel.h"
 
-#include <SDL.h>
+#include "SDL.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <string>
 

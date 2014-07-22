@@ -1,7 +1,9 @@
 METASOURCES = AUTO
 
 #ACLOCAL_AMFLAGS = -I m4
-AM_CPPFLAGS = -DACE_HAS_DLL
+AM_CPPFLAGS = \
+  -I$(srcdir)/../../common \
+  -I$(srcdir)/../../chance/dice
 
 bin_PROGRAMS = XML2CppCode
 

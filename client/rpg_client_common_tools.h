@@ -82,10 +82,11 @@ class RPG_Client_Export RPG_Client_Common_Tools
   static bool hasCeiling(const RPG_Map_Position_t&, // position
                          const RPG_Engine&,         // state / engine
                          const bool& = true);       // locked access ?
-	static bool isVisible(const RPG_Graphics_Position_t&, // position (map coordinates !)
-												const RPG_Graphics_Size_t&,     // window size
-												const RPG_Graphics_Position_t&, // viewport (map coordinates !)
-												const SDL_Rect&);               // window area
+	static bool isVisible(const RPG_Graphics_Positions_t&, // positions (map coordinates !)
+												const RPG_Graphics_Size_t&,      // window size
+												const RPG_Graphics_Position_t&,  // viewport (map coordinates !)
+												const SDL_Rect&,                 // window area
+												const bool& = true);             // any ? : all
 	static bool hasHighlight(const RPG_Map_Position_t&, // position
 												   const RPG_Engine&,         // state / engine
 												   const bool& = true);       // locked access ?

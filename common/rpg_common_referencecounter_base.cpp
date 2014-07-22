@@ -23,7 +23,7 @@
 
 #include "rpg_common_macros.h"
 
-#include <ace/Guard_T.h>
+#include "ace/Guard_T.h"
 
 RPG_Common_ReferenceCounterBase::RPG_Common_ReferenceCounterBase(const unsigned int& initCount_in,
                                                                  const bool& deleteOnZero_in)
@@ -38,7 +38,7 @@ RPG_Common_ReferenceCounterBase::RPG_Common_ReferenceCounterBase(const unsigned 
 //RPG_Common_ReferenceCounterBase::RPG_Common_ReferenceCounterBase(const RPG_Common_ReferenceCounterBase& counter_in)
 // : myCounter(counter_in.myCounter),
 //   myDeleteOnZero(counter_in.myDeleteOnZero),
-//   myCondition(counter_in.myLock) // *NOTE*: use the SAME lock !
+//   myCondition(counter_in.myLock) // *NOTE*: uses the same lock
 //{
 //  RPG_TRACE(ACE_TEXT("RPG_Common_ReferenceCounterBase::RPG_Common_ReferenceCounterBase"));
 //

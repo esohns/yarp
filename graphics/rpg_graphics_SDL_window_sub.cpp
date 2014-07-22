@@ -94,6 +94,30 @@ RPG_Graphics_SDLWindowSub::visible() const
   return myIsVisible;
 }
 
+void
+RPG_Graphics_SDLWindowSub::clip(SDL_Surface* targetSurface_in,
+                                const unsigned int& offsetX_in,
+                                const unsigned int& offsetY_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::clip"));
+
+  RPG_Graphics_IWindowBase* parent = getParent();
+  ACE_ASSERT(parent);
+  parent->clip(targetSurface_in,
+               offsetX_in,
+               offsetY_in);
+}
+
+void
+RPG_Graphics_SDLWindowSub::unclip(SDL_Surface* targetSurface_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowSub::unclip"));
+
+  RPG_Graphics_IWindowBase* parent = getParent();
+  ACE_ASSERT(parent);
+  parent->unclip(targetSurface_in);
+}
+
 RPG_Graphics_IWindowBase*
 RPG_Graphics_SDLWindowSub::getWindow(const RPG_Graphics_Position_t& position_in) const
 {

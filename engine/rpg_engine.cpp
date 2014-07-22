@@ -525,13 +525,11 @@ RPG_Engine::set(const RPG_Engine_Level_t& level_in)
   RPG_Engine_ClientNotificationParameters_t parameters;
   parameters.entity_id = 0;
 	parameters.condition = RPG_COMMON_CONDITION_INVALID;
-	parameters.position =
-			std::make_pair(std::numeric_limits<unsigned int>::max(),
-										 std::numeric_limits<unsigned int>::max());
+	parameters.positions.insert(std::make_pair(std::numeric_limits<unsigned int>::max(),
+																						 std::numeric_limits<unsigned int>::max()));
 	parameters.previous_position =
 			std::make_pair(std::numeric_limits<unsigned int>::max(),
 										 std::numeric_limits<unsigned int>::max());
-	parameters.visible_radius = 0;
   try
   {
     myClient->notify(COMMAND_E2C_INIT,
@@ -582,11 +580,10 @@ RPG_Engine::add(RPG_Engine_Entity_t* entity_in,
   RPG_Engine_ClientNotificationParameters_t parameters;
   parameters.entity_id = id;
 	parameters.condition = RPG_COMMON_CONDITION_INVALID;
-	parameters.position = entity_in->position;
+	parameters.positions.insert(entity_in->position);
 	parameters.previous_position =
 			std::make_pair(std::numeric_limits<unsigned int>::max(),
 										 std::numeric_limits<unsigned int>::max());
-	parameters.visible_radius = 0;
 	// *WARNING*: avoid potential deadlock
 	if (!lockedAccess_in)
 		myLock.release();
@@ -598,9 +595,29 @@ RPG_Engine::add(RPG_Engine_Entity_t* entity_in,
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
+               ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), returning\n"),
                ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_ADD).c_str())));
-  }
+
+		// clean up
+		if (!lockedAccess_in)
+			myLock.acquire();
+
+		return id;
+	}
+	getVisiblePositions(parameters.entity_id,
+											parameters.positions,
+											false);
+	try
+	{
+		myClient->notify(COMMAND_E2C_ENTITY_VISION,
+										 parameters);
+	}
+	catch (...)
+	{
+		ACE_DEBUG((LM_ERROR,
+         			 ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
+			         ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_VISION).c_str())));
+	}
 	if (!lockedAccess_in)
 		myLock.acquire();
 
@@ -618,7 +635,6 @@ RPG_Engine::remove(const RPG_Engine_EntityID_t& id_in)
   // notify AI
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->remove(id_in);
 
-  bool was_active = false;
 	RPG_Engine_ClientNotificationParameters_t parameters;
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
@@ -638,11 +654,11 @@ RPG_Engine::remove(const RPG_Engine_EntityID_t& id_in)
       delete (*iterator).second->character;
       delete (*iterator).second;
     } // end IF
-		parameters.position = (*iterator).second->position;
+		parameters.positions.insert((*iterator).second->position);
     myEntities.erase(iterator);
 
     if (id_in == myActivePlayer)
-      was_active = true;
+			setActive(0, false);
   } // end lock scope
 
   // notify client / window
@@ -651,7 +667,6 @@ RPG_Engine::remove(const RPG_Engine_EntityID_t& id_in)
 	parameters.previous_position =
 		std::make_pair(std::numeric_limits<unsigned int>::max(),
 									 std::numeric_limits<unsigned int>::max());
-	parameters.visible_radius = 0;
   try
   {
     myClient->notify(COMMAND_E2C_ENTITY_REMOVE,
@@ -663,10 +678,6 @@ RPG_Engine::remove(const RPG_Engine_EntityID_t& id_in)
                ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
                ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_REMOVE).c_str())));
   }
-
-  // was active player ?
-  if (was_active)
-    setActive(0);
 }
 
 bool
@@ -1478,30 +1489,37 @@ RPG_Engine::save(const std::string& descriptor_in)
 }
 
 void
-RPG_Engine::setActive(const RPG_Engine_EntityID_t& id_in)
+RPG_Engine::setActive(const RPG_Engine_EntityID_t& id_in,
+                      const bool& lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine::setActive"));
 
-  {
-    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
-
-    myActivePlayer = id_in;
-  } // end lock scope
+	if (lockedAccess_in)
+		myLock.acquire();
+  myActivePlayer = id_in;
+	if (lockedAccess_in)
+		myLock.release();
 
   // notify client ?
   if (id_in)
   {
-    unsigned char visible_radius = getVisibleRadius(id_in);
     RPG_Engine_ClientNotificationParameters_t parameters;
     parameters.entity_id = id_in;
 		parameters.condition = RPG_COMMON_CONDITION_INVALID;
-		parameters.position =
-				std::make_pair(std::numeric_limits<unsigned int>::max(),
-											 std::numeric_limits<unsigned int>::max());
+		if (lockedAccess_in)
+			myLock.acquire();
+		getVisiblePositions(id_in,
+												parameters.positions,
+												false);
 		parameters.previous_position =
 				std::make_pair(std::numeric_limits<unsigned int>::max(),
 											 std::numeric_limits<unsigned int>::max());
-		parameters.visible_radius = visible_radius;
+		parameters.visible_radius = getVisibleRadius(id_in,
+																								 false);
+		if (lockedAccess_in)
+			myLock.release();
+		if (!lockedAccess_in)
+			myLock.release();
     try
     {
       myClient->notify(COMMAND_E2C_ENTITY_VISION, parameters);
@@ -1512,6 +1530,8 @@ RPG_Engine::setActive(const RPG_Engine_EntityID_t& id_in)
                  ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
                  ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_VISION).c_str())));
     }
+    if (!lockedAccess_in)
+      myLock.acquire();
   } // end IF
 }
 
@@ -1936,6 +1956,7 @@ RPG_Engine::getVisibleRadius(const RPG_Engine_EntityID_t& id_in,
                ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
                id_in));
 
+		// clean up
     if (lockedAccess_in)
       myLock.release();
 
@@ -1952,14 +1973,7 @@ RPG_Engine::getVisibleRadius(const RPG_Engine_EntityID_t& id_in,
     }
     catch (...)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in dynamic_cast<RPG_Player_Player_Base*>(%@), aborting\n"),
-                 (*iterator).second->character));
-
-      if (lockedAccess_in)
-        myLock.release();
-
-      return result;
+			player_base = NULL;
     }
     if (!player_base)
     {
@@ -1987,14 +2001,7 @@ RPG_Engine::getVisibleRadius(const RPG_Engine_EntityID_t& id_in,
     }
     catch (...)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in dynamic_cast<RPG_Monster*>(%@), aborting\n"),
-                 (*iterator).second->character));
-
-      if (lockedAccess_in)
-        myLock.release();
-
-      return result;
+			monster = NULL;
     }
     if (!monster)
     {
@@ -2002,6 +2009,7 @@ RPG_Engine::getVisibleRadius(const RPG_Engine_EntityID_t& id_in,
                  ACE_TEXT("caught exception in dynamic_cast<RPG_Monster*>(%@), aborting\n"),
                  (*iterator).second->character));
 
+			// clean up
       if (lockedAccess_in)
         myLock.release();
 
@@ -2600,7 +2608,7 @@ RPG_Engine::handleEntities()
       {
         case COMMAND_ATTACK:
         {
-          action_complete = false; // *NOTE*: handled by the AI
+          action_complete = false; // *NOTE*: timed --> handled by the AI
 
           break;
         }
@@ -2620,13 +2628,11 @@ RPG_Engine::handleEntities()
           RPG_Engine_ClientNotificationParameters_t parameters;
           parameters.entity_id = (*target).first;
 					parameters.condition = RPG_COMMON_CONDITION_INVALID;
-					parameters.position =
-						std::make_pair(std::numeric_limits<unsigned int>::max(),
-                           std::numeric_limits<unsigned int>::max());
+					parameters.positions.insert(std::make_pair(std::numeric_limits<unsigned int>::max(),
+																										 std::numeric_limits<unsigned int>::max()));
 					parameters.previous_position =
 						std::make_pair(std::numeric_limits<unsigned int>::max(),
 						               std::numeric_limits<unsigned int>::max());
-					parameters.visible_radius = 0;
           // *TODO*: implement combat situations, in-turn-movement, ...
           bool hit =
 						RPG_Engine_Common_Tools::attack((*iterator).second->character,
@@ -2712,11 +2718,10 @@ RPG_Engine::handleEntities()
             RPG_Engine_ClientNotificationParameters_t parameters;
             parameters.entity_id = (*iterator).first;
 						parameters.condition = RPG_COMMON_CONDITION_INVALID;
-            parameters.position = current_action.position;
+            parameters.positions.insert(current_action.position);
    					parameters.previous_position =
 							std::make_pair(std::numeric_limits<unsigned int>::max(),
 							               std::numeric_limits<unsigned int>::max());
-						parameters.visible_radius = 0;
 						notifications.push_back(std::make_pair(current_action.command,
 																									 parameters));
           } // end IF
@@ -2832,9 +2837,8 @@ RPG_Engine::handleEntities()
 					RPG_Engine_ClientNotificationParameters_t parameters;
           parameters.entity_id = (*iterator).first;
 					parameters.condition = RPG_COMMON_CONDITION_INVALID;
-          parameters.position = current_action.position;
+          parameters.positions.insert(current_action.position);
 					parameters.previous_position = (*iterator).second->position;
-					parameters.visible_radius = 0;
           notifications.push_back(std::make_pair(COMMAND_E2C_ENTITY_POSITION,
 						                                     parameters));
 
@@ -2907,13 +2911,11 @@ RPG_Engine::handleEntities()
       RPG_Engine_ClientNotificationParameters_t parameters;
       parameters.entity_id = 0;
       parameters.condition = RPG_COMMON_CONDITION_INVALID;
-      parameters.position =
-          std::make_pair(std::numeric_limits<unsigned int>::max(),
-                         std::numeric_limits<unsigned int>::max());
+      parameters.positions.insert(std::make_pair(std::numeric_limits<unsigned int>::max(),
+																	std::numeric_limits<unsigned int>::max()));
       parameters.previous_position =
           std::make_pair(std::numeric_limits<unsigned int>::max(),
                          std::numeric_limits<unsigned int>::max());
-      parameters.visible_radius = 0;
       try
       {
         myClient->notify(COMMAND_E2C_QUIT, parameters);

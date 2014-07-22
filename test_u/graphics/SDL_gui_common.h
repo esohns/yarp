@@ -44,6 +44,7 @@ struct state_t
   bool                       debug;
   RPG_Graphics_Style         style;
 	RPG_Client_SelectionMode   selection_mode;
+	ACE_Thread_Mutex           lock;
 	RPG_Client_SeenPositions_t seen_positions;
 	//
 	RPG_Map_Path_t             path;

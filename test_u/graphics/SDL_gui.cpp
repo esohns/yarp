@@ -78,10 +78,11 @@
 
 #include "rpg_client_defines.h"
 #include "rpg_client_common.h"
+#include "rpg_client_common_tools.h"
+//#include "rpg_client_engine.h"
+#include "rpg_client_entity_manager.h"
 #include "rpg_client_graphicsmode.h"
 #include "rpg_client_iwindow_level.h"
-#include "rpg_client_entity_manager.h"
-#include "rpg_client_common_tools.h"
 
 #include "SDL_gui_defines.h"
 #include "SDL_gui_common.h"
@@ -101,7 +102,7 @@ event_timer_SDL_cb(Uint32 interval_in,
 
   // synch access
   {
-    ACE_Guard<ACE_Thread_Mutex> aGuard(state_p->hover_lock);
+		ACE_Guard<ACE_Thread_Mutex> aGuard(state_p->hover_lock);
 
     state_p->hover_time += interval_in;
     if (state_p->hover_time > RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_DELAY)
@@ -1003,7 +1004,7 @@ do_UI(RPG_Engine_Entity_t& entity_in,
     if (sdl_event.type != RPG_GRAPHICS_SDL_HOVEREVENT)
     {
       // synch access
-      ACE_Guard<ACE_Thread_Mutex> aGuard(state.hover_lock);
+			ACE_Guard<ACE_Thread_Mutex> aGuard(state.hover_lock);
 
       state.hover_time = 0;
     } // end IF
@@ -1101,10 +1102,7 @@ do_UI(RPG_Engine_Entity_t& entity_in,
           }
           case SDLK_r:
           {
-//            RPG_Client_IWindowLevel* map_window =
-//                dynamic_cast<RPG_Client_IWindowLevel*>(mainWindow_in->child(WINDOW_MAP));
-//            ACE_ASSERT(map_window);
-
+            ACE_ASSERT(map_window);
             try
             {
               map_window->draw();
@@ -1118,15 +1116,16 @@ do_UI(RPG_Engine_Entity_t& entity_in,
             RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset();
             event_handled = true;
 
-						// (re-)draw "active" tile highlight
+						// draw "active" tile highlight
 						int x, y;
             SDL_GetMouseState(&x, &y);
             mouse_position = std::make_pair(x, y);
             SDL_Rect window_area;
 						map_window->getArea(window_area, true);
+						engine_in->lock();
 						RPG_Graphics_Position_t map_position =
 								RPG_Graphics_Common_Tools::screen2Map(mouse_position,
-																											engine_in->getSize(),
+																											engine_in->getSize(false),
 																											std::make_pair(window_area.w,
 																											               window_area.h),
 																											map_window->getView());
@@ -1135,67 +1134,37 @@ do_UI(RPG_Engine_Entity_t& entity_in,
 								std::make_pair(std::numeric_limits<unsigned int>::max(),
 															 std::numeric_limits<unsigned int>::max()))
 						{
-							//// off the map --> remove "active" tile highlight
-							//RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(myView,
-							//                                                                      dirtyRegion_out);
-							//invalidate(dirtyRegion_out);
+							// clean up
+							engine_in->unlock();
 
-							break;
+							break; // off the map
 						} // end IF
 						SDL_Rect dirty_region_2;
 						ACE_OS::memset(&dirty_region_2, 0, sizeof(dirty_region_2));
-						if (map_position !=
-								RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->getHighlightBGPosition())
+						if (engine_in->isValid(map_position, false))
 						{
-							// unmapped area ?
-							RPG_Map_Element map_element = engine_in->getElement(map_position);
-				//      ACE_DEBUG((LM_DEBUG,
-				//                 ACE_TEXT("map element [%u,%u]: \"%s\"\n"),
-				//                 map_position.first, map_position.second,
-				//                 ACE_TEXT(RPG_Map_Common_Tools::mapElement2String(map_element).c_str())));
-							if ((map_element == MAPELEMENT_UNMAPPED) ||
-									(map_element == MAPELEMENT_WALL))
+							RPG_Map_PositionList_t positions;
+							RPG_Graphics_Offsets_t screen_positions;
+							for (RPG_Map_PositionListConstIterator_t iterator = state.positions.begin();
+									 iterator != state.positions.end();
+									 iterator++)
 							{
-								RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(map_window->getView(),
-																																											dirty_region_2);
-								if ((dirty_region_2.x != 0) ||
-										(dirty_region_2.y != 0) ||
-										(dirty_region_2.w != 0) ||
-										(dirty_region_2.h != 0))
-									dirty_region =
-											RPG_Graphics_SDL_Tools::boundingBox(dirty_region, dirty_region_2);
-							} // end IF
-							else
-							{
-								RPG_Graphics_Offset_t highlight_position =
-									RPG_Graphics_Common_Tools::map2Screen(map_position,
-									                                      std::make_pair(window_area.w,
-																												               window_area.h),
-																												map_window->getView());
-								if (highlight_position !=
-										std::make_pair(std::numeric_limits<int>::max(),
-																	 std::numeric_limits<int>::max()))
-								{
-									RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(dirty_region_2,
-																																							 NULL);
-									dirty_region =
-											RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-																													dirty_region_2);
-
-									RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlight(map_position,
-																																									highlight_position,
-																																									map_window->getView(),
-																																									dirty_region_2,
-																																									debug_in);
-									dirty_region =
-											RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-																													dirty_region_2);
-
-//									// update cursor bg, as necessary
-//									RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG(dirty_region_2);
-								} // end IF
-							} // end IF
+								positions.push_back(*iterator);
+								screen_positions.push_back(RPG_Graphics_Common_Tools::map2Screen(*iterator,
+																																								 std::make_pair(window_area.w,
+																																									              window_area.h),
+																																								 map_window->getView()));
+							} // end FOR
+							RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlights(positions,
+																																							 screen_positions,
+																																							 map_window->getView(),
+																																							 dirty_region_2,
+																																							 debug_in);
+							dirty_region =
+								RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+																										dirty_region_2);
 						} // end IF
+						engine_in->unlock();
 
             break;
           }
@@ -1638,29 +1607,76 @@ do_work(const mode_t& mode_in,
         } // end IF
 
         ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("loaded entity (\"%s\":\n%s\n"),
+                   ACE_TEXT("loaded entity \"%s\":\n%s\n"),
                    ACE_TEXT(entity_in.c_str()),
                    ACE_TEXT(RPG_Engine_Common_Tools::info(entity).c_str())));
       } // end ELSE
       entity.position = level.map.start;
 
       // step4: init sub-windows (level window, hotspots, minimap, ...)
+//      RPG_Client_Engine client_engine;
       RPG_Engine level_engine;
-			main_window.init(&state,
+      main_window.init(&state,
+                       //&client_engine,
                        &level_engine,
                        (videoConfiguration_in.use_OpenGL ? GRAPHICSMODE_2D_OPENGL
                                                          : GRAPHICSMODE_2D_ISOMETRIC));
+
       // step4a: draw main window borders...
       try
       {
-				main_window.draw();
-				main_window.update();
+        main_window.draw();
+        main_window.update();
       }
       catch (...)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw()/update(), continuing\n")));
       }
+
+//      // step4b: client engine
+//      RPG_Client_GTKUIDefinition ui_definition(&GTKUserData_in);
+//      client_engine.init(&level_engine,
+//                         main_window.child(WINDOW_MAP),
+//                         &ui_definition,
+//                         debug_in);
+
+//      // step4c: queue initial drawing
+//      RPG_Client_Action client_action;
+//      client_action.command = COMMAND_WINDOW_DRAW;
+//      client_action.previous =
+//          std::make_pair(std::numeric_limits<unsigned int>::max(),
+//                         std::numeric_limits<unsigned int>::max());
+//      client_action.position =
+//          std::make_pair(std::numeric_limits<unsigned int>::max(),
+//                         std::numeric_limits<unsigned int>::max());
+//      client_action.window = &main_window;
+//      client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+//      client_action.entity_id = 0;
+//      client_action.sound = RPG_SOUND_EVENT_INVALID;
+//      client_action.source =
+//          std::make_pair(std::numeric_limits<unsigned int>::max(),
+//                         std::numeric_limits<unsigned int>::max());
+//      client_action.radius = 0;
+//      client_engine.action(client_action);
+//      client_action.command = COMMAND_WINDOW_REFRESH;
+//      client_engine.action(client_action);
+
+//      // ...start painting
+//      client_engine.start();
+//      if (!client_engine.isRunning())
+//      {
+//        ACE_DEBUG((LM_ERROR,
+//                   ACE_TEXT("failed to start client engine, aborting\n")));
+
+//        // clean up
+////        level_engine.stop();
+//        delete entity.character;
+//        RPG_Client_Common_Tools::fini();
+//        RPG_Engine_Common_Tools::fini();
+
+//        return;
+//      } // end IF
 
       // step5: init level state engine
       RPG_Client_IWindowLevel* map_window =
@@ -1672,19 +1688,17 @@ do_work(const mode_t& mode_in,
 			RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->init(&main_window,
 																														map_window);
 
-      // *NOTE*: triggers a center/draw/refresh...
-      // --> but as we're not using the client engine, it doesn't redraw...
       level_engine.set(level);
       level_engine.start();
-      RPG_Engine_EntityID_t entity_ID = level_engine.add(&entity);
-      // *NOTE*: triggers a center/draw...
-      // --> but as we're not using the client engine, it doesn't redraw...
-      level_engine.setActive(entity_ID);
+			level_engine.lock();
+      RPG_Engine_EntityID_t entity_ID = level_engine.add(&entity, false);
+      level_engine.setActive(entity_ID, false);
+      level_engine.unlock();
 
       // step5a: draw map window...
       try
       {
-        map_window->setView(level_engine.getPosition(level_engine.getActive()));
+        map_window->setView(level_engine.getPosition(entity_ID, false));
         map_window->draw();
         map_window->update();
       }
@@ -1836,10 +1850,10 @@ ACE_TMAIN(int argc_in,
   state.style.half_height_walls = RPG_CLIENT_GRAPHICS_DEF_WALLSTYLE_HALF;
   state.style.door = RPG_CLIENT_GRAPHICS_DEF_DOORSTYLE;
 	state.selection_mode = SELECTIONMODE_NORMAL;
-	//state.seen_positions.clear();
+	state.seen_positions.clear();
 	//
-	//state.path.clear();
-	//state.positions.clear();
+	state.path.clear();
+	state.positions.clear();
 	state.radius = 0;
 	state.source = std::make_pair(std::numeric_limits<unsigned int>::max(),
 																std::numeric_limits<unsigned int>::max());

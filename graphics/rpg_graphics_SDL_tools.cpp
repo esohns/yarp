@@ -660,7 +660,8 @@ RPG_Graphics_SDL_Tools::colorToSDLColor(const Uint32& color_in,
 
 Uint32
 RPG_Graphics_SDL_Tools::getColor(const RPG_Graphics_ColorName& colorName_in,
-                                 const SDL_Surface& targetSurface_in)
+                                 const SDL_Surface& targetSurface_in,
+																 const float& blendFactor_in) // opacity
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::getColor"));
 
@@ -681,7 +682,7 @@ RPG_Graphics_SDL_Tools::getColor(const RPG_Graphics_ColorName& colorName_in,
                        (*iterator).second.r,
                        (*iterator).second.g,
                        (*iterator).second.b,
-                       (*iterator).second.a);
+											 static_cast<Uint8>((*iterator).second.a * blendFactor_in));
 
   return result;
 }

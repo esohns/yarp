@@ -52,6 +52,12 @@ class RPG_Graphics_Export RPG_Graphics_SDLWindowSub
   // overload RPG_Graphics_SDLWindowBase::visible
   virtual bool visible() const;
 
+  // override (part of) RPG_Graphics_IWindowBase
+  virtual void clip(SDL_Surface* = NULL,      // target surface (default: screen)
+                    const unsigned int& = 0,  // offset x (top-left = [0,0])
+                    const unsigned int& = 0); // offset y (top-left = [0,0]));
+  virtual void unclip(SDL_Surface* = NULL); // target surface (default: screen)
+
   // overload RPG_Graphics_SDLWindowBase::getWindow
   virtual RPG_Graphics_IWindowBase* getWindow(const RPG_Graphics_Position_t&) const; // position (e.g. mouse-)
 

@@ -217,7 +217,7 @@ struct RPG_Engine_ClientNotificationParameters_t
 {
   RPG_Engine_EntityID_t entity_id;
 	RPG_Common_Condition  condition;
-	RPG_Map_Position_t    position;
+	RPG_Map_Positions_t   positions;
 	RPG_Map_Position_t    previous_position;
 	unsigned char         visible_radius;
 	std::string           message;

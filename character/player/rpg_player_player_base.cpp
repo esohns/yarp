@@ -505,7 +505,7 @@ RPG_Player_Player_Base::gainExperience(const unsigned int& XP_in)
   myExperience += XP_in;
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("player: \"%s\" gained %u XP (total: %u)...\n"),
+             ACE_TEXT("\"%s\" gained %u XP (total: %u)...\n"),
              ACE_TEXT(getName().c_str()),
              XP_in,
              myExperience));

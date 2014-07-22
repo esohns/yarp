@@ -66,6 +66,7 @@ class SDL_GUI_MainWindow
   // initialize different hotspots/sub-windows
   // *WARNING*: call this AFTER setScreen() !
   void init(state_t*,                                                    // state
+//            RPG_Client_Engine*,                                          // (graphics) engine handle
             RPG_Engine*,                                                 // (level) state handle
             const RPG_Client_GraphicsMode& = SDL_GUI_DEF_GRAPHICS_MODE); // graphics mode
 
@@ -102,16 +103,18 @@ class SDL_GUI_MainWindow
                  const std::string&,        // text
                  SDL_Surface* = NULL);      // target surface (default: screen)
 
+//  RPG_Client_Engine* myEngine;
+
   // counter
-  unsigned int               myScreenshotIndex;
+  unsigned int       myScreenshotIndex;
 
-  unsigned int               myLastHoverTime;
-  bool                       myHaveMouseFocus;
+  unsigned int       myLastHoverTime;
+  bool               myHaveMouseFocus;
 
-  RPG_Graphics_Font          myTitleFont;
-  mode_t                     myMode;
+  RPG_Graphics_Font  myTitleFont;
+  mode_t             myMode;
 
-  ACE_Recursive_Thread_Mutex myScreenLock;
+  ACE_Thread_Mutex   myScreenLock;
 };
 
 #endif

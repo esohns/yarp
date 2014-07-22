@@ -263,11 +263,12 @@ RPG_Client_Window_Level::setView(const RPG_Map_Position_t& view_in)
 
 void
 RPG_Client_Window_Level::setView(const int& offsetX_in,
-                                const int& offsetY_in)
+                                 const int& offsetY_in,
+                                 const bool& lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::setView"));
 
-  RPG_Map_Size_t size = myEngine->getSize();
+  RPG_Map_Size_t size = myEngine->getSize(lockedAccess_in);
 
   ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 

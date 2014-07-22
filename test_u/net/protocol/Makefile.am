@@ -1,7 +1,8 @@
 METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = -I m4
+#ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = \
+  -I$(builddir)/../.. \
   -I$(srcdir)/../../../common \
   -I$(srcdir)/../../../net/protocol \
   -I$(srcdir)/../../../net \
@@ -28,11 +29,11 @@ IRC_client_CPPFLAGS = \
   -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 #IRC_client_LDFLAGS = $(pkg_libs_LIBS)
 IRC_client_LDADD = \
-  -lRPG_Net_Protocol \
-  -lRPG_Net \
-  -lRPG_Stream \
-  -lRPG_Common \
-  -lRPG_Dice \
+  $(builddir)/../../../net/protocol/libRPG_Net_Protocol.la \
+  $(builddir)/../../../net/libRPG_Net.la \
+  $(builddir)/../../../net/stream/libRPG_Stream.la \
+  $(builddir)/../../../common/libRPG_Common.la \
+  $(builddir)/../../../chance/dice/libRPG_Dice.la \
   $(pkg_libs_LIBS)
 
 IRC_client_gui_SOURCES = \

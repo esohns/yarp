@@ -1,6 +1,7 @@
 METASOURCES = AUTO
 
 AM_CPPFLAGS = \
+  -I$(builddir)/../.. \
   -I$(srcdir)/../../common \
   -I$(srcdir)/../../client \
   -I$(srcdir)/../../engine \

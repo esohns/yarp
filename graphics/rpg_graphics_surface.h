@@ -31,9 +31,9 @@
 #include "rpg_graphics_tilesetgraphic.h"
 #include "rpg_graphics_graphictypeunion.h"
 
-#include <SDL.h>
+#include "SDL.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <string>
 
@@ -105,9 +105,9 @@ class RPG_Graphics_Export RPG_Graphics_Surface
                       const RPG_Graphics_Offset_t&, // offset (top left == 0,0)
                       SDL_Surface*,                 // target surface (e.g. screen)
                       SDL_Rect&);                   // return value: "dirty" region
-  static void putRect(const SDL_Rect&, // rectangle
-                      const Uint32&,   // color
-                      SDL_Surface*);   // target surface (e.g. screen)
+  static void putRectangle(const SDL_Rect&, // rectangle
+                           const Uint32&,   // color
+                           SDL_Surface*);   // target surface (e.g. screen)
 
   static void alpha(const Uint8&,  // alpha (0: transparent --> 255: opaque)
                     SDL_Surface&); // target surface

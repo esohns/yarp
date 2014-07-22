@@ -1,12 +1,13 @@
 METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = -I m4
+#ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = \
   -DRPG_NET_SERVER_HAS_DLL \
   -DRPG_CLIENT_HAS_DLL \
   -DRPG_NET_CLIENT_HAS_DLL \
   -DRPG_NET_HAS_DLL \
   -DRPG_COMMON_HAS_DLL \
+  -I$(builddir)/../.. \
   -I$(srcdir)/../../common \
   -I$(srcdir)/../../chance/dice \
   -I$(srcdir)/../../character \

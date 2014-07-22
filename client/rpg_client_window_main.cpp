@@ -349,9 +349,7 @@ RPG_Client_Window_Main::handleEvent(const SDL_Event& event_in,
           RPG_Engine_ClientNotificationParameters_t parameters;
 					parameters.entity_id = 0;
 					parameters.condition = RPG_COMMON_CONDITION_INVALID;
-					parameters.position =
-							std::make_pair(std::numeric_limits<unsigned int>::max(),
-														 std::numeric_limits<unsigned int>::max());
+					//parameters.positions.clear();
 					parameters.previous_position =
 							std::make_pair(std::numeric_limits<unsigned int>::max(),
 														 std::numeric_limits<unsigned int>::max());

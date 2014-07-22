@@ -19,10 +19,7 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-// *NOTE*: need this to import correct VERSION !
-#ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
-#endif
 
 #include "IRC_common.h"
 #include "IRC_client_defines.h"
@@ -41,19 +38,19 @@
 
 #include "rpg_stream_allocatorheap.h"
 
-#include <ace/ACE.h>
-#include <ace/Version.h>
-#include <ace/Get_Opt.h>
-#include <ace/Profile_Timer.h>
-#include <ace/Reactor.h>
-#include <ace/TP_Reactor.h>
-#include <ace/Signal.h>
-#include <ace/Sig_Handler.h>
-#include <ace/Connector.h>
-#include <ace/SOCK_Connector.h>
-#include <ace/High_Res_Timer.h>
-#include <ace/Configuration.h>
-#include <ace/Configuration_Import_Export.h>
+#include "ace/ACE.h"
+#include "ace/Version.h"
+#include "ace/Get_Opt.h"
+#include "ace/Profile_Timer.h"
+#include "ace/Reactor.h"
+#include "ace/TP_Reactor.h"
+#include "ace/Signal.h"
+#include "ace/Sig_Handler.h"
+#include "ace/Connector.h"
+#include "ace/SOCK_Connector.h"
+#include "ace/High_Res_Timer.h"
+#include "ace/Configuration.h"
+#include "ace/Configuration_Import_Export.h"
 
 #include <string>
 #include <iostream>

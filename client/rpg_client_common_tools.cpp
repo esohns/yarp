@@ -805,25 +805,37 @@ RPG_Client_Common_Tools::hasCeiling(const RPG_Map_Position_t& position_in,
 }
 
 bool
-RPG_Client_Common_Tools::isVisible(const RPG_Graphics_Position_t& position_in,
+RPG_Client_Common_Tools::isVisible(const RPG_Graphics_Positions_t& positions_in,
 														 			 const RPG_Graphics_Size_t& windowSize_in,
 																	 const RPG_Graphics_Position_t& viewport_in,
-																	 const SDL_Rect& windowArea_in)
+																	 const SDL_Rect& windowArea_in,
+																	 const bool& anyAll_in)
 {
 	RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::isVisible"));
 
-	RPG_Graphics_Offset_t screen_position =
-		RPG_Graphics_Common_Tools::map2Screen(position_in,
-																					windowSize_in,
-																					viewport_in);
-	SDL_Rect tile_area = {static_cast<Sint16>(screen_position.first),
-												static_cast<Sint16>(screen_position.second),
-												RPG_GRAPHICS_TILE_FLOOR_WIDTH,
-												RPG_GRAPHICS_TILE_FLOOR_HEIGHT};
-	SDL_Rect overlap = RPG_Graphics_SDL_Tools::intersect(windowArea_in,
-																											 tile_area);
+	RPG_Graphics_Offset_t screen_position;
+	SDL_Rect tile_area, overlap;
+	for (RPG_Graphics_PositionsConstIterator_t iterator = positions_in.begin();
+			 iterator != positions_in.end();
+			 iterator++)
+	{
+		screen_position =
+			RPG_Graphics_Common_Tools::map2Screen(*iterator,
+																						windowSize_in,
+																						viewport_in);
+		tile_area = {static_cast<Sint16>(screen_position.first),
+								 static_cast<Sint16>(screen_position.second),
+								 RPG_GRAPHICS_TILE_FLOOR_WIDTH,
+								 RPG_GRAPHICS_TILE_FLOOR_HEIGHT};
+		overlap = RPG_Graphics_SDL_Tools::intersect(windowArea_in,
+																							  tile_area);
+		if ((overlap.w || overlap.h) && anyAll_in)
+			return true;
+		else if ((!overlap.w || !overlap.h) && !anyAll_in)
+			return false;
+	} // end FOR
 
-	return (overlap.w && overlap.h);
+	return (!anyAll_in ? true : false);
 }
 
 bool
@@ -836,9 +848,12 @@ RPG_Client_Common_Tools::hasHighlight(const RPG_Map_Position_t& position_in,
 	RPG_Map_Element current_element = engine_in.getElement(position_in,
 																												 lockedAccess_in);
 
-	// highlight floors and doors
-	return ((current_element == MAPELEMENT_FLOOR) ||
-			    (current_element == MAPELEMENT_DOOR));
+	// highlight visible floors and doors
+	return (((current_element == MAPELEMENT_FLOOR) ||
+			     (current_element == MAPELEMENT_DOOR)) &&
+					 engine_in.canSee(engine_in.getActive(lockedAccess_in),
+					                  position_in,
+														lockedAccess_in));
 }
 
 RPG_Graphics_Orientation
