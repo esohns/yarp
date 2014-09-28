@@ -46,13 +46,13 @@
     <ClCompile Include="rpg_player_XML_tree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="vs2010_workaround.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="rpg_player_XML_types.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vs2010_workaround.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -34,14 +34,14 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_ACE_xsd.props" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_png_gtk_glade.props" />
+    <Import Project="..\scripts\VS_ProjectPropertySheet_ACEd.props" />
+    <Import Project="..\scripts\VS_ProjectPropertySheet_Xercesd_Xsd.props" />
     <Import Project="..\scripts\VS_ProjectPropertySheet_SDL.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_ACE_xsd.props" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_png_gtk_glade.props" />
+    <Import Project="..\Yarp\VS_ProjectPropertySheet_ACE.props" />
+    <Import Project="..\scripts\VS_ProjectPropertySheet_Xerces_Xsd.props" />
     <Import Project="..\scripts\VS_ProjectPropertySheet_SDL.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -64,6 +64,7 @@
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/NODEFAULTLIB:MSVCRT /FORCE %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -104,6 +105,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="combat\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\chance\dice\dice.vcxproj">
       <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
     </ProjectReference>
@@ -131,9 +135,6 @@
     <ProjectReference Include="..\magic\magic.vcxproj">
       <Project>{6867cf99-3611-4345-b992-85780c27119e}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="combat\stdafx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

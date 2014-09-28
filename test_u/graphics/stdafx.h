@@ -14,7 +14,7 @@
 
 // System Library Header Files
 #include "SDL.h"
-#include "png.h"
+//#include "png.h"
 #include "ace/OS.h"
 #include "ace/Log_Msg.h"
 

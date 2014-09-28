@@ -20,7 +20,11 @@
     </ClCompile>
     <ClCompile Include="character\player\vs2010_workaround.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="character\player\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\chance\dice\dice.vcxproj">
@@ -41,15 +45,9 @@
     <ProjectReference Include="..\graphics\graphics.vcxproj">
       <Project>{dc39b751-377f-4093-9f76-4821f97f4de5}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\item\item.vcxproj">
-      <Project>{63173994-11a3-40d3-b835-63a0e9a8bfe3}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\magic\magic.vcxproj">
       <Project>{6867cf99-3611-4345-b992-85780c27119e}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="character\player\stdafx.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C282B304-AF0F-4C27-9F17-9344C46E93AC}</ProjectGuid>
@@ -75,15 +73,17 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_ACE_xsd.props" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_png_gtk_glade.props" />
+    <Import Project="..\scripts\VS_ProjectPropertySheet_ACEd.props" />
+    <Import Project="..\scripts\VS_ProjectPropertySheet_Xercesd_Xsd.props" />
     <Import Project="..\scripts\VS_ProjectPropertySheet_SDL.props" />
+    <Import Project="..\scripts\VS_ProjectPropertySheet_png_gtk_glade.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_ACE_xsd.props" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_png_gtk_glade.props" />
+    <Import Project="..\Yarp\VS_ProjectPropertySheet_ACE.props" />
+    <Import Project="..\scripts\VS_ProjectPropertySheet_Xerces_Xsd.props" />
     <Import Project="..\scripts\VS_ProjectPropertySheet_SDL.props" />
+    <Import Project="..\scripts\VS_ProjectPropertySheet_png_gtk_glade.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

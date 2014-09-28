@@ -437,7 +437,7 @@ do_processArguments(const int argc_in,
   entityFile_out          =
       RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   entityFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-	entityFile_out += RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_NAME));
+  entityFile_out += RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_NAME));
   entityFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
   openGLMode_out          = false;

@@ -30,9 +30,9 @@
 #include "rpg_magic_exports.h"
 #include "rpg_magic_common.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Singleton.h>
-#include <ace/Synch.h>
+#include "ace/Global_Macros.h"
+#include "ace/Singleton.h"
+#include "ace/Synch.h"
 
 #include <string>
 

@@ -1114,7 +1114,6 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
           //}
           default:
             break;
-
         } // end SWITCH
 
         if (done)
@@ -1675,14 +1674,14 @@ do_printVersion(const std::string& programName_in)
             << std::endl;
 }
 
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
 int
-SDL_main(int argc_in,
-         char** argv_in)
+SDL_main (int argc_in,
+          char** argv_in)
 #else
 int
 ACE_TMAIN(int argc_in,

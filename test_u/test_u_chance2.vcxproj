@@ -18,15 +18,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="chance\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\chance\dice\dice.vcxproj">
       <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\common\common.vcxproj">
-      <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="chance\stdafx.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{27628C8D-C6E9-4213-B897-56BF29EFE65F}</ProjectGuid>
@@ -52,11 +49,11 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_ACE_xsd.props" />
+    <Import Project="..\scripts\VS_ProjectPropertySheet_ACEd.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_ACE_xsd.props" />
+    <Import Project="..\Yarp\VS_ProjectPropertySheet_ACE.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -76,7 +73,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Temp\ACE_wrappers\lib;C:\Temp\yarp\Yarp\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ACEd.lib</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>

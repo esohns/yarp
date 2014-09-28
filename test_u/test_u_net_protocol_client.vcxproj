@@ -33,13 +33,11 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_ACE_xsd.props" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_png_gtk_glade.props" />
+    <Import Project="..\scripts\VS_ProjectPropertySheet_ACEd.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_ACE_xsd.props" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_png_gtk_glade.props" />
+    <Import Project="..\Yarp\VS_ProjectPropertySheet_ACE.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -58,8 +56,8 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Temp\ACE_wrappers\lib;C:\Temp\SDL\lib\x86;C:\Temp\Gtk\lib;C:\Temp\libglade\lib;C:\Temp\libgnome-dev_2.24.1-1_win32\lib;C:\Temp\libgnomeui-dev-2.22.1\lib;C:\Temp\yarp\Yarp\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ACEd.lib;glib-2.0.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>

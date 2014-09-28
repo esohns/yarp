@@ -29,7 +29,7 @@
 #include "ace/Get_Opt.h"
 #include "ace/High_Res_Timer.h"
 
-#include "SDL.h"
+//#include "SDL.h"
 
 #include "rpg_dice.h"
 #include "rpg_dice_common_tools.h"

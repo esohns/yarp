@@ -518,19 +518,19 @@ RPG_Engine_Event_Manager::schedule(RPG_Engine_Event_t* event_in,
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::schedule"));
 
   // sanity check
-	ACE_ASSERT(event_in);
-	ACE_ASSERT(interval_in != ACE_Time_Value::zero);
+  ACE_ASSERT(event_in);
+  ACE_ASSERT(interval_in != ACE_Time_Value::zero);
 
-  RPG_Common_TimerHandler* timer_handler = NULL;
+  ACE_Event_Handler* timer_handler = NULL;
   ACE_NEW_NORETURN(timer_handler,
-									 RPG_Common_TimerHandler(this, isOneShot_in));
+                   RPG_Common_TimerHandler(this, isOneShot_in));
   if (!timer_handler)
   {
     ACE_DEBUG((LM_CRITICAL,
                ACE_TEXT("failed to allocate RPG_Common_TimerHandler, aborting\n")));
 
-		// clean up
-		delete event_in;
+    // clean up
+    delete event_in;
 
     return -1;
   } // end IF
@@ -538,7 +538,7 @@ RPG_Engine_Event_Manager::schedule(RPG_Engine_Event_t* event_in,
   long timer_id = -1;
   // *NOTE*: fire&forget API for timer_handler...
   timer_id =
-		RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(timer_handler,                          // event handler handle
+    RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(timer_handler,                          // event handler handle
                                                             event_in,                               // ACT
                                                             RPG_COMMON_TIME_POLICY() + interval_in, // first wakeup time
                                                             (isOneShot_in ? ACE_Time_Value::zero    // interval

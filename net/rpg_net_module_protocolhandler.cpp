@@ -225,8 +225,9 @@ RPG_Net_Module_ProtocolHandler::handleSessionMessage(RPG_Net_SessionMessage*& me
         ACE_Time_Value interval((myPingInterval / 1000),
                                 ((myPingInterval % 1000) * 1000));
         ACE_ASSERT(myPingTimerID == -1);
+        ACE_Event_Handler* eh = &myPingHandler;
         myPingTimerID =
-					RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myPingHandler,                      // event handler handle
+          RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(eh,                                  // event handler
                                                                   NULL,                                // ACT
                                                                   RPG_COMMON_TIME_POLICY() + interval, // first wakeup time
                                                                   interval);                           // interval
@@ -238,10 +239,10 @@ RPG_Net_Module_ProtocolHandler::handleSessionMessage(RPG_Net_SessionMessage*& me
            return;
         } // end IF
 
-	//ACE_DEBUG((LM_DEBUG,
-	//           ACE_TEXT("scheduled \"ping\" timer (ID: %d), interval: %u second(s)...\n"),
-	//           myPingTimerID,
-	//           pingInterval_in));
+  //ACE_DEBUG((LM_DEBUG,
+  //           ACE_TEXT("scheduled \"ping\" timer (ID: %d), interval: %u second(s)...\n"),
+  //           myPingTimerID,
+  //           pingInterval_in));
       } // end IF
 
       break;

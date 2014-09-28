@@ -98,7 +98,7 @@ RPG_Net_Module_RuntimeStatistic_t<TaskSynchType,
                                   ProtocolMessageType,
                                   ProtocolCommandType,
                                   StatisticsContainerType>::init(const unsigned int& reportingInterval_in,
-																	                               const bool& printFinalReport_in,
+                                                                 const bool& printFinalReport_in,
                                                                  const RPG_Stream_IAllocator* allocator_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Module_RuntimeStatistic_t::init"));
@@ -112,8 +112,8 @@ RPG_Net_Module_RuntimeStatistic_t<TaskSynchType,
     // stop timers
     fini_timers(true);
 
-		myReportingInterval = 0;
-		myPrintFinalReport = false;
+    myReportingInterval = 0;
+    myPrintFinalReport = false;
     mySessionID = 0;
     // reset various counters...
     {
@@ -126,24 +126,25 @@ RPG_Net_Module_RuntimeStatistic_t<TaskSynchType,
       myLastMessagesPerSecondCount = 0;
 
       myNumInboundBytes = 0.0F;
-			myNumOutboundBytes = 0.0F;
+      myNumOutboundBytes = 0.0F;
       myByteCounter = 0;
       myLastBytesPerSecondCount = 0;
 
       myMessageTypeStatistics.clear();
     } // end lock scope
-		myAllocator = NULL;
+    myAllocator = NULL;
 
     myIsInitialized = false;
   } // end IF
 
-	myReportingInterval = reportingInterval_in;
-	if (myReportingInterval)
-	{
+  myReportingInterval = reportingInterval_in;
+  if (myReportingInterval)
+  {
     // schedule the second-granularity timer
     ACE_Time_Value interval(1, 0); // one second interval
+    ACE_Event_Handler* eh = &myResetTimeoutHandler;
     myResetTimeoutHandlerID =
-  		RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myResetTimeoutHandler,              // event handler handle
+      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(eh,                                  // event handler
                                                               NULL,                                // ACT
                                                               RPG_COMMON_TIME_POLICY() + interval, // first wakeup time
                                                               interval);                           // interval
@@ -157,8 +158,8 @@ RPG_Net_Module_RuntimeStatistic_t<TaskSynchType,
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("scheduled second-interval timer (ID: %d)...\n"),
 //              myResetTimeoutHandlerID));
-	} // end IF
-	myPrintFinalReport = printFinalReport_in;
+  } // end IF
+  myPrintFinalReport = printFinalReport_in;
   myAllocator = allocator_in;
 //   // sanity check(s)
 //   if (!myAllocator)
@@ -253,35 +254,36 @@ RPG_Net_Module_RuntimeStatistic_t<TaskSynchType,
       // retain session ID for reporting...
       mySessionID = message_inout->getConfig()->getUserData().sessionID;
 
-			// statistics reporting
-			if (myReportingInterval)
-			{
-				// schedule the reporting interval timer
-				ACE_Time_Value interval(myReportingInterval, 0);
-				ACE_ASSERT(myLocalReportingHandlerID == -1);
-				myLocalReportingHandlerID =
-					RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myLocalReportingHandler,            // handler
-																																	NULL,                                // act
-																																	RPG_COMMON_TIME_POLICY() + interval, // first wakeup time
-																																	interval);                           // interval
-				if (myLocalReportingHandlerID == -1)
-				{
-					ACE_DEBUG((LM_ERROR,
-						ACE_TEXT("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
+      // statistics reporting
+      if (myReportingInterval)
+      {
+        // schedule the reporting interval timer
+        ACE_Time_Value interval(myReportingInterval, 0);
+        ACE_ASSERT(myLocalReportingHandlerID == -1);
+        ACE_Event_Handler* eh = &myLocalReportingHandler;
+        myLocalReportingHandlerID =
+          RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(eh,                                  // event handler
+                                                                  NULL,                                // act
+                                                                  RPG_COMMON_TIME_POLICY() + interval, // first wakeup time
+                                                                  interval);                           // interval
+        if (myLocalReportingHandlerID == -1)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
 
-					return;
-				} // end IF
-				//     ACE_DEBUG((LM_DEBUG,
-				//                ACE_TEXT("scheduled (local) reporting timer (ID: %d) for intervals of %u second(s)...\n"),
-				//                myLocalReportingHandlerID,
-				//                reportingInterval_in));
-			} // end IF
-			else
-			{
-				// *NOTE*: even if this doesn't report, it might still be triggered from outside...
-				//     ACE_DEBUG((LM_DEBUG,
-				//                ACE_TEXT("(local) statistics reporting has been disabled...\n")));
-			} // end IF
+          return;
+        } // end IF
+        //     ACE_DEBUG((LM_DEBUG,
+        //                ACE_TEXT("scheduled (local) reporting timer (ID: %d) for intervals of %u second(s)...\n"),
+        //                myLocalReportingHandlerID,
+        //                reportingInterval_in));
+      } // end IF
+      else
+      {
+        // *NOTE*: even if this doesn't report, it might still be triggered from outside...
+        //     ACE_DEBUG((LM_DEBUG,
+        //                ACE_TEXT("(local) statistics reporting has been disabled...\n")));
+      } // end IF
 
       break;
     }

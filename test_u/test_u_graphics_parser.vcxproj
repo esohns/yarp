@@ -33,15 +33,15 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_ACE_xsd.props" />
+    <Import Project="..\scripts\VS_ProjectPropertySheet_ACEd.props" />
+    <Import Project="..\scripts\VS_ProjectPropertySheet_Xercesd_Xsd.props" />
     <Import Project="..\scripts\VS_ProjectPropertySheet_SDL.props" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_png_gtk_glade.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_ACE_xsd.props" />
+    <Import Project="..\Yarp\VS_ProjectPropertySheet_ACE.props" />
+    <Import Project="..\scripts\VS_ProjectPropertySheet_Xerces_Xsd.props" />
     <Import Project="..\scripts\VS_ProjectPropertySheet_SDL.props" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_png_gtk_glade.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -62,7 +62,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>C:\Temp\ACE_wrappers\lib;C:\Temp\SDL\lib\x86;C:\Temp\yarp\Yarp\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL_ttf.lib;SDLmain.lib;SDL.lib;ACEd.lib</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:MSVCRT %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <ProjectReference>
@@ -102,6 +102,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="graphics\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\chance\dice\dice.vcxproj">
       <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
     </ProjectReference>
@@ -111,9 +114,6 @@
     <ProjectReference Include="..\graphics\graphics.vcxproj">
       <Project>{dc39b751-377f-4093-9f76-4821f97f4de5}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="graphics\stdafx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

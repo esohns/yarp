@@ -388,10 +388,11 @@ togglebutton_stress_toggled_cb(GtkWidget* widget_in,
   // schedule action interval timer ?
   if (data->timer_id == -1)
   {
+    ACE_Event_Handler* eh = data->timeout_handler;
     ACE_Time_Value interval((NET_CLIENT_DEF_SERVER_STRESS_INTERVAL / 1000),
                             ((NET_CLIENT_DEF_SERVER_STRESS_INTERVAL % 1000) * 1000));
     data->timer_id =
-        RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(data->timeout_handler,               // event handler handle
+        RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(eh,                                  // event handler
                                                                 NULL,                                // ACT
                                                                 RPG_COMMON_TIME_POLICY() + interval, // first wakeup time
                                                                 interval);                           // interval

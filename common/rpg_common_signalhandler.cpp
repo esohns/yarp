@@ -92,24 +92,25 @@ RPG_Common_SignalHandler::handle_signal(int signal_in,
     myUContext = *context_in;
 
   // schedule an event (see below)
-	if (myUseReactor)
-	{
-		result = ACE_Reactor::instance()->notify(this,
-		                                         ACE_Event_Handler::EXCEPT_MASK,
-																					   NULL);
-		if (result == -1)
-			ACE_DEBUG((LM_ERROR,
-			           ACE_TEXT("failed to ACE_Reactor::notify: \"%m\", aborting\n")));
-	} // end IF
-	else
-	{
-		result = ACE_Proactor::instance()->schedule_timer(*this,                 // event handler
-			                                                NULL,                  // act
-																					            ACE_Time_Value::zero); // expire immediately
-		if (result == -1)
-			ACE_DEBUG((LM_ERROR,
-			           ACE_TEXT("failed to ACE_Proactor::schedule_timer: \"%m\", aborting\n")));
-	} // end ELSE
+  if (myUseReactor)
+  {
+    result = ACE_Reactor::instance()->notify(this,
+                                             ACE_Event_Handler::EXCEPT_MASK,
+                                             NULL);
+    if (result == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Reactor::notify: \"%m\", aborting\n")));
+  } // end IF
+  else
+  {
+    ACE_Handler* h = this;
+    result = ACE_Proactor::instance()->schedule_timer(h,                     // event handler
+                                                      NULL,                  // act
+                                                      ACE_Time_Value::zero); // expire immediately
+    if (result == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_Proactor::schedule_timer: \"%m\", aborting\n")));
+  } // end ELSE
 
   return result;
 }

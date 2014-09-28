@@ -191,28 +191,29 @@ RPG_Net_Module_SocketHandler::handleSessionMessage(RPG_Net_SessionMessage*& mess
       // retain the session ID for reporting...
       inherited::mySessionID = message_inout->getConfig()->getUserData().sessionID;
 
-			if (myStatCollectionInterval)
-			{
-				// schedule regular statistics collection...
-				ACE_Time_Value interval(myStatCollectionInterval, 0);
-				ACE_ASSERT(myStatCollectHandlerID == -1);
-				myStatCollectHandlerID =
-					RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myStatCollectHandler,               // handler
-																																	NULL,                                // argument
-																																	RPG_COMMON_TIME_POLICY() + interval, // first wakeup time
-																																	interval);                           // interval
-				if (myStatCollectHandlerID == -1)
-				{
-					ACE_DEBUG((LM_ERROR,
-										 ACE_TEXT("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
+      if (myStatCollectionInterval)
+      {
+        // schedule regular statistics collection...
+        ACE_Time_Value interval(myStatCollectionInterval, 0);
+        ACE_ASSERT(myStatCollectHandlerID == -1);
+        ACE_Event_Handler* eh = &myStatCollectHandler;
+        myStatCollectHandlerID =
+          RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(eh,                                  // event handler
+                                                                  NULL,                                // argument
+                                                                  RPG_COMMON_TIME_POLICY() + interval, // first wakeup time
+                                                                  interval);                           // interval
+        if (myStatCollectHandlerID == -1)
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
 
-					return;
-				} // end IF
-		//     ACE_DEBUG((LM_DEBUG,
-		//                ACE_TEXT("scheduled statistics collecting timer (ID: %d) for intervals of %u second(s)...\n"),
-		//                myStatCollectHandlerID,
-		//                myStatCollectionInterval));
-			} // end IF
+          return;
+        } // end IF
+      //     ACE_DEBUG((LM_DEBUG,
+      //                ACE_TEXT("scheduled statistics collecting timer (ID: %d) for intervals of %u second(s)...\n"),
+      //                myStatCollectHandlerID,
+      //                myStatCollectionInterval));
+      } // end IF
 
       // start profile timer...
 //       myProfile.start();

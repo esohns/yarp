@@ -33,13 +33,15 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_ACE_xsd.props" />
+    <Import Project="..\scripts\VS_ProjectPropertySheet_ACEd.props" />
+    <Import Project="..\scripts\VS_ProjectPropertySheet_Xercesd_Xsd.props" />
     <Import Project="..\scripts\VS_ProjectPropertySheet_SDL.props" />
     <Import Project="..\scripts\VS_ProjectPropertySheet_png_gtk_glade.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_ACE_xsd.props" />
+    <Import Project="..\Yarp\VS_ProjectPropertySheet_ACE.props" />
+    <Import Project="..\scripts\VS_ProjectPropertySheet_Xerces_Xsd.props" />
     <Import Project="..\scripts\VS_ProjectPropertySheet_SDL.props" />
     <Import Project="..\scripts\VS_ProjectPropertySheet_png_gtk_glade.props" />
   </ImportGroup>
@@ -52,7 +54,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>D:\projects\yarp\include;$(ProjectDir)..\chance\dice;$(ProjectDir)..\common;$(ProjectDir)..\magic;$(ProjectDir)..\character;$(ProjectDir)..\item;$(ProjectDir)..\combat;$(ProjectDir)..\character\player;$(ProjectDir)..\character\monster;$(ProjectDir)..\map;$(ProjectDir)..\graphics;$(ProjectDir)..\engine;$(ProjectDir)..\net\stream;$(ProjectDir)..\net;$(ProjectDir)..\net\client;$(ProjectDir)..\sound;$(ProjectDir)..\client;$(ProjectDir)..\net\server;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\chance\dice;$(ProjectDir)..\common;$(ProjectDir)..\magic;$(ProjectDir)..\character;$(ProjectDir)..\item;$(ProjectDir)..\combat;$(ProjectDir)..\character\player;$(ProjectDir)..\character\monster;$(ProjectDir)..\map;$(ProjectDir)..\graphics;$(ProjectDir)..\engine;$(ProjectDir)..\net\stream;$(ProjectDir)..\net;$(ProjectDir)..\net\client;$(ProjectDir)..\sound;$(ProjectDir)..\client;$(ProjectDir)..\net\server;$(ProjectDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BASEDIR="$(ProgramFiles.Replace('\', "\\"))\\$(SolutionName)";RPG_NET_HAS_DLL;RPG_COMMON_HAS_DLL;WIN32;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
@@ -61,7 +63,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\projects\yarp\Yarp\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>rpg_dice.lib;rpg_common.lib;rpg_net.lib;rpg_net_server.lib;rpg_client.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/FORCE:MULTIPLE /NODEFAULTLIB:MSVCRT %(AdditionalOptions)</AdditionalOptions>
       <SubSystem>Console</SubSystem>
     </Link>
@@ -114,11 +116,20 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\chance\dice\dice.vcxproj">
+      <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\client\client.vcxproj">
+      <Project>{df9ce33e-5060-48a6-b105-0b61fedf6ae6}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\common\common.vcxproj">
       <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
     </ProjectReference>
     <ProjectReference Include="..\net\net.vcxproj">
       <Project>{aa720739-6711-4cfe-8e54-0d5abfa83963}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\net\server\net_server.vcxproj">
+      <Project>{9cbd2cee-257d-42f2-a88f-ae6a4622f9ae}</Project>
     </ProjectReference>
     <ProjectReference Include="..\net\stream\stream.vcxproj">
       <Project>{ef66f896-aed2-4e31-8222-4424970e4357}</Project>

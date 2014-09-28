@@ -159,7 +159,7 @@ RPG_Sound_Event_Manager::start()
   } // end IF
   ACE_ASSERT(myTimerID == -1);
 
-  RPG_Common_TimerHandler* timer_handler = NULL;
+  ACE_Event_Handler* timer_handler = NULL;
   ACE_NEW_NORETURN(timer_handler,
                    RPG_Common_TimerHandler(this));
   if (!timer_handler)
@@ -332,7 +332,7 @@ RPG_Sound_Event_Manager::handleTimeout(const void* act_in)
   } // end ELSE
   ACE_ASSERT(length != ACE_Time_Value::max_time);
 
-  RPG_Common_TimerHandler* timer_handler = NULL;
+  ACE_Event_Handler* timer_handler = NULL;
   ACE_NEW_NORETURN(timer_handler,
                    RPG_Common_TimerHandler(this, true));
   if (!timer_handler)

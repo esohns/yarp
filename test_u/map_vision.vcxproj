@@ -35,15 +35,13 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_ACE_xsd.props" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_png_gtk_glade.props" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_SDL.props" />
+    <Import Project="..\scripts\VS_ProjectPropertySheet_ACEd.props" />
+    <Import Project="..\scripts\VS_ProjectPropertySheet_Xercesd_Xsd.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_ACE_xsd.props" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_png_gtk_glade.props" />
-    <Import Project="..\scripts\VS_ProjectPropertySheet_SDL.props" />
+    <Import Project="..\Yarp\VS_ProjectPropertySheet_ACE.props" />
+    <Import Project="..\scripts\VS_ProjectPropertySheet_Xerces_Xsd.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -58,7 +56,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>BASEDIR="$(ProgramFiles.Replace('\', "\\"))\\$(SolutionName)";RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;WIN32;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Temp\ACE_wrappers;C:\Program Files\CodeSynthesis XSD 3.3\include;C:\Temp\SDL\include;$(ProjectDir)..\chance\dice;$(ProjectDir)..\common;$(ProjectDir)..\character;$(ProjectDir)..\magic;$(ProjectDir)..\item;$(ProjectDir)..\character\player;$(ProjectDir)..\character\monster;$(ProjectDir)..\combat;$(ProjectDir)..\map;$(ProjectDir)..\graphics;$(ProjectDir)..\engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\chance\dice;$(ProjectDir)..\common;$(ProjectDir)..\character;$(ProjectDir)..\magic;$(ProjectDir)..\item;$(ProjectDir)..\character\player;$(ProjectDir)..\character\monster;$(ProjectDir)..\combat;$(ProjectDir)..\map;$(ProjectDir)..\graphics;$(ProjectDir)..\engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <BrowseInformation>false</BrowseInformation>
@@ -67,7 +65,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\projects\yarp\Yarp\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>rpg_monster.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:MSVCRT.LIB /FORCE %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <ResourceCompile>
@@ -110,6 +108,9 @@
   <ItemGroup>
     <ProjectReference Include="..\chance\dice\dice.vcxproj">
       <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\character\monster\monster.vcxproj">
+      <Project>{f306a4b7-0d19-4322-b891-11e528ebd50c}</Project>
     </ProjectReference>
     <ProjectReference Include="..\common\common.vcxproj">
       <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>

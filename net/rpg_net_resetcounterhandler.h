@@ -23,9 +23,9 @@
 
 #include "rpg_net_exports.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Event_Handler.h>
-#include <ace/Time_Value.h>
+#include "ace/Global_Macros.h"
+#include "ace/Event_Handler.h"
+#include "ace/Time_Value.h"
 
 // forward declaration(s)
 class RPG_Net_ICounter;

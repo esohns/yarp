@@ -1,7 +1,11 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT([yarp], [0.1], [erik.sohns@web.de], [Yarp], [http://www.github.org/esohns/yarp])
+# define version information
+AC_SUBST([YARP_SO_VERSION], [0:0:0])
+AC_SUBST([YARP_API_VERSION], [0.1])
+
+AC_INIT([yarp], [YARP_API_VERSION], [erik.sohns@web.de], [Yarp], [http://www.github.org/esohns/yarp])
 AC_PREREQ(2.63)
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_AUX_DIR([aux_config])
@@ -27,10 +31,6 @@ AC_CONFIG_MACRO_DIR([m4])
 # define meta-package
 META_PACKAGE=RPG
 AC_DEFINE([META_PACKAGE], ["RPG"], [meta-package])
-
-# define version information
-AC_SUBST([YARP_SO_VERSION], [0:0:0])
-AC_SUBST([YARP_API_VERSION], [0.1])
 
 # get system information
 #AC_CANONICAL_TARGET

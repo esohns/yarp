@@ -27,7 +27,7 @@
 
 #include "rpg_map_common.h"
 
-#include "png.h"
+//#include "png.h"
 
 #include "ace/Global_Macros.h"
 #include "ace/Synch.h"
@@ -133,7 +133,7 @@ class RPG_Graphics_Export RPG_Graphics_Common_Tools
 
   static RPG_Graphics_FontCache_t     myFontCache;
 
-	static bool                         myPreInitialized;
+  static bool                         myPreInitialized;
   static bool                         myInitialized;
 };
 

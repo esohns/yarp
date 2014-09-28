@@ -31,9 +31,9 @@
 
 #include "rpg_common_istatistic.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Synch.h>
-#include <ace/Stream_Modules.h>
+#include "ace/Global_Macros.h"
+#include "ace/Synch.h"
+#include "ace/Stream_Modules.h"
 
 #include <set>
 #include <map>
@@ -48,8 +48,8 @@ template <typename TaskSynchType,
           typename StatisticsContainerType> class RPG_Net_Module_RuntimeStatistic_t;
 
 template <typename TaskSynchType,
-					typename TimePolicyType,
-	        typename SessionMessageType,
+          typename TimePolicyType,
+          typename SessionMessageType,
           typename ProtocolMessageType,
           typename ProtocolCommandType,
           typename StatisticsContainerType>
@@ -95,7 +95,7 @@ class RPG_Net_Module_RuntimeStatistic_t
 {
  friend class RPG_Net_Module_RuntimeStatisticReader_t<TaskSynchType,
                                                       TimePolicyType,
-	                                                    SessionMessageType,
+                                                      SessionMessageType,
                                                       ProtocolMessageType,
                                                       ProtocolCommandType,
                                                       StatisticsContainerType>;
@@ -105,7 +105,7 @@ class RPG_Net_Module_RuntimeStatistic_t
 
   // initialization
   bool init(const unsigned int& = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL, // (local) reporting interval [seconds: 0 --> OFF]
-		        const bool& = false,                                             // print final report ?
+            const bool& = false,                                             // print final report ?
             const RPG_Stream_IAllocator* = NULL);                            // report cache usage ?
 
   // implement (part of) Stream_ITaskBase
@@ -157,8 +157,8 @@ class RPG_Net_Module_RuntimeStatistic_t
   long                         myResetTimeoutHandlerID;
   STATISTICHANDLER_TYPE        myLocalReportingHandler;
   long                         myLocalReportingHandlerID;
-	unsigned int                 myReportingInterval; // second(s) {0 --> OFF}
-	bool                         myPrintFinalReport;
+  unsigned int                 myReportingInterval; // second(s) {0 --> OFF}
+  bool                         myPrintFinalReport;
 
   // *GENERIC STATS*
   mutable ACE_Thread_Mutex     myLock;
@@ -174,7 +174,7 @@ class RPG_Net_Module_RuntimeStatistic_t
   unsigned int                 myLastMessagesPerSecondCount;
 
   float                        myNumInboundBytes;
-	float                        myNumOutboundBytes;
+  float                        myNumOutboundBytes;
   // used to compute data throughput...
   unsigned int                 myByteCounter;
   // *NOTE: support asynchronous collecting/reporting of data...

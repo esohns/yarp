@@ -125,8 +125,9 @@ RPG_Net_Protocol_Module_IRCSplitter::init(RPG_Stream_IAllocator* allocator_in,
     // schedule regular statistics collection...
     ACE_Time_Value interval(statisticsCollectionInterval_in, 0);
     ACE_ASSERT(myStatCollectHandlerID == -1);
+    ACE_Event_Handler* eh = &myStatCollectHandler;
     myStatCollectHandlerID =
-			RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&myStatCollectHandler,               // handler
+      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(eh,                                  // event handler
                                                               NULL,                                // act
                                                               RPG_COMMON_TIME_POLICY() + interval, // first wakeup time
                                                               interval);                           // interval

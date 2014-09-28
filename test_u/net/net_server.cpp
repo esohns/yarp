@@ -466,10 +466,11 @@ do_work(const unsigned int& maxNumConnections_in,
                                                         RPG_Net_StatisticHandler_Reactor_t::ACTION_REPORT);
   if (statisticsReportingInterval_in)
   {
+    ACE_Event_Handler* eh = &statistics_handler;
     ACE_Time_Value interval(statisticsReportingInterval_in,
                             0);
     timer_id =
-      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&statistics_handler,        // event handler handle
+      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(eh,                         // event handler
                                                               NULL,                       // ACT
                                                               (RPG_COMMON_TIME_POLICY() +
                                                                interval),                 // first wakeup time

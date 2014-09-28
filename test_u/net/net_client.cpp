@@ -520,7 +520,7 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
                              serverHostname_in.c_str(),
                              AF_INET);
   Net_Client_TimeoutHandler timeout_handler((hasUI_in ? Net_Client_TimeoutHandler::ACTION_STRESS
-		                                                  : actionMode_in),
+                                                      : actionMode_in),
                                             maxNumConnections_in,
                                             peer_address,
                                             connector);
@@ -529,12 +529,13 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
   if (!hasUI_in)
   {
     // schedule action interval timer
+    ACE_Event_Handler* eh = &timeout_handler;
     ACE_Time_Value interval(((actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS) ? (NET_CLIENT_DEF_SERVER_STRESS_INTERVAL / 1000)
                                                                                          : connectionInterval_in),
                             ((actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS) ? ((NET_CLIENT_DEF_SERVER_STRESS_INTERVAL % 1000) * 1000)
                                                                                          : 0));
     CBData_in.timer_id =
-			RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(&timeout_handler,                    // event handler handle
+      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(eh,                                  // event handler
                                                               NULL,                                // ACT
                                                               RPG_COMMON_TIME_POLICY() + interval, // first wakeup time
                                                               interval);                           // interval
