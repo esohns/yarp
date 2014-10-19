@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F306A4B7-0D19-4322-B891-11E528EBD50C}</ProjectGuid>
+    <RootNamespace>monster</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-parser.props" />
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-tree.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_ACEd.props" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_Xercesd_Xsd.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_ACE.props" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_Xerces_Xsd.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
+    <CXX_Tree_Mapping_RuleBeforeTargets />
+    <CXX_Tree_Mapping_RuleAfterTargets />
+    <TargetName>rpg_$(TargetName)</TargetName>
+    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>rpg_$(TargetName)</TargetName>
+    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
+    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\character\player;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>RPG_MONSTER_BUILD_DLL;RPG_COMBAT_HAS_DLL;_SCL_SECURE_NO_WARNINGS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ShowIncludes>false</ShowIncludes>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <BrowseInformation>false</BrowseInformation>
+      <AdditionalOptions>/FS -Zm256 %(AdditionalOptions)</AdditionalOptions>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <CustomBuildStep>
+      <Command>pushd $(ProjectDir)..\..\character\monster\scripts
+call .\bindings.bat
+popd</Command>
+      <Message>generating bindings...</Message>
+      <Inputs>rpg_monster.xsd</Inputs>
+      <Outputs>rpg_monster_XML_types.cpp;rpg_monster_XML_types.h;rpg_monster_actiontrigger.h;rpg_monster_advancement.h;rpg_monster_advancementstep.h;rpg_monster_attack.h;rpg_monster_attackaction.h;rpg_monster_defenseaction.h;rpg_monster_exports.h;rpg_monster_incl.h;rpg_monster_naturalarmorclass.h;rpg_monster_naturalweapon.h;rpg_monster_organization.h;rpg_monster_organizations.h;rpg_monster_organizationslaverstep.h;rpg_monster_organizationstep.h;rpg_monster_propertiesxml.h;rpg_monster_savingthrowmodifiers.h;rpg_monster_specialabilityprecondition.h;rpg_monster_specialabilityproperties.h;rpg_monster_specialattackprecondition.h;rpg_monster_specialattackproperties.h;rpg_monster_specialbaseproperties.h;rpg_monster_specialdefenseprecondition.h;rpg_monster_specialdefenseproperties.h;rpg_monster_specialpropertytypeunion.h;rpg_monster_summonmonster.h;rpg_monster_weapontypeunion.h;%(Outputs)</Outputs>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+    </CustomBuildStep>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\character\player;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>RPG_MONSTER_BUILD_DLL;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>/FS -Zm256 %(AdditionalOptions)</AdditionalOptions>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <CustomBuildStep>
+      <Command>pushd $(ProjectDir)..\..\character\monster\scripts
+call .\bindings.bat
+popd</Command>
+      <Message>generating bindings...</Message>
+      <Outputs>rpg_monster_XML_types.cpp;rpg_monster_XML_types.h;rpg_monster_actiontrigger.h;rpg_monster_advancement.h;rpg_monster_advancementstep.h;rpg_monster_attack.h;rpg_monster_attackaction.h;rpg_monster_defenseaction.h;rpg_monster_exports.h;rpg_monster_incl.h;rpg_monster_naturalarmorclass.h;rpg_monster_naturalweapon.h;rpg_monster_organization.h;rpg_monster_organizations.h;rpg_monster_organizationslaverstep.h;rpg_monster_organizationstep.h;rpg_monster_propertiesxml.h;rpg_monster_savingthrowmodifiers.h;rpg_monster_specialabilityprecondition.h;rpg_monster_specialabilityproperties.h;rpg_monster_specialattackprecondition.h;rpg_monster_specialattackproperties.h;rpg_monster_specialbaseproperties.h;rpg_monster_specialdefenseprecondition.h;rpg_monster_specialdefenseproperties.h;rpg_monster_specialpropertytypeunion.h;rpg_monster_summonmonster.h;rpg_monster_weapontypeunion.h;%(Outputs)</Outputs>
+      <Inputs>rpg_monster.xsd</Inputs>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\character\monster\rpg_monster.cpp" />
+    <ClCompile Include="..\..\character\monster\rpg_monster_common_tools.cpp" />
+    <ClCompile Include="..\..\character\monster\rpg_monster_dictionary.cpp" />
+    <ClCompile Include="..\..\character\monster\rpg_monster_XML_parser.cpp" />
+    <ClCompile Include="..\..\character\monster\rpg_monster_XML_tree.cpp" />
+    <ClCompile Include="..\..\character\monster\rpg_monster_XML_types.cpp" />
+    <ClCompile Include="..\..\character\monster\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(TargetName)_stdafx.o</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(TargetName)_stdafx.o</ObjectFileName>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\character\monster\rpg_monster.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_actiontrigger.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_advancement.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_advancementstep.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_attack.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_attackaction.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_common.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_common_tools.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_defenseaction.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_defines.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_dictionary.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_exports.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_incl.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_naturalarmorclass.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_naturalweapon.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_organization.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_organizations.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_organizationslaverstep.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_organizationstep.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_propertiesxml.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_savingthrowmodifiers.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_size.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_spawn.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_specialabilityprecondition.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_specialabilityproperties.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_specialattackprecondition.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_specialattackproperties.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_specialbaseproperties.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_specialdefenseprecondition.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_specialdefenseproperties.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_specialpropertytypeunion.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_summonmonster.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_weapontypeunion.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_XML_parser.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_XML_tree.h" />
+    <ClInclude Include="..\..\character\monster\rpg_monster_XML_types.h" />
+    <ClInclude Include="..\..\character\monster\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\character\monster\rpg_monster.map" />
+    <None Include="..\..\character\monster\scripts\bindings.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\character\monster\rpg_monster.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <CXX_Tree_Mapping_Rule Include="..\..\character\monster\rpg_monster.xsd">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CXX_Tree_Mapping_Rule>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="character.vcxproj">
+      <Project>{d93f14b1-cfe8-45df-816d-06ab1ca74cd6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="combat.vcxproj">
+      <Project>{ab56c6b4-cdc5-4464-9b00-e798451096ed}</Project>
+    </ProjectReference>
+    <ProjectReference Include="common.vcxproj">
+      <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="dice.vcxproj">
+      <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
+    </ProjectReference>
+    <ProjectReference Include="item.vcxproj">
+      <Project>{63173994-11a3-40d3-b835-63a0e9a8bfe3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="magic.vcxproj">
+      <Project>{6867cf99-3611-4345-b992-85780c27119e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="player.vcxproj">
+      <Project>{c0095f69-560d-4c7d-82de-078644135735}</Project>
+    </ProjectReference>
+    <ProjectReference Include="XML2CppCode.vcxproj">
+      <Project>{7cff8b93-971b-40ae-a875-2c83e1f37002}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-parser.targets" />
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-tree.targets" />
+  </ImportGroup>
+</Project>

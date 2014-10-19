@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{E1B4AAC5-F8C0-469F-9BE3-E3A93B01ED84}</ProjectGuid>
+    <RootNamespace>map</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-parser.props" />
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-tree.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_ACEd.props" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_Xercesd_Xsd.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_ACE.props" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_Xerces_Xsd.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
+    <CXX_Tree_Mapping_RuleBeforeTargets />
+    <CXX_Tree_Mapping_RuleAfterTargets />
+    <TargetName>rpg_$(TargetName)</TargetName>
+    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>rpg_$(TargetName)</TargetName>
+    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
+    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\3rd_party;$(ProjectDir)..\..\3rd_party\bison;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BASEDIR="$(ProgramFiles.Replace('\', "\\"))\\$(SolutionName)";RPG_MAP_BUILD_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;YY_NEVER_INTERACTIVE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;WIN32;DEBUG_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ShowIncludes>false</ShowIncludes>
+      <BrowseInformation>false</BrowseInformation>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>xerces-c_3D.lib;ACEd.lib</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalOptions>/FORCE %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <CustomBuildStep>
+      <Command>pushd $(ProjectDir)..\..\map\scripts
+
+call .\bindings.bat
+
+call .\scanner.bat
+
+call .\parser.bat
+
+popd</Command>
+      <Message>generating bindings and parser...</Message>
+      <Inputs>rpg_map.xsd;.\$(ProjectDir)..\..\scripts\map_scanner.l;.\$(ProjectDir)..\..\scripts\map_parser.y;%(Inputs)</Inputs>
+      <Outputs>location.hh;position.hh;rpg_map_XML_tree.h;rpg_map_XML_tree.cpp;rpg_XMLSchema_XML_tree.h;rpg_map_position.h;rpg_map_incl.h;rpg_map_exports.h;rpg_map_parser.cpp;rpg_map_parser.h;rpg_map_scanner.cpp;rpg_map_scanner.h;stack.hh;%(Outputs)</Outputs>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+    </CustomBuildStep>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\3rd_party;$(ProjectDir)..\..\3rd_party\bison;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>RPG_MAP_BUILD_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;YY_NEVER_INTERACTIVE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>xerces-c_3D.lib;ACE.lib</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalOptions>/FORCE %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <CustomBuildStep>
+      <Command>pushd $(ProjectDir)..\..\map\scripts
+
+call .\bindings.bat
+
+call .\scanner.bat
+
+call .\parser.bat
+
+popd</Command>
+      <Message>generating bindings and parser...</Message>
+      <Outputs>location.hh;position.hh;rpg_map_XML_tree.h;rpg_map_XML_tree.cpp;rpg_XMLSchema_XML_tree.h;rpg_map_position.h;rpg_map_incl.h;rpg_map_exports.h;rpg_map_parser.cpp;rpg_map_parser.h;rpg_map_scanner.cpp;rpg_map_scanner.h;stack.hh;%(Outputs)</Outputs>
+      <Inputs>rpg_map.xsd;.\$(ProjectDir)..\..\scripts\map_scanner.l;.\$(ProjectDir)..\..\scripts\map_parser.y;%(Inputs)</Inputs>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CXX_Tree_Mapping_Rule Include="..\..\map\rpg_map.xsd">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CXX_Tree_Mapping_Rule>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\map\rpg_map_common.h" />
+    <ClInclude Include="..\..\map\rpg_map_common_tools.h" />
+    <ClInclude Include="..\..\map\rpg_map_data.h" />
+    <ClInclude Include="..\..\map\rpg_map_defines.h" />
+    <ClInclude Include="..\..\map\rpg_map_direction.h" />
+    <ClInclude Include="..\..\map\rpg_map_doorstate.h" />
+    <ClInclude Include="..\..\map\rpg_map_exports.h" />
+    <ClInclude Include="..\..\map\rpg_map_incl.h" />
+    <ClInclude Include="..\..\map\rpg_map_level.h" />
+    <ClInclude Include="..\..\map\rpg_map_parser.h" />
+    <ClInclude Include="..\..\map\rpg_map_parser_driver.h" />
+    <ClInclude Include="..\..\map\rpg_map_pathfinding_tools.h" />
+    <ClInclude Include="..\..\map\rpg_map_position.h" />
+    <ClInclude Include="..\..\map\rpg_map_scanner.h" />
+    <ClInclude Include="..\..\map\rpg_map_XML_tree.h" />
+    <ClInclude Include="..\..\map\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\map\rpg_map_common_tools.cpp" />
+    <ClCompile Include="..\..\map\rpg_map_level.cpp" />
+    <ClCompile Include="..\..\map\rpg_map_parser.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\map\rpg_map_parser_driver.cpp" />
+    <ClCompile Include="..\..\map\rpg_map_pathfinding_tools.cpp" />
+    <ClCompile Include="..\..\map\rpg_map_scanner.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\map\rpg_map_XML_tree.cpp" />
+    <ClCompile Include="..\..\map\stdafx.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(TargetName)_stdafx.o</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(TargetName)_stdafx.o</ObjectFileName>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\map\scripts\bindings.bat" />
+    <None Include="..\..\map\scripts\map_parser.y" />
+    <None Include="..\..\map\scripts\map_scanner.l" />
+    <None Include="..\..\map\scripts\parser.bat" />
+    <None Include="..\..\map\scripts\scanner.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="common.vcxproj">
+      <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="dice.vcxproj">
+      <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
+    </ProjectReference>
+    <ProjectReference Include="XML2CppCode.vcxproj">
+      <Project>{7cff8b93-971b-40ae-a875-2c83e1f37002}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-parser.targets" />
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-tree.targets" />
+  </ImportGroup>
+</Project>

@@ -1,0 +1,237 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DC39B751-377F-4093-9F76-4821F97F4DE5}</ProjectGuid>
+    <RootNamespace>graphics</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-parser.props" />
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-tree.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_ACEd.props" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_Xercesd_Xsd.props" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_SDL.props" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_png_gtk_glade.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_ACE.props" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_Xerces_Xsd.props" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_SDL.props" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_png_gtk_glade.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
+    <TargetName>rpg_$(TargetName)</TargetName>
+    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>rpg_$(TargetName)</TargetName>
+    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
+    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\map;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>RPG_GRAPHICS_BUILD_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;_SCL_SECURE_NO_WARNINGS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ShowIncludes>false</ShowIncludes>
+      <BrowseInformation>false</BrowseInformation>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <CustomBuildStep>
+      <Command>pushd $(ProjectDir)..\..\graphics\scripts
+call .\bindings.bat
+popd</Command>
+      <Message>generating bindings...</Message>
+      <Inputs>rpg_graphics.xsd</Inputs>
+      <Outputs>rpg_graphics_XML_tree.cpp;rpg_graphics_XML_tree.h;rpg_graphics_XML_types.cpp;rpg_graphics_XML_types.h;rpg_graphics_category.h;rpg_graphics_exports.h;rpg_graphics_cursor.h;rpg_graphics_doorstyle.h;rpg_graphics_edgestyle.h;rpg_graphics_element.h;rpg_graphics_elementtypeunion.h;rpg_graphics_floorstyle.h;rpg_graphics_font.h;rpg_graphics_graphic.h;rpg_graphics_graphictypeunion.h;rpg_graphics_hotspottype.h;rpg_graphics_image.h;rpg_graphics_incl.h;rpg_graphics_windowtype.h;rpg_graphics_interfaceelementtype.h;rpg_graphics_orientation.h;rpg_graphics_sprite.h;rpg_graphics_stairsstyle.h;rpg_graphics_styleunion.h;rpg_graphics_tile.h;rpg_graphics_tilegraphic.h;rpg_graphics_tileset.h;rpg_graphics_tilesetgraphic.h;rpg_graphics_tilesettype.h;rpg_graphics_tiletype.h;rpg_graphics_wallstyle.h;%(Outputs)</Outputs>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+    </CustomBuildStep>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\map;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>RPG_GRAPHICS_BUILD_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <CustomBuildStep>
+      <Command>pushd $(ProjectDir)..\..\graphics\scripts
+call .\bindings.bat
+popd</Command>
+      <Message>generating bindings...</Message>
+      <Outputs>rpg_graphics_XML_tree.cpp;rpg_graphics_XML_tree.h;rpg_graphics_XML_types.cpp;rpg_graphics_XML_types.h;rpg_graphics_category.h;rpg_graphics_exports.h;rpg_graphics_cursor.h;rpg_graphics_doorstyle.h;rpg_graphics_edgestyle.h;rpg_graphics_element.h;rpg_graphics_elementtypeunion.h;rpg_graphics_floorstyle.h;rpg_graphics_font.h;rpg_graphics_graphic.h;rpg_graphics_graphictypeunion.h;rpg_graphics_hotspottype.h;rpg_graphics_image.h;rpg_graphics_incl.h;rpg_graphics_windowtype.h;rpg_graphics_interfaceelementtype.h;rpg_graphics_orientation.h;rpg_graphics_sprite.h;rpg_graphics_stairsstyle.h;rpg_graphics_styleunion.h;rpg_graphics_tile.h;rpg_graphics_tilegraphic.h;rpg_graphics_tileset.h;rpg_graphics_tilesetgraphic.h;rpg_graphics_tilesettype.h;rpg_graphics_tiletype.h;rpg_graphics_wallstyle.h;%(Outputs)</Outputs>
+      <Inputs>rpg_graphics.xsd</Inputs>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="..\..\graphics\rpg_graphics.map" />
+    <None Include="..\..\graphics\scripts\bindings.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\graphics\rpg_graphics.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <CXX_Tree_Mapping_Rule Include="..\..\graphics\rpg_graphics.xsd">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CXX_Tree_Mapping_Rule>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\graphics\rpg_graphics_category.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_colorname.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_colorrgba.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_colorunion.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_common.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_common_tools.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_cursor.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_cursor_manager.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_defines.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_dictionary.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_doorstyle.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_edgestyle.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_element.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_elementtypeunion.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_exports.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_floorstyle.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_font.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_graphic.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_graphictypeunion.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_hotspot.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_hotspottype.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_image.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_incl.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_interfaceelementtype.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_iwindow.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_iwindow_base.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_orientation.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_SDL_tools.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_SDL_window_base.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_SDL_window_interface.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_SDL_window_sub.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_sprite.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_stairsstyle.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_style.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_styleunion.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_surface.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_tile.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_tilegraphic.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_tileset.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_tilesetgraphic.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_tilesettype.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_tiletype.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_toplevel.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_wallstyle.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_windowtype.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_XML_parser.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_XML_tree.h" />
+    <ClInclude Include="..\..\graphics\rpg_graphics_XML_types.h" />
+    <ClInclude Include="..\..\graphics\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\graphics\rpg_graphics_common_tools.cpp" />
+    <ClCompile Include="..\..\graphics\rpg_graphics_cursor_manager.cpp" />
+    <ClCompile Include="..\..\graphics\rpg_graphics_dictionary.cpp" />
+    <ClCompile Include="..\..\graphics\rpg_graphics_hotspot.cpp" />
+    <ClCompile Include="..\..\graphics\rpg_graphics_SDL_tools.cpp" />
+    <ClCompile Include="..\..\graphics\rpg_graphics_SDL_window_base.cpp" />
+    <ClCompile Include="..\..\graphics\rpg_graphics_SDL_window_interface.cpp" />
+    <ClCompile Include="..\..\graphics\rpg_graphics_SDL_window_sub.cpp" />
+    <ClCompile Include="..\..\graphics\rpg_graphics_surface.cpp" />
+    <ClCompile Include="..\..\graphics\rpg_graphics_toplevel.cpp" />
+    <ClCompile Include="..\..\graphics\rpg_graphics_XML_parser.cpp" />
+    <ClCompile Include="..\..\graphics\rpg_graphics_XML_tree.cpp" />
+    <ClCompile Include="..\..\graphics\rpg_graphics_XML_types.cpp" />
+    <ClCompile Include="..\..\graphics\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(TargetName)_stdafx.o</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(TargetName)_stdafx.o</ObjectFileName>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="common.vcxproj">
+      <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="dice.vcxproj">
+      <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
+    </ProjectReference>
+    <ProjectReference Include="XML2CppCode.vcxproj">
+      <Project>{7cff8b93-971b-40ae-a875-2c83e1f37002}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-parser.targets" />
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-tree.targets" />
+  </ImportGroup>
+</Project>

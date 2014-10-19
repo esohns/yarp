@@ -53,7 +53,7 @@ RPG_Net_AsynchSocketHandler::open(ACE_HANDLE handle_in,
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchSocketHandler::open"));
 
   // step1: prepare data processing stream
-  inherited::myUserData.sessionID = inherited::getID(); // (== socket handle)
+  inherited::myUserData.sessionID = inherited::myStream.getSessionID(); // (== socket handle)
 
   // step2: init/start stream, register reading data with reactor...
   inherited::open(handle_in,

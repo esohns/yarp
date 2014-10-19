@@ -30,7 +30,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 @rem C++ "glue code"
-set XML2CppCodeEXE=%cd%\..\..\..\Yarp\Debug\XML2CppCode.exe
+set XML2CppCodeEXE=%cd%\..\..\..\prj\msvc\Debug\XML2CppCode.exe
 if NOT exist "%XML2CppCodeEXE%" (
  echo invalid file ^(was: "%XML2CppCodeEXE%"^)^, exiting
  goto Failed

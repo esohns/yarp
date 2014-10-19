@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{6D91015A-553A-4512-8EEE-0DA6230A2DF7}</ProjectGuid>
+    <RootNamespace>test_u_net_client</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_ACEd.props" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_Xercesd_Xsd.props" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_SDL.props" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_png_gtk_glade.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_ACE.props" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_Xerces_Xsd.props" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_SDL.props" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_png_gtk_glade.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\chance\dice;$(ProjectDir)..\common;$(ProjectDir)..\magic;$(ProjectDir)..\character;$(ProjectDir)..\item;$(ProjectDir)..\combat;$(ProjectDir)..\character\player;$(ProjectDir)..\character\monster;$(ProjectDir)..\map;$(ProjectDir)..\graphics;$(ProjectDir)..\engine;$(ProjectDir)..\net\stream;$(ProjectDir)..\net;$(ProjectDir)..\net\client;$(ProjectDir)..\sound;$(ProjectDir)..\client;$(ProjectDir)..\net\server;$(ProjectDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BASEDIR="$(ProgramFiles.Replace('\', "\\"))\\$(SolutionName)";RPG_CLIENT_HAS_DLL;RPG_NET_HAS_DLL;RPG_COMMON_HAS_DLL;WIN32;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <BrowseInformation>false</BrowseInformation>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>D:\projects\yarp\Yarp\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/FORCE:MULTIPLE /NODEFAULTLIB:MSVCRT </AdditionalOptions>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>C:\Temp\ACE_wrappers;C:\Program Files\CodeSynthesis XSD 3.3\include;C:\Temp\SDL\include;C:\Temp\Gtk\lib\glib-2.0\include;C:\Temp\Gtk\include\glib-2.0;C:\Temp\Gtk\include\pango-1.0;C:\Temp\Gtk\include\cairo;C:\Temp\Gtk\include\atk-1.0;C:\Temp\Gtk\include\gdk-pixbuf-2.0;C:\Temp\Gtk\lib\gtk-2.0\include;C:\Temp\Gtk\include\gtk-2.0;C:\Temp\libglade\include\libglade-2.0;$(ProjectDir)..\chance\dice;$(ProjectDir)..\common;$(ProjectDir)..\magic;$(ProjectDir)..\character;$(ProjectDir)..\item;$(ProjectDir)..\combat;$(ProjectDir)..\character\player;$(ProjectDir)..\character\monster;$(ProjectDir)..\map;$(ProjectDir)..\graphics;$(ProjectDir)..\engine;$(ProjectDir)..\net\stream;$(ProjectDir)..\net;$(ProjectDir)..\net\client;$(ProjectDir)..\sound;$(ProjectDir)..\client;$(ProjectDir)..\net\server;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>RPG_COMMON_HAS_DLL;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>C:\Temp\ACE_wrappers\lib;C:\Temp\SDL\lib\x86;C:\Temp\Gtk\lib;C:\Temp\libglade\lib;C:\Temp\libgnome-dev_2.24.1-1_win32\lib;C:\Temp\libgnomeui-dev-2.22.1\lib;C:\Temp\yarp\Yarp\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ACE.lib;SDLmain.lib;SDL.lib;SDL_mixer.lib;SDL_ttf.lib;gobject-2.0.lib;gthread-2.0.lib;glib-2.0.lib;gtk-win32-2.0.lib;gdk-win32-2.0.lib;libglade-2.0.dll.a;libgnomeui-2.dll.a;libgnome-2.dll.a;rpg_dice.lib;rpg_common.lib;rpg_net.lib;rpg_net_client.lib;rpg_client.lib</AdditionalDependencies>
+      <AdditionalOptions>/FORCE:MULTIPLE /NODEFAULTLIB:MSVCRT </AdditionalOptions>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="net\net_callbacks.h" />
+    <ClInclude Include="net\net_client_signalhandler.h" />
+    <ClInclude Include="net\net_client_timeouthandler.h" />
+    <ClInclude Include="net\net_common.h" />
+    <ClInclude Include="net\net_defines.h" />
+    <ClInclude Include="net\net_eventhandler.h" />
+    <ClInclude Include="net\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="net\net_callbacks.cpp" />
+    <ClCompile Include="net\net_client.cpp" />
+    <ClCompile Include="net\net_client_signalhandler.cpp" />
+    <ClCompile Include="net\net_client_timeouthandler.cpp" />
+    <ClCompile Include="net\net_eventhandler.cpp" />
+    <ClCompile Include="net\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\chance\dice\dice.vcxproj">
+      <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\client\client.vcxproj">
+      <Project>{df9ce33e-5060-48a6-b105-0b61fedf6ae6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\common\common.vcxproj">
+      <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\net\net.vcxproj">
+      <Project>{aa720739-6711-4cfe-8e54-0d5abfa83963}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\net\net_client.vcxproj">
+      <Project>{47db7c91-607e-4773-b139-a45abaf3ca00}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\net\stream\stream.vcxproj">
+      <Project>{ef66f896-aed2-4e31-8222-4424970e4357}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

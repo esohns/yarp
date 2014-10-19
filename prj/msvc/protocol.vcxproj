@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A0066128-9E16-47C8-9697-78BE571B8445}</ProjectGuid>
+    <RootNamespace>protocol</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_ACEd.props" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_Xercesd_Xsd.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_ACE.props" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_Xerces_Xsd.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
+    <TargetName>rpg_$(TargetName)</TargetName>
+    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>rpg_$(TargetName)</TargetName>
+    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
+    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\3rd_party;$(ProjectDir)..\..\3rd_party\bison;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\net\stream;$(ProjectDir)..\..\net;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>RPG_PROTOCOL_BUILD_DLL;RPG_NET_HAS_DLL;RPG_STREAM_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ShowIncludes>false</ShowIncludes>
+      <BrowseInformation>false</BrowseInformation>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <CustomBuildStep>
+      <Command>pushd $(ProjectDir)..\..\net\protocol\scripts
+call .\exports.bat
+
+call .\scanner.bat
+
+call .\parser.bat
+
+popd</Command>
+      <Message>generating exports macros and parser...</Message>
+      <Outputs>location.hh;position.hh;rpg_net_protocol_IRCparser.cpp;rpg_net_protocol_IRCparser.h;rpg_net_protocol_IRCbisect.cpp;rpg_net_protocol_IRCbisect.h;rpg_net_protocol_IRCscanner.cpp;rpg_net_protocol_IRCscanner.h;rpg_net_protocol_exports.h;stack.hh;%(Outputs)</Outputs>
+      <Inputs>$(ProjectDir)..\..\net\protocol\scripts\IRCbisect.l;$(ProjectDir)..\..\net\protocol\IRCscanner.l;$(ProjectDir)..\..\net\protocol\IRCparser.y;%(Inputs)</Inputs>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+    </CustomBuildStep>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\3rd_party;$(ProjectDir)..\..\3rd_party\bison;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\net\stream;$(ProjectDir)..\..\net;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>RPG_PROTOCOL_BUILD_DLL;RPG_NET_HAS_DLL;RPG_STREAM_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <CustomBuildStep>
+      <Command>pushd $(ProjectDir)..\..\net\protocol\scripts
+call .\exports.bat
+
+call .\scanner.bat
+
+call .\parser.bat
+
+popd</Command>
+      <Message>generating exports macros and parser...</Message>
+      <Outputs>location.hh;position.hh;rpg_net_protocol_IRCparser.cpp;rpg_net_protocol_IRCparser.h;rpg_net_protocol_IRCbisect.cpp;rpg_net_protocol_IRCbisect.h;rpg_net_protocol_IRCscanner.cpp;rpg_net_protocol_IRCscanner.h;rpg_net_protocol_exports.h;stack.hh;%(Outputs)</Outputs>
+      <Inputs>$(ProjectDir)..\..\net\protocol\scripts\IRCbisect.l;$(ProjectDir)..\..\net\protocol\IRCscanner.l;$(ProjectDir)..\..\net\protocol\IRCparser.y;%(Inputs)</Inputs>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_common.h" />
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_common_modules.h" />
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_defines.h" />
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_exports.h" />
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_iIRCControl.h" />
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_IRCbisect.h" />
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_IRCmessage.h" />
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_IRCparser.h" />
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_IRCparser_driver.h" />
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_IRCscanner.h" />
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_IRC_codes.h" />
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_message.h" />
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_messageallocator.h" />
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_module_IRChandler.h" />
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_module_IRCparser.h" />
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_module_IRCsplitter.h" />
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_module_IRCstreamer.h" />
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_sessionmessage.h" />
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_sockethandler.h" />
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_stream.h" />
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_tools.h" />
+    <ClInclude Include="..\..\net\protocol\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\net\protocol\rpg_net_protocol_IRCbisect.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\net\protocol\rpg_net_protocol_IRCmessage.cpp" />
+    <ClCompile Include="..\..\net\protocol\rpg_net_protocol_IRCparser.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\net\protocol\rpg_net_protocol_IRCparser_driver.cpp" />
+    <ClCompile Include="..\..\net\protocol\rpg_net_protocol_IRCscanner.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\net\protocol\rpg_net_protocol_message.cpp" />
+    <ClCompile Include="..\..\net\protocol\rpg_net_protocol_messageallocator.cpp" />
+    <ClCompile Include="..\..\net\protocol\rpg_net_protocol_module_IRChandler.cpp" />
+    <ClCompile Include="..\..\net\protocol\rpg_net_protocol_module_IRCparser.cpp" />
+    <ClCompile Include="..\..\net\protocol\rpg_net_protocol_module_IRCsplitter.cpp" />
+    <ClCompile Include="..\..\net\protocol\rpg_net_protocol_module_IRCstreamer.cpp" />
+    <ClCompile Include="..\..\net\protocol\rpg_net_protocol_sessionmessage.cpp" />
+    <ClCompile Include="..\..\net\protocol\rpg_net_protocol_sockethandler.cpp" />
+    <ClCompile Include="..\..\net\protocol\rpg_net_protocol_stream.cpp" />
+    <ClCompile Include="..\..\net\protocol\rpg_net_protocol_tools.cpp" />
+    <ClCompile Include="..\..\net\protocol\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(TargetName)_stdafx.o</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(TargetName)_stdafx.o</ObjectFileName>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\net\protocol\scripts\exports.bat" />
+    <None Include="..\..\net\protocol\scripts\IRCbisect.l" />
+    <None Include="..\..\net\protocol\scripts\IRCparser.y" />
+    <None Include="..\..\net\protocol\scripts\IRCscanner.l" />
+    <None Include="..\..\net\protocol\scripts\parser.bat" />
+    <None Include="..\..\net\protocol\scripts\scanner.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="common.vcxproj">
+      <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="dice.vcxproj">
+      <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
+    </ProjectReference>
+    <ProjectReference Include="net.vcxproj">
+      <Project>{aa720739-6711-4cfe-8e54-0d5abfa83963}</Project>
+    </ProjectReference>
+    <ProjectReference Include="stream.vcxproj">
+      <Project>{ef66f896-aed2-4e31-8222-4424970e4357}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,257 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5633F302-FF53-4014-8587-7BB1F35561CD}</ProjectGuid>
+    <RootNamespace>common</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-parser.props" />
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-tree.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_ACEd.props" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_Xercesd_Xsd.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_ACE.props" />
+    <Import Project="..\..\scripts\VS_ProjectPropertySheet_Xerces_Xsd.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
+    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
+    <CXX_Parser_Mapping_RuleAfterTargets />
+    <TargetName>rpg_$(TargetName)</TargetName>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>rpg_$(TargetName)</TargetName>
+    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\include;$(ProjectDir)..\..\chance\dice;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>RPG_COMMON_BUILD_DLL;RPG_DICE_HAS_DLL;HAVE_CONFIG_H;_SCL_SECURE_NO_WARNINGS;SECURITY_WIN32;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ShowIncludes>false</ShowIncludes>
+      <BrowseInformation>false</BrowseInformation>
+      <EnablePREfast>false</EnablePREfast>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>ACEd.lib;xerces-c_3D.lib;Advapi32.lib;Userenv.lib;Secur32.lib;Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\projects\ACE_wrappers\lib;C:\Program Files (x86)\CodeSynthesis XSD 3.3\lib\vc-10.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <CustomBuildStep>
+      <Command>pushd $(ProjectDir)..\..\common\scripts
+call .\bindings.bat
+popd</Command>
+      <Message>generating bindings...</Message>
+      <Inputs>rpg_common.xsd;rpg_common_environment.xsd;%(Inputs)</Inputs>
+      <Outputs>rpg_XMLSchema_XML_tree.h;rpg_XMLSchema_XML_types.h;rpg_common_XML_tree.cpp;rpg_common_XML_tree.h;rpg_common_XML_types.cpp;rpg_common_XML_types.h;rpg_common_actiontype.h;rpg_common_amount.h;rpg_common_areaofeffect.h;rpg_common_attribute.h;rpg_common_basechecktypeunion.h;rpg_common_camp.h;rpg_common_checktype.h;rpg_common_climate.h;rpg_common_condition.h;rpg_common_countermeasure.h;rpg_common_creaturemetatype.h;rpg_common_creaturesubtype.h;rpg_common_creaturetype.h;rpg_common_exports.h;rpg_common_duration.h;rpg_common_effectduration.h;rpg_common_effecttype.h;rpg_common_environment.h;rpg_common_environment_XML_tree.cpp;rpg_common_environment_XML_tree.h;rpg_common_environment_XML_types.cpp;rpg_common_environment_XML_types.h;rpg_common_environment_incl.h;rpg_common_incl.h;rpg_common_physicaldamagetype.h;rpg_common_plane.h;rpg_common_savereductiontype.h;rpg_common_savingthrow.h;rpg_common_savingthrowcheck.h;rpg_common_size.h;rpg_common_skill.h;rpg_common_subclass.h;rpg_common_terrain.h;rpg_common_timeofday.h;rpg_common_usage.h;%(Outputs)</Outputs>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+    </CustomBuildStep>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\include;$(ProjectDir)..\..\chance\dice;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>META_DATA_PACKAGE=$(SolutionName);RPG_COMMON_BUILD_DLL;RPG_DICE_HAS_DLL;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;SECURITY_WIN32;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnablePREfast>false</EnablePREfast>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>xerces-c_3D.lib;ACE.lib;Secur32.lib;Advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>E:\Yarp\Yarp\Debug;E:\Program Files\CodeSynthesis XSD 3.3\lib\vc-10.0;E:\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <CustomBuildStep>
+      <Command>pushd $(ProjectDir)..\..\common\scripts
+call .\bindings.bat
+popd</Command>
+      <Message>generating bindings...</Message>
+      <Outputs>rpg_XMLSchema_XML_tree.h;rpg_XMLSchema_XML_types.h;rpg_common_XML_tree.cpp;rpg_common_XML_tree.h;rpg_common_XML_types.cpp;rpg_common_XML_types.h;rpg_common_actiontype.h;rpg_common_amount.h;rpg_common_areaofeffect.h;rpg_common_attribute.h;rpg_common_basechecktypeunion.h;rpg_common_camp.h;rpg_common_checktype.h;rpg_common_climate.h;rpg_common_condition.h;rpg_common_countermeasure.h;rpg_common_creaturemetatype.h;rpg_common_creaturesubtype.h;rpg_common_creaturetype.h;rpg_common_exports.h;rpg_common_duration.h;rpg_common_effectduration.h;rpg_common_effecttype.h;rpg_common_environment.h;rpg_common_environment_XML_tree.cpp;rpg_common_environment_XML_tree.h;rpg_common_environment_XML_types.cpp;rpg_common_environment_XML_types.h;rpg_common_environment_incl.h;rpg_common_incl.h;rpg_common_physicaldamagetype.h;rpg_common_plane.h;rpg_common_savereductiontype.h;rpg_common_savingthrow.h;rpg_common_savingthrowcheck.h;rpg_common_size.h;rpg_common_skill.h;rpg_common_subclass.h;rpg_common_terrain.h;rpg_common_timeofday.h;rpg_common_usage.h;%(Outputs)</Outputs>
+      <Inputs>rpg_common.xsd;rpg_common_environment.xsd;%(Inputs)</Inputs>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\common\rpg_common.h" />
+    <ClInclude Include="..\..\common\rpg_common_actiontype.h" />
+    <ClInclude Include="..\..\common\rpg_common_ambientlighting.h" />
+    <ClInclude Include="..\..\common\rpg_common_amount.h" />
+    <ClInclude Include="..\..\common\rpg_common_areaofeffect.h" />
+    <ClInclude Include="..\..\common\rpg_common_attribute.h" />
+    <ClInclude Include="..\..\common\rpg_common_basechecktypeunion.h" />
+    <ClInclude Include="..\..\common\rpg_common_camp.h" />
+    <ClInclude Include="..\..\common\rpg_common_checktype.h" />
+    <ClInclude Include="..\..\common\rpg_common_climate.h" />
+    <ClInclude Include="..\..\common\rpg_common_condition.h" />
+    <ClInclude Include="..\..\common\rpg_common_countermeasure.h" />
+    <ClInclude Include="..\..\common\rpg_common_creaturemetatype.h" />
+    <ClInclude Include="..\..\common\rpg_common_creaturesubtype.h" />
+    <ClInclude Include="..\..\common\rpg_common_creaturetype.h" />
+    <ClInclude Include="..\..\common\rpg_common_defines.h" />
+    <ClInclude Include="..\..\common\rpg_common_duration.h" />
+    <ClInclude Include="..\..\common\rpg_common_effectduration.h" />
+    <ClInclude Include="..\..\common\rpg_common_effecttype.h" />
+    <ClInclude Include="..\..\common\rpg_common_environment.h" />
+    <ClInclude Include="..\..\common\rpg_common_environment_incl.h" />
+    <ClInclude Include="..\..\common\rpg_common_environment_XML_tree.h" />
+    <ClInclude Include="..\..\common\rpg_common_environment_XML_types.h" />
+    <ClInclude Include="..\..\common\rpg_common_exports.h" />
+    <ClInclude Include="..\..\common\rpg_common_file_tools.h" />
+    <ClInclude Include="..\..\common\rpg_common_fixedperiod.h" />
+    <ClInclude Include="..\..\common\rpg_common_iclone.h" />
+    <ClInclude Include="..\..\common\rpg_common_icontrol.h" />
+    <ClInclude Include="..\..\common\rpg_common_idumpstate.h" />
+    <ClInclude Include="..\..\common\rpg_common_ilock.h" />
+    <ClInclude Include="..\..\common\rpg_common_incl.h" />
+    <ClInclude Include="..\..\common\rpg_common_irefcount.h" />
+    <ClInclude Include="..\..\common\rpg_common_isignal.h" />
+    <ClInclude Include="..\..\common\rpg_common_istatistic.h" />
+    <ClInclude Include="..\..\common\rpg_common_isubscribe.h" />
+    <ClInclude Include="..\..\common\rpg_common_itimer.h" />
+    <ClInclude Include="..\..\common\rpg_common_macros.h" />
+    <ClInclude Include="..\..\common\rpg_common_physicaldamagetype.h" />
+    <ClInclude Include="..\..\common\rpg_common_plane.h" />
+    <ClInclude Include="..\..\common\rpg_common_referencecounter_base.h" />
+    <ClInclude Include="..\..\common\rpg_common_savereductiontype.h" />
+    <ClInclude Include="..\..\common\rpg_common_savingthrow.h" />
+    <ClInclude Include="..\..\common\rpg_common_savingthrowcheck.h" />
+    <ClInclude Include="..\..\common\rpg_common_signalhandler.h" />
+    <ClInclude Include="..\..\common\rpg_common_size.h" />
+    <ClInclude Include="..\..\common\rpg_common_skill.h" />
+    <ClInclude Include="..\..\common\rpg_common_subclass.h" />
+    <ClInclude Include="..\..\common\rpg_common_task_base.h" />
+    <ClInclude Include="..\..\common\rpg_common_terrain.h" />
+    <ClInclude Include="..\..\common\rpg_common_timeofday.h" />
+    <ClInclude Include="..\..\common\rpg_common_timerhandler.h" />
+    <ClInclude Include="..\..\common\rpg_common_timer_manager.h" />
+    <ClInclude Include="..\..\common\rpg_common_tools.h" />
+    <ClInclude Include="..\..\common\rpg_common_track.h" />
+    <ClInclude Include="..\..\common\rpg_common_usage.h" />
+    <ClInclude Include="..\..\common\rpg_common_XML_parser.h" />
+    <ClInclude Include="..\..\common\rpg_common_XML_tools.h" />
+    <ClInclude Include="..\..\common\rpg_common_XML_tree.h" />
+    <ClInclude Include="..\..\common\rpg_common_XML_types.h" />
+    <ClInclude Include="..\..\common\rpg_common_xsderrorhandler.h" />
+    <ClInclude Include="..\..\common\rpg_XMLSchema_XML_tree.h" />
+    <ClInclude Include="..\..\common\rpg_XMLSchema_XML_types.h" />
+    <ClInclude Include="..\..\common\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\common\rpg_common.map" />
+    <None Include="..\..\common\rpg_common_environment.map" />
+    <None Include="..\..\common\rpg_common_task_base.inl" />
+    <None Include="..\..\common\scripts\bindings.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <CXX_Tree_Mapping_Rule Include="..\..\common\rpg_common.xsd">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CXX_Tree_Mapping_Rule>
+    <CXX_Tree_Mapping_Rule Include="..\..\common\rpg_common_environment.xsd">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </CXX_Tree_Mapping_Rule>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\common\rpg_common_environment_XML_tree.cpp" />
+    <ClCompile Include="..\..\common\rpg_common_environment_XML_types.cpp" />
+    <ClCompile Include="..\..\common\rpg_common_file_tools.cpp" />
+    <ClCompile Include="..\..\common\rpg_common_referencecounter_base.cpp" />
+    <ClCompile Include="..\..\common\rpg_common_signalhandler.cpp" />
+    <ClCompile Include="..\..\common\rpg_common_task_base.cpp" />
+    <ClCompile Include="..\..\common\rpg_common_timerhandler.cpp" />
+    <ClCompile Include="..\..\common\rpg_common_timer_manager.cpp" />
+    <ClCompile Include="..\..\common\rpg_common_tools.cpp" />
+    <ClCompile Include="..\..\common\rpg_common_XML_parser.cpp" />
+    <ClCompile Include="..\..\common\rpg_common_XML_tools.cpp" />
+    <ClCompile Include="..\..\common\rpg_common_XML_tree.cpp" />
+    <ClCompile Include="..\..\common\rpg_common_XML_types.cpp" />
+    <ClCompile Include="..\..\common\rpg_common_xsderrorhandler.cpp" />
+    <ClCompile Include="..\..\common\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(TargetName)_stdafx.o</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(TargetName)_stdafx.o</ObjectFileName>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="dice.vcxproj">
+      <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
+    </ProjectReference>
+    <ProjectReference Include="XML2CppCode.vcxproj">
+      <Project>{7cff8b93-971b-40ae-a875-2c83e1f37002}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-parser.targets" />
+    <Import Project="$(ProgramFiles)\CodeSynthesis XSD 3.3\etc\vc-10.0\xsd-cxx-tree.targets" />
+  </ImportGroup>
+</Project>
