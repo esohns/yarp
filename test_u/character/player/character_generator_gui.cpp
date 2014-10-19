@@ -33,12 +33,12 @@ extern "C"
 {
 #endif /* __cplusplus */
 int
-SDL_main(int argc_in,
-         char** argv_in)
+SDL_main (int argc_in,
+          char** argv_in)
 #else
 int
-ACE_TMAIN(int argc_in,
-					ACE_TCHAR* argv_in[])
+ACE_TMAIN (int argc_in,
+           ACE_TCHAR* argv_in[])
 #endif
 {
 	RPG_TRACE(ACE_TEXT("::main"));

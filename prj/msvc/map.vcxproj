@@ -35,13 +35,13 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\scripts\VS_ProjectPropertySheet_ACEd.props" />
-    <Import Project="..\..\scripts\VS_ProjectPropertySheet_Xercesd_Xsd.props" />
+    <Import Project="VS_ProjectPropertySheet_ACEd.props" />
+    <Import Project="VS_ProjectPropertySheet_Xercesd_Xsd.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\scripts\VS_ProjectPropertySheet_ACE.props" />
-    <Import Project="..\..\scripts\VS_ProjectPropertySheet_Xerces_Xsd.props" />
+    <Import Project="VS_ProjectPropertySheet_ACE.props" />
+    <Import Project="VS_ProjectPropertySheet_Xerces_Xsd.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -94,7 +94,7 @@ call .\parser.bat
 
 popd</Command>
       <Message>generating bindings and parser...</Message>
-      <Inputs>rpg_map.xsd;.\$(ProjectDir)..\..\scripts\map_scanner.l;.\$(ProjectDir)..\..\scripts\map_parser.y;%(Inputs)</Inputs>
+      <Inputs>rpg_map.xsd;.\$(ProjectDir)map_scanner.l;.\$(ProjectDir)map_parser.y;%(Inputs)</Inputs>
       <Outputs>location.hh;position.hh;rpg_map_XML_tree.h;rpg_map_XML_tree.cpp;rpg_XMLSchema_XML_tree.h;rpg_map_position.h;rpg_map_incl.h;rpg_map_exports.h;rpg_map_parser.cpp;rpg_map_parser.h;rpg_map_scanner.cpp;rpg_map_scanner.h;stack.hh;%(Outputs)</Outputs>
       <TreatOutputAsContent>true</TreatOutputAsContent>
     </CustomBuildStep>
@@ -140,7 +140,7 @@ call .\parser.bat
 popd</Command>
       <Message>generating bindings and parser...</Message>
       <Outputs>location.hh;position.hh;rpg_map_XML_tree.h;rpg_map_XML_tree.cpp;rpg_XMLSchema_XML_tree.h;rpg_map_position.h;rpg_map_incl.h;rpg_map_exports.h;rpg_map_parser.cpp;rpg_map_parser.h;rpg_map_scanner.cpp;rpg_map_scanner.h;stack.hh;%(Outputs)</Outputs>
-      <Inputs>rpg_map.xsd;.\$(ProjectDir)..\..\scripts\map_scanner.l;.\$(ProjectDir)..\..\scripts\map_parser.y;%(Inputs)</Inputs>
+      <Inputs>rpg_map.xsd;.\$(ProjectDir)map_scanner.l;.\$(ProjectDir)map_parser.y;%(Inputs)</Inputs>
       <TreatOutputAsContent>true</TreatOutputAsContent>
     </CustomBuildStep>
   </ItemDefinitionGroup>
