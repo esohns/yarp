@@ -1,0 +1,3 @@
+autoreconf -is
+automake
+
