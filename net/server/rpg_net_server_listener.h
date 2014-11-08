@@ -28,11 +28,11 @@
 
 #include "rpg_common_idumpstate.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Acceptor.h>
-#include <ace/SOCK_Acceptor.h>
-#include <ace/Singleton.h>
-#include <ace/Synch.h>
+#include "ace/Global_Macros.h"
+#include "ace/Acceptor.h"
+#include "ace/SOCK_Acceptor.h"
+#include "ace/Singleton.h"
+#include "ace/Synch.h"
 
 class RPG_Net_Server_Export RPG_Net_Server_Listener
  : public ACE_Acceptor<RPG_Net_SocketHandler,
@@ -46,8 +46,8 @@ class RPG_Net_Server_Export RPG_Net_Server_Listener
  public:
   // configuration / initialization
   // implement RPG_Net_Server_IListener
-  virtual void init(const unsigned short&, // port number
-                    const bool& = false);  // use loopback interface ?
+  virtual void init(const unsigned short&,           // port number
+                    const bool& = false);            // use loopback interface ?
   bool isInitialized() const;
 
   // override some methods from ACE_Acceptor
@@ -69,17 +69,17 @@ class RPG_Net_Server_Export RPG_Net_Server_Listener
 //                        RPG_Net_StreamSocketBase<RPG_Net_Stream>,
                        ACE_SOCK_ACCEPTOR> inherited;
 
-  // safety measures
   RPG_Net_Server_Listener();
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Server_Listener(const RPG_Net_Server_Listener&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Server_Listener& operator=(const RPG_Net_Server_Listener&));
   virtual ~RPG_Net_Server_Listener();
 
-  bool           myIsInitialized;
-  bool           myIsListening;
-  bool           myIsOpen;
-  unsigned short myListeningPort;
-  bool           myUseLoopback;
+  bool                     myIsInitialized;
+  RPG_Net_TransportLayer_t myTransportLayer;
+  bool                     myIsListening;
+  bool                     myIsOpen;
+  unsigned short           myListeningPort;
+  bool                     myUseLoopback;
 };
 
 typedef ACE_Singleton<RPG_Net_Server_Listener,

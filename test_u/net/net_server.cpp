@@ -85,7 +85,7 @@ do_printUsage(const std::string& programName_in)
 
   std::string configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                           true);
+                                                           true);
 #if defined(DEBUG_DEBUGGER)
   configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
 #endif // #ifdef BASEDIR
@@ -97,20 +97,27 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   std::cout << ACE_TEXT("currently available options:") << std::endl;
   std::cout << ACE_TEXT("-c [VALUE]   : max #connections ([")
-            << RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS
+            << RPG_NET_SERVER_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS
             << ACE_TEXT("])")
             << std::endl;
   std::cout << ACE_TEXT("-i [VALUE]   : client ping interval (second(s)) [")
-            << RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL
+            << RPG_NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL
             << ACE_TEXT("] {0 --> OFF})")
             << std::endl;
-//  std::cout << ACE_TEXT("-k [VALUE]  : client keep-alive timeout ([") << RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE << ACE_TEXT("] second(s) {0 --> no timeout})") << std::endl;
+//  std::cout << ACE_TEXT("-k [VALUE]  : client keep-alive timeout ([")
+//            << RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE
+//            << ACE_TEXT("] second(s) {0 --> no timeout})")
+//            << std::endl;
   std::cout << ACE_TEXT("-l           : log to a file [")
             << false
             << ACE_TEXT("]")
             << std::endl;
+  std::cout << ACE_TEXT("-m           : receive uni/multi/broadcast UDP [")
+            << false
+            << ACE_TEXT("]")
+            << std::endl;
   std::cout << ACE_TEXT("-n [STRING]  : network interface [\"")
-            << ACE_TEXT(RPG_NET_DEF_CNF_NETWORK_INTERFACE)
+            << ACE_TEXT(RPG_NET_DEFAULT_NETWORK_INTERFACE)
             << ACE_TEXT("\"]")
             << std::endl;
   // *TODO*: this doesn't really make sense (yet)
@@ -119,7 +126,7 @@ do_printUsage(const std::string& programName_in)
             << ACE_TEXT("]")
             << std::endl;
   std::cout << ACE_TEXT("-p [VALUE]   : listening port [")
-            << RPG_NET_SERVER_DEF_LISTENING_PORT
+            << RPG_NET_SERVER_DEFAULT_LISTENING_PORT
             << ACE_TEXT("]")
             << std::endl;
   std::cout << ACE_TEXT("-r           : use reactor [")
@@ -127,7 +134,7 @@ do_printUsage(const std::string& programName_in)
             << ACE_TEXT("]")
             << std::endl;
   std::cout << ACE_TEXT("-s [VALUE]   : statistics reporting interval (second(s)) [")
-            << RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL
+            << RPG_NET_SERVER_DEFAULT_STATISTICS_REPORTING_INTERVAL
             << ACE_TEXT("] {0 --> OFF})")
             << std::endl;
   std::cout << ACE_TEXT("-t           : trace information") << std::endl;
@@ -145,7 +152,7 @@ do_printUsage(const std::string& programName_in)
   std::cout << ACE_TEXT("-v           : print version information and exit")
             << std::endl;
   std::cout << ACE_TEXT("-x [VALUE]   : #dispatch threads [")
-            << RPG_NET_SERVER_DEF_NUM_DISPATCH_THREADS
+            << RPG_NET_SERVER_DEFAULT_NUMBER_OF_DISPATCHING_THREADS
             << ACE_TEXT("]")
             << std::endl;
 }
@@ -157,6 +164,7 @@ do_processArguments(const int& argc_in,
                     unsigned int& clientPingInterval_out,
                     //                  unsigned int& keepAliveTimeout_out,
                     bool& logToFile_out,
+                    bool& useUDP_out,
                     std::string& networkInterface_out,
                     bool& useLoopback_out,
                     unsigned short& listeningPortNumber_out,
@@ -171,23 +179,24 @@ do_processArguments(const int& argc_in,
 
   std::string configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                           true);
+                                                           true);
 #if defined(DEBUG_DEBUGGER)
   configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
 #endif // #ifdef BASEDIR
 
   // init results
-  maxNumConnections_out           = RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS;
-  clientPingInterval_out          = RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL;
+  maxNumConnections_out           = RPG_NET_SERVER_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS;
+  clientPingInterval_out          = RPG_NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL;
 //  keepAliveTimeout_out = RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE;
-  logToFile_out = false;
+  logToFile_out                   = false;
+  useUDP_out                      = false;
   networkInterface_out            =
-      ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE);
+      ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEFAULT_NETWORK_INTERFACE);
   useLoopback_out                 = false;
-  listeningPortNumber_out         = RPG_NET_SERVER_DEF_LISTENING_PORT;
+  listeningPortNumber_out         = RPG_NET_SERVER_DEFAULT_LISTENING_PORT;
   useReactor_out                  = RPG_NET_USES_REACTOR;
   statisticsReportingInterval_out =
-      RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL;
+      RPG_NET_SERVER_DEFAULT_STATISTICS_REPORTING_INTERVAL;
   traceInformation_out            = false;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -198,11 +207,11 @@ do_processArguments(const int& argc_in,
   path += ACE_TEXT_ALWAYS_CHAR(NET_SERVER_UI_FILE);
   UIFile_out                      = path;
   printVersionAndExit_out         = false;
-  numDispatchThreads_out          = RPG_NET_SERVER_DEF_NUM_DISPATCH_THREADS;
+  numDispatchThreads_out          = RPG_NET_SERVER_DEFAULT_NUMBER_OF_DISPATCHING_THREADS;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("c:i:k:ln:op:rs:tu::vx:"));
+                             ACE_TEXT("c:i:k:lmn:op:rs:tu::vx:"));
 
   int option = 0;
   std::stringstream converter;
@@ -216,7 +225,6 @@ do_processArguments(const int& argc_in,
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
         converter >> maxNumConnections_out;
-
         break;
       }
       case 'i':
@@ -225,7 +233,6 @@ do_processArguments(const int& argc_in,
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
         converter >> clientPingInterval_out;
-
         break;
       }
 //      case 'k':
@@ -234,25 +241,26 @@ do_processArguments(const int& argc_in,
 //        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
 //        converter << argumentParser.opt_arg();
 //        converter >> keepAliveTimeout_out;
-
 //        break;
 //      }
       case 'l':
       {
         logToFile_out = true;
-
+        break;
+      }
+      case 'm':
+      {
+        useUDP_out = true;
         break;
       }
       case 'n':
       {
-				networkInterface_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
-
+        networkInterface_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
         break;
       }
       case 'o':
       {
         useLoopback_out = true;
-
         break;
       }
       case 'p':
@@ -261,13 +269,11 @@ do_processArguments(const int& argc_in,
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
         converter >> listeningPortNumber_out;
-
         break;
       }
       case 'r':
       {
         useReactor_out = true;
-
         break;
       }
       case 's':
@@ -276,13 +282,11 @@ do_processArguments(const int& argc_in,
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
         converter >> statisticsReportingInterval_out;
-
         break;
       }
       case 't':
       {
         traceInformation_out = true;
-
         break;
       }
       case 'u':
@@ -292,13 +296,11 @@ do_processArguments(const int& argc_in,
           UIFile_out = ACE_TEXT_ALWAYS_CHAR(opt_arg);
         else
           UIFile_out.clear();
-
         break;
       }
       case 'v':
       {
         printVersionAndExit_out = true;
-
         break;
       }
       case 'x':
@@ -307,7 +309,6 @@ do_processArguments(const int& argc_in,
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
         converter >> numDispatchThreads_out;
-
         break;
       }
       // error handling
@@ -316,7 +317,6 @@ do_processArguments(const int& argc_in,
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("unrecognized option \"%s\", aborting\n"),
                    ACE_TEXT(argumentParser.last_option())));
-
         return false;
       }
       default:
@@ -324,7 +324,6 @@ do_processArguments(const int& argc_in,
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("unrecognized option \"%c\", continuing\n"),
                    option));
-
         break;
       }
     } // end SWITCH
@@ -394,6 +393,7 @@ void
 do_work(const unsigned int& maxNumConnections_in,
         const unsigned int& pingInterval_in,
 //        const unsigned int& keepAliveTimeout_in,
+        const bool& useUDP_in,
         const std::string& networkInterface_in,
         const bool& useLoopback_in,
         const unsigned short& listeningPortNumber_in,
@@ -409,7 +409,7 @@ do_work(const unsigned int& maxNumConnections_in,
 
   // step0a: init stream configuration object
   Net_EventHandler ui_event_handler(&CBData_in);
-  RPG_Net_Module_EventHandler_Module event_handler(std::string("EventHandler"),
+  RPG_Net_Module_EventHandler_Module event_handler(ACE_TEXT_ALWAYS_CHAR("EventHandler"),
                                                    NULL);
   RPG_Net_Module_EventHandler* eventHandler_impl = NULL;
   eventHandler_impl = dynamic_cast<RPG_Net_Module_EventHandler*>(event_handler.writer());
@@ -424,7 +424,7 @@ do_work(const unsigned int& maxNumConnections_in,
                           &CBData_in.lock);
   eventHandler_impl->subscribe(&ui_event_handler);
   RPG_Stream_AllocatorHeap heapAllocator;
-  RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_MAX_MESSAGES,
+  RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
                                                   &heapAllocator);
   RPG_Net_ConfigPOD config;
   ACE_OS::memset(&config, 0, sizeof(RPG_Net_ConfigPOD));
@@ -432,7 +432,7 @@ do_work(const unsigned int& maxNumConnections_in,
   config.peerPingInterval = pingInterval_in;
   config.pingAutoAnswer = true;
 //  config.printPongMessages = false;
-  config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
+  config.socketBufferSize = RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
   config.messageAllocator = &messageAllocator;
   config.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
 //  config.useThreadPerConnection = false;
@@ -457,8 +457,8 @@ do_work(const unsigned int& maxNumConnections_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to init event dispatch, aborting\n")));
 
-		return;
-	} // end IF
+    return;
+  } // end IF
 
   // step1: init regular (global) stats reporting
   long timer_id = -1;
@@ -466,11 +466,11 @@ do_work(const unsigned int& maxNumConnections_in,
                                                         RPG_Net_StatisticHandler_Reactor_t::ACTION_REPORT);
   if (statisticsReportingInterval_in)
   {
-    ACE_Event_Handler* eh = &statistics_handler;
+    ACE_Event_Handler* event_handler = &statistics_handler;
     ACE_Time_Value interval(statisticsReportingInterval_in,
                             0);
     timer_id =
-      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(eh,                         // event handler
+      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(event_handler,              // event handler
                                                               NULL,                       // ACT
                                                               (RPG_COMMON_TIME_POLICY() +
                                                                interval),                 // first wakeup time
@@ -672,21 +672,21 @@ do_work(const unsigned int& maxNumConnections_in,
              ACE_TEXT("finished event dispatch...\n")));
 
   // clean up
-	// *NOTE*: listener has stopped, interval timer has been cancelled,
-	// and connections have been aborted...
-	//		{ // synch access
-	//			ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(CBData_in.lock);
+  // *NOTE*: listener has stopped, interval timer has been cancelled,
+  // and connections have been aborted...
+  //		{ // synch access
+  //			ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(CBData_in.lock);
 
-	//			for (Net_GTK_EventSourceIDsIterator_t iterator = CBData_in.event_source_ids.begin();
-	//					 iterator != CBData_in.event_source_ids.end();
-	//					 iterator++)
-	//				g_source_remove(*iterator);
-	//		} // end lock scope
-	RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->stop();
-	RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
-	RPG_Common_Tools::finiSignals(signalSet_inout,
-																useReactor_in,
-																previousSignalActions_inout);
+  //			for (Net_GTK_EventSourceIDsIterator_t iterator = CBData_in.event_source_ids.begin();
+  //					 iterator != CBData_in.event_source_ids.end();
+  //					 iterator++)
+  //				g_source_remove(*iterator);
+  //		} // end lock scope
+  RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->stop();
+  RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
+  RPG_Common_Tools::finiSignals(signalSet_inout,
+                                useReactor_in,
+                                previousSignalActions_inout);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
@@ -751,15 +751,16 @@ ACE_TMAIN(int argc_in,
 #endif // #ifdef BASEDIR
 
   // step1a set defaults
-  unsigned int max_num_connections           = RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS;
-  unsigned int ping_interval                 = RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL;
-//  unsigned int keep_alive_timeout            = RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE;
+  unsigned int max_num_connections           = RPG_NET_SERVER_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS;
+  unsigned int ping_interval                 = RPG_NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL;
+//  unsigned int keep_alive_timeout            = RPG_NET_SERVER_DEFAULT_TCP_KEEPALIVE;
   bool log_to_file                           = false;
-  std::string network_interface              = ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEF_CNF_NETWORK_INTERFACE);
+  bool use_udp                               = false;
+  std::string network_interface              = ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEFAULT_NETWORK_INTERFACE);
   bool use_loopback                          = false;
-  unsigned short listening_port_number       = RPG_NET_SERVER_DEF_LISTENING_PORT;
+  unsigned short listening_port_number       = RPG_NET_SERVER_DEFAULT_LISTENING_PORT;
   bool use_reactor                           = RPG_NET_USES_REACTOR;
-  unsigned int statistics_reporting_interval = RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL;
+  unsigned int statistics_reporting_interval = RPG_NET_SERVER_DEFAULT_STATISTICS_REPORTING_INTERVAL;
   bool trace_information                     = false;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -770,7 +771,7 @@ ACE_TMAIN(int argc_in,
   path += ACE_TEXT_ALWAYS_CHAR(NET_SERVER_UI_FILE);
   std::string UI_file                        = path;
   bool print_version_and_exit                = false;
-  unsigned int num_dispatch_threads          = RPG_NET_SERVER_DEF_NUM_DISPATCH_THREADS;
+  unsigned int num_dispatch_threads          = RPG_NET_SERVER_DEFAULT_NUMBER_OF_DISPATCHING_THREADS;
 
   // step1b: parse/process/validate configuration
   if (!do_processArguments(argc_in,
@@ -779,6 +780,7 @@ ACE_TMAIN(int argc_in,
                            ping_interval,
 //                           keep_alive_timeout,
                            log_to_file,
+                           use_udp,
                            network_interface,
                            use_loopback,
                            listening_port_number,
@@ -820,9 +822,9 @@ ACE_TMAIN(int argc_in,
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -847,9 +849,9 @@ ACE_TMAIN(int argc_in,
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -869,9 +871,9 @@ ACE_TMAIN(int argc_in,
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -889,9 +891,9 @@ ACE_TMAIN(int argc_in,
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -904,9 +906,9 @@ ACE_TMAIN(int argc_in,
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_SUCCESS;
@@ -927,9 +929,9 @@ ACE_TMAIN(int argc_in,
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -937,16 +939,16 @@ ACE_TMAIN(int argc_in,
 
   // step1h: init GLIB / G(D|T)K[+] / GNOME ?
 	Net_GTKUIDefinition gtk_initializer(Net_GTKUIDefinition::ROLE_SERVER,
-																			(statistics_reporting_interval == 0), // allow SIGUSR1/SIGBREAK
-																																						// IFF regular reporting
-																																						// is off
-																		  &gtk_cb_user_data);
-	if (!UI_file.empty())
+                                      (statistics_reporting_interval == 0), // allow SIGUSR1/SIGBREAK
+                                      // IFF regular reporting
+                                      // is off
+                                      &gtk_cb_user_data);
+  if (!UI_file.empty())
   {
-		RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->init(argc_in,
-			                                                 argv_in,
-																											 UI_file,
-																											 &gtk_initializer);
+    RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->init(argc_in,
+                                                       argv_in,
+                                                       UI_file,
+                                                       &gtk_initializer);
   } // end IF
 
   ACE_High_Res_Timer timer;
@@ -955,6 +957,7 @@ ACE_TMAIN(int argc_in,
   do_work(max_num_connections,
           ping_interval,
 //          keep_alive_timeout,
+          use_udp,
           network_interface,
           use_loopback,
           listening_port_number,
@@ -992,9 +995,9 @@ ACE_TMAIN(int argc_in,
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;

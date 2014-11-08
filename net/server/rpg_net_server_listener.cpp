@@ -21,9 +21,9 @@
 
 #include "rpg_net_server_listener.h"
 
-#include <ace/OS.h>
-#include <ace/INET_Addr.h>
-#include <ace/Reactor.h>
+#include "ace/OS.h"
+#include "ace/INET_Addr.h"
+#include "ace/Reactor.h"
 
 #include "rpg_common_macros.h"
 
@@ -33,9 +33,10 @@ RPG_Net_Server_Listener::RPG_Net_Server_Listener()
  : inherited(NULL, // use global (default) reactor
              1),   // always accept ALL pending connections
    myIsInitialized(false),
+   myTransportLayer(RPG_NET_SERVER_DEFAULT_TRANSPORT_LAYER),
    myIsListening(false),
    myIsOpen(false),
-   myListeningPort(RPG_NET_SERVER_DEF_LISTENING_PORT),
+   myListeningPort(RPG_NET_SERVER_DEFAULT_LISTENING_PORT),
 	 myUseLoopback(false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::RPG_Net_Server_Listener"));
@@ -56,13 +57,8 @@ RPG_Net_Server_Listener::init(const unsigned short& listeningPort_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::init"));
 
-  // *NOTE*: changes won't become active until the listener is "restarted"...
   myListeningPort = listeningPort_in;
-	myUseLoopback = useLoopback_in;
-
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("set listening port: %u\n"),
-//              myListeningPort));
+  myUseLoopback = useLoopback_in;
 
   myIsInitialized = true;
 }

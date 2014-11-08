@@ -21,45 +21,49 @@
 #ifndef RPG_NET_DEFINES_H
 #define RPG_NET_DEFINES_H
 
-#include <ace/Default_Constants.h>
+#include "ace/Default_Constants.h"
 
 // CONFIGDIR-specific
-#define RPG_NET_CONFIG_SUB                             "net"
+#define RPG_NET_CONFIGURATION_SUBDIRECTORY            "net"
 
 // *** network-related ***
 // *PORTABILITY*: interface names are not portable, so we let the
 // user choose the interface from a list on Windows (see select_Interface())...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-#define RPG_NET_DEF_CNF_NETWORK_INTERFACE              ""
+#define RPG_NET_DEFAULT_NETWORK_INTERFACE             ""
 #else
-#define RPG_NET_DEF_CNF_NETWORK_INTERFACE              "eth0"
+#define RPG_NET_DEFAULT_NETWORK_INTERFACE             "eth0"
 #endif
 
-// default event handler (default: use asynch I/O (proactor))
-#define RPG_NET_USES_REACTOR                           false
-#define RPG_NET_CONNECTION_HANDLER_THREAD_NAME         "RPG connection dispatch"
-#define RPG_NET_CONNECTION_HANDLER_THREAD_GROUP_ID     2
+#define RPG_NET_DEFAULT_PORT                          32767
+#define RPG_NET_DEFAULT_IP_MULTICAST_ADDRESS          "224.0.0.1"
+#define RPG_NET_DEFAULT_IP_BROADCAST_ADDRESS          "255.255.255.255"
 
-#define RPG_NET_DEF_SOCK_RECVBUF_SIZE                  ACE_DEFAULT_MAX_SOCKET_BUFSIZ
-#define RPG_NET_DEF_SOCK_NODELAY                       true
-#define RPG_NET_DEF_SOCK_KEEPALIVE                     false
-#define RPG_NET_DEF_SOCK_LINGER                        10 // seconds {0 --> off}
+// default event dispatcher (default: use asynch I/O (proactor))
+#define RPG_NET_USES_REACTOR                          false
+#define RPG_NET_CONNECTION_HANDLER_THREAD_NAME        "RPG connection dispatch"
+#define RPG_NET_CONNECTION_HANDLER_THREAD_GROUP_ID    2
 
-#define RPG_NET_MAX_NUM_OPEN_CONNECTIONS               10
+#define RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE    ACE_DEFAULT_MAX_SOCKET_BUFSIZ
+#define RPG_NET_DEFAULT_TCP_NODELAY                   true
+#define RPG_NET_DEFAULT_TCP_KEEPALIVE                 false
+#define RPG_NET_DEFAULT_TCP_LINGER                    10 // seconds {0 --> off}
+
+#define RPG_NET_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS    10
 // *WARNING*: this needs to be AT LEAST sizeof(RPG_Net_Remote_Comm::MessageHeader)
-#define RPG_NET_STREAM_BUFFER_SIZE                     1024 // 1 kB
+#define RPG_NET_STREAM_BUFFER_SIZE                    1024 // 1 kB
 
 // *** protocol-related ***
-#define RPG_NET_PING_AUTO_ANSWER                       true // auto-send "PONG"s
+#define RPG_NET_PING_AUTO_ANSWER                      true // auto-send "PONG"s
 
 // *** pro/reactor-related ***
-#define RPG_NET_TASK_GROUP_ID                          11
+#define RPG_NET_TASK_GROUP_ID                         11
 // *** stream-related ***
 // *IMPORTANT NOTE*: any of these COULD seriously affect performance
-#define RPG_NET_MAX_QUEUE_SLOTS                        1000
-#define RPG_NET_MAX_MESSAGES                           100
+#define RPG_NET_MAXIMUM_QUEUE_SLOTS                   1000
+#define RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES   100
 
-#define RPG_NET_STATISTICS_COLLECT_INTERVAL            60 // seconds [0 --> OFF]
-#define RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL      0  // seconds [0 --> OFF]
+#define RPG_NET_STATISTICS_COLLECTION_INTERVAL        60 // seconds [0 --> OFF]
+#define RPG_NET_DEFAULT_STATISTICS_REPORTING_INTERVAL 0  // seconds [0 --> OFF]
 
 #endif

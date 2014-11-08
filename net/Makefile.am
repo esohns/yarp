@@ -1,4 +1,4 @@
-METASOURCES = AUTO
+#METASOURCES = AUTO
 
 #ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = \
@@ -58,7 +58,9 @@ include_HEADERS = \
   rpg_net_stream_config.h \
   rpg_net_stream_messageallocator.h \
   rpg_net_stream_socket_base.h \
-  rpg_net_stream_socket_base.inl
+  rpg_net_stream_socket_base.inl \
+  rpg_net_transportlayer_ip_cast.h \
+  rpg_net_transportlayer_udp.h
 
 lib_LTLIBRARIES = libRPG_Net.la
 
@@ -126,5 +128,9 @@ libRPG_Net_la_SOURCES = \
   rpg_net_stream_socket_base.cpp \
   rpg_net_stream_socket_base.h \
   rpg_net_stream_socket_base.inl \
+  rpg_net_transportlayer_ip_cast.cpp \
+  rpg_net_transportlayer_ip_cast.h \
+  rpg_net_transportlayer_udp.cpp \
+  rpg_net_transportlayer_udp.h \
   stdafx.cpp \
   stdafx.h

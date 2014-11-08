@@ -21,22 +21,27 @@
 #ifndef RPG_NET_SERVER_DEFINES_H
 #define RPG_NET_SERVER_DEFINES_H
 
+#include "ace/ACE.h"
+
+#include "rpg_net_common.h"
+
 // *** trace log ***
-#define RPG_NET_SERVER_LOG_FILENAME_PREFIX               "rpg_net_server"
+#define RPG_NET_SERVER_LOG_FILENAME_PREFIX                   "rpg_net_server"
 
 // - WARNING: current implementation cannot support numbers that have
 //   more than 7 digits !!!
 // - WARNING: current implementation cannot support 0 !!!
-#define RPG_NET_SERVER_LOG_MAXNUMFILES                   5
+#define RPG_NET_SERVER_LOG_MAXIMUM_NUMBER_OF_FILES           5
 
-#define RPG_NET_SERVER_DEF_NUM_DISPATCH_THREADS          10
+#define RPG_NET_SERVER_DEFAULT_NUMBER_OF_DISPATCHING_THREADS 10
 
-#define RPG_NET_SERVER_DEF_LISTENING_PORT                10101
-#define RPG_NET_SERVER_MAX_NUM_OPEN_CONNECTIONS          ACE::max_handles()
+#define RPG_NET_SERVER_DEFAULT_TRANSPORT_LAYER               TRANSPORTLAYER_TCP
+#define RPG_NET_SERVER_DEFAULT_LISTENING_PORT                10101
+#define RPG_NET_SERVER_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS    ACE::max_handles()
 
-#define RPG_NET_SERVER_DEF_STATISTICS_REPORTING_INTERVAL 3600 // seconds [0 --> OFF]
+#define RPG_NET_SERVER_DEFAULT_STATISTICS_REPORTING_INTERVAL 3600 // seconds [0 --> OFF]
 
-#define RPG_NET_SERVER_DEF_CLIENT_PING_INTERVAL          10 // seconds [0 --> OFF]
-//#define RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE              0  // seconds [0 --> no timeout]
+#define RPG_NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL          10 // seconds [0 --> OFF]
+//#define RPG_NET_SERVER_DEFAULT_TCP_KEEPALIVE              0  // seconds [0 --> no timeout]
 
 #endif

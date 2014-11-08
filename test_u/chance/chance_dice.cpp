@@ -21,18 +21,18 @@
 
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
-#include <rpg_config.h>
+#include "rpg_config.h"
 #endif
 
-#include <rpg_dice_dietype.h>
-#include <rpg_dice_roll.h>
-#include <rpg_dice.h>
+#include "rpg_dice_dietype.h"
+#include "rpg_dice_roll.h"
+#include "rpg_dice.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
-#include <ace/ACE.h>
-#include <ace/Get_Opt.h>
-#include <ace/High_Res_Timer.h>
+#include "ace/ACE.h"
+#include "ace/Get_Opt.h"
+#include "ace/High_Res_Timer.h"
 
 #include <iostream>
 #include <iomanip>

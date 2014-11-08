@@ -949,7 +949,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
   // step5: init networking
   // step5a: init stream configuration object
   RPG_Stream_AllocatorHeap heap_allocator;
-  RPG_Net_StreamMessageAllocator message_allocator(RPG_NET_MAX_MESSAGES,
+  RPG_Net_StreamMessageAllocator message_allocator(RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
                                                    &heap_allocator);
   RPG_Net_ConfigPOD net_configuration;
   ACE_OS::memset(&net_configuration, 0, sizeof(RPG_Net_ConfigPOD));
@@ -957,7 +957,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
   net_configuration.peerPingInterval = 0; // *NOTE*: don't ping the server...
   net_configuration.pingAutoAnswer = true;
 //  net_configuration.printPongMessages = false;
-  net_configuration.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
+  net_configuration.socketBufferSize = RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
   net_configuration.messageAllocator = &message_allocator;
   net_configuration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
 //  net_configuration.useThreadPerConnection = false;

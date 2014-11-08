@@ -25,10 +25,10 @@
 
 #include "rpg_net_common.h"
 
-#include <glade/glade.h>
-#include <gtk/gtk.h>
+#include "glade/glade.h"
+#include "gtk/gtk.h"
 
-#include <ace/Synch.h>
+#include "ace/Synch.h"
 
 #include <deque>
 #include <vector>

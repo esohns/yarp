@@ -31,11 +31,11 @@
 
 #include "rpg_common.h"
 
-#include <ace/Time_Value.h>
-#include <ace/Singleton.h>
-#include <ace/Synch.h>
-#include <ace/Module.h>
-#include <ace/Stream.h>
+#include "ace/Time_Value.h"
+#include "ace/Singleton.h"
+#include "ace/Synch.h"
+#include "ace/Module.h"
+#include "ace/Stream.h"
 
 #include <list>
 
@@ -52,6 +52,26 @@ typedef RPG_Stream_IModule<ACE_MT_SYNCH,
                            RPG_Common_TimePolicy_t> IMODULE_TYPE;
 typedef ACE_Stream_Iterator<ACE_MT_SYNCH,
                             RPG_Common_TimePolicy_t> STREAM_ITERATOR_TYPE;
+
+enum RPG_Net_ClientServerRole_t
+{
+  ROLE_INVALID = -1,
+  ROLE_CLIENT = 0,
+  ROLE_SERVER,
+  //
+  ROLE_MAX
+};
+
+enum RPG_Net_TransportLayer_t
+{
+  TRANSPORTLAYER_INVALID = -1,
+  TRANSPORTLAYER_IP_BROADCAST = 0,
+  TRANSPORTLAYER_IP_MULTICAST,
+  TRANSPORTLAYER_TCP,
+  TRANSPORTLAYER_UDP,
+  //
+  TRANSPORTLAYER_MAX
+};
 
 struct RPG_Net_RuntimeStatistic
 {
@@ -88,8 +108,8 @@ struct RPG_Net_ConfigPOD
   bool                       delete_module;
   unsigned int               sessionID; // (== socket handle !)
   unsigned int               statisticsReportingInterval;
-	bool                       printFinalReport;
-	// ****************************** runtime data *******************************
+  bool                       printFinalReport;
+  // ****************************** runtime data *******************************
   RPG_Net_RuntimeStatistic   currentStatistics;
   ACE_Time_Value             lastCollectionTimestamp;
 };
@@ -105,8 +125,8 @@ typedef RPG_Net_Connection_Manager<RPG_Net_ConfigPOD,
 typedef ACE_Singleton<RPG_Net_Connection_Manager_t,
                       ACE_Recursive_Thread_Mutex> RPG_NET_CONNECTIONMANAGER_SINGLETON;
 RPG_NET_SINGLETON_DECLARE(ACE_Singleton,
-			                    RPG_Net_Connection_Manager_t,
-			                    ACE_Recursive_Thread_Mutex);
+                          RPG_Net_Connection_Manager_t,
+                          ACE_Recursive_Thread_Mutex);
 
 typedef RPG_Net_StatisticHandler_Reactor_T<RPG_Net_RuntimeStatistic> RPG_Net_StatisticHandler_Reactor_t;
 typedef RPG_Net_StatisticHandler_Proactor_T<RPG_Net_RuntimeStatistic> RPG_Net_StatisticHandler_Proactor_t;

@@ -48,7 +48,7 @@ IRC_Client_Tools::connect(RPG_Stream_IAllocator* messageAllocator_in,
   // step1: setup configuration passed to processing stream
   RPG_Net_Protocol_ConfigPOD stream_config;
   // ************ connection config data ************
-  stream_config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
+  stream_config.socketBufferSize = RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
   stream_config.messageAllocator = messageAllocator_in;
   stream_config.bufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
   // ************ protocol config data **************

@@ -226,7 +226,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   if (!socketHandler_impl->init(config_in.messageAllocator,
                                 config_in.sessionID,
                                 config_in.useThreadPerConnection,
-                                RPG_NET_STATISTICS_COLLECT_INTERVAL))
+                                RPG_NET_STATISTICS_COLLECTION_INTERVAL))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),

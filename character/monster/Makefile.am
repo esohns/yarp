@@ -1,8 +1,9 @@
-METASOURCES = AUTO
+#METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = \
   -DRPG_MONSTER_BUILD_DLL \
+  -I$(builddir)/.. \
   -I$(srcdir)/../../common \
   -I$(srcdir)/../../character \
   -I$(srcdir)/../../magic \

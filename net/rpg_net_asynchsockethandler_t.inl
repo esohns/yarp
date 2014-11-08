@@ -104,13 +104,13 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
       return;
     } // end IF
   if (!RPG_Net_Common_Tools::setNoDelay(handle_in,
-                                        RPG_NET_DEF_SOCK_NODELAY))
+                                        RPG_NET_DEFAULT_TCP_NODELAY))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to setNoDelay(%u, %s), aborting\n"),
                handle_in,
-               (RPG_NET_DEF_SOCK_NODELAY ? ACE_TEXT("true")
-							                           : ACE_TEXT("false"))));
+               (RPG_NET_DEFAULT_TCP_NODELAY ? ACE_TEXT("true")
+                                            : ACE_TEXT("false"))));
 
     // clean up
     handle_close(inherited::handle(),
@@ -119,15 +119,15 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
     return;
   } // end IF
   if (!RPG_Net_Common_Tools::setKeepAlive(handle_in,
-                                          RPG_NET_DEF_SOCK_KEEPALIVE))
+                                          RPG_NET_DEFAULT_TCP_KEEPALIVE))
   {
     int error = ACE_OS::last_error();
     if (error != ENOTSOCK) // <-- socket has been closed asynchronously
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to setLinger(%u, %s), aborting\n"),
                  id(),
-                 (RPG_NET_DEF_SOCK_LINGER ? ACE_TEXT("true")
-								                          : ACE_TEXT("false"))));
+                 (RPG_NET_DEFAULT_TCP_LINGER ? ACE_TEXT("true")
+                                             : ACE_TEXT("false"))));
 
     // clean up
     handle_close(inherited::handle(),
@@ -136,15 +136,15 @@ RPG_Net_AsynchSocketHandler_T<ConfigType,
     return;
   } // end IF
   if (!RPG_Net_Common_Tools::setLinger(handle_in,
-                                       RPG_NET_DEF_SOCK_LINGER))
+                                       RPG_NET_DEFAULT_TCP_LINGER))
   {
     int error = ACE_OS::last_error();
     if (error != ENOTSOCK) // <-- socket has been closed asynchronously
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to setLinger(%u, %s), aborting\n"),
                  id(),
-                 ((RPG_NET_DEF_SOCK_LINGER > 0) ? ACE_TEXT("true")
-								                                : ACE_TEXT("false"))));
+                 ((RPG_NET_DEFAULT_TCP_LINGER > 0) ? ACE_TEXT("true")
+                                                   : ACE_TEXT("false"))));
 
     // clean up
     handle_close(inherited::handle(),

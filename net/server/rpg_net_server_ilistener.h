@@ -21,7 +21,7 @@
 #ifndef RPG_NET_SERVER_ILISTENER_H
 #define RPG_NET_SERVER_ILISTENER_H
 
-#include <ace/INET_Addr.h>
+#include "ace/INET_Addr.h"
 
 #include "rpg_common_icontrol.h"
 
@@ -31,9 +31,8 @@ class RPG_Net_Server_IListener
  public:
   virtual ~RPG_Net_Server_IListener() {}
 
-  // exposed interface
   virtual void init(const unsigned short&,    // port number
-		                const bool& = false) = 0; // use loopback device ?
+                    const bool& = false) = 0; // use loopback device ?
 };
 
 #endif

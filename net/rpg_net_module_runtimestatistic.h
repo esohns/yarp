@@ -104,9 +104,9 @@ class RPG_Net_Module_RuntimeStatistic_t
   virtual ~RPG_Net_Module_RuntimeStatistic_t();
 
   // initialization
-  bool init(const unsigned int& = RPG_NET_DEF_STATISTICS_REPORTING_INTERVAL, // (local) reporting interval [seconds: 0 --> OFF]
-            const bool& = false,                                             // print final report ?
-            const RPG_Stream_IAllocator* = NULL);                            // report cache usage ?
+  bool init(const unsigned int& = RPG_NET_DEFAULT_STATISTICS_REPORTING_INTERVAL, // (local) reporting interval [seconds: 0 --> OFF]
+            const bool& = false,                                                 // print final report ?
+            const RPG_Stream_IAllocator* = NULL);                                // report cache usage ?
 
   // implement (part of) Stream_ITaskBase
   virtual void handleDataMessage(ProtocolMessageType*&, // data message handle

@@ -885,7 +885,7 @@ ACE_TMAIN(int argc,
 
   // step1d: init configuration object
   RPG_Stream_AllocatorHeap heapAllocator;
-  RPG_Net_Protocol_MessageAllocator messageAllocator(RPG_NET_MAX_MESSAGES,
+  RPG_Net_Protocol_MessageAllocator messageAllocator(RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
                                                      &heapAllocator);
   RPG_Net_Protocol_Module_IRCHandler_Module IRChandlerModule(std::string("IRCHandler"),
                                                              NULL);
@@ -912,7 +912,7 @@ ACE_TMAIN(int argc,
   RPG_Net_Protocol_ConfigPOD config;
   // step1da: populate config object with default/collected data
   // ************ connection config data ************
-  config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
+  config.socketBufferSize = RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
   config.messageAllocator = &messageAllocator;
   config.bufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
   // ************ protocol config data **************

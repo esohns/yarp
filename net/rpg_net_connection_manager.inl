@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <ace/OS.h>
+#include "ace/OS.h"
 
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
@@ -33,7 +33,7 @@ RPG_Net_Connection_Manager<ConfigurationType,
  : myCondition(myLock),
 //                ACE_TEXT_ALWAYS_CHAR(""),
 //                NULL),
-   myMaxNumConnections(RPG_NET_MAX_NUM_OPEN_CONNECTIONS),
+   myMaxNumConnections(RPG_NET_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS),
    myUserData(),
    myIsInitialized(false),
    myIsActive(true)
@@ -179,7 +179,7 @@ RPG_Net_Connection_Manager<ConfigurationType,
       return false;
     } // end IF
 
-		connection_in->increase();
+    connection_in->increase();
     myConnections.insert_tail(connection_in);
 
     // debug info
@@ -191,8 +191,8 @@ RPG_Net_Connection_Manager<ConfigurationType,
     try
     {
       connection_in->info(handle,
-				                  local_SAP,
-													remote_SAP);
+                          local_SAP,
+                          remote_SAP);
     }
     catch (...)
     {
@@ -202,13 +202,13 @@ RPG_Net_Connection_Manager<ConfigurationType,
       return false;
     }
     if (local_SAP.addr_to_string(buffer,
-			                           sizeof(buffer)) == -1)
+                                 sizeof(buffer)) == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
     localAddress = buffer;
     ACE_OS::memset(buffer, 0, sizeof(buffer));
     if (remote_SAP.addr_to_string(buffer,
-			                            sizeof(buffer)) == -1)
+                                  sizeof(buffer)) == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
 
@@ -276,12 +276,12 @@ RPG_Net_Connection_Manager<ConfigurationType,
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("deregistered connection [%@/%u] (total: %u)\n"),
                  connection_in, reinterpret_cast<unsigned int>(handle),
-								 myConnections.size()));
+                 myConnections.size()));
 #else
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("deregistered connection [%@/%d] (total: %u)\n"),
                  connection_in, handle,
-								 myConnections.size()));
+                 myConnections.size()));
 #endif
 
       break;
@@ -289,8 +289,8 @@ RPG_Net_Connection_Manager<ConfigurationType,
 
   if (!found)
   {
-		// *IMPORTANT NOTE*: when a connection attempt fails, the reactor close()s
-		// the connection although it was never open()ed
+    // *IMPORTANT NOTE*: when a connection attempt fails, the reactor close()s
+    // the connection although it was never open()ed
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to remove connection (%@): not found, aborting\n"),
                connection_in));
@@ -298,10 +298,10 @@ RPG_Net_Connection_Manager<ConfigurationType,
     return;
   } // end IF
 
-	// clean up
-	connection->decrease();
+  // clean up
+  connection->decrease();
 
-	// if there are no more connections, signal any waiters...
+  // if there are no more connections, signal any waiters...
   if (myConnections.is_empty() == 1)
     myCondition.broadcast();
 }
@@ -458,8 +458,8 @@ RPG_Net_Connection_Manager<ConfigurationType,
        iterator.next(result) && (i < index_in);
        iterator.advance(), i++) {} // end FOR
 
-	// increase reference count
-	result->increase();
+  // increase reference count
+  result->increase();
 
   return result;
 }

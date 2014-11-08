@@ -5,7 +5,7 @@
 AC_SUBST([YARP_SO_VERSION], [0:0:0])
 AC_SUBST([YARP_API_VERSION], [0.1])
 
-AC_INIT([yarp], [YARP_API_VERSION], [erik.sohns@web.de], [Yarp], [http://www.github.org/esohns/yarp])
+AC_INIT([yarp], [YARP_API_VERSION], [erik.sohns@fastmail.net], [Yarp], [http://www.github.org/esohns/yarp])
 AC_PREREQ(2.63)
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_AUX_DIR([aux_config])
@@ -44,24 +44,25 @@ AC_DEFINE([META_PACKAGE], ["RPG"], [meta-package])
 #AC_PROG_INSTALL
 #AC_PROG_LN_S
 #AC_PROG_MAKE_SET
-# AC_PROG_RANLIB
+#AC_PROG_RANLIB
 #AC_PROG_LEX
 #AC_PROG_YACC
-#AM_PROG_AR
+AM_PROG_AR
 #PKG_PROG_PKG_CONFIG
 
 # init other tools
 AM_INIT_AUTOMAKE
 # build time sanity check...
 AM_SANITY_CHECK
+
 LT_INIT
 
 # prefix config.h
 AX_PREFIX_CONFIG_H([rpg_config.h], [RPG], [config.h])
 #AX_PREFIX_CONFIG_H([tools/XML2CppCode/XML2CppCode-config.h], [XML2CppCode], [tools/XML2CppCode/config.h])
 
-# reset the cpp compiler flags
-CXXFLAGS=
+## reset the cpp compiler flags
+#CXXFLAGS=
 # --> enable debug support ?
 AC_MSG_CHECKING(whether to enable debugging)
 debug_default="no"
@@ -137,4 +138,3 @@ AC_CONFIG_FILES([Makefile
                  Yarp-${YARP_API_VERSION}.pc:scripts/Yarp.pc.in])
 
 AC_OUTPUT
-

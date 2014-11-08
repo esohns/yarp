@@ -155,8 +155,8 @@ libRPG_Common_la_SOURCES = \
   rpg_common.h \
   rpg_XMLSchema_XML_types.h \
   rpg_XMLSchema_XML_tree.h \
-  stdafx.h \
-  stdafx.h.gch
+  stdafx.h
+#  stdafx.h.gch
 
 # (GNU-)make-rule for pch
 #%.h.gch: %.h

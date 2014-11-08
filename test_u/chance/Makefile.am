@@ -1,7 +1,8 @@
-METASOURCES = AUTO
+#METASOURCES = AUTO
 
 #ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = \
+  -I$(builddir)/.. \
   -I$(srcdir)/../../common \
   -I$(srcdir)/../../chance/dice
 

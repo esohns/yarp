@@ -120,7 +120,7 @@ do_printUsage(const std::string& programName_in)
             << ACE_TEXT("]")
             << std::endl;
   std::cout << ACE_TEXT("-p [VALUE]   : server port [")
-            << RPG_NET_SERVER_DEF_LISTENING_PORT
+            << RPG_NET_SERVER_DEFAULT_LISTENING_PORT
             << ACE_TEXT("]")
             << std::endl;
   std::cout << ACE_TEXT("-r           : use reactor [")
@@ -192,7 +192,7 @@ do_processArguments(const int& argc_in,
   serverHostname_out      = NET_CLIENT_DEF_SERVER_HOSTNAME;
   connectionInterval_out  = NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL;
   logToFile_out           = false;
-  serverPortNumber_out    = RPG_NET_SERVER_DEF_LISTENING_PORT;
+  serverPortNumber_out    = RPG_NET_SERVER_DEFAULT_LISTENING_PORT;
   useReactor_out          = RPG_NET_USES_REACTOR;
   serverPingInterval_out  = NET_CLIENT_DEF_SERVER_PING_INTERVAL;
   traceInformation_out    = false;
@@ -459,7 +459,7 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
                           &CBData_in.lock);
   eventHandler_impl->subscribe(&ui_event_handler);
   RPG_Stream_AllocatorHeap heapAllocator;
-  RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_MAX_MESSAGES,
+  RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
                                                   &heapAllocator);
   RPG_Net_ConfigPOD config;
   ACE_OS::memset(&config, 0, sizeof(config));
@@ -468,7 +468,7 @@ do_work(const Net_Client_TimeoutHandler::ActionMode_t& actionMode_in,
                                                                                          : serverPingInterval_in);
   config.pingAutoAnswer = true;
   config.printPongMessages = true;
-  config.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
+  config.socketBufferSize = RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
   config.messageAllocator = &messageAllocator;
   config.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
 //  config.useThreadPerConnection = false;
@@ -778,7 +778,7 @@ ACE_TMAIN(int argc_in,
   std::string server_hostname                         = NET_CLIENT_DEF_SERVER_HOSTNAME;
   unsigned int connection_interval                    = NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL;
   bool log_to_file                                    = false;
-  unsigned short server_port_number                   = RPG_NET_SERVER_DEF_LISTENING_PORT;
+  unsigned short server_port_number                   = RPG_NET_SERVER_DEFAULT_LISTENING_PORT;
   bool use_reactor                                    = RPG_NET_USES_REACTOR;
   unsigned int server_ping_interval                   = NET_CLIENT_DEF_SERVER_PING_INTERVAL;
   bool trace_information                              = false;

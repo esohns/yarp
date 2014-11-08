@@ -21,9 +21,9 @@
 
 #include "rpg_net_server_common_tools.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Dirent_Selector.h>
-#include <ace/Log_Msg.h>
+#include "ace/Global_Macros.h"
+#include "ace/Dirent_Selector.h"
+#include "ace/Log_Msg.h"
 
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
@@ -32,16 +32,15 @@
 #include "rpg_net_server_defines.h"
 
 // init statics
-unsigned int RPG_Net_Server_Common_Tools::myMaxNumberOfLogFiles = RPG_NET_SERVER_LOG_MAXNUMFILES;
+unsigned int
+RPG_Net_Server_Common_Tools::myMaxNumberOfLogFiles =
+    RPG_NET_SERVER_LOG_MAXIMUM_NUMBER_OF_FILES;
 
 bool
 RPG_Net_Server_Common_Tools::getNextLogFilename(const std::string& directory_in,
                                                 std::string& FQLogFilename_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_Common_Tools::getNextLogFilename"));
-
-  // sanity check(s)
-  ACE_ASSERT(RPG_Net_Server_Common_Tools::myMaxNumberOfLogFiles >= 1);
 
   // init return value(s)
   FQLogFilename_out.resize(0);

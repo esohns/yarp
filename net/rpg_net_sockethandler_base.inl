@@ -166,35 +166,35 @@ RPG_Net_SocketHandlerBase<ConfigurationType,
 			return -1;
 		} // end IF
   if (!RPG_Net_Common_Tools::setNoDelay(peer_.get_handle(),
-                                        RPG_NET_DEF_SOCK_NODELAY))
+                                        RPG_NET_DEFAULT_TCP_NODELAY))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to setNoDelay(%u, %s), aborting\n"),
                id(),
-               (RPG_NET_DEF_SOCK_NODELAY ? ACE_TEXT("true")
-							                           : ACE_TEXT("false"))));
+               (RPG_NET_DEFAULT_TCP_NODELAY ? ACE_TEXT("true")
+                                            : ACE_TEXT("false"))));
 
     return -1;
   } // end IF
   if (!RPG_Net_Common_Tools::setKeepAlive(peer_.get_handle(),
-                                          RPG_NET_DEF_SOCK_KEEPALIVE))
+                                          RPG_NET_DEFAULT_TCP_KEEPALIVE))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to setLinger(%u, %s), aborting\n"),
                id(),
-               (RPG_NET_DEF_SOCK_LINGER ? ACE_TEXT("true")
-							                          : ACE_TEXT("false"))));
+               (RPG_NET_DEFAULT_TCP_LINGER ? ACE_TEXT("true")
+                                           : ACE_TEXT("false"))));
 
     return -1;
   } // end IF
   if (!RPG_Net_Common_Tools::setLinger(peer_.get_handle(),
-                                       RPG_NET_DEF_SOCK_LINGER))
+                                       RPG_NET_DEFAULT_TCP_LINGER))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to setLinger(%u, %s), aborting\n"),
                id(),
-               ((RPG_NET_DEF_SOCK_LINGER > 0) ? ACE_TEXT("true")
-							                                : ACE_TEXT("false"))));
+               ((RPG_NET_DEFAULT_TCP_LINGER > 0) ? ACE_TEXT("true")
+                                                 : ACE_TEXT("false"))));
 
     return -1;
   } // end IF

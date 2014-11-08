@@ -21,11 +21,11 @@
 
 #include "rpg_net_server_asynchlistener.h"
 
-#include <ace/Default_Constants.h>
-#include <ace/OS.h>
-#include <ace/Log_Msg.h>
-#include <ace/INET_Addr.h>
-#include <ace/POSIX_Asynch_IO.h>
+#include "ace/Default_Constants.h"
+#include "ace/OS.h"
+#include "ace/Log_Msg.h"
+#include "ace/INET_Addr.h"
+#include "ace/POSIX_Asynch_IO.h"
 
 #include "rpg_common_macros.h"
 
@@ -37,7 +37,7 @@ RPG_Net_Server_AsynchListener::RPG_Net_Server_AsynchListener()
  : //inherited(),
    myIsInitialized(false),
    myIsListening(false),
-   myListeningPort(RPG_NET_SERVER_DEF_LISTENING_PORT),
+   myListeningPort(RPG_NET_SERVER_DEFAULT_LISTENING_PORT),
    myUseLoopback(false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::RPG_Net_Server_AsynchListener"));
