@@ -55,7 +55,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\chance\dice;$(ProjectDir)..\common;$(ProjectDir)..\character;$(ProjectDir)..\magic;$(ProjectDir)..\item;$(ProjectDir)..\character\player;$(ProjectDir)..\character\monster;$(ProjectDir)..\combat;$(ProjectDir)..\map;$(ProjectDir)..\graphics;$(ProjectDir)..\net\client;$(ProjectDir)..\engine;$(ProjectDir)..\sound;$(ProjectDir)..\client;$(ProjectDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\include;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\map;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\character;$(ProjectDir)..\..\item;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\net\client;$(ProjectDir)..\..\engine;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\sound;$(ProjectDir)..\..\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BASEDIR="$(ProgramFiles.Replace('\', "\\"))\\$(SolutionName)";RPG_CLIENT_HAS_DLL;RPG_GRAPHICS_HAS_DLL;RPG_ENGINE_HAS_DLL;RPG_MAP_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;DEBUG_DEBUGGER;WIN32;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
@@ -84,7 +84,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>E:\Yarp\client;E:\Yarp\graphics;E:\Yarp\engine;E:\Yarp\combat;E:\Yarp\character\monster;E:\Yarp\character\player;E:\Yarp\map;E:\Yarp\item;E:\Yarp\magic;E:\Yarp\character;E:\Yarp\common;E:\Yarp\chance\dice;E:\libglade-dev_2.6.4-1_win32\include\libglade-2.0;E:\Gtk\include\atk-1.0;E:\Gtk\include\gdk-pixbuf-2.0;E:\Gtk\include\pango-1.0;E:\Gtk\include\cairo;E:\Gtk\lib\gtk-2.0\include;E:\Gtk\include\gtk-2.0;E:\Gtk\lib\glib-2.0\include;E:\Gtk\include\glib-2.0;E:\lpng157;E:\SDL-1.2.14;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\include;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\map;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\character;$(ProjectDir)..\..\item;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\net\client;$(ProjectDir)..\..\engine;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\sound;$(ProjectDir)..\..\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_CLIENT_HAS_DLL;RPG_GRAPHICS_HAS_DLL;RPG_ENGINE_HAS_DLL;RPG_MAP_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;WIN32;_CRT_SECURE_NO_WARNINGS;NDEBUG</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -104,36 +104,36 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="map\path_finder_ui.cpp" />
-    <ClCompile Include="map\stdafx.cpp">
+    <ClCompile Include="..\..\test_u\map\path_finder_ui.cpp" />
+    <ClCompile Include="..\..\test_u\map\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="map\stdafx.h" />
+    <ClInclude Include="..\..\test_u\map\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\character\monster\monster.vcxproj">
-      <Project>{f306a4b7-0d19-4322-b891-11e528ebd50c}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\character\player\player.vcxproj">
-      <Project>{c0095f69-560d-4c7d-82de-078644135735}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\client\client.vcxproj">
+    <ProjectReference Include="client.vcxproj">
       <Project>{df9ce33e-5060-48a6-b105-0b61fedf6ae6}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\common\common.vcxproj">
+    <ProjectReference Include="common.vcxproj">
       <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\engine\engine.vcxproj">
+    <ProjectReference Include="engine.vcxproj">
       <Project>{6512261a-32d3-4877-be0c-5d24e88b3b23}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\graphics\graphics.vcxproj">
+    <ProjectReference Include="graphics.vcxproj">
       <Project>{dc39b751-377f-4093-9f76-4821f97f4de5}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\map\map.vcxproj">
+    <ProjectReference Include="map.vcxproj">
       <Project>{e1b4aac5-f8c0-469f-9be3-e3a93b01ed84}</Project>
+    </ProjectReference>
+    <ProjectReference Include="monster.vcxproj">
+      <Project>{f306a4b7-0d19-4322-b891-11e528ebd50c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="player.vcxproj">
+      <Project>{c0095f69-560d-4c7d-82de-078644135735}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -15,15 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="item\item_parser.cpp">
+    <ClCompile Include="..\..\test_u\item\item_parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="item\stdafx.cpp">
+    <ClCompile Include="..\..\test_u\item\stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="item\stdafx.h">
+    <ClInclude Include="..\..\test_u\item\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

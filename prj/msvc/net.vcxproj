@@ -150,6 +150,8 @@ popd</Command>
     <ClCompile Include="..\..\net\rpg_net_stream_config.cpp" />
     <ClCompile Include="..\..\net\rpg_net_stream_messageallocator.cpp" />
     <ClCompile Include="..\..\net\rpg_net_stream_socket_base.cpp" />
+    <ClCompile Include="..\..\net\rpg_net_transportlayer_ip_cast.cpp" />
+    <ClCompile Include="..\..\net\rpg_net_transportlayer_udp.cpp" />
     <ClCompile Include="..\..\net\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -192,6 +194,8 @@ popd</Command>
     <ClInclude Include="..\..\net\rpg_net_stream_config.h" />
     <ClInclude Include="..\..\net\rpg_net_stream_messageallocator.h" />
     <ClInclude Include="..\..\net\rpg_net_stream_socket_base.h" />
+    <ClInclude Include="..\..\net\rpg_net_transportlayer_ip_cast.h" />
+    <ClInclude Include="..\..\net\rpg_net_transportlayer_udp.h" />
     <ClInclude Include="..\..\net\stdafx.h" />
   </ItemGroup>
   <ItemGroup>

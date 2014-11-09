@@ -37,7 +37,7 @@
 #include "ace/High_Res_Timer.h"
 
 #ifdef RPG_ENABLE_VALGRIND_SUPPORT
-#include <valgrind/valgrind.h>
+#include "valgrind/valgrind.h"
 #endif
 
 #include "rpg_dice.h"

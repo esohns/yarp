@@ -15,15 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="map\stdafx.cpp">
+    <ClCompile Include="..\..\test_u\map\map_vision_ui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="map\map_vision_ui.cpp">
+    <ClCompile Include="..\..\test_u\map\stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="map\stdafx.h">
+    <ClInclude Include="..\..\test_u\map\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

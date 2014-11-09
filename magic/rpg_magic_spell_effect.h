@@ -116,7 +116,7 @@ enum RPG_Magic_Spell_Effect
 
 #include "rpg_magic_exports.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <map>
 #include <string>

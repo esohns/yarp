@@ -20,7 +20,7 @@ enum RPG_Character_AlignmentCivic
 
 #include "rpg_character_exports.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <map>
 #include <string>

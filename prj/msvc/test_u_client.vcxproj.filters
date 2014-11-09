@@ -15,15 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="client\rpg_client_gui.cpp">
+    <ClCompile Include="..\..\test_u\client\rpg_client_gui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="client\stdafx.cpp">
+    <ClCompile Include="..\..\test_u\client\stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="client\stdafx.h">
+    <ClInclude Include="..\..\test_u\client\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

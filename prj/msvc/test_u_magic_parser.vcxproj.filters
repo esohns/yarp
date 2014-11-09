@@ -15,15 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="magic\magic_parser.cpp">
+    <ClCompile Include="..\..\test_u\magic\magic_parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="magic\stdafx.cpp">
+    <ClCompile Include="..\..\test_u\magic\stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="magic\stdafx.h">
+    <ClInclude Include="..\..\test_u\magic\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

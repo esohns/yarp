@@ -15,15 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="combat\combat_simulator.cpp">
+    <ClCompile Include="..\..\test_u\combat\combat_simulator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="combat\stdafx.cpp">
+    <ClCompile Include="..\..\test_u\combat\stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="combat\stdafx.h">
+    <ClInclude Include="..\..\test_u\combat\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

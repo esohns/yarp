@@ -62,13 +62,13 @@ typedef ACE_Event_Handler_Handle_Timeout_Upcall RPG_Common_TimeoutUpcall_t;
 //                                  ACE_SYNCH_NULL_MUTEX,
 //                                  RPG_Common_TimePolicy_t> RPG_Common_TimerQueueImplIterator_t;
 typedef ACE_Timer_Wheel_T<ACE_Event_Handler*,
-													RPG_Common_TimeoutUpcall_t,
-													ACE_SYNCH_NULL_MUTEX,
-													RPG_Common_TimePolicy_t> RPG_Common_TimerQueueImpl_t;
+                          RPG_Common_TimeoutUpcall_t,
+                          ACE_SYNCH_NULL_MUTEX,
+                          RPG_Common_TimePolicy_t> RPG_Common_TimerQueueImpl_t;
 typedef ACE_Timer_Wheel_Iterator_T<ACE_Event_Handler*,
-																	 RPG_Common_TimeoutUpcall_t,
-																	 ACE_SYNCH_NULL_MUTEX,
-																	 RPG_Common_TimePolicy_t> RPG_Common_TimerQueueImplIterator_t;
+                                   RPG_Common_TimeoutUpcall_t,
+                                   ACE_SYNCH_NULL_MUTEX,
+                                   RPG_Common_TimePolicy_t> RPG_Common_TimerQueueImplIterator_t;
 typedef ACE_Thread_Timer_Queue_Adapter<RPG_Common_TimerQueueImpl_t,
                                        ACE_Event_Handler*> RPG_Common_TimerQueue_t;
 

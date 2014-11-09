@@ -18,7 +18,7 @@ enum RPG_Common_CounterMeasure
 
 #include "rpg_common_exports.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <map>
 #include <string>

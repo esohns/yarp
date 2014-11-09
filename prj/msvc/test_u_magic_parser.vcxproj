@@ -50,7 +50,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>C:\Temp\ACE_wrappers;C:\Program Files\CodeSynthesis XSD 3.3\include;$(ProjectDir)..\chance\dice;$(ProjectDir)..\common;$(ProjectDir)..\character;$(ProjectDir)..\magic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BASEDIR="$(ProgramFiles.Replace('\', "\\"))\\$(SolutionName)";RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
@@ -80,7 +80,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>E:\Yarp\magic;E:\Yarp\character;E:\Yarp\common;E:\Yarp\chance\dice;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BASEDIR=".";RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -98,26 +98,26 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="magic\magic_parser.cpp" />
-    <ClCompile Include="magic\stdafx.cpp">
+    <ClCompile Include="..\..\test_u\magic\magic_parser.cpp" />
+    <ClCompile Include="..\..\test_u\magic\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="magic\stdafx.h" />
+    <ClInclude Include="..\..\test_u\magic\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\chance\dice\dice.vcxproj">
-      <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\character\character.vcxproj">
+    <ProjectReference Include="character.vcxproj">
       <Project>{d93f14b1-cfe8-45df-816d-06ab1ca74cd6}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\common\common.vcxproj">
+    <ProjectReference Include="common.vcxproj">
       <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\magic\magic.vcxproj">
+    <ProjectReference Include="dice.vcxproj">
+      <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
+    </ProjectReference>
+    <ProjectReference Include="magic.vcxproj">
       <Project>{6867cf99-3611-4345-b992-85780c27119e}</Project>
     </ProjectReference>
   </ItemGroup>

@@ -53,7 +53,7 @@ enum RPG_Common_Terrain
 
 #include "rpg_common_exports.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <map>
 #include <string>

@@ -52,7 +52,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\include;$(ProjectDir)..\chance\dice;$(ProjectDir)..\common;$(ProjectDir)..\sound;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\include;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\sound;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_COMMON_HAS_DLL;WIN32;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
@@ -84,7 +84,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>E:\Yarp\sound;E:\Yarp\common;E:\Yarp\chance\dice;E:\SDL-1.2.14;E:\Program Files\CodeSynthesis XSD 3.3\include;E:\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\include;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\sound;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BASEDIR=".";RPG_COMMON_HAS_DLL;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -103,23 +103,23 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="sound\sound_parser.cpp" />
-    <ClCompile Include="sound\stdafx.cpp">
+    <ClCompile Include="..\..\test_u\sound\sound_parser.cpp" />
+    <ClCompile Include="..\..\test_u\sound\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="sound\stdafx.h" />
+    <ClInclude Include="..\..\test_u\sound\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\chance\dice\dice.vcxproj">
-      <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\common\common.vcxproj">
+    <ProjectReference Include="common.vcxproj">
       <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\sound\sound.vcxproj">
+    <ProjectReference Include="dice.vcxproj">
+      <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
+    </ProjectReference>
+    <ProjectReference Include="sound.vcxproj">
       <Project>{d55b85ff-fd26-43de-a8b1-8833ac97b05c}</Project>
     </ProjectReference>
   </ItemGroup>

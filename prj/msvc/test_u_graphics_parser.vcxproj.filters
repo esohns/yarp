@@ -15,15 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="graphics\graphics_parser.cpp">
+    <ClCompile Include="..\..\test_u\graphics\graphics_parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\stdafx.cpp">
+    <ClCompile Include="..\..\test_u\graphics\stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="graphics\stdafx.h">
+    <ClInclude Include="..\..\test_u\graphics\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

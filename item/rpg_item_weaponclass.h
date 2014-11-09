@@ -21,7 +21,7 @@ enum RPG_Item_WeaponClass
 
 #include "rpg_item_exports.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <map>
 #include <string>

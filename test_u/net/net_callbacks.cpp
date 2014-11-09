@@ -21,7 +21,7 @@
 
 #include "net_callbacks.h"
 
-#include <glade/glade.h>
+#include "glade/glade.h"
 
 #include "rpg_dice.h"
 
