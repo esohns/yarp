@@ -21,13 +21,15 @@
 
 #include "rpg_net_client_asynchconnector.h"
 
-#include "rpg_net_common.h"
+//#include "rpg_net_connection_manager_common.h"
 
 #include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
+//#include "rpg_common_defines.h"
+
+#include "ace/Log_Msg.h"
 
 RPG_Net_Client_AsynchConnector::RPG_Net_Client_AsynchConnector()
- : inherited()
+// : inherited()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_AsynchConnector::RPG_Net_Client_AsynchConnector"));
 
@@ -45,19 +47,24 @@ RPG_Net_Client_AsynchConnector::~RPG_Net_Client_AsynchConnector()
 
 }
 
-RPG_Net_AsynchStreamHandler_t*
+RPG_Net_AsynchTCPSocketHandler_t*
 RPG_Net_Client_AsynchConnector::make_handler(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_AsynchConnector::make_handler"));
 
   // init return value(s)
-  RPG_Net_AsynchStreamHandler_t* handler_out = NULL;
+  RPG_Net_AsynchTCPSocketHandler_t* result = NULL;
 
   // default behavior
-  ACE_NEW_NORETURN(handler_out,
-                   RPG_Net_AsynchStreamHandler_t(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()));
+//  ACE_NEW_NORETURN(result,
+//                   RPG_Net_AsynchTCPSocketHandler_t(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()));
+  ACE_NEW_NORETURN(result,
+                   RPG_Net_AsynchTCPSocketHandler_t());
+  if (!result)
+    ACE_DEBUG((LM_CRITICAL,
+               ACE_TEXT("failed to allocate memory: \"%m\", aborting\n")));
 
-  return handler_out;
+  return result;
 }
 
 void
@@ -76,10 +83,10 @@ RPG_Net_Client_AsynchConnector::connect(const ACE_INET_Addr& peer_address)
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_AsynchConnector::connect"));
 
   int result =
-		inherited::connect(peer_address,                           // remote SAP
-		                   ACE_sap_any_cast(const ACE_INET_Addr&), // local SAP
-											 1,                                      // re-use address (SO_REUSEADDR) ?
-											 NULL);                                  // ACT
+    inherited::connect(peer_address,                           // remote SAP
+                       ACE_sap_any_cast(const ACE_INET_Addr&), // local SAP
+                       1,                                      // re-use address (SO_REUSEADDR) ?
+                       NULL);                                  // ACT
   if (result == -1)
   {
     ACE_TCHAR buffer[RPG_COMMON_BUFSIZE];
@@ -101,20 +108,20 @@ RPG_Net_Client_AsynchConnector::validate_connection(const ACE_Asynch_Connect::Re
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_AsynchConnector::validate_connection"));
 
-	// success ?
-	if (result_in.success() == 0)
-	{
-		// debug info
+  // success ?
+  if (result_in.success() == 0)
+  {
+    // debug info
     ACE_TCHAR buffer[RPG_COMMON_BUFSIZE];
     ACE_OS::memset(buffer, 0, sizeof(buffer));
     if (remoteSAP_in.addr_to_string(buffer, sizeof(buffer)) == -1)
       ACE_DEBUG((LM_ERROR,
                   ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
-		ACE_DEBUG((LM_ERROR,
-			         ACE_TEXT("failed to RPG_Net_Client_AsynchConnector::connect(\"%s\"): \"%s\", aborting\n"),
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to RPG_Net_Client_AsynchConnector::connect(\"%s\"): \"%s\", aborting\n"),
                buffer,
-							 ACE_OS::strerror(result_in.error())));
-	} // end IF
+               ACE_OS::strerror(result_in.error())));
+  } // end IF
 
-	return ((result_in.success() == 1) ? 0 : -1);
+  return ((result_in.success() == 1) ? 0 : -1);
 }

@@ -23,8 +23,8 @@
 
 #include "rpg_common_referencecounter_base.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Time_Value.h>
+#include "ace/Global_Macros.h"
+#include "ace/Time_Value.h"
 
 template <typename DataType>
 class RPG_Stream_SessionConfigBase
@@ -47,7 +47,6 @@ class RPG_Stream_SessionConfigBase
  private:
   typedef RPG_Common_ReferenceCounterBase inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_SessionConfigBase());
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_SessionConfigBase(const RPG_Stream_SessionConfigBase<DataType>&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Stream_SessionConfigBase<DataType>& operator=(const RPG_Stream_SessionConfigBase<DataType>&));

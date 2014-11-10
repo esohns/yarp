@@ -29,12 +29,10 @@
 #include "rpg_net_defines.h"
 
 RPG_Net_TransportLayer_UDP::RPG_Net_TransportLayer_UDP(RPG_Net_ClientServerRole_t clientServerRole_in)
- : inherited(),
+ : inherited(clientServerRole_in,
+             TRANSPORTLAYER_UDP)
+ , inherited2()
 //   myAddress(),
-   myClientServerRole(clientServerRole_in),
-   myTransportLayer(TRANSPORTLAYER_UDP),
-   myPort(RPG_NET_DEFAULT_PORT),
-   myUseLoopback(false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_TransportLayer_UDP::RPG_Net_TransportLayer_UDP"));
 
@@ -46,10 +44,10 @@ RPG_Net_TransportLayer_UDP::RPG_Net_TransportLayer_UDP(RPG_Net_ClientServerRole_
   if (myAddress.set(ACE_TEXT(address.c_str()), AF_INET) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_INET_Addr::set(): \"%m\", continuing\n")));
-  if (open(myAddress,
-           ACE_PROTOCOL_FAMILY_INET,
-           0,
-           0) == -1)
+  if (inherited2::open(myAddress,
+                       ACE_PROTOCOL_FAMILY_INET,
+                       0,
+                       0) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_SOCK_Dgram::open(): \"%m\", continuing\n")));
 }
@@ -58,7 +56,7 @@ RPG_Net_TransportLayer_UDP::~RPG_Net_TransportLayer_UDP()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_TransportLayer_UDP::~RPG_Net_TransportLayer_UDP"));
 
-  if (close() == -1)
+  if (inherited2::close() == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_SOCK_Dgram::close(): \"%m\", continuing\n")));
 }
@@ -74,15 +72,15 @@ RPG_Net_TransportLayer_UDP::init(unsigned short port_in,
 
   if (myAddress.get_port_number() != myPort)
   {
-    if (close() == -1)
+    if (inherited2::close() == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_SOCK_Dgram::close(): \"%m\", continuing\n")));
     myAddress.set_port_number(myPort, 1);
   } // end IF
-  if (open(myAddress,
-           ACE_PROTOCOL_FAMILY_INET,
-           0,
-           0) == -1)
+  if (inherited2::open(myAddress,
+                       ACE_PROTOCOL_FAMILY_INET,
+                       0,
+                       0) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_SOCK_Dgram::open(): \"%m\", continuing\n")));
 }

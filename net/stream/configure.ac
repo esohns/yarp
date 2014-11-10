@@ -26,7 +26,7 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 # AC_PROG_RANLIB
-# AM_PROG_LIBTOOL
+AM_PROG_LIBTOOL
 
 # init other tools.
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
@@ -75,6 +75,7 @@ AC_HEADER_STDBOOL
 AC_CHECK_HEADERS([stddef.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
+AC_C_INLINE
 AC_STRUCT_TIMEZONE
 AC_TYPE_SIZE_T
 AC_TYPE_SSIZE_T

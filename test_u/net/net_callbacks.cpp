@@ -28,7 +28,7 @@
 #include "rpg_common_macros.h"
 #include "rpg_common_timer_manager.h"
 
-#include "rpg_net_common.h"
+#include "rpg_net_connection_manager_common.h"
 
 #include "rpg_client_defines.h"
 #include "rpg_client_ui_tools.h"
@@ -88,32 +88,32 @@ idle_update_log_display_cb(gpointer act_in)
       return TRUE; // nothing to do...
 
     // step1: convert text
-		for (RPG_Client_MessageStackConstIterator_t iterator2 = data->log_stack.begin();
-			   iterator2 != data->log_stack.end();
-				 iterator2++)
-		{
-			converted_text = RPG_Client_UI_Tools::Locale2UTF8(*iterator2);
-			if (!converted_text)
-			{
-				ACE_DEBUG((LM_ERROR,
-					         ACE_TEXT("failed to convert message text (was: \"%s\"), aborting\n"),
-									 ACE_TEXT((*iterator2).c_str())));
+    for (RPG_Client_MessageStackConstIterator_t iterator2 = data->log_stack.begin();
+         iterator2 != data->log_stack.end();
+         iterator2++)
+    {
+      converted_text = RPG_Client_UI_Tools::Locale2UTF8(*iterator2);
+      if (!converted_text)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to convert message text (was: \"%s\"), aborting\n"),
+                   ACE_TEXT((*iterator2).c_str())));
 
-				return FALSE; // G_SOURCE_REMOVE
-			} // end IF
+        return FALSE; // G_SOURCE_REMOVE
+      } // end IF
 
-			// step2: display text
-			gtk_text_buffer_insert(buffer,
-				                     &iterator,
+      // step2: display text
+      gtk_text_buffer_insert(buffer,
+                             &iterator,
                              converted_text,
                              -1);
 
-			// clean up
-			g_free(converted_text);
-			converted_text = NULL;
-		} // end FOR
+      // clean up
+      g_free(converted_text);
+      converted_text = NULL;
+    } // end FOR
 
-		data->log_stack.clear();
+    data->log_stack.clear();
   } // end lock scope
 
   // step3: scroll the view accordingly
@@ -330,54 +330,54 @@ button_ping_clicked_cb(GtkWidget* widget_in,
   ACE_UNUSED_ARG(widget_in);
   ACE_UNUSED_ARG(act_in);
 
-	// sanity check
-	unsigned int num_connections =
-		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections();
-	if (num_connections == 0)
-		return FALSE;
+  // sanity check
+  unsigned int num_connections =
+      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections();
+  if (num_connections == 0)
+    return FALSE;
 
-	// grab a (random) connection handler
-	// *WARNING*: there's a race condition here...
-	RPG_Dice_RollResult_t result;
-	RPG_Dice::generateRandomNumbers(num_connections,
-																	1,
-																	result);
-	const RPG_Net_Connection_Manager_t::CONNECTION_TYPE* connection_handler =
-		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->operator[](result.front() - 1);
-	if (!connection_handler)
-	{
-//				ACE_DEBUG((LM_ERROR,
-//									 ACE_TEXT("failed to retrieve connection handler, continuing")));
+  // grab a (random) connection handler
+  // *WARNING*: there's a race condition here...
+  RPG_Dice_RollResult_t result;
+  RPG_Dice::generateRandomNumbers(num_connections,
+                                  1,
+                                  result);
+  const RPG_Net_Connection_Manager_t::CONNECTION_TYPE* connection_handler =
+      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->operator[](result.front() - 1);
+  if (!connection_handler)
+  {
+    //				ACE_DEBUG((LM_ERROR,
+    //									 ACE_TEXT("failed to retrieve connection handler, continuing")));
 
-		return FALSE;
-	} // end IF
+    return FALSE;
+  } // end IF
 
-	try
-	{
-		const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->ping();
-	}
-	catch (...)
-	{
-		ACE_DEBUG((LM_ERROR,
-							 ACE_TEXT("caught exception in RPG_Net_IConnection::ping(), aborting\n")));
+  try
+  {
+    const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->ping();
+  }
+  catch (...)
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("caught exception in RPG_Net_IConnection::ping(), aborting\n")));
 
-		// clean up
-		const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
+    // clean up
+    const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
 
-		return FALSE;
-	}
+    return FALSE;
+  }
 
-	// clean up
-	const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
+  // clean up
+  const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
 
-	return FALSE;
+  return FALSE;
 } // button_ping_clicked_cb
 
 G_MODULE_EXPORT gint
 togglebutton_stress_toggled_cb(GtkWidget* widget_in,
-															 gpointer act_in)
+                               gpointer act_in)
 {
-	RPG_TRACE(ACE_TEXT("::togglebutton_stress_toggled_cb"));
+  RPG_TRACE(ACE_TEXT("::togglebutton_stress_toggled_cb"));
 
   Net_GTK_CBData_t* data = static_cast<Net_GTK_CBData_t*>(act_in);
   ACE_ASSERT(data);
@@ -552,21 +552,21 @@ button_quit_clicked_cb(GtkWidget* widget_in,
   Net_GTK_CBData_t* data = static_cast<Net_GTK_CBData_t*>(act_in);
   ACE_ASSERT(data);
 
-	// step1: remove event sources
-	{
+  // step1: remove event sources
+  {
     ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(data->lock);
 
-		for (Net_GTK_EventSourceIDsIterator_t iterator = data->event_source_ids.begin();
-			   iterator != data->event_source_ids.end();
-				 iterator++)
-		  if (!g_source_remove(*iterator))
-				ACE_DEBUG((LM_ERROR,
-				           ACE_TEXT("failed to g_source_remove(%u), continuing\n"),
-									 *iterator));
-		data->event_source_ids.clear();
-	} // end lock scope
+    for (Net_GTK_EventSourceIDsIterator_t iterator = data->event_source_ids.begin();
+         iterator != data->event_source_ids.end();
+         iterator++)
+      if (!g_source_remove(*iterator))
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("failed to g_source_remove(%u), continuing\n"),
+                   *iterator));
+    data->event_source_ids.clear();
+  } // end lock scope
 
-	// step2: initiate shutdown sequence
+  // step2: initiate shutdown sequence
   if (ACE_OS::raise(SIGINT) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_OS::raise(%S): \"%m\", continuing\n"),
@@ -692,7 +692,7 @@ init_UI_client(const std::string& UIFile_in,
 
   // schedule asynchronous updates of the log view
   guint event_source_id = g_timeout_add_seconds(1,
-		                                            idle_update_log_display_cb,
+                                                idle_update_log_display_cb,
                                                 &userData_out);
   if (event_source_id > 0)
     userData_out.event_source_ids.push_back(event_source_id);
@@ -705,7 +705,7 @@ init_UI_client(const std::string& UIFile_in,
   } // end ELSE
   // schedule asynchronous updates of the info view
   event_source_id = g_timeout_add(NET_UI_GTKEVENT_RESOLUTION,
-		                              idle_update_info_display_cb,
+                                  idle_update_info_display_cb,
                                   &userData_out);
   if (event_source_id > 0)
     userData_out.event_source_ids.push_back(event_source_id);
@@ -717,9 +717,9 @@ init_UI_client(const std::string& UIFile_in,
     return false;
   } // end ELSE
 
-	// step5: (auto-)connect signals/slots
-	// *NOTE*: glade_xml_signal_autoconnect doesn't work reliably
-	//glade_xml_signal_autoconnect(userData_out.xml);
+  // step5: (auto-)connect signals/slots
+  // *NOTE*: glade_xml_signal_autoconnect doesn't work reliably
+  //glade_xml_signal_autoconnect(userData_out.xml);
 
   // step5a: connect default signals
   g_signal_connect(dialog,
@@ -727,7 +727,7 @@ init_UI_client(const std::string& UIFile_in,
                    G_CALLBACK(gtk_widget_destroyed),
                    NULL);
 
-	// step5b: connect custom signals
+  // step5b: connect custom signals
   glade_xml_signal_connect_data(userData_out.xml,
                                 ACE_TEXT_ALWAYS_CHAR("button_connect_clicked_cb"),
                                 G_CALLBACK(button_connect_clicked_cb),
@@ -882,7 +882,7 @@ init_UI_server(const std::string& UIFile_in,
 
   // schedule asynchronous updates of the log view
   guint event_source_id = g_timeout_add_seconds(1,
-		                                            idle_update_log_display_cb,
+                                                idle_update_log_display_cb,
                                                 &userData_out);
   if (event_source_id > 0)
     userData_out.event_source_ids.push_back(event_source_id);
@@ -895,7 +895,7 @@ init_UI_server(const std::string& UIFile_in,
   } // end ELSE
   // schedule asynchronous updates of the info view
   event_source_id = g_timeout_add(NET_UI_GTKEVENT_RESOLUTION,
-		                              idle_update_info_display_cb,
+                                  idle_update_info_display_cb,
                                   &userData_out);
   if (event_source_id > 0)
     userData_out.event_source_ids.push_back(event_source_id);
@@ -916,19 +916,19 @@ init_UI_server(const std::string& UIFile_in,
                            allowUserRuntimeStats_in);
 
   // step6: (auto-)connect signals/slots
-	// *NOTE*: glade_xml_signal_connect_data does not work reliably
-	//glade_xml_signal_autoconnect(userData_out.xml);
+  // *NOTE*: glade_xml_signal_connect_data does not work reliably
+  //glade_xml_signal_autoconnect(userData_out.xml);
 
   // step6a: connect default signals
-	bool success = true;
-	success = (success &&
-		         (g_signal_connect(dialog,
-						                   ACE_TEXT_ALWAYS_CHAR("destroy"),
+  bool success = true;
+  success = (success &&
+             (g_signal_connect(dialog,
+                               ACE_TEXT_ALWAYS_CHAR("destroy"),
                                G_CALLBACK(gtk_widget_destroyed),
                                &dialog) > 0));
 
   // step6b: connect custom signals
-	// *NOTE*: glade_xml_signal_connect_data does not work reliably on Windows
+  // *NOTE*: glade_xml_signal_connect_data does not work reliably on Windows
   //glade_xml_signal_connect_data(userData_out.xml,
   //                              ACE_TEXT_ALWAYS_CHAR("togglebutton_listen_toggled_cb"),
   //                              G_CALLBACK(togglebutton_listen_toggled_cb),
@@ -936,50 +936,50 @@ init_UI_server(const std::string& UIFile_in,
   GtkToggleButton* togglebutton =
       GTK_TOGGLE_BUTTON(glade_xml_get_widget(userData_out.xml,
                                              ACE_TEXT_ALWAYS_CHAR(NET_SERVER_UI_GTK_BUTTON_LISTEN_NAME)));
-	ACE_ASSERT(togglebutton);
-	success = (success &&
+  ACE_ASSERT(togglebutton);
+  success = (success &&
              (g_signal_connect(togglebutton,
-						                   ACE_TEXT_ALWAYS_CHAR("toggled"),
-									             G_CALLBACK(togglebutton_listen_toggled_cb),
-									             &userData_out) > 0));
-	button =
-			GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
-																			ACE_TEXT_ALWAYS_CHAR(NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
+                               ACE_TEXT_ALWAYS_CHAR("toggled"),
+                               G_CALLBACK(togglebutton_listen_toggled_cb),
+                               &userData_out) > 0));
+  button =
+      GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
+                                      ACE_TEXT_ALWAYS_CHAR(NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
   ACE_ASSERT(button);
-	success = (success &&
+  success = (success &&
              (g_signal_connect(button,
-						                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-									             G_CALLBACK(button_close_all_clicked_cb),
-									             &userData_out) > 0));
-	button =
-			GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
-																			ACE_TEXT_ALWAYS_CHAR(NET_UI_GTK_BUTTON_REPORT_NAME)));
+                               ACE_TEXT_ALWAYS_CHAR("clicked"),
+                               G_CALLBACK(button_close_all_clicked_cb),
+                               &userData_out) > 0));
+  button =
+      GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
+                                      ACE_TEXT_ALWAYS_CHAR(NET_UI_GTK_BUTTON_REPORT_NAME)));
   ACE_ASSERT(button);
-	success = (success &&
+  success = (success &&
              (g_signal_connect(button,
-						                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-									             G_CALLBACK(button_report_clicked_cb),
-									             &userData_out) > 0));
-	button =
-			GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
-																			ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_ABOUT_NAME)));
+                               ACE_TEXT_ALWAYS_CHAR("clicked"),
+                               G_CALLBACK(button_report_clicked_cb),
+                               &userData_out) > 0));
+  button =
+      GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_ABOUT_NAME)));
   ACE_ASSERT(button);
-	success = (success &&
+  success = (success &&
              (g_signal_connect(button,
-						                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-									             G_CALLBACK(button_about_clicked_cb),
-									             &userData_out) > 0));
-	button =
-			GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
-																			ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_QUIT_NAME)));
+                               ACE_TEXT_ALWAYS_CHAR("clicked"),
+                               G_CALLBACK(button_about_clicked_cb),
+                               &userData_out) > 0));
+  button =
+      GTK_BUTTON(glade_xml_get_widget(userData_out.xml,
+                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_QUIT_NAME)));
   ACE_ASSERT(button);
-	success = (success &&
+  success = (success &&
              (g_signal_connect(button,
-						                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-									             G_CALLBACK(button_quit_clicked_cb),
-									             &userData_out) > 0));
-	if (!success)
-	{
+                               ACE_TEXT_ALWAYS_CHAR("clicked"),
+                               G_CALLBACK(button_quit_clicked_cb),
+                               &userData_out) > 0));
+  if (!success)
+  {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to g_signal_connect(): \"%m\", aborting\n")));
 
@@ -1000,13 +1000,13 @@ init_UI_server(const std::string& UIFile_in,
 void
 fini_UI(Net_GTK_CBData_t& userData_out)
 {
-	RPG_TRACE(ACE_TEXT("::fini_UI"));
+  RPG_TRACE(ACE_TEXT("::fini_UI"));
 
 }
 
 Net_GTKUIDefinition::Net_GTKUIDefinition(const Role_t& role_in,
-	                                       const bool& allowRuntimeInteraction_in,
-	                                       Net_GTK_CBData_t* gtkCBData_in)
+                                         const bool& allowRuntimeInteraction_in,
+                                         Net_GTK_CBData_t* gtkCBData_in)
 : myRole(role_in),
   myAllowRuntimeInteraction(allowRuntimeInteraction_in),
   myGTKCBData(gtkCBData_in)
@@ -1026,32 +1026,32 @@ Net_GTKUIDefinition::init(const std::string& filename_in)
 {
   RPG_TRACE(ACE_TEXT("Net_GTKUIDefinition::init"));
 
-	switch (myRole)
-	{
-	 case ROLE_CLIENT:
-		 return init_UI_client(filename_in,
-			                     *myGTKCBData);
-	 case ROLE_SERVER:
-		 return init_UI_server(filename_in,
-			                     myAllowRuntimeInteraction,
-													 *myGTKCBData);
-	 default:
-	 {
-		 ACE_DEBUG((LM_ERROR,
-			          ACE_TEXT("invalid role (was: %d), aborting\n"),
-								myRole));
+  switch (myRole)
+  {
+    case ROLE_CLIENT:
+      return init_UI_client(filename_in,
+                            *myGTKCBData);
+    case ROLE_SERVER:
+      return init_UI_server(filename_in,
+                            myAllowRuntimeInteraction,
+                            *myGTKCBData);
+    default:
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("invalid role (was: %d), aborting\n"),
+                 myRole));
 
-		 break;
-	 }
-	} // end SWITCH
+      break;
+    }
+  } // end SWITCH
 
-	return false;
+  return false;
 }
 
 void
 Net_GTKUIDefinition::fini()
 {
-	RPG_TRACE(ACE_TEXT("Net_GTKUIDefinition::fini"));
+  RPG_TRACE(ACE_TEXT("Net_GTKUIDefinition::fini"));
 
-	fini_UI(*myGTKCBData);
+  fini_UI(*myGTKCBData);
 }

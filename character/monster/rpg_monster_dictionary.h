@@ -29,9 +29,9 @@
 #include "rpg_common_environment_incl.h"
 #include "rpg_character_incl.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Singleton.h>
-#include <ace/Synch.h>
+#include "ace/Global_Macros.h"
+#include "ace/Singleton.h"
+#include "ace/Synch.h"
 
 #include <string>
 
@@ -76,7 +76,7 @@ class RPG_Monster_Export RPG_Monster_Dictionary
 typedef ACE_Singleton<RPG_Monster_Dictionary,
                       ACE_Thread_Mutex> RPG_MONSTER_DICTIONARY_SINGLETON;
 RPG_MONSTER_SINGLETON_DECLARE(ACE_Singleton,
-	                            RPG_Monster_Dictionary,
-	                            ACE_Thread_Mutex);
+                              RPG_Monster_Dictionary,
+                              ACE_Thread_Mutex)
 
 #endif

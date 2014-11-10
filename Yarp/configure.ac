@@ -29,7 +29,7 @@ AC_CONFIG_SUBDIRS([chance
 AC_CONFIG_MACRO_DIR([m4])
 
 # define meta-package
-META_PACKAGE=RPG
+META_PACKAGE="RPG"
 AC_DEFINE([META_PACKAGE], ["RPG"], [meta-package])
 
 # get system information
@@ -61,8 +61,9 @@ LT_INIT
 AX_PREFIX_CONFIG_H([rpg_config.h], [RPG], [config.h])
 #AX_PREFIX_CONFIG_H([tools/XML2CppCode/XML2CppCode-config.h], [XML2CppCode], [tools/XML2CppCode/config.h])
 
-## reset the cpp compiler flags
-#CXXFLAGS=
+## (re)set the cpp compiler flags
+#CXXFLAGS="-fno-implicit-templates"
+CXXFLAGS=
 # --> enable debug support ?
 AC_MSG_CHECKING(whether to enable debugging)
 debug_default="no"
@@ -71,11 +72,11 @@ AC_ARG_ENABLE(debug,
               ,
               enable_debug=$debug_default)
 if test "x$enable_debug" = "xyes"; then
-  CXXFLAGS="-g -O0 -Wall -D_DEBUG -DDEBUG_DEBUGGER"
+  CXXFLAGS="${CXXFLAGS} -g -O0 -Wall -D_DEBUG -DDEBUG_DEBUGGER"
   AC_MSG_RESULT(yes)
 else
 #  CXXFLAGS="-O3 -march=native -Wall -Werror -Wno-unused-variable -Wno-sign-compare"
-  CXXFLAGS="-O3 -march=native -DNDEBUG -Wall -Werror"
+  CXXFLAGS="${CXXFLAGS} -O3 -march=native -DNDEBUG -Wall -Werror"
   AC_MSG_RESULT(no)
 fi
 

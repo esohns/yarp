@@ -25,9 +25,9 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-# AC_PROG_RANLIB
-# AM_PROG_LIBTOOL
+AC_PROG_RANLIB
 AM_PROG_AR
+AM_PROG_LIBTOOL
 
 # init other tools.
 AM_INIT_AUTOMAKE
@@ -92,14 +92,17 @@ AC_HEADER_STDBOOL
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE
 AC_TYPE_SIZE_T
+AC_TYPE_UID_T
 
 # Checks for library functions.
+AC_FUNC_ERROR_AT_LINE
 AC_CHECK_FUNCS([strerror])
 AC_CHECK_FUNCS([getcwd])
 AC_CHECK_FUNCS([gettimeofday])
 AC_CHECK_FUNCS([memset])
 AC_CHECK_FUNCS([mkdir])
 AC_CHECK_FUNCS([uname])
+AC_CHECK_FUNCS([realpath])
 
 AC_CONFIG_FILES([Makefile
                  scripts/Makefile])

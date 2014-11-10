@@ -18,8 +18,8 @@ sound_parser_CPPFLAGS = \
   -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 #sound_parser_LDFLAGS = $(pkg_libs_LIBS)
 sound_parser_LDADD = \
-  -lRPG_Sound \
-  -lRPG_Common \
-  -lRPG_Dice \
+  $(builddir)/../../sound/libRPG_Sound.la \
+  $(builddir)/../../common/libRPG_Common.la \
+  $(builddir)/../../chance/dice/libRPG_Dice.la \
   $(pkg_libs_LIBS) \
   -lSDL_mixer

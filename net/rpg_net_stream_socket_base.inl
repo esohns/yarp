@@ -18,28 +18,23 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <ace/Message_Block.h>
-
-#include "rpg_common_timer_manager.h"
-
-#include "rpg_stream_iallocator.h"
+//#include "rpg_common_timer_manager.h"
 
 #include "rpg_net_defines.h"
-#include "rpg_net_common.h"
-#include "rpg_net_iconnectionmanager.h"
+#include "rpg_net_stream_common.h"
 
 template <typename ConfigurationType,
           typename StatisticsContainerType,
           typename StreamType>
 RPG_Net_StreamSocketBase<ConfigurationType,
                          StatisticsContainerType,
-                         StreamType>::RPG_Net_StreamSocketBase(MANAGER_T* manager_in)
- : inherited(manager_in),
-   //myStream(),
-   myCurrentReadBuffer(NULL),
-   //myLock(),
-   myCurrentWriteBuffer(NULL),
-   mySerializeOutput(false)
+                         StreamType>::RPG_Net_StreamSocketBase()//MANAGER_T* manager_in)
+ : inherited()//manager_in)
+// , myStream()
+ , myCurrentReadBuffer(NULL)
+// , myLock()
+ , myCurrentWriteBuffer(NULL)
+ , mySerializeOutput(false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_StreamSocketBase::RPG_Net_StreamSocketBase"));
 
@@ -64,7 +59,7 @@ RPG_Net_StreamSocketBase<ConfigurationType,
                    ACE_TEXT("failed to ACE_Stream::remove(\"%s\"): \"%m\", continuing\n"),
                    ACE_TEXT_ALWAYS_CHAR(inherited::myUserData.module->name())));
 
-    if (inherited::myUserData.delete_module)
+    if (inherited::myUserData.deleteModule)
       delete inherited::myUserData.module;
   } // end IF
 
@@ -88,7 +83,7 @@ RPG_Net_StreamSocketBase<ConfigurationType,
   mySerializeOutput = inherited::myUserData.serializeOutput;
 
   // step1: init/start stream
-  inherited::myUserData.sessionID = inherited::id(); // (== socket handle)
+  inherited::myUserData.sessionID = inherited::get_handle(); // (== socket handle)
   // step1a: connect stream head message queue with the reactor notification
   // pipe ?
   if (!inherited::myUserData.useThreadPerConnection)
@@ -150,7 +145,7 @@ RPG_Net_StreamSocketBase<ConfigurationType,
       return -1;
     }
     inherited::myUserData.module = clone;
-    inherited::myUserData.delete_module = true;
+    inherited::myUserData.deleteModule = true;
   } // end IF
   // step1c: init stream
   if (!myStream.init(inherited::myUserData))

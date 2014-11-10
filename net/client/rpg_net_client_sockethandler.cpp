@@ -26,13 +26,13 @@
 
 #include "rpg_common_macros.h"
 
-#include <ace/Reactor.h>
+#include "ace/Reactor.h"
 
 #include <string>
 #include <iostream>
 
 RPG_Net_Client_SocketHandler::RPG_Net_Client_SocketHandler()
- : inherited(NULL)
+// : inherited(NULL)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::RPG_Net_Client_SocketHandler"));
 
@@ -40,12 +40,12 @@ RPG_Net_Client_SocketHandler::RPG_Net_Client_SocketHandler()
   ACE_ASSERT(false);
 }
 
-RPG_Net_Client_SocketHandler::RPG_Net_Client_SocketHandler(MANAGER_t* manager_in)
- : inherited(manager_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::RPG_Net_Client_SocketHandler"));
+//RPG_Net_Client_SocketHandler::RPG_Net_Client_SocketHandler(MANAGER_t* manager_in)
+// : inherited(manager_in)
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Net_Client_SocketHandler::RPG_Net_Client_SocketHandler"));
 
-}
+//}
 
 RPG_Net_Client_SocketHandler::~RPG_Net_Client_SocketHandler()
 {

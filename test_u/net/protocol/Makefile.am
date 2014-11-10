@@ -56,24 +56,24 @@ IRC_client_gui_CPPFLAGS = \
   -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 #IRC_client_gui_LDFLAGS = $(pkg_libs_LIBS)
 IRC_client_gui_LDADD = \
-  -lRPG_Client_GUI \
-  -lRPG_Engine \
-  -lRPG_Graphics \
-  -lRPG_Sound \
-  -lRPG_Map \
-  -lRPG_Monster \
-  -lRPG_Player \
-  -lRPG_Combat \
-  -lRPG_Magic \
-  -lRPG_Character \
-  -lRPG_Item \
-  -lRPG_Net_Client \
-  -lRPG_Net_Protocol \
-  -lRPG_Net \
-  -lRPG_Stream \
-  -lRPG_Common \
-  -lRPG_Chance \
-  -lRPG_Dice \
+  $(builddir)/../../../client/libRPG_Client_GUI.la \
+  $(builddir)/../../../engine/libRPG_Engine.la \
+  $(builddir)/../../../graphics/libRPG_Graphics.la \
+  $(builddir)/../../../sound/libRPG_Sound.la \
+  $(builddir)/../../../map/libRPG_Map.la \
+  $(builddir)/../../../character/monster/libRPG_Monster.la \
+  $(builddir)/../../../character/player/libRPG_Player.la \
+  $(builddir)/../../../combat/libRPG_Combat.la \
+  $(builddir)/../../../magic/libRPG_Magic.la \
+  $(builddir)/../../../character/libRPG_Character.la \
+  $(builddir)/../../../item/libRPG_Item.la \
+  $(builddir)/../../../net/client/libRPG_Net_Client.la \
+  $(builddir)/../../../net/protocol/libRPG_Net_Protocol.la \
+  $(builddir)/../../../net/libRPG_Net.la \
+  $(builddir)/../../../net/stream/libRPG_Stream.la \
+  $(builddir)/../../../common/libRPG_Common.la \
+  $(builddir)/../../../chance/libRPG_Chance.la \
+  $(builddir)/../../../chance/dice/libRPG_Dice.la \
   $(pkg_libs_LIBS) \
   -lSDL_mixer
 

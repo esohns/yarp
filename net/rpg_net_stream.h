@@ -22,9 +22,11 @@
 #define RPG_NET_STREAM_H
 
 #include "rpg_net_exports.h"
-#include "rpg_net_common.h"
+#include "rpg_net_stream_common.h"
 #include "rpg_net_common_modules.h"
 #include "rpg_net_stream_config.h"
+#include "rpg_net_sessionmessage.h"
+#include "rpg_net_message.h"
 #include "rpg_net_module_sockethandler.h"
 #include "rpg_net_module_headerparser.h"
 #include "rpg_net_module_protocolhandler.h"
@@ -34,12 +36,8 @@
 #include "rpg_common.h"
 #include "rpg_common_istatistic.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Synch_Traits.h>
-
-// forward declaration(s)
-class RPG_Net_SessionMessage;
-class RPG_Net_Message;
+#include "ace/Global_Macros.h"
+#include "ace/Synch_Traits.h"
 
 class RPG_Net_Export RPG_Net_Stream
  : public RPG_Stream_Base<ACE_MT_SYNCH,

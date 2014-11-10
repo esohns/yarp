@@ -22,26 +22,24 @@
 #define RPG_NET_CLIENT_SOCKETHANDLER_H
 
 #include "rpg_net_client_exports.h"
-#include "rpg_net_common.h"
+#include "rpg_net_stream_common.h"
 #include "rpg_net_sockethandler_base.h"
+//#include "rpg_net_iconnectionmanager.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Synch_Traits.h>
-#include <ace/Svc_Handler.h>
-#include <ace/SOCK_Stream.h>
+#include "ace/Global_Macros.h"
+#include "ace/Synch_Traits.h"
+#include "ace/Svc_Handler.h"
+#include "ace/SOCK_Stream.h"
 
 class RPG_Net_Client_Export RPG_Net_Client_SocketHandler
  : public RPG_Net_SocketHandlerBase<RPG_Net_ConfigPOD,
                                     RPG_Net_RuntimeStatistic>
 {
- protected:
-  // convenient types
-  typedef RPG_Net_IConnectionManager<RPG_Net_ConfigPOD,
-                                     RPG_Net_RuntimeStatistic> MANAGER_t;
-
  public:
-  RPG_Net_Client_SocketHandler(MANAGER_t*);
-  // *TODO*: make this private !!!
+//  typedef RPG_Net_IConnectionManager<RPG_Net_ConfigPOD,
+//                                     RPG_Net_RuntimeStatistic> MANAGER_t;
+//  RPG_Net_Client_SocketHandler(MANAGER_t*);
+//  // *TODO*: make this private !!!
   RPG_Net_Client_SocketHandler();
   virtual ~RPG_Net_Client_SocketHandler();
 
@@ -61,7 +59,6 @@ class RPG_Net_Client_Export RPG_Net_Client_SocketHandler
   typedef RPG_Net_SocketHandlerBase<RPG_Net_ConfigPOD,
                                     RPG_Net_RuntimeStatistic> inherited;
 
-  // safety measures
   //ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_SocketHandler());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_SocketHandler(const RPG_Net_Client_SocketHandler&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_SocketHandler& operator=(const RPG_Net_Client_SocketHandler&));

@@ -22,10 +22,6 @@
 #include "rpg_net_stream.h"
 
 #include "rpg_net_defines.h"
-#include "rpg_net_sessionmessage.h"
-#include "rpg_net_message.h"
-
-#include "rpg_stream_iallocator.h"
 
 #include <string>
 

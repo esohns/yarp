@@ -23,14 +23,14 @@
 
 #include "rpg_net_client_exports.h"
 
-#include "rpg_net_stream_common.h"
+#include "rpg_net_connection_common.h"
 #include "rpg_net_client_iconnector.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Asynch_Connector.h>
+#include "ace/Global_Macros.h"
+#include "ace/Asynch_Connector.h"
 
 class RPG_Net_Client_Export RPG_Net_Client_AsynchConnector
- : public ACE_Asynch_Connector<RPG_Net_AsynchStreamHandler_t>,
+ : public ACE_Asynch_Connector<RPG_Net_AsynchTCPSocketHandler_t>,
    public RPG_Net_Client_IConnector
 {
  public:
@@ -38,8 +38,8 @@ class RPG_Net_Client_Export RPG_Net_Client_AsynchConnector
   virtual ~RPG_Net_Client_AsynchConnector();
 
   // override default creation strategy
-  virtual RPG_Net_AsynchStreamHandler_t* make_handler(void);
-	// override default connect strategy
+  virtual RPG_Net_AsynchTCPSocketHandler_t* make_handler(void);
+  // override default connect strategy
   virtual int validate_connection(const ACE_Asynch_Connect::Result&, // result
                                   const ACE_INET_Addr&,              // remote address
                                   const ACE_INET_Addr&);             // local address
@@ -49,9 +49,8 @@ class RPG_Net_Client_Export RPG_Net_Client_AsynchConnector
   virtual void connect(const ACE_INET_Addr&);
 
  private:
-  typedef ACE_Asynch_Connector<RPG_Net_AsynchStreamHandler_t> inherited;
+  typedef ACE_Asynch_Connector<RPG_Net_AsynchTCPSocketHandler_t> inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_AsynchConnector(const RPG_Net_Client_AsynchConnector&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_AsynchConnector& operator=(const RPG_Net_Client_AsynchConnector&));
 };

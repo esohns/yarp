@@ -1,8 +1,8 @@
-METASOURCES = AUTO
+#METASOURCES = AUTO
 
 #ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = \
-  -DRPG_COMMON_BUILD_DLL \
+  -DRPG_COMMON_BUILD_DLL=1 \
   -DMETA_PACKAGE=\"@META_PACKAGE@\" \
   -I$(srcdir)/../include \
   -I$(srcdir)/../chance/dice

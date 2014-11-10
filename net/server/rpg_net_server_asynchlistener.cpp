@@ -55,8 +55,8 @@ RPG_Net_Server_AsynchListener::~RPG_Net_Server_AsynchListener()
 }
 
 void
-RPG_Net_Server_AsynchListener::init(const unsigned short& listeningPort_in,
-                                    const bool& useLoopback_in)
+RPG_Net_Server_AsynchListener::init(unsigned short listeningPort_in,
+                                    bool useLoopback_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::init"));
 
@@ -183,11 +183,11 @@ RPG_Net_Server_AsynchListener::stop(const bool& lockedAccess_in)
   if (inherited::cancel() == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Asynch_Acceptor::cancel(): \"%m\", continuing\n")));
-	if (ACE_OS::closesocket(inherited::handle()) == -1)
-		ACE_DEBUG((LM_ERROR,
-		           ACE_TEXT("failed to ACE_OS::closesocket(): \"%m\", continuing\n")));
-	inherited::handle(ACE_INVALID_HANDLE);
-	if (false);
+  if (ACE_OS::closesocket(inherited::handle()) == -1)
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_OS::closesocket(): \"%m\", continuing\n")));
+  inherited::handle(ACE_INVALID_HANDLE);
+  if (false);
 #endif
   else
     ACE_DEBUG((LM_DEBUG,
@@ -214,19 +214,24 @@ RPG_Net_Server_AsynchListener::dump_state() const
   ACE_ASSERT(false);
 }
 
-RPG_Net_AsynchStreamHandler_t*
+RPG_Net_AsynchTCPSocketHandler_t*
 RPG_Net_Server_AsynchListener::make_handler(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::make_handler"));
 
   // init return value(s)
-  RPG_Net_AsynchStreamHandler_t* handler_out = NULL;
+  RPG_Net_AsynchTCPSocketHandler_t* result = NULL;
 
   // default behavior
-  ACE_NEW_NORETURN(handler_out,
-                   RPG_Net_AsynchStreamHandler_t(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()));
+//  ACE_NEW_NORETURN(result,
+//                   RPG_Net_AsynchTCPSocketHandler_t(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()));
+  ACE_NEW_NORETURN(result,
+                   RPG_Net_AsynchTCPSocketHandler_t());
+  if (!result)
+    ACE_DEBUG((LM_CRITICAL,
+                ACE_TEXT("failed to allocate memory: \"%m\", aborting\n")));
 
-  return handler_out;
+  return result;
 }
 
 int
@@ -236,22 +241,22 @@ RPG_Net_Server_AsynchListener::validate_connection(const ACE_Asynch_Accept::Resu
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::validate_connection"));
 
-	// success ?
-	if (result_in.success() == 0)
-	{
-		// debug info
+  // success ?
+  if (result_in.success() == 0)
+  {
+    // debug info
     ACE_TCHAR buffer[RPG_COMMON_BUFSIZE];
     ACE_OS::memset(buffer, 0, sizeof(buffer));
     if (remoteSAP_in.addr_to_string(buffer, sizeof(buffer)) == -1)
       ACE_DEBUG((LM_ERROR,
-                  ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
-		ACE_DEBUG((LM_ERROR,
-			         ACE_TEXT("failed to ACE_Asynch_Acceptor::accept(\"%s\"): \"%s\", aborting\n"),
+                 ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to ACE_Asynch_Acceptor::accept(\"%s\"): \"%s\", aborting\n"),
                buffer,
-							 ACE_OS::strerror(result_in.error())));
-	} // end IF
+               ACE_OS::strerror(result_in.error())));
+  } // end IF
 
-	return ((result_in.success() == 1) ? 0 : -1);
+  return ((result_in.success() == 1) ? 0 : -1);
 }
 
 int

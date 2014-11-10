@@ -23,26 +23,25 @@
 
 #include "rpg_net_asynchsockethandler_t.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Event_Handler.h>
-#include <ace/Message_Block.h>
+#include "ace/Global_Macros.h"
+#include "ace/Event_Handler.h"
+#include "ace/Message_Block.h"
 
 template <typename ConfigType,
           typename StatisticsContainerType,
           typename StreamType>
-class RPG_Net_AsynchStreamHandler_T
- : public RPG_Net_AsynchSocketHandler_T<ConfigType,
-                                        StatisticsContainerType>,
+class RPG_Net_AsynchStreamHandler
+ : public RPG_Net_AsynchSocketHandler<ConfigType,
+                                      StatisticsContainerType>,
    public ACE_Event_Handler
 {
  public:
-  typedef RPG_Net_IConnectionManager<ConfigType,
-                                     StatisticsContainerType> MANAGER_T;
-
-  RPG_Net_AsynchStreamHandler_T(MANAGER_T*);
-  // *TODO*: remove this stub
-  RPG_Net_AsynchStreamHandler_T();
-  virtual ~RPG_Net_AsynchStreamHandler_T();
+//  typedef RPG_Net_IConnectionManager<ConfigType,
+//                                     StatisticsContainerType> MANAGER_T;
+//  RPG_Net_AsynchStreamHandler(MANAGER_T*);
+//  // *TODO*: remove this stub
+  RPG_Net_AsynchStreamHandler();
+  virtual ~RPG_Net_AsynchStreamHandler();
 
   // implement (part of) RPG_Net_IConnection
   virtual void ping();
@@ -67,12 +66,12 @@ class RPG_Net_AsynchStreamHandler_T
   StreamType         myStream;
 
  private:
-  typedef RPG_Net_AsynchSocketHandler_T<ConfigType,
-                                        StatisticsContainerType> inherited;
+  typedef RPG_Net_AsynchSocketHandler<ConfigType,
+                                      StatisticsContainerType> inherited;
 
-  //ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchStreamHandler_T());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchStreamHandler_T(const RPG_Net_AsynchStreamHandler_T&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchStreamHandler_T& operator=(const RPG_Net_AsynchStreamHandler_T&));
+  //ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchStreamHandler());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchStreamHandler(const RPG_Net_AsynchStreamHandler&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchStreamHandler& operator=(const RPG_Net_AsynchStreamHandler&));
 };
 
 // include template definition

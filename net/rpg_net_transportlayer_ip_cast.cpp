@@ -29,12 +29,10 @@
 #include "rpg_net_defines.h"
 
 RPG_Net_TransportLayer_IP_Broadcast::RPG_Net_TransportLayer_IP_Broadcast(RPG_Net_ClientServerRole_t clientServerRole_in)
- : inherited(),
-//   myAddress(),
-   myClientServerRole(clientServerRole_in),
-   myTransportLayer(TRANSPORTLAYER_IP_BROADCAST),
-   myPort(RPG_NET_DEFAULT_PORT),
-   myUseLoopback(false)
+ : inherited(clientServerRole_in,
+             TRANSPORTLAYER_IP_BROADCAST)
+// , inherited2()
+// , myAddress()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_TransportLayer_IP_Broadcast::RPG_Net_TransportLayer_IP_Broadcast"));
 
@@ -46,11 +44,11 @@ RPG_Net_TransportLayer_IP_Broadcast::RPG_Net_TransportLayer_IP_Broadcast(RPG_Net
   if (myAddress.set(ACE_TEXT(address.c_str()), AF_INET) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_INET_Addr::set(): \"%m\", continuing\n")));
-  if (open(myAddress,
-           PF_INET,
-           0,
-           0,
-           NULL) == -1)
+  if (inherited2::open(myAddress,
+                       PF_INET,
+                       0,
+                       0,
+                       NULL) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_SOCK_Dgram_Bcast::open(): \"%m\", continuing\n")));
 }
@@ -59,7 +57,7 @@ RPG_Net_TransportLayer_IP_Broadcast::~RPG_Net_TransportLayer_IP_Broadcast()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_TransportLayer_IP_Broadcast::~RPG_Net_TransportLayer_IP_Broadcast"));
 
-  if (close() == -1)
+  if (inherited2::close() == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_SOCK_Dgram_Bcast::close(): \"%m\", continuing\n")));
 }
@@ -75,16 +73,16 @@ RPG_Net_TransportLayer_IP_Broadcast::init(unsigned short port_in,
 
   if (myAddress.get_port_number() != myPort)
   {
-    if (close() == -1)
+    if (inherited2::close() == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_SOCK_Dgram_Bcast::close(): \"%m\", continuing\n")));
     myAddress.set_port_number(myPort, 1);
   } // end IF
-  if (open(myAddress,
-           PF_INET,
-           0,
-           0,
-           NULL) == -1)
+  if (inherited2::open(myAddress,
+                       PF_INET,
+                       0,
+                       0,
+                       NULL) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_SOCK_Dgram_Bcast::open(): \"%m\", continuing\n")));
 }
@@ -92,13 +90,11 @@ RPG_Net_TransportLayer_IP_Broadcast::init(unsigned short port_in,
 /////////////////////////////////////////
 
 RPG_Net_TransportLayer_IP_Multicast::RPG_Net_TransportLayer_IP_Multicast(RPG_Net_ClientServerRole_t clientServerRole_in)
- : inherited(ACE_SOCK_Dgram_Mcast::DEFOPTS),
-   myJoined(false),
-//   myAddress(),
-   myClientServerRole(clientServerRole_in),
-   myTransportLayer(TRANSPORTLAYER_IP_MULTICAST),
-   myPort(RPG_NET_DEFAULT_PORT),
-   myUseLoopback(false)
+ : inherited(clientServerRole_in,
+             TRANSPORTLAYER_IP_MULTICAST)
+ , inherited2(ACE_SOCK_Dgram_Mcast::DEFOPTS)
+ , myJoined(false)
+// , myAddress()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_TransportLayer_IP_Multicast::RPG_Net_TransportLayer_IP_Multicast"));
 
@@ -110,9 +106,9 @@ RPG_Net_TransportLayer_IP_Multicast::RPG_Net_TransportLayer_IP_Multicast(RPG_Net
   if (myAddress.set(ACE_TEXT(address.c_str()), AF_INET) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_INET_Addr::set(): \"%m\", continuing\n")));
-  if (open(myAddress,
-           NULL,
-           1) == -1)
+  if (inherited2::open(myAddress,
+                       NULL,
+                       1) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_SOCK_Dgram_Mcast::open(): \"%m\", continuing\n")));
 }
@@ -122,11 +118,11 @@ RPG_Net_TransportLayer_IP_Multicast::~RPG_Net_TransportLayer_IP_Multicast()
   RPG_TRACE(ACE_TEXT("RPG_Net_TransportLayer_IP_Multicast::~RPG_Net_TransportLayer_IP_Multicast"));
 
   if (myJoined)
-    if (leave(myAddress,
-              NULL) == -1)
+    if (inherited2::leave(myAddress,
+                          NULL) == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_SOCK_Dgram_Mcast::leave(): \"%m\", continuing\n")));
-  if (close() == -1)
+  if (inherited2::close() == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_SOCK_Dgram_Mcast::close(): \"%m\", continuing\n")));
 }
@@ -150,19 +146,19 @@ RPG_Net_TransportLayer_IP_Multicast::init(unsigned short port_in,
                    ACE_TEXT("failed to ACE_SOCK_Dgram_Mcast::leave(): \"%m\", continuing\n")));
       myJoined = false;
     } // end IF
-    if (close() == -1)
+    if (inherited2::close() == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_SOCK_Dgram_Mcast::close(): \"%m\", continuing\n")));
     myAddress.set_port_number(myPort, 1);
   } // end IF
-  if (open(myAddress,
-           NULL,
-           1) == -1)
+  if (inherited2::open(myAddress,
+                       NULL,
+                       1) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_SOCK_Dgram_Mcast::open(): \"%m\", continuing\n")));
-  if (join(myAddress,
-           1,
-           NULL) == -1)
+  if (inherited2::join(myAddress,
+                       1,
+                       NULL) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_SOCK_Dgram_Mcast::join(): \"%m\", continuing\n")));
   else

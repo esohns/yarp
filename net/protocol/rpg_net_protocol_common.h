@@ -29,11 +29,11 @@
 
 #include "rpg_common.h"
 
-#include <ace/Time_Value.h>
-#include <ace/Date_Time.h>
-#include <ace/Singleton.h>
-#include <ace/Synch.h>
-#include <ace/Module.h>
+#include "ace/Time_Value.h"
+#include "ace/Date_Time.h"
+#include "ace/Singleton.h"
+#include "ace/Synch.h"
+#include "ace/Module.h"
 
 #include <string>
 #include <set>
@@ -207,7 +207,7 @@ struct RPG_Net_Protocol_ConfigPOD
   // ************ stream config data ****************
   ACE_Notification_Strategy*        notificationStrategy;
   MODULE_TYPE*                      module;
-  bool                              delete_module;
+  bool                              deleteModule;
   bool                              crunchMessageBuffers;
   bool                              debugScanner;
   bool                              debugParser;
@@ -225,7 +225,7 @@ typedef RPG_Net_Connection_Manager<RPG_Net_Protocol_ConfigPOD,
 typedef ACE_Singleton<RPG_Net_Protocol_Connection_Manager_t,
                       ACE_Recursive_Thread_Mutex> RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON;
 RPG_PROTOCOL_SINGLETON_DECLARE(ACE_Singleton,
-															 RPG_Net_Protocol_Connection_Manager_t,
-															 ACE_Recursive_Thread_Mutex);
+                               RPG_Net_Protocol_Connection_Manager_t,
+                               ACE_Recursive_Thread_Mutex)
 
 #endif

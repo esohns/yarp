@@ -9,7 +9,7 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 # define meta-package
-META_PACKAGE=RPG
+META_PACKAGE="RPG"
 AC_DEFINE([META_PACKAGE], ["RPG"], [meta-package])
 
 # get system information
@@ -25,11 +25,11 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-# AC_PROG_RANLIB
-# AM_PROG_LIBTOOL
+AC_PROG_RANLIB
 AC_PROG_LEX
 AC_PROG_YACC
 AM_PROG_AR
+AM_PROG_LIBTOOL
 
 # init other tools.
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
@@ -40,13 +40,10 @@ LT_INIT
 # prefix config.h
 AX_PREFIX_CONFIG_H
 
-# get the cpp compiler flags
-#CXXFLAGS="${CXXFLAGS=}"
-# reset the cpp compiler flags
+## (re)set the cpp compiler flags
+#CXXFLAGS="-fno-implicit-templates"
 CXXFLAGS=
-# this macro is used to get the arguments supplied
-# to the configure script (./configure --enable-debug)
-# Check if we have enable debug support.
+# --> enable debug support ?
 AC_MSG_CHECKING(whether to enable debugging)
 debug_default="no"
 AC_ARG_ENABLE(debug,
@@ -55,11 +52,40 @@ AC_ARG_ENABLE(debug,
               enable_debug=$debug_default)
 if test "x$enable_debug" = "xyes"; then
 #  CXXFLAGS="${CXXFLAGS} -g3 -O0 -Wall"
-  CXXFLAGS="-g3 -O0 -Wall"
+  CXXFLAGS="${CXXFLAGS} -g3 -O0 -Wall"
   AC_MSG_RESULT(yes)
 else
 #  CXXFLAGS="${CXXFLAGS} -O3 -march=native -DRPG_NTRACE=0"
-  CXXFLAGS="-O3 -march=i686 -DRPG_NTRACE=0"
+  CXXFLAGS="${CXXFLAGS} -O3 -march=i686 -DRPG_NTRACE=0"
+  AC_MSG_RESULT(no)
+fi
+
+# --> enable tracing support ?
+AC_MSG_CHECKING(whether to enable tracing)
+tracing_default="no"
+AC_ARG_ENABLE(tracing,
+              [--enable-tracing=[no/yes] turn on tracing [default=$tracing_default]],
+              ,
+              enable_tracing=$tracing_default)
+if test "x$enable_tracing" = "xyes"; then
+  CXXFLAGS="${CXXFLAGS} -DRPG_NTRACE=0"
+  AC_MSG_RESULT(yes)
+else
+  CXXFLAGS="${CXXFLAGS} -DRPG_NTRACE=1"
+  AC_MSG_RESULT(no)
+fi
+
+# --> enable valgrind support ?
+AC_MSG_CHECKING(whether to enable valgrind support)
+valgrind_support_default="no"
+AC_ARG_ENABLE(valgrind,
+              [--enable-valgrind=[no/yes] turn on valgrind support [default=$valgrind_support_default]],
+              ,
+              enable_valgrind=$valgrind_support_default)
+if test "x$enable_valgrind" = "xyes"; then
+  CXXFLAGS="${CXXFLAGS} -DRPG_ENABLE_VALGRIND_SUPPORT"
+  AC_MSG_RESULT(yes)
+else
   AC_MSG_RESULT(no)
 fi
 

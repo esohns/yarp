@@ -21,16 +21,69 @@
 #ifndef RPG_NET_STREAM_COMMON_H
 #define RPG_NET_STREAM_COMMON_H
 
-#include "rpg_net_exports.h"
-#include "rpg_net_sockethandler.h"
 #include "rpg_net_common.h"
-#include "rpg_net_asynchstreamhandler_t.h"
-#include "rpg_net_stream.h"
+#include "rpg_net_statistichandler.h"
 
-typedef RPG_Net_SocketHandler RPG_Net_StreamHandler_t;
+#include "rpg_stream_iallocator.h"
+#include "rpg_stream_imodule.h"
 
-typedef RPG_Net_AsynchStreamHandler_T<RPG_Net_ConfigPOD,
-                                      RPG_Net_RuntimeStatistic,
-                                      RPG_Net_Stream> RPG_Net_AsynchStreamHandler_t;
+#include "rpg_common.h"
+
+#include "ace/Time_Value.h"
+#include "ace/Notification_Strategy.h"
+#include "ace/Stream.h"
+#include "ace/Synch_Traits.h"
+
+//// forward declaration(s)
+//class RPG_Stream_Module;
+
+typedef RPG_Stream_IModule<ACE_MT_SYNCH,
+                           RPG_Common_TimePolicy_t> IMODULE_TYPE;
+typedef ACE_Stream_Iterator<ACE_MT_SYNCH,
+                            RPG_Common_TimePolicy_t> STREAM_ITERATOR_TYPE;
+
+struct RPG_Net_RuntimeStatistic
+{
+  unsigned int numDataMessages; // (protocol) messages
+  double       numBytes;        // amount of processed data
+
+  // convenience
+  inline RPG_Net_RuntimeStatistic operator+=(const RPG_Net_RuntimeStatistic& rhs)
+  {
+    numDataMessages += rhs.numDataMessages;
+    numBytes += rhs.numBytes;
+
+    return *this;
+  };
+};
+
+struct RPG_Net_ConfigPOD
+{
+  // ************************ connection config data ***************************
+  unsigned int               peerPingInterval; // ms {0 --> OFF}
+  bool                       pingAutoAnswer;
+  bool                       printPongMessages;
+  int                        socketBufferSize;
+  RPG_Stream_IAllocator*     messageAllocator;
+  unsigned int               bufferSize;
+  bool                       useThreadPerConnection;
+  // *IMPORTANT NOTE*: in a threaded environment, workers MAY be
+  // dispatching the reactor notification queue concurrently (most notably,
+  // ACE_TP_Reactor) --> enforce proper serialization
+  bool                       serializeOutput;
+  // *************************** stream config data ****************************
+  ACE_Notification_Strategy* notificationStrategy;
+  MODULE_TYPE*               module;
+  bool                       deleteModule;
+  unsigned int               sessionID; // (== socket handle !)
+  unsigned int               statisticsReportingInterval;
+  bool                       printFinalReport;
+  // ****************************** runtime data *******************************
+  RPG_Net_RuntimeStatistic   currentStatistics;
+  ACE_Time_Value             lastCollectionTimestamp;
+};
+
+typedef RPG_Net_StatisticHandler_Reactor<RPG_Net_RuntimeStatistic> RPG_Net_StatisticHandler_Reactor_t;
+typedef RPG_Net_StatisticHandler_Proactor<RPG_Net_RuntimeStatistic> RPG_Net_StatisticHandler_Proactor_t;
 
 #endif

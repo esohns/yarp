@@ -1,7 +1,10 @@
 METASOURCES = AUTO
 
 #ACLOCAL_AMFLAGS = -I m4
-AM_CPPFLAGS = -I$(srcdir)/../../common
+AM_CPPFLAGS = \
+  -DRPG_STREAM_BUILD_DLL=1 \
+  -DMETA_PACKAGE=\"@META_PACKAGE@\" \
+  -I$(srcdir)/../../common
 
 SUBDIRS = scripts
 

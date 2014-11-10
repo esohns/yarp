@@ -25,23 +25,26 @@
 #include "rpg_common_idumpstate.h"
 #include "rpg_common_irefcount.h"
 
-#include <ace/INET_Addr.h>
+#include "ace/INET_Addr.h"
 
 template <typename StatisticsContainerType>
 class RPG_Net_IConnection
  : public RPG_Common_IStatistic<StatisticsContainerType>, // collect some stats
-	 virtual public RPG_Common_IRefCount,
+   virtual public RPG_Common_IRefCount,
    public RPG_Common_IDumpState
 {
  public:
   virtual ~RPG_Net_IConnection() {};
 
-  // API
+  virtual bool open(const ACE_INET_Addr&, // remote SAP
+                    unsigned short) = 0;  // port number
+  virtual void close() = 0;
+
+  virtual void ping() = 0; // ping the peer !
+
   virtual void info(ACE_HANDLE&,               // return value: I/O handle
                     ACE_INET_Addr&,            // return value: local SAP
                     ACE_INET_Addr&) const = 0; // return value: remote SAP
-  virtual void ping() = 0; // ping the peer !
-  virtual void abort() = 0;
   virtual unsigned int id() const = 0;
 };
 

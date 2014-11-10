@@ -37,7 +37,7 @@ RPG_Net_Server_Listener::RPG_Net_Server_Listener()
    myIsListening(false),
    myIsOpen(false),
    myListeningPort(RPG_NET_SERVER_DEFAULT_LISTENING_PORT),
-	 myUseLoopback(false)
+   myUseLoopback(false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::RPG_Net_Server_Listener"));
 
@@ -52,8 +52,8 @@ RPG_Net_Server_Listener::~RPG_Net_Server_Listener()
 }
 
 void
-RPG_Net_Server_Listener::init(const unsigned short& listeningPort_in,
-                              const bool& useLoopback_in)
+RPG_Net_Server_Listener::init(unsigned short listeningPort_in,
+                              bool useLoopback_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::init"));
 
@@ -121,26 +121,26 @@ RPG_Net_Server_Listener::start()
   } // end IF
 
   // not running --> start listening
-	ACE_INET_Addr local_sap;
-	if (myUseLoopback)
-		local_sap.set(myListeningPort, // local SAP
+  ACE_INET_Addr local_sap;
+  if (myUseLoopback)
+    local_sap.set(myListeningPort, // local SAP
                   // *PORTABILITY*: disambiguation needed under Windows
                   ACE_LOCALHOST,   // hostname
-									1,               // encode ?
-									AF_INET);        // address family
-	else
-		local_sap.set(myListeningPort,                     // local SAP
+                  1,               // encode ?
+                  AF_INET);        // address family
+  else
+    local_sap.set(myListeningPort,                     // local SAP
                   // *TODO*: bind to specific interface/address ?
                   static_cast<ACE_UINT32>(INADDR_ANY), // hostname
-									1,                                   // encode ?
-									0);                                  // map IPv6 to IPv4 ?
-	if (inherited::open(local_sap,               // local SAP
-											ACE_Reactor::instance(), // corresp. reactor
-											ACE_NONBLOCK,            // flags (use non-blocking sockets !)
-											//0,                       // flags (default is blocking sockets)
-											1,                       // always accept ALL pending connections
-											1) == -1)                // try to re-use address
-	{
+                  1,                                   // encode ?
+                  0);                                  // map IPv6 to IPv4 ?
+  if (inherited::open(local_sap,               // local SAP
+                      ACE_Reactor::instance(), // corresp. reactor
+                      ACE_NONBLOCK,            // flags (use non-blocking sockets !)
+                      //0,                       // flags (default is blocking sockets)
+                      1,                       // always accept ALL pending connections
+                      1) == -1)                // try to re-use address
+  {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Acceptor::open(): \"%m\", aborting")));
 

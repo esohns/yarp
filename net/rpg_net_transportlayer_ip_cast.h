@@ -23,6 +23,7 @@
 
 #include "rpg_net_exports.h"
 #include "rpg_net_common.h"
+#include "rpg_net_transportlayer_base.h"
 
 #include "ace/Global_Macros.h"
 #include "ace/INET_Addr.h"
@@ -30,7 +31,8 @@
 #include "ace/SOCK_Dgram_Mcast.h"
 
 class RPG_Net_Export RPG_Net_TransportLayer_IP_Broadcast
- : public ACE_SOCK_Dgram_Bcast
+ : public RPG_Net_TransportLayer_Base
+ , public ACE_SOCK_Dgram_Bcast
 {
  public:
   RPG_Net_TransportLayer_IP_Broadcast(RPG_Net_ClientServerRole_t);
@@ -40,24 +42,21 @@ class RPG_Net_Export RPG_Net_TransportLayer_IP_Broadcast
             bool = false);  // use loopback device ?
 
  private:
-  typedef ACE_SOCK_Dgram_Bcast inherited;
+  typedef RPG_Net_TransportLayer_Base inherited;
+  typedef ACE_SOCK_Dgram_Bcast inherited2;
 
-  RPG_Net_TransportLayer_IP_Broadcast();
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_TransportLayer_IP_Broadcast());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_TransportLayer_IP_Broadcast(const RPG_Net_TransportLayer_IP_Broadcast&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_TransportLayer_IP_Broadcast& operator=(const RPG_Net_TransportLayer_IP_Broadcast&));
 
-  ACE_INET_Addr              myAddress;
-
-  RPG_Net_ClientServerRole_t myClientServerRole;
-  RPG_Net_TransportLayer_t   myTransportLayer;
-  unsigned short             myPort;
-  bool                       myUseLoopback;
+  ACE_INET_Addr myAddress;
 };
 
 /////////////////////////////////////////
 
 class RPG_Net_Export RPG_Net_TransportLayer_IP_Multicast
- : public ACE_SOCK_Dgram_Mcast
+ : public RPG_Net_TransportLayer_Base
+ , public ACE_SOCK_Dgram_Mcast
 {
  public:
   RPG_Net_TransportLayer_IP_Multicast(RPG_Net_ClientServerRole_t);
@@ -67,19 +66,15 @@ class RPG_Net_Export RPG_Net_TransportLayer_IP_Multicast
             bool = false);  // use loopback device ?
 
  private:
-  typedef ACE_SOCK_Dgram_Mcast inherited;
+  typedef RPG_Net_TransportLayer_Base inherited;
+  typedef ACE_SOCK_Dgram_Mcast inherited2;
 
-  RPG_Net_TransportLayer_IP_Multicast();
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_TransportLayer_IP_Multicast());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_TransportLayer_IP_Multicast(const RPG_Net_TransportLayer_IP_Multicast&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_TransportLayer_IP_Multicast& operator=(const RPG_Net_TransportLayer_IP_Multicast&));
 
-  bool                       myJoined;
-  ACE_INET_Addr              myAddress;
-
-  RPG_Net_ClientServerRole_t myClientServerRole;
-  RPG_Net_TransportLayer_t   myTransportLayer;
-  unsigned short             myPort;
-  bool                       myUseLoopback;
+  bool          myJoined;
+  ACE_INET_Addr myAddress;
 };
 
 #endif

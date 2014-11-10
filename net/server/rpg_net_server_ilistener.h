@@ -31,8 +31,8 @@ class RPG_Net_Server_IListener
  public:
   virtual ~RPG_Net_Server_IListener() {}
 
-  virtual void init(const unsigned short&,    // port number
-                    const bool& = false) = 0; // use loopback device ?
+  virtual void init(unsigned short,    // port number
+                    bool = false) = 0; // use loopback device ?
 };
 
 #endif

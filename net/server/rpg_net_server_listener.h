@@ -24,7 +24,7 @@
 #include "rpg_net_server_exports.h"
 #include "rpg_net_server_ilistener.h"
 
-#include "rpg_net_sockethandler.h"
+#include "rpg_net_connection_common.h"
 
 #include "rpg_common_idumpstate.h"
 
@@ -35,7 +35,7 @@
 #include "ace/Synch.h"
 
 class RPG_Net_Server_Export RPG_Net_Server_Listener
- : public ACE_Acceptor<RPG_Net_SocketHandler,
+ : public ACE_Acceptor<RPG_Net_SocketHandler_t,
                        ACE_SOCK_ACCEPTOR>,
    public RPG_Net_Server_IListener
 {
@@ -46,8 +46,8 @@ class RPG_Net_Server_Export RPG_Net_Server_Listener
  public:
   // configuration / initialization
   // implement RPG_Net_Server_IListener
-  virtual void init(const unsigned short&,           // port number
-                    const bool& = false);            // use loopback interface ?
+  virtual void init(unsigned short, // port number
+                    bool = false);  // use loopback interface ?
   bool isInitialized() const;
 
   // override some methods from ACE_Acceptor
@@ -65,8 +65,7 @@ class RPG_Net_Server_Export RPG_Net_Server_Listener
   virtual void dump_state() const;
 
  private:
-  typedef ACE_Acceptor<RPG_Net_SocketHandler,
-//                        RPG_Net_StreamSocketBase<RPG_Net_Stream>,
+  typedef ACE_Acceptor<RPG_Net_SocketHandler_t,
                        ACE_SOCK_ACCEPTOR> inherited;
 
   RPG_Net_Server_Listener();

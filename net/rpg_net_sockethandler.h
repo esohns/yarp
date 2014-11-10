@@ -23,28 +23,30 @@
 
 #include "rpg_net_exports.h"
 #include "rpg_net_stream_socket_base.h"
-#include "rpg_net_common.h"
-#include "rpg_net_stream.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
+#include "ace/Event_Handler.h"
 
+template <typename ConfigurationType,
+          typename StatisticsContainerType,
+          typename StreamType>
 class RPG_Net_Export RPG_Net_SocketHandler
- : public RPG_Net_StreamSocketBase<RPG_Net_ConfigPOD,
-                                   RPG_Net_RuntimeStatistic,
-                                   RPG_Net_Stream>
+ : public RPG_Net_StreamSocketBase<ConfigurationType,
+                                   StatisticsContainerType,
+                                   StreamType>
 {
  public:
   // *TODO*: make this private, make friends with corresponding acceptor and
-	// connector classes
-	RPG_Net_SocketHandler();
+  // connector classes
+  RPG_Net_SocketHandler();
 
-  // implement (part of) RPG_Net_IConnection
-  virtual void ping();
+//  // implement (part of) RPG_Net_IConnection
+//  virtual void ping();
 
   // override some task-based members
   virtual int svc(void);
   virtual int open(void* = NULL); // args
-	virtual int close(u_long = 0); // args
+  virtual int close(u_long = 0); // args
 
 //  // *NOTE*: enqueue any received data onto our stream for further processing
 //   virtual int handle_input(ACE_HANDLE = ACE_INVALID_HANDLE);
@@ -54,9 +56,9 @@ class RPG_Net_Export RPG_Net_SocketHandler
                            ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK);
 
  private:
-  typedef RPG_Net_StreamSocketBase<RPG_Net_ConfigPOD,
-                                   RPG_Net_RuntimeStatistic,
-                                   RPG_Net_Stream> inherited;
+  typedef RPG_Net_StreamSocketBase<ConfigurationType,
+                                   StatisticsContainerType,
+                                   StreamType> inherited;
 
   // stop worker, if any
   void shutdown();
@@ -65,5 +67,8 @@ class RPG_Net_Export RPG_Net_SocketHandler
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandler(const RPG_Net_SocketHandler&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandler& operator=(const RPG_Net_SocketHandler&));
 };
+
+// include template implementation
+#include "rpg_net_sockethandler.inl"
 
 #endif

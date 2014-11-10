@@ -96,7 +96,7 @@ class RPG_Net_Protocol_Module_IRCSplitter
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCSplitter& operator=(const RPG_Net_Protocol_Module_IRCSplitter&));
 
   // convenience types
-  typedef RPG_Net_StatisticHandler_Reactor_T<RPG_Net_Protocol_RuntimeStatistic> STATISTICHANDLER_TYPE;
+  typedef RPG_Net_StatisticHandler_Reactor<RPG_Net_Protocol_RuntimeStatistic> STATISTICHANDLER_TYPE;
   typedef RPG_Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD> SESSIONCONFIG_TYPE;
 
   // helper methods

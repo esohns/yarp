@@ -20,7 +20,7 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-dnl AC_PROG_RANLIB
+AC_PROG_RANLIB
 AM_PROG_AR
 
 # init other tools
@@ -92,14 +92,17 @@ AC_CHECK_LIB([ACE], [main])
 AC_CHECK_LIB([pthread], [main])
 
 # checks for header files
+AC_HEADER_STDBOOL
 
 # checks for typedefs, structures, and compiler characteristics
-AC_HEADER_STDBOOL
+AC_C_INLINE
 AC_TYPE_SIZE_T
 
 # checks for library functions
 AC_FUNC_ERROR_AT_LINE
 AC_CHECK_FUNCS([strerror])
+AC_CHECK_FUNCS([getcwd])
+AC_CHECK_FUNCS([memset])
 
 AC_CONFIG_FILES([Makefile])
 

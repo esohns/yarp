@@ -23,10 +23,10 @@
 
 #include "rpg_net_client_iconnector.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Event_Handler.h>
-#include <ace/Time_Value.h>
-#include <ace/INET_Addr.h>
+#include "ace/Global_Macros.h"
+#include "ace/Event_Handler.h"
+#include "ace/Time_Value.h"
+#include "ace/INET_Addr.h"
 
 #include <string>
 
@@ -35,28 +35,28 @@ class Net_Client_TimeoutHandler
 {
  public:
   enum ActionMode_t
-	{
-		ACTION_NORMAL = 0,
-		ACTION_ALTERNATING,
-		ACTION_STRESS,
-		//// ---------------------
-		//ACTION_GTK, // dispatch UI events
-		// ---------------------
-		ACTION_MAX,
-		ACTION_INVALID = -1
-	};
+  {
+    ACTION_NORMAL = 0,
+    ACTION_ALTERNATING,
+    ACTION_STRESS,
+    //// ---------------------
+    //ACTION_GTK, // dispatch UI events
+    // ---------------------
+    ACTION_MAX,
+    ACTION_INVALID = -1
+  };
 
-	enum AlternatingMode_t
-	{
-		ALTERNATING_CONNECT = 0,
-		ALTERNATING_ABORT,
-		// ---------------------
-		ALTERNATING_MAX,
-		ALTERNATING_INVALID = -1
-	};
+  enum AlternatingMode_t
+  {
+    ALTERNATING_CONNECT = 0,
+    ALTERNATING_ABORT,
+    // ---------------------
+    ALTERNATING_MAX,
+    ALTERNATING_INVALID = -1
+  };
 
-  Net_Client_TimeoutHandler(const ActionMode_t&,         // mode
-                            const unsigned int&,         // max #connections
+  Net_Client_TimeoutHandler(ActionMode_t,                // mode
+                            unsigned int,                // max #connections
                             const ACE_INET_Addr&,        // remote SAP
                             RPG_Net_Client_IConnector*); // connector
   virtual ~Net_Client_TimeoutHandler();
@@ -68,13 +68,12 @@ class Net_Client_TimeoutHandler
  private:
   typedef ACE_Event_Handler inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(Net_Client_TimeoutHandler());
   ACE_UNIMPLEMENTED_FUNC(Net_Client_TimeoutHandler(const Net_Client_TimeoutHandler&));
   ACE_UNIMPLEMENTED_FUNC(Net_Client_TimeoutHandler& operator=(const Net_Client_TimeoutHandler&));
 
   ActionMode_t               myMode;
-	AlternatingMode_t          myAlternatingMode;
+  AlternatingMode_t          myAlternatingMode;
   unsigned int               myMaxNumConnections;
   ACE_INET_Addr              myPeerAddress;
   RPG_Net_Client_IConnector* myConnector;

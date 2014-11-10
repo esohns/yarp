@@ -25,9 +25,9 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-# AC_PROG_RANLIB
-AM_PROG_LIBTOOL
+AC_PROG_RANLIB
 AM_PROG_AR
+AM_PROG_LIBTOOL
 
 # init other tools.
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
@@ -65,19 +65,23 @@ fi
 AC_SUBST(META_PACKAGE)
 AC_SUBST(CXXFLAGS)
 
-# Checks for header files.
-AC_HEADER_STDBOOL
-
-# Checks for typedefs, structures, and compiler characteristics.
-AC_C_INLINE
-
 # Checks for libraries.
 # FIXME: Replace `main' with a function in `-lpthread':
 AC_CHECK_LIB([pthread], [main])
 # FIXME: Replace `main' with a function in `-lACE':
 AC_CHECK_LIB([ACE], [main])
 
+# Checks for header files.
+AC_HEADER_STDBOOL
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_C_INLINE
+AC_TYPE_SIZE_T
+
 # Checks for library functions.
+AC_CHECK_FUNCS([floor])
+AC_CHECK_FUNCS([memset])
+AC_CHECK_FUNCS([modf])
 
 AC_CONFIG_FILES([Makefile
                  data/Makefile

@@ -22,20 +22,22 @@
 #define RPG_NET_COMMON_MODULES_H
 
 #include "rpg_net_common.h"
+#include "rpg_net_stream_common.h"
 #include "rpg_net_sessionmessage.h"
 #include "rpg_net_message.h"
+#include "rpg_net_remote_comm.h"
 #include "rpg_net_module_runtimestatistic.h"
 
 #include "rpg_stream_streammodule_base.h"
 
 #include "rpg_common.h"
 
-#include <ace/Synch_Traits.h>
+#include "ace/Synch_Traits.h"
 
 // declare module(s)
 typedef RPG_Net_Module_RuntimeStatisticReader_t<ACE_MT_SYNCH,
-																								RPG_Common_TimePolicy_t,
-	                                              RPG_Net_SessionMessage,
+                                                RPG_Common_TimePolicy_t,
+                                                RPG_Net_SessionMessage,
                                                 RPG_Net_Message,
                                                 RPG_Net_MessageType,
                                                 RPG_Net_RuntimeStatistic> RPG_NET_MODULE_RUNTIMESTATISTICSREADER_T;

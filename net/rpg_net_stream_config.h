@@ -21,11 +21,12 @@
 #ifndef RPG_NET_STREAM_CONFIG_H
 #define RPG_NET_STREAM_CONFIG_H
 
-#include "rpg_net_common.h"
+#include "rpg_net_stream_common.h"
 
-#include <rpg_stream_session_config_base.h>
+#include "rpg_stream_session_config_base.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
+#include "ace/Time_Value.h"
 
 class RPG_Net_StreamConfig
  : public RPG_Stream_SessionConfigBase<RPG_Net_ConfigPOD>
@@ -42,7 +43,6 @@ class RPG_Net_StreamConfig
  private:
   typedef RPG_Stream_SessionConfigBase<RPG_Net_ConfigPOD> inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamConfig());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamConfig(const RPG_Net_StreamConfig&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamConfig& operator=(const RPG_Net_StreamConfig&));

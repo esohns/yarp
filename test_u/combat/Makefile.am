@@ -26,22 +26,21 @@ combat_simulator_CPPFLAGS = \
   -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 #combat_simulator_LDFLAGS = $(pkg_libs_LIBS)
 combat_simulator_LDADD = \
-  -lRPG_Engine \
-  -lRPG_Net_Client \
-  -lRPG_Net \
-  -lRPG_Stream \
-  -lRPG_Graphics \
-  -lRPG_Sound \
-  -lRPG_Map \
-  -lRPG_Monster \
-  -lRPG_Player \
-  -lRPG_Combat \
-  -lRPG_Character \
-  -lRPG_Item \
-  -lRPG_Magic \
-  -lRPG_Common \
-  -lRPG_Chance \
-  -lRPG_Dice \
+  $(builddir)/../../engine/libRPG_Engine.la \
+  $(builddir)/../../net/client/libRPG_Net_Client.la \
+  $(builddir)/../../net/libRPG_Net.la \
+  $(builddir)/../../net/stream/libRPG_Stream.la \
+  $(builddir)/../../graphics/libRPG_Graphics.la \
+  $(builddir)/../../sound/libRPG_Sound.la \
+  $(builddir)/../../map/libRPG_Map.la \
+  $(builddir)/../../character/monster/libRPG_Monster.la \
+  $(builddir)/../../character/player/libRPG_Player.la \
+  $(builddir)/../../combat/libRPG_Combat.la \
+  $(builddir)/../../character/libRPG_Character.la \
+  $(builddir)/../../item/libRPG_Item.la \
+  $(builddir)/../../magic/libRPG_Magic.la \
+  $(builddir)/../../common/libRPG_Common.la \
+  $(builddir)/../../chance/libRPG_Chance.la \
+  $(builddir)/../../chance/dice/libRPG_Dice.la \
   $(pkg_libs_LIBS) \
   -lSDL_mixer
-

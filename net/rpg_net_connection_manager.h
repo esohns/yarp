@@ -21,23 +21,22 @@
 #ifndef RPG_NET_CONNECTION_MANAGER_H
 #define RPG_NET_CONNECTION_MANAGER_H
 
+#include "rpg_net_exports.h"
+#include "rpg_net_iconnection.h"
 #include "rpg_net_iconnectionmanager.h"
 #include "rpg_net_sockethandler_base.h"
 
 #include "rpg_common_istatistic.h"
 #include "rpg_common_idumpstate.h"
 
-#include <ace/Singleton.h>
-#include <ace/Synch.h>
-#include <ace/Condition_T.h>
-#include <ace/Containers_T.h>
-
-// forward declarations
-template <typename StatisticsContainerType> class RPG_Net_IConnection;
+#include "ace/Singleton.h"
+#include "ace/Synch.h"
+#include "ace/Condition_T.h"
+#include "ace/Containers_T.h"
 
 template <typename ConfigurationType,
           typename StatisticsContainerType>
-class RPG_Net_Connection_Manager
+class RPG_Net_Export RPG_Net_Connection_Manager
  : public RPG_Net_IConnectionManager<ConfigurationType,
                                      StatisticsContainerType>,
    public RPG_Common_IStatistic<StatisticsContainerType>,
@@ -69,11 +68,11 @@ class RPG_Net_Connection_Manager
   void waitConnections() const;
   unsigned int numConnections() const;
 
-	// *TODO*: used for unit testing purposes ONLY !
-	//void lock();
-	//void unlock();
-	const CONNECTION_TYPE* operator[](unsigned int) const;
-	// --------------------------------------------------------------------------
+  // *TODO*: used for unit testing purposes ONLY !
+  //void lock();
+  //void unlock();
+  const CONNECTION_TYPE* operator[](unsigned int) const;
+  // --------------------------------------------------------------------------
   void abortOldestConnection();
   void abortNewestConnection();
 
@@ -97,7 +96,6 @@ class RPG_Net_Connection_Manager
   // *WARNING*: this assumes myLock is being held !
   virtual bool collect(StatisticsContainerType&) const; // return value: statistic data
 
-  // safety measures
   RPG_Net_Connection_Manager();
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Connection_Manager(const RPG_Net_Connection_Manager&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Connection_Manager& operator=(const RPG_Net_Connection_Manager&));
@@ -110,12 +108,21 @@ class RPG_Net_Connection_Manager
 
   unsigned int                                      myMaxNumConnections;
   CONNECTIONLIST_TYPE                               myConnections;
-  ConfigurationType                                        myUserData; // handler data
+  ConfigurationType                                 myUserData; // handler data
   bool                                              myIsInitialized;
   bool                                              myIsActive;
 };
 
 // include template implementation
 #include "rpg_net_connection_manager.inl"
+
+#include "rpg_net_stream_common.h"
+typedef RPG_Net_Connection_Manager<RPG_Net_ConfigPOD,
+                                   RPG_Net_RuntimeStatistic> RPG_Net_Connection_Manager_t;
+typedef ACE_Singleton<RPG_Net_Connection_Manager_t,
+                      ACE_Recursive_Thread_Mutex> RPG_NET_CONNECTIONMANAGER_SINGLETON;
+RPG_NET_SINGLETON_DECLARE(ACE_Singleton,
+                          RPG_Net_Connection_Manager_t,
+                          ACE_Recursive_Thread_Mutex)
 
 #endif

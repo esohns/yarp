@@ -25,7 +25,7 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-dnl AC_PROG_RANLIB
+AC_PROG_RANLIB
 AC_PROG_MKDIR_P
 AM_PROG_AR
 
@@ -79,9 +79,13 @@ PKG_CHECK_MODULES(pkg_libs, libpng sdl SDL_ttf)
 AC_HEADER_STDBOOL
 
 # checks for typedefs, structures, and compiler characteristics
+AC_TYPE_INT16_T
+AC_TYPE_SIZE_T
+AC_TYPE_UINT16_T
 AC_C_INLINE
 
 # checks for library functions
+AC_CHECK_FUNCS([floor])
 AC_CHECK_FUNCS([memset])
 
 AC_CONFIG_FILES([Makefile

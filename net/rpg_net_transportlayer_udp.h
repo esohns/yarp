@@ -23,13 +23,14 @@
 
 #include "rpg_net_exports.h"
 #include "rpg_net_common.h"
+#include "rpg_net_transportlayer_base.h"
 
-#include "ace/Global_Macros.h"
 #include "ace/INET_Addr.h"
 #include "ace/SOCK_Dgram.h"
 
 class RPG_Net_Export RPG_Net_TransportLayer_UDP
- : public ACE_SOCK_Dgram
+ : public RPG_Net_TransportLayer_Base
+ , public ACE_SOCK_Dgram
 {
  public:
   RPG_Net_TransportLayer_UDP(RPG_Net_ClientServerRole_t);
@@ -39,18 +40,14 @@ class RPG_Net_Export RPG_Net_TransportLayer_UDP
             bool = false);  // use loopback device ?
 
  private:
-  typedef ACE_SOCK_Dgram inherited;
+  typedef RPG_Net_TransportLayer_Base inherited;
+  typedef ACE_SOCK_Dgram inherited2;
 
-  RPG_Net_TransportLayer_UDP();
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_TransportLayer_UDP());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_TransportLayer_UDP(const RPG_Net_TransportLayer_UDP&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_TransportLayer_UDP& operator=(const RPG_Net_TransportLayer_UDP&));
 
-  ACE_INET_Addr              myAddress;
-
-  RPG_Net_ClientServerRole_t myClientServerRole;
-  RPG_Net_TransportLayer_t   myTransportLayer;
-  unsigned short             myPort;
-  bool                       myUseLoopback;
+  ACE_INET_Addr myAddress;
 };
 
 #endif

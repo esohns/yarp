@@ -26,7 +26,7 @@
 
 #include "rpg_client_GTK_manager.h"
 
-#include "rpg_net_common.h"
+#include "rpg_net_connection_manager_common.h"
 #include "rpg_net_common_tools.h"
 
 Net_Client_SignalHandler::Net_Client_SignalHandler(const long& actionTimerID_in,

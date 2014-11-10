@@ -30,7 +30,7 @@
 #include "rpg_net_protocol_common.h"
 
 RPG_Net_Protocol_SocketHandler::RPG_Net_Protocol_SocketHandler()
- : inherited(RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance())
+// : inherited()//RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance())
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_SocketHandler::RPG_Net_Protocol_SocketHandler"));
 

@@ -21,10 +21,9 @@
 #include "ace/OS.h"
 
 #include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
+//#include "rpg_common_defines.h"
 
 #include "rpg_net_defines.h"
-#include "rpg_net_iconnection.h"
 
 template <typename ConfigurationType,
           typename StatisticsContainerType>
@@ -351,12 +350,12 @@ RPG_Net_Connection_Manager<ConfigurationType,
     try
     {
       // *IMPORTANT NOTE*: implicitly invokes deregisterConnection
-      connection->abort();
+      connection->close();
     }
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Net_IConnection::abort(), continuing")));
+                 ACE_TEXT("caught exception in RPG_Net_IConnection::close(), continuing")));
     }
   } while (true);
   ACE_ASSERT(myConnections.is_empty());
@@ -487,7 +486,7 @@ RPG_Net_Connection_Manager<ConfigurationType,
     {
       // *IMPORTANT NOTE*: implicitly invokes deregisterConnection from a
       // reactor thread, if any
-      connection->abort();
+      connection->close();
     }
     catch (...)
     {
@@ -520,7 +519,7 @@ RPG_Net_Connection_Manager<ConfigurationType,
     try
     {
       // *IMPORTANT NOTE*: implicitly invokes deregisterConnection from a reactor thread, if any
-      connection->abort();
+      connection->close();
     }
     catch (...)
     {

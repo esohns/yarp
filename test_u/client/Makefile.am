@@ -1,4 +1,4 @@
-METASOURCES = AUTO
+#METASOURCES = AUTO
 
 AM_CPPFLAGS = \
   -I$(builddir)/../.. \
@@ -27,6 +27,7 @@ rpg_client_gui_SOURCES = rpg_client_gui.cpp
 rpg_client_gui_CPPFLAGS	= \
   $(AM_CPPFLAGS) \
   $(pkg_libs_CFLAGS) \
+  -DRPG_NET_HAS_DLL=1 \
   -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 #rpg_client_gui_LDFLAGS = $(pkg_libs_LIBS)
 #rpg_client_gui_LDFLAGS = \
@@ -37,9 +38,9 @@ rpg_client_gui_LDADD = \
   $(builddir)/../../graphics/libRPG_Graphics.la \
   $(builddir)/../../sound/libRPG_Sound.la \
   $(builddir)/../../engine/libRPG_Engine.la \
-  $(builddir)/../../net/stream/libRPG_Stream.la \
-  $(builddir)/../../net/libRPG_Net.la \
   $(builddir)/../../net/client/libRPG_Net_Client.la \
+  $(builddir)/../../net/libRPG_Net.la \
+  $(builddir)/../../net/stream/libRPG_Stream.la \
   $(builddir)/../../map/libRPG_Map.la \
   $(builddir)/../../character/monster/libRPG_Monster.la \
   $(builddir)/../../character/player/libRPG_Player.la \

@@ -53,7 +53,7 @@
 #include "rpg_stream_allocatorheap.h"
 
 #include "rpg_net_defines.h"
-#include "rpg_net_common.h"
+#include "rpg_net_connection_manager_common.h"
 #include "rpg_net_common_tools.h"
 #include "rpg_net_stream_messageallocator.h"
 #include "rpg_net_module_eventhandler.h"
@@ -372,11 +372,11 @@ init_signals(const bool& useReactor_in,
   // *NOTE*: cannot handle some signals --> registration fails for these...
   signals_inout.sig_del(SIGKILL);          // 9       /* Kill signal */
   signals_inout.sig_del(SIGSTOP);          // 19      /* Stop process */
-	// ---------------------------------------------------------------------------
-	if (!allowUserRuntimeStats_in)
-		signals_inout.sig_del(SIGUSR1);        // 10      /* User-defined signal 1 */
-	// *NOTE* core dump on SIGSEGV
-	signals_inout.sig_del(SIGSEGV);          // 11      /* Segmentation fault: Invalid memory reference */
+  // ---------------------------------------------------------------------------
+  if (!allowUserRuntimeStats_in)
+    signals_inout.sig_del(SIGUSR1);        // 10      /* User-defined signal 1 */
+  // *NOTE* core dump on SIGSEGV
+  signals_inout.sig_del(SIGSEGV);          // 11      /* Segmentation fault: Invalid memory reference */
   // *NOTE* don't care about SIGPIPE
   signals_inout.sig_del(SIGPIPE);          // 12      /* Broken pipe: write to pipe with no readers */
   if (!useReactor_in)
@@ -400,7 +400,7 @@ do_work(const unsigned int& maxNumConnections_in,
         const bool& useReactor_in,
         const unsigned int& statisticsReportingInterval_in,
         const unsigned int& numDispatchThreads_in,
-				const bool& hasUI_in,
+        const bool& hasUI_in,
         Net_GTK_CBData_t& CBData_in,
         ACE_Sig_Set& signalSet_inout,
         RPG_Common_SignalActions_t& previousSignalActions_inout)
@@ -498,7 +498,7 @@ do_work(const unsigned int& maxNumConnections_in,
   Net_Server_SignalHandler signal_handler(timer_id,
                                           CBData_in.listener_handle,
                                           RPG_NET_CONNECTIONMANAGER_SINGLETON::instance(),
-																					useReactor_in);
+                                          useReactor_in);
   if (!RPG_Common_Tools::initSignals(signalSet_inout,
                                      &signal_handler,
                                      previousSignalActions_inout))
@@ -796,9 +796,9 @@ ACE_TMAIN(int argc_in,
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;

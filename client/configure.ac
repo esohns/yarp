@@ -25,8 +25,9 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-# AC_PROG_RANLIB
+AC_PROG_RANLIB
 AM_PROG_AR
+AM_PROG_LIBTOOL
 
 # init other tools.
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
@@ -79,6 +80,11 @@ AC_CHECK_LIB([ACE], [main])
 AC_HEADER_STDBOOL
 
 # Checks for typedefs, structures, and compiler characteristics.
+AC_C_INLINE
+AC_TYPE_INT16_T
+AC_TYPE_SIZE_T
+AC_TYPE_SSIZE_T
+AC_TYPE_UINT16_T
 
 # Checks for library functions.
 AC_CHECK_FUNCS([memset])
@@ -87,4 +93,3 @@ AC_CONFIG_FILES([Makefile
                  scripts/Makefile])
 
 AC_OUTPUT
-

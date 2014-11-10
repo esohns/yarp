@@ -23,30 +23,30 @@
 
 #include "rpg_common_referencecounter_base.h"
 
-#include "rpg_net_iconnection.h"
+//#include "rpg_net_iconnection.h"
 #include "rpg_net_iconnectionmanager.h"
 
-#include <ace/Svc_Handler.h>
-#include <ace/SOCK_Stream.h>
-#include <ace/Synch.h>
-#include <ace/Reactor_Notification_Strategy.h>
+#include "ace/Svc_Handler.h"
+#include "ace/SOCK_Stream.h"
+#include "ace/Synch.h"
+#include "ace/Reactor_Notification_Strategy.h"
 
 template <typename ConfigurationType,
           typename StatisticsContainerType>
 class RPG_Net_SocketHandlerBase
  : public ACE_Svc_Handler<ACE_SOCK_STREAM,
                           ACE_MT_SYNCH>,
-	 public RPG_Common_ReferenceCounterBase,
-   public RPG_Net_IConnection<StatisticsContainerType>
+   public RPG_Common_ReferenceCounterBase//,
+//   public RPG_Net_IConnection<StatisticsContainerType>
 {
  public:
-	// override some event handler methods
-	virtual ACE_Event_Handler::Reference_Count add_reference(void);
+  // override some event handler methods
+  virtual ACE_Event_Handler::Reference_Count add_reference(void);
   // *IMPORTANT NOTE*: this API works as long as the reactor doesn't manage
-	// the lifecycle of the event handler. To avoid unforseen behavior, make sure
-	// that the event handler has been properly deregistered from the reactor
-	// before removing the last reference (delete on zero).
-	virtual ACE_Event_Handler::Reference_Count remove_reference(void);
+  // the lifecycle of the event handler. To avoid unforseen behavior, make sure
+  // that the event handler has been properly deregistered from the reactor
+  // before removing the last reference (delete on zero).
+  virtual ACE_Event_Handler::Reference_Count remove_reference(void);
 
   // override some task-based members
   virtual int open(void* = NULL); // args
@@ -54,13 +54,13 @@ class RPG_Net_SocketHandlerBase
   virtual int handle_close(ACE_HANDLE = ACE_INVALID_HANDLE,                        // handle
                            ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK); // event mask
 
-  // implement (part of) RPG_Net_IConnection
-  virtual void info(ACE_HANDLE&,           // return value: handle
-                    ACE_INET_Addr&,        // return value: local SAP
-                    ACE_INET_Addr&) const; // return value: remote SAP
-  virtual void abort();
-  virtual unsigned int id() const;
-	// implement RPG_Common_IRefCount
+//  // implement (part of) RPG_Net_IConnection
+//  virtual void close();
+//  virtual void info(ACE_HANDLE&,           // return value: handle
+//                    ACE_INET_Addr&,        // return value: local SAP
+//                    ACE_INET_Addr&) const; // return value: remote SAP
+//  virtual unsigned int id() const;
+  // implement RPG_Common_IRefCount
   virtual void increase();
   virtual void decrease();
   using RPG_Common_ReferenceCounterBase::count;
@@ -69,22 +69,23 @@ class RPG_Net_SocketHandlerBase
   virtual void dump_state() const;
 
  protected:
-  typedef RPG_Net_IConnectionManager<ConfigurationType,
-                                     StatisticsContainerType> MANAGER_T;
-  RPG_Net_SocketHandlerBase(MANAGER_T*);
+//  typedef RPG_Net_IConnectionManager<ConfigurationType,
+//                                     StatisticsContainerType> MANAGER_T;
+//  RPG_Net_SocketHandlerBase(MANAGER_T*);
+  RPG_Net_SocketHandlerBase();
   virtual ~RPG_Net_SocketHandlerBase();
 
   ACE_Reactor_Notification_Strategy myNotificationStrategy;
-  MANAGER_T*                        myManager;
+//  MANAGER_T*                        myManager;
   ConfigurationType                 myUserData;
-  bool                              myIsRegistered;
+//  bool                              myIsRegistered;
 
  private:
   typedef ACE_Svc_Handler<ACE_SOCK_STREAM,
                           ACE_MT_SYNCH> inherited;
-	typedef RPG_Common_ReferenceCounterBase inherited2;
+  typedef RPG_Common_ReferenceCounterBase inherited2;
 
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandlerBase());
+//  ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandlerBase());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandlerBase(const RPG_Net_SocketHandlerBase&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_SocketHandlerBase& operator=(const RPG_Net_SocketHandlerBase&));
 };

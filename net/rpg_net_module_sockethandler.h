@@ -21,24 +21,22 @@
 #ifndef RPG_NET_MODULE_SOCKETHANDLER_H
 #define RPG_NET_MODULE_SOCKETHANDLER_H
 
-#include "rpg_net_common.h"
+#include "rpg_net_stream_common.h"
 #include "rpg_net_stream_config.h"
+#include "rpg_net_sessionmessage.h"
+#include "rpg_net_message.h"
 
 #include "rpg_common_istatistic.h"
 
+#include "rpg_stream_iallocator.h"
 #include "rpg_stream_headmoduletask_base.h"
 #include "rpg_stream_streammodule_base.h"
 
 #include "rpg_common.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Time_Value.h>
-#include <ace/Synch_Traits.h>
-
-// forward declaration(s)
-class RPG_Stream_IAllocator;
-class RPG_Net_SessionMessage;
-class RPG_Net_Message;
+#include "ace/Global_Macros.h"
+#include "ace/Time_Value.h"
+#include "ace/Synch_Traits.h"
 
 class RPG_Net_Module_SocketHandler
  : public RPG_Stream_HeadModuleTaskBase<ACE_MT_SYNCH,

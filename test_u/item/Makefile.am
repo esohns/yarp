@@ -19,10 +19,10 @@ item_parser_CPPFLAGS = \
   -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 #item_parser_LDFLAGS = $(pkg_libs_LIBS)
 item_parser_LDADD = \
-  -lRPG_Item \
-  -lRPG_Magic \
-  -lRPG_Character \
-  -lRPG_Common \
-  -lRPG_Chance \
-  -lRPG_Dice \
+  $(builddir)/../../item/libRPG_Item.la \
+  $(builddir)/../../magic/libRPG_Magic.la \
+  $(builddir)/../../character/libRPG_Character.la \
+  $(builddir)/../../common/libRPG_Common.la \
+  $(builddir)/../../chance/libRPG_Chance.la \
+  $(builddir)/../../chance/dice/libRPG_Dice.la \
   $(pkg_libs_LIBS)

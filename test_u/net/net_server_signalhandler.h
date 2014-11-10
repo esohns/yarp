@@ -21,7 +21,7 @@
 #ifndef NET_SERVER_SIGNALHANDLER_H
 #define NET_SERVER_SIGNALHANDLER_H
 
-#include "rpg_net_common.h"
+#include "rpg_net_stream_common.h"
 
 #include "rpg_common_signalhandler.h"
 #include "rpg_common_isignal.h"
@@ -36,9 +36,9 @@ class Net_Server_SignalHandler
 {
  public:
   Net_Server_SignalHandler(const long&,                                      // timer ID
-		                       RPG_Common_IControl*,                             // controller
-		                       RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>*, // reporter
-													 // ---------------------------------------------------------------
+                           RPG_Common_IControl*,                             // controller
+                           RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>*, // reporter
+                           // ---------------------------------------------------------------
                            const bool& = true);                              // use reactor ?
   virtual ~Net_Server_SignalHandler();
 

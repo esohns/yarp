@@ -21,20 +21,17 @@
 
 #include "net_client_timeouthandler.h"
 
-#include <ace/Event_Handler.h>
-
-//#include <gdk/gdk.h>
-//#include <gtk/gtkmain.h>
+#include "ace/Event_Handler.h"
 
 #include "rpg_dice.h"
 
-#include "rpg_net_common.h"
+#include "rpg_net_connection_manager_common.h"
 
 #include "net_defines.h"
 #include "net_common.h"
 
-Net_Client_TimeoutHandler::Net_Client_TimeoutHandler(const ActionMode_t& mode_in,
-                                                     const unsigned int& maxNumConnections_in,
+Net_Client_TimeoutHandler::Net_Client_TimeoutHandler(ActionMode_t mode_in,
+                                                     unsigned int maxNumConnections_in,
                                                      const ACE_INET_Addr& remoteSAP_in,
                                                      RPG_Net_Client_IConnector* connector_in)
  : inherited(NULL,                            // default reactor
@@ -67,201 +64,164 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
   //const Net_GTK_CBData_t* user_data = reinterpret_cast<const Net_GTK_CBData_t*>(arg_in);
   //ActionMode_t action_mode = (user_data ? ACTION_GTK : myMode);
   ActionMode_t action_mode = myMode;
-	bool do_connect = false;
-	unsigned int num_connections =
-		RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections();
+  bool do_connect = false;
+  unsigned int num_connections =
+      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections();
 
-	switch (action_mode)
-	{
-	  case ACTION_NORMAL:
-		{
-			do_connect = true;
+  switch (action_mode)
+  {
+    case ACTION_NORMAL:
+    {
+      do_connect = true;
+      break;
+    }
+    case ACTION_ALTERNATING:
+    {
+      switch (myAlternatingMode)
+      {
+        case ALTERNATING_CONNECT:
+        {
+          // sanity check: max num connections already reached ?
+          // --> abort the oldest one first
+          if (myMaxNumConnections &&
+              (num_connections >= myMaxNumConnections))
+          {
+            ACE_DEBUG((LM_DEBUG,
+                       ACE_TEXT("closing oldest connection...\n")));
 
-			break;
-		}
-	  case ACTION_ALTERNATING:
-		{
-			switch (myAlternatingMode)
-			{
-			  case ALTERNATING_CONNECT:
-				{
-					// sanity check: max num connections already reached ?
-					// --> abort the oldest one first
-					if (myMaxNumConnections &&
-							(num_connections >= myMaxNumConnections))
-					{
-						ACE_DEBUG((LM_DEBUG,
-											 ACE_TEXT("closing oldest connection...\n")));
+            RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
+          } // end IF
+          do_connect = true;
+          break;
+        }
+        case ALTERNATING_ABORT:
+        {
+          // sanity check
+          if (num_connections == 0)
+            break; // nothing to do...
 
-						RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
-					} // end IF
+          // grab a (random) connection handler
+          // *WARNING*: there's a race condition here...
+          RPG_Dice_RollResult_t result;
+          RPG_Dice::generateRandomNumbers(num_connections,
+                                          1,
+                                          result);
+          const RPG_Net_Connection_Manager_t::CONNECTION_TYPE* connection_handler =
+              RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->operator [](result.front() - 1);
+          if (!connection_handler)
+          {
+            //						ACE_DEBUG((LM_DEBUG,
+            //											 ACE_TEXT("failed to retrieve connection handler, continuing\n")));
+            return 0;
+          } // end IF
 
-					do_connect = true;
+          try
+          {
+            const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->close();
+          }
+          catch (...)
+          {
+            ACE_DEBUG((LM_ERROR,
+                       ACE_TEXT("caught exception in RPG_Net_IConnection::abort(), aborting\n")));
 
-					break;
-				}
-			  case ALTERNATING_ABORT:
-				{
-					// sanity check
-					if (num_connections == 0)
-						break; // nothing to do...
+            // clean up
+            const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
 
-					// grab a (random) connection handler
-					// *WARNING*: there's a race condition here...
-					RPG_Dice_RollResult_t result;
-					RPG_Dice::generateRandomNumbers(num_connections,
-																					1,
-																					result);
-					const RPG_Net_Connection_Manager_t::CONNECTION_TYPE* connection_handler =
-						RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->operator [](result.front() - 1);
-					if (!connection_handler)
-					{
-//						ACE_DEBUG((LM_DEBUG,
-//											 ACE_TEXT("failed to retrieve connection handler, continuing\n")));
+            return -1;
+          }
 
-						return 0;
-					} // end IF
+          // clean up
+          const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
 
-					try
-					{
-						const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->abort();
-					}
-					catch (...)
-					{
-						ACE_DEBUG((LM_ERROR,
-											 ACE_TEXT("caught exception in RPG_Net_IConnection::abort(), aborting\n")));
+          break;
+        }
+        default:
+        {
+          ACE_DEBUG((LM_ERROR,
+                     ACE_TEXT("invalid alternating mode (was: %d), aborting\n"),
+                     myAlternatingMode));
+          return -1;
+        }
+      } // end SWITCH
 
-						// clean up
-						const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
+      int temp = myAlternatingMode;
+      myAlternatingMode =
+          static_cast<Net_Client_TimeoutHandler::AlternatingMode_t>(++temp);
+      if (myAlternatingMode == ALTERNATING_MAX)
+        myAlternatingMode = ALTERNATING_CONNECT;
 
-						return -1;
-					}
+      break;
+    }
+    case ACTION_STRESS:
+    {
+      // allow some probability for closing connections in between
+      // *WARNING*: there's a race condition here...
+      if ((num_connections > 0) &&
+          RPG_Dice::probability(NET_CLIENT_U_TEST_ABORT_PROBABILITY))
+      {
+        ACE_DEBUG((LM_DEBUG,
+                   ACE_TEXT("closing newest connection...\n")));
 
-					// clean up
-					const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
+        RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortNewestConnection();
+      } // end IF
 
-					break;
-				}
-			  default:
-				{
-					ACE_DEBUG((LM_ERROR,
-										 ACE_TEXT("invalid alternating mode (was: %d), aborting\n"),
-										 myAlternatingMode));
+      // allow some probability for opening connections in between
+      if (RPG_Dice::probability(NET_CLIENT_U_TEST_CONNECT_PROBABILITY))
+        do_connect = true;
 
-					return -1;
-				}
-			} // end SWITCH
+      // ping the server
 
-			int temp = myAlternatingMode;
-			myAlternatingMode = static_cast<Net_Client_TimeoutHandler::AlternatingMode_t>(++temp);
-			if (myAlternatingMode == ALTERNATING_MAX)
-				myAlternatingMode = ALTERNATING_CONNECT;
+      // sanity check
+      // *WARNING*: there's a race condition here...
+      if (num_connections == 0)
+        break;
 
-			break;
-		}
-		case ACTION_STRESS:
-		{
-			// allow some probability for closing connections in between
-			// *WARNING*: there's a race condition here...
-			if ((num_connections > 0) &&
-					RPG_Dice::probability(NET_CLIENT_U_TEST_ABORT_PROBABILITY))
-			{
-				ACE_DEBUG((LM_DEBUG,
-									 ACE_TEXT("closing newest connection...\n")));
+      // grab a (random) connection handler
+      // *WARNING*: there's a race condition here...
+      RPG_Dice_RollResult_t result;
+      RPG_Dice::generateRandomNumbers(num_connections,
+                                      1,
+                                      result);
+      const RPG_Net_Connection_Manager_t::CONNECTION_TYPE* connection_handler =
+          RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->operator [](result.front() - 1);
+      if (!connection_handler)
+      {
+        //				ACE_DEBUG((LM_ERROR,
+        //									 ACE_TEXT("failed to retrieve connection handler, continuing")));
+        return 0;
+      } // end IF
 
-				RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortNewestConnection();
-			} // end IF
+      try
+      {
+        const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->ping();
+      }
+      catch (...)
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("caught exception in RPG_Net_IConnection::ping(), aborting\n")));
 
-			// allow some probability for opening connections in between
-			if (RPG_Dice::probability(NET_CLIENT_U_TEST_CONNECT_PROBABILITY))
-			  do_connect = true;
+        // clean up
+        const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
 
-			// ping the server
+        return -1;
+      }
 
-			// sanity check
-			// *WARNING*: there's a race condition here...
-			if (num_connections == 0)
-				break;
+      // clean up
+      const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
 
-			// grab a (random) connection handler
-			// *WARNING*: there's a race condition here...
-			RPG_Dice_RollResult_t result;
-			RPG_Dice::generateRandomNumbers(num_connections,
-																			1,
-																			result);
-			const RPG_Net_Connection_Manager_t::CONNECTION_TYPE* connection_handler =
-				RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->operator [](result.front() - 1);
-			if (!connection_handler)
-			{
-//				ACE_DEBUG((LM_ERROR,
-//									 ACE_TEXT("failed to retrieve connection handler, continuing")));
-
-				return 0;
-			} // end IF
-
-			try
-			{
-				const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->ping();
-			}
-			catch (...)
-			{
-				ACE_DEBUG((LM_ERROR,
-									 ACE_TEXT("caught exception in RPG_Net_IConnection::ping(), aborting\n")));
-				
-				// clean up
-				const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
-
-				return -1;
-			}
-
-			// clean up
-			const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
-
-			break;
-		}
-//		case ACTION_GTK:
-//		{
-//			ACE_ASSERT(user_data);
-//
-//			// dispatch any pending events
-//			gdk_threads_enter();
-//			while (gtk_events_pending())
-//				if (gtk_main_iteration_do(FALSE)) // NEVER block !
-//				{
-////					// gtk_main_quit() has been invoked --> finished event processing
-//
-////          // *NOTE*: as gtk_main() is never invoked, gtk_main_iteration_do ALWAYS
-////          // returns true... provide a workaround by using the gtk_quit_add hook
-////          // --> check if that has been called...
-////          // synch access
-////          {
-////            ACE_Guard<ACE_Thread_Mutex> aGuard(user_data->lock);
-//
-////            if (user_data->gtk_main_quit_invoked)
-////              if (ACE_OS::raise(SIGINT) == -1) // --> shutdown
-////                ACE_DEBUG((LM_ERROR,
-////                           ACE_TEXT("failed to ACE_OS::raise(%S): \"%m\", continuing\n"),
-////                           SIGINT));
-//
-//          break; // ignore any remaining GTK events
-////          } // end lock scope
-//        } // end IF
-//      gdk_threads_leave();
-//
-//			break;
-//		}
-		default:
-		{
+      break;
+    }
+    default:
+    {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid mode (was: %d), aborting\n"),
-								 myMode));
+                 myMode));
+      return -1;
+    }
+  } // end IF
 
-			return -1;
-		}
-	} // end IF
-
-	if (do_connect)
-	{
+  if (do_connect)
+  {
     try
     {
       myConnector->connect(myPeerAddress);
@@ -270,10 +230,9 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("caught exception in RPG_Net_IConnector::connect(), aborting\n")));
-
       return -1;
     }
-	} // end IF
+  } // end IF
 
   return 0;
 }

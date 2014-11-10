@@ -21,13 +21,13 @@ monster_parser_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 monster_parser_LDADD = \
-  -lRPG_Monster \
-  -lRPG_Player \
-  -lRPG_Combat \
-  -lRPG_Character \
-  -lRPG_Item \
-  -lRPG_Magic \
-  -lRPG_Common \
-  -lRPG_Chance \
-  -lRPG_Dice \
+  $(builddir)/../../../character/monster/libRPG_Monster.la \
+  $(builddir)/../../../character/player/libRPG_Player.la \
+  $(builddir)/../../../combat/libRPG_Combat.la \
+  $(builddir)/../../../character/libRPG_Character.la \
+  $(builddir)/../../../item/libRPG_Item.la \
+  $(builddir)/../../../magic/libRPG_Magic.la \
+  $(builddir)/../../../common/libRPG_Common.la \
+  $(builddir)/../../../chance/libRPG_Chance.la \
+  $(builddir)/../../../chance/dice/libRPG_Dice.la \
   $(pkg_libs_LIBS)

@@ -22,13 +22,12 @@
 #define RPG_NET_STREAMSOCKET_BASE_H
 
 #include "rpg_net_sockethandler_base.h"
-#include "rpg_net_iconnectionmanager.h"
+//#include "rpg_net_iconnectionmanager.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Synch.h>
-
-// forward declaration(s)
-class ACE_Message_Block;
+#include "ace/Global_Macros.h"
+#include "ace/Event_Handler.h"
+#include "ace/Message_Block.h"
+#include "ace/Synch.h"
 
 template <typename ConfigurationType,
           typename StatisticsContainerType,
@@ -57,9 +56,10 @@ class RPG_Net_StreamSocketBase
   virtual void report() const;
 
  protected:
-  typedef RPG_Net_IConnectionManager<ConfigurationType,
-                                     StatisticsContainerType> MANAGER_T;
-  RPG_Net_StreamSocketBase(MANAGER_T*); // connection manager handle
+//  typedef RPG_Net_IConnectionManager<ConfigurationType,
+//                                     StatisticsContainerType> MANAGER_T;
+//  RPG_Net_StreamSocketBase(MANAGER_T*); // connection manager handle
+  RPG_Net_StreamSocketBase();
   virtual ~RPG_Net_StreamSocketBase();
 
   StreamType         myStream;
@@ -74,7 +74,7 @@ class RPG_Net_StreamSocketBase
   typedef RPG_Net_SocketHandlerBase<ConfigurationType,
                                     StatisticsContainerType> inherited;
 
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase());
+//  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase(const RPG_Net_StreamSocketBase&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase& operator=(const RPG_Net_StreamSocketBase&));
 

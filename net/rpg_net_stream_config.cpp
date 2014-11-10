@@ -21,7 +21,7 @@
 
 #include "rpg_net_stream_config.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 RPG_Net_StreamConfig::RPG_Net_StreamConfig(const RPG_Net_ConfigPOD& config_in,
                                            const ACE_Time_Value& startOfSession_in,

@@ -21,7 +21,7 @@
 #ifndef RPG_NET_CLIENT_ICONNECTOR_H
 #define RPG_NET_CLIENT_ICONNECTOR_H
 
-#include <ace/INET_Addr.h>
+#include "ace/INET_Addr.h"
 
 class RPG_Net_Client_IConnector
 {

@@ -48,24 +48,24 @@ net_server_CPPFLAGS = \
   -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 #net_server_LDFLAGS = $(pkg_libs_LIBS)
 net_server_LDADD = \
-  -lRPG_Client_GUI \
-  -lRPG_Engine \
-  -lRPG_Graphics \
-  -lRPG_Player \
-  -lRPG_Monster \
-  -lRPG_Magic \
-  -lRPG_Character \
-  -lRPG_Item \
-  -lRPG_Combat \
-  -lRPG_Map \
-  -lRPG_Sound \
-  -lRPG_Net_Server \
-  -lRPG_Net_Client \
-  -lRPG_Net \
-  -lRPG_Stream \
-  -lRPG_Common \
-  -lRPG_Chance \
-  -lRPG_Dice \
+  $(builddir)/../../client/libRPG_Client_GUI.la \
+  $(builddir)/../../engine/libRPG_Engine.la \
+  $(builddir)/../../graphics/libRPG_Graphics.la \
+  $(builddir)/../../character/player/libRPG_Player.la \
+  $(builddir)/../../character/monster/libRPG_Monster.la \
+  $(builddir)/../../magic/libRPG_Magic.la \
+  $(builddir)/../../character/libRPG_Character.la \
+  $(builddir)/../../item/libRPG_Item.la \
+  $(builddir)/../../combat/libRPG_Combat.la \
+  $(builddir)/../../map/libRPG_Map.la \
+  $(builddir)/../../sound/libRPG_Sound.la \
+  $(builddir)/../../net/server/libRPG_Net_Server.la \
+  $(builddir)/../../net/client/libRPG_Net_Client.la \
+  $(builddir)/../../net/libRPG_Net.la \
+  $(builddir)/../../net/stream/libRPG_Stream.la \
+  $(builddir)/../../common/libRPG_Common.la \
+  $(builddir)/../../chance/libRPG_Chance.la \
+  $(builddir)/../../chance/dice/libRPG_Dice.la \
   $(pkg_libs_LIBS) \
   -lSDL_mixer
 
@@ -87,23 +87,23 @@ net_client_CPPFLAGS = \
   -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 #net_client_LDFLAGS = $(pkg_libs_LIBS)
 net_client_LDADD = \
-  -lRPG_Client_GUI \
-  -lRPG_Engine \
-  -lRPG_Graphics \
-  -lRPG_Player \
-  -lRPG_Monster \
-  -lRPG_Magic \
-  -lRPG_Character \
-  -lRPG_Item \
-  -lRPG_Combat \
-  -lRPG_Map \
-  -lRPG_Sound \
-  -lRPG_Net_Client \
-  -lRPG_Net \
-  -lRPG_Stream \
-  -lRPG_Common \
-  -lRPG_Chance \
-  -lRPG_Dice \
+  $(builddir)/../../client/libRPG_Client_GUI.la \
+  $(builddir)/../../engine/libRPG_Engine.la \
+  $(builddir)/../../graphics/libRPG_Graphics.la \
+  $(builddir)/../../character/player/libRPG_Player.la \
+  $(builddir)/../../character/monster/libRPG_Monster.la \
+  $(builddir)/../../magic/libRPG_Magic.la \
+  $(builddir)/../../character/libRPG_Character.la \
+  $(builddir)/../../item/libRPG_Item.la \
+  $(builddir)/../../combat/libRPG_Combat.la \
+  $(builddir)/../../map/libRPG_Map.la \
+  $(builddir)/../../sound/libRPG_Sound.la \
+  $(builddir)/../../net/client/libRPG_Net_Client.la \
+  $(builddir)/../../net/libRPG_Net.la \
+  $(builddir)/../../net/stream/libRPG_Stream.la \
+  $(builddir)/../../common/libRPG_Common.la \
+  $(builddir)/../../chance/libRPG_Chance.la \
+  $(builddir)/../../chance/dice/libRPG_Dice.la \
   $(pkg_libs_LIBS) \
   -lSDL_mixer
 
@@ -113,4 +113,3 @@ config_DATA = \
   net_server.glade
 
 EXTRA_DIST = $(config_DATA)
-

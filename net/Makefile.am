@@ -2,7 +2,8 @@
 
 #ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = \
-  -DRPG_NET_BUILD_DLL \
+  -DRPG_NET_BUILD_DLL=1 \
+  -DMETA_PACKAGE=\"@META_PACKAGE@\" \
   -I$(srcdir)/../common \
   -I$(srcdir)/../chance/dice \
   -I$(srcdir)/stream
@@ -25,8 +26,12 @@ include_HEADERS = \
   rpg_net_common.h \
   rpg_net_common_modules.h \
   rpg_net_common_tools.h \
+  rpg_net_connection_base.h \
+  rpg_net_connection_base.inl \
+  rpg_net_connection_common.h \
   rpg_net_connection_manager.h \
   rpg_net_connection_manager.inl \
+  rpg_net_connection_manager_common.h \
   rpg_net_controller_base.h \
   rpg_net_defines.h \
   rpg_net_exports.h \
@@ -34,6 +39,7 @@ include_HEADERS = \
   rpg_net_iconnection.h \
   rpg_net_iconnectionmanager.h \
   rpg_net_icounter.h \
+  rpg_net_itransportlayer.h \
   rpg_net_message_base.h \
   rpg_net_message_base.inl \
   rpg_net_message.h \
@@ -59,7 +65,9 @@ include_HEADERS = \
   rpg_net_stream_messageallocator.h \
   rpg_net_stream_socket_base.h \
   rpg_net_stream_socket_base.inl \
+  rpg_net_transportlayer_base.h \
   rpg_net_transportlayer_ip_cast.h \
+  rpg_net_transportlayer_tcp.h \
   rpg_net_transportlayer_udp.h
 
 lib_LTLIBRARIES = libRPG_Net.la
@@ -75,9 +83,14 @@ libRPG_Net_la_SOURCES = \
   rpg_net_common_modules.h \
   rpg_net_common_tools.cpp \
   rpg_net_common_tools.h \
+  rpg_net_connection_base.cpp \
+  rpg_net_connection_base.h \
+  rpg_net_connection_base.inl \
+  rpg_net_connection_common.h \
   rpg_net_connection_manager.cpp \
   rpg_net_connection_manager.h \
   rpg_net_connection_manager.inl \
+  rpg_net_connection_manager_common.h \
   rpg_net_controller_base.cpp \
   rpg_net_controller_base.h \
   rpg_net_defines.h \
@@ -86,6 +99,7 @@ libRPG_Net_la_SOURCES = \
   rpg_net_iconnection.h \
   rpg_net_iconnectionmanager.h \
   rpg_net_icounter.h \
+  rpg_net_itransportlayer.h \
   rpg_net_message_base.cpp \
   rpg_net_message_base.h \
   rpg_net_message_base.inl \
@@ -112,6 +126,7 @@ libRPG_Net_la_SOURCES = \
   rpg_net_sessionmessage.h \
   rpg_net_sockethandler.cpp \
   rpg_net_sockethandler.h \
+  rpg_net_sockethandler.inl \
   rpg_net_sockethandler_base.cpp \
   rpg_net_sockethandler_base.h \
   rpg_net_sockethandler_base.inl \
@@ -128,8 +143,12 @@ libRPG_Net_la_SOURCES = \
   rpg_net_stream_socket_base.cpp \
   rpg_net_stream_socket_base.h \
   rpg_net_stream_socket_base.inl \
+  rpg_net_transportlayer_base.cpp \
+  rpg_net_transportlayer_base.h \
   rpg_net_transportlayer_ip_cast.cpp \
   rpg_net_transportlayer_ip_cast.h \
+  rpg_net_transportlayer_tcp.cpp \
+  rpg_net_transportlayer_tcp.h \
   rpg_net_transportlayer_udp.cpp \
   rpg_net_transportlayer_udp.h \
   stdafx.cpp \

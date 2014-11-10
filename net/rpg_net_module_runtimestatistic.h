@@ -140,7 +140,7 @@ class RPG_Net_Module_RuntimeStatistic_t
 
   // convenience types
   typedef StatisticsContainerType STATISTICINTERFACE_TYPE;
-  typedef RPG_Net_StatisticHandler_Reactor_T<STATISTICINTERFACE_TYPE> STATISTICHANDLER_TYPE;
+  typedef RPG_Net_StatisticHandler_Reactor<STATISTICINTERFACE_TYPE> STATISTICHANDLER_TYPE;
 
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_RuntimeStatistic_t(const RPG_Net_Module_RuntimeStatistic_t&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_RuntimeStatistic_t& operator=(const RPG_Net_Module_RuntimeStatistic_t&));
