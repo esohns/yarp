@@ -51,11 +51,13 @@
     <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
     <TargetName>rpg_$(TargetName)</TargetName>
     <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
+    <IntDir>$(SolutionDir)$(Configuration)_obj\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetName>rpg_$(TargetName)</TargetName>
     <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
     <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
+    <IntDir>$(SolutionDir)$(Configuration)_obj\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

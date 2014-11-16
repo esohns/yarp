@@ -51,11 +51,13 @@
     <CXX_Tree_Mapping_RuleAfterTargets />
     <TargetName>rpg_$(TargetName)</TargetName>
     <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
+    <IntDir>$(SolutionDir)$(Configuration)_obj\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
     <TargetName>rpg_$(TargetName)</TargetName>
     <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
+    <IntDir>$(SolutionDir)$(Configuration)_obj\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

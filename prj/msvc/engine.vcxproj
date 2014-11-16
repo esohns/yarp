@@ -51,9 +51,11 @@
     <CXX_Tree_Mapping_RuleAfterTargets />
     <TargetName>rpg_$(TargetName)</TargetName>
     <RunCodeAnalysis>false</RunCodeAnalysis>
+    <IntDir>$(SolutionDir)$(Configuration)_obj\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetName>rpg_$(TargetName)</TargetName>
+    <IntDir>$(SolutionDir)$(Configuration)_obj\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

@@ -51,6 +51,7 @@
     <CXX_Parser_Mapping_RuleAfterTargets />
     <TargetName>rpg_$(TargetName)</TargetName>
     <RunCodeAnalysis>false</RunCodeAnalysis>
+    <IntDir>$(SolutionDir)$(Configuration)_obj\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -58,6 +59,7 @@
     <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
+    <IntDir>$(SolutionDir)$(Configuration)_obj\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

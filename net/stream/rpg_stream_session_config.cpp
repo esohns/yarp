@@ -82,5 +82,4 @@ RPG_Stream_SessionConfig::dump_state() const
              RPG_Stream_Tools::timestamp2LocalString(myStartOfSession).c_str(),
              (myUserAbort ? ACE_TEXT(" [user abort !]")
                           : ACE_TEXT(""))));
-  inherited::dump_state();
 }

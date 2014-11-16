@@ -21,7 +21,7 @@
 #include "ace/OS.h"
 
 #include "rpg_common_macros.h"
-//#include "rpg_common_defines.h"
+#include "rpg_common_defines.h"
 
 #include "rpg_net_defines.h"
 

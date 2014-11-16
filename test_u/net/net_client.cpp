@@ -108,6 +108,17 @@ do_printUsage(const std::string& programName_in)
             << NET_CLIENT_DEF_MAX_NUM_OPEN_CONNECTIONS
             << ACE_TEXT("] {0 --> unlimited}")
             << std::endl;
+  std::string path = configuration_path;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  //#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  //  path += ACE_TEXT_ALWAYS_CHAR("net");
+  //  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  //#endif
+  path += ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_FILE);
+  std::cout << ACE_TEXT("-g [[STRING]]: UI file [\"")
+            << path
+            << ACE_TEXT("\"] {\"\" --> no GUI}")
+            << std::endl;
   std::cout << ACE_TEXT("-h [STRING]  : server hostname [\"")
             << NET_CLIENT_DEF_SERVER_HOSTNAME
             << ACE_TEXT("\"]")
@@ -117,10 +128,6 @@ do_printUsage(const std::string& programName_in)
             << ACE_TEXT("] {0 --> OFF}")
             << std::endl;
   std::cout << ACE_TEXT("-l           : log to a file [")
-            << false
-            << ACE_TEXT("]")
-            << std::endl;
-  std::cout << ACE_TEXT("-m           : use UDP [")
             << false
             << ACE_TEXT("]")
             << std::endl;
@@ -140,16 +147,9 @@ do_printUsage(const std::string& programName_in)
             << false
             << ACE_TEXT("]")
             << std::endl;
-  std::string path = configuration_path;
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-//  path += ACE_TEXT_ALWAYS_CHAR("net");
-//  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//#endif
-  path += ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_FILE);
-  std::cout << ACE_TEXT("-u [[STRING]]: UI file [\"")
-            << path
-            << ACE_TEXT("\"] {\"\" --> no GUI}")
+  std::cout << ACE_TEXT("-u           : use UDP [")
+            << false
+            << ACE_TEXT("]")
             << std::endl;
   std::cout << ACE_TEXT("-v           : print version information and exit [")
             << false
@@ -170,15 +170,15 @@ do_processArguments(const int& argc_in,
                     ACE_TCHAR** argv_in, // cannot be const...
                     bool& alternatingMode_out,
                     unsigned int& maxNumConnections_out,
+                    std::string& UIFile_out,
                     std::string& serverHostname_out,
                     unsigned int& connectionInterval_out,
                     bool& logToFile_out,
-                    bool& useUDP_out,
                     unsigned short& serverPortNumber_out,
                     bool& useReactor_out,
                     unsigned int& serverPingInterval_out,
                     bool& traceInformation_out,
-                    std::string& UIFile_out,
+                    bool& useUDP_out,
                     bool& printVersionAndExit_out,
                     unsigned int& numDispatchThreads_out,
                     bool& runStressTest_out)
@@ -195,29 +195,29 @@ do_processArguments(const int& argc_in,
   // init results
   alternatingMode_out     = false;
   maxNumConnections_out   = NET_CLIENT_DEF_MAX_NUM_OPEN_CONNECTIONS;
+  std::string path = configuration_path;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  //#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  //  path += ACE_TEXT_ALWAYS_CHAR("net");
+  //  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  //#endif
+  path += ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_FILE);
+  UIFile_out              = path;
   serverHostname_out      = NET_CLIENT_DEF_SERVER_HOSTNAME;
   connectionInterval_out  = NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL;
   logToFile_out           = false;
-  useUDP_out              = false;
   serverPortNumber_out    = RPG_NET_SERVER_DEFAULT_LISTENING_PORT;
   useReactor_out          = RPG_NET_USES_REACTOR;
   serverPingInterval_out  = NET_CLIENT_DEF_SERVER_PING_INTERVAL;
   traceInformation_out    = false;
-  std::string path = configuration_path;
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-//  path += ACE_TEXT_ALWAYS_CHAR("net");
-//  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//#endif
-  path += ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_FILE);
-  UIFile_out              = path;
+  useUDP_out              = false;
   printVersionAndExit_out = false;
   numDispatchThreads_out  = RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS;
   runStressTest_out       = false;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("ac:h:i:lmp:rs:tu::vx:y"),
+                             ACE_TEXT("ac:g::h:i:lp:rs:tuvx:y"),
                              1,                          // skip command name
                              1,                          // report parsing errors
                              ACE_Get_Opt::PERMUTE_ARGS,  // ordering
@@ -242,6 +242,15 @@ do_processArguments(const int& argc_in,
         converter >> maxNumConnections_out;
         break;
       }
+      case 'g':
+      {
+        ACE_TCHAR* opt_arg = argumentParser.opt_arg ();
+        if (opt_arg)
+          UIFile_out = ACE_TEXT_ALWAYS_CHAR (opt_arg);
+        else
+          UIFile_out.clear ();
+        break;
+      }
       case 'h':
       {
         serverHostname_out = argumentParser.opt_arg();
@@ -258,11 +267,6 @@ do_processArguments(const int& argc_in,
       case 'l':
       {
         logToFile_out = true;
-        break;
-      }
-      case 'm':
-      {
-        useUDP_out = true;
         break;
       }
       case 'p':
@@ -293,11 +297,7 @@ do_processArguments(const int& argc_in,
       }
       case 'u':
       {
-        ACE_TCHAR* opt_arg = argumentParser.opt_arg();
-        if (opt_arg)
-          UIFile_out = ACE_TEXT_ALWAYS_CHAR(opt_arg);
-        else
-          UIFile_out.clear();
+        useUDP_out = true;
         break;
       }
       case 'v':
@@ -411,14 +411,14 @@ init_signals(const bool& allowUserRuntimeConnect_in,
 void
 do_work(Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
         unsigned int maxNumConnections_in,
+        bool hasUI_in,
         const std::string& serverHostname_in,
         unsigned int connectionInterval_in,
-        bool useUDP_in,
         unsigned short serverPortNumber_in,
         bool useReactor_in,
         unsigned int serverPingInterval_in,
         unsigned int numDispatchThreads_in,
-        bool hasUI_in,
+        bool useUDP_in,
         Net_GTK_CBData_t& CBData_in,
         ACE_Sig_Set& signalSet_inout,
         RPG_Common_SignalActions_t& previousSignalActions_inout)
@@ -759,7 +759,7 @@ ACE_TMAIN(int argc_in,
 
   std::string configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                           true);
+                                                           true);
 #if defined(DEBUG_DEBUGGER)
   configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
 #endif // #ifdef BASEDIR
@@ -768,22 +768,22 @@ ACE_TMAIN(int argc_in,
   Net_Client_TimeoutHandler::ActionMode_t action_mode = Net_Client_TimeoutHandler::ACTION_NORMAL;
   bool alternating_mode                               = false;
   unsigned int max_num_connections                    = NET_CLIENT_DEF_MAX_NUM_OPEN_CONNECTIONS;
+  std::string path = configuration_path;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  //#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  //  path += ACE_TEXT_ALWAYS_CHAR("net");
+  //  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  //#endif
+  path += ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_FILE);
+  std::string UI_file                                 = path;
   std::string server_hostname                         = NET_CLIENT_DEF_SERVER_HOSTNAME;
   unsigned int connection_interval                    = NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL;
   bool log_to_file                                    = false;
-  bool use_UDP                                        = false;
   unsigned short server_port_number                   = RPG_NET_SERVER_DEFAULT_LISTENING_PORT;
   bool use_reactor                                    = RPG_NET_USES_REACTOR;
   unsigned int server_ping_interval                   = NET_CLIENT_DEF_SERVER_PING_INTERVAL;
   bool trace_information                              = false;
-  std::string path = configuration_path;
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-//  path += ACE_TEXT_ALWAYS_CHAR("net");
-//  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//#endif
-  path += ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_FILE);
-  std::string UI_file                                 = path;
+  bool use_UDP                                        = false;
   bool print_version_and_exit                         = false;
   unsigned int num_dispatch_threads                   = RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS;
   bool run_stress_test                                = false;
@@ -793,15 +793,15 @@ ACE_TMAIN(int argc_in,
                            argv_in,
                            alternating_mode,
                            max_num_connections,
+                           UI_file,
                            server_hostname,
                            connection_interval,
                            log_to_file,
-                           use_UDP,
                            server_port_number,
                            use_reactor,
                            server_ping_interval,
                            trace_information,
-                           UI_file,
+                           use_UDP,
                            print_version_and_exit,
                            num_dispatch_threads,
                            run_stress_test))
@@ -959,14 +959,14 @@ ACE_TMAIN(int argc_in,
   // step2: do actual work
   do_work(action_mode,
           max_num_connections,
+          !UI_file.empty (),
           server_hostname,
           connection_interval,
-          use_UDP,
           server_port_number,
           use_reactor,
           server_ping_interval,
           num_dispatch_threads,
-          !UI_file.empty(),
+          use_UDP,
           gtk_cb_user_data,
           signal_set,
           previous_signal_actions);

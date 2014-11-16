@@ -42,3 +42,5 @@ Thumbs.db
 .picasa.ini
 autoscan.log
 configure.scan
+Debug_obj
+ws2_32.pdb

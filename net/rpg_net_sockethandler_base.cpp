@@ -20,3 +20,28 @@
 #include "stdafx.h"
 
 #include "rpg_net_sockethandler_base.h"
+
+#include "rpg_common_macros.h"
+
+#include "ace/Log_Msg.h"
+
+RPG_Net_SocketHandlerBase::RPG_Net_SocketHandlerBase()
+ : allocator_ (NULL)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::RPG_Net_SocketHandlerBase"));
+
+}
+
+RPG_Net_SocketHandlerBase::~RPG_Net_SocketHandlerBase()
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::~RPG_Net_SocketHandlerBase"));
+
+}
+
+void
+RPG_Net_SocketHandlerBase::init (ACE_Allocator* allocator_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Net_SocketHandlerBase::init"));
+
+  allocator_ = allocator_in;
+}

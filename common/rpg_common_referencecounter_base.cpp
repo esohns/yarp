@@ -25,8 +25,8 @@
 
 #include "ace/Guard_T.h"
 
-RPG_Common_ReferenceCounterBase::RPG_Common_ReferenceCounterBase(const unsigned int& initCount_in,
-                                                                 const bool& deleteOnZero_in)
+RPG_Common_ReferenceCounterBase::RPG_Common_ReferenceCounterBase(unsigned int initCount_in,
+                                                                 bool deleteOnZero_in)
  : myCounter(initCount_in),
    myDeleteOnZero(deleteOnZero_in),
    myCondition(myLock)
@@ -118,20 +118,4 @@ RPG_Common_ReferenceCounterBase::wait_zero()
 
 //  ACE_DEBUG((LM_INFO,
 //             ACE_TEXT("leaving...\n")));
-}
-
-void
-RPG_Common_ReferenceCounterBase::dump_state() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Common_ReferenceCounterBase::dump_state"));
-
-  // dump an "atomic" state...
-  {
-    // lock here...
-    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
-
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("count: %u\n"),
-               myCounter));
-  } // end lock scope
 }

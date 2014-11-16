@@ -47,11 +47,13 @@
     <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
     <TargetName>rpg_$(TargetName)</TargetName>
     <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
+    <IntDir>$(SolutionDir)$(Configuration)_obj\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetName>rpg_$(TargetName)</TargetName>
     <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
     <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
+    <IntDir>$(SolutionDir)$(Configuration)_obj\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -127,9 +129,8 @@ popd</Command>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\net\rpg_net_asynchsockethandler.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_asynchsockethandler_t.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_asynchstreamhandler_t.cpp" />
+    <ClCompile Include="..\..\net\rpg_net_asynch_tcpsockethandler.cpp" />
+    <ClCompile Include="..\..\net\rpg_net_asynch_udpsockethandler.cpp" />
     <ClCompile Include="..\..\net\rpg_net_common_tools.cpp" />
     <ClCompile Include="..\..\net\rpg_net_connection_manager.cpp" />
     <ClCompile Include="..\..\net\rpg_net_controller_base.cpp" />
@@ -143,15 +144,19 @@ popd</Command>
     <ClCompile Include="..\..\net\rpg_net_protocol_layer.cpp" />
     <ClCompile Include="..\..\net\rpg_net_resetcounterhandler.cpp" />
     <ClCompile Include="..\..\net\rpg_net_sessionmessage.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_sockethandler.cpp" />
     <ClCompile Include="..\..\net\rpg_net_sockethandler_base.cpp" />
     <ClCompile Include="..\..\net\rpg_net_statistichandler.cpp" />
     <ClCompile Include="..\..\net\rpg_net_stream.cpp" />
+    <ClCompile Include="..\..\net\rpg_net_stream_asynch_tcpsocket_base_t.cpp" />
+    <ClCompile Include="..\..\net\rpg_net_stream_asynch_udpsocket_base_t.cpp" />
     <ClCompile Include="..\..\net\rpg_net_stream_config.cpp" />
     <ClCompile Include="..\..\net\rpg_net_stream_messageallocator.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_stream_socket_base.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_transportlayer_ip_cast.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_transportlayer_udp.cpp" />
+    <ClCompile Include="..\..\net\rpg_net_stream_tcpsocket_base_t.cpp" />
+    <ClCompile Include="..\..\net\rpg_net_stream_udpsocket_base_t.cpp" />
+    <ClCompile Include="..\..\net\rpg_net_tcpconnection.cpp" />
+    <ClCompile Include="..\..\net\rpg_net_tcpsockethandler.cpp" />
+    <ClCompile Include="..\..\net\rpg_net_udpconnection.cpp" />
+    <ClCompile Include="..\..\net\rpg_net_udpsockethandler.cpp" />
     <ClCompile Include="..\..\net\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -160,9 +165,8 @@ popd</Command>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\net\rpg_net_asynchsockethandler.h" />
-    <ClInclude Include="..\..\net\rpg_net_asynchsockethandler_t.h" />
-    <ClInclude Include="..\..\net\rpg_net_asynchstreamhandler_t.h" />
+    <ClInclude Include="..\..\net\rpg_net_asynch_tcpsockethandler.h" />
+    <ClInclude Include="..\..\net\rpg_net_asynch_udpsockethandler.h" />
     <ClInclude Include="..\..\net\rpg_net_common.h" />
     <ClInclude Include="..\..\net\rpg_net_common_modules.h" />
     <ClInclude Include="..\..\net\rpg_net_common_tools.h" />
@@ -186,27 +190,32 @@ popd</Command>
     <ClInclude Include="..\..\net\rpg_net_remote_comm.h" />
     <ClInclude Include="..\..\net\rpg_net_resetcounterhandler.h" />
     <ClInclude Include="..\..\net\rpg_net_sessionmessage.h" />
-    <ClInclude Include="..\..\net\rpg_net_sockethandler.h" />
     <ClInclude Include="..\..\net\rpg_net_sockethandler_base.h" />
+    <ClInclude Include="..\..\net\rpg_net_socket_common.h" />
     <ClInclude Include="..\..\net\rpg_net_statistichandler.h" />
     <ClInclude Include="..\..\net\rpg_net_stream.h" />
+    <ClInclude Include="..\..\net\rpg_net_stream_asynch_tcpsocket_base_t.h" />
+    <ClInclude Include="..\..\net\rpg_net_stream_asynch_udpsocket_base_t.h" />
     <ClInclude Include="..\..\net\rpg_net_stream_common.h" />
     <ClInclude Include="..\..\net\rpg_net_stream_config.h" />
     <ClInclude Include="..\..\net\rpg_net_stream_messageallocator.h" />
-    <ClInclude Include="..\..\net\rpg_net_stream_socket_base.h" />
-    <ClInclude Include="..\..\net\rpg_net_transportlayer_ip_cast.h" />
-    <ClInclude Include="..\..\net\rpg_net_transportlayer_udp.h" />
+    <ClInclude Include="..\..\net\rpg_net_stream_tcpsocket_base_t.h" />
+    <ClInclude Include="..\..\net\rpg_net_stream_udpsocket_base_t.h" />
+    <ClInclude Include="..\..\net\rpg_net_tcpconnection.h" />
+    <ClInclude Include="..\..\net\rpg_net_tcpsockethandler.h" />
+    <ClInclude Include="..\..\net\rpg_net_udpconnection.h" />
+    <ClInclude Include="..\..\net\rpg_net_udpsockethandler.h" />
     <ClInclude Include="..\..\net\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\net\rpg_net_asynchsockethandler_t.inl" />
-    <None Include="..\..\net\rpg_net_asynchstreamhandler_t.inl" />
     <None Include="..\..\net\rpg_net_connection_manager.inl" />
     <None Include="..\..\net\rpg_net_message_base.inl" />
     <None Include="..\..\net\rpg_net_module_runtimestatistic.inl" />
-    <None Include="..\..\net\rpg_net_sockethandler_base.inl" />
     <None Include="..\..\net\rpg_net_statistichandler.inl" />
-    <None Include="..\..\net\rpg_net_stream_socket_base.inl" />
+    <None Include="..\..\net\rpg_net_stream_asynch_tcpsocket_base_t.inl" />
+    <None Include="..\..\net\rpg_net_stream_asynch_udpsocket_base_t.inl" />
+    <None Include="..\..\net\rpg_net_stream_tcpsocket_base_t.inl" />
+    <None Include="..\..\net\rpg_net_stream_udpsocket_base_t.inl" />
     <None Include="..\..\net\scripts\exports.bat" />
   </ItemGroup>
   <ItemGroup>

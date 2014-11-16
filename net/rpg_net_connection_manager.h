@@ -24,7 +24,7 @@
 #include "rpg_net_exports.h"
 #include "rpg_net_iconnection.h"
 #include "rpg_net_iconnectionmanager.h"
-#include "rpg_net_sockethandler_base.h"
+//#include "rpg_net_sockethandler_base.h"
 
 #include "rpg_common_istatistic.h"
 #include "rpg_common_idumpstate.h"
@@ -47,9 +47,9 @@ class RPG_Net_Export RPG_Net_Connection_Manager
                                                         StatisticsContainerType>,
                              ACE_Recursive_Thread_Mutex>;
 
-  // needs access to (de-)register itself with the singleton
-  friend class RPG_Net_SocketHandlerBase<ConfigurationType,
-                                         StatisticsContainerType>;
+  //// needs access to (de-)register itself with the singleton
+  //friend class RPG_Net_SocketHandlerBase<ConfigurationType,
+  //                                       StatisticsContainerType>;
 
  public:
   typedef RPG_Net_IConnection<StatisticsContainerType> CONNECTION_TYPE;

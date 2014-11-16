@@ -23,15 +23,13 @@
 
 #include "rpg_common_exports.h"
 #include "rpg_common_irefcount.h"
-#include "rpg_common_idumpstate.h"
 
 #include "ace/Global_Macros.h"
 #include "ace/Condition_T.h"
 #include "ace/Synch.h"
 
 class RPG_Common_Export RPG_Common_ReferenceCounterBase
- : virtual public RPG_Common_IRefCount,
-   public RPG_Common_IDumpState
+ : virtual public RPG_Common_IRefCount
 {
  public:
   virtual ~RPG_Common_ReferenceCounterBase();
@@ -42,14 +40,11 @@ class RPG_Common_Export RPG_Common_ReferenceCounterBase
   virtual unsigned int count();
   virtual void wait_zero();
 
-  // implement RPG_Common_IDumpState
-  virtual void dump_state() const;
-
  protected:
   // *WARNING*: "delete on 0" may not work predictably if there are
   // any waiters (or in ANY multithreaded context, for that matter)...
-  RPG_Common_ReferenceCounterBase(const unsigned int& = 1, // initial reference count
-                                  const bool& = true);     // delete on 0 ?
+  RPG_Common_ReferenceCounterBase(unsigned int = 1, // initial reference count
+                                  bool = true);     // delete on 0 ?
 
   mutable ACE_Recursive_Thread_Mutex        myLock;
   unsigned int                              myCounter;
