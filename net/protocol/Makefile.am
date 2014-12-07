@@ -1,4 +1,4 @@
-METASOURCES = AUTO
+#METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = \
@@ -32,7 +32,6 @@ include_HEADERS = \
   rpg_net_protocol_module_IRCsplitter.h \
   rpg_net_protocol_module_IRCstreamer.h \
   rpg_net_protocol_sessionmessage.h \
-  rpg_net_protocol_sockethandler.h \
   rpg_net_protocol_stream.h \
   rpg_net_protocol_tools.h
 
@@ -67,8 +66,6 @@ libRPG_Net_Protocol_la_SOURCES = \
   rpg_net_protocol_module_IRCstreamer.h \
   rpg_net_protocol_sessionmessage.cpp \
   rpg_net_protocol_sessionmessage.h \
-  rpg_net_protocol_sockethandler.cpp \
-  rpg_net_protocol_sockethandler.h \
   rpg_net_protocol_stream.cpp \
   rpg_net_protocol_stream.h \
   rpg_net_protocol_tools.cpp \

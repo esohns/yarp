@@ -1,6 +1,6 @@
 METASOURCES = AUTO
 
-#ACLOCAL_AMFLAGS = -I m4
+ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = \
   -DRPG_CLIENT_BUILD_DLL \
   -I$(srcdir)/../common \

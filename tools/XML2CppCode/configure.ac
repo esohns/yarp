@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT([XML2CppCode], [0.1], [erik.sohns@web.de], [XML2CppCode], [http://www.rpg.org])
+AC_INIT([XML2CppCode], [0.1], [eriksohns@123mail.org], [XML2CppCode], [http://www.github.com/esohns/Yarp])
 AC_PREREQ([2.63])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_AUX_DIR([aux_config])
@@ -20,7 +20,7 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-AC_PROG_RANLIB
+#AC_PROG_RANLIB
 AM_PROG_AR
 
 # init other tools

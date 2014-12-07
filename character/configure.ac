@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT([RPG_Character], [0.1], [erik.sohns@web.de], [RPG_Character], [http://www.rpg.org])
+AC_INIT([RPG_Character], [0.1], [eriksohns@123mail.org], [RPG_Character], [http://www.github.com/esohns/Yarp])
 AC_PREREQ([2.63])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_AUX_DIR([aux_config])
@@ -21,11 +21,10 @@ AC_LANG([C++])
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_CPP
-# AC_PROG_AWK
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-AC_PROG_RANLIB
+#AC_PROG_RANLIB
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 AM_PROG_LIBTOOL
 

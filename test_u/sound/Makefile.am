@@ -1,6 +1,6 @@
-METASOURCES = AUTO
+#METASOURCES = AUTO
 
-#ACLOCAL_AMFLAGS = -I m4
+ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = \
   -I$(builddir)/../.. \
   -I$(srcdir)/../../common \

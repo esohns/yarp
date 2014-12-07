@@ -2,10 +2,12 @@
 # Process this file with autoconf to produce a configure script.
 
 # define version information
-AC_SUBST([YARP_SO_VERSION], [0:0:0])
-AC_SUBST([YARP_API_VERSION], [0.1])
+YARP_SO_VERSION="0:0:0"
+YARP_API_VERSION="0.1"
+AC_SUBST([YARP_SO_VERSION])
+AC_SUBST([YARP_API_VERSION])
 
-AC_INIT([yarp], [YARP_API_VERSION], [erik.sohns@fastmail.net], [Yarp], [http://www.github.org/esohns/yarp])
+AC_INIT([yarp], [YARP_API_VERSION], [eriksohns@123mail.org], [Yarp], [http://www.github.com/esohns/Yarp])
 AC_PREREQ(2.63)
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_AUX_DIR([aux_config])
@@ -38,15 +40,15 @@ AC_DEFINE([META_PACKAGE], ["RPG"], [meta-package])
 #AC_LANG([C++])
 
 # checks for programs
-#AC_PROG_CXX
+AC_PROG_CXX
 #AC_PROG_CC
 #AC_PROG_CPP
 #AC_PROG_INSTALL
 #AC_PROG_LN_S
 #AC_PROG_MAKE_SET
-#AC_PROG_RANLIB
-#AC_PROG_LEX
-#AC_PROG_YACC
+AC_PROG_RANLIB
+AC_PROG_LEX
+AC_PROG_YACC
 AM_PROG_AR
 #PKG_PROG_PKG_CONFIG
 
@@ -135,7 +137,7 @@ AC_SUBST(CXXFLAGS)
 
 AC_CONFIG_FILES([Makefile
                  scripts/Makefile
-                 tools/Makefile
-                 Yarp-${YARP_API_VERSION}.pc:scripts/Yarp.pc.in])
+                 tools/Makefile])
+AC_CONFIG_FILES([Yarp-${YARP_API_VERSION}.pc:scripts/Yarp.pc.in])
 
 AC_OUTPUT

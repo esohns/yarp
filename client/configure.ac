@@ -1,8 +1,8 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT([RPG_Client], [0.1], [erik.sohns@web.de], [RPG_Client], [http://www.rpg.org])
-AC_PREREQ(2.63)
+AC_INIT([RPG_Client], [0.1], [eriksohns@123mail.org], [RPG_Client], [http://www.github.com/esohns/Yarp])
+AC_PREREQ([2.63])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_AUX_DIR([aux_config])
 AC_CONFIG_HEADERS([config.h])
@@ -21,13 +21,13 @@ AC_LANG([C++])
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_CPP
-# AC_PROG_AWK
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-AC_PROG_RANLIB
+#AC_PROG_RANLIB
 AM_PROG_AR
 AM_PROG_LIBTOOL
+PKG_PROG_PKG_CONFIG
 
 # init other tools.
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
@@ -66,7 +66,8 @@ AC_SUBST(META_PACKAGE)
 AC_SUBST(CXXFLAGS)
 
 # checks for libraries
-PKG_CHECK_MODULES(pkg_libs, sdl libpng libglade-2.0 libgnomeui-2.0 >= 1.110.0 gmodule-export-2.0)
+#PKG_CHECK_MODULES(pkg_libs, sdl libpng libglade-2.0 libgnomeui-2.0 >= 1.110.0 gmodule-export-2.0)
+PKG_CHECK_MODULES(pkg_libs, sdl libpng libglade-2.0 gmodule-export-2.0)
 dnl AC_SUBST(pkg_libs_CFLAGS)
 dnl AC_SUBST(pkg_libs_LIBS)
 

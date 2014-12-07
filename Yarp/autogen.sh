@@ -1,3 +1,1 @@
 autoreconf -is
-automake
-
