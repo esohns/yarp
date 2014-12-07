@@ -85,6 +85,7 @@
 #include "rpg_net_defines.h"
 #include "rpg_net_connection_manager_common.h"
 #include "rpg_net_stream_messageallocator.h"
+#include "rpg_net_common_tools.h"
 
 #include "rpg_net_client_defines.h"
 
@@ -938,9 +939,9 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
   net_configuration.peerPingInterval = 0; // *NOTE*: don't ping the server...
   net_configuration.pingAutoAnswer = true;
 //  net_configuration.printPongMessages = false;
-  net_configuration.socketBufferSize = RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
-  net_configuration.messageAllocator = &message_allocator;
-  net_configuration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
+  net_configuration.streamSocketConfiguration.socketBufferSize = RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
+  net_configuration.streamSocketConfiguration.messageAllocator = &message_allocator;
+  net_configuration.streamSocketConfiguration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
 //  net_configuration.useThreadPerConnection = false;
 //  net_configuration.serializeOutput = false;
   // ************ stream config data ************
@@ -956,7 +957,7 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
   // step5b: setup dispatch of network events
   if (!RPG_Net_Common_Tools::initEventDispatch(RPG_NET_USES_REACTOR,
                                                configuration_in.num_dispatch_threads,
-                                               net_configuration.serializeOutput))
+                                               net_configuration.streamSocketConfiguration.serializeOutput))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to init network event dispatch, aborting\n")));

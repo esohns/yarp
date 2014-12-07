@@ -23,9 +23,9 @@
 
 #include "rpg_common_macros.h"
 
-RPG_Net_TransportLayer_TCP::RPG_Net_TransportLayer_TCP(RPG_Net_ClientServerRole_t clientServerRole_in)
- : inherited(clientServerRole_in,
-             TRANSPORTLAYER_TCP)
+RPG_Net_TransportLayer_TCP::RPG_Net_TransportLayer_TCP()
+ : inherited (ROLE_INVALID,
+              TRANSPORTLAYER_TCP)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_TransportLayer_TCP::RPG_Net_TransportLayer_TCP"));
 
@@ -35,14 +35,4 @@ RPG_Net_TransportLayer_TCP::~RPG_Net_TransportLayer_TCP()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_TransportLayer_TCP::~RPG_Net_TransportLayer_TCP"));
 
-}
-
-void
-RPG_Net_TransportLayer_TCP::init(unsigned short port_in,
-                                 bool useLoopback_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_TransportLayer_TCP::init"));
-
-  myPort = port_in;
-  myUseLoopback = useLoopback_in;
 }

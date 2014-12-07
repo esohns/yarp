@@ -26,7 +26,7 @@
 //          typename StatisticsContainerType,
             //typename SocketType,
 //          typename StreamType>
-//RPG_Net_StreamAsynchUDPSocketBase_t<ConfigurationType,
+//RPG_Net_StreamAsynchUDPSocketBase<ConfigurationType,
 //                              StatisticsContainerType,
 //                              SocketType,
 //                              StreamType,
@@ -46,11 +46,11 @@ template <typename ConfigurationType,
           typename StreamType,
           typename SocketType,
           typename SocketHandlerType>
-RPG_Net_StreamAsynchUDPSocketBase_t<ConfigurationType,
+RPG_Net_StreamAsynchUDPSocketBase<ConfigurationType,
                                     StatisticsContainerType,
                                     StreamType,
                                     SocketType,
-                                    SocketHandlerType>::RPG_Net_StreamAsynchUDPSocketBase_t ()//MANAGER_T* manager_in)
+                                    SocketHandlerType>::RPG_Net_StreamAsynchUDPSocketBase ()//MANAGER_T* manager_in)
 // : inherited(manager_in)
 // , myBuffer(NULL)
  //, myUserData ()
@@ -65,11 +65,11 @@ template <typename ConfigurationType,
           typename StreamType,
           typename SocketType,
           typename SocketHandlerType>
-RPG_Net_StreamAsynchUDPSocketBase_t<ConfigurationType,
+RPG_Net_StreamAsynchUDPSocketBase<ConfigurationType,
                                     StatisticsContainerType,
                                     StreamType,
                                     SocketType,
-                                    SocketHandlerType>::~RPG_Net_StreamAsynchUDPSocketBase_t ()
+                                    SocketHandlerType>::~RPG_Net_StreamAsynchUDPSocketBase ()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler::~RPG_Net_AsynchStreamHandler"));
 
@@ -97,7 +97,7 @@ template <typename ConfigurationType,
           typename SocketType,
           typename SocketHandlerType>
 void
-RPG_Net_StreamAsynchUDPSocketBase_t<ConfigurationType,
+RPG_Net_StreamAsynchUDPSocketBase<ConfigurationType,
                                     StatisticsContainerType,
                                     StreamType,
                                     SocketType,
@@ -114,7 +114,7 @@ template <typename ConfigurationType,
           typename SocketType,
           typename SocketHandlerType>
 void
-RPG_Net_StreamAsynchUDPSocketBase_t<ConfigurationType,
+RPG_Net_StreamAsynchUDPSocketBase<ConfigurationType,
                                     StatisticsContainerType,
                                     StreamType,
                                     SocketType,
@@ -295,7 +295,7 @@ template <typename ConfigurationType,
           typename SocketType,
           typename SocketHandlerType>
 int
-RPG_Net_StreamAsynchUDPSocketBase_t<ConfigurationType,
+RPG_Net_StreamAsynchUDPSocketBase<ConfigurationType,
                                     StatisticsContainerType,
                                     StreamType,
                                     SocketType,
@@ -353,7 +353,7 @@ template <typename ConfigurationType,
           typename SocketType,
           typename SocketHandlerType>
 int
-RPG_Net_StreamAsynchUDPSocketBase_t<ConfigurationType,
+RPG_Net_StreamAsynchUDPSocketBase<ConfigurationType,
                                     StatisticsContainerType,
                                     StreamType,
                                     SocketType,
@@ -420,7 +420,7 @@ template <typename ConfigurationType,
           typename SocketType,
           typename SocketHandlerType>
 bool
-RPG_Net_StreamAsynchUDPSocketBase_t<ConfigurationType,
+RPG_Net_StreamAsynchUDPSocketBase<ConfigurationType,
                                     StatisticsContainerType,
                                     StreamType,
                                     SocketType,
@@ -447,7 +447,7 @@ template <typename ConfigurationType,
           typename SocketType,
           typename SocketHandlerType>
 void
-RPG_Net_StreamAsynchUDPSocketBase_t<ConfigurationType,
+RPG_Net_StreamAsynchUDPSocketBase<ConfigurationType,
                                     StatisticsContainerType,
                                     StreamType,
                                     SocketType,
@@ -472,7 +472,7 @@ template <typename ConfigurationType,
           typename SocketType,
           typename SocketHandlerType>
 void
-RPG_Net_StreamAsynchUDPSocketBase_t<ConfigurationType,
+RPG_Net_StreamAsynchUDPSocketBase<ConfigurationType,
                                     StatisticsContainerType,
                                     StreamType,
                                     SocketType,

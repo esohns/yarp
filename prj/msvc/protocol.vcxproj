@@ -160,7 +160,6 @@ popd</Command>
     <ClInclude Include="..\..\net\protocol\rpg_net_protocol_module_IRCsplitter.h" />
     <ClInclude Include="..\..\net\protocol\rpg_net_protocol_module_IRCstreamer.h" />
     <ClInclude Include="..\..\net\protocol\rpg_net_protocol_sessionmessage.h" />
-    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_sockethandler.h" />
     <ClInclude Include="..\..\net\protocol\rpg_net_protocol_stream.h" />
     <ClInclude Include="..\..\net\protocol\rpg_net_protocol_tools.h" />
     <ClInclude Include="..\..\net\protocol\stdafx.h" />
@@ -187,7 +186,6 @@ popd</Command>
     <ClCompile Include="..\..\net\protocol\rpg_net_protocol_module_IRCsplitter.cpp" />
     <ClCompile Include="..\..\net\protocol\rpg_net_protocol_module_IRCstreamer.cpp" />
     <ClCompile Include="..\..\net\protocol\rpg_net_protocol_sessionmessage.cpp" />
-    <ClCompile Include="..\..\net\protocol\rpg_net_protocol_sockethandler.cpp" />
     <ClCompile Include="..\..\net\protocol\rpg_net_protocol_stream.cpp" />
     <ClCompile Include="..\..\net\protocol\rpg_net_protocol_tools.cpp" />
     <ClCompile Include="..\..\net\protocol\stdafx.cpp">

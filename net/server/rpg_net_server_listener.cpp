@@ -33,7 +33,6 @@ RPG_Net_Server_Listener::RPG_Net_Server_Listener()
  : inherited(NULL, // use global (default) reactor
              1),   // always accept ALL pending connections
    myIsInitialized(false),
-   myTransportLayer(RPG_NET_SERVER_DEFAULT_TRANSPORT_LAYER),
    myIsListening(false),
    myIsOpen(false),
    myListeningPort(RPG_NET_SERVER_DEFAULT_LISTENING_PORT),

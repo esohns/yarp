@@ -65,7 +65,7 @@ RPG_Net_Stream::~RPG_Net_Stream()
 }
 
 bool
-RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
+RPG_Net_Stream::init(const RPG_Net_ConfigPOD& configuration_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Stream::init"));
 
@@ -81,7 +81,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   // - push them onto the stream (tail-first) !
   // -------------------------------------------------------------
 
-  if (config_in.notificationStrategy)
+  if (configuration_in.streamSocketConfiguration.notificationStrategy)
   {
     MODULE_TYPE* module = head();
     if (!module)
@@ -99,17 +99,17 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
 
       return false;
     } // end IF
-    task->msg_queue()->notification_strategy(config_in.notificationStrategy);
+    task->msg_queue ()->notification_strategy (configuration_in.streamSocketConfiguration.notificationStrategy);
   } // end IF
 
   // ---------------------------------------------------------------------------
 
-  if (config_in.module)
-    if (inherited::push(config_in.module) == -1)
+  if (configuration_in.streamSocketConfiguration.module)
+    if (inherited::push (configuration_in.streamSocketConfiguration.module) == -1)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_Stream::push(\"%s\"): \"%m\", aborting\n"),
-                 config_in.module->name()));
+                 configuration_in.streamSocketConfiguration.module->name ()));
 
       return false;
     } // end IF
@@ -126,11 +126,11 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
 
     return false;
   } // end IF
-  if (!protocolHandler_impl->init(config_in.messageAllocator,
-                                  config_in.sessionID,
-                                  config_in.peerPingInterval,
-                                  config_in.pingAutoAnswer,
-                                  config_in.printPongMessages)) // print ('.') for received "pong"s...
+  if (!protocolHandler_impl->init (configuration_in.streamSocketConfiguration.messageAllocator,
+                                   configuration_in.streamSocketConfiguration.sessionID,
+                                   configuration_in.peerPingInterval,
+                                   configuration_in.pingAutoAnswer,
+                                   configuration_in.printPongMessages)) // print ('.') for received "pong"s...
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
@@ -159,9 +159,9 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
 
     return false;
   } // end IF
-  if (!runtimeStatistic_impl->init(config_in.statisticsReportingInterval, // reporting interval (seconds)
-		                               config_in.printFinalReport,            // print final report ?
-                                   config_in.messageAllocator))           // message allocator handle
+  if (!runtimeStatistic_impl->init (configuration_in.streamSocketConfiguration.statisticsReportingInterval, // reporting interval (seconds)
+                                    configuration_in.streamSocketConfiguration.printFinalReport,            // print final report ?
+                                    configuration_in.streamSocketConfiguration.messageAllocator))           // message allocator handle
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
@@ -219,10 +219,10 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
 
     return false;
   } // end IF
-  if (!socketHandler_impl->init(config_in.messageAllocator,
-                                config_in.sessionID,
-                                config_in.useThreadPerConnection,
-                                RPG_NET_STATISTICS_COLLECTION_INTERVAL))
+  if (!socketHandler_impl->init (configuration_in.streamSocketConfiguration.messageAllocator,
+                                 configuration_in.streamSocketConfiguration.sessionID,
+                                 configuration_in.streamSocketConfiguration.useThreadPerConnection,
+                                 RPG_NET_STATISTICS_COLLECTION_INTERVAL))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
@@ -234,7 +234,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   // enqueue the module...
   // *NOTE*: push()ing the module will open() it
   // --> set the argument that is passed along
-  mySocketHandler.arg(&const_cast<RPG_Net_ConfigPOD&>(config_in));
+  mySocketHandler.arg (&const_cast<RPG_Net_ConfigPOD&>(configuration_in));
   if (inherited::push(&mySocketHandler) == -1)
   {
     ACE_DEBUG((LM_ERROR,
@@ -247,7 +247,7 @@ RPG_Net_Stream::init(const RPG_Net_ConfigPOD& config_in)
   // -------------------------------------------------------------
 
   // set (session) message allocator
-  inherited::myAllocator = config_in.messageAllocator;
+  inherited::myAllocator = configuration_in.streamSocketConfiguration.messageAllocator;
 
   // OK: all went well
   inherited::myIsInitialized = true;

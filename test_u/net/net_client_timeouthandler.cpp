@@ -117,12 +117,12 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
 
           try
           {
-            const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->close();
+            const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->fini();
           }
           catch (...)
           {
             ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("caught exception in RPG_Net_IConnection::abort(), aborting\n")));
+                       ACE_TEXT("caught exception in RPG_Net_IConnection::fini(), aborting\n")));
 
             // clean up
             const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();

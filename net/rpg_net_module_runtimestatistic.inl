@@ -252,7 +252,7 @@ RPG_Net_Module_RuntimeStatistic_t<TaskSynchType,
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
     {
       // retain session ID for reporting...
-      mySessionID = message_inout->getConfig()->getUserData().sessionID;
+      mySessionID = message_inout->getConfig()->getUserData().streamSocketConfiguration.sessionID;
 
       // statistics reporting
       if (myReportingInterval)

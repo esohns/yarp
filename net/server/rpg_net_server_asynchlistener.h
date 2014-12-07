@@ -24,7 +24,7 @@
 #include "rpg_net_server_exports.h"
 #include "rpg_net_server_ilistener.h"
 
-#include "rpg_net_connection_common.h"
+#include "rpg_net_tcpconnection.h"
 
 #include "rpg_common_idumpstate.h"
 
@@ -33,7 +33,7 @@
 #include "ace/Singleton.h"
 
 class RPG_Net_Server_Export RPG_Net_Server_AsynchListener
- : public ACE_Asynch_Acceptor<RPG_Net_AsynchTCPSocketHandler_t>,
+ : public ACE_Asynch_Acceptor<RPG_Net_AsynchTCPConnection>,
    public RPG_Net_Server_IListener
 {
   // singleton needs access to the ctor/dtors
@@ -42,7 +42,7 @@ class RPG_Net_Server_Export RPG_Net_Server_AsynchListener
 
  public:
   // override default creation strategy
-  virtual RPG_Net_AsynchTCPSocketHandler_t* make_handler(void);
+  virtual RPG_Net_AsynchTCPConnection* make_handler (void);
   // override default accept strategy
   virtual int validate_connection(const ACE_Asynch_Accept::Result&, // result
                                   const ACE_INET_Addr&,             // remote address
@@ -65,7 +65,7 @@ class RPG_Net_Server_Export RPG_Net_Server_AsynchListener
   virtual void dump_state() const;
 
  private:
-  typedef ACE_Asynch_Acceptor<RPG_Net_AsynchTCPSocketHandler_t> inherited;
+  typedef ACE_Asynch_Acceptor<RPG_Net_AsynchTCPConnection> inherited;
 
   RPG_Net_Server_AsynchListener();
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Server_AsynchListener(const RPG_Net_Server_AsynchListener&));

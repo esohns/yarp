@@ -21,19 +21,18 @@
 #ifndef RPG_NET_CONNECTION_MANAGER_COMMON_H
 #define RPG_NET_CONNECTION_MANAGER_COMMON_H
 
-//#include "rpg_net_exports.h"
-//#include "rpg_net_stream_common.h"
+#include "rpg_net_stream_common.h"
 #include "rpg_net_connection_manager.h"
 
-//#include "ace/Singleton.h"
-//#include "ace/Synch.h"
+#include "ace/Singleton.h"
+#include "ace/Synch.h"
 
-//typedef RPG_Net_Connection_Manager<RPG_Net_ConfigPOD,
-//                                   RPG_Net_RuntimeStatistic> RPG_Net_Connection_Manager_t;
-//typedef ACE_Singleton<RPG_Net_Connection_Manager_t,
-//                      ACE_Recursive_Thread_Mutex> RPG_NET_CONNECTIONMANAGER_SINGLETON;
-//RPG_NET_SINGLETON_DECLARE(ACE_Singleton,
-//                          RPG_Net_Connection_Manager_t,
-//                          ACE_Recursive_Thread_Mutex)
+typedef RPG_Net_Connection_Manager<RPG_Net_ConfigPOD,
+                                   RPG_Net_RuntimeStatistic> RPG_Net_Connection_Manager_t;
+typedef ACE_Singleton<RPG_Net_Connection_Manager_t,
+                      ACE_Recursive_Thread_Mutex> RPG_NET_CONNECTIONMANAGER_SINGLETON;
+RPG_NET_SINGLETON_DECLARE(ACE_Singleton,
+                          RPG_Net_Connection_Manager_t,
+                          ACE_Recursive_Thread_Mutex)
 
 #endif

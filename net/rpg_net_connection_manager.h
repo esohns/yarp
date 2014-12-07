@@ -36,7 +36,7 @@
 
 template <typename ConfigurationType,
           typename StatisticsContainerType>
-class RPG_Net_Export RPG_Net_Connection_Manager
+class RPG_Net_Connection_Manager
  : public RPG_Net_IConnectionManager<ConfigurationType,
                                      StatisticsContainerType>,
    public RPG_Common_IStatistic<StatisticsContainerType>,

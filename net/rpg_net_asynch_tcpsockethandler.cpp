@@ -30,44 +30,23 @@
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
 
-//#include "rpg_stream_iallocator.h"
-
 #include "rpg_net_defines.h"
 #include "rpg_net_common_tools.h"
 
-//template <typename ConfigType,
-//          typename StatisticsContainerType>
-RPG_Net_AsynchTCPSocketHandler::RPG_Net_AsynchTCPSocketHandler()//MANAGER_T* manager_in)
+RPG_Net_AsynchTCPSocketHandler::RPG_Net_AsynchTCPSocketHandler()
  : inherited()
- , ACE_Notification_Strategy(NULL,                          // event handler handle
-                             ACE_Event_Handler::WRITE_MASK) // mask
- , inherited2(0,    // initial count
-              true) // delete on zero ?
-// , myUserData()
+ //, inherited2(0,    // initial count
+ //             true) // delete on zero ?
+ , inherited2 ()
+ , inherited3 (NULL,                          // event handler handle
+               ACE_Event_Handler::WRITE_MASK) // mask
 // , myInputStream()
 // , myOutputStream()
-// , myManager(manager_in)
-// , myIsRegistered(false)
 // , myLocalSAP()
 // , myRemoteSAP()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchTCPSocketHandler::RPG_Net_AsynchTCPSocketHandler"));
 
-  //// init user data
-  //ACE_OS::memset(&myUserData, 0, sizeof(ConfigType));
-
-//  if (myManager)
-//  { // (try to) get user data from the connection manager...
-//    try
-//    {
-//      myManager->getConfiguration(myUserData);
-//    }
-//    catch (...)
-//    {
-//      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("caught exception in RPG_Net_IConnectionManager::getConfiguration(), continuing\n")));
-//    }
-//  } // end IF
 }
 
 RPG_Net_AsynchTCPSocketHandler::~RPG_Net_AsynchTCPSocketHandler()
@@ -82,44 +61,42 @@ RPG_Net_AsynchTCPSocketHandler::open(ACE_HANDLE handle_in,
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchTCPSocketHandler::open"));
 
-  ACE_UNUSED_ARG(handle_in);
-
   // step1: tweak socket
   // *TODO*: there is a design glitch here: this class SHOULD NOT make
   // assumptions about ConfigType !
   //if (myUserData.socketBufferSize)
-  //  if (!RPG_Net_Common_Tools::setSocketBuffer(inherited::handle(),
+  //  if (!RPG_Net_Common_Tools::setSocketBuffer(handle_in,
   //                                             SO_RCVBUF,
   //                                             myUserData.socketBufferSize))
   //  {
   //    ACE_DEBUG((LM_ERROR,
   //               ACE_TEXT("failed to RPG_Net_Common_Tools::setSocketBuffer(%u) (handle was: %d), aborting\n"),
   //               myUserData.socketBufferSize,
-  //               inherited::handle()));
+  //               handle_in));
 
   //    // clean up
-  //    handle_close(inherited::handle(),
+  //    handle_close(handle_in,
   //                 ACE_Event_Handler::ALL_EVENTS_MASK);
 
   //    return;
   //  } // end IF
-  if (!RPG_Net_Common_Tools::setNoDelay(inherited3::handle(),
-                                        RPG_NET_DEFAULT_TCP_NODELAY))
+  if (!RPG_Net_Common_Tools::setNoDelay (handle_in,
+                                         RPG_NET_DEFAULT_TCP_NODELAY))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Net_Common_Tools::setNoDelay(%s) (handle was: %d), aborting\n"),
                (RPG_NET_DEFAULT_TCP_NODELAY ? ACE_TEXT("true")
                                             : ACE_TEXT("false")),
-               inherited3::handle()));
+               handle_in));
 
     // clean up
-    handle_close(inherited3::handle(),
-                 ACE_Event_Handler::ALL_EVENTS_MASK);
+    handle_close (handle_in,
+                  ACE_Event_Handler::ALL_EVENTS_MASK);
 
     return;
   } // end IF
-  if (!RPG_Net_Common_Tools::setKeepAlive(inherited3::handle(),
-                                          RPG_NET_DEFAULT_TCP_KEEPALIVE))
+  if (!RPG_Net_Common_Tools::setKeepAlive (handle_in,
+                                           RPG_NET_DEFAULT_TCP_KEEPALIVE))
   {
     int error = ACE_OS::last_error();
     if (error != ENOTSOCK) // <-- socket has been closed asynchronously
@@ -127,16 +104,16 @@ RPG_Net_AsynchTCPSocketHandler::open(ACE_HANDLE handle_in,
                  ACE_TEXT("failed to RPG_Net_Common_Tools::setLinger(%s) (handle was: %d), aborting\n"),
                  (RPG_NET_DEFAULT_TCP_LINGER ? ACE_TEXT("true")
                                              : ACE_TEXT("false")),
-                 inherited3::handle()));
+                 handle_in));
 
     // clean up
-    handle_close(inherited3::handle(),
-                 ACE_Event_Handler::ALL_EVENTS_MASK);
+    handle_close (handle_in,
+                  ACE_Event_Handler::ALL_EVENTS_MASK);
 
     return;
   } // end IF
-  if (!RPG_Net_Common_Tools::setLinger(inherited3::handle(),
-                                       RPG_NET_DEFAULT_TCP_LINGER))
+  if (!RPG_Net_Common_Tools::setLinger (handle_in,
+                                        RPG_NET_DEFAULT_TCP_LINGER))
   {
     int error = ACE_OS::last_error();
     if (error != ENOTSOCK) // <-- socket has been closed asynchronously
@@ -144,60 +121,47 @@ RPG_Net_AsynchTCPSocketHandler::open(ACE_HANDLE handle_in,
                  ACE_TEXT("failed to RPG_Net_Common_Tools::setLinger(%s) (handle was: %d), aborting\n"),
                  ((RPG_NET_DEFAULT_TCP_LINGER > 0) ? ACE_TEXT("true")
                                                    : ACE_TEXT("false")),
-                 inherited3::handle()));
+                 handle_in));
 
     // clean up
-    handle_close(inherited3::handle(),
-                 ACE_Event_Handler::ALL_EVENTS_MASK);
+    handle_close (handle_in,
+                  ACE_Event_Handler::ALL_EVENTS_MASK);
 
     return;
   } // end IF
 
   // step2: init i/o streams
-  inherited3::proactor(ACE_Proactor::instance());
+  inherited2::proactor(ACE_Proactor::instance());
   if (myInputStream.open(*this,
-                         inherited3::handle(),
+                         handle_in,
                          NULL,
-                         inherited3::proactor()) == -1)
+                         inherited2::proactor()) == -1)
   {
     ACE_ERROR((LM_ERROR,
                ACE_TEXT("failed to init input stream (handle was: %d), aborting\n"),
-               inherited3::handle()));
+               handle_in));
 
     // clean up
-    handle_close(inherited3::handle(),
-                 ACE_Event_Handler::ALL_EVENTS_MASK);
+    handle_close (handle_in,
+                  ACE_Event_Handler::ALL_EVENTS_MASK);
 
     return;
   } // end IF
   if (myOutputStream.open(*this,
-                          inherited3::handle(),
+                          handle_in,
                           NULL,
-                          inherited3::proactor()) == -1)
+                          inherited2::proactor()) == -1)
   {
     ACE_ERROR((LM_ERROR,
                ACE_TEXT("failed to init output stream (handle was: %d), aborting\n"),
-               inherited3::handle()));
+               handle_in));
 
     // clean up
-    handle_close(inherited3::handle(),
-                 ACE_Event_Handler::ALL_EVENTS_MASK);
+    handle_close (handle_in,
+                  ACE_Event_Handler::ALL_EVENTS_MASK);
 
     return;
   } // end IF
-
-//  if (myManager)
-//  { // (try to) register with the connection manager...
-//    try
-//    {
-//      myManager->registerConnection(this);
-//    }
-//    catch (...)
-//    {
-//      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("caught exception in RPG_Net_IConnectionManager::registerConnection(), continuing\n")));
-//    }
-//  } // end IF
 }
 
 void
@@ -244,7 +208,7 @@ RPG_Net_AsynchTCPSocketHandler::notify(void)
   int result = -1;
   try
   {
-    result = handle_output(inherited3::handle());
+    result = handle_output(inherited2::handle());
   }
   catch (...)
   {
@@ -252,7 +216,7 @@ RPG_Net_AsynchTCPSocketHandler::notify(void)
                ACE_TEXT("caught exception in RPG_Net_AsynchTCPSocketHandler::handle_output(), aborting")));
   }
   if (result == -1)
-    handle_close(inherited3::handle(),
+    handle_close(inherited2::handle(),
                  ACE_Event_Handler::ALL_EVENTS_MASK);
 
   return result;
@@ -367,7 +331,7 @@ RPG_Net_AsynchTCPSocketHandler::handle_write_stream(const ACE_Asynch_Write_Strea
   // clean up
   result.message_block().release();
   if (close)
-    handle_close(inherited3::handle(),
+    handle_close(inherited2::handle(),
                  ACE_Event_Handler::ALL_EVENTS_MASK);
 }
 
@@ -385,7 +349,7 @@ RPG_Net_AsynchTCPSocketHandler::initiate_read_stream()
                RPG_NET_STREAM_BUFFER_SIZE));
 
     // clean up
-    handle_close(inherited3::handle(),
+    handle_close(inherited2::handle(),
                  ACE_Event_Handler::ALL_EVENTS_MASK);
   } // end IF
 
@@ -399,7 +363,7 @@ RPG_Net_AsynchTCPSocketHandler::initiate_read_stream()
 
     // clean up
     message_block->release();
-    handle_close(inherited3::handle(),
+    handle_close(inherited2::handle(),
                  ACE_Event_Handler::ALL_EVENTS_MASK);
   } // end IF
 }

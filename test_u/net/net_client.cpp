@@ -464,15 +464,15 @@ do_work(Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
                                                                    : serverPingInterval_in);
   configuration.pingAutoAnswer = true;
   configuration.printPongMessages = true;
-  configuration.socketBufferSize = RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
-  configuration.messageAllocator = &messageAllocator;
-  configuration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
+  configuration.streamSocketConfiguration.socketBufferSize = RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
+  configuration.streamSocketConfiguration.messageAllocator = &messageAllocator;
+  configuration.streamSocketConfiguration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
 //  config.useThreadPerConnection = false;
 //  config.serializeOutput = false;
   // ************ stream config data ************
 //  config.notificationStrategy = NULL;
-  configuration.module = (hasUI_in ? &event_handler
-                                   : NULL);
+  configuration.streamSocketConfiguration.module = (hasUI_in ? &event_handler
+                                                             : NULL);
 //  config.delete_module = false;
   // *WARNING*: set at runtime, by the appropriate connection handler
 //  config.sessionID = 0; // (== socket handle !)
@@ -485,7 +485,7 @@ do_work(Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   // step0d: init event dispatch
   if (!RPG_Net_Common_Tools::initEventDispatch(useReactor_in,
                                                numDispatchThreads_in,
-                                               configuration.serializeOutput))
+                                               configuration.streamSocketConfiguration.serializeOutput))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to init event dispatch, aborting\n")));

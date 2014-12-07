@@ -66,7 +66,7 @@ RPG_Net_Protocol_Stream::~RPG_Net_Protocol_Stream()
 }
 
 bool
-RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
+RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& configuration_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Stream::init"));
 
@@ -87,8 +87,8 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
 
     return false;
   } // end IF
-  if (!runtimeStatistic_impl->init(config_in.statisticsReportingInterval,
-                                   config_in.messageAllocator)) // print cache info ?
+  if (!runtimeStatistic_impl->init (configuration_in.statisticsReportingInterval,
+                                    configuration_in.streamSocketConfiguration.messageAllocator)) // print cache info ?
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
@@ -117,10 +117,10 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
 //
 //     return false;
 //   } // end IF
-//   if (!IRCHandler_impl->init(config_in.messageAllocator,
-//                              (config_in.clientPingInterval ? false // servers shouldn't receive "pings" in the first place
-//                                                            : RPG_NET_DEF_CLIENT_PING_PONG), // auto-answer "ping" as a client ?...
-//                              (config_in.clientPingInterval == 0))) // clients print ('.') dots for received "pings"...
+//   if (!IRCHandler_impl->init(configuration_in.messageAllocator,
+//                              (configuration_in.clientPingInterval ? false // servers shouldn't receive "pings" in the first place
+//                                                                   : RPG_NET_DEF_CLIENT_PING_PONG), // auto-answer "ping" as a client ?...
+//                              (configuration_in.clientPingInterval == 0))) // clients print ('.') dots for received "pings"...
 //   {
 //     ACE_DEBUG((LM_ERROR,
 //                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
@@ -149,10 +149,10 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
 
     return false;
   } // end IF
-  if (!IRCParser_impl->init(config_in.messageAllocator,     // message allocator
-                            config_in.crunchMessageBuffers, // "crunch" messages ?
-                            config_in.debugScanner,         // debug scanner ?
-                            config_in.debugParser))         // debug parser ?
+  if (!IRCParser_impl->init (configuration_in.streamSocketConfiguration.messageAllocator, // message allocator
+                             configuration_in.crunchMessageBuffers,                       // "crunch" messages ?
+                             configuration_in.debugScanner,                               // debug scanner ?
+                             configuration_in.debugParser))                               // debug parser ?
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
@@ -181,10 +181,10 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
 
     return false;
   } // end IF
-  if (!IRCSplitter_impl->init(config_in.messageAllocator, // message allocator
-                              false,                      // "crunch" messages ?
-                              0,                          // DON'T collect statistics
-                              config_in.debugScanner))    // debug scanning ?
+  if (!IRCSplitter_impl->init (configuration_in.streamSocketConfiguration.messageAllocator, // message allocator
+                              false,                                                        // "crunch" messages ?
+                              0,                                                            // DON'T collect statistics
+                              configuration_in.debugScanner))                               // debug scanning ?
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
@@ -196,7 +196,7 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
   // enqueue the module...
   // *NOTE*: push()ing the module will open() it
   // --> set the argument that is passed along
-  myIRCMarshal.arg(&const_cast<RPG_Net_Protocol_ConfigPOD&> (config_in));
+  myIRCMarshal.arg (&const_cast<RPG_Net_Protocol_ConfigPOD&> (configuration_in));
   if (push(&myIRCMarshal))
   {
     ACE_DEBUG((LM_ERROR,
@@ -208,8 +208,8 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& config_in)
 
   // set (session) message allocator
   // *TODO*: clean this up ! --> sanity check
-  ACE_ASSERT(config_in.messageAllocator);
-  inherited::myAllocator = config_in.messageAllocator;
+  ACE_ASSERT (configuration_in.streamSocketConfiguration.messageAllocator);
+  inherited::myAllocator = configuration_in.streamSocketConfiguration.messageAllocator;
 
   // OK: all went well
   inherited::myIsInitialized = true;

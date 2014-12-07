@@ -57,30 +57,37 @@ struct RPG_Net_RuntimeStatistic
   };
 };
 
-struct RPG_Net_ConfigPOD
+struct RPG_Net_StreamSocketConfiguration
 {
-  // ************************ connection config data ***************************
-  unsigned int               peerPingInterval; // ms {0 --> OFF}
-  bool                       pingAutoAnswer;
-  bool                       printPongMessages;
+  // ************************ connection data ***************************
   int                        socketBufferSize;
   RPG_Stream_IAllocator*     messageAllocator;
   unsigned int               bufferSize;
+  // *************************** stream data ****************************
   bool                       useThreadPerConnection;
   // *IMPORTANT NOTE*: in a threaded environment, workers MAY be
   // dispatching the reactor notification queue concurrently (most notably,
   // ACE_TP_Reactor) --> enforce proper serialization
   bool                       serializeOutput;
-  // *************************** stream config data ****************************
   ACE_Notification_Strategy* notificationStrategy;
   MODULE_TYPE*               module;
   bool                       deleteModule;
   unsigned int               sessionID; // (== socket handle !)
   unsigned int               statisticsReportingInterval;
   bool                       printFinalReport;
+};
+
+struct RPG_Net_ConfigPOD
+{
+  // *************************** connection data *******************************
+  unsigned int                      peerPingInterval; // ms {0 --> OFF}
+  bool                              pingAutoAnswer;
+  bool                              printPongMessages;
+  // ************************* stream / socket data ****************************
+  RPG_Net_StreamSocketConfiguration streamSocketConfiguration;
   // ****************************** runtime data *******************************
-  RPG_Net_RuntimeStatistic   currentStatistics;
-  ACE_Time_Value             lastCollectionTimestamp;
+  RPG_Net_RuntimeStatistic          currentStatistics;
+  ACE_Time_Value                    lastCollectionTimestamp;
 };
 
 typedef RPG_Net_StatisticHandler_Reactor<RPG_Net_RuntimeStatistic> RPG_Net_StatisticHandler_Reactor_t;

@@ -22,30 +22,20 @@
 #define RPG_NET_ICONNECTION_H
 
 #include "rpg_common_istatistic.h"
-#include "rpg_common_idumpstate.h"
 #include "rpg_common_irefcount.h"
+
+#include "rpg_net_itransportlayer.h"
 
 #include "ace/INET_Addr.h"
 
 template <typename StatisticsContainerType>
 class RPG_Net_IConnection
- : public RPG_Common_IStatistic<StatisticsContainerType>, // collect some stats
+ : public RPG_Common_IStatistic<StatisticsContainerType>,
    virtual public RPG_Common_IRefCount,
-   public RPG_Common_IDumpState
+   virtual public RPG_Net_ITransportLayer
 {
  public:
   virtual ~RPG_Net_IConnection() {};
-
-  virtual bool open(const ACE_INET_Addr&, // remote SAP
-                    unsigned short) = 0;  // port number
-  virtual void close() = 0;
-
-  virtual void ping() = 0; // ping the peer !
-
-  virtual void info(ACE_HANDLE&,               // return value: I/O handle
-                    ACE_INET_Addr&,            // return value: local SAP
-                    ACE_INET_Addr&) const = 0; // return value: remote SAP
-  virtual unsigned int id() const = 0;
 };
 
 #endif

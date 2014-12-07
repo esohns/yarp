@@ -29,16 +29,12 @@ class RPG_Net_Export RPG_Net_TransportLayer_TCP
  : public RPG_Net_TransportLayer_Base
 {
  public:
-  RPG_Net_TransportLayer_TCP(RPG_Net_ClientServerRole_t);
+  RPG_Net_TransportLayer_TCP();
   virtual ~RPG_Net_TransportLayer_TCP();
-
-  void init(unsigned short, // port number
-            bool = false);  // use loopback device ?
 
  private:
   typedef RPG_Net_TransportLayer_Base inherited;
 
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_TransportLayer_TCP());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_TransportLayer_TCP(const RPG_Net_TransportLayer_TCP&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_TransportLayer_TCP& operator=(const RPG_Net_TransportLayer_TCP&));
 };

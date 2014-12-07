@@ -23,7 +23,7 @@
 
 #include "rpg_net_protocol_tools.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 RPG_Net_Protocol_IRCMessage::RPG_Net_Protocol_IRCMessage()
  : inherited(1,

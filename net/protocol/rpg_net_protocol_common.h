@@ -24,6 +24,7 @@
 #include "rpg_net_protocol_exports.h"
 #include "rpg_net_protocol_IRCmessage.h"
 
+#include "rpg_net_stream_common.h"
 #include "rpg_net_connection_manager.h"
 #include "rpg_net_inotify.h"
 
@@ -192,28 +193,16 @@ struct RPG_Net_Protocol_RuntimeStatistic
 
 struct RPG_Net_Protocol_ConfigPOD
 {
-  // ************ connection config data ************
-  int                               socketBufferSize;
-  RPG_Stream_IAllocator*            messageAllocator;
-  unsigned int                      bufferSize;
-  bool                              useThreadPerConnection;
-  // *IMPORTANT NOTE*: in a threaded environment, workers MAY be
-  // dispatching the reactor notification queue concurrently (most notably,
-  // ACE_TP_Reactor) --> enforce proper serialization
-  bool                              serializeOutput;
-  // ************ protocol config data **************
+  // ********** protocol data ***********
   unsigned int                      clientPingInterval; // used by the server...
   RPG_Net_Protocol_IRCLoginOptions  loginOptions;
-  // ************ stream config data ****************
-  ACE_Notification_Strategy*        notificationStrategy;
-  MODULE_TYPE*                      module;
-  bool                              deleteModule;
+  // ******* stream / socket data *******
+  RPG_Net_StreamSocketConfiguration streamSocketConfiguration;
   bool                              crunchMessageBuffers;
   bool                              debugScanner;
   bool                              debugParser;
-  unsigned int                      sessionID; // (== socket handle !)
   unsigned int                      statisticsReportingInterval;
-  // ************ runtime statistics data ***********
+  // ***** runtime statistics data ******
   RPG_Net_Protocol_RuntimeStatistic currentStatistics;
   ACE_Time_Value                    lastCollectionTimestamp;
 };

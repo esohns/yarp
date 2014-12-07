@@ -17,9 +17,6 @@
     <ClCompile Include="..\..\net\client\rpg_net_client_connector.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\net\client\rpg_net_client_sockethandler.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="..\..\net\client\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -34,7 +31,6 @@
     <ClInclude Include="..\..\net\client\rpg_net_client_defines.h" />
     <ClInclude Include="..\..\net\client\rpg_net_client_exports.h" />
     <ClInclude Include="..\..\net\client\rpg_net_client_iconnector.h" />
-    <ClInclude Include="..\..\net\client\rpg_net_client_sockethandler.h" />
     <ClInclude Include="..\..\net\client\stdafx.h" />
   </ItemGroup>
   <ItemGroup>

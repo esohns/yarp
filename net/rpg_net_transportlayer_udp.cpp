@@ -28,59 +28,35 @@
 
 #include "rpg_net_defines.h"
 
-RPG_Net_TransportLayer_UDP::RPG_Net_TransportLayer_UDP(RPG_Net_ClientServerRole_t clientServerRole_in)
- : inherited(clientServerRole_in,
+RPG_Net_TransportLayer_UDP::RPG_Net_TransportLayer_UDP()
+ : inherited(ROLE_INVALID,
              TRANSPORTLAYER_UDP)
- , inherited2()
+ //, inherited2()
 //   myAddress(),
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_TransportLayer_UDP::RPG_Net_TransportLayer_UDP"));
 
-  std::string address = ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEFAULT_IP_BROADCAST_ADDRESS);
-  address += ':';
-  std::ostringstream converter;
-  converter << RPG_NET_DEFAULT_PORT;
-  address += converter.str();
-  if (myAddress.set(ACE_TEXT(address.c_str()), AF_INET) == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_INET_Addr::set(): \"%m\", continuing\n")));
-  if (inherited2::open(myAddress,
-                       ACE_PROTOCOL_FAMILY_INET,
-                       0,
-                       0) == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_Dgram::open(): \"%m\", continuing\n")));
+  //std::string address = ACE_TEXT_ALWAYS_CHAR(RPG_NET_DEFAULT_IP_BROADCAST_ADDRESS);
+  //address += ':';
+  //std::ostringstream converter;
+  //converter << RPG_NET_DEFAULT_PORT;
+  //address += converter.str();
+  //if (myAddress.set(ACE_TEXT(address.c_str()), AF_INET) == -1)
+  //  ACE_DEBUG((LM_ERROR,
+  //             ACE_TEXT("failed to ACE_INET_Addr::set(): \"%m\", continuing\n")));
+  //if (inherited2::open(myAddress,
+  //                     ACE_PROTOCOL_FAMILY_INET,
+  //                     0,
+  //                     0) == -1)
+  //  ACE_DEBUG((LM_ERROR,
+  //             ACE_TEXT("failed to ACE_SOCK_Dgram::open(): \"%m\", continuing\n")));
 }
 
 RPG_Net_TransportLayer_UDP::~RPG_Net_TransportLayer_UDP()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_TransportLayer_UDP::~RPG_Net_TransportLayer_UDP"));
 
-  if (inherited2::close() == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_Dgram::close(): \"%m\", continuing\n")));
-}
-
-void
-RPG_Net_TransportLayer_UDP::init(unsigned short port_in,
-                                 bool useLoopback_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_TransportLayer_UDP::init"));
-
-  myPort = port_in;
-  myUseLoopback = useLoopback_in;
-
-  if (myAddress.get_port_number() != myPort)
-  {
-    if (inherited2::close() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_SOCK_Dgram::close(): \"%m\", continuing\n")));
-    myAddress.set_port_number(myPort, 1);
-  } // end IF
-  if (inherited2::open(myAddress,
-                       ACE_PROTOCOL_FAMILY_INET,
-                       0,
-                       0) == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_SOCK_Dgram::open(): \"%m\", continuing\n")));
+  //if (inherited2::close() == -1)
+  //  ACE_DEBUG((LM_ERROR,
+  //             ACE_TEXT("failed to ACE_SOCK_Dgram::close(): \"%m\", continuing\n")));
 }

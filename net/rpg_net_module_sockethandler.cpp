@@ -189,7 +189,7 @@ RPG_Net_Module_SocketHandler::handleSessionMessage(RPG_Net_SessionMessage*& mess
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
     {
       // retain the session ID for reporting...
-      inherited::mySessionID = message_inout->getConfig()->getUserData().sessionID;
+      inherited::mySessionID = message_inout->getConfig()->getUserData().streamSocketConfiguration.sessionID;
 
       if (myStatCollectionInterval)
       {

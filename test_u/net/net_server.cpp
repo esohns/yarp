@@ -426,33 +426,33 @@ do_work(const unsigned int& maxNumConnections_in,
   RPG_Stream_AllocatorHeap heapAllocator;
   RPG_Net_StreamMessageAllocator messageAllocator(RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
                                                   &heapAllocator);
-  RPG_Net_ConfigPOD config;
-  ACE_OS::memset(&config, 0, sizeof(RPG_Net_ConfigPOD));
+  RPG_Net_ConfigPOD configuration;
+  ACE_OS::memset (&configuration, 0, sizeof (configuration));
   // ************************ connection config data ***************************
-  config.peerPingInterval = pingInterval_in;
-  config.pingAutoAnswer = true;
-//  config.printPongMessages = false;
-  config.socketBufferSize = RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
-  config.messageAllocator = &messageAllocator;
-  config.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
-//  config.useThreadPerConnection = false;
-//  config.serializeOutput = false;
+  configuration.peerPingInterval = pingInterval_in;
+  configuration.pingAutoAnswer = true;
+//  configuration.printPongMessages = false;
+  configuration.streamSocketConfiguration.socketBufferSize = RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
+  configuration.streamSocketConfiguration.messageAllocator = &messageAllocator;
+  configuration.streamSocketConfiguration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
+//  configuration.useThreadPerConnection = false;
+//  configuration.serializeOutput = false;
   // *************************** stream config data ****************************
-  config.module = (hasUI_in ? &event_handler
-		                        : NULL);
-//  config.delete_module = false;
+  configuration.streamSocketConfiguration.module = (hasUI_in ? &event_handler
+                                                             : NULL);
+//  configuration.delete_module = false;
   // *WARNING*: set at runtime, by the appropriate connection handler
-//  config.sessionID = 0; // (== socket handle !)
-//  config.statisticsReportingInterval = 0; // don't do it per stream (see below)...
-//  config.printFinalReport = false;
+//  configuration.sessionID = 0; // (== socket handle !)
+//  configuration.statisticsReportingInterval = 0; // don't do it per stream (see below)...
+//  configuration.printFinalReport = false;
   // ****************************** runtime data *******************************
-//  config.currentStatistics = {};
-//  config.lastCollectionTimestamp = ACE_Time_Value::zero;
+//  configuration.currentStatistics = {};
+//  configuration.lastCollectionTimestamp = ACE_Time_Value::zero;
 
   // step0b: init event dispatch
   if (!RPG_Net_Common_Tools::initEventDispatch(useReactor_in,
                                                numDispatchThreads_in,
-                                               config.serializeOutput))
+                                               configuration.streamSocketConfiguration.serializeOutput))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to init event dispatch, aborting\n")));
@@ -523,7 +523,7 @@ do_work(const unsigned int& maxNumConnections_in,
 
   // step3: init connection manager
   RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(maxNumConnections_in);
-  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->set(config); // will be passed to all handlers
+  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance ()->set (configuration); // will be passed to all handlers
 
   // step4: handle events (signals, incoming connections/data, timers, ...)
   // reactor/proactor event loop:

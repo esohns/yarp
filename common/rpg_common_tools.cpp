@@ -837,78 +837,78 @@ RPG_Common_Tools::sanitizeURI(const std::string& uri_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::isLinux"));
 
-	std::string result = uri_in;
+  std::string result = uri_in;
 
-	std::replace(result.begin(),
-		           result.end(),
-							 '\\', '/');
-	size_t position;
-	do
-	{
-		position = result.find(' ', 0);
-		if (position == std::string::npos)
-			break;
+  std::replace(result.begin(),
+               result.end(),
+               '\\', '/');
+  size_t position;
+  do
+  {
+    position = result.find(' ', 0);
+    if (position == std::string::npos)
+      break;
 
-		result.replace(position, 1, ACE_TEXT_ALWAYS_CHAR("%20"));
-	} while (true);
-	//XMLCh* transcoded_string =
-	//	XMLString::transcode(result.c_str(),
-	//	                     XMLPlatformUtils::fgMemoryManager);
-	//XMLURL url;
-	//if (!XMLURL::parse(transcoded_string,
-	//	                 url))
- // {
- //   ACE_DEBUG((LM_ERROR,
- //              ACE_TEXT("failed to XMLURL::parse(\"%s\"), aborting\n"),
- //              ACE_TEXT(result.c_str())));
+    result.replace(position, 1, ACE_TEXT_ALWAYS_CHAR("%20"));
+  } while (true);
+  //XMLCh* transcoded_string =
+  //	XMLString::transcode(result.c_str(),
+  //	                     XMLPlatformUtils::fgMemoryManager);
+  //XMLURL url;
+  //if (!XMLURL::parse(transcoded_string,
+  //	                 url))
+  // {
+  //   ACE_DEBUG((LM_ERROR,
+  //              ACE_TEXT("failed to XMLURL::parse(\"%s\"), aborting\n"),
+  //              ACE_TEXT(result.c_str())));
 
- //   return result;
- // } // end IF
-	//XMLUri uri(transcoded_string,
-	//	         XMLPlatformUtils::fgMemoryManager);
-	//XMLString::release(&transcoded_string,
-	//	                 XMLPlatformUtils::fgMemoryManager);
-	//char* translated_string =
-	//	XMLString::transcode(uri.getUriText(),
-	//	                     XMLPlatformUtils::fgMemoryManager);
-	//result = translated_string;
-	//XMLString::release(&translated_string,
-	//	                 XMLPlatformUtils::fgMemoryManager);
+  //   return result;
+  // } // end IF
+  //XMLUri uri(transcoded_string,
+  //	         XMLPlatformUtils::fgMemoryManager);
+  //XMLString::release(&transcoded_string,
+  //	                 XMLPlatformUtils::fgMemoryManager);
+  //char* translated_string =
+  //	XMLString::transcode(uri.getUriText(),
+  //	                     XMLPlatformUtils::fgMemoryManager);
+  //result = translated_string;
+  //XMLString::release(&translated_string,
+  //	                 XMLPlatformUtils::fgMemoryManager);
 
-	return result;
+  return result;
 }
 
 std::string
 RPG_Common_Tools::sanitize(const std::string& string_in)
 {
-	RPG_TRACE(ACE_TEXT("RPG_Common_Tools::sanitize"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::sanitize"));
 
-	std::string result = string_in;
+  std::string result = string_in;
 
-	std::replace(result.begin(),
-							 result.end(),
-							 ' ', '_');
+  std::replace(result.begin(),
+               result.end(),
+               ' ', '_');
 
-	return result;
+  return result;
 }
 
 std::string
 RPG_Common_Tools::strip(const std::string& string_in)
 {
-	RPG_TRACE(ACE_TEXT("RPG_Common_Tools::strip"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::strip"));
 
-	std::string result = string_in;
+  std::string result = string_in;
 
-	// *TODO*: remove tabs & other non-printable characters
-	std::string::size_type current_space = std::string::npos;
-	while ((current_space = result.find(' ',
-		                                  0)) == 0)
-		result.erase(current_space, 1);
-	while ((current_space = result.rfind(' ',
-		                                   std::string::npos)) == (result.size() - 1))
-		result.erase(current_space, 1);
+  // *TODO*: remove tabs & other non-printable characters
+  std::string::size_type current_space = std::string::npos;
+  while ((current_space = result.find(' ',
+                                      0)) == 0)
+    result.erase(current_space, 1);
+  while ((current_space = result.rfind(' ',
+                                       std::string::npos)) == (result.size() - 1))
+    result.erase(current_space, 1);
 
-	return result;
+  return result;
 }
 
 bool
@@ -1235,14 +1235,14 @@ RPG_Common_Tools::initLogging(const std::string& programName_in,
 
 bool
 RPG_Common_Tools::preInitSignals(ACE_Sig_Set& signals_inout,
-																 const bool& useReactor_in,
-																 RPG_Common_SignalActions_t& previousActions_out)
+                                 const bool& useReactor_in,
+                                 RPG_Common_SignalActions_t& previousActions_out)
 {
-	RPG_TRACE(ACE_TEXT("RPG_Common_Tools::preInitSignals"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::preInitSignals"));
 
-	// *IMPORTANT NOTE*: "The signal disposition is a per-process attribute: in a
-	// multithreaded application, the disposition of a particular signal is the
-	// same for all threads." (see man(7) signal)
+  // *IMPORTANT NOTE*: "The signal disposition is a per-process attribute: in a
+  // multithreaded application, the disposition of a particular signal is the
+  // same for all threads." (see man(7) signal)
 
   // step1: ignore SIGPIPE: continue gracefully after a client suddenly
   // disconnects (i.e. application/system crash, etc...)
@@ -1326,12 +1326,12 @@ RPG_Common_Tools::initSignals(ACE_Sig_Set& signals_inout,
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::initSignals"));
 
-	// init return value(s)
-	previousActions_out.clear();
+  // init return value(s)
+  previousActions_out.clear();
 
-	// *NOTE*: "The signal disposition is a per-process attribute: in a
-	// multithreaded application, the disposition of a particular signal is the
-	// same for all threads." (see man(7) signal)
+  // *NOTE*: "The signal disposition is a per-process attribute: in a
+  // multithreaded application, the disposition of a particular signal is the
+  // same for all threads." (see man(7) signal)
 
   // step1: backup previous actions
   ACE_Sig_Action previous_action;
@@ -1429,8 +1429,8 @@ RPG_Common_Tools::finiSignals(const ACE_Sig_Set& signals_in,
 void
 RPG_Common_Tools::retrieveSignalInfo(const int& signal_in,
                                      const siginfo_t& info_in,
-																		 const ucontext_t* context_in,
-																		 std::string& information_out)
+                                     const ucontext_t* context_in,
+                                     std::string& information_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::retrieveSignalInfo"));
 
@@ -1766,14 +1766,14 @@ RPG_Common_Tools::retrieveSignalInfo(const int& signal_in,
     case SIGABRT_COMPAT:
       information << ACE_TEXT("SIGABRT_COMPAT"); break;
     default:
-	  {
+    {
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("invalid/unknown signal: %S, continuing\n"),
                  signal_in));
 
-			break;
-		}
-	} // end SWITCH
+      break;
+    }
+  } // end SWITCH
 
   information << ACE_TEXT(", signalled handle: ");
   information << info_in.si_handle_;

@@ -42,7 +42,7 @@ RPG_Net_Client_Connector::~RPG_Net_Client_Connector()
 }
 
 int
-RPG_Net_Client_Connector::make_svc_handler(RPG_Net_TCPSocketHandler_t*& handler_inout)
+RPG_Net_Client_Connector::make_svc_handler (RPG_Net_TCPConnection*& handler_inout)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_Connector::make_svc_handler"));
 
@@ -51,7 +51,7 @@ RPG_Net_Client_Connector::make_svc_handler(RPG_Net_TCPSocketHandler_t*& handler_
 
   // default behavior
   ACE_NEW_NORETURN(handler_inout,
-                   RPG_Net_TCPSocketHandler_t());
+                   RPG_Net_TCPConnection ());
   if (!handler_inout)
     ACE_DEBUG((LM_CRITICAL,
                ACE_TEXT("failed to allocate memory: \"%m\", aborting\n")));
@@ -74,7 +74,7 @@ RPG_Net_Client_Connector::connect(const ACE_INET_Addr& peer_address)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_Connector::connect"));
 
-  RPG_Net_SocketHandler_t* handler = NULL;
+  RPG_Net_TCPConnection* handler = NULL;
   int result = inherited::connect(handler,                          // service handler
                                   peer_address,                     // remote SAP
                                   ACE_Synch_Options::defaults,      // synch options

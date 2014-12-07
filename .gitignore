@@ -44,3 +44,17 @@ autoscan.log
 configure.scan
 Debug_obj
 ws2_32.pdb
+/character/monster/rpg_player.xsd
+/client/rpg_character.xsd
+/client/rpg_combat.xsd
+/client/rpg_common.xsd
+/client/rpg_common_environment.xsd
+/client/rpg_dice.xsd
+/client/rpg_engine.xsd
+/client/rpg_graphics.xsd
+/client/rpg_item.xsd
+/client/rpg_magic.xsd
+/client/rpg_map.xsd
+/client/rpg_monster.xsd
+/client/rpg_player.xsd
+/map/rpg_common_environment.xsd

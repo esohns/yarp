@@ -26,13 +26,19 @@
 #include "rpg_net_itransportlayer.h"
 
 class RPG_Net_Export RPG_Net_TransportLayer_Base
- : public RPG_Net_ITransportLayer
+ : virtual public RPG_Net_ITransportLayer
 {
  public:
   virtual ~RPG_Net_TransportLayer_Base();
 
-  void init(unsigned short, // port number
-            bool = false);  // use loopback device ?
+  virtual void init (RPG_Net_ClientServerRole_t, // role
+                     unsigned short,             // port number
+                     bool = false);              // use loopback device ?
+
+  // implement (part of) RPG_Net_ITransportLayer
+  virtual void info (ACE_HANDLE&,           // return value: I/O handle
+                     ACE_INET_Addr&,        // return value: local SAP
+                     ACE_INET_Addr&) const; // return value: remote SAP
 
  protected:
   RPG_Net_TransportLayer_Base(RPG_Net_ClientServerRole_t,

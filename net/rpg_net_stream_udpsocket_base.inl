@@ -28,21 +28,21 @@ template <typename ConfigurationType,
           typename StreamType,
           typename SocketType,
           typename SocketHandlerType>
-RPG_Net_StreamUDPSocketBase_t<ConfigurationType,
-                              StatisticsContainerType,
-                              StreamType,
-                              SocketType,
-                              SocketHandlerType>::RPG_Net_StreamUDPSocketBase_t ()//MANAGER_T* manager_in)
+RPG_Net_StreamUDPSocketBase<ConfigurationType,
+                            StatisticsContainerType,
+                            StreamType,
+                            SocketType,
+                            SocketHandlerType>::RPG_Net_StreamUDPSocketBase ()//MANAGER_T* manager_in)
  : inherited ()//manager_in)
  //, inherited2 ()
  //, myUserData ()
 // , myStream ()
  , myCurrentReadBuffer (NULL)
-// , myLock ()
+// , mySendLock ()
  , myCurrentWriteBuffer (NULL)
  , mySerializeOutput (false)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Net_StreamUDPSocketBase_t::RPG_Net_StreamUDPSocketBase_t"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_StreamUDPSocketBase::RPG_Net_StreamUDPSocketBase"));
 
 }
 
@@ -51,26 +51,26 @@ template <typename ConfigurationType,
           typename StreamType,
           typename SocketType,
           typename SocketHandlerType>
-RPG_Net_StreamUDPSocketBase_t<ConfigurationType,
-                              StatisticsContainerType,
-                              StreamType,
-                              SocketType,
-                              SocketHandlerType>::~RPG_Net_StreamUDPSocketBase_t ()
+RPG_Net_StreamUDPSocketBase<ConfigurationType,
+                            StatisticsContainerType,
+                            StreamType,
+                            SocketType,
+                            SocketHandlerType>::~RPG_Net_StreamUDPSocketBase ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_StreamUDPSocketBase_t::~RPG_Net_StreamUDPSocketBase_t"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamUDPSocketBase::~RPG_Net_StreamUDPSocketBase"));
 
   // clean up
-  if (myUserData.module)
+  if (myConfiguration.module)
   {
-    if (myStream.find (myUserData.module->name ()))
-      if (myStream.remove (myUserData.module->name (),
+    if (myStream.find (myConfiguration.module->name ()))
+      if (myStream.remove (myConfiguration.module->name (),
                            ACE_Module_Base::M_DELETE_NONE) == -1)
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("failed to ACE_Stream::remove(\"%s\"): \"%m\", continuing\n"),
-                    ACE_TEXT_ALWAYS_CHAR (myUserData.module->name ())));
+                    ACE_TEXT_ALWAYS_CHAR (myConfiguration.module->name ())));
 
-    if (myUserData.deleteModule)
-      delete myUserData.module;
+    if (myConfiguration.deleteModule)
+      delete myConfiguration.module;
   } // end IF
 
   if (myCurrentReadBuffer)
@@ -85,22 +85,25 @@ template <typename ConfigurationType,
           typename SocketType,
           typename SocketHandlerType>
 int
-RPG_Net_StreamUDPSocketBase_t<ConfigurationType,
-                              StatisticsContainerType,
-                              StreamType,
-                              SocketType,
-                              SocketHandlerType>::open (const ACE_INET_Addr& peerAddress_in)
+RPG_Net_StreamUDPSocketBase<ConfigurationType,
+                            StatisticsContainerType,
+                            StreamType,
+                            SocketType,
+                            SocketHandlerType>::open (const ConfigurationType& configuration_in,
+                                                      const ACE_INET_Addr& peerAddress_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_StreamUDPSocketBase_t::open"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamUDPSocketBase::open"));
+
+  myConfiguration = configuration_in.streamSocketConfiguration;
 
   // step0: init this
-  mySerializeOutput = myUserData.serializeOutput;
+  mySerializeOutput = myConfiguration.serializeOutput;
 
   // step1: init/start stream
-  myUserData.sessionID = reinterpret_cast<unsigned int> (inherited::get_handle ()); // (== socket handle)
+  myConfiguration.sessionID = reinterpret_cast<unsigned int> (inherited::get_handle ()); // (== socket handle)
   // step1a: connect stream head message queue with the reactor notification
   // pipe ?
-  if (!myUserData.useThreadPerConnection)
+  if (!myConfiguration.useThreadPerConnection)
   {
     // *IMPORTANT NOTE*: enable the reference counting policy, as this will
     // be registered with the reactor several times (1x READ_MASK, nx
@@ -120,19 +123,19 @@ RPG_Net_StreamUDPSocketBase_t<ConfigurationType,
     // --> this means that "manual" cleanup is necessary (see handle_close())
     //inherited2::closing_ = true;
 
-    myUserData.notificationStrategy = &myNotificationStrategy;
+    myConfiguration.notificationStrategy = &myNotificationStrategy;
   } // end IF
   // step1b: init final module (if any)
-  if (myUserData.module)
+  if (myConfiguration.module)
   {
     IMODULE_TYPE* imodule_handle = NULL;
     // need a downcast...
-    imodule_handle = dynamic_cast<IMODULE_TYPE*>(myUserData.module);
+    imodule_handle = dynamic_cast<IMODULE_TYPE*>(myConfiguration.module);
     if (!imodule_handle)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("%s: dynamic_cast<RPG_Stream_IModule> failed, aborting\n"),
-                 ACE_TEXT_ALWAYS_CHAR(myUserData.module->name())));
+                 ACE_TEXT_ALWAYS_CHAR (myConfiguration.module->name ())));
       return -1;
     } // end IF
     MODULE_TYPE* clone = NULL;
@@ -144,28 +147,28 @@ RPG_Net_StreamUDPSocketBase_t<ConfigurationType,
     {
       ACE_DEBUG ((LM_ERROR,
                  ACE_TEXT ("%s: caught exception in RPG_Stream_IModule::clone(), aborting\n"),
-                 ACE_TEXT_ALWAYS_CHAR (myUserData.module->name ())));
+                 ACE_TEXT_ALWAYS_CHAR (myConfiguration.module->name ())));
       return -1;
     }
     if (!clone)
     {
       ACE_DEBUG ((LM_ERROR,
                  ACE_TEXT ("%s: failed to RPG_Stream_IModule::clone(), aborting\n"),
-                 ACE_TEXT_ALWAYS_CHAR (myUserData.module->name ())));
+                 ACE_TEXT_ALWAYS_CHAR (myConfiguration.module->name ())));
       return -1;
     }
-    myUserData.module = clone;
-    myUserData.deleteModule = true;
+    myConfiguration.module = clone;
+    myConfiguration.deleteModule = true;
   } // end IF
   // step1c: init stream
-  if (!myStream.init (myUserData))
+  if (!myStream.init (configuration_in))
   {
     ACE_DEBUG ((LM_ERROR,
                ACE_TEXT ("failed to init processing stream, aborting\n")));
 
     // clean up
-    delete myUserData.module;
-    myUserData.module = NULL;
+    delete myConfiguration.module;
+    myConfiguration.module = NULL;
 
     return -1;
   } // end IF
@@ -181,7 +184,6 @@ RPG_Net_StreamUDPSocketBase_t<ConfigurationType,
   } // end IF
 
   // step2: tweak socket, register I/O handle with the reactor, ...
-  // *NOTE*: as soon as this returns, data starts arriving at handle_input()
   int result = inherited::open (ACE_Addr::sap_any,        // local
                                 ACE_PROTOCOL_FAMILY_INET, // protocol family
                                 0,                        // protocol
@@ -192,10 +194,11 @@ RPG_Net_StreamUDPSocketBase_t<ConfigurationType,
                ACE_TEXT("failed to ACE_SOCK_Dgram::open(): \"%m\", aborting\n")));
     return -1;
   } // end IF
+  //// *NOTE*: as soon as this returns, data starts arriving at handle_input()
 
   // *NOTE*: let the reactor manage this handler...
   // *WARNING*: this has some implications (see close() below)
-  if (!myUserData.useThreadPerConnection)
+  if (!myConfiguration.useThreadPerConnection)
     inherited2::remove_reference ();
 
   return 0;
@@ -207,13 +210,13 @@ template <typename ConfigurationType,
           typename SocketType,
           typename SocketHandlerType>
 int
-RPG_Net_StreamUDPSocketBase_t<ConfigurationType,
-                              StatisticsContainerType,
-                              StreamType,
-                              SocketType,
-                              SocketHandlerType>::handle_input (ACE_HANDLE handle_in)
+RPG_Net_StreamUDPSocketBase<ConfigurationType,
+                            StatisticsContainerType,
+                            StreamType,
+                            SocketType,
+                            SocketHandlerType>::handle_input (ACE_HANDLE handle_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_StreamUDPSocketBase_t::handle_input"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamUDPSocketBase::handle_input"));
 
   ACE_UNUSED_ARG(handle_in);
 
@@ -221,12 +224,12 @@ RPG_Net_StreamUDPSocketBase_t<ConfigurationType,
   ACE_ASSERT(myCurrentReadBuffer == NULL);
 
   // read some data from the socket
-  myCurrentReadBuffer = allocateMessage(myUserData.bufferSize);
+  myCurrentReadBuffer = allocateMessage (myConfiguration.bufferSize);
   if (myCurrentReadBuffer == NULL)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to allocateMessage(%u), aborting\n"),
-               myUserData.bufferSize));
+               myConfiguration.bufferSize));
 
     return -1;
   } // end IF
@@ -311,14 +314,14 @@ template <typename ConfigurationType,
           typename SocketType,
           typename SocketHandlerType>
 int
-RPG_Net_StreamUDPSocketBase_t<ConfigurationType,
-                              StatisticsContainerType,
-                              StreamType,
-                              SocketType,
-                              SocketHandlerType>::handle_close (ACE_HANDLE handle_in,
-                                                                ACE_Reactor_Mask mask_in)
+RPG_Net_StreamUDPSocketBase<ConfigurationType,
+                            StatisticsContainerType,
+                            StreamType,
+                            SocketType,
+                            SocketHandlerType>::handle_close (ACE_HANDLE handle_in,
+                                                              ACE_Reactor_Mask mask_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_StreamUDPSocketBase_t::handle_close"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamUDPSocketBase::handle_close"));
 
   switch (mask_in)
   {
@@ -339,7 +342,7 @@ RPG_Net_StreamUDPSocketBase_t<ConfigurationType,
       // *IMPORTANT NOTE*: if called from a non-reactor context, or when using a
       // a multithreaded reactor, there may still be in-flight notifications
       // being dispatched at this stage, so this just speeds things up a little
-      if (!myUserData.useThreadPerConnection)
+      if (!myConfiguration.useThreadPerConnection)
         if (inherited2::reactor ()->purge_pending_notifications(this,
                                                                 ACE_Event_Handler::ALL_EVENTS_MASK) == -1)
           ACE_DEBUG ((LM_ERROR,
@@ -381,13 +384,13 @@ template <typename ConfigurationType,
           typename SocketType,
           typename SocketHandlerType>
 bool
-RPG_Net_StreamUDPSocketBase_t<ConfigurationType,
-                              StatisticsContainerType,
-                              StreamType,
-                              SocketType,
-                              SocketHandlerType>::collect (StatisticsContainerType& data_out) const
+RPG_Net_StreamUDPSocketBase<ConfigurationType,
+                            StatisticsContainerType,
+                            StreamType,
+                            SocketType,
+                            SocketHandlerType>::collect (StatisticsContainerType& data_out) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_StreamUDPSocketBase_t::collect"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamUDPSocketBase::collect"));
 
   try
   {
@@ -408,13 +411,13 @@ template <typename ConfigurationType,
           typename SocketType,
           typename SocketHandlerType>
 void
-RPG_Net_StreamUDPSocketBase_t<ConfigurationType,
-                              StatisticsContainerType,
-                              StreamType,
-                              SocketType,
-                              SocketHandlerType>::report () const
+RPG_Net_StreamUDPSocketBase<ConfigurationType,
+                            StatisticsContainerType,
+                            StreamType,
+                            SocketType,
+                            SocketHandlerType>::report () const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_StreamUDPSocketBase_t::report"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamUDPSocketBase::report"));
 
   try
   {
@@ -433,20 +436,20 @@ template <typename ConfigurationType,
           typename SocketType,
           typename SocketHandlerType>
 ACE_Message_Block*
-RPG_Net_StreamUDPSocketBase_t<ConfigurationType,
-                              StatisticsContainerType,
-                              StreamType,
-                              SocketType,
-                              SocketHandlerType>::allocateMessage (const unsigned int& requestedSize_in)
+RPG_Net_StreamUDPSocketBase<ConfigurationType,
+                            StatisticsContainerType,
+                            StreamType,
+                            SocketType,
+                            SocketHandlerType>::allocateMessage (const unsigned int& requestedSize_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Net_StreamUDPSocketBase_t::allocateMessage"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_StreamUDPSocketBase::allocateMessage"));
 
   // init return value(s)
   ACE_Message_Block* message_out = NULL;
 
   try
   {
-    message_out = static_cast<ACE_Message_Block*> (myUserData.messageAllocator->malloc (requestedSize_in));
+    message_out = static_cast<ACE_Message_Block*> (myConfiguration.messageAllocator->malloc (requestedSize_in));
   }
   catch (...)
   {

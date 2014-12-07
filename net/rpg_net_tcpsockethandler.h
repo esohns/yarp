@@ -21,15 +21,12 @@
 #ifndef RPG_NET_TCPSOCKETHANDLER_H
 #define RPG_NET_TCPSOCKETHANDLER_H
 
-//#include "rpg_common_referencecounter_base.h"
-
 #include "ace/Svc_Handler.h"
 #include "ace/SOCK_Stream.h"
 #include "ace/Synch.h"
+#include "ace/Event_Handler.h"
 #include "ace/Reactor_Notification_Strategy.h"
 
-//template <typename ConfigurationType//,
-          //typename StatisticsContainerType>
 class RPG_Net_TCPSocketHandler
  : public ACE_Svc_Handler<ACE_SOCK_STREAM,
                           ACE_MT_SYNCH>
@@ -49,40 +46,18 @@ class RPG_Net_TCPSocketHandler
   virtual int handle_close(ACE_HANDLE = ACE_INVALID_HANDLE,                        // handle
                            ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK); // event mask
 
-//  // implement (part of) RPG_Net_IConnection
-//  virtual void close();
-//  virtual void info(ACE_HANDLE&,           // return value: handle
-//                    ACE_INET_Addr&,        // return value: local SAP
-//                    ACE_INET_Addr&) const; // return value: remote SAP
-//  virtual unsigned int id() const;
-
  protected:
-//  typedef RPG_Net_IConnectionManager<ConfigurationType,
-//                                     StatisticsContainerType> MANAGER_T;
-//  RPG_Net_TCPSocketHandler(MANAGER_T*);
   RPG_Net_TCPSocketHandler ();
   virtual ~RPG_Net_TCPSocketHandler ();
 
   ACE_Reactor_Notification_Strategy myNotificationStrategy;
-//  MANAGER_T*                        myManager;
-  //ConfigurationType                 myUserData;
-//  bool                              myIsRegistered;
 
  private:
-  //typedef RPG_Common_ReferenceCounterBase inherited;
   typedef ACE_Svc_Handler<ACE_SOCK_STREAM,
                           ACE_MT_SYNCH> inherited;
 
-//  ACE_UNIMPLEMENTED_FUNC(RPG_Net_TCPSocketHandler());
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_TCPSocketHandler (const RPG_Net_TCPSocketHandler&));
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_TCPSocketHandler& operator=(const RPG_Net_TCPSocketHandler&));
-
-  //// override (part of) RPG_Common_IRefCount
-  //virtual void increase ();
-  //virtual void decrease ();
 };
-
-//// include template implementation
-//#include "rpg_net_tcpsockethandler_base.inl"
 
 #endif

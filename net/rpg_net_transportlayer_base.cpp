@@ -25,9 +25,9 @@
 
 #include "rpg_common_macros.h"
 
-RPG_Net_TransportLayer_Base::RPG_Net_TransportLayer_Base(RPG_Net_ClientServerRole_t clientServerRole_in,
+RPG_Net_TransportLayer_Base::RPG_Net_TransportLayer_Base(RPG_Net_ClientServerRole_t role_in,
                                                          RPG_Net_TransportLayer_t transportLayer_in)
- : myClientServerRole(clientServerRole_in)
+ : myClientServerRole(role_in)
  , myTransportLayer(transportLayer_in)
  , myPort(RPG_NET_DEFAULT_PORT)
  , myUseLoopback(false)
@@ -43,12 +43,28 @@ RPG_Net_TransportLayer_Base::~RPG_Net_TransportLayer_Base()
 }
 
 void
-RPG_Net_TransportLayer_Base::init(unsigned short port_in,
-                                  bool useLoopback_in)
+RPG_Net_TransportLayer_Base::init (RPG_Net_ClientServerRole_t role_in,
+                                   unsigned short port_in,
+                                   bool useLoopback_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_TransportLayer_Base::init"));
 
+  myClientServerRole = role_in;
   myPort = port_in;
   myUseLoopback = useLoopback_in;
+}
 
+void
+RPG_Net_TransportLayer_Base::info (ACE_HANDLE& handle_out,
+                                   ACE_INET_Addr& localSAP_out,
+                                   ACE_INET_Addr& remoteSAP_out) const
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Net_TransportLayer_Base::info"));
+
+  // init return value(s)
+  handle_out = ACE_INVALID_HANDLE;
+  localSAP_out = ACE_sap_any_cast (ACE_INET_Addr&);
+  remoteSAP_out = ACE_sap_any_cast (ACE_INET_Addr&);
+
+  ACE_ASSERT (false);
 }

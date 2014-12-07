@@ -48,19 +48,19 @@ IRC_Client_Tools::connect(RPG_Stream_IAllocator* messageAllocator_in,
   // step1: setup configuration passed to processing stream
   RPG_Net_Protocol_ConfigPOD stream_config;
   // ************ connection config data ************
-  stream_config.socketBufferSize = RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
-  stream_config.messageAllocator = messageAllocator_in;
-  stream_config.bufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
+  stream_config.streamSocketConfiguration.socketBufferSize = RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
+  stream_config.streamSocketConfiguration.messageAllocator = messageAllocator_in;
+  stream_config.streamSocketConfiguration.bufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
   // ************ protocol config data **************
   stream_config.clientPingInterval = 0; // servers do this...
   stream_config.loginOptions = loginOptions_in;
   // ************ stream config data ****************
-  stream_config.module = finalModule_in;
+  stream_config.streamSocketConfiguration.module = finalModule_in;
   stream_config.crunchMessageBuffers = RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES;
   stream_config.debugScanner = debugScanner_in;
   stream_config.debugParser = debugParser_in;
   // *WARNING*: set at runtime (by the connection handler)
-  stream_config.sessionID = 0; // (== socket handle !)
+  stream_config.streamSocketConfiguration.sessionID = 0; // (== socket handle !)
   stream_config.statisticsReportingInterval = statisticsReportingInterval_in;
   // ************ runtime statistics data ***********
   stream_config.currentStatistics.numDataMessages = 0;

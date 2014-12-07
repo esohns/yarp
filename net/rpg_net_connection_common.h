@@ -21,18 +21,4 @@
 #ifndef RPG_NET_CONNECTION_COMMON_H
 #define RPG_NET_CONNECTION_COMMON_H
 
-#include "rpg_net_stream_common.h"
-#include "rpg_net_stream.h"
-#include "rpg_net_sockethandler.h"
-#include "rpg_net_asynchstreamhandler_t.h"
-
-typedef RPG_Net_SocketHandler<RPG_Net_ConfigPOD,
-                              RPG_Net_RuntimeStatistic,
-                              RPG_Net_Stream> RPG_Net_SocketHandler_t;
-
-typedef RPG_Net_SocketHandler_t RPG_Net_TCPSocketHandler_t;
-typedef RPG_Net_AsynchStreamHandler<RPG_Net_ConfigPOD,
-                                    RPG_Net_RuntimeStatistic,
-                                    RPG_Net_Stream> RPG_Net_AsynchTCPSocketHandler_t;
-
 #endif

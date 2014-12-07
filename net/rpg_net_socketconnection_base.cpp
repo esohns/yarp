@@ -19,4 +19,4 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-#include "rpg_net_stream_udpsocket_base_t.h"
+#include "rpg_net_socketconnection_base.h"

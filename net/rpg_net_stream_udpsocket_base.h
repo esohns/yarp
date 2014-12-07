@@ -18,9 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_STREAM_UDPSOCKET_BASE_T_H
-#define RPG_NET_STREAM_UDPSOCKET_BASE_T_H
+#ifndef RPG_NET_STREAM_UDPSOCKET_BASE_H
+#define RPG_NET_STREAM_UDPSOCKET_BASE_H
 
+#include "rpg_net_stream_common.h"
 #include "rpg_net_sockethandler_base.h"
 //#include "rpg_net_iconnectionmanager.h"
 
@@ -35,12 +36,13 @@ template <typename ConfigurationType,
           typename StreamType,
           typename SocketType,
           typename SocketHandlerType>
-class RPG_Net_StreamUDPSocketBase_t
+class RPG_Net_StreamUDPSocketBase
  : public SocketType,
    public SocketHandlerType
 {
  public:
-  int open (const ACE_INET_Addr&); // peer address
+  int open (const ConfigurationType&, // configuration
+            const ACE_INET_Addr&);    // peer address
   //virtual int close(u_long = 0); // args
 
   // *NOTE*: enqueue any received data onto our stream for further processing
@@ -58,19 +60,19 @@ class RPG_Net_StreamUDPSocketBase_t
  protected:
 //  typedef RPG_Net_IConnectionManager<ConfigurationType,
 //                                     StatisticsContainerType> MANAGER_T;
-//  RPG_Net_StreamUDPSocketBase_t(MANAGER_T*); // connection manager handle
-  RPG_Net_StreamUDPSocketBase_t();
-  virtual ~RPG_Net_StreamUDPSocketBase_t();
+//  RPG_Net_StreamUDPSocketBase(MANAGER_T*); // connection manager handle
+  RPG_Net_StreamUDPSocketBase();
+  virtual ~RPG_Net_StreamUDPSocketBase();
 
-  ConfigurationType  myUserData;
-  StreamType         myStream;
-  ACE_Message_Block* myCurrentReadBuffer;
-  ACE_Thread_Mutex   myLock;
-  ACE_Message_Block* myCurrentWriteBuffer;
+  RPG_Net_StreamSocketConfiguration myConfiguration;
+  StreamType                        myStream;
+  ACE_Message_Block*                myCurrentReadBuffer;
+  ACE_Thread_Mutex                  mySendLock;
+  ACE_Message_Block*                myCurrentWriteBuffer;
   // *IMPORTANT NOTE*: in a threaded environment, workers MAY
   // dispatch the reactor notification queue concurrently (most notably,
   // ACE_TP_Reactor) --> enforce proper serialization
-  bool               mySerializeOutput;
+  bool                              mySerializeOutput;
 
   // helper method(s)
   ACE_Message_Block* allocateMessage(const unsigned int&); // requested size
@@ -80,11 +82,11 @@ class RPG_Net_StreamUDPSocketBase_t
   typedef SocketHandlerType inherited2;
 
 //  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamUDPSocketBase_t(const RPG_Net_StreamUDPSocketBase_t&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamUDPSocketBase_t& operator=(const RPG_Net_StreamUDPSocketBase_t&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamUDPSocketBase(const RPG_Net_StreamUDPSocketBase&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamUDPSocketBase& operator=(const RPG_Net_StreamUDPSocketBase&));
 };
 
 // include template implementation
-#include "rpg_net_stream_udpsocket_base_t.inl"
+#include "rpg_net_stream_udpsocket_base.inl"
 
 #endif

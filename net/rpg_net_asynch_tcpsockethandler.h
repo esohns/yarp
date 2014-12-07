@@ -21,7 +21,7 @@
 #ifndef RPG_NET_ASYNCH_TCP_SOCKETHANDLER_T_H
 #define RPG_NET_ASYNCH_TCP_SOCKETHANDLER_T_H
 
-//#include "rpg_net_iconnectionmanager.h"
+#include "rpg_net_exports.h"
 #include "rpg_net_sockethandler_base.h"
 
 #include "rpg_common_referencecounter_base.h"
@@ -33,19 +33,15 @@
 #include "ace/INET_Addr.h"
 #include "ace/Event_Handler.h"
 
-//template <typename ConfigType,
-//          typename StatisticsContainerType>
-class RPG_Net_AsynchTCPSocketHandler
+class RPG_Net_Export RPG_Net_AsynchTCPSocketHandler
  : public RPG_Net_SocketHandlerBase,
-   public RPG_Common_ReferenceCounterBase,
+   //public RPG_Common_ReferenceCounterBase,
    public ACE_Service_Handler,
-   public ACE_Notification_Strategy//,
-//   public RPG_Net_IConnection<StatisticsContainerType>
+   public ACE_Notification_Strategy
 {
  public:
   virtual ~RPG_Net_AsynchTCPSocketHandler();
 
-  //check if registration with the connection manager was OK...
   virtual void open(ACE_HANDLE,          // (socket) handle
                     ACE_Message_Block&); // initial data (if any)
   virtual void addresses(const ACE_INET_Addr&,  // remote address
@@ -59,24 +55,7 @@ class RPG_Net_AsynchTCPSocketHandler
   virtual int notify(ACE_Event_Handler*, // event handler handle
                      ACE_Reactor_Mask);  // mask
 
-//  // implement (part of) RPG_Net_IConnection
-//  virtual void info(ACE_HANDLE&,           // return value: handle
-//                    ACE_INET_Addr&,        // return value: local SAP
-//                    ACE_INET_Addr&) const; // return value: remote SAP
-//  virtual void abort();
-//  virtual unsigned int id() const;
-//  // implement RPG_Common_IRefCount
-//  using RPG_Common_ReferenceCounterBase::increase;
-//  using RPG_Common_ReferenceCounterBase::decrease;
-//  using RPG_Common_ReferenceCounterBase::count;
-//  using RPG_Common_ReferenceCounterBase::wait_zero;
-//  // implement RPG_Common_IDumpState
-//  virtual void dump_state() const;
-
  protected:
-//  typedef RPG_Net_IConnectionManager_t<ConfigType,
-//                                       StatisticsContainerType> MANAGER_T;
-//  RPG_Net_AsynchTCPSocketHandler(MANAGER_T*); // manager handle
   RPG_Net_AsynchTCPSocketHandler();
 
   // helper method(s)
@@ -84,19 +63,15 @@ class RPG_Net_AsynchTCPSocketHandler
 
   virtual void handle_write_stream(const ACE_Asynch_Write_Stream::Result&); // result
 
-  //ConfigType              myUserData;
   ACE_Asynch_Read_Stream  myInputStream;
   ACE_Asynch_Write_Stream myOutputStream;
-//  MANAGER_T*              myManager;
-//  bool                    myIsRegistered;
 
  private:
   typedef RPG_Net_SocketHandlerBase inherited;
-  typedef RPG_Common_ReferenceCounterBase inherited2;
-  typedef ACE_Service_Handler inherited3;
-  typedef ACE_Notification_Strategy inherited4;
+  //typedef RPG_Common_ReferenceCounterBase inherited2;
+  typedef ACE_Service_Handler inherited2;
+  typedef ACE_Notification_Strategy inherited3;
 
-//  ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchSocketHandler());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchTCPSocketHandler(const RPG_Net_AsynchTCPSocketHandler&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_AsynchTCPSocketHandler& operator=(const RPG_Net_AsynchTCPSocketHandler&));
 
@@ -106,8 +81,5 @@ class RPG_Net_AsynchTCPSocketHandler
   ACE_INET_Addr           myLocalSAP;
   ACE_INET_Addr           myRemoteSAP;
 };
-
-//// include template definition
-//#include "RPG_Net_AsynchTCPSocketHandler.inl"
 
 #endif

@@ -912,9 +912,9 @@ ACE_TMAIN(int argc,
   RPG_Net_Protocol_ConfigPOD config;
   // step1da: populate config object with default/collected data
   // ************ connection config data ************
-  config.socketBufferSize = RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
-  config.messageAllocator = &messageAllocator;
-  config.bufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
+  config.streamSocketConfiguration.socketBufferSize = RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
+  config.streamSocketConfiguration.messageAllocator = &messageAllocator;
+  config.streamSocketConfiguration.bufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
   // ************ protocol config data **************
   config.clientPingInterval = 0; // servers do this...
 //   config.loginOptions.password = ;
@@ -936,12 +936,12 @@ ACE_TMAIN(int argc,
 //   config.loginOptions.user.realname = ;
   config.loginOptions.channel = ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_DEF_IRC_CHANNEL);
   // ************ stream config data ****************
-  config.module = &IRChandlerModule;
+  config.streamSocketConfiguration.module = &IRChandlerModule;
   config.crunchMessageBuffers = false;
   config.debugScanner = debugParser;
   config.debugParser = debugParser;
   // *WARNING*: set at runtime, by the appropriate connection handler
-  config.sessionID = 0; // (== socket handle !)
+  config.streamSocketConfiguration.sessionID = 0; // (== socket handle !)
   config.statisticsReportingInterval = 0; // == off
   config.currentStatistics.numBytes = 0;
   config.currentStatistics.numDataMessages = 0;

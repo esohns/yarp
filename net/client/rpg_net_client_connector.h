@@ -22,16 +22,16 @@
 #define RPG_NET_CLIENT_CONNECTOR_H
 
 #include "rpg_net_client_exports.h"
-
-#include "rpg_net_connection_common.h"
 #include "rpg_net_client_iconnector.h"
+
+#include "rpg_net_tcpconnection.h"
 
 #include "ace/Global_Macros.h"
 #include "ace/Connector.h"
 #include "ace/SOCK_Connector.h"
 
 class RPG_Net_Client_Export RPG_Net_Client_Connector
- : public ACE_Connector<RPG_Net_TCPSocketHandler_t,
+ : public ACE_Connector<RPG_Net_TCPConnection,
                         ACE_SOCK_CONNECTOR>,
    public RPG_Net_Client_IConnector
 {
@@ -40,14 +40,14 @@ class RPG_Net_Client_Export RPG_Net_Client_Connector
   virtual ~RPG_Net_Client_Connector();
 
   // override default creation strategy
-  virtual int make_svc_handler(RPG_Net_TCPSocketHandler_t*&);
+  virtual int make_svc_handler (RPG_Net_TCPConnection*&);
 
   // implement RPG_Net_Client_IConnector
   virtual void abort();
   virtual void connect(const ACE_INET_Addr&);
 
  private:
-  typedef ACE_Connector<RPG_Net_TCPSocketHandler_t,
+  typedef ACE_Connector<RPG_Net_TCPConnection,
                         ACE_SOCK_CONNECTOR> inherited;
 
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_Connector(const RPG_Net_Client_Connector&));

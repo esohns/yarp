@@ -72,9 +72,6 @@
     <ClInclude Include="..\..\net\protocol\rpg_net_protocol_sessionmessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_sockethandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\net\protocol\rpg_net_protocol_stream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -120,9 +117,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\net\protocol\rpg_net_protocol_sessionmessage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\net\protocol\rpg_net_protocol_sockethandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\net\protocol\rpg_net_protocol_stream.cpp">

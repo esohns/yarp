@@ -18,8 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-//#include "rpg_common_timer_manager.h"
-
 #include "rpg_net_defines.h"
 #include "rpg_net_stream_common.h"
 
@@ -27,19 +25,19 @@ template <typename ConfigurationType,
           typename StatisticsContainerType,
           typename StreamType,
           typename SocketHandlerType>
-RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
-                              StatisticsContainerType,
-                              StreamType,
-                              SocketHandlerType>::RPG_Net_StreamTCPSocketBase_t ()//MANAGER_T* manager_in)
+RPG_Net_StreamTCPSocketBase<ConfigurationType,
+                            StatisticsContainerType,
+                            StreamType,
+                            SocketHandlerType>::RPG_Net_StreamTCPSocketBase ()//MANAGER_T* manager_in)
  : inherited ()//manager_in)
- //, myUserData ()
+ //, myConfiguration ()
 // , myStream ()
  , myCurrentReadBuffer (NULL)
-// , myLock ()
+// , mySendLock ()
  , myCurrentWriteBuffer (NULL)
  , mySerializeOutput (false)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Net_StreamTCPSocketBase_t::RPG_Net_StreamTCPSocketBase_t"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_StreamTCPSocketBase::RPG_Net_StreamTCPSocketBase"));
 
 }
 
@@ -47,25 +45,25 @@ template <typename ConfigurationType,
           typename StatisticsContainerType,
           typename StreamType,
           typename SocketHandlerType>
-RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
-                              StatisticsContainerType,
-                              StreamType,
-                              SocketHandlerType>::~RPG_Net_StreamTCPSocketBase_t ()
+RPG_Net_StreamTCPSocketBase<ConfigurationType,
+                            StatisticsContainerType,
+                            StreamType,
+                            SocketHandlerType>::~RPG_Net_StreamTCPSocketBase ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_StreamTCPSocketBase_t::~RPG_Net_StreamTCPSocketBase_t"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamTCPSocketBase::~RPG_Net_StreamTCPSocketBase"));
 
   // clean up
-  if (myUserData.module)
+  if (myConfiguration.module)
   {
-    if (myStream.find(myUserData.module->name()))
-      if (myStream.remove(myUserData.module->name(),
+    if (myStream.find (myConfiguration.module->name ()))
+      if (myStream.remove (myConfiguration.module->name (),
                           ACE_Module_Base::M_DELETE_NONE) == -1)
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_Stream::remove(\"%s\"): \"%m\", continuing\n"),
-                   ACE_TEXT_ALWAYS_CHAR(myUserData.module->name())));
+                   ACE_TEXT_ALWAYS_CHAR (myConfiguration.module->name ())));
 
-    if (myUserData.deleteModule)
-      delete myUserData.module;
+    if (myConfiguration.deleteModule)
+      delete myConfiguration.module;
   } // end IF
 
   if (myCurrentReadBuffer)
@@ -79,21 +77,24 @@ template <typename ConfigurationType,
           typename StreamType,
           typename SocketHandlerType>
 int
-RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
-                              StatisticsContainerType,
-                              StreamType,
-                              SocketHandlerType>::open (void* arg_in)
+RPG_Net_StreamTCPSocketBase<ConfigurationType,
+                            StatisticsContainerType,
+                            StreamType,
+                            SocketHandlerType>::open (void* arg_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_StreamTCPSocketBase_t::open"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamTCPSocketBase::open"));
+
+  ConfigurationType* configuration = reinterpret_cast<ConfigurationType*> (arg_in);
+  myConfiguration = configuration->streamSocketConfiguration;
 
   // step0: init this
-  mySerializeOutput = myUserData.serializeOutput;
+  mySerializeOutput = myConfiguration.serializeOutput;
 
   // step1: init/start stream
-  myUserData.sessionID = reinterpret_cast<unsigned int> (inherited::get_handle()); // (== socket handle)
+  myConfiguration.sessionID = reinterpret_cast<unsigned int> (inherited::get_handle ()); // (== socket handle)
   // step1a: connect stream head message queue with the reactor notification
   // pipe ?
-  if (!myUserData.useThreadPerConnection)
+  if (!myConfiguration.useThreadPerConnection)
   {
     // *IMPORTANT NOTE*: enable the reference counting policy, as this will
     // be registered with the reactor several times (1x READ_MASK, nx
@@ -113,20 +114,20 @@ RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
     // --> this means that "manual" cleanup is necessary (see handle_close())
     inherited::closing_ = true;
 
-    myUserData.notificationStrategy =
+    myConfiguration.notificationStrategy =
         &(inherited::myNotificationStrategy);
   } // end IF
   // step1b: init final module (if any)
-  if (myUserData.module)
+  if (myConfiguration.module)
   {
     IMODULE_TYPE* imodule_handle = NULL;
     // need a downcast...
-    imodule_handle = dynamic_cast<IMODULE_TYPE*>(myUserData.module);
+    imodule_handle = dynamic_cast<IMODULE_TYPE*>(myConfiguration.module);
     if (!imodule_handle)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("%s: dynamic_cast<RPG_Stream_IModule> failed, aborting\n"),
-                 ACE_TEXT_ALWAYS_CHAR(myUserData.module->name())));
+                 ACE_TEXT_ALWAYS_CHAR (myConfiguration.module->name ())));
 
       return -1;
     } // end IF
@@ -139,7 +140,7 @@ RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("%s: caught exception in RPG_Stream_IModule::clone(), aborting\n"),
-                 ACE_TEXT_ALWAYS_CHAR(myUserData.module->name())));
+                 ACE_TEXT_ALWAYS_CHAR (myConfiguration.module->name ())));
 
       return -1;
     }
@@ -147,22 +148,22 @@ RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("%s: failed to RPG_Stream_IModule::clone(), aborting\n"),
-                 ACE_TEXT_ALWAYS_CHAR(myUserData.module->name())));
+                 ACE_TEXT_ALWAYS_CHAR (myConfiguration.module->name ())));
 
       return -1;
     }
-    myUserData.module = clone;
-    myUserData.deleteModule = true;
+    myConfiguration.module = clone;
+    myConfiguration.deleteModule = true;
   } // end IF
   // step1c: init stream
-  if (!myStream.init(myUserData))
+  if (!myStream.init (*configuration))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to init processing stream, aborting\n")));
 
     // clean up
-    delete myUserData.module;
-    myUserData.module = NULL;
+    delete myConfiguration.module;
+    myConfiguration.module = NULL;
 
     return -1;
   } // end IF
@@ -191,7 +192,7 @@ RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
 
   // *NOTE*: let the reactor manage this handler...
   // *WARNING*: this has some implications (see close() below)
-  if (!myUserData.useThreadPerConnection)
+  if (!myConfiguration.useThreadPerConnection)
     inherited::remove_reference();
 
   return 0;
@@ -202,12 +203,12 @@ template <typename ConfigurationType,
           typename StreamType,
           typename SocketHandlerType>
 int
-RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
-                              StatisticsContainerType,
-                              StreamType,
-                              SocketHandlerType>::handle_input (ACE_HANDLE handle_in)
+RPG_Net_StreamTCPSocketBase<ConfigurationType,
+                            StatisticsContainerType,
+                            StreamType,
+                            SocketHandlerType>::handle_input (ACE_HANDLE handle_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_StreamTCPSocketBase_t::handle_input"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamTCPSocketBase::handle_input"));
 
   ACE_UNUSED_ARG(handle_in);
 
@@ -215,12 +216,12 @@ RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
   ACE_ASSERT(myCurrentReadBuffer == NULL);
 
   // read some data from the socket
-  myCurrentReadBuffer = allocateMessage(myUserData.bufferSize);
+  myCurrentReadBuffer = allocateMessage (myConfiguration.bufferSize);
   if (myCurrentReadBuffer == NULL)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to allocateMessage(%u), aborting\n"),
-               myUserData.bufferSize));
+               myConfiguration.bufferSize));
 
     return -1;
   } // end IF
@@ -301,12 +302,12 @@ template <typename ConfigurationType,
           typename StreamType,
           typename SocketHandlerType>
 int
-RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
-                              StatisticsContainerType,
-                              StreamType,
-                              SocketHandlerType>::handle_output (ACE_HANDLE handle_in)
+RPG_Net_StreamTCPSocketBase<ConfigurationType,
+                            StatisticsContainerType,
+                            StreamType,
+                            SocketHandlerType>::handle_output (ACE_HANDLE handle_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_StreamTCPSocketBase_t::handle_output"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamTCPSocketBase::handle_output"));
 
   ACE_UNUSED_ARG(handle_in);
 
@@ -314,7 +315,7 @@ RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
   // dispatching the reactor notification queue concurrently (most notably,
   // ACE_TP_Reactor) --> enforce proper serialization
   if (mySerializeOutput)
-    myLock.acquire();
+    mySendLock.acquire();
 
   if (myCurrentWriteBuffer == NULL)
   {
@@ -322,7 +323,7 @@ RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
     // *IMPORTANT NOTE*: should NEVER block, as available outbound data has
     // been notified to the reactor
     int result = -1;
-    if (!myUserData.useThreadPerConnection)
+    if (!myConfiguration.useThreadPerConnection)
       result = myStream.get(myCurrentWriteBuffer,
                             const_cast<ACE_Time_Value*>(&ACE_Time_Value::zero));
     else
@@ -337,12 +338,12 @@ RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
       if ((error != EAGAIN) ||  // <-- connection has been closed in the meantime
           (error != ESHUTDOWN)) // <-- queue has been deactivated
         ACE_DEBUG((LM_ERROR,
-                   (myUserData.useThreadPerConnection ? ACE_TEXT("failed to ACE_Task::getq(): \"%m\", aborting\n")
-                                                      : ACE_TEXT("failed to ACE_Stream::get(): \"%m\", aborting\n"))));
+                   (myConfiguration.useThreadPerConnection ? ACE_TEXT ("failed to ACE_Task::getq(): \"%m\", aborting\n")
+                                                           : ACE_TEXT("failed to ACE_Stream::get(): \"%m\", aborting\n"))));
 
       // clean up
       if (mySerializeOutput)
-        myLock.release();
+        mySendLock.release();
 
       return -1;
     } // end IF
@@ -350,7 +351,7 @@ RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
   ACE_ASSERT(myCurrentWriteBuffer);
 
   // finished ?
-  if (myUserData.useThreadPerConnection &&
+  if (myConfiguration.useThreadPerConnection &&
       myCurrentWriteBuffer->msg_type() == ACE_Message_Block::MB_STOP)
   {
     myCurrentWriteBuffer->release();
@@ -359,6 +360,10 @@ RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("[%u]: finished sending...\n"),
 //                  peer_.get_handle()));
+
+    // clean up
+    if (mySerializeOutput)
+      mySendLock.release ();
 
     return -1;
   } // end IF
@@ -387,7 +392,7 @@ RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
       myCurrentWriteBuffer->release();
       myCurrentWriteBuffer = NULL;
       if (mySerializeOutput)
-        myLock.release();
+        mySendLock.release();
 
       return -1;
     }
@@ -402,7 +407,7 @@ RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
       myCurrentWriteBuffer->release();
       myCurrentWriteBuffer = NULL;
       if (mySerializeOutput)
-        myLock.release();
+        mySendLock.release();
 
       return -1;
     }
@@ -439,7 +444,7 @@ RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
   {
     // clean up
     if (mySerializeOutput)
-      myLock.release();
+      mySendLock.release();
 
     return 1;
   } // end IF
@@ -450,7 +455,7 @@ RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
 
   // clean up
   if (mySerializeOutput)
-    myLock.release();
+    mySendLock.release();
 
   return 0;
 }
@@ -460,13 +465,13 @@ template <typename ConfigurationType,
           typename StreamType,
           typename SocketHandlerType>
 int
-RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
-                              StatisticsContainerType,
-                              StreamType,
-                              SocketHandlerType>::handle_close (ACE_HANDLE handle_in,
-                                                                ACE_Reactor_Mask mask_in)
+RPG_Net_StreamTCPSocketBase<ConfigurationType,
+                            StatisticsContainerType,
+                            StreamType,
+                            SocketHandlerType>::handle_close (ACE_HANDLE handle_in,
+                                                              ACE_Reactor_Mask mask_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_StreamTCPSocketBase_t::handle_close"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamTCPSocketBase::handle_close"));
 
   switch (mask_in)
   {
@@ -487,7 +492,7 @@ RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
       // *IMPORTANT NOTE*: if called from a non-reactor context, or when using a
       // a multithreaded reactor, there may still be in-flight notifications
       // being dispatched at this stage, so this just speeds things up a little
-      if (!myUserData.useThreadPerConnection)
+      if (!myConfiguration.useThreadPerConnection)
         if (inherited::reactor()->purge_pending_notifications(this,
                                                               ACE_Event_Handler::ALL_EVENTS_MASK) == -1)
           ACE_DEBUG((LM_ERROR,
@@ -526,68 +531,20 @@ template <typename ConfigurationType,
           typename StatisticsContainerType,
           typename StreamType,
           typename SocketHandlerType>
-bool
-RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
-                              StatisticsContainerType,
-                              StreamType,
-                              SocketHandlerType>::collect (StatisticsContainerType& data_out) const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_StreamTCPSocketBase_t::collect"));
-
-  try
-  {
-    return myStream.collect(data_out);
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Common_IStatistic::collect(), aborting\n")));
-  }
-
-  return false;
-}
-
-template <typename ConfigurationType,
-          typename StatisticsContainerType,
-          typename StreamType,
-          typename SocketHandlerType>
-void
-RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
-                              StatisticsContainerType,
-                              StreamType,
-                              SocketHandlerType>::report () const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_StreamTCPSocketBase_t::report"));
-
-  try
-  {
-    return myStream.report();
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Common_IStatistic::report(), aborting\n")));
-  }
-}
-
-template <typename ConfigurationType,
-          typename StatisticsContainerType,
-          typename StreamType,
-          typename SocketHandlerType>
 ACE_Message_Block*
-RPG_Net_StreamTCPSocketBase_t<ConfigurationType,
-                              StatisticsContainerType,
-                              StreamType,
-                              SocketHandlerType>::allocateMessage (const unsigned int& requestedSize_in)
+RPG_Net_StreamTCPSocketBase<ConfigurationType,
+                            StatisticsContainerType,
+                            StreamType,
+                            SocketHandlerType>::allocateMessage (const unsigned int& requestedSize_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_StreamTCPSocketBase_t::allocateMessage"));
+  RPG_TRACE(ACE_TEXT("RPG_Net_StreamTCPSocketBase::allocateMessage"));
 
   // init return value(s)
   ACE_Message_Block* message_out = NULL;
 
   try
   {
-    message_out = static_cast<ACE_Message_Block*>(myUserData.messageAllocator->malloc(requestedSize_in));
+    message_out = static_cast<ACE_Message_Block*>(myConfiguration.messageAllocator->malloc (requestedSize_in));
   }
   catch (...)
   {

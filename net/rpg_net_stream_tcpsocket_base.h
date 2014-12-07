@@ -18,10 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_STREAM_TCPSOCKET_BASE_T_H
-#define RPG_NET_STREAM_TCPSOCKET_BASE_T_H
+#ifndef RPG_NET_STREAM_TCPSOCKET_BASE_H
+#define RPG_NET_STREAM_TCPSOCKET_BASE_H
 
-//#include "rpg_net_iconnectionmanager.h"
+#include "rpg_net_stream_common.h"
 
 #include "ace/Global_Macros.h"
 #include "ace/Event_Handler.h"
@@ -32,7 +32,7 @@ template <typename ConfigurationType,
           typename StatisticsContainerType,
           typename StreamType,
           typename SocketHandlerType>
-class RPG_Net_StreamTCPSocketBase_t
+class RPG_Net_StreamTCPSocketBase
  : public SocketHandlerType
 {
  public:
@@ -49,23 +49,15 @@ class RPG_Net_StreamTCPSocketBase_t
   virtual int handle_close(ACE_HANDLE = ACE_INVALID_HANDLE,
                            ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK);
 
-  // implement RPG_Common_IStatistic
-  // *NOTE*: delegate these to our stream
-  virtual bool collect(StatisticsContainerType&) const; // return value: statistic data
-  virtual void report() const;
-
  protected:
-//  typedef RPG_Net_IConnectionManager<ConfigurationType,
-//                                     StatisticsContainerType> MANAGER_T;
-//  RPG_Net_StreamTCPSocketBase_t(MANAGER_T*); // connection manager handle
-  RPG_Net_StreamTCPSocketBase_t();
-  virtual ~RPG_Net_StreamTCPSocketBase_t();
+  RPG_Net_StreamTCPSocketBase();
+  virtual ~RPG_Net_StreamTCPSocketBase();
 
-  ConfigurationType  myUserData;
-  StreamType         myStream;
-  ACE_Message_Block* myCurrentReadBuffer;
-  ACE_Thread_Mutex   myLock;
-  ACE_Message_Block* myCurrentWriteBuffer;
+  RPG_Net_StreamSocketConfiguration myConfiguration;
+  StreamType                        myStream;
+  ACE_Message_Block*                myCurrentReadBuffer;
+  ACE_Thread_Mutex                  mySendLock;
+  ACE_Message_Block*                myCurrentWriteBuffer;
 
   // helper method(s)
   ACE_Message_Block* allocateMessage(const unsigned int&); // requested size
@@ -73,17 +65,16 @@ class RPG_Net_StreamTCPSocketBase_t
  private:
   typedef SocketHandlerType inherited;
 
-//  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamSocketBase());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamTCPSocketBase_t(const RPG_Net_StreamTCPSocketBase_t&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamTCPSocketBase_t& operator=(const RPG_Net_StreamTCPSocketBase_t&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamTCPSocketBase(const RPG_Net_StreamTCPSocketBase&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamTCPSocketBase& operator=(const RPG_Net_StreamTCPSocketBase&));
 
   // *IMPORTANT NOTE*: in a threaded environment, workers MAY
   // dispatch the reactor notification queue concurrently (most notably,
   // ACE_TP_Reactor) --> enforce proper serialization
-  bool               mySerializeOutput;
+  bool                              mySerializeOutput;
 };
 
 // include template implementation
-#include "rpg_net_stream_tcpsocket_base_t.inl"
+#include "rpg_net_stream_tcpsocket_base.inl"
 
 #endif

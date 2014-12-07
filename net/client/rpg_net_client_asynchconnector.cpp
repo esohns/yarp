@@ -47,19 +47,19 @@ RPG_Net_Client_AsynchConnector::~RPG_Net_Client_AsynchConnector()
 
 }
 
-RPG_Net_AsynchTCPSocketHandler_t*
+RPG_Net_AsynchTCPConnection*
 RPG_Net_Client_AsynchConnector::make_handler(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Client_AsynchConnector::make_handler"));
 
   // init return value(s)
-  RPG_Net_AsynchTCPSocketHandler_t* result = NULL;
+  RPG_Net_AsynchTCPConnection* result = NULL;
 
   // default behavior
 //  ACE_NEW_NORETURN(result,
-//                   RPG_Net_AsynchTCPSocketHandler_t(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()));
+//                   RPG_Net_AsynchTCPConnection(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()));
   ACE_NEW_NORETURN(result,
-                   RPG_Net_AsynchTCPSocketHandler_t());
+                   RPG_Net_AsynchTCPConnection ());
   if (!result)
     ACE_DEBUG((LM_CRITICAL,
                ACE_TEXT("failed to allocate memory: \"%m\", aborting\n")));

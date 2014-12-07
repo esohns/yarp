@@ -454,7 +454,7 @@ RPG_Net_Protocol_Module_IRCSplitter::handleSessionMessage(RPG_Net_Protocol_Sessi
     case RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
     {
       // remember session ID for reporting...
-      inherited::mySessionID = message_inout->getConfig()->getUserData().sessionID;
+      inherited::mySessionID = message_inout->getConfig ()->getUserData ().streamSocketConfiguration.sessionID;
 
       // start profile timer...
 //       myProfile.start();

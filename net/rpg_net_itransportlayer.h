@@ -31,9 +31,9 @@ class RPG_Net_ITransportLayer
  public:
   virtual ~RPG_Net_ITransportLayer() {};
 
-  virtual void open(const ACE_INET_Addr&, // remote SAP
+  virtual bool init(const ACE_INET_Addr&, // remote SAP
                     unsigned short) = 0;  // port number
-  virtual void close() = 0;
+  virtual void fini() = 0;
 
   virtual void ping() = 0; // ping the peer !
 

@@ -18,71 +18,50 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-//#include "rpg_common_timer_manager.h"
-
 #include "rpg_net_stream_common.h"
-
-//template <typename ConfigurationType,
-//          typename StatisticsContainerType,
-//          typename StreamType,
-          //typename SocketHandlerType>
-//RPG_Net_StreamAsynchTCPSocketBase_t<ConfigurationType,
-//                                    StatisticsContainerType,
-//                                    StreamType,
-//                                    SocketHandlerType>::RPG_Net_AsynchStreamHandler ()
-// : inherited(NULL)//,
-////   myBuffer(NULL)
-//{
-//  RPG_TRACE(ACE_TEXT("RPG_Net_StreamAsynchTCPSocketBase_t::RPG_Net_StreamAsynchTCPSocketBase_t"));
-
-//  // *NOTE*: this is a stub...
-//  ACE_ASSERT(false);
-//  ACE_NOTREACHED(return;)
-//}
 
 template <typename ConfigurationType,
           typename StatisticsContainerType,
           typename StreamType,
           typename SocketHandlerType>
-RPG_Net_StreamAsynchTCPSocketBase_t<ConfigurationType,
-                                    StatisticsContainerType,
-                                    StreamType,
-                                    SocketHandlerType>::RPG_Net_StreamAsynchTCPSocketBase_t ()//MANAGER_T* manager_in)
-// : inherited(manager_in)
-// , myUserData ()
-// , myBuffer(NULL)
+RPG_Net_StreamAsynchTCPSocketBase<ConfigurationType,
+                                  StatisticsContainerType,
+                                  StreamType,
+                                  SocketHandlerType>::RPG_Net_StreamAsynchTCPSocketBase ()
+ : inherited ()
+// , myConfiguration ()
+// , myStream ()
+ , myUserData (NULL)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler::RPG_Net_AsynchStreamHandler"));
 
+  ACE_OS::memset (&myConfiguration, 0, sizeof (myConfiguration));
 }
 
 template <typename ConfigurationType,
           typename StatisticsContainerType,
           typename StreamType,
           typename SocketHandlerType>
-RPG_Net_StreamAsynchTCPSocketBase_t<ConfigurationType,
-                                    StatisticsContainerType,
-                                    StreamType,
-                                    SocketHandlerType>::~RPG_Net_StreamAsynchTCPSocketBase_t ()
+RPG_Net_StreamAsynchTCPSocketBase<ConfigurationType,
+                                  StatisticsContainerType,
+                                  StreamType,
+                                  SocketHandlerType>::~RPG_Net_StreamAsynchTCPSocketBase ()
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler::~RPG_Net_AsynchStreamHandler"));
 
   // step1: remove enqueued module (if any)
-  if (inherited::myUserData.module)
+  if (myConfiguration.module)
   {
-    if (myStream.find(inherited::myUserData.module->name()))
-      if (myStream.remove(inherited::myUserData.module->name(),
-                          ACE_Module_Base::M_DELETE_NONE) == -1)
+    if (myStream.find (myConfiguration.module->name ()))
+      if (myStream.remove (myConfiguration.module->name (),
+                           ACE_Module_Base::M_DELETE_NONE) == -1)
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to ACE_Stream::remove(\"%s\"): \"%m\", continuing\n"),
-                   ACE_TEXT_ALWAYS_CHAR(inherited::myUserData.module->name())));
+                   myConfiguration.module->name ()));
 
-    if (inherited::myUserData.deleteModule)
-      delete inherited::myUserData.module;
+    if (myConfiguration.deleteModule)
+      delete myConfiguration.module;
   } // end IF
-
-//  if (myBuffer)
-//    myBuffer->release();
 }
 
 template <typename ConfigurationType,
@@ -90,56 +69,44 @@ template <typename ConfigurationType,
           typename StreamType,
           typename SocketHandlerType>
 void
-RPG_Net_StreamAsynchTCPSocketBase_t<ConfigurationType,
-                                    StatisticsContainerType,
-                                    StreamType,
-                                    SocketHandlerType>::ping ()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler::ping"));
-
-  myStream.ping();
-}
-
-template <typename ConfigurationType,
-          typename StatisticsContainerType,
-          typename StreamType,
-          typename SocketHandlerType>
-void
-RPG_Net_StreamAsynchTCPSocketBase_t<ConfigurationType,
-                                    StatisticsContainerType,
-                                    StreamType,
-                                    SocketHandlerType>::open (ACE_HANDLE handle_in,
-                                                              ACE_Message_Block& messageBlock_in)
+RPG_Net_StreamAsynchTCPSocketBase<ConfigurationType,
+                                  StatisticsContainerType,
+                                  StreamType,
+                                  SocketHandlerType>::open (ACE_HANDLE handle_in,
+                                                            ACE_Message_Block& messageBlock_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler::open"));
 
-  ACE_UNUSED_ARG(handle_in);
+  // sanity check(s)
+  ACE_ASSERT (myUserData);
+
+  myConfiguration = myUserData->streamSocketConfiguration;
 
   // step0: init user data
-  inherited::myUserData.sessionID = inherited::handle(); // (== socket handle)
+  myConfiguration.sessionID = reinterpret_cast<unsigned int> (handle_in); // (== socket handle)
 
   // step1: tweak socket, init I/O
-  inherited::open(inherited::handle(), messageBlock_in);
+  inherited::open (handle_in, messageBlock_in);
 
   // step2: init/start stream
   // step2a: connect stream head message queue with a notification pipe/queue ?
-  if (!inherited::myUserData.useThreadPerConnection)
-    inherited::myUserData.notificationStrategy = this;
+  if (!myConfiguration.useThreadPerConnection)
+    myConfiguration.notificationStrategy = this;
   // step2b: init final module (if any)
-  if (inherited::myUserData.module)
+  if (myConfiguration.module)
   {
     IMODULE_TYPE* imodule_handle = NULL;
     // need a downcast...
-    imodule_handle = dynamic_cast<IMODULE_TYPE*>(inherited::myUserData.module);
+    imodule_handle = dynamic_cast<IMODULE_TYPE*>(myConfiguration.module);
     if (!imodule_handle)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("%s: dynamic_cast<RPG_Stream_IModule> failed, aborting\n"),
-                 ACE_TEXT_ALWAYS_CHAR(inherited::myUserData.module->name())));
+                 myConfiguration.module->name ()));
 
       // clean up
-      handle_close(inherited::handle(),
-                   ACE_Event_Handler::ALL_EVENTS_MASK);
+      handle_close (handle_in,
+                    ACE_Event_Handler::ALL_EVENTS_MASK);
 
       return;
     } // end IF
@@ -152,11 +119,11 @@ RPG_Net_StreamAsynchTCPSocketBase_t<ConfigurationType,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("%s: caught exception in RPG_Stream_IModule::clone(), aborting\n"),
-                 ACE_TEXT_ALWAYS_CHAR(inherited::myUserData.module->name())));
+                 myConfiguration.module->name ()));
 
       // clean up
-      handle_close(inherited::handle(),
-                   ACE_Event_Handler::ALL_EVENTS_MASK);
+      handle_close (handle_in,
+                    ACE_Event_Handler::ALL_EVENTS_MASK);
 
       return;
     }
@@ -164,25 +131,25 @@ RPG_Net_StreamAsynchTCPSocketBase_t<ConfigurationType,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("%s: failed to RPG_Stream_IModule::clone(), aborting\n"),
-                 ACE_TEXT_ALWAYS_CHAR(inherited::myUserData.module->name())));
+                 myConfiguration.module->name ()));
 
       // clean up
-      handle_close(inherited::handle(),
-                   ACE_Event_Handler::ALL_EVENTS_MASK);
+      handle_close (handle_in,
+                    ACE_Event_Handler::ALL_EVENTS_MASK);
 
       return;
     }
-    inherited::myUserData.module = clone;
-    inherited::myUserData.deleteModule = true;
+    myConfiguration.module = clone;
+    myConfiguration.deleteModule = true;
   } // end IF
-  if (!myStream.init(inherited::myUserData))
+  if (!myStream.init (*myUserData))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to init processing stream, aborting\n")));
 
     // clean up
-    handle_close(inherited::handle(),
-                 ACE_Event_Handler::ALL_EVENTS_MASK);
+    handle_close (handle_in,
+                  ACE_Event_Handler::ALL_EVENTS_MASK);
 
     return;
   } // end IF
@@ -195,8 +162,8 @@ RPG_Net_StreamAsynchTCPSocketBase_t<ConfigurationType,
                ACE_TEXT("failed to start processing stream, aborting\n")));
 
     // clean up
-    handle_close(inherited::handle(),
-                 ACE_Event_Handler::ALL_EVENTS_MASK);
+    handle_close (handle_in,
+                  ACE_Event_Handler::ALL_EVENTS_MASK);
 
     return;
   } // end IF
@@ -213,8 +180,8 @@ RPG_Net_StreamAsynchTCPSocketBase_t<ConfigurationType,
                  ACE_TEXT("failed to ACE_Message_Block::duplicate(): \"%m\", aborting\n")));
 
       // clean up
-      handle_close(inherited::handle(),
-                   ACE_Event_Handler::ALL_EVENTS_MASK);
+      handle_close (handle_in,
+                    ACE_Event_Handler::ALL_EVENTS_MASK);
 
       return;
     } // end IF
@@ -234,8 +201,8 @@ RPG_Net_StreamAsynchTCPSocketBase_t<ConfigurationType,
                  ACE_TEXT("failed to ACE_Proactor::create_asynch_read_stream_result: \"%m\", aborting\n")));
 
       // clean up
-      handle_close(inherited::handle(),
-                   ACE_Event_Handler::ALL_EVENTS_MASK);
+      handle_close (handle_in,
+                    ACE_Event_Handler::ALL_EVENTS_MASK);
 
       return;
     } // end IF
@@ -252,31 +219,6 @@ RPG_Net_StreamAsynchTCPSocketBase_t<ConfigurationType,
     // clean up
     delete fake_result;
   } // end ELSE
-
-//  // step4: register this connection ?
-//  if (inherited::myManager)
-//  { // (try to) register with the connection manager...
-//    try
-//    {
-//      inherited::myIsRegistered = inherited::myManager->registerConnection(this);
-//    }
-//    catch (...)
-//    {
-//      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("caught exception in RPG_Net_IConnectionManager::registerConnection(), continuing\n")));
-//    }
-//    if (!inherited::myIsRegistered)
-//    {
-//      // (most probably) too many connections...
-//      ACE_OS::last_error(EBUSY);
-
-//      // clean up
-//      handle_close(inherited::handle(),
-//                   ACE_Event_Handler::ALL_EVENTS_MASK);
-
-//      return;
-//    } // end IF
-//  } // end IF
 }
 
 template <typename ConfigurationType,
@@ -284,10 +226,10 @@ template <typename ConfigurationType,
           typename StreamType,
           typename SocketHandlerType>
 int
-RPG_Net_StreamAsynchTCPSocketBase_t<ConfigurationType,
-                                    StatisticsContainerType,
-                                    StreamType,
-                                    SocketHandlerType>::handle_output (ACE_HANDLE handle_in)
+RPG_Net_StreamAsynchTCPSocketBase<ConfigurationType,
+                                  StatisticsContainerType,
+                                  StreamType,
+                                  SocketHandlerType>::handle_output (ACE_HANDLE handle_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler::handle_output"));
 
@@ -325,8 +267,6 @@ RPG_Net_StreamAsynchTCPSocketBase_t<ConfigurationType,
                message_block->size()));
 
     // clean up
-//    myBuffer->release();
-//    myBuffer = NULL;
     message_block->release();
 
     return -1;
@@ -340,15 +280,13 @@ template <typename ConfigurationType,
           typename StreamType,
           typename SocketHandlerType>
 int
-RPG_Net_StreamAsynchTCPSocketBase_t<ConfigurationType,
-                                    StatisticsContainerType,
-                                    StreamType,
-                                    SocketHandlerType>::handle_close (ACE_HANDLE handle_in,
-                                                                      ACE_Reactor_Mask mask_in)
+RPG_Net_StreamAsynchTCPSocketBase<ConfigurationType,
+                                  StatisticsContainerType,
+                                  StreamType,
+                                  SocketHandlerType>::handle_close (ACE_HANDLE handle_in,
+                                                                    ACE_Reactor_Mask mask_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler::handle_close"));
-
-  ACE_UNUSED_ARG(handle_in);
 
   // step1: wait for all workers within the stream (if any)
   if (myStream.isRunning())
@@ -359,7 +297,7 @@ RPG_Net_StreamAsynchTCPSocketBase_t<ConfigurationType,
 
   // step2: purge any pending notifications ?
   // *WARNING: do this here, while still holding on to the current write buffer
-  if (!inherited::myUserData.useThreadPerConnection)
+  if (!myConfiguration.useThreadPerConnection)
   {
     STREAM_ITERATOR_TYPE iterator(myStream);
     const MODULE_TYPE* module = NULL;
@@ -375,7 +313,7 @@ RPG_Net_StreamAsynchTCPSocketBase_t<ConfigurationType,
   } // end IF
 
   // step3: invoke base class maintenance
-  int result = inherited::handle_close(inherited::handle(),
+  int result = inherited::handle_close(handle_in,
                                        mask_in);
 
 //  // step4: deregister ?
@@ -395,7 +333,7 @@ RPG_Net_StreamAsynchTCPSocketBase_t<ConfigurationType,
 //    } // end IF
 //  } // end IF
 //  else
-    inherited::decrease();
+    //inherited::decrease();
 
   return result;
 }
@@ -404,25 +342,15 @@ template <typename ConfigurationType,
           typename StatisticsContainerType,
           typename StreamType,
           typename SocketHandlerType>
-bool
-RPG_Net_StreamAsynchTCPSocketBase_t<ConfigurationType,
-                                    StatisticsContainerType,
-                                    StreamType,
-                                    SocketHandlerType>::collect (StatisticsContainerType& data_out) const
+void
+RPG_Net_StreamAsynchTCPSocketBase<ConfigurationType,
+                                  StatisticsContainerType,
+                                  StreamType,
+                                  SocketHandlerType >::act (const void* act_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler::collect"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_AsynchStreamHandler::act"));
 
-  try
-  {
-    return myStream.collect(data_out);
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Common_IStatistic::collect(), aborting\n")));
-  }
-
-  return false;
+  myUserData = reinterpret_cast<ConfigurationType*> (const_cast<void*> (act_in));
 }
 
 template <typename ConfigurationType,
@@ -430,33 +358,10 @@ template <typename ConfigurationType,
           typename StreamType,
           typename SocketHandlerType>
 void
-RPG_Net_StreamAsynchTCPSocketBase_t<ConfigurationType,
-                                    StatisticsContainerType,
-                                    StreamType,
-                                    SocketHandlerType>::report () const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler::report"));
-
-  try
-  {
-    return myStream.report();
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Common_IStatistic::report(), aborting\n")));
-  }
-}
-
-template <typename ConfigurationType,
-          typename StatisticsContainerType,
-          typename StreamType,
-          typename SocketHandlerType>
-void
-RPG_Net_StreamAsynchTCPSocketBase_t<ConfigurationType,
-                                    StatisticsContainerType,
-                                    StreamType,
-                                    SocketHandlerType>::handle_read_stream (const ACE_Asynch_Read_Stream::Result& result)
+RPG_Net_StreamAsynchTCPSocketBase<ConfigurationType,
+                                  StatisticsContainerType,
+                                  StreamType,
+                                  SocketHandlerType>::handle_read_stream (const ACE_Asynch_Read_Stream::Result& result)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_AsynchStreamHandler::handle_read_stream"));
 

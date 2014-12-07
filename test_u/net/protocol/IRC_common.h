@@ -21,13 +21,13 @@
 #ifndef IRC_COMMON_H
 #define IRC_COMMON_H
 
-#include "rpg_net_protocol_sockethandler.h"
+#include "rpg_net_tcpconnection.h"
 
-#include <ace/Connector.h>
-#include <ace/SOCK_Connector.h>
+#include "ace/Connector.h"
+#include "ace/SOCK_Connector.h"
 
 // convenient types
-typedef RPG_Net_Protocol_SocketHandler IRC_Client_SocketHandler;
+typedef RPG_Net_TCPConnection IRC_Client_SocketHandler;
 typedef ACE_Connector<IRC_Client_SocketHandler,
                       ACE_SOCK_CONNECTOR> IRC_Client_Connector;
 

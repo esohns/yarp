@@ -23,22 +23,36 @@
 
 #include "rpg_net_exports.h"
 #include "rpg_net_socket_common.h"
+#include "rpg_net_socketconnection_base.h"
+#include "rpg_net_transportlayer_udp.h"
 
-#include "ace/Task.h"
+//#include "ace/Task.h"
 #include "ace/INET_Addr.h"
 
 class RPG_Net_Export RPG_Net_UDPConnection
- : public RPG_Net_UDPHandler,
-   public ACE_Task<ACE_MT_SYNCH>
+ : public RPG_Net_SocketConnectionBase<RPG_Net_UDPHandler,
+                                       RPG_Net_TransportLayer_UDP,
+                                       RPG_Net_ConfigPOD,
+                                       RPG_Net_RuntimeStatistic>
+   //public ACE_Task<ACE_MT_SYNCH>
 {
  public:
   RPG_Net_UDPConnection (const ACE_INET_Addr&); // peer address
 
-//  // implement (part of) RPG_Net_IConnection
-//  virtual void ping ();
+  // implement (part of) RPG_Net_ITransportLayer
+  //virtual bool open (const ACE_INET_Addr&, // peer address
+  //                   unsigned short);      // port number
+  virtual void info (ACE_HANDLE&,           // return value: handle
+                     ACE_INET_Addr&,        // return value: local SAP
+                     ACE_INET_Addr&) const; // return value: remote SAP
+
+  // override some transport layer-based members
+  virtual void init (RPG_Net_ClientServerRole_t, // role
+                    unsigned short,              // port number
+                    bool = false);               // use loopback device ?
 
   // override some task-based members
-  virtual int svc (void);
+  //virtual int svc (void);
   virtual int open (void* = NULL); // args
   virtual int close (u_long = 0); // args
 
@@ -52,11 +66,14 @@ class RPG_Net_Export RPG_Net_UDPConnection
                             ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK);
 
  private:
-  typedef RPG_Net_UDPHandler inherited;
-  typedef ACE_Task<ACE_MT_SYNCH> inherited2;
+  typedef RPG_Net_SocketConnectionBase<RPG_Net_UDPHandler,
+                                       RPG_Net_TransportLayer_UDP,
+                                       RPG_Net_ConfigPOD,
+                                       RPG_Net_RuntimeStatistic> inherited;
+  //typedef ACE_Task<ACE_MT_SYNCH> inherited2;
 
-  // stop worker, if any
-  void shutdown ();
+  //// stop worker, if any
+  //void shutdown ();
 
   virtual ~RPG_Net_UDPConnection ();
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_UDPConnection ());

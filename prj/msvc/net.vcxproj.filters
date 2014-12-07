@@ -78,18 +78,6 @@
     <ClCompile Include="..\..\net\rpg_net_udpsockethandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\net\rpg_net_stream_tcpsocket_base_t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\net\rpg_net_stream_udpsocket_base_t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\net\rpg_net_stream_asynch_tcpsocket_base_t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\net\rpg_net_stream_asynch_udpsocket_base_t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\net\rpg_net_asynch_tcpsockethandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -103,6 +91,36 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\net\rpg_net_sockethandler_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\net\rpg_net_connection_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\net\rpg_net_socketconnection_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\net\rpg_net_transportlayer_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\net\rpg_net_transportlayer_ip_cast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\net\rpg_net_transportlayer_tcp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\net\rpg_net_transportlayer_udp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\net\rpg_net_stream_asynch_tcpsocket_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\net\rpg_net_stream_asynch_udpsocket_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\net\rpg_net_stream_tcpsocket_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\net\rpg_net_stream_udpsocket_base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -200,18 +218,6 @@
     <ClInclude Include="..\..\net\rpg_net_udpsockethandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\net\rpg_net_stream_tcpsocket_base_t.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\net\rpg_net_stream_udpsocket_base_t.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\net\rpg_net_stream_asynch_tcpsocket_base_t.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\net\rpg_net_stream_asynch_udpsocket_base_t.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\net\rpg_net_asynch_tcpsockethandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -221,13 +227,46 @@
     <ClInclude Include="..\..\net\rpg_net_socket_common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\net\rpg_net_tcpconnection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\net\rpg_net_udpconnection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\net\rpg_net_sockethandler_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\net\rpg_net_connection_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\net\rpg_net_socketconnection_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\net\rpg_net_tcpconnection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\net\rpg_net_transportlayer_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\net\rpg_net_transportlayer_ip_cast.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\net\rpg_net_transportlayer_tcp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\net\rpg_net_transportlayer_udp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\net\rpg_net_stream_asynch_tcpsocket_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\net\rpg_net_stream_asynch_udpsocket_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\net\rpg_net_stream_tcpsocket_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\net\rpg_net_stream_udpsocket_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\net\rpg_net_itransportlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -247,16 +286,22 @@
     <None Include="..\..\net\scripts\exports.bat">
       <Filter>scripts</Filter>
     </None>
-    <None Include="..\..\net\rpg_net_stream_tcpsocket_base_t.inl">
+    <None Include="..\..\net\rpg_net_connection_base.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="..\..\net\rpg_net_stream_udpsocket_base_t.inl">
+    <None Include="..\..\net\rpg_net_socketconnection_base.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="..\..\net\rpg_net_stream_asynch_tcpsocket_base_t.inl">
+    <None Include="..\..\net\rpg_net_stream_asynch_tcpsocket_base.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="..\..\net\rpg_net_stream_asynch_udpsocket_base_t.inl">
+    <None Include="..\..\net\rpg_net_stream_asynch_udpsocket_base.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="..\..\net\rpg_net_stream_tcpsocket_base.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="..\..\net\rpg_net_stream_udpsocket_base.inl">
       <Filter>Header Files</Filter>
     </None>
   </ItemGroup>

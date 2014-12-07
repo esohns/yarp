@@ -24,7 +24,7 @@
 #include "rpg_net_server_exports.h"
 #include "rpg_net_server_ilistener.h"
 
-#include "rpg_net_connection_common.h"
+#include "rpg_net_tcpconnection.h"
 
 #include "rpg_common_idumpstate.h"
 
@@ -35,7 +35,7 @@
 #include "ace/Synch.h"
 
 class RPG_Net_Server_Export RPG_Net_Server_Listener
- : public ACE_Acceptor<RPG_Net_SocketHandler_t,
+ : public ACE_Acceptor<RPG_Net_TCPConnection,
                        ACE_SOCK_ACCEPTOR>,
    public RPG_Net_Server_IListener
 {
@@ -65,7 +65,7 @@ class RPG_Net_Server_Export RPG_Net_Server_Listener
   virtual void dump_state() const;
 
  private:
-  typedef ACE_Acceptor<RPG_Net_SocketHandler_t,
+  typedef ACE_Acceptor<RPG_Net_TCPConnection,
                        ACE_SOCK_ACCEPTOR> inherited;
 
   RPG_Net_Server_Listener();
@@ -73,12 +73,11 @@ class RPG_Net_Server_Export RPG_Net_Server_Listener
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Server_Listener& operator=(const RPG_Net_Server_Listener&));
   virtual ~RPG_Net_Server_Listener();
 
-  bool                     myIsInitialized;
-  RPG_Net_TransportLayer_t myTransportLayer;
-  bool                     myIsListening;
-  bool                     myIsOpen;
-  unsigned short           myListeningPort;
-  bool                     myUseLoopback;
+  bool           myIsInitialized;
+  bool           myIsListening;
+  bool           myIsOpen;
+  unsigned short myListeningPort;
+  bool           myUseLoopback;
 };
 
 typedef ACE_Singleton<RPG_Net_Server_Listener,

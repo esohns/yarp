@@ -25,7 +25,6 @@
 
 #include "rpg_net_iconnection.h"
 #include "rpg_net_iconnectionmanager.h"
-#include "rpg_net_transportlayer_base.h"
 
 #include "ace/INET_Addr.h"
 
@@ -36,33 +35,20 @@ class RPG_Net_ConnectionBase
    public RPG_Net_IConnection<StatisticsContainerType>
 {
  public:
-//  // implement RPG_Common_IRefCount
-//  using RPG_Common_ReferenceCounterBase::count;
-//  using RPG_Common_ReferenceCounterBase::wait_zero;
-  // implement RPG_Common_IDumpState
-  virtual void dump_state() const;
-
-  // implement RPG_Net_IConnection
-  virtual bool open(const ACE_INET_Addr&, // peer address
-                    unsigned short) = 0;  // port number
-  virtual void close() = 0;
-  virtual void ping() = 0; // ping the peer !
-  virtual void info(ACE_HANDLE&,           // return value: handle
-                    ACE_INET_Addr&,        // return value: local SAP
-                    ACE_INET_Addr&) const; // return value: remote SAP
-  virtual unsigned int id() const;
+  // implement (part of) RPG_Net_ITransportLayer
+  virtual bool init(const ACE_INET_Addr&, // peer address
+                    unsigned short);      // port number
+  virtual void fini();
 
  protected:
   typedef RPG_Net_IConnectionManager<ConfigurationType,
                                      StatisticsContainerType> MANAGER_T;
-  RPG_Net_ConnectionBase(MANAGER_T*,
-                         RPG_Net_TransportLayer_Base*);
+  RPG_Net_ConnectionBase(MANAGER_T*);
   virtual ~RPG_Net_ConnectionBase();
 
-  MANAGER_T*                   myManager;
-  RPG_Net_TransportLayer_Base* myTransportLayer;
-  ConfigurationType            myUserData;
-  bool                         myIsRegistered;
+  MANAGER_T*        myManager;
+  ConfigurationType myUserData;
+  bool              myIsRegistered;
 
  private:
   typedef RPG_Common_ReferenceCounterBase inherited;

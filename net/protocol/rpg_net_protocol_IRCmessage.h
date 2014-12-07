@@ -24,8 +24,9 @@
 #include "rpg_net_protocol_IRC_codes.h"
 
 #include "rpg_common_referencecounter_base.h"
+#include "rpg_common_idumpstate.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <list>
 #include <string>
@@ -46,7 +47,8 @@ typedef string_list_t RPG_Net_Protocol_Parameters_t;
 typedef string_list_const_iterator_t RPG_Net_Protocol_ParametersIterator_t;
 
 class RPG_Net_Protocol_IRCMessage
- : public RPG_Common_ReferenceCounterBase
+ : public RPG_Common_ReferenceCounterBase,
+   public RPG_Common_IDumpState
 {
   public:
     enum CommandType
@@ -110,7 +112,7 @@ class RPG_Net_Protocol_IRCMessage
     // "attached" to it in the course of its life (see dtor)
     RPG_Net_Protocol_IRCMessage();
 
-    void dump_state() const;
+    virtual void dump_state() const;
 
     struct Prefix
     {

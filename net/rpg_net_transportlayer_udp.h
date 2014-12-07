@@ -26,28 +26,25 @@
 #include "rpg_net_transportlayer_base.h"
 
 #include "ace/INET_Addr.h"
-#include "ace/SOCK_Dgram.h"
+//#include "ace/SOCK_Dgram.h"
 
 class RPG_Net_Export RPG_Net_TransportLayer_UDP
  : public RPG_Net_TransportLayer_Base
- , public ACE_SOCK_Dgram
+ //, public ACE_SOCK_Dgram
 {
  public:
-  RPG_Net_TransportLayer_UDP(RPG_Net_ClientServerRole_t);
+  RPG_Net_TransportLayer_UDP();
   virtual ~RPG_Net_TransportLayer_UDP();
 
-  void init(unsigned short, // port number
-            bool = false);  // use loopback device ?
+ protected:
+  ACE_INET_Addr myAddress;
 
  private:
   typedef RPG_Net_TransportLayer_Base inherited;
-  typedef ACE_SOCK_Dgram inherited2;
+  //typedef ACE_SOCK_Dgram inherited2;
 
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_TransportLayer_UDP());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_TransportLayer_UDP(const RPG_Net_TransportLayer_UDP&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_TransportLayer_UDP& operator=(const RPG_Net_TransportLayer_UDP&));
-
-  ACE_INET_Addr myAddress;
 };
 
 #endif

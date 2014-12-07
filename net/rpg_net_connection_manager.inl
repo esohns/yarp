@@ -350,12 +350,12 @@ RPG_Net_Connection_Manager<ConfigurationType,
     try
     {
       // *IMPORTANT NOTE*: implicitly invokes deregisterConnection
-      connection->close();
+      connection->fini();
     }
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Net_IConnection::close(), continuing")));
+                 ACE_TEXT("caught exception in RPG_Net_IConnection::fini(), continuing")));
     }
   } while (true);
   ACE_ASSERT(myConnections.is_empty());
@@ -486,12 +486,12 @@ RPG_Net_Connection_Manager<ConfigurationType,
     {
       // *IMPORTANT NOTE*: implicitly invokes deregisterConnection from a
       // reactor thread, if any
-      connection->close();
+      connection->fini();
     }
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("caught exception in RPG_Net_IConnection::abort(), continuing")));
+                 ACE_TEXT("caught exception in RPG_Net_IConnection::fini(), continuing")));
     }
   } // end IF
 }
@@ -519,12 +519,12 @@ RPG_Net_Connection_Manager<ConfigurationType,
     try
     {
       // *IMPORTANT NOTE*: implicitly invokes deregisterConnection from a reactor thread, if any
-      connection->close();
+      connection->fini();
     }
     catch (...)
     {
       ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("caught exception in RPG_Net_IConnection::abort(), continuing")));
+                ACE_TEXT("caught exception in RPG_Net_IConnection::fini(), continuing")));
     }
   } // end IF
 }
