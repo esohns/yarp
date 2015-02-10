@@ -61,12 +61,12 @@
 #include "rpg_net_client_connector.h"
 #include "rpg_net_client_asynchconnector.h"
 
+#include "rpg_net_server_defines.h"
+
 #include "rpg_client_defines.h"
 #include "rpg_client_GTK_manager.h"
 #include "rpg_client_logger.h"
 #include "rpg_client_ui_tools.h"
-
-#include "rpg_net_server_defines.h"
 
 #include "rpg_config.h"
 

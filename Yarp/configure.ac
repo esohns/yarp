@@ -2,8 +2,10 @@
 # Process this file with autoconf to produce a configure script.
 
 # define version information
-YARP_SO_VERSION="0:0:0"
-YARP_API_VERSION="0.1"
+m4_define([YARP_SO_VERSION],[0:0:0])
+m4_define([YARP_API_VERSION],[0.1])
+#YARP_SO_VERSION="0:0:0"
+#YARP_API_VERSION="0.1"
 AC_SUBST([YARP_SO_VERSION])
 AC_SUBST([YARP_API_VERSION])
 
