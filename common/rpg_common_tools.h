@@ -80,38 +80,6 @@ class RPG_Common_Export RPG_Common_Tools
 	static std::string sanitize(const std::string&); // string
 	static std::string strip(const std::string&); // string
 
-  // ---------------------------------------------------------------------------
-
-  static bool isLinux();
-
-  static bool initResourceLimits(const bool& = false, // #file descriptors (i.e. open handles)
-                                 const bool& = true); // stack trace/sizes (i.e. core file sizes)
-
-  static void getCurrentUserName(std::string&,  // return value: username
-                                 std::string&); // return value: "real" name
-  static std::string getHostName(); // return value: hostname
-
-  static bool initLogging(const std::string&,           // program name (i.e. argv[0])
-                          const std::string&,           // log file {"" --> disable}
-                          const bool& = false,          // log to syslog ?
-                          const bool& = false,          // enable tracing messages ?
-                          const bool& = false,          // enable debug messages ?
-                          ACE_Log_Msg_Backend* = NULL); // logger backend {NULL --> disable}
-
-  static bool preInitSignals(ACE_Sig_Set&,                 // signal set (*NOTE*: IN/OUT)
-                             const bool&,                  // use reactor ?
-                             RPG_Common_SignalActions_t&); // return value: previous actions
-  static bool initSignals(ACE_Sig_Set&,                 // signal set (*NOTE*: IN/OUT)
-                          ACE_Event_Handler*,           // event handler handle
-                          RPG_Common_SignalActions_t&); // return value: previous actions
-  static void finiSignals(const ACE_Sig_Set&,                 // signal set
-                          const bool&,                        // use reactor ?
-                          const RPG_Common_SignalActions_t&); // previous actions
-  static void retrieveSignalInfo(const int&,        // signal
-                                 const siginfo_t&,  // info
-                                 const ucontext_t*, // context
-                                 std::string&);     // return value: info
-
  private:
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools());
   ACE_UNIMPLEMENTED_FUNC(~RPG_Common_Tools());

@@ -24,18 +24,7 @@
 #include "rpg_common_physicaldamagetype.h"
 #include "rpg_common_terrain.h"
 
-// timer queue
-#include "ace/Synch_Traits.h"
-#include "ace/Event_Handler_Handle_Timeout_Upcall.h"
-//#include "ace/Timer_Heap_T.h"
-#include "ace/Timer_Wheel_T.h"
-#include "ace/Timer_Queue_T.h"
-#include "ace/Timer_Queue_Adapters.h"
-#include "ace/Time_Policy.h"
-#include "ace/Signal.h"
-
 #include <set>
-#include <map>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -45,34 +34,5 @@ typedef RPG_Common_PhysicalDamageList_t::const_iterator RPG_Common_PhysicalDamag
 
 typedef std::set<RPG_Common_Terrain> RPG_Common_Terrains_t;
 typedef RPG_Common_Terrains_t::const_iterator RPG_Common_TerrainsIterator_t;
-
-// *NOTE*: use the high resolution for accuracy and low latency
-typedef ACE_HR_Time_Policy RPG_Common_TimePolicy_t;
-
-// *NOTE*: ensure a minimal amount of locking
-//typedef ACE_Event_Handler_Handle_Timeout_Upcall<ACE_SYNCH_NULL_MUTEX> RPG_Common_TimeoutUpcall_t;
-typedef ACE_Event_Handler_Handle_Timeout_Upcall RPG_Common_TimeoutUpcall_t;
-// *NOTE*: ACEs' timer heap implementation currently has some stability issue...
-//typedef ACE_Timer_Heap_T<ACE_Event_Handler*,
-//                         RPG_Common_TimeoutUpcall_t,
-//                         ACE_SYNCH_NULL_MUTEX,
-//                         RPG_Common_TimePolicy_t> RPG_Common_TimerQueueImpl_t;
-//typedef ACE_Timer_Heap_Iterator_T<ACE_Event_Handler*,
-//                                  RPG_Common_TimeoutUpcall_t,
-//                                  ACE_SYNCH_NULL_MUTEX,
-//                                  RPG_Common_TimePolicy_t> RPG_Common_TimerQueueImplIterator_t;
-typedef ACE_Timer_Wheel_T<ACE_Event_Handler*,
-                          RPG_Common_TimeoutUpcall_t,
-                          ACE_SYNCH_NULL_MUTEX,
-                          RPG_Common_TimePolicy_t> RPG_Common_TimerQueueImpl_t;
-typedef ACE_Timer_Wheel_Iterator_T<ACE_Event_Handler*,
-                                   RPG_Common_TimeoutUpcall_t,
-                                   ACE_SYNCH_NULL_MUTEX,
-                                   RPG_Common_TimePolicy_t> RPG_Common_TimerQueueImplIterator_t;
-typedef ACE_Thread_Timer_Queue_Adapter<RPG_Common_TimerQueueImpl_t,
-                                       ACE_Event_Handler*> RPG_Common_TimerQueue_t;
-
-typedef std::map<int, ACE_Sig_Action> RPG_Common_SignalActions_t;
-typedef RPG_Common_SignalActions_t::const_iterator RPG_Common_SignalActionsIterator_t;
 
 #endif
