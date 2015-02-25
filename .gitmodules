@@ -4,3 +4,9 @@
 [submodule "modules/libACEStream"]
 	path = modules/libACEStream
 	url = https://github.com/esohns/libACEStream.git
+[submodule "modules/libACENetwork"]
+	path = modules/libACENetwork
+	url = https://github.com/esohns/libACENetwork.git
+[submodule "libACENetwork"]
+	path = libACENetwork
+	url = https://github.com/esohns/libACENetwork.git
