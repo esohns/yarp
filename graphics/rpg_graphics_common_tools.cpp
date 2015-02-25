@@ -24,25 +24,26 @@
 
 #include "rpg_graphics_common_tools.h"
 
-#include "rpg_graphics_defines.h"
-#include "rpg_graphics_dictionary.h"
-#include "rpg_graphics_SDL_tools.h"
-#include "rpg_graphics_surface.h"
-
-#include "rpg_common_macros.h"
-#include "rpg_common_ilock.h"
-#include "rpg_common_file_tools.h"
-
-#include "rpg_dice_common.h"
-#include "rpg_dice.h"
+#include <sstream>
+#include <numeric>
 
 #include "ace/OS.h"
 #include "ace/Log_Msg.h"
 
 #include "png.h"
 
-#include <sstream>
-#include <numeric>
+#include "common_file_tools.h"
+
+#include "rpg_common_macros.h"
+#include "rpg_common_ilock.h"
+
+#include "rpg_dice_common.h"
+#include "rpg_dice.h"
+
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_dictionary.h"
+#include "rpg_graphics_SDL_tools.h"
+#include "rpg_graphics_surface.h"
 
 // init statics
 RPG_Graphics_CategoryToStringTable_t RPG_Graphics_CategoryHelper::myRPG_Graphics_CategoryToStringTable;
@@ -97,20 +98,20 @@ RPG_Graphics_Common_Tools::init(const std::string& directory_in,
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::init"));
 
 	if (!myPreInitialized)
-		RPG_Graphics_Common_Tools::preInit();
+		RPG_Graphics_Common_Tools::preInit ();
 
-  if (!directory_in.empty())
+  if (!directory_in.empty ())
   {
     // sanity check(s)
-    if (!RPG_Common_File_Tools::isDirectory(directory_in))
+    if (!Common_File_Tools::isDirectory (directory_in))
     {
       // re-try with resolved path
-      std::string resolved_path = RPG_Common_File_Tools::realPath(directory_in);
-      if (!RPG_Common_File_Tools::isDirectory(resolved_path))
+      std::string resolved_path = Common_File_Tools::realPath(directory_in);
+      if (!Common_File_Tools::isDirectory(resolved_path))
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid argument \"%s\": not a directory, aborting\n"),
-                   ACE_TEXT(directory_in.c_str())));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("invalid argument \"%s\": not a directory, aborting\n"),
+                    ACE_TEXT (directory_in.c_str ())));
 
         return;
       } // end IF
@@ -123,21 +124,21 @@ RPG_Graphics_Common_Tools::init(const std::string& directory_in,
   if (myInitialized)
   {
     // clean up
-    fini();
+    fini ();
 
     myInitialized = false;
   } // end IF
 
   // init colors
   if (initSDL_in)
-    RPG_Graphics_SDL_Tools::initColors();
+    RPG_Graphics_SDL_Tools::initColors ();
 
   // init fonts
   if (initSDL_in)
-    if (!initFonts())
+    if (!initFonts ())
     {
-      ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("failed to initFonts(), aborting\n")));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to initFonts(), aborting\n")));
 
       return;
     } // end IF
@@ -2001,7 +2002,7 @@ RPG_Graphics_Common_Tools::initFonts()
       path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       path += (*iterator).file;
       // sanity check
-      if (!RPG_Common_File_Tools::isReadable(path))
+      if (!Common_File_Tools::isReadable(path))
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid file(\"%s\"): not readable, aborting\n"),

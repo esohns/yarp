@@ -21,14 +21,11 @@
 #ifndef RPG_NET_PROTOCOL_COMMON_H
 #define RPG_NET_PROTOCOL_COMMON_H
 
-#include "rpg_net_protocol_exports.h"
-#include "rpg_net_protocol_IRCmessage.h"
-
-#include "rpg_net_stream_common.h"
-#include "rpg_net_connection_manager.h"
-#include "rpg_net_inotify.h"
-
-#include "rpg_common.h"
+#include <string>
+#include <set>
+#include <vector>
+#include <map>
+#include <bitset>
 
 #include "ace/Time_Value.h"
 #include "ace/Date_Time.h"
@@ -36,11 +33,14 @@
 #include "ace/Synch.h"
 #include "ace/Module.h"
 
-#include <string>
-#include <set>
-#include <vector>
-#include <map>
-#include <bitset>
+#include "common.h"
+
+#include "rpg_net_connection_manager.h"
+#include "rpg_net_inotify.h"
+#include "rpg_net_stream_common.h"
+
+#include "rpg_net_protocol_exports.h"
+#include "rpg_net_protocol_IRCmessage.h"
 
 // forward declaration(s)
 class ACE_Notification_Strategy;
@@ -50,7 +50,7 @@ template <typename ConfigType,
           typename StatisticsContainerType> class RPG_Net_Connection_Manager;
 
 typedef ACE_Module<ACE_MT_SYNCH,
-                   RPG_Common_TimePolicy_t> MODULE_TYPE;
+                   Common_TimePolicy_t> MODULE_TYPE;
 
 struct RPG_Net_Protocol_IRCLoginOptions
 {

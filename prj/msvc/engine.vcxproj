@@ -197,17 +197,8 @@ popd</Command>
     <ProjectReference Include="monster.vcxproj">
       <Project>{f306a4b7-0d19-4322-b891-11e528ebd50c}</Project>
     </ProjectReference>
-    <ProjectReference Include="net.vcxproj">
-      <Project>{aa720739-6711-4cfe-8e54-0d5abfa83963}</Project>
-    </ProjectReference>
-    <ProjectReference Include="net_client.vcxproj">
-      <Project>{47db7c91-607e-4773-b139-a45abaf3ca00}</Project>
-    </ProjectReference>
     <ProjectReference Include="player.vcxproj">
       <Project>{c0095f69-560d-4c7d-82de-078644135735}</Project>
-    </ProjectReference>
-    <ProjectReference Include="stream.vcxproj">
-      <Project>{ef66f896-aed2-4e31-8222-4424970e4357}</Project>
     </ProjectReference>
     <ProjectReference Include="XML2CppCode.vcxproj">
       <Project>{7cff8b93-971b-40ae-a875-2c83e1f37002}</Project>

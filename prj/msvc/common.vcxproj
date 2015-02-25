@@ -37,11 +37,13 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="VS_ProjectPropertySheet_ACEd.props" />
     <Import Project="VS_ProjectPropertySheet_Xercesd_Xsd.props" />
+    <Import Project="..\..\modules\libCommon\prj\msvc\VS_libCommon.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="VS_ProjectPropertySheet_ACE.props" />
     <Import Project="VS_ProjectPropertySheet_Xerces_Xsd.props" />
+    <Import Project="..\..\modules\libCommon\prj\msvc\VS_libCommon.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -167,32 +169,19 @@ popd</Command>
     <ClInclude Include="..\..\common\rpg_common_exports.h" />
     <ClInclude Include="..\..\common\rpg_common_file_tools.h" />
     <ClInclude Include="..\..\common\rpg_common_fixedperiod.h" />
-    <ClInclude Include="..\..\common\rpg_common_iclone.h" />
-    <ClInclude Include="..\..\common\rpg_common_icontrol.h" />
-    <ClInclude Include="..\..\common\rpg_common_idumpstate.h" />
     <ClInclude Include="..\..\common\rpg_common_ilock.h" />
     <ClInclude Include="..\..\common\rpg_common_incl.h" />
-    <ClInclude Include="..\..\common\rpg_common_irefcount.h" />
-    <ClInclude Include="..\..\common\rpg_common_isignal.h" />
-    <ClInclude Include="..\..\common\rpg_common_istatistic.h" />
-    <ClInclude Include="..\..\common\rpg_common_isubscribe.h" />
-    <ClInclude Include="..\..\common\rpg_common_itimer.h" />
     <ClInclude Include="..\..\common\rpg_common_macros.h" />
     <ClInclude Include="..\..\common\rpg_common_physicaldamagetype.h" />
     <ClInclude Include="..\..\common\rpg_common_plane.h" />
-    <ClInclude Include="..\..\common\rpg_common_referencecounter_base.h" />
     <ClInclude Include="..\..\common\rpg_common_savereductiontype.h" />
     <ClInclude Include="..\..\common\rpg_common_savingthrow.h" />
     <ClInclude Include="..\..\common\rpg_common_savingthrowcheck.h" />
-    <ClInclude Include="..\..\common\rpg_common_signalhandler.h" />
     <ClInclude Include="..\..\common\rpg_common_size.h" />
     <ClInclude Include="..\..\common\rpg_common_skill.h" />
     <ClInclude Include="..\..\common\rpg_common_subclass.h" />
-    <ClInclude Include="..\..\common\rpg_common_task_base.h" />
     <ClInclude Include="..\..\common\rpg_common_terrain.h" />
     <ClInclude Include="..\..\common\rpg_common_timeofday.h" />
-    <ClInclude Include="..\..\common\rpg_common_timerhandler.h" />
-    <ClInclude Include="..\..\common\rpg_common_timer_manager.h" />
     <ClInclude Include="..\..\common\rpg_common_tools.h" />
     <ClInclude Include="..\..\common\rpg_common_track.h" />
     <ClInclude Include="..\..\common\rpg_common_usage.h" />
@@ -208,7 +197,6 @@ popd</Command>
   <ItemGroup>
     <None Include="..\..\common\rpg_common.map" />
     <None Include="..\..\common\rpg_common_environment.map" />
-    <None Include="..\..\common\rpg_common_task_base.inl" />
     <None Include="..\..\common\scripts\bindings.bat" />
   </ItemGroup>
   <ItemGroup>
@@ -225,11 +213,6 @@ popd</Command>
     <ClCompile Include="..\..\common\rpg_common_environment_XML_tree.cpp" />
     <ClCompile Include="..\..\common\rpg_common_environment_XML_types.cpp" />
     <ClCompile Include="..\..\common\rpg_common_file_tools.cpp" />
-    <ClCompile Include="..\..\common\rpg_common_referencecounter_base.cpp" />
-    <ClCompile Include="..\..\common\rpg_common_signalhandler.cpp" />
-    <ClCompile Include="..\..\common\rpg_common_task_base.cpp" />
-    <ClCompile Include="..\..\common\rpg_common_timerhandler.cpp" />
-    <ClCompile Include="..\..\common\rpg_common_timer_manager.cpp" />
     <ClCompile Include="..\..\common\rpg_common_tools.cpp" />
     <ClCompile Include="..\..\common\rpg_common_XML_parser.cpp" />
     <ClCompile Include="..\..\common\rpg_common_XML_tools.cpp" />
@@ -244,6 +227,9 @@ popd</Command>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\modules\libCommon\prj\msvc\libCommon.vcxproj">
+      <Project>{78a90d08-4e40-4ed4-8f75-393ac6526158}</Project>
+    </ProjectReference>
     <ProjectReference Include="dice.vcxproj">
       <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
     </ProjectReference>

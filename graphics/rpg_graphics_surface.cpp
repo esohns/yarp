@@ -21,18 +21,19 @@
 
 #include "rpg_graphics_surface.h"
 
+#include "ace/OS.h"
+#include "ace/ACE.h"
+#include "ace/Log_Msg.h"
+
+#include "png.h"
+
+#include "common_file_tools.h"
+
+#include "rpg_common_macros.h"
+
 #include "rpg_graphics_defines.h"
 #include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_SDL_tools.h"
-
-#include "rpg_common_macros.h"
-#include "rpg_common_file_tools.h"
-
-#include <ace/OS.h>
-#include <ace/ACE.h>
-#include <ace/Log_Msg.h>
-
-#include <png.h>
 
 // init static(s)
 Uint32   RPG_Graphics_Surface::SDL_surface_flags = 0;
@@ -232,11 +233,11 @@ RPG_Graphics_Surface::load(const std::string& filename_in,
   SDL_Surface* result = NULL;
 
   // sanity check
-  if (!RPG_Common_File_Tools::isReadable(filename_in))
+  if (!Common_File_Tools::isReadable (filename_in))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid argument(\"%s\"): not readable, aborting\n"),
-               ACE_TEXT(filename_in.c_str())));
+    ACE_DEBUG ((LM_ERROR,
+               ACE_TEXT ("invalid argument(\"%s\"): not readable, aborting\n"),
+               ACE_TEXT (filename_in.c_str ())));
 
     return NULL;
   } // end IF
@@ -244,23 +245,23 @@ RPG_Graphics_Surface::load(const std::string& filename_in,
   //// load complete file into memory
   //// *TODO*: this isn't really necessary...
   //unsigned char* srcbuf = NULL;
-  //if (!RPG_Common_File_Tools::loadFile(filename_in,
-  //                                     srcbuf))
+  //if (!Common_File_Tools::loadFile(filename_in,
+  //                                 srcbuf))
   //{
-  //  ACE_DEBUG((LM_ERROR,
-  //             ACE_TEXT("failed to RPG_Common_File_Tools::loadFile(\"%s\"), aborting\n"),
-  //             filename_in.c_str()));
+  //  ACE_DEBUG ((LM_ERROR,
+  //              ACE_TEXT ("failed to Common_File_Tools::loadFile(\"%s\"), aborting\n"),
+  //              ACE_TEXT (filename_in.c_str()));
 
   //  return NULL;
   //} // end IF
   FILE* file_ptr = NULL;
-  if ((file_ptr = ACE_OS::fopen(filename_in.c_str(),                  // filename
-	                              ACE_TEXT_ALWAYS_CHAR("rb"))) == NULL) // mode
+  if ((file_ptr = ACE_OS::fopen (filename_in.c_str(),                  // filename
+	                               ACE_TEXT_ALWAYS_CHAR ("rb"))) == NULL) // mode
 
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::fopen(\"%s\"): \"%m\", aborting\n"),
-               ACE_TEXT(filename_in.c_str())));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_OS::fopen(\"%s\"): \"%m\", aborting\n"),
+                ACE_TEXT (filename_in.c_str ())));
 
     return NULL;
   } // end IF
@@ -275,25 +276,25 @@ RPG_Graphics_Surface::load(const std::string& filename_in,
 //                                         alpha_in);
   if (!result)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Surface::loadPNG(\"%s\"), aborting\n"),
-               ACE_TEXT(filename_in.c_str())));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Surface::loadPNG(\"%s\"), aborting\n"),
+                ACE_TEXT (filename_in.c_str ())));
 
     // clean up
-	if (ACE_OS::fclose(file_ptr))
-	  ACE_DEBUG((LM_ERROR,
-		           ACE_TEXT("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
-			         ACE_TEXT(filename_in.c_str())));
+	if (ACE_OS::fclose (file_ptr))
+	  ACE_DEBUG ((LM_ERROR,
+		            ACE_TEXT ("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
+			          ACE_TEXT (filename_in.c_str ())));
     //delete[] srcbuf;
 
     return NULL;
   } // end IF
 
   // clean up
-  if (ACE_OS::fclose(file_ptr))
-	ACE_DEBUG((LM_ERROR,
-	           ACE_TEXT("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
-			       ACE_TEXT(filename_in.c_str())));
+  if (ACE_OS::fclose (file_ptr))
+	ACE_DEBUG ((LM_ERROR,
+	            ACE_TEXT ("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
+			        ACE_TEXT (filename_in.c_str ())));
   //delete[] srcbuf;
 
   if (convertToDisplayFormat_in)
@@ -322,19 +323,19 @@ RPG_Graphics_Surface::load(const std::string& filename_in,
     convert = SDL_DisplayFormatAlpha(result);
     if (!convert)
     {
-      ACE_DEBUG((LM_ERROR,
+      ACE_DEBUG ((LM_ERROR,
 //                  ACE_TEXT("failed to SDL_DisplayFormat(): %s, aborting\n"),
-                 ACE_TEXT("failed to SDL_DisplayFormatAlpha(): \"%s\", aborting\n"),
-                 ACE_TEXT(SDL_GetError())));
+                  ACE_TEXT ("failed to SDL_DisplayFormatAlpha(): \"%s\", aborting\n"),
+                  ACE_TEXT (SDL_GetError ())));
 
       // clean up
-      SDL_FreeSurface(result);
+      SDL_FreeSurface (result);
 
       return NULL;
     } // end IF
 
     // clean up
-    SDL_FreeSurface(result);
+    SDL_FreeSurface (result);
     result = convert;
   } // end IF
 
@@ -349,12 +350,12 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::savePNG"));
 
   // preliminary check(s)
-  if (RPG_Common_File_Tools::isReadable(targetFile_in))
-    if (!RPG_Common_File_Tools::deleteFile(targetFile_in))
+  if (Common_File_Tools::isReadable(targetFile_in))
+    if (!Common_File_Tools::deleteFile(targetFile_in))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Common_File_Tools::deleteFile(\"%s\"), returning\n"),
-                 ACE_TEXT(targetFile_in.c_str())));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to RPG_Common_File_Tools::deleteFile(\"%s\"), returning\n"),
+                  ACE_TEXT (targetFile_in.c_str ())));
 
       return;
     } // end IF
@@ -372,10 +373,10 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
   }
   if (!output)
   {
-    ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate memory(%u): \"%m\", returning\n"),
-               (surface_in.w * surface_in.h * (alpha_in ? surface_in.format->BytesPerPixel
-                                                        : (surface_in.format->BytesPerPixel - 1)))));
+    ACE_DEBUG ((LM_CRITICAL,
+                ACE_TEXT ("failed to allocate memory(%u): \"%m\", returning\n"),
+                (surface_in.w * surface_in.h * (alpha_in ? surface_in.format->BytesPerPixel
+                                                         : (surface_in.format->BytesPerPixel - 1)))));
 
     return;
   } // end IF
@@ -391,9 +392,9 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
   }
   if (!image)
   {
-    ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate memory(%u): \"%m\", returning\n"),
-               (sizeof(png_bytep) * surface_in.h)));
+    ACE_DEBUG ((LM_CRITICAL,
+                ACE_TEXT ("failed to allocate memory(%u): \"%m\", returning\n"),
+                (sizeof(png_bytep) * surface_in.h)));
 
     return;
   } // end IF
@@ -402,9 +403,9 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
   if (SDL_MUSTLOCK((&surface_in)))
     if (SDL_LockSurface(&const_cast<SDL_Surface&>(surface_in)))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_LockSurface(): \"%s\", returning\n"),
-                 ACE_TEXT(SDL_GetError())));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_LockSurface(): \"%s\", returning\n"),
+                  ACE_TEXT (SDL_GetError ())));
 
       return;
     } // end IF
@@ -435,18 +436,18 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
     } // end FOR
   } // end FOR
 
-  if (SDL_MUSTLOCK((&surface_in)))
-    SDL_UnlockSurface(&const_cast<SDL_Surface&>(surface_in));
+  if (SDL_MUSTLOCK ((&surface_in)))
+    SDL_UnlockSurface (&const_cast<SDL_Surface&> (surface_in));
 
   // open the file
   FILE* fp = NULL;
-  fp = ACE_OS::fopen(ACE_TEXT(targetFile_in.c_str()),
-                     ACE_TEXT_ALWAYS_CHAR("wb"));
+  fp = ACE_OS::fopen (ACE_TEXT (targetFile_in.c_str ()),
+                      ACE_TEXT_ALWAYS_CHAR ("wb"));
   if (!fp)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to open file(\"%s\"): \"%m\", returning\n"),
-               ACE_TEXT(targetFile_in.c_str())));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to open file(\"%s\"): \"%m\", returning\n"),
+                ACE_TEXT (targetFile_in.c_str ())));
 
     // clean up
     // *NOTE*: output has been modified, but the value is still present in image[0]
@@ -458,20 +459,20 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
 
   // create png image data structures
   png_structp png_ptr = NULL;
-  png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, // version
-                                    NULL,                  // error
-                                    NULL,                  // error handler
-                                    NULL);                 // warning handler
+  png_ptr = png_create_write_struct (PNG_LIBPNG_VER_STRING, // version
+                                     NULL,                  // error
+                                     NULL,                  // error handler
+                                     NULL);                 // warning handler
   if (!png_ptr)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to png_create_write_struct(): \"%m\", returning\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to png_create_write_struct(): \"%m\", returning\n")));
 
     // clean up
-    if (ACE_OS::fclose(fp))
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to close file(\"%s\"): \"%m\", continuing\n"),
-                 ACE_TEXT(targetFile_in.c_str())));
+    if (ACE_OS::fclose (fp))
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to close file(\"%s\"): \"%m\", continuing\n"),
+                  ACE_TEXT (targetFile_in.c_str ())));
     // *NOTE*: output has been modified, but the value is still present in image[0]
     delete[] image[0];
     delete[] image;
@@ -483,16 +484,16 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
   info_ptr = png_create_info_struct(png_ptr);
   if (!info_ptr)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to png_create_info_struct(): \"%m\", returning\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to png_create_info_struct(): \"%m\", returning\n")));
 
     // clean up
-    png_destroy_write_struct(&png_ptr,
-                             NULL);
-    if (ACE_OS::fclose(fp))
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to close file(\"%s\"): \"%m\", continuing\n"),
-                 ACE_TEXT(targetFile_in.c_str())));
+    png_destroy_write_struct (&png_ptr,
+                              NULL);
+    if (ACE_OS::fclose (fp))
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to close file(\"%s\"): \"%m\", continuing\n"),
+                  ACE_TEXT (targetFile_in.c_str ())));
     // *NOTE*: output has been modified, but the value is still present in image[0]
     delete[] image[0];
     delete[] image;
@@ -501,18 +502,18 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
   } // end IF
 
   // save stack context, set up error handling
-  if (::setjmp(png_jmpbuf(png_ptr)))
+  if (::setjmp (png_jmpbuf (png_ptr)))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ::setjmp(): \"%m\", aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ::setjmp(): \"%m\", aborting\n")));
 
     // clean up
-    png_destroy_write_struct(&png_ptr,
-                             &info_ptr);
-    if (ACE_OS::fclose(fp))
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to close file(\"%s\"): \"%m\", continuing\n"),
-                 ACE_TEXT(targetFile_in.c_str())));
+    png_destroy_write_struct (&png_ptr,
+                              &info_ptr);
+    if (ACE_OS::fclose (fp))
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to close file(\"%s\"): \"%m\", continuing\n"),
+                  ACE_TEXT (targetFile_in.c_str ())));
     // *NOTE*: output has been modified, but the value is still present in image[0]
     delete[] image[0];
     delete[] image;
@@ -521,42 +522,42 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
   } // end IF
 
   // write the image
-  png_init_io(png_ptr, fp);
+  png_init_io (png_ptr, fp);
 
-  png_set_IHDR(png_ptr,                         // context
-               info_ptr,                        // header info
-               surface_in.w,                    // width
-               surface_in.h,                    // height
-               8,                               // bit-depth
-               (alpha_in ? PNG_COLOR_TYPE_RGBA  // color-type
-                         : PNG_COLOR_TYPE_RGB),
-               PNG_INTERLACE_NONE,              // interlace
-               PNG_COMPRESSION_TYPE_DEFAULT,    // compression
-               PNG_FILTER_TYPE_DEFAULT);        // filter
+  png_set_IHDR (png_ptr,                         // context
+                info_ptr,                        // header info
+                surface_in.w,                    // width
+                surface_in.h,                    // height
+                8,                               // bit-depth
+                (alpha_in ? PNG_COLOR_TYPE_RGBA  // color-type
+                          : PNG_COLOR_TYPE_RGB),
+                PNG_INTERLACE_NONE,              // interlace
+                PNG_COMPRESSION_TYPE_DEFAULT,    // compression
+                PNG_FILTER_TYPE_DEFAULT);        // filter
 
-  png_set_rows(png_ptr,
-               info_ptr,
-               image);
+  png_set_rows (png_ptr,
+                info_ptr,
+                image);
 
-  png_write_png(png_ptr,  // context
-                info_ptr, // header info
-                0,        // transforms
-                NULL);    // params
+  png_write_png (png_ptr,  // context
+                 info_ptr, // header info
+                 0,        // transforms
+                 NULL);    // params
 
   // clean up
-  png_destroy_write_struct(&png_ptr,
-                           &info_ptr);
-  if (ACE_OS::fclose(fp))
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to close file(\"%s\"): \"%m\", continuing\n"),
-               ACE_TEXT(targetFile_in.c_str())));
+  png_destroy_write_struct (&png_ptr,
+                            &info_ptr);
+  if (ACE_OS::fclose (fp))
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to close file(\"%s\"): \"%m\", continuing\n"),
+                ACE_TEXT (targetFile_in.c_str ())));
   // *NOTE*: output has been modified, but the value is still present in image[0]
   delete[] image[0];
   delete[] image;
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("wrote PNG file \"%s\"...\n"),
-             ACE_TEXT(targetFile_in.c_str())));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("wrote PNG file \"%s\"...\n"),
+              ACE_TEXT (targetFile_in.c_str ())));
 }
 
 SDL_Surface*

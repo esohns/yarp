@@ -37,12 +37,6 @@
     <ProjectReference Include="common.vcxproj">
       <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
     </ProjectReference>
-    <ProjectReference Include="net.vcxproj">
-      <Project>{aa720739-6711-4cfe-8e54-0d5abfa83963}</Project>
-    </ProjectReference>
-    <ProjectReference Include="stream.vcxproj">
-      <Project>{ef66f896-aed2-4e31-8222-4424970e4357}</Project>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{47DB7C91-607E-4773-B139-A45ABAF3CA00}</ProjectGuid>

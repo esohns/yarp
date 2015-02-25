@@ -21,11 +21,11 @@
 #ifndef RPG_NET_MESSAGE_BASE_H
 #define RPG_NET_MESSAGE_BASE_H
 
+#include "ace/Global_Macros.h"
+
+#include "stream_message_base.h"
+
 #include "rpg_net_remote_comm.h"
-
-#include "rpg_stream_message_base.h"
-
-#include <ace/Global_Macros.h>
 
 // forward declaration(s)
 class ACE_Data_Block;
@@ -33,7 +33,7 @@ class ACE_Allocator;
 
 template <typename ProtocolCommandType>
 class RPG_Net_MessageBase
- : public RPG_Stream_MessageBase
+ : public Stream_MessageBase
 {
  public:
   virtual ~RPG_Net_MessageBase();
@@ -64,7 +64,7 @@ class RPG_Net_MessageBase
                       ACE_Allocator*); // message allocator
 
  private:
-  typedef RPG_Stream_MessageBase inherited;
+  typedef Stream_MessageBase inherited;
 
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_MessageBase());
 //   RPG_Net_MessageBase(ACE_Allocator*); // message allocator

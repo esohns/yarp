@@ -21,19 +21,20 @@
 
 #include "rpg_common_XML_tools.h"
 
+#include "ace/Dirent_Selector.h"
+#include "ace/Log_Msg.h"
+
+#include "xercesc/util/XMemory.hpp"
+#include "xercesc/util/XMLUni.hpp"
+#include "xercesc/util/PlatformUtils.hpp"
+#include "xercesc/framework/XMLGrammarPoolImpl.hpp"
+#include "xercesc/sax2/XMLReaderFactory.hpp"
+
+#include "common_file_tools.h"
+
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
-#include "rpg_common_file_tools.h"
 #include "rpg_common_xsderrorhandler.h"
-
-#include <xercesc/util/XMemory.hpp>
-#include <xercesc/util/XMLUni.hpp>
-#include <xercesc/util/PlatformUtils.hpp>
-#include <xercesc/framework/XMLGrammarPoolImpl.hpp>
-#include <xercesc/sax2/XMLReaderFactory.hpp>
-
-#include <ace/Dirent_Selector.h>
-#include <ace/Log_Msg.h>
 
 using namespace xercesc;
 
@@ -85,7 +86,7 @@ RPG_Common_XML_Tools::init(const std::string& schemaDirectory_in)
   XMLPlatformUtils::Initialize();
 
   // sanity check(s)
-  if (!RPG_Common_File_Tools::isDirectory(schemaDirectory_in))
+  if (!Common_File_Tools::isDirectory(schemaDirectory_in))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid argument, not a directory (was: \"%s\"), aborting\n"),

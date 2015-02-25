@@ -21,21 +21,21 @@
 #ifndef RPG_MAP_LEVEL_H
 #define RPG_MAP_LEVEL_H
 
+#include <string>
+
+#include "ace/Global_Macros.h"
+
+#include "common_idumpstate.h"
+
 #include "rpg_map_exports.h"
 #include "rpg_map_defines.h"
 #include "rpg_map_common.h"
-
-#include "rpg_common_idumpstate.h"
-
-#include <ace/Global_Macros.h>
-
-#include <string>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Map_Export RPG_Map_Level
- : public RPG_Common_IDumpState
+ : public Common_IDumpState
 {
  public:
   RPG_Map_Level(const RPG_Map_t&); // map

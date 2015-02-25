@@ -26,25 +26,28 @@
 
 #include "rpg_map_common_tools.h"
 
+#include <sstream>
+#include <iostream>
+#include <stack>
+#include <iterator>
+
+#include "ace/Time_Value.h"
+#include "ace/Log_Msg.h"
+
+#include "common_defines.h"
+#include "common_file_tools.h"
+
+//#include "rpg_common_defines.h"
+#include "rpg_common_file_tools.h"
+#include "rpg_common_macros.h"
+
+#include "rpg_dice.h"
+
 #include "rpg_map_direction.h"
 #include "rpg_map_doorstate.h"
 #include "rpg_map_data.h"
 #include "rpg_map_parser_driver.h"
 #include "rpg_map_pathfinding_tools.h"
-
-#include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-#include "rpg_common_file_tools.h"
-
-#include "rpg_dice.h"
-
-#include <ace/Time_Value.h>
-#include <ace/Log_Msg.h>
-
-#include <sstream>
-#include <iostream>
-#include <stack>
-#include <iterator>
 
 // init statics
 RPG_Map_DirectionToStringTable_t
@@ -4124,7 +4127,7 @@ RPG_Map_Common_Tools::getMapsDirectory()
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            false);
 #if defined(DEBUG_DEBUGGER)
-  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+  data_path = Common_File_Tools::getWorkingDirectory();
 #endif
 
 	result = data_path;
@@ -4137,19 +4140,19 @@ RPG_Map_Common_Tools::getMapsDirectory()
   result += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
 #endif
 
-  if (!RPG_Common_File_Tools::isDirectory(result))
+  if (!Common_File_Tools::isDirectory(result))
   {
-    if (!RPG_Common_File_Tools::createDirectory(result))
+    if (!Common_File_Tools::createDirectory(result))
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Common_File_Tools::createDirectory(\"%s\"), falling back\n"),
+                 ACE_TEXT("failed to Common_File_Tools::createDirectory(\"%s\"), falling back\n"),
                  ACE_TEXT(result.c_str())));
 
       // fallback
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-      result = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
+      result = ACE_TEXT_ALWAYS_CHAR(COMMON_DEF_DUMP_DIR);
 #else
-      result = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR));
+      result = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(COMMON_DEF_DUMP_DIR));
 #endif
     } // end IF
     else

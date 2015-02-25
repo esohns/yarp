@@ -24,19 +24,20 @@
 
 #include "rpg_dice.h"
 
-#include "rpg_dice_defines.h"
-#include "rpg_dice_common_tools.h"
-
-#include "rpg_common_macros.h"
-#include "rpg_common_timer_manager.h"
+#include <algorithm>
+#include <string>
+#include <cmath>
 
 #include "ace/OS.h"
 #include "ace/Time_Value.h"
 #include "ace/Log_Msg.h"
 
-#include <algorithm>
-#include <string>
-#include <cmath>
+#include "common_timer_manager.h"
+
+#include "rpg_common_macros.h"
+
+#include "rpg_dice_defines.h"
+#include "rpg_dice_common_tools.h"
 
 void
 RPG_Dice::init()
@@ -47,7 +48,7 @@ RPG_Dice::init()
              ACE_TEXT("initializing random seed (RAND_MAX = %d)...\n"),
              RAND_MAX));
 
-  ACE_Time_Value now = RPG_COMMON_TIME_POLICY();
+  ACE_Time_Value now = COMMON_TIME_POLICY();
   // *PORTABILITY*: outside glibc, this is not very portable...
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   ::srandom(now.sec());
@@ -86,7 +87,7 @@ RPG_Dice::generateRandomNumbers(const unsigned int& range_in,
 #else
     // *NOTE*: use ACE_OS::rand_r() for improved thread safety !
     //results_out.push_back((ACE_OS::rand() % range_in) + 1);
-		usecs = static_cast<unsigned int>(RPG_COMMON_TIME_POLICY().usec());
+		usecs = static_cast<unsigned int>(COMMON_TIME_POLICY().usec());
 		results_out.push_back((ACE_OS::rand_r(&usecs) % range_in) + 1);
 #endif
   } // end FOR

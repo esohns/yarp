@@ -21,11 +21,11 @@
 #ifndef RPG_NET_PROTOCOL_MESSAGE_H
 #define RPG_NET_PROTOCOL_MESSAGE_H
 
+#include "ace/Global_Macros.h"
+
+#include "stream_data_message_base.h"
+
 #include "rpg_net_protocol_IRCmessage.h"
-
-#include "rpg_stream_data_message_base.h"
-
-#include <ace/Global_Macros.h>
 
 // forward declaration(s)
 class ACE_Allocator;
@@ -33,8 +33,8 @@ class ACE_Message_Block;
 class ACE_Data_Block;
 
 class RPG_Net_Protocol_Message
- : public RPG_Stream_DataMessageBase<RPG_Net_Protocol_IRCMessage,
-                                     int>
+ : public Stream_DataMessageBase_T<RPG_Net_Protocol_IRCMessage,
+                                   int>
 {
  public:
   // *NOTE*: to be used by allocators...
@@ -78,8 +78,8 @@ class RPG_Net_Protocol_Message
   RPG_Net_Protocol_Message(const RPG_Net_Protocol_Message&);
 
  private:
-  typedef RPG_Stream_DataMessageBase<RPG_Net_Protocol_IRCMessage,
-                                     int> inherited;
+  typedef Stream_DataMessageBase_T<RPG_Net_Protocol_IRCMessage,
+                                   int> inherited;
 
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Message());
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Message& operator=(const RPG_Net_Protocol_Message&));

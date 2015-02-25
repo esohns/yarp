@@ -21,11 +21,11 @@
 #ifndef RPG_NET_STATISTICHANDLER_H
 #define RPG_NET_STATISTICHANDLER_H
 
-#include "rpg_common_istatistic.h"
-
 #include "ace/Global_Macros.h"
 #include "ace/Event_Handler.h"
 #include "ace/Asynch_IO.h"
+
+#include "common_istatistic.h"
 
 template <typename StatisticsInfoContainer_t>
 class RPG_Net_StatisticHandler_Reactor
@@ -38,7 +38,7 @@ class RPG_Net_StatisticHandler_Reactor
     ACTION_COLLECT
   };
 
-  typedef RPG_Common_IStatistic<StatisticsInfoContainer_t> COLLECTOR_TYPE;
+  typedef Common_IStatistic<StatisticsInfoContainer_t> COLLECTOR_TYPE;
 
   RPG_Net_StatisticHandler_Reactor(const COLLECTOR_TYPE*,     // interface handle
                                    const ActionSpecifier_t&); // handler action

@@ -140,14 +140,8 @@
     <ProjectReference Include="dice.vcxproj">
       <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
     </ProjectReference>
-    <ProjectReference Include="net.vcxproj">
-      <Project>{aa720739-6711-4cfe-8e54-0d5abfa83963}</Project>
-    </ProjectReference>
     <ProjectReference Include="net_server.vcxproj">
       <Project>{9cbd2cee-257d-42f2-a88f-ae6a4622f9ae}</Project>
-    </ProjectReference>
-    <ProjectReference Include="stream.vcxproj">
-      <Project>{ef66f896-aed2-4e31-8222-4424970e4357}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

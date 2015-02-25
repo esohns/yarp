@@ -21,25 +21,25 @@
 #ifndef RPG_SOUND_EVENT_MANAGER_H
 #define RPG_SOUND_EVENT_MANAGER_H
 
-#include "rpg_sound_exports.h"
-#include "rpg_sound_defines.h"
-
-#include "rpg_common_itimer.h"
-#include "rpg_common_idumpstate.h"
-
-#include <SDL.h>
-
-#include <ace/Global_Macros.h>
-#include <ace/Singleton.h>
-#include <ace/Synch.h>
-
 #include <string>
+
+#include "ace/Global_Macros.h"
+#include "ace/Singleton.h"
+#include "ace/Synch.h"
+
+#include "SDL.h"
+
+#include "common_idumpstate.h"
+#include "common_itimer.h"
+
+#include "rpg_sound_defines.h"
+#include "rpg_sound_exports.h"
 
 /**
   @author Erik Sohns <erik.sohns@web.de>
  */
 class RPG_Sound_Export RPG_Sound_Event_Manager
- : public RPG_Common_ITimer
+ : public Common_ITimer
 {
   // singleton requires access to the ctor/dtor
   friend class ACE_Singleton<RPG_Sound_Event_Manager,

@@ -139,14 +139,8 @@
     <ProjectReference Include="common.vcxproj">
       <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
     </ProjectReference>
-    <ProjectReference Include="net.vcxproj">
-      <Project>{aa720739-6711-4cfe-8e54-0d5abfa83963}</Project>
-    </ProjectReference>
     <ProjectReference Include="protocol.vcxproj">
       <Project>{a0066128-9e16-47c8-9697-78be571b8445}</Project>
-    </ProjectReference>
-    <ProjectReference Include="stream.vcxproj">
-      <Project>{ef66f896-aed2-4e31-8222-4424970e4357}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

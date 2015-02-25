@@ -21,16 +21,16 @@
 #ifndef RPG_NET_PROTOCOL_IRCMESSAGE_H
 #define RPG_NET_PROTOCOL_IRCMESSAGE_H
 
-#include "rpg_net_protocol_IRC_codes.h"
-
-#include "rpg_common_referencecounter_base.h"
-#include "rpg_common_idumpstate.h"
-
-#include "ace/Global_Macros.h"
-
 #include <list>
 #include <string>
 #include <vector>
+
+#include "ace/Global_Macros.h"
+
+#include "common_idumpstate.h"
+#include "common_referencecounter_base.h"
+
+#include "rpg_net_protocol_IRC_codes.h"
 
 // *NOTE*: the list of parameters is essentially a simple list of items
 // (separated by ' '). However, an item can itself be a list (separated by ',')...
@@ -47,8 +47,8 @@ typedef string_list_t RPG_Net_Protocol_Parameters_t;
 typedef string_list_const_iterator_t RPG_Net_Protocol_ParametersIterator_t;
 
 class RPG_Net_Protocol_IRCMessage
- : public RPG_Common_ReferenceCounterBase,
-   public RPG_Common_IDumpState
+ : public Common_ReferenceCounterBase,
+   public Common_IDumpState
 {
   public:
     enum CommandType
@@ -141,7 +141,7 @@ class RPG_Net_Protocol_IRCMessage
     list_items_ranges_t           list_param_ranges;
 
   private:
-   typedef RPG_Common_ReferenceCounterBase inherited;
+   typedef Common_ReferenceCounterBase inherited;
 
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_IRCMessage());
    ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_IRCMessage(const RPG_Net_Protocol_IRCMessage&));

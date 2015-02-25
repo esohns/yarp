@@ -21,21 +21,21 @@
 #ifndef RPG_NET_COMMON_H
 #define RPG_NET_COMMON_H
 
+#include <list>
+
+#include "ace/Module.h"
+#include "ace/Synch_Traits.h"
+#include "ace/Task.h"
+
+#include "common.h"
+
 #include "rpg_net_inotify.h"
 #include "rpg_net_message.h"
 
-#include "rpg_common.h"
-
-#include "ace/Task.h"
-#include "ace/Module.h"
-#include "ace/Synch_Traits.h"
-
-#include <list>
-
 typedef ACE_Task<ACE_MT_SYNCH,
-                 RPG_Common_TimePolicy_t> TASK_TYPE;
+                 Common_TimePolicy_t> TASK_TYPE;
 typedef ACE_Module<ACE_MT_SYNCH,
-                   RPG_Common_TimePolicy_t> MODULE_TYPE;
+                   Common_TimePolicy_t> MODULE_TYPE;
 
 enum RPG_Net_ClientServerRole_t
 {

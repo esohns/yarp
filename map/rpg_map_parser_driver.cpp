@@ -21,18 +21,19 @@
 
 #include "rpg_map_parser_driver.h"
 
+#include <fstream>
+#include <sstream>
+
+#include "ace/OS.h"
+#include "ace/Log_Msg.h"
+
+#include "common_file_tools.h"
+
+#include "rpg_common_macros.h"
+
 #include "rpg_map_common_tools.h"
 #include "rpg_map_scanner.h"
 #include "rpg_map_parser.h"
-
-#include <rpg_common_macros.h>
-#include <rpg_common_file_tools.h>
-
-#include <ace/OS.h>
-#include <ace/Log_Msg.h>
-
-#include <fstream>
-#include <sstream>
 
 RPG_Map_ParserDriver::RPG_Map_ParserDriver(const bool& traceScanning_in,
                                            const bool& traceParsing_in)
@@ -126,11 +127,11 @@ RPG_Map_ParserDriver::parse(const std::string& argument_in,
   // sanity check(s)
   ACE_ASSERT(myIsInitialized);
   if (!argumentIsBuffer_in &&
-      !RPG_Common_File_Tools::isReadable(argument_in))
+      !Common_File_Tools::isReadable(argument_in))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
-               argument_in.c_str()));
+               ACE_TEXT ("failed to Common_File_Tools::isReadable(\"%s\"), aborting\n"),
+               ACE_TEXT (argument_in.c_str ())));
 
     return false;
   } // end IF
@@ -144,8 +145,8 @@ RPG_Map_ParserDriver::parse(const std::string& argument_in,
 //   if (file.fail())
 //   {
 //     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to open file \"%s\", aborting\n"),
-//                filename_in.c_str()));
+//                ACE_TEXT ("failed to open file \"%s\", aborting\n"),
+//                ACE_TEXT (filename_in.c_str()));
 //
 //     return false;
 //   } // end IF
@@ -153,9 +154,9 @@ RPG_Map_ParserDriver::parse(const std::string& argument_in,
                        ACE_TEXT_ALWAYS_CHAR("rb"));
     if (!fp)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to open file(\"%s\"): %m, aborting\n"),
-                 argument_in.c_str()));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to open file(\"%s\"): %m, aborting\n"),
+                  ACE_TEXT (argument_in.c_str ())));
 
       return false;
     } // end IF
@@ -175,14 +176,14 @@ RPG_Map_ParserDriver::parse(const std::string& argument_in,
     // clean up
 //     file.close();
 //     if (file.fail())
-//       ACE_DEBUG((LM_ERROR,
-//                  ACE_TEXT("failed to close file \"%s\", aborting\n"),
-//                  filename_in.c_str()));
+//       ACE_DEBUG ((LM_ERROR,
+//                   ACE_TEXT ("failed to close file \"%s\", aborting\n"),
+//                   ACE_TEXT (filename_in.c_str())));
     if (!argumentIsBuffer_in &&
         ACE_OS::fclose(fp))
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to close file(\"%s\"): %m, aborting\n"),
-                 argument_in.c_str()));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to close file(\"%s\"): %m, aborting\n"),
+                  ACE_TEXT (argument_in.c_str ())));
 
     return false;
   } // end IF
