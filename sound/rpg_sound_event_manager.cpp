@@ -25,14 +25,15 @@
 
 #include "rpg_common_macros.h"
 #include "rpg_common.h"
-#include "rpg_common_timerhandler.h"
-#include "rpg_common_timer_manager.h"
-#include "rpg_common_file_tools.h"
 
 #include "rpg_dice.h"
 
-#include <ace/Dirent_Selector.h>
-#include <ace/Log_Msg.h>
+#include "common_timerhandler.h"
+#include "common_timer_manager.h"
+#include "common_file_tools.h"
+
+#include "ace/Dirent_Selector.h"
+#include "ace/Log_Msg.h"
 
 int
 RPG_Sound_Event_Manager::dirent_selector(const dirent* entry_in)

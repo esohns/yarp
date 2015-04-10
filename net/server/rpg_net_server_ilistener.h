@@ -21,12 +21,12 @@
 #ifndef RPG_NET_SERVER_ILISTENER_H
 #define RPG_NET_SERVER_ILISTENER_H
 
-#include "ace/INET_Addr.h"
+#include "common_icontrol.h"
 
-#include "rpg_common_icontrol.h"
+//#include "ace/INET_Addr.h"
 
 class RPG_Net_Server_IListener
- : public RPG_Common_IControl
+ : public Common_IControl
 {
  public:
   virtual ~RPG_Net_Server_IListener() {}

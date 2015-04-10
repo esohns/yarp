@@ -19,21 +19,10 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-// *NOTE*: need this to import correct VERSION !
-#ifdef HAVE_CONFIG_H
-#include "rpg_config.h"
-#endif
-
-#include "rpg_item_defines.h"
-#include "rpg_item_common_tools.h"
-#include "rpg_item_dictionary.h"
-
-#include "rpg_dice_common_tools.h"
-
-#include "rpg_common_defines.h"
-#include "rpg_common_macros.h"
-#include "rpg_common_tools.h"
-#include "rpg_common_file_tools.h"
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <algorithm>
 
 #include "ace/ACE.h"
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
@@ -42,10 +31,21 @@
 #include "ace/Get_Opt.h"
 #include "ace/High_Res_Timer.h"
 
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <algorithm>
+#include "common_file_tools.h"
+
+#ifdef HAVE_CONFIG_H
+#include "rpg_config.h"
+#endif
+
+#include "rpg_common_defines.h"
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
+
+#include "rpg_dice_common_tools.h"
+
+#include "rpg_item_defines.h"
+#include "rpg_item_common_tools.h"
+#include "rpg_item_dictionary.h"
 
 void
 do_printUsage(const std::string& programName_in)
@@ -322,7 +322,7 @@ ACE_TMAIN(int argc_in,
   } // end IF
 
   // step1b: validate arguments
-  if (!RPG_Common_File_Tools::isReadable(item_dictionary_filename))
+  if (!Common_File_Tools::isReadable(item_dictionary_filename))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid (XML) filename \"%s\", aborting\n"),

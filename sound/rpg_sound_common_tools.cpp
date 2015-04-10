@@ -26,14 +26,15 @@
 #include "rpg_sound_event_manager.h"
 
 #include "rpg_common_macros.h"
-#include "rpg_common_file_tools.h"
 
 #include "rpg_dice_common.h"
 #include "rpg_dice.h"
 
-#include <SDL_mixer.h>
+#include "common_file_tools.h"
 
-#include <ace/Log_Msg.h>
+#include "SDL_mixer.h"
+
+#include "ace/Log_Msg.h"
 
 // init statics
 RPG_Sound_CategoryToStringTable_t RPG_Sound_CategoryHelper::myRPG_Sound_CategoryToStringTable;
@@ -66,11 +67,11 @@ RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfiguration_t& config_in,
   if (!directory_in.empty())
   {
     // sanity check(s)
-    if (!RPG_Common_File_Tools::isDirectory(directory_in))
+    if (!Common_File_Tools::isDirectory(directory_in))
     {
       // re-try with resolved path
-      std::string resolved_path = RPG_Common_File_Tools::realPath(directory_in);
-      if (!RPG_Common_File_Tools::isDirectory(resolved_path))
+      std::string resolved_path = Common_File_Tools::realPath(directory_in);
+      if (!Common_File_Tools::isDirectory(resolved_path))
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid argument \"%s\": not a directory, aborting\n"),
@@ -322,7 +323,7 @@ RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in,
       // load the file
       RPG_Sound_Common_Tools::soundToFile(sound, node.sound_file);
       // sanity check
-      if (!RPG_Common_File_Tools::isReadable(node.sound_file))
+      if (!Common_File_Tools::isReadable(node.sound_file))
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid argument(\"%s\"): not readable, aborting\n"),
@@ -402,7 +403,7 @@ RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in,
     if (result == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to Mix_PlayChannel(\"%s\"): \"%s\", aborting\n"),
-                 RPG_Sound_EventHelper::RPG_Sound_EventToString(event_in).c_str(),
+                 ACE_TEXT(RPG_Sound_EventHelper::RPG_Sound_EventToString (event_in).c_str ()),
                  ACE_TEXT(Mix_GetError())));
   } // end lock scope
 
