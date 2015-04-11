@@ -21,80 +21,81 @@
 #ifndef RPG_NET_MODULE_PROTOCOLHANDLER_H
 #define RPG_NET_MODULE_PROTOCOLHANDLER_H
 
-#include "rpg_common_timerhandler.h"
-#include "rpg_common_itimer.h"
+//#include "ace/Reactor.h"
+#include "ace/Synch_Traits.h"
+//#include "ace/Time_Value.h"
 
-#include "rpg_stream_task_base_synch.h"
-#include "rpg_stream_streammodule_base.h"
+#include "common.h"
+#include "common_itimer.h"
+#include "common_timerhandler.h"
 
-#include "rpg_common.h"
+#include "stream_streammodule_base.h"
+#include "stream_task_base_synch.h"
 
-#include <ace/Time_Value.h>
-#include <ace/Reactor.h>
-#include <ace/Synch_Traits.h>
+#include "net_configuration.h"
 
 // forward declaration(s)
-class RPG_Stream_IAllocator;
-class RPG_Net_SessionMessage;
-class RPG_Net_Message;
+class Stream_IAllocator;
+class Net_SessionMessage;
+class Net_Message;
 
 class RPG_Net_Module_ProtocolHandler
- : public RPG_Stream_TaskBaseSynch<RPG_Common_TimePolicy_t,
-                                   RPG_Net_SessionMessage,
-                                   RPG_Net_Message>,
-   public RPG_Common_ITimer
+ : public Stream_TaskBaseSynch_T<Common_TimePolicy_t,
+                                 Net_SessionMessage,
+                                 Net_Message>
+ , public Common_ITimer
 {
  public:
-  RPG_Net_Module_ProtocolHandler();
-  virtual ~RPG_Net_Module_ProtocolHandler();
+  RPG_Net_Module_ProtocolHandler ();
+  virtual ~RPG_Net_Module_ProtocolHandler ();
 
   // initialization
-  bool init(RPG_Stream_IAllocator*,  // message allocator
-            const unsigned int&,     // session ID
-            const unsigned int& = 0, // peer "ping" interval (ms) [0 --> OFF]
-            const bool& = true,      // automatically reply to "ping" messages (auto-"pong")
-            const bool& = false);    // print dot ('.') for every received "pong" to stdlog
+  bool initialize (Stream_IAllocator*, // message allocator
+                   unsigned int,       // session ID
+                   unsigned int = 0,   // peer "ping" interval (ms) [0 --> OFF]
+                   bool = true,        // automatically reply to "ping" messages (auto-"pong")
+                   bool = false);      // print dot ('.') for every received "pong" to stdlog
 
   // implement (part of) Stream_ITaskBase
-  virtual void handleDataMessage(RPG_Net_Message*&, // data message handle
-                                 bool&);            // return value: pass message downstream ?
-  virtual void handleSessionMessage(RPG_Net_SessionMessage*&, // session message handle
-                                    bool&);                   // return value: pass message downstream ?
+  virtual void handleDataMessage (Net_Message*&, // data message handle
+                                  bool&);        // return value: pass message downstream ?
+  virtual void handleSessionMessage (Net_SessionMessage*&, // session message handle
+                                     bool&);               // return value: pass message downstream ?
 
-  // implement RPG_Common_ITimer
-  virtual void handleTimeout(const void*); // asynchronous completion token
+  // implement Common_ITimer
+  virtual void handleTimeout (const void*); // asynchronous completion token
 
-  // implement RPG_Common_IDumpState
-  virtual void dump_state() const;
+  // implement Common_IDumpState
+  virtual void dump_state () const;
 
  private:
-  typedef RPG_Stream_TaskBaseSynch<RPG_Common_TimePolicy_t,
-                                   RPG_Net_SessionMessage,
-                                   RPG_Net_Message> inherited;
+  typedef Stream_TaskBaseSynch_T<Common_TimePolicy_t,
+                                 Net_SessionMessage,
+                                 Net_Message> inherited;
 
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_ProtocolHandler(const RPG_Net_Module_ProtocolHandler&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_ProtocolHandler& operator=(const RPG_Net_Module_ProtocolHandler&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Module_ProtocolHandler (const RPG_Net_Module_ProtocolHandler&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Module_ProtocolHandler& operator=(const RPG_Net_Module_ProtocolHandler&));
 
   // helper methods
-  RPG_Net_Message* allocateMessage(const unsigned int&); // requested size
+  Net_Message* allocateMessage (unsigned int); // requested size
 
   // timer stuff
-  RPG_Common_TimerHandler myPingHandler;
-  long                    myPingTimerID;
+  Common_TimerHandler myPingHandler;
+  long                myPingTimerID;
 
-  RPG_Stream_IAllocator*  myAllocator;
-  unsigned int            mySessionID;
-  unsigned int            myCounter;
-  unsigned int            myPingInterval;
-  bool                    myAutomaticPong;
-  bool                    myPrintPongDot;
-  bool                    myIsInitialized;
+  Stream_IAllocator*  myAllocator;
+  unsigned int        mySessionID;
+  unsigned int        myCounter;
+  unsigned int        myPingInterval;
+  bool                myAutomaticPong;
+  bool                myPrintPongDot;
+  bool                myIsInitialized;
 };
 
 // declare module
 DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                    // task synch type
-                             RPG_Common_TimePolicy_t,         // time policy type
+                             Common_TimePolicy_t,             // time policy type
+                             Net_Configuration_t,             // configuration type
                              RPG_Net_Module_ProtocolHandler); // writer type
 
 #endif

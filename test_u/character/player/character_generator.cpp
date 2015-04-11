@@ -19,65 +19,68 @@
  ***************************************************************************/
 #include "stdafx.h"
 
+#include <algorithm>
+#include <iomanip>
+#include <iostream>
+#include <numeric>
+#include <sstream>
+#include <string>
+
+#include "ace/ACE.h"
+#include "ace/Get_Opt.h"
+#include "ace/High_Res_Timer.h"
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
+#include "ace/Log_Msg.h"
+
+#include "common_file_tools.h"
+#include "common_tools.h"
+
 // *NOTE*: need this to import correct VERSION !
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
 #endif
 
-#include "rpg_client_defines.h"
+#include "rpg_dice.h"
+#include "rpg_dice_common_tools.h"
+#include "rpg_dice_dietype.h"
 
-#include "rpg_engine_common_tools.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_file_tools.h"
+#include "rpg_common_macros.h"
+#include "rpg_common_subclass.h"
+#include "rpg_common_tools.h"
 
-#include "rpg_graphics_defines.h"
-#include "rpg_graphics_dictionary.h"
-#include "rpg_graphics_common_tools.h"
+#include "rpg_magic_common_tools.h"
+#include "rpg_magic_defines.h"
+#include "rpg_magic_dictionary.h"
 
-#include "rpg_player_defines.h"
-#include "rpg_player.h"
-#include "rpg_player_common_tools.h"
+#include "rpg_item_base.h"
+#include "rpg_item_common_tools.h"
+#include "rpg_item_defines.h"
+#include "rpg_item_dictionary.h"
+#include "rpg_item_instance_manager.h"
 
 #include "rpg_character_alignmentcivic.h"
 #include "rpg_character_alignmentethic.h"
 #include "rpg_character_alignment.h"
-#include "rpg_character_offhand.h"
-#include "rpg_character_common_tools.h"
 #include "rpg_character_class_common_tools.h"
+#include "rpg_character_common_tools.h"
+#include "rpg_character_offhand.h"
 #include "rpg_character_skills_common_tools.h"
 
-#include "rpg_item_defines.h"
-#include "rpg_item_base.h"
-#include "rpg_item_instance_manager.h"
-#include "rpg_item_common_tools.h"
-#include "rpg_item_dictionary.h"
+#include "rpg_player.h"
+#include "rpg_player_common_tools.h"
+#include "rpg_player_defines.h"
 
-#include "rpg_magic_defines.h"
-#include "rpg_magic_dictionary.h"
-#include "rpg_magic_common_tools.h"
+#include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_dictionary.h"
 
-#include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-#include "rpg_common_subclass.h"
-#include "rpg_common_tools.h"
-#include "rpg_common_file_tools.h"
+#include "rpg_engine_common_tools.h"
 
-#include "rpg_dice.h"
-#include "rpg_dice_dietype.h"
-#include "rpg_dice_common_tools.h"
-
-#include "ace/ACE.h"
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-#include "ace/Init_ACE.h"
-#endif
-#include "ace/Log_Msg.h"
-#include "ace/Get_Opt.h"
-#include "ace/High_Res_Timer.h"
-
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <string>
-#include <algorithm>
-#include <numeric>
+#include "rpg_client_defines.h"
 
 #define CHARACTER_GENERATOR_DEF_NUM_PLAYERS 1
 #define CHARACTER_GENERATOR_DEF_RANDOM      false
@@ -91,10 +94,10 @@ do_printUsage(const std::string& programName_in)
   std::cout.setf(ios::boolalpha);
 
   std::string configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           true);
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
 #if defined(DEBUG_DEBUGGER)
-  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
 #endif
 
   std::cout << ACE_TEXT("usage: ")
@@ -180,16 +183,16 @@ do_processArguments(const int& argc_in,
   RPG_TRACE(ACE_TEXT("::do_processArguments"));
 
   std::string configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           true);
-#if defined(DEBUG_DEBUGGER)
-  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
 #endif
 
   // init results
   itemDictionary_out      = configuration_path;
   itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   itemDictionary_out += ACE_TEXT_ALWAYS_CHAR("item");
   itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -197,7 +200,7 @@ do_processArguments(const int& argc_in,
 
   magicDictionary_out     = configuration_path;
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR("magic");
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -205,7 +208,7 @@ do_processArguments(const int& argc_in,
 
   graphicsDictionary_out  = configuration_path;
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -1171,16 +1174,16 @@ do_work(const std::string& schemaDirectory_in,
           case 's':
           {
             std::string path = outputFile_in;
-						if (path.empty())
-						{
-							path = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
-							path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-							path += player_p->getName();
-							path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
-						} // end IF
+            if (path.empty ())
+            {
+              path = RPG_Player_Common_Tools::getPlayerProfilesDirectory ();
+              path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+              path += player_p->getName ();
+              path += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT);
+            } // end IF
 
             // sanity check
-            if (RPG_Common_File_Tools::isReadable(path))
+            if (Common_File_Tools::isReadable (path))
             {
               bool proceed = false;
               c = ' ';
@@ -1308,9 +1311,9 @@ do_work(const std::string& schemaDirectory_in,
 }
 
 void
-do_printVersion(const std::string& programName_in)
+do_printVersion (const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_printVersion"));
+  RPG_TRACE (ACE_TEXT ("::do_printVersion"));
 
   std::cout << programName_in
 #ifdef HAVE_CONFIG_H
@@ -1324,42 +1327,39 @@ do_printVersion(const std::string& programName_in)
   // version number... We need this, as the library soname is compared to this
   // string
   std::ostringstream version_number;
-  if (version_number << ACE::major_version())
+  if (version_number << ACE::major_version ())
   {
-    version_number << ACE_TEXT(".");
+    version_number << ACE_TEXT (".");
   } // end IF
   else
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%m\", returning\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to convert: \"%m\", returning\n")));
     return;
   } // end ELSE
-  if (version_number << ACE::minor_version())
+  if (version_number << ACE::minor_version ())
   {
     version_number << ".";
 
-    if (version_number << ACE::beta_version())
+    if (version_number << ACE::beta_version ())
     {
 
     } // end IF
     else
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to convert: \"%m\", returning\n")));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to convert: \"%m\", returning\n")));
       return;
     } // end ELSE
   } // end IF
   else
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%m\", returning\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to convert: \"%m\", returning\n")));
     return;
   } // end ELSE
-  std::cout << ACE_TEXT("ACE: ")
-            << version_number.str()
+  std::cout << ACE_TEXT ("ACE: ")
+            << version_number.str ()
             << std::endl;
 //   std::cout << "ACE: "
 //             << ACE_VERSION
@@ -1367,20 +1367,20 @@ do_printVersion(const std::string& programName_in)
 }
 
 int
-ACE_TMAIN(int argc_in,
-          ACE_TCHAR** argv_in)
+ACE_TMAIN (int argc_in,
+           ACE_TCHAR** argv_in)
 {
-  RPG_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE (ACE_TEXT ("::main"));
 
   // *PORTABILITY*: on Windows, need to init ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-	if (ACE::init() == -1)
-	{
-		ACE_DEBUG((LM_ERROR,
-							 ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::init () == -1)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
 
-		return EXIT_FAILURE;
-	} // end IF
+    return EXIT_FAILURE;
+  } // end IF
 #endif
 
   // step1: init
@@ -1391,21 +1391,21 @@ ACE_TMAIN(int argc_in,
   std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                            false);
-#if defined(DEBUG_DEBUGGER)
-  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
-  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
+  data_path = Common_File_Tools::getWorkingDirectory ();
 #endif
 
   // init configuration
   std::string schema_repository            = configuration_path;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   schema_repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   schema_repository += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
 
   std::string item_dictionary_filename     = configuration_path;
   item_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   item_dictionary_filename += ACE_TEXT_ALWAYS_CHAR("item");
   item_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -1413,7 +1413,7 @@ ACE_TMAIN(int argc_in,
 
   std::string magic_dictionary_filename    = configuration_path;
   magic_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   magic_dictionary_filename += ACE_TEXT_ALWAYS_CHAR("magic");
   magic_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -1422,7 +1422,7 @@ ACE_TMAIN(int argc_in,
 
   std::string graphics_dictionary_filename = configuration_path;
   graphics_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   graphics_dictionary_filename += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphics_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -1431,7 +1431,7 @@ ACE_TMAIN(int argc_in,
 
   std::string graphics_directory           = data_path;
   graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   graphics_directory += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
@@ -1439,18 +1439,18 @@ ACE_TMAIN(int argc_in,
   graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DATA_SUB);
 #endif
 
-	unsigned int num_players                 =
-			CHARACTER_GENERATOR_DEF_NUM_PLAYERS;
+  unsigned int num_players = CHARACTER_GENERATOR_DEF_NUM_PLAYERS;
 
-	std::string output_filename              =
-			RPG_Player_Common_Tools::getPlayerProfilesDirectory();
-	output_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-	output_filename += RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_NAME));
-	output_filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+  std::string output_filename =
+    RPG_Player_Common_Tools::getPlayerProfilesDirectory ();
+  output_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  output_filename +=
+   RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
+  output_filename += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT);
 
-	bool random                              = CHARACTER_GENERATOR_DEF_RANDOM;
-	bool trace_information                   = false;
-	bool print_version_and_exit              = false;
+  bool random = CHARACTER_GENERATOR_DEF_RANDOM;
+  bool trace_information = false;
+  bool print_version_and_exit = false;
 
   // step1b: parse/process/validate configuration
   if (!do_processArguments(argc_in,
@@ -1469,28 +1469,28 @@ ACE_TMAIN(int argc_in,
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;
   } // end IF
 
   // step1b: validate arguments
-  if (!RPG_Common_File_Tools::isReadable(item_dictionary_filename)     ||
-      !RPG_Common_File_Tools::isReadable(magic_dictionary_filename)    ||
-      !RPG_Common_File_Tools::isReadable(graphics_dictionary_filename) ||
-      !RPG_Common_File_Tools::isDirectory(graphics_directory))
+  if (!Common_File_Tools::isReadable (item_dictionary_filename)     ||
+      !Common_File_Tools::isReadable (magic_dictionary_filename)    ||
+      !Common_File_Tools::isReadable (graphics_dictionary_filename) ||
+      !Common_File_Tools::isDirectory (graphics_directory))
   {
     // make 'em learn...
-    do_printUsage(std::string(ACE::basename(argv_in[0])));
+    do_printUsage (std::string (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -1498,21 +1498,21 @@ ACE_TMAIN(int argc_in,
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
-  if (!RPG_Common_Tools::initLogging(ACE::basename(argv_in[0]), // program name
-                                     log_file,                  // logfile
-                                     false,                     // log to syslog ?
-                                     false,                     // trace messages ?
-                                     trace_information,         // debug messages ?
-                                     NULL))                     // logger
+  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
+                                        log_file,                   // logfile
+                                        false,                      // log to syslog ?
+                                        false,                      // trace messages ?
+                                        trace_information,          // debug messages ?
+                                        NULL))                      // logger
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_Tools::initLogging(), aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;

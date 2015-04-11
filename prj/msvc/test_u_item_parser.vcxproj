@@ -54,7 +54,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BASEDIR="$(ProgramFiles.Replace('\', "\\"))\\$(SolutionName)";RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
@@ -84,7 +84,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BASEDIR=".";RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -112,6 +112,9 @@
     <ClInclude Include="..\..\test_u\item\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\modules\libCommon\prj\msvc\libCommon.vcxproj">
+      <Project>{78a90d08-4e40-4ed4-8f75-393ac6526158}</Project>
+    </ProjectReference>
     <ProjectReference Include="common.vcxproj">
       <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
     </ProjectReference>

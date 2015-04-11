@@ -68,6 +68,10 @@
 #define RPG_ENGINE_NETWORK_DEF_USERNAME             "user"
 #define RPG_ENGINE_NETWORK_DEF_REALNAME             "Ronnie Reagan"
 #define RPG_ENGINE_NETWORK_DEF_CHANNEL              "#foobar"
+// *TODO*: move these to client
+#define RPG_ENGINE_USES_REACTOR                     false
+
+
 
 // gtk
 #define RPG_ENGINE_GTK_LEVEL_FILTER                 "levels"

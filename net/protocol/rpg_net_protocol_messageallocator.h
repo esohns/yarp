@@ -21,31 +21,30 @@
 #ifndef RPG_NET_PROTOCOL_MESSAGEALLOCATOR_H
 #define RPG_NET_PROTOCOL_MESSAGEALLOCATOR_H
 
+#include "stream_cachedmessageallocatorheap_base.h"
+
 #include "rpg_net_protocol_exports.h"
 #include "rpg_net_protocol_message.h"
 #include "rpg_net_protocol_sessionmessage.h"
-
-#include <rpg_stream_cachedmessageallocatorheap_base.h>
 
 // forward declarations
 class ACE_Allocator;
 
 class RPG_Protocol_Export RPG_Net_Protocol_MessageAllocator
- : public RPG_Stream_CachedMessageAllocatorHeapBase<RPG_Net_Protocol_Message,
-                                                    RPG_Net_Protocol_SessionMessage>
+ : public Stream_CachedMessageAllocatorHeapBase_T<RPG_Net_Protocol_Message,
+                                                  RPG_Net_Protocol_SessionMessage>
 {
  public:
-  RPG_Net_Protocol_MessageAllocator(const unsigned long&, // total number of concurrent messages
-                                    ACE_Allocator*);      // (heap) memory allocator...
-  virtual ~RPG_Net_Protocol_MessageAllocator();
+  RPG_Net_Protocol_MessageAllocator (unsigned int,    // total number of concurrent messages
+                                     ACE_Allocator*); // (heap) memory allocator...
+  virtual ~RPG_Net_Protocol_MessageAllocator ();
 
  private:
-  typedef RPG_Stream_CachedMessageAllocatorHeapBase<RPG_Net_Protocol_Message,
-                                                    RPG_Net_Protocol_SessionMessage> inherited;
+  typedef Stream_CachedMessageAllocatorHeapBase_T<RPG_Net_Protocol_Message,
+                                                  RPG_Net_Protocol_SessionMessage> inherited;
 
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_MessageAllocator(const RPG_Net_Protocol_MessageAllocator&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_MessageAllocator& operator=(const RPG_Net_Protocol_MessageAllocator&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_MessageAllocator (const RPG_Net_Protocol_MessageAllocator&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_MessageAllocator& operator=(const RPG_Net_Protocol_MessageAllocator&));
 };
 
 #endif

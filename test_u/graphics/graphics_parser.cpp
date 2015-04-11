@@ -19,36 +19,38 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-// *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <string>
+
+#include "ace/ACE.h"
+#include "ace/Get_Opt.h"
+#include "ace/High_Res_Timer.h"
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
+#include "ace/Log_Msg.h"
+
+#include "common_file_tools.h"
+#include "common_tools.h"
+
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
 #endif
-
-#include "rpg_graphics_defines.h"
-#include "rpg_graphics_dictionary.h"
-#include "rpg_graphics_common_tools.h"
 
 #include "rpg_dice.h"
 #include "rpg_dice_common_tools.h"
 
 #include "rpg_common_defines.h"
+#include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
 #include "rpg_common_tools.h"
-#include "rpg_common_file_tools.h"
 #include "rpg_common_XML_tools.h"
 
-#include <ace/ACE.h>
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-#include <ace/Init_ACE.h>
-#endif
-#include <ace/Log_Msg.h>
-#include <ace/Get_Opt.h>
-#include <ace/High_Res_Timer.h>
-
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <string>
+#include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_dictionary.h"
 
 void
 do_printUsage(const std::string& programName_in)
@@ -345,31 +347,31 @@ ACE_TMAIN(int argc_in,
     // make 'em learn...
     do_printUsage(std::string(ACE::basename(argv_in[0])));
 
-		// *PORTABILITY*: on Windows, fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+    // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
 #endif
 
     return EXIT_FAILURE;
   } // end IF
 
   // step1b: validate arguments
-  if (!RPG_Common_File_Tools::isReadable(filename))
+  if (!Common_File_Tools::isReadable (filename))
   {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("invalid (XML) filename \"%s\", aborting\n"),
-               ACE_TEXT(filename.c_str())));
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("invalid (XML) filename \"%s\", aborting\n"),
+                ACE_TEXT (filename.c_str ())));
 
     // make 'em learn...
     do_printUsage(std::string(ACE::basename(argv_in[0])));
 
-		// *PORTABILITY*: on Windows, fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+    // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -377,21 +379,21 @@ ACE_TMAIN(int argc_in,
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
-  if (!RPG_Common_Tools::initLogging(ACE::basename(argv_in[0]), // program name
-                                     log_file,                  // logfile
-                                     false,                     // log to syslog ?
-                                     false,                     // trace messages ?
-                                     trace_information,         // debug messages ?
-                                     NULL))                     // logger
+  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
+                                        log_file,                  // logfile
+                                        false,                     // log to syslog ?
+                                        false,                     // trace messages ?
+                                        trace_information,         // debug messages ?
+                                        NULL))                     // logger
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_Tools::initLogging(), aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Common_Tools::initLogging(), aborting\n")));
 
-		// *PORTABILITY*: on Windows, fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+    // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -403,10 +405,10 @@ ACE_TMAIN(int argc_in,
     do_printVersion(std::string(ACE::basename(argv_in[0])));
 
     // *PORTABILITY*: on Windows, fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
 #endif
 
     return EXIT_SUCCESS;
@@ -434,12 +436,11 @@ ACE_TMAIN(int argc_in,
   SDL_Quit();
 
   // *PORTABILITY*: on Windows, fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::fini() == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
 #endif

@@ -21,43 +21,46 @@
 #ifndef RPG_NET_PROTOCOL_MODULE_IRCSTREAMER_H
 #define RPG_NET_PROTOCOL_MODULE_IRCSTREAMER_H
 
-#include "rpg_stream_task_base_synch.h"
-#include "rpg_stream_streammodule_base.h"
+#include "ace/Global_Macros.h"
+#include "ace/Synch_Traits.h"
 
-#include "rpg_common.h"
+#include "common.h"
 
-#include <ace/Global_Macros.h>
-#include <ace/Synch_Traits.h>
+#include "stream_streammodule_base.h"
+#include "stream_task_base_synch.h"
+
+#include "rpg_net_protocol_common.h"
 
 // forward declaration(s)
 class RPG_Net_Protocol_SessionMessage;
 class RPG_Net_Protocol_Message;
 
 class RPG_Net_Protocol_Module_IRCStreamer
- : public RPG_Stream_TaskBaseSynch<RPG_Common_TimePolicy_t,
-                                   RPG_Net_Protocol_SessionMessage,
-                                   RPG_Net_Protocol_Message>
+ : public Stream_TaskBaseSynch_T<Common_TimePolicy_t,
+                                 RPG_Net_Protocol_SessionMessage,
+                                 RPG_Net_Protocol_Message>
 {
  public:
-  RPG_Net_Protocol_Module_IRCStreamer();
-  virtual ~RPG_Net_Protocol_Module_IRCStreamer();
+  RPG_Net_Protocol_Module_IRCStreamer ();
+  virtual ~RPG_Net_Protocol_Module_IRCStreamer ();
 
   // implement (part of) Stream_ITaskBase
-  virtual void handleDataMessage(RPG_Net_Protocol_Message*&, // data message handle
-                                 bool&);                     // return value: pass message downstream ?
+  virtual void handleDataMessage (RPG_Net_Protocol_Message*&, // data message handle
+                                  bool&);                     // return value: pass message downstream ?
 
  private:
-  typedef RPG_Stream_TaskBaseSynch<RPG_Common_TimePolicy_t,
-                                   RPG_Net_Protocol_SessionMessage,
-                                   RPG_Net_Protocol_Message> inherited;
+  typedef Stream_TaskBaseSynch_T<Common_TimePolicy_t,
+                                 RPG_Net_Protocol_SessionMessage,
+                                 RPG_Net_Protocol_Message> inherited;
 
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCStreamer(const RPG_Net_Protocol_Module_IRCStreamer&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCStreamer& operator=(const RPG_Net_Protocol_Module_IRCStreamer&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Module_IRCStreamer (const RPG_Net_Protocol_Module_IRCStreamer&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Module_IRCStreamer& operator=(const RPG_Net_Protocol_Module_IRCStreamer&));
 };
 
 // declare module
 DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                         // task synch type
-                             RPG_Common_TimePolicy_t,              // time policy
+                             Common_TimePolicy_t,                  // time policy
+                             RPG_Net_Protocol_Configuration,       // configuration type
                              RPG_Net_Protocol_Module_IRCStreamer); // writer type
 
 #endif

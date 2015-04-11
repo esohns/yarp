@@ -62,7 +62,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\chance;$(ProjectDir)..\..\item;$(ProjectDir)..\..\magic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\chance;$(ProjectDir)..\..\item;$(ProjectDir)..\..\magic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_CHARACTER_BUILD_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;_SCL_SECURE_NO_WARNINGS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -106,7 +106,7 @@ popd</Command>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>RPG_CHARACTER_BUILD_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\chance;$(ProjectDir)..\..\item;$(ProjectDir)..\..\magic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\chance;$(ProjectDir)..\..\item;$(ProjectDir)..\..\magic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>

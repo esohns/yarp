@@ -7,6 +7,13 @@
 
 // Windows Header Files
 #include <windows.h>
+
+// *IMPORTANT NOTE*: windows defines the 'max' macro which confuses the
+//                   compiler when using std::numeric_limits<>::max()
+#ifdef max
+#undef max
+#endif
+
 #endif
 
 // System Library Header Files

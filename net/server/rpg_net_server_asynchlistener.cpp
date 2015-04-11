@@ -22,15 +22,16 @@
 #include "rpg_net_server_asynchlistener.h"
 
 #include "ace/Default_Constants.h"
-#include "ace/OS.h"
-#include "ace/Log_Msg.h"
 #include "ace/INET_Addr.h"
+#include "ace/Log_Msg.h"
+#include "ace/OS.h"
 #include "ace/POSIX_Asynch_IO.h"
 
 #include "rpg_common_macros.h"
 
-#include "rpg_net_common.h"
+#include "net_common.h"
 
+#include "rpg_net_server_common.h"
 #include "rpg_net_server_defines.h"
 
 RPG_Net_Server_AsynchListener::RPG_Net_Server_AsynchListener()
@@ -139,7 +140,7 @@ RPG_Net_Server_AsynchListener::start()
 }
 
 void
-RPG_Net_Server_AsynchListener::stop(const bool& lockedAccess_in)
+RPG_Net_Server_AsynchListener::stop(bool lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::stop"));
 
@@ -214,24 +215,25 @@ RPG_Net_Server_AsynchListener::dump_state() const
   ACE_ASSERT(false);
 }
 
-RPG_Net_AsynchTCPConnection*
+Net_AsynchTCPConnection*
 RPG_Net_Server_AsynchListener::make_handler(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_AsynchListener::make_handler"));
 
   // init return value(s)
-  RPG_Net_AsynchTCPConnection* result = NULL;
+  Net_AsynchTCPConnection* connection_p = NULL;
 
   // default behavior
-//  ACE_NEW_NORETURN(result,
-//                   RPG_Net_AsynchTCPConnection(RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()));
-  ACE_NEW_NORETURN(result,
-                   RPG_Net_AsynchTCPConnection ());
-  if (!result)
-    ACE_DEBUG((LM_CRITICAL,
-                ACE_TEXT("failed to allocate memory: \"%m\", aborting\n")));
+  ACE_NEW_NORETURN (connection_p,
+                    Net_AsynchTCPConnection (RPG_CONNECTIONMANAGER_SINGLETON::instance (),
+                                             0));
+  //ACE_NEW_NORETURN (connection_p,
+  //                  Net_AsynchTCPConnection ());
+  if (!connection_p)
+    ACE_DEBUG ((LM_CRITICAL,
+                ACE_TEXT ("failed to allocate memory: \"%m\", aborting\n")));
 
-  return result;
+  return connection_p;
 }
 
 int
@@ -244,8 +246,7 @@ RPG_Net_Server_AsynchListener::validate_connection(const ACE_Asynch_Accept::Resu
   // success ?
   if (result_in.success() == 0)
   {
-    // debug info
-    ACE_TCHAR buffer[RPG_COMMON_BUFSIZE];
+    ACE_TCHAR buffer[BUFSIZ];
     ACE_OS::memset(buffer, 0, sizeof(buffer));
     if (remoteSAP_in.addr_to_string(buffer, sizeof(buffer)) == -1)
       ACE_DEBUG((LM_ERROR,
@@ -253,7 +254,7 @@ RPG_Net_Server_AsynchListener::validate_connection(const ACE_Asynch_Accept::Resu
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Asynch_Acceptor::accept(\"%s\"): \"%s\", aborting\n"),
                buffer,
-               ACE_OS::strerror(result_in.error())));
+               ACE_TEXT(ACE_OS::strerror(result_in.error()))));
   } // end IF
 
   return ((result_in.success() == 1) ? 0 : -1);

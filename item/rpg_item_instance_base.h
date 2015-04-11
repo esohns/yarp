@@ -21,20 +21,20 @@
 #ifndef RPG_ITEM_INSTANCE_BASE_H
 #define RPG_ITEM_INSTANCE_BASE_H
 
+#include "ace/Global_Macros.h"
+#include "ace/Atomic_Op.h"
+#include "ace/Synch.h"
+
+#include "common_referencecounter_base.h"
+
 #include "rpg_item_exports.h"
 #include "rpg_item_instance_common.h"
-
-#include "rpg_common_referencecounter_base.h"
-
-#include <ace/Global_Macros.h>
-#include <ace/Atomic_Op.h>
-#include <ace/Synch.h>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Item_Export RPG_Item_Instance_Base
- : public RPG_Common_ReferenceCounterBase
+ : public Common_ReferenceCounterBase
 {
  public:
   // info
@@ -47,9 +47,8 @@ class RPG_Item_Export RPG_Item_Instance_Base
   virtual ~RPG_Item_Instance_Base();
 
  private:
-  typedef RPG_Common_ReferenceCounterBase inherited;
+  typedef Common_ReferenceCounterBase inherited;
 
-  // safety measures
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Instance_Base(const RPG_Item_Instance_Base&));
   ACE_UNIMPLEMENTED_FUNC(RPG_Item_Instance_Base& operator=(const RPG_Item_Instance_Base&));
 

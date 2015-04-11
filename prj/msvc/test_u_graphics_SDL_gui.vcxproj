@@ -58,7 +58,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\include;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\net\client;$(ProjectDir)..\..\engine;$(ProjectDir)..\..\sound;$(ProjectDir)..\..\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\modules\libACEStream\src;$(ProjectDir)..\..\modules\libACENetwork\src;$(ProjectDir)..\..\modules\libACENetwork\src\client;$(ProjectDir)..\..\modules\libCommon\src\ui;$(ProjectDir)..\..\include;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\net\client;$(ProjectDir)..\..\engine;$(ProjectDir)..\..\sound;$(ProjectDir)..\..\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BASEDIR="";RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;HAVE_CONFIG_H;DEBUG_DEBUGGER;_USE_MATH_DEFINES;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -93,7 +93,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>BASEDIR=".";RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\include;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\net\client;$(ProjectDir)..\..\engine;$(ProjectDir)..\..\sound;$(ProjectDir)..\..\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\modules\libACEStream\src;$(ProjectDir)..\..\modules\libACENetwork\src;$(ProjectDir)..\..\modules\libACENetwork\src\client;$(ProjectDir)..\..\modules\libCommon\src\ui;$(ProjectDir)..\..\include;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\net\client;$(ProjectDir)..\..\engine;$(ProjectDir)..\..\sound;$(ProjectDir)..\..\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
@@ -130,6 +130,9 @@
     <ClInclude Include="..\..\test_u\graphics\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\modules\libCommon\prj\msvc\libCommon.vcxproj">
+      <Project>{78a90d08-4e40-4ed4-8f75-393ac6526158}</Project>
+    </ProjectReference>
     <ProjectReference Include="client.vcxproj">
       <Project>{df9ce33e-5060-48a6-b105-0b61fedf6ae6}</Project>
     </ProjectReference>

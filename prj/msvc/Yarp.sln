@@ -137,6 +137,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libACENetwork", "..\..\modu
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libACENetwork_Client", "..\..\modules\libACENetwork\prj\msvc\libACENetwork_Client.vcxproj", "{125BBE44-7481-4EDF-8F17-8D373E044976}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libCommon_UI", "..\..\modules\libCommon\prj\msvc\libCommon_UI.vcxproj", "{06296185-3E70-472E-8B65-6F552AB1E283}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "net", "net.vcxproj", "{4F0C67A3-7067-4C43-AC18-2529F27F3273}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -322,6 +326,14 @@ Global
 		{125BBE44-7481-4EDF-8F17-8D373E044976}.Debug|Win32.Build.0 = Debug|Win32
 		{125BBE44-7481-4EDF-8F17-8D373E044976}.Release|Win32.ActiveCfg = Release|Win32
 		{125BBE44-7481-4EDF-8F17-8D373E044976}.Release|Win32.Build.0 = Release|Win32
+		{06296185-3E70-472E-8B65-6F552AB1E283}.Debug|Win32.ActiveCfg = Debug|Win32
+		{06296185-3E70-472E-8B65-6F552AB1E283}.Debug|Win32.Build.0 = Debug|Win32
+		{06296185-3E70-472E-8B65-6F552AB1E283}.Release|Win32.ActiveCfg = Release|Win32
+		{06296185-3E70-472E-8B65-6F552AB1E283}.Release|Win32.Build.0 = Release|Win32
+		{4F0C67A3-7067-4C43-AC18-2529F27F3273}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4F0C67A3-7067-4C43-AC18-2529F27F3273}.Debug|Win32.Build.0 = Debug|Win32
+		{4F0C67A3-7067-4C43-AC18-2529F27F3273}.Release|Win32.ActiveCfg = Release|Win32
+		{4F0C67A3-7067-4C43-AC18-2529F27F3273}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

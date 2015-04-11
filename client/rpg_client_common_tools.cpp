@@ -21,34 +21,36 @@
 
 #include "rpg_client_common_tools.h"
 
-#include "rpg_client_defines.h"
-#include "rpg_client_graphicsmode.h"
+#include "ace/Global_Macros.h"
 
-#include "rpg_sound_defines.h"
-#include "rpg_sound_dictionary.h"
-#include "rpg_sound_common_tools.h"
+#include "common_file_tools.h"
 
-#include "rpg_graphics_defines.h"
-#include "rpg_graphics_dictionary.h"
-#include "rpg_graphics_cursor_manager.h"
-#include "rpg_graphics_common_tools.h"
-#include "rpg_graphics_SDL_tools.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_file_tools.h"
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
 
-#include "rpg_engine_common_tools.h"
+#include "rpg_player_common_tools.h"
+#include "rpg_player_defines.h"
 
 #include "rpg_map_common_tools.h"
 
-#include "rpg_player_defines.h"
-#include "rpg_player_common_tools.h"
+#include "rpg_engine_common_tools.h"
 
-#include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-#include "rpg_common_tools.h"
-#include "rpg_common_file_tools.h"
+#include "rpg_sound_common_tools.h"
+#include "rpg_sound_defines.h"
+#include "rpg_sound_dictionary.h"
 
-#include "ace/Global_Macros.h"
+#include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_cursor_manager.h"
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_dictionary.h"
+#include "rpg_graphics_SDL_tools.h"
 
-// init statics
+#include "rpg_client_defines.h"
+#include "rpg_client_graphicsmode.h"
+
+// initialize statics
 RPG_Client_GraphicsModeToStringTable_t RPG_Client_GraphicsModeHelper::myRPG_Client_GraphicsModeToStringTable;
 
 bool
@@ -91,27 +93,27 @@ RPG_Client_Common_Tools::initSDLInput(const RPG_Client_SDL_InputConfiguration_t&
 void
 RPG_Client_Common_Tools::initUserProfiles()
 {
-	RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::initUserProfiles"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::initUserProfiles"));
 
-	std::string profiles_directory =
-			RPG_Player_Common_Tools::getPlayerProfilesDirectory();
-	if (RPG_Common_File_Tools::isEmptyDirectory(profiles_directory))
-	{
-		std::string default_profile =
-				RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-																														 false);
-		default_profile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-		default_profile += RPG_PLAYER_PROFILES_SUB;
-		default_profile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-		default_profile += RPG_Common_Tools::sanitize(RPG_PLAYER_DEF_NAME);
-		default_profile += RPG_PLAYER_PROFILE_EXT;
-		if (!RPG_Common_File_Tools::copyFile(default_profile,
-																				 profiles_directory))
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to RPG_Common_File_Tools::copyFile(\"%s\",\"%s\"), continuing\n"),
-								 ACE_TEXT(default_profile.c_str()),
-								 ACE_TEXT(profiles_directory.c_str())));
-	} // end IF
+  std::string profiles_directory =
+    RPG_Player_Common_Tools::getPlayerProfilesDirectory ();
+  if (Common_File_Tools::isEmptyDirectory(profiles_directory))
+  {
+    std::string default_profile =
+      RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                            false);
+    default_profile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    default_profile += RPG_PLAYER_PROFILES_SUB;
+    default_profile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    default_profile += RPG_Common_Tools::sanitize (RPG_PLAYER_DEF_NAME);
+    default_profile += RPG_PLAYER_PROFILE_EXT;
+    if (!Common_File_Tools::copyFile (default_profile,
+                                      profiles_directory))
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to RPG_Common_File_Tools::copyFile(\"%s\",\"%s\"), continuing\n"),
+                  ACE_TEXT (default_profile.c_str ()),
+                  ACE_TEXT (profiles_directory.c_str ())));
+  } // end IF
 }
 
 bool

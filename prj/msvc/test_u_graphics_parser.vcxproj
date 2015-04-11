@@ -55,7 +55,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BASEDIR="$(ProgramFiles.Replace('\', "\\"))\\$(SolutionName)";RPG_GRAPHICS_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -88,7 +88,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BASEDIR=".";_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -116,6 +116,9 @@
     <ClInclude Include="..\..\test_u\graphics\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\modules\libCommon\prj\msvc\libCommon.vcxproj">
+      <Project>{78a90d08-4e40-4ed4-8f75-393ac6526158}</Project>
+    </ProjectReference>
     <ProjectReference Include="common.vcxproj">
       <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
     </ProjectReference>

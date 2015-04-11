@@ -6,6 +6,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>D:\projects\ATCD\ACE</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>ACE_HAS_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>D:\projects\ATCD\ACE\lib</AdditionalLibraryDirectories>

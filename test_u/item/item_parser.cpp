@@ -19,32 +19,34 @@
  ***************************************************************************/
 #include "stdafx.h"
 
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <algorithm>
 
 #include "ace/ACE.h"
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
 #include "ace/Init_ACE.h"
 #endif
 #include "ace/Get_Opt.h"
 #include "ace/High_Res_Timer.h"
 
 #include "common_file_tools.h"
+#include "common_tools.h"
 
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
 #endif
 
+#include "rpg_dice_common_tools.h"
+
 #include "rpg_common_defines.h"
+#include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
 #include "rpg_common_tools.h"
 
-#include "rpg_dice_common_tools.h"
-
-#include "rpg_item_defines.h"
 #include "rpg_item_common_tools.h"
+#include "rpg_item_defines.h"
 #include "rpg_item_dictionary.h"
 
 void
@@ -53,10 +55,10 @@ do_printUsage(const std::string& programName_in)
   RPG_TRACE(ACE_TEXT("::do_printUsage"));
 
   std::string configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           true);
-#if defined(DEBUG_DEBUGGER)
-  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory();
 #endif
 
   std::cout << ACE_TEXT("usage: ")
@@ -68,7 +70,7 @@ do_printUsage(const std::string& programName_in)
   std::cout << ACE_TEXT("-d       : dump item dictionary") << std::endl;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("item");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -95,17 +97,17 @@ do_processArguments(const int& argc_in,
 
   // init results
   std::string configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           true);
-#if defined(DEBUG_DEBUGGER)
-  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory();
 #endif
 
   dumpItemDictionary_out     = false;
 
   itemDictionaryFilename_out = configuration_path;
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR("item");
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -171,20 +173,20 @@ do_processArguments(const int& argc_in,
 }
 
 void
-do_work(const bool& dumpItemDictionary_in,
-        const std::string& fileName_in)
+do_work (bool dumpItemDictionary_in,
+         const std::string& fileName_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_work"));
+  RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step1: init string conversion tables
-  RPG_Dice_Common_Tools::initStringConversionTables();
-  RPG_Common_Tools::initStringConversionTables();
-  RPG_Item_Common_Tools::initStringConversionTables();
+  RPG_Dice_Common_Tools::initStringConversionTables ();
+  RPG_Common_Tools::initStringConversionTables ();
+  RPG_Item_Common_Tools::initStringConversionTables ();
 
   // step2: init item dictionary
   try
   {
-    RPG_ITEM_DICTIONARY_SINGLETON::instance()->init(fileName_in);
+    RPG_ITEM_DICTIONARY_SINGLETON::instance ()->init (fileName_in);
   }
   catch(...)
   {
@@ -261,19 +263,18 @@ do_printVersion(const std::string& programName_in)
 }
 
 int
-ACE_TMAIN(int argc_in,
-          ACE_TCHAR** argv_in)
+ACE_TMAIN (int argc_in,
+           ACE_TCHAR** argv_in)
 {
-  RPG_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE (ACE_TEXT ("::main"));
 
   // step0: init ACE
   // *PORTABILITY*: on Windows, init ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-  if (ACE::init() == -1)
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::init () == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
 #endif
@@ -281,17 +282,17 @@ ACE_TMAIN(int argc_in,
   // step1: init
   // step1a set defaults
   std::string configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           true);
-#if defined(DEBUG_DEBUGGER)
-  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory();
 #endif
 
   bool dump_item_dictionary            = false;
 
   std::string item_dictionary_filename = configuration_path;
   item_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   item_dictionary_filename += ACE_TEXT_ALWAYS_CHAR("item");
   item_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -312,10 +313,10 @@ ACE_TMAIN(int argc_in,
     do_printUsage(std::string(ACE::basename(argv_in[0])));
 
     // *PORTABILITY*: on Windows, fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -324,18 +325,18 @@ ACE_TMAIN(int argc_in,
   // step1b: validate arguments
   if (!Common_File_Tools::isReadable(item_dictionary_filename))
   {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("invalid (XML) filename \"%s\", aborting\n"),
-               ACE_TEXT(item_dictionary_filename.c_str())));
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("invalid (XML) filename \"%s\", aborting\n"),
+                ACE_TEXT (item_dictionary_filename.c_str ())));
 
     // make 'em learn...
     do_printUsage(std::string(ACE::basename(argv_in[0])));
 
     // *PORTABILITY*: on Windows, fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -343,21 +344,21 @@ ACE_TMAIN(int argc_in,
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
-  if (!RPG_Common_Tools::initLogging(ACE::basename(argv_in[0]), // program name
-                                     log_file,                  // logfile
-                                     false,                     // log to syslog ?
-                                     false,                     // trace messages ?
-                                     trace_information,         // debug messages ?
-                                     NULL))                     // logger
+  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
+                                        log_file,                  // logfile
+                                        false,                     // log to syslog ?
+                                        false,                     // trace messages ?
+                                        trace_information,         // debug messages ?
+                                        NULL))                     // logger
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_Tools::initLogging(), aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Common_Tools::initLogging(), aborting\n")));
 
     // *PORTABILITY*: on Windows, fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -369,10 +370,10 @@ ACE_TMAIN(int argc_in,
     do_printVersion(std::string(ACE::basename(argv_in[0])));
 
     // *PORTABILITY*: on Windows, fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
 #endif
 
     return EXIT_SUCCESS;
@@ -399,12 +400,11 @@ ACE_TMAIN(int argc_in,
 //              ACE_TEXT(working_time_string.c_str())));
 
   // *PORTABILITY*: on Windows, fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-  if (ACE::fini() == -1)
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::fini () == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
 #endif

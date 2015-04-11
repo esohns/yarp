@@ -21,23 +21,23 @@
 #ifndef RPG_ENGINE_EVENT_MANAGER_H
 #define RPG_ENGINE_EVENT_MANAGER_H
 
-#include "rpg_engine_exports.h"
+#include <map>
+
+#include "ace/Global_Macros.h"
+#include "ace/Task_Ex_T.h"
+#include "ace/Time_Value.h"
+#include "ace/Singleton.h"
+#include "ace/Synch.h"
+
+#include "common.h"
+#include "common_icontrol.h"
+#include "common_idumpstate.h"
+#include "common_itimer.h"
+#include "common_timerhandler.h"
+
 #include "rpg_engine_common.h"
 #include "rpg_engine_event_common.h"
-
-#include "rpg_common.h"
-#include "rpg_common_icontrol.h"
-#include "rpg_common_itimer.h"
-#include "rpg_common_timerhandler.h"
-#include "rpg_common_idumpstate.h"
-
-#include <ace/Global_Macros.h>
-#include <ace/Task_Ex_T.h>
-#include <ace/Time_Value.h>
-#include <ace/Singleton.h>
-#include <ace/Synch.h>
-
-#include <map>
+#include "rpg_engine_exports.h"
 
 // forward declaration(s)
 class RPG_Engine;
@@ -48,10 +48,10 @@ class RPG_Engine;
 class RPG_Engine_Export RPG_Engine_Event_Manager
  : public ACE_Task_Ex<ACE_MT_SYNCH,
                       RPG_Engine_Event_t,
-                      RPG_Common_TimePolicy_t>,
-   public RPG_Common_IControl,
-   public RPG_Common_ITimer,
-   public RPG_Common_IDumpState
+                      Common_TimePolicy_t>,
+   public Common_IControl,
+   public Common_ITimer,
+   public Common_IDumpState
 {
   // singleton requires access to the ctor/dtor
   friend class ACE_Singleton<RPG_Engine_Event_Manager,
@@ -75,9 +75,9 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
   void reschedule(const RPG_Engine_EntityID_t&, // id
                   const ACE_Time_Value&);       // activation interval
 
-  // implement RPG_Common_IControl
+  // implement Common_IControl
   virtual void start();
-  virtual void stop(const bool& = true); // locked access ?
+  virtual void stop(bool = true); // locked access ?
   virtual bool isRunning() const;
 
   // implement RPG_Common_IDumpState
@@ -86,7 +86,7 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
  private:
   typedef ACE_Task_Ex<ACE_MT_SYNCH,
                       RPG_Engine_Event_t,
-                      RPG_Common_TimePolicy_t> inherited;
+                      Common_TimePolicy_t> inherited;
 
   virtual ~RPG_Engine_Event_Manager();
   RPG_Engine_Event_Manager();

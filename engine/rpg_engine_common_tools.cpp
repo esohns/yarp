@@ -21,60 +21,62 @@
 
 #include "rpg_engine_common_tools.h"
 
-#include "rpg_engine_defines.h"
-#include "rpg_engine_incl.h"
-#include "rpg_engine_XML_tree.h"
+#include <algorithm>
+#include <cmath>
+#include <fstream>
+#include <string>
 
-#include "rpg_map_parser_driver.h"
-#include "rpg_map_common_tools.h"
-
-#include "rpg_monster_common.h"
-#include "rpg_monster_common_tools.h"
-#include "rpg_monster_attackaction.h"
-#include "rpg_monster_dictionary.h"
-
-#include "rpg_player_defines.h"
-#include "rpg_player_common_tools.h"
-
-#include "rpg_combat_common_tools.h"
-
-#include "rpg_character_common_tools.h"
-#include "rpg_character_race_common_tools.h"
-#include "rpg_character_class_common_tools.h"
-
-#include "rpg_item_common.h"
-#include "rpg_item_armor.h"
-#include "rpg_item_weapon.h"
-#include "rpg_item_instance_manager.h"
-#include "rpg_item_dictionary.h"
-#include "rpg_item_common_tools.h"
-
-#include "rpg_magic_dictionary.h"
-#include "rpg_magic_common_tools.h"
-
-#include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-#include "rpg_common_attribute.h"
-#include "rpg_common_tools.h"
-#include "rpg_common_file_tools.h"
-#include "rpg_common_XML_tools.h"
-#include "rpg_common_xsderrorhandler.h"
-
-#include "rpg_chance_common_tools.h"
-
-#include "rpg_dice.h"
-#include "rpg_dice_common_tools.h"
+#include "ace/Log_Msg.h"
 
 //#include <xercesc/util/XMLString.hpp>
 //#include <xercesc/util/XMLUri.hpp>
 //#include <xercesc/util/XMLURL.hpp>
 
-#include <ace/Log_Msg.h>
+#include "common_file_tools.h"
 
-#include <algorithm>
-#include <fstream>
-#include <string>
-#include <math.h>
+#include "rpg_dice.h"
+#include "rpg_dice_common_tools.h"
+
+#include "rpg_chance_common_tools.h"
+
+#include "rpg_common_attribute.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_file_tools.h"
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
+#include "rpg_common_xsderrorhandler.h"
+#include "rpg_common_XML_tools.h"
+
+#include "rpg_magic_common_tools.h"
+#include "rpg_magic_dictionary.h"
+
+#include "rpg_item_armor.h"
+#include "rpg_item_common.h"
+#include "rpg_item_common_tools.h"
+#include "rpg_item_dictionary.h"
+#include "rpg_item_instance_manager.h"
+#include "rpg_item_weapon.h"
+
+#include "rpg_character_class_common_tools.h"
+#include "rpg_character_common_tools.h"
+#include "rpg_character_race_common_tools.h"
+
+#include "rpg_map_common_tools.h"
+#include "rpg_map_parser_driver.h"
+
+#include "rpg_player_common_tools.h"
+#include "rpg_player_defines.h"
+
+#include "rpg_monster_attackaction.h"
+#include "rpg_monster_common.h"
+#include "rpg_monster_common_tools.h"
+#include "rpg_monster_dictionary.h"
+
+#include "rpg_combat_common_tools.h"
+
+#include "rpg_engine_defines.h"
+#include "rpg_engine_incl.h"
+#include "rpg_engine_XML_tree.h"
 
 using namespace xercesc;
 
@@ -182,53 +184,53 @@ RPG_Engine_Common_Tools::init(const std::string& schemaDirectory_in,
 }
 
 void
-RPG_Engine_Common_Tools::fini()
+RPG_Engine_Common_Tools::fini ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::fini"));
+  RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::fini"));
 
-  RPG_Common_XML_Tools::fini();
+  RPG_Common_XML_Tools::fini ();
 }
 
 bool
-RPG_Engine_Common_Tools::isOneShotEvent(const RPG_Engine_EventType& eventType_in)
+RPG_Engine_Common_Tools::isOneShotEvent (const RPG_Engine_EventType& eventType_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isOneShotEvent"));
+  RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::isOneShotEvent"));
 
-	switch (eventType_in)
-	{
+  switch (eventType_in)
+  {
     case EVENT_ENTITY_ACTIVATE:
-		case EVENT_ENTITY_SPAWN:
-			return false;
-		default: break;
-	}
+    case EVENT_ENTITY_SPAWN:
+      return false;
+    default: break;
+  }
 
-	return true;
+  return true;
 }
 
 std::string
-RPG_Engine_Common_Tools::getEngineStateDirectory()
+RPG_Engine_Common_Tools::getEngineStateDirectory ()
 {
-	RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::getEngineStateDirectory"));
+  RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::getEngineStateDirectory"));
 
-	std::string result = RPG_Common_File_Tools::getUserConfigurationDirectory();
-	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-	result += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_STATE_SUB);
+  std::string result = RPG_Common_File_Tools::getUserConfigurationDirectory ();
+  result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  result += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_STATE_SUB);
 
-  if (!RPG_Common_File_Tools::isDirectory(result))
+  if (!Common_File_Tools::isDirectory (result))
   {
-    if (!RPG_Common_File_Tools::createDirectory(result))
+    if (!Common_File_Tools::createDirectory (result))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Common_File_Tools::createDirectory(\"%s\"), falling back\n"),
-                 ACE_TEXT(result.c_str())));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to RPG_Common_File_Tools::createDirectory(\"%s\"), falling back\n"),
+                  ACE_TEXT (result.c_str ())));
 
       // fallback
-      result = RPG_Common_File_Tools::getDumpDirectory();
+      result = Common_File_Tools::getDumpDirectory ();
     } // end IF
     else
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("created player profiles directory \"%s\"\n"),
-                 ACE_TEXT(result.c_str())));
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT ("created player profiles directory \"%s\"\n"),
+                  ACE_TEXT (result.c_str ())));
   } // end IF
 
   return result;

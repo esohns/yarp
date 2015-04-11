@@ -21,19 +21,19 @@
 
 #include "rpg_sound_event_manager.h"
 
-#include "rpg_sound_common_tools.h"
-
-#include "rpg_common_macros.h"
-#include "rpg_common.h"
-
-#include "rpg_dice.h"
+#include "ace/Dirent_Selector.h"
+#include "ace/Log_Msg.h"
 
 #include "common_timerhandler.h"
 #include "common_timer_manager.h"
 #include "common_file_tools.h"
 
-#include "ace/Dirent_Selector.h"
-#include "ace/Log_Msg.h"
+#include "rpg_common.h"
+#include "rpg_common_macros.h"
+
+#include "rpg_dice.h"
+
+#include "rpg_sound_common_tools.h"
 
 int
 RPG_Sound_Event_Manager::dirent_selector(const dirent* entry_in)
@@ -89,32 +89,31 @@ RPG_Sound_Event_Manager::~RPG_Sound_Event_Manager()
 }
 
 void
-RPG_Sound_Event_Manager::init(const std::string& repository_in,
-                              const bool& useCD_in)
+RPG_Sound_Event_Manager::init (const std::string& repository_in,
+                               const bool& useCD_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Sound_Event_Manager::init"));
+  RPG_TRACE (ACE_TEXT ("RPG_Sound_Event_Manager::init"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  ACE_Guard<ACE_Thread_Mutex> aGuard (myLock);
 
   // sanity check(s)
   std::string path = repository_in;
-	if (!path.empty())
-	{
-   path += ACE_DIRECTORY_SEPARATOR_STR_A;
-   path += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_AMBIENT_SUB);
-	} // end IF
+  if (!path.empty ())
+  {
+    path += ACE_DIRECTORY_SEPARATOR_STR_A;
+    path += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_AMBIENT_SUB);
+  } // end IF
 
   // sanity check(s)
-  if (!RPG_Common_File_Tools::isDirectory(path))
+  if (!Common_File_Tools::isDirectory (path))
   {
     // re-try with resolved path
-    std::string resolved_path = RPG_Common_File_Tools::realPath(path);
-    if (!RPG_Common_File_Tools::isDirectory(resolved_path))
+    std::string resolved_path = Common_File_Tools::realPath (path);
+    if (!Common_File_Tools::isDirectory (resolved_path))
     {
-      ACE_DEBUG((LM_ERROR,
-                  ACE_TEXT("invalid argument \"%s\": not a directory, aborting\n"),
-                  ACE_TEXT(path.c_str())));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid argument \"%s\": not a directory, aborting\n"),
+                  ACE_TEXT (path.c_str ())));
       return;
     } // end IF
     path = resolved_path;
@@ -148,42 +147,41 @@ RPG_Sound_Event_Manager::fini()
 }
 
 void
-RPG_Sound_Event_Manager::start()
+RPG_Sound_Event_Manager::start ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Sound_Event_Manager::start"));
+  RPG_TRACE (ACE_TEXT ("RPG_Sound_Event_Manager::start"));
 
   // sanity check: playing ?
   if (myTimerID != -1)
   {
-    cancel();
-    stop();
+    cancel ();
+    stop ();
   } // end IF
-  ACE_ASSERT(myTimerID == -1);
+  ACE_ASSERT (myTimerID == -1);
 
-  ACE_Event_Handler* timer_handler = NULL;
-  ACE_NEW_NORETURN(timer_handler,
-                   RPG_Common_TimerHandler(this));
-  if (!timer_handler)
+  ACE_Event_Handler* timer_handler_p = NULL;
+  ACE_NEW_NORETURN (timer_handler_p,
+                    Common_TimerHandler (this));
+  if (!timer_handler_p)
   {
-    ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate RPG_Common_TimerHandler, aborting\n")));
-
+    ACE_DEBUG ((LM_CRITICAL,
+                ACE_TEXT ("failed to allocate RPG_Common_TimerHandler, aborting\n")));
     return;
   } // end IF
 
   // *NOTE*: this is a fire-and-forget API (assumes resp. for timer_handler)...
   myTimerID =
-    RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(timer_handler,            // event handler handle
-                                                            NULL,                     // ACT
-                                                            RPG_COMMON_TIME_POLICY(), // expire immediately
-                                                            ACE_Time_Value::zero);    // one-shot
+    COMMON_TIMERMANAGER_SINGLETON::instance ()->schedule (timer_handler_p,       // event handler handle
+                                                          NULL,                  // ACT
+                                                          COMMON_TIME_POLICY (), // expire immediately
+                                                          ACE_Time_Value::zero); // one-shot
   if (myTimerID == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to schedule timer, aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to schedule timer, aborting\n")));
 
     // clean up
-    delete timer_handler;
+    delete timer_handler_p;
 
     return;
   } // end IF
@@ -319,42 +317,39 @@ RPG_Sound_Event_Manager::handleTimeout(const void* act_in)
     std::advance(iterator, roll_result.front() - 1);
 
     myTrackOrChannel =
-        RPG_Sound_Common_Tools::play(*iterator,
-                                     RPG_SOUND_AMBIENT_DEF_VOLUME,
-                                     length);
+      RPG_Sound_Common_Tools::play (*iterator,
+                                    RPG_SOUND_AMBIENT_DEF_VOLUME,
+                                    length);
     if (myTrackOrChannel == -1)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Sound_Common_Tools::play(\"%s\"), returning"),
-                 ACE_TEXT((*iterator).c_str())));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to RPG_Sound_Common_Tools::play(\"%s\"), returning"),
+                  ACE_TEXT ((*iterator).c_str ())));
       return;
     } // end IF
   } // end ELSE
-  ACE_ASSERT(length != ACE_Time_Value::max_time);
+  ACE_ASSERT (length != ACE_Time_Value::max_time);
 
-  ACE_Event_Handler* timer_handler = NULL;
-  ACE_NEW_NORETURN(timer_handler,
-                   RPG_Common_TimerHandler(this, true));
-  if (!timer_handler)
+  ACE_Event_Handler* timer_handler_p = NULL;
+  ACE_NEW_NORETURN (timer_handler_p,
+                    Common_TimerHandler (this, true));
+  if (!timer_handler_p)
   {
-    ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate RPG_Common_TimerHandler, returning")));
-
+    ACE_DEBUG ((LM_CRITICAL,
+                ACE_TEXT ("failed to allocate RPG_Common_TimerHandler, returning")));
     return;
   } // end IF
 
   // *NOTE*: this is a fire-and-forget API (assumes resp. for timer_handler)...
   myTimerID =
-		RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(timer_handler,                     // event handler handle
-                                                            NULL,                              // ACT
-                                                            RPG_COMMON_TIME_POLICY() + length, // wakeup time
-                                                            ACE_Time_Value::zero);             // interval: one-shot
+    COMMON_TIMERMANAGER_SINGLETON::instance ()->schedule (timer_handler_p,                // event handler handle
+                                                          NULL,                           // ACT
+                                                          COMMON_TIME_POLICY () + length, // wakeup time
+                                                          ACE_Time_Value::zero);          // interval: one-shot
   if (myTimerID == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to schedule timer, aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to schedule timer, aborting\n")));
     return;
   } // end IF
 }
@@ -485,23 +480,24 @@ RPG_Sound_Event_Manager::initCD(const int& drive_in)
 void
 RPG_Sound_Event_Manager::cancel(const bool& lockedAccess_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Sound_Event_Manager::cancel"));
+  RPG_TRACE (ACE_TEXT ("RPG_Sound_Event_Manager::cancel"));
 
   if (lockedAccess_in)
-    myLock.acquire();
+    myLock.acquire ();
 
   // sanity check
   if (myTimerID == -1)
   {
     if (lockedAccess_in)
-      myLock.release();
+      myLock.release ();
 
     return; // nothing to do...
   } // end IF
 
   // cancel corresponding activation timer
-  const void* act = NULL;
-  if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myTimerID, &act) <= 0)
+  const void* act_p = NULL;
+  if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (myTimerID,
+                                                          &act_p) <= 0)
   {
     //ACE_DEBUG((LM_ERROR,
     //           ACE_TEXT("failed to cancel timer (ID: %d), continuing\n"),
@@ -509,12 +505,12 @@ RPG_Sound_Event_Manager::cancel(const bool& lockedAccess_in)
   } // end IF
   else
   {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("cancelled timer (ID: %d)\n"),
-               myTimerID));
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("cancelled timer (ID: %d)\n"),
+                myTimerID));
   } // end ELSE
   myTimerID = -1;
 
   if (lockedAccess_in)
-    myLock.release();
+    myLock.release ();
 }

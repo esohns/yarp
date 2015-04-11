@@ -21,31 +21,33 @@
 #ifndef RPG_NET_STREAM_MESSAGEALLOCATOR_H
 #define RPG_NET_STREAM_MESSAGEALLOCATOR_H
 
-#include "rpg_net_exports.h"
-#include "rpg_net_message.h"
-#include "rpg_net_sessionmessage.h"
+#include "ace/Global_Macros.h"
 
-#include <rpg_stream_messageallocatorheap_base.h>
+#include "stream_messageallocatorheap_base.h"
+
+#include "net_message.h"
+#include "net_sessionmessage.h"
+
+#include "rpg_net_exports.h"
 
 // forward declarations
 class Stream_AllocatorHeap;
 
 class RPG_Net_Export RPG_Net_StreamMessageAllocator
- : public RPG_Stream_MessageAllocatorHeapBase<RPG_Net_Message,
-                                              RPG_Net_SessionMessage>
+ : public Stream_MessageAllocatorHeapBase_T<Net_Message,
+                                            Net_SessionMessage>
 {
  public:
-  RPG_Net_StreamMessageAllocator(const unsigned long&,       // total number of concurrent messages
-                                 RPG_Stream_AllocatorHeap*); // (heap) memory allocator...
-  virtual ~RPG_Net_StreamMessageAllocator();
+  RPG_Net_StreamMessageAllocator (unsigned int,           // total number of concurrent messages
+                                  Stream_AllocatorHeap*); // (heap) memory allocator...
+  virtual ~RPG_Net_StreamMessageAllocator ();
 
  private:
-  typedef RPG_Stream_MessageAllocatorHeapBase<RPG_Net_Message,
-                                              RPG_Net_SessionMessage> inherited;
+  typedef Stream_MessageAllocatorHeapBase_T<Net_Message,
+                                            Net_SessionMessage> inherited;
 
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamMessageAllocator(const RPG_Net_StreamMessageAllocator&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_StreamMessageAllocator& operator=(const RPG_Net_StreamMessageAllocator&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_StreamMessageAllocator (const RPG_Net_StreamMessageAllocator&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_StreamMessageAllocator& operator=(const RPG_Net_StreamMessageAllocator&));
 };
 
 #endif

@@ -21,19 +21,19 @@
 #ifndef RPG_NET_SERVER_ASYNCHLISTENER_H
 #define RPG_NET_SERVER_ASYNCHLISTENER_H
 
-#include "rpg_net_server_exports.h"
-#include "rpg_net_server_ilistener.h"
-
-#include "rpg_net_tcpconnection.h"
-
-#include "rpg_common_idumpstate.h"
-
 #include "ace/Global_Macros.h"
 #include "ace/Asynch_Acceptor.h"
 #include "ace/Singleton.h"
 
+#include "common_idumpstate.h"
+
+#include "net_tcpconnection.h"
+
+#include "rpg_net_server_exports.h"
+#include "rpg_net_server_ilistener.h"
+
 class RPG_Net_Server_Export RPG_Net_Server_AsynchListener
- : public ACE_Asynch_Acceptor<RPG_Net_AsynchTCPConnection>,
+ : public ACE_Asynch_Acceptor<Net_AsynchTCPConnection>,
    public RPG_Net_Server_IListener
 {
   // singleton needs access to the ctor/dtors
@@ -42,7 +42,7 @@ class RPG_Net_Server_Export RPG_Net_Server_AsynchListener
 
  public:
   // override default creation strategy
-  virtual RPG_Net_AsynchTCPConnection* make_handler (void);
+  virtual Net_AsynchTCPConnection* make_handler (void);
   // override default accept strategy
   virtual int validate_connection(const ACE_Asynch_Accept::Result&, // result
                                   const ACE_INET_Addr&,             // remote address
@@ -55,17 +55,17 @@ class RPG_Net_Server_Export RPG_Net_Server_AsynchListener
                     bool = false);  // use loopback interface ?
   const bool isInitialized() const;
 
-  // implement RPG_Common_IControl
+  // implement Common_IControl
   // *WARNING*: this API is NOT re-entrant !
   virtual void start();
-  virtual void stop(const bool& = true); // locked access ?
+  virtual void stop(bool = true); // locked access ?
   virtual bool isRunning() const;
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
  private:
-  typedef ACE_Asynch_Acceptor<RPG_Net_AsynchTCPConnection> inherited;
+  typedef ACE_Asynch_Acceptor<Net_AsynchTCPConnection> inherited;
 
   RPG_Net_Server_AsynchListener();
   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Server_AsynchListener(const RPG_Net_Server_AsynchListener&));

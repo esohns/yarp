@@ -21,67 +21,69 @@
 #ifndef RPG_NET_PROTOCOL_MODULE_IRCPARSER_H
 #define RPG_NET_PROTOCOL_MODULE_IRCPARSER_H
 
+#include "ace/Global_Macros.h"
+#include "ace/Synch_Traits.h"
+
+#include "common.h"
+
+#include "stream_streammodule_base.h"
+#include "stream_task_base_synch.h"
+
+#include "rpg_net_protocol_common.h"
 #include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_IRCparser_driver.h"
 
-#include "rpg_stream_task_base_synch.h"
-#include "rpg_stream_streammodule_base.h"
-
-#include "rpg_common.h"
-
-#include <ace/Global_Macros.h>
-#include <ace/Synch_Traits.h>
-
 // forward declaration(s)
-class RPG_Stream_IAllocator;
+class Stream_IAllocator;
 class RPG_Net_Protocol_SessionMessage;
 class RPG_Net_Protocol_Message;
 
 class RPG_Net_Protocol_Module_IRCParser
- : public RPG_Stream_TaskBaseSynch<RPG_Common_TimePolicy_t,
-                                   RPG_Net_Protocol_SessionMessage,
-                                   RPG_Net_Protocol_Message>
+ : public Stream_TaskBaseSynch_T<Common_TimePolicy_t,
+                                 RPG_Net_Protocol_SessionMessage,
+                                 RPG_Net_Protocol_Message>
 {
  public:
-  RPG_Net_Protocol_Module_IRCParser();
-  virtual ~RPG_Net_Protocol_Module_IRCParser();
+  RPG_Net_Protocol_Module_IRCParser ();
+  virtual ~RPG_Net_Protocol_Module_IRCParser ();
 
   // configuration / initialization
-  const bool init(RPG_Stream_IAllocator*,                             // message allocator
-                  const bool& = RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES, // crunch messages ?
-                  const bool& = RPG_NET_PROTOCOL_DEF_TRACE_SCANNING,  // debug scanner ?
-                  const bool& = RPG_NET_PROTOCOL_DEF_TRACE_PARSING);  // debug parser ?
+  bool initialize (Stream_IAllocator*,                          // message allocator
+                   bool = RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES, // crunch messages ?
+                   bool = RPG_NET_PROTOCOL_DEF_TRACE_SCANNING,  // debug scanner ?
+                   bool = RPG_NET_PROTOCOL_DEF_TRACE_PARSING);  // debug parser ?
 
   // implement (part of) Stream_ITaskBase
-  virtual void handleDataMessage(RPG_Net_Protocol_Message*&, // data message handle
-                                 bool&);                     // return value: pass message downstream ?
+  virtual void handleDataMessage (RPG_Net_Protocol_Message*&, // data message handle
+                                  bool&);                     // return value: pass message downstream ?
 
  private:
-  typedef RPG_Stream_TaskBaseSynch<RPG_Common_TimePolicy_t,
-                                   RPG_Net_Protocol_SessionMessage,
-                                   RPG_Net_Protocol_Message> inherited;
+  typedef Stream_TaskBaseSynch_T<Common_TimePolicy_t,
+                                 RPG_Net_Protocol_SessionMessage,
+                                 RPG_Net_Protocol_Message> inherited;
 
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCParser(const RPG_Net_Protocol_Module_IRCParser&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCParser& operator=(const RPG_Net_Protocol_Module_IRCParser&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Module_IRCParser (const RPG_Net_Protocol_Module_IRCParser&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Module_IRCParser& operator=(const RPG_Net_Protocol_Module_IRCParser&));
 
   // helper methods
-  RPG_Net_Protocol_Message* allocateMessage(const unsigned long&); // requested size
+  RPG_Net_Protocol_Message* allocateMessage (unsigned int); // requested size
 
   // message allocator
-  RPG_Stream_IAllocator*           myAllocator;
+  Stream_IAllocator*               myAllocator;
 
   // driver
-  RPG_Net_Protocol_IRCParserDriver myDriver;
   bool                             myDebugScanner;
   bool                             myDebugParser;
+  RPG_Net_Protocol_IRCParserDriver myDriver;
 
   bool                             myCrunchMessages;
   bool                             myIsInitialized;
 };
 
 // declare module
-DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                       // task synch type
-                             RPG_Common_TimePolicy_t,            // time policy
-                             RPG_Net_Protocol_Module_IRCParser); // writer type
+DATASTREAM_MODULE_INPUT_ONLY (ACE_MT_SYNCH,                       // task synch type
+                              Common_TimePolicy_t,                // time policy
+                              RPG_Net_Protocol_Configuration,     // configuration type
+                              RPG_Net_Protocol_Module_IRCParser); // writer type
 
 #endif

@@ -21,36 +21,42 @@
 #ifndef RPG_NET_PROTOCOL_COMMON_H
 #define RPG_NET_PROTOCOL_COMMON_H
 
-#include <string>
-#include <set>
-#include <vector>
-#include <map>
 #include <bitset>
+#include <map>
+#include <set>
+#include <string>
+#include <vector>
 
-#include "ace/Time_Value.h"
 #include "ace/Date_Time.h"
+#include "ace/Module.h"
 #include "ace/Singleton.h"
 #include "ace/Synch.h"
-#include "ace/Module.h"
+#include "ace/Time_Value.h"
 
 #include "common.h"
+#include "common_inotify.h"
 
-#include "rpg_net_connection_manager.h"
-#include "rpg_net_inotify.h"
-#include "rpg_net_stream_common.h"
+#include "stream_common.h"
+#include "stream_session_data_base.h"
+
+#include "net_configuration.h"
+#include "net_connection_manager.h"
+#include "net_iconnectionmanager.h"
+#include "net_itransportlayer.h"
+#include "net_sessionmessage.h"
 
 #include "rpg_net_protocol_exports.h"
 #include "rpg_net_protocol_IRCmessage.h"
 
 // forward declaration(s)
 class ACE_Notification_Strategy;
-class RPG_Stream_IAllocator;
-class RPG_Stream_Module;
-template <typename ConfigType,
-          typename StatisticsContainerType> class RPG_Net_Connection_Manager;
+class Stream_IAllocator;
+class Stream_Module;
+//template <typename ConfigType,
+//          typename StatisticsContainerType> class RPG_Net_Connection_Manager;
 
-typedef ACE_Module<ACE_MT_SYNCH,
-                   Common_TimePolicy_t> MODULE_TYPE;
+//typedef ACE_Module<ACE_MT_SYNCH,
+//                   Common_TimePolicy_t> MODULE_TYPE;
 
 struct RPG_Net_Protocol_IRCLoginOptions
 {
@@ -176,45 +182,45 @@ struct RPG_Net_Protocol_PhoneBook
   RPG_Net_Protocol_Servers_t  servers;
 };
 
-struct RPG_Net_Protocol_RuntimeStatistic
+typedef Stream_Statistic_t RPG_Net_Protocol_RuntimeStatistic;
+
+struct RPG_Net_Protocol_SessionData
 {
-  unsigned int numDataMessages; // (protocol) messages
-  double       numBytes;        // amount of processed data
-
-  // convenience
-  inline RPG_Net_Protocol_RuntimeStatistic operator+=(const RPG_Net_Protocol_RuntimeStatistic& rhs_in)
-  {
-    numDataMessages += rhs_in.numDataMessages;
-    numBytes += rhs_in.numBytes;
-
-    return *this;
-  };
-};
-
-struct RPG_Net_Protocol_ConfigPOD
-{
-  // ********** protocol data ***********
-  unsigned int                      clientPingInterval; // used by the server...
-  RPG_Net_Protocol_IRCLoginOptions  loginOptions;
-  // ******* stream / socket data *******
-  RPG_Net_StreamSocketConfiguration streamSocketConfiguration;
-  bool                              crunchMessageBuffers;
-  bool                              debugScanner;
-  bool                              debugParser;
-  unsigned int                      statisticsReportingInterval;
-  // ***** runtime statistics data ******
   RPG_Net_Protocol_RuntimeStatistic currentStatistics;
   ACE_Time_Value                    lastCollectionTimestamp;
 };
 
-typedef RPG_Net_INotify<RPG_Net_Protocol_IRCMessage> RPG_Net_Protocol_INotify_t;
+typedef Stream_SessionDataBase_T<RPG_Net_Protocol_SessionData> RPG_Net_Protocol_StreamSessionData_t;
 
-typedef RPG_Net_Connection_Manager<RPG_Net_Protocol_ConfigPOD,
-                                   RPG_Net_Protocol_RuntimeStatistic> RPG_Net_Protocol_Connection_Manager_t;
+struct RPG_Net_Protocol_Configuration
+{
+  // ********** protocol data ***********
+  unsigned int                     clientPingInterval; // used by the server...
+  RPG_Net_Protocol_IRCLoginOptions loginOptions;
+  // ******* socket / stream data *******
+  Net_SocketConfiguration_t        socketConfiguration;
+  Stream_IAllocator*               messageAllocator;
+  bool                             crunchMessageBuffers;
+  bool                             debugScanner;
+  bool                             debugParser;
+  unsigned int                     statisticReportingInterval;
+};
+
+typedef Common_INotify_T<Stream_ModuleConfiguration_t,
+                         RPG_Net_Protocol_IRCMessage> RPG_Net_Protocol_INotification_t;
+
+typedef Net_IConnectionManager_T<RPG_Net_Protocol_Configuration,
+                                 Net_UserData_t,
+                                 Stream_Statistic_t,
+                                 Net_IInetTransportLayer_t> RPG_Net_Protocol_IConnection_Manager_t;
+typedef Net_Connection_Manager_T<RPG_Net_Protocol_Configuration,
+                                 Net_UserData_t,
+                                 Stream_Statistic_t,
+                                 Net_IInetTransportLayer_t> RPG_Net_Protocol_Connection_Manager_t;
 typedef ACE_Singleton<RPG_Net_Protocol_Connection_Manager_t,
                       ACE_Recursive_Thread_Mutex> RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON;
-RPG_PROTOCOL_SINGLETON_DECLARE(ACE_Singleton,
-                               RPG_Net_Protocol_Connection_Manager_t,
-                               ACE_Recursive_Thread_Mutex)
+RPG_PROTOCOL_SINGLETON_DECLARE (ACE_Singleton,
+                                RPG_Net_Protocol_Connection_Manager_t,
+                                ACE_Recursive_Thread_Mutex);
 
 #endif

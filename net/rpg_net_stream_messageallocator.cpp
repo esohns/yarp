@@ -21,19 +21,22 @@
 
 #include "rpg_net_stream_messageallocator.h"
 
-#include <rpg_common_macros.h>
+#include "stream_allocatorheap.h"
 
-RPG_Net_StreamMessageAllocator::RPG_Net_StreamMessageAllocator(const unsigned long& maxNumMessages_in,
-                                                               RPG_Stream_AllocatorHeap* allocator_in)
- : inherited(maxNumMessages_in,
-             allocator_in)
+#include "rpg_common_macros.h"
+
+RPG_Net_StreamMessageAllocator::RPG_Net_StreamMessageAllocator (unsigned int maxNumMessages_in,
+                                                                Stream_AllocatorHeap* allocator_in)
+ : inherited (maxNumMessages_in,
+              allocator_in,
+              true)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_StreamMessageAllocator::RPG_Net_StreamMessageAllocator"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_StreamMessageAllocator::RPG_Net_StreamMessageAllocator"));
 
 }
 
-RPG_Net_StreamMessageAllocator::~RPG_Net_StreamMessageAllocator()
+RPG_Net_StreamMessageAllocator::~RPG_Net_StreamMessageAllocator ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_StreamMessageAllocator::~RPG_Net_StreamMessageAllocator"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_StreamMessageAllocator::~RPG_Net_StreamMessageAllocator"));
 
 }

@@ -21,7 +21,7 @@
 #ifndef RPG_NET_PACKET_HEADERS_H
 #define RPG_NET_PACKET_HEADERS_H
 
-#include <ace/OS.h>
+#include "ace/OS.h"
 
 #ifdef _MSC_VER
 #pragma pack(push, 1)

@@ -21,30 +21,31 @@
 #ifndef RPG_CLIENT_COMMON_H
 #define RPG_CLIENT_COMMON_H
 
-#include "rpg_engine_common.h"
-#include "rpg_engine.h"
-
-#include "rpg_graphics_common.h"
-#include "rpg_graphics_iwindow_base.h"
-#include "rpg_graphics_cursor.h"
-#include "rpg_graphics_style.h"
-
-#include "rpg_sound_common.h"
-#include "rpg_sound_event.h"
-
-#include "rpg_map_common.h"
-
-#include "glade/glade.h"
-
-#include "gtk/gtk.h"
+#include <deque>
+#include <map>
+#include <string>
 
 #include "SDL.h"
 
 #include "ace/Synch.h"
 
-#include <map>
-#include <deque>
-#include <string>
+#include "glade/glade.h"
+#include "gtk/gtk.h"
+
+#include "common_ui_common.h"
+
+#include "rpg_map_common.h"
+
+#include "rpg_engine.h"
+#include "rpg_engine_common.h"
+
+#include "rpg_sound_common.h"
+#include "rpg_sound_event.h"
+
+#include "rpg_graphics_common.h"
+#include "rpg_graphics_cursor.h"
+#include "rpg_graphics_iwindow_base.h"
+#include "rpg_graphics_style.h"
 
 // forward declaration(s)
 class RPG_Client_Engine;
@@ -65,52 +66,48 @@ struct RPG_Client_State_t
 struct RPG_Client_GTK_CBData_t
 {
  inline RPG_Client_GTK_CBData_t()
-  : lock(NULL,
-         NULL),
-    do_hover(true),
-    hover_time(0),
-    //GTK_time(0),
-    //GTK_done(false),
-    XML(NULL),
-//		log_stack(),
-    entity_filter(NULL),
-    map_filter(NULL),
-    screen(NULL),
-    event_timer(NULL),
-    client_engine(NULL),
-//    schema_repository(),
-//    entity(),
-    level_engine(NULL)//,
-//		level_metadata(),
-//    map_configuration()
+  : GTKState ()
+  , doHover (true)
+  , hoverTime (0)
+  , logStack ()
+  , entityFilter (NULL)
+  , mapFilter (NULL)
+  , savedStateFilter (NULL)
+  , screen (NULL)
+  , screenLock (NULL,
+                NULL)
+  , eventTimer (NULL)
+  , clientEngine (NULL)
+  , schemaRepository ()
+  , entity ()
+  , levelEngine (NULL)
+  , levelMetadata ()
+  , mapConfiguration ()
  { };
 
-  ACE_Recursive_Thread_Mutex        lock;
-  bool                              do_hover;
-  unsigned int                      hover_time;
-  //unsigned int                      GTK_time;
-  //bool                              GTK_done;
-  GladeXML*                         XML;
-	RPG_Client_MessageStack_t         log_stack;
-  GtkFileFilter*                    entity_filter;
-  GtkFileFilter*                    map_filter;
-  GtkFileFilter*                    savedstate_filter;
+  Common_UI_GTKState                GTKState;
+  bool                              doHover;
+  unsigned int                      hoverTime;
+  RPG_Client_MessageStack_t         logStack;
+  GtkFileFilter*                    entityFilter;
+  GtkFileFilter*                    mapFilter;
+  GtkFileFilter*                    savedStateFilter;
   SDL_Surface*                      screen;
-  ACE_Thread_Mutex                  screen_lock; // video access
-  SDL_TimerID                       event_timer;
-  RPG_Client_Engine*                client_engine;
-  std::string                       schema_repository;
+  ACE_Thread_Mutex                  screenLock; // video access
+  SDL_TimerID                       eventTimer;
+  RPG_Client_Engine*                clientEngine;
+  std::string                       schemaRepository;
   RPG_Engine_Entity_t               entity;
-  RPG_Engine*                       level_engine;
-  RPG_Engine_LevelMetaData_t        level_metadata;
-  RPG_Map_FloorPlan_Configuration_t map_configuration;
+  RPG_Engine*                       levelEngine;
+  RPG_Engine_LevelMetaData_t        levelMetadata;
+  RPG_Map_FloorPlan_Configuration_t mapConfiguration;
 };
 
 struct RPG_Client_SDL_InputConfiguration_t
 {
-	bool use_UNICODE;
+  bool use_UNICODE;
   int  key_repeat_initial_delay;
-	int  key_repeat_interval;
+  int  key_repeat_interval;
 };
 
 struct RPG_Client_AudioConfiguration_t
@@ -139,8 +136,8 @@ struct RPG_Client_Configuration_t
   unsigned int                          num_dispatch_threads; // 1: don't use a threadpool
   // *** UI ***
   std::string                           glade_file;
-	// *** input ***
-	RPG_Client_SDL_InputConfiguration_t   input_configuration;
+  // *** input ***
+  RPG_Client_SDL_InputConfiguration_t   input_configuration;
   // *** sound ***
   RPG_Client_AudioConfiguration_t       audio_configuration;
   // *** graphics ***
@@ -253,5 +250,7 @@ typedef RPG_Client_SeenPositions_t::iterator RPG_Client_SeenPositionsIterator_t;
 
 typedef std::vector<SDL_Surface*> RPG_Client_BlendingMaskCache_t;
 typedef RPG_Client_BlendingMaskCache_t::iterator RPG_Client_BlendingMaskCacheIterator_t;
+
+typedef Common_UI_IGTK_t RPG_Client_IWidgetUI_t;
 
 #endif

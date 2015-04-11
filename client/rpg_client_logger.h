@@ -21,11 +21,11 @@
 #ifndef RPG_CLIENT_LOGGER_H
 #define RPG_CLIENT_LOGGER_H
 
-#include "rpg_client_exports.h"
-#include "rpg_client_common.h"
+#include "ace/Log_Msg_Backend.h"
+#include "ace/Log_Record.h"
 
-#include <ace/Log_Record.h>
-#include <ace/Log_Msg_Backend.h>
+#include "rpg_client_common.h"
+#include "rpg_client_exports.h"
 
 // forward declaration(s)
 class ACE_Recursive_Thread_Mutex;
@@ -37,25 +37,25 @@ class RPG_Client_Export RPG_Client_Logger
  : public ACE_Log_Msg_Backend
 {
  public:
-  RPG_Client_Logger(RPG_Client_MessageStack_t*,   // message stack
-                    ACE_Recursive_Thread_Mutex*); // synch lock
-  virtual ~RPG_Client_Logger();
+  RPG_Client_Logger (RPG_Client_MessageStack_t*, // message stack
+                     ACE_Thread_Mutex*);         // synch lock
+  virtual ~RPG_Client_Logger ();
 
   // implement ACE_Log_Msg_Backend interface
-  virtual int open(const ACE_TCHAR*); // logger key
-  virtual int reset(void);
-  virtual int close(void);
-  virtual ssize_t log(ACE_Log_Record&); // record
+  virtual int open (const ACE_TCHAR*); // logger key
+  virtual int reset (void);
+  virtual int close (void);
+  virtual ssize_t log (ACE_Log_Record&); // record
 
  private:
   typedef ACE_Log_Msg_Backend inherited;
 
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Logger());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Logger(const RPG_Client_Logger&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Logger& operator=(const RPG_Client_Logger&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Logger ());
+  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Logger (const RPG_Client_Logger&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Logger& operator=(const RPG_Client_Logger&));
 
-  RPG_Client_MessageStack_t*  myMessageStack;
-  ACE_Recursive_Thread_Mutex* myLock;
+  RPG_Client_MessageStack_t* myMessageStack;
+  ACE_Thread_Mutex*          myLock;
 };
 
 #endif

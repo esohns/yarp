@@ -19,57 +19,59 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-// *NOTE*: need this to import correct VERSION !
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <string>
+
+#include "ace/ACE.h"
+#include "ace/Get_Opt.h"
+#include "ace/High_Res_Timer.h"
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
+#include "ace/Log_Msg.h"
+
+#include "common_file_tools.h"
+#include "common_tools.h"
+
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
 #endif
 
-#include "rpg_engine_defines.h"
-#include "rpg_engine_common.h"
-#include "rpg_engine_common_tools.h"
+#include "rpg_dice.h"
+#include "rpg_dice_common_tools.h"
 
-#include "rpg_combat_common_tools.h"
+#include "rpg_common_file_tools.h"
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
 
-#include "rpg_monster_defines.h"
-#include "rpg_monster.h"
-#include "rpg_monster_dictionary.h"
-#include "rpg_monster_common_tools.h"
+#include "rpg_magic_common_tools.h"
+#include "rpg_magic_defines.h"
+#include "rpg_magic_dictionary.h"
+
+#include "rpg_item_common_tools.h"
+#include "rpg_item_defines.h"
+#include "rpg_item_dictionary.h"
+
+#include "rpg_character_common_tools.h"
+#include "rpg_character_defines.h"
+#include "rpg_character_skills_common_tools.h"
 
 #include "rpg_player.h"
 #include "rpg_player_common.h"
 #include "rpg_player_common_tools.h"
 
-#include "rpg_character_defines.h"
-#include "rpg_character_common_tools.h"
-#include "rpg_character_skills_common_tools.h"
+#include "rpg_monster.h"
+#include "rpg_monster_common_tools.h"
+#include "rpg_monster_defines.h"
+#include "rpg_monster_dictionary.h"
 
-#include "rpg_item_defines.h"
-#include "rpg_item_dictionary.h"
-#include "rpg_item_common_tools.h"
+#include "rpg_combat_common_tools.h"
 
-#include "rpg_magic_defines.h"
-#include "rpg_magic_dictionary.h"
-#include "rpg_magic_common_tools.h"
-
-#include "rpg_dice.h"
-#include "rpg_dice_common_tools.h"
-
-#include "rpg_common_macros.h"
-#include "rpg_common_tools.h"
-#include "rpg_common_file_tools.h"
-
-#include "ace/ACE.h"
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-#include "ace/Init_ACE.h"
-#endif
-#include "ace/Log_Msg.h"
-#include "ace/Get_Opt.h"
-#include "ace/High_Res_Timer.h"
-
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <string>
+#include "rpg_engine_common.h"
+#include "rpg_engine_common_tools.h"
+#include "rpg_engine_defines.h"
 
 #define COMBAT_SIMULATOR_DEF_NUM_BATTLES   1
 #define COMBAT_SIMULATOR_DEF_NUM_FOES      0 // random
@@ -86,10 +88,10 @@ do_printUsage(const std::string& programName_in)
   std::cout.setf(ios::boolalpha);
 
   std::string configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-																													 true);
-#if defined(DEBUG_DEBUGGER)
-  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory();
 #endif // #ifdef BASEDIR
 
   std::cout << ACE_TEXT("usage: ")
@@ -110,7 +112,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("item");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -122,7 +124,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("character");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("monster");
@@ -146,7 +148,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("magic");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -183,9 +185,9 @@ do_processArguments(const int& argc_in,
   RPG_TRACE(ACE_TEXT("::do_processArguments"));
 
   std::string configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                           true);
-#if defined(DEBUG_DEBUGGER)
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+#if defined (DEBUG_DEBUGGER)
   configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
 #endif // #ifdef BASEDIR
 
@@ -195,7 +197,7 @@ do_processArguments(const int& argc_in,
 
   magicDictionaryFilename_out   = configuration_path;
   magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR("magic");
   magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -203,7 +205,7 @@ do_processArguments(const int& argc_in,
 
   itemDictionaryFilename_out    = configuration_path;
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR("item");
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -211,7 +213,7 @@ do_processArguments(const int& argc_in,
 
   monsterDictionaryFilename_out = configuration_path;
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR("character");
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR("monster");
@@ -713,19 +715,19 @@ ACE_TMAIN(int argc_in,
     do_printUsage(std::string(ACE::basename(argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;
   } // end IF
 
   // step1b: validate arguments
-  if (!RPG_Common_File_Tools::isReadable(magic_dictionary_filename)   ||
-      !RPG_Common_File_Tools::isReadable(item_dictionary_filename)    ||
-      !RPG_Common_File_Tools::isReadable(monster_dictionary_filename))
+  if (!Common_File_Tools::isReadable (magic_dictionary_filename)  ||
+      !Common_File_Tools::isReadable (item_dictionary_filename)   ||
+      !Common_File_Tools::isReadable (monster_dictionary_filename))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid (XML) filename, aborting\n")));
@@ -734,10 +736,10 @@ ACE_TMAIN(int argc_in,
     do_printUsage(std::string(ACE::basename(argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -745,21 +747,21 @@ ACE_TMAIN(int argc_in,
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
-  if (!RPG_Common_Tools::initLogging(ACE::basename(argv_in[0]),   // program name
-                                     log_file,                    // logfile
-                                     false,                       // log to syslog ?
-                                     false,                       // trace messages ?
-                                     trace_information,           // debug messages ?
-                                     NULL))                       // logger
+  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]),   // program name
+                                        log_file,                    // logfile
+                                        false,                       // log to syslog ?
+                                        false,                       // trace messages ?
+                                        trace_information,           // debug messages ?
+                                        NULL))                       // logger
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_Tools::initLogging(), aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -771,29 +773,29 @@ ACE_TMAIN(int argc_in,
     do_printVersion(std::string(ACE::basename(argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
-  #if defined(ACE_WIN32) || defined(ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+  #if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
   #endif
 
     return EXIT_SUCCESS;
   } // end IF
 
   ACE_High_Res_Timer timer;
-  timer.start();
+  timer.start ();
 
   // step2: do actual work
-  do_work(magic_dictionary_filename,
-          item_dictionary_filename,
-          monster_dictionary_filename,
-          num_monster_types,
-          num_foes,
-          num_players,
-          num_battles,
-          stress_test);
+  do_work (magic_dictionary_filename,
+           item_dictionary_filename,
+           monster_dictionary_filename,
+           num_monster_types,
+           num_foes,
+           num_players,
+           num_battles,
+           stress_test);
 
-  timer.stop();
+  timer.stop ();
 
 //   // debug info
 //   std::string working_time_string;
@@ -806,11 +808,11 @@ ACE_TMAIN(int argc_in,
 //              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
 //              ACE_TEXT(working_time_string.c_str())));
 
-	// *PORTABILITY*: on Windows, need to fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-	if (ACE::fini() == -1)
-		ACE_DEBUG((LM_ERROR,
-							 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+  // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::fini () == -1)
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
   return EXIT_SUCCESS;

@@ -21,65 +21,63 @@
 #ifndef RPG_NET_PROTOCOL_STREAM_H
 #define RPG_NET_PROTOCOL_STREAM_H
 
-#include "rpg_net_protocol_exports.h"
+#include "ace/Global_Macros.h"
+#include "ace/Synch_Traits.h"
+
+#include "common.h"
+
+#include "stream_base.h"
+
+#include "rpg_net_protocol_common.h"
 #include "rpg_net_protocol_common_modules.h"
+#include "rpg_net_protocol_exports.h"
+#include "rpg_net_protocol_module_IRCparser.h"
 #include "rpg_net_protocol_module_IRCsplitter.h"
 #include "rpg_net_protocol_module_IRCstreamer.h"
-#include "rpg_net_protocol_module_IRCparser.h"
-
-#include "rpg_net_module_runtimestatistic.h"
-
-#include "rpg_common_istatistic.h"
-
-#include "rpg_stream_base.h"
-#include "rpg_stream_session_config_base.h"
-
-#include <ace/Global_Macros.h>
-#include <ace/Synch_Traits.h>
 
 // forward declaration(s)
-class RPG_Net_Protocol_SessionMessage;
 class RPG_Net_Protocol_Message;
 
 class RPG_Protocol_Export RPG_Net_Protocol_Stream
- : public RPG_Stream_Base<ACE_MT_SYNCH,
-                          RPG_Common_TimePolicy_t,
-                          RPG_Net_Protocol_ConfigPOD,
-                          RPG_Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD>,
-                          RPG_Net_Protocol_SessionMessage,
-                          RPG_Net_Protocol_Message>,
-   public RPG_Common_IStatistic<RPG_Net_Protocol_RuntimeStatistic>
+ : public Stream_Base_T<ACE_MT_SYNCH,
+                        Common_TimePolicy_t,
+                        Stream_State_t,
+                        RPG_Net_Protocol_RuntimeStatistic,
+                        RPG_Net_Protocol_SessionData,
+                        RPG_Net_Protocol_StreamSessionData_t,
+                        RPG_Net_Protocol_SessionMessage,
+                        RPG_Net_Protocol_Message>
 {
  public:
-  typedef RPG_Common_IStatistic<RPG_Net_Protocol_RuntimeStatistic> StatisticsInterface_Type;
+  RPG_Net_Protocol_Stream ();
+  virtual ~RPG_Net_Protocol_Stream ();
 
-  RPG_Net_Protocol_Stream();
-  virtual ~RPG_Net_Protocol_Stream();
+  // initialize stream
+  bool initialize (const RPG_Net_Protocol_Configuration&); // stream/module configuration
 
-  // init stream
-  bool init(const RPG_Net_Protocol_ConfigPOD&); // stream/module configuration
-
-  // implement RPG_Common_IStatistic
+  // implement Common_IStatistic_T
   // *NOTE*: delegate this to myRuntimeStatistic
-  virtual bool collect(RPG_Net_Protocol_RuntimeStatistic&) const; // return value: statistic data
+  virtual bool collect (RPG_Net_Protocol_RuntimeStatistic&); // return value: statistic data
   // this is just a dummy (use statisticsReportingInterval instead)
-  virtual void report() const;
+  virtual void report () const;
 
  private:
-  typedef RPG_Stream_Base<ACE_MT_SYNCH,
-                          RPG_Common_TimePolicy_t,
-                          RPG_Net_Protocol_ConfigPOD,
-                          RPG_Stream_SessionConfigBase<RPG_Net_Protocol_ConfigPOD>,
-                          RPG_Net_Protocol_SessionMessage,
-                          RPG_Net_Protocol_Message> inherited;
+  typedef Stream_Base_T<ACE_MT_SYNCH,
+                        Common_TimePolicy_t,
+                        Stream_State_t,
+                        RPG_Net_Protocol_RuntimeStatistic,
+                        RPG_Net_Protocol_SessionData,
+                        RPG_Net_Protocol_StreamSessionData_t,
+                        RPG_Net_Protocol_SessionMessage,
+                        RPG_Net_Protocol_Message> inherited;
 
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Stream());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Stream(const RPG_Net_Protocol_Stream&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Stream& operator=(const RPG_Net_Protocol_Stream&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Stream (const RPG_Net_Protocol_Stream&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Stream& operator=(const RPG_Net_Protocol_Stream&));
 
   // fini stream
   // *NOTE*: need this to clean up queued modules if something goes wrong during init() !
-  bool fini(const RPG_Net_Protocol_ConfigPOD&); // configuration
+  bool finalize (const RPG_Net_Protocol_Configuration&); // configuration
 
   // modules
   RPG_Net_Protocol_Module_IRCMarshal_Module       myIRCMarshal;

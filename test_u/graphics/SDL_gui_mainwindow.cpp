@@ -21,28 +21,30 @@
 
 #include "SDL_gui_mainwindow.h"
 
-#include "SDL_gui_defines.h"
-#include "SDL_gui_levelwindow_isometric.h"
-#include "SDL_gui_levelwindow_3d.h"
-
-#include "rpg_client_defines.h"
-
-#include "rpg_engine.h"
-
-#include "rpg_graphics_defines.h"
-#include "rpg_graphics_surface.h"
-#include "rpg_graphics_cursor_manager.h"
-#include "rpg_graphics_hotspot.h"
-#include "rpg_graphics_common_tools.h"
-#include "rpg_graphics_SDL_tools.h"
-
-#include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-#include "rpg_common_file_tools.h"
+#include <sstream>
 
 #include "ace/Log_Msg.h"
 
-#include <sstream>
+#include "common_file_tools.h"
+
+#include "rpg_common_defines.h"
+//#include "rpg_common_file_tools.h"
+#include "rpg_common_macros.h"
+
+#include "rpg_engine.h"
+
+#include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_cursor_manager.h"
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_hotspot.h"
+#include "rpg_graphics_surface.h"
+#include "rpg_graphics_SDL_tools.h"
+
+#include "rpg_client_defines.h"
+
+#include "SDL_gui_defines.h"
+#include "SDL_gui_levelwindow_3d.h"
+#include "SDL_gui_levelwindow_isometric.h"
 
 SDL_GUI_MainWindow::SDL_GUI_MainWindow(const RPG_Graphics_Size_t& size_in,
                                        const RPG_Graphics_GraphicTypeUnion& elementType_in,
@@ -92,8 +94,8 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::draw"));
 
   // sanity check(s)
-	SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-		                                              : myScreen);
+  SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
+                                                  : myScreen);
   ACE_ASSERT(target_surface);
   ACE_ASSERT(static_cast<int>(offsetX_in) <= target_surface->w);
   ACE_ASSERT(static_cast<int>(offsetY_in) <= target_surface->h);
@@ -106,14 +108,14 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
 
   lock();
 
-	// step2: draw title
+  // step2: draw title
   drawTitle(myTitleFont,
             myTitle,
             target_surface);
 
   // step3: fill central area
   SDL_Rect prev_clip_rect, clip_rect, dirty_region;
-	SDL_GetClipRect(target_surface, &prev_clip_rect);
+  SDL_GetClipRect (target_surface, &prev_clip_rect);
   clip_rect.x = static_cast<Sint16>(offsetX_in + myBorderLeft);
   clip_rect.y = static_cast<Sint16>(offsetY_in + myBorderTop);
   clip_rect.w = static_cast<Uint16>(target_surface->w               -
@@ -142,14 +144,14 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
     for (unsigned int j = (offsetX_in + myBorderLeft);
          j < (target_surface->w - myBorderRight);
          j += (*iterator).second->w)
-		{
+    {
       RPG_Graphics_Surface::put(std::make_pair(j,
                                                i),
                                 *(*iterator).second,
                                 target_surface,
                                 dirty_region);
-			invalidate(clip_rect);
-		} // end FOR
+      invalidate (clip_rect);
+    } // end FOR
   if (!SDL_SetClipRect(target_surface, &prev_clip_rect))
   {
     ACE_DEBUG((LM_ERROR,
@@ -290,7 +292,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         {
           std::ostringstream converter;
           converter << myScreenshotIndex++;
-          std::string dump_path = RPG_Common_File_Tools::getDumpDirectory();
+          std::string dump_path = Common_File_Tools::getDumpDirectory();
           dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
           dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_SCREENSHOT_DEF_PREFIX);
           dump_path += ACE_TEXT_ALWAYS_CHAR("_");

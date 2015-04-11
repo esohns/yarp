@@ -21,36 +21,37 @@
 
 #include "rpg_player_common_tools.h"
 
-#include "rpg_player_defines.h"
+#include <numeric>
+
+#include "ace/OS.h"
+#include "ace/Log_Msg.h"
+
+#include "rpg_dice.h"
+#include "rpg_dice_common.h"
+
+#include "common_file_tools.h"
+
+#include "rpg_common_defines.h"
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
+
+#include "rpg_magic_common_tools.h"
+#include "rpg_magic_defines.h"
 
 #include "rpg_item_armor.h"
 #include "rpg_item_commodity.h"
-#include "rpg_item_weapon.h"
-#include "rpg_item_dictionary.h"
-#include "rpg_item_instance_manager.h"
 #include "rpg_item_common_tools.h"
 #include "rpg_item_common_XML_tools.h"
+#include "rpg_item_dictionary.h"
+#include "rpg_item_instance_manager.h"
+#include "rpg_item_weapon.h"
 
-#include "rpg_magic_defines.h"
-#include "rpg_magic_common_tools.h"
-
-#include "rpg_character_common_tools.h"
 #include "rpg_character_class_common_tools.h"
+#include "rpg_character_common_tools.h"
 #include "rpg_character_skills_common_tools.h"
 #include "rpg_character_XML_tools.h"
 
-#include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-#include "rpg_common_tools.h"
-#include "rpg_common_file_tools.h"
-
-#include "rpg_dice_common.h"
-#include "rpg_dice.h"
-
-#include <ace/OS.h>
-#include <ace/Log_Msg.h>
-
-#include <numeric>
+#include "rpg_player_defines.h"
 
 RPG_Character_Race_t
 RPG_Player_Common_Tools::raceXMLTreeToRace(const RPG_Player_PlayerXML_XMLTree_Type::race_sequence& races_in)
@@ -569,7 +570,7 @@ RPG_Player_Common_Tools::getPlayerProfilesDirectory()
   RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::getPlayerProfilesDirectory"));
 
 #if defined(DEBUG_DEBUGGER)
-	std::string result = RPG_Common_File_Tools::getWorkingDirectory();
+	std::string result = Common_File_Tools::getWorkingDirectory();
 	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 	result += ACE_TEXT_ALWAYS_CHAR("engine");
 	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -580,16 +581,16 @@ RPG_Player_Common_Tools::getPlayerProfilesDirectory()
 	result += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILES_SUB);
 #endif
 
-  if (!RPG_Common_File_Tools::isDirectory(result))
+  if (!Common_File_Tools::isDirectory(result))
   {
-    if (!RPG_Common_File_Tools::createDirectory(result))
+    if (!Common_File_Tools::createDirectory(result))
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Common_File_Tools::createDirectory(\"%s\"), falling back\n"),
+                 ACE_TEXT("failed to Common_File_Tools::createDirectory(\"%s\"), falling back\n"),
                  ACE_TEXT(result.c_str())));
 
       // fallback
-      result = RPG_Common_File_Tools::getDumpDirectory();
+      result = Common_File_Tools::getDumpDirectory();
     } // end IF
     else
       ACE_DEBUG((LM_DEBUG,

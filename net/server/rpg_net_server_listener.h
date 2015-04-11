@@ -21,21 +21,21 @@
 #ifndef RPG_NET_SERVER_LISTENER_H
 #define RPG_NET_SERVER_LISTENER_H
 
+#include "ace/Acceptor.h"
+#include "ace/Global_Macros.h"
+#include "ace/Singleton.h"
+#include "ace/Synch.h"
+#include "ace/SOCK_Acceptor.h"
+
+#include "common_idumpstate.h"
+
+#include "net_tcpconnection.h"
+
 #include "rpg_net_server_exports.h"
 #include "rpg_net_server_ilistener.h"
 
-#include "rpg_net_tcpconnection.h"
-
-#include "rpg_common_idumpstate.h"
-
-#include "ace/Global_Macros.h"
-#include "ace/Acceptor.h"
-#include "ace/SOCK_Acceptor.h"
-#include "ace/Singleton.h"
-#include "ace/Synch.h"
-
 class RPG_Net_Server_Export RPG_Net_Server_Listener
- : public ACE_Acceptor<RPG_Net_TCPConnection,
+ : public ACE_Acceptor<Net_TCPConnection,
                        ACE_SOCK_ACCEPTOR>,
    public RPG_Net_Server_IListener
 {
@@ -55,17 +55,17 @@ class RPG_Net_Server_Export RPG_Net_Server_Listener
   // the return value will be returned from handle_input()."
   virtual int handle_accept_error(void);
 
-  // implement RPG_Common_IControl
+  // implement Common_IControl
   // *WARNING*: this API is NOT re-entrant !
   virtual void start();
-  virtual void stop(const bool& = true); // locked access ?
+  virtual void stop(bool = true); // locked access ?
   virtual bool isRunning() const;
 
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
  private:
-  typedef ACE_Acceptor<RPG_Net_TCPConnection,
+  typedef ACE_Acceptor<Net_TCPConnection,
                        ACE_SOCK_ACCEPTOR> inherited;
 
   RPG_Net_Server_Listener();
@@ -82,6 +82,8 @@ class RPG_Net_Server_Export RPG_Net_Server_Listener
 
 typedef ACE_Singleton<RPG_Net_Server_Listener,
                       ACE_Recursive_Thread_Mutex> RPG_NET_SERVER_LISTENER_SINGLETON;
-RPG_NET_SERVER_SINGLETON_DECLARE(ACE_Singleton, RPG_Net_Server_Listener, ACE_Recursive_Thread_Mutex);
+RPG_NET_SERVER_SINGLETON_DECLARE(ACE_Singleton,
+                                 RPG_Net_Server_Listener,
+                                 ACE_Recursive_Thread_Mutex);
 
 #endif

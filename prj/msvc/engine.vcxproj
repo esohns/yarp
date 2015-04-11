@@ -61,7 +61,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\3rd_party\bison;$(ProjectDir)..\..\chance;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\net\stream;$(ProjectDir)..\..\net;$(ProjectDir)..\..\net\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\3rd_party\bison;$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\modules\libACEStream\src;$(ProjectDir)..\..\modules\libACENetwork\src;$(ProjectDir)..\..\modules\libACENetwork\src\client;$(ProjectDir)..\..\chance;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\net\protocol;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_ENGINE_BUILD_DLL;RPG_GRAPHICS_HAS_DLL;RPG_PLAYER_HAS_DLL;RPG_MONSTER_HAS_DLL;RPG_CHARACTER_HAS_DLL;RPG_ITEM_HAS_DLL;RPG_COMMON_HAS_DLL;_SCL_SECURE_NO_WARNINGS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -110,7 +110,7 @@ popd</Command>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\3rd_party\bison;$(ProjectDir)..\..\chance;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\net\stream;$(ProjectDir)..\..\net;$(ProjectDir)..\..\net\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\3rd_party\bison;$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\modules\libACEStream\src;$(ProjectDir)..\..\modules\libACENetwork\src;$(ProjectDir)..\..\modules\libACENetwork\src\client;$(ProjectDir)..\..\chance;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\net\protocol;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_ENGINE_BUILD_DLL;RPG_PLAYER_HAS_DLL;RPG_CHARACTER_HAS_DLL;RPG_ITEM_HAS_DLL;RPG_COMMON_HAS_DLL;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalOptions>/FS -Zm256 %(AdditionalOptions)</AdditionalOptions>
       <SDLCheck>true</SDLCheck>
@@ -170,6 +170,12 @@ popd</Command>
     <None Include="..\..\engine\scripts\bindings.bat" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\modules\libACENetwork\prj\msvc\libACENetwork.vcxproj">
+      <Project>{751d54c5-12bd-4771-9453-b9d3948ed025}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\modules\libCommon\prj\msvc\libCommon.vcxproj">
+      <Project>{78a90d08-4e40-4ed4-8f75-393ac6526158}</Project>
+    </ProjectReference>
     <ProjectReference Include="chance.vcxproj">
       <Project>{680d55c6-2821-4d27-acd2-88873d145794}</Project>
     </ProjectReference>

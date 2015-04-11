@@ -21,13 +21,14 @@
 
 #include "rpg_net_server_common_tools.h"
 
-#include "ace/Global_Macros.h"
 #include "ace/Dirent_Selector.h"
+#include "ace/Global_Macros.h"
 #include "ace/Log_Msg.h"
 
+#include "common_defines.h"
+#include "common_file_tools.h"
+
 #include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-#include "rpg_common_file_tools.h"
 
 #include "rpg_net_server_defines.h"
 
@@ -47,27 +48,27 @@ RPG_Net_Server_Common_Tools::getNextLogFilename(const std::string& directory_in,
 
   // sanity check(s): log directory exists ?
   // No ? --> try to create it then !
-  if (!RPG_Common_File_Tools::isDirectory(directory_in))
+  if (!Common_File_Tools::isDirectory(directory_in))
   {
-    if (!RPG_Common_File_Tools::createDirectory(directory_in))
+    if (!Common_File_Tools::createDirectory(directory_in))
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Common_File_Tools::createDirectory(\"%s\"), aborting\n"),
-                 directory_in.c_str()));
+                 ACE_TEXT("failed to Common_File_Tools::createDirectory(\"%s\"), aborting\n"),
+                 ACE_TEXT(directory_in.c_str ())));
 
       return false;
     } // end IF
 
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("created directory: \"%s\"...\n"),
-//                directory_in.c_str()));
+//                ACE_TEXT(directory_in.c_str())));
   } // end IF
 
   // construct correct logfilename...
   FQLogFilename_out = directory_in;
   FQLogFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   std::string logFileName = ACE_TEXT_ALWAYS_CHAR(RPG_NET_SERVER_LOG_FILENAME_PREFIX);
-  logFileName += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_LOG_FILENAME_SUFFIX);
+  logFileName += ACE_TEXT_ALWAYS_CHAR(COMMON_LOG_FILENAME_SUFFIX);
   FQLogFilename_out += logFileName;
 
   // retrieve all existing logs and sort them alphabetically...
@@ -100,7 +101,7 @@ RPG_Net_Server_Common_Tools::getNextLogFilename(const std::string& directory_in,
   int number = 0;
   int return_val = -1;
   std::string format_string("%d");
-  format_string += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_LOG_FILENAME_SUFFIX);
+  format_string += ACE_TEXT_ALWAYS_CHAR(COMMON_LOG_FILENAME_SUFFIX);
   std::stringstream converter;
   for (int i = entries.length() - 1, index = RPG_Net_Server_Common_Tools::myMaxNumberOfLogFiles - 1;
        i >= 0;
@@ -165,7 +166,7 @@ RPG_Net_Server_Common_Tools::getNextLogFilename(const std::string& directory_in,
       std::string FQfilename = directory_in;
       FQfilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       FQfilename += entries[i]->d_name;
-      RPG_Common_File_Tools::deleteFile(FQfilename);
+      Common_File_Tools::deleteFile(FQfilename);
 
       continue;
     } // end IF
@@ -185,7 +186,7 @@ RPG_Net_Server_Common_Tools::getNextLogFilename(const std::string& directory_in,
     converter << index;
 
     newFQfilename += converter.str();
-    newFQfilename += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_LOG_FILENAME_SUFFIX);
+    newFQfilename += ACE_TEXT_ALWAYS_CHAR(COMMON_LOG_FILENAME_SUFFIX);
     // *IMPORTANT NOTE*: last parameter affects Win32 behaviour only,
     // see "ace/OS_NS_stdio.inl" !
     if (ACE_OS::rename(oldFQfilename.c_str(),
@@ -194,18 +195,16 @@ RPG_Net_Server_Common_Tools::getNextLogFilename(const std::string& directory_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_OS::rename() \"%s\" to \"%s\": \"%s\", aborting\n"),
-                 oldFQfilename.c_str(),
-                 newFQfilename.c_str(),
-                 ACE_OS::strerror(ACE_OS::last_error())));
+                 ACE_TEXT(oldFQfilename.c_str()),
+                 ACE_TEXT(newFQfilename.c_str()),
+                 ACE_TEXT(ACE_OS::strerror (ACE_OS::last_error()))));
 
       return false;
     } // end IF
-
-    // debug info
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("renamed file \"%s\" to \"%s\"...\n"),
-               oldFQfilename.c_str(),
-               newFQfilename.c_str()));
+               ACE_TEXT(oldFQfilename.c_str()),
+               ACE_TEXT(newFQfilename.c_str())));
 
     index--;
   } // end FOR
@@ -216,7 +215,7 @@ RPG_Net_Server_Common_Tools::getNextLogFilename(const std::string& directory_in,
     newFQfilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     newFQfilename += ACE_TEXT_ALWAYS_CHAR(RPG_NET_SERVER_LOG_FILENAME_PREFIX);
     newFQfilename += "_1";
-    newFQfilename += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_LOG_FILENAME_SUFFIX);
+    newFQfilename += ACE_TEXT_ALWAYS_CHAR(COMMON_LOG_FILENAME_SUFFIX);
 
     // *TODO*: last parameter affects Win32 behaviour only, see "ace/OS_NS_stdio.inl" !
     if (ACE_OS::rename(FQLogFilename_out.c_str(),
@@ -225,17 +224,15 @@ RPG_Net_Server_Common_Tools::getNextLogFilename(const std::string& directory_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_OS::rename() \"%s\" to \"%s\": \"%m\", aborting\n"),
-                 FQLogFilename_out.c_str(),
-                 newFQfilename.c_str()));
+                 ACE_TEXT(FQLogFilename_out.c_str()),
+                 ACE_TEXT(newFQfilename.c_str())));
 
       return false;
     } // end IF
-
-    // debug info
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("renamed file \"%s\" to \"%s\"...\n"),
-               FQLogFilename_out.c_str(),
-               newFQfilename.c_str()));
+               ACE_TEXT(FQLogFilename_out.c_str()),
+               ACE_TEXT(newFQfilename.c_str())));
   } // end IF
 
   return true;

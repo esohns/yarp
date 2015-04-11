@@ -347,23 +347,23 @@ RPG_Client_Window_Main::handleEvent(const SDL_Event& event_in,
         case SDLK_ESCAPE:
         {
           RPG_Engine_ClientNotificationParameters_t parameters;
-					parameters.entity_id = 0;
-					parameters.condition = RPG_COMMON_CONDITION_INVALID;
-					//parameters.positions.clear();
-					parameters.previous_position =
-							std::make_pair(std::numeric_limits<unsigned int>::max(),
-														 std::numeric_limits<unsigned int>::max());
-					parameters.visible_radius = 0;
-					try
-					{
-						myEngine->notify(COMMAND_E2C_QUIT, parameters);
-					}
-					catch (...)
-					{
-						ACE_DEBUG((LM_ERROR,
-								       ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
-								       ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_QUIT).c_str())));
-					}
+          parameters.entity_id = 0;
+          parameters.condition = RPG_COMMON_CONDITION_INVALID;
+          //parameters.positions.clear();
+          parameters.previous_position =
+            std::make_pair (std::numeric_limits<unsigned int>::max (),
+                            std::numeric_limits<unsigned int>::max ());
+          parameters.visible_radius = 0;
+          try
+          {
+            myEngine->notify (COMMAND_E2C_QUIT, parameters);
+          }
+          catch (...)
+          {
+            ACE_DEBUG ((LM_ERROR,
+                        ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
+                        ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString (COMMAND_E2C_QUIT).c_str ())));
+          }
 
           break;
         }
@@ -375,15 +375,15 @@ RPG_Client_Window_Main::handleEvent(const SDL_Event& event_in,
           std::string dump_path = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
 #else
           std::string dump_path =
-              ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR));
+            ACE_OS::getenv (ACE_TEXT_ALWAYS_CHAR (COMMON_DEF_DUMP_DIR));
 #endif
           dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
           dump_path += ACE_TEXT(RPG_CLIENT_SCREENSHOT_DEF_PREFIX);
-          dump_path += converter.str();
+          dump_path += converter.str ();
           dump_path += ACE_TEXT(RPG_CLIENT_SCREENSHOT_DEF_EXT);
-          RPG_Graphics_Surface::savePNG(*myScreen, // image
-                                        dump_path, // file
-                                        false);    // no alpha
+          RPG_Graphics_Surface::savePNG (*myScreen, // image
+                                         dump_path, // file
+                                         false);    // no alpha
 
           break;
         }

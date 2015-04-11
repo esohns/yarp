@@ -21,91 +21,106 @@
 
 #include "rpg_net_protocol_module_IRCsplitter.h"
 
-#include "rpg_common.h"
-#include "rpg_common_timer_manager.h"
+#include "ace/OS_Memory.h"
 
-#include "rpg_stream_iallocator.h"
+#include "common_timer_manager.h"
+
+#include "stream_iallocator.h"
+
+#include "rpg_common_macros.h"
 
 #include "rpg_net_protocol_defines.h"
-#include "rpg_net_protocol_sessionmessage.h"
 #include "rpg_net_protocol_message.h"
+#include "rpg_net_protocol_sessionmessage.h"
 
-RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter()
- : inherited(false,  // inactive by default
-             false), // DON'T auto-start !
-   myCrunchMessages(false),
-   myStatCollectHandler(this,
-                        STATISTICHANDLER_TYPE::ACTION_COLLECT),
-   myStatCollectHandlerID(-1),
-   myScannerContext(NULL),
-   myCurrentBufferState(NULL),
-   myCurrentNumFrames(0),
-   myCurrentMessage(NULL),
-   myCurrentBuffer(NULL),
-   myCurrentMessageLength(0),
-   myIsInitialized(false)
+RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter ()
+ : inherited (false, // inactive by default
+              false) // DON'T auto-start !
+ , myCrunchMessages (false)
+ , myStatisticCollectHandler (ACTION_COLLECT,
+                              this,
+                              false)
+ , myStatisticCollectHandlerID (-1)
+ , myScannerContext (NULL)
+ , myCurrentBufferState (NULL)
+ , myCurrentNumFrames (0)
+ , myCurrentMessage (NULL)
+ , myCurrentBuffer (NULL)
+ , myCurrentMessageLength (0)
+ , myIsInitialized (false)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter"));
 
-  if (RPG_Net_Protocol_IRCBisect_lex_init(&myScannerContext))
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to yylex_init: \"%m\", continuing\n")));
+  if (RPG_Net_Protocol_IRCBisect_lex_init (&myScannerContext))
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to yylex_init: \"%m\", continuing\n")));
 
   // trace ?
-  RPG_Net_Protocol_IRCBisect_set_debug((RPG_NET_PROTOCOL_DEF_TRACE_SCANNING ? 1 : 0), myScannerContext);
+  RPG_Net_Protocol_IRCBisect_set_debug ((RPG_NET_PROTOCOL_DEF_TRACE_SCANNING ? 1
+                                                                             : 0),
+                                        myScannerContext);
 }
 
-RPG_Net_Protocol_Module_IRCSplitter::~RPG_Net_Protocol_Module_IRCSplitter()
+RPG_Net_Protocol_Module_IRCSplitter::~RPG_Net_Protocol_Module_IRCSplitter ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::~RPG_Net_Protocol_Module_IRCSplitter"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCSplitter::~RPG_Net_Protocol_Module_IRCSplitter"));
 
   // clean up timer if necessary
-  if (myStatCollectHandlerID != -1)
-    if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myStatCollectHandlerID) == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                 myStatCollectHandlerID));
+  if (myStatisticCollectHandlerID != -1)
+  {
+    int result =
+     COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (myStatisticCollectHandlerID);
+    if (result == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                  myStatisticCollectHandlerID));
+  } // end IF
 
   // fini scanner context
   if (myScannerContext)
-    RPG_Net_Protocol_IRCBisect_lex_destroy(myScannerContext);
+    RPG_Net_Protocol_IRCBisect_lex_destroy (myScannerContext);
 
   // clean up any unprocessed (chained) buffer(s)
   if (myCurrentMessage)
-    myCurrentMessage->release();
+    myCurrentMessage->release ();
 }
 
 bool
-RPG_Net_Protocol_Module_IRCSplitter::init(RPG_Stream_IAllocator* allocator_in,
-                                          const bool& isActive_in,
-                                          const bool& crunchMessages_in,
-                                          const unsigned int& statisticsCollectionInterval_in,
-                                          const bool& traceScanning_in)
+RPG_Net_Protocol_Module_IRCSplitter::initialize (Stream_IAllocator* allocator_in,
+                                                 bool isActive_in,
+                                                 bool crunchMessages_in,
+                                                 unsigned int statisticsCollectionInterval_in,
+                                                 bool traceScanning_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::init"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCSplitter::initialize"));
 
   // sanity check(s)
-  ACE_ASSERT(allocator_in);
+  ACE_ASSERT (allocator_in);
 
   if (myIsInitialized)
   {
-    ACE_DEBUG((LM_WARNING,
-               ACE_TEXT("re-initializing...\n")));
+    ACE_DEBUG ((LM_WARNING,
+                ACE_TEXT ("re-initializing...\n")));
 
     // clean up
     myCrunchMessages = false;
-    if (myStatCollectHandlerID != -1)
-      if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myStatCollectHandlerID) == -1)
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                   myStatCollectHandlerID));
-    myStatCollectHandlerID = -1;
+    if (myStatisticCollectHandlerID != -1)
+    {
+      int result =
+       COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (myStatisticCollectHandlerID);
+      if (result == -1)
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                    myStatisticCollectHandlerID));
+      myStatisticCollectHandlerID = -1;
+    } // end IF
     myCurrentNumFrames = 0;
     if (myCurrentBufferState)
-      RPG_Net_Protocol_IRCBisect__delete_buffer(myCurrentBufferState, myScannerContext);
+      RPG_Net_Protocol_IRCBisect__delete_buffer (myCurrentBufferState,
+                                                 myScannerContext);
     myCurrentBufferState = NULL;
     if (myCurrentMessage)
-      myCurrentMessage->release();
+      myCurrentMessage->release ();
     myCurrentMessage = NULL;
     myCurrentBuffer = NULL;
     myCurrentMessageLength = 0;
@@ -114,28 +129,26 @@ RPG_Net_Protocol_Module_IRCSplitter::init(RPG_Stream_IAllocator* allocator_in,
   } // end IF
 
   // set base class initializer(s)
-  inherited::myAllocator = allocator_in;
-	inherited::mySessionID = 0;
-	inherited::myIsActive = isActive_in;
+  inherited::allocator_ = allocator_in;
+	inherited::isActive_ = isActive_in;
 
   myCrunchMessages = crunchMessages_in;
 
   if (statisticsCollectionInterval_in)
   {
     // schedule regular statistics collection...
-    ACE_Time_Value interval(statisticsCollectionInterval_in, 0);
-    ACE_ASSERT(myStatCollectHandlerID == -1);
-    ACE_Event_Handler* eh = &myStatCollectHandler;
-    myStatCollectHandlerID =
-      RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(eh,                                  // event handler
-                                                              NULL,                                // act
-                                                              RPG_COMMON_TIME_POLICY() + interval, // first wakeup time
-                                                              interval);                           // interval
-    if (myStatCollectHandlerID == -1)
+    ACE_Time_Value interval (statisticsCollectionInterval_in, 0);
+    ACE_ASSERT (myStatisticCollectHandlerID == -1);
+    ACE_Event_Handler* eh = &myStatisticCollectHandler;
+    myStatisticCollectHandlerID =
+      COMMON_TIMERMANAGER_SINGLETON::instance ()->schedule (eh,                               // event handler
+                                                            NULL,                             // act
+                                                            COMMON_TIME_POLICY () + interval, // first wakeup time
+                                                            interval);                        // interval
+    if (myStatisticCollectHandlerID == -1)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to RPG_Common_Timer_Manager::schedule(), aborting\n")));
       return false;
     } // end IF
 //     ACE_DEBUG((LM_DEBUG,
@@ -159,7 +172,8 @@ RPG_Net_Protocol_Module_IRCSplitter::init(RPG_Stream_IAllocator* allocator_in,
 
   //  return false;
   //} // end IF
-  RPG_Net_Protocol_IRCBisect_set_debug((traceScanning_in ? 1 : 0), myScannerContext);
+  RPG_Net_Protocol_IRCBisect_set_debug ((traceScanning_in ? 1 : 0),
+                                        myScannerContext);
 
   myIsInitialized = true;
 
@@ -437,27 +451,28 @@ RPG_Net_Protocol_Module_IRCSplitter::handleDataMessage(RPG_Net_Protocol_Message*
 }
 
 void
-RPG_Net_Protocol_Module_IRCSplitter::handleSessionMessage(RPG_Net_Protocol_SessionMessage*& message_inout,
-                                                          bool& passMessageDownstream_out)
+RPG_Net_Protocol_Module_IRCSplitter::handleSessionMessage (RPG_Net_Protocol_SessionMessage*& message_inout,
+                                                           bool& passMessageDownstream_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::handleSessionMessage"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCSplitter::handleSessionMessage"));
 
   // don't care (implies yes per default, if we're part of a stream)
-  ACE_UNUSED_ARG(passMessageDownstream_out);
+  ACE_UNUSED_ARG (passMessageDownstream_out);
 
   // sanity check(s)
-  ACE_ASSERT(message_inout);
-  ACE_ASSERT(myIsInitialized);
+  ACE_ASSERT (message_inout);
+  ACE_ASSERT (myIsInitialized);
 
-  switch (message_inout->getType())
+  switch (message_inout->getType ())
   {
-    case RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
+    case SESSION_BEGIN:
     {
       // remember session ID for reporting...
-      inherited::mySessionID = message_inout->getConfig ()->getUserData ().streamSocketConfiguration.sessionID;
+      ACE_ASSERT (inherited::state_);
+      inherited::state_->sessionID = message_inout->getState ()->sessionID;
 
       // start profile timer...
-//       myProfile.start();
+      //myProfile.start();
 
       break;
     }
@@ -470,29 +485,28 @@ RPG_Net_Protocol_Module_IRCSplitter::handleSessionMessage(RPG_Net_Protocol_Sessi
 }
 
 bool
-RPG_Net_Protocol_Module_IRCSplitter::collect(RPG_Net_Protocol_RuntimeStatistic& data_out) const
+RPG_Net_Protocol_Module_IRCSplitter::collect (RPG_Net_Protocol_RuntimeStatistic& data_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::collect"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCSplitter::collect"));
 
   // just a dummy...
-  ACE_UNUSED_ARG(data_out);
+  ACE_UNUSED_ARG (data_out);
 
   // sanity check(s)
-  ACE_ASSERT(myIsInitialized);
+  ACE_ASSERT (myIsInitialized);
 
   // step1: init info container POD
-  ACE_OS::memset(&data_out, 0, sizeof(RPG_Net_Protocol_RuntimeStatistic));
+  ACE_OS::memset (&data_out, 0, sizeof (RPG_Net_Protocol_RuntimeStatistic));
 
   // *IMPORTANT NOTE*: information is collected by the statistic module
 	//                   (if any)
 
   // step1: send the container downstream
-  if (!putStatisticsMessage(data_out,                  // data container
-                            RPG_COMMON_TIME_POLICY())) // timestamp
+  if (!putStatisticsMessage (data_out,               // data container
+                             COMMON_TIME_POLICY ())) // timestamp
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to putSessionMessage(SESSION_STATISTICS), aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to putSessionMessage(SESSION_STATISTICS), aborting\n")));
     return false;
   } // end IF
 
@@ -500,58 +514,70 @@ RPG_Net_Protocol_Module_IRCSplitter::collect(RPG_Net_Protocol_RuntimeStatistic& 
 }
 
 void
-RPG_Net_Protocol_Module_IRCSplitter::report() const
+RPG_Net_Protocol_Module_IRCSplitter::report () const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::report"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCSplitter::report"));
 
   // sanity check(s)
-  ACE_ASSERT(myIsInitialized);
+  ACE_ASSERT (myIsInitialized);
 
   // *TODO*: support (local) reporting here as well ?
   // --> leave this to any downstream modules...
-  ACE_ASSERT(false);
+  ACE_ASSERT (false);
 }
 
 bool
-RPG_Net_Protocol_Module_IRCSplitter::putStatisticsMessage(const RPG_Net_Protocol_RuntimeStatistic& info_in,
-                                                          const ACE_Time_Value& collectionTime_in) const
+RPG_Net_Protocol_Module_IRCSplitter::putStatisticsMessage (const RPG_Net_Protocol_RuntimeStatistic& info_in,
+                                                           const ACE_Time_Value& collectionTime_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::putStatisticsMessage"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCSplitter::putStatisticsMessage"));
 
-  // step1: init info POD
-  RPG_Net_Protocol_ConfigPOD data;
-  ACE_OS::memset(&data, 0, sizeof(RPG_Net_Protocol_ConfigPOD));
-  data.currentStatistics = info_in;
-  data.lastCollectionTimestamp = collectionTime_in;
-
-  // step2: allocate config container
-  SESSIONCONFIG_TYPE* session_config = NULL;
-  ACE_NEW_NORETURN(session_config,
-                   SESSIONCONFIG_TYPE(data));
-  if (!session_config)
+  // step1: initialize session data
+  RPG_Net_Protocol_SessionData* data_p = NULL;
+  ACE_NEW_NORETURN (data_p,
+                    RPG_Net_Protocol_SessionData);
+  if (!data_p)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate Stream_SessionConfigBase: \"%m\", aborting\n")));
+    ACE_DEBUG ((LM_CRITICAL,
+                ACE_TEXT ("failed to allocate memory: \"%m\", aborting\n")));
+    return false;
+  } // end IF
+  //ACE_OS::memset (data_p, 0, sizeof (RPG_Net_Protocol_SessionData));
+  data_p->currentStatistics = info_in;
+  data_p->lastCollectionTimestamp = collectionTime_in;
+
+  // step2: allocate session data container
+  RPG_Net_Protocol_StreamSessionData_t* session_data_p = NULL;
+  ACE_NEW_NORETURN (session_data_p,
+                    RPG_Net_Protocol_StreamSessionData_t (data_p,
+                                                          true));
+  if (!session_data_p)
+  {
+    ACE_DEBUG ((LM_CRITICAL,
+                ACE_TEXT ("failed to allocate memory: \"%m\", aborting\n")));
+
+    // clean up
+    delete data_p;
 
     return false;
   } // end IF
 
   // step3: send the data downstream...
-  // *NOTE*: "fire-and-forget"-API for session_config
-  return inherited::putSessionMessage(inherited::mySessionID,
-                                      RPG_Stream_SessionMessage::MB_STREAM_SESSION_STATISTICS,
-                                      session_config,
-                                      inherited::myAllocator);
+  // *NOTE*: "fire-and-forget"-API for session_data_p
+  ACE_ASSERT (inherited::state_);
+  return inherited::putSessionMessage (SESSION_STATISTICS,
+                                       session_data_p,
+                                       inherited::allocator_);
 }
 
 bool
-RPG_Net_Protocol_Module_IRCSplitter::scan_begin(char* data_in,
-                                                const size_t& length_in)
+RPG_Net_Protocol_Module_IRCSplitter::scan_begin (char* data_in,
+                                                 const size_t& length_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::scan_begin"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCSplitter::scan_begin"));
 
   // sanity check(s)
-  ACE_ASSERT(myCurrentBufferState == NULL);
+  ACE_ASSERT (!myCurrentBufferState);
 
   // create/init a new buffer state
   // *WARNING*: cannot use yy_scan_buffer(), as flex modifies the data... :-(
@@ -559,35 +585,36 @@ RPG_Net_Protocol_Module_IRCSplitter::scan_begin(char* data_in,
 //   myCurrentState = yy_scan_buffer(data_in,
 //                                   length_in,
 //                                   myScannerContext);
-  myCurrentBufferState = RPG_Net_Protocol_IRCBisect__scan_bytes(data_in,
-                                                                length_in,
-                                                                myScannerContext);
-  if (myCurrentBufferState == NULL)
+  myCurrentBufferState =
+   RPG_Net_Protocol_IRCBisect__scan_bytes (data_in,
+                                           length_in,
+                                           myScannerContext);
+  if (!myCurrentBufferState)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to yy_scan_bytes(%@,%d), aborting\n"),
-               data_in,
-               length_in));
-
-    // what else can we do ?
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to yy_scan_bytes(%@,%d), aborting\n"),
+                data_in,
+                length_in));
     return false;
   } // end IF
 
   // *WARNING*: contrary (!) to the documentation, still need to switch_buffers()...
-  RPG_Net_Protocol_IRCBisect__switch_to_buffer(myCurrentBufferState, myScannerContext);
+  RPG_Net_Protocol_IRCBisect__switch_to_buffer (myCurrentBufferState,
+                                                myScannerContext);
 
   return true;
 }
 
 void
-RPG_Net_Protocol_Module_IRCSplitter::scan_end()
+RPG_Net_Protocol_Module_IRCSplitter::scan_end ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCSplitter::scan_end"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCSplitter::scan_end"));
 
   // sanity check(s)
-  ACE_ASSERT(myCurrentBufferState);
+  ACE_ASSERT (myCurrentBufferState);
 
   // clean state
-  RPG_Net_Protocol_IRCBisect__delete_buffer(myCurrentBufferState, myScannerContext);
+  RPG_Net_Protocol_IRCBisect__delete_buffer (myCurrentBufferState,
+                                             myScannerContext);
   myCurrentBufferState = NULL;
 }

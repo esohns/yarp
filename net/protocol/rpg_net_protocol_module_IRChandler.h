@@ -21,113 +21,114 @@
 #ifndef RPG_NET_PROTOCOL_MODULE_IRCHANDLER_H
 #define RPG_NET_PROTOCOL_MODULE_IRCHANDLER_H
 
+#include <list>
+#include <string>
+
+#include "ace/Condition_T.h"
+#include "ace/Global_Macros.h"
+#include "ace/Synch.h"
+#include "ace/Synch_Traits.h"
+
+#include "common.h"
+
+#include "stream_streammodule_base.h"
+#include "stream_task_base_synch.h"
+
+//#include "rpg_net_protocol_common.h"
 #include "rpg_net_protocol_exports.h"
 #include "rpg_net_protocol_iIRCControl.h"
-#include "rpg_net_protocol_sessionmessage.h"
-#include "rpg_net_protocol_message.h"
-
-#include "rpg_stream_task_base_synch.h"
-#include "rpg_stream_streammodule_base.h"
-
-#include "rpg_common.h"
-
-#include <ace/Global_Macros.h>
-#include <ace/Synch_Traits.h>
-#include <ace/Condition_T.h>
-#include <ace/Synch.h>
-
-#include <string>
-#include <list>
 
 // forward declaration(s)
-class RPG_Stream_IAllocator;
-class RPG_Net_Protocol_IRCMessage;
+class Stream_IAllocator;
+class RPG_Net_Protocol_SessionMessage;
+class RPG_Net_Protocol_Message;
+
 
 class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
- : public RPG_Stream_TaskBaseSynch<RPG_Common_TimePolicy_t,
-                                   RPG_Net_Protocol_SessionMessage,
-                                   RPG_Net_Protocol_Message>,
-   public RPG_Net_Protocol_IIRCControl
+ : public Stream_TaskBaseSynch_T<Common_TimePolicy_t,
+                                 RPG_Net_Protocol_SessionMessage,
+                                 RPG_Net_Protocol_Message>
+ , public RPG_Net_Protocol_IIRCControl
 {
  public:
-  RPG_Net_Protocol_Module_IRCHandler();
-  virtual ~RPG_Net_Protocol_Module_IRCHandler();
+  RPG_Net_Protocol_Module_IRCHandler ();
+  virtual ~RPG_Net_Protocol_Module_IRCHandler ();
 
   // initialization
-  bool init(RPG_Stream_IAllocator*, // message allocator
-            const unsigned int&,    // default (message) buffer size
-            const bool& = false,    // automatically answer "ping" messages
-            const bool& = false);   // print dot ('.') for every answered PING to stdlog
+  bool initialize (Stream_IAllocator*, // message allocator
+                   unsigned int,       // default (message) buffer size
+                   bool = false,       // automatically answer "ping" messages
+                   bool = false);      // print dot ('.') for every answered PING to stdlog
 
   // implement (part of) Stream_ITaskBase
-  virtual void handleDataMessage(RPG_Net_Protocol_Message*&, // data message handle
-                                 bool&);                     // return value: pass message downstream ?
-  virtual void handleSessionMessage(RPG_Net_Protocol_SessionMessage*&, // session message handle
-                                    bool&);                            // return value: pass message downstream ?
+  virtual void handleDataMessage (RPG_Net_Protocol_Message*&, // data message handle
+                                  bool&);                     // return value: pass message downstream ?
+  virtual void handleSessionMessage (RPG_Net_Protocol_SessionMessage*&, // session message handle
+                                     bool&);                            // return value: pass message downstream ?
 
   // implement RPG_Net_Protocol_IIRCControl
-  virtual void subscribe(RPG_Net_Protocol_INotify_t*); // new subscriber
-  virtual void unsubscribe(RPG_Net_Protocol_INotify_t*); // existing subscriber
-  virtual void registerConnection(const RPG_Net_Protocol_IRCLoginOptions&); // login details
-  virtual void nick(const std::string&); // nick
-  virtual void quit(const std::string&); // reason
-  virtual void join(const string_list_t&,  // channel(s)
-                    const string_list_t&); // key(s)
-  virtual void part(const string_list_t&); // channel(s)
-  virtual void mode(const std::string&,    // nick/channel
-                    const char&,           // user/channel mode
-                    const bool&,           // enable ?
-                    const string_list_t&); // any parameters
-  virtual void topic(const std::string&,  // channel
-                     const std::string&); // topic
-  virtual void names(const string_list_t&); // channel(s)
-  virtual void list(const string_list_t&); // channel(s)
-  virtual void invite(const std::string&,  // nick
-                      const std::string&); // channel
-  virtual void kick(const std::string&,  // channel
-                    const std::string&,  // nick
-                    const std::string&); // comment
-  virtual void send(const string_list_t&, // receiver(s) [nick/channel]
-                    const std::string&);  // message
-  virtual void who(const std::string&, // name
-                   const bool&);       // query ops only ?
-  virtual void whois(const std::string&,    // server
-                     const string_list_t&); // nickmask(s)
-  virtual void whowas(const std::string&,   // nick
-                      const unsigned long&, // count
-                      const std::string&);  // server
-  virtual void away(const std::string&); // message
-  virtual void users(const std::string&); // server
-  virtual void userhost(const string_list_t&); // nicknames
+  virtual void subscribe (RPG_Net_Protocol_INotification_t*); // new subscriber
+  virtual void unsubscribe (RPG_Net_Protocol_INotification_t*); // existing subscriber
+  virtual void registerConnection (const RPG_Net_Protocol_IRCLoginOptions&); // login details
+  virtual void nick (const std::string&); // nick
+  virtual void quit (const std::string&); // reason
+  virtual void join (const string_list_t&,  // channel(s)
+                     const string_list_t&); // key(s)
+  virtual void part (const string_list_t&); // channel(s)
+  virtual void mode (const std::string&,    // nick/channel
+                     const char&,           // user/channel mode
+                     const bool&,           // enable ?
+                     const string_list_t&); // any parameters
+  virtual void topic (const std::string&,  // channel
+                      const std::string&); // topic
+  virtual void names (const string_list_t&); // channel(s)
+  virtual void list (const string_list_t&); // channel(s)
+  virtual void invite (const std::string&,  // nick
+                       const std::string&); // channel
+  virtual void kick (const std::string&,  // channel
+                     const std::string&,  // nick
+                     const std::string&); // comment
+  virtual void send (const string_list_t&, // receiver(s) [nick/channel]
+                     const std::string&);  // message
+  virtual void who (const std::string&, // name
+                    const bool&);       // query ops only ?
+  virtual void whois (const std::string&,    // server
+                      const string_list_t&); // nickmask(s)
+  virtual void whowas (const std::string&,   // nick
+                       const unsigned long&, // count
+                       const std::string&);  // server
+  virtual void away (const std::string&); // message
+  virtual void users (const std::string&); // server
+  virtual void userhost (const string_list_t&); // nicknames
 
-  // implement RPG_Common_IDumpState
-  virtual void dump_state() const;
+  // implement Common_IDumpState
+  virtual void dump_state () const;
 
  private:
-  typedef RPG_Stream_TaskBaseSynch<RPG_Common_TimePolicy_t,
-                                   RPG_Net_Protocol_SessionMessage,
-                                   RPG_Net_Protocol_Message> inherited;
+  typedef Stream_TaskBaseSynch_T<Common_TimePolicy_t,
+                                 RPG_Net_Protocol_SessionMessage,
+                                 RPG_Net_Protocol_Message> inherited;
 
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCHandler(const RPG_Net_Protocol_Module_IRCHandler&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Module_IRCHandler& operator=(const RPG_Net_Protocol_Module_IRCHandler&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Module_IRCHandler (const RPG_Net_Protocol_Module_IRCHandler&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Module_IRCHandler& operator=(const RPG_Net_Protocol_Module_IRCHandler&));
 
   // helper methods
-  RPG_Net_Protocol_Message* allocateMessage(const unsigned int&); // requested size
+  RPG_Net_Protocol_Message* allocateMessage(unsigned int); // requested size
   // *NOTE*: "fire-and-forget" - the argument is consumed
-  void sendMessage(RPG_Net_Protocol_IRCMessage*&); // command handle
+  void sendMessage (RPG_Net_Protocol_IRCMessage*&); // command handle
 
   // convenient types
-  typedef std::list<RPG_Net_Protocol_INotify_t*> Subscribers_t;
+  typedef std::list<RPG_Net_Protocol_INotification_t*> Subscribers_t;
   typedef Subscribers_t::iterator SubscribersIterator_t;
 
-  // lock to protect mySubscribers and myConnectionIsAlive
+  // lock to protect mySubscribers and myConnectionIsAlive (!)
   // *NOTE*: make this recursive so that users may unsubscribe from within the
   // notification callbacks...
-  // *WARNING*: implies CAREFUL iteration
+  // *WARNING*: consider race conditions here
   ACE_Recursive_Thread_Mutex             myLock;
   Subscribers_t                          mySubscribers;
 
-  RPG_Stream_IAllocator*                 myAllocator;
+  Stream_IAllocator*                     myAllocator;
   unsigned int                           myDefaultBufferSize;
   bool                                   myAutomaticPong;
   bool                                   myPrintPingPongDot;
@@ -144,7 +145,8 @@ class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
 
 // declare module
 DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                        // task synch type
-                             RPG_Common_TimePolicy_t,             // time policy
+                             Common_TimePolicy_t,                 // time policy
+                             Stream_ModuleConfiguration_t,        // configuration type
                              RPG_Net_Protocol_Module_IRCHandler); // writer type
 
 #endif

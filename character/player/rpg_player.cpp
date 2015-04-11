@@ -21,40 +21,41 @@
 
 #include "rpg_player.h"
 
-#include "rpg_player_defines.h"
-#include "rpg_player_common_tools.h"
-#include "rpg_player_XML_tree.h"
-
-#include "rpg_item_instance_common.h"
-#include "rpg_item_instance_manager.h"
-#include "rpg_item_base.h"
-#include "rpg_item_armor.h"
-#include "rpg_item_weapon.h"
-#include "rpg_item_common_tools.h"
-#include "rpg_item_dictionary.h"
-
-#include "rpg_magic_defines.h"
-#include "rpg_magic_dictionary.h"
-#include "rpg_magic_common_tools.h"
-
-#include "rpg_character_common_tools.h"
-#include "rpg_character_race_common_tools.h"
-#include "rpg_character_class_common_tools.h"
-#include "rpg_character_skills_common_tools.h"
-
-#include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-#include "rpg_common_tools.h"
-#include "rpg_common_file_tools.h"
-#include "rpg_common_xsderrorhandler.h"
-
-#include "rpg_dice_common.h"
-#include "rpg_dice.h"
+#include <fstream>
+#include <numeric>
 
 #include "ace/Log_Msg.h"
 
-#include <fstream>
-#include <numeric>
+#include "common_file_tools.h"
+
+#include "rpg_common_defines.h"
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
+#include "rpg_common_xsderrorhandler.h"
+
+#include "rpg_dice.h"
+#include "rpg_dice_common.h"
+
+#include "rpg_magic_common_tools.h"
+#include "rpg_magic_defines.h"
+#include "rpg_magic_dictionary.h"
+
+#include "rpg_item_armor.h"
+#include "rpg_item_base.h"
+#include "rpg_item_common_tools.h"
+#include "rpg_item_dictionary.h"
+#include "rpg_item_instance_common.h"
+#include "rpg_item_instance_manager.h"
+#include "rpg_item_weapon.h"
+
+#include "rpg_character_common_tools.h"
+#include "rpg_character_class_common_tools.h"
+#include "rpg_character_race_common_tools.h"
+#include "rpg_character_skills_common_tools.h"
+
+#include "rpg_player_common_tools.h"
+#include "rpg_player_defines.h"
+#include "rpg_player_XML_tree.h"
 
 RPG_Player::RPG_Player(// base attributes
                        const std::string& name_in,
@@ -884,7 +885,7 @@ RPG_Player::load(const std::string& filename_in,
   RPG_TRACE(ACE_TEXT("RPG_Player::load"));
 
   // sanity check(s)
-  if (!RPG_Common_File_Tools::isReadable(filename_in))
+  if (!Common_File_Tools::isReadable(filename_in))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
@@ -924,16 +925,16 @@ RPG_Player::load(const std::string& filename_in,
   std::string path;
   // *NOTE*: use the working directory as a fallback...
   if (schemaRepository_in.empty())
-    path = RPG_Common_File_Tools::getWorkingDirectory();
+    path = Common_File_Tools::getWorkingDirectory();
   else
     path = schemaRepository_in;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_SCHEMA_FILE);
   // sanity check(s)
-  if (!RPG_Common_File_Tools::isReadable(path))
+  if (!Common_File_Tools::isReadable(path))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
+               ACE_TEXT("failed to Common_File_Tools::isReadable(\"%s\"), aborting\n"),
                ACE_TEXT(path.c_str())));
 
     // clean up

@@ -795,35 +795,34 @@ RPG_Common_Tools::enumToString(const std::string& enumString_in,
 }
 
 bool
-RPG_Common_Tools::period2String(const ACE_Time_Value& period_in,
-                                std::string& timeString_out)
+RPG_Common_Tools::period2String (const ACE_Time_Value& period_in,
+                                 std::string& timeString_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::period2String"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::period2String"));
 
   // init return value(s)
-  timeString_out.resize(0);
+  timeString_out.resize (0);
 
   // extract hours and minutes...
   ACE_Time_Value temp = period_in;
-  int hours = static_cast<int>(temp.sec()) / (60 * 60);
-  temp.sec(temp.sec() % (60 * 60));
+  int hours = static_cast<int>(temp.sec ()) / (60 * 60);
+  temp.sec (temp.sec () % (60 * 60));
 
-  int minutes = static_cast<int>(temp.sec()) / 60;
-  temp.sec(temp.sec() % 60);
+  int minutes = static_cast<int>(temp.sec ()) / 60;
+  temp.sec (temp.sec () % 60);
 
-  char time_string[RPG_COMMON_BUFSIZE];
+  char time_string[BUFSIZ];
   // *TODO*: rewrite this in C++...
-  if (ACE_OS::snprintf(time_string,
-                       sizeof(time_string),
-                       ACE_TEXT_ALWAYS_CHAR("%d:%d:%d.%d"),
-                       hours,
-                       minutes,
-                       static_cast<int>(temp.sec()),
-                       static_cast<int>(temp.usec())) < 0)
+  if (ACE_OS::snprintf (time_string,
+                        sizeof (time_string),
+                        ACE_TEXT_ALWAYS_CHAR ("%d:%d:%d.%d"),
+                        hours,
+                        minutes,
+                        static_cast<int>(temp.sec ()),
+                        static_cast<int>(temp.usec ())) < 0)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_OS::snprintf(): \"%m\", aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_OS::snprintf(): \"%m\", aborting\n")));
     return false;
   } // end IF
 
@@ -835,7 +834,7 @@ RPG_Common_Tools::period2String(const ACE_Time_Value& period_in,
 std::string
 RPG_Common_Tools::sanitizeURI(const std::string& uri_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::isLinux"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::sanitizeURI"));
 
   std::string result = uri_in;
 

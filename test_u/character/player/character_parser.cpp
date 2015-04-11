@@ -19,61 +19,66 @@
  ***************************************************************************/
 #include "stdafx.h"
 
+#include <algorithm>
+#include <iomanip>
+#include <iostream>
+#include <numeric>
+#include <sstream>
+#include <string>
+
+#include "ace/ACE.h"
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
+#include "ace/Get_Opt.h"
+#include "ace/High_Res_Timer.h"
+#include "ace/Log_Msg.h"
+
+#include "common_file_tools.h"
+#include "common_tools.h"
+
+#ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
+#endif
 
-#include "rpg_engine_defines.h"
-#include "rpg_engine_common.h"
-#include "rpg_engine_common_tools.h"
+#include "rpg_dice.h"
+#include "rpg_dice_common_tools.h"
+#include "rpg_dice_dietype.h"
 
-#include "rpg_graphics_common_tools.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_file_tools.h"
+#include "rpg_common_macros.h"
+#include "rpg_common_subclass.h"
+#include "rpg_common_tools.h"
+#include "rpg_common_XML_tools.h"
 
-#include "rpg_player_defines.h"
-#include "rpg_player.h"
-#include "rpg_player_common_tools.h"
+#include "rpg_magic_common_tools.h"
+#include "rpg_magic_defines.h"
+#include "rpg_magic_dictionary.h"
+
+#include "rpg_item_armor.h"
+#include "rpg_item_common_tools.h"
+#include "rpg_item_defines.h"
+#include "rpg_item_dictionary.h"
+#include "rpg_item_weapon.h"
 
 #include "rpg_character_alignmentcivic.h"
 #include "rpg_character_alignmentethic.h"
 #include "rpg_character_alignment.h"
-#include "rpg_character_offhand.h"
-#include "rpg_character_common_tools.h"
 #include "rpg_character_class_common_tools.h"
+#include "rpg_character_common_tools.h"
+#include "rpg_character_offhand.h"
 #include "rpg_character_skills_common_tools.h"
 
-#include "rpg_item_defines.h"
-#include "rpg_item_weapon.h"
-#include "rpg_item_armor.h"
-#include "rpg_item_common_tools.h"
-#include "rpg_item_dictionary.h"
+#include "rpg_player.h"
+#include "rpg_player_common_tools.h"
+#include "rpg_player_defines.h"
 
-#include "rpg_magic_defines.h"
-#include "rpg_magic_dictionary.h"
-#include "rpg_magic_common_tools.h"
+#include "rpg_engine_common.h"
+#include "rpg_engine_common_tools.h"
+#include "rpg_engine_defines.h"
 
-#include "rpg_dice.h"
-#include "rpg_dice_dietype.h"
-#include "rpg_dice_common_tools.h"
-
-#include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-#include "rpg_common_subclass.h"
-#include "rpg_common_tools.h"
-#include "rpg_common_file_tools.h"
-#include "rpg_common_XML_tools.h"
-
-#include "ace/ACE.h"
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-#include "ace/Init_ACE.h"
-#endif
-#include "ace/Log_Msg.h"
-#include "ace/Get_Opt.h"
-#include "ace/High_Res_Timer.h"
-
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <string>
-#include <algorithm>
-#include <numeric>
+#include "rpg_graphics_common_tools.h"
 
 void
 do_printUsage(const std::string& programName_in)
@@ -435,11 +440,11 @@ ACE_TMAIN(int argc_in,
   bool print_version_and_exit           = false;
 
   // sanity check
-  if (!RPG_Common_File_Tools::isDirectory(schema_repository))
+  if (!Common_File_Tools::isDirectory (schema_repository))
   {
-    ACE_DEBUG((LM_WARNING,
-               ACE_TEXT("invalid XML schema repository (was: \"%s\"), continuing\n"),
-               ACE_TEXT(schema_repository.c_str())));
+    ACE_DEBUG ((LM_WARNING,
+                ACE_TEXT ("invalid XML schema repository (was: \"%s\"), continuing\n"),
+                ACE_TEXT (schema_repository.c_str ())));
 
     // try fallback
     schema_repository.clear();
@@ -468,21 +473,21 @@ ACE_TMAIN(int argc_in,
   } // end IF
 
   // step1b: validate arguments
-  if (!RPG_Common_File_Tools::isReadable(item_dictionary_filename)  ||
-      !RPG_Common_File_Tools::isReadable(magic_dictionary_filename) ||
-      !RPG_Common_File_Tools::isReadable(player_filename))
+  if (!Common_File_Tools::isReadable (item_dictionary_filename)  ||
+      !Common_File_Tools::isReadable (magic_dictionary_filename) ||
+      !Common_File_Tools::isReadable (player_filename))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("missing/invalid (XML) filename, aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("missing/invalid (XML) filename, aborting\n")));
 
     // make 'em learn...
     do_printUsage(std::string(ACE::basename(argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -490,21 +495,21 @@ ACE_TMAIN(int argc_in,
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
-  if (!RPG_Common_Tools::initLogging(ACE::basename(argv_in[0]), // program name
-                                     log_file,                  // logfile
-                                     false,                     // log to syslog ?
-                                     false,                     // trace messages ?
-                                     trace_information,         // debug messages ?
-                                     NULL))                     // logger
+  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
+                                        log_file,                  // logfile
+                                        false,                     // log to syslog ?
+                                        false,                     // trace messages ?
+                                        trace_information,         // debug messages ?
+                                        NULL))                     // logger
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_Tools::initLogging(), aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Common_Tools::initLogging(), aborting\n")));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -516,10 +521,10 @@ ACE_TMAIN(int argc_in,
     do_printVersion(std::string(ACE::basename(argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_SUCCESS;

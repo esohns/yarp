@@ -35,6 +35,9 @@
     <ClInclude Include="..\..\test_u\character\player\test_u_main.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\modules\libCommon\prj\msvc\libCommon.vcxproj">
+      <Project>{78a90d08-4e40-4ed4-8f75-393ac6526158}</Project>
+    </ProjectReference>
     <ProjectReference Include="character.vcxproj">
       <Project>{d93f14b1-cfe8-45df-816d-06ab1ca74cd6}</Project>
     </ProjectReference>
@@ -103,7 +106,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\net\client;$(ProjectDir)..\..\engine;$(ProjectDir)..\..\sound;$(ProjectDir)..\..\client;$(ProjectDir)..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\modules\libACEStream\src;$(ProjectDir)..\..\modules\libACENetwork\src;$(ProjectDir)..\..\modules\libACENetwork\src\client;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\net\client;$(ProjectDir)..\..\engine;$(ProjectDir)..\..\sound;$(ProjectDir)..\..\client;$(ProjectDir)..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BASEDIR="";RPG_CLIENT_HAS_DLL;RPG_ENGINE_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;DEBUG_DEBUGGER;GNOME_DISABLE_DEPRECATED;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -113,6 +116,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
+      <ShowIncludes>
+      </ShowIncludes>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -143,11 +148,13 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\net\client;$(ProjectDir)..\..\engine;$(ProjectDir)..\..\sound;$(ProjectDir)..\..\client;$(ProjectDir)..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\modules\libACEStream\src;$(ProjectDir)..\..\modules\libACENetwork\src;$(ProjectDir)..\..\modules\libACENetwork\src\client;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\net\client;$(ProjectDir)..\..\engine;$(ProjectDir)..\..\sound;$(ProjectDir)..\..\client;$(ProjectDir)..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BASEDIR=".";RPG_CLIENT_HAS_DLL;RPG_ENGINE_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;GNOME_DISABLE_DEPRECATED;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
+      <ShowIncludes>
+      </ShowIncludes>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

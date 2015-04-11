@@ -45,9 +45,6 @@
     <ClCompile Include="..\..\client\rpg_client_entity_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\client\rpg_client_GTK_manager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\client\rpg_client_logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -98,19 +95,7 @@
     <ClInclude Include="..\..\client\rpg_client_graphicsmode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\client\rpg_client_GTK_manager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\client\rpg_client_iGTK_ui.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\client\rpg_client_iinitGTKUI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\client\rpg_client_incl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\client\rpg_client_iwidget_ui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\client\rpg_client_iwindow.h">

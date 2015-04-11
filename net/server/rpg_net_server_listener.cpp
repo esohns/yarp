@@ -156,7 +156,7 @@ RPG_Net_Server_Listener::start()
 }
 
 void
-RPG_Net_Server_Listener::stop(const bool& lockedAccess_in)
+RPG_Net_Server_Listener::stop(bool lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Net_Server_Listener::stop"));
 
@@ -210,7 +210,7 @@ RPG_Net_Server_Listener::dump_state() const
 
   ACE_TCHAR* buffer = NULL;
   if ((inherited::info(&buffer,
-                      RPG_COMMON_BUFSIZE) == -1) ||
+                       BUFSIZ) == -1) ||
       !buffer)
   {
     ACE_DEBUG((LM_ERROR,

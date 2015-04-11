@@ -21,26 +21,26 @@
 
 #include "rpg_engine_event_manager.h"
 
-#include "rpg_engine_defines.h"
-#include "rpg_engine_common.h"
-#include "rpg_engine.h"
-#include "rpg_engine_common_tools.h"
+#include "ace/Log_Msg.h"
+#include "ace/OS.h"
 
-#include "rpg_map_common_tools.h"
+#include "rpg_dice.h"
+
+#include "common.h"
+//#include "common_defines.h"
+//#include "common_macros.h"
+#include "common_timerhandler.h"
+#include "common_timer_manager.h"
 
 #include "rpg_monster_common.h"
 #include "rpg_monster_dictionary.h"
 
-#include "rpg_common_macros.h"
-#include "rpg_common.h"
-#include "rpg_common_defines.h"
-#include "rpg_common_timerhandler.h"
-#include "rpg_common_timer_manager.h"
+#include "rpg_map_common_tools.h"
 
-#include "rpg_dice.h"
-
-#include "ace/OS.h"
-#include "ace/Log_Msg.h"
+#include "rpg_engine.h"
+#include "rpg_engine_common.h"
+#include "rpg_engine_common_tools.h"
+#include "rpg_engine_defines.h"
 
 RPG_Engine_Event_Manager::RPG_Engine_Event_Manager()
  : myEngine(NULL)//,
@@ -57,11 +57,10 @@ RPG_Engine_Event_Manager::~RPG_Engine_Event_Manager()
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::~RPG_Engine_Event_Manager"));
 
-	// clean up
-	if (isRunning())
-		stop();
-	else
-		cancel_all();
+  if (isRunning())
+    stop ();
+  else
+    cancel_all ();
 }
 
 int
@@ -305,8 +304,8 @@ RPG_Engine_Event_Manager::reschedule(const RPG_Engine_EntityID_t& id_in,
   } // end lock scope
 
   ACE_ASSERT(timer_id != -1);
-  RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->resetInterval(timer_id,
-                                                               activationInterval_in);
+  COMMON_TIMERMANAGER_SINGLETON::instance()->resetInterval(timer_id,
+                                                           activationInterval_in);
 
   //ACE_DEBUG((LM_DEBUG,
   //           ACE_TEXT("reset timer interval (ID: %d) for entity %u\n"),
@@ -324,35 +323,35 @@ RPG_Engine_Event_Manager::start()
     return;
 
   // init game clock
-  myGameClockStart = RPG_COMMON_TIME_POLICY();
+  myGameClockStart = COMMON_TIME_POLICY();
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("started game clock: \"%#D\"\n"),
              &myGameClockStart));
 
   // OK: start worker thread
   ACE_hthread_t thread_handles[RPG_ENGINE_AI_DEF_NUM_THREADS];
-	ACE_OS::memset(thread_handles, 0, sizeof(thread_handles));
+  ACE_OS::memset(thread_handles, 0, sizeof(thread_handles));
   ACE_thread_t thread_ids[RPG_ENGINE_AI_DEF_NUM_THREADS];
-	ACE_OS::memset(thread_ids, 0, sizeof(thread_ids));
-	const char* thread_names[RPG_ENGINE_AI_DEF_NUM_THREADS];
-	char* thread_name = NULL;
-	std::string buffer;
+  ACE_OS::memset(thread_ids, 0, sizeof(thread_ids));
+  const char* thread_names[RPG_ENGINE_AI_DEF_NUM_THREADS];
+  char* thread_name = NULL;
+  std::string buffer;
   std::ostringstream converter;
   for (unsigned int i = 0;
-			  i < RPG_ENGINE_AI_DEF_NUM_THREADS;
-				i++)
+       i < RPG_ENGINE_AI_DEF_NUM_THREADS;
+       i++)
   {
     thread_name = NULL;
-    thread_name = new(std::nothrow) char[RPG_COMMON_BUFSIZE];
+    thread_name = new(std::nothrow) char[BUFSIZ];
 //      ACE_NEW_NORETURN(thread_name,
-//                       char[RPG_COMMON_BUFSIZE]);
+//                       char[BUFSIZ]);
     if (!thread_name)
     {
       ACE_DEBUG((LM_CRITICAL,
                   ACE_TEXT("failed to allocate memory, aborting\n")));
 
       // clean up
-			for (unsigned int j = 0; j < i; j++)
+      for (unsigned int j = 0; j < i; j++)
         delete [] thread_names[j];
 
       return;
@@ -365,24 +364,24 @@ RPG_Engine_Event_Manager::start()
     buffer += converter.str();
     ACE_OS::memset(thread_name, 0, sizeof(thread_name));
     ACE_OS::strcpy(thread_name,
-			             buffer.c_str());
+                   buffer.c_str ());
     thread_names[i] = thread_name;
   } // end FOR
   // *IMPORTANT NOTE*: MUST be THR_JOINABLE !!!
   int result = 0;
   result = inherited::activate((THR_NEW_LWP       |
-																THR_JOINABLE      |
-																THR_INHERIT_SCHED),           // flags
-															 RPG_ENGINE_AI_DEF_NUM_THREADS, // number of threads
-															 0,                             // force spawning
-															 ACE_DEFAULT_THREAD_PRIORITY,   // priority
-															 inherited::grp_id(),           // group id --> has been set (see above)
-															 NULL,                          // corresp. task --> use 'this'
-															 thread_handles,                // thread handle(s)
-															 NULL,                          // thread stack(s)
-															 NULL,                          // thread stack size(s)
-															 thread_ids,                    // thread id(s)
-															 thread_names);                 // thread names(s)
+                                THR_JOINABLE      |
+                                THR_INHERIT_SCHED),           // flags
+                                RPG_ENGINE_AI_DEF_NUM_THREADS, // number of threads
+                                0,                             // force spawning
+                                ACE_DEFAULT_THREAD_PRIORITY,   // priority
+                                inherited::grp_id(),           // group id --> has been set (see above)
+                                NULL,                          // corresp. task --> use 'this'
+                                thread_handles,                // thread handle(s)
+                                NULL,                          // thread stack(s)
+                                NULL,                          // thread stack size(s)
+                                thread_ids,                    // thread id(s)
+                                thread_names);                 // thread names(s)
   if (result == -1)
   {
     ACE_DEBUG((LM_ERROR,
@@ -420,7 +419,7 @@ RPG_Engine_Event_Manager::start()
 }
 
 void
-RPG_Engine_Event_Manager::stop(const bool& lockedAccess_in)
+RPG_Engine_Event_Manager::stop(bool lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::stop"));
 
@@ -430,45 +429,45 @@ RPG_Engine_Event_Manager::stop(const bool& lockedAccess_in)
   if (!isRunning())
     return;
 
-	// cancel all events
-	cancel_all();
+  // cancel all events
+  cancel_all();
 
   // stop/fini game clock
-  ACE_Time_Value elapsed = RPG_COMMON_TIME_POLICY() - myGameClockStart;
-	// *TODO*: "%#T" doesn't work correctly 1.111111 --> " 01:00:01.111111"
-	// --> that's OK for now...
+  ACE_Time_Value elapsed = COMMON_TIME_POLICY() - myGameClockStart;
+  // *TODO*: "%#T" doesn't work correctly 1.111111 --> " 01:00:01.111111"
+  // --> that's OK for now...
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("stopped game clock: \"%#T\"\n"),
              &elapsed));
 
   // drop control message(s) into the queue...
   RPG_Engine_Event_t* quit_message = NULL;
-	for (unsigned int i = 0;
-		   i < RPG_ENGINE_AI_DEF_NUM_THREADS;
-			 i++)
-	{
-		quit_message = NULL;
-		ACE_NEW_NORETURN(quit_message,
-			               RPG_Engine_Event_t());
-		if (!quit_message)
-		{
-			ACE_DEBUG((LM_CRITICAL,
-				         ACE_TEXT("unable to allocate memory, aborting\n")));
+  for (unsigned int i = 0;
+       i < RPG_ENGINE_AI_DEF_NUM_THREADS;
+       i++)
+  {
+    quit_message = NULL;
+    ACE_NEW_NORETURN(quit_message,
+                     RPG_Engine_Event_t ());
+    if (!quit_message)
+    {
+      ACE_DEBUG ((LM_CRITICAL,
+        ACE_TEXT ("unable to allocate memory, aborting\n")));
 
-			return;
-		} // end IF
-		quit_message->type = EVENT_QUIT;
-		if (inherited::putq(quit_message, NULL) == -1)
-		{
-			ACE_DEBUG((LM_ERROR,
-				         ACE_TEXT("failed to ACE_Task::putq(): \"%m\", returning\n")));
+      return;
+    } // end IF
+    quit_message->type = EVENT_QUIT;
+    if (inherited::putq(quit_message, NULL) == -1)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE_Task::putq(): \"%m\", returning\n")));
 
-			// clean up
-			delete quit_message;
+      // clean up
+      delete quit_message;
 
-			return;
-		} // end IF
-	} // end IF
+      return;
+    } // end IF
+  } // end IF
 
   // ... and wait for the worker thread(s) to join
   if (inherited::wait() == -1)
@@ -522,12 +521,12 @@ RPG_Engine_Event_Manager::schedule(RPG_Engine_Event_t* event_in,
   ACE_ASSERT(interval_in != ACE_Time_Value::zero);
 
   ACE_Event_Handler* timer_handler = NULL;
-  ACE_NEW_NORETURN(timer_handler,
-                   RPG_Common_TimerHandler(this, isOneShot_in));
+  ACE_NEW_NORETURN (timer_handler,
+                    Common_TimerHandler (this, isOneShot_in));
   if (!timer_handler)
   {
-    ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate RPG_Common_TimerHandler, aborting\n")));
+    ACE_DEBUG ((LM_CRITICAL,
+                ACE_TEXT ("failed to allocate Common_TimerHandler, aborting\n")));
 
     // clean up
     delete event_in;
@@ -538,15 +537,15 @@ RPG_Engine_Event_Manager::schedule(RPG_Engine_Event_t* event_in,
   long timer_id = -1;
   // *NOTE*: fire&forget API for timer_handler...
   timer_id =
-    RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->schedule(timer_handler,                          // event handler handle
-                                                            event_in,                               // ACT
-                                                            RPG_COMMON_TIME_POLICY() + interval_in, // first wakeup time
-                                                            (isOneShot_in ? ACE_Time_Value::zero    // interval
-                                                                          : interval_in));
+    COMMON_TIMERMANAGER_SINGLETON::instance ()->schedule (timer_handler,                       // event handler handle
+                                                          event_in,                            // ACT
+                                                          COMMON_TIME_POLICY () + interval_in, // first wakeup time
+                                                          (isOneShot_in ? ACE_Time_Value::zero // interval
+                                                                        : interval_in));
   if (timer_id == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to schedule timer, aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to schedule timer, aborting\n")));
 
     // clean up
     delete timer_handler;
@@ -554,57 +553,56 @@ RPG_Engine_Event_Manager::schedule(RPG_Engine_Event_t* event_in,
 
     return -1;
   } // end IF
-	event_in->timer_id = timer_id;
+  event_in->timer_id = timer_id;
 
-	{
+  {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
     myTimers[timer_id] = event_in;
-	} // end lock scope
+  } // end lock scope
 
   return timer_id;
 }
 
 void
-RPG_Engine_Event_Manager::cancel(const long& id_in)
+RPG_Engine_Event_Manager::cancel (const long& id_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::cancel"));
+  RPG_TRACE (ACE_TEXT ("RPG_Engine_Event_Manager::cancel"));
 
-	const void* act = NULL;
-	if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(id_in,
-		                                                        &act) <= 0)
-	{
-		ACE_DEBUG((LM_DEBUG,
-			         ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-			         id_in));
-	} // end IF
-	else
-	{
-		ACE_ASSERT(act);
-	} // end ELSE
+  const void* act_p = NULL;
+  if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (id_in,
+                                                          &act_p) <= 0)
+  {
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                id_in));
+  } // end IF
+  else
+  {
+    ACE_ASSERT (act_p);
+  } // end ELSE
 
-	// clean up
-	{
-    ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  // clean up
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard (myLock);
 
-    RPG_Engine_EventTimersConstIterator_t iterator = myTimers.find(id_in);
-    ACE_ASSERT(iterator != myTimers.end());
-    if (iterator == myTimers.end())
+    RPG_Engine_EventTimersConstIterator_t iterator = myTimers.find (id_in);
+    ACE_ASSERT (iterator != myTimers.end ());
+    if (iterator == myTimers.end ())
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid timer id (was: %d), aborting\n"),
-                 id_in));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid timer id (was: %d), aborting\n"),
+                  id_in));
       return;
     } // end IF
 
-		if (act)
-		{
-			ACE_ASSERT(act == (*iterator).second);
-		} // end IF
-		delete (*iterator).second;
-		myTimers.erase((*iterator).first);
-	} // end lock scope
+    if (act_p)
+    {
+      ACE_ASSERT (act_p == (*iterator).second);
+    } // end IF
+    delete (*iterator).second;
+    myTimers.erase ((*iterator).first);
+  } // end lock scope
 }
 
 void
@@ -612,28 +610,28 @@ RPG_Engine_Event_Manager::cancel_all()
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::cancel_all"));
 
-	const void* act = NULL;
+  const void* act_p = NULL;
 
-	ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
-	for (RPG_Engine_EventTimersConstIterator_t iterator = myTimers.begin();
-       iterator != myTimers.end();
-			 iterator++)
+  ACE_Guard<ACE_Thread_Mutex> aGuard (myLock);
+  for (RPG_Engine_EventTimersConstIterator_t iterator = myTimers.begin ();
+       iterator != myTimers.end ();
+       iterator++)
   {
-		act = NULL;
-		if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel((*iterator).first,
-																															&act) <= 0)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                 (*iterator).first));
-		else
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("cancelled timer (ID: %d)...\n"),
-                 (*iterator).first));
-	  ACE_ASSERT(act == (*iterator).second);
-	  delete (*iterator).second;
+    act_p = NULL;
+    if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel ((*iterator).first,
+                                                            &act_p) <= 0)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                  (*iterator).first));
+    else
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT ("cancelled timer (ID: %d)...\n"),
+                  (*iterator).first));
+    ACE_ASSERT (act_p == (*iterator).second);
+    delete (*iterator).second;
   } // end IF
 
-	myTimers.clear();
+  myTimers.clear ();
 }
 
 void

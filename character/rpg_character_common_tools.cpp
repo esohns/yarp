@@ -21,32 +21,34 @@
 
 #include "rpg_character_common_tools.h"
 
-#include "rpg_character_defines.h"
-#include "rpg_character_race_common.h"
-#include "rpg_character_class_common_tools.h"
-#include "rpg_character_skills_common_tools.h"
-
-#include "rpg_item_common_tools.h"
-#include "rpg_item_instance_manager.h"
-#include "rpg_item_dictionary.h"
-
-#include "rpg_magic_dictionary.h"
-#include "rpg_magic_common_tools.h"
-
-#include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-#include "rpg_common_camp.h"
-#include "rpg_common_tools.h"
-
-#include "rpg_dice.h"
-#include "rpg_chance_common_tools.h"
-
-#include <ace/Log_Msg.h>
-
 #include <string>
 #include <sstream>
 #include <algorithm>
 #include <numeric>
+#include <limits>
+
+#include "ace/Log_Msg.h"
+
+#include "rpg_common_camp.h"
+#include "rpg_common_defines.h"
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
+
+#include "rpg_dice.h"
+
+#include "rpg_chance_common_tools.h"
+
+#include "rpg_magic_common_tools.h"
+#include "rpg_magic_dictionary.h"
+
+#include "rpg_item_common_tools.h"
+#include "rpg_item_dictionary.h"
+#include "rpg_item_instance_manager.h"
+
+#include "rpg_character_class_common_tools.h"
+#include "rpg_character_defines.h"
+#include "rpg_character_race_common.h"
+#include "rpg_character_skills_common_tools.h"
 
 // init statics
 RPG_Character_GenderToStringTable_t RPG_Character_GenderHelper::myRPG_Character_GenderToStringTable;

@@ -21,28 +21,38 @@
 #ifndef RPG_ENGINE_COMMON_H
 #define RPG_ENGINE_COMMON_H
 
-#include "rpg_engine_command.h"
-#include "rpg_engine_entitymode.h"
+#include <deque>
+#include <set>
+#include <string>
+#include <list>
+#include <map>
 
-#include "rpg_map_common.h"
+#include "ace/INET_Addr.h"
+#include "ace/Log_Msg.h"
+#include "ace/Time_Value.h"
+
+#include "net_configuration.h"
+#include "net_connection_manager_common.h"
+
+#include "net_client_iconnector.h"
+
+#include "rpg_common_condition.h"
+//#include "rpg_common_incl.h"
+#include "rpg_common_plane.h"
+#include "rpg_common_terrain.h"
+#include "rpg_common_climate.h"
+#include "rpg_common_timeofday.h"
+#include "rpg_common_ambientlighting.h"
+#include "rpg_common_environment.h"
 
 #include "rpg_player_base.h"
 
 #include "rpg_monster_common.h"
 
-#include "rpg_common_environment.h"
-#include "rpg_common_condition.h"
+#include "rpg_map_common.h"
 
-//#include "SDL.h"
-
-#include "ace/Time_Value.h"
-#include "ace/Log_Msg.h"
-
-#include <set>
-#include <deque>
-#include <string>
-#include <map>
-#include <list>
+#include "rpg_engine_command.h"
+#include "rpg_engine_entitymode.h"
 
 typedef std::set<RPG_Engine_EntityMode> RPG_Engine_EntityMode_t;
 typedef RPG_Engine_EntityMode_t::const_iterator RPG_Engine_EntityModeConstIterator_t;
@@ -230,5 +240,10 @@ typedef std::vector<unsigned int> RPG_Engine_Level2ExperienceList_t;
 typedef RPG_Engine_Level2ExperienceList_t::const_iterator RPG_Engine_Level2ExperienceListConstIterator_t;
 typedef std::map<unsigned char, RPG_Engine_Level2ExperienceList_t> RPG_Engine_CR2ExperienceMap_t;
 typedef RPG_Engine_CR2ExperienceMap_t::const_iterator RPG_Engine_CR2ExperienceMapConstIterator_t;
+
+/////////////////////////////////////////
+
+// *TODO*: move this somehwere else
+typedef NET_TCPCONNECTIONMANAGER_SINGLETON RPG_CONNECTIONMANAGER_SINGLETON;
 
 #endif

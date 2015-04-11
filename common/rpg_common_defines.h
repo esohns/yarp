@@ -28,7 +28,7 @@
 #define RPG_COMMON_MAX_CLASS_LEVEL      20
 
 // *IMPORTANT NOTE*: used for libc calls (i.e. char buffers, mostly)
-#define RPG_COMMON_BUFSIZE              512 // bytes
+//#define RPG_COMMON_BUFSIZE              512 // bytes
 
 // XML-specific
 // *NOTE*: refer to the XSD C++/Tree manual for details

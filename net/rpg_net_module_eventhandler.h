@@ -21,66 +21,73 @@
 #ifndef RPG_Net_Module_EventHandler_H
 #define RPG_Net_Module_EventHandler_H
 
+#include "ace/Global_Macros.h"
+#include "ace/Synch.h"
+
+#include "common.h"
+#include "common_isubscribe.h"
+#include "common_iclone.h"
+
+#include "stream_common.h"
+#include "stream_task_base_synch.h"
+#include "stream_streammodule_base.h"
+
+#include "net_common.h"
+#include "net_message.h"
+#include "net_sessionmessage.h"
+
 #include "rpg_net_exports.h"
-#include "rpg_net_common.h"
-
-#include "rpg_stream_task_base_synch.h"
-#include "rpg_stream_streammodule_base.h"
-
-#include "rpg_common.h"
-#include "rpg_common_isubscribe.h"
-#include "rpg_common_iclone.h"
 
 // forward declaration(s)
-class RPG_Net_SessionMessage;
-class RPG_Net_Message;
-class ACE_Recursive_Thread_Mutex;
+class Net_SessionMessage;
+class Net_Message;
 
-class RPG_Net_Export RPG_Net_Module_EventHandler
- : public RPG_Stream_TaskBaseSynch<RPG_Common_TimePolicy_t,
-                                   RPG_Net_SessionMessage,
-                                   RPG_Net_Message>,
-   public RPG_Common_ISubscribe<RPG_Net_INotify_t>,
-   public RPG_Common_IClone<MODULE_TYPE>
+class RPG_Net_Module_EventHandler
+ : public Stream_TaskBaseSynch_T<Common_TimePolicy_t,
+                                 Net_SessionMessage,
+                                 Net_Message>
+ , public Common_ISubscribe_T<Net_Notification_t>
+ , public Common_IClone_T<Common_Module_t>
 {
  public:
-  RPG_Net_Module_EventHandler();
-  virtual ~RPG_Net_Module_EventHandler();
+  RPG_Net_Module_EventHandler ();
+  virtual ~RPG_Net_Module_EventHandler ();
 
-  void init(RPG_Net_NotifySubscribers_t*, // subscribers (handle)
-            ACE_Recursive_Thread_Mutex*); // subscribers lock
+  void initialize (Net_Subscribers_t* = NULL,           // subscribers (handle)
+                   ACE_Recursive_Thread_Mutex* = NULL); // subscribers lock
 
-  // implement (part of) Stream_ITaskBase
-  virtual void handleDataMessage(RPG_Net_Message*&, // data message handle
-                                 bool&);            // return value: pass message downstream ?
-  virtual void handleSessionMessage(RPG_Net_SessionMessage*&, // session message handle
-                                    bool&);                   // return value: pass message downstream ?
+  // implement (part of) Stream_ITaskBase_T
+  virtual void handleDataMessage (Net_Message*&, // data message handle
+                                  bool&);        // return value: pass message downstream ?
+  virtual void handleSessionMessage (Net_SessionMessage*&, // session message handle
+                                     bool&);               // return value: pass message downstream ?
 
-  // implement RPG_Common_ISubscribe
-  virtual void subscribe(RPG_Net_INotify_t*); // new subscriber
-  virtual void unsubscribe(RPG_Net_INotify_t*); // existing subscriber
+  // implement Common_ISubscribe_T
+  virtual void subscribe (Net_Notification_t*);   // new subscriber
+  virtual void unsubscribe (Net_Notification_t*); // existing subscriber
 
-  // implement RPG_Common_IClone
-  virtual MODULE_TYPE* clone();
+  // implement Common_IClone_T
+  virtual Common_Module_t* clone ();
 
  private:
-  typedef RPG_Stream_TaskBaseSynch<RPG_Common_TimePolicy_t,
-                                   RPG_Net_SessionMessage,
-                                   RPG_Net_Message> inherited;
+  typedef Stream_TaskBaseSynch_T<Common_TimePolicy_t,
+                                 Net_SessionMessage,
+                                 Net_Message> inherited;
 
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_EventHandler(const RPG_Net_Module_EventHandler&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Module_EventHandler& operator=(const RPG_Net_Module_EventHandler&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Module_EventHandler (const RPG_Net_Module_EventHandler&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Module_EventHandler& operator= (const RPG_Net_Module_EventHandler&));
 
-  // *NOTE*: make this recursive so that users may unsubscribe from within the
+  bool                        delete_;
+  // *NOTE*: recursive so that users may unsubscribe from within the
   // notification callbacks...
-  // *WARNING*: implies CAREFUL iteration
-  ACE_Recursive_Thread_Mutex*  myLock;
-  RPG_Net_NotifySubscribers_t* mySubscribers;
+  ACE_Recursive_Thread_Mutex* lock_;
+  Net_Subscribers_t*          subscribers_;
 };
 
 // declare module
-DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                 // task synch type
-                             RPG_Common_TimePolicy_t,      // time policy
-                             RPG_Net_Module_EventHandler); // writer type
+DATASTREAM_MODULE_INPUT_ONLY (ACE_MT_SYNCH,                 // task synch type
+                              Common_TimePolicy_t,          // time policy
+                              Stream_ModuleConfiguration_t, // configuration type
+                              RPG_Net_Module_EventHandler); // writer type
 
 #endif

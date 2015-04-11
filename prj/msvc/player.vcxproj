@@ -63,7 +63,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\combat;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\combat;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_PLAYER_BUILD_DLL;RPG_COMBAT_HAS_DLL;RPG_CHARACTER_HAS_DLL;RPG_ITEM_HAS_DLL;RPG_COMMON_HAS_DLL;DEBUG_DEBUGGER;_SCL_SECURE_NO_WARNINGS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ShowIncludes>false</ShowIncludes>
@@ -108,7 +108,7 @@ popd</Command>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\combat;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\combat;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_PLAYER_BUILD_DLL;RPG_COMBAT_HAS_DLL;RPG_CHARACTER_HAS_DLL;RPG_ITEM_HAS_DLL;RPG_COMMON_HAS_DLL;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalOptions>/FS -Zm256 %(AdditionalOptions)</AdditionalOptions>
       <SDLCheck>true</SDLCheck>
@@ -191,6 +191,9 @@ popd</Command>
     </CXX_Tree_Mapping_Rule>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\modules\libCommon\prj\msvc\libCommon.vcxproj">
+      <Project>{78a90d08-4e40-4ed4-8f75-393ac6526158}</Project>
+    </ProjectReference>
     <ProjectReference Include="character.vcxproj">
       <Project>{d93f14b1-cfe8-45df-816d-06ab1ca74cd6}</Project>
     </ProjectReference>

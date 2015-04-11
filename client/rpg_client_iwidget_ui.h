@@ -21,17 +21,13 @@
 #ifndef RPG_CLIENT_IWIDGET_UI_H
 #define RPG_CLIENT_IWIDGET_UI_H
 
-#include <string>
+#include "common_ui_common.h"
+#include "common_ui_igtk"
 
 class RPG_Client_IWidgetUI
+ : public Common_UI_IGTK_T<Common_UI_GTKState>
 {
  public:
-  // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
-  // -Wno-non-virtual-dtor in the project settings...
-
-  // exposed interface
-  virtual bool init(const std::string&) = 0; // UI definition filename
-  virtual void fini() = 0;
 };
 
 #endif

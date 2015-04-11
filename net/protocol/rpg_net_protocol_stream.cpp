@@ -21,89 +21,85 @@
 
 #include "rpg_net_protocol_stream.h"
 
-#include "rpg_net_protocol_sessionmessage.h"
-#include "rpg_net_protocol_message.h"
-
 #include <string>
 
-RPG_Net_Protocol_Stream::RPG_Net_Protocol_Stream()
- : //inherited(),
-   myIRCMarshal(std::string("IRCMarshal"),
-                NULL),
-   myIRCParser(std::string("IRCParser"),
-               NULL),
-//    myIRCHandler(std::string("IRCHandler"),
-//                 NULL),
-   myRuntimeStatistic(std::string("RuntimeStatistic"),
-                      NULL)
+#include "rpg_net_protocol_common_modules.h"
+#include "rpg_net_protocol_message.h"
+#include "rpg_net_protocol_sessionmessage.h"
+
+RPG_Net_Protocol_Stream::RPG_Net_Protocol_Stream ()
+ : inherited ()
+ , myIRCMarshal (std::string ("IRCMarshal"),
+                 NULL)
+ , myIRCParser (std::string ("IRCParser"),
+                NULL)
+ //, myIRCHandler (std::string ("IRCHandler"),
+ //                NULL)
+ , myRuntimeStatistic (std::string ("RuntimeStatistic"),
+                       NULL)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Stream::RPG_Net_Protocol_Stream"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Stream::RPG_Net_Protocol_Stream"));
 
   // remember the ones we "own"...
   // *TODO*: clean this up
   // *NOTE*: one problem is that we need to explicitly close() all
   // modules which we have NOT enqueued onto the stream (e.g. because init()
   // failed...)
-  myAvailableModules.insert_tail(&myIRCMarshal);
-  myAvailableModules.insert_tail(&myIRCParser);
-  myAvailableModules.insert_tail(&myRuntimeStatistic);
+  inherited::availableModules_.insert_tail (&myIRCMarshal);
+  inherited::availableModules_.insert_tail (&myIRCParser);
+  inherited::availableModules_.insert_tail (&myRuntimeStatistic);
 
   // fix ACE bug: modules should initialize their "next" member to NULL !
 //   for (MODULE_CONTAINERITERATOR_TYPE iter = myAvailableModules.begin();
-  inherited::MODULE_TYPE* module = NULL;
-  for (ACE_DLList_Iterator<inherited::MODULE_TYPE> iterator(myAvailableModules);
-       iterator.next(module);
-       iterator.advance())
-    module->next(NULL);
+  inherited::MODULE_T* module_p = NULL;
+  for (ACE_DLList_Iterator<inherited::MODULE_T> iterator (inherited::availableModules_);
+       iterator.next (module_p);
+       iterator.advance ())
+    module_p->next (NULL);
 }
 
-RPG_Net_Protocol_Stream::~RPG_Net_Protocol_Stream()
+RPG_Net_Protocol_Stream::~RPG_Net_Protocol_Stream ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Stream::~RPG_Net_Protocol_Stream"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Stream::~RPG_Net_Protocol_Stream"));
 
   // *NOTE*: this implements an ordered shutdown on destruction...
-  inherited::shutdown();
+  inherited::shutdown ();
 }
 
 bool
-RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& configuration_in)
+RPG_Net_Protocol_Stream::initialize (const RPG_Net_Protocol_Configuration& configuration_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Stream::init"));
-
-  // sanity check(s)
-  ACE_ASSERT(!myIsInitialized);
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Stream::initialize"));
 
   // things to be done here:
   // - create modules (done for the ones we "own")
   // - init modules
   // - push them onto the stream (tail-first) !
   // ******************* Runtime Statistics ************************
-  RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T* runtimeStatistic_impl = NULL;
-  runtimeStatistic_impl = dynamic_cast<RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T*> (myRuntimeStatistic.writer());
+  RPG_Net_Protocol_Module_Statistic_WriterTask_t* runtimeStatistic_impl = NULL;
+  runtimeStatistic_impl =
+    dynamic_cast<RPG_Net_Protocol_Module_Statistic_WriterTask_t*> (myRuntimeStatistic.writer ());
   if (!runtimeStatistic_impl)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("dynamic_cast<RPG_Net_Module_RuntimeStatistic) failed> (aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("dynamic_cast<RPG_Net_Module_RuntimeStatistic> failed, aborting\n")));
     return false;
   } // end IF
-  if (!runtimeStatistic_impl->init (configuration_in.statisticsReportingInterval,
-                                    configuration_in.streamSocketConfiguration.messageAllocator)) // print cache info ?
+  if (!runtimeStatistic_impl->initialize (configuration_in.statisticReportingInterval,
+                                          configuration_in.messageAllocator))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
-               myRuntimeStatistic.name()));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to initialize module: \"%s\", aborting\n"),
+                ACE_TEXT (myRuntimeStatistic.name ())));
     return false;
   } // end IF
 
   // enqueue the module...
-  if (push(&myRuntimeStatistic))
+  if (inherited::push (&myRuntimeStatistic))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Stream::push() module: \"%s\", aborting\n"),
-               myRuntimeStatistic.name()));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_Stream::push() module: \"%s\", aborting\n"),
+                ACE_TEXT (myRuntimeStatistic.name ())));
     return false;
   } // end IF
 
@@ -114,7 +110,6 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& configuration_in
 //   {
 //     ACE_DEBUG((LM_ERROR,
 //                ACE_TEXT("dynamic_cast<RPG_Net_Protocol_Module_IRCHandler) failed> (aborting\n")));
-//
 //     return false;
 //   } // end IF
 //   if (!IRCHandler_impl->init(configuration_in.messageAllocator,
@@ -125,94 +120,85 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& configuration_in
 //     ACE_DEBUG((LM_ERROR,
 //                ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
 //                myIRCHandler.name()));
-//
 //     return false;
 //   } // end IF
 //
 //   // enqueue the module...
-//   if (push(&myIRCHandler))
+//   if (inherited::push(&myIRCHandler))
 //   {
 //     ACE_DEBUG((LM_ERROR,
 //                ACE_TEXT("failed to ACE_Stream::push() module: \"%s\", aborting\n"),
 //                myIRCHandler.name()));
-//
 //     return false;
 //   } // end IF
 
   // ******************* IRC Parser ************************
   RPG_Net_Protocol_Module_IRCParser* IRCParser_impl = NULL;
-  IRCParser_impl = dynamic_cast<RPG_Net_Protocol_Module_IRCParser*> (myIRCParser.writer());
+  IRCParser_impl =
+   dynamic_cast<RPG_Net_Protocol_Module_IRCParser*> (myIRCParser.writer());
   if (!IRCParser_impl)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("dynamic_cast<RPG_Net_Protocol_Module_IRCParser) failed> (aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("dynamic_cast<RPG_Net_Protocol_Module_IRCParser) failed> (aborting\n")));
     return false;
   } // end IF
-  if (!IRCParser_impl->init (configuration_in.streamSocketConfiguration.messageAllocator, // message allocator
-                             configuration_in.crunchMessageBuffers,                       // "crunch" messages ?
-                             configuration_in.debugScanner,                               // debug scanner ?
-                             configuration_in.debugParser))                               // debug parser ?
+  if (!IRCParser_impl->initialize (configuration_in.messageAllocator,     // message allocator
+                                   configuration_in.crunchMessageBuffers, // "crunch" messages ?
+                                   configuration_in.debugScanner,         // debug scanner ?
+                                   configuration_in.debugParser))         // debug parser ?
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
-               myIRCParser.name()));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to initialize module: \"%s\", aborting\n"),
+                ACE_TEXT (myIRCParser.name ())));
     return false;
   } // end IF
 
   // enqueue the module...
-  if (push(&myIRCParser))
+  if (inherited::push (&myIRCParser))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Stream::push() module: \"%s\", aborting\n"),
-               myIRCParser.name()));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_Stream::push() module: \"%s\", aborting\n"),
+                ACE_TEXT (myIRCParser.name ())));
     return false;
   } // end IF
 
   // ******************* IRC Marshal ************************
   RPG_Net_Protocol_Module_IRCSplitter* IRCSplitter_impl = NULL;
-  IRCSplitter_impl = dynamic_cast<RPG_Net_Protocol_Module_IRCSplitter*> (myIRCMarshal.writer());
+  IRCSplitter_impl =
+   dynamic_cast<RPG_Net_Protocol_Module_IRCSplitter*> (myIRCMarshal.writer());
   if (!IRCSplitter_impl)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("dynamic_cast<RPG_Net_Protocol_Module_IRCSplitter) failed> (aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("dynamic_cast<RPG_Net_Protocol_Module_IRCSplitter> failed, aborting\n")));
     return false;
   } // end IF
-  if (!IRCSplitter_impl->init (configuration_in.streamSocketConfiguration.messageAllocator, // message allocator
-                              false,                                                        // "crunch" messages ?
-                              0,                                                            // DON'T collect statistics
-                              configuration_in.debugScanner))                               // debug scanning ?
+  if (!IRCSplitter_impl->initialize (configuration_in.messageAllocator, // message allocator
+                                     false,                             // "crunch" messages ?
+                                     0,                                 // DON'T collect statistics
+                                     configuration_in.debugScanner))    // debug scanning ?
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
-               myIRCMarshal.name()));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to initialize module: \"%s\", aborting\n"),
+                ACE_TEXT (myIRCMarshal.name ())));
     return false;
   } // end IF
 
   // enqueue the module...
   // *NOTE*: push()ing the module will open() it
   // --> set the argument that is passed along
-  myIRCMarshal.arg (&const_cast<RPG_Net_Protocol_ConfigPOD&> (configuration_in));
-  if (push(&myIRCMarshal))
+  myIRCMarshal.arg (&const_cast<RPG_Net_Protocol_Configuration&> (configuration_in));
+  if (inherited::push (&myIRCMarshal))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Stream::push() module: \"%s\", aborting\n"),
-               myIRCMarshal.name()));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_Stream::push() module: \"%s\", aborting\n"),
+                ACE_TEXT (myIRCMarshal.name ())));
     return false;
   } // end IF
 
   // set (session) message allocator
   // *TODO*: clean this up ! --> sanity check
-  ACE_ASSERT (configuration_in.streamSocketConfiguration.messageAllocator);
-  inherited::myAllocator = configuration_in.streamSocketConfiguration.messageAllocator;
-
-  // OK: all went well
-  inherited::myIsInitialized = true;
+  ACE_ASSERT (configuration_in.messageAllocator);
+  inherited::allocator_ = configuration_in.messageAllocator;
 
 //   // debug info
 //   inherited::dump_state();
@@ -221,28 +207,28 @@ RPG_Net_Protocol_Stream::init(const RPG_Net_Protocol_ConfigPOD& configuration_in
 }
 
 bool
-RPG_Net_Protocol_Stream::collect(RPG_Net_Protocol_RuntimeStatistic& data_out) const
+RPG_Net_Protocol_Stream::collect (RPG_Net_Protocol_RuntimeStatistic& data_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Stream::collect"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Stream::collect"));
 
-  RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T* runtimeStatistic_impl = NULL;
-  runtimeStatistic_impl = dynamic_cast<RPG_NET_PROTOCOL_MODULE_RUNTIMESTATISTICS_T*>(const_cast<RPG_Net_Protocol_Module_RuntimeStatistic_Module&>(myRuntimeStatistic).writer());
+  RPG_Net_Protocol_Module_Statistic_WriterTask_t* runtimeStatistic_impl = NULL;
+  runtimeStatistic_impl =
+    dynamic_cast<RPG_Net_Protocol_Module_Statistic_WriterTask_t*> (const_cast<RPG_Net_Protocol_Module_RuntimeStatistic_Module&> (myRuntimeStatistic).writer ());
   if (!runtimeStatistic_impl)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("dynamic_cast<RPG_Net_Module_RuntimeStatistic) failed> (aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("dynamic_cast<RPG_Net_Module_RuntimeStatistic> failed, aborting\n")));
     return false;
   } // end IF
 
   // delegate to this module...
-  return (runtimeStatistic_impl->collect(data_out));
+  return (runtimeStatistic_impl->collect (data_out));
 }
 
 void
-RPG_Net_Protocol_Stream::report() const
+RPG_Net_Protocol_Stream::report () const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Stream::report"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Stream::report"));
 
 //   RPG_Net_Module_RuntimeStatistic* runtimeStatistic_impl = NULL;
 //   runtimeStatistic_impl = dynamic_cast<RPG_Net_Module_RuntimeStatistic*> (//                                            myRuntimeStatistic.writer());
@@ -258,7 +244,7 @@ RPG_Net_Protocol_Stream::report() const
 //   return (runtimeStatistic_impl->report());
 
   // just a dummy
-  ACE_ASSERT(false);
+  ACE_ASSERT (false);
 
-  ACE_NOTREACHED(return;)
+  ACE_NOTREACHED (return;)
 }

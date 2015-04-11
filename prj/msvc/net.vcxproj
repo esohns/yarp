@@ -11,22 +11,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{AA720739-6711-4CFE-8E54-0D5ABFA83963}</ProjectGuid>
+    <ProjectGuid>{4F0C67A3-7067-4C43-AC18-2529F27F3273}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
     <RootNamespace>net</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -34,211 +35,79 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="VS_ProjectPropertySheet_ACEd.props" />
-    <Import Project="VS_ProjectPropertySheet_Xercesd_Xsd.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="VS_ProjectPropertySheet_ACE.props" />
-    <Import Project="VS_ProjectPropertySheet_Xerces_Xsd.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
-    <TargetName>rpg_$(TargetName)</TargetName>
-    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
-    <IntDir>$(SolutionDir)$(Configuration)_obj\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <TargetName>rpg_$(TargetName)</TargetName>
-    <CustomBuildAfterTargets>Clean</CustomBuildAfterTargets>
-    <CustomBuildBeforeTargets>Rebuild</CustomBuildBeforeTargets>
-    <IntDir>$(SolutionDir)$(Configuration)_obj\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\net\stream;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>RPG_NET_BUILD_DLL;RPG_STREAM_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;_CRT_SECURE_NO_WARNINGS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <ShowIncludes>false</ShowIncludes>
-      <BrowseInformation>false</BrowseInformation>
+      <PreprocessorDefinitions>RPG_NET_BUILD_DLL;WIN32;_DEBUG;_WINDOWS;_USRDLL;NET_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <MinimalRebuild>false</MinimalRebuild>
-      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\modules\libACEStream\src;$(ProjectDir)..\..\modules\libACENetwork\src;$(ProjectDir)..\..\common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
-      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
     </Link>
-    <ProjectReference>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-    </ProjectReference>
-    <CustomBuildStep>
-      <Command>pushd $(ProjectDir)..\..\net\scripts
-call .\exports.bat
-popd</Command>
-      <Message>generating export macros...</Message>
-      <Outputs>rpg_net_exports.h</Outputs>
-      <TreatOutputAsContent>true</TreatOutputAsContent>
-    </CustomBuildStep>
-    <ResourceCompile>
-      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
-    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\net\stream;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>RPG_NET_BUILD_DLL;RPG_STREAM_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RPG_NET_BUILD_DLL;WIN32;NDEBUG;_WINDOWS;_USRDLL;NET_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\modules\libACEStream\src;$(ProjectDir)..\..\modules\libACENetwork\src;$(ProjectDir)..\..\common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
-      <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
     </Link>
-    <ResourceCompile>
-      <AdditionalIncludeDirectories>E:\Yarp\Yarp</AdditionalIncludeDirectories>
-    </ResourceCompile>
-    <CustomBuildStep>
-      <Command>pushd $(ProjectDir)..\..\net\scripts
-call .\exports.bat
-popd</Command>
-      <Message>generating export macros...</Message>
-      <Outputs>rpg_net_exports.h</Outputs>
-      <TreatOutputAsContent>true</TreatOutputAsContent>
-    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\net\rpg_net_asynch_tcpsockethandler.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_asynch_udpsockethandler.cpp" />
     <ClCompile Include="..\..\net\rpg_net_common_tools.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_connection_base.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_connection_manager.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_controller_base.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_message.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_message_base.cpp" />
     <ClCompile Include="..\..\net\rpg_net_module_eventhandler.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_module_headerparser.cpp" />
     <ClCompile Include="..\..\net\rpg_net_module_protocolhandler.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_module_runtimestatistic.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_module_sockethandler.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_protocol_layer.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_resetcounterhandler.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_sessionmessage.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_socketconnection_base.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_sockethandler_base.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_statistichandler.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_stream.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_stream_asynch_tcpsocket_base.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_stream_asynch_udpsocket_base.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_stream_config.cpp" />
     <ClCompile Include="..\..\net\rpg_net_stream_messageallocator.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_stream_tcpsocket_base.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_stream_udpsocket_base.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_tcpconnection.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_tcpsockethandler.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_transportlayer_base.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_transportlayer_ip_cast.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_transportlayer_tcp.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_transportlayer_udp.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_udpconnection.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_udpsockethandler.cpp" />
-    <ClCompile Include="..\..\net\stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(TargetName)_stdafx.o</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(TargetName)_stdafx.o</ObjectFileName>
-    </ClCompile>
+    <ClCompile Include="..\..\net\stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\net\rpg_net_asynch_tcpsockethandler.h" />
-    <ClInclude Include="..\..\net\rpg_net_asynch_udpsockethandler.h" />
-    <ClInclude Include="..\..\net\rpg_net_common.h" />
-    <ClInclude Include="..\..\net\rpg_net_common_modules.h" />
     <ClInclude Include="..\..\net\rpg_net_common_tools.h" />
-    <ClInclude Include="..\..\net\rpg_net_connection_base.h" />
-    <ClInclude Include="..\..\net\rpg_net_connection_manager.h" />
-    <ClInclude Include="..\..\net\rpg_net_controller_base.h" />
     <ClInclude Include="..\..\net\rpg_net_defines.h" />
     <ClInclude Include="..\..\net\rpg_net_exports.h" />
-    <ClInclude Include="..\..\net\rpg_net_iconnection.h" />
-    <ClInclude Include="..\..\net\rpg_net_iconnectionmanager.h" />
-    <ClInclude Include="..\..\net\rpg_net_icounter.h" />
-    <ClInclude Include="..\..\net\rpg_net_inotify.h" />
-    <ClInclude Include="..\..\net\rpg_net_itransportlayer.h" />
-    <ClInclude Include="..\..\net\rpg_net_message.h" />
-    <ClInclude Include="..\..\net\rpg_net_message_base.h" />
     <ClInclude Include="..\..\net\rpg_net_module_eventhandler.h" />
-    <ClInclude Include="..\..\net\rpg_net_module_headerparser.h" />
     <ClInclude Include="..\..\net\rpg_net_module_protocolhandler.h" />
-    <ClInclude Include="..\..\net\rpg_net_module_runtimestatistic.h" />
-    <ClInclude Include="..\..\net\rpg_net_module_sockethandler.h" />
     <ClInclude Include="..\..\net\rpg_net_packet_headers.h" />
-    <ClInclude Include="..\..\net\rpg_net_protocol_layer.h" />
     <ClInclude Include="..\..\net\rpg_net_remote_comm.h" />
-    <ClInclude Include="..\..\net\rpg_net_resetcounterhandler.h" />
-    <ClInclude Include="..\..\net\rpg_net_sessionmessage.h" />
-    <ClInclude Include="..\..\net\rpg_net_socketconnection_base.h" />
-    <ClInclude Include="..\..\net\rpg_net_sockethandler_base.h" />
-    <ClInclude Include="..\..\net\rpg_net_socket_common.h" />
-    <ClInclude Include="..\..\net\rpg_net_statistichandler.h" />
-    <ClInclude Include="..\..\net\rpg_net_stream.h" />
-    <ClInclude Include="..\..\net\rpg_net_stream_asynch_tcpsocket_base.h" />
-    <ClInclude Include="..\..\net\rpg_net_stream_asynch_udpsocket_base.h" />
-    <ClInclude Include="..\..\net\rpg_net_stream_common.h" />
-    <ClInclude Include="..\..\net\rpg_net_stream_config.h" />
     <ClInclude Include="..\..\net\rpg_net_stream_messageallocator.h" />
-    <ClInclude Include="..\..\net\rpg_net_stream_tcpsocket_base.h" />
-    <ClInclude Include="..\..\net\rpg_net_stream_udpsocket_base.h" />
-    <ClInclude Include="..\..\net\rpg_net_tcpconnection.h" />
-    <ClInclude Include="..\..\net\rpg_net_tcpsockethandler.h" />
-    <ClInclude Include="..\..\net\rpg_net_transportlayer_base.h" />
-    <ClInclude Include="..\..\net\rpg_net_transportlayer_ip_cast.h" />
-    <ClInclude Include="..\..\net\rpg_net_transportlayer_tcp.h" />
-    <ClInclude Include="..\..\net\rpg_net_transportlayer_udp.h" />
-    <ClInclude Include="..\..\net\rpg_net_udpconnection.h" />
-    <ClInclude Include="..\..\net\rpg_net_udpsockethandler.h" />
     <ClInclude Include="..\..\net\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\net\rpg_net_connection_base.inl" />
-    <None Include="..\..\net\rpg_net_connection_manager.inl" />
-    <None Include="..\..\net\rpg_net_message_base.inl" />
-    <None Include="..\..\net\rpg_net_module_runtimestatistic.inl" />
-    <None Include="..\..\net\rpg_net_socketconnection_base.inl" />
-    <None Include="..\..\net\rpg_net_statistichandler.inl" />
-    <None Include="..\..\net\rpg_net_stream_asynch_tcpsocket_base.inl" />
-    <None Include="..\..\net\rpg_net_stream_asynch_udpsocket_base.inl" />
-    <None Include="..\..\net\rpg_net_stream_tcpsocket_base.inl" />
-    <None Include="..\..\net\rpg_net_stream_udpsocket_base.inl" />
-    <None Include="..\..\net\scripts\exports.bat" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="common.vcxproj">
-      <Project>{5633f302-ff53-4014-8587-7bb1f35561cd}</Project>
+    <ProjectReference Include="..\..\modules\libACENetwork\prj\msvc\libACENetwork.vcxproj">
+      <Project>{751d54c5-12bd-4771-9453-b9d3948ed025}</Project>
     </ProjectReference>
-    <ProjectReference Include="dice.vcxproj">
-      <Project>{371eac10-4d0b-4f1d-8dea-351dc54c7433}</Project>
+    <ProjectReference Include="..\..\modules\libACEStream\prj\msvc\libACEStream.vcxproj">
+      <Project>{c7a3ee44-14f9-413a-b311-5a77ba5a4edd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\modules\libCommon\prj\msvc\libCommon.vcxproj">
+      <Project>{78a90d08-4e40-4ed4-8f75-393ac6526158}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

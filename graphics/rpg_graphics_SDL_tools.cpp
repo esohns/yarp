@@ -191,50 +191,49 @@ RPG_Graphics_SDL_Tools::initVideo(const RPG_Graphics_SDL_VideoConfiguration_t& c
 }
 
 SDL_Surface*
-RPG_Graphics_SDL_Tools::initScreen(const RPG_Graphics_SDL_VideoConfiguration_t& configuration_in)
+RPG_Graphics_SDL_Tools::initScreen (const RPG_Graphics_SDL_VideoConfiguration_t& configuration_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::initScreen"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::initScreen"));
 
   // init return value
   SDL_Surface* result = NULL;
 
   // sanity check
-  char driver[RPG_COMMON_BUFSIZE];
-  if (!SDL_VideoDriverName(driver,
-                           sizeof(driver)))
+  char driver[BUFSIZ];
+  if (!SDL_VideoDriverName (driver,
+                            sizeof (driver)))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_VideoDriverName(): \"%s\", aborting\n"),
-               ACE_TEXT(SDL_GetError())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_VideoDriverName(): \"%s\", aborting\n"),
+                ACE_TEXT (SDL_GetError ())));
     return result;
   } // end IF
 
   // retrieve/list "best" available video mode
   const SDL_VideoInfo* videoInfo = NULL;
-  videoInfo = SDL_GetVideoInfo();
-  ACE_ASSERT(videoInfo);
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("*** video capabilities (driver: \"%s\") ***\nHW surfaces:\t\t\t\t\"%s\"\nwindow manager:\t\t\t\t\"%s\"\naccelerated HW --> HW [blits/colorkey/alpha]:\t\"%s\"/\"%s\"/\"%s\"\naccelerated SW --> HW [blits/colorkey/alpha]:\t\"%s\"/\"%s\"/\"%s\"\ncolor fills accelerated:\t\t\"%s\"\nvideo memory:\t\t\t\t%d kBytes\n*** (suggested) video mode ***\npalette:\t\t\t\t%@\nbits[bytes]/pixel:\t\t\t%d[%d]\nmask[RGBA]:\t\t\t\t%x %x %x %x\nshift[RGBA]:\t\t\t\t%d %d %d %d\nloss[RGBA]:\t\t\t\t%d %d %d %d\ntransparent colorkey:\t\t\t%d\noverall surface alpha:\t\t\t%d\n"),
-             driver,
-             (videoInfo->hw_available ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->wm_available ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_hw      ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_hw_CC   ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_hw_A    ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_sw      ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_sw_CC   ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_sw_A    ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             (videoInfo->blit_fill    ? ACE_TEXT("yes") : ACE_TEXT("no")),
-             videoInfo->video_mem,
-             videoInfo->vfmt->palette,
-             videoInfo->vfmt->BitsPerPixel,
-             videoInfo->vfmt->BytesPerPixel,
-             videoInfo->vfmt->Rmask, videoInfo->vfmt->Gmask, videoInfo->vfmt->Bmask, videoInfo->vfmt->Amask,
-             videoInfo->vfmt->Rshift, videoInfo->vfmt->Gshift, videoInfo->vfmt->Bshift, videoInfo->vfmt->Ashift,
-             videoInfo->vfmt->Rloss, videoInfo->vfmt->Gloss, videoInfo->vfmt->Bloss, videoInfo->vfmt->Aloss,
-             videoInfo->vfmt->colorkey,
-             static_cast<int>(videoInfo->vfmt->alpha)));
+  videoInfo = SDL_GetVideoInfo ();
+  ACE_ASSERT (videoInfo);
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("*** video capabilities (driver: \"%s\") ***\nHW surfaces:\t\t\t\t\"%s\"\nwindow manager:\t\t\t\t\"%s\"\naccelerated HW --> HW [blits/colorkey/alpha]:\t\"%s\"/\"%s\"/\"%s\"\naccelerated SW --> HW [blits/colorkey/alpha]:\t\"%s\"/\"%s\"/\"%s\"\ncolor fills accelerated:\t\t\"%s\"\nvideo memory:\t\t\t\t%d kBytes\n*** (suggested) video mode ***\npalette:\t\t\t\t%@\nbits[bytes]/pixel:\t\t\t%d[%d]\nmask[RGBA]:\t\t\t\t%x %x %x %x\nshift[RGBA]:\t\t\t\t%d %d %d %d\nloss[RGBA]:\t\t\t\t%d %d %d %d\ntransparent colorkey:\t\t\t%d\noverall surface alpha:\t\t\t%d\n"),
+              driver,
+              (videoInfo->hw_available ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
+              (videoInfo->wm_available ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
+              (videoInfo->blit_hw ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
+              (videoInfo->blit_hw_CC ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
+              (videoInfo->blit_hw_A ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
+              (videoInfo->blit_sw ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
+              (videoInfo->blit_sw_CC ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
+              (videoInfo->blit_sw_A ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
+              (videoInfo->blit_fill ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
+              videoInfo->video_mem,
+              videoInfo->vfmt->palette,
+              videoInfo->vfmt->BitsPerPixel,
+              videoInfo->vfmt->BytesPerPixel,
+              videoInfo->vfmt->Rmask, videoInfo->vfmt->Gmask, videoInfo->vfmt->Bmask, videoInfo->vfmt->Amask,
+              videoInfo->vfmt->Rshift, videoInfo->vfmt->Gshift, videoInfo->vfmt->Bshift, videoInfo->vfmt->Ashift,
+              videoInfo->vfmt->Rloss, videoInfo->vfmt->Gloss, videoInfo->vfmt->Bloss, videoInfo->vfmt->Aloss,
+              videoInfo->vfmt->colorkey,
+              static_cast<int>(videoInfo->vfmt->alpha)));
 
   // set surface flags
   RPG_Graphics_Surface::SDL_surface_flags =

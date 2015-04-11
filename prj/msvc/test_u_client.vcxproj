@@ -21,6 +21,15 @@
     <ClInclude Include="..\..\test_u\client\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\modules\libACEStream\prj\msvc\libACEStream.vcxproj">
+      <Project>{c7a3ee44-14f9-413a-b311-5a77ba5a4edd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\modules\libCommon\prj\msvc\libCommon.vcxproj">
+      <Project>{78a90d08-4e40-4ed4-8f75-393ac6526158}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\modules\libCommon\prj\msvc\libCommon_UI.vcxproj">
+      <Project>{06296185-3e70-472e-8b65-6f552ab1e283}</Project>
+    </ProjectReference>
     <ProjectReference Include="client.vcxproj">
       <Project>{df9ce33e-5060-48a6-b105-0b61fedf6ae6}</Project>
     </ProjectReference>
@@ -35,6 +44,12 @@
     </ProjectReference>
     <ProjectReference Include="monster.vcxproj">
       <Project>{f306a4b7-0d19-4322-b891-11e528ebd50c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="net.vcxproj">
+      <Project>{4f0c67a3-7067-4c43-ac18-2529f27f3273}</Project>
+    </ProjectReference>
+    <ProjectReference Include="protocol.vcxproj">
+      <Project>{a0066128-9e16-47c8-9697-78be571b8445}</Project>
     </ProjectReference>
     <ProjectReference Include="sound.vcxproj">
       <Project>{d55b85ff-fd26-43de-a8b1-8833ac97b05c}</Project>
@@ -89,7 +104,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\include;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\net\stream;$(ProjectDir)..\..\net;$(ProjectDir)..\..\net\client;$(ProjectDir)..\..\engine;$(ProjectDir)..\..\sound;$(ProjectDir)..\..\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\modules\libCommon\src\ui;$(ProjectDir)..\..\modules\libACEStream\src;$(ProjectDir)..\..\modules\libACENetwork\src;$(ProjectDir)..\..\modules\libACENetwork\src\client;$(ProjectDir)..\..\include;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\net\stream;$(ProjectDir)..\..\net;$(ProjectDir)..\..\net\protocol;$(ProjectDir)..\..\engine;$(ProjectDir)..\..\sound;$(ProjectDir)..\..\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BASEDIR="$(ProgramFiles.Replace('\', "\\"))\\$(SolutionName)";RPG_CLIENT_HAS_DLL;RPG_GRAPHICS_HAS_DLL;RPG_SOUND_HAS_DLL;RPG_MAP_HAS_DLL;RPG_ENGINE_HAS_DLL;RPG_MAGIC_HAS_DLL;RPG_CHARACTER_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;HAVE_CONFIG_H;DEBUG_DEBUGGER;GNOME_DISABLE_DEPRECATED;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -123,7 +138,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\include;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\net\stream;$(ProjectDir)..\..\net;$(ProjectDir)..\..\net\client;$(ProjectDir)..\..\engine;$(ProjectDir)..\..\sound;$(ProjectDir)..\..\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\modules\libCommon\src\ui;$(ProjectDir)..\..\modules\libACEStream\src;$(ProjectDir)..\..\modules\libACENetwork\src;$(ProjectDir)..\..\modules\libACENetwork\src\client;$(ProjectDir)..\..\include;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\net\stream;$(ProjectDir)..\..\net;$(ProjectDir)..\..\net\protocol;$(ProjectDir)..\..\engine;$(ProjectDir)..\..\sound;$(ProjectDir)..\..\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BASEDIR=".";RPG_CLIENT_HAS_DLL;RPG_GRAPHICS_HAS_DLL;RPG_SOUND_HAS_DLL;RPG_MAP_HAS_DLL;RPG_ENGINE_HAS_DLL;RPG_CHARACTER_HAS_DLL;RPG_COMMON_HAS_DLL;RPG_DICE_HAS_DLL;GNOME_DISABLE_DEPRECATED;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

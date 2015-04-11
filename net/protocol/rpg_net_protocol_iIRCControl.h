@@ -21,52 +21,52 @@
 #ifndef RPG_NET_PROTOCOL_IIRCCONTROL_H
 #define RPG_NET_PROTOCOL_IIRCCONTROL_H
 
+#include <string>
+
+#include "common_isubscribe.h"
+
 #include "rpg_net_protocol_common.h"
 #include "rpg_net_protocol_IRCmessage.h"
-
-#include "rpg_common_isubscribe.h"
-
-#include <string>
 
 // forward declaration(s)
 struct RPG_Net_Protocol_IRCLoginOptions;
 
 class RPG_Net_Protocol_IIRCControl
- : public RPG_Common_ISubscribe<RPG_Net_Protocol_INotify_t>
+ : public Common_ISubscribe_T<RPG_Net_Protocol_INotification_t>
 {
  public:
   // API
-  virtual void registerConnection(const RPG_Net_Protocol_IRCLoginOptions&) = 0; // login details
-  virtual void nick(const std::string&) = 0; // nick
-  virtual void quit(const std::string&) = 0; // reason
-  virtual void join(const string_list_t&,      // channel(s)
-                    const string_list_t&) = 0; // key(s)
-  virtual void part(const string_list_t&) = 0; // channel(s)
-  virtual void mode(const std::string&,        // nick/channel
-                    const char&,               // user/channel mode
-                    const bool&,               // enable ?
-                    const string_list_t&) = 0; // any parameters
-  virtual void topic(const std::string&,      // channel
-                     const std::string&) = 0; // topic
-  virtual void names(const string_list_t&) = 0; // channel(s)
-  virtual void list(const string_list_t&) = 0; // channel(s)
-  virtual void invite(const std::string&,      // nick
-                      const std::string&) = 0; // channel
-  virtual void kick(const std::string&,      // channel
-                    const std::string&,      // nick
-                    const std::string&) = 0; // comment
-  virtual void send(const string_list_t&,    // receiver(s) [nick/channel]
-                    const std::string&) = 0; // message
-  virtual void who(const std::string&,      // name
-                   const bool&) = 0;        // query ops only ?
-  virtual void whois(const std::string&,        // server
-                     const string_list_t&) = 0; // nickmask(s)
-  virtual void whowas(const std::string&,      // nick
-                      const unsigned long&,    // count
-                      const std::string&) = 0; // server
-  virtual void away(const std::string&) = 0; // message
-  virtual void users(const std::string&) = 0; // server
-  virtual void userhost(const string_list_t&) = 0; // nicknames
+  virtual void registerConnection (const RPG_Net_Protocol_IRCLoginOptions&) = 0; // login details
+  virtual void nick (const std::string&) = 0; // nick
+  virtual void quit (const std::string&) = 0; // reason
+  virtual void join (const string_list_t&,      // channel(s)
+                     const string_list_t&) = 0; // key(s)
+  virtual void part (const string_list_t&) = 0; // channel(s)
+  virtual void mode (const std::string&,        // nick/channel
+                     const char&,               // user/channel mode
+                     const bool&,               // enable ?
+                     const string_list_t&) = 0; // any parameters
+  virtual void topic (const std::string&,      // channel
+                      const std::string&) = 0; // topic
+  virtual void names (const string_list_t&) = 0; // channel(s)
+  virtual void list (const string_list_t&) = 0; // channel(s)
+  virtual void invite (const std::string&,      // nick
+                       const std::string&) = 0; // channel
+  virtual void kick (const std::string&,      // channel
+                     const std::string&,      // nick
+                     const std::string&) = 0; // comment
+  virtual void send (const string_list_t&,    // receiver(s) [nick/channel]
+                     const std::string&) = 0; // message
+  virtual void who (const std::string&,      // name
+                    const bool&) = 0;        // query ops only ?
+  virtual void whois (const std::string&,        // server
+                      const string_list_t&) = 0; // nickmask(s)
+  virtual void whowas (const std::string&,      // nick
+                       const unsigned long&,    // count
+                       const std::string&) = 0; // server
+  virtual void away (const std::string&) = 0; // message
+  virtual void users (const std::string&) = 0; // server
+  virtual void userhost (const string_list_t&) = 0; // nicknames
 };
 
 #endif

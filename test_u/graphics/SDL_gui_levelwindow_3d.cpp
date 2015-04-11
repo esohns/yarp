@@ -79,13 +79,13 @@ SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D(const RPG_Graphics_SDLWindowBase&
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D"));
 
-	myEngine->init(this);
+  myEngine->initialize (this);
 
-	myEngine->lock();
-	RPG_Map_Size_t map_size = myEngine->getSize(false);
-	myEngine->unlock();
-	myView = std::make_pair(map_size.first / 2,
-													map_size.second / 2);
+  myEngine->lock ();
+  RPG_Map_Size_t map_size = myEngine->getSize (false);
+  myEngine->unlock ();
+  myView = std::make_pair (map_size.first / 2,
+                           map_size.second / 2);
 
 //   initWallBlend(false);
 

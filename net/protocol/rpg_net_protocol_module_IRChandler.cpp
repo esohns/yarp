@@ -21,56 +21,57 @@
 
 #include "rpg_net_protocol_module_IRChandler.h"
 
-#include "rpg_net_protocol_defines.h"
-#include "rpg_net_protocol_sessionmessage.h"
-#include "rpg_net_protocol_message.h"
-#include "rpg_net_protocol_tools.h"
-
-#include "rpg_stream_iallocator.h"
-
-#include "rpg_common_macros.h"
-#include "rpg_common_timer_manager.h"
-
 #include <iostream>
 #include <sstream>
 
-RPG_Net_Protocol_Module_IRCHandler::RPG_Net_Protocol_Module_IRCHandler()
- : //inherited(),
-//    mySubscribers(),
-   myAllocator(NULL),
-   myDefaultBufferSize(RPG_NET_PROTOCOL_BUFFER_SIZE),
-   myAutomaticPong(false), // *NOTE*: the idea really is not to play PONG...
-   myPrintPingPongDot(false),
-   myIsInitialized(false),
-   myCondition(myConditionLock),
-   myConnectionIsAlive(false),
-   myReceivedInitialNotice(false)
+#include "common_timer_manager.h"
+
+#include "stream_iallocator.h"
+
+#include "rpg_common_macros.h"
+
+#include "rpg_net_protocol_defines.h"
+#include "rpg_net_protocol_message.h"
+#include "rpg_net_protocol_sessionmessage.h"
+#include "rpg_net_protocol_tools.h"
+
+RPG_Net_Protocol_Module_IRCHandler::RPG_Net_Protocol_Module_IRCHandler ()
+ : inherited ()
+ , mySubscribers ()
+ , myAllocator (NULL)
+ , myDefaultBufferSize (RPG_NET_PROTOCOL_BUFFER_SIZE)
+ , myAutomaticPong (false) // *NOTE*: the idea really is not to play PONG...
+ , myPrintPingPongDot (false)
+ , myIsInitialized (false)
+ , myCondition (myConditionLock)
+ , myConnectionIsAlive (false)
+ , myReceivedInitialNotice (false)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::RPG_Net_Protocol_Module_IRCHandler"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::RPG_Net_Protocol_Module_IRCHandler"));
 
 }
 
-RPG_Net_Protocol_Module_IRCHandler::~RPG_Net_Protocol_Module_IRCHandler()
+RPG_Net_Protocol_Module_IRCHandler::~RPG_Net_Protocol_Module_IRCHandler ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::~RPG_Net_Protocol_Module_IRCHandler"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::~RPG_Net_Protocol_Module_IRCHandler"));
 
 }
 
 bool
-RPG_Net_Protocol_Module_IRCHandler::init(RPG_Stream_IAllocator* allocator_in,
-                                         const unsigned int& defaultBufferSize_in,
-                                         const bool& autoAnswerPings_in,
-                                         const bool& printPingPongDot_in)
+RPG_Net_Protocol_Module_IRCHandler::initialize (Stream_IAllocator* allocator_in,
+                                                unsigned int defaultBufferSize_in,
+                                                bool autoAnswerPings_in,
+                                                bool printPingPongDot_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::init"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::initialize"));
 
   // sanity check(s)
-  ACE_ASSERT(allocator_in);
+  ACE_ASSERT (allocator_in);
 
   if (myIsInitialized)
   {
-    ACE_DEBUG((LM_WARNING,
-               ACE_TEXT("re-initializing...\n")));
+    ACE_DEBUG ((LM_WARNING,
+                ACE_TEXT ("re-initializing...\n")));
 
     // reset state
     myAllocator = NULL;
@@ -79,7 +80,7 @@ RPG_Net_Protocol_Module_IRCHandler::init(RPG_Stream_IAllocator* allocator_in,
     myPrintPingPongDot = false;
     myIsInitialized = false;
     {
-      ACE_Guard<ACE_Thread_Mutex> aGuard(myConditionLock);
+      ACE_Guard<ACE_Thread_Mutex> aGuard (myConditionLock);
 
       myConnectionIsAlive = false;
     } // end lock scope
@@ -100,16 +101,16 @@ RPG_Net_Protocol_Module_IRCHandler::init(RPG_Stream_IAllocator* allocator_in,
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*& message_inout,
-                                                      bool& passMessageDownstream_out)
+RPG_Net_Protocol_Module_IRCHandler::handleDataMessage (RPG_Net_Protocol_Message*& message_inout,
+                                                       bool& passMessageDownstream_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::handleDataMessage"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::handleDataMessage"));
 
   // don't care (implies yes per default, if we're part of a stream)
-  ACE_UNUSED_ARG(passMessageDownstream_out);
+  ACE_UNUSED_ARG (passMessageDownstream_out);
 
   // sanity check(s)
-  ACE_ASSERT(message_inout->getData());
+  ACE_ASSERT (message_inout->getData ());
 
 //   // debug info
 //   try
@@ -122,7 +123,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
 //                ACE_TEXT("caught exception in RPG_Common_IDumpState::dump_state(), continuing\n")));
 //   }
 
-  switch (message_inout->getData()->command.discriminator)
+  switch (message_inout->getData ()->command.discriminator)
   {
     case RPG_Net_Protocol_IRCMessage::Command::NUMERIC:
     {
@@ -133,7 +134,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
 //                  RPG_Net_Protocol_Tools::IRCCode2String(message_inout->getData()->command.numeric).c_str(),
 //                  message_inout->getData()->command.numeric));
 
-      switch (message_inout->getData()->command.numeric)
+      switch (message_inout->getData ()->command.numeric)
       {
         // *NOTE* these are the "regular" (== known) codes
         // [sent by ircd-hybrid-7.2.3 and others]...
@@ -183,11 +184,11 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         }
         default:
         {
-          ACE_DEBUG((LM_WARNING,
-                     ACE_TEXT("[%u]: received unknown (numeric) command/reply: \"%s\" (%u), continuing\n"),
-                     message_inout->getID(),
-                     RPG_Net_Protocol_Tools::IRCCode2String(message_inout->getData()->command.numeric).c_str(),
-                     message_inout->getData()->command.numeric));
+          ACE_DEBUG ((LM_WARNING,
+                      ACE_TEXT ("[%u]: received unknown (numeric) command/reply: \"%s\" (%u), continuing\n"),
+                      message_inout->getID (),
+                      ACE_TEXT (RPG_Net_Protocol_Tools::IRCCode2String (message_inout->getData ()->command.numeric).c_str ()),
+                      message_inout->getData ()->command.numeric));
 
           break;
         }
@@ -197,7 +198,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
     }
     case RPG_Net_Protocol_IRCMessage::Command::STRING:
     {
-      switch (RPG_Net_Protocol_Tools::IRCCommandString2Type(*message_inout->getData()->command.string))
+      switch (RPG_Net_Protocol_Tools::IRCCommandString2Type (*message_inout->getData ()->command.string))
       {
         case RPG_Net_Protocol_IRCMessage::NICK:
         {
@@ -324,18 +325,18 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
             // --> reply with a "PONG"
 
             // step0: init reply
-            RPG_Net_Protocol_IRCMessage* reply_struct = NULL;
-            ACE_NEW_NORETURN(reply_struct,
-                             RPG_Net_Protocol_IRCMessage());
-            ACE_ASSERT(reply_struct);
-            ACE_NEW_NORETURN(reply_struct->command.string,
-                             std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::PONG)));
-            ACE_ASSERT(reply_struct->command.string);
-            reply_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
-            reply_struct->params.push_back(message_inout->getData()->params.back());
+            RPG_Net_Protocol_IRCMessage* reply_struct_p = NULL;
+            ACE_NEW_NORETURN (reply_struct_p,
+                              RPG_Net_Protocol_IRCMessage ());
+            ACE_ASSERT (reply_struct_p);
+            ACE_NEW_NORETURN (reply_struct_p->command.string,
+                              std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::PONG)));
+            ACE_ASSERT (reply_struct_p->command.string);
+            reply_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+            reply_struct_p->params.push_back (message_inout->getData ()->params.back ());
 
             // step1: send it upstream
-            sendMessage(reply_struct);
+            sendMessage (reply_struct_p);
           } // end IF
 
           if (myPrintPingPongDot)
@@ -397,10 +398,10 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
         }
         default:
         {
-          ACE_DEBUG((LM_WARNING,
-                     ACE_TEXT("[%u]: received unknown command (was: \"%s\"), continuing\n"),
-                     message_inout->getID(),
-                     message_inout->getData()->command.string->c_str()));
+          ACE_DEBUG ((LM_WARNING,
+                      ACE_TEXT ("[%u]: received unknown command (was: \"%s\"), continuing\n"),
+                      message_inout->getID (),
+                      ACE_TEXT (message_inout->getData ()->command.string->c_str ())));
 
           break;
         }
@@ -410,10 +411,10 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
     }
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("[%u]: invalid command type (was: %u), continuing\n"),
-                 message_inout->getID(),
-                 message_inout->getData()->command.discriminator));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("[%u]: invalid command type (was: %u), continuing\n"),
+                  message_inout->getID (),
+                  message_inout->getData ()->command.discriminator));
 
       break;
     }
@@ -423,7 +424,7 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
 
   // synch access to our subscribers
   {
-    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard (myLock);
 
     // *WARNING* if the user unsubscribes() within the callback
     // BAD THINGS (TM) WILL happen, because the current iter WILL be invalidated
@@ -431,52 +432,60 @@ RPG_Net_Protocol_Module_IRCHandler::handleDataMessage(RPG_Net_Protocol_Message*&
     // works for MOST containers)
     // *NOTE*: this can only happen due to the ACE_RECURSIVE_Thread_Mutex
     // we use as a lock in order to avoid deadlocks in precisely this situation...
-    for (SubscribersIterator_t iter = mySubscribers.begin();
-         iter != mySubscribers.end();)
+    for (SubscribersIterator_t iter = mySubscribers.begin ();
+         iter != mySubscribers.end ();)
     {
       try
       {
-        (*iter++)->notify(*message_inout->getData());
+        (*iter++)->notify (*message_inout->getData ());
       }
       catch (...)
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught exception in RPG_Net_Protocol_INotify::notify(), continuing\n")));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("caught exception in RPG_Net_Protocol_INotify::notify(), continuing\n")));
       }
     } // end FOR
   } // end lock scope
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_SessionMessage*& message_inout,
-                                                         bool& passMessageDownstream_out)
+RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage (RPG_Net_Protocol_SessionMessage*& message_inout,
+                                                          bool& passMessageDownstream_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage"));
 
   // don't care (implies yes per default, if we're part of a stream)
-  ACE_UNUSED_ARG(passMessageDownstream_out);
+  ACE_UNUSED_ARG (passMessageDownstream_out);
 
   // sanity check(s)
-  ACE_ASSERT(message_inout);
-  ACE_ASSERT(myIsInitialized);
+  ACE_ASSERT (message_inout);
+  ACE_ASSERT (myIsInitialized);
 
-  switch (message_inout->getType())
+  switch (message_inout->getType ())
   {
-    case RPG_Stream_SessionMessage::MB_STREAM_SESSION_BEGIN:
+    case SESSION_BEGIN:
     {
       // remember connection has been opened...
       {
-        ACE_Guard<ACE_Thread_Mutex> aGuard(myConditionLock);
+        ACE_Guard<ACE_Thread_Mutex> aGuard (myConditionLock);
 
         myConnectionIsAlive = true;
 
         // signal any waiter(s)
-        myCondition.broadcast();
+        myCondition.broadcast ();
       } // end lock scope
 
-      // refer this information back to our subscriber(s)
+      // refer the data back to any subscriber(s)
+      //      inherited::MODULE_T* module_p = inherited::module ();
+      RPG_Net_Protocol_Module_IRCHandler_Module* module_p =
+        dynamic_cast<RPG_Net_Protocol_Module_IRCHandler_Module*> (inherited::module ());
+      ACE_ASSERT (module_p);
+      Stream_ModuleConfiguration_t* configuration_p = NULL;
+      module_p->get (configuration_p);
+      ACE_ASSERT (configuration_p);
+
       {
-        ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+        ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard (myLock);
 
 //         ACE_DEBUG((LM_DEBUG,
 //                    ACE_TEXT("session starting, notifying %u subscriber(s)...\n"),
@@ -488,28 +497,28 @@ RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_Sessio
         // works for MOST containers)
         // *NOTE*: this can only happen due to the ACE_RECURSIVE_Thread_Mutex
         // we use as a lock in order to avoid deadlocks in precisely this situation...
-        for (SubscribersIterator_t iter = mySubscribers.begin();
-             iter != mySubscribers.end();)
+        for (SubscribersIterator_t iter = mySubscribers.begin ();
+             iter != mySubscribers.end ();)
         {
           try
           {
-            (*iter++)->start();
+            (*iter++)->start (*configuration_p);
           }
           catch (...)
           {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("caught exception in RPG_Net_Protocol_INotify::start(), continuing\n")));
+            ACE_DEBUG ((LM_ERROR,
+                        ACE_TEXT ("caught exception in RPG_Net_Protocol_INotify::start(), continuing\n")));
           }
         } // end FOR
       } // end lock scope
 
       break;
     }
-    case RPG_Stream_SessionMessage::MB_STREAM_SESSION_END:
+    case SESSION_END:
     {
       // refer this information back to our subscriber(s)
       {
-        ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+        ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard (myLock);
 
 //         ACE_DEBUG((LM_DEBUG,
 //                    ACE_TEXT("session ending, notifying %u subscriber(s)...\n"),
@@ -521,37 +530,37 @@ RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_Sessio
         // works for MOST containers)
         // *NOTE*: this can only happen due to the ACE_RECURSIVE_Thread_Mutex
         // we use as a lock in order to avoid deadlocks in precisely this situation...
-        for (SubscribersIterator_t iter = mySubscribers.begin();
-             iter != mySubscribers.end();)
+        for (SubscribersIterator_t iter = mySubscribers.begin ();
+             iter != mySubscribers.end ();)
         {
           try
           {
-            (*(iter++))->end();
+            (*(iter++))->end ();
           }
           catch (...)
           {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("caught exception in RPG_Net_Protocol_INotify::end(), continuing\n")));
+            ACE_DEBUG ((LM_ERROR,
+                        ACE_TEXT ("caught exception in RPG_Net_Protocol_INotify::end(), continuing\n")));
           }
         } // end FOR
 
-        if (!mySubscribers.empty())
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("removing %u subscription(s)...\n"),
-                     mySubscribers.size()));
+        if (!mySubscribers.empty ())
+          ACE_DEBUG ((LM_DEBUG,
+                      ACE_TEXT ("removing %u subscription(s)...\n"),
+                      mySubscribers.size ()));
 
         // clean subscribers
-        mySubscribers.clear();
+        mySubscribers.clear ();
       } // end lock scope
 
       // remember connection has been closed...
       {
-        ACE_Guard<ACE_Thread_Mutex> aGuard(myConditionLock);
+        ACE_Guard<ACE_Thread_Mutex> aGuard (myConditionLock);
 
         myConnectionIsAlive = false;
 
         // signal any waiter(s)
-        myCondition.broadcast();
+        myCondition.broadcast ();
       } // end lock scope
 
       break;
@@ -565,9 +574,9 @@ RPG_Net_Protocol_Module_IRCHandler::handleSessionMessage(RPG_Net_Protocol_Sessio
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IRCLoginOptions& loginOptions_in)
+RPG_Net_Protocol_Module_IRCHandler::registerConnection (const RPG_Net_Protocol_IRCLoginOptions& loginOptions_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::registerConnection"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::registerConnection"));
 
   // "registering" an IRC connection implies the following 4 distinct steps:
   // --> see also RFC1459
@@ -578,10 +587,10 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IR
   // 5. send USER
 
   // sanity check(s)
-  ACE_ASSERT(myIsInitialized);
+  ACE_ASSERT (myIsInitialized);
   // step1: ...is done ?
   {
-    ACE_Guard<ACE_Thread_Mutex> aGuard(myConditionLock);
+    ACE_Guard<ACE_Thread_Mutex> aGuard (myConditionLock);
 
     if (!myConnectionIsAlive)
     {
@@ -593,22 +602,20 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IR
       // - connection to establish
       // [- the initial NOTICEs to arrive]
       // before proceeding...
-      ACE_Time_Value deadline = RPG_COMMON_TIME_POLICY() +
-                                ACE_Time_Value(RPG_NET_PROTOCOL_IRC_MAX_WELCOME_DELAY, 0);
-      if ((myCondition.wait(&deadline) == -1) &&
-          (ACE_OS::last_error() != ETIME))
+      ACE_Time_Value deadline = COMMON_TIME_POLICY () +
+                                ACE_Time_Value (RPG_NET_PROTOCOL_IRC_MAX_WELCOME_DELAY, 0);
+      if ((myCondition.wait (&deadline) == -1) &&
+          (ACE_OS::last_error () != ETIME))
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_Thread_Condition::wait(), aborting\n")));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to ACE_Thread_Condition::wait(), aborting\n")));
         return;
       } // end IF
 
       if (!myConnectionIsAlive)
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("not (yet ?) connected, aborting\n")));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("not (yet ?) connected, aborting\n")));
         return;
       } // end IF
 
@@ -647,48 +654,48 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IR
 //   } // end IF
 
   // step3a: init PASS
-  RPG_Net_Protocol_IRCMessage* pass_struct = NULL;
-  ACE_NEW_NORETURN(pass_struct,
-                   RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(pass_struct);
-  ACE_NEW_NORETURN(pass_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::PASS)));
-  ACE_ASSERT(pass_struct->command.string);
-  pass_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
-  pass_struct->params.push_back(loginOptions_in.password);
+  RPG_Net_Protocol_IRCMessage* pass_struct_p = NULL;
+  ACE_NEW_NORETURN (pass_struct_p,
+                    RPG_Net_Protocol_IRCMessage ());
+  ACE_ASSERT (pass_struct_p);
+  ACE_NEW_NORETURN (pass_struct_p->command.string,
+                    std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::PASS)));
+  ACE_ASSERT (pass_struct_p->command.string);
+  pass_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  pass_struct_p->params.push_back (loginOptions_in.password);
 
   // step3b: send it upstream
-  sendMessage(pass_struct);
+  sendMessage (pass_struct_p);
 
   // step4a: init NICK
-  RPG_Net_Protocol_IRCMessage* nick_struct = NULL;
-  ACE_NEW_NORETURN(nick_struct,
-                   RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(nick_struct);
-  ACE_NEW_NORETURN(nick_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::NICK)));
-  ACE_ASSERT(nick_struct->command.string);
-  nick_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
-  nick_struct->params.push_back(loginOptions_in.nick);
+  RPG_Net_Protocol_IRCMessage* nick_struct_p = NULL;
+  ACE_NEW_NORETURN (nick_struct_p,
+                    RPG_Net_Protocol_IRCMessage ());
+  ACE_ASSERT (nick_struct_p);
+  ACE_NEW_NORETURN (nick_struct_p->command.string,
+                    std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::NICK)));
+  ACE_ASSERT (nick_struct_p->command.string);
+  nick_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  nick_struct_p->params.push_back (loginOptions_in.nick);
 
   // step4b: send it upstream
-  sendMessage(nick_struct);
+  sendMessage (nick_struct_p);
 
   // step5a: init USER
-  RPG_Net_Protocol_IRCMessage* user_struct = NULL;
-  ACE_NEW_NORETURN(user_struct,
-                   RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(user_struct);
-  ACE_NEW_NORETURN(user_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::USER)));
-  ACE_ASSERT(user_struct->command.string);
-  user_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
-  user_struct->params.push_back(loginOptions_in.user.username);
+  RPG_Net_Protocol_IRCMessage* user_struct_p = NULL;
+  ACE_NEW_NORETURN (user_struct_p,
+                    RPG_Net_Protocol_IRCMessage ());
+  ACE_ASSERT (user_struct_p);
+  ACE_NEW_NORETURN (user_struct_p->command.string,
+                    std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::USER)));
+  ACE_ASSERT (user_struct_p->command.string);
+  user_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  user_struct_p->params.push_back (loginOptions_in.user.username);
   switch (loginOptions_in.user.hostname.discriminator)
   {
     case RPG_Net_Protocol_IRCLoginOptions::User::Hostname::STRING:
     {
-      user_struct->params.push_back(*loginOptions_in.user.hostname.string);
+      user_struct_p->params.push_back (*loginOptions_in.user.hostname.string);
 
       break;
     }
@@ -696,25 +703,23 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IR
     {
       std::ostringstream converter;
       converter << static_cast<unsigned long> (loginOptions_in.user.hostname.mode);
-      user_struct->params.push_back(std::string(converter.str()));
+      user_struct_p->params.push_back (std::string (converter.str ()));
 
       break;
     }
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid USER <hostname> parameter field type (was: %d), aborting\n"),
-                 loginOptions_in.user.hostname.discriminator));
-
-      // what else can we do ?
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid USER <hostname> parameter field type (was: %d), aborting\n"),
+                  loginOptions_in.user.hostname.discriminator));
       return;
     }
   } // end SWITCH
-  user_struct->params.push_back(loginOptions_in.user.servername);
-  user_struct->params.push_back(loginOptions_in.user.realname);
+  user_struct_p->params.push_back (loginOptions_in.user.servername);
+  user_struct_p->params.push_back (loginOptions_in.user.realname);
 
   // step5b: send it upstream
-  sendMessage(user_struct);
+  sendMessage (user_struct_p);
 
 //   // step5a: init JOIN
 //   RPG_Net_Protocol_IRCMessage* join_struct = NULL;
@@ -722,7 +727,7 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IR
 //                    RPG_Net_Protocol_IRCMessage());
 //   ACE_ASSERT(join_struct);
 //   ACE_NEW_NORETURN(join_struct->command.string,
-//                    std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::JOIN)));
+//                    std::string(RPG_Net_Protocol_Message::CommandType2String(RPG_Net_Protocol_IRCMessage::JOIN)));
 //   ACE_ASSERT(join_struct->command.string);
 //   join_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
 // //   std::string channel_name = ACE_TEXT_ALWAYS_CHAR("#");
@@ -734,237 +739,237 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection(const RPG_Net_Protocol_IR
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::subscribe(RPG_Net_Protocol_INotify_t* dataCallback_in)
+RPG_Net_Protocol_Module_IRCHandler::subscribe (RPG_Net_Protocol_INotification_t* dataCallback_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::subscribe"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::subscribe"));
 
   // sanity check(s)
-  ACE_ASSERT(dataCallback_in);
+  ACE_ASSERT (dataCallback_in);
 
   // synch access to subscribers
-  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard (myLock);
 
-  mySubscribers.push_back(dataCallback_in);
+  mySubscribers.push_back (dataCallback_in);
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::unsubscribe(RPG_Net_Protocol_INotify_t* dataCallback_in)
+RPG_Net_Protocol_Module_IRCHandler::unsubscribe (RPG_Net_Protocol_INotification_t* dataCallback_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::unsubscribe"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::unsubscribe"));
 
   // sanity check(s)
-  ACE_ASSERT(dataCallback_in);
+  ACE_ASSERT (dataCallback_in);
 
   // synch access to subscribers
-  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myLock);
+  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard (myLock);
 
-  SubscribersIterator_t iterator = mySubscribers.begin();
+  SubscribersIterator_t iterator = mySubscribers.begin ();
   for (;
-       iterator != mySubscribers.end();
+       iterator != mySubscribers.end ();
        iterator++)
     if ((*iterator) == dataCallback_in)
       break;
 
-  if (iterator != mySubscribers.end())
-    mySubscribers.erase(iterator);
+  if (iterator != mySubscribers.end ())
+    mySubscribers.erase (iterator);
   else
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid argument (was: %@), aborting\n"),
-               dataCallback_in));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("invalid argument (was: %@), aborting\n"),
+                dataCallback_in));
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::nick(const std::string& nick_in)
+RPG_Net_Protocol_Module_IRCHandler::nick (const std::string& nick_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::nick"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::nick"));
 
   // step1: init NICK
-  RPG_Net_Protocol_IRCMessage* nick_struct = NULL;
-  ACE_NEW_NORETURN(nick_struct,
-                   RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(nick_struct);
-  ACE_NEW_NORETURN(nick_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::NICK)));
-  ACE_ASSERT(nick_struct->command.string);
-  nick_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  RPG_Net_Protocol_IRCMessage* nick_struct_p = NULL;
+  ACE_NEW_NORETURN (nick_struct_p,
+                    RPG_Net_Protocol_IRCMessage ());
+  ACE_ASSERT (nick_struct_p);
+  ACE_NEW_NORETURN (nick_struct_p->command.string,
+                    std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::NICK)));
+  ACE_ASSERT (nick_struct_p->command.string);
+  nick_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
 
-  nick_struct->params.push_back(nick_in);
+  nick_struct_p->params.push_back (nick_in);
 
   // step2: send it upstream
-  sendMessage(nick_struct);
+  sendMessage (nick_struct_p);
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::quit(const std::string& reason_in)
+RPG_Net_Protocol_Module_IRCHandler::quit (const std::string& reason_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::quit"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::quit"));
 
   // step1: init QUIT
-  RPG_Net_Protocol_IRCMessage* quit_struct = NULL;
-  ACE_NEW_NORETURN(quit_struct,
-                   RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(quit_struct);
-  ACE_NEW_NORETURN(quit_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::QUIT)));
-  ACE_ASSERT(quit_struct->command.string);
-  quit_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
-  if (!reason_in.empty())
-    quit_struct->params.push_back(reason_in);
+  RPG_Net_Protocol_IRCMessage* quit_struct_p = NULL;
+  ACE_NEW_NORETURN (quit_struct_p,
+                    RPG_Net_Protocol_IRCMessage ());
+  ACE_ASSERT (quit_struct_p);
+  ACE_NEW_NORETURN (quit_struct_p->command.string,
+                    std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::QUIT)));
+  ACE_ASSERT (quit_struct_p->command.string);
+  quit_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  if (!reason_in.empty ())
+    quit_struct_p->params.push_back (reason_in);
 
   // step2: send it upstream
-  sendMessage(quit_struct);
+  sendMessage (quit_struct_p);
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::join(const string_list_t& channels_in,
-                                         const string_list_t& keys_in)
+RPG_Net_Protocol_Module_IRCHandler::join (const string_list_t& channels_in,
+                                          const string_list_t& keys_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::join"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::join"));
 
   // step1: init JOIN
-  RPG_Net_Protocol_IRCMessage* join_struct = NULL;
-  ACE_NEW_NORETURN(join_struct,
-                   RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(join_struct);
-  ACE_NEW_NORETURN(join_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::JOIN)));
-  ACE_ASSERT(join_struct->command.string);
-  join_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  RPG_Net_Protocol_IRCMessage* join_struct_p = NULL;
+  ACE_NEW_NORETURN (join_struct_p,
+                    RPG_Net_Protocol_IRCMessage ());
+  ACE_ASSERT (join_struct_p);
+  ACE_NEW_NORETURN (join_struct_p->command.string,
+                    std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::JOIN)));
+  ACE_ASSERT (join_struct_p->command.string);
+  join_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
   // compute ranges ?
-  if (!keys_in.empty())
+  if (!keys_in.empty ())
   {
     list_item_range_t range;
-    if (channels_in.size() > 1)
+    if (channels_in.size () > 1)
     {
       range.first = 0;
-      range.second = (channels_in.size() - 1);
-      join_struct->list_param_ranges.push_back(range);
+      range.second = (channels_in.size () - 1);
+      join_struct_p->list_param_ranges.push_back (range);
     } // end IF
-    if (keys_in.size() > 1)
+    if (keys_in.size () > 1)
     {
-      range.first = channels_in.size();
-      range.second = (channels_in.size() + keys_in.size() - 1);
-      join_struct->list_param_ranges.push_back(range);
+      range.first = channels_in.size ();
+      range.second = (channels_in.size () + keys_in.size () - 1);
+      join_struct_p->list_param_ranges.push_back (range);
     } // end IF
   } // end IF
-  join_struct->params = channels_in;
+  join_struct_p->params = channels_in;
   // append any keys
-  if (!keys_in.empty())
-    join_struct->params.insert(join_struct->params.end(),
-                               keys_in.begin(),
-                               keys_in.end());
+  if (!keys_in.empty ())
+    join_struct_p->params.insert (join_struct_p->params.end (),
+                                  keys_in.begin(),
+                                  keys_in.end ());
 
   // step2: send it upstream
-  sendMessage(join_struct);
+  sendMessage (join_struct_p);
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::part(const string_list_t& channels_in)
+RPG_Net_Protocol_Module_IRCHandler::part (const string_list_t& channels_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::part"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::part"));
 
   // step1: init PART
-  RPG_Net_Protocol_IRCMessage* part_struct = NULL;
-  ACE_NEW_NORETURN(part_struct,
-                   RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(part_struct);
-  ACE_NEW_NORETURN(part_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::PART)));
-  ACE_ASSERT(part_struct->command.string);
-  part_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
-  part_struct->params = channels_in;
+  RPG_Net_Protocol_IRCMessage* part_struct_p = NULL;
+  ACE_NEW_NORETURN (part_struct_p,
+                    RPG_Net_Protocol_IRCMessage ());
+  ACE_ASSERT (part_struct_p);
+  ACE_NEW_NORETURN (part_struct_p->command.string,
+                    std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::PART)));
+  ACE_ASSERT (part_struct_p->command.string);
+  part_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  part_struct_p->params = channels_in;
 
   // step2: send it upstream
-  sendMessage(part_struct);
+  sendMessage (part_struct_p);
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::mode(const std::string& target_in,
-                                         const char& mode_in,
-                                         const bool& enable_in,
-                                         const string_list_t& parameters_in)
+RPG_Net_Protocol_Module_IRCHandler::mode (const std::string& target_in,
+                                          const char& mode_in,
+                                          const bool& enable_in,
+                                          const string_list_t& parameters_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::mode"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::mode"));
 
   // step1: init MODE
-  RPG_Net_Protocol_IRCMessage* mode_struct = NULL;
-  ACE_NEW_NORETURN(mode_struct,
-                   RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(mode_struct);
-  ACE_NEW_NORETURN(mode_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::MODE)));
-  ACE_ASSERT(mode_struct->command.string);
-  mode_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  RPG_Net_Protocol_IRCMessage* mode_struct_p = NULL;
+  ACE_NEW_NORETURN (mode_struct_p,
+                    RPG_Net_Protocol_IRCMessage ());
+  ACE_ASSERT (mode_struct_p);
+  ACE_NEW_NORETURN (mode_struct_p->command.string,
+                    std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::MODE)));
+  ACE_ASSERT (mode_struct_p->command.string);
+  mode_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
 
   // construct parameter
   std::string mode_string = (enable_in ? ACE_TEXT_ALWAYS_CHAR("+")
                                        : ACE_TEXT_ALWAYS_CHAR("-"));
   mode_string += mode_in;
 
-  mode_struct->params.push_back(target_in);
-  mode_struct->params.push_back(mode_string);
+  mode_struct_p->params.push_back (target_in);
+  mode_struct_p->params.push_back (mode_string);
   // append any parameters
-  mode_struct->params.insert(mode_struct->params.end(),
-                             parameters_in.begin(),
-                             parameters_in.end());
+  mode_struct_p->params.insert (mode_struct_p->params.end (),
+                                parameters_in.begin (),
+                                parameters_in.end ());
 
   // step2: send it upstream
-  sendMessage(mode_struct);
+  sendMessage (mode_struct_p);
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::topic(const std::string& channel_in,
-                                          const std::string& topic_in)
+RPG_Net_Protocol_Module_IRCHandler::topic (const std::string& channel_in,
+                                           const std::string& topic_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::topic"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::topic"));
 
   // sanity check(s)
-  ACE_ASSERT(!topic_in.empty());
+  ACE_ASSERT (!topic_in.empty ());
 
   // step1: init TOPIC
-  RPG_Net_Protocol_IRCMessage* topic_struct = NULL;
-  ACE_NEW_NORETURN(topic_struct,
-                   RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(topic_struct);
-  ACE_NEW_NORETURN(topic_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::TOPIC)));
-  ACE_ASSERT(topic_struct->command.string);
-  topic_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  RPG_Net_Protocol_IRCMessage* topic_struct_p = NULL;
+  ACE_NEW_NORETURN (topic_struct_p,
+                    RPG_Net_Protocol_IRCMessage ());
+  ACE_ASSERT (topic_struct_p);
+  ACE_NEW_NORETURN (topic_struct_p->command.string,
+                    std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::TOPIC)));
+  ACE_ASSERT (topic_struct_p->command.string);
+  topic_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
 
-  topic_struct->params.push_back(channel_in);
-  topic_struct->params.push_back(topic_in);
+  topic_struct_p->params.push_back (channel_in);
+  topic_struct_p->params.push_back (topic_in);
 
   // step2: send it upstream
-  sendMessage(topic_struct);
+  sendMessage (topic_struct_p);
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::names(const string_list_t& channels_in)
+RPG_Net_Protocol_Module_IRCHandler::names (const string_list_t& channels_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::names"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::names"));
 
   // step1: init NAMES
-  RPG_Net_Protocol_IRCMessage* names_struct = NULL;
-  ACE_NEW_NORETURN(names_struct,
-                   RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(names_struct);
-  ACE_NEW_NORETURN(names_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::NAMES)));
-  ACE_ASSERT(names_struct->command.string);
-  names_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  RPG_Net_Protocol_IRCMessage* names_struct_p = NULL;
+  ACE_NEW_NORETURN (names_struct_p,
+                    RPG_Net_Protocol_IRCMessage ());
+  ACE_ASSERT (names_struct_p);
+  ACE_NEW_NORETURN (names_struct_p->command.string,
+                    std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::NAMES)));
+  ACE_ASSERT (names_struct_p->command.string);
+  names_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
 
   // compute range ?
-  if (channels_in.size() > 1)
+  if (channels_in.size () > 1)
   {
     list_item_range_t range;
     range.first = 0;
-    range.second = (channels_in.size() - 1);
-    names_struct->list_param_ranges.push_back(range);
+    range.second = (channels_in.size () - 1);
+    names_struct_p->list_param_ranges.push_back (range);
   } // end IF
-  names_struct->params = channels_in;
+  names_struct_p->params = channels_in;
 
   // step2: send it upstream
-  sendMessage(names_struct);
+  sendMessage (names_struct_p);
 }
 
 void
@@ -973,265 +978,265 @@ RPG_Net_Protocol_Module_IRCHandler::list(const string_list_t& channels_in)
   RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::list"));
 
   // step1: init LIST
-  RPG_Net_Protocol_IRCMessage* list_struct = NULL;
-  ACE_NEW_NORETURN(list_struct,
-                   RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(list_struct);
-  ACE_NEW_NORETURN(list_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::LIST)));
-  ACE_ASSERT(list_struct->command.string);
-  list_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  RPG_Net_Protocol_IRCMessage* list_struct_p = NULL;
+  ACE_NEW_NORETURN (list_struct_p,
+                    RPG_Net_Protocol_IRCMessage ());
+  ACE_ASSERT (list_struct_p);
+  ACE_NEW_NORETURN (list_struct_p->command.string,
+                    std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::LIST)));
+  ACE_ASSERT (list_struct_p->command.string);
+  list_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
 
   // compute range ?
-  if (channels_in.size() > 1)
+  if (channels_in.size () > 1)
   {
     list_item_range_t range;
     range.first = 0;
-    range.second = (channels_in.size() - 1);
-    list_struct->list_param_ranges.push_back(range);
+    range.second = (channels_in.size () - 1);
+    list_struct_p->list_param_ranges.push_back (range);
   } // end IF
-  list_struct->params =  channels_in;
+  list_struct_p->params = channels_in;
 
   // step2: send it upstream
-  sendMessage(list_struct);
+  sendMessage (list_struct_p);
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::invite(const std::string& nick_in,
-                                           const std::string& channel_in)
+RPG_Net_Protocol_Module_IRCHandler::invite (const std::string& nick_in,
+                                            const std::string& channel_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::invite"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::invite"));
 
   // step1: init INVITE
-  RPG_Net_Protocol_IRCMessage* invite_struct = NULL;
-  ACE_NEW_NORETURN(invite_struct,
-                   RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(invite_struct);
-  ACE_NEW_NORETURN(invite_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::INVITE)));
-  ACE_ASSERT(invite_struct->command.string);
-  invite_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  RPG_Net_Protocol_IRCMessage* invite_struct_p = NULL;
+  ACE_NEW_NORETURN (invite_struct_p,
+                    RPG_Net_Protocol_IRCMessage ());
+  ACE_ASSERT (invite_struct_p);
+  ACE_NEW_NORETURN (invite_struct_p->command.string,
+                    std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::INVITE)));
+  ACE_ASSERT (invite_struct_p->command.string);
+  invite_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
 
-  invite_struct->params.push_back(nick_in);
-  invite_struct->params.push_back(channel_in);
+  invite_struct_p->params.push_back (nick_in);
+  invite_struct_p->params.push_back (channel_in);
 
   // step2: send it upstream
-  sendMessage(invite_struct);
+  sendMessage (invite_struct_p);
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::kick(const std::string& channel_in,
-                                         const std::string& nick_in,
-                                         const std::string& comment_in)
+RPG_Net_Protocol_Module_IRCHandler::kick (const std::string& channel_in,
+                                          const std::string& nick_in,
+                                          const std::string& comment_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::kick"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::kick"));
 
   // step1: init KICK
-  RPG_Net_Protocol_IRCMessage* kick_struct = NULL;
-  ACE_NEW_NORETURN(kick_struct,
-                   RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(kick_struct);
-  ACE_NEW_NORETURN(kick_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::KICK)));
-  ACE_ASSERT(kick_struct->command.string);
-  kick_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  RPG_Net_Protocol_IRCMessage* kick_struct_p = NULL;
+  ACE_NEW_NORETURN (kick_struct_p,
+                    RPG_Net_Protocol_IRCMessage ());
+  ACE_ASSERT (kick_struct_p);
+  ACE_NEW_NORETURN (kick_struct_p->command.string,
+                    std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::KICK)));
+  ACE_ASSERT (kick_struct_p->command.string);
+  kick_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
 
-  kick_struct->params.push_back(channel_in);
-  kick_struct->params.push_back(nick_in);
-  if (!comment_in.empty())
-    kick_struct->params.push_back(comment_in);
+  kick_struct_p->params.push_back (channel_in);
+  kick_struct_p->params.push_back (nick_in);
+  if (!comment_in.empty ())
+    kick_struct_p->params.push_back (comment_in);
 
   // step2: send it upstream
-  sendMessage(kick_struct);
+  sendMessage (kick_struct_p);
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::send(const string_list_t& receivers_in,
-                                         const std::string& message_in)
+RPG_Net_Protocol_Module_IRCHandler::send (const string_list_t& receivers_in,
+                                          const std::string& message_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::send"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::send"));
 
   // sanity check
-  if (message_in.empty())
+  if (message_in.empty ())
     return; // nothing to do...
 
   // step1: init PRIVMSG
-  RPG_Net_Protocol_IRCMessage* msg_struct = NULL;
-  ACE_NEW_NORETURN(msg_struct,
-                   RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(msg_struct);
-  ACE_NEW_NORETURN(msg_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::PRIVMSG)));
-  ACE_ASSERT(msg_struct->command.string);
-  msg_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  RPG_Net_Protocol_IRCMessage* msg_struct_p = NULL;
+  ACE_NEW_NORETURN (msg_struct_p,
+                    RPG_Net_Protocol_IRCMessage ());
+  ACE_ASSERT (msg_struct_p);
+  ACE_NEW_NORETURN (msg_struct_p->command.string,
+                    std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::PRIVMSG)));
+  ACE_ASSERT (msg_struct_p->command.string);
+  msg_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
 
   // compute range ?
-  if (receivers_in.size() > 1)
+  if (receivers_in.size () > 1)
   {
     list_item_range_t range;
     range.first = 0;
-    range.second = (receivers_in.size() - 1);
-    msg_struct->list_param_ranges.push_back(range);
+    range.second = (receivers_in.size () - 1);
+    msg_struct_p->list_param_ranges.push_back (range);
   } // end IF
-  msg_struct->params = receivers_in;
-  msg_struct->params.push_back(message_in);
+  msg_struct_p->params = receivers_in;
+  msg_struct_p->params.push_back (message_in);
 
   // step2: send it upstream
-  sendMessage(msg_struct);
+  sendMessage (msg_struct_p);
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::who(const std::string& name_in,
-                                        const bool& operatorsOnly_in)
+RPG_Net_Protocol_Module_IRCHandler::who (const std::string& name_in,
+                                         const bool& operatorsOnly_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::who"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::who"));
 
   // step1: init WHOIS
-  RPG_Net_Protocol_IRCMessage* who_struct = NULL;
-  ACE_NEW_NORETURN(who_struct,
-                   RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(who_struct);
-  ACE_NEW_NORETURN(who_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::WHO)));
-  ACE_ASSERT(who_struct->command.string);
-  who_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  RPG_Net_Protocol_IRCMessage* who_struct_p = NULL;
+  ACE_NEW_NORETURN (who_struct_p,
+                    RPG_Net_Protocol_IRCMessage ());
+  ACE_ASSERT (who_struct_p);
+  ACE_NEW_NORETURN (who_struct_p->command.string,
+                    std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::WHO)));
+  ACE_ASSERT (who_struct_p->command.string);
+  who_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
 
-  who_struct->params.push_back(name_in);
+  who_struct_p->params.push_back (name_in);
   if (operatorsOnly_in)
-    who_struct->params.push_back(std::string("o"));
+    who_struct_p->params.push_back (std::string ("o"));
 
   // step2: send it upstream
-  sendMessage(who_struct);
+  sendMessage (who_struct_p);
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::whois(const std::string& servername_in,
-                                          const string_list_t& nicknames_in)
+RPG_Net_Protocol_Module_IRCHandler::whois (const std::string& servername_in,
+                                           const string_list_t& nicknames_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::whois"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::whois"));
 
   // step1: init WHOIS
-  RPG_Net_Protocol_IRCMessage* whois_struct = NULL;
-  ACE_NEW_NORETURN(whois_struct,
-                   RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(whois_struct);
-  ACE_NEW_NORETURN(whois_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::WHOIS)));
-  ACE_ASSERT(whois_struct->command.string);
-  whois_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  RPG_Net_Protocol_IRCMessage* whois_struct_p = NULL;
+  ACE_NEW_NORETURN (whois_struct_p,
+                    RPG_Net_Protocol_IRCMessage ());
+  ACE_ASSERT (whois_struct_p);
+  ACE_NEW_NORETURN (whois_struct_p->command.string,
+                    std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::WHOIS)));
+  ACE_ASSERT (whois_struct_p->command.string);
+  whois_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
 
-  whois_struct->params = nicknames_in;
-  if (!servername_in.empty())
-    whois_struct->params.push_front(servername_in);
+  whois_struct_p->params = nicknames_in;
+  if (!servername_in.empty ())
+    whois_struct_p->params.push_front (servername_in);
 
   // step2: send it upstream
-  sendMessage(whois_struct);
+  sendMessage (whois_struct_p);
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::whowas(const std::string& nick_in,
-                                           const unsigned long& count_in,
-                                           const std::string& servername_in)
+RPG_Net_Protocol_Module_IRCHandler::whowas (const std::string& nick_in,
+                                            const unsigned long& count_in,
+                                            const std::string& servername_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::whowas"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::whowas"));
 
   // step1: init WHOWAS
-  RPG_Net_Protocol_IRCMessage* whowas_struct = NULL;
-  ACE_NEW_NORETURN(whowas_struct,
-                   RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(whowas_struct);
-  ACE_NEW_NORETURN(whowas_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::WHOWAS)));
-  ACE_ASSERT(whowas_struct->command.string);
-  whowas_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  RPG_Net_Protocol_IRCMessage* whowas_struct_p = NULL;
+  ACE_NEW_NORETURN (whowas_struct_p,
+                    RPG_Net_Protocol_IRCMessage ());
+  ACE_ASSERT (whowas_struct_p);
+  ACE_NEW_NORETURN (whowas_struct_p->command.string,
+                    std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::WHOWAS)));
+  ACE_ASSERT (whowas_struct_p->command.string);
+  whowas_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
 
-  whowas_struct->params.push_back(nick_in);
+  whowas_struct_p->params.push_back (nick_in);
   if (count_in)
   {
     std::stringstream converter;
     converter << count_in;
     std::string count_string;
     converter >> count_string;
-    whowas_struct->params.push_back(count_string);
+    whowas_struct_p->params.push_back (count_string);
   } // end IF
-  if (!servername_in.empty())
-    whowas_struct->params.push_back(servername_in);
+  if (!servername_in.empty ())
+    whowas_struct_p->params.push_back (servername_in);
 
   // step2: send it upstream
-  sendMessage(whowas_struct);
+  sendMessage (whowas_struct_p);
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::away(const std::string& message_in)
+RPG_Net_Protocol_Module_IRCHandler::away (const std::string& message_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::away"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::away"));
 
   // step1: init AWAY
-  RPG_Net_Protocol_IRCMessage* away_struct = NULL;
-  ACE_NEW_NORETURN(away_struct,
-                   RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(away_struct);
-  ACE_NEW_NORETURN(away_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::AWAY)));
-  ACE_ASSERT(away_struct->command.string);
-  away_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  RPG_Net_Protocol_IRCMessage* away_struct_p = NULL;
+  ACE_NEW_NORETURN (away_struct_p,
+                    RPG_Net_Protocol_IRCMessage ());
+  ACE_ASSERT (away_struct_p);
+  ACE_NEW_NORETURN (away_struct_p->command.string,
+                    std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::AWAY)));
+  ACE_ASSERT (away_struct_p->command.string);
+  away_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
 
   // *NOTE*: if there is no away message parameter, the semantic is to
   // "un-away" the user
-  if (!message_in.empty())
-    away_struct->params.push_back(message_in);
+  if (!message_in.empty ())
+    away_struct_p->params.push_back (message_in);
 
   // step2: send it upstream
-  sendMessage(away_struct);
+  sendMessage (away_struct_p);
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::users(const std::string& server_in)
+RPG_Net_Protocol_Module_IRCHandler::users (const std::string& server_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::users"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::users"));
 
   // step1: init USERS
-  RPG_Net_Protocol_IRCMessage* users_struct = NULL;
-  ACE_NEW_NORETURN(users_struct,
-                   RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(users_struct);
-  ACE_NEW_NORETURN(users_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::USERS)));
-  ACE_ASSERT(users_struct->command.string);
-  users_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  RPG_Net_Protocol_IRCMessage* users_struct_p = NULL;
+  ACE_NEW_NORETURN (users_struct_p,
+                    RPG_Net_Protocol_IRCMessage ());
+  ACE_ASSERT (users_struct_p);
+  ACE_NEW_NORETURN (users_struct_p->command.string,
+                    std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::USERS)));
+  ACE_ASSERT (users_struct_p->command.string);
+  users_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
 
-  if (!server_in.empty())
-    users_struct->params.push_back(server_in);
+  if (!server_in.empty ())
+    users_struct_p->params.push_back (server_in);
 
   // step2: send it upstream
-  sendMessage(users_struct);
+  sendMessage (users_struct_p);
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::userhost(const string_list_t& nicknames_in)
+RPG_Net_Protocol_Module_IRCHandler::userhost (const string_list_t& nicknames_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::userhost"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::userhost"));
 
   // step1: init USERHOST
-  RPG_Net_Protocol_IRCMessage* userhost_struct = NULL;
-  ACE_NEW_NORETURN(userhost_struct,
-                   RPG_Net_Protocol_IRCMessage());
-  ACE_ASSERT(userhost_struct);
-  ACE_NEW_NORETURN(userhost_struct->command.string,
-                   std::string(RPG_Net_Protocol_Message::commandType2String(RPG_Net_Protocol_IRCMessage::USERHOST)));
-  ACE_ASSERT(userhost_struct->command.string);
-  userhost_struct->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
+  RPG_Net_Protocol_IRCMessage* userhost_struct_p = NULL;
+  ACE_NEW_NORETURN (userhost_struct_p,
+                    RPG_Net_Protocol_IRCMessage ());
+  ACE_ASSERT (userhost_struct_p);
+  ACE_NEW_NORETURN (userhost_struct_p->command.string,
+                    std::string (RPG_Net_Protocol_Message::CommandType2String (RPG_Net_Protocol_IRCMessage::USERHOST)));
+  ACE_ASSERT (userhost_struct_p->command.string);
+  userhost_struct_p->command.discriminator = RPG_Net_Protocol_IRCMessage::Command::STRING;
 
-  userhost_struct->params = nicknames_in;
+  userhost_struct_p->params = nicknames_in;
 
   // step2: send it upstream
-  sendMessage(userhost_struct);
+  sendMessage (userhost_struct_p);
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::dump_state() const
+RPG_Net_Protocol_Module_IRCHandler::dump_state () const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::dump_state"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::dump_state"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT(" ***** MODULE: \"%s\" state *****\n"),
@@ -1243,52 +1248,52 @@ RPG_Net_Protocol_Module_IRCHandler::dump_state() const
 }
 
 RPG_Net_Protocol_Message*
-RPG_Net_Protocol_Module_IRCHandler::allocateMessage(const unsigned int& requestedSize_in)
+RPG_Net_Protocol_Module_IRCHandler::allocateMessage(unsigned int requestedSize_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::allocateMessage"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::allocateMessage"));
 
   // init return value(s)
   RPG_Net_Protocol_Message* message_out = NULL;
 
   try
   {
-    message_out = static_cast<RPG_Net_Protocol_Message*>(myAllocator->malloc(requestedSize_in));
+    message_out =
+     static_cast<RPG_Net_Protocol_Message*>(myAllocator->malloc (requestedSize_in));
   }
   catch (...)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in Stream_IAllocator::malloc(%u), aborting\n"),
-               requestedSize_in));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("caught exception in Stream_IAllocator::malloc(%u), aborting\n"),
+                requestedSize_in));
   }
   if (!message_out)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to Stream_IAllocator::malloc(%u), aborting\n"),
-               requestedSize_in));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to Stream_IAllocator::malloc(%u), aborting\n"),
+                requestedSize_in));
   } // end IF
 
   return message_out;
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::sendMessage(RPG_Net_Protocol_IRCMessage*& command_in)
+RPG_Net_Protocol_Module_IRCHandler::sendMessage (RPG_Net_Protocol_IRCMessage*& command_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Module_IRCHandler::sendMessage"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::sendMessage"));
 
   // step1: get a message buffer
-  RPG_Net_Protocol_Message* message = allocateMessage(myDefaultBufferSize);
-  if (message == NULL)
+  RPG_Net_Protocol_Message* message_p = allocateMessage (myDefaultBufferSize);
+  if (!message_p)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate message(%u), aborting\n"),
-               myDefaultBufferSize));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to allocate message(%u), returning\n"),
+                myDefaultBufferSize));
     return;
   } // end IF
 
   // step2: attach the command
   // *NOTE*: message assumes control over the reference...
-  message->init(command_in);
+  message_p->initialize (command_in);
   // --> bye bye...
   command_in = NULL;
 
@@ -1297,27 +1302,26 @@ RPG_Net_Protocol_Module_IRCHandler::sendMessage(RPG_Net_Protocol_IRCMessage*& co
   // this does protect against async closure of the STREAM WHILE we propagate
   // our message...
   // --> grab our lock and check myConnectionIsAlive
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myConditionLock);
+  ACE_Guard<ACE_Thread_Mutex> aGuard (myConditionLock);
   // sanity check
   if (!myConnectionIsAlive)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("no connection - cannot send message, aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("no connection - cannot send message, returning\n")));
 
     // clean up
-    message->release();
+    message_p->release ();
 
-    // what else can we do ?
     return;
   } // end IF
 
-  if (reply(message, NULL) == -1)
+  if (reply (message_p, NULL) == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Task::reply(): \"%m\", aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_Task::reply(): \"%m\", returning\n")));
 
     // clean up
-    message->release();
+    message_p->release ();
 
     return;
   } // end IF

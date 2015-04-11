@@ -19,89 +19,100 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-#include <string>
 #include <iostream>
 #include <sstream>
+#include <string>
 
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-#include "ace/Init_ACE.h"
-#endif
-#include "ace/Global_Macros.h"
-#include "ace/Version.h"
-#include "ace/Get_Opt.h"
-#include "ace/Profile_Timer.h"
-#include "ace/Signal.h"
-#include "ace/Sig_Handler.h"
-#include "ace/High_Res_Timer.h"
 #include "ace/Configuration.h"
 #include "ace/Configuration_Import_Export.h"
+#include "ace/Get_Opt.h"
+#include "ace/Global_Macros.h"
+#include "ace/High_Res_Timer.h"
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
+#include "ace/Profile_Timer.h"
+#include "ace/Sig_Handler.h"
+#include "ace/Signal.h"
 #include "ace/Thread_Manager.h"
+#include "ace/Version.h"
 
 #include "SDL.h"
 #include "SDL_mixer.h"
 //#include "SDL/SDL_framerate.h"
 
-#include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-#include "rpg_common_timer_manager.h"
-#include "rpg_common_tools.h"
-#include "rpg_common_file_tools.h"
+#include "common_file_tools.h"
+//#include "common_timer_manager.h"
+#include "common_tools.h"
 
-#include "rpg_character_defines.h"
+#include "common_ui_glade_definition.h"
+#include "common_ui_gtk_manager.h"
+
+#include "stream_allocatorheap.h"
+
+#include "net_common_tools.h"
+#include "net_connection_manager_common.h"
+//#include "net_defines.h"
+
+#include "net_client_defines.h"
+
+#ifdef HAVE_CONFIG_H
+#include "rpg_config.h"
+#endif
+
+#include "rpg_common_defines.h"
+#include "rpg_common_file_tools.h"
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
 
 #include "rpg_magic_defines.h"
 
 #include "rpg_item_defines.h"
 
-#include "rpg_player_defines.h"
+#include "rpg_character_defines.h"
+
 #include "rpg_player.h"
 #include "rpg_player_common_tools.h"
+#include "rpg_player_defines.h"
 
 #include "rpg_monster_defines.h"
 
-#include "rpg_map_defines.h"
 #include "rpg_map_common_tools.h"
+#include "rpg_map_defines.h"
 #include "rpg_map_level.h"
 
-#include "rpg_graphics_defines.h"
-#include "rpg_graphics_dictionary.h"
-#include "rpg_graphics_cursor_manager.h"
-#include "rpg_graphics_surface.h"
-#include "rpg_graphics_SDL_tools.h"
-#include "rpg_graphics_common_tools.h"
-#include "rpg_graphics_cursor.h"
+#include "rpg_net_defines.h"
+#include "rpg_net_stream_messageallocator.h"
 
-#include "rpg_engine_defines.h"
+#include "rpg_net_protocol_common.h"
+
 #include "rpg_engine.h"
 #include "rpg_engine_common_tools.h"
+#include "rpg_engine_defines.h"
 
-#include "rpg_sound_defines.h"
 #include "rpg_sound_common.h"
-#include "rpg_sound_dictionary.h"
 #include "rpg_sound_common_tools.h"
+#include "rpg_sound_defines.h"
+#include "rpg_sound_dictionary.h"
 
-#include "rpg_stream_allocatorheap.h"
+#include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_cursor.h"
+#include "rpg_graphics_cursor_manager.h"
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_dictionary.h"
+#include "rpg_graphics_surface.h"
+#include "rpg_graphics_SDL_tools.h"
 
-#include "rpg_net_defines.h"
-#include "rpg_net_connection_manager_common.h"
-#include "rpg_net_stream_messageallocator.h"
-#include "rpg_net_common_tools.h"
-
-#include "rpg_net_client_defines.h"
-
-#include "rpg_client_defines.h"
-#include "rpg_client_common.h"
 #include "rpg_client_callbacks.h"
-#include "rpg_client_window_main.h"
-#include "rpg_client_window_level.h"
+#include "rpg_client_common.h"
+#include "rpg_client_common_tools.h"
+#include "rpg_client_defines.h"
 #include "rpg_client_engine.h"
 #include "rpg_client_entity_manager.h"
-#include "rpg_client_common_tools.h"
-#include "rpg_client_ui_tools.h"
 #include "rpg_client_logger.h"
-#include "rpg_client_GTK_manager.h"
-
-#include "rpg_config.h"
+#include "rpg_client_ui_tools.h"
+#include "rpg_client_window_level.h"
+#include "rpg_client_window_main.h"
 
 Uint32
 event_timer_SDL_cb(Uint32 interval_in,
@@ -118,16 +129,16 @@ event_timer_SDL_cb(Uint32 interval_in,
 
   // synch access
   {
-    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(data->lock);
+    ACE_Guard<ACE_Thread_Mutex> aGuard (data->GTKState.lock);
 
-    data->hover_time += interval_in;
+    data->hoverTime += interval_in;
     //data->gtk_time += interval_in;
-    if (data->do_hover &&
-        (data->hover_time > RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_DELAY))
+    if (data->doHover &&
+        (data->hoverTime > RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_DELAY))
     {
       // mouse is hovering --> trigger an event
       sdl_event.type = RPG_GRAPHICS_SDL_HOVEREVENT;
-      sdl_event.user.code = static_cast<int>(data->hover_time);
+      sdl_event.user.code = static_cast<int>(data->hoverTime);
 
       if (SDL_PushEvent(&sdl_event))
         ACE_DEBUG((LM_ERROR,
@@ -225,14 +236,14 @@ do_printUsage(const std::string& programName_in)
   std::cout.setf(ios::boolalpha);
 
   std::string configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           true);
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
   std::string data_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           false);
-#if defined(DEBUG_DEBUGGER)
-  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
-  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          false);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
+  data_path = Common_File_Tools::getWorkingDirectory ();
 #endif
 
   std::cout << ACE_TEXT("usage: ")
@@ -248,7 +259,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("client");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -265,7 +276,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("character");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("monster");
@@ -279,7 +290,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("engine");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("data");
@@ -299,7 +310,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("graphics");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -311,7 +322,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("item");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -328,7 +339,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("magic");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -339,7 +350,7 @@ do_printUsage(const std::string& programName_in)
             << ACE_TEXT("\"]")
             << std::endl;
   path = configuration_path;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
@@ -355,7 +366,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("sound");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -372,7 +383,7 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("client");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -388,7 +399,7 @@ do_printUsage(const std::string& programName_in)
             << ACE_TEXT("]")
             << std::endl;
   std::cout << ACE_TEXT("-x [VALUE] : #dispatch threads [")
-            << RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS
+            << NET_CLIENT_DEF_NUM_DISPATCH_THREADS
             << ACE_TEXT("]")
             << std::endl;
   std::cout << ACE_TEXT("-z [STRING]: SDL video driver [\"")
@@ -424,19 +435,19 @@ do_processArguments(const int& argc_in,
   mute_out                = false;
 
   std::string configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           true);
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
   std::string data_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           false);
-#if defined(DEBUG_DEBUGGER)
-  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
-  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          false);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
+  data_path = Common_File_Tools::getWorkingDirectory ();
 #endif
 
   configurationFile_out   = configuration_path;
   configurationFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   configurationFile_out += ACE_TEXT_ALWAYS_CHAR("client");
   configurationFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -446,7 +457,7 @@ do_processArguments(const int& argc_in,
 
   monsterDictionary_out   = configuration_path;
   monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   monsterDictionary_out += ACE_TEXT_ALWAYS_CHAR("character");
   monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monsterDictionary_out += ACE_TEXT_ALWAYS_CHAR("monster");
@@ -457,7 +468,7 @@ do_processArguments(const int& argc_in,
 
   floorPlan_out           = data_path;
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR("engine");
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR("data");
@@ -472,7 +483,7 @@ do_processArguments(const int& argc_in,
 
   graphicsDictionary_out  = configuration_path;
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -481,7 +492,7 @@ do_processArguments(const int& argc_in,
 
   itemDictionary_out      = configuration_path;
   itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   itemDictionary_out += ACE_TEXT_ALWAYS_CHAR("item");
   itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -491,7 +502,7 @@ do_processArguments(const int& argc_in,
 
   magicDictionary_out     = configuration_path;
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR("magic");
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -500,14 +511,14 @@ do_processArguments(const int& argc_in,
   skipIntro_out           = false;
 
   schemaRepository_out    = configuration_path;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   schemaRepository_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   schemaRepository_out += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
 
   soundDictionary_out     = configuration_path;
   soundDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   soundDictionary_out += ACE_TEXT_ALWAYS_CHAR("sound");
   soundDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -517,7 +528,7 @@ do_processArguments(const int& argc_in,
 
   UIfile_out              = configuration_path;
   UIfile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   UIfile_out += ACE_TEXT_ALWAYS_CHAR("client");
   UIfile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -525,7 +536,7 @@ do_processArguments(const int& argc_in,
 
   printVersionAndExit_out = false;
 
-  numDispatchThreads_out  = RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS;
+  numDispatchThreads_out  = NET_CLIENT_DEF_NUM_DISPATCH_THREADS;
 
   videoDriver_out         =
       ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME);
@@ -732,36 +743,37 @@ do_runIntro(SDL_Surface*      targetSurface_in,
 }
 
 void
-do_work(const RPG_Client_Configuration_t& configuration_in,
-        const std::string& schemaRepository_in,
-        RPG_Client_GTK_CBData_t& GTKUserData_in,
-        const bool& skipIntro_in,
-        const bool& debug_in)
+do_work (const RPG_Client_Configuration_t& configuration_in,
+         const std::string& schemaRepository_in,
+         const Common_UI_GladeDefinition& UIDefinition_in,
+         RPG_Client_GTK_CBData_t& GTKUserData_in,
+         bool skipIntro_in,
+         bool debug_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_work"));
+  RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step1: init RPG engine
-  RPG_Engine_Common_Tools::init(schemaRepository_in,
-                                configuration_in.magic_dictionary,
-                                configuration_in.item_dictionary,
-                                configuration_in.monster_dictionary);
-  if (!RPG_Client_Common_Tools::init(configuration_in.input_configuration,
-                                     configuration_in.audio_configuration.SDL_configuration,
-                                     configuration_in.audio_configuration.repository,
-                                     configuration_in.audio_configuration.use_CD,
-                                     RPG_SOUND_DEF_CACHESIZE,
-                                     configuration_in.audio_configuration.mute,
-                                     configuration_in.audio_configuration.dictionary,
-                                     configuration_in.graphics_directory,
-                                     RPG_GRAPHICS_DEF_CACHESIZE,
-                                     configuration_in.graphics_dictionary,
-                                     false)) // init SDL ?
+  RPG_Engine_Common_Tools::init (schemaRepository_in,
+                                 configuration_in.magic_dictionary,
+                                 configuration_in.item_dictionary,
+                                 configuration_in.monster_dictionary);
+  if (!RPG_Client_Common_Tools::init (configuration_in.input_configuration,
+                                      configuration_in.audio_configuration.SDL_configuration,
+                                      configuration_in.audio_configuration.repository,
+                                      configuration_in.audio_configuration.use_CD,
+                                      RPG_SOUND_DEF_CACHESIZE,
+                                      configuration_in.audio_configuration.mute,
+                                      configuration_in.audio_configuration.dictionary,
+                                      configuration_in.graphics_directory,
+                                      RPG_GRAPHICS_DEF_CACHESIZE,
+                                      configuration_in.graphics_dictionary,
+                                      false)) // init SDL ?
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Client_Common_Tools::init(), aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Client_Common_Tools::init(), aborting\n")));
 
     // clean up
-    RPG_Engine_Common_Tools::fini();
+    RPG_Engine_Common_Tools::fini ();
 
     return;
   } // end IF
@@ -769,30 +781,17 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
   // step2: init UI
   RPG_Client_Engine client_engine;
   RPG_Engine level_engine;
-	level_engine.init(&client_engine);
-//   GTKUserData_in.lock;
-  GTKUserData_in.do_hover          = true;
-  GTKUserData_in.hover_time        = 0;
-  //GTKUserData_in.GTK_time          = 0;
-  //GTKUserData_in.GTK_done          = false;
-  GTKUserData_in.XML               = NULL;
-  GTKUserData_in.entity_filter     = NULL;
-  GTKUserData_in.map_filter        = NULL;
-  GTKUserData_in.screen            = NULL;
-  GTKUserData_in.event_timer       = NULL;
-  GTKUserData_in.client_engine     = &client_engine;
-  GTKUserData_in.schema_repository = schemaRepository_in;
-  GTKUserData_in.entity.character  = NULL;
-  GTKUserData_in.entity.position   =
-      std::make_pair(std::numeric_limits<unsigned int>::max(),
-                     std::numeric_limits<unsigned int>::max());
+  level_engine.initialize (&client_engine);
+  GTKUserData_in.clientEngine     = &client_engine;
+  GTKUserData_in.schemaRepository = schemaRepository_in;
+  GTKUserData_in.entity.position  =
+    std::make_pair (std::numeric_limits<unsigned int>::max (),
+                    std::numeric_limits<unsigned int>::max ());
 //   GTKUserData_in.entity.actions();
 //   GTKUserData_in.entity.modes();
 //  GTKUserData_in.entity.sprite();
   GTKUserData_in.entity.is_spawned = false;
-  GTKUserData_in.level_engine      = &level_engine;
-//  GTKUserData_in.level_metadata();
-//  GTKUserData_in.map_configuration();
+  GTKUserData_in.levelEngine      = &level_engine;
 
   // ***** window setup *****
   std::string caption =
@@ -856,11 +855,10 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
                    debug_in);
 
   // step4b: client engine
-  RPG_Client_GTKUIDefinition ui_definition(&GTKUserData_in);
-  client_engine.init(&level_engine,
-                     main_window.child(WINDOW_MAP),
-                     &ui_definition,
-                     debug_in);
+  client_engine.initialize (&level_engine,
+                            main_window.child (WINDOW_MAP),
+                            &const_cast<Common_UI_GladeDefinition&> (UIDefinition_in),
+                            debug_in);
 
   // step4c: queue initial drawing
   RPG_Client_Action client_action;
@@ -907,12 +905,12 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
   } // end IF
 
   // step4d: start timer (triggers hover events)
-  GTKUserData_in.event_timer = NULL;
-  GTKUserData_in.event_timer =
+  GTKUserData_in.eventTimer = NULL;
+  GTKUserData_in.eventTimer =
       SDL_AddTimer(RPG_CLIENT_SDL_EVENT_TIMEOUT, // interval (ms)
                    event_timer_SDL_cb,           // event timer callback
                    &GTKUserData_in);             // callback argument
-  if (!GTKUserData_in.event_timer)
+  if (!GTKUserData_in.eventTimer)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_AddTimer(%u): \"%s\", aborting\n"),
@@ -930,40 +928,42 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
 
   // step5: init networking
   // step5a: init stream configuration object
-  RPG_Stream_AllocatorHeap heap_allocator;
-  RPG_Net_StreamMessageAllocator message_allocator(RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
-                                                   &heap_allocator);
-  RPG_Net_ConfigPOD net_configuration;
-  ACE_OS::memset(&net_configuration, 0, sizeof(RPG_Net_ConfigPOD));
-  // ************ connection config data ************
-  net_configuration.peerPingInterval = 0; // *NOTE*: don't ping the server...
-  net_configuration.pingAutoAnswer = true;
-//  net_configuration.printPongMessages = false;
-  net_configuration.streamSocketConfiguration.socketBufferSize = RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
-  net_configuration.streamSocketConfiguration.messageAllocator = &message_allocator;
-  net_configuration.streamSocketConfiguration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
+  Stream_AllocatorHeap heap_allocator;
+  RPG_Net_StreamMessageAllocator message_allocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
+                                                    &heap_allocator);
+  RPG_Net_Protocol_Configuration protocol_configuration;
+  ACE_OS::memset (&protocol_configuration,
+                  0,
+                  sizeof (RPG_Net_Protocol_Configuration));
+  // ************ connection configuration ************
+  protocol_configuration.socketConfiguration.bufferSize =
+   RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
 //  net_configuration.useThreadPerConnection = false;
 //  net_configuration.serializeOutput = false;
-  // ************ stream config data ************
+  // ************ stream configuration ************
+  protocol_configuration.messageAllocator = &message_allocator;
+  //protocol_configuration.streamConfiguration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
 //  net_configuration.notificationStrategy = NULL;
 //  net_configuration.module = NULL; // just use the default stream...
   // *WARNING*: set at runtime, by the appropriate connection handler
 //  net_configuration.sessionID = 0; // (== socket handle !)
 //  net_configuration.statisticsReportingInterval = 0; // == off
-  // ************ runtime data ************
-//  net_configuration.currentStatistics = {};
-//  net_configuration.lastCollectionTimestamp = ACE_Time_Value::zero;
+  // ************ stream config data ************
+  //protocol_configuration.protocolConfiguration.peerPingInterval = 0; // *NOTE*: don't ping the server...
+  //protocol_configuration.protocolConfiguration.pingAutoAnswer = true;
+  //  net_configuration.printPongMessages = false;
 
   // step5b: setup dispatch of network events
-  if (!RPG_Net_Common_Tools::initEventDispatch(RPG_NET_USES_REACTOR,
-                                               configuration_in.num_dispatch_threads,
-                                               net_configuration.streamSocketConfiguration.serializeOutput))
+  bool serialize_output = false;
+  if (!Common_Tools::initializeEventDispatch (RPG_NET_USES_REACTOR,
+                                              configuration_in.num_dispatch_threads,
+                                              serialize_output))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to init network event dispatch, aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to initialize network event dispatch, aborting\n")));
 
     // clean up
-    if (!SDL_RemoveTimer(GTKUserData_in.event_timer))
+    if (!SDL_RemoveTimer(GTKUserData_in.eventTimer))
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
                  ACE_TEXT(SDL_GetError())));
@@ -976,27 +976,30 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
   } // end IF
 
   // step5c: init connection manager
-  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max());
-  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->set(net_configuration); // will be passed to all handlers
+  RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (std::numeric_limits<unsigned int>::max ());
+  Net_UserData_t user_data;
+  ACE_OS::memset (&user_data, 0, sizeof (Net_UserData_t));
+  RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->set (protocol_configuration,
+                                                              &user_data);
 
   // step5d: start worker(s)
   int group_id = -1;
-  if (!RPG_Net_Common_Tools::startEventDispatch(RPG_NET_USES_REACTOR,
-                                                configuration_in.num_dispatch_threads,
-                                                group_id))
+  if (!Common_Tools::startEventDispatch (RPG_NET_USES_REACTOR,
+                                         configuration_in.num_dispatch_threads,
+                                         group_id))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to start network event dispatch, aborting\n")));
 
     // clean up
-    if (!SDL_RemoveTimer(GTKUserData_in.event_timer))
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
-                 ACE_TEXT(SDL_GetError())));
+    if (!SDL_RemoveTimer (GTKUserData_in.eventTimer))
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
+                  ACE_TEXT (SDL_GetError ())));
 //    level_engine.stop();
-    client_engine.stop();
-    RPG_Client_Common_Tools::fini();
-    RPG_Engine_Common_Tools::fini();
+    client_engine.stop ();
+    RPG_Client_Common_Tools::fini ();
+    RPG_Engine_Common_Tools::fini ();
 
     return;
   } // end IF
@@ -1005,28 +1008,28 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
 
   // step6: dispatch UI events
   // step6a: start GTK event loop
-  RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->start();
-  if (!RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->isRunning())
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start ();
+  if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to start GTK event dispatch, aborting\n")));
 
     // clean up
-    if (!SDL_RemoveTimer(GTKUserData_in.event_timer))
+    if (!SDL_RemoveTimer(GTKUserData_in.eventTimer))
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
                  ACE_TEXT(SDL_GetError())));
     //		level_engine.stop();
     client_engine.stop();
-    RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
+    COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
     RPG_Client_Common_Tools::fini();
     RPG_Engine_Common_Tools::fini();
 
-    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
-    RPG_Net_Common_Tools::finiEventDispatch(RPG_NET_USES_REACTOR,
-                                            !RPG_NET_USES_REACTOR,
-                                            group_id);
+    RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
+    RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->waitConnections ();
+    Common_Tools::finalizeEventDispatch (RPG_NET_USES_REACTOR,
+                                         !RPG_NET_USES_REACTOR,
+                                         group_id);
 
     return;
   } // end IF
@@ -1076,9 +1079,9 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
         (sdl_event.type != RPG_CLIENT_SDL_TIMEREVENT))
     {
       // synch access
-      ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(GTKUserData_in.lock);
+      ACE_Guard<ACE_Thread_Mutex> aGuard (GTKUserData_in.GTKState.lock);
 
-      GTKUserData_in.hover_time = 0;
+      GTKUserData_in.hoverTime = 0;
     } // end IF
 
     switch (sdl_event.type)
@@ -1114,9 +1117,9 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
 //                      ACE_TEXT("gained mouse coverage...\n")));
 
             // synch access
-            ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(GTKUserData_in.lock);
+            ACE_Guard<ACE_Thread_Mutex> aGuard(GTKUserData_in.GTKState.lock);
 
-            GTKUserData_in.do_hover = true;
+            GTKUserData_in.doHover = true;
           } // end IF
           else
           {
@@ -1124,9 +1127,9 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
 //                      ACE_TEXT("lost mouse coverage...\n")));
 
             // synch access
-            ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(GTKUserData_in.lock);
+            ACE_Guard<ACE_Thread_Mutex> aGuard(GTKUserData_in.GTKState.lock);
 
-            GTKUserData_in.do_hover = false;
+            GTKUserData_in.doHover = false;
           } // end ELSE
         } // end IF
 
@@ -1312,23 +1315,23 @@ do_work(const RPG_Client_Configuration_t& configuration_in,
              ACE_TEXT("left event loop...\n")));
 
   // step7: clean up
-  RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->stop();
-  if (!SDL_RemoveTimer(GTKUserData_in.event_timer))
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
+  if (!SDL_RemoveTimer(GTKUserData_in.eventTimer))
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
                ACE_TEXT(SDL_GetError())));
   level_engine.stop();
   client_engine.stop();
-  RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
+  COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
   RPG_Client_Common_Tools::fini();
   RPG_Engine_Common_Tools::fini();
   // done handling UI events
 
-  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-  RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
-  RPG_Net_Common_Tools::finiEventDispatch(RPG_NET_USES_REACTOR,
-                                          !RPG_NET_USES_REACTOR,
-                                          group_id);
+  RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
+  RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->waitConnections ();
+  Common_Tools::finalizeEventDispatch (RPG_NET_USES_REACTOR,
+                                       !RPG_NET_USES_REACTOR,
+                                       group_id);
   // no more data will arrive from here on...
 
   ACE_DEBUG((LM_DEBUG,
@@ -1691,14 +1694,14 @@ ACE_TMAIN(int argc_in,
 
   // step1 init/validate configuration
   std::string configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           true);
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
   std::string data_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           false);
-#if defined(DEBUG_DEBUGGER)
-  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
-  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          false);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
+  data_path = Common_File_Tools::getWorkingDirectory ();
 #endif
 
   // step1a: process commandline arguments
@@ -1706,7 +1709,7 @@ ACE_TMAIN(int argc_in,
   bool debug                        = RPG_CLIENT_DEF_DEBUG;
   std::string configuration_file    = configuration_path;
   configuration_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   configuration_file += ACE_TEXT_ALWAYS_CHAR("client");
   configuration_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -1714,7 +1717,7 @@ ACE_TMAIN(int argc_in,
 
   std::string monster_dictionary    = configuration_path;
   monster_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   monster_dictionary += ACE_TEXT_ALWAYS_CHAR("character");
   monster_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monster_dictionary += ACE_TEXT_ALWAYS_CHAR("monster");
@@ -1724,7 +1727,7 @@ ACE_TMAIN(int argc_in,
 
   std::string graphics_dictionary   = configuration_path;
   graphics_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   graphics_dictionary += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphics_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -1732,7 +1735,7 @@ ACE_TMAIN(int argc_in,
 
   std::string item_dictionary       = configuration_path;
   item_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   item_dictionary += ACE_TEXT_ALWAYS_CHAR("item");
   item_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -1740,7 +1743,7 @@ ACE_TMAIN(int argc_in,
 
   std::string magic_dictionary      = configuration_path;
   magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   magic_dictionary += ACE_TEXT_ALWAYS_CHAR("magic");
   magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -1748,7 +1751,7 @@ ACE_TMAIN(int argc_in,
 
   std::string sound_dictionary      = configuration_path;
   sound_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   sound_dictionary += ACE_TEXT_ALWAYS_CHAR("sound");
   sound_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
@@ -1756,21 +1759,21 @@ ACE_TMAIN(int argc_in,
 
   std::string UI_file               = configuration_path;
   UI_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   UI_file += ACE_TEXT_ALWAYS_CHAR("client");
   UI_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   UI_file += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_UI_FILE);
 
   std::string schema_repository     = configuration_path;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   schema_repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   schema_repository += ACE_TEXT_ALWAYS_CHAR("engine");
 #endif
 
   std::string floor_plan            = data_path;
   floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   floor_plan += ACE_TEXT_ALWAYS_CHAR("engine");
   floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   floor_plan += ACE_TEXT_ALWAYS_CHAR("data");
@@ -1786,7 +1789,7 @@ ACE_TMAIN(int argc_in,
   bool log_to_file                  = false;
   bool trace_information            = false;
   bool print_version_and_exit       = false;
-  unsigned int num_dispatch_threads = RPG_NET_CLIENT_DEF_NUM_DISPATCH_THREADS;
+  unsigned int num_dispatch_threads = NET_CLIENT_DEF_NUM_DISPATCH_THREADS;
   std::string video_driver          =
       ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME);
   bool skip_intro                   = false;
@@ -1824,30 +1827,30 @@ ACE_TMAIN(int argc_in,
   } // end IF
 
   // validate argument(s)
-  if (!RPG_Common_File_Tools::isReadable(configuration_file)  ||
-      !RPG_Common_File_Tools::isReadable(monster_dictionary)  ||
-      !RPG_Common_File_Tools::isReadable(floor_plan)          ||
-      !RPG_Common_File_Tools::isReadable(graphics_dictionary) ||
-      !RPG_Common_File_Tools::isReadable(item_dictionary)     ||
-      !RPG_Common_File_Tools::isReadable(magic_dictionary)    ||
-      !RPG_Common_File_Tools::isDirectory(schema_repository)  ||
-      !RPG_Common_File_Tools::isReadable(sound_dictionary)    ||
-      !RPG_Common_File_Tools::isReadable(UI_file))
+  if (!Common_File_Tools::isReadable (configuration_file)  ||
+      !Common_File_Tools::isReadable (monster_dictionary)  ||
+      !Common_File_Tools::isReadable (floor_plan)          ||
+      !Common_File_Tools::isReadable (graphics_dictionary) ||
+      !Common_File_Tools::isReadable (item_dictionary)     ||
+      !Common_File_Tools::isReadable (magic_dictionary)    ||
+      !Common_File_Tools::isDirectory (schema_repository)  ||
+      !Common_File_Tools::isReadable (sound_dictionary)    ||
+      !Common_File_Tools::isReadable (UI_file))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid argument: \n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n, aborting\n"),
-               ACE_TEXT(configuration_file.c_str()),
-               ACE_TEXT(monster_dictionary.c_str()),
-               ACE_TEXT(floor_plan.c_str()),
-               ACE_TEXT(graphics_dictionary.c_str()),
-               ACE_TEXT(item_dictionary.c_str()),
-               ACE_TEXT(magic_dictionary.c_str()),
-               ACE_TEXT(schema_repository.c_str()),
-               ACE_TEXT(sound_dictionary.c_str()),
-               ACE_TEXT(UI_file.c_str())));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("invalid argument: \n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n, aborting\n"),
+                ACE_TEXT (configuration_file.c_str ()),
+                ACE_TEXT (monster_dictionary.c_str ()),
+                ACE_TEXT (floor_plan.c_str ()),
+                ACE_TEXT (graphics_dictionary.c_str ()),
+                ACE_TEXT (item_dictionary.c_str ()),
+                ACE_TEXT (magic_dictionary.c_str ()),
+                ACE_TEXT (schema_repository.c_str ()),
+                ACE_TEXT (sound_dictionary.c_str ()),
+                ACE_TEXT (UI_file.c_str ())));
 
     // make 'em learn...
-    do_printUsage(std::string(ACE::basename(argv_in[0])));
+    do_printUsage (std::string (ACE::basename (argv_in[0])));
 
     // clean up
     // *PORTABILITY*: on Windows, must fini ACE...
@@ -1877,20 +1880,24 @@ ACE_TMAIN(int argc_in,
   } // end IF
 
   RPG_Client_GTK_CBData_t GTK_user_data;
-  GTK_user_data.level_metadata.name                 =
+
+  GTK_user_data.GTKState.InitializationHook = idle_init_UI_cb;
+  GTK_user_data.GTKState.FinalizationHook = idle_fini_UI_cb;
+
+  GTK_user_data.levelMetadata.name                 =
       ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME);
   //
-  GTK_user_data.level_metadata.environment.plane    =
+  GTK_user_data.levelMetadata.environment.plane =
       RPG_ENGINE_ENVIRONMENT_DEF_PLANE;
-  GTK_user_data.level_metadata.environment.terrain  =
+  GTK_user_data.levelMetadata.environment.terrain =
       RPG_ENGINE_ENVIRONMENT_DEF_TERRAIN;
-  GTK_user_data.level_metadata.environment.climate  =
+  GTK_user_data.levelMetadata.environment.climate =
       RPG_ENGINE_ENVIRONMENT_DEF_CLIMATE;
-  GTK_user_data.level_metadata.environment.time     =
+  GTK_user_data.levelMetadata.environment.time =
       RPG_ENGINE_ENVIRONMENT_DEF_TIMEOFDAY;
-  GTK_user_data.level_metadata.environment.lighting =
+  GTK_user_data.levelMetadata.environment.lighting =
       RPG_ENGINE_ENVIRONMENT_DEF_LIGHTING;
-  GTK_user_data.level_metadata.environment.outdoors =
+  GTK_user_data.levelMetadata.environment.outdoors =
       RPG_ENGINE_ENVIRONMENT_DEF_OUTDOORS;
   //
   RPG_Engine_Spawn_t spawn;
@@ -1901,51 +1908,51 @@ ACE_TMAIN(int argc_in,
   spawn.spawn.max_num_spawned =	RPG_ENGINE_ENCOUNTER_DEF_NUM_SPAWNED_MAX;
   spawn.spawn.amble_probability = RPG_ENGINE_ENCOUNTER_DEF_AMBLE_PROBABILITY;
   spawn.timer_id = -1;
-  GTK_user_data.level_metadata.spawns.push_back(spawn);
-  GTK_user_data.level_metadata.max_num_spawned =
+  GTK_user_data.levelMetadata.spawns.push_back (spawn);
+  GTK_user_data.levelMetadata.max_num_spawned =
       RPG_ENGINE_ENCOUNTER_DEF_NUM_SPAWNED_MAX;
   //
-  GTK_user_data.map_configuration.min_room_size          =
+  GTK_user_data.mapConfiguration.min_room_size          =
       RPG_CLIENT_MAP_DEF_MIN_ROOM_SIZE;
-  GTK_user_data.map_configuration.doors                  =
+  GTK_user_data.mapConfiguration.doors =
       RPG_CLIENT_MAP_DEF_DOORS;
-  GTK_user_data.map_configuration.corridors              =
+  GTK_user_data.mapConfiguration.corridors =
       RPG_CLIENT_MAP_DEF_CORRIDORS;
-  GTK_user_data.map_configuration.max_num_doors_per_room =
+  GTK_user_data.mapConfiguration.max_num_doors_per_room =
       RPG_CLIENT_MAP_DEF_MAX_NUM_DOORS_PER_ROOM;
-  GTK_user_data.map_configuration.maximize_rooms         =
+  GTK_user_data.mapConfiguration.maximize_rooms =
       RPG_CLIENT_MAP_DEF_MAXIMIZE_ROOMS;
-  GTK_user_data.map_configuration.num_areas              =
+  GTK_user_data.mapConfiguration.num_areas =
       RPG_CLIENT_MAP_DEF_NUM_AREAS;
-  GTK_user_data.map_configuration.square_rooms           =
+  GTK_user_data.mapConfiguration.square_rooms =
       RPG_CLIENT_MAP_DEF_SQUARE_ROOMS;
-  GTK_user_data.map_configuration.map_size_x             =
+  GTK_user_data.mapConfiguration.map_size_x =
       RPG_CLIENT_MAP_DEF_SIZE_X;
-  GTK_user_data.map_configuration.map_size_y             =
+  GTK_user_data.mapConfiguration.map_size_y =
       RPG_CLIENT_MAP_DEF_SIZE_Y;
 
   // step1c: initialize logging and/or tracing
-  RPG_Client_Logger logger(&GTK_user_data.log_stack,
-                           &GTK_user_data.lock);
+  RPG_Client_Logger logger (&GTK_user_data.logStack,
+                            &GTK_user_data.GTKState.lock);
   std::string log_file;
   if (log_to_file)
-    log_file = RPG_Common_File_Tools::getLogFilename(ACE::basename(argv_in[0]));
-  if (!RPG_Common_Tools::initLogging(ACE::basename(argv_in[0]), // program name
-                                     log_file,                  // logfile
-                                     false,                     // log to syslog ?
-                                     false,                     // trace messages ?
-                                     trace_information,         // debug messages ?
-                                     &logger))                  // logger
+    log_file = Common_File_Tools::getLogFilename (ACE::basename (argv_in[0]));
+  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
+                                        log_file,                  // logfile
+                                        false,                     // log to syslog ?
+                                        false,                     // trace messages ?
+                                        trace_information,         // debug messages ?
+                                        &logger))                  // logger
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_Tools::initLogging(), aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));
 
     // clean up
     // *PORTABILITY*: on Windows, must fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-      if (ACE::fini() == -1)
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -2038,7 +2045,7 @@ ACE_TMAIN(int argc_in,
   configuration.monster_dictionary   = monster_dictionary;
 
   // *** map ***
-  configuration.map_configuration    = GTK_user_data.map_configuration;
+  configuration.map_configuration    = GTK_user_data.mapConfiguration;
   configuration.map_file             = floor_plan;
 
 //   // step1db: populate config object with default/collected data
@@ -2113,20 +2120,23 @@ ACE_TMAIN(int argc_in,
   } // end IF
 
   // step2b: init GLIB / G(D|T)K[+] / GNOME
-  RPG_Client_GTKUIDefinition GTK_initializer(&GTK_user_data);
-  RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->init(argc_in,
-                                                     argv_in,
-                                                     UI_file,
-                                                     &GTK_initializer);
+  Common_UI_GladeDefinition ui_definition (argc_in,
+                                           argv_in);
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (argc_in,
+                                                            argv_in,
+                                                            UI_file,
+                                                            &GTK_user_data.GTKState,
+                                                            &ui_definition);
 
   ACE_High_Res_Timer timer;
   timer.start();
   // step3: do actual work
-  do_work(configuration,
-          schema_repository,
-          GTK_user_data,
-          skip_intro,
-          debug);
+  do_work (configuration,
+           schema_repository,
+           ui_definition,
+           GTK_user_data,
+           skip_intro,
+           debug);
   timer.stop();
   // debug info
   std::string working_time_string;

@@ -21,20 +21,20 @@
 
 #include "rpg_sound_common_tools.h"
 
-#include "rpg_sound_defines.h"
-#include "rpg_sound_dictionary.h"
-#include "rpg_sound_event_manager.h"
-
-#include "rpg_common_macros.h"
-
-#include "rpg_dice_common.h"
-#include "rpg_dice.h"
-
-#include "common_file_tools.h"
+#include "ace/Log_Msg.h"
 
 #include "SDL_mixer.h"
 
-#include "ace/Log_Msg.h"
+#include "common_file_tools.h"
+
+#include "rpg_dice.h"
+#include "rpg_dice_common.h"
+
+#include "rpg_common_macros.h"
+
+#include "rpg_sound_defines.h"
+#include "rpg_sound_dictionary.h"
+#include "rpg_sound_event_manager.h"
 
 // init statics
 RPG_Sound_CategoryToStringTable_t RPG_Sound_CategoryHelper::myRPG_Sound_CategoryToStringTable;
@@ -440,23 +440,21 @@ RPG_Sound_Common_Tools::play(const std::string& file_in,
     if (iterator == mySoundCache.end())
     {
       // sanity check
-      if (!RPG_Common_File_Tools::isReadable(node.sound_file))
+      if (!Common_File_Tools::isReadable(node.sound_file))
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid argument(\"%s\"): not readable, aborting\n"),
-                   ACE_TEXT(node.sound_file.c_str())));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("invalid argument(\"%s\"): not readable, aborting\n"),
+                    ACE_TEXT (node.sound_file.c_str ())));
         return result;
       } // end IF
-      SDL_RWops* rw_ops = SDL_RWFromFile(node.sound_file.c_str(),
-                                         ACE_TEXT_ALWAYS_CHAR("rb"));
+      SDL_RWops* rw_ops = SDL_RWFromFile (node.sound_file.c_str (),
+                                          ACE_TEXT_ALWAYS_CHAR ("rb"));
       if (!rw_ops)
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to SDL_RWFromFile(\"%s\"): \"%s\", aborting\n"),
-                   ACE_TEXT(node.sound_file.c_str()),
-                   ACE_TEXT(SDL_GetError())));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to SDL_RWFromFile(\"%s\"): \"%s\", aborting\n"),
+                    ACE_TEXT (node.sound_file.c_str ()),
+                    ACE_TEXT (SDL_GetError ())));
         return result;
       } // end IF
       node.chunk = Mix_LoadWAV_RW(rw_ops, 1);

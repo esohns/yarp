@@ -21,91 +21,89 @@
 
 #include "rpg_net_protocol_sessionmessage.h"
 
-#include <rpg_common_macros.h>
+#include "ace/Log_Msg.h"
+#include "ace/Malloc_Base.h"
 
-#include <ace/Malloc_Base.h>
+#include "rpg_common_macros.h"
 
-RPG_Net_Protocol_SessionMessage::RPG_Net_Protocol_SessionMessage(const unsigned long& sessionID_in,
-                                                                 const RPG_Stream_SessionMessageType& messageType_in,
-                                                                 CONFIG_TYPE*& config_inout)
- : inherited(sessionID_in,
-             messageType_in,
-             config_inout)
+RPG_Net_Protocol_SessionMessage::RPG_Net_Protocol_SessionMessage (Stream_SessionMessageType_t messageType_in,
+                                                                  Stream_State_t* streamState_in,
+                                                                  RPG_Net_Protocol_StreamSessionData_t*& sessionData_inout)
+ : inherited (messageType_in,
+              streamState_in,
+              sessionData_inout)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_SessionMessage::RPG_Net_Protocol_SessionMessage"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_SessionMessage::RPG_Net_Protocol_SessionMessage"));
 
 }
 
-RPG_Net_Protocol_SessionMessage::RPG_Net_Protocol_SessionMessage(const RPG_Net_Protocol_SessionMessage& message_in)
- : inherited(message_in)
+RPG_Net_Protocol_SessionMessage::RPG_Net_Protocol_SessionMessage (const RPG_Net_Protocol_SessionMessage& message_in)
+ : inherited (message_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_SessionMessage::RPG_Net_Protocol_SessionMessage"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_SessionMessage::RPG_Net_Protocol_SessionMessage"));
 
 }
 
-RPG_Net_Protocol_SessionMessage::RPG_Net_Protocol_SessionMessage(ACE_Allocator* messageAllocator_in)
- : inherited(messageAllocator_in)
+RPG_Net_Protocol_SessionMessage::RPG_Net_Protocol_SessionMessage (ACE_Allocator* messageAllocator_in)
+ : inherited (messageAllocator_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_SessionMessage::RPG_Net_Protocol_SessionMessage"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_SessionMessage::RPG_Net_Protocol_SessionMessage"));
 
 }
 
-RPG_Net_Protocol_SessionMessage::RPG_Net_Protocol_SessionMessage(ACE_Data_Block* dataBlock_in,
-                                                                 ACE_Allocator* messageAllocator_in)
- : inherited(dataBlock_in,
-             messageAllocator_in)
+RPG_Net_Protocol_SessionMessage::RPG_Net_Protocol_SessionMessage (ACE_Data_Block* dataBlock_in,
+                                                                  ACE_Allocator* messageAllocator_in)
+ : inherited (dataBlock_in,
+              messageAllocator_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_SessionMessage::RPG_Net_Protocol_SessionMessage"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_SessionMessage::RPG_Net_Protocol_SessionMessage"));
 
 }
 
-RPG_Net_Protocol_SessionMessage::~RPG_Net_Protocol_SessionMessage()
+RPG_Net_Protocol_SessionMessage::~RPG_Net_Protocol_SessionMessage ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_SessionMessage::~RPG_Net_Protocol_SessionMessage"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_SessionMessage::~RPG_Net_Protocol_SessionMessage"));
 
 }
 
 ACE_Message_Block*
-RPG_Net_Protocol_SessionMessage::duplicate(void) const
+RPG_Net_Protocol_SessionMessage::duplicate (void) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_SessionMessage::duplicate"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_SessionMessage::duplicate"));
 
-  RPG_Net_Protocol_SessionMessage* nb = NULL;
+  RPG_Net_Protocol_SessionMessage* message_p = NULL;
 
   // *NOTE*: create a new RPG_Net_Protocol_SessionMessage that contains unique copies of
   // the message block fields, but a reference counted duplicate of
   // the ACE_Data_Block
 
   // if there is no allocator, use the standard new and delete calls.
-  if (message_block_allocator_ == NULL)
+  if (inherited::message_block_allocator_ == NULL)
   {
     // uses the copy ctor
-    ACE_NEW_RETURN(nb,
-                   RPG_Net_Protocol_SessionMessage(*this),
-                   NULL);
+    ACE_NEW_NORETURN (message_p,
+                      RPG_Net_Protocol_SessionMessage (*this));
   } // end IF
-
-  // *WARNING*:we tell the allocator to return a RPG_Net_Protocol_SessionMessage
-  // by passing a 0 as argument to malloc()...
-  ACE_NEW_MALLOC_RETURN(nb,
-                        static_cast<RPG_Net_Protocol_SessionMessage*> (message_block_allocator_->malloc(0)),
-                        RPG_Net_Protocol_SessionMessage(*this),
-                        NULL);
-
-  // increment the reference counts of all the continuation messages
-  if (cont_)
+  else
   {
-    nb->cont_ = cont_->duplicate();
-
-    // If things go wrong, release all of our resources and return
-    if (nb->cont_ == 0)
-    {
-      nb->release();
-      nb = NULL;
-    } // end IF
+    // *NOTE*: instruct the allocator to return a session message by passing 0 as
+    //         argument to malloc()...
+    ACE_NEW_MALLOC_NORETURN (message_p,
+                             static_cast<RPG_Net_Protocol_SessionMessage*> (inherited::message_block_allocator_->malloc (0)),
+                             RPG_Net_Protocol_SessionMessage (*this));
+  } // end ELSE
+  if (!message_p)
+  {
+    Stream_IAllocator* allocator_p =
+      dynamic_cast<Stream_IAllocator*> (inherited::message_block_allocator_);
+    ACE_ASSERT (allocator_p);
+    if (allocator_p->block ())
+      ACE_DEBUG ((LM_CRITICAL,
+                  ACE_TEXT ("failed to allocate RPG_Net_Protocol_SessionMessage: \"%m\", aborting\n")));
+    return NULL;
   } // end IF
 
   // *NOTE*: if "this" is initialized, so is the "clone" (and vice-versa)...
 
-  return nb;
+  return message_p;
 }

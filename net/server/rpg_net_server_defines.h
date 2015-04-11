@@ -23,7 +23,7 @@
 
 #include "ace/ACE.h"
 
-#include "rpg_net_common.h"
+#include "net_common.h"
 
 // *** trace log ***
 #define RPG_NET_SERVER_LOG_FILENAME_PREFIX                   "rpg_net_server"

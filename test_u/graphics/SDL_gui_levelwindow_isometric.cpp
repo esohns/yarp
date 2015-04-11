@@ -74,13 +74,13 @@ SDL_GUI_LevelWindow_Isometric::SDL_GUI_LevelWindow_Isometric(const RPG_Graphics_
 //   myHighlightTile(NULL),
    myMinimapIsOn(RPG_CLIENT_MINIMAP_DEF_ISON)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::SDL_GUI_LevelWindow"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_Isometric::SDL_GUI_LevelWindow"));
 
-	myEngine->init(this);
+  myEngine->initialize (this);
 
-	RPG_Map_Size_t map_size = myEngine->getSize(true);
-	myView = std::make_pair(map_size.first  >> 1,
-													map_size.second >> 1);
+  RPG_Map_Size_t map_size = myEngine->getSize (true);
+  myView = std::make_pair (map_size.first >> 1,
+                           map_size.second >> 1);
 
 //   initWallBlend(false);
 

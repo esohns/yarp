@@ -34,19 +34,19 @@ class ACE_Data_Block;
 
 class RPG_Net_Protocol_Message
  : public Stream_DataMessageBase_T<RPG_Net_Protocol_IRCMessage,
-                                   int>
+                                   RPG_Net_Protocol_CommandType_t>
 {
  public:
   // *NOTE*: to be used by allocators...
-  RPG_Net_Protocol_Message(ACE_Data_Block*, // data block to use
-                           ACE_Allocator*); // message allocator
+  RPG_Net_Protocol_Message (ACE_Data_Block*, // data block to use
+                            ACE_Allocator*); // message allocator
   //   RPG_Net_Protocol_Message(ACE_Allocator*); // message allocator
-  virtual ~RPG_Net_Protocol_Message();
+  virtual ~RPG_Net_Protocol_Message ();
 
-  virtual int getCommand() const; // return value: message type
+  virtual RPG_Net_Protocol_CommandType_t getCommand () const; // return value: message type
 
-  // implement RPG_Net_IDumpState
-  virtual void dump_state() const;
+  // implement Common_IDumpState
+  virtual void dump_state () const;
 
   // "normalize" the data in this message (fragment) by:
   // 1. aligning the rd_ptr with base() --> ACE_Message_Block::crunch()/::memmove()
@@ -63,26 +63,26 @@ class RPG_Net_Protocol_Message
   // - our peer keeps to the standard and doesn't send oversized messages (!)
   // --> THEN this measure ensures that EVERY single buffer contains a CONTIGUOUS
   //     and COMPLETE message...
-  void crunch();
+  void crunch ();
 
   // overrides from ACE_Message_Block
   // --> create a "shallow" copy of ourselves that references the same packet
   // *NOTE*: this uses our allocator (if any) to create a new message
-  virtual ACE_Message_Block* duplicate(void) const;
+  virtual ACE_Message_Block* duplicate (void) const;
 
-  static std::string commandType2String(const RPG_Net_Protocol_CommandType_t&);
+  static std::string CommandType2String (const RPG_Net_Protocol_CommandType_t&);
 
  protected:
   // copy ctor to be used by duplicate() and child classes
   // --> uses an (incremented refcount of) the same datablock ("shallow copy")
-  RPG_Net_Protocol_Message(const RPG_Net_Protocol_Message&);
+  RPG_Net_Protocol_Message (const RPG_Net_Protocol_Message&);
 
  private:
   typedef Stream_DataMessageBase_T<RPG_Net_Protocol_IRCMessage,
-                                   int> inherited;
+                                   RPG_Net_Protocol_CommandType_t> inherited;
 
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Message());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Message& operator=(const RPG_Net_Protocol_Message&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Message ());
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Message& operator=(const RPG_Net_Protocol_Message&));
 };
 
 #endif

@@ -19,23 +19,24 @@
 
 #include "rpg_client_window_minimap.h"
 
-#include "rpg_client_common.h"
-#include "rpg_client_defines.h"
-#include "rpg_client_engine.h"
+#include "common_file_tools.h"
+
+#include "rpg_common_defines.h"
+#include "rpg_common_macros.h"
+
+#include "rpg_map_common.h"
 
 #include "rpg_engine.h"
 
 #include "rpg_graphics_common.h"
+#include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_defines.h"
 #include "rpg_graphics_surface.h"
-#include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_SDL_tools.h"
 
-#include "rpg_map_common.h"
-
-#include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-#include "rpg_common_file_tools.h"
+#include "rpg_client_common.h"
+#include "rpg_client_defines.h"
+#include "rpg_client_engine.h"
 
 RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap(const RPG_Graphics_SDLWindowBase& parent_in,
                                                      // *NOTE*: offset doesn't include any border(s) !
@@ -330,41 +331,41 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
     } // end FOR
 
   // unlock engine
-  myEngine->unlock();
+  myEngine->unlock ();
 
-  if (SDL_MUSTLOCK(mySurface))
-    SDL_UnlockSurface(mySurface);
+  if (SDL_MUSTLOCK (mySurface))
+    SDL_UnlockSurface (mySurface);
 
   // step4: paint surface
-  ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
+  ACE_OS::memset (&dirty_region, 0, sizeof (dirty_region));
   if (inherited::myScreenLock)
     inherited::myScreenLock->lock();
-  RPG_Graphics_Surface::put(std::make_pair(myClipRect.x,
-                                           myClipRect.y),
-                            *mySurface,
-                            target_surface,
-                            dirty_region);
+  RPG_Graphics_Surface::put (std::make_pair (myClipRect.x,
+                                             myClipRect.y),
+                             *mySurface,
+                             target_surface,
+                             dirty_region);
   if (inherited::myScreenLock)
-    inherited::myScreenLock->unlock();
+    inherited::myScreenLock->unlock ();
 
   // reset clipping
-  unclip();
+  unclip ();
 
   // invalidate dirty region
-  invalidate(dirty_region);
+  invalidate (dirty_region);
 
   // remember position of last realization
-  myLastAbsolutePosition = std::make_pair(myClipRect.x,
-                                          myClipRect.y);
+  myLastAbsolutePosition = std::make_pair (myClipRect.x,
+                                           myClipRect.y);
 
   if (myDebug)
   {
-    std::string path = RPG_Common_File_Tools::getDumpDirectory();
+    std::string path = Common_File_Tools::getDumpDirectory ();
     path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    path += ACE_TEXT_ALWAYS_CHAR("minimap.png");
-    RPG_Graphics_Surface::savePNG(*mySurface,
-                                  path,
-                                  true);
+    path += ACE_TEXT_ALWAYS_CHAR ("minimap.png");
+    RPG_Graphics_Surface::savePNG (*mySurface,
+                                   path,
+                                   true);
   } // end IF
 }
 

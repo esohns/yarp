@@ -21,44 +21,46 @@
 
 #include "character_generator_gui_callbacks.h"
 
-#include "character_generator_gui_common.h"
-
-#include "rpg_client_defines.h"
-#include "rpg_client_common.h"
-#include "rpg_client_common_tools.h"
-#include "rpg_client_ui_tools.h"
-#include "rpg_client_callbacks.h"
-
-#include "rpg_engine_defines.h"
-#include "rpg_engine_common.h"
-#include "rpg_engine_common_tools.h"
-
-#include "rpg_graphics_defines.h"
-#include "rpg_graphics_surface.h"
-#include "rpg_graphics_cursor.h"
-#include "rpg_graphics_dictionary.h"
-#include "rpg_graphics_common_tools.h"
-
-#include "rpg_map_defines.h"
-#include "rpg_map_common_tools.h"
-
-#include "rpg_player_defines.h"
-#include "rpg_player_common_tools.h"
-
-#include "rpg_item_instance_manager.h"
-#include "rpg_item_weapon.h"
-#include "rpg_item_armor.h"
-
-#include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-#include "rpg_common_tools.h"
-#include "rpg_common_file_tools.h"
-
-#include "gmodule.h"
+#include <sstream>
 
 #include "ace/Log_Msg.h"
 
-#include <sstream>
+#include "gmodule.h"
+
+#include "common_file_tools.h"
+
+#include "rpg_common_defines.h"
+#include "rpg_common_file_tools.h"
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
+
+#include "rpg_item_armor.h"
+#include "rpg_item_instance_manager.h"
+#include "rpg_item_weapon.h"
+
+#include "rpg_player_common_tools.h"
+#include "rpg_player_defines.h"
+
+#include "rpg_map_common_tools.h"
+#include "rpg_map_defines.h"
+
+#include "rpg_engine_common.h"
+#include "rpg_engine_common_tools.h"
+#include "rpg_engine_defines.h"
+
+#include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_cursor.h"
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_dictionary.h"
+#include "rpg_graphics_surface.h"
+
+#include "rpg_client_callbacks.h"
+#include "rpg_client_common.h"
+#include "rpg_client_common_tools.h"
+#include "rpg_client_defines.h"
+#include "rpg_client_ui_tools.h"
+
+#include "character_generator_gui_common.h"
 
 void
 update_sprite_gallery(GTK_cb_data_t& CBData_in)
@@ -177,25 +179,25 @@ quit_clicked_GTK_cb(GtkWidget* widget_in,
 }
 
 G_MODULE_EXPORT gint
-create_character_clicked_GTK_cb(GtkWidget* widget_in,
-                                gpointer userData_in)
+create_character_clicked_GTK_cb (GtkWidget* widget_in,
+                                 gpointer userData_in)
 {
-  RPG_TRACE(ACE_TEXT("::create_character_clicked_GTK_cb"));
+  RPG_TRACE (ACE_TEXT ("::create_character_clicked_GTK_cb"));
 
-  ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG (widget_in);
 
-  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*>(userData_in);
-  ACE_ASSERT(data);
+  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
+  ACE_ASSERT (data);
 
-	// sanity check(s)
-	Character_Generator_XMLPoolIterator_t iterator =
-		data->XML_pool.find(ACE_TEXT_ALWAYS_CHAR(CHARACTER_GENERATOR_GTK_GLADE_FILE));
-	ACE_ASSERT(iterator != data->XML_pool.end());
-	Character_Generator_XMLPoolIterator_t iterator_2 =
-		data->XML_pool.find(ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_UI_FILE));
-	ACE_ASSERT(iterator_2 != data->XML_pool.end());
+  // sanity check(s)
+  Character_Generator_XMLPoolIterator_t iterator =
+    data->XML_pool.find (ACE_TEXT_ALWAYS_CHAR (CHARACTER_GENERATOR_GTK_GLADE_FILE));
+  ACE_ASSERT (iterator != data->XML_pool.end ());
+  Character_Generator_XMLPoolIterator_t iterator_2 =
+    data->XML_pool.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_UI_FILE));
+  ACE_ASSERT (iterator_2 != data->XML_pool.end ());
 
-	// clean up
+  // clean up
   if (data->entity.character)
   {
     delete data->entity.character;
@@ -213,31 +215,31 @@ create_character_clicked_GTK_cb(GtkWidget* widget_in,
   data->is_transient = true;
 
   // update entity profile widgets
-  ::update_entity_profile(data->entity,
-													(*iterator_2).second);
+  ::update_entity_profile (data->entity,
+                           (*iterator_2).second);
 
   // make character display frame sensitive (if it's not already)
   GtkFrame* character_frame =
-		GTK_FRAME(glade_xml_get_widget((*iterator_2).second,
-                                   ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
+    GTK_FRAME (glade_xml_get_widget ((*iterator_2).second,
+                                     ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
   ACE_ASSERT(character_frame);
   gtk_widget_set_sensitive(GTK_WIDGET(character_frame), TRUE);
   // make drop button sensitive (if it's not already)
   GtkButton* button =
-		GTK_BUTTON(glade_xml_get_widget((*iterator).second,
-                                    ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_DROP_NAME)));
+    GTK_BUTTON (glade_xml_get_widget ((*iterator).second,
+                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_DROP_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
   // make save button sensitive (if it's not already)
   button =
-		GTK_BUTTON(glade_xml_get_widget((*iterator).second,
-                                    ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_STORE_NAME)));
+    GTK_BUTTON (glade_xml_get_widget ((*iterator).second,
+                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_STORE_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
   // make load button in-sensitive (if it's not already)
   button =
-		GTK_BUTTON(glade_xml_get_widget((*iterator).second,
-			                              ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_LOAD_NAME)));
+    GTK_BUTTON (glade_xml_get_widget ((*iterator).second,
+                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_LOAD_NAME)));
   ACE_ASSERT(button);
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
   // make this in-sensitive
@@ -247,93 +249,90 @@ create_character_clicked_GTK_cb(GtkWidget* widget_in,
 }
 
 G_MODULE_EXPORT gint
-drop_character_clicked_GTK_cb(GtkWidget* widget_in,
-                              gpointer userData_in)
+drop_character_clicked_GTK_cb (GtkWidget* widget_in,
+                               gpointer userData_in)
 {
-  RPG_TRACE(ACE_TEXT("::drop_character_clicked_GTK_cb"));
+  RPG_TRACE (ACE_TEXT ("::drop_character_clicked_GTK_cb"));
 
-  ACE_UNUSED_ARG(widget_in);
+  ACE_UNUSED_ARG (widget_in);
 
-  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*>(userData_in);
-  ACE_ASSERT(data);
+  GTK_cb_data_t* data = static_cast<GTK_cb_data_t*> (userData_in);
+  ACE_ASSERT (data);
 
-	// sanity check(s)
-	Character_Generator_XMLPoolIterator_t iterator =
-		data->XML_pool.find(ACE_TEXT_ALWAYS_CHAR(CHARACTER_GENERATOR_GTK_GLADE_FILE));
-	ACE_ASSERT(iterator != data->XML_pool.end());
-	Character_Generator_XMLPoolIterator_t iterator_2 =
-		data->XML_pool.find(ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_UI_FILE));
-	ACE_ASSERT(iterator_2 != data->XML_pool.end());
+  // sanity check(s)
+  Character_Generator_XMLPoolIterator_t iterator =
+    data->XML_pool.find (ACE_TEXT_ALWAYS_CHAR (CHARACTER_GENERATOR_GTK_GLADE_FILE));
+  ACE_ASSERT (iterator != data->XML_pool.end ());
+  Character_Generator_XMLPoolIterator_t iterator_2 =
+    data->XML_pool.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_UI_FILE));
+  ACE_ASSERT (iterator_2 != data->XML_pool.end ());
 
-	// delete file if non-transient ?
-	if (!data->is_transient)
-	{
-		// retrieve confirmation dialog handle
-		GtkWidget* confirmation_dialog =
-			GTK_WIDGET(glade_xml_get_widget((*iterator).second,
-			  															ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_CONFIRMATION_NAME)));
-		ACE_ASSERT(confirmation_dialog);
-		gint response = gtk_dialog_run(GTK_DIALOG(confirmation_dialog));
+  // delete file if non-transient ?
+  if (!data->is_transient)
+  {
+    // retrieve confirmation dialog handle
+    GtkWidget* confirmation_dialog =
+      GTK_WIDGET (glade_xml_get_widget ((*iterator).second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_CONFIRMATION_NAME)));
+    ACE_ASSERT (confirmation_dialog);
+    gint response = gtk_dialog_run (GTK_DIALOG (confirmation_dialog));
     gtk_widget_hide(confirmation_dialog);
-		if (response == GTK_RESPONSE_OK)
-		{
-			// retrieve active item
-			GtkComboBox* repository_combobox =
-				GTK_COMBO_BOX(glade_xml_get_widget((*iterator).second,
-																					 ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
-			ACE_ASSERT(repository_combobox);
-			std::string active_item;
-			GtkTreeIter selected;
-			GtkTreeModel* model = NULL;
-			GValue value;
-			const gchar* text = NULL;
-			if (!gtk_combo_box_get_active_iter(repository_combobox, &selected))
-			{
-				ACE_DEBUG((LM_ERROR,
-									 ACE_TEXT("failed to gtk_combo_box_get_active_iter(), aborting\n")));
+    if (response == GTK_RESPONSE_OK)
+    {
+      // retrieve active item
+      GtkComboBox* repository_combobox =
+        GTK_COMBO_BOX (glade_xml_get_widget ((*iterator).second,
+                                             ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
+      ACE_ASSERT (repository_combobox);
+      std::string active_item;
+      GtkTreeIter selected;
+      GtkTreeModel* model = NULL;
+      GValue value;
+      const gchar* text = NULL;
+      if (!gtk_combo_box_get_active_iter (repository_combobox, &selected))
+      {
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to gtk_combo_box_get_active_iter(), aborting\n")));
+        return FALSE;
+      } // end IF
+      model = gtk_combo_box_get_model (repository_combobox);
+      ACE_ASSERT (model);
+      ACE_OS::memset (&value, 0, sizeof (value));
+      gtk_tree_model_get_value (model, &selected,
+                                0, &value);
+      text = g_value_get_string (&value);
+      // sanity check
+      ACE_ASSERT (text);
+      active_item = ACE_TEXT_ALWAYS_CHAR (text);
+      g_value_unset (&value);
 
-				return FALSE;
-			} // end IF
-			model = gtk_combo_box_get_model(repository_combobox);
-			ACE_ASSERT(model);
-			ACE_OS::memset(&value,
-										 0,
-										 sizeof(value));
-			gtk_tree_model_get_value(model, &selected,
-															 0, &value);
-			text = g_value_get_string(&value);
-			// sanity check
-			ACE_ASSERT(text);
-			active_item = ACE_TEXT_ALWAYS_CHAR(text);
-			g_value_unset(&value);
+      // construct filename
+      std::string filename =
+        RPG_Player_Common_Tools::getPlayerProfilesDirectory ();
+      filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+      filename += active_item;
+      filename += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT);
 
-			// construct filename
-			std::string filename =
-					RPG_Player_Common_Tools::getPlayerProfilesDirectory();
-			filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-			filename += active_item;
-			filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
-
-			// remove file
-			if (!RPG_Common_File_Tools::deleteFile(filename))
-				ACE_DEBUG((LM_ERROR,
-									 ACE_TEXT("failed to RPG_Common_File_Tools::deleteFile(\"%s\"), aborting\n"),
-									 ACE_TEXT(filename.c_str())));
-			else
-			{
-				// refresh combobox
-				GtkButton* button =
-					GTK_BUTTON(glade_xml_get_widget((*iterator).second,
-																					ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_REFRESH_NAME)));
-				ACE_ASSERT(button);
-				g_signal_emit_by_name(button,
-					                    ACE_TEXT_ALWAYS_CHAR("clicked"),
-															userData_in);
-			} // end IF
-		} // end IF
-		else
-			return FALSE; // cancelled --> done
-	} // end IF
+      // remove file
+      if (!Common_File_Tools::deleteFile (filename))
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to RPG_Common_File_Tools::deleteFile(\"%s\"), aborting\n"),
+                    ACE_TEXT (filename.c_str ())));
+      else
+      {
+        // refresh combobox
+        GtkButton* button =
+          GTK_BUTTON (glade_xml_get_widget ((*iterator).second,
+                                            ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_REFRESH_NAME)));
+        ACE_ASSERT (button);
+        g_signal_emit_by_name (button,
+                              ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                              userData_in);
+      } // end IF
+    } // end IF
+    else
+      return FALSE; // cancelled --> done
+  } // end IF
 
   // clean up
   if (data->entity.character)
