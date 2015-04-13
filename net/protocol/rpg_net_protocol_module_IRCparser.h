@@ -29,14 +29,14 @@
 #include "stream_streammodule_base.h"
 #include "stream_task_base_synch.h"
 
-#include "rpg_net_protocol_common.h"
 #include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_IRCparser_driver.h"
+#include "rpg_net_protocol_message.h"
+#include "rpg_net_protocol_sessionmessage.h"
+#include "rpg_net_protocol_stream_common.h"
 
 // forward declaration(s)
 class Stream_IAllocator;
-class RPG_Net_Protocol_SessionMessage;
-class RPG_Net_Protocol_Message;
 
 class RPG_Net_Protocol_Module_IRCParser
  : public Stream_TaskBaseSynch_T<Common_TimePolicy_t,

@@ -21,29 +21,31 @@
 #ifndef NET_EVENTHANDLER_H
 #define NET_EVENTHANDLER_H
 
-#include "rpg_net_common.h"
+#include "common_inotify.h"
 
 // forward declaration(s)
+struct Stream_ModuleConfiguration_t;
 struct Net_GTK_CBData_t;
+class Net_Message;
 
 class Net_EventHandler
- : public RPG_Net_INotify_t
+ : public Common_INotify_T<Stream_ModuleConfiguration_t, Net_Message>
 {
  public:
-  Net_EventHandler(Net_GTK_CBData_t*); // GTK state
-  virtual ~Net_EventHandler();
+  Net_EventHandler (Net_GTK_CBData_t*); // GTK state
+  virtual ~Net_EventHandler ();
 
-  // implement RPG_Net_INotify_t
-  virtual void start();
-  virtual void notify(const RPG_Net_Message&); // data
-  virtual void end();
+  // implement Common_INotify_T
+  virtual void start (const Stream_ModuleConfiguration_t&);
+  virtual void notify (const Net_Message&);
+  virtual void end ();
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(Net_EventHandler());
-  ACE_UNIMPLEMENTED_FUNC(Net_EventHandler(const Net_EventHandler&));
-  ACE_UNIMPLEMENTED_FUNC(Net_EventHandler& operator=(const Net_EventHandler&));
+  ACE_UNIMPLEMENTED_FUNC (Net_EventHandler ());
+  ACE_UNIMPLEMENTED_FUNC (Net_EventHandler (const Net_EventHandler&));
+  ACE_UNIMPLEMENTED_FUNC (Net_EventHandler& operator=(const Net_EventHandler&));
 
-  Net_GTK_CBData_t* myCBData;
+  Net_GTK_CBData_t* CBData_;
 };
 
 #endif

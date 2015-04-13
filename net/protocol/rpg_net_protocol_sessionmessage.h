@@ -26,17 +26,13 @@
 #include "stream_common.h"
 #include "stream_session_message_base.h"
 
-#include "rpg_net_protocol_common.h"
 #include "rpg_net_protocol_exports.h"
+#include "rpg_net_protocol_stream_common.h"
 
 // forward declarations
 class ACE_Allocator;
 class ACE_Data_Block;
 class ACE_Message_Block;
-class Net_Message;
-// class Net_StreamMessageAllocator;
-//template <typename MessageType,
-//          typename SessionMessageType> class Stream_MessageAllocatorHeapBase;
 
 class RPG_Protocol_Export RPG_Net_Protocol_SessionMessage
  : public Stream_SessionMessageBase_T<Stream_State_t,

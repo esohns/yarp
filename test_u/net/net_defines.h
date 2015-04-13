@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef NET_DEFINES_H
-#define NET_DEFINES_H
+#ifndef TEST_U_NET_DEFINES_H
+#define TEST_U_NET_DEFINES_H
 
 #define NET_UI_GTKEVENT_RESOLUTION                200 // ms --> 5 FPS
 #define NET_UI_GTK_SPINBUTTON_NUMCONNECTIONS_NAME "spinbutton"

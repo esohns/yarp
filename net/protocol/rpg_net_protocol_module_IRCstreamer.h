@@ -29,11 +29,9 @@
 #include "stream_streammodule_base.h"
 #include "stream_task_base_synch.h"
 
-#include "rpg_net_protocol_common.h"
-
-// forward declaration(s)
-class RPG_Net_Protocol_SessionMessage;
-class RPG_Net_Protocol_Message;
+#include "rpg_net_protocol_configuration.h"
+#include "rpg_net_protocol_message.h"
+#include "rpg_net_protocol_sessionmessage.h"
 
 class RPG_Net_Protocol_Module_IRCStreamer
  : public Stream_TaskBaseSynch_T<Common_TimePolicy_t,
@@ -58,9 +56,9 @@ class RPG_Net_Protocol_Module_IRCStreamer
 };
 
 // declare module
-DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                         // task synch type
-                             Common_TimePolicy_t,                  // time policy
-                             RPG_Net_Protocol_Configuration,       // configuration type
-                             RPG_Net_Protocol_Module_IRCStreamer); // writer type
+DATASTREAM_MODULE_INPUT_ONLY (ACE_MT_SYNCH,                         // task synch type
+                              Common_TimePolicy_t,                  // time policy
+                              RPG_Net_Protocol_Configuration,       // configuration type
+                              RPG_Net_Protocol_Module_IRCStreamer); // writer type
 
 #endif

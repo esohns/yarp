@@ -21,59 +21,60 @@
 
 #include "IRC_client_signalhandler.h"
 
-#include "rpg_net_protocol_common.h"
+#include "ace/Log_Msg.h"
+#include "ace/Proactor.h"
+#include "ace/Reactor.h"
 
-#include "rpg_net_connection_manager.h"
+#include "common_tools.h"
 
-#include "rpg_common_tools.h"
+#include "rpg_net_protocol_network.h"
 
-#include <ace/Reactor.h>
-#include <ace/Proactor.h>
-
-IRC_Client_SignalHandler::IRC_Client_SignalHandler(const std::string& serverHostname_in,
-                                                   const unsigned short& serverPort_in,
-                                                   IRC_Client_Connector* connector_in)
- : inherited(ACE_Reactor::instance(),         // corresp. reactor
-             ACE_Event_Handler::LO_PRIORITY), // priority
-   myPeerAddress(serverPort_in,
-                 serverHostname_in.c_str()),
-   myConnector(connector_in)
+IRC_Client_SignalHandler::IRC_Client_SignalHandler (const std::string& serverHostname_in,
+                                                    unsigned short serverPort_in,
+                                                    Net_Client_IConnector* connector_in)
+ : inherited (ACE_Reactor::instance (),       // corresp. reactor
+              ACE_Event_Handler::LO_PRIORITY) // priority
+ , myPeerAddress (serverPort_in,
+                  serverHostname_in.c_str ())
+ , myConnector (connector_in)
 {
-  RPG_TRACE(ACE_TEXT("IRC_Client_SignalHandler::IRC_Client_SignalHandler"));
+  RPG_TRACE (ACE_TEXT ("IRC_Client_SignalHandler::IRC_Client_SignalHandler"));
 
 }
 
-IRC_Client_SignalHandler::~IRC_Client_SignalHandler()
+IRC_Client_SignalHandler::~IRC_Client_SignalHandler ()
 {
-  RPG_TRACE(ACE_TEXT("IRC_Client_SignalHandler::~IRC_Client_SignalHandler"));
+  RPG_TRACE (ACE_TEXT ("IRC_Client_SignalHandler::~IRC_Client_SignalHandler"));
 
 }
 
 int
-IRC_Client_SignalHandler::handle_signal(int signal_in,
-                                        siginfo_t* info_in,
-                                        ucontext_t* context_in)
+IRC_Client_SignalHandler::handle_signal (int signal_in,
+                                         siginfo_t* info_in,
+                                         ucontext_t* context_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_SignalHandler::handle_signal"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_SignalHandler::handle_signal"));
 
-  ACE_UNUSED_ARG(context_in);
+  ACE_UNUSED_ARG (context_in);
+
+  int result = -1;
 
   // debug info
   if (info_in == NULL)
   {
     // *PORTABILITY*: tracing in a signal handler context is not portable
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("%D: received [%S], but no siginfo_t was available, continuing\n"),
-               signal_in));
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("%D: received [%S], but no siginfo_t was available, continuing\n"),
+                signal_in));
   } // end IF
   else
   {
     // collect some context information...
     std::string information;
-    RPG_Common_Tools::retrieveSignalInfo(signal_in,
-                                         *info_in,
-                                         context_in,
-                                         information);
+    Common_Tools::retrieveSignalInfo (signal_in,
+                                      *info_in,
+                                      context_in,
+                                      information);
 
 //     // *PORTABILITY*: tracing in a signal handler context is not portable
 //     ACE_DEBUG((LM_DEBUG,
@@ -143,40 +144,32 @@ IRC_Client_SignalHandler::handle_signal(int signal_in,
   if (abort_oldest)
   {
     // release an existing connection...
-    RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
+    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abortOldestConnection ();
   } // end IF
 
   // ...connect ?
   if (connect_to_server)
   {
-    IRC_Client_SocketHandler* handler = NULL;
-    if (myConnector->connect(handler,                     // service handler
-                             myPeerAddress/*,              // remote SAP
-                             ACE_Synch_Options::defaults, // synch options
-                             ACE_INET_Addr::sap_any,      // local SAP
-                             0,                           // try to re-use address (SO_REUSEADDR)
-                             O_RDWR,                      // flags
-                             0*/) == -1)                  // perms
+    if (!myConnector->connect (myPeerAddress)) // peer address
     {
       // debug info
-      ACE_TCHAR buf[BUFSIZ];
-      ACE_OS::memset(buf,
-                     0,
-                     (BUFSIZ * sizeof(ACE_TCHAR)));
-      if (myPeerAddress.addr_to_string(buf,
-                                       (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
+      ACE_TCHAR buffer[BUFSIZ];
+      ACE_OS::memset(buffer, 0, sizeof (buffer));
+      result = myPeerAddress.addr_to_string (buffer,
+                                             sizeof (buffer));
+      if (result == -1)
       {
         // *PORTABILITY*: tracing in a signal handler context is not portable
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
       } // end IF
       // *PORTABILITY*: tracing in a signal handler context is not portable
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Connector::connect(%s): \"%m\", continuing\n"),
-                 buf));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to connect(\"%s\"): \"%m\", continuing\n"),
+                  buffer));
 
       // release an existing connection, maybe that helps...
-      RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
+      RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abortOldestConnection ();
     } // end IF
   } // end IF
 
@@ -189,8 +182,8 @@ IRC_Client_SignalHandler::handle_signal(int signal_in,
     // --> (try to) terminate in a well-behaved manner
 
     // stop reactor
-    if ((reactor()->end_event_loop() == -1) ||
-        (ACE_Proactor::instance()->end_event_loop() == -1))
+    if ((reactor ()->end_event_loop () == -1) ||
+        (ACE_Proactor::instance ()->end_event_loop () == -1))
     {
       //// *PORTABILITY*: tracing in a signal handler context is not portable
       //ACE_DEBUG((LM_ERROR,

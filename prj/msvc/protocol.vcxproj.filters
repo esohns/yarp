@@ -81,6 +81,15 @@
     <ClInclude Include="..\..\net\protocol\rpg_net_protocol_sessionmessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_stream_common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_network.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\net\protocol\rpg_net_protocol_configuration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\net\protocol\rpg_net_protocol_IRCbisect.cpp">

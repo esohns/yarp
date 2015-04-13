@@ -19,53 +19,58 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-#include "rpg_config.h"
+#include <iostream>
+#include <list>
+#include <sstream>
+#include <string>
 
-#include "IRC_common.h"
-#include "IRC_client_defines.h"
-#include "IRC_client_signalhandler.h"
-
-#include "rpg_net_protocol_defines.h"
-#include "rpg_net_protocol_common.h"
-#include "rpg_net_protocol_messageallocator.h"
-#include "rpg_net_protocol_module_IRChandler.h"
-
-#include "rpg_net_defines.h"
-#include "rpg_net_connection_manager.h"
-
-#include "rpg_common_tools.h"
-#include "rpg_common_file_tools.h"
-
-#include "rpg_stream_allocatorheap.h"
-
-#include "ace/ACE.h"
-#include "ace/Version.h"
+#include "ace/Configuration.h"
+#include "ace/Configuration_Import_Export.h"
 #include "ace/Get_Opt.h"
+#include "ace/High_Res_Timer.h"
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
 #include "ace/Profile_Timer.h"
 #include "ace/Reactor.h"
 #include "ace/TP_Reactor.h"
-#include "ace/Signal.h"
 #include "ace/Sig_Handler.h"
-#include "ace/Connector.h"
-#include "ace/SOCK_Connector.h"
-#include "ace/High_Res_Timer.h"
-#include "ace/Configuration.h"
-#include "ace/Configuration_Import_Export.h"
+#include "ace/Signal.h"
+#include "ace/Version.h"
 
-#include <string>
-#include <iostream>
-#include <sstream>
-#include <list>
+#include "common_file_tools.h"
+#include "common_tools.h"
+
+#include "common_ui_gtk_manager.h"
+
+#include "stream_allocatorheap.h"
+
+#ifdef HAVE_CONFIG_H
+#include "rpg_config.h"
+#endif
+
+#include "rpg_common_file_tools.h"
+
+#include "rpg_net_defines.h"
+
+#include "rpg_net_protocol_defines.h"
+#include "rpg_net_protocol_messageallocator.h"
+#include "rpg_net_protocol_module_IRChandler.h"
+#include "rpg_net_protocol_network.h"
+
+//#include "IRC_common.h"
+#include "IRC_client_defines.h"
+#include "IRC_client_signalhandler.h"
 
 void
-print_usage(const std::string& programName_in)
+do_printUsage (const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::print_usage"));
+  RPG_TRACE (ACE_TEXT ("::do_printUsage"));
 
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
-  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
+  std::string config_path = Common_File_Tools::getWorkingDirectory ();
 #ifdef BASEDIR
   config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
                                                                      true);
@@ -89,31 +94,32 @@ print_usage(const std::string& programName_in)
 } // end print_usage
 
 bool
-process_arguments(const int argc_in,
-                  ACE_TCHAR* argv_in[], // cannot be const...
-                  std::string& configFile_out,
-                  bool& debugParser_out,
-                  bool& logToFile_out,
-                  bool& traceInformation_out,
-                  bool& printVersionAndExit_out,
-                  unsigned int& numThreadPoolThreads_out)
+do_processArguments (const int argc_in,
+                     ACE_TCHAR* argv_in[], // cannot be const...
+                     std::string& configFile_out,
+                     bool& debugParser_out,
+                     bool& logToFile_out,
+                     bool& traceInformation_out,
+                     bool& printVersionAndExit_out,
+                     unsigned int& numThreadPoolThreads_out)
 {
-  RPG_TRACE(ACE_TEXT("::process_arguments"));
+  RPG_TRACE (ACE_TEXT ("::do_processArguments"));
 
-  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                     true);
-#endif // #ifdef BASEDIR
+  std::string configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
+#endif // #ifdef DEBUG_DEBUGGER
 
   // init configuration
-  configFile_out = config_path;
+  configFile_out = configuration_path;
   configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  configFile_out += ACE_TEXT_ALWAYS_CHAR("protocol");
+#if defined (DEBUG_DEBUGGER)
+  configFile_out += ACE_TEXT_ALWAYS_CHAR ("protocol");
   configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  configFile_out += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_DEF_INI_FILE);
+  configFile_out += ACE_TEXT_ALWAYS_CHAR (IRC_CLIENT_CNF_DEF_INI_FILE);
 
   debugParser_out          = false;
   logToFile_out            = false;
@@ -121,23 +127,23 @@ process_arguments(const int argc_in,
   printVersionAndExit_out  = false;
   numThreadPoolThreads_out = IRC_CLIENT_DEF_NUM_TP_THREADS;
 
-  ACE_Get_Opt argumentParser(argc_in,
-                             argv_in,
-                             ACE_TEXT("c:dltvx:"),
-                             1, // skip command name
-                             1, // report parsing errors
-                             ACE_Get_Opt::PERMUTE_ARGS, // ordering
-                             0); // for now, don't use long options
+  ACE_Get_Opt argumentParser (argc_in,
+                              argv_in,
+                              ACE_TEXT("c:dltvx:"),
+                              1, // skip command name
+                              1, // report parsing errors
+                              ACE_Get_Opt::PERMUTE_ARGS, // ordering
+                              0); // for now, don't use long options
 
   int option = 0;
   std::stringstream converter;
-  while ((option = argumentParser()) != EOF)
+  while ((option = argumentParser ()) != EOF)
   {
     switch (option)
     {
       case 'c':
       {
-        configFile_out = argumentParser.opt_arg();
+        configFile_out = argumentParser.opt_arg ();
 
         break;
       }
@@ -167,9 +173,9 @@ process_arguments(const int argc_in,
       }
       case 'x':
       {
-        converter.clear();
-        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-        converter << argumentParser.opt_arg();
+        converter.clear ();
+        converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+        converter << argumentParser.opt_arg ();
         converter >> numThreadPoolThreads_out;
 
         break;
@@ -177,33 +183,29 @@ process_arguments(const int argc_in,
       // error handling
       case ':':
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("option \"%c\" requires an argument, aborting\n"),
-                   argumentParser.opt_opt()));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("option \"%c\" requires an argument, aborting\n"),
+                    argumentParser.opt_opt ()));
         return false;
       }
       case '?':
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unrecognized option \"%s\", aborting\n"),
-                   argumentParser.last_option()));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("unrecognized option \"%s\", aborting\n"),
+                    argumentParser.last_option ()));
         return false;
       }
       case 0:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("found long option \"%s\", aborting\n"),
-                   argumentParser.long_option()));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("found long option \"%s\", aborting\n"),
+                    argumentParser.long_option ()));
         return false;
       }
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("parse error, aborting\n")));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("parse error, aborting\n")));
         return false;
       }
     } // end SWITCH
@@ -212,46 +214,22 @@ process_arguments(const int argc_in,
   return true;
 }
 
-bool
-init_threadPool(const bool& useReactor_in,
-                const unsigned int& numThreadPoolThreads_in)
-{
-  RPG_TRACE(ACE_TEXT("::init_threadPool"));
-
-  if (useReactor_in && (numThreadPoolThreads_in > 1))
-    {
-      ACE_TP_Reactor* threadpool_reactor = NULL;
-      ACE_NEW_RETURN(threadpool_reactor,
-                     ACE_TP_Reactor(),
-                     false);
-      ACE_Reactor* new_reactor = NULL;
-      ACE_NEW_RETURN(new_reactor,
-                     ACE_Reactor(threadpool_reactor, 1), // delete in dtor
-                     false);
-      // make this the "default" reactor...
-      ACE_Reactor::instance(new_reactor, 1); // delete in dtor
-    } // end IF
-  else
-    {
-      ACE_Proactor* proactor = NULL;
-      ACE_NEW_RETURN(proactor,
-                     ACE_Proactor(NULL, false, NULL),
-                     false);
-      // make this the "default" proactor...
-      ACE_Proactor::instance(proactor, 1); // delete in dtor
-    } // end ELSE
-
-  return true;
-}
-
 void
-init_signals(const bool& allowUserRuntimeConnect_in,
-             std::vector<int>& signals_inout)
+do_initializeSignals (bool allowUserRuntimeConnect_in,
+                      ACE_Sig_Set& signals_inout)
 {
-  RPG_TRACE(ACE_TEXT("::init_signals"));
+  RPG_TRACE(ACE_TEXT("::do_initializeSignals"));
+
+  int result = -1;
 
   // init return value(s)
-  signals_inout.clear();
+  result = signals_inout.empty_set ();
+  if (result == -1)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_Sig_Set::empty_set(): \"%m\", aborting\n")));
+    return;
+  } // end IF
 
   // init list of handled signals...
   // *PORTABILITY*: on Windows SIGHUP and SIGQUIT are not defined,
@@ -260,344 +238,235 @@ init_signals(const bool& allowUserRuntimeConnect_in,
   // *NOTE*: don't handle SIGHUP !!!! --> program will hang !
   //signals_inout.push_back(SIGHUP);
 #endif
-  signals_inout.push_back(SIGINT);
+  signals_inout.sig_add (SIGINT);
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  signals_inout.push_back(SIGQUIT);
+  signals_inout.sig_add (SIGQUIT);
 #endif
-//   signals_inout.push_back(SIGILL);
-//   signals_inout.push_back(SIGTRAP);
-//   signals_inout.push_back(SIGBUS);
-//   signals_inout.push_back(SIGFPE);
-//   signals_inout.push_back(SIGKILL); // cannot catch this one...
+//   signals_inout.sig_add(SIGILL);
+//   signals_inout.sig_add(SIGTRAP);
+//   signals_inout.sig_add(SIGBUS);
+//   signals_inout.sig_add(SIGFPE);
+//   signals_inout.sig_add(SIGKILL); // cannot catch this one...
   if (allowUserRuntimeConnect_in)
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-    signals_inout.push_back(SIGUSR1);
+    signals_inout.sig_add (SIGUSR1);
 #else
-    signals_inout.push_back(SIGBREAK);
+    signals_inout.sig_add (SIGBREAK);
 #endif
-//   signals_inout.push_back(SIGSEGV);
+//   signals_inout.sig_add(SIGSEGV);
   if (allowUserRuntimeConnect_in)
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-    signals_inout.push_back(SIGUSR2);
+    signals_inout.sig_add (SIGUSR2);
 #else
-    signals_inout.push_back(SIGABRT);
+    signals_inout.sig_add (SIGABRT);
 #endif
-//   signals_inout.push_back(SIGPIPE);
-//   signals_inout.push_back(SIGALRM);
-  signals_inout.push_back(SIGTERM);
-//   signals_inout.push_back(SIGSTKFLT);
-//   signals_inout.push_back(SIGCHLD);
-//   signals_inout.push_back(SIGCONT);
-//   signals_inout.push_back(SIGSTOP); // cannot catch this one...
-//   signals_inout.push_back(SIGTSTP);
-//   signals_inout.push_back(SIGTTIN);
-//   signals_inout.push_back(SIGTTOU);
-//   signals_inout.push_back(SIGURG);
-//   signals_inout.push_back(SIGXCPU);
-//   signals_inout.push_back(SIGXFSZ);
-//   signals_inout.push_back(SIGVTALRM);
-//   signals_inout.push_back(SIGPROF);
-//   signals_inout.push_back(SIGWINCH);
-//   signals_inout.push_back(SIGIO);
-//   signals_inout.push_back(SIGPWR);
-//   signals_inout.push_back(SIGSYS);
-//   signals_inout.push_back(SIGRTMIN);
-//   signals_inout.push_back(SIGRTMIN+1);
+//   signals_inout.sig_add(SIGPIPE);
+//   signals_inout.sig_add(SIGALRM);
+  signals_inout.sig_add (SIGTERM);
+//   signals_inout.sig_add(SIGSTKFLT);
+//   signals_inout.sig_add(SIGCHLD);
+//   signals_inout.sig_add(SIGCONT);
+//   signals_inout.sig_add(SIGSTOP); // cannot catch this one...
+//   signals_inout.sig_add(SIGTSTP);
+//   signals_inout.sig_add(SIGTTIN);
+//   signals_inout.sig_add(SIGTTOU);
+//   signals_inout.sig_add(SIGURG);
+//   signals_inout.sig_add(SIGXCPU);
+//   signals_inout.sig_add(SIGXFSZ);
+//   signals_inout.sig_add(SIGVTALRM);
+//   signals_inout.sig_add(SIGPROF);
+//   signals_inout.sig_add(SIGWINCH);
+//   signals_inout.sig_add(SIGIO);
+//   signals_inout.sig_add(SIGPWR);
+//   signals_inout.sig_add(SIGSYS);
+//   signals_inout.sig_add(SIGRTMIN);
+//   signals_inout.sig_add(SIGRTMIN+1);
 // ...
-//   signals_inout.push_back(SIGRTMAX-1);
-//   signals_inout.push_back(SIGRTMAX);
-}
-
-bool
-init_signalHandling(const std::vector<int>& signals_inout,
-                    IRC_Client_SignalHandler& eventHandler_in,
-                    ACE_Sig_Handlers& signalHandlers_in)
-{
-  RPG_TRACE(ACE_TEXT("::init_signalHandling"));
-
-  // step1: register signal handlers for the list of signals we want to catch
-
-  // specify (default) action...
-  // --> we don't actually need to keep this around after registration
-  ACE_Sig_Action signalAction((ACE_SignalHandler)SIG_DFL, // default action (will be overridden below)...
-                              ACE_Sig_Set(1),             // mask of signals to be blocked when we're servicing
-                                                          // --> block them all ! (except KILL off course...)
-//                               (SA_RESTART | SA_SIGINFO)); // flags
-                              SA_SIGINFO);               // flags
-
-  // register different signals...
-  int sigkey = -1;
-  for (std::vector<int>::const_iterator iter = signals_inout.begin();
-       iter != signals_inout.end();
-       iter++)
-  {
-    sigkey = signalHandlers_in.register_handler(*iter,            // signal
-                                                &eventHandler_in, // new handler
-                                                &signalAction,    // new action
-                                                NULL,             // old handler
-                                                NULL);            // old action
-    if (sigkey == -1)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Sig_Handlers::register_handler(\"%S\": %d): \"%m\", aborting\n"),
-                 *iter,
-                 *iter));
-
-      return false;
-    } // end IF
-
-    // debug info
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("registered handler for \"%S\" (key: %d)...\n"),
-               *iter,
-               sigkey));
-  } // end FOR
-
-  // actually, there is only a single handler for ALL signals in the set...
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("handling %d signal(s)...\n"),
-//              signals_inout.size()));
-
-  // step2: ignore SIGPIPE; need this to enable sending to exit gracefully
-  // after an asynchronous client disconnect (i.e. crash/...)
-  // specify ignore action...
-  // --> we don't actually need to keep this around after registration
-  ACE_Sig_Action ignoreAction((ACE_SignalHandler)SIG_IGN, // ignore action...
-                              ACE_Sig_Set(1),             // mask of signals to be blocked when we're servicing
-                                                          // --> block them all ! (except KILL off course...)
-                              SA_SIGINFO);                // flags
-//                               (SA_RESTART | SA_SIGINFO)); // flags
-  ACE_Sig_Action originalAction;
-  ignoreAction.register_action(SIGPIPE, &originalAction);
-
-  return true;
-}
-
-static
-ACE_THR_FUNC_RETURN
-tp_worker_func(void* args_in)
-{
-  RPG_TRACE(ACE_TEXT("::tp_worker_func"));
-
-  bool use_reactor = *reinterpret_cast<bool*>(args_in);
-
-  // *NOTE*: asynchronous writing to a closed socket triggers the
-  // SIGPIPE signal (default action: abort).
-  // --> as this doesn't use select(), guard against this (ignore the signal)
-  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler>(SIG_IGN));
-  ACE_Sig_Action original_action;
-  no_sigpipe.register_action(SIGPIPE, &original_action);
-
-  int success = 0;
-  // handle any events...
-  if (use_reactor)
-  {
-    // assume ownership over the reactor...
-    ACE_Reactor::instance()->owner(ACE_OS::thr_self(),
-                                   NULL);
-    success = ACE_Reactor::instance()->run_reactor_event_loop(0);
-  }
-  else
-    success = ACE_Proactor::instance()->proactor_run_event_loop(0);
-  if (success == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("(%t) failed to handle events: \"%m\", aborting\n")));
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("(%t) worker leaving...\n")));
-
-  // clean up
-  no_sigpipe.restore_action(SIGPIPE, original_action);
-
-  // *PORTABILITY*
-  // *TODO*
-  return (success == 0 ? NULL : NULL);
+//   signals_inout.sig_add(SIGRTMAX-1);
+//   signals_inout.sig_add(SIGRTMAX);
 }
 
 void
-do_work(const RPG_Net_Protocol_ConfigPOD& config_in,
-        const std::string& serverHostname_in,
-        const unsigned short& serverPortNumber_in,
-        const unsigned int& numThreadPoolThreads_in)
+do_work (RPG_Net_Protocol_Configuration& configuration_in,
+         const std::string& serverHostname_in,
+         unsigned short serverPortNumber_in,
+         unsigned int numDispatchThreads_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_work"));
+  RPG_TRACE (ACE_TEXT ("::do_work"));
 
-  // step0: (if necessary) init the thread pool
-  if (!init_threadPool(IRC_CLIENT_DEF_CLIENT_USES_REACTOR, numThreadPoolThreads_in))
+  // step1: initialize event dispatch
+  if (!Common_Tools::initializeEventDispatch (RPG_NET_USES_REACTOR,
+                                              numDispatchThreads_in,
+                                              configuration_in.streamConfiguration.serializeOutput))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to init thread pool, aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to init event dispatch, returning\n")));
     return;
   } // end IF
 
-  // step0b: init client connector
-  IRC_Client_Connector connector(ACE_Reactor::instance(), // reactor
-                                 ACE_NONBLOCK);           // flags: non-blocking I/O
-//                                  0);                      // flags (*TODO*: ACE_NONBLOCK ?);
+  // step2: initialize client connector
+  Net_Client_IConnector* connector_p = NULL;
+  if (RPG_NET_USES_REACTOR)
+    ACE_NEW_NORETURN (connector_p,
+                      RPG_Net_Protocol_Connector_t (&configuration_in,
+                                                    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance (),
+                                                    0));
+  else
+    ACE_NEW_NORETURN (connector_p,
+                      RPG_Net_Protocol_AsynchConnector_t (&configuration_in,
+                                                          RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance (),
+                                                          0));
+  if (!connector_p)
+  {
+    ACE_DEBUG ((LM_CRITICAL,
+                ACE_TEXT ("failed to allocate memory, aborting\n")));
+    return;
+  } // end IF
 
-  // step1: signal handling
-  // event handler for signals
-  IRC_Client_SignalHandler signalEventHandler(serverHostname_in,   // target hostname
-                                              serverPortNumber_in, // target port
-                                              &connector);         // connector
-  ACE_Sig_Handlers signalHandlers;
+  // step3: initialize signal handling
+  IRC_Client_SignalHandler signal_handler (serverHostname_in,   // target hostname
+                                           serverPortNumber_in, // target port
+                                           connector_p);        // connector
+  ACE_Sig_Handlers signal_handlers;
   // *WARNING*: 'signals' appears to be a keyword in some contexts...
-  std::vector<int> signalss;
-  init_signals(true,  // allow SIGUSR1
-               signalss);
-  if (!init_signalHandling(signalss,
-                           signalEventHandler,
-                           signalHandlers))
+  ACE_Sig_Set signal_set (0);
+  do_initializeSignals (true,  // allow SIGUSR1
+                        signal_set);
+  Common_SignalActions_t previous_signal_actions;
+  if (!Common_Tools::initializeSignals (signal_set,
+                                        &signal_handler,
+                                        previous_signal_actions))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to init_signalHandling(), aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to initialize signal handling, returning\n")));
+
+    // clean up
+    delete connector_p;
 
     return;
   } // end IF
 
-  // step2a: init connection manager
-  RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max());
-  RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->set(config_in); // will be passed to all handlers
+  // step4a: initialize connection manager
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (std::numeric_limits<unsigned int>::max ());
+  RPG_Net_Protocol_SessionData session_data;
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->set (configuration_in,
+                                                                  &session_data);
 
-  // step2b: (try to) connect to the server
-  IRC_Client_SocketHandler* handler = NULL;
-  ACE_INET_Addr remote_address(serverPortNumber_in, // remote SAP
-                               serverHostname_in.c_str());
-  if (connector.connect(handler,                     // service handler
-                        remote_address/*,              // remote SAP
-                        ACE_Synch_Options::defaults, // synch options
-                        ACE_INET_Addr::sap_any,      // local SAP
-                        0,                           // try to re-use address (SO_REUSEADDR)
-                        O_RDWR,                      // flags
-                        0*/) == -1)                  // perms
+  // step5a: start GTK event loop
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start ();
+  if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to start GTK event dispatch, aborting\n")));
+
+    // clean up
+    delete connector_p;
+    Common_Tools::finalizeSignals (signal_set,
+                                   RPG_NET_USES_REACTOR,
+                                   previous_signal_actions);
+
+    return;
+  } // end IF
+
+  // step5b: initialize worker(s)
+  int group_id = -1;
+  if (!Common_Tools::startEventDispatch (RPG_NET_USES_REACTOR,
+                                         numDispatchThreads_in,
+                                         group_id))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to start event dispatch, aborting\n")));
+
+    // clean up
+    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
+    delete connector_p;
+    Common_Tools::finalizeSignals (signal_set,
+                                   RPG_NET_USES_REACTOR,
+                                   previous_signal_actions);
+
+    return;
+  } // end IF
+
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("started event dispatch...\n")));
+
+  // step6: (try to) connect to the server
+  ACE_INET_Addr remote_address (serverPortNumber_in,
+                                serverHostname_in.c_str ());
+  if (!connector_p->connect (remote_address))
   {
     // debug info
-    ACE_TCHAR buf[BUFSIZ];
-    ACE_OS::memset(buf,
-                   0,
-                   (BUFSIZ * sizeof(ACE_TCHAR)));
-    if (remote_address.addr_to_string(buf,
-                                      (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Connector::connect(%s): \"%m\", aborting\n"),
-               buf));
+    ACE_TCHAR buffer[BUFSIZ];
+    ACE_OS::memset (buffer, 0, sizeof (buffer));
+    int result = remote_address.addr_to_string (buffer,
+                                                sizeof (buffer));
+    if (result == -1)
+      ACE_DEBUG ((LM_ERROR,
+      ACE_TEXT ("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
+    ACE_DEBUG ((LM_ERROR,
+      ACE_TEXT ("failed to connect(\"%s\"): \"%m\", returning\n"),
+      buffer));
+
+    // clean up
+    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
+    delete connector_p;
+    Common_Tools::finalizeSignals (signal_set,
+                                   RPG_NET_USES_REACTOR,
+                                   previous_signal_actions);
 
     return;
   } // end IF
 
   // *NOTE*: from this point on, we need to clean up any remote connections !
 
-  // event loop:
-  // - catch SIGINT/SIGQUIT/SIGTERM/... signals (and perform orderly shutdown)
-  // - signal timer expiration to perform server queries
-
-//   // *NOTE*: make sure we generally restart system calls (after e.g. EINTR) for the reactor...
-//   ACE_Reactor::instance()->restart(1);
-
-  // step3: dispatch events...
-  // *NOTE*: if we use a thread pool, we need to do this differently...
-  if (numThreadPoolThreads_in > 1)
+  // step7: dispatch events
+  // *NOTE*: when using a thread pool, handle things differently...
+  if (numDispatchThreads_in > 1)
   {
-    // start a (group of) worker thread(s)...
-    bool thread_argument = IRC_CLIENT_DEF_CLIENT_USES_REACTOR;
-    int grp_id = -1;
-    grp_id = ACE_Thread_Manager::instance()->spawn_n(numThreadPoolThreads_in,     // # threads
-                                                     ::tp_worker_func,            // function
-                                                     &thread_argument,            // argument
-                                                     (THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED), // flags
-                                                     ACE_DEFAULT_THREAD_PRIORITY, // priority
-                                                     -1,                          // group id --> create new
-                                                     NULL,                        // task
-                                                     NULL,                        // handle(s)
-                                                     NULL,                        // stack(s)
-                                                     NULL,                        // stack size(s)
-                                                     NULL);                       // name(s)
-    if (grp_id == -1)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%m\", aborting\n"),
-                 numThreadPoolThreads_in));
-
-      // clean up
-//       if (stressTestServer_in)
-//       {
-//         if (ACE_Reactor::instance()->cancel_timer(timerID,  // timer ID
-//             NULL,     // pointer to args passed to handler
-//             1) != 1)  // don't invoke handle_close() on handler
-//         {
-//           ACE_DEBUG((LM_ERROR,
-//                      ACE_TEXT("failed to ACE_Reactor::cancel_timer(): \"%p\", continuing\n")));
-//         } // end IF
-//       } // end IF
-      RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-      RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
-
-      return;
-    } // end IF
-
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("spawned %u event handlers (group ID: %u)...\n"),
-               numThreadPoolThreads_in,
-               grp_id));
-
-    // ... and wait for this group to join
-    ACE_Thread_Manager::instance()->wait_grp(grp_id);
+    if (ACE_Thread_Manager::instance ()->wait_grp (group_id) == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE_Thread_Manager::wait_grp(%d): \"%m\", continuing\n"),
+                  group_id));
   } // end IF
   else
   {
-    if (IRC_CLIENT_DEF_CLIENT_USES_REACTOR)
+    if (RPG_NET_USES_REACTOR)
     {
-/*    // *WARNING*: DON'T restart system calls (after e.g. EINTR) for the reactor
+      /*      // *WARNING*: restart system calls (after e.g. SIGINT) for the reactor
       ACE_Reactor::instance()->restart(1);
-*/
-      while (!ACE_Reactor::instance()->reactor_event_loop_done())
-      {
-        if (ACE_Reactor::instance()->run_reactor_event_loop(0) == -1)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to handle events: \"%m\", aborting\n")));
-
-	  break;
-	} // end IF
-      } // end WHILE
+      */
+      if (ACE_Reactor::instance ()->run_reactor_event_loop (0) == -1)
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to handle events: \"%m\", aborting\n")));
     } // end IF
     else
-    {
-      while (!ACE_Proactor::instance()->proactor_event_loop_done())
-      {
-        if (ACE_Proactor::instance()->proactor_run_event_loop(0) == -1)
-        {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("failed to handle events: \"%m\", aborting\n")));
-
-          // clean up
-          // *TODO*: stop connector
-          //			    connector.cancel();
-
-          break;
-        } // end IF
-      } // end WHILE
-    } // end ELSE
+      if (ACE_Proactor::instance ()->proactor_run_event_loop (0) == -1)
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to handle events: \"%m\", aborting\n")));
   } // end ELSE
 
-  // step4: clean up
-  RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-  RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("finished event dispatch...\n")));
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished working...\n")));
+  // step8: clean up
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->waitConnections ();
+  delete connector_p;
+  Common_Tools::finalizeSignals (signal_set,
+                                 RPG_NET_USES_REACTOR,
+                                 previous_signal_actions);
+
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("finished working...\n")));
 }
 
 void
-do_parseConfigFile(const std::string& configFilename_in,
-                   RPG_Net_Protocol_IRCLoginOptions& loginOptions_out,
-                   std::string& serverHostname_out,
-                   unsigned short& serverPortNumber_out)
+do_parseConfigurationFile (const std::string& configFilename_in,
+                           RPG_Net_Protocol_IRCLoginOptions& loginOptions_out,
+                           std::string& serverHostname_out,
+                           unsigned short& serverPortNumber_out)
 {
-  RPG_TRACE(ACE_TEXT("::do_parseConfigFile"));
+  RPG_TRACE (ACE_TEXT ("::do_parseConfigurationFile"));
 
   // init return value(s)
   serverHostname_out   = ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_DEF_SERVER_HOSTNAME);
@@ -754,9 +623,9 @@ do_parseConfigFile(const std::string& configFilename_in,
 }
 
 void
-do_printVersion(const std::string& programName_in)
+do_printVersion (const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_printVersion"));
+  RPG_TRACE (ACE_TEXT ("::do_printVersion"));
 
   std::cout << programName_in
 #ifdef HAVE_CONFIG_H
@@ -781,257 +650,290 @@ do_printVersion(const std::string& programName_in)
 }
 
 int
-ACE_TMAIN(int argc,
-          ACE_TCHAR* argv[])
+ACE_TMAIN (int argc_in,
+           ACE_TCHAR* argv_in[])
 {
-  RPG_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE (ACE_TEXT ("::main"));
 
   // *PROCESS PROFILE*
   ACE_Profile_Timer process_profile;
   // start profile timer...
-  process_profile.start();
+  process_profile.start ();
 
   // step1: init
-//  // *PORTABILITY*: on Windows, we need to init ACE...
-//#if defined (ACE_WIN32) || defined (ACE_WIN64)
-//  if (ACE::init() == -1)
-//  {
-//    ACE_DEBUG((LM_ERROR,
-//               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
-//
-//    return EXIT_FAILURE;
-//  } // end IF
-//#endif
+  // *PORTABILITY*: on Windows, init ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::init () == -1)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
+    return EXIT_FAILURE;
+  } // end IF
+#endif
 
   // step1 init/validate configuration
 
   // step1a: process commandline arguments
-  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                     true);
-#endif // #ifdef BASEDIR
+  std::string configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
+#endif // #ifdef DEBUG_DEBUGGER
 
-  std::string configFile = config_path;
-  configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  configFile += ACE_TEXT_ALWAYS_CHAR("protocol");
-  configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  std::string configuration_file = configuration_path;
+  configuration_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined (DEBUG_DEBUGGER)
+  configuration_file += ACE_TEXT_ALWAYS_CHAR ("protocol");
+  configuration_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  configFile += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_DEF_INI_FILE);
+  configuration_file += ACE_TEXT_ALWAYS_CHAR (IRC_CLIENT_CNF_DEF_INI_FILE);
 
-  bool debugParser                  = false;
-  bool logToFile                    = false;
-  bool traceInformation             = false;
-  bool printVersionAndExit          = false;
-  unsigned int numThreadPoolThreads = IRC_CLIENT_DEF_NUM_TP_THREADS;
-  if (!(process_arguments(argc,
-                          argv,
-                          configFile,
-                          debugParser,
-                          logToFile,
-                          traceInformation,
-                          printVersionAndExit,
-                          numThreadPoolThreads)))
+  bool debug_parser                    = false;
+  bool log_to_file                     = false;
+  bool trace_information               = false;
+  bool print_version_and_exit          = false;
+  unsigned int num_thread_pool_threads = IRC_CLIENT_DEF_NUM_TP_THREADS;
+  if (!do_processArguments (argc_in,
+                            argv_in,
+                            configuration_file,
+                            debug_parser,
+                            log_to_file,
+                            trace_information,
+                            print_version_and_exit,
+                            num_thread_pool_threads))
   {
     // make 'em learn...
-    print_usage(std::string(ACE::basename(argv[0])));
+    do_printUsage (ACE::basename (argv_in[0]));
+
+    // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
 
   // validate argument(s)
-  if (!RPG_Common_File_Tools::isReadable(configFile))
+  if (!Common_File_Tools::isReadable (configuration_file))
   {
     // make 'em learn...
-    print_usage(std::string(ACE::basename(argv[0])));
+    do_printUsage (ACE::basename (argv_in[0]));
+
+    // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
 
-  // step1b: handle specific program modes
-  if (printVersionAndExit)
+  // initialize logging and/or tracing
+  std::string log_file;
+  if (log_to_file)
+    log_file = RPG_Common_File_Tools::getLogFilename (ACE::basename (argv_in[0]));
+  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]),   // program name
+                                        log_file,                    // logfile
+                                        false,                       // log to syslog ?
+                                        false,                       // trace messages ?
+                                        trace_information,           // debug messages ?
+                                        NULL))                       // logger
   {
-    do_printVersion(std::string(ACE::basename(argv[0])));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));
+
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+      ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
+
+    return EXIT_FAILURE;
+  } // end IF
+
+  // handle specific program modes
+  if (print_version_and_exit)
+  {
+    do_printVersion (ACE::basename (argv_in[0]));
+
+    // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_SUCCESS;
   } // end IF
 
-  // step1c: set correct trace level
-  //ACE_Trace::start_tracing();
-  if (!traceInformation)
-  {
-    u_long process_priority_mask = (LM_SHUTDOWN |
-                                    //LM_TRACE |  // <-- DISABLE trace messages !
-                                    //LM_DEBUG |
-                                    LM_INFO |
-                                    LM_NOTICE |
-                                    LM_WARNING |
-                                    LM_STARTUP |
-                                    LM_ERROR |
-                                    LM_CRITICAL |
-                                    LM_ALERT |
-                                    LM_EMERGENCY);
-
-    // set new mask...
-    ACE_LOG_MSG->priority_mask(process_priority_mask,
-                               ACE_Log_Msg::PROCESS);
-
-    //ACE_LOG_MSG->stop_tracing();
-
-    // don't go VERBOSE...
-    //ACE_LOG_MSG->clr_flags(ACE_Log_Msg::VERBOSE_LITE);
-  } // end IF
-
-  // step1d: init configuration object
-  RPG_Stream_AllocatorHeap heapAllocator;
-  RPG_Net_Protocol_MessageAllocator messageAllocator(RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
-                                                     &heapAllocator);
-  RPG_Net_Protocol_Module_IRCHandler_Module IRChandlerModule(std::string("IRCHandler"),
-                                                             NULL);
+  // initialize configuration object
+  Stream_AllocatorHeap heapAllocator;
+  RPG_Net_Protocol_MessageAllocator messageAllocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
+                                                      &heapAllocator);
+  RPG_Net_Protocol_Module_IRCHandler_Module IRChandlerModule (std::string ("IRCHandler"),
+                                                              NULL);
   RPG_Net_Protocol_Module_IRCHandler* IRChandler_impl = NULL;
-  IRChandler_impl = dynamic_cast<RPG_Net_Protocol_Module_IRCHandler*>(IRChandlerModule.writer());
+  IRChandler_impl =
+   dynamic_cast<RPG_Net_Protocol_Module_IRCHandler*>(IRChandlerModule.writer());
   if (!IRChandler_impl)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("dynamic_cast<RPG_Net_Protocol_Module_IRCHandler) failed> (aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("dynamic_cast<RPG_Net_Protocol_Module_IRCHandler) failed> (aborting\n")));
+
+    // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
-  if (!IRChandler_impl->init(&messageAllocator,
-                             true,              // auto-answer "ping" as a client ?...
-                             true))             // clients print ('.') dots for received "pings"...
+  if (!IRChandler_impl->initialize (&messageAllocator,
+                                    RPG_NET_PROTOCOL_BUFFER_SIZE,
+                                    true,              // auto-answer "ping" as a client ?...
+                                    true))             // clients print ('.') dots for received "pings"...
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to initialize module: \"%s\", aborting\n"),
-               IRChandlerModule.name()));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to initialize module: \"%s\", aborting\n"),
+                ACE_TEXT (IRChandlerModule.name ())));
+
+    // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
 
-  RPG_Net_Protocol_ConfigPOD config;
-  // step1da: populate config object with default/collected data
-  // ************ connection config data ************
-  config.streamSocketConfiguration.socketBufferSize = RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
-  config.streamSocketConfiguration.messageAllocator = &messageAllocator;
-  config.streamSocketConfiguration.bufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
-  // ************ protocol config data **************
-  config.clientPingInterval = 0; // servers do this...
-//   config.loginOptions.password = ;
-  config.loginOptions.nick = IRC_CLIENT_DEF_IRC_NICK;
-//   config.loginOptions.user.username = ;
-  std::string hostname = RPG_Common_Tools::getHostName();
+  RPG_Net_Protocol_Configuration configuration;
+  // ************ socket configuration data ************
+  configuration.socketConfiguration.bufferSize = NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
+
+  // ************ stream configuration data ****************
+  configuration.streamConfiguration.messageAllocator = &messageAllocator;
+  configuration.streamConfiguration.bufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
+  configuration.streamConfiguration.module = &IRChandlerModule;
+  configuration.streamConfiguration.statisticReportingInterval = 0; // == off
+
+  // ************ protocol configuration data **************
+  configuration.protocolConfiguration.streamConfiguration.crunchMessageBuffers =
+    RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES;
+  configuration.protocolConfiguration.streamConfiguration.debugScanner =
+   debug_parser;
+  configuration.protocolConfiguration.streamConfiguration.debugParser =
+   debug_parser;
+  configuration.protocolConfiguration.clientPingInterval = 0; // servers only
+  configuration.protocolConfiguration.loginOptions.nick =
+   IRC_CLIENT_DEF_IRC_NICK;
+  std::string hostname;
+  Net_Common_Tools::retrieveLocalHostname (hostname);
   if (IRC_CLIENT_CNF_IRC_USERMSG_TRADITIONAL)
   {
-    config.loginOptions.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::STRING;
-    config.loginOptions.user.hostname.string = &hostname;
+    configuration.protocolConfiguration.loginOptions.user.hostname.discriminator =
+      RPG_Net_Protocol_IRCLoginOptions::User::Hostname::STRING;
+    configuration.protocolConfiguration.loginOptions.user.hostname.string = &hostname;
   } // end IF
   else
   {
-    config.loginOptions.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::BITMASK;
+    configuration.protocolConfiguration.loginOptions.user.hostname.discriminator =
+      RPG_Net_Protocol_IRCLoginOptions::User::Hostname::BITMASK;
     // *NOTE*: hybrid-7.2.3 seems to have a bug: 4 --> +i
-    config.loginOptions.user.hostname.mode = IRC_CLIENT_DEF_IRC_USERMODE;
+    configuration.protocolConfiguration.loginOptions.user.hostname.mode =
+      IRC_CLIENT_DEF_IRC_USERMODE;
   } // end ELSE
-  config.loginOptions.user.servername = ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME);
-//   config.loginOptions.user.realname = ;
-  config.loginOptions.channel = ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_DEF_IRC_CHANNEL);
-  // ************ stream config data ****************
-  config.streamSocketConfiguration.module = &IRChandlerModule;
-  config.crunchMessageBuffers = false;
-  config.debugScanner = debugParser;
-  config.debugParser = debugParser;
-  // *WARNING*: set at runtime, by the appropriate connection handler
-  config.streamSocketConfiguration.sessionID = 0; // (== socket handle !)
-  config.statisticsReportingInterval = 0; // == off
-  config.currentStatistics.numBytes = 0;
-  config.currentStatistics.numDataMessages = 0;
-  config.lastCollectionTimestamp = ACE_Time_Value::zero;
-
+  configuration.protocolConfiguration.loginOptions.user.servername =
+    ACE_TEXT_ALWAYS_CHAR (RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME);
+  configuration.protocolConfiguration.loginOptions.channel =
+    ACE_TEXT_ALWAYS_CHAR (IRC_CLIENT_DEF_IRC_CHANNEL);
   // populate user/realname
-  RPG_Common_Tools::getCurrentUserName(config.loginOptions.user.username,
-                                       config.loginOptions.user.realname);
+  Common_Tools::getCurrentUserName (configuration.protocolConfiguration.loginOptions.user.username,
+                                    configuration.protocolConfiguration.loginOptions.user.realname);
 
   // step1db: parse config file (if any)
   std::string serverHostname      = ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_DEF_SERVER_HOSTNAME);
   unsigned short serverPortNumber = IRC_CLIENT_DEF_SERVER_PORT;
-  if (!configFile.empty())
-    do_parseConfigFile(configFile,
-                       config.loginOptions,
-                       serverHostname,
-                       serverPortNumber);
+  if (!configuration_file.empty ())
+    do_parseConfigurationFile (configuration_file,
+                               configuration.protocolConfiguration.loginOptions,
+                               serverHostname,
+                               serverPortNumber);
 
   ACE_High_Res_Timer timer;
   timer.start();
   // step2: do actual work
-  do_work(config,
-          serverHostname,
-          serverPortNumber,
-          numThreadPoolThreads);
+  do_work (configuration,
+           serverHostname,
+           serverPortNumber,
+           num_thread_pool_threads);
   // clean up
-  IRChandlerModule.close();
-  timer.stop();
+  IRChandlerModule.close ();
+  timer.stop ();
 
   // debug info
   std::string working_time_string;
   ACE_Time_Value working_time;
-  timer.elapsed_time(working_time);
-  RPG_Common_Tools::period2String(working_time,
-                                  working_time_string);
+  timer.elapsed_time (working_time);
+  Common_Tools::period2String (working_time,
+                               working_time_string);
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
-             working_time_string.c_str()));
-
-//  // *PORTABILITY*: on Windows, we must fini ACE...
-//#if defined (ACE_WIN32) || defined (ACE_WIN64)
-//  if (ACE::fini() == -1)
-//  {
-//    ACE_DEBUG((LM_ERROR,
-//               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
-//
-//    return EXIT_FAILURE;
-//  } // end IF
-//#endif
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
+              ACE_TEXT (working_time_string.c_str ())));
 
   // stop profile timer...
-  process_profile.stop();
+  process_profile.stop ();
 
   // only process profile left to do...
   ACE_Profile_Timer::ACE_Elapsed_Time elapsed_time;
   elapsed_time.real_time = 0.0;
   elapsed_time.user_time = 0.0;
   elapsed_time.system_time = 0.0;
-  if (process_profile.elapsed_time(elapsed_time) == -1)
+  if (process_profile.elapsed_time (elapsed_time) == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Profile_Timer::elapsed_time: \"%m\", aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_Profile_Timer::elapsed_time: \"%m\", aborting\n")));
+
+    // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
   ACE_Profile_Timer::Rusage elapsed_rusage;
-  ACE_OS::memset(&elapsed_rusage,
-                 0,
-                 sizeof(ACE_Profile_Timer::Rusage));
+  ACE_OS::memset (&elapsed_rusage,
+                  0,
+                  sizeof (ACE_Profile_Timer::Rusage));
   process_profile.elapsed_rusage(elapsed_rusage);
   ACE_Time_Value user_time(elapsed_rusage.ru_utime);
   ACE_Time_Value system_time(elapsed_rusage.ru_stime);
   std::string user_time_string;
   std::string system_time_string;
-  RPG_Common_Tools::period2String(user_time,
-                                  user_time_string);
-  RPG_Common_Tools::period2String(system_time,
-                                  system_time_string);
+  Common_Tools::period2String (user_time,
+                               user_time_string);
+  Common_Tools::period2String (system_time,
+                               system_time_string);
 
   // debug info
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT(" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\nmaximum resident set size = %d\nintegral shared memory size = %d\nintegral unshared data size = %d\nintegral unshared stack size = %d\npage reclaims = %d\npage faults = %d\nswaps = %d\nblock input operations = %d\nblock output operations = %d\nmessages sent = %d\nmessages received = %d\nsignals received = %d\nvoluntary context switches = %d\ninvoluntary context switches = %d\n"),
-			 elapsed_time.real_time,
+             elapsed_time.real_time,
              elapsed_time.user_time,
              elapsed_time.system_time,
              user_time_string.c_str(),
              system_time_string.c_str(),
-			 elapsed_rusage.ru_maxrss,
+             elapsed_rusage.ru_maxrss,
              elapsed_rusage.ru_ixrss,
              elapsed_rusage.ru_idrss,
              elapsed_rusage.ru_isrss,
@@ -1046,13 +948,20 @@ ACE_TMAIN(int argc,
              elapsed_rusage.ru_nvcsw,
              elapsed_rusage.ru_nivcsw));
 #else
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT(" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\n"),
-             elapsed_time.real_time,
-             elapsed_time.user_time,
-             elapsed_time.system_time,
-             user_time_string.c_str(),
-             system_time_string.c_str()));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT (" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\n"),
+              elapsed_time.real_time,
+              elapsed_time.user_time,
+              elapsed_time.system_time,
+              user_time_string.c_str (),
+              system_time_string.c_str ()));
+#endif
+
+  // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::fini () == -1)
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
   return EXIT_SUCCESS;

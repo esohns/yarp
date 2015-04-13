@@ -36,7 +36,6 @@
 
 #include "rpg_map_common.h"
 
-#include "rpg_engine.h"
 #include "rpg_engine_common.h"
 
 #include "rpg_sound_common.h"
@@ -49,6 +48,7 @@
 
 // forward declaration(s)
 class RPG_Client_Engine;
+class RPG_Engine;
 
 typedef std::deque<std::string> RPG_Client_MessageStack_t;
 typedef RPG_Client_MessageStack_t::const_iterator RPG_Client_MessageStackConstIterator_t;

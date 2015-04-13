@@ -27,33 +27,34 @@
 
 #include "common_file_tools.h"
 
-#include "rpg_dice_common.h"
 #include "rpg_dice.h"
+#include "rpg_dice_common.h"
 
-#include "rpg_common_macros.h"
 #include "rpg_common.h"
 #include "rpg_common_condition.h"
 #include "rpg_common_defines.h"
-#include "rpg_common_tools.h"
 #include "rpg_common_file_tools.h"
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
 
 #include "rpg_character_race_common_tools.h"
 
-#include "rpg_item_dictionary.h"
 #include "rpg_item_common_tools.h"
 #include "rpg_item_common_XML_tools.h"
+#include "rpg_item_dictionary.h"
 
-#include "rpg_player_defines.h"
 #include "rpg_player_common_tools.h"
+#include "rpg_player_defines.h"
 
 #include "rpg_map_common_tools.h"
 #include "rpg_map_pathfinding_tools.h"
 
 #include "rpg_net_protocol_defines.h"
 
+#include "rpg_engine_common_tools.h"
 #include "rpg_engine_defines.h"
 #include "rpg_engine_event_manager.h"
-#include "rpg_engine_common_tools.h"
+#include "rpg_engine_iclient.h"
 
 // initialize statics
 // *TODO* --> typedef
@@ -315,24 +316,24 @@ RPG_Engine::start()
   thread_handles[0] = 0;
   ACE_thread_t thread_ids[1];
   thread_ids[0] = 0;
-	const char* thread_names[1];
-	thread_names[0] = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_TASK_THREAD_NAME);
-	int result = inherited::activate((THR_NEW_LWP  |
-																		THR_JOINABLE |
-																		THR_INHERIT_SCHED),         // flags
-																	 1,                           // number of threads
-																	 0,                           // force spawning
-																	 ACE_DEFAULT_THREAD_PRIORITY, // priority
-																	 inherited::grp_id(),         // group id --> has been set (see above)
-																	 NULL,                        // corresp. task --> use 'this'
-																	 thread_handles,              // thread handle(s)
-																	 NULL,                        // thread stack(s)
-																	 NULL,                        // thread stack size(s)
-																	 thread_ids,                  // thread id(s)
-																	 thread_names);               // thread names(s)
-	if (result == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Task_Base::activate(): \"%m\", continuing\n")));
+  const char* thread_names[1];
+  thread_names[0] = ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_TASK_THREAD_NAME);
+  int result = inherited::activate ((THR_NEW_LWP |
+                                     THR_JOINABLE |
+                                     THR_INHERIT_SCHED),         // flags
+                                    1,                           // number of threads
+                                    0,                           // force spawning
+                                    ACE_DEFAULT_THREAD_PRIORITY, // priority
+                                    inherited::grp_id (),         // group id --> has been set (see above)
+                                    NULL,                        // corresp. task --> use 'this'
+                                    thread_handles,              // thread handle(s)
+                                    NULL,                        // thread stack(s)
+                                    NULL,                        // thread stack size(s)
+                                    thread_ids,                  // thread id(s)
+                                    thread_names);               // thread names(s)
+  if (result == -1)
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_Task_Base::activate(): \"%m\", continuing\n")));
   else
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("(%s) started worker thread (group: %d, id: %u)...\n"),
@@ -742,7 +743,7 @@ RPG_Engine::action(const RPG_Engine_EntityID_t& id_in,
                ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
                id_in));
 
-		// clean up
+    // clean up
     if (lockedAccess_in)
       myLock.release();
 

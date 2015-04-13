@@ -27,22 +27,21 @@
 #include "common.h"
 #include "common_istatistic.h"
 
+#include "stream_common.h"
 #include "stream_headmoduletask_base.h"
 #include "stream_statistichandler.h"
 #include "stream_streammodule_base.h"
 
-#include "net_stream_common.h"
-
 #include "rpg_net_protocol_defines.h"
-#include "rpg_net_protocol_common.h"
 #include "rpg_net_protocol_IRCbisect.h"
+#include "rpg_net_protocol_message.h"
+#include "rpg_net_protocol_sessionmessage.h"
+#include "rpg_net_protocol_stream_common.h"
 
 // forward declaration(s)
 class Stream_IAllocator;
 //typedef void* yyscan_t;
 typedef struct yy_buffer_state* YY_BUFFER_STATE;
-class RPG_Net_Protocol_SessionMessage;
-class RPG_Net_Protocol_Message;
 
 class RPG_Net_Protocol_Module_IRCSplitter
  : public Stream_HeadModuleTaskBase_T<ACE_MT_SYNCH,
@@ -100,7 +99,7 @@ class RPG_Net_Protocol_Module_IRCSplitter
 
   // convenience types
   typedef Stream_StatisticHandler_Reactor_T<RPG_Net_Protocol_RuntimeStatistic> STATISTICHANDLER_T;
-  typedef Net_StreamSessionData_t SESSIONDATA_T;
+  //typedef RPG_Net_Protocol_SessionData SESSIONDATA_T;
 
   // helper methods
   bool putStatisticsMessage (const RPG_Net_Protocol_RuntimeStatistic&, // statistics info

@@ -30,8 +30,6 @@
 #include "rpg_common_macros.h"
 
 #include "rpg_net_protocol_defines.h"
-#include "rpg_net_protocol_message.h"
-#include "rpg_net_protocol_sessionmessage.h"
 
 RPG_Net_Protocol_Module_IRCSplitter::RPG_Net_Protocol_Module_IRCSplitter ()
  : inherited (false, // inactive by default

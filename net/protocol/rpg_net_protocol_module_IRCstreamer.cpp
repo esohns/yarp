@@ -24,8 +24,6 @@
 #include "rpg_common_macros.h"
 
 #include "rpg_net_protocol_defines.h"
-#include "rpg_net_protocol_message.h"
-#include "rpg_net_protocol_sessionmessage.h"
 #include "rpg_net_protocol_tools.h"
 
 RPG_Net_Protocol_Module_IRCStreamer::RPG_Net_Protocol_Module_IRCStreamer ()

@@ -19,63 +19,65 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-// *NOTE*: workaround quirky MSVC...
+// *NOTE*: work around quirky MSVC...
 #ifdef _MSC_VER
 #define NOMINMAX
 #endif
 
-// *NOTE*: need this to import correct VERSION !
+#include <iostream>
+#include <set>
+#include <sstream>
+#include <string>
+
+#include "ace/ACE.h"
+#include "ace/Get_Opt.h"
+#include "ace/High_Res_Timer.h"
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
+#include "ace/Log_Msg.h"
+
+#include "common_file_tools.h"
+#include "common_tools.h"
+
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
 #endif
 
-#include "map_generator_defines.h"
-
-#include "rpg_graphics_common_tools.h"
-
-#include "rpg_engine_defines.h"
-#include "rpg_engine_common.h"
-#include "rpg_engine_common_tools.h"
-
-#include "rpg_map_defines.h"
-#include "rpg_map_common_tools.h"
-
 #include "rpg_dice.h"
 #include "rpg_dice_common_tools.h"
 
+#include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
 #include "rpg_common_tools.h"
-#include "rpg_common_file_tools.h"
 
-#include "ace/ACE.h"
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-#include "ace/Init_ACE.h"
-#endif
-#include "ace/Log_Msg.h"
-#include "ace/Get_Opt.h"
-#include "ace/High_Res_Timer.h"
+#include "rpg_map_common_tools.h"
+#include "rpg_map_defines.h"
 
-#include <string>
-#include <set>
-#include <sstream>
-#include <iostream>
+#include "rpg_engine_common.h"
+#include "rpg_engine_common_tools.h"
+#include "rpg_engine_defines.h"
+
+#include "rpg_graphics_common_tools.h"
+
+#include "map_generator_defines.h"
 
 typedef std::set<char> Map_Generator_Options_t;
 typedef Map_Generator_Options_t::const_iterator Map_Generator_OptionsIterator_t;
 
 void
-do_printUsage(const std::string& programName_in)
+do_printUsage (const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_printUsage"));
+  RPG_TRACE (ACE_TEXT ("::do_printUsage"));
 
   // enable verbatim boolean output
-  std::cout.setf(ios::boolalpha);
+  std::cout.setf (ios::boolalpha);
 
   std::string data_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           false);
-#if defined(DEBUG_DEBUGGER)
-  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          false);
+#if defined (DEBUG_DEBUGGER)
+  data_path = Common_File_Tools::getWorkingDirectory ();
 #endif
 
   std::cout << ACE_TEXT("usage: ")
@@ -189,10 +191,10 @@ do_processArguments(const int argc_in,
   RPG_TRACE(ACE_TEXT("::do_processArguments"));
 
   std::string data_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           false);
-#if defined(DEBUG_DEBUGGER)
-  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          false);
+#if defined (DEBUG_DEBUGGER)
+  data_path = Common_File_Tools::getWorkingDirectory ();
 #endif
 
   // init results
@@ -204,7 +206,7 @@ do_processArguments(const int argc_in,
 
   outputFile_out          = data_path;
   outputFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   outputFile_out += ACE_TEXT_ALWAYS_CHAR("map");
   outputFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   outputFile_out += ACE_TEXT_ALWAYS_CHAR("data");
@@ -376,19 +378,19 @@ do_processArguments(const int argc_in,
 }
 
 void
-do_work(const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
-        const bool& generateLevel_in,
-        const std::string& outputFile_in,
-        const bool& dump_in,
-        const bool& random_in)
+do_work (const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
+         bool generateLevel_in,
+         const std::string& outputFile_in,
+         bool dump_in,
+         bool random_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_work"));
+  RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step1: init: random seed, string conversion facilities, ...
-  RPG_Dice::init();
-  RPG_Dice_Common_Tools::initStringConversionTables();
-  RPG_Common_Tools::initStringConversionTables();
-  RPG_Graphics_Common_Tools::preInit();
+  RPG_Dice::init ();
+  RPG_Dice_Common_Tools::initStringConversionTables ();
+  RPG_Common_Tools::initStringConversionTables ();
+  RPG_Graphics_Common_Tools::preInit ();
 
   // step2: generate level data
   RPG_Engine_Level_t level;
@@ -482,9 +484,9 @@ do_work(const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
 } // end do_work
 
 void
-do_printVersion(const std::string& programName_in)
+do_printVersion (const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_printVersion"));
+  RPG_TRACE (ACE_TEXT ("::do_printVersion"));
 
   std::cout << programName_in
 #ifdef HAVE_CONFIG_H
@@ -538,27 +540,26 @@ do_printVersion(const std::string& programName_in)
 }
 
 int
-ACE_TMAIN(int argc_in,
-          ACE_TCHAR* argv_in[])
+ACE_TMAIN (int argc_in,
+           ACE_TCHAR* argv_in[])
 {
-  RPG_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE (ACE_TEXT ("::main"));
 
-	// *PORTABILITY*: on Windows, need to init ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-	if (ACE::init() == -1)
-	{
-		ACE_DEBUG((LM_ERROR,
-			         ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
-
+  // *PORTABILITY*: on Windows, need to init ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::init () == -1)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
-	} // end IF
+  } // end IF
 #endif
 
   std::string data_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           false);
-#if defined(DEBUG_DEBUGGER)
-  data_path = RPG_Common_File_Tools::getWorkingDirectory();
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          false);
+#if defined (DEBUG_DEBUGGER)
+  data_path = Common_File_Tools::getWorkingDirectory ();
 #endif
 
   // step1: init
@@ -578,7 +579,7 @@ ACE_TMAIN(int argc_in,
 
   std::string output_file         = data_path;
   output_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   output_file += ACE_TEXT_ALWAYS_CHAR("map");
   output_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   output_file += ACE_TEXT_ALWAYS_CHAR("data");
@@ -624,11 +625,11 @@ ACE_TMAIN(int argc_in,
     // make 'em learn...
     do_printUsage(std::string(ACE::basename(argv_in[0])));
 
-		// *PORTABILITY*: on Windows, need to fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-			           ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -676,11 +677,11 @@ ACE_TMAIN(int argc_in,
     // make 'em learn...
     do_printUsage(std::string(ACE::basename(argv_in[0])));
 
-		// *PORTABILITY*: on Windows, need to fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-			           ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -688,21 +689,21 @@ ACE_TMAIN(int argc_in,
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
-  if (!RPG_Common_Tools::initLogging(ACE::basename(argv_in[0]),   // program name
-                                     log_file,                    // logfile
-                                     false,                       // log to syslog ?
-                                     false,                       // trace messages ?
-                                     trace_information,           // debug messages ?
-                                     NULL))                       // logger
+  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]),   // program name
+                                        log_file,                    // logfile
+                                        false,                       // log to syslog ?
+                                        false,                       // trace messages ?
+                                        trace_information,           // debug messages ?
+                                        NULL))                       // logger
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_Tools::initLogging(), aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -714,10 +715,10 @@ ACE_TMAIN(int argc_in,
     do_printVersion(std::string(ACE::basename(argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_SUCCESS;
@@ -747,12 +748,11 @@ ACE_TMAIN(int argc_in,
              ACE_TEXT(working_time_string.c_str())));
 
   // *PORTABILITY*: on Windows, fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-  if (ACE::fini() == -1)
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::fini () == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
 #endif

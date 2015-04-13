@@ -23,10 +23,6 @@
 
 #include <string>
 
-#include "rpg_net_protocol_common_modules.h"
-#include "rpg_net_protocol_message.h"
-#include "rpg_net_protocol_sessionmessage.h"
-
 RPG_Net_Protocol_Stream::RPG_Net_Protocol_Stream ()
  : inherited ()
  , myIRCMarshal (std::string ("IRCMarshal"),
@@ -67,7 +63,10 @@ RPG_Net_Protocol_Stream::~RPG_Net_Protocol_Stream ()
 }
 
 bool
-RPG_Net_Protocol_Stream::initialize (const RPG_Net_Protocol_Configuration& configuration_in)
+RPG_Net_Protocol_Stream::initialize (unsigned int sessionID_in,
+                                     const Stream_Configuration_t& streamConfiguration_in,
+                                     const RPG_Net_Protocol_ProtocolConfiguration& protocolConfiguration_in,
+                                     const RPG_Net_Protocol_SessionData& sessionData_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Stream::initialize"));
 
@@ -85,8 +84,8 @@ RPG_Net_Protocol_Stream::initialize (const RPG_Net_Protocol_Configuration& confi
                 ACE_TEXT ("dynamic_cast<RPG_Net_Module_RuntimeStatistic> failed, aborting\n")));
     return false;
   } // end IF
-  if (!runtimeStatistic_impl->initialize (configuration_in.statisticReportingInterval,
-                                          configuration_in.messageAllocator))
+  if (!runtimeStatistic_impl->initialize (streamConfiguration_in.statisticReportingInterval,
+                                          streamConfiguration_in.messageAllocator))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to initialize module: \"%s\", aborting\n"),
@@ -142,10 +141,10 @@ RPG_Net_Protocol_Stream::initialize (const RPG_Net_Protocol_Configuration& confi
                 ACE_TEXT ("dynamic_cast<RPG_Net_Protocol_Module_IRCParser) failed> (aborting\n")));
     return false;
   } // end IF
-  if (!IRCParser_impl->initialize (configuration_in.messageAllocator,     // message allocator
-                                   configuration_in.crunchMessageBuffers, // "crunch" messages ?
-                                   configuration_in.debugScanner,         // debug scanner ?
-                                   configuration_in.debugParser))         // debug parser ?
+  if (!IRCParser_impl->initialize (streamConfiguration_in.messageAllocator,                           // message allocator
+                                   protocolConfiguration_in.streamConfiguration.crunchMessageBuffers, // "crunch" messages ?
+                                   protocolConfiguration_in.streamConfiguration.debugScanner,         // debug scanner ?
+                                   protocolConfiguration_in.streamConfiguration.debugParser))         // debug parser ?
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to initialize module: \"%s\", aborting\n"),
@@ -172,10 +171,10 @@ RPG_Net_Protocol_Stream::initialize (const RPG_Net_Protocol_Configuration& confi
                 ACE_TEXT ("dynamic_cast<RPG_Net_Protocol_Module_IRCSplitter> failed, aborting\n")));
     return false;
   } // end IF
-  if (!IRCSplitter_impl->initialize (configuration_in.messageAllocator, // message allocator
-                                     false,                             // "crunch" messages ?
-                                     0,                                 // DON'T collect statistics
-                                     configuration_in.debugScanner))    // debug scanning ?
+  if (!IRCSplitter_impl->initialize (streamConfiguration_in.messageAllocator,                    // message allocator
+                                     false,                                                      // "crunch" messages ?
+                                     0,                                                          // DON'T collect statistics
+                                     protocolConfiguration_in.streamConfiguration.debugScanner)) // debug scanning ?
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to initialize module: \"%s\", aborting\n"),
@@ -186,7 +185,7 @@ RPG_Net_Protocol_Stream::initialize (const RPG_Net_Protocol_Configuration& confi
   // enqueue the module...
   // *NOTE*: push()ing the module will open() it
   // --> set the argument that is passed along
-  myIRCMarshal.arg (&const_cast<RPG_Net_Protocol_Configuration&> (configuration_in));
+  myIRCMarshal.arg (&const_cast<RPG_Net_Protocol_SessionData&> (sessionData_in));
   if (inherited::push (&myIRCMarshal))
   {
     ACE_DEBUG ((LM_ERROR,
@@ -197,8 +196,8 @@ RPG_Net_Protocol_Stream::initialize (const RPG_Net_Protocol_Configuration& confi
 
   // set (session) message allocator
   // *TODO*: clean this up ! --> sanity check
-  ACE_ASSERT (configuration_in.messageAllocator);
-  inherited::allocator_ = configuration_in.messageAllocator;
+  ACE_ASSERT (streamConfiguration_in.messageAllocator);
+  inherited::allocator_ = streamConfiguration_in.messageAllocator;
 
 //   // debug info
 //   inherited::dump_state();
@@ -247,4 +246,56 @@ RPG_Net_Protocol_Stream::report () const
   ACE_ASSERT (false);
 
   ACE_NOTREACHED (return;)
+}
+
+void
+RPG_Net_Protocol_Stream::ping ()
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Stream::ping"));
+
+  // delegate to the head module, skip over ACE_Stream_Head...
+  MODULE_T* module_p = inherited::head ();
+  if (!module_p)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("no head module found, returning\n")));
+    return;
+  } // end IF
+  module_p = module_p->next ();
+  if (!module_p)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("no head module found, returning\n")));
+    return;
+  } // end IF
+
+  // sanity check: head == tail ? --> no modules have been push()ed (yet) !
+  if (module_p == inherited::tail ())
+  {
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("no modules have been enqueued yet --> nothing to do !, returning\n")));
+    return;
+  } // end IF
+
+  ISTREAM_CONTROL_T* control_impl = NULL;
+  control_impl = dynamic_cast<ISTREAM_CONTROL_T*> (module_p->writer ());
+  if (!control_impl)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("%s: dynamic_cast<Stream_IStreamControl> failed, returning\n"),
+                ACE_TEXT (module_p->name ())));
+    return;
+  } // end IF
+
+  try
+  {
+    control_impl->stop ();
+  }
+  catch (...)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("caught exception in Stream_IStreamControl::stop (module: \"%s\"), returning\n"),
+                ACE_TEXT (module_p->name ())));
+    return;
+  }
 }

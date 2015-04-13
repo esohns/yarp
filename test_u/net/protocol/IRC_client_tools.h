@@ -21,34 +21,34 @@
 #ifndef IRC_CLIENT_TOOLS_H
 #define IRC_CLIENT_TOOLS_H
 
+#include <string>
+
+#include "ace/Global_Macros.h"
+
+#include "common.h"
+
 #include "rpg_net_protocol_common.h"
 
-#include <gtk/gtk.h>
-
-#include <ace/Global_Macros.h>
-
 // forward declaration(s)
-class RPG_Stream_IAllocator;
-class RPG_Stream_Module;
+class Stream_IAllocator;
 
 class IRC_Client_Tools
 {
  public:
-  static bool connect(RPG_Stream_IAllocator*,                  // message allocator
-                      const RPG_Net_Protocol_IRCLoginOptions&, // login options
-                      const bool&,                             // debug scanner ?
-                      const bool&,                             // debug parser ?
-                      const unsigned int&,                     // statistics reporting interval (0: OFF)
-                      const std::string&,                      // hostname
-                      const unsigned short&,                   // port
-                      MODULE_TYPE*);                           // final module
+  static bool connect (Stream_IAllocator*,                      // message allocator
+                       const RPG_Net_Protocol_IRCLoginOptions&, // login options
+                       bool,                                    // debug scanner ?
+                       bool,                                    // debug parser ?
+                       unsigned int,                            // statistics reporting interval (0: OFF)
+                       const std::string&,                      // hostname
+                       unsigned short,                          // port
+                       Common_Module_t*);                       // final module
 
  private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(IRC_Client_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~IRC_Client_Tools());
-  ACE_UNIMPLEMENTED_FUNC(IRC_Client_Tools(const IRC_Client_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(IRC_Client_Tools& operator=(const IRC_Client_Tools&));
+  ACE_UNIMPLEMENTED_FUNC (IRC_Client_Tools ());
+  ACE_UNIMPLEMENTED_FUNC (~IRC_Client_Tools ());
+  ACE_UNIMPLEMENTED_FUNC (IRC_Client_Tools (const IRC_Client_Tools&));
+  ACE_UNIMPLEMENTED_FUNC (IRC_Client_Tools& operator=(const IRC_Client_Tools&));
 };
 
 #endif

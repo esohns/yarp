@@ -31,8 +31,6 @@
 #include "rpg_common_macros.h"
 
 #include "rpg_net_protocol_defines.h"
-#include "rpg_net_protocol_message.h"
-#include "rpg_net_protocol_sessionmessage.h"
 #include "rpg_net_protocol_tools.h"
 
 RPG_Net_Protocol_Module_IRCHandler::RPG_Net_Protocol_Module_IRCHandler ()
@@ -739,7 +737,7 @@ RPG_Net_Protocol_Module_IRCHandler::registerConnection (const RPG_Net_Protocol_I
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::subscribe (RPG_Net_Protocol_INotification_t* dataCallback_in)
+RPG_Net_Protocol_Module_IRCHandler::subscribe (RPG_Net_Protocol_INotify_t* dataCallback_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::subscribe"));
 
@@ -753,7 +751,7 @@ RPG_Net_Protocol_Module_IRCHandler::subscribe (RPG_Net_Protocol_INotification_t*
 }
 
 void
-RPG_Net_Protocol_Module_IRCHandler::unsubscribe (RPG_Net_Protocol_INotification_t* dataCallback_in)
+RPG_Net_Protocol_Module_IRCHandler::unsubscribe (RPG_Net_Protocol_INotify_t* dataCallback_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCHandler::unsubscribe"));
 

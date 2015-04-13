@@ -43,9 +43,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IntDir>$(SolutionDir)$(Configuration)_obj\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IntDir>$(SolutionDir)$(Configuration)_obj\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -56,6 +58,7 @@
       <PreprocessorDefinitions>RPG_NET_BUILD_DLL;WIN32;_DEBUG;_WINDOWS;_USRDLL;NET_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\modules\libACEStream\src;$(ProjectDir)..\..\modules\libACENetwork\src;$(ProjectDir)..\..\common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -73,6 +76,7 @@
       <PreprocessorDefinitions>RPG_NET_BUILD_DLL;WIN32;NDEBUG;_WINDOWS;_USRDLL;NET_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\modules\libACEStream\src;$(ProjectDir)..\..\modules\libACENetwork\src;$(ProjectDir)..\..\common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -83,6 +87,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\net\rpg_net_common_tools.cpp" />
+    <ClCompile Include="..\..\net\rpg_net_eventhandler.cpp" />
     <ClCompile Include="..\..\net\rpg_net_module_eventhandler.cpp" />
     <ClCompile Include="..\..\net\rpg_net_module_protocolhandler.cpp" />
     <ClCompile Include="..\..\net\rpg_net_stream_messageallocator.cpp" />
@@ -91,6 +96,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\net\rpg_net_common_tools.h" />
     <ClInclude Include="..\..\net\rpg_net_defines.h" />
+    <ClInclude Include="..\..\net\rpg_net_eventhandler.h" />
     <ClInclude Include="..\..\net\rpg_net_exports.h" />
     <ClInclude Include="..\..\net\rpg_net_module_eventhandler.h" />
     <ClInclude Include="..\..\net\rpg_net_module_protocolhandler.h" />

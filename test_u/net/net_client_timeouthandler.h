@@ -21,14 +21,14 @@
 #ifndef NET_CLIENT_TIMEOUTHANDLER_H
 #define NET_CLIENT_TIMEOUTHANDLER_H
 
-#include "rpg_net_client_iconnector.h"
-
-#include "ace/Global_Macros.h"
-#include "ace/Event_Handler.h"
-#include "ace/Time_Value.h"
-#include "ace/INET_Addr.h"
-
 #include <string>
+
+#include "ace/Event_Handler.h"
+#include "ace/Global_Macros.h"
+#include "ace/INET_Addr.h"
+#include "ace/Time_Value.h"
+
+#include "net_client_common.h"
 
 class Net_Client_TimeoutHandler
  : public ACE_Event_Handler
@@ -55,28 +55,28 @@ class Net_Client_TimeoutHandler
     ALTERNATING_INVALID = -1
   };
 
-  Net_Client_TimeoutHandler(ActionMode_t,                // mode
-                            unsigned int,                // max #connections
-                            const ACE_INET_Addr&,        // remote SAP
-                            RPG_Net_Client_IConnector*); // connector
-  virtual ~Net_Client_TimeoutHandler();
+  Net_Client_TimeoutHandler (ActionMode_t,            // mode
+                             unsigned int,            // max #connections
+                             const ACE_INET_Addr&,    // remote SAP
+                             Net_Client_IConnector*); // connector
+  virtual ~Net_Client_TimeoutHandler ();
 
   // implement specific behaviour
-  virtual int handle_timeout(const ACE_Time_Value&, // current time
-                             const void*);          // asynchronous completion token
+  virtual int handle_timeout (const ACE_Time_Value&, // current time
+                              const void*);          // asynchronous completion token
 
  private:
   typedef ACE_Event_Handler inherited;
 
-  ACE_UNIMPLEMENTED_FUNC(Net_Client_TimeoutHandler());
-  ACE_UNIMPLEMENTED_FUNC(Net_Client_TimeoutHandler(const Net_Client_TimeoutHandler&));
-  ACE_UNIMPLEMENTED_FUNC(Net_Client_TimeoutHandler& operator=(const Net_Client_TimeoutHandler&));
+  ACE_UNIMPLEMENTED_FUNC (Net_Client_TimeoutHandler ());
+  ACE_UNIMPLEMENTED_FUNC (Net_Client_TimeoutHandler (const Net_Client_TimeoutHandler&));
+  ACE_UNIMPLEMENTED_FUNC (Net_Client_TimeoutHandler& operator=(const Net_Client_TimeoutHandler&));
 
-  ActionMode_t               myMode;
-  AlternatingMode_t          myAlternatingMode;
-  unsigned int               myMaxNumConnections;
-  ACE_INET_Addr              myPeerAddress;
-  RPG_Net_Client_IConnector* myConnector;
+  ActionMode_t           myMode;
+  AlternatingMode_t      myAlternatingMode;
+  unsigned int           myMaxNumConnections;
+  ACE_INET_Addr          myPeerAddress;
+  Net_Client_IConnector* myConnector;
 };
 
 #endif

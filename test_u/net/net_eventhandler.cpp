@@ -21,50 +21,54 @@
 
 #include "net_eventhandler.h"
 
-#include "net_common.h"
+#include "ace/Synch.h"
+
+#include "stream_common.h"
+
+#include "net_message.h"
 
 #include "rpg_common_macros.h"
 
-Net_EventHandler::Net_EventHandler(Net_GTK_CBData_t* CBData_in)
- : myCBData(CBData_in)
-{
-  RPG_TRACE(ACE_TEXT("Net_EventHandler::Net_EventHandler"));
+#include "net_common.h"
 
-  // sanity check(s)
-  ACE_ASSERT(myCBData);
-}
-
-Net_EventHandler::~Net_EventHandler()
+Net_EventHandler::Net_EventHandler (Net_GTK_CBData_t* CBData_in)
+ : CBData_ (CBData_in)
 {
-  RPG_TRACE(ACE_TEXT("Net_EventHandler::~Net_EventHandler"));
+  RPG_TRACE (ACE_TEXT ("Net_EventHandler::Net_EventHandler"));
 
 }
 
-void
-Net_EventHandler::start()
+Net_EventHandler::~Net_EventHandler ()
 {
-  RPG_TRACE(ACE_TEXT("Net_EventHandler::start"));
+  RPG_TRACE (ACE_TEXT ("Net_EventHandler::~Net_EventHandler"));
 
-  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myCBData->lock);
-
-  myCBData->event_stack.push_back(NET_GTKEVENT_CONNECT);
 }
 
 void
-Net_EventHandler::notify(const RPG_Net_Message& message_in)
+Net_EventHandler::start (const Stream_ModuleConfiguration_t& configuration_in)
 {
-  RPG_TRACE(ACE_TEXT("Net_EventHandler::notify"));
+  RPG_TRACE (ACE_TEXT ("Net_EventHandler::start"));
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard (CBData_->GTKState.lock);
+
+  CBData_->eventStack.push_back (NET_GTKEVENT_CONNECT);
+}
+
+void
+Net_EventHandler::notify (const Net_Message& message_in)
+{
+  RPG_TRACE (ACE_TEXT ("Net_EventHandler::notify"));
 
   // *TODO*
-  ACE_UNUSED_ARG(message_in);
+  ACE_UNUSED_ARG (message_in);
 }
 
 void
-Net_EventHandler::end()
+Net_EventHandler::end ()
 {
-  RPG_TRACE(ACE_TEXT("Net_EventHandler::end"));
+  RPG_TRACE (ACE_TEXT ("Net_EventHandler::end"));
 
-  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(myCBData->lock);
+  ACE_Guard<ACE_Thread_Mutex> aGuard (CBData_->GTKState.lock);
 
-  myCBData->event_stack.push_back(NET_GTKEVENT_DISCONNECT);
+  CBData_->eventStack.push_back (NET_GTKEVENT_DISCONNECT);
 }

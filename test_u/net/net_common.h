@@ -18,27 +18,26 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef NET_COMMON_H
-#define NET_COMMON_H
-
-#include "rpg_client_common.h"
-
-#include "rpg_net_common.h"
-
-#include "glade/glade.h"
-#include "gtk/gtk.h"
-
-#include "ace/Synch.h"
+#ifndef TEST_U_NET_COMMON_H
+#define TEST_U_NET_COMMON_H
 
 #include <deque>
 #include <vector>
 
+#include "ace/Synch.h"
+
+#include "glade/glade.h"
+#include "gtk/gtk.h"
+
+#include "common_ui_common.h"
+
+#include "net_stream_common.h"
+
+#include "rpg_client_common.h"
+
 // forward declaration(s)
 class Net_Client_TimeoutHandler;
 class RPG_Net_Server_IListener;
-
-typedef std::vector<guint> Net_GTK_EventSourceIDs_t;
-typedef Net_GTK_EventSourceIDs_t::const_iterator Net_GTK_EventSourceIDsIterator_t;
 
 enum Net_GTK_Event_t
 {
@@ -54,27 +53,26 @@ typedef Net_GTK_Events_t::const_iterator Net_GTK_EventsIterator_t;
 
 struct Net_GTK_CBData_t
 {
- inline Net_GTK_CBData_t()
-  : lock(NULL, NULL),
-    xml(NULL),
-//    log_stack(),
-//    event_stack(),
-//    subscribers(),
-//    event_source_ids(),
-    timeout_handler(NULL),
-    timer_id(-1),
-    listener_handle(NULL)
+  inline Net_GTK_CBData_t ()
+   : GTKState ()
+   , logStack ()
+   , eventStack ()
+   , subscribers ()
+   , timeoutHandler (NULL)
+   , timerId (-1)
+   , listenerHandle (NULL)
+   , allowUserRuntimeStatistic (true)
  { };
 
- mutable ACE_Recursive_Thread_Mutex lock;
- GladeXML*                          xml;
- RPG_Client_MessageStack_t          log_stack;
- Net_GTK_Events_t                   event_stack;
- RPG_Net_NotifySubscribers_t        subscribers;
- Net_GTK_EventSourceIDs_t           event_source_ids;
- Net_Client_TimeoutHandler*         timeout_handler; // *NOTE*: client only !
- long                               timer_id;        // *NOTE*: client only !
- RPG_Net_Server_IListener*          listener_handle; // *NOTE*: server only !
+  Common_UI_GTKState         GTKState;
+  RPG_Client_MessageStack_t  logStack;
+  Net_GTK_Events_t           eventStack;
+  Net_Subscribers_t          subscribers;
+  ACE_Recursive_Thread_Mutex subscribersLock;
+  Net_Client_TimeoutHandler* timeoutHandler; // *NOTE*: client only !
+  long                       timerId;        // *NOTE*: client only !
+  RPG_Net_Server_IListener*  listenerHandle; // *NOTE*: server only !
+  bool                       allowUserRuntimeStatistic;
 };
 
 #endif

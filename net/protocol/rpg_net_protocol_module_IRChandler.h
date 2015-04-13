@@ -34,14 +34,14 @@
 #include "stream_streammodule_base.h"
 #include "stream_task_base_synch.h"
 
-//#include "rpg_net_protocol_common.h"
 #include "rpg_net_protocol_exports.h"
 #include "rpg_net_protocol_iIRCControl.h"
+#include "rpg_net_protocol_message.h"
+#include "rpg_net_protocol_sessionmessage.h"
+#include "rpg_net_protocol_stream_common.h"
 
 // forward declaration(s)
 class Stream_IAllocator;
-class RPG_Net_Protocol_SessionMessage;
-class RPG_Net_Protocol_Message;
 
 
 class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
@@ -67,8 +67,8 @@ class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
                                      bool&);                            // return value: pass message downstream ?
 
   // implement RPG_Net_Protocol_IIRCControl
-  virtual void subscribe (RPG_Net_Protocol_INotification_t*); // new subscriber
-  virtual void unsubscribe (RPG_Net_Protocol_INotification_t*); // existing subscriber
+  virtual void subscribe (RPG_Net_Protocol_INotify_t*); // new subscriber
+  virtual void unsubscribe (RPG_Net_Protocol_INotify_t*); // existing subscriber
   virtual void registerConnection (const RPG_Net_Protocol_IRCLoginOptions&); // login details
   virtual void nick (const std::string&); // nick
   virtual void quit (const std::string&); // reason
@@ -118,7 +118,7 @@ class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
   void sendMessage (RPG_Net_Protocol_IRCMessage*&); // command handle
 
   // convenient types
-  typedef std::list<RPG_Net_Protocol_INotification_t*> Subscribers_t;
+  typedef std::list<RPG_Net_Protocol_INotify_t*> Subscribers_t;
   typedef Subscribers_t::iterator SubscribersIterator_t;
 
   // lock to protect mySubscribers and myConnectionIsAlive (!)
@@ -144,9 +144,9 @@ class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
 };
 
 // declare module
-DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                        // task synch type
-                             Common_TimePolicy_t,                 // time policy
-                             Stream_ModuleConfiguration_t,        // configuration type
-                             RPG_Net_Protocol_Module_IRCHandler); // writer type
+DATASTREAM_MODULE_INPUT_ONLY (ACE_MT_SYNCH,                        // task synch type
+                              Common_TimePolicy_t,                 // time policy
+                              Stream_ModuleConfiguration_t,        // configuration type
+                              RPG_Net_Protocol_Module_IRCHandler); // writer type
 
 #endif

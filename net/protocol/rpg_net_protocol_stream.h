@@ -28,15 +28,14 @@
 
 #include "stream_base.h"
 
-#include "rpg_net_protocol_common.h"
 #include "rpg_net_protocol_common_modules.h"
+#include "rpg_net_protocol_configuration.h"
 #include "rpg_net_protocol_exports.h"
+#include "rpg_net_protocol_message.h"
 #include "rpg_net_protocol_module_IRCparser.h"
 #include "rpg_net_protocol_module_IRCsplitter.h"
 #include "rpg_net_protocol_module_IRCstreamer.h"
-
-// forward declaration(s)
-class RPG_Net_Protocol_Message;
+#include "rpg_net_protocol_sessionmessage.h"
 
 class RPG_Protocol_Export RPG_Net_Protocol_Stream
  : public Stream_Base_T<ACE_MT_SYNCH,
@@ -53,13 +52,19 @@ class RPG_Protocol_Export RPG_Net_Protocol_Stream
   virtual ~RPG_Net_Protocol_Stream ();
 
   // initialize stream
-  bool initialize (const RPG_Net_Protocol_Configuration&); // stream/module configuration
+  bool initialize (unsigned int,                                  // session ID
+                   const Stream_Configuration_t&,                 // stream configuration
+                   const RPG_Net_Protocol_ProtocolConfiguration&, // protocol configuration
+                   const RPG_Net_Protocol_SessionData&);          // session data
 
   // implement Common_IStatistic_T
   // *NOTE*: delegate this to myRuntimeStatistic
   virtual bool collect (RPG_Net_Protocol_RuntimeStatistic&); // return value: statistic data
   // this is just a dummy (use statisticsReportingInterval instead)
   virtual void report () const;
+
+  // *TODO*: re-consider this API
+  void ping ();
 
  private:
   typedef Stream_Base_T<ACE_MT_SYNCH,
@@ -76,7 +81,8 @@ class RPG_Protocol_Export RPG_Net_Protocol_Stream
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Stream& operator=(const RPG_Net_Protocol_Stream&));
 
   // fini stream
-  // *NOTE*: need this to clean up queued modules if something goes wrong during init() !
+  // *NOTE*: need this to clean up queued modules if something goes wrong
+  //         during initialize () !
   bool finalize (const RPG_Net_Protocol_Configuration&); // configuration
 
   // modules

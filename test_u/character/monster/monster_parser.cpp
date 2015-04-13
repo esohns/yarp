@@ -25,96 +25,97 @@
 #include <string>
 
 #include "ace/ACE.h"
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#include "ace/Get_Opt.h"
+#include "ace/High_Res_Timer.h"
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
 #include "ace/Init_ACE.h"
 #endif
 #include "ace/Log_Msg.h"
-#include "ace/Get_Opt.h"
-#include "ace/High_Res_Timer.h"
 
 #include "common_file_tools.h"
+#include "common_tools.h"
 
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
 #endif
 
-#include "rpg_common_defines.h"
-#include "rpg_common_macros.h"
-#include "rpg_common_tools.h"
-#include "rpg_common_file_tools.h"
-
 #include "rpg_dice.h"
 #include "rpg_dice_common_tools.h"
+
+#include "rpg_common_defines.h"
+#include "rpg_common_file_tools.h"
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
 
 #include "rpg_item_common_tools.h"
 
 #include "rpg_magic_common_tools.h"
 
-#include "rpg_character_defines.h"
 #include "rpg_character_common_tools.h"
+#include "rpg_character_defines.h"
 #include "rpg_character_skills_common_tools.h"
 
 #include "rpg_combat_common_tools.h"
 
+#include "rpg_monster_common_tools.h"
 #include "rpg_monster_defines.h"
 #include "rpg_monster_dictionary.h"
-#include "rpg_monster_common_tools.h"
 
 void
-do_printUsage(const std::string& programName_in)
+do_printUsage (const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_printUsage"));
+  RPG_TRACE (ACE_TEXT ("::do_printUsage"));
 
   std::string configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           true);
-#if defined(DEBUG_DEBUGGER)
-  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory();
 #endif
 
-  std::cout << ACE_TEXT("usage: ")
+  std::cout << ACE_TEXT ("usage: ")
             << programName_in
-            << ACE_TEXT(" [OPTIONS]")
+            << ACE_TEXT (" [OPTIONS]")
             << std::endl
             << std::endl;
-  std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-d       : dump dictionary") << std::endl;
+  std::cout << ACE_TEXT ("currently available options:") << std::endl;
+  std::cout << ACE_TEXT ("-d       : dump dictionary") << std::endl;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   path += ACE_TEXT_ALWAYS_CHAR("character");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR("monster");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-m [FILE]: monster dictionary (*.xml)")
-            << ACE_TEXT(" [\"")
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_DICTIONARY_FILE);
+  std::cout << ACE_TEXT ("-m [FILE]: monster dictionary (*.xml)")
+            << ACE_TEXT (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT("-t       : trace information") << std::endl;
-  std::cout << ACE_TEXT("-v       : print version information and exit")
+  std::cout << ACE_TEXT ("-t       : trace information") << std::endl;
+  std::cout << ACE_TEXT ("-v       : print version information and exit")
             << std::endl;
-  std::cout << ACE_TEXT("-x       : do NOT validate XML") << std::endl;
+  std::cout << ACE_TEXT ("-x       : do NOT validate XML") << std::endl;
 }
 
 bool
-do_processArguments(const int& argc_in,
-                    ACE_TCHAR** argv_in, // cannot be const...
-                    bool& dumpDictionary_out,
-                    std::string& monsterDictionaryFilename_out,
-                    bool& traceInformation_out,
-                    bool& printVersionAndExit_out,
-                    bool& validateXML_out)
+do_processArguments (const int& argc_in,
+                     ACE_TCHAR** argv_in, // cannot be const...
+                     bool& dumpDictionary_out,
+                     std::string& monsterDictionaryFilename_out,
+                     bool& traceInformation_out,
+                     bool& printVersionAndExit_out,
+                     bool& validateXML_out)
 {
-  RPG_TRACE(ACE_TEXT("::do_processArguments"));
+  RPG_TRACE (ACE_TEXT ("::do_processArguments"));
 
   std::string configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           true);
-#if defined(DEBUG_DEBUGGER)
-  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory();
 #endif
 
   // init results
@@ -122,14 +123,14 @@ do_processArguments(const int& argc_in,
 
   monsterDictionaryFilename_out = configuration_path;
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR("character");
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR("monster");
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   monsterDictionaryFilename_out +=
-      ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DICTIONARY_FILE);
+    ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_DICTIONARY_FILE);
 
   traceInformation_out          = false;
   printVersionAndExit_out       = false;
@@ -198,48 +199,47 @@ do_processArguments(const int& argc_in,
 }
 
 void
-do_work(const std::string& filename_in,
-        const bool& validateXML_in,
-        const bool& dumpDictionary_in)
+do_work (const std::string& filename_in,
+         bool validateXML_in,
+         bool dumpDictionary_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_work"));
+  RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step1: init: random seed, string conversion facilities, ...
-  RPG_Dice::init();
-  RPG_Dice_Common_Tools::initStringConversionTables();
-  RPG_Common_Tools::initStringConversionTables();
-  RPG_Item_Common_Tools::initStringConversionTables();
-  RPG_Character_Common_Tools::init();
-  RPG_Magic_Common_Tools::init();
-  RPG_Combat_Common_Tools::initStringConversionTables();
-  RPG_Monster_Common_Tools::initStringConversionTables();
+  RPG_Dice::init ();
+  RPG_Dice_Common_Tools::initStringConversionTables ();
+  RPG_Common_Tools::initStringConversionTables ();
+  RPG_Item_Common_Tools::initStringConversionTables ();
+  RPG_Character_Common_Tools::init ();
+  RPG_Magic_Common_Tools::init ();
+  RPG_Combat_Common_Tools::initStringConversionTables ();
+  RPG_Monster_Common_Tools::initStringConversionTables ();
 
   // step2: init monster dictionary
   try
   {
-    RPG_MONSTER_DICTIONARY_SINGLETON::instance()->init(filename_in,
-                                                       validateXML_in);
+    RPG_MONSTER_DICTIONARY_SINGLETON::instance ()->init (filename_in,
+                                                         validateXML_in);
   }
   catch (...)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Character_Monster_Dictionary::init(), returning\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("caught exception in RPG_Character_Monster_Dictionary::init(), returning\n")));
     return;
   }
 
   // step3: dump monster descriptions
   if (dumpDictionary_in)
-    RPG_MONSTER_DICTIONARY_SINGLETON::instance()->dump();
+    RPG_MONSTER_DICTIONARY_SINGLETON::instance ()->dump ();
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished working...\n")));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("finished working...\n")));
 } // end do_work
 
 void
-do_printVersion(const std::string& programName_in)
+do_printVersion (const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_printVersion"));
+  RPG_TRACE (ACE_TEXT ("::do_printVersion"));
 
   std::cout << programName_in
 #ifdef HAVE_CONFIG_H
@@ -253,15 +253,14 @@ do_printVersion(const std::string& programName_in)
   // version number... Need this, as the library soname is compared to this
   // string
   std::ostringstream version_number;
-  if (version_number << ACE::major_version())
+  if (version_number << ACE::major_version ())
   {
-    version_number << ACE_TEXT(".");
+    version_number << ACE_TEXT (".");
   } // end IF
   else
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%m\", returning\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to convert: \"%m\", returning\n")));
     return;
   } // end ELSE
   if (version_number << ACE::minor_version())
@@ -274,105 +273,102 @@ do_printVersion(const std::string& programName_in)
     } // end IF
     else
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to convert: \"%m\", returning\n")));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to convert: \"%m\", returning\n")));
       return;
     } // end ELSE
   } // end IF
   else
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%m\", returning\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to convert: \"%m\", returning\n")));
     return;
   } // end ELSE
-  std::cout << ACE_TEXT("ACE: ") << version_number.str() << std::endl;
+  std::cout << ACE_TEXT ("ACE: ") << version_number.str () << std::endl;
 //   std::cout << "ACE: "
 //             << ACE_VERSION
 //             << std::endl;
 }
 
 int
-ACE_TMAIN(int argc_in,
-          ACE_TCHAR** argv_in)
+ACE_TMAIN (int argc_in,
+           ACE_TCHAR** argv_in)
 {
-  RPG_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE (ACE_TEXT ("::main"));
 
   // *PORTABILITY*: on Windows, need to init ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-	if (ACE::init() == -1)
-	{
-		ACE_DEBUG((LM_ERROR,
-							 ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
-
-		return EXIT_FAILURE;
-	} // end IF
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::init () == -1)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
+    return EXIT_FAILURE;
+  } // end IF
 #endif
 
   // step1: init
   // step1a set defaults
   std::string configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           true);
-#if defined(DEBUG_DEBUGGER)
-  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory();
 #endif
 
   bool dump_dictionary                    = false;
 
   std::string monster_dictionary_filename = configuration_path;
   monster_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
+#if defined (DEBUG_DEBUGGER)
   monster_dictionary_filename += ACE_TEXT_ALWAYS_CHAR("character");
   monster_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monster_dictionary_filename += ACE_TEXT_ALWAYS_CHAR("monster");
   monster_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   monster_dictionary_filename +=
-      ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DICTIONARY_FILE);
+    ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_DICTIONARY_FILE);
 
   bool trace_information                  = false;
   bool print_version_and_exit             = false;
   bool validate_XML                       = true;
 
   // step1b: parse/process/validate configuration
-  if (!do_processArguments(argc_in,
-                           argv_in,
-                           dump_dictionary,
-                           monster_dictionary_filename,
-                           trace_information,
-                           print_version_and_exit,
-                           validate_XML))
+  if (!do_processArguments (argc_in,
+                            argv_in,
+                            dump_dictionary,
+                            monster_dictionary_filename,
+                            trace_information,
+                            print_version_and_exit,
+                            validate_XML))
   {
     // make 'em learn...
-    do_printUsage(std::string(ACE::basename(argv_in[0])));
+    do_printUsage (std::string (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;
   } // end IF
 
   // step1b: validate arguments
-  if (!Common_File_Tools::isReadable(monster_dictionary_filename))
+  if (!Common_File_Tools::isReadable (monster_dictionary_filename))
   {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("invalid (XML) filename \"%s\", aborting\n"),
-               ACE_TEXT(monster_dictionary_filename.c_str())));
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("invalid (XML) filename \"%s\", aborting\n"),
+                ACE_TEXT (monster_dictionary_filename.c_str ())));
 
     // make 'em learn...
-    do_printUsage(std::string(ACE::basename(argv_in[0])));
+    do_printUsage (std::string (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -380,21 +376,21 @@ ACE_TMAIN(int argc_in,
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
-  if (!RPG_Common_Tools::initLogging(ACE::basename(argv_in[0]),   // program name
-                                     log_file,                    // logfile
-                                     false,                       // log to syslog ?
-                                     false,                       // trace messages ?
-                                     trace_information,           // debug messages ?
-                                     NULL))                       // logger
+  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]),   // program name
+                                        log_file,                    // logfile
+                                        false,                       // log to syslog ?
+                                        false,                       // trace messages ?
+                                        trace_information,           // debug messages ?
+                                        NULL))                       // logger
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_Tools::initLogging(), aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Common_Tools::initLogging(), aborting\n")));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -403,27 +399,27 @@ ACE_TMAIN(int argc_in,
   // step1d: handle specific program modes
   if (print_version_and_exit)
   {
-    do_printVersion(std::string(ACE::basename(argv_in[0])));
+    do_printVersion (std::string (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-		if (ACE::fini() == -1)
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_SUCCESS;
   } // end IF
 
   ACE_High_Res_Timer timer;
-  timer.start();
+  timer.start ();
 
   // step2: do actual work
-  do_work(monster_dictionary_filename,
-          validate_XML,
-          dump_dictionary);
+  do_work (monster_dictionary_filename,
+           validate_XML,
+           dump_dictionary);
 
-  timer.stop();
+  timer.stop ();
 
 //   // debug info
 //   std::string working_time_string;
@@ -437,16 +433,14 @@ ACE_TMAIN(int argc_in,
 //              ACE_TEXT(working_time_string.c_str())));
 
   // *PORTABILITY*: on Windows, fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-  if (ACE::fini() == -1)
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::fini () == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
 #endif
-
 
   return EXIT_SUCCESS;
 } // end main

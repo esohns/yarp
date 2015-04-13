@@ -27,12 +27,10 @@
 
 #include "rpg_net_protocol_common.h"
 #include "rpg_net_protocol_IRCmessage.h"
-
-// forward declaration(s)
-struct RPG_Net_Protocol_IRCLoginOptions;
+#include "rpg_net_protocol_stream_common.h"
 
 class RPG_Net_Protocol_IIRCControl
- : public Common_ISubscribe_T<RPG_Net_Protocol_INotification_t>
+ : public Common_ISubscribe_T<RPG_Net_Protocol_INotify_t>
 {
  public:
   // API

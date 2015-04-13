@@ -21,52 +21,49 @@
 
 #include "net_client_timeouthandler.h"
 
-#include "ace/Event_Handler.h"
+#include "net_defines.h"
+#include "net_common.h"
+#include "net_connection_manager_common.h"
 
 #include "rpg_dice.h"
 
-#include "rpg_net_connection_manager_common.h"
-
-#include "net_defines.h"
-#include "net_common.h"
-
-Net_Client_TimeoutHandler::Net_Client_TimeoutHandler(ActionMode_t mode_in,
-                                                     unsigned int maxNumConnections_in,
-                                                     const ACE_INET_Addr& remoteSAP_in,
-                                                     RPG_Net_Client_IConnector* connector_in)
- : inherited(NULL,                            // default reactor
-             ACE_Event_Handler::LO_PRIORITY), // priority
-   myMode(mode_in),
-	 myAlternatingMode(ALTERNATING_CONNECT),
-   myMaxNumConnections(maxNumConnections_in),
-   myPeerAddress(remoteSAP_in),
-   myConnector(connector_in)
+Net_Client_TimeoutHandler::Net_Client_TimeoutHandler (ActionMode_t mode_in,
+                                                      unsigned int maxNumConnections_in,
+                                                      const ACE_INET_Addr& remoteSAP_in,
+                                                      Net_Client_IConnector* connector_in)
+ : inherited (NULL,                           // default reactor
+              ACE_Event_Handler::LO_PRIORITY) // priority
+ , myMode (mode_in)
+ , myAlternatingMode (ALTERNATING_CONNECT)
+ , myMaxNumConnections (maxNumConnections_in)
+ , myPeerAddress (remoteSAP_in)
+ , myConnector (connector_in)
 {
-  RPG_TRACE(ACE_TEXT("Net_Client_TimeoutHandler::Net_Client_TimeoutHandler"));
+  RPG_TRACE (ACE_TEXT ("Net_Client_TimeoutHandler::Net_Client_TimeoutHandler"));
 
-  ACE_ASSERT(myConnector);
+  ACE_ASSERT (myConnector);
 }
 
-Net_Client_TimeoutHandler::~Net_Client_TimeoutHandler()
+Net_Client_TimeoutHandler::~Net_Client_TimeoutHandler ()
 {
-  RPG_TRACE(ACE_TEXT("Net_Client_TimeoutHandler::~Net_Client_TimeoutHandler"));
+  RPG_TRACE (ACE_TEXT ("Net_Client_TimeoutHandler::~Net_Client_TimeoutHandler"));
 
 }
 
 int
-Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
-                                          const void* arg_in)
+Net_Client_TimeoutHandler::handle_timeout (const ACE_Time_Value& tv_in,
+                                           const void* arg_in)
 {
   RPG_TRACE(ACE_TEXT("Net_Client_TimeoutHandler::handle_timeout"));
 
-  ACE_UNUSED_ARG(tv_in);
+  ACE_UNUSED_ARG (tv_in);
 
   //const Net_GTK_CBData_t* user_data = reinterpret_cast<const Net_GTK_CBData_t*>(arg_in);
   //ActionMode_t action_mode = (user_data ? ACTION_GTK : myMode);
   ActionMode_t action_mode = myMode;
   bool do_connect = false;
   unsigned int num_connections =
-      RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->numConnections();
+    NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->numConnections ();
 
   switch (action_mode)
   {
@@ -89,7 +86,7 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
             ACE_DEBUG((LM_DEBUG,
                        ACE_TEXT("closing oldest connection...\n")));
 
-            RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
+            NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->abortOldestConnection ();
           } // end IF
           do_connect = true;
           break;
@@ -106,8 +103,8 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
           RPG_Dice::generateRandomNumbers(num_connections,
                                           1,
                                           result);
-          const RPG_Net_Connection_Manager_t::CONNECTION_TYPE* connection_handler =
-              RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->operator [](result.front() - 1);
+          const Net_TCPConnection_Manager_t::CONNECTION_T* connection_handler =
+            NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->operator [](result.front () - 1);
           if (!connection_handler)
           {
             //						ACE_DEBUG((LM_DEBUG,
@@ -117,36 +114,36 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
 
           try
           {
-            const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->fini();
+            const_cast<Net_TCPConnection_Manager_t::CONNECTION_T*> (connection_handler)->finalize ();
           }
           catch (...)
           {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("caught exception in RPG_Net_IConnection::fini(), aborting\n")));
+            ACE_DEBUG ((LM_ERROR,
+                        ACE_TEXT ("caught exception in RPG_Net_IConnection::fini(), aborting\n")));
 
             // clean up
-            const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
+            const_cast<Net_TCPConnection_Manager_t::CONNECTION_T*> (connection_handler)->decrease ();
 
             return -1;
           }
 
           // clean up
-          const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
+          const_cast<Net_TCPConnection_Manager_t::CONNECTION_T*> (connection_handler)->decrease ();
 
           break;
         }
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid alternating mode (was: %d), aborting\n"),
-                     myAlternatingMode));
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid alternating mode (was: %d), aborting\n"),
+                      myAlternatingMode));
           return -1;
         }
       } // end SWITCH
 
       int temp = myAlternatingMode;
       myAlternatingMode =
-          static_cast<Net_Client_TimeoutHandler::AlternatingMode_t>(++temp);
+        static_cast<Net_Client_TimeoutHandler::AlternatingMode_t> (++temp);
       if (myAlternatingMode == ALTERNATING_MAX)
         myAlternatingMode = ALTERNATING_CONNECT;
 
@@ -157,16 +154,16 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
       // allow some probability for closing connections in between
       // *WARNING*: there's a race condition here...
       if ((num_connections > 0) &&
-          RPG_Dice::probability(NET_CLIENT_U_TEST_ABORT_PROBABILITY))
+          RPG_Dice::probability (NET_CLIENT_U_TEST_ABORT_PROBABILITY))
       {
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("closing newest connection...\n")));
+        ACE_DEBUG ((LM_DEBUG,
+                    ACE_TEXT ("closing newest connection...\n")));
 
-        RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortNewestConnection();
+        NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->abortNewestConnection ();
       } // end IF
 
       // allow some probability for opening connections in between
-      if (RPG_Dice::probability(NET_CLIENT_U_TEST_CONNECT_PROBABILITY))
+      if (RPG_Dice::probability (NET_CLIENT_U_TEST_CONNECT_PROBABILITY))
         do_connect = true;
 
       // ping the server
@@ -179,11 +176,11 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
       // grab a (random) connection handler
       // *WARNING*: there's a race condition here...
       RPG_Dice_RollResult_t result;
-      RPG_Dice::generateRandomNumbers(num_connections,
-                                      1,
-                                      result);
-      const RPG_Net_Connection_Manager_t::CONNECTION_TYPE* connection_handler =
-          RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->operator [](result.front() - 1);
+      RPG_Dice::generateRandomNumbers (num_connections,
+                                       1,
+                                       result);
+      const Net_TCPConnection_Manager_t::CONNECTION_T* connection_handler =
+        NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->operator [](result.front () - 1);
       if (!connection_handler)
       {
         //				ACE_DEBUG((LM_ERROR,
@@ -193,29 +190,29 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
 
       try
       {
-        const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->ping();
+        const_cast<Net_TCPConnection_Manager_t::CONNECTION_T*> (connection_handler)->ping ();
       }
       catch (...)
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught exception in RPG_Net_IConnection::ping(), aborting\n")));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("caught exception in RPG_Net_IConnection::ping(), aborting\n")));
 
         // clean up
-        const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
+        const_cast<Net_TCPConnection_Manager_t::CONNECTION_T*> (connection_handler)->decrease ();
 
         return -1;
       }
 
       // clean up
-      const_cast<RPG_Net_Connection_Manager_t::CONNECTION_TYPE*>(connection_handler)->decrease();
+      const_cast<Net_TCPConnection_Manager_t::CONNECTION_T*>(connection_handler)->decrease ();
 
       break;
     }
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid mode (was: %d), aborting\n"),
-                 myMode));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid mode (was: %d), aborting\n"),
+                  myMode));
       return -1;
     }
   } // end IF
@@ -224,12 +221,12 @@ Net_Client_TimeoutHandler::handle_timeout(const ACE_Time_Value& tv_in,
   {
     try
     {
-      myConnector->connect(myPeerAddress);
+      myConnector->connect (myPeerAddress);
     }
     catch (...)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Net_IConnector::connect(), aborting\n")));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("caught exception in RPG_Net_IConnector::connect(), aborting\n")));
       return -1;
     }
   } // end IF

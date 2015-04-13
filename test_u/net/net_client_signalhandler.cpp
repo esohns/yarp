@@ -21,39 +21,42 @@
 
 #include "net_client_signalhandler.h"
 
+#include "common_timer_manager.h"
+#include "common_tools.h"
+
+#include "common_ui_gtk_manager.h"
+
+#include "net_connection_manager_common.h"
+
 #include "rpg_common_macros.h"
-#include "rpg_common_timer_manager.h"
 
-#include "rpg_client_GTK_manager.h"
-
-#include "rpg_net_connection_manager_common.h"
 #include "rpg_net_common_tools.h"
 
-Net_Client_SignalHandler::Net_Client_SignalHandler(const long& actionTimerID_in,
-                                                   const ACE_INET_Addr& peerSAP_in,
-                                                   RPG_Net_Client_IConnector* connector_in,
-                                                   const bool& useReactor_in)
- : inherited(this,           // event handler handle
-             useReactor_in), // use reactor ?
-   myActionTimerID(actionTimerID_in),
-   myPeerAddress(peerSAP_in),
-   myConnector(connector_in),
-   myUseReactor(useReactor_in)
+Net_Client_SignalHandler::Net_Client_SignalHandler (long actionTimerID_in,
+                                                    const ACE_INET_Addr& peerSAP_in,
+                                                    Net_Client_IConnector* connector_in,
+                                                    bool useReactor_in)
+ : inherited (this,          // event handler handle
+              useReactor_in) // use reactor ?
+ , myActionTimerID (actionTimerID_in)
+ , myPeerAddress (peerSAP_in)
+ , myConnector (connector_in)
+ , myUseReactor (useReactor_in)
 {
-  RPG_TRACE(ACE_TEXT("Net_Client_SignalHandler::Net_Client_SignalHandler"));
+  RPG_TRACE (ACE_TEXT ("Net_Client_SignalHandler::Net_Client_SignalHandler"));
 
 }
 
-Net_Client_SignalHandler::~Net_Client_SignalHandler()
+Net_Client_SignalHandler::~Net_Client_SignalHandler ()
 {
-  RPG_TRACE(ACE_TEXT("Net_Client_SignalHandler::~Net_Client_SignalHandler"));
+  RPG_TRACE (ACE_TEXT ("Net_Client_SignalHandler::~Net_Client_SignalHandler"));
 
 }
 
 bool
-Net_Client_SignalHandler::handleSignal(const int& signal_in)
+Net_Client_SignalHandler::handleSignal (int signal_in)
 {
-  RPG_TRACE(ACE_TEXT("Net_Client_SignalHandler::handleSignal"));
+  RPG_TRACE (ACE_TEXT ("Net_Client_SignalHandler::handleSignal"));
 
   bool stop_event_dispatching = false;
   bool connect = false;
@@ -62,7 +65,7 @@ Net_Client_SignalHandler::handleSignal(const int& signal_in)
   {
     case SIGINT:
 // *PORTABILITY*: on Windows SIGQUIT is not defined
-#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     case SIGQUIT:
 #endif
     {
@@ -76,7 +79,7 @@ Net_Client_SignalHandler::handleSignal(const int& signal_in)
     }
 // *PORTABILITY*: on Windows SIGUSRx are not defined
 // --> use SIGBREAK (21) and SIGTERM (15) instead...
-#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     case SIGUSR1:
 #else
     case SIGBREAK:
@@ -87,7 +90,7 @@ Net_Client_SignalHandler::handleSignal(const int& signal_in)
 
       break;
     }
-#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     case SIGHUP:
     case SIGUSR2:
 #endif
@@ -100,10 +103,9 @@ Net_Client_SignalHandler::handleSignal(const int& signal_in)
     }
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("received invalid/unknown signal: \"%S\", aborting\n"),
-                 signal_in));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("received invalid/unknown signal: \"%S\", aborting\n"),
+                  signal_in));
       return false;
     }
   } // end SWITCH
@@ -112,7 +114,7 @@ Net_Client_SignalHandler::handleSignal(const int& signal_in)
   if (abort)
   {
     // release an existing connection...
-    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortOldestConnection();
+    NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->abortOldestConnection ();
   } // end IF
 
   // ...connect ?
@@ -120,14 +122,13 @@ Net_Client_SignalHandler::handleSignal(const int& signal_in)
   {
     try
     {
-      myConnector->connect(myPeerAddress);
+      myConnector->connect (myPeerAddress);
     }
     catch (...)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Net_IConnector::connect(), aborting\n")));
-
-			return false;
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("caught exception in RPG_Net_IConnector::connect(), aborting\n")));
+      return false;
     }
   } // end IF
 
@@ -143,47 +144,46 @@ Net_Client_SignalHandler::handleSignal(const int& signal_in)
     // stop action timer (might spawn new connections otherwise)
     if (myActionTimerID >= 0)
     {
-			const void* act = NULL;
-			if (RPG_COMMON_TIMERMANAGER_SINGLETON::instance()->cancel(myActionTimerID,
-																																&act) <= 0)
-			{
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("failed to cancel timer (ID: %d): \"%m\", aborting\n"),
-                   myActionTimerID));
+      const void* act = NULL;
+      if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (myActionTimerID,
+                                                              &act) <= 0)
+      {
+        ACE_DEBUG ((LM_DEBUG,
+                    ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", aborting\n"),
+                    myActionTimerID));
 
-				// clean up
-				myActionTimerID = -1;
+        // clean up
+        myActionTimerID = -1;
 
-				return false;
-			} // end IF
+        return false;
+      } // end IF
 
       // clean up
       myActionTimerID = -1;
     } // end IF
-		try
+    try
     {
-      myConnector->abort();
+      myConnector->abort ();
     }
     catch (...)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Net_IConnector::abort(), aborting\n")));
-
-			return false;
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("caught exception in Net_Client_IConnector_t::abort(), aborting\n")));
+      return false;
     }
-    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->stop();
-    RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
+    NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->stop ();
+    NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
     // *IMPORTANT NOTE*: as long as connections are inactive (i.e. events are
     // dispatched by reactor thread(s), there is no real reason to wait here)
     //RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
     // step2: stop GTK event dispatch
-    RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->stop();
+    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
 
     // step3: stop reactor (&& proactor, if applicable)
-    RPG_Net_Common_Tools::finiEventDispatch(true,          // stop reactor ?
-                                            !myUseReactor, // stop proactor ?
-                                            -1);           // group ID (--> don't block !)
+    Common_Tools::finalizeEventDispatch (true,          // stop reactor ?
+                                         !myUseReactor, // stop proactor ?
+                                         -1);           // group ID (--> don't block !)
   } // end IF
 
   return true;

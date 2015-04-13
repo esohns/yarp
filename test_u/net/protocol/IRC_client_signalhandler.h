@@ -21,38 +21,37 @@
 #ifndef IRC_CLIENT_SIGNALHANDLER_H
 #define IRC_CLIENT_SIGNALHANDLER_H
 
-#include "IRC_common.h"
-
-#include <ace/Global_Macros.h>
-#include <ace/Event_Handler.h>
-#include <ace/INET_Addr.h>
-
 #include <string>
+
+#include "ace/Event_Handler.h"
+#include "ace/Global_Macros.h"
+#include "ace/INET_Addr.h"
+
+#include "net_client_common.h"
 
 class IRC_Client_SignalHandler
  : public ACE_Event_Handler
 {
  public:
-  IRC_Client_SignalHandler(const std::string&,     // target hostname
-                           const unsigned short&,  // target port number
-                           IRC_Client_Connector*); // connector
-  virtual ~IRC_Client_SignalHandler();
+  IRC_Client_SignalHandler (const std::string&,      // target hostname
+                            unsigned short,          // target port number
+                            Net_Client_IConnector*); // connector handle
+  virtual ~IRC_Client_SignalHandler ();
 
   // implement specific behaviour
-  virtual int handle_signal(int,          // signal
-                            siginfo_t*,   // not needed on UNIX
-                            ucontext_t*); // not used
+  virtual int handle_signal (int,          // signal
+                             siginfo_t*,   // not needed on UNIX
+                             ucontext_t*); // not used
 
  private:
   typedef ACE_Event_Handler inherited;
 
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(IRC_Client_SignalHandler());
-  ACE_UNIMPLEMENTED_FUNC(IRC_Client_SignalHandler(const IRC_Client_SignalHandler&));
-  ACE_UNIMPLEMENTED_FUNC(IRC_Client_SignalHandler& operator=(const IRC_Client_SignalHandler&));
+  ACE_UNIMPLEMENTED_FUNC (IRC_Client_SignalHandler ());
+  ACE_UNIMPLEMENTED_FUNC (IRC_Client_SignalHandler (const IRC_Client_SignalHandler&));
+  ACE_UNIMPLEMENTED_FUNC (IRC_Client_SignalHandler& operator=(const IRC_Client_SignalHandler&));
 
-  ACE_INET_Addr         myPeerAddress;
-  IRC_Client_Connector* myConnector;
+  ACE_INET_Addr          myPeerAddress;
+  Net_Client_IConnector* myConnector;
 };
 
 #endif

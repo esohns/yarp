@@ -35,6 +35,7 @@
 #include "net_common.h"
 #include "net_message.h"
 #include "net_sessionmessage.h"
+#include "net_module_messagehandler.h"
 
 #include "rpg_net_exports.h"
 
@@ -42,46 +43,30 @@
 class Net_SessionMessage;
 class Net_Message;
 
-class RPG_Net_Module_EventHandler
- : public Stream_TaskBaseSynch_T<Common_TimePolicy_t,
-                                 Net_SessionMessage,
-                                 Net_Message>
- , public Common_ISubscribe_T<Net_Notification_t>
- , public Common_IClone_T<Common_Module_t>
+class RPG_Net_Export RPG_Net_Module_EventHandler
+ : public Net_Module_MessageHandler_T<Stream_ModuleConfiguration_t,
+                                      Net_SessionMessage,
+                                      Net_Message>
 {
  public:
   RPG_Net_Module_EventHandler ();
   virtual ~RPG_Net_Module_EventHandler ();
 
-  void initialize (Net_Subscribers_t* = NULL,           // subscribers (handle)
-                   ACE_Recursive_Thread_Mutex* = NULL); // subscribers lock
-
-  // implement (part of) Stream_ITaskBase_T
-  virtual void handleDataMessage (Net_Message*&, // data message handle
-                                  bool&);        // return value: pass message downstream ?
-  virtual void handleSessionMessage (Net_SessionMessage*&, // session message handle
-                                     bool&);               // return value: pass message downstream ?
-
-  // implement Common_ISubscribe_T
-  virtual void subscribe (Net_Notification_t*);   // new subscriber
-  virtual void unsubscribe (Net_Notification_t*); // existing subscriber
-
   // implement Common_IClone_T
   virtual Common_Module_t* clone ();
 
  private:
-  typedef Stream_TaskBaseSynch_T<Common_TimePolicy_t,
-                                 Net_SessionMessage,
-                                 Net_Message> inherited;
+  typedef Net_Module_MessageHandler_T<Stream_ModuleConfiguration_t,
+                                      Net_SessionMessage,
+                                      Net_Message> inherited;
 
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_Module_EventHandler (const RPG_Net_Module_EventHandler&));
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_Module_EventHandler& operator= (const RPG_Net_Module_EventHandler&));
 
-  bool                        delete_;
-  // *NOTE*: recursive so that users may unsubscribe from within the
-  // notification callbacks...
-  ACE_Recursive_Thread_Mutex* lock_;
-  Net_Subscribers_t*          subscribers_;
+  //// *NOTE*: recursive so that users may unsubscribe from within the
+  //// notification callbacks...
+  //ACE_Recursive_Thread_Mutex lock_;
+  //Net_Subscribers_t          subscribers_;
 };
 
 // declare module

@@ -21,87 +21,94 @@
 
 #include "IRC_client_tools.h"
 
-#include "IRC_common.h"
+#include "ace/Log_Msg.h"
 
-#include "rpg_net_defines.h"
-#include "rpg_net_connection_manager.h"
+#include "common.h"
 
-#include "rpg_net_protocol_defines.h"
+#include "stream_iallocator.h"
+
+#include "net_stream_common.h"
+
+#include "net_client_common.h"
 
 #include "rpg_common_macros.h"
 
+#include "rpg_net_protocol_defines.h"
+#include "rpg_net_protocol_configuration.h"
+#include "rpg_net_protocol_network.h"
+
 bool
-IRC_Client_Tools::connect(RPG_Stream_IAllocator* messageAllocator_in,
-                          const RPG_Net_Protocol_IRCLoginOptions& loginOptions_in,
-                          const bool& debugScanner_in,
-                          const bool& debugParser_in,
-                          const unsigned int& statisticsReportingInterval_in,
-                          const std::string& serverHostname_in,
-                          const unsigned short& serverPortNumber_in,
-                          MODULE_TYPE* finalModule_in)
+IRC_Client_Tools::connect (Stream_IAllocator* messageAllocator_in,
+                           const RPG_Net_Protocol_IRCLoginOptions& loginOptions_in,
+                           bool debugScanner_in,
+                           bool debugParser_in,
+                           unsigned int statisticReportingInterval_in,
+                           const std::string& serverHostname_in,
+                           unsigned short serverPortNumber_in,
+                           Common_Module_t* finalModule_in)
 {
-  RPG_TRACE(ACE_TEXT("IRC_Client_Tools::connect"));
+  RPG_TRACE (ACE_TEXT ("IRC_Client_Tools::connect"));
 
   // sanity check(s)
-  ACE_ASSERT(finalModule_in);
+  ACE_ASSERT (finalModule_in);
 
   // step1: setup configuration passed to processing stream
-  RPG_Net_Protocol_ConfigPOD stream_config;
-  // ************ connection config data ************
-  stream_config.streamSocketConfiguration.socketBufferSize = RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
-  stream_config.streamSocketConfiguration.messageAllocator = messageAllocator_in;
-  stream_config.streamSocketConfiguration.bufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
+  RPG_Net_Protocol_Configuration configuration;
+  // ************ socket configuration data ************
+  configuration.socketConfiguration.bufferSize =
+   NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
   // ************ protocol config data **************
-  stream_config.clientPingInterval = 0; // servers do this...
-  stream_config.loginOptions = loginOptions_in;
-  // ************ stream config data ****************
-  stream_config.streamSocketConfiguration.module = finalModule_in;
-  stream_config.crunchMessageBuffers = RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES;
-  stream_config.debugScanner = debugScanner_in;
-  stream_config.debugParser = debugParser_in;
-  // *WARNING*: set at runtime (by the connection handler)
-  stream_config.streamSocketConfiguration.sessionID = 0; // (== socket handle !)
-  stream_config.statisticsReportingInterval = statisticsReportingInterval_in;
-  // ************ runtime statistics data ***********
-  stream_config.currentStatistics.numDataMessages = 0;
-  stream_config.currentStatistics.numBytes = 0;
-  stream_config.lastCollectionTimestamp = ACE_Time_Value::zero;
-  RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->set(stream_config);
+  configuration.protocolConfiguration.streamConfiguration.crunchMessageBuffers =
+    RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES;
+  configuration.protocolConfiguration.streamConfiguration.debugScanner =
+   debugScanner_in;
+  configuration.protocolConfiguration.streamConfiguration.debugParser =
+   debugParser_in;
+  configuration.protocolConfiguration.clientPingInterval = 0; // servers only
+  configuration.protocolConfiguration.loginOptions = loginOptions_in;
+  // ************ stream configuration data ****************
+  configuration.streamConfiguration.messageAllocator = messageAllocator_in;
+  configuration.streamConfiguration.bufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
+  configuration.streamConfiguration.module = finalModule_in;
+  configuration.streamConfiguration.statisticReportingInterval =
+    statisticReportingInterval_in;
 
-  // step2: init client connector
-  IRC_Client_Connector connector(ACE_Reactor::instance(), // reactor
-                                 ACE_NONBLOCK);           // flags: non-blocking I/O
-//                                  0);                      // flags (*TODO*: ACE_NONBLOCK ?);
-
-  // step3: (try to) connect to the server
-  IRC_Client_SocketHandler* handler = NULL;
-  ACE_INET_Addr remote_address(serverPortNumber_in, // remote SAP
-                               serverHostname_in.c_str());
-  if (connector.connect(handler,                     // service handler
-      remote_address/*,              // remote SAP
-          ACE_Synch_Options::defaults, // synch options
-          ACE_INET_Addr::sap_any,      // local SAP
-          0,                           // try to re-use address (SO_REUSEADDR)
-          O_RDWR,                      // flags
-          0*/) == -1)                  // perms
+  RPG_Net_Protocol_SessionData* session_data_p = NULL;
+  ACE_NEW_NORETURN (session_data_p,
+                    RPG_Net_Protocol_SessionData ());
+  if (!session_data_p)
   {
-    // debug info
-    ACE_TCHAR buf[BUFSIZ];
-    ACE_OS::memset(buf,
-                   0,
-                   (BUFSIZ * sizeof(ACE_TCHAR)));
-    if (remote_address.addr_to_string(buf,
-        (BUFSIZ * sizeof(ACE_TCHAR))) == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Connector::connect(%s): \"%m\", aborting\n"),
-                        buf));
-
+    ACE_DEBUG ((LM_CRITICAL,
+                ACE_TEXT ("failed to allocator memory: \"%m\", aborting\n")));
     return false;
   } // end IF
-  // sanity check
-  ACE_ASSERT(handler);
+
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->set (configuration,
+                                                                  session_data_p);
+
+  // step2: init client connector
+  RPG_Net_Protocol_Connector_t connector (&configuration,
+                                          RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance (),
+                                          0);
+
+  // step3: (try to) connect to the server
+  ACE_INET_Addr remote_address (serverPortNumber_in,
+                                serverHostname_in.c_str ());
+  if (!connector.connect (remote_address))
+  {
+    // debug info
+    ACE_TCHAR buffer[BUFSIZ];
+    ACE_OS::memset (buffer, 0, sizeof (buffer));
+    int result = remote_address.addr_to_string (buffer,
+                                                sizeof (buffer));
+    if (result == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to connect(\"%s\"): \"%m\", aborting\n"),
+                buffer));
+    return false;
+  } // end IF
 
   // *NOTE* handlers automagically register with the connection manager and
   // will also de-register and self-destruct on disconnects !

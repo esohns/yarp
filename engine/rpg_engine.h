@@ -44,9 +44,11 @@
 #include "rpg_engine_entitymode.h"
 #include "rpg_engine_exports.h"
 #include "rpg_engine_event_manager.h"
-#include "rpg_engine_iclient.h"
 #include "rpg_engine_level.h"
 #include "rpg_engine_messagequeue.h"
+
+// forward declarations
+class RPG_Engine_IClient;
 
 /**
         @author Erik Sohns <erik.sohns@web.de>
@@ -224,6 +226,6 @@ class RPG_Engine_Export RPG_Engine
 
   RPG_Engine_IClient*                         myClient;
   Net_Configuration_t                         myNetConfiguration;
-  Net_Client_IConnector_t*                    myConnector;
+  Net_Client_IConnector*                      myConnector;
 };
 #endif
