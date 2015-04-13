@@ -55,8 +55,8 @@
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>
       </DebugInformationFormat>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\3rd_party;$(ProjectDir)..\..\3rd_party\bison;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\sound;$(ProjectDir)..\..\engine;$(ProjectDir)..\..\net\stream;$(ProjectDir)..\..\net;$(ProjectDir)..\..\net\protocol;$(ProjectDir)..\..\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>RPG_COMMON_HAS_DLL;WIN32;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\modules\libCommon\src\ui;$(ProjectDir)..\..\modules\libACEStream\src;$(ProjectDir)..\..\modules\libACENetwork\src;$(ProjectDir)..\..\modules\libACENetwork\src\client;$(ProjectDir)..\..\3rd_party;$(ProjectDir)..\..\3rd_party\bison;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\sound;$(ProjectDir)..\..\engine;$(ProjectDir)..\..\net\stream;$(ProjectDir)..\..\net;$(ProjectDir)..\..\net\protocol;$(ProjectDir)..\..\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BASEDIR="$(ProgramFiles.Replace('\', "\\"))\\$(SolutionName)";WIN32;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <BrowseInformation>false</BrowseInformation>
@@ -85,8 +85,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PreprocessorDefinitions>RPG_COMMON_HAS_DLL;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\3rd_party;$(ProjectDir)..\..\3rd_party\bison;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\sound;$(ProjectDir)..\..\engine;$(ProjectDir)..\..\net\stream;$(ProjectDir)..\..\net;$(ProjectDir)..\..\net\protocol;$(ProjectDir)..\..\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BASEDIR="$(ProgramFiles.Replace('\', "\\"))\\$(SolutionName)";_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\modules\libCommon\src\ui;$(ProjectDir)..\..\modules\libACEStream\src;$(ProjectDir)..\..\modules\libACENetwork\src;$(ProjectDir)..\..\modules\libACENetwork\src\client;$(ProjectDir)..\..\3rd_party;$(ProjectDir)..\..\3rd_party\bison;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\sound;$(ProjectDir)..\..\engine;$(ProjectDir)..\..\net\stream;$(ProjectDir)..\..\net;$(ProjectDir)..\..\net\protocol;$(ProjectDir)..\..\client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
@@ -135,6 +135,18 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\modules\libACENetwork\prj\msvc\libACENetwork.vcxproj">
+      <Project>{751d54c5-12bd-4771-9453-b9d3948ed025}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\modules\libACEStream\prj\msvc\libACEStream.vcxproj">
+      <Project>{c7a3ee44-14f9-413a-b311-5a77ba5a4edd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\modules\libCommon\prj\msvc\libCommon.vcxproj">
+      <Project>{78a90d08-4e40-4ed4-8f75-393ac6526158}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\modules\libCommon\prj\msvc\libCommon_UI.vcxproj">
+      <Project>{06296185-3e70-472e-8b65-6f552ab1e283}</Project>
+    </ProjectReference>
     <ProjectReference Include="client.vcxproj">
       <Project>{df9ce33e-5060-48a6-b105-0b61fedf6ae6}</Project>
     </ProjectReference>

@@ -24,7 +24,6 @@
 #include <sstream>
 #include <string>
 
-#include "ace/Connector.h"
 #include "ace/Get_Opt.h"
 #include "ace/High_Res_Timer.h"
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -33,7 +32,6 @@
 #include "ace/Profile_Timer.h"
 #include "ace/Sig_Handler.h"
 #include "ace/Signal.h"
-#include "ace/SOCK_Connector.h"
 #include "ace/Version.h"
 
 #ifdef RPG_ENABLE_VALGRIND_SUPPORT
@@ -67,7 +65,7 @@
 #include "rpg_common_macros.h"
 #include "rpg_common_tools.h"
 
-#include "rpg_net_common_tools.h"
+//#include "rpg_net_common_tools.h"
 #include "rpg_net_defines.h"
 #include "rpg_net_module_eventhandler.h"
 #include "rpg_net_stream_messageallocator.h"
@@ -435,7 +433,9 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
 {
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
-  // step0b: init randomization
+  int result = -1;
+
+  // step0a: initialize randomization
   try
   {
     RPG_Dice::init ();
@@ -447,9 +447,9 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
     return;
   }
 
-  // step0c: init stream configuration object
+  // step0b: initialize stream configuration object
   Net_EventHandler ui_event_handler (&CBData_in);
-  RPG_Net_Module_EventHandler_Module event_handler (std::string ("EventHandler"),
+  RPG_Net_Module_EventHandler_Module event_handler (ACE_TEXT_ALWAYS_CHAR ("EventHandler"),
                                                     NULL);
   RPG_Net_Module_EventHandler* eventHandler_impl = NULL;
   eventHandler_impl =
@@ -457,7 +457,7 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   if (!eventHandler_impl)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("dynamic_cast<RPG_Net_Module_EventHandler> failed, aborting\n")));
+                ACE_TEXT ("dynamic_cast<RPG_Net_Module_EventHandler> failed, returning\n")));
     return;
   } // end IF
   eventHandler_impl->initialize (&CBData_in.subscribers,
@@ -476,7 +476,8 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   configuration.protocolConfiguration.pingAutoAnswer = true;
   configuration.protocolConfiguration.printPongMessages = true;
   // ************ socket / stream configuration data ************
-  configuration.socketConfiguration.bufferSize = RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
+  configuration.socketConfiguration.bufferSize =
+   RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
   configuration.streamConfiguration.messageAllocator = &messageAllocator;
   configuration.streamConfiguration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
   //  config.useThreadPerConnection = false;
@@ -494,17 +495,17 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
 //	config.currentStatistics = {};
 //	config.lastCollectionTimestamp = ACE_Time_Value::zero;
 
-  // step0d: initialize event dispatch
+  // step0c: initialize event dispatch
   if (!Common_Tools::initializeEventDispatch (useReactor_in,
                                               numDispatchThreads_in,
                                               configuration.streamConfiguration.serializeOutput))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to init event dispatch, returing\n")));
+                ACE_TEXT ("failed to initialize event dispatch, returing\n")));
     return;
   } // end IF
 
-  // step1: initialize client connector
+  // step0d: initialize client connector
   Net_Client_IConnector* connector_p = NULL;
   if (useReactor_in)
     ACE_NEW_NORETURN (connector_p,
@@ -523,30 +524,30 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
     return;
   } // end IF
 
-  // step2: initialize connection manager
+  // step0e: initialize connection manager
   NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->initialize (std::numeric_limits<unsigned int>::max ());
   NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->set (configuration,
                                                         &configuration.streamSessionData);
 
-  // step3: initialize action timer ?
-  ACE_INET_Addr peer_address(serverPortNumber_in,
-                             serverHostname_in.c_str(),
-                             AF_INET);
-  Net_Client_TimeoutHandler timeout_handler((hasUI_in ? Net_Client_TimeoutHandler::ACTION_STRESS
-                                                      : actionMode_in),
-                                            maxNumConnections_in,
-                                            peer_address,
-                                            connector_p);
+  // step0f: initialize action timer
+  ACE_INET_Addr peer_address (serverPortNumber_in,
+                              serverHostname_in.c_str (),
+                              AF_INET);
+  Net_Client_TimeoutHandler timeout_handler ((hasUI_in ? Net_Client_TimeoutHandler::ACTION_STRESS
+                                                       : actionMode_in),
+                                             maxNumConnections_in,
+                                             peer_address,
+                                             connector_p);
   CBData_in.timeoutHandler = &timeout_handler;
   CBData_in.timerId = -1;
   if (!hasUI_in)
   {
     // schedule action interval timer
     ACE_Event_Handler* event_handler = &timeout_handler;
-    ACE_Time_Value interval(((actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS) ? (NET_CLIENT_DEF_SERVER_STRESS_INTERVAL / 1000)
-                                                                                         : connectionInterval_in),
-                            ((actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS) ? ((NET_CLIENT_DEF_SERVER_STRESS_INTERVAL % 1000) * 1000)
-                                                                                         : 0));
+    ACE_Time_Value interval (((actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS) ? (NET_CLIENT_DEF_SERVER_STRESS_INTERVAL / 1000)
+                                                                                          : connectionInterval_in),
+                             ((actionMode_in == Net_Client_TimeoutHandler::ACTION_STRESS) ? ((NET_CLIENT_DEF_SERVER_STRESS_INTERVAL % 1000) * 1000)
+                                                                                          : 0));
     CBData_in.timerId =
       COMMON_TIMERMANAGER_SINGLETON::instance ()->schedule (event_handler,                    // event handler
                                                             NULL,                             // ACT
@@ -554,7 +555,7 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
                                                             interval);                        // interval
     if (CBData_in.timerId == -1)
     {
-      ACE_DEBUG ((LM_DEBUG,
+      ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to schedule action timer: \"%m\", aborting\n")));
 
       // clean up
@@ -564,8 +565,9 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
       return;
     } // end IF
   } // end IF
+  const void* act_p = NULL;
 
-  // step4: initialize signal handling
+  // step0f: initialize signal handling
   Net_Client_SignalHandler signal_handler (CBData_in.timerId, // action timer id
                                            peer_address,      // remote SAP
                                            connector_p,       // connector
@@ -580,10 +582,11 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
     // clean up
     if (CBData_in.timerId != -1)
     {
-      const void* act = NULL;
-      if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (CBData_in.timerId,
-                                                              &act) <= 0)
-        ACE_DEBUG ((LM_DEBUG,
+      result =
+        COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (CBData_in.timerId,
+                                                            &act_p);
+      if (result <= 0)
+        ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                     CBData_in.timerId));
     } // end IF
@@ -598,7 +601,7 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   // - catch SIGINT/SIGQUIT/SIGTERM/... signals (connect / perform orderly shutdown)
   // [- signal timer expiration to perform server queries] (see above)
 
-  // step5a: start GTK event loop ?
+  // step1a: start GTK event loop ?
   if (hasUI_in)
   {
     COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start ();
@@ -610,10 +613,11 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
       // clean up
       if (CBData_in.timerId != -1)
       {
-        const void* act = NULL;
-        if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (CBData_in.timerId,
-                                                                &act) <= 0)
-          ACE_DEBUG ((LM_DEBUG,
+        result =
+          COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (CBData_in.timerId,
+                                                              &act_p);
+        if (result <= 0)
+          ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                       CBData_in.timerId));
       } // end IF
@@ -640,10 +644,11 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
     // clean up
     if (CBData_in.timerId != -1)
     {
-      const void* act = NULL;
-      if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (CBData_in.timerId,
-                                                              &act) <= 0)
-        ACE_DEBUG ((LM_DEBUG,
+      result =
+        COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (CBData_in.timerId,
+                                                            &act_p);
+      if (result <= 0)
+        ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                     CBData_in.timerId));
     } // end IF
@@ -691,18 +696,18 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
 /*      // *WARNING*: restart system calls (after e.g. SIGINT) for the reactor
       ACE_Reactor::instance()->restart(1);
 */
-      if (ACE_Reactor::instance()->run_reactor_event_loop(0) == -1)
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to handle events: \"%m\", aborting\n")));
+      if (ACE_Reactor::instance ()->run_reactor_event_loop (0) == -1)
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to handle events: \"%m\", aborting\n")));
     } // end IF
     else
-      if (ACE_Proactor::instance()->proactor_run_event_loop(0) == -1)
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to handle events: \"%m\", aborting\n")));
+      if (ACE_Proactor::instance ()->proactor_run_event_loop (0) == -1)
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to handle events: \"%m\", aborting\n")));
   } // end ELSE
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished event dispatch...\n")));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("finished event dispatch...\n")));
 
   // step7: clean up
   // *NOTE*: any action timer has been cancelled, connections have been
@@ -914,12 +919,12 @@ ACE_TMAIN (int argc_in,
                             &gtk_cb_user_data.GTKState.lock);
   std::string log_file;
   if (log_to_file)
-    log_file = RPG_Common_File_Tools::getLogFilename(ACE::basename(argv_in[0]));
-  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]),   // program name
-                                        log_file,                    // logfile
-                                        false,                       // log to syslog ?
-                                        false,                       // trace messages ?
-                                        trace_information,           // debug messages ?
+    log_file = RPG_Common_File_Tools::getLogFilename (ACE::basename (argv_in[0]));
+  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]),    // program name
+                                        log_file,                      // logfile
+                                        false,                         // log to syslog ?
+                                        false,                         // trace messages ?
+                                        trace_information,             // debug messages ?
                                         (UI_file.empty () ? NULL
                                                           : &logger))) // logger ?
   {
@@ -972,14 +977,13 @@ ACE_TMAIN (int argc_in,
   } // end IF
 
   // step1h: init GLIB / G(D|T)K[+] / GNOME ?
-  Common_UI_GTKState gtk_state;
   Common_UI_GladeDefinition ui_definition (argc_in,
                                            argv_in);
-  if (!UI_file.empty())
+  if (!UI_file.empty ())
     COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (argc_in,
                                                               argv_in,
                                                               UI_file,
-                                                              &gtk_state,
+                                                              &gtk_cb_user_data.GTKState,
                                                               &ui_definition);
 
   ACE_High_Res_Timer timer;

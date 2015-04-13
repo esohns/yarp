@@ -19,33 +19,39 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 #include <string>
 
-#include "ace/ACE.h"
-#include "ace/Log_Msg.h"
 #include "ace/Get_Opt.h"
 #include "ace/High_Res_Timer.h"
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
+#include "ace/Log_Msg.h"
 
-//#include "SDL.h"
+#include "SDL.h"
+
+#include "common_file_tools.h"
+#include "common_tools.h"
+
+#ifdef HAVE_CONFIG_H
+#include "rpg_config.h"
+#endif
 
 #include "rpg_dice.h"
 #include "rpg_dice_common_tools.h"
 
-#include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
-#include "rpg_common_tools.h"
 #include "rpg_common_file_tools.h"
+#include "rpg_common_macros.h"
 #include "rpg_common_XML_tools.h"
 
-#include "rpg_sound_defines.h"
 #include "rpg_sound_common.h"
-#include "rpg_sound_dictionary.h"
 #include "rpg_sound_common_tools.h"
-
-#include "rpg_config.h"
+#include "rpg_sound_defines.h"
+#include "rpg_sound_dictionary.h"
 
 #define SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS false
 #define SDL_TIMEREVENT                     SDL_USEREVENT
@@ -53,10 +59,10 @@
 //static SDL_CD* cdrom = NULL;
 
 Uint32
-timer_SDL_cb(Uint32 interval_in,
-             void* argument_in)
+timer_SDL_cb (Uint32 interval_in,
+              void* argument_in)
 {
-  RPG_TRACE(ACE_TEXT("::timer_SDL_cb"));
+  RPG_TRACE (ACE_TEXT ("::timer_SDL_cb"));
 
   // create an SDL timer event
   SDL_Event sdl_event;
@@ -77,13 +83,13 @@ timer_SDL_cb(Uint32 interval_in,
 
 // wait for an input event; stop after timeout_in second(s) (0: wait forever)
 void
-do_SDL_waitForInput(const unsigned int& timeout_in)
+do_SDL_waitForInput (unsigned int timeout_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_SDL_waitForInput"));
+  RPG_TRACE (ACE_TEXT ("::do_SDL_waitForInput"));
 
   SDL_TimerID timer = NULL;
   if (timeout_in)
-    timer = SDL_AddTimer((timeout_in * 1000), // interval (ms)
+    timer = SDL_AddTimer ((timeout_in * 1000), // interval (ms)
                           timer_SDL_cb,       // timeout callback
                           NULL);              // callback argument
 
@@ -91,129 +97,132 @@ do_SDL_waitForInput(const unsigned int& timeout_in)
   SDL_Event sdl_event;
   do
   {
-    if (SDL_WaitEvent(&sdl_event) != 1)
+    if (SDL_WaitEvent (&sdl_event) != 1)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
-                 SDL_GetError()));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_WaitEvent(): \"%s\", returning\n"),
+                  ACE_TEXT (SDL_GetError ())));
 
-      // what else can we do ?
       break;
     } // end IF
-    if (sdl_event.type == SDL_KEYDOWN ||
+    if (sdl_event.type == SDL_KEYDOWN         ||
         sdl_event.type == SDL_MOUSEBUTTONDOWN ||
         sdl_event.type == SDL_TIMEREVENT)
       break;
   } while (true);
 
   if (timeout_in)
-    if (!SDL_RemoveTimer(timer))
+    if (!SDL_RemoveTimer (timer))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
-               SDL_GetError()));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
+                ACE_TEXT (SDL_GetError ())));
   } // end IF
 }
 
 void
-print_usage(const std::string& programName_in)
+do_printUsage (const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::print_usage"));
+  RPG_TRACE (ACE_TEXT ("::do_printUsage"));
 
   // enable verbatim boolean output
-  std::cout.setf(ios::boolalpha);
+  std::cout.setf (ios::boolalpha);
 
-  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
-  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                     true);
-  data_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                   false);
-#endif // #ifdef BASEDIR
+  std::string configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+  std::string data_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          false);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory();
+  data_path = Common_File_Tools::getWorkingDirectory ();
+#endif // DEBUG_DEBUGGER
 
-  std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
-  std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-d       : dump dictionary") << std::endl;
+  std::cout << ACE_TEXT ("usage: ") << programName_in << ACE_TEXT (" [OPTIONS]") << std::endl << std::endl;
+  std::cout << ACE_TEXT ("currently available options:") << std::endl;
+  std::cout << ACE_TEXT ("-d       : dump dictionary") << std::endl;
   std::string path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  path += ACE_TEXT_ALWAYS_CHAR("sound");
+#if defined (DEBUG_DEBUGGER)
+  path += ACE_TEXT_ALWAYS_CHAR ("sound");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_DATA_SUB);
 #else
   path += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DATA_SUB);
-#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
-  std::cout << ACE_TEXT("-f [DIR] : data directory") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
+#endif // DEBUG_DEBUGGER
+  std::cout << ACE_TEXT ("-f [DIR] : data directory") << ACE_TEXT (" [\"") << path.c_str () << ACE_TEXT ("\"]") << std::endl;
   std::cout << ACE_TEXT("-r       : play random sounds") << ACE_TEXT(" [") << SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS << ACE_TEXT("]") << std::endl;
-  path = config_path;
+  path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  path += ACE_TEXT_ALWAYS_CHAR("sound");
+#if defined (DEBUG_DEBUGGER)
+  path += ACE_TEXT_ALWAYS_CHAR ("sound");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-s [FILE]: sound dictionary (*.xml)") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-t       : trace information") << std::endl;
-  std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
-  std::cout << ACE_TEXT("-x       : do NOT validate XML") << std::endl;
+#endif // DEBUG_DEBUGGER
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DICTIONARY_FILE);
+  std::cout << ACE_TEXT ("-s [FILE]: sound dictionary (*.xml)") << ACE_TEXT (" [\"") << path.c_str () << ACE_TEXT ("\"]") << std::endl;
+  std::cout << ACE_TEXT ("-t       : trace information") << std::endl;
+  std::cout << ACE_TEXT ("-v       : print version information and exit") << std::endl;
+  std::cout << ACE_TEXT ("-x       : do NOT validate XML") << std::endl;
 } // end print_usage
 
 bool
-process_arguments(const int argc_in,
-                  ACE_TCHAR* argv_in[], // cannot be const...
-                  bool& dumpDictionary_out,
-                  std::string& directory_out,
-                  bool& playRandomSounds_out,
-                  std::string& filename_out,
-                  bool& traceInformation_out,
-                  bool& printVersionAndExit_out,
-                  bool& validateXML_out)
+do_processArguments (const int argc_in,
+                     ACE_TCHAR* argv_in[], // cannot be const...
+                     bool& dumpDictionary_out,
+                     std::string& directory_out,
+                     bool& playRandomSounds_out,
+                     std::string& filename_out,
+                     bool& traceInformation_out,
+                     bool& printVersionAndExit_out,
+                     bool& validateXML_out)
 {
-  RPG_TRACE(ACE_TEXT("::process_arguments"));
+  RPG_TRACE (ACE_TEXT ("::do_processArguments"));
 
-  // init results
-  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
-  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                     true);
-  data_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                   false);
-#endif // #ifdef BASEDIR
+  // initialize results
+  std::string configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+  std::string data_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          false);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
+  data_path = Common_File_Tools::getWorkingDirectory ();
+#endif // DEBUG_DEBUGGER
 
   dumpDictionary_out = false;
 
   directory_out = data_path;
   directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  directory_out += ACE_TEXT_ALWAYS_CHAR("sound");
+#if defined (DEBUG_DEBUGGER)
+  directory_out += ACE_TEXT_ALWAYS_CHAR ("sound");
   directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
 #else
-  directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DATA_SUB);
-#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  directory_out += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DATA_SUB);
+#endif // DEBUG_DEBUGGER
 
   playRandomSounds_out = SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS;
 
-  filename_out = config_path;
+  filename_out = configuration_path;
   filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  filename_out += ACE_TEXT_ALWAYS_CHAR("sound");
+#if defined (DEBUG_DEBUGGER)
+  filename_out += ACE_TEXT_ALWAYS_CHAR ("sound");
   filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
-  filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DICTIONARY_FILE);
+#endif // DEBUG_DEBUGGER
+  filename_out += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DICTIONARY_FILE);
 
   traceInformation_out = false;
   printVersionAndExit_out = false;
   validateXML_out = true;
 
-  ACE_Get_Opt argumentParser(argc_in,
-                             argv_in,
-                             ACE_TEXT("df:rs:tvx"));
+  ACE_Get_Opt argumentParser (argc_in,
+                              argv_in,
+                              ACE_TEXT ("df:rs:tvx"));
 
   int option = 0;
-  while ((option = argumentParser()) != EOF)
+  while ((option = argumentParser ()) != EOF)
   {
     switch (option)
     {
@@ -225,7 +234,7 @@ process_arguments(const int argc_in,
       }
       case 'f':
       {
-        directory_out = argumentParser.opt_arg();
+        directory_out = argumentParser.opt_arg ();
 
         break;
       }
@@ -237,7 +246,7 @@ process_arguments(const int argc_in,
       }
       case 's':
       {
-        filename_out = argumentParser.opt_arg();
+        filename_out = argumentParser.opt_arg ();
 
         break;
       }
@@ -262,18 +271,16 @@ process_arguments(const int argc_in,
       // error handling
       case '?':
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unrecognized option \"%s\", aborting\n"),
-                   argumentParser.last_option()));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("unrecognized option \"%s\", aborting\n"),
+                    ACE_TEXT (argumentParser.last_option ())));
         return false;
       }
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unrecognized option \"%c\", aborting\n"),
-                   option));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("unrecognized option \"%c\", aborting\n"),
+                    option));
         return false;
       }
     } // end SWITCH
@@ -283,110 +290,108 @@ process_arguments(const int argc_in,
 }
 
 void
-do_work(const bool& dumpDictionary_in,
-        const std::string& path_in,
-        const bool& playRandomSounds_in,
-				const std::string& schemaRepository_in,
-        const std::string& dictionary_in,
-        const bool& validateXML_in)
+do_work (bool dumpDictionary_in,
+         const std::string& path_in,
+         bool playRandomSounds_in,
+         const std::string& schemaRepository_in,
+         const std::string& dictionary_in,
+         bool validateXML_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_work"));
+  RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step0: init: random seed, string conversion facilities, ...
-  RPG_Dice::init();
-  RPG_Dice_Common_Tools::initStringConversionTables();
+  RPG_Dice::init ();
+  RPG_Dice_Common_Tools::initStringConversionTables ();
 
   // step1: init: sound directory, cache, ...
-  RPG_Sound_SDLConfiguration_t sound_config;
-  sound_config.frequency = RPG_SOUND_AUDIO_DEF_FREQUENCY;
-  sound_config.format = RPG_SOUND_AUDIO_DEF_FORMAT;
-  sound_config.channels = RPG_SOUND_AUDIO_DEF_CHANNELS;
-  sound_config.chunksize = RPG_SOUND_AUDIO_DEF_CHUNKSIZE;
-  if (!RPG_Sound_Common_Tools::init(sound_config,
-                                    path_in,
-                                    RPG_SOUND_AMBIENT_DEF_USE_CD,
-                                    RPG_SOUND_DEF_CACHESIZE,
-                                    false))
-	{
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Sound_Common_Tools::init(), returning\n")));
-
+  RPG_Sound_SDLConfiguration_t sound_configuration;
+  sound_configuration.frequency = RPG_SOUND_AUDIO_DEF_FREQUENCY;
+  sound_configuration.format = RPG_SOUND_AUDIO_DEF_FORMAT;
+  sound_configuration.channels = RPG_SOUND_AUDIO_DEF_CHANNELS;
+  sound_configuration.chunksize = RPG_SOUND_AUDIO_DEF_CHUNKSIZE;
+  if (!RPG_Sound_Common_Tools::init (sound_configuration,
+                                     path_in,
+                                     RPG_SOUND_AMBIENT_DEF_USE_CD,
+                                     RPG_SOUND_DEF_CACHESIZE,
+                                     false))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Sound_Common_Tools::init(), returning\n")));
     return;
-	} // end IF
+  } // end IF
 
   // step2: init sound dictionary
-	RPG_Common_XML_Tools::init(schemaRepository_in);
+  RPG_Common_XML_Tools::init (schemaRepository_in);
   try
   {
-    RPG_SOUND_DICTIONARY_SINGLETON::instance()->init(dictionary_in,
-                                                     validateXML_in);
+    RPG_SOUND_DICTIONARY_SINGLETON::instance ()->init (dictionary_in,
+                                                       validateXML_in);
   }
   catch (...)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Sound_Dictionary::init(), returning\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("caught exception in RPG_Sound_Dictionary::init(), returning\n")));
     return;
   }
 
   // step3: dump sound descriptions
   if (dumpDictionary_in)
-    RPG_SOUND_DICTIONARY_SINGLETON::instance()->dump();
+    RPG_SOUND_DICTIONARY_SINGLETON::instance ()->dump ();
 
   if (!playRandomSounds_in)
-	{
-		// clean up
-		RPG_Common_XML_Tools::fini();
+  {
+    // clean up
+    RPG_Common_XML_Tools::fini ();
 
     return;
-	} // end IF
+  } // end IF
 
   // step4: play (random) sounds...
   RPG_Sound_Event sound_event = RPG_SOUND_EVENT_INVALID;
   RPG_Dice_RollResult_t result;
   int current_channel = -1;
-	ACE_Time_Value duration = ACE_Time_Value::zero;
+  ACE_Time_Value duration = ACE_Time_Value::zero;
   do
   {
-    result.clear();
-    RPG_Dice::generateRandomNumbers(RPG_SOUND_EVENT_MAX,
-                                    1,
-                                    result);
-    sound_event = static_cast<RPG_Sound_Event>((result.front() - 1));
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("playing event sound \"%s\"...\n"),
-               RPG_Sound_EventHelper::RPG_Sound_EventToString(sound_event).c_str()));
+    result.clear ();
+    RPG_Dice::generateRandomNumbers (RPG_SOUND_EVENT_MAX,
+                                     1,
+                                     result);
+    sound_event = static_cast<RPG_Sound_Event>((result.front () - 1));
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("playing event sound \"%s\"...\n"),
+                ACE_TEXT (RPG_Sound_EventHelper::RPG_Sound_EventToString (sound_event).c_str ())));
 
-    current_channel = RPG_Sound_Common_Tools::play(sound_event, duration);
+    current_channel = RPG_Sound_Common_Tools::play (sound_event, duration);
     if (current_channel == -1)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to play event sound \"%s\", aborting\n"),
-                 RPG_Sound_EventHelper::RPG_Sound_EventToString(sound_event).c_str()));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to play event sound \"%s\", aborting\n"),
+                  ACE_TEXT (RPG_Sound_EventHelper::RPG_Sound_EventToString (sound_event).c_str ())));
 
       break;
     } // end IF
 
     // stop after some time (5 seconds)
-    ACE_OS::sleep(ACE_Time_Value(5, 0));
-    if (RPG_Sound_Common_Tools::isPlaying(current_channel))
-      RPG_Sound_Common_Tools::stop(current_channel);
+    ACE_OS::sleep (ACE_Time_Value (5, 0));
+    if (RPG_Sound_Common_Tools::isPlaying (current_channel))
+      RPG_Sound_Common_Tools::stop (current_channel);
   } while (true);
 
   // *NOTE*: it seems you cannot SDL_WaitEvent() if there is no window... :-(
 //   do_SDL_waitForInput(10);
 
   // clean up
-	RPG_Common_XML_Tools::fini();
+  RPG_Common_XML_Tools::fini ();
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished working...\n")));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("finished working...\n")));
 } // end do_work
 
 void
-do_printVersion(const std::string& programName_in)
+do_printVersion (const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_printVersion"));
+  RPG_TRACE (ACE_TEXT ("::do_printVersion"));
 
   std::cout << programName_in
 #ifdef HAVE_CONFIG_H
@@ -399,106 +404,104 @@ do_printVersion(const std::string& programName_in)
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
   // number... We need this, as the library soname is compared to this string.
   std::ostringstream version_number;
-  if (version_number << ACE::major_version())
+  if (version_number << ACE::major_version ())
   {
     version_number << ACE_TEXT(".");
   } // end IF
   else
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%m\", returning\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to convert: \"%m\", returning\n")));
     return;
   } // end ELSE
-  if (version_number << ACE::minor_version())
+  if (version_number << ACE::minor_version ())
   {
-    version_number << ACE_TEXT(".");
+    version_number << ACE_TEXT (".");
 
-    if (version_number << ACE::beta_version())
+    if (version_number << ACE::beta_version ())
     {
 
     } // end IF
     else
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to convert: \"%m\", returning\n")));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to convert: \"%m\", returning\n")));
       return;
     } // end ELSE
   } // end IF
   else
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%m\", returning\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to convert: \"%m\", returning\n")));
     return;
   } // end ELSE
-  std::cout << ACE_TEXT("ACE: ") << version_number.str() << std::endl;
+  std::cout << ACE_TEXT ("ACE: ") << version_number.str () << std::endl;
 //   std::cout << "ACE: "
 //             << ACE_VERSION
 //             << std::endl;
 }
 
 int
-ACE_TMAIN(int argc,
-          ACE_TCHAR* argv[])
+ACE_TMAIN (int argc_in,
+           ACE_TCHAR* argv_in[])
 {
-  RPG_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE (ACE_TEXT ("::main"));
 
-//  // step0: init ACE
-//  // *PORTABILITY*: on Windows, we need to init ACE...
-//#if defined (ACE_WIN32) || defined (ACE_WIN64)
-//  if (ACE::init() == -1)
-//  {
-//    ACE_DEBUG((LM_ERROR,
-//               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
-//
-//    return EXIT_FAILURE;
-//  } // end IF
-//#endif
+  // step0: init ACE
+  // *PORTABILITY*: on Windows, init ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::init () == -1)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
+    return EXIT_FAILURE;
+  } // end IF
+#endif
 
   // step1: init
   // step1a set defaults
-  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
-  std::string data_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                              true);
-  data_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                            false);
-#endif // #ifdef BASEDIR
+  std::string configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+  std::string data_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          false);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
+  data_path = Common_File_Tools::getWorkingDirectory ();
+#endif // DEBUG_DEBUGGER
 
-  bool dumpDictionary = false;
+  bool dump_dictionary = false;
 
-  std::string soundDirectory = data_path;
-  soundDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  soundDirectory += ACE_TEXT_ALWAYS_CHAR("sound");
-  soundDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  soundDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
+  std::string sound_directory = data_path;
+  sound_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined (DEBUG_DEBUGGER)
+  sound_directory += ACE_TEXT_ALWAYS_CHAR ("sound");
+  sound_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  sound_directory += ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_DATA_SUB);
 #else
-  soundDirectory += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DATA_SUB);
-#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  sound_directory += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DATA_SUB);
+#endif // DEBUG_DEBUGGER
 
-  bool playRandomSounds = SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS;
+  bool play_random_sounds = SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS;
 
-  std::string schemaRepository = config_path;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  schemaRepository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schemaRepository += ACE_TEXT_ALWAYS_CHAR("engine");
-#endif
+  std::string schema_repository = configuration_path;
+#if defined (DEBUG_DEBUGGER)
+  schema_repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository += ACE_TEXT_ALWAYS_CHAR("engine");
+#endif // DEBUG_DEBUGGER
 
-  std::string filename = config_path;
+  std::string filename = configuration_path;
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  filename += ACE_TEXT_ALWAYS_CHAR("sound");
+#if defined (DEBUG_DEBUGGER)
+  filename += ACE_TEXT_ALWAYS_CHAR ("sound");
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DICTIONARY_FILE);
+#endif // DEBUG_DEBUGGER
+  filename += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DICTIONARY_FILE);
 
-  bool traceInformation = false;
-  bool printVersionAndExit = false;
-  bool validateXML = true;
+  bool trace_information = false;
+  bool print_version_and_exit = false;
+  bool validate_XML = true;
 
 //  RPG_Sound_SDLConfig_t audio_config;
 //  audio_config.frequency = RPG_SOUND_DEF_AUDIO_FREQUENCY;
@@ -507,108 +510,105 @@ ACE_TMAIN(int argc,
 //  audio_config.chunksize = RPG_SOUND_DEF_AUDIO_CHUNKSIZE;
 
   // step1b: parse/process/validate configuration
-  if (!process_arguments(argc,
-                         argv,
-                         dumpDictionary,
-                         soundDirectory,
-                         playRandomSounds,
-                         filename,
-                         traceInformation,
-                         printVersionAndExit,
-                         validateXML))
+  if (!do_processArguments (argc_in,
+                            argv_in,
+                            dump_dictionary,
+                            sound_directory,
+                            play_random_sounds,
+                            filename,
+                            trace_information,
+                            print_version_and_exit,
+                            validate_XML))
   {
     // make 'em learn...
-    print_usage(std::string(ACE::basename(argv[0])));
+    do_printUsage (ACE::basename (argv_in[0]));
 
-//    // *PORTABILITY*: on Windows, we must fini ACE...
-//#if defined (ACE_WIN32) || defined (ACE_WIN64)
-//    if (ACE::fini() == -1)
-//      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-//#endif
+    // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
 
   // step1b: validate arguments
-  if ((playRandomSounds && !RPG_Common_File_Tools::isDirectory(soundDirectory)) ||
-      !RPG_Common_File_Tools::isReadable(filename))
+  if ((play_random_sounds &&
+       !Common_File_Tools::isDirectory (sound_directory)) ||
+      !Common_File_Tools::isReadable (filename))
   {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("invalid argument, aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("invalid argument, aborting\n")));
 
     // make 'em learn...
-    print_usage(std::string(ACE::basename(argv[0])));
+    do_printUsage (ACE::basename (argv_in[0]));
 
-//    // *PORTABILITY*: on Windows, we must fini ACE...
-//#if defined (ACE_WIN32) || defined (ACE_WIN64)
-//    if (ACE::fini() == -1)
-//      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-//#endif
+    // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
 
-  // step1c: set correct trace level
-  //ACE_Trace::start_tracing();
-  if (!traceInformation)
+  // step1c: initialize logging and/or tracing
+  std::string log_file;
+  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
+                                        log_file,                  // logfile
+                                        false,                     // log to syslog ?
+                                        false,                     // trace messages ?
+                                        trace_information,         // debug messages ?
+                                        NULL))                     // logger
   {
-    u_long process_priority_mask = (LM_SHUTDOWN |
-                                    //LM_INFO |  // <-- DISABLE trace messages !
-                                    //LM_DEBUG |
-                                    LM_INFO |
-                                    LM_NOTICE |
-                                    LM_WARNING |
-                                    LM_STARTUP |
-                                    LM_ERROR |
-                                    LM_CRITICAL |
-                                    LM_ALERT |
-                                    LM_EMERGENCY);
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Common_Tools::initLogging(), aborting\n")));
 
-    // set new mask...
-    ACE_LOG_MSG->priority_mask(process_priority_mask,
-                               ACE_Log_Msg::PROCESS);
+    // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
+#endif
 
-    //ACE_LOG_MSG->stop_tracing();
-
-    // don't go VERBOSE...
-    //ACE_LOG_MSG->clr_flags(ACE_Log_Msg::VERBOSE_LITE);
+    return EXIT_FAILURE;
   } // end IF
 
   // step1d: handle specific program modes
-  if (printVersionAndExit)
+  if (print_version_and_exit)
   {
-    do_printVersion(std::string(ACE::basename(argv[0])));
+    do_printVersion (ACE::basename (argv_in[0]));
 
     return EXIT_SUCCESS;
   } // end IF
 
   // step2: init SDL
-  if (SDL_Init(SDL_INIT_TIMER |
-               SDL_INIT_AUDIO |
-               SDL_INIT_CDROM |
-               SDL_INIT_NOPARACHUTE) == -1) // "...Prevents SDL from catching fatal signals..."
+  if (SDL_Init (SDL_INIT_TIMER |
+                SDL_INIT_AUDIO |
+                SDL_INIT_CDROM |
+                SDL_INIT_NOPARACHUTE) == -1) // "...Prevents SDL from catching fatal signals..."
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_Init(): \"%s\", aborting\n"),
-               SDL_GetError()));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_Init(): \"%s\", aborting\n"),
+                ACE_TEXT (SDL_GetError ())));
 
-//    // *PORTABILITY*: on Windows, we must fini ACE...
-//#if defined (ACE_WIN32) || defined (ACE_WIN64)
-//    if (ACE::fini() == -1)
-//      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-//#endif
+    // *PORTABILITY*: on Windows, we must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_FAILURE;
   } // end IF
   // ***** keyboard setup *****
   // enable Unicode translation
-  SDL_EnableUNICODE(1);
+  SDL_EnableUNICODE (1);
   // enable key repeat
-  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,
-                      SDL_DEFAULT_REPEAT_INTERVAL);
+  SDL_EnableKeyRepeat (SDL_DEFAULT_REPEAT_DELAY,
+                       SDL_DEFAULT_REPEAT_INTERVAL);
 //   // ignore keyboard events
 //   SDL_EventState(SDL_KEYDOWN, SDL_IGNORE);
 //   SDL_EventState(SDL_KEYUP, SDL_IGNORE);
@@ -618,37 +618,36 @@ ACE_TMAIN(int argc,
 
   // step3: do actual work
   ACE_High_Res_Timer timer;
-  timer.start();
-  do_work(dumpDictionary,
-          soundDirectory,
-          playRandomSounds,
-					schemaRepository,
-          filename,
-          validateXML);
-  timer.stop();
+  timer.start ();
+  do_work (dump_dictionary,
+           sound_directory,
+           play_random_sounds,
+           schema_repository,
+           filename,
+           validate_XML);
+  timer.stop ();
   // debug info
   std::string working_time_string;
   ACE_Time_Value working_time;
-  timer.elapsed_time(working_time);
-  RPG_Common_Tools::period2String(working_time,
-                                  working_time_string);
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
-             working_time_string.c_str()));
+  timer.elapsed_time (working_time);
+  Common_Tools::period2String (working_time,
+                               working_time_string);
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
+              ACE_TEXT (working_time_string.c_str ())));
 
   // step4a: fini SDL
-  SDL_Quit();
+  SDL_Quit ();
 
-//  // *PORTABILITY*: on Windows, we must fini ACE...
-//#if defined (ACE_WIN32) || defined (ACE_WIN64)
-//  if (ACE::fini() == -1)
-//  {
-//    ACE_DEBUG((LM_ERROR,
-//               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
-//
-//    return EXIT_FAILURE;
-//  } // end IF
-//#endif
+  // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::fini () == -1)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
+    return EXIT_FAILURE;
+  } // end IF
+#endif
 
   return EXIT_SUCCESS;
 } // end main

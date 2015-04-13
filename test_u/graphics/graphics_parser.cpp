@@ -24,7 +24,6 @@
 #include <sstream>
 #include <string>
 
-#include "ace/ACE.h"
 #include "ace/Get_Opt.h"
 #include "ace/High_Res_Timer.h"
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -45,7 +44,7 @@
 #include "rpg_common_defines.h"
 #include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
-#include "rpg_common_tools.h"
+//#include "rpg_common_tools.h"
 #include "rpg_common_XML_tools.h"
 
 #include "rpg_graphics_common_tools.h"
@@ -53,15 +52,15 @@
 #include "rpg_graphics_dictionary.h"
 
 void
-do_printUsage(const std::string& programName_in)
+do_printUsage (const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_printUsage"));
+  RPG_TRACE (ACE_TEXT ("::do_printUsage"));
 
   std::string configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           true);
-#if defined(DEBUG_DEBUGGER)
-  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory();
 #endif
 
   std::cout << ACE_TEXT("usage: ")

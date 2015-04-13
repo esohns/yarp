@@ -32,8 +32,6 @@
 #include "ace/Init_ACE.h"
 #endif
 #include "ace/Profile_Timer.h"
-#include "ace/Reactor.h"
-#include "ace/TP_Reactor.h"
 #include "ace/Sig_Handler.h"
 #include "ace/Signal.h"
 #include "ace/Version.h"
@@ -70,27 +68,28 @@ do_printUsage (const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
 
-  std::string config_path = Common_File_Tools::getWorkingDirectory ();
-#ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                     true);
-#endif // #ifdef BASEDIR
+  std::string configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
+#endif // #ifdef DEBUG_DEBUGGER
 
-  std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
-  std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::string path = config_path;
+  std::cout << ACE_TEXT ("usage: ") << programName_in << ACE_TEXT (" [OPTIONS]") << std::endl << std::endl;
+  std::cout << ACE_TEXT ("currently available options:") << std::endl;
+  std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  path += ACE_TEXT_ALWAYS_CHAR("protocol");
+#if defined (DEBUG_DEBUGGER)
+  path += ACE_TEXT_ALWAYS_CHAR ("protocol");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_DEF_INI_FILE);
-  std::cout << ACE_TEXT("-c [FILE]   : config file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-d          : debug parser") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-l          : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-t          : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-v          : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-x [VALUE]  : #thread pool threads ([") << IRC_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
+  path += ACE_TEXT_ALWAYS_CHAR (IRC_CLIENT_CNF_DEF_INI_FILE);
+  std::cout << ACE_TEXT ("-c [FILE]   : config file") << ACE_TEXT (" [\"") << path.c_str () << ACE_TEXT ("\"]") << std::endl;
+  std::cout << ACE_TEXT ("-d          : debug parser") << ACE_TEXT (" [") << false << ACE_TEXT ("]") << std::endl;
+  std::cout << ACE_TEXT ("-l          : log to a file") << ACE_TEXT (" [") << false << ACE_TEXT ("]") << std::endl;
+  std::cout << ACE_TEXT ("-t          : trace information") << ACE_TEXT (" [") << false << ACE_TEXT ("]") << std::endl;
+  std::cout << ACE_TEXT ("-v          : print version information and exit") << ACE_TEXT (" [") << false << ACE_TEXT ("]") << std::endl;
+  std::cout << ACE_TEXT ("-x [VALUE]  : #thread pool threads ([") << IRC_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT ("]") << std::endl;
 } // end print_usage
 
 bool
@@ -352,21 +351,21 @@ do_work (RPG_Net_Protocol_Configuration& configuration_in,
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->set (configuration_in,
                                                                   &session_data);
 
-  // step5a: start GTK event loop
-  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start ();
-  if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to start GTK event dispatch, aborting\n")));
+  //// step5a: start GTK event loop
+  //COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start ();
+  //if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
+  //{
+  //  ACE_DEBUG ((LM_ERROR,
+  //              ACE_TEXT ("failed to start GTK event dispatch, aborting\n")));
 
-    // clean up
-    delete connector_p;
-    Common_Tools::finalizeSignals (signal_set,
-                                   RPG_NET_USES_REACTOR,
-                                   previous_signal_actions);
+  //  // clean up
+  //  delete connector_p;
+  //  Common_Tools::finalizeSignals (signal_set,
+  //                                 RPG_NET_USES_REACTOR,
+  //                                 previous_signal_actions);
 
-    return;
-  } // end IF
+  //  return;
+  //} // end IF
 
   // step5b: initialize worker(s)
   int group_id = -1;
@@ -736,12 +735,12 @@ ACE_TMAIN (int argc_in,
   std::string log_file;
   if (log_to_file)
     log_file = RPG_Common_File_Tools::getLogFilename (ACE::basename (argv_in[0]));
-  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]),   // program name
-                                        log_file,                    // logfile
-                                        false,                       // log to syslog ?
-                                        false,                       // trace messages ?
-                                        trace_information,           // debug messages ?
-                                        NULL))                       // logger
+  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
+                                        log_file,                   // logfile
+                                        false,                      // log to syslog ?
+                                        false,                      // trace messages ?
+                                        trace_information,          // debug messages ?
+                                        NULL))                      // logger
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));
@@ -750,7 +749,7 @@ ACE_TMAIN (int argc_in,
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
-      ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -772,18 +771,18 @@ ACE_TMAIN (int argc_in,
   } // end IF
 
   // initialize configuration object
-  Stream_AllocatorHeap heapAllocator;
-  RPG_Net_Protocol_MessageAllocator messageAllocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
-                                                      &heapAllocator);
-  RPG_Net_Protocol_Module_IRCHandler_Module IRChandlerModule (std::string ("IRCHandler"),
-                                                              NULL);
-  RPG_Net_Protocol_Module_IRCHandler* IRChandler_impl = NULL;
-  IRChandler_impl =
-   dynamic_cast<RPG_Net_Protocol_Module_IRCHandler*>(IRChandlerModule.writer());
-  if (!IRChandler_impl)
+  Stream_AllocatorHeap heap_allocator;
+  RPG_Net_Protocol_MessageAllocator message_allocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
+                                                       &heap_allocator);
+  RPG_Net_Protocol_Module_IRCHandler_Module IRC_handler_module (std::string ("IRCHandler"),
+                                                                NULL);
+  RPG_Net_Protocol_Module_IRCHandler* IRC_handler_impl = NULL;
+  IRC_handler_impl =
+    dynamic_cast<RPG_Net_Protocol_Module_IRCHandler*>(IRC_handler_module.writer ());
+  if (!IRC_handler_impl)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("dynamic_cast<RPG_Net_Protocol_Module_IRCHandler) failed> (aborting\n")));
+                ACE_TEXT ("dynamic_cast<RPG_Net_Protocol_Module_IRCHandler> failed, aborting\n")));
 
     // *PORTABILITY*: on Windows, fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -794,14 +793,14 @@ ACE_TMAIN (int argc_in,
 
     return EXIT_FAILURE;
   } // end IF
-  if (!IRChandler_impl->initialize (&messageAllocator,
-                                    RPG_NET_PROTOCOL_BUFFER_SIZE,
-                                    true,              // auto-answer "ping" as a client ?...
-                                    true))             // clients print ('.') dots for received "pings"...
+  if (!IRC_handler_impl->initialize (&message_allocator,
+                                     RPG_NET_PROTOCOL_BUFFER_SIZE,
+                                     true,                         // auto-answer "ping" as a client ?...
+                                     true))                        // clients print ('.') dots for received "pings"...
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to initialize module: \"%s\", aborting\n"),
-                ACE_TEXT (IRChandlerModule.name ())));
+                ACE_TEXT (IRC_handler_module.name ())));
 
     // *PORTABILITY*: on Windows, fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -818,9 +817,9 @@ ACE_TMAIN (int argc_in,
   configuration.socketConfiguration.bufferSize = NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
 
   // ************ stream configuration data ****************
-  configuration.streamConfiguration.messageAllocator = &messageAllocator;
+  configuration.streamConfiguration.messageAllocator = &message_allocator;
   configuration.streamConfiguration.bufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
-  configuration.streamConfiguration.module = &IRChandlerModule;
+  configuration.streamConfiguration.module = &IRC_handler_module;
   configuration.streamConfiguration.statisticReportingInterval = 0; // == off
 
   // ************ protocol configuration data **************
@@ -874,7 +873,7 @@ ACE_TMAIN (int argc_in,
            serverPortNumber,
            num_thread_pool_threads);
   // clean up
-  IRChandlerModule.close ();
+  IRC_handler_module.close ();
   timer.stop ();
 
   // debug info
@@ -911,9 +910,7 @@ ACE_TMAIN (int argc_in,
     return EXIT_FAILURE;
   } // end IF
   ACE_Profile_Timer::Rusage elapsed_rusage;
-  ACE_OS::memset (&elapsed_rusage,
-                  0,
-                  sizeof (ACE_Profile_Timer::Rusage));
+  ACE_OS::memset (&elapsed_rusage, 0, sizeof (ACE_Profile_Timer::Rusage));
   process_profile.elapsed_rusage(elapsed_rusage);
   ACE_Time_Value user_time(elapsed_rusage.ru_utime);
   ACE_Time_Value system_time(elapsed_rusage.ru_stime);

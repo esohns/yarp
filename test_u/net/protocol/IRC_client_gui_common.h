@@ -21,18 +21,22 @@
 #ifndef IRC_CLIENT_GUI_COMMON_H
 #define IRC_CLIENT_GUI_COMMON_H
 
-#include "rpg_net_protocol_common.h"
-#include "rpg_net_protocol_iIRCControl.h"
-
-#include <gtk/gtk.h>
-
-#include <ace/Synch.h>
-
-#include <vector>
+#include <map>
 #include <string>
+#include <vector>
+
+#include "gtk/gtk.h"
+
+#include "common_ui_common.h"
+
+#include "rpg_net_protocol_common.h"
+//#include "rpg_net_protocol_configuration.h"
+#include "rpg_net_protocol_IRCmessage.h"
 
 // forward declaration(s)
-class RPG_Stream_IAllocator;
+class ACE_Thread_Mutex;
+struct RPG_Net_Protocol_Configuration;
+class RPG_Net_Protocol_IIRCControl;
 class IRC_Client_GUI_Connection;
 
 typedef std::map<std::string, IRC_Client_GUI_Connection*> connections_t;
@@ -40,41 +44,34 @@ typedef connections_t::iterator connections_iterator_t;
 
 struct main_cb_data_t
 {
-  RPG_Stream_IAllocator*           allocator;
-  bool                             debugParser;
-  bool                             debugScanner;
-  unsigned long                    statisticsReportingInterval; // seconds [0 --> OFF]
-  std::string                      UIFileDirectory;
-  // *WARNING*: mainBuilder needs exclusive access under the "connectionsLock"
-  GtkBuilder*                      builder;
-  RPG_Net_Protocol_PhoneBook       phoneBook;
-  RPG_Net_Protocol_IRCLoginOptions loginOptions;
-  ACE_Thread_Mutex                 connectionsLock;
-  connections_t                    connections;
+  RPG_Net_Protocol_Configuration* configuration;
+  connections_t                   connections;
+  Common_UI_GTKState              GTKState;
+  RPG_Net_Protocol_PhoneBook      phoneBook;
+  std::string                     UIFileDirectory;
 };
 
 struct connection_cb_data_t
 {
-  // *WARNING*: mainBuilder needs exclusive access under the "connectionsLock"
-  GtkBuilder*                   mainBuilder;
-  GtkBuilder*                   builder;
-  std::string                   nickname;
-  RPG_Net_Protocol_UserModes_t  userModes;
-  RPG_Net_Protocol_IIRCControl* controller;
-  ACE_Thread_Mutex*             connectionsLock;
-  connections_t*                connections;
-  IRC_Client_GUI_Connection*    connection;
   // *TODO*: couldn't it be done without this one ?
   bool                          away;
+  GtkBuilder*                   builder;
+  IRC_Client_GUI_Connection*    connection;
+  connections_t*                connections;
+  RPG_Net_Protocol_IIRCControl* controller;
+  ACE_Thread_Mutex*             lock;
+  GtkBuilder*                   mainBuilder;
+  std::string                   nickname;
+  RPG_Net_Protocol_UserModes_t  userModes;
 };
 
 struct handler_cb_data_t
 {
-  IRC_Client_GUI_Connection*      connection;
   GtkBuilder*                     builder;
-  std::string                     id;
   RPG_Net_Protocol_ChannelModes_t channelModes;
+  IRC_Client_GUI_Connection*      connection;
   RPG_Net_Protocol_IIRCControl*   controller;
+  std::string                     id;
   string_list_t                   parameters;
 };
 

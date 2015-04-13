@@ -240,10 +240,10 @@ update_equipment(const RPG_Client_GTK_CBData_t& data_in)
 }
 
 void
-update_character_profile(const RPG_Player& player_in,
-                         GladeXML* xml_in)
+update_character_profile (const RPG_Player& player_in,
+                          GladeXML* xml_in)
 {
-  RPG_TRACE(ACE_TEXT("::update_character_profile"));
+  RPG_TRACE (ACE_TEXT ("::update_character_profile"));
 
   // sanity check(s)
   ACE_ASSERT(xml_in);
@@ -253,21 +253,20 @@ update_character_profile(const RPG_Player& player_in,
   GtkWidget* current = NULL;
 
   // step1: name
-  current = GTK_WIDGET(glade_xml_get_widget(xml_in,
-                                            ACE_TEXT_ALWAYS_CHAR("name")));
+  current = GTK_WIDGET (glade_xml_get_widget (xml_in,
+                                              ACE_TEXT_ALWAYS_CHAR ("name")));
   ACE_ASSERT(current);
-	gchar* text_p = RPG_Client_UI_Tools::Locale2UTF8(player_in.getName());
-	if (!text_p)
-	{
-		ACE_DEBUG((LM_ERROR,
-							 ACE_TEXT("failed to RPG_Client_UI_Tools::Locale2UTF8(\"%s\"), aborting\n"),
-							 ACE_TEXT(player_in.getName().c_str())));
-
-		return;
-	} // end IF
-  gtk_label_set_text(GTK_LABEL(current),
-										 text_p);
-	g_free(text_p);
+  gchar* text_p = RPG_Client_UI_Tools::Locale2UTF8 (player_in.getName ());
+  if (!text_p)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Client_UI_Tools::Locale2UTF8(\"%s\"), returning\n"),
+                ACE_TEXT (player_in.getName ().c_str ())));
+    return;
+  } // end IF
+  gtk_label_set_text (GTK_LABEL (current),
+                      text_p);
+  g_free (text_p);
 
   // step2: gender
   const RPG_Character_Gender& player_gender = player_in.getGender();
@@ -278,7 +277,7 @@ update_character_profile(const RPG_Player& player_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid gender (was: \"%s\"), aborting\n"),
-								 ACE_TEXT(RPG_Character_GenderHelper::RPG_Character_GenderToString(player_gender).c_str())));
+                 ACE_TEXT (RPG_Character_GenderHelper::RPG_Character_GenderToString (player_gender).c_str ())));
 
       return;
     }
@@ -315,7 +314,7 @@ update_character_profile(const RPG_Player& player_in,
           {
             ACE_DEBUG((LM_ERROR,
                        ACE_TEXT("invalid race (was: \"%s\"), aborting\n"),
-											 ACE_TEXT(RPG_Character_RaceHelper::RPG_Character_RaceToString(static_cast<RPG_Character_Race> (race_index)).c_str())));
+                       ACE_TEXT (RPG_Character_RaceHelper::RPG_Character_RaceToString (static_cast<RPG_Character_Race> (race_index)).c_str ())));
 
             return;
           }
@@ -347,7 +346,7 @@ update_character_profile(const RPG_Player& player_in,
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid metaclass (was: \"%s\"), aborting\n"),
-								 ACE_TEXT(RPG_Character_MetaClassHelper::RPG_Character_MetaClassToString(player_class.metaClass).c_str())));
+                 ACE_TEXT (RPG_Character_MetaClassHelper::RPG_Character_MetaClassToString (player_class.metaClass).c_str ())));
 
       break;
     }
@@ -375,7 +374,7 @@ update_character_profile(const RPG_Player& player_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid subclass (was: \"%s\"), aborting\n"),
-									 ACE_TEXT(RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str())));
+                   ACE_TEXT (RPG_Common_SubClassHelper::RPG_Common_SubClassToString (*iterator).c_str ())));
 
         break;
       }
@@ -418,7 +417,7 @@ update_character_profile(const RPG_Player& player_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid alignment (civic) (was: \"%s\"), aborting\n"),
-									 ACE_TEXT(RPG_Character_AlignmentCivicHelper::RPG_Character_AlignmentCivicToString(player_alignment.civic).c_str())));
+                   ACE_TEXT (RPG_Character_AlignmentCivicHelper::RPG_Character_AlignmentCivicToString (player_alignment.civic).c_str ())));
 
         break;
       }
@@ -438,7 +437,7 @@ update_character_profile(const RPG_Player& player_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid alignment (ethic) (was: \"%s\"), aborting\n"),
-									 ACE_TEXT(RPG_Character_AlignmentEthicHelper::RPG_Character_AlignmentEthicToString(player_alignment.ethic).c_str())));
+                   ACE_TEXT (RPG_Character_AlignmentEthicHelper::RPG_Character_AlignmentEthicToString (player_alignment.ethic).c_str ())));
 
         break;
       }
@@ -460,9 +459,9 @@ update_character_profile(const RPG_Player& player_in,
   // step6: HP
   //converter.str(ACE_TEXT_ALWAYS_CHAR(""));
   //converter.clear();
-	converter << player_in.getNumHitPoints();
+  converter << player_in.getNumHitPoints ();
   converter << ACE_TEXT_ALWAYS_CHAR(" / ");
-	converter << player_in.getNumTotalHitPoints();
+  converter << player_in.getNumTotalHitPoints ();
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("hitpoints")));
   ACE_ASSERT(current);
@@ -472,11 +471,11 @@ update_character_profile(const RPG_Player& player_in,
   // step7: AC
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
   converter.clear();
-	converter << static_cast<int>(player_in.getArmorClass(DEFENSE_NORMAL));
+  converter << static_cast<int>(player_in.getArmorClass (DEFENSE_NORMAL));
   converter << ACE_TEXT_ALWAYS_CHAR(" / ");
-	converter << static_cast<int>(player_in.getArmorClass(DEFENSE_TOUCH));
+  converter << static_cast<int>(player_in.getArmorClass (DEFENSE_TOUCH));
   converter << ACE_TEXT_ALWAYS_CHAR(" / ");
-	converter << static_cast<int>(player_in.getArmorClass(DEFENSE_FLATFOOTED));
+  converter << static_cast<int>(player_in.getArmorClass (DEFENSE_FLATFOOTED));
   current =
       GTK_WIDGET(glade_xml_get_widget(xml_in,
                                       ACE_TEXT_ALWAYS_CHAR("armorclass")));
@@ -487,7 +486,7 @@ update_character_profile(const RPG_Player& player_in,
   // step8: XP
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
   converter.clear();
-	converter << player_in.getExperience();
+  converter << player_in.getExperience ();
   current =
       GTK_WIDGET(glade_xml_get_widget(xml_in,
                                       ACE_TEXT_ALWAYS_CHAR("experience")));
@@ -531,7 +530,7 @@ update_character_profile(const RPG_Player& player_in,
   // step10: gold
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
   converter.clear();
-	converter << player_in.getWealth();
+  converter << player_in.getWealth ();
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("gold")));
   ACE_ASSERT(current);
@@ -556,8 +555,8 @@ update_character_profile(const RPG_Player& player_in,
     //} // end FOR
 
     //g_list_free(entries);
-		g_list_free_full(entries,
-										 (GDestroyNotify)gtk_widget_destroy);
+    g_list_free_full (entries,
+                      (GDestroyNotify)gtk_widget_destroy);
   } // end IF
   GtkWidget* label = NULL;
   const RPG_Character_Conditions_t& player_condition = player_in.getCondition();
@@ -566,7 +565,7 @@ update_character_profile(const RPG_Player& player_in,
        iterator++)
   {
     text =
-        RPG_Common_Tools::enumToString(RPG_Common_ConditionHelper::RPG_Common_ConditionToString(*iterator));
+      RPG_Common_Tools::enumToString (RPG_Common_ConditionHelper::RPG_Common_ConditionToString (*iterator));
     label = NULL;
     label = gtk_label_new(text.c_str());
     ACE_ASSERT(label);
@@ -581,7 +580,7 @@ update_character_profile(const RPG_Player& player_in,
   // step12: attributes
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
   converter.clear();
-	converter << static_cast<unsigned int>(player_in.getAttribute(ATTRIBUTE_STRENGTH));
+  converter << static_cast<unsigned int>(player_in.getAttribute (ATTRIBUTE_STRENGTH));
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("strength")));
   ACE_ASSERT(current);
@@ -589,7 +588,7 @@ update_character_profile(const RPG_Player& player_in,
                      converter.str().c_str());
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
   converter.clear();
-	converter << static_cast<unsigned int>(player_in.getAttribute(ATTRIBUTE_DEXTERITY));
+  converter << static_cast<unsigned int>(player_in.getAttribute (ATTRIBUTE_DEXTERITY));
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("dexterity")));
   ACE_ASSERT(current);
@@ -597,7 +596,7 @@ update_character_profile(const RPG_Player& player_in,
                      converter.str().c_str());
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
   converter.clear();
-	converter << static_cast<unsigned int>(player_in.getAttribute(ATTRIBUTE_CONSTITUTION));
+  converter << static_cast<unsigned int>(player_in.getAttribute (ATTRIBUTE_CONSTITUTION));
   current =
       GTK_WIDGET(glade_xml_get_widget(xml_in,
                                       ACE_TEXT_ALWAYS_CHAR("constitution")));
@@ -606,7 +605,7 @@ update_character_profile(const RPG_Player& player_in,
                      converter.str().c_str());
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
   converter.clear();
-	converter << static_cast<unsigned int>(player_in.getAttribute(ATTRIBUTE_INTELLIGENCE));
+  converter << static_cast<unsigned int>(player_in.getAttribute (ATTRIBUTE_INTELLIGENCE));
   current =
       GTK_WIDGET(glade_xml_get_widget(xml_in,
                                       ACE_TEXT_ALWAYS_CHAR("intelligence")));
@@ -615,7 +614,7 @@ update_character_profile(const RPG_Player& player_in,
                      converter.str().c_str());
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
   converter.clear();
-	converter << static_cast<unsigned int>(player_in.getAttribute(ATTRIBUTE_WISDOM));
+  converter << static_cast<unsigned int>(player_in.getAttribute (ATTRIBUTE_WISDOM));
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("wisdom")));
   ACE_ASSERT(current);
@@ -623,7 +622,7 @@ update_character_profile(const RPG_Player& player_in,
                      converter.str().c_str());
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
   converter.clear();
-	converter << static_cast<unsigned int>(player_in.getAttribute(ATTRIBUTE_CHARISMA));
+  converter << static_cast<unsigned int>(player_in.getAttribute (ATTRIBUTE_CHARISMA));
   current = GTK_WIDGET(glade_xml_get_widget(xml_in,
                                             ACE_TEXT_ALWAYS_CHAR("charisma")));
   ACE_ASSERT(current);
@@ -639,18 +638,18 @@ update_character_profile(const RPG_Player& player_in,
 //   ACE_ASSERT(entries);
   if (entries)
   {
-		//for (GList* iterator = entries;
-		//     iterator;
-		//     iterator = g_list_next(iterator))
-		//{
-		//  // *NOTE*: effectively removes the widget from the container...
-		//  gtk_widget_destroy(GTK_WIDGET(iterator->data));
-		//} // end FOR
+    //for (GList* iterator = entries;
+    //     iterator;
+    //     iterator = g_list_next(iterator))
+    //{
+    //  // *NOTE*: effectively removes the widget from the container...
+    //  gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    //} // end FOR
 
-		//g_list_free(entries);
-		g_list_free_full(entries,
-										 (GDestroyNotify)gtk_widget_destroy);
-	} // end IF
+    //g_list_free(entries);
+    g_list_free_full (entries,
+                      (GDestroyNotify)gtk_widget_destroy);
+  } // end IF
   label = NULL;
   const RPG_Character_Feats_t& player_feats = player_in.getFeats();
   for (RPG_Character_FeatsConstIterator_t iterator = player_feats.begin();
@@ -679,18 +678,18 @@ update_character_profile(const RPG_Player& player_in,
 //   ACE_ASSERT(entries);
   if (entries)
   {
-		//for (GList* iterator = entries;
-		//     iterator;
-		//     iterator = g_list_next(iterator))
-		//{
-		//  // *NOTE*: effectively removes the widget from the container...
-		//  gtk_widget_destroy(GTK_WIDGET(iterator->data));
-		//} // end FOR
+    //for (GList* iterator = entries;
+    //     iterator;
+    //     iterator = g_list_next(iterator))
+    //{
+    //  // *NOTE*: effectively removes the widget from the container...
+    //  gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    //} // end FOR
 
-		//g_list_free(entries);
-		g_list_free_full(entries,
-										 (GDestroyNotify)gtk_widget_destroy);
-	} // end IF
+    //g_list_free(entries);
+    g_list_free_full (entries,
+                      (GDestroyNotify)gtk_widget_destroy);
+  } // end IF
   const RPG_Character_Abilities_t& player_abilities = player_in.getAbilities();
   for (RPG_Character_AbilitiesConstIterator_t iterator =
        player_abilities.begin();
@@ -719,24 +718,24 @@ update_character_profile(const RPG_Player& player_in,
 //   ACE_ASSERT(entries);
   if (entries)
   {
-		//for (GList* iterator = entries;
-		//     iterator;
-		//     iterator = g_list_next(iterator))
-		//{
-		//  // *NOTE*: effectively removes the widget from the container...
-		//  gtk_widget_destroy(GTK_WIDGET(iterator->data));
-		//} // end FOR
+    //for (GList* iterator = entries;
+    //     iterator;
+    //     iterator = g_list_next(iterator))
+    //{
+    //  // *NOTE*: effectively removes the widget from the container...
+    //  gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    //} // end FOR
 
-		//g_list_free(entries);
-		g_list_free_full(entries,
-										 (GDestroyNotify)gtk_widget_destroy);
-	} // end IF
+    //g_list_free(entries);
+    g_list_free_full (entries,
+                      (GDestroyNotify)gtk_widget_destroy);
+  } // end IF
   //GtkWidget* current_box = NULL;
   const RPG_Character_Skills_t& player_skills = player_in.getSkills();
-	gtk_table_resize(GTK_TABLE(current),
-									 player_skills.size(), 2);
-	unsigned int index = 0;
-	GtkAttachOptions attach_options = GTK_SHRINK;
+  gtk_table_resize (GTK_TABLE (current),
+                    player_skills.size (), 2);
+  unsigned int index = 0;
+  GtkAttachOptions attach_options = GTK_SHRINK;
   for (RPG_Character_SkillsConstIterator_t iterator = player_skills.begin();
        iterator != player_skills.end();
        iterator++, index++)
@@ -754,10 +753,10 @@ update_character_profile(const RPG_Player& player_in,
     //                   FALSE, // expand
     //                   FALSE, // fill
     //                   0);    // padding
-		gtk_table_attach_defaults(GTK_TABLE(current),
-															label,
-															0, 1,
-															index, index + 1);
+    gtk_table_attach_defaults (GTK_TABLE (current),
+                               label,
+                               0, 1,
+                               index, index + 1);
 
     converter.str(ACE_TEXT(""));
     converter.clear();
@@ -770,12 +769,12 @@ update_character_profile(const RPG_Player& player_in,
     //                   FALSE, // expand
     //                   FALSE, // fill
     //                   0);    // padding
-		gtk_table_attach(GTK_TABLE(current),
-										 label,
-										 1, 2,
-										 index, index + 1,
-										 attach_options, attach_options,
-										 3, 0);
+    gtk_table_attach (GTK_TABLE (current),
+                      label,
+                      1, 2,
+                      index, index + 1,
+                      attach_options, attach_options,
+                      3, 0);
 
 //     gtk_container_add(GTK_CONTAINER(current), label);
     //gtk_box_pack_start(GTK_BOX(current), current_box,
@@ -786,18 +785,18 @@ update_character_profile(const RPG_Player& player_in,
   gtk_widget_show_all(current);
 
   // step16: spells
-	GtkNotebook* notebook =
-		GTK_NOTEBOOK(glade_xml_get_widget(xml_in,
-		                                  ACE_TEXT_ALWAYS_CHAR("notebook")));
-	ACE_ASSERT(notebook);
-	current = gtk_notebook_get_nth_page(notebook,
-																			3);
+  GtkNotebook* notebook =
+    GTK_NOTEBOOK (glade_xml_get_widget (xml_in,
+                                        ACE_TEXT_ALWAYS_CHAR ("notebook")));
+  ACE_ASSERT (notebook);
+  current = gtk_notebook_get_nth_page (notebook,
+                                       3);
   //current =
   //    GTK_WIDGET(glade_xml_get_widget(xml_in,
   //                                    ACE_TEXT_ALWAYS_CHAR("spells_frame")));
   ACE_ASSERT(current);
-	gtk_widget_set_sensitive(current,
-													 RPG_Magic_Common_Tools::hasCasterClass(player_class));
+  gtk_widget_set_sensitive (current,
+                            RPG_Magic_Common_Tools::hasCasterClass (player_class));
   //if (!RPG_Magic_Common_Tools::hasCasterClass(player_class))
   //  gtk_widget_hide_all(current);
   //else
@@ -821,17 +820,17 @@ update_character_profile(const RPG_Player& player_in,
 //   ACE_ASSERT(entries);
   if (entries)
   {
-		//for (GList* iterator = entries;
-		//     iterator;
-		//     iterator = g_list_next(iterator))
-		//{
-		//  // *NOTE*: effectively removes the widget from the container...
-		//  gtk_widget_destroy(GTK_WIDGET(iterator->data));
-		//} // end FOR
+    //for (GList* iterator = entries;
+    //     iterator;
+    //     iterator = g_list_next(iterator))
+    //{
+    //  // *NOTE*: effectively removes the widget from the container...
+    //  gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    //} // end FOR
 
-		//g_list_free(entries);
-		g_list_free_full(entries,
-										 (GDestroyNotify)gtk_widget_destroy);
+    //g_list_free(entries);
+    g_list_free_full (entries,
+                      (GDestroyNotify)gtk_widget_destroy);
   } // end IF
   const RPG_Magic_SpellTypes_t& player_known_spells =
       player_in.getKnownSpells();
@@ -860,49 +859,49 @@ update_character_profile(const RPG_Player& player_in,
 //   ACE_ASSERT(entries);
   if (entries)
   {
-		//for (GList* iterator = entries;
-		//     iterator;
-		//     iterator = g_list_next(iterator))
-		//{
-		//  // *NOTE*: effectively removes the widget from the container...
-		//  gtk_widget_destroy(GTK_WIDGET(iterator->data));
-		//} // end FOR
+    //for (GList* iterator = entries;
+    //     iterator;
+    //     iterator = g_list_next(iterator))
+    //{
+    //  // *NOTE*: effectively removes the widget from the container...
+    //  gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    //} // end FOR
 
-		//g_list_free(entries);
-		g_list_free_full(entries,
-										 (GDestroyNotify)gtk_widget_destroy);
-	} // end IF
+    //g_list_free(entries);
+    g_list_free_full (entries,
+                      (GDestroyNotify)gtk_widget_destroy);
+  } // end IF
   const RPG_Magic_Spells_t& player_spells = player_in.getSpells();
-	unsigned int count = 0;
-	RPG_Magic_SpellTypes_t processsed_types;
-	std::map<RPG_Magic_SpellType, unsigned int> spells;
-	for (RPG_Magic_SpellsIterator_t iterator = player_spells.begin();
-			 iterator != player_spells.end();
-			 iterator++)
-	{
-		if (processsed_types.find(*iterator) != processsed_types.end())
-			continue; // already accounted for
+  unsigned int count = 0;
+  RPG_Magic_SpellTypes_t processsed_types;
+  std::map<RPG_Magic_SpellType, unsigned int> spells;
+  for (RPG_Magic_SpellsIterator_t iterator = player_spells.begin ();
+       iterator != player_spells.end ();
+       iterator++)
+  {
+    if (processsed_types.find (*iterator) != processsed_types.end ())
+      continue; // already accounted for
 
-		// count instances
-		count = 0;
-		for (RPG_Magic_SpellsIterator_t iterator2 = player_spells.begin();
-				 iterator2 != player_spells.end();
-				 iterator2++)
-		if (*iterator2 == *iterator)
-			count++;
+    // count instances
+    count = 0;
+    for (RPG_Magic_SpellsIterator_t iterator2 = player_spells.begin ();
+         iterator2 != player_spells.end ();
+         iterator2++)
+      if (*iterator2 == *iterator)
+        count++;
 
-		spells[*iterator] = count;
-		processsed_types.insert(*iterator);
-	} // end FOR
-	gtk_table_resize(GTK_TABLE(current),
-									 spells.size(), 2);
-	index = 0;
-	for (std::map<RPG_Magic_SpellType, unsigned int>::const_iterator iterator = spells.begin();
-       iterator != spells.end();
+    spells[*iterator] = count;
+    processsed_types.insert (*iterator);
+  } // end FOR
+  gtk_table_resize (GTK_TABLE (current),
+                    spells.size (), 2);
+  index = 0;
+  for (std::map<RPG_Magic_SpellType, unsigned int>::const_iterator iterator = spells.begin ();
+       iterator != spells.end ();
        iterator++, index++)
   {
     text =
-        RPG_Common_Tools::enumToString(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString((*iterator).first));
+      RPG_Common_Tools::enumToString (RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString ((*iterator).first));
     //current_box = NULL;
     //current_box = gtk_hbox_new(TRUE, // homogeneous
     //                           0);   // spacing
@@ -914,10 +913,10 @@ update_character_profile(const RPG_Player& player_in,
     //                   FALSE, // expand
     //                   FALSE, // fill
     //                   0);    // padding
-		gtk_table_attach_defaults(GTK_TABLE(current),
-															label,
-															0, 1,
-															index, index + 1);
+    gtk_table_attach_defaults (GTK_TABLE (current),
+                               label,
+                               0, 1,
+                               index, index + 1);
 
     converter.str(ACE_TEXT(""));
     converter.clear();
@@ -930,12 +929,12 @@ update_character_profile(const RPG_Player& player_in,
     //                   FALSE, // expand
     //                   FALSE, // fill
     //                   0);    // padding
-		gtk_table_attach(GTK_TABLE(current),
-										 label,
-										 1, 2,
-										 index, index + 1,
-										 attach_options, attach_options,
-										 3, 0);
+    gtk_table_attach (GTK_TABLE (current),
+                      label,
+                      1, 2,
+                      index, index + 1,
+                      attach_options, attach_options,
+                      3, 0);
 
     //     gtk_container_add(GTK_CONTAINER(current), label);
     //gtk_box_pack_start(GTK_BOX(current), current_box,
@@ -954,18 +953,18 @@ update_character_profile(const RPG_Player& player_in,
 //   ACE_ASSERT(entries);
   if (entries)
   {
-		//for (GList* iterator = entries;
-		//     iterator;
-		//     iterator = g_list_next(iterator))
-		//{
-		//  // *NOTE*: effectively removes the widget from the container...
-		//  gtk_widget_destroy(GTK_WIDGET(iterator->data));
-		//} // end FOR
+    //for (GList* iterator = entries;
+    //     iterator;
+    //     iterator = g_list_next(iterator))
+    //{
+    //  // *NOTE*: effectively removes the widget from the container...
+    //  gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    //} // end FOR
 
-		//g_list_free(entries);
-		g_list_free_full(entries,
-										 (GDestroyNotify)gtk_widget_destroy);
-	} // end IF
+    //g_list_free(entries);
+    g_list_free_full (entries,
+                      (GDestroyNotify)gtk_widget_destroy);
+  } // end IF
   const RPG_Player_Inventory& player_inventory = player_in.getInventory();
   RPG_Player_Equipment& player_equipment =
       const_cast<RPG_Player&>(player_in).getEquipment();
@@ -1347,17 +1346,17 @@ reset_character_profile(GladeXML* xml_in)
 //   ACE_ASSERT(entries);
   if (entries)
   {
-		//for (GList* iterator = entries;
-		//     iterator;
-		//     iterator = g_list_next(iterator))
-		//{
-		//  // *NOTE*: effectively removes the widget from the container...
-		//  gtk_widget_destroy(GTK_WIDGET(iterator->data));
-		//} // end FOR
+    //for (GList* iterator = entries;
+    //     iterator;
+    //     iterator = g_list_next(iterator))
+    //{
+    //  // *NOTE*: effectively removes the widget from the container...
+    //  gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    //} // end FOR
 
-		//g_list_free(entries);
-		g_list_free_full(entries,
-										 (GDestroyNotify)gtk_widget_destroy);
+    //g_list_free(entries);
+    g_list_free_full (entries,
+                      (GDestroyNotify)gtk_widget_destroy);
   } // end IF
 
   // step1n: abilities
@@ -1369,17 +1368,17 @@ reset_character_profile(GladeXML* xml_in)
 //   ACE_ASSERT(entries);
   if (entries)
   {
-		//for (GList* iterator = entries;
-		//     iterator;
-		//     iterator = g_list_next(iterator))
-		//{
-		//  // *NOTE*: effectively removes the widget from the container...
-		//  gtk_widget_destroy(GTK_WIDGET(iterator->data));
-		//} // end FOR
+    //for (GList* iterator = entries;
+    //     iterator;
+    //     iterator = g_list_next(iterator))
+    //{
+    //  // *NOTE*: effectively removes the widget from the container...
+    //  gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    //} // end FOR
 
-		//g_list_free(entries);
-		g_list_free_full(entries,
-										 (GDestroyNotify)gtk_widget_destroy);
+    //g_list_free(entries);
+    g_list_free_full (entries,
+                      (GDestroyNotify)gtk_widget_destroy);
   } // end IF
 
   // step1o: skills
@@ -1391,17 +1390,17 @@ reset_character_profile(GladeXML* xml_in)
 //   ACE_ASSERT(entries);
   if (entries)
   {
-		//for (GList* iterator = entries;
-		//     iterator;
-		//     iterator = g_list_next(iterator))
-		//{
-		//  // *NOTE*: effectively removes the widget from the container...
-		//  gtk_widget_destroy(GTK_WIDGET(iterator->data));
-		//} // end FOR
+    //for (GList* iterator = entries;
+    //     iterator;
+    //     iterator = g_list_next(iterator))
+    //{
+    //  // *NOTE*: effectively removes the widget from the container...
+    //  gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    //} // end FOR
 
-		//g_list_free(entries);
-		g_list_free_full(entries,
-										 (GDestroyNotify)gtk_widget_destroy);
+    //g_list_free(entries);
+    g_list_free_full (entries,
+                      (GDestroyNotify)gtk_widget_destroy);
   } // end IF
 
   // step1p: spells
@@ -1423,17 +1422,17 @@ reset_character_profile(GladeXML* xml_in)
 //   ACE_ASSERT(entries);
   if (entries)
   {
-		//for (GList* iterator = entries;
-		//     iterator;
-		//     iterator = g_list_next(iterator))
-		//{
-		//  // *NOTE*: effectively removes the widget from the container...
-		//  gtk_widget_destroy(GTK_WIDGET(iterator->data));
-		//} // end FOR
+    //for (GList* iterator = entries;
+    //     iterator;
+    //     iterator = g_list_next(iterator))
+    //{
+    //  // *NOTE*: effectively removes the widget from the container...
+    //  gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    //} // end FOR
 
-		//g_list_free(entries);
-		g_list_free_full(entries,
-										 (GDestroyNotify)gtk_widget_destroy);
+    //g_list_free(entries);
+    g_list_free_full (entries,
+                      (GDestroyNotify)gtk_widget_destroy);
   } // end IF
   current =
       GTK_WIDGET(glade_xml_get_widget(xml_in,
@@ -1443,17 +1442,17 @@ reset_character_profile(GladeXML* xml_in)
 //   ACE_ASSERT(entries);
   if (entries)
   {
-		//for (GList* iterator = entries;
-		//     iterator;
-		//     iterator = g_list_next(iterator))
-		//{
-		//  // *NOTE*: effectively removes the widget from the container...
-		//  gtk_widget_destroy(GTK_WIDGET(iterator->data));
-		//} // end FOR
+    //for (GList* iterator = entries;
+    //     iterator;
+    //     iterator = g_list_next(iterator))
+    //{
+    //  // *NOTE*: effectively removes the widget from the container...
+    //  gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    //} // end FOR
 
-		//g_list_free(entries);
-		g_list_free_full(entries,
-										 (GDestroyNotify)gtk_widget_destroy);
+    //g_list_free(entries);
+    g_list_free_full (entries,
+                      (GDestroyNotify)gtk_widget_destroy);
   } // end IF
 
   // step1q: inventory
@@ -1465,17 +1464,17 @@ reset_character_profile(GladeXML* xml_in)
 //   ACE_ASSERT(entries);
   if (entries)
   {
-		//for (GList* iterator = entries;
-		//     iterator;
-		//     iterator = g_list_next(iterator))
-		//{
-		//  // *NOTE*: effectively removes the widget from the container...
-		//  gtk_widget_destroy(GTK_WIDGET(iterator->data));
-		//} // end FOR
+    //for (GList* iterator = entries;
+    //     iterator;
+    //     iterator = g_list_next(iterator))
+    //{
+    //  // *NOTE*: effectively removes the widget from the container...
+    //  gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    //} // end FOR
 
-		//g_list_free(entries);
-		g_list_free_full(entries,
-										 (GDestroyNotify)gtk_widget_destroy);
+    //g_list_free(entries);
+    g_list_free_full (entries,
+                      (GDestroyNotify)gtk_widget_destroy);
   } // end IF
 }
 
@@ -1491,7 +1490,7 @@ dirent_selector_profiles(const dirent* entry_in)
   std::string::size_type position =
       filename.rfind(extension, std::string::npos);
   if ((position == std::string::npos) ||
-		  (position != (filename.size() - extension.size())))
+      (position != (filename.size () - extension.size ())))
 //                     -1) != (filename.size() - extension.size()))
   {
 //     ACE_DEBUG((LM_DEBUG,
@@ -1515,7 +1514,7 @@ dirent_selector_maps(const dirent* entry_in)
   std::string::size_type position =
       filename.rfind(extension, std::string::npos);
   if ((position == std::string::npos) ||
-		  (position != (filename.size() - extension.size())))
+      (position != (filename.size () - extension.size ())))
 //                     -1) != (filename.size() - extension.size()))
   {
 //     ACE_DEBUG((LM_DEBUG,
@@ -1701,53 +1700,53 @@ load_files(const RPG_Client_Repository& repository_in,
 }
 
 gint
-combobox_sort_function(GtkTreeModel* model_in,
-											 GtkTreeIter*  iterator1_in,
-											 GtkTreeIter*  iterator2_in,
-											 gpointer      userData_in)
+combobox_sort_function (GtkTreeModel* model_in,
+                        GtkTreeIter*  iterator1_in,
+                        GtkTreeIter*  iterator2_in,
+                        gpointer      userData_in)
 {
-	RPG_TRACE(ACE_TEXT("::combobox_sort_function"));
+  RPG_TRACE (ACE_TEXT ("::combobox_sort_function"));
 
-	gint sort_column = GPOINTER_TO_INT(userData_in);
-	gint result = 0; // -1: row1 < row2, 0: equal, 1: row1 > row2
+  gint sort_column = GPOINTER_TO_INT (userData_in);
+  gint result = 0; // -1: row1 < row2, 0: equal, 1: row1 > row2
 
-	switch (sort_column)
-	{
-		case 0:
-		{
-			gchar* row1, *row2;
-			gtk_tree_model_get(model_in, iterator1_in, sort_column, &row1, -1);
-			gtk_tree_model_get(model_in, iterator2_in, sort_column, &row2, -1);
-			if ((row1 == NULL) ||
-					(row2 == NULL))
-			{
-				if ((row1 == NULL) &&
-						(row2 == NULL))
-					break; // --> equal
+  switch (sort_column)
+  {
+    case 0:
+    {
+      gchar* row1, *row2;
+      gtk_tree_model_get (model_in, iterator1_in, sort_column, &row1, -1);
+      gtk_tree_model_get (model_in, iterator2_in, sort_column, &row2, -1);
+      if ((row1 == NULL) ||
+          (row2 == NULL))
+      {
+        if ((row1 == NULL) &&
+            (row2 == NULL))
+          break; // --> equal
 
-				result = ((row1 == NULL) ? -1 : 1);
+        result = ((row1 == NULL) ? -1 : 1);
 
-				break;
-			} // end IF
+        break;
+      } // end IF
 
-			// compare (case-insensitive)
-			gchar* row1_lower, *row2_lower;
-			row1_lower = g_utf8_strdown(row1, -1);
-			row2_lower = g_utf8_strdown(row2, -1);
-			g_free(row1);
-			g_free(row2);
+      // compare (case-insensitive)
+      gchar* row1_lower, *row2_lower;
+      row1_lower = g_utf8_strdown (row1, -1);
+      row2_lower = g_utf8_strdown (row2, -1);
+      g_free (row1);
+      g_free (row2);
 
-			result = g_utf8_collate(row1_lower, row2_lower);
-			g_free(row1_lower);
-			g_free(row2_lower);
+      result = g_utf8_collate (row1_lower, row2_lower);
+      g_free (row1_lower);
+      g_free (row2_lower);
 
-			break;
-		}
-		default:
-			g_return_val_if_reached(0);
-	} // end SWITCH
+      break;
+    }
+    default:
+      g_return_val_if_reached (0);
+  } // end SWITCH
 
-	return result;
+  return result;
 }
 
 #ifdef __cplusplus
@@ -1755,9 +1754,9 @@ extern "C"
 {
 #endif /* __cplusplus */
 G_MODULE_EXPORT gboolean
-idle_init_UI_cb (gpointer userData_in)
+idle_initialize_UI_cb (gpointer userData_in)
 {
-  RPG_TRACE(ACE_TEXT("::idle_init_UI_cb"));
+  RPG_TRACE(ACE_TEXT("::idle_initialize_UI_cb"));
 
   RPG_Client_GTK_CBData_t* data_p =
     static_cast<RPG_Client_GTK_CBData_t*> (userData_in);
@@ -2330,9 +2329,9 @@ idle_init_UI_cb (gpointer userData_in)
 }
 
 G_MODULE_EXPORT gboolean
-idle_fini_UI_cb (gpointer userData_in)
+idle_finalize_UI_cb (gpointer userData_in)
 {
-  RPG_TRACE (ACE_TEXT ("::idle_fini_UI_cb"));
+  RPG_TRACE (ACE_TEXT ("::idle_finalize_UI_cb"));
 
   RPG_Client_GTK_CBData_t* data_p =
    static_cast<RPG_Client_GTK_CBData_t*> (userData_in);

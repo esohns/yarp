@@ -21,41 +21,43 @@
 #ifndef NET_SERVER_SIGNALHANDLER_H
 #define NET_SERVER_SIGNALHANDLER_H
 
-#include "rpg_net_stream_common.h"
+#include "ace/Global_Macros.h"
 
-#include "rpg_common_signalhandler.h"
-#include "rpg_common_isignal.h"
-#include "rpg_common_istatistic.h"
+#include "common_signalhandler.h"
+#include "common_isignal.h"
+#include "common_istatistic.h"
+
+#include "rpg_net_protocol_configuration.h"
 
 // forward declarations
-class RPG_Common_IControl;
+class Common_IControl;
 
 class Net_Server_SignalHandler
- : public RPG_Common_SignalHandler,
-   public RPG_Common_ISignal
+ : public Common_SignalHandler,
+   public Common_ISignal
 {
  public:
-  Net_Server_SignalHandler(const long&,                                      // timer ID
-                           RPG_Common_IControl*,                             // controller
-                           RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>*, // reporter
-                           // ---------------------------------------------------------------
-                           const bool& = true);                              // use reactor ?
-  virtual ~Net_Server_SignalHandler();
+  Net_Server_SignalHandler (long,                                                    // timer ID
+                            Common_IControl*,                                        // controller
+                            Common_IStatistic_T<RPG_Net_Protocol_RuntimeStatistic>*, // reporter
+                            // ---------------------------------------------------------------
+                            bool = true);                                            // use reactor ?
+  virtual ~Net_Server_SignalHandler ();
 
-  // implement RPG_Common_ISignal
-  virtual bool handleSignal(const int&); // signal
+  // implement Common_ISignal
+  virtual bool handleSignal (int); // signal
 
  private:
-  typedef RPG_Common_SignalHandler inherited;
+  typedef Common_SignalHandler inherited;
 
-  ACE_UNIMPLEMENTED_FUNC(Net_Server_SignalHandler());
-  ACE_UNIMPLEMENTED_FUNC(Net_Server_SignalHandler(const Net_Server_SignalHandler&));
-  ACE_UNIMPLEMENTED_FUNC(Net_Server_SignalHandler& operator=(const Net_Server_SignalHandler&));
+  ACE_UNIMPLEMENTED_FUNC (Net_Server_SignalHandler ());
+  ACE_UNIMPLEMENTED_FUNC (Net_Server_SignalHandler (const Net_Server_SignalHandler&));
+  ACE_UNIMPLEMENTED_FUNC (Net_Server_SignalHandler& operator=(const Net_Server_SignalHandler&));
 
-  long                                             myTimerID;
-	RPG_Common_IControl*                             myControl;
-  RPG_Common_IStatistic<RPG_Net_RuntimeStatistic>* myReport;
-	bool                                             myUseReactor;
+  long                                                    myTimerID;
+  Common_IControl*                                        myControl;
+  Common_IStatistic_T<RPG_Net_Protocol_RuntimeStatistic>* myReport;
+  bool                                                    myUseReactor;
 };
 
 #endif

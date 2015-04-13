@@ -21,42 +21,50 @@
 #ifndef IRC_CLIENT_GUI_CALLBACKS_H
 #define IRC_CLIENT_GUI_CALLBACKS_H
 
-#include <gtk/gtk.h>
+#include "gtk/gtk.h"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
+void is_entry_sensitive (GtkCellLayout*,
+                         GtkCellRenderer*,
+                         GtkTreeModel*,
+                         GtkTreeIter*,
+                         gpointer);
+//------------------------------------------------------------------------------
+gboolean idle_initialize_UI_cb (gpointer);
+gboolean idle_finalize_UI_cb (gpointer);
 // main
-void connect_clicked_cb(GtkWidget*, gpointer);
-gboolean send_entry_kb_focused_cb(GtkWidget*, GdkEventFocus*, gpointer);
-void send_clicked_cb(GtkWidget*, gpointer);
-gint quit_activated_cb(GtkWidget*, GdkEvent*, gpointer);
+void connect_clicked_cb (GtkWidget*, gpointer);
+gboolean send_entry_kb_focused_cb (GtkWidget*, GdkEventFocus*, gpointer);
+void send_clicked_cb (GtkWidget*, gpointer);
+gint quit_activated_cb (GtkWidget*, GdkEvent*, gpointer);
 
 // IRC_Client_GUI_Connection
-void disconnect_clicked_cb(GtkWidget*, gpointer);
-gboolean nick_entry_kb_focused_cb(GtkWidget*, GdkEventFocus*, gpointer);
-void change_clicked_cb(GtkWidget*, gpointer);
-void usersbox_changed_cb(GtkWidget*, gpointer);
-void refresh_users_clicked_cb(GtkWidget*, gpointer);
-gboolean channel_entry_kb_focused_cb(GtkWidget*, GdkEventFocus*, gpointer);
-void join_clicked_cb(GtkWidget*, gpointer);
-void channelbox_changed_cb(GtkWidget*, gpointer);
-void refresh_channels_clicked_cb(GtkWidget*, gpointer);
-void user_mode_toggled_cb(GtkToggleButton*, gpointer);
-void switch_channel_cb(GtkNotebook*, GtkNotebookPage*, guint, gpointer);
-void action_away_cb(GtkAction*, gpointer);
+void disconnect_clicked_cb (GtkWidget*, gpointer);
+gboolean nick_entry_kb_focused_cb (GtkWidget*, GdkEventFocus*, gpointer);
+void change_clicked_cb (GtkWidget*, gpointer);
+void usersbox_changed_cb (GtkWidget*, gpointer);
+void refresh_users_clicked_cb (GtkWidget*, gpointer);
+gboolean channel_entry_kb_focused_cb (GtkWidget*, GdkEventFocus*, gpointer);
+void join_clicked_cb (GtkWidget*, gpointer);
+void channelbox_changed_cb (GtkWidget*, gpointer);
+void refresh_channels_clicked_cb (GtkWidget*, gpointer);
+void user_mode_toggled_cb (GtkToggleButton*, gpointer);
+void switch_channel_cb (GtkNotebook*, GtkNotebookPage*, guint, gpointer);
+void action_away_cb (GtkAction*, gpointer);
 
 // IRC_Client_GUI_MessageHandler
-void channel_mode_toggled_cb(GtkToggleButton*, gpointer);
-void topic_clicked_cb(GtkWidget*, GdkEventButton*, gpointer);
-void part_clicked_cb(GtkWidget*, gpointer);
-gboolean members_clicked_cb(GtkWidget*, GdkEventButton*, gpointer);
-void action_msg_cb(GtkAction*, gpointer);
-void action_invite_cb(GtkAction*, gpointer);
-void action_info_cb(GtkAction*, gpointer);
-void action_kick_cb(GtkAction*, gpointer);
-void action_ban_cb(GtkAction*, gpointer);
+void channel_mode_toggled_cb (GtkToggleButton*, gpointer);
+void topic_clicked_cb (GtkWidget*, GdkEventButton*, gpointer);
+void part_clicked_cb (GtkWidget*, gpointer);
+gboolean members_clicked_cb (GtkWidget*, GdkEventButton*, gpointer);
+void action_msg_cb (GtkAction*, gpointer);
+void action_invite_cb (GtkAction*, gpointer);
+void action_info_cb (GtkAction*, gpointer);
+void action_kick_cb (GtkAction*, gpointer);
+void action_ban_cb (GtkAction*, gpointer);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

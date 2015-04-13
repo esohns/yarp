@@ -129,9 +129,9 @@ class RPG_Net_Protocol_Module_IRCSplitter
 };
 
 // declare module
-DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                         // task synch type
-                             Common_TimePolicy_t,                  // time policy
-                             RPG_Net_Protocol_Configuration,       // configuration type
-                             RPG_Net_Protocol_Module_IRCSplitter); // writer type
+DATASTREAM_MODULE_INPUT_ONLY (ACE_MT_SYNCH,                         // task synch type
+                              Common_TimePolicy_t,                  // time policy
+                              RPG_Net_Protocol_Configuration,       // configuration type
+                              RPG_Net_Protocol_Module_IRCSplitter); // writer type
 
 #endif

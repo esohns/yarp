@@ -5,6 +5,9 @@
 #if defined _MSC_VER
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
 
+// *NOTE*: (f)lex defines its own integer types...
+#define _STDINT
+
 // Windows Header Files
 #include <windows.h>
 #endif

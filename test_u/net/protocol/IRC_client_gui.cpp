@@ -19,180 +19,170 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-// *NOTE*: need this to import correct VERSION !
-#ifdef HAVE_CONFIG_H
-#include "rpg_config.h"
-#endif
-
-#include "IRC_client_defines.h"
-#include "IRC_client_gui_defines.h"
-#include "IRC_client_gui_common.h"
-#include "IRC_client_gui_callbacks.h"
-
-#include "rpg_net_protocol_defines.h"
-#include "rpg_net_protocol_messageallocator.h"
-
-#include "rpg_net_connection_manager.h"
-
-#include "rpg_common_tools.h"
-#include "rpg_common_file_tools.h"
-
-#include "rpg_stream_cachedallocatorheap.h"
-
-#include <gtk/gtk.h>
-
-#include <ace/ACE.h>
-#include <ace/Version.h>
-#include <ace/Get_Opt.h>
-#include <ace/Profile_Timer.h>
-#include <ace/Reactor.h>
-#include <ace/TP_Reactor.h>
-#include <ace/Proactor.h>
-#include <ace/Signal.h>
-#include <ace/Sig_Handler.h>
-#include <ace/Connector.h>
-#include <ace/SOCK_Connector.h>
-#include <ace/High_Res_Timer.h>
-#include <ace/Configuration.h>
-#include <ace/Configuration_Import_Export.h>
-
 #include <string>
 #include <iostream>
 #include <sstream>
 #include <map>
 
-void
-is_entry_sensitive(GtkCellLayout*   layout_in,
-                   GtkCellRenderer* renderer_in,
-                   GtkTreeModel*    model_in,
-                   GtkTreeIter*     iter_in,
-                   gpointer         data_in)
-{
-//   RPG_TRACE(ACE_TEXT("::is_entry_sensitive"));
+#include "ace/Configuration.h"
+#include "ace/Configuration_Import_Export.h"
+#include "ace/Get_Opt.h"
+#include "ace/High_Res_Timer.h"
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
+#include "ace/Profile_Timer.h"
+#include "ace/Sig_Handler.h"
+#include "ace/Signal.h"
+#include "ace/Version.h"
 
-  gboolean sensitive = !gtk_tree_model_iter_has_child(model_in, iter_in);
-  // set corresponding property
-  g_object_set(renderer_in,
-               ACE_TEXT_ALWAYS_CHAR("sensitive"), sensitive,
-               NULL);
-}
+//#include "gtk/gtk.h"
+
+#include "common_file_tools.h"
+#include "common_tools.h"
+
+#include "common_ui_gtk_builder_definition.h"
+#include "common_ui_gtk_manager.h"
+
+#include "stream_cachedallocatorheap.h"
+
+#ifdef HAVE_CONFIG_H
+#include "rpg_config.h"
+#endif
+
+#include "rpg_common_file_tools.h"
+//#include "rpg_common_tools.h"
+
+#include "rpg_net_defines.h"
+
+#include "rpg_net_protocol_defines.h"
+#include "rpg_net_protocol_messageallocator.h"
+#include "rpg_net_protocol_network.h"
+
+#include "IRC_client_defines.h"
+#include "IRC_client_gui_callbacks.h"
+#include "IRC_client_gui_common.h"
+#include "IRC_client_gui_defines.h"
 
 void
-print_usage(const std::string& programName_in)
+do_printUsage (const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::print_usage"));
+  RPG_TRACE (ACE_TEXT ("::do_printUsage"));
 
   // enable verbatim boolean output
-  std::cout.setf(ios::boolalpha);
+  std::cout.setf (ios::boolalpha);
 
-  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                     true);
-#endif // #ifdef BASEDIR
+  std::string configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
+#endif // #ifdef DEBUG_DEBUGGER
 
-  std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
-  std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::string path = config_path;
+  std::cout << ACE_TEXT ("usage: ") << programName_in << ACE_TEXT (" [OPTIONS]") << std::endl << std::endl;
+  std::cout << ACE_TEXT ("currently available options:") << std::endl;
+  std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  path += ACE_TEXT_ALWAYS_CHAR("protocol");
+#if defined (DEBUG_DEBUGGER)
+  path += ACE_TEXT_ALWAYS_CHAR ("protocol");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
-  path += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_DEF_INI_FILE);
-  std::cout << ACE_TEXT("-c [FILE] : config file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-d        : debug") << ACE_TEXT(" [") << IRC_CLIENT_DEF_TRACE_ENABLED << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-l        : log to a file") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-r [VALUE]: reporting interval (seconds: 0 --> OFF)") << ACE_TEXT(" [") << IRC_CLIENT_DEF_STATSINTERVAL << ACE_TEXT("]") << std::endl;
-  path = config_path;
+#endif // #ifdef DEBUG_DEBUGGER
+  path += ACE_TEXT_ALWAYS_CHAR (IRC_CLIENT_CNF_DEF_INI_FILE);
+  std::cout << ACE_TEXT ("-c [FILE] : config file") << ACE_TEXT (" [\"") << path.c_str () << ACE_TEXT ("\"]") << std::endl;
+  std::cout << ACE_TEXT ("-d        : debug") << ACE_TEXT (" [") << IRC_CLIENT_DEF_TRACE_ENABLED << ACE_TEXT ("]") << std::endl;
+  std::cout << ACE_TEXT ("-l        : log to a file") << ACE_TEXT (" [") << false << ACE_TEXT ("]") << std::endl;
+  std::cout << ACE_TEXT ("-r [VALUE]: reporting interval (seconds: 0 --> OFF)") << ACE_TEXT (" [") << IRC_CLIENT_DEF_STATSINTERVAL << ACE_TEXT ("]") << std::endl;
+  path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  path += ACE_TEXT_ALWAYS_CHAR("protocol");
+#if defined (DEBUG_DEBUGGER)
+  path += ACE_TEXT_ALWAYS_CHAR ("protocol");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
-  path += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_GUI_DEF_SERVERS_FILE);
-  std::cout << ACE_TEXT("-s [FILE] : server config file") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-t        : trace information") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  path = config_path;
+#endif // #ifdef DEBUG_DEBUGGER
+  path += ACE_TEXT_ALWAYS_CHAR (IRC_CLIENT_GUI_DEF_SERVERS_FILE);
+  std::cout << ACE_TEXT ("-s [FILE] : server config file") << ACE_TEXT (" [\"") << path.c_str () << ACE_TEXT ("\"]") << std::endl;
+  std::cout << ACE_TEXT ("-t        : trace information") << ACE_TEXT (" [") << false << ACE_TEXT ("]") << std::endl;
+  path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  path += ACE_TEXT_ALWAYS_CHAR("protocol");
-#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
-  std::cout << ACE_TEXT("-u [DIR]  : UI file directory") << ACE_TEXT(" [\"") << path.c_str() << ACE_TEXT("\"]") << std::endl;
-  std::cout << ACE_TEXT("-v        : print version information and exit") << ACE_TEXT(" [") << false << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-x [VALUE]: #thread pool threads ([") << IRC_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT("]") << std::endl;
+#if defined (DEBUG_DEBUGGER)
+  path += ACE_TEXT_ALWAYS_CHAR ("protocol");
+#endif // #ifdef DEBUG_DEBUGGER
+  std::cout << ACE_TEXT ("-u [DIR]  : UI file directory") << ACE_TEXT (" [\"") << path.c_str () << ACE_TEXT ("\"]") << std::endl;
+  std::cout << ACE_TEXT ("-v        : print version information and exit") << ACE_TEXT (" [") << false << ACE_TEXT ("]") << std::endl;
+  std::cout << ACE_TEXT ("-x [VALUE]: #thread pool threads ([") << IRC_CLIENT_DEF_NUM_TP_THREADS << ACE_TEXT ("]") << std::endl;
 } // end print_usage
 
 bool
-process_arguments(const int argc_in,
-                  ACE_TCHAR* argv_in[], // cannot be const...
-                  std::string& configFile_out,
-                  bool& debug_out,
-                  bool& logToFile_out,
-                  unsigned int& reportingInterval_out,
-                  std::string& serverConfigFile_out,
-                  bool& traceInformation_out,
-                  std::string& UIFileDirectory_out,
-                  bool& printVersionAndExit_out,
-                  unsigned int& numThreadPoolThreads_out)
+do_processArguments (const int argc_in,
+                     ACE_TCHAR* argv_in[], // cannot be const...
+                     std::string& configurationFile_out,
+                     bool& debug_out,
+                     bool& logToFile_out,
+                     unsigned int& reportingInterval_out,
+                     std::string& phonebookFile_out,
+                     bool& traceInformation_out,
+                     std::string& UIFileDirectory_out,
+                     bool& printVersionAndExit_out,
+                     unsigned int& numThreadPoolThreads_out)
 {
-  RPG_TRACE(ACE_TEXT("::process_arguments"));
+  RPG_TRACE (ACE_TEXT ("::do_processArguments"));
 
-  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                     true);
-#endif // #ifdef BASEDIR
+  std::string configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
+#endif // #ifdef DEBUG_DEBUGGER
 
   // init results
-  configFile_out = config_path;
-  configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  configFile_out += ACE_TEXT_ALWAYS_CHAR("protocol");
-  configFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
-  configFile_out += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_DEF_INI_FILE);
+  configurationFile_out = configuration_path;
+  configurationFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined (DEBUG_DEBUGGER)
+  configurationFile_out += ACE_TEXT_ALWAYS_CHAR ("protocol");
+  configurationFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif // #ifdef DEBUG_DEBUGGER
+  configurationFile_out += ACE_TEXT_ALWAYS_CHAR (IRC_CLIENT_CNF_DEF_INI_FILE);
 
   debug_out             = IRC_CLIENT_DEF_TRACE_ENABLED;
   logToFile_out         = false;
   reportingInterval_out = IRC_CLIENT_DEF_STATSINTERVAL;
 
-  serverConfigFile_out = config_path;
-  serverConfigFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  serverConfigFile_out += ACE_TEXT_ALWAYS_CHAR("protocol");
-  serverConfigFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
-  serverConfigFile_out += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_GUI_DEF_SERVERS_FILE);
+  phonebookFile_out = configuration_path;
+  phonebookFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined (DEBUG_DEBUGGER)
+  phonebookFile_out += ACE_TEXT_ALWAYS_CHAR ("protocol");
+  phonebookFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif // #ifdef DEBUG_DEBUGGER
+  phonebookFile_out +=
+   ACE_TEXT_ALWAYS_CHAR (IRC_CLIENT_GUI_DEF_SERVERS_FILE);
 
   traceInformation_out     = false;
 
-  UIFileDirectory_out = config_path;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+  UIFileDirectory_out = configuration_path;
+#if defined (DEBUG_DEBUGGER)
   UIFileDirectory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   UIFileDirectory_out += ACE_TEXT_ALWAYS_CHAR("protocol");
-#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
+#endif // #ifdef DEBUG_DEBUGGER
 
   printVersionAndExit_out  = false;
   numThreadPoolThreads_out = IRC_CLIENT_DEF_NUM_TP_THREADS;
 
-  ACE_Get_Opt argumentParser(argc_in,
-                             argv_in,
-                             ACE_TEXT("c:dlr:s:tu:vx:"),
-                             1, // skip command name
-                             1, // report parsing errors
-                             ACE_Get_Opt::PERMUTE_ARGS, // ordering
-                             0); // for now, don't use long options
+  ACE_Get_Opt argumentParser (argc_in,
+                              argv_in,
+                              ACE_TEXT ("c:dlr:s:tu:vx:"),
+                              1, // skip command name
+                              1, // report parsing errors
+                              ACE_Get_Opt::PERMUTE_ARGS, // ordering
+                              0); // for now, don't use long options
 
   int option = 0;
   std::stringstream converter;
-  while ((option = argumentParser()) != EOF)
+  while ((option = argumentParser ()) != EOF)
   {
     switch (option)
     {
       case 'c':
       {
-        configFile_out = argumentParser.opt_arg();
+        configurationFile_out = argumentParser.opt_arg ();
 
         break;
       }
@@ -210,16 +200,16 @@ process_arguments(const int argc_in,
       }
       case 'r':
       {
-        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-        converter.clear();
-        converter << argumentParser.opt_arg();
+        converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+        converter.clear ();
+        converter << argumentParser.opt_arg ();
         converter >> reportingInterval_out;
 
         break;
       }
       case 's':
       {
-        serverConfigFile_out = argumentParser.opt_arg();
+        phonebookFile_out = argumentParser.opt_arg ();
 
         break;
       }
@@ -231,7 +221,7 @@ process_arguments(const int argc_in,
       }
       case 'u':
       {
-        UIFileDirectory_out = argumentParser.opt_arg();
+        UIFileDirectory_out = argumentParser.opt_arg ();
 
         break;
       }
@@ -243,9 +233,9 @@ process_arguments(const int argc_in,
       }
       case 'x':
       {
-        converter.clear();
-        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-        converter << argumentParser.opt_arg();
+        converter.clear ();
+        converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+        converter << argumentParser.opt_arg ();
         converter >> numThreadPoolThreads_out;
 
         break;
@@ -253,33 +243,29 @@ process_arguments(const int argc_in,
       // error handling
       case ':':
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("option \"%c\" requires an argument, aborting\n"),
-                   argumentParser.opt_opt()));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("option \"%c\" requires an argument, aborting\n"),
+                    argumentParser.opt_opt ()));
         return false;
       }
       case '?':
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unrecognized option \"%s\", aborting\n"),
-                   argumentParser.last_option()));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("unrecognized option \"%s\", aborting\n"),
+                    ACE_TEXT (argumentParser.last_option ())));
         return false;
       }
       case 0:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("found long option \"%s\", aborting\n"),
-                   argumentParser.long_option()));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("found long option \"%s\", aborting\n"),
+                    ACE_TEXT (argumentParser.long_option ())));
         return false;
       }
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("parse error, aborting\n")));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("parse error, aborting\n")));
         return false;
       }
     } // end SWITCH
@@ -288,361 +274,102 @@ process_arguments(const int argc_in,
   return true;
 }
 
-bool
-init_threadPool(const bool& useReactor_in,
-                const unsigned int& numThreadPoolThreads_in)
-{
-  RPG_TRACE(ACE_TEXT("::init_threadPool"));
-
-  if (useReactor_in && (numThreadPoolThreads_in > 1))
-    {
-      ACE_TP_Reactor* threadpool_reactor = NULL;
-      ACE_NEW_RETURN(threadpool_reactor,
-                     ACE_TP_Reactor(),
-                     false);
-      ACE_Reactor* new_reactor = NULL;
-      ACE_NEW_RETURN(new_reactor,
-                     ACE_Reactor(threadpool_reactor, 1), // delete in dtor
-                     false);
-      // make this the "default" reactor...
-      ACE_Reactor::instance(new_reactor, 1); // delete in dtor
-    } // end IF
-  else
-    {
-      ACE_Proactor* proactor = NULL;
-      ACE_NEW_RETURN(proactor,
-                     ACE_Proactor(NULL, false, NULL),
-                     false);
-      // make this the "default" proactor...
-      ACE_Proactor::instance(proactor, 1); // delete in dtor
-    } // end ELSE
-
-  return true;
-}
-
-static
-ACE_THR_FUNC_RETURN
-tp_worker_func(void* args_in)
-{
-  RPG_TRACE(ACE_TEXT("::tp_worker_func"));
-
-  bool use_reactor = *reinterpret_cast<bool*>(args_in);
-
-  // *NOTE*: asynchronous writing to a closed socket triggers the
-  // SIGPIPE signal (default action: abort).
-  // --> as this doesn't use select(), guard against this (ignore the signal)
-  ACE_Sig_Action no_sigpipe(static_cast<ACE_SignalHandler>(SIG_IGN));
-  ACE_Sig_Action original_action;
-  no_sigpipe.register_action(SIGPIPE, &original_action);
-
-  int success = 0;
-  // handle any events...
-  if (use_reactor)
-  {
-    // assume ownership over the reactor...
-    ACE_Reactor::instance()->owner(ACE_OS::thr_self(),
-                                   NULL);
-    success = ACE_Reactor::instance()->run_reactor_event_loop(0);
-  }
-  else
-    success = ACE_Proactor::instance()->proactor_run_event_loop(0);
-  if (success == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("(%t) failed to handle events: \"%m\", aborting\n")));
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("(%t) worker leaving...\n")));
-
-  // clean up
-  no_sigpipe.restore_action(SIGPIPE, original_action);
-
-  // *PORTABILITY*
-  // *TODO*
-  return (success == 0 ? NULL : NULL);
-}
-
 void
-do_main_window(const std::string& UIFileDirectory_in,
-               const main_cb_data_t& userData_in,
-               const GtkWidget* parentWidget_in)
+do_work (unsigned int numDispatchThreads_in,
+         main_cb_data_t& userData_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_main_window"));
+  RPG_TRACE (ACE_TEXT ("::do_work"));
 
-  ACE_ASSERT(userData_in.builder);
-
-  // step0: assemble FQ filename (Glade-UI XML)
-  std::string filename = UIFileDirectory_in;
-  filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  filename += IRC_CLIENT_GUI_DEF_UI_MAIN_FILE;
-  if (!RPG_Common_File_Tools::isReadable(filename))
+  // step1: initialize event dispatch
+  bool serialize_output = false;
+  if (!Common_Tools::initializeEventDispatch (IRC_CLIENT_DEF_CLIENT_USES_REACTOR,
+                                              numDispatchThreads_in,
+                                              serialize_output))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid UI file (was \"%s\"): not readable, aborting\n"),
-               filename.c_str()));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to init event dispatch, returning\n")));
     return;
   } // end IF
-
-  // step1: load widget tree
-  GError* error = NULL;
-  gtk_builder_add_from_file(userData_in.builder,
-                            filename.c_str(),
-                            &error);
-  if (error)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to gtk_builder_add_from_file(\"%s\"): \"%s\", aborting\n"),
-               filename.c_str(),
-               error->message));
-
-    // clean up
-    g_error_free(error);
-
-    return;
-  } // end IF
-
-  // step2: populate phonebook liststore
-  GtkTreeStore* main_servers_treestore = NULL;
-  main_servers_treestore = GTK_TREE_STORE(gtk_builder_get_object(userData_in.builder,
-                                          ACE_TEXT_ALWAYS_CHAR("main_servers_treestore")));
-  ACE_ASSERT(main_servers_treestore);
-  GtkComboBox* main_servers_combobox = NULL;
-  main_servers_combobox = GTK_COMBO_BOX(gtk_builder_get_object(userData_in.builder,
-                                        ACE_TEXT_ALWAYS_CHAR("main_servers_combobox")));
-  ACE_ASSERT(main_servers_combobox);
-  // *NOTE*: the combobox will display (selectable) column headers --> don't want that
-  GList* renderers = gtk_cell_layout_get_cells(GTK_CELL_LAYOUT(main_servers_combobox));
-  GtkCellRenderer* renderer = GTK_CELL_RENDERER(g_list_first(renderers)->data);
-  ACE_ASSERT(renderer);
-  g_list_free(renderers);
-  gtk_cell_layout_set_cell_data_func(GTK_CELL_LAYOUT(main_servers_combobox), renderer,
-                                     is_entry_sensitive,
-                                     NULL, NULL);
-  std::map<std::string, GtkTreeIter> network_map;
-  std::map<std::string, GtkTreeIter>::iterator network_map_iterator;
-  GtkTreeIter tree_iterator, current_row;
-  for (RPG_Net_Protocol_ServersIterator_t iterator = userData_in.phoneBook.servers.begin();
-       iterator != userData_in.phoneBook.servers.end();
-       iterator++)
-  {
-    // known network ?
-    network_map_iterator = network_map.find((*iterator).second.network);
-    if (network_map_iterator == network_map.end())
-    {
-      // new toplevel row
-      gtk_tree_store_append(main_servers_treestore,
-                            &tree_iterator,
-                            NULL);
-      std::string network_label = ((*iterator).second.network.empty() ? ACE_TEXT_ALWAYS_CHAR("<none>")
-                                                                      : (*iterator).second.network);
-      gtk_tree_store_set(main_servers_treestore, &tree_iterator,
-                         0, network_label.c_str(),
-                         -1);
-
-      network_map.insert(std::make_pair((*iterator).second.network, tree_iterator));
-
-      network_map_iterator = network_map.find((*iterator).second.network);
-      ACE_ASSERT(network_map_iterator != network_map.end());
-    } // end IF
-
-    // append new (text) entry
-    gtk_tree_store_append(main_servers_treestore,
-                          &current_row,
-                          &(*network_map_iterator).second);
-    gtk_tree_store_set(main_servers_treestore, &current_row,
-                       0, (*iterator).first.c_str(), // column 0
-                       -1);
-
-    // set active item
-    if ((*iterator).first == IRC_CLIENT_DEF_SERVER_HOSTNAME)
-      gtk_combo_box_set_active_iter(main_servers_combobox,
-                                    &current_row);
-  } // end FOR
-  if (!userData_in.phoneBook.servers.empty())
-  {
-    // sort entries (toplevel: ascending)
-    gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(main_servers_treestore),
-                                         0, GTK_SORT_ASCENDING);
-
-    gtk_widget_set_sensitive(GTK_WIDGET(main_servers_combobox), TRUE);
-  } // end IF
-
-  // step3: connect signals/slots
-//   gtk_builder_connect_signals(builder,
-//                               &const_cast<main_cb_data&> (userData_in));
-  GtkEntry* entry = GTK_ENTRY(gtk_builder_get_object(userData_in.builder,
-                                                     ACE_TEXT_ALWAYS_CHAR("main_send_entry")));
-  ACE_ASSERT(entry);
-  g_signal_connect(entry,
-                   ACE_TEXT_ALWAYS_CHAR("focus-in-event"),
-                   G_CALLBACK(send_entry_kb_focused_cb),
-                   &const_cast<main_cb_data_t&>(userData_in));
-  GtkButton* button = GTK_BUTTON(gtk_builder_get_object(userData_in.builder,
-                                                        ACE_TEXT_ALWAYS_CHAR("main_send_button")));
-  ACE_ASSERT(button);
-  g_signal_connect(button,
-                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(send_clicked_cb),
-                   &const_cast<main_cb_data_t&>(userData_in));
-  button = GTK_BUTTON(gtk_builder_get_object(userData_in.builder,
-                                             ACE_TEXT_ALWAYS_CHAR("main_connect_button")));
-  ACE_ASSERT(button);
-  g_signal_connect(button,
-                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(connect_clicked_cb),
-                   &const_cast<main_cb_data_t&>(userData_in));
-  button = GTK_BUTTON(gtk_builder_get_object(userData_in.builder,
-                                             ACE_TEXT_ALWAYS_CHAR("main_quit_buton")));
-  ACE_ASSERT(button);
-  g_signal_connect(button,
-                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(quit_activated_cb),
-                   NULL);
-
-  // step4: retrieve toplevel handle
-  GtkWindow* window = GTK_WINDOW(gtk_builder_get_object(userData_in.builder,
-                                                        ACE_TEXT_ALWAYS_CHAR("main_dialog")));
-  ACE_ASSERT(window);
-  if (!window)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to gtk_builder_get_object(\"main_dialog\"): \"%m\", aborting\n")));
-
-    return;
-  } // end IF
-  // connect default signals
-  g_signal_connect(window,
-                   ACE_TEXT_ALWAYS_CHAR("delete-event"),
-                   G_CALLBACK(quit_activated_cb),
-                   window);
-//   g_signal_connect(window,
-//                    ACE_TEXT_ALWAYS_CHAR("destroy-event"),
-//                    G_CALLBACK(quit_activated_cb),
-//                    window);
-  g_signal_connect(window,
-                   ACE_TEXT_ALWAYS_CHAR("destroy"),
-                   G_CALLBACK(gtk_widget_destroyed),
-                   window);
-
-  // use correct screen
-  if (parentWidget_in)
-    gtk_window_set_screen(window,
-                          gtk_widget_get_screen(const_cast<GtkWidget*>(parentWidget_in)));
-
-  // step5: draw it
-  gtk_widget_show_all(GTK_WIDGET(window));
-}
-
-void
-do_work(const unsigned int& numThreadPoolThreads_in,
-        const std::string& UIFileDirectory_in,
-        main_cb_data_t& userData_in)
-{
-  RPG_TRACE(ACE_TEXT("::do_work"));
-
-  // step0: (if necessary) init the thread pool
-  if (!init_threadPool(IRC_CLIENT_DEF_CLIENT_USES_REACTOR, numThreadPoolThreads_in))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to init thread pool, aborting\n")));
-
-    return;
-  } // end IF
-
 
   // step0b: init connection manager
-  RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->init(std::numeric_limits<unsigned int>::max());
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (std::numeric_limits<unsigned int>::max ());
+  RPG_Net_Protocol_SessionData session_data;
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->set (*userData_in.configuration,
+                                                                  &session_data);
 
   // *WARNING*: from this point on, we need to clean up any remote connections !
   // *NOTE* handlers register with the connection manager and will self-destruct
   // on disconnects !
 
-  // step1: setup UI
-  do_main_window(UIFileDirectory_in, // glade file directory
-                 userData_in,        // cb data
-                 NULL);              // there's no parent widget
-
-  // event loops:
-  // - perform socket I/O --> ACE_Reactor
-  // - UI events --> GTK main loop
-
-  // step2: dispatch events...
-  // *NOTE*: if we use a thread pool, we need to do this differently...
-  bool thread_argument = IRC_CLIENT_DEF_CLIENT_USES_REACTOR;
-  int grp_id = -1;
-
-  // start a (group of) worker thread(s)...
-  grp_id = ACE_Thread_Manager::instance()->spawn_n(numThreadPoolThreads_in,     // # threads
-                                                   ::tp_worker_func,            // function
-                                                   &thread_argument,            // argument
-                                                   (THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED), // flags
-                                                   ACE_DEFAULT_THREAD_PRIORITY, // priority
-                                                   -1,                          // group id --> create new
-                                                   NULL,                        // task
-                                                   NULL,                        // handle(s)
-                                                   NULL,                        // stack(s)
-                                                   NULL,                        // stack size(s)
-                                                   NULL);                       // name(s)
-  if (grp_id == -1)
+  // step1: start GTK event loop
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start ();
+  if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Thread_Manager::spawn_n(%u): \"%m\", aborting\n"),
-               numThreadPoolThreads_in));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to start GTK event dispatch, aborting\n")));
+    return;
+  } // end IF
+
+  // step2: initialize worker(s)
+  int group_id = -1;
+  if (!Common_Tools::startEventDispatch (IRC_CLIENT_DEF_CLIENT_USES_REACTOR,
+                                         numDispatchThreads_in,
+                                         group_id))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to start event dispatch, aborting\n")));
+
+    // clean up
+    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
 
     return;
   } // end IF
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("spawned %u event handlers (group ID: %u)...\n"),
-             numThreadPoolThreads_in,
-             grp_id));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("started event dispatch...\n")));
 
-  // dispatch GTK events
-  // *WARNING*: this doesn't really make any sense - still, it seems to be a
-  // requirement to somehow "initialize" the mutex from the "main" thread...
-  // IOW: without this, gdk_threads_enter(), when first invoked from a child thread,
-  // will block indefinetly (go on, try it !)
-  gdk_threads_enter();
-  gtk_main();
-  gdk_threads_leave();
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished GTK event dispatching...\n")));
-
-  // done handling UI events
-
-  // stop reactor/proactor
-  if (IRC_CLIENT_DEF_CLIENT_USES_REACTOR)
+  // step7: dispatch events
+  // *NOTE*: when using a thread pool, handle things differently...
+  if (numDispatchThreads_in > 1)
   {
-    if (ACE_Reactor::instance()->end_event_loop() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to terminate event handling: \"%m\", continuing\n")));
-  }
+    if (ACE_Thread_Manager::instance ()->wait_grp (group_id) == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE_Thread_Manager::wait_grp(%d): \"%m\", continuing\n"),
+                  group_id));
+  } // end IF
   else
-    if (ACE_Proactor::instance()->end_event_loop() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to terminate event handling: \"%m\", continuing\n")));
+  {
+    if (IRC_CLIENT_DEF_CLIENT_USES_REACTOR)
+    {
+      /*      // *WARNING*: restart system calls (after e.g. SIGINT) for the reactor
+      ACE_Reactor::instance()->restart(1);
+      */
+      if (ACE_Reactor::instance ()->run_reactor_event_loop (0) == -1)
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to handle events: \"%m\", aborting\n")));
+    } // end IF
+    else
+      if (ACE_Proactor::instance ()->proactor_run_event_loop (0) == -1)
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to handle events: \"%m\", aborting\n")));
+  } // end ELSE
 
-  // no more data will be enqueued onto the processing streams...
-
-  // wait for the reactor worker(s) to join
-  ACE_Thread_Manager::instance()->wait_grp(grp_id);
-
-  // no more data will arrive from here on...
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("finished event dispatch...\n")));
 
   // wait for connection processing to complete
-  RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->abortConnections();
-  RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->waitConnections ();
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished working...\n")));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("finished working...\n")));
 }
 
 void
-do_parseServerConfigFile(const std::string& serverConfigFile_in,
-                         RPG_Net_Protocol_PhoneBook& phoneBook_out)
+do_parsePhonebookFile (const std::string& serverConfigFile_in,
+                       RPG_Net_Protocol_PhoneBook& phoneBook_out)
 {
-  RPG_TRACE(ACE_TEXT("::do_parseServerConfigFile"));
+  RPG_TRACE (ACE_TEXT ("::do_parsePhonebookFile"));
 
   // init return value(s)
   phoneBook_out.timestamp.update(ACE_Time_Value::zero);
@@ -1026,21 +753,21 @@ do_parseServerConfigFile(const std::string& serverConfigFile_in,
 //                ACE_TEXT("network: \"%s\"\n"),
 //                (*iterator).c_str()));
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("parsed %u phonebook (timestamp: %u/%u/%u) entries (%u network(s))...\n"),
-             phoneBook_out.servers.size(),
-             phoneBook_out.timestamp.month(),
-             phoneBook_out.timestamp.day(),
-             phoneBook_out.timestamp.year(),
-             phoneBook_out.networks.size()));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("parsed %u phonebook (timestamp: %u/%u/%u) entries (%u network(s))...\n"),
+              phoneBook_out.servers.size (),
+              phoneBook_out.timestamp.month (),
+              phoneBook_out.timestamp.day (),
+              phoneBook_out.timestamp.year (),
+              phoneBook_out.networks.size ()));
 }
 
 void
-do_parseConfigFile(const std::string& configFilename_in,
-                   RPG_Net_Protocol_IRCLoginOptions& loginOptions_out,
-                   RPG_Net_Protocol_PhoneBook& phoneBook_out)
+do_parseConfigurationFile (const std::string& configFilename_in,
+                           RPG_Net_Protocol_IRCLoginOptions& loginOptions_out,
+                           RPG_Net_Protocol_PhoneBook& phoneBook_out)
 {
-  RPG_TRACE(ACE_TEXT("::do_parseConfigFile"));
+  RPG_TRACE (ACE_TEXT ("::do_parseConfigurationFile"));
 
   ACE_Configuration_Heap config_heap;
   if (config_heap.open())
@@ -1221,9 +948,9 @@ do_parseConfigFile(const std::string& configFilename_in,
 }
 
 void
-do_printVersion(const std::string& programName_in)
+do_printVersion (const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_printVersion"));
+  RPG_TRACE (ACE_TEXT ("::do_printVersion"));
 
 //   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
   std::cout << programName_in
@@ -1249,231 +976,289 @@ do_printVersion(const std::string& programName_in)
 }
 
 int
-ACE_TMAIN(int argc,
-          ACE_TCHAR* argv[])
+ACE_TMAIN (int argc_in,
+           ACE_TCHAR* argv_in[])
 {
-//   RPG_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE (ACE_TEXT ("::main"));
 
   // step1: init libraries
-//  // *PORTABILITY*: on Windows, we need to init ACE...
-//#if defined(ACE_WIN32) || defined(ACE_WIN64)
-//  if (ACE::init() == -1)
-//  {
-//    ACE_DEBUG((LM_ERROR,
-//               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
-//
-//    return EXIT_FAILURE;
-//  } // end IF
-//#endif
+  // *PORTABILITY*: on Windows, init ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::init () == -1)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
+    return EXIT_FAILURE;
+  } // end IF
+#endif
 
   // *PROCESS PROFILE*
   ACE_Profile_Timer process_profile;
   // start profile timer...
-  process_profile.start();
-
-  // init GTK
-//  g_thread_init(NULL);
-  gdk_threads_init();
-  gtk_init(&argc, &argv);
+  process_profile.start ();
 
   // step2 init/validate configuration
 
   // step2a: process commandline arguments
-  std::string config_path = RPG_Common_File_Tools::getWorkingDirectory();
-#ifdef BASEDIR
-  config_path = RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                                     true);
-#endif // #ifdef BASEDIR
+  std::string configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
+#endif // #ifdef DEBUG_DEBUGGER
 
-  std::string configFile = config_path;
-  configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  configFile += ACE_TEXT_ALWAYS_CHAR("protocol");
-  configFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
-  configFile += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_CNF_DEF_INI_FILE);
+  std::string configuration_file = configuration_path;
+  configuration_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined (DEBUG_DEBUGGER)
+  configuration_file += ACE_TEXT_ALWAYS_CHAR ("protocol");
+  configuration_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif // #ifdef DEBUG_DEBUGGER
+  configuration_file += ACE_TEXT_ALWAYS_CHAR (IRC_CLIENT_CNF_DEF_INI_FILE);
 
-  bool debug                     = IRC_CLIENT_DEF_TRACE_ENABLED;
-  bool logToFile                 = false;
-  unsigned int reportingInterval = IRC_CLIENT_DEF_STATSINTERVAL;
+  bool debug                      = IRC_CLIENT_DEF_TRACE_ENABLED;
+  bool log_to_file                = false;
+  unsigned int reporting_interval = IRC_CLIENT_DEF_STATSINTERVAL;
 
-  std::string serverConfigFile = config_path;
-  serverConfigFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  serverConfigFile += ACE_TEXT_ALWAYS_CHAR("protocol");
-  serverConfigFile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
-  serverConfigFile += ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_GUI_DEF_SERVERS_FILE);
+  std::string phonebook_file = configuration_path;
+  phonebook_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined (DEBUG_DEBUGGER)
+  phonebook_file += ACE_TEXT_ALWAYS_CHAR ("protocol");
+  phonebook_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#endif // #ifdef DEBUG_DEBUGGER
+  phonebook_file += ACE_TEXT_ALWAYS_CHAR (IRC_CLIENT_GUI_DEF_SERVERS_FILE);
 
-  bool traceInformation       = false;
+  bool trace_information       = false;
 
-  std::string UIFileDirectory = config_path;
-  UIFileDirectory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-  UIFileDirectory += ACE_TEXT_ALWAYS_CHAR("protocol");
-#endif // #if (defined _DEBUG) || (defined DEBUG_RELEASE)
+  std::string UIFile_directory = configuration_path;
+  UIFile_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined (DEBUG_DEBUGGER)
+  UIFile_directory += ACE_TEXT_ALWAYS_CHAR ("protocol");
+#endif // #ifdef DEBUG_DEBUGGER
 
-  bool printVersionAndExit          = false;
-  unsigned int numThreadPoolThreads = IRC_CLIENT_DEF_NUM_TP_THREADS;
-  if (!(process_arguments(argc,
-                          argv,
-                          configFile,
-                          debug,
-                          logToFile,
-                          reportingInterval,
-                          serverConfigFile,
-                          traceInformation,
-                          UIFileDirectory,
-                          printVersionAndExit,
-                          numThreadPoolThreads)))
+  bool print_version_and_exit          = false;
+  unsigned int num_thread_pool_threads = IRC_CLIENT_DEF_NUM_TP_THREADS;
+  if (!do_processArguments (argc_in,
+                            argv_in,
+                            configuration_file,
+                            debug,
+                            log_to_file,
+                            reporting_interval,
+                            phonebook_file,
+                            trace_information,
+                            UIFile_directory,
+                            print_version_and_exit,
+                            num_thread_pool_threads))
   {
     // make 'em learn...
-    print_usage(std::string(ACE::basename(argv[0])));
+    do_printUsage (ACE::basename (argv_in[0]));
+
+    // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
+      return EXIT_FAILURE;
+    } // end IF
+#endif
 
     return EXIT_FAILURE;
   } // end IF
 
+  // assemble FQ filename (Glade-UI XML)
+  std::string ui_definition_filename = UIFile_directory;
+  ui_definition_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  ui_definition_filename += IRC_CLIENT_GUI_DEF_UI_MAIN_FILE;
+
   // validate argument(s)
-  if (!RPG_Common_File_Tools::isReadable(configFile) ||
-      !RPG_Common_File_Tools::isReadable(serverConfigFile) ||
-      !RPG_Common_File_Tools::isDirectory(UIFileDirectory))
+  if (!Common_File_Tools::isReadable (configuration_file)    ||
+      !Common_File_Tools::isReadable (phonebook_file)        ||
+      !Common_File_Tools::isReadable (ui_definition_filename))
   {
     // make 'em learn...
-    print_usage(std::string(ACE::basename(argv[0])));
+    do_printUsage (ACE::basename (argv_in[0]));
+
+    // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
+      return EXIT_FAILURE;
+    } // end IF
+#endif
 
     return EXIT_FAILURE;
   } // end IF
 
   // step2b: handle specific program modes
-  if (printVersionAndExit)
+  if (print_version_and_exit)
   {
-    do_printVersion(std::string(ACE::basename(argv[0])));
+    do_printVersion (ACE::basename (argv_in[0]));
+
+    // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
+      return EXIT_FAILURE;
+    } // end IF
+#endif
 
     return EXIT_SUCCESS;
   } // end IF
 
-  // step2c: set correct verbosity
-  u_long process_priority_mask = (LM_SHUTDOWN |
-//                                   LM_TRACE |  // <-- DISABLE trace messages !
-//                                   LM_DEBUG |  // <-- DISABLE ACE_DEBUG messages !
-                                  LM_INFO |
-                                  LM_NOTICE |
-                                  LM_WARNING |
-                                  LM_STARTUP |
-                                  LM_ERROR |
-                                  LM_CRITICAL |
-                                  LM_ALERT |
-                                  LM_EMERGENCY);
-  if (traceInformation)
+  // initialize logging and/or tracing
+  std::string log_file;
+  if (log_to_file)
+    log_file = RPG_Common_File_Tools::getLogFilename (ACE::basename (argv_in[0]));
+  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
+                                        log_file,                   // logfile
+                                        false,                      // log to syslog ?
+                                        false,                      // trace messages ?
+                                        trace_information,          // debug messages ?
+                                        NULL))                      // logger
   {
-    process_priority_mask |= LM_DEBUG;
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));
 
-    // don't go VERBOSE...
-    //ACE_LOG_MSG->clr_flags(ACE_Log_Msg::VERBOSE_LITE);
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
+
+    return EXIT_FAILURE;
   } // end IF
-  // set process priority mask...
-  ACE_LOG_MSG->priority_mask(process_priority_mask,
-                             ACE_Log_Msg::PROCESS);
 
   // init global (!) processing stream message allocator
-  RPG_Stream_CachedAllocatorHeap heapAllocator(RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
-                                               RPG_NET_PROTOCOL_BUFFER_SIZE);
-  RPG_Net_Protocol_MessageAllocator messageAllocator(RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
-                                                     &heapAllocator);
+  Stream_CachedAllocatorHeap heap_allocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
+                                             RPG_NET_PROTOCOL_BUFFER_SIZE);
+  RPG_Net_Protocol_MessageAllocator message_allocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
+                                                       &heap_allocator);
 
-  // step2d: init callback data
-  main_cb_data_t userData;
-  userData.allocator = &messageAllocator;
-  userData.debugScanner = RPG_NET_PROTOCOL_DEF_TRACE_SCANNING;
-  userData.debugParser = debug;
-  userData.statisticsReportingInterval = reportingInterval;
-  userData.UIFileDirectory = UIFileDirectory;
-  userData.builder = gtk_builder_new();
-  ACE_ASSERT(userData.builder);
+  // step2d: initialize configuration / callback data
+  RPG_Net_Protocol_Configuration configuration;
+  configuration.streamConfiguration.messageAllocator = &message_allocator;
+  configuration.streamConfiguration.statisticReportingInterval =
+   reporting_interval;
+  configuration.protocolConfiguration.streamConfiguration.debugScanner =
+   RPG_NET_PROTOCOL_DEF_TRACE_SCANNING;
+  configuration.protocolConfiguration.streamConfiguration.debugParser = debug;
+
+  main_cb_data_t user_data;
+  user_data.configuration = &configuration;
+  user_data.UIFileDirectory = UIFile_directory;
+  user_data.GTKState.builder = gtk_builder_new ();
+  ACE_ASSERT (user_data.GTKState.builder);
+  user_data.GTKState.InitializationHook = idle_initialize_UI_cb;
+  user_data.GTKState.FinalizationHook = idle_finalize_UI_cb;
 //   userData.phoneBook;
 //   userData.loginOptions.password = ;
-  userData.loginOptions.nick = ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_DEF_IRC_NICK);
+  user_data.configuration->protocolConfiguration.loginOptions.nick =
+   ACE_TEXT_ALWAYS_CHAR (IRC_CLIENT_DEF_IRC_NICK);
 //   userData.loginOptions.user.username = ;
-  std::string hostname = RPG_Common_Tools::getHostName();
+  std::string hostname;
+  Net_Common_Tools::retrieveLocalHostname (hostname);
   if (IRC_CLIENT_CNF_IRC_USERMSG_TRADITIONAL)
   {
-    userData.loginOptions.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::STRING;
-    userData.loginOptions.user.hostname.string = &hostname;
+    configuration.protocolConfiguration.loginOptions.user.hostname.discriminator =
+      RPG_Net_Protocol_IRCLoginOptions::User::Hostname::STRING;
+    configuration.protocolConfiguration.loginOptions.user.hostname.string = &hostname;
   } // end IF
   else
   {
-    userData.loginOptions.user.hostname.discriminator = RPG_Net_Protocol_IRCLoginOptions::User::Hostname::BITMASK;
+    configuration.protocolConfiguration.loginOptions.user.hostname.discriminator =
+      RPG_Net_Protocol_IRCLoginOptions::User::Hostname::BITMASK;
     // *NOTE*: hybrid-7.2.3 seems to have a bug: 4 --> +i
-    userData.loginOptions.user.hostname.mode = IRC_CLIENT_DEF_IRC_USERMODE;
+    configuration.protocolConfiguration.loginOptions.user.hostname.mode =
+      IRC_CLIENT_DEF_IRC_USERMODE;
   } // end ELSE
-  userData.loginOptions.user.servername = ACE_TEXT_ALWAYS_CHAR(RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME);
-//  userData.loginOptions.user.username = ;
-//  userData.loginOptions.user.realname = ;
-  userData.loginOptions.channel = ACE_TEXT_ALWAYS_CHAR(IRC_CLIENT_DEF_IRC_CHANNEL);
-  userData.connections.clear();
-
+  configuration.protocolConfiguration.loginOptions.user.servername =
+    ACE_TEXT_ALWAYS_CHAR (RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME);
+  configuration.protocolConfiguration.loginOptions.channel =
+    ACE_TEXT_ALWAYS_CHAR (IRC_CLIENT_DEF_IRC_CHANNEL);
   // populate user/realname
-  RPG_Common_Tools::getCurrentUserName(userData.loginOptions.user.username,
-                                       userData.loginOptions.user.realname);
+  Common_Tools::getCurrentUserName (configuration.protocolConfiguration.loginOptions.user.username,
+                                    configuration.protocolConfiguration.loginOptions.user.realname);
 
   // step2e: parse config file(s) (if any)
-  if (!serverConfigFile.empty())
-    do_parseServerConfigFile(serverConfigFile,
-                             userData.phoneBook);
-  if (!configFile.empty())
-    do_parseConfigFile(configFile,
-                       userData.loginOptions,
-                       userData.phoneBook);
+  if (!phonebook_file.empty ())
+    do_parsePhonebookFile (phonebook_file,
+                           user_data.phoneBook);
+  if (!configuration_file.empty ())
+    do_parseConfigurationFile (configuration_file,
+                               configuration.protocolConfiguration.loginOptions,
+                               user_data.phoneBook);
+
+  // step2f: initialize GTK
+  user_data.GTKState.CBUserData = &user_data;
+  Common_UI_GtkBuilderDefinition ui_definition (argc_in,
+                                                argv_in);
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (argc_in,
+                                                            argv_in,
+                                                            ui_definition_filename,
+                                                            &user_data.GTKState,
+                                                            &ui_definition);
 
   // step3: do actual work
   ACE_High_Res_Timer timer;
-  timer.start();
-  do_work(numThreadPoolThreads,
-          UIFileDirectory,
-          userData);
+  timer.start ();
+  do_work (num_thread_pool_threads,
+           user_data);
 
   // debug info
-  timer.stop();
+  timer.stop ();
   std::string working_time_string;
   ACE_Time_Value working_time;
   timer.elapsed_time(working_time);
-  RPG_Common_Tools::period2String(working_time,
-                                  working_time_string);
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
-             working_time_string.c_str()));
+  Common_Tools::period2String (working_time,
+                               working_time_string);
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
+              ACE_TEXT (working_time_string.c_str ())));
 
   // clean up
-  g_object_unref(userData.builder);
+  g_object_unref (user_data.GTKState.builder);
 
   // debug info
-  process_profile.stop();
+  process_profile.stop ();
   ACE_Profile_Timer::ACE_Elapsed_Time elapsed_time;
   elapsed_time.real_time = 0.0;
   elapsed_time.user_time = 0.0;
   elapsed_time.system_time = 0.0;
-  if (process_profile.elapsed_time(elapsed_time) == -1)
+  if (process_profile.elapsed_time (elapsed_time) == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Profile_Timer::elapsed_time: \"%m\", aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_Profile_Timer::elapsed_time: \"%m\", aborting\n")));
+
+    // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
+      return EXIT_FAILURE;
+    } // end IF
+#endif
 
     return EXIT_FAILURE;
   } // end IF
   ACE_Profile_Timer::Rusage elapsed_rusage;
-  ACE_OS::memset(&elapsed_rusage,
-                 0,
-                 sizeof(ACE_Profile_Timer::Rusage));
-  process_profile.elapsed_rusage(elapsed_rusage);
-  ACE_Time_Value user_time(elapsed_rusage.ru_utime);
-  ACE_Time_Value system_time(elapsed_rusage.ru_stime);
+  ACE_OS::memset (&elapsed_rusage, 0, sizeof (ACE_Profile_Timer::Rusage));
+  process_profile.elapsed_rusage (elapsed_rusage);
+  ACE_Time_Value user_time (elapsed_rusage.ru_utime);
+  ACE_Time_Value system_time (elapsed_rusage.ru_stime);
   std::string user_time_string;
   std::string system_time_string;
-  RPG_Common_Tools::period2String(user_time,
-                                  user_time_string);
-  RPG_Common_Tools::period2String(system_time,
-                                  system_time_string);
+  Common_Tools::period2String (user_time,
+                               user_time_string);
+  Common_Tools::period2String (system_time,
+                               system_time_string);
   // debug info
-#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
+#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT(" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\nmaximum resident set size = %d\nintegral shared memory size = %d\nintegral unshared data size = %d\nintegral unshared stack size = %d\npage reclaims = %d\npage faults = %d\nswaps = %d\nblock input operations = %d\nblock output operations = %d\nmessages sent = %d\nmessages received = %d\nsignals received = %d\nvoluntary context switches = %d\ninvoluntary context switches = %d\n"),
              elapsed_time.real_time,
@@ -1496,26 +1281,25 @@ ACE_TMAIN(int argc,
              elapsed_rusage.ru_nvcsw,
              elapsed_rusage.ru_nivcsw));
 #else
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT(" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\n"),
-             elapsed_time.real_time,
-             elapsed_time.user_time,
-             elapsed_time.system_time,
-             user_time_string.c_str(),
-             system_time_string.c_str()));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT (" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\n"),
+              elapsed_time.real_time,
+              elapsed_time.user_time,
+              elapsed_time.system_time,
+              ACE_TEXT (user_time_string.c_str ()),
+              ACE_TEXT (system_time_string.c_str ())));
 #endif
 
   // step4: fini libraries
-//  // *PORTABILITY*: on Windows, we must fini ACE...
-//#if defined (ACE_WIN32) || defined (ACE_WIN64)
-//  if (ACE::fini() == -1)
-//  {
-//    ACE_DEBUG((LM_ERROR,
-//               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
-//
-//    return EXIT_FAILURE;
-//  } // end IF
-//#endif
+  // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::fini () == -1)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
+    return EXIT_FAILURE;
+  } // end IF
+#endif
 
   return EXIT_SUCCESS;
 } // end main

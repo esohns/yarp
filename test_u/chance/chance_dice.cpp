@@ -19,7 +19,20 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-// *NOTE*: need this to import correct VERSION !
+#include <algorithm>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <string>
+
+#include "ace/ACE.h"
+#include "ace/Get_Opt.h"
+#include "ace/High_Res_Timer.h"
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
+#include "ace/Log_Msg.h"
+
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
 #endif
@@ -29,16 +42,6 @@
 #include "rpg_dice.h"
 
 #include "rpg_common_macros.h"
-
-#include "ace/ACE.h"
-#include "ace/Get_Opt.h"
-#include "ace/High_Res_Timer.h"
-
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <string>
-#include <algorithm>
 
 void
 print_usage(const std::string& programName_in)
@@ -179,11 +182,11 @@ process_arguments(const int argc_in,
 }
 
 void
-do_work(const RPG_Dice_Roll& rollSpecs_in,
-        const unsigned int& numRolls_in,
-        const bool& includeSortedResult_in)
+do_work (const RPG_Dice_Roll& rollSpecs_in,
+         unsigned int numRolls_in,
+         bool includeSortedResult_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_work"));
+  RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step1: init randomization
   try
@@ -390,13 +393,13 @@ ACE_TMAIN(int argc,
   bool printVersionAndExit = false;
 
   // step1b: parse/process/validate configuration
-  if (!(process_arguments(argc,
+  if (!process_arguments (argc,
                           argv,
                           rollSpecs,
                           numRolls,
                           includeSortedResult,
                           traceInformation,
-                          printVersionAndExit)))
+                          printVersionAndExit))
   {
     // make 'em learn...
     print_usage(std::string(ACE::basename(argv[0])));

@@ -42,7 +42,6 @@
 //#include "SDL/SDL_framerate.h"
 
 #include "common_file_tools.h"
-//#include "common_timer_manager.h"
 #include "common_tools.h"
 
 #include "common_ui_glade_definition.h"
@@ -52,7 +51,6 @@
 
 #include "net_common_tools.h"
 #include "net_connection_manager_common.h"
-//#include "net_defines.h"
 
 #include "net_client_defines.h"
 
@@ -84,7 +82,8 @@
 #include "rpg_net_defines.h"
 #include "rpg_net_stream_messageallocator.h"
 
-#include "rpg_net_protocol_common.h"
+#include "rpg_net_protocol_configuration.h"
+#include "rpg_net_protocol_network.h"
 
 #include "rpg_engine.h"
 #include "rpg_engine_common_tools.h"
@@ -745,7 +744,7 @@ do_runIntro(SDL_Surface*      targetSurface_in,
 void
 do_work (const RPG_Client_Configuration_t& configuration_in,
          const std::string& schemaRepository_in,
-         const Common_UI_GladeDefinition& UIDefinition_in,
+         Common_UI_GladeDefinition& UIDefinition_in,
          RPG_Client_GTK_CBData_t& GTKUserData_in,
          bool skipIntro_in,
          bool debug_in)
@@ -799,41 +798,40 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
 //   caption += ACE_TEXT_ALWAYS_CHAR(" ");
 //   caption += RPG_VERSION;
   // ***** window/screen setup *****
-  if (!RPG_Graphics_SDL_Tools::initVideo(configuration_in.video_configuration, // configuration
-                                         caption,                              // window/icon caption
-                                         GTKUserData_in.screen,                // window surface
-                                         true))                                // init window ?
+  if (!RPG_Graphics_SDL_Tools::initVideo (configuration_in.video_configuration, // configuration
+                                          caption,                              // window/icon caption
+                                          GTKUserData_in.screen,                // window surface
+                                          true))                                // init window ?
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_SDL_Tools::initVideo(), aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::initVideo(), aborting\n")));
 
     // clean up
-    RPG_Client_Common_Tools::fini();
-    RPG_Engine_Common_Tools::fini();
+    RPG_Client_Common_Tools::fini ();
+    RPG_Engine_Common_Tools::fini ();
 
     return;
   } // end IF
-  ACE_ASSERT(GTKUserData_in.screen != NULL);
-  RPG_Graphics_Common_Tools::init(configuration_in.graphics_directory,
-                                  RPG_CLIENT_GRAPHICS_DEF_CACHESIZE,
-                                  true);
+  ACE_ASSERT (GTKUserData_in.screen != NULL);
+  RPG_Graphics_Common_Tools::init (configuration_in.graphics_directory,
+                                   RPG_CLIENT_GRAPHICS_DEF_CACHESIZE,
+                                   true);
   SDL_Rect dirty_region;
-  ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
-  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->setCursor(CURSOR_NORMAL,
-                                                               dirty_region);
+  ACE_OS::memset (&dirty_region, 0, sizeof (dirty_region));
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->setCursor (CURSOR_NORMAL,
+                                                                 dirty_region);
 
   // ***** mouse setup *****
-  SDL_WarpMouse((GTKUserData_in.screen->w / 2),
-                (GTKUserData_in.screen->h / 2));
+  SDL_WarpMouse ((GTKUserData_in.screen->w / 2),
+                 (GTKUserData_in.screen->h / 2));
 
   // step3: run intro ?
   if (!skipIntro_in &&
-      !do_runIntro(GTKUserData_in.screen,
-                   &client_engine))
+      !do_runIntro (GTKUserData_in.screen,
+                    &client_engine))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to run intro, aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to run intro, returning\n")));
     return;
   } // end IF
 
@@ -842,64 +840,64 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = RPG_CLIENT_GRAPHICS_DEF_WINDOWSTYLE_TYPE;
   std::string title =
-      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);
-  RPG_Client_Window_Main main_window(RPG_Graphics_Size_t(GTKUserData_in.screen->w,
-                                                         GTKUserData_in.screen->h), // size
-                                     type,                                          // interface elements
-                                     title,                                         // title (== caption)
-                                     FONT_MAIN_LARGE);                              // title font
-  main_window.setScreen(GTKUserData_in.screen);
-  main_window.init(&client_engine,
-                   RPG_CLIENT_WINDOW_DEF_EDGE_AUTOSCROLL,
-                   &level_engine,
-                   debug_in);
+    ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);
+  RPG_Client_Window_Main main_window (RPG_Graphics_Size_t (GTKUserData_in.screen->w,
+                                                           GTKUserData_in.screen->h), // size
+                                      type,                                           // interface elements
+                                      title,                                          // title (== caption)
+                                      FONT_MAIN_LARGE);                               // title font
+  main_window.setScreen (GTKUserData_in.screen);
+  main_window.init (&client_engine,
+                    RPG_CLIENT_WINDOW_DEF_EDGE_AUTOSCROLL,
+                    &level_engine,
+                    debug_in);
 
   // step4b: client engine
   client_engine.initialize (&level_engine,
                             main_window.child (WINDOW_MAP),
-                            &const_cast<Common_UI_GladeDefinition&> (UIDefinition_in),
+                            &UIDefinition_in,
                             debug_in);
 
   // step4c: queue initial drawing
   RPG_Client_Action client_action;
   client_action.command = COMMAND_WINDOW_DRAW;
   client_action.previous =
-      std::make_pair(std::numeric_limits<unsigned int>::max(),
-                     std::numeric_limits<unsigned int>::max());
+    std::make_pair (std::numeric_limits<unsigned int>::max (),
+                    std::numeric_limits<unsigned int>::max ());
   client_action.position =
-      std::make_pair(std::numeric_limits<unsigned int>::max(),
-                     std::numeric_limits<unsigned int>::max());
+    std::make_pair (std::numeric_limits<unsigned int>::max (),
+                    std::numeric_limits<unsigned int>::max ());
   client_action.window = &main_window;
   client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   client_action.entity_id = 0;
   client_action.sound = RPG_SOUND_EVENT_INVALID;
   client_action.source =
-      std::make_pair(std::numeric_limits<unsigned int>::max(),
-                     std::numeric_limits<unsigned int>::max());
+    std::make_pair (std::numeric_limits<unsigned int>::max (),
+                    std::numeric_limits<unsigned int>::max ());
   client_action.radius = 0;
-  client_engine.action(client_action);
+  client_engine.action (client_action);
   client_action.command = COMMAND_WINDOW_REFRESH;
-  client_engine.action(client_action);
+  client_engine.action (client_action);
 
-  RPG_Graphics_IWindowBase* level_window = main_window.child(WINDOW_MAP);
-  ACE_ASSERT(level_window);
+  RPG_Graphics_IWindowBase* level_window = main_window.child (WINDOW_MAP);
+  ACE_ASSERT (level_window);
   // init/add entity to the graphics cache
-  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->init(&client_engine,
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->init (&client_engine,
+                                                            level_window);
+  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->init (&client_engine,
                                                           level_window);
-  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->init(&client_engine,
-                                                        level_window);
 
   // start painting...
-  client_engine.start();
-  if (!client_engine.isRunning())
+  client_engine.start ();
+  if (!client_engine.isRunning ())
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to start client engine, aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to start client engine, aborting\n")));
 
     // clean up
-    level_engine.stop();
-    RPG_Client_Common_Tools::fini();
-    RPG_Engine_Common_Tools::fini();
+    level_engine.stop ();
+    RPG_Client_Common_Tools::fini ();
+    RPG_Engine_Common_Tools::fini ();
 
     return;
   } // end IF
@@ -907,21 +905,21 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
   // step4d: start timer (triggers hover events)
   GTKUserData_in.eventTimer = NULL;
   GTKUserData_in.eventTimer =
-      SDL_AddTimer(RPG_CLIENT_SDL_EVENT_TIMEOUT, // interval (ms)
-                   event_timer_SDL_cb,           // event timer callback
-                   &GTKUserData_in);             // callback argument
+    SDL_AddTimer (RPG_CLIENT_SDL_EVENT_TIMEOUT, // interval (ms)
+                  event_timer_SDL_cb,           // event timer callback
+                  &GTKUserData_in);             // callback argument
   if (!GTKUserData_in.eventTimer)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_AddTimer(%u): \"%s\", aborting\n"),
-               RPG_CLIENT_SDL_EVENT_TIMEOUT,
-               ACE_TEXT(SDL_GetError())));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_AddTimer(%u): \"%s\", aborting\n"),
+                RPG_CLIENT_SDL_EVENT_TIMEOUT,
+                ACE_TEXT (SDL_GetError ())));
 
     // clean up
 //    level_engine.stop();
-    client_engine.stop();
-    RPG_Client_Common_Tools::fini();
-    RPG_Engine_Common_Tools::fini();
+    client_engine.stop ();
+    RPG_Client_Common_Tools::fini ();
+    RPG_Engine_Common_Tools::fini ();
 
     return;
   } // end IF
@@ -937,11 +935,12 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
                   sizeof (RPG_Net_Protocol_Configuration));
   // ************ connection configuration ************
   protocol_configuration.socketConfiguration.bufferSize =
-   RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
+    RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
 //  net_configuration.useThreadPerConnection = false;
 //  net_configuration.serializeOutput = false;
   // ************ stream configuration ************
-  protocol_configuration.messageAllocator = &message_allocator;
+  protocol_configuration.streamConfiguration.messageAllocator =
+    &message_allocator;
   //protocol_configuration.streamConfiguration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
 //  net_configuration.notificationStrategy = NULL;
 //  net_configuration.module = NULL; // just use the default stream...
@@ -976,11 +975,11 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
   } // end IF
 
   // step5c: init connection manager
-  RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (std::numeric_limits<unsigned int>::max ());
-  Net_UserData_t user_data;
-  ACE_OS::memset (&user_data, 0, sizeof (Net_UserData_t));
-  RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->set (protocol_configuration,
-                                                              &user_data);
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (std::numeric_limits<unsigned int>::max ());
+  RPG_Net_Protocol_SessionData session_data;
+  ACE_OS::memset (&session_data, 0, sizeof (RPG_Net_Protocol_SessionData));
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->set (protocol_configuration,
+                                                                  &session_data);
 
   // step5d: start worker(s)
   int group_id = -1;
@@ -1025,8 +1024,8 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
     RPG_Client_Common_Tools::fini();
     RPG_Engine_Common_Tools::fini();
 
-    RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
-    RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->waitConnections ();
+    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
+    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->waitConnections ();
     Common_Tools::finalizeEventDispatch (RPG_NET_USES_REACTOR,
                                          !RPG_NET_USES_REACTOR,
                                          group_id);
@@ -1327,8 +1326,8 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
   RPG_Engine_Common_Tools::fini();
   // done handling UI events
 
-  RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
-  RPG_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->waitConnections ();
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->waitConnections ();
   Common_Tools::finalizeEventDispatch (RPG_NET_USES_REACTOR,
                                        !RPG_NET_USES_REACTOR,
                                        group_id);
@@ -1339,10 +1338,10 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
 }
 
 void
-do_parseIniFile(const std::string& iniFilename_in,
-                RPG_Client_Configuration_t& config_out)
+do_parseIniFile (const std::string& iniFilename_in,
+                 RPG_Client_Configuration_t& config_out)
 {
-  RPG_TRACE(ACE_TEXT("::do_parseIniFile"));
+  RPG_TRACE (ACE_TEXT ("::do_parseIniFile"));
 
   // init return value(s)
   //config_out.audio_configuration.mute = false;
@@ -1881,8 +1880,8 @@ ACE_TMAIN(int argc_in,
 
   RPG_Client_GTK_CBData_t GTK_user_data;
 
-  GTK_user_data.GTKState.InitializationHook = idle_init_UI_cb;
-  GTK_user_data.GTKState.FinalizationHook = idle_fini_UI_cb;
+  GTK_user_data.GTKState.InitializationHook = idle_initialize_UI_cb;
+  GTK_user_data.GTKState.FinalizationHook = idle_finalize_UI_cb;
 
   GTK_user_data.levelMetadata.name                 =
       ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME);
@@ -2092,34 +2091,35 @@ ACE_TMAIN(int argc_in,
 
     // clean up
     // *PORTABILITY*: on Windows, must fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-      if (ACE::fini() == -1)
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
 #endif
 
     return EXIT_FAILURE;
   } // end IF
-  if (TTF_Init() == -1)
+  if (TTF_Init () == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to TTF_Init(): \"%s\", aborting\n"),
-               ACE_TEXT(SDL_GetError())));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to TTF_Init(): \"%s\", aborting\n"),
+                ACE_TEXT (SDL_GetError ())));
 
     // clean up
-    SDL_VideoQuit();
-    SDL_Quit();
+    SDL_VideoQuit ();
+    SDL_Quit ();
     // *PORTABILITY*: on Windows, must fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-      if (ACE::fini() == -1)
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
 #endif
 
     return EXIT_FAILURE;
   } // end IF
 
   // step2b: init GLIB / G(D|T)K[+] / GNOME
+  GTK_user_data.GTKState.CBUserData = &GTK_user_data;
   Common_UI_GladeDefinition ui_definition (argc_in,
                                            argv_in);
   COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (argc_in,
@@ -2129,7 +2129,7 @@ ACE_TMAIN(int argc_in,
                                                             &ui_definition);
 
   ACE_High_Res_Timer timer;
-  timer.start();
+  timer.start ();
   // step3: do actual work
   do_work (configuration,
            schema_repository,
@@ -2137,22 +2137,22 @@ ACE_TMAIN(int argc_in,
            GTK_user_data,
            skip_intro,
            debug);
-  timer.stop();
+  timer.stop ();
   // debug info
   std::string working_time_string;
   ACE_Time_Value working_time;
-  timer.elapsed_time(working_time);
-  RPG_Common_Tools::period2String(working_time,
-                                  working_time_string);
+  timer.elapsed_time (working_time);
+  Common_Tools::period2String (working_time,
+                               working_time_string);
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
-             ACE_TEXT(working_time_string.c_str())));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
+              ACE_TEXT (working_time_string.c_str ())));
 
   // step4: clean up
-  TTF_Quit();
-  SDL_VideoQuit();
-  SDL_Quit();
+  TTF_Quit ();
+  SDL_VideoQuit ();
+  SDL_Quit ();
 
   // stop profile timer...
   process_profile.stop();
@@ -2162,80 +2162,77 @@ ACE_TMAIN(int argc_in,
   elapsed_time.real_time = 0.0;
   elapsed_time.user_time = 0.0;
   elapsed_time.system_time = 0.0;
-  if (process_profile.elapsed_time(elapsed_time) == -1)
+  if (process_profile.elapsed_time (elapsed_time) == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Profile_Timer::elapsed_time: \"%m\", aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_Profile_Timer::elapsed_time: \"%m\", aborting\n")));
 
     // clean up
     // *PORTABILITY*: on Windows, must fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-      if (ACE::fini() == -1)
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
     #endif
 
     return EXIT_FAILURE;
   } // end IF
   ACE_Profile_Timer::Rusage elapsed_rusage;
-  ACE_OS::memset(&elapsed_rusage,
-                 0,
-                 sizeof(ACE_Profile_Timer::Rusage));
-  process_profile.elapsed_rusage(elapsed_rusage);
-  ACE_Time_Value user_time(elapsed_rusage.ru_utime);
-  ACE_Time_Value system_time(elapsed_rusage.ru_stime);
+  ACE_OS::memset (&elapsed_rusage, 0, sizeof (ACE_Profile_Timer::Rusage));
+  process_profile.elapsed_rusage (elapsed_rusage);
+  ACE_Time_Value user_time (elapsed_rusage.ru_utime);
+  ACE_Time_Value system_time (elapsed_rusage.ru_stime);
   std::string user_time_string;
   std::string system_time_string;
-  RPG_Common_Tools::period2String(user_time,
-                                  user_time_string);
-  RPG_Common_Tools::period2String(system_time,
-                                  system_time_string);
+  Common_Tools::period2String (user_time,
+                               user_time_string);
+  Common_Tools::period2String (system_time,
+                               system_time_string);
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT(" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\nmaximum resident set size = %d\nintegral shared memory size = %d\nintegral unshared data size = %d\nintegral unshared stack size = %d\npage reclaims = %d\npage faults = %d\nswaps = %d\nblock input operations = %d\nblock output operations = %d\nmessages sent = %d\nmessages received = %d\nsignals received = %d\nvoluntary context switches = %d\ninvoluntary context switches = %d\n"),
-             elapsed_time.real_time,
-             elapsed_time.user_time,
-             elapsed_time.system_time,
-             ACE_TEXT(user_time_string.c_str()),
-             ACE_TEXT(system_time_string.c_str()),
-             elapsed_rusage.ru_maxrss,
-             elapsed_rusage.ru_ixrss,
-             elapsed_rusage.ru_idrss,
-             elapsed_rusage.ru_isrss,
-             elapsed_rusage.ru_minflt,
-             elapsed_rusage.ru_majflt,
-             elapsed_rusage.ru_nswap,
-             elapsed_rusage.ru_inblock,
-             elapsed_rusage.ru_oublock,
-             elapsed_rusage.ru_msgsnd,
-             elapsed_rusage.ru_msgrcv,
-             elapsed_rusage.ru_nsignals,
-             elapsed_rusage.ru_nvcsw,
-             elapsed_rusage.ru_nivcsw));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT(" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\nmaximum resident set size = %d\nintegral shared memory size = %d\nintegral unshared data size = %d\nintegral unshared stack size = %d\npage reclaims = %d\npage faults = %d\nswaps = %d\nblock input operations = %d\nblock output operations = %d\nmessages sent = %d\nmessages received = %d\nsignals received = %d\nvoluntary context switches = %d\ninvoluntary context switches = %d\n"),
+              elapsed_time.real_time,
+              elapsed_time.user_time,
+              elapsed_time.system_time,
+              ACE_TEXT(user_time_string.c_str()),
+              ACE_TEXT(system_time_string.c_str()),
+              elapsed_rusage.ru_maxrss,
+              elapsed_rusage.ru_ixrss,
+              elapsed_rusage.ru_idrss,
+              elapsed_rusage.ru_isrss,
+              elapsed_rusage.ru_minflt,
+              elapsed_rusage.ru_majflt,
+              elapsed_rusage.ru_nswap,
+              elapsed_rusage.ru_inblock,
+              elapsed_rusage.ru_oublock,
+              elapsed_rusage.ru_msgsnd,
+              elapsed_rusage.ru_msgrcv,
+              elapsed_rusage.ru_nsignals,
+              elapsed_rusage.ru_nvcsw,
+              elapsed_rusage.ru_nivcsw));
 #else
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT(" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\n"),
-             elapsed_time.real_time,
-             elapsed_time.user_time,
-             elapsed_time.system_time,
-             ACE_TEXT(user_time_string.c_str()),
-             ACE_TEXT(system_time_string.c_str())));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT (" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\n"),
+              elapsed_time.real_time,
+              elapsed_time.user_time,
+              elapsed_time.system_time,
+              ACE_TEXT (user_time_string.c_str ()),
+              ACE_TEXT (system_time_string.c_str ())));
 #endif
 
 // *PORTABILITY*: on Windows, must fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-  if (ACE::fini() == -1)
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::fini () == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
 #endif
 
   return EXIT_SUCCESS;
 } // end main
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
