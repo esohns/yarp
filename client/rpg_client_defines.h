@@ -35,6 +35,8 @@
 // gnome / gtk
 #define RPG_CLIENT_GNOME_APPLICATION_ID                   "rpg_client"
 #define RPG_CLIENT_GTK_UI_FILE                            "rpg_client.glade"
+#define RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN         "client"
+
 // gtk widget names
 #define RPG_CLIENT_GTK_BUTTON_ABOUT_NAME                  "about"
 #define RPG_CLIENT_GTK_BUTTON_QUIT_NAME                   "quit"

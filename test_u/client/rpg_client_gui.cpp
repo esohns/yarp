@@ -1668,20 +1668,19 @@ SDL_main (int argc_in,
           char** argv_in)
 #else
 int
-ACE_TMAIN(int argc_in,
-          ACE_TCHAR** argv_in)
+ACE_TMAIN (int argc_in,
+           ACE_TCHAR** argv_in)
 #endif
 {
-  RPG_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE (ACE_TEXT ("::main"));
 
   // step1: init ACE
 // *PORTABILITY*: on Windows, need to init ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-  if (ACE::init() == -1)
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::init () == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
 #endif
@@ -1689,7 +1688,7 @@ ACE_TMAIN(int argc_in,
   // *PROCESS PROFILE*
   ACE_Profile_Timer process_profile;
   // start profile timer...
-  process_profile.start();
+  process_profile.start ();
 
   // step1 init/validate configuration
   std::string configuration_path =
@@ -1709,17 +1708,17 @@ ACE_TMAIN(int argc_in,
   std::string configuration_file    = configuration_path;
   configuration_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  configuration_file += ACE_TEXT_ALWAYS_CHAR("client");
+  configuration_file += ACE_TEXT_ALWAYS_CHAR ("client");
   configuration_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  configuration_file += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_CONFIGURATION_FILE);
+  configuration_file += ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_CONFIGURATION_FILE);
 
   std::string monster_dictionary    = configuration_path;
   monster_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  monster_dictionary += ACE_TEXT_ALWAYS_CHAR("character");
+  monster_dictionary += ACE_TEXT_ALWAYS_CHAR ("character");
   monster_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  monster_dictionary += ACE_TEXT_ALWAYS_CHAR("monster");
+  monster_dictionary += ACE_TEXT_ALWAYS_CHAR ("monster");
   monster_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   monster_dictionary += RPG_MONSTER_DICTIONARY_FILE;
@@ -1727,7 +1726,7 @@ ACE_TMAIN(int argc_in,
   std::string graphics_dictionary   = configuration_path;
   graphics_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  graphics_dictionary += ACE_TEXT_ALWAYS_CHAR("graphics");
+  graphics_dictionary += ACE_TEXT_ALWAYS_CHAR ("graphics");
   graphics_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   graphics_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DICTIONARY_FILE);
@@ -1735,7 +1734,7 @@ ACE_TMAIN(int argc_in,
   std::string item_dictionary       = configuration_path;
   item_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  item_dictionary += ACE_TEXT_ALWAYS_CHAR("item");
+  item_dictionary += ACE_TEXT_ALWAYS_CHAR ("item");
   item_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   item_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DICTIONARY_FILE);
@@ -1743,7 +1742,7 @@ ACE_TMAIN(int argc_in,
   std::string magic_dictionary      = configuration_path;
   magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  magic_dictionary += ACE_TEXT_ALWAYS_CHAR("magic");
+  magic_dictionary += ACE_TEXT_ALWAYS_CHAR ("magic");
   magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   magic_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
@@ -1751,7 +1750,7 @@ ACE_TMAIN(int argc_in,
   std::string sound_dictionary      = configuration_path;
   sound_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  sound_dictionary += ACE_TEXT_ALWAYS_CHAR("sound");
+  sound_dictionary += ACE_TEXT_ALWAYS_CHAR ("sound");
   sound_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   sound_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DICTIONARY_FILE);
@@ -1759,7 +1758,7 @@ ACE_TMAIN(int argc_in,
   std::string UI_file               = configuration_path;
   UI_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  UI_file += ACE_TEXT_ALWAYS_CHAR("client");
+  UI_file += ACE_TEXT_ALWAYS_CHAR ("client");
   UI_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   UI_file += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_UI_FILE);
@@ -1767,23 +1766,23 @@ ACE_TMAIN(int argc_in,
   std::string schema_repository     = configuration_path;
 #if defined (DEBUG_DEBUGGER)
   schema_repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_repository += ACE_TEXT_ALWAYS_CHAR("engine");
+  schema_repository += ACE_TEXT_ALWAYS_CHAR ("engine");
 #endif
 
   std::string floor_plan            = data_path;
   floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  floor_plan += ACE_TEXT_ALWAYS_CHAR("engine");
+  floor_plan += ACE_TEXT_ALWAYS_CHAR ("engine");
   floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  floor_plan += ACE_TEXT_ALWAYS_CHAR("data");
+  floor_plan += ACE_TEXT_ALWAYS_CHAR ("data");
   floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
   floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   floor_plan +=
-      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME));
-  floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
+    RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
+  floor_plan += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
 
   bool log_to_file                  = false;
   bool trace_information            = false;
@@ -1792,34 +1791,34 @@ ACE_TMAIN(int argc_in,
   std::string video_driver          =
       ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME);
   bool skip_intro                   = false;
-  if (!do_processArguments(argc_in,
-                           argv_in,
-                           mute_sound,
-                           configuration_file,
-                           debug,
-                           monster_dictionary,
-                           floor_plan,
-                           graphics_dictionary,
-                           item_dictionary,
-                           log_to_file,
-                           magic_dictionary,
-                           skip_intro,
-                           schema_repository,
-                           sound_dictionary,
-                           trace_information,
-                           UI_file,
-                           print_version_and_exit,
-                           num_dispatch_threads,
-                           video_driver))
+  if (!do_processArguments (argc_in,
+                            argv_in,
+                            mute_sound,
+                            configuration_file,
+                            debug,
+                            monster_dictionary,
+                            floor_plan,
+                            graphics_dictionary,
+                            item_dictionary,
+                            log_to_file,
+                            magic_dictionary,
+                            skip_intro,
+                            schema_repository,
+                            sound_dictionary,
+                            trace_information,
+                            UI_file,
+                            print_version_and_exit,
+                            num_dispatch_threads,
+                            video_driver))
   {
-    do_printUsage(std::string(ACE::basename(argv_in[0])));
+    do_printUsage (ACE::basename (argv_in[0]));
 
     // clean up
     // *PORTABILITY*: on Windows, must fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-      if (ACE::fini() == -1)
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -1849,14 +1848,14 @@ ACE_TMAIN(int argc_in,
                 ACE_TEXT (UI_file.c_str ())));
 
     // make 'em learn...
-    do_printUsage (std::string (ACE::basename (argv_in[0])));
+    do_printUsage (ACE::basename (argv_in[0]));
 
     // clean up
     // *PORTABILITY*: on Windows, must fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-      if (ACE::fini() == -1)
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
 #endif
 
     return EXIT_FAILURE;
@@ -1865,14 +1864,14 @@ ACE_TMAIN(int argc_in,
   // step1b: handle specific program modes
   if (print_version_and_exit)
   {
-    do_printVersion(std::string(ACE::basename(argv_in[0])));
+    do_printVersion (ACE::basename (argv_in[0]));
 
     // clean up
     // *PORTABILITY*: on Windows, must fini ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-      if (ACE::fini() == -1)
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to ACE::fini(): \"%m\", aborting\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
 #endif
 
     return EXIT_SUCCESS;
@@ -1880,8 +1879,8 @@ ACE_TMAIN(int argc_in,
 
   RPG_Client_GTK_CBData_t GTK_user_data;
 
-  GTK_user_data.GTKState.InitializationHook = idle_initialize_UI_cb;
-  GTK_user_data.GTKState.FinalizationHook = idle_finalize_UI_cb;
+  GTK_user_data.GTKState.initializationHook = idle_initialize_UI_cb;
+  GTK_user_data.GTKState.finalizationHook = idle_finalize_UI_cb;
 
   GTK_user_data.levelMetadata.name                 =
       ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME);
@@ -2119,12 +2118,11 @@ ACE_TMAIN(int argc_in,
   } // end IF
 
   // step2b: init GLIB / G(D|T)K[+] / GNOME
-  GTK_user_data.GTKState.CBUserData = &GTK_user_data;
+  GTK_user_data.GTKState.userData = &GTK_user_data;
   Common_UI_GladeDefinition ui_definition (argc_in,
                                            argv_in);
   COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (argc_in,
                                                             argv_in,
-                                                            UI_file,
                                                             &GTK_user_data.GTKState,
                                                             &ui_definition);
 

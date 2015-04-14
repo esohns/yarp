@@ -39,10 +39,10 @@
 #include <valgrind/valgrind.h>
 #endif
 
-//#include "common.h"
 #include "common_file_tools.h"
 #include "common_tools.h"
 
+#include "common_ui_defines.h"
 #include "common_ui_glade_definition.h"
 #include "common_ui_gtk_manager.h"
 
@@ -50,7 +50,6 @@
 
 #include "net_common_tools.h"
 #include "net_connection_manager_common.h"
-//#include "net_module_eventhandler.h"
 
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
@@ -403,7 +402,7 @@ do_work (unsigned int maxNumConnections_in,
          bool useReactor_in,
          unsigned int statisticsReportingInterval_in,
          unsigned int numDispatchThreads_in,
-         bool hasUI_in,
+         const std::string& UIDefinitionFile_in,
          Net_GTK_CBData_t& CBData_in,
          ACE_Sig_Set& signalSet_inout,
          Common_SignalActions_t& previousSignalActions_inout)
@@ -444,8 +443,8 @@ do_work (unsigned int maxNumConnections_in,
   //  config.serializeOutput = false;
 
   //  config.notificationStrategy = NULL;
-  configuration.streamConfiguration.module = (hasUI_in ? &event_handler
-                                                       : NULL);
+  configuration.streamConfiguration.module = (!UIDefinitionFile_in.empty () ? &event_handler
+                                                                            : NULL);
   //  config.delete_module = false;
   // *WARNING*: set at runtime, by the appropriate connection handler
   //  config.sessionID = 0; // (== socket handle !)
@@ -541,8 +540,11 @@ do_work (unsigned int maxNumConnections_in,
   // - dispatch UI events (if any)
 
   // step4a: start GTK event loop ?
-  if (hasUI_in)
+  if (!UIDefinitionFile_in.empty ())
   {
+    CBData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
+      std::make_pair (UIDefinitionFile_in, static_cast<GladeXML*> (NULL));
+
     COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start ();
     if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
     {
@@ -947,13 +949,12 @@ ACE_TMAIN (int argc_in,
   } // end IF
 
   // step1h: init GLIB / G(D|T)K[+] / GNOME ?
-  gtk_cb_user_data.GTKState.CBUserData = &gtk_cb_user_data;
+  gtk_cb_user_data.GTKState.userData = &gtk_cb_user_data;
   Common_UI_GladeDefinition ui_definition (argc_in,
                                            argv_in);
   if (!UI_file.empty ())
     COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (argc_in,
                                                               argv_in,
-                                                              UI_file,
                                                               &gtk_cb_user_data.GTKState,
                                                               &ui_definition);
 
@@ -970,7 +971,7 @@ ACE_TMAIN (int argc_in,
            use_reactor,
            statistics_reporting_interval,
            num_dispatch_threads,
-           !UI_file.empty (),
+           UI_file,
            gtk_cb_user_data,
            signal_set,
            previous_signal_actions);

@@ -22,54 +22,51 @@
 #define TEST_U_MAIN_H
 #pragma once
 
-#include "character_generator_gui_common.h"
-
-#include "ace/OS.h"
-#include "ace/OS_main.h"
-
 #include <string>
 
+#include "ace/OS_main.h"
+
+#include "character_generator_gui_common.h"
+
 class test_u_main
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
  : public ACE_Main_Base
 #endif
 {
  public:
-	test_u_main(void);
-	virtual ~test_u_main(void);
+  test_u_main (void);
+  virtual ~test_u_main (void);
 
-	virtual int run_i(int,      // argc
-		                char*[]); // argv
+  virtual int run_i (int,      // argc
+                     char*[]); // argv
 
  private:
- #if defined(ACE_WIN32) || defined(ACE_WIN64)
-	typedef ACE_Main_Base inherited;
+ #if defined (ACE_WIN32) || defined (ACE_WIN64)
+  typedef ACE_Main_Base inherited;
  #endif
 
-	// helper methods
-  void print_usage(const std::string&);
-	bool process_arguments(const int&,    // argc
-												 ACE_TCHAR**,   // argv (*NOTE*: cannot be const)...
-												 std::string&,  // client UI file
-												 std::string&,  // graphics dictionary
-												 std::string&,  // item dictionary,
-												 bool&,         // log to file ?
-												 std::string&,  // magic dictionary,
-												 bool&,         // trace information ?,
-												 std::string&,  // UI definition file,
-												 std::string&,  // graphics directory,
-												 bool&);        // print program version only ?
-	bool init_GUI(const std::string&,                    // graphics directory
-								const Character_Generator_XMLFiles_t&, // UI definition files
-								GTK_cb_data_t&);                       // return value: callback user data
-	void do_work(const std::string&,  // schema directory
-							 const std::string&,  // client UI definition file
-		           const std::string&,  // magic dictionary
-							 const std::string&,  // item dictionary
-							 const std::string&,  // graphics dictionary
-							 const std::string&,  // graphics directory
-							 const std::string&); // UI definition file
-	void print_version(const std::string&); // program name
+  // helper methods
+  void print_usage (const std::string&);
+  bool process_arguments (const int&,    // argc
+                          ACE_TCHAR**,   // argv (*NOTE*: cannot be const)...
+                          std::string&,  // client UI file
+                          std::string&,  // graphics dictionary
+                          std::string&,  // item dictionary,
+                          bool&,         // log to file ?
+                          std::string&,  // magic dictionary,
+                          bool&,         // trace information ?,
+                          std::string&,  // UI definition file,
+                          std::string&,  // graphics directory,
+                          bool&);        // print program version only ?
+  void do_work (GTK_cb_data_t&,      // GTK callback data
+                const std::string&,  // schema directory
+                const std::string&,  // client UI definition file
+                const std::string&,  // magic dictionary
+                const std::string&,  // item dictionary
+                const std::string&,  // graphics dictionary
+                const std::string&,  // graphics directory
+                const std::string&); // UI definition file
+  void print_version (const std::string&); // program name
 };
 
 #endif

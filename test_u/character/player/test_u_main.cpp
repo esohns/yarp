@@ -16,6 +16,10 @@
 #include "common_file_tools.h"
 #include "common_tools.h"
 
+#include "common_ui_defines.h"
+#include "common_ui_glade_definition.h"
+#include "common_ui_gtk_manager.h"
+
 // *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
@@ -372,339 +376,15 @@ test_u_main::process_arguments (const int& argc_in,
   return true;
 }
 
-bool
-test_u_main::init_GUI (const std::string& graphics_directory_in,
-                       const Character_Generator_XMLFiles_t& files_in,
-                       GTK_cb_data_t& userData_in)
-{
-  RPG_TRACE (ACE_TEXT ("test_u_main::init_GUI"));
-
-  // sanity check(s)
-  if (!Common_File_Tools::isDirectory (graphics_directory_in))
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("invalid directory \"%s\", aborting\n"),
-                ACE_TEXT (graphics_directory_in.c_str ())));
-    return false;
-  } // end IF
-
-  // step1: load XML
-  GladeXML* XML_tree = NULL;
-  for (Character_Generator_XMLFilesConstIterator_t iterator = files_in.begin ();
-       iterator != files_in.end ();
-       iterator++)
-  {
-    // sanity check
-    if (!Common_File_Tools::isReadable (*iterator))
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("UI definition file \"%s\" not readable, aborting\n"),
-                  ACE_TEXT ((*iterator).c_str ())));
-
-      //// *TODO*: clean up ?
-      //// --> iterate over all widgets and release references for any toplevel windows
-      //GList* list = NULL;
-      //for (Character_Generator_XMLPoolIterator_t iterator_2 = userData_in.XML_pool.begin();
-      //		 iterator_2 != userData_in.XML_pool.end();
-      //		 iterator_2++)
-      //{
-      //	list = glade_xml_get_widget_prefix((*iterator_2).second,
-      //																		 ACE_TEXT_ALWAYS_CHAR(""));
-      //	ACE_ASSERT(list);
-      // 	g_object_unref(G_OBJECT((*iterator_2).second->parent));
-      //	g_list_free_full(list, (GDestroyNotify)g_free);
-      //	//g_list_foreach(list, (GFunc)g_free, NULL);
-      //	//g_list_free(list);
-      //} // end FOR
-
-      return false;
-    } // end IF
-
-    // load widget tree
-    XML_tree = glade_xml_new ((*iterator).c_str (), // definition file
-                              NULL,                // root widget --> construct all
-                              NULL);               // (translation) domain
-    if (!XML_tree)
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to glade_xml_new(\"%s\"), aborting\n"),
-                  ACE_TEXT ((*iterator).c_str ())));
-
-      // *TODO*: clean up ? (see above)
-
-      return false;
-    } // end IF
-
-    ACE_DEBUG ((LM_DEBUG,
-                ACE_TEXT ("loaded UI file \"%s\"...\n"),
-                ACE_TEXT ((*iterator).c_str ())));
-
-    userData_in.XML_pool[ACE_TEXT_ALWAYS_CHAR (ACE::basename (ACE_TEXT ((*iterator).c_str ())))] = XML_tree;
-  } // end FOR
-
-  // step2: retrieve dialog handles
-  Character_Generator_XMLPoolIterator_t iterator =
-    userData_in.XML_pool.find (ACE_TEXT_ALWAYS_CHAR (CHARACTER_GENERATOR_GTK_GLADE_FILE));
-  if (iterator == userData_in.XML_pool.end ())
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("XML tree for \"%s\"not available, aborting\n"),
-                ACE_TEXT (CHARACTER_GENERATOR_GTK_GLADE_FILE)));
-
-    // *TODO*: clean up ? (see above)
-
-    return false;
-  } // end IF
-
-  GtkWidget* main_dialog = NULL;
-  main_dialog =
-    GTK_WIDGET (glade_xml_get_widget ((*iterator).second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_MAIN_NAME)));
-  ACE_ASSERT (main_dialog);
-
-  GtkWidget* about_dialog =
-    GTK_WIDGET (glade_xml_get_widget ((*iterator).second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_ABOUT_NAME)));
-  ACE_ASSERT (about_dialog);
-
-  // step3: populate combobox
-  GtkComboBox* combobox =
-    GTK_COMBO_BOX (glade_xml_get_widget ((*iterator).second,
-                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
-  ACE_ASSERT (combobox);
-  gtk_cell_layout_clear (GTK_CELL_LAYOUT (combobox));
-  GtkCellRenderer* renderer = gtk_cell_renderer_text_new ();
-  ACE_ASSERT (renderer);
-  gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combobox), renderer,
-                              TRUE); // expand ?
-  //   gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(combobox), renderer,
-//                                 ACE_TEXT_ALWAYS_CHAR("text"), 0);
-  gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (combobox), renderer,
-                                  ACE_TEXT_ALWAYS_CHAR ("text"), 0,
-                                  NULL);
-  GtkListStore* list = gtk_list_store_new (1,
-                                           G_TYPE_STRING);
-  ACE_ASSERT (list);
-  gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (list),
-                                   0,
-                                   (GtkTreeIterCompareFunc)combobox_sort_function,
-                                   GINT_TO_POINTER (0),
-                                   (GDestroyNotify)NULL);
-  gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (list),
-                                        0,
-                                        GTK_SORT_ASCENDING);
-  gtk_combo_box_set_model (combobox,
-                           GTK_TREE_MODEL (list));
-  g_object_unref (G_OBJECT (list));
-  unsigned int num_entries = ::load_files (REPOSITORY_PROFILES,
-                                           list);
-
-  Character_Generator_XMLPoolIterator_t iterator_2 =
-    userData_in.XML_pool.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_UI_FILE));
-  if (iterator_2 == userData_in.XML_pool.end ())
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("XML tree for \"%s\"not available, aborting\n"),
-                ACE_TEXT (RPG_CLIENT_GTK_UI_FILE)));
-
-    // *TODO*: clean up ? (see above)
-
-    return false;
-  } // end IF
-  GtkHBox* hbox =
-    GTK_HBOX (glade_xml_get_widget ((*iterator).second,
-                                    ACE_TEXT_ALWAYS_CHAR (CHARACTER_GENERATOR_GTK_HBOX_NAME)));
-  ACE_ASSERT (hbox);
-  GtkFrame* frame =
-    GTK_FRAME (glade_xml_get_widget ((*iterator_2).second,
-                                     ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
-  ACE_ASSERT (frame);
-  gtk_widget_ref (GTK_WIDGET (frame));
-  gtk_widget_unparent (GTK_WIDGET (frame));
-  gtk_box_pack_start (GTK_BOX (hbox),
-                      GTK_WIDGET (frame),
-                      FALSE, // expand
-                      FALSE, // fill
-                      0);    // padding
-
-  // step4a: connect default signals
-  gpointer userData_p = const_cast<GTK_cb_data_t*>(&userData_in);
-  g_signal_connect(main_dialog,
-                   ACE_TEXT_ALWAYS_CHAR("destroy"),
-                   G_CALLBACK(quit_clicked_GTK_cb),
-//                    G_CALLBACK(gtk_widget_destroyed),
-//                    &main_dialog,
-                   userData_p);
-  g_signal_connect(about_dialog,
-                   ACE_TEXT_ALWAYS_CHAR("response"),
-                   G_CALLBACK(gtk_widget_hide),
-                   &about_dialog);
-
-   // step4b: connect custom signals
-  GtkButton* button = NULL;
-  button =
-    GTK_BUTTON (glade_xml_get_widget ((*iterator).second,
-                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_CREATE_NAME)));
-  ACE_ASSERT(button);
-  g_signal_connect(button,
-                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(create_character_clicked_GTK_cb),
-                   userData_p);
-
-  button =
-    GTK_BUTTON (glade_xml_get_widget ((*iterator).second,
-                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_DROP_NAME)));
-  ACE_ASSERT(button);
-  g_signal_connect(button,
-                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(drop_character_clicked_GTK_cb),
-                   userData_p);
-
-  GtkFileChooserDialog* filechooser_dialog =
-    GTK_FILE_CHOOSER_DIALOG (glade_xml_get_widget ((*iterator).second,
-                                                   ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_FILECHOOSER_NAME)));
-  ACE_ASSERT(filechooser_dialog);
-  GtkFileFilter* file_filter = gtk_file_filter_new ();
-  ACE_ASSERT(file_filter);
-  if (!file_filter)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to gtk_file_filter_new(): \"%m\", aborting\n")));
-
-  //  // clean up
-    //g_object_unref(G_OBJECT((*iterator).second->parent));
-
-    return false;
-  } // end IF
-  gtk_file_filter_set_name(file_filter,
-                           ACE_TEXT(RPG_PLAYER_PROFILE_EXT));
-  std::string pattern = ACE_TEXT_ALWAYS_CHAR("*");
-  pattern += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
-  gtk_file_filter_add_pattern(file_filter, ACE_TEXT(pattern.c_str()));
-  gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(filechooser_dialog),
-                              file_filter);
-  //gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(filechooser_dialog),
-  //                                    ACE_TEXT(profiles_directory.c_str()));
-  g_signal_connect(filechooser_dialog,
-                   ACE_TEXT_ALWAYS_CHAR("file-activated"),
-                   G_CALLBACK(character_file_activated_GTK_cb),
-                   userData_p);
-
-  button =
-    GTK_BUTTON (glade_xml_get_widget ((*iterator).second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_LOAD_NAME)));
-  ACE_ASSERT(button);
-  g_signal_connect(button,
-                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(load_character_clicked_GTK_cb),
-                   userData_p);
-
-  button =
-    GTK_BUTTON (glade_xml_get_widget ((*iterator).second,
-                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_STORE_NAME)));
-  ACE_ASSERT(button);
-  g_signal_connect(button,
-                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(store_character_clicked_GTK_cb),
-                   userData_p);
-
-  combobox =
-    GTK_COMBO_BOX (glade_xml_get_widget ((*iterator).second,
-                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
-  ACE_ASSERT(combobox);
-  g_signal_connect(combobox,
-                   ACE_TEXT_ALWAYS_CHAR("changed"),
-                   G_CALLBACK(character_repository_combobox_changed_GTK_cb),
-                   userData_p);
-
-  button =
-    GTK_BUTTON (glade_xml_get_widget ((*iterator).second,
-                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_REFRESH_NAME)));
-  ACE_ASSERT(button);
-  g_signal_connect(button,
-                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(character_repository_button_clicked_GTK_cb),
-                   userData_p);
-
-  button =
-    GTK_BUTTON (glade_xml_get_widget ((*iterator).second,
-                                      ACE_TEXT_ALWAYS_CHAR(CHARACTER_GENERATOR_GTK_BUTTON_IMAGEPREV_NAME)));
-  ACE_ASSERT(button);
-  g_signal_connect(button,
-                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(prev_image_clicked_GTK_cb),
-                   userData_p);
-
-  button =
-    GTK_BUTTON (glade_xml_get_widget ((*iterator).second,
-                                      ACE_TEXT_ALWAYS_CHAR(CHARACTER_GENERATOR_GTK_BUTTON_IMAGENEXT_NAME)));
-  ACE_ASSERT(button);
-  g_signal_connect(button,
-                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(next_image_clicked_GTK_cb),
-                   userData_p);
-
-  button =
-    GTK_BUTTON (glade_xml_get_widget ((*iterator).second,
-                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_QUIT_NAME)));
-  ACE_ASSERT(button);
-  g_signal_connect(button,
-                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(quit_clicked_GTK_cb),
-                   userData_p);
-
-  button =
-    GTK_BUTTON (glade_xml_get_widget ((*iterator).second,
-                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_ABOUT_NAME)));
-  ACE_ASSERT(button);
-  g_signal_connect(button,
-                   ACE_TEXT_ALWAYS_CHAR("clicked"),
-                   G_CALLBACK(about_clicked_GTK_cb),
-                   userData_p);
-
-  // step5: auto-connect signals/slots
-//   glade_xml_signal_autoconnect(xml);
-
-//   // step6: use correct screen
-//   if (parentWidget_in)
-//     gtk_window_set_screen(GTK_WINDOW(dialog),
-//                           gtk_widget_get_screen(const_cast<GtkWidget*> (//                                                                parentWidget_in)));
-
-  // step6: draw it
-  gtk_widget_show_all(main_dialog);
-
-  // step7: activate first repository entry (if any)
-  gtk_widget_set_sensitive (GTK_WIDGET (combobox), (num_entries > 0));
-  if (num_entries > 0)
-    gtk_combo_box_set_active(combobox, 0);
-  else
-  {
-    // make create button sensitive (if it's not already)
-    button =
-      GTK_BUTTON (glade_xml_get_widget ((*iterator).second,
-                                        ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_CREATE_NAME)));
-    ACE_ASSERT(button);
-    gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
-
-    // make load button sensitive (if it's not already)
-    button =
-      GTK_BUTTON (glade_xml_get_widget ((*iterator).second,
-                                        ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_LOAD_NAME)));
-    ACE_ASSERT (button);
-    gtk_widget_set_sensitive (GTK_WIDGET (button), TRUE);
-  } // end ELSE
-
-  return true;
-}
-
 void
-test_u_main::do_work(const std::string& schemaDirectory_in,
-                     const std::string& clientUIFile_in,
-                     const std::string& magicDictionary_in,
-                     const std::string& itemDictionary_in,
-                     const std::string& graphicsDictionary_in,
-                     const std::string& graphicsDirectory_in,
-                     const std::string& UIFile_in)
+test_u_main::do_work (GTK_cb_data_t& userData_in,
+                      const std::string& schemaDirectory_in,
+                      const std::string& clientUIFile_in,
+                      const std::string& magicDictionary_in,
+                      const std::string& itemDictionary_in,
+                      const std::string& graphicsDictionary_in,
+                      const std::string& graphicsDirectory_in,
+                      const std::string& UIFile_in)
 {
   RPG_TRACE (ACE_TEXT ("test_u_main::do_work"));
 
@@ -712,10 +392,10 @@ test_u_main::do_work(const std::string& schemaDirectory_in,
   //RPG_Common_XML_Tools::init(schemaDirectory_in);
   // step0b: init RPG engine
   std::string empty;
-  RPG_Engine_Common_Tools::init(schemaDirectory_in,
-                                magicDictionary_in,
-                                itemDictionary_in,
-                                empty);
+  RPG_Engine_Common_Tools::init (schemaDirectory_in,
+                                 magicDictionary_in,
+                                 itemDictionary_in,
+                                 empty);
   RPG_Client_SDL_InputConfiguration_t input_configuration;
   input_configuration.key_repeat_initial_delay = SDL_DEFAULT_REPEAT_DELAY;
   input_configuration.key_repeat_interval = SDL_DEFAULT_REPEAT_INTERVAL;
@@ -725,56 +405,60 @@ test_u_main::do_work(const std::string& schemaDirectory_in,
   sound_configuration.format = RPG_SOUND_AUDIO_DEF_FORMAT;
   sound_configuration.channels = RPG_SOUND_AUDIO_DEF_CHANNELS;
   sound_configuration.chunksize = RPG_SOUND_AUDIO_DEF_CHUNKSIZE;
-  RPG_Client_Common_Tools::init(input_configuration,
-                                sound_configuration,
-                                empty,
-                                RPG_SOUND_AMBIENT_DEF_USE_CD,
-                                RPG_SOUND_DEF_CACHESIZE,
-                                false,
-                                empty,
-                                //
-                                graphicsDirectory_in,
-                                RPG_GRAPHICS_DEF_CACHESIZE,
-                                graphicsDictionary_in,
-                                false); // don't init SDL
+  RPG_Client_Common_Tools::init (input_configuration,
+                                 sound_configuration,
+                                 empty,
+                                 RPG_SOUND_AMBIENT_DEF_USE_CD,
+                                 RPG_SOUND_DEF_CACHESIZE,
+                                 false,
+                                 empty,
+                                 //
+                                 graphicsDirectory_in,
+                                 RPG_GRAPHICS_DEF_CACHESIZE,
+                                 graphicsDictionary_in,
+                                 false); // don't init SDL
 
-  GTK_cb_data_t user_data;
   //user_data.XML_pool();
-  user_data.schema_repository = schemaDirectory_in;
-  user_data.entity.character  = NULL;
-  user_data.entity.position   =
-      std::make_pair(std::numeric_limits<unsigned int>::max(),
-                     std::numeric_limits<unsigned int>::max());
-  user_data.entity.modes.clear();
-  user_data.entity.actions.clear();
-  user_data.entity.is_spawned = false;
+  userData_in.schemaRepository = schemaDirectory_in;
+  userData_in.entity.character = NULL;
+  userData_in.entity.position =
+    std::make_pair (std::numeric_limits<unsigned int>::max (),
+                    std::numeric_limits<unsigned int>::max ());
+  userData_in.entity.modes.clear ();
+  userData_in.entity.actions.clear ();
+  userData_in.entity.is_spawned = false;
   // init sprite gallery
   for (int index = 0;
        index < RPG_GRAPHICS_SPRITE_MAX;
        index++)
-    user_data.sprite_gallery.push_back(static_cast<RPG_Graphics_Sprite>(index));
-  user_data.sprite_gallery_iterator = user_data.sprite_gallery.begin();
-  user_data.current_sprite = RPG_GRAPHICS_SPRITE_INVALID;
-  user_data.is_transient = false;
+    userData_in.spriteGallery.push_back (static_cast<RPG_Graphics_Sprite> (index));
+  userData_in.spriteGalleryIterator = userData_in.spriteGallery.begin ();
+  userData_in.currentSprite = RPG_GRAPHICS_SPRITE_INVALID;
+  userData_in.isTransient = false;
 
-  Character_Generator_XMLFiles_t ui_files;
-  ui_files.push_back (UIFile_in);
-  ui_files.push_back (clientUIFile_in);
-  if (!init_GUI (graphicsDirectory_in, // graphics directory
-                 ui_files,             // UI definition files
-                 user_data))           // GTK cb data
+  userData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
+    std::make_pair (UIFile_in, static_cast<GladeXML*> (NULL));
+  userData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
+    std::make_pair (clientUIFile_in, static_cast<GladeXML*> (NULL));
+
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start ();
+  if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to initialize UI, aborting\n")));
+                ACE_TEXT ("failed to start GTK event dispatch, returning\n")));
     return;
   } // end IF
 
-  // step2: setup event loops
-  // - UI events --> GTK main loop
-  gtk_main();
+  int result = COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->wait ();
+  if (result == -1)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_Task_Base::wait(): \"%m\", returning\n")));
+    return;
+  } // end IF
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished working...\n")));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("finished working...\n")));
 }
 
 void
@@ -976,11 +660,11 @@ test_u_main::run_i (int argc_in,
   // step1c: initialize logging and/or tracing
   std::string log_file;
   if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
-                                        log_file,                  // logfile
-                                        false,                     // log to syslog ?
-                                        false,                     // trace messages ?
-                                        trace_information,         // debug messages ?
-                                        NULL))                     // logger
+                                        log_file,                   // logfile
+                                        false,                      // log to syslog ?
+                                        false,                      // trace messages ?
+                                        trace_information,          // debug messages ?
+                                        NULL))                      // logger
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));
@@ -996,12 +680,6 @@ test_u_main::run_i (int argc_in,
   } // end IF
 
   // step2b: init GLIB / G(D|T)K[+] / GNOME
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-  g_thread_init (NULL);
-#endif
-  gdk_threads_init ();
-  gtk_init (&argc_in,
-            &argv_in);
 //   GnomeClient* gnomeSession = NULL;
 //   gnomeSession = gnome_client_new();
 //   ACE_ASSERT(gnomeSession);
@@ -1019,11 +697,20 @@ test_u_main::run_i (int argc_in,
 //                                    argv_in,                              // cmdline
 //                                    NULL);                                // property name(s)
 //  ACE_ASSERT(gnomeProgram);
+  GTK_cb_data_t user_data;
+  user_data.GTKState.userData = &user_data;
+  Common_UI_GladeDefinition ui_definition (argc_in,
+                                           argv_in);
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (argc_in,
+                                                            argv_in,
+                                                            &user_data.GTKState,
+                                                            &ui_definition);
 
   ACE_High_Res_Timer timer;
   timer.start ();
   // step3: do actual work
-  do_work (schema_repository,
+  do_work (user_data,
+           schema_repository,
            client_ui_file,
            magic_dictionary,
            item_dictionary,

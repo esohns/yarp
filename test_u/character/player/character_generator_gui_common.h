@@ -21,15 +21,14 @@
 #ifndef CHARACTER_GENERATOR_GUI_COMMON_H
 #define CHARACTER_GENERATOR_GUI_COMMON_H
 
+#include <string>
+#include <vector>
+
+#include "common_ui_common.h"
+
 #include "rpg_engine_common.h"
 
 #include "rpg_graphics_sprite.h"
-
-#include "glade/glade.h"
-
-#include <string>
-#include <vector>
-#include <map>
 
 #define CHARACTER_GENERATOR_GTK_BUTTON_IMAGENEXT_NAME "next_button"
 #define CHARACTER_GENERATOR_GTK_BUTTON_IMAGEPREV_NAME "previous_button"
@@ -40,20 +39,15 @@
 typedef std::vector<RPG_Graphics_Sprite> Character_Generator_GUI_SpriteGallery_t;
 typedef Character_Generator_GUI_SpriteGallery_t::const_iterator Character_Generator_GUI_SpriteGalleryIterator_t;
 
-typedef std::vector<std::string> Character_Generator_XMLFiles_t;
-typedef Character_Generator_XMLFiles_t::const_iterator Character_Generator_XMLFilesConstIterator_t;
-typedef std::map<std::string, GladeXML*> Character_Generator_XMLPool_t;
-typedef Character_Generator_XMLPool_t::iterator Character_Generator_XMLPoolIterator_t;
-
 struct GTK_cb_data_t
 {
-	Character_Generator_XMLPool_t                   XML_pool;
-	std::string                                     schema_repository;
+  Common_UI_GTKState                              GTKState;
+  std::string                                     schemaRepository;
   RPG_Engine_Entity_t                             entity;
-  RPG_Graphics_Sprite                             current_sprite;
-  Character_Generator_GUI_SpriteGalleryIterator_t sprite_gallery_iterator;
-  Character_Generator_GUI_SpriteGallery_t         sprite_gallery;
-	bool                                            is_transient;
+  RPG_Graphics_Sprite                             currentSprite;
+  Character_Generator_GUI_SpriteGalleryIterator_t spriteGalleryIterator;
+  Character_Generator_GUI_SpriteGallery_t         spriteGallery;
+  bool                                            isTransient;
 };
 
 #define CHARACTER_GENERATOR_DEF_ENTITY_SPRITE SPRITE_HUMAN
