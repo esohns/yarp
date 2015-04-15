@@ -16,20 +16,23 @@ AC_CONFIG_AUX_DIR([aux_config])
 AC_CONFIG_HEADERS([config.h])
 #                   ../tools/XML2CppCode/config.h:../tools/XML2CppCode/config.h.in])
 #AC_CONFIG_LINKS([../common/rpg_common.xsd:../engine/rpg_common.xsd])
-AC_CONFIG_SUBDIRS([chance
-                   character
-                   client
-                   combat
+AC_CONFIG_SUBDIRS([modules/libCommon
+                   modules/libACEStream
+                   modules/libACENetwork
+                   tools/XML2CppCode
+                   chance
                    common
-                   engine
-                   graphics
-                   item
                    magic
+                   item
+                   character
+                   combat
                    map
                    net
+                   engine
                    sound
-                   test_u
-                   tools/XML2CppCode])
+                   graphics
+                   client
+                   test_u])
 AC_CONFIG_MACRO_DIR([m4])
 
 # define meta-package
@@ -138,8 +141,11 @@ AC_SUBST(CXXFLAGS)
 #AC_CHECK_FUNCS([memset])
 
 AC_CONFIG_FILES([Makefile
+                 include/Makefile
+                 m4/Makefile
+                 modules/Makefile
                  scripts/Makefile
                  tools/Makefile])
-AC_CONFIG_FILES([Yarp-${YARP_API_VERSION}.pc:scripts/Yarp.pc.in])
+AC_CONFIG_FILES([Yarp-YARP_API_VERSION.pc:scripts/Yarp.pc.in])
 
 AC_OUTPUT

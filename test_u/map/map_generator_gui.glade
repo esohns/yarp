@@ -253,7 +253,7 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">character generator</property>
+    <property name="title" translatable="yes">map generator</property>
     <property name="resizable">False</property>
     <property name="icon">../data/graphics/images/image_icon.png</property>
     <property name="type_hint">normal</property>
@@ -322,7 +322,7 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkButton" id="save">
+                          <widget class="GtkButton" id="store">
                             <property name="label">gtk-save</property>
                             <property name="visible">True</property>
                             <property name="sensitive">False</property>

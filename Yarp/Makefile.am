@@ -5,6 +5,7 @@ ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = \
   tools \
   . \
+  modules \
   chance \
   common \
   magic \

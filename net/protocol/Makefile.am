@@ -1,14 +1,15 @@
 #METASOURCES = AUTO
 
-ACLOCAL_AMFLAGS = -I m4
-AM_CPPFLAGS = \
-  -DRPG_PROTOCOL_BUILD_DLL \
-  -I$(srcdir)/../../common \
-  -I$(srcdir)/.. \
-  -I$(srcdir)/../stream \
-  -I$(srcdir)/../../3rd_party/bison
-
 SUBDIRS = scripts
+
+ACLOCAL_AMFLAGS = -I m4
+#  -I$(top_srcdir)/../../modules/ATCD/ACE
+AM_CPPFLAGS = \
+  -I$(top_srcdir)/../../ATCD/ACE \
+  -I$(srcdir)/..
+
+DEFS = \
+  -DRPG_PROTOCOL_BUILD_DLL
 
 noinst_HEADERS = \
   stdafx.h
@@ -16,6 +17,7 @@ noinst_HEADERS = \
 include_HEADERS = \
   rpg_net_protocol_common_modules.h \
   rpg_net_protocol_common.h \
+  rpg_net_protocol_configuration.h \
   rpg_net_protocol_defines.h \
   rpg_net_protocol_exports.h \
   rpg_net_protocol_iIRCControl.h \
@@ -31,13 +33,21 @@ include_HEADERS = \
   rpg_net_protocol_module_IRCparser.h \
   rpg_net_protocol_module_IRCsplitter.h \
   rpg_net_protocol_module_IRCstreamer.h \
+  rpg_net_protocol_network.h \
   rpg_net_protocol_sessionmessage.h \
   rpg_net_protocol_stream.h \
+  rpg_net_protocol_stream_common.h \
   rpg_net_protocol_tools.h
 
 lib_LTLIBRARIES = libRPG_Net_Protocol.la
 
 libRPG_Net_Protocol_la_SOURCES = \
+  rpg_net_protocol_common.h \
+  rpg_net_protocol_common_modules.h \
+  rpg_net_protocol_configuration.h \
+  rpg_net_protocol_defines.h \
+  rpg_net_protocol_exports.h \
+  rpg_net_protocol_iIRCControl.h \
   rpg_net_protocol_IRC_codes.h \
   rpg_net_protocol_IRCbisect.cpp \
   rpg_net_protocol_IRCbisect.h \
@@ -49,9 +59,6 @@ libRPG_Net_Protocol_la_SOURCES = \
   rpg_net_protocol_IRCparser_driver.h \
   rpg_net_protocol_IRCscanner.cpp \
   rpg_net_protocol_IRCscanner.h \
-  rpg_net_protocol_common.h \
-  rpg_net_protocol_defines.h \
-  rpg_net_protocol_iIRCControl.h \
   rpg_net_protocol_message.cpp \
   rpg_net_protocol_message.h \
   rpg_net_protocol_messageallocator.cpp \
@@ -64,12 +71,20 @@ libRPG_Net_Protocol_la_SOURCES = \
   rpg_net_protocol_module_IRCsplitter.h \
   rpg_net_protocol_module_IRCstreamer.cpp \
   rpg_net_protocol_module_IRCstreamer.h \
+  rpg_net_protocol_network.h \
   rpg_net_protocol_sessionmessage.cpp \
   rpg_net_protocol_sessionmessage.h \
   rpg_net_protocol_stream.cpp \
   rpg_net_protocol_stream.h \
+  rpg_net_protocol_stream_common.h \
   rpg_net_protocol_tools.cpp \
-  rpg_net_protocol_tools.h \
-  rpg_net_protocol_exports.h \
-  rpg_net_protocol_common_modules.h
+  rpg_net_protocol_tools.h
+libRPG_Net_Protocol_la_CPPFLAGS = \
+  $(AM_CPPFLAGS) \
+  -I$(top_srcdir)/../3rd_party/bison \
+  -I$(top_srcdir)/../modules/libCommon/src \
+  -I$(top_srcdir)/../modules/libACEStream/src \
+  -I$(top_srcdir)/../modules/libACENetwork/src \
+  -I$(top_srcdir)/../modules/libACENetwork/src/client \
+  -I$(top_srcdir)/../common
 

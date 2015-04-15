@@ -44,7 +44,6 @@
 #include "rpg_common_defines.h"
 #include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
-//#include "rpg_common_tools.h"
 #include "rpg_common_XML_tools.h"
 
 #include "rpg_graphics_common_tools.h"
@@ -424,8 +423,8 @@ ACE_TMAIN(int argc_in,
   std::string working_time_string;
   ACE_Time_Value working_time;
   timer.elapsed_time(working_time);
-  RPG_Common_Tools::period2String(working_time,
-                                  working_time_string);
+  Common_Tools::period2String(working_time,
+                              working_time_string);
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
              ACE_TEXT(working_time_string.c_str())));

@@ -1,12 +1,15 @@
 #METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
+#  -I$(top_srcdir)/../modules/ATCD/ACE
 AM_CPPFLAGS = \
-  -I$(srcdir)/../common \
-  -I$(srcdir)/../chance/dice \
-  -I$(srcdir)/../magic \
-  -I$(srcdir)/../character \
-  -I$(srcdir)/../item
+  -I$(top_srcdir)/../../ATCD/ACE \
+  -I$(top_srcdir)/../chance/dice \
+  -I$(top_srcdir)/../common \
+  -I$(top_srcdir)/../magic \
+  -I$(top_srcdir)/../item \
+  -I$(top_srcdir)/../character \
+  -DRPG_COMBAT_BUILD_DLL
 
 SUBDIRS = scripts
 

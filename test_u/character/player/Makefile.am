@@ -1,24 +1,15 @@
 #METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
+#  -I$(top_srcdir)/../modules/ATCD/ACE
 AM_CPPFLAGS = \
-  -DRPG_NET_CLIENT_HAS_DLL \
+  -I$(top_srcdir)/../../ATCD/ACE \
+  -I$(builddir)/../../..
+
+DEFS = \
   -DRPG_PLAYER_HAS_DLL \
-  -I$(builddir)/../../.. \
-  -I$(srcdir)/../../../common \
-  -I$(srcdir)/../../../chance/dice \
-  -I$(srcdir)/../../../magic \
-  -I$(srcdir)/../../../item \
-  -I$(srcdir)/../../../character \
-  -I$(srcdir)/../../../combat \
-  -I$(srcdir)/../../../character/player \
-  -I$(srcdir)/../../../character/monster \
-  -I$(srcdir)/../../../map \
-  -I$(srcdir)/../../../graphics \
-  -I$(srcdir)/../../../sound \
-  -I$(srcdir)/../../../net/client \
-  -I$(srcdir)/../../../engine \
-  -I$(srcdir)/../../../client
+  -DRPG_NET_CLIENT_HAS_DLL \
+  -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 
 bin_PROGRAMS = \
   character_generator \
@@ -27,52 +18,66 @@ bin_PROGRAMS = \
 
 noinst_HEADERS = stdafx.h
 
-character_generator_SOURCES = character_generator.cpp
+character_generator_SOURCES = \
+  character_generator.cpp
 character_generator_CPPFLAGS = \
   $(AM_CPPFLAGS) \
-  $(pkg_libs_CFLAGS) \
-  -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
-character_generator_LDFLAGS = $(pkg_libs_LDFLAGS)
+  -I$(top_srcdir)/../modules/libCommon/src \
+  -I$(top_srcdir)/../modules/libACEStream/src \
+  -I$(top_srcdir)/../modules/libACENetwork/src \
+  -I$(top_srcdir)/../modules/libACENetwork/src/client \
+  -I$(top_srcdir)/../chance/dice \
+  -I$(top_srcdir)/../common \
+  -I$(top_srcdir)/../magic \
+  -I$(top_srcdir)/../item \
+  -I$(top_srcdir)/../character \
+  -I$(top_srcdir)/../character/player \
+  -I$(top_srcdir)/../combat \
+  -I$(top_srcdir)/../character/monster \
+  -I$(top_srcdir)/../map \
+  -I$(top_srcdir)/../net/client \
+  -I$(top_srcdir)/../engine \
+  -I$(top_srcdir)/../sound \
+  -I$(top_srcdir)/../graphics \
+  -I$(top_srcdir)/../client \
+  $(pkg_libs_CFLAGS)
+character_generator_LDFLAGS = \
+  -L$(abs_top_srcdir)/../../ATCD/ACE/build/linux/lib \
+  -L$(abs_builddir)/../../../modules/libCommon/src/.libs \
+  -L$(abs_builddir)/../../../modules/libACEStream/src/.libs \
+  -L$(abs_builddir)/../../../modules/libACENetwork/src/.libs \
+  -L$(abs_builddir)/../../../chance/dice/.libs \
+  -L$(abs_builddir)/../../../chance/.libs \
+  -L$(abs_builddir)/../../../common/.libs \
+  -L$(abs_builddir)/../../../magic/.libs \
+  -L$(abs_builddir)/../../../item/.libs \
+  -L$(abs_builddir)/../../../character/.libs \
+  -L$(abs_builddir)/../../../character/player/.libs \
+  -L$(abs_builddir)/../../../combat/.libs \
+  -L$(abs_builddir)/../../../character/monster/.libs \
+  -L$(abs_builddir)/../../../map/.libs \
+  -L$(abs_builddir)/../../../net/.libs \
+  -L$(abs_builddir)/../../../engine/.libs \
+  -L$(abs_builddir)/../../../graphics/.libs \
+  $(pkg_libs_LDFLAGS)
 character_generator_LDADD = \
-  -lRPG_Engine \
-  -lRPG_Net_Client \
-  -lRPG_Net \
-  -lRPG_Stream \
-  -lRPG_Graphics \
-  -lRPG_Map \
-  -lRPG_Monster \
-  -lRPG_Combat \
-  -lRPG_Player \
-  -lRPG_Character \
-  -lRPG_Item \
-  -lRPG_Magic \
+  -lACE \
+  -lCommon \
+  -lACEStream \
+  -lACENetwork \
+  -lRPG_Dice \
   -lRPG_Chance \
   -lRPG_Common \
-  -lRPG_Dice \
-  $(pkg_libs_LIBS)
-
-character_parser_SOURCES = character_parser.cpp
-character_parser_CPPFLAGS = \
-  $(AM_CPPFLAGS) \
-  $(pkg_libs_CFLAGS) \
-  -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
-character_parser_LDFLAGS = $(pkg_libs_LDFLAGS)
-character_parser_LDADD = \
-  -lRPG_Graphics \
-  -lRPG_Engine \
-  -lRPG_Net_Client \
-  -lRPG_Net \
-  -lRPG_Stream \
-  -lRPG_Map \
-  -lRPG_Monster \
+  -lRPG_Magic \
+  -lRPG_Item \
+  -lRPG_Character \
   -lRPG_Player \
   -lRPG_Combat \
-  -lRPG_Character \
-  -lRPG_Item \
-  -lRPG_Magic \
-  -lRPG_Common \
-  -lRPG_Chance \
-  -lRPG_Dice \
+  -lRPG_Monster \
+  -lRPG_Map \
+  -lRPG_Net \
+  -lRPG_Engine \
+  -lRPG_Graphics \
   $(pkg_libs_LIBS)
 
 character_generator_gui_SOURCES = \
@@ -84,29 +89,111 @@ character_generator_gui_SOURCES = \
   test_u_main.h
 character_generator_gui_CPPFLAGS = \
   $(AM_CPPFLAGS) \
-  $(pkg_libs_CFLAGS) \
-  -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
-character_generator_gui_LDFLAGS = $(pkg_libs_LDFLAGS)
+  -I$(top_srcdir)/../modules/libCommon/src \
+  -I$(top_srcdir)/../modules/libCommon/src/ui \
+  -I$(top_srcdir)/../modules/libACEStream/src \
+  -I$(top_srcdir)/../modules/libACENetwork/src \
+  -I$(top_srcdir)/../modules/libACENetwork/src/client \
+  -I$(top_srcdir)/../chance/dice \
+  -I$(top_srcdir)/../common \
+  -I$(top_srcdir)/../magic \
+  -I$(top_srcdir)/../item \
+  -I$(top_srcdir)/../character \
+  -I$(top_srcdir)/../character/player \
+  -I$(top_srcdir)/../combat \
+  -I$(top_srcdir)/../character/monster \
+  -I$(top_srcdir)/../map \
+  -I$(top_srcdir)/../engine \
+  -I$(top_srcdir)/../sound \
+  -I$(top_srcdir)/../graphics \
+  -I$(top_srcdir)/../client \
+  $(pkg_libs_CFLAGS)
+character_generator_gui_LDFLAGS = \
+  -L$(abs_top_srcdir)/../../ATCD/ACE/build/linux/lib \
+  -L$(abs_builddir)/../../../modules/libCommon/src/.libs \
+  -L$(abs_builddir)/../../../modules/libCommon/src/ui/.libs \
+  -L$(abs_builddir)/../../../modules/libACEStream/src/.libs \
+  -L$(abs_builddir)/../../../modules/libACENetwork/src/.libs \
+  -L$(abs_builddir)/../../../chance/dice/.libs \
+  -L$(abs_builddir)/../../../chance/.libs \
+  -L$(abs_builddir)/../../../common/.libs \
+  -L$(abs_builddir)/../../../magic/.libs \
+  -L$(abs_builddir)/../../../item/.libs \
+  -L$(abs_builddir)/../../../character/.libs \
+  -L$(abs_builddir)/../../../character/player/.libs \
+  -L$(abs_builddir)/../../../combat/.libs \
+  -L$(abs_builddir)/../../../character/monster/.libs \
+  -L$(abs_builddir)/../../../map/.libs \
+  -L$(abs_builddir)/../../../net/.libs \
+  -L$(abs_builddir)/../../../engine/.libs \
+  -L$(abs_builddir)/../../../sound/.libs \
+  -L$(abs_builddir)/../../../graphics/.libs \
+  -L$(abs_builddir)/../../../client/.libs \
+  $(pkg_libs_LDFLAGS)
 character_generator_gui_LDADD = \
-  -lRPG_Client_GUI \
-  -lRPG_Engine \
-  -lRPG_Net_Client \
-  -lRPG_Net \
-  -lRPG_Stream \
-  -lRPG_Graphics \
-  -lRPG_Sound \
-  -lRPG_Map \
-  -lRPG_Monster \
-  -lRPG_Combat \
-  -lRPG_Player \
-  -lRPG_Character \
-  -lRPG_Item \
-  -lRPG_Magic \
+  -lACE \
+  -lCommon \
+  -lCommon_UI \
+  -lACEStream \
+  -lACENetwork \
+  -lRPG_Dice \
   -lRPG_Chance \
   -lRPG_Common \
-  -lRPG_Dice \
+  -lRPG_Magic \
+  -lRPG_Item \
+  -lRPG_Character \
+  -lRPG_Player \
+  -lRPG_Combat \
+  -lRPG_Monster \
+  -lRPG_Map \
+  -lRPG_Net \
+  -lRPG_Engine \
+  -lRPG_Sound \
+  -lRPG_Graphics \
+  -lRPG_Client_GUI \
   $(pkg_libs_LIBS) \
   -lSDL_mixer
+
+character_parser_SOURCES = character_parser.cpp
+character_parser_CPPFLAGS = \
+  $(AM_CPPFLAGS) \
+  -I$(top_srcdir)/../modules/libCommon/src \
+  -I$(top_srcdir)/../chance/dice \
+  -I$(top_srcdir)/../common \
+  -I$(top_srcdir)/../magic \
+  -I$(top_srcdir)/../item \
+  -I$(top_srcdir)/../character \
+  -I$(top_srcdir)/../character/player \
+  -I$(top_srcdir)/../combat \
+  -I$(top_srcdir)/../character/monster \
+  -I$(top_srcdir)/../map \
+  -I$(top_srcdir)/../engine \
+  -I$(top_srcdir)/../graphics \
+  $(pkg_libs_CFLAGS)
+character_parser_LDFLAGS = \
+  -L$(abs_top_srcdir)/../../ATCD/ACE/build/linux/lib \
+  -L$(abs_builddir)/../../../modules/libCommon/src/.libs \
+  -L$(abs_builddir)/../../../chance/dice/.libs \
+  -L$(abs_builddir)/../../../chance/.libs \
+  -L$(abs_builddir)/../../../common/.libs \
+  -L$(abs_builddir)/../../../magic/.libs \
+  -L$(abs_builddir)/../../../item/.libs \
+  -L$(abs_builddir)/../../../character/.libs \
+  -L$(abs_builddir)/../../../character/player/.libs \
+  -L$(abs_builddir)/../../../graphics/.libs \
+  $(pkg_libs_LDFLAGS)
+character_parser_LDADD = \
+  -lACE \
+  -lCommon \
+  -lRPG_Dice \
+  -lRPG_Chance \
+  -lRPG_Common \
+  -lRPG_Magic \
+  -lRPG_Item \
+  -lRPG_Character \
+  -lRPG_Player \
+  -lRPG_Graphics \
+  $(pkg_libs_LIBS)
 
 configdir = $(datadir)/@META_PACKAGE@/config
 config_DATA = character_generator_gui.glade

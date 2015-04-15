@@ -36,23 +36,25 @@
 #include "IRC_client_gui_common.h"
 
 // forward declaration(s)
+struct Common_UI_GTKState;
 class ACE_Thread_Mutex;
 class RPG_Net_Protocol_IIRCControl;
 class IRC_Client_GUI_MessageHandler;
 
 /**
-	@author Erik Sohns <erik.sohns@web.de>
+  @author Erik Sohns <erik.sohns@web.de>
 */
 class IRC_Client_GUI_Connection
  : public RPG_Net_Protocol_INotify_t
 {
+  friend class IRC_Client_GUI_MessageHandler;
+
  public:
   // *WARNING*: make sure the ctor/dtor calls are made either:
   // - by the main thread (servicing the gtk_main event loop)
   // - protected by gdk_threads_enter/gdk_threads_leave
-  IRC_Client_GUI_Connection (GtkBuilder*,                   // main builder handle
+  IRC_Client_GUI_Connection (Common_UI_GTKState*,           // GTK state handle
                              RPG_Net_Protocol_IIRCControl*, // controller handle
-                             ACE_Thread_Mutex*,             // connections lock handle
                              connections_t*,                // connections handle
                              //const std::string&,            // (starting) nickname
                              const std::string&,            // (server tab) label
@@ -81,8 +83,8 @@ class IRC_Client_GUI_Connection
 
  private:
   typedef std::map<std::string,
-                   IRC_Client_GUI_MessageHandler* > message_handlers_t;
-  typedef message_handlers_t::iterator message_handlers_iterator_t;
+                   IRC_Client_GUI_MessageHandler* > MESSAGE_HANDLERS_T;
+  typedef MESSAGE_HANDLERS_T::iterator MESSAGE_HANDLERSITERATOR_T;
 
   ACE_UNIMPLEMENTED_FUNC (IRC_Client_GUI_Connection ());
   ACE_UNIMPLEMENTED_FUNC (IRC_Client_GUI_Connection (const IRC_Client_GUI_Connection&));
@@ -94,19 +96,21 @@ class IRC_Client_GUI_Connection
   void log (const std::string&);
   void log (const RPG_Net_Protocol_IRCMessage&);
   void error (const RPG_Net_Protocol_IRCMessage&);
+  std::string getLabel () const;
 
   IRC_Client_GUI_MessageHandler* getHandler (const std::string&); // id (channel/nick)
   void updateModeButtons ();
 
-  std::string          myUIFileDirectory;
-  connection_cb_data_t myCBData;
-  bool                 myIsFirstUsersMsg;
+  connection_cb_data_t CBData_;
+  bool                 isFirstUsersMsg_;
+  std::string          label_;
+  std::string          UIFileDirectory_;
 
-  ACE_Thread_Mutex     myLock;
-  message_handlers_t   myMessageHandlers;
+  ACE_Thread_Mutex     lock_;
+  MESSAGE_HANDLERS_T   messageHandlers_;
 
-  GtkNotebook*         myParent;
-  guint                myContextID;
+  guint                contextID_;
+  GtkNotebook*         parent_;
 };
 
 #endif

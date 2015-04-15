@@ -698,7 +698,7 @@ button_close_clicked_cb (GtkWidget* widget_in,
   signal = SIGTERM;
 #endif
   unsigned int num_connections =
-    NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->numConnections ();
+    NET_CONNECTIONMANAGER_SINGLETON::instance ()->numConnections ();
   if (num_connections > 0)
     if (ACE_OS::raise (signal) == -1)
       ACE_DEBUG ((LM_ERROR,
@@ -724,7 +724,7 @@ button_close_all_clicked_cb (GtkWidget* widget_in,
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
 
-  NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
+  NET_CONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
 
   return FALSE;
 } // button_close_all_clicked_cb
@@ -740,7 +740,7 @@ button_ping_clicked_cb (GtkWidget* widget_in,
 
   // sanity check
   unsigned int num_connections =
-    NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->numConnections ();
+    NET_CONNECTIONMANAGER_SINGLETON::instance ()->numConnections ();
   if (num_connections == 0)
     return FALSE;
 
@@ -750,8 +750,8 @@ button_ping_clicked_cb (GtkWidget* widget_in,
   RPG_Dice::generateRandomNumbers (num_connections,
                                    1,
                                    result);
-  const Net_TCPConnection_Manager_t::CONNECTION_T* connection_handler =
-    NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->operator[](result.front () - 1);
+  const Net_InetConnection_Manager_t::CONNECTION_T* connection_handler =
+    NET_CONNECTIONMANAGER_SINGLETON::instance ()->operator[](result.front () - 1);
   if (!connection_handler)
   {
     //				ACE_DEBUG((LM_ERROR,
@@ -762,7 +762,7 @@ button_ping_clicked_cb (GtkWidget* widget_in,
 
   try
   {
-    const_cast<Net_TCPConnection_Manager_t::CONNECTION_T*> (connection_handler)->ping ();
+    const_cast<Net_InetConnection_Manager_t::CONNECTION_T*> (connection_handler)->ping ();
   }
   catch (...)
   {
@@ -770,13 +770,13 @@ button_ping_clicked_cb (GtkWidget* widget_in,
                 ACE_TEXT ("caught exception in RPG_Net_IConnection::ping(), aborting\n")));
 
     // clean up
-    const_cast<Net_TCPConnection_Manager_t::CONNECTION_T*> (connection_handler)->decrease ();
+    const_cast<Net_InetConnection_Manager_t::CONNECTION_T*> (connection_handler)->decrease ();
 
     return FALSE;
   }
 
   // clean up
-  const_cast<Net_TCPConnection_Manager_t::CONNECTION_T*> (connection_handler)->decrease ();
+  const_cast<Net_InetConnection_Manager_t::CONNECTION_T*> (connection_handler)->decrease ();
 
   return FALSE;
 } // button_ping_clicked_cb

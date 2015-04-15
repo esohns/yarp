@@ -1,10 +1,13 @@
 #METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
+#  -I$(top_srcdir)/../modules/ATCD/ACE
 AM_CPPFLAGS = \
-  -DRPG_SOUND_BUILD_DLL \
-  -I$(srcdir)/../common \
-  -I$(srcdir)/../chance/dice
+  -I$(top_srcdir)/../../ATCD/ACE \
+  -I$(top_srcdir)/../modules/libCommon/src \
+  -I$(top_srcdir)/../chance/dice \
+  -I$(top_srcdir)/../common \
+  -DRPG_SOUND_BUILD_DLL
 
 SUBDIRS = scripts data
 

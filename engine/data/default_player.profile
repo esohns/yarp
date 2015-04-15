@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <player_t xmlns="urn:rpg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:rpg rpg_player.xsd">
 
-  <name>aicJvgv</name>
+  <name>aHpQFAC</name>
 
   <abilities>
-    <ability>ABILITY_NATURAL_WEAPONS</ability>
     <ability>ABILITY_SPELLS</ability>
-    <ability>ABILITY_ANIMAL_COMPANION</ability>
   </abilities>
 
   <alignment>
@@ -17,33 +15,50 @@
   <attributes>
     <strength>13</strength>
     <dexterity>16</dexterity>
-    <constitution>12</constitution>
-    <intelligence>11</intelligence>
-    <wisdom>17</wisdom>
-    <charisma>14</charisma>
+    <constitution>13</constitution>
+    <intelligence>16</intelligence>
+    <wisdom>12</wisdom>
+    <charisma>13</charisma>
   </attributes>
 
-  <defaultSize>SIZE_MEDIUM</defaultSize>
+  <defaultSize>SIZE_SMALL</defaultSize>
 
   <feats>
     <feat>FEAT_PROFICIENCY_ARMOR_LIGHT</feat>
     <feat>FEAT_PROFICIENCY_ARMOR_MEDIUM</feat>
+    <feat>FEAT_PROFICIENCY_ARMOR_HEAVY</feat>
+    <feat>FEAT_PROFICIENCY_MARTIAL_WEAPONS</feat>
+    <feat>FEAT_SELF_SUFFICIENT</feat>
     <feat>FEAT_PROFICIENCY_SHIELD</feat>
     <feat>FEAT_PROFICIENCY_SIMPLE_WEAPONS</feat>
-    <feat>FEAT_MULTI_ATTACK</feat>
   </feats>
 
-  <knownSpells/>
+  <knownSpells>
+    <spell>SPELL_CAUSE_FEAR</spell>
+    <spell>SPELL_DISRUPT_UNDEAD</spell>
+  </knownSpells>
 
-  <maxHP>8</maxHP>
+  <maxHP>10</maxHP>
 
   <skills>
     <skill>
+      <skill>SKILL_APPRAISE</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
       <skill>SKILL_BLUFF</skill>
-      <rank>3</rank>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_CRAFT_ALL</skill>
+      <rank>1</rank>
     </skill>
     <skill>
       <skill>SKILL_CRAFT_ALCHEMY</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_CRAFT_BOWYER</skill>
       <rank>1</rank>
     </skill>
     <skill>
@@ -51,31 +66,19 @@
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_DECIPHER_SCRIPT</skill>
+      <skill>SKILL_DISABLE_DEVICE</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_DIPLOMACY</skill>
+      <skill>SKILL_GATHER_INFORMATION</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_DISGUISE</skill>
+      <skill>SKILL_JUMP</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_ESCAPE_ARTIST</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_INTIMIDATE</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_KNOWLEDGE_ALL</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_KNOWLEDGE_ARCANA</skill>
+      <skill>SKILL_KNOWLEDGE_ARCHITECTURE_ENGINEERING</skill>
       <rank>1</rank>
     </skill>
     <skill>
@@ -83,31 +86,51 @@
       <rank>1</rank>
     </skill>
     <skill>
+      <skill>SKILL_KNOWLEDGE_NATURE</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_LISTEN</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_OPEN_LOCK</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_PERFORM</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_RIDE</skill>
+      <rank>2</rank>
+    </skill>
+    <skill>
+      <skill>SKILL_SENSE_MOTIVE</skill>
+      <rank>1</rank>
+    </skill>
+    <skill>
       <skill>SKILL_SPELLCRAFT</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_SPOT</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_TUMBLE</skill>
+      <skill>SKILL_USE_MAGIC_DEVICE</skill>
       <rank>1</rank>
     </skill>
   </skills>
 
   <classXML>
-    <metaClass>METACLASS_PRIEST</metaClass>
+    <metaClass>METACLASS_WARRIOR</metaClass>
     <subClass>SUBCLASS_DRUID</subClass>
+    <subClass>SUBCLASS_PALADIN</subClass>
+    <subClass>SUBCLASS_WIZARD</subClass>
   </classXML>
 
   <gender>GENDER_FEMALE</gender>
 
   <offhand>OFFHAND_LEFT</offhand>
 
-  <race>RACE_DWARF</race>
-
-  <race>RACE_HALFLING</race>
+  <race>RACE_GNOME</race>
 
   <gold>0</gold>
 
@@ -115,19 +138,19 @@
     <item>
       <type>ITEM_WEAPON</type>
       <weapon isDoubleWeapon="false" isNonLethal="false" isReachWeapon="false">
-        <baseWeight>2</baseWeight>
+        <baseWeight>4</baseWeight>
         <baseStorePrice>
-          <numGoldPieces>6</numGoldPieces>
+          <numGoldPieces>15</numGoldPieces>
         </baseStorePrice>
-        <type>LIGHT_MELEE_WEAPON_SICKLE</type>
-        <category>WEAPONCATEGORY_SIMPLE</category>
-        <weaponClass>WEAPONCLASS_LIGHT_MELEE</weaponClass>
+        <type>ONE_HANDED_MELEE_WEAPON_SWORD_LONG</type>
+        <category>WEAPONCATEGORY_MARTIAL</category>
+        <weaponClass>WEAPONCLASS_ONE_HANDED_MELEE</weaponClass>
         <baseDamage>
           <numDice>1</numDice>
-          <typeDice>D_6</typeDice>
+          <typeDice>D_8</typeDice>
         </baseDamage>
         <criticalHit>
-          <minToHitRoll>20</minToHitRoll>
+          <minToHitRoll>19</minToHitRoll>
           <damageModifier>2</damageModifier>
         </criticalHit>
         <typeOfDamage>PHYSICALDAMAGE_SLASHING</typeOfDamage>
@@ -136,32 +159,32 @@
     <item>
       <type>ITEM_ARMOR</type>
       <armor>
-        <baseWeight>25</baseWeight>
+        <baseWeight>50</baseWeight>
         <baseStorePrice>
-          <numGoldPieces>15</numGoldPieces>
+          <numGoldPieces>1500</numGoldPieces>
         </baseStorePrice>
-        <type>ARMOR_HIDE</type>
-        <category>ARMORCATEGORY_MEDIUM</category>
-        <baseBonus>3</baseBonus>
-        <maxDexterityBonus>4</maxDexterityBonus>
-        <checkPenalty>-3</checkPenalty>
-        <arcaneSpellFailure>20</arcaneSpellFailure>
+        <type>ARMOR_PLATE_FULL</type>
+        <category>ARMORCATEGORY_HEAVY</category>
+        <baseBonus>8</baseBonus>
+        <maxDexterityBonus>1</maxDexterityBonus>
+        <checkPenalty>-6</checkPenalty>
+        <arcaneSpellFailure>35</arcaneSpellFailure>
         <baseSpeed>20</baseSpeed>
       </armor>
     </item>
     <item>
       <type>ITEM_ARMOR</type>
       <armor>
-        <baseWeight>5</baseWeight>
+        <baseWeight>15</baseWeight>
         <baseStorePrice>
-          <numGoldPieces>3</numGoldPieces>
+          <numGoldPieces>20</numGoldPieces>
         </baseStorePrice>
-        <type>ARMOR_SHIELD_LIGHT_WOODEN</type>
+        <type>ARMOR_SHIELD_HEAVY_STEEL</type>
         <category>ARMORCATEGORY_SHIELD</category>
-        <baseBonus>1</baseBonus>
+        <baseBonus>2</baseBonus>
         <maxDexterityBonus>0</maxDexterityBonus>
-        <checkPenalty>-1</checkPenalty>
-        <arcaneSpellFailure>5</arcaneSpellFailure>
+        <checkPenalty>-2</checkPenalty>
+        <arcaneSpellFailure>15</arcaneSpellFailure>
         <baseSpeed>0</baseSpeed>
       </armor>
     </item>

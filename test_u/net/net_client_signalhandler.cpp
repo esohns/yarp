@@ -114,7 +114,7 @@ Net_Client_SignalHandler::handleSignal (int signal_in)
   if (abort)
   {
     // release an existing connection...
-    NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->abortOldestConnection ();
+    NET_CONNECTIONMANAGER_SINGLETON::instance ()->abortOldestConnection ();
   } // end IF
 
   // ...connect ?
@@ -171,8 +171,8 @@ Net_Client_SignalHandler::handleSignal (int signal_in)
                   ACE_TEXT ("caught exception in Net_Client_IConnector_t::abort(), aborting\n")));
       return false;
     }
-    NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->stop ();
-    NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
+    NET_CONNECTIONMANAGER_SINGLETON::instance ()->stop ();
+    NET_CONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
     // *IMPORTANT NOTE*: as long as connections are inactive (i.e. events are
     // dispatched by reactor thread(s), there is no real reason to wait here)
     //RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();

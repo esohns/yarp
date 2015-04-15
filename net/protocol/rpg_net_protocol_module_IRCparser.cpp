@@ -30,10 +30,10 @@
 RPG_Net_Protocol_Module_IRCParser::RPG_Net_Protocol_Module_IRCParser ()
  : inherited ()
  , myAllocator (NULL)
- , myDriver (RPG_NET_PROTOCOL_DEF_TRACE_SCANNING,          // trace scanning ?
-             RPG_NET_PROTOCOL_DEF_TRACE_PARSING)           // trace parsing ?
  , myDebugScanner (RPG_NET_PROTOCOL_DEF_TRACE_SCANNING)    // trace scanning ?
  , myDebugParser (RPG_NET_PROTOCOL_DEF_TRACE_PARSING)      // trace parsing ?
+ , myDriver (RPG_NET_PROTOCOL_DEF_TRACE_SCANNING,          // trace scanning ?
+             RPG_NET_PROTOCOL_DEF_TRACE_PARSING)           // trace parsing ?
  , myCrunchMessages (RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES) // "crunch" messages ?
  , myIsInitialized (false)
 {

@@ -42,6 +42,7 @@
 #include "common_timer_manager.h"
 #include "common_tools.h"
 
+#include "common_ui_defines.h"
 #include "common_ui_glade_definition.h"
 #include "common_ui_gtk_manager.h"
 
@@ -419,7 +420,7 @@ init_signals (bool allowUserRuntimeConnect_in,
 void
 do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
          unsigned int maxNumConnections_in,
-         bool hasUI_in,
+         const std::string& UIDefinitionFile_in,
          const std::string& serverHostname_in,
          unsigned int connectionInterval_in,
          unsigned short serverPortNumber_in,
@@ -484,8 +485,9 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   //  config.serializeOutput = false;
 
 //  config.notificationStrategy = NULL;
-  configuration.streamConfiguration.module = (hasUI_in ? &event_handler
-                                                       : NULL);
+  configuration.streamConfiguration.module =
+      (!UIDefinitionFile_in.empty () ? &event_handler
+                                     : NULL);
 //  config.delete_module = false;
   // *WARNING*: set at runtime, by the appropriate connection handler
 //  config.sessionID = 0; // (== socket handle !)
@@ -510,12 +512,12 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   if (useReactor_in)
     ACE_NEW_NORETURN (connector_p,
                       Net_Client_Connector_t (&configuration,
-                                              NET_TCPCONNECTIONMANAGER_SINGLETON::instance (),
+                                              NET_CONNECTIONMANAGER_SINGLETON::instance (),
                                               0));
   else
     ACE_NEW_NORETURN (connector_p,
                       Net_Client_AsynchConnector_t (&configuration,
-                                                    NET_TCPCONNECTIONMANAGER_SINGLETON::instance (),
+                                                    NET_CONNECTIONMANAGER_SINGLETON::instance (),
                                                     0));
   if (!connector_p)
   {
@@ -525,22 +527,22 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   } // end IF
 
   // step0e: initialize connection manager
-  NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->initialize (std::numeric_limits<unsigned int>::max ());
-  NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->set (configuration,
-                                                        &configuration.streamSessionData);
+  NET_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (std::numeric_limits<unsigned int>::max ());
+  NET_CONNECTIONMANAGER_SINGLETON::instance ()->set (configuration,
+                                                     &configuration.streamSessionData);
 
   // step0f: initialize action timer
   ACE_INET_Addr peer_address (serverPortNumber_in,
                               serverHostname_in.c_str (),
                               AF_INET);
-  Net_Client_TimeoutHandler timeout_handler ((hasUI_in ? Net_Client_TimeoutHandler::ACTION_STRESS
-                                                       : actionMode_in),
+  Net_Client_TimeoutHandler timeout_handler ((!UIDefinitionFile_in.empty () ? Net_Client_TimeoutHandler::ACTION_STRESS
+                                                                            : actionMode_in),
                                              maxNumConnections_in,
                                              peer_address,
                                              connector_p);
   CBData_in.timeoutHandler = &timeout_handler;
   CBData_in.timerId = -1;
-  if (!hasUI_in)
+  if (UIDefinitionFile_in.empty ())
   {
     // schedule action interval timer
     ACE_Event_Handler* event_handler = &timeout_handler;
@@ -602,8 +604,14 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   // [- signal timer expiration to perform server queries] (see above)
 
   // step1a: start GTK event loop ?
-  if (hasUI_in)
+  if (!UIDefinitionFile_in.empty ())
   {
+    CBData_in.GTKState.finalizationHook = idle_finalize_UI_cb;
+    CBData_in.GTKState.initializationHook = idle_initialize_client_UI_cb;
+    CBData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
+      std::make_pair (UIDefinitionFile_in, static_cast<GladeXML*> (NULL));
+    CBData_in.GTKState.userData = &CBData_in;
+
     COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start ();
     if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
     {
@@ -675,10 +683,62 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
               ACE_TEXT ("started event dispatch...\n")));
 
   // step5c: connect immediately ?
-  if (!hasUI_in && (connectionInterval_in == 0))
-    connector_p->connect (peer_address);
+  if (UIDefinitionFile_in.empty () && (connectionInterval_in == 0))
+  {
+    bool result = connector_p->connect (peer_address);
+    if (!useReactor_in)
+    {
+      ACE_Time_Value delay (1, 0);
+      ACE_OS::sleep (delay);
+      if (NET_CONNECTIONMANAGER_SINGLETON::instance ()->numConnections () != 1)
+        result = false;
+    } // end IF
 
-  // *NOTE*: from this point on, we need to clean up any remote connections !
+    if (!result)
+    {
+      char buffer[BUFSIZ];
+      ACE_OS::memset (buffer, 0, sizeof (buffer));
+      int result_2 = peer_address.addr_to_string (buffer,
+                                                  sizeof (buffer));
+      if (result_2 == -1)
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to ACE_INET_Addr::addr_to_string: \"%m\", continuing\n")));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to connect to \"%s\", returning\n"),
+                  ACE_TEXT (buffer)));
+
+      // clean up
+      if (CBData_in.timerId != -1)
+      {
+        result =
+            COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (CBData_in.timerId,
+                                                                &act_p);
+        if (result <= 0)
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                      CBData_in.timerId));
+      } // end IF
+      //		{ // synch access
+      //			ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(CBData_in.lock);
+
+      //			for (Net_GTK_EventSourceIDsIterator_t iterator = CBData_in.event_source_ids.begin();
+      //					 iterator != CBData_in.event_source_ids.end();
+      //					 iterator++)
+      //				g_source_remove(*iterator);
+      //		} // end lock scope
+      COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
+      COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
+      connector_p->abort ();
+      delete connector_p;
+      Common_Tools::finalizeSignals (signalSet_inout,
+                                     useReactor_in,
+                                     previousSignalActions_inout);
+
+      return;
+    } // end IF
+  } // end IF
+
+  // *NOTE*: from this point on, clean up any remote connections !
 
   // step6: dispatch events
   // *NOTE*: when using a thread pool, handle things differently...
@@ -982,7 +1042,6 @@ ACE_TMAIN (int argc_in,
   if (!UI_file.empty ())
     COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (argc_in,
                                                               argv_in,
-                                                              UI_file,
                                                               &gtk_cb_user_data.GTKState,
                                                               &ui_definition);
 
@@ -991,7 +1050,7 @@ ACE_TMAIN (int argc_in,
   // step2: do actual work
   do_work (action_mode,
            max_num_connections,
-           !UI_file.empty (),
+           UI_file,
            server_hostname,
            connection_interval,
            server_port_number,

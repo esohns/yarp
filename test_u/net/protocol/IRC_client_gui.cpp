@@ -36,11 +36,12 @@
 #include "ace/Signal.h"
 #include "ace/Version.h"
 
-//#include "gtk/gtk.h"
+#include "gtk/gtk.h"
 
 #include "common_file_tools.h"
 #include "common_tools.h"
 
+#include "common_ui_defines.h"
 #include "common_ui_gtk_builder_definition.h"
 #include "common_ui_gtk_manager.h"
 
@@ -276,7 +277,8 @@ do_processArguments (const int argc_in,
 
 void
 do_work (unsigned int numDispatchThreads_in,
-         main_cb_data_t& userData_in)
+         main_cb_data_t& userData_in,
+         const std::string& UIDefinitionFile_in)
 {
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
@@ -302,6 +304,12 @@ do_work (unsigned int numDispatchThreads_in,
   // on disconnects !
 
   // step1: start GTK event loop
+  userData_in.GTKState.initializationHook = idle_initialize_UI_cb;
+  userData_in.GTKState.finalizationHook = idle_finalize_UI_cb;
+  userData_in.GTKState.builders[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
+    std::make_pair (UIDefinitionFile_in, static_cast<GtkBuilder*> (NULL));
+  userData_in.GTKState.userData = &userData_in;
+
   COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start ();
   if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
   {
@@ -1151,10 +1159,6 @@ ACE_TMAIN (int argc_in,
   main_cb_data_t user_data;
   user_data.configuration = &configuration;
   user_data.UIFileDirectory = UIFile_directory;
-  user_data.GTKState.builder = gtk_builder_new ();
-  ACE_ASSERT (user_data.GTKState.builder);
-  user_data.GTKState.InitializationHook = idle_initialize_UI_cb;
-  user_data.GTKState.FinalizationHook = idle_finalize_UI_cb;
 //   userData.phoneBook;
 //   userData.loginOptions.password = ;
   user_data.configuration->protocolConfiguration.loginOptions.nick =
@@ -1194,12 +1198,10 @@ ACE_TMAIN (int argc_in,
                                user_data.phoneBook);
 
   // step2f: initialize GTK
-  user_data.GTKState.CBUserData = &user_data;
   Common_UI_GtkBuilderDefinition ui_definition (argc_in,
                                                 argv_in);
   COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (argc_in,
                                                             argv_in,
-                                                            ui_definition_filename,
                                                             &user_data.GTKState,
                                                             &ui_definition);
 
@@ -1207,7 +1209,8 @@ ACE_TMAIN (int argc_in,
   ACE_High_Res_Timer timer;
   timer.start ();
   do_work (num_thread_pool_threads,
-           user_data);
+           user_data,
+           ui_definition_filename);
 
   // debug info
   timer.stop ();
@@ -1219,9 +1222,6 @@ ACE_TMAIN (int argc_in,
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
               ACE_TEXT (working_time_string.c_str ())));
-
-  // clean up
-  g_object_unref (user_data.GTKState.builder);
 
   // debug info
   process_profile.stop ();

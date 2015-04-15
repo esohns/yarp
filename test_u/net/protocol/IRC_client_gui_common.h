@@ -25,8 +25,6 @@
 #include <string>
 #include <vector>
 
-#include "gtk/gtk.h"
-
 #include "common_ui_common.h"
 
 #include "rpg_net_protocol_common.h"
@@ -55,23 +53,21 @@ struct connection_cb_data_t
 {
   // *TODO*: couldn't it be done without this one ?
   bool                          away;
-  GtkBuilder*                   builder;
   IRC_Client_GUI_Connection*    connection;
   connections_t*                connections;
   RPG_Net_Protocol_IIRCControl* controller;
-  ACE_Thread_Mutex*             lock;
-  GtkBuilder*                   mainBuilder;
+  Common_UI_GTKState*           GTKState;
   std::string                   nickname;
   RPG_Net_Protocol_UserModes_t  userModes;
 };
 
 struct handler_cb_data_t
 {
-  GtkBuilder*                     builder;
   RPG_Net_Protocol_ChannelModes_t channelModes;
   IRC_Client_GUI_Connection*      connection;
   RPG_Net_Protocol_IIRCControl*   controller;
   std::string                     id;
+  Common_UI_GTKState*             GTKState;
   string_list_t                   parameters;
 };
 

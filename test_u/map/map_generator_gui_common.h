@@ -21,11 +21,13 @@
 #ifndef MAP_GENERATOR_GUI_COMMON_H
 #define MAP_GENERATOR_GUI_COMMON_H
 
-#include "rpg_engine_common.h"
-
-#include <glade/glade.h>
-
 #include <string>
+
+#include "common_ui_common.h"
+
+#include "rpg_map_common.h"
+
+#include "rpg_engine_common.h"
 
 // gtk widget names
 #define MAP_GENERATOR_GNOME_CONFIGURATION_DOORS_CHECKBUTTON_NAME          "doors_checkbutton"
@@ -61,11 +63,11 @@
 
 struct GTK_cb_data_t
 {
-  GladeXML*                         XML;
-  std::string                       schema_repository;
-  RPG_Map_FloorPlan_Configuration_t map_configuration;
-  RPG_Engine_Level_t                current_level;
-  bool                              is_transient;
+  Common_UI_GTKState                GTKState;
+  std::string                       schemaRepository;
+  RPG_Map_FloorPlan_Configuration_t mapConfiguration;
+  RPG_Engine_Level_t                currentLevel;
+  bool                              isTransient;
 };
 
 #endif

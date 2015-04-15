@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010 by Erik Sohns   *
+ *   Copyright (C) 2009 by Erik Sohns   *
  *   erik.sohns@web.de   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,39 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_NET_CLIENT_ASYNCHCONNECTOR_H
-#define RPG_NET_CLIENT_ASYNCHCONNECTOR_H
+#ifndef RPG_NET_COMMON_H
+#define RPG_NET_COMMON_H
 
-#include "ace/Global_Macros.h"
+#include "net_connection_manager_common.h"
 
-#include "rpg_net_client_exports.h"
-
-#include "net_tcpconnection.h"
-
-class RPG_Net_Client_Export RPG_Net_Client_AsynchConnector
- : public ACE_Asynch_Connector<RPG_Net_AsynchTCPConnection>,
-   public RPG_Net_Client_IConnector
-{
- public:
-  RPG_Net_Client_AsynchConnector();
-  virtual ~RPG_Net_Client_AsynchConnector();
-
-  // override default creation strategy
-  virtual RPG_Net_AsynchTCPConnection* make_handler (void);
-  // override default connect strategy
-  virtual int validate_connection(const ACE_Asynch_Connect::Result&, // result
-                                  const ACE_INET_Addr&,              // remote address
-                                  const ACE_INET_Addr&);             // local address
-
-  // implement RPG_Net_Client_IConnector
-  virtual void abort();
-  virtual void connect(const ACE_INET_Addr&);
-
- private:
-  typedef ACE_Asynch_Connector<RPG_Net_AsynchTCPConnection> inherited;
-
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_AsynchConnector(const RPG_Net_Client_AsynchConnector&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Client_AsynchConnector& operator=(const RPG_Net_Client_AsynchConnector&));
-};
+typedef NET_CONNECTIONMANAGER_SINGLETON RPG_CONNECTIONMANAGER_SINGLETON;
 
 #endif

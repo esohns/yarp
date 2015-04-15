@@ -38,7 +38,7 @@ enum RPG_Engine_Command
 
 #include "rpg_engine_exports.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <map>
 #include <string>

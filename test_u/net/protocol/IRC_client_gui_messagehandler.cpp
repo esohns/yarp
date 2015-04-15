@@ -65,42 +65,46 @@ update_display_cb(gpointer userData_in)
 #endif /* __cplusplus */
 
 IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkTextView* view_in)
- : //myCBData(),
-   //myLock(),
-   //myDisplayQueue(),
-   myView(view_in),
-   myEventSourceID(0),
-   myIsFirstMemberListMsg(true),
-   myParent(NULL)
+ : CBData_ ()
+ , displayQueue_ ()
+ , lock_ ()
+ , eventSourceID_ (0)
+ , isFirstMemberListMsg_ (true)
+ , parent_ (NULL)
+ , view_ (view_in)
 {
   RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler"));
 
   // sanity check(s)
-  ACE_ASSERT(myView);
+  ACE_ASSERT(view_);
 
   // init cb data
-  myCBData.builder = NULL;
-  myCBData.id.clear();
-  myCBData.controller = NULL;
+  CBData_.id.clear();
+  CBData_.controller = NULL;
 
   // setup auto-scrolling
   GtkTextIter iterator;
-  gtk_text_buffer_get_end_iter(gtk_text_view_get_buffer(myView),
+  gtk_text_buffer_get_end_iter(gtk_text_view_get_buffer(view_),
                                &iterator);
-  gtk_text_buffer_create_mark(gtk_text_view_get_buffer(myView),
+  gtk_text_buffer_create_mark(gtk_text_view_get_buffer(view_),
                               ACE_TEXT_ALWAYS_CHAR("scroll"),
                               &iterator,
                               TRUE);
 }
 
-IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler (IRC_Client_GUI_Connection* connection_in,
+IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler (Common_UI_GTKState* GTKState_in,
+                                                              IRC_Client_GUI_Connection* connection_in,
                                                               RPG_Net_Protocol_IIRCControl* controller_in,
                                                               const std::string& id_in,
                                                               const std::string& UIFileDirectory_in,
-                                                              GtkNotebook* notebook_in)
- : myView (NULL)
- , myIsFirstMemberListMsg (true)
- , myParent (notebook_in)
+                                                              GtkNotebook* parent_in)
+ : CBData_ ()
+ , displayQueue_ ()
+ , lock_ ()
+ , eventSourceID_ (0)
+ , isFirstMemberListMsg_ (true)
+ , parent_ (parent_in)
+ , view_ (NULL)
 {
   RPG_TRACE (ACE_TEXT ("IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler"));
 
@@ -111,366 +115,415 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler (IRC_Client_GUI_Con
   if (!Common_File_Tools::isDirectory (UIFileDirectory_in))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("invalid argument (was: \"%s\"): not a directory, aborting\n"),
+                ACE_TEXT ("invalid argument (was: \"%s\"): not a directory, returning\n"),
                 ACE_TEXT (UIFileDirectory_in.c_str ())));
     return;
   } // end IF
-  ACE_ASSERT (notebook_in);
+  ACE_ASSERT (parent_in);
 
   // init cb data
-  myCBData.connection = connection_in;
-  myCBData.builder = NULL;
-  myCBData.id = id_in;
-  myCBData.controller = controller_in;
-  myCBData.channelModes = 0;
+  CBData_.connection = connection_in;
+  CBData_.id = id_in;
+  CBData_.controller = controller_in;
+  CBData_.channelModes = 0;
 
   // create new GtkBuilder
-  myCBData.builder = gtk_builder_new ();
-  ACE_ASSERT (myCBData.builder);
-
-  // init builder (load widget tree)
-  std::string filename = UIFileDirectory_in;
-  filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  filename += IRC_CLIENT_GUI_DEF_UI_CHANNEL_TAB_FILE;
-  if (!Common_File_Tools::isReadable (filename))
+  GtkBuilder* builder_p = gtk_builder_new ();
+  if (!builder_p)
   {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("invalid UI file (was: \"%s\"): not readable, aborting\n"),
-                ACE_TEXT (filename.c_str ())));
+    ACE_DEBUG ((LM_CRITICAL,
+                ACE_TEXT ("failed to allocate memory: \"%m\", returning\n")));
     return;
   } // end IF
+  std::string ui_definition_filename = UIFileDirectory_in;
+  ui_definition_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  ui_definition_filename += IRC_CLIENT_GUI_DEF_UI_CHANNEL_TAB_FILE;
+  if (!Common_File_Tools::isReadable (ui_definition_filename))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("invalid UI file (was: \"%s\"): not readable, returning\n"),
+                ACE_TEXT (ui_definition_filename.c_str ())));
+
+    // clean up
+    g_object_unref (G_OBJECT (builder_p));
+
+    return;
+  } // end IF
+
+  // load widget tree
   GError* error = NULL;
-  gtk_builder_add_from_file (myCBData.builder,
-                             filename.c_str (),
+  gtk_builder_add_from_file (builder_p,
+                             ui_definition_filename.c_str (),
                              &error);
   if (error)
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to gtk_builder_add_from_file(\"%s\"): \"%s\", aborting\n"),
-                ACE_TEXT (filename.c_str ()),
+                ACE_TEXT (ui_definition_filename.c_str ()),
                 ACE_TEXT (error->message)));
 
     // clean up
     g_error_free (error);
+    g_object_unref (G_OBJECT (builder_p));
 
     return;
   } // end IF
-
-  // add new channel page to notebook (== server log)
-  // retrieve (dummy) parent window
-  GtkWindow* parent =
-    GTK_WINDOW (gtk_builder_get_object (myCBData.builder,
-                                        ACE_TEXT_ALWAYS_CHAR ("channel_tab_label_template")));
-  ACE_ASSERT (parent);
-  // retrieve channel tab label
-  GtkHBox* channel_tab_label_hbox =
-    GTK_HBOX (gtk_builder_get_object (myCBData.builder,
-                                      ACE_TEXT_ALWAYS_CHAR ("channel_tab_label_hbox")));
-  ACE_ASSERT (channel_tab_label_hbox);
-  g_object_ref (channel_tab_label_hbox);
-  gtk_container_remove (GTK_CONTAINER (parent),
-                        GTK_WIDGET (channel_tab_label_hbox));
-  // set tab label
-  GtkLabel* channel_tab_label =
-    GTK_LABEL (gtk_builder_get_object (myCBData.builder,
-                                       ACE_TEXT_ALWAYS_CHAR ("channel_tab_label")));
-  ACE_ASSERT (channel_tab_label);
-  std::string page_tab_label_string;
-  if (!RPG_Net_Protocol_Tools::isValidIRCChannelName (myCBData.id))
-  {
-    // --> private conversation window, modify label accordingly
-    page_tab_label_string = ACE_TEXT_ALWAYS_CHAR ("[");
-    page_tab_label_string += myCBData.id;
-    page_tab_label_string += ACE_TEXT_ALWAYS_CHAR("]");
-
-    // hide channel mode tab frame
-    GtkFrame* channel_tab_mode_frame =
-      GTK_FRAME (gtk_builder_get_object (myCBData.builder,
-                                         ACE_TEXT_ALWAYS_CHAR ("channel_tab_mode_frame")));
-    ACE_ASSERT (channel_tab_mode_frame);
-    gtk_widget_hide (GTK_WIDGET (channel_tab_mode_frame));
-    // hide channel tab treeview
-    GtkTreeView* channel_tab_treeview =
-      GTK_TREE_VIEW (gtk_builder_get_object (myCBData.builder,
-                                             ACE_TEXT_ALWAYS_CHAR ("channel_tab_treeview")));
-    ACE_ASSERT (channel_tab_treeview);
-    gtk_widget_hide (GTK_WIDGET (channel_tab_treeview));
-
-    // erase "topic" label
-    GtkLabel* channel_tab_topic_label =
-      GTK_LABEL (gtk_builder_get_object (myCBData.builder,
-                                         ACE_TEXT_ALWAYS_CHAR ("channel_tab_topic_label")));
-    ACE_ASSERT (channel_tab_topic_label);
-    gtk_label_set_text (channel_tab_topic_label,
-                        NULL);
-  } // end IF
-  else
-    page_tab_label_string = myCBData.id;
-  gtk_label_set_text (channel_tab_label,
-                      page_tab_label_string.c_str ());
-  // retrieve (dummy) parent window
-  parent =
-    GTK_WINDOW (gtk_builder_get_object (myCBData.builder,
-                                        ACE_TEXT_ALWAYS_CHAR ("channel_tab_template")));
-  ACE_ASSERT (parent);
-  // retrieve channel tab
-  GtkVBox* channel_tab_vbox =
-    GTK_VBOX (gtk_builder_get_object (myCBData.builder,
-                                      ACE_TEXT_ALWAYS_CHAR ("channel_tab_vbox")));
-  ACE_ASSERT (channel_tab_vbox);
-  g_object_ref (channel_tab_vbox);
-  gtk_container_remove (GTK_CONTAINER (parent),
-                        GTK_WIDGET (channel_tab_vbox));
-  gint page_num = gtk_notebook_append_page (myParent,
-                                            GTK_WIDGET (channel_tab_vbox),
-                                            GTK_WIDGET (channel_tab_label_hbox));
-  if (page_num == -1)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to gtk_notebook_append_page(%@), returning\n"),
-                myParent));
-
-    // clean up
-    g_object_unref (channel_tab_label_hbox);
-    g_object_unref (channel_tab_vbox);
-
-    return;
-  } // end IF
-  // allow reordering
-  gtk_notebook_set_tab_reorderable (myParent,
-                                    GTK_WIDGET (channel_tab_vbox),
-                                    TRUE);
-  // activate new page (iff it's a channel tab !)
-  if (RPG_Net_Protocol_Tools::isValidIRCChannelName (myCBData.id))
-    gtk_notebook_set_current_page (myParent,
-                                   page_num);
-
-  // clean up
-  g_object_unref (channel_tab_label_hbox);
-  g_object_unref (channel_tab_vbox);
 
   // setup auto-scrolling in textview
-  myView =
-    GTK_TEXT_VIEW (gtk_builder_get_object (myCBData.builder,
-                                           ACE_TEXT_ALWAYS_CHAR ("channel_tab_textview")));
-  ACE_ASSERT (myView);
+  view_ =
+      GTK_TEXT_VIEW (gtk_builder_get_object (builder_p,
+                                             ACE_TEXT_ALWAYS_CHAR ("channel_tab_textview")));
+  ACE_ASSERT (view_);
   GtkTextIter iter;
-  gtk_text_buffer_get_end_iter (gtk_text_view_get_buffer (myView),
+  gtk_text_buffer_get_end_iter (gtk_text_view_get_buffer (view_),
                                 &iter);
-  gtk_text_buffer_create_mark (gtk_text_view_get_buffer (myView),
+  gtk_text_buffer_create_mark (gtk_text_view_get_buffer (view_),
                                ACE_TEXT_ALWAYS_CHAR ("scroll"),
                                &iter,
                                TRUE);
 
   // enable multi-selection in treeview
-  GtkTreeView* channel_tab_treeview =
-    GTK_TREE_VIEW (gtk_builder_get_object (myCBData.builder,
+  GtkTreeView* tree_view_p =
+    GTK_TREE_VIEW (gtk_builder_get_object (builder_p,
                                            ACE_TEXT_ALWAYS_CHAR ("channel_tab_treeview")));
-  ACE_ASSERT (channel_tab_treeview);
-  GtkTreeSelection* selection =
-    gtk_tree_view_get_selection (channel_tab_treeview);
-  ACE_ASSERT (selection);
-  gtk_tree_selection_set_mode (selection,
+  ACE_ASSERT (tree_view_p);
+  GtkTreeSelection* tree_selection_p =
+    gtk_tree_view_get_selection (tree_view_p);
+  ACE_ASSERT (tree_selection_p);
+  gtk_tree_selection_set_mode (tree_selection_p,
                                GTK_SELECTION_MULTIPLE);
 
   // add the invite_channel_members_menu to the "Invite" menu item
-  GtkMenu* invite_channel_members_menu =
-    GTK_MENU (gtk_builder_get_object (myCBData.builder,
+  GtkMenu* menu_p =
+    GTK_MENU (gtk_builder_get_object (builder_p,
                                       ACE_TEXT_ALWAYS_CHAR ("invite_channel_members_menu")));
-  ACE_ASSERT (invite_channel_members_menu);
-  GtkMenuItem* menuitem_invite =
-    GTK_MENU_ITEM (gtk_builder_get_object (myCBData.builder,
+  ACE_ASSERT (menu_p);
+  GtkMenuItem* menu_item_p =
+    GTK_MENU_ITEM (gtk_builder_get_object (builder_p,
                                            ACE_TEXT_ALWAYS_CHAR ("menuitem_invite")));
-  ACE_ASSERT (menuitem_invite);
-  gtk_menu_item_set_submenu (menuitem_invite,
-                             GTK_WIDGET (invite_channel_members_menu));
+  ACE_ASSERT (menu_item_p);
+  gtk_menu_item_set_submenu (menu_item_p, GTK_WIDGET (menu_p));
 
   // connect signal(s)
-  GtkButton* channel_tab_label_button =
-    GTK_BUTTON (gtk_builder_get_object (myCBData.builder,
+  GtkButton* button_p =
+    GTK_BUTTON (gtk_builder_get_object (builder_p,
                                         ACE_TEXT_ALWAYS_CHAR ("channel_tab_label_button")));
-  ACE_ASSERT (channel_tab_label_button);
-  g_signal_connect (channel_tab_label_button,
+  ACE_ASSERT (button_p);
+  g_signal_connect (button_p,
                     ACE_TEXT_ALWAYS_CHAR ("clicked"),
                     G_CALLBACK (part_clicked_cb),
-                    &myCBData);
+                    &CBData_);
   // toggle buttons
-  GtkToggleButton* toggle_button =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_key_togglebutton")));
-  ACE_ASSERT (toggle_button);
-  g_signal_connect (toggle_button,
+  GtkToggleButton* toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder_p,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_key_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  g_signal_connect (toggle_button_p,
                     ACE_TEXT_ALWAYS_CHAR ("toggled"),
                     G_CALLBACK (channel_mode_toggled_cb),
-                    &myCBData);
-  toggle_button =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_voice_togglebutton")));
-  ACE_ASSERT (toggle_button);
-  g_signal_connect (toggle_button,
+                    &CBData_);
+  toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder_p,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_voice_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  g_signal_connect (toggle_button_p,
                     ACE_TEXT_ALWAYS_CHAR ("toggled"),
                     G_CALLBACK (channel_mode_toggled_cb),
-                    &myCBData);
-  toggle_button =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_ban_togglebutton")));
-  ACE_ASSERT (toggle_button);
-  g_signal_connect (toggle_button,
+                    &CBData_);
+  toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder_p,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_ban_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  g_signal_connect (toggle_button_p,
                     ACE_TEXT_ALWAYS_CHAR ("toggled"),
                     G_CALLBACK (channel_mode_toggled_cb),
-                    &myCBData);
-  toggle_button =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_userlimit_togglebutton")));
-  ACE_ASSERT (toggle_button);
-  g_signal_connect (toggle_button,
+                    &CBData_);
+  toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder_p,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_userlimit_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  g_signal_connect (toggle_button_p,
                     ACE_TEXT_ALWAYS_CHAR ("toggled"),
                     G_CALLBACK (channel_mode_toggled_cb),
-                    &myCBData);
-  toggle_button =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_moderated_togglebutton")));
-  ACE_ASSERT (toggle_button);
-  g_signal_connect (toggle_button,
+                    &CBData_);
+  toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder_p,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_moderated_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  g_signal_connect (toggle_button_p,
                     ACE_TEXT_ALWAYS_CHAR ("toggled"),
                     G_CALLBACK (channel_mode_toggled_cb),
-                    &myCBData);
-  toggle_button =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_blockforeign_togglebutton")));
-  ACE_ASSERT (toggle_button);
-  g_signal_connect (toggle_button,
+                    &CBData_);
+  toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder_p,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_blockforeign_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  g_signal_connect (toggle_button_p,
                     ACE_TEXT_ALWAYS_CHAR ("toggled"),
                     G_CALLBACK (channel_mode_toggled_cb),
-                    &myCBData);
-  toggle_button =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_restricttopic_togglebutton")));
-  ACE_ASSERT (toggle_button);
-  g_signal_connect (toggle_button,
+                    &CBData_);
+  toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder_p,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_restricttopic_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  g_signal_connect (toggle_button_p,
                     ACE_TEXT_ALWAYS_CHAR ("toggled"),
                     G_CALLBACK (channel_mode_toggled_cb),
-                    &myCBData);
-  toggle_button =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_inviteonly_togglebutton")));
-  ACE_ASSERT (toggle_button);
-  g_signal_connect (toggle_button,
+                    &CBData_);
+  toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder_p,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_inviteonly_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  g_signal_connect (toggle_button_p,
                     ACE_TEXT_ALWAYS_CHAR ("toggled"),
                     G_CALLBACK (channel_mode_toggled_cb),
-                    &myCBData);
-  toggle_button =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_secret_togglebutton")));
-  ACE_ASSERT (toggle_button);
-  g_signal_connect (toggle_button,
+                    &CBData_);
+  toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder_p,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_secret_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  g_signal_connect (toggle_button_p,
                     ACE_TEXT_ALWAYS_CHAR ("toggled"),
                     G_CALLBACK (channel_mode_toggled_cb),
-                    &myCBData);
-  toggle_button =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_private_togglebutton")));
-  ACE_ASSERT (toggle_button);
-  g_signal_connect (toggle_button,
+                    &CBData_);
+  toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder_p,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_private_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  g_signal_connect (toggle_button_p,
                     ACE_TEXT_ALWAYS_CHAR ("toggled"),
                     G_CALLBACK (channel_mode_toggled_cb),
-                    &myCBData);
-  toggle_button =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_operator_togglebutton")));
-  ACE_ASSERT (toggle_button);
-  g_signal_connect (toggle_button,
+                    &CBData_);
+  toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder_p,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_operator_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  g_signal_connect (toggle_button_p,
                     ACE_TEXT_ALWAYS_CHAR ("toggled"),
                     G_CALLBACK (channel_mode_toggled_cb),
-                    &myCBData);
+                    &CBData_);
   // topic label
-  GtkEventBox* event_box =
-    GTK_EVENT_BOX (gtk_builder_get_object (myCBData.builder,
+  GtkEventBox* event_box_p =
+    GTK_EVENT_BOX (gtk_builder_get_object (builder_p,
                                            ACE_TEXT_ALWAYS_CHAR ("channel_tab_topic_label_eventbox")));
-  ACE_ASSERT (event_box);
-  g_signal_connect (event_box,
+  ACE_ASSERT (event_box_p);
+  g_signal_connect (event_box_p,
                     ACE_TEXT_ALWAYS_CHAR ("button-press-event"),
                     G_CALLBACK (topic_clicked_cb),
-                    &myCBData);
+                    &CBData_);
   // context menu in treeview
-  g_signal_connect (channel_tab_treeview,
+  g_signal_connect (tree_view_p,
                     ACE_TEXT_ALWAYS_CHAR ("button-press-event"),
                     G_CALLBACK (members_clicked_cb),
-                    &myCBData);
+                    &CBData_);
   // actions in treeview
-  GtkAction* action =
-    GTK_ACTION (gtk_builder_get_object (myCBData.builder,
+  GtkAction* action_p =
+    GTK_ACTION (gtk_builder_get_object (builder_p,
                                         ACE_TEXT_ALWAYS_CHAR ("action_msg")));
-  ACE_ASSERT (action);
-  g_signal_connect (action,
+  ACE_ASSERT (action_p);
+  g_signal_connect (action_p,
                     ACE_TEXT_ALWAYS_CHAR ("activate"),
                     G_CALLBACK (action_msg_cb),
-                    &myCBData);
-  action =
-    GTK_ACTION (gtk_builder_get_object (myCBData.builder,
+                    &CBData_);
+  action_p =
+    GTK_ACTION (gtk_builder_get_object (builder_p,
                                         ACE_TEXT_ALWAYS_CHAR ("action_invite")));
-  ACE_ASSERT (action);
-  g_signal_connect (action,
+  ACE_ASSERT (action_p);
+  g_signal_connect (action_p,
                     ACE_TEXT_ALWAYS_CHAR ("activate"),
                     G_CALLBACK (action_invite_cb),
-                    &myCBData);
-  action =
-    GTK_ACTION (gtk_builder_get_object (myCBData.builder,
+                    &CBData_);
+  action_p =
+    GTK_ACTION (gtk_builder_get_object (builder_p,
                                         ACE_TEXT_ALWAYS_CHAR ("action_info")));
-  ACE_ASSERT (action);
-  g_signal_connect (action,
+  ACE_ASSERT (action_p);
+  g_signal_connect (action_p,
                     ACE_TEXT_ALWAYS_CHAR ("activate"),
                     G_CALLBACK (action_info_cb),
-                    &myCBData);
-  action =
-    GTK_ACTION (gtk_builder_get_object (myCBData.builder,
+                    &CBData_);
+  action_p =
+    GTK_ACTION (gtk_builder_get_object (builder_p,
                                         ACE_TEXT_ALWAYS_CHAR ("action_kick")));
-  ACE_ASSERT (action);
-  g_signal_connect (action,
+  ACE_ASSERT (action_p);
+  g_signal_connect (action_p,
                     ACE_TEXT_ALWAYS_CHAR ("activate"),
                     G_CALLBACK (action_kick_cb),
-                    &myCBData);
-  action =
-    GTK_ACTION (gtk_builder_get_object (myCBData.builder,
+                    &CBData_);
+  action_p =
+    GTK_ACTION (gtk_builder_get_object (builder_p,
                                         ACE_TEXT_ALWAYS_CHAR ("action_ban")));
-  ACE_ASSERT (action);
-  g_signal_connect (action,
+  ACE_ASSERT (action_p);
+  g_signal_connect (action_p,
                     ACE_TEXT_ALWAYS_CHAR ("activate"),
                     G_CALLBACK (action_ban_cb),
-                    &myCBData);
+                    &CBData_);
+
+  // add new channel page to notebook (== server log)
+  // retrieve (dummy) parent window
+  GtkWindow* window_p =
+    GTK_WINDOW (gtk_builder_get_object (builder_p,
+                                        ACE_TEXT_ALWAYS_CHAR ("channel_tab_label_template")));
+  ACE_ASSERT (window_p);
+  // retrieve channel tab label
+  GtkHBox* hbox_p =
+    GTK_HBOX (gtk_builder_get_object (builder_p,
+                                      ACE_TEXT_ALWAYS_CHAR ("channel_tab_label_hbox")));
+  ACE_ASSERT (hbox_p);
+  g_object_ref (hbox_p);
+  gtk_container_remove (GTK_CONTAINER (window_p),
+                        GTK_WIDGET (hbox_p));
+  // set tab label
+  GtkLabel* label_p =
+    GTK_LABEL (gtk_builder_get_object (builder_p,
+                                       ACE_TEXT_ALWAYS_CHAR ("channel_tab_label")));
+  ACE_ASSERT (label_p);
+  std::string page_tab_label_string;
+  if (!RPG_Net_Protocol_Tools::isValidIRCChannelName (CBData_.id))
+  {
+    // --> private conversation window, modify label accordingly
+    page_tab_label_string = ACE_TEXT_ALWAYS_CHAR ("[");
+    page_tab_label_string += CBData_.id;
+    page_tab_label_string += ACE_TEXT_ALWAYS_CHAR("]");
+
+    // hide channel mode tab frame
+    GtkFrame* frame_p =
+      GTK_FRAME (gtk_builder_get_object (builder_p,
+                                         ACE_TEXT_ALWAYS_CHAR ("channel_tab_mode_frame")));
+    ACE_ASSERT (frame_p);
+    gtk_widget_hide (GTK_WIDGET (frame_p));
+    // hide channel tab treeview
+    tree_view_p =
+      GTK_TREE_VIEW (gtk_builder_get_object (builder_p,
+                                             ACE_TEXT_ALWAYS_CHAR ("channel_tab_treeview")));
+    ACE_ASSERT (tree_view_p);
+    gtk_widget_hide (GTK_WIDGET (tree_view_p));
+
+    // erase "topic" label
+    label_p =
+      GTK_LABEL (gtk_builder_get_object (builder_p,
+                                         ACE_TEXT_ALWAYS_CHAR ("channel_tab_topic_label")));
+    ACE_ASSERT (label_p);
+    gtk_label_set_text (label_p, NULL);
+  } // end IF
+  else
+    page_tab_label_string = CBData_.id;
+  gtk_label_set_text (label_p,
+                      page_tab_label_string.c_str ());
+  // retrieve (dummy) parent window
+  window_p =
+    GTK_WINDOW (gtk_builder_get_object (builder_p,
+                                        ACE_TEXT_ALWAYS_CHAR ("channel_tab_template")));
+  ACE_ASSERT (window_p);
+  // retrieve channel tab
+  GtkVBox* vbox_p =
+    GTK_VBOX (gtk_builder_get_object (builder_p,
+                                      ACE_TEXT_ALWAYS_CHAR ("channel_tab_vbox")));
+  ACE_ASSERT (vbox_p);
+  g_object_ref (vbox_p);
+  gtk_container_remove (GTK_CONTAINER (window_p),
+                        GTK_WIDGET (vbox_p));
+  gint page_num = gtk_notebook_append_page (parent_,
+                                            GTK_WIDGET (vbox_p),
+                                            GTK_WIDGET (hbox_p));
+  if (page_num == -1)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to gtk_notebook_append_page(%@), returning\n"),
+                parent_));
+
+    // clean up
+    g_object_unref (hbox_p);
+    g_object_unref (vbox_p);
+    g_object_unref (G_OBJECT (builder_p));
+
+    return;
+  } // end IF
+  g_object_unref (hbox_p);
+
+  // allow reordering
+  gtk_notebook_set_tab_reorderable (parent_,
+                                    GTK_WIDGET (vbox_p),
+                                    TRUE);
+  g_object_unref (vbox_p);
+
+  // activate new page (iff it's a channel tab !)
+  if (RPG_Net_Protocol_Tools::isValidIRCChannelName (CBData_.id))
+    gtk_notebook_set_current_page (parent_,
+                                   page_num);
+
+  builderLabel_ = connection_in->getLabel ();
+  builderLabel_ += ACE_TEXT_ALWAYS_CHAR ("::");
+  builderLabel_ += page_tab_label_string;
+  // synch access
+  {
+    ACE_Guard<ACE_Thread_Mutex> aGuard (CBData_.GTKState->lock);
+
+    CBData_.GTKState->builders[builderLabel_] =
+        std::make_pair (ui_definition_filename, builder_p);
+  } // end lock scope
 }
 
 IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler ()
 {
   RPG_TRACE (ACE_TEXT ("IRC_Client_GUI_MessageHandler::~IRC_Client_GUI_MessageHandler"));
 
+  // sanity check(s)
+  ACE_ASSERT (CBData_.GTKState);
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard (CBData_.GTKState->lock);
+
   // remove queued events
   while (g_idle_remove_by_data (this));
+  if (eventSourceID_)
+  {
+    Common_UI_GTKEventSourceIdsIterator_t iterator =
+        CBData_.GTKState->eventSourceIds.begin();
+    while (iterator != CBData_.GTKState->eventSourceIds.end())
+    {
+      if (*iterator == eventSourceID_)
+      {
+        iterator = CBData_.GTKState->eventSourceIds.erase(iterator);
+        continue;
+      } // end IF
+
+      iterator++;
+    }
+    if (iterator != CBData_.GTKState->eventSourceIds.end ())
+      CBData_.GTKState->eventSourceIds.erase (iterator);
+  } // end IF
 
   // *NOTE*: the server log handler MUST NOT do this...
-  if (myParent)
+  if (parent_)
   {
-//   // change active page ?
-//   if (gtk_notebook_get_current_page(myParent) == myPageNum)
-//     gtk_notebook_prev_page(myParent);
+    // remove server page from parent notebook
+    Common_UI_GTKBuildersIterator_t iterator =
+        CBData_.GTKState->builders.find (builderLabel_);
+    // sanity check(s)
+    if (iterator == CBData_.GTKState->builders.end ())
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("handler (was: \"%s\") builder not found, returning\n"),
+                  ACE_TEXT (builderLabel_.c_str ())));
+      return;
+    } // end IF
 
-    GtkVBox* channel_tab_vbox =
-      GTK_VBOX (gtk_builder_get_object (myCBData.builder,
+    GtkVBox* vbox_p =
+      GTK_VBOX (gtk_builder_get_object ((*iterator).second.second,
                                         ACE_TEXT_ALWAYS_CHAR ("channel_tab_vbox")));
-    ACE_ASSERT (channel_tab_vbox);
-    if (gtk_notebook_page_num (myParent,
-                               GTK_WIDGET (channel_tab_vbox)) > 1)
-      gtk_notebook_prev_page (myParent);
-    else
-      gtk_notebook_next_page (myParent);
+    ACE_ASSERT (vbox_p);
+    guint page_num = gtk_notebook_page_num (parent_,
+                                            GTK_WIDGET (vbox_p));
+
+    // flip away from "this" page ?
+    if (gtk_notebook_get_current_page (parent_) == static_cast<gint> (page_num))
+      gtk_notebook_prev_page (parent_);
 
     // remove channel page from channel tabs notebook
-    gtk_notebook_remove_page (myParent,
-                              gtk_notebook_page_num (myParent,
-                                                     GTK_WIDGET (channel_tab_vbox)));
+    gtk_notebook_remove_page (parent_,
+                              page_num);
 
-    // clean up
-    g_object_unref (myCBData.builder);
+    g_object_unref (G_OBJECT ((*iterator).second.second));
+    CBData_.GTKState->builders.erase (iterator);
   } // end IF
 }
 
@@ -479,7 +532,7 @@ IRC_Client_GUI_MessageHandler::isServerLog () const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_SignalHandler::isServerLog"));
 
-  return (myParent == NULL);
+  return (parent_ == NULL);
 }
 
 void
@@ -487,16 +540,28 @@ IRC_Client_GUI_MessageHandler::queueForDisplay (const std::string& text_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_SignalHandler::queueForDisplay"));
 
+  // sanity check(s)
+  ACE_ASSERT (CBData_.GTKState);
+
   {
     // synch access
-    ACE_Guard<ACE_Thread_Mutex> aGuard (myLock);
+    ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
 
-    myDisplayQueue.push_back (text_in);
+    displayQueue_.push_back (text_in);
   } // end lock scope
 
   // schedule asynch update(s) ?
-  if (myEventSourceID == 0)
-    myEventSourceID = g_idle_add (update_display_cb, this);
+  if (eventSourceID_ == 0)
+  {
+    eventSourceID_ = g_idle_add (update_display_cb, this);
+
+    // synch access
+    {
+      ACE_Guard<ACE_Thread_Mutex> aGuard (CBData_.GTKState->lock);
+
+      CBData_.GTKState->eventSourceIds.push_back (eventSourceID_);
+    } // end lock scope
+  } // end IF
 }
 
 void
@@ -505,39 +570,39 @@ IRC_Client_GUI_MessageHandler::update ()
   RPG_TRACE (ACE_TEXT ("RPG_Net_SignalHandler::update"));
 
   // always insert new text at the END of the buffer...
-  ACE_ASSERT (myView);
+  ACE_ASSERT (view_);
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("printing: \"%s\"\n"),
-//              myDisplayQueue.front().c_str()));
+//              ACE_TEXT(displayQueue_.front().c_str())));
 
   GtkTextIter iter;
-  gtk_text_buffer_get_end_iter (gtk_text_view_get_buffer (myView),
+  gtk_text_buffer_get_end_iter (gtk_text_view_get_buffer (view_),
                                 &iter);
 
   {  // synch access
-    ACE_Guard<ACE_Thread_Mutex> aGuard (myLock);
+    ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
 
     // sanity check
-    if (myDisplayQueue.empty ())
+    if (displayQueue_.empty ())
       return; // nothing to do...
 
     // step1: convert text
     gchar* converted_text =
-      RPG_Client_UI_Tools::Locale2UTF8 (myDisplayQueue.front ());
+      RPG_Client_UI_Tools::Locale2UTF8 (displayQueue_.front ());
     if (!converted_text)
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to convert message text (was: \"%s\"), returning\n"),
-                  ACE_TEXT (myDisplayQueue.front ().c_str ())));
+                  ACE_TEXT (displayQueue_.front ().c_str ())));
       return;
     } // end IF
 
     // step2: display text
-    gtk_text_buffer_insert (gtk_text_view_get_buffer (myView), &iter,
+    gtk_text_buffer_insert (gtk_text_view_get_buffer (view_), &iter,
                             converted_text,
                             -1);
-//   gtk_text_buffer_insert_at_cursor(myTargetBuffer,
+//   gtk_text_buffer_insert_at_cursor(gtk_text_view_get_buffer (view_),
 //                                    message_text.c_str(),
 //                                    message_text.size());
 
@@ -545,7 +610,7 @@ IRC_Client_GUI_MessageHandler::update ()
     g_free (converted_text);
 
     // step3: pop stack
-    myDisplayQueue.pop_front ();
+    displayQueue_.pop_front ();
   } // end lock scope
 
 //   // get the new "end"...
@@ -558,14 +623,14 @@ IRC_Client_GUI_MessageHandler::update ()
   // ...and place the mark at iter. The mark will stay there after we
   // insert some text at the end because it has right gravity
   GtkTextMark* mark = NULL;
-  mark = gtk_text_buffer_get_mark (gtk_text_view_get_buffer (myView),
+  mark = gtk_text_buffer_get_mark (gtk_text_view_get_buffer (view_),
                                    ACE_TEXT_ALWAYS_CHAR ("scroll"));
-  gtk_text_buffer_move_mark (gtk_text_view_get_buffer (myView),
+  gtk_text_buffer_move_mark (gtk_text_view_get_buffer (view_),
                              mark,
                              &iter);
 
   // scroll the mark onscreen
-  gtk_text_view_scroll_mark_onscreen (myView,
+  gtk_text_view_scroll_mark_onscreen (view_,
                                       mark);
 
   // redraw view area...
@@ -582,12 +647,12 @@ IRC_Client_GUI_MessageHandler::update ()
 //   gdk_window_invalidate_region(GTK_WIDGET(dialog)->window,
 //                                region,
 //                                TRUE);
-  gdk_window_invalidate_rect (GTK_WIDGET (myView)->window,
+  gdk_window_invalidate_rect (GTK_WIDGET (view_)->window,
                               NULL,
                               TRUE);
 //   gdk_region_destroy(region);
-//   gtk_widget_queue_draw(GTK_WIDGET(myView));
-  gdk_window_process_updates (GTK_WIDGET (myView)->window, TRUE);
+//   gtk_widget_queue_draw(GTK_WIDGET(view_));
+  gdk_window_process_updates (GTK_WIDGET (view_)->window, TRUE);
 //   gdk_window_process_all_updates();
 }
 
@@ -596,22 +661,36 @@ IRC_Client_GUI_MessageHandler::getTopLevelPageChild ()
 {
   RPG_TRACE (ACE_TEXT ("IRC_Client_GUI_MessageHandler::getTopLevelPageChild"));
 
+  GtkWidget* widget_p = NULL;
+
   // *WARNING*: the server log handler doesn't have a builder...
-  if (!myParent)
+  if (!parent_)
   {
     // sanity check(s)
-    ACE_ASSERT (myView);
+    ACE_ASSERT (view_);
 
-    return gtk_widget_get_ancestor (GTK_WIDGET (myView),
-                                    GTK_TYPE_WIDGET);
+    widget_p =  gtk_widget_get_ancestor (GTK_WIDGET (view_),
+                                         GTK_TYPE_WIDGET);
   } // end IF
+  else
+  {
+    // sanity check(s)
+    ACE_ASSERT (CBData_.GTKState);
 
-  // sanity check(s)
-  ACE_ASSERT (myCBData.builder);
+    ACE_Guard<ACE_Thread_Mutex> aGuard (CBData_.GTKState->lock);
 
-  // retrieve button handle
-  return GTK_WIDGET (gtk_builder_get_object (myCBData.builder,
-                                             ACE_TEXT_ALWAYS_CHAR ("channel_tab_vbox")));
+    Common_UI_GTKBuildersIterator_t iterator =
+        CBData_.GTKState->builders.find (builderLabel_);
+    // sanity check(s)
+    ACE_ASSERT (iterator != CBData_.GTKState->builders.end ());
+
+    widget_p =
+        GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
+                                            ACE_TEXT_ALWAYS_CHAR ("channel_tab_vbox")));
+  } // end ELSE
+  ACE_ASSERT (widget_p);
+
+  return widget_p;
 }
 
 // const std::string
@@ -620,9 +699,9 @@ IRC_Client_GUI_MessageHandler::getTopLevelPageChild ()
 //   RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::getChannel"));
 //
 //   // sanity check: 'this' might be a private message handler !...
-//   ACE_ASSERT(RPG_Net_Protocol_Tools::isValidIRCChannelName(myCBData.id));
+//   ACE_ASSERT(RPG_Net_Protocol_Tools::isValidIRCChannelName(CBData_.id));
 //
-//   return myCBData.id;
+//   return CBData_.id;
 // }
 
 void
@@ -631,14 +710,21 @@ IRC_Client_GUI_MessageHandler::setTopic (const std::string& topic_in)
   RPG_TRACE (ACE_TEXT ("IRC_Client_GUI_MessageHandler::setTopic"));
 
   // sanity check(s)
-  ACE_ASSERT (myCBData.builder);
+  ACE_ASSERT (CBData_.GTKState);
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard (CBData_.GTKState->lock);
+
+  Common_UI_GTKBuildersIterator_t iterator =
+      CBData_.GTKState->builders.find (builderLabel_);
+  // sanity check(s)
+  ACE_ASSERT (iterator != CBData_.GTKState->builders.end ());
 
   // retrieve label handle
-  GtkLabel* channel_tab_topic_label =
-    GTK_LABEL (gtk_builder_get_object (myCBData.builder,
-                                       ACE_TEXT_ALWAYS_CHAR ("channel_tab_topic_label")));
-  ACE_ASSERT (channel_tab_topic_label);
-  gtk_label_set_text (channel_tab_topic_label,
+  GtkLabel* label_p =
+      GTK_LABEL (gtk_builder_get_object ((*iterator).second.second,
+                                         ACE_TEXT_ALWAYS_CHAR ("channel_tab_topic_label")));
+  ACE_ASSERT (label_p);
+  gtk_label_set_text (label_p,
                       topic_in.c_str ());
 }
 
@@ -650,19 +736,29 @@ IRC_Client_GUI_MessageHandler::setModes (const std::string& modes_in,
 
   ACE_UNUSED_ARG (parameter_in);
 
+  // sanity check(s)
+  ACE_ASSERT (CBData_.GTKState);
+
   RPG_Net_Protocol_Tools::merge (modes_in,
-                                 myCBData.channelModes);
+                                 CBData_.channelModes);
 
   updateModeButtons ();
 
   // enable channel modes ?
   // retrieve channel tab mode hbox handle
-  GtkHBox* channel_tab_mode_hbox =
-    GTK_HBOX (gtk_builder_get_object (myCBData.builder,
+  ACE_Guard<ACE_Thread_Mutex> aGuard (CBData_.GTKState->lock);
+
+  Common_UI_GTKBuildersIterator_t iterator =
+      CBData_.GTKState->builders.find (builderLabel_);
+  // sanity check(s)
+  ACE_ASSERT (iterator != CBData_.GTKState->builders.end ());
+
+  GtkHBox* hbox_p =
+    GTK_HBOX (gtk_builder_get_object ((*iterator).second.second,
                                       ACE_TEXT_ALWAYS_CHAR ("channel_tab_mode_hbox")));
-  ACE_ASSERT (channel_tab_mode_hbox);
-  gtk_widget_set_sensitive (GTK_WIDGET (channel_tab_mode_hbox),
-                            myCBData.channelModes.test (CHANNELMODE_OPERATOR));
+  ACE_ASSERT (hbox_p);
+  gtk_widget_set_sensitive (GTK_WIDGET (hbox_p),
+                            CBData_.channelModes.test (CHANNELMODE_OPERATOR));
 }
 
 void
@@ -671,17 +767,23 @@ IRC_Client_GUI_MessageHandler::clearMembers ()
   RPG_TRACE (ACE_TEXT ("IRC_Client_GUI_MessageHandler::clearMembers"));
 
   // sanity check(s)
-  ACE_ASSERT (myCBData.builder);
+  ACE_ASSERT (CBData_.GTKState);
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard (CBData_.GTKState->lock);
+
+  Common_UI_GTKBuildersIterator_t iterator =
+      CBData_.GTKState->builders.find (builderLabel_);
+  // sanity check(s)
+  ACE_ASSERT (iterator != CBData_.GTKState->builders.end ());
 
   // retrieve channel liststore handle
-  GtkListStore* channel_liststore = NULL;
-  channel_liststore =
-    GTK_LIST_STORE (gtk_builder_get_object (myCBData.builder,
+  GtkListStore* list_store_p =
+    GTK_LIST_STORE (gtk_builder_get_object ((*iterator).second.second,
                                             ACE_TEXT_ALWAYS_CHAR ("channel_liststore")));
-  ACE_ASSERT (channel_liststore);
+  ACE_ASSERT (list_store_p);
 
   // clear liststore
-  gtk_list_store_clear (channel_liststore);
+  gtk_list_store_clear (list_store_p);
 }
 
 void
@@ -689,8 +791,11 @@ IRC_Client_GUI_MessageHandler::updateNick (const std::string& oldNick_in)
 {
   RPG_TRACE (ACE_TEXT ("IRC_Client_GUI_MessageHandler::updateNick"));
 
-  std::string new_nick = myCBData.connection->getNickname ();
-  if (myCBData.channelModes.test (CHANNELMODE_OPERATOR))
+  // sanity check(s)
+  ACE_ASSERT (CBData_.connection);
+
+  std::string new_nick = CBData_.connection->getNickname ();
+  if (CBData_.channelModes.test (CHANNELMODE_OPERATOR))
     new_nick.insert (new_nick.begin (), '@');
 
   remove (oldNick_in);
@@ -703,14 +808,20 @@ IRC_Client_GUI_MessageHandler::add (const std::string& nick_in)
   RPG_TRACE (ACE_TEXT ("IRC_Client_GUI_MessageHandler::add"));
 
   // sanity check(s)
-  ACE_ASSERT (myCBData.builder);
+  ACE_ASSERT (CBData_.GTKState);
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard (CBData_.GTKState->lock);
+
+  Common_UI_GTKBuildersIterator_t iterator =
+      CBData_.GTKState->builders.find (builderLabel_);
+  // sanity check(s)
+  ACE_ASSERT (iterator != CBData_.GTKState->builders.end ());
 
   // retrieve channel liststore handle
-  GtkListStore* channel_liststore = NULL;
-  channel_liststore =
-    GTK_LIST_STORE (gtk_builder_get_object (myCBData.builder,
-                                            ACE_TEXT_ALWAYS_CHAR ("channel_liststore")));
-  ACE_ASSERT (channel_liststore);
+  GtkListStore* list_store_p =
+      GTK_LIST_STORE (gtk_builder_get_object ((*iterator).second.second,
+                                              ACE_TEXT_ALWAYS_CHAR ("channel_liststore")));
+  ACE_ASSERT (list_store_p);
 
   // step1: convert text
   GtkTreeIter iter;
@@ -723,8 +834,8 @@ IRC_Client_GUI_MessageHandler::add (const std::string& nick_in)
   } // end IF
 
   // step2: append new (text) entry
-  gtk_list_store_append (channel_liststore, &iter);
-  gtk_list_store_set (channel_liststore, &iter,
+  gtk_list_store_append (list_store_p, &iter);
+  gtk_list_store_set (list_store_p, &iter,
                       0, converted_nick_string, // column 0
                       -1);
 
@@ -738,14 +849,20 @@ IRC_Client_GUI_MessageHandler::remove (const std::string& nick_in)
   RPG_TRACE (ACE_TEXT ("IRC_Client_GUI_MessageHandler::remove"));
 
   // sanity check(s)
-  ACE_ASSERT (myCBData.builder);
+  ACE_ASSERT (CBData_.GTKState);
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard (CBData_.GTKState->lock);
+
+  Common_UI_GTKBuildersIterator_t iterator =
+      CBData_.GTKState->builders.find (builderLabel_);
+  // sanity check(s)
+  ACE_ASSERT (iterator != CBData_.GTKState->builders.end ());
 
   // retrieve channel liststore handle
-  GtkListStore* channel_liststore = NULL;
-  channel_liststore =
-    GTK_LIST_STORE (gtk_builder_get_object (myCBData.builder,
-                                            ACE_TEXT_ALWAYS_CHAR ("channel_liststore")));
-  ACE_ASSERT (channel_liststore);
+  GtkListStore* list_store_p =
+      GTK_LIST_STORE (gtk_builder_get_object ((*iterator).second.second,
+                                              ACE_TEXT_ALWAYS_CHAR ("channel_liststore")));
+  ACE_ASSERT (list_store_p);
 
   // step1: convert text
   gchar* converted_nick_string = RPG_Client_UI_Tools::Locale2UTF8 (nick_in);
@@ -760,12 +877,12 @@ IRC_Client_GUI_MessageHandler::remove (const std::string& nick_in)
   GtkTreeIter current_iter;
 //   GValue current_value;
   gchar* current_value_string = NULL;
-  if (!gtk_tree_model_get_iter_first (GTK_TREE_MODEL (channel_liststore),
+  if (!gtk_tree_model_get_iter_first (GTK_TREE_MODEL (list_store_p),
                                       &current_iter))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to gtk_tree_model_get_iter_first(%@), returning\n"),
-                channel_liststore));
+                list_store_p));
 
     // clean up
     g_free (converted_nick_string);
@@ -778,10 +895,10 @@ IRC_Client_GUI_MessageHandler::remove (const std::string& nick_in)
     current_value_string = NULL;
 
     // retrieve value
-//     gtk_tree_model_get_value(GTK_TREE_MODEL(channel_liststore),
+//     gtk_tree_model_get_value(GTK_TREE_MODEL(list_store_p),
 //                              current_iter,
 //                              0, &current_value);
-    gtk_tree_model_get (GTK_TREE_MODEL (channel_liststore),
+    gtk_tree_model_get (GTK_TREE_MODEL (list_store_p),
                         &current_iter,
                         0, &current_value_string,
                         -1);
@@ -797,14 +914,14 @@ IRC_Client_GUI_MessageHandler::remove (const std::string& nick_in)
 
     if (found_row)
       break; // found value
-  } while (gtk_tree_model_iter_next (GTK_TREE_MODEL (channel_liststore),
+  } while (gtk_tree_model_iter_next (GTK_TREE_MODEL (list_store_p),
                                      &current_iter));
 
   // clean up
   g_free (converted_nick_string);
 
   if (found_row)
-    gtk_list_store_remove (channel_liststore,
+    gtk_list_store_remove (list_store_p,
                            &current_iter);
   else
     ACE_DEBUG ((LM_ERROR,
@@ -818,21 +935,27 @@ IRC_Client_GUI_MessageHandler::members (const string_list_t& list_in)
   RPG_TRACE (ACE_TEXT ("IRC_Client_GUI_MessageHandler::members"));
 
   // sanity check(s)
-  ACE_ASSERT (myCBData.builder);
+  ACE_ASSERT (CBData_.GTKState);
 
-  if (myIsFirstMemberListMsg)
+  ACE_Guard<ACE_Thread_Mutex> aGuard (CBData_.GTKState->lock);
+
+  Common_UI_GTKBuildersIterator_t iterator =
+      CBData_.GTKState->builders.find (builderLabel_);
+  // sanity check(s)
+  ACE_ASSERT (iterator != CBData_.GTKState->builders.end ());
+
+  if (isFirstMemberListMsg_)
   {
     clearMembers ();
 
-    myIsFirstMemberListMsg = false;
+    isFirstMemberListMsg_ = false;
   } // end IF
 
   // retrieve channel liststore handle
-  GtkListStore* channel_liststore = NULL;
-  channel_liststore =
-    GTK_LIST_STORE (gtk_builder_get_object (myCBData.builder,
-                                            ACE_TEXT_ALWAYS_CHAR ("channel_liststore")));
-  ACE_ASSERT (channel_liststore);
+  GtkListStore* list_store_p =
+      GTK_LIST_STORE (gtk_builder_get_object ((*iterator).second.second,
+                                              ACE_TEXT_ALWAYS_CHAR ("channel_liststore")));
+  ACE_ASSERT (list_store_p);
 
   GtkTreeIter iter;
   gchar* converted_nick_string = NULL;
@@ -850,8 +973,8 @@ IRC_Client_GUI_MessageHandler::members (const string_list_t& list_in)
     } // end IF
 
     // step2: append new (text) entry
-    gtk_list_store_append (channel_liststore, &iter);
-    gtk_list_store_set (channel_liststore, &iter,
+    gtk_list_store_append (list_store_p, &iter);
+    gtk_list_store_set (list_store_p, &iter,
                         0, converted_nick_string, // column 0
                         -1);
 
@@ -866,17 +989,23 @@ IRC_Client_GUI_MessageHandler::endMembers ()
   RPG_TRACE (ACE_TEXT ("IRC_Client_GUI_MessageHandler::endMembers"));
 
   // sanity check(s)
-  ACE_ASSERT (myCBData.builder);
+  ACE_ASSERT (CBData_.GTKState);
 
-  myIsFirstMemberListMsg = true;
+  ACE_Guard<ACE_Thread_Mutex> aGuard (CBData_.GTKState->lock);
+
+  Common_UI_GTKBuildersIterator_t iterator =
+      CBData_.GTKState->builders.find (builderLabel_);
+  // sanity check(s)
+  ACE_ASSERT (iterator != CBData_.GTKState->builders.end ());
+
+  isFirstMemberListMsg_ = true;
 
   // retrieve treeview handle
-  GtkTreeView* channel_tab_treeview = NULL;
-  channel_tab_treeview =
-    GTK_TREE_VIEW (gtk_builder_get_object (myCBData.builder,
-                                           ACE_TEXT_ALWAYS_CHAR ("channel_tab_treeview")));
-  ACE_ASSERT (channel_tab_treeview);
-  gtk_widget_set_sensitive (GTK_WIDGET (channel_tab_treeview), TRUE);
+  GtkTreeView* tree_view_p =
+      GTK_TREE_VIEW (gtk_builder_get_object ((*iterator).second.second,
+                                             ACE_TEXT_ALWAYS_CHAR ("channel_tab_treeview")));
+  ACE_ASSERT (tree_view_p);
+  gtk_widget_set_sensitive (GTK_WIDGET (tree_view_p), TRUE);
 }
 
 void
@@ -884,71 +1013,81 @@ IRC_Client_GUI_MessageHandler::updateModeButtons ()
 {
   RPG_TRACE (ACE_TEXT ("IRC_Client_GUI_MessageHandler::updateModeButtons"));
 
+  // sanity check(s)
+  ACE_ASSERT (CBData_.GTKState);
+
+  ACE_Guard<ACE_Thread_Mutex> aGuard (CBData_.GTKState->lock);
+
+  Common_UI_GTKBuildersIterator_t iterator =
+      CBData_.GTKState->builders.find (builderLabel_);
+  // sanity check(s)
+  ACE_ASSERT (iterator != CBData_.GTKState->builders.end ());
+
   // display (changed) channel modes
-  GtkToggleButton* togglebutton =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_key_togglebutton")));
-  ACE_ASSERT (togglebutton);
-  gtk_toggle_button_set_active (togglebutton,
-                                myCBData.channelModes[CHANNELMODE_PASSWORD]);
-  togglebutton =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_voice_togglebutton")));
-  ACE_ASSERT (togglebutton);
-  gtk_toggle_button_set_active (togglebutton,
-                                myCBData.channelModes[CHANNELMODE_VOICE]);
-  togglebutton =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_ban_togglebutton")));
-  ACE_ASSERT (togglebutton);
-  gtk_toggle_button_set_active (togglebutton,
-                                myCBData.channelModes[CHANNELMODE_BAN]);
-  togglebutton =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_userlimit_togglebutton")));
-  ACE_ASSERT (togglebutton);
-  gtk_toggle_button_set_active (togglebutton,
-                                myCBData.channelModes[CHANNELMODE_USERLIMIT]);
-  togglebutton =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_moderated_togglebutton")));
-  ACE_ASSERT (togglebutton);
-  gtk_toggle_button_set_active (togglebutton,
-                                myCBData.channelModes[CHANNELMODE_MODERATED]);
-  togglebutton =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_blockforeign_togglebutton")));
-  ACE_ASSERT (togglebutton);
-  gtk_toggle_button_set_active (togglebutton,
-                                myCBData.channelModes[CHANNELMODE_BLOCKFOREIGNMSGS]);
-  togglebutton =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_restricttopic_togglebutton")));
-  ACE_ASSERT (togglebutton);
-  gtk_toggle_button_set_active (togglebutton,
-                                myCBData.channelModes[CHANNELMODE_RESTRICTEDTOPIC]);
-  togglebutton =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_inviteonly_togglebutton")));
-  ACE_ASSERT (togglebutton);
-  gtk_toggle_button_set_active (togglebutton,
-                                myCBData.channelModes[CHANNELMODE_INVITEONLY]);
-  togglebutton =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_secret_togglebutton")));
-  ACE_ASSERT (togglebutton);
-  gtk_toggle_button_set_active (togglebutton,
-                                myCBData.channelModes[CHANNELMODE_SECRET]);
-  togglebutton =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_private_togglebutton")));
-  ACE_ASSERT (togglebutton);
-  gtk_toggle_button_set_active (togglebutton,
-                                myCBData.channelModes[CHANNELMODE_PRIVATE]);
-  togglebutton =
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object (myCBData.builder,
-                                               ACE_TEXT_ALWAYS_CHAR ("mode_operator_togglebutton")));
-  ACE_ASSERT (togglebutton);
-  gtk_toggle_button_set_active (togglebutton,
-                                myCBData.channelModes[CHANNELMODE_OPERATOR]);
+  GtkToggleButton* toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_key_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  gtk_toggle_button_set_active (toggle_button_p,
+                                CBData_.channelModes[CHANNELMODE_PASSWORD]);
+  toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_voice_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  gtk_toggle_button_set_active (toggle_button_p,
+                                CBData_.channelModes[CHANNELMODE_VOICE]);
+  toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_ban_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  gtk_toggle_button_set_active (toggle_button_p,
+                                CBData_.channelModes[CHANNELMODE_BAN]);
+  toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_userlimit_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  gtk_toggle_button_set_active (toggle_button_p,
+                                CBData_.channelModes[CHANNELMODE_USERLIMIT]);
+  toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_moderated_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  gtk_toggle_button_set_active (toggle_button_p,
+                                CBData_.channelModes[CHANNELMODE_MODERATED]);
+  toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_blockforeign_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  gtk_toggle_button_set_active (toggle_button_p,
+                                CBData_.channelModes[CHANNELMODE_BLOCKFOREIGNMSGS]);
+  toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_restricttopic_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  gtk_toggle_button_set_active (toggle_button_p,
+                                CBData_.channelModes[CHANNELMODE_RESTRICTEDTOPIC]);
+  toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_inviteonly_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  gtk_toggle_button_set_active (toggle_button_p,
+                                CBData_.channelModes[CHANNELMODE_INVITEONLY]);
+  toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_secret_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  gtk_toggle_button_set_active (toggle_button_p,
+                                CBData_.channelModes[CHANNELMODE_SECRET]);
+  toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_private_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  gtk_toggle_button_set_active (toggle_button_p,
+                                CBData_.channelModes[CHANNELMODE_PRIVATE]);
+  toggle_button_p =
+    GTK_TOGGLE_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                               ACE_TEXT_ALWAYS_CHAR ("mode_operator_toggle_button_p")));
+  ACE_ASSERT (toggle_button_p);
+  gtk_toggle_button_set_active (toggle_button_p,
+                                CBData_.channelModes[CHANNELMODE_OPERATOR]);
 }

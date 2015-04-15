@@ -1,11 +1,13 @@
 #METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
+#  -I$(top_srcdir)/../modules/ATCD/ACE
 AM_CPPFLAGS = \
-  -I$(builddir)/../.. \
-  -I$(srcdir)/../../common \
-  -I$(srcdir)/../../sound \
-  -I$(srcdir)/../../chance/dice
+  -I$(top_srcdir)/../../ATCD/ACE \
+  -I$(builddir)/../..
+
+DEFS = \
+  -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 
 bin_PROGRAMS = sound_parser
 
@@ -14,12 +16,24 @@ noinst_HEADERS = stdafx.h
 sound_parser_SOURCES = sound_parser.cpp
 sound_parser_CPPFLAGS = \
   $(AM_CPPFLAGS) \
-  $(pkg_libs_CFLAGS) \
-  -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
-#sound_parser_LDFLAGS = $(pkg_libs_LIBS)
+  -I$(top_srcdir)/../modules/libCommon/src \
+  -I$(top_srcdir)/../chance/dice \
+  -I$(top_srcdir)/../common \
+  -I$(top_srcdir)/../sound \
+  $(pkg_libs_CFLAGS)
+sound_parser_LDFLAGS = \
+  -L$(abs_top_srcdir)/../../ATCD/ACE/build/linux/lib \
+  -L$(abs_builddir)/../../modules/libCommon/src/.libs \
+  -L$(abs_builddir)/../../chance/dice/.libs \
+  -L$(abs_builddir)/../../common/.libs \
+  -L$(abs_builddir)/../../sound/.libs \
+  $(pkg_libs_LDFLAGS)
 sound_parser_LDADD = \
-  $(builddir)/../../sound/libRPG_Sound.la \
-  $(builddir)/../../common/libRPG_Common.la \
-  $(builddir)/../../chance/dice/libRPG_Dice.la \
+  -lACE \
+  -lCommon \
+  -lRPG_Dice \
+  -lRPG_Common \
+  -lRPG_Sound \
   $(pkg_libs_LIBS) \
   -lSDL_mixer
+

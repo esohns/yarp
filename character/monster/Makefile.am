@@ -1,16 +1,20 @@
 #METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
+#  -I$(top_srcdir)/../modules/ATCD/ACE
 AM_CPPFLAGS = \
-  -DRPG_MONSTER_BUILD_DLL \
-  -I$(builddir)/.. \
-  -I$(srcdir)/../../common \
+  -I$(top_srcdir)/../../ATCD/ACE \
+  -I$(top_srcdir)/../chance/dice \
+  -I$(top_srcdir)/../common \
+  -I$(top_srcdir)/../magic \
+  -I$(top_srcdir)/../item \
   -I$(srcdir)/../../character \
-  -I$(srcdir)/../../magic \
-  -I$(srcdir)/../../item \
-  -I$(srcdir)/../../combat \
   -I$(srcdir)/../player \
-  -I$(srcdir)/../../chance/dice
+  -I$(top_srcdir)/../combat \
+  -I$(builddir)/.. \
+  -DRPG_MONSTER_BUILD_DLL
+
+#DEFS = 
 
 SUBDIRS = scripts
 

@@ -32,6 +32,7 @@
 #include "IRC_client_gui_common.h"
 
 // forward declaration(s)
+struct Common_UI_GTKState;
 class IRC_Client_GUI_Connection;
 class RPG_Net_Protocol_IIRCControl;
 
@@ -41,13 +42,14 @@ class IRC_Client_GUI_MessageHandler
   // ctor for default handler (== server log)
   // *WARNING*: ctors/dtor need gdk_threads_enter/gdk_threads_leave protection
   // (or call from gtk_main context...)
-  IRC_Client_GUI_MessageHandler (GtkTextView*);                 // text view
+  IRC_Client_GUI_MessageHandler (GtkTextView*); // text view handle
   // ctor for regular channel handler
-  IRC_Client_GUI_MessageHandler (IRC_Client_GUI_Connection*,    // connection handle
+  IRC_Client_GUI_MessageHandler (Common_UI_GTKState*,           // GTK state handle
+                                 IRC_Client_GUI_Connection*,    // connection handle
                                  RPG_Net_Protocol_IIRCControl*, // controller handle
                                  const std::string&,            // identifier (channel/nick)
                                  const std::string&,            // UI (glade) file directory
-                                 GtkNotebook*);                 // parent widget
+                                 GtkNotebook*);                 // parent widget handle
   virtual ~IRC_Client_GUI_MessageHandler ();
 
   bool isServerLog () const;
@@ -100,15 +102,16 @@ class IRC_Client_GUI_MessageHandler
   void clearMembers ();
   void updateModeButtons ();
 
-  handler_cb_data_t       myCBData;
+  handler_cb_data_t       CBData_;
 
-  ACE_Thread_Mutex        myLock;
-  std::deque<std::string> myDisplayQueue;
-  GtkTextView*            myView;
-  guint                   myEventSourceID;
+  std::deque<std::string> displayQueue_;
+  ACE_Thread_Mutex        lock_;
 
-  bool                    myIsFirstMemberListMsg;
-  GtkNotebook*            myParent;
+  std::string             builderLabel_;
+  guint                   eventSourceID_;
+  bool                    isFirstMemberListMsg_;
+  GtkNotebook*            parent_;
+  GtkTextView*            view_;
 };
 
 #endif

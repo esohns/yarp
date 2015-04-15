@@ -20,7 +20,7 @@ enum RPG_Engine_EntityMode
 
 #include "rpg_engine_exports.h"
 
-#include <ace/Global_Macros.h>
+#include "ace/Global_Macros.h"
 
 #include <map>
 #include <string>

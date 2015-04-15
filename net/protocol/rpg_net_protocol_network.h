@@ -90,10 +90,11 @@ typedef Net_Connection_Manager_T<RPG_Net_Protocol_Configuration,
                                  RPG_Net_Protocol_SessionData,
                                  Stream_Statistic_t,
                                  Net_IInetTransportLayer_t> RPG_Net_Protocol_Connection_Manager_t;
-typedef ACE_Singleton<RPG_Net_Protocol_Connection_Manager_t,
-                      ACE_Recursive_Thread_Mutex> RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON;
+
 RPG_PROTOCOL_SINGLETON_DECLARE (ACE_Singleton,
                                 RPG_Net_Protocol_Connection_Manager_t,
                                 ACE_Recursive_Thread_Mutex);
+typedef ACE_Singleton<RPG_Net_Protocol_Connection_Manager_t,
+                      ACE_Recursive_Thread_Mutex> RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON;
 
 #endif

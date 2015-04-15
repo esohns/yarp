@@ -31,7 +31,9 @@
 
 #include "net_common.h"
 
-#include "rpg_net_server_common.h"
+#include "rpg_net_common.h"
+
+//#include "rpg_net_server_common.h"
 #include "rpg_net_server_defines.h"
 
 RPG_Net_Server_AsynchListener::RPG_Net_Server_AsynchListener()

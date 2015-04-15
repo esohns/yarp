@@ -1,12 +1,15 @@
 METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
+#  -I$(top_srcdir)/../modules/ATCD/ACE
 AM_CPPFLAGS = \
-  -I$(srcdir)/../common \
-  -I$(srcdir)/../item \
-  -I$(srcdir)/../magic \
-  -I$(srcdir)/../chance/dice \
-  -I$(srcdir)/../chance
+  -I$(top_srcdir)/../../ATCD/ACE \
+  -I$(top_srcdir)/../modules/libCommon/src \
+  -I$(top_srcdir)/../chance/dice \
+  -I$(top_srcdir)/../chance \
+  -I$(top_srcdir)/../common \
+  -I$(top_srcdir)/../magic \
+  -I$(top_srcdir)/../item
 
 SUBDIRS = . player monster scripts
 

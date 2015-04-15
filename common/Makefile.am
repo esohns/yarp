@@ -1,11 +1,15 @@
 #METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
+#  -I$(top_srcdir)/../modules/ATCD/ACE
+#  -I$(srcdir)/../include
 AM_CPPFLAGS = \
-  -DRPG_COMMON_BUILD_DLL=1 \
-  -DMETA_PACKAGE=\"@META_PACKAGE@\" \
-  -I$(srcdir)/../include \
-  -I$(srcdir)/../chance/dice
+  -I$(top_srcdir)/../../ATCD/ACE \
+  -I$(top_srcdir)/../modules/libCommon/src \
+  -I$(top_srcdir)/../chance/dice \
+  -I$(builddir)/.. \
+  -DRPG_COMMON_BUILD_DLL \
+  -DMETA_PACKAGE=\"@META_PACKAGE@\"
 
 SUBDIRS = scripts
 
@@ -20,6 +24,7 @@ include_HEADERS = \
   rpg_common_camp.h \
   rpg_common_checktype.h \
   rpg_common_climate.h \
+  rpg_common_file_tools.h \
   rpg_common_condition.h \
   rpg_common_countermeasure.h \
   rpg_common_creaturemetatype.h \
@@ -34,35 +39,20 @@ include_HEADERS = \
   rpg_common_environment_XML_types.h \
   rpg_common_environment.h \
   rpg_common_exports.h \
-  rpg_common_file_tools.h \
   rpg_common_fixedperiod.h \
-  rpg_common_iclone.h \
-  rpg_common_icontrol.h \
-  rpg_common_idumpstate.h \
   rpg_common_ilock.h \
   rpg_common_incl.h \
-  rpg_common_irefcount.h \
-  rpg_common_isignal.h \
-  rpg_common_istatistic.h \
-  rpg_common_isubscribe.h \
-  rpg_common_itimer.h \
   rpg_common_macros.h \
   rpg_common_physicaldamagetype.h \
   rpg_common_plane.h \
-  rpg_common_referencecounter_base.h \
   rpg_common_savereductiontype.h \
   rpg_common_savingthrow.h \
   rpg_common_savingthrowcheck.h \
-  rpg_common_signalhandler.h \
   rpg_common_size.h \
   rpg_common_skill.h \
   rpg_common_subclass.h \
-  rpg_common_task_base.h \
-  rpg_common_task_base.inl \
   rpg_common_terrain.h \
   rpg_common_timeofday.h \
-  rpg_common_timer_manager.h \
-  rpg_common_timerhandler.h \
   rpg_common_tools.h \
   rpg_common_track.h \
   rpg_common_usage.h \
@@ -87,6 +77,8 @@ libRPG_Common_la_SOURCES = \
   rpg_common_camp.h \
   rpg_common_checktype.h \
   rpg_common_climate.h \
+  rpg_common_file_tools.cpp \
+  rpg_common_file_tools.h \
   rpg_common_condition.h \
   rpg_common_countermeasure.h \
   rpg_common_creaturemetatype.h \
@@ -103,41 +95,20 @@ libRPG_Common_la_SOURCES = \
   rpg_common_environment_XML_types.h \
   rpg_common_environment.h \
   rpg_common_exports.h \
-  rpg_common_file_tools.cpp \
-  rpg_common_file_tools.h \
   rpg_common_fixedperiod.h \
-  rpg_common_iclone.h \
-  rpg_common_icontrol.h \
-  rpg_common_idumpstate.h \
   rpg_common_ilock.h \
   rpg_common_incl.h \
-  rpg_common_irefcount.h \
-  rpg_common_isignal.h \
-  rpg_common_istatistic.h \
-  rpg_common_isubscribe.h \
-  rpg_common_itimer.h \
   rpg_common_macros.h \
   rpg_common_physicaldamagetype.h \
   rpg_common_plane.h \
-  rpg_common_referencecounter_base.cpp \
-  rpg_common_referencecounter_base.h \
   rpg_common_savereductiontype.h \
   rpg_common_savingthrow.h \
   rpg_common_savingthrowcheck.h \
-  rpg_common_signalhandler.cpp \
-  rpg_common_signalhandler.h \
   rpg_common_size.h \
   rpg_common_skill.h \
   rpg_common_subclass.h \
-  rpg_common_task_base.cpp \
-  rpg_common_task_base.h \
-  rpg_common_task_base.inl \
   rpg_common_terrain.h \
   rpg_common_timeofday.h \
-  rpg_common_timer_manager.cpp \
-  rpg_common_timer_manager.h \
-  rpg_common_timerhandler.cpp \
-  rpg_common_timerhandler.h \
   rpg_common_tools.cpp \
   rpg_common_tools.h \
   rpg_common_track.h \

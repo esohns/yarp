@@ -1,22 +1,30 @@
 METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
+#  -I$(top_srcdir)/../modules/ATCD/ACE
+#  -I$(srcdir)/../include
 AM_CPPFLAGS = \
-  -DRPG_CLIENT_BUILD_DLL \
-  -I$(srcdir)/../common \
-  -I$(srcdir)/../chance/dice \
-  -I$(srcdir)/../character \
-  -I$(srcdir)/../magic \
-  -I$(srcdir)/../item \
-  -I$(srcdir)/../combat \
-  -I$(srcdir)/../graphics \
-  -I$(srcdir)/../net/client \
-  -I$(srcdir)/../engine \
-  -I$(srcdir)/../map \
-  -I$(srcdir)/../character/monster \
-  -I$(srcdir)/../character/player \
-  -I$(srcdir)/../sound \
-  -I$(srcdir)/../include
+  -I$(top_srcdir)/../../ATCD/ACE \
+  -I$(top_srcdir)/../modules/libCommon/src \
+  -I$(top_srcdir)/../modules/libCommon/src/ui \
+  -I$(top_srcdir)/../modules/libACEStream/src \
+  -I$(top_srcdir)/../modules/libACENetwork/src \
+  -I$(top_srcdir)/../modules/libACENetwork/src/client \
+  -I$(top_srcdir)/../chance/dice \
+  -I$(top_srcdir)/../common \
+  -I$(top_srcdir)/../character \
+  -I$(top_srcdir)/../magic \
+  -I$(top_srcdir)/../item \
+  -I$(top_srcdir)/../character/player \
+  -I$(top_srcdir)/../combat \
+  -I$(top_srcdir)/../character/monster \
+  -I$(top_srcdir)/../map \
+  -I$(top_srcdir)/../net/client \
+  -I$(top_srcdir)/../engine \
+  -I$(top_srcdir)/../sound \
+  -I$(top_srcdir)/../graphics \
+  -I$(builddir)/.. \
+  -DRPG_CLIENT_BUILD_DLL
 
 SUBDIRS = scripts
 
@@ -30,8 +38,6 @@ include_HEADERS = \
   rpg_client_entity_manager.h \
   rpg_client_exports.h \
   rpg_client_graphicsmode.h \
-  rpg_client_GTK_manager.h \
-  rpg_client_iGTK_ui.h \
   rpg_client_incl.h \
   rpg_client_iwidget_ui.h \
   rpg_client_iwindow.h \
@@ -59,9 +65,6 @@ libRPG_Client_GUI_la_SOURCES = \
   rpg_client_entity_manager.h \
   rpg_client_exports.h \
   rpg_client_graphicsmode.h \
-  rpg_client_GTK_manager.cpp \
-  rpg_client_GTK_manager.h \
-  rpg_client_iGTK_ui.h \
   rpg_client_incl.h \
   rpg_client_iwidget_ui.h \
   rpg_client_iwindow.h \

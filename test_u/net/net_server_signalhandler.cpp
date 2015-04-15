@@ -170,8 +170,8 @@ Net_Server_SignalHandler::handleSignal (int signal_in)
     } // end IF
 
     // step3: stop/abort/wait for connections
-    NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->stop ();
-    NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
+    NET_CONNECTIONMANAGER_SINGLETON::instance ()->stop ();
+    NET_CONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
     // *IMPORTANT NOTE*: as long as connections are inactive (i.e. events are
     // dispatched by reactor thread(s), there is no real reason to wait here)
     //RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();

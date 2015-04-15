@@ -23,8 +23,8 @@
 
 #include <numeric>
 
-#include "ace/OS.h"
 #include "ace/Log_Msg.h"
+#include "ace/OS.h"
 
 #include "rpg_dice.h"
 #include "rpg_dice_common.h"
@@ -32,6 +32,7 @@
 #include "common_file_tools.h"
 
 #include "rpg_common_defines.h"
+#include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
 #include "rpg_common_tools.h"
 
@@ -565,20 +566,20 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
 }
 
 std::string
-RPG_Player_Common_Tools::getPlayerProfilesDirectory()
+RPG_Player_Common_Tools::getPlayerProfilesDirectory ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::getPlayerProfilesDirectory"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Common_Tools::getPlayerProfilesDirectory"));
 
-#if defined(DEBUG_DEBUGGER)
-	std::string result = Common_File_Tools::getWorkingDirectory();
-	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-	result += ACE_TEXT_ALWAYS_CHAR("engine");
-	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-	result += ACE_TEXT_ALWAYS_CHAR("data");
+#if defined (DEBUG_DEBUGGER)
+  std::string result = Common_File_Tools::getWorkingDirectory();
+  result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  result += ACE_TEXT_ALWAYS_CHAR("engine");
+  result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  result += ACE_TEXT_ALWAYS_CHAR("data");
 #else
-	std::string result = RPG_Common_File_Tools::getUserConfigurationDirectory();
-	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-	result += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILES_SUB);
+  std::string result = RPG_Common_File_Tools::getUserConfigurationDirectory();
+  result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  result += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILES_SUB);
 #endif
 
   if (!Common_File_Tools::isDirectory(result))

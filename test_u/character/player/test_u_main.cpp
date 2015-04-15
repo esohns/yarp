@@ -11,7 +11,7 @@
 #include "ace/Global_Macros.h"
 #include "ace/High_Res_Timer.h"
 
-#include "gtk/gtk.h"
+//#include "gtk/gtk.h"
 
 #include "common_file_tools.h"
 #include "common_tools.h"
@@ -20,7 +20,6 @@
 #include "common_ui_glade_definition.h"
 #include "common_ui_gtk_manager.h"
 
-// *NOTE*: need this to import correct PACKAGE_STRING/VERSION/... !
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
 #endif
@@ -418,7 +417,14 @@ test_u_main::do_work (GTK_cb_data_t& userData_in,
                                  graphicsDictionary_in,
                                  false); // don't init SDL
 
-  //user_data.XML_pool();
+  userData_in.GTKState.initializationHook = idle_initialize_UI_cb;
+  userData_in.GTKState.finalizationHook = idle_finalize_UI_cb;
+  userData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
+    std::make_pair (UIFile_in, static_cast<GladeXML*> (NULL));
+  userData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
+    std::make_pair (clientUIFile_in, static_cast<GladeXML*> (NULL));
+  userData_in.GTKState.userData = &userData_in;
+
   userData_in.schemaRepository = schemaDirectory_in;
   userData_in.entity.character = NULL;
   userData_in.entity.position =
@@ -435,11 +441,6 @@ test_u_main::do_work (GTK_cb_data_t& userData_in,
   userData_in.spriteGalleryIterator = userData_in.spriteGallery.begin ();
   userData_in.currentSprite = RPG_GRAPHICS_SPRITE_INVALID;
   userData_in.isTransient = false;
-
-  userData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
-    std::make_pair (UIFile_in, static_cast<GladeXML*> (NULL));
-  userData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
-    std::make_pair (clientUIFile_in, static_cast<GladeXML*> (NULL));
 
   COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start ();
   if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
@@ -698,7 +699,6 @@ test_u_main::run_i (int argc_in,
 //                                    NULL);                                // property name(s)
 //  ACE_ASSERT(gnomeProgram);
   GTK_cb_data_t user_data;
-  user_data.GTKState.userData = &user_data;
   Common_UI_GladeDefinition ui_definition (argc_in,
                                            argv_in);
   COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (argc_in,

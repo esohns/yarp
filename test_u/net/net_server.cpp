@@ -30,6 +30,8 @@
 #endif
 #include "ace/Get_Opt.h"
 #include "ace/High_Res_Timer.h"
+#include "ace/POSIX_Proactor.h"
+#include "ace/Proactor.h"
 #include "ace/Profile_Timer.h"
 #include "ace/Sig_Handler.h"
 #include "ace/Signal.h"
@@ -466,7 +468,7 @@ do_work (unsigned int maxNumConnections_in,
 
   // step1: init regular (global) stats reporting
   Stream_StatisticHandler_Reactor_t statistics_handler (ACTION_REPORT,
-                                                        NET_TCPCONNECTIONMANAGER_SINGLETON::instance (),
+                                                        NET_CONNECTIONMANAGER_SINGLETON::instance (),
                                                         false);
   long timer_id = -1;
   if (statisticsReportingInterval_in)
@@ -500,7 +502,7 @@ do_work (unsigned int maxNumConnections_in,
   // event handler for signals
   Net_Server_SignalHandler signal_handler (timer_id,
                                            CBData_in.listenerHandle,
-                                           NET_TCPCONNECTIONMANAGER_SINGLETON::instance (),
+                                           NET_CONNECTIONMANAGER_SINGLETON::instance (),
                                            useReactor_in);
   if (!Common_Tools::initializeSignals (signalSet_inout,
                                         &signal_handler,
@@ -525,10 +527,10 @@ do_work (unsigned int maxNumConnections_in,
   } // end IF
 
   // step3: init connection manager
-  NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->initialize (maxNumConnections_in);
+  NET_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (maxNumConnections_in);
   Net_UserData_t session_data;
-  NET_TCPCONNECTIONMANAGER_SINGLETON::instance ()->set (configuration,
-                                                        &session_data);
+  NET_CONNECTIONMANAGER_SINGLETON::instance ()->set (configuration,
+                                                     &session_data);
 
   // step4: handle events (signals, incoming connections/data, timers, ...)
   // reactor/proactor event loop:
@@ -542,8 +544,11 @@ do_work (unsigned int maxNumConnections_in,
   // step4a: start GTK event loop ?
   if (!UIDefinitionFile_in.empty ())
   {
+    CBData_in.GTKState.finalizationHook = idle_finalize_UI_cb;
+    CBData_in.GTKState.initializationHook = idle_initialize_server_UI_cb;
     CBData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
       std::make_pair (UIDefinitionFile_in, static_cast<GladeXML*> (NULL));
+    CBData_in.GTKState.userData = &CBData_in;
 
     COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start ();
     if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
@@ -949,7 +954,6 @@ ACE_TMAIN (int argc_in,
   } // end IF
 
   // step1h: init GLIB / G(D|T)K[+] / GNOME ?
-  gtk_cb_user_data.GTKState.userData = &gtk_cb_user_data;
   Common_UI_GladeDefinition ui_definition (argc_in,
                                            argv_in);
   if (!UI_file.empty ())

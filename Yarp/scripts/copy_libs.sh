@@ -34,7 +34,49 @@ if [ ! -d "${TARGET_DIR}" ]; then
  [ $? -ne 0 ] && echo "ERROR: failed to mkdir \"${TARGET_DIR}\", aborting" && exit 1
  echo "INFO: created directory \"${TARGET_DIR}\", continuing"
 fi
+VERSION="6.3.1"
 
+echo "copying 3rd-party libraries"
+LIB_DIR="lib"
+MODULES_DIR="${PROJECT_DIR}/modules"
+SUB_DIRS="ATCD/ACE/build/linux"
+declare -a LIBS=("libACE.so")
+i=0
+for DIR in $SUB_DIRS
+do
+ LIB="${MODULES_DIR}/${DIR}/${LIB_DIR}/${LIBS[$i]}"
+ [ ! -r "${LIB}.${VERSION}" ] && echo "ERROR: invalid library file (was: \"${LIB}.${VERSION}\"), aborting" && exit 1
+ cp -f "${LIB}.${VERSION}" ${TARGET_DIR}
+ [ $? -ne 0 ] && echo "ERROR: failed to copy \"${LIB}.${VERSION}\" to \"${TARGET_DIR}\": $?, aborting" && exit 1
+ echo "copied \"$LIB.${VERSION}\"..."
+
+ i=$i+1
+done
+VERSION="0"
+
+echo "copying external module libraries"
+LIB_DIR=".libs"
+SUB_DIRS="modules/libCommon/src
+modules/libCommon/src/ui
+modules/libACEStream/src
+modules/libACENetwork/src"
+declare -a LIBS=("libCommon.so"
+"libCommon_UI.so"
+"libACEStream.so"
+"libACENetwork.so")
+i=0
+for DIR in $SUB_DIRS
+do
+ LIB="${BUILD_DIR}/${DIR}/${LIB_DIR}/${LIBS[$i]}"
+ [ ! -r "${LIB}.${VERSION}" ] && echo "ERROR: invalid library file (was: \"${LIB}.${VERSION}\"), aborting" && exit 1
+ cp -f "${LIB}.${VERSION}" ${TARGET_DIR}
+ [ $? -ne 0 ] && echo "ERROR: failed to copy \"${LIB}.${VERSION}\" to \"${TARGET_DIR}\": $?, aborting" && exit 1
+ echo "copied \"$LIB.${VERSION}\"..."
+
+ i=$i+1
+done
+
+echo "copying framework libraries"
 LIB_DIR=".libs"
 SUB_DIRS="chance/dice
 chance
@@ -49,10 +91,8 @@ graphics
 item
 magic
 map
-net/client
 net/protocol
 net/server
-net/stream
 net
 sound"
 declare -a LIBS=("libRPG_Dice.so"
@@ -68,20 +108,18 @@ declare -a LIBS=("libRPG_Dice.so"
 "libRPG_Item.so"
 "libRPG_Magic.so"
 "libRPG_Map.so"
-"libRPG_Net_Client.so"
 "libRPG_Net_Protocol.so"
 "libRPG_Net_Server.so"
-"libRPG_Stream.so"
 "libRPG_Net.so"
 "libRPG_Sound.so")
 i=0
 for DIR in $SUB_DIRS
 do
  LIB="${BUILD_DIR}/${DIR}/${LIB_DIR}/${LIBS[$i]}"
- [ ! -r "${LIB}" ] && echo "ERROR: invalid library file (was: \"${LIB}\"), aborting" && exit 1
- cp ${LIB} "${TARGET_DIR}/${LIBS[$i]}.0"
- [ $? -ne 0 ] && echo "ERROR: failed to copy \"${LIB}\" to \"${TARGET_DIR}\": $?, aborting" && exit 1
- echo "copied \"$LIB\"..."
+ [ ! -r "${LIB}.${VERSION}" ] && echo "ERROR: invalid library file (was: \"${LIB}.${VERSION}\"), aborting" && exit 1
+ cp -f "${LIB}.${VERSION}" ${TARGET_DIR}
+ [ $? -ne 0 ] && echo "ERROR: failed to copy \"${LIB}.${VERSION}\" to \"${TARGET_DIR}\": $?, aborting" && exit 1
+ echo "copied \"$LIB.${VERSION}\"..."
 
  i=$i+1
 done

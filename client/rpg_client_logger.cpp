@@ -21,6 +21,8 @@
 
 #include "rpg_client_logger.h"
 
+#include <sstream>
+
 #include "ace/Global_Macros.h"
 #include "ace/Log_Msg.h"
 #include "ace/Synch.h"

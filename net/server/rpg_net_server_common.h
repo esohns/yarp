@@ -21,8 +21,4 @@
 #ifndef RPG_NET_SERVER_COMMON_H
 #define RPG_NET_SERVER_COMMON_H
 
-#include "net_connection_manager_common.h"
-
-typedef NET_TCPCONNECTIONMANAGER_SINGLETON RPG_CONNECTIONMANAGER_SINGLETON;
-
 #endif

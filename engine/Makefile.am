@@ -1,23 +1,29 @@
 #METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
+#  -DRPG_NET_CLIENT_HAS_DLL
+#  -I$(top_srcdir)/../modules/ATCD/ACE
 AM_CPPFLAGS = \
-  -DRPG_ENGINE_BUILD_DLL \
-  -DRPG_NET_CLIENT_HAS_DLL \
-  -I$(srcdir)/../common \
-  -I$(srcdir)/../character/player \
-  -I$(srcdir)/../chance/dice \
-  -I$(srcdir)/../magic \
-  -I$(srcdir)/../character \
-  -I$(srcdir)/../item \
-  -I$(srcdir)/../map \
-  -I$(srcdir)/../combat \
-  -I$(srcdir)/../character/monster \
-  -I$(srcdir)/../chance \
-  -I$(srcdir)/../net/stream \
-  -I$(srcdir)/../net \
-  -I$(srcdir)/../net/client \
-  -I$(srcdir)/../3rd_party/bison
+  -I$(top_srcdir)/../../ATCD/ACE \
+  -I$(top_srcdir)/../3rd_party/bison \
+  -I$(top_srcdir)/../modules/libCommon/src \
+  -I$(top_srcdir)/../modules/libACEStream/src \
+  -I$(top_srcdir)/../modules/libACENetwork/src \
+  -I$(top_srcdir)/../modules/libACENetwork/src/client \
+  -I$(top_srcdir)/../chance/dice \
+  -I$(top_srcdir)/../chance \
+  -I$(top_srcdir)/../common \
+  -I$(top_srcdir)/../magic \
+  -I$(top_srcdir)/../item \
+  -I$(top_srcdir)/../character \
+  -I$(top_srcdir)/../character/player \
+  -I$(top_srcdir)/../combat \
+  -I$(top_srcdir)/../character/monster \
+  -I$(top_srcdir)/../map \
+  -I$(top_srcdir)/../net \
+  -I$(top_srcdir)/../net/client \
+  -I$(top_srcdir)/../net/protocol \
+  -DRPG_ENGINE_BUILD_DLL
 
 SUBDIRS = data scripts
 

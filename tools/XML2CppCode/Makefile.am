@@ -1,9 +1,11 @@
 #METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
+#  -I$(top_srcdir)/../../modules/ATCD/ACE
 AM_CPPFLAGS = \
-  -I$(srcdir)/../../common \
-  -I$(srcdir)/../../chance/dice
+  -I$(top_srcdir)/../../../ATCD/ACE \
+  -I$(top_srcdir)/../../chance/dice \
+  -I$(top_srcdir)/../../common
 
 bin_PROGRAMS = XML2CppCode
 
@@ -32,9 +34,10 @@ XML2CppCode_SOURCES = \
   stdafx.cpp \
   stdafx.h
 XML2CppCode_CPPFLAGS = $(AM_CPPFLAGS)
-#XML2CppCode_LDFLAGS = -L/usr/local/lib
+XML2CppCode_LDFLAGS = -L$(abs_top_srcdir)/../../../ATCD/ACE/build/linux/lib
 XML2CppCode_LDADD = -lACE -lpthread -lxerces-c
 
 EXTRA_DIST = \
   configure.ac \
   m4/ax_prefix_config_h.m4
+

@@ -1,466 +1,131 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="2.16"/>
+  <requires lib="gtk+" version="2.24"/>
   <!-- interface-naming-policy project-wide -->
-  <object class="GtkTextTagTable" id="server_tab_log_texttagtable"/>
-  <object class="GtkWindow" id="server_tab_template">
-    <child>
-      <object class="GtkVBox" id="server_tab_vbox">
+  <object class="GtkAction" id="action_accept">
+    <property name="label">OK</property>
+    <property name="short_label">OK</property>
+    <property name="stock_id">gtk-ok</property>
+  </object>
+  <object class="GtkAction" id="action_away">
+    <property name="label">Away</property>
+    <property name="short_label">Away</property>
+    <signal name="activate" handler="action_away_cb" swapped="no"/>
+  </object>
+  <object class="GtkAction" id="action_cancel">
+    <property name="label">Cancel</property>
+    <property name="short_label">Cancel</property>
+    <property name="stock_id">gtk-cancel</property>
+  </object>
+  <object class="GtkDialog" id="server_tab_entry_dialog">
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">please insert data...</property>
+    <property name="modal">True</property>
+    <property name="window_position">center</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">normal</property>
+    <property name="deletable">False</property>
+    <child internal-child="vbox">
+      <object class="GtkVBox" id="server_tab_entry_vbox">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkHBox" id="server_tab_nick_chan_hbox">
+        <property name="can_focus">False</property>
+        <child internal-child="action_area">
+          <object class="GtkHButtonBox" id="server_tab_entry_action_area">
             <property name="visible">True</property>
-            <property name="sensitive">False</property>
+            <property name="can_focus">False</property>
+            <property name="homogeneous">True</property>
+            <property name="layout_style">end</property>
             <child>
-              <object class="GtkFrame" id="server_tab_nick_frame">
+              <object class="GtkButton" id="server_tab_entry_dialog_accept_button">
+                <property name="related_action">action_accept</property>
                 <property name="visible">True</property>
-                <property name="label_xalign">0</property>
-                <property name="shadow_type">etched-out</property>
-                <child>
-                  <object class="GtkAlignment" id="server_tab_nick_alignment">
-                    <property name="visible">True</property>
-                    <child>
-                      <object class="GtkHBox" id="server_tab_users_hbox">
-                        <property name="visible">True</property>
-                        <child>
-                          <object class="GtkEntry" id="server_tab_users_nick_entry">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="max_length">9</property>
-                            <property name="invisible_char">&#x25CF;</property>
-                            <property name="activates_default">True</property>
-                            <property name="width_chars">9</property>
-                            <property name="truncate_multiline">True</property>
-                            <property name="shadow_type">etched-out</property>
-                            <signal name="focus_in_event" handler="nick_entry_kb_focused_cb"/>
-                          </object>
-                          <packing>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkButton" id="server_tab_users_nick_button">
-                            <property name="label" translatable="yes">_Change</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="can_default">True</property>
-                            <property name="receives_default">False</property>
-                            <property name="use_underline">True</property>
-                            <property name="focus_on_click">False</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkVSeparator" id="server_tab_users_vseparator">
-                            <property name="visible">True</property>
-                            <property name="orientation">vertical</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="position">2</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkComboBox" id="server_tab_users_combobox">
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can_focus">True</property>
-                            <property name="model">server_tab_users_store</property>
-                            <property name="has_frame">False</property>
-                            <property name="focus_on_click">False</property>
-                            <signal name="changed" handler="usersbox_changed_cb"/>
-                            <child>
-                              <object class="GtkCellRendererText" id="server_tab_users_cellrenderertext"/>
-                              <attributes>
-                                <attribute name="text">0</attribute>
-                              </attributes>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="position">3</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkButton" id="server_tab_users_refresh_button">
-                            <property name="label" translatable="yes">_Refresh</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="use_underline">True</property>
-                            <property name="focus_on_click">False</property>
-                            <signal name="clicked" handler="refresh_users_clicked_cb"/>
-                          </object>
-                          <packing>
-                            <property name="position">4</property>
-                          </packing>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child type="label">
-                  <object class="GtkLabel" id="server_tab_nick_label">
-                    <property name="visible">True</property>
-                    <property name="label" translatable="yes">nickname</property>
-                  </object>
-                </child>
+                <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="has_default">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <property name="focus_on_click">False</property>
               </object>
               <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="pack_type">end</property>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
-              <object class="GtkFrame" id="server_tab_channels_frame">
+              <object class="GtkButton" id="server_tab_entry_dialog_cancel_button">
+                <property name="related_action">action_cancel</property>
                 <property name="visible">True</property>
-                <property name="label_xalign">0</property>
-                <property name="shadow_type">etched-out</property>
-                <child>
-                  <object class="GtkAlignment" id="server_tab_channels_alignment">
-                    <property name="visible">True</property>
-                    <child>
-                      <object class="GtkHBox" id="server_tab_channels_hbox">
-                        <property name="visible">True</property>
-                        <child>
-                          <object class="GtkEntry" id="server_tab_channel_entry">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="max_length">200</property>
-                            <property name="invisible_char">&#x25CF;</property>
-                            <property name="activates_default">True</property>
-                            <property name="truncate_multiline">True</property>
-                            <property name="shadow_type">etched-out</property>
-                            <signal name="focus_in_event" handler="join_entry_kb_focused_cb"/>
-                          </object>
-                          <packing>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkButton" id="server_tab_join_button">
-                            <property name="label" translatable="yes">_Join</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="can_default">True</property>
-                            <property name="receives_default">False</property>
-                            <property name="use_underline">True</property>
-                            <property name="focus_on_click">False</property>
-                            <signal name="clicked" handler="join_clicked_cb"/>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkVSeparator" id="server_tab_channels_vseparator">
-                            <property name="visible">True</property>
-                            <property name="orientation">vertical</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="position">2</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkComboBox" id="server_tab_channels_combobox">
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can_focus">True</property>
-                            <property name="model">server_tab_channels_store</property>
-                            <property name="has_frame">False</property>
-                            <property name="focus_on_click">False</property>
-                            <signal name="changed" handler="channelbox_changed_cb"/>
-                            <child>
-                              <object class="GtkCellRendererText" id="server_tab_channels_cellrenderertext"/>
-                              <attributes>
-                                <attribute name="text">0</attribute>
-                              </attributes>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="position">3</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkButton" id="server_tab_channels_refresh_button">
-                            <property name="label" translatable="yes">_Refresh</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="use_underline">True</property>
-                            <property name="focus_on_click">False</property>
-                            <signal name="clicked" handler="refresh_channels_clicked_cb"/>
-                          </object>
-                          <packing>
-                            <property name="position">4</property>
-                          </packing>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child type="label">
-                  <object class="GtkLabel" id="server_tab_channels_label">
-                    <property name="visible">True</property>
-                    <property name="label" translatable="yes">channels</property>
-                  </object>
-                </child>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <property name="focus_on_click">False</property>
               </object>
               <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="pack_type">end</property>
                 <property name="position">1</property>
               </packing>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
-          <object class="GtkFrame" id="server_tab_user_mode_frame">
-            <property name="visible">True</property>
-            <property name="label_xalign">0</property>
-            <property name="shadow_type">etched-out</property>
-            <child>
-              <object class="GtkAlignment" id="server_tab_user_mode_alignment">
-                <property name="visible">True</property>
-                <child>
-                  <object class="GtkHBox" id="server_tab_user_modes_hbox">
-                    <property name="visible">True</property>
-                    <property name="sensitive">False</property>
-                    <property name="homogeneous">True</property>
-                    <child>
-                      <object class="GtkToggleButton" id="mode_notices_togglebutton">
-                        <property name="label" translatable="yes">notices</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="relief">none</property>
-                        <property name="focus_on_click">False</property>
-                        <signal name="toggled" handler="user_mode_toggled_cb"/>
-                      </object>
-                      <packing>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkToggleButton" id="mode_localoperator_togglebutton">
-                        <property name="label" translatable="yes">local operator</property>
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="relief">none</property>
-                        <property name="focus_on_click">False</property>
-                        <signal name="toggled" handler="user_mode_toggled_cb"/>
-                      </object>
-                      <packing>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkToggleButton" id="mode_operator_togglebutton">
-                        <property name="label" translatable="yes">operator</property>
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="relief">none</property>
-                        <property name="focus_on_click">False</property>
-                        <signal name="toggled" handler="user_mode_toggled_cb"/>
-                      </object>
-                      <packing>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkToggleButton" id="mode_restricted_togglebutton">
-                        <property name="label" translatable="yes">restricted</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="relief">none</property>
-                        <property name="focus_on_click">False</property>
-                        <signal name="toggled" handler="user_mode_toggled_cb"/>
-                      </object>
-                      <packing>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkToggleButton" id="mode_wallops_togglebutton">
-                        <property name="label" translatable="yes">wallops</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="relief">none</property>
-                        <property name="focus_on_click">False</property>
-                        <signal name="toggled" handler="user_mode_toggled_cb"/>
-                      </object>
-                      <packing>
-                        <property name="position">4</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkToggleButton" id="mode_invisible_togglebutton">
-                        <property name="label" translatable="yes">invisible</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="relief">none</property>
-                        <property name="focus_on_click">False</property>
-                        <signal name="toggled" handler="user_mode_toggled_cb"/>
-                      </object>
-                      <packing>
-                        <property name="position">5</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkToggleButton" id="mode_away_togglebutton">
-                        <property name="label" translatable="yes">away</property>
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="relief">none</property>
-                        <property name="focus_on_click">False</property>
-                        <signal name="toggled" handler="user_mode_toggled_cb"/>
-                      </object>
-                      <packing>
-                        <property name="position">6</property>
-                      </packing>
-                    </child>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child type="label">
-              <object class="GtkLabel" id="server_tab_user_mode_label">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">user mode</property>
-                <property name="use_markup">True</property>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkFrame" id="server_tab_tools_frame">
-            <property name="visible">True</property>
-            <property name="label_xalign">0</property>
-            <property name="shadow_type">etched-out</property>
-            <child>
-              <object class="GtkAlignment" id="server_tab_tools_alignment">
-                <property name="visible">True</property>
-                <child>
-                  <object class="GtkHBox" id="server_tab_tools_hbox">
-                    <property name="visible">True</property>
-                    <child>
-                      <object class="GtkToggleButton" id="server_tab_tools_togglebutton">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="related_action">action_away</property>
-                        <property name="use_action_appearance">True</property>
-                        <property name="focus_on_click">False</property>
-                      </object>
-                      <packing>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child type="label">
-              <object class="GtkLabel" id="server_tab_tools_label">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">tools</property>
-                <property name="use_markup">True</property>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkNotebook" id="server_tab_channel_tabs">
+          <object class="GtkEntry" id="server_tab_entry_dialog_entry">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="show_border">False</property>
-            <property name="scrollable">True</property>
-            <property name="tab_border">0</property>
-            <property name="tab_hborder">0</property>
-            <property name="tab_vborder">0</property>
-            <property name="enable_popup">True</property>
-            <property name="homogeneous">True</property>
-            <signal name="switch_page" handler="switch_channel_cb"/>
-            <child>
-              <object class="GtkScrolledWindow" id="server_tab_log_scrolledwindow">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="events">GDK_EXPOSURE_MASK | GDK_STRUCTURE_MASK | GDK_SCROLL_MASK</property>
-                <property name="hscrollbar_policy">automatic</property>
-                <property name="vscrollbar_policy">automatic</property>
-                <property name="shadow_type">etched-out</property>
-                <child>
-                  <object class="GtkTextView" id="server_tab_log_textview">
-                    <property name="width_request">600</property>
-                    <property name="height_request">600</property>
-                    <property name="visible">True</property>
-                    <property name="events">GDK_STRUCTURE_MASK | GDK_SCROLL_MASK</property>
-                    <property name="editable">False</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="cursor_visible">False</property>
-                    <property name="buffer">server_tab_log_textbuffer</property>
-                    <property name="accepts_tab">False</property>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child type="tab">
-              <object class="GtkLabel" id="server_tab_log_label">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">server log</property>
-                <property name="track_visited_links">False</property>
-                <attributes>
-                  <attribute name="weight" value="semibold"/>
-                </attributes>
-              </object>
-              <packing>
-                <property name="tab_fill">False</property>
-              </packing>
-            </child>
+            <property name="invisible_char">●</property>
+            <property name="activates_default">True</property>
+            <property name="truncate_multiline">True</property>
+            <property name="shadow_type">etched-out</property>
+            <property name="caps_lock_warning">False</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
           </object>
           <packing>
-            <property name="position">3</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
           </packing>
         </child>
       </object>
     </child>
+    <action-widgets>
+      <action-widget response="1">server_tab_entry_dialog_cancel_button</action-widget>
+      <action-widget response="0">server_tab_entry_dialog_accept_button</action-widget>
+    </action-widgets>
+  </object>
+  <object class="GtkImage" id="disconnect_button_image">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-close</property>
+    <property name="icon-size">1</property>
   </object>
   <object class="GtkWindow" id="server_tab_label_template">
+    <property name="can_focus">False</property>
     <property name="resizable">False</property>
     <child>
       <object class="GtkHBox" id="server_tab_label_hbox">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <child>
           <object class="GtkLabel" id="server_tab_label">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="track_visited_links">False</property>
           </object>
           <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -476,17 +141,13 @@
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="pack_type">end</property>
             <property name="position">1</property>
           </packing>
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkImage" id="disconnect_button_image">
-    <property name="visible">True</property>
-    <property name="stock">gtk-close</property>
-    <property name="icon-size">1</property>
   </object>
   <object class="GtkListStore" id="server_tab_channels_store">
     <columns>
@@ -498,102 +159,9 @@
       <column type="gchararray"/>
     </columns>
   </object>
-  <object class="GtkAction" id="action_away">
-    <property name="label">Away</property>
-    <property name="short_label">Away</property>
-    <signal name="activate" handler="action_away_cb"/>
-  </object>
-  <object class="GtkDialog" id="server_tab_entry_dialog">
-    <property name="title" translatable="yes">please insert data...</property>
-    <property name="modal">True</property>
-    <property name="window_position">center</property>
-    <property name="destroy_with_parent">True</property>
-    <property name="type_hint">normal</property>
-    <property name="deletable">False</property>
-    <child internal-child="vbox">
-      <object class="GtkVBox" id="server_tab_entry_vbox">
-        <property name="visible">True</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkEntry" id="server_tab_entry_dialog_entry">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="invisible_char">&#x25CF;</property>
-            <property name="activates_default">True</property>
-            <property name="truncate_multiline">True</property>
-            <property name="shadow_type">etched-out</property>
-            <property name="caps_lock_warning">False</property>
-          </object>
-          <packing>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="server_tab_entry_action_area">
-            <property name="visible">True</property>
-            <property name="homogeneous">True</property>
-            <property name="layout_style">end</property>
-            <child>
-              <object class="GtkButton" id="server_tab_entry_dialog_cancel_button">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="related_action">action_cancel</property>
-                <property name="use_action_appearance">True</property>
-                <property name="use_stock">True</property>
-                <property name="focus_on_click">False</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="pack_type">end</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="server_tab_entry_dialog_accept_button">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="can_default">True</property>
-                <property name="has_default">True</property>
-                <property name="receives_default">True</property>
-                <property name="related_action">action_accept</property>
-                <property name="use_action_appearance">True</property>
-                <property name="use_stock">True</property>
-                <property name="focus_on_click">False</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="pack_type">end</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-    <action-widgets>
-      <action-widget response="1">server_tab_entry_dialog_cancel_button</action-widget>
-      <action-widget response="0">server_tab_entry_dialog_accept_button</action-widget>
-    </action-widgets>
-  </object>
-  <object class="GtkAction" id="action_cancel">
-    <property name="name">Cancel</property>
-    <property name="label">Cancel</property>
-    <property name="short_label">Cancel</property>
-    <property name="stock_id">gtk-cancel</property>
-  </object>
-  <object class="GtkAction" id="action_accept">
-    <property name="name">Accept</property>
-    <property name="label">OK</property>
-    <property name="short_label">OK</property>
-    <property name="stock_id">gtk-ok</property>
+  <object class="GtkTextTagTable" id="server_tab_log_texttagtable"/>
+  <object class="GtkTextBuffer" id="server_tab_log_textbuffer">
+    <property name="tag_table">server_tab_log_texttagtable</property>
   </object>
   <object class="GtkListStore" id="server_tab_users_store">
     <columns>
@@ -613,7 +181,521 @@
       <column type="gchararray"/>
     </columns>
   </object>
-  <object class="GtkTextBuffer" id="server_tab_log_textbuffer">
-    <property name="tag_table">server_tab_log_texttagtable</property>
+  <object class="GtkWindow" id="server_tab_template">
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkVBox" id="server_tab_vbox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkHBox" id="server_tab_nick_chan_hbox">
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkFrame" id="server_tab_nick_frame">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label_xalign">0</property>
+                <property name="shadow_type">etched-out</property>
+                <child>
+                  <object class="GtkAlignment" id="server_tab_nick_alignment">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkHBox" id="server_tab_users_hbox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkEntry" id="server_tab_users_nick_entry">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="max_length">9</property>
+                            <property name="invisible_char">●</property>
+                            <property name="activates_default">True</property>
+                            <property name="width_chars">9</property>
+                            <property name="truncate_multiline">True</property>
+                            <property name="shadow_type">etched-out</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <signal name="focus-in-event" handler="nick_entry_kb_focused_cb" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="server_tab_users_nick_button">
+                            <property name="label">gtk-ok</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="can_default">True</property>
+                            <property name="receives_default">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                            <property name="focus_on_click">False</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkVSeparator" id="server_tab_users_vseparator">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkComboBox" id="server_tab_users_combobox">
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="can_focus">True</property>
+                            <property name="model">server_tab_users_store</property>
+                            <property name="has_frame">False</property>
+                            <property name="focus_on_click">False</property>
+                            <signal name="changed" handler="usersbox_changed_cb" swapped="no"/>
+                            <child>
+                              <object class="GtkCellRendererText" id="server_tab_users_cellrenderertext"/>
+                              <attributes>
+                                <attribute name="text">0</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="server_tab_users_refresh_button">
+                            <property name="label">gtk-refresh</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                            <property name="focus_on_click">False</property>
+                            <signal name="clicked" handler="refresh_users_clicked_cb" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">4</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child type="label">
+                  <object class="GtkLabel" id="server_tab_nick_label">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">nickname</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkFrame" id="server_tab_channels_frame">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label_xalign">0</property>
+                <property name="shadow_type">etched-out</property>
+                <child>
+                  <object class="GtkAlignment" id="server_tab_channels_alignment">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkHBox" id="server_tab_channels_hbox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkEntry" id="server_tab_channel_entry">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="max_length">200</property>
+                            <property name="invisible_char">●</property>
+                            <property name="activates_default">True</property>
+                            <property name="truncate_multiline">True</property>
+                            <property name="shadow_type">etched-out</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                            <signal name="focus-in-event" handler="join_entry_kb_focused_cb" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="server_tab_join_button">
+                            <property name="label">gtk-add</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="can_default">True</property>
+                            <property name="receives_default">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                            <property name="focus_on_click">False</property>
+                            <signal name="clicked" handler="join_clicked_cb" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkVSeparator" id="server_tab_channels_vseparator">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkComboBox" id="server_tab_channels_combobox">
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="can_focus">True</property>
+                            <property name="model">server_tab_channels_store</property>
+                            <property name="has_frame">False</property>
+                            <property name="focus_on_click">False</property>
+                            <signal name="changed" handler="channelbox_changed_cb" swapped="no"/>
+                            <child>
+                              <object class="GtkCellRendererText" id="server_tab_channels_cellrenderertext"/>
+                              <attributes>
+                                <attribute name="text">0</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="server_tab_channels_refresh_button">
+                            <property name="label">gtk-refresh</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                            <property name="focus_on_click">False</property>
+                            <signal name="clicked" handler="refresh_channels_clicked_cb" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">4</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child type="label">
+                  <object class="GtkLabel" id="server_tab_channels_label">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">channels</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkFrame" id="server_tab_user_mode_frame">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label_xalign">0</property>
+            <property name="shadow_type">etched-out</property>
+            <child>
+              <object class="GtkAlignment" id="server_tab_user_mode_alignment">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkHBox" id="server_tab_user_modes_hbox">
+                    <property name="visible">True</property>
+                    <property name="sensitive">False</property>
+                    <property name="can_focus">False</property>
+                    <property name="homogeneous">True</property>
+                    <child>
+                      <object class="GtkToggleButton" id="mode_notices_togglebutton">
+                        <property name="label" translatable="yes">notices</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="relief">none</property>
+                        <property name="focus_on_click">False</property>
+                        <signal name="toggled" handler="user_mode_toggled_cb" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToggleButton" id="mode_localoperator_togglebutton">
+                        <property name="label" translatable="yes">local operator</property>
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="relief">none</property>
+                        <property name="focus_on_click">False</property>
+                        <signal name="toggled" handler="user_mode_toggled_cb" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToggleButton" id="mode_operator_togglebutton">
+                        <property name="label" translatable="yes">operator</property>
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="relief">none</property>
+                        <property name="focus_on_click">False</property>
+                        <signal name="toggled" handler="user_mode_toggled_cb" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToggleButton" id="mode_restricted_togglebutton">
+                        <property name="label" translatable="yes">restricted</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="relief">none</property>
+                        <property name="focus_on_click">False</property>
+                        <signal name="toggled" handler="user_mode_toggled_cb" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToggleButton" id="mode_wallops_togglebutton">
+                        <property name="label" translatable="yes">wallops</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="relief">none</property>
+                        <property name="focus_on_click">False</property>
+                        <signal name="toggled" handler="user_mode_toggled_cb" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">4</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToggleButton" id="mode_invisible_togglebutton">
+                        <property name="label" translatable="yes">invisible</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="relief">none</property>
+                        <property name="focus_on_click">False</property>
+                        <signal name="toggled" handler="user_mode_toggled_cb" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">5</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToggleButton" id="mode_away_togglebutton">
+                        <property name="label" translatable="yes">away</property>
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="relief">none</property>
+                        <property name="focus_on_click">False</property>
+                        <signal name="toggled" handler="user_mode_toggled_cb" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">6</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="label">
+              <object class="GtkLabel" id="server_tab_user_mode_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">user mode</property>
+                <property name="use_markup">True</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkFrame" id="server_tab_tools_frame">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label_xalign">0</property>
+            <property name="shadow_type">etched-out</property>
+            <child>
+              <object class="GtkAlignment" id="server_tab_tools_alignment">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkHBox" id="server_tab_tools_hbox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkToggleButton" id="server_tab_tools_togglebutton">
+                        <property name="related_action">action_away</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="focus_on_click">False</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="label">
+              <object class="GtkLabel" id="server_tab_tools_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">tools</property>
+                <property name="use_markup">True</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkNotebook" id="server_tab_channel_tabs">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="show_border">False</property>
+            <property name="scrollable">True</property>
+            <property name="tab_border">0</property>
+            <property name="tab_hborder">0</property>
+            <property name="tab_vborder">0</property>
+            <property name="enable_popup">True</property>
+            <property name="homogeneous">True</property>
+            <signal name="switch-page" handler="switch_channel_cb" swapped="no"/>
+            <child>
+              <object class="GtkScrolledWindow" id="server_tab_log_scrolledwindow">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="events">GDK_EXPOSURE_MASK | GDK_STRUCTURE_MASK | GDK_SCROLL_MASK</property>
+                <property name="hscrollbar_policy">automatic</property>
+                <property name="vscrollbar_policy">automatic</property>
+                <property name="shadow_type">etched-out</property>
+                <child>
+                  <object class="GtkTextView" id="server_tab_log_textview">
+                    <property name="width_request">600</property>
+                    <property name="height_request">600</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="events">GDK_STRUCTURE_MASK | GDK_SCROLL_MASK</property>
+                    <property name="editable">False</property>
+                    <property name="wrap_mode">word</property>
+                    <property name="cursor_visible">False</property>
+                    <property name="buffer">server_tab_log_textbuffer</property>
+                    <property name="accepts_tab">False</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="tab">
+              <object class="GtkLabel" id="server_tab_log_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">server log</property>
+                <property name="track_visited_links">False</property>
+                <attributes>
+                  <attribute name="weight" value="semibold"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="tab_fill">False</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+      </object>
+    </child>
   </object>
 </interface>

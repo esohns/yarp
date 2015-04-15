@@ -1,7 +1,11 @@
 METASOURCES = AUTO
 
 ACLOCAL_AMFLAGS = -I m4
-AM_CPPFLAGS = -I$(srcdir)/../../common
+#  -I$(top_srcdir)/../../modules/ATCD/ACE
+AM_CPPFLAGS = \
+  -I$(top_srcdir)/../../ATCD/ACE \
+  -I$(top_srcdir)/../modules/libCommon/src \
+  -I$(top_srcdir)/../common
 
 SUBDIRS = scripts
 

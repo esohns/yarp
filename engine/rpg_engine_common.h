@@ -31,10 +31,9 @@
 #include "ace/Log_Msg.h"
 #include "ace/Time_Value.h"
 
-#include "net_configuration.h"
-#include "net_connection_manager_common.h"
+//#include "net_configuration.h"
 
-#include "net_client_iconnector.h"
+//#include "net_client_iconnector.h"
 
 #include "rpg_common_condition.h"
 //#include "rpg_common_incl.h"
@@ -226,11 +225,11 @@ typedef RPG_Engine_CombatantSequence_t::const_iterator RPG_Engine_CombatantSeque
 struct RPG_Engine_ClientNotificationParameters_t
 {
   RPG_Engine_EntityID_t entity_id;
-	RPG_Common_Condition  condition;
-	RPG_Map_Positions_t   positions;
-	RPG_Map_Position_t    previous_position;
-	unsigned char         visible_radius;
-	std::string           message;
+  RPG_Common_Condition  condition;
+  RPG_Map_Positions_t   positions;
+  RPG_Map_Position_t    previous_position;
+  unsigned char         visible_radius;
+  std::string           message;
 };
 //typedef std::vector<void*> RPG_Engine_ClientParameters_t;
 //typedef RPG_Engine_ClientParameters_t::iterator RPG_Engine_ClientParametersIterator_t;
@@ -240,10 +239,5 @@ typedef std::vector<unsigned int> RPG_Engine_Level2ExperienceList_t;
 typedef RPG_Engine_Level2ExperienceList_t::const_iterator RPG_Engine_Level2ExperienceListConstIterator_t;
 typedef std::map<unsigned char, RPG_Engine_Level2ExperienceList_t> RPG_Engine_CR2ExperienceMap_t;
 typedef RPG_Engine_CR2ExperienceMap_t::const_iterator RPG_Engine_CR2ExperienceMapConstIterator_t;
-
-/////////////////////////////////////////
-
-// *TODO*: move this somehwere else
-typedef NET_TCPCONNECTIONMANAGER_SINGLETON RPG_CONNECTIONMANAGER_SINGLETON;
 
 #endif

@@ -80,8 +80,9 @@ AC_SUBST(META_PACKAGE)
 AC_SUBST(CXXFLAGS)
 
 # checks for libraries
+dnl libgnomeui-2.0 >= 1.110.0
 PKG_CHECK_MODULES(pkg_libs, 
-                  libpng sdl SDL_ttf SDL_mixer xerces-c libglade-2.0 libgnomeui-2.0 >= 1.110.0 gmodule-export-2.0 gthread-2.0 gtk+-2.0)
+                  libpng sdl SDL_ttf SDL_mixer xerces-c libglade-2.0 gmodule-export-2.0 gthread-2.0 gtk+-2.0)
 dnl AC_SUBST(pkg_libs_CFLAGS)
 dnl AC_SUBST(pkg_libs_LIBS)
 

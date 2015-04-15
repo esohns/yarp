@@ -78,7 +78,7 @@ update_equipment (const RPG_Client_GTK_CBData_t& data_in)
   RPG_Player* player = dynamic_cast<RPG_Player*> (data_in.entity.character);
   ACE_ASSERT (player);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_in.GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_in.GTKState.gladeXML.end ());
@@ -1733,7 +1733,7 @@ idle_initialize_UI_cb (gpointer userData_in)
   // sanity check(s)
   ACE_ASSERT (data_p);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -2312,7 +2312,7 @@ idle_finalize_UI_cb (gpointer userData_in)
   // sanity check(s)
   ACE_ASSERT (data_p);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -2344,7 +2344,7 @@ about_clicked_GTK_cb (GtkWidget* widget_in,
   // sanity check(s)
   ACE_ASSERT (data_p);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -2407,7 +2407,7 @@ create_character_clicked_GTK_cb (GtkWidget* widget_in,
   // sanity check(s)
   ACE_ASSERT (data_p);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -2491,7 +2491,7 @@ drop_character_clicked_GTK_cb (GtkWidget* widget_in,
   // sanity check(s)
   ACE_ASSERT (data_p);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -2586,7 +2586,7 @@ load_character_clicked_GTK_cb (GtkWidget* widget_in,
   ACE_ASSERT (data_p->entityFilter);
   ACE_ASSERT (data_p->levelEngine);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -2602,7 +2602,7 @@ load_character_clicked_GTK_cb (GtkWidget* widget_in,
       RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(filechooser_dialog),
                                       ACE_TEXT(profiles_directory.c_str()));
-	// *TODO*: this crashes on WIN
+  // *TODO*: this crashes on WIN
   gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(filechooser_dialog),
                               data_p->entityFilter);
 
@@ -2709,7 +2709,7 @@ save_character_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT (data_p);
   ACE_ASSERT (data_p->entity.character);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -2780,7 +2780,7 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT (widget_in);
   ACE_ASSERT (data_p);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -2910,7 +2910,7 @@ character_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
   // sanity check(s)
   ACE_ASSERT (data_p);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -2977,7 +2977,7 @@ create_map_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT (data_p->levelEngine);
   ACE_ASSERT (data_p->clientEngine);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -3100,7 +3100,7 @@ drop_map_clicked_GTK_cb (GtkWidget* widget_in,
   ACE_ASSERT (data_p->levelEngine);
   ACE_ASSERT (data_p->clientEngine);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -3161,7 +3161,7 @@ load_map_clicked_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT (data_p->entityFilter);
   ACE_ASSERT (data_p->levelEngine);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -3259,7 +3259,7 @@ save_map_clicked_GTK_cb (GtkWidget* widget_in,
   ACE_ASSERT (data_p);
   ACE_ASSERT (data_p->levelEngine);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -3304,7 +3304,7 @@ map_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   ACE_ASSERT (data_p);
   ACE_ASSERT (data_p->levelEngine);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -3380,7 +3380,7 @@ map_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
   // sanity check(s)
   ACE_ASSERT (data_p);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -3430,7 +3430,7 @@ load_state_clicked_GTK_cb (GtkWidget* widget_in,
   ACE_ASSERT (data_p->levelEngine);
   ACE_ASSERT (data_p->savedStateFilter);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -3506,7 +3506,7 @@ save_state_clicked_GTK_cb (GtkWidget* widget_in,
   ACE_ASSERT (data_p);
   ACE_ASSERT (data_p->levelEngine);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -3580,7 +3580,7 @@ state_repository_combobox_changed_GTK_cb (GtkWidget* widget_in,
   ACE_ASSERT (data_p);
   ACE_ASSERT (data_p->levelEngine);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -3660,7 +3660,7 @@ state_repository_button_clicked_GTK_cb (GtkWidget* widget_in,
   // sanity check(s)
   ACE_ASSERT (data_p);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -3700,7 +3700,7 @@ join_game_clicked_GTK_cb (GtkWidget* widget_in,
   ACE_ASSERT (data_p->clientEngine);
   ACE_ASSERT (data_p->levelEngine);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -3835,7 +3835,7 @@ part_game_clicked_GTK_cb (GtkWidget* widget_in,
   ACE_ASSERT (data_p);
   ACE_ASSERT (data_p->levelEngine);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
@@ -3929,7 +3929,7 @@ equip_clicked_GTK_cb (GtkWidget* widget_in,
   RPG_Player* player = dynamic_cast<RPG_Player*> (data_p->entity.character);
   ACE_ASSERT (player);
 
-  Common_UI_GladeXMLsIterator_t iterator =
+  Common_UI_GladeXMLsConstIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());

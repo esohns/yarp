@@ -221,8 +221,8 @@ do_printUsage(const std::string& programName_in)
             << path
             << ACE_TEXT("\"]")
             << std::endl;
-	path = data_path;
-	path += RPG_Player_Common_Tools::getPlayerProfilesDirectory();
+  path = data_path;
+  path += RPG_Player_Common_Tools::getPlayerProfilesDirectory();
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_NAME));
   path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
@@ -1301,7 +1301,7 @@ ACE_TMAIN (int argc_in,
     // try fallback
     schema_repository.clear ();
   } // end IF
- 
+
   // step1c: initialize logging and/or tracing
   RPG_Client_GTK_CBData_t user_data;
   RPG_Client_Logger logger (&user_data.logStack,
@@ -1450,7 +1450,6 @@ ACE_TMAIN (int argc_in,
                                            argv_in);
   COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (argc_in,
                                                             argv_in,
-                                                            UI_file,
                                                             &gtk_state,
                                                             &ui_definition);
 
