@@ -37,7 +37,9 @@
 #include "common_file_tools.h"
 #include "common_defines.h"
 
+#ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
+#endif
 
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"

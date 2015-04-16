@@ -44,6 +44,7 @@
 #include "common_file_tools.h"
 #include "common_tools.h"
 
+//#include "common_ui_defines.h"
 #include "common_ui_glade_definition.h"
 #include "common_ui_gtk_manager.h"
 
@@ -746,6 +747,7 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
          const std::string& schemaRepository_in,
          Common_UI_GladeDefinition& UIDefinition_in,
          RPG_Client_GTK_CBData_t& GTKUserData_in,
+         const std::string& UIDefinitionFile_in,
          bool skipIntro_in,
          bool debug_in)
 {
@@ -1007,6 +1009,12 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
 
   // step6: dispatch UI events
   // step6a: start GTK event loop
+  GTKUserData_in.GTKState.initializationHook = idle_initialize_UI_cb;
+  GTKUserData_in.GTKState.finalizationHook = idle_finalize_UI_cb;
+  GTKUserData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
+    std::make_pair (UIDefinitionFile_in, static_cast<GladeXML*> (NULL));
+  GTKUserData_in.GTKState.userData = &GTKUserData_in;
+
   COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start ();
   if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
   {
@@ -1879,9 +1887,6 @@ ACE_TMAIN (int argc_in,
 
   RPG_Client_GTK_CBData_t GTK_user_data;
 
-  GTK_user_data.GTKState.initializationHook = idle_initialize_UI_cb;
-  GTK_user_data.GTKState.finalizationHook = idle_finalize_UI_cb;
-
   GTK_user_data.levelMetadata.name                 =
       ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME);
   //
@@ -1962,7 +1967,7 @@ ACE_TMAIN (int argc_in,
   configuration.num_dispatch_threads = num_dispatch_threads;
 
   // *** UI ***
-  configuration.glade_file           = UI_file;
+  //configuration.glade_file           = UI_file;
 
   // *** input ***
   configuration.input_configuration.use_UNICODE              = true;
@@ -2118,7 +2123,6 @@ ACE_TMAIN (int argc_in,
   } // end IF
 
   // step2b: init GLIB / G(D|T)K[+] / GNOME
-  GTK_user_data.GTKState.userData = &GTK_user_data;
   Common_UI_GladeDefinition ui_definition (argc_in,
                                            argv_in);
   COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (argc_in,
@@ -2133,6 +2137,7 @@ ACE_TMAIN (int argc_in,
            schema_repository,
            ui_definition,
            GTK_user_data,
+           UI_file,
            skip_intro,
            debug);
   timer.stop ();

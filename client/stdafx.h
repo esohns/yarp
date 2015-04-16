@@ -32,7 +32,7 @@
 #include <iostream>
 
 // Local Library Header Files
-#include "glade/glade.h"
+//#include "glade/glade.h"
 #include "gtk/gtk.h"
 #include "SDL.h"
 #include "SDL_ttf.h"

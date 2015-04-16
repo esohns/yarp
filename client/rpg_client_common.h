@@ -135,7 +135,7 @@ struct RPG_Client_Configuration_t
   // *** reactor ***
   unsigned int                          num_dispatch_threads; // 1: don't use a threadpool
   // *** UI ***
-  std::string                           glade_file;
+  //std::string                           glade_file;
   // *** input ***
   RPG_Client_SDL_InputConfiguration_t   input_configuration;
   // *** sound ***

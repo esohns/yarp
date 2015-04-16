@@ -19,11 +19,7 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-#if defined _MSC_VER
-#include "build/XML2CppCode-config.h"
-#else
-//// *TODO*: leave as-is for now (see Yarp/configure.ac)
-//#include "config.h"
+#ifdef HAVE_CONFIG_H
 #include "XML2CppCode-config.h"
 #endif
 

@@ -99,37 +99,37 @@ idle_initialize_client_UI_cb (gpointer userData_in)
                                          ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_TEXTVIEW_NAME)));
   ACE_ASSERT (view);
   gtk_text_view_set_buffer (view, buffer);
-  PangoFontDescription* font_description =
-    pango_font_description_from_string (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_FONTDESCRIPTION));
-  if (!font_description)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to pango_font_description_from_string(\"%s\"): \"%m\", aborting\n"),
-                ACE_TEXT (NET_UI_LOG_FONTDESCRIPTION)));
-    return FALSE; // G_SOURCE_REMOVE
-  } // end IF
-  // apply font
-  GtkRcStyle* rc_style = gtk_rc_style_new ();
-  if (!rc_style)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to gtk_rc_style_new(): \"%m\", aborting\n")));
-    return FALSE; // G_SOURCE_REMOVE
-  } // end IF
-  rc_style->font_desc = font_description;
-  GdkColor base_colour, text_colour;
-  gdk_color_parse (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_BASE),
-                   &base_colour);
-  rc_style->base[GTK_STATE_NORMAL] = base_colour;
-  gdk_color_parse (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_TEXT),
-                   &text_colour);
-  rc_style->text[GTK_STATE_NORMAL] = text_colour;
-  rc_style->color_flags[GTK_STATE_NORMAL] =
-    static_cast<GtkRcFlags> (GTK_RC_BASE |
-                             GTK_RC_TEXT);
-  gtk_widget_modify_style (GTK_WIDGET (view),
-                           rc_style);
-  gtk_rc_style_unref (rc_style);
+  //PangoFontDescription* font_description =
+  //  pango_font_description_from_string (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_FONTDESCRIPTION));
+  //if (!font_description)
+  //{
+  //  ACE_DEBUG ((LM_ERROR,
+  //              ACE_TEXT ("failed to pango_font_description_from_string(\"%s\"): \"%m\", aborting\n"),
+  //              ACE_TEXT (NET_UI_LOG_FONTDESCRIPTION)));
+  //  return FALSE; // G_SOURCE_REMOVE
+  //} // end IF
+  //// apply font
+  //GtkRcStyle* rc_style = gtk_rc_style_new ();
+  //if (!rc_style)
+  //{
+  //  ACE_DEBUG ((LM_ERROR,
+  //              ACE_TEXT ("failed to gtk_rc_style_new(): \"%m\", aborting\n")));
+  //  return FALSE; // G_SOURCE_REMOVE
+  //} // end IF
+  //rc_style->font_desc = font_description;
+  //GdkColor base_colour, text_colour;
+  //gdk_color_parse (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_BASE),
+  //                 &base_colour);
+  //rc_style->base[GTK_STATE_NORMAL] = base_colour;
+  //gdk_color_parse (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_TEXT),
+  //                 &text_colour);
+  //rc_style->text[GTK_STATE_NORMAL] = text_colour;
+  //rc_style->color_flags[GTK_STATE_NORMAL] =
+  //  static_cast<GtkRcFlags> (GTK_RC_BASE |
+  //                           GTK_RC_TEXT);
+  //gtk_widget_modify_style (GTK_WIDGET (view),
+  //                         rc_style);
+  //gtk_rc_style_unref (rc_style);
 
   //  GtkTextIter iterator;
   //  gtk_text_buffer_get_end_iter(buffer,
@@ -277,37 +277,37 @@ idle_initialize_server_UI_cb (gpointer userData_in)
   //                              &iterator,
   //                              TRUE);
   g_object_unref (buffer);
-  PangoFontDescription* font_description =
-    pango_font_description_from_string (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_FONTDESCRIPTION));
-  if (!font_description)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to pango_font_description_from_string(\"%s\"): \"%m\", aborting\n"),
-                ACE_TEXT (NET_UI_LOG_FONTDESCRIPTION)));
-    return FALSE; // G_SOURCE_REMOVE
-  } // end IF
-  // apply font
-  GtkRcStyle* rc_style = gtk_rc_style_new ();
-  if (!rc_style)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to gtk_rc_style_new(): \"%m\", aborting\n")));
-    return FALSE; // G_SOURCE_REMOVE
-  } // end IF
-  rc_style->font_desc = font_description;
-  GdkColor base_colour, text_colour;
-  gdk_color_parse (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_BASE),
-                   &base_colour);
-  rc_style->base[GTK_STATE_NORMAL] = base_colour;
-  gdk_color_parse (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_TEXT),
-                   &text_colour);
-  rc_style->text[GTK_STATE_NORMAL] = text_colour;
-  rc_style->color_flags[GTK_STATE_NORMAL] =
-    static_cast<GtkRcFlags>(GTK_RC_BASE |
-    GTK_RC_TEXT);
-  gtk_widget_modify_style (GTK_WIDGET (view),
-                           rc_style);
-  gtk_rc_style_unref (rc_style);
+  //PangoFontDescription* font_description =
+  //  pango_font_description_from_string (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_FONTDESCRIPTION));
+  //if (!font_description)
+  //{
+  //  ACE_DEBUG ((LM_ERROR,
+  //              ACE_TEXT ("failed to pango_font_description_from_string(\"%s\"): \"%m\", aborting\n"),
+  //              ACE_TEXT (NET_UI_LOG_FONTDESCRIPTION)));
+  //  return FALSE; // G_SOURCE_REMOVE
+  //} // end IF
+  //// apply font
+  //GtkRcStyle* rc_style = gtk_rc_style_new ();
+  //if (!rc_style)
+  //{
+  //  ACE_DEBUG ((LM_ERROR,
+  //              ACE_TEXT ("failed to gtk_rc_style_new(): \"%m\", aborting\n")));
+  //  return FALSE; // G_SOURCE_REMOVE
+  //} // end IF
+  //rc_style->font_desc = font_description;
+  //GdkColor base_colour, text_colour;
+  //gdk_color_parse (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_BASE),
+  //                 &base_colour);
+  //rc_style->base[GTK_STATE_NORMAL] = base_colour;
+  //gdk_color_parse (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_TEXT),
+  //                 &text_colour);
+  //rc_style->text[GTK_STATE_NORMAL] = text_colour;
+  //rc_style->color_flags[GTK_STATE_NORMAL] =
+  //  static_cast<GtkRcFlags>(GTK_RC_BASE |
+  //  GTK_RC_TEXT);
+  //gtk_widget_modify_style (GTK_WIDGET (view),
+  //                         rc_style);
+  //gtk_rc_style_unref (rc_style);
 
   // schedule asynchronous updates of the log view
   guint event_source_id = g_timeout_add_seconds (1,

@@ -685,7 +685,7 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   // step5c: connect immediately ?
   if (UIDefinitionFile_in.empty () && (connectionInterval_in == 0))
   {
-    bool result = connector_p->connect (peer_address);
+    bool result_2 = connector_p->connect (peer_address);
     if (!useReactor_in)
     {
       ACE_Time_Value delay (1, 0);
@@ -694,13 +694,13 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
         result = false;
     } // end IF
 
-    if (!result)
+    if (!result_2)
     {
       char buffer[BUFSIZ];
       ACE_OS::memset (buffer, 0, sizeof (buffer));
-      int result_2 = peer_address.addr_to_string (buffer,
-                                                  sizeof (buffer));
-      if (result_2 == -1)
+      result = peer_address.addr_to_string (buffer,
+                                            sizeof (buffer));
+      if (result == -1)
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("failed to ACE_INET_Addr::addr_to_string: \"%m\", continuing\n")));
       ACE_DEBUG ((LM_ERROR,

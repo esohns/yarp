@@ -67,7 +67,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\include;$(ProjectDir)..\..\chance\dice;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\Yarp\include;$(ProjectDir)..\..\chance\dice;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_COMMON_BUILD_DLL;RPG_DICE_HAS_DLL;HAVE_CONFIG_H;_SCL_SECURE_NO_WARNINGS;SECURITY_WIN32;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <PrecompiledHeader>Use</PrecompiledHeader>

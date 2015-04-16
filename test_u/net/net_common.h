@@ -26,9 +26,6 @@
 
 #include "ace/Synch.h"
 
-#include "glade/glade.h"
-#include "gtk/gtk.h"
-
 #include "common_ui_common.h"
 
 #include "net_stream_common.h"

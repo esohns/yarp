@@ -21,48 +21,30 @@
 
 #include "XML_handler.h"
 
-// *NOTE*: need this to import correct VERSION !
-#ifdef HAVE_CONFIG_H
-#if defined _MSC_VER
-#include "build/XML2CppCode-config.h"
-#else
-//// *TODO*: leave as-is for now (see Yarp/configure.ac)
-//#include "config.h"
-#include "XML2CppCode-config.h"
-#endif
-#endif
-
-#include "xml2cppcode.h"
-#include "handle_xmlchoice.h"
-#include "handle_xmlenumeration.h"
-#include "handle_xmlsequence.h"
-#include "handle_xmlstruct.h"
-#include "handle_xmlunion.h"
-
-#include "xercesc/util/XMLUniDefs.hpp"
-#include "xercesc/util/OutOfMemoryException.hpp"
-#include "xercesc/sax2/Attributes.hpp"
+#include <algorithm>
+#include <functional>
+#include <locale>
+#include <sstream>
 
 #include "ace/ACE.h"
 #include "ace/OS.h"
 #include "ace/OS_Memory.h"
 #include "ace/Log_Msg.h"
 
-#include <algorithm>
-#include <sstream>
-#include <locale>
-#include <functional>
+#include "xercesc/sax2/Attributes.hpp"
+#include "xercesc/util/OutOfMemoryException.hpp"
+#include "xercesc/util/XMLUniDefs.hpp"
 
-// *NOTE*: need this to import correct PACKAGE_STRING !
 #ifdef HAVE_CONFIG_H
-#if defined _MSC_VER
-#include "build/XML2CppCode-config.h"
-#else
-//// *TODO*: leave as-is for now (see Yarp/configure.ac)
-//#include "config.h"
 #include "XML2CppCode-config.h"
 #endif
-#endif
+
+#include "handle_xmlchoice.h"
+#include "handle_xmlenumeration.h"
+#include "handle_xmlsequence.h"
+#include "handle_xmlstruct.h"
+#include "handle_xmlunion.h"
+#include "xml2cppcode.h"
 
 XML_Handler::XML_Handler(const std::string& emitClassQualifiers_in,
                          const bool& emitStringConversionUtilities_in,

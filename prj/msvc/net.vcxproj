@@ -94,6 +94,7 @@
     <ClCompile Include="..\..\net\stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\net\rpg_net_common.h" />
     <ClInclude Include="..\..\net\rpg_net_common_tools.h" />
     <ClInclude Include="..\..\net\rpg_net_defines.h" />
     <ClInclude Include="..\..\net\rpg_net_eventhandler.h" />
