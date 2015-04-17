@@ -66,7 +66,6 @@
 #include "rpg_common_macros.h"
 #include "rpg_common_tools.h"
 
-//#include "rpg_net_common_tools.h"
 #include "rpg_net_defines.h"
 #include "rpg_net_module_eventhandler.h"
 #include "rpg_net_stream_messageallocator.h"
@@ -97,7 +96,7 @@ do_printUsage (const std::string& programName_in)
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
                                                           true);
 #if defined (DEBUG_DEBUGGER)
-  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
 #endif // #ifdef DEBUG_DEBUGGER
 
   std::cout << ACE_TEXT("usage: ")
@@ -770,8 +769,7 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
               ACE_TEXT ("finished event dispatch...\n")));
 
   // step7: clean up
-  // *NOTE*: any action timer has been cancelled, connections have been
-  // aborted and any GTK event dispatcher has returned by now...
+  // *NOTE*: any action timer has been cancelled, connections have been aborted
   Common_Tools::finalizeSignals (signalSet_inout,
                                  useReactor_in,
                                  previousSignalActions_inout);
@@ -783,7 +781,7 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
 //				 iterator++)
 //			g_source_remove(*iterator);
 //	} // end lock scope
-//  RPG_CLIENT_GTK_MANAGER_SINGLETON::instance()->stop();
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
   COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
   delete connector_p;
 

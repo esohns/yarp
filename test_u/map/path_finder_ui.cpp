@@ -215,9 +215,12 @@ do_printUsage (const std::string& programName_in)
 bool
 do_processArguments (const int argc_in,
                      ACE_TCHAR** argv_in, // cannot be const...
+                     std::string& graphicsDirectory_out,
                      std::string& playerProfile_out,
                      std::string& graphicsDictionary_out,
                      std::string& itemDictionary_out,
+                     std::string& magicDictionary_out,
+                     std::string& monsterDictionary_out,
                      std::string& floorPlan_out,
                      bool& traceInformation_out,
                      bool& printVersionAndExit_out)
@@ -235,11 +238,22 @@ do_processArguments (const int argc_in,
   data_path = Common_File_Tools::getWorkingDirectory ();
 #endif
 
-  // init results
+  // initialize results
+  graphicsDirectory_out = data_path;
+  graphicsDirectory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined (DEBUG_DEBUGGER)
+  graphicsDirectory_out += ACE_TEXT_ALWAYS_CHAR ("graphics");
+  graphicsDirectory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  graphicsDirectory_out += ACE_TEXT_ALWAYS_CHAR ("data");
+#else
+  graphicsDirectory_out += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DATA_SUB);
+#endif
+
   playerProfile_out = data_path;
   playerProfile_out += RPG_Player_Common_Tools::getPlayerProfilesDirectory ();
   playerProfile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  playerProfile_out += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
+  playerProfile_out +=
+    RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
   playerProfile_out += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT);
 
   graphicsDictionary_out = configuration_path;
@@ -258,6 +272,9 @@ do_processArguments (const int argc_in,
 #endif
   itemDictionary_out += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
 
+  magicDictionary_out.clear ();
+  monsterDictionary_out.clear ();
+
   floorPlan_out = data_path;
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
@@ -269,7 +286,8 @@ do_processArguments (const int argc_in,
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  floorPlan_out += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
+  floorPlan_out +=
+    RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
   floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
 
   traceInformation_out    = false;
@@ -277,16 +295,22 @@ do_processArguments (const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("f:g:i:p:tv"));
+                             ACE_TEXT("d:f:g:i:m:n:p:tv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
   {
     switch (option)
     {
+      case 'd':
+      {
+        graphicsDirectory_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
+
+        break;
+      }
       case 'f':
       {
-        playerProfile_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
+        playerProfile_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
 
         break;
       }
@@ -299,6 +323,18 @@ do_processArguments (const int argc_in,
       case 'i':
       {
         itemDictionary_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
+
+        break;
+      }
+      case 'm':
+      {
+        magicDictionary_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
+
+        break;
+      }
+      case 'n':
+      {
+        monsterDictionary_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
 
         break;
       }
@@ -434,23 +470,27 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
 {
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
-  std::string empty;
   // step0: init: random seed, string conversion facilities, ...
   RPG_Engine_Common_Tools::init (schemaRepository_in,
                                  configuration_in.magic_dictionary,
                                  configuration_in.item_dictionary,
-                                 empty);
-  RPG_Client_Common_Tools::init (configuration_in.input_configuration,
-                                 configuration_in.audio_configuration.SDL_configuration,
-                                 configuration_in.audio_configuration.repository,
-                                 configuration_in.audio_configuration.use_CD,
-                                 RPG_SOUND_DEF_CACHESIZE,
-                                 configuration_in.audio_configuration.mute,
-                                 configuration_in.audio_configuration.dictionary,
-                                 configuration_in.graphics_directory,
-                                 RPG_CLIENT_GRAPHICS_DEF_CACHESIZE,
-                                 configuration_in.graphics_dictionary,
-                                 false);
+                                 configuration_in.monster_dictionary);
+  if (!RPG_Client_Common_Tools::initialize (configuration_in.input_configuration,
+                                            configuration_in.audio_configuration.SDL_configuration,
+                                            configuration_in.audio_configuration.repository,
+                                            configuration_in.audio_configuration.use_CD,
+                                            RPG_SOUND_DEF_CACHESIZE,
+                                            configuration_in.audio_configuration.mute,
+                                            configuration_in.audio_configuration.dictionary,
+                                            configuration_in.graphics_directory,
+                                            RPG_CLIENT_GRAPHICS_DEF_CACHESIZE,
+                                            configuration_in.graphics_dictionary,
+                                            true))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Client_Common_Tools::initialize(): \"%m\", returning\n")));
+    return;
+  } // end IF
 
   // step1: load floor plan
   RPG_Engine_Level_t level;
@@ -940,6 +980,8 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
 
   // done handling UI events
 
+  RPG_Client_Common_Tools::finalize ();
+
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("finished working...\n")));
 } // end do_work
@@ -1027,12 +1069,24 @@ ACE_TMAIN (int argc_in,
   data_path = Common_File_Tools::getWorkingDirectory ();
 #endif
 
-  // step1: init
-  // step1a set defaults
+  // step1: initialize configuration
+
+  // step1a: set defaults
+  std::string graphics_directory = data_path;
+  graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#if defined (DEBUG_DEBUGGER)
+  graphics_directory += ACE_TEXT_ALWAYS_CHAR ("graphics");
+  graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  graphics_directory += ACE_TEXT_ALWAYS_CHAR ("data");
+#else
+  graphics_directory += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DATA_SUB);
+#endif
+
   std::string player_profile = data_path;
   player_profile += RPG_Player_Common_Tools::getPlayerProfilesDirectory ();
   player_profile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  player_profile += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
+  player_profile +=
+    RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
   player_profile += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT);
 
   std::string graphics_dictionary = configuration_path;
@@ -1062,42 +1116,30 @@ ACE_TMAIN (int argc_in,
   floor_plan += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  floor_plan += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
+  floor_plan +=
+    RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
   floor_plan += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
-
-  // sanity check
-  if (!Common_File_Tools::isReadable (player_profile))
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("invalid player profile (was: \"%s\"), aborting\n"),
-                ACE_TEXT (player_profile.c_str ())));
-
-    // clean up
-    // *PORTABILITY*: on Windows, must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini () == -1)
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
-
-    return EXIT_FAILURE;
-  } // end IF
 
   bool trace_information          = false;
   bool print_version_and_exit     = false;
 
   // step1ba: parse/process/validate configuration
+  std::string magic_dictionary;
+  std::string monster_dictionary;
   if (!do_processArguments (argc_in,
                             argv_in,
+                            graphics_directory,
                             player_profile,
                             graphics_dictionary,
                             item_dictionary,
+                            magic_dictionary,
+                            monster_dictionary,
                             floor_plan,
                             trace_information,
                             print_version_and_exit))
   {
     // make 'em learn...
-    do_printUsage (std::string (ACE::basename (argv_in[0])));
+    do_printUsage (ACE::basename (argv_in[0]));
 
     // clean up
     // *PORTABILITY*: on Windows, must fini ACE...
@@ -1116,11 +1158,8 @@ ACE_TMAIN (int argc_in,
       !Common_File_Tools::isReadable (item_dictionary)     ||
       !Common_File_Tools::isReadable (floor_plan))
   {
-    ACE_DEBUG ((LM_DEBUG,
-                ACE_TEXT ("invalid argument(s), aborting\n")));
-
     // make 'em learn...
-    do_printUsage (std::string (ACE::basename (argv_in[0])));
+    do_printUsage (ACE::basename (argv_in[0]));
 
     // clean up
     // *PORTABILITY*: on Windows, must fini ACE...
@@ -1190,6 +1229,7 @@ ACE_TMAIN (int argc_in,
 
   // step1db: initialize configuration object
   RPG_Client_Configuration_t configuration;
+  ACE_OS::memset (&configuration, 0, sizeof (configuration));
 
   // *** reactor ***
   configuration.num_dispatch_threads = 0;
@@ -1228,26 +1268,17 @@ ACE_TMAIN (int argc_in,
   configuration.video_configuration.use_OpenGL = RPG_CLIENT_VIDEO_DEF_OPENGL;
   configuration.video_configuration.full_screen =
    RPG_CLIENT_VIDEO_DEF_FULLSCREEN;
-  configuration.graphics_directory = data_path;
-  configuration.graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  configuration.graphics_directory += ACE_TEXT_ALWAYS_CHAR ("graphics");
-  configuration.graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  configuration.graphics_directory += ACE_TEXT_ALWAYS_CHAR ("data");
-#else
-  configuration.graphics_directory +=
-   ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_DATA_SUB);
-#endif
+  configuration.graphics_directory = graphics_directory;
   configuration.graphics_dictionary = graphics_dictionary;
 
   // *** magic ***
-  configuration.magic_dictionary.clear ();
+  configuration.magic_dictionary = magic_dictionary;
 
   // *** item ***
   configuration.item_dictionary = item_dictionary;
 
   // *** monster ***
-  configuration.monster_dictionary.clear ();
+  configuration.monster_dictionary = monster_dictionary;
 
   // *** map ***
   configuration.map_configuration.min_room_size =

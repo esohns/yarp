@@ -64,7 +64,8 @@ update_display_cb(gpointer userData_in)
 }
 #endif /* __cplusplus */
 
-IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkTextView* view_in)
+IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler (Common_UI_GTKState* GTKState_in,
+                                                              GtkTextView* view_in)
  : CBData_ ()
  , displayQueue_ ()
  , lock_ ()
@@ -73,23 +74,25 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler(GtkTextView* view_i
  , parent_ (NULL)
  , view_ (view_in)
 {
-  RPG_TRACE(ACE_TEXT("IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler"));
+  RPG_TRACE (ACE_TEXT ("IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler"));
 
   // sanity check(s)
-  ACE_ASSERT(view_);
+  ACE_ASSERT (GTKState_in);
+  ACE_ASSERT (view_in);
 
-  // init cb data
-  CBData_.id.clear();
+  // initialize cb data
+  CBData_.id.clear ();
+  CBData_.GTKState = GTKState_in;
   CBData_.controller = NULL;
 
   // setup auto-scrolling
   GtkTextIter iterator;
-  gtk_text_buffer_get_end_iter(gtk_text_view_get_buffer(view_),
-                               &iterator);
-  gtk_text_buffer_create_mark(gtk_text_view_get_buffer(view_),
-                              ACE_TEXT_ALWAYS_CHAR("scroll"),
-                              &iterator,
-                              TRUE);
+  gtk_text_buffer_get_end_iter (gtk_text_view_get_buffer (view_),
+                                &iterator);
+  gtk_text_buffer_create_mark (gtk_text_view_get_buffer (view_),
+                               ACE_TEXT_ALWAYS_CHAR ("scroll"),
+                               &iterator,
+                               TRUE);
 }
 
 IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler (Common_UI_GTKState* GTKState_in,
@@ -109,6 +112,7 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler (Common_UI_GTKState
   RPG_TRACE (ACE_TEXT ("IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler"));
 
   // sanity check(s)
+  ACE_ASSERT (GTKState_in);
   ACE_ASSERT(connection_in);
   ACE_ASSERT(controller_in);
   ACE_ASSERT (!id_in.empty ());
@@ -121,7 +125,8 @@ IRC_Client_GUI_MessageHandler::IRC_Client_GUI_MessageHandler (Common_UI_GTKState
   } // end IF
   ACE_ASSERT (parent_in);
 
-  // init cb data
+  // initialize cb data
+  CBData_.GTKState = GTKState_in;
   CBData_.connection = connection_in;
   CBData_.id = id_in;
   CBData_.controller = controller_in;

@@ -49,6 +49,7 @@
 #include "rpg_map_level.h"
 
 #include "rpg_engine_defines.h"
+#include "rpg_engine_level.h"
 
 #define MAP_PARSER_DEF_DEBUG_SCANNER false
 #define MAP_PARSER_DEF_DEBUG_PARSER  false
@@ -219,18 +220,48 @@ do_processArguments (const int argc_in,
 }
 
 void
-do_work (bool debugScanner_in,
+do_work (const std::string& schemaRepository_in,
+         bool debugScanner_in,
          bool debugParser_in,
          const std::string& mapFile_in)
 {
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
-  // step1: load map
-  RPG_Map_t map;
-  RPG_Map_Level::load (mapFile_in, map);
+  // step0: initialize framework
+  RPG_Common_Tools::initStringConversionTables ();
 
-  // debug info
-  RPG_Map_Level::print (map);
+  // step1: load map / level
+  std::string extension = ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
+  bool load_level =
+    (mapFile_in.find (extension) == (mapFile_in.size () - extension.size ()));
+  if (load_level)
+  {
+    RPG_Engine_Level_t level;
+    if (!RPG_Engine_Level::load (mapFile_in,
+                                 schemaRepository_in,
+                                 level))
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to RPG_Engine_Level::load(\"%s\"): \"%m\", returning\n"),
+                  ACE_TEXT (mapFile_in.c_str ())));
+      return;
+    } // end IF
+
+    RPG_Engine_Level::print (level);
+  } // end IF
+  else
+  {
+    RPG_Map_t map;
+    if (!RPG_Map_Level::load (mapFile_in, map))
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to RPG_Map_Level::load(\"%s\"): \"%m\", returning\n"),
+                  ACE_TEXT (mapFile_in.c_str ())));
+      return;
+    } // end IF
+
+    RPG_Map_Level::print (map);
+  } // end ELSE
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("finished working...\n")));
@@ -260,7 +291,6 @@ do_printVersion(const std::string& programName_in)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to convert: \"%m\", aborting\n")));
-
     return;
   } // end ELSE
   if (version_number << ACE::minor_version())
@@ -297,10 +327,14 @@ ACE_TMAIN (int argc_in,
 {
   RPG_TRACE (ACE_TEXT ("::main"));
 
+  std::string configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
   std::string data_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
                                                           false);
 #if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
   data_path = Common_File_Tools::getWorkingDirectory ();
 #endif
 
@@ -324,6 +358,14 @@ ACE_TMAIN (int argc_in,
                                        : ACE_TEXT_ALWAYS_CHAR (RPG_MAP_DEF_MAP_FILE));
   map_file += (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT)
                                        : ACE_TEXT_ALWAYS_CHAR (RPG_MAP_FILE_EXT));
+
+  std::string schema_directory = configuration_path;
+#if defined (DEBUG_DEBUGGER)
+  schema_directory = Common_File_Tools::getWorkingDirectory ();
+  schema_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_directory += ACE_TEXT_ALWAYS_CHAR ("engine");
+#endif
+
   bool trace_information      = false;
   bool print_version_and_exit = false;
 
@@ -337,7 +379,7 @@ ACE_TMAIN (int argc_in,
                             print_version_and_exit))
   {
     // make 'em learn...
-    do_printUsage (std::string (ACE::basename (argv_in[0])));
+    do_printUsage (ACE::basename (argv_in[0]));
 
     // clean up
     // *PORTABILITY*: on Windows, need to fini ACE...
@@ -351,13 +393,11 @@ ACE_TMAIN (int argc_in,
   } // end IF
 
   // step1bb: validate arguments
-  if (!Common_File_Tools::isReadable (map_file))
+  if (!Common_File_Tools::isReadable (map_file) ||
+      !Common_File_Tools::isDirectory (schema_directory))
   {
-    ACE_DEBUG ((LM_DEBUG,
-                ACE_TEXT ("invalid argument(s), aborting\n")));
-
     // make 'em learn...
-    do_printUsage (std::string (ACE::basename (argv_in[0])));
+    do_printUsage (ACE::basename (argv_in[0]));
 
     // clean up
     // *PORTABILITY*: on Windows, need to fini ACE...
@@ -396,7 +436,7 @@ ACE_TMAIN (int argc_in,
   // step1d: handle specific program modes
   if (print_version_and_exit)
   {
-    do_printVersion (std::string (ACE::basename (argv_in[0])));
+    do_printVersion (ACE::basename (argv_in[0]));
 
     // clean up
     // *PORTABILITY*: on Windows, need to fini ACE...
@@ -412,7 +452,8 @@ ACE_TMAIN (int argc_in,
   ACE_High_Res_Timer timer;
   timer.start ();
   // step2: do actual work
-  do_work (debug_scanner,
+  do_work (schema_directory,
+           debug_scanner,
            debug_parser,
            map_file);
   timer.stop ();

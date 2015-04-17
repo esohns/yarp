@@ -19,11 +19,6 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-// *NOTE*: work around quirky MSVC...
-#ifdef _MSC_VER
-#define NOMINMAX
-#endif
-
 #include <iostream>
 #include <set>
 #include <sstream>
@@ -365,14 +360,14 @@ do_processArguments(const int argc_in,
   } // end WHILE
 
   if (default_output_path == outputFile_out)
-	{
-		outputFile_out +=
-				(level_out ? RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME))
-									 : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP_FILE));
-		outputFile_out +=
-				(level_out ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
-									 : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT));
-	} // end IF
+  {
+    outputFile_out +=
+      (level_out ? RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME))
+                 : ACE_TEXT_ALWAYS_CHAR (RPG_MAP_DEF_MAP_FILE));
+    outputFile_out +=
+      (level_out ? ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT)
+                 : ACE_TEXT_ALWAYS_CHAR (RPG_MAP_FILE_EXT));
+  } // end IF
 
   return true;
 }
@@ -390,7 +385,7 @@ do_work (const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
   RPG_Dice::init ();
   RPG_Dice_Common_Tools::initStringConversionTables ();
   RPG_Common_Tools::initStringConversionTables ();
-  RPG_Graphics_Common_Tools::preInit ();
+  RPG_Graphics_Common_Tools::preInitialize ();
 
   // step2: generate level data
   RPG_Engine_Level_t level;

@@ -21,35 +21,36 @@
 #ifndef RPG_CLIENT_IWINDOW_LEVEL_H
 #define RPG_CLIENT_IWINDOW_LEVEL_H
 
-#include "rpg_client_iwindow.h"
-
-#include "rpg_graphics_floorstyle.h"
-#include "rpg_graphics_edgestyle.h"
-#include "rpg_graphics_wallstyle.h"
-#include "rpg_graphics_doorstyle.h"
-#include "rpg_graphics_style.h"
-#include "rpg_graphics_common.h"
+#include <string>
 
 #include "rpg_map_common.h"
 
-#include <string>
+#include "rpg_graphics_common.h"
+#include "rpg_graphics_doorstyle.h"
+#include "rpg_graphics_edgestyle.h"
+#include "rpg_graphics_floorstyle.h"
+#include "rpg_graphics_style.h"
+#include "rpg_graphics_wallstyle.h"
+
+#include "rpg_client_iwindow.h"
 
 class RPG_Client_IWindowLevel
  : public RPG_Client_IWindow
 {
  public:
-  // exposed interface
-  virtual void init(const RPG_Graphics_Style&) = 0; // style
-  virtual void setView(const int&,              // offset x (map coordinates !)
-                       const int&,              // offset y (map coordinates !)
-                       const bool& = true) = 0; // locked access ?
-  virtual void setView(const RPG_Map_Position_t&) = 0; // view (map coordinates !)
-	virtual RPG_Graphics_Position_t getView() const = 0; // return value: view (map coordinates !)
+  virtual ~RPG_Client_IWindowLevel () {};
 
-  virtual void toggleDoor(const RPG_Map_Position_t&) = 0; // door position
-  virtual void setBlendRadius(const unsigned char&) = 0; // radius
-  virtual void updateMinimap() = 0;
-  virtual void updateMessageWindow(const std::string&) = 0; // message
+  virtual void initialize (const RPG_Graphics_Style&) = 0; // style
+  virtual void setView (int,              // offset x (map coordinates !)
+                        int,              // offset y (map coordinates !)
+                        bool = true) = 0; // locked access ?
+  virtual void setView (const RPG_Map_Position_t&) = 0; // view (map coordinates !)
+  virtual RPG_Graphics_Position_t getView () const = 0; // return value: view (map coordinates !)
+
+  virtual void toggleDoor (const RPG_Map_Position_t&) = 0; // door position
+  virtual void setBlendRadius (unsigned char) = 0; // radius
+  virtual void updateMinimap () = 0;
+  virtual void updateMessageWindow (const std::string&) = 0; // message
 };
 
 #endif

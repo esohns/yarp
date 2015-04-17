@@ -29,28 +29,28 @@
 
 #include "rpg_common_macros.h"
 
-RPG_Graphics_HotSpot::RPG_Graphics_HotSpot(const RPG_Graphics_SDLWindowBase& parent_in,
-                                           const RPG_Graphics_Size_t& size_in,
-                                           // *NOTE*: offset doesn't include any border(s) !
-                                           const RPG_Graphics_Offset_t& offset_in,
-                                           const RPG_Graphics_Cursor& cursor_in,
-                                           const bool& debug_in)
- : inherited(WINDOW_HOTSPOT, // type
-             parent_in,      // parent
-             offset_in,      // offset
-             std::string()), // title
-//              NULL),          // background
-   myCursorType(cursor_in),
-   myCursorHasBeenSet(false),
-   myDebug(debug_in)
+RPG_Graphics_HotSpot::RPG_Graphics_HotSpot (const RPG_Graphics_SDLWindowBase& parent_in,
+                                            const RPG_Graphics_Size_t& size_in,
+                                            // *NOTE*: offset doesn't include any border(s) !
+                                            const RPG_Graphics_Offset_t& offset_in,
+                                            const RPG_Graphics_Cursor& cursor_in,
+                                            bool debug_in)
+ : inherited (WINDOW_HOTSPOT, // type
+              parent_in,      // parent
+              offset_in,      // offset
+              std::string())  // title
+//              NULL)          // background
+ , myCursorType (cursor_in)
+ , myCursorHasBeenSet (false)
+ , myDebug (debug_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::RPG_Graphics_HotSpot"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_HotSpot::RPG_Graphics_HotSpot"));
 
   // init clipping rectangle
-  inherited::myClipRect.x = static_cast<int16_t>(offset_in.first);
-  inherited::myClipRect.y = static_cast<int16_t>(offset_in.second);
-  inherited::myClipRect.w = static_cast<uint16_t>(size_in.first);
-  inherited::myClipRect.h = static_cast<uint16_t>(size_in.second);
+  inherited::clipRectangle_.x = static_cast<int16_t> (offset_in.first);
+  inherited::clipRectangle_.y = static_cast<int16_t> (offset_in.second);
+  inherited::clipRectangle_.w = static_cast<uint16_t> (size_in.first);
+  inherited::clipRectangle_.h = static_cast<uint16_t> (size_in.second);
 }
 
 RPG_Graphics_HotSpot::~RPG_Graphics_HotSpot()
@@ -194,16 +194,16 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
 }
 
 void
-RPG_Graphics_HotSpot::draw(SDL_Surface* targetSurface_in,
-                           const unsigned int& offsetX_in,
-                           const unsigned int& offsetY_in)
+RPG_Graphics_HotSpot::draw (SDL_Surface* targetSurface_in,
+                            unsigned int offsetX_in,
+                            unsigned int offsetY_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::draw"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_HotSpot::draw"));
 
   // sanity check(s)
   // sanity check(s)
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : myScreen);
+                                                  : inherited::screen_);
   ACE_ASSERT(target_surface);
   ACE_UNUSED_ARG(offsetX_in);
   ACE_UNUSED_ARG(offsetY_in);
@@ -224,39 +224,40 @@ RPG_Graphics_HotSpot::draw(SDL_Surface* targetSurface_in,
 //   } // end IF
 
   if (myDebug)
-    RPG_Graphics_Surface::putRectangle(myClipRect,      // rectangle
+    RPG_Graphics_Surface::putRectangle (inherited::clipRectangle_,      // rectangle
                                        RPG_Graphics_SDL_Tools::getColor(RPG_GRAPHICS_WINDOW_HOTSPOT_DEF_COLOR, // color
                                                                         *target_surface),
                                        target_surface); // target surface
 
   // remember position of last realization
-  myLastAbsolutePosition = std::make_pair(myClipRect.x,
-                                          myClipRect.y);
+  lastAbsolutePosition_ = std::make_pair (inherited::clipRectangle_.x,
+                                          inherited::clipRectangle_.y);
 }
 
-void
-RPG_Graphics_HotSpot::init(const RPG_Graphics_SDLWindowBase& parent_in,
-                           const RPG_Graphics_Size_t& size_in,
-                           const RPG_Graphics_Offset_t& offset_in,
-                           const RPG_Graphics_Cursor& cursor_in,
-                           const bool& debug_in)
+bool
+RPG_Graphics_HotSpot::initialize (const RPG_Graphics_SDLWindowBase& parent_in,
+                                  const RPG_Graphics_Size_t& size_in,
+                                  const RPG_Graphics_Offset_t& offset_in,
+                                  const RPG_Graphics_Cursor& cursor_in,
+                                  bool debug_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::init"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_HotSpot::initialize"));
 
   // *NOTE*: hotspot registers automagically
   RPG_Graphics_HotSpot* hotspot = NULL;
-  ACE_NEW_NORETURN(hotspot,
-                   RPG_Graphics_HotSpot(parent_in,
-                                        size_in,
-                                        offset_in,
-                                        cursor_in,
-                                        debug_in));
+  ACE_NEW_NORETURN (hotspot,
+                    RPG_Graphics_HotSpot (parent_in,
+                                          size_in,
+                                          offset_in,
+                                          cursor_in,
+                                          debug_in));
   if (!hotspot)
   {
-    ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
-               sizeof(RPG_Graphics_HotSpot)));
-
-    return;
+    ACE_DEBUG ((LM_CRITICAL,
+                ACE_TEXT ("failed to allocate memory(%u): %m, aborting\n"),
+                sizeof (RPG_Graphics_HotSpot)));
+    return false;
   } // end IF
+
+  return true;
 }

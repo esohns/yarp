@@ -117,94 +117,103 @@ RPG_Client_Common_Tools::initUserProfiles()
 }
 
 bool
-RPG_Client_Common_Tools::init(const RPG_Client_SDL_InputConfiguration_t& inputConfiguration_in,
-                              const RPG_Sound_SDLConfiguration_t& audioConfiguration_in,
-                              const std::string& soundDirectory_in,
-                              const bool& useCD_in,
-                              const unsigned int& soundCacheSize_in,
-                              const bool& muted_in,
-                              const std::string& soundDictionaryFile_in,
-                              const std::string& graphicsDirectory_in,
-                              const unsigned int& graphicsCacheSize_in,
-                              const std::string& graphicsDictionaryFile_in,
-                              const bool& initSDL_in)
+RPG_Client_Common_Tools::initialize (const RPG_Client_SDL_InputConfiguration_t& inputConfiguration_in,
+                                     const RPG_Sound_SDLConfiguration_t& audioConfiguration_in,
+                                     const std::string& soundDirectory_in,
+                                     bool useCD_in,
+                                     unsigned int soundCacheSize_in,
+                                     bool muted_in,
+                                     const std::string& soundDictionaryFile_in,
+                                     const std::string& graphicsDirectory_in,
+                                     unsigned int graphicsCacheSize_in,
+                                     const std::string& graphicsDictionaryFile_in,
+                                     bool initSDL_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::initialize"));
 
-  // step0a: init string conversion facilities
+  // step0: initialize string conversion facilities
   RPG_Client_GraphicsModeHelper::init();
 
-	// step0b: init input
-	if (!RPG_Client_Common_Tools::initSDLInput(inputConfiguration_in))
+  // step1: initialize input
+  if (!RPG_Client_Common_Tools::initSDLInput (inputConfiguration_in))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Client_Common_Tools::initSDLInput, aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Client_Common_Tools::initSDLInput, aborting\n")));
     return false;
   } // end IF
 
-  // step0c: init audio/video, string conversion facilities and other static data
+  // step2: initialize sound
+
+  // step2a: initialize sound dictionary
+  if (!soundDictionaryFile_in.empty ())
+  {
+    try
+    {
+      RPG_SOUND_DICTIONARY_SINGLETON::instance ()->init (soundDictionaryFile_in
+#ifdef _DEBUG
+                                                         , true
+#else
+                                                         , false
+#endif
+                                                         );
+    }
+    catch (...)
+    {
+      ACE_DEBUG ((LM_ERROR,
+        ACE_TEXT ("caught exception in RPG_Sound_Dictionary::init, aborting\n")));
+
+      return false;
+    }
+  } // end IF
+
+  // step2b: initialize audio/video, string conversion facilities and other
+  //         (static) data
   if (!RPG_Sound_Common_Tools::init(audioConfiguration_in,
                                     soundDirectory_in,
                                     useCD_in,
                                     soundCacheSize_in,
                                     muted_in))
   {
-    ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("failed to RPG_Sound_Common_Tools::init, aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Sound_Common_Tools::init, aborting\n")));
     return false;
   } // end IF
-  RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
-                                  graphicsCacheSize_in,
-                                  initSDL_in);
 
-  // step1: init dictionaries
-  // step1a: init graphics dictionary
-  if (!graphicsDictionaryFile_in.empty())
+  // step3: initialize graphics
+  RPG_Graphics_Common_Tools::preInitialize ();
+
+  // step3a: initialize graphics dictionary
+  if (!graphicsDictionaryFile_in.empty ())
   {
     try
     {
-      RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(graphicsDictionaryFile_in
+      RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->init (graphicsDictionaryFile_in
 #ifdef _DEBUG
-                                                          ,true
+                                                            , true
 #else
-                                                          ,false
+                                                            , false
 #endif
-                                                          );
+                                                            );
     }
     catch (...)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Graphics_Dictionary::init, aborting\n")));
+      ACE_DEBUG ((LM_ERROR,
+        ACE_TEXT ("caught exception in RPG_Graphics_Dictionary::init, aborting\n")));
 
       return false;
     }
   } // end IF
 
-  // step1b: init sound dictionary
-  if (!soundDictionaryFile_in.empty())
+  if (!RPG_Graphics_Common_Tools::initialize (graphicsDirectory_in,
+                                              graphicsCacheSize_in,
+                                              initSDL_in))
   {
-    try
-    {
-      RPG_SOUND_DICTIONARY_SINGLETON::instance()->init(soundDictionaryFile_in
-#ifdef _DEBUG
-                                                       ,true
-#else
-                                                       ,false
-#endif
-        );
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Sound_Dictionary::init, aborting\n")));
-
-      return false;
-    }
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Common_Tools::initialize, aborting\n")));
+    return false;
   } // end IF
 
-  // step2: init cursor manager singleton
+  // step4: initialize cursor manager singleton
   if (initSDL_in)
   {
     SDL_Rect dirty_region;
@@ -213,18 +222,19 @@ RPG_Client_Common_Tools::init(const RPG_Client_SDL_InputConfiguration_t& inputCo
                                                                  dirty_region);
   } // end IF
 
-  // step3: init user profiles
+  // step5: initialize user profiles
   RPG_Client_Common_Tools::initUserProfiles();
 
   return true;
 }
 
 void
-RPG_Client_Common_Tools::fini()
+RPG_Client_Common_Tools::finalize ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::fini"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Common_Tools::fini"));
 
-  RPG_Sound_Common_Tools::fini();
+  RPG_Sound_Common_Tools::fini ();
+  RPG_Graphics_Common_Tools::finalize ();
 }
 
 void

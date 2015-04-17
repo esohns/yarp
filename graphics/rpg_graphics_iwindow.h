@@ -21,28 +21,29 @@
 #ifndef RPG_GRAPHICS_IWINDOW_H
 #define RPG_GRAPHICS_IWINDOW_H
 
-#include "rpg_graphics_common.h"
-#include "rpg_graphics_iwindow_base.h"
-#include "rpg_graphics_colorname.h"
-#include "rpg_graphics_cursor.h"
-
 #include "SDL.h"
+
+#include "rpg_graphics_colorname.h"
+#include "rpg_graphics_common.h"
+#include "rpg_graphics_cursor.h"
+#include "rpg_graphics_iwindow_base.h"
 
 class RPG_Graphics_IWindow
  : public virtual RPG_Graphics_IWindowBase
 {
  public:
-  // exposed interface
-  virtual void show(SDL_Rect&) = 0; // return value: "dirty" region
-  virtual void hide(SDL_Rect&) = 0; // return value: "dirty" region
-  virtual bool visible() const = 0;
+  virtual ~RPG_Graphics_IWindow () {};
 
-  virtual void clear(const RPG_Graphics_ColorName& = COLOR_BLACK, // color
-		                 const bool& = true) = 0;                     // clip ?
+  virtual void show (SDL_Rect&) = 0; // return value: "dirty" region
+  virtual void hide (SDL_Rect&) = 0; // return value: "dirty" region
+  virtual bool visible () const = 0;
 
-  virtual RPG_Graphics_IWindowBase* child(const RPG_Graphics_WindowType&) = 0; // type
+  virtual void clear (const RPG_Graphics_ColorName& = COLOR_BLACK, // color
+                      bool = true) = 0;                            // clip ?
 
-  virtual void notify(const RPG_Graphics_Cursor&) const = 0;
+  virtual RPG_Graphics_IWindowBase* child (const RPG_Graphics_WindowType&) = 0; // type
+
+  virtual void notify (const RPG_Graphics_Cursor&) const = 0;
 };
 
 #endif

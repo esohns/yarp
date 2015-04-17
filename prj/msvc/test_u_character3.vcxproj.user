@@ -2,14 +2,16 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-t</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-c $(ProjectDir)..\..\client\rpg_client.glade -d $(ProjectDir)..\..\graphics\data -g $(ProjectDir)..\..\graphics\rpg_graphics.xml -i $(ProjectDir)..\..\item\rpg_item.xml -l -m $(ProjectDir)..\..\magic\rpg_magic.xml -t -u $(ProjectDir)..\..\test_u\character\player\character_generator_gui.glade</LocalDebuggerCommandArguments>
     <LocalDebuggerAttach>
     </LocalDebuggerAttach>
     <LocalDebuggerWorkingDirectory>$(ProjectDir)..\..</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerEnvironment>GLADE_DEBUG</LocalDebuggerEnvironment>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)..\..</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-d $(ProjectDir)..\..\graphics\data -g $(ProjectDir)..\..\graphics\rpg_graphics.xml -i $(ProjectDir)..\..\item\rpg_item.xml -l -m $(ProjectDir)..\..\magic\rpg_magic.xml -t -u $(ProjectDir)..\..\character\player\character_generator_gui.glade</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-c $(ProjectDir)..\..\client\rpg_client.glade -d $(ProjectDir)..\..\graphics\data -g $(ProjectDir)..\..\graphics\rpg_graphics.xml -i $(ProjectDir)..\..\item\rpg_item.xml -l -m $(ProjectDir)..\..\magic\rpg_magic.xml -t -u $(ProjectDir)..\..\test_u\character\player\character_generator_gui.glade</LocalDebuggerCommandArguments>
+    <LocalDebuggerEnvironment>GLADE_DEBUG</LocalDebuggerEnvironment>
   </PropertyGroup>
 </Project>

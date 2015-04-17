@@ -54,6 +54,8 @@ IRC_Client_Tools::connect (Stream_IAllocator* messageAllocator_in,
 
   // step1: setup configuration passed to processing stream
   RPG_Net_Protocol_Configuration configuration;
+  ACE_OS::memset (&configuration, 0, sizeof (configuration));
+
   // ************ socket configuration data ************
   configuration.socketConfiguration.bufferSize =
    NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
@@ -92,15 +94,15 @@ IRC_Client_Tools::connect (Stream_IAllocator* messageAllocator_in,
                                           0);
 
   // step3: (try to) connect to the server
-  ACE_INET_Addr remote_address (serverPortNumber_in,
-                                serverHostname_in.c_str ());
-  if (!connector.connect (remote_address))
+  ACE_INET_Addr peer_address (serverPortNumber_in,
+                              serverHostname_in.c_str ());
+  if (!connector.connect (peer_address))
   {
     // debug info
     ACE_TCHAR buffer[BUFSIZ];
     ACE_OS::memset (buffer, 0, sizeof (buffer));
-    int result = remote_address.addr_to_string (buffer,
-                                                sizeof (buffer));
+    int result = peer_address.addr_to_string (buffer,
+                                              sizeof (buffer));
     if (result == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));

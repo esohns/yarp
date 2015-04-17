@@ -266,11 +266,13 @@ RPG_Map_ParserDriver::error(const yy::RPG_Map_Parser::location_type& location_in
 
   std::ostringstream converter;
   converter << location_in;
-  ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("failed to parse file (line: %u, @%s): \"%s\"\n"),
-             myCurrentNumLines,
-             converter.str().c_str(),
-             message_in.c_str()));
+  std::string location = converter.str ();
+  location = ACE::basename (location.c_str ());
+  ACE_DEBUG ((LM_ERROR,
+              ACE_TEXT ("failed to parse file (line: %u, @%s): \"%s\"\n"),
+              myCurrentNumLines,
+              ACE_TEXT (location.c_str ()),
+              ACE_TEXT (message_in.c_str ())));
 }
 
 void
@@ -281,7 +283,7 @@ RPG_Map_ParserDriver::error(const std::string& message_in)
   ACE_DEBUG((LM_ERROR,
              ACE_TEXT("failed to parse file (line: %u): \"%s\"...\n"),
              myCurrentNumLines,
-             message_in.c_str()));
+             ACE_TEXT (message_in.c_str ())));
 }
 
 bool

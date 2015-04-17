@@ -758,20 +758,20 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
                                  configuration_in.magic_dictionary,
                                  configuration_in.item_dictionary,
                                  configuration_in.monster_dictionary);
-  if (!RPG_Client_Common_Tools::init (configuration_in.input_configuration,
-                                      configuration_in.audio_configuration.SDL_configuration,
-                                      configuration_in.audio_configuration.repository,
-                                      configuration_in.audio_configuration.use_CD,
-                                      RPG_SOUND_DEF_CACHESIZE,
-                                      configuration_in.audio_configuration.mute,
-                                      configuration_in.audio_configuration.dictionary,
-                                      configuration_in.graphics_directory,
-                                      RPG_GRAPHICS_DEF_CACHESIZE,
-                                      configuration_in.graphics_dictionary,
-                                      false)) // init SDL ?
+  if (!RPG_Client_Common_Tools::initialize (configuration_in.input_configuration,
+                                            configuration_in.audio_configuration.SDL_configuration,
+                                            configuration_in.audio_configuration.repository,
+                                            configuration_in.audio_configuration.use_CD,
+                                            RPG_SOUND_DEF_CACHESIZE,
+                                            configuration_in.audio_configuration.mute,
+                                            configuration_in.audio_configuration.dictionary,
+                                            configuration_in.graphics_directory,
+                                            RPG_GRAPHICS_DEF_CACHESIZE,
+                                            configuration_in.graphics_dictionary,
+                                            false)) // init SDL ?
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Client_Common_Tools::init(), aborting\n")));
+                ACE_TEXT ("failed to RPG_Client_Common_Tools::init(), returning\n")));
 
     // clean up
     RPG_Engine_Common_Tools::fini ();
@@ -806,18 +806,29 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
                                           true))                                // init window ?
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::initVideo(), aborting\n")));
+                ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::initVideo(), returning\n")));
 
     // clean up
-    RPG_Client_Common_Tools::fini ();
+    RPG_Client_Common_Tools::finalize ();
     RPG_Engine_Common_Tools::fini ();
 
     return;
   } // end IF
   ACE_ASSERT (GTKUserData_in.screen != NULL);
-  RPG_Graphics_Common_Tools::init (configuration_in.graphics_directory,
-                                   RPG_CLIENT_GRAPHICS_DEF_CACHESIZE,
-                                   true);
+  if (!RPG_Graphics_Common_Tools::initialize (configuration_in.graphics_directory,
+                                              RPG_CLIENT_GRAPHICS_DEF_CACHESIZE,
+                                              true))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Common_Tools::initialize(): \"%m\", returning\n")));
+
+    // clean up
+    RPG_Client_Common_Tools::finalize ();
+    RPG_Engine_Common_Tools::fini ();
+
+    return;
+  } // end IF
+
   SDL_Rect dirty_region;
   ACE_OS::memset (&dirty_region, 0, sizeof (dirty_region));
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->setCursor (CURSOR_NORMAL,
@@ -894,11 +905,11 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
   if (!client_engine.isRunning ())
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to start client engine, aborting\n")));
+                ACE_TEXT ("failed to start client engine, returning\n")));
 
     // clean up
     level_engine.stop ();
-    RPG_Client_Common_Tools::fini ();
+    RPG_Client_Common_Tools::finalize ();
     RPG_Engine_Common_Tools::fini ();
 
     return;
@@ -913,14 +924,14 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
   if (!GTKUserData_in.eventTimer)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to SDL_AddTimer(%u): \"%s\", aborting\n"),
+                ACE_TEXT ("failed to SDL_AddTimer(%u): \"%s\", returning\n"),
                 RPG_CLIENT_SDL_EVENT_TIMEOUT,
                 ACE_TEXT (SDL_GetError ())));
 
     // clean up
 //    level_engine.stop();
     client_engine.stop ();
-    RPG_Client_Common_Tools::fini ();
+    RPG_Client_Common_Tools::finalize ();
     RPG_Engine_Common_Tools::fini ();
 
     return;
@@ -961,7 +972,7 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
                                               serialize_output))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to initialize network event dispatch, aborting\n")));
+                ACE_TEXT ("failed to initialize network event dispatch, returning\n")));
 
     // clean up
     if (!SDL_RemoveTimer(GTKUserData_in.eventTimer))
@@ -970,7 +981,7 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
                  ACE_TEXT(SDL_GetError())));
 //    level_engine.stop();
     client_engine.stop();
-    RPG_Client_Common_Tools::fini();
+    RPG_Client_Common_Tools::finalize ();
     RPG_Engine_Common_Tools::fini();
 
     return;
@@ -990,7 +1001,7 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
                                          group_id))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to start network event dispatch, aborting\n")));
+               ACE_TEXT("failed to start network event dispatch, returning\n")));
 
     // clean up
     if (!SDL_RemoveTimer (GTKUserData_in.eventTimer))
@@ -999,7 +1010,7 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
                   ACE_TEXT (SDL_GetError ())));
 //    level_engine.stop();
     client_engine.stop ();
-    RPG_Client_Common_Tools::fini ();
+    RPG_Client_Common_Tools::finalize ();
     RPG_Engine_Common_Tools::fini ();
 
     return;
@@ -1019,7 +1030,7 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
   if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to start GTK event dispatch, aborting\n")));
+               ACE_TEXT("failed to start GTK event dispatch, returning\n")));
 
     // clean up
     if (!SDL_RemoveTimer(GTKUserData_in.eventTimer))
@@ -1029,7 +1040,7 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
     //		level_engine.stop();
     client_engine.stop();
     COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
-    RPG_Client_Common_Tools::fini();
+    RPG_Client_Common_Tools::finalize ();
     RPG_Engine_Common_Tools::fini();
 
     RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
@@ -1330,7 +1341,7 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
   level_engine.stop();
   client_engine.stop();
   COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
-  RPG_Client_Common_Tools::fini();
+  RPG_Client_Common_Tools::finalize ();
   RPG_Engine_Common_Tools::fini();
   // done handling UI events
 

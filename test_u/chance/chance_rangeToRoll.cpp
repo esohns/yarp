@@ -19,25 +19,30 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-// *NOTE*: need this to import correct VERSION !
-#ifdef HAVE_CONFIG_H
-#include <rpg_config.h>
-#endif
-
-#include <rpg_dice.h>
-#include <rpg_dice_common.h>
-#include <rpg_dice_common_tools.h>
-
-#include <rpg_common_macros.h>
-
-#include <ace/ACE.h>
-#include <ace/Get_Opt.h>
-#include <ace/High_Res_Timer.h>
-
 #include <iostream>
 #include <iomanip>
 #include <string>
 #include <sstream>
+
+#include "ace/ACE.h"
+#include "ace/Get_Opt.h"
+#include "ace/High_Res_Timer.h"
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#include "ace/Init_ACE.h"
+#endif
+
+#include "common_file_tools.h"
+#include "common_tools.h"
+
+#ifdef HAVE_CONFIG_H
+#include "rpg_config.h"
+#endif
+
+#include "rpg_dice.h"
+#include "rpg_dice_common.h"
+#include "rpg_dice_common_tools.h"
+
+#include "rpg_common_macros.h"
 
 void
 print_usage(const std::string& programName_in)
@@ -86,27 +91,21 @@ process_arguments(const int argc_in,
       }
       case 'r':
       {
-        std::string range = argumentParser.opt_arg();
-        unsigned int separator = range.find_first_of(ACE_TEXT_ALWAYS_CHAR("-"), 0);
-// *TODO*: there is a linking problem using std::string::npos in MSVC 2010...
-#if defined(_MSC_VER) && (_MSC_VER >= 1600) /* VS2010 or newer */
-        if (separator != -1)
-#else
-        if (separator != std::string::npos)
-#endif
+        std::string range = argumentParser.opt_arg ();
+        unsigned int separator = range.find_first_of (ACE_TEXT_ALWAYS_CHAR ("-"), 0);
+        if (separator == std::string::npos)
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid range: \"%s\", aborting\n"),
-                     range.c_str()));
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid range: \"%s\", aborting\n"),
+                      ACE_TEXT (range.c_str ())));
           return false;
         } // end IF
 
-        valueRange_out.begin = ::atol(range.substr(0, separator).c_str());
-        valueRange_out.end = ::atol(range.substr(separator + 1, range.length()).c_str());
+        valueRange_out.begin = ::atol (range.substr (0, separator).c_str ());
+        valueRange_out.end = ::atol (range.substr (separator + 1, range.length ()).c_str ());
         if (valueRange_out.begin > valueRange_out.end)
         {
-          std::swap(valueRange_out.begin, valueRange_out.end);
+          std::swap (valueRange_out.begin, valueRange_out.end);
         } // end IF
 
 //         // debug info
@@ -132,18 +131,16 @@ process_arguments(const int argc_in,
       // error handling
       case '?':
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unrecognized option \"%s\", aborting\n"),
-                   argumentParser.last_option()));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("unrecognized option \"%s\", aborting\n"),
+                    ACE_TEXT (argumentParser.last_option ())));
         return false;
       }
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unrecognized option \"%c\", aborting\n"),
-                   option));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("unrecognized option \"%c\", aborting\n"),
+                    option));
         return false;
       }
     } // end SWITCH
@@ -153,19 +150,19 @@ process_arguments(const int argc_in,
 }
 
 void
-do_work(const RPG_Dice_ValueRange& valueRange_in,
-        RPG_Dice_Rolls_t& rolls_out)
+do_work (const RPG_Dice_ValueRange& valueRange_in,
+         RPG_Dice_Rolls_t& rolls_out)
 {
-  RPG_TRACE(ACE_TEXT("::do_work"));
+  RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // init result
-  rolls_out.clear();
+  rolls_out.clear ();
 
   // step0: init framework
-  RPG_Dice_Common_Tools::initStringConversionTables();
+  RPG_Dice_Common_Tools::initStringConversionTables ();
 
   // step1a: make sure begin <= end
-  ACE_ASSERT(valueRange_in.begin <= valueRange_in.end);
+  ACE_ASSERT (valueRange_in.begin <= valueRange_in.end);
 
   // step1b: basic case ?
   RPG_Dice_Roll result;
@@ -228,8 +225,8 @@ do_work(const RPG_Dice_ValueRange& valueRange_in,
 
   // fallback: try a (rather simplistic) alternate greedy algorithm
   // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("trying fallback algorithm...\n")));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("trying fallback algorithm...\n")));
 
   // step1c: find SMALLEST type of die LARGER than range.end to start with
   current_dieType = D_100;
@@ -370,35 +367,57 @@ do_printVersion(const std::string& programName_in)
 }
 
 int
-ACE_TMAIN(int argc,
-          ACE_TCHAR* argv[])
+ACE_TMAIN (int argc_in,
+           ACE_TCHAR* argv_in[])
 {
-  RPG_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE (ACE_TEXT ("::main"));
 
-  // step1: init
-  // step1a set defaults
-  RPG_Dice_ValueRange valueRange;
-  valueRange.begin = 0;
-  valueRange.end = 0;
-  bool printAllResults     = false;
-  bool traceInformation    = false;
-  bool printVersionAndExit = false;
+  // step1: initialize libraries
+  // *PORTABILITY*: on Windows, init ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::init () == -1)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
+    return EXIT_FAILURE;
+  } // end IF
+#endif
 
-  // step1b: parse/process/validate configuration
-  if (!(process_arguments(argc,
-                          argv,
-                          printAllResults,
-                          valueRange,
-                          traceInformation,
-                          printVersionAndExit)))
+  // step2: initialize configuration
+  
+  // step2a: set defaults
+  RPG_Dice_ValueRange value_range;
+  value_range.begin = 0;
+  value_range.end = 0;
+  bool print_all_results      = false;
+  bool trace_information      = false;
+  bool print_version_and_exit = false;
+
+  // step2b: parse/process/validate configuration
+  if (!process_arguments (argc_in,
+                          argv_in,
+                          print_all_results,
+                          value_range,
+                          trace_information,
+                          print_version_and_exit))
   {
     // make 'em learn...
-    print_usage(std::string(ACE::basename(argv[0])));
+    print_usage (ACE::basename (argv_in[0]));
+
+    // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
+      return EXIT_FAILURE;
+    } // end IF
+#endif
 
     return EXIT_FAILURE;
   } // end IF
 
-//   // step1b: validate arguments
+//   // step2c: validate arguments
 //   if (valueRange.begin == valueRange.end == 0)
 //   {
 //     ACE_DEBUG((LM_DEBUG,
@@ -411,73 +430,89 @@ ACE_TMAIN(int argc,
 //     return EXIT_FAILURE;
 //   } // end IF
 
-  // step1c: set correct trace level
-  //ACE_Trace::start_tracing();
-  if (!traceInformation)
+  // step3: initialize logging and/or tracing
+  std::string log_file;
+  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
+                                        log_file,                   // logfile
+                                        false,                      // log to syslog ?
+                                        false,                      // trace messages ?
+                                        trace_information,          // debug messages ?
+                                        NULL))                      // logger
   {
-    u_long process_priority_mask = (LM_SHUTDOWN |
-                                    //LM_INFO |  // <-- DISABLE trace messages !
-                                    //LM_DEBUG |
-                                    LM_INFO |
-                                    LM_NOTICE |
-                                    LM_WARNING |
-                                    LM_STARTUP |
-                                    LM_ERROR |
-                                    LM_CRITICAL |
-                                    LM_ALERT |
-                                    LM_EMERGENCY);
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));
 
-    // set new mask...
-    ACE_LOG_MSG->priority_mask(process_priority_mask,
-                               ACE_Log_Msg::PROCESS);
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
-    //ACE_LOG_MSG->stop_tracing();
-
-    // don't go VERBOSE...
-    //ACE_LOG_MSG->clr_flags(ACE_Log_Msg::VERBOSE_LITE);
+    return EXIT_FAILURE;
   } // end IF
 
-  // step1d: handle specific program modes
-  if (printVersionAndExit)
+  // step4: handle specific program modes
+  if (print_version_and_exit)
   {
-    do_printVersion(std::string(ACE::basename(argv[0])));
+    do_printVersion (ACE::basename (argv_in[0]));
+
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
 
     return EXIT_SUCCESS;
   } // end IF
 
   ACE_High_Res_Timer timer;
-  timer.start();
+  timer.start ();
 
-  // step2: do actual work
+  // step5: do work
   RPG_Dice_Rolls_t combinations;
-  do_work(valueRange,
-          combinations);
+  do_work (value_range,
+           combinations);
 
-  timer.stop();
+  timer.stop ();
 
-  // print results
+  // step6: print results
   // header line
-  std::cout << ACE_TEXT("results ") << RPG_Dice_Common_Tools::rangeToString(valueRange) << ACE_TEXT(": ") << std::endl;
-  std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
+  std::cout << ACE_TEXT ("results ")
+            << RPG_Dice_Common_Tools::rangeToString (value_range)
+            << ACE_TEXT (": ")
+            << std::endl;
+  std::cout << std::setw (80)
+            << std::setfill (ACE_TEXT_ALWAYS_CHAR ('-'))
+            << ACE_TEXT ("")
+            << std::setfill (ACE_TEXT_ALWAYS_CHAR (' '))
+            << std::endl;
 
   bool perfect_match = true;
   int index = 1;
   RPG_Dice_ValueRange range;
-  for (RPG_Dice_RollsIterator_t iterator = combinations.begin();
-       iterator != combinations.end();
+  for (RPG_Dice_RollsIterator_t iterator = combinations.begin ();
+       iterator != combinations.end ();
        iterator++, index++)
   {
     perfect_match = true;
-    RPG_Dice::rollToRange(*iterator, range);
-    if ((range.begin != valueRange.begin) || (range.end != valueRange.end))
+    RPG_Dice::rollToRange (*iterator, range);
+    if ((range.begin != value_range.begin) || (range.end != value_range.end))
     {
       // not a perfect match...
       perfect_match = false;
-      if (!printAllResults)
+      if (!print_all_results)
         continue;
     } // end IF
 
-    std::cout << ACE_TEXT("[") << index << (perfect_match ? ACE_TEXT("*]") : ACE_TEXT("]")) << RPG_Dice_Common_Tools::rollToString(*iterator) << ACE_TEXT(" : ") << RPG_Dice_Common_Tools::rangeToString(range) << std::endl;
+    std::cout << ACE_TEXT ("[")
+              << index
+              << (perfect_match ? ACE_TEXT ("*]") : ACE_TEXT ("]"))
+              << RPG_Dice_Common_Tools::rollToString (*iterator)
+              << ACE_TEXT (" : ")
+              << RPG_Dice_Common_Tools::rangeToString (range)
+              << std::endl;
   } // end FOR
 
 //   std::string working_time_string;
@@ -489,6 +524,17 @@ ACE_TMAIN(int argc,
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
 //              working_time_string.c_str()));
+
+  // step7: finalize libraries
+  // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::fini () == -1)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
+    return EXIT_FAILURE;
+  } // end IF
+#endif
 
   return EXIT_SUCCESS;
 } // end main

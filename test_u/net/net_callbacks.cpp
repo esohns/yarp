@@ -27,6 +27,7 @@
 
 #include "common_ui_common.h"
 #include "common_ui_defines.h"
+#include "common_ui_gtk_manager.h"
 
 #include "net_client_timeouthandler.h"
 #include "net_common.h"
@@ -423,9 +424,13 @@ idle_initialize_server_UI_cb (gpointer userData_in)
   return FALSE; // G_SOURCE_REMOVE
 }
 
-G_MODULE_EXPORT gboolean idle_finalize_UI_cb (gpointer userData_in)
+G_MODULE_EXPORT gboolean
+idle_finalize_UI_cb (gpointer userData_in)
 {
   RPG_TRACE (ACE_TEXT ("::idle_finalize_UI_cb"));
+
+  // leave GTK
+  gtk_main_quit ();
 
   return FALSE; // G_SOURCE_REMOVE
 }
@@ -975,25 +980,28 @@ button_quit_clicked_cb (GtkWidget* widget_in,
   // sanity check(s)
   ACE_ASSERT (data_p);
 
-  // step1: remove event sources
-  {
-    ACE_Guard<ACE_Thread_Mutex> aGuard (data_p->GTKState.lock);
+  //// step1: remove event sources
+  //{
+  //  ACE_Guard<ACE_Thread_Mutex> aGuard (data_p->GTKState.lock);
 
-    for (Common_UI_GTKEventSourceIdsIterator_t iterator = data_p->GTKState.eventSourceIds.begin ();
-         iterator != data_p->GTKState.eventSourceIds.end ();
-         iterator++)
-      if (!g_source_remove (*iterator))
-        ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("failed to g_source_remove(%u), continuing\n"),
-                    *iterator));
-    data_p->GTKState.eventSourceIds.clear ();
-  } // end lock scope
+  //  for (Common_UI_GTKEventSourceIdsIterator_t iterator = data_p->GTKState.eventSourceIds.begin ();
+  //       iterator != data_p->GTKState.eventSourceIds.end ();
+  //       iterator++)
+  //    if (!g_source_remove (*iterator))
+  //      ACE_DEBUG ((LM_ERROR,
+  //                  ACE_TEXT ("failed to g_source_remove(%u), continuing\n"),
+  //                  *iterator));
+  //  data_p->GTKState.eventSourceIds.clear ();
+  //} // end lock scope
 
   // step2: initiate shutdown sequence
   if (ACE_OS::raise (SIGINT) == -1)
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to ACE_OS::raise(%S): \"%m\", continuing\n"),
                 SIGINT));
+
+  // step3: stop GTK event processing
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->close (1);
 
   return FALSE;
 } // button_quit_clicked_cb

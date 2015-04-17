@@ -152,7 +152,7 @@ do_printUsage (const std::string& programName_in)
   path += ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DATA_SUB);
 #endif // DEBUG_DEBUGGER
   std::cout << ACE_TEXT ("-f [DIR] : data directory") << ACE_TEXT (" [\"") << path.c_str () << ACE_TEXT ("\"]") << std::endl;
-  std::cout << ACE_TEXT("-r       : play random sounds") << ACE_TEXT(" [") << SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS << ACE_TEXT("]") << std::endl;
+  std::cout << ACE_TEXT ("-r       : play random sounds") << ACE_TEXT (" [") << SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS << ACE_TEXT ("]") << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
@@ -320,8 +320,13 @@ do_work (bool dumpDictionary_in,
     return;
   } // end IF
 
-  // step2: init sound dictionary
-  RPG_Common_XML_Tools::init (schemaRepository_in);
+  // step2: initialize sound dictionary
+  if (!RPG_Common_XML_Tools::initialize (schemaRepository_in))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Common_XML_Tools::initialize(), returning\n")));
+    return;
+  } // end IF
   try
   {
     RPG_SOUND_DICTIONARY_SINGLETON::instance ()->init (dictionary_in,
@@ -341,7 +346,7 @@ do_work (bool dumpDictionary_in,
   if (!playRandomSounds_in)
   {
     // clean up
-    RPG_Common_XML_Tools::fini ();
+    RPG_Common_XML_Tools::finalize ();
 
     return;
   } // end IF
@@ -382,7 +387,7 @@ do_work (bool dumpDictionary_in,
 //   do_SDL_waitForInput(10);
 
   // clean up
-  RPG_Common_XML_Tools::fini ();
+  RPG_Common_XML_Tools::finalize ();
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("finished working...\n")));

@@ -43,13 +43,13 @@ class RPG_Common_ILock;
 class RPG_Graphics_Export RPG_Graphics_Common_Tools
 {
  public:
-  static void preInit();
+  static void preInitialize ();
   // *WARNING*: needs to be called AFTER SDL_SetVideoMode !
   // *NOTE*: not using SDL at all ? --> provide 'false' as last parameter...
-  static void init(const std::string&,  // graphics directory
-                   const unsigned int&, // cache size
-                   const bool& = true); // init SDL ?
-  static void fini();
+  static bool initialize (const std::string&, // graphics directory
+                          unsigned int,       // cache size
+                          bool = true);       // initialize SDL ?
+  static void finalize ();
   static std::string getGraphicsDirectory();
   static std::string typeToString(const RPG_Graphics_GraphicTypeUnion&);
   static std::string styleToString(const RPG_Graphics_StyleUnion&);

@@ -21,14 +21,14 @@
 #ifndef RPG_GRAPHICS_HOTSPOT_H
 #define RPG_GRAPHICS_HOTSPOT_H
 
-#include "rpg_graphics_exports.h"
+#include "ace/Global_Macros.h"
+
+#include "SDL.h"
+
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_cursor.h"
+#include "rpg_graphics_exports.h"
 #include "rpg_graphics_SDL_window_base.h"
-
-#include <SDL.h>
-
-#include <ace/Global_Macros.h>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
@@ -37,40 +37,40 @@ class RPG_Graphics_Export RPG_Graphics_HotSpot
  : public RPG_Graphics_SDLWindowBase
 {
  public:
-  RPG_Graphics_HotSpot(const RPG_Graphics_SDLWindowBase&, // parent
-                       const RPG_Graphics_Size_t&,        // size
-                       // *NOTE*: offset doesn't include any border(s) !
-                       const RPG_Graphics_Offset_t&,      // offset
-                       const RPG_Graphics_Cursor&,        // (hover) cursor graphic
-                       const bool& = false);              // debug ?
-  virtual ~RPG_Graphics_HotSpot();
+  RPG_Graphics_HotSpot (const RPG_Graphics_SDLWindowBase&, // parent
+                        const RPG_Graphics_Size_t&,        // size
+                        // *NOTE*: offset doesn't include any border(s) !
+                        const RPG_Graphics_Offset_t&,      // offset
+                        const RPG_Graphics_Cursor&,        // (hover) cursor graphic
+                        bool = false);                     // debug ?
+  virtual ~RPG_Graphics_HotSpot ();
 
-  RPG_Graphics_Cursor getCursorType() const;
+  RPG_Graphics_Cursor getCursorType () const;
 
   // implement (part of) RPG_Graphics_IWindowBase
   // *IMPORTANT NOTE*: dummy stub --> DO NOT CALL
-  virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
+  virtual RPG_Graphics_Position_t getView () const; // return value: view (map coordinates !)
 
-  virtual void draw(SDL_Surface* = NULL,      // target surface (default: screen)
-                    const unsigned int& = 0,  // offset x (top-left = [0,0])
-                    const unsigned int& = 0); // offset y (top-left = [0,0])
-  virtual void handleEvent(const SDL_Event&,          // event
-                           RPG_Graphics_IWindowBase*, // target window (NULL: this)
-                           SDL_Rect&);                // return value: "dirty" region
+  virtual void draw (SDL_Surface* = NULL, // target surface (default: screen)
+                     unsigned int = 0,    // offset x (top-left = [0,0])
+                     unsigned int = 0);   // offset y (top-left = [0,0])
+  virtual void handleEvent (const SDL_Event&,          // event
+                            RPG_Graphics_IWindowBase*, // target window (NULL: this)
+                            SDL_Rect&);                // return value: "dirty" region
 
-  static void init(const RPG_Graphics_SDLWindowBase&, // parent
-                   const RPG_Graphics_Size_t&,        // size
-                   // *NOTE*: offset doesn't include any border(s) !
-                   const RPG_Graphics_Offset_t&,      // offset
-                   const RPG_Graphics_Cursor&,        // (hover) cursor graphic
-                   const bool& = false);              // debug ?
+  static bool initialize (const RPG_Graphics_SDLWindowBase&, // parent
+                          const RPG_Graphics_Size_t&,        // size
+                          // *NOTE*: offset doesn't include any border(s) !
+                          const RPG_Graphics_Offset_t&,      // offset
+                          const RPG_Graphics_Cursor&,        // (hover) cursor graphic
+                          bool = false);                     // debug ?
 
  private:
   typedef RPG_Graphics_SDLWindowBase inherited;
 
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_HotSpot());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_HotSpot(const RPG_Graphics_HotSpot&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_HotSpot& operator=(const RPG_Graphics_HotSpot&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_HotSpot ());
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_HotSpot (const RPG_Graphics_HotSpot&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_HotSpot& operator= (const RPG_Graphics_HotSpot&));
 
   RPG_Graphics_Cursor myCursorType;
   bool                myCursorHasBeenSet;

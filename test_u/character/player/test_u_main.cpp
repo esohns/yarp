@@ -11,8 +11,6 @@
 #include "ace/Global_Macros.h"
 #include "ace/High_Res_Timer.h"
 
-//#include "gtk/gtk.h"
-
 #include "common_file_tools.h"
 #include "common_tools.h"
 
@@ -404,18 +402,23 @@ test_u_main::do_work (GTK_cb_data_t& userData_in,
   sound_configuration.format = RPG_SOUND_AUDIO_DEF_FORMAT;
   sound_configuration.channels = RPG_SOUND_AUDIO_DEF_CHANNELS;
   sound_configuration.chunksize = RPG_SOUND_AUDIO_DEF_CHUNKSIZE;
-  RPG_Client_Common_Tools::init (input_configuration,
-                                 sound_configuration,
-                                 empty,
-                                 RPG_SOUND_AMBIENT_DEF_USE_CD,
-                                 RPG_SOUND_DEF_CACHESIZE,
-                                 false,
-                                 empty,
-                                 //
-                                 graphicsDirectory_in,
-                                 RPG_GRAPHICS_DEF_CACHESIZE,
-                                 graphicsDictionary_in,
-                                 false); // don't init SDL
+  if (!RPG_Client_Common_Tools::initialize (input_configuration,
+                                            sound_configuration,
+                                            empty,
+                                            RPG_SOUND_AMBIENT_DEF_USE_CD,
+                                            RPG_SOUND_DEF_CACHESIZE,
+                                            false,
+                                            empty,
+                                            //
+                                            graphicsDirectory_in,
+                                            RPG_GRAPHICS_DEF_CACHESIZE,
+                                            graphicsDictionary_in,
+                                            false)) // don't init SDL
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Client_Common_Tools::initialize(): \"%m\", returning\n")));
+    return;
+  } // end IF
 
   userData_in.GTKState.initializationHook = idle_initialize_UI_cb;
   userData_in.GTKState.finalizationHook = idle_finalize_UI_cb;
@@ -701,10 +704,23 @@ test_u_main::run_i (int argc_in,
   GTK_cb_data_t user_data;
   Common_UI_GladeDefinition ui_definition (argc_in,
                                            argv_in);
-  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (argc_in,
-                                                            argv_in,
-                                                            &user_data.GTKState,
-                                                            &ui_definition);
+  if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (argc_in,
+                                                                 argv_in,
+                                                                 &user_data.GTKState,
+                                                                 &ui_definition))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to initialize GTK manager, aborting\n")));
+
+    // *PORTABILITY*: on Windows, need to fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif
+
+    return EXIT_FAILURE;
+  } // end IF
 
   ACE_High_Res_Timer timer;
   timer.start ();

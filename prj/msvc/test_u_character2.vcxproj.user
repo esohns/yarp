@@ -3,6 +3,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)..\..</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-n 1 -o$(ProjectDir)..\engine\data\default_player.profile -r -t</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-g $(ProjectDir)..\..\graphics\rpg_graphics.xml -i $(ProjectDir)..\..\item\rpg_item.xml -m $(ProjectDir)..\..\magic\rpg_magic.xml -n 1 -o$(ProjectDir)..\..\engine\data\default_player.profile -r -t</LocalDebuggerCommandArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LocalDebuggerCommandArguments>-g $(ProjectDir)..\..\graphics\rpg_graphics.xml -i $(ProjectDir)..\..\item\rpg_item.xml -m $(ProjectDir)..\..\magic\rpg_magic.xml -n 1 -o$(ProjectDir)..\..\engine\data\default_player.profile -r -t</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerWorkingDirectory>$(ProjectDir)..\..</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
 </Project>

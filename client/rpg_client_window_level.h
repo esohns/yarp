@@ -21,98 +21,98 @@
 #ifndef RPG_CLIENT_WINDOW_LEVEL_H
 #define RPG_CLIENT_WINDOW_LEVEL_H
 
-#include "rpg_client_exports.h"
-#include "rpg_client_common.h"
-#include "rpg_client_iwindow_level.h"
-
-#include "rpg_graphics_common.h"
-#include "rpg_graphics_SDL_window_base.h"
-#include "rpg_graphics_style.h"
-
-#include "rpg_map_common.h"
-
-#include "SDL.h"
+#include <vector>
 
 #include "ace/Global_Macros.h"
 #include "ace/Thread_Mutex.h"
 
-#include <vector>
+#include "SDL.h"
+
+#include "rpg_map_common.h"
+
+#include "rpg_graphics_common.h"
+#include "rpg_graphics_style.h"
+#include "rpg_graphics_SDL_window_base.h"
+
+#include "rpg_client_common.h"
+#include "rpg_client_exports.h"
+#include "rpg_client_iwindow_level.h"
 
 // forward declaration(s)
-class RPG_Engine;
 class RPG_Client_Engine;
+class RPG_Engine;
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Client_Export RPG_Client_Window_Level
- : public RPG_Graphics_SDLWindowBase,
-   public RPG_Client_IWindowLevel
+ : public RPG_Graphics_SDLWindowBase
+ , public RPG_Client_IWindowLevel
 {
  public:
-  RPG_Client_Window_Level(// *** SDL window ***
-                          const RPG_Graphics_SDLWindowBase&); // parent
-  virtual ~RPG_Client_Window_Level();
+  RPG_Client_Window_Level (// *** SDL window ***
+                           const RPG_Graphics_SDLWindowBase&); // parent
+  virtual ~RPG_Client_Window_Level ();
 
-  // init level properties
-  bool init(RPG_Client_Engine*,   // engine handle
-            RPG_Engine*,          // (level) state handle
-            const bool& = false); // debug ?
+  // initialize  level properties
+  bool initialize (RPG_Client_Engine*, // engine handle
+                   RPG_Engine*,        // (level) state handle
+                   bool = false);      // debug ?
 
-  void toggleMiniMap();
-  bool showMiniMap() const;
-  void toggleMessages();
-  bool showMessages() const;
+  void toggleMiniMap ();
+  bool showMiniMap () const;
+  void toggleMessages ();
+  bool showMessages () const;
 
   // implement RPG_Client_IWindowLevel
-  virtual void drawBorder(SDL_Surface* = NULL,      // target surface (default: screen)
-                          const unsigned int& = 0,  // offset x (top-left = [0,0])
-                          const unsigned int& = 0); // offset y (top-left = [0,0])
-  virtual void init(const RPG_Graphics_Style&); // style
-  virtual void setView(const int&,
-                       const int&,          // view (relative map coordinates)
-                       const bool& = true); // locked access ?
-  virtual void setView(const RPG_Map_Position_t&); // view (map coordinates)
-  virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
-  virtual void toggleDoor(const RPG_Map_Position_t&); // door position
+  virtual void drawBorder(SDL_Surface* = NULL, // target surface (default: screen)
+                          unsigned int = 0,    // offset x (top-left = [0,0])
+                          unsigned int = 0);   // offset y (top-left = [0,0])
+  virtual void initialize (const RPG_Graphics_Style&); // style
+  virtual void setView (int,
+                        int,          // view (relative map coordinates)
+                        bool = true); // locked access ?
+  virtual void setView (const RPG_Map_Position_t&); // view (map coordinates)
+  virtual RPG_Graphics_Position_t getView () const; // return value: view (map coordinates !)
+  virtual void toggleDoor (const RPG_Map_Position_t&); // door position
   // (re)set lighting blend cache
-  virtual void setBlendRadius(const unsigned char&); // radius
-  virtual void updateMinimap();
-  virtual void updateMessageWindow(const std::string&); // message
+  virtual void setBlendRadius (unsigned char); // radius
+  virtual void updateMinimap ();
+  virtual void updateMessageWindow (const std::string&); // message
 
   // implement (part of) RPG_Graphics_IWindowBase
-  virtual void draw(SDL_Surface* = NULL,      // target surface (default: screen)
-                    const unsigned int& = 0,  // offset x (top-left = [0,0])
-                    const unsigned int& = 0); // offset y (top-left = [0,0])
-  virtual void handleEvent(const SDL_Event&,          // event
-                           RPG_Graphics_IWindowBase*, // target window (NULL: this)
-                           SDL_Rect&);                // return value: "dirty" region
+  virtual void draw (SDL_Surface* = NULL, // target surface (default: screen)
+                     unsigned int = 0,    // offset x (top-left = [0,0])
+                     unsigned int = 0);   // offset y (top-left = [0,0])
+  virtual void handleEvent (const SDL_Event&,          // event
+                            RPG_Graphics_IWindowBase*, // target window (NULL: this)
+                            SDL_Rect&);                // return value: "dirty" region
 
   // debug
 #ifdef _DEBUG
-  void toggleShowCoordinates();
+  void toggleShowCoordinates ();
 #endif
 
  private:
   typedef RPG_Graphics_SDLWindowBase inherited;
 
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Level());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Level(const RPG_Client_Window_Level&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Level& operator=(const RPG_Client_Window_Level&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Level ());
+  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Level (const RPG_Client_Window_Level&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Level& operator= (const RPG_Client_Window_Level&));
 
   // helper methods
-  bool setStyle(const RPG_Graphics_StyleUnion&); // style
+  bool setStyle (const RPG_Graphics_StyleUnion&); // style
 
-  void initCeiling();
-  void initWallBlend(const bool&); // half-height walls ?
-  bool initMiniMap(const bool& = false); // debug ?
-  bool initMessageWindow();
+  void initCeiling ();
+  void initWallBlend (bool); // half-height walls ?
+  bool initMiniMap (bool = false); // debug ?
+  bool initMessageWindow ();
 
-  void drawChild(const RPG_Graphics_WindowType&, // (child) type
-                 SDL_Surface* = NULL,            // target surface (default: screen)
-                 const unsigned int& = 0,        // offset x (top-left = [0,0])
-                 const unsigned int& = 0,        // offset y (top-left = [0,0])
-                 const bool& = true);            // refresh ?
+  void drawChild (const RPG_Graphics_WindowType&, // (child) type
+                  SDL_Surface* = NULL,            // target surface (default: screen)
+                  unsigned int = 0,               // offset x (top-left = [0,0])
+                  unsigned int = 0,               // offset y (top-left = [0,0])
+                  bool = true);                   // refresh ?
 
   RPG_Engine*                     myEngine;
   RPG_Client_Engine*              myClient;

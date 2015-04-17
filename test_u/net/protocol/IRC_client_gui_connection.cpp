@@ -326,7 +326,8 @@ IRC_Client_GUI_Connection::IRC_Client_GUI_Connection (Common_UI_GTKState* state_
   ACE_ASSERT (text_view_p);
   IRC_Client_GUI_MessageHandler* message_handler_p = NULL;
   ACE_NEW_NORETURN (message_handler_p,
-                    IRC_Client_GUI_MessageHandler (text_view_p));
+                    IRC_Client_GUI_MessageHandler (CBData_.GTKState,
+                                                   text_view_p));
   if (!message_handler_p)
   {
     ACE_DEBUG ((LM_CRITICAL,
@@ -491,15 +492,8 @@ IRC_Client_GUI_Connection::~IRC_Client_GUI_Connection ()
 
   // remove this from the connection list
   connections_iterator_t iterator =
-      CBData_.connections->find (label_);
-  if (iterator == CBData_.connections->end ())
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("connection (was: \"%s\" --> %@) not found, continuing\n"),
-                ACE_TEXT (label_.c_str ()),
-                this));
-  } // end IF
-  else
+    CBData_.connections->find (label_);
+  if (iterator != CBData_.connections->end ())
     CBData_.connections->erase (iterator);
 
   // remove server page from parent notebook

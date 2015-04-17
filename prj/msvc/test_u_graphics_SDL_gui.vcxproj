@@ -37,6 +37,7 @@
     <Import Project="VS_ProjectPropertySheet_Xercesd_Xsd.props" />
     <Import Project="VS_ProjectPropertySheet_SDL.props" />
     <Import Project="VS_ProjectPropertySheet_png_gtk_gnome.props" />
+    <Import Project="VS_ProjectPropertySheet_glade.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -44,6 +45,7 @@
     <Import Project="VS_ProjectPropertySheet_Xerces_Xsd.props" />
     <Import Project="VS_ProjectPropertySheet_SDL.props" />
     <Import Project="VS_ProjectPropertySheet_png_gtk_gnome.props" />
+    <Import Project="VS_ProjectPropertySheet_glade.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
@@ -13,7 +13,6 @@
     <property name="stock_id">gtk-cancel</property>
   </object>
   <object class="GtkDialog" id="main_entry_dialog">
-    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">please insert data...</property>
     <property name="modal">True</property>
@@ -25,22 +24,55 @@
     <child internal-child="vbox">
       <object class="GtkVBox" id="main_entry_vbox">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <property name="spacing">2</property>
+        <child>
+          <object class="GtkEntry" id="main_entry_entry">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="has_focus">True</property>
+            <property name="is_focus">True</property>
+            <property name="max_length">9</property>
+            <property name="invisible_char">&#x25CF;</property>
+            <property name="activates_default">True</property>
+            <property name="width_chars">9</property>
+            <property name="truncate_multiline">True</property>
+            <property name="shadow_type">etched-out</property>
+            <property name="caps_lock_warning">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
         <child internal-child="action_area">
           <object class="GtkHButtonBox" id="main_entry_action_area">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="homogeneous">True</property>
             <property name="layout_style">end</property>
             <child>
+              <object class="GtkButton" id="main_entry_cancel_button">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="related_action">action_cancel</property>
+                <property name="use_stock">True</property>
+                <property name="focus_on_click">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkButton" id="main_entry_accept_button">
-                <property name="related_action">action_accept</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
+                <property name="related_action">action_accept</property>
                 <property name="use_stock">True</property>
                 <property name="focus_on_click">False</property>
               </object>
@@ -51,51 +83,11 @@
                 <property name="position">0</property>
               </packing>
             </child>
-            <child>
-              <object class="GtkButton" id="main_entry_cancel_button">
-                <property name="related_action">action_cancel</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
-                <property name="focus_on_click">False</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="pack_type">end</property>
             <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEntry" id="main_entry_entry">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="has_focus">True</property>
-            <property name="is_focus">True</property>
-            <property name="max_length">9</property>
-            <property name="invisible_char">●</property>
-            <property name="activates_default">True</property>
-            <property name="width_chars">9</property>
-            <property name="truncate_multiline">True</property>
-            <property name="shadow_type">etched-out</property>
-            <property name="caps_lock_warning">False</property>
-            <property name="primary_icon_activatable">False</property>
-            <property name="secondary_icon_activatable">False</property>
-            <property name="primary_icon_sensitive">True</property>
-            <property name="secondary_icon_sensitive">True</property>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
           </packing>
         </child>
       </object>
@@ -113,15 +105,13 @@
   </object>
   <object class="GtkWindow" id="main_dialog">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
     <property name="title" translatable="yes">IRC client</property>
     <property name="window_position">center</property>
     <property name="destroy_with_parent">True</property>
-    <signal name="delete-event" handler="quit_activated_cb" swapped="no"/>
+    <signal name="delete_event" handler="quit_activated_cb"/>
     <child>
       <object class="GtkVBox" id="main_vbox">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <child>
           <object class="GtkNotebook" id="main_server_tabs">
             <property name="can_focus">True</property>
@@ -141,8 +131,6 @@
             </child>
           </object>
           <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -150,39 +138,34 @@
           <object class="GtkHBox" id="main_send_hbox">
             <property name="visible">True</property>
             <property name="sensitive">False</property>
-            <property name="can_focus">False</property>
             <child>
               <object class="GtkEntry" id="main_send_entry">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="max_length">480</property>
-                <property name="invisible_char">●</property>
+                <property name="invisible_char">&#x25CF;</property>
                 <property name="activates_default">True</property>
                 <property name="truncate_multiline">True</property>
                 <property name="shadow_type">etched-out</property>
-                <property name="primary_icon_activatable">False</property>
-                <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <signal name="focus-in-event" handler="send_entry_kb_focused_cb" swapped="no"/>
+                <signal name="focus_in_event" handler="send_entry_kb_focused_cb"/>
               </object>
               <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkButton" id="main_send_button">
-                <property name="label">gtk-execute</property>
+                <property name="label">_Send</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">False</property>
+                <property name="image">send_button_image</property>
                 <property name="use_underline">True</property>
-                <property name="use_stock">True</property>
                 <property name="focus_on_click">False</property>
-                <signal name="clicked" handler="send_clicked_cb" swapped="no"/>
+                <signal name="clicked" handler="send_clicked_cb"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -201,7 +184,6 @@
         <child>
           <object class="GtkHButtonBox" id="main_hbuttonbox">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="homogeneous">True</property>
             <property name="layout_style">start</property>
             <child>
@@ -215,7 +197,7 @@
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
                 <property name="focus_on_click">False</property>
-                <signal name="clicked" handler="connect_clicked_cb" swapped="no"/>
+                <signal name="clicked" handler="connect_clicked_cb"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -252,7 +234,7 @@
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
                 <property name="focus_on_click">False</property>
-                <signal name="clicked" handler="quit_activated_cb" swapped="no"/>
+                <signal name="clicked" handler="quit_activated_cb"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -272,7 +254,6 @@
         <child>
           <object class="GtkStatusbar" id="main_statusbar">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -282,5 +263,9 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkImage" id="send_button_image">
+    <property name="visible">True</property>
+    <property name="stock">gtk-execute</property>
   </object>
 </interface>

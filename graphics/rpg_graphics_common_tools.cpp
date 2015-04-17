@@ -80,25 +80,25 @@ bool                         RPG_Graphics_Common_Tools::myInitialized = false;
 bool                         RPG_Graphics_Common_Tools::myPreInitialized = false;
 
 void
-RPG_Graphics_Common_Tools::preInit()
+RPG_Graphics_Common_Tools::preInitialize ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::preInit"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::preInitialize"));
 
   // init string conversion facilities
-  RPG_Graphics_Common_Tools::initStringConversionTables();
+  RPG_Graphics_Common_Tools::initStringConversionTables ();
 
-	myPreInitialized = true;
+  myPreInitialized = true;
 }
 
-void
-RPG_Graphics_Common_Tools::init(const std::string& directory_in,
-                                const unsigned int& cacheSize_in,
-                                const bool& initSDL_in)
+bool
+RPG_Graphics_Common_Tools::initialize (const std::string& directory_in,
+                                       unsigned int cacheSize_in,
+                                       bool initSDL_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::init"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::initialize"));
 
-	if (!myPreInitialized)
-		RPG_Graphics_Common_Tools::preInit ();
+  if (!myPreInitialized)
+    RPG_Graphics_Common_Tools::preInitialize ();
 
   if (!directory_in.empty ())
   {
@@ -112,8 +112,7 @@ RPG_Graphics_Common_Tools::init(const std::string& directory_in,
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("invalid argument \"%s\": not a directory, aborting\n"),
                     ACE_TEXT (directory_in.c_str ())));
-
-        return;
+        return false;
       } // end IF
     } // end IF
     myGraphicsDirectory = directory_in;
@@ -124,7 +123,7 @@ RPG_Graphics_Common_Tools::init(const std::string& directory_in,
   if (myInitialized)
   {
     // clean up
-    fini ();
+    finalize ();
 
     myInitialized = false;
   } // end IF
@@ -139,17 +138,18 @@ RPG_Graphics_Common_Tools::init(const std::string& directory_in,
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to initFonts(), aborting\n")));
-
-      return;
+      return false;
     } // end IF
 
-  myInitialized = initSDL_in;
+  myInitialized = true;
+
+  return true;
 }
 
 void
-RPG_Graphics_Common_Tools::fini()
+RPG_Graphics_Common_Tools::finalize ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::fini"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::finalize"));
 
   // synch cache access
   {

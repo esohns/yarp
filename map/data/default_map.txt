@@ -1,18 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<engine_level_t xmlns="urn:rpg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:rpg rpg_engine.xsd">
-
-  <name>default level</name>
-
-  <environment>
-    <plane>PLANE_MATERIAL</plane>
-    <terrain>TERRAIN_UNDER_GROUND</terrain>
-    <climate>CLIMATE_TEMPERATE</climate>
-    <time>TIMEOFDAY_DAYTIME</time>
-    <lighting>AMBIENCE_DARKNESS</lighting>
-    <outdoors>false</outdoors>
-  </environment>
-
-  <map>             ######################   ##########################################
+             ######################   ##########################################
              #....................#   #........................................#
            ###..........@.........#####............@...........................#
            #.=....................#...=........................................#
@@ -52,18 +38,3 @@
 #..#.# #...........# ###.....##########.......###..............................#
 #..=.# #...........#   #.....#        #.......# #..............................#
 ###### #############   #######        ######### ################################
-</map>
-
-  <spawn>
-    <type>Bugbear</type>
-    <interval>
-      <seconds>10</seconds>
-    </interval>
-    <probability>0.3</probability>
-    <max_num_spawned>50</max_num_spawned>
-    <amble_probability>0.5</amble_probability>
-  </spawn>
-
-  <max_num_spawned>50</max_num_spawned>
-
-</engine_level_t>

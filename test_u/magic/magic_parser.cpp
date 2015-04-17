@@ -44,6 +44,7 @@
 #include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
 #include "rpg_common_tools.h"
+#include "rpg_common_XML_tools.h"
 
 #include "rpg_magic_common_tools.h"
 #include "rpg_magic_defines.h"
@@ -57,54 +58,54 @@ do_printUsage(const std::string& programName_in)
   RPG_TRACE(ACE_TEXT("::do_printUsage"));
 
   std::string configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           true);
-#if defined(DEBUG_DEBUGGER)
-  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
 #endif
 
-  std::cout << ACE_TEXT("usage: ")
+  std::cout << ACE_TEXT ("usage: ")
             << programName_in
-            << ACE_TEXT(" [OPTIONS]")
+            << ACE_TEXT (" [OPTIONS]")
             << std::endl
             << std::endl;
-  std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-d       : dump spell dictionary") << std::endl;
-  std::cout << ACE_TEXT("-l       : group levels") << std::endl;
+  std::cout << ACE_TEXT ("currently available options:") << std::endl;
+  std::cout << ACE_TEXT ("-d       : dump spell dictionary") << std::endl;
+  std::cout << ACE_TEXT ("-l       : group levels") << std::endl;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR("magic");
+#if defined (DEBUG_DEBUGGER)
+  path += ACE_TEXT_ALWAYS_CHAR ("magic");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-m [FILE]: spell dictionary (*.xml)")
-            << ACE_TEXT(" [\"")
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
+  std::cout << ACE_TEXT ("-m [FILE]: spell dictionary (*.xml)")
+            << ACE_TEXT (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT("-t       : trace information") << std::endl;
-  std::cout << ACE_TEXT("-v       : print version information and exit")
+  std::cout << ACE_TEXT ("-t       : trace information") << std::endl;
+  std::cout << ACE_TEXT ("-v       : print version information and exit")
             << std::endl;
 }
 
 bool
-do_processArguments(const int& argc_in,
-                    ACE_TCHAR** argv_in, // cannot be const...
-                    bool& dumpDictionary_out,
-                    bool& groupLevels_out,
-                    std::string& magicDictionaryFilename_out,
-                    bool& traceInformation_out,
-                    bool& printVersionAndExit_out)
+do_processArguments (int argc_in,
+                     ACE_TCHAR** argv_in, // cannot be const...
+                     bool& dumpDictionary_out,
+                     bool& groupLevels_out,
+                     std::string& magicDictionaryFilename_out,
+                     bool& traceInformation_out,
+                     bool& printVersionAndExit_out)
 {
-  RPG_TRACE(ACE_TEXT("::do_processArguments"));
+  RPG_TRACE (ACE_TEXT ("::do_processArguments"));
 
   // init results
   std::string configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           true);
-#if defined(DEBUG_DEBUGGER)
-  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
 #endif
 
   dumpDictionary_out          = false;
@@ -112,22 +113,22 @@ do_processArguments(const int& argc_in,
 
   magicDictionaryFilename_out = configuration_path;
   magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
-  magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR("magic");
+#if defined (DEBUG_DEBUGGER)
+  magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR ("magic");
   magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   magicDictionaryFilename_out +=
-      ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
+    ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
 
   traceInformation_out        = false;
   printVersionAndExit_out     = false;
 
-  ACE_Get_Opt argumentParser(argc_in,
-                             argv_in,
-                             ACE_TEXT("dlm:tv"));
+  ACE_Get_Opt argumentParser (argc_in,
+                              argv_in,
+                              ACE_TEXT ("dlm:tv"));
 
   int option = 0;
-  while ((option = argumentParser()) != EOF)
+  while ((option = argumentParser ()) != EOF)
   {
     switch (option)
     {
@@ -185,11 +186,12 @@ do_processArguments(const int& argc_in,
 }
 
 void
-do_work(const bool& dumpDictionary_in,
-        const bool& groupLevels_in,
-        const std::string& fileName_in)
+do_work (const std::string& schemaRepository_in,
+         bool dumpDictionary_in,
+         bool groupLevels_in,
+         const std::string& fileName_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_work"));
+  RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step1: init string conversion tables
   RPG_Dice_Common_Tools::initStringConversionTables();
@@ -197,10 +199,16 @@ do_work(const bool& dumpDictionary_in,
   RPG_Character_Common_Tools::init();
   RPG_Magic_Common_Tools::init();
 
-  // step2: init spell dictionary
+  // step2: initialize spell dictionary
+  if (!RPG_Common_XML_Tools::initialize (schemaRepository_in))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Common_XML_Tools::initialize(), returning\n")));
+    return;
+  } // end IF
   try
   {
-    RPG_MAGIC_DICTIONARY_SINGLETON::instance()->init(fileName_in);
+    RPG_MAGIC_DICTIONARY_SINGLETON::instance ()->init (fileName_in);
   }
   catch (...)
   {
@@ -310,10 +318,17 @@ ACE_TMAIN(int argc_in,
   std::string magic_dictionary_filename = configuration_path;
   magic_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  magic_dictionary_filename += ACE_TEXT_ALWAYS_CHAR("magic");
+  magic_dictionary_filename += ACE_TEXT_ALWAYS_CHAR ("magic");
   magic_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  magic_dictionary_filename += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
+  magic_dictionary_filename += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
+
+  std::string schema_directory = configuration_path;
+#if defined (DEBUG_DEBUGGER)
+  schema_directory = Common_File_Tools::getWorkingDirectory ();
+  schema_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_directory += ACE_TEXT_ALWAYS_CHAR ("magic");
+#endif
 
   bool trace_information                = false;
   bool print_version_and_exit           = false;
@@ -328,7 +343,7 @@ ACE_TMAIN(int argc_in,
                             print_version_and_exit))
   {
     // make 'em learn...
-    do_printUsage (std::string (ACE::basename (argv_in[0])));
+    do_printUsage (ACE::basename (argv_in[0]));
 
     // *PORTABILITY*: on Windows, fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -341,14 +356,11 @@ ACE_TMAIN(int argc_in,
   } // end IF
 
   // step1b: validate arguments
-  if (!Common_File_Tools::isReadable(magic_dictionary_filename))
+  if (!Common_File_Tools::isReadable(magic_dictionary_filename) ||
+      !Common_File_Tools::isDirectory (schema_directory))
   {
-    ACE_DEBUG ((LM_DEBUG,
-                ACE_TEXT ("invalid (XML) filename \"%s\", aborting\n"),
-                ACE_TEXT (magic_dictionary_filename.c_str ())));
-
     // make 'em learn...
-    do_printUsage (std::string (ACE::basename (argv_in[0])));
+    do_printUsage (ACE::basename (argv_in[0]));
 
     // *PORTABILITY*: on Windows, fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -385,7 +397,7 @@ ACE_TMAIN(int argc_in,
   // step1d: handle specific program modes
   if (print_version_and_exit)
   {
-    do_printVersion (std::string (ACE::basename (argv_in[0])));
+    do_printVersion (ACE::basename (argv_in[0]));
 
     // *PORTABILITY*: on Windows, fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -399,12 +411,11 @@ ACE_TMAIN(int argc_in,
 
   ACE_High_Res_Timer timer;
   timer.start ();
-
   // step2: do actual work
-  do_work (dump_dictionary,
+  do_work (schema_directory,
+           dump_dictionary,
            group_levels,
            magic_dictionary_filename);
-
   timer.stop ();
 
 //   // debug info

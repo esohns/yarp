@@ -876,7 +876,7 @@ ACE_TMAIN (int argc_in,
   Net_GTK_CBData_t gtk_cb_user_data;
   // step1e: initialize logging and/or tracing
   RPG_Client_Logger logger (&gtk_cb_user_data.logStack,
-                            &gtk_cb_user_data.GTKState.lock);
+                            &gtk_cb_user_data.logStackLock);
   std::string log_file;
   if (log_to_file &&
       !RPG_Net_Server_Common_Tools::getNextLogFilename (ACE_TEXT_ALWAYS_CHAR (COMMON_DEF_LOG_DIRECTORY),

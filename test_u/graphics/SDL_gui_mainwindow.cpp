@@ -46,27 +46,27 @@
 #include "SDL_gui_levelwindow_3d.h"
 #include "SDL_gui_levelwindow_isometric.h"
 
-SDL_GUI_MainWindow::SDL_GUI_MainWindow(const RPG_Graphics_Size_t& size_in,
-                                       const RPG_Graphics_GraphicTypeUnion& elementType_in,
-                                       const std::string& title_in,
-                                       const RPG_Graphics_Font& fontType_in)
- : inherited(size_in,        // size
-             elementType_in, // element type
-             title_in),      // title
-//              NULL),          // background
-   myScreenshotIndex(1),
-   myLastHoverTime(0),
-   myHaveMouseFocus(true),   // *NOTE*: enforced with SDL_WarpMouse()
-   myTitleFont(fontType_in)//,
-//   myScreenLock()
+SDL_GUI_MainWindow::SDL_GUI_MainWindow (const RPG_Graphics_Size_t& size_in,
+                                        const RPG_Graphics_GraphicTypeUnion& elementType_in,
+                                        const std::string& title_in,
+                                        const RPG_Graphics_Font& fontType_in)
+ : inherited (size_in,        // size
+              elementType_in, // element type
+              title_in)      // title
+//              NULL)          // background
+ , myScreenshotIndex (1)
+ , myLastHoverTime (0)
+ , myHaveMouseFocus (true)   // *NOTE*: enforced with SDL_WarpMouse()
+ , myTitleFont (fontType_in)//
+ //, inherited::screenLock_ ()
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::SDL_GUI_MainWindow"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_MainWindow::SDL_GUI_MainWindow"));
 
 }
 
-SDL_GUI_MainWindow::~SDL_GUI_MainWindow()
+SDL_GUI_MainWindow::~SDL_GUI_MainWindow ()
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::~SDL_GUI_MainWindow"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_MainWindow::~SDL_GUI_MainWindow"));
 
 }
 
@@ -95,7 +95,7 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
 
   // sanity check(s)
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : myScreen);
+                                                  : inherited::screen_);
   ACE_ASSERT(target_surface);
   ACE_ASSERT(static_cast<int>(offsetX_in) <= target_surface->w);
   ACE_ASSERT(static_cast<int>(offsetY_in) <= target_surface->h);
@@ -116,15 +116,15 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
   // step3: fill central area
   SDL_Rect prev_clip_rect, clip_rect, dirty_region;
   SDL_GetClipRect (target_surface, &prev_clip_rect);
-  clip_rect.x = static_cast<Sint16>(offsetX_in + myBorderLeft);
-  clip_rect.y = static_cast<Sint16>(offsetY_in + myBorderTop);
-  clip_rect.w = static_cast<Uint16>(target_surface->w               -
-                                    offsetX_in                      -
-                                    (myBorderLeft + myBorderRight));
-  clip_rect.h = static_cast<Uint16>(target_surface->h               -
-                                    offsetY_in                      -
-                                    (myBorderTop + myBorderBottom));
-  if (!SDL_SetClipRect(target_surface, &clip_rect))
+  clip_rect.x = static_cast<Sint16> (offsetX_in + borderLeft_);
+  clip_rect.y = static_cast<Sint16> (offsetY_in + borderTop_);
+  clip_rect.w = static_cast<Uint16> (target_surface->w               -
+                                     offsetX_in                      -
+                                     (borderLeft_ + borderRight_));
+  clip_rect.h = static_cast<Uint16> (target_surface->h               -
+                                     offsetY_in                      -
+                                     (borderTop_ + borderBottom_));
+  if (!SDL_SetClipRect (target_surface, &clip_rect))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
@@ -138,11 +138,11 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
   RPG_Graphics_InterfaceElementsConstIterator_t iterator;
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_CENTER);
   ACE_ASSERT(iterator != myElementGraphics.end());
-  for (unsigned int i = (offsetY_in + myBorderTop);
-       i < (target_surface->h - myBorderBottom);
+  for (unsigned int i = (offsetY_in + borderTop_);
+       i < (target_surface->h - borderBottom_);
        i += (*iterator).second->h)
-    for (unsigned int j = (offsetX_in + myBorderLeft);
-         j < (target_surface->w - myBorderRight);
+    for (unsigned int j = (offsetX_in + borderLeft_);
+         j < (target_surface->w - borderRight_);
          j += (*iterator).second->w)
     {
       RPG_Graphics_Surface::put(std::make_pair(j,
@@ -222,12 +222,12 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
 //                      ACE_TEXT("gained mouse coverage...\n")));
 
 //          // *HACK*: prevents MOST "mouse trails" (NW borders)...
-//          drawBorder(myScreen,
+//          drawBorder(inherited::screen_,
 //                     0,
 //                     0);
 //          drawTitle(myTitleFont,
 //                    myTitle,
-//                    myScreen);
+//                    inherited::screen_);
 //          refresh();
 
           myHaveMouseFocus = true;
@@ -238,12 +238,12 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
 //                      ACE_TEXT("lost mouse coverage...\n")));
 
 //          // *HACK*: prevents MOST "mouse trails" (NW borders)...
-//          drawBorder(myScreen,
+//          drawBorder(inherited::screen_,
 //                     0,
 //                     0);
 //          drawTitle(myTitleFont,
 //                    myTitle,
-//                    myScreen);
+//                    inherited::screen_);
 //          refresh();
 
           myHaveMouseFocus = false;
@@ -291,7 +291,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         case SDLK_s:
         {
           std::ostringstream converter;
-          converter << myScreenshotIndex++;
+          converter << inherited::screen_shotIndex++;
           std::string dump_path = Common_File_Tools::getDumpDirectory();
           dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
           dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_SCREENSHOT_DEF_PREFIX);
@@ -763,7 +763,7 @@ SDL_GUI_MainWindow::lock()
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::lock"));
 
-  if (myScreenLock.acquire() == -1)
+  if (inherited::screen_Lock.acquire() == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Thread_Mutex::acquire(): \"%m\", continuing\n")));
 }
@@ -773,7 +773,7 @@ SDL_GUI_MainWindow::unlock()
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::unlock"));
 
-  if (myScreenLock.release() == -1)
+  if (inherited::screen_Lock.release() == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Thread_Mutex::release(): \"%m\", continuing\n")));
 }
@@ -910,7 +910,7 @@ SDL_GUI_MainWindow::initMap(state_t* state_in,
   } // end IF
 
   // init window
-  window_base->setScreen(myScreen);
+  window_base->setScreen(inherited::screen_);
 
   return true;
 }
@@ -924,7 +924,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
 
   // sanity check(s)
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : myScreen);
+                                                  : inherited::screen_);
   ACE_ASSERT(target_surface);
   ACE_ASSERT(static_cast<int>(offsetX_in) <= target_surface->w);
   ACE_ASSERT(static_cast<int>(offsetY_in) <= target_surface->h);
@@ -939,11 +939,11 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   SDL_GetClipRect(target_surface, &prev_clip_rect);
 
 	// step1: draw border elements
-  clip_rect.x = static_cast<Sint16>(offsetX_in + myBorderLeft);
+  clip_rect.x = static_cast<Sint16>(offsetX_in + borderLeft_);
   clip_rect.y = static_cast<Sint16>(offsetY_in);
   clip_rect.w = static_cast<Uint16>(myClipRect.w -
-                                    (myBorderLeft + myBorderRight));
-  clip_rect.h = static_cast<Uint16>(myBorderTop);
+                                    (borderLeft_ + borderRight_));
+  clip_rect.h = static_cast<Uint16>(borderTop_);
 	if (!SDL_SetClipRect(target_surface, &clip_rect))
   {
     ACE_DEBUG((LM_ERROR,
@@ -954,8 +954,8 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   } // end IF
 	iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_TOP);
   ACE_ASSERT(iterator != myElementGraphics.end());
-	for (i = offsetX_in + myBorderLeft;
-       i < (static_cast<unsigned int>(myClipRect.w) - myBorderRight);
+	for (i = offsetX_in + borderLeft_;
+       i < (static_cast<unsigned int>(myClipRect.w) - borderRight_);
        i += (*iterator).second->w)
 	{
     RPG_Graphics_Surface::put(std::make_pair(i,
@@ -976,8 +976,8 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
 
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_LEFT);
   ACE_ASSERT(iterator != myElementGraphics.end());
-  for (i = (offsetY_in + myBorderTop);
-       i < (static_cast<unsigned int>(myClipRect.h) - myBorderBottom);
+  for (i = (offsetY_in + borderTop_);
+       i < (static_cast<unsigned int>(myClipRect.h) - borderBottom_);
        i += (*iterator).second->h)
 	{
     RPG_Graphics_Surface::put(std::make_pair(offsetX_in,
@@ -990,11 +990,11 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
 
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_RIGHT);
   ACE_ASSERT(iterator != myElementGraphics.end());
-  for (i = (offsetY_in + myBorderTop);
-       i < (static_cast<unsigned int>(myClipRect.h) - myBorderBottom);
+  for (i = (offsetY_in + borderTop_);
+       i < (static_cast<unsigned int>(myClipRect.h) - borderBottom_);
        i += (*iterator).second->h)
 	{
-    RPG_Graphics_Surface::put(std::make_pair((myClipRect.w - myBorderRight),
+    RPG_Graphics_Surface::put(std::make_pair((myClipRect.w - borderRight_),
                                              i),
                                *(*iterator).second,
                                target_surface,
@@ -1002,11 +1002,11 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
 		invalidate(dirty_region);
 	} // end FOR
 
-  clip_rect.x = static_cast<Sint16>(offsetX_in + myBorderLeft);
-  clip_rect.y = static_cast<Sint16>(offsetY_in + myClipRect.h - myBorderBottom);
+  clip_rect.x = static_cast<Sint16>(offsetX_in + borderLeft_);
+  clip_rect.y = static_cast<Sint16>(offsetY_in + myClipRect.h - borderBottom_);
   clip_rect.w = static_cast<Uint16>(myClipRect.w -
-                                    (myBorderLeft + myBorderRight));
-  clip_rect.h = static_cast<Uint16>(myBorderBottom);
+                                    (borderLeft_ + borderRight_));
+  clip_rect.h = static_cast<Uint16>(borderBottom_);
 	if (!SDL_SetClipRect(target_surface, &clip_rect))
   {
     ACE_DEBUG((LM_ERROR,
@@ -1017,13 +1017,13 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   } // end IF
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_BOTTOM);
   ACE_ASSERT(iterator != myElementGraphics.end());
-  for (i = (offsetX_in + myBorderLeft);
-       i < (myClipRect.w - myBorderRight);
+  for (i = (offsetX_in + borderLeft_);
+       i < (myClipRect.w - borderRight_);
        i += (*iterator).second->w)
 	{
     RPG_Graphics_Surface::put(std::make_pair(i,
                                              (offsetY_in +
-                                              (myClipRect.h - myBorderBottom))),
+                                              (myClipRect.h - borderBottom_))),
                               *(*iterator).second,
                               target_surface,
                               dirty_region);
@@ -1098,7 +1098,7 @@ SDL_GUI_MainWindow::drawTitle(const RPG_Graphics_Font& font_in,
 
   // sanity check
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : myScreen);
+                                                  : inherited::screen_);
   ACE_ASSERT(target_surface);
 
   RPG_Graphics_TextSize_t title_size =
@@ -1106,8 +1106,8 @@ SDL_GUI_MainWindow::drawTitle(const RPG_Graphics_Font& font_in,
                                           text_in);
 
   SDL_Rect clip_rect, dirty_region;
-  clip_rect.x = static_cast<Sint16>(myBorderLeft);
-  clip_rect.y = static_cast<Sint16>((myBorderTop - title_size.second) / 2);
+  clip_rect.x = static_cast<Sint16>(borderLeft_);
+  clip_rect.y = static_cast<Sint16>((borderTop_ - title_size.second) / 2);
   clip_rect.w = static_cast<Uint16>(title_size.first);
   clip_rect.h = static_cast<Uint16>(title_size.second);
   if (!SDL_SetClipRect(target_surface, &clip_rect))
@@ -1128,8 +1128,8 @@ SDL_GUI_MainWindow::drawTitle(const RPG_Graphics_Font& font_in,
                                 RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_Graphics_SDL_Tools::getColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
                                                                                                          *target_surface),
                                                                         *target_surface),
-                                std::make_pair(myBorderLeft,                             // top left
-                                               ((myBorderTop - title_size.second) / 2)), // center of top border
+                                std::make_pair(borderLeft_,                             // top left
+                                               ((borderTop_ - title_size.second) / 2)), // center of top border
                                 target_surface,
                                 dirty_region);
   invalidate(dirty_region);

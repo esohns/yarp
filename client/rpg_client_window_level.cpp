@@ -262,11 +262,11 @@ RPG_Client_Window_Level::setView(const RPG_Map_Position_t& view_in)
 }
 
 void
-RPG_Client_Window_Level::setView(const int& offsetX_in,
-                                 const int& offsetY_in,
-                                 const bool& lockedAccess_in)
+RPG_Client_Window_Level::setView (int offsetX_in,
+                                  int offsetY_in,
+                                  bool lockedAccess_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::setView"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::setView"));
 
   RPG_Map_Size_t size = myEngine->getSize(lockedAccess_in);
 
@@ -317,9 +317,9 @@ RPG_Client_Window_Level::toggleMiniMap()
   myDrawMinimap = !myDrawMinimap;
 
   // retrieve map window handle
-  RPG_Graphics_WindowsConstIterator_t iterator = myChildren.begin();
+  RPG_Graphics_WindowsConstIterator_t iterator = children_.begin();
   for (;
-       iterator != myChildren.end();
+       iterator != children_.end();
        iterator++)
   {
     if ((*iterator)->getType() == WINDOW_MINIMAP)
@@ -425,29 +425,28 @@ RPG_Client_Window_Level::toggleShowCoordinates()
 #endif
 
 bool
-RPG_Client_Window_Level::init(RPG_Client_Engine* clientEngine_in,
-                              RPG_Engine* engine_in,
-                              const bool& debug_in)
+RPG_Client_Window_Level::initialize (RPG_Client_Engine* clientEngine_in,
+                                     RPG_Engine* engine_in,
+                                     bool debug_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::init"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::initialize"));
 
   // sanity checks
-  ACE_ASSERT(clientEngine_in);
-  ACE_ASSERT(engine_in);
+  ACE_ASSERT (clientEngine_in);
+  ACE_ASSERT (engine_in);
 
   myClient = clientEngine_in;
   myEngine = engine_in;
 
   // init edge, wall, door tiles
-  init(myClient->getStyle());
+  initialize (myClient->getStyle ());
 
   // init minimap/message windows
-  if (!initMiniMap(debug_in) ||
-      !initMessageWindow())
+  if (!initMiniMap (debug_in) ||
+      !initMessageWindow ())
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to initialize sub-windows, aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to initialize sub-windows, aborting\n")));
     return false;
   } // end IF
 
@@ -455,14 +454,14 @@ RPG_Client_Window_Level::init(RPG_Client_Engine* clientEngine_in,
 }
 
 void
-RPG_Client_Window_Level::drawBorder(SDL_Surface* targetSurface_in,
-                                   const unsigned int& offsetX_in,
-                                   const unsigned int& offsetY_in)
+RPG_Client_Window_Level::drawBorder (SDL_Surface* targetSurface_in,
+                                     unsigned int offsetX_in,
+                                     unsigned int offsetY_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::drawBorder"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::drawBorder"));
 
   // *NOTE*: should NEVER be reached !
-  ACE_ASSERT(false);
+  ACE_ASSERT (false);
 
 #if defined (_MSC_VER)
   return;
@@ -472,131 +471,131 @@ RPG_Client_Window_Level::drawBorder(SDL_Surface* targetSurface_in,
 }
 
 void
-RPG_Client_Window_Level::drawChild(const RPG_Graphics_WindowType& child_in,
-                                  SDL_Surface* targetSurface_in,
-                                  const unsigned int& offsetX_in,
-                                  const unsigned int& offsetY_in,
-                                  const bool& refresh_in)
+RPG_Client_Window_Level::drawChild (const RPG_Graphics_WindowType& child_in,
+                                    SDL_Surface* targetSurface_in,
+                                    unsigned int offsetX_in,
+                                    unsigned int offsetY_in,
+                                    bool refresh_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::drawChild"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::drawChild"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  ACE_Guard<ACE_Thread_Mutex> aGuard (myLock);
 
   // sanity check(s)
   ACE_ASSERT(child_in != RPG_GRAPHICS_WINDOWTYPE_INVALID);
   // set target surface
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : myScreen);
+                                                  : inherited::screen_);
   ACE_ASSERT(target_surface);
 
   // draw any child(ren) of a specific type
-  for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
-       iterator != myChildren.end();
+  for (RPG_Graphics_WindowsIterator_t iterator = inherited::children_.begin ();
+       iterator != inherited::children_.end ();
        iterator++)
   {
-    if (((*iterator)->getType() != child_in)              ||
+    if (((*iterator)->getType () != child_in) ||
         ((child_in == WINDOW_MINIMAP) && !myDrawMinimap)  || // minimap switched off...
         ((child_in == WINDOW_MESSAGE) && !myShowMessages))   // message window switched off...
       continue;
 
     try
     {
-      (*iterator)->draw(target_surface,
-                        offsetX_in,
-                        offsetY_in);
+      (*iterator)->draw (target_surface,
+                         offsetX_in,
+                         offsetY_in);
     }
     catch (...)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw(), continuing\n")));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("caught exception in RPG_Graphics_IWindow::draw(), continuing\n")));
     }
 
     if (refresh_in)
     {
       try
       {
-        (*iterator)->update(target_surface);
+        (*iterator)->update (target_surface);
       }
       catch (...)
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught exception in RPG_Graphics_IWindow::update(), continuing\n")));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("caught exception in RPG_Graphics_IWindow::update(), continuing\n")));
       }
     } // end IF
   } // end FOR
 }
 
 void
-RPG_Client_Window_Level::init(const RPG_Graphics_Style& style_in)
+RPG_Client_Window_Level::initialize (const RPG_Graphics_Style& style_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::init"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::initialize"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  ACE_Guard<ACE_Thread_Mutex> aGuard (myLock);
 
   // init style
   RPG_Graphics_StyleUnion style;
   style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
   style.floorstyle = style_in.floor;
-  if (!setStyle(style))
+  if (!setStyle (style))
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Client_Window_Level::setStyle(FLOORSTYLE), continuing\n")));
   style.discriminator = RPG_Graphics_StyleUnion::EDGESTYLE;
   style.edgestyle = style_in.edge;
-  if (!setStyle(style))
+  if (!setStyle (style))
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Client_Window_Level::setStyle(EDGESTYLE), continuing\n")));
   style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
   style.wallstyle = style_in.wall;
-  if (!setStyle(style))
+  if (!setStyle (style))
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Client_Window_Level::setStyle(WALLSTYLE), continuing\n")));
   style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
   style.doorstyle = style_in.door;
-  if (!setStyle(style))
+  if (!setStyle (style))
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Client_Window_Level::setStyle(DOORSTYLE), continuing\n")));
 
   // init tiles / position
-  RPG_Client_Common_Tools::initFloorEdges(*myEngine,
-                                          myCurrentFloorEdgeSet,
-                                          myFloorEdgeTiles);
-  RPG_Client_Common_Tools::initWalls(*myEngine,
-                                     myCurrentWallSet,
-                                     myWallTiles);
-  RPG_Client_Common_Tools::initDoors(*myEngine,
-                                     myCurrentDoorSet,
-                                     myDoorTiles);
+  RPG_Client_Common_Tools::initFloorEdges (*myEngine,
+                                           myCurrentFloorEdgeSet,
+                                           myFloorEdgeTiles);
+  RPG_Client_Common_Tools::initWalls (*myEngine,
+                                      myCurrentWallSet,
+                                      myWallTiles);
+  RPG_Client_Common_Tools::initDoors (*myEngine,
+                                      myCurrentDoorSet,
+                                      myDoorTiles);
 }
 
 void
-RPG_Client_Window_Level::setBlendRadius(const unsigned char& radius_in)
+RPG_Client_Window_Level::setBlendRadius (unsigned char radius_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::setBlendRadius"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::setBlendRadius"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  ACE_Guard<ACE_Thread_Mutex> aGuard (myLock);
 
   // sanity check
   if (radius_in == 0)
   {
-    for (RPG_Client_BlendingMaskCacheIterator_t iterator = myLightingCache.begin();
-         iterator != myLightingCache.end();
+    for (RPG_Client_BlendingMaskCacheIterator_t iterator = myLightingCache.begin ();
+         iterator != myLightingCache.end ();
          iterator++)
-      SDL_FreeSurface(*iterator);
-    myLightingCache.clear();
+      SDL_FreeSurface (*iterator);
+    myLightingCache.clear ();
 
     return;
   } // end IF
 
   // grow/shrink cache as necessary
-  int delta = myLightingCache.size() - radius_in;
+  int delta = myLightingCache.size () - radius_in;
   if (delta > 0)
   {
     for (int i = delta;
          i > 0;
          i--)
     {
-      SDL_FreeSurface(myLightingCache.back());
-      myLightingCache.pop_back();
+      SDL_FreeSurface (myLightingCache.back ());
+      myLightingCache.pop_back ();
     } // end FOR
   } // end IF
   else if (delta < 0)
@@ -606,15 +605,14 @@ RPG_Client_Window_Level::setBlendRadius(const unsigned char& radius_in)
          i > 0;
          i--)
     {
-      new_entry = RPG_Graphics_Surface::create(RPG_GRAPHICS_TILE_FLOOR_WIDTH,
-                                               RPG_GRAPHICS_TILE_FLOOR_HEIGHT);
+      new_entry = RPG_Graphics_Surface::create (RPG_GRAPHICS_TILE_FLOOR_WIDTH,
+                                                RPG_GRAPHICS_TILE_FLOOR_HEIGHT);
       if (!new_entry)
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), aborting\n"),
-                   RPG_GRAPHICS_TILE_FLOOR_WIDTH,
-                   RPG_GRAPHICS_TILE_FLOOR_HEIGHT));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to RPG_Graphics_Surface::create(%u,%u), returning\n"),
+                    RPG_GRAPHICS_TILE_FLOOR_WIDTH,
+                    RPG_GRAPHICS_TILE_FLOOR_HEIGHT));
         return;
       } // end IF
       myLightingCache.push_back(new_entry);
@@ -624,93 +622,91 @@ RPG_Client_Window_Level::setBlendRadius(const unsigned char& radius_in)
 
   // *NOTE*: quantum == (SDL_ALPHA_OPAQUE / (visible_radius + 1));
   Uint8 quantum = static_cast<Uint8>(SDL_ALPHA_OPAQUE / (radius_in + 1));
-  RPG_Client_BlendingMaskCacheIterator_t iterator = myLightingCache.begin();
+  RPG_Client_BlendingMaskCacheIterator_t iterator = myLightingCache.begin ();
   for (unsigned int i = 1;
        i <= radius_in;
        i++, iterator++)
   {
-    RPG_Graphics_Surface::copy(*myOffMapTile,
-                               **iterator);
-    RPG_Graphics_Surface::alpha((i * quantum),
+    RPG_Graphics_Surface::copy (*myOffMapTile,
                                 **iterator);
+    RPG_Graphics_Surface::alpha ((i * quantum),
+                                 **iterator);
   } // end FOR
 }
 
 void
-RPG_Client_Window_Level::updateMinimap()
+RPG_Client_Window_Level::updateMinimap ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::updateMinimap"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::updateMinimap"));
 
   // sanity check
-  if (!showMiniMap())
+  if (!showMiniMap ())
     return;
 
-  drawChild(WINDOW_MINIMAP,
-            NULL,
-            0, 0,
-            true);
+  drawChild (WINDOW_MINIMAP,
+             NULL,
+             0, 0,
+             true);
 }
 
 void
-RPG_Client_Window_Level::updateMessageWindow(const std::string& message_in)
+RPG_Client_Window_Level::updateMessageWindow (const std::string& message_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::updateMessageWindow"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::updateMessageWindow"));
 
-  RPG_Graphics_IWindowBase* child = inherited::child(WINDOW_MESSAGE);
+  RPG_Graphics_IWindowBase* child = inherited::child (WINDOW_MESSAGE);
   if (!child)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_SDLWindowBase::child(WINDOW_MESSAGE), aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_SDLWindowBase::child(WINDOW_MESSAGE), returning\n")));
     return;
   } // end IF
   RPG_Client_Window_Message* message_window =
-      dynamic_cast<RPG_Client_Window_Message*>(child);
+    dynamic_cast<RPG_Client_Window_Message*>(child);
   if (!message_window)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to dynamic_cast<RPG_Client_Window_Message*>(%@), aborting\n"),
-               child));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to dynamic_cast<RPG_Client_Window_Message*>(%@), returning\n"),
+                child));
     return;
   } // end IF
-  message_window->push(message_in);
+  message_window->push (message_in);
 
   // sanity check
-  if (!showMessages())
+  if (!showMessages ())
     return;
 
-  drawChild(WINDOW_MESSAGE,
-            NULL,
-            0, 0,
-            true);
+  drawChild (WINDOW_MESSAGE,
+             NULL,
+             0, 0,
+             true);
 }
 
 void
-RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
-                              const unsigned int& offsetX_in,
-                              const unsigned int& offsetY_in)
+RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
+                               unsigned int offsetX_in,
+                               unsigned int offsetY_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::draw"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::draw"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  ACE_Guard<ACE_Thread_Mutex> aGuard (myLock);
 
   // sanity check(s)
-  ACE_ASSERT(myEngine);
-  ACE_ASSERT(myCeilingTile);
-  ACE_ASSERT(myOffMapTile);
-  ACE_ASSERT(myInvisibleTile);
-  ACE_ASSERT(myVisionBlendTile);
+  ACE_ASSERT (myEngine);
+  ACE_ASSERT (myCeilingTile);
+  ACE_ASSERT (myOffMapTile);
+  ACE_ASSERT (myInvisibleTile);
+  ACE_ASSERT (myVisionBlendTile);
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : myScreen);
-  ACE_ASSERT(target_surface);
-  ACE_ASSERT(static_cast<int>(offsetX_in) <= target_surface->w);
-  ACE_ASSERT(static_cast<int>(offsetY_in) <= target_surface->h);
+                                                  : inherited::screen_);
+  ACE_ASSERT (target_surface);
+  ACE_ASSERT (static_cast<int> (offsetX_in) <= target_surface->w);
+  ACE_ASSERT (static_cast<int> (offsetY_in) <= target_surface->h);
 
   // init clipping
-  clip(target_surface,
-       offsetX_in,
-       offsetY_in);
+  inherited::clip (target_surface,
+                   offsetX_in,
+                   offsetY_in);
 
   // *NOTE*: mapping tile coordinates to world-, and world- to screen coordinates basically
   // works as follows (DImetric projection):
@@ -735,7 +731,7 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
   //    - Yscreen = (Xworld + Yworld)*sin(a)*e - Yorigin + Ycenter
 
   // position of the top right corner
-  RPG_Graphics_Position_t top_right = std::make_pair(0, 0);
+  RPG_Graphics_Position_t top_right = std::make_pair (0, 0);
 //   top_right.first = (((-RPG_GRAPHICS_TILE_HEIGHT_MOD * ((targetSurface->w / 2) + 50)) +
 //                       (RPG_GRAPHICS_TILE_WIDTH_MOD * ((targetSurface->h / 2) + 50)) +
 //                       (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
@@ -1341,8 +1337,8 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
   myEngine->unlock();
 
   // realize any children
-  for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
-       iterator != myChildren.end();
+  for (RPG_Graphics_WindowsIterator_t iterator = children_.begin();
+       iterator != children_.end();
        iterator++)
   {
     if ((((*iterator)->getType() == WINDOW_MINIMAP) && !myDrawMinimap) ||
@@ -1370,8 +1366,8 @@ RPG_Client_Window_Level::draw(SDL_Surface* targetSurface_in,
   unclip(target_surface);
 
   // remember position of last realization
-  myLastAbsolutePosition = std::make_pair(myClipRect.x,
-                                          myClipRect.y);
+  lastAbsolutePosition_ = std::make_pair (inherited::clipRectangle_.x,
+                                          inherited::clipRectangle_.y);
 }
 
 void
@@ -1819,12 +1815,12 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
       RPG_Graphics_Position_t curent_view = getView();
       myEngine->lock();
       myClientAction.position =
-          RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.motion.x,
+        RPG_Graphics_Common_Tools::screen2Map (std::make_pair (event_in.motion.x,
                                                                event_in.motion.y),
-                                                myEngine->getSize(false),
-                                                std::make_pair(myClipRect.w,
-																								               myClipRect.h),
-																								curent_view);
+                                               myEngine->getSize(false),
+                                               std::make_pair (inherited::clipRectangle_.w,
+                                                               inherited::clipRectangle_.h),
+                                               curent_view);
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse position [%u,%u] --> [%u,%u]\n"),
 //                  event_in.button.x,
@@ -1999,8 +1995,8 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
             RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.button.x,
                                                                  event_in.button.y),
                                                   myEngine->getSize(false),
-                                                  std::make_pair(myClipRect.w,
-																									               myClipRect.h),
+                                                  std::make_pair(inherited::clipRectangle_.w,
+																									               inherited::clipRectangle_.h),
 																									curent_view);
         //ACE_DEBUG((LM_DEBUG,
         //           ACE_TEXT("mouse position [%u,%u] --> map position [%u,%u]\n"),
@@ -2510,40 +2506,39 @@ RPG_Client_Window_Level::initCeiling()
 }
 
 void
-RPG_Client_Window_Level::initWallBlend(const bool& halfHeightWalls_in)
+RPG_Client_Window_Level::initWallBlend (bool halfHeightWalls_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::initWallBlend"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::initWallBlend"));
 
   // sanity check
   if (myWallBlend)
   {
-    SDL_FreeSurface(myWallBlend);
+    SDL_FreeSurface (myWallBlend);
     myWallBlend = NULL;
   } // end IF
 
   myWallBlend =
-      RPG_Graphics_Surface::create(RPG_GRAPHICS_TILE_WALL_WIDTH,
-                                   (halfHeightWalls_in ? RPG_GRAPHICS_TILE_WALL_HEIGHT_HALF
-                                                       : RPG_GRAPHICS_TILE_WALL_HEIGHT));
+    RPG_Graphics_Surface::create (RPG_GRAPHICS_TILE_WALL_WIDTH,
+                                  (halfHeightWalls_in ? RPG_GRAPHICS_TILE_WALL_HEIGHT_HALF
+                                                      : RPG_GRAPHICS_TILE_WALL_HEIGHT));
   if (!myWallBlend)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), aborting\n"),
-               RPG_GRAPHICS_TILE_WALL_WIDTH,
-               (halfHeightWalls_in ? RPG_GRAPHICS_TILE_WALL_HEIGHT_HALF
-                                   : RPG_GRAPHICS_TILE_WALL_HEIGHT)));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Surface::create(%u,%u), returning\n"),
+                RPG_GRAPHICS_TILE_WALL_WIDTH,
+                (halfHeightWalls_in ? RPG_GRAPHICS_TILE_WALL_HEIGHT_HALF
+                                    : RPG_GRAPHICS_TILE_WALL_HEIGHT)));
     return;
   } // end IF
 
-  if (SDL_FillRect(myWallBlend,
-                   NULL,
-                   RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK_A10,
-                                                    *myWallBlend)))
+  if (SDL_FillRect (myWallBlend,
+                    NULL,
+                    RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK_A10,
+                                                      *myWallBlend)))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
-               ACE_TEXT(SDL_GetError())));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_FillRect(): %s, returning\n"),
+                ACE_TEXT (SDL_GetError ())));
 
     // clean up
     SDL_FreeSurface(myWallBlend);
@@ -2554,63 +2549,61 @@ RPG_Client_Window_Level::initWallBlend(const bool& halfHeightWalls_in)
 }
 
 bool
-RPG_Client_Window_Level::initMiniMap(const bool& debug_in)
+RPG_Client_Window_Level::initMiniMap (bool debug_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::initMiniMap"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::initMiniMap"));
 
   // sanity check(s)
-  ACE_ASSERT(myClient);
-  ACE_ASSERT(myEngine);
-  ACE_ASSERT(inherited::myScreen);
+  ACE_ASSERT (myClient);
+  ACE_ASSERT (myEngine);
+  ACE_ASSERT (inherited::screen_);
 
   RPG_Graphics_Offset_t offset =
       std::make_pair(std::numeric_limits<int>::max(),
                      std::numeric_limits<int>::max());
   RPG_Client_Window_MiniMap* minimap_window = NULL;
-  ACE_NEW_NORETURN(minimap_window,
-                   RPG_Client_Window_MiniMap(*this,
-                                             offset,
-                                             debug_in));
+  ACE_NEW_NORETURN (minimap_window,
+                    RPG_Client_Window_MiniMap (*this,
+                                               offset,
+                                               debug_in));
   if (!minimap_window)
   {
     ACE_DEBUG((LM_CRITICAL,
                ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
                sizeof(RPG_Client_Window_MiniMap)));
-
     return false;
   } // end IF
 
-  minimap_window->init(myClient, myEngine);
-  minimap_window->setScreen(inherited::myScreen);
+  minimap_window->initialize (myClient, myEngine);
+  minimap_window->setScreen (inherited::screen_);
 
   return true;
 }
 
 bool
-RPG_Client_Window_Level::initMessageWindow()
+RPG_Client_Window_Level::initMessageWindow ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::initMessageWindow"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::initMessageWindow"));
 
   // sanity check(s)
-  ACE_ASSERT(myClient);
-  ACE_ASSERT(inherited::myScreen);
+  ACE_ASSERT (myClient);
+  ACE_ASSERT (inherited::screen_);
 
   RPG_Client_Window_Message* message_window = NULL;
-  ACE_NEW_NORETURN(message_window,
-                   RPG_Client_Window_Message(*this));
+  ACE_NEW_NORETURN (message_window,
+                    RPG_Client_Window_Message (*this));
   if (!message_window)
   {
-    ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
-               sizeof(RPG_Client_Window_Message)));
-
+    ACE_DEBUG ((LM_CRITICAL,
+                ACE_TEXT ("failed to allocate memory(%u): %m, aborting\n"),
+                sizeof (RPG_Client_Window_Message)));
     return false;
   } // end IF
 
-  message_window->init(myClient,
-                       RPG_CLIENT_MESSAGE_FONT,
-                       RPG_CLIENT_MESSAGE_DEF_NUM_LINES);
-  message_window->setScreen(inherited::myScreen);
+  message_window->initialize (myClient,
+                              RPG_CLIENT_MESSAGE_FONT,
+                              RPG_CLIENT_MESSAGE_DEF_NUM_LINES);
+  message_window->setScreen (inherited::screen_);
 
   return true;
 }

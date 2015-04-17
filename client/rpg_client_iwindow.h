@@ -21,18 +21,19 @@
 #ifndef RPG_CLIENT_IWINDOW_H
 #define RPG_CLIENT_IWINDOW_H
 
-#include "rpg_graphics_iwindow_base.h"
+#include "SDL.h"
 
-#include <SDL.h>
+#include "rpg_graphics_iwindow_base.h"
 
 class RPG_Client_IWindow
  : public virtual RPG_Graphics_IWindowBase
 {
  public:
-  // exposed interface
-  virtual void drawBorder(SDL_Surface* = NULL,          // target surface (default: screen)
-                          const unsigned int& = 0,      // offset x (top-left = [0,0])
-                          const unsigned int& = 0) = 0; // offset y (top-left = [0,0])
+  virtual ~RPG_Client_IWindow () {};
+
+  virtual void drawBorder (SDL_Surface* = NULL,   // target surface (default: screen)
+                           unsigned int = 0,      // offset x (top-left = [0,0])
+                           unsigned int = 0) = 0; // offset y (top-left = [0,0])
 };
 
 #endif

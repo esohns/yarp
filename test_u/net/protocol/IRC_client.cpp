@@ -390,21 +390,29 @@ do_work (RPG_Net_Protocol_Configuration& configuration_in,
               ACE_TEXT ("started event dispatch...\n")));
 
   // step6: (try to) connect to the server
-  ACE_INET_Addr remote_address (serverPortNumber_in,
-                                serverHostname_in.c_str ());
-  if (!connector_p->connect (remote_address))
+  ACE_INET_Addr peer_address (serverPortNumber_in,
+                              serverHostname_in.c_str ());
+  bool result = connector_p->connect (peer_address);
+  if (!RPG_NET_USES_REACTOR)
+  {
+    ACE_Time_Value delay (1, 0);
+    ACE_OS::sleep (delay);
+    if (RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->numConnections () != 1)
+      result = false;
+  } // end IF
+  if (!result)
   {
     // debug info
     ACE_TCHAR buffer[BUFSIZ];
     ACE_OS::memset (buffer, 0, sizeof (buffer));
-    int result = remote_address.addr_to_string (buffer,
-                                                sizeof (buffer));
+    int result = peer_address.addr_to_string (buffer,
+                                              sizeof (buffer));
     if (result == -1)
       ACE_DEBUG ((LM_ERROR,
-      ACE_TEXT ("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
+                  ACE_TEXT ("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
     ACE_DEBUG ((LM_ERROR,
-      ACE_TEXT ("failed to connect(\"%s\"): \"%m\", returning\n"),
-      buffer));
+                ACE_TEXT ("failed to connect(\"%s\"): \"%m\", returning\n"),
+                buffer));
 
     // clean up
     COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();

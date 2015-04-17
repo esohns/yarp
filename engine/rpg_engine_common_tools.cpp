@@ -112,7 +112,12 @@ RPG_Engine_Common_Tools::init(const std::string& schemaDirectory_in,
   RPG_Character_Common_Tools::init();
 
   // step1c: init dictionaries
-  RPG_Common_XML_Tools::init(schemaDirectory_in);
+  if (!RPG_Common_XML_Tools::initialize (schemaDirectory_in))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Common_XML_Tools::initialize(), returning\n")));
+    return;
+  } // end IF
 
   // step1ca: init magic dictionary
   if (!magicDictionaryFile_in.empty())
@@ -188,7 +193,7 @@ RPG_Engine_Common_Tools::fini ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::fini"));
 
-  RPG_Common_XML_Tools::fini ();
+  RPG_Common_XML_Tools::finalize ();
 }
 
 bool
@@ -718,7 +723,7 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Player_Party_t& party_in
   } // end FOR
 
   // step2: sort according to criteria: descending initiative / DEX modifier
-  // *TODO*: --> typedef
+  // *BUG*: --> typedef
   std::pair<RPG_Engine_CombatantSequenceIterator_t,
             bool> preliminarySequencePosition;
   RPG_Engine_CombatSequenceList_t conflicts;
@@ -727,14 +732,14 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Player_Party_t& party_in
        iterator++)
   {
     // make sure there is a PROPER sequence:
-    // if the set already contains this value we must resolve the conflict
+    // if the set already contains this value, resolve the conflict
     // (again)
     // *IMPORTANT NOTE*: this algorithm implements the notion of fairness as
     // appropriate between two HUMAN/HUMAN-Monster actors, i.e. we could have
-    // just re-rolled the current element until it doesn't clash. In a
-    // real-world situation (depending on the relevance of the CURRENT position)
-    // this would trigger discussions of WHO would re-roll...
-    preliminarySequencePosition = battleSequence_out.insert(*iterator);
+    // just re-rolled the current element until it doesn't clash.
+    //  In a real-world situation (depending on the relevance of the CURRENT
+    //  position) this could trigger discussions of WHO would re-roll...
+    preliminarySequencePosition = battleSequence_out.insert (*iterator);
     if (preliminarySequencePosition.second == false)
     {
       // find conflicting element

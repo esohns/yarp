@@ -36,10 +36,10 @@
 #include "rpg_client_common.h"
 
 RPG_Client_Logger::RPG_Client_Logger (RPG_Client_MessageStack_t* stack_in,
-                                      ACE_Thread_Mutex* lock_in)
+                                      ACE_Recursive_Thread_Mutex* lock_in)
  : inherited ()
- , myMessageStack (stack_in)
- , myLock (lock_in)
+ , messageStack_ (stack_in)
+ , lock_ (lock_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Logger::RPG_Client_Logger"));
 
@@ -83,8 +83,8 @@ RPG_Client_Logger::log (ACE_Log_Record& record_in)
   RPG_TRACE (ACE_TEXT ("RPG_Client_Logger::log"));
 
   // sanity check(s)
-  ACE_ASSERT (myLock);
-  ACE_ASSERT (myMessageStack);
+  ACE_ASSERT (lock_);
+  ACE_ASSERT (messageStack_);
 
   std::ostringstream string_stream;
   int result =
@@ -99,9 +99,9 @@ RPG_Client_Logger::log (ACE_Log_Record& record_in)
     return -1;
   } // end IF
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard (*myLock);
+  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard (*lock_);
 
-  myMessageStack->push_back (string_stream.str ());
+  messageStack_->push_back (string_stream.str ());
 
   return 0;
 }

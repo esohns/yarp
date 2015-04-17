@@ -408,22 +408,28 @@ do_initGUI (const std::string& graphicsDictionary_in,
   // sanity check(s)
   if (!Common_File_Tools::isDirectory (graphicsDirectory_in.c_str ()))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid directory \"%s\", aborting\n"),
-               ACE_TEXT(graphicsDirectory_in.c_str())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("invalid directory \"%s\", aborting\n"),
+                ACE_TEXT (graphicsDirectory_in.c_str ())));
     return false;
   } // end IF
-  RPG_Graphics_Common_Tools::init (graphicsDirectory_in,
-                                   RPG_CLIENT_GRAPHICS_DEF_CACHESIZE,
-                                   false);
+  RPG_Graphics_Common_Tools::preInitialize ();
   RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->init (graphicsDictionary_in
 #ifdef _DEBUG
-                                                      ,true
+                                                        , true
 #else
-                                                      ,false
+                                                        , false
 #endif
-                                                      );
+                                                        );
+
+  if (!RPG_Graphics_Common_Tools::initialize (graphicsDirectory_in,
+                                              RPG_CLIENT_GRAPHICS_DEF_CACHESIZE,
+                                              false))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Common_Tools::initialize(): \"%m\", aborting\n")));
+    return false;
+  } // end IF
 
   // init SDL UI handling
 
@@ -518,16 +524,14 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
                                level))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to load level map (was: \"%s\"), aborting\n"),
+               ACE_TEXT("failed to load level map (was: \"%s\"), returning\n"),
                ACE_TEXT(levelFilename_in.c_str())));
-
     return;
   } // end IF
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("loaded level map: \"%s\"\n%s\n"),
-             ACE_TEXT(levelFilename_in.c_str()),
-             ACE_TEXT(RPG_Map_Level::info(level.map).c_str())));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("loaded level map: \"%s\"\n%s\n"),
+              ACE_TEXT (levelFilename_in.c_str ()),
+              ACE_TEXT (RPG_Map_Level::info (level.map).c_str ())));
 
   // step2: process doors
   RPG_Map_Positions_t door_positions;
@@ -558,7 +562,7 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
                    configuration_in.video_configuration)) // SDL_video configuration
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to initialize video, aborting\n")));
+                ACE_TEXT ("failed to initialize video, returning\n")));
 
     GDK_THREADS_LEAVE ();
 
@@ -568,17 +572,22 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
   ACE_ASSERT (userData_in.screen);
   //ACE_ASSERT(user_data.XML);
 
-  RPG_Client_Common_Tools::init (configuration_in.input_configuration,
-                                 configuration_in.audio_configuration.SDL_configuration,
-                                 configuration_in.audio_configuration.repository,
-                                 configuration_in.audio_configuration.use_CD,
-                                 RPG_SOUND_DEF_CACHESIZE,
-                                 configuration_in.audio_configuration.mute,
-                                 configuration_in.audio_configuration.dictionary,
-                                 configuration_in.graphics_directory,
-                                 RPG_CLIENT_GRAPHICS_DEF_CACHESIZE,
-                                 configuration_in.graphics_dictionary,
-                                 true);
+  if (!RPG_Client_Common_Tools::initialize (configuration_in.input_configuration,
+                                            configuration_in.audio_configuration.SDL_configuration,
+                                            configuration_in.audio_configuration.repository,
+                                            configuration_in.audio_configuration.use_CD,
+                                            RPG_SOUND_DEF_CACHESIZE,
+                                            configuration_in.audio_configuration.mute,
+                                            configuration_in.audio_configuration.dictionary,
+                                            configuration_in.graphics_directory,
+                                            RPG_CLIENT_GRAPHICS_DEF_CACHESIZE,
+                                            configuration_in.graphics_dictionary,
+                                            true))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Client_Common_Tools::initialize(): \"%m\", returning\n")));
+    return;
+  } // end IF
 
   RPG_Character_Conditions_t condition;
   condition.insert(CONDITION_NORMAL);
@@ -592,7 +601,7 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
   if (!userData_in.entity.character)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Player::load(\"%s\"), aborting\n"),
+                ACE_TEXT ("failed to RPG_Player::load(\"%s\"), returning\n"),
                 ACE_TEXT (playerProfile_in.c_str ())));
     return;
   } // end IF
@@ -631,7 +640,7 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
   if (!level_engine.isRunning ())
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to start level engine, aborting\n")));
+                ACE_TEXT ("failed to start level engine, returning\n")));
     return;
   } // end IF
 
@@ -647,10 +656,15 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
                                       title,                                       // title (== caption)
                                       FONT_MAIN_LARGE);                            // title font
   main_window.setScreen(userData_in.screen);
-  main_window.init (&client_engine,
-                    RPG_CLIENT_WINDOW_DEF_EDGE_AUTOSCROLL,
-                    &level_engine,
-                    false);
+  if (!main_window.initialize (&client_engine,
+                               RPG_CLIENT_WINDOW_DEF_EDGE_AUTOSCROLL,
+                               &level_engine,
+                               false))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Client_Window_Main::initialize(): \"%m\", returning\n")));
+    return;
+  } // end IF
 
   // step5e: client engine
   client_engine.initialize (&level_engine,
@@ -692,11 +706,11 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
   client_engine.start();
   if (!client_engine.isRunning())
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to start client engine, aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to start client engine, returning\n")));
 
     // clean up
-    level_engine.stop();
+    level_engine.stop ();
 
     return;
   } // end IF
@@ -710,7 +724,7 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
   if (!userData_in.eventTimer)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to SDL_AddTimer(%u): \"%s\", aborting\n"),
+                ACE_TEXT ("failed to SDL_AddTimer(%u): \"%s\", returning\n"),
                 RPG_CLIENT_SDL_EVENT_TIMEOUT,
                 ACE_TEXT (SDL_GetError ())));
 
@@ -769,12 +783,12 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
     if (SDL_WaitEvent(&sdl_event) != 1)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
+                 ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", returning\n"),
                  ACE_TEXT(SDL_GetError())));
 
       // clean up
-      level_engine.stop();
-      client_engine.stop();
+      level_engine.stop ();
+      client_engine.stop ();
 
       return;
     } // end IF
@@ -828,9 +842,8 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
                                                                           handle))
                 {
                   ACE_DEBUG((LM_ERROR,
-                             ACE_TEXT("invalid item ID: %d, aborting\n"),
+                             ACE_TEXT("invalid item ID: %d, returning\n"),
                              *iterator));
-
                   return;
                 } // end IF
                 ACE_ASSERT(handle);
@@ -1084,14 +1097,14 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
 
   // done handling UI events
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished working...\n")));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("finished working...\n")));
 } // end do_work
 
 void
-do_printVersion(const std::string& programName_in)
+do_printVersion (const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_printVersion"));
+  RPG_TRACE (ACE_TEXT ("::do_printVersion"));
 
   std::cout << programName_in
 #ifdef HAVE_CONFIG_H
@@ -1248,7 +1261,7 @@ ACE_TMAIN (int argc_in,
                             print_version_and_exit))
   {
     // make 'em learn...
-    do_printUsage (std::string (ACE::basename (argv_in[0])));
+    do_printUsage (ACE::basename (argv_in[0]));
 
     // clean up
     // *PORTABILITY*: on Windows, must fini ACE...
@@ -1269,11 +1282,8 @@ ACE_TMAIN (int argc_in,
       !Common_File_Tools::isReadable (level_map)           ||
       !Common_File_Tools::isReadable (UI_file))
   {
-    ACE_DEBUG ((LM_DEBUG,
-                ACE_TEXT ("invalid argument(s), aborting\n")));
-
     // make 'em learn...
-    do_printUsage (std::string (ACE::basename (argv_in[0])));
+    do_printUsage (ACE::basename (argv_in[0]));
 
     // clean up
     // *PORTABILITY*: on Windows, must fini ACE...
@@ -1331,7 +1341,7 @@ ACE_TMAIN (int argc_in,
   // step1d: handle specific program modes
   if (print_version_and_exit)
   {
-    do_printVersion (std::string (ACE::basename (argv_in[0])));
+    do_printVersion (ACE::basename (argv_in[0]));
 
     // clean up
     // *PORTABILITY*: on Windows, must fini ACE...
@@ -1346,6 +1356,7 @@ ACE_TMAIN (int argc_in,
 
   // step1db: init configuration object
   RPG_Client_Configuration_t configuration;
+  ACE_OS::memset (&configuration, 0, sizeof (configuration));
 
   // *** reactor ***
   configuration.num_dispatch_threads                = 0;
@@ -1365,19 +1376,15 @@ ACE_TMAIN (int argc_in,
 
   configuration.graphics_directory = data_path;
   configuration.graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#ifdef BASEDIR
-  configuration.graphics_directory +=
-   ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
+#if defined (DEBUG_DEBUGGER)
+  configuration.graphics_directory += ACE_TEXT_ALWAYS_CHAR ("graphics");
   configuration.graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  configuration.graphics_directory +=
-   ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DATA_SUB);
+  configuration.graphics_directory += ACE_TEXT_ALWAYS_CHAR ("data");
 #else
-  configuration.graphics_directory += ACE_TEXT_ALWAYS_CHAR("graphics");
-  configuration.graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  configuration.graphics_directory +=
-   ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
+  configuration.graphics_directory += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DATA_SUB);
 #endif
-  configuration.graphics_dictionary += graphics_dictionary;
+
+  configuration.graphics_dictionary = graphics_dictionary;
 
   // *** magic ***
   configuration.magic_dictionary.clear();

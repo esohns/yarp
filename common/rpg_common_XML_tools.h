@@ -21,37 +21,40 @@
 #ifndef RPG_COMMON_XML_TOOLS_H
 #define RPG_COMMON_XML_TOOLS_H
 
+#include <string>
+
+#include "ace/Global_Macros.h"
+
+#include "xercesc/framework/XMLGrammarPool.hpp"
+#include "xercesc/sax2/SAX2XMLReader.hpp"
+
 #include "rpg_common_exports.h"
 
-#include <xercesc/framework/XMLGrammarPool.hpp>
-#include <xercesc/sax2/SAX2XMLReader.hpp>
-
-#include <ace/Global_Macros.h>
-
-#include <string>
+// forward declarations
+struct dirent;
 
 class RPG_Common_Export RPG_Common_XML_Tools
 {
  public:
-   static void init(const std::string&); // schema path
-   static void fini();
+   static bool initialize (const std::string&); // schema path
+   static void finalize ();
 
-   static ::xercesc::SAX2XMLReader* parser();
+   static ::xercesc::SAX2XMLReader* parser ();
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Common_XML_Tools());
-  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Common_XML_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Common_XML_Tools(const RPG_Common_XML_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Common_XML_Tools& operator=(const RPG_Common_XML_Tools&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Common_XML_Tools ());
+  ACE_UNIMPLEMENTED_FUNC (virtual ~RPG_Common_XML_Tools ());
+  ACE_UNIMPLEMENTED_FUNC (RPG_Common_XML_Tools (const RPG_Common_XML_Tools&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Common_XML_Tools& operator=(const RPG_Common_XML_Tools&));
 
   // helper methods
-  static int dirent_selector(const dirent*);
-  static int dirent_comparator(const dirent**,
-                               const dirent**);
+  static int dirent_selector (const dirent*);
+  static int dirent_comparator (const dirent**,
+                                const dirent**);
 
-  static ::xercesc::XMLGrammarPool* myGrammarPool;
-  static ::xercesc::SAX2XMLReader*  myParser;
-  static bool                       myInitialized;
+  static ::xercesc::XMLGrammarPool* grammarPool_;
+  static ::xercesc::SAX2XMLReader*  parser_;
+  static bool                       initialized_;
 };
 
 #endif

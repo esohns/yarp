@@ -24,8 +24,6 @@
 #include "common_timer_manager.h"
 #include "common_tools.h"
 
-#include "common_ui_gtk_manager.h"
-
 #include "net_connection_manager_common.h"
 
 #include "rpg_common_macros.h"
@@ -176,9 +174,6 @@ Net_Client_SignalHandler::handleSignal (int signal_in)
     // *IMPORTANT NOTE*: as long as connections are inactive (i.e. events are
     // dispatched by reactor thread(s), there is no real reason to wait here)
     //RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
-
-    // step2: stop GTK event dispatch
-    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
 
     // step3: stop reactor (&& proactor, if applicable)
     Common_Tools::finalizeEventDispatch (true,          // stop reactor ?

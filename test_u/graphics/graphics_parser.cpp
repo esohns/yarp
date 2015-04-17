@@ -99,10 +99,10 @@ do_processArguments(const int argc_in,
   RPG_TRACE(ACE_TEXT("::do_processArguments"));
 
   std::string configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           true);
-#if defined(DEBUG_DEBUGGER)
-  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
 #endif
 
   // init configuration
@@ -110,11 +110,11 @@ do_processArguments(const int argc_in,
 
   filename_out            = configuration_path;
   filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
-  filename_out += ACE_TEXT_ALWAYS_CHAR("graphics");
+#if defined (DEBUG_DEBUGGER)
+  filename_out += ACE_TEXT_ALWAYS_CHAR ("graphics");
   filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  filename_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DICTIONARY_FILE);
+  filename_out += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
 
   traceInformation_out    = false;
   printVersionAndExit_out = false;
@@ -183,39 +183,37 @@ do_processArguments(const int argc_in,
 }
 
 void
-do_work(const bool& dumpDictionary_in,
-        const std::string& dictionary_in,
-        const bool& validateXML_in)
+do_work (const std::string& schemaRepository_in,
+         bool dumpDictionary_in,
+         const std::string& dictionary_in,
+         bool validateXML_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_work"));
+  RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step0: init: random seed, string conversion facilities, ...
   RPG_Dice::init();
-  RPG_Dice_Common_Tools::initStringConversionTables();
-
-  std::string schema_directory =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           true);
-#if defined(DEBUG_DEBUGGER)
-  schema_directory = RPG_Common_File_Tools::getWorkingDirectory();
-#endif
-  schema_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER) // running a debugger ?
-  schema_directory += ACE_TEXT_ALWAYS_CHAR("graphics");
-  schema_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#else
-#endif
-  RPG_Common_XML_Tools::init(schema_directory);
+  RPG_Dice_Common_Tools::initStringConversionTables ();
+  if (!RPG_Common_XML_Tools::initialize (schemaRepository_in))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Common_XML_Tools::initialize(), returning\n")));
+    return;
+  } // end IF
   std::string directory;
-  RPG_Graphics_Common_Tools::init(directory,
-                                  0,
-                                  false);
+  if (!RPG_Graphics_Common_Tools::initialize (directory,
+                                              0,
+                                              false))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Common_Tools::initialize(), returning\n")));
+    return;
+  } // end IF
 
   // step1a: init graphics dictionary
   try
   {
-    RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(dictionary_in,
-                                                        validateXML_in);
+    RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->init (dictionary_in,
+                                                          validateXML_in);
   }
   catch (...)
   {
@@ -227,10 +225,13 @@ do_work(const bool& dumpDictionary_in,
 
   // step2: dump graphics descriptions
   if (dumpDictionary_in)
-    RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->dump();
+    RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->dump ();
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished working...\n")));
+  // step3: clean up
+  RPG_Graphics_Common_Tools::finalize ();
+
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("finished working...\n")));
 } // end do_work
 
 void
@@ -312,10 +313,10 @@ ACE_TMAIN(int argc_in,
   // step1: init
   // step1a set defaults
   std::string configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           true);
-#if defined(DEBUG_DEBUGGER)
-  configuration_path = RPG_Common_File_Tools::getWorkingDirectory();
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+                                                          true);
+#if defined (DEBUG_DEBUGGER)
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
 #endif
 
   // init configuration
@@ -323,11 +324,18 @@ ACE_TMAIN(int argc_in,
 
   std::string filename           = configuration_path;
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
-  filename += ACE_TEXT_ALWAYS_CHAR("graphics");
+#if defined (DEBUG_DEBUGGER)
+  filename += ACE_TEXT_ALWAYS_CHAR ("graphics");
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DICTIONARY_FILE);
+  filename += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
+
+  std::string schema_directory   = configuration_path;
+#if defined (DEBUG_DEBUGGER)
+  schema_directory = Common_File_Tools::getWorkingDirectory ();
+  schema_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_directory += ACE_TEXT_ALWAYS_CHAR ("graphics");
+#endif
 
   bool trace_information         = false;
   bool print_version_and_exit    = false;
@@ -356,12 +364,9 @@ ACE_TMAIN(int argc_in,
   } // end IF
 
   // step1b: validate arguments
-  if (!Common_File_Tools::isReadable (filename))
+  if (!Common_File_Tools::isReadable (filename)         ||
+      !Common_File_Tools::isDirectory (schema_directory))
   {
-    ACE_DEBUG ((LM_DEBUG,
-                ACE_TEXT ("invalid (XML) filename \"%s\", aborting\n"),
-                ACE_TEXT (filename.c_str ())));
-
     // make 'em learn...
     do_printUsage(std::string(ACE::basename(argv_in[0])));
 
@@ -414,11 +419,12 @@ ACE_TMAIN(int argc_in,
 
   // step2: do actual work
   ACE_High_Res_Timer timer;
-  timer.start();
-  do_work(dump_dictionary,
-          filename,
-          validate_XML);
-  timer.stop();
+  timer.start ();
+  do_work (schema_directory,
+           dump_dictionary,
+           filename,
+           validate_XML);
+  timer.stop ();
   // debug info
   std::string working_time_string;
   ACE_Time_Value working_time;

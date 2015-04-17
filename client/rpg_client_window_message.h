@@ -19,17 +19,17 @@
 #ifndef RPG_CLIENT_WINDOW_MESSAGE_H
 #define RPG_CLIENT_WINDOW_MESSAGE_H
 
+#include <string>
+
+#include "ace/Global_Macros.h"
+#include "ace/Synch.h"
+
+#include "SDL.h"
+
 #include "rpg_client_common.h"
 
-#include "rpg_graphics_SDL_window_sub.h"
 #include "rpg_graphics_font.h"
-
-#include <SDL.h>
-
-#include <ace/Global_Macros.h>
-#include <ace/Synch.h>
-
-#include <string>
+#include "rpg_graphics_SDL_window_sub.h"
 
 // forward declarations
 class RPG_Common_ILock;
@@ -38,31 +38,31 @@ class RPG_Client_Window_Message
  : public RPG_Graphics_SDLWindowSub
 {
  public:
-  RPG_Client_Window_Message(const RPG_Graphics_SDLWindowBase&); // parent
-  virtual ~RPG_Client_Window_Message();
+  RPG_Client_Window_Message (const RPG_Graphics_SDLWindowBase&); // parent
+  virtual ~RPG_Client_Window_Message ();
 
-  void init(RPG_Common_ILock*,        // screen lock interface handle
-            const RPG_Graphics_Font&, // font
-            const unsigned int&);     // lines
-  void push(const std::string&); // message
+  void initialize (RPG_Common_ILock*,        // screen lock interface handle
+                   const RPG_Graphics_Font&, // font
+                   unsigned int);            // #lines
+  void push (const std::string&); // message
 
   // implement (part of) RPG_Graphics_IWindowBase
-  virtual void draw(SDL_Surface* = NULL,      // target surface (default: screen)
-                    const unsigned int& = 0,  // offset x (top-left = [0,0])
-                    const unsigned int& = 0); // offset y (top-left = [0,0])
-  virtual void handleEvent(const SDL_Event&,          // event
-                           RPG_Graphics_IWindowBase*, // target window (NULL: this)
-                           SDL_Rect&);                // return value: "dirty" region
+  virtual void draw (SDL_Surface* = NULL, // target surface (default: screen)
+                     unsigned int = 0,    // offset x (top-left = [0,0])
+                     unsigned int = 0);   // offset y (top-left = [0,0])
+  virtual void handleEvent (const SDL_Event&,          // event
+                            RPG_Graphics_IWindowBase*, // target window (NULL: this)
+                            SDL_Rect&);                // return value: "dirty" region
 
  private:
   typedef RPG_Graphics_SDLWindowSub inherited;
 
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Message());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Message(const RPG_Client_Window_Message&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Window_Message& operator=(const RPG_Client_Window_Message&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Message ());
+  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Message (const RPG_Client_Window_Message&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Message& operator= (const RPG_Client_Window_Message&));
 
   // helper methods
-  void initScrollSpots();
+  void initScrollSpots ();
 
   RPG_Client_Engine*        myClient;
   RPG_Graphics_Font         myFont;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <player_t xmlns="urn:rpg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:rpg rpg_player.xsd">
 
-  <name>aHpQFAC</name>
+  <name>pOvWSw</name>
 
   <abilities>
     <ability>ABILITY_SPELLS</ability>
@@ -9,34 +9,31 @@
 
   <alignment>
     <civic>ALIGNMENTCIVIC_NEUTRAL</civic>
-    <ethic>ALIGNMENTETHIC_GOOD</ethic>
+    <ethic>ALIGNMENTETHIC_NEUTRAL</ethic>
   </alignment>
 
   <attributes>
     <strength>13</strength>
-    <dexterity>16</dexterity>
-    <constitution>13</constitution>
-    <intelligence>16</intelligence>
-    <wisdom>12</wisdom>
-    <charisma>13</charisma>
+    <dexterity>12</dexterity>
+    <constitution>14</constitution>
+    <intelligence>12</intelligence>
+    <wisdom>14</wisdom>
+    <charisma>17</charisma>
   </attributes>
 
-  <defaultSize>SIZE_SMALL</defaultSize>
+  <defaultSize>SIZE_MEDIUM</defaultSize>
 
   <feats>
+    <feat>FEAT_COMBAT_REFLEXES</feat>
     <feat>FEAT_PROFICIENCY_ARMOR_LIGHT</feat>
     <feat>FEAT_PROFICIENCY_ARMOR_MEDIUM</feat>
     <feat>FEAT_PROFICIENCY_ARMOR_HEAVY</feat>
     <feat>FEAT_PROFICIENCY_MARTIAL_WEAPONS</feat>
-    <feat>FEAT_SELF_SUFFICIENT</feat>
     <feat>FEAT_PROFICIENCY_SHIELD</feat>
     <feat>FEAT_PROFICIENCY_SIMPLE_WEAPONS</feat>
   </feats>
 
-  <knownSpells>
-    <spell>SPELL_CAUSE_FEAR</spell>
-    <spell>SPELL_DISRUPT_UNDEAD</spell>
-  </knownSpells>
+  <knownSpells/>
 
   <maxHP>10</maxHP>
 
@@ -46,91 +43,61 @@
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_BLUFF</skill>
+      <skill>SKILL_CRAFT_SMITH_BLACK</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_CRAFT_ALL</skill>
+      <skill>SKILL_DIPLOMACY</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_CRAFT_ALCHEMY</skill>
+      <skill>SKILL_DISGUISE</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_CRAFT_BOWYER</skill>
+      <skill>SKILL_ESCAPE_ARTIST</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_CRAFT_SMITH_ARMOR</skill>
+      <skill>SKILL_HEAL</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_DISABLE_DEVICE</skill>
+      <skill>SKILL_KNOWLEDGE_LOCAL</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_GATHER_INFORMATION</skill>
+      <skill>SKILL_KNOWLEDGE_RELIGION</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_JUMP</skill>
+      <skill>SKILL_KNOWLEDGE_PLANES</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_KNOWLEDGE_ARCHITECTURE_ENGINEERING</skill>
+      <skill>SKILL_SURVIVAL</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_KNOWLEDGE_DUNGEONS</skill>
+      <skill>SKILL_SWIM</skill>
       <rank>1</rank>
     </skill>
     <skill>
-      <skill>SKILL_KNOWLEDGE_NATURE</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_LISTEN</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_OPEN_LOCK</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_PERFORM</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_RIDE</skill>
-      <rank>2</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_SENSE_MOTIVE</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_SPELLCRAFT</skill>
-      <rank>1</rank>
-    </skill>
-    <skill>
-      <skill>SKILL_USE_MAGIC_DEVICE</skill>
+      <skill>SKILL_USE_ROPE</skill>
       <rank>1</rank>
     </skill>
   </skills>
 
   <classXML>
     <metaClass>METACLASS_WARRIOR</metaClass>
-    <subClass>SUBCLASS_DRUID</subClass>
     <subClass>SUBCLASS_PALADIN</subClass>
-    <subClass>SUBCLASS_WIZARD</subClass>
   </classXML>
 
-  <gender>GENDER_FEMALE</gender>
+  <gender>GENDER_MALE</gender>
 
   <offhand>OFFHAND_LEFT</offhand>
 
-  <race>RACE_GNOME</race>
+  <race>RACE_ORC</race>
 
   <gold>0</gold>
 

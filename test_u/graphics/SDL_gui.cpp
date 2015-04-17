@@ -1459,23 +1459,28 @@ do_work(const mode_t& mode_in,
     return;
   } // end IF
   // step1b: pre-init graphics
-  RPG_Graphics_Common_Tools::preInit();
+  RPG_Graphics_Common_Tools::preInitialize ();
   // step1c: init graphics dictionary
   RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(graphicsDictionary_in,
                                                       validateXML_in);
   // step1b: init graphics
-  RPG_Graphics_Common_Tools::init(graphicsDirectory_in,
-                                  cacheSize_in,
-                                  true);
+  if (!RPG_Graphics_Common_Tools::initialize (graphicsDirectory_in,
+                                              cacheSize_in,
+                                              true))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Common_Tools::initialize(): \"%m\", returning\n")));
+    return;
+  } // end IF
+
   // step1d: init video window
   if (!RPG_Graphics_SDL_Tools::initVideo(videoConfiguration_in,                     // configuration
                                          ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION), // window/icon caption
                                          state.screen,                              // return value: window surface
                                          true))                                     // init window surface ?
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_SDL_Tools::initVideo, aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::initVideo, returning\n")));
     return;
   } // end IF
   ACE_ASSERT(state.screen);
@@ -1488,8 +1493,7 @@ do_work(const mode_t& mode_in,
   if (!RPG_Client_Common_Tools::initSDLInput(input_configuration))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Client_Common_Tools::initSDLInput, aborting\n")));
-
+               ACE_TEXT("failed to RPG_Client_Common_Tools::initSDLInput, returning\n")));
     return;
   } // end IF
 

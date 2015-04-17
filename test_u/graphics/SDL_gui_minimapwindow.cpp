@@ -67,19 +67,19 @@ SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase& p
 
   // adjust position, size
   SDL_Rect parent_area;
-  ACE_ASSERT(myParent);
-  myParent->getArea(parent_area);
-  myClipRect.x =
+  ACE_ASSERT(inherited::parent_);
+  inherited::parent_->getArea(parent_area);
+  clipRectangle_.x =
       ((offset_in.first == std::numeric_limits<int>::max()) ? ((parent_area.x + parent_area.w) -
                                                                myBG->w                         -
                                                                RPG_CLIENT_MINIMAP_DEF_OFFSET_X)
                                                             : offset_in.first);
-  myClipRect.y =
+  clipRectangle_.y =
       ((offset_in.second == std::numeric_limits<int>::max()) ? (parent_area.y                   +
                                                                 RPG_CLIENT_MINIMAP_DEF_OFFSET_Y)
                                                              : offset_in.second);
-  myClipRect.w = mySurface->w;
-  myClipRect.h = mySurface->h;
+  clipRectangle_.w = mySurface->w;
+  clipRectangle_.h = mySurface->h;
 }
 
 SDL_GUI_MinimapWindow::~SDL_GUI_MinimapWindow()
@@ -165,11 +165,11 @@ SDL_GUI_MinimapWindow::init(state_t* state_in,
   RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::init"));
 
   // sanity check(s)
-  ACE_ASSERT(state_in);
+  ACE_ASSERT (state_in);
 
   myState = state_in;
-  inherited::init(screenLock_in,
-                  (state_in->screen->flags & SDL_DOUBLEBUF));
+  inherited::initialize (screenLock_in,
+                         (state_in->screen->flags & SDL_DOUBLEBUF));
 }
 
 void
@@ -181,7 +181,7 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
 
   // sanity check(s)
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : myScreen);
+                                                  : screen_);
   ACE_ASSERT(target_surface);
   ACE_UNUSED_ARG(offsetX_in);
   ACE_UNUSED_ARG(offsetY_in);
@@ -212,24 +212,24 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
   SDL_Rect destination_rectangle = {0, 0, 3, 2};
   Uint32* pixels = NULL;
   RPG_Engine_EntityID_t entity_id = 0, active_entity_id;
-	float blend_factor = 1.0F;
+  float blend_factor = 1.0F;
   myEngine->lock();
   RPG_Map_Size_t size = myEngine->getSize(false);
   active_entity_id = myEngine->getActive(false);
-	RPG_Map_Positions_t visible_positions;
-	RPG_Map_PositionsConstIterator_t visible_iterator;
-	RPG_Client_SeenPositionsConstIterator_t has_seen_iterator =
-			myState->seen_positions.end();
-	RPG_Map_PositionsConstIterator_t has_seen_iterator_2;
-	myState->lock.acquire();
-	if (active_entity_id)
-	{
-		myEngine->getVisiblePositions(active_entity_id,
-																	visible_positions,
-																	false);
-		has_seen_iterator = myState->seen_positions.find(active_entity_id);
-	} // end IF
-	RPG_Map_Element map_element;
+  RPG_Map_Positions_t visible_positions;
+  RPG_Map_PositionsConstIterator_t visible_iterator;
+  RPG_Client_SeenPositionsConstIterator_t has_seen_iterator =
+    myState->seen_positions.end ();
+  RPG_Map_PositionsConstIterator_t has_seen_iterator_2;
+  myState->lock.acquire ();
+  if (active_entity_id)
+  {
+    myEngine->getVisiblePositions (active_entity_id,
+                                   visible_positions,
+                                   false);
+    has_seen_iterator = myState->seen_positions.find (active_entity_id);
+  } // end IF
+  RPG_Map_Element map_element;
   for (unsigned int y = 0;
        y < size.second;
        y++)
@@ -255,16 +255,16 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
         map_element = myEngine->getElement(map_position, false);
         switch (map_element)
         {
-					case MAPELEMENT_DOOR:
-						tile = MINIMAPTILE_DOOR; break;
-					case MAPELEMENT_FLOOR:
+          case MAPELEMENT_DOOR:
+            tile = MINIMAPTILE_DOOR; break;
+          case MAPELEMENT_FLOOR:
             tile = MINIMAPTILE_FLOOR; break;
           case MAPELEMENT_STAIRS:
             tile = MINIMAPTILE_STAIRS; break;
-					case MAPELEMENT_UNMAPPED:
-						tile = MINIMAPTILE_NONE; break;
-					case MAPELEMENT_WALL:
-						tile = MINIMAPTILE_WALL; break;
+          case MAPELEMENT_UNMAPPED:
+            tile = MINIMAPTILE_NONE; break;
+          case MAPELEMENT_WALL:
+            tile = MINIMAPTILE_WALL; break;
           default:
           {
             ACE_DEBUG((LM_ERROR,
@@ -287,16 +287,16 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
           color_name = RPG_CLIENT_MINIMAPCOLOR_FLOOR; break;
         case MINIMAPTILE_MONSTER:
           color_name = RPG_CLIENT_MINIMAPCOLOR_MONSTER; break;
-				case MINIMAPTILE_NONE:
-					color_name = RPG_CLIENT_MINIMAPCOLOR_UNMAPPED; break;
-				case MINIMAPTILE_PLAYER:
+        case MINIMAPTILE_NONE:
+          color_name = RPG_CLIENT_MINIMAPCOLOR_UNMAPPED; break;
+        case MINIMAPTILE_PLAYER:
           color_name = RPG_CLIENT_MINIMAPCOLOR_PLAYER; break;
         case MINIMAPTILE_PLAYER_ACTIVE:
           color_name = RPG_CLIENT_MINIMAPCOLOR_PLAYER_ACTIVE; break;
         case MINIMAPTILE_STAIRS:
           color_name = RPG_CLIENT_MINIMAPCOLOR_STAIRS; break;
-				case MINIMAPTILE_WALL:
-					color_name = RPG_CLIENT_MINIMAPCOLOR_WALL; break;
+        case MINIMAPTILE_WALL:
+          color_name = RPG_CLIENT_MINIMAPCOLOR_WALL; break;
         default:
         {
           ACE_DEBUG((LM_ERROR,
@@ -306,26 +306,26 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
           continue;
         }
       } // end SWITCH
-			blend_factor = 1.0F; // --> opaque
-			if (color_name != RPG_CLIENT_MINIMAPCOLOR_UNMAPPED)
-			{
-				// handle vision
-				visible_iterator = visible_positions.find(map_position);
-				if ((visible_iterator == visible_positions.end()) &&
-						(has_seen_iterator != myState->seen_positions.end()) &&
-						!myState->debug)
-				{
-					// seen previously ?
-					has_seen_iterator_2 = (*has_seen_iterator).second.find(map_position);
-					if (has_seen_iterator_2 == (*has_seen_iterator).second.end())
-						color_name = RPG_CLIENT_MINIMAPCOLOR_UNMAPPED;
-					else
-						blend_factor = RPG_GRAPHICS_TILE_PREVSEEN_DEF_OPACITY;
-				} // end IF
-			} // end IF
-			color = RPG_Graphics_SDL_Tools::getColor(color_name,
-																							 *mySurface,
-																							 blend_factor);
+      blend_factor = 1.0F; // --> opaque
+      if (color_name != RPG_CLIENT_MINIMAPCOLOR_UNMAPPED)
+      {
+        // handle vision
+        visible_iterator = visible_positions.find (map_position);
+        if ((visible_iterator == visible_positions.end ()) &&
+            (has_seen_iterator != myState->seen_positions.end ()) &&
+            !myState->debug)
+        {
+          // seen previously ?
+          has_seen_iterator_2 = (*has_seen_iterator).second.find (map_position);
+          if (has_seen_iterator_2 == (*has_seen_iterator).second.end ())
+            color_name = RPG_CLIENT_MINIMAPCOLOR_UNMAPPED;
+          else
+            blend_factor = RPG_GRAPHICS_TILE_PREVSEEN_DEF_OPACITY;
+        } // end IF
+      } // end IF
+      color = RPG_Graphics_SDL_Tools::getColor (color_name,
+                                                *mySurface,
+                                                blend_factor);
 
       // step3: draw tile onto surface
       // *NOTE*: a minimap symbol has this shape: _ C _
@@ -350,42 +350,41 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
       pixels[1] = color;
       pixels[2] = color;
     } // end FOR
-	myState->lock.release();
+  myState->lock.release();
   myEngine->unlock();
   if (SDL_MUSTLOCK(mySurface))
     SDL_UnlockSurface(mySurface);
 
   // step4: save BG ?
-  if (!inherited::myBGHasBeenSaved)
-    inherited::saveBG(std::make_pair(myClipRect.w,
-                                     myClipRect.h));
+  if (!inherited::BGHasBeenSaved_)
+    inherited::saveBG (inherited::clipRectangle_);
 
   // step5: paint surface
-  clip();
-  if (inherited::myScreenLock)
-    inherited::myScreenLock->lock();
-  RPG_Graphics_Surface::put(std::make_pair(myClipRect.x,
-                                           myClipRect.y),
-                            *mySurface,
-                            target_surface,
-                            dirty_region);
-  if (inherited::myScreenLock)
-    inherited::myScreenLock->unlock();
-  unclip();
+  inherited::clip ();
+  if (inherited::screenLock_)
+    inherited::screenLock_->lock();
+  RPG_Graphics_Surface::put (std::make_pair (inherited::clipRectangle_.x,
+                                             inherited::clipRectangle_.y),
+                             *mySurface,
+                             target_surface,
+                             dirty_region);
+  if (inherited::screenLock_)
+    inherited::screenLock_->unlock();
+  inherited::unclip ();
 
   // invalidate dirty region
   invalidate(dirty_region);
 
   // remember position of last realization
-  myLastAbsolutePosition = std::make_pair(myClipRect.x,
-                                          myClipRect.y);
+  lastAbsolutePosition_ = std::make_pair (inherited::clipRectangle_.x,
+                                          inherited::clipRectangle_.y);
 
-  inherited::myIsVisible = true;
+  inherited::isVisible_ = true;
 
   //// debug info
   //if (myState->debug)
   //{
-		//std::string path = RPG_Common_File_Tools::getDumpDirectory();
+  //std::string path = RPG_Common_File_Tools::getDumpDirectory();
   //  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   //  path += ACE_TEXT_ALWAYS_CHAR("minimap.png");
   //  RPG_Graphics_Surface::savePNG(*mySurface,

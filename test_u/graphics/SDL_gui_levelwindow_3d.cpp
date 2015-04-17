@@ -234,11 +234,11 @@ SDL_GUI_LevelWindow_3D::init(state_t* state_in,
   ACE_ASSERT(state_in);
 
   myState = state_in;
-  inherited::init(screenLock_in,
-                  (state_in->screen->flags & SDL_DOUBLEBUF));
+  inherited::initialize (screenLock_in,
+                         (state_in->screen->flags & SDL_DOUBLEBUF));
 
-	GLfloat ratio = (static_cast<float>(myClipRect.w) /
-									 static_cast<float>(myClipRect.h));
+	GLfloat ratio = (static_cast<float>(clipRectangle_.w) /
+                   static_cast<float>(clipRectangle_.h));
 
   GLenum gl_error = GL_NO_ERROR;
   /* Our shading model--Gouraud (smooth). */
@@ -287,12 +287,12 @@ SDL_GUI_LevelWindow_3D::init(state_t* state_in,
 //                       myBorderLeft,
 //                       myBorderRight,
 //                       false);
-//  glViewport(myClipRect.x,
+//  glViewport(clipRectangle_.x,
 //             (parent_area.w - myBorderBottom),
-//             myClipRect.w,
-//             myClipRect.h);
+//             clipRectangle_.w,
+//             clipRectangle_.h);
 //  myBorderTop = myBorderBottom = myBorderLeft = myBorderRight = 0;
-  glViewport(myClipRect.x, myClipRect.y, myClipRect.w, myClipRect.h);
+  glViewport(clipRectangle_.x, clipRectangle_.y, clipRectangle_.w, clipRectangle_.h);
   gl_error = glGetError();
   if (gl_error != GL_NO_ERROR)
     ACE_DEBUG((LM_ERROR,
@@ -375,7 +375,7 @@ SDL_GUI_LevelWindow_3D::draw(SDL_Surface* targetSurface_in,
 
   // sanity check(s)
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : myScreen);
+                                                  : inherited::screen_);
   ACE_ASSERT(target_surface);
   ACE_ASSERT(myState);
 //  ACE_ASSERT(myCurrentOffMapTile);
@@ -388,8 +388,8 @@ SDL_GUI_LevelWindow_3D::draw(SDL_Surface* targetSurface_in,
        offsetX_in,
        offsetY_in);
 
-  if (inherited::myScreenLock)
-    inherited::myScreenLock->lock();
+  if (inherited::screenLock_)
+    inherited::screenLock_->lock();
 
   /* Our angle of rotation. */
 //  static GLfloat angle = 0.0F;
@@ -573,12 +573,12 @@ SDL_GUI_LevelWindow_3D::draw(SDL_Surface* targetSurface_in,
    * Do it using vetors and textured quads.
    */
 
-  if (inherited::myScreenLock)
-    inherited::myScreenLock->unlock();
+  if (inherited::screenLock_)
+    inherited::screenLock_->unlock();
 
   // realize any sub-windows
-  for (RPG_Graphics_WindowsIterator_t iterator = inherited::myChildren.begin();
-       iterator != inherited::myChildren.end();
+  for (RPG_Graphics_WindowsIterator_t iterator = inherited::children_.begin();
+       iterator != inherited::children_.end();
        iterator++)
   {
     // draw minimap ?
@@ -602,8 +602,8 @@ SDL_GUI_LevelWindow_3D::draw(SDL_Surface* targetSurface_in,
   unclip(target_surface);
 
   // remember position of last realization
-  myLastAbsolutePosition = std::make_pair(myClipRect.x,
-                                          myClipRect.y);
+  myLastAbsolutePosition = std::make_pair(clipRectangle_.x,
+                                          clipRectangle_.y);
 }
 
 void
@@ -1087,7 +1087,7 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
 			} // end IF
 
 			// step2: draw/remove highlight(s)
-			myScreenLock->lock();
+			screenLock_->lock();
 			if (toggle_on)
 				RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlights(myState->positions,
 																																				 screen_positions,
@@ -1101,7 +1101,7 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
 																																							NULL,
 																																							false,
 																																							myState->debug);
-			myScreenLock->unlock();
+			screenLock_->unlock();
 			invalidate(dirtyRegion_out);
 
 			// step3: set an appropriate cursor
@@ -1142,8 +1142,8 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
             RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.button.x,
                                                                  event_in.button.y),
                                                   myEngine->getSize(),
-                                                  std::make_pair(myClipRect.w,
-                                                                 myClipRect.h),
+                                                  std::make_pair(clipRectangle_.w,
+                                                                 clipRectangle_.h),
                                                   myView);
 
         ACE_DEBUG((LM_DEBUG,
@@ -1404,8 +1404,8 @@ SDL_GUI_LevelWindow_3D::notify(const RPG_Engine_Command& command_in,
       ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put(parameters_in.entity_id,
                                                            RPG_Graphics_Common_Tools::map2Screen(*parameters_in.positions.begin(),
-                                                                                                 std::make_pair(myClipRect.w,
-																																																                myClipRect.h),
+                                                                                                 std::make_pair(clipRectangle_.w,
+																																																                clipRectangle_.h),
                                                                                                  getView()),
                                                            dirty_region,
                                                            true,
@@ -1547,9 +1547,9 @@ SDL_GUI_LevelWindow_3D::clear()
 
   // init clipping
   SDL_Rect old_clip_rect;
-  SDL_GetClipRect(myScreen, &old_clip_rect);
+  SDL_GetClipRect(inherited::screen_, &old_clip_rect);
 
-  if (!SDL_SetClipRect(myScreen, &myClipRect))
+  if (!SDL_SetClipRect(inherited::screen_, &clipRectangle_))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
@@ -1558,10 +1558,10 @@ SDL_GUI_LevelWindow_3D::clear()
     return;
   } // end IF
 
-  if (SDL_FillRect(myScreen,                                     // target surface
-                   &myClipRect,                                  // rectangle
+  if (SDL_FillRect(inherited::screen_,                                     // target surface
+                   &clipRectangle_,                                  // rectangle
                    RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK,
-                                                    *myScreen))) // color
+                                                    *inherited::screen_))) // color
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
@@ -1571,7 +1571,7 @@ SDL_GUI_LevelWindow_3D::clear()
   } // end IF
 
   // reset clipping
-  if (!SDL_SetClipRect(myScreen, &old_clip_rect))
+  if (!SDL_SetClipRect(inherited::screen_, &old_clip_rect))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
@@ -1580,7 +1580,7 @@ SDL_GUI_LevelWindow_3D::clear()
     return;
   } // end IF
 
-  invalidate(myClipRect);
+  invalidate(clipRectangle_);
 }
 
 bool
@@ -2016,5 +2016,5 @@ SDL_GUI_LevelWindow_3D::initMiniMap(RPG_Engine* engine_in)
     return;
   } // end IF
   // *NOTE* cannot init screen lock (has not been set), do it later...
-//  minimap_window->init(inherited::myScreenLock);
+//  minimap_window->init(inherited::screenLock_);
 }

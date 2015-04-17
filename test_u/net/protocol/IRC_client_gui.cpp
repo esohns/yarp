@@ -989,7 +989,7 @@ ACE_TMAIN (int argc_in,
 {
   RPG_TRACE (ACE_TEXT ("::main"));
 
-  // step1: init libraries
+  // step1: initialize libraries
   // *PORTABILITY*: on Windows, init ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::init () == -1)
@@ -1005,7 +1005,7 @@ ACE_TMAIN (int argc_in,
   // start profile timer...
   process_profile.start ();
 
-  // step2 init/validate configuration
+  // step2 initialize/validate configuration
 
   // step2a: process commandline arguments
   std::string configuration_path =
@@ -1078,7 +1078,7 @@ ACE_TMAIN (int argc_in,
   ui_definition_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   ui_definition_filename += IRC_CLIENT_GUI_DEF_UI_MAIN_FILE;
 
-  // validate argument(s)
+  // step2b: validate argument(s)
   if (!Common_File_Tools::isReadable (configuration_file)    ||
       !Common_File_Tools::isReadable (phonebook_file)        ||
       !Common_File_Tools::isReadable (ui_definition_filename))
@@ -1099,25 +1099,7 @@ ACE_TMAIN (int argc_in,
     return EXIT_FAILURE;
   } // end IF
 
-  // step2b: handle specific program modes
-  if (print_version_and_exit)
-  {
-    do_printVersion (ACE::basename (argv_in[0]));
-
-    // *PORTABILITY*: on Windows, fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini () == -1)
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
-      return EXIT_FAILURE;
-    } // end IF
-#endif
-
-    return EXIT_SUCCESS;
-  } // end IF
-
-  // initialize logging and/or tracing
+  // step3: initialize logging and/or tracing
   std::string log_file;
   if (log_to_file)
     log_file = RPG_Common_File_Tools::getLogFilename (ACE::basename (argv_in[0]));
@@ -1141,19 +1123,40 @@ ACE_TMAIN (int argc_in,
     return EXIT_FAILURE;
   } // end IF
 
-  // init global (!) processing stream message allocator
+  // step4: handle specific program modes
+  if (print_version_and_exit)
+  {
+    do_printVersion (ACE::basename (argv_in[0]));
+
+    // *PORTABILITY*: on Windows, fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
+      return EXIT_FAILURE;
+    } // end IF
+#endif
+
+    return EXIT_SUCCESS;
+  } // end IF
+
+  // step5: initialize configuration objects
+
+  // initialize protocol configuration
   Stream_CachedAllocatorHeap heap_allocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
                                              RPG_NET_PROTOCOL_BUFFER_SIZE);
   RPG_Net_Protocol_MessageAllocator message_allocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
                                                        &heap_allocator);
 
-  // step2d: initialize configuration / callback data
   RPG_Net_Protocol_Configuration configuration;
+  ACE_OS::memset (&configuration, 0, sizeof (configuration));
+
   configuration.streamConfiguration.messageAllocator = &message_allocator;
   configuration.streamConfiguration.statisticReportingInterval =
    reporting_interval;
   configuration.protocolConfiguration.streamConfiguration.debugScanner =
-   RPG_NET_PROTOCOL_DEF_TRACE_SCANNING;
+    RPG_NET_PROTOCOL_DEF_TRACE_SCANNING;
   configuration.protocolConfiguration.streamConfiguration.debugParser = debug;
 
   main_cb_data_t user_data;
@@ -1162,7 +1165,7 @@ ACE_TMAIN (int argc_in,
 //   userData.phoneBook;
 //   userData.loginOptions.password = ;
   user_data.configuration->protocolConfiguration.loginOptions.nick =
-   ACE_TEXT_ALWAYS_CHAR (IRC_CLIENT_DEF_IRC_NICK);
+    ACE_TEXT_ALWAYS_CHAR (IRC_CLIENT_DEF_IRC_NICK);
 //   userData.loginOptions.user.username = ;
   std::string hostname;
   Net_Common_Tools::retrieveLocalHostname (hostname);
@@ -1188,7 +1191,7 @@ ACE_TMAIN (int argc_in,
   Common_Tools::getCurrentUserName (configuration.protocolConfiguration.loginOptions.user.username,
                                     configuration.protocolConfiguration.loginOptions.user.realname);
 
-  // step2e: parse config file(s) (if any)
+  // parse configuration file(s) (if any)
   if (!phonebook_file.empty ())
     do_parsePhonebookFile (phonebook_file,
                            user_data.phoneBook);
@@ -1197,7 +1200,7 @@ ACE_TMAIN (int argc_in,
                                configuration.protocolConfiguration.loginOptions,
                                user_data.phoneBook);
 
-  // step2f: initialize GTK
+  // step6: initialize GTK UI
   Common_UI_GtkBuilderDefinition ui_definition (argc_in,
                                                 argv_in);
   COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (argc_in,
@@ -1205,7 +1208,7 @@ ACE_TMAIN (int argc_in,
                                                             &user_data.GTKState,
                                                             &ui_definition);
 
-  // step3: do actual work
+  // step7: do work
   ACE_High_Res_Timer timer;
   timer.start ();
   do_work (num_thread_pool_threads,
@@ -1290,7 +1293,7 @@ ACE_TMAIN (int argc_in,
               ACE_TEXT (system_time_string.c_str ())));
 #endif
 
-  // step4: fini libraries
+  // step8: finalize libraries
   // *PORTABILITY*: on Windows, fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::fini () == -1)

@@ -376,6 +376,19 @@ idle_initialize_UI_cb (gpointer userData_in)
   return FALSE; // G_SOURCE_REMOVE
 }
 
+G_MODULE_EXPORT gboolean
+idle_finalize_UI_cb (gpointer userData_in)
+{
+  RPG_TRACE (ACE_TEXT ("::idle_finalize_UI_cb"));
+
+  ACE_UNUSED_ARG (userData_in);
+
+  // leave GTK
+  gtk_main_quit ();
+
+  return FALSE; // G_SOURCE_REMOVE
+}
+
 G_MODULE_EXPORT gint
 about_clicked_GTK_cb (GtkWidget* widget_in,
                       gpointer userData_in)
@@ -416,15 +429,9 @@ quit_clicked_GTK_cb (GtkWidget* widget_in,
   ACE_UNUSED_ARG (widget_in);
   ACE_UNUSED_ARG (userData_in);
 
-  // leave GTK
-  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->close (1);
 
-  ACE_DEBUG ((LM_DEBUG,
-              ACE_TEXT ("leaving GTK...\n")));
-
-  // this is the "delete-event" handler
-  // --> destroy the main dialog widget
-  return TRUE; // --> propagate
+  return FALSE;
 }
 
 G_MODULE_EXPORT gint

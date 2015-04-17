@@ -44,6 +44,7 @@
 #include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
 #include "rpg_common_tools.h"
+#include "rpg_common_XML_tools.h"
 
 #include "rpg_item_common_tools.h"
 #include "rpg_item_defines.h"
@@ -173,17 +174,24 @@ do_processArguments(const int& argc_in,
 }
 
 void
-do_work (bool dumpItemDictionary_in,
+do_work (const std::string& schemaRepository_in,
+         bool dumpItemDictionary_in,
          const std::string& fileName_in)
 {
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
-  // step1: init string conversion tables
+  // step1: initialize string conversion tables
   RPG_Dice_Common_Tools::initStringConversionTables ();
   RPG_Common_Tools::initStringConversionTables ();
   RPG_Item_Common_Tools::initStringConversionTables ();
 
-  // step2: init item dictionary
+  // step2: initialize item dictionary
+  if (!RPG_Common_XML_Tools::initialize (schemaRepository_in))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Common_XML_Tools::initialize(), returning\n")));
+    return;
+  } // end IF
   try
   {
     RPG_ITEM_DICTIONARY_SINGLETON::instance ()->init (fileName_in);
@@ -204,9 +212,9 @@ do_work (bool dumpItemDictionary_in,
 } // end do_work
 
 void
-do_printVersion(const std::string& programName_in)
+do_printVersion (const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_printVersion"));
+  RPG_TRACE (ACE_TEXT ("::do_printVersion"));
 
   std::cout << programName_in
 #ifdef HAVE_CONFIG_H
@@ -298,19 +306,26 @@ ACE_TMAIN (int argc_in,
 #endif
   item_dictionary_filename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DICTIONARY_FILE);
 
+  std::string schema_directory = configuration_path;
+#if defined (DEBUG_DEBUGGER)
+  schema_directory = Common_File_Tools::getWorkingDirectory ();
+  schema_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_directory += ACE_TEXT_ALWAYS_CHAR ("item");
+#endif
+
   bool trace_information               = false;
   bool print_version_and_exit          = false;
 
   // step1b: parse/process/validate configuration
-  if (!do_processArguments(argc_in,
-                           argv_in,
-                           dump_item_dictionary,
-                           item_dictionary_filename,
-                           trace_information,
-                           print_version_and_exit))
+  if (!do_processArguments (argc_in,
+                            argv_in,
+                            dump_item_dictionary,
+                            item_dictionary_filename,
+                            trace_information,
+                            print_version_and_exit))
   {
     // make 'em learn...
-    do_printUsage(std::string(ACE::basename(argv_in[0])));
+    do_printUsage (ACE::basename (argv_in[0]));
 
     // *PORTABILITY*: on Windows, fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -323,14 +338,11 @@ ACE_TMAIN (int argc_in,
   } // end IF
 
   // step1b: validate arguments
-  if (!Common_File_Tools::isReadable(item_dictionary_filename))
+  if (!Common_File_Tools::isReadable (item_dictionary_filename) ||
+      !Common_File_Tools::isDirectory (schema_directory))
   {
-    ACE_DEBUG ((LM_DEBUG,
-                ACE_TEXT ("invalid (XML) filename \"%s\", aborting\n"),
-                ACE_TEXT (item_dictionary_filename.c_str ())));
-
     // make 'em learn...
-    do_printUsage(std::string(ACE::basename(argv_in[0])));
+    do_printUsage (ACE::basename (argv_in[0]));
 
     // *PORTABILITY*: on Windows, fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -367,7 +379,7 @@ ACE_TMAIN (int argc_in,
   // step1d: handle specific program modes
   if (print_version_and_exit)
   {
-    do_printVersion(std::string(ACE::basename(argv_in[0])));
+    do_printVersion (ACE::basename (argv_in[0]));
 
     // *PORTABILITY*: on Windows, fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -380,13 +392,12 @@ ACE_TMAIN (int argc_in,
   } // end IF
 
   ACE_High_Res_Timer timer;
-  timer.start();
-
-  // step2: do actual work
-  do_work(dump_item_dictionary,
-          item_dictionary_filename);
-
-  timer.stop();
+  timer.start ();
+  // step2: do work
+  do_work (schema_directory,
+           dump_item_dictionary,
+           item_dictionary_filename);
+  timer.stop ();
 
 //   // debug info
 //   std::string working_time_string;

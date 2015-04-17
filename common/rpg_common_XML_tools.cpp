@@ -23,6 +23,7 @@
 
 #include "ace/Dirent_Selector.h"
 #include "ace/Log_Msg.h"
+#include "ace/OS_Memory.h"
 
 #include "xercesc/util/XMemory.hpp"
 #include "xercesc/util/XMLUni.hpp"
@@ -32,27 +33,27 @@
 
 #include "common_file_tools.h"
 
-#include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
+#include "rpg_common_macros.h"
 #include "rpg_common_xsderrorhandler.h"
 
 using namespace xercesc;
 
 // init statics
-XMLGrammarPool* RPG_Common_XML_Tools::myGrammarPool = NULL;
-SAX2XMLReader*  RPG_Common_XML_Tools::myParser = NULL;
-bool            RPG_Common_XML_Tools::myInitialized = false;
+XMLGrammarPool* RPG_Common_XML_Tools::grammarPool_ = NULL;
+SAX2XMLReader*  RPG_Common_XML_Tools::parser_ = NULL;
+bool            RPG_Common_XML_Tools::initialized_ = false;
 
 int
-RPG_Common_XML_Tools::dirent_selector(const dirent* entry_in)
+RPG_Common_XML_Tools::dirent_selector (const dirent* entry_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_XML_Tools::dirent_selector"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_XML_Tools::dirent_selector"));
 
   // *NOTE*: select XML schemas
-  std::string filename(entry_in->d_name);
-  std::string extension(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_SCHEMA_FILE_EXT));
-  if (filename.rfind(extension,
-                     std::string::npos) != (filename.size() - extension.size()))
+  std::string filename (entry_in->d_name);
+  std::string extension (ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_XML_SCHEMA_FILE_EXT));
+  if (filename.rfind (extension,
+                      std::string::npos) != (filename.size () - extension.size ()))
 //                     -1) != (filename.size() - extension.size()))
   {
 //     ACE_DEBUG((LM_DEBUG,
@@ -66,165 +67,181 @@ RPG_Common_XML_Tools::dirent_selector(const dirent* entry_in)
 }
 
 int
-RPG_Common_XML_Tools::dirent_comparator(const dirent** entry1_in,
-                                        const dirent** entry2_in)
+RPG_Common_XML_Tools::dirent_comparator (const dirent** entry1_in,
+                                         const dirent** entry2_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_XML_Tools::dirent_comparator"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_XML_Tools::dirent_comparator"));
 
-  return ACE_OS::strcmp((*entry1_in)->d_name,
-                        (*entry2_in)->d_name);
+  return ACE_OS::strcmp ((*entry1_in)->d_name,
+                         (*entry2_in)->d_name);
 }
 
-void
-RPG_Common_XML_Tools::init(const std::string& schemaDirectory_in)
+bool
+RPG_Common_XML_Tools::initialize (const std::string& schemaDirectory_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_XML_Tools::init"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_XML_Tools::initialize"));
 
-  if (RPG_Common_XML_Tools::myInitialized)
-    return;
+  int result = -1;
 
-  XMLPlatformUtils::Initialize();
+  if (RPG_Common_XML_Tools::initialized_)
+    return true;
+
+  XMLPlatformUtils::Initialize ();
 
   // sanity check(s)
-  if (!Common_File_Tools::isDirectory(schemaDirectory_in))
+  if (!Common_File_Tools::isDirectory (schemaDirectory_in))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid argument, not a directory (was: \"%s\"), aborting\n"),
-               ACE_TEXT(schemaDirectory_in.c_str())));
-
-    return;
-  } // end IF
-
-  // retrieve all relevant schema files...
-  ACE_Dirent_Selector entries;
-  if (entries.open(ACE_TEXT(schemaDirectory_in.c_str()),
-                   &RPG_Common_XML_Tools::dirent_selector,
-                   &RPG_Common_XML_Tools::dirent_comparator) == -1)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Dirent_Selector::open(\"%s\"): \"%m\", aborting\n"),
-               ACE_TEXT(schemaDirectory_in.c_str())));
-
-    return;
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("invalid argument, not a directory (was: \"%s\"), aborting\n"),
+                ACE_TEXT (schemaDirectory_in.c_str ())));
+    return false;
   } // end IF
 
   // *TODO*
-//  ACE_NEW_NORETURN(myGrammarPool,
-//                   XMLGrammarPoolImpl());
+  //ACE_NEW_NORETURN (grammarPool_,
+  //                  XMLGrammarPoolImpl (xercesc_3_1::XMLPlatformUtils::fgMemoryManager));
   try
   {
-    myGrammarPool =
-        static_cast<XMLGrammarPool*>(new XMLGrammarPoolImpl(XMLPlatformUtils::fgMemoryManager));
+    grammarPool_ =
+      static_cast<XMLGrammarPool*> (new XMLGrammarPoolImpl (XMLPlatformUtils::fgMemoryManager));
   }
   catch (...)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate memory: \"%m\", aborting\n")));
-
-    // clean up
-    entries.close();
-
-    return;
+    ACE_DEBUG ((LM_CRITICAL,
+                ACE_TEXT ("failed to allocate memory: \"%m\", aborting\n")));
+    return false;
   } // end IF
-  if (!myGrammarPool)
+  if (!grammarPool_)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate memory: \"%m\", aborting\n")));
-
-    // clean up
-    entries.close();
-
-    return;
+    ACE_DEBUG ((LM_CRITICAL,
+                ACE_TEXT ("failed to allocate memory: \"%m\", aborting\n")));
+    return false;
   } // end IF
 
-  myParser = XMLReaderFactory::createXMLReader(XMLPlatformUtils::fgMemoryManager,
-                                               myGrammarPool);
-  if (!myParser)
+  parser_ =
+    XMLReaderFactory::createXMLReader (XMLPlatformUtils::fgMemoryManager,
+                                       grammarPool_);
+  if (!parser_)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate memory: \"%m\", aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to XMLReaderFactory::createXMLReader: \"%m\", aborting\n")));
 
     // clean up
-    entries.close();
+    delete grammarPool_;
+    grammarPool_ = NULL;
 
-    return;
+    return false;
   } // end IF
-  myParser->setErrorHandler(&RPG_XercesErrorHandler);
+  parser_->setErrorHandler (&RPG_XercesErrorHandler);
   // Commonly useful configuration.
-  myParser->setFeature(XMLUni::fgSAX2CoreNameSpaces, true);
-  myParser->setFeature(XMLUni::fgSAX2CoreNameSpacePrefixes, true);
-  myParser->setFeature(XMLUni::fgSAX2CoreValidation, true);
+  parser_->setFeature (XMLUni::fgSAX2CoreNameSpaces, true);
+  parser_->setFeature (XMLUni::fgSAX2CoreNameSpacePrefixes, true);
+  parser_->setFeature (XMLUni::fgSAX2CoreValidation, true);
   // Enable validation.
-  myParser->setFeature(XMLUni::fgXercesSchema, true);
-  myParser->setFeature(XMLUni::fgXercesSchemaFullChecking, true);
-  myParser->setFeature(XMLUni::fgXercesValidationErrorAsFatal, true);
+  parser_->setFeature (XMLUni::fgXercesSchema, true);
+  parser_->setFeature (XMLUni::fgXercesSchemaFullChecking, true);
+  parser_->setFeature (XMLUni::fgXercesValidationErrorAsFatal, true);
   // Use the loaded grammar during parsing.
-  myParser->setFeature(XMLUni::fgXercesUseCachedGrammarInParse, true);
+  parser_->setFeature (XMLUni::fgXercesUseCachedGrammarInParse, true);
   // Don't load schemas from any other source (e.g., from XML document's
   // xsi:schemaLocation attributes).
-  myParser->setFeature(XMLUni::fgXercesLoadSchema, false);
+  parser_->setFeature (XMLUni::fgXercesLoadSchema, false);
   // Xerces-C++ 3.1.0 is the first version with working multi import
   // support.
 #if _XERCES_VERSION >= 30100
-  myParser->setFeature(XMLUni::fgXercesHandleMultipleImports, true);
+  parser_->setFeature (XMLUni::fgXercesHandleMultipleImports, true);
 #endif
+
+  // retrieve all relevant schema files...
+  ACE_Dirent_Selector entries;
+  result = entries.open (ACE_TEXT (schemaDirectory_in.c_str ()),
+                         &RPG_Common_XML_Tools::dirent_selector,
+                         &RPG_Common_XML_Tools::dirent_comparator);
+  if (result == -1)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_Dirent_Selector::open(\"%s\"): \"%m\", aborting\n"),
+                ACE_TEXT (schemaDirectory_in.c_str ())));
+
+    // clean up
+    delete parser_;
+    parser_ = NULL;
+    delete grammarPool_;
+    grammarPool_ = NULL;
+
+    return false;
+  } // end IF
 
   std::string path;
   for (unsigned int i = 0;
-       i < static_cast<unsigned int>(entries.length());
+       i < static_cast<unsigned int> (entries.length ());
        i++)
   {
     path = schemaDirectory_in;
     path += ACE_DIRECTORY_SEPARATOR_STR_A;
-    path += ACE_TEXT_ALWAYS_CHAR(entries[i]->d_name);
-    if (!myParser->loadGrammar(path.c_str(),
+    path += ACE_TEXT_ALWAYS_CHAR (entries[i]->d_name);
+    if (!parser_->loadGrammar (path.c_str (),
                                Grammar::SchemaGrammarType,
                                true) ||
-        RPG_XercesErrorHandler.failed())
+        RPG_XercesErrorHandler.failed ())
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to loadGrammar(\"%s\"), aborting\n"),
-                 ACE_TEXT(path.c_str())));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to loadGrammar(\"%s\"), aborting\n"),
+                  ACE_TEXT (path.c_str ())));
 
-      break;
+      // clean up
+      result = entries.close ();
+      if (result == -1)
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to ACE_Dirent_Selector::close(): \"%m\", continuing\n")));
+      delete parser_;
+      parser_ = NULL;
+      delete grammarPool_;
+      grammarPool_ = NULL;
+
+      return false;
     } // end IF
 
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("loaded \"%s\"\n"),
-               entries[i]->d_name));
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("loaded \"%s\"\n"),
+                ACE_TEXT (entries[i]->d_name)));
   } // end FOR
 
-  myGrammarPool->lockPool();
+  grammarPool_->lockPool ();
 
   // clean up
-  entries.close();
+  result = entries.close ();
+  if (result == -1)
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_Dirent_Selector::close(): \"%m\", continuing\n")));
 
-  myInitialized = true;
+  initialized_ = true;
+
+  return true;
 }
 
 void
-RPG_Common_XML_Tools::fini()
+RPG_Common_XML_Tools::finalize ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_XML_Tools::fini"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_XML_Tools::finalize"));
 
   // clean up
 //  delete(myGrammarPool,
 //         XMLPlatformUtils::fgMemoryManager);
-  delete myGrammarPool;
+  delete grammarPool_;
   //delete(myParser,
   //                  XMLPlatformUtils::fgMemoryManager);
-  delete myParser;
+  delete parser_;
 
-  XMLPlatformUtils::Terminate();
+  XMLPlatformUtils::Terminate ();
 }
 
 SAX2XMLReader*
-RPG_Common_XML_Tools::parser()
+RPG_Common_XML_Tools::parser ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_XML_Tools::parser"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_XML_Tools::parser"));
 
-  ACE_ASSERT(myInitialized &&
-             myParser);
+  ACE_ASSERT(initialized_ && parser_);
 
-  return myParser;
+  return parser_;
 }

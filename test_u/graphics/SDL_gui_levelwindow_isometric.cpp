@@ -229,8 +229,8 @@ SDL_GUI_LevelWindow_Isometric::init(state_t* state_in,
   ACE_ASSERT(state_in);
 
   myState = state_in;
-  inherited::init(screenLock_in,
-                  (state_in->screen->flags & SDL_DOUBLEBUF));
+  inherited::initialize (screenLock_in,
+                         (state_in->screen->flags & SDL_DOUBLEBUF));
 
   // init style
   RPG_Graphics_StyleUnion style;
@@ -302,7 +302,7 @@ SDL_GUI_LevelWindow_Isometric::draw(SDL_Surface* targetSurface_in,
 
   // sanity check(s)
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : myScreen);
+                                                  : inherited::screen_);
   ACE_ASSERT(target_surface);
   ACE_ASSERT(myCurrentOffMapTile);
 //   ACE_ASSERT(myCurrentCeilingTile);
@@ -399,8 +399,8 @@ SDL_GUI_LevelWindow_Isometric::draw(SDL_Surface* targetSurface_in,
   } // end IF
 //  float blend_factor = 1.0F;
 
-  if (inherited::myScreenLock)
-    inherited::myScreenLock->lock();
+  if (inherited::screenLock_)
+    inherited::screenLock_->lock();
 
   // pass 1
   RPG_Map_Size_t map_size = myEngine->getSize(false);
@@ -849,15 +849,15 @@ SDL_GUI_LevelWindow_Isometric::draw(SDL_Surface* targetSurface_in,
   } // end FOR
   myState->lock.release();
   myEngine->unlock();
-  if (inherited::myScreenLock)
-    inherited::myScreenLock->unlock();
+  if (inherited::screenLock_)
+    inherited::screenLock_->unlock();
 
   // refresh (i.e. update bg cache) any sub-windows
   inherited::refresh();
 
   // realize any sub-windows
-  for (RPG_Graphics_WindowsIterator_t iterator = inherited::myChildren.begin();
-       iterator != inherited::myChildren.end();
+  for (RPG_Graphics_WindowsIterator_t iterator = inherited::children_.begin();
+       iterator != inherited::children_.end();
        iterator++)
   {
     switch ((*iterator)->getType())
@@ -1625,7 +1625,7 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
       } // end IF
 
       // step2: draw/remove highlight(s)
-      myScreenLock->lock();
+      screenLock_->lock();
       if (toggle_on)
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlights(myState->positions,
                                                                          screen_positions,
@@ -1639,7 +1639,7 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
                                                                               NULL,
                                                                               false,
                                                                               myState->debug);
-      myScreenLock->unlock();
+      screenLock_->unlock();
 
 set_cursor:
       // step3: set an appropriate cursor
@@ -2933,7 +2933,7 @@ SDL_GUI_LevelWindow_Isometric::initMiniMap(RPG_Engine* engine_in)
     return;
   } // end IF
   // *NOTE* cannot init screen lock (has not been set), do it later...
-//  minimap_window->init(inherited::myScreenLock);
+//  minimap_window->init(inherited::screenLock_);
 }
 
 bool

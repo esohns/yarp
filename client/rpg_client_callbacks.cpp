@@ -2390,9 +2390,7 @@ quit_clicked_GTK_cb (GtkWidget* widget_in,
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("leaving GTK...\n")));
 
-  // this is the "delete-event" handler
-  // --> destroy the main dialog widget
-  return TRUE; // --> propagate
+  return FALSE;
 }
 
 G_MODULE_EXPORT gint

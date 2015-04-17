@@ -34,6 +34,7 @@
 
 #include "common_file_tools.h"
 #include "common_tools.h"
+#include "rpg_common_XML_tools.h"
 
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
@@ -199,7 +200,8 @@ do_processArguments (const int& argc_in,
 }
 
 void
-do_work (const std::string& filename_in,
+do_work (const std::string& schemaRepository_in,
+         const std::string& filename_in,
          bool validateXML_in,
          bool dumpDictionary_in)
 {
@@ -209,6 +211,12 @@ do_work (const std::string& filename_in,
   RPG_Dice::init ();
   RPG_Dice_Common_Tools::initStringConversionTables ();
   RPG_Common_Tools::initStringConversionTables ();
+  if (!RPG_Common_XML_Tools::initialize (schemaRepository_in))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Common_XML_Tools::initialize(), returning\n")));
+    return;
+  } // end IF
   RPG_Item_Common_Tools::initStringConversionTables ();
   RPG_Character_Common_Tools::init ();
   RPG_Magic_Common_Tools::init ();
@@ -306,31 +314,39 @@ ACE_TMAIN (int argc_in,
   } // end IF
 #endif
 
-  // step1: init
-  // step1a set defaults
+  // step1: initialize configuration
+
+  // step1a: set defaults
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
                                                           true);
 #if defined (DEBUG_DEBUGGER)
-  configuration_path = Common_File_Tools::getWorkingDirectory();
+  configuration_path = Common_File_Tools::getWorkingDirectory ();
 #endif
 
-  bool dump_dictionary                    = false;
+  bool dump_dictionary = false;
 
   std::string monster_dictionary_filename = configuration_path;
   monster_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  monster_dictionary_filename += ACE_TEXT_ALWAYS_CHAR("character");
+  monster_dictionary_filename += ACE_TEXT_ALWAYS_CHAR ("character");
   monster_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  monster_dictionary_filename += ACE_TEXT_ALWAYS_CHAR("monster");
+  monster_dictionary_filename += ACE_TEXT_ALWAYS_CHAR ("monster");
   monster_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   monster_dictionary_filename +=
     ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_DICTIONARY_FILE);
 
-  bool trace_information                  = false;
-  bool print_version_and_exit             = false;
-  bool validate_XML                       = true;
+  std::string schema_directory = configuration_path;
+#if defined (DEBUG_DEBUGGER)
+  schema_directory = Common_File_Tools::getWorkingDirectory ();
+  schema_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_directory += ACE_TEXT_ALWAYS_CHAR ("engine");
+#endif
+
+  bool trace_information = false;
+  bool print_version_and_exit = false;
+  bool validate_XML = true;
 
   // step1b: parse/process/validate configuration
   if (!do_processArguments (argc_in,
@@ -342,7 +358,7 @@ ACE_TMAIN (int argc_in,
                             validate_XML))
   {
     // make 'em learn...
-    do_printUsage (std::string (ACE::basename (argv_in[0])));
+    do_printUsage (ACE::basename (argv_in[0]));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -355,14 +371,11 @@ ACE_TMAIN (int argc_in,
   } // end IF
 
   // step1b: validate arguments
-  if (!Common_File_Tools::isReadable (monster_dictionary_filename))
+  if (!Common_File_Tools::isReadable (monster_dictionary_filename) ||
+      !Common_File_Tools::isDirectory (schema_directory))
   {
-    ACE_DEBUG ((LM_DEBUG,
-                ACE_TEXT ("invalid (XML) filename \"%s\", aborting\n"),
-                ACE_TEXT (monster_dictionary_filename.c_str ())));
-
     // make 'em learn...
-    do_printUsage (std::string (ACE::basename (argv_in[0])));
+    do_printUsage (ACE::basename (argv_in[0]));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -399,7 +412,7 @@ ACE_TMAIN (int argc_in,
   // step1d: handle specific program modes
   if (print_version_and_exit)
   {
-    do_printVersion (std::string (ACE::basename (argv_in[0])));
+    do_printVersion (ACE::basename (argv_in[0]));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -415,7 +428,8 @@ ACE_TMAIN (int argc_in,
   timer.start ();
 
   // step2: do actual work
-  do_work (monster_dictionary_filename,
+  do_work (schema_directory,
+           monster_dictionary_filename,
            validate_XML,
            dump_dictionary);
 

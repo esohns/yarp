@@ -37,8 +37,8 @@ class RPG_Client_Export RPG_Client_Logger
  : public ACE_Log_Msg_Backend
 {
  public:
-  RPG_Client_Logger (RPG_Client_MessageStack_t*, // message stack
-                     ACE_Thread_Mutex*);         // synch lock
+  RPG_Client_Logger (RPG_Client_MessageStack_t*,   // message stack
+                     ACE_Recursive_Thread_Mutex*); // synch lock
   virtual ~RPG_Client_Logger ();
 
   // implement ACE_Log_Msg_Backend interface
@@ -52,10 +52,10 @@ class RPG_Client_Export RPG_Client_Logger
 
   ACE_UNIMPLEMENTED_FUNC (RPG_Client_Logger ());
   ACE_UNIMPLEMENTED_FUNC (RPG_Client_Logger (const RPG_Client_Logger&));
-  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Logger& operator=(const RPG_Client_Logger&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Logger& operator= (const RPG_Client_Logger&));
 
-  RPG_Client_MessageStack_t* myMessageStack;
-  ACE_Thread_Mutex*          myLock;
+  RPG_Client_MessageStack_t*  messageStack_;
+  ACE_Recursive_Thread_Mutex* lock_;
 };
 
 #endif

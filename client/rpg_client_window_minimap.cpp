@@ -38,22 +38,22 @@
 #include "rpg_client_defines.h"
 #include "rpg_client_engine.h"
 
-RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap(const RPG_Graphics_SDLWindowBase& parent_in,
-                                                     // *NOTE*: offset doesn't include any border(s) !
-                                                     const RPG_Graphics_Offset_t& offset_in,
-                                                     const bool& debug_in)
- : inherited(WINDOW_MINIMAP, // type
-             parent_in,      // parent
-             offset_in,      // offset
-             std::string()), // title
+RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap (const RPG_Graphics_SDLWindowBase& parent_in,
+                                                      // *NOTE*: offset doesn't include any border(s) !
+                                                      const RPG_Graphics_Offset_t& offset_in,
+                                                      bool debug_in)
+ : inherited (WINDOW_MINIMAP, // type
+              parent_in,      // parent
+              offset_in,      // offset
+              std::string())  // title
 //              NULL),          // background
-   myClient(NULL),
-   myEngine(NULL),
-   myDebug(debug_in),
-   myBG(NULL),
-   mySurface(NULL)
+ , myClient (NULL)
+ , myEngine (NULL)
+ , myDebug (debug_in)
+ , myBG (NULL)
+ , mySurface (NULL)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap"));
 
   // load interface image
   RPG_Graphics_GraphicTypeUnion type;
@@ -69,48 +69,47 @@ RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap(const RPG_Graphics_SDLWindo
 
   // adjust position, size
   SDL_Rect parent_area;
-  ACE_ASSERT(myParent);
-  myParent->getArea(parent_area, true);
-  myParent->getBorders(myBorderTop,
-                       myBorderBottom,
-                       myBorderLeft,
-                       myBorderRight,
-                       true);
-  myClipRect.x =
-      ((offset_in.first == std::numeric_limits<int>::max()) ? ((parent_area.w - 1)             -
-                                                               myBorderRight                   -
-                                                               myBG->w                         -
-                                                               RPG_CLIENT_MINIMAP_DEF_OFFSET_X)
-                                                            : offset_in.first);
-  myClipRect.y =
-      ((offset_in.second == std::numeric_limits<int>::max()) ? (parent_area.y                   +
-                                                                myBorderTop                     +
+  parent_in.getArea (parent_area, true);
+  parent_in.getBorders (borderTop_,
+                        borderBottom_,
+                        borderLeft_,
+                        borderRight_,
+                        true);
+  inherited::clipRectangle_.x =
+    ((offset_in.first == std::numeric_limits<int>::max ()) ? ((parent_area.w - 1) -
+                                                              borderRight_                   -
+                                                              myBG->w                         -
+                                                              RPG_CLIENT_MINIMAP_DEF_OFFSET_X)
+                                                           : offset_in.first);
+  inherited::clipRectangle_.y =
+    ((offset_in.second == std::numeric_limits<int>::max ()) ? (parent_area.y +
+                                                                borderTop_                     +
                                                                 RPG_CLIENT_MINIMAP_DEF_OFFSET_Y)
-                                                             : offset_in.second);
-  myClipRect.w = mySurface->w;
-  myClipRect.h = mySurface->h;
+                                                            : offset_in.second);
+  inherited::clipRectangle_.w = mySurface->w;
+  inherited::clipRectangle_.h = mySurface->h;
 
-  myBorderTop = myBorderBottom = myBorderLeft = myBorderRight = 0;
+  inherited::borderTop_ = inherited::borderBottom_ = inherited::borderLeft_ = inherited::borderRight_ = 0;
 }
 
-RPG_Client_Window_MiniMap::~RPG_Client_Window_MiniMap()
+RPG_Client_Window_MiniMap::~RPG_Client_Window_MiniMap ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::~RPG_Client_Window_MiniMap"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_MiniMap::~RPG_Client_Window_MiniMap"));
 
   // clean up
-  SDL_FreeSurface(myBG);
-  SDL_FreeSurface(mySurface);
+  SDL_FreeSurface (myBG);
+  SDL_FreeSurface (mySurface);
 }
 
 void
-RPG_Client_Window_MiniMap::handleEvent(const SDL_Event& event_in,
-                                       RPG_Graphics_IWindowBase* window_in,
-                                       SDL_Rect& dirtyRegion_out)
+RPG_Client_Window_MiniMap::handleEvent (const SDL_Event& event_in,
+                                        RPG_Graphics_IWindowBase* window_in,
+                                        SDL_Rect& dirtyRegion_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::handleEvent"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_MiniMap::handleEvent"));
 
   // init return value(s)
-  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (dirtyRegion_out));
 
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("RPG_Client_Window_MiniMap::handleEvent(%s)\n"),
@@ -166,15 +165,15 @@ RPG_Client_Window_MiniMap::handleEvent(const SDL_Event& event_in,
 }
 
 void
-RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
-                                const unsigned int& offsetX_in,
-                                const unsigned int& offsetY_in)
+RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
+                                 unsigned int offsetX_in,
+                                 unsigned int offsetY_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::draw"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_MiniMap::draw"));
 
   // sanity check(s)
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : myScreen);
+                                                  : inherited::screen_);
   ACE_ASSERT(target_surface);
   ACE_UNUSED_ARG(offsetX_in);
   ACE_UNUSED_ARG(offsetY_in);
@@ -338,15 +337,15 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
 
   // step4: paint surface
   ACE_OS::memset (&dirty_region, 0, sizeof (dirty_region));
-  if (inherited::myScreenLock)
-    inherited::myScreenLock->lock();
-  RPG_Graphics_Surface::put (std::make_pair (myClipRect.x,
-                                             myClipRect.y),
+  if (inherited::screenLock_)
+    inherited::screenLock_->lock();
+  RPG_Graphics_Surface::put (std::make_pair (clipRectangle_.x,
+                                             clipRectangle_.y),
                              *mySurface,
                              target_surface,
                              dirty_region);
-  if (inherited::myScreenLock)
-    inherited::myScreenLock->unlock ();
+  if (inherited::screenLock_)
+    inherited::screenLock_->unlock ();
 
   // reset clipping
   unclip ();
@@ -355,8 +354,8 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
   invalidate (dirty_region);
 
   // remember position of last realization
-  myLastAbsolutePosition = std::make_pair (myClipRect.x,
-                                           myClipRect.y);
+  lastAbsolutePosition_ = std::make_pair (clipRectangle_.x,
+                                          clipRectangle_.y);
 
   if (myDebug)
   {
@@ -370,14 +369,14 @@ RPG_Client_Window_MiniMap::draw(SDL_Surface* targetSurface_in,
 }
 
 void
-RPG_Client_Window_MiniMap::init(RPG_Client_Engine* client_in,
-                                RPG_Engine* engine_in)
+RPG_Client_Window_MiniMap::initialize (RPG_Client_Engine* client_in,
+                                       RPG_Engine* engine_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_MiniMap::init"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_MiniMap::initialize"));
 
   // sanity check(s)
-  ACE_ASSERT(engine_in);
-  ACE_ASSERT(engine_in);
+  ACE_ASSERT (engine_in);
+  ACE_ASSERT (engine_in);
 
   myClient = client_in;
   myEngine = engine_in;

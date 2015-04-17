@@ -42,7 +42,8 @@ class IRC_Client_GUI_MessageHandler
   // ctor for default handler (== server log)
   // *WARNING*: ctors/dtor need gdk_threads_enter/gdk_threads_leave protection
   // (or call from gtk_main context...)
-  IRC_Client_GUI_MessageHandler (GtkTextView*); // text view handle
+  IRC_Client_GUI_MessageHandler (Common_UI_GTKState*, // GTK state handle
+                                 GtkTextView*);       // text view handle
   // ctor for regular channel handler
   IRC_Client_GUI_MessageHandler (Common_UI_GTKState*,           // GTK state handle
                                  IRC_Client_GUI_Connection*,    // connection handle

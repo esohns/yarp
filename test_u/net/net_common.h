@@ -52,9 +52,11 @@ struct Net_GTK_CBData_t
 {
   inline Net_GTK_CBData_t ()
    : GTKState ()
+   , logStackLock ()
    , logStack ()
    , eventStack ()
    , subscribers ()
+   , subscribersLock ()
    , timeoutHandler (NULL)
    , timerId (-1)
    , listenerHandle (NULL)
@@ -63,6 +65,7 @@ struct Net_GTK_CBData_t
 
   Common_UI_GTKState         GTKState;
   RPG_Client_MessageStack_t  logStack;
+  ACE_Recursive_Thread_Mutex logStackLock;
   Net_GTK_Events_t           eventStack;
   Net_Subscribers_t          subscribers;
   ACE_Recursive_Thread_Mutex subscribersLock;

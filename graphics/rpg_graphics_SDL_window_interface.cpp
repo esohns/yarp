@@ -49,23 +49,23 @@ RPG_Graphics_SDL_WindowInterface::RPG_Graphics_SDL_WindowInterface(const RPG_Gra
     return;
   } // end IF
 
-	// set borders (if any)
-	RPG_Graphics_InterfaceElementsConstIterator_t iterator =
-		myElementGraphics.find(INTERFACEELEMENT_BORDER_TOP);
-	if (iterator != myElementGraphics.end())
-		myBorderTop = (*iterator).second->h;
-	iterator =
-		myElementGraphics.find(INTERFACEELEMENT_BORDER_LEFT);
-	if (iterator != myElementGraphics.end())
-		myBorderLeft = (*iterator).second->w;
-	iterator =
-		myElementGraphics.find(INTERFACEELEMENT_BORDER_RIGHT);
-	if (iterator != myElementGraphics.end())
-		myBorderRight = (*iterator).second->w;
-	iterator =
-		myElementGraphics.find(INTERFACEELEMENT_BORDER_BOTTOM);
-	if (iterator != myElementGraphics.end())
-		myBorderBottom = (*iterator).second->h;
+  // set borders (if any)
+  RPG_Graphics_InterfaceElementsConstIterator_t iterator =
+    myElementGraphics.find (INTERFACEELEMENT_BORDER_TOP);
+  if (iterator != myElementGraphics.end ())
+    borderTop_ = (*iterator).second->h;
+  iterator =
+    myElementGraphics.find (INTERFACEELEMENT_BORDER_LEFT);
+  if (iterator != myElementGraphics.end ())
+    borderLeft_ = (*iterator).second->w;
+  iterator =
+    myElementGraphics.find (INTERFACEELEMENT_BORDER_RIGHT);
+  if (iterator != myElementGraphics.end ())
+    borderRight_ = (*iterator).second->w;
+  iterator =
+    myElementGraphics.find (INTERFACEELEMENT_BORDER_BOTTOM);
+  if (iterator != myElementGraphics.end ())
+    borderBottom_ = (*iterator).second->h;
 }
 
 RPG_Graphics_SDL_WindowInterface::~RPG_Graphics_SDL_WindowInterface()
