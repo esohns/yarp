@@ -21,14 +21,14 @@
 #ifndef RPG_GRAPHICS_DICTIONARY_H
 #define RPG_GRAPHICS_DICTIONARY_H
 
-#include "rpg_graphics_exports.h"
-#include "rpg_graphics_common.h"
-
-#include <ace/Global_Macros.h>
-#include <ace/Singleton.h>
-#include <ace/Synch.h>
-
 #include <string>
+
+#include "ace/Global_Macros.h"
+#include "ace/Singleton.h"
+#include "ace/Synch.h"
+
+#include "rpg_graphics_common.h"
+#include "rpg_graphics_exports.h"
 
 /**
 @author Erik Sohns <erik.sohns@web.de>
@@ -40,8 +40,8 @@ class RPG_Graphics_Export RPG_Graphics_Dictionary
                              ACE_Thread_Mutex>;
 
  public:
-  void init(const std::string&,   // (XML) dictionary file
-            const bool& = false); // validate XML ?
+  void init(const std::string&, // (XML) dictionary file
+            bool = false);      // validate XML ?
 
   const RPG_Graphics_t get(const RPG_Graphics_GraphicTypeUnion&) const; // type
   RPG_Graphics_Fonts_t getFonts() const;

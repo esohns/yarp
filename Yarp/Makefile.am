@@ -1,5 +1,3 @@
-#METASOURCES = AUTO
-
 ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = \
@@ -31,5 +29,6 @@ test: libs test_u
 all-local: libs test
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = Yarp-${YARP_API_VERSION}.pc
-
+#*TODO*: repair the m4 macros expansion in configure.ac to make this work...
+#pkgconfig_DATA = Yarp-${YARP_API_VERSION}.pc
+pkgconfig_DATA = Yarp.pc

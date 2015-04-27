@@ -37,27 +37,27 @@ LT_INIT
 # prefix config.h
 AX_PREFIX_CONFIG_H
 
-# get the cpp compiler flags
-#CXXFLAGS="${CXXFLAGS=}"
-# reset the cpp compiler flags
-CXXFLAGS="-DRPG_MAGIC_BUILD_DLL"
-# this macro is used to get the arguments supplied
-# to the configure script (./configure --enable-debug)
-# Check if we have enable debug support.
-AC_MSG_CHECKING(whether to enable debugging)
+## (re)set the cpp compiler flags
+#CXXFLAGS_DEBUG="-fno-implicit-templates"
+CXXFLAGS_DEBUG=
+# --> enable debug support ?
+AC_MSG_CHECKING([enable debugging])
 debug_default="no"
-AC_ARG_ENABLE(debug,
-              [ --enable-debug=[no/yes] turn on debugging [default=$debug_default]],
-              ,
-              enable_debug=$debug_default)
-if test "x$enable_debug" = "xyes"; then
-#  CXXFLAGS="${CXXFLAGS} -g3 -O0 -Wall"
-  CXXFLAGS="-g3 -O0 -Wall ${CXXFLAGS}"
-  AC_MSG_RESULT(yes)
+AC_ARG_ENABLE([debug],
+              [AS_HELP_STRING([--enable-debug], [turn on debugging [default="${debug_default}"]])],
+              [case "${enableval}" in
+                 yes) debug=yes ;;
+                 no)  debug=no  ;;
+                 *) AC_MSG_ERROR([bad value ${enableval} for --enable-debug]) ;;
+               esac],
+              [debug=$debug_default])
+AM_CONDITIONAL([DEBUG], [test x$debug = xyes])
+if test x$debug = xyes; then
+  CXXFLAGS_DEBUG="-fno-inline -g -O0 -Wall -D_DEBUG"
+  AC_MSG_RESULT([yes])
 else
-#  CXXFLAGS="${CXXFLAGS} -O3 -march=native -DRPG_NTRACE=0"
-  CXXFLAGS="-O3 -march=i686 -DRPG_NTRACE=0 ${CXXFLAGS}"
-  AC_MSG_RESULT(no)
+  CXXFLAGS_DEBUG="-O3 -Werror -DACE_NDEBUG"
+  AC_MSG_RESULT([no])
 fi
 
 # export variables (so Makefile substitutions can be made)

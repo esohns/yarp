@@ -21,16 +21,16 @@
 #ifndef RPG_GRAPHICS_COMMON_H
 #define RPG_GRAPHICS_COMMON_H
 
-#include "rpg_graphics_incl.h"
+#include <string>
+#include <map>
+#include <vector>
+
+#include "ace/Log_Msg.h"
 
 #include "SDL.h"
 #include "SDL_ttf.h"
 
-#include "ace/Log_Msg.h"
-
-#include <string>
-#include <map>
-#include <vector>
+#include "rpg_graphics_incl.h"
 
 // *NOTE* types as used by SDL
 struct RPG_Graphics_SDL_VideoConfiguration_t

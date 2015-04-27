@@ -89,6 +89,7 @@ struct RPG_Client_GTK_CBData_t
   bool                              doHover;
   unsigned int                      hoverTime;
   RPG_Client_MessageStack_t         logStack;
+  ACE_Recursive_Thread_Mutex        logStackLock;
   GtkFileFilter*                    entityFilter;
   GtkFileFilter*                    mapFilter;
   GtkFileFilter*                    savedStateFilter;

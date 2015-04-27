@@ -51,28 +51,28 @@ typedef Net_GTK_Events_t::const_iterator Net_GTK_EventsIterator_t;
 struct Net_GTK_CBData_t
 {
   inline Net_GTK_CBData_t ()
-   : GTKState ()
-   , logStackLock ()
-   , logStack ()
+   : allowUserRuntimeStatistic (true)
    , eventStack ()
+   , GTKState ()
+   , listenerHandle (NULL)
+   , logStack ()
+   , logStackLock ()
    , subscribers ()
    , subscribersLock ()
-   , timeoutHandler (NULL)
    , timerId (-1)
-   , listenerHandle (NULL)
-   , allowUserRuntimeStatistic (true)
+   , timeoutHandler (NULL)
  { };
 
+  bool                       allowUserRuntimeStatistic;
+  Net_GTK_Events_t           eventStack;
   Common_UI_GTKState         GTKState;
+  RPG_Net_Server_IListener*  listenerHandle; // *NOTE*: server only !
   RPG_Client_MessageStack_t  logStack;
   ACE_Recursive_Thread_Mutex logStackLock;
-  Net_GTK_Events_t           eventStack;
   Net_Subscribers_t          subscribers;
   ACE_Recursive_Thread_Mutex subscribersLock;
-  Net_Client_TimeoutHandler* timeoutHandler; // *NOTE*: client only !
   long                       timerId;        // *NOTE*: client only !
-  RPG_Net_Server_IListener*  listenerHandle; // *NOTE*: server only !
-  bool                       allowUserRuntimeStatistic;
+  Net_Client_TimeoutHandler* timeoutHandler; // *NOTE*: client only !
 };
 
 #endif

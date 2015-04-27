@@ -88,8 +88,8 @@ SDL_GUI_MainWindow::init(state_t* state_in,
 
 void
 SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
-                         const unsigned int& offsetX_in,
-                         const unsigned int& offsetY_in)
+                         unsigned int offsetX_in,
+                         unsigned int offsetY_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::draw"));
 
@@ -110,7 +110,7 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
 
   // step2: draw title
   drawTitle(myTitleFont,
-            myTitle,
+            title_,
             target_surface);
 
   // step3: fill central area
@@ -171,8 +171,8 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
        offsetY_in);
 
   // step4: realize hotspots (and any other children)
-  for (RPG_Graphics_WindowsIterator_t iterator = myChildren.begin();
-       iterator != myChildren.end();
+  for (RPG_Graphics_WindowsIterator_t iterator = children_.begin();
+       iterator != children_.end();
        iterator++)
   {
     try
@@ -192,8 +192,8 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
   unclip(target_surface);
 
   // remember position of last realization
-  myLastAbsolutePosition = std::make_pair(offsetX_in,
-                                          offsetY_in);
+  lastAbsolutePosition_ = std::make_pair(offsetX_in,
+                                         offsetY_in);
 }
 
 void
@@ -291,7 +291,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         case SDLK_s:
         {
           std::ostringstream converter;
-          converter << inherited::screen_shotIndex++;
+          converter << myScreenshotIndex++;
           std::string dump_path = Common_File_Tools::getDumpDirectory();
           dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
           dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_SCREENSHOT_DEF_PREFIX);
@@ -338,27 +338,27 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
       {
         // retrieve hotspot window handle
         RPG_Graphics_HotSpot* hotspot = NULL;
-				try
-				{
-					hotspot = dynamic_cast<RPG_Graphics_HotSpot*>(window_in);
-				}
-				catch (...)
-				{
-					hotspot = NULL;
-				}
+        try
+        {
+          hotspot = dynamic_cast<RPG_Graphics_HotSpot*>(window_in);
+        }
+        catch (...)
+        {
+          hotspot = NULL;
+        }
         if (!hotspot)
         {
           ACE_DEBUG((LM_ERROR,
                     ACE_TEXT("failed to dynamic_cast<RPG_Graphics_HotSpot*>(%@), aborting\n"),
-										window_in));
+                    window_in));
 
           break;
         } // end IF
 
         // retrieve map window handle
-        RPG_Graphics_WindowsConstIterator_t iterator = myChildren.begin();
+        RPG_Graphics_WindowsConstIterator_t iterator = children_.begin();
         for (;
-             iterator != myChildren.end();
+             iterator != children_.end();
              iterator++)
         {
           if ((*iterator)->getType() == WINDOW_MAP)
@@ -366,19 +366,19 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         } // end FOR
         ACE_ASSERT((*iterator)->getType() == WINDOW_MAP);
         RPG_Client_IWindowLevel* level_window = NULL;
-				try
-				{
-					level_window = dynamic_cast<RPG_Client_IWindowLevel*>(*iterator);
-				}
-				catch (...)
-				{
-					level_window = NULL;
-				}
+        try
+        {
+          level_window = dynamic_cast<RPG_Client_IWindowLevel*>(*iterator);
+        }
+        catch (...)
+        {
+          level_window = NULL;
+        }
         if (!level_window)
         {
           ACE_DEBUG((LM_ERROR,
                     ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), aborting\n"),
-										*iterator));
+                    *iterator));
 
           break;
         } // end IF
@@ -470,7 +470,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
           ACE_DEBUG((LM_ERROR,
                     ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::draw/getArea, continuing\n")));
         }
-				RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset(true);
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset(true);
 
   //       ACE_DEBUG((LM_DEBUG,
   //                  ACE_TEXT("scrolled map (%s)...\n"),
@@ -547,48 +547,48 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
 
       // retrieve hotspot window handle
       RPG_Graphics_HotSpot* hotspot = NULL;
-			try
-			{
-				hotspot = dynamic_cast<RPG_Graphics_HotSpot*>(window_in);
-			}
-			catch (...)
-			{
-				hotspot = NULL;
-			}
+      try
+      {
+        hotspot = dynamic_cast<RPG_Graphics_HotSpot*>(window_in);
+      }
+      catch (...)
+      {
+        hotspot = NULL;
+      }
       if (!hotspot)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to dynamic_cast<RPG_Graphics_HotSpot*>(%@), aborting\n"),
-									 window_in));
+                   window_in));
 
         break;
       } // end IF
 
       // retrieve map window handle
-      RPG_Graphics_WindowsConstIterator_t iterator = myChildren.begin();
+      RPG_Graphics_WindowsConstIterator_t iterator = children_.begin();
       for (;
-           iterator != myChildren.end();
+           iterator != children_.end();
            iterator++)
       {
         if ((*iterator)->getType() == WINDOW_MAP)
           break;
       } // end FOR
-      ACE_ASSERT((iterator != myChildren.end()) &&
-				         (*iterator)->getType() == WINDOW_MAP);
-			RPG_Client_IWindowLevel* level_window = NULL;
-			try
-			{
-				level_window = dynamic_cast<RPG_Client_IWindowLevel*>(*iterator);
-			}
-			catch (...)
-			{
-				level_window = NULL;
-			}
-			if (!level_window)
+      ACE_ASSERT((iterator != children_.end()) &&
+                 (*iterator)->getType() == WINDOW_MAP);
+      RPG_Client_IWindowLevel* level_window = NULL;
+      try
+      {
+        level_window = dynamic_cast<RPG_Client_IWindowLevel*>(*iterator);
+      }
+      catch (...)
+      {
+        level_window = NULL;
+      }
+      if (!level_window)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), aborting\n"),
-									 *iterator));
+                   *iterator));
 
         break;
       } // end IF
@@ -763,7 +763,7 @@ SDL_GUI_MainWindow::lock()
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::lock"));
 
-  if (inherited::screen_Lock.acquire() == -1)
+  if (myScreenLock.acquire() == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Thread_Mutex::acquire(): \"%m\", continuing\n")));
 }
@@ -773,7 +773,7 @@ SDL_GUI_MainWindow::unlock()
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::unlock"));
 
-  if (inherited::screen_Lock.release() == -1)
+  if (myScreenLock.release() == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Thread_Mutex::release(): \"%m\", continuing\n")));
 }
@@ -784,69 +784,69 @@ SDL_GUI_MainWindow::initScrollSpots()
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::initScrollSpots"));
 
   // upper left
-  RPG_Graphics_HotSpot::init(*this,             // parent
+  RPG_Graphics_HotSpot::initialize(*this,             // parent
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
                              std::make_pair(0,
                                             0), // offset
                              CURSOR_SCROLL_UL); // (hover) cursor graphic
   // up
-  RPG_Graphics_HotSpot::init(*this,             // parent
-                             std::make_pair((myClipRect.w -
+  RPG_Graphics_HotSpot::initialize(*this,             // parent
+                             std::make_pair((clipRectangle_.w -
                                              (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)),
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             0), // offset
                              CURSOR_SCROLL_U);  // (hover) cursor graphic
   // upper right
-  RPG_Graphics_HotSpot::init(*this,             // parent
+  RPG_Graphics_HotSpot::initialize(*this,             // parent
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
-                             std::make_pair((myClipRect.w -
+                             std::make_pair((clipRectangle_.w -
                                              RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
                                             0), // offset
                              CURSOR_SCROLL_UR); // (hover) cursor graphic
   // left
-  RPG_Graphics_HotSpot::init(*this,            // parent
+  RPG_Graphics_HotSpot::initialize(*this,            // parent
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            (myClipRect.h -
+                                            (clipRectangle_.h -
                                              (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN))), // size
                              std::make_pair(0,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
                              CURSOR_SCROLL_L); // (hover) cursor graphic
   // right
-  RPG_Graphics_HotSpot::init(*this,            // parent
+  RPG_Graphics_HotSpot::initialize(*this,            // parent
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            (myClipRect.h -
+                                            (clipRectangle_.h -
                                              (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN))), // size
-                             std::make_pair((myClipRect.w -
+                             std::make_pair((clipRectangle_.w -
                                              RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // offset
                              CURSOR_SCROLL_R); // (hover) cursor graphic
   // lower left
-  RPG_Graphics_HotSpot::init(*this,             // parent
+  RPG_Graphics_HotSpot::initialize(*this,             // parent
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
                              std::make_pair(0,
-                                            (myClipRect.h -
+                                            (clipRectangle_.h -
                                              RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)), // offset
                              CURSOR_SCROLL_DL); // (hover) cursor graphic
   // down
-  RPG_Graphics_HotSpot::init(*this,            // parent
-                             std::make_pair(myClipRect.w -
+  RPG_Graphics_HotSpot::initialize(*this,            // parent
+                             std::make_pair(clipRectangle_.w -
                                             (2 * RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            (myClipRect.h -
+                                            (clipRectangle_.h -
                                              RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)), // offset
                              CURSOR_SCROLL_D); // (hover) cursor graphic
   // lower right
-  RPG_Graphics_HotSpot::init(*this,             // parent
+  RPG_Graphics_HotSpot::initialize(*this,             // parent
                              std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
                                             RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
-                             std::make_pair((myClipRect.w -
+                             std::make_pair((clipRectangle_.w -
                                              RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN),
-                                            (myClipRect.h -
+                                            (clipRectangle_.h -
                                              RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN)), // offset
                              CURSOR_SCROLL_DR); // (hover) cursor graphic
 }
@@ -935,16 +935,16 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   SDL_Rect dirty_region, prev_clip_rect, clip_rect;
   unsigned int i = 0;
 
-	// step0: retain previous clip rect
+  // step0: retain previous clip rect
   SDL_GetClipRect(target_surface, &prev_clip_rect);
 
-	// step1: draw border elements
+  // step1: draw border elements
   clip_rect.x = static_cast<Sint16>(offsetX_in + borderLeft_);
   clip_rect.y = static_cast<Sint16>(offsetY_in);
-  clip_rect.w = static_cast<Uint16>(myClipRect.w -
+  clip_rect.w = static_cast<Uint16>(clipRectangle_.w -
                                     (borderLeft_ + borderRight_));
   clip_rect.h = static_cast<Uint16>(borderTop_);
-	if (!SDL_SetClipRect(target_surface, &clip_rect))
+  if (!SDL_SetClipRect(target_surface, &clip_rect))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
@@ -952,20 +952,20 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
 
     return;
   } // end IF
-	iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_TOP);
+  iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_TOP);
   ACE_ASSERT(iterator != myElementGraphics.end());
-	for (i = offsetX_in + borderLeft_;
-       i < (static_cast<unsigned int>(myClipRect.w) - borderRight_);
+  for (i = offsetX_in + borderLeft_;
+       i < (static_cast<unsigned int>(clipRectangle_.w) - borderRight_);
        i += (*iterator).second->w)
-	{
+  {
     RPG_Graphics_Surface::put(std::make_pair(i,
                                              offsetY_in),
                               *(*iterator).second,
                               target_surface,
                               dirty_region);
-		invalidate(dirty_region);
-	} // end FOR
-	if (!SDL_SetClipRect(target_surface, &prev_clip_rect))
+    invalidate(dirty_region);
+  } // end FOR
+  if (!SDL_SetClipRect(target_surface, &prev_clip_rect))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
@@ -977,37 +977,37 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_LEFT);
   ACE_ASSERT(iterator != myElementGraphics.end());
   for (i = (offsetY_in + borderTop_);
-       i < (static_cast<unsigned int>(myClipRect.h) - borderBottom_);
+       i < (static_cast<unsigned int>(clipRectangle_.h) - borderBottom_);
        i += (*iterator).second->h)
-	{
+  {
     RPG_Graphics_Surface::put(std::make_pair(offsetX_in,
                                              i),
                               *(*iterator).second,
                               target_surface,
                               dirty_region);
-		invalidate(dirty_region);
-	} // end FOR
+    invalidate(dirty_region);
+  } // end FOR
 
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_RIGHT);
   ACE_ASSERT(iterator != myElementGraphics.end());
   for (i = (offsetY_in + borderTop_);
-       i < (static_cast<unsigned int>(myClipRect.h) - borderBottom_);
+       i < (static_cast<unsigned int>(clipRectangle_.h) - borderBottom_);
        i += (*iterator).second->h)
-	{
-    RPG_Graphics_Surface::put(std::make_pair((myClipRect.w - borderRight_),
+  {
+    RPG_Graphics_Surface::put(std::make_pair((clipRectangle_.w - borderRight_),
                                              i),
                                *(*iterator).second,
                                target_surface,
                               dirty_region);
-		invalidate(dirty_region);
-	} // end FOR
+    invalidate(dirty_region);
+  } // end FOR
 
   clip_rect.x = static_cast<Sint16>(offsetX_in + borderLeft_);
-  clip_rect.y = static_cast<Sint16>(offsetY_in + myClipRect.h - borderBottom_);
-  clip_rect.w = static_cast<Uint16>(myClipRect.w -
+  clip_rect.y = static_cast<Sint16>(offsetY_in + clipRectangle_.h - borderBottom_);
+  clip_rect.w = static_cast<Uint16>(clipRectangle_.w -
                                     (borderLeft_ + borderRight_));
   clip_rect.h = static_cast<Uint16>(borderBottom_);
-	if (!SDL_SetClipRect(target_surface, &clip_rect))
+  if (!SDL_SetClipRect(target_surface, &clip_rect))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
@@ -1018,18 +1018,18 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_BOTTOM);
   ACE_ASSERT(iterator != myElementGraphics.end());
   for (i = (offsetX_in + borderLeft_);
-       i < (myClipRect.w - borderRight_);
+       i < (clipRectangle_.w - borderRight_);
        i += (*iterator).second->w)
-	{
+  {
     RPG_Graphics_Surface::put(std::make_pair(i,
                                              (offsetY_in +
-                                              (myClipRect.h - borderBottom_))),
+                                              (clipRectangle_.h - borderBottom_))),
                               *(*iterator).second,
                               target_surface,
                               dirty_region);
-		invalidate(dirty_region);
-	} // end FOR
-	if (!SDL_SetClipRect(target_surface, &prev_clip_rect))
+    invalidate(dirty_region);
+  } // end FOR
+  if (!SDL_SetClipRect(target_surface, &prev_clip_rect))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
@@ -1052,7 +1052,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   // NE
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_TOP_RIGHT);
   ACE_ASSERT(iterator != myElementGraphics.end());
-  RPG_Graphics_Surface::put(std::make_pair((myClipRect.w -
+  RPG_Graphics_Surface::put(std::make_pair((clipRectangle_.w -
                                             (*iterator).second->w),
                                            offsetY_in),
                             *(*iterator).second,
@@ -1064,7 +1064,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_BOTTOM_LEFT);
   ACE_ASSERT(iterator != myElementGraphics.end());
   RPG_Graphics_Surface::put(std::make_pair(offsetX_in,
-                                           (myClipRect.h -
+                                           (clipRectangle_.h -
                                             (*iterator).second->h)),
                             *(*iterator).second,
                             target_surface,
@@ -1074,16 +1074,16 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   // SE
   iterator = myElementGraphics.find(INTERFACEELEMENT_BORDER_BOTTOM_RIGHT);
   ACE_ASSERT(iterator != myElementGraphics.end());
-  RPG_Graphics_Surface::put(std::make_pair((myClipRect.w -
+  RPG_Graphics_Surface::put(std::make_pair((clipRectangle_.w -
                                             (*iterator).second->w),
-                                           (myClipRect.h -
+                                           (clipRectangle_.h -
                                             (*iterator).second->h)),
                             *(*iterator).second,
                             target_surface,
                             dirty_region);
   invalidate(dirty_region);
 
-	unlock();
+  unlock();
 }
 
 void

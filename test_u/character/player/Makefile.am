@@ -87,6 +87,7 @@ character_generator_gui_SOURCES = \
   character_generator_gui_common.h \
   test_u_main.cpp \
   test_u_main.h
+#  -I/home/esohns/Downloads/libglade-2.6.4
 character_generator_gui_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   -I$(top_srcdir)/../modules/libCommon/src \
@@ -114,6 +115,7 @@ character_generator_gui_LDFLAGS = \
   -L$(abs_builddir)/../../../modules/libCommon/src/ui/.libs \
   -L$(abs_builddir)/../../../modules/libACEStream/src/.libs \
   -L$(abs_builddir)/../../../modules/libACENetwork/src/.libs \
+  -L/home/esohns/Downloads/libglade-2.6.4/glade/.libs \
   -L$(abs_builddir)/../../../chance/dice/.libs \
   -L$(abs_builddir)/../../../chance/.libs \
   -L$(abs_builddir)/../../../common/.libs \
@@ -152,7 +154,8 @@ character_generator_gui_LDADD = \
   -lRPG_Graphics \
   -lRPG_Client_GUI \
   $(pkg_libs_LIBS) \
-  -lSDL_mixer
+  -lSDL_mixer \
+  -lglade-2.0
 
 character_parser_SOURCES = character_parser.cpp
 character_parser_CPPFLAGS = \

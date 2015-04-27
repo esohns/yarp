@@ -88,7 +88,7 @@ RPG_Common_File_Tools::getConfigurationDataDirectory(const std::string& baseDir_
 
     result = ACE_TEXT_ALWAYS_CHAR(buffer);
     result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    result += ACE_TEXT_ALWAYS_CHAR(RPG_PACKAGE);
+    result += ACE_TEXT_ALWAYS_CHAR(YARP_PACKAGE);
 #else
     return Common_File_Tools::getWorkingDirectory();
 #endif
@@ -184,14 +184,14 @@ RPG_Common_File_Tools::getUserConfigurationDirectory()
   result = ACE_TEXT_ALWAYS_CHAR(buffer);
   result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  result += ACE_TEXT_ALWAYS_CHAR(RPG_PACKAGE);
+  result += ACE_TEXT_ALWAYS_CHAR(YARP_PACKAGE);
 
   if (!Common_File_Tools::isDirectory(result))
   {
     if (!Common_File_Tools::createDirectory(result))
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Common_File_Tools::createDirectory(\"%s\"), falling back\n"),
+                 ACE_TEXT("failed to Common_File_Tools::createDirectory(\"%s\"), falling back\n"),
                  ACE_TEXT(result.c_str())));
 
       // fallback

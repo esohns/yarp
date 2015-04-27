@@ -860,10 +860,15 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
                                       title,                                          // title (== caption)
                                       FONT_MAIN_LARGE);                               // title font
   main_window.setScreen (GTKUserData_in.screen);
-  main_window.init (&client_engine,
-                    RPG_CLIENT_WINDOW_DEF_EDGE_AUTOSCROLL,
-                    &level_engine,
-                    debug_in);
+  if (!main_window.initialize (&client_engine,
+                               RPG_CLIENT_WINDOW_DEF_EDGE_AUTOSCROLL,
+                               &level_engine,
+                               debug_in))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Client_Window_Main::initialize (), returning\n")));
+    return;
+  } // end IF
 
   // step4b: client engine
   client_engine.initialize (&level_engine,
@@ -1603,7 +1608,7 @@ do_printVersion(const std::string& programName_in)
   std::cout << programName_in
 #ifdef HAVE_CONFIG_H
             << ACE_TEXT(" : ")
-            << RPG_VERSION
+            << YARP_VERSION
 #endif
             << std::endl;
 
@@ -1947,7 +1952,7 @@ ACE_TMAIN (int argc_in,
 
   // step1c: initialize logging and/or tracing
   RPG_Client_Logger logger (&GTK_user_data.logStack,
-                            &GTK_user_data.GTKState.lock);
+                            &GTK_user_data.logStackLock);
   std::string log_file;
   if (log_to_file)
     log_file = Common_File_Tools::getLogFilename (ACE::basename (argv_in[0]));

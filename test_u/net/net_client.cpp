@@ -43,7 +43,8 @@
 #include "common_tools.h"
 
 #include "common_ui_defines.h"
-#include "common_ui_glade_definition.h"
+//#include "common_ui_glade_definition.h"
+#include "common_ui_gtk_builder_definition.h"
 #include "common_ui_gtk_manager.h"
 
 #include "stream_allocatorheap.h"
@@ -607,8 +608,10 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   {
     CBData_in.GTKState.finalizationHook = idle_finalize_UI_cb;
     CBData_in.GTKState.initializationHook = idle_initialize_client_UI_cb;
-    CBData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
-      std::make_pair (UIDefinitionFile_in, static_cast<GladeXML*> (NULL));
+    //CBData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
+    //  std::make_pair (UIDefinitionFile_in, static_cast<GladeXML*> (NULL));
+    CBData_in.GTKState.builders[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
+      std::make_pair (UIDefinitionFile_in, static_cast<GtkBuilder*> (NULL));
     CBData_in.GTKState.userData = &CBData_in;
 
     COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start ();
@@ -960,7 +963,7 @@ ACE_TMAIN (int argc_in,
                                            previous_signal_actions))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Common_Tools::preInitSignals(), aborting\n")));
+                ACE_TEXT ("failed to RPG_Common_Tools::preInitializeSignals(), aborting\n")));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -974,7 +977,7 @@ ACE_TMAIN (int argc_in,
   Net_GTK_CBData_t gtk_cb_user_data;
   // step1e: initialize logging and/or tracing
   RPG_Client_Logger logger (&gtk_cb_user_data.logStack,
-                            &gtk_cb_user_data.GTKState.lock);
+                            &gtk_cb_user_data.logStackLock);
   std::string log_file;
   if (log_to_file)
     log_file = RPG_Common_File_Tools::getLogFilename (ACE::basename (argv_in[0]));
@@ -1035,8 +1038,10 @@ ACE_TMAIN (int argc_in,
   } // end IF
 
   // step1h: init GLIB / G(D|T)K[+] / GNOME ?
-  Common_UI_GladeDefinition ui_definition (argc_in,
-                                           argv_in);
+  //Common_UI_GladeDefinition ui_definition (argc_in,
+  //                                         argv_in);
+  Common_UI_GtkBuilderDefinition ui_definition (argc_in,
+                                                argv_in);
   if (!UI_file.empty ())
     COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (argc_in,
                                                               argv_in,

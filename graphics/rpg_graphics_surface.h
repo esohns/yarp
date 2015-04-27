@@ -21,9 +21,15 @@
 #ifndef RPG_GRAPHICS_SURFACE_H
 #define RPG_GRAPHICS_SURFACE_H
 
-#include "rpg_graphics_exports.h"
+#include <string>
+
+#include "ace/Global_Macros.h"
+
+#include "SDL.h"
+
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_cursor.h"
+#include "rpg_graphics_exports.h"
 #include "rpg_graphics_font.h"
 #include "rpg_graphics_image.h"
 #include "rpg_graphics_sprite.h"
@@ -31,14 +37,8 @@
 #include "rpg_graphics_tilesetgraphic.h"
 #include "rpg_graphics_graphictypeunion.h"
 
-#include "SDL.h"
-
-#include "ace/Global_Macros.h"
-
-#include <string>
-
 /**
-	@author Erik Sohns <erik.sohns@web.de>
+  @author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Graphics_Export RPG_Graphics_Surface
 {
@@ -127,7 +127,7 @@ class RPG_Graphics_Export RPG_Graphics_Surface
  private:
   // helper methods
   static SDL_Surface* loadPNG(const std::string&,    // filename
-	                            FILE*);                // file handle
+                              FILE*);                // file handle
 //                              const unsigned char*); // source buffer
 //                              const unsigned char&); // alpha (0: transparent --> 255: opaque)
 

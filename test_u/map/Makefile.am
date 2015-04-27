@@ -7,6 +7,7 @@ AM_CPPFLAGS = \
   -I$(builddir)/../..
 
 DEFS = \
+  -DHAVE_CONFIG_H \
   -DBASEDIR=\"$(datadir)/@META_PACKAGE@\" \
   -DDEBUG_DEBUGGER
 

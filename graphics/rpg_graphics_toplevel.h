@@ -21,9 +21,12 @@
 #ifndef RPG_GRAPHICS_TOPLEVEL_H
 #define RPG_GRAPHICS_TOPLEVEL_H
 
-#include "rpg_graphics_exports.h"
-//#include "rpg_graphics_common.h"
+#include "ace/Global_Macros.h"
+
+#include "SDL.h"
+
 #include "rpg_graphics_cursor.h"
+#include "rpg_graphics_exports.h"
 #include "rpg_graphics_font.h"
 #include "rpg_graphics_image.h"
 #include "rpg_graphics_sprite.h"
@@ -32,12 +35,8 @@
 #include "rpg_graphics_graphictypeunion.h"
 #include "rpg_graphics_SDL_window_base.h"
 
-#include <SDL.h>
-
-#include <ace/Global_Macros.h>
-
 /**
-	@author Erik Sohns <erik.sohns@web.de>
+  @author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Graphics_Export RPG_Graphics_TopLevel
  : public RPG_Graphics_SDLWindowBase

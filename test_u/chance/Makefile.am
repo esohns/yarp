@@ -28,9 +28,11 @@ chance_dice_LDADD = \
 chance_rangeToRoll_SOURCES = chance_rangeToRoll.cpp
 chance_rangeToRoll_LDFLAGS = \
   -L$(abs_top_srcdir)/../../ATCD/ACE/build/linux/lib \
+  -L$(abs_builddir)/../../modules/libCommon/src/.libs \
   -L$(abs_builddir)/../../chance/dice/.libs
 chance_rangeToRoll_LDADD = \
   -lACE \
+  -lCommon \
   -lRPG_Dice \
   $(pkg_libs_LIBS)
 

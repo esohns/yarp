@@ -1,34 +1,17 @@
-METASOURCES = AUTO
-
 ACLOCAL_AMFLAGS = -I m4
-#  -I$(top_srcdir)/../modules/ATCD/ACE
-#  -I$(srcdir)/../include
+
+DEFS = \
+  -DHAVE_CONFIG_H \
+  -DRPG_CLIENT_BUILD_DLL \
+  -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
+
+#  -I/home/esohns/Downloads/libglade-2.6.4
 AM_CPPFLAGS = \
   -I$(top_srcdir)/../../ATCD/ACE \
-  -I$(top_srcdir)/../modules/libCommon/src \
-  -I$(top_srcdir)/../modules/libCommon/src/ui \
-  -I$(top_srcdir)/../modules/libACEStream/src \
-  -I$(top_srcdir)/../modules/libACENetwork/src \
-  -I$(top_srcdir)/../modules/libACENetwork/src/client \
-  -I$(top_srcdir)/../chance/dice \
-  -I$(top_srcdir)/../common \
-  -I$(top_srcdir)/../character \
-  -I$(top_srcdir)/../magic \
-  -I$(top_srcdir)/../item \
-  -I$(top_srcdir)/../character/player \
-  -I$(top_srcdir)/../combat \
-  -I$(top_srcdir)/../character/monster \
-  -I$(top_srcdir)/../map \
-  -I$(top_srcdir)/../net/client \
-  -I$(top_srcdir)/../engine \
-  -I$(top_srcdir)/../sound \
-  -I$(top_srcdir)/../graphics \
-  -I$(builddir)/.. \
-  -DRPG_CLIENT_BUILD_DLL
+  -I$(builddir)/..
 
-SUBDIRS = scripts
-
-noinst_HEADERS = stdafx.h
+noinst_HEADERS = \
+  stdafx.h
 include_HEADERS = \
   rpg_client_callbacks.h \
   rpg_client_common.h \
@@ -52,6 +35,7 @@ include_HEADERS = \
   rpg_client_XML_tree.h
 
 lib_LTLIBRARIES = libRPG_Client_GUI.la
+
 libRPG_Client_GUI_la_SOURCES = \
   rpg_client_callbacks.cpp \
   rpg_client_callbacks.h \
@@ -89,7 +73,24 @@ libRPG_Client_GUI_la_SOURCES = \
 
 libRPG_Client_GUI_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
-  -DBASEDIR=\"$(datadir)/@META_PACKAGE@\" \
+  -I$(top_srcdir)/../modules/libCommon/src \
+  -I$(top_srcdir)/../modules/libCommon/src/ui \
+  -I$(top_srcdir)/../modules/libACEStream/src \
+  -I$(top_srcdir)/../modules/libACENetwork/src \
+  -I$(top_srcdir)/../modules/libACENetwork/src/client \
+  -I$(top_srcdir)/../chance/dice \
+  -I$(top_srcdir)/../common \
+  -I$(top_srcdir)/../character \
+  -I$(top_srcdir)/../magic \
+  -I$(top_srcdir)/../item \
+  -I$(top_srcdir)/../character/player \
+  -I$(top_srcdir)/../combat \
+  -I$(top_srcdir)/../character/monster \
+  -I$(top_srcdir)/../map \
+  -I$(top_srcdir)/../net/client \
+  -I$(top_srcdir)/../engine \
+  -I$(top_srcdir)/../sound \
+  -I$(top_srcdir)/../graphics \
   $(pkg_libs_CFLAGS)
 
 configdir = $(datadir)/@META_PACKAGE@/config
@@ -98,3 +99,5 @@ config_DATA = \
   rpg_client.ini
 
 EXTRA_DIST = $(config_DATA)
+
+SUBDIRS = scripts

@@ -23,7 +23,9 @@
 
 #include "rpg_graphics_colorname.h"
 
+#ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
+#endif
 
 // task-specific
 #define RPG_CLIENT_GTK_UI_THREAD_GROUP_ID                 102
@@ -101,7 +103,7 @@
 
 #define RPG_CLIENT_GRAPHICS_DEF_CACHESIZE                 50
 #define RPG_CLIENT_GRAPHICS_DEF_WINDOWSTYLE_TYPE          IMAGE_INTERFACE_MAIN
-#define RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE         RPG_PACKAGE_STRING
+#define RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE         YARP_PACKAGE_STRING
 
 // default style
 #define RPG_CLIENT_GRAPHICS_DEF_FLOORSTYLE                FLOORSTYLE_STONE_COBBLED

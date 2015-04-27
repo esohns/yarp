@@ -21,10 +21,16 @@
 #ifndef SDL_GUI_MAINWINDOW_H
 #define SDL_GUI_MAINWINDOW_H
 
-#include "SDL_gui_common.h"
-#include "SDL_gui_defines.h"
+#include <string>
 
-#include "rpg_client_graphicsmode.h"
+#include "ace/Global_Macros.h"
+#include "ace/Synch.h"
+
+#include "SDL.h"
+
+#include "rpg_common_ilock.h"
+
+#include "rpg_map_common.h"
 
 #include "rpg_graphics_cursor.h"
 #include "rpg_graphics_font.h"
@@ -35,22 +41,16 @@
 #include "rpg_graphics_graphictypeunion.h"
 #include "rpg_graphics_toplevel.h"
 
-#include "rpg_map_common.h"
+#include "rpg_client_graphicsmode.h"
 
-#include "rpg_common_ilock.h"
-
-#include "SDL.h"
-
-#include "ace/Global_Macros.h"
-#include "ace/Synch.h"
-
-#include <string>
+#include "SDL_gui_common.h"
+#include "SDL_gui_defines.h"
 
 // forward declarations
 class RPG_Engine;
 
 /**
-	@author Erik Sohns <erik.sohns@web.de>
+  @author Erik Sohns <erik.sohns@web.de>
 */
 class SDL_GUI_MainWindow
  : public RPG_Graphics_TopLevel,
@@ -71,9 +71,9 @@ class SDL_GUI_MainWindow
             const RPG_Client_GraphicsMode& = SDL_GUI_DEF_GRAPHICS_MODE); // graphics mode
 
   // implement (part of) RPG_Graphics_IWindowBase
-  virtual void draw(SDL_Surface* = NULL,      // target surface (default: screen)
-                    const unsigned int& = 0,  // offset x (top-left = [0,0])
-                    const unsigned int& = 0); // offset y (top-left = [0,0])
+  virtual void draw(SDL_Surface* = NULL, // target surface (default: screen)
+                    unsigned int = 0,    // offset x (top-left = [0,0])
+                    unsigned int = 0);   // offset y (top-left = [0,0])
   virtual void handleEvent(const SDL_Event&,      // event
                            RPG_Graphics_IWindowBase*, // target window (NULL: this)
                            SDL_Rect&);            // return value: "dirty" region

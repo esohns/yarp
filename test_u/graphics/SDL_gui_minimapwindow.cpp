@@ -114,10 +114,10 @@ SDL_GUI_MinimapWindow::handleEvent(const SDL_Event& event_in,
   switch (event_in.type)
   {
     // *** mouse ***
-		case SDL_MOUSEBUTTONDOWN:
-		{
-			// *WARNING*: falls through !
-		}
+    case SDL_MOUSEBUTTONDOWN:
+    {
+      // *WARNING*: falls through !
+    }
     case RPG_GRAPHICS_SDL_MOUSEMOVEOUT:
     {
 
@@ -127,7 +127,7 @@ SDL_GUI_MinimapWindow::handleEvent(const SDL_Event& event_in,
     case SDL_KEYDOWN:
     case SDL_KEYUP:
     case SDL_MOUSEBUTTONUP:
-		case SDL_MOUSEMOTION:
+    case SDL_MOUSEMOTION:
     case SDL_JOYAXISMOTION:
     case SDL_JOYBALLMOTION:
     case SDL_JOYHATMOTION:
@@ -152,7 +152,7 @@ SDL_GUI_MinimapWindow::handleEvent(const SDL_Event& event_in,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("received unknown event (was: %u)...\n"),
                  static_cast<unsigned int>(event_in.type)));
-      
+
       break;
     }
   } // end SWITCH
@@ -174,8 +174,8 @@ SDL_GUI_MinimapWindow::init(state_t* state_in,
 
 void
 SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
-                            const unsigned int& offsetX_in,
-                            const unsigned int& offsetY_in)
+                            unsigned int offsetX_in,
+                            unsigned int offsetY_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::draw"));
 

@@ -372,19 +372,23 @@ test_u_main::do_work(GTK_cb_data_t& userData_in,
   sound_configuration.format = RPG_SOUND_AUDIO_DEF_FORMAT;
   sound_configuration.channels = RPG_SOUND_AUDIO_DEF_CHANNELS;
   sound_configuration.chunksize = RPG_SOUND_AUDIO_DEF_CHUNKSIZE;
-  RPG_Client_Common_Tools::init(input_configuration,
-                                sound_configuration,
-                                empty,
-                                RPG_SOUND_AMBIENT_DEF_USE_CD,
-                                RPG_SOUND_DEF_CACHESIZE,
-                                false,
-                                empty,
-                                //
-                                graphicsDirectory_in,
-                                RPG_CLIENT_GRAPHICS_DEF_CACHESIZE,
-                                graphicsDictionary_in,
-                                false); // don't init SDL
-
+  if (!RPG_Client_Common_Tools::initialize(input_configuration,
+                                           sound_configuration,
+                                           empty,
+                                           RPG_SOUND_AMBIENT_DEF_USE_CD,
+                                           RPG_SOUND_DEF_CACHESIZE,
+                                           false,
+                                           empty,
+                                           //
+                                           graphicsDirectory_in,
+                                           RPG_CLIENT_GRAPHICS_DEF_CACHESIZE,
+                                           graphicsDictionary_in,
+                                           false)) // don't init SDL
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Client_Common_Tools::initialize(): \"%m\", returning\n")));
+    return;
+  } // end IF
   userData_in.GTKState.finalizationHook = idle_finalize_UI_cb;
   userData_in.GTKState.initializationHook = idle_initialize_UI_cb;
   userData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN)] =

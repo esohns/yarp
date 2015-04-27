@@ -26,8 +26,10 @@
 #define NET_UI_GTK_TEXTVIEW_NAME                  "textview"
 #define NET_UI_GTK_SCROLLMARK_NAME                "insert"
 #define NET_UI_GTK_BUTTONBOX_ACTIONS_NAME         "vbuttonbox"
+#define NET_UI_GTK_BUTTON_ABOUT_NAME              "about"
 #define NET_UI_GTK_BUTTON_CLOSEALL_NAME           "close_all"
 #define NET_UI_GTK_BUTTON_REPORT_NAME             "report"
+#define NET_UI_GTK_BUTTON_QUIT_NAME               "quit"
 #define NET_UI_LOG_FONTDESCRIPTION                "Monospace 10"
 #define NET_UI_LOG_BASE                           "#000000" // black
 #define NET_UI_LOG_TEXT                           "#FFFFFF" // white
@@ -44,6 +46,7 @@
 #define NET_CLIENT_UI_GTK_BUTTON_CONNECT_NAME     "connect"
 #define NET_CLIENT_UI_GTK_BUTTON_CLOSE_NAME       "close"
 #define NET_CLIENT_UI_GTK_BUTTON_PING_NAME        "ping"
+#define NET_CLIENT_UI_GTK_BUTTON_STRESS_NAME      "stress"
 
 // define behaviour
 #define NET_CLIENT_U_TEST_CONNECT_PROBABILITY     0.2F // 20%

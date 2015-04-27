@@ -21,24 +21,22 @@
 #ifndef RPG_GRAPHICS_COMMON_TOOLS_H
 #define RPG_GRAPHICS_COMMON_TOOLS_H
 
-#include "rpg_graphics_exports.h"
-#include "rpg_graphics_incl.h"
-#include "rpg_graphics_common.h"
-
-#include "rpg_map_common.h"
-
-//#include "png.h"
+#include <string>
 
 #include "ace/Global_Macros.h"
 #include "ace/Synch.h"
 
-#include <string>
+#include "rpg_map_common.h"
+
+#include "rpg_graphics_common.h"
+#include "rpg_graphics_exports.h"
+#include "rpg_graphics_incl.h"
 
 // forward declarations
 class RPG_Common_ILock;
 
 /**
-	@author Erik Sohns <erik.sohns@web.de>
+  @author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Graphics_Export RPG_Graphics_Common_Tools
 {

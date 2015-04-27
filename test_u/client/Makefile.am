@@ -7,6 +7,7 @@ AM_CPPFLAGS = \
   -I$(builddir)/../..
 
 DEFS = \
+  -DHAVE_CONFIG_H \
   -DNET_HAS_DLL=1 \
   -DRPG_PROTOCOL_HAS_DLL=1 \
   -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
@@ -87,4 +88,3 @@ rpg_client_gui_LDADD = \
   -lRPG_Graphics \
   -lRPG_Client_GUI \
   $(pkg_libs_LIBS)
-

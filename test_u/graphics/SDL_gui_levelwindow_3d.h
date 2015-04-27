@@ -44,7 +44,7 @@ class RPG_Engine;
 class RPG_Common_ILock;
 
 /**
-	@author Erik Sohns <erik.sohns@web.de>
+  @author Erik Sohns <erik.sohns@web.de>
 */
 class SDL_GUI_LevelWindow_3D
  : public RPG_Graphics_SDLWindowBase,
@@ -62,32 +62,32 @@ class SDL_GUI_LevelWindow_3D
             RPG_Common_ILock*); // screen lock interface handle
 
   // implement (part of) RPG_Client_IWindowLevel
-  virtual void init(const RPG_Graphics_Style&); // style
-  virtual void setView(const int&,          // offset x (map coordinates !)
-                       const int&,          // offset x (map coordinates !)
-                       const bool& = true); // locked access ?
+  virtual void initialize(const RPG_Graphics_Style&); // style
+  virtual void setView(int,          // offset x (map coordinates !)
+                       int,          // offset x (map coordinates !)
+                       bool = true); // locked access ?
   virtual void setView(const RPG_Map_Position_t&); // position
   virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
 
-	void center();
+  void center();
 
   // (re-)init / set level properties
   // implement (part of) RPG_Client_IWindowLevel
   virtual void toggleDoor(const RPG_Map_Position_t&); // door position
-  virtual void setBlendRadius(const unsigned char&); // radius
+  virtual void setBlendRadius(unsigned char); // radius
   virtual void updateMinimap();
   virtual void updateMessageWindow(const std::string&); // message
 
   bool setStyle(const RPG_Graphics_StyleUnion&);
 
   // implement RPG_Client_IWindow
-  virtual void drawBorder(SDL_Surface* = NULL,      // target surface (default: screen)
-                          const unsigned int& = 0,  // offset x (top-left = [0,0])
-                          const unsigned int& = 0); // offset y (top-left = [0,0])
+  virtual void drawBorder(SDL_Surface* = NULL, // target surface (default: screen)
+                          unsigned int = 0,    // offset x (top-left = [0,0])
+                          unsigned int = 0);   // offset y (top-left = [0,0])
   // implement (part of) RPG_Graphics_IWindowBase
-  virtual void draw(SDL_Surface* = NULL,       // target surface (default: screen)
-                    const unsigned int& = 0,  // offset x (top-left = [0,0])
-                    const unsigned int& = 0); // offset y (top-left = [0,0])
+  virtual void draw(SDL_Surface* = NULL, // target surface (default: screen)
+                    unsigned int = 0,    // offset x (top-left = [0,0])
+                    unsigned int = 0);   // offset y (top-left = [0,0])
   virtual void update(SDL_Surface* = NULL); // target surface (default: screen)
   virtual void handleEvent(const SDL_Event&,          // event
                            RPG_Graphics_IWindowBase*, // target window (NULL: this)
@@ -117,7 +117,7 @@ class SDL_GUI_LevelWindow_3D
   void initWallBlend(const bool&); // half-height walls ?
   void initMiniMap(RPG_Engine*); // level state handle
 //  void restoreBG();
-	void initTiles();
+  void initTiles();
 
   state_t*                        myState;
   RPG_Engine*                     myEngine;

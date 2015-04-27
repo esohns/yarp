@@ -1107,10 +1107,8 @@ do_printVersion (const std::string& programName_in)
   RPG_TRACE (ACE_TEXT ("::do_printVersion"));
 
   std::cout << programName_in
-#ifdef HAVE_CONFIG_H
             << ACE_TEXT(" : ")
-            << RPG_VERSION
-#endif
+            << YARP_PACKAGE_VERSION
             << std::endl;
 
   // create version string...
@@ -1315,14 +1313,14 @@ ACE_TMAIN (int argc_in,
   // step1c: initialize logging and/or tracing
   RPG_Client_GTK_CBData_t user_data;
   RPG_Client_Logger logger (&user_data.logStack,
-                            &user_data.GTKState.lock);
+                            &user_data.logStackLock);
   std::string log_file;
   if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
-                                        log_file,                  // logfile
-                                        false,                     // log to syslog ?
-                                        false,                     // trace messages ?
-                                        trace_information,         // debug messages ?
-                                        &logger))                  // logger
+                                        log_file,                   // logfile
+                                        false,                      // log to syslog ?
+                                        false,                      // trace messages ?
+                                        trace_information,          // debug messages ?
+                                        &logger))                   // logger
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));

@@ -499,7 +499,7 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
                                level))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to load level \"%s\", aborting\n"),
+                ACE_TEXT ("failed to load level \"%s\", returning\n"),
                 ACE_TEXT (mapFilename_in.c_str ())));
     return;
   } // end IF
@@ -536,7 +536,7 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
                    configuration_in.video_configuration)) // SDL video config
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to initialize video, aborting\n")));
+                ACE_TEXT ("failed to initialize video, returning\n")));
 
     GDK_THREADS_LEAVE ();
 
@@ -572,8 +572,7 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
 //   if (!do_runIntro())
 //   {
 //     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to run intro, aborting\n")));
-//
+//                ACE_TEXT("failed to run intro, returning\n")));
 //     return;
 //   } // end IF
 
@@ -592,7 +591,7 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
   if (!level_engine.isRunning ())
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to start level engine, aborting\n")));
+                ACE_TEXT ("failed to start level engine, returning\n")));
     return;
   } // end IF
 
@@ -607,10 +606,15 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
                                       title,                                    // title (== caption)
                                       FONT_MAIN_LARGE);                         // title font
   main_window.setScreen (user_data.screen);
-  main_window.init (&client_engine,
-                    RPG_CLIENT_WINDOW_DEF_EDGE_AUTOSCROLL,
-                    &level_engine,
-                    false);
+  if (!main_window.initialize (&client_engine,
+                               RPG_CLIENT_WINDOW_DEF_EDGE_AUTOSCROLL,
+                               &level_engine,
+                               false))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Client_Window_Main::initialize(), returning\n")));
+    return;
+  } // end IF
 
   // step5e: client engine
   client_engine.initialize (&level_engine,
@@ -653,7 +657,7 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
   if (!client_engine.isRunning())
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to start client engine, aborting\n")));
+               ACE_TEXT("failed to start client engine, returning\n")));
 
     // clean up
     level_engine.stop();
@@ -670,7 +674,7 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
   if (!user_data.eventTimer)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to SDL_AddTimer(%u): \"%s\", aborting\n"),
+                ACE_TEXT ("failed to SDL_AddTimer(%u): \"%s\", returning\n"),
                 RPG_CLIENT_SDL_EVENT_TIMEOUT,
                 ACE_TEXT (SDL_GetError ())));
 
@@ -705,15 +709,14 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
 //     if (SDL_PollEvent(&event) == -1)
 //     {
 //       ACE_DEBUG((LM_ERROR,
-//                  ACE_TEXT("failed to SDL_PollEvent(): \"%s\", aborting\n"),
+//                  ACE_TEXT("failed to SDL_PollEvent(): \"%s\", returning\n"),
 //                  ACE_TEXT(SDL_GetError())));
-//
 //       return;
 //     } // end IF
     if (SDL_WaitEvent (&sdl_event) != 1)
     {
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
+                  ACE_TEXT ("failed to SDL_WaitEvent(): \"%s\", returning\n"),
                   ACE_TEXT (SDL_GetError ())));
 
       // clean up
@@ -992,10 +995,8 @@ do_printVersion(const std::string& programName_in)
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
   std::cout << programName_in
-#ifdef HAVE_CONFIG_H
             << ACE_TEXT(" : ")
-            << RPG_VERSION
-#endif
+            << YARP_VERSION
             << std::endl;
 
   // create version string...
@@ -1009,8 +1010,7 @@ do_printVersion(const std::string& programName_in)
   else
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%m\", aborting\n")));
-
+               ACE_TEXT("failed to convert: \"%m\", returning\n")));
     return;
   } // end ELSE
   if (version_number << ACE::minor_version())
@@ -1023,16 +1023,14 @@ do_printVersion(const std::string& programName_in)
     else
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to convert: \"%m\", aborting\n")));
-
+                 ACE_TEXT("failed to convert: \"%m\", returning\n")));
       return;
     } // end ELSE
   } // end IF
   else
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%m\", aborting\n")));
-
+               ACE_TEXT("failed to convert: \"%m\", returning\n")));
     return;
   } // end ELSE
   std::cout << ACE_TEXT("ACE: ") << version_number.str() << std::endl;

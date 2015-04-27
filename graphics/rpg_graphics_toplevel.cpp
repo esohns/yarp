@@ -21,23 +21,23 @@
 
 #include "rpg_graphics_toplevel.h"
 
+#include "rpg_common_macros.h"
+
+#include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_dictionary.h"
 #include "rpg_graphics_surface.h"
-#include "rpg_graphics_common_tools.h"
-
-#include "rpg_common_macros.h"
 
 RPG_Graphics_TopLevel::RPG_Graphics_TopLevel(const RPG_Graphics_Size_t& size_in,
                                              const RPG_Graphics_GraphicTypeUnion& elementType_in,
                                              const std::string& title_in)
 //                                              SDL_Surface* backGround_in)
- : inherited(WINDOW_MAIN,
-             size_in,
-             title_in),
+ : inherited (WINDOW_MAIN,
+              size_in,
+              title_in)
 //              backGround_in),
-   myElementGraphicsType(elementType_in)
+ , myElementGraphicsType (elementType_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_TopLevel::RPG_Graphics_TopLevel"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_TopLevel::RPG_Graphics_TopLevel"));
 
   // (try to) load (interface) element graphics
   if (!loadGraphics(myElementGraphicsType))

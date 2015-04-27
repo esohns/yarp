@@ -21,19 +21,18 @@
 
 #include "rpg_graphics_dictionary.h"
 
-#include "rpg_graphics_defines.h"
-#include "rpg_graphics_XML_parser.h"
-#include "rpg_graphics_common_tools.h"
-
-#include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-//#include "rpg_common_xsderrorhandler.h"
-#include "rpg_common_XML_tools.h"
-
-#include <ace/Log_Msg.h>
-
 #include <string>
 #include <sstream>
+
+#include "ace/Log_Msg.h"
+
+#include "rpg_common_defines.h"
+#include "rpg_common_macros.h"
+#include "rpg_common_XML_tools.h"
+
+#include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_XML_parser.h"
 
 RPG_Graphics_Dictionary::RPG_Graphics_Dictionary()
 {
@@ -49,7 +48,7 @@ RPG_Graphics_Dictionary::~RPG_Graphics_Dictionary()
 
 void
 RPG_Graphics_Dictionary::init(const std::string& filename_in,
-                              const bool& validateXML_in)
+                              bool validateXML_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::init"));
 

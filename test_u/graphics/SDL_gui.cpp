@@ -1776,11 +1776,8 @@ do_printVersion(const std::string& programName_in)
 //   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
   std::cout << programName_in
             << ACE_TEXT(": ")
-#ifdef HAVE_CONFIG_H
-            << RPG_VERSION
-#else
+            << YARP_PACKAGE_VERSION
             << ACE_TEXT("N/A")
-#endif
             << std::endl;
 
   // step2: SDL version

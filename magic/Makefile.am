@@ -3,13 +3,10 @@
 ACLOCAL_AMFLAGS = -I m4
 #  -I$(top_srcdir)/../modules/ATCD/ACE
 AM_CPPFLAGS = \
-  -I$(top_srcdir)/../../ATCD/ACE \
-  -I$(top_srcdir)/../chance/dice \
-  -I$(top_srcdir)/../common \
-  -I$(top_srcdir)/../character \
-  -DRPG_MAGIC_BUILD_DLL
+  -I$(top_srcdir)/../../ATCD/ACE
 
-SUBDIRS = scripts
+DEFS = \
+  -DRPG_MAGIC_BUILD_DLL
 
 noinst_HEADERS = \
   stdafx.h
@@ -100,6 +97,14 @@ libRPG_Magic_la_SOURCES = \
   stdafx.cpp \
   stdafx.h
 
+libRPG_Magic_la_CPPFLAGS = \
+  $(AM_CPPFLAGS) \
+  -I$(top_srcdir)/../modules/libCommon/src \
+  -I$(top_srcdir)/../chance/dice \
+  -I$(top_srcdir)/../common \
+  -I$(top_srcdir)/../character \
+  $(pkg_libs_CFLAGS)
+
 pkgdatadir = $(datadir)/@META_PACKAGE@
 configdir = $(pkgdatadir)/config
 config_DATA = \
@@ -109,3 +114,5 @@ config_DATA = \
 EXTRA_DIST = \
   $(config_DATA) \
   rpg_magic.map
+
+SUBDIRS = scripts

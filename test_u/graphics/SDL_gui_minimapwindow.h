@@ -42,11 +42,11 @@ class SDL_GUI_MinimapWindow
 
   // implement (part of) RPG_Graphics_IWindow
   virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
-  virtual void draw(SDL_Surface* = NULL,      // target surface (default: screen)
-                    const unsigned int& = 0,  // offset x (top-left = [0,0])
-                    const unsigned int& = 0); // offset y (top-left = [0,0])
+  virtual void draw(SDL_Surface* = NULL, // target surface (default: screen)
+                    unsigned int = 0,    // offset x (top-left = [0,0])
+                    unsigned int = 0);   // offset y (top-left = [0,0])
   virtual void handleEvent(const SDL_Event&,          // event
-													 RPG_Graphics_IWindowBase*, // target window (NULL: this)
+                           RPG_Graphics_IWindowBase*, // target window (NULL: this)
                            SDL_Rect&);                // return value: "dirty" region
 
   void init(state_t*,           // state handle

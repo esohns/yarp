@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT([RPG_UTest], [0.1], [erik.sohns@web.de], [RPG_UTest], [http://www.rpg.org])
+AC_INIT([RPG_UTest], [0.1], [eriksohns@123mail.org], [RPG_UTest], [http://www.github.com/esohns/yarp])
 AC_PREREQ([2.63])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_AUX_DIR([aux_config])
@@ -81,8 +81,9 @@ AC_SUBST(CXXFLAGS)
 
 # checks for libraries
 dnl libgnomeui-2.0 >= 1.110.0
-PKG_CHECK_MODULES(pkg_libs, 
-                  libpng sdl SDL_ttf SDL_mixer xerces-c libglade-2.0 gmodule-export-2.0 gthread-2.0 gtk+-2.0)
+PKG_CHECK_MODULES(pkg_libs, libpng sdl SDL_ttf SDL_mixer xerces-c gmodule-export-2.0 gthread-2.0 gtk+-2.0 libglade-2.0)
+#PKG_CHECK_MODULES(pkg_libs, libpng sdl SDL_ttf SDL_mixer xerces-c gmodule-export-2.0 gthread-2.0 gtk+-2.0)
+
 dnl AC_SUBST(pkg_libs_CFLAGS)
 dnl AC_SUBST(pkg_libs_LIBS)
 
@@ -120,4 +121,3 @@ AC_CONFIG_FILES([Makefile
                  client/Makefile])
 
 AC_OUTPUT
-

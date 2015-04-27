@@ -7,6 +7,7 @@ AM_CPPFLAGS = \
   -I$(builddir)/../..
 
 DEFS = \
+  -DHAVE_CONFIG_H \
   -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 
 bin_PROGRAMS = \
@@ -120,4 +121,3 @@ SDL_gui_LDADD = \
   -lSDL_mixer \
   -lGLU \
   -lGL
-

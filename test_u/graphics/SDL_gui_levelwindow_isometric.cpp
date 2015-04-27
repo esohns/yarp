@@ -21,31 +21,30 @@
 
 #include "SDL_gui_levelwindow_isometric.h"
 
-#include "SDL_gui_defines.h"
-#include "SDL_gui_minimapwindow.h"
+#include <sstream>
 
-#include "rpg_client_defines.h"
-#include "rpg_client_entity_manager.h"
-#include "rpg_client_common_tools.h"
+#include "ace/Log_Msg.h"
+
+#include "rpg_common_defines.h"
+#include "rpg_common_macros.h"
+
+#include "rpg_map_common_tools.h"
 
 #include "rpg_engine.h"
 #include "rpg_engine_common_tools.h"
 
+#include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_cursor_manager.h"
 #include "rpg_graphics_defines.h"
 #include "rpg_graphics_surface.h"
-#include "rpg_graphics_cursor_manager.h"
-#include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_SDL_tools.h"
 
-#include "rpg_map_common_tools.h"
+#include "rpg_client_common_tools.h"
+#include "rpg_client_defines.h"
+#include "rpg_client_entity_manager.h"
 
-#include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-//#include "rpg_common_file_tools.h"
-
-#include "ace/Log_Msg.h"
-
-#include <sstream>
+#include "SDL_gui_defines.h"
+#include "SDL_gui_minimapwindow.h"
 
 SDL_GUI_LevelWindow_Isometric::SDL_GUI_LevelWindow_Isometric(const RPG_Graphics_SDLWindowBase& parent_in,
                                                              RPG_Engine* engine_in)
@@ -185,9 +184,9 @@ SDL_GUI_LevelWindow_Isometric::~SDL_GUI_LevelWindow_Isometric()
 }
 
 void
-SDL_GUI_LevelWindow_Isometric::setView(const int& offsetX_in,
-                                       const int& offsetY_in,
-                                       const bool& lockedAccess_in)
+SDL_GUI_LevelWindow_Isometric::setView(int offsetX_in,
+                                       int offsetY_in,
+                                       bool lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::setView"));
 
@@ -278,8 +277,8 @@ SDL_GUI_LevelWindow_Isometric::init(state_t* state_in,
 
 void
 SDL_GUI_LevelWindow_Isometric::drawBorder(SDL_Surface* targetSurface_in,
-                                          const unsigned int& offsetX_in,
-                                          const unsigned int& offsetY_in)
+                                          unsigned int offsetX_in,
+                                          unsigned int offsetY_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::drawBorder"));
 
@@ -295,8 +294,8 @@ SDL_GUI_LevelWindow_Isometric::drawBorder(SDL_Surface* targetSurface_in,
 
 void
 SDL_GUI_LevelWindow_Isometric::draw(SDL_Surface* targetSurface_in,
-                                    const unsigned int& offsetX_in,
-                                    const unsigned int& offsetY_in)
+                                    unsigned int offsetX_in,
+                                    unsigned int offsetY_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::draw"));
 
@@ -897,11 +896,11 @@ SDL_GUI_LevelWindow_Isometric::draw(SDL_Surface* targetSurface_in,
   unclip(target_surface);
 
   // whole viewport needs a refresh...
-  invalidate(myClipRect);
+  invalidate(clipRectangle_);
 
   // remember position of last realization
-  myLastAbsolutePosition = std::make_pair(myClipRect.x,
-                                          myClipRect.y);
+  lastAbsolutePosition_ = std::make_pair(clipRectangle_.x,
+                                         clipRectangle_.y);
 }
 
 void
@@ -1947,11 +1946,11 @@ SDL_GUI_LevelWindow_Isometric::center()
 }
 
 void
-SDL_GUI_LevelWindow_Isometric::init(const RPG_Graphics_Style& style_in)
+SDL_GUI_LevelWindow_Isometric::initialize(const RPG_Graphics_Style& style_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::init"));
+  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::initialize"));
 
-  // init style
+  // initialize style
   RPG_Graphics_StyleUnion style;
   style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
   style.floorstyle = style_in.floor;
@@ -1974,7 +1973,7 @@ SDL_GUI_LevelWindow_Isometric::init(const RPG_Graphics_Style& style_in)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_GUI_LevelWindow_Isometric::setStyle(DOORSTYLE), continuing\n")));
 
-  // init tiles / position
+  // initialize tiles / position
   RPG_Client_Common_Tools::initFloorEdges(*myEngine,
                                           myCurrentFloorEdgeSet,
                                           myFloorEdgeTiles);
@@ -2013,8 +2012,8 @@ SDL_GUI_LevelWindow_Isometric::notify(const RPG_Engine_Command& command_in,
       // change tile accordingly
       RPG_Graphics_Orientation orientation =
         RPG_Client_Common_Tools::getDoorOrientation(position,
-                                                            *myEngine,
-                                                            false);
+                                                    *myEngine,
+                                                    false);
       myEngine->unlock();
       switch (orientation)
       {
@@ -2022,7 +2021,7 @@ SDL_GUI_LevelWindow_Isometric::notify(const RPG_Engine_Command& command_in,
         {
           myDoorTiles[position] =
             ((door_state == DOORSTATE_OPEN) ? myCurrentDoorSet.horizontal_open
-                                                        : myCurrentDoorSet.horizontal_closed);
+                                            : myCurrentDoorSet.horizontal_closed);
           break;
         }
         case ORIENTATION_VERTICAL:
@@ -2046,8 +2045,8 @@ SDL_GUI_LevelWindow_Isometric::notify(const RPG_Engine_Command& command_in,
     draw();
     //getArea(dirty_region, false); // *TODO*
     redrawCursor(RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position(false),
-           true,
-           true);
+                 true,
+                 true);
     update_parent = true;
 
       break;
@@ -2167,18 +2166,18 @@ SDL_GUI_LevelWindow_Isometric::notify(const RPG_Engine_Command& command_in,
             myState->debug)
         {
           RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->put(parameters_in.entity_id,
-                                     RPG_Graphics_Common_Tools::map2Screen(*parameters_in.positions.begin(),
-                                                       std::make_pair(window_area.w,
-                                                              window_area.h),
-                                                       myView),
-                                     dirty_region,
-                                     true,
-                                     true,
-                                     myState->debug);
+                                                               RPG_Graphics_Common_Tools::map2Screen(*parameters_in.positions.begin(),
+                                                                                                     std::make_pair(window_area.w,
+                                                                                                                    window_area.h),
+                                                                                                     myView),
+                                                               dirty_region,
+                                                               true,
+                                                               true,
+                                                               myState->debug);
           invalidate(dirty_region);
           redrawCursor(RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position(false),
-                 true,
-                 true);
+                       true,
+                       true);
           update_parent = true;
         } // end IF
         myEngine->unlock();
@@ -2373,7 +2372,7 @@ SDL_GUI_LevelWindow_Isometric::toggleDoor(const RPG_Map_Position_t& position_in)
 }
 
 void
-SDL_GUI_LevelWindow_Isometric::setBlendRadius(const unsigned char& radius_in)
+SDL_GUI_LevelWindow_Isometric::setBlendRadius(unsigned char radius_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::setBlendRadius"));
 
