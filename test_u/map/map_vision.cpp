@@ -346,10 +346,8 @@ do_printVersion(const std::string& programName_in)
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
   std::cout << programName_in
-#ifdef HAVE_CONFIG_H
             << ACE_TEXT(" : ")
-            << RPG_VERSION
-#endif
+            << YARP_VERSION
             << std::endl;
 
   // create version string...
@@ -457,7 +455,7 @@ ACE_TMAIN (int argc_in,
     // try fallback
     schema_repository.clear ();
   } // end IF
-  
+
   bool trace_information        = false;
   bool print_version_and_exit   = false;
 

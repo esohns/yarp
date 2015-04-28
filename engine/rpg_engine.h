@@ -226,6 +226,6 @@ class RPG_Engine_Export RPG_Engine
 
   RPG_Engine_IClient*                         myClient;
   Net_Configuration_t                         myNetConfiguration;
-  Net_Client_IConnector*                      myConnector;
+  Net_Client_IConnector_t*                    myConnector;
 };
 #endif

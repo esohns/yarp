@@ -413,6 +413,15 @@ do_work (unsigned int maxNumConnections_in,
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step0a: initialize stream configuration object
+  Stream_AllocatorHeap heapAllocator;
+  RPG_Net_StreamMessageAllocator messageAllocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
+                                                   &heapAllocator);
+
+  Stream_ModuleConfiguration_t module_configuration;
+  ACE_OS::memset (&module_configuration, 0, sizeof (module_configuration));
+  module_configuration.messageAllocator = &messageAllocator;
+  module_configuration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
+
   Net_EventHandler ui_event_handler (&CBData_in);
   RPG_Net_Module_EventHandler_Module event_handler (ACE_TEXT_ALWAYS_CHAR ("EventHandler"),
                                                     NULL);
@@ -425,13 +434,11 @@ do_work (unsigned int maxNumConnections_in,
                 ACE_TEXT ("dynamic_cast<RPG_Net_Module_EventHandler> failed, returning\n")));
     return;
   } // end IF
-  eventHandler_impl->initialize (&CBData_in.subscribers,
+  eventHandler_impl->initialize (module_configuration,
+                                 &CBData_in.subscribers,
                                  &CBData_in.subscribersLock);
-
   eventHandler_impl->subscribe (&ui_event_handler);
-  Stream_AllocatorHeap heapAllocator;
-  RPG_Net_StreamMessageAllocator messageAllocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
-                                                   &heapAllocator);
+
   Net_Configuration_t configuration;
   ACE_OS::memset (&configuration, 0, sizeof (Net_Configuration_t));
   // ************ connection configuration data ************
@@ -440,14 +447,14 @@ do_work (unsigned int maxNumConnections_in,
   // ************ socket / stream configuration data ************
   configuration.socketConfiguration.bufferSize =
    RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
-  configuration.streamConfiguration.messageAllocator = &messageAllocator;
-  configuration.streamConfiguration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
+  configuration.streamConfiguration = module_configuration;
   //  config.useThreadPerConnection = false;
   //  config.serializeOutput = false;
 
   //  config.notificationStrategy = NULL;
-  configuration.streamConfiguration.module = (!UIDefinitionFile_in.empty () ? &event_handler
-                                                                            : NULL);
+  configuration.streamConfiguration.module =
+    (!UIDefinitionFile_in.empty () ? &event_handler
+                                   : NULL);
   //  config.delete_module = false;
   // *WARNING*: set at runtime, by the appropriate connection handler
   //  config.sessionID = 0; // (== socket handle !)

@@ -55,10 +55,10 @@ class Net_Client_TimeoutHandler
     ALTERNATING_INVALID = -1
   };
 
-  Net_Client_TimeoutHandler (ActionMode_t,            // mode
-                             unsigned int,            // max #connections
-                             const ACE_INET_Addr&,    // remote SAP
-                             Net_Client_IConnector*); // connector
+  Net_Client_TimeoutHandler (ActionMode_t,             // mode
+                             unsigned int,             // max #connections
+                             const ACE_INET_Addr&,     // remote SAP
+                             Net_Client_IConnector_t*); // connector
   virtual ~Net_Client_TimeoutHandler ();
 
   // implement specific behaviour
@@ -70,13 +70,13 @@ class Net_Client_TimeoutHandler
 
   ACE_UNIMPLEMENTED_FUNC (Net_Client_TimeoutHandler ());
   ACE_UNIMPLEMENTED_FUNC (Net_Client_TimeoutHandler (const Net_Client_TimeoutHandler&));
-  ACE_UNIMPLEMENTED_FUNC (Net_Client_TimeoutHandler& operator=(const Net_Client_TimeoutHandler&));
+  ACE_UNIMPLEMENTED_FUNC (Net_Client_TimeoutHandler& operator= (const Net_Client_TimeoutHandler&));
 
-  ActionMode_t           myMode;
-  AlternatingMode_t      myAlternatingMode;
-  unsigned int           myMaxNumConnections;
-  ACE_INET_Addr          myPeerAddress;
-  Net_Client_IConnector* myConnector;
+  AlternatingMode_t        alternatingMode_;
+  Net_Client_IConnector_t* connector_;
+  unsigned int             maxNumConnections_;
+  ActionMode_t             mode_;
+  ACE_INET_Addr            peerAddress_;
 };
 
 #endif

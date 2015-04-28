@@ -61,7 +61,7 @@ idle_initialize_client_UI_cb (gpointer userData_in)
   //  data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
   //// sanity check(s)
   //ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
-  Common_UI_GTKBuildersIterator_t iterator = 
+  Common_UI_GTKBuildersIterator_t iterator =
     data_p->GTKState.builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->GTKState.builders.end ());
@@ -189,36 +189,13 @@ idle_initialize_client_UI_cb (gpointer userData_in)
                     NULL);
 
   // step5b: connect custom signals
-  //glade_xml_signal_connect_data ((*iterator).second.second,
-  //                               ACE_TEXT_ALWAYS_CHAR ("button_connect_clicked_cb"),
-  //                               G_CALLBACK (button_connect_clicked_cb),
-  //                               userData_in);
-  //glade_xml_signal_connect_data ((*iterator).second.second,
-  //                               ACE_TEXT_ALWAYS_CHAR ("button_close_clicked_cb"),
-  //                               G_CALLBACK (button_close_clicked_cb),
-  //                               userData_in);
-  //glade_xml_signal_connect_data ((*iterator).second.second,
-  //                               ACE_TEXT_ALWAYS_CHAR ("button_close_all_clicked_cb"),
-  //                               G_CALLBACK (button_close_all_clicked_cb),
-  //                               userData_in);
-  //glade_xml_signal_connect_data ((*iterator).second.second,
-  //                               ACE_TEXT_ALWAYS_CHAR ("button_ping_clicked_cb"),
-  //                               G_CALLBACK (button_ping_clicked_cb),
-  //                               userData_in);
-  //glade_xml_signal_connect_data ((*iterator).second.second,
-  //                               ACE_TEXT_ALWAYS_CHAR ("button_about_clicked_cb"),
-  //                               G_CALLBACK (button_about_clicked_cb),
-  //                               userData_in);
-  //glade_xml_signal_connect_data ((*iterator).second.second,
-  //                               ACE_TEXT_ALWAYS_CHAR ("button_quit_clicked_cb"),
-  //                               G_CALLBACK (button_quit_clicked_cb),
-  //                               userData_in);
-  //glade_xml_signal_connect_data ((*iterator).second.second,
-  //                               ACE_TEXT_ALWAYS_CHAR ("togglebutton_stress_toggled_cb"),
-  //                               G_CALLBACK (togglebutton_stress_toggled_cb),
-  //                               userData_in);
   //gtk_builder_connect_signals ((*iterator).second.second,
   //                             userData_in);
+  g_signal_connect (gtk_builder_get_object ((*iterator).second.second,
+                                            ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_CONNECT_NAME)),
+                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                    G_CALLBACK (button_connect_clicked_cb),
+                    userData_in);
   g_signal_connect (gtk_builder_get_object ((*iterator).second.second,
                                             ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_CLOSE_NAME)),
                     ACE_TEXT_ALWAYS_CHAR ("clicked"),
@@ -796,7 +773,7 @@ button_close_all_clicked_cb (GtkWidget* widget_in,
   //// sanity check(s)
   //ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
 
-  NET_CONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
+  NET_CONNECTIONMANAGER_SINGLETON::instance ()->abort ();
 
   return FALSE;
 } // button_close_all_clicked_cb

@@ -33,9 +33,9 @@ class IRC_Client_SignalHandler
  : public ACE_Event_Handler
 {
  public:
-  IRC_Client_SignalHandler (const std::string&,      // target hostname
-                            unsigned short,          // target port number
-                            Net_Client_IConnector*); // connector handle
+  IRC_Client_SignalHandler (const std::string&,        // target hostname
+                            unsigned short,            // target port number
+                            Net_Client_IConnector_t*); // connector handle
   virtual ~IRC_Client_SignalHandler ();
 
   // implement specific behaviour
@@ -50,8 +50,8 @@ class IRC_Client_SignalHandler
   ACE_UNIMPLEMENTED_FUNC (IRC_Client_SignalHandler (const IRC_Client_SignalHandler&));
   ACE_UNIMPLEMENTED_FUNC (IRC_Client_SignalHandler& operator=(const IRC_Client_SignalHandler&));
 
-  ACE_INET_Addr          myPeerAddress;
-  Net_Client_IConnector* myConnector;
+  Net_Client_IConnector_t* connector_;
+  ACE_INET_Addr            peerAddress_;
 };
 
 #endif

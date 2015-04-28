@@ -30,18 +30,17 @@
 Net_Client_TimeoutHandler::Net_Client_TimeoutHandler (ActionMode_t mode_in,
                                                       unsigned int maxNumConnections_in,
                                                       const ACE_INET_Addr& remoteSAP_in,
-                                                      Net_Client_IConnector* connector_in)
+                                                      Net_Client_IConnector_t* connector_in)
  : inherited (NULL,                           // default reactor
               ACE_Event_Handler::LO_PRIORITY) // priority
- , myMode (mode_in)
- , myAlternatingMode (ALTERNATING_CONNECT)
- , myMaxNumConnections (maxNumConnections_in)
- , myPeerAddress (remoteSAP_in)
- , myConnector (connector_in)
+ , alternatingMode_ (ALTERNATING_CONNECT)
+ , connector_ (connector_in)
+ , maxNumConnections_ (maxNumConnections_in)
+ , mode_ (mode_in)
+ , peerAddress_ (remoteSAP_in)
 {
   RPG_TRACE (ACE_TEXT ("Net_Client_TimeoutHandler::Net_Client_TimeoutHandler"));
 
-  ACE_ASSERT (myConnector);
 }
 
 Net_Client_TimeoutHandler::~Net_Client_TimeoutHandler ()
@@ -60,7 +59,7 @@ Net_Client_TimeoutHandler::handle_timeout (const ACE_Time_Value& tv_in,
 
   //const Net_GTK_CBData_t* user_data = reinterpret_cast<const Net_GTK_CBData_t*>(arg_in);
   //ActionMode_t action_mode = (user_data ? ACTION_GTK : myMode);
-  ActionMode_t action_mode = myMode;
+  ActionMode_t action_mode = mode_;
   bool do_connect = false;
   unsigned int num_connections =
     NET_CONNECTIONMANAGER_SINGLETON::instance ()->numConnections ();
@@ -74,14 +73,14 @@ Net_Client_TimeoutHandler::handle_timeout (const ACE_Time_Value& tv_in,
     }
     case ACTION_ALTERNATING:
     {
-      switch (myAlternatingMode)
+      switch (alternatingMode_)
       {
         case ALTERNATING_CONNECT:
         {
           // sanity check: max num connections already reached ?
           // --> abort the oldest one first
-          if (myMaxNumConnections &&
-              (num_connections >= myMaxNumConnections))
+          if (maxNumConnections_ &&
+              (num_connections >= maxNumConnections_))
           {
             ACE_DEBUG((LM_DEBUG,
                        ACE_TEXT("closing oldest connection...\n")));
@@ -136,16 +135,16 @@ Net_Client_TimeoutHandler::handle_timeout (const ACE_Time_Value& tv_in,
         {
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("invalid alternating mode (was: %d), aborting\n"),
-                      myAlternatingMode));
+                      alternatingMode_));
           return -1;
         }
       } // end SWITCH
 
-      int temp = myAlternatingMode;
-      myAlternatingMode =
+      int temp = alternatingMode_;
+      alternatingMode_ =
         static_cast<Net_Client_TimeoutHandler::AlternatingMode_t> (++temp);
-      if (myAlternatingMode == ALTERNATING_MAX)
-        myAlternatingMode = ALTERNATING_CONNECT;
+      if (alternatingMode_ == ALTERNATING_MAX)
+        alternatingMode_ = ALTERNATING_CONNECT;
 
       break;
     }
@@ -212,23 +211,36 @@ Net_Client_TimeoutHandler::handle_timeout (const ACE_Time_Value& tv_in,
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("invalid mode (was: %d), aborting\n"),
-                  myMode));
+                  mode_));
       return -1;
     }
   } // end IF
 
-  if (do_connect)
+  if (do_connect && connector_)
   {
+    bool result = false;
     try
     {
-      myConnector->connect (myPeerAddress);
+      result = connector_->connect (peerAddress_);
     }
     catch (...)
     {
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("caught exception in RPG_Net_IConnector::connect(), aborting\n")));
+                  ACE_TEXT ("caught exception in Net_Client_IConnector_t::connect(), aborting\n")));
       return -1;
     }
+    if (!result)
+    {
+      ACE_TCHAR buffer[BUFSIZ];
+      ACE_OS::memset(buffer, 0, sizeof (buffer));
+      int result_2 = peerAddress_.addr_to_string (buffer, sizeof (buffer));
+      if (result_2 == -1)
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to ACE_INET_Addr::addr_to_string(): \"%m\", continuing\n")));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to Net_Client_IConnector::connect(\"%s\"), continuing\n"),
+                  buffer));
+    } // end IF
   } // end IF
 
   return 0;

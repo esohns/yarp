@@ -453,10 +453,8 @@ test_u_main::print_version(const std::string& programName_in)
   RPG_TRACE(ACE_TEXT("test_u_main::print_version"));
 
   std::cout << programName_in
-#ifdef HAVE_CONFIG_H
             << ACE_TEXT(" : ")
-            << RPG_VERSION
-#endif
+            << YARP_VERSION
             << std::endl;
 
   // create version string...

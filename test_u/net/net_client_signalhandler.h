@@ -33,11 +33,11 @@ class Net_Client_SignalHandler
    public Common_ISignal
 {
  public:
-  Net_Client_SignalHandler (long,                   // action timer id
-                            const ACE_INET_Addr&,   // peer SAP
-                            Net_Client_IConnector*, // connector
+  Net_Client_SignalHandler (long,                     // action timer id
+                            const ACE_INET_Addr&,     // peer SAP
+                            Net_Client_IConnector_t*, // connector
                             // -------------------------------------------
-                            bool);                  // use reactor ?
+                            bool);                    // use reactor ?
   virtual ~Net_Client_SignalHandler ();
 
   // implement Common_ISignal
@@ -50,10 +50,10 @@ class Net_Client_SignalHandler
   ACE_UNIMPLEMENTED_FUNC (Net_Client_SignalHandler (const Net_Client_SignalHandler&));
   ACE_UNIMPLEMENTED_FUNC (Net_Client_SignalHandler& operator=(const Net_Client_SignalHandler&));
 
-  long                   myActionTimerID;
-  ACE_INET_Addr          myPeerAddress;
-  Net_Client_IConnector* myConnector;
-  bool                   myUseReactor;
+  long                     actionTimerID_;
+  Net_Client_IConnector_t* connector_;
+  ACE_INET_Addr            peerAddress_;
+  bool                     useReactor_;
 };
 
 #endif

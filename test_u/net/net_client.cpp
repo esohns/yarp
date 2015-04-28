@@ -449,6 +449,9 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   }
 
   // step0b: initialize stream configuration object
+  Stream_ModuleConfiguration_t module_configuration;
+  ACE_OS::memset (&module_configuration, 0, sizeof (module_configuration));
+
   Net_EventHandler ui_event_handler (&CBData_in);
   RPG_Net_Module_EventHandler_Module event_handler (ACE_TEXT_ALWAYS_CHAR ("EventHandler"),
                                                     NULL);
@@ -465,6 +468,7 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
                                  &CBData_in.subscribersLock);
 
   eventHandler_impl->subscribe (&ui_event_handler);
+
   Stream_AllocatorHeap heapAllocator;
   RPG_Net_StreamMessageAllocator messageAllocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
                                                    &heapAllocator);
@@ -479,8 +483,10 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   // ************ socket / stream configuration data ************
   configuration.socketConfiguration.bufferSize =
    RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
-  configuration.streamConfiguration.messageAllocator = &messageAllocator;
+
   configuration.streamConfiguration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
+  configuration.streamConfiguration.messageAllocator = &messageAllocator;
+  configuration.streamConfiguration.moduleConfiguration = &module_configuration;
   //  config.useThreadPerConnection = false;
   //  config.serializeOutput = false;
 
@@ -508,7 +514,7 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   } // end IF
 
   // step0d: initialize client connector
-  Net_Client_IConnector* connector_p = NULL;
+  Net_Client_IConnector_t* connector_p = NULL;
   if (useReactor_in)
     ACE_NEW_NORETURN (connector_p,
                       Net_Client_Connector_t (&configuration,
@@ -772,7 +778,25 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
               ACE_TEXT ("finished event dispatch...\n")));
 
   // step7: clean up
-  // *NOTE*: any action timer has been cancelled, connections have been aborted
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
+  //		{ // synch access
+  //			ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(CBData_in.lock);
+
+  //			for (Net_GTK_EventSourceIDsIterator_t iterator = CBData_in.event_source_ids.begin();
+  //					 iterator != CBData_in.event_source_ids.end();
+  //					 iterator++)
+  //				g_source_remove(*iterator);
+  //		} // end lock scope
+  COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
+
+  Net_IInetConnectionManager_t* connection_manager_p =
+    Net_Common_Tools::getConnectionManager ();
+  ACE_ASSERT (connection_manager_p);
+  connection_manager_p->abort ();
+  // *IMPORTANT NOTE*: as long as connections are inactive (i.e. events are
+  // dispatched by reactor thread(s), there is no real reason to wait here)
+  connection_manager_p->wait ();
+
   Common_Tools::finalizeSignals (signalSet_inout,
                                  useReactor_in,
                                  previousSignalActions_inout);
@@ -784,8 +808,6 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
 //				 iterator++)
 //			g_source_remove(*iterator);
 //	} // end lock scope
-  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
-  COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
   delete connector_p;
 
   ACE_DEBUG ((LM_DEBUG,

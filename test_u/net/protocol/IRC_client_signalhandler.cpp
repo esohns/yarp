@@ -31,12 +31,12 @@
 
 IRC_Client_SignalHandler::IRC_Client_SignalHandler (const std::string& serverHostname_in,
                                                     unsigned short serverPort_in,
-                                                    Net_Client_IConnector* connector_in)
+                                                    Net_Client_IConnector_t* connector_in)
  : inherited (ACE_Reactor::instance (),       // corresp. reactor
               ACE_Event_Handler::LO_PRIORITY) // priority
- , myPeerAddress (serverPort_in,
-                  serverHostname_in.c_str ())
- , myConnector (connector_in)
+ , connector_ (connector_in)
+ , peerAddress_ (serverPort_in,
+                 serverHostname_in.c_str ())
 {
   RPG_TRACE (ACE_TEXT ("IRC_Client_SignalHandler::IRC_Client_SignalHandler"));
 
@@ -110,7 +110,7 @@ IRC_Client_SignalHandler::handle_signal (int signal_in,
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     case SIGUSR1:
 #else
-	case SIGBREAK:
+  case SIGBREAK:
 #endif
     {
       // (try to) connect...
@@ -121,7 +121,7 @@ IRC_Client_SignalHandler::handle_signal (int signal_in,
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
     case SIGUSR2:
 #else
-	case SIGABRT:
+  case SIGABRT:
 #endif
     {
       // (try to) abort oldest connection...
@@ -148,15 +148,25 @@ IRC_Client_SignalHandler::handle_signal (int signal_in,
   } // end IF
 
   // ...connect ?
-  if (connect_to_server)
+  if (connect_to_server && connector_)
   {
-    if (!myConnector->connect (myPeerAddress)) // peer address
+    bool result_2 = false;
+    try
+    {
+      result_2 = connector_->connect (peerAddress_);
+    }
+    catch (...)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("caught exception in Net_Client_IConnector_t::connect(): \"%m\", continuing\n")));
+    }
+    if (!result_2)
     {
       // debug info
       ACE_TCHAR buffer[BUFSIZ];
       ACE_OS::memset(buffer, 0, sizeof (buffer));
-      result = myPeerAddress.addr_to_string (buffer,
-                                             sizeof (buffer));
+      result = peerAddress_.addr_to_string (buffer,
+                                            sizeof (buffer));
       if (result == -1)
       {
         // *PORTABILITY*: tracing in a signal handler context is not portable
@@ -165,7 +175,7 @@ IRC_Client_SignalHandler::handle_signal (int signal_in,
       } // end IF
       // *PORTABILITY*: tracing in a signal handler context is not portable
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to connect(\"%s\"): \"%m\", continuing\n"),
+                  ACE_TEXT ("failed to Net_Client_IConnector_t::connect(\"%s\"): \"%m\", continuing\n"),
                   buffer));
 
       // release an existing connection, maybe that helps...

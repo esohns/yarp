@@ -304,7 +304,7 @@ do_work (RPG_Net_Protocol_Configuration& configuration_in,
   } // end IF
 
   // step2: initialize client connector
-  Net_Client_IConnector* connector_p = NULL;
+  Net_Client_IConnector_t* connector_p = NULL;
   if (RPG_NET_USES_REACTOR)
     ACE_NEW_NORETURN (connector_p,
                       RPG_Net_Protocol_Connector_t (&configuration_in,
