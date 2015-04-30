@@ -11,15 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\net\server\rpg_net_server_asynchlistener.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="..\..\net\server\rpg_net_server_common_tools.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\..\net\server\rpg_net_server_listener.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
     </ClCompile>
@@ -31,13 +23,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\net\server\rpg_net_server_asynchlistener.h" />
     <ClInclude Include="..\..\net\server\rpg_net_server_common.h" />
     <ClInclude Include="..\..\net\server\rpg_net_server_common_tools.h" />
     <ClInclude Include="..\..\net\server\rpg_net_server_defines.h" />
     <ClInclude Include="..\..\net\server\rpg_net_server_exports.h" />
-    <ClInclude Include="..\..\net\server\rpg_net_server_ilistener.h" />
-    <ClInclude Include="..\..\net\server\rpg_net_server_listener.h" />
     <ClInclude Include="..\..\net\server\stdafx.h" />
   </ItemGroup>
   <ItemGroup>

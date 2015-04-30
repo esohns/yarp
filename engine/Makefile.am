@@ -1,15 +1,12 @@
-#METASOURCES = AUTO
-
 ACLOCAL_AMFLAGS = -I m4
-#  -DRPG_NET_CLIENT_HAS_DLL
-#  -I$(top_srcdir)/../modules/ATCD/ACE
+
 AM_CPPFLAGS = \
   -I$(top_srcdir)/../../ATCD/ACE \
   -I$(top_srcdir)/../3rd_party/bison \
   -I$(top_srcdir)/../modules/libCommon/src \
   -I$(top_srcdir)/../modules/libACEStream/src \
   -I$(top_srcdir)/../modules/libACENetwork/src \
-  -I$(top_srcdir)/../modules/libACENetwork/src/client \
+  -I$(top_srcdir)/../modules/libACENetwork/src/client_server \
   -I$(top_srcdir)/../chance/dice \
   -I$(top_srcdir)/../chance \
   -I$(top_srcdir)/../common \
@@ -21,8 +18,9 @@ AM_CPPFLAGS = \
   -I$(top_srcdir)/../character/monster \
   -I$(top_srcdir)/../map \
   -I$(top_srcdir)/../net \
-  -I$(top_srcdir)/../net/client \
-  -I$(top_srcdir)/../net/protocol \
+  -I$(top_srcdir)/../net/protocol
+
+DEFS = \
   -DRPG_ENGINE_BUILD_DLL
 
 SUBDIRS = data scripts
@@ -78,4 +76,3 @@ configdir = $(pkgdatadir)/config
 config_DATA = rpg_engine.xsd
 
 EXTRA_DIST = $(config_DATA)
-

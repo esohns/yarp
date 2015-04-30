@@ -366,8 +366,8 @@ do_work (unsigned int numDispatchThreads_in,
               ACE_TEXT ("finished event dispatch...\n")));
 
   // wait for connection processing to complete
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->waitConnections ();
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abort ();
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->wait ();
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("finished working...\n")));

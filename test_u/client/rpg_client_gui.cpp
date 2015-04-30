@@ -44,7 +44,6 @@
 #include "common_file_tools.h"
 #include "common_tools.h"
 
-//#include "common_ui_defines.h"
 #include "common_ui_glade_definition.h"
 #include "common_ui_gtk_manager.h"
 
@@ -1048,8 +1047,8 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
     RPG_Client_Common_Tools::finalize ();
     RPG_Engine_Common_Tools::fini();
 
-    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
-    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->waitConnections ();
+    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abort ();
+    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->wait ();
     Common_Tools::finalizeEventDispatch (RPG_NET_USES_REACTOR,
                                          !RPG_NET_USES_REACTOR,
                                          group_id);
@@ -1350,8 +1349,8 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
   RPG_Engine_Common_Tools::fini();
   // done handling UI events
 
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->waitConnections ();
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abort ();
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->wait ();
   Common_Tools::finalizeEventDispatch (RPG_NET_USES_REACTOR,
                                        !RPG_NET_USES_REACTOR,
                                        group_id);

@@ -58,7 +58,7 @@ SDL_gui_CPPFLAGS = \
   -I$(top_srcdir)/../modules/libCommon/src/ui \
   -I$(top_srcdir)/../modules/libACEStream/src \
   -I$(top_srcdir)/../modules/libACENetwork/src \
-  -I$(top_srcdir)/../modules/libACENetwork/src/client \
+  -I$(top_srcdir)/../modules/libACENetwork/src/client_server \
   -I$(top_srcdir)/../chance/dice \
   -I$(top_srcdir)/../common \
   -I$(top_srcdir)/../magic \
@@ -68,6 +68,7 @@ SDL_gui_CPPFLAGS = \
   -I$(top_srcdir)/../combat \
   -I$(top_srcdir)/../character/monster \
   -I$(top_srcdir)/../map \
+  -I$(top_srcdir)/../net/protocol \
   -I$(top_srcdir)/../engine \
   -I$(top_srcdir)/../sound \
   -I$(top_srcdir)/../graphics \
@@ -113,6 +114,7 @@ SDL_gui_LDADD = \
   -lRPG_Monster \
   -lRPG_Map \
   -lRPG_Net \
+  -lRPG_Net_Protocol \
   -lRPG_Engine \
   -lRPG_Sound \
   -lRPG_Graphics \

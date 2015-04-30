@@ -34,28 +34,27 @@
 
 // init statics
 unsigned int
-RPG_Net_Server_Common_Tools::myMaxNumberOfLogFiles =
+RPG_Net_Server_Common_Tools::maxNumberOfLogFiles_ =
     RPG_NET_SERVER_LOG_MAXIMUM_NUMBER_OF_FILES;
 
 bool
-RPG_Net_Server_Common_Tools::getNextLogFilename(const std::string& directory_in,
-                                                std::string& FQLogFilename_out)
+RPG_Net_Server_Common_Tools::getNextLogFilename (const std::string& directory_in,
+                                                 std::string& FQLogFilename_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Server_Common_Tools::getNextLogFilename"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Server_Common_Tools::getNextLogFilename"));
 
-  // init return value(s)
-  FQLogFilename_out.resize(0);
+  // initialize return value(s)
+  FQLogFilename_out.resize (0);
 
   // sanity check(s): log directory exists ?
   // No ? --> try to create it then !
-  if (!Common_File_Tools::isDirectory(directory_in))
+  if (!Common_File_Tools::isDirectory (directory_in))
   {
-    if (!Common_File_Tools::createDirectory(directory_in))
+    if (!Common_File_Tools::createDirectory (directory_in))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to Common_File_Tools::createDirectory(\"%s\"), aborting\n"),
-                 ACE_TEXT(directory_in.c_str ())));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to Common_File_Tools::createDirectory(\"%s\"), aborting\n"),
+                  ACE_TEXT (directory_in.c_str ())));
       return false;
     } // end IF
 
@@ -67,27 +66,27 @@ RPG_Net_Server_Common_Tools::getNextLogFilename(const std::string& directory_in,
   // construct correct logfilename...
   FQLogFilename_out = directory_in;
   FQLogFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  std::string logFileName = ACE_TEXT_ALWAYS_CHAR(RPG_NET_SERVER_LOG_FILENAME_PREFIX);
-  logFileName += ACE_TEXT_ALWAYS_CHAR(COMMON_LOG_FILENAME_SUFFIX);
+  std::string logFileName = ACE_TEXT_ALWAYS_CHAR (RPG_NET_SERVER_LOG_FILENAME_PREFIX);
+  logFileName += ACE_TEXT_ALWAYS_CHAR (COMMON_LOG_FILENAME_SUFFIX);
   FQLogFilename_out += logFileName;
 
   // retrieve all existing logs and sort them alphabetically...
   ACE_Dirent_Selector entries;
-  if (entries.open(directory_in.c_str(),
-                   &RPG_Net_Server_Common_Tools::selector,
-                   &RPG_Net_Server_Common_Tools::comparator) == -1)
+  int result = entries.open (directory_in.c_str (),
+                             &RPG_Net_Server_Common_Tools::selector,
+                             &RPG_Net_Server_Common_Tools::comparator);
+  if (result == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Dirent_Selector::open(\"%s\"): \"%s\", aborting\n"),
-               directory_in.c_str(),
-               ACE_OS::strerror(ACE_OS::last_error())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_Dirent_Selector::open(\"%s\"): \"%s\", aborting\n"),
+                ACE_TEXT (directory_in.c_str ()),
+                ACE_TEXT (ACE_OS::strerror (ACE_OS::last_error()))));
     return false;
   } // end IF
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("found %d logfiles...\n"),
-//              entries.length()));
+//   ACE_DEBUG ((LM_DEBUG,
+//               ACE_TEXT ("found %d logfiles...\n"),
+//               entries.length ()));
 
   // OK: iterate over the entries and perform some magic...
   // *NOTE*: entries have been sorted alphabetically:
@@ -100,17 +99,17 @@ RPG_Net_Server_Common_Tools::getNextLogFilename(const std::string& directory_in,
   // sscanf settings
   int number = 0;
   int return_val = -1;
-  std::string format_string("%d");
-  format_string += ACE_TEXT_ALWAYS_CHAR(COMMON_LOG_FILENAME_SUFFIX);
+  std::string format_string ("%d");
+  format_string += ACE_TEXT_ALWAYS_CHAR (COMMON_LOG_FILENAME_SUFFIX);
   std::stringstream converter;
-  for (int i = entries.length() - 1, index = RPG_Net_Server_Common_Tools::myMaxNumberOfLogFiles - 1;
+  for (int i = entries.length () - 1, index = RPG_Net_Server_Common_Tools::maxNumberOfLogFiles_ - 1;
        i >= 0;
        i--)
   {
     // perform "special treatment" if "<PREFIX><SUFFIX>" found...
     // *TODO*: do this in C++...
-    if (ACE_OS::strcmp(entries[i]->d_name,
-                       logFileName.c_str()) == 0)
+    if (ACE_OS::strcmp (entries[i]->d_name,
+                        logFileName.c_str ()) == 0)
     {
       found_current = true;
 
@@ -122,19 +121,19 @@ RPG_Net_Server_Common_Tools::getNextLogFilename(const std::string& directory_in,
     try
     {
       // *TODO*: do this in C++...
-      return_val = ::sscanf(entries[i]->d_name +
-                            // skip some characters...
-                            (ACE_OS::strlen(ACE_TEXT_ALWAYS_CHAR(RPG_NET_SERVER_LOG_FILENAME_PREFIX)) + 1),
-                            format_string.c_str(),
-                            &number);
+      return_val = ::sscanf (entries[i]->d_name +
+                             // skip some characters...
+                             (ACE_OS::strlen (ACE_TEXT_ALWAYS_CHAR (RPG_NET_SERVER_LOG_FILENAME_PREFIX)) + 1),
+                             format_string.c_str (),
+                             &number);
       if (return_val != 1)
       {
         if (return_val != 0)
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("::sscanf() failed for \"%s\": \"%s\", continuing\n"),
-                     entries[i]->d_name,
-                     ACE_OS::strerror(ACE_OS::last_error())));
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("::sscanf() failed for \"%s\": \"%s\", continuing\n"),
+                      entries[i]->d_name,
+                      ACE_TEXT (ACE_OS::strerror (ACE_OS::last_error ()))));
         } // end IF
 
         continue;
@@ -142,10 +141,10 @@ RPG_Net_Server_Common_Tools::getNextLogFilename(const std::string& directory_in,
     }
     catch (...)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in ::sscanf() for \"%s\": \"%s\", continuing\n"),
-                 entries[i]->d_name,
-                 ACE_OS::strerror(ACE_OS::last_error())));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("caught exception in ::sscanf() for \"%s\": \"%s\", continuing\n"),
+                  entries[i]->d_name,
+                  ACE_TEXT (ACE_OS::strerror (ACE_OS::last_error ()))));
 
       continue;
     }
@@ -155,18 +154,18 @@ RPG_Net_Server_Common_Tools::getNextLogFilename(const std::string& directory_in,
       index = number + 1;
 
     // if the number is bigger than the max AND we have more than enough logs --> delete it !
-    if ((static_cast<unsigned long> (number) >= (RPG_Net_Server_Common_Tools::myMaxNumberOfLogFiles - 1)) &&
-        (static_cast<unsigned long> (entries.length()) >= RPG_Net_Server_Common_Tools::myMaxNumberOfLogFiles))
+    if ((static_cast<unsigned long> (number) >= (RPG_Net_Server_Common_Tools::maxNumberOfLogFiles_ - 1)) &&
+        (static_cast<unsigned long> (entries.length()) >= RPG_Net_Server_Common_Tools::maxNumberOfLogFiles_))
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("removing surplus logfile \"%s\"...\n"),
-                 entries[i]->d_name));
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT ("removing surplus logfile \"%s\"...\n"),
+                  entries[i]->d_name));
 
       // clean up
       std::string FQfilename = directory_in;
       FQfilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       FQfilename += entries[i]->d_name;
-      Common_File_Tools::deleteFile(FQfilename);
+      Common_File_Tools::deleteFile (FQfilename);
 
       continue;
     } // end IF
@@ -178,33 +177,32 @@ RPG_Net_Server_Common_Tools::getNextLogFilename(const std::string& directory_in,
 
     std::string newFQfilename = directory_in;
     newFQfilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    newFQfilename += ACE_TEXT_ALWAYS_CHAR(RPG_NET_SERVER_LOG_FILENAME_PREFIX);
-    newFQfilename += "_";
+    newFQfilename += ACE_TEXT_ALWAYS_CHAR (RPG_NET_SERVER_LOG_FILENAME_PREFIX);
+    newFQfilename += ACE_TEXT_ALWAYS_CHAR ("_");
 
-    converter.clear();
-    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+    converter.clear ();
+    converter.str (ACE_TEXT_ALWAYS_CHAR (""));
     converter << index;
 
-    newFQfilename += converter.str();
-    newFQfilename += ACE_TEXT_ALWAYS_CHAR(COMMON_LOG_FILENAME_SUFFIX);
+    newFQfilename += converter.str ();
+    newFQfilename += ACE_TEXT_ALWAYS_CHAR (COMMON_LOG_FILENAME_SUFFIX);
     // *IMPORTANT NOTE*: last parameter affects Win32 behaviour only,
     // see "ace/OS_NS_stdio.inl" !
-    if (ACE_OS::rename(oldFQfilename.c_str(),
-                       newFQfilename.c_str(),
-                       -1))
+    if (ACE_OS::rename (oldFQfilename.c_str (),
+                        newFQfilename.c_str (),
+                        -1))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_OS::rename() \"%s\" to \"%s\": \"%s\", aborting\n"),
-                 ACE_TEXT(oldFQfilename.c_str()),
-                 ACE_TEXT(newFQfilename.c_str()),
-                 ACE_TEXT(ACE_OS::strerror (ACE_OS::last_error()))));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE_OS::rename() \"%s\" to \"%s\": \"%s\", aborting\n"),
+                  ACE_TEXT (oldFQfilename.c_str ()),
+                  ACE_TEXT (newFQfilename.c_str ()),
+                  ACE_TEXT (ACE_OS::strerror (ACE_OS::last_error ()))));
       return false;
     } // end IF
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("renamed file \"%s\" to \"%s\"...\n"),
-               ACE_TEXT(oldFQfilename.c_str()),
-               ACE_TEXT(newFQfilename.c_str())));
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("renamed file \"%s\" to \"%s\"...\n"),
+                ACE_TEXT (oldFQfilename.c_str ()),
+                ACE_TEXT (newFQfilename.c_str ())));
 
     index--;
   } // end FOR
@@ -213,45 +211,43 @@ RPG_Net_Server_Common_Tools::getNextLogFilename(const std::string& directory_in,
   {
     std::string newFQfilename = directory_in;
     newFQfilename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    newFQfilename += ACE_TEXT_ALWAYS_CHAR(RPG_NET_SERVER_LOG_FILENAME_PREFIX);
-    newFQfilename += "_1";
-    newFQfilename += ACE_TEXT_ALWAYS_CHAR(COMMON_LOG_FILENAME_SUFFIX);
+    newFQfilename += ACE_TEXT_ALWAYS_CHAR (RPG_NET_SERVER_LOG_FILENAME_PREFIX);
+    newFQfilename += ACE_TEXT_ALWAYS_CHAR ("_1");
+    newFQfilename += ACE_TEXT_ALWAYS_CHAR (COMMON_LOG_FILENAME_SUFFIX);
 
     // *TODO*: last parameter affects Win32 behaviour only, see "ace/OS_NS_stdio.inl" !
-    if (ACE_OS::rename(FQLogFilename_out.c_str(),
-                       newFQfilename.c_str(),
-                       -1))
+    if (ACE_OS::rename (FQLogFilename_out.c_str (),
+                        newFQfilename.c_str (),
+                        -1))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_OS::rename() \"%s\" to \"%s\": \"%m\", aborting\n"),
-                 ACE_TEXT(FQLogFilename_out.c_str()),
-                 ACE_TEXT(newFQfilename.c_str())));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE_OS::rename() \"%s\" to \"%s\": \"%m\", aborting\n"),
+                  ACE_TEXT (FQLogFilename_out.c_str ()),
+                  ACE_TEXT (newFQfilename.c_str ())));
       return false;
     } // end IF
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("renamed file \"%s\" to \"%s\"...\n"),
-               ACE_TEXT(FQLogFilename_out.c_str()),
-               ACE_TEXT(newFQfilename.c_str())));
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("renamed file \"%s\" to \"%s\"...\n"),
+                ACE_TEXT (FQLogFilename_out.c_str ()),
+                ACE_TEXT (newFQfilename.c_str ())));
   } // end IF
 
   return true;
 }
 
 int
-RPG_Net_Server_Common_Tools::selector(const dirent* dirEntry_in)
+RPG_Net_Server_Common_Tools::selector (const dirent* dirEntry_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Server_Common_Tools::selector"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Server_Common_Tools::selector"));
 
   // *IMPORTANT NOTE*: select only files following the naming schema for
   // logfiles: "<PREFIX>[_<NUMBER>]<SUFFIX>"
 
   // sanity check --> prefix ok ?
-  if (ACE_OS::strncmp(dirEntry_in->d_name,
-                      ACE_TEXT_ALWAYS_CHAR(RPG_NET_SERVER_LOG_FILENAME_PREFIX),
-                      ACE_OS::strlen(ACE_TEXT_ALWAYS_CHAR(RPG_NET_SERVER_LOG_FILENAME_PREFIX))) != 0)
+  if (ACE_OS::strncmp (dirEntry_in->d_name,
+                       ACE_TEXT_ALWAYS_CHAR (RPG_NET_SERVER_LOG_FILENAME_PREFIX),
+                       ACE_OS::strlen (ACE_TEXT_ALWAYS_CHAR (RPG_NET_SERVER_LOG_FILENAME_PREFIX))) != 0)
   {
-//     // debug info
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("ignoring \"%s\"...\n"),
 //                dirEntry_in->d_name));
@@ -263,11 +259,11 @@ RPG_Net_Server_Common_Tools::selector(const dirent* dirEntry_in)
 }
 
 int
-RPG_Net_Server_Common_Tools::comparator(const dirent** d1,
-                                        const dirent** d2)
+RPG_Net_Server_Common_Tools::comparator (const dirent** d1,
+                                         const dirent** d2)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Server_Common_Tools::comparator"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Server_Common_Tools::comparator"));
 
-  return ACE_OS::strcmp((*d1)->d_name,
-                        (*d2)->d_name);
+  return ACE_OS::strcmp ((*d1)->d_name,
+                         (*d2)->d_name);
 }

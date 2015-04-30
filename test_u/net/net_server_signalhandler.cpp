@@ -45,10 +45,10 @@ Net_Server_SignalHandler::Net_Server_SignalHandler (long timerID_in,
                                                     bool useReactor_in)
  : inherited (this,          // event handler handle
               useReactor_in) // use reactor ?
- , myTimerID (timerID_in)
- , myControl (controller_in)
- , myReport (report_in)
- , myUseReactor (useReactor_in)
+ , control_ (controller_in)
+ , report_ (report_in)
+ , timerID_ (timerID_in)
+ , useReactor_ (useReactor_in)
 {
   RPG_TRACE (ACE_TEXT ("Net_Server_SignalHandler::Net_Server_SignalHandler"));
 
@@ -109,22 +109,18 @@ Net_Server_SignalHandler::handleSignal (int signal_in)
   } // end SWITCH
 
   // report ?
-  if (report)
+  if (report && report_)
   {
-    // step1: invoke reporter (if any)
-    if (myReport)
+    try
     {
-      try
-      {
-        myReport->report ();
-      }
-      catch (...)
-      {
-        ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("caught exception in RPG_Common_IStatistic::report(), aborting\n")));
-        return false;
-      }
-    } // end IF
+      report_->report ();
+    }
+    catch (...)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("caught exception in Common_IStatistic::report(), aborting\n")));
+      return false;
+    }
   } // end IF
 
   // ...shutdown ?
@@ -135,51 +131,51 @@ Net_Server_SignalHandler::handleSignal (int signal_in)
     // --> (try to) terminate in a well-behaved manner
 
     // step1: invoke controller (if any)
-    if (myControl)
+    if (control_)
     {
       try
       {
-        myControl->stop ();
+        control_->stop ();
       }
       catch (...)
       {
         ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("caught exception in RPG_Common_IControl::stop(), aborting\n")));
+                    ACE_TEXT ("caught exception in Common_IControl::stop(), aborting\n")));
         return false;
       }
     } // end IF
 
     // step2: stop timer
-    if (myTimerID >= 0)
+    if (timerID_ >= 0)
     {
-      if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (myTimerID,
+      if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timerID_,
                                                               NULL) <= 0)
       {
         ACE_DEBUG ((LM_DEBUG,
                     ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", aborting\n"),
-                    myTimerID));
+                    timerID_));
 
         // clean up
-        myTimerID = -1;
+        timerID_ = -1;
 
         return false;
       } // end IF
 
       // clean up
-      myTimerID = -1;
+      timerID_ = -1;
     } // end IF
 
     // step3: stop/abort/wait for connections
     NET_CONNECTIONMANAGER_SINGLETON::instance ()->stop ();
-    NET_CONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
+    NET_CONNECTIONMANAGER_SINGLETON::instance ()->abort ();
     // *IMPORTANT NOTE*: as long as connections are inactive (i.e. events are
     // dispatched by reactor thread(s), there is no real reason to wait here)
     //RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
     // step4: stop reactor (&& proactor, if applicable)
-    Common_Tools::finalizeEventDispatch (true,          // stop reactor ?
-                                         !myUseReactor, // stop proactor ?
-                                         -1);           // group ID (--> don't block !)
+    Common_Tools::finalizeEventDispatch (true,         // stop reactor ?
+                                         !useReactor_, // stop proactor ?
+                                         -1);          // group ID (--> don't block !)
   } // end IF
 
   return true;

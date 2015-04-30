@@ -62,7 +62,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\3rd_party\bison;$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\modules\libACEStream\src;$(ProjectDir)..\..\modules\libACENetwork\src;$(ProjectDir)..\..\modules\libACENetwork\src\client;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\chance;$(ProjectDir)..\..\common;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\character;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\map;$(ProjectDir)..\..\net;$(ProjectDir)..\..\net\protocol;$(ProjectDir)..\..\graphics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\3rd_party\bison;$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\modules\libACEStream\src;$(ProjectDir)..\..\modules\libACENetwork\src;$(ProjectDir)..\..\modules\libACENetwork\src\client_server;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\chance;$(ProjectDir)..\..\common;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\character;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\map;$(ProjectDir)..\..\net;$(ProjectDir)..\..\net\protocol;$(ProjectDir)..\..\graphics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_ENGINE_BUILD_DLL;RPG_GRAPHICS_HAS_DLL;RPG_PLAYER_HAS_DLL;RPG_MONSTER_HAS_DLL;RPG_CHARACTER_HAS_DLL;RPG_ITEM_HAS_DLL;RPG_COMMON_HAS_DLL;_SCL_SECURE_NO_WARNINGS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -111,7 +111,7 @@ popd</Command>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\3rd_party\bison;$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\modules\libACEStream\src;$(ProjectDir)..\..\modules\libACENetwork\src;$(ProjectDir)..\..\modules\libACENetwork\src\client;$(ProjectDir)..\..\chance;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\net\protocol;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\3rd_party\bison;$(ProjectDir)..\..\modules\libCommon\src;$(ProjectDir)..\..\modules\libACEStream\src;$(ProjectDir)..\..\modules\libACENetwork\src;$(ProjectDir)..\..\modules\libACENetwork\src\client_server;$(ProjectDir)..\..\chance;$(ProjectDir)..\..\chance\dice;$(ProjectDir)..\..\common;$(ProjectDir)..\..\character;$(ProjectDir)..\..\magic;$(ProjectDir)..\..\item;$(ProjectDir)..\..\character\player;$(ProjectDir)..\..\character\monster;$(ProjectDir)..\..\combat;$(ProjectDir)..\..\map;$(ProjectDir)..\..\graphics;$(ProjectDir)..\..\net\protocol;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RPG_ENGINE_BUILD_DLL;RPG_PLAYER_HAS_DLL;RPG_CHARACTER_HAS_DLL;RPG_ITEM_HAS_DLL;RPG_COMMON_HAS_DLL;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalOptions>/FS -Zm256 %(AdditionalOptions)</AdditionalOptions>
       <SDLCheck>true</SDLCheck>
@@ -175,6 +175,9 @@ popd</Command>
     <ProjectReference Include="..\..\modules\libACENetwork\prj\msvc\libACENetwork.vcxproj">
       <Project>{751d54c5-12bd-4771-9453-b9d3948ed025}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\modules\libACEStream\prj\msvc\libACEStream.vcxproj">
+      <Project>{c7a3ee44-14f9-413a-b311-5a77ba5a4edd}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\modules\libCommon\prj\msvc\libCommon.vcxproj">
       <Project>{78a90d08-4e40-4ed4-8f75-393ac6526158}</Project>
     </ProjectReference>
@@ -207,6 +210,9 @@ popd</Command>
     </ProjectReference>
     <ProjectReference Include="player.vcxproj">
       <Project>{c0095f69-560d-4c7d-82de-078644135735}</Project>
+    </ProjectReference>
+    <ProjectReference Include="protocol.vcxproj">
+      <Project>{a0066128-9e16-47c8-9697-78be571b8445}</Project>
     </ProjectReference>
     <ProjectReference Include="XML2CppCode.vcxproj">
       <Project>{7cff8b93-971b-40ae-a875-2c83e1f37002}</Project>

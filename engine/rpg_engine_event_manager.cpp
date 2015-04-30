@@ -144,43 +144,43 @@ RPG_Engine_Event_Manager::svc(void)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::svc"));
 
-	int result = -1;
-	RPG_Engine_Event_t* event = NULL;
+  int result = -1;
+  RPG_Engine_Event_t* event = NULL;
   while (true)
   {
-		event = NULL;
-		result = inherited::getq(event, NULL);
+    event = NULL;
+    result = inherited::getq(event, NULL);
     if (result == -1)
     {
       ACE_DEBUG((LM_ERROR,
-				         ACE_TEXT("failed to ACE_Task_Ex::getq(): \"%m\", aborting\n")));
+                 ACE_TEXT("failed to ACE_Task_Ex::getq(): \"%m\", aborting\n")));
 
       return -1;
     } // end IF
-		ACE_ASSERT(event);
-		
-		switch (event->type)
-		{
-		  case EVENT_QUIT:
-			{
-				// ACE_DEBUG((LM_DEBUG,
-				//            ACE_TEXT("received EVENT_QUIT...\n")));
+    ACE_ASSERT(event);
 
-				// clean up
-				delete event;
+    switch (event->type)
+    {
+      case EVENT_QUIT:
+      {
+        // ACE_DEBUG((LM_DEBUG,
+        //            ACE_TEXT("received EVENT_QUIT...\n")));
 
-				return 0;
-			}
-			default:
-			{
-				handleEvent(*event);
+        // clean up
+        delete event;
 
-				break;
-			}
-		} // end SWITCH
+        return 0;
+      }
+      default:
+      {
+        handleEvent(*event);
+
+        break;
+      }
+    } // end SWITCH
   } // end WHILE
 
-	return -1;
+  return -1;
 }
 
 void
@@ -195,7 +195,7 @@ RPG_Engine_Event_Manager::add(const RPG_Engine_EntityID_t& id_in,
 
   RPG_Engine_Event_t* activation_event = NULL;
   ACE_NEW_NORETURN(activation_event,
-									 RPG_Engine_Event_t());
+                   RPG_Engine_Event_t());
   if (!activation_event)
   {
     ACE_DEBUG((LM_CRITICAL,
@@ -206,10 +206,10 @@ RPG_Engine_Event_Manager::add(const RPG_Engine_EntityID_t& id_in,
   } // end IF
   activation_event->type = EVENT_ENTITY_ACTIVATE;
   activation_event->entity_id = id_in;
-	activation_event->timer_id = -1;
+  activation_event->timer_id = -1;
 
-	long timer_id = -1;
-	// *NOTE*: fire&forget API for activation_event
+  long timer_id = -1;
+  // *NOTE*: fire&forget API for activation_event
   timer_id = schedule(activation_event,
                       activationInterval_in,
                       false);
@@ -225,14 +225,14 @@ RPG_Engine_Event_Manager::add(const RPG_Engine_EntityID_t& id_in,
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-		myTimers[timer_id] = activation_event;
+    myTimers[timer_id] = activation_event;
     ACE_ASSERT(myEntityTimers.find(id_in) == myEntityTimers.end());
     myEntityTimers[id_in] = timer_id;
   } // end lock scope
 
-	// *NOTE*: "%#T" doesn't work correctly 1.111111 --> " 01:00:01.111111"; that's OK...
+  // *NOTE*: "%#T" doesn't work correctly 1.111111 --> " 01:00:01.111111"; that's OK...
   ACE_DEBUG((LM_DEBUG,
-		         ACE_TEXT("scheduled activation event (ID: %d [%#T]) for entity (ID: %u)\n"),
+             ACE_TEXT("scheduled activation event (ID: %d [%#T]) for entity (ID: %u)\n"),
              timer_id,
              &activationInterval_in,
              id_in));
@@ -268,7 +268,7 @@ RPG_Engine_Event_Manager::remove(const RPG_Engine_EntityID_t& id_in)
 
   // cancel corresponding activation timer
   ACE_ASSERT(timer_id != -1);
-	cancel(timer_id);
+  cancel(timer_id);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("cancelled activation timer (ID: %d) for entity %u\n"),
@@ -656,8 +656,8 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       myEngine->lock();
       // step1: check pending action (if any)
       RPG_Engine_EntitiesIterator_t iterator =
-          myEngine->myEntities.find(event_in.entity_id);
-      if (iterator == myEngine->myEntities.end())
+          myEngine->entities_.find(event_in.entity_id);
+      if (iterator == myEngine->entities_.end())
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
@@ -726,7 +726,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       {
         // clean up
         myEngine->unlock();
-        
+
         break;
       } // end IF
 
@@ -740,8 +740,8 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
         {
           ACE_ASSERT(current_action.target);
           RPG_Engine_EntitiesConstIterator_t target =
-              myEngine->myEntities.find(current_action.target);
-          if ((target == myEngine->myEntities.end()) ||
+              myEngine->entities_.find(current_action.target);
+          if ((target == myEngine->entities_.end()) ||
               RPG_Engine_Common_Tools::isCharacterDisabled((*target).second->character)) // target disabled ?
           {
             (*iterator).second->modes.erase(ENTITYMODE_FIGHTING);
@@ -850,9 +850,9 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
           {
             // determine target position
             RPG_Engine_EntitiesConstIterator_t target =
-                myEngine->myEntities.end();
-            target = myEngine->myEntities.find(current_action.target);
-            if (target == myEngine->myEntities.end())
+                myEngine->entities_.end();
+            target = myEngine->entities_.find(current_action.target);
+            if (target == myEngine->entities_.end())
             {
               // *NOTE*: --> target has gone...
               (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
@@ -929,13 +929,13 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
 
           break;
         }
-				default:
-				{
-					// the engine executes these...
-					myEngine->msg_queue()->pulse();
+        default:
+        {
+          // the engine executes these...
+          myEngine->msg_queue()->pulse();
 
-					break;
-				}
+          break;
+        }
       } // end SWITCH
 
       if (done_current_action)
@@ -944,7 +944,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
         (*iterator).second->actions.push_front(next_action);
 
       myEngine->unlock();
-      
+
       break;
     }
     case EVENT_ENTITY_SPAWN:
@@ -1040,15 +1040,15 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
 //                   ACE_TEXT("failed to RPG_Engine::findValid([%u,%u]), aborting\n"),
 //                   (*iterator3).first, (*iterator3).second));
 
-				// clean up
-				myEngine->unlock();
-				delete entity;
+        // clean up
+        myEngine->unlock();
+        delete entity;
 
         break;
       } // end IF
 
       RPG_Engine_EntityID_t id = myEngine->add(entity, false);
-			myEngine->unlock();
+      myEngine->unlock();
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("spawned \"%s\" [id: %u] @ [%u,%u]...\n"),
                  ACE_TEXT((*iterator).spawn.type.c_str()),
@@ -1067,9 +1067,9 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
     }
   } // end SWITCH
 
-	// clean up ?
-	if (RPG_Engine_Common_Tools::isOneShotEvent(event_in.type))
-	{
+  // clean up ?
+  if (RPG_Engine_Common_Tools::isOneShotEvent(event_in.type))
+  {
     ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
     RPG_Engine_EventTimersConstIterator_t iterator =
@@ -1083,9 +1083,9 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       return;
     } // end IF
 
-		delete (*iterator).second;
-		myTimers.erase((*iterator).first);
-	} // end IF
+    delete (*iterator).second;
+    myTimers.erase((*iterator).first);
+  } // end IF
 }
 
 void
@@ -1096,36 +1096,36 @@ RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
   ACE_ASSERT(myEngine);
   ACE_ASSERT(act_in);
   RPG_Engine_Event_t* event_handle =
-		reinterpret_cast<RPG_Engine_Event_t*>(const_cast<void*>(act_in));
+    reinterpret_cast<RPG_Engine_Event_t*>(const_cast<void*>(act_in));
 
-	if (inherited::putq(event_handle, NULL) == -1)
-	{
-		ACE_DEBUG((LM_ERROR,
-				        ACE_TEXT("failed to ACE_Task::putq(): \"%m\", returning\n")));
+  if (inherited::putq(event_handle, NULL) == -1)
+  {
+    ACE_DEBUG((LM_ERROR,
+                ACE_TEXT("failed to ACE_Task::putq(): \"%m\", returning\n")));
 
-		// clean up ?
-		if (RPG_Engine_Common_Tools::isOneShotEvent(event_handle->type))
-		{
-			ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+    // clean up ?
+    if (RPG_Engine_Common_Tools::isOneShotEvent(event_handle->type))
+    {
+      ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
-			RPG_Engine_EventTimersConstIterator_t iterator =
-				myTimers.find(event_handle->timer_id);
-			ACE_ASSERT(iterator != myTimers.end());
-			if (iterator == myTimers.end())
-			{
-				ACE_DEBUG((LM_ERROR,
-									 ACE_TEXT("invalid timer id (was: %d), aborting\n"),
-									 event_handle->timer_id));
+      RPG_Engine_EventTimersConstIterator_t iterator =
+        myTimers.find(event_handle->timer_id);
+      ACE_ASSERT(iterator != myTimers.end());
+      if (iterator == myTimers.end())
+      {
+        ACE_DEBUG((LM_ERROR,
+                   ACE_TEXT("invalid timer id (was: %d), aborting\n"),
+                   event_handle->timer_id));
 
-				return;
-			} // end IF
+        return;
+      } // end IF
 
-			delete (*iterator).second;
-			myTimers.erase((*iterator).first);
-		} // end IF
+      delete (*iterator).second;
+      myTimers.erase((*iterator).first);
+    } // end IF
 
-		return;
-	} // end IF
+    return;
+  } // end IF
 }
 
 bool

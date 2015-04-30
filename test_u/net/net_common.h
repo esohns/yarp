@@ -28,13 +28,16 @@
 
 #include "common_ui_common.h"
 
+#include "net_configuration.h"
 #include "net_stream_common.h"
+
+//#include "net_server_common.h"
+#include "net_server_ilistener.h"
 
 #include "rpg_client_common.h"
 
 // forward declaration(s)
 class Net_Client_TimeoutHandler;
-class RPG_Net_Server_IListener;
 
 enum Net_GTK_Event_t
 {
@@ -66,7 +69,8 @@ struct Net_GTK_CBData_t
   bool                       allowUserRuntimeStatistic;
   Net_GTK_Events_t           eventStack;
   Common_UI_GTKState         GTKState;
-  RPG_Net_Server_IListener*  listenerHandle; // *NOTE*: server only !
+  Net_Server_IListener_T<Net_ListenerConfiguration_t>*    listenerHandle; // *NOTE*: server only !
+  //Net_Server_IListener_t*    listenerHandle; // *NOTE*: server only !
   RPG_Client_MessageStack_t  logStack;
   ACE_Recursive_Thread_Mutex logStackLock;
   Net_Subscribers_t          subscribers;

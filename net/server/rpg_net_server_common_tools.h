@@ -21,11 +21,11 @@
 #ifndef RPG_NET_SERVER_COMMON_TOOLS_H
 #define RPG_NET_SERVER_COMMON_TOOLS_H
 
-#include "rpg_net_server_exports.h"
-
-#include <ace/Global_Macros.h>
-
 #include <string>
+
+#include "ace/Global_Macros.h"
+
+#include "rpg_net_server_exports.h"
 
 // forward declaration(s)
 struct dirent;
@@ -34,22 +34,21 @@ class RPG_Net_Server_Export RPG_Net_Server_Common_Tools
 {
  public:
   // *NOTE*: implements log rotation
-  static bool getNextLogFilename(const std::string&, // directory
-                                 std::string&);      // return value: log filename
+  static bool getNextLogFilename (const std::string&, // directory
+                                  std::string&);      // return value: log filename
 
  private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Server_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Net_Server_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Server_Common_Tools(const RPG_Net_Server_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Server_Common_Tools& operator=(const RPG_Net_Server_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Server_Common_Tools ());
+  ACE_UNIMPLEMENTED_FUNC (virtual ~RPG_Net_Server_Common_Tools ());
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Server_Common_Tools (const RPG_Net_Server_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Server_Common_Tools& operator= (const RPG_Net_Server_Common_Tools&));
 
   // *NOTE*: implements log rotation
   // callbacks used for scandir...
-  static int selector(const dirent*); // directory entry
-  static int comparator(const dirent**,  // directory entry
-                        const dirent**); // directory entry
-  static unsigned int myMaxNumberOfLogFiles;
+  static int selector (const dirent*); // directory entry
+  static int comparator (const dirent**,  // directory entry
+                         const dirent**); // directory entry
+  static unsigned int maxNumberOfLogFiles_;
 };
 
 #endif

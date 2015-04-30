@@ -304,15 +304,21 @@ do_work (RPG_Net_Protocol_Configuration& configuration_in,
   } // end IF
 
   // step2: initialize client connector
+  Net_SocketHandlerConfiguration_t socket_handler_configuration;
+  socket_handler_configuration.bufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
+  socket_handler_configuration.messageAllocator =
+    configuration_in.streamConfiguration.messageAllocator;
+  socket_handler_configuration.socketConfiguration =
+    configuration_in.socketConfiguration;
   Net_Client_IConnector_t* connector_p = NULL;
   if (RPG_NET_USES_REACTOR)
     ACE_NEW_NORETURN (connector_p,
-                      RPG_Net_Protocol_Connector_t (&configuration_in,
+                      RPG_Net_Protocol_Connector_t (&socket_handler_configuration,
                                                     RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance (),
                                                     0));
   else
     ACE_NEW_NORETURN (connector_p,
-                      RPG_Net_Protocol_AsynchConnector_t (&configuration_in,
+                      RPG_Net_Protocol_AsynchConnector_t (&socket_handler_configuration,
                                                           RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance (),
                                                           0));
   if (!connector_p)
@@ -327,12 +333,14 @@ do_work (RPG_Net_Protocol_Configuration& configuration_in,
                                            serverPortNumber_in, // target port
                                            connector_p);        // connector
   ACE_Sig_Handlers signal_handlers;
-  // *WARNING*: 'signals' appears to be a keyword in some contexts...
+  // *WARNING*: 'signals' appears to be a reserved keyword in some contexts...
   ACE_Sig_Set signal_set (0);
   do_initializeSignals (true,  // allow SIGUSR1
                         signal_set);
   Common_SignalActions_t previous_signal_actions;
+  ACE_Sig_Set ignored_signal_set (0);
   if (!Common_Tools::initializeSignals (signal_set,
+                                        ignored_signal_set,
                                         &signal_handler,
                                         previous_signal_actions))
   {
@@ -456,8 +464,8 @@ do_work (RPG_Net_Protocol_Configuration& configuration_in,
               ACE_TEXT ("finished event dispatch...\n")));
 
   // step8: clean up
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abortConnections ();
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->waitConnections ();
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abort ();
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->wait ();
   delete connector_p;
   Common_Tools::finalizeSignals (signal_set,
                                  RPG_NET_USES_REACTOR,

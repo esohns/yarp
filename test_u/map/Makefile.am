@@ -1,6 +1,5 @@
-#METASOURCES = AUTO
-
 ACLOCAL_AMFLAGS = -I m4
+
 #  -I$(top_srcdir)/../modules/ATCD/ACE
 AM_CPPFLAGS = \
   -I$(top_srcdir)/../../ATCD/ACE \
@@ -55,6 +54,7 @@ map_generator_LDFLAGS = \
   -L$(abs_builddir)/../../character/monster/.libs \
   -L$(abs_builddir)/../../map/.libs \
   -L$(abs_builddir)/../../net/.libs \
+  -L$(abs_builddir)/../../net/protocol/.libs \
   -L$(abs_builddir)/../../engine/.libs \
   -L$(abs_builddir)/../../graphics/.libs \
   $(pkg_libs_LDFLAGS)
@@ -74,6 +74,7 @@ map_generator_LDADD = \
   -lRPG_Monster \
   -lRPG_Map \
   -lRPG_Net \
+  -lRPG_Net_Protocol \
   -lRPG_Engine \
   -lRPG_Graphics \
   $(pkg_libs_LIBS)
@@ -93,7 +94,7 @@ map_generator_gui_CPPFLAGS = \
   -I$(top_srcdir)/../modules/libCommon/src/ui \
   -I$(top_srcdir)/../modules/libACEStream/src \
   -I$(top_srcdir)/../modules/libACENetwork/src \
-  -I$(top_srcdir)/../modules/libACENetwork/src/client \
+  -I$(top_srcdir)/../modules/libACENetwork/src/client_server \
   -I$(top_srcdir)/../chance/dice \
   -I$(top_srcdir)/../common \
   -I$(top_srcdir)/../magic \
@@ -103,7 +104,7 @@ map_generator_gui_CPPFLAGS = \
   -I$(top_srcdir)/../combat \
   -I$(top_srcdir)/../character/monster \
   -I$(top_srcdir)/../map \
-  -I$(top_srcdir)/../net/client \
+  -I$(top_srcdir)/../net/protocol \
   -I$(top_srcdir)/../engine \
   -I$(top_srcdir)/../sound \
   -I$(top_srcdir)/../graphics \
@@ -126,6 +127,7 @@ map_generator_gui_LDFLAGS = \
   -L$(abs_builddir)/../../character/monster/.libs \
   -L$(abs_builddir)/../../map/.libs \
   -L$(abs_builddir)/../../net/.libs \
+  -L$(abs_builddir)/../../net/protocol/.libs \
   -L$(abs_builddir)/../../engine/.libs \
   -L$(abs_builddir)/../../sound/.libs \
   -L$(abs_builddir)/../../graphics/.libs \
@@ -148,6 +150,7 @@ map_generator_gui_LDADD = \
   -lRPG_Monster \
   -lRPG_Map \
   -lRPG_Net \
+  -lRPG_Net_Protocol \
   -lRPG_Engine \
   -lRPG_Sound \
   -lRPG_Graphics \
@@ -189,6 +192,7 @@ map_vision_LDFLAGS = \
   -L$(abs_builddir)/../../character/monster/.libs \
   -L$(abs_builddir)/../../map/.libs \
   -L$(abs_builddir)/../../net/.libs \
+  -L$(abs_builddir)/../../net/protocol/.libs \
   -L$(abs_builddir)/../../engine/.libs \
   -L$(abs_builddir)/../../graphics/.libs \
   $(pkg_libs_LDFLAGS)
@@ -208,6 +212,7 @@ map_vision_LDADD = \
   -lRPG_Monster \
   -lRPG_Map \
   -lRPG_Net \
+  -lRPG_Net_Protocol \
   -lRPG_Engine \
   -lRPG_Graphics \
   $(pkg_libs_LIBS)
@@ -222,7 +227,7 @@ map_vision_ui_CPPFLAGS = \
   -I$(top_srcdir)/../modules/libCommon/src/ui \
   -I$(top_srcdir)/../modules/libACEStream/src \
   -I$(top_srcdir)/../modules/libACENetwork/src \
-  -I$(top_srcdir)/../modules/libACENetwork/src/client \
+  -I$(top_srcdir)/../modules/libACENetwork/src/client_server \
   -I$(top_srcdir)/../chance/dice \
   -I$(top_srcdir)/../common \
   -I$(top_srcdir)/../magic \
@@ -232,7 +237,7 @@ map_vision_ui_CPPFLAGS = \
   -I$(top_srcdir)/../combat \
   -I$(top_srcdir)/../character/monster \
   -I$(top_srcdir)/../map \
-  -I$(top_srcdir)/../net/client \
+  -I$(top_srcdir)/../net/protocol \
   -I$(top_srcdir)/../engine \
   -I$(top_srcdir)/../sound \
   -I$(top_srcdir)/../graphics \
@@ -255,6 +260,7 @@ map_vision_ui_LDFLAGS = \
   -L$(abs_builddir)/../../character/monster/.libs \
   -L$(abs_builddir)/../../map/.libs \
   -L$(abs_builddir)/../../net/.libs \
+  -L$(abs_builddir)/../../net/protocol/.libs \
   -L$(abs_builddir)/../../engine/.libs \
   -L$(abs_builddir)/../../sound/.libs \
   -L$(abs_builddir)/../../graphics/.libs \
@@ -277,6 +283,7 @@ map_vision_ui_LDADD = \
   -lRPG_Monster \
   -lRPG_Map \
   -lRPG_Net \
+  -lRPG_Net_Protocol \
   -lRPG_Engine \
   -lRPG_Sound \
   -lRPG_Graphics \

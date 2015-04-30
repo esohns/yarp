@@ -52,7 +52,10 @@
 #include "stream_allocatorheap.h"
 
 #include "net_common_tools.h"
+#include "net_configuration.h"
 #include "net_connection_manager_common.h"
+
+#include "net_server_common.h"
 
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
@@ -69,10 +72,8 @@
 #include "rpg_client_logger.h"
 #include "rpg_client_ui_tools.h"
 
-#include "rpg_net_server_asynchlistener.h"
 #include "rpg_net_server_common_tools.h"
 #include "rpg_net_server_defines.h"
-#include "rpg_net_server_listener.h"
 
 #include "net_callbacks.h"
 #include "net_common.h"
@@ -342,15 +343,26 @@ do_processArguments (const int& argc_in,
 void
 do_initializeSignals (bool useReactor_in,
                       bool allowUserRuntimeStats_in,
-                      ACE_Sig_Set& signals_inout)
+                      ACE_Sig_Set& signals_out,
+                      ACE_Sig_Set& ignoredSignals_out)
 {
   RPG_TRACE (ACE_TEXT ("::do_initializeSignals"));
 
-  // init return value(s)
-  if (signals_inout.empty_set () == -1)
+  int result = -1;
+
+  // initialize return value(s)
+  result = signals_out.empty_set ();
+  if (result == -1)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to ACE_Sig_Set::empty_set(): \"%m\", aborting\n")));
+                ACE_TEXT ("failed to ACE_Sig_Set::empty_set(): \"%m\", returning\n")));
+    return;
+  } // end IF
+  result = ignoredSignals_out.empty_set ();
+  if (result == -1)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_Sig_Set::empty_set(): \"%m\", returning\n")));
     return;
   } // end IF
 
@@ -358,38 +370,46 @@ do_initializeSignals (bool useReactor_in,
   // and ACE_Sig_Set::fill_set() doesn't really work as specified
   // --> add valid signals (see <signal.h>)...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-  signals_inout.sig_add (SIGINT);         // 2       /* interrupt */
-  signals_inout.sig_add (SIGILL);         // 4       /* illegal instruction - invalid function image */
-  signals_inout.sig_add (SIGFPE);         // 8       /* floating point exception */
-  //  signals_inout.sig_add(SIGSEGV);        // 11      /* segment violation */
-  signals_inout.sig_add (SIGTERM);        // 15      /* Software termination signal from kill */
+  signals_out.sig_add (SIGINT);            // 2       /* interrupt */
+  signals_out.sig_add (SIGILL);            // 4       /* illegal instruction - invalid function image */
+  signals_out.sig_add (SIGFPE);            // 8       /* floating point exception */
+  //  signals_out.sig_add(SIGSEGV);          // 11      /* segment violation */
+  signals_out.sig_add (SIGTERM);           // 15      /* Software termination signal from kill */
   if (allowUserRuntimeStats_in)
-    signals_inout.sig_add (SIGBREAK);       // 21      /* Ctrl-Break sequence */
-  signals_inout.sig_add (SIGABRT);        // 22      /* abnormal termination triggered by abort call */
-  signals_inout.sig_add (SIGABRT_COMPAT); // 6       /* SIGABRT compatible with other platforms, same as SIGABRT */
-#else
-  if (signals_inout.fill_set() == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Sig_Set::fill_set(): \"%m\", aborting\n")));
+    signals_out.sig_add (SIGBREAK);        // 21      /* Ctrl-Break sequence */
+    ignoredSignals_out.sig_add (SIGBREAK); // 21      /* Ctrl-Break sequence */
+  } // end IF
+  signals_out.sig_add (SIGABRT);           // 22      /* abnormal termination triggered by abort call */
+  signals_out.sig_add (SIGABRT_COMPAT);    // 6       /* SIGABRT compatible with other platforms, same as SIGABRT */
+#else
+  result = signals_out.fill_set ();
+  if (result == -1)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_Sig_Set::fill_set(): \"%m\", returning\n")));
     return;
   } // end IF
   // *NOTE*: cannot handle some signals --> registration fails for these...
-  signals_inout.sig_del(SIGKILL);          // 9       /* Kill signal */
-  signals_inout.sig_del(SIGSTOP);          // 19      /* Stop process */
+  signals_out.sig_del (SIGKILL);           // 9       /* Kill signal */
   // ---------------------------------------------------------------------------
   if (!allowUserRuntimeStats_in)
-    signals_inout.sig_del(SIGUSR1);        // 10      /* User-defined signal 1 */
+  {
+    signals_out.sig_del (SIGUSR1);         // 10      /* User-defined signal 1 */
+    ignoredSignals_out.sig_add (SIGUSR1);  // 10      /* User-defined signal 1 */
+  } // end IF
   // *NOTE* core dump on SIGSEGV
-  signals_inout.sig_del(SIGSEGV);          // 11      /* Segmentation fault: Invalid memory reference */
+  signals_out.sig_del (SIGSEGV);           // 11      /* Segmentation fault: Invalid memory reference */
   // *NOTE* don't care about SIGPIPE
-  signals_inout.sig_del(SIGPIPE);          // 12      /* Broken pipe: write to pipe with no readers */
+  signals_out.sig_del (SIGPIPE);           // 12      /* Broken pipe: write to pipe with no readers */
+  signals_out.sig_del (SIGSTOP);           // 19      /* Stop process */
   if (!useReactor_in)
   {
-    ACE_POSIX_Proactor* proactor_impl = dynamic_cast<ACE_POSIX_Proactor*>(ACE_Proactor::instance()->implementation());
-    ACE_ASSERT(proactor_impl);
-    if (proactor_impl->get_impl_type() == ACE_POSIX_Proactor::PROACTOR_SIG)
-      signals_inout.sig_del(ACE_SIGRTMIN); // 34      /* SIGRTMIN */
+    ACE_POSIX_Proactor* proactor_impl =
+        dynamic_cast<ACE_POSIX_Proactor*> (ACE_Proactor::instance ()->implementation ());
+    ACE_ASSERT (proactor_impl);
+    if (proactor_impl->get_impl_type () == ACE_POSIX_Proactor::PROACTOR_SIG)
+      signals_out.sig_del (ACE_SIGRTMIN);  // 34      /* SIGRTMIN */
   } // end IF
 #endif
 }
@@ -407,20 +427,15 @@ do_work (unsigned int maxNumConnections_in,
          unsigned int numDispatchThreads_in,
          const std::string& UIDefinitionFile_in,
          Net_GTK_CBData_t& CBData_in,
-         ACE_Sig_Set& signalSet_inout,
+         const ACE_Sig_Set& signalSet_in,
+         const ACE_Sig_Set& ignoredSignalSet_in,
          Common_SignalActions_t& previousSignalActions_inout)
 {
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step0a: initialize stream configuration object
-  Stream_AllocatorHeap heapAllocator;
-  RPG_Net_StreamMessageAllocator messageAllocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
-                                                   &heapAllocator);
-
   Stream_ModuleConfiguration_t module_configuration;
   ACE_OS::memset (&module_configuration, 0, sizeof (module_configuration));
-  module_configuration.messageAllocator = &messageAllocator;
-  module_configuration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
 
   Net_EventHandler ui_event_handler (&CBData_in);
   RPG_Net_Module_EventHandler_Module event_handler (ACE_TEXT_ALWAYS_CHAR ("EventHandler"),
@@ -434,10 +449,13 @@ do_work (unsigned int maxNumConnections_in,
                 ACE_TEXT ("dynamic_cast<RPG_Net_Module_EventHandler> failed, returning\n")));
     return;
   } // end IF
-  eventHandler_impl->initialize (module_configuration,
-                                 &CBData_in.subscribers,
+  eventHandler_impl->initialize (&CBData_in.subscribers,
                                  &CBData_in.subscribersLock);
   eventHandler_impl->subscribe (&ui_event_handler);
+
+  Stream_AllocatorHeap heap_allocator;
+  RPG_Net_StreamMessageAllocator message_allocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
+                                                    &heap_allocator);
 
   Net_Configuration_t configuration;
   ACE_OS::memset (&configuration, 0, sizeof (Net_Configuration_t));
@@ -447,14 +465,17 @@ do_work (unsigned int maxNumConnections_in,
   // ************ socket / stream configuration data ************
   configuration.socketConfiguration.bufferSize =
    RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
-  configuration.streamConfiguration = module_configuration;
+  configuration.streamConfiguration.moduleConfiguration = &module_configuration;
   //  config.useThreadPerConnection = false;
   //  config.serializeOutput = false;
 
   //  config.notificationStrategy = NULL;
+  configuration.streamConfiguration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
+  configuration.streamConfiguration.messageAllocator = &message_allocator;
   configuration.streamConfiguration.module =
     (!UIDefinitionFile_in.empty () ? &event_handler
                                    : NULL);
+
   //  config.delete_module = false;
   // *WARNING*: set at runtime, by the appropriate connection handler
   //  config.sessionID = 0; // (== socket handle !)
@@ -464,13 +485,13 @@ do_work (unsigned int maxNumConnections_in,
   //	config.currentStatistics = {};
   //	config.lastCollectionTimestamp = ACE_Time_Value::zero;
 
-  // step0b: init event dispatch
+  // step0b: initialize event dispatch
   if (!Common_Tools::initializeEventDispatch (useReactor_in,
                                               numDispatchThreads_in,
                                               configuration.streamConfiguration.serializeOutput))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to init event dispatch, returning\n")));
+                ACE_TEXT ("failed to Common_Tools::initializeEventDispatch(), returning\n")));
     return;
   } // end IF
 
@@ -503,28 +524,31 @@ do_work (unsigned int maxNumConnections_in,
 
   // step2: signal handling
   if (useReactor_in)
-    CBData_in.listenerHandle = RPG_NET_SERVER_LISTENER_SINGLETON::instance ();
+    CBData_in.listenerHandle = NET_SERVER_LISTENER_SINGLETON::instance ();
   else
     CBData_in.listenerHandle =
-      RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance ();
+      NET_SERVER_ASYNCHLISTENER_SINGLETON::instance ();
   // event handler for signals
   Net_Server_SignalHandler signal_handler (timer_id,
                                            CBData_in.listenerHandle,
                                            NET_CONNECTIONMANAGER_SINGLETON::instance (),
                                            useReactor_in);
-  if (!Common_Tools::initializeSignals (signalSet_inout,
+  int result = -1;
+  const void* act_p = NULL;
+  if (!Common_Tools::initializeSignals (signalSet_in,
+                                        ignoredSignalSet_in,
                                         &signal_handler,
                                         previousSignalActions_inout))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to init signal handling, returning\n")));
+                ACE_TEXT ("failed to Common_Tools::initializeSignals(), returning\n")));
 
     // clean up
-    if (timer_id == -1)
+    if (timer_id != -1)
     {
-      const void* act = NULL;
-      if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timer_id,
-                                                              &act) <= 0)
+      result = COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timer_id,
+                                                                   &act_p);
+      if (result <= 0)
         ACE_DEBUG ((LM_DEBUG,
                     ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                     timer_id));
@@ -534,7 +558,7 @@ do_work (unsigned int maxNumConnections_in,
     return;
   } // end IF
 
-  // step3: init connection manager
+  // step3: initialize connection manager
   NET_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (maxNumConnections_in);
   Net_UserData_t session_data;
   NET_CONNECTIONMANAGER_SINGLETON::instance ()->set (configuration,
@@ -567,17 +591,17 @@ do_work (unsigned int maxNumConnections_in,
                   ACE_TEXT ("failed to start GTK event dispatch, returning\n")));
 
       // clean up
-      if (timer_id == -1)
+      if (timer_id != -1)
       {
-        const void* act = NULL;
-        if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timer_id,
-                                                                &act) <= 0)
+        result = COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timer_id,
+                                                                     &act_p);
+        if (result <= 0)
           ACE_DEBUG ((LM_DEBUG,
                       ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                       timer_id));
       } // end IF
       COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
-      Common_Tools::finalizeSignals (signalSet_inout,
+      Common_Tools::finalizeSignals (signalSet_in,
                                      useReactor_in,
                                      previousSignalActions_inout);
 
@@ -585,7 +609,7 @@ do_work (unsigned int maxNumConnections_in,
     } // end IF
   } // end IF
 
-  // step4b: init worker(s)
+  // step4b: initialize worker(s)
   int group_id = -1;
   if (!Common_Tools::startEventDispatch (useReactor_in,
                                          numDispatchThreads_in,
@@ -595,11 +619,11 @@ do_work (unsigned int maxNumConnections_in,
                 ACE_TEXT ("failed to start event dispatch, returning\n")));
 
     // clean up
-    if (timer_id == -1)
+    if (timer_id != -1)
     {
-      const void* act = NULL;
-      if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timer_id,
-                                                              &act) <= 0)
+      result = COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timer_id,
+                                                                   &act_p);
+      if (result <= 0)
         ACE_DEBUG ((LM_DEBUG,
                     ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                     timer_id));
@@ -612,9 +636,10 @@ do_work (unsigned int maxNumConnections_in,
     //					 iterator++)
     //				g_source_remove(*iterator);
     //		} // end lock scope
-    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
+    if (!UIDefinitionFile_in.empty ())
+      COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
     COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
-    Common_Tools::finalizeSignals (signalSet_inout,
+    Common_Tools::finalizeSignals (signalSet_in,
                                    useReactor_in,
                                    previousSignalActions_inout);
 
@@ -625,8 +650,54 @@ do_work (unsigned int maxNumConnections_in,
               ACE_TEXT ("started event dispatch...\n")));
 
   // step4c: start listening
-  CBData_in.listenerHandle->init (listeningPortNumber_in,
-                                  useLoopback_in);
+  Net_SocketHandlerConfiguration_t socket_handler_configuration;
+  socket_handler_configuration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
+  socket_handler_configuration.messageAllocator = &message_allocator;
+  socket_handler_configuration.socketConfiguration =
+      configuration.socketConfiguration;
+  Net_ListenerConfiguration_t listener_configuration;
+  listener_configuration.addressFamily = 2;
+  listener_configuration.portNumber = listeningPortNumber_in;
+  listener_configuration.socketHandlerConfiguration =
+    &socket_handler_configuration;
+  listener_configuration.statisticCollectionInterval =
+    statisticsReportingInterval_in;
+  listener_configuration.useLoopbackDevice = useLoopback_in;
+  if (!CBData_in.listenerHandle->initialize (listener_configuration))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to initialize listener, returning\n")));
+
+    // clean up
+    Common_Tools::finalizeEventDispatch (useReactor_in,
+                                         !useReactor_in,
+                                         group_id);
+    if (timer_id != -1)
+    {
+      result = COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timer_id,
+                                                                   &act_p);
+      if (result <= 0)
+        ACE_DEBUG ((LM_DEBUG,
+                    ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                    timer_id));
+    } // end IF
+    //		{ // synch access
+    //			ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(CBData_in.lock);
+
+    //			for (Net_GTK_EventSourceIDsIterator_t iterator = CBData_in.event_source_ids.begin();
+    //					 iterator != CBData_in.event_source_ids.end();
+    //					 iterator++)
+    //				g_source_remove(*iterator);
+    //		} // end lock scope
+    if (!UIDefinitionFile_in.empty ())
+      COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
+    COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
+    Common_Tools::finalizeSignals (signalSet_in,
+                                   useReactor_in,
+                                   previousSignalActions_inout);
+
+    return;
+  } // end IF
   CBData_in.listenerHandle->start ();
   if (!CBData_in.listenerHandle->isRunning ())
   {
@@ -638,11 +709,11 @@ do_work (unsigned int maxNumConnections_in,
     Common_Tools::finalizeEventDispatch (useReactor_in,
                                          !useReactor_in,
                                          group_id);
-    if (timer_id == -1)
+    if (timer_id != -1)
     {
-      const void* act = NULL;
-      if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timer_id,
-                                                              &act) <= 0)
+      result = COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timer_id,
+                                                                   &act_p);
+      if (result <= 0)
         ACE_DEBUG ((LM_DEBUG,
                     ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                     timer_id));
@@ -655,9 +726,10 @@ do_work (unsigned int maxNumConnections_in,
     //					 iterator++)
     //				g_source_remove(*iterator);
     //		} // end lock scope
-    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
-    COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
-    Common_Tools::finalizeSignals (signalSet_inout,
+    if (!UIDefinitionFile_in.empty ())
+      COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
+    COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
+    Common_Tools::finalizeSignals (signalSet_in,
                                    useReactor_in,
                                    previousSignalActions_inout);
 
@@ -669,7 +741,8 @@ do_work (unsigned int maxNumConnections_in,
   // *NOTE*: when using a thread pool, handle things differently...
   if (numDispatchThreads_in > 1)
   {
-    if (ACE_Thread_Manager::instance ()->wait_grp (group_id) == -1)
+    result = ACE_Thread_Manager::instance ()->wait_grp (group_id);
+    if (result == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE_Thread_Manager::wait_grp(%d): \"%m\", continuing\n"),
                   group_id));
@@ -681,14 +754,18 @@ do_work (unsigned int maxNumConnections_in,
 /*      // *WARNING*: restart system calls (after e.g. SIGINT) for the reactor
       ACE_Reactor::instance()->restart(1);
 */
-      if (ACE_Reactor::instance ()->run_reactor_event_loop (0) == -1)
+      result = ACE_Reactor::instance ()->run_reactor_event_loop (0);
+      if (result == -1)
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("failed to handle events: \"%m\", aborting\n")));
     } // end IF
     else
-      if (ACE_Proactor::instance ()->proactor_run_event_loop (0) == -1)
+    {
+      result = ACE_Proactor::instance ()->proactor_run_event_loop (0);
+      if (result == -1)
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("failed to handle events: \"%m\", aborting\n")));
+    } // end ELSE
   } // end ELSE
 
   ACE_DEBUG ((LM_DEBUG,
@@ -705,9 +782,10 @@ do_work (unsigned int maxNumConnections_in,
   //					 iterator++)
   //				g_source_remove(*iterator);
   //		} // end lock scope
-  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
+  if (!UIDefinitionFile_in.empty ())
+    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
   COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
-  Common_Tools::finalizeSignals (signalSet_inout,
+  Common_Tools::finalizeSignals (signalSet_in,
                                  useReactor_in,
                                  previousSignalActions_inout);
 
@@ -860,11 +938,13 @@ ACE_TMAIN (int argc_in,
 
   // step1d: pre-init signal handling
   ACE_Sig_Set signal_set (0);
+  ACE_Sig_Set ignored_signal_set (0);
   do_initializeSignals (use_reactor,
-                        (statistics_reporting_interval == 0), // allow SIGUSR1/SIGBREAK
-                                                              // IFF regular reporting
+                        (statistics_reporting_interval == 0), // handle SIGUSR1/SIGBREAK
+                                                              // iff regular reporting
                                                               // is off
-                        signal_set);
+                        signal_set,
+                        ignored_signal_set);
   Common_SignalActions_t previous_signal_actions;
   if (!Common_Tools::preInitializeSignals (signal_set,
                                            use_reactor,
@@ -884,6 +964,11 @@ ACE_TMAIN (int argc_in,
   } // end IF
 
   Net_GTK_CBData_t gtk_cb_user_data;
+  gtk_cb_user_data.allowUserRuntimeStatistic =
+      (statistics_reporting_interval == 0); // handle SIGUSR1/SIGBREAK
+                                            // iff regular reporting
+                                            // is off
+
   // step1e: initialize logging and/or tracing
   RPG_Client_Logger logger (&gtk_cb_user_data.logStack,
                             &gtk_cb_user_data.logStackLock);
@@ -990,6 +1075,7 @@ ACE_TMAIN (int argc_in,
            UI_file,
            gtk_cb_user_data,
            signal_set,
+           ignored_signal_set,
            previous_signal_actions);
   timer.stop ();
 

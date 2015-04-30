@@ -33,12 +33,16 @@
 #include "common.h"
 #include "common_icontrol.h"
 
+#include "stream_allocatorheap.h"
+
 #include "net_configuration.h"
 
 #include "net_client_common.h"
 
 #include "rpg_map_common.h"
 #include "rpg_map_common_tools.h"
+
+#include "rpg_net_protocol_messageallocator.h"
 
 #include "rpg_engine_common.h"
 #include "rpg_engine_entitymode.h"
@@ -211,21 +215,20 @@ class RPG_Engine_Export RPG_Engine
 
   // atomic ID generator
   static ACE_Atomic_Op<ACE_Thread_Mutex,
-                       RPG_Engine_EntityID_t> myCurrentID;
+                       RPG_Engine_EntityID_t> currentID;
 
-  // *IMPORTANT NOTE*: need this ONLY to handle control messages...
-  RPG_Engine_MessageQueue                     myQueue;
-
-  // make API re-entrant
-  mutable ACE_Thread_Mutex                    myLock;
+  RPG_Engine_EntityID_t                       activePlayer_;
+  RPG_Engine_IClient*                         client_;
   //// implement blocking wait...
-  //ACE_Condition<ACE_Recursive_Thread_Mutex>   myCondition;
-
-  RPG_Engine_Entities_t                       myEntities;
-  RPG_Engine_EntityID_t                       myActivePlayer;
-
-  RPG_Engine_IClient*                         myClient;
-  Net_Configuration_t                         myNetConfiguration;
-  Net_Client_IConnector_t*                    myConnector;
+  //ACE_Condition<ACE_Recursive_Thread_Mutex>   condition_;
+  Net_Client_IConnector_t*                    connector_;
+  RPG_Engine_Entities_t                       entities_;
+  Stream_AllocatorHeap                        heapAllocator_;
+  // make API re-entrant
+  mutable ACE_Thread_Mutex                    lock_;
+  RPG_Net_Protocol_MessageAllocator           messageAllocator_;
+  Net_SocketHandlerConfiguration_t            netConfiguration_;
+  // *IMPORTANT NOTE*: need this ONLY to handle control messages...
+  RPG_Engine_MessageQueue                     queue_;
 };
 #endif

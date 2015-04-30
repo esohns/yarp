@@ -1,6 +1,5 @@
-#METASOURCES = AUTO
-
 ACLOCAL_AMFLAGS = -I m4
+
 #  -I$(top_srcdir)/../modules/ATCD/ACE
 AM_CPPFLAGS = \
   -I$(top_srcdir)/../../ATCD/ACE \
@@ -29,7 +28,7 @@ IRC_client_CPPFLAGS = \
   -I$(top_srcdir)/../modules/libCommon/src/ui \
   -I$(top_srcdir)/../modules/libACEStream/src \
   -I$(top_srcdir)/../modules/libACENetwork/src \
-  -I$(top_srcdir)/../modules/libACENetwork/src/client \
+  -I$(top_srcdir)/../modules/libACENetwork/src/client_server \
   -I$(top_srcdir)/../3rd_party/bison \
   -I$(top_srcdir)/../chance/dice \
   -I$(top_srcdir)/../common \
@@ -80,7 +79,7 @@ IRC_client_gui_CPPFLAGS = \
   -I$(top_srcdir)/../modules/libCommon/src/ui \
   -I$(top_srcdir)/../modules/libACEStream/src \
   -I$(top_srcdir)/../modules/libACENetwork/src \
-  -I$(top_srcdir)/../modules/libACENetwork/src/client \
+  -I$(top_srcdir)/../modules/libACENetwork/src/client_server \
   -I$(top_srcdir)/../3rd_party/bison \
   -I$(top_srcdir)/../chance/dice \
   -I$(top_srcdir)/../common \
@@ -145,4 +144,3 @@ config_DATA = \
   servers.ini
 
 EXTRA_DIST = $(config_DATA)
-

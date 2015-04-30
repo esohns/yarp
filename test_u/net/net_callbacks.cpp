@@ -29,10 +29,13 @@
 #include "common_ui_defines.h"
 #include "common_ui_gtk_manager.h"
 
-#include "net_client_timeouthandler.h"
 #include "net_common.h"
 #include "net_connection_manager_common.h"
 #include "net_defines.h"
+
+#include "net_client_timeouthandler.h"
+
+#include "net_server_common.h"
 
 #include "rpg_dice.h"
 
@@ -40,8 +43,6 @@
 
 #include "rpg_client_defines.h"
 #include "rpg_client_ui_tools.h"
-
-#include "rpg_net_server_ilistener.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -385,9 +386,9 @@ idle_initialize_server_UI_cb (gpointer userData_in)
   bool success = true;
   success = (success &&
              (g_signal_connect (dialog,
-             ACE_TEXT_ALWAYS_CHAR ("destroy"),
-             G_CALLBACK (gtk_widget_destroyed),
-             &dialog) > 0));
+                                ACE_TEXT_ALWAYS_CHAR ("destroy"),
+                                G_CALLBACK (gtk_widget_destroyed),
+                                &dialog) > 0));
 
   // step6b: connect custom signals
   // *NOTE*: glade_xml_signal_connect_data does not work reliably on Windows
@@ -799,7 +800,7 @@ button_ping_clicked_cb (GtkWidget* widget_in,
   RPG_Dice::generateRandomNumbers (num_connections,
                                    1,
                                    result);
-  const Net_InetConnection_Manager_t::CONNECTION_T* connection_handler =
+  const Net_InetConnectionManager_t::CONNECTION_T* connection_handler =
     NET_CONNECTIONMANAGER_SINGLETON::instance ()->operator[](result.front () - 1);
   if (!connection_handler)
   {
@@ -811,7 +812,7 @@ button_ping_clicked_cb (GtkWidget* widget_in,
 
   try
   {
-    const_cast<Net_InetConnection_Manager_t::CONNECTION_T*> (connection_handler)->ping ();
+    const_cast<Net_InetConnectionManager_t::CONNECTION_T*> (connection_handler)->ping ();
   }
   catch (...)
   {
@@ -819,13 +820,13 @@ button_ping_clicked_cb (GtkWidget* widget_in,
                 ACE_TEXT ("caught exception in RPG_Net_IConnection::ping(), aborting\n")));
 
     // clean up
-    const_cast<Net_InetConnection_Manager_t::CONNECTION_T*> (connection_handler)->decrease ();
+    const_cast<Net_InetConnectionManager_t::CONNECTION_T*> (connection_handler)->decrease ();
 
     return FALSE;
   }
 
   // clean up
-  const_cast<Net_InetConnection_Manager_t::CONNECTION_T*> (connection_handler)->decrease ();
+  const_cast<Net_InetConnectionManager_t::CONNECTION_T*> (connection_handler)->decrease ();
 
   return FALSE;
 } // button_ping_clicked_cb

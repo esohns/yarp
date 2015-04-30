@@ -102,7 +102,7 @@ Net_Client_TimeoutHandler::handle_timeout (const ACE_Time_Value& tv_in,
           RPG_Dice::generateRandomNumbers(num_connections,
                                           1,
                                           result);
-          const Net_InetConnection_Manager_t::CONNECTION_T* connection_handler =
+          const Net_InetConnectionManager_t::CONNECTION_T* connection_handler =
             NET_CONNECTIONMANAGER_SINGLETON::instance ()->operator [](result.front () - 1);
           if (!connection_handler)
           {
@@ -113,7 +113,7 @@ Net_Client_TimeoutHandler::handle_timeout (const ACE_Time_Value& tv_in,
 
           try
           {
-            const_cast<Net_InetConnection_Manager_t::CONNECTION_T*> (connection_handler)->finalize ();
+            const_cast<Net_InetConnectionManager_t::CONNECTION_T*> (connection_handler)->finalize ();
           }
           catch (...)
           {
@@ -121,13 +121,13 @@ Net_Client_TimeoutHandler::handle_timeout (const ACE_Time_Value& tv_in,
                         ACE_TEXT ("caught exception in RPG_Net_IConnection::fini(), aborting\n")));
 
             // clean up
-            const_cast<Net_InetConnection_Manager_t::CONNECTION_T*> (connection_handler)->decrease ();
+            const_cast<Net_InetConnectionManager_t::CONNECTION_T*> (connection_handler)->decrease ();
 
             return -1;
           }
 
           // clean up
-          const_cast<Net_InetConnection_Manager_t::CONNECTION_T*> (connection_handler)->decrease ();
+          const_cast<Net_InetConnectionManager_t::CONNECTION_T*> (connection_handler)->decrease ();
 
           break;
         }
@@ -178,7 +178,7 @@ Net_Client_TimeoutHandler::handle_timeout (const ACE_Time_Value& tv_in,
       RPG_Dice::generateRandomNumbers (num_connections,
                                        1,
                                        result);
-      const Net_InetConnection_Manager_t::CONNECTION_T* connection_handler =
+      const Net_InetConnectionManager_t::CONNECTION_T* connection_handler =
         NET_CONNECTIONMANAGER_SINGLETON::instance ()->operator [](result.front () - 1);
       if (!connection_handler)
       {
@@ -189,7 +189,7 @@ Net_Client_TimeoutHandler::handle_timeout (const ACE_Time_Value& tv_in,
 
       try
       {
-        const_cast<Net_InetConnection_Manager_t::CONNECTION_T*> (connection_handler)->ping ();
+        const_cast<Net_InetConnectionManager_t::CONNECTION_T*> (connection_handler)->ping ();
       }
       catch (...)
       {
@@ -197,13 +197,13 @@ Net_Client_TimeoutHandler::handle_timeout (const ACE_Time_Value& tv_in,
                     ACE_TEXT ("caught exception in RPG_Net_IConnection::ping(), aborting\n")));
 
         // clean up
-        const_cast<Net_InetConnection_Manager_t::CONNECTION_T*> (connection_handler)->decrease ();
+        const_cast<Net_InetConnectionManager_t::CONNECTION_T*> (connection_handler)->decrease ();
 
         return -1;
       }
 
       // clean up
-      const_cast<Net_InetConnection_Manager_t::CONNECTION_T*>(connection_handler)->decrease ();
+      const_cast<Net_InetConnectionManager_t::CONNECTION_T*> (connection_handler)->decrease ();
 
       break;
     }

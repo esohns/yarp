@@ -45,7 +45,7 @@ RPG_Client_UI_Tools::UTF82Locale(const gchar* string_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to convert string: \"%s\", aborting\n"),
-							 ACE_TEXT_CHAR_TO_TCHAR(conversion_error->message)));
+               ACE_TEXT_CHAR_TO_TCHAR(conversion_error->message)));
 
     // clean up
     g_error_free(conversion_error);
@@ -76,8 +76,8 @@ RPG_Client_UI_Tools::Locale2UTF8(const std::string& string_in)
   if (conversion_error)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert string: \"%s\", aborting\n"),
-							 ACE_TEXT_CHAR_TO_TCHAR(conversion_error->message)));
+               ACE_TEXT ("failed to convert string: \"%s\", aborting\n"),
+               ACE_TEXT (conversion_error->message)));
 
       // clean up
     g_error_free(conversion_error);

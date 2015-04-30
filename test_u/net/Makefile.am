@@ -1,17 +1,11 @@
-#METASOURCES = AUTO
-
 ACLOCAL_AMFLAGS = -I m4
+
 #  -I$(top_srcdir)/../modules/ATCD/ACE
 AM_CPPFLAGS = \
   -I$(top_srcdir)/../../ATCD/ACE \
   -I$(builddir)/../..
 
 DEFS = \
-  -DRPG_COMMON_HAS_DLL \
-  -DRPG_NET_HAS_DLL \
-  -DRPG_NET_CLIENT_HAS_DLL \
-  -DRPG_CLIENT_HAS_DLL \
-  -DRPG_NET_SERVER_HAS_DLL \
   -DBASEDIR=\"$(datadir)/@META_PACKAGE@\"
 
 SUBDIRS = protocol
@@ -40,7 +34,7 @@ net_client_CPPFLAGS = \
   -I$(top_srcdir)/../modules/libCommon/src/ui \
   -I$(top_srcdir)/../modules/libACEStream/src \
   -I$(top_srcdir)/../modules/libACENetwork/src \
-  -I$(top_srcdir)/../modules/libACENetwork/src/client \
+  -I$(top_srcdir)/../modules/libACENetwork/src/client_server \
   -I$(top_srcdir)/../chance/dice \
   -I$(top_srcdir)/../common \
   -I$(top_srcdir)/../magic \
@@ -98,6 +92,7 @@ net_client_LDADD = \
   -lRPG_Monster \
   -lRPG_Map \
   -lRPG_Net \
+  -lRPG_Net_Protocol \
   -lRPG_Engine \
   -lRPG_Sound \
   -lRPG_Graphics \
@@ -121,7 +116,7 @@ net_server_CPPFLAGS = \
   -I$(top_srcdir)/../modules/libCommon/src/ui \
   -I$(top_srcdir)/../modules/libACEStream/src \
   -I$(top_srcdir)/../modules/libACENetwork/src \
-  -I$(top_srcdir)/../modules/libACENetwork/src/client \
+  -I$(top_srcdir)/../modules/libACENetwork/src/client_server \
   -I$(top_srcdir)/../chance/dice \
   -I$(top_srcdir)/../common \
   -I$(top_srcdir)/../magic \
@@ -146,6 +141,7 @@ net_server_LDFLAGS = \
   -L$(abs_builddir)/../../modules/libCommon/src/ui/.libs \
   -L$(abs_builddir)/../../modules/libACEStream/src/.libs \
   -L$(abs_builddir)/../../modules/libACENetwork/src/.libs \
+  -L$(abs_builddir)/../../modules/libACENetwork/src/client_server/.libs \
   -L$(abs_builddir)/../../chance/dice/.libs \
   -L$(abs_builddir)/../../chance/.libs \
   -L$(abs_builddir)/../../common/.libs \
@@ -170,6 +166,7 @@ net_server_LDADD = \
   -lCommon_UI \
   -lACEStream \
   -lACENetwork \
+  -lACENetwork_Server \
   -lRPG_Dice \
   -lRPG_Chance \
   -lRPG_Common \
@@ -179,8 +176,9 @@ net_server_LDADD = \
   -lRPG_Player \
   -lRPG_Combat \
   -lRPG_Monster \
-  -lRPG_Net \
   -lRPG_Map \
+  -lRPG_Net \
+  -lRPG_Net_Protocol \
   -lRPG_Engine \
   -lRPG_Sound \
   -lRPG_Graphics \

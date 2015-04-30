@@ -1,5 +1,3 @@
-#METASOURCES = AUTO
-
 SUBDIRS = scripts
 
 ACLOCAL_AMFLAGS = -I m4
@@ -79,12 +77,12 @@ libRPG_Net_Protocol_la_SOURCES = \
   rpg_net_protocol_stream_common.h \
   rpg_net_protocol_tools.cpp \
   rpg_net_protocol_tools.h
+
 libRPG_Net_Protocol_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   -I$(top_srcdir)/../3rd_party/bison \
   -I$(top_srcdir)/../modules/libCommon/src \
   -I$(top_srcdir)/../modules/libACEStream/src \
   -I$(top_srcdir)/../modules/libACENetwork/src \
-  -I$(top_srcdir)/../modules/libACENetwork/src/client \
+  -I$(top_srcdir)/../modules/libACENetwork/src/client_server \
   -I$(top_srcdir)/../common
-

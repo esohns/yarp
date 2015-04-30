@@ -59,11 +59,15 @@ LIB_DIR=".libs"
 SUB_DIRS="modules/libCommon/src
 modules/libCommon/src/ui
 modules/libACEStream/src
-modules/libACENetwork/src"
+modules/libACENetwork/src
+modules/libACENetwork/src/client_server
+modules/libACENetwork/src/client_server"
 declare -a LIBS=("libCommon.so"
 "libCommon_UI.so"
 "libACEStream.so"
-"libACENetwork.so")
+"libACENetwork.so"
+"libACENetwork_Client.so"
+"libACENetwork_Server.so")
 i=0
 for DIR in $SUB_DIRS
 do
@@ -91,9 +95,9 @@ graphics
 item
 magic
 map
+net
 net/protocol
 net/server
-net
 sound"
 declare -a LIBS=("libRPG_Dice.so"
 "libRPG_Chance.so"
@@ -108,9 +112,9 @@ declare -a LIBS=("libRPG_Dice.so"
 "libRPG_Item.so"
 "libRPG_Magic.so"
 "libRPG_Map.so"
+"libRPG_Net.so"
 "libRPG_Net_Protocol.so"
 "libRPG_Net_Server.so"
-"libRPG_Net.so"
 "libRPG_Sound.so")
 i=0
 for DIR in $SUB_DIRS

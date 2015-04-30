@@ -85,13 +85,32 @@ IRC_Client_Tools::connect (Stream_IAllocator* messageAllocator_in,
     return false;
   } // end IF
 
+  // *TODO*: memory leak here ? ...
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->set (configuration,
                                                                   session_data_p);
 
-  // step2: init client connector
-  RPG_Net_Protocol_Connector_t connector (&configuration,
+  // step2: initialize client connector
+  Net_SocketHandlerConfiguration_t* socket_handler_configuration_p = NULL;
+  ACE_NEW_NORETURN (socket_handler_configuration_p,
+                    Net_SocketHandlerConfiguration_t ());
+  if (!socket_handler_configuration_p)
+  {
+    ACE_DEBUG ((LM_CRITICAL,
+                ACE_TEXT ("failed to allocator memory: \"%m\", aborting\n")));
+
+    // clean up
+    delete session_data_p;
+
+    return false;
+  } // end IF
+  socket_handler_configuration_p->bufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
+  socket_handler_configuration_p->messageAllocator = messageAllocator_in;
+  socket_handler_configuration_p->socketConfiguration =
+    configuration.socketConfiguration;
+  // *TODO*: memory leak here...
+  RPG_Net_Protocol_Connector_t connector (socket_handler_configuration_p,
                                           RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance (),
-                                          0);
+                                          statisticReportingInterval_in);
 
   // step3: (try to) connect to the server
   ACE_INET_Addr peer_address (serverPortNumber_in,

@@ -360,59 +360,73 @@ do_processArguments (const int& argc_in,
 }
 
 void
-init_signals (bool allowUserRuntimeConnect_in,
-              ACE_Sig_Set& signals_inout)
+do_initializeSignals (bool allowUserRuntimeConnect_in,
+                      ACE_Sig_Set& signals_out,
+                      ACE_Sig_Set& ignoredSignals_out)
 {
-  RPG_TRACE (ACE_TEXT ("::init_signals"));
+  RPG_TRACE (ACE_TEXT ("::do_initializeSignals"));
 
   int result = -1;
 
-  // init return value(s)
-  result = signals_inout.empty_set ();
+  // initialize return value(s)
+  result = signals_out.empty_set ();
   if (result == -1)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to ACE_Sig_Set::empty_set(): \"%m\", aborting\n")));
+                ACE_TEXT ("failed to ACE_Sig_Set::empty_set(): \"%m\", returning\n")));
+    return;
+  } // end IF
+  result = ignoredSignals_out.empty_set ();
+  if (result == -1)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_Sig_Set::empty_set(): \"%m\", returning\n")));
     return;
   } // end IF
 
-  // *PORTABILITY*: on Windows most signals are not defined,
-  // and ACE_Sig_Set::fill_set() doesn't really work as specified
+  // *PORTABILITY*: on Windows(TM) platforms most signals are not defined, and
+  //                ACE_Sig_Set::fill_set() doesn't really work as specified
   // --> add valid signals (see <signal.h>)...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-  signals_inout.sig_add (SIGINT);         // 2       /* interrupt */
-  signals_inout.sig_add (SIGILL);         // 4       /* illegal instruction - invalid function image */
-  signals_inout.sig_add (SIGFPE);         // 8       /* floating point exception */
-//  signals_inout.sig_add(SIGSEGV);        // 11      /* segment violation */
-  signals_inout.sig_add (SIGTERM);        // 15      /* Software termination signal from kill */
+  signals_out.sig_add (SIGINT);            // 2       /* interrupt */
+  signals_out.sig_add (SIGILL);            // 4       /* illegal instruction - invalid function image */
+  signals_out.sig_add (SIGFPE);            // 8       /* floating point exception */
+//  signals_out.sig_add (SIGSEGV);           // 11      /* segment violation */
+  signals_out.sig_add (SIGTERM);           // 15      /* Software termination signal from kill */
   if (allowUserRuntimeConnect_in)
-    signals_inout.sig_add (SIGBREAK);     // 21      /* Ctrl-Break sequence */
-  signals_inout.sig_add (SIGABRT);        // 22      /* abnormal termination triggered by abort call */
-  signals_inout.sig_add (SIGABRT_COMPAT); // 6       /* SIGABRT compatible with other platforms, same as SIGABRT */
-#else
-  if (signals_inout.fill_set() == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Sig_Set::fill_set(): \"%m\", aborting\n")));
-
+    signals_out.sig_add (SIGBREAK);        // 21      /* Ctrl-Break sequence */
+    ignoredSignals_out.sig_add (SIGBREAK); // 21      /* Ctrl-Break sequence */
+  } // end IF
+  signals_out.sig_add (SIGABRT);           // 22      /* abnormal termination triggered by abort call */
+  signals_out.sig_add (SIGABRT_COMPAT);    // 6       /* SIGABRT compatible with other platforms, same as SIGABRT */
+#else
+  result = signals_out.fill_set ();
+  if (result == -1)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT("failed to ACE_Sig_Set::fill_set(): \"%m\", returning\n")));
     return;
   } // end IF
   // *NOTE*: cannot handle some signals --> registration fails for these...
-  signals_inout.sig_del(SIGKILL);        // 9       /* Kill signal */
-  signals_inout.sig_del(SIGSTOP);        // 19      /* Stop process */
+  signals_out.sig_del (SIGKILL);           // 9       /* Kill signal */
+  signals_out.sig_del (SIGSTOP);           // 19      /* Stop process */
   // ---------------------------------------------------------------------------
   if (!allowUserRuntimeConnect_in)
-    signals_inout.sig_del(SIGUSR1);      // 10      /* User-defined signal 1 */
+  {
+    signals_out.sig_del (SIGUSR1);         // 10      /* User-defined signal 1 */
+    ignoredSignals_out.sig_add (SIGUSR1);  // 10      /* User-defined signal 1 */
+  } // end IF
   // *NOTE* core dump on SIGSEGV
-  signals_inout.sig_del(SIGSEGV);        // 11      /* Segmentation fault: Invalid memory reference */
+  signals_out.sig_del (SIGSEGV);           // 11      /* Segmentation fault: Invalid memory reference */
   // *NOTE* don't care about SIGPIPE
-  signals_inout.sig_del(SIGPIPE);        // 12      /* Broken pipe: write to pipe with no readers */
+  signals_out.sig_del (SIGPIPE);           // 12      /* Broken pipe: write to pipe with no readers */
 
 #ifdef RPG_ENABLE_VALGRIND_SUPPORT
   // *NOTE*: valgrind uses SIGRT32 (--> SIGRTMAX ?) and apparently will not work
   // if the application installs its own handler (see documentation)
   if (RUNNING_ON_VALGRIND)
-    signals_inout.sig_del(SIGRTMAX);     // 64
+    signals_out.sig_del (SIGRTMAX);        // 64
 #endif
 #endif
 }
@@ -429,7 +443,8 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
          unsigned int numDispatchThreads_in,
          bool useUDP_in,
          Net_GTK_CBData_t& CBData_in,
-         ACE_Sig_Set& signalSet_inout,
+         const ACE_Sig_Set& signalSet_in,
+         const ACE_Sig_Set& ignoredSignalSet_in,
          Common_SignalActions_t& previousSignalActions_inout)
 {
   RPG_TRACE (ACE_TEXT ("::do_work"));
@@ -466,12 +481,11 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   } // end IF
   eventHandler_impl->initialize (&CBData_in.subscribers,
                                  &CBData_in.subscribersLock);
-
   eventHandler_impl->subscribe (&ui_event_handler);
 
-  Stream_AllocatorHeap heapAllocator;
-  RPG_Net_StreamMessageAllocator messageAllocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
-                                                   &heapAllocator);
+  Stream_AllocatorHeap heap_allocator;
+  RPG_Net_StreamMessageAllocator message_allocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
+                                                    &heap_allocator);
   Net_Configuration_t configuration;
   ACE_OS::memset (&configuration, 0, sizeof (Net_Configuration_t));
   // ************ connection configuration data ************
@@ -485,15 +499,16 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
    RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
 
   configuration.streamConfiguration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
-  configuration.streamConfiguration.messageAllocator = &messageAllocator;
+  configuration.streamConfiguration.messageAllocator = &message_allocator;
   configuration.streamConfiguration.moduleConfiguration = &module_configuration;
-  //  config.useThreadPerConnection = false;
-  //  config.serializeOutput = false;
-
-//  config.notificationStrategy = NULL;
   configuration.streamConfiguration.module =
       (!UIDefinitionFile_in.empty () ? &event_handler
                                      : NULL);
+
+  //  config.useThreadPerConnection = false;
+  //  config.serializeOutput = false;
+
+  //  config.notificationStrategy = NULL;
 //  config.delete_module = false;
   // *WARNING*: set at runtime, by the appropriate connection handler
 //  config.sessionID = 0; // (== socket handle !)
@@ -514,15 +529,20 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   } // end IF
 
   // step0d: initialize client connector
+  Net_SocketHandlerConfiguration_t socket_handler_configuration;
+  socket_handler_configuration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
+  socket_handler_configuration.messageAllocator = &message_allocator;
+  socket_handler_configuration.socketConfiguration =
+    configuration.socketConfiguration;
   Net_Client_IConnector_t* connector_p = NULL;
   if (useReactor_in)
     ACE_NEW_NORETURN (connector_p,
-                      Net_Client_Connector_t (&configuration,
+                      Net_Client_Connector_t (&socket_handler_configuration,
                                               NET_CONNECTIONMANAGER_SINGLETON::instance (),
                                               0));
   else
     ACE_NEW_NORETURN (connector_p,
-                      Net_Client_AsynchConnector_t (&configuration,
+                      Net_Client_AsynchConnector_t (&socket_handler_configuration,
                                                     NET_CONNECTIONMANAGER_SINGLETON::instance (),
                                                     0));
   if (!connector_p)
@@ -533,9 +553,15 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   } // end IF
 
   // step0e: initialize connection manager
-  NET_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (std::numeric_limits<unsigned int>::max ());
-  NET_CONNECTIONMANAGER_SINGLETON::instance ()->set (configuration,
-                                                     &configuration.streamSessionData);
+  Net_IInetConnectionManager_t* iconnection_manager_p =
+    Net_Common_Tools::getConnectionManager ();
+  ACE_ASSERT (iconnection_manager_p);
+  Net_InetConnectionManager_t* connection_manager_p =
+    dynamic_cast<Net_InetConnectionManager_t*> (iconnection_manager_p);
+  ACE_ASSERT (connection_manager_p);
+  connection_manager_p->initialize (std::numeric_limits<unsigned int>::max ());
+  connection_manager_p->set (configuration,
+                             &configuration.streamSessionData);
 
   // step0f: initialize action timer
   ACE_INET_Addr peer_address (serverPortNumber_in,
@@ -580,12 +606,13 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
                                            peer_address,      // remote SAP
                                            connector_p,       // connector
                                            useReactor_in);    // use reactor ?
-  if (!Common_Tools::initializeSignals (signalSet_inout,
+  if (!Common_Tools::initializeSignals (signalSet_in,
+                                        ignoredSignalSet_in,
                                         &signal_handler,
                                         previousSignalActions_inout))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to init signal handling, aborting\n")));
+                ACE_TEXT ("failed to Common_Tools::initializeSignals(), aborting\n")));
 
     // clean up
     if (CBData_in.timerId != -1)
@@ -640,7 +667,7 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
       COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
       connector_p->abort ();
       delete connector_p;
-      Common_Tools::finalizeSignals (signalSet_inout,
+      Common_Tools::finalizeSignals (signalSet_in,
                                      useReactor_in,
                                      previousSignalActions_inout);
 
@@ -680,7 +707,7 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
     COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
     connector_p->abort ();
     delete connector_p;
-    Common_Tools::finalizeSignals (signalSet_inout,
+    Common_Tools::finalizeSignals (signalSet_in,
                                    useReactor_in,
                                    previousSignalActions_inout);
 
@@ -738,7 +765,7 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
       COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
       connector_p->abort ();
       delete connector_p;
-      Common_Tools::finalizeSignals (signalSet_inout,
+      Common_Tools::finalizeSignals (signalSet_in,
                                      useReactor_in,
                                      previousSignalActions_inout);
 
@@ -778,7 +805,8 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
               ACE_TEXT ("finished event dispatch...\n")));
 
   // step7: clean up
-  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
+  if (!UIDefinitionFile_in.empty ())
+    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->wait ();
   //		{ // synch access
   //			ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(CBData_in.lock);
 
@@ -789,15 +817,12 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   //		} // end lock scope
   COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
 
-  Net_IInetConnectionManager_t* connection_manager_p =
-    Net_Common_Tools::getConnectionManager ();
-  ACE_ASSERT (connection_manager_p);
   connection_manager_p->abort ();
   // *IMPORTANT NOTE*: as long as connections are inactive (i.e. events are
   // dispatched by reactor thread(s), there is no real reason to wait here)
   connection_manager_p->wait ();
 
-  Common_Tools::finalizeSignals (signalSet_inout,
+  Common_Tools::finalizeSignals (signalSet_in,
                                  useReactor_in,
                                  previousSignalActions_inout);
 //  { // synch access
@@ -975,17 +1000,19 @@ ACE_TMAIN (int argc_in,
     action_mode = Net_Client_TimeoutHandler::ACTION_STRESS;
 
   // step1d: pre-initialize signal handling
-  ACE_Sig_Set signal_set(0);
-  init_signals((connection_interval == 0), // allow SIGUSR1/SIGBREAK IFF
-                                           // regular connections are off
-               signal_set);
+  ACE_Sig_Set signal_set (0);
+  ACE_Sig_Set ignored_signal_set (0);
+  do_initializeSignals ((connection_interval == 0), // allow SIGUSR1/SIGBREAK iff
+                                                    // regular connections are off
+                        signal_set,
+                        ignored_signal_set);
   Common_SignalActions_t previous_signal_actions;
   if (!Common_Tools::preInitializeSignals (signal_set,
                                            use_reactor,
                                            previous_signal_actions))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Common_Tools::preInitializeSignals(), aborting\n")));
+                ACE_TEXT ("failed to Common_Tools::preInitializeSignals(), aborting\n")));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -1085,7 +1112,8 @@ ACE_TMAIN (int argc_in,
            use_UDP,
            gtk_cb_user_data,
            signal_set,
-          previous_signal_actions);
+           ignored_signal_set,
+           previous_signal_actions);
   timer.stop ();
 
   // debug info

@@ -1,6 +1,5 @@
-#METASOURCES = AUTO
-
 ACLOCAL_AMFLAGS = -I m4
+
 #  -I$(top_srcdir)/../modules/ATCD/ACE
 AM_CPPFLAGS = \
   -I$(top_srcdir)/../../ATCD/ACE \
@@ -24,7 +23,7 @@ rpg_client_gui_CPPFLAGS	= \
   -I$(top_srcdir)/../modules/libCommon/src/ui \
   -I$(top_srcdir)/../modules/libACEStream/src \
   -I$(top_srcdir)/../modules/libACENetwork/src \
-  -I$(top_srcdir)/../modules/libACENetwork/src/client \
+  -I$(top_srcdir)/../modules/libACENetwork/src/client_server \
   -I$(top_srcdir)/../chance/dice \
   -I$(top_srcdir)/../common \
   -I$(top_srcdir)/../magic \

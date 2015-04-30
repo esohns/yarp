@@ -1,6 +1,5 @@
-#METASOURCES = AUTO
-
 ACLOCAL_AMFLAGS = -I m4
+
 #  -I$(top_srcdir)/../modules/ATCD/ACE
 AM_CPPFLAGS = \
   -I$(top_srcdir)/../../ATCD/ACE \
@@ -25,7 +24,7 @@ character_generator_CPPFLAGS = \
   -I$(top_srcdir)/../modules/libCommon/src \
   -I$(top_srcdir)/../modules/libACEStream/src \
   -I$(top_srcdir)/../modules/libACENetwork/src \
-  -I$(top_srcdir)/../modules/libACENetwork/src/client \
+  -I$(top_srcdir)/../modules/libACENetwork/src/client_server \
   -I$(top_srcdir)/../chance/dice \
   -I$(top_srcdir)/../common \
   -I$(top_srcdir)/../magic \
@@ -46,6 +45,7 @@ character_generator_LDFLAGS = \
   -L$(abs_builddir)/../../../modules/libCommon/src/.libs \
   -L$(abs_builddir)/../../../modules/libACEStream/src/.libs \
   -L$(abs_builddir)/../../../modules/libACENetwork/src/.libs \
+  -L$(abs_builddir)/../../../modules/libACENetwork/src/client_server/.libs \
   -L$(abs_builddir)/../../../chance/dice/.libs \
   -L$(abs_builddir)/../../../chance/.libs \
   -L$(abs_builddir)/../../../common/.libs \
@@ -57,6 +57,7 @@ character_generator_LDFLAGS = \
   -L$(abs_builddir)/../../../character/monster/.libs \
   -L$(abs_builddir)/../../../map/.libs \
   -L$(abs_builddir)/../../../net/.libs \
+  -L$(abs_builddir)/../../../net/protocol/.libs \
   -L$(abs_builddir)/../../../engine/.libs \
   -L$(abs_builddir)/../../../graphics/.libs \
   $(pkg_libs_LDFLAGS)
@@ -76,6 +77,7 @@ character_generator_LDADD = \
   -lRPG_Monster \
   -lRPG_Map \
   -lRPG_Net \
+  -lRPG_Net_Protocol \
   -lRPG_Engine \
   -lRPG_Graphics \
   $(pkg_libs_LIBS)
@@ -87,14 +89,13 @@ character_generator_gui_SOURCES = \
   character_generator_gui_common.h \
   test_u_main.cpp \
   test_u_main.h
-#  -I/home/esohns/Downloads/libglade-2.6.4
 character_generator_gui_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   -I$(top_srcdir)/../modules/libCommon/src \
   -I$(top_srcdir)/../modules/libCommon/src/ui \
   -I$(top_srcdir)/../modules/libACEStream/src \
   -I$(top_srcdir)/../modules/libACENetwork/src \
-  -I$(top_srcdir)/../modules/libACENetwork/src/client \
+  -I$(top_srcdir)/../modules/libACENetwork/src/client_server \
   -I$(top_srcdir)/../chance/dice \
   -I$(top_srcdir)/../common \
   -I$(top_srcdir)/../magic \
@@ -104,6 +105,7 @@ character_generator_gui_CPPFLAGS = \
   -I$(top_srcdir)/../combat \
   -I$(top_srcdir)/../character/monster \
   -I$(top_srcdir)/../map \
+  -I$(top_srcdir)/../net/protocol \
   -I$(top_srcdir)/../engine \
   -I$(top_srcdir)/../sound \
   -I$(top_srcdir)/../graphics \
@@ -115,7 +117,7 @@ character_generator_gui_LDFLAGS = \
   -L$(abs_builddir)/../../../modules/libCommon/src/ui/.libs \
   -L$(abs_builddir)/../../../modules/libACEStream/src/.libs \
   -L$(abs_builddir)/../../../modules/libACENetwork/src/.libs \
-  -L/home/esohns/Downloads/libglade-2.6.4/glade/.libs \
+  -L$(abs_builddir)/../../../modules/libACENetwork/src/client_server/.libs \
   -L$(abs_builddir)/../../../chance/dice/.libs \
   -L$(abs_builddir)/../../../chance/.libs \
   -L$(abs_builddir)/../../../common/.libs \
@@ -127,6 +129,7 @@ character_generator_gui_LDFLAGS = \
   -L$(abs_builddir)/../../../character/monster/.libs \
   -L$(abs_builddir)/../../../map/.libs \
   -L$(abs_builddir)/../../../net/.libs \
+  -L$(abs_builddir)/../../../net/protocol/.libs \
   -L$(abs_builddir)/../../../engine/.libs \
   -L$(abs_builddir)/../../../sound/.libs \
   -L$(abs_builddir)/../../../graphics/.libs \
@@ -149,6 +152,7 @@ character_generator_gui_LDADD = \
   -lRPG_Monster \
   -lRPG_Map \
   -lRPG_Net \
+  -lRPG_Net_Protocol \
   -lRPG_Engine \
   -lRPG_Sound \
   -lRPG_Graphics \

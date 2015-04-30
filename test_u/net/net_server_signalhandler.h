@@ -33,13 +33,13 @@
 class Common_IControl;
 
 class Net_Server_SignalHandler
- : public Common_SignalHandler,
-   public Common_ISignal
+ : public Common_SignalHandler
+ , public Common_ISignal
 {
  public:
   Net_Server_SignalHandler (long,                                                    // timer ID
-                            Common_IControl*,                                        // controller
-                            Common_IStatistic_T<RPG_Net_Protocol_RuntimeStatistic>*, // reporter
+                            Common_IControl*,                                        // controller handle
+                            Common_IStatistic_T<RPG_Net_Protocol_RuntimeStatistic>*, // reporter handle
                             // ---------------------------------------------------------------
                             bool = true);                                            // use reactor ?
   virtual ~Net_Server_SignalHandler ();
@@ -52,12 +52,12 @@ class Net_Server_SignalHandler
 
   ACE_UNIMPLEMENTED_FUNC (Net_Server_SignalHandler ());
   ACE_UNIMPLEMENTED_FUNC (Net_Server_SignalHandler (const Net_Server_SignalHandler&));
-  ACE_UNIMPLEMENTED_FUNC (Net_Server_SignalHandler& operator=(const Net_Server_SignalHandler&));
+  ACE_UNIMPLEMENTED_FUNC (Net_Server_SignalHandler& operator= (const Net_Server_SignalHandler&));
 
-  long                                                    myTimerID;
-  Common_IControl*                                        myControl;
-  Common_IStatistic_T<RPG_Net_Protocol_RuntimeStatistic>* myReport;
-  bool                                                    myUseReactor;
+  Common_IControl*                                        control_;
+  Common_IStatistic_T<RPG_Net_Protocol_RuntimeStatistic>* report_;
+  long                                                    timerID_;
+  bool                                                    useReactor_;
 };
 
 #endif
