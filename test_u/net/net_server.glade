@@ -120,7 +120,6 @@
                           <object class="GtkButton" id="close_all">
                             <property name="label" translatable="yes">Disconnect _All</property>
                             <property name="visible">True</property>
-                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="can_default">True</property>
                             <property name="receives_default">True</property>
@@ -174,6 +173,9 @@
                         <property name="n_rows">3</property>
                         <property name="n_columns">2</property>
                         <property name="homogeneous">True</property>
+                        <child>
+                          <placeholder/>
+                        </child>
                         <child>
                           <placeholder/>
                         </child>
@@ -265,6 +267,9 @@
                     <property name="can_focus">False</property>
                     <property name="n_columns">2</property>
                     <property name="homogeneous">True</property>
+                    <child>
+                      <placeholder/>
+                    </child>
                     <child>
                       <placeholder/>
                     </child>

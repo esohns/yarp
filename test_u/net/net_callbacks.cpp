@@ -183,11 +183,34 @@ idle_initialize_client_UI_cb (gpointer userData_in)
     return FALSE; // G_SOURCE_REMOVE
   } // end ELSE
 
-  // step5: (auto-)connect signals/slots
+  // step5: disable some functions ?
+  GtkButton* button_p =
+    //GTK_BUTTON (glade_xml_get_widget ((*iterator).second.second,
+    //                                  ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_CLOSE_NAME)));
+    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_CLOSE_NAME)));
+  ACE_ASSERT (button_p);
+  gtk_widget_set_sensitive (GTK_WIDGET (button_p), FALSE);
+  button_p =
+      //GTK_BUTTON (glade_xml_get_widget ((*iterator).second.second,
+      //                                  ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                          ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
+  ACE_ASSERT (button_p);
+  gtk_widget_set_sensitive (GTK_WIDGET (button_p), FALSE);
+  button_p =
+      //GTK_BUTTON (glade_xml_get_widget ((*iterator).second.second,
+      //                                  ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_PING_NAME)));
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                          ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_PING_NAME)));
+  ACE_ASSERT (button_p);
+  gtk_widget_set_sensitive (GTK_WIDGET (button_p), FALSE);
+
+  // step6: (auto-)connect signals/slots
   // *NOTE*: glade_xml_signal_autoconnect does not work reliably
   //glade_xml_signal_autoconnect(userData_out.xml);
 
-  // step5a: connect default signals
+  // step6a: connect default signals
   gulong result =
       g_signal_connect (dialog_p,
                         ACE_TEXT_ALWAYS_CHAR ("destroy"),
@@ -195,7 +218,7 @@ idle_initialize_client_UI_cb (gpointer userData_in)
                         NULL);
   ACE_ASSERT (result);
 
-  // step5b: connect custom signals
+  // step6b: connect custom signals
   //gtk_builder_connect_signals ((*iterator).second.second,
   //                             userData_in);
   GObject* object_p =
@@ -270,12 +293,12 @@ idle_initialize_client_UI_cb (gpointer userData_in)
                         userData_in);
   ACE_ASSERT (result);
 
-  //   // step6: use correct screen
+  //   // step7: use correct screen
   //   if (parentWidget_in)
   //     gtk_window_set_screen (GTK_WINDOW (dialog_p),
   //                            gtk_widget_get_screen (const_cast<GtkWidget*> (//parentWidget_in)));
 
-  // step7: draw main dialog
+  // step8: draw main dialog
   gtk_widget_show_all (dialog_p);
 
   return FALSE; // G_SOURCE_REMOVE
@@ -416,10 +439,17 @@ idle_initialize_server_UI_cb (gpointer userData_in)
 
   // step5: disable some functions ?
   GtkButton* button_p =
-    //GTK_BUTTON (glade_xml_get_widget ((*iterator).second.second,
-    //                                  ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_REPORT_NAME)));
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                        ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_REPORT_NAME)));
+      //GTK_BUTTON (glade_xml_get_widget ((*iterator).second.second,
+      //                                  ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                          ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
+  ACE_ASSERT (button_p);
+  gtk_widget_set_sensitive (GTK_WIDGET (button_p), FALSE);
+  button_p =
+      //GTK_BUTTON (glade_xml_get_widget ((*iterator).second.second,
+      //                                  ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_REPORT_NAME)));
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                          ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_REPORT_NAME)));
   ACE_ASSERT (button_p);
   gtk_widget_set_sensitive (GTK_WIDGET (button_p),
                             data_p->allowUserRuntimeStatistic);
