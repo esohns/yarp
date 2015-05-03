@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>-i 1 -o -s 0 -t -u$(ProjectDir)..\..\test_u\net\net_server.glade</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-g$(ProjectDir)..\..\test_u\net\net_server.glade -i 1 -l -o -s 0 -t</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(ProjectDir)..\..</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LocalDebuggerCommandArguments>-i 1 -o -s 0 -t -u$(ProjectDir)..\..\test_u\net\net_server.glade</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-g$(ProjectDir)..\..\test_u\net\net_server.glade -i 1 -l -o -s 0 -t</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(ProjectDir)..\..</LocalDebuggerWorkingDirectory>
   </PropertyGroup>

@@ -31,7 +31,6 @@
 #include "net_configuration.h"
 #include "net_connection_manager.h"
 #include "net_iconnectionmanager.h"
-#include "net_itransportlayer.h"
 #include "net_stream_asynch_tcpsocket_base.h"
 #include "net_stream_tcpsocket_base.h"
 #include "net_tcpsockethandler.h"
@@ -44,17 +43,19 @@
 #include "rpg_net_protocol_stream.h"
 #include "rpg_net_protocol_stream_common.h"
 
-typedef Net_StreamTCPSocketBase_T<RPG_Net_Protocol_Configuration,
+typedef Net_StreamTCPSocketBase_T<ACE_INET_Addr,
+                                  Net_SocketConfiguration_t,
+                                  RPG_Net_Protocol_Configuration,
                                   RPG_Net_Protocol_SessionData,
                                   RPG_Net_Protocol_StreamSessionData_t,
-                                  Net_IInetTransportLayer_t,
                                   Stream_Statistic_t,
                                   RPG_Net_Protocol_Stream,
                                   Net_TCPSocketHandler> RPG_Net_Protocol_TCPHandler_t;
-typedef Net_StreamAsynchTCPSocketBase_T<RPG_Net_Protocol_Configuration,
+typedef Net_StreamAsynchTCPSocketBase_T<ACE_INET_Addr,
+                                        Net_SocketConfiguration_t,
+                                        RPG_Net_Protocol_Configuration,
                                         RPG_Net_Protocol_SessionData,
                                         RPG_Net_Protocol_StreamSessionData_t,
-                                        Net_IInetTransportLayer_t,
                                         Stream_Statistic_t,
                                         RPG_Net_Protocol_Stream,
                                         Net_AsynchTCPSocketHandler> RPG_Net_Protocol_AsynchTCPHandler_t;
@@ -68,28 +69,30 @@ typedef Net_AsynchTCPConnectionBase_T<RPG_Net_Protocol_Configuration,
                                       RPG_Net_Protocol_AsynchTCPHandler_t> RPG_Net_Protocol_AsynchTCPConnection_t;
 
 typedef Net_Client_Connector_T<ACE_INET_Addr,
+                               Net_SocketConfiguration_t,
                                RPG_Net_Protocol_Configuration,
                                Net_SocketHandlerConfiguration_t,
                                RPG_Net_Protocol_SessionData,
                                RPG_Net_Protocol_StreamSessionData_t,
-                               Net_IInetTransportLayer_t,
                                RPG_Net_Protocol_TCPConnection_t> RPG_Net_Protocol_Connector_t;
 typedef Net_Client_AsynchConnector_T<ACE_INET_Addr,
+                                     Net_SocketConfiguration_t,
                                      RPG_Net_Protocol_Configuration,
                                      Net_SocketHandlerConfiguration_t,
                                      RPG_Net_Protocol_SessionData,
                                      RPG_Net_Protocol_StreamSessionData_t,
-                                     Net_IInetTransportLayer_t,
                                      RPG_Net_Protocol_AsynchTCPConnection_t> RPG_Net_Protocol_AsynchConnector_t;
 
-typedef Net_IConnectionManager_T<RPG_Net_Protocol_Configuration,
+typedef Net_IConnectionManager_T<ACE_INET_Addr,
+                                 Net_SocketConfiguration_t,
+                                 RPG_Net_Protocol_Configuration,
                                  RPG_Net_Protocol_SessionData,
-                                 Stream_Statistic_t,
-                                 Net_IInetTransportLayer_t> RPG_Net_Protocol_IConnection_Manager_t;
-typedef Net_Connection_Manager_T<RPG_Net_Protocol_Configuration,
+                                 Stream_Statistic_t> RPG_Net_Protocol_IConnection_Manager_t;
+typedef Net_Connection_Manager_T<ACE_INET_Addr,
+                                 Net_SocketConfiguration_t,
+                                 RPG_Net_Protocol_Configuration,
                                  RPG_Net_Protocol_SessionData,
-                                 Stream_Statistic_t,
-                                 Net_IInetTransportLayer_t> RPG_Net_Protocol_Connection_Manager_t;
+                                 Stream_Statistic_t> RPG_Net_Protocol_Connection_Manager_t;
 
 RPG_PROTOCOL_SINGLETON_DECLARE (ACE_Singleton,
                                 RPG_Net_Protocol_Connection_Manager_t,

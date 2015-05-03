@@ -30,6 +30,7 @@
 #include "common_ui_gtk_manager.h"
 
 #include "net_common.h"
+#include "net_connection_common.h"
 #include "net_connection_manager_common.h"
 #include "net_defines.h"
 
@@ -68,92 +69,95 @@ idle_initialize_client_UI_cb (gpointer userData_in)
   ACE_ASSERT (iterator != data_p->GTKState.builders.end ());
 
   // step1: initialize dialog window(s)
-  GtkWidget* dialog =
+  GtkWidget* dialog_p =
   //  GTK_WIDGET (glade_xml_get_widget ((*iterator).second.second,
   //                                    ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_MAIN_NAME)));
     GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_MAIN_NAME)));
-  ACE_ASSERT (dialog);
-  //  GtkWidget* image_icon = gtk_image_new_from_file(path.c_str());
-  //  ACE_ASSERT(image_icon);
-  //  gtk_window_set_icon(GTK_WINDOW(dialog),
-  //                      gtk_image_get_pixbuf(GTK_IMAGE(image_icon)));
-  //GdkWindow* dialog_window = gtk_widget_get_window(dialog);
-  //gtk_window_set_title(,
-  //                     caption.c_str());
+  ACE_ASSERT (dialog_p);
+  //  GtkWidget* image_icon_p = gtk_image_new_from_file (path.c_str ());
+  //  ACE_ASSERT (image_icon_p);
+  //  gtk_window_set_icon (GTK_WINDOW (dialog_p),
+  //                       gtk_image_get_pixbuf (GTK_IMAGE (image_icon_p)));
+  //GdkWindow* dialog_window_p = gtk_widget_get_window (dialog_p);
+  //gtk_window_set_title (,
+  //                      caption.c_str ());
 
-  GtkWidget* about_dialog =
+  GtkWidget* about_dialog_p =
     //GTK_WIDGET (glade_xml_get_widget ((*iterator).second.second,
     //                                  ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_ABOUT_NAME)));
     GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_ABOUT_NAME)));
-  ACE_ASSERT (about_dialog);
+  ACE_ASSERT (about_dialog_p);
 
   // step2: initialize info view
-  GtkSpinButton* spinbutton =
+  GtkSpinButton* spinbutton_p =
     //GTK_SPIN_BUTTON (glade_xml_get_widget ((*iterator).second.second,
     //                                       ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_SPINBUTTON_NUMCONNECTIONS_NAME)));
     GTK_SPIN_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                              ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_SPINBUTTON_NUMCONNECTIONS_NAME)));
-  ACE_ASSERT (spinbutton);
-  gtk_spin_button_set_range (spinbutton,
+  ACE_ASSERT (spinbutton_p);
+  gtk_spin_button_set_range (spinbutton_p,
                              0.0,
                              std::numeric_limits<unsigned int>::max ());
-  //  gtk_entry_set_editable(GTK_ENTRY(spinbutton),
-  //                         FALSE);
+  //  gtk_entry_set_editable (GTK_ENTRY (spinbutton_p),
+  //                          FALSE);
 
-  // step4: init text view, setup auto-scrolling
-  GtkTextBuffer* buffer =
-    gtk_text_buffer_new (NULL); // text tag table --> create new
-  ACE_ASSERT (buffer);
-  GtkTextView* view =
+  // step3: initialize text view, setup auto-scrolling
+  GtkTextView* view_p =
     //GTK_TEXT_VIEW (glade_xml_get_widget ((*iterator).second.second,
     //                                     ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_TEXTVIEW_NAME)));
     GTK_TEXT_VIEW (gtk_builder_get_object ((*iterator).second.second,
                                            ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_TEXTVIEW_NAME)));
-  ACE_ASSERT (view);
-  gtk_text_view_set_buffer (view, buffer);
-  //PangoFontDescription* font_description =
-  //  pango_font_description_from_string (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_FONTDESCRIPTION));
-  //if (!font_description)
-  //{
-  //  ACE_DEBUG ((LM_ERROR,
-  //              ACE_TEXT ("failed to pango_font_description_from_string(\"%s\"): \"%m\", aborting\n"),
-  //              ACE_TEXT (NET_UI_LOG_FONTDESCRIPTION)));
-  //  return FALSE; // G_SOURCE_REMOVE
-  //} // end IF
-  //// apply font
-  //GtkRcStyle* rc_style = gtk_rc_style_new ();
-  //if (!rc_style)
-  //{
-  //  ACE_DEBUG ((LM_ERROR,
-  //              ACE_TEXT ("failed to gtk_rc_style_new(): \"%m\", aborting\n")));
-  //  return FALSE; // G_SOURCE_REMOVE
-  //} // end IF
-  //rc_style->font_desc = font_description;
-  //GdkColor base_colour, text_colour;
-  //gdk_color_parse (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_BASE),
-  //                 &base_colour);
-  //rc_style->base[GTK_STATE_NORMAL] = base_colour;
-  //gdk_color_parse (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_TEXT),
-  //                 &text_colour);
-  //rc_style->text[GTK_STATE_NORMAL] = text_colour;
-  //rc_style->color_flags[GTK_STATE_NORMAL] =
-  //  static_cast<GtkRcFlags> (GTK_RC_BASE |
-  //                           GTK_RC_TEXT);
-  //gtk_widget_modify_style (GTK_WIDGET (view),
-  //                         rc_style);
-  //gtk_rc_style_unref (rc_style);
+  ACE_ASSERT (view_p);
+  GtkTextBuffer* buffer_p =
+//    gtk_text_buffer_new (NULL); // text tag table --> create new
+      gtk_text_view_get_buffer (view_p);
+  ACE_ASSERT (buffer_p);
+//  gtk_text_view_set_buffer (view_p, buffer_p);
+
+  PangoFontDescription* font_description_p =
+    pango_font_description_from_string (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_FONTDESCRIPTION));
+  if (!font_description_p)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to pango_font_description_from_string(\"%s\"): \"%m\", aborting\n"),
+                ACE_TEXT (NET_UI_LOG_FONTDESCRIPTION)));
+    return FALSE; // G_SOURCE_REMOVE
+  } // end IF
+  // apply font
+  GtkRcStyle* rc_style_p = gtk_rc_style_new ();
+  if (!rc_style_p)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to gtk_rc_style_new(): \"%m\", aborting\n")));
+    return FALSE; // G_SOURCE_REMOVE
+  } // end IF
+  rc_style_p->font_desc = font_description_p;
+  GdkColor base_colour, text_colour;
+  gdk_color_parse (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_BASE),
+                   &base_colour);
+  rc_style_p->base[GTK_STATE_NORMAL] = base_colour;
+  gdk_color_parse (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_TEXT),
+                   &text_colour);
+  rc_style_p->text[GTK_STATE_NORMAL] = text_colour;
+  rc_style_p->color_flags[GTK_STATE_NORMAL] =
+    static_cast<GtkRcFlags> (GTK_RC_BASE |
+                             GTK_RC_TEXT);
+  gtk_widget_modify_style (GTK_WIDGET (view_p),
+                           rc_style_p);
+  gtk_rc_style_unref (rc_style_p);
 
   //  GtkTextIter iterator;
-  //  gtk_text_buffer_get_end_iter(buffer,
-  //                               &iterator);
-  //  gtk_text_buffer_create_mark(buffer,
-  //                              ACE_TEXT_ALWAYS_CHAR(NET_UI_SCROLLMARK_NAME),
-  //                              &iterator,
-  //                              TRUE);
-  g_object_unref (buffer);
+  //  gtk_text_buffer_get_end_iter (buffer_p,
+  //                                &iterator);
+  //  gtk_text_buffer_create_mark (buffer_p,
+  //                               ACE_TEXT_ALWAYS_CHAR (NET_UI_SCROLLMARK_NAME),
+  //                               &iterator,
+  //                               TRUE);
+  //  g_object_unref (buffer_p);
 
+  // step4: initialize updates
   // schedule asynchronous updates of the log view
   guint event_source_id = g_timeout_add_seconds (1,
                                                  idle_update_log_display_cb,
@@ -184,57 +188,95 @@ idle_initialize_client_UI_cb (gpointer userData_in)
   //glade_xml_signal_autoconnect(userData_out.xml);
 
   // step5a: connect default signals
-  g_signal_connect (dialog,
-                    ACE_TEXT_ALWAYS_CHAR ("destroy"),
-                    G_CALLBACK (gtk_widget_destroyed),
-                    NULL);
+  gulong result =
+      g_signal_connect (dialog_p,
+                        ACE_TEXT_ALWAYS_CHAR ("destroy"),
+                        G_CALLBACK (gtk_widget_destroyed),
+                        NULL);
+  ACE_ASSERT (result);
 
   // step5b: connect custom signals
   //gtk_builder_connect_signals ((*iterator).second.second,
   //                             userData_in);
-  g_signal_connect (gtk_builder_get_object ((*iterator).second.second,
-                                            ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_CONNECT_NAME)),
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (button_connect_clicked_cb),
-                    userData_in);
-  g_signal_connect (gtk_builder_get_object ((*iterator).second.second,
-                                            ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_CLOSE_NAME)),
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (button_close_clicked_cb),
-                    userData_in);
-  g_signal_connect (gtk_builder_get_object ((*iterator).second.second,
-                                            ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_CLOSEALL_NAME)),
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (button_close_all_clicked_cb),
-                    userData_in);
-  g_signal_connect (gtk_builder_get_object ((*iterator).second.second,
-                                            ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_PING_NAME)),
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (button_ping_clicked_cb),
-                    userData_in);
-  g_signal_connect (gtk_builder_get_object ((*iterator).second.second,
-                                            ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_ABOUT_NAME)),
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (button_about_clicked_cb),
-                    userData_in);
-  g_signal_connect (gtk_builder_get_object ((*iterator).second.second,
-                                            ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_QUIT_NAME)),
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (button_quit_clicked_cb),
-                    userData_in);
-  g_signal_connect (gtk_builder_get_object ((*iterator).second.second,
-                                            ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_STRESS_NAME)),
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (togglebutton_stress_toggled_cb),
-                    userData_in);
+  GObject* object_p =
+      gtk_builder_get_object ((*iterator).second.second,
+                              ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_CONNECT_NAME));
+  ACE_ASSERT (object_p);
+  result = g_signal_connect (object_p,
+                             ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                             G_CALLBACK (button_connect_clicked_cb),
+                             userData_in);
+  ACE_ASSERT (result);
+  object_p =
+      gtk_builder_get_object ((*iterator).second.second,
+                              ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_CLOSE_NAME));
+  ACE_ASSERT (object_p);
+  result =
+      g_signal_connect (object_p,
+                        ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                        G_CALLBACK (button_close_clicked_cb),
+                        userData_in);
+  ACE_ASSERT (result);
+  object_p =
+      gtk_builder_get_object ((*iterator).second.second,
+                              ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_CLOSEALL_NAME));
+  ACE_ASSERT (object_p);
+  result =
+      g_signal_connect (object_p,
+                        ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                        G_CALLBACK (button_close_all_clicked_cb),
+                        userData_in);
+  ACE_ASSERT (result);
+  object_p =
+      gtk_builder_get_object ((*iterator).second.second,
+                              ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_PING_NAME));
+  ACE_ASSERT (object_p);
+  result =
+      g_signal_connect (object_p,
+                        ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                        G_CALLBACK (button_ping_clicked_cb),
+                        userData_in);
+  ACE_ASSERT (result);
+
+  object_p =
+      gtk_builder_get_object ((*iterator).second.second,
+                              ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_STRESS_NAME));
+  ACE_ASSERT (object_p);
+  result =
+      g_signal_connect (object_p,
+                        ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                        G_CALLBACK (togglebutton_stress_toggled_cb),
+                        userData_in);
+  ACE_ASSERT (result);
+
+  object_p =
+      gtk_builder_get_object ((*iterator).second.second,
+                              ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_ABOUT_NAME));
+  ACE_ASSERT (object_p);
+  result =
+      g_signal_connect (object_p,
+                        ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                        G_CALLBACK (button_about_clicked_cb),
+                        userData_in);
+  ACE_ASSERT (result);
+  object_p =
+      gtk_builder_get_object ((*iterator).second.second,
+                              ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_QUIT_NAME));
+  ACE_ASSERT (object_p);
+  result =
+      g_signal_connect (object_p,
+                        ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                        G_CALLBACK (button_quit_clicked_cb),
+                        userData_in);
+  ACE_ASSERT (result);
 
   //   // step6: use correct screen
   //   if (parentWidget_in)
-  //     gtk_window_set_screen(GTK_WINDOW(dialog),
-  //                           gtk_widget_get_screen(const_cast<GtkWidget*> (//parentWidget_in)));
+  //     gtk_window_set_screen (GTK_WINDOW (dialog_p),
+  //                            gtk_widget_get_screen (const_cast<GtkWidget*> (//parentWidget_in)));
 
   // step7: draw main dialog
-  gtk_widget_show_all (dialog);
+  gtk_widget_show_all (dialog_p);
 
   return FALSE; // G_SOURCE_REMOVE
 }
@@ -257,92 +299,96 @@ idle_initialize_server_UI_cb (gpointer userData_in)
   //ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
   ACE_ASSERT (iterator != data_p->GTKState.builders.end ());
 
-  // step2: init dialog window(s)
-  GtkWidget* dialog =
+  // step1: initialize dialog window(s)
+  GtkWidget* dialog_p =
     //GTK_WIDGET (glade_xml_get_widget ((*iterator).second.second,
     //                                  ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_MAIN_NAME)));
     GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_MAIN_NAME)));
-  ACE_ASSERT (dialog);
-  //  GtkWidget* image_icon = gtk_image_new_from_file(path.c_str());
-  //  ACE_ASSERT(image_icon);
-  //  gtk_window_set_icon(GTK_WINDOW(dialog),
-  //                      gtk_image_get_pixbuf(GTK_IMAGE(image_icon)));
-  //GdkWindow* dialog_window = gtk_widget_get_window(dialog);
+  ACE_ASSERT (dialog_p);
+  //  GtkWidget* image_icon = gtk_image_new_from_file (path.c_str());
+  //  ACE_ASSERT (image_icon);
+  //  gtk_window_set_icon (GTK_WINDOW (dialog_p),
+  //                       gtk_image_get_pixbuf (GTK_IMAGE (image_icon)));
+  //GdkWindow* dialog_window_p = gtk_widget_get_window (dialog_p);
   //gtk_window_set_title(,
-  //                     caption.c_str());
+  //                     caption.c_str ());
 
-  GtkWidget* about_dialog =
+  GtkWidget* about_dialog_p =
     //GTK_WIDGET (glade_xml_get_widget ((*iterator).second.second,
     //                                  ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_ABOUT_NAME)));
     GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_ABOUT_NAME)));
-  ACE_ASSERT (about_dialog);
+  ACE_ASSERT (about_dialog_p);
 
-  // step3: init info view
-  GtkSpinButton* spinbutton =
+  // step2: initialize info view
+  GtkSpinButton* spinbutton_p =
     //GTK_SPIN_BUTTON (glade_xml_get_widget ((*iterator).second.second,
     //                                       ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_SPINBUTTON_NUMCONNECTIONS_NAME)));
     GTK_SPIN_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                              ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_SPINBUTTON_NUMCONNECTIONS_NAME)));
-  ACE_ASSERT (spinbutton);
-  gtk_spin_button_set_range (spinbutton,
+  ACE_ASSERT (spinbutton_p);
+  gtk_spin_button_set_range (spinbutton_p,
                              0.0,
                              std::numeric_limits<unsigned int>::max ());
-  //  gtk_entry_set_editable(GTK_ENTRY(spinbutton),
-  //                         FALSE);
+  //  gtk_entry_set_editable (GTK_ENTRY(spinbutton_p),
+  //                          FALSE);
 
-  // step4: init text view, setup auto-scrolling
-  GtkTextBuffer* buffer = gtk_text_buffer_new (NULL); // text tag table --> create new
-  ACE_ASSERT (buffer);
-  GtkTextView* view =
+  // step3: initialize text view, setup auto-scrolling
+  GtkTextView* view_p =
     //GTK_TEXT_VIEW (glade_xml_get_widget ((*iterator).second.second,
     //                                     ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_TEXTVIEW_NAME)));
     GTK_TEXT_VIEW (gtk_builder_get_object ((*iterator).second.second,
                                            ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_TEXTVIEW_NAME)));
-  ACE_ASSERT (view);
-  gtk_text_view_set_buffer (view,
-                            buffer);
-  //  GtkTextIter iterator;
-  //  gtk_text_buffer_get_end_iter(buffer,
-  //                               &iterator);
-  //  gtk_text_buffer_create_mark(buffer,
-  //                              ACE_TEXT_ALWAYS_CHAR(NET_UI_SCROLLMARK_NAME),
-  //                              &iterator,
-  //                              TRUE);
-  g_object_unref (buffer);
-  //PangoFontDescription* font_description =
-  //  pango_font_description_from_string (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_FONTDESCRIPTION));
-  //if (!font_description)
-  //{
-  //  ACE_DEBUG ((LM_ERROR,
-  //              ACE_TEXT ("failed to pango_font_description_from_string(\"%s\"): \"%m\", aborting\n"),
-  //              ACE_TEXT (NET_UI_LOG_FONTDESCRIPTION)));
-  //  return FALSE; // G_SOURCE_REMOVE
-  //} // end IF
-  //// apply font
-  //GtkRcStyle* rc_style = gtk_rc_style_new ();
-  //if (!rc_style)
-  //{
-  //  ACE_DEBUG ((LM_ERROR,
-  //              ACE_TEXT ("failed to gtk_rc_style_new(): \"%m\", aborting\n")));
-  //  return FALSE; // G_SOURCE_REMOVE
-  //} // end IF
-  //rc_style->font_desc = font_description;
-  //GdkColor base_colour, text_colour;
-  //gdk_color_parse (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_BASE),
-  //                 &base_colour);
-  //rc_style->base[GTK_STATE_NORMAL] = base_colour;
-  //gdk_color_parse (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_TEXT),
-  //                 &text_colour);
-  //rc_style->text[GTK_STATE_NORMAL] = text_colour;
-  //rc_style->color_flags[GTK_STATE_NORMAL] =
-  //  static_cast<GtkRcFlags>(GTK_RC_BASE |
-  //  GTK_RC_TEXT);
-  //gtk_widget_modify_style (GTK_WIDGET (view),
-  //                         rc_style);
-  //gtk_rc_style_unref (rc_style);
+  ACE_ASSERT (view_p);
+  GtkTextBuffer* buffer_p =
+//      gtk_text_buffer_new (NULL); // text tag table --> create new
+//      gtk_text_view_set_buffer (view_p, buffer_p);
+      gtk_text_view_get_buffer (view_p);
+  ACE_ASSERT (buffer_p);
 
+  //  GtkTextIter iterator;
+  //  gtk_text_buffer_get_end_iter (buffer_p,
+  //                                &iterator);
+  //  gtk_text_buffer_create_mark (buffer_p,
+  //                               ACE_TEXT_ALWAYS_CHAR (NET_UI_SCROLLMARK_NAME),
+  //                               &iterator,
+  //                               TRUE);
+//  g_object_unref (buffer_p);
+
+  PangoFontDescription* font_description_p =
+    pango_font_description_from_string (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_FONTDESCRIPTION));
+  if (!font_description_p)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to pango_font_description_from_string(\"%s\"): \"%m\", aborting\n"),
+                ACE_TEXT (NET_UI_LOG_FONTDESCRIPTION)));
+    return FALSE; // G_SOURCE_REMOVE
+  } // end IF
+  // apply font
+  GtkRcStyle* rc_style_p = gtk_rc_style_new ();
+  if (!rc_style_p)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to gtk_rc_style_new(): \"%m\", aborting\n")));
+    return FALSE; // G_SOURCE_REMOVE
+  } // end IF
+  rc_style_p->font_desc = font_description_p;
+  GdkColor base_colour, text_colour;
+  gdk_color_parse (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_BASE),
+                   &base_colour);
+  rc_style_p->base[GTK_STATE_NORMAL] = base_colour;
+  gdk_color_parse (ACE_TEXT_ALWAYS_CHAR (NET_UI_LOG_TEXT),
+                   &text_colour);
+  rc_style_p->text[GTK_STATE_NORMAL] = text_colour;
+  rc_style_p->color_flags[GTK_STATE_NORMAL] =
+      static_cast<GtkRcFlags>(GTK_RC_BASE |
+                              GTK_RC_TEXT);
+  gtk_widget_modify_style (GTK_WIDGET (view_p),
+                           rc_style_p);
+  gtk_rc_style_unref (rc_style_p);
+
+  // step4: initialize updates
   // schedule asynchronous updates of the log view
   guint event_source_id = g_timeout_add_seconds (1,
                                                  idle_update_log_display_cb,
@@ -369,26 +415,28 @@ idle_initialize_server_UI_cb (gpointer userData_in)
   } // end ELSE
 
   // step5: disable some functions ?
-  GtkButton* button =
+  GtkButton* button_p =
     //GTK_BUTTON (glade_xml_get_widget ((*iterator).second.second,
     //                                  ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_REPORT_NAME)));
     GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                         ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_REPORT_NAME)));
-  ACE_ASSERT (button);
-  gtk_widget_set_sensitive (GTK_WIDGET (button),
+  ACE_ASSERT (button_p);
+  gtk_widget_set_sensitive (GTK_WIDGET (button_p),
                             data_p->allowUserRuntimeStatistic);
 
   // step6: (auto-)connect signals/slots
   // *NOTE*: glade_xml_signal_connect_data does not work reliably
   //glade_xml_signal_autoconnect(userData_out.xml);
+  //gtk_builder_connect_signals ((*iterator).second.second,
+  //                             userData_in);
 
   // step6a: connect default signals
-  bool success = true;
-  success = (success &&
-             (g_signal_connect (dialog,
-                                ACE_TEXT_ALWAYS_CHAR ("destroy"),
-                                G_CALLBACK (gtk_widget_destroyed),
-                                &dialog) > 0));
+  gulong result =
+      g_signal_connect (dialog_p,
+                        ACE_TEXT_ALWAYS_CHAR ("destroy"),
+                        G_CALLBACK (gtk_widget_destroyed),
+                        &dialog_p);
+  ACE_ASSERT (result);
 
   // step6b: connect custom signals
   // *NOTE*: glade_xml_signal_connect_data does not work reliably on Windows
@@ -396,75 +444,75 @@ idle_initialize_server_UI_cb (gpointer userData_in)
   //                              ACE_TEXT_ALWAYS_CHAR("togglebutton_listen_toggled_cb"),
   //                              G_CALLBACK(togglebutton_listen_toggled_cb),
   //                              &userData_out);
-  GtkToggleButton* togglebutton =
+  GObject* object_p =
     //GTK_TOGGLE_BUTTON (glade_xml_get_widget ((*iterator).second.second,
     //                                         ACE_TEXT_ALWAYS_CHAR (NET_SERVER_UI_GTK_BUTTON_LISTEN_NAME)));
-    GTK_TOGGLE_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                               ACE_TEXT_ALWAYS_CHAR (NET_SERVER_UI_GTK_BUTTON_LISTEN_NAME)));
-  ACE_ASSERT (togglebutton);
-  success = (success &&
-             (g_signal_connect (togglebutton,
-                                ACE_TEXT_ALWAYS_CHAR ("toggled"),
-                                G_CALLBACK (togglebutton_listen_toggled_cb),
-                                userData_in) > 0));
-  button =
+    gtk_builder_get_object ((*iterator).second.second,
+                            ACE_TEXT_ALWAYS_CHAR (NET_SERVER_UI_GTK_BUTTON_LISTEN_NAME));
+  ACE_ASSERT (object_p);
+  result =
+      g_signal_connect (object_p,
+                        ACE_TEXT_ALWAYS_CHAR ("toggled"),
+                        G_CALLBACK (togglebutton_listen_toggled_cb),
+                        userData_in);
+  ACE_ASSERT (result);
+  object_p =
     //GTK_BUTTON (glade_xml_get_widget ((*iterator).second.second,
     //                                  ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                        ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
-  ACE_ASSERT (button);
-  success = (success &&
-             (g_signal_connect (button,
-                                ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                                G_CALLBACK (button_close_all_clicked_cb),
-                                userData_in) > 0));
-  button =
+      gtk_builder_get_object ((*iterator).second.second,
+                              ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_CLOSEALL_NAME));
+  ACE_ASSERT (object_p);
+  result =
+      g_signal_connect (object_p,
+                        ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                        G_CALLBACK (button_close_all_clicked_cb),
+                        userData_in);
+  ACE_ASSERT (result);
+
+  object_p =
     //GTK_BUTTON (glade_xml_get_widget ((*iterator).second.second,
     //                                  ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_REPORT_NAME)));
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                        ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_REPORT_NAME)));
-  ACE_ASSERT (button);
-  success = (success &&
-             (g_signal_connect (button,
-                                ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                                G_CALLBACK (button_report_clicked_cb),
-                                userData_in) > 0));
-  button =
+    gtk_builder_get_object ((*iterator).second.second,
+                            ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_REPORT_NAME));
+  ACE_ASSERT (object_p);
+  result =
+      g_signal_connect (object_p,
+                        ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                        G_CALLBACK (button_report_clicked_cb),
+                        userData_in);
+  ACE_ASSERT (result);
+
+  object_p =
     //GTK_BUTTON (glade_xml_get_widget ((*iterator).second.second,
-    //                                  ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_ABOUT_NAME)));
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_ABOUT_NAME)));
-  ACE_ASSERT (button);
-  success = (success &&
-             (g_signal_connect (button,
-                                ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                                G_CALLBACK (button_about_clicked_cb),
-                                userData_in) > 0));
-  button =
+    //                                  ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_ABOUT_NAME)));
+      gtk_builder_get_object ((*iterator).second.second,
+                              ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_ABOUT_NAME));
+  ACE_ASSERT (object_p);
+  result = g_signal_connect (object_p,
+                             ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                             G_CALLBACK (button_about_clicked_cb),
+                             userData_in);
+  ACE_ASSERT (result);
+  object_p =
     //GTK_BUTTON (glade_xml_get_widget ((*iterator).second.second,
-    //                                  ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_QUIT_NAME)));
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_QUIT_NAME)));
-  ACE_ASSERT (button);
-  success = (success &&
-             (g_signal_connect (button,
-                                ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                                G_CALLBACK (button_quit_clicked_cb),
-                                userData_in) > 0));
-  if (!success)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to g_signal_connect(): \"%m\", aborting\n")));
-    return FALSE; // G_SOURCE_REMOVE
-  } // end IF
+    //                                  ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_QUIT_NAME)));
+      gtk_builder_get_object ((*iterator).second.second,
+                              ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_QUIT_NAME));
+  ACE_ASSERT (object_p);
+  result =
+      g_signal_connect (object_p,
+                        ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                        G_CALLBACK (button_quit_clicked_cb),
+                        userData_in);
+  ACE_ASSERT (result);
 
   //   // step7: use correct screen
   //   if (parentWidget_in)
-  //     gtk_window_set_screen(GTK_WINDOW(dialog),
-  //                           gtk_widget_get_screen(const_cast<GtkWidget*>(//parentWidget_in)));
+  //     gtk_window_set_screen (GTK_WINDOW (dialog_p),
+  //                            gtk_widget_get_screen (const_cast<GtkWidget*> (//parentWidget_in)));
 
   // step8: draw main dialog
-  gtk_widget_show_all (dialog);
+  gtk_widget_show_all (dialog_p);
 
   return FALSE; // G_SOURCE_REMOVE
 }
@@ -483,7 +531,7 @@ idle_finalize_UI_cb (gpointer userData_in)
 G_MODULE_EXPORT gboolean
 idle_update_log_display_cb (gpointer userData_in)
 {
-  RPG_TRACE(ACE_TEXT("::idle_update_log_display_cb"));
+  RPG_TRACE (ACE_TEXT ("::idle_update_log_display_cb"));
 
   Net_GTK_CBData_t* data_p = static_cast<Net_GTK_CBData_t*> (userData_in);
 
@@ -498,18 +546,18 @@ idle_update_log_display_cb (gpointer userData_in)
   //ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
   ACE_ASSERT (iterator != data_p->GTKState.builders.end ());
 
-  GtkTextView* view =
-    //GTK_TEXT_VIEW (glade_xml_get_widget ((*iterator).second.second,
-    //                                     ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_TEXTVIEW_NAME)));
-    GTK_TEXT_VIEW (gtk_builder_get_object ((*iterator).second.second,
-                                           ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_TEXTVIEW_NAME)));
-  ACE_ASSERT (view);
-  GtkTextBuffer* buffer = gtk_text_view_get_buffer (view);
-  ACE_ASSERT (buffer);
+  GtkTextView* view_p =
+      //GTK_TEXT_VIEW (glade_xml_get_widget ((*iterator).second.second,
+      //                                     ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_TEXTVIEW_NAME)));
+      GTK_TEXT_VIEW (gtk_builder_get_object ((*iterator).second.second,
+                                             ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_TEXTVIEW_NAME)));
+  ACE_ASSERT (view_p);
+  GtkTextBuffer* buffer_p = gtk_text_view_get_buffer (view_p);
+  ACE_ASSERT (buffer_p);
 
-  GtkTextIter iterator_2;
-  gtk_text_buffer_get_end_iter (buffer,
-                                &iterator_2);
+  GtkTextIter text_iterator;
+  gtk_text_buffer_get_end_iter (buffer_p,
+                                &text_iterator);
 
   gchar* converted_text = NULL;
   // synch access
@@ -521,50 +569,55 @@ idle_update_log_display_cb (gpointer userData_in)
       return TRUE; // G_SOURCE_CONTINUE
 
     // step1: convert text
-    for (RPG_Client_MessageStackConstIterator_t iterator_3 = data_p->logStack.begin ();
-         iterator_3 != data_p->logStack.end ();
-         iterator_3++)
+    for (RPG_Client_MessageStackConstIterator_t iterator_2 = data_p->logStack.begin ();
+         iterator_2 != data_p->logStack.end ();
+         iterator_2++)
     {
-      converted_text = RPG_Client_UI_Tools::Locale2UTF8(*iterator_3);
+      converted_text = RPG_Client_UI_Tools::Locale2UTF8 (*iterator_2);
       if (!converted_text)
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to convert message text (was: \"%s\"), aborting\n"),
-                   ACE_TEXT((*iterator_3).c_str())));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to convert message text (was: \"%s\"), aborting\n"),
+                    ACE_TEXT ((*iterator_2).c_str ())));
         return FALSE; // G_SOURCE_REMOVE
       } // end IF
 
       // step2: display text
-      gtk_text_buffer_insert(buffer,
-                             &iterator_2,
-                             converted_text,
-                             -1);
+      gtk_text_buffer_insert (buffer_p,
+                              &text_iterator,
+                              converted_text,
+                              -1);
 
       // clean up
-      g_free(converted_text);
-      converted_text = NULL;
+      g_free (converted_text);
     } // end FOR
 
     data_p->logStack.clear ();
   } // end lock scope
 
   // step3: scroll the view accordingly
-  // move the iterator to the beginning of line, so it doesn't scroll
-  // in horizontal direction
-  gtk_text_iter_set_line_offset(&iterator_2, 0);
+//  // move the iterator to the beginning of line, so it doesn't scroll
+//  // in horizontal direction
+//  gtk_text_iter_set_line_offset (&text_iterator, 0);
 
-  // ...and place the mark at iter. The mark will stay there after insertion
-  // because it has "right" gravity
-  GtkTextMark* mark =
-      gtk_text_buffer_get_mark(buffer,
-                               ACE_TEXT_ALWAYS_CHAR(NET_UI_GTK_SCROLLMARK_NAME));
-//  gtk_text_buffer_move_mark(buffer,
-//                            mark,
-//                            &iterator);
+//  // ...and place the mark at iter. The mark will stay there after insertion
+//  // because it has "right" gravity
+//  GtkTextMark* text_mark_p =
+//      gtk_text_buffer_get_mark (buffer_p,
+//                                ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_SCROLLMARK_NAME));
+////  gtk_text_buffer_move_mark (buffer_p,
+////                             text_mark_p,
+////                             &text_iterator);
 
-  // scroll the mark onscreen
-  gtk_text_view_scroll_mark_onscreen(view,
-                                     mark);
+//  // scroll the mark onscreen
+//  gtk_text_view_scroll_mark_onscreen (view_p,
+//                                      text_mark_p);
+  GtkAdjustment* adjustment_p =
+      GTK_ADJUSTMENT (gtk_builder_get_object ((*iterator).second.second,
+                                              ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_ADJUSTMENT_NAME)));
+  ACE_ASSERT (adjustment_p);
+  gtk_adjustment_set_value (adjustment_p,
+                            gtk_adjustment_get_upper (adjustment_p));
 
   return TRUE; // G_SOURCE_CONTINUE
 }
@@ -587,12 +640,12 @@ idle_update_info_display_cb (gpointer userData_in)
   //ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
   ACE_ASSERT (iterator != data_p->GTKState.builders.end ());
 
-  GtkSpinButton* spinbutton =
+  GtkSpinButton* spinbutton_p =
     //GTK_SPIN_BUTTON (glade_xml_get_widget ((*iterator).second.second,
     //                                       ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_SPINBUTTON_NUMCONNECTIONS_NAME)));
     GTK_SPIN_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                              ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_SPINBUTTON_NUMCONNECTIONS_NAME)));
-  ACE_ASSERT (spinbutton);
+  ACE_ASSERT (spinbutton_p);
 
   { // synch access
     ACE_Guard<ACE_Thread_Mutex> aGuard (data_p->GTKState.lock);
@@ -605,17 +658,17 @@ idle_update_info_display_cb (gpointer userData_in)
         case NET_GTKEVENT_CONNECT:
         {
           // update info label
-          gtk_spin_button_spin(spinbutton,
-                               GTK_SPIN_STEP_FORWARD,
-                               1.0);
+          gtk_spin_button_spin (spinbutton_p,
+                                GTK_SPIN_STEP_FORWARD,
+                                1.0);
           break;
         }
         case NET_GTKEVENT_DISCONNECT:
         {
           // update info label
-          gtk_spin_button_spin(spinbutton,
-                               GTK_SPIN_STEP_BACKWARD,
-                               1.0);
+          gtk_spin_button_spin (spinbutton_p,
+                                GTK_SPIN_STEP_BACKWARD,
+                                1.0);
           break;
         }
         case NET_GTKEVENT_STATISTICS:
@@ -625,9 +678,9 @@ idle_update_info_display_cb (gpointer userData_in)
         }
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid/unknown event type (was: %d), continuing\n"),
-                     *iterator));
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid/unknown event type (was: %d), continuing\n"),
+                      *iterator));
           break;
         }
       } // end SWITCH
@@ -637,47 +690,46 @@ idle_update_info_display_cb (gpointer userData_in)
   } // end lock scope
 
   // enable buttons ?
-  gint current_value = gtk_spin_button_get_value_as_int(spinbutton);
-  GtkWidget* widget = NULL;
+  gint current_value = gtk_spin_button_get_value_as_int (spinbutton_p);
+  GtkWidget* widget_p = NULL;
   if (!data_p->listenerHandle) // <-- client
   {
-    widget =
+    widget_p =
       //GTK_WIDGET (glade_xml_get_widget ((*iterator).second.second,
       //                                  ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_CLOSE_NAME)));
       GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
                                           ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_CLOSE_NAME)));
-    if (!widget)
+    if (!widget_p)
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
+                  ACE_TEXT ("failed to gtk_builder_get_object(\"%s\"): \"%m\", continuing\n"),
                   ACE_TEXT (NET_CLIENT_UI_GTK_BUTTON_CLOSE_NAME)));
     else
-      gtk_widget_set_sensitive(widget,
-                               (current_value > 0));
+      gtk_widget_set_sensitive (widget_p, (current_value > 0));
   } // end IF
-  widget =
+  widget_p =
     //GTK_WIDGET (glade_xml_get_widget ((*iterator).second.second,
     //                                  ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
     GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
                                         ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
-  if (!widget)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-               ACE_TEXT(NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
+  if (!widget_p)
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to gtk_builder_get_object(\"%s\"): \"%m\", continuing\n"),
+                ACE_TEXT (NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
   else
-    gtk_widget_set_sensitive(widget, (current_value > 0));
+    gtk_widget_set_sensitive (widget_p, (current_value > 0));
   if (!data_p->listenerHandle) // <-- client
   {
-    widget =
+    widget_p =
       //GTK_WIDGET (glade_xml_get_widget ((*iterator).second.second,
       //                                  ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_PING_NAME)));
       GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
                                           ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_PING_NAME)));
-    if (!widget)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to glade_xml_get_widget(\"%s\"): \"%m\", continuing\n"),
-                 ACE_TEXT(NET_CLIENT_UI_GTK_BUTTON_PING_NAME)));
+    if (!widget_p)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to gtk_builder_get_object(\"%s\"): \"%m\", continuing\n"),
+                  ACE_TEXT (NET_CLIENT_UI_GTK_BUTTON_PING_NAME)));
     else
-      gtk_widget_set_sensitive(widget, (current_value > 0));
+      gtk_widget_set_sensitive (widget_p, (current_value > 0));
   } // end IF
 
   return TRUE; // G_SOURCE_CONTINUE
@@ -745,13 +797,10 @@ button_close_clicked_cb (GtkWidget* widget_in,
 #else
   signal = SIGTERM;
 #endif
-  unsigned int num_connections =
-    NET_CONNECTIONMANAGER_SINGLETON::instance ()->numConnections ();
-  if (num_connections > 0)
-    if (ACE_OS::raise (signal) == -1)
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to ACE_OS::raise(%S): \"%m\", continuing\n"),
-                  signal));
+  if (ACE_OS::raise (signal) == -1)
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_OS::raise(%S): \"%m\", continuing\n"),
+                signal));
 
   return FALSE;
 } // button_close_clicked_cb
@@ -800,33 +849,43 @@ button_ping_clicked_cb (GtkWidget* widget_in,
   RPG_Dice::generateRandomNumbers (num_connections,
                                    1,
                                    result);
-  const Net_InetConnectionManager_t::CONNECTION_T* connection_handler =
-    NET_CONNECTIONMANAGER_SINGLETON::instance ()->operator[](result.front () - 1);
-  if (!connection_handler)
+  Net_InetConnectionManager_t::CONNECTION_T* connection_base_p =
+      NET_CONNECTIONMANAGER_SINGLETON::instance ()->operator[] (result.front () - 1);
+  if (!connection_base_p)
   {
-    //				ACE_DEBUG((LM_ERROR,
-    //									 ACE_TEXT("failed to retrieve connection handler, continuing")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to retrieve connection handler (%d), aborting\n"),
+                result.front () - 1));
+    return FALSE;
+  } // end IF
+  Net_ITransportLayer_t* connection_p =
+    dynamic_cast<Net_ITransportLayer_t*> (connection_base_p);
+  if (!connection_p)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to dynamic_cast<const Net_ITransportLayer_t*> (%@), aborting\n"),
+                connection_base_p));
     return FALSE;
   } // end IF
 
   try
   {
-    const_cast<Net_InetConnectionManager_t::CONNECTION_T*> (connection_handler)->ping ();
+    connection_p->ping ();
   }
   catch (...)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("caught exception in RPG_Net_IConnection::ping(), aborting\n")));
+                ACE_TEXT ("caught exception in Net_ITransportLayer_t::ping(), aborting\n")));
 
     // clean up
-    const_cast<Net_InetConnectionManager_t::CONNECTION_T*> (connection_handler)->decrease ();
+    connection_base_p->decrease ();
+    connection_base_p->close ();
 
     return FALSE;
   }
 
   // clean up
-  const_cast<Net_InetConnectionManager_t::CONNECTION_T*> (connection_handler)->decrease ();
+  connection_base_p->decrease ();
 
   return FALSE;
 } // button_ping_clicked_cb

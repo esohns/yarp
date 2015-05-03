@@ -122,7 +122,7 @@ do_printUsage (const std::string& programName_in)
   //  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   //#endif
   path += ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_FILE);
-  std::cout << ACE_TEXT("-g [[STRING]]: UI file [\"")
+  std::cout << ACE_TEXT("-g[[STRING]] : UI file [\"")
             << path
             << ACE_TEXT("\"] {\"\" --> no GUI}")
             << std::endl;
@@ -567,8 +567,7 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   ACE_INET_Addr peer_address (serverPortNumber_in,
                               serverHostname_in.c_str (),
                               AF_INET);
-  Net_Client_TimeoutHandler timeout_handler ((!UIDefinitionFile_in.empty () ? Net_Client_TimeoutHandler::ACTION_STRESS
-                                                                            : actionMode_in),
+  Net_Client_TimeoutHandler timeout_handler (actionMode_in,
                                              maxNumConnections_in,
                                              peer_address,
                                              connector_p);
@@ -1069,7 +1068,7 @@ ACE_TMAIN (int argc_in,
   // *TODO*: the reasoning here is incomplete
   bool use_fd_based_reactor = use_reactor;
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-  use_fd_based_reactor = (use_reactor && !COMMON_USE_WFMO_REACTOR);
+  use_fd_based_reactor = (use_reactor && !COMMON_EVENT_WINXX_USE_WFMO_REACTOR);
 #endif
   if (!Common_Tools::setResourceLimits (use_fd_based_reactor, // file descriptors
                                         true))                // stack traces

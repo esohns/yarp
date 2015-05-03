@@ -107,6 +107,17 @@ do_printUsage (const std::string& programName_in)
             << RPG_NET_SERVER_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS
             << ACE_TEXT ("])")
             << std::endl;
+  std::string path = configuration_path;
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+//#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
+//  path += ACE_TEXT_ALWAYS_CHAR("net");
+//  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+//#endif
+  path += ACE_TEXT_ALWAYS_CHAR(NET_SERVER_UI_FILE);
+  std::cout << ACE_TEXT ("-g[[STRING]] : UI file [\"")
+            << path
+            << ACE_TEXT ("\"] {\"\" --> no GUI}")
+            << std::endl;
   std::cout << ACE_TEXT ("-i [VALUE]   : client ping interval (second(s)) [")
             << RPG_NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL
             << ACE_TEXT ("] {0 --> OFF})")
@@ -145,17 +156,6 @@ do_printUsage (const std::string& programName_in)
             << ACE_TEXT ("] {0 --> OFF})")
             << std::endl;
   std::cout << ACE_TEXT ("-t           : trace information") << std::endl;
-  std::string path = configuration_path;
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-//  path += ACE_TEXT_ALWAYS_CHAR("net");
-//  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//#endif
-  path += ACE_TEXT_ALWAYS_CHAR(NET_SERVER_UI_FILE);
-  std::cout << ACE_TEXT ("-u [[STRING]]: UI file [\"")
-            << path
-            << ACE_TEXT ("\"] {\"\" --> no GUI}")
-            << std::endl;
   std::cout << ACE_TEXT ("-v           : print version information and exit")
             << std::endl;
   std::cout << ACE_TEXT ("-x [VALUE]   : #dispatch threads [")
@@ -218,7 +218,7 @@ do_processArguments (const int& argc_in,
 
   ACE_Get_Opt argumentParser (argc_in,
                               argv_in,
-                              ACE_TEXT ("c:i:k:lmn:op:rs:tu::vx:"));
+                              ACE_TEXT ("c:g::i:k:lmn:op:rs:tvx:"));
 
   int option = 0;
   std::stringstream converter;
@@ -232,6 +232,15 @@ do_processArguments (const int& argc_in,
         converter.str (ACE_TEXT_ALWAYS_CHAR (""));
         converter << argumentParser.opt_arg ();
         converter >> maxNumConnections_out;
+        break;
+      }
+      case 'g':
+      {
+        ACE_TCHAR* opt_arg = argumentParser.opt_arg ();
+        if (opt_arg)
+          UIFile_out = ACE_TEXT_ALWAYS_CHAR (opt_arg);
+        else
+          UIFile_out.clear ();
         break;
       }
       case 'i':
@@ -295,15 +304,6 @@ do_processArguments (const int& argc_in,
       case 't':
       {
         traceInformation_out = true;
-        break;
-      }
-      case 'u':
-      {
-        ACE_TCHAR* opt_arg = argumentParser.opt_arg ();
-        if (opt_arg)
-          UIFile_out = ACE_TEXT_ALWAYS_CHAR (opt_arg);
-        else
-          UIFile_out.clear ();
         break;
       }
       case 'v':
@@ -403,13 +403,23 @@ do_initializeSignals (bool useReactor_in,
   // *NOTE* don't care about SIGPIPE
   signals_out.sig_del (SIGPIPE);           // 12      /* Broken pipe: write to pipe with no readers */
   signals_out.sig_del (SIGSTOP);           // 19      /* Stop process */
+
+  // *IMPORTANT NOTE*: "...NPTL makes internal use of the first two real-time
+  //                   signals (see also signal(7)); these signals cannot be
+  //                   used in applications. ..." (see 'man 7 pthreads')
+  // --> on POSIX platforms, make sure that ACE_SIGRTMIN == 34
+//  for (int i = ACE_SIGRTMIN;
+//       i <= ACE_SIGRTMAX;
+//       i++)
+//    signals_out.sig_del (i);
+
   if (!useReactor_in)
   {
     ACE_POSIX_Proactor* proactor_impl =
         dynamic_cast<ACE_POSIX_Proactor*> (ACE_Proactor::instance ()->implementation ());
     ACE_ASSERT (proactor_impl);
     if (proactor_impl->get_impl_type () == ACE_POSIX_Proactor::PROACTOR_SIG)
-      signals_out.sig_del (ACE_SIGRTMIN);  // 34      /* SIGRTMIN */
+      signals_out.sig_del (COMMON_EVENT_PROACTOR_SIG_RT_SIGNAL);
   } // end IF
 #endif
 }
@@ -1030,7 +1040,7 @@ ACE_TMAIN (int argc_in,
   // *TODO*: the reasoning here is incomplete
   bool use_fd_based_reactor = use_reactor;
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-  use_fd_based_reactor = (use_reactor && !COMMON_USE_WFMO_REACTOR);
+  use_fd_based_reactor = (use_reactor && !COMMON_EVENT_WINXX_USE_WFMO_REACTOR);
 #endif
   if (!Common_Tools::setResourceLimits (use_fd_based_reactor, // file descriptors
                                         true))                // stack traces

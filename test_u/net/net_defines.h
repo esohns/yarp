@@ -24,6 +24,7 @@
 #define NET_UI_GTKEVENT_RESOLUTION                200 // ms --> 5 FPS
 #define NET_UI_GTK_SPINBUTTON_NUMCONNECTIONS_NAME "spinbutton"
 #define NET_UI_GTK_TEXTVIEW_NAME                  "textview"
+#define NET_UI_GTK_ADJUSTMENT_NAME                "scrolledwindow_vadjustment"
 #define NET_UI_GTK_SCROLLMARK_NAME                "insert"
 #define NET_UI_GTK_BUTTONBOX_ACTIONS_NAME         "vbuttonbox"
 #define NET_UI_GTK_BUTTON_ABOUT_NAME              "about"

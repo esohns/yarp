@@ -102,32 +102,33 @@ Net_Client_TimeoutHandler::handle_timeout (const ACE_Time_Value& tv_in,
           RPG_Dice::generateRandomNumbers(num_connections,
                                           1,
                                           result);
-          const Net_InetConnectionManager_t::CONNECTION_T* connection_handler =
-            NET_CONNECTIONMANAGER_SINGLETON::instance ()->operator [](result.front () - 1);
-          if (!connection_handler)
+          Net_InetConnectionManager_t::CONNECTION_T* connection_p =
+            NET_CONNECTIONMANAGER_SINGLETON::instance ()->operator [] (result.front () - 1);
+          if (!connection_p)
           {
-            //						ACE_DEBUG((LM_DEBUG,
-            //											 ACE_TEXT("failed to retrieve connection handler, continuing\n")));
+            ACE_DEBUG ((LM_ERROR,
+                        ACE_TEXT ("failed to retrieve connection #%d, returning\n"),
+                        result.front () - 1));
             return 0;
           } // end IF
 
           try
           {
-            const_cast<Net_InetConnectionManager_t::CONNECTION_T*> (connection_handler)->finalize ();
+            connection_p->close ();
           }
           catch (...)
           {
             ACE_DEBUG ((LM_ERROR,
-                        ACE_TEXT ("caught exception in RPG_Net_IConnection::fini(), aborting\n")));
+                        ACE_TEXT ("caught exception in Net_IConnection_T::close(), aborting\n")));
 
             // clean up
-            const_cast<Net_InetConnectionManager_t::CONNECTION_T*> (connection_handler)->decrease ();
+            connection_p->decrease ();
 
             return -1;
           }
 
           // clean up
-          const_cast<Net_InetConnectionManager_t::CONNECTION_T*> (connection_handler)->decrease ();
+          connection_p->decrease ();
 
           break;
         }
@@ -178,32 +179,43 @@ Net_Client_TimeoutHandler::handle_timeout (const ACE_Time_Value& tv_in,
       RPG_Dice::generateRandomNumbers (num_connections,
                                        1,
                                        result);
-      const Net_InetConnectionManager_t::CONNECTION_T* connection_handler =
-        NET_CONNECTIONMANAGER_SINGLETON::instance ()->operator [](result.front () - 1);
-      if (!connection_handler)
+      Net_InetConnectionManager_t::CONNECTION_T* connection_base_p =
+          NET_CONNECTIONMANAGER_SINGLETON::instance ()->operator [] (result.front () - 1);
+      if (!connection_base_p)
       {
-        //				ACE_DEBUG((LM_ERROR,
-        //									 ACE_TEXT("failed to retrieve connection handler, continuing")));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to retrieve connection #%d, returning\n"),
+                    result.front () - 1));
+        return 0;
+      } // end IF
+      Net_ITransportLayer_t* connection_p =
+        dynamic_cast<Net_ITransportLayer_t*> (connection_base_p);
+      if (!connection_p)
+      {
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to dynamic_cast<Net_ITransportLayer_t*> (%@), returning\n"),
+                    connection_base_p));
         return 0;
       } // end IF
 
       try
       {
-        const_cast<Net_InetConnectionManager_t::CONNECTION_T*> (connection_handler)->ping ();
+        connection_p->ping ();
       }
       catch (...)
       {
         ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("caught exception in RPG_Net_IConnection::ping(), aborting\n")));
+                    ACE_TEXT ("caught exception in Net_IConnection_T::ping(), aborting\n")));
 
         // clean up
-        const_cast<Net_InetConnectionManager_t::CONNECTION_T*> (connection_handler)->decrease ();
+        connection_base_p->decrease ();
+        connection_base_p->close ();
 
         return -1;
       }
 
       // clean up
-      const_cast<Net_InetConnectionManager_t::CONNECTION_T*> (connection_handler)->decrease ();
+      connection_base_p->decrease ();
 
       break;
     }

@@ -8,3 +8,7 @@
 
 // *NOTE*: don't use the WFMO-reactor on windows platforms
 #define ACE_USE_SELECT_REACTOR_FOR_REACTOR_IMPL
+
+// *NOTE*: on Linux, libpthread now supports thread names
+//         (see /usr/include/pthread.h::453: pthread_setname_np())
+#define ACE_HAS_PTHREAD_ATTR_SETNAME
