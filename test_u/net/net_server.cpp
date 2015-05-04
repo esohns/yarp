@@ -64,14 +64,16 @@
 #include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
 
+#include "rpg_net_common.h"
 #include "rpg_net_defines.h"
 #include "rpg_net_module_eventhandler.h"
 #include "rpg_net_stream_messageallocator.h"
 
-#include "rpg_client_common.h"
+//#include "rpg_client_common.h"
 #include "rpg_client_logger.h"
-#include "rpg_client_ui_tools.h"
+//#include "rpg_client_ui_tools.h"
 
+#include "rpg_net_server_common.h"
 #include "rpg_net_server_common_tools.h"
 #include "rpg_net_server_defines.h"
 
@@ -118,7 +120,7 @@ do_printUsage (const std::string& programName_in)
             << path
             << ACE_TEXT ("\"] {\"\" --> no GUI}")
             << std::endl;
-  std::cout << ACE_TEXT ("-i [VALUE]   : client ping interval (second(s)) [")
+  std::cout << ACE_TEXT ("-i [VALUE]   : client ping interval (ms) [")
             << RPG_NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL
             << ACE_TEXT ("] {0 --> OFF})")
             << std::endl;
@@ -470,8 +472,10 @@ do_work (unsigned int maxNumConnections_in,
   Net_Configuration_t configuration;
   ACE_OS::memset (&configuration, 0, sizeof (Net_Configuration_t));
   // ************ connection configuration data ************
+  configuration.protocolConfiguration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
   configuration.protocolConfiguration.peerPingInterval = pingInterval_in;
   configuration.protocolConfiguration.pingAutoAnswer = true;
+  configuration.protocolConfiguration.printPongMessages = true;
   // ************ socket / stream configuration data ************
   configuration.socketConfiguration.bufferSize =
    RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
@@ -507,19 +511,19 @@ do_work (unsigned int maxNumConnections_in,
 
   // step1: init regular (global) stats reporting
   Stream_StatisticHandler_Reactor_t statistics_handler (ACTION_REPORT,
-                                                        NET_CONNECTIONMANAGER_SINGLETON::instance (),
+                                                        RPG_CONNECTIONMANAGER_SINGLETON::instance (),
                                                         false);
   long timer_id = -1;
   if (statisticsReportingInterval_in)
   {
-    ACE_Event_Handler* event_handler = &statistics_handler;
+    ACE_Event_Handler* handler_p = &statistics_handler;
     ACE_Time_Value interval (statisticsReportingInterval_in,
                              0);
     timer_id =
-      COMMON_TIMERMANAGER_SINGLETON::instance ()->schedule (event_handler,                    // event handler
-                                                            NULL,                             // ACT
-                                                            COMMON_TIME_POLICY () + interval, // first wakeup time
-                                                            interval);                        // interval
+      COMMON_TIMERMANAGER_SINGLETON::instance ()->schedule (handler_p,                  // event handler
+                                                            NULL,                       // ACT
+                                                            COMMON_TIME_NOW + interval, // first wakeup time
+                                                            interval);                  // interval
     if (timer_id == -1)
     {
       ACE_DEBUG ((LM_DEBUG,
@@ -534,14 +538,14 @@ do_work (unsigned int maxNumConnections_in,
 
   // step2: signal handling
   if (useReactor_in)
-    CBData_in.listenerHandle = NET_SERVER_LISTENER_SINGLETON::instance ();
+    CBData_in.listenerHandle = RPG_NET_SERVER_LISTENER_SINGLETON::instance ();
   else
     CBData_in.listenerHandle =
-      NET_SERVER_ASYNCHLISTENER_SINGLETON::instance ();
+      RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance ();
   // event handler for signals
   Net_Server_SignalHandler signal_handler (timer_id,
                                            CBData_in.listenerHandle,
-                                           NET_CONNECTIONMANAGER_SINGLETON::instance (),
+                                           RPG_CONNECTIONMANAGER_SINGLETON::instance (),
                                            useReactor_in);
   int result = -1;
   const void* act_p = NULL;
@@ -569,9 +573,9 @@ do_work (unsigned int maxNumConnections_in,
   } // end IF
 
   // step3: initialize connection manager
-  NET_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (maxNumConnections_in);
+  RPG_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (maxNumConnections_in);
   Net_UserData_t session_data;
-  NET_CONNECTIONMANAGER_SINGLETON::instance ()->set (configuration,
+  RPG_CONNECTIONMANAGER_SINGLETON::instance ()->set (configuration,
                                                      &session_data);
 
   // step4: handle events (signals, incoming connections/data, timers, ...)
@@ -666,7 +670,7 @@ do_work (unsigned int maxNumConnections_in,
   socket_handler_configuration.socketConfiguration =
       configuration.socketConfiguration;
   Net_ListenerConfiguration_t listener_configuration;
-  listener_configuration.addressFamily = 2;
+  listener_configuration.addressFamily = ACE_ADDRESS_FAMILY_INET;
   listener_configuration.portNumber = listeningPortNumber_in;
   listener_configuration.socketHandlerConfiguration =
     &socket_handler_configuration;
@@ -981,10 +985,10 @@ ACE_TMAIN (int argc_in,
 
   // step1e: initialize logging and/or tracing
   RPG_Client_Logger logger (&gtk_cb_user_data.logStack,
-                            &gtk_cb_user_data.logStackLock);
+                            &gtk_cb_user_data.stackLock);
   std::string log_file;
   if (log_to_file &&
-      !RPG_Net_Server_Common_Tools::getNextLogFilename (ACE_TEXT_ALWAYS_CHAR (COMMON_DEF_LOG_DIRECTORY),
+      !RPG_Net_Server_Common_Tools::getNextLogFilename (Common_File_Tools::getDumpDirectory (),
                                                         log_file))
   {
     ACE_DEBUG ((LM_ERROR,

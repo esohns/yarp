@@ -590,9 +590,8 @@ idle_update_log_display_cb (gpointer userData_in)
                                 &text_iterator);
 
   gchar* converted_text = NULL;
-  // synch access
-  {
-    ACE_Guard<ACE_Thread_Mutex> aGuard (data_p->GTKState.lock);
+  { // synch access
+    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard (data_p->stackLock);
 
     // sanity check
     if (data_p->logStack.empty ())
@@ -678,7 +677,7 @@ idle_update_info_display_cb (gpointer userData_in)
   ACE_ASSERT (spinbutton_p);
 
   { // synch access
-    ACE_Guard<ACE_Thread_Mutex> aGuard (data_p->GTKState.lock);
+    ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard (data_p->stackLock);
     for (Net_GTK_EventsIterator_t iterator = data_p->eventStack.begin ();
          iterator != data_p->eventStack.end ();
          iterator++)
@@ -913,6 +912,9 @@ button_ping_clicked_cb (GtkWidget* widget_in,
 
     return FALSE;
   }
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("session %u: sent ping...\n"),
+              connection_base_p->id ()));
 
   // clean up
   connection_base_p->decrease ();

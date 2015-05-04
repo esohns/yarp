@@ -51,8 +51,6 @@
 
 #include "net_connection_manager.h"
 
-#include "net_client_asynchconnector.h"
-#include "net_client_connector.h"
 #include "net_client_defines.h"
 
 #ifdef HAVE_CONFIG_H
@@ -68,6 +66,7 @@
 #include "rpg_common_tools.h"
 
 #include "rpg_net_defines.h"
+#include "rpg_net_common.h"
 #include "rpg_net_module_eventhandler.h"
 #include "rpg_net_stream_messageallocator.h"
 
@@ -537,14 +536,14 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   Net_Client_IConnector_t* connector_p = NULL;
   if (useReactor_in)
     ACE_NEW_NORETURN (connector_p,
-                      Net_Client_Connector_t (&socket_handler_configuration,
-                                              NET_CONNECTIONMANAGER_SINGLETON::instance (),
-                                              0));
+                      RPG_Net_Client_Connector_t (&socket_handler_configuration,
+                                                  NET_CONNECTIONMANAGER_SINGLETON::instance (),
+                                                  0));
   else
     ACE_NEW_NORETURN (connector_p,
-                      Net_Client_AsynchConnector_t (&socket_handler_configuration,
-                                                    NET_CONNECTIONMANAGER_SINGLETON::instance (),
-                                                    0));
+                      RPG_Net_Client_AsynchConnector_t (&socket_handler_configuration,
+                                                        NET_CONNECTIONMANAGER_SINGLETON::instance (),
+                                                        0));
   if (!connector_p)
   {
     ACE_DEBUG ((LM_CRITICAL,
@@ -1025,7 +1024,7 @@ ACE_TMAIN (int argc_in,
   Net_GTK_CBData_t gtk_cb_user_data;
   // step1e: initialize logging and/or tracing
   RPG_Client_Logger logger (&gtk_cb_user_data.logStack,
-                            &gtk_cb_user_data.logStackLock);
+                            &gtk_cb_user_data.stackLock);
   std::string log_file;
   if (log_to_file)
     log_file = RPG_Common_File_Tools::getLogFilename (ACE::basename (argv_in[0]));

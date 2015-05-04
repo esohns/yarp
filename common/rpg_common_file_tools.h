@@ -32,25 +32,25 @@ class RPG_Common_Export RPG_Common_File_Tools
  public:
   // *PORTABILITY*: - on UNIX, this should be passed as a BASEDIR macro at compile time
   //                - on WIN32, this should default to the working directory (*TODO*)
-  static std::string getConfigurationDataDirectory(const std::string&, // base directory
-                                                   const bool&);       // config ? : data
+  static std::string getConfigurationDataDirectory (const std::string&, // base directory
+                                                    bool);              // configuration ? : data
 
   // *NOTE*: (try to) create the directory if it doesn't exist
-  static std::string getUserConfigurationDirectory();
+  static std::string getUserConfigurationDirectory ();
 
-  static std::string getLogFilename(const std::string&); // program name
+  static std::string getLogFilename (const std::string&); // program name
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Common_File_Tools());
-  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Common_File_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Common_File_Tools(const RPG_Common_File_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Common_File_Tools& operator=(const RPG_Common_File_Tools&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Common_File_Tools ());
+  ACE_UNIMPLEMENTED_FUNC (virtual ~RPG_Common_File_Tools ());
+  ACE_UNIMPLEMENTED_FUNC (RPG_Common_File_Tools (const RPG_Common_File_Tools&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Common_File_Tools& operator= (const RPG_Common_File_Tools&));
 
   // helper methods
 //  static int dirent_selector(const dirent*);
 //  static int dirent_comparator(const dirent**,
 //                               const dirent**);
-  static std::string getLogDirectory();
+  static std::string getLogDirectory ();
 };
 
 #endif

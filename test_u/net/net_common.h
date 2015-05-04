@@ -59,7 +59,7 @@ struct Net_GTK_CBData_t
    , GTKState ()
    , listenerHandle (NULL)
    , logStack ()
-   , logStackLock ()
+   , stackLock ()
    , subscribers ()
    , subscribersLock ()
    , timerId (-1)
@@ -69,10 +69,11 @@ struct Net_GTK_CBData_t
   bool                       allowUserRuntimeStatistic;
   Net_GTK_Events_t           eventStack;
   Common_UI_GTKState         GTKState;
-  Net_Server_IListener_T<Net_ListenerConfiguration_t>*    listenerHandle; // *NOTE*: server only !
+  // *TODO*: this is just weird...
+  Net_Server_IListener_T<Net_ListenerConfiguration_t>* listenerHandle; // *NOTE*: server only !
   //Net_Server_IListener_t*    listenerHandle; // *NOTE*: server only !
   RPG_Client_MessageStack_t  logStack;
-  ACE_Recursive_Thread_Mutex logStackLock;
+  ACE_Recursive_Thread_Mutex stackLock;
   Net_Subscribers_t          subscribers;
   ACE_Recursive_Thread_Mutex subscribersLock;
   long                       timerId;        // *NOTE*: client only !

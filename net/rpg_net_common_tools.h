@@ -30,10 +30,10 @@ class RPG_Net_Export RPG_Net_Common_Tools
  public:
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Net_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Common_Tools(const RPG_Net_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Common_Tools& operator=(const RPG_Net_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Common_Tools ());
+  ACE_UNIMPLEMENTED_FUNC (virtual ~RPG_Net_Common_Tools ());
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Common_Tools (const RPG_Net_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Common_Tools& operator= (const RPG_Net_Common_Tools&));
 };
 
 #endif

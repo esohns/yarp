@@ -21,18 +21,15 @@
 #ifndef RPG_NET_MODULE_PROTOCOLHANDLER_H
 #define RPG_NET_MODULE_PROTOCOLHANDLER_H
 
-//#include "ace/Reactor.h"
 #include "ace/Synch_Traits.h"
-//#include "ace/Time_Value.h"
 
 #include "common.h"
 #include "common_itimer.h"
 #include "common_timerhandler.h"
 
+#include "stream_common.h"
 #include "stream_streammodule_base.h"
 #include "stream_task_base_synch.h"
-
-#include "net_configuration.h"
 
 // forward declaration(s)
 class Stream_IAllocator;
@@ -51,7 +48,6 @@ class RPG_Net_Module_ProtocolHandler
 
   // initialization
   bool initialize (Stream_IAllocator*, // message allocator
-                   unsigned int,       // session ID
                    unsigned int = 0,   // peer "ping" interval (ms) [0 --> OFF]
                    bool = true,        // automatically reply to "ping" messages (auto-"pong")
                    bool = false);      // print dot ('.') for every received "pong" to stdlog
@@ -74,28 +70,28 @@ class RPG_Net_Module_ProtocolHandler
                                  Net_Message> inherited;
 
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_Module_ProtocolHandler (const RPG_Net_Module_ProtocolHandler&));
-  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Module_ProtocolHandler& operator=(const RPG_Net_Module_ProtocolHandler&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Module_ProtocolHandler& operator= (const RPG_Net_Module_ProtocolHandler&));
 
   // helper methods
   Net_Message* allocateMessage (unsigned int); // requested size
 
   // timer stuff
-  Common_TimerHandler myPingHandler;
-  long                myPingTimerID;
+  Common_TimerHandler pingHandler_;
+  long                timerID_;
 
-  Stream_IAllocator*  myAllocator;
-  unsigned int        mySessionID;
-  unsigned int        myCounter;
-  unsigned int        myPingInterval;
-  bool                myAutomaticPong;
-  bool                myPrintPongDot;
-  bool                myIsInitialized;
+  Stream_IAllocator*  allocator_;
+  unsigned int        sessionID_;
+  unsigned int        counter_;
+  unsigned int        pingInterval_;
+  bool                automaticPong_;
+  bool                printPongDot_;
+  bool                isInitialized_;
 };
 
 // declare module
-DATASTREAM_MODULE_INPUT_ONLY(ACE_MT_SYNCH,                    // task synch type
-                             Common_TimePolicy_t,             // time policy type
-                             Net_Configuration_t,             // configuration type
-                             RPG_Net_Module_ProtocolHandler); // writer type
+DATASTREAM_MODULE_INPUT_ONLY (ACE_MT_SYNCH,                    // task synch type
+                              Common_TimePolicy_t,             // time policy type
+                              Stream_ModuleConfiguration_t,    // configuration type
+                              RPG_Net_Module_ProtocolHandler); // writer type
 
 #endif

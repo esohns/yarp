@@ -25,6 +25,8 @@
 
 #include "ace/Global_Macros.h"
 
+#include "net_server_common.h"
+
 #include "rpg_net_server_exports.h"
 
 // forward declaration(s)
@@ -36,6 +38,9 @@ class RPG_Net_Server_Export RPG_Net_Server_Common_Tools
   // *NOTE*: implements log rotation
   static bool getNextLogFilename (const std::string&, // directory
                                   std::string&);      // return value: log filename
+
+  static Net_Server_IListener_t* getAsynchListener ();
+  static Net_Server_IListener_t* getListener ();
 
  private:
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_Server_Common_Tools ());

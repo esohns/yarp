@@ -124,6 +124,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
       <BrowseInformation>false</BrowseInformation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

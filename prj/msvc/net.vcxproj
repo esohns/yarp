@@ -60,10 +60,12 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BrowseInformation>false</BrowseInformation>
       <MinimalRebuild>false</MinimalRebuild>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -83,6 +85,7 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -90,6 +93,7 @@
     <ClCompile Include="..\..\net\rpg_net_eventhandler.cpp" />
     <ClCompile Include="..\..\net\rpg_net_module_eventhandler.cpp" />
     <ClCompile Include="..\..\net\rpg_net_module_protocolhandler.cpp" />
+    <ClCompile Include="..\..\net\rpg_net_stream.cpp" />
     <ClCompile Include="..\..\net\rpg_net_stream_messageallocator.cpp" />
     <ClCompile Include="..\..\net\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -106,6 +110,7 @@
     <ClInclude Include="..\..\net\rpg_net_module_protocolhandler.h" />
     <ClInclude Include="..\..\net\rpg_net_packet_headers.h" />
     <ClInclude Include="..\..\net\rpg_net_remote_comm.h" />
+    <ClInclude Include="..\..\net\rpg_net_stream.h" />
     <ClInclude Include="..\..\net\rpg_net_stream_messageallocator.h" />
     <ClInclude Include="..\..\net\stdafx.h" />
   </ItemGroup>

@@ -22,7 +22,6 @@
 #include "rpg_net_server_common_tools.h"
 
 #include "ace/Dirent_Selector.h"
-#include "ace/Global_Macros.h"
 #include "ace/Log_Msg.h"
 
 #include "common_defines.h"
@@ -30,9 +29,10 @@
 
 #include "rpg_common_macros.h"
 
+#include "rpg_net_server_common.h"
 #include "rpg_net_server_defines.h"
 
-// init statics
+// initialize statics
 unsigned int
 RPG_Net_Server_Common_Tools::maxNumberOfLogFiles_ =
     RPG_NET_SERVER_LOG_MAXIMUM_NUMBER_OF_FILES;
@@ -57,10 +57,9 @@ RPG_Net_Server_Common_Tools::getNextLogFilename (const std::string& directory_in
                   ACE_TEXT (directory_in.c_str ())));
       return false;
     } // end IF
-
-//     ACE_DEBUG((LM_DEBUG,
-//                ACE_TEXT("created directory: \"%s\"...\n"),
-//                ACE_TEXT(directory_in.c_str())));
+    ACE_DEBUG ((LM_DEBUG,
+               ACE_TEXT ("created directory: \"%s\"...\n"),
+               ACE_TEXT (directory_in.c_str ())));
   } // end IF
 
   // construct correct logfilename...
@@ -233,6 +232,22 @@ RPG_Net_Server_Common_Tools::getNextLogFilename (const std::string& directory_in
   } // end IF
 
   return true;
+}
+
+Net_Server_IListener_t*
+RPG_Net_Server_Common_Tools::getAsynchListener ()
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Server_Common_Tools::getAsynchListener"));
+
+  return RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance ();
+}
+
+Net_Server_IListener_t*
+RPG_Net_Server_Common_Tools::getListener ()
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Server_Common_Tools::getListener"));
+
+  return RPG_NET_SERVER_LISTENER_SINGLETON::instance ();
 }
 
 int
