@@ -94,7 +94,6 @@
     <ClCompile Include="..\..\net\rpg_net_module_eventhandler.cpp" />
     <ClCompile Include="..\..\net\rpg_net_module_protocolhandler.cpp" />
     <ClCompile Include="..\..\net\rpg_net_stream.cpp" />
-    <ClCompile Include="..\..\net\rpg_net_stream_messageallocator.cpp" />
     <ClCompile Include="..\..\net\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -111,7 +110,6 @@
     <ClInclude Include="..\..\net\rpg_net_packet_headers.h" />
     <ClInclude Include="..\..\net\rpg_net_remote_comm.h" />
     <ClInclude Include="..\..\net\rpg_net_stream.h" />
-    <ClInclude Include="..\..\net\rpg_net_stream_messageallocator.h" />
     <ClInclude Include="..\..\net\stdafx.h" />
   </ItemGroup>
   <ItemGroup>

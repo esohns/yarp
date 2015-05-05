@@ -29,13 +29,13 @@
 
 RPG_Net_Protocol_Module_IRCParser::RPG_Net_Protocol_Module_IRCParser ()
  : inherited ()
- , myAllocator (NULL)
- , myDebugScanner (RPG_NET_PROTOCOL_DEF_TRACE_SCANNING)    // trace scanning ?
- , myDebugParser (RPG_NET_PROTOCOL_DEF_TRACE_PARSING)      // trace parsing ?
- , myDriver (RPG_NET_PROTOCOL_DEF_TRACE_SCANNING,          // trace scanning ?
+ , allocator_ (NULL)
+ , debugScanner_ (RPG_NET_PROTOCOL_DEF_TRACE_SCANNING)    // trace scanning ?
+ , debugParser_ (RPG_NET_PROTOCOL_DEF_TRACE_PARSING)      // trace parsing ?
+ , driver_ (RPG_NET_PROTOCOL_DEF_TRACE_SCANNING,          // trace scanning ?
              RPG_NET_PROTOCOL_DEF_TRACE_PARSING)           // trace parsing ?
- , myCrunchMessages (RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES) // "crunch" messages ?
- , myIsInitialized (false)
+ , crunchMessages_ (RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES) // "crunch" messages ?
+ , isInitialized_ (false)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCParser::RPG_Net_Protocol_Module_IRCParser"));
 
@@ -57,27 +57,27 @@ RPG_Net_Protocol_Module_IRCParser::initialize (Stream_IAllocator* allocator_in,
 
   // sanity check(s)
   ACE_ASSERT (allocator_in);
-  if (myIsInitialized)
+  if (isInitialized_)
   {
     ACE_DEBUG ((LM_WARNING,
                 ACE_TEXT ("re-initializing...\n")));
 
-    myAllocator = NULL;
-    myDebugScanner = debugScanner_in;
-    myDebugParser = debugParser_in;
-    myCrunchMessages = RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES;
-    myIsInitialized = false;
+    allocator_ = NULL;
+    debugScanner_ = debugScanner_in;
+    debugParser_ = debugParser_in;
+    crunchMessages_ = RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES;
+    isInitialized_ = false;
   } // end IF
 
-  myAllocator = allocator_in;
-  myDebugScanner = debugScanner_in;
-  myDebugParser = debugParser_in;
-  myCrunchMessages = crunchMessages_in;
+  allocator_ = allocator_in;
+  debugScanner_ = debugScanner_in;
+  debugParser_ = debugParser_in;
+  crunchMessages_ = crunchMessages_in;
 
   // OK: all's well...
-  myIsInitialized = true;
+  isInitialized_ = true;
 
-  return myIsInitialized;
+  return isInitialized_;
 }
 
 void
@@ -102,7 +102,7 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage (RPG_Net_Protocol_Message*&
 
   // "crunch" messages for easier parsing ?
   RPG_Net_Protocol_Message* message_p = message_inout;
-  if (myCrunchMessages)
+  if (crunchMessages_)
   {
 //     // debug info
 //     message->dump_state();
@@ -174,11 +174,11 @@ RPG_Net_Protocol_Module_IRCParser::handleDataMessage (RPG_Net_Protocol_Message*&
 //              message_inout->length(),
 //              std::string(message_inout->rd_ptr(), message_inout->length()).c_str()));
 
-  myDriver.init (const_cast<RPG_Net_Protocol_IRCMessage&> (*message_inout->getData ()),
-                 myDebugScanner,
-                 myDebugParser);
-  if (!myDriver.parse (message_p,         // data block
-                       myCrunchMessages)) // has data been crunched ?
+  driver_.init (const_cast<RPG_Net_Protocol_IRCMessage&> (*message_inout->getData ()),
+                debugScanner_,
+                debugParser_);
+  if (!driver_.parse (message_p,        // data block
+                      crunchMessages_)) // has data been crunched ?
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Net_Protocol_IRCParserDriver::parse(ID: %u), returning\n"),
@@ -203,26 +203,45 @@ RPG_Net_Protocol_Module_IRCParser::allocateMessage (unsigned int requestedSize_i
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Module_IRCParser::allocateMessage"));
 
-  // init return value(s)
-  RPG_Net_Protocol_Message* message_out = NULL;
+  // initialize return value(s)
+  RPG_Net_Protocol_Message* message_p = NULL;
 
-  try
+  if (allocator_)
   {
-    message_out =
-     static_cast<RPG_Net_Protocol_Message*> (myAllocator->malloc (requestedSize_in));
-  }
-  catch (...)
+allocate:
+    try
+    {
+      message_p =
+        static_cast<RPG_Net_Protocol_Message*> (allocator_->malloc (requestedSize_in));
+    }
+    catch (...)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("caught exception in Stream_IAllocator::malloc(%u), aborting\n"),
+                  requestedSize_in));
+      return NULL;
+    }
+
+    // keep retrying ?
+    if (!message_p &&
+        !allocator_->block ())
+        goto allocate;
+  } // end IF
+  else
+    ACE_NEW_NORETURN (message_p,
+                      RPG_Net_Protocol_Message (requestedSize_in));
+  if (!message_p)
   {
-    ACE_DEBUG ((LM_ERROR,
-               ACE_TEXT ("caught exception in Stream_IAllocator::malloc(%u), aborting\n"),
-               requestedSize_in));
-  }
-  if (!message_out)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to Stream_IAllocator::malloc(%u), aborting\n"),
-                requestedSize_in));
+    if (allocator_)
+    {
+      if (allocator_->block ())
+        ACE_DEBUG ((LM_CRITICAL,
+                    ACE_TEXT ("failed to allocate SessionMessageType: \"%m\", aborting\n")));
+    } // end IF
+    else
+      ACE_DEBUG ((LM_CRITICAL,
+                  ACE_TEXT ("failed to allocate SessionMessageType: \"%m\", aborting\n")));
   } // end IF
 
-  return message_out;
+  return message_p;
 }

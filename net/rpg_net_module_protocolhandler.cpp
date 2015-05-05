@@ -249,10 +249,10 @@ RPG_Net_Module_ProtocolHandler::handleSessionMessage (Net_SessionMessage*& messa
           return;
         } // end IF
         ACE_DEBUG ((LM_DEBUG,
-                    ACE_TEXT ("session %u: scheduled \"ping\" timer (id: %d), interval: %u second(s)...\n"),
+                    ACE_TEXT ("session %u: scheduled \"ping\" timer (id: %d), interval: %#T...\n"),
                     sessionID_,
                     timerID_,
-                    pingInterval_));
+                    &pingInterval_));
       } // end IF
 
       break;
@@ -353,26 +353,45 @@ RPG_Net_Module_ProtocolHandler::allocateMessage (unsigned int requestedSize_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_Module_ProtocolHandler::allocateMessage"));
 
-  // init return value(s)
-  Net_Message* message_out = NULL;
+  // initialize return value(s)
+  Net_Message* message_p = NULL;
 
-  try
+  if (allocator_)
   {
-    message_out =
-     static_cast<Net_Message*> (allocator_->malloc (requestedSize_in));
-  }
-  catch (...)
+allocate:
+    try
+    {
+      message_p =
+        static_cast<Net_Message*> (allocator_->malloc (requestedSize_in));
+    }
+    catch (...)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("caught exception in Stream_IAllocator::malloc(%u), aborting\n"),
+                  requestedSize_in));
+      return NULL;
+    }
+
+    // keep retrying ?
+    if (!message_p &&
+        !allocator_->block ())
+      goto allocate;
+  } // end IF
+  else
+    ACE_NEW_NORETURN (message_p,
+                      Net_Message (requestedSize_in));
+  if (!message_p)
   {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("caught exception in Stream_IAllocator::malloc(%u), aborting\n"),
-                requestedSize_in));
-  }
-  if (!message_out)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to Stream_IAllocator::malloc(%u), aborting\n"),
-                requestedSize_in));
+    if (allocator_)
+    {
+      if (allocator_->block ())
+        ACE_DEBUG ((LM_CRITICAL,
+                    ACE_TEXT ("failed to allocate SessionMessageType: \"%m\", aborting\n")));
+    } // end IF
+    else
+      ACE_DEBUG ((LM_CRITICAL,
+                  ACE_TEXT ("failed to allocate SessionMessageType: \"%m\", aborting\n")));
   } // end IF
 
-  return message_out;
+  return message_p;
 }

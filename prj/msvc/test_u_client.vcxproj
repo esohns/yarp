@@ -21,6 +21,9 @@
     <ClInclude Include="..\..\test_u\client\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\modules\libACENetwork\prj\msvc\libACENetwork.vcxproj">
+      <Project>{751d54c5-12bd-4771-9453-b9d3948ed025}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\modules\libACEStream\prj\msvc\libACEStream.vcxproj">
       <Project>{c7a3ee44-14f9-413a-b311-5a77ba5a4edd}</Project>
     </ProjectReference>

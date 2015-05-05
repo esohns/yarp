@@ -21,12 +21,13 @@
 #ifndef NET_CLIENT_SIGNALHANDLER_H
 #define NET_CLIENT_SIGNALHANDLER_H
 
+#include "ace/Global_Macros.h"
 #include "ace/INET_Addr.h"
 
 #include "common_isignal.h"
 #include "common_signalhandler.h"
 
-#include "net_client_common.h"
+#include "net_client_connector_common.h"
 
 class Net_Client_SignalHandler
  : public Common_SignalHandler,
@@ -48,7 +49,7 @@ class Net_Client_SignalHandler
 
   ACE_UNIMPLEMENTED_FUNC (Net_Client_SignalHandler ());
   ACE_UNIMPLEMENTED_FUNC (Net_Client_SignalHandler (const Net_Client_SignalHandler&));
-  ACE_UNIMPLEMENTED_FUNC (Net_Client_SignalHandler& operator=(const Net_Client_SignalHandler&));
+  ACE_UNIMPLEMENTED_FUNC (Net_Client_SignalHandler& operator= (const Net_Client_SignalHandler&));
 
   long                     actionTimerID_;
   Net_Client_IConnector_t* connector_;

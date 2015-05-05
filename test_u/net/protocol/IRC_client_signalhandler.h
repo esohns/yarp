@@ -27,7 +27,7 @@
 #include "ace/Global_Macros.h"
 #include "ace/INET_Addr.h"
 
-#include "net_client_common.h"
+#include "net_client_connector_common.h"
 
 class IRC_Client_SignalHandler
  : public ACE_Event_Handler

@@ -21,6 +21,8 @@
 
 #include "net_client_timeouthandler.h"
 
+#include "ace/Log_Msg.h"
+
 #include "net_defines.h"
 #include "net_common.h"
 #include "net_connection_manager_common.h"

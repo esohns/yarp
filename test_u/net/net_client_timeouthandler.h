@@ -28,7 +28,7 @@
 #include "ace/INET_Addr.h"
 #include "ace/Time_Value.h"
 
-#include "net_client_common.h"
+#include "net_client_connector_common.h"
 
 class Net_Client_TimeoutHandler
  : public ACE_Event_Handler

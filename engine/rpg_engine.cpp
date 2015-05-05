@@ -96,14 +96,14 @@ RPG_Engine::RPG_Engine ()
 
   if (RPG_ENGINE_USES_REACTOR)
     ACE_NEW_NORETURN (connector_,
-                      Net_Client_Connector_t (&netConfiguration_,
-                                              RPG_CONNECTIONMANAGER_SINGLETON::instance (),
-                                              0));
+                      RPG_Net_Client_Connector_t (&netConfiguration_,
+                                                  RPG_CONNECTIONMANAGER_SINGLETON::instance (),
+                                                  0));
   else
     ACE_NEW_NORETURN (connector_,
-                      Net_Client_AsynchConnector_t (&netConfiguration_,
-                                                    RPG_CONNECTIONMANAGER_SINGLETON::instance (),
-                                                    0));
+                      RPG_Net_Client_AsynchConnector_t (&netConfiguration_,
+                                                        RPG_CONNECTIONMANAGER_SINGLETON::instance (),
+                                                        0));
   if (!connector_)
   {
     ACE_DEBUG ((LM_CRITICAL,

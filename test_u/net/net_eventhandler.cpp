@@ -49,7 +49,7 @@ Net_EventHandler::start (const Stream_ModuleConfiguration_t& configuration_in)
 {
   RPG_TRACE (ACE_TEXT ("Net_EventHandler::start"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard (CBData_->stackLock.lock);
+  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard (CBData_->stackLock);
 
   CBData_->eventStack.push_back (NET_GTKEVENT_CONNECT);
 }
@@ -68,7 +68,7 @@ Net_EventHandler::end ()
 {
   RPG_TRACE (ACE_TEXT ("Net_EventHandler::end"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard (CBData_->stackLock.lock);
+  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard (CBData_->stackLock);
 
   CBData_->eventStack.push_back (NET_GTKEVENT_DISCONNECT);
 }

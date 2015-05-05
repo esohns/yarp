@@ -110,10 +110,10 @@ class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
                                  RPG_Net_Protocol_Message> inherited;
 
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Module_IRCHandler (const RPG_Net_Protocol_Module_IRCHandler&));
-  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Module_IRCHandler& operator=(const RPG_Net_Protocol_Module_IRCHandler&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Module_IRCHandler& operator= (const RPG_Net_Protocol_Module_IRCHandler&));
 
   // helper methods
-  RPG_Net_Protocol_Message* allocateMessage(unsigned int); // requested size
+  RPG_Net_Protocol_Message* allocateMessage (unsigned int); // requested size
   // *NOTE*: "fire-and-forget" - the argument is consumed
   void sendMessage (RPG_Net_Protocol_IRCMessage*&); // command handle
 
@@ -125,22 +125,22 @@ class RPG_Protocol_Export RPG_Net_Protocol_Module_IRCHandler
   // *NOTE*: make this recursive so that users may unsubscribe from within the
   // notification callbacks...
   // *WARNING*: consider race conditions here
-  ACE_Recursive_Thread_Mutex             myLock;
-  Subscribers_t                          mySubscribers;
+  ACE_Recursive_Thread_Mutex             lock_;
+  Subscribers_t                          subscribers_;
 
-  Stream_IAllocator*                     myAllocator;
-  unsigned int                           myDefaultBufferSize;
-  bool                                   myAutomaticPong;
-  bool                                   myPrintPingPongDot;
-  bool                                   myIsInitialized;
+  Stream_IAllocator*                     allocator_;
+  unsigned int                           defaultBufferSize_;
+  bool                                   automaticPong_;
+  bool                                   printPingPongDot_;
+  bool                                   isInitialized_;
 
   // *NOTE*: obviously, there is a delay between connection establishment and
   // reception of the welcome NOTICE: let the users wait for it so they can
   // safely start registering connections
-  ACE_Thread_Mutex                       myConditionLock;
-  ACE_Thread_Condition<ACE_Thread_Mutex> myCondition;
-  bool                                   myConnectionIsAlive;
-  bool                                   myReceivedInitialNotice;
+  ACE_Thread_Mutex                       conditionLock_;
+  ACE_Thread_Condition<ACE_Thread_Mutex> condition_;
+  bool                                   connectionIsAlive_;
+  bool                                   receivedInitialNotice_;
 };
 
 // declare module

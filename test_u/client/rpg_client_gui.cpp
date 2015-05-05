@@ -79,8 +79,8 @@
 #include "rpg_map_defines.h"
 #include "rpg_map_level.h"
 
+#include "rpg_net_common.h"
 #include "rpg_net_defines.h"
-#include "rpg_net_stream_messageallocator.h"
 
 #include "rpg_net_protocol_configuration.h"
 #include "rpg_net_protocol_network.h"
@@ -944,8 +944,8 @@ do_work (const RPG_Client_Configuration_t& configuration_in,
   // step5: init networking
   // step5a: init stream configuration object
   Stream_AllocatorHeap heap_allocator;
-  RPG_Net_StreamMessageAllocator message_allocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
-                                                    &heap_allocator);
+  RPG_Net_StreamMessageAllocator_t message_allocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
+                                                      &heap_allocator);
   RPG_Net_Protocol_Configuration protocol_configuration;
   ACE_OS::memset (&protocol_configuration,
                   0,

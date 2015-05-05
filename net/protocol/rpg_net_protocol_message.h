@@ -29,18 +29,26 @@
 
 // forward declaration(s)
 class ACE_Allocator;
-class ACE_Message_Block;
 class ACE_Data_Block;
+class ACE_Message_Block;
+class RPG_Net_Protocol_SessionMessage;
+template <typename MessageType,
+          typename SessionMessageType> class Stream_MessageAllocatorHeapBase_T;
+template <typename MessageType,
+          typename SessionMessageType> class Stream_CachedMessageAllocatorHeapBase_T;
 
 class RPG_Net_Protocol_Message
  : public Stream_DataMessageBase_T<RPG_Net_Protocol_IRCMessage,
                                    RPG_Net_Protocol_CommandType_t>
 {
+  // enable access to specific private ctors...
+  friend class Stream_MessageAllocatorHeapBase_T<RPG_Net_Protocol_Message,
+                                                 RPG_Net_Protocol_SessionMessage>;
+  friend class Stream_CachedMessageAllocatorHeapBase_T<RPG_Net_Protocol_Message,
+                                                       RPG_Net_Protocol_SessionMessage>;
+
  public:
-  // *NOTE*: to be used by allocators...
-  RPG_Net_Protocol_Message (ACE_Data_Block*, // data block to use
-                            ACE_Allocator*); // message allocator
-  //   RPG_Net_Protocol_Message(ACE_Allocator*); // message allocator
+  RPG_Net_Protocol_Message (unsigned int); // size
   virtual ~RPG_Net_Protocol_Message ();
 
   virtual RPG_Net_Protocol_CommandType_t getCommand () const; // return value: message type
@@ -73,6 +81,11 @@ class RPG_Net_Protocol_Message
   static std::string CommandType2String (const RPG_Net_Protocol_CommandType_t&);
 
  protected:
+   // *NOTE*: to be used by allocators...
+   RPG_Net_Protocol_Message (ACE_Data_Block*, // data block to use
+                             ACE_Allocator*); // message allocator
+   //   RPG_Net_Protocol_Message(ACE_Allocator*); // message allocator
+
   // copy ctor to be used by duplicate() and child classes
   // --> uses an (incremented refcount of) the same datablock ("shallow copy")
   RPG_Net_Protocol_Message (const RPG_Net_Protocol_Message&);

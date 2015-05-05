@@ -78,26 +78,48 @@ RPG_Net_Protocol_SessionMessage::duplicate (void) const
   // the ACE_Data_Block
 
   // if there is no allocator, use the standard new and delete calls.
-  if (inherited::message_block_allocator_ == NULL)
-  {
-    // uses the copy ctor
+  if (!inherited::message_block_allocator_)
     ACE_NEW_NORETURN (message_p,
                       RPG_Net_Protocol_SessionMessage (*this));
-  } // end IF
   else
-  {
-    // *NOTE*: instruct the allocator to return a session message by passing 0 as
-    //         argument to malloc()...
-    ACE_NEW_MALLOC_NORETURN (message_p,
-                             static_cast<RPG_Net_Protocol_SessionMessage*> (inherited::message_block_allocator_->malloc (0)),
-                             RPG_Net_Protocol_SessionMessage (*this));
-  } // end ELSE
-  if (!message_p)
   {
     Stream_IAllocator* allocator_p =
       dynamic_cast<Stream_IAllocator*> (inherited::message_block_allocator_);
     ACE_ASSERT (allocator_p);
-    if (allocator_p->block ())
+allocate:
+    try
+    {
+      // *NOTE*: instruct the allocator to return a session message by passing 0 as
+      //         argument to malloc()...
+      ACE_NEW_MALLOC_NORETURN (message_p,
+                               static_cast<RPG_Net_Protocol_SessionMessage*> (inherited::message_block_allocator_->calloc (0)),
+                               RPG_Net_Protocol_SessionMessage (*this));
+    }
+    catch (...)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("caught exception in Stream_IAllocator::calloc(0), aborting\n")));
+      return NULL;
+    }
+
+    // keep retrying ?
+    if (!message_p &&
+        !allocator_p->block ())
+      goto allocate;
+  } // end ELSE
+  if (!message_p)
+  {
+    if (inherited::message_block_allocator_)
+    {
+      Stream_IAllocator* allocator_p =
+        dynamic_cast<Stream_IAllocator*> (inherited::message_block_allocator_);
+      ACE_ASSERT (allocator_p);
+
+      if (allocator_p->block ())
+        ACE_DEBUG ((LM_CRITICAL,
+                    ACE_TEXT ("failed to allocate RPG_Net_Protocol_SessionMessage: \"%m\", aborting\n")));
+    } // end IF
+    else
       ACE_DEBUG ((LM_CRITICAL,
                   ACE_TEXT ("failed to allocate RPG_Net_Protocol_SessionMessage: \"%m\", aborting\n")));
     return NULL;

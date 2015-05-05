@@ -21,28 +21,35 @@
 
 #include "rpg_net_protocol_message.h"
 
-#include "rpg_net_protocol_tools.h"
+#include <sstream>
+
+#include "ace/Message_Block.h"
+#include "ace/Malloc_Base.h"
 
 #include "rpg_common_macros.h"
 
-#include <ace/Message_Block.h>
-#include <ace/Malloc_Base.h>
+#include "rpg_net_protocol_tools.h"
 
-#include <sstream>
-
-RPG_Net_Protocol_Message::RPG_Net_Protocol_Message(const RPG_Net_Protocol_Message& message_in)
- : inherited(message_in)
+RPG_Net_Protocol_Message::RPG_Net_Protocol_Message (unsigned int requestedSize_in)
+ : inherited (requestedSize_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::RPG_Net_Protocol_Message"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Message::RPG_Net_Protocol_Message"));
 
 }
 
-RPG_Net_Protocol_Message::RPG_Net_Protocol_Message(ACE_Data_Block* dataBlock_in,
-                                                   ACE_Allocator* messageAllocator_in)
- : inherited(dataBlock_in,        // use (don't own !) this data block
-             messageAllocator_in) // use this when destruction is imminent...
+RPG_Net_Protocol_Message::RPG_Net_Protocol_Message (const RPG_Net_Protocol_Message& message_in)
+ : inherited (message_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::RPG_Net_Protocol_Message"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Message::RPG_Net_Protocol_Message"));
+
+}
+
+RPG_Net_Protocol_Message::RPG_Net_Protocol_Message (ACE_Data_Block* dataBlock_in,
+                                                    ACE_Allocator* messageAllocator_in)
+ : inherited (dataBlock_in,        // use (don't own !) this data block
+              messageAllocator_in) // use this when destruction is imminent...
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Message::RPG_Net_Protocol_Message"));
 
 }
 
@@ -190,54 +197,90 @@ RPG_Net_Protocol_Message::crunch ()
 }
 
 ACE_Message_Block*
-RPG_Net_Protocol_Message::duplicate(void) const
+RPG_Net_Protocol_Message::duplicate (void) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Message::duplicate"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Message::duplicate"));
 
-  RPG_Net_Protocol_Message* new_message = NULL;
+  RPG_Net_Protocol_Message* message_p = NULL;
 
   // create a new RPG_Net_Protocol_Message that contains unique copies of
   // the message block fields, but a (reference counted) shallow duplicate of
   // the ACE_Data_Block.
 
   // if there is no allocator, use the standard new and delete calls.
-  if (message_block_allocator_ == NULL)
-  {
-    ACE_NEW_RETURN(new_message,
-                   RPG_Net_Protocol_Message(*this), // invoke copy ctor
-                   NULL);
-  } // end IF
+  if (!inherited::message_block_allocator_)
+    ACE_NEW_NORETURN (message_p,
+                      RPG_Net_Protocol_Message (*this)); // invoke copy ctor
   else // otherwise, use the existing message_block_allocator
   {
-    // *NOTE*: the argument to malloc SHOULDN'T really matter, as this will be
-    // a "shallow" copy which just references our data block...
-    // *IMPORTANT NOTE*: cached allocators require the object size as argument to
-    // malloc() (instead of its internal "capacity()" !)
-    // *TODO*: (depending on the allocator) we senselessly allocate a datablock
-    // anyway, only to immediately release it again...
-    ACE_NEW_MALLOC_RETURN(new_message,
-//                          static_cast<RPG_Net_Protocol_Message*>(message_block_allocator_->malloc(capacity())),
-                          static_cast<RPG_Net_Protocol_Message*>(message_block_allocator_->malloc(sizeof(RPG_Net_Protocol_Message))),
-                          RPG_Net_Protocol_Message(*this),
-                          NULL);
+    Stream_IAllocator* allocator_p =
+      dynamic_cast<Stream_IAllocator*> (inherited::message_block_allocator_);
+    ACE_ASSERT (allocator_p);
+allocate:
+    try
+    {
+      // *NOTE*: the argument to malloc SHOULDN'T really matter, as this will be
+      //         a "shallow" copy which just references our data block...
+      // *IMPORTANT NOTE*: cached allocators require the object size as argument
+      //                   to malloc() (instead of its internal "capacity()" !)
+      // *TODO*: (depending on the allocator implementation) this senselessly
+      // allocates a datablock anyway, only to immediately release it again...
+      ACE_NEW_MALLOC_NORETURN (message_p,
+                               //                           static_cast<RPG_Net_Protocol_Message*>(message_block_allocator_->malloc(capacity())),
+                               static_cast<RPG_Net_Protocol_Message*> (inherited::message_block_allocator_->calloc (sizeof (RPG_Net_Protocol_Message))),
+                               RPG_Net_Protocol_Message (*this));
+    }
+    catch (...)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("caught exception in Stream_IAllocator::calloc(0), aborting\n")));
+      return NULL;
+    }
+
+    // keep retrying ?
+    if (!message_p &&
+        !allocator_p->block ())
+      goto allocate;
   } // end ELSE
+  if (!message_p)
+  {
+    if (inherited::message_block_allocator_)
+    {
+      Stream_IAllocator* allocator_p =
+        dynamic_cast<Stream_IAllocator*> (inherited::message_block_allocator_);
+      ACE_ASSERT (allocator_p);
+
+      if (allocator_p->block ())
+        ACE_DEBUG ((LM_CRITICAL,
+                    ACE_TEXT ("failed to allocate RPG_Net_Protocol_Message: \"%m\", aborting\n")));
+    } // end IF
+    else
+      ACE_DEBUG ((LM_CRITICAL,
+                  ACE_TEXT ("failed to allocate RPG_Net_Protocol_Message: \"%m\", aborting\n")));
+    return NULL;
+  } // end IF
 
   // increment the reference counts of all the continuation messages
-  if (cont_)
+  if (inherited::cont_)
   {
-    new_message->cont_ = cont_->duplicate();
+    message_p->cont_ = inherited::cont_-> duplicate ();
 
     // If things go wrong, release all of our resources and return
-    if (new_message->cont_ == NULL)
+    if (!message_p->cont_)
     {
-      new_message->release();
-      new_message = NULL;
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to RPG_Net_Protocol_Message::duplicate(): \"%m\", aborting\n")));
+
+      // clean up
+      message_p->release ();
+
+      return NULL;
     } // end IF
   } // end IF
 
-  // *NOTE*: the "clone" always starts un-initialized --> use inherited::init()
+  // *NOTE*: if "this" is initialized, so is the "clone" (and vice-versa)...
 
-  return new_message;
+  return message_p;
 }
 
 std::string

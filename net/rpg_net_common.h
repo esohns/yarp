@@ -24,10 +24,13 @@
 #include "ace/INET_Addr.h"
 
 #include "stream_common.h"
+#include "stream_messageallocatorheap_base.h"
 
 #include "net_asynch_tcpsockethandler.h"
 #include "net_configuration.h"
 #include "net_connection_manager_common.h"
+#include "net_message.h"
+#include "net_sessionmessage.h"
 #include "net_stream_common.h"
 #include "net_stream_asynch_tcpsocket_base.h"
 #include "net_stream_tcpsocket_base.h"
@@ -38,6 +41,9 @@
 #include "net_client_connector.h"
 
 #include "rpg_net_stream.h"
+
+typedef Stream_MessageAllocatorHeapBase_T<Net_Message,
+                                          Net_SessionMessage> RPG_Net_StreamMessageAllocator_t;
 
 typedef Net_StreamAsynchTCPSocketBase_T<ACE_INET_Addr,
                                         Net_SocketConfiguration_t,

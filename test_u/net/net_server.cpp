@@ -21,6 +21,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -64,14 +65,11 @@
 #include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
 
-#include "rpg_net_common.h"
-#include "rpg_net_defines.h"
-#include "rpg_net_module_eventhandler.h"
-#include "rpg_net_stream_messageallocator.h"
+//#include "rpg_net_common.h"
+//#include "rpg_net_defines.h"
+//#include "rpg_net_module_eventhandler.h"
 
-//#include "rpg_client_common.h"
 #include "rpg_client_logger.h"
-//#include "rpg_client_ui_tools.h"
 
 #include "rpg_net_server_common.h"
 #include "rpg_net_server_common_tools.h"
@@ -466,8 +464,9 @@ do_work (unsigned int maxNumConnections_in,
   eventHandler_impl->subscribe (&ui_event_handler);
 
   Stream_AllocatorHeap heap_allocator;
-  RPG_Net_StreamMessageAllocator message_allocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
-                                                    &heap_allocator);
+  RPG_Net_StreamMessageAllocator_t message_allocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
+                                                      &heap_allocator,
+                                                      false);
 
   Net_Configuration_t configuration;
   ACE_OS::memset (&configuration, 0, sizeof (Net_Configuration_t));
@@ -625,7 +624,8 @@ do_work (unsigned int maxNumConnections_in,
 
   // step4b: initialize worker(s)
   int group_id = -1;
-  if (!Common_Tools::startEventDispatch (useReactor_in,
+  bool use_reactor = useReactor_in;
+  if (!Common_Tools::startEventDispatch (use_reactor,
                                          numDispatchThreads_in,
                                          group_id))
   {
@@ -665,12 +665,21 @@ do_work (unsigned int maxNumConnections_in,
 
   // step4c: start listening
   Net_SocketHandlerConfiguration_t socket_handler_configuration;
+  ACE_OS::memset (&socket_handler_configuration,
+                  0,
+                  sizeof (socket_handler_configuration));
   socket_handler_configuration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
   socket_handler_configuration.messageAllocator = &message_allocator;
   socket_handler_configuration.socketConfiguration =
       configuration.socketConfiguration;
   Net_ListenerConfiguration_t listener_configuration;
+  ACE_OS::memset (&listener_configuration,
+                  0,
+                  sizeof (listener_configuration));
   listener_configuration.addressFamily = ACE_ADDRESS_FAMILY_INET;
+  listener_configuration.allocator = &message_allocator;
+  listener_configuration.connectionManager =
+    NET_CONNECTIONMANAGER_SINGLETON::instance ();
   listener_configuration.portNumber = listeningPortNumber_in;
   listener_configuration.socketHandlerConfiguration =
     &socket_handler_configuration;
@@ -928,6 +937,14 @@ ACE_TMAIN (int argc_in,
     ACE_DEBUG ((LM_WARNING,
                 ACE_TEXT ("using (privileged) port #: %d...\n"),
                 listening_port_number));
+  // *IMPORTANT NOTE*: iff the number of message buffers is limited, the
+  //                   reactor/proactor thread could (dead)lock on the
+  //                   allocator lock, as it cannot dispatch events that would
+  //                   free slots
+  if (NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES <=
+      std::numeric_limits<unsigned int>::max ())
+    ACE_DEBUG ((LM_WARNING,
+                ACE_TEXT ("limiting the number of message buffers could lead to deadlocks...\n")));
   if (!UI_file.empty() &&
       !Common_File_Tools::isReadable (UI_file))
   {

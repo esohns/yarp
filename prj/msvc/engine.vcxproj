@@ -208,6 +208,9 @@ popd</Command>
     <ProjectReference Include="monster.vcxproj">
       <Project>{f306a4b7-0d19-4322-b891-11e528ebd50c}</Project>
     </ProjectReference>
+    <ProjectReference Include="net.vcxproj">
+      <Project>{4f0c67a3-7067-4c43-ac18-2529f27f3273}</Project>
+    </ProjectReference>
     <ProjectReference Include="player.vcxproj">
       <Project>{c0095f69-560d-4c7d-82de-078644135735}</Project>
     </ProjectReference>

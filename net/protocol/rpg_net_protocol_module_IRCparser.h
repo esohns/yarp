@@ -63,21 +63,21 @@ class RPG_Net_Protocol_Module_IRCParser
                                  RPG_Net_Protocol_Message> inherited;
 
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Module_IRCParser (const RPG_Net_Protocol_Module_IRCParser&));
-  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Module_IRCParser& operator=(const RPG_Net_Protocol_Module_IRCParser&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Module_IRCParser& operator= (const RPG_Net_Protocol_Module_IRCParser&));
 
   // helper methods
   RPG_Net_Protocol_Message* allocateMessage (unsigned int); // requested size
 
   // message allocator
-  Stream_IAllocator*               myAllocator;
+  Stream_IAllocator*               allocator_;
 
   // driver
-  bool                             myDebugScanner;
-  bool                             myDebugParser;
-  RPG_Net_Protocol_IRCParserDriver myDriver;
+  bool                             debugScanner_;
+  bool                             debugParser_;
+  RPG_Net_Protocol_IRCParserDriver driver_;
 
-  bool                             myCrunchMessages;
-  bool                             myIsInitialized;
+  bool                             crunchMessages_;
+  bool                             isInitialized_;
 };
 
 // declare module

@@ -37,7 +37,7 @@
 
 #include "net_configuration.h"
 
-#include "net_client_common.h"
+#include "net_client_connector_common.h"
 
 #include "rpg_map_common.h"
 #include "rpg_map_common_tools.h"

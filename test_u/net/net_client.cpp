@@ -20,6 +20,7 @@
 #include "stdafx.h"
 
 #include <iostream>
+#include <limits>
 #include <list>
 #include <sstream>
 #include <string>
@@ -51,6 +52,7 @@
 
 #include "net_connection_manager.h"
 
+#include "net_client_connector_common.h"
 #include "net_client_defines.h"
 
 #ifdef HAVE_CONFIG_H
@@ -65,12 +67,11 @@
 #include "rpg_common_macros.h"
 #include "rpg_common_tools.h"
 
-#include "rpg_net_defines.h"
-#include "rpg_net_common.h"
-#include "rpg_net_module_eventhandler.h"
-#include "rpg_net_stream_messageallocator.h"
-
-#include "rpg_net_server_defines.h"
+//#include "rpg_net_defines.h"
+//#include "rpg_net_common.h"
+//#include "rpg_net_module_eventhandler.h"
+//
+//#include "rpg_net_server_defines.h"
 
 #include "rpg_client_defines.h"
 #include "rpg_client_logger.h"
@@ -483,8 +484,9 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   eventHandler_impl->subscribe (&ui_event_handler);
 
   Stream_AllocatorHeap heap_allocator;
-  RPG_Net_StreamMessageAllocator message_allocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
-                                                    &heap_allocator);
+  RPG_Net_StreamMessageAllocator_t message_allocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
+                                                      &heap_allocator,
+                                                      false);
   Net_Configuration_t configuration;
   ACE_OS::memset (&configuration, 0, sizeof (Net_Configuration_t));
   // ************ connection configuration data ************
@@ -536,14 +538,14 @@ do_work (Net_Client_TimeoutHandler::ActionMode_t actionMode_in,
   Net_Client_IConnector_t* connector_p = NULL;
   if (useReactor_in)
     ACE_NEW_NORETURN (connector_p,
-                      RPG_Net_Client_Connector_t (&socket_handler_configuration,
-                                                  NET_CONNECTIONMANAGER_SINGLETON::instance (),
-                                                  0));
+                      Net_Client_Connector_t (&socket_handler_configuration,
+                                              NET_CONNECTIONMANAGER_SINGLETON::instance (),
+                                              0));
   else
     ACE_NEW_NORETURN (connector_p,
-                      RPG_Net_Client_AsynchConnector_t (&socket_handler_configuration,
-                                                        NET_CONNECTIONMANAGER_SINGLETON::instance (),
-                                                        0));
+                      Net_Client_AsynchConnector_t (&socket_handler_configuration,
+                                                    NET_CONNECTIONMANAGER_SINGLETON::instance (),
+                                                    0));
   if (!connector_p)
   {
     ACE_DEBUG ((LM_CRITICAL,
@@ -871,8 +873,8 @@ ACE_TMAIN (int argc_in,
 {
   RPG_TRACE (ACE_TEXT ("::main"));
 
-  // step0: init
-// *PORTABILITY*: on Windows, need to init ACE...
+  // step0: initialize
+// *PORTABILITY*: on Windows, initialize ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::init () == -1)
   {
@@ -956,7 +958,15 @@ ACE_TMAIN (int argc_in,
   } // end IF
 
   // step1c: validate arguments
-  if ((!UI_file.empty() && (alternating_mode || run_stress_test)) ||
+  // *IMPORTANT NOTE*: iff the number of message buffers is limited, the
+  //                   reactor/proactor thread could (dead)lock on the
+  //                   allocator lock, as it cannot dispatch events that would
+  //                   free slots
+  if (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES <=
+      std::numeric_limits<unsigned int>::max ())
+    ACE_DEBUG ((LM_WARNING,
+                ACE_TEXT ("limiting the number of message buffers could lead to deadlocks...\n")));
+  if ((!UI_file.empty () && (alternating_mode || run_stress_test)) ||
       (run_stress_test && ((server_ping_interval != 0) ||
                            (connection_interval != 0)))           ||
       (alternating_mode && run_stress_test))
