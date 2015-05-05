@@ -8,8 +8,8 @@ ltsugar.m4
 ltversion.m4
 lt~obsolete.m4
 .deps/
-build/
 _configs.sed
+build/
 
 .anjuta_sym_db.db
 .kdev4
@@ -23,18 +23,13 @@ Makefile.am.user
 configure
 Makefile
 
-scanner_report.txt
-lex.backup
-parser_graph.txt
-parser_graph.xml
-parser_report.txt
-IRCScanner_scanner_report.txt
-IRCbisect_scanner_report.txt
 
 *.sdf
 *.suo
 *.opensdf
+*.pdb
 Debug/
+Debug_obj/
 Release/
 ipch/
 
@@ -42,8 +37,7 @@ Thumbs.db
 .picasa.ini
 autoscan.log
 configure.scan
-Debug_obj
-ws2_32.pdb
+
 /character/monster/rpg_player.xsd
 /client/rpg_character.xsd
 /client/rpg_combat.xsd
@@ -58,4 +52,13 @@ ws2_32.pdb
 /client/rpg_monster.xsd
 /client/rpg_player.xsd
 /map/rpg_common_environment.xsd
+
 /doc/html
+
+scanner_report.txt
+lex.backup
+parser_graph.txt
+parser_graph.xml
+parser_report.txt
+IRCScanner_scanner_report.txt
+IRCbisect_scanner_report.txt

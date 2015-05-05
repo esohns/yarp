@@ -53,6 +53,7 @@ class RPG_Net_Server_Export RPG_Net_Server_Common_Tools
   static int selector (const dirent*); // directory entry
   static int comparator (const dirent**,  // directory entry
                          const dirent**); // directory entry
+
   static unsigned int maxNumberOfLogFiles_;
 };
 

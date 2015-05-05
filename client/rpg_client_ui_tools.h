@@ -21,27 +21,19 @@
 #ifndef RPG_CLIENT_UI_TOOLS_H
 #define RPG_CLIENT_UI_TOOLS_H
 
-#include "rpg_client_exports.h"
-
-#include "gtk/gtk.h"
-
 #include "ace/Global_Macros.h"
 
-#include <string>
+#include "rpg_client_exports.h"
 
 class RPG_Client_Export RPG_Client_UI_Tools
 {
  public:
-  static std::string UTF82Locale(const gchar*,        // string
-                                 const gssize& = -1); // length in bytes (-1: \0-terminated)
-  // *IMPORTANT NOTE*: return value needs to be g_free()'d !
-  static gchar* Locale2UTF8(const std::string&); // string
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_UI_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Client_UI_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_UI_Tools(const RPG_Client_UI_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_UI_Tools& operator=(const RPG_Client_UI_Tools&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Client_UI_Tools ());
+  ACE_UNIMPLEMENTED_FUNC (~RPG_Client_UI_Tools ());
+  ACE_UNIMPLEMENTED_FUNC (RPG_Client_UI_Tools (const RPG_Client_UI_Tools&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Client_UI_Tools& operator= (const RPG_Client_UI_Tools&));
 };
 
 #endif

@@ -21,12 +21,12 @@
 #ifndef RPG_DICE_COMMON_H
 #define RPG_DICE_COMMON_H
 
+#include <vector>
+
+#include "ace/Assert.h"
+
 #include "rpg_dice_dietype.h"
 #include "rpg_dice_roll.h"
-
-#include <ace/Assert.h>
-
-#include <vector>
 
 // some convenient types...
 typedef std::vector<RPG_Dice_Roll> RPG_Dice_Rolls_t;

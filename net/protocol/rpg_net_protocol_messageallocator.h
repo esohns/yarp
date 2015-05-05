@@ -44,7 +44,7 @@ class RPG_Protocol_Export RPG_Net_Protocol_MessageAllocator
                                                   RPG_Net_Protocol_SessionMessage> inherited;
 
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_MessageAllocator (const RPG_Net_Protocol_MessageAllocator&));
-  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_MessageAllocator& operator=(const RPG_Net_Protocol_MessageAllocator&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_MessageAllocator& operator= (const RPG_Net_Protocol_MessageAllocator&));
 };
 
 #endif

@@ -103,9 +103,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_map_vision_gui", "te
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_monster_parser", "test_u_monster.vcxproj", "{20053AC9-B17A-4B26-A78D-B1641D33258F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_net_protocol_client", "test_u_net_protocol_client.vcxproj", "{2DC1F873-1EA8-42E3-9708-1743A487EA1A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_net_client", "test_u_net_protocol_client.vcxproj", "{2DC1F873-1EA8-42E3-9708-1743A487EA1A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_net_protocol_client_gui", "test_u_net_protocol_client_gui.vcxproj", "{3CD65736-91A6-4BD3-92AC-1D9FCE838908}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_net_client_gui", "test_u_net_protocol_client_gui.vcxproj", "{3CD65736-91A6-4BD3-92AC-1D9FCE838908}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_map_path_finder_gui", "test_u_path_finder_gui.vcxproj", "{10A14AEB-4BBD-4C77-9D12-424125C4428C}"
 EndProject
@@ -136,6 +136,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "net", "net.vcxproj", "{4F0C67A3-7067-4C43-AC18-2529F27F3273}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libACENetwork_Server", "..\..\modules\libACENetwork\prj\msvc\libACENetwork_Server.vcxproj", "{4BA6E9EA-9F26-462E-B799-8ED2B7B5BA3D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_u_net_server", "test_u_net_server.vcxproj", "{B8422D9F-1595-4C6E-B6C4-F5A96E35AA80}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -326,6 +328,10 @@ Global
 		{4BA6E9EA-9F26-462E-B799-8ED2B7B5BA3D}.Debug|Win32.Build.0 = Debug|Win32
 		{4BA6E9EA-9F26-462E-B799-8ED2B7B5BA3D}.Release|Win32.ActiveCfg = Release|Win32
 		{4BA6E9EA-9F26-462E-B799-8ED2B7B5BA3D}.Release|Win32.Build.0 = Release|Win32
+		{B8422D9F-1595-4C6E-B6C4-F5A96E35AA80}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B8422D9F-1595-4C6E-B6C4-F5A96E35AA80}.Debug|Win32.Build.0 = Debug|Win32
+		{B8422D9F-1595-4C6E-B6C4-F5A96E35AA80}.Release|Win32.ActiveCfg = Release|Win32
+		{B8422D9F-1595-4C6E-B6C4-F5A96E35AA80}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

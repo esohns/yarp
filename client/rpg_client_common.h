@@ -32,6 +32,8 @@
 #include "glade/glade.h"
 #include "gtk/gtk.h"
 
+#include "common.h"
+
 #include "common_ui_common.h"
 
 #include "rpg_map_common.h"
@@ -49,10 +51,6 @@
 // forward declaration(s)
 class RPG_Client_Engine;
 class RPG_Engine;
-
-typedef std::deque<std::string> RPG_Client_MessageStack_t;
-typedef RPG_Client_MessageStack_t::const_iterator RPG_Client_MessageStackConstIterator_t;
-//typedef std::deque<ACE_Log_Record> RPG_Client_LogRecordStack_t;
 
 typedef std::map<RPG_Engine_EntityID_t, RPG_Graphics_Sprite> RPG_Client_Entities_t;
 typedef RPG_Client_Entities_t::const_iterator RPG_Client_EntitiesIterator_t;
@@ -88,7 +86,7 @@ struct RPG_Client_GTK_CBData_t
   Common_UI_GTKState                GTKState;
   bool                              doHover;
   unsigned int                      hoverTime;
-  RPG_Client_MessageStack_t         logStack;
+  Common_MessageStack_t             logStack;
   ACE_Recursive_Thread_Mutex        logStackLock;
   GtkFileFilter*                    entityFilter;
   GtkFileFilter*                    mapFilter;
