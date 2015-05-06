@@ -252,7 +252,7 @@ RPG_Net_Module_ProtocolHandler::handleSessionMessage (Net_SessionMessage*& messa
                     ACE_TEXT ("session %u: scheduled \"ping\" timer (id: %d), interval: %#T...\n"),
                     sessionID_,
                     timerID_,
-                    &pingInterval_));
+                    &interval));
       } // end IF
 
       break;
