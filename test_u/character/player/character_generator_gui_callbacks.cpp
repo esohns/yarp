@@ -30,6 +30,7 @@
 #include "common_ui_common.h"
 #include "common_ui_defines.h"
 #include "common_ui_gtk_manager.h"
+#include "common_ui_tools.h"
 
 #include "rpg_common_defines.h"
 #include "rpg_common_file_tools.h"
@@ -60,7 +61,7 @@
 #include "rpg_client_common.h"
 #include "rpg_client_common_tools.h"
 #include "rpg_client_defines.h"
-#include "rpg_client_ui_tools.h"
+//#include "rpg_client_ui_tools.h"
 
 #include "character_generator_gui_common.h"
 
@@ -189,7 +190,7 @@ idle_initialize_UI_cb (gpointer userData_in)
   g_object_unref (G_OBJECT (list));
   unsigned int num_entries = ::load_files (REPOSITORY_PROFILES,
                                            list);
-  
+
   Common_UI_GladeXMLsIterator_t iterator_2 =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
@@ -704,7 +705,7 @@ character_file_activated_GTK_cb (GtkWidget* widget_in,
 
   // sanity check(s)
   ACE_ASSERT (data_p);
-  
+
   Common_UI_GladeXMLsIterator_t iterator =
     data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
   Common_UI_GladeXMLsIterator_t iterator_2 =
@@ -724,7 +725,7 @@ character_file_activated_GTK_cb (GtkWidget* widget_in,
     gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (filechooser_dialog));
   if (!filename_utf8)
     return FALSE; // done
-  filename = RPG_Client_UI_Tools::UTF82Locale (filename_utf8);
+  filename = Common_UI_Tools::UTF82Locale (filename_utf8);
   g_free (filename_utf8);
 
   // clean up

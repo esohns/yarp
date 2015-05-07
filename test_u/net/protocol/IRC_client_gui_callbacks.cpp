@@ -26,6 +26,7 @@
 #include "common_ui_common.h"
 #include "common_ui_defines.h"
 #include "common_ui_gtk_manager.h"
+#include "common_ui_tools.h"
 
 #include "rpg_common_macros.h"
 
@@ -35,8 +36,6 @@
 #include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_module_IRChandler.h"
 #include "rpg_net_protocol_tools.h"
-
-#include "rpg_client_ui_tools.h"
 
 #include "IRC_client_defines.h"
 #include "IRC_client_gui_common.h"
@@ -342,7 +341,7 @@ connect_clicked_cb (GtkWidget* widget_in,
   } // end IF
   gtk_widget_hide (GTK_WIDGET (main_entry_dialog));
   loginOptions.nick =
-    RPG_Client_UI_Tools::UTF82Locale (gtk_entry_get_text (main_entry_entry),
+    Common_UI_Tools::UTF82Locale (gtk_entry_get_text (main_entry_entry),
                                       -1);
   // clean up
   gtk_entry_buffer_delete_text (gtk_entry_get_buffer (main_entry_entry),
@@ -608,7 +607,7 @@ send_clicked_cb (GtkWidget* widget_in,
 
   // retrieve textbuffer data
   std::string message_string =
-    RPG_Client_UI_Tools::UTF82Locale (gtk_entry_buffer_get_text (buffer),    // text
+    Common_UI_Tools::UTF82Locale (gtk_entry_buffer_get_text (buffer),    // text
                                       gtk_entry_buffer_get_length (buffer)); // number of bytes
   if (message_string.empty ())
   {
@@ -779,7 +778,7 @@ change_clicked_cb (GtkWidget* widget_in,
 
   // retrieve textbuffer data
   std::string nick_string =
-    RPG_Client_UI_Tools::UTF82Locale (gtk_entry_buffer_get_text (buffer),    // text
+    Common_UI_Tools::UTF82Locale (gtk_entry_buffer_get_text (buffer),    // text
                                       gtk_entry_buffer_get_length (buffer)); // number of bytes
   if (nick_string.empty ())
   {
@@ -860,7 +859,7 @@ usersbox_changed_cb (GtkWidget* widget_in,
   // convert UTF8 to locale
 //   user_string = g_value_get_string(&active_value);
   std::string user_string =
-    RPG_Client_UI_Tools::UTF82Locale (user_value,
+    Common_UI_Tools::UTF82Locale (user_value,
                                       g_utf8_strlen (user_value, -1));
   if (user_string.empty ())
   {
@@ -992,7 +991,7 @@ join_clicked_cb (GtkWidget* widget_in,
 
   // retrieve textbuffer data
   std::string channel_string =
-    RPG_Client_UI_Tools::UTF82Locale (gtk_entry_buffer_get_text (buffer),    // text
+    Common_UI_Tools::UTF82Locale (gtk_entry_buffer_get_text (buffer),    // text
                                       gtk_entry_buffer_get_length (buffer)); // number of bytes
   if (channel_string.empty ())
   {
@@ -1079,7 +1078,7 @@ channelbox_changed_cb (GtkWidget* widget_in,
   // convert UTF8 to locale
 //   channel_string = g_value_get_string(&active_value);
   std::string channel_string =
-    RPG_Client_UI_Tools::UTF82Locale (channel_value,
+    Common_UI_Tools::UTF82Locale (channel_value,
                                       g_utf8_strlen (channel_value, -1));
   if (channel_string.empty ())
   {
@@ -1371,7 +1370,7 @@ action_away_cb (GtkAction* action_in,
     gtk_widget_hide (GTK_WIDGET (server_tab_entry_dialog));
 
     away_message =
-      RPG_Client_UI_Tools::UTF82Locale (gtk_entry_get_text (server_tab_entry_dialog_entry),
+      Common_UI_Tools::UTF82Locale (gtk_entry_get_text (server_tab_entry_dialog_entry),
                                         -1);
     // clean up
     gtk_entry_buffer_delete_text (gtk_entry_get_buffer (server_tab_entry_dialog_entry),
@@ -1832,7 +1831,7 @@ members_clicked_cb (GtkWidget* widget_in,
                         0, &current_value,
                         -1);
     // *TODO*: check if these
-    data_p->parameters.push_back (RPG_Client_UI_Tools::UTF82Locale (current_value,
+    data_p->parameters.push_back (Common_UI_Tools::UTF82Locale (current_value,
                                                                     g_utf8_strlen (current_value, -1)));
 
     // clean up
@@ -2022,7 +2021,7 @@ action_invite_cb (GtkAction* action_in,
     GTK_MENU_ITEM (gtk_menu_get_active (invite_channel_members_menu));
   ACE_ASSERT (active_item);
   std::string channel_string =
-    RPG_Client_UI_Tools::UTF82Locale (gtk_menu_item_get_label (active_item),
+    Common_UI_Tools::UTF82Locale (gtk_menu_item_get_label (active_item),
                                       -1);
   ACE_ASSERT (!channel_string.empty ());
 

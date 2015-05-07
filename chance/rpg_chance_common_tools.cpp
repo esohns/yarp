@@ -21,28 +21,28 @@
 
 #include "rpg_chance_common_tools.h"
 
+#include "ace/Log_Msg.h"
+
 #include "rpg_dice_dietype.h"
 #include "rpg_dice_roll.h"
 #include "rpg_dice.h"
 
-#include <rpg_common_macros.h>
-
-#include <ace/Log_Msg.h>
+#include "rpg_common_macros.h"
 
 int
-RPG_Chance_Common_Tools::getCheck(const short int& modifier_in,
-                                  const RPG_Dice_DieType& dieType_in)
+RPG_Chance_Common_Tools::getCheck (short int modifier_in,
+                                   const RPG_Dice_DieType& dieType_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Chance_Common_Tools::getCheck"));
+  RPG_TRACE (ACE_TEXT ("RPG_Chance_Common_Tools::getCheck"));
 
   RPG_Dice_Roll roll;
   roll.numDice = 1;
   roll.typeDice = dieType_in;
   roll.modifier = modifier_in;
   RPG_Dice_RollResult_t result;
-  RPG_Dice::simulateRoll(roll,
-                         1,
-                         result);
+  RPG_Dice::simulateRoll  (roll,
+                           1,
+                           result);
 
-  return result.front();
+  return result.front ();
 }

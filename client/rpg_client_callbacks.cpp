@@ -31,12 +31,11 @@
 
 #include "common_file_tools.h"
 
+#include "common_ui_tools.h"
+
 #include "rpg_common_defines.h"
 #include "rpg_common_macros.h"
 #include "rpg_common_tools.h"
-
-#include "rpg_player_common_tools.h"
-#include "rpg_player_defines.h"
 
 #include "rpg_magic_common_tools.h"
 
@@ -44,6 +43,9 @@
 #include "rpg_item_commodity.h"
 #include "rpg_item_instance_manager.h"
 #include "rpg_item_weapon.h"
+
+#include "rpg_player_common_tools.h"
+#include "rpg_player_defines.h"
 
 #include "rpg_map_common_tools.h"
 #include "rpg_map_defines.h"
@@ -65,7 +67,7 @@
 #include "rpg_client_common_tools.h"
 #include "rpg_client_defines.h"
 #include "rpg_client_engine.h"
-#include "rpg_client_ui_tools.h"
+//#include "rpg_client_ui_tools.h"
 
 void
 update_equipment (const RPG_Client_GTK_CBData_t& data_in)
@@ -248,34 +250,34 @@ update_character_profile (const RPG_Player& player_in,
 
   std::string text;
   std::stringstream converter;
-  GtkWidget* current = NULL;
+  GtkWidget* widget_p = NULL;
 
   // step1: name
-  current = GTK_WIDGET (glade_xml_get_widget (xml_in,
-                                              ACE_TEXT_ALWAYS_CHAR ("name")));
-  ACE_ASSERT(current);
-  gchar* text_p = RPG_Client_UI_Tools::Locale2UTF8 (player_in.getName ());
+  widget_p = GTK_WIDGET (glade_xml_get_widget (xml_in,
+                                               ACE_TEXT_ALWAYS_CHAR ("name")));
+  ACE_ASSERT(widget_p);
+  gchar* text_p = Common_UI_Tools::Locale2UTF8 (player_in.getName ());
   if (!text_p)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Client_UI_Tools::Locale2UTF8(\"%s\"), returning\n"),
+                ACE_TEXT ("failed to Common_UI_Tools::Locale2UTF8(\"%s\"), returning\n"),
                 ACE_TEXT (player_in.getName ().c_str ())));
     return;
   } // end IF
-  gtk_label_set_text (GTK_LABEL (current),
+  gtk_label_set_text (GTK_LABEL (widget_p),
                       text_p);
   g_free (text_p);
 
   // step2: gender
-  const RPG_Character_Gender& player_gender = player_in.getGender();
+  const RPG_Character_Gender& player_gender = player_in.getGender ();
   switch (player_gender)
   {
     case RPG_CHARACTER_GENDER_MAX:
     case RPG_CHARACTER_GENDER_INVALID:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid gender (was: \"%s\"), returning\n"),
-                 ACE_TEXT (RPG_Character_GenderHelper::RPG_Character_GenderToString (player_gender).c_str ())));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid gender (was: \"%s\"), returning\n"),
+                  ACE_TEXT (RPG_Character_GenderHelper::RPG_Character_GenderToString (player_gender).c_str ())));
       return;
     }
     case GENDER_NONE:
@@ -288,10 +290,10 @@ update_character_profile (const RPG_Player& player_in,
       break;
     }
   } // end SWITCH
-  current = GTK_WIDGET (glade_xml_get_widget (xml_in,
-                                              ACE_TEXT_ALWAYS_CHAR ("gender")));
-  ACE_ASSERT (current);
-  gtk_label_set_text (GTK_LABEL (current),
+  widget_p = GTK_WIDGET (glade_xml_get_widget (xml_in,
+                                               ACE_TEXT_ALWAYS_CHAR ("gender")));
+  ACE_ASSERT (widget_p);
+  gtk_label_set_text (GTK_LABEL (widget_p),
                       text.c_str ());
 
   // step3: race
@@ -331,10 +333,10 @@ update_character_profile (const RPG_Player& player_in,
     } // end FOR
     text.erase (--text.end ());
   } // end ELSE
-  current = GTK_WIDGET (glade_xml_get_widget (xml_in,
-                                              ACE_TEXT_ALWAYS_CHAR ("race")));
-  ACE_ASSERT (current);
-  gtk_label_set_text (GTK_LABEL (current),
+  widget_p = GTK_WIDGET (glade_xml_get_widget (xml_in,
+                                               ACE_TEXT_ALWAYS_CHAR ("race")));
+  ACE_ASSERT (widget_p);
+  gtk_label_set_text (GTK_LABEL (widget_p),
                       text.c_str ());
 
   // step4: class
@@ -393,10 +395,10 @@ update_character_profile (const RPG_Player& player_in,
     text.erase (--text.end ());
     text += ACE_TEXT_ALWAYS_CHAR (")");
   } // end IF
-  current = GTK_WIDGET (glade_xml_get_widget (xml_in,
-                                              ACE_TEXT_ALWAYS_CHAR ("class")));
-  ACE_ASSERT (current);
-  gtk_label_set_text (GTK_LABEL (current),
+  widget_p = GTK_WIDGET (glade_xml_get_widget (xml_in,
+                                               ACE_TEXT_ALWAYS_CHAR ("class")));
+  ACE_ASSERT (widget_p);
+  gtk_label_set_text (GTK_LABEL (widget_p),
                       text.c_str ());
 
   // step5: alignment
@@ -446,22 +448,22 @@ update_character_profile (const RPG_Player& player_in,
       }
     } // end SWITCH
   } // end ELSE
-  current = GTK_WIDGET (glade_xml_get_widget (xml_in,
-                                              ACE_TEXT_ALWAYS_CHAR ("alignment")));
-  ACE_ASSERT (current);
-  gtk_label_set_text (GTK_LABEL (current),
+  widget_p = GTK_WIDGET (glade_xml_get_widget (xml_in,
+                                               ACE_TEXT_ALWAYS_CHAR ("alignment")));
+  ACE_ASSERT (widget_p);
+  gtk_label_set_text (GTK_LABEL (widget_p),
                       text.c_str ());
 
   // step6: HP
   //converter.str(ACE_TEXT_ALWAYS_CHAR(""));
   //converter.clear();
   converter << player_in.getNumHitPoints ();
-  converter << ACE_TEXT_ALWAYS_CHAR(" / ");
+  converter << ACE_TEXT_ALWAYS_CHAR (" / ");
   converter << player_in.getNumTotalHitPoints ();
-  current = GTK_WIDGET (glade_xml_get_widget (xml_in,
-                                              ACE_TEXT_ALWAYS_CHAR ("hitpoints")));
-  ACE_ASSERT (current);
-  gtk_label_set_text (GTK_LABEL (current),
+  widget_p = GTK_WIDGET (glade_xml_get_widget (xml_in,
+                                               ACE_TEXT_ALWAYS_CHAR ("hitpoints")));
+  ACE_ASSERT (widget_p);
+  gtk_label_set_text (GTK_LABEL (widget_p),
                       converter.str ().c_str ());
 
   // step7: AC
@@ -472,26 +474,26 @@ update_character_profile (const RPG_Player& player_in,
   converter << static_cast<int> (player_in.getArmorClass (DEFENSE_TOUCH));
   converter << ACE_TEXT_ALWAYS_CHAR(" / ");
   converter << static_cast<int> (player_in.getArmorClass (DEFENSE_FLATFOOTED));
-  current =
+  widget_p =
     GTK_WIDGET (glade_xml_get_widget (xml_in,
                                       ACE_TEXT_ALWAYS_CHAR ("armorclass")));
-  ACE_ASSERT (current);
-  gtk_label_set_text (GTK_LABEL (current),
+  ACE_ASSERT (widget_p);
+  gtk_label_set_text (GTK_LABEL (widget_p),
                       converter.str ().c_str ());
 
   // step8: XP
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
   converter << player_in.getExperience ();
-  current =
+  widget_p =
     GTK_WIDGET (glade_xml_get_widget (xml_in,
                                       ACE_TEXT_ALWAYS_CHAR ("experience")));
-  ACE_ASSERT (current);
-  gtk_label_set_text (GTK_LABEL (current),
+  ACE_ASSERT (widget_p);
+  gtk_label_set_text (GTK_LABEL (widget_p),
                       converter.str ().c_str ());
 
   // step9: level(s)
-  text.clear();
+  text.clear ();
   unsigned char level = 0;
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
@@ -516,28 +518,28 @@ update_character_profile (const RPG_Player& player_in,
     std::advance (iterator, -3);
     text.erase (iterator, text.end ());
   } // end IF
-  current = GTK_WIDGET (glade_xml_get_widget (xml_in,
-                                              ACE_TEXT_ALWAYS_CHAR ("level")));
-  ACE_ASSERT (current);
-  gtk_label_set_text (GTK_LABEL (current),
+  widget_p = GTK_WIDGET (glade_xml_get_widget (xml_in,
+                                               ACE_TEXT_ALWAYS_CHAR ("level")));
+  ACE_ASSERT (widget_p);
+  gtk_label_set_text (GTK_LABEL (widget_p),
                       text.c_str ());
 
   // step10: gold
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
   converter << player_in.getWealth ();
-  current = GTK_WIDGET (glade_xml_get_widget (xml_in,
-                                              ACE_TEXT_ALWAYS_CHAR ("gold")));
-  ACE_ASSERT (current);
-  gtk_label_set_text (GTK_LABEL (current),
+  widget_p = GTK_WIDGET (glade_xml_get_widget (xml_in,
+                                               ACE_TEXT_ALWAYS_CHAR ("gold")));
+  ACE_ASSERT (widget_p);
+  gtk_label_set_text (GTK_LABEL (widget_p),
                       converter.str ().c_str ());
 
   // step11: condition
-  current =
+  widget_p =
     GTK_WIDGET (glade_xml_get_widget (xml_in,
                                       ACE_TEXT_ALWAYS_CHAR ("condition_vbox")));
-  ACE_ASSERT (current);
-  GList* entries = gtk_container_get_children (GTK_CONTAINER (current));
+  ACE_ASSERT (widget_p);
+  GList* entries = gtk_container_get_children (GTK_CONTAINER (widget_p));
 //   ACE_ASSERT(entries);
   if (entries)
   {
@@ -553,7 +555,7 @@ update_character_profile (const RPG_Player& player_in,
     g_list_free_full (entries,
                       (GDestroyNotify)gtk_widget_destroy);
   } // end IF
-  GtkWidget* label = NULL;
+  GtkWidget* label_p = NULL;
   const RPG_Character_Conditions_t& player_condition = player_in.getCondition ();
   for (RPG_Character_ConditionsIterator_t iterator = player_condition.begin ();
        iterator != player_condition.end ();
@@ -561,75 +563,78 @@ update_character_profile (const RPG_Player& player_in,
   {
     text =
       RPG_Common_Tools::enumToString (RPG_Common_ConditionHelper::RPG_Common_ConditionToString (*iterator));
-    label = NULL;
-    label = gtk_label_new (text.c_str ());
-    ACE_ASSERT (label);
+    label_p = NULL;
+    label_p = gtk_label_new (text.c_str ());
+    ACE_ASSERT (label_p);
 //     gtk_container_add(GTK_CONTAINER(current), label);
-    gtk_box_pack_start (GTK_BOX (current), label,
+    gtk_box_pack_start (GTK_BOX (widget_p), label_p,
                         FALSE, // expand
                         FALSE, // fill
                         0);    // padding
   } // end FOR
-  gtk_widget_show_all (current);
+  gtk_widget_show_all (widget_p);
 
   // step12: attributes
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
   converter << static_cast<unsigned int> (player_in.getAttribute (ATTRIBUTE_STRENGTH));
-  current = GTK_WIDGET (glade_xml_get_widget (xml_in,
-                                              ACE_TEXT_ALWAYS_CHAR ("strength")));
-  ACE_ASSERT (current);
-  gtk_label_set_text (GTK_LABEL (current),
+  widget_p = GTK_WIDGET (glade_xml_get_widget (xml_in,
+                                               ACE_TEXT_ALWAYS_CHAR ("strength")));
+  ACE_ASSERT (widget_p);
+  gtk_label_set_text (GTK_LABEL (widget_p),
                       converter.str ().c_str ());
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
   converter << static_cast<unsigned int> (player_in.getAttribute (ATTRIBUTE_DEXTERITY));
-  current = GTK_WIDGET (glade_xml_get_widget (xml_in,
-                                              ACE_TEXT_ALWAYS_CHAR ("dexterity")));
-  ACE_ASSERT (current);
-  gtk_label_set_text (GTK_LABEL (current),
+  widget_p =
+      GTK_WIDGET (glade_xml_get_widget (xml_in,
+                                        ACE_TEXT_ALWAYS_CHAR ("dexterity")));
+  ACE_ASSERT (widget_p);
+  gtk_label_set_text (GTK_LABEL (widget_p),
                       converter.str ().c_str ());
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
   converter << static_cast<unsigned int> (player_in.getAttribute (ATTRIBUTE_CONSTITUTION));
-  current =
+  widget_p =
     GTK_WIDGET (glade_xml_get_widget (xml_in,
                                       ACE_TEXT_ALWAYS_CHAR ("constitution")));
-  ACE_ASSERT (current);
-  gtk_label_set_text (GTK_LABEL (current),
+  ACE_ASSERT (widget_p);
+  gtk_label_set_text (GTK_LABEL (widget_p),
                       converter.str ().c_str ());
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
   converter << static_cast<unsigned int> (player_in.getAttribute (ATTRIBUTE_INTELLIGENCE));
-  current =
+  widget_p =
     GTK_WIDGET (glade_xml_get_widget (xml_in,
                                       ACE_TEXT_ALWAYS_CHAR ("intelligence")));
-  ACE_ASSERT (current);
-  gtk_label_set_text (GTK_LABEL (current),
+  ACE_ASSERT (widget_p);
+  gtk_label_set_text (GTK_LABEL (widget_p),
                       converter.str ().c_str ());
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
   converter << static_cast<unsigned int> (player_in.getAttribute (ATTRIBUTE_WISDOM));
-  current = GTK_WIDGET (glade_xml_get_widget (xml_in,
-                                              ACE_TEXT_ALWAYS_CHAR ("wisdom")));
-  ACE_ASSERT (current);
-  gtk_label_set_text (GTK_LABEL (current),
+  widget_p =
+      GTK_WIDGET (glade_xml_get_widget (xml_in,
+                                        ACE_TEXT_ALWAYS_CHAR ("wisdom")));
+  ACE_ASSERT (widget_p);
+  gtk_label_set_text (GTK_LABEL (widget_p),
                       converter.str ().c_str ());
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
   converter << static_cast<unsigned int> (player_in.getAttribute (ATTRIBUTE_CHARISMA));
-  current = GTK_WIDGET (glade_xml_get_widget (xml_in,
-                                              ACE_TEXT_ALWAYS_CHAR ("charisma")));
-  ACE_ASSERT (current);
-  gtk_label_set_text (GTK_LABEL (current),
+  widget_p =
+      GTK_WIDGET (glade_xml_get_widget (xml_in,
+                                        ACE_TEXT_ALWAYS_CHAR ("charisma")));
+  ACE_ASSERT (widget_p);
+  gtk_label_set_text (GTK_LABEL (widget_p),
                       converter.str ().c_str ());
 
   // step13: feats
-  current =
+  widget_p =
     GTK_WIDGET (glade_xml_get_widget (xml_in,
                                       ACE_TEXT_ALWAYS_CHAR ("feats_vbox")));
-  ACE_ASSERT (current);
-  entries = gtk_container_get_children (GTK_CONTAINER (current));
+  ACE_ASSERT (widget_p);
+  entries = gtk_container_get_children (GTK_CONTAINER (widget_p));
   //   ACE_ASSERT(entries);
   if (entries)
   {
@@ -645,7 +650,6 @@ update_character_profile (const RPG_Player& player_in,
     g_list_free_full (entries,
                       (GDestroyNotify)gtk_widget_destroy);
   } // end IF
-  label = NULL;
   const RPG_Character_Feats_t& player_feats = player_in.getFeats ();
   for (RPG_Character_FeatsConstIterator_t iterator = player_feats.begin ();
        iterator != player_feats.end ();
@@ -653,23 +657,23 @@ update_character_profile (const RPG_Player& player_in,
   {
     text =
       RPG_Common_Tools::enumToString (RPG_Character_FeatHelper::RPG_Character_FeatToString (*iterator));
-    label = NULL;
-    label = gtk_label_new (text.c_str ());
-    ACE_ASSERT (label);
-//     gtk_container_add(GTK_CONTAINER(current), label);
-    gtk_box_pack_start (GTK_BOX (current), label,
+    label_p = NULL;
+    label_p = gtk_label_new (text.c_str ());
+    ACE_ASSERT (label_p);
+//     gtk_container_add(GTK_CONTAINER(current), label_p);
+    gtk_box_pack_start (GTK_BOX (widget_p), label_p,
                         FALSE, // expand
                         FALSE, // fill
                         0);    // padding
   } // end FOR
-  gtk_widget_show_all (current);
+  gtk_widget_show_all (widget_p);
 
   // step14: abilities
-  current =
+  widget_p =
     GTK_WIDGET (glade_xml_get_widget (xml_in,
                                       ACE_TEXT_ALWAYS_CHAR ("abilities_vbox")));
-  ACE_ASSERT (current);
-  entries = gtk_container_get_children (GTK_CONTAINER (current));
+  ACE_ASSERT (widget_p);
+  entries = gtk_container_get_children (GTK_CONTAINER (widget_p));
 //   ACE_ASSERT(entries);
   if (entries)
   {
@@ -692,23 +696,23 @@ update_character_profile (const RPG_Player& player_in,
   {
     text =
       RPG_Common_Tools::enumToString (RPG_Character_AbilityHelper::RPG_Character_AbilityToString (*iterator));
-    label = NULL;
-    label = gtk_label_new (text.c_str ());
-    ACE_ASSERT (label);
-//     gtk_container_add(GTK_CONTAINER(current), label);
-    gtk_box_pack_start (GTK_BOX (current), label,
+    label_p = NULL;
+    label_p = gtk_label_new (text.c_str ());
+    ACE_ASSERT (label_p);
+//     gtk_container_add(GTK_CONTAINER(widget_p), label_p);
+    gtk_box_pack_start (GTK_BOX (widget_p), label_p,
                         FALSE, // expand
                         FALSE, // fill
                         0);    // padding
   } // end FOR
-  gtk_widget_show_all (current);
+  gtk_widget_show_all (widget_p);
 
   // step15: skills
-  current =
+  widget_p =
     GTK_WIDGET (glade_xml_get_widget (xml_in,
                                       ACE_TEXT_ALWAYS_CHAR ("skills_table")));
-  ACE_ASSERT (current);
-  entries = gtk_container_get_children (GTK_CONTAINER (current));
+  ACE_ASSERT (widget_p);
+  entries = gtk_container_get_children (GTK_CONTAINER (widget_p));
 //   ACE_ASSERT(entries);
   if (entries)
   {
@@ -726,7 +730,7 @@ update_character_profile (const RPG_Player& player_in,
   } // end IF
   //GtkWidget* current_box = NULL;
   const RPG_Character_Skills_t& player_skills = player_in.getSkills ();
-  gtk_table_resize (GTK_TABLE (current),
+  gtk_table_resize (GTK_TABLE (widget_p),
                     player_skills.size (), 2);
   unsigned int index = 0;
   GtkAttachOptions attach_options = GTK_SHRINK;
@@ -740,15 +744,15 @@ update_character_profile (const RPG_Player& player_in,
     //current_box = gtk_hbox_new(TRUE, // homogeneous
     //                           0);   // spacing
     //ACE_ASSERT(current_box);
-    label = NULL;
-    label = gtk_label_new (text.c_str ());
-    ACE_ASSERT (label);
-    //gtk_box_pack_start(GTK_BOX(current_box), label,
+    label_p = NULL;
+    label_p = gtk_label_new (text.c_str ());
+    ACE_ASSERT (label_p);
+    //gtk_box_pack_start(GTK_BOX(current_box), label_p,
     //                   FALSE, // expand
     //                   FALSE, // fill
     //                   0);    // padding
-    gtk_table_attach_defaults (GTK_TABLE (current),
-                               label,
+    gtk_table_attach_defaults (GTK_TABLE (widget_p),
+                               label_p,
                                0, 1,
                                index, index + 1);
 
@@ -756,15 +760,15 @@ update_character_profile (const RPG_Player& player_in,
     converter.clear ();
     converter << static_cast<unsigned int> ((*iterator).second);
     text = converter.str ();
-    label = NULL;
-    label = gtk_label_new (text.c_str ());
-    ACE_ASSERT (label);
-    //gtk_box_pack_start(GTK_BOX(current_box), label,
+    label_p = NULL;
+    label_p = gtk_label_new (text.c_str ());
+    ACE_ASSERT (label_p);
+    //gtk_box_pack_start(GTK_BOX(current_box), label_p,
     //                   FALSE, // expand
     //                   FALSE, // fill
     //                   0);    // padding
-    gtk_table_attach (GTK_TABLE (current),
-                      label,
+    gtk_table_attach (GTK_TABLE (widget_p),
+                      label_p,
                       1, 2,
                       index, index + 1,
                       attach_options, attach_options,
@@ -776,41 +780,41 @@ update_character_profile (const RPG_Player& player_in,
     //                   FALSE, // fill
     //                   0);    // padding
   } // end FOR
-  gtk_widget_show_all (current);
+  gtk_widget_show_all (widget_p);
 
   // step16: spells
-  GtkNotebook* notebook =
+  GtkNotebook* notebook_p =
     GTK_NOTEBOOK (glade_xml_get_widget (xml_in,
                                         ACE_TEXT_ALWAYS_CHAR ("notebook")));
-  ACE_ASSERT (notebook);
-  current = gtk_notebook_get_nth_page (notebook,
-                                       3);
-  //current =
+  ACE_ASSERT (notebook_p);
+  widget_p = gtk_notebook_get_nth_page (notebook_p,
+                                        3);
+  //widget_p =
   //    GTK_WIDGET(glade_xml_get_widget(xml_in,
   //                                    ACE_TEXT_ALWAYS_CHAR("spells_frame")));
-  ACE_ASSERT (current);
-  gtk_widget_set_sensitive (current,
+  ACE_ASSERT (widget_p);
+  gtk_widget_set_sensitive (widget_p,
                             RPG_Magic_Common_Tools::hasCasterClass (player_class));
-  //if (!RPG_Magic_Common_Tools::hasCasterClass(player_class))
-  //  gtk_widget_hide_all(current);
+  //if (!RPG_Magic_Common_Tools::hasCasterClass (player_class))
+  //  gtk_widget_hide_all (widget_p);
   //else
-  //  gtk_widget_show_all(current);
+  //  gtk_widget_show_all (widget_p);
 
   // divine casters know ALL spells from the levels they can cast...
-  current =
+  widget_p =
     GTK_WIDGET (glade_xml_get_widget (xml_in,
                                       ACE_TEXT_ALWAYS_CHAR ("known_spells_frame")));
-  ACE_ASSERT (current);
+  ACE_ASSERT (widget_p);
   if (!RPG_Magic_Common_Tools::hasArcaneCasterClass (player_class))
-    gtk_widget_hide_all (current);
+    gtk_widget_hide_all (widget_p);
   else
-    gtk_widget_show_all (current);
+    gtk_widget_show_all (widget_p);
 
-  current =
+  widget_p =
     GTK_WIDGET (glade_xml_get_widget (xml_in,
                                       ACE_TEXT_ALWAYS_CHAR ("known_spells_vbox")));
-  ACE_ASSERT (current);
-  entries = gtk_container_get_children (GTK_CONTAINER (current));
+  ACE_ASSERT (widget_p);
+  entries = gtk_container_get_children (GTK_CONTAINER (widget_p));
 //   ACE_ASSERT(entries);
   if (entries)
   {
@@ -835,21 +839,21 @@ update_character_profile (const RPG_Player& player_in,
     text =
       RPG_Common_Tools::enumToString (RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString (*iterator));
 
-    label = NULL;
-    label = gtk_label_new (text.c_str ());
-    ACE_ASSERT (label);
-//     gtk_container_add(GTK_CONTAINER(current), label);
-    gtk_box_pack_start (GTK_BOX (current), label,
+    label_p = NULL;
+    label_p = gtk_label_new (text.c_str ());
+    ACE_ASSERT (label_p);
+//     gtk_container_add(GTK_CONTAINER (widget_p), label_p);
+    gtk_box_pack_start (GTK_BOX (widget_p), label_p,
                         FALSE, // expand
                         FALSE, // fill
                         0);    // padding
   } // end FOR
-  gtk_widget_show_all (current);
-  current =
+  gtk_widget_show_all (widget_p);
+  widget_p =
     GTK_WIDGET (glade_xml_get_widget (xml_in,
                                       ACE_TEXT_ALWAYS_CHAR ("prepared_spells_table")));
-  ACE_ASSERT (current);
-  entries = gtk_container_get_children (GTK_CONTAINER (current));
+  ACE_ASSERT (widget_p);
+  entries = gtk_container_get_children (GTK_CONTAINER (widget_p));
   //   ACE_ASSERT(entries);
   if (entries)
   {
@@ -887,7 +891,7 @@ update_character_profile (const RPG_Player& player_in,
     spells[*iterator] = count;
     processsed_types.insert (*iterator);
   } // end FOR
-  gtk_table_resize (GTK_TABLE (current),
+  gtk_table_resize (GTK_TABLE (widget_p),
                     spells.size (), 2);
   index = 0;
   for (std::map<RPG_Magic_SpellType, unsigned int>::const_iterator iterator = spells.begin ();
@@ -900,15 +904,15 @@ update_character_profile (const RPG_Player& player_in,
     //current_box = gtk_hbox_new(TRUE, // homogeneous
     //                           0);   // spacing
     //ACE_ASSERT(current_box);
-    label = NULL;
-    label = gtk_label_new (text.c_str ());
-    ACE_ASSERT (label);
-    //gtk_box_pack_start(GTK_BOX(current_box), label,
+    label_p = NULL;
+    label_p = gtk_label_new (text.c_str ());
+    ACE_ASSERT (label_p);
+    //gtk_box_pack_start (GTK_BOX (current_box), label_p,
     //                   FALSE, // expand
     //                   FALSE, // fill
     //                   0);    // padding
-    gtk_table_attach_defaults (GTK_TABLE (current),
-                               label,
+    gtk_table_attach_defaults (GTK_TABLE (widget_p),
+                               label_p,
                                0, 1,
                                index, index + 1);
 
@@ -916,15 +920,15 @@ update_character_profile (const RPG_Player& player_in,
     converter.clear ();
     converter << (*iterator).second;
     text = converter.str ();
-    label = NULL;
-    label = gtk_label_new (text.c_str ());
-    ACE_ASSERT (label);
-    //gtk_box_pack_start(GTK_BOX(current_box), label,
+    label_p = NULL;
+    label_p = gtk_label_new (text.c_str ());
+    ACE_ASSERT (label_p);
+    //gtk_box_pack_start (GTK_BOX (current_box), label_p,
     //                   FALSE, // expand
     //                   FALSE, // fill
     //                   0);    // padding
-    gtk_table_attach (GTK_TABLE (current),
-                      label,
+    gtk_table_attach (GTK_TABLE (widget_p),
+                      label_p,
                       1, 2,
                       index, index + 1,
                       attach_options, attach_options,
@@ -936,14 +940,14 @@ update_character_profile (const RPG_Player& player_in,
     //                   FALSE, // fill
     //                   0);    // padding
   } // end FOR
-  gtk_widget_show_all (current);
+  gtk_widget_show_all (widget_p);
 
   // step17: inventory
-  current =
+  widget_p =
     GTK_WIDGET (glade_xml_get_widget (xml_in,
                                       ACE_TEXT_ALWAYS_CHAR("inventory_items_vbox")));
-  ACE_ASSERT (current);
-  entries = gtk_container_get_children (GTK_CONTAINER (current));
+  ACE_ASSERT (widget_p);
+  entries = gtk_container_get_children (GTK_CONTAINER (widget_p));
 //   ACE_ASSERT(entries);
   if (entries)
   {
@@ -962,72 +966,72 @@ update_character_profile (const RPG_Player& player_in,
   const RPG_Player_Inventory& player_inventory = player_in.getInventory ();
   RPG_Player_Equipment& player_equipment =
     const_cast<RPG_Player&> (player_in).getEquipment ();
-  RPG_Item_Base* item = NULL;
+  RPG_Item_Base* item_p = NULL;
   RPG_Character_EquipmentSlot equipment_slot;
   for (RPG_Item_ListIterator_t iterator = player_inventory.myItems.begin ();
        iterator != player_inventory.myItems.end ();
        iterator++)
   {
-    item = NULL;
+    item_p = NULL;
 
     // retrieve item handle
     if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance ()->get (*iterator,
-                                                                item))
+                                                                item_p))
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("invalid item (ID: %d), returning\n"),
                   *iterator));
       return;
     } // end IF
-    ACE_ASSERT (item);
+    ACE_ASSERT (item_p);
 
-    switch (item->getType ())
+    switch (item_p->getType ())
     {
       case ITEM_ARMOR:
       {
-        RPG_Item_Armor* armor = NULL;
+        RPG_Item_Armor* armor_p = NULL;
         try
         {
-          armor = dynamic_cast<RPG_Item_Armor*> (item);
+          armor_p = dynamic_cast<RPG_Item_Armor*> (item_p);
         }
         catch (...)
         {
-          armor = NULL;
+          armor_p = NULL;
         }
-        if (!armor)
+        if (!armor_p)
         {
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("failed to dynamic_cast<RPG_Item_Armor*>(%@), returning\n"),
-                      item));
+                      item_p));
           return;
         } // end IF
 
         text =
-          RPG_Common_Tools::enumToString (RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString (armor->getArmorType ()));
+          RPG_Common_Tools::enumToString (RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString (armor_p->getArmorType ()));
 
         break;
       }
       case ITEM_COMMODITY:
       {
-        RPG_Item_Commodity* commodity = NULL;
+        RPG_Item_Commodity* commodity_p = NULL;
         try
         {
-          commodity = dynamic_cast<RPG_Item_Commodity*> (item);
+          commodity_p = dynamic_cast<RPG_Item_Commodity*> (item_p);
         }
         catch (...)
         {
-          commodity = NULL;
+          commodity_p = NULL;
         }
-        if (!commodity)
+        if (!commodity_p)
         {
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("failed to dynamic_cast<RPG_Item_Commodity*>(%@), returning\n"),
-                      item));
+                      item_p));
           return;
         } // end IF
 
         RPG_Item_CommodityUnion commodity_type =
-          commodity->getCommoditySubType ();
+            commodity_p->getCommoditySubType ();
         switch (commodity_type.discriminator)
         {
           case RPG_Item_CommodityUnion::COMMODITYBEVERAGE:
@@ -1055,26 +1059,26 @@ update_character_profile (const RPG_Player& player_in,
       }
       case ITEM_WEAPON:
       {
-        RPG_Item_Weapon* weapon = NULL;
+        RPG_Item_Weapon* weapon_p = NULL;
         try
         {
-          weapon = dynamic_cast<RPG_Item_Weapon*> (item);
+          weapon_p = dynamic_cast<RPG_Item_Weapon*> (item_p);
         }
         catch (...)
         {
-          weapon = NULL;
+          weapon_p = NULL;
         }
-        if (!weapon)
+        if (!weapon_p)
         {
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("failed to dynamic_cast<RPG_Item_Weapon*>(%@), returning\n"),
-                      item));
+                      item_p));
           return;
         } // end IF
 
         // *TODO*: pretty-print this string
         text =
-          RPG_Common_Tools::enumToString (RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString (weapon->getWeaponType ()), false); // don't strip leading "xxx_"
+          RPG_Common_Tools::enumToString (RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString (weapon_p->getWeaponType ()), false); // don't strip leading "xxx_"
 
         break;
       }
@@ -1082,7 +1086,7 @@ update_character_profile (const RPG_Player& player_in,
       {
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("invalid item type (was: \"%s\"), returning\n"),
-                    ACE_TEXT (RPG_Item_TypeHelper::RPG_Item_TypeToString (item->getType ()).c_str ())));
+                    ACE_TEXT (RPG_Item_TypeHelper::RPG_Item_TypeToString (item_p->getType ()).c_str ())));
         return;
       }
     } // end SWITCH
@@ -1091,16 +1095,16 @@ update_character_profile (const RPG_Player& player_in,
     if (player_equipment.isEquipped (*iterator, equipment_slot))
       text += ACE_TEXT_ALWAYS_CHAR ('*');
 
-    label = NULL;
-    label = gtk_label_new (text.c_str ());
-    ACE_ASSERT (label);
-//     gtk_container_add(GTK_CONTAINER(current), label);
-    gtk_box_pack_start (GTK_BOX (current), label,
+    label_p = NULL;
+    label_p = gtk_label_new (text.c_str ());
+    ACE_ASSERT (label_p);
+//     gtk_container_add (GTK_CONTAINER (widget_p), label_p);
+    gtk_box_pack_start (GTK_BOX (widget_p), label_p,
                         FALSE, // expand
                         FALSE, // fill
                         0);    // padding
   } // end FOR
-  gtk_widget_show_all (current);
+  gtk_widget_show_all (widget_p);
 }
 
 void

@@ -43,6 +43,7 @@
 #endif
 
 #include "common_file_tools.h"
+#include "common_logger.h"
 #include "common_tools.h"
 
 #include "common_ui_defines.h"
@@ -65,11 +66,7 @@
 #include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
 
-//#include "rpg_net_common.h"
-//#include "rpg_net_defines.h"
-//#include "rpg_net_module_eventhandler.h"
-
-#include "rpg_client_logger.h"
+#include "rpg_net_defines.h"
 
 #include "rpg_net_server_common.h"
 #include "rpg_net_server_common_tools.h"
@@ -79,6 +76,7 @@
 #include "net_common.h"
 #include "net_defines.h"
 #include "net_eventhandler.h"
+#include "net_module_eventhandler.h"
 
 #include "net_server_signalhandler.h"
 
@@ -192,7 +190,8 @@ do_processArguments (const int& argc_in,
 #endif // #ifdef DEBUG_DEBUGGER
 
   // init results
-  maxNumConnections_out           = RPG_NET_SERVER_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS;
+  maxNumConnections_out           =
+      RPG_NET_SERVER_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS;
   clientPingInterval_out          = RPG_NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL;
 //  keepAliveTimeout_out = RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE;
   logToFile_out                   = false;
@@ -214,7 +213,8 @@ do_processArguments (const int& argc_in,
   path += ACE_TEXT_ALWAYS_CHAR (NET_SERVER_UI_FILE);
   UIFile_out                      = path;
   printVersionAndExit_out         = false;
-  numDispatchThreads_out          = RPG_NET_SERVER_DEFAULT_NUMBER_OF_DISPATCHING_THREADS;
+  numDispatchThreads_out          =
+      RPG_NET_SERVER_DEFAULT_NUMBER_OF_DISPATCHING_THREADS;
 
   ACE_Get_Opt argumentParser (argc_in,
                               argv_in,
@@ -590,7 +590,7 @@ do_work (unsigned int maxNumConnections_in,
   if (!UIDefinitionFile_in.empty ())
   {
     CBData_in.GTKState.finalizationHook = idle_finalize_UI_cb;
-    CBData_in.GTKState.initializationHook = idle_initialize_server_UI_cb;
+    CBData_in.GTKState.initializationHook = idle_initialize_UI_cb;
     //CBData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
     //  std::make_pair (UIDefinitionFile_in, static_cast<GladeXML*> (NULL));
     CBData_in.GTKState.builders[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
@@ -941,7 +941,7 @@ ACE_TMAIN (int argc_in,
   //                   reactor/proactor thread could (dead)lock on the
   //                   allocator lock, as it cannot dispatch events that would
   //                   free slots
-  if (NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES <=
+  if (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES <=
       std::numeric_limits<unsigned int>::max ())
     ACE_DEBUG ((LM_WARNING,
                 ACE_TEXT ("limiting the number of message buffers could lead to deadlocks...\n")));
@@ -1001,8 +1001,8 @@ ACE_TMAIN (int argc_in,
                                             // is off
 
   // step1e: initialize logging and/or tracing
-  RPG_Client_Logger logger (&gtk_cb_user_data.logStack,
-                            &gtk_cb_user_data.stackLock);
+  Common_Logger logger (&gtk_cb_user_data.logStack,
+                        &gtk_cb_user_data.stackLock);
   std::string log_file;
   if (log_to_file &&
       !RPG_Net_Server_Common_Tools::getNextLogFilename (Common_File_Tools::getDumpDirectory (),

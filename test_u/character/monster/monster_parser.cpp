@@ -207,8 +207,8 @@ do_work (const std::string& schemaRepository_in,
 {
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
-  // step1: init: random seed, string conversion facilities, ...
-  RPG_Dice::init ();
+  // step1: initialize: random seed, string conversion facilities, ...
+  RPG_Dice::initialize ();
   RPG_Dice_Common_Tools::initStringConversionTables ();
   RPG_Common_Tools::initStringConversionTables ();
   if (!RPG_Common_XML_Tools::initialize (schemaRepository_in))

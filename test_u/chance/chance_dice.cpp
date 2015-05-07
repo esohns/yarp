@@ -188,16 +188,15 @@ do_work (const RPG_Dice_Roll& rollSpecs_in,
 {
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
-  // step1: init randomization
+  // step1: initialize randomization
   try
   {
-    RPG_Dice::init();
+    RPG_Dice::initialize ();
   }
-  catch(...)
+  catch (...)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Dice::init, returning\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("caught exception in RPG_Dice::initialize, returning\n")));
     return;
   }
 
@@ -205,15 +204,14 @@ do_work (const RPG_Dice_Roll& rollSpecs_in,
   RPG_Dice_RollResult_t result;
   try
   {
-    RPG_Dice::generateRandomNumbers(rollSpecs_in.typeDice, // see enum
-                                    numRolls_in,
-                                    result);
+    RPG_Dice::generateRandomNumbers (rollSpecs_in.typeDice, // see enum
+                                     numRolls_in,
+                                     result);
   }
-  catch(...)
+  catch (...)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Dice::generateRandomNumbers, returning\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("caught exception in RPG_Dice::generateRandomNumbers, returning\n")));
     return;
   }
 
@@ -259,18 +257,17 @@ do_work (const RPG_Dice_Roll& rollSpecs_in,
 //   std::cout << std::endl;
 
   // step2b: generate some random dice rolls...
-  result.clear();
+  result.clear ();
   try
   {
-    RPG_Dice::simulateRoll(rollSpecs_in,
-                           numRolls_in,
-                           result);
+    RPG_Dice::simulateRoll (rollSpecs_in,
+                            numRolls_in,
+                            result);
   }
-  catch(...)
+  catch (...)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Dice::simulateRoll, returning\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("caught exception in RPG_Dice::simulateRoll, returning\n")));
     return;
   }
 
@@ -280,13 +277,13 @@ do_work (const RPG_Dice_Roll& rollSpecs_in,
 //   std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
 
   std::ostringstream converter;
-  for (RPG_Dice_RollResultIterator_t iter = result.begin();
-       iter != result.end();
+  for (RPG_Dice_RollResultIterator_t iter = result.begin ();
+       iter != result.end ();
        iter++)
   {
     converter << *iter;
-    std::cout << converter.str() << ACE_TEXT(" ");
-    converter.str(ACE_TEXT_ALWAYS_CHAR("")); // "reset" it...
+    std::cout << converter.str () << ACE_TEXT (" ");
+    converter.str (ACE_TEXT_ALWAYS_CHAR ("")); // "reset" it...
   } // end FOR
   std::cout << std::endl;
 
@@ -294,27 +291,31 @@ do_work (const RPG_Dice_Roll& rollSpecs_in,
   if (includeSortedResult_in)
   {
     // header line
-    std::cout << ACE_TEXT("dice rolls (sorted): ") << std::endl;
-    std::cout << std::setw(80) << std::setfill(ACE_TEXT_ALWAYS_CHAR('-')) << ACE_TEXT("") << std::setfill(ACE_TEXT_ALWAYS_CHAR(' ')) << std::endl;
+    std::cout << ACE_TEXT ("dice rolls (sorted): ") << std::endl;
+    std::cout << std::setw (80)
+              << std::setfill (ACE_TEXT_ALWAYS_CHAR ('-'))
+              << ACE_TEXT ("")
+              << std::setfill (ACE_TEXT_ALWAYS_CHAR (' '))
+              << std::endl;
 
     // sort array
-    std::sort(result.begin(),
-              result.end());
+    std::sort (result.begin (),
+               result.end ());
 
 //     converter.str(std::string()); // "reset" it...
-    for (RPG_Dice_RollResultIterator_t iter = result.begin();
-         iter != result.end();
+    for (RPG_Dice_RollResultIterator_t iter = result.begin ();
+         iter != result.end ();
          iter++)
     {
       converter << *iter;
-      std::cout << converter.str() << ACE_TEXT(" ");
-      converter.str(ACE_TEXT_ALWAYS_CHAR("")); // "reset" it...
+      std::cout << converter.str () << ACE_TEXT (" ");
+      converter.str (ACE_TEXT_ALWAYS_CHAR ("")); // "reset" it...
     } // end FOR
     std::cout << std::endl;
   } // end IF
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished working...\n")));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("finished working...\n")));
 } // end do_work
 
 void

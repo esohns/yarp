@@ -27,13 +27,12 @@
 
 #include "common_ui_common.h"
 #include "common_ui_defines.h"
+#include "common_ui_tools.h"
 
 #include "rpg_common_macros.h"
 
 #include "rpg_net_protocol_iIRCControl.h"
 #include "rpg_net_protocol_tools.h"
-
-#include "rpg_client_ui_tools.h"
 
 #include "IRC_client_gui_callbacks.h"
 #include "IRC_client_gui_defines.h"
@@ -811,7 +810,8 @@ IRC_Client_GUI_Connection::notify (const RPG_Net_Protocol_IRCMessage& message_in
           param_iterator--;
 
           // convert text
-          gchar* converted_text = RPG_Client_UI_Tools::Locale2UTF8(*param_iterator);
+          gchar* converted_text =
+              Common_UI_Tools::Locale2UTF8(*param_iterator);
           if (!converted_text)
           {
             ACE_DEBUG((LM_ERROR,
@@ -912,7 +912,7 @@ IRC_Client_GUI_Connection::notify (const RPG_Net_Protocol_IRCMessage& message_in
           } // end IF
 
           // step1: convert text
-          gchar* converted_nick_string = RPG_Client_UI_Tools::Locale2UTF8(nick);
+          gchar* converted_nick_string = Common_UI_Tools::Locale2UTF8(nick);
           if (!converted_nick_string)
           {
             ACE_DEBUG((LM_ERROR,
@@ -923,7 +923,7 @@ IRC_Client_GUI_Connection::notify (const RPG_Net_Protocol_IRCMessage& message_in
 
             break;
           } // end IF
-          gchar* converted_name_string = RPG_Client_UI_Tools::Locale2UTF8(real_name);
+          gchar* converted_name_string = Common_UI_Tools::Locale2UTF8(real_name);
           if (!converted_name_string)
           {
             ACE_DEBUG((LM_ERROR,

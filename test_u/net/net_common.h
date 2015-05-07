@@ -26,14 +26,14 @@
 
 #include "ace/Synch.h"
 
+#include "common.h"
+
 #include "common_ui_common.h"
 
 #include "net_configuration.h"
 #include "net_stream_common.h"
 
 #include "net_server_common.h"
-
-#include "rpg_client_common.h"
 
 // forward declaration(s)
 class Net_Client_TimeoutHandler;
@@ -69,7 +69,7 @@ struct Net_GTK_CBData_t
   Net_GTK_Events_t           eventStack;
   Common_UI_GTKState         GTKState;
   Net_Server_IListener_t*    listenerHandle; // *NOTE*: server only !
-  RPG_Client_MessageStack_t  logStack;
+  Common_MessageStack_t      logStack;
   ACE_Recursive_Thread_Mutex stackLock;
   Net_Subscribers_t          subscribers;
   ACE_Recursive_Thread_Mutex subscribersLock;

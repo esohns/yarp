@@ -34,10 +34,12 @@
 #include "SDL.h"
 
 #include "common_file_tools.h"
+#include "common_logger.h"
 #include "common_tools.h"
 
 #include "common_ui_glade_definition.h"
 #include "common_ui_gtk_manager.h"
+#include "common_ui_tools.h"
 
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
@@ -89,8 +91,6 @@
 #include "rpg_client_defines.h"
 #include "rpg_client_engine.h"
 #include "rpg_client_entity_manager.h"
-#include "rpg_client_logger.h"
-#include "rpg_client_ui_tools.h"
 #include "rpg_client_window_level.h"
 #include "rpg_client_window_main.h"
 
@@ -435,10 +435,10 @@ do_initGUI (const std::string& graphicsDictionary_in,
 
   // ***** keyboard setup *****
   // enable Unicode translation
-  SDL_EnableUNICODE(1);
+  SDL_EnableUNICODE (1);
   // enable key repeat
-  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,
-                      SDL_DEFAULT_REPEAT_INTERVAL);
+  SDL_EnableKeyRepeat (SDL_DEFAULT_REPEAT_DELAY,
+                       SDL_DEFAULT_REPEAT_INTERVAL);
 //   // ignore keyboard events
 //   SDL_EventState(SDL_KEYDOWN, SDL_IGNORE);
 //   SDL_EventState(SDL_KEYUP, SDL_IGNORE);
@@ -452,41 +452,40 @@ do_initGUI (const std::string& graphicsDictionary_in,
   caption = ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);
 //   caption += ACE_TEXT_ALWAYS_CHAR(" ");
 //   caption += RPG_VERSION;
-  gchar* caption_utf8 = RPG_Client_UI_Tools::Locale2UTF8(caption);
-  SDL_WM_SetCaption(caption.c_str(),  // window caption
-                    caption.c_str()); // icon caption
+  gchar* caption_utf8 = Common_UI_Tools::Locale2UTF8 (caption);
+  SDL_WM_SetCaption (caption.c_str (),  // window caption
+                     caption.c_str ()); // icon caption
   // clean up
-  g_free(caption_utf8);
+  g_free (caption_utf8);
   // set window icon
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = IMAGE_WM_ICON;
   RPG_Graphics_t icon_graphic =
-      RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type);
-  ACE_ASSERT(icon_graphic.type.image == IMAGE_WM_ICON);
+      RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->get (type);
+  ACE_ASSERT (icon_graphic.type.image == IMAGE_WM_ICON);
   std::string path = graphicsDirectory_in;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_IMAGES_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_TILE_IMAGES_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += icon_graphic.file;
-  SDL_Surface* icon_image = NULL;
-  icon_image = RPG_Graphics_Surface::load(path,   // graphics file
-                                          false); // don't convert to display format (no screen yet !)
-  if (!icon_image)
+  SDL_Surface* icon_image_p =
+      RPG_Graphics_Surface::load (path,   // graphics file
+                                  false); // don't convert to display format (no screen yet !)
+  if (!icon_image_p)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadFile(\"%s\"), aborting\n"),
-               ACE_TEXT(path.c_str())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Common_Tools::loadFile(\"%s\"), aborting\n"),
+                ACE_TEXT (path.c_str ())));
     return false;
   } // end IF
-  SDL_WM_SetIcon(icon_image, // surface
-                 NULL);      // mask (--> everything)
+  SDL_WM_SetIcon (icon_image_p, // surface
+                  NULL);        // mask (--> everything)
 //   // don't show (double) cursor
 //   SDL_ShowCursor(SDL_DISABLE);
 
   userData_in.screen =
-      RPG_Graphics_SDL_Tools::initScreen(videoConfiguration_in);
+      RPG_Graphics_SDL_Tools::initScreen (videoConfiguration_in);
   if (!userData_in.screen)
   {
     ACE_DEBUG ((LM_ERROR,
@@ -1161,16 +1160,16 @@ ACE_TMAIN (int argc_in,
 {
   RPG_TRACE (ACE_TEXT ("::main"));
 
-  // step1: init ACE
-// *PORTABILITY*: on Windows, need to init ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-  if (ACE::init () == -1)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
-    return EXIT_FAILURE;
-  } // end IF
-#endif
+//  // step1: initialize ACE
+//// *PORTABILITY*: on Windows, need to init ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//  if (ACE::init () == -1)
+//  {
+//    ACE_DEBUG ((LM_ERROR,
+//                ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
+//    return EXIT_FAILURE;
+//  } // end IF
+//#endif
 
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
@@ -1261,13 +1260,13 @@ ACE_TMAIN (int argc_in,
     // make 'em learn...
     do_printUsage (ACE::basename (argv_in[0]));
 
-    // clean up
-    // *PORTABILITY*: on Windows, must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini () == -1)
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
-#endif
+//    // clean up
+//    // *PORTABILITY*: on Windows, must fini ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//    if (ACE::fini () == -1)
+//      ACE_DEBUG ((LM_ERROR,
+//                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
+//#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -1283,13 +1282,13 @@ ACE_TMAIN (int argc_in,
     // make 'em learn...
     do_printUsage (ACE::basename (argv_in[0]));
 
-    // clean up
-    // *PORTABILITY*: on Windows, must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini () == -1)
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
-#endif
+//    // clean up
+//    // *PORTABILITY*: on Windows, must fini ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//    if (ACE::fini () == -1)
+//      ACE_DEBUG ((LM_ERROR,
+//                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
+//#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -1312,8 +1311,8 @@ ACE_TMAIN (int argc_in,
 
   // step1c: initialize logging and/or tracing
   RPG_Client_GTK_CBData_t user_data;
-  RPG_Client_Logger logger (&user_data.logStack,
-                            &user_data.logStackLock);
+  Common_Logger logger (&user_data.logStack,
+                        &user_data.logStackLock);
   std::string log_file;
   if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
                                         log_file,                   // logfile
@@ -1325,13 +1324,13 @@ ACE_TMAIN (int argc_in,
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));
 
-    // clean up
-    // *PORTABILITY*: on Windows, must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini () == -1)
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
-#endif
+//    // clean up
+//    // *PORTABILITY*: on Windows, must fini ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//    if (ACE::fini () == -1)
+//      ACE_DEBUG ((LM_ERROR,
+//                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
+//#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -1342,12 +1341,13 @@ ACE_TMAIN (int argc_in,
     do_printVersion (ACE::basename (argv_in[0]));
 
     // clean up
-    // *PORTABILITY*: on Windows, must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini () == -1)
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
-#endif
+    Common_Tools::finalizeLogging ();
+//    // *PORTABILITY*: on Windows, must fini ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//    if (ACE::fini () == -1)
+//      ACE_DEBUG ((LM_ERROR,
+//                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
+//#endif
 
     return EXIT_SUCCESS;
   } // end IF
@@ -1421,12 +1421,13 @@ ACE_TMAIN (int argc_in,
                ACE_TEXT(SDL_GetError())));
 
     // clean up
-    // *PORTABILITY*: on Windows, must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini () == -1)
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
-#endif
+    Common_Tools::finalizeLogging ();
+//    // *PORTABILITY*: on Windows, must fini ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//    if (ACE::fini () == -1)
+//      ACE_DEBUG ((LM_ERROR,
+//                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
+//#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -1437,14 +1438,15 @@ ACE_TMAIN (int argc_in,
                ACE_TEXT(SDL_GetError())));
 
     // clean up
+    Common_Tools::finalizeLogging ();
     SDL_VideoQuit();
     SDL_Quit();
-    // *PORTABILITY*: on Windows, must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini () == -1)
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
-#endif
+//    // *PORTABILITY*: on Windows, must fini ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//    if (ACE::fini () == -1)
+//      ACE_DEBUG ((LM_ERROR,
+//                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
+//#endif
 
     return EXIT_FAILURE;
   } // end IF
@@ -1486,15 +1488,17 @@ ACE_TMAIN (int argc_in,
               ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
               ACE_TEXT (working_time_string.c_str ())));
 
-// *PORTABILITY*: on Windows, must fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-  if (ACE::fini () == -1)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
-    return EXIT_FAILURE;
-  } // end IF
-#endif
+  Common_Tools::finalizeLogging ();
+
+//// *PORTABILITY*: on Windows, must fini ACE...
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//  if (ACE::fini () == -1)
+//  {
+//    ACE_DEBUG ((LM_ERROR,
+//                ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
+//    return EXIT_FAILURE;
+//  } // end IF
+//#endif
 
   return EXIT_SUCCESS;
 } // end main

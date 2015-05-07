@@ -12,7 +12,11 @@ AM_CPPFLAGS = \
   -DRPG_NET_BUILD_DLL \
   -DMETA_PACKAGE=\"@META_PACKAGE@\"
 
-SUBDIRS = . protocol server scripts
+SUBDIRS = \
+  scripts \
+  . \
+  protocol \
+  server
 
 # define dependencies
 protocol: .
@@ -29,7 +33,7 @@ include_HEADERS = \
   rpg_net_module_eventhandler.h \
   rpg_net_module_protocolhandler.h \
   rpg_net_remote_comm.h \
-  rpg_net_stream_messageallocator.h
+  rpg_net_stream.h
 
 lib_LTLIBRARIES = libRPG_Net.la
 
@@ -44,8 +48,7 @@ libRPG_Net_la_SOURCES = \
   rpg_net_module_protocolhandler.cpp \
   rpg_net_module_protocolhandler.h \
   rpg_net_remote_comm.h \
-  rpg_net_stream_messageallocator.cpp \
-  rpg_net_stream_messageallocator.h \
+  rpg_net_stream.cpp \
+  rpg_net_stream.h \
   stdafx.cpp \
   stdafx.h
-

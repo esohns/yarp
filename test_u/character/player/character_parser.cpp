@@ -253,7 +253,7 @@ do_work (const std::string& magicDictionaryFilename_in,
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step1a: initialize randomization
-  RPG_Dice::init ();
+  RPG_Dice::initialize ();
 
   // step1b: initialize facilities
   RPG_Dice_Common_Tools::initStringConversionTables ();

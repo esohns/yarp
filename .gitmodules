@@ -1,14 +1,15 @@
 # *NOTE*: this is the easiest way of working with the repository
 #[submodule "ATCD"]
 #        path = modules/ATCD
-##       url = https://github.com/DOCGroup/ATCD.git
-#	url = https://github.com/esohns/ATCD.git
+##       url = git://github.com/DOCGroup/ATCD.git
+#	url = git://github.com/esohns/ATCD.git
 [submodule "libCommon"]
 	path = modules/libCommon
-	url = https://github.com/esohns/libCommon.git
+	url = git://github.com/esohns/libCommon.git
 [submodule "libACEStream"]
 	path = modules/libACEStream
-	url = https://github.com/esohns/libACEStream.git
+	url = git://github.com/esohns/libACEStream.git
 [submodule "libACENetwork"]
 	path = modules/libACENetwork
-	url = https://github.com/esohns/libACENetwork.git
+	url = git://github.com/esohns/libACENetwork.git
+

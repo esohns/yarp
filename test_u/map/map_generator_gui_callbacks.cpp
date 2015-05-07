@@ -30,6 +30,7 @@
 #include "common_ui_common.h"
 #include "common_ui_defines.h"
 #include "common_ui_gtk_manager.h"
+#include "common_ui_tools.h"
 
 #include "rpg_common_defines.h"
 #include "rpg_common_macros.h"
@@ -58,7 +59,6 @@
 
 #include "rpg_client_callbacks.h"
 #include "rpg_client_defines.h"
-#include "rpg_client_ui_tools.h"
 
 #include "map_generator_gui_common.h"
 
@@ -266,7 +266,7 @@ update_layout(GTK_cb_data_t& userData_in)
   map_info.resize(map_info.size() - 1);
   gchar* converted_text = NULL;
   converted_text =
-      RPG_Client_UI_Tools::Locale2UTF8(map_info);
+      Common_UI_Tools::Locale2UTF8(map_info);
   if (!converted_text)
   {
     ACE_DEBUG((LM_ERROR,

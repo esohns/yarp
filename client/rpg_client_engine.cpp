@@ -21,29 +21,29 @@
 
 #include "rpg_client_engine.h"
 
-#include "rpg_client_defines.h"
-//#include "rpg_client_iwidget_ui.h"
-#include "rpg_client_iwindow_level.h"
-#include "rpg_client_iwindow.h"
-#include "rpg_client_common_tools.h"
-#include "rpg_client_ui_tools.h"
-#include "rpg_client_entity_manager.h"
+#include "ace/Log_Msg.h"
 
-#include "rpg_graphics_defines.h"
-#include "rpg_graphics_surface.h"
-#include "rpg_graphics_cursor_manager.h"
-#include "rpg_graphics_common_tools.h"
+#include "common_ui_tools.h"
+
+#include "rpg_common_defines.h"
+#include "rpg_common_file_tools.h"
+#include "rpg_common_macros.h"
+
+#include "rpg_engine.h"
 
 #include "rpg_sound_common.h"
 #include "rpg_sound_common_tools.h"
 
-#include "rpg_engine.h"
+#include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_cursor_manager.h"
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_surface.h"
 
-#include "rpg_common_macros.h"
-#include "rpg_common_defines.h"
-#include "rpg_common_file_tools.h"
-
-#include "ace/Log_Msg.h"
+#include "rpg_client_common_tools.h"
+#include "rpg_client_defines.h"
+#include "rpg_client_entity_manager.h"
+#include "rpg_client_iwindow.h"
+#include "rpg_client_iwindow_level.h"
 
 RPG_Client_Engine::RPG_Client_Engine()
 //  : myQueue(RPG_CLIENT_MAX_QUEUE_SLOTS),
@@ -65,22 +65,22 @@ RPG_Client_Engine::RPG_Client_Engine()
   // use member message queue...
 //   inherited::msg_queue(&myQueue);
 
-	myRuntimeState.style.door = RPG_CLIENT_GRAPHICS_DEF_DOORSTYLE;
-	myRuntimeState.style.edge = RPG_CLIENT_GRAPHICS_DEF_EDGESTYLE;
-	myRuntimeState.style.floor = RPG_CLIENT_GRAPHICS_DEF_FLOORSTYLE;
-	myRuntimeState.style.half_height_walls = RPG_CLIENT_GRAPHICS_DEF_WALLSTYLE_HALF;
-	myRuntimeState.style.wall = RPG_CLIENT_GRAPHICS_DEF_WALLSTYLE;
+  myRuntimeState.style.door = RPG_CLIENT_GRAPHICS_DEF_DOORSTYLE;
+  myRuntimeState.style.edge = RPG_CLIENT_GRAPHICS_DEF_EDGESTYLE;
+  myRuntimeState.style.floor = RPG_CLIENT_GRAPHICS_DEF_FLOORSTYLE;
+  myRuntimeState.style.half_height_walls = RPG_CLIENT_GRAPHICS_DEF_WALLSTYLE_HALF;
+  myRuntimeState.style.wall = RPG_CLIENT_GRAPHICS_DEF_WALLSTYLE;
 
-	// set group ID for worker thread(s)
-	inherited::grp_id(RPG_CLIENT_ENGINE_THREAD_GROUP_ID);
+  // set group ID for worker thread(s)
+  inherited::grp_id(RPG_CLIENT_ENGINE_THREAD_GROUP_ID);
 }
 
 RPG_Client_Engine::~RPG_Client_Engine()
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::~RPG_Client_Engine"));
 
-	if (isRunning())
-		stop();
+  if (isRunning())
+    stop();
 }
 
 int
@@ -918,17 +918,17 @@ RPG_Client_Engine::hasSeen (const RPG_Engine_EntityID_t& id_in,
   {
     if (lockedAccess_in)
       myLock.release ();
-    
+
     return false;
   } // end IF
 
   RPG_Map_PositionsConstIterator_t iterator2 =
     (*iterator).second.find (position_in);
   bool result = (iterator2 != (*iterator).second.end ());
-  
+
   if (lockedAccess_in)
     myLock.release ();
-  
+
   return result;
 }
 
@@ -1620,7 +1620,7 @@ RPG_Client_Engine::handleActions ()
                         ACE_TEXT ("failed to SDL_WM_IconifyWindow(): \"%s\", continuing\n"),
                         ACE_TEXT (SDL_GetError ())));
         } // end IF
-        gchar* caption_utf8 = RPG_Client_UI_Tools::Locale2UTF8 (caption);
+        gchar* caption_utf8 = Common_UI_Tools::Locale2UTF8 (caption);
 // *TODO*: this will not return on VS2010...
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
         SDL_WM_SetCaption (caption_utf8,  // window caption

@@ -25,7 +25,6 @@ include_HEADERS = \
   rpg_client_iwidget_ui.h \
   rpg_client_iwindow.h \
   rpg_client_iwindow_level.h \
-  rpg_client_logger.h \
   rpg_client_runtimestate.h \
   rpg_client_ui_tools.h \
   rpg_client_window_level.h \
@@ -53,8 +52,6 @@ libRPG_Client_GUI_la_SOURCES = \
   rpg_client_iwidget_ui.h \
   rpg_client_iwindow.h \
   rpg_client_iwindow_level.h \
-  rpg_client_logger.h \
-  rpg_client_logger.cpp \
   rpg_client_runtimestate.h \
   rpg_client_ui_tools.cpp \
   rpg_client_ui_tools.h \

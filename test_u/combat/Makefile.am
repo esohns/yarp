@@ -44,6 +44,7 @@ combat_simulator_LDFLAGS = \
   -L$(abs_builddir)/../../combat/.libs \
   -L$(abs_builddir)/../../character/monster/.libs \
   -L$(abs_builddir)/../../map/.libs \
+  -L$(abs_builddir)/../../net/.libs \
   -L$(abs_builddir)/../../net/protocol/.libs \
   -L$(abs_builddir)/../../engine/.libs \
   -L$(abs_builddir)/../../graphics/.libs \
@@ -63,6 +64,7 @@ combat_simulator_LDADD = \
   -lRPG_Combat \
   -lRPG_Monster \
   -lRPG_Map \
+  -lRPG_Net \
   -lRPG_Net_Protocol \
   -lRPG_Engine \
   -lRPG_Graphics \

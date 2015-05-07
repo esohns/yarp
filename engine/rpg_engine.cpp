@@ -90,7 +90,7 @@ RPG_Engine::RPG_Engine ()
   netConfiguration_.messageAllocator = &messageAllocator_;
   // ******************* socket configuration data ****************************
   netConfiguration_.socketConfiguration.bufferSize =
-    NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
+    NET_SOCKET_DEFAULT_RECEIVE_BUFFER_SIZE;
   //netConfiguration_.socketConfiguration.peerAddress = INADDR_ANY;
   netConfiguration_.socketConfiguration.useLoopbackDevice = false;
 

@@ -33,6 +33,8 @@
 
 #include "rpg_common_macros.h"
 
+#include "rpg_net_defines.h"
+
 #include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_configuration.h"
 #include "rpg_net_protocol_network.h"
@@ -58,7 +60,7 @@ IRC_Client_Tools::connect (Stream_IAllocator* messageAllocator_in,
 
   // ************ socket configuration data ************
   configuration.socketConfiguration.bufferSize =
-   NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
+   RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
   // ************ protocol config data **************
   configuration.protocolConfiguration.streamConfiguration.crunchMessageBuffers =
     RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES;

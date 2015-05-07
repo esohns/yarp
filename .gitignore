@@ -55,6 +55,8 @@ configure.scan
 
 /doc/html
 
+config.h
+
 scanner_report.txt
 lex.backup
 parser_graph.txt

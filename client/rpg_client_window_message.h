@@ -26,10 +26,12 @@
 
 #include "SDL.h"
 
-#include "rpg_client_common.h"
+#include "common.h"
 
 #include "rpg_graphics_font.h"
 #include "rpg_graphics_SDL_window_sub.h"
+
+#include "rpg_client_common.h"
 
 // forward declarations
 class RPG_Common_ILock;
@@ -64,14 +66,12 @@ class RPG_Client_Window_Message
   // helper methods
   void initScrollSpots ();
 
-  RPG_Client_Engine*        myClient;
-  RPG_Graphics_Font         myFont;
-  unsigned int              myNumLines;
-
-  ACE_Thread_Mutex          myLock;
-  RPG_Client_MessageStack_t myMessages;
-
-  SDL_Surface*              myBG;
+  SDL_Surface*          BG_;
+  RPG_Client_Engine*    client_;
+  RPG_Graphics_Font     font_;
+  ACE_Thread_Mutex      lock_;
+  Common_MessageStack_t messages_;
+  unsigned int          numLines_;
 };
 
 #endif // RPG_CLIENT_WINDOW_MESSAGE_H

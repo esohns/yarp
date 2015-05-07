@@ -19,15 +19,15 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-#include "RPG_Net_Stream.h"
+#include "rpg_net_stream.h"
 
 #include <string>
 
 #include "ace/Log_Msg.h"
 
-#include "net_defines.h"
-
 #include "rpg_common_macros.h"
+
+#include "rpg_net_defines.h"
 
 RPG_Net_Stream::RPG_Net_Stream ()
  : inherited ()
@@ -246,7 +246,7 @@ RPG_Net_Stream::initialize (unsigned int sessionID_in,
   if (!socketHandler_impl->initialize (&state_,
                                        configuration_in.messageAllocator,
                                        configuration_in.useThreadPerConnection,
-                                       NET_STATISTICS_COLLECTION_INTERVAL))
+                                       RPG_NET_STATISTICS_COLLECTION_INTERVAL))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to initialize module: \"%s\", aborting\n"),

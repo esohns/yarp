@@ -299,8 +299,8 @@ do_work (bool dumpDictionary_in,
 {
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
-  // step0: init: random seed, string conversion facilities, ...
-  RPG_Dice::init ();
+  // step0: initialize: random seed, string conversion facilities, ...
+  RPG_Dice::initialize ();
   RPG_Dice_Common_Tools::initStringConversionTables ();
 
   // step1: init: sound directory, cache, ...

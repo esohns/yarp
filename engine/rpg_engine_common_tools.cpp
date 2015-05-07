@@ -80,38 +80,38 @@
 
 using namespace xercesc;
 
-// init statics
+// initialize statics
 RPG_Engine_CommandToStringTable_t RPG_Engine_CommandHelper::myRPG_Engine_CommandToStringTable;
 RPG_Engine_EntityModeToStringTable_t RPG_Engine_EntityModeHelper::myRPG_Engine_EntityModeToStringTable;
 
 RPG_Engine_CR2ExperienceMap_t RPG_Engine_Common_Tools::myCR2ExperienceMap;
 
 void
-RPG_Engine_Common_Tools::init(const std::string& schemaDirectory_in,
-                              const std::string& magicDictionaryFile_in,
-                              const std::string& itemDictionaryFile_in,
-                              const std::string& monsterDictionaryFile_in)
+RPG_Engine_Common_Tools::init (const std::string& schemaDirectory_in,
+                               const std::string& magicDictionaryFile_in,
+                               const std::string& itemDictionaryFile_in,
+                               const std::string& monsterDictionaryFile_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::init"));
+  RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::init"));
 
-  // step1a: init randomization
-  RPG_Dice::init();
+  // step1a: initialize randomization
+  RPG_Dice::initialize ();
 
-  // step1b: init string conversion facilities
-  RPG_Dice_Common_Tools::initStringConversionTables();
-  RPG_Common_Tools::initStringConversionTables();
-  RPG_Item_Common_Tools::initStringConversionTables();
-  RPG_Combat_Common_Tools::initStringConversionTables();
-  RPG_Monster_Common_Tools::initStringConversionTables();
-  RPG_Map_Common_Tools::initStringConversionTables();
-  RPG_Engine_CommandHelper::init();
-  RPG_Engine_EntityModeHelper::init();
+  // step1b: initialize string conversion facilities
+  RPG_Dice_Common_Tools::initStringConversionTables ();
+  RPG_Common_Tools::initStringConversionTables ();
+  RPG_Item_Common_Tools::initStringConversionTables ();
+  RPG_Combat_Common_Tools::initStringConversionTables ();
+  RPG_Monster_Common_Tools::initStringConversionTables ();
+  RPG_Map_Common_Tools::initStringConversionTables ();
+  RPG_Engine_CommandHelper::init ();
+  RPG_Engine_EntityModeHelper::init ();
 
   // step1c: ...and other static data
-  RPG_Magic_Common_Tools::init();
-  RPG_Character_Common_Tools::init();
+  RPG_Magic_Common_Tools::init ();
+  RPG_Character_Common_Tools::init ();
 
-  // step1c: init dictionaries
+  // step1c: initialize dictionaries
   if (!RPG_Common_XML_Tools::initialize (schemaDirectory_in))
   {
     ACE_DEBUG ((LM_ERROR,
@@ -119,12 +119,33 @@ RPG_Engine_Common_Tools::init(const std::string& schemaDirectory_in,
     return;
   } // end IF
 
-  // step1ca: init magic dictionary
-  if (!magicDictionaryFile_in.empty())
+  // step1ca: initialize magic dictionary
+  if (!magicDictionaryFile_in.empty ())
   {
     try
     {
-      RPG_MAGIC_DICTIONARY_SINGLETON::instance()->init(magicDictionaryFile_in
+      RPG_MAGIC_DICTIONARY_SINGLETON::instance()->init (magicDictionaryFile_in
+#ifdef _DEBUG
+                                                        ,true
+#else
+                                                        ,false
+#endif
+                                                        );
+    }
+    catch (...)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("caught exception in RPG_Magic_Dictionary::init, returning\n")));
+      return;
+    }
+  } // end IF
+
+  // step1cb: init item dictionary
+  if (!itemDictionaryFile_in.empty ())
+  {
+    try
+    {
+      RPG_ITEM_DICTIONARY_SINGLETON::instance()->init (itemDictionaryFile_in
 #ifdef _DEBUG
                                                        ,true
 #else
@@ -134,58 +155,34 @@ RPG_Engine_Common_Tools::init(const std::string& schemaDirectory_in,
     }
     catch (...)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Magic_Dictionary::init, returning\n")));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("caught exception in RPG_Item_Dictionary::init, returning\n")));
       return;
     }
   } // end IF
 
-  // step1cb: init item dictionary
-  if (!itemDictionaryFile_in.empty())
+  // step1cc: initialize monster dictionary
+  if (!monsterDictionaryFile_in.empty ())
   {
     try
     {
-      RPG_ITEM_DICTIONARY_SINGLETON::instance()->init(itemDictionaryFile_in
+      RPG_MONSTER_DICTIONARY_SINGLETON::instance()->init (monsterDictionaryFile_in
 #ifdef _DEBUG
-                                                      ,true
+                                                          ,true
 #else
-                                                      ,false
+                                                          ,false
 #endif
-        );
+                                                          );
     }
     catch (...)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Item_Dictionary::init, returning\n")));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("caught exception in RPG_Monster_Dictionary::init, returning\n")));
       return;
     }
   } // end IF
 
-  // step1cc: init monster dictionary
-  if (!monsterDictionaryFile_in.empty())
-  {
-    try
-    {
-      RPG_MONSTER_DICTIONARY_SINGLETON::instance()->init(monsterDictionaryFile_in
-#ifdef _DEBUG
-                                                         ,true
-#else
-                                                         ,false
-#endif
-        );
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Monster_Dictionary::init, returning\n")));
-
-      return;
-    }
-  } // end IF
-
-  initCR2ExperienceMap();
+  initCR2ExperienceMap ();
 }
 
 void
@@ -1766,18 +1763,18 @@ RPG_Engine_Common_Tools::party2ACL(const RPG_Player_Party_t& party_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::party2ACL"));
 
-	// init return value(s)
-	unsigned int return_value = 0;
+  // init return value(s)
+  unsigned int return_value = 0;
 
   for (RPG_Player_PartyConstIterator_t iterator = party_in.begin();
        iterator != party_in.end();
        iterator++)
-	  return_value += (*iterator)->getLevel();
+    return_value += (*iterator)->getLevel();
 
-	// divide&round
-	return_value = (return_value + (party_in.size() >> 1)) / party_in.size();
+  // divide&round
+  return_value = (return_value + (party_in.size() >> 1)) / party_in.size();
 
-	return (return_value == 0 ? 1 : return_value);
+  return (return_value == 0 ? 1 : return_value);
 }
 
 unsigned int

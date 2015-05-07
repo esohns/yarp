@@ -381,8 +381,8 @@ do_work (const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
 {
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
-  // step1: init: random seed, string conversion facilities, ...
-  RPG_Dice::init ();
+  // step1: initialize: random seed, string conversion facilities, ...
+  RPG_Dice::initialize ();
   RPG_Dice_Common_Tools::initStringConversionTables ();
   RPG_Common_Tools::initStringConversionTables ();
   RPG_Graphics_Common_Tools::preInitialize ();
