@@ -8,3 +8,9 @@
 // *NOTE*: don't use the WFMO-reactor on Microsoft Windows (TM) platforms,
 //         it only supports ~64 concurrent handles...
 #define ACE_USE_SELECT_REACTOR_FOR_REACTOR_IMPL
+
+// *NOTE*: the proactor ACE code contains SEH-enabled code; however, the default
+//         MPC (auto-)generated project files do not apply the correct
+//         compilation flags (sets /EHsc instead of /EHa), leading to memory leaks
+//         --> as a workaround, disable SEH
+#undef ACE_HAS_WIN32_STRUCTURAL_EXCEPTIONS
