@@ -323,4 +323,3 @@ config_DATA = \
 
 EXTRA_DIST = \
   $(config_DATA)
-
