@@ -29,7 +29,7 @@ set(RPG_Common_LIB_SRCS
     rpg_common_creaturesubtype.h
     rpg_common_creaturetype.h
     rpg_common_defines.h
-    rpg_common_exports.h
+  #  rpg_common_exports.h
     rpg_common_duration.h
     rpg_common_effectduration.h
     rpg_common_effecttype.h
@@ -39,19 +39,10 @@ set(RPG_Common_LIB_SRCS
     rpg_common_environment_XML_types.cpp
     rpg_common_environment_XML_types.h
     rpg_common_environment_incl.h
-    rpg_common_file_tools.cpp
-    rpg_common_file_tools.h
-    rpg_common_icontrol.h
-    rpg_common_idumpstate.h
     rpg_common_incl.h
-    rpg_common_irefcount.h
-    rpg_common_istatistic.h
-    rpg_common_itimer.h
     rpg_common_macros.h
     rpg_common_physicaldamagetype.h
     rpg_common_plane.h
-    rpg_common_referencecounter.cpp
-    rpg_common_referencecounter.h
     rpg_common_savereductiontype.h
     rpg_common_savingthrow.h
     rpg_common_savingthrowcheck.h
@@ -60,10 +51,6 @@ set(RPG_Common_LIB_SRCS
     rpg_common_subclass.h
     rpg_common_terrain.h
     rpg_common_timeofday.h
-    rpg_common_timer_manager.cpp
-    rpg_common_timer_manager.h
-    rpg_common_timerhandler.cpp
-    rpg_common_timerhandler.h
     rpg_common_tools.cpp
     rpg_common_tools.h
     rpg_common_usage.h
@@ -123,7 +110,7 @@ install(FILES
         rpg_common_creaturesubtype.h
         rpg_common_creaturetype.h
         rpg_common_defines.h
-        rpg_common_exports.h
+    #    rpg_common_exports.h
         rpg_common_duration.h
         rpg_common_effecttype.h
         rpg_common_effectduration.h
@@ -131,17 +118,10 @@ install(FILES
         rpg_common_environment_XML_tree.h
         rpg_common_environment_XML_types.h
         rpg_common_environment_incl.h
-        rpg_common_file_tools.h
-        rpg_common_icontrol.h
-        rpg_common_idumpstate.h
         rpg_common_incl.h
-        rpg_common_irefcount.h
-        rpg_common_istatistic.h
-        rpg_common_itimer.h
         rpg_common_macros.h
         rpg_common_physicaldamagetype.h
         rpg_common_plane.h
-        rpg_common_referencecounter.h
         rpg_common_savereductiontype.h
         rpg_common_savingthrow.h
         rpg_common_savingthrowcheck.h
@@ -150,8 +130,6 @@ install(FILES
         rpg_common_subclass.h
         rpg_common_terrain.h
         rpg_common_timeofday.h
-        rpg_common_timer_manager.h
-        rpg_common_timerhandler.h
         rpg_common_tools.h
         rpg_common_usage.h
         rpg_common_xsderrorhandler.h

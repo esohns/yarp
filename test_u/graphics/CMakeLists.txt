@@ -1,11 +1,27 @@
 cmake_minimum_required(VERSION 2.8)
 
-include(FindPkgConfig)
-pkg_check_modules(PKG_CONFIG_MODULE_SDL REQUIRED sdl)
-pkg_check_modules(PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
-pkg_check_modules(PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
-pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
-pkg_check_modules(PKG_CONFIG_MODULE_LIBGLADE REQUIRED libglade-2.0)
+if (UNIX)
+ include(FindPkgConfig)
+ pkg_check_modules(PKG_CONFIG_MODULE_SDL REQUIRED sdl)
+ pkg_check_modules(PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
+ pkg_check_modules(PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
+ pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
+ pkg_check_modules(PKG_CONFIG_MODULE_LIBGLADE REQUIRED libglade-2.0)
+elseif (WIN32)
+endif ()
+
+if (UNIX)
+ include_directories(${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
+                     ${PKG_CONFIG_MODULE_SDL_MIXER_INCLUDE_DIRS}
+                     ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}
+                     ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS}
+                     ${PKG_CONFIG_MODULE_LIBGLADE_INCLUDE_DIRS})
+elseif (WIN32)
+ include_directories($ENV{LIB_ROOT}/SDL/include
+                     $ENV{LIB_ROOT}/SDL_mixer/include
+                     $ENV{LIB_ROOT}/SDL_ttf/include
+                     $ENV{LIB_ROOT}/gtk2/include)
+endif ()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../common
@@ -19,11 +35,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../engine
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../client
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../graphics)
-include_directories(${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
-                    ${PKG_CONFIG_MODULE_SDL_MIXER_INCLUDE_DIRS}
-                    ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}
-                    ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS}
-                    ${PKG_CONFIG_MODULE_LIBGLADE_INCLUDE_DIRS})
 
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
@@ -48,13 +59,16 @@ install(TARGETS graphics_parser RUNTIME DESTINATION bin)
 ########### next target ###############
 set(SDL_gui_SRCS
     SDL_gui.cpp
+    SDL_gui_common.h
     SDL_gui_defines.h
-    SDL_gui_levelwindow.cpp
-    SDL_gui_levelwindow.h
-    SDL_gui_minimapwindow.cpp
-    SDL_gui_minimapwindow.h
+    SDL_gui_levelwindow_3d.cpp
+    SDL_gui_levelwindow_3d.h
+    SDL_gui_levelwindow_isometric.cpp
+    SDL_gui_levelwindow_isometric.h
     SDL_gui_mainwindow.cpp
-    SDL_gui_mainwindow.h)
+    SDL_gui_mainwindow.h
+    SDL_gui_minimapwindow.cpp
+    SDL_gui_minimapwindow.h)
 
 if (CMAKE_COMPILER_IS_GNUCC)
     set_source_files_properties(${SDL_gui_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
@@ -105,3 +119,4 @@ target_link_libraries(SDL_gui
                       RPG_Client)
 
 install(TARGETS SDL_gui RUNTIME DESTINATION bin)
+

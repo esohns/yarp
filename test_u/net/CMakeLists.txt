@@ -7,16 +7,23 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
 
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
-add_subdirectory(protocol)
+#add_subdirectory(protocol)
 
 ########### next target ###############
 set(net_client_SRCS
+    net_callbacks.cpp
+    net_callbacks.h
     net_client.cpp
     net_client_signalhandler.cpp
     net_client_signalhandler.h
-    net_client_timeouthandler.cpp
-    net_client_timeouthandler.h
-    net_common.h)
+#    net_client_timeouthandler.cpp
+#    net_client_timeouthandler.h
+    net_common.h
+    net_defines.h
+    net_eventhandler.cpp
+    net_eventhandler.h
+    net_module_eventhandler.cpp
+    net_module_eventhandler.h)
 
 add_executable(net_client ${net_client_SRCS})
 
@@ -26,6 +33,8 @@ install(TARGETS net_client RUNTIME DESTINATION bin)
 
 ########### next target ###############
 set(net_server_SRCS
+    net_common.h
+    net_defines.h
     net_server.cpp
     net_server_signalhandler.cpp
     net_server_signalhandler.h)
@@ -35,3 +44,4 @@ add_executable(net_server ${net_server_SRCS})
 target_link_libraries(net_server pthread ACE xerces-c RPG_Dice RPG_Common RPG_Stream RPG_Net)
 
 install(TARGETS net_server RUNTIME DESTINATION bin)
+

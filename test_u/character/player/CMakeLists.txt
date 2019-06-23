@@ -1,12 +1,27 @@
 cmake_minimum_required(VERSION 2.8)
 
-include(FindPkgConfig)
-pkg_check_modules(PKG_CONFIG_MODULE_SDL REQUIRED sdl)
-pkg_check_modules(PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
-pkg_check_modules(PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
-pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
-pkg_check_modules(PKG_CONFIG_MODULE_LIBGLADE REQUIRED libglade-2.0)
-pkg_check_modules(PKG_CONFIG_MODULE_LIBGNOMEUI REQUIRED libgnomeui-2.0>=1.110.0)
+if (UNIX)
+ include(FindPkgConfig)
+ pkg_check_modules(PKG_CONFIG_MODULE_SDL REQUIRED sdl)
+ pkg_check_modules(PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
+ pkg_check_modules(PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
+ pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
+ pkg_check_modules(PKG_CONFIG_MODULE_LIBGLADE REQUIRED libglade-2.0)
+ pkg_check_modules(PKG_CONFIG_MODULE_LIBGNOMEUI REQUIRED libgnomeui-2.0>=1.110.0)
+elseif (WIN32)
+endif ()
+
+if (UNIX)
+ include_directories(${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
+                     ${PKG_CONFIG_MODULE_SDL_MIXER_INCLUDE_DIRS}
+                     ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}
+                     ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
+elseif (WIN32)
+ include_directories($ENV{LIB_ROOT}/SDL/include
+                     $ENV{LIB_ROOT}/SDL_mixer/include
+                     $ENV{LIB_ROOT}/SDL_ttf/include
+                     $ENV{LIB_ROOT}/gtk2/include)
+endif ()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../chance/dice
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../common
@@ -20,10 +35,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../chance/dice
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../engine
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../client
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../graphics)
-include_directories(${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
-                    ${PKG_CONFIG_MODULE_SDL_MIXER_INCLUDE_DIRS}
-                    ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}
-                    ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
 
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 

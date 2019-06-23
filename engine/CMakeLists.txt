@@ -35,9 +35,9 @@ set(RPG_Engine_LIB_SRCS
     rpg_engine_messagequeue.cpp
     rpg_engine_messagequeue.h
     rpg_engine_XML_tree.cpp
-    rpg_engine_XML_tree.h
-    rpg_XMLSchema_XML_tree.h
-    rpg_XMLSchema_XML_types.h)
+    rpg_engine_XML_tree.h)
+ #   rpg_XMLSchema_XML_tree.h
+ #   rpg_XMLSchema_XML_types.h)
 
 if (CMAKE_COMPILER_IS_GNUCC)
     set_source_files_properties(${RPG_Engine_LIB_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")

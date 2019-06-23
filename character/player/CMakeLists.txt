@@ -11,9 +11,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
 
 ########### next target ###############
 set(RPG_Player_LIB_SRCS
-    rpg_XMLSchema_XML_tree.h
+  #  rpg_XMLSchema_XML_tree.h
     rpg_player_defines.h
-    rpg_player_exports.h
+  #  rpg_player_exports.h
     rpg_player.cpp
     rpg_player.h
     rpg_iplayer.h
@@ -22,7 +22,7 @@ set(RPG_Player_LIB_SRCS
     rpg_player_XML_tree.h
     rpg_player_base.cpp
     rpg_player_base.h
-    rpg_player_basexml.h
+  #  rpg_player_basexml.h
     rpg_player_conditions.h
     rpg_player_equipment.cpp
     rpg_player_equipment.h
@@ -62,11 +62,11 @@ set_target_properties(RPG_Player PROPERTIES VERSION 1.0.0 SOVERSION 1)
 install(FILES rpg_player.xsd
         DESTINATION share/RPG/config)
 install(FILES
-        rpg_XMLSchema_XML_tree.h
+  #      rpg_XMLSchema_XML_tree.h
         rpg_player_defines.h
-	rpg_player_exports.h
+#	rpg_player_exports.h
 	rpg_player_abilities.h
-	rpg_player_basexml.h
+#	rpg_player_basexml.h
 	rpg_player_conditions.h
 	rpg_player_equipment.h
 	rpg_player_equipment_common.h

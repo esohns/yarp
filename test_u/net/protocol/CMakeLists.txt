@@ -1,26 +1,37 @@
 cmake_minimum_required(VERSION 2.8)
 
-include(FindPkgConfig)
-pkg_check_modules(PKG_CONFIG_MODULE_SDL REQUIRED sdl)
-pkg_check_modules(PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
-pkg_check_modules(PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
-pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
-pkg_check_modules(PKG_CONFIG_MODULE_GTHREAD REQUIRED gthread-2.0)
-pkg_check_modules(PKG_CONFIG_MODULE_LIBGLADE REQUIRED libglade-2.0)
+if (UNIX)
+ include(FindPkgConfig)
+ pkg_check_modules(PKG_CONFIG_MODULE_SDL REQUIRED sdl)
+ pkg_check_modules(PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
+ pkg_check_modules(PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
+ pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
+ pkg_check_modules(PKG_CONFIG_MODULE_GTHREAD REQUIRED gthread-2.0)
+ pkg_check_modules(PKG_CONFIG_MODULE_LIBGLADE REQUIRED libglade-2.0)
+elseif(WIN32)
+endif ()
 
-#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+if (UNIX)
+ include_directories(${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
+                     ${PKG_CONFIG_MODULE_SDL_MIXER_INCLUDE_DIRS}
+                     ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}
+                     ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS}
+                     ${PKG_CONFIG_MODULE_GTHREAD_INCLUDE_DIRS}
+                     ${PKG_CONFIG_MODULE_LIBGLADE_INCLUDE_DIRS})
+elseif (WIN32)
+ include_directories($ENV{LIB_ROOT}/SDL/include
+                     $ENV{LIB_ROOT}/SDL_mixer/include
+                     $ENV{LIB_ROOT}/SDL_ttf/include
+                     $ENV{LIB_ROOT}/gtk2/include)
+endif ()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../chance/dice
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../common
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../net
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../net/stream
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../net/protocol)
-include_directories(${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
-                    ${PKG_CONFIG_MODULE_SDL_MIXER_INCLUDE_DIRS}
-                    ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}
-                    ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS}
-                    ${PKG_CONFIG_MODULE_GTHREAD_INCLUDE_DIRS}
-                    ${PKG_CONFIG_MODULE_LIBGLADE_INCLUDE_DIRS})
+
+#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 ########### next target ###############
 set(IRC_client_SRCS

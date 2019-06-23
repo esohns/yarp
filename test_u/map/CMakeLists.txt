@@ -1,16 +1,26 @@
 cmake_minimum_required(VERSION 2.8)
 
-include(FindPkgConfig)
-pkg_check_modules(PKG_CONFIG_MODULE_SDL REQUIRED sdl)
-pkg_check_modules(PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
-pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
+if (UNIX)
+ include(FindPkgConfig)
+ pkg_check_modules(PKG_CONFIG_MODULE_SDL REQUIRED sdl)
+ pkg_check_modules(PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
+ pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
+elseif (WIN32)
+endif ()
+
+if (UNIX)
+ include_directories(${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
+                     ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}
+                     ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
+elseif (WIN32)
+ include_directories($ENV{LIB_ROOT}/SDL/include
+                     $ENV{LIB_ROOT}/SDL_ttf/include
+                     $ENV{LIB_ROOT}/gtk2/include)
+endif ()
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../common")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../map")
-include_directories(${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
-                    ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}
-                    ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
 
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
