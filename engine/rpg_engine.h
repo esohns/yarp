@@ -33,7 +33,7 @@
 #include "common.h"
 #include "common_icontrol.h"
 
-#include "stream_allocatorheap.h"
+//#include "stream_allocatorheap.h"
 
 #include "net_configuration.h"
 

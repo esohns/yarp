@@ -62,5 +62,6 @@ lex.backup
 parser_graph.txt
 parser_graph.xml
 parser_report.txt
-IRCScanner_scanner_report.txt
-IRCbisect_scanner_report.txt
+
+cmake/
+

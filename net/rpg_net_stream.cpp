@@ -29,35 +29,21 @@
 
 #include "rpg_net_defines.h"
 
+const char stream_name_string_[] = ACE_TEXT_ALWAYS_CHAR ("YarpNetworkStream");
+
 RPG_Net_Stream::RPG_Net_Stream ()
  : inherited ()
- , socketHandler_ (std::string ("SocketHandler"),
-                   NULL)
- , headerParser_ (std::string ("HeaderParser"),
-                  NULL)
- , protocolHandler_ (std::string ("ProtocolHandler"),
-                     NULL)
- , runtimeStatistic_ (std::string ("RuntimeStatistic"),
-                      NULL)
+ //, headerParser_ (std::string ("HeaderParser"),
+ //                 NULL)
+ // , runtimeStatistic_ (std::string ("RuntimeStatistic"),
+ //                      NULL)
+  , protocolHandler_ (this,
+                      ACE_TEXT_ALWAYS_CHAR ("ProtocolHandler"))
+  , eventHandler_ (this,
+                   ACE_TEXT_ALWAYS_CHAR ("EventHandler"))
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_Stream::RPG_Net_Stream"));
 
-  // remember the "owned" ones...
-  // *TODO*: clean this up
-  // *NOTE*: one problem is that we need to explicitly close() all
-  // modules which we have NOT enqueued onto the stream (e.g. because init()
-  // failed...)
-  inherited::availableModules_.insert_tail (&socketHandler_);
-  inherited::availableModules_.insert_tail (&headerParser_);
-  inherited::availableModules_.insert_tail (&runtimeStatistic_);
-  inherited::availableModules_.insert_tail (&protocolHandler_);
-
-  // *CHECK* fix ACE bug: modules should initialize their "next" member to NULL !
-  inherited::MODULE_T* module = NULL;
-  for (ACE_DLList_Iterator<inherited::MODULE_T> iterator (inherited::availableModules_);
-       iterator.next (module);
-       iterator.advance ())
-    module->next (NULL);
 }
 
 RPG_Net_Stream::~RPG_Net_Stream ()
@@ -69,213 +55,111 @@ RPG_Net_Stream::~RPG_Net_Stream ()
 }
 
 bool
-RPG_Net_Stream::initialize (unsigned int sessionID_in,
-                            Stream_Configuration_t& configuration_in,
-                            const Net_ProtocolConfiguration_t& protocolConfiguration_in,
-                            const Net_UserData_t& userData_in)
+RPG_Net_Stream::load (Stream_ILayout* layout_in,
+                      bool& delete_out)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Net_Stream::load"));
+
+  // sanity check(s)
+  //ACE_ASSERT (inherited::configuration_);
+  //ACE_ASSERT (inherited::configuration_->moduleHandlerConfiguration);
+
+  Stream_Module_t* module_p = &protocolHandler_;
+  layout_in->append (module_p, NULL, 0);
+  module_p = NULL;
+  module_p = &eventHandler_;
+  layout_in->append (module_p, NULL, 0);
+  module_p = NULL;
+
+  delete_out = false;
+
+  return true;
+}
+
+bool
+RPG_Net_Stream::initialize (const inherited::CONFIGURATION_T& configuration_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_Stream::initialize"));
 
   // sanity check(s)
-  ACE_ASSERT (!isInitialized_);
+  ACE_ASSERT (!isRunning ());
 
-  // things to be done here:
-  // [- init base class]
-  // ------------------------------------
-  // - initialize notification strategy (if any)
-  // ------------------------------------
-  // - push the final module onto the stream (if any)
-  // ------------------------------------
-  // - initialize modules
-  // - push them onto the stream (tail-first) !
-  // ------------------------------------
+  //  bool result = false;
+  bool setup_pipeline = configuration_in.configuration_.setupPipeline;
+  bool reset_setup_pipeline = false;
+  struct RPG_Net_Protocol_SessionData* session_data_p = NULL;
+  typename inherited::CONFIGURATION_T::ITERATOR_T iterator;
+  struct RPG_Net_Protocol_ModuleHandlerConfiguration* configuration_p = NULL;
+  typename inherited::ISTREAM_T::MODULE_T* module_p = NULL;
+  RPG_Net_ProtocolHandler* head_impl_p = NULL;
 
-//  ACE_OS::memset (&inherited::state_, 0, sizeof (inherited::state_));
-  inherited::state_.sessionID = sessionID_in;
-
-  int result = -1;
-  inherited::MODULE_T* module_p = NULL;
-  if (configuration_in.notificationStrategy)
+  // allocate a new session state, reset stream
+  const_cast<typename inherited::CONFIGURATION_T&> (configuration_in).configuration_.setupPipeline =
+    false;
+  reset_setup_pipeline = true;
+  if (!inherited::initialize (configuration_in))
   {
-    module_p = inherited::head ();
-    if (!module_p)
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("no head module found, aborting\n")));
-      return false;
-    } // end IF
-    inherited::TASK_T* task_p = module_p->reader ();
-    if (!task_p)
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("no head module reader task found, aborting\n")));
-      return false;
-    } // end IF
-    task_p->msg_queue ()->notification_strategy (configuration_in.notificationStrategy);
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("%s: failed to Stream_Base_T::initialize(), aborting\n"),
+                ACE_TEXT (stream_name_string_)));
+    goto error;
   } // end IF
+  const_cast<typename inherited::CONFIGURATION_T&> (configuration_in).configuration_.setupPipeline =
+    setup_pipeline;
+  reset_setup_pipeline = false;
+  // sanity check(s)
+  ACE_ASSERT (inherited::sessionData_);
+  session_data_p =
+    &const_cast<struct RPG_Net_Protocol_SessionData&> (inherited::sessionData_->getR ());
+  // *TODO*: remove type inferences
+  // sanity check(s)
+  iterator =
+      const_cast<typename inherited::CONFIGURATION_T&> (configuration_in).find (ACE_TEXT_ALWAYS_CHAR (""));
+  ACE_ASSERT (iterator != configuration_in.end ());
+  configuration_p = &((*iterator).second.second);
+  ACE_ASSERT (configuration_p);
 
-  ACE_ASSERT (configuration_in.moduleConfiguration);
-  configuration_in.moduleConfiguration->streamState = &state_;
-
-  // ---------------------------------------------------------------------------
-  if (configuration_in.module)
-  {
-    Stream_IModule_t* module_2 =
-      dynamic_cast<Stream_IModule_t*> (configuration_in.module);
-    if (!module_2)
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("dynamic_cast<Stream_IModule_t> failed, aborting\n")));
-      return false;
-    } // end IF
-    if (!module_2->initialize (*configuration_in.moduleConfiguration))
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to Stream_IModule_t::initialize, aborting\n")));
-      return false;
-    } // end IF
-    result = inherited::push (configuration_in.module);
-    if (result == -1)
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to ACE_Stream::push(\"%s\"): \"%m\", aborting\n"),
-                  ACE_TEXT (configuration_in.module->name ())));
-      return false;
-    } // end IF
-  } // end IF
+  //session_data_p->targetFileName = configuration_p->fileIdentifier.identifier;
+  //session_data_p->formats.push_back (configuration_in.configuration_.format);
+  //session_data_r.size =
+  //  Common_File_Tools::size (configuration_in.moduleHandlerConfiguration->fileName);
 
   // ---------------------------------------------------------------------------
 
   // ******************* Protocol Handler ************************
-  protocolHandler_.initialize (*configuration_in.moduleConfiguration);
-  RPG_Net_Module_ProtocolHandler* protocolHandler_impl = NULL;
-  protocolHandler_impl =
-      dynamic_cast<RPG_Net_Module_ProtocolHandler*> (protocolHandler_.writer ());
-  if (!protocolHandler_impl)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("dynamic_cast<RPG_Net_Module_ProtocolHandler> failed, aborting\n")));
-    return false;
-  } // end IF
-  if (!protocolHandler_impl->initialize (configuration_in.messageAllocator,
-                                         protocolConfiguration_in.peerPingInterval,
-                                         protocolConfiguration_in.pingAutoAnswer,
-                                         protocolConfiguration_in.printPongMessages)) // print ('.') for received "pong"s...
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to initialize module: \"%s\", aborting\n"),
-                ACE_TEXT (protocolHandler_.name ())));
-    return false;
-  } // end IF
-  result = inherited::push (&protocolHandler_);
-  if (result == -1)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to ACE_Stream::push(\"%s\"): \"%m\", aborting\n"),
-                ACE_TEXT (protocolHandler_.name ())));
-    return false;
-  } // end IF
-
-  // ******************* Runtime Statistics ************************
-  runtimeStatistic_.initialize (*configuration_in.moduleConfiguration);
-  Net_Module_Statistic_WriterTask_t* runtimeStatistic_impl = NULL;
-  runtimeStatistic_impl =
-      dynamic_cast<Net_Module_Statistic_WriterTask_t*> (runtimeStatistic_.writer ());
-  if (!runtimeStatistic_impl)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("dynamic_cast<Net_Module_RuntimeStatistic> failed, aborting\n")));
-    return false;
-  } // end IF
-  if (!runtimeStatistic_impl->initialize (configuration_in.statisticReportingInterval, // reporting interval (seconds)
-                                          configuration_in.printFinalReport,           // print final report ?
-                                          configuration_in.messageAllocator))          // message allocator handle
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to initialize module: \"%s\", aborting\n"),
-                ACE_TEXT (runtimeStatistic_.name ())));
-    return false;
-  } // end IF
-  result = inherited::push (&runtimeStatistic_);
-  if (result == -1)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to ACE_Stream::push(\"%s\"): \"%m\", aborting\n"),
-                ACE_TEXT (runtimeStatistic_.name ())));
-    return false;
-  } // end IF
-
-  // ******************* Header Parser ************************
-  headerParser_.initialize (*configuration_in.moduleConfiguration);
-  Net_Module_HeaderParser* headerParser_impl = NULL;
-  headerParser_impl =
-      dynamic_cast<Net_Module_HeaderParser*> (headerParser_.writer ());
-  if (!headerParser_impl)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("dynamic_cast<Net_Module_HeaderParser> failed, aborting\n")));
-    return false;
-  } // end IF
-  if (!headerParser_impl->initialize ())
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to initialize module: \"%s\", aborting\n"),
-                ACE_TEXT (headerParser_.name ())));
-    return false;
-  } // end IF
-  result = inherited::push (&headerParser_);
-  if (result == -1)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to ACE_Stream::push(\"%s\"): \"%m\", aborting\n"),
-                ACE_TEXT (headerParser_.name ())));
-    return false;
-  } // end IF
-
-  // ******************* Socket Handler ************************
-  socketHandler_.initialize (*configuration_in.moduleConfiguration);
-  Net_Module_SocketHandler* socketHandler_impl = NULL;
-  socketHandler_impl =
-      dynamic_cast<Net_Module_SocketHandler*> (socketHandler_.writer ());
-  if (!socketHandler_impl)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("dynamic_cast<Net_Module_SocketHandler> failed, aborting\n")));
-    return false;
-  } // end IF
-  if (!socketHandler_impl->initialize (&state_,
-                                       configuration_in.messageAllocator,
-                                       configuration_in.useThreadPerConnection,
-                                       RPG_NET_STATISTICS_COLLECTION_INTERVAL))
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to initialize module: \"%s\", aborting\n"),
-                ACE_TEXT (socketHandler_.name ())));
-    return false;
-  } // end IF
-
+  module_p =
+    const_cast<typename inherited::ISTREAM_T::MODULE_T*> (inherited::find (ACE_TEXT_ALWAYS_CHAR ("ProtocolHandler")));
+  ACE_ASSERT (module_p);
+  head_impl_p = dynamic_cast<RPG_Net_ProtocolHandler*> (module_p->writer ());
+  ACE_ASSERT (head_impl_p);
+  head_impl_p->setP (&(inherited::state_));
   // *NOTE*: push()ing the module will open() it
-  // --> set the argument that is passed along
-  socketHandler_.arg (&const_cast<Net_UserData_t&> (userData_in));
-  result = inherited::push (&socketHandler_);
-  if (result == -1)
+  //         --> set the argument that is passed along (head module expects a
+  //             handle to the session data)
+  module_p->arg (inherited::sessionData_);
+
+  if (!inherited::setup ())
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to ACE_Stream::push(\"%s\"): \"%m\", aborting\n"),
-                ACE_TEXT (socketHandler_.name ())));
-    return false;
+                ACE_TEXT ("%s: failed to set up pipeline, aborting\n"),
+                ACE_TEXT (stream_name_string_)));
+    goto error;
   } // end IF
 
   // -------------------------------------------------------------
 
-  // set (session) message allocator
-  inherited::allocator_ = configuration_in.messageAllocator;
-
   // OK: all went well
   inherited::isInitialized_ = true;
-//   inherited::dump_state ();
+  //inherited::dump_state ();
 
   return true;
+
+error:
+  if (reset_setup_pipeline)
+    const_cast<typename inherited::CONFIGURATION_T&> (configuration_in).configuration_.setupPipeline =
+      setup_pipeline;
+
+  return false;
 }
 
 void
@@ -283,67 +167,68 @@ RPG_Net_Stream::ping ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_Stream::ping"));
 
-  RPG_Net_Module_ProtocolHandler* protocolHandler_impl = NULL;
-  protocolHandler_impl =
-    dynamic_cast<RPG_Net_Module_ProtocolHandler*> (protocolHandler_.writer ());
-  if (!protocolHandler_impl)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("dynamic_cast<RPG_Net_Module_ProtocolHandler> failed, returning\n")));
-    return;
-  } // end IF
-
   // delegate to this module...
-  protocolHandler_impl->handleTimeout (NULL);
+  Common_ITimerHandler* timer_handler_p = NULL;
+  timer_handler_p =
+    dynamic_cast<Common_ITimerHandler*> (protocolHandler_.writer ());
+  ACE_ASSERT (timer_handler_p);
+
+  try {
+    timer_handler_p->handle (NULL);
+  } catch (...) {
+    ACE_DEBUG ((LM_CRITICAL,
+                ACE_TEXT ("%s: caught exception in Common_ITimerHandler::handle, continuing\n"),
+                ACE_TEXT (stream_name_string_)));
+  }
 }
 
-bool
-RPG_Net_Stream::collect (Stream_Statistic_t& data_out)
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Net_Stream::collect"));
-
-  Net_Module_Statistic_WriterTask_t* runtimeStatistic_impl = NULL;
-  runtimeStatistic_impl =
-    dynamic_cast<Net_Module_Statistic_WriterTask_t*> (runtimeStatistic_.writer ());
-  if (!runtimeStatistic_impl)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("dynamic_cast<Net_Module_Statistic_WriterTask_t> failed, aborting\n")));
-    return false;
-  } // end IF
-
-  // delegate to the statistics module...
-  if (!runtimeStatistic_impl->collect (data_out))
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to Net_Module_Statistic_WriterTask_t::collect(), aborting\n")));
-    return false;
-  } // end IF
-  data_out = inherited::state_.currentStatistics;
-
-  return true;
-}
-
-void
-RPG_Net_Stream::report () const
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Net_Stream::report"));
-
-//   Net_Module_Statistic_WriterTask_t* runtimeStatistic_impl = NULL;
-//   runtimeStatistic_impl = dynamic_cast<Net_Module_Statistic_WriterTask_t*> (//runtimeStatistic_.writer ());
-//   if (!runtimeStatistic_impl)
-//   {
-//     ACE_DEBUG ((LM_ERROR,
-//                 ACE_TEXT ("dynamic_cast<Net_Module_Statistic_WriterTask_t> failed, returning\n")));
+//bool
+//RPG_Net_Stream::collect (Stream_Statistic_t& data_out)
+//{
+//  RPG_TRACE (ACE_TEXT ("RPG_Net_Stream::collect"));
 //
-//     return;
-//   } // end IF
+//  Net_Module_Statistic_WriterTask_t* runtimeStatistic_impl = NULL;
+//  runtimeStatistic_impl =
+//    dynamic_cast<Net_Module_Statistic_WriterTask_t*> (runtimeStatistic_.writer ());
+//  if (!runtimeStatistic_impl)
+//  {
+//    ACE_DEBUG ((LM_ERROR,
+//                ACE_TEXT ("dynamic_cast<Net_Module_Statistic_WriterTask_t> failed, aborting\n")));
+//    return false;
+//  } // end IF
 //
-//   // delegate to this module...
-//   return (runtimeStatistic_impl->report ());
-
-  // just a dummy
-  ACE_ASSERT (false);
-
-  ACE_NOTREACHED (return;)
-}
+//  // delegate to the statistics module...
+//  if (!runtimeStatistic_impl->collect (data_out))
+//  {
+//    ACE_DEBUG ((LM_ERROR,
+//                ACE_TEXT ("failed to Net_Module_Statistic_WriterTask_t::collect(), aborting\n")));
+//    return false;
+//  } // end IF
+//  data_out = inherited::state_.currentStatistics;
+//
+//  return true;
+//}
+//
+//void
+//RPG_Net_Stream::report () const
+//{
+//  RPG_TRACE (ACE_TEXT ("RPG_Net_Stream::report"));
+//
+////   Net_Module_Statistic_WriterTask_t* runtimeStatistic_impl = NULL;
+////   runtimeStatistic_impl = dynamic_cast<Net_Module_Statistic_WriterTask_t*> (//runtimeStatistic_.writer ());
+////   if (!runtimeStatistic_impl)
+////   {
+////     ACE_DEBUG ((LM_ERROR,
+////                 ACE_TEXT ("dynamic_cast<Net_Module_Statistic_WriterTask_t> failed, returning\n")));
+////
+////     return;
+////   } // end IF
+////
+////   // delegate to this module...
+////   return (runtimeStatistic_impl->report ());
+//
+//  // just a dummy
+//  ACE_ASSERT (false);
+//
+//  ACE_NOTREACHED (return;)
+//}

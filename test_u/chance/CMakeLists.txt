@@ -1,32 +1,33 @@
-cmake_minimum_required(VERSION 2.8)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../common)
-
-#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 ########### next target ###############
-set(chance_dice_SRCS chance_dice.cpp)
+set (EXECUTABLE chance_dice)
+set (${EXECUTABLE}_SRCS
+     chance_dice.cpp)
 
-if (CMAKE_COMPILER_IS_GNUCC)
-    set_source_files_properties(${chance_dice_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
-endif()
+add_executable (${EXECUTABLE}
+                ${${EXECUTABLE}_SRCS})
+set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
-add_executable(chance_dice ${chance_dice_SRCS})
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log)
 
-target_link_libraries(chance_dice pthread ACE xerces-c RPG_Dice)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../common)
 
-install(TARGETS chance_dice RUNTIME DESTINATION bin)
+target_link_libraries (${EXECUTABLE}
+                       pthread xerces-c ACE RPG_Dice)
+
+install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 
 ########### next target ###############
-set(chance_rangeToRoll_SRCS chance_rangeToRoll.cpp)
+set (EXECUTABLE chance_rangeToRoll)
+set (${EXECUTABLE}_SRCS
+     chance_rangeToRoll.cpp)
 
-if (CMAKE_COMPILER_IS_GNUCC)
-    set_source_files_properties(${chance_rangeToRoll_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
-endif()
+add_executable (${EXECUTABLE}
+                ${${EXECUTABLE}_SRCS})
+set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
-add_executable(chance_rangeToRoll ${chance_rangeToRoll_SRCS})
+target_link_libraries (${EXECUTABLE}
+                       pthread xerces-c ACE RPG_Dice)
 
-target_link_libraries(chance_rangeToRoll pthread ACE xerces-c RPG_Dice)
-
-install(TARGETS chance_rangeToRoll RUNTIME DESTINATION bin)
+install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)

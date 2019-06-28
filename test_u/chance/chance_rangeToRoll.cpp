@@ -29,10 +29,9 @@
 #include "ace/High_Res_Timer.h"
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
 #include "ace/Init_ACE.h"
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
-#include "common_file_tools.h"
-#include "common_tools.h"
+#include "common_log_tools.h"
 
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
@@ -318,7 +317,7 @@ do_printVersion(const std::string& programName_in)
   std::cout << programName_in
 #ifdef HAVE_CONFIG_H
             << ACE_TEXT(" : ")
-            << RPG_VERSION
+            << YARP_PACKAGE_VERSION
 #endif
             << std::endl;
 
@@ -432,12 +431,12 @@ ACE_TMAIN (int argc_in,
 
   // step3: initialize logging and/or tracing
   std::string log_file;
-  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
-                                        log_file,                   // logfile
-                                        false,                      // log to syslog ?
-                                        false,                      // trace messages ?
-                                        trace_information,          // debug messages ?
-                                        NULL))                      // logger
+  if (!Common_Log_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
+                                            log_file,                   // logfile
+                                            false,                      // log to syslog ?
+                                            false,                      // trace messages ?
+                                            trace_information,          // debug messages ?
+                                            NULL))                      // logger
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));

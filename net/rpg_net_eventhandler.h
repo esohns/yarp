@@ -25,29 +25,40 @@
 #include "ace/Synch.h"
 
 #include "stream_common.h"
+#include "stream_isessionnotify.h"
 
-#include "net_message.h"
-#include "net_messagehandler_base.h"
+//#include "net_message.h"
+//#include "net_messagehandler_base.h"
 
-#include "rpg_net_exports.h"
+// forward declarations
+struct RPG_Net_SessionData;
+class RPG_Net_Message;
+class RPG_Net_SessionMessage;
 
-class RPG_Net_Export RPG_Net_EventHandler
- : public Net_MessageHandlerBase_T<Stream_ModuleConfiguration_t,
-                                   Net_Message>
+typedef Stream_ISessionDataNotify_T<Stream_SessionId_t,
+                                    struct RPG_Net_SessionData,
+                                    enum Stream_SessionMessageType,
+                                    RPG_Net_Message,
+                                    RPG_Net_SessionMessage> RPG_Net_ISessionNotify_t;
+
+class RPG_Net_EventHandler
+ : public RPG_Net_ISessionNotify_t
 {
  public:
   RPG_Net_EventHandler ();
-  virtual ~RPG_Net_EventHandler ();
+  inline virtual ~RPG_Net_EventHandler () {}
 
-  // override Common_INotify_T
-  virtual void start (const Stream_ModuleConfiguration_t&);
-  virtual void notify (const Net_Message&);
-  virtual void end ();
+  // implement Stream_ISessionDataNotify_T
+  virtual void start (Stream_SessionId_t,
+                      const struct RPG_Net_SessionData&);
+  inline virtual void notify (Stream_SessionId_t, const enum Stream_SessionMessageType&) { ACE_ASSERT (false); ACE_NOTSUP; ACE_NOTREACHED (return;) }
+  virtual void end (Stream_SessionId_t);
+  virtual void notify (Stream_SessionId_t,
+                       const RPG_Net_Message&);
+  virtual void notify (Stream_SessionId_t,
+                       const RPG_Net_SessionMessage&);
 
  private:
-  typedef Net_MessageHandlerBase_T<Stream_ModuleConfiguration_t,
-                                   Net_Message> inherited;
-
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_EventHandler (const RPG_Net_EventHandler&));
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_EventHandler& operator= (const RPG_Net_EventHandler&));
 };

@@ -21,40 +21,50 @@
 
 #include "rpg_net_eventhandler.h"
 
+#include "ace/Log_Msg.h"
+
 #include "rpg_common_macros.h"
 
 RPG_Net_EventHandler::RPG_Net_EventHandler ()
- : inherited ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_EventHandler::RPG_Net_EventHandler"));
 
 }
 
-RPG_Net_EventHandler::~RPG_Net_EventHandler ()
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Net_EventHandler::~RPG_Net_EventHandler"));
-
-}
-
 void
-RPG_Net_EventHandler::start (const Stream_ModuleConfiguration_t& configuration_in)
+RPG_Net_EventHandler::start (Stream_SessionId_t sessionId_in,
+                             const struct RPG_Net_SessionData& sessionData_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_EventHandler::start"));
 
-  ACE_UNUSED_ARG (configuration_in);
+  ACE_UNUSED_ARG (sessionId_in);
+  ACE_UNUSED_ARG (sessionData_in);
 }
 
 void
-RPG_Net_EventHandler::notify (const Net_Message& message_in)
+RPG_Net_EventHandler::end (Stream_SessionId_t sessionId_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Net_EventHandler::end"));
+
+  ACE_UNUSED_ARG (sessionId_in);
+}
+
+void
+RPG_Net_EventHandler::notify (Stream_SessionId_t sessionId_in,
+                              const RPG_Net_Message& message_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_EventHandler::notify"));
 
+  ACE_UNUSED_ARG (sessionId_in);
   ACE_UNUSED_ARG (message_in);
 }
 
 void
-RPG_Net_EventHandler::end ()
+RPG_Net_EventHandler::notify (Stream_SessionId_t sessionId_in,
+                              const RPG_Net_SessionMessage& sessionMessage_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Net_EventHandler::end"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_EventHandler::notify"));
 
+  ACE_UNUSED_ARG (sessionId_in);
+  ACE_UNUSED_ARG (sessionMessage_in);
 }

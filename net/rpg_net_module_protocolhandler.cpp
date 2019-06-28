@@ -19,69 +19,67 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-#include "rpg_net_module_protocolhandler.h"
+#include "rpg_net_module_protocolHandler.h"
 
 #include <iostream>
 
-#include "common_timer_manager.h"
+#include "common_timer_manager_common.h"
 
 #include "stream_iallocator.h"
 
-#include "net_remote_comm.h"
-#include "net_sessionmessage.h"
-#include "net_message.h"
-
 #include "rpg_common_macros.h"
 
-RPG_Net_Module_ProtocolHandler::RPG_Net_Module_ProtocolHandler ()
- : inherited ()
+#include "rpg_net_remote_comm.h"
+
+RPG_Net_ProtocolHandler::RPG_Net_ProtocolHandler (ISTREAM_T* stream_in)
+ : inherited (stream_in)
  , pingHandler_ (this,  // dispatch ourselves
                  false) // ping peer at regular intervals...
- , timerID_ (-1)
- , allocator_ (NULL)
- , sessionID_ (0)
+ , timerId_ (-1)
+ //, allocator_ (NULL)
+ , sessionId_ (0)
  , counter_ (1)
  , pingInterval_ (0) // [0: --> OFF]
  , automaticPong_ (true)
  , printPongDot_ (false)
  , isInitialized_ (false)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Net_Module_ProtocolHandler::RPG_Net_Module_ProtocolHandler"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_ProtocolHandler::RPG_Net_ProtocolHandler"));
 
 }
 
-RPG_Net_Module_ProtocolHandler::~RPG_Net_Module_ProtocolHandler ()
+RPG_Net_ProtocolHandler::~RPG_Net_ProtocolHandler ()
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Net_Module_ProtocolHandler::~RPG_Net_Module_ProtocolHandler"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_ProtocolHandler::~RPG_Net_ProtocolHandler"));
 
   int result = -1;
 
   // clean up timer if necessary
-  if (timerID_ != -1)
+  if (unlikely (timerId_ != -1))
   {
     const void* act_p = NULL;
-    result = COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timerID_,
+    result = COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timerId_,
                                                                  &act_p);
     if (result == -1)
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("session %u: failed to cancel \"ping\" timer (ID: %d): \"%m\", continuing\n"),
-                  sessionID_,
-                  timerID_));
+                  ACE_TEXT ("%s: failed to cancel \"ping\" timer (id: %d): \"%m\", continuing\n"),
+                  inherited::mod_->name (),
+                  timerId_));
     else
       ACE_DEBUG ((LM_WARNING,
-                  ACE_TEXT ("session %u: cancelled \"ping\" timer (ID: %d)\n"),
-                  sessionID_,
-                  timerID_));
+                  ACE_TEXT ("%s: cancelled \"ping\" timer (id: %d)\n"),
+                  inherited::mod_->name (),
+                  timerId_));
   } // end IF
 }
 
 bool
-RPG_Net_Module_ProtocolHandler::initialize (Stream_IAllocator* allocator_in,
-                                            unsigned int pingInterval_in,
-                                            bool autoAnswerPings_in,
-                                            bool printPongDot_in)
+RPG_Net_ProtocolHandler::initialize (Stream_IAllocator* allocator_in,
+                                     unsigned int pingInterval_in,
+                                     bool autoAnswerPings_in,
+                                     bool printPongDot_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Net_Module_ProtocolHandler::initialize"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_ProtocolHandler::initialize"));
 
   int result = -1;
 
@@ -91,20 +89,22 @@ RPG_Net_Module_ProtocolHandler::initialize (Stream_IAllocator* allocator_in,
                 ACE_TEXT ("re-initializing...\n")));
 
     // reset state
-    if (timerID_ != -1)
+    if (timerId_ != -1)
     {
       const void* act_p = NULL;
-      result = COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timerID_,
+      result = COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timerId_,
                                                                    &act_p);
       if (result == -1)
         ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("failed to cancel \"ping\" timer (ID: %d): \"%m\", continuing\n"),
-                    timerID_));
+                    ACE_TEXT ("%s: failed to cancel \"ping\" timer (id: %d): \"%m\", continuing\n"),
+                    inherited::mod_->name (),
+                    timerId_));
       else
         ACE_DEBUG ((LM_DEBUG,
-                    ACE_TEXT ("cancelled \"ping\" timer (ID: %d)\n"),
-                    timerID_));
-      timerID_ = -1;
+                    ACE_TEXT ("cancelled \"ping\" timer (id: %d)\n"),
+                    inherited::mod_->name (),
+                    timerId_));
+      timerId_ = -1;
     } // end IF
     counter_ = 1;
 
@@ -112,7 +112,7 @@ RPG_Net_Module_ProtocolHandler::initialize (Stream_IAllocator* allocator_in,
   } // end IF
 
   allocator_ = allocator_in;
-  sessionID_ = 0;
+  sessionId_ = 0;
   pingInterval_ = pingInterval_in;
   automaticPong_ = autoAnswerPings_in;
   //if (automaticPong_)
@@ -126,10 +126,10 @@ RPG_Net_Module_ProtocolHandler::initialize (Stream_IAllocator* allocator_in,
 }
 
 void
-RPG_Net_Module_ProtocolHandler::handleDataMessage (Net_Message*& message_inout,
-                                                   bool& passMessageDownstream_out)
+RPG_Net_ProtocolHandler::handleDataMessage (RPG_Net_Protocol_Message*& message_inout,
+                                            bool& passMessageDownstream_out)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Net_Module_ProtocolHandler::handleDataMessage"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_ProtocolHandler::handleDataMessage"));
 
   int result = -1;
 
@@ -137,11 +137,11 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage (Net_Message*& message_inout,
   ACE_UNUSED_ARG (passMessageDownstream_out);
 
   // retrieve type of message and other details...
-  Net_Remote_Comm::MessageHeader* message_header_p =
-    reinterpret_cast<Net_Remote_Comm::MessageHeader*> (message_inout->rd_ptr ());
+  RPG_Net_Remote_Comm::MessageHeader* message_header_p =
+    reinterpret_cast<RPG_Net_Remote_Comm::MessageHeader*> (message_inout->rd_ptr ());
   switch (message_header_p->messageType)
   {
-    case Net_Remote_Comm::NET_PING:
+    case RPG_Net_Remote_Comm::RPG_NET_PING:
     {
       // auto-answer ?
       if (automaticPong_)
@@ -150,41 +150,38 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage (Net_Message*& message_inout,
 
         // step0: create reply structure
         // --> get a message buffer
-        Net_Message* message_p =
-          allocateMessage (sizeof (Net_Remote_Comm::PongMessage));
+        RPG_Net_Protocol_Message* message_p =
+          allocateMessage (sizeof (RPG_Net_Remote_Comm::PongMessage));
         if (!message_p)
         {
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("failed to allocate reply message(%u), aborting\n"),
-                      sizeof (Net_Remote_Comm::PongMessage)));
+                      sizeof (RPG_Net_Remote_Comm::PongMessage)));
           return;
         } // end IF
         // step1: initialize reply
-        Net_Remote_Comm::PongMessage* reply_struct_p =
-          reinterpret_cast<Net_Remote_Comm::PongMessage*>(message_p->wr_ptr ());
-        ACE_OS::memset (reply_struct_p, 0, sizeof (Net_Remote_Comm::PongMessage));
+        RPG_Net_Remote_Comm::PongMessage* reply_struct_p =
+          reinterpret_cast<RPG_Net_Remote_Comm::PongMessage*>(message_p->wr_ptr ());
+        ACE_OS::memset (reply_struct_p, 0, sizeof (RPG_Net_Remote_Comm::PongMessage));
         reply_struct_p->messageHeader.messageLength =
-         sizeof (Net_Remote_Comm::PongMessage) - sizeof (unsigned int);
+         sizeof (RPG_Net_Remote_Comm::PongMessage) - sizeof (unsigned int);
         reply_struct_p->messageHeader.messageType =
-         Net_Remote_Comm::NET_PONG;
-        message_p->wr_ptr (sizeof (Net_Remote_Comm::PongMessage));
+         RPG_Net_Remote_Comm::RPG_NET_PONG;
+        message_p->wr_ptr (sizeof (RPG_Net_Remote_Comm::PongMessage));
         // step2: send it upstream
         result = inherited::reply (message_p, NULL);
         if (result == -1)
         {
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("failed to ACE_Task::reply(): \"%m\", aborting\n")));
-
-          // clean up
-          message_p->release ();
-
+          message_p->release (); message_p = NULL;
           return;
         } // end IF
       } // end IF
 
       break;
     }
-    case Net_Remote_Comm::NET_PONG:
+    case RPG_Net_Remote_Comm::RPG_NET_PONG:
     {
       //ACE_DEBUG ((LM_DEBUG,
       //            ACE_TEXT ("received PONG (connection ID: %u)...\n"),
@@ -198,20 +195,19 @@ RPG_Net_Module_ProtocolHandler::handleDataMessage (Net_Message*& message_inout,
     default:
     {
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("[%u]: unknown message type: \"%s\": protocol error, continuing\n"),
-                  message_inout->getID (),
-                  ACE_TEXT (Net_Message::CommandType2String (message_header_p->messageType).c_str ())));
-
+                  ACE_TEXT ("[%u:%u]: unknown message type: \"%s\": protocol error, continuing\n"),
+                  message_inout->sessionId (), message_inout->id (),
+                  ACE_TEXT (RPG_Net_Protocol_Message::CommandTypeToString (message_header_p->messageType).c_str ())));
       break;
     }
   } // end SWITCH
 }
 
 void
-RPG_Net_Module_ProtocolHandler::handleSessionMessage (Net_SessionMessage*& message_inout,
-                                                      bool& passMessageDownstream_out)
+RPG_Net_ProtocolHandler::handleSessionMessage (RPG_Net_Protocol_SessionMessage*& message_inout,
+                                               bool& passMessageDownstream_out)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Net_Module_ProtocolHandler::handleSessionMessage"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_ProtocolHandler::handleSessionMessage"));
 
   int result = -1;
 
@@ -222,59 +218,61 @@ RPG_Net_Module_ProtocolHandler::handleSessionMessage (Net_SessionMessage*& messa
   ACE_ASSERT (message_inout);
   ACE_ASSERT (isInitialized_);
 
-  switch (message_inout->getType ())
+  switch (message_inout->type ())
   {
-    case SESSION_BEGIN:
+    case STREAM_SESSION_MESSAGE_BEGIN:
     {
-      const Stream_State_t* state_p = message_inout->getState ();
-      ACE_ASSERT (state_p);
-      sessionID_ = state_p->sessionID;
+      sessionId_ = message_inout->sessionId ();
 
       if (pingInterval_)
       {
         // schedule ourselves...
         ACE_Time_Value interval ((pingInterval_ / 1000),
                                  ((pingInterval_ % 1000) * 1000));
-        ACE_ASSERT (timerID_ == -1);
+        ACE_ASSERT (timerId_ == -1);
         ACE_Event_Handler* handler_p = &pingHandler_;
-        timerID_ =
+        timerId_ =
           COMMON_TIMERMANAGER_SINGLETON::instance ()->schedule (handler_p,                  // event handler
                                                                 NULL,                       // ACT
                                                                 COMMON_TIME_NOW + interval, // first wakeup time
                                                                 interval);                  // interval
-        if (timerID_ == -1)
+        if (unlikely (timerId_ == -1))
         {
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("failed to Common_Timer_Manager::schedule(), aborting\n")));
           return;
         } // end IF
+#if defined (_DEBUG)
         ACE_DEBUG ((LM_DEBUG,
                     ACE_TEXT ("session %u: scheduled \"ping\" timer (id: %d), interval: %#T...\n"),
-                    sessionID_,
-                    timerID_,
+                    sessionId_,
+                    timerId_,
                     &interval));
+#endif // _DEBUG
       } // end IF
 
       break;
     }
-    case SESSION_END:
+    case STREAM_SESSION_MESSAGE_END:
     {
-      if (timerID_ != -1)
+      if (timerId_ != -1)
       {
         const void* act_p = NULL;
-        result = COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timerID_,
+        result = COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timerId_,
                                                                      &act_p);
-        if (result == -1)
+        if (unlikely (result == -1))
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("session %u: failed to cancel \"ping\" timer (ID: %d): \"%m\", continuing\n"),
-                      sessionID_,
-                      timerID_));
-        //else
-        //	ACE_DEBUG((LM_DEBUG,
-        //						 ACE_TEXT("session %u: cancelled \"ping\" timer (ID: %d)\n"),
-        //						 sessionID_,
-        //						 timerID_));
-        timerID_ = -1;
+                      sessionId_,
+                      timerId_));
+#if defined (_DEBUG)
+        else
+         ACE_DEBUG ((LM_DEBUG,
+                     ACE_TEXT("session %u: cancelled \"ping\" timer (ID: %d)\n"),
+                     sessionId_,
+                     timerId_));
+#endif // _DEBUG
+        timerId_ = -1;
       } // end IF
 
       break;
@@ -285,9 +283,9 @@ RPG_Net_Module_ProtocolHandler::handleSessionMessage (Net_SessionMessage*& messa
 }
 
 void
-RPG_Net_Module_ProtocolHandler::handleTimeout (const void* arg_in)
+RPG_Net_ProtocolHandler::handle (const void* arg_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Net_Module_ProtocolHandler::handleTimeout"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_ProtocolHandler::handle"));
 
   int result = -1;
 
@@ -295,30 +293,30 @@ RPG_Net_Module_ProtocolHandler::handleTimeout (const void* arg_in)
 
 //   ACE_DEBUG ((LM_DEBUG,
 //               ACE_TEXT ("timer (ID: %d) expired...sending ping\n"),
-//               timerID_));
+//               timerId_));
 
   // step0: create ping structure --> get a message buffer
-  Net_Message* message_p =
-   allocateMessage (sizeof (Net_Remote_Comm::PingMessage));
+  RPG_Net_Protocol_Message* message_p =
+   allocateMessage (sizeof (RPG_Net_Remote_Comm::PingMessage));
   if (!message_p)
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to allocate ping message(%u), returning\n"),
-                sizeof (Net_Remote_Comm::PingMessage)));
+                sizeof (RPG_Net_Remote_Comm::PingMessage)));
     return;
   } // end IF
 
   // step1: initialize ping data
   // *TODO*: clean this up and handle endianness consistently !
-  Net_Remote_Comm::PingMessage* ping_struct_p =
-    reinterpret_cast<Net_Remote_Comm::PingMessage*> (message_p->wr_ptr ());
-  ACE_OS::memset (ping_struct_p, 0, sizeof (Net_Remote_Comm::PingMessage));
+  RPG_Net_Remote_Comm::PingMessage* ping_struct_p =
+    reinterpret_cast<RPG_Net_Remote_Comm::PingMessage*> (message_p->wr_ptr ());
+  ACE_OS::memset (ping_struct_p, 0, sizeof (RPG_Net_Remote_Comm::PingMessage));
   ping_struct_p->messageHeader.messageLength =
-    (sizeof (Net_Remote_Comm::PingMessage) -
+    (sizeof (RPG_Net_Remote_Comm::PingMessage) -
      sizeof (unsigned int));
-  ping_struct_p->messageHeader.messageType = Net_Remote_Comm::NET_PING;
+  ping_struct_p->messageHeader.messageType = RPG_Net_Remote_Comm::RPG_NET_PING;
   ping_struct_p->counter = counter_++;
-  message_p->wr_ptr (sizeof (Net_Remote_Comm::PingMessage));
+  message_p->wr_ptr (sizeof (RPG_Net_Remote_Comm::PingMessage));
 
   // step2: send it upstream
   result = inherited::reply (message_p, NULL);
@@ -326,18 +324,15 @@ RPG_Net_Module_ProtocolHandler::handleTimeout (const void* arg_in)
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to ACE_Task::reply(): \"%m\", returning\n")));
-
-    // clean up
-    message_p->release ();
-
+    message_p->release (); message_p = NULL;
     return;
   } // end IF
 }
 
 void
-RPG_Net_Module_ProtocolHandler::dump_state () const
+RPG_Net_ProtocolHandler::dump_state () const
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Net_Module_ProtocolHandler::dump_state"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_ProtocolHandler::dump_state"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT(" ***** MODULE: \"%s\" state *****\n"),
@@ -348,24 +343,21 @@ RPG_Net_Module_ProtocolHandler::dump_state () const
 //              ACE_TEXT_ALWAYS_CHAR(name())));
 }
 
-Net_Message*
-RPG_Net_Module_ProtocolHandler::allocateMessage (unsigned int requestedSize_in)
+RPG_Net_Protocol_Message*
+RPG_Net_ProtocolHandler::allocateMessage (unsigned int requestedSize_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Net_Module_ProtocolHandler::allocateMessage"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_ProtocolHandler::allocateMessage"));
 
   // initialize return value(s)
-  Net_Message* message_p = NULL;
+  RPG_Net_Protocol_Message* message_p = NULL;
 
-  if (allocator_)
+  if (likely (inherited::allocator_))
   {
 allocate:
-    try
-    {
+    try {
       message_p =
-        static_cast<Net_Message*> (allocator_->malloc (requestedSize_in));
-    }
-    catch (...)
-    {
+        static_cast<RPG_Net_Protocol_Message*> (inherited::allocator_->malloc (requestedSize_in));
+    } catch (...) {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("caught exception in Stream_IAllocator::malloc(%u), aborting\n"),
                   requestedSize_in));
@@ -374,23 +366,23 @@ allocate:
 
     // keep retrying ?
     if (!message_p &&
-        !allocator_->block ())
+        !inherited::allocator_->block ())
       goto allocate;
   } // end IF
   else
     ACE_NEW_NORETURN (message_p,
-                      Net_Message (requestedSize_in));
-  if (!message_p)
+                      RPG_Net_Protocol_Message (requestedSize_in));
+  if (unlikely (!message_p))
   {
-    if (allocator_)
+    if (inherited::allocator_)
     {
-      if (allocator_->block ())
+      if (inherited::allocator_->block ())
         ACE_DEBUG ((LM_CRITICAL,
-                    ACE_TEXT ("failed to allocate SessionMessageType: \"%m\", aborting\n")));
+                    ACE_TEXT ("failed to allocate message: \"%m\", aborting\n")));
     } // end IF
     else
       ACE_DEBUG ((LM_CRITICAL,
-                  ACE_TEXT ("failed to allocate SessionMessageType: \"%m\", aborting\n")));
+                  ACE_TEXT ("failed to allocate message: \"%m\", aborting\n")));
   } // end IF
 
   return message_p;

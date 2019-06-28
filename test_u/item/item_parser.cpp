@@ -219,7 +219,7 @@ do_printVersion (const std::string& programName_in)
   std::cout << programName_in
 #ifdef HAVE_CONFIG_H
             << ACE_TEXT(" : ")
-            << RPG_VERSION
+            << YARP_PACKAGE_VERSION
 #endif
             << std::endl;
 

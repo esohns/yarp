@@ -48,7 +48,7 @@ typedef Net_StreamTCPSocketBase_T<ACE_INET_Addr,
                                   RPG_Net_Protocol_Configuration,
                                   RPG_Net_Protocol_SessionData,
                                   RPG_Net_Protocol_StreamSessionData_t,
-                                  Stream_Statistic_t,
+                                  struct Stream_Statistic,
                                   RPG_Net_Protocol_Stream,
                                   Net_TCPSocketHandler> RPG_Net_Protocol_TCPHandler_t;
 typedef Net_StreamAsynchTCPSocketBase_T<ACE_INET_Addr,
@@ -56,7 +56,7 @@ typedef Net_StreamAsynchTCPSocketBase_T<ACE_INET_Addr,
                                         RPG_Net_Protocol_Configuration,
                                         RPG_Net_Protocol_SessionData,
                                         RPG_Net_Protocol_StreamSessionData_t,
-                                        Stream_Statistic_t,
+                                        struct Stream_Statistic,
                                         RPG_Net_Protocol_Stream,
                                         Net_AsynchTCPSocketHandler> RPG_Net_Protocol_AsynchTCPHandler_t;
 typedef Net_TCPConnectionBase_T<RPG_Net_Protocol_Configuration,
@@ -87,12 +87,12 @@ typedef Net_IConnectionManager_T<ACE_INET_Addr,
                                  Net_SocketConfiguration_t,
                                  RPG_Net_Protocol_Configuration,
                                  RPG_Net_Protocol_SessionData,
-                                 Stream_Statistic_t> RPG_Net_Protocol_IConnection_Manager_t;
+                                 struct Stream_Statistic> RPG_Net_Protocol_IConnection_Manager_t;
 typedef Net_Connection_Manager_T<ACE_INET_Addr,
                                  Net_SocketConfiguration_t,
                                  RPG_Net_Protocol_Configuration,
                                  RPG_Net_Protocol_SessionData,
-                                 Stream_Statistic_t> RPG_Net_Protocol_Connection_Manager_t;
+                                 struct Stream_Statistic> RPG_Net_Protocol_Connection_Manager_t;
 
 RPG_PROTOCOL_SINGLETON_DECLARE (ACE_Singleton,
                                 RPG_Net_Protocol_Connection_Manager_t,

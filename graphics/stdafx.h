@@ -34,9 +34,11 @@
 #include <functional>
 
 // Local Library Header Files
-#include <SDL_ttf.h>
-#include <SDL.h>
 #include <png.h>
+
+#include <SDL.h>
+#include <SDL_ttf.h>
+
 #include <xsd/cxx/pre.hxx>
 #include <xsd/cxx/config.hxx>
 

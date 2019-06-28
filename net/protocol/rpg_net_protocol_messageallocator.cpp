@@ -23,17 +23,9 @@
 
 #include "rpg_common_macros.h"
 
-RPG_Net_Protocol_MessageAllocator::RPG_Net_Protocol_MessageAllocator (unsigned int maxNumMessages_in,
-                                                                      ACE_Allocator* allocator_in)
- : inherited (maxNumMessages_in,
-              allocator_in)
+RPG_Net_Protocol_MessageAllocator::RPG_Net_Protocol_MessageAllocator (unsigned int maxNumMessages_in)
+ : inherited (maxNumMessages_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_MessageAllocator::RPG_Net_Protocol_MessageAllocator"));
-
-}
-
-RPG_Net_Protocol_MessageAllocator::~RPG_Net_Protocol_MessageAllocator ()
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_MessageAllocator::~RPG_Net_Protocol_MessageAllocator"));
 
 }

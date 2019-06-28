@@ -26,48 +26,48 @@
 #include "ace/Global_Macros.h"
 
 #include "rpg_net_protocol_common.h"
-#include "rpg_net_protocol_exports.h"
-#include "rpg_net_protocol_IRCmessage.h"
-#include "rpg_net_protocol_IRC_codes.h"
+//#include "rpg_net_protocol_exports.h"
+//#include "rpg_net_protocol_IRCmessage.h"
+//#include "rpg_net_protocol_IRC_codes.h"
 #include "rpg_net_protocol_network.h"
 
-class RPG_Protocol_Export RPG_Net_Protocol_Tools
+class RPG_Net_Protocol_Tools
 {
  public:
   // debug info
-  static std::string dump(const RPG_Net_Protocol_IRCMessage&);
-  static std::string dump(const RPG_Net_Protocol_UserModes_t&);
-  static std::string dump(const RPG_Net_Protocol_ChannelModes_t&);
+  //static std::string dump (const RPG_Net_Protocol_IRCMessage&);
+  //static std::string dump (const RPG_Net_Protocol_UserModes_t&);
+  //static std::string dump (const RPG_Net_Protocol_ChannelModes_t&);
 
-  static std::string IRCCode2String(const RPG_Net_Protocol_IRCNumeric_t&);
-  static std::string IRCChannelMode2String(const RPG_Net_Protocol_ChannelMode&);
-  static std::string IRCUserMode2String(const RPG_Net_Protocol_UserMode&);
-  static std::string IRCMessage2String(const RPG_Net_Protocol_IRCMessage&);
+  //static std::string IRCCode2String (const RPG_Net_Protocol_IRCNumeric_t&);
+  //static std::string IRCChannelMode2String (const RPG_Net_Protocol_ChannelMode&);
+  //static std::string IRCUserMode2String (const RPG_Net_Protocol_UserMode&);
+  //static std::string IRCMessage2String (const RPG_Net_Protocol_IRCMessage&);
 
-  static RPG_Net_Protocol_CommandType_t IRCCommandString2Type(const std::string&);
-  static void merge(const std::string&,             // mode string (e.g. "+i")
-                    RPG_Net_Protocol_UserModes_t&); // input/return value: (merged) user modes
-  static void merge(const std::string&,                // mode string (e.g. "+i")
-                    RPG_Net_Protocol_ChannelModes_t&); // input/return value: (merged) channel modes
-  static char IRCChannelMode2Char(const RPG_Net_Protocol_ChannelMode&);
-  static char IRCUserMode2Char(const RPG_Net_Protocol_UserMode&);
+  //static RPG_Net_Protocol_CommandType_t IRCCommandString2Type (const std::string&);
+  //static void merge (const std::string&,             // mode string (e.g. "+i")
+  //                   RPG_Net_Protocol_UserModes_t&); // input/return value: (merged) user modes
+  //static void merge (const std::string&,                // mode string (e.g. "+i")
+  //                   RPG_Net_Protocol_ChannelModes_t&); // input/return value: (merged) channel modes
+  //static char IRCChannelMode2Char (const RPG_Net_Protocol_ChannelMode&);
+  //static char IRCUserMode2Char (const RPG_Net_Protocol_UserMode&);
 
-  static bool isValidIRCChannelName(const std::string&); // string
+  //static bool isValidIRCChannelName (const std::string&); // string
 
   // *TODO*: find a way to directly export the singleton from the dll
   static RPG_Net_Protocol_IConnection_Manager_t* getConnectionManager ();
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools());
-  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Net_Protocol_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools(const RPG_Net_Protocol_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools& operator=(const RPG_Net_Protocol_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools ());
+  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Net_Protocol_Tools ());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools (const RPG_Net_Protocol_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools& operator= (const RPG_Net_Protocol_Tools&));
 
   // helper methods
-  static RPG_Net_Protocol_UserMode IRCUserModeChar2UserMode(char);
-  static RPG_Net_Protocol_ChannelMode IRCChannelModeChar2ChannelMode(char);
-  static std::string concatParams(const RPG_Net_Protocol_Parameters_t&, // parameters
-                                  int = 0); // starting index (-1: LAST parameter)
+  //static RPG_Net_Protocol_UserMode IRCUserModeChar2UserMode (char);
+  //static RPG_Net_Protocol_ChannelMode IRCChannelModeChar2ChannelMode (char);
+  //static std::string concatParams (const RPG_Net_Protocol_Parameters_t&, // parameters
+  //                                 int = 0); // starting index (-1: LAST parameter)
 };
 
 #endif

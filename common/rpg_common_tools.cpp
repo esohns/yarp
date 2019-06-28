@@ -33,10 +33,6 @@
 #include "ace/POSIX_Proactor.h"
 #include "ace/Reactor.h"
 
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-#include <Security.h>
-#endif
-
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
 #include "rpg_common_environment_incl.h"

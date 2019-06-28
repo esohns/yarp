@@ -29,9 +29,6 @@
 #include "net_asynch_tcpsockethandler.h"
 #include "net_configuration.h"
 #include "net_connection_manager_common.h"
-#include "net_message.h"
-#include "net_sessionmessage.h"
-#include "net_stream_common.h"
 #include "net_stream_asynch_tcpsocket_base.h"
 #include "net_stream_tcpsocket_base.h"
 #include "net_tcpsockethandler.h"
@@ -42,25 +39,15 @@
 
 #include "rpg_net_stream.h"
 
-typedef Stream_MessageAllocatorHeapBase_T<Net_Message,
-                                          Net_SessionMessage> RPG_Net_StreamMessageAllocator_t;
+#include "rpg_net_protocol_message.h"
+#include "rpg_net_protocol_session_message.h"
 
-typedef Net_StreamAsynchTCPSocketBase_T<ACE_INET_Addr,
-                                        Net_SocketConfiguration_t,
-                                        Net_Configuration_t,
-                                        Net_UserData_t,
-                                        Net_StreamSessionData_t,
-                                        Stream_Statistic_t,
-                                        RPG_Net_Stream,
-                                        Net_AsynchTCPSocketHandler> RPG_Net_AsynchTCPHandler_t;
-typedef Net_StreamTCPSocketBase_T<ACE_INET_Addr,
-                                  Net_SocketConfiguration_t,
-                                  Net_Configuration_t,
-                                  Net_UserData_t,
-                                  Net_StreamSessionData_t,
-                                  Stream_Statistic_t,
-                                  RPG_Net_Stream,
-                                  Net_TCPSocketHandler> RPG_Net_TCPHandler_t;
+typedef Stream_MessageAllocatorHeapBase_T<ACE_MT_SYNCH,
+                                          struct Stream_AllocatorConfiguration,
+                                          Stream_ControlMessage_t,
+                                          RPG_Net_Protocol_Message,
+                                          RPG_Net_Protocol_SessionMessage> RPG_Net_MessageAllocator_t;
+
 typedef Net_AsynchTCPConnectionBase_T<Net_Configuration_t,
                                       Net_UserData_t,
                                       Net_StreamSessionData_t,

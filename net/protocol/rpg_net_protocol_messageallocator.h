@@ -23,26 +23,26 @@
 
 #include "stream_cachedmessageallocatorheap_base.h"
 
-#include "rpg_net_protocol_exports.h"
 #include "rpg_net_protocol_message.h"
-#include "rpg_net_protocol_sessionmessage.h"
+#include "rpg_net_protocol_session_message.h"
 
 // forward declarations
 class ACE_Allocator;
 
-class RPG_Protocol_Export RPG_Net_Protocol_MessageAllocator
- : public Stream_CachedMessageAllocatorHeapBase_T<RPG_Net_Protocol_Message,
+class RPG_Net_Protocol_MessageAllocator
+ : public Stream_CachedMessageAllocatorHeapBase_T<Stream_ControlMessage_t,
+                                                  RPG_Net_Protocol_Message,
                                                   RPG_Net_Protocol_SessionMessage>
 {
- public:
-  RPG_Net_Protocol_MessageAllocator (unsigned int,    // total number of concurrent messages
-                                     ACE_Allocator*); // (heap) memory allocator...
-  virtual ~RPG_Net_Protocol_MessageAllocator ();
-
- private:
-  typedef Stream_CachedMessageAllocatorHeapBase_T<RPG_Net_Protocol_Message,
+  typedef Stream_CachedMessageAllocatorHeapBase_T<Stream_ControlMessage_t,
+                                                  RPG_Net_Protocol_Message,
                                                   RPG_Net_Protocol_SessionMessage> inherited;
 
+ public:
+  RPG_Net_Protocol_MessageAllocator (unsigned int); // total number of concurrent messages
+  inline virtual ~RPG_Net_Protocol_MessageAllocator () {}
+
+ private:
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_MessageAllocator (const RPG_Net_Protocol_MessageAllocator&));
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_MessageAllocator& operator= (const RPG_Net_Protocol_MessageAllocator&));
 };

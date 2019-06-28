@@ -1,31 +1,47 @@
-cmake_minimum_required(VERSION 2.8)
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/Threads.cmake)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/dice
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../common)
-
-#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
-
-add_subdirectory(dice)
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/ACE.cmake)
 
 ########### next target ###############
-set(RPG_Chance_LIB_SRCS
-    rpg_chance_common_tools.cpp
-    rpg_chance_common_tools.h)
+set (LIBRARY RPG_Chance)
+set (${LIBRARY}_SRCS
+     rpg_chance_common_tools.cpp
+     rpg_chance_common_tools.h)
 
-set_source_files_properties(${RPG_Chance_LIB_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_CHANCE_BUILD_DLL)
-if (CMAKE_COMPILER_IS_GNUCC)
-    set_source_files_properties(${RPG_Chance_LIB_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
-endif()
+set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_CHANCE_BUILD_DLL)
 
-add_library(RPG_Chance SHARED ${RPG_Chance_LIB_SRCS})
+add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 
-add_dependencies(RPG_Chance RPG_Dice)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
+if (UNIX)
+ target_include_directories (${LIBRARY} PUBLIC
+#                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules/ACE>)
+#                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/ACE_TAO/ACE>)
+                             $<BUILD_INTERFACE:/usr/local/src/ACE_wrappers>)
+elseif (WIN32)
+ if (DEFINED ENV{ACE_ROOT})
+  target_include_directories (${LIBRARY} PUBLIC
+                              $<BUILD_INTERFACE:$ENV{ACE_ROOT}>)
+ else ()
+  target_include_directories (${LIBRARY} PUBLIC
+                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/ACE_TAO/ACE>)
+ endif (DEFINED ENV{ACE_ROOT})
+endif ()
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/dice>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../common>)
 
-set_target_properties(RPG_Chance PROPERTIES VERSION 1.0.0 SOVERSION 1)
+set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
+
+add_dependencies (${LIBRARY} RPG_Dice)
 
 ########### install files ###############
-install(FILES
-        rpg_chance_common_tools.h
-	rpg_chance_exports.h
-        DESTINATION include)
-install(TARGETS RPG_Chance LIBRARY DESTINATION lib)
+install (FILES
+         rpg_chance_common_tools.h
+       # rpg_chance_exports.h
+         DESTINATION include)
+install (TARGETS ${LIBRARY} LIBRARY DESTINATION lib)
+
+add_subdirectory (dice)

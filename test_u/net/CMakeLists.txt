@@ -1,47 +1,56 @@
-cmake_minimum_required(VERSION 2.8)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../common
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../net
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../net/stream)
-
-#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
-
-#add_subdirectory(protocol)
-
 ########### next target ###############
-set(net_client_SRCS
-    net_callbacks.cpp
-    net_callbacks.h
-    net_client.cpp
-    net_client_signalhandler.cpp
-    net_client_signalhandler.h
+set (EXECUTABLE net_client)
+set (${EXECUTABLE}_SRCS
+     net_callbacks.cpp
+     net_callbacks.h
+     net_client.cpp
+     net_client_signalhandler.cpp
+     net_client_signalhandler.h
 #    net_client_timeouthandler.cpp
 #    net_client_timeouthandler.h
-    net_common.h
-    net_defines.h
-    net_eventhandler.cpp
-    net_eventhandler.h
-    net_module_eventhandler.cpp
-    net_module_eventhandler.h)
+     net_common.h
+     net_defines.h
+     net_eventhandler.cpp
+     net_eventhandler.h
+     net_module_eventhandler.cpp
+     net_module_eventhandler.h)
 
-add_executable(net_client ${net_client_SRCS})
+add_executable (${EXECUTABLE}
+                ${${EXECUTABLE}_SRCS})
+set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
-target_link_libraries(net_client pthread ACE xerces-c RPG_Dice RPG_Common RPG_Stream RPG_Net)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src>)
+#include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log>)
 
-install(TARGETS net_client RUNTIME DESTINATION bin)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../common
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../net
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../net/protocol)
+
+target_link_libraries (${EXECUTABLE}
+                       pthread xerces-c
+                       ACE
+                       RPG_Dice RPG_Common RPG_Net)
+
+install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 
 ########### next target ###############
-set(net_server_SRCS
-    net_common.h
-    net_defines.h
-    net_server.cpp
-    net_server_signalhandler.cpp
-    net_server_signalhandler.h)
+set (EXECUTABLE net_server)
+set (${EXECUTABLE}_SRCS
+     net_common.h
+     net_defines.h
+     net_server.cpp
+     net_server_signalhandler.cpp
+     net_server_signalhandler.h)
 
-add_executable(net_server ${net_server_SRCS})
+add_executable (${EXECUTABLE}
+                ${${EXECUTABLE}_SRCS})
 
-target_link_libraries(net_server pthread ACE xerces-c RPG_Dice RPG_Common RPG_Stream RPG_Net)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log>)
 
-install(TARGETS net_server RUNTIME DESTINATION bin)
+target_link_libraries (${EXECUTABLE}
+                       pthread xerces-c
+                       ACE
+                       RPG_Dice RPG_Common RPG_Net)
 
+install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)

@@ -30,7 +30,7 @@
 #include "ace/OS.h"
 #include "ace/Time_Value.h"
 
-#include "common_timer_manager.h"
+#include "common_time_common.h"
 
 #include "rpg_common_macros.h"
 
@@ -48,11 +48,11 @@ RPG_Dice::initialize ()
 
   ACE_Time_Value now = COMMON_TIME_NOW;
   // *PORTABILITY*: outside glibc, this is not very portable...
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  ::srandom (now.sec ());
-#else
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
   ACE_OS::srand (static_cast<u_int> (now.sec ()));
-#endif
+#else
+  ::srandom (now.sec ());
+#endif // ACE_WIN32 || ACE_WIN64
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("initializing random seed...DONE\n")));
@@ -136,6 +136,8 @@ RPG_Dice::simulateRoll (const RPG_Dice_Roll& rollSpecs_in,
 bool
 RPG_Dice::probability (float probability_in)
 {
+  RPG_TRACE (ACE_TEXT ("RPG_Dice::probability"));
+
   // sanity checks
   ACE_ASSERT ((probability_in >= 0.0F) && (probability_in <= 1.0F));
 
