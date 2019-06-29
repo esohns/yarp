@@ -26,12 +26,13 @@
 #include "ace/Atomic_Op_T.h"
 #include "ace/Global_Macros.h"
 #include "ace/Message_Queue_T.h"
-#include "ace/Synch.h"
+//#include "ace/Synch.h"
 #include "ace/Synch_Traits.h"
 #include "ace/Task.h"
 
-#include "common.h"
-#include "common_icontrol.h"
+#include "common_time_common.h"
+
+//#include "common_icontrol.h"
 
 //#include "stream_allocatorheap.h"
 
@@ -46,7 +47,7 @@
 
 #include "rpg_engine_common.h"
 #include "rpg_engine_entitymode.h"
-#include "rpg_engine_exports.h"
+//#include "rpg_engine_exports.h"
 #include "rpg_engine_event_manager.h"
 #include "rpg_engine_level.h"
 #include "rpg_engine_messagequeue.h"
@@ -57,11 +58,14 @@ class RPG_Engine_IClient;
 /**
         @author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Engine_Export RPG_Engine
+class RPG_Engine
  : public ACE_Task<ACE_MT_SYNCH, Common_TimePolicy_t>
  , public RPG_Engine_Level
- , public Common_IControl
+ //, public Common_IControl
 {
+  typedef ACE_Task<ACE_MT_SYNCH, Common_TimePolicy_t> inherited;
+  typedef RPG_Engine_Level inherited2;
+
   // AI thread(s) require access to the entity action queues...
   friend class RPG_Engine_Event_Manager;
 
@@ -168,17 +172,14 @@ class RPG_Engine_Export RPG_Engine
   RPG_Map_Positions_t getDoors (bool = true) const; // locked access ?
 
  private:
-  typedef ACE_Task<ACE_MT_SYNCH, Common_TimePolicy_t> inherited;
-  typedef RPG_Engine_Level inherited2;
-
   // hide unwanted funcionality
   using RPG_Engine_Level::init;
   using RPG_Engine_Level::getMetaData;
   using RPG_Engine_Level::getSeedPoints;
   using RPG_Engine_Level::findPath;
 
-  ACE_UNIMPLEMENTED_FUNC (RPG_Engine (const RPG_Engine&));
-  ACE_UNIMPLEMENTED_FUNC (RPG_Engine& operator=(const RPG_Engine&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Engine (const RPG_Engine&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Engine& operator=(const RPG_Engine&))
 
   // override task-based members
   virtual int open (void* = NULL);
@@ -221,11 +222,11 @@ class RPG_Engine_Export RPG_Engine
   RPG_Engine_IClient*                         client_;
   //// implement blocking wait...
   //ACE_Condition<ACE_Recursive_Thread_Mutex>   condition_;
-  Net_Client_IConnector_t*                    connector_;
+  RPG_Net_Protocol_Client_IConnector_t*       connector_;
   RPG_Engine_Entities_t                       entities_;
   Stream_AllocatorHeap                        heapAllocator_;
   // make API re-entrant
-  mutable ACE_Thread_Mutex                    lock_;
+  mutable ACE_SYNCH_MUTEX                     lock_;
   RPG_Net_Protocol_MessageAllocator           messageAllocator_;
   Net_SocketHandlerConfiguration_t            netConfiguration_;
   // *IMPORTANT NOTE*: need this ONLY to handle control messages...

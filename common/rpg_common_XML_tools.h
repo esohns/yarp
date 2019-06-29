@@ -28,12 +28,12 @@
 #include "xercesc/framework/XMLGrammarPool.hpp"
 #include "xercesc/sax2/SAX2XMLReader.hpp"
 
-#include "rpg_common_exports.h"
+//#include "rpg_common_exports.h"
 
 // forward declarations
 struct dirent;
 
-class RPG_Common_Export RPG_Common_XML_Tools
+class RPG_Common_XML_Tools
 {
  public:
    static bool initialize (const std::string&); // schema path
@@ -42,10 +42,10 @@ class RPG_Common_Export RPG_Common_XML_Tools
    static ::xercesc::SAX2XMLReader* parser ();
 
  private:
-  ACE_UNIMPLEMENTED_FUNC (RPG_Common_XML_Tools ());
-  ACE_UNIMPLEMENTED_FUNC (virtual ~RPG_Common_XML_Tools ());
-  ACE_UNIMPLEMENTED_FUNC (RPG_Common_XML_Tools (const RPG_Common_XML_Tools&));
-  ACE_UNIMPLEMENTED_FUNC (RPG_Common_XML_Tools& operator=(const RPG_Common_XML_Tools&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Common_XML_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (virtual ~RPG_Common_XML_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Common_XML_Tools (const RPG_Common_XML_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Common_XML_Tools& operator=(const RPG_Common_XML_Tools&))
 
   // helper methods
   static int dirent_selector (const dirent*);

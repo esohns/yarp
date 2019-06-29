@@ -42,20 +42,21 @@ RPG_Dice::initialize ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Dice::initialize"));
 
+#if defined (_DEBUG)
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("initializing random seed (RAND_MAX = %d)...\n"),
               RAND_MAX));
-
-  ACE_Time_Value now = COMMON_TIME_NOW;
+#endif // _DEBUG
   // *PORTABILITY*: outside glibc, this is not very portable...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-  ACE_OS::srand (static_cast<u_int> (now.sec ()));
+  ACE_OS::srand (static_cast<u_int> (COMMON_TIME_NOW.sec ()));
 #else
-  ::srandom (now.sec ());
+  ::srandom (COMMON_TIME_NOW.sec ());
 #endif // ACE_WIN32 || ACE_WIN64
-
+#if defined (_DEBUG)
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("initializing random seed...DONE\n")));
+#endif // _DEBUG
 }
 
 void
@@ -71,22 +72,21 @@ RPG_Dice::generateRandomNumbers (unsigned int range_in,
   // initialize result(s)
   results_out.clear ();
 
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-#else
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
   unsigned int usecs = 0;
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
   for (unsigned int i = 0;
        i < numRolls_in;
        i++)
   {
     // *PORTABILITY*: outside glibc, this is not very portable...
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-    results_out.push_back ((::random () % range_in) + 1);
-#else
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
     // *NOTE*: use ACE_OS::rand_r() for improved thread safety !
     //results_out.push_back((ACE_OS::rand() % range_in) + 1);
     usecs = static_cast<unsigned int> (COMMON_TIME_NOW.usec ());
     results_out.push_back ((ACE_OS::rand_r (&usecs) % range_in) + 1);
+#else
+    results_out.push_back ((::random () % range_in) + 1);
 #endif
   } // end FOR
 }
@@ -268,14 +268,14 @@ RPG_Dice::rangeToRoll (const RPG_Dice_ValueRange& valueRange_in,
   {
     ACE_DEBUG ((LM_WARNING,
                 ACE_TEXT ("failed to match range: %s, best result was: %s (distance: %d)...\n"),
-                ACE_TEXT (RPG_Dice_Common_Tools::rangeToString (valueRange_in).c_str ()),
-                ACE_TEXT (RPG_Dice_Common_Tools::rollToString (roll_out).c_str ()),
+                ACE_TEXT (RPG_Dice_Common_Tools::toString (valueRange_in).c_str ()),
+                ACE_TEXT (RPG_Dice_Common_Tools::toString (roll_out).c_str ()),
                 distance));
 
     // print all results...
     ACE_DEBUG ((LM_DEBUG,
                 ACE_TEXT ("results for range \"%s\"\n"),
-                ACE_TEXT (RPG_Dice_Common_Tools::rangeToString (valueRange_in).c_str ())));
+                ACE_TEXT (RPG_Dice_Common_Tools::toString (valueRange_in).c_str ())));
     bool perfect_match = true;
     int index = 1;
     RPG_Dice_ValueRange range;
@@ -294,7 +294,7 @@ RPG_Dice::rangeToRoll (const RPG_Dice_ValueRange& valueRange_in,
        // not a perfect match...
         perfect_match = false;
         range_string = ACE_TEXT (" --> ");
-        range_string += RPG_Dice_Common_Tools::rangeToString (range);
+        range_string += RPG_Dice_Common_Tools::toString (range);
       } // end IF
 
       index_string = ACE_TEXT ("[");
@@ -302,20 +302,10 @@ RPG_Dice::rangeToRoll (const RPG_Dice_ValueRange& valueRange_in,
       ACE_DEBUG ((LM_DEBUG,
                   ACE_TEXT ("%s: \"%s\"%s\n"),
                   ACE_TEXT (index_string.c_str ()),
-                  ACE_TEXT (RPG_Dice_Common_Tools::rollToString ((*iterator).roll).c_str ()),
+                  ACE_TEXT (RPG_Dice_Common_Tools::toString ((*iterator).roll).c_str ()),
                   ACE_TEXT (range_string.c_str ())));
     } // end FOR
   } // end IF
-}
-
-unsigned int
-RPG_Dice::distanceRangeToRange (const RPG_Dice_ValueRange& rangeA_in,
-                                const RPG_Dice_ValueRange& rangeB_in)
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Dice::distanceRangeToRange"));
-
-  return (::abs (rangeA_in.begin - rangeB_in.begin) +
-          ::abs (rangeA_in.end - rangeB_in.end));
 }
 
 std::pair<unsigned int, unsigned int>

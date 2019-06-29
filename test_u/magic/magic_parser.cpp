@@ -32,7 +32,8 @@
 #endif
 
 #include "common_file_tools.h"
-#include "common_tools.h"
+
+#include "common_log_tools.h"
 
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
@@ -194,10 +195,10 @@ do_work (const std::string& schemaRepository_in,
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step1: init string conversion tables
-  RPG_Dice_Common_Tools::initStringConversionTables();
-  RPG_Common_Tools::initStringConversionTables();
+  RPG_Dice_Common_Tools::initialize();
+  RPG_Common_Tools::initializeStringConversionTables();
   RPG_Character_Common_Tools::init();
-  RPG_Magic_Common_Tools::init();
+  RPG_Magic_Common_Tools::initialize();
 
   // step2: initialize spell dictionary
   if (!RPG_Common_XML_Tools::initialize (schemaRepository_in))
@@ -235,7 +236,7 @@ do_printVersion(const std::string& programName_in)
   std::cout << programName_in
 #ifdef HAVE_CONFIG_H
             << ACE_TEXT(" : ")
-            << YARP_PACKAGE_VERSION
+            //<< YARP_PACKAGE_VERSION
 #endif
             << std::endl;
 
@@ -374,15 +375,15 @@ ACE_TMAIN(int argc_in,
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
-  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
-                                        log_file,                  // logfile
-                                        false,                     // log to syslog ?
-                                        false,                     // trace messages ?
-                                        trace_information,         // debug messages ?
-                                        NULL))                     // logger
+  if (!Common_Log_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
+                                            log_file,                  // logfile
+                                            false,                     // log to syslog ?
+                                            false,                     // trace messages ?
+                                            trace_information,         // debug messages ?
+                                            NULL))                     // logger
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));
+                ACE_TEXT ("failed to Common_Log_Tools::initializeLogging(), aborting\n")));
 
     // *PORTABILITY*: on Windows, fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)

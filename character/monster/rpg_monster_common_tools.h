@@ -21,35 +21,39 @@
 #ifndef RPG_MONSTER_COMMON_TOOLS_H
 #define RPG_MONSTER_COMMON_TOOLS_H
 
-#include "rpg_monster_exports.h"
-#include "rpg_monster_common.h"
+#include "ace/Global_Macros.h"
 
 #include "rpg_dice_incl.h"
 
 #include "rpg_common.h"
 #include "rpg_common_incl.h"
 #include "rpg_common_environment_incl.h"
-#include "rpg_item_weapontype.h"
-#include "rpg_character_incl.h"
-#include "rpg_magic_incl.h"
-#include "rpg_combat_incl.h"
-#include "rpg_monster_incl.h"
 
-#include <ace/Global_Macros.h>
+#include "rpg_item_weapontype.h"
+
+#include "rpg_character_incl.h"
+
+#include "rpg_magic_incl.h"
+
+#include "rpg_combat_incl.h"
+
+#include "rpg_monster_common.h"
+//#include "rpg_monster_exports.h"
+#include "rpg_monster_incl.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Monster_Export RPG_Monster_Common_Tools
+class RPG_Monster_Common_Tools
 {
  public:
-  static void initStringConversionTables();
+  static void initializeStringConversionTables();
 
-  static std::string weaponTypeToString(const RPG_Monster_WeaponTypeUnion&); // weapon type
-  static std::string attackToString(const RPG_Monster_Attack&); // attack
-  static std::string organizationsToString(const RPG_Monster_Organizations_t&); // organizations
-  static std::string organizationsToString(const RPG_Monster_OrganizationSet_t&); // organizations
-  static std::string advancementToString(const RPG_Monster_Advancement_t&); // advancement
+  static std::string toString(const RPG_Monster_WeaponTypeUnion&); // weapon type
+  static std::string toString(const RPG_Monster_Attack&); // attack
+  static std::string toString(const RPG_Monster_Organizations_t&); // organizations
+  static std::string toString(const RPG_Monster_OrganizationSet_t&); // organizations
+  static std::string toString(const RPG_Monster_Advancement_t&); // advancement
   static RPG_Common_PhysicalDamageList_t naturalWeaponToPhysicalDamageType(const RPG_Monster_NaturalWeapon&);
 
   static bool match(const RPG_Monster_HitDice&,
@@ -64,13 +68,13 @@ class RPG_Monster_Export RPG_Monster_Common_Tools
                                       RPG_Monster_Encounter_t&);            // return value: encounter
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Monster_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Common_Tools(const RPG_Monster_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Common_Tools& operator=(const RPG_Monster_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Common_Tools())
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Monster_Common_Tools())
+  ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Common_Tools(const RPG_Monster_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Common_Tools& operator=(const RPG_Monster_Common_Tools&))
 
   // helper methods
-  static std::string attackActionToString(const RPG_Monster_AttackAction&); // attack action
+  static std::string toString(const RPG_Monster_AttackAction&); // attack action
   static void organizationStepToRoll(const RPG_Monster_OrganizationStep&, // organization step
                                      RPG_Dice_Roll&);                     // return value: roll
 };

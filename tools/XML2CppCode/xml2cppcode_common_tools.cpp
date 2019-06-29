@@ -26,7 +26,7 @@
 std::string
 XML2CppCode_Common_Tools::strip(const std::string& string_in)
 {
-	RPG_TRACE(ACE_TEXT("XML2CppCode_Common_Tools::strip"));
+  ACE_TRACE (ACE_TEXT("XML2CppCode_Common_Tools::strip"));
 
 	std::string result = string_in;
 

@@ -81,8 +81,7 @@ RPG_Graphics_Surface::RPG_Graphics_Surface(const RPG_Graphics_GraphicTypeUnion& 
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(%s), aborting\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type_in).c_str())));
-
+               ACE_TEXT(RPG_Graphics_Common_Tools::toString(type_in).c_str())));
     return;
   } // end IF
 
@@ -152,8 +151,7 @@ RPG_Graphics_Surface::init(const RPG_Graphics_GraphicTypeUnion& type_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(%s), aborting\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type_in).c_str())));
-
+               ACE_TEXT(RPG_Graphics_Common_Tools::toString(type_in).c_str())));
     return;
   } // end IF
 

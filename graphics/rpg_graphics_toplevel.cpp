@@ -114,7 +114,7 @@ RPG_Graphics_TopLevel::loadGraphics(const RPG_Graphics_GraphicTypeUnion& type_in
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Dictionary::get(\"%s\"), aborting\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type_in).c_str())));
+               ACE_TEXT(RPG_Graphics_Common_Tools::toString(type_in).c_str())));
 
     return false;
   } // end IF
@@ -127,7 +127,7 @@ RPG_Graphics_TopLevel::loadGraphics(const RPG_Graphics_GraphicTypeUnion& type_in
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type_in).c_str())));
+               ACE_TEXT(RPG_Graphics_Common_Tools::toString(type_in).c_str())));
 
     return false;
   } // end IF
@@ -158,7 +158,7 @@ RPG_Graphics_TopLevel::loadGraphics(const RPG_Graphics_GraphicTypeUnion& type_in
                    (*iterator).offsetY,
                    ((*iterator).offsetX + (*iterator).width),
                    ((*iterator).offsetY + (*iterator).height),
-                   ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type_in).c_str())));
+                   ACE_TEXT(RPG_Graphics_Common_Tools::toString(type_in).c_str())));
 
         // clean up
         SDL_FreeSurface(interface_image);
@@ -183,7 +183,7 @@ RPG_Graphics_TopLevel::loadGraphics(const RPG_Graphics_GraphicTypeUnion& type_in
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("loaded %u interface element graphic(s) from \"%s\"...\n"),
              myElementGraphics.size(),
-             ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type_in).c_str())));
+             ACE_TEXT(RPG_Graphics_Common_Tools::toString(type_in).c_str())));
 
   return true;
 }

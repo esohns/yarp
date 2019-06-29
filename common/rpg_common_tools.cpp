@@ -63,7 +63,7 @@ RPG_Common_TimeOfDayToStringTable_t RPG_Common_TimeOfDayHelper::myRPG_Common_Tim
 RPG_Common_AmbientLightingToStringTable_t RPG_Common_AmbientLightingHelper::myRPG_Common_AmbientLightingToStringTable;
 
 void
-RPG_Common_Tools::initStringConversionTables()
+RPG_Common_Tools::initializeStringConversionTables()
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::initStringConversionTables"));
 
@@ -96,7 +96,7 @@ RPG_Common_Tools::initStringConversionTables()
 }
 
 std::string
-RPG_Common_Tools::creatureTypeToString(const RPG_Common_CreatureType& type_in)
+RPG_Common_Tools::toString(const RPG_Common_CreatureType& type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::creatureTypeToString"));
 
@@ -126,17 +126,11 @@ RPG_Common_Tools::savingThrowToAttribute(const RPG_Common_SavingThrow& save_in)
   switch (save_in)
   {
     case SAVE_FORTITUDE:
-    {
       return ATTRIBUTE_CONSTITUTION;
-    }
     case SAVE_REFLEX:
-    {
       return ATTRIBUTE_DEXTERITY;
-    }
     case SAVE_WILL:
-    {
       return ATTRIBUTE_WISDOM;
-    }
     default:
     {
       // debug info
@@ -152,7 +146,7 @@ RPG_Common_Tools::savingThrowToAttribute(const RPG_Common_SavingThrow& save_in)
 }
 
 std::string
-RPG_Common_Tools::savingThrowToString(const RPG_Common_SavingThrowCheck& save_in)
+RPG_Common_Tools::toString(const RPG_Common_SavingThrowCheck& save_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::savingThrowToString"));
 
@@ -177,7 +171,7 @@ RPG_Common_Tools::savingThrowToString(const RPG_Common_SavingThrowCheck& save_in
 }
 
 std::string
-RPG_Common_Tools::environmentToString(const RPG_Common_Environment& environment_in)
+RPG_Common_Tools::toString(const RPG_Common_Environment& environment_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::environmentToString"));
 
@@ -484,9 +478,9 @@ RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in,
 }
 
 unsigned short
-RPG_Common_Tools::environment2Radius(const RPG_Common_Environment& environment_in)
+RPG_Common_Tools::environmentToRadius(const RPG_Common_Environment& environment_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::environment2Radius"));
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::environmentToRadius"));
 
   if (environment_in.outdoors)
   {
@@ -518,8 +512,8 @@ RPG_Common_Tools::environment2Radius(const RPG_Common_Environment& environment_i
 }
 
 float
-RPG_Common_Tools::terrain2SpeedModifier(const RPG_Common_Terrain& terrain_in,
-                                        const RPG_Common_Track& track_in)
+RPG_Common_Tools::terrainToSpeedModifier(const RPG_Common_Terrain& terrain_in,
+                                         const RPG_Common_Track& track_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_Tools::terrain2SpeedModifier"));
 
@@ -790,118 +784,118 @@ RPG_Common_Tools::enumToString(const std::string& enumString_in,
   return result;
 }
 
-bool
-RPG_Common_Tools::period2String (const ACE_Time_Value& period_in,
-                                 std::string& timeString_out)
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::period2String"));
-
-  // init return value(s)
-  timeString_out.resize (0);
-
-  // extract hours and minutes...
-  ACE_Time_Value temp = period_in;
-  int hours = static_cast<int>(temp.sec ()) / (60 * 60);
-  temp.sec (temp.sec () % (60 * 60));
-
-  int minutes = static_cast<int>(temp.sec ()) / 60;
-  temp.sec (temp.sec () % 60);
-
-  char time_string[BUFSIZ];
-  // *TODO*: rewrite this in C++...
-  if (ACE_OS::snprintf (time_string,
-                        sizeof (time_string),
-                        ACE_TEXT_ALWAYS_CHAR ("%d:%d:%d.%d"),
-                        hours,
-                        minutes,
-                        static_cast<int>(temp.sec ()),
-                        static_cast<int>(temp.usec ())) < 0)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to ACE_OS::snprintf(): \"%m\", aborting\n")));
-    return false;
-  } // end IF
-
-  timeString_out = time_string;
-
-  return true;
-}
-
-std::string
-RPG_Common_Tools::sanitizeURI(const std::string& uri_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::sanitizeURI"));
-
-  std::string result = uri_in;
-
-  std::replace(result.begin(),
-               result.end(),
-               '\\', '/');
-  size_t position;
-  do
-  {
-    position = result.find(' ', 0);
-    if (position == std::string::npos)
-      break;
-
-    result.replace(position, 1, ACE_TEXT_ALWAYS_CHAR("%20"));
-  } while (true);
-  //XMLCh* transcoded_string =
-  //	XMLString::transcode(result.c_str(),
-  //	                     XMLPlatformUtils::fgMemoryManager);
-  //XMLURL url;
-  //if (!XMLURL::parse(transcoded_string,
-  //	                 url))
-  // {
-  //   ACE_DEBUG((LM_ERROR,
-  //              ACE_TEXT("failed to XMLURL::parse(\"%s\"), aborting\n"),
-  //              ACE_TEXT(result.c_str())));
-
-  //   return result;
-  // } // end IF
-  //XMLUri uri(transcoded_string,
-  //	         XMLPlatformUtils::fgMemoryManager);
-  //XMLString::release(&transcoded_string,
-  //	                 XMLPlatformUtils::fgMemoryManager);
-  //char* translated_string =
-  //	XMLString::transcode(uri.getUriText(),
-  //	                     XMLPlatformUtils::fgMemoryManager);
-  //result = translated_string;
-  //XMLString::release(&translated_string,
-  //	                 XMLPlatformUtils::fgMemoryManager);
-
-  return result;
-}
-
-std::string
-RPG_Common_Tools::sanitize(const std::string& string_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::sanitize"));
-
-  std::string result = string_in;
-
-  std::replace(result.begin(),
-               result.end(),
-               ' ', '_');
-
-  return result;
-}
-
-std::string
-RPG_Common_Tools::strip(const std::string& string_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::strip"));
-
-  std::string result = string_in;
-
-  // *TODO*: remove tabs & other non-printable characters
-  std::string::size_type current_space = std::string::npos;
-  while ((current_space = result.find(' ',
-                                      0)) == 0)
-    result.erase(current_space, 1);
-  while ((current_space = result.rfind(' ',
-                                       std::string::npos)) == (result.size() - 1))
-    result.erase(current_space, 1);
-
-  return result;
-}
+//bool
+//RPG_Common_Tools::period2String (const ACE_Time_Value& period_in,
+//                                 std::string& timeString_out)
+//{
+//  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::period2String"));
+//
+//  // init return value(s)
+//  timeString_out.resize (0);
+//
+//  // extract hours and minutes...
+//  ACE_Time_Value temp = period_in;
+//  int hours = static_cast<int>(temp.sec ()) / (60 * 60);
+//  temp.sec (temp.sec () % (60 * 60));
+//
+//  int minutes = static_cast<int>(temp.sec ()) / 60;
+//  temp.sec (temp.sec () % 60);
+//
+//  char time_string[BUFSIZ];
+//  // *TODO*: rewrite this in C++...
+//  if (ACE_OS::snprintf (time_string,
+//                        sizeof (time_string),
+//                        ACE_TEXT_ALWAYS_CHAR ("%d:%d:%d.%d"),
+//                        hours,
+//                        minutes,
+//                        static_cast<int>(temp.sec ()),
+//                        static_cast<int>(temp.usec ())) < 0)
+//  {
+//    ACE_DEBUG ((LM_ERROR,
+//                ACE_TEXT ("failed to ACE_OS::snprintf(): \"%m\", aborting\n")));
+//    return false;
+//  } // end IF
+//
+//  timeString_out = time_string;
+//
+//  return true;
+//}
+//
+//std::string
+//RPG_Common_Tools::sanitizeURI(const std::string& uri_in)
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::sanitizeURI"));
+//
+//  std::string result = uri_in;
+//
+//  std::replace(result.begin(),
+//               result.end(),
+//               '\\', '/');
+//  size_t position;
+//  do
+//  {
+//    position = result.find(' ', 0);
+//    if (position == std::string::npos)
+//      break;
+//
+//    result.replace(position, 1, ACE_TEXT_ALWAYS_CHAR("%20"));
+//  } while (true);
+//  //XMLCh* transcoded_string =
+//  //	XMLString::transcode(result.c_str(),
+//  //	                     XMLPlatformUtils::fgMemoryManager);
+//  //XMLURL url;
+//  //if (!XMLURL::parse(transcoded_string,
+//  //	                 url))
+//  // {
+//  //   ACE_DEBUG((LM_ERROR,
+//  //              ACE_TEXT("failed to XMLURL::parse(\"%s\"), aborting\n"),
+//  //              ACE_TEXT(result.c_str())));
+//
+//  //   return result;
+//  // } // end IF
+//  //XMLUri uri(transcoded_string,
+//  //	         XMLPlatformUtils::fgMemoryManager);
+//  //XMLString::release(&transcoded_string,
+//  //	                 XMLPlatformUtils::fgMemoryManager);
+//  //char* translated_string =
+//  //	XMLString::transcode(uri.getUriText(),
+//  //	                     XMLPlatformUtils::fgMemoryManager);
+//  //result = translated_string;
+//  //XMLString::release(&translated_string,
+//  //	                 XMLPlatformUtils::fgMemoryManager);
+//
+//  return result;
+//}
+//
+//std::string
+//RPG_Common_Tools::sanitize(const std::string& string_in)
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::sanitize"));
+//
+//  std::string result = string_in;
+//
+//  std::replace(result.begin(),
+//               result.end(),
+//               ' ', '_');
+//
+//  return result;
+//}
+//
+//std::string
+//RPG_Common_Tools::strip(const std::string& string_in)
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::strip"));
+//
+//  std::string result = string_in;
+//
+//  // *TODO*: remove tabs & other non-printable characters
+//  std::string::size_type current_space = std::string::npos;
+//  while ((current_space = result.find(' ',
+//                                      0)) == 0)
+//    result.erase(current_space, 1);
+//  while ((current_space = result.rfind(' ',
+//                                       std::string::npos)) == (result.size() - 1))
+//    result.erase(current_space, 1);
+//
+//  return result;
+//}

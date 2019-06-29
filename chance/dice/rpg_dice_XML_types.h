@@ -36,7 +36,6 @@
 
 // Begin prologue.
 //
-#include "rpg_dice_exports.h"
 //
 // End prologue.
 
@@ -66,7 +65,7 @@ class RPG_Dice_ValueRange_Type_pskel;
 
 #include "rpg_dice_incl.h"
 
-class RPG_Dice_Export RPG_Dice_DieType_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Dice_DieType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -78,7 +77,7 @@ class RPG_Dice_Export RPG_Dice_DieType_Type_pskel: public virtual ::xml_schema::
   post_RPG_Dice_DieType_Type () = 0;
 };
 
-class RPG_Dice_Export RPG_Dice_Roll_Type_pskel: public ::xml_schema::complex_content
+class RPG_Dice_Roll_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -136,7 +135,7 @@ class RPG_Dice_Export RPG_Dice_Roll_Type_pskel: public ::xml_schema::complex_con
   ::xml_schema::int_pskel* modifier_parser_;
 };
 
-class RPG_Dice_Export RPG_Dice_ValueRange_Type_pskel: public ::xml_schema::complex_content
+class RPG_Dice_ValueRange_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.

@@ -21,23 +21,23 @@
 #ifndef RPG_SOUND_COMMON_TOOLS_H
 #define RPG_SOUND_COMMON_TOOLS_H
 
-#include "rpg_sound_incl.h"
-#include "rpg_sound_exports.h"
+#include <string>
+
+#include "SDL.h"
+
+#include "ace/Global_Macros.h"
+#include "ace/Time_Value.h"
+#include "ace/Synch.h"
+
+//#include "rpg_sound_exports.h"
 #include "rpg_sound_defines.h"
 #include "rpg_sound_common.h"
-
-#include <SDL.h>
-
-#include <ace/Global_Macros.h>
-#include <ace/Time_Value.h>
-#include <ace/Synch.h>
-
-#include <string>
+#include "rpg_sound_incl.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Sound_Export RPG_Sound_Common_Tools
+class RPG_Sound_Common_Tools
 {
  public:
   static bool init(const RPG_Sound_SDLConfiguration_t&,           // SDL config parameters
@@ -64,14 +64,14 @@ class RPG_Sound_Export RPG_Sound_Common_Tools
   static int playRandomTrack(SDL_CD* = NULL); // CDROM handle
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Sound_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Common_Tools(const RPG_Sound_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Common_Tools& operator=(const RPG_Sound_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Common_Tools())
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Sound_Common_Tools())
+  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Common_Tools(const RPG_Sound_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Common_Tools& operator=(const RPG_Sound_Common_Tools&))
 
   // helper methods
   // init string conversion facilities
-  static void initStringConversionTables();
+  static void initializeStringConversionTables ();
 
   static bool                         myIsMuted;
   static std::string                  mySoundDirectory;

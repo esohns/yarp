@@ -57,7 +57,8 @@ typedef RPG_Dice_RollResult_t::const_iterator RPG_Dice_RollResultIterator_t;
 
 // enhance some (existing) definition(s)
 // prefix increment
-inline RPG_Dice_DieType& operator++(RPG_Dice_DieType& dieType_inout)
+RPG_Dice_DieType&
+operator++ (RPG_Dice_DieType& dieType_inout)
 {
   switch (dieType_inout)
   {
@@ -77,15 +78,19 @@ inline RPG_Dice_DieType& operator++(RPG_Dice_DieType& dieType_inout)
 
   return dieType_inout;
 };
+
 // postfix increment
-inline RPG_Dice_DieType operator++(RPG_Dice_DieType& dieType_inout, int)
+RPG_Dice_DieType
+operator++ (RPG_Dice_DieType& dieType_inout, int)
 {
   RPG_Dice_DieType result = ++dieType_inout;
 
   return result;
 };
+
 // prefix decrement
-inline RPG_Dice_DieType& operator--(RPG_Dice_DieType& dieType_inout)
+RPG_Dice_DieType&
+operator-- (RPG_Dice_DieType& dieType_inout)
 {
   switch (dieType_inout)
   {
@@ -105,13 +110,17 @@ inline RPG_Dice_DieType& operator--(RPG_Dice_DieType& dieType_inout)
 
   return dieType_inout;
 };
+
 // postfix decrement
-inline RPG_Dice_DieType operator--(RPG_Dice_DieType& dieType_inout, int)
+enum RPG_Dice_DieType
+operator-- (enum RPG_Dice_DieType& dieType_inout, int)
 {
   RPG_Dice_DieType result = --dieType_inout;
 
   return result;
 };
+
+// ---------------------------------------
 
 // allow multiplier
 // struct RPG_Dice_Export RPG_Dice_Roll
@@ -124,7 +133,8 @@ inline RPG_Dice_DieType operator--(RPG_Dice_DieType& dieType_inout, int)
 //   // (refer to rpg_dice_common.h for a template)
 //   RPG_Dice_Roll& operator*=(int);
 // };
-inline RPG_Dice_Roll& RPG_Dice_Roll::operator*=(int multiplier_in)
+RPG_Dice_Roll&
+RPG_Dice_Roll::operator*= (int multiplier_in)
 {
   numDice *= multiplier_in;
   modifier *= multiplier_in;

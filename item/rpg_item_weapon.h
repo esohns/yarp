@@ -21,42 +21,41 @@
 #ifndef RPG_ITEM_WEAPON_H
 #define RPG_ITEM_WEAPON_H
 
-#include "rpg_item_exports.h"
+#include "ace/Global_Macros.h"
+
+//#include "rpg_item_exports.h"
 #include "rpg_item_instance_base.h"
 #include "rpg_item_base.h"
 #include "rpg_item_instance_manager.h"
 #include "rpg_item_weapontype.h"
 
-#include <ace/Global_Macros.h>
-
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Item_Export RPG_Item_Weapon
+class RPG_Item_Weapon
  : public RPG_Item_Instance_Base,
    public RPG_Item_Base
 {
+  typedef RPG_Item_Instance_Base inherited;
+  typedef RPG_Item_Base inherited2;
+
   // grant access to ctor
   friend class RPG_Item_Instance_Manager;
 
  public:
-  // what am I ?
-  const RPG_Item_WeaponType getWeaponType() const;
+  inline enum RPG_Item_WeaponType type () const { return type_; }
 
-  virtual void dump() const;
+  virtual void dump () const;
+
+ protected:
+  RPG_Item_WeaponType type_;
 
  private:
-  typedef RPG_Item_Instance_Base inherited;
-  typedef RPG_Item_Base inherited2;
-
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Weapon());
-  RPG_Item_Weapon(const RPG_Item_WeaponType&);
-  virtual ~RPG_Item_Weapon();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Weapon(const RPG_Item_Weapon&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Weapon& operator=(const RPG_Item_Weapon&));
-
-  RPG_Item_WeaponType myWeaponType;
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Weapon())
+  inline virtual ~RPG_Item_Weapon () {}
+  RPG_Item_Weapon (enum RPG_Item_WeaponType);
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Weapon (const RPG_Item_Weapon&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Weapon& operator= (const RPG_Item_Weapon&))
 };
 
 #endif

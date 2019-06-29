@@ -24,72 +24,94 @@
 #include "ace/Global_Macros.h"
 #include "ace/Synch_Traits.h"
 
-#include "common.h"
+#include "common_configuration.h"
+
+#include "common_time_common.h"
 
 #include "stream_base.h"
+#include "stream_common.h"
+
+#include "rpg_net_module_eventhandler.h"
+#include "rpg_net_module_protocolhandler.h"
 
 #include "rpg_net_protocol_common_modules.h"
 #include "rpg_net_protocol_configuration.h"
-#include "rpg_net_protocol_exports.h"
+//#include "rpg_net_protocol_exports.h"
 #include "rpg_net_protocol_message.h"
-#include "rpg_net_protocol_module_IRCparser.h"
-#include "rpg_net_protocol_module_IRCsplitter.h"
-#include "rpg_net_protocol_module_IRCstreamer.h"
-#include "rpg_net_protocol_sessionmessage.h"
+//#include "rpg_net_protocol_module_IRCparser.h"
+//#include "rpg_net_protocol_module_IRCsplitter.h"
+//#include "rpg_net_protocol_module_IRCstreamer.h"
+#include "rpg_net_protocol_session_message.h"
 
-class RPG_Protocol_Export RPG_Net_Protocol_Stream
+extern const char protocol_stream_name_string_[];
+
+class RPG_Net_Protocol_Stream
  : public Stream_Base_T<ACE_MT_SYNCH,
                         Common_TimePolicy_t,
-                        Stream_State_t,
-                        RPG_Net_Protocol_RuntimeStatistic,
-                        RPG_Net_Protocol_SessionData,
-                        RPG_Net_Protocol_StreamSessionData_t,
-                        RPG_Net_Protocol_SessionMessage,
-                        RPG_Net_Protocol_Message>
+                        protocol_stream_name_string_,
+                        enum Stream_ControlType,
+                        enum Stream_SessionMessageType,
+                        enum Stream_StateMachine_ControlState,
+                        struct Stream_State,
+                        struct RPG_Net_Protocol_StreamConfiguration,
+                        struct Stream_Statistic,
+                        struct Common_FlexParserAllocatorConfiguration,
+                        struct Stream_ModuleConfiguration,
+                        struct RPG_Net_Protocol_ModuleHandlerConfiguration,
+                        struct RPG_Net_Protocol_SessionData,
+                        RPG_Net_Protocol_SessionData_t,
+                        Stream_ControlMessage_t,
+                        RPG_Net_Protocol_Message,
+                        RPG_Net_Protocol_SessionMessage>
 {
+  typedef Stream_Base_T<ACE_MT_SYNCH,
+                        Common_TimePolicy_t,
+                        protocol_stream_name_string_,
+                        enum Stream_ControlType,
+                        enum Stream_SessionMessageType,
+                        enum Stream_StateMachine_ControlState,
+                        struct Stream_State,
+                        struct RPG_Net_Protocol_StreamConfiguration,
+                        struct Stream_Statistic,
+                        struct Common_FlexParserAllocatorConfiguration,
+                        struct Stream_ModuleConfiguration,
+                        struct RPG_Net_Protocol_ModuleHandlerConfiguration,
+                        struct RPG_Net_Protocol_SessionData,
+                        RPG_Net_Protocol_SessionData_t,
+                        Stream_ControlMessage_t,
+                        RPG_Net_Protocol_Message,
+                        RPG_Net_Protocol_SessionMessage> inherited;
+
  public:
   RPG_Net_Protocol_Stream ();
   virtual ~RPG_Net_Protocol_Stream ();
 
-  // initialize stream
-  bool initialize (unsigned int,                                  // session ID
-                   const Stream_Configuration_t&,                 // stream configuration
-                   const RPG_Net_Protocol_ProtocolConfiguration&, // protocol configuration
-                   const RPG_Net_Protocol_SessionData&);          // session data
+  // implement (part of) Stream_IStreamControlBase
+  virtual bool load (Stream_ILayout*,
+                     bool&);          // return value: delete modules ?
+
+  // implement Common_IInitialize_T
+  virtual bool initialize (const inherited::CONFIGURATION_T&); // configuration
 
   // implement Common_IStatistic_T
   // *NOTE*: delegate this to myRuntimeStatistic
-  virtual bool collect (RPG_Net_Protocol_RuntimeStatistic&); // return value: statistic data
+  //virtual bool collect (RPG_Net_Protocol_RuntimeStatistic&); // return value: statistic data
   // this is just a dummy (use statisticsReportingInterval instead)
-  virtual void report () const;
+  //virtual void report () const;
 
   // *TODO*: re-consider this API
   void ping ();
 
  private:
-  typedef Stream_Base_T<ACE_MT_SYNCH,
-                        Common_TimePolicy_t,
-                        Stream_State_t,
-                        RPG_Net_Protocol_RuntimeStatistic,
-                        RPG_Net_Protocol_SessionData,
-                        RPG_Net_Protocol_StreamSessionData_t,
-                        RPG_Net_Protocol_SessionMessage,
-                        RPG_Net_Protocol_Message> inherited;
-
-//   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Stream());
-  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Stream (const RPG_Net_Protocol_Stream&));
-  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Stream& operator=(const RPG_Net_Protocol_Stream&));
-
-  // fini stream
-  // *NOTE*: need this to clean up queued modules if something goes wrong
-  //         during initialize () !
-  bool finalize (const RPG_Net_Protocol_Configuration&); // configuration
+//   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Stream())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Stream (const RPG_Net_Protocol_Stream&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Stream& operator=(const RPG_Net_Protocol_Stream&))
 
   // modules
-  RPG_Net_Protocol_Module_IRCMarshal_Module       myIRCMarshal;
-  RPG_Net_Protocol_Module_IRCParser_Module        myIRCParser;
-  RPG_Net_Protocol_Module_RuntimeStatistic_Module myRuntimeStatistic;
-  //   RPG_Net_Protocol_Module_IRCHandler_Module myIRCHandler;
+  //RPG_Net_HeaderParser_Module    headerParser_;
+  //Net_Module_RuntimeStatistic_Module runtimeStatistic_;
+  RPG_Net_ProtocolHandler_Module protocolHandler_;
+  RPG_Net_EventHandler_Module    eventHandler_;
 };
 
 #endif

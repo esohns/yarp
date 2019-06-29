@@ -21,8 +21,6 @@
 #ifndef RPG_ITEM_INSTANCE_COMMON_H
 #define RPG_ITEM_INSTANCE_COMMON_H
 
-#include "rpg_item_exports.h"
-
 #include <set>
 
 // useful types

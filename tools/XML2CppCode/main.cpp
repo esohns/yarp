@@ -20,7 +20,7 @@
 #include "stdafx.h"
 
 #ifdef HAVE_CONFIG_H
-#include "XML2CppCode-config.h"
+//#include "XML2CppCode-config.h"
 #endif
 
 #include "xml2cppcode.h"
@@ -258,13 +258,13 @@ do_printVersion(const std::string& programName_in)
 {
   ACE_TRACE(ACE_TEXT("::do_printVersion"));
 
-#if defined(_MSC_VER)
-  std::cout << programName_in << ACE_TEXT(" : ") << XML2CPPCODE_VERSION << std::endl;
-#else
-//  // *TODO*: leave as-is for now (see Yarp/configure.ac)
-  //std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
-  std::cout << programName_in << ACE_TEXT(" : ") << XML2CPPCODE_VERSION << std::endl;
-#endif
+//#if defined(_MSC_VER)
+//  std::cout << programName_in << ACE_TEXT(" : ") << XML2CPPCODE_VERSION << std::endl;
+//#else
+////  // *TODO*: leave as-is for now (see Yarp/configure.ac)
+//  //std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
+//  std::cout << programName_in << ACE_TEXT(" : ") << XML2CPPCODE_VERSION << std::endl;
+//#endif
 
   // create version string...
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version

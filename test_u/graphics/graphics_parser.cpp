@@ -32,7 +32,8 @@
 #include "ace/Log_Msg.h"
 
 #include "common_file_tools.h"
-#include "common_tools.h"
+
+#include "common_log_tools.h"
 
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
@@ -192,7 +193,7 @@ do_work (const std::string& schemaRepository_in,
 
   // step0: init: random seed, string conversion facilities, ...
   RPG_Dice::initialize ();
-  RPG_Dice_Common_Tools::initStringConversionTables ();
+  RPG_Dice_Common_Tools::initializeStringConversionTables ();
   if (!RPG_Common_XML_Tools::initialize (schemaRepository_in))
   {
     ACE_DEBUG ((LM_ERROR,
@@ -242,7 +243,7 @@ do_printVersion(const std::string& programName_in)
 //   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
   std::cout << programName_in
             << ACE_TEXT(" : ")
-            << YARP_PACKAGE_VERSION
+            //<< YARP_PACKAGE_VERSION
             << std::endl;
 
   // create version string...
@@ -380,15 +381,15 @@ ACE_TMAIN(int argc_in,
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
-  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
-                                        log_file,                  // logfile
-                                        false,                     // log to syslog ?
-                                        false,                     // trace messages ?
-                                        trace_information,         // debug messages ?
-                                        NULL))                     // logger
+  if (!Common_Log_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
+                                            log_file,                  // logfile
+                                            false,                     // log to syslog ?
+                                            false,                     // trace messages ?
+                                            trace_information,         // debug messages ?
+                                            NULL))                     // logger
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Common_Tools::initLogging(), aborting\n")));
+                ACE_TEXT ("failed to Common_Log_Tools::initializeLogging(), aborting\n")));
 
     // *PORTABILITY*: on Windows, fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -427,8 +428,8 @@ ACE_TMAIN(int argc_in,
   std::string working_time_string;
   ACE_Time_Value working_time;
   timer.elapsed_time(working_time);
-  Common_Tools::period2String(working_time,
-                              working_time_string);
+  Common_Timer_Tools::periodToString (working_time,
+                                     working_time_string);
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
              ACE_TEXT(working_time_string.c_str())));

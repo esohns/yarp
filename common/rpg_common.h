@@ -21,10 +21,10 @@
 #ifndef RPG_COMMON_H
 #define RPG_COMMON_H
 
+#include <set>
+
 #include "rpg_common_physicaldamagetype.h"
 #include "rpg_common_terrain.h"
-
-#include <set>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>

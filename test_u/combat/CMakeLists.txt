@@ -1,4 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
 
 if (UNIX)
  include(FindPkgConfig)
@@ -17,6 +16,9 @@ elseif (WIN32)
                      $ENV{LIB_ROOT}/SDL_ttf/include
                      $ENV{LIB_ROOT}/gtk2/include)
 endif ()
+
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../common

@@ -21,18 +21,18 @@
 #ifndef RPG_COMMON_TOOLS_H
 #define RPG_COMMON_TOOLS_H
 
-#include "rpg_dice_incl.h"
-#include "rpg_common_incl.h"
-#include "rpg_common_environment_incl.h"
-
-#include "rpg_common_exports.h"
-#include "rpg_common.h"
+#include <string>
 
 #include "ace/Global_Macros.h"
 #include "ace/Time_Value.h"
 #include "ace/Signal.h"
 
-#include <string>
+#include "rpg_dice_incl.h"
+
+#include "rpg_common.h"
+#include "rpg_common_incl.h"
+#include "rpg_common_environment_incl.h"
+//#include "rpg_common_exports.h"
 
 // forward declaration(s)
 class ACE_Log_Msg_Backend;
@@ -41,15 +41,15 @@ class ACE_Event_Handler;
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Common_Export RPG_Common_Tools
+class RPG_Common_Tools
 {
  public:
-  static void initStringConversionTables();
+  static void initializeStringConversionTables();
 
   static RPG_Common_Attribute savingThrowToAttribute(const RPG_Common_SavingThrow&); // save
-  static std::string creatureTypeToString(const RPG_Common_CreatureType&); // type
-  static std::string savingThrowToString(const RPG_Common_SavingThrowCheck&); // save
-  static std::string environmentToString(const RPG_Common_Environment&); // environment
+  static std::string toString(const RPG_Common_CreatureType&); // type
+  static std::string toString(const RPG_Common_SavingThrowCheck&); // save
+  static std::string toString(const RPG_Common_Environment&); // environment
 
   static RPG_Common_Plane terrainToPlane(const RPG_Common_Terrain&);
   static bool match(const RPG_Common_Environment&,  // a
@@ -62,29 +62,29 @@ class RPG_Common_Export RPG_Common_Tools
                                    const bool& = true); // is biped ?
   static unsigned short sizeToReach(const RPG_Common_Size&,
                                     const bool& = true); // is tall ? : long
-  static unsigned short environment2Radius(const RPG_Common_Environment&);
-  static float terrain2SpeedModifier(const RPG_Common_Terrain& = TERRAIN_ANY, // terrain
-                                     const RPG_Common_Track& = TRACK_NONE);   // track type
+  static unsigned short environmentToRadius(const RPG_Common_Environment&);
+  static float terrainToSpeedModifier(const RPG_Common_Terrain& = TERRAIN_ANY, // terrain
+                                      const RPG_Common_Track& = TRACK_NONE);   // track type
 
   // use this to "pretty-print" enumerated (i.e. XML-) values
   // e.g. "SUBCLASS_MONK" --> "Monk"
   static std::string enumToString(const std::string&,  // string representation
                                   const bool& = true); // chop prefix ?
 
-  // use this to generate a "condensed" period string
-  // - uses snprintf internally: "%H:%M:%S.usec"
-  static bool period2String(const ACE_Time_Value&, // period
-                            std::string&);         // return value: corresp. string
+ // // use this to generate a "condensed" period string
+ // // - uses snprintf internally: "%H:%M:%S.usec"
+ // static bool period2String(const ACE_Time_Value&, // period
+ //                           std::string&);         // return value: corresp. string
 
-	static std::string sanitizeURI(const std::string&); // URI
-	static std::string sanitize(const std::string&); // string
-	static std::string strip(const std::string&); // string
+	//static std::string sanitizeURI(const std::string&); // URI
+	//static std::string sanitize(const std::string&); // string
+	//static std::string strip(const std::string&); // string
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools(const RPG_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools& operator=(const RPG_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools())
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Common_Tools())
+  ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools(const RPG_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools& operator=(const RPG_Common_Tools&))
 };
 
 #endif

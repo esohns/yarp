@@ -25,9 +25,9 @@
 
 #include "ace/Global_Macros.h"
 
-#include "rpg_common_exports.h"
+//#include "rpg_common_exports.h"
 
-class RPG_Common_Export RPG_Common_File_Tools
+class RPG_Common_File_Tools
 {
  public:
   // *PORTABILITY*: - on UNIX, this should be passed as a BASEDIR macro at compile time

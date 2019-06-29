@@ -25,23 +25,23 @@
 
 #include "rpg_dice_dietype.h"
 
-#include "rpg_chance_exports.h"
+//#include "rpg_chance_exports.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Chance_Export RPG_Chance_Common_Tools
+class RPG_Chance_Common_Tools
 {
  public:
   // perform a standard die roll check
-  static int getCheck (short int,                       // modifier
-                       const RPG_Dice_DieType& = D_20); // type of dice
+  static int getCheck (ACE_INT16,                     // modifier
+                       enum RPG_Dice_DieType = D_20); // type of dice
 
  private:
-  ACE_UNIMPLEMENTED_FUNC (RPG_Chance_Common_Tools ());
-  ACE_UNIMPLEMENTED_FUNC (~RPG_Chance_Common_Tools ());
-  ACE_UNIMPLEMENTED_FUNC (RPG_Chance_Common_Tools (const RPG_Chance_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC (RPG_Chance_Common_Tools& operator= (const RPG_Chance_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Chance_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (~RPG_Chance_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Chance_Common_Tools (const RPG_Chance_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Chance_Common_Tools& operator= (const RPG_Chance_Common_Tools&))
 };
 
 #endif

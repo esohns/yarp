@@ -21,14 +21,17 @@
 #ifndef RPG_CHARACTER_COMMON_H
 #define RPG_CHARACTER_COMMON_H
 
+#include <set>
+#include <vector>
+
+#include "ace/Basic_Types.h"
+
 #include "rpg_common_condition.h"
 
 #include "rpg_character_equipmentslot.h"
 
-#include <set>
-#include <vector>
+typedef ACE_UINT8 RPG_Character_Level_t;
 
-// some useful types
 typedef std::set<RPG_Common_Condition> RPG_Character_Conditions_t;
 typedef RPG_Character_Conditions_t::const_iterator RPG_Character_ConditionsIterator_t;
 

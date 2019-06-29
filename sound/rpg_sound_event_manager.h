@@ -22,24 +22,26 @@
 #define RPG_SOUND_EVENT_MANAGER_H
 
 #include <string>
-
-#include "ace/Global_Macros.h"
-#include "ace/Singleton.h"
-#include "ace/Synch.h"
+#include <vector>
 
 #include "SDL.h"
 
+#include "ace/Global_Macros.h"
+#include "ace/Singleton.h"
+#include "ace/Synch_Traits.h"
+
 #include "common_idumpstate.h"
-#include "common_itimer.h"
+
+#include "common_timer_handler.h"
 
 #include "rpg_sound_defines.h"
-#include "rpg_sound_exports.h"
+//#include "rpg_sound_exports.h"
 
 /**
   @author Erik Sohns <erik.sohns@web.de>
  */
-class RPG_Sound_Export RPG_Sound_Event_Manager
- : public Common_ITimer
+class RPG_Sound_Event_Manager
+ : public Common_Timer_Handler
 {
   // singleton requires access to the ctor/dtor
   friend class ACE_Singleton<RPG_Sound_Event_Manager,
@@ -57,13 +59,13 @@ class RPG_Sound_Export RPG_Sound_Event_Manager
 
   // implement RPG_Common_ITimer interface
   // *WARNING*: NOT to be called by the user
-  virtual void handleTimeout(const void*); // ACT (if any)
+  virtual void handle (const void*); // ACT (if any)
 
  private:
   virtual ~RPG_Sound_Event_Manager();
   RPG_Sound_Event_Manager();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Event_Manager(const RPG_Sound_Event_Manager&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Event_Manager& operator=(const RPG_Sound_Event_Manager&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Event_Manager(const RPG_Sound_Event_Manager&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Event_Manager& operator=(const RPG_Sound_Event_Manager&))
 
   // helper methods
   static int dirent_selector(const dirent*);
@@ -86,8 +88,8 @@ class RPG_Sound_Export RPG_Sound_Event_Manager
 };
 
 typedef ACE_Singleton<RPG_Sound_Event_Manager,
-                      ACE_Recursive_Thread_Mutex> RPG_SOUND_EVENT_MANAGER_SINGLETON;
-RPG_SOUND_SINGLETON_DECLARE(ACE_Singleton,
-                            RPG_Sound_Event_Manager,
-                            ACE_Recursive_Thread_Mutex);
+                      ACE_SYNCH_RECURSIVE_MUTEX> RPG_SOUND_EVENT_MANAGER_SINGLETON;
+//RPG_SOUND_SINGLETON_DECLARE(ACE_Singleton,
+//                            RPG_Sound_Event_Manager,
+//                            ACE_Recursive_Thread_Mutex);
 #endif

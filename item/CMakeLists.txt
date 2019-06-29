@@ -61,6 +61,16 @@ set (${LIBRARY}_SRCS
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 
 if (UNIX)
+elseif (WIN32)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/src>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/src>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
+endif ()
+
+if (UNIX)
  target_include_directories (${LIBRARY} PUBLIC
 #                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules/ACE>)
 #                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/ACE_TAO/ACE>)
@@ -76,11 +86,14 @@ elseif (WIN32)
 endif ()
 
 target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src>)
+
+target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../chance/dice>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../common>)
-#target_include_directories (${LIBRARY} PUBLIC
-#                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../character>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../character>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../magic>)
 

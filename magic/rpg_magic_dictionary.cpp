@@ -43,13 +43,13 @@
 
 RPG_Magic_Dictionary::RPG_Magic_Dictionary()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::RPG_Magic_Dictionary"));
+  RPG_TRACE (ACE_TEXT ("RPG_Magic_Dictionary::RPG_Magic_Dictionary"));
 
 }
 
 RPG_Magic_Dictionary::~RPG_Magic_Dictionary()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::~RPG_Magic_Dictionary"));
+  RPG_TRACE (ACE_TEXT ("RPG_Magic_Dictionary::~RPG_Magic_Dictionary"));
 
 }
 
@@ -57,7 +57,7 @@ bool
 RPG_Magic_Dictionary::init(const std::string& filename_in,
                            const bool& validateXML_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::init"));
+  RPG_TRACE (ACE_TEXT ("RPG_Magic_Dictionary::init"));
 
   // Construct the parser.
   //
@@ -290,7 +290,7 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
 RPG_Magic_Spell_Properties
 RPG_Magic_Dictionary::getSpellProperties(const std::string& spellName_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::getSpellProperties"));
+  RPG_TRACE (ACE_TEXT ("RPG_Magic_Dictionary::getSpellProperties"));
 
   RPG_Magic_DictionaryIterator_t iterator = myDictionary.find(spellName_in);
   if (iterator == myDictionary.end())
@@ -309,7 +309,7 @@ RPG_Magic_Spell_Properties
 RPG_Magic_Dictionary::getSpellProperties(const RPG_Magic_SpellType& spellType_in,
                                          std::string& spellName_out) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::getSpellProperties"));
+  RPG_TRACE (ACE_TEXT ("RPG_Magic_Dictionary::getSpellProperties"));
 
   // reset return value
   spellName_out.resize(0);
@@ -342,7 +342,7 @@ RPG_Magic_SpellTypes_t
 RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterClassUnion& casterClass_in,
                                 const unsigned char& spellLevel_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::getSpells"));
+  RPG_TRACE (ACE_TEXT ("RPG_Magic_Dictionary::getSpells"));
 
   // sanity check
   ACE_ASSERT(casterClass_in.discriminator != RPG_Magic_CasterClassUnion::INVALID);
@@ -411,7 +411,7 @@ RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterClassUnion& casterClass_in
 void
 RPG_Magic_Dictionary::dump(const bool& groupLevels_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::dump"));
+  RPG_TRACE (ACE_TEXT ("RPG_Magic_Dictionary::dump"));
 
   if (groupLevels_in)
     return dumpLevels();
@@ -436,17 +436,17 @@ RPG_Magic_Dictionary::dump(const bool& groupLevels_in) const
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("Spell (\"%s\"):\nType: %s\nLevel(s):\n---------\n%sXP Cost: %d\nCasting Time: %s\nRange:\n------\n%sTarget(s):\n-------\n%sDuration:\n---------\n%s\nPrecondition(s):\n--------------\n%sSave: %s\nEffect(s):\n----------\n%sCounterMeasure(s):\n----------\n%sResistible: %s\n"),
                (iterator->first).c_str(),
-               RPG_Magic_Common_Tools::spellTypeToString((iterator->second).type).c_str(),
-               RPG_Magic_Common_Tools::spellLevelsToString((iterator->second).levels).c_str(),
+               RPG_Magic_Common_Tools::toString((iterator->second).type).c_str(),
+               RPG_Magic_Common_Tools::toString((iterator->second).levels).c_str(),
                (iterator->second).cost,
                castingTime.c_str(),
-               RPG_Magic_Common_Tools::spellRangeToString((iterator->second).range).c_str(),
-               RPG_Magic_Common_Tools::spellTargetsToString((iterator->second).targets).c_str(),
-               RPG_Magic_Common_Tools::spellDurationToString((iterator->second).duration).c_str(),
-               RPG_Magic_Common_Tools::preconditionsToString((iterator->second).preconditions).c_str(),
+               RPG_Magic_Common_Tools::toString((iterator->second).range).c_str(),
+               RPG_Magic_Common_Tools::toString((iterator->second).targets).c_str(),
+               RPG_Magic_Common_Tools::toString((iterator->second).duration).c_str(),
+               RPG_Magic_Common_Tools::toString((iterator->second).preconditions).c_str(),
                RPG_Common_SavingThrowHelper::RPG_Common_SavingThrowToString((iterator->second).saveable).c_str(),
-               RPG_Magic_Common_Tools::effectsToString((iterator->second).effects).c_str(),
-               RPG_Magic_Common_Tools::counterMeasuresToString((iterator->second).counterMeasures).c_str(),
+               RPG_Magic_Common_Tools::toString((iterator->second).effects).c_str(),
+               RPG_Magic_Common_Tools::toString((iterator->second).counterMeasures).c_str(),
                ((iterator->second).resistible ? ACE_TEXT_ALWAYS_CHAR("true") : ACE_TEXT_ALWAYS_CHAR("false"))));
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("===========================\n")));
@@ -456,7 +456,7 @@ RPG_Magic_Dictionary::dump(const bool& groupLevels_in) const
 void
 RPG_Magic_Dictionary::dumpLevels() const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Magic_Dictionary::dumpLevels"));
+  RPG_TRACE (ACE_TEXT ("RPG_Magic_Dictionary::dumpLevels"));
 
   RPG_Magic_SpellTypes_t spell_types;
   RPG_Magic_DictionaryIterator_t iterator;

@@ -55,6 +55,16 @@ set (${LIBRARY}_SRCS
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 
 if (UNIX)
+elseif (WIN32)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/src>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/src>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
+endif ()
+
+if (UNIX)
  target_include_directories (${LIBRARY} PUBLIC
 #                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules/ACE>)
 #                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/ACE_TAO/ACE>)
@@ -90,7 +100,8 @@ add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic_XML_types.cpp
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
                     COMMENT "generating XML <--> C++ bindings...")
 
-add_dependencies (${LIBRARY} RPG_Dice RPG_Common RPG_Character)
+add_dependencies (${LIBRARY} RPG_Dice RPG_Common)
+#add_dependencies (${LIBRARY} RPG_Dice RPG_Common RPG_Character)
 
 set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
 

@@ -21,67 +21,68 @@
 
 #include "rpg_dice_common_tools.h"
 
-#include <rpg_common_macros.h>
-
-#include <ace/Log_Msg.h>
-
 #include <sstream>
 
-// init statics
-RPG_Dice_DieTypeToStringTable_t RPG_Dice_DieTypeHelper::myRPG_Dice_DieTypeToStringTable;
+#include "ace/Log_Msg.h"
 
-void RPG_Dice_Common_Tools::initStringConversionTables()
+#include "rpg_dice_dietype.h"
+
+#include "rpg_common_macros.h"
+
+// initialize statics
+RPG_Dice_DieTypeToStringTable_t RPG_Dice_DieTypeHelper::RPG_Dice_DieTypeToStringTable;
+
+void
+RPG_Dice_Common_Tools::initializeStringConversionTables ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Dice_Common_Tools::initStringConversionTables"));
+  RPG_TRACE (ACE_TEXT ("RPG_Dice_Common_Tools::initializeStringConversionTables"));
 
-  RPG_Dice_DieTypeHelper::init();
-
-  // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("RPG_Dice_Common_Tools: initialized string conversion table...\n")));
+  RPG_Dice_DieTypeHelper::initialize ();
+#if defined (_DEBUG)
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT("RPG_Dice_Common_Tools: initialized string conversion table...\n")));
+#endif // _DEBUG
 }
 
-const std::string RPG_Dice_Common_Tools::rollToString(const RPG_Dice_Roll& roll_in)
+std::string
+RPG_Dice_Common_Tools::toString (const RPG_Dice_Roll& roll_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Dice_Common_Tools::rollToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Dice_Common_Tools::rollToString"));
 
   std::string result;
-  std::stringstream str;
+  std::stringstream converter;
 
-  str << roll_in.numDice;
-  result += str.str();
-  result += RPG_Dice_DieTypeHelper::RPG_Dice_DieTypeToString(roll_in.typeDice);
+  converter << roll_in.numDice;
+  result += converter.str ();
+  result += RPG_Dice_DieTypeHelper::RPG_Dice_DieTypeToString (roll_in.typeDice);
 
   if (roll_in.modifier == 0)
-  {
     return result;
-  } // end IF
   else if (roll_in.modifier > 0)
-  {
-    result += ACE_TEXT_ALWAYS_CHAR("+");
-  } // end IF
-  str.str(ACE_TEXT_ALWAYS_CHAR(""));
-  str << roll_in.modifier;
-  result += str.str();
+    result += ACE_TEXT_ALWAYS_CHAR ("+");
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
+  converter << roll_in.modifier;
+  result += converter.str ();
 
   return result;
 }
 
-const std::string RPG_Dice_Common_Tools::rangeToString(const RPG_Dice_ValueRange& range_in)
+std::string
+RPG_Dice_Common_Tools::toString (const RPG_Dice_ValueRange& range_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Dice_Common_Tools::rangeToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Dice_Common_Tools::rangeToString"));
 
   std::string result;
-  std::stringstream str;
+  std::stringstream converter;
 
-  str << range_in.begin;
+  converter << range_in.begin;
   if (range_in.begin != range_in.end)
   {
-    str << ACE_TEXT_ALWAYS_CHAR("-");
-    str << range_in.end;
+    converter << ACE_TEXT_ALWAYS_CHAR("-");
+    converter << range_in.end;
   } // end IF
-
-  result = str.str();
+  result = converter.str ();
 
   return result;
 }

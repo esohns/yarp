@@ -61,7 +61,7 @@ RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfiguration_t& config_in,
   RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::init"));
 
   // init string conversion facilities
-  RPG_Sound_Common_Tools::initStringConversionTables();
+  RPG_Sound_Common_Tools::initializeStringConversionTables ();
 
 	myIsMuted = mute_in;
   if (!directory_in.empty())
@@ -606,9 +606,9 @@ RPG_Sound_Common_Tools::playRandomTrack(SDL_CD* cdrom_in)
 }
 
 void
-RPG_Sound_Common_Tools::initStringConversionTables()
+RPG_Sound_Common_Tools::initializeStringConversionTables ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::initStringConversionTables"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::initializeStringConversionTables"));
 
   RPG_Sound_CategoryHelper::init();
   RPG_Sound_EventHelper::init();

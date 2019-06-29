@@ -36,7 +36,6 @@
 
 // Begin prologue.
 //
-#include "rpg_sound_exports.h"
 //
 // End prologue.
 
@@ -67,7 +66,7 @@ class RPG_Sound_Dictionary_Type_pskel;
 
 #include "rpg_sound_incl.h"
 
-class RPG_Sound_Export RPG_Sound_Category_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Sound_Category_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -79,7 +78,7 @@ class RPG_Sound_Export RPG_Sound_Category_Type_pskel: public virtual ::xml_schem
   post_RPG_Sound_Category_Type () = 0;
 };
 
-class RPG_Sound_Export RPG_Sound_Event_Type_pskel: public virtual ::xml_schema::string_pskel
+class RPG_Sound_Event_Type_pskel: public virtual ::xml_schema::string_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -91,7 +90,7 @@ class RPG_Sound_Export RPG_Sound_Event_Type_pskel: public virtual ::xml_schema::
   post_RPG_Sound_Event_Type () = 0;
 };
 
-class RPG_Sound_Export RPG_Sound_Type_pskel: public ::xml_schema::complex_content
+class RPG_Sound_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -170,7 +169,7 @@ class RPG_Sound_Export RPG_Sound_Type_pskel: public ::xml_schema::complex_conten
   ::xml_schema::unsigned_byte_pskel* interval_parser_;
 };
 
-class RPG_Sound_Export RPG_Sound_Dictionary_Type_pskel: public ::xml_schema::complex_content
+class RPG_Sound_Dictionary_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.

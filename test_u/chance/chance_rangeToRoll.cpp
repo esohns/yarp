@@ -158,7 +158,7 @@ do_work (const RPG_Dice_ValueRange& valueRange_in,
   rolls_out.clear ();
 
   // step0: init framework
-  RPG_Dice_Common_Tools::initStringConversionTables ();
+  RPG_Dice_Common_Tools::initialize ();
 
   // step1a: make sure begin <= end
   ACE_ASSERT (valueRange_in.begin <= valueRange_in.end);
@@ -317,7 +317,7 @@ do_printVersion(const std::string& programName_in)
   std::cout << programName_in
 #ifdef HAVE_CONFIG_H
             << ACE_TEXT(" : ")
-            << YARP_PACKAGE_VERSION
+            //<< YARP_PACKAGE_VERSION
 #endif
             << std::endl;
 
@@ -479,7 +479,7 @@ ACE_TMAIN (int argc_in,
   // step6: print results
   // header line
   std::cout << ACE_TEXT ("results ")
-            << RPG_Dice_Common_Tools::rangeToString (value_range)
+            << RPG_Dice_Common_Tools::toString (value_range)
             << ACE_TEXT (": ")
             << std::endl;
   std::cout << std::setw (80)
@@ -508,9 +508,9 @@ ACE_TMAIN (int argc_in,
     std::cout << ACE_TEXT ("[")
               << index
               << (perfect_match ? ACE_TEXT ("*]") : ACE_TEXT ("]"))
-              << RPG_Dice_Common_Tools::rollToString (*iterator)
+              << RPG_Dice_Common_Tools::toString (*iterator)
               << ACE_TEXT (" : ")
-              << RPG_Dice_Common_Tools::rangeToString (range)
+              << RPG_Dice_Common_Tools::toString (range)
               << std::endl;
   } // end FOR
 

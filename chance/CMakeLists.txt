@@ -8,12 +8,16 @@ set (${LIBRARY}_SRCS
      rpg_chance_common_tools.cpp
      rpg_chance_common_tools.h)
 
-set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_CHANCE_BUILD_DLL)
+#set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_CHANCE_BUILD_DLL)
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 
-target_include_directories (${LIBRARY} PUBLIC
-                            $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
+if (UNIX)
+elseif (WIN32)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
+endif ()
+
 if (UNIX)
  target_include_directories (${LIBRARY} PUBLIC
 #                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules/ACE>)
@@ -28,6 +32,7 @@ elseif (WIN32)
                               $<BUILD_INTERFACE:$ENV{LIB_ROOT}/ACE_TAO/ACE>)
  endif (DEFINED ENV{ACE_ROOT})
 endif ()
+
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/dice>)
 target_include_directories (${LIBRARY} PUBLIC

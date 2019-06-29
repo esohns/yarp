@@ -422,7 +422,7 @@ RPG_Item_Dictionary::dump() const
                RPG_Item_WeaponClassHelper::RPG_Item_WeaponClassToString((*iterator).second.weaponClass).c_str(),
                (*iterator).second.baseStorePrice.numGoldPieces,
                (*iterator).second.baseStorePrice.numSilverPieces,
-               RPG_Dice_Common_Tools::rollToString((*iterator).second.baseDamage).c_str(),
+               RPG_Dice_Common_Tools::toString((*iterator).second.baseDamage).c_str(),
                (*iterator).second.criticalHit.minToHitRoll,
                (*iterator).second.criticalHit.damageModifier,
                (*iterator).second.rangeIncrement,

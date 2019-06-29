@@ -23,9 +23,10 @@
 
 #include "ace/Global_Macros.h"
 
-#include "common_signalhandler.h"
-#include "common_isignal.h"
 #include "common_istatistic.h"
+
+#include "common_isignal.h"
+#include "common_signal_handler.h"
 
 #include "rpg_net_protocol_configuration.h"
 

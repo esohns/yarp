@@ -217,7 +217,7 @@ RPG_Graphics_Dictionary::get(const RPG_Graphics_GraphicTypeUnion& type_in) const
 
   ACE_DEBUG((LM_ERROR,
              ACE_TEXT("type \"%s\" not found, aborting\n"),
-             ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type_in).c_str())));
+             ACE_TEXT(RPG_Graphics_Common_Tools::toString(type_in).c_str())));
 
   ACE_ASSERT(false);
   RPG_Graphics_t dummy;
@@ -267,33 +267,33 @@ RPG_Graphics_Dictionary::dump() const
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("Graphic[#%u]:\n%s===========================\n"),
                index,
-               ACE_TEXT(RPG_Graphics_Common_Tools::graphicToString((*iterator).second).c_str())));
+               ACE_TEXT(RPG_Graphics_Common_Tools::toString((*iterator).second).c_str())));
   for (RPG_Graphics_FontDictionaryIterator_t iterator = myDictionary.fonts.begin();
        iterator != myDictionary.fonts.end();
        iterator++, index++)
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("Graphic[#%u]:\n%s===========================\n"),
                index,
-               ACE_TEXT(RPG_Graphics_Common_Tools::graphicToString((*iterator).second).c_str())));
+               ACE_TEXT(RPG_Graphics_Common_Tools::toString((*iterator).second).c_str())));
   for (RPG_Graphics_ImageDictionaryIterator_t iterator = myDictionary.images.begin();
        iterator != myDictionary.images.end();
        iterator++, index++)
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("Graphic[#%u]:\n%s===========================\n"),
                index,
-               ACE_TEXT(RPG_Graphics_Common_Tools::graphicToString((*iterator).second).c_str())));
+               ACE_TEXT(RPG_Graphics_Common_Tools::toString((*iterator).second).c_str())));
   for (RPG_Graphics_TileDictionaryIterator_t iterator = myDictionary.tiles.begin();
        iterator != myDictionary.tiles.end();
        iterator++, index++)
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("Graphic[#%u]:\n%s===========================\n"),
                index,
-               ACE_TEXT(RPG_Graphics_Common_Tools::graphicToString((*iterator).second).c_str())));
+               ACE_TEXT(RPG_Graphics_Common_Tools::toString((*iterator).second).c_str())));
   for (RPG_Graphics_TileSetDictionaryIterator_t iterator = myDictionary.tilesets.begin();
        iterator != myDictionary.tilesets.end();
        iterator++, index++)
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("Graphic[#%u]:\n%s===========================\n"),
                index,
-               ACE_TEXT(RPG_Graphics_Common_Tools::graphicToString((*iterator).second).c_str())));
+               ACE_TEXT(RPG_Graphics_Common_Tools::toString((*iterator).second).c_str())));
 }

@@ -75,7 +75,7 @@ RPG_Graphics_Cursor_Manager::RPG_Graphics_Cursor_Manager()
   if (!myHighlightTile)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type).c_str())));
+               ACE_TEXT(RPG_Graphics_Common_Tools::toString(type).c_str())));
 
 }
 

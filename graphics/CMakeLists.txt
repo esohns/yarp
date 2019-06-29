@@ -70,7 +70,7 @@ set (${LIBRARY}_SRCS
      rpg_graphics_toplevel.h
      rpg_graphics_wallstyle.h)
 
-set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_GRAPHICS_BUILD_DLL)
+#set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_GRAPHICS_BUILD_DLL)
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 
@@ -87,7 +87,19 @@ elseif (WIN32)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/SDL_ttf/include>)
  target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/libpng/cmake>)
+ target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/libpng>)
+endif ()
+
+if (UNIX)
+elseif (WIN32)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/src>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/src>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
 endif ()
 
 if (UNIX)
@@ -106,9 +118,14 @@ elseif (WIN32)
 endif ()
 
 target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src>)
+
+target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../chance/dice>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../common>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../map>)
 
 # add_custom_target(graphics_bindings
 #                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_graphics.xsd)
@@ -177,6 +194,7 @@ install (FILES
          rpg_graphics_toplevel.h
          rpg_graphics_wallstyle.h
          DESTINATION include)
-install (TARGETS ${LIBRARY} LIBRARY DESTINATION lib)
+install (TARGETS ${LIBRARY} LIBRARY
+         DESTINATION lib)
 
 add_subdirectory (data)

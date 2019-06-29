@@ -21,17 +21,17 @@
 
 #include "rpg_chance_common_tools.h"
 
-#include "ace/Log_Msg.h"
+//#include "ace/Log_Msg.h"
 
-#include "rpg_dice_dietype.h"
+#include "rpg_dice_common.h"
 #include "rpg_dice_roll.h"
 #include "rpg_dice.h"
 
 #include "rpg_common_macros.h"
 
 int
-RPG_Chance_Common_Tools::getCheck (short int modifier_in,
-                                   const RPG_Dice_DieType& dieType_in)
+RPG_Chance_Common_Tools::getCheck (ACE_INT16 modifier_in,
+                                   enum RPG_Dice_DieType dieType_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Chance_Common_Tools::getCheck"));
 

@@ -25,7 +25,7 @@
 
 #include "stream_common.h"
 
-#include "net_message.h"
+//#include "net_message.h"
 
 #include "rpg_common_macros.h"
 
@@ -36,18 +36,19 @@ Net_EventHandler::Net_EventHandler (Net_GTK_CBData_t* CBData_in)
 {
   RPG_TRACE (ACE_TEXT ("Net_EventHandler::Net_EventHandler"));
 
-}
-
-Net_EventHandler::~Net_EventHandler ()
-{
-  RPG_TRACE (ACE_TEXT ("Net_EventHandler::~Net_EventHandler"));
-
+  ACE_ASSERT (CBData_);
 }
 
 void
-Net_EventHandler::start (const Stream_ModuleConfiguration_t& configuration_in)
+Net_EventHandler::start (Stream_SessionId_t sessionId_in,
+                         const struct RPG_Net_Protocol_SessionData& sessionData_in)
 {
   RPG_TRACE (ACE_TEXT ("Net_EventHandler::start"));
+
+  ACE_UNUSED_ARG (sessionId_in);
+  ACE_UNUSED_ARG (sessionData_in);
+
+  ACE_ASSERT (CBData_);
 
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard (CBData_->stackLock);
 
@@ -55,20 +56,46 @@ Net_EventHandler::start (const Stream_ModuleConfiguration_t& configuration_in)
 }
 
 void
-Net_EventHandler::notify (const Net_Message& message_in)
+Net_EventHandler::notify (Stream_SessionId_t sessionId_in,
+                          const enum Stream_SessionMessageType& notification_in)
 {
   RPG_TRACE (ACE_TEXT ("Net_EventHandler::notify"));
 
   // *TODO*
-  ACE_UNUSED_ARG (message_in);
+  ACE_UNUSED_ARG (sessionId_in);
+  ACE_UNUSED_ARG (notification_in);
 }
 
 void
-Net_EventHandler::end ()
+Net_EventHandler::end (Stream_SessionId_t sessionId_in)
 {
   RPG_TRACE (ACE_TEXT ("Net_EventHandler::end"));
+
+  ACE_UNUSED_ARG (sessionId_in);
 
   ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard (CBData_->stackLock);
 
   CBData_->eventStack.push_back (NET_GTKEVENT_DISCONNECT);
+}
+
+void
+Net_EventHandler::notify (Stream_SessionId_t sessionId_in,
+                          const RPG_Net_Protocol_Message& message_in)
+{
+  RPG_TRACE (ACE_TEXT ("Net_EventHandler::notify"));
+
+  // *TODO*
+  ACE_UNUSED_ARG (sessionId_in);
+  ACE_UNUSED_ARG (message_in);
+}
+
+void
+Net_EventHandler::notify (Stream_SessionId_t sessionId_in,
+                          const RPG_Net_Protocol_SessionMessage& sessionMessage_in)
+{
+  RPG_TRACE (ACE_TEXT ("Net_EventHandler::notify"));
+
+  // *TODO*
+  ACE_UNUSED_ARG (sessionId_in);
+  ACE_UNUSED_ARG (sessionMessage_in);
 }

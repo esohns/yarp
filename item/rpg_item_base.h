@@ -21,36 +21,34 @@
 #ifndef RPG_ITEM_BASE_H
 #define RPG_ITEM_BASE_H
 
-#include "rpg_item_exports.h"
-#include "rpg_item_type.h"
-#include "rpg_item_instance_common.h"
+#include "ace/Global_Macros.h"
 
-#include <ace/Global_Macros.h>
+//#include "rpg_item_exports.h"
+#include "rpg_item_instance_common.h"
+#include "rpg_item_type.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Item_Export RPG_Item_Base
+class RPG_Item_Base
 {
  public:
-  virtual ~RPG_Item_Base();
+  virtual ~RPG_Item_Base ();
 
-  // what am I ?
-  const RPG_Item_Type& getType() const;
+  inline enum RPG_Item_Type type () const { return type_; }
 
-  virtual void dump() const;
+  virtual void dump () const;
 
  protected:
-  RPG_Item_Base(const RPG_Item_Type&,
-                const RPG_Item_ID_t&);
+  RPG_Item_Base (enum RPG_Item_Type,
+                 RPG_Item_ID_t);
+
+  enum RPG_Item_Type type_;
 
  private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Base());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Base(const RPG_Item_Base&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Base& operator=(const RPG_Item_Base&));
-
-  RPG_Item_Type myType;
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Base ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Base (const RPG_Item_Base&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Base& operator= (const RPG_Item_Base&))
 };
 
 #endif

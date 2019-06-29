@@ -21,23 +21,22 @@
 
 #include "rpg_item_base.h"
 
-#include "rpg_item_type.h"
+#include "ace/Log_Msg.h"
+
 #include "rpg_item_instance_manager.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
-#include <ace/Log_Msg.h>
-
-RPG_Item_Base::RPG_Item_Base(const RPG_Item_Type& itemType_in,
-                             const RPG_Item_ID_t& itemID_in)
- : myType(itemType_in)
+RPG_Item_Base::RPG_Item_Base (enum RPG_Item_Type type_in,
+                              RPG_Item_ID_t id_in)
+ : type_ (type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Base::RPG_Item_Base"));
 
   // register with instance manager
   // *NOTE*: the manager stores references to RPG_Item_Base (instead of RPG_Item_Instance_Base)
   // --> allows easier/consistent upcasts !
-  RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->registerItem(itemID_in, this);
+  RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance ()->registerItem (id_in, this);
 }
 
 RPG_Item_Base::~RPG_Item_Base()
@@ -45,15 +44,7 @@ RPG_Item_Base::~RPG_Item_Base()
   RPG_TRACE(ACE_TEXT("RPG_Item_Base::~RPG_Item_Base"));
 
   // deregister with instance manager
-  RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->deregisterItem(this);
-}
-
-const RPG_Item_Type&
-RPG_Item_Base::getType() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Item_Base::getType"));
-
-  return myType;
+  RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance ()->deregisterItem (this);
 }
 
 void
@@ -61,9 +52,7 @@ RPG_Item_Base::dump() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Base::dump"));
 
-  std::string itemType = RPG_Item_TypeHelper::RPG_Item_TypeToString(myType);
-
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("Item Type: %s\n"),
-             itemType.c_str()));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("Item Type: %s\n"),
+              RPG_Item_TypeHelper::RPG_Item_TypeToString (type_).c_str ()));
 }

@@ -65,17 +65,17 @@ RPG_Character_EncumbranceToStringTable_t RPG_Character_EncumbranceHelper::myRPG_
 RPG_Character_Common_Tools::RPG_Character_EncumbranceTable_t RPG_Character_Common_Tools::myEncumbranceTable;
 
 void
-RPG_Character_Common_Tools::init()
+RPG_Character_Common_Tools::initialize()
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::init"));
 
-  initStringConversionTables();
-  initEncumbranceTable();
-  RPG_Character_Skills_Common_Tools::init();
+  initializeStringConversionTables();
+  initializeEncumbranceTable();
+  RPG_Character_Skills_Common_Tools::initialize ();
 }
 
 void
-RPG_Character_Common_Tools::initStringConversionTables()
+RPG_Character_Common_Tools::initializeStringConversionTables()
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::initStringConversionTables"));
 
@@ -95,7 +95,7 @@ RPG_Character_Common_Tools::initStringConversionTables()
 }
 
 void
-RPG_Character_Common_Tools::initEncumbranceTable()
+RPG_Character_Common_Tools::initializeEncumbranceTable()
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::initEncumbranceTable"));
 
@@ -224,7 +224,7 @@ RPG_Character_Common_Tools::initEncumbranceTable()
 }
 
 std::string
-RPG_Character_Common_Tools::alignmentToString(const RPG_Character_Alignment& alignment_in)
+RPG_Character_Common_Tools::toString(const RPG_Character_Alignment& alignment_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::alignmentToString"));
 
@@ -245,7 +245,7 @@ RPG_Character_Common_Tools::alignmentToString(const RPG_Character_Alignment& ali
 }
 
 std::string
-RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& attributes_in)
+RPG_Character_Common_Tools::toString(const RPG_Character_Attributes& attributes_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::attributesToString"));
 
@@ -302,7 +302,7 @@ RPG_Character_Common_Tools::attributesToString(const RPG_Character_Attributes& a
 }
 
 std::string
-RPG_Character_Common_Tools::raceToString(const RPG_Character_Race_t& races_in)
+RPG_Character_Common_Tools::toString(const RPG_Character_Race_t& races_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::raceToString"));
 
@@ -337,7 +337,7 @@ RPG_Character_Common_Tools::raceToString(const RPG_Character_Race_t& races_in)
 }
 
 std::string
-RPG_Character_Common_Tools::classToString(const RPG_Character_Class& class_in)
+RPG_Character_Common_Tools::toString(const RPG_Character_Class& class_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::classToString"));
 
@@ -363,7 +363,7 @@ RPG_Character_Common_Tools::classToString(const RPG_Character_Class& class_in)
 }
 
 std::string
-RPG_Character_Common_Tools::conditionToString(const RPG_Character_Conditions_t& condition_in)
+RPG_Character_Common_Tools::toString(const RPG_Character_Conditions_t& condition_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Common_Tools::conditionToString"));
 

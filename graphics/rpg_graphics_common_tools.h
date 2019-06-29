@@ -24,21 +24,21 @@
 #include <string>
 
 #include "ace/Global_Macros.h"
-#include "ace/Synch.h"
+#include "ace/Synch_Traits.h"
 
 #include "rpg_map_common.h"
 
 #include "rpg_graphics_common.h"
-#include "rpg_graphics_exports.h"
+//#include "rpg_graphics_exports.h"
 #include "rpg_graphics_incl.h"
 
 // forward declarations
-class RPG_Common_ILock;
+class Common_ILock;
 
 /**
   @author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Graphics_Export RPG_Graphics_Common_Tools
+class RPG_Graphics_Common_Tools
 {
  public:
   static void preInitialize ();
@@ -49,13 +49,13 @@ class RPG_Graphics_Export RPG_Graphics_Common_Tools
                           bool = true);       // initialize SDL ?
   static void finalize ();
   static std::string getGraphicsDirectory();
-  static std::string typeToString(const RPG_Graphics_GraphicTypeUnion&);
-  static std::string styleToString(const RPG_Graphics_StyleUnion&);
-  static std::string tileToString(const RPG_Graphics_Tile&);
-  static std::string tileSetToString(const RPG_Graphics_TileSet&);
-  static std::string elementTypeToString(const RPG_Graphics_ElementTypeUnion&);
-  static std::string elementsToString(const RPG_Graphics_Elements_t&);
-  static std::string graphicToString(const RPG_Graphics_t&);
+  static std::string toString(const RPG_Graphics_GraphicTypeUnion&);
+  static std::string toString(const RPG_Graphics_StyleUnion&);
+  static std::string toString(const RPG_Graphics_Tile&);
+  static std::string toString(const RPG_Graphics_TileSet&);
+  static std::string toString(const RPG_Graphics_ElementTypeUnion&);
+  static std::string toString(const RPG_Graphics_Elements_t&);
+  static std::string toString(const RPG_Graphics_t&);
 
   static void graphicToFile(const RPG_Graphics_t&, // graphic
                             std::string&);         // return value: FQ filename
@@ -84,11 +84,11 @@ class RPG_Graphics_Export RPG_Graphics_Common_Tools
                                  const SDL_Color&);        // color
 
   // *NOTE*: source/target image must already be loaded into the framebuffer !
-  static void fade(const bool&,       // fade in ? (else out)
-                   const float&,      // interval (seconds)
-                   const Uint32&,     // fade to/from color
-                   RPG_Common_ILock*, // lock interface handle
-                   SDL_Surface*);     // target surface (e.g. screen)
+  static void fade(const bool&,   // fade in ? (else out)
+                   const float&,  // interval (seconds)
+                   const Uint32&, // fade to/from color
+                   Common_ILock*, // lock interface handle
+                   SDL_Surface*); // target surface (e.g. screen)
 
   static RPG_Graphics_Style random(const RPG_Graphics_Style&); // graphics style
 
@@ -103,27 +103,27 @@ class RPG_Graphics_Export RPG_Graphics_Common_Tools
                                           const RPG_Graphics_Position_t&); // viewport (map coordinates !)
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Graphics_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Common_Tools(const RPG_Graphics_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Common_Tools& operator=(const RPG_Graphics_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Common_Tools())
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Graphics_Common_Tools())
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Common_Tools(const RPG_Graphics_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Common_Tools& operator=(const RPG_Graphics_Common_Tools&))
 
   // helper methods
-  static void initStringConversionTables();
-  static bool initFonts();
+  static void initializeStringConversionTables();
+  static bool initializeFonts();
 
   // convert style (wall-, floor-, ...) to appropriate graphic (meta)type
   static RPG_Graphics_GraphicTypeUnion styleToType(const RPG_Graphics_StyleUnion&, // style (generic)
                                                    const bool& = false);           // half-height (wallstyle only) ?
 
-  static void fade(const float&,      // interval (seconds)
-                   SDL_Surface*,      // target image
-                   RPG_Common_ILock*, // lock interface handle
-                   SDL_Surface*);     // target surface (e.g. screen)
+  static void fade(const float&,  // interval (seconds)
+                   SDL_Surface*,  // target image
+                   Common_ILock*, // lock interface handle
+                   SDL_Surface*); // target surface (e.g. screen)
 
   static std::string                  myGraphicsDirectory;
 
-  static ACE_Thread_Mutex             myCacheLock;
+  static ACE_SYNCH_MUTEX              myCacheLock;
 
   static unsigned int                 myOldestCacheEntry;
   static unsigned int                 myCacheSize;

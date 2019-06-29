@@ -28,7 +28,7 @@ set (${LIBRARY}_SRCS
  #   rpg_XMLSchema_XML_tree.h
  #   rpg_XMLSchema_XML_types.h)
 
-set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_ENGINE_BUILD_DLL)
+#set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_ENGINE_BUILD_DLL)
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 
@@ -88,7 +88,7 @@ add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_engine_XML_tree.cpp
                     COMMENT "generating XML <--> C++ bindings...")
 
 add_dependencies (${LIBRARY} RPG_Graphics RPG_Map
-                             RPG_Combat RPG_Character RPG_Character_Monster RPG_Character_Player
+                             RPG_Combat RPG_Character RPG_Player RPG_Monster
                              RPG_Item RPG_Magic RPG_Common RPG_Chance RPG_Dice)
 
 set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
@@ -112,4 +112,5 @@ install (FILES
          rpg_engine_messagequeue.h
          rpg_engine_XML_tree.h
          DESTINATION include)
-install (TARGETS ${LIBRARY} LIBRARY DESTINATION lib)
+install (TARGETS ${LIBRARY} LIBRARY
+         DESTINATION lib)

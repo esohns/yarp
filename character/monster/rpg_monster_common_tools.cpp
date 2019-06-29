@@ -42,7 +42,7 @@ RPG_Monster_NaturalWeaponToStringTable_t RPG_Monster_NaturalWeaponHelper::myRPG_
 RPG_Monster_OrganizationToStringTable_t RPG_Monster_OrganizationHelper::myRPG_Monster_OrganizationToStringTable;
 
 void
-RPG_Monster_Common_Tools::initStringConversionTables()
+RPG_Monster_Common_Tools::initializeStringConversionTables()
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::initStringConversionTables"));
 
@@ -54,7 +54,7 @@ RPG_Monster_Common_Tools::initStringConversionTables()
 }
 
 std::string
-RPG_Monster_Common_Tools::weaponTypeToString(const RPG_Monster_WeaponTypeUnion& weaponType_in)
+RPG_Monster_Common_Tools::toString(const RPG_Monster_WeaponTypeUnion& weaponType_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::weaponTypeToString"));
 
@@ -92,14 +92,14 @@ RPG_Monster_Common_Tools::weaponTypeToString(const RPG_Monster_WeaponTypeUnion& 
 }
 
 std::string
-RPG_Monster_Common_Tools::attackActionToString(const RPG_Monster_AttackAction& attackAction_in)
+RPG_Monster_Common_Tools::toString(const RPG_Monster_AttackAction& attackAction_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::attackActionToString"));
 
   std::string result;
 
   result += ACE_TEXT_ALWAYS_CHAR("weapon: ");
-  result += RPG_Monster_Common_Tools::weaponTypeToString(attackAction_in.weapon);
+  result += RPG_Monster_Common_Tools::toString(attackAction_in.weapon);
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("attackBonus(es): ");
 
@@ -121,9 +121,9 @@ RPG_Monster_Common_Tools::attackActionToString(const RPG_Monster_AttackAction& a
 
   result += ACE_TEXT_ALWAYS_CHAR("\n");
   result += ACE_TEXT_ALWAYS_CHAR("attackForm: ");
-  result += RPG_Combat_Common_Tools::attackFormsToString(attackAction_in.attackForms);
+  result += RPG_Combat_Common_Tools::toString(attackAction_in.attackForms);
   result += ACE_TEXT_ALWAYS_CHAR("\n");
-  result += RPG_Combat_Common_Tools::damageToString(attackAction_in.damage);
+  result += RPG_Combat_Common_Tools::toString(attackAction_in.damage);
   result += ACE_TEXT_ALWAYS_CHAR("numAttacksPerRound: ");
   converter.clear();
   converter.str(ACE_TEXT_ALWAYS_CHAR(""));
@@ -135,7 +135,7 @@ RPG_Monster_Common_Tools::attackActionToString(const RPG_Monster_AttackAction& a
 }
 
 std::string
-RPG_Monster_Common_Tools::attackToString(const RPG_Monster_Attack& attack_in)
+RPG_Monster_Common_Tools::toString(const RPG_Monster_Attack& attack_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::attackToString"));
 
@@ -164,7 +164,7 @@ RPG_Monster_Common_Tools::attackToString(const RPG_Monster_Attack& attack_in)
     converter << i;
     result += converter.str();
     result += ACE_TEXT_ALWAYS_CHAR("\n");
-    result += attackActionToString(*iterator);
+    result += RPG_Monster_Common_Tools::toString(*iterator);
   } // end FOR
   result += ACE_TEXT_ALWAYS_CHAR("Full Attack Action(s):\n---------------\n");
   i = 1;
@@ -178,14 +178,14 @@ RPG_Monster_Common_Tools::attackToString(const RPG_Monster_Attack& attack_in)
     converter << i;
     result += converter.str();
     result += ACE_TEXT_ALWAYS_CHAR("\n");
-    result += attackActionToString(*iterator);
+    result += RPG_Monster_Common_Tools::toString(*iterator);
   } // end FOR
 
   return result;
 }
 
 std::string
-RPG_Monster_Common_Tools::organizationsToString(const RPG_Monster_OrganizationSet_t& organizations_in)
+RPG_Monster_Common_Tools::toString(const RPG_Monster_OrganizationSet_t& organizations_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::organizationsToString"));
 
@@ -207,7 +207,7 @@ RPG_Monster_Common_Tools::organizationsToString(const RPG_Monster_OrganizationSe
 }
 
 std::string
-RPG_Monster_Common_Tools::organizationsToString(const RPG_Monster_Organizations_t& organizations_in)
+RPG_Monster_Common_Tools::toString(const RPG_Monster_Organizations_t& organizations_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::organizationsToString"));
 
@@ -218,7 +218,7 @@ RPG_Monster_Common_Tools::organizationsToString(const RPG_Monster_Organizations_
        iterator++)
   {
     result += RPG_Monster_OrganizationHelper::RPG_Monster_OrganizationToString((*iterator).type);
-    range_string = RPG_Dice_Common_Tools::rangeToString((*iterator).range);
+    range_string = RPG_Dice_Common_Tools::toString((*iterator).range);
     result += ACE_TEXT_ALWAYS_CHAR(": ");
     result += range_string;
     result += ACE_TEXT_ALWAYS_CHAR("\n");
@@ -228,7 +228,7 @@ RPG_Monster_Common_Tools::organizationsToString(const RPG_Monster_Organizations_
 }
 
 std::string
-RPG_Monster_Common_Tools::advancementToString(const RPG_Monster_Advancement_t& advancement_in)
+RPG_Monster_Common_Tools::toString(const RPG_Monster_Advancement_t& advancement_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster_Common_Tools::advancementToString"));
 
@@ -239,7 +239,7 @@ RPG_Monster_Common_Tools::advancementToString(const RPG_Monster_Advancement_t& a
   {
     result += RPG_Common_SizeHelper::RPG_Common_SizeToString((*iterator).size);
     result += ACE_TEXT_ALWAYS_CHAR(": ");
-    result += RPG_Dice_Common_Tools::rangeToString((*iterator).range);
+    result += RPG_Dice_Common_Tools::toString((*iterator).range);
     result += ACE_TEXT_ALWAYS_CHAR(" HD\n");
   } // end FOR
 
@@ -357,10 +357,10 @@ RPG_Monster_Common_Tools::generateRandomEncounter(const unsigned int& numDiffere
     // nothing found in database...
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("found no appropriate monster types (alignment: \"%s\", environment \"%s\", organizations: \"%s\", HD: \"%s\" in dictionary (%u entries), returning\n"),
-               RPG_Character_Common_Tools::alignmentToString(alignment_in).c_str(),
-               RPG_Common_Tools::environmentToString(environment_in).c_str(),
-               RPG_Monster_Common_Tools::organizationsToString(organizations_in).c_str(),
-               RPG_Dice_Common_Tools::rollToString(hitDice_in).c_str(),
+               RPG_Character_Common_Tools::toString(alignment_in).c_str(),
+               RPG_Common_Tools::toString(environment_in).c_str(),
+               RPG_Monster_Common_Tools::toString(organizations_in).c_str(),
+               RPG_Dice_Common_Tools::toString(hitDice_in).c_str(),
                RPG_MONSTER_DICTIONARY_SINGLETON::instance()->numEntries()));
 
     return;

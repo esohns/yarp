@@ -21,16 +21,19 @@
 #ifndef RPG_MAGIC_COMMON_H
 #define RPG_MAGIC_COMMON_H
 
-#include "rpg_dice_incl.h"
-#include "rpg_common_incl.h"
-#include "rpg_common_environment_incl.h"
-#include "rpg_character_incl.h"
-#include "rpg_magic_incl.h"
-
-#include <vector>
+#include <map>
 #include <set>
 #include <string>
-#include <map>
+#include <vector>
+
+#include "rpg_dice_incl.h"
+
+#include "rpg_common_incl.h"
+#include "rpg_common_environment_incl.h"
+
+#include "rpg_character_incl.h"
+
+#include "rpg_magic_incl.h"
 
 // some useful types
 typedef std::set<RPG_Magic_SpellType> RPG_Magic_SpellTypes_t;

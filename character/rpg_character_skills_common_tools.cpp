@@ -40,17 +40,17 @@ RPG_Character_Skills_Common_Tools::RPG_Character_ClassSkillsTable_t RPG_Characte
 RPG_Character_Skills_Common_Tools::RPG_Character_FeatPrerequisitesTable_t RPG_Character_Skills_Common_Tools::myFeatPrerequisitesTable;
 
 void
-RPG_Character_Skills_Common_Tools::init()
+RPG_Character_Skills_Common_Tools::initialize()
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::init"));
 
-  initClassSkillsTable();
-  initFeatPrerequisitesTable();
-  initBonusFeatsTables();
+  initializeClassSkillsTable();
+  initializeFeatPrerequisitesTable();
+  initializeBonusFeatsTables();
 }
 
 void
-RPG_Character_Skills_Common_Tools::initBonusFeatsTables()
+RPG_Character_Skills_Common_Tools::initializeBonusFeatsTables()
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::initBonusFeatsTables"));
 
@@ -132,7 +132,7 @@ RPG_Character_Skills_Common_Tools::initBonusFeatsTables()
 }
 
 void
-RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
+RPG_Character_Skills_Common_Tools::initializeFeatPrerequisitesTable()
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable"));
 
@@ -1175,7 +1175,7 @@ RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable()
 }
 
 void
-RPG_Character_Skills_Common_Tools::initClassSkillsTable()
+RPG_Character_Skills_Common_Tools::initializeClassSkillsTable()
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::initClassSkillsTable"));
 
@@ -1851,7 +1851,7 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const RPG_Character_Race
 }
 
 const std::string
-RPG_Character_Skills_Common_Tools::skillsToString(const RPG_Character_Skills_t& skills_in)
+RPG_Character_Skills_Common_Tools::toString(const RPG_Character_Skills_t& skills_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::skillsToString"));
 
@@ -1875,7 +1875,7 @@ RPG_Character_Skills_Common_Tools::skillsToString(const RPG_Character_Skills_t& 
 }
 
 const std::string
-RPG_Character_Skills_Common_Tools::featsToString(const RPG_Character_Feats_t& feats_in)
+RPG_Character_Skills_Common_Tools::toString(const RPG_Character_Feats_t& feats_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::featsToString"));
 
@@ -1893,7 +1893,7 @@ RPG_Character_Skills_Common_Tools::featsToString(const RPG_Character_Feats_t& fe
 }
 
 const std::string
-RPG_Character_Skills_Common_Tools::abilitiesToString(const RPG_Character_Abilities_t& abilities_in)
+RPG_Character_Skills_Common_Tools::toString(const RPG_Character_Abilities_t& abilities_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::abilitiesToString"));
 
@@ -1911,13 +1911,13 @@ RPG_Character_Skills_Common_Tools::abilitiesToString(const RPG_Character_Abiliti
 }
 
 const bool
-RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites(const RPG_Character_Feat& feat_in,
-														  const RPG_Common_SubClass& subClass_in,
-														  const unsigned char& currentLevel_in,
-														  const RPG_Character_Attributes& attributes_in,
-														  const RPG_Character_Skills_t& skills_in,
-														  const RPG_Character_Feats_t& feats_in,
-														  const RPG_Character_Abilities_t& abilities_in)
+RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites (const RPG_Character_Feat& feat_in,
+                                                           const RPG_Common_SubClass& subClass_in,
+                                                           const unsigned char& currentLevel_in,
+                                                           const RPG_Character_Attributes& attributes_in,
+                                                           const RPG_Character_Skills_t& skills_in,
+                                                           const RPG_Character_Feats_t& feats_in,
+                                                           const RPG_Character_Abilities_t& abilities_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites"));
 

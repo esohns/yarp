@@ -20,9 +20,9 @@
 #include "stdafx.h"
 
 // *NOTE*: workaround for MSVC quirk with min/max
-#if defined (_MSC_VER)
-#define NOMINMAX
-#endif
+//#if defined (_MSC_VER)
+//#define NOMINMAX
+//#endif
 
 #include "rpg_map_common_tools.h"
 
@@ -37,11 +37,11 @@
 #include "common_defines.h"
 #include "common_file_tools.h"
 
+#include "rpg_dice.h"
+
 //#include "rpg_common_defines.h"
 #include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
-
-#include "rpg_dice.h"
 
 #include "rpg_map_direction.h"
 #include "rpg_map_doorstate.h"
@@ -56,7 +56,7 @@ RPG_Map_DoorStateToStringTable_t
 RPG_Map_DoorStateHelper::myRPG_Map_DoorStateToStringTable;
 
 void
-RPG_Map_Common_Tools::initStringConversionTables()
+RPG_Map_Common_Tools::initializeStringConversionTables()
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::initStringConversionTables"));
 
@@ -2219,9 +2219,9 @@ RPG_Map_Common_Tools::isAdjacent(const RPG_Map_Position_t& position1_in,
 }
 
 std::string
-RPG_Map_Common_Tools::orientation2String(const RPG_Map_Orientation& orientation_in)
+RPG_Map_Common_Tools::toString(const RPG_Map_Orientation& orientation_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::orientation2String"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::toString"));
 
   // init result value
   std::string result = ACE_TEXT_ALWAYS_CHAR("MAP_ORIENTATION_INVALID");
@@ -2250,9 +2250,9 @@ RPG_Map_Common_Tools::orientation2String(const RPG_Map_Orientation& orientation_
 }
 
 std::string
-RPG_Map_Common_Tools::map2String(const RPG_Map_t& map_in)
+RPG_Map_Common_Tools::toString(const RPG_Map_t& map_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::map2String"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::toString"));
 
   std::string result;
 
@@ -2294,9 +2294,9 @@ RPG_Map_Common_Tools::map2String(const RPG_Map_t& map_in)
 }
 
 std::string
-RPG_Map_Common_Tools::mapElement2String(const RPG_Map_Element& element_in)
+RPG_Map_Common_Tools::toString(const RPG_Map_Element& element_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::map2String"));
+  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::toString"));
 
   std::string result = ACE_TEXT_ALWAYS_CHAR("MAPELEMENT_INVALID");
 
@@ -2378,7 +2378,7 @@ RPG_Map_Common_Tools::door2exitDirection(const RPG_Map_Position_t& position_in, 
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid orientation (was: \"%s\"), aborting\n"),
-                 ACE_TEXT(RPG_Map_Common_Tools::orientation2String(orientation).c_str())));
+                 ACE_TEXT(RPG_Map_Common_Tools::toString(orientation).c_str())));
       ACE_ASSERT(false);
       
       return RPG_MAP_DIRECTION_INVALID;
@@ -2411,7 +2411,7 @@ compare_shape:
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid orientation (was: \"%s\"), aborting\n"),
-                     ACE_TEXT(RPG_Map_Common_Tools::orientation2String(orientation).c_str())));
+                     ACE_TEXT(RPG_Map_Common_Tools::toString(orientation).c_str())));
           ACE_ASSERT(false);
 
           return RPG_MAP_DIRECTION_INVALID;
@@ -2431,7 +2431,7 @@ compare_size:
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid orientation (was: \"%s\"), aborting\n"),
-                   ACE_TEXT(RPG_Map_Common_Tools::orientation2String(orientation).c_str())));
+                   ACE_TEXT(RPG_Map_Common_Tools::toString(orientation).c_str())));
         ACE_ASSERT(false);
 
         return RPG_MAP_DIRECTION_INVALID;
@@ -2459,7 +2459,7 @@ compare_size:
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid orientation (was: \"%s\"), aborting\n"),
-                   ACE_TEXT(RPG_Map_Common_Tools::orientation2String(orientation).c_str())));
+                   ACE_TEXT(RPG_Map_Common_Tools::toString(orientation).c_str())));
         ACE_ASSERT(false);
 
         return RPG_MAP_DIRECTION_INVALID;
@@ -4149,10 +4149,12 @@ RPG_Map_Common_Tools::getMapsDirectory()
                  ACE_TEXT(result.c_str())));
 
       // fallback
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-      result = ACE_TEXT_ALWAYS_CHAR(COMMON_DEF_DUMP_DIR);
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+      result =
+        ACE_OS::getenv (ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEMPORARY_STORAGE_VARIABLE));
 #else
-      result = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(COMMON_DEF_DUMP_DIR));
+      result =
+        ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEMPORARY_STORAGE_DIRECTORY);
 #endif
     } // end IF
     else

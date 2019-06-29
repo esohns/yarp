@@ -8,12 +8,6 @@ set (${LIBRARY}_SRCS
  #    rpg_XMLSchema_XML_tree.h
  #    rpg_XMLSchema_XML_types.h
      rpg_common.h
-     rpg_common_XML_parser.cpp
-     rpg_common_XML_parser.h
-     rpg_common_XML_tree.cpp
-     rpg_common_XML_tree.h
-     rpg_common_XML_types.cpp
-     rpg_common_XML_types.h
      rpg_common_actiontype.h
      rpg_common_amount.h
      rpg_common_areaofeffect.h
@@ -54,18 +48,27 @@ set (${LIBRARY}_SRCS
      rpg_common_tools.h
      rpg_common_usage.h
      rpg_common_xsderrorhandler.cpp
-     rpg_common_xsderrorhandler.h)
+     rpg_common_xsderrorhandler.h
+     rpg_common_XML_parser.cpp
+     rpg_common_XML_parser.h
+     rpg_common_XML_tree.cpp
+     rpg_common_XML_tree.h
+     rpg_common_XML_types.cpp
+     rpg_common_XML_types.h)
 
-set_source_files_properties(${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_COMMON_BUILD_DLL)
+#set_source_files_properties(${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_COMMON_BUILD_DLL)
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 
-target_include_directories (${LIBRARY} PUBLIC
-                            $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/src>)
-target_include_directories (${LIBRARY} PUBLIC
-                            $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/src>)
-target_include_directories (${LIBRARY} PUBLIC
-                            $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
+if (UNIX)
+elseif (WIN32)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/src>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/src>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
+endif ()
 
 if (UNIX)
  target_include_directories (${LIBRARY} PUBLIC
@@ -108,15 +111,14 @@ add_dependencies (${LIBRARY} RPG_Dice)
 set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
 ########### install files ###############
-install (FILES rpg_common.xsd rpg_common_environment.xsd
+install (FILES
+         rpg_common.xsd
+         rpg_common_environment.xsd
          DESTINATION share/RPG/config)
 install (FILES
         # rpg_XMLSchema_XML_tree.h
         #rpg_XMLSchema_XML_types.h
          rpg_common.h
-         rpg_common_XML_parser.h
-         rpg_common_XML_tree.h
-         rpg_common_XML_types.h
          rpg_common_actiontype.h
          rpg_common_amount.h
          rpg_common_areaofeffect.h
@@ -154,5 +156,9 @@ install (FILES
          rpg_common_tools.h
          rpg_common_usage.h
          rpg_common_xsderrorhandler.h
+         rpg_common_XML_parser.h
+         rpg_common_XML_tree.h
+         rpg_common_XML_types.h
          DESTINATION include)
-install (TARGETS ${LIBRARY} LIBRARY DESTINATION lib)
+install (TARGETS ${LIBRARY} LIBRARY
+         DESTINATION lib)

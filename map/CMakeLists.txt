@@ -10,14 +10,10 @@ set (${LIBRARY}_SRCS
      rpg_map_common.h
      rpg_map_common_tools.cpp
      rpg_map_common_tools.h
-     rpg_map_XML_tree.h
-     rpg_map_XML_tree.cpp
-#     rpg_XMLSchema_XML_tree.h
-     rpg_map_position.h
-     rpg_map_doorstate.h
-     rpg_map_incl.h
      rpg_map_defines.h
+     rpg_map_doorstate.h
  #    rpg_map_exports.h
+     rpg_map_incl.h
      rpg_map_level.cpp
      rpg_map_level.h
      rpg_map_parser.cpp
@@ -26,13 +22,28 @@ set (${LIBRARY}_SRCS
      rpg_map_parser_driver.h
      rpg_map_pathfinding_tools.cpp
      rpg_map_pathfinding_tools.h
+     rpg_map_position.h
      rpg_map_scanner.cpp
-     rpg_map_scanner.h)
- #    stack.hh)
+     rpg_map_scanner.h
+ #    stack.hh
+     rpg_map_XML_tree.h
+     rpg_map_XML_tree.cpp)
+#     rpg_XMLSchema_XML_tree.h
 
-set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS "YY_NO_UNISTD_H;RPG_MAP_BUILD_DLL")
+set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS "YY_NO_UNISTD_H;BASEDIR=\"C:\\\"")
+#set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS "YY_NO_UNISTD_H;RPG_MAP_BUILD_DLL")
 
-add_library (RPG_Map STATIC ${${LIBRARY}_SRCS})
+add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
+
+if (UNIX)
+elseif (WIN32)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/src>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/src>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
+endif ()
 
 if (UNIX)
  target_include_directories (${LIBRARY} PUBLIC
@@ -49,6 +60,11 @@ elseif (WIN32)
  endif (DEFINED ENV{ACE_ROOT})
 endif ()
 
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src>)
+
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../3rd_party/bison>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../chance/dice>)
 target_include_directories (${LIBRARY} PUBLIC
@@ -99,19 +115,19 @@ install (FILES
          rpg_map_common.h
          rpg_map_common_tools.h
          rpg_map_defines.h
+         rpg_map_doorstate.h
  #        rpg_map_exports.h
+         rpg_map_incl.h
          rpg_map_level.h
          rpg_map_parser.h
          rpg_map_parser_driver.h
          rpg_map_pathfinding_tools.h
+         rpg_map_position.h
          rpg_map_scanner.h
 #         location.hh
 #         position.hh
 #         stack.hh
          rpg_map_XML_tree.h
-         rpg_map_position.h
-         rpg_map_doorstate.h
-         rpg_map_incl.h
          DESTINATION include)
 install (TARGETS ${LIBRARY} LIBRARY
          DESTINATION lib)

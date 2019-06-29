@@ -1,3 +1,7 @@
+#include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/Threads.cmake)
+
+#include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/ACE.cmake)
+
 ########### next target ###############
 set (LIBRARY RPG_Dice)
 set (${LIBRARY}_SRCS
@@ -20,7 +24,7 @@ set (${LIBRARY}_SRCS
 #     rpg_XMLSchema_XML_tree.h
 #     rpg_XMLSchema_XML_types.h)
 
-set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_DICE_BUILD_DLL)
+#set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_DICE_BUILD_DLL)
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 
@@ -87,4 +91,5 @@ install (FILES
          rpg_dice_XML_tree.h
          rpg_dice_XML_types.h
          DESTINATION include)
-install (TARGETS ${LIBRARY} LIBRARY DESTINATION lib)
+install (TARGETS ${LIBRARY} LIBRARY
+         DESTINATION lib)

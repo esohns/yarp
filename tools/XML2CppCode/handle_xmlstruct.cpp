@@ -24,7 +24,7 @@
 #include "xml2cppcode.h"
 #include "xml2cppcode_common_tools.h"
 
-#include "rpg_common_tools.h"
+//#include "rpg_common_tools.h"
 
 #include "ace/Log_Msg.h"
 

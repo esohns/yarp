@@ -21,23 +21,23 @@
 #ifndef RPG_MAP_COMMON_TOOLS_H
 #define RPG_MAP_COMMON_TOOLS_H
 
-#include "rpg_map_exports.h"
-#include "rpg_map_defines.h"
-#include "rpg_map_common.h"
-
-#include <ace/Global_Macros.h>
-
 #include <list>
 #include <set>
 #include <string>
 
+#include "ace/Global_Macros.h"
+
+#include "rpg_map_common.h"
+#include "rpg_map_defines.h"
+//#include "rpg_map_exports.h"
+
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Map_Export RPG_Map_Common_Tools
+class RPG_Map_Common_Tools
 {
  public:
-  static void initStringConversionTables();
+  static void initializeStringConversionTables();
 
   static unsigned int distance(const RPG_Map_Position_t&,  // position 1
                                const RPG_Map_Position_t&); // position 2
@@ -45,9 +45,9 @@ class RPG_Map_Export RPG_Map_Common_Tools
                                   const RPG_Map_Position_t&); // position 2
   static bool isAdjacent(const RPG_Map_Position_t&,  // position 1
                          const RPG_Map_Position_t&); // position 2
-  static std::string orientation2String(const RPG_Map_Orientation&);
-  static std::string map2String(const RPG_Map_t&);
-  static std::string mapElement2String(const RPG_Map_Element&);
+  static std::string toString(const RPG_Map_Orientation&);
+  static std::string toString(const RPG_Map_t&);
+  static std::string toString(const RPG_Map_Element&);
 
   // *TODO*: relies on the size of the room in relation to its' surrounding space
   // --> results may be wrong for small enclosures
@@ -94,10 +94,10 @@ class RPG_Map_Export RPG_Map_Common_Tools
 	static std::string getMapsDirectory();
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Map_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Common_Tools(const RPG_Map_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Common_Tools& operator=(const RPG_Map_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Common_Tools())
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Map_Common_Tools())
+  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Common_Tools(const RPG_Map_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Common_Tools& operator=(const RPG_Map_Common_Tools&))
 
   // helper types/methods
   // *WARNING*: make sure the set of positions forms one (connected) area !

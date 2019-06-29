@@ -19,8 +19,12 @@ add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
-include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src>)
-#include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log>)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/image)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/signal)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/gtk)
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
                      ${CMAKE_CURRENT_SOURCE_DIR}/../../common

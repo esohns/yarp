@@ -21,17 +21,17 @@
 #ifndef RPG_NET_PROTOCOL_STREAM_COMMON_H
 #define RPG_NET_PROTOCOL_STREAM_COMMON_H
 
-#include "common_inotify.h"
+//#include "common_inotify.h"
 
-#include "stream_common.h"
-#include "stream_session_data_base.h"
+//#include "stream_common.h"
+#include "stream_session_data.h"
 
 #include "rpg_net_protocol_configuration.h"
-#include "rpg_net_protocol_IRCmessage.h"
+//#include "rpg_net_protocol_IRCmessage.h"
 
-typedef Stream_SessionDataBase_T<RPG_Net_Protocol_SessionData> RPG_Net_Protocol_StreamSessionData_t;
+typedef Stream_SessionData_T<struct RPG_Net_Protocol_SessionData> RPG_Net_Protocol_SessionData_t;
 
-typedef Common_INotify_T<Stream_ModuleConfiguration_t,
-                         RPG_Net_Protocol_IRCMessage> RPG_Net_Protocol_INotify_t;
+//typedef Common_INotify_T<Stream_ModuleConfiguration_t,
+//                         RPG_Net_Protocol_IRCMessage> RPG_Net_Protocol_INotify_t;
 
 #endif

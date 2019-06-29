@@ -20,7 +20,7 @@ set (${LIBRARY}_SRCS
      rpg_net_protocol_tools.cpp
      rpg_net_protocol_tools.h)
 
-set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_PROTOCOL_BUILD_DLL)
+#set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_PROTOCOL_BUILD_DLL)
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 
@@ -54,6 +54,10 @@ target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../ACEStream/src>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../ACEStream/src/modules/lib>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../ACEStream/src/modules/misc>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../ACEStream/src/modules/stat>)
 
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../ACENetwork/src>)
@@ -113,5 +117,5 @@ install (FILES
          rpg_net_protocol_stream_common.h
          rpg_net_protocol_tools.h
          DESTINATION include)
-install (TARGETS ${LIBRARY} LIBRARY DESTINATION lib)
-
+install (TARGETS ${LIBRARY} LIBRARY
+         DESTINATION lib)

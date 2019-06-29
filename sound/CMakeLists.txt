@@ -2,15 +2,18 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/Threads.cmake)
 
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/ACE.cmake)
 
+if (UNIX)
+ include (FindPkgConfig)
+ pkg_check_modules (PKG_CONFIG_MODULE_SDL REQUIRED sdl)
+ pkg_check_modules (PKG_CONFIG_MODULE_SDL_Mixer REQUIRED SDL_Mixer)
+elseif (WIN32)
+endif ()
+
 ########### next target ###############
 set (LIBRARY RPG_Sound)
 set (${LIBRARY}_SRCS
     # rpg_XMLSchema_XML_types.h
      rpg_sound.h
-     rpg_sound_XML_parser.cpp
-     rpg_sound_XML_parser.h
-     rpg_sound_XML_types.cpp
-     rpg_sound_XML_types.h
      rpg_sound_category.h
      rpg_sound_common.h
      rpg_sound_common_tools.cpp
@@ -20,11 +23,38 @@ set (${LIBRARY}_SRCS
      rpg_sound_dictionary.cpp
      rpg_sound_dictionary.h
      rpg_sound_event.h
-     rpg_sound_incl.h)
+     rpg_sound_incl.h
+     rpg_sound_XML_parser.cpp
+     rpg_sound_XML_parser.h
+     rpg_sound_XML_types.cpp
+     rpg_sound_XML_types.h)
 
+set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\"")
 #set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_SOUND_BUILD_DLL)
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
+
+if (UNIX)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}>)
+elseif (WIN32)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/SDL/include>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/SDL_Mixer/include>)
+endif ()
+
+if (UNIX)
+elseif (WIN32)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/src>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/src>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
+endif ()
 
 if (UNIX)
  target_include_directories (${LIBRARY} PUBLIC
@@ -40,6 +70,11 @@ elseif (WIN32)
                               $<BUILD_INTERFACE:$ENV{LIB_ROOT}/ACE_TAO/ACE>)
  endif (DEFINED ENV{ACE_ROOT})
 endif ()
+
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/timer>)
 
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../chance/dice>)
@@ -68,8 +103,6 @@ install (FILES
          DESTINATION share/RPG/config)
 install (FILES
          rpg_sound.h
-         rpg_sound_XML_parser.h
-         rpg_sound_XML_types.h
          rpg_sound_category.h
          rpg_sound_common.h
          rpg_sound_common_tools.h
@@ -78,6 +111,8 @@ install (FILES
          rpg_sound_dictionary.h
          rpg_sound_event.h
          rpg_sound_incl.h
+         rpg_sound_XML_parser.h
+         rpg_sound_XML_types.h
          DESTINATION include)
 install (TARGETS ${LIBRARY} LIBRARY
          DESTINATION lib)

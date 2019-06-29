@@ -21,7 +21,7 @@ set (${LIBRARY}_SRCS
      rpg_net_stream.cpp
      rpg_net_stream.h)
 
-set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_NET_BUILD_DLL)
+#set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_NET_BUILD_DLL)
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 
@@ -90,7 +90,8 @@ install (FILES
          rpg_net_remote_comm.h
          rpg_net_stream.h
          DESTINATION include)
-install (TARGETS ${LIBRARY} LIBRARY DESTINATION lib)
+install (TARGETS ${LIBRARY} LIBRARY
+         DESTINATION lib)
 
 #add_subdirectory(stream)
 add_subdirectory (protocol)

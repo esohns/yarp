@@ -36,7 +36,6 @@
 
 // Begin prologue.
 //
-#include "rpg_character_exports.h"
 //
 // End prologue.
 
@@ -96,7 +95,7 @@ class RPG_Character_Check_XMLTree_Type;
 
 #include "rpg_common_XML_tree.h"
 
-class RPG_Character_Export RPG_Character_Gender_XMLTree_Type: public ::xml_schema::string
+class RPG_Character_Gender_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -158,7 +157,7 @@ class RPG_Character_Export RPG_Character_Gender_XMLTree_Type: public ::xml_schem
   static const value _xsd_RPG_Character_Gender_XMLTree_Type_indexes_[4];
 };
 
-class RPG_Character_Export RPG_Character_Race_XMLTree_Type: public ::xml_schema::string
+class RPG_Character_Race_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -223,7 +222,7 @@ class RPG_Character_Export RPG_Character_Race_XMLTree_Type: public ::xml_schema:
   static const value _xsd_RPG_Character_Race_XMLTree_Type_indexes_[7];
 };
 
-class RPG_Character_Export RPG_Character_MetaClass_XMLTree_Type: public ::xml_schema::string
+class RPG_Character_MetaClass_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -286,7 +285,7 @@ class RPG_Character_Export RPG_Character_MetaClass_XMLTree_Type: public ::xml_sc
   static const value _xsd_RPG_Character_MetaClass_XMLTree_Type_indexes_[5];
 };
 
-class RPG_Character_Export RPG_Character_ClassXML_XMLTree_Type: public ::xml_schema::type
+class RPG_Character_ClassXML_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // metaClass
@@ -362,16 +361,14 @@ class RPG_Character_Export RPG_Character_ClassXML_XMLTree_Type: public ::xml_sch
   subClass_sequence subClass_;
 };
 
-RPG_Character_Export
 bool
 operator== (const RPG_Character_ClassXML_XMLTree_Type&, const RPG_Character_ClassXML_XMLTree_Type&);
 
-RPG_Character_Export
 bool
 operator!= (const RPG_Character_ClassXML_XMLTree_Type&, const RPG_Character_ClassXML_XMLTree_Type&);
 
 
-class RPG_Character_Export RPG_Character_Attributes_XMLTree_Type: public ::xml_schema::type
+class RPG_Character_Attributes_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // strength
@@ -506,16 +503,14 @@ class RPG_Character_Export RPG_Character_Attributes_XMLTree_Type: public ::xml_s
   ::xsd::cxx::tree::one< charisma_type > charisma_;
 };
 
-RPG_Character_Export
 bool
 operator== (const RPG_Character_Attributes_XMLTree_Type&, const RPG_Character_Attributes_XMLTree_Type&);
 
-RPG_Character_Export
 bool
 operator!= (const RPG_Character_Attributes_XMLTree_Type&, const RPG_Character_Attributes_XMLTree_Type&);
 
 
-class RPG_Character_Export RPG_Character_SkillValue_XMLTree_Type: public ::xml_schema::type
+class RPG_Character_SkillValue_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // skill
@@ -589,16 +584,14 @@ class RPG_Character_Export RPG_Character_SkillValue_XMLTree_Type: public ::xml_s
   ::xsd::cxx::tree::one< rank_type > rank_;
 };
 
-RPG_Character_Export
 bool
 operator== (const RPG_Character_SkillValue_XMLTree_Type&, const RPG_Character_SkillValue_XMLTree_Type&);
 
-RPG_Character_Export
 bool
 operator!= (const RPG_Character_SkillValue_XMLTree_Type&, const RPG_Character_SkillValue_XMLTree_Type&);
 
 
-class RPG_Character_Export RPG_Character_Skills_XMLTree_Type: public ::xml_schema::type
+class RPG_Character_Skills_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // skill
@@ -656,16 +649,14 @@ class RPG_Character_Export RPG_Character_Skills_XMLTree_Type: public ::xml_schem
   skill_sequence skill_;
 };
 
-RPG_Character_Export
 bool
 operator== (const RPG_Character_Skills_XMLTree_Type&, const RPG_Character_Skills_XMLTree_Type&);
 
-RPG_Character_Export
 bool
 operator!= (const RPG_Character_Skills_XMLTree_Type&, const RPG_Character_Skills_XMLTree_Type&);
 
 
-class RPG_Character_Export RPG_Character_Ability_XMLTree_Type: public ::xml_schema::string
+class RPG_Character_Ability_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -802,7 +793,7 @@ class RPG_Character_Export RPG_Character_Ability_XMLTree_Type: public ::xml_sche
   static const value _xsd_RPG_Character_Ability_XMLTree_Type_indexes_[79];
 };
 
-class RPG_Character_Export RPG_Character_Feat_XMLTree_Type: public ::xml_schema::string
+class RPG_Character_Feat_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -982,7 +973,7 @@ class RPG_Character_Export RPG_Character_Feat_XMLTree_Type: public ::xml_schema:
   static const value _xsd_RPG_Character_Feat_XMLTree_Type_indexes_[122];
 };
 
-class RPG_Character_Export RPG_Character_Feats_XMLTree_Type: public ::xml_schema::type
+class RPG_Character_Feats_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // feat
@@ -1040,16 +1031,14 @@ class RPG_Character_Export RPG_Character_Feats_XMLTree_Type: public ::xml_schema
   feat_sequence feat_;
 };
 
-RPG_Character_Export
 bool
 operator== (const RPG_Character_Feats_XMLTree_Type&, const RPG_Character_Feats_XMLTree_Type&);
 
-RPG_Character_Export
 bool
 operator!= (const RPG_Character_Feats_XMLTree_Type&, const RPG_Character_Feats_XMLTree_Type&);
 
 
-class RPG_Character_Export RPG_Character_AlignmentCivic_XMLTree_Type: public ::xml_schema::string
+class RPG_Character_AlignmentCivic_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -1111,7 +1100,7 @@ class RPG_Character_Export RPG_Character_AlignmentCivic_XMLTree_Type: public ::x
   static const value _xsd_RPG_Character_AlignmentCivic_XMLTree_Type_indexes_[4];
 };
 
-class RPG_Character_Export RPG_Character_AlignmentEthic_XMLTree_Type: public ::xml_schema::string
+class RPG_Character_AlignmentEthic_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -1173,7 +1162,7 @@ class RPG_Character_Export RPG_Character_AlignmentEthic_XMLTree_Type: public ::x
   static const value _xsd_RPG_Character_AlignmentEthic_XMLTree_Type_indexes_[4];
 };
 
-class RPG_Character_Export RPG_Character_Alignment_XMLTree_Type: public ::xml_schema::type
+class RPG_Character_Alignment_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // civic
@@ -1250,16 +1239,14 @@ class RPG_Character_Export RPG_Character_Alignment_XMLTree_Type: public ::xml_sc
   ::xsd::cxx::tree::one< ethic_type > ethic_;
 };
 
-RPG_Character_Export
 bool
 operator== (const RPG_Character_Alignment_XMLTree_Type&, const RPG_Character_Alignment_XMLTree_Type&);
 
-RPG_Character_Export
 bool
 operator!= (const RPG_Character_Alignment_XMLTree_Type&, const RPG_Character_Alignment_XMLTree_Type&);
 
 
-class RPG_Character_Export RPG_Character_EquipmentSlot_XMLTree_Type: public ::xml_schema::string
+class RPG_Character_EquipmentSlot_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -1333,7 +1320,7 @@ class RPG_Character_Export RPG_Character_EquipmentSlot_XMLTree_Type: public ::xm
   static const value _xsd_RPG_Character_EquipmentSlot_XMLTree_Type_indexes_[16];
 };
 
-class RPG_Character_Export RPG_Character_OffHand_XMLTree_Type: public ::xml_schema::string
+class RPG_Character_OffHand_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -1394,7 +1381,7 @@ class RPG_Character_Export RPG_Character_OffHand_XMLTree_Type: public ::xml_sche
   static const value _xsd_RPG_Character_OffHand_XMLTree_Type_indexes_[3];
 };
 
-class RPG_Character_Export RPG_Character_Encumbrance_XMLTree_Type: public ::xml_schema::string
+class RPG_Character_Encumbrance_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -1455,7 +1442,7 @@ class RPG_Character_Export RPG_Character_Encumbrance_XMLTree_Type: public ::xml_
   static const value _xsd_RPG_Character_Encumbrance_XMLTree_Type_indexes_[3];
 };
 
-class RPG_Character_Export RPG_Character_CheckTypeUnion_XMLTree_Type: public ::xml_schema::string
+class RPG_Character_CheckTypeUnion_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -1576,7 +1563,7 @@ class RPG_Character_Export RPG_Character_CheckTypeUnion_XMLTree_Type: public ::x
   static const value _xsd_RPG_Character_CheckTypeUnion_XMLTree_Type_indexes_[63];
 };
 
-class RPG_Character_Export RPG_Character_Check_XMLTree_Type: public ::xml_schema::type
+class RPG_Character_Check_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // type
@@ -1650,130 +1637,99 @@ class RPG_Character_Export RPG_Character_Check_XMLTree_Type: public ::xml_schema
   ::xsd::cxx::tree::one< difficultyClass_type > difficultyClass_;
 };
 
-RPG_Character_Export
 bool
 operator== (const RPG_Character_Check_XMLTree_Type&, const RPG_Character_Check_XMLTree_Type&);
 
-RPG_Character_Export
 bool
 operator!= (const RPG_Character_Check_XMLTree_Type&, const RPG_Character_Check_XMLTree_Type&);
 
 
 #include <iosfwd>
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Character_Gender_XMLTree_Type::value);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Character_Gender_XMLTree_Type&);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Character_Race_XMLTree_Type::value);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Character_Race_XMLTree_Type&);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Character_MetaClass_XMLTree_Type::value);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Character_MetaClass_XMLTree_Type&);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Character_ClassXML_XMLTree_Type&);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Character_Attributes_XMLTree_Type&);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Character_SkillValue_XMLTree_Type&);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Character_Skills_XMLTree_Type&);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Character_Ability_XMLTree_Type::value);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Character_Ability_XMLTree_Type&);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Character_Feat_XMLTree_Type::value);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Character_Feat_XMLTree_Type&);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Character_Feats_XMLTree_Type&);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Character_AlignmentCivic_XMLTree_Type::value);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Character_AlignmentCivic_XMLTree_Type&);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Character_AlignmentEthic_XMLTree_Type::value);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Character_AlignmentEthic_XMLTree_Type&);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Character_Alignment_XMLTree_Type&);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Character_EquipmentSlot_XMLTree_Type::value);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Character_EquipmentSlot_XMLTree_Type&);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Character_OffHand_XMLTree_Type::value);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Character_OffHand_XMLTree_Type&);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Character_Encumbrance_XMLTree_Type::value);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Character_Encumbrance_XMLTree_Type&);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Character_CheckTypeUnion_XMLTree_Type::value);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Character_CheckTypeUnion_XMLTree_Type&);
 
-RPG_Character_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Character_Check_XMLTree_Type&);
 
@@ -1791,263 +1747,205 @@ operator<< (::std::ostream&, const RPG_Character_Check_XMLTree_Type&);
 
 #include <xsd/cxx/xml/dom/auto-ptr.hxx>
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Character_Gender_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Character_Gender_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Character_Gender_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Character_Race_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Character_Race_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Character_Race_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Character_MetaClass_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Character_MetaClass_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Character_MetaClass_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Character_ClassXML_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Character_Attributes_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Character_SkillValue_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Character_Skills_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Character_Ability_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Character_Ability_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Character_Ability_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Character_Feat_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Character_Feat_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Character_Feat_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Character_Feats_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Character_AlignmentCivic_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Character_AlignmentCivic_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Character_AlignmentCivic_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Character_AlignmentEthic_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Character_AlignmentEthic_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Character_AlignmentEthic_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Character_Alignment_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Character_EquipmentSlot_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Character_EquipmentSlot_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Character_EquipmentSlot_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Character_OffHand_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Character_OffHand_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Character_OffHand_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Character_Encumbrance_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Character_Encumbrance_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Character_Encumbrance_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Character_CheckTypeUnion_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Character_CheckTypeUnion_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Character_CheckTypeUnion_XMLTree_Type&);
 
-RPG_Character_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Character_Check_XMLTree_Type&);
 
-RPG_Character_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_Gender_XMLTree_Type&);
 
-RPG_Character_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_Race_XMLTree_Type&);
 
-RPG_Character_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_MetaClass_XMLTree_Type&);
 
-RPG_Character_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_ClassXML_XMLTree_Type&);
 
-RPG_Character_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_Attributes_XMLTree_Type&);
 
-RPG_Character_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_SkillValue_XMLTree_Type&);
 
-RPG_Character_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_Skills_XMLTree_Type&);
 
-RPG_Character_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_Ability_XMLTree_Type&);
 
-RPG_Character_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_Feat_XMLTree_Type&);
 
-RPG_Character_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_Feats_XMLTree_Type&);
 
-RPG_Character_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_AlignmentCivic_XMLTree_Type&);
 
-RPG_Character_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_AlignmentEthic_XMLTree_Type&);
 
-RPG_Character_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_Alignment_XMLTree_Type&);
 
-RPG_Character_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_EquipmentSlot_XMLTree_Type&);
 
-RPG_Character_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_OffHand_XMLTree_Type&);
 
-RPG_Character_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_Encumbrance_XMLTree_Type&);
 
-RPG_Character_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_CheckTypeUnion_XMLTree_Type&);
 
-RPG_Character_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Character_Check_XMLTree_Type&);

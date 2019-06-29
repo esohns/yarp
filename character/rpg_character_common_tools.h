@@ -21,34 +21,35 @@
 #ifndef RPG_CHARACTER_COMMON_TOOLS_H
 #define RPG_CHARACTER_COMMON_TOOLS_H
 
-#include <rpg_dice_incl.h>
-#include <rpg_common_incl.h>
-#include "rpg_character_incl.h"
+#include <string>
 
-#include "rpg_character_exports.h"
+#include "ace/Global_Macros.h"
+
+#include "rpg_dice_incl.h"
+
+#include "rpg_common_incl.h"
+
 #include "rpg_character_common.h"
 #include "rpg_character_encumbrance.h"
-#include "rpg_character_race_common.h"
+//#include "rpg_character_exports.h"
+#include "rpg_character_incl.h"
 #include "rpg_character_class_common.h"
-
-#include <ace/Global_Macros.h>
-
-#include <string>
+#include "rpg_character_race_common.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Character_Export RPG_Character_Common_Tools
+class RPG_Character_Common_Tools
 {
  public:
   // init string conversion (and other) tables
-  static void init();
+  static void initialize();
 
-  static std::string raceToString(const RPG_Character_Race_t&); // race(es)
-  static std::string classToString(const RPG_Character_Class&); // class(es)
-  static std::string alignmentToString(const RPG_Character_Alignment&); // alignment
-  static std::string attributesToString(const RPG_Character_Attributes&); // attributes
-  static std::string conditionToString(const RPG_Character_Conditions_t&); // condition
+  static std::string toString(const RPG_Character_Race_t&); // race(es)
+  static std::string toString(const RPG_Character_Class&); // class(es)
+  static std::string toString(const RPG_Character_Alignment&); // alignment
+  static std::string toString(const RPG_Character_Attributes&); // attributes
+  static std::string toString(const RPG_Character_Conditions_t&); // condition
 
   static bool match(const RPG_Character_Alignment&,  // a
                     const RPG_Character_Alignment&); // b
@@ -71,14 +72,13 @@ class RPG_Character_Export RPG_Character_Common_Tools
   static unsigned char getReducedSpeed(const unsigned char&); // (base) speed
 
  private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Character_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools(const RPG_Character_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools& operator=(const RPG_Character_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools())
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Character_Common_Tools())
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools(const RPG_Character_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools& operator=(const RPG_Character_Common_Tools&))
 
-  static void initStringConversionTables();
-  static void initEncumbranceTable();
+  static void initializeStringConversionTables();
+  static void initializeEncumbranceTable();
 
   struct RPG_Character_EncumbranceEntry_t
   {

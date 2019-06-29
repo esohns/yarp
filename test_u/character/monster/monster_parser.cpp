@@ -209,19 +209,19 @@ do_work (const std::string& schemaRepository_in,
 
   // step1: initialize: random seed, string conversion facilities, ...
   RPG_Dice::initialize ();
-  RPG_Dice_Common_Tools::initStringConversionTables ();
-  RPG_Common_Tools::initStringConversionTables ();
+  RPG_Dice_Common_Tools::initializeStringConversionTables ();
+  RPG_Common_Tools::initializeStringConversionTables ();
   if (!RPG_Common_XML_Tools::initialize (schemaRepository_in))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Common_XML_Tools::initialize(), returning\n")));
     return;
   } // end IF
-  RPG_Item_Common_Tools::initStringConversionTables ();
-  RPG_Character_Common_Tools::init ();
-  RPG_Magic_Common_Tools::init ();
-  RPG_Combat_Common_Tools::initStringConversionTables ();
-  RPG_Monster_Common_Tools::initStringConversionTables ();
+  RPG_Item_Common_Tools::initializeStringConversionTables ();
+  RPG_Character_Common_Tools::initialize ();
+  RPG_Magic_Common_Tools::initialize ();
+  RPG_Combat_Common_Tools::initializeStringConversionTables ();
+  RPG_Monster_Common_Tools::initializeStringConversionTables ();
 
   // step2: init monster dictionary
   try

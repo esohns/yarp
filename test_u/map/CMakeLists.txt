@@ -6,23 +6,13 @@ if (UNIX)
 elseif (WIN32)
 endif ()
 
-if (UNIX)
- include_directories (${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
-                      ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}
-                      ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
-elseif (WIN32)
- include_directories ($ENV{LIB_ROOT}/SDL/include
-                      $ENV{LIB_ROOT}/SDL_ttf/include
-                      $ENV{LIB_ROOT}/libpng)
-endif ()
-
-include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src>)
-include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log>)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log)
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../common)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../map)
-#include_directories ("${CMAKE_CURRENT_SOURCE_DIR}/../../engine")
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../engine)
 
 ############## next target ###############
 set (EXECUTABLE map_parser)
@@ -47,6 +37,16 @@ install (TARGETS ${EXECUTABLE}
 set (EXECUTABLE map_generator)
 set (${EXECUTABLE}_SRCS
      map_generator.cpp)
+
+if (UNIX)
+ include_directories (${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
+                      ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}
+                      ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
+elseif (WIN32)
+ include_directories ($ENV{LIB_ROOT}/SDL/include
+                      $ENV{LIB_ROOT}/SDL_ttf/include
+                      $ENV{LIB_ROOT}/libpng)
+endif ()
 
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})

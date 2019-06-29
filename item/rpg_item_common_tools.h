@@ -21,31 +21,33 @@
 #ifndef RPG_ITEM_COMMON_TOOLS_H
 #define RPG_ITEM_COMMON_TOOLS_H
 
-#include "rpg_item_exports.h"
+#include <string>
+
+#include "ace/Global_Macros.h"
+
+#include "rpg_common.h"
+
+#include "rpg_character_common.h"
+#include "rpg_character_offhand.h"
+
+//#include "rpg_item_exports.h"
 #include "rpg_item_common.h"
 #include "rpg_item_commoditybeverage.h"
 #include "rpg_item_commoditylight.h"
 #include "rpg_item_commodityunion.h"
 #include "rpg_item_instance_common.h"
 
-#include "rpg_character_common.h"
-#include "rpg_character_offhand.h"
-
-#include "rpg_common.h"
-
-#include <ace/Global_Macros.h>
-
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Item_Export RPG_Item_Common_Tools
+class RPG_Item_Common_Tools
 {
  public:
-  static void initStringConversionTables();
+  static void initializeStringConversionTables();
 
-  static std::string weaponDamageTypeToString(const RPG_Item_WeaponDamageType&); // weapon damage
+  static std::string toString(const RPG_Item_WeaponDamageType&); // weapon damage
   static RPG_Common_PhysicalDamageList_t weaponDamageTypeToPhysicalDamageType(const RPG_Item_WeaponDamageType&); // weapon damage
-  static std::string damageToString(const RPG_Item_Damage&); // damage
+  static std::string toString(const RPG_Item_Damage&); // damage
 
   // XML-specifics
   static std::string commoditySubTypeToXMLString(const RPG_Item_CommodityUnion&); // subtype
@@ -70,11 +72,10 @@ class RPG_Item_Export RPG_Item_Common_Tools
                         RPG_Character_EquipmentSlots&); // return value: possible slot(s)
 
  private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Item_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Common_Tools(const RPG_Item_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Common_Tools& operator=(const RPG_Item_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Common_Tools())
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Item_Common_Tools())
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Common_Tools(const RPG_Item_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Common_Tools& operator=(const RPG_Item_Common_Tools&))
 };
 
 #endif

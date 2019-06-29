@@ -61,6 +61,7 @@ if(NOT DOC_TARGET)
 endif()
 add_dependencies(doc doxygen)
 
+#add_subdirectory(../tools tools)
 add_subdirectory(../chance chance)
 add_subdirectory(../common common)
 add_subdirectory(../magic magic)

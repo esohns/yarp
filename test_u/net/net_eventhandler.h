@@ -21,29 +21,42 @@
 #ifndef NET_EVENTHANDLER_H
 #define NET_EVENTHANDLER_H
 
-#include "common_inotify.h"
+#include "stream_isessionnotify.h"
+
+#include "rpg_net_protocol_common.h"
+#include "rpg_net_protocol_message.h"
+#include "rpg_net_protocol_session_message.h"
 
 // forward declaration(s)
-struct Stream_ModuleConfiguration_t;
 struct Net_GTK_CBData_t;
-class Net_Message;
+typedef Stream_ISessionDataNotify_T<Stream_SessionId_t,
+                                    struct RPG_Net_Protocol_SessionData,
+                                    enum Stream_SessionMessageType,
+                                    RPG_Net_Protocol_Message,
+                                    RPG_Net_Protocol_SessionMessage> RPG_Net_Protocol_ISessionNotify_t;
 
 class Net_EventHandler
- : public Common_INotify_T<Stream_ModuleConfiguration_t, Net_Message>
+ : public RPG_Net_Protocol_ISessionNotify_t
 {
  public:
   Net_EventHandler (Net_GTK_CBData_t*); // GTK state
-  virtual ~Net_EventHandler ();
+  inline virtual ~Net_EventHandler () {}
 
-  // implement Common_INotify_T
-  virtual void start (const Stream_ModuleConfiguration_t&);
-  virtual void notify (const Net_Message&);
-  virtual void end ();
+  // implement Stream_ISessionDataNotify_T
+  virtual void start (Stream_SessionId_t,                          // session id
+                      const struct RPG_Net_Protocol_SessionData&); // session data
+  virtual void notify (Stream_SessionId_t,                     // session id
+                       const enum Stream_SessionMessageType&); // event (state/status change, ...)
+  virtual void end (Stream_SessionId_t); // session id
+  virtual void notify (Stream_SessionId_t,               // session id
+                       const RPG_Net_Protocol_Message&); // (protocol) data
+  virtual void notify (Stream_SessionId_t,                      // session id
+                       const RPG_Net_Protocol_SessionMessage&); // session message
 
  private:
-  ACE_UNIMPLEMENTED_FUNC (Net_EventHandler ());
-  ACE_UNIMPLEMENTED_FUNC (Net_EventHandler (const Net_EventHandler&));
-  ACE_UNIMPLEMENTED_FUNC (Net_EventHandler& operator=(const Net_EventHandler&));
+  ACE_UNIMPLEMENTED_FUNC (Net_EventHandler ())
+  ACE_UNIMPLEMENTED_FUNC (Net_EventHandler (const Net_EventHandler&))
+  ACE_UNIMPLEMENTED_FUNC (Net_EventHandler& operator=(const Net_EventHandler&))
 
   Net_GTK_CBData_t* CBData_;
 };

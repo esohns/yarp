@@ -40,7 +40,7 @@ RPG_Combat_OtherDamageTypeToStringTable_t RPG_Combat_OtherDamageTypeHelper::myRP
 RPG_Combat_DamageReductionTypeToStringTable_t RPG_Combat_DamageReductionTypeHelper::myRPG_Combat_DamageReductionTypeToStringTable;
 
 void
-RPG_Combat_Common_Tools::initStringConversionTables()
+RPG_Combat_Common_Tools::initializeStringConversionTables()
 {
   RPG_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::initStringConversionTables"));
 
@@ -58,7 +58,7 @@ RPG_Combat_Common_Tools::initStringConversionTables()
 }
 
 const std::string
-RPG_Combat_Common_Tools::attackFormsToString(const RPG_Combat_AttackForms_t& attackForms_in)
+RPG_Combat_Common_Tools::toString(const RPG_Combat_AttackForms_t& attackForms_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::attackFormsToString"));
 
@@ -81,7 +81,7 @@ RPG_Combat_Common_Tools::attackFormsToString(const RPG_Combat_AttackForms_t& att
 }
 
 const std::string
-RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damage& damage_in)
+RPG_Combat_Common_Tools::toString(const RPG_Combat_Damage& damage_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::damageToString"));
 
@@ -97,18 +97,18 @@ RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damage& damage_in)
          iterator2 != (*iterator).types.end();
          iterator2++)
     {
-      result += damageTypeToString(*iterator2);
+      result += RPG_Combat_Common_Tools::toString(*iterator2);
       result += ACE_TEXT_ALWAYS_CHAR("|");
     } // end FOR
     if (!(*iterator).types.empty())
       result.erase(--result.end());
     result += ACE_TEXT_ALWAYS_CHAR("\namount: ");
-    result += RPG_Dice_Common_Tools::rollToString((*iterator).amount);
+    result += RPG_Dice_Common_Tools::toString((*iterator).amount);
     if ((*iterator).duration.interval ||
         (*iterator).duration.totalDuration)
     {
       result += ACE_TEXT_ALWAYS_CHAR("\nduration (incubation / interval / total): ");
-      result += RPG_Dice_Common_Tools::rollToString((*iterator).duration.incubationPeriod);
+      result += RPG_Dice_Common_Tools::toString((*iterator).duration.incubationPeriod);
       result += ACE_TEXT_ALWAYS_CHAR(" / ");
       converter.clear();
       converter.str(ACE_TEXT_ALWAYS_CHAR(""));
@@ -265,7 +265,7 @@ RPG_Combat_Common_Tools::damageToString(const RPG_Combat_Damage& damage_in)
 }
 
 const std::string
-RPG_Combat_Common_Tools::damageTypeToString(const RPG_Combat_DamageTypeUnion& type_in)
+RPG_Combat_Common_Tools::toString(const RPG_Combat_DamageTypeUnion& type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Combat_Common_Tools::damageTypeToString"));
 

@@ -21,41 +21,44 @@
 #ifndef RPG_COMBAT_COMMON_TOOLS_H
 #define RPG_COMBAT_COMMON_TOOLS_H
 
+#include <string>
+
+#include "ace/Global_Macros.h"
+
 #include "rpg_dice_incl.h"
+
 #include "rpg_common_incl.h"
 #include "rpg_common_environment_incl.h"
-#include "rpg_character_incl.h"
-#include "rpg_magic_incl.h"
-#include "rpg_item_incl.h"
-#include "rpg_combat_incl.h"
 
-#include "rpg_combat_exports.h"
+#include "rpg_character_incl.h"
+
+#include "rpg_magic_incl.h"
+
+#include "rpg_item_incl.h"
+
 #include "rpg_combat_common.h"
 #include "rpg_combat_damage.h"
-
-#include <ace/Global_Macros.h>
-
-#include <string>
+//#include "rpg_combat_exports.h"
+#include "rpg_combat_incl.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Combat_Export RPG_Combat_Common_Tools
+class RPG_Combat_Common_Tools
 {
  public:
-  static void initStringConversionTables();
+  static void initializeStringConversionTables();
 
-  static const std::string attackFormsToString(const RPG_Combat_AttackForms_t&); // attack forms
-  static const std::string damageToString(const RPG_Combat_Damage&); // damage
+  static const std::string toString(const RPG_Combat_AttackForms_t&); // attack forms
+  static const std::string toString(const RPG_Combat_Damage&); // damage
 
  private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Combat_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Combat_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Combat_Common_Tools(const RPG_Combat_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Combat_Common_Tools& operator=(const RPG_Combat_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Combat_Common_Tools())
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Combat_Common_Tools())
+  ACE_UNIMPLEMENTED_FUNC(RPG_Combat_Common_Tools(const RPG_Combat_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Combat_Common_Tools& operator=(const RPG_Combat_Common_Tools&))
 
-  static const std::string damageTypeToString(const RPG_Combat_DamageTypeUnion&); // damage type
+  static const std::string toString(const RPG_Combat_DamageTypeUnion&); // damage type
 };
 
 #endif

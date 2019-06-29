@@ -25,28 +25,26 @@
 
 #include "ace/Global_Macros.h"
 
-#include "rpg_dice_dietype.h"
-#include "rpg_dice_exports.h"
 #include "rpg_dice_roll.h"
 #include "rpg_dice_valuerange.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Dice_Export RPG_Dice_Common_Tools
+class RPG_Dice_Common_Tools
 {
  public:
   // initialize string tables
-  static void initStringConversionTables ();
+  static void initializeStringConversionTables ();
 
-  static const std::string rollToString (const RPG_Dice_Roll&); // roll
-  static const std::string rangeToString (const RPG_Dice_ValueRange&); // range
+  static std::string toString (const RPG_Dice_Roll&); // roll
+  static std::string toString (const RPG_Dice_ValueRange&); // range
 
  private:
-  ACE_UNIMPLEMENTED_FUNC (RPG_Dice_Common_Tools ());
-  ACE_UNIMPLEMENTED_FUNC (~RPG_Dice_Common_Tools ());
-  ACE_UNIMPLEMENTED_FUNC (RPG_Dice_Common_Tools (const RPG_Dice_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC (RPG_Dice_Common_Tools& operator= (const RPG_Dice_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Dice_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (~RPG_Dice_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Dice_Common_Tools (const RPG_Dice_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Dice_Common_Tools& operator= (const RPG_Dice_Common_Tools&))
 };
 
 #endif

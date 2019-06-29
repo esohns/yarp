@@ -23,6 +23,10 @@ elseif (WIN32)
                      $ENV{LIB_ROOT}/gtk2/include)
 endif ()
 
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/timer)
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../common
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../item
@@ -41,9 +45,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
 ########### next target ###############
 set(graphics_parser_SRCS graphics_parser.cpp)
 
-if (CMAKE_COMPILER_IS_GNUCC)
-    set_source_files_properties(${graphics_parser_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
-endif()
 set_source_files_properties(${graphics_parser_SRCS} PROPERTIES COMPILE_DEFINITIONS DATADIR="/usr/local/share/RPG/config")
 
 add_executable(graphics_parser ${graphics_parser_SRCS})
@@ -78,20 +79,9 @@ set_source_files_properties(${SDL_gui_SRCS} PROPERTIES COMPILE_DEFINITIONS DATAD
 add_executable(SDL_gui ${SDL_gui_SRCS})
 
 add_dependencies(SDL_gui
-                 RPG_Dice
-                 RPG_Chance
-                 RPG_Common
-                 RPG_Magic
-                 RPG_Item
-                 RPG_Character
-                 RPG_Monster
-                 RPG_Player
-                 RPG_Combat
-                 RPG_Map
-                 RPG_Engine
-                 RPG_Sound
-                 RPG_Graphics
-                 RPG_Client)
+                 RPG_Dice RPG_Chance RPG_Common
+                 RPG_Magic RPG_Item RPG_Character RPG_Monster RPG_Player RPG_Combat
+                 RPG_Map RPG_Engine RPG_Sound RPG_Graphics RPG_Client)
 
 target_link_libraries(SDL_gui
                       ${PKG_CONFIG_MODULE_SDL_LIBRARIES}

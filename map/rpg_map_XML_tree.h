@@ -36,7 +36,6 @@
 
 // Begin prologue.
 //
-#include "rpg_map_exports.h"
 //
 // End prologue.
 
@@ -83,9 +82,9 @@ class RPG_Map_State_XMLTree_Type;
 
 #include <xsd/cxx/tree/istream-fwd.hxx>
 
-#include "rpg_common_environment_XML_tree.h"
+#include "../common/rpg_common_environment_XML_tree.h"
 
-class RPG_Map_Export RPG_Map_DoorState_XMLTree_Type: public ::xml_schema::string
+class RPG_Map_DoorState_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -147,7 +146,7 @@ class RPG_Map_Export RPG_Map_DoorState_XMLTree_Type: public ::xml_schema::string
   static const value _xsd_RPG_Map_DoorState_XMLTree_Type_indexes_[4];
 };
 
-class RPG_Map_Export RPG_Map_Position_XMLTree_Type: public ::xml_schema::type
+class RPG_Map_Position_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // x
@@ -218,16 +217,14 @@ class RPG_Map_Export RPG_Map_Position_XMLTree_Type: public ::xml_schema::type
   ::xsd::cxx::tree::one< y_type > y_;
 };
 
-RPG_Map_Export
 bool
 operator== (const RPG_Map_Position_XMLTree_Type&, const RPG_Map_Position_XMLTree_Type&);
 
-RPG_Map_Export
 bool
 operator!= (const RPG_Map_Position_XMLTree_Type&, const RPG_Map_Position_XMLTree_Type&);
 
 
-class RPG_Map_Export RPG_Map_Direction_XMLTree_Type: public ::xml_schema::string
+class RPG_Map_Direction_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -289,7 +286,7 @@ class RPG_Map_Export RPG_Map_Direction_XMLTree_Type: public ::xml_schema::string
   static const value _xsd_RPG_Map_Direction_XMLTree_Type_indexes_[4];
 };
 
-class RPG_Map_Export RPG_Map_Door_XMLTree_Type: public ::xml_schema::type
+class RPG_Map_Door_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // position
@@ -369,16 +366,14 @@ class RPG_Map_Export RPG_Map_Door_XMLTree_Type: public ::xml_schema::type
   ::xsd::cxx::tree::one< outside_type > outside_;
 };
 
-RPG_Map_Export
 bool
 operator== (const RPG_Map_Door_XMLTree_Type&, const RPG_Map_Door_XMLTree_Type&);
 
-RPG_Map_Export
 bool
 operator!= (const RPG_Map_Door_XMLTree_Type&, const RPG_Map_Door_XMLTree_Type&);
 
 
-class RPG_Map_Export RPG_Map_Level_XMLTree_Type: public ::xml_schema::type
+class RPG_Map_Level_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // name
@@ -496,16 +491,14 @@ class RPG_Map_Export RPG_Map_Level_XMLTree_Type: public ::xml_schema::type
   door_sequence door_;
 };
 
-RPG_Map_Export
 bool
 operator== (const RPG_Map_Level_XMLTree_Type&, const RPG_Map_Level_XMLTree_Type&);
 
-RPG_Map_Export
 bool
 operator!= (const RPG_Map_Level_XMLTree_Type&, const RPG_Map_Level_XMLTree_Type&);
 
 
-class RPG_Map_Export RPG_Map_Door_State_XMLTree_Type: public ::xml_schema::type
+class RPG_Map_Door_State_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // position
@@ -585,16 +578,14 @@ class RPG_Map_Export RPG_Map_Door_State_XMLTree_Type: public ::xml_schema::type
   ::xsd::cxx::tree::one< state_type > state_;
 };
 
-RPG_Map_Export
 bool
 operator== (const RPG_Map_Door_State_XMLTree_Type&, const RPG_Map_Door_State_XMLTree_Type&);
 
-RPG_Map_Export
 bool
 operator!= (const RPG_Map_Door_State_XMLTree_Type&, const RPG_Map_Door_State_XMLTree_Type&);
 
 
-class RPG_Map_Export RPG_Map_State_XMLTree_Type: public ::xml_schema::type
+class RPG_Map_State_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // file
@@ -670,50 +661,39 @@ class RPG_Map_Export RPG_Map_State_XMLTree_Type: public ::xml_schema::type
   door_sequence door_;
 };
 
-RPG_Map_Export
 bool
 operator== (const RPG_Map_State_XMLTree_Type&, const RPG_Map_State_XMLTree_Type&);
 
-RPG_Map_Export
 bool
 operator!= (const RPG_Map_State_XMLTree_Type&, const RPG_Map_State_XMLTree_Type&);
 
 
 #include <iosfwd>
 
-RPG_Map_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Map_DoorState_XMLTree_Type::value);
 
-RPG_Map_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Map_DoorState_XMLTree_Type&);
 
-RPG_Map_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Map_Position_XMLTree_Type&);
 
-RPG_Map_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Map_Direction_XMLTree_Type::value);
 
-RPG_Map_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Map_Direction_XMLTree_Type&);
 
-RPG_Map_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Map_Door_XMLTree_Type&);
 
-RPG_Map_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Map_Level_XMLTree_Type&);
 
-RPG_Map_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Map_Door_State_XMLTree_Type&);
 
-RPG_Map_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Map_State_XMLTree_Type&);
 
@@ -726,20 +706,17 @@ operator<< (::std::ostream&, const RPG_Map_State_XMLTree_Type&);
 // Parse a URI or a local file.
 //
 
-RPG_Map_Export
 ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
 map_t (const ::std::string& uri,
        ::xml_schema::flags f = 0,
        const ::xml_schema::properties& p = ::xml_schema::properties ());
 
-RPG_Map_Export
 ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
 map_t (const ::std::string& uri,
        ::xml_schema::error_handler& eh,
        ::xml_schema::flags f = 0,
        const ::xml_schema::properties& p = ::xml_schema::properties ());
 
-RPG_Map_Export
 ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
 map_t (const ::std::string& uri,
        ::xercesc::DOMErrorHandler& eh,
@@ -749,34 +726,29 @@ map_t (const ::std::string& uri,
 // Parse std::istream.
 //
 
-RPG_Map_Export
 ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
 map_t (::std::istream& is,
        ::xml_schema::flags f = 0,
        const ::xml_schema::properties& p = ::xml_schema::properties ());
 
-RPG_Map_Export
 ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
 map_t (::std::istream& is,
        ::xml_schema::error_handler& eh,
        ::xml_schema::flags f = 0,
        const ::xml_schema::properties& p = ::xml_schema::properties ());
 
-RPG_Map_Export
 ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
 map_t (::std::istream& is,
        ::xercesc::DOMErrorHandler& eh,
        ::xml_schema::flags f = 0,
        const ::xml_schema::properties& p = ::xml_schema::properties ());
 
-RPG_Map_Export
 ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
 map_t (::std::istream& is,
        const ::std::string& id,
        ::xml_schema::flags f = 0,
        const ::xml_schema::properties& p = ::xml_schema::properties ());
 
-RPG_Map_Export
 ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
 map_t (::std::istream& is,
        const ::std::string& id,
@@ -784,7 +756,6 @@ map_t (::std::istream& is,
        ::xml_schema::flags f = 0,
        const ::xml_schema::properties& p = ::xml_schema::properties ());
 
-RPG_Map_Export
 ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
 map_t (::std::istream& is,
        const ::std::string& id,
@@ -795,20 +766,17 @@ map_t (::std::istream& is,
 // Parse xercesc::InputSource.
 //
 
-RPG_Map_Export
 ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
 map_t (::xercesc::InputSource& is,
        ::xml_schema::flags f = 0,
        const ::xml_schema::properties& p = ::xml_schema::properties ());
 
-RPG_Map_Export
 ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
 map_t (::xercesc::InputSource& is,
        ::xml_schema::error_handler& eh,
        ::xml_schema::flags f = 0,
        const ::xml_schema::properties& p = ::xml_schema::properties ());
 
-RPG_Map_Export
 ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
 map_t (::xercesc::InputSource& is,
        ::xercesc::DOMErrorHandler& eh,
@@ -818,13 +786,11 @@ map_t (::xercesc::InputSource& is,
 // Parse xercesc::DOMDocument.
 //
 
-RPG_Map_Export
 ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
 map_t (const ::xercesc::DOMDocument& d,
        ::xml_schema::flags f = 0,
        const ::xml_schema::properties& p = ::xml_schema::properties ());
 
-RPG_Map_Export
 ::std::auto_ptr< ::RPG_Map_Level_XMLTree_Type >
 map_t (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
        ::xml_schema::flags f = 0,
@@ -838,56 +804,44 @@ map_t (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
 
 #include <xsd/cxx/xml/dom/auto-ptr.hxx>
 
-RPG_Map_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Map_DoorState_XMLTree_Type&);
 
-RPG_Map_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Map_DoorState_XMLTree_Type&);
 
-RPG_Map_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Map_DoorState_XMLTree_Type&);
 
-RPG_Map_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Map_Position_XMLTree_Type&);
 
-RPG_Map_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Map_Direction_XMLTree_Type&);
 
-RPG_Map_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Map_Direction_XMLTree_Type&);
 
-RPG_Map_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Map_Direction_XMLTree_Type&);
 
-RPG_Map_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Map_Door_XMLTree_Type&);
 
-RPG_Map_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Map_Level_XMLTree_Type&);
 
-RPG_Map_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Map_Door_State_XMLTree_Type&);
 
-RPG_Map_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Map_State_XMLTree_Type&);
 
 // Serialize to std::ostream.
 //
 
-RPG_Map_Export
 void
 map_t (::std::ostream& os,
        const ::RPG_Map_Level_XMLTree_Type& x, 
@@ -895,7 +849,6 @@ map_t (::std::ostream& os,
        const ::std::string& e = "UTF-8",
        ::xml_schema::flags f = 0);
 
-RPG_Map_Export
 void
 map_t (::std::ostream& os,
        const ::RPG_Map_Level_XMLTree_Type& x, 
@@ -904,7 +857,6 @@ map_t (::std::ostream& os,
        const ::std::string& e = "UTF-8",
        ::xml_schema::flags f = 0);
 
-RPG_Map_Export
 void
 map_t (::std::ostream& os,
        const ::RPG_Map_Level_XMLTree_Type& x, 
@@ -916,7 +868,6 @@ map_t (::std::ostream& os,
 // Serialize to xercesc::XMLFormatTarget.
 //
 
-RPG_Map_Export
 void
 map_t (::xercesc::XMLFormatTarget& ft,
        const ::RPG_Map_Level_XMLTree_Type& x, 
@@ -924,7 +875,6 @@ map_t (::xercesc::XMLFormatTarget& ft,
        const ::std::string& e = "UTF-8",
        ::xml_schema::flags f = 0);
 
-RPG_Map_Export
 void
 map_t (::xercesc::XMLFormatTarget& ft,
        const ::RPG_Map_Level_XMLTree_Type& x, 
@@ -933,7 +883,6 @@ map_t (::xercesc::XMLFormatTarget& ft,
        const ::std::string& e = "UTF-8",
        ::xml_schema::flags f = 0);
 
-RPG_Map_Export
 void
 map_t (::xercesc::XMLFormatTarget& ft,
        const ::RPG_Map_Level_XMLTree_Type& x, 
@@ -945,7 +894,6 @@ map_t (::xercesc::XMLFormatTarget& ft,
 // Serialize to an existing xercesc::DOMDocument.
 //
 
-RPG_Map_Export
 void
 map_t (::xercesc::DOMDocument& d,
        const ::RPG_Map_Level_XMLTree_Type& x,
@@ -954,43 +902,35 @@ map_t (::xercesc::DOMDocument& d,
 // Serialize to a new xercesc::DOMDocument.
 //
 
-RPG_Map_Export
 ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >
 map_t (const ::RPG_Map_Level_XMLTree_Type& x, 
        const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
        ::xml_schema::flags f = 0);
 
-RPG_Map_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Map_DoorState_XMLTree_Type&);
 
-RPG_Map_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Map_Position_XMLTree_Type&);
 
-RPG_Map_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Map_Direction_XMLTree_Type&);
 
-RPG_Map_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Map_Door_XMLTree_Type&);
 
-RPG_Map_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Map_Level_XMLTree_Type&);
 
-RPG_Map_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Map_Door_State_XMLTree_Type&);
 
-RPG_Map_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Map_State_XMLTree_Type&);
