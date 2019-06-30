@@ -21,15 +21,17 @@
 #ifndef RPG_ITEM_XML_PARSER_H
 #define RPG_ITEM_XML_PARSER_H
 
-#include "rpg_item_exports.h"
-#include "rpg_item_XML_types.h"
+#include "ace/Global_Macros.h"
 
-#include <ace/Global_Macros.h>
+#include "rpg_XMLSchema_XML_types.h"
+
+//#include "rpg_item_exports.h"
+#include "rpg_item_XML_types.h"
 
 /**
   @author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Item_Export RPG_Item_Type_Type
+class RPG_Item_Type_Type
  : public RPG_Item_Type_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -38,7 +40,7 @@ class RPG_Item_Export RPG_Item_Type_Type
   virtual RPG_Item_Type post_RPG_Item_Type_Type();
 };
 
-class RPG_Item_Export RPG_Item_CommodityType_Type
+class RPG_Item_CommodityType_Type
  : public RPG_Item_CommodityType_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -47,7 +49,7 @@ class RPG_Item_Export RPG_Item_CommodityType_Type
   virtual RPG_Item_CommodityType post_RPG_Item_CommodityType_Type();
 };
 
-class RPG_Item_Export RPG_Item_CommodityBeverage_Type
+class RPG_Item_CommodityBeverage_Type
  : public RPG_Item_CommodityBeverage_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -56,7 +58,7 @@ class RPG_Item_Export RPG_Item_CommodityBeverage_Type
   virtual RPG_Item_CommodityBeverage post_RPG_Item_CommodityBeverage_Type();
 };
 
-class RPG_Item_Export RPG_Item_CommodityLight_Type
+class RPG_Item_CommodityLight_Type
  : public RPG_Item_CommodityLight_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -65,7 +67,7 @@ class RPG_Item_Export RPG_Item_CommodityLight_Type
   virtual RPG_Item_CommodityLight post_RPG_Item_CommodityLight_Type();
 };
 
-class RPG_Item_Export RPG_Item_CommodityUnion_Type
+class RPG_Item_CommodityUnion_Type
   : public RPG_Item_CommodityUnion_Type_pskel
 {
   public:
@@ -79,7 +81,7 @@ class RPG_Item_Export RPG_Item_CommodityUnion_Type
     RPG_Item_CommodityUnion myCurrentCommodityUnion;
 };
 
-class RPG_Item_Export RPG_Item_WeaponCategory_Type
+class RPG_Item_WeaponCategory_Type
  : public RPG_Item_WeaponCategory_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -88,7 +90,7 @@ class RPG_Item_Export RPG_Item_WeaponCategory_Type
   virtual RPG_Item_WeaponCategory post_RPG_Item_WeaponCategory_Type();
 };
 
-class RPG_Item_Export RPG_Item_WeaponClass_Type
+class RPG_Item_WeaponClass_Type
  : public RPG_Item_WeaponClass_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -97,7 +99,7 @@ class RPG_Item_Export RPG_Item_WeaponClass_Type
   virtual RPG_Item_WeaponClass post_RPG_Item_WeaponClass_Type();
 };
 
-class RPG_Item_Export RPG_Item_WeaponType_Type
+class RPG_Item_WeaponType_Type
  : public RPG_Item_WeaponType_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -106,7 +108,7 @@ class RPG_Item_Export RPG_Item_WeaponType_Type
   virtual RPG_Item_WeaponType post_RPG_Item_WeaponType_Type();
 };
 
-class RPG_Item_Export RPG_Item_StorePrice_Type
+class RPG_Item_StorePrice_Type
  : public RPG_Item_StorePrice_Type_pskel
 {
  public:
@@ -121,7 +123,7 @@ class RPG_Item_Export RPG_Item_StorePrice_Type
   RPG_Item_StorePrice myCurrentStorePrice;
 };
 
-class RPG_Item_Export RPG_Item_CriticalHitProperties_Type
+class RPG_Item_CriticalHitProperties_Type
  : public RPG_Item_CriticalHitProperties_Type_pskel
 {
  public:
@@ -136,7 +138,7 @@ class RPG_Item_Export RPG_Item_CriticalHitProperties_Type
   RPG_Item_CriticalHitProperties myCurrentCriticalHitProperties;
 };
 
-class RPG_Item_Export RPG_Item_CreationCost_Type
+class RPG_Item_CreationCost_Type
  : public RPG_Item_CreationCost_Type_pskel
 {
  public:
@@ -151,7 +153,7 @@ class RPG_Item_Export RPG_Item_CreationCost_Type
   RPG_Item_CreationCost myCurrentCreationCost;
 };
 
-// class RPG_Item_Export RPG_Item_BaseProperties_Type
+// class RPG_Item_BaseProperties_Type
 //  : public RPG_Item_BaseProperties_Type_pskel
 // {
 //  public:
@@ -167,7 +169,7 @@ class RPG_Item_Export RPG_Item_CreationCost_Type
 //   RPG_Item_BaseProperties myBaseProperties;
 // };
 
-class RPG_Item_Export RPG_Item_MagicalPrerequisites_Type
+class RPG_Item_MagicalPrerequisites_Type
  : public RPG_Item_MagicalPrerequisites_Type_pskel
 {
  public:
@@ -196,7 +198,7 @@ class RPG_Item_Export RPG_Item_MagicalPrerequisites_Type
 //   RPG_Item_PropertiesBase myPropertiesBase;
 // };
 
- class RPG_Item_Export RPG_Item_CommodityPropertiesBase_Type
+ class RPG_Item_CommodityPropertiesBase_Type
   : public RPG_Item_CommodityPropertiesBase_Type_pskel
  {
   public:
@@ -221,7 +223,7 @@ class RPG_Item_Export RPG_Item_MagicalPrerequisites_Type
    RPG_Item_CommodityPropertiesBase myCurrentProperties;
  };
 
-// class RPG_Item_Export RPG_Item_WeaponPropertiesBase_Type
+// class RPG_Item_WeaponPropertiesBase_Type
 //  : public RPG_Item_WeaponPropertiesBase_Type_pskel
 // {
 //  public:
@@ -244,7 +246,7 @@ class RPG_Item_Export RPG_Item_MagicalPrerequisites_Type
 //   RPG_Item_WeaponPropertiesBase myCurrentProperties;
 // };
 
-class RPG_Item_Export RPG_Item_WeaponPropertiesXML_Type
+class RPG_Item_WeaponPropertiesXML_Type
  : public RPG_Item_WeaponPropertiesXML_Type_pskel
 {
  public:
@@ -279,7 +281,7 @@ class RPG_Item_Export RPG_Item_WeaponPropertiesXML_Type
   RPG_Item_WeaponPropertiesXML myCurrentWeaponProperties;
 };
 
-class RPG_Item_Export RPG_Item_ArmorCategory_Type
+class RPG_Item_ArmorCategory_Type
  : public RPG_Item_ArmorCategory_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -288,7 +290,7 @@ class RPG_Item_Export RPG_Item_ArmorCategory_Type
   virtual RPG_Item_ArmorCategory post_RPG_Item_ArmorCategory_Type();
 };
 
-class RPG_Item_Export RPG_Item_ArmorType_Type
+class RPG_Item_ArmorType_Type
  : public RPG_Item_ArmorType_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -297,7 +299,7 @@ class RPG_Item_Export RPG_Item_ArmorType_Type
   virtual RPG_Item_ArmorType post_RPG_Item_ArmorType_Type();
 };
 
-// class RPG_Item_Export RPG_Item_ArmorPropertiesBase_Type
+// class RPG_Item_ArmorPropertiesBase_Type
 //  : public RPG_Item_ArmorPropertiesBase_Type_pskel
 // {
 //  public:
@@ -317,7 +319,7 @@ class RPG_Item_Export RPG_Item_ArmorType_Type
 //   RPG_Item_ArmorPropertiesBase myCurrentArmorProperties;
 // };
 
-class RPG_Item_Export RPG_Item_ArmorPropertiesXML_Type
+class RPG_Item_ArmorPropertiesXML_Type
  : public RPG_Item_ArmorPropertiesXML_Type_pskel
 {
  public:
@@ -349,7 +351,7 @@ class RPG_Item_Export RPG_Item_ArmorPropertiesXML_Type
   RPG_Item_ArmorPropertiesXML myCurrentArmorProperties;
 };
 
-class RPG_Item_Export RPG_Item_Dictionary_Type
+class RPG_Item_Dictionary_Type
  : public RPG_Item_DictionaryXML_Type_pskel
 {
  public:

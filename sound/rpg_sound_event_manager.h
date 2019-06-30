@@ -45,7 +45,7 @@ class RPG_Sound_Event_Manager
 {
   // singleton requires access to the ctor/dtor
   friend class ACE_Singleton<RPG_Sound_Event_Manager,
-                             ACE_Recursive_Thread_Mutex>;
+                             ACE_SYNCH_MUTEX>;
 
  public:
   void init(const std::string&,                          // (ambient) sound directory
@@ -78,17 +78,17 @@ class RPG_Sound_Event_Manager
   typedef std::vector<std::string> RPG_Sound_SampleRepository_t;
   typedef RPG_Sound_SampleRepository_t::const_iterator RPG_Sound_SampleRepositoryConstIterator_t;
 
-  mutable ACE_Thread_Mutex myLock;
-  long                     myTimerID;
-  std::string              myRepository;
-  bool                     myUseCDROM;
-  SDL_CD*                  myCDROM;
-  int                      myTrackOrChannel;
-  bool                     myInitialized;
+  mutable ACE_SYNCH_MUTEX myLock;
+  long                    myTimerID;
+  std::string             myRepository;
+  bool                    myUseCDROM;
+  SDL_CD*                 myCDROM;
+  int                     myTrackOrChannel;
+  bool                    myInitialized;
 };
 
 typedef ACE_Singleton<RPG_Sound_Event_Manager,
-                      ACE_SYNCH_RECURSIVE_MUTEX> RPG_SOUND_EVENT_MANAGER_SINGLETON;
+                      ACE_SYNCH_MUTEX> RPG_SOUND_EVENT_MANAGER_SINGLETON;
 //RPG_SOUND_SINGLETON_DECLARE(ACE_Singleton,
 //                            RPG_Sound_Event_Manager,
 //                            ACE_Recursive_Thread_Mutex);

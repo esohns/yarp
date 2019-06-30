@@ -21,23 +21,26 @@
 #ifndef RPG_ITEM_DICTIONARY_H
 #define RPG_ITEM_DICTIONARY_H
 
+#include <string>
+
+#include "ace/Global_Macros.h"
+#include "ace/Singleton.h"
+#include "ace/Synch_Traits.h"
+
 #include "rpg_dice_incl.h"
+
 #include "rpg_common_incl.h"
 #include "rpg_common_environment_incl.h"
+
 #include "rpg_character_incl.h"
+
 #include "rpg_magic_incl.h"
-#include "rpg_item_incl.h"
 
 #include "rpg_common_xsderrorhandler.h"
 
-#include "rpg_item_exports.h"
+//#include "rpg_item_exports.h"
 #include "rpg_item_common.h"
-
-#include <ace/Global_Macros.h>
-#include <ace/Singleton.h>
-#include <ace/Synch.h>
-
-#include <string>
+#include "rpg_item_incl.h"
 
 // forward declarations
 class RPG_Item_Base;
@@ -45,12 +48,12 @@ class RPG_Item_Base;
 /**
   @author Erik Sohns <erik.sohns@web.de>
  */
-class RPG_Item_Export RPG_Item_Dictionary
+class RPG_Item_Dictionary
  : public RPG_Common_XSDErrorHandler
 {
   // singleton requires access to the ctor/dtor
  friend class ACE_Singleton<RPG_Item_Dictionary,
-                            ACE_Thread_Mutex>;
+                            ACE_SYNCH_MUTEX>;
 
  public:
   // init item dictionary
@@ -68,11 +71,10 @@ class RPG_Item_Export RPG_Item_Dictionary
   void dump() const;
 
  private:
-  // safety measures
   RPG_Item_Dictionary();
   virtual ~RPG_Item_Dictionary();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary(const RPG_Item_Dictionary&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary& operator=(const RPG_Item_Dictionary&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary(const RPG_Item_Dictionary&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary& operator=(const RPG_Item_Dictionary&))
 
   RPG_Item_ArmorDictionary_t             myArmorDictionary;
   RPG_Item_CommodityBeverageDictionary_t myCommodityBeverageDictionary;
@@ -81,7 +83,7 @@ class RPG_Item_Export RPG_Item_Dictionary
 };
 
 typedef ACE_Singleton<RPG_Item_Dictionary,
-                      ACE_Thread_Mutex> RPG_ITEM_DICTIONARY_SINGLETON;
-RPG_ITEM_SINGLETON_DECLARE(ACE_Singleton, RPG_Item_Dictionary, ACE_Thread_Mutex);
+                      ACE_SYNCH_MUTEX> RPG_ITEM_DICTIONARY_SINGLETON;
+//RPG_ITEM_SINGLETON_DECLARE(ACE_Singleton, RPG_Item_Dictionary, ACE_Thread_Mutex);
 
 #endif

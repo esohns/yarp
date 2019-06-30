@@ -21,15 +21,17 @@
 #ifndef RPG_CHARACTER_XML_PARSER_H
 #define RPG_CHARACTER_XML_PARSER_H
 
-#include "rpg_character_exports.h"
-#include "rpg_character_XML_types.h"
+#include "ace/Global_Macros.h"
 
-#include <ace/Global_Macros.h>
+#include "rpg_XMLSchema_XML_types.h"
+
+//#include "rpg_character_exports.h"
+#include "rpg_character_XML_types.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Character_Export RPG_Character_Gender_Type
+class RPG_Character_Gender_Type
  : public RPG_Character_Gender_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -38,7 +40,7 @@ class RPG_Character_Export RPG_Character_Gender_Type
   virtual RPG_Character_Gender post_RPG_Character_Gender_Type();
 };
 
-class RPG_Character_Export RPG_Character_Race_Type
+class RPG_Character_Race_Type
  : public RPG_Character_Race_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -47,7 +49,7 @@ class RPG_Character_Export RPG_Character_Race_Type
   virtual RPG_Character_Race post_RPG_Character_Race_Type();
 };
 
-class RPG_Character_Export RPG_Character_MetaClass_Type
+class RPG_Character_MetaClass_Type
  : public RPG_Character_MetaClass_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -56,7 +58,7 @@ class RPG_Character_Export RPG_Character_MetaClass_Type
   virtual RPG_Character_MetaClass post_RPG_Character_MetaClass_Type();
 };
 
-class RPG_Character_Export RPG_Character_ClassXML_Type
+class RPG_Character_ClassXML_Type
   : public RPG_Character_ClassXML_Type_pskel
 {
  public:
@@ -71,7 +73,7 @@ class RPG_Character_Export RPG_Character_ClassXML_Type
    RPG_Character_ClassXML myCurrentClass;
 };
 
-class RPG_Character_Export RPG_Character_Ability_Type
+class RPG_Character_Ability_Type
  : public RPG_Character_Ability_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -80,7 +82,7 @@ class RPG_Character_Export RPG_Character_Ability_Type
   virtual RPG_Character_Ability post_RPG_Character_Ability_Type();
 };
 
-// class RPG_Character_Export RPG_Character_Abilities_Type
+// class RPG_Character_Abilities_Type
 //   : public RPG_Character_Abilities_Type_pskel
 // {
 //   public:
@@ -94,7 +96,7 @@ class RPG_Character_Export RPG_Character_Ability_Type
 //     RPG_Character_Abilities myCurrentAbilities;
 // };
 
-class RPG_Character_Export RPG_Character_Attributes_Type
+class RPG_Character_Attributes_Type
  : public RPG_Character_Attributes_Type_pskel
 {
  public:
@@ -113,7 +115,7 @@ class RPG_Character_Export RPG_Character_Attributes_Type
   RPG_Character_Attributes myCurrentAttributes;
 };
 
-class RPG_Character_Export RPG_Character_SkillValue_Type
+class RPG_Character_SkillValue_Type
  : public RPG_Character_SkillValue_Type_pskel
 {
  public:
@@ -128,7 +130,7 @@ class RPG_Character_Export RPG_Character_SkillValue_Type
   RPG_Character_SkillValue myCurrentSkill;
 };
 
-class RPG_Character_Export RPG_Character_Skills_Type
+class RPG_Character_Skills_Type
  : public RPG_Character_Skills_Type_pskel
 {
  public:
@@ -142,7 +144,7 @@ class RPG_Character_Export RPG_Character_Skills_Type
   RPG_Character_Skills myCurrentSkills;
 };
 
-class RPG_Character_Export RPG_Character_CheckTypeUnion_Type
+class RPG_Character_CheckTypeUnion_Type
  : public RPG_Character_CheckTypeUnion_Type_pskel
 {
  public:
@@ -156,7 +158,7 @@ class RPG_Character_Export RPG_Character_CheckTypeUnion_Type
   RPG_Character_CheckTypeUnion myCurrentCheckType;
 };
 
-class RPG_Character_Export RPG_Character_Check_Type
+class RPG_Character_Check_Type
  : public RPG_Character_Check_Type_pskel
 {
  public:
@@ -171,7 +173,7 @@ class RPG_Character_Export RPG_Character_Check_Type
   RPG_Character_Check myCurrentCheck;
 };
 
-class RPG_Character_Export RPG_Character_Feat_Type
+class RPG_Character_Feat_Type
  : public RPG_Character_Feat_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -180,7 +182,7 @@ class RPG_Character_Export RPG_Character_Feat_Type
   virtual RPG_Character_Feat post_RPG_Character_Feat_Type();
 };
 
-class RPG_Character_Export RPG_Character_Feats_Type
+class RPG_Character_Feats_Type
  : public RPG_Character_Feats_Type_pskel
 {
  public:
@@ -194,7 +196,7 @@ class RPG_Character_Export RPG_Character_Feats_Type
   RPG_Character_Feats myCurrentFeats;
 };
 
-class RPG_Character_Export RPG_Character_AlignmentCivic_Type
+class RPG_Character_AlignmentCivic_Type
  : public RPG_Character_AlignmentCivic_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -203,7 +205,7 @@ class RPG_Character_Export RPG_Character_AlignmentCivic_Type
   virtual RPG_Character_AlignmentCivic post_RPG_Character_AlignmentCivic_Type();
 };
 
-class RPG_Character_Export RPG_Character_AlignmentEthic_Type
+class RPG_Character_AlignmentEthic_Type
  : public RPG_Character_AlignmentEthic_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -212,7 +214,7 @@ class RPG_Character_Export RPG_Character_AlignmentEthic_Type
   virtual RPG_Character_AlignmentEthic post_RPG_Character_AlignmentEthic_Type();
 };
 
-class RPG_Character_Export RPG_Character_Alignment_Type
+class RPG_Character_Alignment_Type
  : public RPG_Character_Alignment_Type_pskel
 {
  public:
@@ -227,7 +229,7 @@ class RPG_Character_Export RPG_Character_Alignment_Type
   RPG_Character_Alignment myCurrentAlignment;
 };
 
-class RPG_Character_Export RPG_Character_EquipmentSlot_Type
+class RPG_Character_EquipmentSlot_Type
  : public RPG_Character_EquipmentSlot_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -236,7 +238,7 @@ class RPG_Character_Export RPG_Character_EquipmentSlot_Type
   virtual RPG_Character_EquipmentSlot post_RPG_Character_EquipmentSlot_Type();
 };
 
-class RPG_Character_Export RPG_Character_OffHand_Type
+class RPG_Character_OffHand_Type
  : public RPG_Character_OffHand_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -245,7 +247,7 @@ class RPG_Character_Export RPG_Character_OffHand_Type
     virtual RPG_Character_OffHand post_RPG_Character_OffHand_Type();
 };
 
-class RPG_Character_Export RPG_Character_Encumbrance_Type
+class RPG_Character_Encumbrance_Type
  : public RPG_Character_Encumbrance_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -254,7 +256,7 @@ class RPG_Character_Export RPG_Character_Encumbrance_Type
     virtual RPG_Character_Encumbrance post_RPG_Character_Encumbrance_Type();
 };
 
-// class RPG_Character_Export RPG_Character_BaseXML_Type
+// class RPG_Character_BaseXML_Type
 //  : public RPG_Character_BaseXML_Type_pskel
 // {
 //  public:
@@ -278,7 +280,7 @@ class RPG_Character_Export RPG_Character_Encumbrance_Type
 //   RPG_Character_BaseXML myCurrentCharacterBaseXML;
 // };
 
-// class RPG_Character_Export RPG_Character_PlayerXML_Type
+// class RPG_Character_PlayerXML_Type
 //  : public RPG_Character_PlayerXML_Type_pskel
 // {
 //  public:

@@ -64,9 +64,11 @@
 #include "rpg_map_common_tools.h"
 #include "rpg_map_parser_driver.h"
 
+#include "rpg_player.h"
 #include "rpg_player_common_tools.h"
 #include "rpg_player_defines.h"
 
+#include "rpg_monster.h"
 #include "rpg_monster_attackaction.h"
 #include "rpg_monster_common.h"
 #include "rpg_monster_common_tools.h"
@@ -84,13 +86,13 @@ using namespace xercesc;
 RPG_Engine_CommandToStringTable_t RPG_Engine_CommandHelper::myRPG_Engine_CommandToStringTable;
 RPG_Engine_EntityModeToStringTable_t RPG_Engine_EntityModeHelper::myRPG_Engine_EntityModeToStringTable;
 
-RPG_Engine_CR2ExperienceMap_t RPG_Engine_Common_Tools::myCR2ExperienceMap;
+RPG_Engine_CRToExperienceMap_t RPG_Engine_Common_Tools::myCRToExperienceMap;
 
 void
-RPG_Engine_Common_Tools::init (const std::string& schemaDirectory_in,
-                               const std::string& magicDictionaryFile_in,
-                               const std::string& itemDictionaryFile_in,
-                               const std::string& monsterDictionaryFile_in)
+RPG_Engine_Common_Tools::initialize (const std::string& schemaDirectory_in,
+                                     const std::string& magicDictionaryFile_in,
+                                     const std::string& itemDictionaryFile_in,
+                                     const std::string& monsterDictionaryFile_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::init"));
 
@@ -98,18 +100,18 @@ RPG_Engine_Common_Tools::init (const std::string& schemaDirectory_in,
   RPG_Dice::initialize ();
 
   // step1b: initialize string conversion facilities
-  RPG_Dice_Common_Tools::initStringConversionTables ();
-  RPG_Common_Tools::initStringConversionTables ();
-  RPG_Item_Common_Tools::initStringConversionTables ();
-  RPG_Combat_Common_Tools::initStringConversionTables ();
-  RPG_Monster_Common_Tools::initStringConversionTables ();
-  RPG_Map_Common_Tools::initStringConversionTables ();
+  RPG_Dice_Common_Tools::initializeStringConversionTables ();
+  RPG_Common_Tools::initializeStringConversionTables ();
+  RPG_Item_Common_Tools::initializeStringConversionTables ();
+  RPG_Combat_Common_Tools::initializeStringConversionTables ();
+  RPG_Monster_Common_Tools::initializeStringConversionTables ();
+  RPG_Map_Common_Tools::initializeStringConversionTables ();
   RPG_Engine_CommandHelper::init ();
   RPG_Engine_EntityModeHelper::init ();
 
   // step1c: ...and other static data
-  RPG_Magic_Common_Tools::init ();
-  RPG_Character_Common_Tools::init ();
+  RPG_Magic_Common_Tools::initialize ();
+  RPG_Character_Common_Tools::initialize ();
 
   // step1c: initialize dictionaries
   if (!RPG_Common_XML_Tools::initialize (schemaDirectory_in))
@@ -182,11 +184,11 @@ RPG_Engine_Common_Tools::init (const std::string& schemaDirectory_in,
     }
   } // end IF
 
-  initCR2ExperienceMap ();
+  initializeCRToExperienceMap ();
 }
 
 void
-RPG_Engine_Common_Tools::fini ()
+RPG_Engine_Common_Tools::finalize ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::fini"));
 
@@ -194,7 +196,7 @@ RPG_Engine_Common_Tools::fini ()
 }
 
 bool
-RPG_Engine_Common_Tools::isOneShotEvent (const RPG_Engine_EventType& eventType_in)
+RPG_Engine_Common_Tools::isOneShotEvent (enum RPG_Engine_EventType eventType_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::isOneShotEvent"));
 
@@ -203,7 +205,8 @@ RPG_Engine_Common_Tools::isOneShotEvent (const RPG_Engine_EventType& eventType_i
     case EVENT_ENTITY_ACTIVATE:
     case EVENT_ENTITY_SPAWN:
       return false;
-    default: break;
+    default:
+      break;
   }
 
   return true;
@@ -227,7 +230,7 @@ RPG_Engine_Common_Tools::getEngineStateDirectory ()
                   ACE_TEXT (result.c_str ())));
 
       // fallback
-      result = Common_File_Tools::getDumpDirectory ();
+      result = Common_File_Tools::getTempDirectory ();
     } // end IF
     else
       ACE_DEBUG ((LM_DEBUG,
@@ -238,12 +241,12 @@ RPG_Engine_Common_Tools::getEngineStateDirectory ()
   return result;
 }
 
-RPG_Engine_Entity_t
+struct RPG_Engine_Entity
 RPG_Engine_Common_Tools::createEntity()
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::createEntity"));
 
-  RPG_Engine_Entity_t result;
+  struct RPG_Engine_Entity result;
   result.character = NULL;
   result.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                    std::numeric_limits<unsigned int>::max());
@@ -265,7 +268,7 @@ RPG_Engine_Common_Tools::createEntity()
   return result;
 }
 
-RPG_Engine_Entity_t
+struct RPG_Engine_Entity
 RPG_Engine_Common_Tools::createEntity(// base attributes
                                       const std::string& type_in,                     // type
                                       const unsigned short int& maxHP_in,             // max HP
@@ -279,7 +282,7 @@ RPG_Engine_Common_Tools::createEntity(// base attributes
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::createEntity"));
 
-  RPG_Engine_Entity_t result;
+  struct RPG_Engine_Entity result;
   result.character = NULL;
   result.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                    std::numeric_limits<unsigned int>::max());
@@ -341,7 +344,7 @@ RPG_Engine_Common_Tools::createEntity(// base attributes
 }
 
 std::string
-RPG_Engine_Common_Tools::info(const RPG_Engine_Entity_t& entity_in)
+RPG_Engine_Common_Tools::info(const struct RPG_Engine_Entity& entity_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::info"));
 
@@ -416,7 +419,7 @@ RPG_Engine_Common_Tools::info(const RPG_Engine_Entity_t& entity_in)
 }
 
 RPG_Item_List_t
-RPG_Engine_Common_Tools::generateStandardItems(const RPG_Common_SubClass& subClass_in)
+RPG_Engine_Common_Tools::generateStandardItems(enum RPG_Common_SubClass subClass_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::generateStandardItems"));
 
@@ -432,15 +435,15 @@ RPG_Engine_Common_Tools::generateStandardItems(const RPG_Common_SubClass& subCla
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
             ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
         ACE_ASSERT(current);
-        result.insert(current->getID());
+        result.insert(current->id());
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
             ARMOR_MAIL_SPLINT);
         ACE_ASSERT(current);
-        result.insert(current->getID());
+        result.insert(current->id());
         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
             ARMOR_SHIELD_HEAVY_WOODEN);
         ACE_ASSERT(current);
-        result.insert(current->getID());
+        result.insert(current->id());
 
         break;
       }
@@ -451,17 +454,17 @@ RPG_Engine_Common_Tools::generateStandardItems(const RPG_Common_SubClass& subCla
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
                                                                     ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
         ACE_ASSERT(current);
-        result.insert(current->getID());
+        result.insert(current->id());
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                     ARMOR_PLATE_FULL);
         ACE_ASSERT(current);
-        result.insert(current->getID());
+        result.insert(current->id());
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                     ARMOR_SHIELD_HEAVY_STEEL);
         ACE_ASSERT(current);
-        result.insert(current->getID());
+        result.insert(current->id());
 
         break;
       }
@@ -471,17 +474,17 @@ RPG_Engine_Common_Tools::generateStandardItems(const RPG_Common_SubClass& subCla
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
                                                                     ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
         ACE_ASSERT(current);
-        result.insert(current->getID());
+        result.insert(current->id());
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
                                                                     RANGED_WEAPON_BOW_LONG);
         ACE_ASSERT(current);
-        result.insert(current->getID());
+        result.insert(current->id());
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                     ARMOR_HIDE);
         ACE_ASSERT(current);
-        result.insert(current->getID());
+        result.insert(current->id());
 
         // *TODO*: no arrows ?
 
@@ -492,11 +495,11 @@ RPG_Engine_Common_Tools::generateStandardItems(const RPG_Common_SubClass& subCla
 //         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
 //             ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
 //         ACE_ASSERT(current);
-//         result.insert(current->getID());
+//         result.insert(current->id());
 //         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
 //             ARMOR_HIDE);
 //         ACE_ASSERT(current);
-//         result.insert(current->getID());
+//         result.insert(current->id());
 //
 //         break;
 //       }
@@ -508,7 +511,7 @@ RPG_Engine_Common_Tools::generateStandardItems(const RPG_Common_SubClass& subCla
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
                                                                     TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
         ACE_ASSERT(current);
-        result.insert(current->getID());
+        result.insert(current->id());
 
         break;
       }
@@ -520,17 +523,17 @@ RPG_Engine_Common_Tools::generateStandardItems(const RPG_Common_SubClass& subCla
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
                                                                     ONE_HANDED_MELEE_WEAPON_MACE_HEAVY);
         ACE_ASSERT(current);
-        result.insert(current->getID());
+        result.insert(current->id());
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                     ARMOR_MAIL_CHAIN);
         ACE_ASSERT(current);
-        result.insert(current->getID());
+        result.insert(current->id());
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                     ARMOR_SHIELD_HEAVY_WOODEN);
         ACE_ASSERT(current);
-        result.insert(current->getID());
+        result.insert(current->id());
 
         break;
       }
@@ -541,17 +544,17 @@ RPG_Engine_Common_Tools::generateStandardItems(const RPG_Common_SubClass& subCla
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
                                                                     LIGHT_MELEE_WEAPON_SICKLE);
         ACE_ASSERT(current);
-        result.insert(current->getID());
+        result.insert(current->id());
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                     ARMOR_HIDE);
         ACE_ASSERT(current);
-        result.insert(current->getID());
+        result.insert(current->id());
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                     ARMOR_SHIELD_LIGHT_WOODEN);
         ACE_ASSERT(current);
-        result.insert(current->getID());
+        result.insert(current->id());
 
         break;
       }
@@ -560,7 +563,7 @@ RPG_Engine_Common_Tools::generateStandardItems(const RPG_Common_SubClass& subCla
 //         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
 //             TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
 //         ACE_ASSERT(current);
-//         result.insert(current->getID());
+//         result.insert(current->id());
 //
 //         break;
 //       }
@@ -571,17 +574,17 @@ RPG_Engine_Common_Tools::generateStandardItems(const RPG_Common_SubClass& subCla
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
                                                                     LIGHT_MELEE_WEAPON_SWORD_SHORT);
         ACE_ASSERT(current);
-        result.insert(current->getID());
+        result.insert(current->id());
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                     ARMOR_LEATHER);
         ACE_ASSERT(current);
-        result.insert(current->getID());
+        result.insert(current->id());
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                     ARMOR_SHIELD_LIGHT_STEEL);
         ACE_ASSERT(current);
-        result.insert(current->getID());
+        result.insert(current->id());
 
         break;
       }
@@ -696,7 +699,7 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Player_Party_t& party_in
        iterator != listOfCombatants.end();
        iterator++)
   {
-    RPG_Engine_CombatantSequenceElement_t element = {0, 0, *iterator};
+    struct RPG_Engine_CombatantSequenceElement element = {0, 0, *iterator};
     // compute initiative: DEX check
     element.DEXModifier =
         RPG_Character_Common_Tools::getAttributeAbilityModifier((*iterator)->getAttribute(ATTRIBUTE_DEXTERITY));
@@ -753,7 +756,7 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Player_Party_t& party_in
   } // end FOR
 
   // step3: resolve conflicts
-  RPG_Engine_CombatantSequenceElement_t current_conflict;
+  struct RPG_Engine_CombatantSequenceElement current_conflict;
   while (!conflicts.empty())
   {
 //     // handle first conflict
@@ -986,7 +989,7 @@ RPG_Engine_Common_Tools::isCharacterDisabled(const RPG_Player_Base* const charac
 }
 
 unsigned int
-RPG_Engine_Common_Tools::numCompatibleMonsterAttackActions(const RPG_Combat_AttackForm& attackForm_in,
+RPG_Engine_Common_Tools::numCompatibleMonsterAttackActions(enum RPG_Combat_AttackForm attackForm_in,
                                                            const RPG_Monster_AttackActions_t& actions_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::numCompatibleMonsterAttackActions"));
@@ -1038,7 +1041,7 @@ RPG_Engine_Common_Tools::numCompatibleMonsterAttackActions(const RPG_Combat_Atta
 }
 
 bool
-RPG_Engine_Common_Tools::isCompatibleMonsterAttackAction(const RPG_Combat_AttackForm& attackForm_in,
+RPG_Engine_Common_Tools::isCompatibleMonsterAttackAction(enum RPG_Combat_AttackForm attackForm_in,
                                                          const RPG_Monster_AttackAction& action_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::isCompatibleMonsterAttackAction"));
@@ -1706,7 +1709,7 @@ monster_perform_single_action:
                  ACE_TEXT(monster->getName().c_str()),
                  ACE_TEXT(player_base->getName().c_str()),
                  targetArmorClass,
-                 ACE_TEXT(RPG_Monster_Common_Tools::weaponTypeToString(current_action->weapon).c_str()),
+                 ACE_TEXT(RPG_Monster_Common_Tools::toString(current_action->weapon).c_str()),
                  (attack_roll + currentAttackBonus),
                  (is_critical_hit ? ACE_TEXT(" (critical)") : ACE_TEXT(""))));
 
@@ -1730,7 +1733,7 @@ is_monster_miss:
                  ACE_TEXT(monster->getName().c_str()),
                  ACE_TEXT(player_base->getName().c_str()),
                  targetArmorClass,
-                 ACE_TEXT(RPG_Monster_Common_Tools::weaponTypeToString(current_action->weapon).c_str()),
+                 ACE_TEXT(RPG_Monster_Common_Tools::toString(current_action->weapon).c_str()),
                  (attack_roll + currentAttackBonus)));
     } // end FOR
 
@@ -1759,7 +1762,7 @@ monster_advance_attack_iterator:
 }
 
 unsigned int
-RPG_Engine_Common_Tools::party2ACL(const RPG_Player_Party_t& party_in)
+RPG_Engine_Common_Tools::partyToACL(const RPG_Player_Party_t& party_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::party2ACL"));
 
@@ -1778,10 +1781,10 @@ RPG_Engine_Common_Tools::party2ACL(const RPG_Player_Party_t& party_in)
 }
 
 unsigned int
-RPG_Engine_Common_Tools::combat2XP(const std::string& type_in,
-                                   const unsigned int& acl_in,
-                                   const unsigned int& numFoes_in,
-                                   const unsigned int& numPartyMembers_in)
+RPG_Engine_Common_Tools::combatToXP(const std::string& type_in,
+                                    const unsigned int& acl_in,
+                                    const unsigned int& numFoes_in,
+                                    const unsigned int& numPartyMembers_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::combat2XP"));
 
@@ -1791,9 +1794,9 @@ RPG_Engine_Common_Tools::combat2XP(const std::string& type_in,
   // step1: retrieve challenge rating
   const RPG_Monster_Properties& monster_type =
       RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(type_in);
-  RPG_Engine_CR2ExperienceMapConstIterator_t iterator =
-      myCR2ExperienceMap.find(monster_type.challengeRating);
-  if (iterator == myCR2ExperienceMap.end())
+  RPG_Engine_CRToExperienceMapConstIterator_t iterator =
+      myCRToExperienceMap.find(monster_type.challengeRating);
+  if (iterator == myCRToExperienceMap.end())
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to retrieve XP table (CR was: %u), aborting\n"),
@@ -1822,13 +1825,13 @@ RPG_Engine_Common_Tools::combat2XP(const std::string& type_in,
 }
 
 void
-RPG_Engine_Common_Tools::initCR2ExperienceMap()
+RPG_Engine_Common_Tools::initializeCRToExperienceMap()
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::initCR2ExperienceMap"));
 
-  myCR2ExperienceMap.clear();
+  myCRToExperienceMap.clear();
 
-  RPG_Engine_Level2ExperienceList_t l2xp;
+  RPG_Engine_LevelToExperienceList_t l2xp;
   // CR 1
   l2xp.push_back(300);
   l2xp.push_back(300);
@@ -1838,7 +1841,7 @@ RPG_Engine_Common_Tools::initCR2ExperienceMap()
   l2xp.push_back(300);
   l2xp.push_back(263);
   l2xp.push_back(200);
-  myCR2ExperienceMap.insert(std::make_pair(1, l2xp));
+  myCRToExperienceMap.insert(std::make_pair(1, l2xp));
 
   l2xp.clear();
   // CR 2
@@ -1851,7 +1854,7 @@ RPG_Engine_Common_Tools::initCR2ExperienceMap()
   l2xp.push_back(394);
   l2xp.push_back(300);
   l2xp.push_back(225);
-  myCR2ExperienceMap.insert(std::make_pair(2, l2xp));
+  myCRToExperienceMap.insert(std::make_pair(2, l2xp));
 
   l2xp.clear();
   // CR 3
@@ -1865,7 +1868,7 @@ RPG_Engine_Common_Tools::initCR2ExperienceMap()
   l2xp.push_back(450);
   l2xp.push_back(338);
   l2xp.push_back(250);
-  myCR2ExperienceMap.insert(std::make_pair(3, l2xp));
+  myCRToExperienceMap.insert(std::make_pair(3, l2xp));
 
   l2xp.clear();
   // CR 4
@@ -1880,7 +1883,7 @@ RPG_Engine_Common_Tools::initCR2ExperienceMap()
   l2xp.push_back(506);
   l2xp.push_back(375);
   l2xp.push_back(275);
-  myCR2ExperienceMap.insert(std::make_pair(4, l2xp));
+  myCRToExperienceMap.insert(std::make_pair(4, l2xp));
 
   l2xp.clear();
   // CR 5
@@ -1896,7 +1899,7 @@ RPG_Engine_Common_Tools::initCR2ExperienceMap()
   l2xp.push_back(563);
   l2xp.push_back(413);
   l2xp.push_back(300);
-  myCR2ExperienceMap.insert(std::make_pair(5, l2xp));
+  myCRToExperienceMap.insert(std::make_pair(5, l2xp));
 
   l2xp.clear();
   // CR 6
@@ -1913,7 +1916,7 @@ RPG_Engine_Common_Tools::initCR2ExperienceMap()
   l2xp.push_back(619);
   l2xp.push_back(450);
   l2xp.push_back(325);
-  myCR2ExperienceMap.insert(std::make_pair(6, l2xp));
+  myCRToExperienceMap.insert(std::make_pair(6, l2xp));
 
   l2xp.clear();
   // CR 7
@@ -1931,7 +1934,7 @@ RPG_Engine_Common_Tools::initCR2ExperienceMap()
   l2xp.push_back(675);
   l2xp.push_back(488);
   l2xp.push_back(350);
-  myCR2ExperienceMap.insert(std::make_pair(7, l2xp));
+  myCRToExperienceMap.insert(std::make_pair(7, l2xp));
 
   l2xp.clear();
   // CR 8
@@ -1950,7 +1953,7 @@ RPG_Engine_Common_Tools::initCR2ExperienceMap()
   l2xp.push_back(731);
   l2xp.push_back(525);
   l2xp.push_back(375);
-  myCR2ExperienceMap.insert(std::make_pair(8, l2xp));
+  myCRToExperienceMap.insert(std::make_pair(8, l2xp));
 
   l2xp.clear();
   // CR 9
@@ -1970,7 +1973,7 @@ RPG_Engine_Common_Tools::initCR2ExperienceMap()
   l2xp.push_back(788);
   l2xp.push_back(563);
   l2xp.push_back(400);
-  myCR2ExperienceMap.insert(std::make_pair(9, l2xp));
+  myCRToExperienceMap.insert(std::make_pair(9, l2xp));
 
   l2xp.clear();
   // CR 10
@@ -1991,7 +1994,7 @@ RPG_Engine_Common_Tools::initCR2ExperienceMap()
   l2xp.push_back(844);
   l2xp.push_back(600);
   l2xp.push_back(425);
-  myCR2ExperienceMap.insert(std::make_pair(10, l2xp));
+  myCRToExperienceMap.insert(std::make_pair(10, l2xp));
 
   l2xp.clear();
   // CR 11
@@ -2012,7 +2015,7 @@ RPG_Engine_Common_Tools::initCR2ExperienceMap()
   l2xp.push_back(900);
   l2xp.push_back(638);
   l2xp.push_back(450);
-  myCR2ExperienceMap.insert(std::make_pair(11, l2xp));
+  myCRToExperienceMap.insert(std::make_pair(11, l2xp));
 
   l2xp.clear();
   // CR 12
@@ -2035,7 +2038,7 @@ RPG_Engine_Common_Tools::initCR2ExperienceMap()
   l2xp.push_back(956);
   l2xp.push_back(675);
   l2xp.push_back(475);
-  myCR2ExperienceMap.insert(std::make_pair(12, l2xp));
+  myCRToExperienceMap.insert(std::make_pair(12, l2xp));
 
   l2xp.clear();
   // CR 13
@@ -2059,7 +2062,7 @@ RPG_Engine_Common_Tools::initCR2ExperienceMap()
   l2xp.push_back(1013);
   l2xp.push_back(713);
   l2xp.push_back(500);
-  myCR2ExperienceMap.insert(std::make_pair(13, l2xp));
+  myCRToExperienceMap.insert(std::make_pair(13, l2xp));
 
   l2xp.clear();
   // CR 14
@@ -2083,7 +2086,7 @@ RPG_Engine_Common_Tools::initCR2ExperienceMap()
   l2xp.push_back(1350);
   l2xp.push_back(1069);
   l2xp.push_back(750);
-  myCR2ExperienceMap.insert(std::make_pair(14, l2xp));
+  myCRToExperienceMap.insert(std::make_pair(14, l2xp));
 
   l2xp.clear();
   // CR 15
@@ -2107,7 +2110,7 @@ RPG_Engine_Common_Tools::initCR2ExperienceMap()
   l2xp.push_back(1800);
   l2xp.push_back(1425);
   l2xp.push_back(1000);
-  myCR2ExperienceMap.insert(std::make_pair(15, l2xp));
+  myCRToExperienceMap.insert(std::make_pair(15, l2xp));
 
   l2xp.clear();
   // CR 16
@@ -2131,7 +2134,7 @@ RPG_Engine_Common_Tools::initCR2ExperienceMap()
   l2xp.push_back(2700);
   l2xp.push_back(1900);
   l2xp.push_back(1500);
-  myCR2ExperienceMap.insert(std::make_pair(16, l2xp));
+  myCRToExperienceMap.insert(std::make_pair(16, l2xp));
 
   l2xp.clear();
   // CR 17
@@ -2155,7 +2158,7 @@ RPG_Engine_Common_Tools::initCR2ExperienceMap()
   l2xp.push_back(3600);
   l2xp.push_back(2850);
   l2xp.push_back(2000);
-  myCR2ExperienceMap.insert(std::make_pair(17, l2xp));
+  myCRToExperienceMap.insert(std::make_pair(17, l2xp));
 
   l2xp.clear();
   // CR 18
@@ -2179,7 +2182,7 @@ RPG_Engine_Common_Tools::initCR2ExperienceMap()
   l2xp.push_back(5400);
   l2xp.push_back(3800);
   l2xp.push_back(3000);
-  myCR2ExperienceMap.insert(std::make_pair(18, l2xp));
+  myCRToExperienceMap.insert(std::make_pair(18, l2xp));
 
   l2xp.clear();
   // CR 19
@@ -2203,7 +2206,7 @@ RPG_Engine_Common_Tools::initCR2ExperienceMap()
   l2xp.push_back(8100);
   l2xp.push_back(5700);
   l2xp.push_back(4000);
-  myCR2ExperienceMap.insert(std::make_pair(19, l2xp));
+  myCRToExperienceMap.insert(std::make_pair(19, l2xp));
 
   l2xp.clear();
   // CR 20
@@ -2227,7 +2230,7 @@ RPG_Engine_Common_Tools::initCR2ExperienceMap()
   l2xp.push_back(10800);
   l2xp.push_back(8550);
   l2xp.push_back(6000);
-  myCR2ExperienceMap.insert(std::make_pair(20, l2xp));
+  myCRToExperienceMap.insert(std::make_pair(20, l2xp));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("RPG_Engine_Common_Tools: initialized experience points table...\n")));

@@ -28,13 +28,13 @@
 #include "SDL.h"
 
 #include "rpg_graphics_common.h"
-#include "rpg_graphics_exports.h"
+//#include "rpg_graphics_exports.h"
 #include "rpg_graphics_SDL_window_base.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Graphics_Export RPG_Graphics_SDLWindowSub
+class RPG_Graphics_SDLWindowSub
  : public RPG_Graphics_SDLWindowBase
 {
  public:

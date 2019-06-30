@@ -32,26 +32,28 @@
 #include "net_connection_configuration.h"
 
 #include "rpg_net_protocol_common.h"
+#include "rpg_net_protocol_message.h"
+#include "rpg_net_protocol_session_message.h"
 
-////typedef struct Stream_Statistic RPG_Net_Protocol_Statistic_t;
-//struct RPG_Net_Protocol_SessionData
-// : Stream_SessionData
-//{
-//  RPG_Net_Protocol_SessionData ()
-//   : Stream_SessionData ()
-//   //, statistic ()
-//  {}
-//
-//  //RPG_Net_Protocol_Statistic_t statistic;
-//};
-//typedef Stream_SessionData_T<struct RPG_Net_Protocol_SessionData> RPG_Net_Protocol_SessionData_t;
+typedef Stream_ISessionDataNotify_T<Stream_SessionId_t,
+                                    struct RPG_Net_Protocol_SessionData,
+                                    enum Stream_SessionMessageType,
+                                    RPG_Net_Protocol_Message,
+                                    RPG_Net_Protocol_SessionMessage> RPG_Net_Protocol_ISessionNotify_t;
+typedef std::list<RPG_Net_Protocol_ISessionNotify_t*> RPG_Net_Protocol_Subscribers_t;
+typedef RPG_Net_Protocol_Subscribers_t::iterator RPG_Net_Protocol_SubscribersIterator_t;
 
 struct RPG_Net_Protocol_ModuleHandlerConfiguration
- : Stream_ModuleConfiguration
+ : Stream_ModuleHandlerConfiguration
 {
   RPG_Net_Protocol_ModuleHandlerConfiguration ()
-   : Stream_ModuleConfiguration ()
+   : Stream_ModuleHandlerConfiguration ()
+   , subscriber (NULL)
+   , subscribers (NULL)
   {}
+
+  RPG_Net_Protocol_ISessionNotify_t* subscriber;
+  RPG_Net_Protocol_Subscribers_t* subscribers;
 };
 
 struct RPG_Net_Protocol_StreamConfiguration

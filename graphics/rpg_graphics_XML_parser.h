@@ -21,16 +21,16 @@
 #ifndef RPG_GRAPHICS_XML_PARSER_H
 #define RPG_GRAPHICS_XML_PARSER_H
 
-#include "rpg_graphics_exports.h"
-#include "rpg_graphics_XML_types.h"
-#include "rpg_graphics_common.h"
+#include "ace/Global_Macros.h"
 
-#include <ace/Global_Macros.h>
+#include "rpg_graphics_common.h"
+//#include "rpg_graphics_exports.h"
+#include "rpg_graphics_XML_types.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Graphics_Export RPG_Graphics_Category_Type
+class RPG_Graphics_Category_Type
  : public RPG_Graphics_Category_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -39,7 +39,7 @@ class RPG_Graphics_Export RPG_Graphics_Category_Type
   virtual RPG_Graphics_Category post_RPG_Graphics_Category_Type();
 };
 
-class RPG_Graphics_Export RPG_Graphics_Orientation_Type
+class RPG_Graphics_Orientation_Type
  : public RPG_Graphics_Orientation_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -48,7 +48,7 @@ class RPG_Graphics_Export RPG_Graphics_Orientation_Type
   virtual RPG_Graphics_Orientation post_RPG_Graphics_Orientation_Type();
 };
 
-class RPG_Graphics_Export RPG_Graphics_TileType_Type
+class RPG_Graphics_TileType_Type
  : public RPG_Graphics_TileType_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -57,7 +57,7 @@ class RPG_Graphics_Export RPG_Graphics_TileType_Type
   virtual RPG_Graphics_TileType post_RPG_Graphics_TileType_Type();
 };
 
-class RPG_Graphics_Export RPG_Graphics_FloorStyle_Type
+class RPG_Graphics_FloorStyle_Type
  : public RPG_Graphics_FloorStyle_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -66,7 +66,7 @@ class RPG_Graphics_Export RPG_Graphics_FloorStyle_Type
   virtual RPG_Graphics_FloorStyle post_RPG_Graphics_FloorStyle_Type();
 };
 
-class RPG_Graphics_Export RPG_Graphics_StairsStyle_Type
+class RPG_Graphics_StairsStyle_Type
  : public RPG_Graphics_StairsStyle_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -75,7 +75,7 @@ class RPG_Graphics_Export RPG_Graphics_StairsStyle_Type
     virtual RPG_Graphics_StairsStyle post_RPG_Graphics_StairsStyle_Type();
 };
 
-class RPG_Graphics_Export RPG_Graphics_WallStyle_Type
+class RPG_Graphics_WallStyle_Type
  : public RPG_Graphics_WallStyle_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -84,7 +84,7 @@ class RPG_Graphics_Export RPG_Graphics_WallStyle_Type
   virtual RPG_Graphics_WallStyle post_RPG_Graphics_WallStyle_Type();
 };
 
-class RPG_Graphics_Export RPG_Graphics_EdgeStyle_Type
+class RPG_Graphics_EdgeStyle_Type
   : public RPG_Graphics_EdgeStyle_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -93,7 +93,7 @@ class RPG_Graphics_Export RPG_Graphics_EdgeStyle_Type
     virtual RPG_Graphics_EdgeStyle post_RPG_Graphics_EdgeStyle_Type();
 };
 
-class RPG_Graphics_Export RPG_Graphics_DoorStyle_Type
+class RPG_Graphics_DoorStyle_Type
  : public RPG_Graphics_DoorStyle_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -102,7 +102,7 @@ class RPG_Graphics_Export RPG_Graphics_DoorStyle_Type
     virtual RPG_Graphics_DoorStyle post_RPG_Graphics_DoorStyle_Type();
 };
 
-class RPG_Graphics_Export RPG_Graphics_StyleUnion_Type
+class RPG_Graphics_StyleUnion_Type
  : public RPG_Graphics_StyleUnion_Type_pskel
 {
  public:
@@ -116,7 +116,7 @@ class RPG_Graphics_Export RPG_Graphics_StyleUnion_Type
   RPG_Graphics_StyleUnion myCurrentStyle;
 };
 
-class RPG_Graphics_Export RPG_Graphics_Cursor_Type
+class RPG_Graphics_Cursor_Type
   : public RPG_Graphics_Cursor_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -125,7 +125,7 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Type
     virtual RPG_Graphics_Cursor post_RPG_Graphics_Cursor_Type();
 };
 
-class RPG_Graphics_Export RPG_Graphics_Font_Type
+class RPG_Graphics_Font_Type
   : public RPG_Graphics_Font_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -134,7 +134,7 @@ class RPG_Graphics_Export RPG_Graphics_Font_Type
     virtual RPG_Graphics_Font post_RPG_Graphics_Font_Type();
 };
 
-class RPG_Graphics_Export RPG_Graphics_Image_Type
+class RPG_Graphics_Image_Type
   : public RPG_Graphics_Image_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -143,7 +143,7 @@ class RPG_Graphics_Export RPG_Graphics_Image_Type
     virtual RPG_Graphics_Image post_RPG_Graphics_Image_Type();
 };
 
-class RPG_Graphics_Export RPG_Graphics_Sprite_Type
+class RPG_Graphics_Sprite_Type
   : public RPG_Graphics_Sprite_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -152,7 +152,7 @@ class RPG_Graphics_Export RPG_Graphics_Sprite_Type
     virtual RPG_Graphics_Sprite post_RPG_Graphics_Sprite_Type();
 };
 
-class RPG_Graphics_Export RPG_Graphics_TileGraphic_Type
+class RPG_Graphics_TileGraphic_Type
   : public RPG_Graphics_TileGraphic_Type_pskel,
   public ::xml_schema::string_pimpl
 {
@@ -161,7 +161,7 @@ class RPG_Graphics_Export RPG_Graphics_TileGraphic_Type
     virtual RPG_Graphics_TileGraphic post_RPG_Graphics_TileGraphic_Type();
 };
 
-class RPG_Graphics_Export RPG_Graphics_TileSetGraphic_Type
+class RPG_Graphics_TileSetGraphic_Type
   : public RPG_Graphics_TileSetGraphic_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -170,7 +170,7 @@ class RPG_Graphics_Export RPG_Graphics_TileSetGraphic_Type
    virtual RPG_Graphics_TileSetGraphic post_RPG_Graphics_TileSetGraphic_Type();
 };
 
-class RPG_Graphics_Export RPG_Graphics_GraphicTypeUnion_Type
+class RPG_Graphics_GraphicTypeUnion_Type
   : public RPG_Graphics_GraphicTypeUnion_Type_pskel
 {
   public:
@@ -184,7 +184,7 @@ class RPG_Graphics_Export RPG_Graphics_GraphicTypeUnion_Type
     RPG_Graphics_GraphicTypeUnion myCurrentType;
 };
 
-class RPG_Graphics_Export RPG_Graphics_WindowType_Type
+class RPG_Graphics_WindowType_Type
 : public RPG_Graphics_WindowType_Type_pskel,
 public ::xml_schema::string_pimpl
 {
@@ -193,7 +193,7 @@ public:
   virtual RPG_Graphics_WindowType post_RPG_Graphics_WindowType_Type();
 };
 
-class RPG_Graphics_Export RPG_Graphics_InterfaceElementType_Type
+class RPG_Graphics_InterfaceElementType_Type
  : public RPG_Graphics_InterfaceElementType_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -202,7 +202,7 @@ class RPG_Graphics_Export RPG_Graphics_InterfaceElementType_Type
   virtual RPG_Graphics_InterfaceElementType post_RPG_Graphics_InterfaceElementType_Type();
 };
 
-class RPG_Graphics_Export RPG_Graphics_HotspotType_Type
+class RPG_Graphics_HotspotType_Type
  : public RPG_Graphics_HotspotType_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -211,7 +211,7 @@ class RPG_Graphics_Export RPG_Graphics_HotspotType_Type
   virtual RPG_Graphics_HotspotType post_RPG_Graphics_HotspotType_Type();
 };
 
-class RPG_Graphics_Export RPG_Graphics_ElementTypeUnion_Type
+class RPG_Graphics_ElementTypeUnion_Type
  : public RPG_Graphics_ElementTypeUnion_Type_pskel
 {
  public:
@@ -225,7 +225,7 @@ class RPG_Graphics_Export RPG_Graphics_ElementTypeUnion_Type
   RPG_Graphics_ElementTypeUnion myCurrentElementType;
 };
 
-class RPG_Graphics_Export RPG_Graphics_Element_Type
+class RPG_Graphics_Element_Type
  : public RPG_Graphics_Element_Type_pskel
 {
  public:
@@ -244,7 +244,7 @@ class RPG_Graphics_Export RPG_Graphics_Element_Type
   RPG_Graphics_Element myCurrentElement;
 };
 
-class RPG_Graphics_Export RPG_Graphics_Tile_Type
+class RPG_Graphics_Tile_Type
  : public RPG_Graphics_Tile_Type_pskel
 {
  public:
@@ -266,7 +266,7 @@ class RPG_Graphics_Export RPG_Graphics_Tile_Type
   RPG_Graphics_Tile myCurrentTile;
 };
 
-class RPG_Graphics_Export RPG_Graphics_TileSetType_Type
+class RPG_Graphics_TileSetType_Type
  : public RPG_Graphics_TileSetType_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -275,7 +275,7 @@ class RPG_Graphics_Export RPG_Graphics_TileSetType_Type
   virtual RPG_Graphics_TileSetType post_RPG_Graphics_TileSetType_Type();
 };
 
-class RPG_Graphics_Export RPG_Graphics_TileSet_Type
+class RPG_Graphics_TileSet_Type
  : public RPG_Graphics_TileSet_Type_pskel
 {
  public:
@@ -292,7 +292,7 @@ class RPG_Graphics_Export RPG_Graphics_TileSet_Type
   RPG_Graphics_TileSet myCurrentTileSet;
 };
 
-class RPG_Graphics_Export RPG_Graphics_Graphic_Type
+class RPG_Graphics_Graphic_Type
  : public RPG_Graphics_Graphic_Type_pskel
 {
  public:
@@ -312,7 +312,7 @@ class RPG_Graphics_Export RPG_Graphics_Graphic_Type
   RPG_Graphics_Graphic myCurrentGraphic;
 };
 
-class RPG_Graphics_Export RPG_Graphics_Dictionary_Type
+class RPG_Graphics_Dictionary_Type
  : public RPG_Graphics_Dictionary_Type_pskel
 {
  public:
@@ -331,7 +331,7 @@ class RPG_Graphics_Export RPG_Graphics_Dictionary_Type
   RPG_Graphics_Dictionary_t* myDictionary;
 };
 
-class RPG_Graphics_Export RPG_Graphics_ColorName_Type
+class RPG_Graphics_ColorName_Type
  : public RPG_Graphics_ColorName_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -340,7 +340,7 @@ class RPG_Graphics_Export RPG_Graphics_ColorName_Type
   virtual RPG_Graphics_ColorName post_RPG_Graphics_ColorName_Type();
 };
 
-class RPG_Graphics_Export RPG_Graphics_ColorRGBA_Type
+class RPG_Graphics_ColorRGBA_Type
  : public RPG_Graphics_ColorRGBA_Type_pskel
 {
  public:
@@ -358,7 +358,7 @@ class RPG_Graphics_Export RPG_Graphics_ColorRGBA_Type
   RPG_Graphics_ColorRGBA myCurrentColorRGBA;
 };
 
-//class RPG_Graphics_Export RPG_Graphics_ColorUnion_Type
+//class RPG_Graphics_ColorUnion_Type
 //  : public RPG_Graphics_ColorUnion_Type_pskel
 //{
 //  public:

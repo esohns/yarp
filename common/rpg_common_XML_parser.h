@@ -21,11 +21,13 @@
 #ifndef RPG_COMMON_XML_PARSER_H
 #define RPG_COMMON_XML_PARSER_H
 
+#include "ace/Global_Macros.h"
+
+#include "rpg_XMLSchema_XML_types.h"
+
 //#include "rpg_common_exports.h"
 #include "rpg_common_XML_types.h"
 #include "rpg_common_environment_XML_types.h"
-
-#include <ace/Global_Macros.h>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>

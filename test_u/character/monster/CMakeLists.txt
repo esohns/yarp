@@ -1,3 +1,16 @@
+
+########### next target ###############
+set (EXECUTABLE monster_parser)
+set (${EXECUTABLE}_SRCS
+     monster_parser.cpp)
+
+set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG\"")
+
+add_executable(${EXECUTABLE} ${${EXECUTABLE}_SRCS})
+
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src/log)
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../chance/dice
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../common
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../item
@@ -6,19 +19,14 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../chance/dice
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../combat
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../character/monster)
 
-#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
-########### next target ###############
-set (EXECUTABLE monster_parser)
-set (${EXECUTABLE}_SRCS
-     monster_parser.cpp)
-
-set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS DATADIR="/usr/local/share/RPG/config")
-
-add_executable(${EXECUTABLE} ${${EXECUTABLE}_SRCS})
-
-target_link_libraries(${EXECUTABLE} ACE pthread xerces-c RPG_Dice RPG_Chance RPG_Common RPG_Magic
-                                    RPG_Item RPG_Character RPG_Monster RPG_Player RPG_Combat)
+target_link_libraries (${EXECUTABLE}
+                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                       Common CommonLog CommonTimer
+                       RPG_Dice RPG_Chance RPG_Common RPG_Magic
+                       RPG_Item RPG_Character RPG_Monster RPG_Player RPG_Combat)
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 

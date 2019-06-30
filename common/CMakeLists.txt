@@ -53,6 +53,8 @@ set (${LIBRARY}_SRCS
      rpg_common_xsderrorhandler.h
      rpg_common_XML_parser.cpp
      rpg_common_XML_parser.h
+     rpg_common_XML_tools.cpp
+     rpg_common_XML_tools.h
      rpg_common_XML_tree.cpp
      rpg_common_XML_tree.h
      rpg_common_XML_types.cpp
@@ -86,6 +88,9 @@ elseif (WIN32)
                               $<BUILD_INTERFACE:$ENV{LIB_ROOT}/ACE_TAO/ACE>)
  endif (DEFINED ENV{ACE_ROOT})
 endif ()
+
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src>)
 
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../chance/dice>)
@@ -160,6 +165,7 @@ install (FILES
          rpg_common_usage.h
          rpg_common_xsderrorhandler.h
          rpg_common_XML_parser.h
+         rpg_common_XML_tools.h
          rpg_common_XML_tree.h
          rpg_common_XML_types.h
          DESTINATION include)

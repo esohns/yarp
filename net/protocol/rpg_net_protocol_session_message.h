@@ -25,6 +25,7 @@
 #include "ace/Message_Block.h"
 
 #include "stream_common.h"
+#include "stream_configuration.h"
 #include "stream_session_message_base.h"
 
 #include "rpg_net_protocol_common.h"
@@ -61,9 +62,9 @@ class RPG_Net_Protocol_SessionMessage
   // *NOTE*: assumes responsibility for the second argument !
   // *TODO*: (using gcc) cannot pass reference to pointer for some reason
   RPG_Net_Protocol_SessionMessage (Stream_SessionId_t,
-                                     enum Stream_SessionMessageType,
-                                     RPG_Net_Protocol_SessionData_t*&, // session data container handle
-                                     struct Stream_UserData*);
+                                   enum Stream_SessionMessageType,
+                                   RPG_Net_Protocol_SessionData_t*&, // session data container handle
+                                   struct Stream_UserData*);
   inline virtual ~RPG_Net_Protocol_SessionMessage () {}
 
   // overloaded from ACE_Message_Block

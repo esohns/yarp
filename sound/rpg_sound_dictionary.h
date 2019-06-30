@@ -21,23 +21,23 @@
 #ifndef RPG_SOUND_DICTIONARY_H
 #define RPG_SOUND_DICTIONARY_H
 
-#include "rpg_sound_exports.h"
-#include "rpg_sound_common.h"
-
-#include <ace/Global_Macros.h>
-#include <ace/Singleton.h>
-#include <ace/Synch.h>
-
 #include <string>
+
+#include "ace/Global_Macros.h"
+#include "ace/Singleton.h"
+#include "ace/Synch_Traits.h"
+
+#include "rpg_sound_common.h"
+//#include "rpg_sound_exports.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Sound_Export RPG_Sound_Dictionary
+class RPG_Sound_Dictionary
 {
   // we use the singleton pattern, so we need to enable access to the ctor/dtors
   friend class ACE_Singleton<RPG_Sound_Dictionary,
-                             ACE_Thread_Mutex>;
+                             ACE_SYNCH_MUTEX>;
 
  public:
   // init sound dictionary
@@ -60,7 +60,7 @@ class RPG_Sound_Export RPG_Sound_Dictionary
 };
 
 typedef ACE_Singleton<RPG_Sound_Dictionary,
-                      ACE_Thread_Mutex> RPG_SOUND_DICTIONARY_SINGLETON;
-RPG_SOUND_SINGLETON_DECLARE(ACE_Singleton, RPG_Sound_Dictionary, ACE_Thread_Mutex);
+                      ACE_SYNCH_MUTEX> RPG_SOUND_DICTIONARY_SINGLETON;
+//RPG_SOUND_SINGLETON_DECLARE(ACE_Singleton, RPG_Sound_Dictionary, ACE_Thread_Mutex);
 
 #endif

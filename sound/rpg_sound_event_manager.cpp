@@ -24,9 +24,10 @@
 #include "ace/Dirent_Selector.h"
 #include "ace/Log_Msg.h"
 
-#include "common_timerhandler.h"
-#include "common_timer_manager.h"
 #include "common_file_tools.h"
+
+#include "common_timer_handler.h"
+#include "common_timer_manager_common.h"
 
 #include "rpg_common.h"
 #include "rpg_common_macros.h"
@@ -159,19 +160,9 @@ RPG_Sound_Event_Manager::start ()
   } // end IF
   ACE_ASSERT (myTimerID == -1);
 
-  ACE_Event_Handler* timer_handler_p = NULL;
-  ACE_NEW_NORETURN (timer_handler_p,
-                    Common_TimerHandler (this));
-  if (!timer_handler_p)
-  {
-    ACE_DEBUG ((LM_CRITICAL,
-                ACE_TEXT ("failed to allocate RPG_Common_TimerHandler, aborting\n")));
-    return;
-  } // end IF
-
   // *NOTE*: this is a fire-and-forget API (assumes resp. for timer_handler)...
   myTimerID =
-    COMMON_TIMERMANAGER_SINGLETON::instance ()->schedule (timer_handler_p,       // event handler handle
+    COMMON_TIMERMANAGER_SINGLETON::instance ()->schedule (this,                  // event handler handle
                                                           NULL,                  // ACT
                                                           COMMON_TIME_POLICY (), // expire immediately
                                                           ACE_Time_Value::zero); // one-shot
@@ -179,10 +170,6 @@ RPG_Sound_Event_Manager::start ()
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to schedule timer, aborting\n")));
-
-    // clean up
-    delete timer_handler_p;
-
     return;
   } // end IF
 }
@@ -236,7 +223,7 @@ RPG_Sound_Event_Manager::isPlaying() const
 }
 
 void
-RPG_Sound_Event_Manager::handleTimeout(const void* act_in)
+RPG_Sound_Event_Manager::handle(const void* act_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Event_Manager::handleTimeout"));
 
@@ -330,19 +317,9 @@ RPG_Sound_Event_Manager::handleTimeout(const void* act_in)
   } // end ELSE
   ACE_ASSERT (length != ACE_Time_Value::max_time);
 
-  ACE_Event_Handler* timer_handler_p = NULL;
-  ACE_NEW_NORETURN (timer_handler_p,
-                    Common_TimerHandler (this, true));
-  if (!timer_handler_p)
-  {
-    ACE_DEBUG ((LM_CRITICAL,
-                ACE_TEXT ("failed to allocate RPG_Common_TimerHandler, returning")));
-    return;
-  } // end IF
-
   // *NOTE*: this is a fire-and-forget API (assumes resp. for timer_handler)...
   myTimerID =
-    COMMON_TIMERMANAGER_SINGLETON::instance ()->schedule (timer_handler_p,                // event handler handle
+    COMMON_TIMERMANAGER_SINGLETON::instance ()->schedule (this,                           // event handler handle
                                                           NULL,                           // ACT
                                                           COMMON_TIME_POLICY () + length, // wakeup time
                                                           ACE_Time_Value::zero);          // interval: one-shot

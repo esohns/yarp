@@ -21,7 +21,14 @@
 #ifndef RPG_NET_PROTOCOL_COMMON_H
 #define RPG_NET_PROTOCOL_COMMON_H
 
+#include <list>
+
+#include "stream_common.h"
+#include "stream_isessionnotify.h"
 #include "stream_session_data.h"
+
+//#include "rpg_net_protocol_message.h"
+//#include "rpg_net_protocol_session_message.h"
 
 struct RPG_Net_Protocol_SessionData
  : Stream_SessionData

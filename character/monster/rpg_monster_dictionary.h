@@ -21,28 +21,30 @@
 #ifndef RPG_MONSTER_DICTIONARY_H
 #define RPG_MONSTER_DICTIONARY_H
 
-#include "rpg_monster_exports.h"
-#include "rpg_monster_common.h"
-
-#include "rpg_dice_incl.h"
-#include "rpg_common_incl.h"
-#include "rpg_common_environment_incl.h"
-#include "rpg_character_incl.h"
+#include <string>
 
 #include "ace/Global_Macros.h"
 #include "ace/Singleton.h"
-#include "ace/Synch.h"
+#include "ace/Synch_Traits.h"
 
-#include <string>
+#include "rpg_monster_common.h"
+//#include "rpg_monster_exports.h"
+
+#include "rpg_dice_incl.h"
+
+#include "rpg_common_incl.h"
+#include "rpg_common_environment_incl.h"
+
+#include "rpg_character_incl.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Monster_Export RPG_Monster_Dictionary
+class RPG_Monster_Dictionary
 {
   // we use the singleton pattern, so we need to enable access to the ctor/dtors
   friend class ACE_Singleton<RPG_Monster_Dictionary,
-                             ACE_Thread_Mutex>;
+                             ACE_SYNCH_MUTEX>;
 
  public:
   // init dictionary
@@ -64,8 +66,8 @@ class RPG_Monster_Export RPG_Monster_Dictionary
  private:
   RPG_Monster_Dictionary();
   virtual ~RPG_Monster_Dictionary();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Dictionary(const RPG_Monster_Dictionary&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Dictionary& operator=(const RPG_Monster_Dictionary&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Dictionary(const RPG_Monster_Dictionary&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Dictionary& operator=(const RPG_Monster_Dictionary&))
 
   // helper types
   typedef RPG_Monster_Dictionary_t::const_iterator RPG_Monster_DictionaryConstIterator_t;
@@ -74,9 +76,9 @@ class RPG_Monster_Export RPG_Monster_Dictionary
 };
 
 typedef ACE_Singleton<RPG_Monster_Dictionary,
-                      ACE_Thread_Mutex> RPG_MONSTER_DICTIONARY_SINGLETON;
-RPG_MONSTER_SINGLETON_DECLARE(ACE_Singleton,
-                              RPG_Monster_Dictionary,
-                              ACE_Thread_Mutex)
+                      ACE_SYNCH_MUTEX> RPG_MONSTER_DICTIONARY_SINGLETON;
+//RPG_MONSTER_SINGLETON_DECLARE(ACE_Singleton,
+//                              RPG_Monster_Dictionary,
+//                              ACE_Thread_Mutex)
 
 #endif

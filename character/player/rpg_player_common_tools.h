@@ -54,7 +54,8 @@ class RPG_Player_Common_Tools
   ACE_UNIMPLEMENTED_FUNC (RPG_Player_Common_Tools (const RPG_Player_Common_Tools&))
   ACE_UNIMPLEMENTED_FUNC (RPG_Player_Common_Tools& operator= (const RPG_Player_Common_Tools&))
 
-  static RPG_Character_Race_t raceXMLTreeToRace(RPG_Player_CharacterXML_XMLTree_Type::race_sequence&); // race (XML format)
+  // *WARNING*: MSVC refuses to compile RPG_Character_Race_t
+  static std::bitset<6> raceXMLTreeToRace(const RPG_Player_CharacterXML_XMLTree_Type::race_sequence&); // race (XML format)
   static RPG_Character_Abilities_t abilitiesXMLTreeToAbilities(const RPG_Player_Abilities_XMLTree_Type&); // abilities (XML format)
 
   static RPG_Magic_SpellTypes_t spellsXMLTreeToSpellTypes(const RPG_Player_Spells_XMLTree_Type&); // spells (XML format)

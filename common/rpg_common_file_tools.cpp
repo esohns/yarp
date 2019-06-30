@@ -33,7 +33,7 @@
 #include "ace/Dirent_Selector.h"
 #include "ace/OS_NS_sys_sendfile.h"
 
-#include "common_tools.h"
+//#include "common_tools.h"
 #include "common_file_tools.h"
 #include "common_defines.h"
 
@@ -88,7 +88,7 @@ RPG_Common_File_Tools::getConfigurationDataDirectory (const std::string& baseDir
 
     result = ACE_TEXT_ALWAYS_CHAR (buffer);
     result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    result += ACE_TEXT_ALWAYS_CHAR (YARP_PACKAGE);
+    //result += ACE_TEXT_ALWAYS_CHAR (YARP_PACKAGE);
 #else
     return Common_File_Tools::getWorkingDirectory ();
 #endif
@@ -178,14 +178,14 @@ RPG_Common_File_Tools::getUserConfigurationDirectory ()
 
     // fallback
     result =
-        ACE_TEXT_ALWAYS_CHAR (ACE_OS::getenv (ACE_TEXT (COMMON_DEF_DUMP_DIR)));
+        ACE_TEXT_ALWAYS_CHAR (ACE_OS::getenv (ACE_TEXT (COMMON_LOCATION_TEMPORARY_STORAGE_VARIABLE)));
     return result;
   } // end IF
 
   result = ACE_TEXT_ALWAYS_CHAR (buffer);
   result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  result += ACE_TEXT_ALWAYS_CHAR (YARP_PACKAGE);
+  //result += ACE_TEXT_ALWAYS_CHAR (YARP_PACKAGE);
 
   if (!Common_File_Tools::isDirectory (result))
   {
@@ -197,7 +197,7 @@ RPG_Common_File_Tools::getUserConfigurationDirectory ()
 
       // fallback
       result =
-          ACE_TEXT_ALWAYS_CHAR (ACE_OS::getenv (ACE_TEXT (COMMON_DEF_DUMP_DIR)));
+          ACE_TEXT_ALWAYS_CHAR (ACE_OS::getenv (ACE_TEXT (COMMON_LOCATION_TEMPORARY_STORAGE_VARIABLE)));
     } // end IF
     else
       ACE_DEBUG ((LM_DEBUG,
@@ -254,7 +254,7 @@ RPG_Common_File_Tools::getLogDirectory ()
   // init return value(s)
   std::string result;
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-  result = ACE_OS::getenv (ACE_TEXT_ALWAYS_CHAR (COMMON_DEF_LOG_DIRECTORY));
+  result = ACE_OS::getenv (ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEMPORARY_STORAGE_VARIABLE));
 #else
   result = ACE_TEXT_ALWAYS_CHAR (COMMON_DEF_LOG_DIRECTORY);
 #endif

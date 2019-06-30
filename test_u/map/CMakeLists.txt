@@ -12,6 +12,10 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/timer)
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../common)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../character)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../magic)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../item)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../combat)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../character/player)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../character/monster)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../map)
@@ -22,7 +26,7 @@ set (EXECUTABLE map_parser)
 set (${EXECUTABLE}_SRCS
      map_parser.cpp)
 
-set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS BASEDIR=\"C:\\\")
+set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
 
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
@@ -45,7 +49,7 @@ set (EXECUTABLE map_generator)
 set (${EXECUTABLE}_SRCS
      map_generator.cpp)
 
-set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS BASEDIR=\"C:\\\")
+set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
 
 if (UNIX)
  include_directories (${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
@@ -97,10 +101,7 @@ target_link_libraries (${EXECUTABLE}
                        Userenv.lib
 #                       xerces-c
                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/cmake/src/Debug/Common.lib
-                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/cmake/src/error/Debug/CommonError.lib
-                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/cmake/src/log/Debug/CommonLog.lib
-                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/cmake/src/timer/Debug/CommonTimer.lib
+                       Common CommonError CommonLog CommonTimer
                        RPG_Dice RPG_Common RPG_Map)
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")

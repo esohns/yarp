@@ -27,13 +27,14 @@
 #include "ace/Task_Ex_T.h"
 #include "ace/Time_Value.h"
 #include "ace/Singleton.h"
-#include "ace/Synch.h"
+#include "ace/Synch_Traits.h"
 
 #include "common.h"
-#include "common_icontrol.h"
+//#include "common_icontrol.h"
 #include "common_idumpstate.h"
-#include "common_itimer.h"
-#include "common_timerhandler.h"
+
+#include "common_time_common.h"
+#include "common_timer_handler.h"
 
 #include "rpg_engine_common.h"
 #include "rpg_engine_event_common.h"
@@ -45,18 +46,21 @@ class RPG_Engine;
 /**
   @author Erik Sohns <erik.sohns@web.de>
  */
-class RPG_Engine_Export RPG_Engine_Event_Manager
+class RPG_Engine_Event_Manager
  : public ACE_Task_Ex<ACE_MT_SYNCH,
                       RPG_Engine_Event_t,
                       Common_TimePolicy_t>,
-   public Common_IControl,
-   public Common_ITimer,
+   //public Common_IControl,
+   public Common_Timer_Handler,
    public Common_IDumpState
 {
+  typedef ACE_Task_Ex<ACE_MT_SYNCH,
+                      RPG_Engine_Event_t,
+                      Common_TimePolicy_t> inherited;
+
   // singleton requires access to the ctor/dtor
   friend class ACE_Singleton<RPG_Engine_Event_Manager,
-                             ACE_Recursive_Thread_Mutex>;
-	friend class RPG_Common_TimerHandler;
+                             ACE_SYNCH_RECURSIVE_MUTEX>;
 
  public:
   void init(RPG_Engine*); // engine handle
@@ -84,14 +88,10 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
   virtual void dump_state() const;
 
  private:
-  typedef ACE_Task_Ex<ACE_MT_SYNCH,
-                      RPG_Engine_Event_t,
-                      Common_TimePolicy_t> inherited;
-
   virtual ~RPG_Engine_Event_Manager();
   RPG_Engine_Event_Manager();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Event_Manager(const RPG_Engine_Event_Manager&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Event_Manager& operator=(const RPG_Engine_Event_Manager&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Event_Manager(const RPG_Engine_Event_Manager&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Event_Manager& operator=(const RPG_Engine_Event_Manager&))
 
   // implement task-based members
   virtual int open(void* = NULL);
@@ -99,7 +99,7 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
   virtual int svc(void);
 
   // implement RPG_Common_ITimer interface
-  virtual void handleTimeout(const void*); // ACT (if any)
+  virtual void handle (const void*); // ACT (if any)
 
 	// helper methods
 	void cancel_all();
@@ -131,7 +131,7 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
     bool operator()(const RPG_Engine_EntityID_t&);
   };
 
-  ACE_Thread_Mutex          myLock;
+  ACE_SYNCH_MUTEX           myLock;
   ACE_Time_Value            myGameClockStart;
 
   RPG_Engine_EventTimers_t  myTimers;
@@ -140,8 +140,8 @@ class RPG_Engine_Export RPG_Engine_Event_Manager
 };
 
 typedef ACE_Singleton<RPG_Engine_Event_Manager,
-                      ACE_Recursive_Thread_Mutex> RPG_ENGINE_EVENT_MANAGER_SINGLETON;
-RPG_ENGINE_SINGLETON_DECLARE(ACE_Singleton,
-                             RPG_Engine_Event_Manager,
-                             ACE_Recursive_Thread_Mutex);
+                      ACE_SYNCH_RECURSIVE_MUTEX> RPG_ENGINE_EVENT_MANAGER_SINGLETON;
+//RPG_ENGINE_SINGLETON_DECLARE(ACE_Singleton,
+//                             RPG_Engine_Event_Manager,
+//                             ACE_Recursive_Thread_Mutex);
 #endif

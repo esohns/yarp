@@ -55,8 +55,8 @@
 #include "rpg_player.h"
 #include "rpg_player_defines.h"
 
-RPG_Character_Race_t
-RPG_Player_Common_Tools::raceXMLTreeToRace(RPG_Player_CharacterXML_XMLTree_Type::race_sequence& races_in)
+std::bitset<6>
+RPG_Player_Common_Tools::raceXMLTreeToRace(const RPG_Player_CharacterXML_XMLTree_Type::race_sequence& races_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::raceXMLTreeToRace"));
 

@@ -145,6 +145,15 @@ add_dependencies (${LIBRARY} RPG_Common RPG_Dice)
 
 set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
+target_link_libraries(${LIBRARY}
+                      ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
+                      ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
+                      ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
+target_link_libraries(${LIBRARY}
+                      $ENV{LIB_ROOT}/SDL/lib/x86/SDL.lib
+                      $ENV{LIB_ROOT}/SDL_ttf/lib/x86/SDL_ttf.lib
+                      $ENV{LIB_ROOT}/libpng/cmake/Debug/libpng16d.lib)
+
 ########### install files ###############
 install (FILES
          rpg_graphics.xml

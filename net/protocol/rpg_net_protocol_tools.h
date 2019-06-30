@@ -55,13 +55,13 @@ class RPG_Net_Protocol_Tools
   //static bool isValidIRCChannelName (const std::string&); // string
 
   // *TODO*: find a way to directly export the singleton from the dll
-  static RPG_Net_Protocol_IConnection_Manager_t* getConnectionManager ();
+  //static RPG_Net_Protocol_IConnection_Manager_t* getConnectionManager ();
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools ());
-  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Net_Protocol_Tools ());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools (const RPG_Net_Protocol_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools& operator= (const RPG_Net_Protocol_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools ())
+  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Net_Protocol_Tools ())
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools (const RPG_Net_Protocol_Tools&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools& operator= (const RPG_Net_Protocol_Tools&))
 
   // helper methods
   //static RPG_Net_Protocol_UserMode IRCUserModeChar2UserMode (char);

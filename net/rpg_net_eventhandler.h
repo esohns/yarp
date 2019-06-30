@@ -30,19 +30,10 @@
 //#include "net_message.h"
 //#include "net_messagehandler_base.h"
 
-// forward declarations
-struct RPG_Net_SessionData;
-class RPG_Net_Message;
-class RPG_Net_SessionMessage;
-
-typedef Stream_ISessionDataNotify_T<Stream_SessionId_t,
-                                    struct RPG_Net_SessionData,
-                                    enum Stream_SessionMessageType,
-                                    RPG_Net_Message,
-                                    RPG_Net_SessionMessage> RPG_Net_ISessionNotify_t;
+#include "rpg_net_protocol_configuration.h"
 
 class RPG_Net_EventHandler
- : public RPG_Net_ISessionNotify_t
+ : public RPG_Net_Protocol_ISessionNotify_t
 {
  public:
   RPG_Net_EventHandler ();
@@ -54,9 +45,9 @@ class RPG_Net_EventHandler
   inline virtual void notify (Stream_SessionId_t, const enum Stream_SessionMessageType&) { ACE_ASSERT (false); ACE_NOTSUP; ACE_NOTREACHED (return;) }
   virtual void end (Stream_SessionId_t);
   virtual void notify (Stream_SessionId_t,
-                       const RPG_Net_Message&);
+                       const RPG_Net_Protocol_Message&);
   virtual void notify (Stream_SessionId_t,
-                       const RPG_Net_SessionMessage&);
+                       const RPG_Net_Protocol_SessionMessage&);
 
  private:
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_EventHandler (const RPG_Net_EventHandler&));

@@ -55,7 +55,7 @@
 
 #include "net_common_tools.h"
 #include "net_configuration.h"
-#include "net_connection_manager_common.h"
+#include "net_connection_manager.h"
 
 #include "net_server_common.h"
 
@@ -68,9 +68,9 @@
 
 #include "rpg_net_defines.h"
 
-#include "rpg_net_server_common.h"
-#include "rpg_net_server_common_tools.h"
-#include "rpg_net_server_defines.h"
+//#include "rpg_net_server_common.h"
+//#include "rpg_net_server_common_tools.h"
+//#include "rpg_net_server_defines.h"
 
 #include "net_callbacks.h"
 #include "net_common.h"

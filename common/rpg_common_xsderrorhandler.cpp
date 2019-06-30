@@ -21,49 +21,28 @@
 
 #include "rpg_common_xsderrorhandler.h"
 
+#include "ace/Log_Msg.h"
+
+#include "xercesc/util/XMLString.hpp"
+#include "xercesc/util/PlatformUtils.hpp"
+
 #include "rpg_common_macros.h"
 #include "rpg_XMLSchema_XML_tree.h"
 
-#include <xercesc/util/XMLString.hpp>
-#include <xercesc/util/PlatformUtils.hpp>
-
-#include <ace/Log_Msg.h>
-
 RPG_Common_XSDErrorHandler::RPG_Common_XSDErrorHandler()
- : myFailed(false)
+ : inherited ()
+  , myFailed (false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_XSDErrorHandler::RPG_Common_XSDErrorHandler"));
 
 }
 
-RPG_Common_XSDErrorHandler::~RPG_Common_XSDErrorHandler()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Common_XSDErrorHandler::~RPG_Common_XSDErrorHandler"));
-
-}
-
-void
-RPG_Common_XSDErrorHandler::reset()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Common_XSDErrorHandler::reset"));
-
-  myFailed = false;
-}
-
 bool
-RPG_Common_XSDErrorHandler::failed()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Common_XSDErrorHandler::failed"));
-
-  return myFailed;
-}
-
-bool
-RPG_Common_XSDErrorHandler::handle(const std::string& id_in,
-                                   unsigned long line_in,
-                                   unsigned long column_in,
-                                   ::xsd::cxx::xml::error_handler<char>::severity severity_in,
-                                   const std::string& message_in)
+RPG_Common_XSDErrorHandler::handle (const std::string& id_in,
+                                    unsigned long line_in,
+                                    unsigned long column_in,
+                                    ::xsd::cxx::xml::error_handler<char>::severity severity_in,
+                                    const std::string& message_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_XSDErrorHandler::handle"));
 
@@ -135,32 +114,11 @@ RPG_Common_XSDErrorHandler::handle(const std::string& id_in,
 // *********************************************************************** //
 
 RPG_Common_XercesErrorHandler::RPG_Common_XercesErrorHandler()
- : myFailed(false)
+ : inherited ()
+ , myFailed (false)
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_XercesErrorHandler::RPG_Common_XercesErrorHandler"));
 
-}
-
-RPG_Common_XercesErrorHandler::~RPG_Common_XercesErrorHandler()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Common_XercesErrorHandler::~RPG_Common_XercesErrorHandler"));
-
-}
-
-void
-RPG_Common_XercesErrorHandler::resetErrors()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Common_XercesErrorHandler::resetErrors"));
-
-  myFailed = false;
-}
-
-bool
-RPG_Common_XercesErrorHandler::failed()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Common_XercesErrorHandler::failed"));
-
-  return myFailed;
 }
 
 void
@@ -168,10 +126,12 @@ RPG_Common_XercesErrorHandler::warning(const ::xercesc::SAXParseException& excep
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_XercesErrorHandler::warning"));
 
-  std::string system_id = ::xercesc::XMLString::transcode(exception_in.getSystemId(),
-                                                          ::xercesc::XMLPlatformUtils::fgMemoryManager);
-  std::string message   = ::xercesc::XMLString::transcode(exception_in.getMessage(),
-                                                          ::xercesc::XMLPlatformUtils::fgMemoryManager);
+  std::string system_id =
+    ::xercesc::XMLString::transcode(exception_in.getSystemId(),
+                                    ::xercesc::XMLPlatformUtils::fgMemoryManager);
+  std::string message   =
+    ::xercesc::XMLString::transcode(exception_in.getMessage(),
+                                    ::xercesc::XMLPlatformUtils::fgMemoryManager);
 
   ACE_DEBUG((LM_WARNING,
              ACE_TEXT("WARNING: error occured (ID: \"%s\", location [%Q,%Q]): \"%s\", continuing\n"),
@@ -186,10 +146,12 @@ RPG_Common_XercesErrorHandler::error(const ::xercesc::SAXParseException& excepti
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_XercesErrorHandler::error"));
 
-  std::string system_id = ::xercesc::XMLString::transcode(exception_in.getSystemId(),
-                                                          ::xercesc::XMLPlatformUtils::fgMemoryManager);
-  std::string message   = ::xercesc::XMLString::transcode(exception_in.getMessage(),
-                                                          ::xercesc::XMLPlatformUtils::fgMemoryManager);
+  std::string system_id =
+    ::xercesc::XMLString::transcode(exception_in.getSystemId(),
+                                    ::xercesc::XMLPlatformUtils::fgMemoryManager);
+  std::string message   =
+    ::xercesc::XMLString::transcode(exception_in.getMessage(),
+                                    ::xercesc::XMLPlatformUtils::fgMemoryManager);
 
   ACE_DEBUG((LM_ERROR,
              ACE_TEXT("ERROR: error occured (ID: \"%s\", location: [%Q,%Q]): \"%s\", continuing\n"),
@@ -206,10 +168,12 @@ RPG_Common_XercesErrorHandler::fatalError(const ::xercesc::SAXParseException& ex
 {
   RPG_TRACE(ACE_TEXT("RPG_Common_XercesErrorHandler::fatalError"));
 
-  std::string system_id = ::xercesc::XMLString::transcode(exception_in.getSystemId(),
-                                                          ::xercesc::XMLPlatformUtils::fgMemoryManager);
-  std::string message   = ::xercesc::XMLString::transcode(exception_in.getMessage(),
-                                                          ::xercesc::XMLPlatformUtils::fgMemoryManager);
+  std::string system_id =
+    ::xercesc::XMLString::transcode(exception_in.getSystemId(),
+                                    ::xercesc::XMLPlatformUtils::fgMemoryManager);
+  std::string message   =
+    ::xercesc::XMLString::transcode(exception_in.getMessage(),
+                                    ::xercesc::XMLPlatformUtils::fgMemoryManager);
 
   ACE_DEBUG((LM_ERROR,
              ACE_TEXT("FATAL: error occured (ID: \"%s\", location: [%Q,%Q]): \"%s\", continuing\n"),

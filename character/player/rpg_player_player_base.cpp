@@ -46,26 +46,26 @@
 
 #include <algorithm>
 
-RPG_Player_Player_Base::RPG_Player_Player_Base(// base attributes
-											                         const std::string& name_in,
-											                         const RPG_Character_Gender& gender_in,
-											                         const RPG_Character_Race_t& race_in,
-											                         const RPG_Character_Class& class_in,
-											                         const RPG_Character_Alignment& alignment_in,
-											                         const RPG_Character_Attributes& attributes_in,
-											                         const RPG_Character_Skills_t& skills_in,
-											                         const RPG_Character_Feats_t& feats_in,
-											                         const RPG_Character_Abilities_t& abilities_in,
-											                         const RPG_Character_OffHand& offHand_in,
-											                         const unsigned short int& maxHitPoints_in,
-											                         const RPG_Magic_SpellTypes_t& knownSpells_in,
-											                         // current status
-											                         const RPG_Character_Conditions_t& condition_in,
-											                         const short int& hitpoints_in,
-											                         const unsigned int& experience_in,
-											                         const unsigned int& wealth_in,
-											                         const RPG_Magic_Spells_t& spells_in,
-											                         const RPG_Item_List_t& inventory_in)
+RPG_Player_Player_Base::RPG_Player_Player_Base (// base attributes
+                                                const std::string& name_in,
+                                                enum RPG_Character_Gender gender_in,
+                                                const RPG_Character_Race_t& race_in,
+                                                const struct RPG_Character_Class& class_in,
+                                                const struct RPG_Character_Alignment& alignment_in,
+                                                const struct RPG_Character_Attributes& attributes_in,
+                                                const RPG_Character_Skills_t& skills_in,
+                                                const RPG_Character_Feats_t& feats_in,
+                                                const RPG_Character_Abilities_t& abilities_in,
+                                                enum RPG_Character_OffHand offHand_in,
+                                                const unsigned short int& maxHitPoints_in,
+                                                const RPG_Magic_SpellTypes_t& knownSpells_in,
+                                                // current status
+                                                const RPG_Character_Conditions_t& condition_in,
+                                                const short int& hitpoints_in,
+                                                const unsigned int& experience_in,
+                                                const unsigned int& wealth_in,
+                                                const RPG_Magic_Spells_t& spells_in,
+                                                const RPG_Item_List_t& inventory_in)
  : inherited(name_in,
              alignment_in,
              attributes_in,
@@ -125,26 +125,26 @@ RPG_Player_Player_Base::~RPG_Player_Player_Base()
 // }
 
 void
-RPG_Player_Player_Base::init(// base attributes
-							               const std::string& name_in,
-							               const RPG_Character_Gender& gender_in,
-							               const RPG_Character_Race_t& race_in,
-							               const RPG_Character_Class& class_in,
-							               const RPG_Character_Alignment& alignment_in,
-							               const RPG_Character_Attributes& attributes_in,
-							               const RPG_Character_Skills_t& skills_in,
-							               const RPG_Character_Feats_t& feats_in,
-							               const RPG_Character_Abilities_t& abilities_in,
-							               const RPG_Character_OffHand& offHand_in,
-							               const unsigned short int& maxHitPoints_in,
-							               const RPG_Magic_SpellTypes_t& knownSpells_in,
-							               // current status
-							               const RPG_Character_Conditions_t& condition_in,
-							               const short int& hitpoints_in,
-							               const unsigned int& experience_in,
-							               const unsigned int& wealth_in,
-							               const RPG_Magic_Spells_t& spells_in,
-							               const RPG_Item_List_t& inventory_in)
+RPG_Player_Player_Base::init (// base attributes
+                              const std::string& name_in,
+                              enum RPG_Character_Gender gender_in,
+                              const RPG_Character_Race_t& race_in,
+                              const struct RPG_Character_Class& class_in,
+                              const struct RPG_Character_Alignment& alignment_in,
+                              const struct RPG_Character_Attributes& attributes_in,
+                              const RPG_Character_Skills_t& skills_in,
+                              const RPG_Character_Feats_t& feats_in,
+                              const RPG_Character_Abilities_t& abilities_in,
+                              enum RPG_Character_OffHand offHand_in,
+                              const unsigned short int& maxHitPoints_in,
+                              const RPG_Magic_SpellTypes_t& knownSpells_in,
+                              // current status
+                              const RPG_Character_Conditions_t& condition_in,
+                              const short int& hitpoints_in,
+                              const unsigned int& experience_in,
+                              const unsigned int& wealth_in,
+                              const RPG_Magic_Spells_t& spells_in,
+                              const RPG_Item_List_t& inventory_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::init"));
 
@@ -173,7 +173,7 @@ RPG_Player_Player_Base::init(// base attributes
   mySize       = RPG_Character_Race_Common_Tools::race2Size(race_in);
 }
 
-const RPG_Character_Gender&
+enum RPG_Character_Gender
 RPG_Player_Player_Base::getGender() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getGender"));
@@ -189,7 +189,7 @@ RPG_Player_Player_Base::getRace() const
   return myRace;
 }
 
-const RPG_Character_Class&
+const struct RPG_Character_Class&
 RPG_Player_Player_Base::getClass() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getClass"));
@@ -197,7 +197,7 @@ RPG_Player_Player_Base::getClass() const
   return myClass;
 }
 
-const RPG_Character_OffHand&
+enum RPG_Character_OffHand
 RPG_Player_Player_Base::getOffHand() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getOffHand"));
@@ -205,7 +205,7 @@ RPG_Player_Player_Base::getOffHand() const
   return myOffHand;
 }
 
-const RPG_Common_Size&
+enum RPG_Common_Size
 RPG_Player_Player_Base::getSize() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getSize"));
@@ -247,8 +247,8 @@ RPG_Player_Player_Base::getEquipment()
 }
 
 RPG_Character_BaseAttackBonus_t
-RPG_Player_Player_Base::getAttackBonus(const RPG_Common_Attribute& modifier_in,
-                                       const RPG_Combat_AttackSituation& attackSituation_in) const
+RPG_Player_Player_Base::getAttackBonus(enum RPG_Common_Attribute modifier_in,
+                                       enum RPG_Combat_AttackSituation attackSituation_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getAttackBonus"));
 
@@ -293,8 +293,8 @@ RPG_Player_Player_Base::getAttackBonus(const RPG_Common_Attribute& modifier_in,
   return result;
 }
 
-signed char
-RPG_Player_Player_Base::getArmorClass(const RPG_Combat_DefenseSituation& defenseSituation_in) const
+ACE_INT8
+RPG_Player_Player_Base::getArmorClass(enum RPG_Combat_DefenseSituation defenseSituation_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getArmorClass"));
 
@@ -388,11 +388,11 @@ RPG_Player_Player_Base::getReach(unsigned short& baseRange_out,
   return result;
 }
 
-unsigned char
-RPG_Player_Player_Base::getSpeed(const bool& isRunning_in,
-                                 const RPG_Common_AmbientLighting& lighting_in,
-                                 const RPG_Common_Terrain& terrain_in,
-                                 const RPG_Common_Track& track_in) const
+ACE_UINT8
+RPG_Player_Player_Base::getSpeed(bool isRunning_in,
+                                 enum RPG_Common_AmbientLighting lighting_in,
+                                 enum RPG_Common_Terrain terrain_in,
+                                 enum RPG_Common_Track track_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getSpeed"));
 
@@ -720,7 +720,7 @@ RPG_Player_Player_Base::dump() const
              ACE_TEXT(RPG_Magic_Common_Tools::toString(mySpells).c_str())));
 }
 
-signed char
+ACE_INT8
 RPG_Player_Player_Base::getShieldBonus() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getShieldBonus"));

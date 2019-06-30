@@ -18,6 +18,11 @@ set (${EXECUTABLE}_SRCS
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 
+if (WIN32)
+# include_directories ($ENV{LIB_ROOT}/gtk2/include/gtk-2.0)
+ include_directories (${GTK_INCLUDE_DIRS})
+endif (WIN32)
+
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/image)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log)

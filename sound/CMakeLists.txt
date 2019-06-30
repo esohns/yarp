@@ -19,6 +19,8 @@ set (${LIBRARY}_SRCS
      rpg_sound_common_tools.cpp
      rpg_sound_common_tools.h
      rpg_sound_defines.h
+     rpg_sound_event_manager.cpp
+     rpg_sound_event_manager.h
     # rpg_sound_exports.h
      rpg_sound_dictionary.cpp
      rpg_sound_dictionary.h
@@ -74,6 +76,8 @@ endif ()
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src>)
 target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/error>)
+target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/timer>)
 
 target_include_directories (${LIBRARY} PUBLIC
@@ -107,6 +111,7 @@ install (FILES
          rpg_sound_common.h
          rpg_sound_common_tools.h
          rpg_sound_defines.h
+         rpg_sound_event_manager.h
         # rpg_sound_exports.h
          rpg_sound_dictionary.h
          rpg_sound_event.h

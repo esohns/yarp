@@ -51,7 +51,7 @@ RPG_Net_EventHandler::end (Stream_SessionId_t sessionId_in)
 
 void
 RPG_Net_EventHandler::notify (Stream_SessionId_t sessionId_in,
-                              const RPG_Net_Message& message_in)
+                              const RPG_Net_Protocol_Message& message_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_EventHandler::notify"));
 
@@ -61,7 +61,7 @@ RPG_Net_EventHandler::notify (Stream_SessionId_t sessionId_in,
 
 void
 RPG_Net_EventHandler::notify (Stream_SessionId_t sessionId_in,
-                              const RPG_Net_SessionMessage& sessionMessage_in)
+                              const RPG_Net_Protocol_SessionMessage& sessionMessage_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_EventHandler::notify"));
 

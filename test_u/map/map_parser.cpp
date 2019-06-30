@@ -32,7 +32,10 @@
 #include "ace/Log_Msg.h"
 
 #include "common_file_tools.h"
-#include "common_tools.h"
+
+#include "common_log_tools.h"
+
+#include "common_timer_tools.h"
 
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
@@ -46,6 +49,7 @@
 #include "rpg_common_tools.h"
 
 #include "rpg_map_common_tools.h"
+#include "rpg_map_defines.h"
 #include "rpg_map_level.h"
 
 #include "rpg_engine_defines.h"
@@ -228,7 +232,7 @@ do_work (const std::string& schemaRepository_in,
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step0: initialize framework
-  RPG_Common_Tools::initStringConversionTables ();
+  RPG_Common_Tools::initializeStringConversionTables ();
 
   // step1: load map / level
   std::string extension = ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
@@ -236,7 +240,7 @@ do_work (const std::string& schemaRepository_in,
     (mapFile_in.find (extension) == (mapFile_in.size () - extension.size ()));
   if (load_level)
   {
-    RPG_Engine_Level_t level;
+    struct RPG_Engine_LevelData level;
     if (!RPG_Engine_Level::load (mapFile_in,
                                  schemaRepository_in,
                                  level))
@@ -251,7 +255,7 @@ do_work (const std::string& schemaRepository_in,
   } // end IF
   else
   {
-    RPG_Map_t map;
+    struct RPG_Map map;
     if (!RPG_Map_Level::load (mapFile_in, map))
     {
       ACE_DEBUG ((LM_ERROR,
@@ -275,7 +279,7 @@ do_printVersion(const std::string& programName_in)
   std::cout << programName_in
 #ifdef HAVE_CONFIG_H
             << ACE_TEXT(" : ")
-            << RPG_VERSION
+            //<< RPG_VERSION
 #endif
             << std::endl;
 
@@ -351,7 +355,7 @@ ACE_TMAIN (int argc_in,
   map_file += ACE_TEXT_ALWAYS_CHAR ("data");
   map_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
-  map_file += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAPS_SUB);
+  map_file += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   map_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   map_file += (MAP_GENERATOR_DEF_LEVEL ? RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME))
@@ -412,12 +416,12 @@ ACE_TMAIN (int argc_in,
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
-  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]),   // program name
-                                        log_file,                    // logfile
-                                        false,                       // log to syslog ?
-                                        false,                       // trace messages ?
-                                        trace_information,           // debug messages ?
-                                        NULL))                       // logger
+  if (!Common_Log_Tools::initializeLogging (ACE::basename (argv_in[0]),   // program name
+                                            log_file,                    // logfile
+                                            false,                       // log to syslog ?
+                                            false,                       // trace messages ?
+                                            trace_information,           // debug messages ?
+                                            NULL))                       // logger
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));
@@ -462,8 +466,8 @@ ACE_TMAIN (int argc_in,
   std::string working_time_string;
   ACE_Time_Value working_time;
   timer.elapsed_time (working_time);
-  RPG_Common_Tools::period2String (working_time,
-                                   working_time_string);
+  working_time_string =
+    Common_Timer_Tools::periodToString (working_time);
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
               ACE_TEXT (working_time_string.c_str ())));

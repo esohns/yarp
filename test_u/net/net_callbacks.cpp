@@ -21,7 +21,7 @@
 
 #include "net_callbacks.h"
 
-#include "glade/glade.h"
+//#include "glade/glade.h"
 
 #include "common_timer_manager.h"
 
@@ -31,8 +31,8 @@
 #include "common_ui_tools.h"
 
 #include "net_common.h"
-#include "net_connection_common.h"
-#include "net_connection_manager_common.h"
+//#include "net_connection_common.h"
+//#include "net_connection_manager_common.h"
 #include "net_defines.h"
 
 #include "net_server_common.h"

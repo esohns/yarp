@@ -34,6 +34,7 @@
 #include "stream_streammodule_base.h"
 #include "stream_task_base_synch.h"
 
+#include "rpg_net_protocol_configuration.h"
 #include "rpg_net_protocol_message.h"
 #include "rpg_net_protocol_session_message.h"
 
@@ -46,7 +47,7 @@ class RPG_Net_ProtocolHandler
  : public Stream_TaskBaseSynch_T<ACE_MT_SYNCH,
                                  Common_TimePolicy_t,
                                  Common_ILock_T<ACE_MT_SYNCH>,
-                                 struct RPG_Net_ModuleHandlerConfiguration,
+                                 struct RPG_Net_Protocol_ModuleHandlerConfiguration,
                                  Stream_ControlMessage_t,
                                  RPG_Net_Protocol_Message,
                                  RPG_Net_Protocol_SessionMessage,
@@ -59,7 +60,7 @@ class RPG_Net_ProtocolHandler
   typedef Stream_TaskBaseSynch_T<ACE_MT_SYNCH,
                                  Common_TimePolicy_t,
                                  Common_ILock_T<ACE_MT_SYNCH>,
-                                 struct RPG_Net_ModuleHandlerConfiguration,
+                                 struct RPG_Net_Protocol_ModuleHandlerConfiguration,
                                  Stream_ControlMessage_t,
                                  RPG_Net_Protocol_Message,
                                  RPG_Net_Protocol_SessionMessage,
@@ -115,7 +116,7 @@ class RPG_Net_ProtocolHandler
 // declare module
 DATASTREAM_MODULE_INPUT_ONLY (struct RPG_Net_Protocol_SessionData,        // session data type
                               enum Stream_SessionMessageType,             // session event type
-                              struct RPG_Net_ModuleHandlerConfiguration,  // module handler configuration type
+                              struct RPG_Net_Protocol_ModuleHandlerConfiguration,  // module handler configuration type
                               rpg_net_protocolhandler_module_name_string,
                               Stream_INotify_t,                           // stream notification interface type
                               RPG_Net_ProtocolHandler);                   // writer type

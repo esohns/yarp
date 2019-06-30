@@ -1537,13 +1537,13 @@
 //  return result;
 //}
 
-RPG_Net_Protocol_IConnection_Manager_t*
-RPG_Net_Protocol_Tools::getConnectionManager ()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::getConnectionManager"));
-
-  return RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ();
-}
+//RPG_Net_Protocol_IConnection_Manager_t*
+//RPG_Net_Protocol_Tools::getConnectionManager ()
+//{
+//  RPG_TRACE(ACE_TEXT("RPG_Net_Protocol_Tools::getConnectionManager"));
+//
+//  return RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ();
+//}
 
 //std::string
 //RPG_Net_Protocol_Tools::concatParams(const RPG_Net_Protocol_Parameters_t& params_in,

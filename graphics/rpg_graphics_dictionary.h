@@ -25,19 +25,19 @@
 
 #include "ace/Global_Macros.h"
 #include "ace/Singleton.h"
-#include "ace/Synch.h"
+#include "ace/Synch_Traits.h"
 
 #include "rpg_graphics_common.h"
-#include "rpg_graphics_exports.h"
+//#include "rpg_graphics_exports.h"
 
 /**
 @author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Graphics_Export RPG_Graphics_Dictionary
+class RPG_Graphics_Dictionary
 {
   // we use the singleton pattern, so we need to enable access to the ctor/dtors
   friend class ACE_Singleton<RPG_Graphics_Dictionary,
-                             ACE_Thread_Mutex>;
+                             ACE_SYNCH_MUTEX>;
 
  public:
   void init(const std::string&, // (XML) dictionary file
@@ -50,17 +50,16 @@ class RPG_Graphics_Export RPG_Graphics_Dictionary
   void dump() const;
 
  private:
-  // safety measures
-  RPG_Graphics_Dictionary();
-  virtual ~RPG_Graphics_Dictionary();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Dictionary(const RPG_Graphics_Dictionary&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Dictionary& operator=(const RPG_Graphics_Dictionary&));
+  RPG_Graphics_Dictionary ();
+  inline virtual ~RPG_Graphics_Dictionary () {}
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Dictionary(const RPG_Graphics_Dictionary&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Dictionary& operator=(const RPG_Graphics_Dictionary&))
 
   RPG_Graphics_Dictionary_t myDictionary;
 };
 
 typedef ACE_Singleton<RPG_Graphics_Dictionary,
-                      ACE_Thread_Mutex> RPG_GRAPHICS_DICTIONARY_SINGLETON;
-RPG_GRAPHICS_SINGLETON_DECLARE(ACE_Singleton, RPG_Graphics_Dictionary, ACE_Thread_Mutex);
+                      ACE_SYNCH_MUTEX> RPG_GRAPHICS_DICTIONARY_SINGLETON;
+//RPG_GRAPHICS_SINGLETON_DECLARE(ACE_Singleton, RPG_Graphics_Dictionary, ACE_Thread_Mutex);
 
 #endif

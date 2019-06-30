@@ -21,16 +21,18 @@
 #ifndef RPG_SOUND_XML_PARSER_H
 #define RPG_SOUND_XML_PARSER_H
 
-#include "rpg_sound_exports.h"
-#include "rpg_sound_XML_types.h"
-#include "rpg_sound_common.h"
+#include "ace/Global_Macros.h"
 
-#include <ace/Global_Macros.h>
+#include "rpg_XMLSchema_XML_types.h"
+
+#include "rpg_sound_common.h"
+//#include "rpg_sound_exports.h"
+#include "rpg_sound_XML_types.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Sound_Export RPG_Sound_Category_Type
+class RPG_Sound_Category_Type
  : public RPG_Sound_Category_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -39,7 +41,7 @@ class RPG_Sound_Export RPG_Sound_Category_Type
   virtual RPG_Sound_Category post_RPG_Sound_Category_Type();
 };
 
-class RPG_Sound_Export RPG_Sound_Event_Type
+class RPG_Sound_Event_Type
  : public RPG_Sound_Event_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -48,7 +50,7 @@ class RPG_Sound_Export RPG_Sound_Event_Type
   virtual RPG_Sound_Event post_RPG_Sound_Event_Type();
 };
 
-class RPG_Sound_Export RPG_Sound_Type
+class RPG_Sound_Type
  : public RPG_Sound_Type_pskel
 {
  public:
@@ -66,7 +68,7 @@ class RPG_Sound_Export RPG_Sound_Type
   RPG_Sound myCurrentSound;
 };
 
-class RPG_Sound_Export RPG_Sound_Dictionary_Type
+class RPG_Sound_Dictionary_Type
  : public RPG_Sound_Dictionary_Type_pskel
 {
  public:

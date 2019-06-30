@@ -40,12 +40,6 @@ RPG_Graphics_Dictionary::RPG_Graphics_Dictionary()
 
 }
 
-RPG_Graphics_Dictionary::~RPG_Graphics_Dictionary()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::~RPG_Graphics_Dictionary"));
-
-}
-
 void
 RPG_Graphics_Dictionary::init(const std::string& filename_in,
                               bool validateXML_in)
