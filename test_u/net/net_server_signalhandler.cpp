@@ -29,45 +29,39 @@
 #include "ace/Proactor.h"
 #include "ace/Reactor.h"
 
-#include "common_icontrol.h"
-#include "common_timer_manager.h"
+//#include "common_icontrol.h"
 #include "common_tools.h"
 
-#include "net_connection_manager_common.h"
+#include "common_timer_manager_common.h"
 
 #include "rpg_common_macros.h"
 
 #include "rpg_net_protocol_common.h"
+#include "rpg_net_protocol_network.h"
 
-Net_Server_SignalHandler::Net_Server_SignalHandler (long timerID_in,
-                                                    Common_IControl* controller_in,
-                                                    Common_IStatistic_T<RPG_Net_Protocol_RuntimeStatistic>* report_in,
-                                                    bool useReactor_in)
- : inherited (this,          // event handler handle
-              useReactor_in) // use reactor ?
- , control_ (controller_in)
- , report_ (report_in)
- , timerID_ (timerID_in)
- , useReactor_ (useReactor_in)
+Net_Server_SignalHandler::Net_Server_SignalHandler (long timerId_in)
+                                                    //Common_IControl* controller_in,
+                                                    //Common_IStatistic_T<RPG_Net_Protocol_RuntimeStatistic>* report_in,
+                                                    //bool useReactor_in)
+ : inherited (COMMON_SIGNAL_DISPATCH_SIGNAL,
+              NULL,
+              this)          // event handler handle
+ //, control_ (controller_in)
+ //, report_ (report_in)
+ , timerId_ (timerId_in)
 {
   RPG_TRACE (ACE_TEXT ("Net_Server_SignalHandler::Net_Server_SignalHandler"));
 
 }
 
-Net_Server_SignalHandler::~Net_Server_SignalHandler ()
+void
+Net_Server_SignalHandler::handle (const struct Common_Signal& signal_in)
 {
-  RPG_TRACE (ACE_TEXT ("Net_Server_SignalHandler::~Net_Server_SignalHandler"));
-
-}
-
-bool
-Net_Server_SignalHandler::handleSignal (int signal_in)
-{
-  RPG_TRACE (ACE_TEXT ("Net_Server_SignalHandler::handleSignal"));
+  RPG_TRACE (ACE_TEXT ("Net_Server_SignalHandler::handle"));
 
   bool stop_event_dispatching = false;
   bool report = false;
-  switch (signal_in)
+  switch (signal_in.signal)
   {
 // *PORTABILITY*: on Windows SIGHUP/SIGQUIT are not defined
 // --> use SIGINT (2) and/or SIGTERM (15) instead...
@@ -102,26 +96,26 @@ Net_Server_SignalHandler::handleSignal (int signal_in)
     default:
     {
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("received invalid/unknown signal: \"%S\", aborting\n"),
+                  ACE_TEXT ("received invalid/unknown signal: \"%S\", returning\n"),
                   signal_in));
-      return false;
+      return;
     }
   } // end SWITCH
 
   // report ?
-  if (report && report_)
-  {
-    try
-    {
-      report_->report ();
-    }
-    catch (...)
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("caught exception in Common_IStatistic::report(), aborting\n")));
-      return false;
-    }
-  } // end IF
+  //if (report && report_)
+  //{
+  //  try
+  //  {
+  //    report_->report ();
+  //  }
+  //  catch (...)
+  //  {
+  //    ACE_DEBUG ((LM_ERROR,
+  //                ACE_TEXT ("caught exception in Common_IStatistic::report(), returning\n")));
+  //    return;
+  //  }
+  //} // end IF
 
   // ...shutdown ?
   if (stop_event_dispatching)
@@ -131,52 +125,45 @@ Net_Server_SignalHandler::handleSignal (int signal_in)
     // --> (try to) terminate in a well-behaved manner
 
     // step1: invoke controller (if any)
-    if (control_)
-    {
-      try
-      {
-        control_->stop ();
-      }
-      catch (...)
-      {
-        ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("caught exception in Common_IControl::stop(), aborting\n")));
-        return false;
-      }
-    } // end IF
+    //if (control_)
+    //{
+    //  try
+    //  {
+    //    control_->stop ();
+    //  }
+    //  catch (...)
+    //  {
+    //    ACE_DEBUG ((LM_ERROR,
+    //                ACE_TEXT ("caught exception in Common_IControl::stop(), returning\n")));
+    //    return;
+    //  }
+    //} // end IF
 
     // step2: stop timer
-    if (timerID_ >= 0)
+    if (timerId_ >= 0)
     {
-      if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timerID_,
+      if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timerId_,
                                                               NULL) <= 0)
       {
         ACE_DEBUG ((LM_DEBUG,
-                    ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", aborting\n"),
-                    timerID_));
-
-        // clean up
-        timerID_ = -1;
-
-        return false;
+                    ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", returning\n"),
+                    timerId_));
+        timerId_ = -1;
+        return;
       } // end IF
-
-      // clean up
-      timerID_ = -1;
+      timerId_ = -1;
     } // end IF
 
     // step3: stop/abort/wait for connections
-    NET_CONNECTIONMANAGER_SINGLETON::instance ()->stop ();
-    NET_CONNECTIONMANAGER_SINGLETON::instance ()->abort ();
+    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->stop ();
+    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abort ();
     // *IMPORTANT NOTE*: as long as connections are inactive (i.e. events are
     // dispatched by reactor thread(s), there is no real reason to wait here)
     //RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
     // step4: stop reactor (&& proactor, if applicable)
-    Common_Tools::finalizeEventDispatch (true,         // stop reactor ?
-                                         !useReactor_, // stop proactor ?
-                                         -1);          // group ID (--> don't block !)
+    Common_Tools::finalizeEventDispatch (-1,     // stop reactor ?
+                                         -1,     // stop proactor ?
+                                         false);          // group ID (--> don't block !)
   } // end IF
-
-  return true;
 }

@@ -524,7 +524,7 @@ namespace yy {
                                       }
                                       case '=':
                                       {
-                                        RPG_Map_Door_t door;
+                                        struct RPG_Map_Door door;
                                         door.position = driver->myCurrentPosition;
                                         door.outside = RPG_MAP_DIRECTION_INVALID;
                                         door.state = RPG_MAP_DOORSTATE_INVALID;

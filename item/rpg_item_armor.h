@@ -21,42 +21,41 @@
 #ifndef RPG_ITEM_ARMOR_H
 #define RPG_ITEM_ARMOR_H
 
-#include "rpg_item_exports.h"
-#include "rpg_item_instance_base.h"
-#include "rpg_item_base.h"
-#include "rpg_item_instance_manager.h"
-#include "rpg_item_armortype.h"
+#include "ace/Global_Macros.h"
 
-#include <ace/Global_Macros.h>
+#include "rpg_item_armortype.h"
+#include "rpg_item_base.h"
+ //#include "rpg_item_exports.h"
+#include "rpg_item_instance_base.h"
+#include "rpg_item_instance_manager.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Item_Export RPG_Item_Armor
+class RPG_Item_Armor
  : public RPG_Item_Instance_Base,
    public RPG_Item_Base
 {
+  typedef RPG_Item_Instance_Base inherited;
+  typedef RPG_Item_Base inherited2;
+
   // grant access to ctor
   friend class RPG_Item_Instance_Manager;
 
  public:
-  // what am I ?
-  const RPG_Item_ArmorType getArmorType() const;
+  inline enum RPG_Item_ArmorType type () const { return type_; }
 
-  virtual void dump() const;
+  virtual void dump () const;
+
+ protected:
+  enum RPG_Item_ArmorType type_;
 
  private:
-  typedef RPG_Item_Instance_Base inherited;
-  typedef RPG_Item_Base inherited2;
-
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Armor());
-  RPG_Item_Armor(const RPG_Item_ArmorType&);
-  virtual ~RPG_Item_Armor();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Armor(const RPG_Item_Armor&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Armor& operator=(const RPG_Item_Armor&));
-
-  RPG_Item_ArmorType myArmorType;
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Armor ())
+  RPG_Item_Armor (enum RPG_Item_ArmorType);
+  inline virtual ~RPG_Item_Armor () {}
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Armor (const RPG_Item_Armor&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Armor& operator= (const RPG_Item_Armor&))
 };
 
 #endif

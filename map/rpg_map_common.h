@@ -49,7 +49,7 @@ enum RPG_Map_Element
   MAPELEMENT_INVALID
 };
 
-struct RPG_Map_FloorPlan_Configuration_t
+struct RPG_Map_FloorPlan_Configuration
 {
   bool         doors;
   bool         corridors;
@@ -72,38 +72,38 @@ typedef std::list<RPG_Map_Position_t> RPG_Map_PositionList_t;
 typedef RPG_Map_PositionList_t::const_iterator RPG_Map_PositionListConstIterator_t;
 typedef RPG_Map_PositionList_t::iterator RPG_Map_PositionListIterator_t;
 
-typedef std::set<RPG_Map_Direction> RPG_Map_Directions_t;
+typedef std::set<enum RPG_Map_Direction> RPG_Map_Directions_t;
 typedef RPG_Map_Directions_t::const_iterator RPG_Map_DirectionsConstIterator_t;
 
-struct RPG_Map_Door_t
+struct RPG_Map_Door
 {
-  inline bool operator==(const RPG_Map_Door_t& rhs_in) const
+  inline bool operator==(const struct RPG_Map_Door& rhs_in) const
   {
     return (position == rhs_in.position);
   }
-  inline bool operator!=(const RPG_Map_Door_t& rhs_in) const
+  inline bool operator!=(const struct RPG_Map_Door& rhs_in) const
   {
     return !(position == rhs_in.position);
   }
 
-  RPG_Map_Position_t        position;
-  RPG_Map_Direction         outside;
-  mutable RPG_Map_DoorState state; // allow "external" updates (see below)
+  RPG_Map_Position_t             position;
+  enum RPG_Map_Direction         outside;
+  mutable enum RPG_Map_DoorState state; // allow "external" updates (see below)
 };
 struct door_compare
- : public std::binary_function<RPG_Map_Door_t, RPG_Map_Door_t, bool>
+ : public std::binary_function<struct RPG_Map_Door, struct RPG_Map_Door, bool>
 {
-  inline bool operator()(const RPG_Map_Door_t& __x,
-                         const RPG_Map_Door_t& __y) const
+  inline bool operator()(const struct RPG_Map_Door& __x,
+                         const struct RPG_Map_Door& __y) const
   {
     return (__x.position < __y.position);
   }
 };
-typedef std::set<RPG_Map_Door_t, door_compare> RPG_Map_Doors_t;
+typedef std::set<struct RPG_Map_Door, door_compare> RPG_Map_Doors_t;
 typedef RPG_Map_Doors_t::const_iterator RPG_Map_DoorsConstIterator_t;
 typedef RPG_Map_Doors_t::iterator RPG_Map_DoorsIterator_t;
 
-struct RPG_Map_FloorPlan_t
+struct RPG_Map_FloorPlan
 {
   unsigned int        size_x;
   unsigned int        size_y;
@@ -113,14 +113,14 @@ struct RPG_Map_FloorPlan_t
   bool                rooms_are_square;
 };
 
-struct RPG_Map_t
+struct RPG_Map
 {
-  RPG_Map_Position_t  start; // starting position
-  RPG_Map_Positions_t seeds; // seed points
-  RPG_Map_FloorPlan_t plan;  // floor plan
+  RPG_Map_Position_t       start; // starting position
+  RPG_Map_Positions_t      seeds; // seed points
+  struct RPG_Map_FloorPlan plan;  // floor plan
 };
 
-typedef std::pair<RPG_Map_Position_t, RPG_Map_Direction> RPG_Map_PathStep_t;
+typedef std::pair<RPG_Map_Position_t, enum RPG_Map_Direction> RPG_Map_PathStep_t;
 typedef std::list<RPG_Map_PathStep_t> RPG_Map_Path_t;
 typedef RPG_Map_Path_t::const_iterator RPG_Map_PathConstIterator_t;
 typedef std::list<RPG_Map_Path_t> RPG_Map_PathList_t;

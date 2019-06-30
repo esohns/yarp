@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef TEST_U_NET_COMMON_H
-#define TEST_U_NET_COMMON_H
+#ifndef NET_COMMON_H
+#define NET_COMMON_H
 
 #include <deque>
 #include <vector>
@@ -30,8 +30,10 @@
 
 #include "common_ui_common.h"
 
-#include "net_configuration.h"
-#include "net_stream_common.h"
+#include "common_ui_gtk_common.h"
+
+//#include "net_configuration.h"
+//#include "net_stream_common.h"
 
 #include "net_server_common.h"
 
@@ -67,7 +69,7 @@ struct Net_GTK_CBData_t
 
   bool                       allowUserRuntimeStatistic;
   Net_GTK_Events_t           eventStack;
-  Common_UI_GTKState         GTKState;
+  Common_UI_GTKState_t       GTKState;
   Net_Server_IListener_t*    listenerHandle; // *NOTE*: server only !
   Common_MessageStack_t      logStack;
   ACE_Recursive_Thread_Mutex stackLock;

@@ -867,19 +867,19 @@ RPG_Common_Tools::enumToString(const std::string& enumString_in,
 //  return result;
 //}
 //
-//std::string
-//RPG_Common_Tools::sanitize(const std::string& string_in)
-//{
-//  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::sanitize"));
-//
-//  std::string result = string_in;
-//
-//  std::replace(result.begin(),
-//               result.end(),
-//               ' ', '_');
-//
-//  return result;
-//}
+std::string
+RPG_Common_Tools::sanitize(const std::string& string_in)
+{
+  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::sanitize"));
+
+  std::string result = string_in;
+
+  std::replace(result.begin(),
+               result.end(),
+               ' ', '_');
+
+  return result;
+}
 //
 //std::string
 //RPG_Common_Tools::strip(const std::string& string_in)

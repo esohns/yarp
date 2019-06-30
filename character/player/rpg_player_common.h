@@ -21,10 +21,13 @@
 #ifndef RPG_PLAYER_COMMON_H
 #define RPG_PLAYER_COMMON_H
 
-#include "rpg_player_base.h"
-#include "rpg_player.h"
+//#include "rpg_player_base.h"
 
 #include <vector>
+
+// forward declarations
+class RPG_Player_Base;
+class RPG_Player;
 
 typedef std::vector<RPG_Player_Base*> RPG_Player_List_t;
 typedef RPG_Player_List_t::const_iterator RPG_Player_ListIterator_t;

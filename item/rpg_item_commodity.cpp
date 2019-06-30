@@ -28,52 +28,31 @@
 
 #include <ace/Log_Msg.h>
 
-RPG_Item_Commodity::RPG_Item_Commodity(const RPG_Item_CommodityType& commodityType_in,
-                                       const RPG_Item_CommodityUnion& commoditySubType_in)
- : inherited(), // *NOTE*: this generates a new item ID
-   inherited2(ITEM_COMMODITY,
-              getID()), // <-- retrieve generated item ID
-   myCommodityType(commodityType_in),
-   myCommoditySubType(commoditySubType_in)
+RPG_Item_Commodity::RPG_Item_Commodity (enum RPG_Item_CommodityType type_in,
+                                       const RPG_Item_CommodityUnion& subtype_in)
+ : inherited () // *NOTE*: this generates a new item id
+ , inherited2 (ITEM_COMMODITY,
+               id ()) // <-- retrieve generated item ID
+ , type_ (type_in)
+ , subtype_ (subtype_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_Commodity::RPG_Item_Commodity"));
+  RPG_TRACE (ACE_TEXT ("RPG_Item_Commodity::RPG_Item_Commodity"));
 
-}
-
-RPG_Item_Commodity::~RPG_Item_Commodity()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Item_Commodity::RPG_Item_Commodity"));
-
-}
-
-const RPG_Item_CommodityType
-RPG_Item_Commodity::getCommodityType() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Item_Commodity::getCommodityType"));
-
-  return myCommodityType;
-}
-
-const RPG_Item_CommodityUnion
-RPG_Item_Commodity::getCommoditySubType() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Item_Commodity::getCommoditySubType"));
-
-  return myCommoditySubType;
 }
 
 void
 RPG_Item_Commodity::dump() const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_Commodity::dump"));
+  RPG_TRACE (ACE_TEXT ("RPG_Item_Commodity::dump"));
 
   // retrieve properties
-  RPG_Item_CommodityProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getCommodityProperties(myCommoditySubType);
+  RPG_Item_CommodityProperties properties =
+    RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getCommodityProperties (subtype_);
 
-  ACE_DEBUG((LM_DEBUG,
-            ACE_TEXT("Item: Commodity\nType: %s\nPrice: %d GP, %d SP\nWeight: %d\n"),
-            RPG_Item_CommodityTypeHelper::RPG_Item_CommodityTypeToString(myCommodityType).c_str(),
-            properties.baseStorePrice.numGoldPieces,
-            properties.baseStorePrice.numSilverPieces,
-            properties.baseWeight));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("Item: Commodity\nType: %s\nPrice: %d GP, %d SP\nWeight: %d\n"),
+              ACE_TEXT (RPG_Item_CommodityTypeHelper::RPG_Item_CommodityTypeToString (type_).c_str ()),
+              properties.baseStorePrice.numGoldPieces,
+              properties.baseStorePrice.numSilverPieces,
+              properties.baseWeight));
 }

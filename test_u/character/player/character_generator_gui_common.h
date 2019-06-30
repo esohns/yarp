@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-#include "common_ui_common.h"
+#include "common_ui_gtk_common.h"
 
 #include "rpg_engine_common.h"
 

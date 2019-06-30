@@ -391,7 +391,7 @@ RPG_Map_Pathfinding_Tools::getDirection(const RPG_Map_Position_t& startPosition_
 
 void
 RPG_Map_Pathfinding_Tools::print(const RPG_Map_Path_t& path_in,
-                                 const RPG_Map_FloorPlan_t& plan_in)
+                                 const struct RPG_Map_FloorPlan& plan_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Pathfinding_Tools::print"));
 
@@ -403,7 +403,7 @@ RPG_Map_Pathfinding_Tools::print(const RPG_Map_Path_t& path_in,
 
   RPG_Map_PathConstIterator_t path_iterator;
   RPG_Map_Position_t current_position;
-  RPG_Map_Door_t current_position_door;
+  struct RPG_Map_Door current_position_door;
   bool done = false;
   for (unsigned int y = 0;
        y < plan_in.size_y;

@@ -59,15 +59,15 @@
 
 RPG_Player::RPG_Player(// base attributes
                        const std::string& name_in,
-                       const RPG_Character_Gender& gender_in,
+                       enum RPG_Character_Gender gender_in,
                        const RPG_Character_Race_t& race_in,
-                       const RPG_Character_Class& class_in,
-                       const RPG_Character_Alignment& alignment_in,
-                       const RPG_Character_Attributes& attributes_in,
+                       const struct RPG_Character_Class& class_in,
+                       const struct RPG_Character_Alignment& alignment_in,
+                       const struct RPG_Character_Attributes& attributes_in,
                        const RPG_Character_Skills_t& skills_in,
                        const RPG_Character_Feats_t& feats_in,
                        const RPG_Character_Abilities_t& abilities_in,
-                       const RPG_Character_OffHand& offhand_in,
+                       enum RPG_Character_OffHand offhand_in,
                        const unsigned short int& maxHitPoints_in,
                        const RPG_Magic_SpellTypes_t& knownSpells_in,
                        // extended data
@@ -110,12 +110,6 @@ RPG_Player::RPG_Player(const RPG_Player& player_in)
  : inherited(player_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player::RPG_Player"));
-
-}
-
-RPG_Player::~RPG_Player()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player::~RPG_Player"));
 
 }
 
@@ -643,19 +637,19 @@ RPG_Player::random()
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
                                                                     ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
         ACE_ASSERT(current);
-        items.insert(current->getID());
+        items.insert(current->id());
 
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                     ARMOR_MAIL_SPLINT);
         ACE_ASSERT(current);
-        items.insert(current->getID());
+        items.insert(current->id());
 
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                     ARMOR_SHIELD_HEAVY_WOODEN);
         ACE_ASSERT(current);
-        items.insert(current->getID());
+        items.insert(current->id());
 
         break;
       }
@@ -666,19 +660,19 @@ RPG_Player::random()
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
                                                                     ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
         ACE_ASSERT(current);
-        items.insert(current->getID());
+        items.insert(current->id());
 
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                     ARMOR_PLATE_FULL);
         ACE_ASSERT(current);
-        items.insert(current->getID());
+        items.insert(current->id());
 
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                     ARMOR_SHIELD_HEAVY_STEEL);
         ACE_ASSERT(current);
-        items.insert(current->getID());
+        items.insert(current->id());
 
         break;
       }
@@ -688,19 +682,19 @@ RPG_Player::random()
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
                                                                     ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
         ACE_ASSERT(current);
-        items.insert(current->getID());
+        items.insert(current->id());
 
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
                                                                     RANGED_WEAPON_BOW_LONG);
         ACE_ASSERT(current);
-        items.insert(current->getID());
+        items.insert(current->id());
 
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                     ARMOR_HIDE);
         ACE_ASSERT(current);
-        items.insert(current->getID());
+        items.insert(current->id());
 
         // *TODO*: no arrows ?
 
@@ -711,12 +705,12 @@ RPG_Player::random()
 //         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
 //             ONE_HANDED_MELEE_WEAPON_SWORD_LONG);
 //         ACE_ASSERT(current);
-//         items.insert(current->getID());
+//         items.insert(current->id());
 //
 //         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
 //             ARMOR_HIDE);
 //         ACE_ASSERT(current);
-//         items.insert(current->getID());
+//         items.insert(current->id());
 //
 //         break;
 //       }
@@ -728,7 +722,7 @@ RPG_Player::random()
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
                                                                     TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
         ACE_ASSERT(current);
-        items.insert(current->getID());
+        items.insert(current->id());
 
         break;
       }
@@ -740,19 +734,19 @@ RPG_Player::random()
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
                                                                     ONE_HANDED_MELEE_WEAPON_MACE_HEAVY);
         ACE_ASSERT(current);
-        items.insert(current->getID());
+        items.insert(current->id());
 
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                     ARMOR_MAIL_CHAIN);
         ACE_ASSERT(current);
-        items.insert(current->getID());
+        items.insert(current->id());
 
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                     ARMOR_SHIELD_HEAVY_WOODEN);
         ACE_ASSERT(current);
-        items.insert(current->getID());
+        items.insert(current->id());
 
         break;
       }
@@ -763,19 +757,19 @@ RPG_Player::random()
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
                                                                     LIGHT_MELEE_WEAPON_SICKLE);
         ACE_ASSERT(current);
-        items.insert(current->getID());
+        items.insert(current->id());
 
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                     ARMOR_HIDE);
         ACE_ASSERT(current);
-        items.insert(current->getID());
+        items.insert(current->id());
 
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                     ARMOR_SHIELD_LIGHT_WOODEN);
         ACE_ASSERT(current);
-        items.insert(current->getID());
+        items.insert(current->id());
 
         break;
       }
@@ -784,7 +778,7 @@ RPG_Player::random()
 //         current = RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
 //             TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF);
 //         ACE_ASSERT(current);
-//         items.insert(current->getID());
+//         items.insert(current->id());
 //
 //         break;
 //       }
@@ -795,19 +789,19 @@ RPG_Player::random()
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_WEAPON,
                                                                     LIGHT_MELEE_WEAPON_SWORD_SHORT);
         ACE_ASSERT(current);
-        items.insert(current->getID());
+        items.insert(current->id());
 
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                     ARMOR_LEATHER);
         ACE_ASSERT(current);
-        items.insert(current->getID());
+        items.insert(current->id());
 
         current =
             RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_ARMOR,
                                                                     ARMOR_SHIELD_LIGHT_STEEL);
         ACE_ASSERT(current);
-        items.insert(current->getID());
+        items.insert(current->id());
 
         break;
       }
@@ -829,7 +823,7 @@ RPG_Player::random()
         RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->create(ITEM_COMMODITY,
                                                                 subtype);
     ACE_ASSERT(current);
-    items.insert(current->getID());
+    items.insert(current->id());
   }
   catch (const std::bad_alloc& exception)
   {

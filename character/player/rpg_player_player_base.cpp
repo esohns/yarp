@@ -471,7 +471,7 @@ RPG_Player_Player_Base::getSpeed(const bool& isRunning_in,
     modifier *= 0.5F;
 
   // step4: consider terrain [track type]
-  modifier *= RPG_Common_Tools::terrain2SpeedModifier(terrain_in, track_in);
+  modifier *= RPG_Common_Tools::terrainToSpeedModifier(terrain_in, track_in);
 
   // step5: consider movement mode
   if (isRunning_in)
@@ -593,9 +593,9 @@ RPG_Player_Player_Base::defaultEquip()
   {
     slots.slots.clear();
     slots.is_inclusive = false;
-    RPG_Item_Common_Tools::item2Slot(*iterator,
-                                     myOffHand,
-                                     slots);
+    RPG_Item_Common_Tools::itemToSlot (*iterator,
+                                       myOffHand,
+                                       slots);
     ACE_ASSERT(!slots.slots.empty());
 
     handle = NULL;
@@ -610,7 +610,7 @@ RPG_Player_Player_Base::defaultEquip()
     } // end IF
     ACE_ASSERT(handle);
 
-    switch (handle->getType())
+    switch (handle->type())
     {
       case ITEM_ARMOR:
       {
@@ -633,8 +633,7 @@ RPG_Player_Player_Base::defaultEquip()
         RPG_Item_Commodity* commodity =
             dynamic_cast<RPG_Item_Commodity*>(handle);
         ACE_ASSERT(commodity);
-        RPG_Item_CommodityUnion commodity_type =
-            commodity->getCommoditySubType();
+        RPG_Item_CommodityUnion commodity_type = commodity->subtype();
         //RPG_Item_CommodityProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getCommodityProperties(commodity->getCommoditySubType());
         // - by default, equip light sources only
         if (commodity_type.discriminator !=
@@ -656,7 +655,7 @@ RPG_Player_Player_Base::defaultEquip()
 //         RPG_Item_WeaponProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_base->getWeaponType());
         // - by default, equip melee weapons only
         // *TODO*: what about other types of weapons ?
-        if (!RPG_Item_Common_Tools::isMeleeWeapon(weapon->getWeaponType()))
+        if (!RPG_Item_Common_Tools::isMeleeWeapon(weapon->type()))
           break;
         if (myEquipment.isEquipped(slots.slots.front(),
                                    item_id))
@@ -705,20 +704,20 @@ RPG_Player_Player_Base::dump() const
              ACE_TEXT("Player \"%s\": \nGender: %s\nRace: %s\nClass: %s\nAlignment: %s\nCondition: %s\nHP: %d/%u\nXP: %u\nGold: %u\nAttributes:\n===========\n%sFeats:\n======\n%sAbilities:\n==========\n%sSkills:\n=======\n%sSpells (known):\n=======\n%sSpells (prepared):\n=======\n%sItems:\n======\n"),
              ACE_TEXT(getName().c_str()),
              ACE_TEXT(RPG_Character_GenderHelper::RPG_Character_GenderToString(myGender).c_str()),
-             ACE_TEXT(RPG_Character_Common_Tools::raceToString(myRace).c_str()),
-             ACE_TEXT(RPG_Character_Common_Tools::classToString(myClass).c_str()),
-             ACE_TEXT(RPG_Character_Common_Tools::alignmentToString(getAlignment()).c_str()),
-             ACE_TEXT(RPG_Character_Common_Tools::conditionToString(myCondition).c_str()),
+             ACE_TEXT(RPG_Character_Common_Tools::toString(myRace).c_str()),
+             ACE_TEXT(RPG_Character_Common_Tools::toString(myClass).c_str()),
+             ACE_TEXT(RPG_Character_Common_Tools::toString(getAlignment()).c_str()),
+             ACE_TEXT(RPG_Character_Common_Tools::toString(myCondition).c_str()),
              myNumHitPoints,
              getNumTotalHitPoints(),
              myExperience,
              myWealth,
-             ACE_TEXT(RPG_Character_Common_Tools::attributesToString(myAttributes).c_str()),
-             ACE_TEXT(RPG_Character_Skills_Common_Tools::featsToString(myFeats).c_str()),
-             ACE_TEXT(RPG_Character_Skills_Common_Tools::abilitiesToString(myAbilities).c_str()),
-             ACE_TEXT(RPG_Character_Skills_Common_Tools::skillsToString(mySkills).c_str()),
-             ACE_TEXT(RPG_Magic_Common_Tools::spellsToString(myKnownSpells).c_str()),
-             ACE_TEXT(RPG_Magic_Common_Tools::spellsToString(mySpells).c_str())));
+             ACE_TEXT(RPG_Character_Common_Tools::toString(myAttributes).c_str()),
+             ACE_TEXT(RPG_Character_Skills_Common_Tools::toString(myFeats).c_str()),
+             ACE_TEXT(RPG_Character_Skills_Common_Tools::toString(myAbilities).c_str()),
+             ACE_TEXT(RPG_Character_Skills_Common_Tools::toString(mySkills).c_str()),
+             ACE_TEXT(RPG_Magic_Common_Tools::toString(myKnownSpells).c_str()),
+             ACE_TEXT(RPG_Magic_Common_Tools::toString(mySpells).c_str())));
 }
 
 signed char

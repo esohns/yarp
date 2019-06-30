@@ -21,28 +21,30 @@
 #ifndef RPG_PLAYER_H
 #define RPG_PLAYER_H
 
-#include "rpg_player_exports.h"
+//#include "rpg_player_exports.h"
 #include "rpg_player_player_base.h"
 
 /**
 player character
 @author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Player_Export RPG_Player
+class RPG_Player
  : public RPG_Player_Player_Base
 {
+  typedef RPG_Player_Player_Base inherited;
+
  public:
   RPG_Player(// base attributes
              const std::string&,                // name
-             const RPG_Character_Gender&,       // gender
+             enum RPG_Character_Gender,       // gender
              const RPG_Character_Race_t&,       // race
-             const RPG_Character_Class&,        // class(es)
-             const RPG_Character_Alignment&,    // alignment
-             const RPG_Character_Attributes&,   // base attributes
+             const struct RPG_Character_Class&,        // class(es)
+             const struct RPG_Character_Alignment&,    // alignment
+             const struct RPG_Character_Attributes&,   // base attributes
              const RPG_Character_Skills_t&,     // skills
              const RPG_Character_Feats_t&,      // base feats
              const RPG_Character_Abilities_t&,  // base abilities
-             const RPG_Character_OffHand&,      // off-hand
+             enum RPG_Character_OffHand,      // off-hand
              const unsigned short int&,         // max HP
              const RPG_Magic_SpellTypes_t&,     // set of known spells (if any)
              // extended data
@@ -54,7 +56,7 @@ class RPG_Player_Export RPG_Player
              const short int&,                  // HP
              const RPG_Magic_Spells_t&);        // list of prepared spells (if any)
   RPG_Player(const RPG_Player&);
-  virtual ~RPG_Player();
+  inline virtual ~RPG_Player () {}
 
   // *WARNING*: result needs to be delete()d !
   static RPG_Player* random(); // return value: (random) player
@@ -70,10 +72,8 @@ class RPG_Player_Export RPG_Player
   bool save(const std::string&) const; // FQ filename
 
  private:
-  typedef RPG_Player_Player_Base inherited;
-
-  ACE_UNIMPLEMENTED_FUNC(RPG_Player());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Player& operator=(const RPG_Player&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Player())
+  ACE_UNIMPLEMENTED_FUNC(RPG_Player& operator=(const RPG_Player&))
 };
 
 #endif

@@ -8,9 +8,12 @@ endif ()
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/timer)
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../common)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../character/player)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../character/monster)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../map)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../engine)
 
@@ -18,6 +21,8 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../engine)
 set (EXECUTABLE map_parser)
 set (${EXECUTABLE}_SRCS
      map_parser.cpp)
+
+set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS BASEDIR=\"C:\\\")
 
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
@@ -29,6 +34,8 @@ target_link_libraries (${EXECUTABLE}
                        ACE
                        RPG_Dice RPG_Common RPG_Map)
 
+set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
+
 #----------- install files ---------------
 install (TARGETS ${EXECUTABLE}
          RUNTIME DESTINATION bin)
@@ -37,6 +44,8 @@ install (TARGETS ${EXECUTABLE}
 set (EXECUTABLE map_generator)
 set (${EXECUTABLE}_SRCS
      map_generator.cpp)
+
+set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS BASEDIR=\"C:\\\")
 
 if (UNIX)
  include_directories (${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
@@ -64,6 +73,8 @@ target_link_libraries (${EXECUTABLE}
                        RPG_Chance RPG_Dice RPG_Common RPG_Map RPG_Character RPG_Magic RPG_Item
                        RPG_Monster RPG_Player RPG_Combat RPG_Graphics RPG_Engine)
 
+set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
+
 #----------- install files ---------------
 install (TARGETS ${EXECUTABLE}
          RUNTIME DESTINATION bin)
@@ -73,15 +84,26 @@ set (EXECUTABLE path_finder)
 set (${EXECUTABLE}_SRCS
      path_finder.cpp)
 
+set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
+
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 
 add_dependencies (${EXECUTABLE} RPG_Dice RPG_Common RPG_Map)
 
+set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+
 target_link_libraries (${EXECUTABLE}
-                       pthread xerces-c
-                       ACE 
+                       Userenv.lib
+#                       xerces-c
+                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/cmake/src/Debug/Common.lib
+                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/cmake/src/error/Debug/CommonError.lib
+                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/cmake/src/log/Debug/CommonLog.lib
+                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/cmake/src/timer/Debug/CommonTimer.lib
                        RPG_Dice RPG_Common RPG_Map)
+
+set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
 #----------- install files ---------------
 install (TARGETS ${EXECUTABLE}

@@ -77,7 +77,7 @@ class RPG_Common_Tools
  //                           std::string&);         // return value: corresp. string
 
 	//static std::string sanitizeURI(const std::string&); // URI
-	//static std::string sanitize(const std::string&); // string
+	static std::string sanitize(const std::string&); // string
 	//static std::string strip(const std::string&); // string
 
  private:

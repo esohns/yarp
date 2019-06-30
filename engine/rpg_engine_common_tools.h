@@ -21,38 +21,41 @@
 #ifndef RPG_ENGINE_COMMON_TOOLS_H
 #define RPG_ENGINE_COMMON_TOOLS_H
 
-#include "rpg_engine_exports.h"
-#include "rpg_engine_defines.h"
-#include "rpg_engine_common.h"
-#include "rpg_engine_event_common.h"
-#include "rpg_engine_level.h"
-#include "rpg_engine_XML_tree.h"
+#include <deque>
+#include <string>
 
-#include "rpg_map_common.h"
+#include "ace/Global_Macros.h"
 
-#include "rpg_monster_common.h"
-
-#include "rpg_player_common.h"
-#include "rpg_player_XML_tree.h"
-
-#include "rpg_combat_attacksituation.h"
-#include "rpg_combat_defensesituation.h"
+#include "rpg_common_subclass.h"
 
 #include "rpg_character_class_common.h"
 
 #include "rpg_item_instance_common.h"
 
-#include "rpg_common_subclass.h"
+#include "rpg_player_common.h"
+#include "rpg_player_XML_tree.h"
 
-#include "ace/Global_Macros.h"
+#include "rpg_monster_common.h"
 
-#include <string>
-#include <deque>
+#include "rpg_combat_attacksituation.h"
+#include "rpg_combat_defensesituation.h"
+
+#include "rpg_map_common.h"
+
+#include "rpg_engine_common.h"
+#include "rpg_engine_defines.h"
+#include "rpg_engine_event_common.h"
+//#include "rpg_engine_exports.h"
+#include "rpg_engine_level.h"
+#include "rpg_engine_XML_tree.h"
+
+// forward declarations
+class RPG_Player_Base;
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Engine_Export RPG_Engine_Common_Tools
+class RPG_Engine_Common_Tools
 {
  public:
   // *NOTE*: initializes (static) data from ALL individual modules
@@ -61,33 +64,33 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
   //                - static tables (skills, spells, experience, ...)
   //                - XML parsing facilities
   //                - dictionaries (spells, items, monsters, ...)
-  static void init(const std::string&,  // schema directory
-                   const std::string&,  // magic dictionary file
-                   const std::string&,  // item dictionary file
-                   const std::string&); // monster dictionary file
-  static void fini();
+  static void initialize(const std::string&,  // schema directory
+                         const std::string&,  // magic dictionary file
+                         const std::string&,  // item dictionary file
+                         const std::string&); // monster dictionary file
+  static void finalize();
 
 	// ***** event-related *****
-	static bool isOneShotEvent(const RPG_Engine_EventType&);
+	static bool isOneShotEvent(enum RPG_Engine_EventType);
 
   // ***** state-related *****
   static std::string getEngineStateDirectory();
 
   // ***** entity-related *****
-  static RPG_Engine_Entity_t createEntity();
-  static RPG_Engine_Entity_t createEntity(// base attributes
-                                          const std::string&,                // creature type
-                                          const unsigned short int&,         // max HP
-                                          // extended data
-                                          const unsigned int&,               // wealth (GP)
-                                          const RPG_Item_List_t&,            // list of (carried) items
-                                          // current status
-                                          const RPG_Character_Conditions_t&, // condition
-                                          const short int&,                  // HP
-                                          const RPG_Magic_Spells_t&);        // set of memorized/prepared spells (if any)
+  static struct RPG_Engine_Entity createEntity();
+  static struct RPG_Engine_Entity createEntity(// base attributes
+                                               const std::string&,                // creature type
+                                               const unsigned short int&,         // max HP
+                                               // extended data
+                                               const unsigned int&,               // wealth (GP)
+                                               const RPG_Item_List_t&,            // list of (carried) items
+                                               // current status
+                                               const RPG_Character_Conditions_t&, // condition
+                                               const short int&,                  // HP
+                                               const RPG_Magic_Spells_t&);        // set of memorized/prepared spells (if any)
 
-  static std::string info(const RPG_Engine_Entity_t&); // entity
-  static RPG_Item_List_t generateStandardItems(const RPG_Common_SubClass&);
+  static std::string info (const struct RPG_Engine_Entity&); // entity
+  static RPG_Item_List_t generateStandardItems(enum RPG_Common_SubClass);
 
   // ***** combat-related *****
   static unsigned int range(const RPG_Map_Position_t&,  // A
@@ -108,37 +111,37 @@ class RPG_Engine_Export RPG_Engine_Common_Tools
                      const RPG_Combat_DefenseSituation& = DEFENSE_NORMAL, // defense situation
                      const bool& = true,                                  // full-round action ?
                      const unsigned short& = RPG_ENGINE_FEET_PER_SQUARE); // distance (feet)
-	static unsigned int party2ACL(const RPG_Player_Party_t&);
-  static unsigned int combat2XP(const std::string&,       // type
-                                const unsigned int&,      // ACL (average character level)
-                                const unsigned int& = 1,  // number of foes
-                                const unsigned int& = 1); // number of party members
+	static unsigned int partyToACL(const RPG_Player_Party_t&);
+  static unsigned int combatToXP(const std::string&,       // type
+                                 const unsigned int&,      // ACL (average character level)
+                                 const unsigned int& = 1,  // number of foes
+                                 const unsigned int& = 1); // number of party members
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Engine_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Common_Tools(const RPG_Engine_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Common_Tools& operator=(const RPG_Engine_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Common_Tools())
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Engine_Common_Tools())
+  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Common_Tools(const RPG_Engine_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Common_Tools& operator=(const RPG_Engine_Common_Tools&))
 
   // helper types
-  typedef std::deque<RPG_Engine_CombatantSequenceElement_t> RPG_Engine_CombatSequenceList_t;
+  typedef std::deque<struct RPG_Engine_CombatantSequenceElement> RPG_Engine_CombatSequenceList_t;
   typedef RPG_Engine_CombatSequenceList_t::iterator RPG_Engine_CombatSequenceListIterator_t;
 
   // helper methods
-  static void initCR2ExperienceMap();
+  static void initializeCRToExperienceMap();
   static bool isMonsterGroupHelpless(const RPG_Monster_Group_t&); // group instance
   static bool isValidFoeAvailable(const bool&,                            // monsters ? : players
                                   const RPG_Engine_CombatantSequence_t&); // battle sequence
 
-  static unsigned int numCompatibleMonsterAttackActions(const RPG_Combat_AttackForm&,
+  static unsigned int numCompatibleMonsterAttackActions(enum RPG_Combat_AttackForm,
                                                         const RPG_Monster_AttackActions_t&);
-  static bool isCompatibleMonsterAttackAction(const RPG_Combat_AttackForm&,
+  static bool isCompatibleMonsterAttackAction(enum RPG_Combat_AttackForm,
                                               const RPG_Monster_AttackAction&);
 
 //  // *WARNING*: result needs to be delete()d !
 //  static RPG_Engine_EntityState_XMLTree_Type* playerXMLToEntityStateXML(const RPG_Player_PlayerXML_XMLTree_Type&);
 
-  static RPG_Engine_CR2ExperienceMap_t myCR2ExperienceMap;
+  static RPG_Engine_CRToExperienceMap_t myCRToExperienceMap;
 };
 
 #endif

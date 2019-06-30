@@ -34,6 +34,8 @@
 
 #include "common_log_tools.h"
 
+#include "common_timer_tools.h"
+
 #if defined (HAVE_CONFIG_H)
 #include "rpg_config.h"
 #endif // HAVE_CONFIG_H
@@ -221,11 +223,11 @@ do_work (bool buildCorridors_in,
 
   // step0: initialize: random seed, string conversion facilities, ...
   RPG_Dice::initialize ();
-  RPG_Dice_Common_Tools::initStringConversionTables ();
-  RPG_Common_Tools::initStringConversionTables ();
+  RPG_Dice_Common_Tools::initializeStringConversionTables ();
+  RPG_Common_Tools::initializeStringConversionTables ();
 
   // step1: load floor plan
-  RPG_Map_t map;
+  struct RPG_Map map;
   if (!RPG_Map_Level::load (filename_in,
                             map,
                             false,
@@ -236,7 +238,6 @@ do_work (bool buildCorridors_in,
                 ACE_TEXT (filename_in.c_str ())));
     return;
   } // end IF
-
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("loaded floor plan %s\n"),
               ACE_TEXT (filename_in.c_str ()),
@@ -250,9 +251,9 @@ do_work (bool buildCorridors_in,
   {
     // *WARNING*: set iterators are CONST for a good reason !
     // --> (but we know what we're doing)...
-    const_cast<RPG_Map_Door_t&>(*iterator).outside =
-      RPG_Map_Common_Tools::door2exitDirection ((*iterator).position,
-                                                map.plan);
+    const_cast<struct RPG_Map_Door&>(*iterator).outside =
+      RPG_Map_Common_Tools::doorToExitDirection ((*iterator).position,
+                                                 map.plan);
 
     door_positions.insert ((*iterator).position);
   } // end FOR
@@ -348,7 +349,7 @@ do_work (bool buildCorridors_in,
 
   // step5: display the result
   RPG_Map_Position_t current_position;
-  RPG_Map_Door_t current_position_door;
+  struct RPG_Map_Door current_position_door;
   std::ostringstream converter;
   bool done = false;
   for (unsigned int y = 0;
@@ -414,7 +415,7 @@ do_printVersion (const std::string& programName_in)
 
   std::cout << programName_in
             << ACE_TEXT(" : ")
-            << YARP_PACKAGE_VERSION
+            //<< YARP_PACKAGE_VERSION
             << std::endl;
 
   // create version string...
@@ -598,9 +599,8 @@ ACE_TMAIN (int argc_in,
   std::string working_time_string;
   ACE_Time_Value working_time;
   timer.elapsed_time (working_time);
-  RPG_Common_Tools::period2String (working_time,
-                                   working_time_string);
-
+  working_time_string =
+    Common_Timer_Tools::periodToString (working_time);
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
               ACE_TEXT (working_time_string.c_str ())));

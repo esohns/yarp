@@ -46,30 +46,30 @@
 
 #include "rpg_player_base.h"
 
-#include "rpg_monster_common.h"
+#include "rpg_monster_spawn.h"
 
 #include "rpg_map_common.h"
 
 #include "rpg_engine_command.h"
 #include "rpg_engine_entitymode.h"
 
-typedef std::set<RPG_Engine_EntityMode> RPG_Engine_EntityMode_t;
+typedef std::set<enum RPG_Engine_EntityMode> RPG_Engine_EntityMode_t;
 typedef RPG_Engine_EntityMode_t::const_iterator RPG_Engine_EntityModeConstIterator_t;
 
 typedef unsigned int RPG_Engine_EntityID_t;
 
-struct RPG_Engine_Action_t
+struct RPG_Engine_Action
 {
   RPG_Engine_Command    command;
   RPG_Map_Position_t    position;
   RPG_Map_Path_t        path;
   RPG_Engine_EntityID_t target;
 };
-typedef std::deque<RPG_Engine_Action_t> RPG_Engine_Actions_t;
+typedef std::deque<struct RPG_Engine_Action> RPG_Engine_Actions_t;
 typedef RPG_Engine_Actions_t::iterator RPG_Engine_ActionsIterator_t;
 typedef RPG_Engine_Actions_t::const_iterator RPG_Engine_ActionsConstIterator_t;
 
-struct RPG_Engine_Entity_t
+struct RPG_Engine_Entity
 {
   RPG_Player_Base*        character;
   RPG_Engine_EntityMode_t modes;
@@ -78,7 +78,7 @@ struct RPG_Engine_Entity_t
   // monster - onlies
   bool                    is_spawned;
 };
-typedef std::map<RPG_Engine_EntityID_t, RPG_Engine_Entity_t*> RPG_Engine_Entities_t;
+typedef std::map<RPG_Engine_EntityID_t, struct RPG_Engine_Entity*> RPG_Engine_Entities_t;
 typedef RPG_Engine_Entities_t::iterator RPG_Engine_EntitiesIterator_t;
 typedef RPG_Engine_Entities_t::const_iterator RPG_Engine_EntitiesConstIterator_t;
 
@@ -86,37 +86,38 @@ typedef std::list<RPG_Engine_EntityID_t> RPG_Engine_EntityList_t;
 typedef RPG_Engine_EntityList_t::iterator RPG_Engine_EntityListIterator_t;
 typedef RPG_Engine_EntityList_t::const_iterator RPG_Engine_EntityListConstIterator_t;
 
-struct RPG_Engine_Spawn_t
+struct RPG_Engine_Spawn
 {
-  RPG_Monster_Spawn spawn;
-  long              timer_id;
+  struct RPG_Monster_Spawn spawn;
+  long                     timer_id;
 };
-typedef std::vector<RPG_Engine_Spawn_t> RPG_Engine_Spawns_t;
+typedef std::vector<struct RPG_Engine_Spawn> RPG_Engine_Spawns_t;
 typedef RPG_Engine_Spawns_t::iterator RPG_Engine_SpawnsIterator_t;
 typedef RPG_Engine_Spawns_t::const_iterator RPG_Engine_SpawnsConstIterator_t;
-struct RPG_Engine_LevelMetaData_t
-{
-  std::string            name;
 
-  RPG_Common_Environment environment;
+struct RPG_Engine_LevelMetaData
+{
+  std::string                   name;
+
+  struct RPG_Common_Environment environment;
 
   // (roaming) monsters
-  RPG_Engine_Spawns_t    spawns;
-  unsigned int           max_num_spawned; // 0: don't auto-spawn, INT_MAX: unlimited
+  RPG_Engine_Spawns_t           spawns;
+  unsigned int                  max_num_spawned; // 0: don't auto-spawn, INT_MAX: unlimited
 };
-struct RPG_Engine_Level_t
+struct RPG_Engine_LevelData
 {
-  RPG_Engine_LevelMetaData_t metadata;
-  RPG_Map_t                  map;
+  struct RPG_Engine_LevelMetaData metadata;
+  struct RPG_Map                  map;
 };
 
 //typedef std::map<RPG_Map_Position_t, SDL_Surface*> RPG_Engine_EntityGraphics_t;
 //typedef RPG_Engine_EntityGraphics_t::const_iterator RPG_Engine_EntityGraphicsConstIterator_t;
 
-struct RPG_Engine_CombatantSequenceElement_t
+struct RPG_Engine_CombatantSequenceElement
 {
   // needed for proper sorting...
-  inline bool operator<(const RPG_Engine_CombatantSequenceElement_t& rhs_in) const
+  bool operator<(const struct RPG_Engine_CombatantSequenceElement& rhs_in) const
   {
     if (initiative < rhs_in.initiative)
       return true;
@@ -133,8 +134,7 @@ struct RPG_Engine_CombatantSequenceElement_t
     // *NOTE*: a conflict between monsters doesn't matter, really...
     // --> if either one is a PC, we have a conflict
     ACE_ASSERT(handle && rhs_in.handle);
-    try
-    {
+    try {
       if (handle->isPlayerCharacter() ||
           rhs_in.handle->isPlayerCharacter())
       {
@@ -144,9 +144,7 @@ struct RPG_Engine_CombatantSequenceElement_t
         // resolve the conflict by comparing adresses...
         return (this < &rhs_in);
       } // end IF
-    }
-    catch (...)
-    {
+    } catch (...) {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("caught exception in RPG_Engine_CombatantSequenceElement::operator<, aborting\n")));
     }
@@ -154,11 +152,11 @@ struct RPG_Engine_CombatantSequenceElement_t
     // no conflict for monsters...
     return false;
   }
-  inline bool operator>(const RPG_Engine_CombatantSequenceElement_t& rhs_in) const
+  inline bool operator>(const struct RPG_Engine_CombatantSequenceElement& rhs_in) const
   {
     return (!(*this < rhs_in) && !(*this == rhs_in));
   }
-  inline bool operator==(const RPG_Engine_CombatantSequenceElement_t& rhs_in) const
+  inline bool operator==(const struct RPG_Engine_CombatantSequenceElement& rhs_in) const
   {
     if (initiative == rhs_in.initiative)
     {
@@ -167,8 +165,7 @@ struct RPG_Engine_CombatantSequenceElement_t
         // *NOTE*: a conflict between monsters doesn't matter, really...
         // --> if either one is a PC, we have a conflict
         ACE_ASSERT(handle && rhs_in.handle);
-        try
-        {
+        try {
           if (handle->isPlayerCharacter() ||
               rhs_in.handle->isPlayerCharacter())
           {
@@ -178,9 +175,7 @@ struct RPG_Engine_CombatantSequenceElement_t
             // resolve the conflict by comparing adresses...
             return (this < &rhs_in);
           } // end IF
-        }
-        catch (...)
-        {
+        } catch (...) {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("caught exception in RPG_Engine_CombatantSequenceElement::operator==, aborting\n")));
         }
@@ -190,7 +185,7 @@ struct RPG_Engine_CombatantSequenceElement_t
     // no conflict for monsters...
     return false;
   }
-  inline bool operator!=(const RPG_Engine_CombatantSequenceElement_t& rhs_in) const
+  inline bool operator!=(const struct RPG_Engine_CombatantSequenceElement& rhs_in) const
   {
     return !operator==(rhs_in);
   }
@@ -216,28 +211,28 @@ struct RPG_Engine_CombatantSequenceElement_t
 // typedef std::set<RPG_Engine_CombatantSequenceElement_t,
 //                  lessThanRPG_Engine_CombatantSequenceElement_t> RPG_Engine_CombatantSequence_t;
 // *NOTE*: sort in DESCENDING order !
-typedef std::set<RPG_Engine_CombatantSequenceElement_t,
-                 std::greater<RPG_Engine_CombatantSequenceElement_t> > RPG_Engine_CombatantSequence_t;
+typedef std::set<struct RPG_Engine_CombatantSequenceElement,
+                 std::greater<struct RPG_Engine_CombatantSequenceElement> > RPG_Engine_CombatantSequence_t;
 typedef RPG_Engine_CombatantSequence_t::iterator RPG_Engine_CombatantSequenceIterator_t;
 typedef RPG_Engine_CombatantSequence_t::const_iterator RPG_Engine_CombatantSequenceConstIterator_t;
 // typedef RPG_Engine_CombatantSequence_t::const_reverse_iterator RPG_Engine_CombatantSequenceRIterator_t;
 
-struct RPG_Engine_ClientNotificationParameters_t
+struct RPG_Engine_ClientNotificationParameters
 {
-  RPG_Engine_EntityID_t entity_id;
-  RPG_Common_Condition  condition;
-  RPG_Map_Positions_t   positions;
-  RPG_Map_Position_t    previous_position;
-  unsigned char         visible_radius;
-  std::string           message;
+  RPG_Engine_EntityID_t     entity_id;
+  enum RPG_Common_Condition condition;
+  RPG_Map_Positions_t       positions;
+  RPG_Map_Position_t        previous_position;
+  unsigned char             visible_radius;
+  std::string               message;
 };
 //typedef std::vector<void*> RPG_Engine_ClientParameters_t;
 //typedef RPG_Engine_ClientParameters_t::iterator RPG_Engine_ClientParametersIterator_t;
 //typedef RPG_Engine_ClientParameters_t::const_iterator RPG_Engine_ClientParametersConstIterator_t;
 
-typedef std::vector<unsigned int> RPG_Engine_Level2ExperienceList_t;
-typedef RPG_Engine_Level2ExperienceList_t::const_iterator RPG_Engine_Level2ExperienceListConstIterator_t;
-typedef std::map<unsigned char, RPG_Engine_Level2ExperienceList_t> RPG_Engine_CR2ExperienceMap_t;
-typedef RPG_Engine_CR2ExperienceMap_t::const_iterator RPG_Engine_CR2ExperienceMapConstIterator_t;
+typedef std::vector<unsigned int> RPG_Engine_LevelToExperienceList_t;
+typedef RPG_Engine_LevelToExperienceList_t::const_iterator RPG_Engine_LevelToExperienceListConstIterator_t;
+typedef std::map<unsigned char, RPG_Engine_LevelToExperienceList_t> RPG_Engine_CRToExperienceMap_t;
+typedef RPG_Engine_CRToExperienceMap_t::const_iterator RPG_Engine_CRToExperienceMapConstIterator_t;
 
 #endif

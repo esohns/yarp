@@ -158,7 +158,7 @@ do_work (const RPG_Dice_ValueRange& valueRange_in,
   rolls_out.clear ();
 
   // step0: init framework
-  RPG_Dice_Common_Tools::initialize ();
+  RPG_Dice_Common_Tools::initializeStringConversionTables ();
 
   // step1a: make sure begin <= end
   ACE_ASSERT (valueRange_in.begin <= valueRange_in.end);

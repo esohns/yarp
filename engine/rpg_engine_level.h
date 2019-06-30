@@ -21,46 +21,48 @@
 #ifndef RPG_ENGINE_LEVEL_H
 #define RPG_ENGINE_LEVEL_H
 
-#include "rpg_engine_exports.h"
-#include "rpg_engine_common.h"
-#include "rpg_engine_XML_tree.h"
+#include <string>
+
+#include "ace/Global_Macros.h"
 
 #include "rpg_map_common.h"
 #include "rpg_map_level.h"
 
-#include "ace/Global_Macros.h"
-
-#include <string>
+#include "rpg_engine_common.h"
+//#include "rpg_engine_exports.h"
+#include "rpg_engine_XML_tree.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Engine_Export RPG_Engine_Level
+class RPG_Engine_Level
  : public RPG_Map_Level
 {
+ typedef RPG_Map_Level inherited;
+
  public:
   RPG_Engine_Level();
   virtual ~RPG_Engine_Level();
 
   // static functionality
-  static void create(const RPG_Map_FloorPlan_Configuration_t&, // floor plan config
-                     RPG_Engine_Level_t&);                     // return value: level
-  static bool load(const std::string&,   // FQ filename
-                   const std::string&,   // schema repository (directory)
-                   RPG_Engine_Level_t&); // return value: level
-  static bool save(const std::string&,         // FQ filename
-                   const RPG_Engine_Level_t&); // level
-  static void random(const RPG_Engine_LevelMetaData_t&,        // metadata
-                     const RPG_Map_FloorPlan_Configuration_t&, // floor plan config
-                     RPG_Engine_Level_t&);                     // return value: level
-  static void print(const RPG_Engine_Level_t&); // level
+  static void create (const struct RPG_Map_FloorPlan_Configuration&, // floor plan config
+                      struct RPG_Engine_LevelData&);                 // return value: level data
+  static bool load (const std::string&,   // FQ filename
+                    const std::string&,   // schema repository (directory)
+                    struct RPG_Engine_LevelData&); // return value: level
+  static bool save (const std::string&,                  // FQ filename
+                    const struct RPG_Engine_LevelData&); // level
+  static void random (const struct RPG_Engine_LevelMetaData&,        // metadata
+                      const struct RPG_Map_FloorPlan_Configuration&, // floor plan config
+                      struct RPG_Engine_LevelData&);                 // return value: level
+  static void print (const struct RPG_Engine_LevelData&); // level
 
-  void init(const RPG_Engine_Level_t&); // level
-  void save(const std::string&) const; // FQ filename
+  void init (const struct RPG_Engine_LevelData&); // level
+  void save (const std::string&) const; // FQ filename
   // override RPG_IDumpState
-  virtual void dump_state() const;
+  virtual void dump_state () const;
 
-  RPG_Engine_LevelMetaData_t getMetaData() const;
+  struct RPG_Engine_LevelMetaData getMetaData () const;
 
  protected:
   // hide some funcionality
@@ -79,25 +81,23 @@ class RPG_Engine_Export RPG_Engine_Level
   using RPG_Map_Level::findValid;
 
   // *NOTE*: return value: toggled ?
-  bool handleDoor(const RPG_Map_Position_t&, // position
-                  const bool&);              // open ? : close
+  bool handleDoor (const RPG_Map_Position_t&, // position
+                   bool);                     // open ? : close
   bool findPath(const RPG_Map_Position_t&,  // start position
                 const RPG_Map_Position_t&,  // end position
                 const RPG_Map_Positions_t&, // obstacles
                 RPG_Map_Path_t&) const;     // return value: (partial) path A --> B
 
-  RPG_Engine_LevelMetaData_t myMetaData;
+  struct RPG_Engine_LevelMetaData myMetaData;
 
  private:
-  typedef RPG_Map_Level inherited;
-
-  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Level(const RPG_Engine_Level&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Level& operator=(const RPG_Engine_Level&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Engine_Level (const RPG_Engine_Level&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Engine_Level& operator= (const RPG_Engine_Level&))
 
   // helper methods
   // *WARNING*: result needs to be delete()d !
-  static RPG_Engine_Level_XMLTree_Type* levelToLevelXML(const RPG_Engine_Level_t&);
-  static RPG_Engine_Level_t levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type&);
+  static RPG_Engine_Level_XMLTree_Type* levelToLevelXML (const struct RPG_Engine_LevelData&);
+  static struct RPG_Engine_LevelData levelXMLToLevel (const RPG_Engine_Level_XMLTree_Type&);
 
   // hide unwanted funcionality
   using RPG_Map_Level::save;

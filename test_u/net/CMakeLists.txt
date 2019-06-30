@@ -17,7 +17,6 @@ set (${EXECUTABLE}_SRCS
 
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
-set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/image)
@@ -35,6 +34,8 @@ target_link_libraries (${EXECUTABLE}
                        pthread xerces-c
                        ACE
                        RPG_Dice RPG_Common RPG_Net)
+
+set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
 install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 
@@ -56,5 +57,7 @@ target_link_libraries (${EXECUTABLE}
                        pthread xerces-c
                        ACE
                        RPG_Dice RPG_Common RPG_Net)
+
+set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
 install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)

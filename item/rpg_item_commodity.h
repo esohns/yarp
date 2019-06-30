@@ -21,47 +21,46 @@
 #ifndef RPG_ITEM_COMMODITY_H
 #define RPG_ITEM_COMMODITY_H
 
-#include "rpg_item_exports.h"
-#include "rpg_item_instance_base.h"
+#include "ace/Global_Macros.h"
+
 #include "rpg_item_base.h"
 #include "rpg_item_commoditytype.h"
 #include "rpg_item_commoditybeverage.h"
 #include "rpg_item_commoditylight.h"
 #include "rpg_item_commodityunion.h"
-
-#include <ace/Global_Macros.h>
+//#include "rpg_item_exports.h"
+#include "rpg_item_instance_base.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Item_Export RPG_Item_Commodity
+class RPG_Item_Commodity
  : public RPG_Item_Instance_Base,
    public RPG_Item_Base
 {
+  typedef RPG_Item_Instance_Base inherited;
+  typedef RPG_Item_Base inherited2;
+
   // grant access to ctor
   friend class RPG_Item_Instance_Manager;
 
  public:
-  // what am I ?
-  const RPG_Item_CommodityType getCommodityType() const;
-  const RPG_Item_CommodityUnion getCommoditySubType() const;
+  inline enum RPG_Item_CommodityType type () const { return type_; }
+  inline RPG_Item_CommodityUnion subtype () const { return subtype_; }
 
-  virtual void dump() const;
+  virtual void dump () const;
+
+ protected:
+  enum RPG_Item_CommodityType type_;
+  RPG_Item_CommodityUnion subtype_;
 
  private:
-  typedef RPG_Item_Instance_Base inherited;
-  typedef RPG_Item_Base inherited2;
-
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Commodity());
-  RPG_Item_Commodity(const RPG_Item_CommodityType&,
-                     const RPG_Item_CommodityUnion&);
-  virtual ~RPG_Item_Commodity();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Commodity(const RPG_Item_Commodity&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Commodity& operator=(const RPG_Item_Commodity&));
-
-  RPG_Item_CommodityType  myCommodityType;
-  RPG_Item_CommodityUnion myCommoditySubType;
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Commodity ())
+  RPG_Item_Commodity (enum RPG_Item_CommodityType,
+                      const RPG_Item_CommodityUnion&);
+  inline virtual ~RPG_Item_Commodity () {}
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Commodity (const RPG_Item_Commodity&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Commodity& operator= (const RPG_Item_Commodity&));
 };
 
 #endif

@@ -8,6 +8,19 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/Configuration.cmake)
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/Macros.cmake)
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/VersionConfig.cmake)
 
+get_filename_component (BUILD_PATH ${CMAKE_CURRENT_BINARY_DIR}/../.. REALPATH DIRECTORY)
+get_filename_component (BUILD_PATH_SUFFIX ${BUILD_PATH} NAME)
+find_package (Common ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO}
+              REQUIRED
+              CONFIG
+              PATHS ${CMAKE_CURRENT_SOURCE_DIR}/../modules ${CMAKE_CURRENT_SOURCE_DIR}/../..
+              PATH_SUFFIXES Common/${BUILD_PATH_SUFFIX}
+              NO_DEFAULT_PATH)
+if (NOT EXISTS ${Common_DIR})
+ message (FATAL_ERROR "could not find package \"Common\", aborting")
+endif ()
+add_definitions (-DCOMMON_HAS_DLL)
+
 if (UNIX)
  set (NEWLINE_STYLE UNIX)
 elseif (WIN32)

@@ -374,7 +374,7 @@ do_processArguments(const int argc_in,
 }
 
 void
-do_work (const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
+do_work (const struct RPG_Map_FloorPlan_Configuration& mapConfig_in,
          bool generateLevel_in,
          const std::string& outputFile_in,
          bool dump_in,
@@ -384,12 +384,12 @@ do_work (const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
 
   // step1: initialize: random seed, string conversion facilities, ...
   RPG_Dice::initialize ();
-  RPG_Dice_Common_Tools::initStringConversionTables ();
-  RPG_Common_Tools::initStringConversionTables ();
+  RPG_Dice_Common_Tools::initializeStringConversionTables ();
+  RPG_Common_Tools::initializeStringConversionTables ();
   RPG_Graphics_Common_Tools::preInitialize ();
 
   // step2: generate level data
-  RPG_Engine_Level_t level;
+  struct RPG_Engine_Level level;
   if (generateLevel_in)
   {
     if (random_in)

@@ -21,18 +21,18 @@
 #ifndef RPG_MAP_PATHFINDING_TOOLS_H
 #define RPG_MAP_PATHFINDING_TOOLS_H
 
-#include "rpg_map_exports.h"
-#include "rpg_map_common.h"
-
-#include <ace/Global_Macros.h>
-
-#include <set>
 #include <list>
+#include <set>
+
+#include "ace/Global_Macros.h"
+
+//#include "rpg_map_exports.h"
+#include "rpg_map_common.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Map_Export RPG_Map_Pathfinding_Tools
+class RPG_Map_Pathfinding_Tools
 {
  public:
   // "classic" A* algorithm
@@ -53,7 +53,7 @@ class RPG_Map_Export RPG_Map_Pathfinding_Tools
                                         const RPG_Map_Position_t&); // end position
 
   static void print(const RPG_Map_Path_t&,       // path
-                    const RPG_Map_FloorPlan_t&); // floor plan
+                    const struct RPG_Map_FloorPlan&); // floor plan
 
   // *NOTE*: these must be public (required by operator==, see below)
   struct RPG_Map_AStar_Position_t
@@ -71,11 +71,10 @@ class RPG_Map_Export RPG_Map_Pathfinding_Tools
   typedef std::pair<RPG_Map_AStar_Position_t, unsigned int> RPG_Map_AStar_Node_t;
 
  private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Pathfinding_Tools());
-  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Map_Pathfinding_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Pathfinding_Tools(const RPG_Map_Pathfinding_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Pathfinding_Tools& operator=(const RPG_Map_Pathfinding_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Pathfinding_Tools())
+  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Map_Pathfinding_Tools())
+  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Pathfinding_Tools(const RPG_Map_Pathfinding_Tools&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Pathfinding_Tools& operator=(const RPG_Map_Pathfinding_Tools&))
 
   typedef std::list<RPG_Map_AStar_Node_t> RPG_Map_AStar_NodeList_t;
   typedef RPG_Map_AStar_NodeList_t::const_iterator RPG_Map_AStar_NodeListConstIterator_t;

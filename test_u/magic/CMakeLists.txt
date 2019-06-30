@@ -14,7 +14,7 @@ set (EXECUTABLE magic_parser)
 set (${EXECUTABLE}_SRCS
      magic_parser.cpp)
 
-set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS DATADIR="/usr/local/share/RPG/config")
+set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG\"")
 
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
@@ -23,5 +23,7 @@ target_link_libraries (${EXECUTABLE}
                        pthread xerces-c
                        ACE
                        RPG_Dice RPG_Chance RPG_Common RPG_Item RPG_Character RPG_Magic)
+
+set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
 install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)

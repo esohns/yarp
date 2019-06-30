@@ -185,37 +185,25 @@ RPG_Player_Base::getCondition() const
   return myCondition;
 }
 
-unsigned char
-RPG_Player_Base::getAttribute(const RPG_Common_Attribute& attribute_in) const
+ACE_UINT8
+RPG_Player_Base::getAttribute(enum RPG_Common_Attribute attribute_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::getAttribute"));
 
   switch (attribute_in)
   {
     case ATTRIBUTE_STRENGTH:
-    {
       return myAttributes.strength;
-    }
     case ATTRIBUTE_DEXTERITY:
-    {
       return myAttributes.dexterity;
-    }
     case ATTRIBUTE_CONSTITUTION:
-    {
       return myAttributes.constitution;
-    }
     case ATTRIBUTE_INTELLIGENCE:
-    {
       return myAttributes.intelligence;
-    }
     case ATTRIBUTE_WISDOM:
-    {
       return myAttributes.wisdom;
-    }
     case ATTRIBUTE_CHARISMA:
-    {
       return myAttributes.charisma;
-    }
     default:
     {
       ACE_DEBUG((LM_ERROR,
@@ -254,8 +242,8 @@ RPG_Player_Base::getSkills() const
 }
 
 void
-RPG_Player_Base::getSkillRank(const RPG_Common_Skill& skill_in,
-                              unsigned char& result_out) const
+RPG_Player_Base::getSkillRank(enum RPG_Common_Skill skill_in,
+                              ACE_UINT8& result_out) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::getSkillRank"));
 
@@ -270,7 +258,7 @@ RPG_Player_Base::getSkillRank(const RPG_Common_Skill& skill_in,
 }
 
 bool
-RPG_Player_Base::hasFeat(const RPG_Character_Feat& feat_in) const
+RPG_Player_Base::hasFeat(enum RPG_Character_Feat feat_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::hasFeat"));
 
@@ -278,7 +266,7 @@ RPG_Player_Base::hasFeat(const RPG_Character_Feat& feat_in) const
 }
 
 bool
-RPG_Player_Base::hasAbility(const RPG_Character_Ability& ability_in) const
+RPG_Player_Base::hasAbility(enum RPG_Character_Ability ability_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::hasAbility"));
 
@@ -342,7 +330,7 @@ RPG_Player_Base::getWealth() const
 }
 
 bool
-RPG_Player_Base::hasCondition(const RPG_Common_Condition& condition_in) const
+RPG_Player_Base::hasCondition(enum RPG_Common_Condition condition_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Base::hasCondition"));
 
@@ -416,7 +404,7 @@ RPG_Player_Base::status() const
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("condition: %s\nHP: %d/%d\nwealth: %d GP\n"),
-             ACE_TEXT(RPG_Character_Common_Tools::conditionToString(myCondition).c_str()),
+             ACE_TEXT(RPG_Character_Common_Tools::toString(myCondition).c_str()),
              myNumHitPoints,
              myNumTotalHitPoints,
              myWealth));
@@ -431,22 +419,22 @@ RPG_Player_Base::dump() const
   if (!myKnownSpells.empty())
   {
     spells += ACE_TEXT_ALWAYS_CHAR("known:\n");
-    spells += RPG_Magic_Common_Tools::spellsToString(myKnownSpells);
+    spells += RPG_Magic_Common_Tools::toString(myKnownSpells);
   } // end IF
   if (!mySpells.empty())
   {
     spells += ACE_TEXT_ALWAYS_CHAR("memorized:\n");
-    spells += RPG_Magic_Common_Tools::spellsToString(mySpells);
+    spells += RPG_Magic_Common_Tools::toString(mySpells);
   } // end IF
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("Name: \"%s\"\nAlignment: \"%s\"\nAttributes:\n===========\n%sSkills:\n=======\n%sFeats:\n======\n%sAbilities:\n==========\n%sSpells:\n==========\n%sItems:\n======\n"),
              ACE_TEXT(myName.c_str()),
-             ACE_TEXT(RPG_Character_Common_Tools::alignmentToString(myAlignment).c_str()),
-             ACE_TEXT(RPG_Character_Common_Tools::attributesToString(myAttributes).c_str()),
-             ACE_TEXT(RPG_Character_Skills_Common_Tools::skillsToString(mySkills).c_str()),
-             ACE_TEXT(RPG_Character_Skills_Common_Tools::featsToString(myFeats).c_str()),
-             ACE_TEXT(RPG_Character_Skills_Common_Tools::abilitiesToString(myAbilities).c_str()),
+             ACE_TEXT(RPG_Character_Common_Tools::toString(myAlignment).c_str()),
+             ACE_TEXT(RPG_Character_Common_Tools::toString(myAttributes).c_str()),
+             ACE_TEXT(RPG_Character_Skills_Common_Tools::toString(mySkills).c_str()),
+             ACE_TEXT(RPG_Character_Skills_Common_Tools::toString(myFeats).c_str()),
+             ACE_TEXT(RPG_Character_Skills_Common_Tools::toString(myAbilities).c_str()),
              ACE_TEXT(spells.c_str())));
 
   // dump items

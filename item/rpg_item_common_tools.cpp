@@ -52,9 +52,9 @@ RPG_Item_ArmorCategoryToStringTable_t RPG_Item_ArmorCategoryHelper::myRPG_Item_A
 RPG_Item_ArmorTypeToStringTable_t RPG_Item_ArmorTypeHelper::myRPG_Item_ArmorTypeToStringTable;
 
 void
-RPG_Item_Common_Tools::initStringConversionTables()
+RPG_Item_Common_Tools::initializeStringConversionTables()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::initStringConversionTables"));
+  RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::initStringConversionTables"));
 
   RPG_Item_TypeHelper::init();
   RPG_Item_CommodityTypeHelper::init();
@@ -73,9 +73,9 @@ RPG_Item_Common_Tools::initStringConversionTables()
 }
 
 std::string
-RPG_Item_Common_Tools::weaponDamageTypeToString(const RPG_Item_WeaponDamageType& weaponDamageType_in)
+RPG_Item_Common_Tools::toString(const RPG_Item_WeaponDamageType& weaponDamageType_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::weaponDamageTypeToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::weaponDamageTypeToString"));
 
   std::string result;
 
@@ -114,7 +114,7 @@ RPG_Item_Common_Tools::weaponDamageTypeToString(const RPG_Item_WeaponDamageType&
 RPG_Common_PhysicalDamageList_t
 RPG_Item_Common_Tools::weaponDamageTypeToPhysicalDamageType(const RPG_Item_WeaponDamageType& weaponDamageType_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::weaponDamageTypeToPhysicalDamageType"));
+  RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::weaponDamageTypeToPhysicalDamageType"));
 
   RPG_Common_PhysicalDamageList_t result;
 
@@ -142,9 +142,9 @@ RPG_Item_Common_Tools::weaponDamageTypeToPhysicalDamageType(const RPG_Item_Weapo
 }
 
 std::string
-RPG_Item_Common_Tools::damageToString(const RPG_Item_Damage& damage_in)
+RPG_Item_Common_Tools::toString(const RPG_Item_Damage& damage_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::damageToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::damageToString"));
 
   std::string result;
 
@@ -176,7 +176,7 @@ RPG_Item_Common_Tools::damageToString(const RPG_Item_Damage& damage_in)
 std::string
 RPG_Item_Common_Tools::commoditySubTypeToXMLString(const RPG_Item_CommodityUnion& commoditySubType_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::commoditySubTypeToXMLString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::commoditySubTypeToXMLString"));
 
   std::string result;
 
@@ -204,7 +204,7 @@ RPG_Item_Common_Tools::commoditySubTypeToXMLString(const RPG_Item_CommodityUnion
 RPG_Item_CommodityUnion
 RPG_Item_Common_Tools::XMLStringToCommoditySubType(const std::string& string_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::XMLStringToCommoditySubType"));
+  RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::XMLStringToCommoditySubType"));
 
   // *NOTE*: re-use the cxx-parser functionality...
   RPG_Item_CommodityUnion_Type union_type_xml;
@@ -214,11 +214,11 @@ RPG_Item_Common_Tools::XMLStringToCommoditySubType(const std::string& string_in)
 }
 
 bool
-RPG_Item_Common_Tools::isShield(const RPG_Item_ArmorType& armorType_in)
+RPG_Item_Common_Tools::isShield(enum RPG_Item_ArmorType type_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::isShield"));
+  RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::isShield"));
 
-  switch (armorType_in)
+  switch (type_in)
   {
     case ARMOR_BUCKLER:
     case ARMOR_SHIELD_LIGHT_WOODEN:
@@ -239,10 +239,10 @@ RPG_Item_Common_Tools::isShield(const RPG_Item_ArmorType& armorType_in)
 }
 
 unsigned short
-RPG_Item_Common_Tools::lightingItem2Radius(const RPG_Item_CommodityLight& type_in,
-                                           const bool& ambienceIsBright_in)
+RPG_Item_Common_Tools::lightingItemToRadius(const RPG_Item_CommodityLight& type_in,
+                                            const bool& ambienceIsBright_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::lightingItem2Radius"));
+  RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::lightingItem2Radius"));
 
   unsigned char result = 0;
 
@@ -274,11 +274,11 @@ RPG_Item_Common_Tools::lightingItem2Radius(const RPG_Item_CommodityLight& type_i
 }
 
 void
-RPG_Item_Common_Tools::item2Slot(const RPG_Item_ID_t& itemID_in,
-                                 const RPG_Character_OffHand& offHand_in,
-                                 RPG_Character_EquipmentSlots& slots_out)
+RPG_Item_Common_Tools::itemToSlot(RPG_Item_ID_t id_in,
+                                  enum RPG_Character_OffHand offHand_in,
+                                  RPG_Character_EquipmentSlots& slots_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::item2Slot"));
+  RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::item2Slot"));
 
   // init return value(s)
   slots_out.slots.clear();
@@ -286,25 +286,23 @@ RPG_Item_Common_Tools::item2Slot(const RPG_Item_ID_t& itemID_in,
 
   // retrieve properties
   RPG_Item_Base* item_base = NULL;
-  if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(itemID_in, item_base))
+  if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(id_in, item_base))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid item ID (was: %u), aborting\n"),
-               itemID_in));
-
+               ACE_TEXT("invalid item ID (was: %u), returning\n"),
+               id_in));
     return;
   } // end IF
   ACE_ASSERT(item_base);
 
-  const RPG_Item_Type& item_type = item_base->getType();
-  switch (item_type)
+  switch (item_base->type ())
   {
     case ITEM_ARMOR:
     {
       const RPG_Item_Armor* armor = dynamic_cast<const RPG_Item_Armor*>(item_base);
       ACE_ASSERT(armor);
-      const RPG_Item_ArmorType& armor_type = armor->getArmorType();
-      const RPG_Item_ArmorProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_type);
+      const RPG_Item_ArmorProperties& properties =
+        RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor->type ());
       switch (properties.category)
       {
         case ARMORCATEGORY_GLOVES:
@@ -359,8 +357,7 @@ RPG_Item_Common_Tools::item2Slot(const RPG_Item_ID_t& itemID_in,
     {
       const RPG_Item_Commodity* commodity = dynamic_cast<const RPG_Item_Commodity*>(item_base);
       ACE_ASSERT(commodity);
-      const RPG_Item_CommodityUnion& commodity_type = commodity->getCommoditySubType();
-      switch (commodity_type.discriminator)
+      switch (commodity->subtype ().discriminator)
       {
         case RPG_Item_CommodityUnion::COMMODITYBEVERAGE:
           break;
@@ -378,7 +375,7 @@ RPG_Item_Common_Tools::item2Slot(const RPG_Item_ID_t& itemID_in,
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid commodity type (was: %d), aborting\n"),
-                     commodity_type.discriminator));
+                     commodity->subtype ().discriminator));
 
           return;
         }
@@ -398,12 +395,12 @@ RPG_Item_Common_Tools::item2Slot(const RPG_Item_ID_t& itemID_in,
     {
       const RPG_Item_Weapon* weapon = dynamic_cast<const RPG_Item_Weapon*>(item_base);
       ACE_ASSERT(weapon);
-      const RPG_Item_WeaponType& weapon_type = weapon->getWeaponType();
-      const RPG_Item_WeaponProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_type);
+      const RPG_Item_WeaponProperties& properties =
+        RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon->type ());
 
       // *TODO*: consider single-handed use of double-handed weapons...
       if (properties.isDoubleWeapon ||
-          RPG_Item_Common_Tools::isTwoHandedWeapon(weapon_type))
+          RPG_Item_Common_Tools::isTwoHandedWeapon(weapon->type ()))
         slots_out.is_inclusive = true;
       // *NOTE*: primary, then secondary
       slots_out.slots.push_back((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT
@@ -417,7 +414,7 @@ RPG_Item_Common_Tools::item2Slot(const RPG_Item_ID_t& itemID_in,
     {
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("invalid item type (was: \"%s\"), aborting\n"),
-                 RPG_Item_TypeHelper::RPG_Item_TypeToString(item_type).c_str()));
+                 RPG_Item_TypeHelper::RPG_Item_TypeToString(item_base->type ()).c_str()));
 
       break;
     }
@@ -425,21 +422,23 @@ RPG_Item_Common_Tools::item2Slot(const RPG_Item_ID_t& itemID_in,
 }
 
 bool
-RPG_Item_Common_Tools::isThrownWeapon(const RPG_Item_WeaponType& weaponType_in)
+RPG_Item_Common_Tools::isThrownWeapon(enum RPG_Item_WeaponType type_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::isThrownWeapon"));
+  RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::isThrownWeapon"));
 
-  RPG_Item_WeaponProperties weapon_properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weaponType_in);
+  RPG_Item_WeaponProperties weapon_properties =
+    RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(type_in);
 
-  return (weapon_properties.rangeIncrement && !isProjectileWeapon(weaponType_in));
+  return (weapon_properties.rangeIncrement &&
+          !RPG_Item_Common_Tools::isProjectileWeapon(type_in));
 }
 
 bool
-RPG_Item_Common_Tools::isProjectileWeapon(const RPG_Item_WeaponType& weaponType_in)
+RPG_Item_Common_Tools::isProjectileWeapon(enum RPG_Item_WeaponType type_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::isProjectileWeapon"));
+  RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::isProjectileWeapon"));
 
-  switch (weaponType_in)
+  switch (type_in)
   {
     case RANGED_WEAPON_SLING:
     case RANGED_WEAPON_CROSSBOW_LIGHT:
@@ -460,19 +459,20 @@ RPG_Item_Common_Tools::isProjectileWeapon(const RPG_Item_WeaponType& weaponType_
 }
 
 bool
-RPG_Item_Common_Tools::isRangedWeapon(const RPG_Item_WeaponType& weaponType_in)
+RPG_Item_Common_Tools::isRangedWeapon(enum RPG_Item_WeaponType type_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::isRangedWeapon"));
+  RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::isRangedWeapon"));
 
-  return (isThrownWeapon(weaponType_in) || isProjectileWeapon(weaponType_in));
+  return (RPG_Item_Common_Tools::isThrownWeapon (type_in) ||
+          RPG_Item_Common_Tools::isProjectileWeapon(type_in));
 }
 
 bool
-RPG_Item_Common_Tools::isTwoHandedWeapon(const RPG_Item_WeaponType& weaponType_in)
+RPG_Item_Common_Tools::isTwoHandedWeapon(enum RPG_Item_WeaponType type_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::isTwoHandedWeapon"));
+  RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::isTwoHandedWeapon"));
 
-  switch (weaponType_in)
+  switch (type_in)
   {
     case TWO_HANDED_MELEE_WEAPON_LONGSPEAR:
     case TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF:
@@ -498,7 +498,7 @@ RPG_Item_Common_Tools::isTwoHandedWeapon(const RPG_Item_WeaponType& weaponType_i
     default:
     {
       // ALL projectile weapons are two-handed...
-      if (isProjectileWeapon(weaponType_in))
+      if (RPG_Item_Common_Tools::isProjectileWeapon (type_in))
         return true;
 
       break;
@@ -509,18 +509,18 @@ RPG_Item_Common_Tools::isTwoHandedWeapon(const RPG_Item_WeaponType& weaponType_i
 }
 
 bool
-RPG_Item_Common_Tools::isMeleeWeapon(const RPG_Item_WeaponType& weaponType_in)
+RPG_Item_Common_Tools::isMeleeWeapon(enum RPG_Item_WeaponType type_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_Common_Tools::isMeleeWeapon"));
+  RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::isMeleeWeapon"));
 
-  if (!isRangedWeapon(weaponType_in))
+  if (!RPG_Item_Common_Tools::isRangedWeapon(type_in))
     return true;
 
-  // some thrown weapons CAN be effectively used in melee
-  if (!isThrownWeapon(weaponType_in))
+  // *NOTE*: some thrown weapons CAN be effectively used in melee
+  if (!RPG_Item_Common_Tools::isThrownWeapon (type_in))
     return false;
 
-  switch (weaponType_in)
+  switch (type_in)
   {
     case LIGHT_MELEE_WEAPON_DAGGER:
     case ONE_HANDED_MELEE_WEAPON_CLUB:
@@ -540,14 +540,15 @@ RPG_Item_Common_Tools::isMeleeWeapon(const RPG_Item_WeaponType& weaponType_in)
 }
 
 bool
-RPG_Item_Common_Tools::hasAbsoluteReach(const RPG_Item_WeaponType& weaponType_in)
+RPG_Item_Common_Tools::hasAbsoluteReach(enum RPG_Item_WeaponType type_in)
 {
   // sanity check
-  const RPG_Item_WeaponProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weaponType_in);
+  const RPG_Item_WeaponProperties& properties =
+    RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(type_in);
   if (!properties.isReachWeapon)
     return false;
 
-  switch (weaponType_in)
+  switch (type_in)
   {
     case TWO_HANDED_MELEE_WEAPON_CHAIN_SPIKED:
       return false;

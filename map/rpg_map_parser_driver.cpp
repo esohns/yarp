@@ -75,7 +75,7 @@ RPG_Map_ParserDriver::~RPG_Map_ParserDriver ()
 void
 RPG_Map_ParserDriver::init(RPG_Map_Position_t* startPosition_in,
                            RPG_Map_Positions_t* seedPoints_in,
-                           RPG_Map_FloorPlan_t* plan_in,
+                           struct RPG_Map_FloorPlan* plan_in,
                            const bool& traceScanning_in,
                            const bool& traceParsing_in)
 {

@@ -47,9 +47,9 @@ RPG_Player_Equipment::~RPG_Player_Equipment()
 }
 
 void
-RPG_Player_Equipment::equip(const RPG_Item_ID_t& itemID_in,
-                            const RPG_Character_OffHand& offHand_in,
-                            const RPG_Character_EquipmentSlot& slot_in)
+RPG_Player_Equipment::equip(RPG_Item_ID_t itemID_in,
+                            enum RPG_Character_OffHand offHand_in,
+                            enum RPG_Character_EquipmentSlot slot_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Equipment::equip"));
 
@@ -60,9 +60,9 @@ RPG_Player_Equipment::equip(const RPG_Item_ID_t& itemID_in,
   slots.is_inclusive = false;
 
   // find appropriate slot(s)
-  RPG_Item_Common_Tools::item2Slot(itemID_in,
-                                   offHand_in,
-                                   slots);
+  RPG_Item_Common_Tools::itemToSlot (itemID_in,
+                                     offHand_in,
+                                     slots);
   ACE_ASSERT(!slots.slots.empty());
   bool is_hint = false;
   if (!slots.is_inclusive)
@@ -154,13 +154,13 @@ RPG_Player_Equipment::equip(const RPG_Item_ID_t& itemID_in,
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("equipped item (ID: %d, type: \"%s\") @ \"%s\"\n"),
                itemID_in,
-               RPG_Item_TypeHelper::RPG_Item_TypeToString(handle->getType()).c_str(),
+               RPG_Item_TypeHelper::RPG_Item_TypeToString(handle->type()).c_str(),
                RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString(*iterator).c_str()));
   } // end FOR
 }
 
 void
-RPG_Player_Equipment::unequip(const RPG_Item_ID_t& itemID_in)
+RPG_Player_Equipment::unequip(RPG_Item_ID_t itemID_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Equipment::unequip"));
 
@@ -185,7 +185,7 @@ RPG_Player_Equipment::unequip(const RPG_Item_ID_t& itemID_in)
 }
 
 void
-RPG_Player_Equipment::unequip(const RPG_Character_EquipmentSlot& slot_in)
+RPG_Player_Equipment::unequip(enum RPG_Character_EquipmentSlot slot_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Equipment::unequip"));
 
@@ -216,7 +216,7 @@ RPG_Player_Equipment::strip()
 }
 
 RPG_Item_WeaponType
-RPG_Player_Equipment::getPrimaryWeapon(const RPG_Character_OffHand& offHand_in) const
+RPG_Player_Equipment::getPrimaryWeapon(enum RPG_Character_OffHand offHand_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Equipment::getPrimaryWeapon"));
 
@@ -241,7 +241,7 @@ RPG_Player_Equipment::getPrimaryWeapon(const RPG_Character_OffHand& offHand_in) 
   } // end IF
 
   // weapon ?
-  if (handle->getType() != ITEM_WEAPON)
+  if (handle->type() != ITEM_WEAPON)
   {
     // equipped item is not a weapon...
     //ACE_DEBUG((LM_DEBUG,
@@ -255,11 +255,11 @@ RPG_Player_Equipment::getPrimaryWeapon(const RPG_Character_OffHand& offHand_in) 
   RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*>(handle);
   ACE_ASSERT(weapon);
 
-  return weapon->getWeaponType();
+  return weapon->type();
 }
 
 RPG_Item_WeaponType
-RPG_Player_Equipment::getSecondaryWeapon(const RPG_Character_OffHand& offHand_in) const
+RPG_Player_Equipment::getSecondaryWeapon(enum RPG_Character_OffHand offHand_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Equipment::getSecondaryWeapon"));
 
@@ -295,17 +295,17 @@ RPG_Player_Equipment::getBodyArmor() const
   } // end IF
 
   // armor ?
-  if (handle->getType() != ITEM_ARMOR)
+  if (handle->type() != ITEM_ARMOR)
     return ARMOR_NONE; // item is not an armor...
 
   RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(handle);
   ACE_ASSERT(armor);
 
-  return armor->getArmorType();
+  return armor->type();
 }
 
-RPG_Item_ArmorType
-RPG_Player_Equipment::getShield(const RPG_Character_OffHand& offHand_in) const
+enum RPG_Item_ArmorType
+RPG_Player_Equipment::getShield(enum RPG_Character_OffHand offHand_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Equipment::getShield"));
 
@@ -330,29 +330,29 @@ RPG_Player_Equipment::getShield(const RPG_Character_OffHand& offHand_in) const
   } // end IF
 
   // armor ?
-  if (handle->getType() != ITEM_ARMOR)
+  if (handle->type() != ITEM_ARMOR)
     return ARMOR_NONE; // item is not an armor...
 
   RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(handle);
   ACE_ASSERT(armor);
 
   // sanity check
-  if (!RPG_Item_Common_Tools::isShield(armor->getArmorType()))
+  if (!RPG_Item_Common_Tools::isShield(armor->type()))
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("equipped armor (ID: %d, type: \"%s\") is not a shield: returning \"%s\"...\n"),
                (*iterator).second,
-               RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->getArmorType()).c_str(),
+               RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->type()).c_str(),
                RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(ARMOR_NONE).c_str()));
 
     // some kind of armor is equipped here, but it's not a shield...
     return ARMOR_NONE;
   } // end IF
 
-  return armor->getArmorType();
+  return armor->type();
 }
 
-RPG_Item_CommodityLight
+enum RPG_Item_CommodityLight
 RPG_Player_Equipment::getLightSource() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Equipment::getLightSource"));
@@ -379,12 +379,12 @@ RPG_Player_Equipment::getLightSource() const
     } // end IF
 
     // commodity ?
-    if (handle->getType() == ITEM_COMMODITY)
+    if (handle->type() == ITEM_COMMODITY)
     {
       commodity_handle = NULL;
       commodity_handle = dynamic_cast<RPG_Item_Commodity*>(handle);
       ACE_ASSERT(commodity_handle);
-      commodity_union = commodity_handle->getCommoditySubType();
+      commodity_union = commodity_handle->subtype();
 
       // light ?
       if (commodity_union.discriminator == RPG_Item_CommodityUnion::COMMODITYLIGHT)
@@ -408,12 +408,12 @@ RPG_Player_Equipment::getLightSource() const
     } // end IF
 
     // commodity ?
-    if (handle->getType() == ITEM_COMMODITY)
+    if (handle->type() == ITEM_COMMODITY)
     {
       commodity_handle = NULL;
       commodity_handle = dynamic_cast<RPG_Item_Commodity*>(handle);
       ACE_ASSERT(commodity_handle);
-      commodity_union = commodity_handle->getCommoditySubType();
+      commodity_union = commodity_handle->subtype();
 
       // light ?
       if (commodity_union.discriminator == RPG_Item_CommodityUnion::COMMODITYLIGHT)
@@ -427,14 +427,16 @@ RPG_Player_Equipment::getLightSource() const
     return lightsource_1;
 
   // return the brighter lightsource...
-  unsigned short brightness_1 = RPG_Item_Common_Tools::lightingItem2Radius(lightsource_1);
-  unsigned short brightness_2 = RPG_Item_Common_Tools::lightingItem2Radius(lightsource_2);
+  unsigned short brightness_1 =
+    RPG_Item_Common_Tools::lightingItemToRadius(lightsource_1);
+  unsigned short brightness_2 =
+    RPG_Item_Common_Tools::lightingItemToRadius(lightsource_2);
 
   return ((brightness_1 > brightness_2) ? lightsource_1 : lightsource_2);
 }
 
 bool
-RPG_Player_Equipment::isEquipped(const RPG_Character_EquipmentSlot& slot_in,
+RPG_Player_Equipment::isEquipped(enum RPG_Character_EquipmentSlot slot_in,
                                  RPG_Item_ID_t& itemID_out) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Equipment::isEquipped"));
@@ -452,8 +454,8 @@ RPG_Player_Equipment::isEquipped(const RPG_Character_EquipmentSlot& slot_in,
 }
 
 bool
-RPG_Player_Equipment::isEquipped(const RPG_Item_ID_t& itemID_in,
-                                 RPG_Character_EquipmentSlot& slot_out) const
+RPG_Player_Equipment::isEquipped(RPG_Item_ID_t itemID_in,
+                                 enum RPG_Character_EquipmentSlot slot_out) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Equipment::isEquipped"));
 
@@ -494,7 +496,7 @@ RPG_Player_Equipment::dump() const
       continue;
     } // end IF
 
-    switch (handle->getType())
+    switch (handle->type())
     {
       case ITEM_ARMOR:
       {
@@ -505,7 +507,7 @@ RPG_Player_Equipment::dump() const
                    ACE_TEXT("slot \"%s\" --> armor (ID: %d, type: %s)\n"),
                    RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString((*iterator).first).c_str(),
                    (*iterator).second,
-                   RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->getArmorType()).c_str()));
+                   RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->type()).c_str()));
 
         break;
       }
@@ -518,7 +520,7 @@ RPG_Player_Equipment::dump() const
                    ACE_TEXT("slot \"%s\" --> commodity (ID: %d, type: %s)\n"),
                    RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString((*iterator).first).c_str(),
                    (*iterator).second,
-                   RPG_Item_CommodityTypeHelper::RPG_Item_CommodityTypeToString(commodity->getCommodityType()).c_str()));
+                   RPG_Item_CommodityTypeHelper::RPG_Item_CommodityTypeToString(commodity->type()).c_str()));
 
         break;
       }
@@ -531,7 +533,7 @@ RPG_Player_Equipment::dump() const
                    ACE_TEXT("slot \"%s\" --> weapon (ID: %d, type: %s)\n"),
                    RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString((*iterator).first).c_str(),
                    (*iterator).second,
-                   RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon->getWeaponType()).c_str()));
+                   RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon->type()).c_str()));
 
         break;
       }
@@ -541,7 +543,7 @@ RPG_Player_Equipment::dump() const
                    ACE_TEXT("slot \"%s\" --> item (ID: %d, type: %s)\n"),
                    RPG_Character_EquipmentSlotHelper::RPG_Character_EquipmentSlotToString((*iterator).first).c_str(),
                    (*iterator).second,
-                   RPG_Item_TypeHelper::RPG_Item_TypeToString(handle->getType()).c_str()));
+                   RPG_Item_TypeHelper::RPG_Item_TypeToString(handle->type()).c_str()));
 
         break;
       }

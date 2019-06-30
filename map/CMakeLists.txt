@@ -30,7 +30,7 @@ set (${LIBRARY}_SRCS
      rpg_map_XML_tree.cpp)
 #     rpg_XMLSchema_XML_tree.h
 
-set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS "YY_NO_UNISTD_H;BASEDIR=\"C:\\\"")
+set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS "YY_NO_UNISTD_H;BASEDIR=\"C:\\\\\"")
 #set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS "YY_NO_UNISTD_H;RPG_MAP_BUILD_DLL")
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})

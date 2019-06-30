@@ -35,21 +35,27 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 ########### next target ###############
-set(combat_simulator_SRCS combat_simulator.cpp)
+set (EXECUTABLE combat_simulator)
+set (${EXECUTABLE}_SRCS
+     combat_simulator.cpp)
 
-if (CMAKE_COMPILER_IS_GNUCC)
-    set_source_files_properties(${combat_simulator_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
-endif()
-set_source_files_properties(${combat_simulator_SRCS} PROPERTIES COMPILE_DEFINITIONS DATADIR="/usr/local/share/RPG/config")
+set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS DATADIR="/usr/local/share/RPG/config")
 
-add_executable(combat_simulator ${combat_simulator_SRCS})
+add_executable (${EXECUTABLE}
+                ${${EXECUTABLE}_SRCS})
 
-target_link_libraries(combat_simulator ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
-                                       ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
-                                       ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
-target_link_libraries(combat_simulator pthread ACE xerces-c RPG_Chance RPG_Dice RPG_Common RPG_Magic RPG_Item
-                                               RPG_Character RPG_Monster RPG_Player RPG_Combat RPG_Map
-                                               RPG_Graphics RPG_Engine)
+target_link_libraries(${EXECUTABLE} ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
+                                    ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
+                                    ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
+target_link_libraries(${EXECUTABLE}
+                      pthread
+                      ACE
+                      xerces-c
+                      RPG_Chance RPG_Dice RPG_Common RPG_Magic RPG_Item
+                      RPG_Character RPG_Monster RPG_Player RPG_Combat RPG_Map
+                      RPG_Graphics RPG_Engine)
+
+set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
 ########### install files ###############
-install(TARGETS combat_simulator RUNTIME DESTINATION bin)
+install(TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)

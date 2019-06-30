@@ -43,70 +43,65 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 ########### next target ###############
-set(graphics_parser_SRCS graphics_parser.cpp)
+set (EXECUTABLE graphics_parser)
+set (${EXECUTABLE}_SRCS
+     graphics_parser.cpp)
 
-set_source_files_properties(${graphics_parser_SRCS} PROPERTIES COMPILE_DEFINITIONS DATADIR="/usr/local/share/RPG/config")
+set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
 
-add_executable(graphics_parser ${graphics_parser_SRCS})
+add_executable(${EXECUTABLE} ${${EXECUTABLE}_SRCS})
 
-target_link_libraries(graphics_parser
+target_link_libraries(${EXECUTABLE}
                       ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
                       ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
                       ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
-target_link_libraries(graphics_parser pthread ACE xerces-c RPG_Dice RPG_Common RPG_Graphics)
+target_link_libraries(${EXECUTABLE} pthread ACE xerces-c RPG_Dice RPG_Common RPG_Graphics)
 
-install(TARGETS graphics_parser RUNTIME DESTINATION bin)
+set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
+
+install(TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 
 ########### next target ###############
-set(SDL_gui_SRCS
-    SDL_gui.cpp
-    SDL_gui_common.h
-    SDL_gui_defines.h
-    SDL_gui_levelwindow_3d.cpp
-    SDL_gui_levelwindow_3d.h
-    SDL_gui_levelwindow_isometric.cpp
-    SDL_gui_levelwindow_isometric.h
-    SDL_gui_mainwindow.cpp
-    SDL_gui_mainwindow.h
-    SDL_gui_minimapwindow.cpp
-    SDL_gui_minimapwindow.h)
+set (EXECUTABLE SDL_gui)
+set (${EXECUTABLE}_SRCS
+     SDL_gui.cpp
+     SDL_gui_common.h
+     SDL_gui_defines.h
+     SDL_gui_levelwindow_3d.cpp
+     SDL_gui_levelwindow_3d.h
+     SDL_gui_levelwindow_isometric.cpp
+     SDL_gui_levelwindow_isometric.h
+     SDL_gui_mainwindow.cpp
+     SDL_gui_mainwindow.h
+     SDL_gui_minimapwindow.cpp
+     SDL_gui_minimapwindow.h)
 
-if (CMAKE_COMPILER_IS_GNUCC)
-    set_source_files_properties(${SDL_gui_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
-endif()
-set_source_files_properties(${SDL_gui_SRCS} PROPERTIES COMPILE_DEFINITIONS DATADIR="/usr/local/share/RPG")
+set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS DATADIR="/usr/local/share/RPG")
 
-add_executable(SDL_gui ${SDL_gui_SRCS})
+add_executable (${EXECUTABLE}
+                ${${EXECUTABLE}_SRCS})
 
-add_dependencies(SDL_gui
+add_dependencies(${EXECUTABLE}
                  RPG_Dice RPG_Chance RPG_Common
                  RPG_Magic RPG_Item RPG_Character RPG_Monster RPG_Player RPG_Combat
                  RPG_Map RPG_Engine RPG_Sound RPG_Graphics RPG_Client)
 
-target_link_libraries(SDL_gui
+target_link_libraries(${EXECUTABLE}
                       ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
                       ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES}
                       ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
                       ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
                       ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES})
-target_link_libraries(SDL_gui
-                      pthread
-                      ACE
-                      xerces-c
-                      RPG_Dice
-                      RPG_Chance
-                      RPG_Common
-                      RPG_Magic
-                      RPG_Item
-                      RPG_Character
-                      RPG_Monster
-                      RPG_Player
-                      RPG_Combat
-                      RPG_Map
-                      RPG_Engine
-                      RPG_Sound
-                      RPG_Graphics
-                      RPG_Client)
+target_link_libraries(${EXECUTABLE}
+                      $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                      $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                      ${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/cmake/src/Debug/Common.lib
+                      ${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/cmake/src/log/Debug/CommonLog.lib
+                      RPG_Dice RPG_Chance RPG_Common
+                      RPG_Character RPG_Magic RPG_Item RPG_Monster RPG_Player RPG_Combat
+                      RPG_Map RPG_Engine
+                      RPG_Sound RPG_Graphics RPG_Client)
 
-install(TARGETS SDL_gui RUNTIME DESTINATION bin)
+set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
+install(TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)

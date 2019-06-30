@@ -27,16 +27,30 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../sound)
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 ########### next target ###############
-set(sound_parser_SRCS sound_parser.cpp)
+set (EXECUTABLE sound_parser)
+set (${EXECUTABLE}_SRCS
+     sound_parser.cpp)
 
-set_source_files_properties (${sound_parser_SRCS} PROPERTIES COMPILE_DEFINITIONS BASEDIR="C:\\")
-set_source_files_properties (${sound_parser_SRCS} PROPERTIES COMPILE_DEFINITIONS DATADIR="/usr/local/share/RPG")
+set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG\"")
 
-add_executable(sound_parser ${sound_parser_SRCS})
+add_executable (${EXECUTABLE}
+                ${${EXECUTABLE}_SRCS})
 
-target_link_libraries(sound_parser ${PKG_CONFIG_MODULE_XERCES_LIBRARIES} ${PKG_CONFIG_MODULE_SDL_LIBRARIES} ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES})
+set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
-target_link_libraries(sound_parser pthread ACE RPG_Dice RPG_Common RPG_Sound)
+target_link_libraries(${EXECUTABLE} ${PKG_CONFIG_MODULE_XERCES_LIBRARIES}
+                                    ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
+                                    ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES})
+
+target_link_libraries (${EXECUTABLE}
+                       $ENV{LIB_ROOT}/SDL/lib/x86/SDL.lib
+                       $ENV{LIB_ROOT}/SDL_mixer/lib/x86/SDL_mixer.lib
+                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                       Common CommonLog CommonTimer
+                       RPG_Dice RPG_Common RPG_Sound)
+
+set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
 ########### install files ###############
-install(TARGETS sound_parser RUNTIME DESTINATION bin)
+install(TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)

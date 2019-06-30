@@ -63,7 +63,7 @@ RPG_Item_Common_XML_Tools::instantiate(const RPG_Item_InventoryXML_XMLTree_Type&
         ACE_ASSERT(item_base);
         RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(item_base);
         ACE_ASSERT(armor);
-        list.insert(armor->getID());
+        list.insert(armor->id());
 
         break;
       }
@@ -113,7 +113,7 @@ RPG_Item_Common_XML_Tools::instantiate(const RPG_Item_InventoryXML_XMLTree_Type&
         ACE_ASSERT(item_base);
         RPG_Item_Commodity* commodity = dynamic_cast<RPG_Item_Commodity*>(item_base);
         ACE_ASSERT(commodity);
-        list.insert(commodity->getID());
+        list.insert(commodity->id());
 
         break;
       }
@@ -135,7 +135,7 @@ RPG_Item_Common_XML_Tools::instantiate(const RPG_Item_InventoryXML_XMLTree_Type&
         ACE_ASSERT(item_base);
         RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*>(item_base);
         ACE_ASSERT(weapon);
-        list.insert(weapon->getID());
+        list.insert(weapon->id());
 
         break;
       }

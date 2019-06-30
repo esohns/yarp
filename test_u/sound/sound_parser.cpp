@@ -38,6 +38,8 @@
 
 #include "common_log_tools.h"
 
+#include "common_timer_tools.h"
+
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
 #endif
@@ -303,7 +305,7 @@ do_work (bool dumpDictionary_in,
 
   // step0: initialize: random seed, string conversion facilities, ...
   RPG_Dice::initialize ();
-  RPG_Dice_Common_Tools::initialize ();
+  RPG_Dice_Common_Tools::initializeStringConversionTables ();
 
   // step1: init: sound directory, cache, ...
   RPG_Sound_SDLConfiguration_t sound_configuration;
@@ -637,8 +639,8 @@ ACE_TMAIN (int argc_in,
   std::string working_time_string;
   ACE_Time_Value working_time;
   timer.elapsed_time (working_time);
-  Common_Timer_Tools::periodToString (working_time,
-                                      working_time_string);
+  working_time_string =
+    Common_Timer_Tools::periodToString (working_time);
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
               ACE_TEXT (working_time_string.c_str ())));

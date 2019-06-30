@@ -1394,7 +1394,7 @@ RPG_Magic_Common_Tools::toString(const RPG_Magic_Spell_Preconditions_t& precondi
         result += ACE_TEXT_ALWAYS_CHAR(": ");
 
         if ((*iterator).type == PRECONDITION_ALIGNMENT)
-          result += RPG_Character_Common_Tools::alignmentToString((*iterator).alignment);
+          result += RPG_Character_Common_Tools::toString((*iterator).alignment);
         else if ((*iterator).type == PRECONDITION_ATTRIBUTE_MAX)
         {
           result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString((*iterator).attribute);
@@ -1407,7 +1407,7 @@ RPG_Magic_Common_Tools::toString(const RPG_Magic_Spell_Preconditions_t& precondi
         else if ((*iterator).type == PRECONDITION_CONDITION)
           result += RPG_Common_ConditionHelper::RPG_Common_ConditionToString((*iterator).condition);
         else if ((*iterator).type == PRECONDITION_ENVIRONMENT)
-          result += RPG_Common_Tools::environmentToString((*iterator).environment);
+          result += RPG_Common_Tools::toString((*iterator).environment);
         else if (((*iterator).type == PRECONDITION_SIZE_MAX) ||
                  ((*iterator).type == PRECONDITION_SIZE_RELATIVE))
           result += RPG_Common_SizeHelper::RPG_Common_SizeToString((*iterator).size);
@@ -1456,7 +1456,7 @@ RPG_Magic_Common_Tools::toString(const RPG_Magic_Spell_Preconditions_t& precondi
              iterator2++)
         {
           result += ACE_TEXT_ALWAYS_CHAR("\n");
-          result += RPG_Common_Tools::creatureTypeToString(*iterator2);
+          result += RPG_Common_Tools::toString(*iterator2);
         } // end FOR
 
         break;

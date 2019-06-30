@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 if (UNIX)
  include(FindPkgConfig)
  pkg_check_modules(PKG_CONFIG_MODULE_XERCES_C REQUIRED xerces-c)
@@ -47,19 +45,22 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 ########### next target ###############
-set(client_gui_SRCS rpg_client_gui.cpp)
+set (EXECUTABLE client_gui)
+set (${EXECUTABLE}_SRCS
+     rpg_client_gui.cpp)
 
-if (CMAKE_COMPILER_IS_GNUCC)
-    set_source_files_properties(${client_gui_SRCS} PROPERTIES COMPILE_FLAGS "-g -march=i686 -Wall")
-endif()
-set_source_files_properties(${client_gui_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"/usr/local/share/RPG\";RPG_GRAPHICS_HAS_DLL=1")
+set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"/usr/local/share/RPG\";RPG_GRAPHICS_HAS_DLL=1")
 
-add_executable(client_gui ${client_gui_SRCS})
+add_executable (${EXECUTABLE}
+                ${${EXECUTABLE}_SRCS})
 
-add_dependencies(client_gui RPG_Chance RPG_Dice RPG_Common RPG_Magic RPG_Item RPG_Character RPG_Player RPG_Monster
-                            RPG_Combat RPG_Map RPG_Graphics RPG_Sound RPG_Engine RPG_Client)
+add_dependencies(${EXECUTABLE} RPG_Chance RPG_Dice RPG_Common
+                               RPG_Magic RPG_Item RPG_Character RPG_Combat 
+                               RPG_Player RPG_Monster
+                               RPG_Map RPG_Graphics RPG_Sound RPG_Engine
+                               RPG_Client)
 
-target_link_libraries(client_gui
+target_link_libraries(${EXECUTABLE}
                       ${PKG_CONFIG_MODULE_XERCES_C_LIBRARIES}
                       ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
 #                      ${PKG_CONFIG_MODULE_SDL_GFX_LIBRARIES}
@@ -69,7 +70,7 @@ target_link_libraries(client_gui
                       ${PKG_CONFIG_MODULE_GTHREAD_LIBRARIES}
                       ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES})
 
-target_link_libraries(client_gui
+target_link_libraries(${EXECUTABLE}
                       ACE
                       pthread
 #                      SDL_gfx
@@ -88,4 +89,6 @@ target_link_libraries(client_gui
                       RPG_Engine
                       RPG_Client)
 
-install(TARGETS client_gui RUNTIME DESTINATION bin)
+set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
+
+install(TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)

@@ -43,56 +43,56 @@
 #include "rpg_net_protocol_stream.h"
 #include "rpg_net_protocol_stream_common.h"
 
-typedef Net_StreamTCPSocketBase_T<ACE_INET_Addr,
-                                  Net_SocketConfiguration_t,
-                                  RPG_Net_Protocol_Configuration,
-                                  RPG_Net_Protocol_SessionData,
-                                  RPG_Net_Protocol_StreamSessionData_t,
-                                  struct Stream_Statistic,
-                                  RPG_Net_Protocol_Stream,
-                                  Net_TCPSocketHandler> RPG_Net_Protocol_TCPHandler_t;
-typedef Net_StreamAsynchTCPSocketBase_T<ACE_INET_Addr,
-                                        Net_SocketConfiguration_t,
-                                        RPG_Net_Protocol_Configuration,
-                                        RPG_Net_Protocol_SessionData,
-                                        RPG_Net_Protocol_StreamSessionData_t,
-                                        struct Stream_Statistic,
-                                        RPG_Net_Protocol_Stream,
-                                        Net_AsynchTCPSocketHandler> RPG_Net_Protocol_AsynchTCPHandler_t;
-typedef Net_TCPConnectionBase_T<RPG_Net_Protocol_Configuration,
-                                RPG_Net_Protocol_SessionData,
-                                RPG_Net_Protocol_StreamSessionData_t,
-                                RPG_Net_Protocol_TCPHandler_t> RPG_Net_Protocol_TCPConnection_t;
-typedef Net_AsynchTCPConnectionBase_T<RPG_Net_Protocol_Configuration,
-                                      RPG_Net_Protocol_SessionData,
-                                      RPG_Net_Protocol_StreamSessionData_t,
-                                      RPG_Net_Protocol_AsynchTCPHandler_t> RPG_Net_Protocol_AsynchTCPConnection_t;
+typedef Net_TCPConnectionBase_T<ACE_MT_SYNCH,
+                                Net_TCPSocketHandler_t,
+                                RPG_Net_Protocol_ConnectionConfiguration,
+                                struct Net_StreamConnectionState,
+                                Net_StreamStatistic_t,
+                                RPG_Net_Protocol_Stream,
+                                struct Net_UserData> RPG_Net_Protocol_TCPConnection_t;
+typedef Net_AsynchTCPConnectionBase_T<Net_AsynchTCPSocketHandler_t,
+                                      RPG_Net_Protocol_ConnectionConfiguration,
+                                      struct Net_StreamConnectionState,
+                                      Net_StreamStatistic_t,
+                                      RPG_Net_Protocol_Stream,
+                                      struct Net_UserData> RPG_Net_Protocol_AsynchTCPConnection_t;
 
-typedef Net_Client_Connector_T<ACE_INET_Addr,
-                               Net_SocketConfiguration_t,
-                               RPG_Net_Protocol_Configuration,
-                               Net_SocketHandlerConfiguration_t,
-                               RPG_Net_Protocol_SessionData,
-                               RPG_Net_Protocol_StreamSessionData_t,
-                               RPG_Net_Protocol_TCPConnection_t> RPG_Net_Protocol_Connector_t;
-typedef Net_Client_AsynchConnector_T<ACE_INET_Addr,
-                                     Net_SocketConfiguration_t,
-                                     RPG_Net_Protocol_Configuration,
-                                     Net_SocketHandlerConfiguration_t,
-                                     RPG_Net_Protocol_SessionData,
-                                     RPG_Net_Protocol_StreamSessionData_t,
-                                     RPG_Net_Protocol_AsynchTCPConnection_t> RPG_Net_Protocol_AsynchConnector_t;
+typedef Net_IConnector_T<ACE_INET_Addr,
+                         RPG_Net_Protocol_ConnectionConfiguration> RPG_Net_Protocol_IConnector_t;
 
-typedef Net_IConnectionManager_T<ACE_INET_Addr,
-                                 Net_SocketConfiguration_t,
-                                 RPG_Net_Protocol_Configuration,
-                                 RPG_Net_Protocol_SessionData,
-                                 struct Stream_Statistic> RPG_Net_Protocol_IConnection_Manager_t;
-typedef Net_Connection_Manager_T<ACE_INET_Addr,
-                                 Net_SocketConfiguration_t,
-                                 RPG_Net_Protocol_Configuration,
-                                 RPG_Net_Protocol_SessionData,
-                                 struct Stream_Statistic> RPG_Net_Protocol_Connection_Manager_t;
+typedef Net_Client_Connector_T<ACE_MT_SYNCH,
+                               RPG_Net_Protocol_TCPConnection_t,
+                               Net_SOCK_Connector,
+                               ACE_INET_Addr,
+                               RPG_Net_Protocol_ConnectionConfiguration,
+                               struct Net_StreamConnectionState,
+                               Net_StreamStatistic_t,
+                               Net_TCPSocketConfiguration_t,
+                               Net_TCPSocketConfiguration_t,
+                               RPG_Net_Protocol_Stream,
+                               struct Net_UserData> RPG_Net_Protocol_Connector_t;
+typedef Net_Client_AsynchConnector_T<RPG_Net_Protocol_AsynchTCPConnection_t,
+                                     ACE_INET_Addr,
+                                     RPG_Net_Protocol_ConnectionConfiguration,
+                                     struct Net_StreamConnectionState,
+                                     Net_StreamStatistic_t,
+                                     Net_TCPSocketConfiguration_t,
+                                     Net_TCPSocketConfiguration_t,
+                                     RPG_Net_Protocol_Stream,
+                                     struct Net_UserData> RPG_Net_Protocol_AsynchConnector_t;
+
+typedef Net_IConnectionManager_T<ACE_MT_SYNCH,
+                                 ACE_INET_Addr,
+                                 RPG_Net_Protocol_ConnectionConfiguration,
+                                 struct Net_StreamConnectionState,
+                                 Net_StreamStatistic_t,
+                                 struct Net_UserData> RPG_Net_Protocol_IConnection_Manager_t;
+typedef Net_Connection_Manager_T<ACE_MT_SYNCH,
+                                 ACE_INET_Addr,
+                                 RPG_Net_Protocol_ConnectionConfiguration,
+                                 struct Net_StreamConnectionState,
+                                 Net_StreamStatistic_t,
+                                 struct Net_UserData> RPG_Net_Protocol_Connection_Manager_t;
 
 //RPG_PROTOCOL_SINGLETON_DECLARE (ACE_Singleton,
 //                                RPG_Net_Protocol_Connection_Manager_t,

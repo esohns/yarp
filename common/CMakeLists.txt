@@ -32,6 +32,8 @@ set (${LIBRARY}_SRCS
      rpg_common_environment_XML_types.cpp
      rpg_common_environment_XML_types.h
      rpg_common_environment_incl.h
+     rpg_common_file_tools.cpp
+     rpg_common_file_tools.h
      rpg_common_incl.h
      rpg_common_macros.h
      rpg_common_physicaldamagetype.h
@@ -141,6 +143,7 @@ install (FILES
          rpg_common_environment_XML_tree.h
          rpg_common_environment_XML_types.h
          rpg_common_environment_incl.h
+         rpg_common_file_tools.h
          rpg_common_incl.h
          rpg_common_macros.h
          rpg_common_physicaldamagetype.h

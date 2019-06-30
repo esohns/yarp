@@ -53,7 +53,7 @@ RPG_Map_Level::RPG_Map_Level()
   myMap.plan.rooms_are_square = false;
 }
 
-RPG_Map_Level::RPG_Map_Level(const RPG_Map_t& map_in)
+RPG_Map_Level::RPG_Map_Level(const struct RPG_Map& map_in)
  : myMap(map_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::RPG_Map_Level"));
@@ -67,8 +67,8 @@ RPG_Map_Level::~RPG_Map_Level()
 }
 
 void
-RPG_Map_Level::create(const RPG_Map_FloorPlan_Configuration_t& floorPlanConfig_in,
-                      RPG_Map_t& map_out)
+RPG_Map_Level::create(const struct RPG_Map_FloorPlan_Configuration& floorPlanConfig_in,
+                      struct RPG_Map& map_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::create"));
 
@@ -122,7 +122,7 @@ RPG_Map_Level::create(const RPG_Map_FloorPlan_Configuration_t& floorPlanConfig_i
 
 bool
 RPG_Map_Level::load(const std::string& filename_in,
-                    RPG_Map_t& map_out,
+                    struct RPG_Map& map_out,
                     const bool& traceScanning_in,
                     const bool& traceParsing_in)
 {
@@ -172,8 +172,8 @@ RPG_Map_Level::load(const std::string& filename_in,
 }
 
 void
-RPG_Map_Level::random(const RPG_Map_FloorPlan_Configuration_t& floorPlanConfiguration_in,
-                      RPG_Map_t& map_out)
+RPG_Map_Level::random(const struct RPG_Map_FloorPlan_Configuration& floorPlanConfiguration_in,
+                      struct RPG_Map& map_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::random"));
 
@@ -190,7 +190,7 @@ RPG_Map_Level::random(const RPG_Map_FloorPlan_Configuration_t& floorPlanConfigur
 
   RPG_Dice_RollResult_t result;
 
-  RPG_Map_FloorPlan_Configuration_t map_configuration =
+  struct RPG_Map_FloorPlan_Configuration map_configuration =
       floorPlanConfiguration_in;
 
   // step1: min room size
@@ -318,7 +318,7 @@ RPG_Map_Level::random(const RPG_Map_FloorPlan_Configuration_t& floorPlanConfigur
 }
 
 void
-RPG_Map_Level::print(const RPG_Map_t& map_in)
+RPG_Map_Level::print(const struct RPG_Map& map_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::print"));
 
@@ -329,13 +329,13 @@ RPG_Map_Level::print(const RPG_Map_t& map_in)
 }
 
 std::string
-RPG_Map_Level::string(const RPG_Map_t& map_in)
+RPG_Map_Level::string(const struct RPG_Map& map_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::string"));
 
   std::ostringstream converter;
   RPG_Map_Position_t current_position;
-  RPG_Map_Door_t current_position_door;
+  struct RPG_Map_Door current_position_door;
   for (unsigned int y = 0;
        y < map_in.plan.size_y;
        y++)
@@ -373,7 +373,7 @@ RPG_Map_Level::string(const RPG_Map_t& map_in)
 }
 
 std::string
-RPG_Map_Level::info(const RPG_Map_t& map_in)
+RPG_Map_Level::info(const struct RPG_Map& map_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::info"));
 
@@ -467,7 +467,7 @@ RPG_Map_Level::info(const RPG_Map_t& map_in)
 }
 
 void
-RPG_Map_Level::init(const RPG_Map_t& map_in)
+RPG_Map_Level::init(const struct RPG_Map& map_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::init"));
 
@@ -521,7 +521,7 @@ RPG_Map_Level::save(const std::string& filename_in) const
   ssize_t sent_bytes = 0;
   std::string row;
   RPG_Map_Position_t current_position;
-  RPG_Map_Door_t current_position_door;
+  struct RPG_Map_Door current_position_door;
   for (unsigned int y = 0;
        y < myMap.plan.size_y;
        y++)
@@ -694,7 +694,7 @@ RPG_Map_Level::getSeedPoints() const
   return myMap.seeds;
 }
 
-const RPG_Map_FloorPlan_t&
+const struct RPG_Map_FloorPlan&
 RPG_Map_Level::getFloorPlan() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::getFloorPlan"));
@@ -803,7 +803,7 @@ RPG_Map_Level::getElement(const RPG_Map_Position_t& position_in) const
   if (myMap.plan.walls.find(position_in) != myMap.plan.walls.end())
     return MAPELEMENT_WALL;
 
-  RPG_Map_Door_t position_door;
+  struct RPG_Map_Door position_door;
   position_door.position = position_in;
   if (myMap.plan.doors.find(position_door) != myMap.plan.doors.end())
     return MAPELEMENT_DOOR;
@@ -816,7 +816,7 @@ RPG_Map_Level::state(const RPG_Map_Position_t& position_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::state"));
 
-  RPG_Map_Door_t position_door;
+  struct RPG_Map_Door position_door;
   position_door.position = position_in;
   position_door.outside = RPG_MAP_DIRECTION_INVALID;
   position_door.state = RPG_MAP_DOORSTATE_INVALID;

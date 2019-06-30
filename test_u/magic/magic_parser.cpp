@@ -195,9 +195,9 @@ do_work (const std::string& schemaRepository_in,
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step1: init string conversion tables
-  RPG_Dice_Common_Tools::initialize();
+  RPG_Dice_Common_Tools::initializeStringConversionTables ();
   RPG_Common_Tools::initializeStringConversionTables();
-  RPG_Character_Common_Tools::init();
+  RPG_Character_Common_Tools::initialize ();
   RPG_Magic_Common_Tools::initialize();
 
   // step2: initialize spell dictionary

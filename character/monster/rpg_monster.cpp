@@ -132,8 +132,8 @@ RPG_Monster::isSummoned() const
   return myIsSummoned;
 }
 
-signed char
-RPG_Monster::getArmorClass(const RPG_Combat_DefenseSituation& defenseSituation_in) const
+ACE_INT8
+RPG_Monster::getArmorClass(enum RPG_Combat_DefenseSituation defenseSituation_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster::getArmorClass"));
 
@@ -228,11 +228,11 @@ RPG_Monster::getReach(unsigned short& baseRange_out,
   return result;
 }
 
-unsigned char
-RPG_Monster::getSpeed(const bool& isRunning_in,
-                      const RPG_Common_AmbientLighting& lighting_in,
-                      const RPG_Common_Terrain& terrain_in,
-                      const RPG_Common_Track& track_in) const
+ACE_UINT8
+RPG_Monster::getSpeed(bool isRunning_in,
+                      enum RPG_Common_AmbientLighting lighting_in,
+                      enum RPG_Common_Terrain terrain_in,
+                      enum RPG_Common_Track track_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster::getSpeed"));
 
@@ -298,7 +298,7 @@ RPG_Monster::getSpeed(const bool& isRunning_in,
     modifier *= 0.5F;
 
   // step4: consider terrain [track type]
-  modifier *= RPG_Common_Tools::terrain2SpeedModifier(terrain_in, track_in);
+  modifier *= RPG_Common_Tools::terrainToSpeedModifier(terrain_in, track_in);
 
   // step5: consider movement mode
   if (isRunning_in)
@@ -350,8 +350,8 @@ RPG_Monster::dump() const
 }
 
 RPG_Character_BaseAttackBonus_t
-RPG_Monster::getAttackBonus(const RPG_Common_Attribute& modifier_in,
-                            const RPG_Combat_AttackSituation& attackSituation_in) const
+RPG_Monster::getAttackBonus(enum RPG_Common_Attribute modifier_in,
+                            enum RPG_Combat_AttackSituation situation_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster::getAttackBonus"));
 
@@ -367,7 +367,7 @@ RPG_Monster::getAttackBonus(const RPG_Common_Attribute& modifier_in,
 #endif
 }
 
-signed char
+ACE_INT8
 RPG_Monster::getShieldBonus() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster::getShieldBonus"));

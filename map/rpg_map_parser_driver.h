@@ -21,15 +21,15 @@
 #ifndef RPG_MAP_PARSER_DRIVER_H
 #define RPG_MAP_PARSER_DRIVER_H
 
-#include "rpg_map_exports.h"
-#include "rpg_map_defines.h"
-#include "rpg_map_common.h"
-#include "rpg_map_parser.h"
-
-#include <ace/Global_Macros.h>
-
-#include <string>
 #include <iostream>
+#include <string>
+
+#include "ace/Global_Macros.h"
+
+#include "rpg_map_common.h"
+#include "rpg_map_defines.h"
+//#include "rpg_map_exports.h"
+#include "rpg_map_parser.h"
 
 // forward declaration(s)
 typedef void* yyscan_t;
@@ -46,7 +46,7 @@ RPG_Map_Scanner_lex(yy::RPG_Map_Parser::semantic_type* yylval, \
 // ... and declare it for the parser's sake
 YY_DECL;
 
-class RPG_Map_Export RPG_Map_ParserDriver
+class RPG_Map_ParserDriver
 {
   // allow access to our internals (i.e. the current plan, seed points)
   friend class yy::RPG_Map_Parser;
@@ -61,7 +61,7 @@ class RPG_Map_Export RPG_Map_ParserDriver
   // target data, needs to be set PRIOR to invoking parse() !
   void init(RPG_Map_Position_t*,  // target data: start position
             RPG_Map_Positions_t*, // target data: seed points
-            RPG_Map_FloorPlan_t*, // target data: floor plan
+            struct RPG_Map_FloorPlan*, // target data: floor plan
             const bool& = RPG_MAP_DEF_TRACE_SCANNING, // trace scanning ?
             const bool& = RPG_MAP_DEF_TRACE_PARSING); // trace parsing ?
   // *WARNING*: IFF the argument IS then buffer, it needs to have been prepared for
@@ -80,10 +80,9 @@ class RPG_Map_Export RPG_Map_ParserDriver
   void error(const std::string&); // message
 
  private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Map_ParserDriver());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Map_ParserDriver(const RPG_Map_ParserDriver&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Map_ParserDriver& operator=(const RPG_Map_ParserDriver&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Map_ParserDriver())
+  ACE_UNIMPLEMENTED_FUNC(RPG_Map_ParserDriver(const RPG_Map_ParserDriver&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Map_ParserDriver& operator=(const RPG_Map_ParserDriver&))
 
 //   // clear current data
 //   void reset();
@@ -103,7 +102,7 @@ class RPG_Map_Export RPG_Map_ParserDriver
   YY_BUFFER_STATE      myCurrentBufferState;
 
   // target data
-  RPG_Map_FloorPlan_t* myCurrentPlan;
+  struct RPG_Map_FloorPlan* myCurrentPlan;
   RPG_Map_Positions_t* myCurrentSeedPoints;
   RPG_Map_Position_t*  myCurrentStartPosition;
 

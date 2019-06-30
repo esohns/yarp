@@ -53,29 +53,29 @@ class RPG_Item_Common_Tools
   static std::string commoditySubTypeToXMLString(const RPG_Item_CommodityUnion&); // subtype
   static RPG_Item_CommodityUnion XMLStringToCommoditySubType(const std::string&); // subtype (XML string)
 
-  static bool isThrownWeapon(const RPG_Item_WeaponType&); // weapon type
-  static bool isProjectileWeapon(const RPG_Item_WeaponType&); // weapon type
-  static bool isRangedWeapon(const RPG_Item_WeaponType&); // weapon type
-  static bool isTwoHandedWeapon(const RPG_Item_WeaponType&); // weapon type
-  static bool isMeleeWeapon(const RPG_Item_WeaponType&); // weapon type
+  static bool isThrownWeapon(enum RPG_Item_WeaponType); // weapon type
+  static bool isProjectileWeapon(enum RPG_Item_WeaponType); // weapon type
+  static bool isRangedWeapon(enum RPG_Item_WeaponType); // weapon type
+  static bool isTwoHandedWeapon(enum RPG_Item_WeaponType); // weapon type
+  static bool isMeleeWeapon(enum RPG_Item_WeaponType); // weapon type
 
-  static bool isShield(const RPG_Item_ArmorType&); // armor type
+  static bool isShield(enum RPG_Item_ArmorType); // armor type
 
-  static bool hasAbsoluteReach(const RPG_Item_WeaponType&); // weapon type
+  static bool hasAbsoluteReach(enum RPG_Item_WeaponType); // weapon type
 
   // *TODO*: consider shape of the light
-  static unsigned short lightingItem2Radius(const RPG_Item_CommodityLight&, // lighting item type
-                                            const bool& = true);            // ambience is "bright" ?
+  static unsigned short lightingItemToRadius(const RPG_Item_CommodityLight&, // lighting item type
+                                             const bool& = true);            // ambience is "bright" ?
 
-  static void item2Slot(const RPG_Item_ID_t&,           // item id
-                        const RPG_Character_OffHand&,   // off-hand
-                        RPG_Character_EquipmentSlots&); // return value: possible slot(s)
+  static void itemToSlot(RPG_Item_ID_t,                  // item id
+                         enum RPG_Character_OffHand,     // off-hand
+                         RPG_Character_EquipmentSlots&); // return value: possible slot(s)
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Common_Tools())
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Item_Common_Tools())
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Common_Tools(const RPG_Item_Common_Tools&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Common_Tools& operator=(const RPG_Item_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (~RPG_Item_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Common_Tools (const RPG_Item_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Common_Tools& operator= (const RPG_Item_Common_Tools&))
 };
 
 #endif

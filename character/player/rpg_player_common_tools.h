@@ -21,16 +21,18 @@
 #ifndef RPG_PLAYER_COMMON_TOOLS_H
 #define RPG_PLAYER_COMMON_TOOLS_H
 
-#include "rpg_player_exports.h"
-#include "rpg_player_common.h"
-#include "rpg_player_XML_tree.h"
+#include "ace/Global_Macros.h"
 
 #include "rpg_character_common.h"
 #include "rpg_character_skills_common.h"
 
 #include "rpg_magic_common.h"
 
-class RPG_Player_Export RPG_Player_Common_Tools
+#include "rpg_player_common.h"
+//#include "rpg_player_exports.h"
+#include "rpg_player_XML_tree.h"
+
+class RPG_Player_Common_Tools
 {
  public:
   static unsigned int restParty(RPG_Player_Party_t&); // party of players
@@ -47,12 +49,12 @@ class RPG_Player_Export RPG_Player_Common_Tools
   static std::string getPlayerProfilesDirectory();
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Player_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Player_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Player_Common_Tools(const RPG_Player_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Player_Common_Tools& operator=(const RPG_Player_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Player_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (~RPG_Player_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Player_Common_Tools (const RPG_Player_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Player_Common_Tools& operator= (const RPG_Player_Common_Tools&))
 
-  static RPG_Character_Race_t raceXMLTreeToRace(const RPG_Player_PlayerXML_XMLTree_Type::race_sequence&); // race (XML format)
+  static RPG_Character_Race_t raceXMLTreeToRace(RPG_Player_CharacterXML_XMLTree_Type::race_sequence&); // race (XML format)
   static RPG_Character_Abilities_t abilitiesXMLTreeToAbilities(const RPG_Player_Abilities_XMLTree_Type&); // abilities (XML format)
 
   static RPG_Magic_SpellTypes_t spellsXMLTreeToSpellTypes(const RPG_Player_Spells_XMLTree_Type&); // spells (XML format)

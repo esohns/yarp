@@ -336,7 +336,7 @@ do_battle (RPG_Player_Party_t& party_in,
   RPG_Monster_Groups_t monsters;
   RPG_Monster_Group_t groupInstance;
   RPG_Monster* monster_p = NULL;
-  RPG_Engine_Entity_t entity;
+  struct RPG_Engine_Entity entity;
   entity.character = NULL;
   entity.position = std::make_pair (std::numeric_limits<unsigned int>::max (),
                                     std::numeric_limits<unsigned int>::max ());

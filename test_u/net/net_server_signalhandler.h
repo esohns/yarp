@@ -34,31 +34,31 @@
 class Common_IControl;
 
 class Net_Server_SignalHandler
- : public Common_SignalHandler
+ : public Common_SignalHandler_T<struct Common_SignalHandlerConfiguration>
  , public Common_ISignal
 {
+  typedef Common_SignalHandler_T<struct Common_SignalHandlerConfiguration> inherited;
+
  public:
-  Net_Server_SignalHandler (long,                                                    // timer ID
-                            Common_IControl*,                                        // controller handle
-                            Common_IStatistic_T<RPG_Net_Protocol_RuntimeStatistic>*, // reporter handle
+  Net_Server_SignalHandler (long);                                                   // timer id
+                            //Common_IControl*,                                        // controller handle
+                            //Common_IStatistic_T<RPG_Net_Protocol_RuntimeStatistic>*, // reporter handle
                             // ---------------------------------------------------------------
-                            bool = true);                                            // use reactor ?
-  virtual ~Net_Server_SignalHandler ();
+                            //bool = true);                                            // use reactor ?
+  inline virtual ~Net_Server_SignalHandler () {}
 
   // implement Common_ISignal
-  virtual bool handleSignal (int); // signal
+  virtual void handle (const struct Common_Signal&); // signal
 
  private:
-  typedef Common_SignalHandler inherited;
+  ACE_UNIMPLEMENTED_FUNC (Net_Server_SignalHandler ())
+  ACE_UNIMPLEMENTED_FUNC (Net_Server_SignalHandler (const Net_Server_SignalHandler&))
+  ACE_UNIMPLEMENTED_FUNC (Net_Server_SignalHandler& operator= (const Net_Server_SignalHandler&))
 
-  ACE_UNIMPLEMENTED_FUNC (Net_Server_SignalHandler ());
-  ACE_UNIMPLEMENTED_FUNC (Net_Server_SignalHandler (const Net_Server_SignalHandler&));
-  ACE_UNIMPLEMENTED_FUNC (Net_Server_SignalHandler& operator= (const Net_Server_SignalHandler&));
-
-  Common_IControl*                                        control_;
-  Common_IStatistic_T<RPG_Net_Protocol_RuntimeStatistic>* report_;
-  long                                                    timerID_;
-  bool                                                    useReactor_;
+  //Common_IControl*                                        control_;
+  //Common_IStatistic_T<RPG_Net_Protocol_RuntimeStatistic>* report_;
+  long                                                    timerId_;
+  //bool                                                    useReactor_;
 };
 
 #endif

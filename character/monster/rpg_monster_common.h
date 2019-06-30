@@ -21,25 +21,32 @@
 #ifndef RPG_MONSTER_COMMON_H
 #define RPG_MONSTER_COMMON_H
 
-#include <rpg_dice_incl.h>
-#include <rpg_common_incl.h>
-#include <rpg_common_environment_incl.h>
-#include <rpg_character_incl.h>
-#include <rpg_magic_incl.h>
-#include <rpg_item_incl.h>
-#include <rpg_combat_incl.h>
-#include "rpg_monster_incl.h"
-
-#include "rpg_monster.h"
-
-#include "rpg_character_skills_common.h"
-
 #include <string>
 #include <vector>
 #include <set>
 #include <map>
 
-typedef std::set<RPG_Common_CreatureSubType> RPG_Monster_SubTypes_t;
+#include "rpg_dice_incl.h"
+
+#include "rpg_common_environment_incl.h"
+#include "rpg_common_incl.h"
+
+#include "rpg_character_incl.h"
+#include "rpg_character_skills_common.h"
+
+#include "rpg_magic_incl.h"
+
+#include "rpg_item_incl.h"
+
+#include "rpg_combat_incl.h"
+
+//#include "rpg_monster.h"
+#include "rpg_monster_incl.h"
+
+// forward declarations
+class RPG_Monster;
+
+typedef std::set<enum RPG_Common_CreatureSubType> RPG_Monster_SubTypes_t;
 typedef RPG_Monster_SubTypes_t::const_iterator RPG_Monster_SubTypesIterator_t;
 
 typedef RPG_Dice_Roll RPG_Monster_HitDice;
@@ -93,8 +100,10 @@ typedef RPG_Monster_Groups_t::const_iterator RPG_Monster_GroupsIterator_t;
 
 // some more useful types
 typedef std::map<std::string, RPG_Monster_Properties> RPG_Monster_Dictionary_t;
+
 typedef std::vector<std::string> RPG_Monster_List_t;
 typedef RPG_Monster_List_t::const_iterator RPG_Monster_ListConstIterator_t;
+
 typedef std::map<std::string, unsigned short int> RPG_Monster_Encounter_t;
 typedef RPG_Monster_Encounter_t::const_iterator RPG_Monster_EncounterConstIterator_t;
 typedef RPG_Monster_Encounter_t::iterator RPG_Monster_EncounterIterator_t;

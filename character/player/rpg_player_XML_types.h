@@ -36,8 +36,6 @@
 
 // Begin prologue.
 //
-#include "rpg_player_exports.h"
-#include "rpg_player_exports.h"
 //
 // End prologue.
 
@@ -86,7 +84,7 @@ class RPG_Player_State_Type_pskel;
 
 #include "rpg_character_XML_types.h"
 
-class RPG_Player_Export RPG_Player_Abilities_Type_pskel: public ::xml_schema::complex_content
+class RPG_Player_Abilities_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -128,7 +126,7 @@ class RPG_Player_Export RPG_Player_Abilities_Type_pskel: public ::xml_schema::co
   ::RPG_Character_Ability_Type_pskel* ability_parser_;
 };
 
-class RPG_Player_Export RPG_Player_Conditions_Type_pskel: public ::xml_schema::complex_content
+class RPG_Player_Conditions_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -170,7 +168,7 @@ class RPG_Player_Export RPG_Player_Conditions_Type_pskel: public ::xml_schema::c
   ::RPG_Common_Condition_Type_pskel* condition_parser_;
 };
 
-class RPG_Player_Export RPG_Player_Spells_Type_pskel: public ::xml_schema::complex_content
+class RPG_Player_Spells_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -212,7 +210,7 @@ class RPG_Player_Export RPG_Player_Spells_Type_pskel: public ::xml_schema::compl
   ::RPG_Magic_SpellType_Type_pskel* spell_parser_;
 };
 
-class RPG_Player_Export RPG_Player_CharacterBaseXML_Type_pskel: public ::xml_schema::complex_content
+class RPG_Player_CharacterBaseXML_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -318,7 +316,7 @@ class RPG_Player_Export RPG_Player_CharacterBaseXML_Type_pskel: public ::xml_sch
   ::RPG_Character_Skills_Type_pskel* skills_parser_;
 };
 
-class RPG_Player_Export RPG_Player_CharacterXML_Type_pskel: public virtual ::RPG_Player_CharacterBaseXML_Type_pskel
+class RPG_Player_CharacterXML_Type_pskel: public virtual ::RPG_Player_CharacterBaseXML_Type_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -393,7 +391,7 @@ class RPG_Player_Export RPG_Player_CharacterXML_Type_pskel: public virtual ::RPG
   ::RPG_Character_Race_Type_pskel* race_parser_;
 };
 
-class RPG_Player_Export RPG_Player_PlayerXML_Type_pskel: public virtual ::RPG_Player_CharacterXML_Type_pskel
+class RPG_Player_PlayerXML_Type_pskel: public virtual ::RPG_Player_CharacterXML_Type_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -464,7 +462,7 @@ class RPG_Player_Export RPG_Player_PlayerXML_Type_pskel: public virtual ::RPG_Pl
   ::xml_schema::unsigned_int_pskel* XP_parser_;
 };
 
-class RPG_Player_Export RPG_Player_StateBase_Type_pskel: public ::xml_schema::complex_content
+class RPG_Player_StateBase_Type_pskel: public ::xml_schema::complex_content
 {
   public:
   // Parser callbacks. Override them in your implementation.
@@ -514,7 +512,7 @@ class RPG_Player_Export RPG_Player_StateBase_Type_pskel: public ::xml_schema::co
   ::xml_schema::short_pskel* HP_parser_;
 };
 
-class RPG_Player_Export RPG_Player_State_Type_pskel: public virtual ::RPG_Player_StateBase_Type_pskel
+class RPG_Player_State_Type_pskel: public virtual ::RPG_Player_StateBase_Type_pskel
 {
   public:
   // Parser callbacks. Override them in your implementation.

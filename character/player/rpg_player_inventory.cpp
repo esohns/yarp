@@ -180,7 +180,7 @@ RPG_Player_Inventory::operator=(const RPG_Player_Inventory& inventory_in)
 }
 
 void
-RPG_Player_Inventory::pickUp(const RPG_Item_ID_t& itemID_in)
+RPG_Player_Inventory::pickUp(RPG_Item_ID_t itemID_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Inventory::pickUp"));
 
@@ -207,7 +207,7 @@ RPG_Player_Inventory::pickUp(const RPG_Item_ID_t& itemID_in)
 }
 
 void
-RPG_Player_Inventory::drop(const RPG_Item_ID_t& itemID_in)
+RPG_Player_Inventory::drop(RPG_Item_ID_t itemID_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Inventory::drop"));
 
@@ -272,7 +272,7 @@ RPG_Player_Inventory::getTotalWeight() const
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("invalid item type (was: \"%s\"), continuing\n"),
-                 RPG_Item_TypeHelper::RPG_Item_TypeToString(base->getType()).c_str()));
+                 RPG_Item_TypeHelper::RPG_Item_TypeToString(base->type()).c_str()));
 
       continue;
     } // end IF

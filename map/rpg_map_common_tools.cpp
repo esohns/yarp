@@ -79,7 +79,7 @@ RPG_Map_Common_Tools::createFloorPlan(const unsigned int& dimensionX_in,
                                       const bool& doorFillsPosition_in,
                                       const unsigned int& maxDoorsPerRoom_in,
                                       RPG_Map_Positions_t& seedPositions_out,
-                                      RPG_Map_FloorPlan_t& floorPlan_out)
+                                      struct RPG_Map_FloorPlan& floorPlan_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::createFloorPlan"));
 
@@ -1473,7 +1473,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned int& dimensionX_in,
                                    const RPG_Map_AreaList_t& boundaries_in,
                                    const RPG_Map_AreaList_t& doors_in,
                                    const RPG_Map_AreaList_t& rooms_in,
-                                   RPG_Map_FloorPlan_t& level_out)
+                                   struct RPG_Map_FloorPlan& level_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::connectRooms"));
 
@@ -1499,7 +1499,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned int& dimensionX_in,
   // step1: add the doors
 //   unsigned int index = 0;
 //   unsigned int index2 = 0;
-  RPG_Map_Door_t door;
+  struct RPG_Map_Door door;
   door.position = std::make_pair(std::numeric_limits<unsigned int>::max(),
                                  std::numeric_limits<unsigned int>::max());
   door.outside = RPG_MAP_DIRECTION_INVALID;
@@ -2219,7 +2219,7 @@ RPG_Map_Common_Tools::isAdjacent(const RPG_Map_Position_t& position1_in,
 }
 
 std::string
-RPG_Map_Common_Tools::toString(const RPG_Map_Orientation& orientation_in)
+RPG_Map_Common_Tools::toString(enum RPG_Map_Orientation orientation_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::toString"));
 
@@ -2250,7 +2250,7 @@ RPG_Map_Common_Tools::toString(const RPG_Map_Orientation& orientation_in)
 }
 
 std::string
-RPG_Map_Common_Tools::toString(const RPG_Map_t& map_in)
+RPG_Map_Common_Tools::toString(const struct RPG_Map& map_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::toString"));
 
@@ -2258,7 +2258,7 @@ RPG_Map_Common_Tools::toString(const RPG_Map_t& map_in)
 
   RPG_Map_PositionsConstIterator_t iterator;
   RPG_Map_Position_t current_position;
-  RPG_Map_Door_t door_dummy;
+  struct RPG_Map_Door door_dummy;
   for (unsigned int y = 0;
        y < map_in.plan.size_y;
        y++)
@@ -2294,7 +2294,7 @@ RPG_Map_Common_Tools::toString(const RPG_Map_t& map_in)
 }
 
 std::string
-RPG_Map_Common_Tools::toString(const RPG_Map_Element& element_in)
+RPG_Map_Common_Tools::toString(enum RPG_Map_Element element_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::toString"));
 
@@ -2330,8 +2330,8 @@ RPG_Map_Common_Tools::toString(const RPG_Map_Element& element_in)
 }
 
 RPG_Map_Direction
-RPG_Map_Common_Tools::door2exitDirection(const RPG_Map_Position_t& position_in, // door
-                                         const RPG_Map_FloorPlan_t& floorPlan_in)
+RPG_Map_Common_Tools::doorToExitDirection(const RPG_Map_Position_t& position_in, // door
+                                          const struct RPG_Map_FloorPlan& floorPlan_in)
 {
   // *NOTE*: algorithm is as follows:
   // - perform two "flood-fill"s just beyond the given position - one INSIDE
@@ -2350,7 +2350,7 @@ RPG_Map_Common_Tools::door2exitDirection(const RPG_Map_Position_t& position_in, 
   //     --> the SMALLER area is INSIDE
 
   // sanity check(s)
-  RPG_Map_Door_t position_door;
+  struct RPG_Map_Door position_door;
   position_door.position = position_in;
   RPG_Map_DoorsIterator_t iterator = floorPlan_in.doors.find(position_door);
   if (iterator == floorPlan_in.doors.end())
@@ -2479,11 +2479,11 @@ compare_size:
 
 bool
 RPG_Map_Common_Tools::isFloor(const RPG_Map_Position_t& position_in,
-                              const RPG_Map_FloorPlan_t& floorPlan_in)
+                              const struct RPG_Map_FloorPlan& floorPlan_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::isFloor"));
 
-  RPG_Map_Door_t position_door;
+  struct RPG_Map_Door position_door;
   position_door.position = position_in;
   return ((floorPlan_in.doors.find(position_door) ==
            floorPlan_in.doors.end())                                         &&
@@ -2494,7 +2494,7 @@ RPG_Map_Common_Tools::isFloor(const RPG_Map_Position_t& position_in,
 
 bool
 RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
-                                   const RPG_Map_FloorPlan_t& floorPlan_in)
+                                   const struct RPG_Map_FloorPlan& floorPlan_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::isInsideRoom"));
 
@@ -2509,7 +2509,7 @@ RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
   // step0: preliminary checking
   if (floorPlan_in.walls.find(position_in) != floorPlan_in.walls.end())
     return false;
-  RPG_Map_Door_t position_door;
+  struct RPG_Map_Door position_door;
   position_door.position = position_in;
   if (floorPlan_in.doors.find(position_door) != floorPlan_in.doors.end())
     return true;
@@ -2733,7 +2733,7 @@ RPG_Map_Common_Tools::isInsideRoom(const RPG_Map_Position_t& position_in,
 }
 
 bool
-RPG_Map_Common_Tools::roomsAreSquare(const RPG_Map_t& map_in)
+RPG_Map_Common_Tools::roomsAreSquare(const struct RPG_Map& map_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::hasLineOfSight"));
 
@@ -3849,7 +3849,7 @@ RPG_Map_Common_Tools::displayCorridors(const unsigned int& dimensionX_in,
 
 void
 RPG_Map_Common_Tools::floodFill(const RPG_Map_Position_t& position_in,
-                                const RPG_Map_FloorPlan_t& floorPlan_in,
+                                const struct RPG_Map_FloorPlan& floorPlan_in,
                                 RPG_Map_Positions_t& area_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::floodFill"));
@@ -3860,7 +3860,7 @@ RPG_Map_Common_Tools::floodFill(const RPG_Map_Position_t& position_in,
   area_out.insert(position_in);
   std::stack<RPG_Map_Position_t> position_stack;
   position_stack.push(position_in);
-  RPG_Map_Door_t position_door;
+  struct RPG_Map_Door position_door;
   while (!position_stack.empty())
   {
     // compute 8 neighbours
@@ -4023,7 +4023,7 @@ RPG_Map_Common_Tools::perimeter(const RPG_Map_Area_t& room_in,
 
 unsigned int
 RPG_Map_Common_Tools::countAdjacentDoors(const RPG_Map_Positions_t& area_in,
-                                         const RPG_Map_FloorPlan_t& floorPlan_in)
+                                         const struct RPG_Map_FloorPlan& floorPlan_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::countAdjacentDoors"));
 

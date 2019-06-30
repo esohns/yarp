@@ -61,6 +61,9 @@ if(NOT DOC_TARGET)
 endif()
 add_dependencies(doc doxygen)
 
+#Use solution folders.
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 #add_subdirectory(../tools tools)
 add_subdirectory(../chance chance)
 add_subdirectory(../common common)

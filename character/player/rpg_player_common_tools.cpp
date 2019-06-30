@@ -26,10 +26,10 @@
 #include "ace/Log_Msg.h"
 #include "ace/OS.h"
 
+#include "common_file_tools.h"
+
 #include "rpg_dice.h"
 #include "rpg_dice_common.h"
-
-#include "common_file_tools.h"
 
 #include "rpg_common_defines.h"
 #include "rpg_common_file_tools.h"
@@ -52,10 +52,11 @@
 #include "rpg_character_skills_common_tools.h"
 #include "rpg_character_XML_tools.h"
 
+#include "rpg_player.h"
 #include "rpg_player_defines.h"
 
 RPG_Character_Race_t
-RPG_Player_Common_Tools::raceXMLTreeToRace(const RPG_Player_PlayerXML_XMLTree_Type::race_sequence& races_in)
+RPG_Player_Common_Tools::raceXMLTreeToRace(RPG_Player_CharacterXML_XMLTree_Type::race_sequence& races_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::raceXMLTreeToRace"));
 
@@ -244,7 +245,7 @@ RPG_Player_Common_Tools::playerXMLToPlayer(const RPG_Player_PlayerXML_XMLTree_Ty
                    RPG_Player(// base attributes
                               player_in.name(),
                               RPG_Character_GenderHelper::stringToRPG_Character_Gender(player_in.gender()),
-                              RPG_Player_Common_Tools::raceXMLTreeToRace(player_in.race()),
+                              RPG_Player_Common_Tools::raceXMLTreeToRace(const_cast<RPG_Player_PlayerXML_XMLTree_Type&> (player_in).race()),
                               RPG_Character_Class_Common_Tools::classXMLTreeToClass(player_in.classXML()),
                               alignment,
                               attributes,
@@ -309,8 +310,8 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
     RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(*iterator,
                                                          item_base);
     ACE_ASSERT(item_base);
-    RPG_Item_BaseXML_XMLTree_Type item(RPG_Item_TypeHelper::RPG_Item_TypeToString(item_base->getType()));
-    switch (item_base->getType())
+    RPG_Item_BaseXML_XMLTree_Type item(RPG_Item_TypeHelper::RPG_Item_TypeToString(item_base->type()));
+    switch (item_base->type())
     {
       case ITEM_ARMOR:
       {
@@ -318,7 +319,7 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
         ACE_ASSERT(armor);
 
         RPG_Item_ArmorProperties armor_properties =
-            RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor->getArmorType());
+            RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor->type());
 
         RPG_Item_StorePrice_XMLTree_Type store_price;
         if (armor_properties.baseStorePrice.numGoldPieces)
@@ -327,7 +328,7 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
           store_price.numSilverPieces(armor_properties.baseStorePrice.numSilverPieces);
         RPG_Item_ArmorPropertiesXML_XMLTree_Type armor_properties_xml(armor_properties.baseWeight,
                                                                       store_price,
-                                                                      RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->getArmorType()),
+                                                                      RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->type()),
                                                                       RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString(armor_properties.category),
                                                                       armor_properties.baseBonus,
                                                                       armor_properties.maxDexterityBonus,
@@ -366,7 +367,7 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
         ACE_ASSERT(commodity);
 
         RPG_Item_CommodityProperties commodity_properties =
-            RPG_ITEM_DICTIONARY_SINGLETON::instance()->getCommodityProperties(commodity->getCommoditySubType());
+            RPG_ITEM_DICTIONARY_SINGLETON::instance()->getCommodityProperties(commodity->subtype());
 
         RPG_Item_StorePrice_XMLTree_Type store_price;
         if (commodity_properties.baseStorePrice.numGoldPieces)
@@ -375,8 +376,8 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
           store_price.numSilverPieces(commodity_properties.baseStorePrice.numSilverPieces);
         RPG_Item_CommodityPropertiesBase_XMLTree_Type commodity_properties_xml(commodity_properties.baseWeight,
                                                                                store_price,
-                                                                               RPG_Item_CommodityTypeHelper::RPG_Item_CommodityTypeToString(commodity->getCommodityType()),
-                                                                               RPG_Item_Common_Tools::commoditySubTypeToXMLString(commodity->getCommoditySubType()));
+                                                                               RPG_Item_CommodityTypeHelper::RPG_Item_CommodityTypeToString(commodity->type()),
+                                                                               RPG_Item_Common_Tools::commoditySubTypeToXMLString(commodity->subtype()));
         if (commodity_properties.aura != RPG_MAGIC_SCHOOL_INVALID)
           commodity_properties_xml.aura(RPG_Magic_SchoolHelper::RPG_Magic_SchoolToString(commodity_properties.aura));
         if (commodity_properties.prerequisites.minCasterLevel)
@@ -415,9 +416,9 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
         ACE_ASSERT(weapon);
 
         RPG_Item_WeaponProperties weapon_properties =
-            RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon->getWeaponType());
+            RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon->type());
 
-        RPG_Item_BaseXML_XMLTree_Type item(RPG_Item_TypeHelper::RPG_Item_TypeToString(item_base->getType()));
+        RPG_Item_BaseXML_XMLTree_Type item(RPG_Item_TypeHelper::RPG_Item_TypeToString(item_base->type()));
         RPG_Item_StorePrice_XMLTree_Type store_price;
         if (weapon_properties.baseStorePrice.numGoldPieces)
           store_price.numGoldPieces(weapon_properties.baseStorePrice.numGoldPieces);
@@ -432,7 +433,7 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
                                                                             weapon_properties.criticalHit.damageModifier);
         RPG_Item_WeaponPropertiesXML_XMLTree_Type weapon_properties_xml(weapon_properties.baseWeight,
                                                                         store_price,
-                                                                        RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon->getWeaponType()),
+                                                                        RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon->type()),
                                                                         RPG_Item_WeaponCategoryHelper::RPG_Item_WeaponCategoryToString(weapon_properties.category),
                                                                         RPG_Item_WeaponClassHelper::RPG_Item_WeaponClassToString(weapon_properties.weaponClass),
                                                                         base_damage,
@@ -480,7 +481,7 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid item type (was: \"%s\"), aborting\n"),
-                   ACE_TEXT(RPG_Item_TypeHelper::RPG_Item_TypeToString(item_base->getType()).c_str())));
+                   ACE_TEXT(RPG_Item_TypeHelper::RPG_Item_TypeToString(item_base->type()).c_str())));
 
         return NULL;
       }
@@ -591,7 +592,7 @@ RPG_Player_Common_Tools::getPlayerProfilesDirectory ()
                  ACE_TEXT(result.c_str())));
 
       // fallback
-      result = Common_File_Tools::getDumpDirectory();
+      result = Common_File_Tools::getTempDirectory();
     } // end IF
     else
       ACE_DEBUG((LM_DEBUG,

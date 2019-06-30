@@ -21,16 +21,16 @@
 #ifndef RPG_PLAYER_INVENTORY_H
 #define RPG_PLAYER_INVENTORY_H
 
-#include "rpg_player_exports.h"
+#include "ace/Global_Macros.h"
 
 #include "rpg_item_instance_common.h"
-
-#include <ace/Global_Macros.h>
+ 
+ //#include "rpg_player_exports.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Player_Export RPG_Player_Inventory
+class RPG_Player_Inventory
 {
  public:
   RPG_Player_Inventory(const RPG_Item_List_t&); // list of (initial) items
@@ -39,8 +39,8 @@ class RPG_Player_Export RPG_Player_Inventory
 
   RPG_Player_Inventory& operator=(const RPG_Player_Inventory&);
 
-  void pickUp(const RPG_Item_ID_t&); // item ID
-  void drop(const RPG_Item_ID_t&); // item ID
+  void pickUp(RPG_Item_ID_t); // item ID
+  void drop(RPG_Item_ID_t); // item ID
 
   unsigned short getTotalWeight() const; 
 
@@ -50,8 +50,7 @@ class RPG_Player_Export RPG_Player_Inventory
   RPG_Item_List_t myItems;
 
  private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Player_Inventory());
+  ACE_UNIMPLEMENTED_FUNC(RPG_Player_Inventory())
 };
 
 #endif

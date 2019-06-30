@@ -211,14 +211,14 @@ RPG_Item_Dictionary::getProperties(const RPG_Item_Base* item_in,
 
   ACE_ASSERT(item_in);
 
-  switch (item_in->getType())
+  switch (item_in->type())
   {
     case ITEM_ARMOR:
     {
       const RPG_Item_Armor* armor = dynamic_cast<const RPG_Item_Armor*>(item_in);
       ACE_ASSERT(armor);
       ACE_NEW_NORETURN(properties_out,
-                       RPG_Item_ArmorProperties(getArmorProperties(armor->getArmorType())));
+                       RPG_Item_ArmorProperties(getArmorProperties(armor->type())));
       break;
     }
     case ITEM_COMMODITY:
@@ -226,7 +226,7 @@ RPG_Item_Dictionary::getProperties(const RPG_Item_Base* item_in,
       const RPG_Item_Commodity* commodity = dynamic_cast<const RPG_Item_Commodity*>(item_in);
       ACE_ASSERT(commodity);
       ACE_NEW_NORETURN(properties_out,
-                       RPG_Item_CommodityProperties(getCommodityProperties(commodity->getCommoditySubType())));
+                       RPG_Item_CommodityProperties(getCommodityProperties(commodity->subtype())));
       break;
     }
     case ITEM_OTHER:
@@ -242,14 +242,14 @@ RPG_Item_Dictionary::getProperties(const RPG_Item_Base* item_in,
       const RPG_Item_Weapon* weapon = dynamic_cast<const RPG_Item_Weapon*>(item_in);
       ACE_ASSERT(weapon);
       ACE_NEW_NORETURN(properties_out,
-                       RPG_Item_WeaponProperties(getWeaponProperties(weapon->getWeaponType())));
+                       RPG_Item_WeaponProperties(getWeaponProperties(weapon->type())));
       break;
     }
     default:
     {
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("invalid item type (was: \"%s\"), aborting\n"),
-                 RPG_Item_TypeHelper::RPG_Item_TypeToString(item_in->getType()).c_str()));
+                 RPG_Item_TypeHelper::RPG_Item_TypeToString(item_in->type()).c_str()));
 
       break;
     }
@@ -259,7 +259,7 @@ RPG_Item_Dictionary::getProperties(const RPG_Item_Base* item_in,
   if (!properties_out)
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("failed to retrieve item properties (type was: \"%s\"), aborting\n"),
-               RPG_Item_TypeHelper::RPG_Item_TypeToString(item_in->getType()).c_str()));
+               RPG_Item_TypeHelper::RPG_Item_TypeToString(item_in->type()).c_str()));
 }
 
 RPG_Item_CommodityProperties
@@ -427,7 +427,7 @@ RPG_Item_Dictionary::dump() const
                (*iterator).second.criticalHit.damageModifier,
                (*iterator).second.rangeIncrement,
                (*iterator).second.baseWeight,
-               RPG_Item_Common_Tools::weaponDamageTypeToString((*iterator).second.typeOfDamage).c_str()));
+               RPG_Item_Common_Tools::toString((*iterator).second.typeOfDamage).c_str()));
 
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("==================================\n")));
