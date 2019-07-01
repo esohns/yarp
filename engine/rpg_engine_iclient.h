@@ -38,7 +38,7 @@ class RPG_Engine_IClient
   //virtual void removeEntity(const RPG_Engine_EntityID_t&) = 0;
   //virtual void updateEntity(const RPG_Engine_EntityID_t&) = 0;
   virtual void notify(const RPG_Engine_Command&,
-                      const RPG_Engine_ClientNotificationParameters_t&) = 0;
+                      const struct RPG_Engine_ClientNotificationParameters&) = 0;
 };
 
 #endif // RPG_ENGINE_ICLIENT_H

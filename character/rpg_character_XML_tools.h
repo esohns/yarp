@@ -21,27 +21,26 @@
 #ifndef RPG_CHARACTER_XML_TOOLS_H
 #define RPG_CHARACTER_XML_TOOLS_H
 
-#include "rpg_character_exports.h"
+#include "ace/Global_Macros.h"
+
+//#include "rpg_character_exports.h"
 #include "rpg_character_skills_common.h"
 #include "rpg_character_XML_tree.h"
-
-#include <ace/Global_Macros.h>
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Character_Export RPG_Character_XML_Tools
+class RPG_Character_XML_Tools
 {
  public:
   static RPG_Character_Skills_t skillsXMLTreeToSkills(const RPG_Character_Skills_XMLTree_Type&); // skills (XML format)
   static RPG_Character_Feats_t featsXMLTreeToFeats(const RPG_Character_Feats_XMLTree_Type&); // feats (XML format)
 
  private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_XML_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Character_XML_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_XML_Tools(const RPG_Character_XML_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_XML_Tools& operator=(const RPG_Character_XML_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_XML_Tools())
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Character_XML_Tools())
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_XML_Tools(const RPG_Character_XML_Tools&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_XML_Tools& operator=(const RPG_Character_XML_Tools&))
 };
 
 #endif

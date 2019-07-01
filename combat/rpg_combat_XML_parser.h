@@ -21,15 +21,17 @@
 #ifndef RPG_COMBAT_XML_PARSER_H
 #define RPG_COMBAT_XML_PARSER_H
 
-#include "rpg_combat_exports.h"
-#include "rpg_combat_XML_types.h"
+//#include "ace/Global_Macros.h"
 
-#include <ace/Global_Macros.h>
+#include "rpg_XMLSchema_XML_types.h"
+
+//#include "rpg_combat_exports.h"
+#include "rpg_combat_XML_types.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Combat_Export RPG_Combat_AttackForm_Type
+class RPG_Combat_AttackForm_Type
  : public RPG_Combat_AttackForm_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -38,7 +40,7 @@ class RPG_Combat_Export RPG_Combat_AttackForm_Type
   virtual RPG_Combat_AttackForm post_RPG_Combat_AttackForm_Type();
 };
 
-class RPG_Combat_Export RPG_Combat_RangedEffectUnion_Type
+class RPG_Combat_RangedEffectUnion_Type
  : public RPG_Combat_RangedEffectUnion_Type_pskel
 {
  public:
@@ -52,7 +54,7 @@ class RPG_Combat_Export RPG_Combat_RangedEffectUnion_Type
   RPG_Combat_RangedEffectUnion myCurrentRangedEffect;
 };
 
-class RPG_Combat_Export RPG_Combat_RangedAttackProperties_Type
+class RPG_Combat_RangedAttackProperties_Type
  : public RPG_Combat_RangedAttackProperties_Type_pskel
 {
  public:
@@ -68,7 +70,7 @@ class RPG_Combat_Export RPG_Combat_RangedAttackProperties_Type
   RPG_Combat_RangedAttackProperties myCurrentRangedProperties;
 };
 
-class RPG_Combat_Export RPG_Combat_AttackSituation_Type
+class RPG_Combat_AttackSituation_Type
  : public RPG_Combat_AttackSituation_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -77,7 +79,7 @@ class RPG_Combat_Export RPG_Combat_AttackSituation_Type
   virtual RPG_Combat_AttackSituation post_RPG_Combat_AttackSituation_Type();
 };
 
-class RPG_Combat_Export RPG_Combat_DefenseSituation_Type
+class RPG_Combat_DefenseSituation_Type
  : public RPG_Combat_DefenseSituation_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -86,7 +88,7 @@ class RPG_Combat_Export RPG_Combat_DefenseSituation_Type
   virtual RPG_Combat_DefenseSituation post_RPG_Combat_DefenseSituation_Type();
 };
 
-class RPG_Combat_Export RPG_Combat_SpecialAttack_Type
+class RPG_Combat_SpecialAttack_Type
  : public RPG_Combat_SpecialAttack_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -95,7 +97,7 @@ class RPG_Combat_Export RPG_Combat_SpecialAttack_Type
    virtual RPG_Combat_SpecialAttack post_RPG_Combat_SpecialAttack_Type();
 };
 
-class RPG_Combat_Export RPG_Combat_SpecialDamageType_Type
+class RPG_Combat_SpecialDamageType_Type
  : public RPG_Combat_SpecialDamageType_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -104,7 +106,7 @@ class RPG_Combat_Export RPG_Combat_SpecialDamageType_Type
    virtual RPG_Combat_SpecialDamageType post_RPG_Combat_SpecialDamageType_Type();
 };
 
-class RPG_Combat_Export RPG_Combat_DamageTypeUnion_Type
+class RPG_Combat_DamageTypeUnion_Type
  : public RPG_Combat_DamageTypeUnion_Type_pskel
 {
  public:
@@ -118,7 +120,7 @@ class RPG_Combat_Export RPG_Combat_DamageTypeUnion_Type
   RPG_Combat_DamageTypeUnion myCurrentDamageType;
 };
 
-class RPG_Combat_Export RPG_Combat_DamageDuration_Type
+class RPG_Combat_DamageDuration_Type
  : public RPG_Combat_DamageDuration_Type_pskel
 {
  public:
@@ -136,7 +138,7 @@ class RPG_Combat_Export RPG_Combat_DamageDuration_Type
   RPG_Combat_DamageDuration myCurrentDuration;
 };
 
-class RPG_Combat_Export RPG_Combat_OtherDamageType_Type
+class RPG_Combat_OtherDamageType_Type
  : public RPG_Combat_OtherDamageType_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -145,7 +147,7 @@ class RPG_Combat_Export RPG_Combat_OtherDamageType_Type
   virtual RPG_Combat_OtherDamageType post_RPG_Combat_OtherDamageType_Type();
 };
 
-class RPG_Combat_Export RPG_Combat_OtherDamage_Type
+class RPG_Combat_OtherDamage_Type
  : public RPG_Combat_OtherDamage_Type_pskel
 {
  public:
@@ -161,7 +163,7 @@ class RPG_Combat_Export RPG_Combat_OtherDamage_Type
   RPG_Combat_OtherDamage myCurrentOtherDamage;
 };
 
-class RPG_Combat_Export RPG_Combat_CheckTypeUnion_Type
+class RPG_Combat_CheckTypeUnion_Type
  : public RPG_Combat_CheckTypeUnion_Type_pskel
 {
  public:
@@ -175,7 +177,7 @@ class RPG_Combat_Export RPG_Combat_CheckTypeUnion_Type
   RPG_Combat_CheckTypeUnion myCurrentCheckTypeUnion;
 };
 
-class RPG_Combat_Export RPG_Combat_Check_Type
+class RPG_Combat_Check_Type
  : public RPG_Combat_Check_Type_pskel
 {
  public:
@@ -191,7 +193,7 @@ class RPG_Combat_Export RPG_Combat_Check_Type
   RPG_Combat_Check myCurrentCheck;
 };
 
-class RPG_Combat_Export RPG_Combat_DamageReductionType_Type
+class RPG_Combat_DamageReductionType_Type
  : public RPG_Combat_DamageReductionType_Type_pskel,
    public ::xml_schema::string_pimpl
 {
@@ -200,7 +202,7 @@ class RPG_Combat_Export RPG_Combat_DamageReductionType_Type
   virtual RPG_Combat_DamageReductionType post_RPG_Combat_DamageReductionType_Type();
 };
 
-class RPG_Combat_Export RPG_Combat_DamageCounterMeasure_Type
+class RPG_Combat_DamageCounterMeasure_Type
  : public RPG_Combat_DamageCounterMeasure_Type_pskel
 {
   public:
@@ -219,7 +221,7 @@ class RPG_Combat_Export RPG_Combat_DamageCounterMeasure_Type
   RPG_Combat_DamageCounterMeasure myCurrentCounterMeasure;
 };
 
-class RPG_Combat_Export RPG_Combat_DamageElement_Type
+class RPG_Combat_DamageElement_Type
  : public RPG_Combat_DamageElement_Type_pskel
 {
  public:
@@ -241,7 +243,7 @@ class RPG_Combat_Export RPG_Combat_DamageElement_Type
   RPG_Combat_DamageElement myCurrentDamageElement;
 };
 
-class RPG_Combat_Export RPG_Combat_Damage_Type
+class RPG_Combat_Damage_Type
  : public RPG_Combat_Damage_Type_pskel
 {
  public:

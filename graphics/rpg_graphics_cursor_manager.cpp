@@ -102,8 +102,8 @@ RPG_Graphics_Cursor_Manager::~RPG_Graphics_Cursor_Manager()
 }
 
 void
-RPG_Graphics_Cursor_Manager::init(RPG_Common_ILock* screenLock_in,
-                                  RPG_Graphics_IWindowBase* window_in)
+RPG_Graphics_Cursor_Manager::initialize (Common_ILock* screenLock_in,
+                                         RPG_Graphics_IWindowBase* window_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::init"));
 

@@ -28,7 +28,7 @@
 #include "rpg_net_protocol_session_message.h"
 
 // forward declaration(s)
-struct Net_GTK_CBData_t;
+struct Common_UI_CBData;
 typedef Stream_ISessionDataNotify_T<Stream_SessionId_t,
                                     struct RPG_Net_Protocol_SessionData,
                                     enum Stream_SessionMessageType,
@@ -39,7 +39,7 @@ class Net_EventHandler
  : public RPG_Net_Protocol_ISessionNotify_t
 {
  public:
-  Net_EventHandler (Net_GTK_CBData_t*); // GTK state
+  Net_EventHandler (Common_UI_CBData*); // GTK state
   inline virtual ~Net_EventHandler () {}
 
   // implement Stream_ISessionDataNotify_T
@@ -58,7 +58,7 @@ class Net_EventHandler
   ACE_UNIMPLEMENTED_FUNC (Net_EventHandler (const Net_EventHandler&))
   ACE_UNIMPLEMENTED_FUNC (Net_EventHandler& operator=(const Net_EventHandler&))
 
-  Net_GTK_CBData_t* CBData_;
+  Common_UI_CBData* CBData_;
 };
 
 #endif

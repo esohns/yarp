@@ -36,6 +36,8 @@
 
 #include "common_log_tools.h"
 
+#include "common_timer_tools.h"
+
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
 #endif
@@ -389,7 +391,7 @@ do_work (const struct RPG_Map_FloorPlan_Configuration& mapConfig_in,
   RPG_Graphics_Common_Tools::preInitialize ();
 
   // step2: generate level data
-  struct RPG_Engine_Level level;
+  struct RPG_Engine_LevelData level;
   if (generateLevel_in)
   {
     if (random_in)
@@ -427,7 +429,7 @@ do_work (const struct RPG_Map_FloorPlan_Configuration& mapConfig_in,
       level.metadata.environment.outdoors =
           RPG_ENGINE_ENVIRONMENT_DEF_OUTDOORS;
 
-      RPG_Engine_Spawn_t spawn;
+      struct RPG_Engine_Spawn spawn;
       spawn.spawn.amble_probability = RPG_ENGINE_ENCOUNTER_DEF_AMBLE_PROBABILITY;
       spawn.spawn.interval.seconds =
           RPG_ENGINE_ENCOUNTER_DEF_TIMER_INTERVAL;
@@ -486,7 +488,7 @@ do_printVersion (const std::string& programName_in)
 
   std::cout << programName_in
             << ACE_TEXT(" : ")
-            << YARP_VERSION
+            //<< YARP_VERSION
             << std::endl;
 
   // create version string...
@@ -558,7 +560,7 @@ ACE_TMAIN (int argc_in,
 
   // step1: init
   // step1a set defaults
-  RPG_Map_FloorPlan_Configuration_t configuration;
+  struct RPG_Map_FloorPlan_Configuration configuration;
   configuration.corridors              = MAP_GENERATOR_DEF_CORRIDORS;
   configuration.doors                  = MAP_GENERATOR_DEF_DOORS;
   configuration.map_size_x             = MAP_GENERATOR_DEF_DIMENSION_X;
@@ -734,9 +736,8 @@ ACE_TMAIN (int argc_in,
   std::string working_time_string;
   ACE_Time_Value working_time;
   timer.elapsed_time(working_time);
-  RPG_Common_Tools::period2String(working_time,
-                                  working_time_string);
-
+  working_time_string =
+    Common_Timer_Tools::periodToString(working_time);
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
              ACE_TEXT(working_time_string.c_str())));

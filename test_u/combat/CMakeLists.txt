@@ -39,7 +39,7 @@ set (EXECUTABLE combat_simulator)
 set (${EXECUTABLE}_SRCS
      combat_simulator.cpp)
 
-set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS DATADIR="/usr/local/share/RPG/config")
+set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG\"")
 
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})

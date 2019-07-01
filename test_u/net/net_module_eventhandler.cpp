@@ -30,12 +30,6 @@ RPG_Net_Module_EventHandler::RPG_Net_Module_EventHandler ()
 
 }
 
-RPG_Net_Module_EventHandler::~RPG_Net_Module_EventHandler ()
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Net_Module_EventHandler::~RPG_Net_Module_EventHandler"));
-
-}
-
 Common_Module_t*
 RPG_Net_Module_EventHandler::clone ()
 {

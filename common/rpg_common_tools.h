@@ -76,9 +76,9 @@ class RPG_Common_Tools
  // static bool period2String(const ACE_Time_Value&, // period
  //                           std::string&);         // return value: corresp. string
 
-	//static std::string sanitizeURI(const std::string&); // URI
-	static std::string sanitize(const std::string&); // string
-	//static std::string strip(const std::string&); // string
+  static std::string sanitizeURI(const std::string&); // URI
+  static std::string sanitize(const std::string&); // string
+  //static std::string strip(const std::string&); // string
 
  private:
   ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools())

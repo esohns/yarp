@@ -87,7 +87,7 @@ class RPG_Common_Camp_Type_pskel;
 #include "rpg_dice_incl.h"
 #include "rpg_common_incl.h"
 
-#include "rpg_dice_XML_types.h"
+#include "../chance/dice/rpg_dice_XML_types.h"
 
 class RPG_Common_CreatureMetaType_Type_pskel: public virtual ::xml_schema::string_pskel
 {

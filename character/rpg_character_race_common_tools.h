@@ -21,34 +21,33 @@
 #ifndef RPG_CHARACTER_RACE_COMMON_TOOLS_H
 #define RPG_CHARACTER_RACE_COMMON_TOOLS_H
 
-#include "rpg_character_exports.h"
+#include "ace/Global_Macros.h"
+
+#include "rpg_common_size.h"
+
+//#include "rpg_character_exports.h"
 #include "rpg_character_race_common.h"
 #include "rpg_character_race.h"
 
-#include <rpg_common_size.h>
-
-#include <ace/Global_Macros.h>
-
-class RPG_Character_Export RPG_Character_Race_Common_Tools
+class RPG_Character_Race_Common_Tools
 {
  public:
-  static RPG_Common_Size race2Size(const RPG_Character_Race_t&); // (player) race(s)
-  static unsigned char race2Speed(const RPG_Character_Race&);
-  static bool isCompatible(const RPG_Character_Race&,  // race 1
-                           const RPG_Character_Race&); // race 2
+  static enum RPG_Common_Size raceToSize (const RPG_Character_Race_t&); // (player) race(s)
+  static ACE_UINT8 raceToSpeed (enum RPG_Character_Race);
+  static bool isCompatible (enum RPG_Character_Race,  // race 1
+                            enum RPG_Character_Race); // race 2
 
-  static bool hasRace(const RPG_Character_Race_t&, // (player) race(s)
-                      const RPG_Character_Race&);  // specific race
+  static bool hasRace (const RPG_Character_Race_t&, // (player) race(s)
+                       enum RPG_Character_Race);    // specific race
 
   private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Race_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Character_Race_Common_Tools());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Race_Common_Tools(const RPG_Character_Race_Common_Tools&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Race_Common_Tools& operator=(const RPG_Character_Race_Common_Tools&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Race_Common_Tools())
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Character_Race_Common_Tools())
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Race_Common_Tools(const RPG_Character_Race_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Race_Common_Tools& operator=(const RPG_Character_Race_Common_Tools&))
 
   // helper method(s)
-  static RPG_Common_Size race2Size(const RPG_Character_Race&); // race
+  static enum RPG_Common_Size raceToSize(enum RPG_Character_Race); // race
 };
 
 #endif

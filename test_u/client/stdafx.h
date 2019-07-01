@@ -10,10 +10,10 @@
 #endif
 
 // System Library Header Files
-#include "glade/glade.h"
-#include "gtk/gtk.h"
-#include "SDL.h"
-#include "png.h"
+//#include "glade/glade.h"
+//#include "gtk/gtk.h"
+//#include "SDL.h"
+//#include "png.h"
 #include "ace/OS.h"
 #include "ace/Log_Msg.h"
 

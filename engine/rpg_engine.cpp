@@ -43,8 +43,11 @@
 #include "rpg_item_common_XML_tools.h"
 #include "rpg_item_dictionary.h"
 
+#include "rpg_player.h"
 #include "rpg_player_common_tools.h"
 #include "rpg_player_defines.h"
+
+#include "rpg_monster.h"
 
 #include "rpg_map_common_tools.h"
 #include "rpg_map_pathfinding_tools.h"
@@ -71,8 +74,7 @@ RPG_Engine::RPG_Engine ()
  , entities_ ()
  , heapAllocator_ ()
  , lock_ ()
- , messageAllocator_ (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
-                      &heapAllocator_)
+ , messageAllocator_ (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES)
  , netConfiguration_ ()
  , queue_ (RPG_ENGINE_MAX_QUEUE_SLOTS)
 {
@@ -89,25 +91,27 @@ RPG_Engine::RPG_Engine ()
   netConfiguration_.bufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
   netConfiguration_.messageAllocator = &messageAllocator_;
   // ******************* socket configuration data ****************************
-  netConfiguration_.socketConfiguration.bufferSize =
-    NET_SOCKET_DEFAULT_RECEIVE_BUFFER_SIZE;
-  //netConfiguration_.socketConfiguration.peerAddress = INADDR_ANY;
-  netConfiguration_.socketConfiguration.useLoopbackDevice = false;
+  //netConfiguration_.socketConfiguration.bufferSize =
+  //  NET_SOCKET_DEFAULT_RECEIVE_BUFFER_SIZE;
+  ////netConfiguration_.socketConfiguration.peerAddress = INADDR_ANY;
+  //netConfiguration_.socketConfiguration.useLoopbackDevice = false;
 
   if (RPG_ENGINE_USES_REACTOR)
     ACE_NEW_NORETURN (connector_,
-                      RPG_Net_Client_Connector_t (&netConfiguration_,
-                                                  RPG_CONNECTIONMANAGER_SINGLETON::instance (),
-                                                  0));
+                      RPG_Net_Protocol_Connector_t (true));
   else
     ACE_NEW_NORETURN (connector_,
-                      RPG_Net_Client_AsynchConnector_t (&netConfiguration_,
-                                                        RPG_CONNECTIONMANAGER_SINGLETON::instance (),
-                                                        0));
+                      RPG_Net_Protocol_AsynchConnector_t (true));
   if (!connector_)
   {
     ACE_DEBUG ((LM_CRITICAL,
                 ACE_TEXT ("failed to allocate memory, returning\n")));
+    return;
+  } // end IF
+  if (!connector_->initialize (netConfiguration_))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to initialize connector, returning\n")));
     return;
   } // end IF
 }
@@ -521,7 +525,7 @@ RPG_Engine::initialize (RPG_Engine_IClient* client_in)
 }
 
 void
-RPG_Engine::set (const RPG_Engine_Level_t& level_in)
+RPG_Engine::set (const struct RPG_Engine_LevelData& level_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::set"));
 
@@ -539,7 +543,7 @@ RPG_Engine::set (const RPG_Engine_Level_t& level_in)
       (*iterator).state = DOORSTATE_CLOSED;
 
   // notify client / window
-  RPG_Engine_ClientNotificationParameters_t parameters;
+  struct RPG_Engine_ClientNotificationParameters parameters;
   parameters.entity_id = 0;
   parameters.condition = RPG_COMMON_CONDITION_INVALID;
   parameters.positions.insert (std::make_pair (std::numeric_limits<unsigned int>::max (),
@@ -561,7 +565,7 @@ RPG_Engine::set (const RPG_Engine_Level_t& level_in)
 }
 
 RPG_Engine_EntityID_t
-RPG_Engine::add (RPG_Engine_Entity_t* entity_in,
+RPG_Engine::add (struct RPG_Engine_Entity* entity_in,
                  bool lockedAccess_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::add"));
@@ -594,7 +598,7 @@ RPG_Engine::add (RPG_Engine_Entity_t* entity_in,
                                                                        static_cast<suseconds_t> (fractional * 1000000.0F)));
 
   // notify client / window
-  RPG_Engine_ClientNotificationParameters_t parameters;
+  struct RPG_Engine_ClientNotificationParameters parameters;
   parameters.entity_id = id;
   parameters.condition = RPG_COMMON_CONDITION_INVALID;
   parameters.positions.insert(entity_in->position);
@@ -652,7 +656,7 @@ RPG_Engine::remove (const RPG_Engine_EntityID_t& id_in)
   // notify AI
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance ()->remove (id_in);
 
-  RPG_Engine_ClientNotificationParameters_t parameters;
+  struct RPG_Engine_ClientNotificationParameters parameters;
   {
     ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
 
@@ -711,7 +715,7 @@ RPG_Engine::exists (const RPG_Engine_EntityID_t& id_in) const
 
 void
 RPG_Engine::action (const RPG_Engine_EntityID_t& id_in,
-                    const RPG_Engine_Action_t& action_in,
+                    const struct RPG_Engine_Action& action_in,
                     bool lockedAccess_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::action"));
@@ -1058,26 +1062,26 @@ RPG_Engine::load (const std::string& filename_in,
   }
 
   // initialize level
-  RPG_Engine_Level_t level;
+  struct RPG_Engine_LevelData level;
   RPG_Engine_State_XMLTree_Type::entities_sequence& entities =
     engine_state_p->entities ();
   base_path = RPG_Player_Common_Tools::getPlayerProfilesDirectory ();
   std::string filename;
   RPG_Magic_Spells_t spells;
   RPG_Character_Conditions_t condition;
-  RPG_Engine_Entity_t* entity = NULL;
+  struct RPG_Engine_Entity* entity = NULL;
   for (RPG_Engine_State_XMLTree_Type::entities_const_iterator iterator = entities.begin ();
        iterator != entities.end ();
        iterator++)
   {
     entity = NULL;
     ACE_NEW_NORETURN (entity,
-                      RPG_Engine_Entity_t ());
+                      struct RPG_Engine_Entity ());
     if (!entity)
     {
       ACE_DEBUG ((LM_CRITICAL,
                   ACE_TEXT ("failed to allocate memory(%u), aborting\n"),
-                  sizeof (RPG_Engine_Entity_t)));
+                  sizeof (struct RPG_Engine_Entity)));
       return false;
     } // end IF
 
@@ -1501,7 +1505,7 @@ RPG_Engine::setActive (const RPG_Engine_EntityID_t& id_in,
   // notify client ?
   if (id_in)
   {
-    RPG_Engine_ClientNotificationParameters_t parameters;
+    struct RPG_Engine_ClientNotificationParameters parameters;
     parameters.entity_id = id_in;
     parameters.condition = RPG_COMMON_CONDITION_INVALID;
     if (lockedAccess_in)
@@ -2019,14 +2023,14 @@ RPG_Engine::getVisibleRadius (const RPG_Engine_EntityID_t& id_in,
 
   // step2: consider environment / ambient lighting
   unsigned short environment_radius =
-    RPG_Common_Tools::environment2Radius (inherited2::myMetaData.environment);
+    RPG_Common_Tools::environmentToRadius (inherited2::myMetaData.environment);
 
   // step3: consider equipment (ambient lighting conditions)
   unsigned short lit_radius = 0;
   if (equipped_light_source != RPG_ITEM_COMMODITYLIGHT_INVALID)
     lit_radius =
-        RPG_Item_Common_Tools::lightingItem2Radius (equipped_light_source,
-                                                    (inherited2::myMetaData.environment.lighting == AMBIENCE_BRIGHT));
+        RPG_Item_Common_Tools::lightingItemToRadius (equipped_light_source,
+                                                     (inherited2::myMetaData.environment.lighting == AMBIENCE_BRIGHT));
 
   if (lockedAccess_in)
     lock_.release ();
@@ -2342,12 +2346,12 @@ RPG_Engine::canReach (const RPG_Engine_EntityID_t& id_in,
                          : (range <= max_reach));
 }
 
-RPG_Engine_LevelMetaData_t
+struct RPG_Engine_LevelMetaData
 RPG_Engine::getMetaData (bool lockedAccess_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::getMetaData"));
 
-  RPG_Engine_LevelMetaData_t result;
+  struct RPG_Engine_LevelMetaData result;
 
   if (lockedAccess_in)
     lock_.acquire ();
@@ -2601,7 +2605,7 @@ RPG_Engine::handleEntities()
         continue;
 
       action_complete = true;
-      RPG_Engine_Action_t& current_action = (*iterator).second->actions.front ();
+      struct RPG_Engine_Action& current_action = (*iterator).second->actions.front ();
       switch (current_action.command)
       {
         case COMMAND_ATTACK:
@@ -2623,7 +2627,7 @@ RPG_Engine::handleEntities()
             break; // nothing to do...
 
           // notify client
-          RPG_Engine_ClientNotificationParameters_t parameters;
+          struct RPG_Engine_ClientNotificationParameters parameters;
           parameters.entity_id = (*target).first;
           parameters.condition = RPG_COMMON_CONDITION_INVALID;
           parameters.positions.insert (std::make_pair(std::numeric_limits<unsigned int>::max (),
@@ -2676,10 +2680,10 @@ RPG_Engine::handleEntities()
                 break;
               } // end IF
               unsigned int xp =
-                RPG_Engine_Common_Tools::combat2XP ((*target).second->character->getName (),
-                                                    player_base->getLevel (),
-                                                    1,
-                                                    1);
+                RPG_Engine_Common_Tools::combatToXP ((*target).second->character->getName (),
+                                                     player_base->getLevel (),
+                                                     1,
+                                                     1);
               bool level_up = player_base->gainExperience (xp);
 
               parameters.entity_id = (*iterator).first;
@@ -2713,7 +2717,7 @@ RPG_Engine::handleEntities()
           if (handleDoor (current_action.position,
                           (current_action.command == COMMAND_DOOR_OPEN)))
           {
-            RPG_Engine_ClientNotificationParameters_t parameters;
+            struct RPG_Engine_ClientNotificationParameters parameters;
             parameters.entity_id = (*iterator).first;
             parameters.condition = RPG_COMMON_CONDITION_INVALID;
             parameters.positions.insert(current_action.position);
@@ -2835,7 +2839,7 @@ RPG_Engine::handleEntities()
           } // end IF
 
           // notify client window
-          RPG_Engine_ClientNotificationParameters_t parameters;
+          struct RPG_Engine_ClientNotificationParameters parameters;
           parameters.entity_id = (*iterator).first;
           parameters.condition = RPG_COMMON_CONDITION_INVALID;
           parameters.positions.insert (current_action.position);
@@ -2909,7 +2913,7 @@ RPG_Engine::handleEntities()
     if (remove_id == active_entity_id)
     {
       // notify client
-      RPG_Engine_ClientNotificationParameters_t parameters;
+      struct RPG_Engine_ClientNotificationParameters parameters;
       parameters.entity_id = 0;
       parameters.condition = RPG_COMMON_CONDITION_INVALID;
       parameters.positions.insert (std::make_pair (std::numeric_limits<unsigned int>::max (),

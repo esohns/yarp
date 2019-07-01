@@ -19,7 +19,7 @@
 
 #include "rpg_engine_messagequeue.h"
 
-#include <rpg_common_macros.h>
+#include "rpg_common_macros.h"
 
 RPG_Engine_MessageQueue::RPG_Engine_MessageQueue(const size_t& maxMessages_in)
 : inherited(maxMessages_in, // high water mark
@@ -27,12 +27,6 @@ RPG_Engine_MessageQueue::RPG_Engine_MessageQueue(const size_t& maxMessages_in)
             NULL)           // notification strategy
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_MessageQueue::RPG_Engine_MessageQueue"));
-
-}
-
-RPG_Engine_MessageQueue::~RPG_Engine_MessageQueue()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Engine_MessageQueue::~RPG_Engine_MessageQueue"));
 
 }
 

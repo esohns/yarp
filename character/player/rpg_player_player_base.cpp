@@ -84,7 +84,7 @@ RPG_Player_Player_Base::RPG_Player_Player_Base (// base attributes
    myClass(class_in),
    myOffHand(offHand_in),
    myExperience(experience_in),
-   mySize(RPG_Character_Race_Common_Tools::race2Size(race_in))
+   mySize(RPG_Character_Race_Common_Tools::raceToSize(race_in))
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::RPG_Player_Player_Base"));
 
@@ -170,7 +170,7 @@ RPG_Player_Player_Base::init (// base attributes
   myClass      = class_in;
   myOffHand    = offHand_in;
   myExperience = experience_in;
-  mySize       = RPG_Character_Race_Common_Tools::race2Size(race_in);
+  mySize       = RPG_Character_Race_Common_Tools::raceToSize(race_in);
 }
 
 enum RPG_Character_Gender
@@ -411,7 +411,7 @@ RPG_Player_Player_Base::getSpeed(bool isRunning_in,
     if (myRace.test(index))
     {
       base_speed =
-          RPG_Character_Race_Common_Tools::race2Speed(static_cast<RPG_Character_Race>(race_index));
+          RPG_Character_Race_Common_Tools::raceToSpeed(static_cast<RPG_Character_Race>(race_index));
       if (base_speed > result)
         result = base_speed;
     } // end IF

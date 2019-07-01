@@ -83,13 +83,13 @@ class RPG_Player_State_XMLTree_Type;
 
 #include <xsd/cxx/tree/istream-fwd.hxx>
 
-#include "rpg_common_XML_tree.h"
+#include "../../common/rpg_common_XML_tree.h"
 
-#include "rpg_magic_XML_tree.h"
+#include "../../magic/rpg_magic_XML_tree.h"
 
-#include "rpg_item_XML_tree.h"
+#include "../../item/rpg_item_XML_tree.h"
 
-#include "rpg_character_XML_tree.h"
+#include "../rpg_character_XML_tree.h"
 
 class RPG_Player_Abilities_XMLTree_Type: public ::xml_schema::type
 {

@@ -21,14 +21,14 @@
 
 #include "rpg_character_class_common_tools.h"
 
-#include <rpg_common_macros.h>
-#include <rpg_common_tools.h>
+#include "ace/Log_Msg.h"
 
-#include <ace/Log_Msg.h>
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
 
 bool
-RPG_Character_Class_Common_Tools::hasSubClass(const RPG_Character_Class& class_in,
-                                              const RPG_Common_SubClass& subClass_in)
+RPG_Character_Class_Common_Tools::hasSubClass (const RPG_Character_Class& class_in,
+                                               enum RPG_Common_SubClass subClass_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::hasSubClass"));
 
@@ -41,8 +41,8 @@ RPG_Character_Class_Common_Tools::hasSubClass(const RPG_Character_Class& class_i
   return false;
 }
 
-RPG_Character_MetaClass
-RPG_Character_Class_Common_Tools::subClassToMetaClass(const RPG_Common_SubClass& subClass_in)
+enum RPG_Character_MetaClass
+RPG_Character_Class_Common_Tools::subClassToMetaClass (enum RPG_Common_SubClass subClass_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::subClassToMetaClass"));
 

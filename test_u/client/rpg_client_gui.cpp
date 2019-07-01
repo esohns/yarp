@@ -42,8 +42,11 @@
 //#include "SDL/SDL_framerate.h"
 
 #include "common_file_tools.h"
-#include "common_logger.h"
-#include "common_tools.h"
+
+//#include "common_logger.h"
+#include "common_log_tools.h"
+
+#include "common_timer_tools.h"
 
 #include "common_ui_glade_definition.h"
 #include "common_ui_gtk_manager.h"

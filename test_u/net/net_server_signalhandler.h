@@ -25,7 +25,6 @@
 
 #include "common_istatistic.h"
 
-#include "common_isignal.h"
 #include "common_signal_handler.h"
 
 #include "rpg_net_protocol_configuration.h"
@@ -35,7 +34,6 @@ class Common_IControl;
 
 class Net_Server_SignalHandler
  : public Common_SignalHandler_T<struct Common_SignalHandlerConfiguration>
- , public Common_ISignal
 {
   typedef Common_SignalHandler_T<struct Common_SignalHandlerConfiguration> inherited;
 

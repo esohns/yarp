@@ -33,9 +33,9 @@
 #include "stream_streammodule_base.h"
 
 #include "net_common.h"
-#include "net_message.h"
-#include "net_sessionmessage.h"
-#include "net_module_messagehandler.h"
+//#include "net_message.h"
+//#include "net_sessionmessage.h"
+//#include "net_module_messagehandler.h"
 
 // forward declaration(s)
 class Net_SessionMessage;

@@ -7,13 +7,13 @@
             attributeFormDefault="unqualified">
 
   <!-- include chance_dice schema -->
-  <xsd:include schemaLocation="rpg_dice.xsd"/>
+  <xsd:include schemaLocation="../chance/dice/rpg_dice.xsd"/>
   <!-- include common schema -->
-  <xsd:include schemaLocation="rpg_common.xsd"/>
+  <xsd:include schemaLocation="../common/rpg_common.xsd"/>
   <!-- include common schema -->
-  <xsd:include schemaLocation="rpg_common_environment.xsd"/>
+  <xsd:include schemaLocation="../common/rpg_common_environment.xsd"/>
   <!-- include character schema -->
-  <xsd:include schemaLocation="rpg_character.xsd"/>
+  <xsd:include schemaLocation="../character/rpg_character.xsd"/>
 
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
 <!--   import chance_dice schema (as declared above) -->

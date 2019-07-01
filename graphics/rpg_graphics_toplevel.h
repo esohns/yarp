@@ -26,7 +26,7 @@
 #include "SDL.h"
 
 #include "rpg_graphics_cursor.h"
-#include "rpg_graphics_exports.h"
+//#include "rpg_graphics_exports.h"
 #include "rpg_graphics_font.h"
 #include "rpg_graphics_image.h"
 #include "rpg_graphics_sprite.h"
@@ -38,9 +38,11 @@
 /**
   @author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Graphics_Export RPG_Graphics_TopLevel
+class RPG_Graphics_TopLevel
  : public RPG_Graphics_SDLWindowBase
 {
+  typedef RPG_Graphics_SDLWindowBase inherited;
+
  public:
   RPG_Graphics_TopLevel(const RPG_Graphics_Size_t&,           // size
                         const RPG_Graphics_GraphicTypeUnion&, // (element) type
@@ -65,11 +67,9 @@ class RPG_Graphics_Export RPG_Graphics_TopLevel
   RPG_Graphics_InterfaceElements_t myElementGraphics;
 
  private:
-  typedef RPG_Graphics_SDLWindowBase inherited;
-
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TopLevel());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TopLevel(const RPG_Graphics_TopLevel&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TopLevel& operator=(const RPG_Graphics_TopLevel&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TopLevel())
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TopLevel(const RPG_Graphics_TopLevel&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TopLevel& operator=(const RPG_Graphics_TopLevel&))
 
   // helper methods
   bool loadGraphics(const RPG_Graphics_GraphicTypeUnion&); // (element) type

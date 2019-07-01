@@ -25,20 +25,16 @@
 #include "ace/Message_Block.h"
 
 #include "stream_common.h"
+#include "stream_cachedmessageallocatorheap_base.h"
 #include "stream_configuration.h"
 #include "stream_session_message_base.h"
+#include "stream_messageallocatorheap_base.h"
 
 #include "rpg_net_protocol_common.h"
 
 // forward declaratation(s)
 class ACE_Allocator;
 class RPG_Net_Protocol_Message;
-template <ACE_SYNCH_DECL,
-          typename AllocatorConfigurationType,
-          typename ControlMessageType,
-          typename DataMessageType,
-          typename SessionMessageType>
-class Stream_MessageAllocatorHeapBase_T;
 
 class RPG_Net_Protocol_SessionMessage
  : public Stream_SessionMessageBase_T<struct Stream_AllocatorConfiguration,
@@ -57,6 +53,9 @@ class RPG_Net_Protocol_SessionMessage
                                                  Stream_ControlMessage_t,
                                                  RPG_Net_Protocol_Message,
                                                  RPG_Net_Protocol_SessionMessage>;
+  friend class Stream_CachedMessageAllocatorHeapBase_T<Stream_ControlMessage_t,
+                                                       RPG_Net_Protocol_Message,
+                                                       RPG_Net_Protocol_SessionMessage>;
 
  public:
   // *NOTE*: assumes responsibility for the second argument !

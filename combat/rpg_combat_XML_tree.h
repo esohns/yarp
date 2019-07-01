@@ -92,11 +92,11 @@ class RPG_Combat_Damage_XMLTree_Type;
 
 #include <xsd/cxx/tree/istream-fwd.hxx>
 
-#include "rpg_dice_XML_tree.h"
+#include "../chance/dice/rpg_dice_XML_tree.h"
 
-#include "rpg_common_XML_tree.h"
+#include "../common/rpg_common_XML_tree.h"
 
-#include "rpg_magic_XML_tree.h"
+#include "../magic/rpg_magic_XML_tree.h"
 
 class RPG_Combat_AttackForm_XMLTree_Type: public ::xml_schema::string
 {

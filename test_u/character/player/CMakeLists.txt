@@ -21,10 +21,10 @@ elseif (WIN32)
                      $ENV{LIB_ROOT}/gtk2/include)
 endif ()
 
-include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src)
-include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log)
-include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui)
-include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/gtk)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src/log)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src/ui)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src/ui/gtk)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../chance/dice
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../common
@@ -44,7 +44,7 @@ set (EXECUTABLE character_parser)
 set (${EXECUTABLE}_SRCS
      character_parser.cpp)
 
-set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS DATADIR="/usr/local/share/RPG/config")
+set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG\"")
 
 # add_definitions(-DDATADIR="/usr/local/share/RPG/config")
 

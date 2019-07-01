@@ -62,14 +62,15 @@ if %ERRORLEVEL% NEQ 0 (
 @rem *NOTE*: xsdcxx improperly rearranges the included headers from the map file
 @rem --> move a repaired version back into the project directory
 @rem *IMPORTANT NOTE*: needs to be updated after every change
-copy /Y rpg_combat_XML_types.h .\.. >NUL 2>&1
-if %ERRORLEVEL% NEQ 0 (
- echo failed to copy header file^, exiting
- set RC=%ERRORLEVEL%
- goto Failed
-) else (
- echo copied header file^, continuing
-)
+@rem copy /Y rpg_combat_XML_types.h .\.. >NUL 2>&1
+@rem if %ERRORLEVEL% NEQ 0 (
+@rem echo failed to copy header file^, exiting
+@rem set RC=%ERRORLEVEL%
+@rem goto Failed
+@rem ) else (
+@rem echo copied header file^, continuing
+@rem )
+
 @rem generate "XMLSchema" namespace include file (tree)
 @rem "%XsdEXE%" cxx-tree --char-type char --output-dir .\.. --generate-serialization --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --generate-xml-schema --hxx-suffix .h --show-anonymous --show-sloc ..\rpg_XMLSchema_XML_tree.xsd
 @rem "%XsdEXE%" cxx-tree --char-type char --output-dir .\.. --generate-serialization --generate-xml-schema --hxx-suffix .h --show-anonymous --show-sloc ..\rpg_XMLSchema_XML_tree.xsd

@@ -70,8 +70,8 @@ RPG_Engine_Level::~RPG_Engine_Level()
 }
 
 void
-RPG_Engine_Level::create(const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
-                         RPG_Engine_Level_t& level_out)
+RPG_Engine_Level::create(const struct RPG_Map_FloorPlan_Configuration& mapConfig_in,
+                         struct RPG_Engine_LevelData& level_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::create"));
 
@@ -90,7 +90,7 @@ RPG_Engine_Level::create(const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
       RPG_ENGINE_ENVIRONMENT_DEF_TIMEOFDAY;
 
   level_out.metadata.spawns.clear();
-  RPG_Engine_Spawn_t default_spawn;
+  struct RPG_Engine_Spawn default_spawn;
   default_spawn.spawn.type = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENCOUNTER_DEF_TYPE);
   default_spawn.spawn.interval.seconds = RPG_ENGINE_ENCOUNTER_DEF_TIMER_INTERVAL;
   default_spawn.spawn.interval.u_seconds = 0;
@@ -118,7 +118,7 @@ RPG_Engine_Level::create(const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
 bool
 RPG_Engine_Level::load(const std::string& filename_in,
                        const std::string& schemaRepository_in,
-                       RPG_Engine_Level_t& level_out)
+                       struct RPG_Engine_LevelData& level_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::load"));
 
@@ -278,7 +278,7 @@ RPG_Engine_Level::load(const std::string& filename_in,
 
 bool
 RPG_Engine_Level::save(const std::string& filename_in,
-                       const RPG_Engine_Level_t& level_in)
+                       const struct RPG_Engine_LevelData& level_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::save"));
 
@@ -479,9 +479,9 @@ RPG_Engine_Level::save(const std::string& filename_in,
 }
 
 void
-RPG_Engine_Level::random(const RPG_Engine_LevelMetaData_t& metaData_in,
-                         const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
-                         RPG_Engine_Level_t& level_out)
+RPG_Engine_Level::random(const struct RPG_Engine_LevelMetaData& metaData_in,
+                         const struct RPG_Map_FloorPlan_Configuration& mapConfig_in,
+                         struct RPG_Engine_LevelData& level_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::random"));
 
@@ -624,7 +624,7 @@ RPG_Engine_Level::random(const RPG_Engine_LevelMetaData_t& metaData_in,
                                     result);
     number = (result.front() - 1);
 
-    RPG_Engine_Spawn_t spawn;
+    struct RPG_Engine_Spawn spawn;
     RPG_Monster_ListConstIterator_t iterator;
     bool found = false;
     while (level_out.metadata.spawns.size() < number)
@@ -697,7 +697,7 @@ RPG_Engine_Level::random(const RPG_Engine_LevelMetaData_t& metaData_in,
 }
 
 void
-RPG_Engine_Level::print(const RPG_Engine_Level_t& level_in)
+RPG_Engine_Level::print(const struct RPG_Engine_LevelData& level_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::print"));
 
@@ -741,7 +741,7 @@ RPG_Engine_Level::print(const RPG_Engine_Level_t& level_in)
 }
 
 void
-RPG_Engine_Level::init(const RPG_Engine_Level_t& level_in)
+RPG_Engine_Level::init(const struct RPG_Engine_LevelData& level_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::init"));
 
@@ -754,7 +754,7 @@ RPG_Engine_Level::save(const std::string& filename_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::save"));
 
-  RPG_Engine_Level_t level;
+  struct RPG_Engine_LevelData level;
   level.map = inherited::myMap;
   level.metadata = myMetaData;
   if (!RPG_Engine_Level::save(filename_in,
@@ -769,12 +769,12 @@ RPG_Engine_Level::dump_state() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::dump_state"));
 
-  RPG_Engine_Level_t level = {myMetaData, inherited::myMap};
+  struct RPG_Engine_LevelData level = {myMetaData, inherited::myMap};
 
   RPG_Engine_Level::print(level);
 }
 
-RPG_Engine_LevelMetaData_t
+struct RPG_Engine_LevelMetaData
 RPG_Engine_Level::getMetaData() const
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::getMetaData"));
@@ -783,12 +783,12 @@ RPG_Engine_Level::getMetaData() const
 }
 
 bool
-RPG_Engine_Level::handleDoor(const RPG_Map_Position_t& position_in,
-                             const bool& open_in)
+RPG_Engine_Level::handleDoor (const RPG_Map_Position_t& position_in,
+                              bool open_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::handleDoor"));
 
-  RPG_Map_Door_t position_door;
+  struct RPG_Map_Door position_door;
   position_door.position = position_in;
   position_door.outside = RPG_MAP_DIRECTION_INVALID;
   position_door.state = RPG_MAP_DOORSTATE_INVALID;
@@ -859,8 +859,8 @@ RPG_Engine_Level::handleDoor(const RPG_Map_Position_t& position_in,
 
   // *WARNING*: set iterators are CONST for a good reason !
   // --> (but we know what we're doing)...
-  (const_cast<RPG_Map_Door_t&>(*iterator)).state = (open_in ? DOORSTATE_OPEN
-                                                            : DOORSTATE_CLOSED);
+  (const_cast<struct RPG_Map_Door&>(*iterator)).state = (open_in ? DOORSTATE_OPEN
+                                                                 : DOORSTATE_CLOSED);
 
   return true;
 }
@@ -893,7 +893,7 @@ RPG_Engine_Level::findPath(const RPG_Map_Position_t& start_in,
 }
 
 RPG_Engine_Level_XMLTree_Type*
-RPG_Engine_Level::levelToLevelXML(const RPG_Engine_Level_t& level_in)
+RPG_Engine_Level::levelToLevelXML(const struct RPG_Engine_LevelData& level_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::levelToLevelXML"));
 
@@ -914,7 +914,7 @@ RPG_Engine_Level::levelToLevelXML(const RPG_Engine_Level_t& level_in)
   ACE_NEW_NORETURN(level_p,
                    RPG_Engine_Level_XMLTree_Type(level_in.metadata.name,
                                                  environment,
-                                                 RPG_Map_Common_Tools::map2String(level_in.map),
+                                                 RPG_Map_Common_Tools::toString(level_in.map),
                                                  level_in.metadata.max_num_spawned));
   if (!level_p)
   {
@@ -947,13 +947,13 @@ RPG_Engine_Level::levelToLevelXML(const RPG_Engine_Level_t& level_in)
   return level_p;
 }
 
-RPG_Engine_Level_t
+struct RPG_Engine_LevelData
 RPG_Engine_Level::levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type& level_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Level::levelXMLToLevel"));
 
-	// init return value
-  RPG_Engine_Level_t result;
+  // init return value
+  struct RPG_Engine_LevelData result;
 
   result.metadata.name = level_in.name();
 
@@ -985,7 +985,7 @@ RPG_Engine_Level::levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type& level_in)
     ACE_DEBUG((LM_WARNING,
                ACE_TEXT("environment.outdoors not set (assuming \"false\"), continuing\n")));
 
-  RPG_Engine_Spawn_t spawn;
+  struct RPG_Engine_Spawn spawn;
   const RPG_Engine_Level_XMLTree_Type::spawn_sequence& spawns =
       level_in.spawn();
   for (RPG_Engine_Level_XMLTree_Type::spawn_const_iterator iterator =

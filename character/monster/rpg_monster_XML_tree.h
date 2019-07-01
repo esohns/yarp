@@ -36,7 +36,6 @@
 
 // Begin prologue.
 //
-#include "rpg_monster_exports.h"
 //
 // End prologue.
 
@@ -105,21 +104,21 @@ class RPG_Monster_Dictionary_XMLTree_Type;
 
 #include <xsd/cxx/tree/istream-fwd.hxx>
 
-#include "rpg_dice_XML_tree.h"
+#include "../../chance/dice/rpg_dice_XML_tree.h"
 
-#include "rpg_common_XML_tree.h"
+#include "../../common/rpg_common_XML_tree.h"
 
-#include "rpg_common_environment_XML_tree.h"
+#include "../../common/rpg_common_environment_XML_tree.h"
 
-#include "rpg_magic_XML_tree.h"
+#include "../../magic/rpg_magic_XML_tree.h"
 
-#include "rpg_item_XML_tree.h"
+#include "../../item/rpg_item_XML_tree.h"
 
-#include "rpg_combat_XML_tree.h"
+#include "../../combat/rpg_combat_XML_tree.h"
 
-#include "rpg_player_XML_tree.h"
+#include "../player/rpg_player_XML_tree.h"
 
-class RPG_Monster_Export RPG_Monster_Size_XMLTree_Type: public ::xml_schema::type
+class RPG_Monster_Size_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // size
@@ -195,16 +194,14 @@ class RPG_Monster_Export RPG_Monster_Size_XMLTree_Type: public ::xml_schema::typ
   ::xsd::cxx::tree::one< isTall_type > isTall_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_Size_XMLTree_Type&, const RPG_Monster_Size_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_Size_XMLTree_Type&, const RPG_Monster_Size_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_NaturalArmorClass_XMLTree_Type: public ::xml_schema::type
+class RPG_Monster_NaturalArmorClass_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // normal
@@ -291,16 +288,14 @@ class RPG_Monster_Export RPG_Monster_NaturalArmorClass_XMLTree_Type: public ::xm
   ::xsd::cxx::tree::one< flatFooted_type > flatFooted_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_NaturalArmorClass_XMLTree_Type&, const RPG_Monster_NaturalArmorClass_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_NaturalArmorClass_XMLTree_Type&, const RPG_Monster_NaturalArmorClass_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_SpecialPropertyTypeUnion_XMLTree_Type: public ::xml_schema::string
+class RPG_Monster_SpecialPropertyTypeUnion_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -440,7 +435,7 @@ class RPG_Monster_Export RPG_Monster_SpecialPropertyTypeUnion_XMLTree_Type: publ
   static const value _xsd_RPG_Monster_SpecialPropertyTypeUnion_XMLTree_Type_indexes_[82];
 };
 
-class RPG_Monster_Export RPG_Monster_SpecialBaseProperties_XMLTree_Type: public ::xml_schema::type
+class RPG_Monster_SpecialBaseProperties_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // abilityClass
@@ -558,16 +553,14 @@ class RPG_Monster_Export RPG_Monster_SpecialBaseProperties_XMLTree_Type: public 
   usage_optional usage_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_SpecialBaseProperties_XMLTree_Type&, const RPG_Monster_SpecialBaseProperties_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_SpecialBaseProperties_XMLTree_Type&, const RPG_Monster_SpecialBaseProperties_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_NaturalWeapon_XMLTree_Type: public ::xml_schema::string
+class RPG_Monster_NaturalWeapon_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -640,7 +633,7 @@ class RPG_Monster_Export RPG_Monster_NaturalWeapon_XMLTree_Type: public ::xml_sc
   static const value _xsd_RPG_Monster_NaturalWeapon_XMLTree_Type_indexes_[15];
 };
 
-class RPG_Monster_Export RPG_Monster_WeaponTypeUnion_XMLTree_Type: public ::xml_schema::string
+class RPG_Monster_WeaponTypeUnion_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -867,7 +860,7 @@ class RPG_Monster_Export RPG_Monster_WeaponTypeUnion_XMLTree_Type: public ::xml_
   static const value _xsd_RPG_Monster_WeaponTypeUnion_XMLTree_Type_indexes_[169];
 };
 
-class RPG_Monster_Export RPG_Monster_SpecialDefensePreCondition_XMLTree_Type: public ::xml_schema::type
+class RPG_Monster_SpecialDefensePreCondition_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // weaponType
@@ -979,16 +972,14 @@ class RPG_Monster_Export RPG_Monster_SpecialDefensePreCondition_XMLTree_Type: pu
   ::xsd::cxx::tree::one< isMagicalWeapon_type > isMagicalWeapon_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_SpecialDefensePreCondition_XMLTree_Type&, const RPG_Monster_SpecialDefensePreCondition_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_SpecialDefensePreCondition_XMLTree_Type&, const RPG_Monster_SpecialDefensePreCondition_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_DefenseAction_XMLTree_Type: public ::xml_schema::type
+class RPG_Monster_DefenseAction_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // preCondition
@@ -1090,16 +1081,14 @@ class RPG_Monster_Export RPG_Monster_DefenseAction_XMLTree_Type: public ::xml_sc
   ranged_optional ranged_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_DefenseAction_XMLTree_Type&, const RPG_Monster_DefenseAction_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_DefenseAction_XMLTree_Type&, const RPG_Monster_DefenseAction_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_SpecialDefenseProperties_XMLTree_Type: public ::RPG_Monster_SpecialBaseProperties_XMLTree_Type
+class RPG_Monster_SpecialDefenseProperties_XMLTree_Type: public ::RPG_Monster_SpecialBaseProperties_XMLTree_Type
 {
   public:
   // action
@@ -1159,16 +1148,14 @@ class RPG_Monster_Export RPG_Monster_SpecialDefenseProperties_XMLTree_Type: publ
   action_sequence action_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_SpecialDefenseProperties_XMLTree_Type&, const RPG_Monster_SpecialDefenseProperties_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_SpecialDefenseProperties_XMLTree_Type&, const RPG_Monster_SpecialDefenseProperties_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_AttackAction_XMLTree_Type: public ::xml_schema::type
+class RPG_Monster_AttackAction_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // weapon
@@ -1401,16 +1388,14 @@ class RPG_Monster_Export RPG_Monster_AttackAction_XMLTree_Type: public ::xml_sch
   ::xsd::cxx::tree::one< fullAttackIncludesNextAction_type > fullAttackIncludesNextAction_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_AttackAction_XMLTree_Type&, const RPG_Monster_AttackAction_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_AttackAction_XMLTree_Type&, const RPG_Monster_AttackAction_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_Attack_XMLTree_Type: public ::xml_schema::type
+class RPG_Monster_Attack_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // baseAttackBonus
@@ -1535,16 +1520,14 @@ class RPG_Monster_Export RPG_Monster_Attack_XMLTree_Type: public ::xml_schema::t
   ::xsd::cxx::tree::one< actionsAreInclusive_type > actionsAreInclusive_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_Attack_XMLTree_Type&, const RPG_Monster_Attack_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_Attack_XMLTree_Type&, const RPG_Monster_Attack_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_ActionTrigger_XMLTree_Type: public ::xml_schema::type
+class RPG_Monster_ActionTrigger_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // weapon
@@ -1618,16 +1601,14 @@ class RPG_Monster_Export RPG_Monster_ActionTrigger_XMLTree_Type: public ::xml_sc
   ::xsd::cxx::tree::one< numHits_type > numHits_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_ActionTrigger_XMLTree_Type&, const RPG_Monster_ActionTrigger_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_ActionTrigger_XMLTree_Type&, const RPG_Monster_ActionTrigger_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_SpecialAttackPreCondition_XMLTree_Type: public ::xml_schema::type
+class RPG_Monster_SpecialAttackPreCondition_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // action
@@ -1813,16 +1794,14 @@ class RPG_Monster_Export RPG_Monster_SpecialAttackPreCondition_XMLTree_Type: pub
   check_optional check_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_SpecialAttackPreCondition_XMLTree_Type&, const RPG_Monster_SpecialAttackPreCondition_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_SpecialAttackPreCondition_XMLTree_Type&, const RPG_Monster_SpecialAttackPreCondition_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_SpecialAttackProperties_XMLTree_Type: public ::RPG_Monster_SpecialBaseProperties_XMLTree_Type
+class RPG_Monster_SpecialAttackProperties_XMLTree_Type: public ::RPG_Monster_SpecialBaseProperties_XMLTree_Type
 {
   public:
   // preCondition
@@ -1906,16 +1885,14 @@ class RPG_Monster_Export RPG_Monster_SpecialAttackProperties_XMLTree_Type: publi
   ::xsd::cxx::tree::one< action_type > action_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_SpecialAttackProperties_XMLTree_Type&, const RPG_Monster_SpecialAttackProperties_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_SpecialAttackProperties_XMLTree_Type&, const RPG_Monster_SpecialAttackProperties_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type: public ::xml_schema::type
+class RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // targetCondition
@@ -2017,16 +1994,14 @@ class RPG_Monster_Export RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type: pu
   check_optional check_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type&, const RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type&, const RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_SummonMonster_XMLTree_Type: public ::xml_schema::type
+class RPG_Monster_SummonMonster_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // name
@@ -2142,16 +2117,14 @@ class RPG_Monster_Export RPG_Monster_SummonMonster_XMLTree_Type: public ::xml_sc
   ::xsd::cxx::tree::one< actionsAreInclusive_type > actionsAreInclusive_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_SummonMonster_XMLTree_Type&, const RPG_Monster_SummonMonster_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_SummonMonster_XMLTree_Type&, const RPG_Monster_SummonMonster_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_SpecialAbilityProperties_XMLTree_Type: public ::RPG_Monster_SpecialBaseProperties_XMLTree_Type
+class RPG_Monster_SpecialAbilityProperties_XMLTree_Type: public ::RPG_Monster_SpecialBaseProperties_XMLTree_Type
 {
   public:
   // preCondition
@@ -2269,16 +2242,14 @@ class RPG_Monster_Export RPG_Monster_SpecialAbilityProperties_XMLTree_Type: publ
   ranged_optional ranged_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_SpecialAbilityProperties_XMLTree_Type&, const RPG_Monster_SpecialAbilityProperties_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_SpecialAbilityProperties_XMLTree_Type&, const RPG_Monster_SpecialAbilityProperties_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_SavingThrowModifiers_XMLTree_Type: public ::xml_schema::type
+class RPG_Monster_SavingThrowModifiers_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // fortitude
@@ -2365,16 +2336,14 @@ class RPG_Monster_Export RPG_Monster_SavingThrowModifiers_XMLTree_Type: public :
   ::xsd::cxx::tree::one< will_type > will_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_SavingThrowModifiers_XMLTree_Type&, const RPG_Monster_SavingThrowModifiers_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_SavingThrowModifiers_XMLTree_Type&, const RPG_Monster_SavingThrowModifiers_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_Organization_XMLTree_Type: public ::xml_schema::string
+class RPG_Monster_Organization_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -2457,7 +2426,7 @@ class RPG_Monster_Export RPG_Monster_Organization_XMLTree_Type: public ::xml_sch
   static const value _xsd_RPG_Monster_Organization_XMLTree_Type_indexes_[25];
 };
 
-class RPG_Monster_Export RPG_Monster_OrganizationSlaverStep_XMLTree_Type: public ::xml_schema::type
+class RPG_Monster_OrganizationSlaverStep_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // name
@@ -2537,16 +2506,14 @@ class RPG_Monster_Export RPG_Monster_OrganizationSlaverStep_XMLTree_Type: public
   ::xsd::cxx::tree::one< range_type > range_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_OrganizationSlaverStep_XMLTree_Type&, const RPG_Monster_OrganizationSlaverStep_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_OrganizationSlaverStep_XMLTree_Type&, const RPG_Monster_OrganizationSlaverStep_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_OrganizationStep_XMLTree_Type: public ::xml_schema::type
+class RPG_Monster_OrganizationStep_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // type
@@ -2644,16 +2611,14 @@ class RPG_Monster_Export RPG_Monster_OrganizationStep_XMLTree_Type: public ::xml
   slaves_sequence slaves_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_OrganizationStep_XMLTree_Type&, const RPG_Monster_OrganizationStep_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_OrganizationStep_XMLTree_Type&, const RPG_Monster_OrganizationStep_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_Organizations_XMLTree_Type: public ::xml_schema::type
+class RPG_Monster_Organizations_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // step
@@ -2711,16 +2676,14 @@ class RPG_Monster_Export RPG_Monster_Organizations_XMLTree_Type: public ::xml_sc
   step_sequence step_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_Organizations_XMLTree_Type&, const RPG_Monster_Organizations_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_Organizations_XMLTree_Type&, const RPG_Monster_Organizations_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_AdvancementStep_XMLTree_Type: public ::xml_schema::type
+class RPG_Monster_AdvancementStep_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // size
@@ -2800,16 +2763,14 @@ class RPG_Monster_Export RPG_Monster_AdvancementStep_XMLTree_Type: public ::xml_
   ::xsd::cxx::tree::one< range_type > range_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_AdvancementStep_XMLTree_Type&, const RPG_Monster_AdvancementStep_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_AdvancementStep_XMLTree_Type&, const RPG_Monster_AdvancementStep_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_Advancement_XMLTree_Type: public ::xml_schema::type
+class RPG_Monster_Advancement_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // step
@@ -2867,16 +2828,14 @@ class RPG_Monster_Export RPG_Monster_Advancement_XMLTree_Type: public ::xml_sche
   step_sequence step_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_Advancement_XMLTree_Type&, const RPG_Monster_Advancement_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_Advancement_XMLTree_Type&, const RPG_Monster_Advancement_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_PropertiesXML_XMLTree_Type: public ::xml_schema::type
+class RPG_Monster_PropertiesXML_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // name
@@ -3375,16 +3334,14 @@ class RPG_Monster_Export RPG_Monster_PropertiesXML_XMLTree_Type: public ::xml_sc
   ::xsd::cxx::tree::one< levelAdjustment_type > levelAdjustment_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_PropertiesXML_XMLTree_Type&, const RPG_Monster_PropertiesXML_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_PropertiesXML_XMLTree_Type&, const RPG_Monster_PropertiesXML_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_StateBase_XMLTree_Type: public ::RPG_Player_StateBase_XMLTree_Type
+class RPG_Monster_StateBase_XMLTree_Type: public ::RPG_Player_StateBase_XMLTree_Type
 {
   public:
   // gold
@@ -3484,16 +3441,14 @@ class RPG_Monster_Export RPG_Monster_StateBase_XMLTree_Type: public ::RPG_Player
   ::xsd::cxx::tree::one< maxHP_type > maxHP_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_StateBase_XMLTree_Type&, const RPG_Monster_StateBase_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_StateBase_XMLTree_Type&, const RPG_Monster_StateBase_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_State_XMLTree_Type: public ::RPG_Monster_StateBase_XMLTree_Type
+class RPG_Monster_State_XMLTree_Type: public ::RPG_Monster_StateBase_XMLTree_Type
 {
   public:
   // type
@@ -3561,16 +3516,14 @@ class RPG_Monster_Export RPG_Monster_State_XMLTree_Type: public ::RPG_Monster_St
   ::xsd::cxx::tree::one< type_type > type_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_State_XMLTree_Type&, const RPG_Monster_State_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_State_XMLTree_Type&, const RPG_Monster_State_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_Spawn_XMLTree_Type: public ::xml_schema::type
+class RPG_Monster_Spawn_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // type
@@ -3701,16 +3654,14 @@ class RPG_Monster_Export RPG_Monster_Spawn_XMLTree_Type: public ::xml_schema::ty
   ::xsd::cxx::tree::one< amble_probability_type > amble_probability_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_Spawn_XMLTree_Type&, const RPG_Monster_Spawn_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_Spawn_XMLTree_Type&, const RPG_Monster_Spawn_XMLTree_Type&);
 
 
-class RPG_Monster_Export RPG_Monster_Dictionary_XMLTree_Type: public ::xml_schema::type
+class RPG_Monster_Dictionary_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // monster
@@ -3768,146 +3719,111 @@ class RPG_Monster_Export RPG_Monster_Dictionary_XMLTree_Type: public ::xml_schem
   monster_sequence monster_;
 };
 
-RPG_Monster_Export
 bool
 operator== (const RPG_Monster_Dictionary_XMLTree_Type&, const RPG_Monster_Dictionary_XMLTree_Type&);
 
-RPG_Monster_Export
 bool
 operator!= (const RPG_Monster_Dictionary_XMLTree_Type&, const RPG_Monster_Dictionary_XMLTree_Type&);
 
 
 #include <iosfwd>
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_Size_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_NaturalArmorClass_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Monster_SpecialPropertyTypeUnion_XMLTree_Type::value);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_SpecialPropertyTypeUnion_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_SpecialBaseProperties_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Monster_NaturalWeapon_XMLTree_Type::value);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_NaturalWeapon_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Monster_WeaponTypeUnion_XMLTree_Type::value);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_WeaponTypeUnion_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_SpecialDefensePreCondition_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_DefenseAction_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_SpecialDefenseProperties_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_AttackAction_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_Attack_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_ActionTrigger_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_SpecialAttackPreCondition_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_SpecialAttackProperties_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_SummonMonster_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_SpecialAbilityProperties_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_SavingThrowModifiers_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Monster_Organization_XMLTree_Type::value);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_Organization_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_OrganizationSlaverStep_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_OrganizationStep_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_Organizations_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_AdvancementStep_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_Advancement_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_PropertiesXML_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_StateBase_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_State_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_Spawn_XMLTree_Type&);
 
-RPG_Monster_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Monster_Dictionary_XMLTree_Type&);
 
@@ -3920,20 +3836,17 @@ operator<< (::std::ostream&, const RPG_Monster_Dictionary_XMLTree_Type&);
 // Parse a URI or a local file.
 //
 
-RPG_Monster_Export
 ::std::auto_ptr< ::RPG_Monster_Dictionary_XMLTree_Type >
 monsterDictionary (const ::std::string& uri,
                    ::xml_schema::flags f = 0,
                    const ::xml_schema::properties& p = ::xml_schema::properties ());
 
-RPG_Monster_Export
 ::std::auto_ptr< ::RPG_Monster_Dictionary_XMLTree_Type >
 monsterDictionary (const ::std::string& uri,
                    ::xml_schema::error_handler& eh,
                    ::xml_schema::flags f = 0,
                    const ::xml_schema::properties& p = ::xml_schema::properties ());
 
-RPG_Monster_Export
 ::std::auto_ptr< ::RPG_Monster_Dictionary_XMLTree_Type >
 monsterDictionary (const ::std::string& uri,
                    ::xercesc::DOMErrorHandler& eh,
@@ -3943,34 +3856,29 @@ monsterDictionary (const ::std::string& uri,
 // Parse std::istream.
 //
 
-RPG_Monster_Export
 ::std::auto_ptr< ::RPG_Monster_Dictionary_XMLTree_Type >
 monsterDictionary (::std::istream& is,
                    ::xml_schema::flags f = 0,
                    const ::xml_schema::properties& p = ::xml_schema::properties ());
 
-RPG_Monster_Export
 ::std::auto_ptr< ::RPG_Monster_Dictionary_XMLTree_Type >
 monsterDictionary (::std::istream& is,
                    ::xml_schema::error_handler& eh,
                    ::xml_schema::flags f = 0,
                    const ::xml_schema::properties& p = ::xml_schema::properties ());
 
-RPG_Monster_Export
 ::std::auto_ptr< ::RPG_Monster_Dictionary_XMLTree_Type >
 monsterDictionary (::std::istream& is,
                    ::xercesc::DOMErrorHandler& eh,
                    ::xml_schema::flags f = 0,
                    const ::xml_schema::properties& p = ::xml_schema::properties ());
 
-RPG_Monster_Export
 ::std::auto_ptr< ::RPG_Monster_Dictionary_XMLTree_Type >
 monsterDictionary (::std::istream& is,
                    const ::std::string& id,
                    ::xml_schema::flags f = 0,
                    const ::xml_schema::properties& p = ::xml_schema::properties ());
 
-RPG_Monster_Export
 ::std::auto_ptr< ::RPG_Monster_Dictionary_XMLTree_Type >
 monsterDictionary (::std::istream& is,
                    const ::std::string& id,
@@ -3978,7 +3886,6 @@ monsterDictionary (::std::istream& is,
                    ::xml_schema::flags f = 0,
                    const ::xml_schema::properties& p = ::xml_schema::properties ());
 
-RPG_Monster_Export
 ::std::auto_ptr< ::RPG_Monster_Dictionary_XMLTree_Type >
 monsterDictionary (::std::istream& is,
                    const ::std::string& id,
@@ -3989,20 +3896,17 @@ monsterDictionary (::std::istream& is,
 // Parse xercesc::InputSource.
 //
 
-RPG_Monster_Export
 ::std::auto_ptr< ::RPG_Monster_Dictionary_XMLTree_Type >
 monsterDictionary (::xercesc::InputSource& is,
                    ::xml_schema::flags f = 0,
                    const ::xml_schema::properties& p = ::xml_schema::properties ());
 
-RPG_Monster_Export
 ::std::auto_ptr< ::RPG_Monster_Dictionary_XMLTree_Type >
 monsterDictionary (::xercesc::InputSource& is,
                    ::xml_schema::error_handler& eh,
                    ::xml_schema::flags f = 0,
                    const ::xml_schema::properties& p = ::xml_schema::properties ());
 
-RPG_Monster_Export
 ::std::auto_ptr< ::RPG_Monster_Dictionary_XMLTree_Type >
 monsterDictionary (::xercesc::InputSource& is,
                    ::xercesc::DOMErrorHandler& eh,
@@ -4012,13 +3916,11 @@ monsterDictionary (::xercesc::InputSource& is,
 // Parse xercesc::DOMDocument.
 //
 
-RPG_Monster_Export
 ::std::auto_ptr< ::RPG_Monster_Dictionary_XMLTree_Type >
 monsterDictionary (const ::xercesc::DOMDocument& d,
                    ::xml_schema::flags f = 0,
                    const ::xml_schema::properties& p = ::xml_schema::properties ());
 
-RPG_Monster_Export
 ::std::auto_ptr< ::RPG_Monster_Dictionary_XMLTree_Type >
 monsterDictionary (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
                    ::xml_schema::flags f = 0,
@@ -4032,162 +3934,124 @@ monsterDictionary (::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >& d,
 
 #include <xsd/cxx/xml/dom/auto-ptr.hxx>
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_Size_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_NaturalArmorClass_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_SpecialPropertyTypeUnion_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Monster_SpecialPropertyTypeUnion_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Monster_SpecialPropertyTypeUnion_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_SpecialBaseProperties_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_NaturalWeapon_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Monster_NaturalWeapon_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Monster_NaturalWeapon_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_WeaponTypeUnion_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Monster_WeaponTypeUnion_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Monster_WeaponTypeUnion_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_SpecialDefensePreCondition_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_DefenseAction_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_SpecialDefenseProperties_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_AttackAction_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_Attack_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_ActionTrigger_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_SpecialAttackPreCondition_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_SpecialAttackProperties_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_SummonMonster_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_SpecialAbilityProperties_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_SavingThrowModifiers_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_Organization_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Monster_Organization_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Monster_Organization_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_OrganizationSlaverStep_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_OrganizationStep_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_Organizations_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_AdvancementStep_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_Advancement_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_PropertiesXML_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_StateBase_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_State_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_Spawn_XMLTree_Type&);
 
-RPG_Monster_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Monster_Dictionary_XMLTree_Type&);
 
 // Serialize to std::ostream.
 //
 
-RPG_Monster_Export
 void
 monsterDictionary (::std::ostream& os,
                    const ::RPG_Monster_Dictionary_XMLTree_Type& x, 
@@ -4195,7 +4059,6 @@ monsterDictionary (::std::ostream& os,
                    const ::std::string& e = "UTF-8",
                    ::xml_schema::flags f = 0);
 
-RPG_Monster_Export
 void
 monsterDictionary (::std::ostream& os,
                    const ::RPG_Monster_Dictionary_XMLTree_Type& x, 
@@ -4204,7 +4067,6 @@ monsterDictionary (::std::ostream& os,
                    const ::std::string& e = "UTF-8",
                    ::xml_schema::flags f = 0);
 
-RPG_Monster_Export
 void
 monsterDictionary (::std::ostream& os,
                    const ::RPG_Monster_Dictionary_XMLTree_Type& x, 
@@ -4216,7 +4078,6 @@ monsterDictionary (::std::ostream& os,
 // Serialize to xercesc::XMLFormatTarget.
 //
 
-RPG_Monster_Export
 void
 monsterDictionary (::xercesc::XMLFormatTarget& ft,
                    const ::RPG_Monster_Dictionary_XMLTree_Type& x, 
@@ -4224,7 +4085,6 @@ monsterDictionary (::xercesc::XMLFormatTarget& ft,
                    const ::std::string& e = "UTF-8",
                    ::xml_schema::flags f = 0);
 
-RPG_Monster_Export
 void
 monsterDictionary (::xercesc::XMLFormatTarget& ft,
                    const ::RPG_Monster_Dictionary_XMLTree_Type& x, 
@@ -4233,7 +4093,6 @@ monsterDictionary (::xercesc::XMLFormatTarget& ft,
                    const ::std::string& e = "UTF-8",
                    ::xml_schema::flags f = 0);
 
-RPG_Monster_Export
 void
 monsterDictionary (::xercesc::XMLFormatTarget& ft,
                    const ::RPG_Monster_Dictionary_XMLTree_Type& x, 
@@ -4245,7 +4104,6 @@ monsterDictionary (::xercesc::XMLFormatTarget& ft,
 // Serialize to an existing xercesc::DOMDocument.
 //
 
-RPG_Monster_Export
 void
 monsterDictionary (::xercesc::DOMDocument& d,
                    const ::RPG_Monster_Dictionary_XMLTree_Type& x,
@@ -4254,153 +4112,123 @@ monsterDictionary (::xercesc::DOMDocument& d,
 // Serialize to a new xercesc::DOMDocument.
 //
 
-RPG_Monster_Export
 ::xml_schema::dom::auto_ptr< ::xercesc::DOMDocument >
 monsterDictionary (const ::RPG_Monster_Dictionary_XMLTree_Type& x, 
                    const ::xml_schema::namespace_infomap& m = ::xml_schema::namespace_infomap (),
                    ::xml_schema::flags f = 0);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_Size_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_NaturalArmorClass_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_SpecialPropertyTypeUnion_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_SpecialBaseProperties_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_NaturalWeapon_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_WeaponTypeUnion_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_SpecialDefensePreCondition_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_DefenseAction_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_SpecialDefenseProperties_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_AttackAction_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_Attack_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_ActionTrigger_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_SpecialAttackPreCondition_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_SpecialAttackProperties_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_SpecialAbilityPreCondition_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_SummonMonster_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_SpecialAbilityProperties_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_SavingThrowModifiers_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_Organization_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_OrganizationSlaverStep_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_OrganizationStep_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_Organizations_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_AdvancementStep_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_Advancement_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_PropertiesXML_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_StateBase_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_State_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_Spawn_XMLTree_Type&);
 
-RPG_Monster_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Monster_Dictionary_XMLTree_Type&);

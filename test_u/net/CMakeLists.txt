@@ -4,16 +4,16 @@ set (${EXECUTABLE}_SRCS
      net_callbacks.cpp
      net_callbacks.h
      net_client.cpp
+     net_client_common.h
      net_client_signalhandler.cpp
      net_client_signalhandler.h
 #    net_client_timeouthandler.cpp
 #    net_client_timeouthandler.h
-     net_common.h
      net_defines.h
      net_eventhandler.cpp
-     net_eventhandler.h
-     net_module_eventhandler.cpp
-     net_module_eventhandler.h)
+     net_eventhandler.h)
+#     net_module_eventhandler.cpp
+#     net_module_eventhandler.h)
 
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
@@ -47,9 +47,9 @@ install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 ########### next target ###############
 set (EXECUTABLE net_server)
 set (${EXECUTABLE}_SRCS
-     net_common.h
      net_defines.h
      net_server.cpp
+     net_server_common.h
      net_server_signalhandler.cpp
      net_server_signalhandler.h)
 

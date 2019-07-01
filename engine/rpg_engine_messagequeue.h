@@ -23,19 +23,23 @@
 #include "ace/Message_Queue.h"
 #include "ace/Synch_Traits.h"
 
-#include "common.h"
+#include "common_time_common.h"
 
-#include "rpg_engine_exports.h"
+//#include "rpg_engine_exports.h"
 
-class RPG_Engine_Export RPG_Engine_MessageQueue
- : public ACE_Message_Queue<ACE_MT_SYNCH, Common_TimePolicy_t>
+class RPG_Engine_MessageQueue
+ : public ACE_Message_Queue<ACE_MT_SYNCH,
+                            Common_TimePolicy_t>
 {
+  typedef ACE_Message_Queue<ACE_MT_SYNCH,
+                            Common_TimePolicy_t> inherited;
+
  public:
-  RPG_Engine_MessageQueue(const size_t&); // max number of queued items
-  virtual ~RPG_Engine_MessageQueue();
+  RPG_Engine_MessageQueue (const size_t&); // max number of queued items
+  inline virtual ~RPG_Engine_MessageQueue () {}
 
  protected:
-  // define some convenient types...
+  // convenient types
   typedef ACE_Message_Queue<ACE_MT_SYNCH,
                             Common_TimePolicy_t> MESSAGEQUEUE_TYPE;
   typedef ACE_Message_Queue_Iterator<ACE_MT_SYNCH,
@@ -46,12 +50,9 @@ class RPG_Engine_Export RPG_Engine_MessageQueue
   virtual bool is_full_i(void);
 
  private:
-  typedef ACE_Message_Queue<ACE_MT_SYNCH,
-                            Common_TimePolicy_t> inherited;
-
-  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_MessageQueue());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_MessageQueue(const RPG_Engine_MessageQueue&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_MessageQueue& operator=(const RPG_Engine_MessageQueue&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_MessageQueue())
+  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_MessageQueue(const RPG_Engine_MessageQueue&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_MessageQueue& operator=(const RPG_Engine_MessageQueue&))
 };
 
 #endif // RPG_ENGINE_MESSAGEQUEUE_H

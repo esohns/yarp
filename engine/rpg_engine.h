@@ -34,16 +34,15 @@
 
 //#include "common_icontrol.h"
 
-//#include "stream_allocatorheap.h"
+#include "stream_allocatorheap.h"
 
 #include "net_configuration.h"
-
-#include "net_client_connector_common.h"
 
 #include "rpg_map_common.h"
 #include "rpg_map_common_tools.h"
 
 #include "rpg_net_protocol_messageallocator.h"
+#include "rpg_net_protocol_network.h"
 
 #include "rpg_engine_common.h"
 #include "rpg_engine_entitymode.h"
@@ -89,16 +88,16 @@ class RPG_Engine
 
   void initialize (RPG_Engine_IClient*); // client interface handle
   // *WARNING*: DO NOT USE while the engine isRunning() !
-  void set (const RPG_Engine_Level_t&); // level
+  void set (const struct RPG_Engine_LevelData&); // level
 
   // *WARNING*: fire&forget API, added NPC (!) entities are controlled by the engine
-  RPG_Engine_EntityID_t add (RPG_Engine_Entity_t*, // entity handle
+  RPG_Engine_EntityID_t add (struct RPG_Engine_Entity*, // entity handle
                              bool = true);         // locked access ?
   void remove (const RPG_Engine_EntityID_t&); // id
   bool exists (const RPG_Engine_EntityID_t&) const; // id
   void action (const RPG_Engine_EntityID_t&, // id
-               const RPG_Engine_Action_t&,   // action
-               bool = true);                 // locked access ?
+               const struct RPG_Engine_Action&, // action
+               bool = true);                    // locked access ?
 
   // state
   bool load (const std::string&,  // FQ filename
@@ -153,7 +152,7 @@ class RPG_Engine
                  bool = true) const;           // locked access ?
 
   // map
-  RPG_Engine_LevelMetaData_t getMetaData (bool = true) const; // locked access ?
+  struct RPG_Engine_LevelMetaData getMetaData (bool = true) const; // locked access ?
   RPG_Map_Position_t getStartPosition (bool = true) const; // locked access ?
   RPG_Map_Positions_t getSeedPoints (bool = true) const; // locked access ?
   RPG_Map_Size_t getSize (bool = true) const; // locked access ?
@@ -209,10 +208,12 @@ class RPG_Engine
 
   // helper types
   typedef std::vector<std::pair<RPG_Engine_Command,
-                                RPG_Engine_ClientNotificationParameters_t> > RPG_Engine_ClientNotifications_t;
+                                struct RPG_Engine_ClientNotificationParameters> > RPG_Engine_ClientNotifications_t;
   typedef RPG_Engine_ClientNotifications_t::const_iterator RPG_Engine_ClientNotificationsConstIterator_t;
   typedef ACE_Message_Queue<ACE_MT_SYNCH,
                             Common_TimePolicy_t> MESSAGE_QUEUE_T;
+  typedef Stream_AllocatorHeap_T<ACE_MT_SYNCH,
+                                 struct Common_FlexParserAllocatorConfiguration> HEAP_ALLOCATOR_T;
 
   // atomic ID generator
   static ACE_Atomic_Op<ACE_Thread_Mutex,
@@ -222,13 +223,13 @@ class RPG_Engine
   RPG_Engine_IClient*                         client_;
   //// implement blocking wait...
   //ACE_Condition<ACE_Recursive_Thread_Mutex>   condition_;
-  RPG_Net_Protocol_Client_IConnector_t*       connector_;
+  RPG_Net_Protocol_IConnector_t*              connector_;
   RPG_Engine_Entities_t                       entities_;
-  Stream_AllocatorHeap                        heapAllocator_;
+  HEAP_ALLOCATOR_T                            heapAllocator_;
   // make API re-entrant
   mutable ACE_SYNCH_MUTEX                     lock_;
   RPG_Net_Protocol_MessageAllocator           messageAllocator_;
-  Net_SocketHandlerConfiguration_t            netConfiguration_;
+  RPG_Net_Protocol_ConnectionConfiguration    netConfiguration_;
   // *IMPORTANT NOTE*: need this ONLY to handle control messages...
   RPG_Engine_MessageQueue                     queue_;
 };

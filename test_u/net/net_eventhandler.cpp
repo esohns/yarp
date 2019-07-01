@@ -23,6 +23,8 @@
 
 #include "ace/Synch.h"
 
+#include "common_ui_common.h"
+
 #include "stream_common.h"
 
 //#include "net_message.h"
@@ -31,7 +33,7 @@
 
 #include "net_common.h"
 
-Net_EventHandler::Net_EventHandler (Net_GTK_CBData_t* CBData_in)
+Net_EventHandler::Net_EventHandler (Common_UI_CBData* CBData_in)
  : CBData_ (CBData_in)
 {
   RPG_TRACE (ACE_TEXT ("Net_EventHandler::Net_EventHandler"));
@@ -49,10 +51,11 @@ Net_EventHandler::start (Stream_SessionId_t sessionId_in,
   ACE_UNUSED_ARG (sessionData_in);
 
   ACE_ASSERT (CBData_);
+  ACE_ASSERT (CBData_->UIState);
 
-  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard (CBData_->stackLock);
+  ACE_Guard<ACE_SYNCH_MUTEX> aGuard (CBData_->UIState->lock);
 
-  CBData_->eventStack.push_back (NET_GTKEVENT_CONNECT);
+  CBData_->UIState->eventStack.insert (COMMON_UI_EVENT_CONNECT);
 }
 
 void
@@ -73,9 +76,12 @@ Net_EventHandler::end (Stream_SessionId_t sessionId_in)
 
   ACE_UNUSED_ARG (sessionId_in);
 
-  ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard (CBData_->stackLock);
+  ACE_ASSERT (CBData_);
+  ACE_ASSERT (CBData_->UIState);
 
-  CBData_->eventStack.push_back (NET_GTKEVENT_DISCONNECT);
+  ACE_Guard<ACE_SYNCH_MUTEX> aGuard (CBData_->UIState->lock);
+
+  CBData_->UIState->eventStack.insert (COMMON_UI_EVENT_DISCONNECT);
 }
 
 void

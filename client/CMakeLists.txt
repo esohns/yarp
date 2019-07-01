@@ -54,7 +54,7 @@ elseif (WIN32)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/SDL/include>)
  target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/gtk2/include>)
+                             $<BUILD_INTERFACE:${GTK_INCLUDE_DIRS}>)
 endif ()
 
 if (UNIX)
@@ -71,6 +71,13 @@ elseif (WIN32)
                               $<BUILD_INTERFACE:$ENV{LIB_ROOT}/ACE_TAO/ACE>)
  endif (DEFINED ENV{ACE_ROOT})
 endif ()
+
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/ui>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/ui/gtk>)
 
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../chance>)

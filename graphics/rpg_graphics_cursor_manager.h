@@ -21,42 +21,37 @@
 #ifndef RPG_GRAPHICS_CURSOR_MANAGER_H
 #define RPG_GRAPHICS_CURSOR_MANAGER_H
 
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-// *NOTE*: workaround quirky MSVC...
-#define NOMINMAX
-#endif
-
-#include "rpg_graphics_exports.h"
-#include "rpg_graphics_common.h"
-#include "rpg_graphics_cursor.h"
-#include "rpg_graphics_iwindow.h"
-
-#include "rpg_map_common.h"
-
-#include "rpg_common_ilock.h"
+#include <map>
+#include <limits>
 
 #include "SDL.h"
 
 #include "ace/Global_Macros.h"
 #include "ace/Singleton.h"
-#include "ace/Synch.h"
+#include "ace/Synch_Traits.h"
 
-#include <map>
-#include <limits>
+#include "common_ilock.h"
+
+#include "rpg_map_common.h"
+
+//#include "rpg_graphics_exports.h"
+#include "rpg_graphics_common.h"
+#include "rpg_graphics_cursor.h"
+#include "rpg_graphics_iwindow.h"
 
 /**
   @author Erik Sohns <erik.sohns@web.de>
  */
-class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
+class RPG_Graphics_Cursor_Manager
 {
   // singleton requires access to the ctor/dtor
   friend class ACE_Singleton<RPG_Graphics_Cursor_Manager,
-                             ACE_Recursive_Thread_Mutex>;
+                             ACE_SYNCH_MUTEX>;
 
  public:
   // init (clipping of highlight tile)
-  void init(RPG_Common_ILock*,          // screen lock interface handle
-            RPG_Graphics_IWindowBase*); // target window handle
+  void initialize(Common_ILock*,              // screen lock interface handle
+                  RPG_Graphics_IWindowBase*); // target window handle
   void reset(const bool& = false,  // update cursor BG ? : clear
              const bool& = true,   // locked access ? (debug only)
              const bool& = false); // debug ?
@@ -65,14 +60,14 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
   SDL_Rect area(const RPG_Graphics_Position_t&) const; // viewport (map coords !)
   RPG_Graphics_Position_t position(const bool& = false) const; // highlight ?
 
-	// draw cursor (and highlight)
-	void put(const RPG_Graphics_Position_t&, // cursor position
-		       const RPG_Graphics_Position_t&, // viewport (map coords !)
-           const RPG_Map_Size_t&,          // (current) map size
-           SDL_Rect&,                      // return value: "dirty" region
-					 const bool& = true,             // draw highlight ?
-					 const bool& = true,             // locked access ?
-					 const bool& = false);           // debug ?
+  // draw cursor (and highlight)
+  void put (const RPG_Graphics_Position_t&, // cursor position
+            const RPG_Graphics_Position_t&, // viewport (map coords !)
+            const RPG_Map_Size_t&,          // (current) map size
+            SDL_Rect&,                      // return value: "dirty" region
+            const bool& = true,             // draw highlight ?
+            const bool& = true,             // locked access ?
+            const bool& = false);           // debug ?
 
   void setCursor(const RPG_Graphics_Cursor&, // cursor type
                  SDL_Rect&,                  // return value: "dirty" region
@@ -93,29 +88,29 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
   void invalidateBG(const SDL_Rect* = NULL); // clip area (default: don't clip)
 
   RPG_Graphics_Position_t getHighlightBGPosition(const unsigned int& = std::numeric_limits<unsigned int>::max()) const;
-	void putHighlights(const RPG_Map_PositionList_t&,   // positions (map coords !)
-										 const RPG_Graphics_Offsets_t&,   // position(s) (screen coords !)
-										 const RPG_Graphics_Position_t&,  // viewport (map coords !)
-										 SDL_Rect&,                       // return value: "dirty" region
-										 const bool& = true,              // locked access ?
-	                   const bool& = false);            // debug ?
+  void putHighlights(const RPG_Map_PositionList_t&,   // positions (map coords !)
+                     const RPG_Graphics_Offsets_t&,   // position(s) (screen coords !)
+                     const RPG_Graphics_Position_t&,  // viewport (map coords !)
+                     SDL_Rect&,                       // return value: "dirty" region
+                     const bool& = true,              // locked access ?
+                     const bool& = false);            // debug ?
   void restoreHighlightBG(const RPG_Graphics_Position_t&, // viewport (map coords !)
-													SDL_Rect&,                      // return value: "dirty" region
-													const SDL_Rect* = NULL,         // clip area (default: don't clip)
+                          SDL_Rect&,                      // return value: "dirty" region
+                          const SDL_Rect* = NULL,         // clip area (default: don't clip)
                           const bool& = true,             // locked access ?
                           const bool& = false);           // debug ?
-	void updateHighlightBG(const RPG_Graphics_Position_t&, // viewport (map coords !)
-		                     SDL_Rect&,                      // return value: "dirty" region (debug only)
-												 const SDL_Rect* = NULL,         // clip area (default: clip to map window)
-												 const bool& = true,             // locked access ?
-												 const bool& = false);           // debug ?
+  void updateHighlightBG(const RPG_Graphics_Position_t&, // viewport (map coords !)
+                         SDL_Rect&,                      // return value: "dirty" region (debug only)
+                         const SDL_Rect* = NULL,         // clip area (default: clip to map window)
+                         const bool& = true,             // locked access ?
+                         const bool& = false);           // debug ?
   void resetHighlightBG(const RPG_Graphics_Position_t&); // reset to (single) initial position (map coords !)
 
  private:
   virtual ~RPG_Graphics_Cursor_Manager();
   RPG_Graphics_Cursor_Manager();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Cursor_Manager(const RPG_Graphics_Cursor_Manager&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Cursor_Manager& operator=(const RPG_Graphics_Cursor_Manager&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Cursor_Manager(const RPG_Graphics_Cursor_Manager&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Cursor_Manager& operator=(const RPG_Graphics_Cursor_Manager&))
 
   // helper types
   typedef std::map<RPG_Graphics_Cursor, SDL_Surface*> RPG_Graphics_Cursor_Cache_t;
@@ -143,12 +138,12 @@ class RPG_Graphics_Export RPG_Graphics_Cursor_Manager
   RPG_Graphics_TileCache_t    myHighlightBGCache;
   SDL_Surface*                myHighlightTile;
 
-  RPG_Common_ILock*           myScreenLock;
+  Common_ILock*               myScreenLock;
 };
 
 typedef ACE_Singleton<RPG_Graphics_Cursor_Manager,
-                      ACE_Recursive_Thread_Mutex> RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON;
-RPG_GRAPHICS_SINGLETON_DECLARE(ACE_Singleton,
-                               RPG_Graphics_Cursor_Manager,
-                               ACE_Recursive_Thread_Mutex);
+                      ACE_SYNCH_MUTEX> RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON;
+//RPG_GRAPHICS_SINGLETON_DECLARE(ACE_Singleton,
+//                               RPG_Graphics_Cursor_Manager,
+//                               ACE_Recursive_Thread_Mutex);
 #endif

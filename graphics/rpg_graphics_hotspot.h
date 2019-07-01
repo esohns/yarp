@@ -27,15 +27,17 @@
 
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_cursor.h"
-#include "rpg_graphics_exports.h"
+//#include "rpg_graphics_exports.h"
 #include "rpg_graphics_SDL_window_base.h"
 
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Graphics_Export RPG_Graphics_HotSpot
+class RPG_Graphics_HotSpot
  : public RPG_Graphics_SDLWindowBase
 {
+  typedef RPG_Graphics_SDLWindowBase inherited;
+
  public:
   RPG_Graphics_HotSpot (const RPG_Graphics_SDLWindowBase&, // parent
                         const RPG_Graphics_Size_t&,        // size
@@ -66,11 +68,9 @@ class RPG_Graphics_Export RPG_Graphics_HotSpot
                           bool = false);                     // debug ?
 
  private:
-  typedef RPG_Graphics_SDLWindowBase inherited;
-
-  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_HotSpot ());
-  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_HotSpot (const RPG_Graphics_HotSpot&));
-  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_HotSpot& operator= (const RPG_Graphics_HotSpot&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_HotSpot ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_HotSpot (const RPG_Graphics_HotSpot&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_HotSpot& operator= (const RPG_Graphics_HotSpot&))
 
   RPG_Graphics_Cursor myCursorType;
   bool                myCursorHasBeenSet;

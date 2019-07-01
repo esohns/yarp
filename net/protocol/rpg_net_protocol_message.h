@@ -23,7 +23,9 @@
 
 #include "ace/Global_Macros.h"
 
+#include "stream_cachedmessageallocatorheap_base.h"
 #include "stream_data_message_base.h"
+#include "stream_messageallocatorheap_base.h"
 
 #include "rpg_net_protocol_common.h"
 
@@ -32,12 +34,6 @@ class ACE_Allocator;
 class ACE_Data_Block;
 class ACE_Message_Block;
 class RPG_Net_Protocol_SessionMessage;
-template <ACE_SYNCH_DECL,
-          typename AllocatorConfigurationType,
-          typename ControlMessageType,
-          typename MessageType,
-          typename SessionMessageType>
-class Stream_MessageAllocatorHeapBase_T;
 
 class RPG_Net_Protocol_Message
  : public Stream_MessageBase_T<struct Stream_AllocatorConfiguration,
@@ -54,6 +50,9 @@ class RPG_Net_Protocol_Message
                                                  Stream_ControlMessage_t,
                                                  RPG_Net_Protocol_Message,
                                                  RPG_Net_Protocol_SessionMessage>;
+  friend class Stream_CachedMessageAllocatorHeapBase_T<Stream_ControlMessage_t,
+                                                       RPG_Net_Protocol_Message,
+                                                       RPG_Net_Protocol_SessionMessage>;
 
  public:
   RPG_Net_Protocol_Message (unsigned int); // size

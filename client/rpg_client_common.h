@@ -29,12 +29,14 @@
 
 #include "ace/Synch.h"
 
-#include "glade/glade.h"
-#include "gtk/gtk.h"
+//#include "glade/glade.h"
+//#include "gtk/gtk.h"
 
 #include "common.h"
 
 #include "common_ui_common.h"
+
+#include "common_ui_gtk_common.h"
 
 #include "rpg_map_common.h"
 
@@ -52,16 +54,16 @@
 class RPG_Client_Engine;
 class RPG_Engine;
 
-typedef std::map<RPG_Engine_EntityID_t, RPG_Graphics_Sprite> RPG_Client_Entities_t;
+typedef std::map<RPG_Engine_EntityID_t, enum RPG_Graphics_Sprite> RPG_Client_Entities_t;
 typedef RPG_Client_Entities_t::const_iterator RPG_Client_EntitiesIterator_t;
 
-struct RPG_Client_State_t
+struct RPG_Client_State
 {
   RPG_Graphics_Style    style;
   RPG_Client_Entities_t entities;
 };
 
-struct RPG_Client_GTK_CBData_t
+struct RPG_Client_GTK_CBData
 {
  inline RPG_Client_GTK_CBData_t()
   : GTKState ()
@@ -102,20 +104,20 @@ struct RPG_Client_GTK_CBData_t
   RPG_Map_FloorPlan_Configuration_t mapConfiguration;
 };
 
-struct RPG_Client_SDL_InputConfiguration_t
+struct RPG_Client_SDL_InputConfiguration
 {
   bool use_UNICODE;
   int  key_repeat_initial_delay;
   int  key_repeat_interval;
 };
 
-struct RPG_Client_AudioConfiguration_t
+struct RPG_Client_AudioConfiguration
 {
-  RPG_Sound_SDLConfiguration_t SDL_configuration;
-  std::string                  repository;
-  std::string                  dictionary;
-  bool                         use_CD;
-  bool                         mute;
+  RPG_Sound_SDLConfiguration SDL_configuration;
+  std::string                repository;
+  std::string                dictionary;
+  bool                       use_CD;
+  bool                       mute;
 };
 
 struct RPG_Client_NetworkConfiguration_t
@@ -129,31 +131,31 @@ struct RPG_Client_NetworkConfiguration_t
   std::string    channel;
 };
 
-struct RPG_Client_Configuration_t
+struct RPG_Client_Configuration
 {
   // *** reactor ***
-  unsigned int                          num_dispatch_threads; // 1: don't use a threadpool
+  unsigned int                           num_dispatch_threads; // 1: don't use a threadpool
   // *** UI ***
   //std::string                           glade_file;
   // *** input ***
-  RPG_Client_SDL_InputConfiguration_t   input_configuration;
+  RPG_Client_SDL_InputConfiguration_t    input_configuration;
   // *** sound ***
-  RPG_Client_AudioConfiguration_t       audio_configuration;
+  RPG_Client_AudioConfiguration_t        audio_configuration;
   // *** graphics ***
-  RPG_Graphics_SDL_VideoConfiguration_t video_configuration;
-  std::string                           graphics_directory;
-  std::string                           graphics_dictionary;
+  RPG_Graphics_SDL_VideoConfiguration_t  video_configuration;
+  std::string                            graphics_directory;
+  std::string                            graphics_dictionary;
   // *** network ***
-  RPG_Client_NetworkConfiguration_t     network_configuration;
+  RPG_Client_NetworkConfiguration_t      network_configuration;
   // *** magic ***
-  std::string                           magic_dictionary;
+  std::string                            magic_dictionary;
   // *** item ***
-  std::string                           item_dictionary;
+  std::string                            item_dictionary;
   // *** monster ***
-  std::string                           monster_dictionary;
+  std::string                            monster_dictionary;
   // *** map ***
-  RPG_Map_FloorPlan_Configuration_t     map_configuration;
-  std::string                           map_file;
+  struct RPG_Map_FloorPlan_Configuration map_configuration;
+  std::string                            map_file;
 };
 
 enum RPG_Client_Command
@@ -203,9 +205,9 @@ struct RPG_Client_Action
   // *NOTE*: depending on the scenario, these could be map or screen coordinates !
   RPG_Client_Position_t     position;
   RPG_Graphics_IWindowBase* window;
-  RPG_Graphics_Cursor       cursor;
+  enum RPG_Graphics_Cursor  cursor;
   RPG_Engine_EntityID_t     entity_id;
-  RPG_Sound_Event           sound;
+  enum RPG_Sound_Event      sound;
   std::string               message;
   // *TODO*: this does not really belong here...
   RPG_Map_Path_t            path;

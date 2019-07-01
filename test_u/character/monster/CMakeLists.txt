@@ -26,7 +26,7 @@ target_link_libraries (${EXECUTABLE}
                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                        Common CommonLog CommonTimer
                        RPG_Dice RPG_Chance RPG_Common RPG_Magic
-                       RPG_Item RPG_Character RPG_Monster RPG_Player RPG_Combat)
+                       RPG_Item RPG_Character RPG_Combat RPG_Player RPG_Monster)
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 

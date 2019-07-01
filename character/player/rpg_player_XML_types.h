@@ -76,13 +76,13 @@ class RPG_Player_State_Type_pskel;
 #include "rpg_common_environment_incl.h"
 #include "rpg_character_incl.h"
 
-#include "rpg_common_XML_types.h"
+#include "../../common/rpg_common_XML_types.h"
 
-#include "rpg_magic_XML_types.h"
+#include "../../magic/rpg_magic_XML_types.h"
 
-#include "rpg_item_XML_types.h"
+#include "../../item/rpg_item_XML_types.h"
 
-#include "rpg_character_XML_types.h"
+#include "../rpg_character_XML_types.h"
 
 class RPG_Player_Abilities_Type_pskel: public ::xml_schema::complex_content
 {

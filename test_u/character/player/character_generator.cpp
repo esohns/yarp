@@ -1113,10 +1113,10 @@ do_work (const std::string& schemaDirectory_in,
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step1: init engine (randomization, string conversion facilities, ...)
-  RPG_Engine_Common_Tools::init (schemaDirectory_in,
-                                 magicDictionaryFilename_in,
-                                 itemDictionaryFilename_in,
-                                 std::string ());
+  RPG_Engine_Common_Tools::initialize (schemaDirectory_in,
+                                       magicDictionaryFilename_in,
+                                       itemDictionaryFilename_in,
+                                       std::string ());
   if (!RPG_Graphics_Common_Tools::initialize (graphicsDirectory_in,
                                               graphicsCacheSize_in,
                                               false)) // DON'T init SDL bits...
