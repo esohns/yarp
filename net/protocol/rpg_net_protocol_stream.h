@@ -28,8 +28,11 @@
 
 #include "common_time_common.h"
 
-#include "stream_base.h"
 #include "stream_common.h"
+
+#include "stream_net_io_stream.h"
+
+#include "net_connection_manager.h"
 
 #include "rpg_net_module_eventhandler.h"
 #include "rpg_net_module_protocolhandler.h"
@@ -38,49 +41,63 @@
 #include "rpg_net_protocol_configuration.h"
 //#include "rpg_net_protocol_exports.h"
 #include "rpg_net_protocol_message.h"
-//#include "rpg_net_protocol_module_IRCparser.h"
-//#include "rpg_net_protocol_module_IRCsplitter.h"
-//#include "rpg_net_protocol_module_IRCstreamer.h"
+//#include "rpg_net_protocol_network.h"
 #include "rpg_net_protocol_session_message.h"
+
+typedef Net_Connection_Manager_T<ACE_MT_SYNCH,
+                                 ACE_INET_Addr,
+                                 RPG_Net_Protocol_ConnectionConfiguration,
+                                 struct Net_StreamConnectionState,
+                                 Net_StreamStatistic_t,
+                                 struct Net_UserData> RPG_Net_Protocol_Connection_Manager_t;
+
 
 extern const char protocol_stream_name_string_[];
 
 class RPG_Net_Protocol_Stream
- : public Stream_Base_T<ACE_MT_SYNCH,
-                        Common_TimePolicy_t,
-                        protocol_stream_name_string_,
-                        enum Stream_ControlType,
-                        enum Stream_SessionMessageType,
-                        enum Stream_StateMachine_ControlState,
-                        struct Stream_State,
-                        struct RPG_Net_Protocol_StreamConfiguration,
-                        struct Stream_Statistic,
-                        struct Common_FlexParserAllocatorConfiguration,
-                        struct Stream_ModuleConfiguration,
-                        struct RPG_Net_Protocol_ModuleHandlerConfiguration,
-                        struct RPG_Net_Protocol_SessionData,
-                        RPG_Net_Protocol_SessionData_t,
-                        Stream_ControlMessage_t,
-                        RPG_Net_Protocol_Message,
-                        RPG_Net_Protocol_SessionMessage>
+ : public Stream_Module_Net_IO_Stream_T <ACE_MT_SYNCH,
+                                         Common_TimePolicy_t,
+                                         protocol_stream_name_string_,
+                                         enum Stream_ControlType,
+                                         enum Stream_SessionMessageType,
+                                         enum Stream_StateMachine_ControlState,
+                                         struct RPG_Net_Protocol_StreamState,
+                                         struct RPG_Net_Protocol_StreamConfiguration,
+                                         struct Stream_Statistic,
+                                         Common_Timer_Manager_t,
+                                         struct Common_FlexParserAllocatorConfiguration,
+                                         struct Stream_ModuleConfiguration,
+                                         struct RPG_Net_Protocol_ModuleHandlerConfiguration,
+                                         struct RPG_Net_Protocol_SessionData,
+                                         RPG_Net_Protocol_SessionData_t,
+                                         Stream_ControlMessage_t,
+                                         RPG_Net_Protocol_Message,
+                                         RPG_Net_Protocol_SessionMessage,
+                                         ACE_INET_Addr,
+                                         RPG_Net_Protocol_Connection_Manager_t,
+                                         struct Stream_UserData>
 {
-  typedef Stream_Base_T<ACE_MT_SYNCH,
-                        Common_TimePolicy_t,
-                        protocol_stream_name_string_,
-                        enum Stream_ControlType,
-                        enum Stream_SessionMessageType,
-                        enum Stream_StateMachine_ControlState,
-                        struct Stream_State,
-                        struct RPG_Net_Protocol_StreamConfiguration,
-                        struct Stream_Statistic,
-                        struct Common_FlexParserAllocatorConfiguration,
-                        struct Stream_ModuleConfiguration,
-                        struct RPG_Net_Protocol_ModuleHandlerConfiguration,
-                        struct RPG_Net_Protocol_SessionData,
-                        RPG_Net_Protocol_SessionData_t,
-                        Stream_ControlMessage_t,
-                        RPG_Net_Protocol_Message,
-                        RPG_Net_Protocol_SessionMessage> inherited;
+  typedef Stream_Module_Net_IO_Stream_T <ACE_MT_SYNCH,
+                                         Common_TimePolicy_t,
+                                         protocol_stream_name_string_,
+                                         enum Stream_ControlType,
+                                         enum Stream_SessionMessageType,
+                                         enum Stream_StateMachine_ControlState,
+                                         struct RPG_Net_Protocol_StreamState,
+                                         struct RPG_Net_Protocol_StreamConfiguration,
+                                         struct Stream_Statistic,
+                                         Common_Timer_Manager_t,
+                                         struct Common_FlexParserAllocatorConfiguration,
+                                         struct Stream_ModuleConfiguration,
+                                         struct RPG_Net_Protocol_ModuleHandlerConfiguration,
+                                         struct RPG_Net_Protocol_SessionData,
+                                         RPG_Net_Protocol_SessionData_t,
+                                         Stream_ControlMessage_t,
+                                         RPG_Net_Protocol_Message,
+                                         RPG_Net_Protocol_SessionMessage,
+                                         ACE_INET_Addr,
+                                         RPG_Net_Protocol_Connection_Manager_t,
+                                         struct Stream_UserData> inherited;
 
  public:
   RPG_Net_Protocol_Stream ();
@@ -91,7 +108,8 @@ class RPG_Net_Protocol_Stream
                      bool&);          // return value: delete modules ?
 
   // implement Common_IInitialize_T
-  virtual bool initialize (const inherited::CONFIGURATION_T&); // configuration
+  virtual bool initialize (const inherited::CONFIGURATION_T&, // configuration
+                           ACE_HANDLE);
 
   // implement Common_IStatistic_T
   // *NOTE*: delegate this to myRuntimeStatistic
@@ -110,8 +128,9 @@ class RPG_Net_Protocol_Stream
   // modules
   //RPG_Net_HeaderParser_Module    headerParser_;
   //Net_Module_RuntimeStatistic_Module runtimeStatistic_;
-  RPG_Net_ProtocolHandler_Module protocolHandler_;
-  RPG_Net_EventHandler_Module    eventHandler_;
+  typename inherited::IO_MODULE_T IOHandler_;
+  RPG_Net_ProtocolHandler_Module  protocolHandler_;
+  RPG_Net_EventHandler_Module     eventHandler_;
 };
 
 #endif

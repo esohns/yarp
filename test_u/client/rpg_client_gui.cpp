@@ -48,7 +48,7 @@
 
 #include "common_timer_tools.h"
 
-#include "common_ui_glade_definition.h"
+//#include "common_ui_glade_definition.h"
 #include "common_ui_gtk_manager.h"
 
 #include "stream_allocatorheap.h"

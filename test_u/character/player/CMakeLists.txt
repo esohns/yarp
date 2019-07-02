@@ -51,13 +51,18 @@ set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITION
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 
+set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+
 target_link_libraries (${EXECUTABLE}
-                       pthread xerces-c
+#                       pthread
+#                       xerces-c
                        ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
                        ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
 target_link_libraries (${EXECUTABLE}
-                       ACE
+                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                       Common CommonLog CommonTimer
                        RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item
                        RPG_Character RPG_Monster RPG_Player RPG_Combat
                        RPG_Map RPG_Graphics RPG_Engine)
@@ -77,13 +82,16 @@ set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITION
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 
+set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+
 target_link_libraries (${EXECUTABLE}
-                       xerces-c
                        ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
                        ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
 target_link_libraries (${EXECUTABLE}
-                       ACE
+                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                       Common CommonLog CommonTimer
                        RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item
                        RPG_Character RPG_Monster RPG_Player RPG_Combat
                        RPG_Map RPG_Graphics RPG_Engine)
@@ -109,8 +117,9 @@ add_executable (${EXECUTABLE}
 include_directories (${PKG_CONFIG_MODULE_LIBGLADE_INCLUDE_DIRS}
                      ${PKG_CONFIG_MODULE_LIBGNOMEUI_INCLUDE_DIRS})
 
+set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+
 target_link_libraries (${EXECUTABLE}
-                       xerces-c
                        ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
                        ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES}
                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
@@ -118,7 +127,10 @@ target_link_libraries (${EXECUTABLE}
                        ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES}
                        ${PKG_CONFIG_MODULE_LIBGNOMEUI_LIBRARIES})
 target_link_libraries (${EXECUTABLE}
-                       ACE RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item
+                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                       Common CommonLog CommonTimer
+                       RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item
                        RPG_Character RPG_Monster RPG_Player RPG_Combat
                        RPG_Map RPG_Sound RPG_Graphics RPG_Engine RPG_Client)
 

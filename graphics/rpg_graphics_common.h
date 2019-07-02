@@ -33,7 +33,7 @@
 #include "rpg_graphics_incl.h"
 
 // *NOTE* types as used by SDL
-struct RPG_Graphics_SDL_VideoConfiguration_t
+struct RPG_Graphics_SDL_VideoConfiguration
 {
   int         screen_width;
   int         screen_height;
@@ -69,12 +69,12 @@ struct RPG_Graphics_Dictionary_t
   RPG_Graphics_TileSetDictionary_t tilesets;
 };
 
-struct RPG_Graphics_GraphicsCacheNode_t
+struct RPG_Graphics_GraphicsCacheNode
 {
   RPG_Graphics_GraphicTypeUnion type;
   SDL_Surface* image;
 
-  inline bool operator==(const RPG_Graphics_GraphicsCacheNode_t& rhs_in) const
+  bool operator==(const struct RPG_Graphics_GraphicsCacheNode& rhs_in) const
   {
     if (type.discriminator != rhs_in.type.discriminator)
       return false;
@@ -104,11 +104,11 @@ struct RPG_Graphics_GraphicsCacheNode_t
     } // end SWITCH
 
     return false; }
-  inline bool operator!=(const RPG_Graphics_GraphicsCacheNode_t& rhs_in) const
+  bool operator!=(const struct RPG_Graphics_GraphicsCacheNode& rhs_in) const
   {
     return !(*this == rhs_in); }
 };
-typedef std::vector<RPG_Graphics_GraphicsCacheNode_t> RPG_Graphics_GraphicsCache_t;
+typedef std::vector<struct RPG_Graphics_GraphicsCacheNode> RPG_Graphics_GraphicsCache_t;
 typedef RPG_Graphics_GraphicsCache_t::iterator RPG_Graphics_GraphicsCacheIterator_t;
 
 typedef std::map<RPG_Graphics_Font, TTF_Font*> RPG_Graphics_FontCache_t;
@@ -143,14 +143,14 @@ typedef RPG_Graphics_Offsets_t::const_iterator RPG_Graphics_OffsetsConstIterator
 typedef std::pair<unsigned int, unsigned int> RPG_Graphics_Size_t;
 
 // a set of (floor-, wall-, door-, ...) tiles
-struct RPG_Graphics_Tile_t
+struct RPG_Graphics_Tile
 {
   int offset_x;
   int offset_y;
   SDL_Surface* surface;
 };
 
-typedef std::vector<RPG_Graphics_Tile_t> RPG_Graphics_FloorTiles_t;
+typedef std::vector<struct RPG_Graphics_Tile> RPG_Graphics_FloorTiles_t;
 typedef RPG_Graphics_FloorTiles_t::const_iterator RPG_Graphics_FloorTilesConstIterator_t;
 struct RPG_Graphics_FloorTileSet_t
 {
@@ -159,49 +159,49 @@ struct RPG_Graphics_FloorTileSet_t
   RPG_Graphics_FloorTiles_t tiles;
 };
 
-struct RPG_Graphics_FloorEdgeTileSet_t
+struct RPG_Graphics_FloorEdgeTileSet
 {
   // straight edges
-  RPG_Graphics_Tile_t west;
-  RPG_Graphics_Tile_t north;
-  RPG_Graphics_Tile_t east;
-  RPG_Graphics_Tile_t south;
+  struct RPG_Graphics_Tile west;
+  struct RPG_Graphics_Tile north;
+  struct RPG_Graphics_Tile east;
+  struct RPG_Graphics_Tile south;
   // corner edges
-  RPG_Graphics_Tile_t south_west;
-  RPG_Graphics_Tile_t south_east;
-  RPG_Graphics_Tile_t north_west;
-  RPG_Graphics_Tile_t north_east;
+  struct RPG_Graphics_Tile south_west;
+  struct RPG_Graphics_Tile south_east;
+  struct RPG_Graphics_Tile north_west;
+  struct RPG_Graphics_Tile north_east;
   // (square) corner edges
-  RPG_Graphics_Tile_t top;
-  RPG_Graphics_Tile_t right;
-  RPG_Graphics_Tile_t left;
-  RPG_Graphics_Tile_t bottom;
+  struct RPG_Graphics_Tile top;
+  struct RPG_Graphics_Tile right;
+  struct RPG_Graphics_Tile left;
+  struct RPG_Graphics_Tile bottom;
 };
 // *NOTE*: map coordinates !
-typedef std::map<RPG_Graphics_Position_t, RPG_Graphics_FloorEdgeTileSet_t> RPG_Graphics_FloorEdgeTileMap_t;
+typedef std::map<RPG_Graphics_Position_t, struct RPG_Graphics_FloorEdgeTileSet> RPG_Graphics_FloorEdgeTileMap_t;
 typedef RPG_Graphics_FloorEdgeTileMap_t::iterator RPG_Graphics_FloorEdgeTileMapIterator_t;
 
-struct RPG_Graphics_WallTileSet_t
+struct RPG_Graphics_WallTileSet
 {
-  RPG_Graphics_Tile_t west;
-  RPG_Graphics_Tile_t north;
-  RPG_Graphics_Tile_t east;
-  RPG_Graphics_Tile_t south;
+  struct RPG_Graphics_Tile west;
+  struct RPG_Graphics_Tile north;
+  struct RPG_Graphics_Tile east;
+  struct RPG_Graphics_Tile south;
 };
 // *NOTE*: map coordinates !
-typedef std::map<RPG_Graphics_Position_t, RPG_Graphics_WallTileSet_t> RPG_Graphics_WallTileMap_t;
+typedef std::map<RPG_Graphics_Position_t, struct RPG_Graphics_WallTileSet> RPG_Graphics_WallTileMap_t;
 typedef RPG_Graphics_WallTileMap_t::iterator RPG_Graphics_WallTileMapIterator_t;
 
-struct RPG_Graphics_DoorTileSet_t
+struct RPG_Graphics_DoorTileSet
 {
-  RPG_Graphics_Tile_t horizontal_open;
-  RPG_Graphics_Tile_t vertical_open;
-  RPG_Graphics_Tile_t horizontal_closed;
-  RPG_Graphics_Tile_t vertical_closed;
-  RPG_Graphics_Tile_t broken;
+  struct RPG_Graphics_Tile horizontal_open;
+  struct RPG_Graphics_Tile vertical_open;
+  struct RPG_Graphics_Tile horizontal_closed;
+  struct RPG_Graphics_Tile vertical_closed;
+  struct RPG_Graphics_Tile broken;
 };
 // *NOTE*: map coordinates !
-typedef std::map<RPG_Graphics_Position_t, RPG_Graphics_Tile_t> RPG_Graphics_DoorTileMap_t;
+typedef std::map<RPG_Graphics_Position_t, struct RPG_Graphics_Tile> RPG_Graphics_DoorTileMap_t;
 typedef RPG_Graphics_DoorTileMap_t::iterator RPG_Graphics_DoorTileMapIterator_t;
 
 typedef std::vector<RPG_Graphics_Tile>::const_iterator RPG_Graphics_TileSetConstIterator_t;
@@ -211,7 +211,7 @@ typedef std::vector<std::pair<RPG_Graphics_Position_t, SDL_Surface*> > RPG_Graph
 typedef RPG_Graphics_TileCache_t::const_iterator RPG_Graphics_TileCacheConstIterator_t;
 typedef RPG_Graphics_TileCache_t::iterator RPG_Graphics_TileCacheIterator_t;
 
-typedef std::map<RPG_Graphics_ColorName, RPG_Graphics_ColorRGBA> RPG_Graphics_ColorMap_t;
+typedef std::map<RPG_Graphics_ColorName, struct RPG_Graphics_ColorRGBA> RPG_Graphics_ColorMap_t;
 typedef RPG_Graphics_ColorMap_t::const_iterator RPG_Graphics_ColorMapConstIterator_t;
 typedef RPG_Graphics_ColorMap_t::iterator RPG_Graphics_ColorMapIterator_t;
 

@@ -30,6 +30,9 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/signal)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/gtk)
 
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../ACEStream/src)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../ACEStream/src/modules/net)
+
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
                      ${CMAKE_CURRENT_SOURCE_DIR}/../../common
                      ${CMAKE_CURRENT_SOURCE_DIR}/../../net
@@ -55,8 +58,6 @@ set (${EXECUTABLE}_SRCS
 
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
-
-include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log>)
 
 target_link_libraries (${EXECUTABLE}
                        pthread xerces-c

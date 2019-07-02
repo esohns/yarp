@@ -37,8 +37,8 @@ class RPG_Engine_IClient
   //                       const SDL_Surface*) = 0;
   //virtual void removeEntity(const RPG_Engine_EntityID_t&) = 0;
   //virtual void updateEntity(const RPG_Engine_EntityID_t&) = 0;
-  virtual void notify(const RPG_Engine_Command&,
-                      const struct RPG_Engine_ClientNotificationParameters&) = 0;
+  virtual void notify (enum RPG_Engine_Command,
+                       const struct RPG_Engine_ClientNotificationParameters&) = 0;
 };
 
 #endif // RPG_ENGINE_ICLIENT_H

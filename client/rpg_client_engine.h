@@ -27,10 +27,9 @@
 #include "ace/Synch.h"
 #include "ace/Task.h"
 
-#include "common_icontrol.h"
+//#include "common_icontrol.h"
 #include "common_idumpstate.h"
-
-#include "rpg_common_ilock.h"
+#include "common_ilock.h"
 
 #include "rpg_graphics_iwindow_base.h"
 #include "rpg_graphics_style.h"
@@ -39,7 +38,7 @@
 #include "rpg_engine_iclient.h"
 
 #include "rpg_client_common.h"
-#include "rpg_client_exports.h"
+//#include "rpg_client_exports.h"
 
 // forward declaration(s)
 class RPG_Engine;
@@ -47,11 +46,11 @@ class RPG_Engine;
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Client_Export RPG_Client_Engine
+class RPG_Client_Engine
  : public ACE_Task<ACE_MT_SYNCH>
  , public RPG_Engine_IClient
- , public RPG_Common_ILock
- , public Common_IControl
+ , public Common_ILock
+ //, public Common_IControl
  , public Common_IDumpState
 {
  public:
@@ -66,9 +65,9 @@ class RPG_Client_Export RPG_Client_Engine
   // implement Common_IDumpState
   virtual void dump_state () const;
 
-  // implement RPG_Common_ILock
-  virtual void lock ();
-  virtual void unlock ();
+  // implement Common_ILock
+  virtual bool lock (bool = true); // block ?
+  virtual int unlock (bool = false); // unlock completely ?
 
   void redraw ();
   // *TODO* these need consideration/redesign
@@ -87,8 +86,8 @@ class RPG_Client_Export RPG_Client_Engine
   //                       const SDL_Surface*);
   //virtual void removeEntity(const RPG_Engine_EntityID_t&);
   //virtual void updateEntity(const RPG_Engine_EntityID_t&);
-  virtual void notify (const RPG_Engine_Command&,
-                       const RPG_Engine_ClientNotificationParameters_t&);
+  virtual void notify (enum RPG_Engine_Command,
+                       const struct RPG_Engine_ClientNotificationParameters&);
 
   // *WARNING*: window handle needs to be of WINDOW_MAP type !!!
   void initialize (RPG_Engine*,               // (level) state
@@ -136,7 +135,7 @@ class RPG_Client_Export RPG_Client_Engine
   RPG_Client_IWidgetUI_t*         myWidgetInterface;
 
   RPG_Client_Actions_t            myActions;
-  RPG_Client_State_t              myRuntimeState;
+  struct RPG_Client_State         myRuntimeState;
 
   RPG_Client_SelectionMode        mySelectionMode;
   RPG_Client_SeenPositions_t      mySeenPositions;

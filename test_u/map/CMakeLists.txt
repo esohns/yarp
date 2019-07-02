@@ -70,6 +70,8 @@ add_executable (${EXECUTABLE}
 add_dependencies (${EXECUTABLE}
                   RPG_Dice RPG_Common RPG_Map RPG_Engine)
 
+set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+
 target_link_libraries (${EXECUTABLE}
                        ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}

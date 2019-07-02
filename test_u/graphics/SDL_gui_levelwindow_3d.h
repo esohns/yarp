@@ -97,8 +97,8 @@ class SDL_GUI_LevelWindow_3D
   //virtual void redraw();
   //// *NOTE*: this triggers a complete redraw !
   //virtual void updateEntity(const RPG_Engine_EntityID_t&);
-  virtual void notify(const RPG_Engine_Command&,
-                      const RPG_Engine_ClientNotificationParameters_t&);
+  virtual void notify(enum RPG_Engine_Command,
+                      const struct RPG_Engine_ClientNotificationParameters&);
 
  private:
   typedef RPG_Graphics_SDLWindowBase inherited;

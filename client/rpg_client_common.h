@@ -30,7 +30,7 @@
 #include "ace/Synch.h"
 
 //#include "glade/glade.h"
-//#include "gtk/gtk.h"
+#include "gtk/gtk.h"
 
 #include "common.h"
 
@@ -65,43 +65,43 @@ struct RPG_Client_State
 
 struct RPG_Client_GTK_CBData
 {
- inline RPG_Client_GTK_CBData_t()
-  : GTKState ()
-  , doHover (true)
-  , hoverTime (0)
-  , logStack ()
-  , entityFilter (NULL)
-  , mapFilter (NULL)
-  , savedStateFilter (NULL)
-  , screen (NULL)
-  , screenLock (NULL,
-                NULL)
-  , eventTimer (NULL)
-  , clientEngine (NULL)
-  , schemaRepository ()
-  , entity ()
-  , levelEngine (NULL)
-  , levelMetadata ()
-  , mapConfiguration ()
- { };
+  RPG_Client_GTK_CBData()
+   : GTKState ()
+   , doHover (true)
+   , hoverTime (0)
+   , logStack ()
+   , entityFilter (NULL)
+   , mapFilter (NULL)
+   , savedStateFilter (NULL)
+   , screen (NULL)
+   , screenLock (NULL,
+                 NULL)
+   , eventTimer (NULL)
+   , clientEngine (NULL)
+   , schemaRepository ()
+   , entity ()
+   , levelEngine (NULL)
+   , levelMetadata ()
+   , mapConfiguration ()
+  {}
 
-  Common_UI_GTKState                GTKState;
-  bool                              doHover;
-  unsigned int                      hoverTime;
-  Common_MessageStack_t             logStack;
-  ACE_Recursive_Thread_Mutex        logStackLock;
-  GtkFileFilter*                    entityFilter;
-  GtkFileFilter*                    mapFilter;
-  GtkFileFilter*                    savedStateFilter;
-  SDL_Surface*                      screen;
-  ACE_Thread_Mutex                  screenLock; // video access
-  SDL_TimerID                       eventTimer;
-  RPG_Client_Engine*                clientEngine;
-  std::string                       schemaRepository;
-  RPG_Engine_Entity_t               entity;
-  RPG_Engine*                       levelEngine;
-  RPG_Engine_LevelMetaData_t        levelMetadata;
-  RPG_Map_FloorPlan_Configuration_t mapConfiguration;
+  //Common_UI_GTKState                     GTKState;
+  bool                                   doHover;
+  unsigned int                           hoverTime;
+  //Common_MessageStack_t                  logStack;
+  //ACE_Recursive_Thread_Mutex             logStackLock;
+  GtkFileFilter*                         entityFilter;
+  GtkFileFilter*                         mapFilter;
+  GtkFileFilter*                         savedStateFilter;
+  SDL_Surface*                           screen;
+  ACE_Thread_Mutex                       screenLock; // video access
+  SDL_TimerID                            eventTimer;
+  RPG_Client_Engine*                     clientEngine;
+  std::string                            schemaRepository;
+  struct RPG_Engine_Entity               entity;
+  RPG_Engine*                            levelEngine;
+  struct RPG_Engine_LevelMetaData        levelMetadata;
+  struct RPG_Map_FloorPlan_Configuration mapConfiguration;
 };
 
 struct RPG_Client_SDL_InputConfiguration
@@ -113,14 +113,14 @@ struct RPG_Client_SDL_InputConfiguration
 
 struct RPG_Client_AudioConfiguration
 {
-  RPG_Sound_SDLConfiguration SDL_configuration;
-  std::string                repository;
-  std::string                dictionary;
-  bool                       use_CD;
-  bool                       mute;
+  struct RPG_Sound_SDLConfiguration SDL_configuration;
+  std::string                       repository;
+  std::string                       dictionary;
+  bool                              use_CD;
+  bool                              mute;
 };
 
-struct RPG_Client_NetworkConfiguration_t
+struct RPG_Client_NetworkConfiguration
 {
   std::string    server;
   unsigned short port;
@@ -134,28 +134,28 @@ struct RPG_Client_NetworkConfiguration_t
 struct RPG_Client_Configuration
 {
   // *** reactor ***
-  unsigned int                           num_dispatch_threads; // 1: don't use a threadpool
+  unsigned int                               num_dispatch_threads; // 1: don't use a threadpool
   // *** UI ***
   //std::string                           glade_file;
   // *** input ***
-  RPG_Client_SDL_InputConfiguration_t    input_configuration;
+  struct RPG_Client_SDL_InputConfiguration   input_configuration;
   // *** sound ***
-  RPG_Client_AudioConfiguration_t        audio_configuration;
+  struct RPG_Client_AudioConfiguration       audio_configuration;
   // *** graphics ***
-  RPG_Graphics_SDL_VideoConfiguration_t  video_configuration;
-  std::string                            graphics_directory;
-  std::string                            graphics_dictionary;
+  struct RPG_Graphics_SDL_VideoConfiguration video_configuration;
+  std::string                                graphics_directory;
+  std::string                                graphics_dictionary;
   // *** network ***
-  RPG_Client_NetworkConfiguration_t      network_configuration;
+  struct RPG_Client_NetworkConfiguration     network_configuration;
   // *** magic ***
-  std::string                            magic_dictionary;
+  std::string                                magic_dictionary;
   // *** item ***
-  std::string                            item_dictionary;
+  std::string                                item_dictionary;
   // *** monster ***
-  std::string                            monster_dictionary;
+  std::string                                monster_dictionary;
   // *** map ***
-  struct RPG_Map_FloorPlan_Configuration map_configuration;
-  std::string                            map_file;
+  struct RPG_Map_FloorPlan_Configuration     map_configuration;
+  std::string                                map_file;
 };
 
 enum RPG_Client_Command
@@ -252,6 +252,6 @@ typedef RPG_Client_SeenPositions_t::iterator RPG_Client_SeenPositionsIterator_t;
 typedef std::vector<SDL_Surface*> RPG_Client_BlendingMaskCache_t;
 typedef RPG_Client_BlendingMaskCache_t::iterator RPG_Client_BlendingMaskCacheIterator_t;
 
-typedef Common_UI_IGTK_t RPG_Client_IWidgetUI_t;
+//typedef Common_UI_IGTK_t RPG_Client_IWidgetUI_t;
 
 #endif

@@ -30,7 +30,7 @@
 #include "stream_session_message_base.h"
 #include "stream_messageallocatorheap_base.h"
 
-#include "rpg_net_protocol_common.h"
+#include "rpg_net_protocol_stream_common.h"
 
 // forward declaratation(s)
 class ACE_Allocator;

@@ -304,8 +304,8 @@ RPG_Engine_Event_Manager::reschedule(const RPG_Engine_EntityID_t& id_in,
   } // end lock scope
 
   ACE_ASSERT(timer_id != -1);
-  COMMON_TIMERMANAGER_SINGLETON::instance()->resetInterval(timer_id,
-                                                           activationInterval_in);
+  COMMON_TIMERMANAGER_SINGLETON::instance()->reset_timer_interval (timer_id,
+                                                                   activationInterval_in);
 
   //ACE_DEBUG((LM_DEBUG,
   //           ACE_TEXT("reset timer interval (ID: %d) for entity %u\n"),
@@ -520,19 +520,19 @@ RPG_Engine_Event_Manager::schedule(RPG_Engine_Event_t* event_in,
   ACE_ASSERT(event_in);
   ACE_ASSERT(interval_in != ACE_Time_Value::zero);
 
-  ACE_Event_Handler* timer_handler = NULL;
-  ACE_NEW_NORETURN (timer_handler,
-                    Common_TimerHandler (this, isOneShot_in));
-  if (!timer_handler)
-  {
-    ACE_DEBUG ((LM_CRITICAL,
-                ACE_TEXT ("failed to allocate Common_TimerHandler, aborting\n")));
+  Common_Timer_Handler* timer_handler = this;
+  //ACE_NEW_NORETURN (timer_handler,
+  //                  Common_TimerHandler (this, isOneShot_in));
+  //if (!timer_handler)
+  //{
+  //  ACE_DEBUG ((LM_CRITICAL,
+  //              ACE_TEXT ("failed to allocate Common_TimerHandler, aborting\n")));
 
-    // clean up
-    delete event_in;
+  //  // clean up
+  //  delete event_in;
 
-    return -1;
-  } // end IF
+  //  return -1;
+  //} // end IF
 
   long timer_id = -1;
   // *NOTE*: fire&forget API for timer_handler...
@@ -645,7 +645,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
     {
       ACE_ASSERT(event_in.entity_id);
 
-      RPG_Engine_Action_t next_action;
+      struct RPG_Engine_Action next_action;
       next_action.command = RPG_ENGINE_COMMAND_INVALID;
       next_action.position =
           std::make_pair(std::numeric_limits<unsigned int>::max(),
@@ -731,7 +731,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       } // end IF
 
       // fighting / travelling ?
-      RPG_Engine_Action_t& current_action = (*iterator).second->actions.front();
+      struct RPG_Engine_Action& current_action = (*iterator).second->actions.front();
       bool done_current_action = false;
       bool do_next_action = false;
       switch (current_action.command)
@@ -775,7 +775,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
         case COMMAND_IDLE:
         {
           // amble a little bit ?
-          const RPG_Engine_LevelMetaData_t& level_metadata =
+          const struct RPG_Engine_LevelMetaData& level_metadata =
               myEngine->getMetaData(false);
           bool do_amble = false;
           RPG_Engine_SpawnsConstIterator_t iterator2 = level_metadata.spawns.begin();
@@ -949,7 +949,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
     }
     case EVENT_ENTITY_SPAWN:
     {
-      RPG_Engine_LevelMetaData_t level_metadata =
+      struct RPG_Engine_LevelMetaData level_metadata =
           myEngine->getMetaData(true);
       RPG_Engine_SpawnsConstIterator_t iterator =
           level_metadata.spawns.begin();
@@ -967,14 +967,14 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
         break; // not this time...
 
       // OK: spawn an instance
-      RPG_Engine_Entity_t* entity = NULL;
+      struct RPG_Engine_Entity* entity = NULL;
       ACE_NEW_NORETURN(entity,
-                       RPG_Engine_Entity_t());
+                       struct RPG_Engine_Entity());
       if (!entity)
       {
         ACE_DEBUG((LM_CRITICAL,
                    ACE_TEXT("unable to allocate memory(%u), aborting\n"),
-                   sizeof(RPG_Engine_Entity_t)));
+                   sizeof(struct RPG_Engine_Entity)));
 
         break;
       } // end IF
@@ -1089,7 +1089,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
 }
 
 void
-RPG_Engine_Event_Manager::handleTimeout(const void* act_in)
+RPG_Engine_Event_Manager::handle (const void* act_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::handleTimeout"));
 

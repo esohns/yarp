@@ -267,23 +267,29 @@ RPG_Client_Engine::dump_state() const
 }
 
 void
-RPG_Client_Engine::lock()
+RPG_Client_Engine::lock(bool block_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::lock"));
+
+  ACE_UNUSED_ARG (block_in);
 
   if (myScreenLock.acquire(NULL) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Thread_Mutex::acquire: \"%m\", continuing\n")));
 }
 
-void
-RPG_Client_Engine::unlock()
+int
+RPG_Client_Engine::unlock(bool unlock_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::unlock"));
+
+  ACE_UNUSED_ARG (unlock_in);
 
   if (myScreenLock.release() == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Thread_Mutex::release: \"%m\", continuing\n")));
+
+  return 0;
 }
 
 void

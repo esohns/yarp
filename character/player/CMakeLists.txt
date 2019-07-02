@@ -29,7 +29,9 @@ set (${LIBRARY}_SRCS
      rpg_player_playerxml.h
      rpg_player_spells.h
      rpg_player_XML_tree.cpp
-     rpg_player_XML_tree.h)
+     rpg_player_XML_tree.h
+     rpg_player_XML_types.cpp
+     rpg_player_XML_types.h)
 
 #set_source_files_properties(${RPG_Player_LIB_SRCS} PROPERTIES COMPILE_DEFINITIONS "RPG_PLAYER_BUILD_DLL;RPG_CHARACTER_HAS_DLL")
 
@@ -112,6 +114,7 @@ install (FILES
          rpg_player_playerxml.h
          rpg_player_spells.h
          rpg_player_XML_tree.h
+         rpg_player_XML_types.h
   #      rpg_XMLSchema_XML_tree.h
          DESTINATION include)
 install (TARGETS ${LIBRARY} LIBRARY

@@ -21,6 +21,7 @@
 
 #include "SDL_gui_levelwindow_3d.h"
 
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include <sstream>
 
@@ -102,7 +103,7 @@ SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D(const RPG_Graphics_SDLWindowBase&
   if (!myCurrentOffMapTile)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
-               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
+               RPG_Graphics_Common_Tools::toString(type).c_str()));
 
   // init tiles / position
   ACE_OS::memset(&myCurrentFloorEdgeSet,
@@ -720,7 +721,7 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
             if (entity_id == 0)
               break; // nothing to do...
 
-            RPG_Engine_Action_t player_action;
+            struct RPG_Engine_Action player_action;
             player_action.command = COMMAND_TRAVEL;
             // compute target position
             player_action.position = myEngine->getPosition(entity_id);
@@ -1158,7 +1159,7 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
         {
           RPG_Map_DoorState door_state = myEngine->state(map_position, true);
 
-          RPG_Engine_Action_t action;
+          struct RPG_Engine_Action action;
           action.command = ((door_state == DOORSTATE_OPEN) ? COMMAND_DOOR_CLOSE
                                                            : COMMAND_DOOR_OPEN);
           action.position = map_position;
@@ -1310,8 +1311,8 @@ SDL_GUI_LevelWindow_3D::initialize(const RPG_Graphics_Style& style_in)
 }
 
 void
-SDL_GUI_LevelWindow_3D::notify(const RPG_Engine_Command& command_in,
-                               const RPG_Engine_ClientNotificationParameters_t& parameters_in)
+SDL_GUI_LevelWindow_3D::notify(enum RPG_Engine_Command command_in,
+                               const struct RPG_Engine_ClientNotificationParameters& parameters_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::notify"));
 
@@ -1914,7 +1915,7 @@ SDL_GUI_LevelWindow_3D::initCeiling()
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
-               RPG_Graphics_Common_Tools::typeToString(type).c_str()));
+               RPG_Graphics_Common_Tools::toString(type).c_str()));
 
     return;
   } // end IF

@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 if (UNIX)
  include(FindPkgConfig)
  pkg_check_modules(PKG_CONFIG_MODULE_SDL REQUIRED sdl)
@@ -44,7 +42,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../map
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../engine
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../client
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../graphics)
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../../graphics
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../../sound)
 
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
@@ -88,7 +87,7 @@ set (${EXECUTABLE}_SRCS
      SDL_gui_minimapwindow.cpp
      SDL_gui_minimapwindow.h)
 
-set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS DATADIR="/usr/local/share/RPG")
+set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
 
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})

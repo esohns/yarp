@@ -30,13 +30,4 @@
 //#include "rpg_net_protocol_message.h"
 //#include "rpg_net_protocol_session_message.h"
 
-struct RPG_Net_Protocol_SessionData
- : Stream_SessionData
-{
-  RPG_Net_Protocol_SessionData ()
-   : Stream_SessionData ()
-  {}
-};
-typedef Stream_SessionData_T<struct RPG_Net_Protocol_SessionData> RPG_Net_Protocol_SessionData_t;
-
 #endif

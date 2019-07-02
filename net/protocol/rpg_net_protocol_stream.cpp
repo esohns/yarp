@@ -31,10 +31,12 @@ RPG_Net_Protocol_Stream::RPG_Net_Protocol_Stream ()
  //                 NULL)
  // , runtimeStatistic_ (std::string ("RuntimeStatistic"),
  //                      NULL)
-  , protocolHandler_ (this,
-                      ACE_TEXT_ALWAYS_CHAR ("ProtocolHandler"))
-  , eventHandler_ (this,
-                   ACE_TEXT_ALWAYS_CHAR ("EventHandler"))
+ , IOHandler_ (this,
+               ACE_TEXT_ALWAYS_CHAR ("IOHandler"))
+ , protocolHandler_ (this,
+                     ACE_TEXT_ALWAYS_CHAR ("ProtocolHandler"))
+ , eventHandler_ (this,
+                  ACE_TEXT_ALWAYS_CHAR ("EventHandler"))
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Stream::RPG_Net_Protocol_Stream"));
 
@@ -58,7 +60,10 @@ RPG_Net_Protocol_Stream::load (Stream_ILayout* layout_in,
   //ACE_ASSERT (inherited::configuration_);
   //ACE_ASSERT (inherited::configuration_->moduleHandlerConfiguration);
 
-  Stream_Module_t* module_p = &protocolHandler_;
+  Stream_Module_t* module_p = &IOHandler_;
+  layout_in->append (module_p, NULL, 0);
+  module_p = NULL;
+  module_p = &protocolHandler_;
   layout_in->append (module_p, NULL, 0);
   module_p = NULL;
   module_p = &eventHandler_;
@@ -71,7 +76,8 @@ RPG_Net_Protocol_Stream::load (Stream_ILayout* layout_in,
 }
 
 bool
-RPG_Net_Protocol_Stream::initialize (const inherited::CONFIGURATION_T& configuration_in)
+RPG_Net_Protocol_Stream::initialize (const inherited::CONFIGURATION_T& configuration_in,
+                                     ACE_HANDLE handle_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Stream::initialize"));
 
@@ -85,16 +91,17 @@ RPG_Net_Protocol_Stream::initialize (const inherited::CONFIGURATION_T& configura
   typename inherited::CONFIGURATION_T::ITERATOR_T iterator;
   struct RPG_Net_Protocol_ModuleHandlerConfiguration* configuration_p = NULL;
   typename inherited::ISTREAM_T::MODULE_T* module_p = NULL;
-  RPG_Net_ProtocolHandler* head_impl_p = NULL;
+  typename inherited::WRITER_T* head_impl_p = NULL;
 
   // allocate a new session state, reset stream
   const_cast<typename inherited::CONFIGURATION_T&> (configuration_in).configuration_.setupPipeline =
     false;
   reset_setup_pipeline = true;
-  if (!inherited::initialize (configuration_in))
+  if (!inherited::initialize (configuration_in,
+                              handle_in))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("%s: failed to Stream_Base_T::initialize(), aborting\n"),
+                ACE_TEXT ("%s: failed to Stream_Module_Net_IO_Stream_T::initialize(), aborting\n"),
                 ACE_TEXT (protocol_stream_name_string_)));
     goto error;
   } // end IF
@@ -122,9 +129,9 @@ RPG_Net_Protocol_Stream::initialize (const inherited::CONFIGURATION_T& configura
 
   // ******************* Protocol Handler ************************
   module_p =
-    const_cast<typename inherited::ISTREAM_T::MODULE_T*> (inherited::find (ACE_TEXT_ALWAYS_CHAR ("ProtocolHandler")));
+    const_cast<typename inherited::ISTREAM_T::MODULE_T*> (inherited::find (ACE_TEXT_ALWAYS_CHAR ("IOHandler")));
   ACE_ASSERT (module_p);
-  head_impl_p = dynamic_cast<RPG_Net_ProtocolHandler*> (module_p->writer ());
+  head_impl_p = dynamic_cast<typename inherited::WRITER_T*> (module_p->writer ());
   ACE_ASSERT (head_impl_p);
   head_impl_p->setP (&(inherited::state_));
   // *NOTE*: push()ing the module will open() it
