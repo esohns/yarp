@@ -143,16 +143,16 @@ typedef RPG_Graphics_Offsets_t::const_iterator RPG_Graphics_OffsetsConstIterator
 typedef std::pair<unsigned int, unsigned int> RPG_Graphics_Size_t;
 
 // a set of (floor-, wall-, door-, ...) tiles
-struct RPG_Graphics_Tile
+struct RPG_Graphics_TileElement
 {
   int offset_x;
   int offset_y;
   SDL_Surface* surface;
 };
 
-typedef std::vector<struct RPG_Graphics_Tile> RPG_Graphics_FloorTiles_t;
+typedef std::vector<struct RPG_Graphics_TileElement> RPG_Graphics_FloorTiles_t;
 typedef RPG_Graphics_FloorTiles_t::const_iterator RPG_Graphics_FloorTilesConstIterator_t;
-struct RPG_Graphics_FloorTileSet_t
+struct RPG_Graphics_FloorTileSet
 {
   unsigned int columns;
   unsigned int rows;
@@ -162,20 +162,20 @@ struct RPG_Graphics_FloorTileSet_t
 struct RPG_Graphics_FloorEdgeTileSet
 {
   // straight edges
-  struct RPG_Graphics_Tile west;
-  struct RPG_Graphics_Tile north;
-  struct RPG_Graphics_Tile east;
-  struct RPG_Graphics_Tile south;
+  struct RPG_Graphics_TileElement west;
+  struct RPG_Graphics_TileElement north;
+  struct RPG_Graphics_TileElement east;
+  struct RPG_Graphics_TileElement south;
   // corner edges
-  struct RPG_Graphics_Tile south_west;
-  struct RPG_Graphics_Tile south_east;
-  struct RPG_Graphics_Tile north_west;
-  struct RPG_Graphics_Tile north_east;
+  struct RPG_Graphics_TileElement south_west;
+  struct RPG_Graphics_TileElement south_east;
+  struct RPG_Graphics_TileElement north_west;
+  struct RPG_Graphics_TileElement north_east;
   // (square) corner edges
-  struct RPG_Graphics_Tile top;
-  struct RPG_Graphics_Tile right;
-  struct RPG_Graphics_Tile left;
-  struct RPG_Graphics_Tile bottom;
+  struct RPG_Graphics_TileElement top;
+  struct RPG_Graphics_TileElement right;
+  struct RPG_Graphics_TileElement left;
+  struct RPG_Graphics_TileElement bottom;
 };
 // *NOTE*: map coordinates !
 typedef std::map<RPG_Graphics_Position_t, struct RPG_Graphics_FloorEdgeTileSet> RPG_Graphics_FloorEdgeTileMap_t;
@@ -183,10 +183,10 @@ typedef RPG_Graphics_FloorEdgeTileMap_t::iterator RPG_Graphics_FloorEdgeTileMapI
 
 struct RPG_Graphics_WallTileSet
 {
-  struct RPG_Graphics_Tile west;
-  struct RPG_Graphics_Tile north;
-  struct RPG_Graphics_Tile east;
-  struct RPG_Graphics_Tile south;
+  struct RPG_Graphics_TileElement west;
+  struct RPG_Graphics_TileElement north;
+  struct RPG_Graphics_TileElement east;
+  struct RPG_Graphics_TileElement south;
 };
 // *NOTE*: map coordinates !
 typedef std::map<RPG_Graphics_Position_t, struct RPG_Graphics_WallTileSet> RPG_Graphics_WallTileMap_t;
@@ -194,14 +194,14 @@ typedef RPG_Graphics_WallTileMap_t::iterator RPG_Graphics_WallTileMapIterator_t;
 
 struct RPG_Graphics_DoorTileSet
 {
-  struct RPG_Graphics_Tile horizontal_open;
-  struct RPG_Graphics_Tile vertical_open;
-  struct RPG_Graphics_Tile horizontal_closed;
-  struct RPG_Graphics_Tile vertical_closed;
-  struct RPG_Graphics_Tile broken;
+  struct RPG_Graphics_TileElement horizontal_open;
+  struct RPG_Graphics_TileElement vertical_open;
+  struct RPG_Graphics_TileElement horizontal_closed;
+  struct RPG_Graphics_TileElement vertical_closed;
+  struct RPG_Graphics_TileElement broken;
 };
 // *NOTE*: map coordinates !
-typedef std::map<RPG_Graphics_Position_t, struct RPG_Graphics_Tile> RPG_Graphics_DoorTileMap_t;
+typedef std::map<RPG_Graphics_Position_t, struct RPG_Graphics_TileElement> RPG_Graphics_DoorTileMap_t;
 typedef RPG_Graphics_DoorTileMap_t::iterator RPG_Graphics_DoorTileMapIterator_t;
 
 typedef std::vector<RPG_Graphics_Tile>::const_iterator RPG_Graphics_TileSetConstIterator_t;

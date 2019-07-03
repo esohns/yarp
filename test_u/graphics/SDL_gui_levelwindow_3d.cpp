@@ -226,8 +226,8 @@ SDL_GUI_LevelWindow_3D::getView() const
 }
 
 void
-SDL_GUI_LevelWindow_3D::init(state_t* state_in,
-                             RPG_Common_ILock* screenLock_in)
+SDL_GUI_LevelWindow_3D::initialize(state_t* state_in,
+                                   Common_ILock* screenLock_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::init"));
 
@@ -1381,9 +1381,9 @@ SDL_GUI_LevelWindow_3D::notify(enum RPG_Engine_Command command_in,
       type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
       myEngine->lock();
       type.sprite =
-          (myEngine->isMonster(parameters_in.entity_id, false) ? RPG_Client_Common_Tools::class2Sprite(myEngine->getClass(parameters_in.entity_id,
+          (myEngine->isMonster(parameters_in.entity_id, false) ? RPG_Client_Common_Tools::classToSprite(myEngine->getClass(parameters_in.entity_id,
                                                                                                                           false))
-                                                               : RPG_Client_Common_Tools::monster2Sprite(myEngine->getName(parameters_in.entity_id,
+                                                               : RPG_Client_Common_Tools::monsterToSprite(myEngine->getName(parameters_in.entity_id,
                                                                                                                            false)));
       myEngine->unlock();
       sprite_graphic =

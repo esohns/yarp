@@ -23,12 +23,12 @@
 
 #include <string>
 
+#include "SDL.h"
+
 #include "ace/Global_Macros.h"
 #include "ace/Synch.h"
 
-#include "SDL.h"
-
-#include "rpg_common_ilock.h"
+#include "common_ilock.h"
 
 #include "rpg_map_common.h"
 
@@ -54,8 +54,10 @@ class RPG_Engine;
 */
 class SDL_GUI_MainWindow
  : public RPG_Graphics_TopLevel,
-   public RPG_Common_ILock
+   public Common_ILock
 {
+  typedef RPG_Graphics_TopLevel inherited;
+
  public:
   SDL_GUI_MainWindow(const RPG_Graphics_Size_t&,                  // size
                      const RPG_Graphics_GraphicTypeUnion&,        // (element) type
@@ -81,15 +83,13 @@ class SDL_GUI_MainWindow
   virtual void notify(const RPG_Graphics_Cursor&) const;
 
   // implement RPG_Common_ILock
-  virtual void lock();
-  virtual void unlock();
+  virtual bool lock (bool = true); // block ?
+  virtual int unlock (bool = false); // unlock completely ?
 
  private:
-  typedef RPG_Graphics_TopLevel inherited;
-
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow());
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow(const SDL_GUI_MainWindow&));
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow& operator=(const SDL_GUI_MainWindow&));
+  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow())
+  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow(const SDL_GUI_MainWindow&))
+  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow& operator=(const SDL_GUI_MainWindow&))
 
   // helper methods
   void initScrollSpots();

@@ -40,13 +40,13 @@ class RPG_Graphics_SDL_Tools
   friend class RPG_Graphics_Common_Tools;
 
  public:
-  static bool preInitVideo(const RPG_Graphics_SDL_VideoConfiguration_t&, // configuration
+  static bool preInitializeVideo(const struct RPG_Graphics_SDL_VideoConfiguration&, // configuration
                            const std::string&);                          // window/icon caption
-  static bool initVideo(const RPG_Graphics_SDL_VideoConfiguration_t&, // configuration
+  static bool initializeVideo(const struct RPG_Graphics_SDL_VideoConfiguration&, // configuration
                         const std::string&,                           // window/icon caption
                         SDL_Surface*&,                                // return value: window surface
                         const bool& = true);                          // init window surface ?
-  static SDL_Surface* initScreen(const RPG_Graphics_SDL_VideoConfiguration_t&); // configuration
+  static SDL_Surface* initializeScreen(const struct RPG_Graphics_SDL_VideoConfiguration&); // configuration
 
   static std::string keyToString(const SDL_keysym&);
 

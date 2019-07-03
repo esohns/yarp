@@ -23,11 +23,11 @@
 
 #include <string>
 
-#include "ace/Global_Macros.h"
-
 #include "SDL.h"
 
-#include "rpg_common_ilock.h"
+#include "ace/Global_Macros.h"
+
+#include "common_ilock.h"
 
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_colorname.h"
@@ -40,6 +40,8 @@
 class RPG_Graphics_SDLWindowBase
  : public RPG_Graphics_IWindow
 {
+  //typedef RPG_Graphics_IWindow inherited;
+
  public:
   virtual ~RPG_Graphics_SDLWindowBase ();
 
@@ -56,8 +58,8 @@ class RPG_Graphics_SDLWindowBase
   virtual void notify (const RPG_Graphics_Cursor&) const;
 
   // implement (part of) RPG_Graphics_IWindowBase
-  virtual void initialize (RPG_Common_ILock* = NULL, // screen lock interface handle
-                           bool = false);            // double-buffered screen ?
+  virtual void initialize (Common_ILock* = NULL, // screen lock interface handle
+                           bool = false);        // double-buffered screen ?
 
   virtual void clip (SDL_Surface* = NULL, // target surface (default: screen)
                      unsigned int = 0,    // offset x (top-left = [0,0])
@@ -109,7 +111,7 @@ class RPG_Graphics_SDLWindowBase
 
   // default screen
   SDL_Surface*                  screen_;
-  RPG_Common_ILock*             screenLock_;
+  Common_ILock*                 screenLock_;
 
   // border sizes
   unsigned int                  borderTop_;
@@ -137,15 +139,13 @@ class RPG_Graphics_SDLWindowBase
   SDL_Rect                      clipRectangle_;
 
  private:
-  typedef RPG_Graphics_IWindow inherited;
-
   // helper types
   typedef std::vector<SDL_Rect> RPG_Graphics_InvalidRegions_t;
   typedef RPG_Graphics_InvalidRegions_t::const_iterator RPG_Graphics_InvalidRegionsConstIterator_t;
 
-  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_SDLWindowBase ());
-  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_SDLWindowBase (const RPG_Graphics_SDLWindowBase&));
-  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_SDLWindowBase& operator= (const RPG_Graphics_SDLWindowBase&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_SDLWindowBase ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_SDLWindowBase (const RPG_Graphics_SDLWindowBase&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_SDLWindowBase& operator= (const RPG_Graphics_SDLWindowBase&))
 
   // helper methods
   virtual void addChild (RPG_Graphics_IWindowBase*); // window handle

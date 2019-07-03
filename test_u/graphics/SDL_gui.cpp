@@ -37,7 +37,10 @@
 #include "SDL_ttf.h"
 
 #include "common_file_tools.h"
-#include "common_tools.h"
+
+#include "common_log_tools.h"
+
+#include "common_timer_tools.h"
 
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
@@ -61,6 +64,7 @@
 
 #include "rpg_character_common_tools.h"
 
+#include "rpg_player.h"
 #include "rpg_player_common_tools.h"
 #include "rpg_player_defines.h"
 
@@ -736,7 +740,7 @@ do_slideshow(const std::string& graphicsDirectory_in,
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
-                     ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type).c_str())));
+                     ACE_TEXT(RPG_Graphics_Common_Tools::toString(type).c_str())));
 
           continue;
         } // end IF
@@ -867,7 +871,7 @@ do_slideshow(const std::string& graphicsDirectory_in,
 
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("showing graphics type \"%s\"...\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type).c_str())));
+               ACE_TEXT(RPG_Graphics_Common_Tools::toString(type).c_str())));
 
     // step4: draw image to screen
     RPG_Graphics_Surface::put(std::make_pair(((state.screen->w - image->w) / 2),  // location x
@@ -962,10 +966,10 @@ do_slideshow(const std::string& graphicsDirectory_in,
 }
 
 void
-do_UI(RPG_Engine_Entity_t& entity_in,
+do_UI(struct RPG_Engine_Entity& entity_in,
       RPG_Engine* engine_in,
-      const RPG_Engine_Level_t& level_in,
-      const RPG_Map_FloorPlan_Configuration_t& mapConfig_in,
+      const struct RPG_Engine_LevelData& level_in,
+      const struct RPG_Map_FloorPlan_Configuration& mapConfig_in,
       SDL_GUI_MainWindow* mainWindow_in,
       const bool& openGL_in,
       const bool& debug_in)
@@ -983,7 +987,7 @@ do_UI(RPG_Engine_Entity_t& entity_in,
   RPG_Graphics_Position_t mouse_position;
   unsigned int map_index = 1;
   std::ostringstream converter;
-  RPG_Engine_Level_t current_level;
+  struct RPG_Engine_LevelData current_level;
   SDL_Rect dirty_region;
   bool has_hovered = false;
   do
@@ -1181,7 +1185,7 @@ do_UI(RPG_Engine_Entity_t& entity_in,
                 ACE_TEXT_ALWAYS_CHAR(COMMON_DEF_DUMP_DIR);
 #else
             dump_path =
-                ACE_OS::getenv (ACE_TEXT_ALWAYS_CHAR (COMMON_DEF_DUMP_DIR));
+                ACE_OS::getenv (ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEMPORARY_STORAGE_VARIABLE));
 #endif
             dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
             dump_path += current_level.metadata.name;
@@ -1428,8 +1432,8 @@ void
 do_work(const mode_t& mode_in,
         const std::string& entity_in,
         const std::string& map_in,
-        const RPG_Map_FloorPlan_Configuration_t& mapConfiguration_in,
-        const RPG_Graphics_SDL_VideoConfiguration_t& videoConfiguration_in,
+        const struct RPG_Map_FloorPlan_Configuration& mapConfiguration_in,
+        const struct RPG_Graphics_SDL_VideoConfiguration& videoConfiguration_in,
         const std::string& magicDictionary_in,
         const std::string& itemsDictionary_in,
         const std::string& monsterDictionary_in,
@@ -1443,14 +1447,14 @@ do_work(const mode_t& mode_in,
   RPG_TRACE(ACE_TEXT("::do_work"));
 
   // step0: init: random seed, string conversion facilities, ...
-  RPG_Engine_Common_Tools::init(schemaRepository_in,
+  RPG_Engine_Common_Tools::initialize(schemaRepository_in,
                                 magicDictionary_in,
                                 itemsDictionary_in,
                                 monsterDictionary_in);
 
   // step1: init video
   // step1a: init video system
-   if (!RPG_Graphics_SDL_Tools::preInitVideo(videoConfiguration_in,                      // configuration
+   if (!RPG_Graphics_SDL_Tools::preInitializeVideo(videoConfiguration_in,                      // configuration
                                              ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION))) // window/icon caption
   {
     ACE_DEBUG((LM_ERROR,
@@ -1474,7 +1478,7 @@ do_work(const mode_t& mode_in,
   } // end IF
 
   // step1d: init video window
-  if (!RPG_Graphics_SDL_Tools::initVideo(videoConfiguration_in,                     // configuration
+  if (!RPG_Graphics_SDL_Tools::initializeVideo(videoConfiguration_in,                     // configuration
                                          ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION), // window/icon caption
                                          state.screen,                              // return value: window surface
                                          true))                                     // init window surface ?
@@ -1486,11 +1490,11 @@ do_work(const mode_t& mode_in,
   ACE_ASSERT(state.screen);
 
   // step2: init input
-  RPG_Client_SDL_InputConfiguration_t input_configuration;
+  struct RPG_Client_SDL_InputConfiguration input_configuration;
   input_configuration.key_repeat_initial_delay = SDL_DEFAULT_REPEAT_DELAY;
   input_configuration.key_repeat_interval = SDL_DEFAULT_REPEAT_INTERVAL;
   input_configuration.use_UNICODE = true;
-  if (!RPG_Client_Common_Tools::initSDLInput(input_configuration))
+  if (!RPG_Client_Common_Tools::initializeSDLInput(input_configuration))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Client_Common_Tools::initSDLInput, returning\n")));
@@ -1501,7 +1505,9 @@ do_work(const mode_t& mode_in,
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE;
-  std::string title = ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);
+  std::string title
+    //= ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE)
+    ;
   SDL_GUI_MainWindow main_window(std::make_pair(state.screen->w,
                                                 state.screen->h), // size
                                  type,                            // interface elements
@@ -1525,7 +1531,7 @@ do_work(const mode_t& mode_in,
     case SDL_GUI_USERMODE_FLOOR_PLAN:
     {
       // step1: create/load initial level map
-      RPG_Engine_Level_t level;
+      struct RPG_Engine_LevelData level;
       if (map_in.empty())
       {
         ACE_DEBUG((LM_DEBUG,
@@ -1574,7 +1580,7 @@ do_work(const mode_t& mode_in,
       schema_repository += ACE_TEXT_ALWAYS_CHAR ("engine");
 #endif
 
-      RPG_Engine_Entity_t entity;
+      struct RPG_Engine_Entity entity;
 //      entity.actions.clear();
       entity.character = NULL;
       entity.is_spawned = false;
@@ -1693,9 +1699,9 @@ do_work(const mode_t& mode_in,
         dynamic_cast<RPG_Client_IWindowLevel*>(main_window.child(WINDOW_MAP));
       ACE_ASSERT(map_window);
       // init/add entity to the graphics cache
-      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->init(&main_window,
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->initialize(&main_window,
                                                               map_window);
-      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->init(&main_window,
+      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->initialize(&main_window,
                                                             map_window);
 
       level_engine.set(level);
@@ -1776,7 +1782,7 @@ do_printVersion(const std::string& programName_in)
 //   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
   std::cout << programName_in
             << ACE_TEXT(": ")
-            << YARP_PACKAGE_VERSION
+            //<< YARP_PACKAGE_VERSION
             << ACE_TEXT("N/A")
             << std::endl;
 
@@ -1955,7 +1961,7 @@ ACE_TMAIN(int argc_in,
   bool validate_XML = SDL_GUI_DEF_VALIDATE_XML;
 
   // *** map ***
-  RPG_Map_FloorPlan_Configuration_t map_configuration;
+  struct RPG_Map_FloorPlan_Configuration map_configuration;
   map_configuration.min_room_size          = SDL_GUI_DEF_MAP_MIN_ROOM_SIZE;
   map_configuration.doors                  = SDL_GUI_DEF_MAP_DOORS;
   map_configuration.corridors              = SDL_GUI_DEF_MAP_CORRIDORS;
@@ -1967,7 +1973,7 @@ ACE_TMAIN(int argc_in,
   map_configuration.map_size_y             = SDL_GUI_DEF_MAP_SIZE_Y;
 
   // *** video ***
-  RPG_Graphics_SDL_VideoConfiguration_t video_configuration;
+  struct RPG_Graphics_SDL_VideoConfiguration video_configuration;
   video_configuration.screen_width      = SDL_GUI_DEF_VIDEO_W;
   video_configuration.screen_height     = SDL_GUI_DEF_VIDEO_H;
   video_configuration.screen_colordepth = SDL_GUI_DEF_VIDEO_BPP;
@@ -2060,12 +2066,12 @@ ACE_TMAIN(int argc_in,
 
   // step1d: initialize logging and/or tracing
   std::string log_file;
-  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
-                                        log_file,                  // logfile
-                                        false,                     // log to syslog ?
-                                        false,                     // trace messages ?
-                                        trace_information,         // debug messages ?
-                                        NULL))                     // logger
+  if (!Common_Log_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
+                                            log_file,                  // logfile
+                                            false,                     // log to syslog ?
+                                            false,                     // trace messages ?
+                                            trace_information,         // debug messages ?
+                                            NULL))                     // logger
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));
@@ -2158,8 +2164,8 @@ ACE_TMAIN(int argc_in,
   std::string working_time_string;
   ACE_Time_Value working_time;
   timer.elapsed_time(working_time);
-  RPG_Common_Tools::period2String(working_time,
-                                  working_time_string);
+  working_time_string =
+    Common_Timer_Tools::periodToString(working_time);
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
              ACE_TEXT(working_time_string.c_str())));

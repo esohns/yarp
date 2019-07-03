@@ -40,8 +40,8 @@ bool                    RPG_Graphics_SDL_Tools::myVideoPreInitialized = false;
 RPG_Graphics_ColorMap_t RPG_Graphics_SDL_Tools::myColors;
 
 bool
-RPG_Graphics_SDL_Tools::preInitVideo(const RPG_Graphics_SDL_VideoConfiguration_t& configuration_in,
-                                     const std::string& caption_in)
+RPG_Graphics_SDL_Tools::preInitializeVideo (const struct RPG_Graphics_SDL_VideoConfiguration& configuration_in,
+                                            const std::string& caption_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::preInitVideo"));
 
@@ -124,10 +124,10 @@ RPG_Graphics_SDL_Tools::preInitVideo(const RPG_Graphics_SDL_VideoConfiguration_t
 }
 
 bool
-RPG_Graphics_SDL_Tools::initVideo(const RPG_Graphics_SDL_VideoConfiguration_t& configuration_in,
-                                  const std::string& caption_in,
-                                  SDL_Surface*& windowSurface_out,
-                                  const bool& initWindow_in)
+RPG_Graphics_SDL_Tools::initializeVideo (const struct RPG_Graphics_SDL_VideoConfiguration& configuration_in,
+                                         const std::string& caption_in,
+                                         SDL_Surface*& windowSurface_out,
+                                         const bool& initWindow_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::initVideo"));
 
@@ -136,8 +136,8 @@ RPG_Graphics_SDL_Tools::initVideo(const RPG_Graphics_SDL_VideoConfiguration_t& c
 
   // sanity check
   if (!myVideoPreInitialized)
-    if (!preInitVideo(configuration_in,
-                      caption_in))
+    if (!preInitializeVideo(configuration_in,
+                            caption_in))
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Graphics_SDL_Tools::preInitVideo(), aborting\n")));
@@ -174,7 +174,7 @@ RPG_Graphics_SDL_Tools::initVideo(const RPG_Graphics_SDL_VideoConfiguration_t& c
   // step3: init screen
   if (initWindow_in)
   {
-    windowSurface_out = RPG_Graphics_SDL_Tools::initScreen(configuration_in);
+    windowSurface_out = RPG_Graphics_SDL_Tools::initializeScreen(configuration_in);
     if (!windowSurface_out)
     {
       ACE_DEBUG((LM_ERROR,
@@ -191,7 +191,7 @@ RPG_Graphics_SDL_Tools::initVideo(const RPG_Graphics_SDL_VideoConfiguration_t& c
 }
 
 SDL_Surface*
-RPG_Graphics_SDL_Tools::initScreen (const RPG_Graphics_SDL_VideoConfiguration_t& configuration_in)
+RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoConfiguration& configuration_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::initScreen"));
 

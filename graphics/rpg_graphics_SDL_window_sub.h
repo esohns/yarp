@@ -37,6 +37,8 @@
 class RPG_Graphics_SDLWindowSub
  : public RPG_Graphics_SDLWindowBase
 {
+  typedef RPG_Graphics_SDLWindowBase inherited;
+
  public:
   RPG_Graphics_SDLWindowSub (const RPG_Graphics_WindowType&,    // type
                              const RPG_Graphics_SDLWindowBase&, // parent
@@ -76,11 +78,9 @@ class RPG_Graphics_SDLWindowSub
   bool         isVisible_;
 
  private:
-  typedef RPG_Graphics_SDLWindowBase inherited;
-
-  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_SDLWindowSub ());
-  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_SDLWindowSub (const RPG_Graphics_SDLWindowSub&));
-  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_SDLWindowSub& operator= (const RPG_Graphics_SDLWindowSub&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_SDLWindowSub ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_SDLWindowSub (const RPG_Graphics_SDLWindowSub&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_SDLWindowSub& operator= (const RPG_Graphics_SDLWindowSub&))
 
   SDL_Surface* BG_;
 };

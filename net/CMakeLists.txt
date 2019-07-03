@@ -17,9 +17,7 @@ set (${LIBRARY}_SRCS
      rpg_net_module_protocolhandler.cpp
      rpg_net_module_protocolhandler.h
      rpg_net_packet_headers.h
-     rpg_net_remote_comm.h
-     rpg_net_stream.cpp
-     rpg_net_stream.h)
+     rpg_net_remote_comm.h)
 
 #set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_NET_BUILD_DLL)
 
@@ -88,7 +86,6 @@ install (FILES
          rpg_net_module_protocolhandler.h
          rpg_net_packet_headers.h
          rpg_net_remote_comm.h
-         rpg_net_stream.h
          DESTINATION include)
 install (TARGETS ${LIBRARY} LIBRARY
          DESTINATION lib)

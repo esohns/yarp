@@ -31,7 +31,7 @@
 #include <vector>
 
 // *NOTE* types as used by SDL
-struct RPG_Sound_SDLConfiguration_t
+struct RPG_Sound_SDLConfiguration
 {
   int    frequency;
   Uint16 format;
@@ -43,16 +43,16 @@ typedef RPG_Sound RPG_Sound_t;
 typedef std::map<RPG_Sound_Event, RPG_Sound_t> RPG_Sound_Dictionary_t;
 typedef RPG_Sound_Dictionary_t::const_iterator RPG_Sound_DictionaryIterator_t;
 
-struct RPG_Sound_SoundCacheNode_t
+struct RPG_Sound_SoundCacheNode
 {
   RPG_Sound_Event sound_event;
   std::string     sound_file;
   Mix_Chunk*      chunk;
 
-  inline bool operator==(const RPG_Sound_SoundCacheNode_t& rhs_in) const
+  bool operator==(const struct RPG_Sound_SoundCacheNode& rhs_in) const
   { return (this->sound_event == rhs_in.sound_event); }
 };
-typedef std::vector<RPG_Sound_SoundCacheNode_t> RPG_Sound_SoundCache_t;
+typedef std::vector<struct RPG_Sound_SoundCacheNode> RPG_Sound_SoundCache_t;
 typedef RPG_Sound_SoundCache_t::iterator RPG_Sound_SoundCacheIterator_t;
 
 #endif

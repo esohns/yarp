@@ -21,36 +21,36 @@
 #ifndef RPG_CLIENT_ENTITY_MANAGER_H
 #define RPG_CLIENT_ENTITY_MANAGER_H
 
-#include "rpg_client_exports.h"
-
-#include "rpg_engine_common.h"
-
-#include "rpg_graphics_common.h"
-#include "rpg_graphics_iwindow.h"
-
-#include "rpg_common_ilock.h"
+#include <map>
 
 #include "SDL.h"
 
 #include "ace/Global_Macros.h"
 #include "ace/Singleton.h"
-#include "ace/Synch.h"
+#include "ace/Synch_Traits.h"
 
-#include <map>
+#include "common_ilock.h"
+
+#include "rpg_graphics_common.h"
+#include "rpg_graphics_iwindow.h"
+
+#include "rpg_engine_common.h"
+
+//#include "rpg_client_exports.h"
 
 /**
   @author Erik Sohns <erik.sohns@web.de>
  */
-class RPG_Client_Export RPG_Client_Entity_Manager
+class RPG_Client_Entity_Manager
 {
   // singleton requires access to the ctor/dtor
   friend class ACE_Singleton<RPG_Client_Entity_Manager,
-                             ACE_Recursive_Thread_Mutex>;
+                             ACE_SYNCH_RECURSIVE_MUTEX>;
 
  public:
   // init (clipping)
-  void init(RPG_Common_ILock*,          // screen lock interface handle
-            RPG_Graphics_IWindowBase*); // (target) window handle
+  void initialize (Common_ILock*,              // screen lock interface handle
+                   RPG_Graphics_IWindowBase*); // (target) window handle
 
   // manage entities
   void add(const RPG_Engine_EntityID_t&, // id
@@ -67,7 +67,7 @@ class RPG_Client_Export RPG_Client_Entity_Manager
            const RPG_Graphics_Position_t&, // position (screen coordinates !)
            SDL_Rect&,                      // return value: "dirty" region
            const bool&,                    // clip window ?
-					 const bool& = true,             // locked access ?
+           const bool& = true,             // locked access ?
            const bool& = false);           // debug ?
 
   // clear the stored BG
@@ -76,37 +76,37 @@ class RPG_Client_Export RPG_Client_Entity_Manager
  private:
   virtual ~RPG_Client_Entity_Manager();
   RPG_Client_Entity_Manager();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Entity_Manager(const RPG_Client_Entity_Manager&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Entity_Manager& operator=(const RPG_Client_Entity_Manager&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Entity_Manager(const RPG_Client_Entity_Manager&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Client_Entity_Manager& operator=(const RPG_Client_Entity_Manager&))
 
   // helper types
-  struct RPG_Client_EntityCacheEntry_t
+  struct RPG_Client_EntityCacheEntry
   {
     SDL_Surface*            graphic;
     bool                    free_on_remove;
     SDL_Surface*            bg;
     RPG_Graphics_Position_t bg_position;
   };
-  typedef std::map<RPG_Engine_EntityID_t, RPG_Client_EntityCacheEntry_t> RPG_Client_EntityCache_t;
+  typedef std::map<RPG_Engine_EntityID_t, struct RPG_Client_EntityCacheEntry> RPG_Client_EntityCache_t;
   typedef RPG_Client_EntityCache_t::iterator RPG_Client_EntityCacheIterator_t;
   typedef RPG_Client_EntityCache_t::const_iterator RPG_Client_EntityCacheConstIterator_t;
 
   // helper methods
   // restore the BG
-	void restoreBG(const RPG_Engine_EntityID_t&, // id
-								 SDL_Rect&,                    // return value: "dirty" region
-								 const bool&,                  // clip window ?
-								 const bool& = true,           // locked access ?
-								 const bool& = false);         // debug ?
+  void restoreBG (const RPG_Engine_EntityID_t&, // id
+                  SDL_Rect&,                    // return value: "dirty" region
+                  const bool&,                  // clip window ?
+                  const bool& = true,           // locked access ?
+                  const bool& = false);         // debug ?
 
-  RPG_Common_ILock*         myScreenLock;
+  Common_ILock*             myScreenLock;
   RPG_Graphics_IWindowBase* myWindow;
   RPG_Client_EntityCache_t  myCache;
 };
 
 typedef ACE_Singleton<RPG_Client_Entity_Manager,
-                      ACE_Recursive_Thread_Mutex> RPG_CLIENT_ENTITY_MANAGER_SINGLETON;
-RPG_CLIENT_SINGLETON_DECLARE(ACE_Singleton,
-                             RPG_Client_Entity_Manager,
-                             ACE_Recursive_Thread_Mutex);
+                      ACE_SYNCH_RECURSIVE_MUTEX> RPG_CLIENT_ENTITY_MANAGER_SINGLETON;
+//RPG_CLIENT_SINGLETON_DECLARE(ACE_Singleton,
+//                             RPG_Client_Entity_Manager,
+//                             ACE_Recursive_Thread_Mutex);
 #endif

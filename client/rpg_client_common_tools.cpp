@@ -54,44 +54,43 @@
 RPG_Client_GraphicsModeToStringTable_t RPG_Client_GraphicsModeHelper::myRPG_Client_GraphicsModeToStringTable;
 
 bool
-RPG_Client_Common_Tools::initSDLInput(const RPG_Client_SDL_InputConfiguration_t& SDLInputConfiguration_in)
+RPG_Client_Common_Tools::initializeSDLInput(const RPG_Client_SDL_InputConfiguration& SDLInputConfiguration_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::initSDLInput"));
 
   // ***** keyboard setup *****
   // Unicode translation
-	int previous_state =
-		SDL_EnableUNICODE((SDLInputConfiguration_in.use_UNICODE ? 1 : 0));
-	ACE_UNUSED_ARG(previous_state);
+  int previous_state =
+    SDL_EnableUNICODE((SDLInputConfiguration_in.use_UNICODE ? 1 : 0));
+  ACE_UNUSED_ARG(previous_state);
 
   // key repeat rates
-	if (SDL_EnableKeyRepeat(SDLInputConfiguration_in.key_repeat_initial_delay,
-		                      SDLInputConfiguration_in.key_repeat_interval))
-	{
-	  ACE_DEBUG((LM_ERROR,
-		           ACE_TEXT("failed to SDL_EnableKeyRepeat(): \"%s\", aborting\n"),
-							 ACE_TEXT(SDL_GetError())));
+  if (SDL_EnableKeyRepeat(SDLInputConfiguration_in.key_repeat_initial_delay,
+                          SDLInputConfiguration_in.key_repeat_interval))
+  {
+    ACE_DEBUG((LM_ERROR,
+              ACE_TEXT("failed to SDL_EnableKeyRepeat(): \"%s\", aborting\n"),
+              ACE_TEXT(SDL_GetError())));
+    return false;
+  } // end IF
 
-		return false;
-	} // end IF
+  //   // ignore keyboard events
+  //   SDL_EventState(SDL_KEYDOWN, SDL_IGNORE);
+  //   SDL_EventState(SDL_KEYUP, SDL_IGNORE);
 
-	//   // ignore keyboard events
-	//   SDL_EventState(SDL_KEYDOWN, SDL_IGNORE);
-	//   SDL_EventState(SDL_KEYUP, SDL_IGNORE);
+  // SDL event filter (filter mouse motion events and the like)
+  //   SDL_SetEventFilter(event_filter_SDL_cb);
 
-	// SDL event filter (filter mouse motion events and the like)
-	//   SDL_SetEventFilter(event_filter_SDL_cb);
+  // ***** mouse setup *****
+  int show_cursor_status_before = SDL_ShowCursor(-1);
+  if (show_cursor_status_before == 1)
+    SDL_ShowCursor(SDL_DISABLE); // disable OS mouse cursor over SDL window
 
-	// ***** mouse setup *****
-	int show_cursor_status_before = SDL_ShowCursor(-1);
-	if (show_cursor_status_before == 1)
-		SDL_ShowCursor(SDL_DISABLE); // disable OS mouse cursor over SDL window
-
-	return true;
+  return true;
 }
 
 void
-RPG_Client_Common_Tools::initUserProfiles()
+RPG_Client_Common_Tools::initializeUserProfiles()
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::initUserProfiles"));
 
@@ -117,8 +116,8 @@ RPG_Client_Common_Tools::initUserProfiles()
 }
 
 bool
-RPG_Client_Common_Tools::initialize (const RPG_Client_SDL_InputConfiguration_t& inputConfiguration_in,
-                                     const RPG_Sound_SDLConfiguration_t& audioConfiguration_in,
+RPG_Client_Common_Tools::initialize (const struct RPG_Client_SDL_InputConfiguration& inputConfiguration_in,
+                                     const struct RPG_Sound_SDLConfiguration& audioConfiguration_in,
                                      const std::string& soundDirectory_in,
                                      bool useCD_in,
                                      unsigned int soundCacheSize_in,
@@ -135,7 +134,7 @@ RPG_Client_Common_Tools::initialize (const RPG_Client_SDL_InputConfiguration_t& 
   RPG_Client_GraphicsModeHelper::init();
 
   // step1: initialize input
-  if (!RPG_Client_Common_Tools::initSDLInput (inputConfiguration_in))
+  if (!RPG_Client_Common_Tools::initializeSDLInput (inputConfiguration_in))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Client_Common_Tools::initSDLInput, aborting\n")));
@@ -168,7 +167,7 @@ RPG_Client_Common_Tools::initialize (const RPG_Client_SDL_InputConfiguration_t& 
 
   // step2b: initialize audio/video, string conversion facilities and other
   //         (static) data
-  if (!RPG_Sound_Common_Tools::init(audioConfiguration_in,
+  if (!RPG_Sound_Common_Tools::initialize(audioConfiguration_in,
                                     soundDirectory_in,
                                     useCD_in,
                                     soundCacheSize_in,
@@ -223,7 +222,7 @@ RPG_Client_Common_Tools::initialize (const RPG_Client_SDL_InputConfiguration_t& 
   } // end IF
 
   // step5: initialize user profiles
-  RPG_Client_Common_Tools::initUserProfiles();
+  RPG_Client_Common_Tools::initializeUserProfiles();
 
   return true;
 }
@@ -233,13 +232,13 @@ RPG_Client_Common_Tools::finalize ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Common_Tools::fini"));
 
-  RPG_Sound_Common_Tools::fini ();
+  RPG_Sound_Common_Tools::finalize ();
   RPG_Graphics_Common_Tools::finalize ();
 }
 
 void
 RPG_Client_Common_Tools::initFloorEdges(const RPG_Engine& engine_in,
-                                        const RPG_Graphics_FloorEdgeTileSet_t& tileSet_in,
+                                        const struct RPG_Graphics_FloorEdgeTileSet& tileSet_in,
                                         RPG_Graphics_FloorEdgeTileMap_t& floorEdgeTiles_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::initFloorEdges"));
@@ -250,7 +249,7 @@ RPG_Client_Common_Tools::initFloorEdges(const RPG_Engine& engine_in,
   RPG_Map_Position_t current_position;
   RPG_Map_Position_t east, north, west, south;
   RPG_Map_Position_t north_east, north_west, south_east, south_west;
-  RPG_Graphics_FloorEdgeTileSet_t current_floor_edges;
+  struct RPG_Graphics_FloorEdgeTileSet current_floor_edges;
   RPG_Map_Element current_element;
   RPG_Map_Size_t map_size = engine_in.getSize();
   RPG_Map_Positions_t walls = engine_in.getWalls();
@@ -357,7 +356,7 @@ RPG_Client_Common_Tools::initFloorEdges(const RPG_Engine& engine_in,
 }
 
 void
-RPG_Client_Common_Tools::updateFloorEdges(const RPG_Graphics_FloorEdgeTileSet_t& tileSet_in,
+RPG_Client_Common_Tools::updateFloorEdges(const struct RPG_Graphics_FloorEdgeTileSet& tileSet_in,
                                           RPG_Graphics_FloorEdgeTileMap_t& floorEdgeTiles_inout)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::updateFloorEdges"));
@@ -395,7 +394,7 @@ RPG_Client_Common_Tools::updateFloorEdges(const RPG_Graphics_FloorEdgeTileSet_t&
 
 void
 RPG_Client_Common_Tools::initWalls(const RPG_Engine& engine_in,
-                                   const RPG_Graphics_WallTileSet_t& tileSet_in,
+                                   const struct RPG_Graphics_WallTileSet& tileSet_in,
                                    RPG_Graphics_WallTileMap_t& wallTiles_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::initWalls"));
@@ -405,7 +404,7 @@ RPG_Client_Common_Tools::initWalls(const RPG_Engine& engine_in,
 
   RPG_Map_Position_t current_position;
   RPG_Map_Position_t east, north, west, south;
-  RPG_Graphics_WallTileSet_t current_walls;
+  struct RPG_Graphics_WallTileSet current_walls;
   bool has_walls = false;
   RPG_Map_Element current_element;
   RPG_Map_Size_t map_size = engine_in.getSize();
@@ -470,7 +469,7 @@ RPG_Client_Common_Tools::initWalls(const RPG_Engine& engine_in,
 }
 
 void
-RPG_Client_Common_Tools::updateWalls(const RPG_Graphics_WallTileSet_t& tileSet_in,
+RPG_Client_Common_Tools::updateWalls(const struct RPG_Graphics_WallTileSet& tileSet_in,
                                      RPG_Graphics_WallTileMap_t& wallTiles_inout)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::updateWalls"));
@@ -492,7 +491,7 @@ RPG_Client_Common_Tools::updateWalls(const RPG_Graphics_WallTileSet_t& tileSet_i
 
 void
 RPG_Client_Common_Tools::initDoors(const RPG_Engine& engine_in,
-                                   const RPG_Graphics_DoorTileSet_t& tileSet_in,
+                                   const struct RPG_Graphics_DoorTileSet& tileSet_in,
                                    RPG_Graphics_DoorTileMap_t& doorTiles_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::initDoors"));
@@ -500,7 +499,7 @@ RPG_Client_Common_Tools::initDoors(const RPG_Engine& engine_in,
   // init return value(s)
   doorTiles_out.clear();
 
-  RPG_Graphics_Tile_t current_tile;
+  struct RPG_Graphics_TileElement current_tile;
   RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
 	engine_in.lock();
   RPG_Map_Positions_t doors = engine_in.getDoors(false);
@@ -560,13 +559,13 @@ RPG_Client_Common_Tools::initDoors(const RPG_Engine& engine_in,
 }
 
 void
-RPG_Client_Common_Tools::updateDoors(const RPG_Graphics_DoorTileSet_t& tileSet_in,
+RPG_Client_Common_Tools::updateDoors(const struct RPG_Graphics_DoorTileSet& tileSet_in,
                                      const RPG_Engine& engine_in,
                                      RPG_Graphics_DoorTileMap_t& doorTiles_inout)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::updateDoors"));
 
-  RPG_Graphics_Tile_t current_tile;
+  struct RPG_Graphics_TileElement current_tile;
   RPG_Graphics_Orientation orientation;
   RPG_Map_DoorState door_state;
 	engine_in.lock();
@@ -625,7 +624,7 @@ RPG_Client_Common_Tools::updateDoors(const RPG_Graphics_DoorTileSet_t& tileSet_i
 }
 
 RPG_Graphics_Sprite
-RPG_Client_Common_Tools::class2Sprite(const RPG_Character_Class& class_in)
+RPG_Client_Common_Tools::classToSprite(const RPG_Character_Class& class_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::class2Sprite"));
 
@@ -641,7 +640,7 @@ RPG_Client_Common_Tools::class2Sprite(const RPG_Character_Class& class_in)
 }
 
 RPG_Graphics_Sprite
-RPG_Client_Common_Tools::monster2Sprite(const std::string& type_in)
+RPG_Client_Common_Tools::monsterToSprite(const std::string& type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::monster2Sprite"));
 
@@ -962,7 +961,7 @@ RPG_Client_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
 }
 
 RPG_Graphics_Style
-RPG_Client_Common_Tools::environment2Style(const RPG_Common_Environment& environment_in)
+RPG_Client_Common_Tools::environmentToStyle(const RPG_Common_Environment& environment_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::environment2Style"));
 

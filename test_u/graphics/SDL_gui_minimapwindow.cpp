@@ -159,8 +159,8 @@ SDL_GUI_MinimapWindow::handleEvent(const SDL_Event& event_in,
 }
 
 void
-SDL_GUI_MinimapWindow::init(state_t* state_in,
-                            RPG_Common_ILock* screenLock_in)
+SDL_GUI_MinimapWindow::initialize(state_t* state_in,
+                                  Common_ILock* screenLock_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::init"));
 

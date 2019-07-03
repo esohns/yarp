@@ -23,19 +23,18 @@
 
 #include "SDL.h"
 
+#include "common_ilock.h"
+
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_windowtype.h"
-
-// forward declarations;
-class RPG_Common_ILock;
 
 class RPG_Graphics_IWindowBase
 {
  public:
   virtual ~RPG_Graphics_IWindowBase () {};
 
-  virtual void initialize (RPG_Common_ILock* = NULL, // screen lock interface handle
-                           bool = false) = 0;        // double-buffered screen ?
+  virtual void initialize (Common_ILock* = NULL, // screen lock interface handle
+                           bool = false) = 0;    // double-buffered screen ?
 
   virtual void clip (SDL_Surface* = NULL,   // target surface (default: screen)
                      unsigned int = 0,      // offset x (top-left = [0,0])

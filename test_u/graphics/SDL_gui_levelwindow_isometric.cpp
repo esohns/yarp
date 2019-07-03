@@ -96,7 +96,7 @@ SDL_GUI_LevelWindow_Isometric::SDL_GUI_LevelWindow_Isometric(const RPG_Graphics_
   if (!myCurrentOffMapTile)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type).c_str())));
+               ACE_TEXT(RPG_Graphics_Common_Tools::toString(type).c_str())));
 
   // init tiles / position
   ACE_OS::memset(&myCurrentFloorEdgeSet,
@@ -219,8 +219,8 @@ SDL_GUI_LevelWindow_Isometric::getView() const
 }
 
 void
-SDL_GUI_LevelWindow_Isometric::init(state_t* state_in,
-                                    RPG_Common_ILock* screenLock_in)
+SDL_GUI_LevelWindow_Isometric::initialize(state_t* state_in,
+                                    Common_ILock* screenLock_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::init"));
 
@@ -272,7 +272,7 @@ SDL_GUI_LevelWindow_Isometric::init(state_t* state_in,
 
     return;
   } // end IF
-  minimap_window->init(state_in, screenLock_in);
+  minimap_window->initialize(state_in, screenLock_in);
 }
 
 void
@@ -676,7 +676,7 @@ SDL_GUI_LevelWindow_Isometric::draw(SDL_Surface* targetSurface_in,
   // pass 2
   RPG_Graphics_WallTileMapIterator_t wall_iterator = myWallTiles.end();
   RPG_Graphics_DoorTileMapIterator_t door_iterator = myDoorTiles.end();
-  RPG_Engine_LevelMetaData_t level_metadata = myEngine->getMetaData(false);
+  struct RPG_Engine_LevelMetaData level_metadata = myEngine->getMetaData(false);
   //RPG_Engine_EntityGraphicsConstIterator_t creature_iterator;
   for (i = -static_cast<int>(top_right.second);
        i <= static_cast<int>(top_right.second);
@@ -1001,7 +1001,7 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
             if (entity_id == 0)
               break; // nothing to do...
 
-            RPG_Engine_Action_t player_action;
+            struct RPG_Engine_Action player_action;
             player_action.command = COMMAND_TRAVEL;
             // compute target position
             player_action.position = myEngine->getPosition(entity_id, true);
@@ -1699,7 +1699,7 @@ set_cursor:
                        map_position))
             break; // --> no player/vision, no action...
 
-          RPG_Engine_Action_t player_action;
+          struct RPG_Engine_Action player_action;
           player_action.command = RPG_ENGINE_COMMAND_INVALID;
           player_action.position = map_position;
           //player_action.path.clear();
@@ -1986,8 +1986,8 @@ SDL_GUI_LevelWindow_Isometric::initialize(const RPG_Graphics_Style& style_in)
 }
 
 void
-SDL_GUI_LevelWindow_Isometric::notify(const RPG_Engine_Command& command_in,
-                                      const RPG_Engine_ClientNotificationParameters_t& parameters_in)
+SDL_GUI_LevelWindow_Isometric::notify(enum RPG_Engine_Command command_in,
+                                      const struct RPG_Engine_ClientNotificationParameters& parameters_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::notify"));
 
@@ -2069,9 +2069,9 @@ SDL_GUI_LevelWindow_Isometric::notify(const RPG_Engine_Command& command_in,
       type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
       myEngine->lock();
       type.sprite =
-        (myEngine->isMonster(parameters_in.entity_id, false) ? RPG_Client_Common_Tools::monster2Sprite(myEngine->getName(parameters_in.entity_id,
+        (myEngine->isMonster(parameters_in.entity_id, false) ? RPG_Client_Common_Tools::monsterToSprite(myEngine->getName(parameters_in.entity_id,
                                                                                                                          false))
-                                                             : RPG_Client_Common_Tools::class2Sprite(myEngine->getClass(parameters_in.entity_id,
+                                                             : RPG_Client_Common_Tools::classToSprite(myEngine->getClass(parameters_in.entity_id,
                                                                                                                         false)));
       myEngine->unlock();
       sprite_graphic =
@@ -2193,8 +2193,8 @@ SDL_GUI_LevelWindow_Isometric::notify(const RPG_Engine_Command& command_in,
                                                     map_area,
                                                     false); // all
 
-        const_cast<RPG_Engine_ClientNotificationParameters_t&>(parameters_in).positions.clear();
-        const_cast<RPG_Engine_ClientNotificationParameters_t&>(parameters_in).positions.insert(parameters_in.previous_position);
+        const_cast<struct RPG_Engine_ClientNotificationParameters&>(parameters_in).positions.clear();
+        const_cast<struct RPG_Engine_ClientNotificationParameters&>(parameters_in).positions.insert(parameters_in.previous_position);
       } // end ELSE
 
       update_minimap = true;
@@ -2833,7 +2833,7 @@ SDL_GUI_LevelWindow_Isometric::initCeiling()
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type).c_str())));
+               ACE_TEXT(RPG_Graphics_Common_Tools::toString(type).c_str())));
 
     return;
   } // end IF

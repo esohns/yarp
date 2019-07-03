@@ -816,7 +816,7 @@ RPG_Graphics_Common_Tools::textSize(const RPG_Graphics_Font& font_in,
 
 void
 RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& style_in,
-                                                RPG_Graphics_FloorEdgeTileSet_t& tileSet_out)
+                                                struct RPG_Graphics_FloorEdgeTileSet& tileSet_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadFloorEdgeTileSet"));
 
@@ -923,7 +923,7 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& st
   path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 
   std::string path = path_base;
-  RPG_Graphics_Tile_t current_tile;
+  struct RPG_Graphics_TileElement current_tile;
   unsigned int type = 0;
   std::istringstream converter;
 //  size_t edge_position = std::string::npos;
@@ -1189,7 +1189,7 @@ RPG_Graphics_Common_Tools::loadFloorTileSet(const RPG_Graphics_FloorStyle& style
   path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 
   std::string path = path_base;
-  RPG_Graphics_Tile_t current_tile;
+  struct RPG_Graphics_TileElement current_tile;
   unsigned long column = 0;
   unsigned long row = 0;
   std::istringstream converter;
@@ -1257,7 +1257,7 @@ RPG_Graphics_Common_Tools::loadFloorTileSet(const RPG_Graphics_FloorStyle& style
 void
 RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_in,
                                            const bool& halfHeight_in,
-                                           RPG_Graphics_WallTileSet_t& tileSet_out)
+                                           struct RPG_Graphics_WallTileSet& tileSet_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadWallTileSet"));
 
@@ -1324,7 +1324,7 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
   path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 
   std::string path = path_base;
-  RPG_Graphics_Tile_t current_tile;
+  struct RPG_Graphics_TileElement current_tile;
   for (RPG_Graphics_TileSetConstIterator_t iterator = graphic.tileset.tiles.begin();
        iterator != graphic.tileset.tiles.end();
        iterator++)
@@ -1423,7 +1423,7 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
 
 void
 RPG_Graphics_Common_Tools::loadDoorTileSet(const RPG_Graphics_DoorStyle& style_in,
-                                           RPG_Graphics_DoorTileSet_t& tileSet_out)
+                                           struct RPG_Graphics_DoorTileSet& tileSet_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadDoorTileSet"));
 
@@ -1495,7 +1495,7 @@ RPG_Graphics_Common_Tools::loadDoorTileSet(const RPG_Graphics_DoorStyle& style_i
   path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 
   std::string path = path_base;
-  RPG_Graphics_Tile_t current_tile;
+  struct RPG_Graphics_TileElement current_tile;
   for (RPG_Graphics_TileSetConstIterator_t iterator = graphic.tileset.tiles.begin();
        iterator != graphic.tileset.tiles.end();
        iterator++)
@@ -1630,7 +1630,7 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_GraphicTypeUnion& type
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadGraphic"));
 
   RPG_Graphics_GraphicsCacheIterator_t iter;
-  RPG_Graphics_GraphicsCacheNode_t node;
+  struct RPG_Graphics_GraphicsCacheNode node;
   node.type = type_in;
   // init return value(s)
   node.image = NULL;

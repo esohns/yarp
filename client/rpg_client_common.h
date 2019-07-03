@@ -64,15 +64,15 @@ struct RPG_Client_State
 };
 
 struct RPG_Client_GTK_CBData
+  : Common_UI_GTK_CBData
 {
   RPG_Client_GTK_CBData()
-   : GTKState ()
+   : Common_UI_GTK_CBData ()
    , doHover (true)
    , hoverTime (0)
-   , logStack ()
-   , entityFilter (NULL)
-   , mapFilter (NULL)
-   , savedStateFilter (NULL)
+   //, entityFilter (NULL)
+   //, mapFilter (NULL)
+   //, savedStateFilter (NULL)
    , screen (NULL)
    , screenLock (NULL,
                  NULL)
@@ -85,14 +85,11 @@ struct RPG_Client_GTK_CBData
    , mapConfiguration ()
   {}
 
-  //Common_UI_GTKState                     GTKState;
   bool                                   doHover;
   unsigned int                           hoverTime;
-  //Common_MessageStack_t                  logStack;
-  //ACE_Recursive_Thread_Mutex             logStackLock;
-  GtkFileFilter*                         entityFilter;
-  GtkFileFilter*                         mapFilter;
-  GtkFileFilter*                         savedStateFilter;
+  //GtkFileFilter*                         entityFilter;
+  //GtkFileFilter*                         mapFilter;
+  //GtkFileFilter*                         savedStateFilter;
   SDL_Surface*                           screen;
   ACE_Thread_Mutex                       screenLock; // video access
   SDL_TimerID                            eventTimer;

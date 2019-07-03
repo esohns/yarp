@@ -21,12 +21,13 @@
 #ifndef SDL_GUI_LEVELWINDOW_H
 #define SDL_GUI_LEVELWINDOW_H
 
-#include "SDL_gui_common.h"
+#include <string>
 
-#include "rpg_client_iwindow_level.h"
+#include "SDL.h"
 
-#include "rpg_engine_common.h"
-#include "rpg_engine_iclient.h"
+#include "ace/Global_Macros.h"
+
+#include "common_ilock.h"
 
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_style.h"
@@ -34,15 +35,15 @@
 #include "rpg_graphics_SDL_window_base.h"
 #include "rpg_graphics_cursor_manager.h"
 
-#include "SDL.h"
+#include "rpg_engine_common.h"
+#include "rpg_engine_iclient.h"
 
-#include "ace/Global_Macros.h"
+#include "rpg_client_iwindow_level.h"
 
-#include <string>
+#include "SDL_gui_common.h"
 
 // forward declarations
 class RPG_Engine;
-class RPG_Common_ILock;
 
 /**
   @author Erik Sohns <erik.sohns@web.de>
@@ -52,6 +53,8 @@ class SDL_GUI_LevelWindow_Isometric
    public RPG_Client_IWindowLevel,
    public RPG_Engine_IClient
 {
+  typedef RPG_Graphics_SDLWindowBase inherited;
+
  public:
   SDL_GUI_LevelWindow_Isometric(// *** SDL window ***
                                 const RPG_Graphics_SDLWindowBase&, // parent
@@ -59,8 +62,8 @@ class SDL_GUI_LevelWindow_Isometric
                                 RPG_Engine*);                      // (level) state handle
   virtual ~SDL_GUI_LevelWindow_Isometric();
 
-  void init(state_t*,           // state handle
-            RPG_Common_ILock*); // screen lock interface handle
+  void initialize (state_t*,           // state handle
+                   Common_ILock*); // screen lock interface handle
 
   // implement (part of) RPG_Client_IWindowLevel
   virtual void initialize(const RPG_Graphics_Style&); // style
@@ -99,15 +102,13 @@ class SDL_GUI_LevelWindow_Isometric
   //virtual void redraw();
   //// *NOTE*: this triggers a complete redraw !
   //virtual void updateEntity(const RPG_Engine_EntityID_t&);
-  virtual void notify(const RPG_Engine_Command&,
-                      const RPG_Engine_ClientNotificationParameters_t&);
+  virtual void notify(enum RPG_Engine_Command,
+                      const struct RPG_Engine_ClientNotificationParameters&);
 
  private:
-  typedef RPG_Graphics_SDLWindowBase inherited;
-
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow_Isometric());
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow_Isometric(const SDL_GUI_LevelWindow_Isometric&));
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow_Isometric& operator=(const SDL_GUI_LevelWindow_Isometric&));
+  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow_Isometric())
+  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow_Isometric(const SDL_GUI_LevelWindow_Isometric&))
+  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow_Isometric& operator=(const SDL_GUI_LevelWindow_Isometric&))
 
   // helper types
   typedef std::pair<int, int> RPG_Position_t;
@@ -130,10 +131,10 @@ class SDL_GUI_LevelWindow_Isometric
   RPG_Engine*                     myEngine;
 
   RPG_Graphics_FloorTileSet_t     myCurrentFloorSet;
-  RPG_Graphics_FloorEdgeTileSet_t myCurrentFloorEdgeSet;
-  RPG_Graphics_WallTileSet_t      myCurrentWallSet;
+  struct RPG_Graphics_FloorEdgeTileSet myCurrentFloorEdgeSet;
+  struct RPG_Graphics_WallTileSet      myCurrentWallSet;
   SDL_Surface*                    myCurrentCeilingTile;
-  RPG_Graphics_DoorTileSet_t      myCurrentDoorSet;
+  struct RPG_Graphics_DoorTileSet      myCurrentDoorSet;
   SDL_Surface*                    myCurrentOffMapTile;
 
   // floor edge tiles / position

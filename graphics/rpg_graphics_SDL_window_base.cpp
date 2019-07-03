@@ -36,8 +36,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase (const RPG_Graphics_Windo
                                                         const RPG_Graphics_Size_t& size_in,
                                                         const std::string& title_in)
 //                                                        SDL_Surface* backGround_in)
- : inherited ()
- , screen_ (NULL)
+ : screen_ (NULL)
  , screenLock_ (NULL)
  , borderTop_ (0)
  , borderBottom_ (0)
@@ -66,8 +65,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase (const RPG_Graphics_Windo
                                                         const RPG_Graphics_Offset_t& offset_in,
                                                         const std::string& title_in)
 //                                                        SDL_Surface* backGround_in)
- : inherited ()
- , screen_ (parent_in.screen_)
+ : screen_ (parent_in.screen_)
  , screenLock_ (NULL)
  , borderTop_ (0)
  , borderBottom_ (0)
@@ -230,7 +228,7 @@ RPG_Graphics_SDLWindowBase::refresh (SDL_Surface* targetSurface_in)
 }
 
 void
-RPG_Graphics_SDLWindowBase::initialize (RPG_Common_ILock* screenLock_in,
+RPG_Graphics_SDLWindowBase::initialize (Common_ILock* screenLock_in,
                                         bool flip_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::init"));

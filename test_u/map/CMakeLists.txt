@@ -39,7 +39,8 @@ target_link_libraries (${EXECUTABLE}
                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                        Common CommonError CommonLog CommonTimer
-                       RPG_Dice RPG_Common RPG_Map RPG_Engine)
+                       RPG_Dice RPG_Common RPG_Character
+                       RPG_Player RPG_Monster RPG_Map RPG_Engine)
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 

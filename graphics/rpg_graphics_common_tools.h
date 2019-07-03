@@ -64,16 +64,16 @@ class RPG_Graphics_Common_Tools
 
   // *NOTE*: tileset needs to be SDL_FreeSurface()ed by the user !
   static void loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle&,     // style
-                                   RPG_Graphics_FloorEdgeTileSet_t&); // return value: tileset
+                                   struct RPG_Graphics_FloorEdgeTileSet&); // return value: tileset
   static void loadFloorTileSet(const RPG_Graphics_FloorStyle&, // style
                                RPG_Graphics_FloorTileSet_t&);  // return value: tileset
   // *NOTE*: tileset needs to be SDL_FreeSurface()ed by the user !
   static void loadWallTileSet(const RPG_Graphics_WallStyle&, // style
                               const bool&,                   // half-height walls ?
-                              RPG_Graphics_WallTileSet_t&);  // return value: tileset
+                              struct RPG_Graphics_WallTileSet&);  // return value: tileset
     // *NOTE*: tileset needs to be SDL_FreeSurface()ed by the user !
   static void loadDoorTileSet(const RPG_Graphics_DoorStyle&, // style
-                              RPG_Graphics_DoorTileSet_t&);  // return value: tileset
+                              struct RPG_Graphics_DoorTileSet&);  // return value: tileset
   // *NOTE*: uncached (!) surfaces need to be SDL_FreeSurface()ed by the user !
   static SDL_Surface* loadGraphic(const RPG_Graphics_GraphicTypeUnion&, // type
                                   const bool&,                          // convert to display format ?

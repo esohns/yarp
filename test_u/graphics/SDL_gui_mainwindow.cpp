@@ -292,7 +292,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
         {
           std::ostringstream converter;
           converter << myScreenshotIndex++;
-          std::string dump_path = Common_File_Tools::getDumpDirectory();
+          std::string dump_path = Common_File_Tools::getTempDirectory();
           dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
           dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_SCREENSHOT_DEF_PREFIX);
           dump_path += ACE_TEXT_ALWAYS_CHAR("_");
@@ -758,24 +758,30 @@ SDL_GUI_MainWindow::notify(const RPG_Graphics_Cursor& cursor_in) const
   } // end SWITCH
 }
 
-void
-SDL_GUI_MainWindow::lock()
+bool
+SDL_GUI_MainWindow::lock(bool block_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::lock"));
+
+  ACE_UNUSED_ARG (block_in);
 
   if (myScreenLock.acquire() == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Thread_Mutex::acquire(): \"%m\", continuing\n")));
 }
 
-void
-SDL_GUI_MainWindow::unlock()
+int
+SDL_GUI_MainWindow::unlock(bool unlock_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::unlock"));
+
+  ACE_UNUSED_ARG (unlock_in);
 
   if (myScreenLock.release() == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Thread_Mutex::release(): \"%m\", continuing\n")));
+
+  return 0;
 }
 
 void
@@ -871,8 +877,8 @@ SDL_GUI_MainWindow::initMap(state_t* state_in,
       SDL_GUI_LevelWindow_Isometric* map_window =
           dynamic_cast<SDL_GUI_LevelWindow_Isometric*>(window_base);
       ACE_ASSERT(map_window);
-      map_window->init(state_in,
-                       this);
+      map_window->initialize (state_in,
+                              this);
 
       break;
     }
@@ -886,8 +892,8 @@ SDL_GUI_MainWindow::initMap(state_t* state_in,
       SDL_GUI_LevelWindow_3D* map_window =
           dynamic_cast<SDL_GUI_LevelWindow_3D*>(window_base);
       ACE_ASSERT(map_window);
-      map_window->init(state_in,
-                       this);
+      map_window->initialize (state_in,
+                              this);
 
       break;
     }
