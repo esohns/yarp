@@ -8,10 +8,15 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/Configuration.cmake)
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/Macros.cmake)
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/VersionConfig.cmake)
 
+option(DEBUG_DEBUGGER "debug using IDE" OFF)
+if (DEBUG_DEBUGGER)
+ add_definitions (-DDEBUG_DEBUGGER)
+endif (DEBUG_DEBUGGER)
+
 # user interface
 #option (GUI_SUPPORT "enable graphical user interface support" ON)
 #if (GUI_SUPPORT)
- add_definitions (-DGUI_SUPPORT)
+# add_definitions (-DGUI_SUPPORT)
  include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/ui/scripts/PreUIFramework.cmake)
  include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/ui/scripts/SetUIFramework.cmake)
 
@@ -74,6 +79,16 @@ configure_file (${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake.in
 add_definitions(-DHAVE_CONFIG_H)
 # include rpg_config.h
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+file (TO_CMAKE_PATH "$ENV{LIB_ROOT}/cmake-modules" CMAKE_MODULES_PATH)
+file (TO_CMAKE_PATH "$ENV{LIB_ROOT}/CMakeHelpers" CMAKE_HELPERS_PATH)
+list (APPEND CMAKE_MODULE_PATH
+      "${CMAKE_MODULES_PATH}"
+      "${CMAKE_HELPERS_PATH}")
+#include (UseBackportedModules)
+cmake_policy (SET CMP0026 OLD)
+cmake_policy (SET CMP0053 OLD)
+include (CreateLaunchers)
 
 add_subdirectory (chance)
 add_subdirectory (character)

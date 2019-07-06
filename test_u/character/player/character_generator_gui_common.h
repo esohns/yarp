@@ -39,11 +39,11 @@
 typedef std::vector<RPG_Graphics_Sprite> Character_Generator_GUI_SpriteGallery_t;
 typedef Character_Generator_GUI_SpriteGallery_t::const_iterator Character_Generator_GUI_SpriteGalleryIterator_t;
 
-struct GTK_cb_data_t
+struct GTK_CBData
 {
-  Common_UI_GTKState                              GTKState;
+  //Common_UI_GTKState                              GTKState;
   std::string                                     schemaRepository;
-  RPG_Engine_Entity_t                             entity;
+  struct RPG_Engine_Entity                        entity;
   RPG_Graphics_Sprite                             currentSprite;
   Character_Generator_GUI_SpriteGalleryIterator_t spriteGalleryIterator;
   Character_Generator_GUI_SpriteGallery_t         spriteGallery;

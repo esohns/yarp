@@ -69,7 +69,9 @@ RPG_Sound_Event_Manager::dirent_comparator(const dirent** entry1_in,
 }
 
 RPG_Sound_Event_Manager::RPG_Sound_Event_Manager()
- : myTimerID(-1),
+ : inherited (this,
+              false)
+ , myTimerID(-1),
 //   myRepository(),
    myUseCDROM(RPG_SOUND_AMBIENT_DEF_USE_CD),
    myCDROM(NULL),
@@ -86,12 +88,12 @@ RPG_Sound_Event_Manager::~RPG_Sound_Event_Manager()
 
   stop();
   if (myInitialized)
-    fini();
+    finalize();
 }
 
 void
-RPG_Sound_Event_Manager::init (const std::string& repository_in,
-                               const bool& useCD_in)
+RPG_Sound_Event_Manager::initialize (const std::string& repository_in,
+                                     bool useCD_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Sound_Event_Manager::init"));
 
@@ -125,7 +127,7 @@ RPG_Sound_Event_Manager::init (const std::string& repository_in,
 }
 
 void
-RPG_Sound_Event_Manager::fini()
+RPG_Sound_Event_Manager::finalize ()
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Event_Manager::fini"));
 

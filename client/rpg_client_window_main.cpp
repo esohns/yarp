@@ -346,7 +346,7 @@ RPG_Client_Window_Main::handleEvent(const SDL_Event& event_in,
       {
         case SDLK_ESCAPE:
         {
-          RPG_Engine_ClientNotificationParameters_t parameters;
+          struct RPG_Engine_ClientNotificationParameters parameters;
           parameters.entity_id = 0;
           parameters.condition = RPG_COMMON_CONDITION_INVALID;
           //parameters.positions.clear();
@@ -375,7 +375,7 @@ RPG_Client_Window_Main::handleEvent(const SDL_Event& event_in,
           std::string dump_path = ACE_TEXT_ALWAYS_CHAR (COMMON_DEF_DUMP_DIR);
 #else
           std::string dump_path =
-            ACE_OS::getenv (ACE_TEXT_ALWAYS_CHAR (COMMON_DEF_DUMP_DIR));
+            ACE_OS::getenv (ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEMPORARY_STORAGE_VARIABLE));
 #endif
           dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
           dump_path += ACE_TEXT (RPG_CLIENT_SCREENSHOT_DEF_PREFIX);

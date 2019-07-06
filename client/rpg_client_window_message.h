@@ -26,24 +26,23 @@
 
 #include "SDL.h"
 
-#include "common.h"
+#include "common_ilock.h"
 
 #include "rpg_graphics_font.h"
 #include "rpg_graphics_SDL_window_sub.h"
 
 #include "rpg_client_common.h"
 
-// forward declarations
-class RPG_Common_ILock;
-
 class RPG_Client_Window_Message
  : public RPG_Graphics_SDLWindowSub
 {
+  typedef RPG_Graphics_SDLWindowSub inherited;
+
  public:
   RPG_Client_Window_Message (const RPG_Graphics_SDLWindowBase&); // parent
   virtual ~RPG_Client_Window_Message ();
 
-  void initialize (RPG_Common_ILock*,        // screen lock interface handle
+  void initialize (Common_ILock*,            // screen lock interface handle
                    const RPG_Graphics_Font&, // font
                    unsigned int);            // #lines
   void push (const std::string&); // message
@@ -57,11 +56,9 @@ class RPG_Client_Window_Message
                             SDL_Rect&);                // return value: "dirty" region
 
  private:
-  typedef RPG_Graphics_SDLWindowSub inherited;
-
-  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Message ());
-  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Message (const RPG_Client_Window_Message&));
-  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Message& operator= (const RPG_Client_Window_Message&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Message ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Message (const RPG_Client_Window_Message&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Message& operator= (const RPG_Client_Window_Message&))
 
   // helper methods
   void initScrollSpots ();

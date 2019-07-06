@@ -5,17 +5,11 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/ACE.cmake)
 ########### next target ###############
 set (LIBRARY RPG_Combat)
 set (${LIBRARY}_SRCS
-#    rpg_XMLSchema_XML_types.h
-     rpg_combat_XML_parser.cpp
-     rpg_combat_XML_parser.h
-     rpg_combat_XML_types.cpp
-     rpg_combat_XML_types.h
      rpg_combat_attackform.h
      rpg_combat_attacksituation.h
      rpg_combat_check.h
      rpg_combat_checktypeunion.h
      rpg_combat_common.h
-   #  rpg_combat_exports.h
      rpg_combat_common_tools.cpp
      rpg_combat_common_tools.h
      rpg_combat_damage.h
@@ -23,11 +17,19 @@ set (${LIBRARY}_SRCS
      rpg_combat_damageduration.h
      rpg_combat_damagereductiontype.h
      rpg_combat_defensesituation.h
+   #  rpg_combat_exports.h
      rpg_combat_incl.h
      rpg_combat_otherdamage.h
      rpg_combat_otherdamagetype.h
      rpg_combat_rangedattackproperties.h
-     rpg_combat_rangedeffectunion.h)
+     rpg_combat_rangedeffectunion.h
+     rpg_combat_XML_parser.cpp
+     rpg_combat_XML_parser.h
+     rpg_combat_XML_tree.cpp
+     rpg_combat_XML_tree.h
+     rpg_combat_XML_types.cpp
+     rpg_combat_XML_types.h)
+
 
 #set_source_files_properties(${RPG_Combat_LIB_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_COMBAT_BUILD_DLL)
 
@@ -88,15 +90,12 @@ set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
 install (FILES rpg_combat.xsd
          DESTINATION share/RPG/config)
 install (FILES
-         rpg_combat_XML_parser.h
-         rpg_combat_XML_types.h
          rpg_combat_attackform.h
          rpg_combat_attacksituation.h
          rpg_combat_check.h
          rpg_combat_checktypeunion.h
          rpg_combat_common.h
          rpg_combat_common_tools.h
-        # rpg_combat_exports.h
          rpg_combat_damage.h
          rpg_combat_damagecountermeasure.h
          rpg_combat_damageduration.h
@@ -104,6 +103,7 @@ install (FILES
          rpg_combat_damagereductiontype.h
          rpg_combat_damagetypeunion.h
          rpg_combat_defensesituation.h
+        # rpg_combat_exports.h
          rpg_combat_incl.h
          rpg_combat_otherdamage.h
          rpg_combat_otherdamagetype.h
@@ -111,6 +111,9 @@ install (FILES
          rpg_combat_rangedeffectunion.h
          rpg_combat_specialattack.h
          rpg_combat_specialdamagetype.h
+         rpg_combat_XML_parser.h
+         rpg_combat_XML_tree.h
+         rpg_combat_XML_types.h
          DESTINATION include)
 install (TARGETS ${LIBRARY} LIBRARY
          DESTINATION lib)

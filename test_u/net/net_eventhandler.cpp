@@ -21,7 +21,7 @@
 
 #include "net_eventhandler.h"
 
-#include "ace/Synch.h"
+//#include "ace/Synch_Traits.h"
 
 #include "common_ui_common.h"
 

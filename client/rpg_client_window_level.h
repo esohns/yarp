@@ -123,11 +123,11 @@ class RPG_Client_Export RPG_Client_Window_Level
 #endif
   bool                            myShowMessages;
 
-  RPG_Graphics_FloorTileSet_t     myCurrentFloorSet;
-  RPG_Graphics_FloorEdgeTileSet_t myCurrentFloorEdgeSet;
-  RPG_Graphics_WallTileSet_t      myCurrentWallSet;
+  struct RPG_Graphics_FloorTileSet     myCurrentFloorSet;
+  struct RPG_Graphics_FloorEdgeTileSet myCurrentFloorEdgeSet;
+  struct RPG_Graphics_WallTileSet      myCurrentWallSet;
   SDL_Surface*                    myCeilingTile;
-  RPG_Graphics_DoorTileSet_t      myCurrentDoorSet;
+  struct RPG_Graphics_DoorTileSet      myCurrentDoorSet;
   SDL_Surface*                    myOffMapTile;
   SDL_Surface*                    myInvisibleTile;
   SDL_Surface*                    myVisionBlendTile;

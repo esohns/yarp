@@ -43,14 +43,16 @@
 class RPG_Sound_Event_Manager
  : public Common_Timer_Handler
 {
+  typedef Common_Timer_Handler inherited;
+
   // singleton requires access to the ctor/dtor
   friend class ACE_Singleton<RPG_Sound_Event_Manager,
                              ACE_SYNCH_MUTEX>;
 
  public:
-  void init(const std::string&,                          // (ambient) sound directory
-            const bool& = RPG_SOUND_AMBIENT_DEF_USE_CD); // use audio CD for ambient sound ?
-  void fini();
+  void initialize (const std::string&,                   // (ambient) sound directory
+                   bool = RPG_SOUND_AMBIENT_DEF_USE_CD); // use audio CD for ambient sound ?
+  void finalize ();
 
   // handle ambient music
   virtual void start();

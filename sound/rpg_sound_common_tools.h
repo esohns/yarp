@@ -40,12 +40,12 @@
 class RPG_Sound_Common_Tools
 {
  public:
-  static bool init(const RPG_Sound_SDLConfiguration_t&,           // SDL config parameters
+  static bool initialize(const struct RPG_Sound_SDLConfiguration&,           // SDL config parameters
                    const std::string&,                            // sound directory
                    const bool& = RPG_SOUND_AMBIENT_DEF_USE_CD,    // use CD ?
                    const unsigned int& = RPG_SOUND_DEF_CACHESIZE, // cache size
                    const bool& = false);                          // mute ?
-  static void fini();
+  static void finalize();
 
   static void soundToFile(const RPG_Sound_t&, // sound
                           std::string&);      // return value: FQ filename
@@ -75,7 +75,7 @@ class RPG_Sound_Common_Tools
 
   static bool                         myIsMuted;
   static std::string                  mySoundDirectory;
-  static RPG_Sound_SDLConfiguration_t myConfig;
+  static struct RPG_Sound_SDLConfiguration myConfig;
 
   static ACE_Thread_Mutex             myCacheLock;
   static unsigned int                 myOldestCacheEntry;

@@ -60,6 +60,14 @@
 
 #include "map_generator_defines.h"
 
+ // ******* WORKAROUND *************
+FILE _iob[] = { *stdin, *stdout, *stderr };
+extern "C" FILE* __cdecl __iob_func (void)
+{
+  return _iob;
+}
+// ********************************
+
 typedef std::set<char> Map_Generator_Options_t;
 typedef Map_Generator_Options_t::const_iterator Map_Generator_OptionsIterator_t;
 

@@ -62,6 +62,14 @@
 
 //static SDL_CD* cdrom = NULL;
 
+// ******* WORKAROUND *************
+FILE _iob[] = { *stdin, *stdout, *stderr };
+extern "C" FILE* __cdecl __iob_func (void)
+{
+  return _iob;
+}
+// ********************************
+
 Uint32
 timer_SDL_cb (Uint32 interval_in,
               void* argument_in)
@@ -308,12 +316,12 @@ do_work (bool dumpDictionary_in,
   RPG_Dice_Common_Tools::initializeStringConversionTables ();
 
   // step1: init: sound directory, cache, ...
-  RPG_Sound_SDLConfiguration_t sound_configuration;
+  struct RPG_Sound_SDLConfiguration sound_configuration;
   sound_configuration.frequency = RPG_SOUND_AUDIO_DEF_FREQUENCY;
   sound_configuration.format = RPG_SOUND_AUDIO_DEF_FORMAT;
   sound_configuration.channels = RPG_SOUND_AUDIO_DEF_CHANNELS;
   sound_configuration.chunksize = RPG_SOUND_AUDIO_DEF_CHUNKSIZE;
-  if (!RPG_Sound_Common_Tools::init (sound_configuration,
+  if (!RPG_Sound_Common_Tools::initialize (sound_configuration,
                                      path_in,
                                      RPG_SOUND_AMBIENT_DEF_USE_CD,
                                      RPG_SOUND_DEF_CACHESIZE,

@@ -39,6 +39,8 @@ set (${LIBRARY}_SRCS
      rpg_monster_weapontypeunion.h
      rpg_monster_XML_parser.cpp
      rpg_monster_XML_parser.h
+     rpg_monster_XML_tree.cpp
+     rpg_monster_XML_tree.h
      rpg_monster_XML_types.cpp
      rpg_monster_XML_types.h)
 
@@ -140,6 +142,7 @@ install (FILES
          rpg_monster_summonmonster.h
          rpg_monster_weapontypeunion.h
          rpg_monster_XML_parser.h
+         rpg_monster_XML_tree.h
          rpg_monster_XML_types.h
          DESTINATION include)
 install (TARGETS ${LIBRARY} LIBRARY

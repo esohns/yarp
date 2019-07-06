@@ -65,8 +65,8 @@ RPG_Client_Entity_Manager::~RPG_Client_Entity_Manager()
 }
 
 void
-RPG_Client_Entity_Manager::init(RPG_Common_ILock* screenLock_in,
-                                RPG_Graphics_IWindowBase* window_in)
+RPG_Client_Entity_Manager::initialize(Common_ILock* screenLock_in,
+                                      RPG_Graphics_IWindowBase* window_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::init"));
 
@@ -99,7 +99,7 @@ RPG_Client_Entity_Manager::add(const RPG_Engine_EntityID_t& id_in,
     return;
   } // end IF
 
-  RPG_Client_EntityCacheEntry_t new_entry;
+  struct RPG_Client_EntityCacheEntry new_entry;
   new_entry.graphic = surface_in;
   new_entry.free_on_remove = free_on_remove_in;
   new_entry.bg = RPG_Graphics_Surface::create(surface_in->w,
@@ -180,7 +180,7 @@ RPG_Client_Entity_Manager::put(const RPG_Engine_EntityID_t& id_in,
                                SDL_Rect& dirtyRegion_out,
                                const bool& clipWindow_in,
                                const bool& lockedAccess_in,
-							   const bool& debug_in)
+                               const bool& debug_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::put"));
 

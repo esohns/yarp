@@ -130,7 +130,7 @@ class SDL_GUI_LevelWindow_Isometric
   state_t*                        myState;
   RPG_Engine*                     myEngine;
 
-  RPG_Graphics_FloorTileSet_t     myCurrentFloorSet;
+  struct RPG_Graphics_FloorTileSet     myCurrentFloorSet;
   struct RPG_Graphics_FloorEdgeTileSet myCurrentFloorEdgeSet;
   struct RPG_Graphics_WallTileSet      myCurrentWallSet;
   SDL_Surface*                    myCurrentCeilingTile;

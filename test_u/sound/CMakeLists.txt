@@ -43,7 +43,9 @@ target_link_libraries(${EXECUTABLE} ${PKG_CONFIG_MODULE_XERCES_LIBRARIES}
                                     ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES})
 
 target_link_libraries (${EXECUTABLE}
+                       legacy_stdio_definitions.lib
                        $ENV{LIB_ROOT}/SDL/lib/x86/SDL.lib
+                       $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
                        $ENV{LIB_ROOT}/SDL_mixer/lib/x86/SDL_mixer.lib
                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
@@ -54,3 +56,19 @@ set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
 ########### install files ###############
 install(TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
+
+file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
+create_target_launcher (${EXECUTABLE}
+                        ARGS "-t"
+                        FORWARD_ARGS
+                        RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/SDL/lib/x86
+                                             ${LIB_ROOT}/SDL_mixer/lib/x86
+                                             ${LIB_ROOT}/xerces-c/build/src/Debug
+                                             ${LIB_ROOT}/ACE_TAO/ACE/lib
+                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/Debug
+                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/err/Debug
+                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/ui/Debug
+                                             ${PROJECT_SOURCE_DIR}/cmake/src/Debug
+                                             ${PROJECT_SOURCE_DIR}/cmake/src/modules/vis/Debug
+                        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/../..
+                        ENVIRONMENT foo=bar)

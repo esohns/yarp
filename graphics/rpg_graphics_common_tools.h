@@ -66,7 +66,7 @@ class RPG_Graphics_Common_Tools
   static void loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle&,     // style
                                    struct RPG_Graphics_FloorEdgeTileSet&); // return value: tileset
   static void loadFloorTileSet(const RPG_Graphics_FloorStyle&, // style
-                               RPG_Graphics_FloorTileSet_t&);  // return value: tileset
+                               struct RPG_Graphics_FloorTileSet&);  // return value: tileset
   // *NOTE*: tileset needs to be SDL_FreeSurface()ed by the user !
   static void loadWallTileSet(const RPG_Graphics_WallStyle&, // style
                               const bool&,                   // half-height walls ?

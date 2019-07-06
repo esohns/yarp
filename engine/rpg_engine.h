@@ -36,7 +36,7 @@
 
 #include "stream_allocatorheap.h"
 
-#include "net_configuration.h"
+//#include "net_configuration.h"
 
 #include "rpg_map_common.h"
 #include "rpg_map_common_tools.h"

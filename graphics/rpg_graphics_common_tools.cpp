@@ -1135,7 +1135,7 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& st
 
 void
 RPG_Graphics_Common_Tools::loadFloorTileSet(const RPG_Graphics_FloorStyle& style_in,
-                                            RPG_Graphics_FloorTileSet_t& tileSet_out)
+                                            struct RPG_Graphics_FloorTileSet& tileSet_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadFloorTileSet"));
 

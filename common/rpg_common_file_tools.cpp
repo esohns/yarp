@@ -104,8 +104,6 @@ RPG_Common_File_Tools::getConfigurationDataDirectory (const std::string& baseDir
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("not a directory: \"%s\", falling back\n"),
                 ACE_TEXT (result.c_str ())));
-
-    // fallback
     return Common_File_Tools::getWorkingDirectory ();
   } // end IF
 

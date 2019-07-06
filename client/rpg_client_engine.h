@@ -92,7 +92,7 @@ class RPG_Client_Engine
   // *WARNING*: window handle needs to be of WINDOW_MAP type !!!
   void initialize (RPG_Engine*,               // (level) state
                    RPG_Graphics_IWindowBase*, // window handle
-                   RPG_Client_IWidgetUI_t*,   // widget UI interface handle
+                   //RPG_Client_IWidgetUI_t*,   // widget UI interface handle
                    bool = false);             // debug ?
   void action (const RPG_Client_Action&); // action
 
@@ -132,7 +132,7 @@ class RPG_Client_Engine
 
   RPG_Engine*                     myEngine;
   RPG_Graphics_IWindowBase*       myWindow;
-  RPG_Client_IWidgetUI_t*         myWidgetInterface;
+  //RPG_Client_IWidgetUI_t*         myWidgetInterface;
 
   RPG_Client_Actions_t            myActions;
   struct RPG_Client_State         myRuntimeState;

@@ -25,9 +25,9 @@
 
 #include "gtk/gtk.h"
 
-void update_sprite_gallery(GTK_cb_data_t&);
-void set_current_image(const RPG_Graphics_Sprite&,
-                       GladeXML*);
+void update_sprite_gallery(struct GTK_CBData&);
+void set_current_image (enum RPG_Graphics_Sprite,
+                        GtkBuilder*);
 
 #ifdef __cplusplus
 extern "C"

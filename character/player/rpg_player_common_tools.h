@@ -21,6 +21,8 @@
 #ifndef RPG_PLAYER_COMMON_TOOLS_H
 #define RPG_PLAYER_COMMON_TOOLS_H
 
+#include <bitset>
+
 #include "ace/Global_Macros.h"
 
 #include "rpg_character_common.h"

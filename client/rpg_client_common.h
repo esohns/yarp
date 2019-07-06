@@ -70,9 +70,9 @@ struct RPG_Client_GTK_CBData
    : Common_UI_GTK_CBData ()
    , doHover (true)
    , hoverTime (0)
-   //, entityFilter (NULL)
-   //, mapFilter (NULL)
-   //, savedStateFilter (NULL)
+   , entityFilter (NULL)
+   , mapFilter (NULL)
+   , savedStateFilter (NULL)
    , screen (NULL)
    , screenLock (NULL,
                  NULL)
@@ -87,9 +87,9 @@ struct RPG_Client_GTK_CBData
 
   bool                                   doHover;
   unsigned int                           hoverTime;
-  //GtkFileFilter*                         entityFilter;
-  //GtkFileFilter*                         mapFilter;
-  //GtkFileFilter*                         savedStateFilter;
+  GtkFileFilter*                         entityFilter;
+  GtkFileFilter*                         mapFilter;
+  GtkFileFilter*                         savedStateFilter;
   SDL_Surface*                           screen;
   ACE_Thread_Mutex                       screenLock; // video access
   SDL_TimerID                            eventTimer;

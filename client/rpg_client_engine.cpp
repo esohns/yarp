@@ -23,7 +23,7 @@
 
 #include "ace/Log_Msg.h"
 
-#include "common_ui_tools.h"
+#include "common_ui_gtk_tools.h"
 
 #include "rpg_common_defines.h"
 #include "rpg_common_file_tools.h"
@@ -51,7 +51,7 @@ RPG_Client_Engine::RPG_Client_Engine()
    myStop(false),
    myEngine(NULL),
    myWindow(NULL),
-   myWidgetInterface(NULL),
+   //myWidgetInterface(NULL),
 //   myActions(),
 //   myRuntimeState(),
 //   mySeenPositions(),
@@ -266,7 +266,7 @@ RPG_Client_Engine::dump_state() const
              myActions.size()));
 }
 
-void
+bool
 RPG_Client_Engine::lock(bool block_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::lock"));
@@ -276,6 +276,8 @@ RPG_Client_Engine::lock(bool block_in)
   if (myScreenLock.acquire(NULL) == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Thread_Mutex::acquire: \"%m\", continuing\n")));
+
+  return true;
 }
 
 int
@@ -407,8 +409,8 @@ RPG_Client_Engine::setView(const RPG_Map_Position_t& position_in)
 //}
 
 void
-RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
-                          const RPG_Engine_ClientNotificationParameters_t& parameters_in)
+RPG_Client_Engine::notify(enum RPG_Engine_Command command_in,
+                          const struct RPG_Engine_ClientNotificationParameters& parameters_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Engine::notify"));
 
@@ -501,9 +503,9 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
       type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
       myEngine->lock();
       type.sprite =
-          (myEngine->isMonster(parameters_in.entity_id, false) ? RPG_Client_Common_Tools::class2Sprite(myEngine->getClass(parameters_in.entity_id,
+          (myEngine->isMonster(parameters_in.entity_id, false) ? RPG_Client_Common_Tools::classToSprite(myEngine->getClass(parameters_in.entity_id,
                                                                                                                           false))
-                                                               : RPG_Client_Common_Tools::monster2Sprite(myEngine->getName(parameters_in.entity_id,
+                                                               : RPG_Client_Common_Tools::monsterToSprite(myEngine->getName(parameters_in.entity_id,
                                                                                                                            false)));
       myEngine->unlock ();
       sprite_graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
@@ -821,18 +823,18 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
     }
     case COMMAND_E2C_QUIT:
     {
-      if (myWidgetInterface)
-      {
-        try
-        {
-          myWidgetInterface->finalize ();
-        }
-        catch (...)
-        {
-          ACE_DEBUG ((LM_ERROR,
-                      ACE_TEXT ("caught exception in RPG_Client_IWidgetUI_t::finalize(), continuing\n")));
-        }
-      } // end IF
+      //if (myWidgetInterface)
+      //{
+      //  try
+      //  {
+      //    myWidgetInterface->finalize ();
+      //  }
+      //  catch (...)
+      //  {
+      //    ACE_DEBUG ((LM_ERROR,
+      //                ACE_TEXT ("caught exception in RPG_Client_IWidgetUI_t::finalize(), continuing\n")));
+      //  }
+      //} // end IF
 
       do_action = false;
 
@@ -855,7 +857,7 @@ RPG_Client_Engine::notify(const RPG_Engine_Command& command_in,
 void
 RPG_Client_Engine::initialize (RPG_Engine* engine_in,
                                RPG_Graphics_IWindowBase* window_in,
-                               RPG_Client_IWidgetUI_t* widgetInterface_in,
+                               //RPG_Client_IWidgetUI_t* widgetInterface_in,
                                bool debug_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::initialize"));
@@ -867,7 +869,7 @@ RPG_Client_Engine::initialize (RPG_Engine* engine_in,
 
   myEngine = engine_in;
   myWindow = window_in;
-  myWidgetInterface = widgetInterface_in;
+  //myWidgetInterface = widgetInterface_in;
   myDebug = debug_in;
 }
 
@@ -1590,7 +1592,7 @@ RPG_Client_Engine::handleActions ()
         // step1: init/(re)draw window
         myEngine->lock ();
         RPG_Map_Position_t center = myEngine->getSize (false);
-        setStyle (RPG_Client_Common_Tools::environment2Style (myEngine->getMetaData (false).environment));
+        setStyle (RPG_Client_Common_Tools::environmentToStyle (myEngine->getMetaData (false).environment));
         myEngine->unlock ();
         center.first >>= 1;
         center.second >>= 1;
@@ -1609,8 +1611,9 @@ RPG_Client_Engine::handleActions ()
         }
 
         // step2: (re)set window title caption/iconify
-        std::string caption =
-          ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);
+        std::string caption
+          //= ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);
+          ;
         const std::string& level_name = myEngine->getMetaData (true).name;
         if (!level_name.empty ())
         {
@@ -1626,7 +1629,7 @@ RPG_Client_Engine::handleActions ()
                         ACE_TEXT ("failed to SDL_WM_IconifyWindow(): \"%s\", continuing\n"),
                         ACE_TEXT (SDL_GetError ())));
         } // end IF
-        gchar* caption_utf8 = Common_UI_Tools::Locale2UTF8 (caption);
+        gchar* caption_utf8 = Common_UI_GTK_Tools::localeToUTF8 (caption);
 // *TODO*: this will not return on VS2010...
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
         SDL_WM_SetCaption (caption_utf8,  // window caption

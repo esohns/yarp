@@ -2,6 +2,39 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/Threads.cmake)
 
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/ACE.cmake)
 
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/ui/scripts/PreUIFramework.cmake)
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/ui/scripts/SetUIFramework.cmake)
+
+if (CURSES_USE)
+elseif (GTK_USE)
+ include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/ui/scripts/SetGTKVersion.cmake)
+
+ if (CMAKE_BUILD_TYPE STREQUAL Debug)
+  add_definitions (-DG_ERRORCHECK_MUTEXES)
+ endif (CMAKE_BUILD_TYPE STREQUAL Debug)
+elseif (WXWIDGETS_USE)
+ message (STATUS "wxWidgets_DEFINITIONS: ${wxWidgets_DEFINITIONS}")
+ message (STATUS "wxWidgets_DEFINITIONS_DEBUG: ${wxWidgets_DEFINITIONS_DEBUG}")
+ message (STATUS "wxWidgets_CXX_FLAGS: ${wxWidgets_CXX_FLAGS}")
+ message (STATUS "wxWidgets_USE_FILE: ${wxWidgets_USE_FILE}")
+# # *NOTE*: re-enable ANSI mode, iff available
+# add_definitions (-DwxUSE_UNICODE=0)
+ foreach (DEFINITION ${wxWidgets_DEFINITIONS})
+  add_definitions (-D${DEFINITION})
+ endforeach ()
+ if (WIN32)
+#  add_definitions (-D__WXMSW__)
+#  add_definitions (-DWXUSINGDLL)
+  if (MSVC)
+   add_definitions (-DwxMSVC_VERSION_AUTO)
+  endif (MSVC)
+ endif (WIN32)
+ add_definitions (-DwxUSE_GUI=1)
+ if (CMAKE_BUILD_TYPE STREQUAL Debug)
+#   add_definitions (-D__WXDEBUG__)
+ endif (CMAKE_BUILD_TYPE STREQUAL Debug)
+endif ()
+
 if (UNIX)
  include (FindPkgConfig)
  pkg_check_modules (PKG_CONFIG_MODULE_SDL REQUIRED sdl)
@@ -35,13 +68,21 @@ set (${LIBRARY}_SRCS
      rpg_client_window_main.cpp
      rpg_client_window_main.h
      rpg_client_window_minimap.h
-     rpg_client_window_minimap.cpp)
-#     rpg_client_window_message.h
-#     rpg_client_window_message.cpp
+     rpg_client_window_minimap.cpp
+     rpg_client_window_message.h
+     rpg_client_window_message.cpp
+     rpg_client_XML_tree.h
+     rpg_client_XML_tree.cpp)
 
 #set_source_files_properties(${RPG_Client_LIB_SRCS} PROPERTIES COMPILE_DEFINITIONS "RPG_CLIENT_BUILD_DLL;RPG_ENGINE_HAS_DLL=1;RPG_GRAPHICS_HAS_DLL=1;RPG_SOUND_HAS_DLL=1")
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
+
+if (UNIX)
+ set_source_files_properties(${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
+elseif (WIN32)
+ set_source_files_properties(${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
+endif ()
 
 if (UNIX)
  target_include_directories (${LIBRARY} PUBLIC
@@ -54,7 +95,17 @@ elseif (WIN32)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/SDL/include>)
  target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:${GTK_INCLUDE_DIRS}>)
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/SDL_ttf/include>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/SDL_mixer/include>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             "$<BUILD_INTERFACE:${GTK_INCLUDE_DIRS}>")
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/src>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/src>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
 endif ()
 
 if (UNIX)
@@ -75,9 +126,35 @@ endif ()
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src>)
 target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/error>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/image>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/log>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/timer>)
+target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/ui>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/ui/gtk>)
+
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../ACEStream/3rd_party/tree>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../ACEStream/src>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../ACEStream/src/modules/lib>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../ACEStream/src/modules/misc>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../ACEStream/src/modules/net>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../ACEStream/src/modules/stat>)
+
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../ACENetwork/src>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../ACENetwork/src/client_server>)
 
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../chance>)
@@ -99,6 +176,10 @@ target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../character/monster>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../map>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../net>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../net/protocol>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../engine>)
 target_include_directories (${LIBRARY} PUBLIC
@@ -132,7 +213,8 @@ install (FILES
          rpg_client_window_level.h
          rpg_client_window_main.h
          rpg_client_window_minimap.h
-      # rpg_client_window_message.h
+         rpg_client_window_message.h
+         rpg_client_XML_tree.h
          DESTINATION include)
 install (TARGETS RPG_Client LIBRARY
          DESTINATION lib)

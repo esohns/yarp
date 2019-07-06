@@ -134,7 +134,7 @@ RPG_Client_Window_Level::RPG_Client_Window_Level(const RPG_Graphics_SDLWindowBas
   if (!myOffMapTile)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type).c_str())));
+               ACE_TEXT(RPG_Graphics_Common_Tools::toString(type).c_str())));
 
   // load tile for invisible areas
   type.tilegraphic = TILE_FLOOR_INVISIBLE;
@@ -145,7 +145,7 @@ RPG_Client_Window_Level::RPG_Client_Window_Level(const RPG_Graphics_SDLWindowBas
   if (!myInvisibleTile)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type).c_str())));
+               ACE_TEXT(RPG_Graphics_Common_Tools::toString(type).c_str())));
 
   // create tile for vision blending/temp
   myVisionBlendTile = RPG_Graphics_Surface::copy(*myOffMapTile);
@@ -1463,7 +1463,7 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
             RPG_Engine_EntityID_t entity_id = myEngine->getActive(false);
             if (entity_id)
             {
-              RPG_Engine_Action_t player_action;
+              struct RPG_Engine_Action player_action;
               player_action.command = COMMAND_RUN;
               player_action.position =
                   std::make_pair(std::numeric_limits<unsigned int>::max(),
@@ -1499,7 +1499,7 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
             RPG_Engine_EntityID_t entity_id = myEngine->getActive(false);
             if (entity_id)
             {
-              RPG_Engine_Action_t player_action;
+              struct RPG_Engine_Action player_action;
               player_action.command = COMMAND_SEARCH;
               player_action.position =
                   std::make_pair(std::numeric_limits<unsigned int>::max(),
@@ -1745,7 +1745,7 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
               break; // nothing to do...
             } // end IF
 
-            RPG_Engine_Action_t player_action;
+            struct RPG_Engine_Action player_action;
             player_action.command = COMMAND_TRAVEL;
             // compute target position
             myClientAction.position =
@@ -2018,7 +2018,7 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
         myClientAction.position =
           myEngine->getPosition(myClientAction.entity_id, false);
 
-        RPG_Engine_Action_t player_action;
+        struct RPG_Engine_Action player_action;
         player_action.command = RPG_ENGINE_COMMAND_INVALID;
         player_action.position = map_position;
         //player_action.path.clear();
@@ -2479,7 +2479,7 @@ RPG_Client_Window_Level::initCeiling()
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::typeToString(type).c_str())));
+               ACE_TEXT(RPG_Graphics_Common_Tools::toString(type).c_str())));
 
     return;
   } // end IF

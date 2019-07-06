@@ -21,7 +21,7 @@
 #ifndef RPG_CLIENT_CALLBACKS_H
 #define RPG_CLIENT_CALLBACKS_H
 
-#include "glade/glade.h"
+//#include "glade/glade.h"
 #include "gtk/gtk.h"
 
 #include "rpg_player.h"
@@ -29,18 +29,18 @@
 #include "rpg_engine_common.h"
 
 #include "rpg_client_common.h"
-#include "rpg_client_exports.h"
+//#include "rpg_client_exports.h"
 
-RPG_Client_Export void update_equipment (const RPG_Client_GTK_CBData_t&);
-RPG_Client_Export void update_character_profile (const RPG_Player&, GladeXML*);
-RPG_Client_Export void update_entity_profile (const RPG_Engine_Entity_t&, GladeXML*);
-RPG_Client_Export void reset_character_profile (GladeXML*);
-RPG_Client_Export unsigned int load_files (const RPG_Client_Repository&, // repository
-                                           GtkListStore*);               // target liststore
-RPG_Client_Export gint combobox_sort_function (GtkTreeModel*, // model
-                                               GtkTreeIter*,  // row 1
-                                               GtkTreeIter*,  // row 2
-                                               gpointer);     // user data
+void update_equipment (const struct RPG_Client_GTK_CBData&);
+void update_character_profile (const RPG_Player&, GtkBuilder*);
+void update_entity_profile (const struct RPG_Engine_Entity&, GtkBuilder*);
+void reset_character_profile (GtkBuilder*);
+unsigned int load_files (const RPG_Client_Repository&, // repository
+                         GtkListStore*);               // target liststore
+gint combobox_sort_function (GtkTreeModel*, // model
+                             GtkTreeIter*,  // row 1
+                             GtkTreeIter*,  // row 2
+                             gpointer);     // user data
 
 // GTK callback functions
 #ifdef __cplusplus

@@ -42,7 +42,7 @@ RPG_Sound_EventToStringTable_t RPG_Sound_EventHelper::myRPG_Sound_EventToStringT
 
 bool                         RPG_Sound_Common_Tools::myIsMuted;
 std::string                  RPG_Sound_Common_Tools::mySoundDirectory;
-RPG_Sound_SDLConfiguration_t RPG_Sound_Common_Tools::myConfig;
+struct RPG_Sound_SDLConfiguration RPG_Sound_Common_Tools::myConfig;
 
 ACE_Thread_Mutex             RPG_Sound_Common_Tools::myCacheLock;
 unsigned int                 RPG_Sound_Common_Tools::myOldestCacheEntry = 0;
@@ -52,11 +52,11 @@ RPG_Sound_SoundCache_t       RPG_Sound_Common_Tools::mySoundCache;
 bool                         RPG_Sound_Common_Tools::myInitialized = false;
 
 bool
-RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfiguration_t& config_in,
-                             const std::string& directory_in,
-                             const bool& useCD_in,
-                             const unsigned int& cacheSize_in,
-                             const bool& mute_in)
+RPG_Sound_Common_Tools::initialize (const struct RPG_Sound_SDLConfiguration& config_in,
+                                    const std::string& directory_in,
+                                    const bool& useCD_in,
+                                    const unsigned int& cacheSize_in,
+                                    const bool& mute_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::init"));
 
@@ -85,9 +85,9 @@ RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfiguration_t& config_in,
 	myConfig = config_in;
   myCacheSize = cacheSize_in;
 
-  RPG_SOUND_EVENT_MANAGER_SINGLETON::instance()->init(directory_in,
-                                                      (mute_in ? false
-                                                               : useCD_in));
+  RPG_SOUND_EVENT_MANAGER_SINGLETON::instance()->initialize (directory_in,
+                                                             (mute_in ? false
+                                                                      : useCD_in));
 
   // init SDL audio handling
 	if (!mute_in)
@@ -213,7 +213,7 @@ RPG_Sound_Common_Tools::init(const RPG_Sound_SDLConfiguration_t& config_in,
 }
 
 void
-RPG_Sound_Common_Tools::fini()
+RPG_Sound_Common_Tools::finalize()
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::fini"));
 
@@ -232,7 +232,7 @@ RPG_Sound_Common_Tools::fini()
     myOldestCacheEntry = 0;
   } // end lock scope
 
-  RPG_SOUND_EVENT_MANAGER_SINGLETON::instance()->fini();
+  RPG_SOUND_EVENT_MANAGER_SINGLETON::instance()->finalize ();
 
 	Mix_CloseAudio();
 
@@ -296,7 +296,7 @@ RPG_Sound_Common_Tools::play(const RPG_Sound_Event& event_in,
   length_out = ACE_Time_Value::zero;
 
   // step1: sound already cached ?
-  RPG_Sound_SoundCacheNode_t node;
+  struct RPG_Sound_SoundCacheNode node;
   node.chunk = NULL;
   node.sound_event = event_in;
 
@@ -422,7 +422,7 @@ RPG_Sound_Common_Tools::play(const std::string& file_in,
   length_out = ACE_Time_Value::zero;
 
   // step1: sound already cached ?
-  RPG_Sound_SoundCacheNode_t node;
+  struct RPG_Sound_SoundCacheNode node;
   node.chunk = NULL;
   node.sound_event = EVENT_AMBIENT;
   node.sound_file = file_in;

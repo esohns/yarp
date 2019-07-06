@@ -275,7 +275,7 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
 }
 
 void
-RPG_Client_Window_Message::initialize (RPG_Common_ILock* screenLock_in,
+RPG_Client_Window_Message::initialize (Common_ILock* screenLock_in,
                                        const RPG_Graphics_Font& font_in,
                                        unsigned int numLines_in)
 {

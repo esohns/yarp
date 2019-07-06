@@ -36,7 +36,6 @@
 
 // Begin prologue.
 //
-#include "rpg_client_exports.h"
 //
 // End prologue.
 
@@ -77,11 +76,11 @@ class RPG_Client_GraphicsMode_XMLTree_Type;
 
 #include <xsd/cxx/tree/istream-fwd.hxx>
 
-#include "rpg_engine_XML_tree.h"
+#include "../engine/rpg_engine_XML_tree.h"
 
-#include "rpg_graphics_XML_tree.h"
+#include "../graphics/rpg_graphics_XML_tree.h"
 
-class RPG_Client_Export RPG_Client_GraphicsMode_XMLTree_Type: public ::xml_schema::string
+class RPG_Client_GraphicsMode_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -144,11 +143,9 @@ class RPG_Client_Export RPG_Client_GraphicsMode_XMLTree_Type: public ::xml_schem
 
 #include <iosfwd>
 
-RPG_Client_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Client_GraphicsMode_XMLTree_Type::value);
 
-RPG_Client_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Client_GraphicsMode_XMLTree_Type&);
 
@@ -166,20 +163,16 @@ operator<< (::std::ostream&, const RPG_Client_GraphicsMode_XMLTree_Type&);
 
 #include <xsd/cxx/xml/dom/auto-ptr.hxx>
 
-RPG_Client_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Client_GraphicsMode_XMLTree_Type&);
 
-RPG_Client_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Client_GraphicsMode_XMLTree_Type&);
 
-RPG_Client_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Client_GraphicsMode_XMLTree_Type&);
 
-RPG_Client_Export
 ::xml_schema::ostream< ACE_OutputCDR >&
 operator<< (::xml_schema::ostream< ACE_OutputCDR >&,
             const RPG_Client_GraphicsMode_XMLTree_Type&);

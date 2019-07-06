@@ -58,7 +58,7 @@ class test_u_main
                           std::string&,  // UI definition file,
                           std::string&,  // graphics directory,
                           bool&);        // print program version only ?
-  void do_work (GTK_cb_data_t&,      // GTK callback data
+  void do_work (struct GTK_CBData&,      // GTK callback data
                 const std::string&,  // schema directory
                 const std::string&,  // client UI definition file
                 const std::string&,  // magic dictionary

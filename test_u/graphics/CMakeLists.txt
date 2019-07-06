@@ -6,6 +6,8 @@ if (UNIX)
  pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
  pkg_check_modules(PKG_CONFIG_MODULE_LIBGLADE REQUIRED libglade-2.0)
 elseif (WIN32)
+# add_definitions (-D__IDataObject_INTERFACE_DEFINED__)
+ add_definitions (-D_USE_MATH_DEFINES)
 endif ()
 
 if (UNIX)
@@ -52,7 +54,11 @@ set (EXECUTABLE graphics_parser)
 set (${EXECUTABLE}_SRCS
      graphics_parser.cpp)
 
-set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
+if (UNIX)
+ set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
+elseif (WIN32)
+ set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
+endif ()
 
 add_executable(${EXECUTABLE} ${${EXECUTABLE}_SRCS})
 
@@ -87,7 +93,11 @@ set (${EXECUTABLE}_SRCS
      SDL_gui_minimapwindow.cpp
      SDL_gui_minimapwindow.h)
 
-set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
+if (UNIX)
+ set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
+elseif (WIN32)
+ set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
+endif ()
 
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})

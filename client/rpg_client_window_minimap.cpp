@@ -359,7 +359,7 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
 
   if (myDebug)
   {
-    std::string path = Common_File_Tools::getDumpDirectory ();
+    std::string path = Common_File_Tools::getTempDirectory ();
     path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     path += ACE_TEXT_ALWAYS_CHAR ("minimap.png");
     RPG_Graphics_Surface::savePNG (*mySurface,
