@@ -27,7 +27,7 @@
 
 #include "SDL.h"
 
-#include "ace/Synch.h"
+#include "ace/Synch_Traits.h"
 
 //#include "glade/glade.h"
 #include "gtk/gtk.h"
@@ -39,6 +39,8 @@
 #include "common_ui_gtk_common.h"
 
 #include "rpg_map_common.h"
+
+#include "rpg_net_protocol_configuration.h"
 
 #include "rpg_engine_common.h"
 
@@ -64,7 +66,7 @@ struct RPG_Client_State
 };
 
 struct RPG_Client_GTK_CBData
-  : Common_UI_GTK_CBData
+ : Common_UI_GTK_CBData
 {
   RPG_Client_GTK_CBData()
    : Common_UI_GTK_CBData ()
@@ -130,7 +132,10 @@ struct RPG_Client_NetworkConfiguration
 
 struct RPG_Client_Configuration
 {
+  Common_UI_GTK_Configuration_t              gtk_configuration;
+
   // *** reactor ***
+  struct Common_EventDispatchConfiguration   dispatch_configuration;
   unsigned int                               num_dispatch_threads; // 1: don't use a threadpool
   // *** UI ***
   //std::string                           glade_file;
@@ -143,6 +148,8 @@ struct RPG_Client_Configuration
   std::string                                graphics_directory;
   std::string                                graphics_dictionary;
   // *** network ***
+  RPG_Net_Protocol_StreamConfiguration_t     stream_configuration;
+  RPG_Net_Protocol_ConnectionConfiguration   connection_configuration;
   struct RPG_Client_NetworkConfiguration     network_configuration;
   // *** magic ***
   std::string                                magic_dictionary;

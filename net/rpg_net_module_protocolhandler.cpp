@@ -31,6 +31,9 @@
 
 #include "rpg_net_remote_comm.h"
 
+const char rpg_net_protocolhandler_module_name_string[] =
+  ACE_TEXT_ALWAYS_CHAR ("ProtocolHandler");
+
 RPG_Net_ProtocolHandler::RPG_Net_ProtocolHandler (ISTREAM_T* stream_in)
  : inherited (stream_in)
  , pingHandler_ (this,  // dispatch ourselves

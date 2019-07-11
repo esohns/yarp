@@ -23,45 +23,45 @@
 
 #include "rpg_common_macros.h"
 
-RPG_Net_Module_EventHandler::RPG_Net_Module_EventHandler ()
- : inherited ()
+RPG_Net_Module_EventHandler::RPG_Net_Module_EventHandler (ISTREAM_T* stream_in)
+ : inherited (stream_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_Module_EventHandler::RPG_Net_Module_EventHandler"));
 
 }
 
-Common_Module_t*
-RPG_Net_Module_EventHandler::clone ()
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Net_Module_EventHandler::clone"));
-
-  // initialize return value(s)
-  Common_Module_t* module_p = NULL;
-
-  ACE_NEW_NORETURN (module_p,
-                    RPG_Net_Module_EventHandler_Module (ACE_TEXT_ALWAYS_CHAR (inherited::name ()),
-                    NULL));
-  if (!module_p)
-    ACE_DEBUG ((LM_CRITICAL,
-                ACE_TEXT ("failed to allocate memory(%u): %m, aborting\n"),
-                sizeof (RPG_Net_Module_EventHandler_Module)));
-  else
-  {
-    RPG_Net_Module_EventHandler* eventHandler_impl = NULL;
-    eventHandler_impl =
-      dynamic_cast<RPG_Net_Module_EventHandler*> (module_p->writer ());
-    if (!eventHandler_impl)
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("dynamic_cast<RPG_Net_Module_EventHandler> failed, aborting\n")));
-
-      // clean up
-      delete module_p;
-
-      return NULL;
-    } // end IF
-    eventHandler_impl->initialize (inherited::subscribers_, inherited::lock_);
-  } // end ELSE
-
-  return module_p;
-}
+//Common_Module_t*
+//RPG_Net_Module_EventHandler::clone ()
+//{
+//  RPG_TRACE (ACE_TEXT ("RPG_Net_Module_EventHandler::clone"));
+//
+//  // initialize return value(s)
+//  Common_Module_t* module_p = NULL;
+//
+//  ACE_NEW_NORETURN (module_p,
+//                    RPG_Net_Module_EventHandler_Module (ACE_TEXT_ALWAYS_CHAR (inherited::name ()),
+//                    NULL));
+//  if (!module_p)
+//    ACE_DEBUG ((LM_CRITICAL,
+//                ACE_TEXT ("failed to allocate memory(%u): %m, aborting\n"),
+//                sizeof (RPG_Net_Module_EventHandler_Module)));
+//  else
+//  {
+//    RPG_Net_Module_EventHandler* eventHandler_impl = NULL;
+//    eventHandler_impl =
+//      dynamic_cast<RPG_Net_Module_EventHandler*> (module_p->writer ());
+//    if (!eventHandler_impl)
+//    {
+//      ACE_DEBUG ((LM_ERROR,
+//                  ACE_TEXT ("dynamic_cast<RPG_Net_Module_EventHandler> failed, aborting\n")));
+//
+//      // clean up
+//      delete module_p;
+//
+//      return NULL;
+//    } // end IF
+//    eventHandler_impl->initialize (inherited::subscribers_, inherited::lock_);
+//  } // end ELSE
+//
+//  return module_p;
+//}

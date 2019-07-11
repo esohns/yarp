@@ -24,7 +24,7 @@
 #include <deque>
 #include <vector>
 
-#include "ace/Synch.h"
+//#include "ace/Synch.h"
 
 #include "common.h"
 
@@ -32,13 +32,26 @@
 
 #include "common_ui_gtk_common.h"
 
+#include "stream_common.h"
+#include "stream_isessionnotify.h"
+
 //#include "net_configuration.h"
 //#include "net_stream_common.h"
 
 //#include "net_server_common.h"
 
+#include "rpg_net_protocol_message.h"
+#include "rpg_net_protocol_session_message.h"
+
 // forward declaration(s)
 class Net_Client_TimeoutHandler;
+typedef Stream_ISessionDataNotify_T<Stream_SessionId_t,
+                                    struct RPG_Net_Protocol_SessionData,
+                                    enum Stream_SessionMessageType,
+                                    RPG_Net_Protocol_Message,
+                                    RPG_Net_Protocol_SessionMessage> RPG_Net_Protocol_ISessionNotify_t;
+typedef std::list<RPG_Net_Protocol_ISessionNotify_t*> RPG_Net_Protocol_Subscribers_t;
+typedef RPG_Net_Protocol_Subscribers_t::iterator RPG_Net_Protocol_SubscribersIterator_t;
 
 struct Net_Client_GTK_CBData
  : Common_UI_GTK_CBData
@@ -46,17 +59,19 @@ struct Net_Client_GTK_CBData
   Net_Client_GTK_CBData ()
    : Common_UI_GTK_CBData ()
    , allowUserRuntimeStatistic (true)
+   , configuration (NULL)
    , subscribers ()
-   , subscribersLock ()
+   //, subscribersLock ()
    , timerId (-1)
    , timeoutHandler (NULL)
- { };
+  {}
 
-  bool                       allowUserRuntimeStatistic;
-  Net_Subscribers_t          subscribers;
-  ACE_Recursive_Thread_Mutex subscribersLock;
-  long                       timerId;        // *NOTE*: client only !
-  Net_Client_TimeoutHandler* timeoutHandler; // *NOTE*: client only !
+  bool                             allowUserRuntimeStatistic;
+  struct RPG_Client_Configuration* configuration;
+  RPG_Net_Protocol_Subscribers_t   subscribers;
+  //ACE_Recursive_Thread_Mutex     subscribersLock;
+  long                             timerId;        // *NOTE*: client only !
+  Net_Client_TimeoutHandler*       timeoutHandler; // *NOTE*: client only !
 };
 
 #endif

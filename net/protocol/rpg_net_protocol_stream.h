@@ -130,7 +130,7 @@ class RPG_Net_Protocol_Stream
   //Net_Module_RuntimeStatistic_Module runtimeStatistic_;
   typename inherited::IO_MODULE_T IOHandler_;
   RPG_Net_ProtocolHandler_Module  protocolHandler_;
-  RPG_Net_EventHandler_Module     eventHandler_;
+  //RPG_Net_EventHandler_Module     eventHandler_;
 };
 
 #endif

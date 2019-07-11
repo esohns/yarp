@@ -22,7 +22,7 @@
 #include <string>
 
 #include "ace/Global_Macros.h"
-#include "ace/Synch.h"
+#include "ace/Synch_Traits.h"
 
 #include "SDL.h"
 

@@ -102,6 +102,8 @@ endif ()
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 
+set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+
 add_dependencies(${EXECUTABLE}
                  RPG_Dice RPG_Chance RPG_Common
                  RPG_Magic RPG_Item RPG_Character RPG_Monster RPG_Player RPG_Combat
@@ -114,13 +116,16 @@ target_link_libraries(${EXECUTABLE}
                       ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
                       ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES})
 target_link_libraries(${EXECUTABLE}
+                      Opengl32.lib Glu32.lib Secur32.lib Userenv.lib
+                      $ENV{LIB_ROOT}/SDL_mixer/lib/x86/SDL_mixer.lib
                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                      ${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/cmake/src/Debug/Common.lib
-                      ${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/cmake/src/log/Debug/CommonLog.lib
+                      Common CommonLog CommonTimer
+                      ACEStream ACEStream_Network
+                      ACENetwork
                       RPG_Dice RPG_Chance RPG_Common
                       RPG_Character RPG_Magic RPG_Item RPG_Monster RPG_Player RPG_Combat
-                      RPG_Map RPG_Engine
+                      RPG_Map RPG_Engine RPG_Net RPG_Net_Protocol
                       RPG_Sound RPG_Graphics RPG_Client)
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")

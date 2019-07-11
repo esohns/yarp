@@ -22,7 +22,7 @@
 #define RPG_Net_EventHandler_H
 
 #include "ace/Global_Macros.h"
-#include "ace/Synch.h"
+//#include "ace/Synch.h"
 
 #include "common.h"
 #include "common_iclone.h"

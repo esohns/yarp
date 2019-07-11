@@ -26,7 +26,7 @@
 #include "SDL.h"
 
 #include "ace/Global_Macros.h"
-#include "ace/Synch.h"
+//#include "ace/Synch.h"
 
 #include "common_ilock.h"
 

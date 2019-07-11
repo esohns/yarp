@@ -768,6 +768,8 @@ SDL_GUI_MainWindow::lock(bool block_in)
   if (myScreenLock.acquire() == -1)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE_Thread_Mutex::acquire(): \"%m\", continuing\n")));
+
+  return true;
 }
 
 int

@@ -35,8 +35,8 @@ RPG_Net_Protocol_Stream::RPG_Net_Protocol_Stream ()
                ACE_TEXT_ALWAYS_CHAR ("IOHandler"))
  , protocolHandler_ (this,
                      ACE_TEXT_ALWAYS_CHAR ("ProtocolHandler"))
- , eventHandler_ (this,
-                  ACE_TEXT_ALWAYS_CHAR ("EventHandler"))
+ //, eventHandler_ (this,
+ //                 ACE_TEXT_ALWAYS_CHAR ("EventHandler"))
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Stream::RPG_Net_Protocol_Stream"));
 
@@ -66,9 +66,9 @@ RPG_Net_Protocol_Stream::load (Stream_ILayout* layout_in,
   module_p = &protocolHandler_;
   layout_in->append (module_p, NULL, 0);
   module_p = NULL;
-  module_p = &eventHandler_;
-  layout_in->append (module_p, NULL, 0);
-  module_p = NULL;
+  //module_p = &eventHandler_;
+  //layout_in->append (module_p, NULL, 0);
+  //module_p = NULL;
 
   delete_out = false;
 

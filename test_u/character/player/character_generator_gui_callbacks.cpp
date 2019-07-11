@@ -32,7 +32,7 @@
 #include "common_ui_tools.h"
 
 #include "common_ui_gtk_defines.h"
-#include "common_ui_gtk_manager.h"
+#include "common_ui_gtk_manager_common.h"
 
 #include "rpg_common_defines.h"
 #include "rpg_common_file_tools.h"
@@ -145,7 +145,7 @@ idle_initialize_UI_cb (gpointer userData_in)
   ACE_ASSERT (data_p);
 
   Common_UI_GTK_BuildersConstIterator_t iterator =
-    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
 
@@ -405,7 +405,7 @@ about_clicked_GTK_cb (GtkWidget* widget_in,
   ACE_ASSERT (data_p);
 
   Common_UI_GTK_BuildersConstIterator_t iterator =
-    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
 
@@ -432,7 +432,7 @@ quit_clicked_GTK_cb (GtkWidget* widget_in,
   ACE_UNUSED_ARG (widget_in);
   ACE_UNUSED_ARG (userData_in);
 
-  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->close (1);
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
 
   return FALSE;
 }
@@ -450,7 +450,7 @@ create_character_clicked_GTK_cb (GtkWidget* widget_in,
   ACE_ASSERT (data_p);
 
   Common_UI_GTK_BuildersConstIterator_t iterator =
-    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   Common_UI_GTK_BuildersConstIterator_t iterator_2 =
     data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
@@ -521,7 +521,7 @@ drop_character_clicked_GTK_cb (GtkWidget* widget_in,
   ACE_ASSERT (data_p);
 
   Common_UI_GTK_BuildersConstIterator_t iterator =
-    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   Common_UI_GTK_BuildersConstIterator_t iterator_2 =
     data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
@@ -674,7 +674,7 @@ load_character_clicked_GTK_cb (GtkWidget* widget_in,
   ACE_ASSERT (data_p);
 
   Common_UI_GTK_BuildersConstIterator_t iterator =
-    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
 
@@ -709,7 +709,7 @@ character_file_activated_GTK_cb (GtkWidget* widget_in,
   ACE_ASSERT (data_p);
 
   Common_UI_GTK_BuildersConstIterator_t iterator =
-    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   Common_UI_GTK_BuildersConstIterator_t iterator_2 =
     data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
@@ -727,7 +727,7 @@ character_file_activated_GTK_cb (GtkWidget* widget_in,
     gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (filechooser_dialog));
   if (!filename_utf8)
     return FALSE; // done
-  filename = Common_UI_Tools::UTF82Locale (filename_utf8);
+  filename = Common_UI_GTK_Tools::UTF8ToLocale (filename_utf8);
   g_free (filename_utf8);
 
   // clean up
@@ -778,7 +778,7 @@ character_file_activated_GTK_cb (GtkWidget* widget_in,
     return FALSE;
   } // end IF
   data_p->currentSprite =
-    RPG_Client_Common_Tools::class2Sprite (player_base->getClass ());
+    RPG_Client_Common_Tools::classToSprite (player_base->getClass ());
   data_p->isTransient = false;
 
   // update entity profile widgets
@@ -834,7 +834,7 @@ store_character_clicked_GTK_cb (GtkWidget* widget_in,
   ACE_ASSERT (data_p->entity.character);
 
   Common_UI_GTK_BuildersConstIterator_t iterator =
-    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
 
@@ -899,7 +899,7 @@ character_repository_combobox_changed_GTK_cb (GtkWidget* widget_in,
   ACE_ASSERT (data_p);
 
   Common_UI_GTK_BuildersConstIterator_t iterator =
-    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   Common_UI_GTK_BuildersConstIterator_t iterator_2 =
     data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
@@ -981,7 +981,7 @@ character_repository_combobox_changed_GTK_cb (GtkWidget* widget_in,
     return FALSE;
   } // end IF
   data_p->currentSprite =
-    RPG_Client_Common_Tools::class2Sprite (player_p->getClass ());
+    RPG_Client_Common_Tools::classToSprite (player_p->getClass ());
   data_p->isTransient = false;
 
   // update entity profile widgets
@@ -1027,7 +1027,7 @@ character_repository_button_clicked_GTK_cb (GtkWidget* widget_in,
   ACE_ASSERT (data_p);
 
   Common_UI_GTK_BuildersConstIterator_t iterator =
-    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
 
@@ -1067,7 +1067,7 @@ prev_image_clicked_GTK_cb (GtkWidget* widget_in,
   ACE_ASSERT (!data_p->spriteGallery.empty ());
 
   Common_UI_GTK_BuildersConstIterator_t iterator =
-    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
 
@@ -1103,7 +1103,7 @@ next_image_clicked_GTK_cb (GtkWidget* widget_in,
   ACE_ASSERT (!data_p->spriteGallery.empty ());
 
   Common_UI_GTK_BuildersConstIterator_t iterator =
-    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
 

@@ -12,11 +12,16 @@
 #include "ace/High_Res_Timer.h"
 
 #include "common_file_tools.h"
-#include "common_tools.h"
+
+#include "common_timer_tools.h"
+
+#include "common_log_tools.h"
 
 #include "common_ui_defines.h"
-#include "common_ui_glade_definition.h"
+
+//#include "common_ui_glade_definition.h"
 #include "common_ui_gtk_manager.h"
+#include "common_ui_gtk_manager_common.h"
 
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
@@ -374,7 +379,7 @@ test_u_main::process_arguments (const int& argc_in,
 }
 
 void
-test_u_main::do_work (GTK_cb_data_t& userData_in,
+test_u_main::do_work (struct GTK_CBData& userData_in,
                       const std::string& schemaDirectory_in,
                       const std::string& clientUIFile_in,
                       const std::string& magicDictionary_in,
@@ -389,15 +394,15 @@ test_u_main::do_work (GTK_cb_data_t& userData_in,
   //RPG_Common_XML_Tools::init(schemaDirectory_in);
   // step0b: init RPG engine
   std::string empty;
-  RPG_Engine_Common_Tools::init (schemaDirectory_in,
-                                 magicDictionary_in,
-                                 itemDictionary_in,
-                                 empty);
-  RPG_Client_SDL_InputConfiguration_t input_configuration;
+  RPG_Engine_Common_Tools::initialize (schemaDirectory_in,
+                                       magicDictionary_in,
+                                       itemDictionary_in,
+                                       empty);
+  struct RPG_Client_SDL_InputConfiguration input_configuration;
   input_configuration.key_repeat_initial_delay = SDL_DEFAULT_REPEAT_DELAY;
   input_configuration.key_repeat_interval = SDL_DEFAULT_REPEAT_INTERVAL;
   input_configuration.use_UNICODE = true;
-  RPG_Sound_SDLConfiguration_t sound_configuration;
+  struct RPG_Sound_SDLConfiguration sound_configuration;
   sound_configuration.frequency = RPG_SOUND_AUDIO_DEF_FREQUENCY;
   sound_configuration.format = RPG_SOUND_AUDIO_DEF_FORMAT;
   sound_configuration.channels = RPG_SOUND_AUDIO_DEF_CHANNELS;
@@ -420,13 +425,16 @@ test_u_main::do_work (GTK_cb_data_t& userData_in,
     return;
   } // end IF
 
-  userData_in.GTKState.initializationHook = idle_initialize_UI_cb;
-  userData_in.GTKState.finalizationHook = idle_finalize_UI_cb;
-  userData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
-    std::make_pair (UIFile_in, static_cast<GladeXML*> (NULL));
-  userData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
-    std::make_pair (clientUIFile_in, static_cast<GladeXML*> (NULL));
-  userData_in.GTKState.userData = &userData_in;
+  Common_UI_GTK_Manager_t* gtk_manager_p =
+    COMMON_UI_GTK_MANAGER_SINGLETON::instance ();
+  ACE_ASSERT (gtk_manager_p);
+  Common_UI_GTK_State_t& state_r =
+    const_cast<Common_UI_GTK_State_t&> (gtk_manager_p->getR_2 ());
+  state_r.builders[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN)] =
+    std::make_pair (UIFile_in, static_cast<GtkBuilder*> (NULL));
+  state_r.builders[ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
+    std::make_pair (clientUIFile_in, static_cast<GtkBuilder*> (NULL));
+  //userData_in.GTKState.userData = &userData_in;
 
   userData_in.schemaRepository = schemaDirectory_in;
   userData_in.entity.character = NULL;
@@ -445,7 +453,8 @@ test_u_main::do_work (GTK_cb_data_t& userData_in,
   userData_in.currentSprite = RPG_GRAPHICS_SPRITE_INVALID;
   userData_in.isTransient = false;
 
-  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start ();
+  ACE_thread_t thread_id;
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start (thread_id);
   if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
   {
     ACE_DEBUG ((LM_ERROR,
@@ -453,13 +462,7 @@ test_u_main::do_work (GTK_cb_data_t& userData_in,
     return;
   } // end IF
 
-  int result = COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->wait ();
-  if (result == -1)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to ACE_Task_Base::wait(): \"%m\", returning\n")));
-    return;
-  } // end IF
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->wait ();
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("finished working...\n")));
@@ -473,7 +476,7 @@ test_u_main::print_version (const std::string& programName_in)
   std::cout << programName_in
 #ifdef HAVE_CONFIG_H
             << ACE_TEXT(" : ")
-            << RPG_VERSION
+            //<< RPG_VERSION
 #endif
             << std::endl;
 
@@ -663,12 +666,12 @@ test_u_main::run_i (int argc_in,
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
-  if (!Common_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
-                                        log_file,                   // logfile
-                                        false,                      // log to syslog ?
-                                        false,                      // trace messages ?
-                                        trace_information,          // debug messages ?
-                                        NULL))                      // logger
+  if (!Common_Log_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
+                                            log_file,                   // logfile
+                                            false,                      // log to syslog ?
+                                            false,                      // trace messages ?
+                                            trace_information,          // debug messages ?
+                                            NULL))                      // logger
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));
@@ -701,13 +704,16 @@ test_u_main::run_i (int argc_in,
 //                                    argv_in,                              // cmdline
 //                                    NULL);                                // property name(s)
 //  ACE_ASSERT(gnomeProgram);
-  GTK_cb_data_t user_data;
-  Common_UI_GladeDefinition ui_definition (argc_in,
-                                           argv_in);
-  if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (argc_in,
-                                                                 argv_in,
-                                                                 &user_data.GTKState,
-                                                                 &ui_definition))
+  struct GTK_CBData user_data;
+  Common_UI_GtkBuilderDefinition_t ui_definition;
+  struct Common_UI_GTK_Configuration gtk_configuration;
+  gtk_configuration.argc = argc_in;
+  gtk_configuration.argv = argv_in;
+  gtk_configuration.CBData = &user_data;
+  gtk_configuration.definition = &ui_definition;
+  gtk_configuration.eventHooks.initHook = idle_initialize_UI_cb;
+  gtk_configuration.eventHooks.finiHook = idle_finalize_UI_cb;
+  if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (gtk_configuration))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to initialize GTK manager, aborting\n")));
@@ -738,8 +744,7 @@ test_u_main::run_i (int argc_in,
   std::string working_time_string;
   ACE_Time_Value working_time;
   timer.elapsed_time (working_time);
-  Common_Tools::period2String (working_time,
-                               working_time_string);
+  working_time_string = Common_Timer_Tools::periodToString (working_time);
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),

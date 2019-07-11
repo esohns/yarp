@@ -62,7 +62,26 @@ find_package (Common ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO}
 if (NOT EXISTS ${Common_DIR})
  message (FATAL_ERROR "could not find package \"Common\", aborting")
 endif ()
-add_definitions (-DCOMMON_HAS_DLL)
+
+find_package (ACEStream ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO}
+              REQUIRED
+              CONFIG
+              PATHS ${CMAKE_CURRENT_SOURCE_DIR}/../modules ${CMAKE_CURRENT_SOURCE_DIR}/../..
+              PATH_SUFFIXES ACEStream/${BUILD_PATH_SUFFIX}
+              NO_DEFAULT_PATH)
+if (NOT EXISTS ${ACEStream_DIR})
+ message (FATAL_ERROR "could not find package \"ACEStream\", aborting")
+endif ()
+
+find_package (ACENetwork ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO}
+              REQUIRED
+              CONFIG
+              PATHS ${CMAKE_CURRENT_SOURCE_DIR}/../modules ${CMAKE_CURRENT_SOURCE_DIR}/../..
+              PATH_SUFFIXES ACENetwork/${BUILD_PATH_SUFFIX}
+              NO_DEFAULT_PATH)
+if (NOT EXISTS ${ACENetwork_DIR})
+ message (FATAL_ERROR "could not find package \"ACENetwork\", aborting")
+endif ()
 
 if (UNIX)
  set (NEWLINE_STYLE UNIX)

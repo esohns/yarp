@@ -43,21 +43,32 @@
 #endif
 
 #include "common_file_tools.h"
-#include "common_logger.h"
-#include "common_tools.h"
+
+ //#include "common_logger.h"
+#include "common_log_tools.h"
+
+#include "common_signal_tools.h"
+
+#include "common_timer_tools.h"
 
 #include "common_ui_defines.h"
 //#include "common_ui_glade_definition.h"
 #include "common_ui_gtk_builder_definition.h"
 #include "common_ui_gtk_manager.h"
+#include "common_ui_gtk_manager_common.h"
 
 #include "stream_allocatorheap.h"
+
+#include "stream_stat_common.h"
 
 #include "net_common_tools.h"
 #include "net_configuration.h"
 #include "net_connection_manager.h"
 
-#include "net_server_common.h"
+#include "net_client_defines.h"
+
+//#include "net_server_common.h"
+#include "net_server_defines.h"
 
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
@@ -66,19 +77,19 @@
 #include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
 
+#include "rpg_net_common.h"
 #include "rpg_net_defines.h"
+#include "rpg_net_module_eventhandler.h"
 
-//#include "rpg_net_server_common.h"
-//#include "rpg_net_server_common_tools.h"
-//#include "rpg_net_server_defines.h"
+#include "rpg_net_protocol_network.h"
+
+#include "rpg_client_common.h"
 
 #include "net_callbacks.h"
-#include "net_common.h"
-#include "net_defines.h"
+#include "net_client_common.h"
+#include "net_client_signalhandler.h"
 #include "net_eventhandler.h"
-#include "net_module_eventhandler.h"
-
-#include "net_server_signalhandler.h"
+//#include "net_module_eventhandler.h"
 
 void
 do_printUsage (const std::string& programName_in)
@@ -102,7 +113,7 @@ do_printUsage (const std::string& programName_in)
             << std::endl;
   std::cout << ACE_TEXT ("currently available options:") << std::endl;
   std::cout << ACE_TEXT ("-c [VALUE]   : max #connections ([")
-            << RPG_NET_SERVER_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS
+            << RPG_NET_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS
             << ACE_TEXT ("])")
             << std::endl;
   std::string path = configuration_path;
@@ -111,13 +122,13 @@ do_printUsage (const std::string& programName_in)
 //  path += ACE_TEXT_ALWAYS_CHAR("net");
 //  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 //#endif
-  path += ACE_TEXT_ALWAYS_CHAR(NET_SERVER_UI_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_FILE);
   std::cout << ACE_TEXT ("-g[[STRING]] : UI file [\"")
             << path
             << ACE_TEXT ("\"] {\"\" --> no GUI}")
             << std::endl;
   std::cout << ACE_TEXT ("-i [VALUE]   : client ping interval (ms) [")
-            << RPG_NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL
+            << NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL
             << ACE_TEXT ("] {0 --> OFF})")
             << std::endl;
 //  std::cout << ACE_TEXT("-k [VALUE]  : client keep-alive timeout ([")
@@ -142,22 +153,22 @@ do_printUsage (const std::string& programName_in)
             << ACE_TEXT ("]")
             << std::endl;
   std::cout << ACE_TEXT ("-p [VALUE]   : listening port [")
-            << RPG_NET_SERVER_DEFAULT_LISTENING_PORT
+            << RPG_NET_DEFAULT_PORT
             << ACE_TEXT ("]")
             << std::endl;
   std::cout << ACE_TEXT ("-r           : use reactor [")
-            << RPG_NET_USES_REACTOR
+            << (COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR)
             << ACE_TEXT ("]")
             << std::endl;
   std::cout << ACE_TEXT ("-s [VALUE]   : statistics reporting interval (second(s)) [")
-            << RPG_NET_SERVER_DEFAULT_STATISTICS_REPORTING_INTERVAL
+            << RPG_NET_DEFAULT_STATISTICS_REPORTING_INTERVAL
             << ACE_TEXT ("] {0 --> OFF})")
             << std::endl;
   std::cout << ACE_TEXT ("-t           : trace information") << std::endl;
   std::cout << ACE_TEXT ("-v           : print version information and exit")
             << std::endl;
   std::cout << ACE_TEXT ("-x [VALUE]   : #dispatch threads [")
-            << RPG_NET_SERVER_DEFAULT_NUMBER_OF_DISPATCHING_THREADS
+            << NET_CLIENT_DEFAULT_NUMBER_OF_DISPATCH_THREADS
             << ACE_TEXT ("]")
             << std::endl;
 }
@@ -191,18 +202,18 @@ do_processArguments (const int& argc_in,
 
   // init results
   maxNumConnections_out           =
-      RPG_NET_SERVER_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS;
-  clientPingInterval_out          = RPG_NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL;
+    RPG_NET_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS;
+  clientPingInterval_out          = NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL;
 //  keepAliveTimeout_out = RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE;
   logToFile_out                   = false;
   useUDP_out                      = false;
   networkInterface_out            =
     ACE_TEXT_ALWAYS_CHAR (RPG_NET_DEFAULT_NETWORK_INTERFACE);
   useLoopback_out                 = false;
-  listeningPortNumber_out         = RPG_NET_SERVER_DEFAULT_LISTENING_PORT;
-  useReactor_out                  = RPG_NET_USES_REACTOR;
+  listeningPortNumber_out         = RPG_NET_DEFAULT_PORT;
+  useReactor_out                  = (COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR);
   statisticsReportingInterval_out =
-      RPG_NET_SERVER_DEFAULT_STATISTICS_REPORTING_INTERVAL;
+    RPG_NET_DEFAULT_STATISTICS_REPORTING_INTERVAL;
   traceInformation_out            = false;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -210,11 +221,11 @@ do_processArguments (const int& argc_in,
 //  path += ACE_TEXT_ALWAYS_CHAR("net");
 //  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 //#endif
-  path += ACE_TEXT_ALWAYS_CHAR (NET_SERVER_UI_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_FILE);
   UIFile_out                      = path;
   printVersionAndExit_out         = false;
   numDispatchThreads_out          =
-      RPG_NET_SERVER_DEFAULT_NUMBER_OF_DISPATCHING_THREADS;
+    NET_CLIENT_DEFAULT_NUMBER_OF_DISPATCH_THREADS;
 
   ACE_Get_Opt argumentParser (argc_in,
                               argv_in,
@@ -436,58 +447,70 @@ do_work (unsigned int maxNumConnections_in,
          unsigned int statisticsReportingInterval_in,
          unsigned int numDispatchThreads_in,
          const std::string& UIDefinitionFile_in,
-         Net_GTK_CBData_t& CBData_in,
+         struct Net_Client_GTK_CBData& CBData_in,
          const ACE_Sig_Set& signalSet_in,
          const ACE_Sig_Set& ignoredSignalSet_in,
-         Common_SignalActions_t& previousSignalActions_inout)
+         Common_SignalActions_t& previousSignalActions_inout,
+         sigset_t previousSignalMask_inout)
 {
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step0a: initialize stream configuration object
-  Stream_ModuleConfiguration_t module_configuration;
-  ACE_OS::memset (&module_configuration, 0, sizeof (module_configuration));
+  struct Common_FlexParserAllocatorConfiguration allocator_configuration;
+  struct Stream_ModuleConfiguration module_configuration;
+  struct RPG_Net_Protocol_ModuleHandlerConfiguration modulehandler_configuration;
+  struct RPG_Net_Protocol_StreamConfiguration stream_configuration;
+  RPG_Net_Protocol_StreamConfiguration_t stream_configuration_2;
 
   Net_EventHandler ui_event_handler (&CBData_in);
-  RPG_Net_Module_EventHandler_Module event_handler (ACE_TEXT_ALWAYS_CHAR ("EventHandler"),
-                                                    NULL);
-  RPG_Net_Module_EventHandler* eventHandler_impl = NULL;
+  RPG_Net_EventHandler_Module event_handler (NULL,
+                                             ACE_TEXT_ALWAYS_CHAR ("EventHandler"));
+  RPG_Net_EventHandler* eventHandler_impl = NULL;
   eventHandler_impl =
-    dynamic_cast<RPG_Net_Module_EventHandler*> (event_handler.writer ());
+    dynamic_cast<RPG_Net_EventHandler*> (event_handler.writer ());
   if (!eventHandler_impl)
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("dynamic_cast<RPG_Net_Module_EventHandler> failed, returning\n")));
     return;
   } // end IF
+  ACE_ASSERT (CBData_in.UIState);
   eventHandler_impl->initialize (&CBData_in.subscribers,
-                                 &CBData_in.subscribersLock);
+                                 &CBData_in.UIState->subscribersLock);
   eventHandler_impl->subscribe (&ui_event_handler);
 
-  Stream_AllocatorHeap heap_allocator;
-  RPG_Net_StreamMessageAllocator_t message_allocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
-                                                      &heap_allocator,
-                                                      false);
+  Stream_AllocatorHeap_T<ACE_MT_SYNCH,
+                         struct Stream_AllocatorConfiguration> heap_allocator;
+  RPG_Net_MessageAllocator_t message_allocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
+                                                &heap_allocator,
+                                                false);
 
-  Net_Configuration_t configuration;
-  ACE_OS::memset (&configuration, 0, sizeof (Net_Configuration_t));
+  //ACE_OS::memset (&configuration, 0, sizeof (Net_Configuration_t));
   // ************ connection configuration data ************
-  configuration.protocolConfiguration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
-  configuration.protocolConfiguration.peerPingInterval = pingInterval_in;
-  configuration.protocolConfiguration.pingAutoAnswer = true;
-  configuration.protocolConfiguration.printPongMessages = true;
+  //configuration.protocolConfiguration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
+  //configuration.protocolConfiguration.peerPingInterval = pingInterval_in;
+  //configuration.protocolConfiguration.pingAutoAnswer = true;
+  //configuration.protocolConfiguration.printPongMessages = true;
   // ************ socket / stream configuration data ************
-  configuration.socketConfiguration.bufferSize =
-   RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
-  configuration.streamConfiguration.moduleConfiguration = &module_configuration;
+  //configuration.socketConfiguration.bufferSize =
+  // RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
+  //configuration.streamConfiguration.moduleConfiguration = &module_configuration;
   //  config.useThreadPerConnection = false;
   //  config.serializeOutput = false;
 
   //  config.notificationStrategy = NULL;
-  configuration.streamConfiguration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
-  configuration.streamConfiguration.messageAllocator = &message_allocator;
-  configuration.streamConfiguration.module =
+
+  //stream_configuration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
+  stream_configuration.messageAllocator = &message_allocator;
+  stream_configuration.module =
     (!UIDefinitionFile_in.empty () ? &event_handler
                                    : NULL);
+  stream_configuration_2.initialize (module_configuration,
+                                     modulehandler_configuration,
+                                     allocator_configuration,
+                                     stream_configuration);
+  CBData_in.configuration->connection_configuration.initialize (allocator_configuration,
+                                                                stream_configuration_2);
 
   //  config.delete_module = false;
   // *WARNING*: set at runtime, by the appropriate connection handler
@@ -499,9 +522,7 @@ do_work (unsigned int maxNumConnections_in,
   //	config.lastCollectionTimestamp = ACE_Time_Value::zero;
 
   // step0b: initialize event dispatch
-  if (!Common_Tools::initializeEventDispatch (useReactor_in,
-                                              numDispatchThreads_in,
-                                              configuration.streamConfiguration.serializeOutput))
+  if (!Common_Tools::initializeEventDispatch (CBData_in.configuration->dispatch_configuration))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to Common_Tools::initializeEventDispatch(), returning\n")));
@@ -509,9 +530,9 @@ do_work (unsigned int maxNumConnections_in,
   } // end IF
 
   // step1: init regular (global) stats reporting
-  Stream_StatisticHandler_Reactor_t statistics_handler (ACTION_REPORT,
-                                                        RPG_CONNECTIONMANAGER_SINGLETON::instance (),
-                                                        false);
+  Net_StreamStatisticHandler_t statistics_handler (COMMON_STATISTIC_ACTION_REPORT,
+                                                   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance (),
+                                                   false);
   long timer_id = -1;
   if (statisticsReportingInterval_in)
   {
@@ -536,19 +557,19 @@ do_work (unsigned int maxNumConnections_in,
   } // end IF
 
   // step2: signal handling
-  if (useReactor_in)
-    CBData_in.listenerHandle = RPG_NET_SERVER_LISTENER_SINGLETON::instance ();
-  else
-    CBData_in.listenerHandle =
-      RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance ();
+  //if (useReactor_in)
+  //  CBData_in.listenerHandle = RPG_NET_SERVER_LISTENER_SINGLETON::instance ();
+  //else
+  //  CBData_in.listenerHandle =
+  //    RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance ();
   // event handler for signals
-  Net_Server_SignalHandler signal_handler (timer_id,
-                                           CBData_in.listenerHandle,
-                                           RPG_CONNECTIONMANAGER_SINGLETON::instance (),
-                                           useReactor_in);
+  Net_Client_SignalHandler signal_handler (timer_id/*,
+                                           RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance (),
+                                           useReactor_in*/);
   int result = -1;
   const void* act_p = NULL;
-  if (!Common_Tools::initializeSignals (signalSet_in,
+  if (!Common_Signal_Tools::initialize (COMMON_SIGNAL_DISPATCH_SIGNAL,
+                                        signalSet_in,
                                         ignoredSignalSet_in,
                                         &signal_handler,
                                         previousSignalActions_inout))
@@ -572,10 +593,10 @@ do_work (unsigned int maxNumConnections_in,
   } // end IF
 
   // step3: initialize connection manager
-  RPG_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (maxNumConnections_in);
-  Net_UserData_t session_data;
-  RPG_CONNECTIONMANAGER_SINGLETON::instance ()->set (configuration,
-                                                     &session_data);
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (maxNumConnections_in,
+                                                                         ACE_Time_Value (0, NET_STATISTIC_DEFAULT_VISIT_INTERVAL_MS * 1000));
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->set (CBData_in.configuration->connection_configuration,
+                                                                  NULL);
 
   // step4: handle events (signals, incoming connections/data, timers, ...)
   // reactor/proactor event loop:
@@ -589,15 +610,16 @@ do_work (unsigned int maxNumConnections_in,
   // step4a: start GTK event loop ?
   if (!UIDefinitionFile_in.empty ())
   {
-    CBData_in.GTKState.finalizationHook = idle_finalize_UI_cb;
-    CBData_in.GTKState.initializationHook = idle_initialize_UI_cb;
+    CBData_in.configuration->gtk_configuration.eventHooks.finiHook = idle_finalize_UI_cb;
+    CBData_in.configuration->gtk_configuration.eventHooks.initHook = idle_initialize_UI_cb;
     //CBData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
     //  std::make_pair (UIDefinitionFile_in, static_cast<GladeXML*> (NULL));
-    CBData_in.GTKState.builders[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
+    CBData_in.UIState->builders[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN)] =
       std::make_pair (UIDefinitionFile_in, static_cast<GtkBuilder*> (NULL));
-    CBData_in.GTKState.userData = &CBData_in;
+    //CBData_in.GTKState.userData = &CBData_in;
 
-    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start ();
+    ACE_thread_t thread_id;
+    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start (thread_id);
     if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
     {
       ACE_DEBUG ((LM_ERROR,
@@ -614,9 +636,10 @@ do_work (unsigned int maxNumConnections_in,
                       timer_id));
       } // end IF
       COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
-      Common_Tools::finalizeSignals (signalSet_in,
-                                     useReactor_in,
-                                     previousSignalActions_inout);
+      Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
+                                     signalSet_in,
+                                     previousSignalActions_inout,
+                                     previousSignalMask_inout);
 
       return;
     } // end IF
@@ -624,10 +647,8 @@ do_work (unsigned int maxNumConnections_in,
 
   // step4b: initialize worker(s)
   int group_id = -1;
-  bool use_reactor = useReactor_in;
-  if (!Common_Tools::startEventDispatch (use_reactor,
-                                         numDispatchThreads_in,
-                                         group_id))
+  struct Common_EventDispatchState dispatch_state_s;
+  if (!Common_Tools::startEventDispatch (dispatch_state_s))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to start event dispatch, returning\n")));
@@ -653,111 +674,16 @@ do_work (unsigned int maxNumConnections_in,
     if (!UIDefinitionFile_in.empty ())
       COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
     COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
-    Common_Tools::finalizeSignals (signalSet_in,
-                                   useReactor_in,
-                                   previousSignalActions_inout);
+    Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
+                                   signalSet_in,
+                                   previousSignalActions_inout,
+                                   previousSignalMask_inout);
 
     return;
   } // end IF
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("started event dispatch...\n")));
-
-  // step4c: start listening
-  Net_SocketHandlerConfiguration_t socket_handler_configuration;
-  ACE_OS::memset (&socket_handler_configuration,
-                  0,
-                  sizeof (socket_handler_configuration));
-  socket_handler_configuration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
-  socket_handler_configuration.messageAllocator = &message_allocator;
-  socket_handler_configuration.socketConfiguration =
-      configuration.socketConfiguration;
-  Net_ListenerConfiguration_t listener_configuration;
-  ACE_OS::memset (&listener_configuration,
-                  0,
-                  sizeof (listener_configuration));
-  listener_configuration.addressFamily = ACE_ADDRESS_FAMILY_INET;
-  listener_configuration.allocator = &message_allocator;
-  listener_configuration.connectionManager =
-    NET_CONNECTIONMANAGER_SINGLETON::instance ();
-  listener_configuration.portNumber = listeningPortNumber_in;
-  listener_configuration.socketHandlerConfiguration =
-    &socket_handler_configuration;
-  listener_configuration.statisticCollectionInterval =
-    statisticsReportingInterval_in;
-  listener_configuration.useLoopbackDevice = useLoopback_in;
-  if (!CBData_in.listenerHandle->initialize (listener_configuration))
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to initialize listener, returning\n")));
-
-    // clean up
-    Common_Tools::finalizeEventDispatch (useReactor_in,
-                                         !useReactor_in,
-                                         group_id);
-    if (timer_id != -1)
-    {
-      result = COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timer_id,
-                                                                   &act_p);
-      if (result <= 0)
-        ACE_DEBUG ((LM_DEBUG,
-                    ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                    timer_id));
-    } // end IF
-    //		{ // synch access
-    //			ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(CBData_in.lock);
-
-    //			for (Net_GTK_EventSourceIDsIterator_t iterator = CBData_in.event_source_ids.begin();
-    //					 iterator != CBData_in.event_source_ids.end();
-    //					 iterator++)
-    //				g_source_remove(*iterator);
-    //		} // end lock scope
-    if (!UIDefinitionFile_in.empty ())
-      COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
-    COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
-    Common_Tools::finalizeSignals (signalSet_in,
-                                   useReactor_in,
-                                   previousSignalActions_inout);
-
-    return;
-  } // end IF
-  CBData_in.listenerHandle->start ();
-  if (!CBData_in.listenerHandle->isRunning ())
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to start listener (port: %u), returning\n"),
-                listeningPortNumber_in));
-
-    // clean up
-    Common_Tools::finalizeEventDispatch (useReactor_in,
-                                         !useReactor_in,
-                                         group_id);
-    if (timer_id != -1)
-    {
-      result = COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timer_id,
-                                                                   &act_p);
-      if (result <= 0)
-        ACE_DEBUG ((LM_DEBUG,
-                    ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                    timer_id));
-    } // end IF
-    //		{ // synch access
-    //			ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(CBData_in.lock);
-
-    //			for (Net_GTK_EventSourceIDsIterator_t iterator = CBData_in.event_source_ids.begin();
-    //					 iterator != CBData_in.event_source_ids.end();
-    //					 iterator++)
-    //				g_source_remove(*iterator);
-    //		} // end lock scope
-    if (!UIDefinitionFile_in.empty ())
-      COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
-    COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
-    Common_Tools::finalizeSignals (signalSet_in,
-                                   useReactor_in,
-                                   previousSignalActions_inout);
-
-    return;
-  } // end IF
 
   // *NOTE*: from this point on, clean up any remote connections !
 
@@ -808,9 +734,10 @@ do_work (unsigned int maxNumConnections_in,
   if (!UIDefinitionFile_in.empty ())
     COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
   COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
-  Common_Tools::finalizeSignals (signalSet_in,
-                                 useReactor_in,
-                                 previousSignalActions_inout);
+  Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
+                                 signalSet_in,
+                                 previousSignalActions_inout,
+                                 previousSignalMask_inout);
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("finished working...\n")));
@@ -824,7 +751,7 @@ do_printVersion (const std::string& programName_in)
   std::cout << programName_in
 #ifdef HAVE_CONFIG_H
             << ACE_TEXT(" : ")
-            << RPG_VERSION
+            //<< RPG_VERSION
 #endif
             << std::endl;
 
@@ -875,18 +802,19 @@ ACE_TMAIN (int argc_in,
 
   // step1a set defaults
   unsigned int max_num_connections =
-    RPG_NET_SERVER_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS;
-  unsigned int ping_interval = RPG_NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL;
+    RPG_NET_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS;
+  unsigned int ping_interval = NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL;
   //  unsigned int keep_alive_timeout            = RPG_NET_SERVER_DEFAULT_TCP_KEEPALIVE;
   bool log_to_file = false;
   bool use_udp = false;
   std::string network_interface =
     ACE_TEXT_ALWAYS_CHAR (RPG_NET_DEFAULT_NETWORK_INTERFACE);
   bool use_loopback = false;
-  unsigned short listening_port_number = RPG_NET_SERVER_DEFAULT_LISTENING_PORT;
-  bool use_reactor = RPG_NET_USES_REACTOR;
+  unsigned short listening_port_number = RPG_NET_DEFAULT_PORT;
+  bool use_reactor =
+    (COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR);
   unsigned int statistics_reporting_interval =
-    RPG_NET_SERVER_DEFAULT_STATISTICS_REPORTING_INTERVAL;
+    RPG_NET_DEFAULT_STATISTICS_REPORTING_INTERVAL;
   bool trace_information = false;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -894,11 +822,12 @@ ACE_TMAIN (int argc_in,
 //  path += ACE_TEXT_ALWAYS_CHAR ("net");
 //  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 //#endif // #ifdef DEBUG_DEBUGGER
-  path += ACE_TEXT_ALWAYS_CHAR (NET_SERVER_UI_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_FILE);
   std::string UI_file = path;
   bool print_version_and_exit = false;
   unsigned int num_dispatch_threads =
-    RPG_NET_SERVER_DEFAULT_NUMBER_OF_DISPATCHING_THREADS;
+    NET_CLIENT_DEFAULT_NUMBER_OF_DISPATCH_THREADS;
+  struct RPG_Client_Configuration configuration;
 
   // step1b: parse/process/validate configuration
   if (!do_processArguments (argc_in,
@@ -977,9 +906,11 @@ ACE_TMAIN (int argc_in,
                         signal_set,
                         ignored_signal_set);
   Common_SignalActions_t previous_signal_actions;
-  if (!Common_Tools::preInitializeSignals (signal_set,
+  sigset_t previous_signal_mask;
+  if (!Common_Signal_Tools::preInitialize (signal_set,
                                            use_reactor,
-                                           previous_signal_actions))
+                                           previous_signal_actions,
+                                           previous_signal_mask))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to Common_Tools::preInitializeSignals(), aborting\n")));
@@ -994,39 +925,27 @@ ACE_TMAIN (int argc_in,
     return EXIT_FAILURE;
   } // end IF
 
-  Net_GTK_CBData_t gtk_cb_user_data;
+  struct Net_Client_GTK_CBData gtk_cb_user_data;
   gtk_cb_user_data.allowUserRuntimeStatistic =
       (statistics_reporting_interval == 0); // handle SIGUSR1/SIGBREAK
                                             // iff regular reporting
                                             // is off
+  gtk_cb_user_data.configuration = &configuration;
 
   // step1e: initialize logging and/or tracing
-  Common_Logger logger (&gtk_cb_user_data.logStack,
-                        &gtk_cb_user_data.stackLock);
-  std::string log_file;
-  if (log_to_file &&
-      !RPG_Net_Server_Common_Tools::getNextLogFilename (Common_File_Tools::getDumpDirectory (),
-                                                        log_file))
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Net_Common_Tools::getNextLogFilename(), aborting\n")));
-
-    // *PORTABILITY*: on Windows, need to fini ACE...
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini () == -1)
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
-
-    return EXIT_FAILURE;
-  } // end IF
-  if (!Common_Tools::initializeLogging (ACE::basename(argv_in[0]),     // program name
-                                        log_file,                      // logfile
-                                        true,                          // log to syslog ?
-                                        false,                         // trace messages ?
-                                        trace_information,             // debug messages ?
-                                        (UI_file.empty () ? NULL
-                                                          : &logger))) // logger ?
+  //Common_Logger logger (&gtk_cb_user_data.logStack,
+  //                      &gtk_cb_user_data.stackLock);
+  std::string log_file =
+    Common_Log_Tools::getLogFilename (ACE_TEXT_ALWAYS_CHAR (""),
+                                      ACE::basename(argv_in[0]));
+  if (!Common_Log_Tools::initializeLogging (ACE::basename(argv_in[0]),     // program name
+                                            log_file,                      // logfile
+                                            true,                          // log to syslog ?
+                                            false,                         // trace messages ?
+                                            trace_information,             // debug messages ?
+                                            //(UI_file.empty () ? NULL
+                                            //                  : &logger))) // logger ?
+                                            NULL))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));
@@ -1060,9 +979,9 @@ ACE_TMAIN (int argc_in,
   // *NOTE*: settings will be inherited by any child processes
   // *TODO*: the reasoning here is incomplete
   bool use_fd_based_reactor = use_reactor;
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-  use_fd_based_reactor = (use_reactor && !COMMON_EVENT_WINXX_USE_WFMO_REACTOR);
-#endif
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//  use_fd_based_reactor = (use_reactor && !COMMON_EVENT_WINXX_USE_WFMO_REACTOR);
+//#endif
   if (!Common_Tools::setResourceLimits (use_fd_based_reactor, // file descriptors
                                         true))                // stack traces
   {
@@ -1082,16 +1001,12 @@ ACE_TMAIN (int argc_in,
   // step1h: init GLIB / G(D|T)K[+] / GNOME ?
   //Common_UI_GladeDefinition ui_definition (argc_in,
   //                                         argv_in);
-  Common_UI_GtkBuilderDefinition ui_definition (argc_in,
-                                                argv_in);
+  Common_UI_GtkBuilderDefinition_t ui_definition;
   if (!UI_file.empty ())
-    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (argc_in,
-                                                              argv_in,
-                                                              &gtk_cb_user_data.GTKState,
-                                                              &ui_definition);
+    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (gtk_cb_user_data.configuration->gtk_configuration);
 
-  ACE_High_Res_Timer timer;
-  timer.start ();
+  ACE_High_Res_Timer highres_timer;
+  highres_timer.start ();
   // step2: do actual work
   do_work (max_num_connections,
            ping_interval,
@@ -1107,15 +1022,16 @@ ACE_TMAIN (int argc_in,
            gtk_cb_user_data,
            signal_set,
            ignored_signal_set,
-           previous_signal_actions);
-  timer.stop ();
+           previous_signal_actions,
+           previous_signal_mask);
+  highres_timer.stop ();
 
   // debug info
   std::string working_time_string;
   ACE_Time_Value working_time;
-  timer.elapsed_time (working_time);
-  Common_Tools::period2String (working_time,
-                               working_time_string);
+  highres_timer.elapsed_time (working_time);
+  working_time_string =
+    Common_Timer_Tools::periodToString (working_time);
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
               ACE_TEXT (working_time_string.c_str ())));
@@ -1147,12 +1063,9 @@ ACE_TMAIN (int argc_in,
   process_profile.elapsed_rusage (elapsed_rusage);
   ACE_Time_Value user_time (elapsed_rusage.ru_utime);
   ACE_Time_Value system_time (elapsed_rusage.ru_stime);
-  std::string user_time_string;
-  std::string system_time_string;
-  Common_Tools::period2String (user_time,
-                               user_time_string);
-  Common_Tools::period2String (system_time,
-                               system_time_string);
+  std::string user_time_string = Common_Timer_Tools::periodToString (user_time);
+  std::string system_time_string =
+    Common_Timer_Tools::periodToString (system_time);
 
   // debug info
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)

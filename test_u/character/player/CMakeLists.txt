@@ -108,7 +108,9 @@ set (${EXECUTABLE}_SRCS
      character_generator_gui.cpp
      character_generator_gui_callbacks.cpp
      character_generator_gui_callbacks.h
-     character_generator_gui_common.h)
+     character_generator_gui_common.h
+     test_u_main.cpp
+     test_u_main.h)
 
 set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"/usr/local/share/RPG\";CONFIGDIR=\".\"")
 
@@ -128,12 +130,19 @@ target_link_libraries (${EXECUTABLE}
                        ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES}
                        ${PKG_CONFIG_MODULE_LIBGNOMEUI_LIBRARIES})
 target_link_libraries (${EXECUTABLE}
+                       Opengl32.lib
+                       $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
+                       $ENV{LIB_ROOT}/SDL_mixer/lib/x86/SDL_mixer.lib
+                       ${GTK_LIBRARIES}
                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                       Common CommonLog CommonTimer
+                       Common CommonLog CommonTimer CommonUI_GTK
+                       ACEStream ACEStream_Miscellaneaous ACEStream_Network
+                       ACENetwork ACENetwork_Client
                        RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item
                        RPG_Character RPG_Monster RPG_Player RPG_Combat
-                       RPG_Map RPG_Sound RPG_Graphics RPG_Engine RPG_Client)
+                       RPG_Map RPG_Sound RPG_Graphics RPG_Engine RPG_Client
+                       RPG_Net RPG_Net_Protocol)
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 

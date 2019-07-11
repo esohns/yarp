@@ -27,7 +27,7 @@
 
 #include "ace/Global_Macros.h"
 #include "ace/Time_Value.h"
-#include "ace/Synch.h"
+//#include "ace/Synch.h"
 
 //#include "rpg_sound_exports.h"
 #include "rpg_sound_defines.h"

@@ -108,6 +108,11 @@ elseif (WIN32)
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
 endif ()
 
+if (GTKGLAREA_SUPPORT)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/gtkglarea>)
+endif (GTKGLAREA_SUPPORT)
+
 if (UNIX)
  target_include_directories (${LIBRARY} PUBLIC
 #                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules/ACE>)

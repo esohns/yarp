@@ -24,7 +24,7 @@
 #include <vector>
 
 #include "ace/Global_Macros.h"
-#include "ace/Thread_Mutex.h"
+#include "ace/Synch_Traits.h"
 
 #include "SDL.h"
 
@@ -35,7 +35,7 @@
 #include "rpg_graphics_SDL_window_base.h"
 
 #include "rpg_client_common.h"
-#include "rpg_client_exports.h"
+//#include "rpg_client_exports.h"
 #include "rpg_client_iwindow_level.h"
 
 // forward declaration(s)
@@ -45,10 +45,12 @@ class RPG_Engine;
 /**
 	@author Erik Sohns <erik.sohns@web.de>
 */
-class RPG_Client_Export RPG_Client_Window_Level
+class RPG_Client_Window_Level
  : public RPG_Graphics_SDLWindowBase
  , public RPG_Client_IWindowLevel
 {
+  typedef RPG_Graphics_SDLWindowBase inherited;
+
  public:
   RPG_Client_Window_Level (// *** SDL window ***
                            const RPG_Graphics_SDLWindowBase&); // parent
@@ -94,11 +96,9 @@ class RPG_Client_Export RPG_Client_Window_Level
 #endif
 
  private:
-  typedef RPG_Graphics_SDLWindowBase inherited;
-
-  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Level ());
-  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Level (const RPG_Client_Window_Level&));
-  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Level& operator= (const RPG_Client_Window_Level&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Level ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Level (const RPG_Client_Window_Level&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Level& operator= (const RPG_Client_Window_Level&))
 
   // helper methods
   bool setStyle (const RPG_Graphics_StyleUnion&); // style

@@ -34,7 +34,7 @@
 #include "SDL.h"
 #include "SDL_opengl.h"
 
-#include "ace/Synch.h"
+//#include "ace/Synch.h"
 
 struct state_t
 {

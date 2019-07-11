@@ -21,11 +21,11 @@
 #ifndef RPG_CLIENT_DEFINES_H
 #define RPG_CLIENT_DEFINES_H
 
-#include "rpg_graphics_colorname.h"
+//#include "rpg_graphics_colorname.h"
 
-#ifdef HAVE_CONFIG_H
-#include "rpg_config.h"
-#endif
+//#ifdef HAVE_CONFIG_H
+//#include "rpg_config.h"
+//#endif
 
 // task-specific
 #define RPG_CLIENT_GTK_UI_THREAD_GROUP_ID                 102

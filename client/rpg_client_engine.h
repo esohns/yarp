@@ -24,7 +24,7 @@
 #include "ace/Atomic_Op_T.h"
 #include "ace/Condition_T.h"
 #include "ace/Global_Macros.h"
-#include "ace/Synch.h"
+#include "ace/Synch_Traits.h"
 #include "ace/Task.h"
 
 //#include "common_icontrol.h"

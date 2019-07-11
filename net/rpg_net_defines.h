@@ -40,9 +40,9 @@
 #define RPG_NET_DEFAULT_IP_BROADCAST_ADDRESS          "255.255.255.255"
 
 // default event dispatcher (default: use asynch I/O (proactor))
-#define RPG_NET_USES_REACTOR                          false
-#define RPG_NET_CONNECTION_HANDLER_THREAD_NAME        "RPG connection dispatch"
-#define RPG_NET_CONNECTION_HANDLER_THREAD_GROUP_ID    2
+//#define RPG_NET_USES_REACTOR                          false
+//#define RPG_NET_CONNECTION_HANDLER_THREAD_NAME        "RPG connection dispatch"
+//#define RPG_NET_CONNECTION_HANDLER_THREAD_GROUP_ID    2
 
 #define RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE    ACE_DEFAULT_MAX_SOCKET_BUFSIZ
 #define RPG_NET_DEFAULT_TCP_NODELAY                   true
@@ -57,7 +57,7 @@
 #define RPG_NET_PING_AUTO_ANSWER                      true // auto-send "PONG"s
 
 // *** pro/reactor-related ***
-#define RPG_NET_TASK_GROUP_ID                         11
+//#define RPG_NET_TASK_GROUP_ID                         11
 // *** stream-related ***
 // *IMPORTANT NOTE*: any of these COULD seriously affect performance
 #define RPG_NET_MAXIMUM_QUEUE_SLOTS                   1000

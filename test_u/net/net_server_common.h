@@ -18,13 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef TEST_U_NET_COMMON_H
-#define TEST_U_NET_COMMON_H
+#ifndef NET_SERVER_COMMON_H
+#define NET_SERVER_COMMON_H
 
 #include <deque>
 #include <vector>
 
-#include "ace/Synch.h"
+//#include "ace/Synch.h"
 
 #include "common.h"
 
@@ -32,51 +32,55 @@
 
 #include "common_ui_gtk_common.h"
 
+#include "net_ilistener.h"
 //#include "net_configuration.h"
 //#include "net_stream_common.h"
 
-#include "net_server_common.h"
+#include "rpg_net_protocol_configuration.h"
+
+//#include "net_server_common.h"
 
 // forward declaration(s)
 class Net_Client_TimeoutHandler;
 
-enum Net_GTK_Event
-{
-  NET_GTKEVENT_CONNECT = 0,
-  NET_GTKEVENT_DISCONNECT,
-  NET_GTKEVENT_STATISTICS,
-  // ----------------------
-  NET_GTKEVENT_MAX,
-  NET_GKTEVENT_INVALID
-};
-typedef std::deque<enum Net_GTK_Event> Net_GTK_Events_t;
-typedef Net_GTK_Events_t::const_iterator Net_GTK_EventsIterator_t;
+typedef Net_IListener_T<RPG_Net_Protocol_ConnectionConfiguration> RPG_Net_Protocol_IListener_t;
+typedef Stream_ISessionDataNotify_T<Stream_SessionId_t,
+                                    struct RPG_Net_Protocol_SessionData,
+                                    enum Stream_SessionMessageType,
+                                    RPG_Net_Protocol_Message,
+                                    RPG_Net_Protocol_SessionMessage> RPG_Net_Protocol_ISessionNotify_t;
+typedef std::list<RPG_Net_Protocol_ISessionNotify_t*> RPG_Net_Protocol_Subscribers_t;
+typedef RPG_Net_Protocol_Subscribers_t::iterator RPG_Net_Protocol_SubscribersIterator_t;
 
-struct Net_GTK_CBData
+struct Net_Server_GTK_CBData
+ : Common_UI_GTK_CBData
 {
-  Net_GTK_CBData ()
-   : allowUserRuntimeStatistic (true)
-   , eventStack ()
-   , GTKState ()
+  Net_Server_GTK_CBData ()
+   : Common_UI_GTK_CBData ()
+   , allowUserRuntimeStatistic (true)
+   , configuration (NULL)
+    //, eventStack ()
+   //, GTKState ()
    , listenerHandle (NULL)
-   , logStack ()
-   , stackLock ()
+   //, logStack ()
+   //, stackLock ()
    , subscribers ()
-   , subscribersLock ()
+   //, subscribersLock ()
    , timerId (-1)
    , timeoutHandler (NULL)
  { };
 
-  bool                       allowUserRuntimeStatistic;
-  Net_GTK_Events_t           eventStack;
-  Common_UI_GTK_State_t      GTKState;
-  Net_Server_IListener_t*    listenerHandle; // *NOTE*: server only !
-  Common_MessageStack_t      logStack;
-  ACE_Recursive_Thread_Mutex stackLock;
-  Net_Subscribers_t          subscribers;
-  ACE_Recursive_Thread_Mutex subscribersLock;
-  long                       timerId;        // *NOTE*: client only !
-  Net_Client_TimeoutHandler* timeoutHandler; // *NOTE*: client only !
+  bool                             allowUserRuntimeStatistic;
+  struct RPG_Client_Configuration* configuration;
+  //Net_GTK_Events_t           eventStack;
+  //Common_UI_GTK_State_t      GTKState;
+  RPG_Net_Protocol_IListener_t*    listenerHandle; // *NOTE*: server only !
+  //Common_MessageStack_t      logStack;
+  //ACE_Recursive_Thread_Mutex stackLock;
+  RPG_Net_Protocol_Subscribers_t   subscribers;
+  //ACE_Recursive_Thread_Mutex subscribersLock;
+  long                             timerId;        // *NOTE*: client only !
+  Net_Client_TimeoutHandler*       timeoutHandler; // *NOTE*: client only !
 };
 
 #endif

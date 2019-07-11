@@ -30,7 +30,7 @@
 #include "ace/Init_ACE.h"
 #endif
 #include "ace/Log_Msg.h"
-#include "ace/Synch.h"
+//#include "ace/Synch.h"
 
 #include "SDL.h"
 #include "SDL_syswm.h"

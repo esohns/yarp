@@ -39,6 +39,9 @@
 #include "net_client_asynchconnector.h"
 #include "net_client_connector.h"
 
+#include "net_server_asynchlistener.h"
+#include "net_server_listener.h"
+
 //#include "rpg_net_protocol_exports.h"
 #include "rpg_net_protocol_stream.h"
 #include "rpg_net_protocol_stream_common.h"
@@ -81,6 +84,20 @@ typedef Net_Client_AsynchConnector_T<RPG_Net_Protocol_AsynchTCPConnection_t,
                                      RPG_Net_Protocol_Stream,
                                      struct Net_UserData> RPG_Net_Protocol_AsynchConnector_t;
 
+typedef Net_Server_Listener_T<RPG_Net_Protocol_TCPConnection_t,
+                              ACE_SOCK_ACCEPTOR,
+                              ACE_INET_Addr,
+                              RPG_Net_Protocol_ConnectionConfiguration,
+                              struct Net_StreamConnectionState,
+                              RPG_Net_Protocol_Stream,
+                              struct Net_UserData> RPG_Net_Protocol_TCPListener_t;
+typedef Net_Server_AsynchListener_T<RPG_Net_Protocol_AsynchTCPConnection_t,
+                                    ACE_INET_Addr,
+                                    RPG_Net_Protocol_ConnectionConfiguration,
+                                    struct Net_StreamConnectionState,
+                                    RPG_Net_Protocol_Stream,
+                                    struct Net_UserData> RPG_Net_Protocol_AsynchTCPListener_t;
+
 typedef Net_IConnectionManager_T<ACE_MT_SYNCH,
                                  ACE_INET_Addr,
                                  RPG_Net_Protocol_ConnectionConfiguration,
@@ -93,6 +110,11 @@ typedef Net_Connection_Manager_T<ACE_MT_SYNCH,
                                  struct Net_StreamConnectionState,
                                  Net_StreamStatistic_t,
                                  struct Net_UserData> RPG_Net_Protocol_Connection_Manager_t;
+
+typedef ACE_Singleton<RPG_Net_Protocol_TCPListener_t,
+                      ACE_SYNCH_MUTEX> RPG_NET_PROTOCOL_LISTENER_SINGLETON;
+typedef ACE_Singleton<RPG_Net_Protocol_AsynchTCPListener_t,
+                      ACE_SYNCH_MUTEX> RPG_NET_PROTOCOL_ASYNCH_LISTENER_SINGLETON;
 
 //RPG_PROTOCOL_SINGLETON_DECLARE (ACE_Singleton,
 //                                RPG_Net_Protocol_Connection_Manager_t,
