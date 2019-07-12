@@ -474,8 +474,8 @@ do_work (unsigned int maxNumConnections_in,
                 ACE_TEXT ("dynamic_cast<RPG_Net_Module_EventHandler> failed, returning\n")));
     return;
   } // end IF
-  eventHandler_impl->initialize (&CBData_in.subscribers,
-                                 &CBData_in.UIState->subscribersLock);
+  //eventHandler_impl->initialize (&CBData_in.subscribers,
+  //                               &CBData_in.UIState->subscribersLock);
   eventHandler_impl->subscribe (&ui_event_handler);
 
   Stream_AllocatorHeap_T<ACE_MT_SYNCH,

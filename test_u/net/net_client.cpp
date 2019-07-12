@@ -475,8 +475,8 @@ do_work (unsigned int maxNumConnections_in,
     return;
   } // end IF
   ACE_ASSERT (CBData_in.UIState);
-  eventHandler_impl->initialize (&CBData_in.subscribers,
-                                 &CBData_in.UIState->subscribersLock);
+  //eventHandler_impl->initialize (&CBData_in.subscribers,
+  //                               &CBData_in.UIState->subscribersLock);
   eventHandler_impl->subscribe (&ui_event_handler);
 
   Stream_AllocatorHeap_T<ACE_MT_SYNCH,

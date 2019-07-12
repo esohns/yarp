@@ -27,6 +27,14 @@
 
 #include "rpg_common_macros.h"
 
+// ******* WORKAROUND *************
+FILE _iob[] = { *stdin, *stdout, *stderr };
+extern "C" FILE* __cdecl __iob_func (void)
+{
+  return _iob;
+}
+// ********************************
+
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
 #ifdef __cplusplus
 extern "C"
