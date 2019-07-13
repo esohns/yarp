@@ -117,6 +117,14 @@
 #include "rpg_client_window_level.h"
 #include "rpg_client_window_main.h"
 
+// ******* WORKAROUND *************
+FILE _iob[] = { *stdin, *stdout, *stderr };
+extern "C" FILE* __cdecl __iob_func (void)
+{
+  return _iob;
+}
+// ********************************
+
 Uint32
 event_timer_SDL_cb(Uint32 interval_in,
                    void* argument_in)

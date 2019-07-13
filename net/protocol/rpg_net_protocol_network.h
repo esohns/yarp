@@ -120,6 +120,6 @@ typedef ACE_Singleton<RPG_Net_Protocol_AsynchTCPListener_t,
 //                                RPG_Net_Protocol_Connection_Manager_t,
 //                                ACE_Recursive_Thread_Mutex);
 typedef ACE_Singleton<RPG_Net_Protocol_Connection_Manager_t,
-                      ACE_SYNCH_RECURSIVE_MUTEX> RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON;
+                      ACE_SYNCH_MUTEX> RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON;
 
 #endif

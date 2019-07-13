@@ -70,35 +70,34 @@ add_dependencies(${EXECUTABLE} RPG_Chance RPG_Dice RPG_Common
                                RPG_Map RPG_Graphics RPG_Sound RPG_Engine
                                RPG_Client)
 
-target_link_libraries(${EXECUTABLE}
-                      ${PKG_CONFIG_MODULE_XERCES_C_LIBRARIES}
-                      ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
-#                      ${PKG_CONFIG_MODULE_SDL_GFX_LIBRARIES}
-                      ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
-                      ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES}
-                      ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
-                      ${PKG_CONFIG_MODULE_GTHREAD_LIBRARIES}
-                      ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES})
+set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
-target_link_libraries(${EXECUTABLE}
-                      ACE
-                      pthread
+target_link_libraries (${EXECUTABLE}
+                       ${PKG_CONFIG_MODULE_XERCES_C_LIBRARIES}
+                       ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
+#                      ${PKG_CONFIG_MODULE_SDL_GFX_LIBRARIES}
+                       ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
+                       ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES}
+                       ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
+                       ${PKG_CONFIG_MODULE_GTHREAD_LIBRARIES}
+                       ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES})
+
+target_link_libraries (${EXECUTABLE}
+                       Opengl32.lib
+                       $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
+                       $ENV{LIB_ROOT}/SDL_mixer/lib/x86/SDL_mixer.lib
 #                      SDL_gfx
-                      RPG_Chance
-                      RPG_Dice
-                      RPG_Common
-                      RPG_Magic
-                      RPG_Item
-                      RPG_Character
-                      RPG_Player
-                      RPG_Monster
-                      RPG_Combat
-                      RPG_Map
-                      RPG_Graphics
-                      RPG_Sound
-                      RPG_Engine
-                      RPG_Client)
+                       ${GTK_LIBRARIES}
+                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                       Common CommonLog CommonSignal CommonTimer CommonUI_GTK
+                       ACEStream ACEStream_Network
+                       ACENetwork
+                       RPG_Chance RPG_Dice RPG_Common
+                       RPG_Character RPG_Magic RPG_Item RPG_Player RPG_Monster
+                       RPG_Combat RPG_Map RPG_Graphics RPG_Sound
+                       RPG_Engine RPG_Client RPG_Net RPG_Net_Protocol)
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
-install(TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
+install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)

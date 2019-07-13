@@ -91,6 +91,14 @@
 #include "net_eventhandler.h"
 //#include "net_module_eventhandler.h"
 
+// ******* WORKAROUND *************
+FILE _iob[] = { *stdin, *stdout, *stderr };
+extern "C" FILE* __cdecl __iob_func (void)
+{
+  return _iob;
+}
+// ********************************
+
 void
 do_printUsage (const std::string& programName_in)
 {

@@ -98,7 +98,6 @@ struct RPG_Graphics_GraphicsCacheNode
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("invalid RPG_Graphics_GraphicTypeUnion type (was: %d), continuing\n"),
                    type.discriminator));
-
         break;
       }
     } // end SWITCH

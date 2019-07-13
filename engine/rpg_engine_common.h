@@ -152,11 +152,11 @@ struct RPG_Engine_CombatantSequenceElement
     // no conflict for monsters...
     return false;
   }
-  inline bool operator>(const struct RPG_Engine_CombatantSequenceElement& rhs_in) const
+  bool operator>(const struct RPG_Engine_CombatantSequenceElement& rhs_in) const
   {
     return (!(*this < rhs_in) && !(*this == rhs_in));
   }
-  inline bool operator==(const struct RPG_Engine_CombatantSequenceElement& rhs_in) const
+  bool operator==(const struct RPG_Engine_CombatantSequenceElement& rhs_in) const
   {
     if (initiative == rhs_in.initiative)
     {
@@ -185,7 +185,7 @@ struct RPG_Engine_CombatantSequenceElement
     // no conflict for monsters...
     return false;
   }
-  inline bool operator!=(const struct RPG_Engine_CombatantSequenceElement& rhs_in) const
+  bool operator!=(const struct RPG_Engine_CombatantSequenceElement& rhs_in) const
   {
     return !operator==(rhs_in);
   }
@@ -197,8 +197,8 @@ struct RPG_Engine_CombatantSequenceElement
 
 // struct lessThanRPG_Engine_CombatantSequenceElement_t
 // {
-//   inline bool operator()(const RPG_Engine_CombatantSequenceElement_t& lhs_in,
-//                          const RPG_Engine_CombatantSequenceElement_t& rhs_in) const
+//   bool operator()(const RPG_Engine_CombatantSequenceElement_t& lhs_in,
+//                   const RPG_Engine_CombatantSequenceElement_t& rhs_in) const
 //   {
 //     if (lhs_in.initiative < rhs_in.initiative)
 //       return true;

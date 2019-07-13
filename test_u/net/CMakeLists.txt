@@ -73,10 +73,19 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
                      ${CMAKE_CURRENT_SOURCE_DIR}/../../net/protocol
                      ${CMAKE_CURRENT_SOURCE_DIR}/../../client)
 
+set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+
 target_link_libraries (${EXECUTABLE}
-                       pthread xerces-c
-                       ACE
-                       RPG_Dice RPG_Common RPG_Net)
+                       Opengl32.lib legacy_stdio_definitions.lib
+                       ${GTK_LIBRARIES}
+                       $ENV{LIB_ROOT}/SDL/lib/x86/SDL.lib
+                       $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
+                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                       Common CommonLog CommonSignal CommonTimer CommonUI_GTK
+                       ACEStream ACEStream_Miscellaneous ACEStream_Network
+                       ACENetwork ACENetwork_Client
+                       RPG_Dice RPG_Common RPG_Net RPG_Net_Protocol)
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
@@ -85,11 +94,15 @@ install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 ########### next target ###############
 set (EXECUTABLE net_server)
 set (${EXECUTABLE}_SRCS
+     net_callbacks.cpp
+     net_callbacks.h
      net_defines.h
      net_server.cpp
      net_server_common.h
      net_server_signalhandler.cpp
-     net_server_signalhandler.h)
+     net_server_signalhandler.h
+     net_eventhandler.cpp
+     net_eventhandler.h)
 
 if (UNIX)
  set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
@@ -100,10 +113,19 @@ endif ()
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 
+set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+
 target_link_libraries (${EXECUTABLE}
-                       pthread xerces-c
-                       ACE
-                       RPG_Dice RPG_Common RPG_Net)
+                       Opengl32.lib legacy_stdio_definitions.lib
+                       ${GTK_LIBRARIES}
+                       $ENV{LIB_ROOT}/SDL/lib/x86/SDL.lib
+                       $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
+                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                       Common CommonLog CommonSignal CommonTimer CommonUI_GTK
+                       ACEStream ACEStream_Miscellaneous ACEStream_Network
+                       ACENetwork ACENetwork_Server
+                       RPG_Dice RPG_Common RPG_Net RPG_Net_Protocol)
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 

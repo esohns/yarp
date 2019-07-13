@@ -91,6 +91,14 @@
 #include "net_server_common.h"
 #include "net_server_signalhandler.h"
 
+// ******* WORKAROUND *************
+FILE _iob[] = { *stdin, *stdout, *stderr };
+extern "C" FILE* __cdecl __iob_func (void)
+{
+  return _iob;
+}
+// ********************************
+
 void
 do_printUsage (const std::string& programName_in)
 {
