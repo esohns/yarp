@@ -43,7 +43,10 @@
 #include "rpg_engine_defines.h"
 
 RPG_Engine_Event_Manager::RPG_Engine_Event_Manager()
- : myEngine(NULL)//,
+ : inherited ()
+ , inherited2 (this,
+               false)
+ , myEngine(NULL)//,
 //   myTimers(),
 //   myEntityTimers()
 {

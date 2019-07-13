@@ -80,11 +80,11 @@ class RPG_Engine_State_XMLTree_Type;
 
 #include <xsd/cxx/tree/istream-fwd.hxx>
 
-#include "rpg_player_XML_tree.h"
+#include "../character/player/rpg_player_XML_tree.h"
 
-#include "rpg_monster_XML_tree.h"
+#include "../character/monster/rpg_monster_XML_tree.h"
 
-#include "rpg_map_XML_tree.h"
+#include "../map/rpg_map_XML_tree.h"
 
 class RPG_Engine_Command_XMLTree_Type: public ::xml_schema::string
 {

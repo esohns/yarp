@@ -57,6 +57,7 @@ class RPG_Engine_Event_Manager
   typedef ACE_Task_Ex<ACE_MT_SYNCH,
                       RPG_Engine_Event_t,
                       Common_TimePolicy_t> inherited;
+  typedef Common_Timer_Handler inherited2;
 
   // singleton requires access to the ctor/dtor
   friend class ACE_Singleton<RPG_Engine_Event_Manager,
@@ -114,7 +115,7 @@ class RPG_Engine_Event_Manager
   typedef RPG_Engine_EntityTimers_t::const_iterator RPG_Engine_EntityTimersConstIterator_t;
 
   // helper classes
-  struct monster_remove_t
+  struct monster_remove
   {
     RPG_Engine* engine;
     bool        locked_access;
@@ -122,7 +123,7 @@ class RPG_Engine_Event_Manager
 
     bool operator()(const RPG_Engine_EntityID_t&);
   };
-  struct invisible_remove_t
+  struct invisible_remove
   {
     RPG_Engine*           engine;
     bool                  locked_access;
