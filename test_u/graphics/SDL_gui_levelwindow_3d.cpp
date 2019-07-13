@@ -25,7 +25,7 @@
 #include <cmath>
 #include <sstream>
 
-//#include "ace/Log_Msg.h"
+#include "ace/Log_Msg.h"
 
 #include "SDL_opengl.h"
 

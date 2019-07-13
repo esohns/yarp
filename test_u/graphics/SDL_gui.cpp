@@ -390,14 +390,14 @@ do_processArguments(const int argc_in,
 #if defined (DEBUG_DEBUGGER)
   configuration_path = Common_File_Tools::getWorkingDirectory ();
   data_path = Common_File_Tools::getWorkingDirectory ();
-#endif
+#endif // DEBUG_DEBUGGER
 
   magicDictionary_out     = configuration_path;
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR("magic");
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
+#endif // DEBUG_DEBUGGER
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
 
   height_out              = SDL_GUI_DEF_VIDEO_H;
@@ -407,7 +407,7 @@ do_processArguments(const int argc_in,
 #if defined (DEBUG_DEBUGGER)
   itemsDictionary_out += ACE_TEXT_ALWAYS_CHAR("item");
   itemsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
+#endif // DEBUG_DEBUGGER
   itemsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DICTIONARY_FILE);
 
   monsterDictionary_out   = configuration_path;
@@ -417,7 +417,7 @@ do_processArguments(const int argc_in,
   monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monsterDictionary_out += ACE_TEXT_ALWAYS_CHAR("monster");
   monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
+#endif // DEBUG_DEBUGGER
   monsterDictionary_out +=
     ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_DICTIONARY_FILE);
 
@@ -431,19 +431,28 @@ do_processArguments(const int argc_in,
   directory_out += ACE_TEXT_ALWAYS_CHAR("data");
 #else
   directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DATA_SUB);
-#endif
+#endif // DEBUG_DEBUGGER
 
   graphicsDictionary_out  = configuration_path;
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
   graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR("graphics");
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
+#endif // DEBUG_DEBUGGER
   graphicsDictionary_out +=
     ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
 
+#if defined (DEBUG_DEBUGGER)
+  entityFile_out = data_path;
+  entityFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  entityFile_out += ACE_TEXT_ALWAYS_CHAR ("engine");
+  entityFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  entityFile_out += ACE_TEXT_ALWAYS_CHAR ("data");
+  entityFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#else
   entityFile_out          =
     RPG_Player_Common_Tools::getPlayerProfilesDirectory ();
+#endif // DEBUG_DEBUGGER
   entityFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   entityFile_out +=
    RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
@@ -461,7 +470,7 @@ do_processArguments(const int argc_in,
 #else
   mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
+#endif // DEBUG_DEBUGGER
   mapFile_out +=
     RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
   mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);

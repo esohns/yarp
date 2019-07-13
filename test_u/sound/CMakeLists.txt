@@ -57,6 +57,7 @@ set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 ########### install files ###############
 install(TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 
+########### launcher ###############
 file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
 create_target_launcher (${EXECUTABLE}
                         ARGS "-t"
