@@ -49,28 +49,28 @@ class RPG_Magic_Dictionary
 
  public:
   // init magic dictionary
-  bool init(const std::string&,   // filename
-            const bool& = false); // validate XML ?
+  bool initialize (const std::string&, // filename
+                   bool = false);      // validate XML ?
 
-  RPG_Magic_Spell_Properties getSpellProperties(const std::string&) const; // name of spell
-  RPG_Magic_Spell_Properties getSpellProperties(const RPG_Magic_SpellType&, // type of spell
-                                                std::string&) const;        // return value: name
-  RPG_Magic_SpellTypes_t getSpells(const RPG_Magic_CasterClassUnion&,  // caster class
-                                   const unsigned char& = 0xFF) const; // spell level (default: ALL)
+  struct RPG_Magic_Spell_Properties getSpellProperties (const std::string&) const; // name of spell
+  struct RPG_Magic_Spell_Properties getSpellProperties (enum RPG_Magic_SpellType, // type of spell
+                                                        std::string&) const;      // return value: name
+  RPG_Magic_SpellTypes_t getSpells (const RPG_Magic_CasterClassUnion&,  // caster class
+                                    ACE_UINT8 = 0xFF) const;            // spell level (default: ALL)
 
   // debug info
-  void dump(const bool& = true) const; // group Levels ?
+  void dump (bool = true) const; // group Levels ?
 
  private:
-  RPG_Magic_Dictionary();
-  virtual ~RPG_Magic_Dictionary();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Magic_Dictionary(const RPG_Magic_Dictionary&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Magic_Dictionary& operator=(const RPG_Magic_Dictionary&))
+  RPG_Magic_Dictionary ();
+  inline virtual ~RPG_Magic_Dictionary () {}
+  ACE_UNIMPLEMENTED_FUNC (RPG_Magic_Dictionary (const RPG_Magic_Dictionary&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Magic_Dictionary& operator= (const RPG_Magic_Dictionary&))
 
   // helper methods
-  void dumpLevels() const;
+  void dumpLevels () const;
 
-  RPG_Magic_Dictionary_t myDictionary;
+  RPG_Magic_Dictionary_t dictionary_;
 };
 
 typedef ACE_Singleton<RPG_Magic_Dictionary,

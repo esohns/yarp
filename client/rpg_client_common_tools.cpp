@@ -53,6 +53,36 @@
 // initialize statics
 RPG_Client_GraphicsModeToStringTable_t RPG_Client_GraphicsModeHelper::myRPG_Client_GraphicsModeToStringTable;
 
+#if defined (DEBUG_DEBUGGER)
+bool
+RPG_Client_Common_Tools::initializeClientDictionaries ()
+{
+  std::string path_string = Common_File_Tools::getWorkingDirectory ();
+  path_string += ACE_DIRECTORY_SEPARATOR_STR;
+  path_string += ACE_TEXT_ALWAYS_CHAR ("sound");
+  if (!RPG_Common_XML_Tools::initialize (path_string))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Common_XML_Tools::initialize(\"%s\"), aborting\n"),
+                ACE_TEXT (path_string.c_str ())));
+    return false;
+  } // end IF
+
+  path_string = Common_File_Tools::getWorkingDirectory ();
+  path_string += ACE_DIRECTORY_SEPARATOR_STR;
+  path_string += ACE_TEXT_ALWAYS_CHAR ("graphics");
+  if (!RPG_Common_XML_Tools::initialize (path_string))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Common_XML_Tools::initialize(\"%s\"), aborting\n"),
+                ACE_TEXT (path_string.c_str ())));
+    return false;
+  } // end IF
+
+  return true;
+}
+#endif // DEBUG_DEBUGGER
+
 bool
 RPG_Client_Common_Tools::initializeSDLInput(const RPG_Client_SDL_InputConfiguration& SDLInputConfiguration_in)
 {
@@ -142,25 +172,20 @@ RPG_Client_Common_Tools::initialize (const struct RPG_Client_SDL_InputConfigurat
   } // end IF
 
   // step2: initialize sound
-
   // step2a: initialize sound dictionary
   if (!soundDictionaryFile_in.empty ())
   {
-    try
-    {
-      RPG_SOUND_DICTIONARY_SINGLETON::instance ()->init (soundDictionaryFile_in
-#ifdef _DEBUG
-                                                         , true
+    bool validate_schema_b =
+#if defined (_DEBUG)
+      true;
 #else
-                                                         , false
-#endif
-                                                         );
-    }
-    catch (...)
+      false;
+#endif // _DEBUG
+    if (!RPG_SOUND_DICTIONARY_SINGLETON::instance ()->initialize (soundDictionaryFile_in,
+                                                                  validate_schema_b))
     {
       ACE_DEBUG ((LM_ERROR,
-        ACE_TEXT ("caught exception in RPG_Sound_Dictionary::init, aborting\n")));
-
+                  ACE_TEXT ("failed to RPG_Sound_Dictionary::initialize, aborting\n")));
       return false;
     }
   } // end IF
@@ -168,10 +193,10 @@ RPG_Client_Common_Tools::initialize (const struct RPG_Client_SDL_InputConfigurat
   // step2b: initialize audio/video, string conversion facilities and other
   //         (static) data
   if (!RPG_Sound_Common_Tools::initialize(audioConfiguration_in,
-                                    soundDirectory_in,
-                                    useCD_in,
-                                    soundCacheSize_in,
-                                    muted_in))
+                                          soundDirectory_in,
+                                          useCD_in,
+                                          soundCacheSize_in,
+                                          muted_in))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Sound_Common_Tools::init, aborting\n")));
@@ -184,21 +209,16 @@ RPG_Client_Common_Tools::initialize (const struct RPG_Client_SDL_InputConfigurat
   // step3a: initialize graphics dictionary
   if (!graphicsDictionaryFile_in.empty ())
   {
-    try
-    {
-      RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->init (graphicsDictionaryFile_in
+    if (!RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->initialize (graphicsDictionaryFile_in
 #ifdef _DEBUG
-                                                            , true
+                                                                     , true
 #else
-                                                            , false
+                                                                     , false
 #endif
-                                                            );
-    }
-    catch (...)
+                                                                    ))
     {
       ACE_DEBUG ((LM_ERROR,
-        ACE_TEXT ("caught exception in RPG_Graphics_Dictionary::init, aborting\n")));
-
+                  ACE_TEXT ("failed to RPG_Graphics_Dictionary::initialize, aborting\n")));
       return false;
     }
   } // end IF

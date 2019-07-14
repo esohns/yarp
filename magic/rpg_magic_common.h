@@ -26,49 +26,57 @@
 #include <string>
 #include <vector>
 
-#include "rpg_dice_incl.h"
-
 #include "rpg_common_incl.h"
-#include "rpg_common_environment_incl.h"
-
-#include "rpg_character_incl.h"
 
 #include "rpg_magic_incl.h"
 
-// some useful types
-typedef std::set<RPG_Magic_SpellType> RPG_Magic_SpellTypes_t;
+typedef std::set<enum RPG_Magic_SpellType> RPG_Magic_SpellTypes_t;
 typedef RPG_Magic_SpellTypes_t::const_iterator RPG_Magic_SpellTypesIterator_t;
-typedef std::vector<RPG_Magic_SpellType> RPG_Magic_Spells_t;
+typedef std::vector<enum RPG_Magic_SpellType> RPG_Magic_Spells_t;
 typedef RPG_Magic_Spells_t::const_iterator RPG_Magic_SpellsIterator_t;
-typedef std::vector<RPG_Magic_Spell_Level> RPG_Magic_SpellLevels_t;
+
+typedef std::vector<struct RPG_Magic_Spell_Level> RPG_Magic_SpellLevels_t;
 typedef RPG_Magic_SpellLevels_t::const_iterator RPG_Magic_SpellLevelsIterator_t;
-typedef std::vector<RPG_Magic_Spell_TargetProperties> RPG_Magic_Spell_Targets_t;
+typedef std::vector<struct RPG_Magic_Spell_TargetProperties> RPG_Magic_Spell_Targets_t;
 typedef RPG_Magic_Spell_Targets_t::const_iterator RPG_Magic_Spell_TargetsIterator_t;
-typedef std::vector<RPG_Magic_Spell_PreconditionProperties> RPG_Magic_Spell_Preconditions_t;
+typedef std::vector<struct RPG_Magic_Spell_PreconditionProperties> RPG_Magic_Spell_Preconditions_t;
 typedef RPG_Magic_Spell_Preconditions_t::const_iterator RPG_Magic_Spell_PreconditionsIterator_t;
-typedef std::vector<RPG_Magic_Spell_EffectProperties> RPG_Magic_Spell_Effects_t;
+typedef std::vector<struct RPG_Magic_Spell_EffectProperties> RPG_Magic_Spell_Effects_t;
 typedef RPG_Magic_Spell_Effects_t::const_iterator RPG_Magic_Spell_EffectsIterator_t;
-typedef std::vector<RPG_Magic_CounterMeasure> RPG_Magic_Spell_CounterMeasures_t;
+typedef std::vector<struct RPG_Magic_CounterMeasure> RPG_Magic_Spell_CounterMeasures_t;
 typedef RPG_Magic_Spell_CounterMeasures_t::const_iterator RPG_Magic_Spell_CounterMeasuresIterator_t;
 
 struct RPG_Magic_Spell_Properties
 {
-//   std::string name;
-  RPG_Magic_Spell_Type type;
-  RPG_Magic_SpellLevels_t levels;
-  unsigned char cost;
-  RPG_Magic_Spell_CastingTime time;
-  RPG_Magic_Spell_RangeProperties range;
-  RPG_Magic_Spell_Targets_t targets;
-  RPG_Magic_Spell_DurationProperties duration;
-  RPG_Magic_Spell_Preconditions_t preconditions;
-  RPG_Magic_Spell_Effects_t effects;
-  RPG_Magic_Spell_CounterMeasures_t counterMeasures;
-  RPG_Common_SavingThrow saveable;
-  bool resistible;
-};
+  RPG_Magic_Spell_Properties ()
+   : type ()
+   , levels ()
+   , cost (0)
+   , time ()
+   , range ()
+   , targets ()
+   , duration ()
+   , preconditions ()
+   , effects ()
+   , counterMeasures ()
+   , saveable (RPG_COMMON_SAVINGTHROW_INVALID)
+   , resistible (false)
+  {}
 
-typedef std::map<std::string, RPG_Magic_Spell_Properties> RPG_Magic_Dictionary_t;
+  struct RPG_Magic_Spell_Type               type;
+  RPG_Magic_SpellLevels_t                   levels;
+  ACE_UINT8                                 cost;
+  struct RPG_Magic_Spell_CastingTime        time;
+  struct RPG_Magic_Spell_RangeProperties    range;
+  RPG_Magic_Spell_Targets_t                 targets;
+  struct RPG_Magic_Spell_DurationProperties duration;
+  RPG_Magic_Spell_Preconditions_t           preconditions;
+  RPG_Magic_Spell_Effects_t                 effects;
+  RPG_Magic_Spell_CounterMeasures_t         counterMeasures;
+  enum RPG_Common_SavingThrow               saveable;
+  bool                                      resistible;
+};
+typedef std::map<std::string, struct RPG_Magic_Spell_Properties> RPG_Magic_Dictionary_t;
 typedef RPG_Magic_Dictionary_t::const_iterator RPG_Magic_DictionaryIterator_t;
 
 #endif

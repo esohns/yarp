@@ -199,6 +199,10 @@ add_dependencies (${LIBRARY} RPG_Chance RPG_Dice RPG_Common
 
 set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
+# add PCH
+set_target_properties (${LIBRARY} PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
+cotire (${LIBRARY})
+
 ########### install files ###############
 install (FILES
          rpg_client.glade

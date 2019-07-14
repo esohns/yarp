@@ -281,7 +281,7 @@ do_work (const std::string& magicDictionaryFilename_in,
   // step1c: initialize dictionaries
   try
   {
-    RPG_MAGIC_DICTIONARY_SINGLETON::instance ()->init (magicDictionaryFilename_in);
+    RPG_MAGIC_DICTIONARY_SINGLETON::instance ()->initialize (magicDictionaryFilename_in);
     RPG_ITEM_DICTIONARY_SINGLETON::instance ()->init (itemDictionaryFilename_in);
   }
   catch (...)

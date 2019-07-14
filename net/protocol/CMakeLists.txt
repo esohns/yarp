@@ -104,6 +104,10 @@ add_dependencies (${LIBRARY} RPG_Net)
 
 set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
+# add PCH
+set_target_properties (${LIBRARY} PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
+cotire (${LIBRARY})
+
 ########### install files ###############
 install (FILES
          rpg_net_protocol_common.h

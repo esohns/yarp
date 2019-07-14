@@ -8,11 +8,6 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/Configuration.cmake)
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/Macros.cmake)
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/VersionConfig.cmake)
 
-option(DEBUG_DEBUGGER "debug using IDE" OFF)
-if (DEBUG_DEBUGGER)
- add_definitions (-DDEBUG_DEBUGGER)
-endif (DEBUG_DEBUGGER)
-
 # user interface
 #option (GUI_SUPPORT "enable graphical user interface support" ON)
 #if (GUI_SUPPORT)

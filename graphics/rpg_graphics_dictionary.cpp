@@ -40,9 +40,9 @@ RPG_Graphics_Dictionary::RPG_Graphics_Dictionary()
 
 }
 
-void
-RPG_Graphics_Dictionary::init(const std::string& filename_in,
-                              bool validateXML_in)
+bool
+RPG_Graphics_Dictionary::initialize (const std::string& filename_in,
+                                     bool validateXML_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Dictionary::init"));
 
@@ -124,24 +124,26 @@ RPG_Graphics_Dictionary::init(const std::string& filename_in,
     converter << exception;
     std::string text = converter.str();
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Graphics_Dictionary::init(): exception occurred: \"%s\", returning\n"),
+               ACE_TEXT("RPG_Graphics_Dictionary::init(): exception occurred: \"%s\", aborting\n"),
                ACE_TEXT(text.c_str())));
-
-    throw(exception);
+    return false;
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Graphics_Dictionary::init(): exception occurred, returning\n")));
-
-    throw;
+               ACE_TEXT("RPG_Graphics_Dictionary::init(): exception occurred, aborting\n")));
+    return false;
   }
 
   dictionary_p.post_RPG_Graphics_Dictionary_Type();
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("finished parsing graphics dictionary file \"%s\"...\n"),
-//              ACE_TEXT(filename_in.c_str())));
+#if defined (_DEBUG)
+  ACE_DEBUG((LM_DEBUG,
+            ACE_TEXT("finished parsing graphics dictionary file \"%s\"...\n"),
+            ACE_TEXT(filename_in.c_str())));
+#endif // _DEBUG
+
+  return true;
 }
 
 const RPG_Graphics_t

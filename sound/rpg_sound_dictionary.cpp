@@ -47,9 +47,9 @@ RPG_Sound_Dictionary::~RPG_Sound_Dictionary()
 
 }
 
-void
-RPG_Sound_Dictionary::init(const std::string& filename_in,
-                           const bool& validateXML_in)
+bool
+RPG_Sound_Dictionary::initialize(const std::string& filename_in,
+                                 const bool& validateXML_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Dictionary::init"));
 
@@ -74,7 +74,7 @@ RPG_Sound_Dictionary::init(const std::string& filename_in,
   ::xml_schema::document doc_p(dictionary_p,                                          // parser
                                ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE), // namespace
                                ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DICTIONARY_INSTANCE),   // root element name
-															 false);                                                // polymorphic ?
+                               false);                                                // polymorphic ?
 
   dictionary_p.pre();
 
@@ -99,25 +99,26 @@ RPG_Sound_Dictionary::init(const std::string& filename_in,
     converter << exception;
     std::string text = converter.str();
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Sound_Dictionary::init(): exception occurred: \"%s\", returning\n"),
+               ACE_TEXT("RPG_Sound_Dictionary::init(): exception occurred: \"%s\", aborting\n"),
                text.c_str()));
-
-    return;
+    return false;
   }
   catch (...)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Sound_Dictionary::init(): exception occurred, returning\n")));
-
-    return;
+               ACE_TEXT("RPG_Sound_Dictionary::init(): exception occurred, aborting\n")));
+    return false;
   }
 
   dictionary_p.post_RPG_Sound_Dictionary_Type();
 
-//   // debug info
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("finished parsing sound dictionary file \"%s\"...\n"),
-//              filename_in.c_str()));
+#if defined (_DEBUG)
+  ACE_DEBUG((LM_DEBUG,
+            ACE_TEXT("finished parsing sound dictionary file \"%s\"...\n"),
+            filename_in.c_str()));
+#endif // _DEBUG
+
+  return true;
 }
 
 const RPG_Sound_t&

@@ -30,7 +30,6 @@ set (${LIBRARY}_SRCS
      rpg_combat_XML_types.cpp
      rpg_combat_XML_types.h)
 
-
 #set_source_files_properties(${RPG_Combat_LIB_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_COMBAT_BUILD_DLL)
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
@@ -85,6 +84,10 @@ add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_combat_XML_types.cpp
 add_dependencies (${LIBRARY} RPG_Dice RPG_Common RPG_Character RPG_Magic RPG_Item)
 
 set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
+
+# add PCH
+set_target_properties (${LIBRARY} PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
+cotire (${LIBRARY})
 
 ########### install files ###############
 install (FILES rpg_combat.xsd

@@ -124,20 +124,16 @@ RPG_Engine_Common_Tools::initialize (const std::string& schemaDirectory_in,
   // step1ca: initialize magic dictionary
   if (!magicDictionaryFile_in.empty ())
   {
-    try
-    {
-      RPG_MAGIC_DICTIONARY_SINGLETON::instance()->init (magicDictionaryFile_in
+    if (!RPG_MAGIC_DICTIONARY_SINGLETON::instance ()->initialize (magicDictionaryFile_in
 #ifdef _DEBUG
-                                                        ,true
+                                                                  ,true
 #else
-                                                        ,false
+                                                                  ,false
 #endif
-                                                        );
-    }
-    catch (...)
+                                                                 ))
     {
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("caught exception in RPG_Magic_Dictionary::init, returning\n")));
+                  ACE_TEXT ("failed to RPG_Magic_Dictionary::initialize, returning\n")));
       return;
     }
   } // end IF

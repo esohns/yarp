@@ -41,8 +41,8 @@ class RPG_Sound_Dictionary
 
  public:
   // init sound dictionary
-  void init(const std::string&,   // filename
-            const bool& = false); // validate XML ?
+  bool initialize(const std::string&,   // filename
+                  const bool& = false); // validate XML ?
 
   const RPG_Sound_t& get(const RPG_Sound_Event&) const; // event
 
@@ -53,8 +53,8 @@ class RPG_Sound_Dictionary
   // safety measures
   RPG_Sound_Dictionary();
   virtual ~RPG_Sound_Dictionary();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Dictionary(const RPG_Sound_Dictionary&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Dictionary& operator=(const RPG_Sound_Dictionary&));
+  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Dictionary(const RPG_Sound_Dictionary&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Dictionary& operator=(const RPG_Sound_Dictionary&))
 
   RPG_Sound_Dictionary_t myDictionary;
 };

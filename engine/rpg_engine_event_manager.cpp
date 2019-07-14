@@ -688,11 +688,11 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
           possible_targets.erase(possible_targets.begin());
 
           // step2: remove fellow monsters
-          monster_remove_t monster_remove = {myEngine, false, true};
+          struct monster_remove monster_remove = {myEngine, false, true};
           possible_targets.remove_if(monster_remove);
 
           // step3: remove invisible (== cannot (currently) see) targets
-          invisible_remove_t invisible_remove =
+          struct invisible_remove invisible_remove =
               {myEngine, false, (*iterator).first};
           possible_targets.remove_if(invisible_remove);
 
@@ -1132,7 +1132,7 @@ RPG_Engine_Event_Manager::handle (const void* act_in)
 }
 
 bool
-RPG_Engine_Event_Manager::monster_remove_t::operator()(const RPG_Engine_EntityID_t& id_in)
+RPG_Engine_Event_Manager::monster_remove::operator()(const RPG_Engine_EntityID_t& id_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::monster_remove_t::operator()"));
 
@@ -1145,7 +1145,7 @@ RPG_Engine_Event_Manager::monster_remove_t::operator()(const RPG_Engine_EntityID
 }
 
 bool
-RPG_Engine_Event_Manager::invisible_remove_t::operator()(const RPG_Engine_EntityID_t& id_in)
+RPG_Engine_Event_Manager::invisible_remove::operator()(const RPG_Engine_EntityID_t& id_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::invisible_remove_t::operator()"));
 

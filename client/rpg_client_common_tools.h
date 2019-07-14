@@ -41,6 +41,10 @@
 class RPG_Client_Common_Tools
 {
  public:
+#if defined (DEBUG_DEBUGGER)
+  // loads sound and graphics schemata
+  static bool initializeClientDictionaries ();
+#endif // DEBUG_DEBUGGER
   static bool initializeSDLInput(const RPG_Client_SDL_InputConfiguration&); // SDL input configuration
   // *NOTE*: initializes cursor manager singleton/dictionaries
   static bool initialize (// *** input ***

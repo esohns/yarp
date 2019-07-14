@@ -40,8 +40,8 @@ class RPG_Graphics_Dictionary
                              ACE_SYNCH_MUTEX>;
 
  public:
-  void init(const std::string&, // (XML) dictionary file
-            bool = false);      // validate XML ?
+  bool initialize (const std::string&, // (XML) dictionary file
+                   bool = false);      // validate XML ?
 
   const RPG_Graphics_t get(const RPG_Graphics_GraphicTypeUnion&) const; // type
   RPG_Graphics_Fonts_t getFonts() const;

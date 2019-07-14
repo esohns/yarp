@@ -470,7 +470,7 @@ do_work (const std::string& schemaRepository_in,
   // step2a: initialize dictionaries
   try
   {
-    RPG_MAGIC_DICTIONARY_SINGLETON::instance ()->init (magicDictionaryFilename_in);
+    RPG_MAGIC_DICTIONARY_SINGLETON::instance ()->initialize (magicDictionaryFilename_in);
     RPG_ITEM_DICTIONARY_SINGLETON::instance ()->init (itemDictionaryFilename_in);
     RPG_MONSTER_DICTIONARY_SINGLETON::instance ()->init (monsterDictionaryFilename_in);
   }

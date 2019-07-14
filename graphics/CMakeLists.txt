@@ -154,6 +154,10 @@ target_link_libraries(${LIBRARY}
                       $ENV{LIB_ROOT}/SDL_ttf/lib/x86/SDL_ttf.lib
                       $ENV{LIB_ROOT}/libpng/cmake/Debug/libpng16d.lib)
 
+# add PCH
+set_target_properties (${LIBRARY} PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
+cotire (${LIBRARY})
+
 ########### install files ###############
 install (FILES
          rpg_graphics.xml

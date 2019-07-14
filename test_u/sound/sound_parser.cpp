@@ -339,15 +339,11 @@ do_work (bool dumpDictionary_in,
                 ACE_TEXT ("failed to RPG_Common_XML_Tools::initialize(), returning\n")));
     return;
   } // end IF
-  try
-  {
-    RPG_SOUND_DICTIONARY_SINGLETON::instance ()->init (dictionary_in,
-                                                       validateXML_in);
-  }
-  catch (...)
+  if (!RPG_SOUND_DICTIONARY_SINGLETON::instance ()->initialize (dictionary_in,
+                                                                validateXML_in))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("caught exception in RPG_Sound_Dictionary::init(), returning\n")));
+                ACE_TEXT ("failed to RPG_Sound_Dictionary::initialize(), returning\n")));
     return;
   }
 

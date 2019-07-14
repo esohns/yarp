@@ -80,6 +80,9 @@ elseif (WIN32)
 endif ()
 
 target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src>)
+
+target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../chance/dice>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../common>)
@@ -104,6 +107,10 @@ add_dependencies (${LIBRARY} RPG_Dice RPG_Common)
 #add_dependencies (${LIBRARY} RPG_Dice RPG_Common RPG_Character)
 
 set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
+
+# add PCH
+set_target_properties (${LIBRARY} PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
+cotire (${LIBRARY})
 
 ########### install files ###############
 install (FILES

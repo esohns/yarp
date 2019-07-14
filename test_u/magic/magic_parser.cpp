@@ -207,15 +207,10 @@ do_work (const std::string& schemaRepository_in,
                 ACE_TEXT ("failed to RPG_Common_XML_Tools::initialize(), returning\n")));
     return;
   } // end IF
-  try
-  {
-    RPG_MAGIC_DICTIONARY_SINGLETON::instance ()->init (fileName_in);
-  }
-  catch (...)
+  if (!RPG_MAGIC_DICTIONARY_SINGLETON::instance ()->initialize (fileName_in))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Magic_Dictionary::init, returning\n")));
-
+               ACE_TEXT("failed to RPG_Magic_Dictionary::initialize, returning\n")));
     return;
   }
 

@@ -75,6 +75,10 @@ add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice_XML_tree.cpp
 
 set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
+# add PCH
+set_target_properties (${LIBRARY} PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
+cotire (${LIBRARY})
+
 ########### install files ###############
 install (FILES rpg_dice.xsd
          DESTINATION share/RPG/config)

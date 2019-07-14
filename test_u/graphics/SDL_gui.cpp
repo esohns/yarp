@@ -480,7 +480,7 @@ do_processArguments(const int argc_in,
   printVersionAndExit_out = false;
   width_out               = SDL_GUI_DEF_VIDEO_W;
 
-  validateXML_out         = SDL_GUI_DEF_VALIDATE_XML;
+  validateXML_out = false; // SDL_GUI_DEF_VALIDATE_XML;
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
@@ -1451,20 +1451,20 @@ do_work(const mode_t& mode_in,
         const std::string& graphicsDirectory_in,
         const std::string& schemaRepository_in,
         const unsigned int& cacheSize_in,
-        const bool& validateXML_in)
+        bool validateXML_in)
 {
   RPG_TRACE(ACE_TEXT("::do_work"));
 
   // step0: init: random seed, string conversion facilities, ...
   RPG_Engine_Common_Tools::initialize(schemaRepository_in,
-                                magicDictionary_in,
-                                itemsDictionary_in,
-                                monsterDictionary_in);
+                                      magicDictionary_in,
+                                      itemsDictionary_in,
+                                      monsterDictionary_in);
 
   // step1: init video
   // step1a: init video system
    if (!RPG_Graphics_SDL_Tools::preInitializeVideo(videoConfiguration_in,                      // configuration
-                                             ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION))) // window/icon caption
+                                                   ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION))) // window/icon caption
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Graphics_SDL_Tools::preInitVideo, aborting\n")));
@@ -1473,9 +1473,19 @@ do_work(const mode_t& mode_in,
   } // end IF
   // step1b: pre-init graphics
   RPG_Graphics_Common_Tools::preInitialize ();
+
+#if defined (DEBUG_DEBUGGER)
+  RPG_Client_Common_Tools::initializeClientDictionaries ();
+#endif // DEBUG_DEBUGGER
   // step1c: init graphics dictionary
-  RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->init(graphicsDictionary_in,
-                                                      validateXML_in);
+  if (!RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->initialize (graphicsDictionary_in,
+                                                                  validateXML_in))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Dictionary::initialize(): \"%m\", returning\n")));
+    return;
+  } // end IF
+
   // step1b: init graphics
   if (!RPG_Graphics_Common_Tools::initialize (graphicsDirectory_in,
                                               cacheSize_in,
@@ -1488,9 +1498,9 @@ do_work(const mode_t& mode_in,
 
   // step1d: init video window
   if (!RPG_Graphics_SDL_Tools::initializeVideo(videoConfiguration_in,                     // configuration
-                                         ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION), // window/icon caption
-                                         state.screen,                              // return value: window surface
-                                         true))                                     // init window surface ?
+                                               ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION), // window/icon caption
+                                               state.screen,                              // return value: window surface
+                                               true))                                     // init window surface ?
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::initVideo, returning\n")));
@@ -1967,7 +1977,7 @@ ACE_TMAIN(int argc_in,
                                      SDL_GUI_USERMODE_SLIDESHOW);
   bool trace_information          = false;
   bool print_version_and_exit     = false;
-  bool validate_XML = SDL_GUI_DEF_VALIDATE_XML;
+  bool validate_XML = false;// SDL_GUI_DEF_VALIDATE_XML;
 
   // *** map ***
   struct RPG_Map_FloorPlan_Configuration map_configuration;

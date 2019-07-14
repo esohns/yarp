@@ -1127,14 +1127,10 @@ do_work (const std::string& schemaDirectory_in,
   } // end IF
 
   // init graphics dictionary
-  try
-  {
-    RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->init (graphicsDictionary_in);
-  }
-  catch (...)
+  if (!RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->initialize (graphicsDictionary_in))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("caught exception in RPG_Graphics_Dictionary::init, returning\n")));
+                ACE_TEXT ("failed to RPG_Graphics_Dictionary::init, returning\n")));
     return;
   }
 
@@ -1147,8 +1143,7 @@ do_work (const std::string& schemaDirectory_in,
   {
     if (player_p)
     {
-      delete player_p;
-      player_p = NULL;
+      delete player_p; player_p = NULL;
     } // end IF
 
     // step1: generate new player character

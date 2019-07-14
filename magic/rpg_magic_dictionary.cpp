@@ -21,10 +21,16 @@
 
 #include "rpg_magic_dictionary.h"
 
-#include "rpg_magic_XML_parser.h"
-#include "rpg_magic_common_tools.h"
+#include <iostream>
+#include <algorithm>
+#include <sstream>
 
-#include "rpg_character_XML_parser.h"
+#include "ace/Log_Msg.h"
+
+#include "common_macros.h"
+
+#include "rpg_dice_XML_parser.h"
+#include "rpg_dice_common_tools.h"
 
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
@@ -32,30 +38,21 @@
 #include "rpg_common_XML_parser.h"
 #include "rpg_common_tools.h"
 
-#include "rpg_dice_XML_parser.h"
-#include "rpg_dice_common_tools.h"
+#include "rpg_character_XML_parser.h"
 
-#include <ace/Log_Msg.h>
-
-#include <iostream>
-#include <algorithm>
-#include <sstream>
+#include "rpg_magic_XML_parser.h"
+#include "rpg_magic_common_tools.h"
 
 RPG_Magic_Dictionary::RPG_Magic_Dictionary()
+ : dictionary_ ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Magic_Dictionary::RPG_Magic_Dictionary"));
 
 }
 
-RPG_Magic_Dictionary::~RPG_Magic_Dictionary()
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Magic_Dictionary::~RPG_Magic_Dictionary"));
-
-}
-
 bool
-RPG_Magic_Dictionary::init(const std::string& filename_in,
-                           const bool& validateXML_in)
+RPG_Magic_Dictionary::initialize (const std::string& filename_in,
+                                  bool validateXML_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Magic_Dictionary::init"));
 
@@ -231,17 +228,17 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
                           bool_p,
                           bool_p);
 
-  RPG_Magic_Dictionary_Type                   dictionary_p(&myDictionary);
-  dictionary_p.parsers(propertiesXML_p);
+  RPG_Magic_Dictionary_Type                   dictionary_p (&dictionary_);
+  dictionary_p.parsers (propertiesXML_p);
 
   // Parse the document to obtain the object model.
   //
-  ::xml_schema::document doc_p(dictionary_p,                                          // parser
-                               ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE), // namespace
-                               ACE_TEXT_ALWAYS_CHAR("spellDictionary"),               // root element name
-															 false);                                                // polymorphic ?
+  ::xml_schema::document doc_p (dictionary_p,                                          // parser
+                                ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE), // namespace
+                                ACE_TEXT_ALWAYS_CHAR ("spellDictionary"),              // root element name
+                                false);                                                // polymorphic ?
 
-  dictionary_p.pre();
+  dictionary_p.pre ();
 
   // OK: parse the file...
   ::xml_schema::flags flags;
@@ -253,11 +250,11 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
     //doc_p.parse(filename_in,
     //            RPG_XSDErrorHandler,
     //            flags,
-				//				properties);
-	  doc_p.parse(filename_in,
-                *RPG_Common_XML_Tools::parser(),
-                flags,
-                properties);
+    //            properties);
+	  doc_p.parse (filename_in,
+                 *RPG_Common_XML_Tools::parser(),
+                 flags,
+                 properties);
   }
   catch (const ::xml_schema::parsing& exception)
   {
@@ -278,80 +275,79 @@ RPG_Magic_Dictionary::init(const std::string& filename_in,
     return false;
   }
 
-  dictionary_p.post_RPG_Magic_Dictionary_Type();
+  dictionary_p.post_RPG_Magic_Dictionary_Type ();
 
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("finished parsing magic dictionary file \"%s\"...\n"),
-//              ACE_TEXT(filename_in.c_str())));
+#if defined (_DEBUG)
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("finished parsing magic dictionary file \"%s\"...\n"),
+              ACE_TEXT (filename_in.c_str ())));
+#endif // _DEBUG
 
 	return true;
 }
 
-RPG_Magic_Spell_Properties
-RPG_Magic_Dictionary::getSpellProperties(const std::string& spellName_in) const
+struct RPG_Magic_Spell_Properties
+RPG_Magic_Dictionary::getSpellProperties (const std::string& spellName_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Magic_Dictionary::getSpellProperties"));
 
-  RPG_Magic_DictionaryIterator_t iterator = myDictionary.find(spellName_in);
-  if (iterator == myDictionary.end())
-  {
+  struct RPG_Magic_Spell_Properties result;
+
+  RPG_Magic_DictionaryIterator_t iterator = dictionary_.find (spellName_in);
+  if (unlikely (iterator == dictionary_.end ()))
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid spell name \"%s\" --> check implementation !, aborting\n"),
-               spellName_in.c_str()));
+               ACE_TEXT ("invalid/unknown spell name (was: \"%s\"), aborting\n"),
+               ACE_TEXT (spellName_in.c_str ())));
+  else
+    result = iterator->second;
 
-    ACE_ASSERT(false);
-  } // end IF
-
-  return iterator->second;
+  return result;
 }
 
-RPG_Magic_Spell_Properties
-RPG_Magic_Dictionary::getSpellProperties(const RPG_Magic_SpellType& spellType_in,
-                                         std::string& spellName_out) const
+struct RPG_Magic_Spell_Properties
+RPG_Magic_Dictionary::getSpellProperties (enum RPG_Magic_SpellType spellType_in,
+                                          std::string& spellName_out) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Magic_Dictionary::getSpellProperties"));
 
-  // reset return value
-  spellName_out.resize(0);
+  // reset return value(s)
+  struct RPG_Magic_Spell_Properties result;
+  spellName_out.resize (0);
 
-  for (RPG_Magic_DictionaryIterator_t iterator = myDictionary.begin();
-       iterator != myDictionary.end();
+  RPG_Magic_DictionaryIterator_t iterator = dictionary_.begin ();
+  for (;
+       iterator != dictionary_.end();
        iterator++)
   {
     if ((*iterator).second.type.type == spellType_in)
     {
       spellName_out = iterator->first;
-      return iterator->second;
+      result = iterator->second;
+      break;
     } // end IF
   } // end IF
+  if (unlikely (iterator == dictionary_.end ()))
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT("invalid/unknown spell type (was: \"%s\"), aborting\n"),
+                ACE_TEXT (RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString (spellType_in).c_str ())));
 
-  ACE_DEBUG((LM_ERROR,
-             ACE_TEXT("invalid spell type \"%s\", aborting\n"),
-             RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(spellType_in).c_str()));
-
-  ACE_ASSERT(false);
-  RPG_Magic_Spell_Properties dummy;
-#if defined (_MSC_VER)
-  return dummy;
-#else
-  ACE_NOTREACHED(return dummy;)
-#endif
+  return result;
 }
 
 RPG_Magic_SpellTypes_t
-RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterClassUnion& casterClass_in,
-                                const unsigned char& spellLevel_in) const
+RPG_Magic_Dictionary::getSpells (const RPG_Magic_CasterClassUnion& casterClass_in,
+                                 ACE_UINT8 spellLevel_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Magic_Dictionary::getSpells"));
 
-  // sanity check
-  ACE_ASSERT(casterClass_in.discriminator != RPG_Magic_CasterClassUnion::INVALID);
+  // sanity check(s)
+  ACE_ASSERT (casterClass_in.discriminator != RPG_Magic_CasterClassUnion::INVALID);
 
   RPG_Magic_SpellTypes_t result;
 
   bool match = false;
-  for (RPG_Magic_DictionaryIterator_t iterator = myDictionary.begin();
-       iterator != myDictionary.end();
+  for (RPG_Magic_DictionaryIterator_t iterator = dictionary_.begin();
+       iterator != dictionary_.end();
        iterator++)
     for (RPG_Magic_SpellLevelsIterator_t iterator2 = (*iterator).second.levels.begin();
          iterator2 != (*iterator).second.levels.end();
@@ -367,41 +363,36 @@ RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterClassUnion& casterClass_in
         {
           if ((*iterator2).casterClass.subclass == casterClass_in.subclass)
             match = true;
-
           break;
         }
         // *PORTABILITY*: "DOMAIN" seems to be a constant (see math.h)
         // --> provide a (temporary) workaround here...
-#if defined __GNUC__ || defined _MSC_VER
+#if defined (__GNUC__) || defined (_MSC_VER)
 #pragma message("applying quirk code for this compiler...")
         case RPG_Magic_CasterClassUnion::__QUIRK__DOMAIN:
 #else
 #pragma message("re-check code for this compiler")
         case RPG_Magic_CasterClassUnion::DOMAIN:
-#endif
+#endif // __GNUC__ || _MSC_VER
         {
           if ((*iterator2).casterClass.domain == casterClass_in.domain)
             match = true;
-
           break;
         }
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid caster class type: %d, aborting\n"),
-                     (*iterator2).casterClass.discriminator));
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid caster class type (was: %d) --> check implementation, continuing\n"),
+                      (*iterator2).casterClass.discriminator));
           break;
         }
       } // end SWITCH
-
       if (!match)
         continue;
 
-      if ((spellLevel_in == 0xFF) ||
+      if ((spellLevel_in == 0xFF)              ||
           (spellLevel_in == (*iterator2).level))
         result.insert((*iterator).second.type.type);
-
       break;
     } // end FOR
 
@@ -409,16 +400,16 @@ RPG_Magic_Dictionary::getSpells(const RPG_Magic_CasterClassUnion& casterClass_in
 }
 
 void
-RPG_Magic_Dictionary::dump(const bool& groupLevels_in) const
+RPG_Magic_Dictionary::dump (bool groupLevels_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Magic_Dictionary::dump"));
 
   if (groupLevels_in)
-    return dumpLevels();
+    return dumpLevels ();
 
   std::ostringstream converter;
-  for (RPG_Magic_DictionaryIterator_t iterator = myDictionary.begin();
-       iterator != myDictionary.end();
+  for (RPG_Magic_DictionaryIterator_t iterator = dictionary_.begin();
+       iterator != dictionary_.end();
        iterator++)
   {
     std::string castingTime;
@@ -431,9 +422,10 @@ RPG_Magic_Dictionary::dump(const bool& groupLevels_in) const
       castingTime += ACE_TEXT_ALWAYS_CHAR(" rd(s)");
     } // end IF
     else
-      castingTime = RPG_Common_ActionTypeHelper::RPG_Common_ActionTypeToString((iterator->second).time.action);
+      castingTime =
+        RPG_Common_ActionTypeHelper::RPG_Common_ActionTypeToString((iterator->second).time.action);
 
-    ACE_DEBUG((LM_DEBUG,
+    ACE_DEBUG((LM_INFO,
                ACE_TEXT("Spell (\"%s\"):\nType: %s\nLevel(s):\n---------\n%sXP Cost: %d\nCasting Time: %s\nRange:\n------\n%sTarget(s):\n-------\n%sDuration:\n---------\n%s\nPrecondition(s):\n--------------\n%sSave: %s\nEffect(s):\n----------\n%sCounterMeasure(s):\n----------\n%sResistible: %s\n"),
                (iterator->first).c_str(),
                RPG_Magic_Common_Tools::toString((iterator->second).type).c_str(),
@@ -448,13 +440,13 @@ RPG_Magic_Dictionary::dump(const bool& groupLevels_in) const
                RPG_Magic_Common_Tools::toString((iterator->second).effects).c_str(),
                RPG_Magic_Common_Tools::toString((iterator->second).counterMeasures).c_str(),
                ((iterator->second).resistible ? ACE_TEXT_ALWAYS_CHAR("true") : ACE_TEXT_ALWAYS_CHAR("false"))));
-    ACE_DEBUG((LM_DEBUG,
+    ACE_DEBUG((LM_INFO,
                ACE_TEXT("===========================\n")));
   } // end FOR
 }
 
 void
-RPG_Magic_Dictionary::dumpLevels() const
+RPG_Magic_Dictionary::dumpLevels () const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Magic_Dictionary::dumpLevels"));
 
@@ -462,15 +454,15 @@ RPG_Magic_Dictionary::dumpLevels() const
   RPG_Magic_DictionaryIterator_t iterator;
   RPG_Magic_SpellLevelsIterator_t iterator2;
   RPG_Magic_SpellTypesIterator_t iterator3;
-  unsigned int index = 0;
-  for (unsigned char i = 0;
+  unsigned int index_i = 0;
+  for (ACE_UINT8 i = 0;
        i <= RPG_COMMON_MAX_SPELL_LEVEL;
-       i++)
+       ++i)
   {
     // step1: collect all known spells / level
     spell_types.clear();
-    for (iterator = myDictionary.begin();
-         iterator != myDictionary.end();
+    for (iterator = dictionary_.begin();
+         iterator != dictionary_.end();
          iterator++)
       for (iterator2 = (*iterator).second.levels.begin();
            iterator2 != (*iterator).second.levels.end();
@@ -481,18 +473,18 @@ RPG_Magic_Dictionary::dumpLevels() const
           break;
         } // end IF
 
-    ACE_DEBUG((LM_DEBUG,
+    // step2: list known spells for this level
+    ACE_DEBUG((LM_INFO,
                ACE_TEXT("============== level %u [%u] =============\n"),
                static_cast<unsigned int>(i),
                spell_types.size()));
-
-    index = 0;
+    index_i = 0;
     for (iterator3 = spell_types.begin();
          iterator3 != spell_types.end();
-         iterator3++, index++)
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("[%u]: %s\n"),
-                 index,
-                 RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator3).c_str()));
+         ++iterator3, ++index_i)
+      ACE_DEBUG ((LM_INFO,
+                  ACE_TEXT ("[%u]: %s\n"),
+                  index_i,
+                  ACE_TEXT (RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString (*iterator3).c_str ())));
   } // end FOR
 }

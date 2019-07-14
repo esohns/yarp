@@ -214,16 +214,11 @@ do_work (const std::string& schemaRepository_in,
   } // end IF
 
   // step1a: init graphics dictionary
-  try
-  {
-    RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->init (dictionary_in,
-                                                          validateXML_in);
-  }
-  catch (...)
+  if (!RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->initialize (dictionary_in,
+                                                                   validateXML_in))
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Graphics_Dictionary::init(), returning\n")));
-
+               ACE_TEXT("failed to RPG_Graphics_Dictionary::initialize(), returning\n")));
     return;
   }
 
