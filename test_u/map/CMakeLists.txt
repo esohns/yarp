@@ -40,8 +40,11 @@ target_link_libraries (${EXECUTABLE}
                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                        Common CommonError CommonLog CommonTimer
+                       ACEStream ACEStream_Network
+                       ACENetwork
                        RPG_Dice RPG_Chance RPG_Common RPG_Character RPG_Magic RPG_Item
-                       RPG_Combat RPG_Player RPG_Monster RPG_Map RPG_Engine)
+                       RPG_Player RPG_Monster RPG_Combat
+                       RPG_Map RPG_Net RPG_Net_Protocol RPG_Engine)
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
@@ -84,8 +87,11 @@ target_link_libraries (${EXECUTABLE}
                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                        Common CommonError CommonLog CommonTimer
+                       ACEStream ACEStream_Network
+                       ACENetwork
                        RPG_Chance RPG_Dice RPG_Common RPG_Character RPG_Magic RPG_Item
-                       RPG_Monster RPG_Player RPG_Combat RPG_Map RPG_Graphics RPG_Engine)
+                       RPG_Player RPG_Monster RPG_Combat
+                       RPG_Map RPG_Graphics RPG_Net RPG_Net_Protocol RPG_Engine)
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
@@ -109,7 +115,7 @@ set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
 target_link_libraries (${EXECUTABLE}
                        Userenv.lib
-#                       xerces-c
+                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                        Common CommonError CommonLog CommonTimer
                        RPG_Dice RPG_Common RPG_Map)

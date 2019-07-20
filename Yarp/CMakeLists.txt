@@ -44,22 +44,26 @@ set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION_MAJOR
 
 include(CPack)
 
-find_package (Doxygen)
-if (DOXYGEN_FOUND STREQUAL "NO")
+option (DOXYGEN_SUPPORT "generate documentation" OFF)
+if (DOXYGEN_SUPPORT)
+ find_package (Doxygen)
+ if (DOXYGEN_FOUND STREQUAL "NO")
   message(FATAL_ERROR "Doxygen not found. Please get a copy http://www.doxygen.org")
-endif (DOXYGEN_FOUND STREQUAL "NO")
+ endif (DOXYGEN_FOUND STREQUAL "NO")
+ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.cmake ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.cmake ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile)
+ add_custom_target (doxygen
+                    ${DOXYGEN_EXECUTABLE}
+                    ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile)
 
-add_custom_target(doxygen ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile)
+ set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES api-doc)
 
-set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES api-doc)
-
-get_target_property(DOC_TARGET doc TYPE)
-if(NOT DOC_TARGET)
-  add_custom_target(doc)
-endif()
-add_dependencies(doc doxygen)
+ get_target_property(DOC_TARGET doc TYPE)
+ if(NOT DOC_TARGET)
+  add_custom_target (doc)
+ endif (NOT DOC_TARGET)
+ add_dependencies (doc doxygen)
+endif (DOXYGEN_SUPPORT)
 
 #Use solution folders.
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
