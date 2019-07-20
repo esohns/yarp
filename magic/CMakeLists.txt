@@ -91,17 +91,15 @@ target_include_directories (${LIBRARY} PUBLIC
 
 # add_custom_target(magic_bindings
 #                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic.xsd)
-add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic_XML_types.cpp
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic_XML_types.h
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_types.h
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic_XML_tree.cpp
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic_XML_tree.h
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_tree.h
-                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/bindings.sh
-#                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic.xsd
-#                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic.map
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
-                    COMMENT "generating XML <--> C++ bindings...")
+#add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic_XML_types.cpp
+#                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic_XML_types.h
+#                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic_XML_tree.cpp
+#                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic_XML_tree.h
+#                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/bindings.sh
+##                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic.xsd
+##                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_magic.map
+#                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
+#                    COMMENT "generating XML <--> C++ bindings...")
 
 add_dependencies (${LIBRARY} RPG_Dice RPG_Common)
 #add_dependencies (${LIBRARY} RPG_Dice RPG_Common RPG_Character)

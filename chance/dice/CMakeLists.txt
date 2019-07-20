@@ -57,21 +57,19 @@ target_include_directories (${LIBRARY} PUBLIC
 
 # add_custom_target(dice_bindings
 #                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice.xsd)
-add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice_XML_tree.cpp
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice_XML_tree.h
-#                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_tree.h
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice_XML_types.cpp
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice_XML_types.h
- #                          ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_types.h
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice_dietype.h
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice_incl.h
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice_roll.h
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice_valuerange.h
-                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/bindings.sh
-#                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice.xsd
-#                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice.map
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
-                    COMMENT "generating XML <--> C++ bindings...")
+#add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice_XML_tree.cpp
+#                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice_XML_tree.h
+#                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice_XML_types.cpp
+#                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice_XML_types.h
+#                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice_dietype.h
+#                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice_incl.h
+#                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice_roll.h
+#                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice_valuerange.h
+#                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/bindings.sh
+##                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice.xsd
+##                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice.map
+#                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
+#                    COMMENT "generating XML <--> C++ bindings...")
 
 set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
 

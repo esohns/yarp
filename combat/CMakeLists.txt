@@ -72,14 +72,13 @@ target_include_directories (${LIBRARY} PUBLIC
 
 # add_custom_target(combat_bindings
 #                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_combat.xsd)
-add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_combat_XML_types.cpp
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_combat_XML_types.h
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_types.h
-                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/bindings.sh
-                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_combat.xsd
-                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_combat.map
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
-                    COMMENT "generating XML <--> C++ bindings...")
+#add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_combat_XML_types.cpp
+#                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_combat_XML_types.h
+#                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/bindings.sh
+#                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_combat.xsd
+#                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_combat.map
+#                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
+#                    COMMENT "generating XML <--> C++ bindings...")
 
 add_dependencies (${LIBRARY} RPG_Dice RPG_Common RPG_Character RPG_Magic RPG_Item)
 

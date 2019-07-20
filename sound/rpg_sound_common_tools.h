@@ -40,38 +40,36 @@
 class RPG_Sound_Common_Tools
 {
  public:
-  static bool initialize(const struct RPG_Sound_SDLConfiguration&,           // SDL config parameters
-                   const std::string&,                            // sound directory
-                   const bool& = RPG_SOUND_AMBIENT_DEF_USE_CD,    // use CD ?
-                   const unsigned int& = RPG_SOUND_DEF_CACHESIZE, // cache size
-                   const bool& = false);                          // mute ?
-  static void finalize();
+  // init string conversion facilities
+  static void initializeStringConversionTables ();
+  static bool initialize (const struct RPG_Sound_SDLConfiguration&,           // SDL config parameters
+                          const std::string&,                            // sound directory
+                          const bool& = RPG_SOUND_AMBIENT_DEF_USE_CD,    // use CD ?
+                          const unsigned int& = RPG_SOUND_DEF_CACHESIZE, // cache size
+                          const bool& = false);                          // mute ?
+  static void finalize ();
 
-  static void soundToFile(const RPG_Sound_t&, // sound
-                          std::string&);      // return value: FQ filename
+  static void soundToFile (const RPG_Sound_t&, // sound
+                           std::string&);      // return value: FQ filename
 
   // *NOTE*: returns the channel# that is playing the sound/music/...
-  static int play(const RPG_Sound_Event&, // event
-                  ACE_Time_Value&);       // return value: length
-  static int play(const std::string&,   // sound file
-                  const unsigned char&, // volume (0-128)
-                  ACE_Time_Value&);     // return value: length
-  static bool isPlaying(const int& = -1); // channel (-1: ALL channels)
-  static void stop(const int& = -1); // channel (-1: ALL channels)
+  static int play (const RPG_Sound_Event&, // event
+                   ACE_Time_Value&);       // return value: length
+  static int play (const std::string&,   // sound file
+                   const unsigned char&, // volume (0-128)
+                   ACE_Time_Value&);     // return value: length
+  static bool isPlaying (const int& = -1); // channel (-1: ALL channels)
+  static void stop (const int& = -1); // channel (-1: ALL channels)
 
   // *NOTE*: returns the track# that is playing...
   // *NOTE*: passing NULL will invoke all commands on the last drive SDL_OpenCD()ed...
-  static int playRandomTrack(SDL_CD* = NULL); // CDROM handle
+  static int playRandomTrack (SDL_CD* = NULL); // CDROM handle
 
  private:
   ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Common_Tools())
   ACE_UNIMPLEMENTED_FUNC(~RPG_Sound_Common_Tools())
   ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Common_Tools(const RPG_Sound_Common_Tools&))
   ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Common_Tools& operator=(const RPG_Sound_Common_Tools&))
-
-  // helper methods
-  // init string conversion facilities
-  static void initializeStringConversionTables ();
 
   static bool                         myIsMuted;
   static std::string                  mySoundDirectory;

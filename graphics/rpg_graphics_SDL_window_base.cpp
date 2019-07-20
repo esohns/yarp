@@ -311,8 +311,7 @@ RPG_Graphics_SDLWindowBase::invalidate (const SDL_Rect& rect_in)
       (rect_in.h == 0))
     invalidRegions_.push_back (clipRectangle_);
   else
-  {
-    ACE_ASSERT (rect_in.x >= 0);
+  { //ACE_ASSERT (rect_in.x >= 0);
     invalidRegions_.push_back (rect_in);
   } // end ELSE
 }

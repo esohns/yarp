@@ -80,13 +80,12 @@ target_include_directories (${LIBRARY} PUBLIC
 
 # add_custom_target(player_bindings
 #                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_player.xsd)
-add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_player_XML_tree.cpp
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_player_XML_tree.h
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_tree.h
-                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/bindings.sh
-#                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_player.xsd
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
-                    COMMENT "generating XML <--> C++ bindings...")
+#add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_player_XML_tree.cpp
+#                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_player_XML_tree.h
+#                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/bindings.sh
+##                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_player.xsd
+#                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
+#                    COMMENT "generating XML <--> C++ bindings...")
 
 add_dependencies (${LIBRARY} RPG_Dice RPG_Common RPG_Character RPG_Magic RPG_Item)
 

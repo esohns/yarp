@@ -173,6 +173,8 @@ RPG_Client_Common_Tools::initialize (const struct RPG_Client_SDL_InputConfigurat
   } // end IF
 
   // step2: initialize sound
+  RPG_Sound_Common_Tools::initializeStringConversionTables ();
+
   // step2a: initialize sound dictionary
   if (!soundDictionaryFile_in.empty ())
   {

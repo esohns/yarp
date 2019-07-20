@@ -32,6 +32,12 @@ set (${LIBRARY}_SRCS
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 
+#if (WIN32)
+# *WORKAROUND*: 'DOMDocument' is declared multiple times, we want the xerces-c one
+# add_definitions (-D__msxml_h__)
+# add_definitions (-D__urlmon_h__)
+#endif (WIN32)
+
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/src>)
 target_include_directories (${LIBRARY} PUBLIC
@@ -110,13 +116,12 @@ target_include_directories (${LIBRARY} PUBLIC
 
 # add_custom_target(engine_bindings
 #                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_engine.xsd)
-add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_engine_XML_tree.cpp
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_engine_XML_tree.h
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_tree.h
-                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/bindings.sh
-#                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_engine.xsd
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
-                    COMMENT "generating XML <--> C++ bindings...")
+#add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_engine_XML_tree.cpp
+#                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_engine_XML_tree.h
+#                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/bindings.sh
+##                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_engine.xsd
+#                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
+#                    COMMENT "generating XML <--> C++ bindings...")
 
 add_dependencies (${LIBRARY} RPG_Graphics RPG_Map
                              RPG_Combat RPG_Character RPG_Player RPG_Monster

@@ -59,7 +59,11 @@ set (EXECUTABLE client_gui)
 set (${EXECUTABLE}_SRCS
      rpg_client_gui.cpp)
 
-set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"/usr/local/share/RPG\";RPG_GRAPHICS_HAS_DLL=1")
+if (UNIX)
+ set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"/usr/local/share/RPG\";RPG_GRAPHICS_HAS_DLL=1")
+elseif (WIN32)
+ set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"\"")
+endif ()
 
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})

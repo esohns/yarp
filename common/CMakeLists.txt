@@ -97,21 +97,19 @@ target_include_directories (${LIBRARY} PUBLIC
 
 # add_custom_target(common_bindings
 #                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common.xsd)
-add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_XML_types.cpp
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_XML_types.h
-#                          ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_types.h
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_XML_tree.cpp
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_XML_tree.h
- #                         ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_tree.h
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_environment_XML_types.cpp
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_environment_XML_types.h
-                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/bindings.sh
-#                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common.xsd
-#                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common.map
-#                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_environment.xsd
-#                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_environment.map
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
-                    COMMENT "generating XML <--> C++ bindings...")
+#add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_XML_types.cpp
+#                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_XML_types.h
+#                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_XML_tree.cpp
+#                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_XML_tree.h
+#                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_environment_XML_types.cpp
+#                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_environment_XML_types.h
+#                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/bindings.sh
+##                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common.xsd
+##                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common.map
+##                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_environment.xsd
+##                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_common_environment.map
+#                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
+#                    COMMENT "generating XML <--> C++ bindings...")
 
 add_dependencies (${LIBRARY} RPG_Dice)
 

@@ -87,14 +87,13 @@ target_include_directories (${LIBRARY} PUBLIC
 
 # add_custom_target(sound_bindings
 #                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_sound.xsd)
-add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_sound_XML_types.cpp
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_sound_XML_types.h
-                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_types.h
-                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/bindings.sh
-#                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_sound.xsd
-#                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_sound.map
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
-                    COMMENT "generating XML <--> C++ bindings...")
+#add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_sound_XML_types.cpp
+#                           ${CMAKE_CURRENT_SOURCE_DIR}/rpg_sound_XML_types.h
+#                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/bindings.sh
+##                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_sound.xsd
+##                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_sound.map
+#                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
+#                    COMMENT "generating XML <--> C++ bindings...")
 
 add_dependencies (${LIBRARY} RPG_Dice RPG_Common)
 
