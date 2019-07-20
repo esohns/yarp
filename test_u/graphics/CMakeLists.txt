@@ -156,6 +156,7 @@ create_target_launcher (SDL_gui
                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/cmake/Debug
                                              ${LIB_ROOT}/libpng/cmake/Debug
                                              ${LIB_ROOT}/openssl
+                                             ${LIB_ROOT}/gtk2/bin
                                              ${LIB_ROOT}/SDL/lib/x86
                                              ${LIB_ROOT}/SDL_mixer/lib/x86
                                              ${LIB_ROOT}/SDL_ttf/lib/x86

@@ -68,8 +68,8 @@ add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice_XML_tree.cpp
                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice_roll.h
                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice_valuerange.h
                     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/bindings.sh
-                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice.xsd
-                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice.map
+#                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice.xsd
+#                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_dice.map
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
                     COMMENT "generating XML <--> C++ bindings...")
 

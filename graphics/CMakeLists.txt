@@ -136,8 +136,8 @@ add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_graphics_XML_types.cp
                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_graphics_XML_tree.h
                      #     ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_tree.h
                     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/bindings.sh
-                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_graphics.xsd
-                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_graphics.map
+#                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_graphics.xsd
+#                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_graphics.map
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
                     COMMENT "generating XML <--> C++ bindings...")
 

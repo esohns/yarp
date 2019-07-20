@@ -17,7 +17,7 @@ if NOT exist "%PerlEXE%" (
  echo invalid file ^(was: "%PerlEXE%"^)^, exiting
  goto Failed
 )
-set PerlScript=E:\lib\ACE_TAO\ACE\bin\generate_export_file.pl
+set PerlScript=%LIB_ROOT%\ACE_TAO\ACE\bin\generate_export_file.pl
 if NOT exist "%PerlScript%" (
  echo invalid file ^(was: "%PerlScript%"^)^, exiting
  goto Failed
@@ -44,7 +44,7 @@ if %ERRORLEVEL% NEQ 0 (
 
 @rem XML Parser
 @rem set XsdEXE=C:\Program Files\CodeSynthesis XSD 3.3\bin\xsd.exe
-set XsdEXE=E:\lib\xsd\bin\xsd.exe
+set XsdEXE=%LIB_ROOT%\xsd\bin\xsd.exe
 if NOT exist "%XsdEXE%" (
  echo invalid file ^(was: "%XsdEXE%"^)^, exiting
  goto Failed

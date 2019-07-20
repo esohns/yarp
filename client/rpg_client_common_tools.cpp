@@ -29,6 +29,7 @@
 #include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
 #include "rpg_common_tools.h"
+#include "rpg_common_xml_tools.h"
 
 #include "rpg_player_common_tools.h"
 #include "rpg_player_defines.h"

@@ -918,10 +918,16 @@ RPG_Player::load(const std::string& filename_in,
   ::xml_schema::properties props;
   std::string path;
   // *NOTE*: use the working directory as a fallback...
-  if (schemaRepository_in.empty())
-    path = Common_File_Tools::getWorkingDirectory();
-  else
-    path = schemaRepository_in;
+  ACE_ASSERT (!schemaRepository_in.empty ());
+#if defined (DEBUG_DEBUGGER)
+  path = Common_File_Tools::getWorkingDirectory ();
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR ("character");
+  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  path += ACE_TEXT_ALWAYS_CHAR ("player");
+#else
+  path = schemaRepository_in;
+#endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_SCHEMA_FILE);
   // sanity check(s)

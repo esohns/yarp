@@ -87,7 +87,7 @@ add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_map_parser.cpp
                            ${CMAKE_CURRENT_SOURCE_DIR}/position.hh
                            ${CMAKE_CURRENT_SOURCE_DIR}/stack.hh
                     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/parser.sh
-                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/map_parser.y
+#                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/map_parser.y
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
                     COMMENT "generating bison parser...")
 
@@ -99,7 +99,7 @@ add_custom_command (OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/rpg_map_XML_tree.cpp
                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_map_XML_tree.h
                            ${CMAKE_CURRENT_SOURCE_DIR}/rpg_XMLSchema_XML_tree.h
                     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/bindings.sh
-                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_map.xsd
+#                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/rpg_map.xsd
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts
                     COMMENT "generating XML <--> C++ bindings...")
 
