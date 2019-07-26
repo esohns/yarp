@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-#include "rpg_client_callbacks.h"
+#include "rpg_client_gui_callbacks.h"
 
 #include <sstream>
 

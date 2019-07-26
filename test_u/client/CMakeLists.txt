@@ -47,7 +47,6 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../ACENetwork/src)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../ACENetwork/src/client_server)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../3rd_party/xsd)
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../common
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../item
@@ -78,6 +77,14 @@ if (UNIX)
 elseif (WIN32)
  set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"\"")
 endif ()
+
+if (UNIX)
+ if (CMAKE_COMPILER_IS_GNUCC)
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
+  set (CMAKE_EXE_LINKER_FLAGS "-Wl,-z,multidefs")
+  set (CMAKE_STATIC_LINKER_FLAGS "-Wl,-z,multidefs")
+ endif (CMAKE_COMPILER_IS_GNUCC)
+endif (UNIX)
 
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})

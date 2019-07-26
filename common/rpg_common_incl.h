@@ -35,6 +35,7 @@
 #include "rpg_common_climate.h"
 #include "rpg_common_timeofday.h"
 #include "rpg_common_ambientlighting.h"
+#include "rpg_common_terrain.h"
 #include "rpg_common_environment.h"
 
 #endif
