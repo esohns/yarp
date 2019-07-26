@@ -21,7 +21,7 @@ perl ${PERL_SCRIPT} -n RPG_Monster > ./character/monster/rpg_monster_exports.h
 [ $? -ne 0 ] && echo "ERROR: failed to perl, aborting" && exit 1
 
 # C++ "glue code"
-XML2CppCode -d RPG_Monster_Export -e -f ./character/monster/rpg_monster.xsd -i -o ./character/monster -s -u -x RPG_Monster
+XML2CppCode -e -f ./character/monster/rpg_monster.xsd -i -o ./character/monster -s -u -x RPG_Monster
 [ $? -ne 0 ] && echo "ERROR: failed to XML2CppCode, aborting" && exit 1
 
 # XML Parser
@@ -35,11 +35,11 @@ xsdcxx cxx-parser --type-map ./character/monster/rpg_monster.map --char-type cha
 # *NOTE*: xsdcxx improperly rearranges the included headers from the map file
 # --> move a repaired version back into the project directory
 # *IMPORTANT NOTE*: needs to be updated after every change
-cp -f ./character/monster/scripts/rpg_monster_XML_types.h ./character/monster
-if [ $? -ne 0 ]; then
- echo "ERROR: failed to cp, aborting"
- exit 1
-fi
+#cp -f ./character/monster/scripts/rpg_monster_XML_types.h ./character/monster
+#if [ $? -ne 0 ]; then
+# echo "ERROR: failed to cp, aborting"
+# exit 1
+#fi
 
 # XML Parser/Tree
 ## generate "XMLSchema" namespace include file (tree)
@@ -48,7 +48,7 @@ fi
 #[ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
 
 # generate tree include/implementation (rpg_monster.xsd)
-xsdcxx cxx-tree --generate-serialization --generate-ostream --generate-comparison --type-regex '/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/' --char-type char --output-dir ./character/monster --namespace-map urn:rpg= --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc --export-symbol "RPG_Monster_Export" --hxx-prologue "#include \"rpg_monster_exports.h\"" ./character/monster/rpg_monster.xsd
+xsdcxx cxx-tree --generate-serialization --generate-ostream --generate-comparison --type-regex '/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/' --char-type char --output-dir ./character/monster --namespace-map urn:rpg= --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc ./character/monster/rpg_monster.xsd
 #xsdcxx cxx-tree --generate-serialization --generate-ostream --generate-comparison --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --type-regex '/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/' --char-type char --output-dir ./character/player --namespace-map urn:rpg= --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc --export-symbol "RPG_Player_Export" --hxx-prologue "#include \"rpg_player_exports.h\"" ./character/player/rpg_player.xsd
 if [ $? -ne 0 ]; then
  echo "ERROR: failed to xsdcxx, aborting"

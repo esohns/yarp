@@ -1066,7 +1066,7 @@ XML_Handler::insertPreamble(std::ofstream& targetStream_inout)
 #else
 //  // *TODO*: leave as-is for now (see Yarp/configure.ac)
 //  targetStream_inout << PACKAGE_STRING << std::endl;
-  targetStream_inout << XML2CPPCODE_PACKAGE_STRING << std::endl;
+//  targetStream_inout << XML2CPPCODE_PACKAGE_STRING << std::endl;
 #endif
   targetStream_inout << ACE_TEXT_ALWAYS_CHAR("// -------------------------------- * * * ----------------------------------- //") << std::endl;
   targetStream_inout << std::endl;

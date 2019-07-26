@@ -36,6 +36,8 @@ enum RPG_Graphics_ColorName
   RPG_GRAPHICS_COLORNAME_INVALID
 };
 
+#include "rpg_graphics_exports.h"
+
 #include "ace/Global_Macros.h"
 
 #include <map>
@@ -44,7 +46,7 @@ enum RPG_Graphics_ColorName
 typedef std::map<RPG_Graphics_ColorName, std::string> RPG_Graphics_ColorNameToStringTable_t;
 typedef RPG_Graphics_ColorNameToStringTable_t::const_iterator RPG_Graphics_ColorNameToStringTableIterator_t;
 
-class RPG_Graphics_ColorNameHelper
+class RPG_Graphics_Export RPG_Graphics_ColorNameHelper
 {
  public:
   inline static void init()

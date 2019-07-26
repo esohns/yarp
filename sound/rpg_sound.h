@@ -6,7 +6,9 @@
 #ifndef RPG_SOUND_H
 #define RPG_SOUND_H
 
-struct RPG_Sound
+#include "rpg_sound_exports.h"
+
+struct RPG_Sound_Export RPG_Sound
 {
   RPG_Sound_Category category;
   RPG_Sound_Event sound_event;

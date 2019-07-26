@@ -6,7 +6,9 @@
 #ifndef RPG_GRAPHICS_COLORRGBA_H
 #define RPG_GRAPHICS_COLORRGBA_H
 
-struct RPG_Graphics_ColorRGBA
+#include "rpg_graphics_exports.h"
+
+struct RPG_Graphics_Export RPG_Graphics_ColorRGBA
 {
   unsigned char r;
   unsigned char g;

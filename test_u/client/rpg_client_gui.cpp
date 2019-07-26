@@ -48,6 +48,7 @@
 
 #include "common_timer_tools.h"
 
+#include "common_ui_gtk_builder_definition.h"
 #include "common_ui_gtk_common.h"
 #include "common_ui_gtk_manager.h"
 #include "common_ui_gtk_manager_common.h"
@@ -117,12 +118,16 @@
 #include "rpg_client_window_level.h"
 #include "rpg_client_window_main.h"
 
+#include "rpg_client_gui_callbacks.h"
+
 // ******* WORKAROUND *************
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
 FILE _iob[] = { *stdin, *stdout, *stderr };
 extern "C" FILE* __cdecl __iob_func (void)
 {
   return _iob;
 }
+#endif // ACE_WIN32 || ACE_WIN64
 // ********************************
 
 Uint32

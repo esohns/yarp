@@ -19,7 +19,7 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-#include "rpg_net_module_protocolHandler.h"
+#include "rpg_net_module_protocolhandler.h"
 
 #include <iostream>
 

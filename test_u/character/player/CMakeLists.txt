@@ -1,11 +1,11 @@
 if (UNIX)
  include(FindPkgConfig)
  pkg_check_modules(PKG_CONFIG_MODULE_SDL REQUIRED sdl)
- pkg_check_modules(PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
- pkg_check_modules(PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
+# pkg_check_modules(PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
+# pkg_check_modules(PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
  pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
- pkg_check_modules(PKG_CONFIG_MODULE_LIBGLADE REQUIRED libglade-2.0)
- pkg_check_modules(PKG_CONFIG_MODULE_LIBGNOMEUI REQUIRED libgnomeui-2.0>=1.110.0)
+ pkg_check_modules(PKG_CONFIG_MODULE_LIBGTK REQUIRED gtk+-2.0)
+# pkg_check_modules(PKG_CONFIG_MODULE_LIBGNOMEUI REQUIRED libgnomeui-2.0>=1.110.0)
 elseif (WIN32)
 endif ()
 
@@ -27,7 +27,8 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src/log)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src/ui)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src/ui/gtk)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../chance/dice
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../3rd_party/xsd
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../chance/dice
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../common
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../item
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../character
@@ -35,10 +36,11 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../chance/dice
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../combat
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../character/player
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../character/monster
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../map
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../map
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../engine
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../client
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../graphics)
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../graphics
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../sound)
 
 ########### next target ###############
 set (EXECUTABLE character_parser)
@@ -52,21 +54,35 @@ set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITION
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 
-set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+if (UNIX)
+ target_link_libraries (${EXECUTABLE}
+                        pthread
+                        xerces-c
+                        ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
+                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
+                        ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
+                        xerces-c
+                        ACE
+                        Common CommonLog CommonTimer
+                        RPG_Dice RPG_Chance RPG_Common
+                        RPG_Character RPG_Magic RPG_Item
+                        RPG_Monster RPG_Player RPG_Combat
+                        RPG_Map RPG_Graphics RPG_Engine
+                        RPG_Chance RPG_Dice RPG_Common
+                        RPG_Character RPG_Magic RPG_Item
+                        RPG_Common
+                        Common)
+elseif (WIN32)
+ set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
-target_link_libraries (${EXECUTABLE}
-#                       pthread
-#                       xerces-c
-                       ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
-target_link_libraries (${EXECUTABLE}
+ target_link_libraries (${EXECUTABLE}
                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                        Common CommonLog CommonTimer
                        RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item
                        RPG_Character RPG_Monster RPG_Player RPG_Combat
                        RPG_Map RPG_Graphics RPG_Engine)
+endif ()
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
@@ -83,21 +99,37 @@ set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITION
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 
-set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+if (UNIX)
+ target_link_libraries (${EXECUTABLE}
+                        ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
+                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
+                        ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
+                        xerces-c
+                        ACE
+                        Common CommonLog CommonTimer
+                        ACEStream ACEStream_Network
+                        ACENetwork
+                        RPG_Dice RPG_Chance RPG_Common
+                        RPG_Character RPG_Magic RPG_Item
+                        RPG_Monster RPG_Player RPG_Combat
+                        RPG_Map RPG_Graphics RPG_Engine
+                        RPG_Chance RPG_Dice RPG_Common
+                        RPG_Character RPG_Magic RPG_Item
+                        RPG_Common RPG_Monster RPG_Combat RPG_Map
+                        RPG_Player)
+elseif (WIN32)
+ set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
-target_link_libraries (${EXECUTABLE}
-                       ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
-target_link_libraries (${EXECUTABLE}
-                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
-                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                       Common CommonLog CommonTimer
-                       ACEStream ACEStream_Network
-                       ACENetwork
-                       RPG_Dice RPG_Chance RPG_Common RPG_Character RPG_Magic RPG_Item
-                       RPG_Player RPG_Monster RPG_Combat
-                       RPG_Map RPG_Graphics RPG_Net RPG_Net_Protocol RPG_Engine)
+ target_link_libraries (${EXECUTABLE}
+                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        Common CommonLog CommonTimer
+                        ACEStream ACEStream_Network
+                        ACENetwork
+                        RPG_Dice RPG_Chance RPG_Common RPG_Character RPG_Magic RPG_Item
+                        RPG_Player RPG_Monster RPG_Combat
+                        RPG_Map RPG_Graphics RPG_Net RPG_Net_Protocol RPG_Engine)
+endif ()
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
@@ -122,32 +154,56 @@ add_executable (${EXECUTABLE}
 add_definitions (-D_WIN32_WINNT=0x0602)
 add_definitions (-DWINVER=0x0602)
 
-include_directories (${PKG_CONFIG_MODULE_LIBGLADE_INCLUDE_DIRS}
+include_directories (${GTK_INCLUDE_DIRS}
+                     $ENV{LIB_ROOT}/gtkglarea
+                     ${PKG_CONFIG_MODULE_LIBGLADE_INCLUDE_DIRS}
                      ${PKG_CONFIG_MODULE_LIBGNOMEUI_INCLUDE_DIRS})
 
-set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+if (UNIX)
+ target_link_libraries (${EXECUTABLE}
+                        ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
+                        ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES}
+                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
+                        ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
+                        X11
+                        ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES}
+                        ${PKG_CONFIG_MODULE_LIBGNOMEUI_LIBRARIES}
+                        ${GTK_LIBRARIES}
+                        xerces-c
+                        ACE
+                        Common CommonLog CommonTimer CommonUI_GTK
+                        ACEStream ACEStream_Network
+                        ACENetwork
+                        RPG_Dice RPG_Chance RPG_Common
+                        RPG_Character RPG_Magic RPG_Item
+                        RPG_Monster RPG_Player RPG_Combat
+                        RPG_Map RPG_Graphics RPG_Engine RPG_Client
+                        RPG_Chance RPG_Dice RPG_Common
+                        RPG_Character RPG_Magic RPG_Item
+                        RPG_Dice RPG_Common RPG_Character RPG_Monster
+                        RPG_Combat RPG_Map
+                        RPG_Player RPG_Engine RPG_Graphics RPG_Sound
+                        RPG_Monster RPG_Combat RPG_Map RPG_Net_Protocol RPG_Net
+                        Common
+                        ACEStream_Network)
+elseif (WIN32)
+ set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
-target_link_libraries (${EXECUTABLE}
-                       ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_LIBGNOMEUI_LIBRARIES})
-target_link_libraries (${EXECUTABLE}
-                       Opengl32.lib Ntdll.lib
-                       $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
-                       $ENV{LIB_ROOT}/SDL_mixer/lib/x86/SDL_mixer.lib
-                       ${GTK_LIBRARIES}
-                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
-                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                       Common CommonLog CommonTimer CommonUI_GTK
-                       ACEStream ACEStream_Miscellaneous ACEStream_Network
-                       ACENetwork ACENetwork_Client
-                       RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item
-                       RPG_Character RPG_Monster RPG_Player RPG_Combat
-                       RPG_Map RPG_Sound RPG_Graphics RPG_Engine RPG_Client
-                       RPG_Net RPG_Net_Protocol)
+ target_link_libraries (${EXECUTABLE}
+                        Opengl32.lib Ntdll.lib
+                        $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
+                        $ENV{LIB_ROOT}/SDL_mixer/lib/x86/SDL_mixer.lib
+                        ${GTK_LIBRARIES}
+                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        Common CommonLog CommonTimer CommonUI_GTK
+                        ACEStream ACEStream_Miscellaneous ACEStream_Network
+                        ACENetwork ACENetwork_Client
+                        RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item
+                        RPG_Character RPG_Monster RPG_Player RPG_Combat
+                        RPG_Map RPG_Sound RPG_Graphics RPG_Engine RPG_Client
+                        RPG_Net RPG_Net_Protocol)
+endif ()
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 

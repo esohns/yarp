@@ -50,6 +50,8 @@ enum RPG_Common_Terrain
   RPG_COMMON_TERRAIN_INVALID
 };
 
+#include "rpg_common_exports.h"
+
 #include "ace/Global_Macros.h"
 
 #include <map>
@@ -58,7 +60,7 @@ enum RPG_Common_Terrain
 typedef std::map<RPG_Common_Terrain, std::string> RPG_Common_TerrainToStringTable_t;
 typedef RPG_Common_TerrainToStringTable_t::const_iterator RPG_Common_TerrainToStringTableIterator_t;
 
-class RPG_Common_TerrainHelper
+class RPG_Common_Export RPG_Common_TerrainHelper
 {
  public:
   inline static void init()

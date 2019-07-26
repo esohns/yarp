@@ -21,7 +21,7 @@ perl ${PERL_SCRIPT} -n RPG_Client > ./client/rpg_client_exports.h
 [ $? -ne 0 ] && echo "ERROR: failed to perl, aborting" && exit 1
 
 # C++ "glue code"
-XML2CppCode -d RPG_Client_Export -e -f ./client/rpg_client.xsd -i -o ./client -s -u -x RPG_Client
+XML2CppCode -e -f ./client/rpg_client.xsd -i -o ./client -s -u -x RPG_Client
 [ $? -ne 0 ] && echo "ERROR: failed to XML2CppCode, aborting" && exit 1
 
 ## generate "XMLSchema" namespace include file (tree)

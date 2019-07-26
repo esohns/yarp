@@ -2,9 +2,9 @@ if (UNIX)
  include (FindPkgConfig)
  pkg_check_modules (PKG_CONFIG_MODULE_SDL REQUIRED sdl)
  pkg_check_modules (PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
- pkg_check_modules (PKG_CONFIG_MODULE_LIBGLADE REQUIRED libglade-2.0)
- pkg_check_modules (PKG_CONFIG_MODULE_LIBGNOMEUI REQUIRED libgnomeui-2.0>=1.110.0)
- pkg_check_modules (PKG_CONFIG_MODULE_GMODULE REQUIRED gmodule-export-2.0)
+ pkg_check_modules (PKG_CONFIG_MODULE_LIBGTK REQUIRED gtk+-2.0)
+# pkg_check_modules (PKG_CONFIG_MODULE_LIBGNOMEUI REQUIRED libgnomeui-2.0>=1.110.0)
+# pkg_check_modules (PKG_CONFIG_MODULE_GMODULE REQUIRED gmodule-export-2.0)
 elseif (WIN32)
 endif ()
 
@@ -34,15 +34,15 @@ endif ()
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 
-if (WIN32)
+include_directories (${GTK_INCLUDE_DIRS})
+if (UNIX)
+ include_directories (${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
+                      ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
+elseif (WIN32)
  include_directories ($ENV{LIB_ROOT}/SDL/include
                       $ENV{LIB_ROOT}/SDL_mixer/include
                       $ENV{LIB_ROOT}/SDL_ttf/include)
-
-# include_directories ($ENV{LIB_ROOT}/gtk2/include/gtk-2.0)
- include_directories (${GTK_INCLUDE_DIRS})
-endif (WIN32)
-
+endif ()
 if (GTKGLAREA_SUPPORT)
  include_directories ($ENV{LIB_ROOT}/gtkglarea)
 endif (GTKGLAREA_SUPPORT)
@@ -57,7 +57,8 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/gtk)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../ACEStream/src)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../ACEStream/src/modules/net)
 
-include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../3rd_party/xsd
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
                      ${CMAKE_CURRENT_SOURCE_DIR}/../../common
                      ${CMAKE_CURRENT_SOURCE_DIR}/../../character
                      ${CMAKE_CURRENT_SOURCE_DIR}/../../magic
@@ -73,19 +74,33 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
                      ${CMAKE_CURRENT_SOURCE_DIR}/../../net/protocol
                      ${CMAKE_CURRENT_SOURCE_DIR}/../../client)
 
-set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+if (UNIX)
+ target_link_libraries (${EXECUTABLE}
+                        ${GTK_LIBRARIES}
+                        #$ENV{LIB_ROOT}/SDL/lib/x86/SDL.lib
+                        #$ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
+                        X11
+                        xerces-c
+                        ACE
+                        Common CommonLog CommonSignal CommonTimer CommonUI_GTK
+                        ACEStream ACEStream_Miscellaneous ACEStream_Network
+                        ACENetwork ACENetwork_Client
+                        RPG_Dice RPG_Common RPG_Net RPG_Net_Protocol)
+elseif (WIN32)
+ set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
-target_link_libraries (${EXECUTABLE}
-                       Opengl32.lib legacy_stdio_definitions.lib
-                       ${GTK_LIBRARIES}
-                       $ENV{LIB_ROOT}/SDL/lib/x86/SDL.lib
-                       $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
-                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
-                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                       Common CommonLog CommonSignal CommonTimer CommonUI_GTK
-                       ACEStream ACEStream_Miscellaneous ACEStream_Network
-                       ACENetwork ACENetwork_Client
-                       RPG_Dice RPG_Common RPG_Net RPG_Net_Protocol)
+ target_link_libraries (${EXECUTABLE}
+                        Opengl32.lib legacy_stdio_definitions.lib
+                        ${GTK_LIBRARIES}
+                        $ENV{LIB_ROOT}/SDL/lib/x86/SDL.lib
+                        $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
+                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        Common CommonLog CommonSignal CommonTimer CommonUI_GTK
+                        ACEStream ACEStream_Miscellaneous ACEStream_Network
+                        ACENetwork ACENetwork_Client
+                        RPG_Dice RPG_Common RPG_Net RPG_Net_Protocol)
+endif ()
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
@@ -113,19 +128,35 @@ endif ()
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 
-set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+if (UNIX)
+ target_link_libraries (${EXECUTABLE}
+                        ${GTK_LIBRARIES}
+#                        $ENV{LIB_ROOT}/SDL/lib/x86/SDL.lib
+ #                       $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
+                        X11
+                        xerces-c
+                        ACE
+                        Common CommonLog CommonSignal CommonTimer CommonUI_GTK
+                        ACEStream ACEStream_Miscellaneous ACEStream_Network
+                        ACENetwork ACENetwork_Server
+                        RPG_Dice RPG_Common RPG_Net RPG_Net_Protocol
+                        ACEStream_Network
+                        RPG_Net)
+elseif (WIN32)
+ set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
-target_link_libraries (${EXECUTABLE}
-                       Opengl32.lib legacy_stdio_definitions.lib
-                       ${GTK_LIBRARIES}
-                       $ENV{LIB_ROOT}/SDL/lib/x86/SDL.lib
-                       $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
-                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
-                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                       Common CommonLog CommonSignal CommonTimer CommonUI_GTK
-                       ACEStream ACEStream_Miscellaneous ACEStream_Network
-                       ACENetwork ACENetwork_Server
-                       RPG_Dice RPG_Common RPG_Net RPG_Net_Protocol)
+ target_link_libraries (${EXECUTABLE}
+                        Opengl32.lib legacy_stdio_definitions.lib
+                        ${GTK_LIBRARIES}
+                        $ENV{LIB_ROOT}/SDL/lib/x86/SDL.lib
+                        $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
+                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        Common CommonLog CommonSignal CommonTimer CommonUI_GTK
+                        ACEStream ACEStream_Miscellaneous ACEStream_Network
+                        ACENetwork ACENetwork_Server
+                        RPG_Dice RPG_Common RPG_Net RPG_Net_Protocol)
+endif ()
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 

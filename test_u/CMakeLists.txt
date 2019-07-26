@@ -46,8 +46,10 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/VersionConfig.cmake)
  endif ()
 #endif (GUI_SUPPORT)
 
-get_filename_component (BUILD_PATH ${CMAKE_CURRENT_BINARY_DIR}/../.. REALPATH DIRECTORY)
+#message (STATUS "CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
+get_filename_component (BUILD_PATH ${CMAKE_CURRENT_BINARY_DIR}/.. REALPATH DIRECTORY)
 get_filename_component (BUILD_PATH_SUFFIX ${BUILD_PATH} NAME)
+#message (STATUS "BUILD_PATH_SUFFIX: ${BUILD_PATH_SUFFIX}")
 find_package (Common ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO}
               REQUIRED
               CONFIG

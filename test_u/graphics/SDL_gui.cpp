@@ -1191,7 +1191,7 @@ do_UI(struct RPG_Engine_Entity& entity_in,
             std::string dump_path;
 #if !defined (ACE_WIN32) && !defined (ACE_WIN64)
             dump_path =
-                ACE_TEXT_ALWAYS_CHAR(COMMON_DEF_DUMP_DIR);
+                ACE_TEXT_ALWAYS_CHAR(COMMON_LOCATION_TEMPORARY_STORAGE_DIRECTORY);
 #else
             dump_path =
                 ACE_OS::getenv (ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEMPORARY_STORAGE_VARIABLE));

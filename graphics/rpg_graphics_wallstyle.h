@@ -24,6 +24,8 @@ enum RPG_Graphics_WallStyle
   RPG_GRAPHICS_WALLSTYLE_INVALID
 };
 
+#include "rpg_graphics_exports.h"
+
 #include "ace/Global_Macros.h"
 
 #include <map>
@@ -32,7 +34,7 @@ enum RPG_Graphics_WallStyle
 typedef std::map<RPG_Graphics_WallStyle, std::string> RPG_Graphics_WallStyleToStringTable_t;
 typedef RPG_Graphics_WallStyleToStringTable_t::const_iterator RPG_Graphics_WallStyleToStringTableIterator_t;
 
-class RPG_Graphics_WallStyleHelper
+class RPG_Graphics_Export RPG_Graphics_WallStyleHelper
 {
  public:
   inline static void init()

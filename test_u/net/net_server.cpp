@@ -92,11 +92,13 @@
 #include "net_server_signalhandler.h"
 
 // ******* WORKAROUND *************
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
 FILE _iob[] = { *stdin, *stdout, *stderr };
 extern "C" FILE* __cdecl __iob_func (void)
 {
   return _iob;
 }
+#endif // ACE_WIN32 || ACE_WIN64
 // ********************************
 
 void

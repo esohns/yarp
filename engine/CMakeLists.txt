@@ -38,19 +38,19 @@ add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 # add_definitions (-D__urlmon_h__)
 #endif (WIN32)
 
-target_include_directories (${LIBRARY} PUBLIC
-                            $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/src>)
-target_include_directories (${LIBRARY} PUBLIC
-                            $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/src>)
-target_include_directories (${LIBRARY} PUBLIC
-                            $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
-
 if (UNIX)
  target_include_directories (${LIBRARY} PUBLIC
 #                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules/ACE>)
 #                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/ACE_TAO/ACE>)
                              $<BUILD_INTERFACE:/usr/local/src/ACE_wrappers>)
 elseif (WIN32)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/src>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/src>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
+
  if (DEFINED ENV{ACE_ROOT})
   target_include_directories (${LIBRARY} PUBLIC
                               $<BUILD_INTERFACE:$ENV{ACE_ROOT}>)
@@ -87,6 +87,8 @@ target_include_directories (${LIBRARY} PUBLIC
 
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../3rd_party/bison>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../3rd_party/xsd>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../chance>)
 target_include_directories (${LIBRARY} PUBLIC

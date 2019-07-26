@@ -5,7 +5,7 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/ACE.cmake)
 if (UNIX)
  include (FindPkgConfig)
  pkg_check_modules (PKG_CONFIG_MODULE_SDL REQUIRED sdl)
- pkg_check_modules (PKG_CONFIG_MODULE_SDL_Mixer REQUIRED SDL_Mixer)
+ pkg_check_modules (PKG_CONFIG_MODULE_SDL_Mixer REQUIRED SDL_mixer)
 elseif (WIN32)
 endif ()
 
@@ -101,7 +101,7 @@ set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
 # add PCH
 set_target_properties (${LIBRARY} PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
-cotire (${LIBRARY})
+#cotire (${LIBRARY})
 
 ########### install files ###############
 install (FILES

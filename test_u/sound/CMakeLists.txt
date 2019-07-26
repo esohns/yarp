@@ -36,13 +36,19 @@ set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITION
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 
-set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+if (UNIX)
+ target_link_libraries(${EXECUTABLE}
+                       ${PKG_CONFIG_MODULE_XERCES_LIBRARIES}
+                       ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
+                       ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES}
+                       xerces-c
+                       ACE
+                       Common CommonLog CommonTimer
+                       RPG_Dice RPG_Common RPG_Sound)
+elseif (WIN32)
+ set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
-target_link_libraries(${EXECUTABLE} ${PKG_CONFIG_MODULE_XERCES_LIBRARIES}
-                                    ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
-                                    ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES})
-
-target_link_libraries (${EXECUTABLE}
+ target_link_libraries (${EXECUTABLE}
                        legacy_stdio_definitions.lib
                        $ENV{LIB_ROOT}/SDL/lib/x86/SDL.lib
                        $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
@@ -51,6 +57,7 @@ target_link_libraries (${EXECUTABLE}
                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                        Common CommonLog CommonTimer
                        RPG_Dice RPG_Common RPG_Sound)
+endif ()
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 

@@ -21,7 +21,7 @@ perl ${PERL_SCRIPT} -n RPG_Magic > ./magic/rpg_magic_exports.h
 [ $? -ne 0 ] && echo "ERROR: failed to perl, aborting" && exit 1
 
 # C++ "glue code"
-XML2CppCode -d RPG_Magic_Export -e -f ./magic/rpg_magic.xsd -i -o ./magic -s -u -x RPG_Magic
+XML2CppCode -e -f ./magic/rpg_magic.xsd -i -o ./magic -s -u -x RPG_Magic
 [ $? -ne 0 ] && echo "ERROR: failed to XML2CppCode, aborting" && exit 1
 
 # XML Parser/Tree
@@ -30,7 +30,7 @@ XML2CppCode -d RPG_Magic_Export -e -f ./magic/rpg_magic.xsd -i -o ./magic -s -u 
 #[ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
 
 # generate parser include/implementation (rpg_magic.xsd)
-xsdcxx cxx-parser --type-map ./magic/rpg_magic.map --char-type char --output-dir ./magic --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc --export-symbol "RPG_Magic_Export" --hxx-prologue "#include \"rpg_magic_exports.h\"" ./magic/rpg_magic.xsd
+xsdcxx cxx-parser --type-map ./magic/rpg_magic.map --char-type char --output-dir ./magic --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc ./magic/rpg_magic.xsd
 [ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
 
 ## generate "XMLSchema" namespace include file (tree)
@@ -39,9 +39,10 @@ xsdcxx cxx-parser --type-map ./magic/rpg_magic.map --char-type char --output-dir
 #[ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
 
 # generate tree include/implementation (rpg_magic.xsd)
-xsdcxx cxx-tree --generate-serialization --generate-ostream --generate-comparison --type-regex '/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/' --char-type char --output-dir ./magic --namespace-map urn:rpg= --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc --export-symbol "RPG_Magic_Export" --hxx-prologue "#include \"rpg_magic_exports.h\"" ./magic/rpg_magic.xsd
+xsdcxx cxx-tree --generate-serialization --generate-ostream --generate-comparison --type-regex '/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/' --char-type char --output-dir ./magic --namespace-map urn:rpg= --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc ./magic/rpg_magic.xsd
 #xsdcxx cxx-tree --generate-serialization --generate-ostream --generate-comparison --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --type-regex '/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/' --char-type char --output-dir ./magic --namespace-map urn:rpg= --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc --export-symbol "RPG_Magic_Export" --hxx-prologue "#include \"rpg_magic_exports.h\"" ./magic/rpg_magic.xsd
 if [ $? -ne 0 ]; then
  echo "ERROR: failed to xsdcxx, aborting"
  exit 1
 fi
+

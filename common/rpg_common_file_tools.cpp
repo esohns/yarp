@@ -24,7 +24,7 @@
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
 #include "Userenv.h"
 #include "Shlobj.h"
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
 #include "ace/ACE.h"
 #include "ace/OS.h"
@@ -33,7 +33,10 @@
 #include "ace/Dirent_Selector.h"
 #include "ace/OS_NS_sys_sendfile.h"
 
-//#include "common_tools.h"
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#else
+#include "common_tools.h"
+#endif // ACE_WIN32 || ACE_WIN64
 #include "common_file_tools.h"
 #include "common_defines.h"
 
@@ -117,37 +120,7 @@ RPG_Common_File_Tools::getUserConfigurationDirectory ()
 
   std::string result;
 
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-  std::string user_name;
-  std::string real_name;
-  Common_Tools::getCurrentUserName (user_name, real_name);
-  if (user_name.empty ())
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to Common_Tools::getCurrentUserName(), falling back\n")));
-
-    // fallback
-    result =
-        ACE_TEXT_ALWAYS_CHAR (ACE_OS::getenv (ACE_TEXT(COMMON_DEF_DUMP_DIR)));
-    return result;
-  } // end IF
-
-  result = Common_File_Tools::getUserHomeDirectory (user_name);
-  if (result.empty ())
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to Common_File_Tools::getUserHomeDirectory(\"%s\"), falling back\n"),
-                ACE_TEXT (user_name.c_str ())));
-
-    // fallback
-    result =
-        ACE_TEXT_ALWAYS_CHAR (ACE_OS::getenv (ACE_TEXT(COMMON_DEF_DUMP_DIR)));
-    return result;
-  } // end IF
-
-  result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  result += ACE_TEXT_ALWAYS_CHAR (".");
-#else
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
   TCHAR buffer[PATH_MAX];
   ACE_OS::memset (buffer, 0, sizeof (buffer));
 
@@ -182,8 +155,16 @@ RPG_Common_File_Tools::getUserConfigurationDirectory ()
 
   result = ACE_TEXT_ALWAYS_CHAR (buffer);
   result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+#else
+  std::string user_name = Common_Tools::getUserName ();
+  ACE_ASSERT (!user_name.empty ());
+  result = Common_File_Tools::getHomeDirectory (user_name);
+  ACE_ASSERT (!result.empty ());
+  result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  result += ACE_TEXT_ALWAYS_CHAR (".");
 #endif
-  //result += ACE_TEXT_ALWAYS_CHAR (YARP_PACKAGE);
+  result += ACE_TEXT_ALWAYS_CHAR ("Yarp");
+//  result += ACE_TEXT_ALWAYS_CHAR (YARP_PACKAGE);
 
   if (!Common_File_Tools::isDirectory (result))
   {
@@ -254,8 +235,8 @@ RPG_Common_File_Tools::getLogDirectory ()
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   result = ACE_OS::getenv (ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEMPORARY_STORAGE_VARIABLE));
 #else
-  result = ACE_TEXT_ALWAYS_CHAR (COMMON_DEF_LOG_DIRECTORY);
-#endif
+  result = ACE_TEXT_ALWAYS_CHAR (COMMON_LOG_DEFAULT_DIRECTORY);
+#endif // ACE_WIN32 || ACE_WIN64
 
   // sanity check(s): directory exists ?
   // No ? --> try to create it then !

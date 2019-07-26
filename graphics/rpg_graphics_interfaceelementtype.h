@@ -23,6 +23,8 @@ enum RPG_Graphics_InterfaceElementType
   RPG_GRAPHICS_INTERFACEELEMENTTYPE_INVALID
 };
 
+#include "rpg_graphics_exports.h"
+
 #include "ace/Global_Macros.h"
 
 #include <map>
@@ -31,7 +33,7 @@ enum RPG_Graphics_InterfaceElementType
 typedef std::map<RPG_Graphics_InterfaceElementType, std::string> RPG_Graphics_InterfaceElementTypeToStringTable_t;
 typedef RPG_Graphics_InterfaceElementTypeToStringTable_t::const_iterator RPG_Graphics_InterfaceElementTypeToStringTableIterator_t;
 
-class RPG_Graphics_InterfaceElementTypeHelper
+class RPG_Graphics_Export RPG_Graphics_InterfaceElementTypeHelper
 {
  public:
   inline static void init()

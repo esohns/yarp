@@ -21,7 +21,7 @@ perl ${PERL_SCRIPT} -n RPG_Engine > ./engine/rpg_engine_exports.h
 [ $? -ne 0 ] && echo "ERROR: failed to perl, aborting" && exit 1
 
 # C++ "glue code"
-XML2CppCode -d RPG_Engine_Export -e -f ./engine/rpg_engine.xsd -i -o ./engine -s -u -x RPG_Engine
+XML2CppCode -e -f ./engine/rpg_engine.xsd -i -o ./engine -s -u -x RPG_Engine
 [ $? -ne 0 ] && echo "ERROR: failed to XML2CppCode, aborting" && exit 1
 
 ## generate "XMLSchema" namespace include file (tree)
@@ -30,9 +30,10 @@ XML2CppCode -d RPG_Engine_Export -e -f ./engine/rpg_engine.xsd -i -o ./engine -s
 #[ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
 
 # generate tree include/implementation (rpg_engine.xsd)
-xsdcxx cxx-tree --export-symbol "RPG_Engine_Export" --hxx-prologue "#include \"rpg_engine_exports.h\"" --options-file ./scripts/xsdcxx_tree_options --output-dir ./engine ./engine/rpg_engine.xsd
-#xsdcxx cxx-tree --generate-serialization --generate-ostream --generate-comparison --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --type-regex '/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/' --char-type char --output-dir ./engine --namespace-map urn:rpg= --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc --root-element-all ./engine/rpg_engine.xsd
+#xsdcxx cxx-tree --options-file ./scripts/xsdcxx_tree_options --output-dir ./engine ./engine/rpg_engine.xsd
+xsdcxx cxx-tree --generate-serialization --generate-ostream --generate-comparison --type-regex '/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/' --char-type char --output-dir ./engine --namespace-map urn:rpg= --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc --root-element-all ./engine/rpg_engine.xsd
 if [ $? -ne 0 ]; then
  echo "ERROR: failed to xsdcxx, aborting"
  exit 1
 fi
+

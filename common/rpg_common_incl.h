@@ -31,5 +31,10 @@
 #include "rpg_common_duration.h"
 #include "rpg_common_effectduration.h"
 #include "rpg_common_camp.h"
+#include "rpg_common_plane.h"
+#include "rpg_common_climate.h"
+#include "rpg_common_timeofday.h"
+#include "rpg_common_ambientlighting.h"
+#include "rpg_common_environment.h"
 
 #endif

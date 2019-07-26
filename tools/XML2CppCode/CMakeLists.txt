@@ -56,9 +56,15 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(XML2CppCode ${XML2CppCode_SRCS})
 
-target_link_libraries(XML2CppCode
-                      $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                      $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib)
+if (UNIX)
+ target_link_libraries(XML2CppCode
+                       ACE
+                       xerces-c)
+elseif (WIN32)
+ target_link_libraries(XML2CppCode
+                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib)
+endif ()
 
 ########### install files ###############
 install(TARGETS XML2CppCode RUNTIME DESTINATION bin)

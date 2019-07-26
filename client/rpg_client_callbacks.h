@@ -47,39 +47,39 @@ gint combobox_sort_function (GtkTreeModel*, // model
 extern "C"
 {
 #endif /* __cplusplus */
-G_MODULE_EXPORT gboolean idle_initialize_UI_cb (gpointer);
-G_MODULE_EXPORT gboolean idle_finalize_UI_cb (gpointer);
+//G_MODULE_EXPORT gboolean idle_initialize_UI_cb (gpointer);
+//G_MODULE_EXPORT gboolean idle_finalize_UI_cb (gpointer);
 // -----------------------------------------------------------------------------
-G_MODULE_EXPORT gint create_character_clicked_GTK_cb (GtkWidget*, gpointer);
-G_MODULE_EXPORT gint drop_character_clicked_GTK_cb (GtkWidget*, gpointer);
-G_MODULE_EXPORT gint load_character_clicked_GTK_cb (GtkWidget*, gpointer);
-G_MODULE_EXPORT gint save_character_clicked_GTK_cb (GtkWidget*, gpointer);
-G_MODULE_EXPORT gint character_repository_combobox_changed_GTK_cb (GtkWidget*, gpointer);
-G_MODULE_EXPORT gint character_repository_button_clicked_GTK_cb (GtkWidget*, gpointer);
-//
-G_MODULE_EXPORT gint create_map_clicked_GTK_cb (GtkWidget*, gpointer);
-G_MODULE_EXPORT gint drop_map_clicked_GTK_cb (GtkWidget*, gpointer);
-G_MODULE_EXPORT gint load_map_clicked_GTK_cb (GtkWidget*, gpointer);
-G_MODULE_EXPORT gint save_map_clicked_GTK_cb (GtkWidget*, gpointer);
-G_MODULE_EXPORT gint map_repository_combobox_changed_GTK_cb (GtkWidget*, gpointer);
-G_MODULE_EXPORT gint map_repository_button_clicked_GTK_cb (GtkWidget*, gpointer);
-//
-G_MODULE_EXPORT gint load_state_clicked_GTK_cb (GtkWidget*, gpointer);
-G_MODULE_EXPORT gint save_state_clicked_GTK_cb (GtkWidget*, gpointer);
-G_MODULE_EXPORT gint state_repository_combobox_changed_GTK_cb (GtkWidget*, gpointer);
-G_MODULE_EXPORT gint state_repository_button_clicked_GTK_cb (GtkWidget*, gpointer);
-//
-G_MODULE_EXPORT gint join_game_clicked_GTK_cb (GtkWidget*, gpointer);
-G_MODULE_EXPORT gint part_game_clicked_GTK_cb (GtkWidget*, gpointer);
-G_MODULE_EXPORT gint server_repository_combobox_changed_GTK_cb (GtkWidget*, gpointer);
-G_MODULE_EXPORT gint server_repository_button_clicked_GTK_cb (GtkWidget*, gpointer);
-//
-G_MODULE_EXPORT gint equip_clicked_GTK_cb (GtkWidget*, gpointer);
+//G_MODULE_EXPORT gint create_character_clicked_GTK_cb (GtkWidget*, gpointer);
+//G_MODULE_EXPORT gint drop_character_clicked_GTK_cb (GtkWidget*, gpointer);
+//G_MODULE_EXPORT gint load_character_clicked_GTK_cb (GtkWidget*, gpointer);
+//G_MODULE_EXPORT gint save_character_clicked_GTK_cb (GtkWidget*, gpointer);
+//G_MODULE_EXPORT gint character_repository_combobox_changed_GTK_cb (GtkWidget*, gpointer);
+//G_MODULE_EXPORT gint character_repository_button_clicked_GTK_cb (GtkWidget*, gpointer);
+////
+//G_MODULE_EXPORT gint create_map_clicked_GTK_cb (GtkWidget*, gpointer);
+//G_MODULE_EXPORT gint drop_map_clicked_GTK_cb (GtkWidget*, gpointer);
+//G_MODULE_EXPORT gint load_map_clicked_GTK_cb (GtkWidget*, gpointer);
+//G_MODULE_EXPORT gint save_map_clicked_GTK_cb (GtkWidget*, gpointer);
+//G_MODULE_EXPORT gint map_repository_combobox_changed_GTK_cb (GtkWidget*, gpointer);
+//G_MODULE_EXPORT gint map_repository_button_clicked_GTK_cb (GtkWidget*, gpointer);
+////
+//G_MODULE_EXPORT gint load_state_clicked_GTK_cb (GtkWidget*, gpointer);
+//G_MODULE_EXPORT gint save_state_clicked_GTK_cb (GtkWidget*, gpointer);
+//G_MODULE_EXPORT gint state_repository_combobox_changed_GTK_cb (GtkWidget*, gpointer);
+//G_MODULE_EXPORT gint state_repository_button_clicked_GTK_cb (GtkWidget*, gpointer);
+////
+//G_MODULE_EXPORT gint join_game_clicked_GTK_cb (GtkWidget*, gpointer);
+//G_MODULE_EXPORT gint part_game_clicked_GTK_cb (GtkWidget*, gpointer);
+//G_MODULE_EXPORT gint server_repository_combobox_changed_GTK_cb (GtkWidget*, gpointer);
+//G_MODULE_EXPORT gint server_repository_button_clicked_GTK_cb (GtkWidget*, gpointer);
+////
+//G_MODULE_EXPORT gint equip_clicked_GTK_cb (GtkWidget*, gpointer);
 G_MODULE_EXPORT gint item_toggled_GTK_cb (GtkWidget*, gpointer);
-G_MODULE_EXPORT gint rest_clicked_GTK_cb (GtkWidget*, gpointer);
-//
-G_MODULE_EXPORT gint about_clicked_GTK_cb (GtkWidget*, gpointer);
-G_MODULE_EXPORT gint quit_clicked_GTK_cb (GtkWidget*, gpointer);
+//G_MODULE_EXPORT gint rest_clicked_GTK_cb (GtkWidget*, gpointer);
+////
+//G_MODULE_EXPORT gint about_clicked_GTK_cb (GtkWidget*, gpointer);
+//G_MODULE_EXPORT gint quit_clicked_GTK_cb (GtkWidget*, gpointer);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

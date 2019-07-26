@@ -34,17 +34,34 @@ add_executable (${EXECUTABLE}
 add_dependencies (${EXECUTABLE} RPG_Dice RPG_Chance RPG_Common RPG_Character RPG_Magic RPG_Item
                                 RPG_Combat RPG_Player RPG_Monster RPG_Map RPG_Engine)
 
-set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+if (UNIX)
+ target_link_libraries (${EXECUTABLE}
+                        xerces-c
+                        ACE
+                        Common CommonError CommonLog CommonTimer
+                        ACEStream ACEStream_Network
+                        ACENetwork
+                        RPG_Dice RPG_Chance RPG_Common
+                        RPG_Character RPG_Magic RPG_Item
+                        RPG_Player RPG_Monster RPG_Combat
+                        RPG_Map RPG_Net RPG_Net_Protocol RPG_Engine
+                        RPG_Dice RPG_Common RPG_Player RPG_Monster RPG_Map
+                        RPG_Dice RPG_Character RPG_Magic RPG_Item
+                        RPG_Common RPG_Combat RPG_Player RPG_Chance)
+elseif (WIN32)
+ set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
-target_link_libraries (${EXECUTABLE}
-                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
-                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                       Common CommonError CommonLog CommonTimer
-                       ACEStream ACEStream_Network
-                       ACENetwork
-                       RPG_Dice RPG_Chance RPG_Common RPG_Character RPG_Magic RPG_Item
-                       RPG_Player RPG_Monster RPG_Combat
-                       RPG_Map RPG_Net RPG_Net_Protocol RPG_Engine)
+ target_link_libraries (${EXECUTABLE}
+                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        Common CommonError CommonLog CommonTimer
+                        ACEStream ACEStream_Network
+                        ACENetwork
+                        RPG_Dice RPG_Chance RPG_Common
+                        RPG_Character RPG_Magic RPG_Item
+                        RPG_Player RPG_Monster RPG_Combat
+                        RPG_Map RPG_Net RPG_Net_Protocol RPG_Engine)
+endif ()
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
@@ -68,6 +85,8 @@ elseif (WIN32)
                       $ENV{LIB_ROOT}/SDL_ttf/include
                       $ENV{LIB_ROOT}/libpng)
 endif ()
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../3rd_party/xsd)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../graphics)
 
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
@@ -76,22 +95,38 @@ add_dependencies (${EXECUTABLE}
                   RPG_Dice RPG_Common RPG_Character RPG_Magic RPG_Item
                   RPG_Monster RPG_Player RPG_Combat RPG_Map RPG_Graphics RPG_Engine)
 
-set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+if (UNIX)
+ target_link_libraries (${EXECUTABLE}
+                        ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
+                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
+                        ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
+                        xerces-c
+                        ACE
+                        Common CommonError CommonLog CommonTimer
+                        ACEStream ACEStream_Network
+                        ACENetwork
+                        RPG_Chance RPG_Dice RPG_Common
+                        RPG_Character RPG_Magic RPG_Item
+                        RPG_Player RPG_Monster RPG_Combat
+                        RPG_Map RPG_Graphics RPG_Net RPG_Net_Protocol RPG_Engine
+                        RPG_Common RPG_Player RPG_Monster RPG_Map RPG_Graphics
+                        RPG_Dice RPG_Character RPG_Magic RPG_Item
+                        RPG_Common RPG_Combat RPG_Player RPG_Chance)
+elseif (WIN32)
+ set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
-target_link_libraries (${EXECUTABLE}
-                       ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
-target_link_libraries (${EXECUTABLE}
+ target_link_libraries (${EXECUTABLE}
                        $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                        Common CommonError CommonLog CommonTimer
                        ACEStream ACEStream_Network
                        ACENetwork
-                       RPG_Chance RPG_Dice RPG_Common RPG_Character RPG_Magic RPG_Item
+                       RPG_Chance RPG_Dice RPG_Common
+                       RPG_Character RPG_Magic RPG_Item
                        RPG_Player RPG_Monster RPG_Combat
                        RPG_Map RPG_Graphics RPG_Net RPG_Net_Protocol RPG_Engine)
+endif ()
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
@@ -111,14 +146,22 @@ add_executable (${EXECUTABLE}
 
 add_dependencies (${EXECUTABLE} RPG_Dice RPG_Common RPG_Map)
 
-set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+if (UNIX)
+ target_link_libraries (${EXECUTABLE}
+                        xerces-c
+                        ACE
+                        Common CommonError CommonLog CommonTimer
+                        RPG_Dice RPG_Common RPG_Map)
+elseif (WIN32)
+ set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
-target_link_libraries (${EXECUTABLE}
-                       Userenv.lib
-                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
-                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                       Common CommonError CommonLog CommonTimer
-                       RPG_Dice RPG_Common RPG_Map)
+ target_link_libraries (${EXECUTABLE}
+                        Userenv.lib
+                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        Common CommonError CommonLog CommonTimer
+                        RPG_Dice RPG_Common RPG_Map)
+endif ()
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 

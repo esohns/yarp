@@ -24,7 +24,7 @@ perl ${PERL_SCRIPT} -n RPG_Dice > ./chance/dice/rpg_dice_exports.h
 [ $? -ne 0 ] && echo "ERROR: failed to perl, aborting" && exit 1
 
 # C++ "glue code"
-XML2CppCode -d RPG_Dice_Export -e -f ./chance/dice/rpg_dice.xsd -i -o ./chance/dice -s -u -x RPG_Dice
+XML2CppCode -e -f ./chance/dice/rpg_dice.xsd -i -o ./chance/dice -s -u -x RPG_Dice
 [ $? -ne 0 ] && echo "ERROR: failed to XML2CppCode, aborting" && exit 1
 # *NOTE*: XML2CppCode clobbers some important changes, so move some files back into the project directory
 cp -f ./chance/dice/scripts/rpg_dice_dietype.h ./chance/dice
@@ -32,8 +32,8 @@ cp -f ./chance/dice/scripts/rpg_dice_roll.h ./chance/dice
 [ $? -ne 0 ] && echo "ERROR: failed to cp, aborting" && exit 1
 
 # generate "XMLSchema" namespace include file (rpg_dice.xsd)
-xsdcxx cxx-parser --char-type char --output-dir ./chance/dice --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ./chance/dice/rpg_XMLSchema_XML_types.xsd
-[ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
+#xsdcxx cxx-parser --char-type char --output-dir ./chance/dice --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ./chance/dice/rpg_XMLSchema_XML_types.xsd
+#[ $? -ne 0 ] && echo "ERROR: failed to xsdcxx, aborting" && exit 1
 
 # generate parser include/implementation (rpg_dice.xsd)
 xsdcxx cxx-parser --type-map ./chance/dice/rpg_dice.map --char-type char --output-dir ./chance/dice --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc ./chance/dice/rpg_dice.xsd

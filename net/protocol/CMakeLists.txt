@@ -74,6 +74,8 @@ target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../common>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
 # add_custom_target(protocol_scanner
 #                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/scripts/protocol_scanner.l)

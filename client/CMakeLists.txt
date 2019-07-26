@@ -39,9 +39,9 @@ if (UNIX)
  include (FindPkgConfig)
  pkg_check_modules (PKG_CONFIG_MODULE_SDL REQUIRED sdl)
  pkg_check_modules (PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
- pkg_check_modules (PKG_CONFIG_MODULE_LIBGLADE REQUIRED libglade-2.0)
- pkg_check_modules (PKG_CONFIG_MODULE_LIBGNOMEUI REQUIRED libgnomeui-2.0>=1.110.0)
- pkg_check_modules (PKG_CONFIG_MODULE_GMODULE REQUIRED gmodule-export-2.0)
+ pkg_check_modules (PKG_CONFIG_MODULE_LIBGTK REQUIRED gtk+-2.0)
+# pkg_check_modules (PKG_CONFIG_MODULE_LIBGNOMEUI REQUIRED libgnomeui-2.0>=1.110.0)
+# pkg_check_modules (PKG_CONFIG_MODULE_GMODULE REQUIRED gmodule-export-2.0)
 elseif (WIN32)
 endif ()
 
@@ -99,15 +99,14 @@ elseif (WIN32)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/SDL_mixer/include>)
  target_include_directories (${LIBRARY} PUBLIC
-                             "$<BUILD_INTERFACE:${GTK_INCLUDE_DIRS}>")
- target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/src>)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/src>)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
 endif ()
-
+target_include_directories (${LIBRARY} PUBLIC
+                            "$<BUILD_INTERFACE:${GTK_INCLUDE_DIRS}>")
 if (GTKGLAREA_SUPPORT)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/gtkglarea>)
@@ -161,6 +160,8 @@ target_include_directories (${LIBRARY} PUBLIC
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../ACENetwork/src/client_server>)
 
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../3rd_party/xsd>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../chance>)
 target_include_directories (${LIBRARY} PUBLIC

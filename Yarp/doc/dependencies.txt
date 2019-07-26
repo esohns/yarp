@@ -1,0 +1,6 @@
+
+Linux Package Management:
+* Fedora 30 ('sudo dnf install')
+SDL-devel SDL_mixer-devel SDL_ttf-devel
+xerces-c-devel xsd gtk2-devel
+
