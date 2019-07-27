@@ -335,7 +335,7 @@ RPG_Item_Dictionary::getArmorProperties(const RPG_Item_ArmorType& armorType_in) 
                ACE_TEXT("invalid armor type \"%s\", aborting\n"),
                RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armorType_in).c_str()));
 
-    ACE_ASSERT(false);
+//    ACE_ASSERT(false);
     RPG_Item_ArmorProperties dummy;
     dummy.aura = RPG_MAGIC_SCHOOL_INVALID;
     dummy.baseStorePrice.numGoldPieces = 0;

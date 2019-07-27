@@ -50,11 +50,11 @@ if (DOXYGEN_SUPPORT)
  if (DOXYGEN_FOUND STREQUAL "NO")
   message(FATAL_ERROR "Doxygen not found. Please get a copy http://www.doxygen.org")
  endif (DOXYGEN_FOUND STREQUAL "NO")
- configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.cmake ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile)
+ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/Doxyfile.cmake ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
  add_custom_target (doxygen
                     ${DOXYGEN_EXECUTABLE}
-                    ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile)
+                    ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
  set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES api-doc)
 
@@ -87,20 +87,40 @@ if (UNIX)
  endif (CMAKE_COMPILER_IS_GNUCC)
 endif (UNIX)
 
+include (${CMAKE_CURRENT_SOURCE_DIR}/../Common/scripts/Configuration.cmake)
+include (${CMAKE_CURRENT_SOURCE_DIR}/../Common/scripts/Macros.cmake)
+include (${CMAKE_CURRENT_SOURCE_DIR}/scripts/VersionConfig.cmake)
+
+if (UNIX)
+ set (NEWLINE_STYLE UNIX)
+elseif (WIN32)
+ set (NEWLINE_STYLE WIN32)
+else ()
+ set (NEWLINE_STYLE UNIX)
+endif ()
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/scripts/config.h.cmake.in
+                ${CMAKE_CURRENT_BINARY_DIR}/rpg_config.h
+                @ONLY
+                NEWLINE_STYLE ${NEWLINE_STYLE})
+
+add_definitions(-DHAVE_CONFIG_H)
+# include rpg_config.h
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
 #add_subdirectory(../tools tools)
-add_subdirectory(../chance chance)
-add_subdirectory(../common common)
-add_subdirectory(../magic magic)
-add_subdirectory(../item item)
-add_subdirectory(../character character)
-add_subdirectory(../combat combat)
-add_subdirectory(../map map)
-add_subdirectory(../graphics graphics)
-add_subdirectory(../sound sound)
-add_subdirectory(../engine engine)
-add_subdirectory(../net net)
-add_subdirectory(../client client)
-add_subdirectory(../test_u test_u)
+add_subdirectory(chance)
+add_subdirectory(common)
+add_subdirectory(magic)
+add_subdirectory(item)
+add_subdirectory(character)
+add_subdirectory(combat)
+add_subdirectory(map)
+add_subdirectory(graphics)
+add_subdirectory(sound)
+add_subdirectory(engine)
+add_subdirectory(net)
+add_subdirectory(client)
+add_subdirectory(test_u)
 
 set(DOC_FILES COPYING INSTALL AUTHORS NEWS README TODO)
 set(DOC_PATH "share/doc/${CPACK_PACKAGE_NAME}")
@@ -116,3 +136,4 @@ if(INSTALL_DOCUMENTATION)
 else(INSTALL_DOCUMENTATION)
   message(STATUS "documentation will NOT be installed...")
 endif(INSTALL_DOCUMENTATION)
+

@@ -162,9 +162,8 @@ RPG_Common_File_Tools::getUserConfigurationDirectory ()
   ACE_ASSERT (!result.empty ());
   result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   result += ACE_TEXT_ALWAYS_CHAR (".");
-#endif
-  result += ACE_TEXT_ALWAYS_CHAR ("Yarp");
-//  result += ACE_TEXT_ALWAYS_CHAR (YARP_PACKAGE);
+#endif // ACE_WIN32 || ACE_WIN64
+  result += ACE_TEXT_ALWAYS_CHAR (Yarp_PACKAGE_NAME);
 
   if (!Common_File_Tools::isDirectory (result))
   {

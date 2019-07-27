@@ -1727,7 +1727,7 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
   // *PROCESS PROFILE*
   ACE_Profile_Timer process_profile;
@@ -1744,7 +1744,7 @@ ACE_TMAIN (int argc_in,
 #if defined (DEBUG_DEBUGGER)
   configuration_path = Common_File_Tools::getWorkingDirectory ();
   data_path = Common_File_Tools::getWorkingDirectory ();
-#endif
+#endif // DEBUG_DEBUGGER
 
   // step1a: process commandline arguments
   bool mute_sound                   = false;

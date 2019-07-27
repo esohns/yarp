@@ -4,10 +4,6 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/ACE.cmake)
 
 option (BUILD_TEST_U "build test_u" OFF)
 
-include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/Configuration.cmake)
-include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/Macros.cmake)
-include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/VersionConfig.cmake)
-
 # user interface
 #option (GUI_SUPPORT "enable graphical user interface support" ON)
 #if (GUI_SUPPORT)
@@ -79,22 +75,6 @@ find_package (ACENetwork ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO}
 if (NOT EXISTS ${ACENetwork_DIR})
  message (FATAL_ERROR "could not find package \"ACENetwork\", aborting")
 endif ()
-
-if (UNIX)
- set (NEWLINE_STYLE UNIX)
-elseif (WIN32)
- set (NEWLINE_STYLE WIN32)
-else ()
- set (NEWLINE_STYLE UNIX)
-endif ()
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake.in
-                ${CMAKE_CURRENT_BINARY_DIR}/rpg_config.h
-                @ONLY
-                NEWLINE_STYLE ${NEWLINE_STYLE})
-
-add_definitions(-DHAVE_CONFIG_H)
-# include rpg_config.h
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 file (TO_CMAKE_PATH "$ENV{LIB_ROOT}/cmake-modules" CMAKE_MODULES_PATH)
 file (TO_CMAKE_PATH "$ENV{LIB_ROOT}/CMakeHelpers" CMAKE_HELPERS_PATH)

@@ -1,7 +1,7 @@
 if (UNIX)
  include(FindPkgConfig)
  pkg_check_modules(PKG_CONFIG_MODULE_SDL REQUIRED sdl)
-# pkg_check_modules(PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
+ pkg_check_modules(PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
 # pkg_check_modules(PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
  pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
  pkg_check_modules(PKG_CONFIG_MODULE_LIBGTK REQUIRED gtk+-2.0)
