@@ -1028,7 +1028,7 @@ RPG_Graphics_Cursor_Manager::storeHighlightBG(const RPG_Map_PositionList_t& mapP
 void
 RPG_Graphics_Cursor_Manager::restoreHighlightBG(const RPG_Graphics_Position_t& viewPort_in,
                                                 SDL_Rect& dirtyRegion_out,
-																								const SDL_Rect* clipRectangle_in,
+                                                const SDL_Rect* clipRectangle_in,
                                                 const bool& lockedAccess_in,
                                                 const bool& debug_in)
 {
@@ -1048,240 +1048,239 @@ RPG_Graphics_Cursor_Manager::restoreHighlightBG(const RPG_Graphics_Position_t& v
                       std::numeric_limits<unsigned int>::max())))
     return; // nothing to do
 
-	SDL_Rect window_area, clip_area, clip_rectangle, source_clip_rectangle;
-	myHighlightWindow->getArea(window_area, true);
-	myHighlightWindow->getArea(clip_area, false);
-	if (clipRectangle_in)
-		clip_area = *clipRectangle_in;
-	RPG_Graphics_Position_t screen_position;
-	SDL_Rect cursor_clip_rectangle = {static_cast<Sint16>(myBGPosition.first),
-																		static_cast<Sint16>(myBGPosition.second),
-																		static_cast<Uint16>(myBG->w),
-																		static_cast<Uint16>(myBG->h)}, temp_rectangle;
-	std::vector<SDL_Rect> cursor_relevant_clip_rectangles;
-	myHighlightWindow->clip();
-	if (lockedAccess_in && myScreenLock)
-		myScreenLock->lock();
-	for (RPG_Graphics_TileCacheConstIterator_t iterator = myHighlightBGCache.begin();
-			 iterator != myHighlightBGCache.end();
-			 iterator++)
-	{
-		screen_position =
-			RPG_Graphics_Common_Tools::map2Screen((*iterator).first,
-																						std::make_pair(window_area.w,
-																													 window_area.h),
-																						viewPort_in);
+  SDL_Rect window_area, clip_area, clip_rectangle, source_clip_rectangle;
+  myHighlightWindow->getArea(window_area, true);
+  myHighlightWindow->getArea(clip_area, false);
+  if (clipRectangle_in)
+    clip_area = *clipRectangle_in;
+  RPG_Graphics_Position_t screen_position;
+  SDL_Rect cursor_clip_rectangle = {static_cast<Sint16>(myBGPosition.first),
+                                    static_cast<Sint16>(myBGPosition.second),
+                                    static_cast<Uint16>(myBG->w),
+                                    static_cast<Uint16>(myBG->h)}, temp_rectangle;
+  std::vector<SDL_Rect> cursor_relevant_clip_rectangles;
+  myHighlightWindow->clip();
+  if (lockedAccess_in && myScreenLock)
+    myScreenLock->lock();
+  for (RPG_Graphics_TileCacheConstIterator_t iterator = myHighlightBGCache.begin();
+       iterator != myHighlightBGCache.end();
+       iterator++)
+  {
+    screen_position =
+        RPG_Graphics_Common_Tools::map2Screen((*iterator).first,
+                                              std::make_pair(window_area.w,
+                                                             window_area.h),
+                                              viewPort_in);
 
-		source_clip_rectangle.x = screen_position.first;
-		source_clip_rectangle.y = screen_position.second;
-		source_clip_rectangle.w = (*iterator).second->w;
-		source_clip_rectangle.h = (*iterator).second->h;
-		clip_rectangle = RPG_Graphics_SDL_Tools::intersect(source_clip_rectangle,
-																											 clip_area);
-		dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirtyRegion_out,
-																													clip_rectangle);
-		source_clip_rectangle.x = clip_rectangle.x - screen_position.first;
-		source_clip_rectangle.y = clip_rectangle.y - screen_position.second;
-		if (!clip_rectangle.w || !clip_rectangle.h)
-			continue; // nothing to do...
+    source_clip_rectangle.x = screen_position.first;
+    source_clip_rectangle.y = screen_position.second;
+    source_clip_rectangle.w = (*iterator).second->w;
+    source_clip_rectangle.h = (*iterator).second->h;
+    clip_rectangle = RPG_Graphics_SDL_Tools::intersect(source_clip_rectangle,
+                                                                                                         clip_area);
+    dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirtyRegion_out,
+                                                                                                                clip_rectangle);
+    source_clip_rectangle.x = clip_rectangle.x - screen_position.first;
+    source_clip_rectangle.y = clip_rectangle.y - screen_position.second;
+    if (!clip_rectangle.w || !clip_rectangle.h)
+        continue; // nothing to do...
 
-		temp_rectangle = clip_rectangle;
-		// restore / clear background
-		if (SDL_BlitSurface((*iterator).second,     // source
-												&source_clip_rectangle, // aspect
-												target_surface,         // target
-												&clip_rectangle))       // aspect
-			ACE_DEBUG((LM_ERROR,
-									ACE_TEXT("failed to SDL_BlitSurface(): \"%s\", continuing\n"),
-									ACE_TEXT(SDL_GetError())));
+    temp_rectangle = clip_rectangle;
+    // restore / clear background
+    if (SDL_BlitSurface((*iterator).second,     // source
+                            &source_clip_rectangle, // aspect
+                            target_surface,         // target
+                            &clip_rectangle))       // aspect
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT("failed to SDL_BlitSurface(): \"%s\", continuing\n"),
+                  ACE_TEXT(SDL_GetError())));
 
-		temp_rectangle = RPG_Graphics_SDL_Tools::intersect(cursor_clip_rectangle,
-																											 temp_rectangle);
-		if (temp_rectangle.w || temp_rectangle.h)
-			cursor_relevant_clip_rectangles.push_back(temp_rectangle);
-	} // end FOR
-	if (lockedAccess_in && myScreenLock)
-		myScreenLock->unlock();
-	myHighlightWindow->unclip();
+    temp_rectangle = RPG_Graphics_SDL_Tools::intersect(cursor_clip_rectangle,
+                                                       temp_rectangle);
+    if (temp_rectangle.w || temp_rectangle.h)
+      cursor_relevant_clip_rectangles.push_back(temp_rectangle);
+  } // end FOR
+  if (lockedAccess_in && myScreenLock)
+    myScreenLock->unlock();
+  myHighlightWindow->unclip();
 
   // *NOTE*: iff the highlight bg(s) intersected the cursor bg, an update is
   // needed of (that/those bit(s) of) the cursor bg...
-	for (std::vector<SDL_Rect>::const_iterator iterator = cursor_relevant_clip_rectangles.begin();
-			 iterator != cursor_relevant_clip_rectangles.end();
-			 iterator++)
-	{
-		updateBG(temp_rectangle,
-						 &(*iterator),
-						 lockedAccess_in,
-						 debug_in);
-		if (debug_in)
-			dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(temp_rectangle,
-																  dirtyRegion_out);
-	} // end FOR
+  for (std::vector<SDL_Rect>::const_iterator iterator = cursor_relevant_clip_rectangles.begin();
+       iterator != cursor_relevant_clip_rectangles.end();
+       iterator++)
+  {
+    updateBG(temp_rectangle,
+             &(*iterator),
+             lockedAccess_in,
+             debug_in);
+    if (debug_in)
+      dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(temp_rectangle,
+                                                            dirtyRegion_out);
+  } // end FOR
 }
 
 void
 RPG_Graphics_Cursor_Manager::updateHighlightBG(const RPG_Graphics_Position_t& viewPort_in, 
-											   SDL_Rect& dirtyRegion_out,
-											   const SDL_Rect* clipRectangle_in,
-											   const bool& lockedAccess_in,
-											   const bool& debug_in)
+                                               SDL_Rect& dirtyRegion_out,
+                                               const SDL_Rect* clipRectangle_in,
+                                               const bool& lockedAccess_in,
+                                               const bool& debug_in)
 {
-	RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::updateHighlightBG"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::updateHighlightBG"));
 
-	// sanity check(s)
-	ACE_ASSERT(myHighlightWindow);
-	SDL_Surface* target_surface = myHighlightWindow->getScreen();
-	ACE_ASSERT(target_surface);
+  // sanity check(s)
+  ACE_ASSERT(myHighlightWindow);
+  SDL_Surface* target_surface = myHighlightWindow->getScreen();
+  ACE_ASSERT(target_surface);
 
-	// init return value(s)
-	ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
+  // init return value(s)
+  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
 
-	SDL_Rect window_area, clip_area, clip_rectangle, source_clip_rectangle;
-	myHighlightWindow->getArea(window_area, true);
-	myHighlightWindow->getArea(clip_area, false);
-	if (clipRectangle_in)
-		clip_area = *clipRectangle_in;
-	RPG_Graphics_Position_t screen_position;
-	SDL_Surface* new_background = NULL;
-	if (myScreenLock && lockedAccess_in && debug_in)
-		myScreenLock->lock();
-	for (RPG_Graphics_TileCacheIterator_t iterator = myHighlightBGCache.begin();
-			 iterator != myHighlightBGCache.end();
-			 iterator++)
-	{
-		screen_position =
-			RPG_Graphics_Common_Tools::map2Screen((*iterator).first,
-												  std::make_pair(window_area.w,
-																 window_area.h),
-												  viewPort_in);
-		source_clip_rectangle.x = screen_position.first;
-		source_clip_rectangle.y = screen_position.second;
-		source_clip_rectangle.w = (*iterator).second->w;
-		source_clip_rectangle.h = (*iterator).second->h;
-		clip_rectangle = RPG_Graphics_SDL_Tools::intersect(clip_area,
-														   source_clip_rectangle);
-		if (!clip_rectangle.w || !clip_rectangle.h)
-			continue; // nothing to do...
+  SDL_Rect window_area, clip_area, clip_rectangle, source_clip_rectangle;
+  myHighlightWindow->getArea(window_area, true);
+  myHighlightWindow->getArea(clip_area, false);
+  if (clipRectangle_in)
+      clip_area = *clipRectangle_in;
+  RPG_Graphics_Position_t screen_position;
+  SDL_Surface* new_background = NULL;
+  if (myScreenLock && lockedAccess_in && debug_in)
+      myScreenLock->lock();
+  for (RPG_Graphics_TileCacheIterator_t iterator = myHighlightBGCache.begin();
+           iterator != myHighlightBGCache.end();
+           iterator++)
+  {
+    screen_position =
+        RPG_Graphics_Common_Tools::map2Screen((*iterator).first,
+                                              std::make_pair(window_area.w,
+                                                             window_area.h),
+                                              viewPort_in);
+    source_clip_rectangle.x = screen_position.first;
+    source_clip_rectangle.y = screen_position.second;
+    source_clip_rectangle.w = (*iterator).second->w;
+    source_clip_rectangle.h = (*iterator).second->h;
+    clip_rectangle = RPG_Graphics_SDL_Tools::intersect(clip_area,
+                                                       source_clip_rectangle);
+    if (!clip_rectangle.w || !clip_rectangle.h)
+      continue; // nothing to do...
 
-		if ((clip_rectangle.w == (*iterator).second->w) &&
-			(clip_rectangle.h == (*iterator).second->h))
-		{
-			// cached highlight bg completely "dirty"
-			// --> just get a fresh copy
-			RPG_Graphics_Surface::get(screen_position,
-									  true, // use (fast) blitting method
-									  *target_surface,
-									  *(*iterator).second);
+    if ((clip_rectangle.w == (*iterator).second->w) &&
+        (clip_rectangle.h == (*iterator).second->h))
+    {
+      // cached highlight bg completely "dirty"
+      // --> just get a fresh copy
+      RPG_Graphics_Surface::get(screen_position,
+                                true, // use (fast) blitting method
+                                *target_surface,
+                                *(*iterator).second);
 
-			// debug info
-			if (debug_in)
-			{
-				// show bg surface in left upper corner
-				ACE_ASSERT(target_surface->w >= (*iterator).second->w);
-				ACE_ASSERT(target_surface->h >= (*iterator).second->h);
+      // debug info
+      if (debug_in)
+      {
+        // show bg surface in left upper corner
+        ACE_ASSERT(target_surface->w >= (*iterator).second->w);
+        ACE_ASSERT(target_surface->h >= (*iterator).second->h);
 
-				// compute bounding box
-				SDL_Rect dirty_region;
-				dirty_region.x = target_surface->w - (*iterator).second->w;
-				dirty_region.y = target_surface->h - (*iterator).second->h;
-				dirty_region.w = (*iterator).second->w;
-				dirty_region.h = (*iterator).second->h;
+        // compute bounding box
+        SDL_Rect dirty_region;
+        dirty_region.x = target_surface->w - (*iterator).second->w;
+        dirty_region.y = target_surface->h - (*iterator).second->h;
+        dirty_region.w = (*iterator).second->w;
+        dirty_region.h = (*iterator).second->h;
 
-				RPG_Graphics_Surface::put(std::make_pair(dirty_region.x,
-													 	 dirty_region.y),
-									      *(*iterator).second,
-										  target_surface,
-										  dirty_region);
-				dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-														 		      dirtyRegion_out);
-			} // end IF
+        RPG_Graphics_Surface::put(std::make_pair(dirty_region.x,
+                                                 dirty_region.y),
+                                  *(*iterator).second,
+                                  target_surface,
+                                  dirty_region);
+        dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+                                                              dirtyRegion_out);
+      } // end IF
 
-			continue;
-		} // end IF
+      continue;
+    } // end IF
 
-		// get a fresh copy from that part of the map
-		new_background =
-			RPG_Graphics_Surface::create(static_cast<unsigned int>((*iterator).second->w),
-										 static_cast<unsigned int>((*iterator).second->h));
-		if (!new_background)
-		{
-			ACE_DEBUG((LM_ERROR,
-					   ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), continuing\n"),
-					   (*iterator).second->w, (*iterator).second->h));
+    // get a fresh copy from that part of the map
+    new_background =
+        RPG_Graphics_Surface::create(static_cast<unsigned int>((*iterator).second->w),
+                                     static_cast<unsigned int>((*iterator).second->h));
+    if (!new_background)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), continuing\n"),
+                 (*iterator).second->w, (*iterator).second->h));
+      continue;
+    } // end IF
+    RPG_Graphics_Surface::get(screen_position,
+                              true, // use (fast) blitting method
+                              *target_surface,
+                              *new_background);
 
-			continue;
-		} // end IF
-		RPG_Graphics_Surface::get(screen_position,
-								true, // use (fast) blitting method
-								*target_surface,
-								*new_background);
+    // mask the "dirty" bit of the cached bg
+    // --> adjust intersection coordinates (relative to cached bg surface)
+    clip_rectangle.x -= screen_position.first;
+    clip_rectangle.y -= screen_position.second;
+    if (SDL_FillRect((*iterator).second,
+                     &clip_rectangle,
+                     RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK_A0, // transparent
+                                                      *(*iterator).second)))
+    {
+      ACE_DEBUG((LM_ERROR,
+                           ACE_TEXT("failed to SDL_FillRect(): \"%s\", continuing\n"),
+                           ACE_TEXT(SDL_GetError())));
 
-		// mask the "dirty" bit of the cached bg
-		// --> adjust intersection coordinates (relative to cached bg surface)
-		clip_rectangle.x -= screen_position.first;
-		clip_rectangle.y -= screen_position.second;
-		if (SDL_FillRect((*iterator).second,
-			               &clip_rectangle,
-										 RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK_A0, // transparent
-										                                  *(*iterator).second)))
-		{
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to SDL_FillRect(): \"%s\", continuing\n"),
-								 ACE_TEXT(SDL_GetError())));
+      // clean up
+      SDL_FreeSurface(new_background);
 
-			// clean up
-			SDL_FreeSurface(new_background);
+      continue;
+    } // end IF
 
-			continue;
-		} // end IF
+    // blit the cached/masked bg onto the fresh copy
+    if (SDL_BlitSurface((*iterator).second, // source
+                                            NULL,               // aspect (--> everything)
+                                            new_background,     // target
+                                            NULL))              // aspect (--> everything)
+    {
+      ACE_DEBUG((LM_ERROR,
+                           ACE_TEXT("failed to SDL_BlitSurface(): %s, continuing\n"),
+                           ACE_TEXT(SDL_GetError())));
 
-		// blit the cached/masked bg onto the fresh copy
-		if (SDL_BlitSurface((*iterator).second, // source
-												NULL,               // aspect (--> everything)
-												new_background,     // target
-												NULL))              // aspect (--> everything)
-		{
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to SDL_BlitSurface(): %s, continuing\n"),
-								 ACE_TEXT(SDL_GetError())));
+      // clean up
+      SDL_FreeSurface(new_background);
 
-			// clean up
-			SDL_FreeSurface(new_background);
+      continue;
+    } // end IF
 
-			continue;
-		} // end IF
+    // clean up
+    SDL_FreeSurface((*iterator).second);
 
-		// clean up
-		SDL_FreeSurface((*iterator).second);
+    (*iterator).second = new_background;
 
-		(*iterator).second = new_background;
+    // debug info
+    if (debug_in)
+    {
+      // show bg surface in left upper corner
+      ACE_ASSERT(target_surface->w >= (*iterator).second->w);
+      ACE_ASSERT(target_surface->h >= (*iterator).second->h);
 
-		// debug info
-		if (debug_in)
-		{
-			// show bg surface in left upper corner
-			ACE_ASSERT(target_surface->w >= (*iterator).second->w);
-			ACE_ASSERT(target_surface->h >= (*iterator).second->h);
+      // compute bounding box
+      SDL_Rect dirty_region;
+      dirty_region.x = 0;
+      dirty_region.y = 0;
+      dirty_region.w = (*iterator).second->w;
+      dirty_region.h = (*iterator).second->h;
 
-			// compute bounding box
-			SDL_Rect dirty_region;
-			dirty_region.x = 0;
-			dirty_region.y = 0;
-			dirty_region.w = (*iterator).second->w;
-			dirty_region.h = (*iterator).second->h;
-
-			RPG_Graphics_Surface::put(std::make_pair(dirty_region.x,
-																							 dirty_region.y),
-																*(*iterator).second,
-																target_surface,
-																dirty_region);
-			dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-																														dirtyRegion_out);
-		} // end IF
-	} // end FOR
-	if (myScreenLock && lockedAccess_in && debug_in)
-		myScreenLock->unlock();
+      RPG_Graphics_Surface::put(std::make_pair(dirty_region.x,
+                                               dirty_region.y),
+                                *(*iterator).second,
+                                target_surface,
+                                dirty_region);
+      dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+                                                            dirtyRegion_out);
+    } // end IF
+  } // end FOR
+  if (myScreenLock && lockedAccess_in && debug_in)
+    myScreenLock->unlock();
 }
 
 void

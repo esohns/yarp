@@ -33,7 +33,7 @@ RPG_Item_Commodity::RPG_Item_Commodity (enum RPG_Item_CommodityType type_in,
  : inherited () // *NOTE*: this generates a new item id
  , inherited2 (ITEM_COMMODITY,
                id ()) // <-- retrieve generated item ID
- , type_ (type_in)
+ , commodityType_ (type_in)
  , subtype_ (subtype_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Item_Commodity::RPG_Item_Commodity"));
@@ -51,7 +51,7 @@ RPG_Item_Commodity::dump() const
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("Item: Commodity\nType: %s\nPrice: %d GP, %d SP\nWeight: %d\n"),
-              ACE_TEXT (RPG_Item_CommodityTypeHelper::RPG_Item_CommodityTypeToString (type_).c_str ()),
+              ACE_TEXT (RPG_Item_CommodityTypeHelper::RPG_Item_CommodityTypeToString (commodityType_).c_str ()),
               properties.baseStorePrice.numGoldPieces,
               properties.baseStorePrice.numSilverPieces,
               properties.baseWeight));

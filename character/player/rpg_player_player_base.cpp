@@ -633,7 +633,7 @@ RPG_Player_Player_Base::defaultEquip()
         RPG_Item_Commodity* commodity =
             dynamic_cast<RPG_Item_Commodity*>(handle);
         ACE_ASSERT(commodity);
-        RPG_Item_CommodityUnion commodity_type = commodity->subtype();
+        RPG_Item_CommodityUnion commodity_type = commodity->subtype_;
         //RPG_Item_CommodityProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getCommodityProperties(commodity->getCommoditySubType());
         // - by default, equip light sources only
         if (commodity_type.discriminator !=
@@ -655,7 +655,7 @@ RPG_Player_Player_Base::defaultEquip()
 //         RPG_Item_WeaponProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_base->getWeaponType());
         // - by default, equip melee weapons only
         // *TODO*: what about other types of weapons ?
-        if (!RPG_Item_Common_Tools::isMeleeWeapon(weapon->type()))
+        if (!RPG_Item_Common_Tools::isMeleeWeapon(weapon->weaponType_))
           break;
         if (myEquipment.isEquipped(slots.slots.front(),
                                    item_id))

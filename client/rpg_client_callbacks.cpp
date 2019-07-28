@@ -138,7 +138,7 @@ update_equipment (const struct RPG_Client_GTK_CBData& data_in)
         ACE_ASSERT (armor);
 
         text =
-          RPG_Common_Tools::enumToString (RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString (armor->type ()));
+          RPG_Common_Tools::enumToString (RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString (armor->armorType ()));
 
         break;
       }
@@ -180,7 +180,7 @@ update_equipment (const struct RPG_Client_GTK_CBData& data_in)
 
         // *TODO*: pretty-print this string
         text =
-          RPG_Common_Tools::enumToString (RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString (weapon->type ()), false); // don't strip leading "xxx_"
+          RPG_Common_Tools::enumToString (RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString (weapon->weaponType_), false); // don't strip leading "xxx_"
 
         break;
       }
@@ -1007,7 +1007,7 @@ update_character_profile (const RPG_Player& player_in,
           return;
         } // end IF
         text =
-          RPG_Common_Tools::enumToString (RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString (armor_p->type ()));
+          RPG_Common_Tools::enumToString (RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString (armor_p->armorType ()));
 
         break;
       }
@@ -1077,7 +1077,7 @@ update_character_profile (const RPG_Player& player_in,
 
         // *TODO*: pretty-print this string
         text =
-          RPG_Common_Tools::enumToString (RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString (weapon_p->type ()), false); // don't strip leading "xxx_"
+          RPG_Common_Tools::enumToString (RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString (weapon_p->weaponType_), false); // don't strip leading "xxx_"
 
         break;
       }

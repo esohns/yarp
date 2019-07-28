@@ -31,7 +31,7 @@ RPG_Item_Armor::RPG_Item_Armor (enum RPG_Item_ArmorType type_in)
  : inherited () // *NOTE*: this generates a new item id
  , inherited2 (ITEM_ARMOR,
                id ()) // <-- retrieve generated item id
- , type_ (type_in)
+ , armorType_ (type_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Item_Armor::RPG_Item_Armor"));
 
@@ -44,12 +44,12 @@ RPG_Item_Armor::dump () const
 
   // retrieve properties
   RPG_Item_ArmorProperties properties =
-    RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getArmorProperties (type_);
+    RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getArmorProperties (armorType_);
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("Item: Armor\nType: %s\nCategory: %s\nPrice: %d GP, %d SP\nAC Bonus: %d\nmax Dex Bonus: %d\nPenalty: %d\nSpell Failure: %d%%\nSpeed: %d\nWeight: %d\n"),
-              RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString (type_).c_str(),
-              RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString (properties.category).c_str(),
+              ACE_TEXT (RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString (armorType_).c_str()),
+              ACE_TEXT (RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString (properties.category).c_str()),
               properties.baseStorePrice.numGoldPieces,
               properties.baseStorePrice.numSilverPieces,
               properties.baseBonus,

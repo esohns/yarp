@@ -43,12 +43,10 @@ class RPG_Item_Weapon
   friend class RPG_Item_Instance_Manager;
 
  public:
-  inline enum RPG_Item_WeaponType type () const { return type_; }
+  RPG_Item_WeaponType weaponType_;
+  inline enum RPG_Item_WeaponType weaponType () const { return weaponType_; }
 
   virtual void dump () const;
-
- protected:
-  RPG_Item_WeaponType type_;
 
  private:
   ACE_UNIMPLEMENTED_FUNC (RPG_Item_Weapon())

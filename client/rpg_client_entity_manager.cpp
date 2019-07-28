@@ -202,8 +202,8 @@ RPG_Client_Entity_Manager::put(const RPG_Engine_EntityID_t& id_in,
   } // end IF
 
   // step1: restore old background
-	if (myScreenLock && lockedAccess_in)
-		myScreenLock->lock();
+//	if (myScreenLock && lockedAccess_in)
+//		myScreenLock->lock();
   restoreBG(id_in,
             dirtyRegion_out,
             clipWindow_in,
@@ -364,8 +364,8 @@ RPG_Client_Entity_Manager::restoreBG(const RPG_Engine_EntityID_t& id_in,
   // restore/clear background
   if (clipWindow_in)
     myWindow->clip();
-  if (lockedAccess_in && myScreenLock)
-    myScreenLock->lock();
+//  if (lockedAccess_in && myScreenLock)
+//    myScreenLock->lock();
   if (SDL_BlitSurface((*iterator).second.bg, // source
                       NULL,                  // aspect (--> everything)
                       target_surface,        // target
@@ -376,26 +376,26 @@ RPG_Client_Entity_Manager::restoreBG(const RPG_Engine_EntityID_t& id_in,
                ACE_TEXT(SDL_GetError())));
 
     // clean up
-    if (lockedAccess_in && myScreenLock)
-      myScreenLock->unlock();
+//    if (lockedAccess_in && myScreenLock)
+//      myScreenLock->unlock();
     if (clipWindow_in)
       myWindow->unclip();
 
     return;
   } // end IF
-  if (lockedAccess_in && myScreenLock)
-    myScreenLock->unlock();
+//  if (lockedAccess_in && myScreenLock)
+//    myScreenLock->unlock();
   if (clipWindow_in)
     myWindow->unclip();
 
 	// update cursor / highlight(s) ?
 	SDL_Rect dirty_region;
 	RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG(dirty_region,
-																															&dirtyRegion_out,
-																															lockedAccess_in,
-																															debug_in);
+                                                                &dirtyRegion_out,
+                                                                lockedAccess_in,
+                                                                debug_in);
 	dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-																												dirtyRegion_out);
+                                                            dirtyRegion_out);
 	RPG_Client_IWindowLevel* window = NULL;
 	try
 	{

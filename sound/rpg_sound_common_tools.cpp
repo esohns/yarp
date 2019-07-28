@@ -90,121 +90,119 @@ RPG_Sound_Common_Tools::initialize (const struct RPG_Sound_SDLConfiguration& con
                                                                       : useCD_in));
 
   // init SDL audio handling
-	if (!mute_in)
-	{
-	//   SDL_AudioSpec wanted;
-	//   wanted.freq = audioConfig_in.frequency;
-	//   wanted.format = audioConfig_in.format;
-	//   wanted.channels = audioConfig_in.channels;
-	//   wanted.samples = audioConfig_in.chunksize;
-	// //   wanted.callback = fill_audio;
-	// //   wanted.userdata = NULL;
-	//
-	//   // Open the audio device, forcing the desired format
-	//   if (SDL_OpenAudio(&wanted, NULL) < 0)
-	//   {
-	//     ACE_DEBUG((LM_ERROR,
-	//                ACE_TEXT("failed to SDL_OpenAudio(): \"%s\", aborting\n"),
-	//                ACE_TEXT(SDL_GetError())));
-	//
-	//     return;
-	//   } // end IF
-		if (Mix_OpenAudio(config_in.frequency,
-											config_in.format,
-											config_in.channels,
-											config_in.chunksize) < 0)
-		{
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to Mix_OpenAudio(): \"%s\", aborting\n"),
-								 ACE_TEXT(Mix_GetError())));
+  if (!mute_in)
+  {
+    //   SDL_AudioSpec wanted;
+    //   wanted.freq = audioConfig_in.frequency;
+    //   wanted.format = audioConfig_in.format;
+    //   wanted.channels = audioConfig_in.channels;
+    //   wanted.samples = audioConfig_in.chunksize;
+    // //   wanted.callback = fill_audio;
+    // //   wanted.userdata = NULL;
+    //
+    //   // Open the audio device, forcing the desired format
+    //   if (SDL_OpenAudio(&wanted, NULL) < 0)
+    //   {
+    //     ACE_DEBUG((LM_ERROR,
+    //                ACE_TEXT("failed to SDL_OpenAudio(): \"%s\", aborting\n"),
+    //                ACE_TEXT(SDL_GetError())));
+    //
+    //     return;
+    //   } // end IF
+    if (Mix_OpenAudio(config_in.frequency,
+                      config_in.format,
+                      config_in.channels,
+                      config_in.chunksize) < 0)
+    {
+      ACE_DEBUG((LM_ERROR,
+                  ACE_TEXT("failed to Mix_OpenAudio(): \"%s\", aborting\n"),
+                  ACE_TEXT(Mix_GetError())));
 
-			return false;
-		} // end IF
-		if (Mix_AllocateChannels(RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS) !=
-				RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS)
-		{
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to Mix_AllocateChannels(%d): \"%s\", aborting\n"),
-								 RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS,
-								 ACE_TEXT(Mix_GetError())));
+      return false;
+    } // end IF
+    if (Mix_AllocateChannels(RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS) !=
+        RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS)
+    {
+      ACE_DEBUG((LM_ERROR,
+                  ACE_TEXT("failed to Mix_AllocateChannels(%d): \"%s\", aborting\n"),
+                  RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS,
+                  ACE_TEXT(Mix_GetError())));
 
-			return false;
-		} // end IF
-		ACE_DEBUG((LM_DEBUG,
-							 ACE_TEXT("allocated %d audio channel(s)...\n"),
-							 RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS));
+      return false;
+    } // end IF
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT("allocated %d audio channel(s)...\n"),
+                RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS));
 
-		RPG_Sound_Common_Tools::myConfig.frequency = 0;
-		RPG_Sound_Common_Tools::myConfig.format = 0;
-		RPG_Sound_Common_Tools::myConfig.channels = 0;
-		RPG_Sound_Common_Tools::myConfig.chunksize = 0;
-		std::string format_string;
-		if (Mix_QuerySpec(&RPG_Sound_Common_Tools::myConfig.frequency,
-											&RPG_Sound_Common_Tools::myConfig.format,
-											&RPG_Sound_Common_Tools::myConfig.channels) == 0)
-		{
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to Mix_QuerySpec(): \"%s\", aborting\n"),
-								 ACE_TEXT(Mix_GetError())));
+    RPG_Sound_Common_Tools::myConfig.frequency = 0;
+    RPG_Sound_Common_Tools::myConfig.format = 0;
+    RPG_Sound_Common_Tools::myConfig.channels = 0;
+    RPG_Sound_Common_Tools::myConfig.chunksize = 0;
+    std::string format_string;
+    if (Mix_QuerySpec(&RPG_Sound_Common_Tools::myConfig.frequency,
+                      &RPG_Sound_Common_Tools::myConfig.format,
+                      &RPG_Sound_Common_Tools::myConfig.channels) == 0)
+    {
+      ACE_DEBUG((LM_ERROR,
+                  ACE_TEXT("failed to Mix_QuerySpec(): \"%s\", aborting\n"),
+                  ACE_TEXT(Mix_GetError())));
 
-			return false;
-		} // end IF
-		switch (RPG_Sound_Common_Tools::myConfig.format)
-		{
-			case AUDIO_U8:
-				format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_U8"); break;
-			case AUDIO_S8:
-				format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_S8"); break;
-			case AUDIO_U16LSB:
-				format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_U16LSB"); break;
-			case AUDIO_S16LSB:
-				format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_S16LSB"); break;
-			case AUDIO_U16MSB:
-				format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_U16MSB"); break;
-			case AUDIO_S16MSB:
-				format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_S16MSB"); break;
-			default:
-			{
-				ACE_DEBUG((LM_ERROR,
-									 ACE_TEXT("invalid audio format (was: %u), aborting\n"),
-									 RPG_Sound_Common_Tools::myConfig.format));
+      return false;
+    } // end IF
+    switch (RPG_Sound_Common_Tools::myConfig.format)
+    {
+      case AUDIO_U8:
+        format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_U8"); break;
+      case AUDIO_S8:
+        format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_S8"); break;
+      case AUDIO_U16LSB:
+        format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_U16LSB"); break;
+      case AUDIO_S16LSB:
+        format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_S16LSB"); break;
+      case AUDIO_U16MSB:
+        format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_U16MSB"); break;
+      case AUDIO_S16MSB:
+        format_string = ACE_TEXT_ALWAYS_CHAR("AUDIO_S16MSB"); break;
+      default:
+      {
+        ACE_DEBUG((LM_ERROR,
+                    ACE_TEXT("invalid audio format (was: %u), aborting\n"),
+                    RPG_Sound_Common_Tools::myConfig.format));
+        return false;
+      }
+    } // end SWITCH
+    char driver[MAXPATHLEN];
+    if (!SDL_AudioDriverName(driver,
+                              sizeof(driver)))
+    {
+      ACE_DEBUG((LM_ERROR,
+                  ACE_TEXT("failed to SDL_AudioDriverName(): \"%s\", aborting\n"),
+                  ACE_TEXT(SDL_GetError())));
+      return false;
+    } // end IF
 
-				return false;
-			}
-		} // end SWITCH
-		char driver[MAXPATHLEN];
-		if (!SDL_AudioDriverName(driver,
-														 sizeof(driver)))
-		{
-			ACE_DEBUG((LM_ERROR,
-								 ACE_TEXT("failed to SDL_AudioDriverName(): \"%s\", aborting\n"),
-								 ACE_TEXT(SDL_GetError())));
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT("*** audio capabilities (driver: \"%s\") ***\nfrequency:\t%d\nformat:\t\t%s\nchannels:\t%d\nCD:\t\t%s\n"),
+                ACE_TEXT(driver),
+                RPG_Sound_Common_Tools::myConfig.frequency,
+                ACE_TEXT(format_string.c_str()),
+                RPG_Sound_Common_Tools::myConfig.channels,
+                (useCD_in ? ACE_TEXT(SDL_CDName(0)) : ACE_TEXT("N/A"))));
 
-			return false;
-		} // end IF
-
-		ACE_DEBUG((LM_DEBUG,
-							 ACE_TEXT("*** audio capabilities (driver: \"%s\") ***\nfrequency:\t%d\nformat:\t\t%s\nchannels:\t%d\nCD:\t\t%s\n"),
-							 ACE_TEXT(driver),
-							 RPG_Sound_Common_Tools::myConfig.frequency,
-							 ACE_TEXT(format_string.c_str()),
-							 RPG_Sound_Common_Tools::myConfig.channels,
-							 (useCD_in ? ACE_TEXT(SDL_CDName(0)) : ACE_TEXT("N/A"))));
-
-		int total = Mix_GetNumChunkDecoders();
-		ACE_DEBUG((LM_DEBUG,
-							 ACE_TEXT("*** audio decoders (effects) ***\n")));
-		for (int i = 0; i < total; i++)
-			ACE_DEBUG((LM_DEBUG,
-								 ACE_TEXT("chunk decoder: [%s]\n"),
-								 ACE_TEXT(Mix_GetChunkDecoder(i))));
-		total = Mix_GetNumMusicDecoders();
-		ACE_DEBUG((LM_DEBUG,
-							 ACE_TEXT("*** audio decoders (music) ***\n")));
-		for (int i = 0; i < total; i++)
-			ACE_DEBUG((LM_DEBUG,
-								 ACE_TEXT("music decoder: [%s]\n"),
-								 ACE_TEXT(Mix_GetMusicDecoder(i))));
+    int total = Mix_GetNumChunkDecoders();
+    ACE_DEBUG((LM_DEBUG,
+                ACE_TEXT("*** audio decoders (effects) ***\n")));
+    for (int i = 0; i < total; i++)
+      ACE_DEBUG((LM_DEBUG,
+                  ACE_TEXT("chunk decoder: [%s]\n"),
+                  ACE_TEXT(Mix_GetChunkDecoder(i))));
+    total = Mix_GetNumMusicDecoders();
+    ACE_DEBUG((LM_DEBUG,
+                ACE_TEXT("*** audio decoders (music) ***\n")));
+    for (int i = 0; i < total; i++)
+      ACE_DEBUG((LM_DEBUG,
+                  ACE_TEXT("music decoder: [%s]\n"),
+                  ACE_TEXT(Mix_GetMusicDecoder(i))));
   } // end IF
 
   myInitialized = true;

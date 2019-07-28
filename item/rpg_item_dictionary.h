@@ -63,9 +63,9 @@ class RPG_Item_Dictionary
   // *NOTE*: caller is responsible for return value's lifecycle
   void getProperties(const RPG_Item_Base*,             // type
                      RPG_Item_PropertiesBase*&) const; // return value: properties
-  RPG_Item_ArmorProperties getArmorProperties(const RPG_Item_ArmorType&) const;
-  RPG_Item_CommodityProperties getCommodityProperties(const RPG_Item_CommodityUnion&) const;
-  RPG_Item_WeaponProperties getWeaponProperties(const RPG_Item_WeaponType&) const;
+  struct RPG_Item_ArmorProperties getArmorProperties(enum RPG_Item_ArmorType) const;
+  struct RPG_Item_CommodityProperties getCommodityProperties(const struct RPG_Item_CommodityUnion&) const;
+  struct RPG_Item_WeaponProperties getWeaponProperties(enum RPG_Item_WeaponType) const;
 
   // debug info
   void dump() const;

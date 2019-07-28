@@ -218,7 +218,7 @@ RPG_Item_Dictionary::getProperties(const RPG_Item_Base* item_in,
       const RPG_Item_Armor* armor = dynamic_cast<const RPG_Item_Armor*>(item_in);
       ACE_ASSERT(armor);
       ACE_NEW_NORETURN(properties_out,
-                       RPG_Item_ArmorProperties(getArmorProperties(armor->type())));
+                       RPG_Item_ArmorProperties(getArmorProperties(armor->armorType_)));
       break;
     }
     case ITEM_COMMODITY:
@@ -226,7 +226,7 @@ RPG_Item_Dictionary::getProperties(const RPG_Item_Base* item_in,
       const RPG_Item_Commodity* commodity = dynamic_cast<const RPG_Item_Commodity*>(item_in);
       ACE_ASSERT(commodity);
       ACE_NEW_NORETURN(properties_out,
-                       RPG_Item_CommodityProperties(getCommodityProperties(commodity->subtype())));
+                       RPG_Item_CommodityProperties(getCommodityProperties(commodity->subtype_)));
       break;
     }
     case ITEM_OTHER:
@@ -242,7 +242,7 @@ RPG_Item_Dictionary::getProperties(const RPG_Item_Base* item_in,
       const RPG_Item_Weapon* weapon = dynamic_cast<const RPG_Item_Weapon*>(item_in);
       ACE_ASSERT(weapon);
       ACE_NEW_NORETURN(properties_out,
-                       RPG_Item_WeaponProperties(getWeaponProperties(weapon->type())));
+                       RPG_Item_WeaponProperties(getWeaponProperties(weapon->weaponType_)));
       break;
     }
     default:
@@ -262,8 +262,8 @@ RPG_Item_Dictionary::getProperties(const RPG_Item_Base* item_in,
                RPG_Item_TypeHelper::RPG_Item_TypeToString(item_in->type()).c_str()));
 }
 
-RPG_Item_CommodityProperties
-RPG_Item_Dictionary::getCommodityProperties(const RPG_Item_CommodityUnion& commoditySubType_in) const
+struct RPG_Item_CommodityProperties
+RPG_Item_Dictionary::getCommodityProperties(const struct RPG_Item_CommodityUnion& commoditySubType_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::getCommodityProperties"));
 
@@ -323,8 +323,8 @@ RPG_Item_Dictionary::getCommodityProperties(const RPG_Item_CommodityUnion& commo
 #endif
 }
 
-RPG_Item_ArmorProperties
-RPG_Item_Dictionary::getArmorProperties(const RPG_Item_ArmorType& armorType_in) const
+struct RPG_Item_ArmorProperties
+RPG_Item_Dictionary::getArmorProperties(enum RPG_Item_ArmorType armorType_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::getArmorProperties"));
 
@@ -361,8 +361,8 @@ RPG_Item_Dictionary::getArmorProperties(const RPG_Item_ArmorType& armorType_in) 
   return iterator->second;
 }
 
-RPG_Item_WeaponProperties
-RPG_Item_Dictionary::getWeaponProperties(const RPG_Item_WeaponType& weaponType_in) const
+struct RPG_Item_WeaponProperties
+RPG_Item_Dictionary::getWeaponProperties(enum RPG_Item_WeaponType weaponType_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Dictionary::getWeaponProperties"));
 

@@ -515,7 +515,7 @@ RPG_Engine_Event_Manager::init(RPG_Engine* engine_in)
 long
 RPG_Engine_Event_Manager::schedule(RPG_Engine_Event_t* event_in,
                                    const ACE_Time_Value& interval_in,
-                                   const bool& isOneShot_in)
+                                   bool isOneShot_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::schedule"));
 
@@ -540,11 +540,11 @@ RPG_Engine_Event_Manager::schedule(RPG_Engine_Event_t* event_in,
   long timer_id = -1;
   // *NOTE*: fire&forget API for timer_handler...
   timer_id =
-    COMMON_TIMERMANAGER_SINGLETON::instance ()->schedule (timer_handler,                       // event handler handle
-                                                          event_in,                            // ACT
-                                                          COMMON_TIME_POLICY () + interval_in, // first wakeup time
-                                                          (isOneShot_in ? ACE_Time_Value::zero // interval
-                                                                        : interval_in));
+    COMMON_TIMERMANAGER_SINGLETON::instance ()->schedule_timer (timer_handler,                       // event handler handle
+                                                                event_in,                            // ACT
+                                                                COMMON_TIME_POLICY () + interval_in, // first wakeup time
+                                                                (isOneShot_in ? ACE_Time_Value::zero // interval
+                                                                              : interval_in));
   if (timer_id == -1)
   {
     ACE_DEBUG ((LM_ERROR,

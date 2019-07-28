@@ -45,14 +45,12 @@ class RPG_Item_Commodity
   friend class RPG_Item_Instance_Manager;
 
  public:
-  inline enum RPG_Item_CommodityType type () const { return type_; }
+  enum RPG_Item_CommodityType commodityType_;
+  RPG_Item_CommodityUnion subtype_;
+  inline enum RPG_Item_CommodityType commodityType () const { return commodityType_; }
   inline RPG_Item_CommodityUnion subtype () const { return subtype_; }
 
   virtual void dump () const;
-
- protected:
-  enum RPG_Item_CommodityType type_;
-  RPG_Item_CommodityUnion subtype_;
 
  private:
   ACE_UNIMPLEMENTED_FUNC (RPG_Item_Commodity ())

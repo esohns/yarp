@@ -134,6 +134,8 @@ struct RPG_Client_Configuration
 {
   Common_UI_GTK_Configuration_t              gtk_configuration;
 
+  // *** timers ***
+  struct Common_TimerConfiguration           timer_configuration;
   // *** reactor ***
   struct Common_EventDispatchConfiguration   dispatch_configuration;
   unsigned int                               num_dispatch_threads; // 1: don't use a threadpool

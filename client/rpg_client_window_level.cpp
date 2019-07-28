@@ -689,7 +689,7 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::draw"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard (myLock);
+//  ACE_Guard<ACE_Thread_Mutex> aGuard (myLock);
 
   // sanity check(s)
   ACE_ASSERT (myEngine);
@@ -759,7 +759,7 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
   // --> "back-to-front"
 
   // lock engine
-  myEngine->lock();
+//  myEngine->lock();
 
   RPG_Engine_EntityID_t active_entity_id = myEngine->getActive(false);
   RPG_Map_Position_t active_position =
@@ -827,7 +827,7 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
 //                                                    std::numeric_limits<unsigned int>::max());
 
   // pass 1
-  myClient->lock();
+//  myClient->lock();
   for (i = -static_cast<int>(top_right.second);
        i <= static_cast<int>(top_right.second);
        i++)
@@ -1526,19 +1526,19 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
           RPG_Graphics_Position_t cursor_position =
               RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
           RPG_Graphics_Position_t curent_view = getView();
-					SDL_Rect window_area;
-					getArea(window_area, true);
-					myEngine->lock();
+          SDL_Rect window_area;
+          getArea(window_area, true);
+          myEngine->lock();
           myClientAction.position =
-						RPG_Graphics_Common_Tools::screen2Map(cursor_position,
+            RPG_Graphics_Common_Tools::screen2Map(cursor_position,
                                                   myEngine->getSize(false),
-																									std::make_pair(window_area.w,
-																									               window_area.h),
+                                                  std::make_pair(window_area.w,
+                                                                 window_area.h),
                                                   curent_view);
           bool push_mousemove_event = myEngine->isValid(myClientAction.position,
                                                         false);
 
-					myClientAction.entity_id = myEngine->getActive(false);
+          myClientAction.entity_id = myEngine->getActive(false);
           // toggle path selection mode
           switch (myClient->mode())
           {
@@ -1556,10 +1556,10 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
               myClient->mode(SELECTIONMODE_NORMAL);
               push_mousemove_event = false;
 
-							if (event_in.key.keysym.sym != SDLK_t)
-								break;
+              if (event_in.key.keysym.sym != SDLK_t)
+                break;
 
-							// *WARNING*: falls through !
+              // *WARNING*: falls through !
             }
             case SELECTIONMODE_PATH:
             {
@@ -1570,24 +1570,24 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
             }
             case SELECTIONMODE_NORMAL:
             {
-							if (myClientAction.entity_id == 0)
-								push_mousemove_event = false;
+              if (myClientAction.entity_id == 0)
+                push_mousemove_event = false;
 
-							if (event_in.key.keysym.sym == SDLK_t)
-								myClient->mode(SELECTIONMODE_PATH);	// --> switch on path selection
-							else
-							{
-								// --> switch on aim selection
+              if (event_in.key.keysym.sym == SDLK_t)
+                myClient->mode(SELECTIONMODE_PATH);	// --> switch on path selection
+              else
+              {
+                // --> switch on aim selection
 
-								// retain source position
-								myClientAction.source = myClientAction.position;
+                // retain source position
+                myClientAction.source = myClientAction.position;
 
-								// initial radius == 0
-								myClientAction.positions.insert(myClientAction.position);
+                // initial radius == 0
+                myClientAction.positions.insert(myClientAction.position);
 
-								myClient->mode(((event_in.key.keysym.mod & KMOD_SHIFT) ? SELECTIONMODE_AIM_SQUARE
-									                                                     : SELECTIONMODE_AIM_CIRCLE));
-							} // end ELSE
+                myClient->mode(((event_in.key.keysym.mod & KMOD_SHIFT) ? SELECTIONMODE_AIM_SQUARE
+                                                                       : SELECTIONMODE_AIM_CIRCLE));
+              } // end ELSE
 
               break;
             }
@@ -1750,6 +1750,7 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
             // compute target position
             myClientAction.position =
                 myEngine->getPosition(myClientAction.entity_id, false);
+            player_action.position = myClientAction.position;
             switch (direction)
             {
               case DIRECTION_UP:
@@ -1765,11 +1766,9 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
                 ACE_DEBUG((LM_ERROR,
                            ACE_TEXT("invalid direction (was: \"%s\"), aborting\n"),
                            ACE_TEXT(RPG_Map_DirectionHelper::RPG_Map_DirectionToString(direction).c_str())));
-
                 break;
               }
             } // end SWITCH
-            player_action.position = myClientAction.position;
             player_action.path.clear();
             player_action.target = 0;
 

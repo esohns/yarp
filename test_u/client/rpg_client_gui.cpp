@@ -770,6 +770,10 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   GTKUserData_in.UIState =
     &const_cast<Common_UI_GTK_State_t&> (COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->getR_2 ());
 
+  COMMON_TIMERMANAGER_SINGLETON::instance ()->initialize (configuration_in.timer_configuration);
+  ACE_thread_t thread_id = 0;
+  COMMON_TIMERMANAGER_SINGLETON::instance ()->start (thread_id);
+
   // step1: init RPG engine
   RPG_Engine_Common_Tools::initialize (schemaRepository_in,
                                        configuration_in.magic_dictionary,
@@ -1050,7 +1054,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
     std::make_pair (UIDefinitionFile_in, static_cast<GtkBuilder*> (NULL));
   //GTKUserData_in.UIState->userData = &GTKUserData_in;
 
-  ACE_thread_t thread_id;
+  thread_id = 0;
   COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start (thread_id);
   if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
   {

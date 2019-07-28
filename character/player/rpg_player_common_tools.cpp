@@ -319,7 +319,7 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
         ACE_ASSERT(armor);
 
         RPG_Item_ArmorProperties armor_properties =
-            RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor->type());
+            RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor->armorType());
 
         RPG_Item_StorePrice_XMLTree_Type store_price;
         if (armor_properties.baseStorePrice.numGoldPieces)
@@ -328,7 +328,7 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
           store_price.numSilverPieces(armor_properties.baseStorePrice.numSilverPieces);
         RPG_Item_ArmorPropertiesXML_XMLTree_Type armor_properties_xml(armor_properties.baseWeight,
                                                                       store_price,
-                                                                      RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->type()),
+                                                                      RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->armorType()),
                                                                       RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString(armor_properties.category),
                                                                       armor_properties.baseBonus,
                                                                       armor_properties.maxDexterityBonus,
@@ -376,7 +376,7 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
           store_price.numSilverPieces(commodity_properties.baseStorePrice.numSilverPieces);
         RPG_Item_CommodityPropertiesBase_XMLTree_Type commodity_properties_xml(commodity_properties.baseWeight,
                                                                                store_price,
-                                                                               RPG_Item_CommodityTypeHelper::RPG_Item_CommodityTypeToString(commodity->type()),
+                                                                               RPG_Item_CommodityTypeHelper::RPG_Item_CommodityTypeToString(commodity->commodityType()),
                                                                                RPG_Item_Common_Tools::commoditySubTypeToXMLString(commodity->subtype()));
         if (commodity_properties.aura != RPG_MAGIC_SCHOOL_INVALID)
           commodity_properties_xml.aura(RPG_Magic_SchoolHelper::RPG_Magic_SchoolToString(commodity_properties.aura));
@@ -416,7 +416,7 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
         ACE_ASSERT(weapon);
 
         RPG_Item_WeaponProperties weapon_properties =
-            RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon->type());
+            RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon->weaponType_);
 
         RPG_Item_BaseXML_XMLTree_Type item(RPG_Item_TypeHelper::RPG_Item_TypeToString(item_base->type()));
         RPG_Item_StorePrice_XMLTree_Type store_price;
@@ -433,7 +433,7 @@ RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
                                                                             weapon_properties.criticalHit.damageModifier);
         RPG_Item_WeaponPropertiesXML_XMLTree_Type weapon_properties_xml(weapon_properties.baseWeight,
                                                                         store_price,
-                                                                        RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon->type()),
+                                                                        RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon->weaponType_),
                                                                         RPG_Item_WeaponCategoryHelper::RPG_Item_WeaponCategoryToString(weapon_properties.category),
                                                                         RPG_Item_WeaponClassHelper::RPG_Item_WeaponClassToString(weapon_properties.weaponClass),
                                                                         base_damage,

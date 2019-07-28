@@ -301,8 +301,9 @@ RPG_Item_Common_Tools::itemToSlot(RPG_Item_ID_t id_in,
     {
       const RPG_Item_Armor* armor = dynamic_cast<const RPG_Item_Armor*>(item_base);
       ACE_ASSERT(armor);
+      enum RPG_Item_ArmorType armor_type_e = armor->armorType_;
       const RPG_Item_ArmorProperties& properties =
-        RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor->type ());
+        RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_type_e);
       switch (properties.category)
       {
         case ARMORCATEGORY_GLOVES:
@@ -357,7 +358,7 @@ RPG_Item_Common_Tools::itemToSlot(RPG_Item_ID_t id_in,
     {
       const RPG_Item_Commodity* commodity = dynamic_cast<const RPG_Item_Commodity*>(item_base);
       ACE_ASSERT(commodity);
-      switch (commodity->subtype ().discriminator)
+      switch (commodity->subtype_.discriminator)
       {
         case RPG_Item_CommodityUnion::COMMODITYBEVERAGE:
           break;
@@ -375,7 +376,7 @@ RPG_Item_Common_Tools::itemToSlot(RPG_Item_ID_t id_in,
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("invalid commodity type (was: %d), aborting\n"),
-                     commodity->subtype ().discriminator));
+                     commodity->subtype_.discriminator));
 
           return;
         }
@@ -396,11 +397,11 @@ RPG_Item_Common_Tools::itemToSlot(RPG_Item_ID_t id_in,
       const RPG_Item_Weapon* weapon = dynamic_cast<const RPG_Item_Weapon*>(item_base);
       ACE_ASSERT(weapon);
       const RPG_Item_WeaponProperties& properties =
-        RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon->type ());
+        RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon->weaponType_);
 
       // *TODO*: consider single-handed use of double-handed weapons...
       if (properties.isDoubleWeapon ||
-          RPG_Item_Common_Tools::isTwoHandedWeapon(weapon->type ()))
+          RPG_Item_Common_Tools::isTwoHandedWeapon(weapon->weaponType_))
         slots_out.is_inclusive = true;
       // *NOTE*: primary, then secondary
       slots_out.slots.push_back((offHand_in == OFFHAND_LEFT) ? EQUIPMENTSLOT_HAND_RIGHT

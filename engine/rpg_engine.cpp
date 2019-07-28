@@ -1871,7 +1871,7 @@ RPG_Character_Class
 RPG_Engine::getClass (const RPG_Engine_EntityID_t& id_in,
                       bool lockedAccess_in) const
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Engine::getName"));
+  RPG_TRACE (ACE_TEXT ("RPG_Engine::getClass"));
 
   RPG_Character_Class result;
   result.metaClass = RPG_CHARACTER_METACLASS_INVALID;

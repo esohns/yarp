@@ -70,7 +70,7 @@ class RPG_Engine_Event_Manager
 	// *IMPORTANT*: fire&forget API !!!
   long schedule(RPG_Engine_Event_t*,   // event handle
                 const ACE_Time_Value&, // interval (or delay)
-                const bool& = false);  // one-shot ?
+                bool = false);         // one-shot ?
   void cancel(const long&); // timer (!) id
 
   // manage entities

@@ -529,6 +529,9 @@ RPG_Client_Engine::notify(enum RPG_Engine_Command command_in,
         ACE_ASSERT(mySeenPositions.find(parameters_in.entity_id) ==
                    mySeenPositions.end());
         RPG_Map_Positions_t positions;
+        myEngine->getVisiblePositions (parameters_in.entity_id,
+                                       positions,
+                                       true);
         mySeenPositions[parameters_in.entity_id] = positions;
       } // end lock scope
 
@@ -602,6 +605,19 @@ RPG_Client_Engine::notify(enum RPG_Engine_Command command_in,
       client_action.position  = *parameters_in.positions.begin();
       client_action.previous  = parameters_in.previous_position;
       client_action.window    = myWindow;
+
+      // step1: player has moved, update seen positions
+      { ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+        RPG_Client_SeenPositionsIterator_t iterator =
+          mySeenPositions.find (parameters_in.entity_id);
+        ACE_ASSERT (iterator != mySeenPositions.end ());
+        RPG_Map_Positions_t positions;
+        myEngine->getVisiblePositions (parameters_in.entity_id,
+                                       positions,
+                                       true);
+        (*iterator).second.insert (positions.begin (),
+                                   positions.end ());
+      } // end lock scope
 
       // *NOTE*: when using (dynamic) lighting, redraw the whole window...
       RPG_Engine_EntityID_t active_entity_id = myEngine->getActive(true);

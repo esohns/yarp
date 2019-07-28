@@ -34,7 +34,7 @@ RPG_Item_Weapon::RPG_Item_Weapon (enum RPG_Item_WeaponType type_in)
  : inherited () // *NOTE*: this generates a new item ID
  , inherited2 (ITEM_WEAPON,
                id ()) // <-- retrieve generated item ID
- , type_ (type_in)
+ , weaponType_ (type_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Item_Weapon::RPG_Item_Weapon"));
 
@@ -47,19 +47,19 @@ RPG_Item_Weapon::dump() const
 
   // retrieve properties
   RPG_Item_WeaponProperties properties =
-    RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getWeaponProperties (type_);
+    RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getWeaponProperties (weaponType_);
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("Item: Weapon\nType: %s\nCategory: %s\nClass: %s\nPrice: %d GP, %d SP\nDamage: %s\ncritical: %d, x%d\nRange: %d\nWeight: %d\nDamage Type: %s\n"),
-             RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(type_).c_str(),
-             RPG_Item_WeaponCategoryHelper::RPG_Item_WeaponCategoryToString(properties.category).c_str(),
-             RPG_Item_WeaponClassHelper::RPG_Item_WeaponClassToString(properties.weaponClass).c_str(),
+             ACE_TEXT (RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weaponType_).c_str()),
+             ACE_TEXT (RPG_Item_WeaponCategoryHelper::RPG_Item_WeaponCategoryToString(properties.category).c_str()),
+             ACE_TEXT (RPG_Item_WeaponClassHelper::RPG_Item_WeaponClassToString(properties.weaponClass).c_str()),
              properties.baseStorePrice.numGoldPieces,
              properties.baseStorePrice.numSilverPieces,
-             RPG_Dice_Common_Tools::toString(properties.baseDamage).c_str(),
+             ACE_TEXT (RPG_Dice_Common_Tools::toString(properties.baseDamage).c_str()),
              properties.criticalHit.minToHitRoll,
              properties.criticalHit.damageModifier,
              properties.rangeIncrement,
              properties.baseWeight,
-             RPG_Item_Common_Tools::toString(properties.typeOfDamage).c_str()));
+             ACE_TEXT (RPG_Item_Common_Tools::toString(properties.typeOfDamage).c_str())));
 }
