@@ -523,15 +523,13 @@ RPG_Client_Engine::notify(enum RPG_Engine_Command command_in,
                                                            sprite_graphic);
 
       // step2: init vision cache
-      {
-        ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
-
+      RPG_Map_Positions_t positions;
+      myEngine->getVisiblePositions (parameters_in.entity_id,
+                                     positions,
+                                     true);
+      { ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
         ACE_ASSERT(mySeenPositions.find(parameters_in.entity_id) ==
                    mySeenPositions.end());
-        RPG_Map_Positions_t positions;
-        myEngine->getVisiblePositions (parameters_in.entity_id,
-                                       positions,
-                                       true);
         mySeenPositions[parameters_in.entity_id] = positions;
       } // end lock scope
 
@@ -607,14 +605,14 @@ RPG_Client_Engine::notify(enum RPG_Engine_Command command_in,
       client_action.window    = myWindow;
 
       // step1: player has moved, update seen positions
+      RPG_Map_Positions_t positions;
+      myEngine->getVisiblePositions (parameters_in.entity_id,
+                                     positions,
+                                     true);
       { ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
         RPG_Client_SeenPositionsIterator_t iterator =
           mySeenPositions.find (parameters_in.entity_id);
         ACE_ASSERT (iterator != mySeenPositions.end ());
-        RPG_Map_Positions_t positions;
-        myEngine->getVisiblePositions (parameters_in.entity_id,
-                                       positions,
-                                       true);
         (*iterator).second.insert (positions.begin (),
                                    positions.end ());
       } // end lock scope
@@ -1057,13 +1055,10 @@ RPG_Client_Engine::handleActions ()
         SDL_Rect window_area;
         (*iterator).window->getArea (window_area, true);
         RPG_Client_IWindowLevel* level_window = NULL;
-        try
-        {
+        try {
           level_window =
-            dynamic_cast<RPG_Client_IWindowLevel*> ((*iterator).window);
-        }
-        catch (...)
-        {
+              dynamic_cast<RPG_Client_IWindowLevel*> ((*iterator).window);
+        } catch (...) {
           level_window = NULL;
         }
         if (!level_window)
@@ -1074,20 +1069,17 @@ RPG_Client_Engine::handleActions ()
           continue;
         }
         RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->put ((*iterator).entity_id, // entity ID
-                                                               RPG_Graphics_Common_Tools::map2Screen ((*iterator).position,
-                                                                                                      std::make_pair (window_area.w,
-                                                                                                                      window_area.h),
-                                                                                                      level_window->getView ()), // position
+                                                               RPG_Graphics_Common_Tools::mapToScreen ((*iterator).position,
+                                                                                                       std::make_pair (window_area.w,
+                                                                                                                       window_area.h),
+                                                                                                       level_window->getView ()), // position
                                                                dirty_region,          // return value: "dirty" region
                                                                true,                  // clip window ?
                                                                false,                 // locked access ? (screen-lock)
                                                                myDebug);              // debug ?
-        try
-        {
+        try {
           (*iterator).window->invalidate (dirty_region);
-        }
-        catch (...)
-        {
+        } catch (...) {
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("caught exception in RPG_Graphics_IWindowBase::invalidate(), continuing\n")));
           continue;
@@ -1268,10 +1260,10 @@ RPG_Client_Engine::handleActions ()
             (*iterator).positions.empty ())
         {
           positions.push_back ((*iterator).position);
-          screen_positions.push_back (RPG_Graphics_Common_Tools::map2Screen ((*iterator).position,
-                                                                             std::make_pair (window_area.w,
-                                                                                             window_area.h),
-                                                                             view));
+          screen_positions.push_back (RPG_Graphics_Common_Tools::mapToScreen ((*iterator).position,
+                                                                              std::make_pair (window_area.w,
+                                                                                              window_area.h),
+                                                                              view));
         } // end IF
         else if (!(*iterator).path.empty ())
         {
@@ -1281,10 +1273,10 @@ RPG_Client_Engine::handleActions ()
                iterator2++)
           {
             positions.push_back ((*iterator2).first);
-            screen_positions.push_back (RPG_Graphics_Common_Tools::map2Screen ((*iterator2).first,
-                                                                               std::make_pair (window_area.w,
-                                                                                               window_area.h),
-                                                                               view));
+            screen_positions.push_back (RPG_Graphics_Common_Tools::mapToScreen ((*iterator2).first,
+                                                                                std::make_pair (window_area.w,
+                                                                                                window_area.h),
+                                                                                view));
           } // end FOR
         } // end ELSE
         else
@@ -1296,10 +1288,10 @@ RPG_Client_Engine::handleActions ()
                iterator2++)
           {
             positions.push_back (*iterator2);
-            screen_positions.push_back (RPG_Graphics_Common_Tools::map2Screen (*iterator2,
-                                                                               std::make_pair (window_area.w,
-                                                                                               window_area.h),
-                                                                               view));
+            screen_positions.push_back (RPG_Graphics_Common_Tools::mapToScreen (*iterator2,
+                                                                                std::make_pair (window_area.w,
+                                                                                                window_area.h),
+                                                                                view));
           } // end FOR
         } // end ELSE
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->putHighlights (positions,
@@ -1429,13 +1421,10 @@ RPG_Client_Engine::handleActions ()
         ACE_ASSERT ((*iterator).window);
 
         RPG_Client_IWindowLevel* level_window = NULL;
-        try
-        {
+        try {
           level_window =
             dynamic_cast<RPG_Client_IWindowLevel*> ((*iterator).window);
-        }
-        catch (...)
-        {
+        } catch (...) {
           level_window = NULL;
         }
         if (!level_window)
@@ -1445,13 +1434,10 @@ RPG_Client_Engine::handleActions ()
                       (*iterator).window));
           continue;
         }
-        try
-        {
+        try {
           level_window->toggleDoor ((*iterator).position);
           level_window->draw ();
-        }
-        catch (...)
-        {
+        } catch (...) {
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("caught exception in [%@]: RPG_Client_IWindowLevel::toggleDoor/clear/draw(), continuing\n"),
                       level_window));
@@ -1459,12 +1445,9 @@ RPG_Client_Engine::handleActions ()
         }
 
         // --> update whole window
-        try
-        {
+        try {
           (*iterator).window->invalidate (dirty_region);
-        }
-        catch (...)
-        {
+        } catch (...) {
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("caught exception in RPG_Graphics_IWindowBase::invalidate(), continuing\n")));
           continue;
@@ -1478,13 +1461,10 @@ RPG_Client_Engine::handleActions ()
         ACE_ASSERT ((*iterator).window);
 
         RPG_Client_IWindow* client_window = NULL;
-        try
-        {
+        try {
           client_window =
             dynamic_cast<RPG_Client_IWindow*> ((*iterator).window);
-        }
-        catch (...)
-        {
+        } catch (...) {
           client_window = NULL;
         }
         if (!client_window)
@@ -1494,14 +1474,11 @@ RPG_Client_Engine::handleActions ()
                       (*iterator).window));
           continue;
         }
-        try
-        {
+        try {
           client_window->drawBorder ((*iterator).window->getScreen (),
                                      0,
                                      0);
-        }
-        catch (...)
-        {
+        } catch (...) {
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("caught exception in [%@]: RPG_Client_IWindow::drawBorder(), continuing\n"),
                       client_window));
@@ -1509,12 +1486,9 @@ RPG_Client_Engine::handleActions ()
         }
 
         // --> update whole window
-        try
-        {
+        try {
           (*iterator).window->invalidate (dirty_region);
-        }
-        catch (...)
-        {
+        } catch (...) {
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("caught exception in RPG_Graphics_IWindowBase::invalidate(), continuing\n")));
           continue;
@@ -1527,12 +1501,9 @@ RPG_Client_Engine::handleActions ()
         // sanity check
         ACE_ASSERT ((*iterator).window);
 
-        try
-        {
+        try {
           (*iterator).window->draw ();
-        }
-        catch (...)
-        {
+        } catch (...) {
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("caught exception in [%@]: RPG_Graphics_IWindow::draw(), continuing\n"),
                       (*iterator).window));
@@ -1547,12 +1518,9 @@ RPG_Client_Engine::handleActions ()
         ACE_ASSERT ((*iterator).window);
 
         RPG_Graphics_IWindow* window = NULL;
-        try
-        {
+        try {
           window = dynamic_cast<RPG_Graphics_IWindow*> ((*iterator).window);
-        }
-        catch (...)
-        {
+        } catch (...) {
           window = NULL;
         }
         if (!window)
@@ -1563,12 +1531,9 @@ RPG_Client_Engine::handleActions ()
           continue;
         }
         SDL_Rect dirty_region;
-        try
-        {
+        try {
           window->hide (dirty_region);
-        }
-        catch (...)
-        {
+        } catch (...) {
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("caught exception in [%@]: RPG_Graphics_IWindow::hide(), continuing\n"),
                       window));
@@ -1583,13 +1548,10 @@ RPG_Client_Engine::handleActions ()
         //ACE_ASSERT ((*iterator).window);
 
         RPG_Client_IWindowLevel* level_window_p = NULL;
-        try
-        {
+        try {
           level_window_p =
             dynamic_cast<RPG_Client_IWindowLevel*> ((*iterator).window);
-        }
-        catch (...)
-        {
+        } catch (...) {
           level_window_p = NULL;
         }
         if (!level_window_p)
@@ -1612,14 +1574,11 @@ RPG_Client_Engine::handleActions ()
         myEngine->unlock ();
         center.first >>= 1;
         center.second >>= 1;
-        try
-        {
+        try {
           level_window_p->initialize (myRuntimeState.style);
           level_window_p->setView (center);
           level_window_p->draw ();
-        }
-        catch (...)
-        {
+        } catch (...) {
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("caught exception in [%@]: RPG_Client_IWindowLevel::initialize/setView/clear/draw(), continuing\n"),
                       level_window_p));
@@ -1663,12 +1622,9 @@ RPG_Client_Engine::handleActions ()
 
         // --> update whole window
         (*iterator).window->getArea (dirty_region);
-        try
-        {
+        try {
           (*iterator).window->invalidate (dirty_region);
-        }
-        catch (...)
-        {
+        } catch (...) {
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("caught exception in RPG_Graphics_IWindowBase::invalidate, continuing\n")));
           continue;
@@ -1683,13 +1639,10 @@ RPG_Client_Engine::handleActions ()
         ACE_ASSERT (!(*iterator).message.empty ());
 
         RPG_Client_IWindowLevel* level_window = NULL;
-        try
-        {
+        try {
           level_window =
             dynamic_cast<RPG_Client_IWindowLevel*> ((*iterator).window);
-        }
-        catch (...)
-        {
+        } catch (...) {
           level_window = NULL;
         }
         if (!level_window)
@@ -1699,12 +1652,9 @@ RPG_Client_Engine::handleActions ()
                       (*iterator).window));
           continue;
         }
-        try
-        {
+        try {
           level_window->updateMessageWindow ((*iterator).message);
-        }
-        catch (...)
-        {
+        } catch (...) {
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("caught exception in [%@]: RPG_Client_IWindowLevel::updateMessageWindow(\"%s\"), continuing\n"),
                       level_window,
@@ -1720,13 +1670,10 @@ RPG_Client_Engine::handleActions ()
         ACE_ASSERT ((*iterator).window);
 
         RPG_Client_IWindowLevel* level_window = NULL;
-        try
-        {
+        try {
           level_window =
             dynamic_cast<RPG_Client_IWindowLevel*> ((*iterator).window);
-        }
-        catch (...)
-        {
+        } catch (...) {
           level_window = NULL;
         }
         if (!level_window)
@@ -1736,12 +1683,9 @@ RPG_Client_Engine::handleActions ()
                       (*iterator).window));
           continue;
         }
-        try
-        {
+        try {
           level_window->updateMinimap ();
-        }
-        catch (...)
-        {
+        } catch (...) {
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("caught exception in [%@]: RPG_Client_IWindowLevel::updateMinimap(), continuing\n"),
                       level_window));
@@ -1759,18 +1703,15 @@ RPG_Client_Engine::handleActions ()
       }
     } // end SWITCH
 
-    // update screen
-    ACE_ASSERT ((*iterator).window);
-    try
-    {
-      (*iterator).window->update ();
-    }
-    catch (...)
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("[%@] caught exception in RPG_Graphics_IWindow::update(), continuing\n"),
-                  (*iterator).window));
-    }
+    // update screen ?
+    if ((*iterator).window)
+      try {
+        (*iterator).window->update ();
+      } catch (...) {
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("[%@] caught exception in RPG_Graphics_IWindow::update(), continuing\n"),
+                    (*iterator).window));
+      }
   } // end FOR
 
   myActions.clear ();

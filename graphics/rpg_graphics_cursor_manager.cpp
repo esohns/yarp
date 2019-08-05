@@ -165,30 +165,30 @@ RPG_Graphics_Cursor_Manager::area(const RPG_Graphics_Position_t& viewport_in) co
     bg_area.y = static_cast<Sint16>(myBGPosition.second);
     bg_area.w = static_cast<Uint16>(myBG->w);
     bg_area.h = static_cast<Uint16>(myBG->h);
-    result = RPG_Graphics_SDL_Tools::boundingBox(result,
-                                                 bg_area);
+    result = RPG_Graphics_SDL_Tools::boundingBox (result,
+                                                  bg_area);
   } // end IF
 
   // step2: highlight background(s)
   SDL_Rect highlight_area = {0, 0, 0, 0};
   RPG_Graphics_Position_t screen_position;
-  SDL_Surface* screen = myHighlightWindow->getScreen();
+  SDL_Surface* screen = myHighlightWindow->getScreen ();
   ACE_ASSERT(screen);
   for (RPG_Graphics_TileCacheConstIterator_t iterator = myHighlightBGCache.begin();
        iterator != myHighlightBGCache.end();
        iterator++)
   {
     screen_position =
-        RPG_Graphics_Common_Tools::map2Screen((*iterator).first,
-                                              std::make_pair(screen->w,
-                                                             screen->h),
-                                              viewport_in);
-    highlight_area.x = static_cast<Sint16>(screen_position.first);
-    highlight_area.y = static_cast<Sint16>(screen_position.second);
-    highlight_area.w = static_cast<Uint16>((*iterator).second->w);
-    highlight_area.h = static_cast<Uint16>((*iterator).second->h);
-    result = RPG_Graphics_SDL_Tools::boundingBox(result,
-                                                 highlight_area);
+        RPG_Graphics_Common_Tools::mapToScreen((*iterator).first,
+                                               std::make_pair (screen->w,
+                                                               screen->h),
+                                               viewport_in);
+    highlight_area.x = static_cast<Sint16> (screen_position.first);
+    highlight_area.y = static_cast<Sint16> (screen_position.second);
+    highlight_area.w = static_cast<Uint16> ((*iterator).second->w);
+    highlight_area.h = static_cast<Uint16> ((*iterator).second->h);
+    result = RPG_Graphics_SDL_Tools::boundingBox (result,
+                                                  highlight_area);
   } // end FOR
 
   return result;
@@ -215,9 +215,9 @@ RPG_Graphics_Cursor_Manager::put(const RPG_Graphics_Position_t& position_in,
                                  const RPG_Graphics_Position_t& view_in,
                                  const RPG_Map_Size_t& mapSize_in,
                                  SDL_Rect& dirtyRegion_out,
-								 const bool& drawHighlight_in,
-								 const bool& lockedAccess_in,
-								 const bool& debug_in)
+                                 const bool& drawHighlight_in,
+                                 const bool& lockedAccess_in,
+                                 const bool& debug_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::put"));
 
@@ -238,35 +238,35 @@ RPG_Graphics_Cursor_Manager::put(const RPG_Graphics_Position_t& position_in,
 	  SDL_Rect window_area;
 	  myHighlightWindow->getArea(window_area, true);
 	  RPG_Map_Position_t map_position =
-			RPG_Graphics_Common_Tools::screen2Map(input_position,
-												  mapSize_in,
-												  std::make_pair(window_area.w,
-													 			 window_area.h),
-												  view_in);
+      RPG_Graphics_Common_Tools::screenToMap (input_position,
+                                              mapSize_in,
+                                              std::make_pair (window_area.w,
+                                                              window_area.h),
+                                              view_in);
 	  RPG_Map_PositionList_t positions;
 	  positions.push_back(map_position);
 	  RPG_Graphics_Offsets_t screen_positions;
-	  screen_positions.push_back(RPG_Graphics_Common_Tools::map2Screen(map_position,
-																	   std::make_pair(window_area.w,
-																					  window_area.h),
-																	   view_in));
-	  putHighlights(positions,
-					screen_positions,
-					view_in,
-					dirtyRegion_out,
-					lockedAccess_in,
-					debug_in);
+    screen_positions.push_back(RPG_Graphics_Common_Tools::mapToScreen (map_position,
+                                                                       std::make_pair (window_area.w,
+                                                                                       window_area.h),
+                                                                       view_in));
+    putHighlights (positions,
+                   screen_positions,
+                   view_in,
+                   dirtyRegion_out,
+                   lockedAccess_in,
+                   debug_in);
 	} // end IF
 
   // step2: draw cursor
   SDL_Rect dirty_region;
-  putCursor(input_position,
-            dirty_region,
-            lockedAccess_in,
-            debug_in);
+  putCursor (input_position,
+             dirty_region,
+             lockedAccess_in,
+             debug_in);
 
-  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirtyRegion_out,
-                                                        dirty_region);
+  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirtyRegion_out,
+                                                         dirty_region);
 }
 
 void
@@ -545,7 +545,7 @@ RPG_Graphics_Cursor_Manager::restoreBG(SDL_Rect& dirtyRegion_out,
 	if (clipRectangle_in)
 	{
 		clip_rectangle = RPG_Graphics_SDL_Tools::intersect(*clipRectangle_in,
-														   clip_rectangle);
+                                                       clip_rectangle);
 		source_clip_rectangle = clip_rectangle;
 		source_clip_rectangle.x -= myBGPosition.first;
 		source_clip_rectangle.y -= myBGPosition.second;
@@ -1067,19 +1067,19 @@ RPG_Graphics_Cursor_Manager::restoreHighlightBG(const RPG_Graphics_Position_t& v
        iterator++)
   {
     screen_position =
-        RPG_Graphics_Common_Tools::map2Screen((*iterator).first,
-                                              std::make_pair(window_area.w,
-                                                             window_area.h),
-                                              viewPort_in);
+        RPG_Graphics_Common_Tools::mapToScreen ((*iterator).first,
+                                                std::make_pair (window_area.w,
+                                                                window_area.h),
+                                                viewPort_in);
 
     source_clip_rectangle.x = screen_position.first;
     source_clip_rectangle.y = screen_position.second;
     source_clip_rectangle.w = (*iterator).second->w;
     source_clip_rectangle.h = (*iterator).second->h;
-    clip_rectangle = RPG_Graphics_SDL_Tools::intersect(source_clip_rectangle,
-                                                                                                         clip_area);
-    dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirtyRegion_out,
-                                                                                                                clip_rectangle);
+    clip_rectangle = RPG_Graphics_SDL_Tools::intersect (source_clip_rectangle,
+                                                        clip_area);
+    dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirtyRegion_out,
+                                                           clip_rectangle);
     source_clip_rectangle.x = clip_rectangle.x - screen_position.first;
     source_clip_rectangle.y = clip_rectangle.y - screen_position.second;
     if (!clip_rectangle.w || !clip_rectangle.h)
@@ -1151,10 +1151,10 @@ RPG_Graphics_Cursor_Manager::updateHighlightBG(const RPG_Graphics_Position_t& vi
            iterator++)
   {
     screen_position =
-        RPG_Graphics_Common_Tools::map2Screen((*iterator).first,
-                                              std::make_pair(window_area.w,
-                                                             window_area.h),
-                                              viewPort_in);
+        RPG_Graphics_Common_Tools::mapToScreen ((*iterator).first,
+                                                std::make_pair (window_area.w,
+                                                                window_area.h),
+                                                viewPort_in);
     source_clip_rectangle.x = screen_position.first;
     source_clip_rectangle.y = screen_position.second;
     source_clip_rectangle.w = (*iterator).second->w;

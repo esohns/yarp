@@ -1142,11 +1142,11 @@ do_UI(struct RPG_Engine_Entity& entity_in,
             map_window->getArea(window_area, true);
             engine_in->lock();
             RPG_Graphics_Position_t map_position =
-                RPG_Graphics_Common_Tools::screen2Map(mouse_position,
-                                                      engine_in->getSize(false),
-                                                      std::make_pair(window_area.w,
-                                                                     window_area.h),
-                                                      map_window->getView());
+                RPG_Graphics_Common_Tools::screenToMap (mouse_position,
+                                                        engine_in->getSize(false),
+                                                        std::make_pair (window_area.w,
+                                                                        window_area.h),
+                                                        map_window->getView());
             // inside map ?
             if (map_position ==
                 std::make_pair(std::numeric_limits<unsigned int>::max(),
@@ -1168,21 +1168,21 @@ do_UI(struct RPG_Engine_Entity& entity_in,
                    iterator++)
               {
                 positions.push_back(*iterator);
-                screen_positions.push_back(RPG_Graphics_Common_Tools::map2Screen(*iterator,
-                                                                                 std::make_pair(window_area.w,
-                                                                                                window_area.h),
-                                                                                 map_window->getView()));
+                screen_positions.push_back(RPG_Graphics_Common_Tools::mapToScreen (*iterator,
+                                                                                   std::make_pair (window_area.w,
+                                                                                                   window_area.h),
+                                                                                   map_window->getView()));
               } // end FOR
-              RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlights(positions,
-                                                                               screen_positions,
-                                                                               map_window->getView(),
-                                                                               dirty_region_2,
-                                                                               debug_in);
+              RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlights (positions,
+                                                                                screen_positions,
+                                                                                map_window->getView(),
+                                                                                dirty_region_2,
+                                                                                debug_in);
               dirty_region =
-                RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-                                                    dirty_region_2);
+                RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
+                                                     dirty_region_2);
             } // end IF
-            engine_in->unlock();
+            engine_in->unlock ();
 
             break;
           }
@@ -1460,6 +1460,11 @@ do_work(const mode_t& mode_in,
                                       magicDictionary_in,
                                       itemsDictionary_in,
                                       monsterDictionary_in);
+
+  struct Common_TimerConfiguration timer_configuration;
+  COMMON_TIMERMANAGER_SINGLETON::instance ()->initialize (timer_configuration);
+  ACE_thread_t thread_id = 0;
+  COMMON_TIMERMANAGER_SINGLETON::instance ()->start (thread_id);
 
   // step1: init video
   // step1a: init video system

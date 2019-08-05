@@ -19,26 +19,28 @@
  ***************************************************************************/
 #include "stdafx.h"
 
+#include "rpg_client_entity_manager.h"
+
 // *NOTE*: work around quirky MSVC...
 #ifdef _MSC_VER
 #define NOMINMAX
 #endif
 
-#include "rpg_client_entity_manager.h"
+#include <limits>
 
-#include "rpg_client_iwindow_level.h"
+#include "ace/OS.h"
+#include "ace/Log_Msg.h"
+
+#include "common_macros.h"
+
+#include "rpg_common_macros.h"
 
 #include "rpg_graphics_defines.h"
 #include "rpg_graphics_surface.h"
 #include "rpg_graphics_cursor_manager.h"
 #include "rpg_graphics_SDL_tools.h"
 
-#include "rpg_common_macros.h"
-
-#include "ace/OS.h"
-#include "ace/Log_Msg.h"
-
-#include <limits>
+#include "rpg_client_iwindow_level.h"
 
 RPG_Client_Entity_Manager::RPG_Client_Entity_Manager()
  : myScreenLock(NULL),
@@ -428,8 +430,9 @@ RPG_Client_Entity_Manager::invalidateBG(const RPG_Engine_EntityID_t& id_in)
   RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::invalidateBG"));
 
   RPG_Client_EntityCacheConstIterator_t iterator = myCache.find(id_in);
-  // sanity check(s)
-  ACE_ASSERT(iterator != myCache.end());
-
-  RPG_Graphics_Surface::clear((*iterator).second.bg);
+  if (likely (iterator != myCache.end()))
+  { ACE_ASSERT ((*iterator).second.bg);
+    RPG_Graphics_Surface::clear((*iterator).second.bg,
+                                NULL);
+  } // end IF
 }

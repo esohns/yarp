@@ -90,7 +90,7 @@ class RPG_Client_Common_Tools
                          const RPG_Graphics_Size_t&,      // window size
                          const RPG_Graphics_Position_t&,  // viewport (map coordinates !)
                          const SDL_Rect&,                 // window area
-                         const bool& = true);             // any ? : all
+                         bool = true);                    // any ? : all
   static bool hasHighlight (const RPG_Map_Position_t&, // position
                             const RPG_Engine&,         // state / engine
                             const bool& = true);       // locked access ?

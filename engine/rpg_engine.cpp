@@ -2891,12 +2891,10 @@ RPG_Engine::handleEntities()
        iterator != notifications.end ();
        iterator++)
   {
-    try
-    {
-      client_->notify ((*iterator).first, (*iterator).second);
-    }
-    catch (...)
-    {
+    try {
+      client_->notify ((*iterator).first,
+                       (*iterator).second);
+    } catch (...) {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
                   ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString ((*iterator).first).c_str ())));

@@ -93,14 +93,14 @@ class RPG_Graphics_Common_Tools
   static RPG_Graphics_Style random(const RPG_Graphics_Style&); // graphics style
 
   // coordinate transformations
-  static RPG_Graphics_Position_t screen2Map(const RPG_Graphics_Position_t&,  // position (screen coordinates !)
-                                            const RPG_Map_Size_t&,           // map size
+  static RPG_Graphics_Position_t screenToMap (const RPG_Graphics_Position_t&,  // position (screen coordinates !)
+                                              const RPG_Map_Size_t&,           // map size
+                                              const RPG_Graphics_Size_t&,      // window size
+                                              const RPG_Graphics_Position_t&); // viewport (map coordinates !)
+  // *NOTE*: translates the center of a map square to screen coordinates
+  static RPG_Graphics_Offset_t mapToScreen (const RPG_Graphics_Position_t&,  // position (map coordinates !)
                                             const RPG_Graphics_Size_t&,      // window size
                                             const RPG_Graphics_Position_t&); // viewport (map coordinates !)
-  // *NOTE*: translates the center of a map square to screen coordinates
-  static RPG_Graphics_Offset_t map2Screen(const RPG_Graphics_Position_t&,  // position (map coordinates !)
-                                          const RPG_Graphics_Size_t&,      // window size
-                                          const RPG_Graphics_Position_t&); // viewport (map coordinates !)
 
  private:
   ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Common_Tools())

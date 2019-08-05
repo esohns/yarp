@@ -869,10 +869,10 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
 //       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
 //       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
       screen_position =
-          RPG_Graphics_Common_Tools::map2Screen(current_map_position,
-                                                std::make_pair(window_area.w,
-                                                               window_area.h),
-                                                myView);
+          RPG_Graphics_Common_Tools::mapToScreen (current_map_position,
+                                                  std::make_pair (window_area.w,
+                                                                  window_area.h),
+                                                  myView);
 
       // step1: unmapped areas
       if ((current_element == MAPELEMENT_UNMAPPED) ||
@@ -1169,10 +1169,10 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
 //       x = (targetSurface->w / 2) + (RPG_GRAPHICS_TILE_WIDTH_MOD * (j - i));
 //       y = (targetSurface->h / 2) + (RPG_GRAPHICS_TILE_HEIGHT_MOD * (j + i));
       screen_position =
-          RPG_Graphics_Common_Tools::map2Screen(current_map_position,
-                                                std::make_pair(window_area.w,
-                                                               window_area.h),
-                                                myView);
+          RPG_Graphics_Common_Tools::mapToScreen (current_map_position,
+                                                  std::make_pair (window_area.w,
+                                                                  window_area.h),
+                                                  myView);
 
       wall_iterator = myWallTiles.find(current_map_position);
       door_iterator = myDoorTiles.find(current_map_position);
@@ -1530,11 +1530,11 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
           getArea(window_area, true);
           myEngine->lock();
           myClientAction.position =
-            RPG_Graphics_Common_Tools::screen2Map(cursor_position,
-                                                  myEngine->getSize(false),
-                                                  std::make_pair(window_area.w,
-                                                                 window_area.h),
-                                                  curent_view);
+            RPG_Graphics_Common_Tools::screenToMap (cursor_position,
+                                                    myEngine->getSize(false),
+                                                    std::make_pair (window_area.w,
+                                                                    window_area.h),
+                                                    curent_view);
           bool push_mousemove_event = myEngine->isValid(myClientAction.position,
                                                         false);
 
@@ -1814,12 +1814,12 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
       RPG_Graphics_Position_t curent_view = getView();
       myEngine->lock();
       myClientAction.position =
-        RPG_Graphics_Common_Tools::screen2Map (std::make_pair (event_in.motion.x,
-                                                               event_in.motion.y),
-                                               myEngine->getSize(false),
-                                               std::make_pair (inherited::clipRectangle_.w,
-                                                               inherited::clipRectangle_.h),
-                                               curent_view);
+        RPG_Graphics_Common_Tools::screenToMap (std::make_pair (event_in.motion.x,
+                                                                event_in.motion.y),
+                                                myEngine->getSize(false),
+                                                std::make_pair (inherited::clipRectangle_.w,
+                                                                inherited::clipRectangle_.h),
+                                                curent_view);
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse position [%u,%u] --> [%u,%u]\n"),
 //                  event_in.button.x,
@@ -1827,12 +1827,12 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
 //                  myClientAction.position.first,
 //                  myClientAction.position.second));
 
-      myClientAction.entity_id = myEngine->getActive(false);
-      bool is_valid = myEngine->isValid(myClientAction.position, false);
+      myClientAction.entity_id = myEngine->getActive (false);
+      bool is_valid = myEngine->isValid (myClientAction.position, false);
       myEngine->unlock();
-      bool has_seen = myClient->hasSeen(myClientAction.entity_id,
-                                        myClientAction.position,
-                                        true);
+      bool has_seen = myClient->hasSeen (myClientAction.entity_id,
+                                         myClientAction.position,
+                                         true);
       myEngine->lock();
 
       // change "active" tile ?
@@ -1991,12 +1991,12 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
       if (event_in.button.button == 1) // left-click
       {
         RPG_Graphics_Position_t map_position =
-            RPG_Graphics_Common_Tools::screen2Map(std::make_pair(event_in.button.x,
-                                                                 event_in.button.y),
-                                                  myEngine->getSize(false),
-                                                  std::make_pair(inherited::clipRectangle_.w,
-																									               inherited::clipRectangle_.h),
-																									curent_view);
+            RPG_Graphics_Common_Tools::screenToMap (std::make_pair (event_in.button.x,
+                                                                    event_in.button.y),
+                                                    myEngine->getSize(false),
+                                                    std::make_pair (inherited::clipRectangle_.w,
+                                                                    inherited::clipRectangle_.h),
+                                                    curent_view);
         //ACE_DEBUG((LM_DEBUG,
         //           ACE_TEXT("mouse position [%u,%u] --> map position [%u,%u]\n"),
         //           event_in.button.x,

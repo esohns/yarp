@@ -2235,54 +2235,56 @@ RPG_Graphics_Common_Tools::fade(const float& interval_in,
   } // end IF
   if (screenLock_in)
     screenLock_in->lock();
-  if (SDL_BlitSurface(targetImage_in,
-                      NULL,
-                      targetSurface_in,
-                      NULL))
+  if (SDL_BlitSurface (targetImage_in,
+                       NULL,
+                       targetSurface_in,
+                       NULL))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-               ACE_TEXT(SDL_GetError())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_BlitSurface(): %s, aborting\n"),
+                ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
   if (screenLock_in)
-    screenLock_in->unlock();
-  if (SDL_Flip(targetSurface_in))
+    screenLock_in->unlock ();
+  if (SDL_Flip (targetSurface_in))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_Flip(): %s, aborting\n"),
-               ACE_TEXT(SDL_GetError())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_Flip(): %s, aborting\n"),
+                ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
 }
 
 RPG_Graphics_Position_t
-RPG_Graphics_Common_Tools::screen2Map(const RPG_Graphics_Position_t& position_in,
-                                      const RPG_Map_Size_t& mapSize_in,
-                                      const RPG_Graphics_Size_t& windowSize_in,
-                                      const RPG_Graphics_Position_t& viewport_in)
+RPG_Graphics_Common_Tools::screenToMap (const RPG_Graphics_Position_t& position_in,
+                                        const RPG_Map_Size_t& mapSize_in,
+                                        const RPG_Graphics_Size_t& windowSize_in,
+                                        const RPG_Graphics_Position_t& viewport_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::screen2Map"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::screenToMap"));
 
   RPG_Graphics_Position_t offset, map_position;
 
-  offset.first = (position_in.first         -
-                  (windowSize_in.first / 2) +
-                  ((viewport_in.first - viewport_in.second) * RPG_GRAPHICS_TILE_WIDTH_MOD));
-  offset.second = (position_in.second         -
-                   (windowSize_in.second / 2) +
-                   ((viewport_in.first + viewport_in.second) * RPG_GRAPHICS_TILE_HEIGHT_MOD));
+  offset.first =
+      (position_in.first         -
+       (windowSize_in.first / 2) +
+       ((viewport_in.first - viewport_in.second) * RPG_GRAPHICS_TILE_WIDTH_MOD));
+  offset.second =
+      (position_in.second         -
+       (windowSize_in.second / 2) +
+       ((viewport_in.first + viewport_in.second) * RPG_GRAPHICS_TILE_HEIGHT_MOD));
 
-  map_position.first = ((RPG_GRAPHICS_TILE_HEIGHT_MOD * offset.first) +
-                        (RPG_GRAPHICS_TILE_WIDTH_MOD * offset.second) +
-                        (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
-                       (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD);
-  map_position.second = ((-RPG_GRAPHICS_TILE_HEIGHT_MOD * offset.first) +
-                         (RPG_GRAPHICS_TILE_WIDTH_MOD * offset.second) +
-                         (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
-                        (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD);
+  map_position.first =
+      ((RPG_GRAPHICS_TILE_HEIGHT_MOD * offset.first) +
+       (RPG_GRAPHICS_TILE_WIDTH_MOD * offset.second) +
+       (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
+      (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD);
+  map_position.second =
+      ((-RPG_GRAPHICS_TILE_HEIGHT_MOD * offset.first) +
+       (RPG_GRAPHICS_TILE_WIDTH_MOD * offset.second) +
+       (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
+      (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD);
 
   // sanity check: off-map position ?
   if ((map_position.first  >= mapSize_in.first) ||
@@ -2301,20 +2303,20 @@ RPG_Graphics_Common_Tools::screen2Map(const RPG_Graphics_Position_t& position_in
 }
 
 RPG_Graphics_Offset_t
-RPG_Graphics_Common_Tools::map2Screen(const RPG_Graphics_Position_t& position_in,
-                                      const RPG_Graphics_Size_t& windowSize_in,
-                                      const RPG_Graphics_Position_t& viewport_in)
+RPG_Graphics_Common_Tools::mapToScreen (const RPG_Graphics_Position_t& position_in,
+                                        const RPG_Graphics_Size_t& windowSize_in,
+                                        const RPG_Graphics_Position_t& viewport_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::map2Screen"));
+  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::mapToScreen"));
 
   // init return value(s)
   RPG_Graphics_Offset_t result =
-      std::make_pair(std::numeric_limits<int>::max(),
-                     std::numeric_limits<int>::max());
+      std::make_pair (std::numeric_limits<int>::max (),
+                      std::numeric_limits<int>::max ());
 
   RPG_Graphics_Position_t map_center =
-    std::make_pair(windowSize_in.first / 2,
-                   windowSize_in.second / 2);
+    std::make_pair (windowSize_in.first / 2,
+                    windowSize_in.second / 2);
   result.first = map_center.first +
                  (RPG_GRAPHICS_TILE_WIDTH_MOD *
                   (position_in.first -

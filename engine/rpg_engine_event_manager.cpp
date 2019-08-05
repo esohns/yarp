@@ -573,8 +573,8 @@ RPG_Engine_Event_Manager::cancel (const long& id_in)
   RPG_TRACE (ACE_TEXT ("RPG_Engine_Event_Manager::cancel"));
 
   const void* act_p = NULL;
-  if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (id_in,
-                                                          &act_p) <= 0)
+  if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel_timer (id_in,
+                                                                &act_p) <= 0)
   {
     ACE_DEBUG ((LM_DEBUG,
                 ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
