@@ -82,9 +82,9 @@ SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D(const RPG_Graphics_SDLWindowBase&
 
   myEngine->initialize (this);
 
-  myEngine->lock ();
-  RPG_Map_Size_t map_size = myEngine->getSize (false);
-  myEngine->unlock ();
+//  myEngine->lock ();
+  RPG_Map_Size_t map_size = myEngine->getSize (true);
+//  myEngine->unlock ();
   myView = std::make_pair (map_size.first / 2,
                            map_size.second / 2);
 
@@ -891,7 +891,7 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
       // find map square
       SDL_Rect window_area;
       getArea (window_area, true);
-      myEngine->lock ();
+//      myEngine->lock ();
       RPG_Graphics_Position_t map_position =
         RPG_Graphics_Common_Tools::screenToMap (std::make_pair (event_in.motion.x,
                                                                 event_in.motion.y),
@@ -910,7 +910,7 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
                           std::numeric_limits<unsigned int>::max ()))
       {
         // clean up
-        myEngine->unlock ();
+//        myEngine->unlock ();
 
         break; // off-map
       } // end IF
@@ -920,7 +920,7 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
           (event_in.motion.which != std::numeric_limits<unsigned char>::max ())) // fake event ?
       {
         // clean up
-        myEngine->unlock ();
+//        myEngine->unlock ();
 
         break; // same map square/not initiating pathing --> nothing to do...
       } // end IF
@@ -1080,7 +1080,7 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
                        myState->selection_mode));
 
             // clean up
-            myEngine->unlock ();
+//            myEngine->unlock ();
 
             break;
           }
@@ -1114,7 +1114,7 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
                                               myState->selection_mode,
                                               *myEngine,
                                               false);
-      myEngine->unlock();
+//      myEngine->unlock();
       if (cursor_type !=
           RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->type ())
       {
@@ -1325,7 +1325,7 @@ SDL_GUI_LevelWindow_3D::notify(enum RPG_Engine_Command command_in,
     case COMMAND_DOOR_OPEN:
     {
       RPG_Map_Position_t position = *parameters_in.positions.begin();
-      myEngine->lock();
+//      myEngine->lock();
       RPG_Map_DoorState door_state = myEngine->state(position, false);
 
       // change tile accordingly
@@ -1333,7 +1333,7 @@ SDL_GUI_LevelWindow_3D::notify(enum RPG_Engine_Command command_in,
           RPG_Client_Common_Tools::getDoorOrientation(position,
                                                       *myEngine,
                                                       false);
-      myEngine->unlock();
+//      myEngine->unlock();
       switch (orientation)
       {
         case ORIENTATION_HORIZONTAL:
@@ -1377,13 +1377,13 @@ SDL_GUI_LevelWindow_3D::notify(enum RPG_Engine_Command command_in,
       SDL_Surface* sprite_graphic = NULL;
       RPG_Graphics_GraphicTypeUnion type;
       type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-      myEngine->lock();
+//      myEngine->lock();
       type.sprite =
           (myEngine->isMonster(parameters_in.entity_id, false) ? RPG_Client_Common_Tools::classToSprite(myEngine->getClass(parameters_in.entity_id,
                                                                                                                           false))
                                                                : RPG_Client_Common_Tools::monsterToSprite(myEngine->getName(parameters_in.entity_id,
                                                                                                                            false)));
-      myEngine->unlock();
+//      myEngine->unlock();
       sprite_graphic =
           RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
                                                  true,   // convert to display format
@@ -1454,7 +1454,7 @@ SDL_GUI_LevelWindow_3D::toggleDoor(const RPG_Map_Position_t& position_in)
 
   ACE_ASSERT(myEngine);
 
-  myEngine->lock();
+//  myEngine->lock();
   bool is_open = (myEngine->state(position_in,
                                   false) == DOORSTATE_OPEN);
 
@@ -1463,7 +1463,7 @@ SDL_GUI_LevelWindow_3D::toggleDoor(const RPG_Map_Position_t& position_in)
   orientation = RPG_Client_Common_Tools::getDoorOrientation(position_in,
                                                             *myEngine,
                                                             false);
-  myEngine->unlock();
+//  myEngine->unlock();
   switch (orientation)
   {
     case ORIENTATION_HORIZONTAL:

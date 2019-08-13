@@ -26,7 +26,6 @@
 #include "ace/Atomic_Op_T.h"
 #include "ace/Global_Macros.h"
 #include "ace/Message_Queue_T.h"
-//#include "ace/Synch.h"
 #include "ace/Synch_Traits.h"
 #include "ace/Task.h"
 
@@ -82,9 +81,9 @@ class RPG_Engine
   // implement Common_IDumpState
   virtual void dump_state () const;
 
-  // *WARNING*: handle with care !
-  void lock () const;
-  void unlock () const;
+//  // *WARNING*: handle with care !
+//  void lock () const;
+//  void unlock () const;
 
   void initialize (RPG_Engine_IClient*); // client interface handle
   // *WARNING*: DO NOT USE while the engine isRunning() !
@@ -141,6 +140,9 @@ class RPG_Engine
   bool canSee (const RPG_Engine_EntityID_t&, // id
                const RPG_Engine_EntityID_t&, // target id
                bool = true) const;           // locked access ?
+  bool hasSeen (const RPG_Engine_EntityID_t&, // entity
+                const RPG_Map_Position_t&,    // position
+                bool = true) const;           // locked access ?
 
   bool findPath (const RPG_Map_Position_t&, // start position
                  const RPG_Map_Position_t&, // end position
@@ -232,5 +234,7 @@ class RPG_Engine
   RPG_Net_Protocol_ConnectionConfiguration    netConfiguration_;
   // *IMPORTANT NOTE*: need this ONLY to handle control messages...
   RPG_Engine_MessageQueue                     queue_;
+
+  RPG_Engine_SeenPositions_t                  seenPositions_;
 };
 #endif

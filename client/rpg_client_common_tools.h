@@ -104,6 +104,9 @@ class RPG_Client_Common_Tools
                                        const RPG_Client_SelectionMode&, // current selection mode
                                        const RPG_Engine&,               // state / engine
                                        const bool& = true);             // locked access ?
+
+  static RPG_Graphics_Positions_t mapToGraphicsPositions (const RPG_Map_Positions_t&);
+
   static RPG_Graphics_Style environmentToStyle(const RPG_Common_Environment&); // environment
 
  private:

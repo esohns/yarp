@@ -34,6 +34,7 @@
 #include "ace/Profile_Timer.h"
 #include "ace/Sig_Handler.h"
 #include "ace/Signal.h"
+#include "ace/Synch.h"
 #include "ace/Thread_Manager.h"
 #include "ace/Version.h"
 
@@ -855,7 +856,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   } // end IF
 
   SDL_Rect dirty_region;
-  ACE_OS::memset (&dirty_region, 0, sizeof (dirty_region));
+  ACE_OS::memset (&dirty_region, 0, sizeof (SDL_Rect));
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->setCursor (CURSOR_NORMAL,
                                                                  dirty_region);
 
@@ -927,12 +928,13 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   ACE_ASSERT (level_window);
   // init/add entity to the graphics cache
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->initialize (&client_engine,
-                                                            level_window);
+                                                                  level_window);
   RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->initialize (&client_engine,
-                                                          level_window);
+                                                                level_window);
 
   // start painting...
-  client_engine.start ();
+  thread_id = 0;
+  client_engine.start (thread_id);
   if (!client_engine.isRunning ())
   {
     ACE_DEBUG ((LM_ERROR,
@@ -1024,6 +1026,8 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   // step5d: start worker(s)
   int group_id = -1;
   struct Common_EventDispatchConfiguration dispatch_configuration;
+  dispatch_configuration.numberOfProactorThreads =
+      NET_CLIENT_DEFAULT_NUMBER_OF_DISPATCH_THREADS;
   struct Common_EventDispatchState dispatch_state_s;
   dispatch_state_s.configuration = &dispatch_configuration;
   if (!Common_Tools::startEventDispatch (dispatch_state_s))

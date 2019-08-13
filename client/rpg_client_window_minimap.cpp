@@ -202,7 +202,7 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
                             dirty_region);
 
   // lock engine
-  myEngine->lock();
+//  myEngine->lock();
 
   RPG_Map_Position_t map_position;
   RPG_Client_MiniMapTile tile = RPG_CLIENT_MINIMAPTILE_INVALID;
@@ -242,9 +242,9 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
 
       if (tile == RPG_CLIENT_MINIMAPTILE_INVALID)
       {
-        if (myClient->hasSeen(active_entity_id,
-                              map_position,
-                              false))
+        if (myEngine->hasSeen (active_entity_id,
+                               map_position,
+                               false))
         {
           switch (myEngine->getElement(map_position,
                                        false))
@@ -330,7 +330,7 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
     } // end FOR
 
   // unlock engine
-  myEngine->unlock ();
+//  myEngine->unlock ();
 
   if (SDL_MUSTLOCK (mySurface))
     SDL_UnlockSurface (mySurface);

@@ -51,7 +51,7 @@ if NOT exist "%XsdEXE%" (
  goto Failed
 )
 @rem generate "XMLSchema" namespace include file (rpg_common.xsd/rpg_common_environment.xsd)
-"%XsdEXE%" cxx-parser --char-type char --xml-parser xerces --force-overwrite --output-dir .\.. --hxx-suffix .h --show-anonymous --show-sloc --generate-xml-schema --skel-file-suffix "" ..\rpg_XMLSchema_XML_types.xsd
+@rem "%XsdEXE%" cxx-parser --char-type char --xml-parser xerces --force-overwrite --output-dir .\.. --hxx-suffix .h --show-anonymous --show-sloc --generate-xml-schema --skel-file-suffix "" ..\rpg_XMLSchema_XML_types.xsd
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate XML namespace code ^(parser^)^, exiting
  set RC=%ERRORLEVEL%
@@ -75,7 +75,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 @rem generate "XMLSchema" namespace include file (tree)
 @rem "%XsdEXE%" cxx-tree --char-type char --output-dir .\.. --generate-serialization --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --generate-xml-schema --hxx-suffix .h --show-anonymous --show-sloc ..\rpg_XMLSchema_XML_tree.xsd
-"%XsdEXE%" cxx-tree --char-type char --output-dir .\.. --generate-serialization --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --generate-xml-schema --hxx-suffix .h --show-anonymous --show-sloc ..\rpg_XMLSchema_XML_tree.xsd
+@rem "%XsdEXE%" cxx-tree --char-type char --output-dir .\.. --generate-serialization --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --generate-xml-schema --hxx-suffix .h --show-anonymous --show-sloc ..\rpg_XMLSchema_XML_tree.xsd
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate XML namespace code ^(tree^)^, exiting
  set RC=%ERRORLEVEL%

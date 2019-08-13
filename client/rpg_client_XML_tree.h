@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__CLIENT_RPG_CLIENT_XML_TREE_H
-#define CXX__CLIENT_RPG_CLIENT_XML_TREE_H
+#ifndef CXX___RPG_CLIENT_XML_TREE_H
+#define CXX___RPG_CLIENT_XML_TREE_H
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -174,4 +174,4 @@ operator<< (::xml_schema::list_stream&,
 //
 // End epilogue.
 
-#endif // CXX__CLIENT_RPG_CLIENT_XML_TREE_H
+#endif // CXX___RPG_CLIENT_XML_TREE_H

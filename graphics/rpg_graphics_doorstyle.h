@@ -16,8 +16,6 @@ enum RPG_Graphics_DoorStyle
   RPG_GRAPHICS_DOORSTYLE_INVALID
 };
 
-#include "rpg_graphics_exports.h"
-
 #include "ace/Global_Macros.h"
 
 #include <map>
@@ -26,7 +24,7 @@ enum RPG_Graphics_DoorStyle
 typedef std::map<RPG_Graphics_DoorStyle, std::string> RPG_Graphics_DoorStyleToStringTable_t;
 typedef RPG_Graphics_DoorStyleToStringTable_t::const_iterator RPG_Graphics_DoorStyleToStringTableIterator_t;
 
-class RPG_Graphics_Export RPG_Graphics_DoorStyleHelper
+class RPG_Graphics_DoorStyleHelper
 {
  public:
   inline static void init()

@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__COMBAT_RPG_COMBAT_XML_TREE_H
-#define CXX__COMBAT_RPG_COMBAT_XML_TREE_H
+#ifndef CXX_____RPG_COMBAT_XML_TREE_H
+#define CXX_____RPG_COMBAT_XML_TREE_H
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -1916,4 +1916,4 @@ operator<< (::xercesc::DOMElement&, const RPG_Combat_Damage_XMLTree_Type&);
 //
 // End epilogue.
 
-#endif // CXX__COMBAT_RPG_COMBAT_XML_TREE_H
+#endif // CXX_____RPG_COMBAT_XML_TREE_H

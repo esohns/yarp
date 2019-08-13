@@ -77,6 +77,7 @@ RPG_Engine::RPG_Engine ()
  , messageAllocator_ (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES)
  , netConfiguration_ ()
  , queue_ (RPG_ENGINE_MAX_QUEUE_SLOTS)
+ , seenPositions_ ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::RPG_Engine"));
 
@@ -495,21 +496,21 @@ RPG_Engine::dump_state () const
   } // end FOR
 }
 
-void
-RPG_Engine::lock () const
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Engine::lock"));
+//void
+//RPG_Engine::lock () const
+//{
+//  RPG_TRACE (ACE_TEXT ("RPG_Engine::lock"));
 
-  lock_.acquire ();
-}
+//  lock_.acquire ();
+//}
 
-void
-RPG_Engine::unlock () const
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Engine::unlock"));
+//void
+//RPG_Engine::unlock () const
+//{
+//  RPG_TRACE (ACE_TEXT ("RPG_Engine::unlock"));
 
-  lock_.release ();
-}
+//  lock_.release ();
+//}
 
 void
 RPG_Engine::initialize (RPG_Engine_IClient* client_in)
@@ -583,6 +584,17 @@ RPG_Engine::add (struct RPG_Engine_Entity* entity_in,
   if (lockedAccess_in)
     lock_.release ();
 
+  // step2: initialize vision cache
+  RPG_Map_Positions_t visible_positions;
+  getVisiblePositions (id,
+                       visible_positions,
+                       true);
+  { ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
+    ACE_ASSERT(seenPositions_.find (id) ==
+               seenPositions_.end ());
+    seenPositions_[id] = visible_positions;
+  } // end lock scope
+
   // notify AI
   unsigned char temp =
     entity_in->character->getSpeed (false,
@@ -605,42 +617,37 @@ RPG_Engine::add (struct RPG_Engine_Entity* entity_in,
   parameters.previous_position =
       std::make_pair(std::numeric_limits<unsigned int>::max(),
                      std::numeric_limits<unsigned int>::max());
-  // *WARNING*: avoid potential deadlock
-  if (!lockedAccess_in)
-    lock_.release ();
-  try
-  {
+//  // *WARNING*: avoid potential deadlock
+//  if (!lockedAccess_in)
+//    lock_.release ();
+  try {
     client_->notify (COMMAND_E2C_ENTITY_ADD,
                      parameters);
-  }
-  catch (...)
-  {
+  } catch (...) {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), returning\n"),
                 ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_ADD).c_str())));
 
-    // clean up
-    if (!lockedAccess_in)
-      lock_.acquire ();
+//    // clean up
+//    if (!lockedAccess_in)
+//      lock_.acquire ();
 
     return id;
   }
-  getVisiblePositions (parameters.entity_id,
-                       parameters.positions,
-                       false);
-  try
-  {
-    client_->notify (COMMAND_E2C_ENTITY_VISION,
-                     parameters);
-  }
-  catch (...)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
-                ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString (COMMAND_E2C_ENTITY_VISION).c_str ())));
-  }
-  if (!lockedAccess_in)
-    lock_.acquire ();
+//  parameters.positions = visible_positions;
+//  try
+//  {
+//    client_->notify (COMMAND_E2C_ENTITY_VISION,
+//                     parameters);
+//  }
+//  catch (...)
+//  {
+//    ACE_DEBUG ((LM_ERROR,
+//                ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
+//                ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString (COMMAND_E2C_ENTITY_VISION).c_str ())));
+//  }
+//  if (!lockedAccess_in)
+//    lock_.acquire ();
 
   return id;
 }
@@ -657,9 +664,7 @@ RPG_Engine::remove (const RPG_Engine_EntityID_t& id_in)
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance ()->remove (id_in);
 
   struct RPG_Engine_ClientNotificationParameters parameters;
-  {
-    ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
-
+  { ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
     RPG_Engine_EntitiesIterator_t iterator = entities_.find (id_in);
     if (iterator == entities_.end ())
     {
@@ -677,6 +682,12 @@ RPG_Engine::remove (const RPG_Engine_EntityID_t& id_in)
     parameters.positions.insert ((*iterator).second->position);
     entities_.erase (iterator);
 
+    // step2: update vision cache
+//      { ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+    ACE_ASSERT (seenPositions_.find (id_in) != seenPositions_.end ());
+    seenPositions_.erase (id_in);
+//      } // end lock scope
+
     if (id_in == activePlayer_)
       setActive (0, false);
   } // end lock scope
@@ -687,13 +698,10 @@ RPG_Engine::remove (const RPG_Engine_EntityID_t& id_in)
   parameters.previous_position =
     std::make_pair (std::numeric_limits<unsigned int>::max (),
                     std::numeric_limits<unsigned int>::max ());
-  try
-  {
+  try {
     client_->notify (COMMAND_E2C_ENTITY_REMOVE,
                      parameters);
-  }
-  catch (...)
-  {
+  } catch (...) {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
                 ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_REMOVE).c_str())));
@@ -1503,38 +1511,39 @@ RPG_Engine::setActive (const RPG_Engine_EntityID_t& id_in,
     lock_.release ();
 
   // notify client ?
-  if (id_in)
-  {
-    struct RPG_Engine_ClientNotificationParameters parameters;
-    parameters.entity_id = id_in;
-    parameters.condition = RPG_COMMON_CONDITION_INVALID;
-    if (lockedAccess_in)
-      lock_.acquire ();
-    getVisiblePositions (id_in,
-                         parameters.positions,
-                         false);
-    parameters.previous_position =
-      std::make_pair (std::numeric_limits<unsigned int>::max (),
-                      std::numeric_limits<unsigned int>::max ());
-    parameters.visible_radius = getVisibleRadius (id_in,
-                                                  false);
-    if (lockedAccess_in)
-      lock_.release ();
-    if (!lockedAccess_in)
-      lock_.release ();
-    try
-    {
-      client_->notify (COMMAND_E2C_ENTITY_VISION, parameters);
-    }
-    catch (...)
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
-                  ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_VISION).c_str())));
-    }
-    if (!lockedAccess_in)
-      lock_.acquire ();
-  } // end IF
+//  if (id_in)
+//  {
+//    struct RPG_Engine_ClientNotificationParameters parameters;
+//    parameters.entity_id = id_in;
+//    parameters.condition = RPG_COMMON_CONDITION_INVALID;
+//    if (lockedAccess_in)
+//      lock_.acquire ();
+//    getVisiblePositions (id_in,
+//                         parameters.positions,
+//                         false);
+//    parameters.previous_position =
+//      std::make_pair (std::numeric_limits<unsigned int>::max (),
+//                      std::numeric_limits<unsigned int>::max ());
+//    parameters.visible_radius = getVisibleRadius (id_in,
+//                                                  false);
+//    if (lockedAccess_in)
+//      lock_.release ();
+//    if (!lockedAccess_in)
+//      lock_.release ();
+//    try
+//    {
+//      client_->notify (COMMAND_E2C_ENTITY_VISION,
+//                       parameters);
+//    }
+//    catch (...)
+//    {
+//      ACE_DEBUG ((LM_ERROR,
+//                  ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
+//                  ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_VISION).c_str())));
+//    }
+//    if (!lockedAccess_in)
+//      lock_.acquire ();
+//  } // end IF
 }
 
 RPG_Engine_EntityID_t
@@ -2068,8 +2077,7 @@ RPG_Engine::getVisiblePositions (const RPG_Engine_EntityID_t& id_in,
   positions_out.clear ();
 
   // sanity check
-  if (id_in == 0)
-    return; // done
+  ACE_ASSERT (id_in != 0);
 
   if (lockedAccess_in)
     lock_.acquire ();
@@ -2134,93 +2142,32 @@ RPG_Engine::canSee (const RPG_Engine_EntityID_t& id_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::canSee"));
 
-  // sanity check
-  if ((id_in == 0) || (target_in == 0))
-    return false; // *CONSIDER*: false negative ?
+  // sanity check(s)
+  ACE_ASSERT (id_in && target_in);
 
   if (lockedAccess_in)
     lock_.acquire ();
-
   RPG_Engine_EntitiesConstIterator_t iterator = entities_.find (target_in);
-  ACE_ASSERT(iterator != entities_.end ());
-  if (iterator == entities_.end ())
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("invalid entity ID (was: %u), aborting\n"),
-                target_in));
-
-    if (lockedAccess_in)
-      lock_.release ();
-
-    // *CONSIDER*: false negative ?
-    return false;
-  } // end IF
+  ACE_ASSERT (iterator != entities_.end ());
 
   // target using a light source ?
   // *TODO*: consider magic light, spells, ...
   bool target_equipped_a_light = false;
   if ((*iterator).second->character->isPlayerCharacter ())
   {
-    RPG_Player_Player_Base* player_base = NULL;
-    try
-    {
-      player_base =
+    RPG_Player_Player_Base* player_base_p =
           dynamic_cast<RPG_Player_Player_Base*> ((*iterator).second->character);
-    }
-    catch (...)
-    {
-      player_base = NULL;
-    }
-    if (!player_base)
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to dynamic_cast<RPG_Player_Player_Base*>(%@), aborting\n"),
-                  (*iterator).second->character));
-
-      if (lockedAccess_in)
-        lock_.release ();
-
-      // *CONSIDER*: false negative ?
-      return false;
-    } // end IF
-
+    ACE_ASSERT (player_base_p);
     target_equipped_a_light =
-      (player_base->getEquipment ().getLightSource () != RPG_ITEM_COMMODITYLIGHT_INVALID);
+      (player_base_p->getEquipment ().getLightSource () != RPG_ITEM_COMMODITYLIGHT_INVALID);
   } // end IF
   else
   {
-    RPG_Monster* monster = NULL;
-    try
-    {
-      monster = dynamic_cast<RPG_Monster*> ((*iterator).second->character);
-    }
-    catch (...)
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to dynamic_cast<RPG_Monster*>(%@), aborting\n"),
-                  (*iterator).second->character));
-
-      if (lockedAccess_in)
-        lock_.release ();
-
-      // *CONSIDER*: false negative ?
-      return false;
-    }
-    if (!monster)
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to dynamic_cast<RPG_Monster*>(%@), aborting\n"),
-                  (*iterator).second->character));
-
-      if (lockedAccess_in)
-        lock_.release ();
-
-      // *CONSIDER*: false negative ?
-      return false;
-    } // end IF
-
+    RPG_Monster* monster_p =
+      dynamic_cast<RPG_Monster*> ((*iterator).second->character);
+    ACE_ASSERT (monster_p);
     target_equipped_a_light =
-      (monster->getEquipment ().getLightSource () != RPG_ITEM_COMMODITYLIGHT_INVALID);
+      (monster_p->getEquipment ().getLightSource () != RPG_ITEM_COMMODITYLIGHT_INVALID);
   } // end ELSE
   RPG_Map_Position_t target_position = (*iterator).second->position;
   if (!target_equipped_a_light)
@@ -2244,6 +2191,29 @@ RPG_Engine::canSee (const RPG_Engine_EntityID_t& id_in,
                                                target_position,
                                                obstacles,
                                                false);
+}
+
+bool
+RPG_Engine::hasSeen (const RPG_Engine_EntityID_t& id_in,
+                     const RPG_Map_Position_t& position_in,
+                     bool lockedAccess_in) const
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Engine::hasSeen"));
+
+  if (lockedAccess_in)
+    lock_.acquire ();
+
+  RPG_Engine_SeenPositionsConstIterator_t iterator =
+    seenPositions_.find (id_in);
+  ACE_ASSERT (iterator != seenPositions_.end ());
+  RPG_Map_PositionsConstIterator_t iterator2 =
+    (*iterator).second.find (position_in);
+  bool result = (iterator2 != (*iterator).second.end ());
+
+  if (lockedAccess_in)
+    lock_.release ();
+
+  return result;
 }
 
 unsigned int
@@ -2593,9 +2563,7 @@ RPG_Engine::handleEntities()
   RPG_Engine_EntityID_t remove_id = 0;
   RPG_Engine_ClientNotifications_t notifications;
 
-  {
-    ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
-
+  { ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
     for (RPG_Engine_EntitiesIterator_t iterator = entities_.begin();
          iterator != entities_.end();
          iterator++)
@@ -2661,30 +2629,15 @@ RPG_Engine::handleEntities()
             // award XP
             if (!(*target).second->character->isPlayerCharacter ())
             {
-              RPG_Player_Player_Base* player_base = NULL;
-              try
-              {
-                player_base =
+              RPG_Player_Player_Base* player_base_p =
                     dynamic_cast<RPG_Player_Player_Base*> ((*iterator).second->character);
-              }
-              catch (...)
-              {
-                player_base = NULL;
-              }
-              if (!player_base)
-              {
-                ACE_DEBUG ((LM_ERROR,
-                            ACE_TEXT ("failed to dynamic_cast<RPG_Player_Player_Base*>(%@), continuing\n"),
-                            (*iterator).second->character));
-
-                break;
-              } // end IF
+              ACE_ASSERT (player_base_p);
               unsigned int xp =
                 RPG_Engine_Common_Tools::combatToXP ((*target).second->character->getName (),
-                                                     player_base->getLevel (),
+                                                     player_base_p->getLevel (),
                                                      1,
                                                      1);
-              bool level_up = player_base->gainExperience (xp);
+              bool level_up = player_base_p->gainExperience (xp);
 
               parameters.entity_id = (*iterator).first;
               // append some more info to the message
@@ -2726,6 +2679,20 @@ RPG_Engine::handleEntities()
                               std::numeric_limits<unsigned int>::max());
             notifications.push_back (std::make_pair (current_action.command,
                                                      parameters));
+          } // end IF
+
+          // update seen positions ?
+          if (current_action.command == COMMAND_DOOR_OPEN)
+          {
+            RPG_Map_Positions_t visible_positions;
+            RPG_Engine_SeenPositionsIterator_t iterator_2 =
+              seenPositions_.find ((*iterator).first);
+            ACE_ASSERT (iterator_2 != seenPositions_.end ());
+            getVisiblePositions ((*iterator).first,
+                                 visible_positions,
+                                 false);
+            (*iterator_2).second.insert (visible_positions.begin (),
+                                         visible_positions.end ());
           } // end IF
 
           break;
@@ -2838,6 +2805,22 @@ RPG_Engine::handleEntities()
             break;
           } // end IF
 
+          // OK: take a step...
+          (*iterator).second->position = current_action.position;
+
+          // step1: entity has moved, update seen positions
+          RPG_Map_Positions_t positions;
+          getVisiblePositions ((*iterator).first,
+                               positions,
+                               true);
+//          { ACE_Guard<ACE_Thread_Mutex> aGuard (myLock);
+            RPG_Engine_SeenPositionsIterator_t iterator_2 =
+              seenPositions_.find ((*iterator).first);
+            ACE_ASSERT (iterator_2 != seenPositions_.end ());
+            (*iterator_2).second.insert (positions.begin (),
+                                         positions.end ());
+//          } // end lock scope
+
           // notify client window
           struct RPG_Engine_ClientNotificationParameters parameters;
           parameters.entity_id = (*iterator).first;
@@ -2846,9 +2829,6 @@ RPG_Engine::handleEntities()
           parameters.previous_position = (*iterator).second->position;
           notifications.push_back (std::make_pair (COMMAND_E2C_ENTITY_POSITION,
                                                    parameters));
-
-          // OK: take a step...
-          (*iterator).second->position = current_action.position;
 
           break;
         }

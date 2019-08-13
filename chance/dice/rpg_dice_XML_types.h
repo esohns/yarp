@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__CHANCE_DICE_RPG_DICE_XML_TYPES_H
-#define CXX__CHANCE_DICE_RPG_DICE_XML_TYPES_H
+#ifndef CXX_____RPG_DICE_XML_TYPES_H
+#define CXX_____RPG_DICE_XML_TYPES_H
 
 // Begin prologue.
 //
@@ -192,4 +192,4 @@ class RPG_Dice_ValueRange_Type_pskel: public ::xml_schema::complex_content
 //
 // End epilogue.
 
-#endif // CXX__CHANCE_DICE_RPG_DICE_XML_TYPES_H
+#endif // CXX_____RPG_DICE_XML_TYPES_H

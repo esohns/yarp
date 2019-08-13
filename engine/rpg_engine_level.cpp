@@ -792,7 +792,7 @@ RPG_Engine_Level::handleDoor (const RPG_Map_Position_t& position_in,
   position_door.position = position_in;
   position_door.outside = RPG_MAP_DIRECTION_INVALID;
   position_door.state = RPG_MAP_DOORSTATE_INVALID;
-  RPG_Map_DoorsIterator_t iterator = myMap.plan.doors.find(position_door);
+  RPG_Map_DoorsIterator_t iterator = myMap.plan.doors.find (position_door);
   // sanity check
   ACE_ASSERT(iterator != myMap.plan.doors.end());
 

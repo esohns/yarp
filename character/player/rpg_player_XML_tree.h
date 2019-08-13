@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__CHARACTER_PLAYER_RPG_PLAYER_XML_TREE_H
-#define CXX__CHARACTER_PLAYER_RPG_PLAYER_XML_TREE_H
+#ifndef CXX_____RPG_PLAYER_XML_TREE_H
+#define CXX_____RPG_PLAYER_XML_TREE_H
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -1115,4 +1115,4 @@ player_t (const ::RPG_Player_PlayerXML_XMLTree_Type& x,
 //
 // End epilogue.
 
-#endif // CXX__CHARACTER_PLAYER_RPG_PLAYER_XML_TREE_H
+#endif // CXX_____RPG_PLAYER_XML_TREE_H

@@ -174,7 +174,7 @@ create_target_launcher (graphics_parser
                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/ui/Debug
                                              ${PROJECT_SOURCE_DIR}/cmake/src/Debug
                                              ${PROJECT_SOURCE_DIR}/cmake/src/modules/vis/Debug
-                        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/../..
+                        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/..
                         ENVIRONMENT foo=bar)
 
 create_target_launcher (SDL_gui
@@ -194,5 +194,5 @@ create_target_launcher (SDL_gui
                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/ui/Debug
                                              ${PROJECT_SOURCE_DIR}/cmake/src/Debug
                                              ${PROJECT_SOURCE_DIR}/cmake/src/modules/vis/Debug
-                        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/../..
+                        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/..
                         ENVIRONMENT foo=bar)

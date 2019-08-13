@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.9.1, 2019-07-28T14:38:53. -->
+<!-- Written by QtCreator 4.9.2, 2019-08-09T19:43:40. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -65,9 +65,9 @@
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Desktop</value>
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Desktop</value>
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">{1506fb6f-a826-4668-928f-3702355e1c3c}</value>
-   <value type="int" key="ProjectExplorer.Target.ActiveBuildConfiguration">1</value>
+   <value type="int" key="ProjectExplorer.Target.ActiveBuildConfiguration">0</value>
    <value type="int" key="ProjectExplorer.Target.ActiveDeployConfiguration">0</value>
-   <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">9</value>
+   <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">15</value>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.0">
     <valuelist type="QVariantList" key="CMake.Configuration">
      <value type="QString">ACENetwork_DIR:PATH=/mnt/win_d/projects/ACENetwork/build</value>
@@ -385,7 +385,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Debug/test_u/graphics</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Default/test_u/graphics</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.1">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -451,7 +451,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Debug/test_u/item</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Default/test_u/item</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.10">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -517,7 +517,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Debug/test_u/map</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Default/test_u/map</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.11">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -583,7 +583,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Debug/test_u/map</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Default/test_u/map</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.12">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -649,7 +649,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Debug/test_u/map</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Default/test_u/map</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.13">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -715,7 +715,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Debug/test_u/net</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Default/test_u/net</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.14">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -781,7 +781,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Debug/test_u/net</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Default/test_u/net</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.15">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -847,7 +847,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory">/mnt/win_d/projects/yarp/</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Debug/test_u/client</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Default/test_u/client</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.16">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -913,7 +913,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Debug/test_u/magic</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Default/test_u/magic</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.17">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -979,7 +979,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Debug/test_u/character/monster</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Default/test_u/character/monster</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.2">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -1045,7 +1045,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Debug/test_u/chance</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Default/test_u/chance</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.3">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -1111,7 +1111,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Debug/test_u/chance</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Default/test_u/chance</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.4">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -1177,7 +1177,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Debug/test_u/sound</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Default/test_u/sound</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.5">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -1243,7 +1243,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Debug/test_u/character/player</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Default/test_u/character/player</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.6">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -1309,7 +1309,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Debug/test_u/character/player</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Default/test_u/character/player</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.7">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -1375,7 +1375,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Debug/test_u/character/player</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Default/test_u/character/player</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.8">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -1441,7 +1441,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Debug/test_u/combat</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Default/test_u/combat</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.9">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -1507,7 +1507,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory">/mnt/win_d/projects/yarp</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Debug/test_u/graphics</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/mnt/win_d/projects/yarp/build/Default/test_u/graphics</value>
    </valuemap>
    <value type="int" key="ProjectExplorer.Target.RunConfigurationCount">18</value>
   </valuemap>

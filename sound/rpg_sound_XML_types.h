@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__SOUND_RPG_SOUND_XML_TYPES_H
-#define CXX__SOUND_RPG_SOUND_XML_TYPES_H
+#ifndef CXX___RPG_SOUND_XML_TYPES_H
+#define CXX___RPG_SOUND_XML_TYPES_H
 
 // Begin prologue.
 //
@@ -218,4 +218,4 @@ class RPG_Sound_Dictionary_Type_pskel: public ::xml_schema::complex_content
 //
 // End epilogue.
 
-#endif // CXX__SOUND_RPG_SOUND_XML_TYPES_H
+#endif // CXX___RPG_SOUND_XML_TYPES_H

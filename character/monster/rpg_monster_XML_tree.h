@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__CHARACTER_MONSTER_RPG_MONSTER_XML_TREE_H
-#define CXX__CHARACTER_MONSTER_RPG_MONSTER_XML_TREE_H
+#ifndef CXX___RPG_MONSTER_XML_TREE_H
+#define CXX___RPG_MONSTER_XML_TREE_H
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -3981,4 +3981,4 @@ monsterDictionary (const ::RPG_Monster_Dictionary_XMLTree_Type& x,
 //
 // End epilogue.
 
-#endif // CXX__CHARACTER_MONSTER_RPG_MONSTER_XML_TREE_H
+#endif // CXX___RPG_MONSTER_XML_TREE_H

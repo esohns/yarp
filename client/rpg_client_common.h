@@ -251,10 +251,6 @@ enum RPG_Client_SelectionMode
   RPG_CLIENT_SELECTIONMODE_INVALID
 };
 
-typedef std::map<RPG_Engine_EntityID_t, RPG_Map_Positions_t> RPG_Client_SeenPositions_t;
-typedef RPG_Client_SeenPositions_t::const_iterator RPG_Client_SeenPositionsConstIterator_t;
-typedef RPG_Client_SeenPositions_t::iterator RPG_Client_SeenPositionsIterator_t;
-
 typedef std::vector<SDL_Surface*> RPG_Client_BlendingMaskCache_t;
 typedef RPG_Client_BlendingMaskCache_t::iterator RPG_Client_BlendingMaskCacheIterator_t;
 

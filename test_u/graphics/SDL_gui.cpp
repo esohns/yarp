@@ -1140,7 +1140,7 @@ do_UI(struct RPG_Engine_Entity& entity_in,
             mouse_position = std::make_pair(x, y);
             SDL_Rect window_area;
             map_window->getArea(window_area, true);
-            engine_in->lock();
+//            engine_in->lock();
             RPG_Graphics_Position_t map_position =
                 RPG_Graphics_Common_Tools::screenToMap (mouse_position,
                                                         engine_in->getSize(false),
@@ -1153,7 +1153,7 @@ do_UI(struct RPG_Engine_Entity& entity_in,
                                std::numeric_limits<unsigned int>::max()))
             {
               // clean up
-              engine_in->unlock();
+//              engine_in->unlock();
 
               break; // off the map
             } // end IF
@@ -1182,7 +1182,7 @@ do_UI(struct RPG_Engine_Entity& entity_in,
                 RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
                                                      dirty_region_2);
             } // end IF
-            engine_in->unlock ();
+//            engine_in->unlock ();
 
             break;
           }
@@ -1723,17 +1723,17 @@ do_work(const mode_t& mode_in,
         dynamic_cast<RPG_Client_IWindowLevel*>(main_window.child(WINDOW_MAP));
       ACE_ASSERT(map_window);
       // init/add entity to the graphics cache
-      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->initialize(&main_window,
-                                                              map_window);
-      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->initialize(&main_window,
-                                                            map_window);
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->initialize (&main_window,
+                                                                     map_window);
+      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance()->initialize (&main_window,
+                                                                   map_window);
 
       level_engine.set(level);
       level_engine.start();
-      level_engine.lock();
-      RPG_Engine_EntityID_t entity_ID = level_engine.add(&entity, false);
-      level_engine.setActive(entity_ID, false);
-      level_engine.unlock();
+//      level_engine.lock();
+      RPG_Engine_EntityID_t entity_ID = level_engine.add(&entity, true);
+      level_engine.setActive(entity_ID, true);
+//      level_engine.unlock();
 
       // step5a: draw map window...
       try

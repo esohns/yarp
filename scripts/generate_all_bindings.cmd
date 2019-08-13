@@ -12,7 +12,7 @@ set RC=0
 setlocal enabledelayedexpansion
 pushd . >NUL 2>&1
 
-set perl_exe=C:\Perl\bin\perl.exe
+set perl_exe=C:\Perl64\bin\perl.exe
 :: sanity check(s)
 if NOT exist %perl_exe% (
  echo Perl runtime not found^, exiting
@@ -24,10 +24,10 @@ set Yarp_dir=.
 :: ..........................................
 
 echo generating DLL exports headers...
-call %Yarp_dir%\chance\scripts\exports.bat
-call %Yarp_dir%\net\scripts\exports.bat
-call %Yarp_dir%\net\protocol\scripts\exports.bat
-call %Yarp_dir%\net\stream\scripts\exports.bat
+@rem call %Yarp_dir%\chance\scripts\exports.bat
+@rem call %Yarp_dir%\net\scripts\exports.bat
+@rem call %Yarp_dir%\net\protocol\scripts\exports.bat
+@rem call %Yarp_dir%\net\stream\scripts\exports.bat
 
 if %ERRORLEVEL% NEQ 0 (
  echo failed generating DLL exports headers

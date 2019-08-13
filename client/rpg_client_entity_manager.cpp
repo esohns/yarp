@@ -81,7 +81,7 @@ RPG_Client_Entity_Manager::initialize(Common_ILock* screenLock_in,
 void
 RPG_Client_Entity_Manager::add(const RPG_Engine_EntityID_t& id_in,
                                SDL_Surface* surface_in,
-                               const bool& free_on_remove_in)
+                               bool free_on_remove_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::add"));
 
@@ -128,8 +128,8 @@ RPG_Client_Entity_Manager::add(const RPG_Engine_EntityID_t& id_in,
 void
 RPG_Client_Entity_Manager::remove(const RPG_Engine_EntityID_t& id_in,
                                   SDL_Rect& dirtyRegion_out,
-                                  const bool& lockedAccess_in,
-                                  const bool& debug_in)
+                                  bool lockedAccess_in,
+                                  bool debug_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::remove"));
 
@@ -180,9 +180,9 @@ void
 RPG_Client_Entity_Manager::put(const RPG_Engine_EntityID_t& id_in,
                                const RPG_Graphics_Position_t& position_in,
                                SDL_Rect& dirtyRegion_out,
-                               const bool& clipWindow_in,
-                               const bool& lockedAccess_in,
-                               const bool& debug_in)
+                               bool clipWindow_in,
+                               bool lockedAccess_in,
+                               bool debug_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::put"));
 
@@ -328,9 +328,9 @@ RPG_Client_Entity_Manager::put(const RPG_Engine_EntityID_t& id_in,
 void
 RPG_Client_Entity_Manager::restoreBG(const RPG_Engine_EntityID_t& id_in,
                                      SDL_Rect& dirtyRegion_out,
-                                     const bool& clipWindow_in,
-                                     const bool& lockedAccess_in,
-																		 const bool& debug_in)
+                                     bool clipWindow_in,
+                                     bool lockedAccess_in,
+                                     bool debug_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::restoreBG"));
 

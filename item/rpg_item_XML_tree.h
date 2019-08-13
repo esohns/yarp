@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__ITEM_RPG_ITEM_XML_TREE_H
-#define CXX__ITEM_RPG_ITEM_XML_TREE_H
+#ifndef CXX___RPG_ITEM_XML_TREE_H
+#define CXX___RPG_ITEM_XML_TREE_H
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -2533,4 +2533,4 @@ operator<< (::xercesc::DOMElement&, const RPG_Item_DictionaryXML_XMLTree_Type&);
 //
 // End epilogue.
 
-#endif // CXX__ITEM_RPG_ITEM_XML_TREE_H
+#endif // CXX___RPG_ITEM_XML_TREE_H

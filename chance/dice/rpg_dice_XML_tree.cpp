@@ -33,6 +33,7 @@
 
 // Begin prologue.
 //
+#include "stdafx.h"
 //
 // End prologue.
 
@@ -202,21 +203,6 @@ end (const end_type& x)
 
 
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
-
-#include <xsd/cxx/tree/type-factory-map.hxx>
-
-#include <xsd/cxx/tree/comparison-map.hxx>
-
-namespace _xsd
-{
-  static
-  const ::xsd::cxx::tree::type_factory_plate< 0, char >
-  type_factory_plate_init;
-
-  static
-  const ::xsd::cxx::tree::comparison_plate< 0, char >
-  comparison_plate_init;
-}
 
 // RPG_Dice_DieType_XMLTree_Type
 //
@@ -579,15 +565,6 @@ operator!= (const RPG_Dice_ValueRange_XMLTree_Type& x, const RPG_Dice_ValueRange
 
 #include <ostream>
 
-#include <xsd/cxx/tree/std-ostream-map.hxx>
-
-namespace _xsd
-{
-  static
-  const ::xsd::cxx::tree::std_ostream_plate< 0, char >
-  std_ostream_plate_init;
-}
-
 ::std::ostream&
 operator<< (::std::ostream& o, RPG_Dice_DieType_XMLTree_Type::value i)
 {
@@ -632,15 +609,6 @@ operator<< (::std::ostream& o, const RPG_Dice_ValueRange_XMLTree_Type& i)
 #include <ostream>
 #include <xsd/cxx/tree/error-handler.hxx>
 #include <xsd/cxx/xml/dom/serialization-source.hxx>
-
-#include <xsd/cxx/tree/type-serializer-map.hxx>
-
-namespace _xsd
-{
-  static
-  const ::xsd::cxx::tree::type_serializer_plate< 0, char >
-  type_serializer_plate_init;
-}
 
 void
 operator<< (::xercesc::DOMElement& e, const RPG_Dice_DieType_XMLTree_Type& i)

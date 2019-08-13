@@ -143,23 +143,31 @@ set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 
 ########### launcher ###############
-file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
-create_target_launcher (client_gui
-                        ARGS "-t"
-                        FORWARD_ARGS
-                        RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/cmake/Debug
-                                             ${LIB_ROOT}/libpng/cmake/Debug
-                                             ${LIB_ROOT}/openssl
-                                             ${LIB_ROOT}/gtk2/bin
-                                             ${LIB_ROOT}/SDL/lib/x86
-                                             ${LIB_ROOT}/SDL_mixer/lib/x86
-                                             ${LIB_ROOT}/SDL_ttf/lib/x86
-                                             ${LIB_ROOT}/xerces-c/build/src/Debug
-                                             ${LIB_ROOT}/ACE_TAO/ACE/lib
-                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/Debug
-                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/err/Debug
-                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/ui/Debug
-                                             ${PROJECT_SOURCE_DIR}/cmake/src/Debug
-                                             ${PROJECT_SOURCE_DIR}/cmake/src/modules/vis/Debug
-                        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/../..
-                        ENVIRONMENT foo=bar)
+if (UNIX)
+ create_target_launcher (client_gui
+                         ARGS "-l -n -t"
+                         FORWARD_ARGS
+                         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/..
+                         ENVIRONMENT foo=bar)
+elseif (WIN32)
+ file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
+ create_target_launcher (client_gui
+                         ARGS "-l -n -t"
+                         FORWARD_ARGS
+                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/cmake/Debug
+                                              ${LIB_ROOT}/libpng/cmake/Debug
+                                              ${LIB_ROOT}/openssl
+                                              ${LIB_ROOT}/gtk2/bin
+                                              ${LIB_ROOT}/SDL/lib/x86
+                                              ${LIB_ROOT}/SDL_mixer/lib/x86
+                                              ${LIB_ROOT}/SDL_ttf/lib/x86
+                                              ${LIB_ROOT}/xerces-c/build/src/Debug
+                                              ${LIB_ROOT}/ACE_TAO/ACE/lib
+                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/Debug
+                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/err/Debug
+                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/ui/Debug
+                                              ${PROJECT_SOURCE_DIR}/cmake/src/Debug
+                                              ${PROJECT_SOURCE_DIR}/cmake/src/modules/vis/Debug
+                         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/..
+                         ENVIRONMENT foo=bar)
+endif ()

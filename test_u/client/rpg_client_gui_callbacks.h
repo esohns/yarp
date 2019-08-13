@@ -24,6 +24,8 @@
 //#include "glade/glade.h"
 #include "gtk/gtk.h"
 
+#include "ace/Synch.h"
+
 #include "rpg_player.h"
 
 #include "rpg_engine_common.h"

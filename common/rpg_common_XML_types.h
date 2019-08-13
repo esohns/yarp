@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__COMMON_RPG_COMMON_XML_TYPES_H
-#define CXX__COMMON_RPG_COMMON_XML_TYPES_H
+#ifndef CXX_____RPG_COMMON_XML_TYPES_H
+#define CXX_____RPG_COMMON_XML_TYPES_H
 
 // Begin prologue.
 //
@@ -727,4 +727,4 @@ class RPG_Common_Camp_Type_pskel: public virtual ::xml_schema::string_pskel
 //
 // End epilogue.
 
-#endif // CXX__COMMON_RPG_COMMON_XML_TYPES_H
+#endif // CXX_____RPG_COMMON_XML_TYPES_H

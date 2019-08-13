@@ -27,6 +27,7 @@
 #include <vector>
 
 #include "rpg_common_incl.h"
+#include "rpg_common_environment_incl.h"
 
 #include "rpg_magic_incl.h"
 

@@ -656,7 +656,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       next_action.path.clear();
       next_action.target = 0;
 
-      myEngine->lock();
+//      myEngine->lock();
       // step1: check pending action (if any)
       RPG_Engine_EntitiesIterator_t iterator =
           myEngine->entities_.find(event_in.entity_id);
@@ -667,7 +667,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
                    event_in.entity_id));
 
         // clean up
-        myEngine->unlock();
+//        myEngine->unlock();
 
         break;
       } // end IF
@@ -728,7 +728,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       if ((*iterator).second->actions.empty())
       {
         // clean up
-        myEngine->unlock();
+//        myEngine->unlock();
 
         break;
       } // end IF
@@ -946,7 +946,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       if (do_next_action)
         (*iterator).second->actions.push_front(next_action);
 
-      myEngine->unlock();
+//      myEngine->unlock();
 
       break;
     }
@@ -1010,7 +1010,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       entity->is_spawned = true;
 
       // choose random entry point
-      myEngine->lock();
+//      myEngine->lock();
       RPG_Map_Positions_t seed_points = myEngine->getSeedPoints(false);
       RPG_Map_PositionsConstIterator_t iterator2 = seed_points.begin();
       if (iterator2 == seed_points.end())
@@ -1019,7 +1019,7 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
                    ACE_TEXT("current map has no seed points, aborting\n")));
 
         // clean up
-        myEngine->unlock();
+//        myEngine->unlock();
         delete entity;
 
         break;
@@ -1031,9 +1031,9 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       std::advance(iterator2, roll_result.front() - 1);
 
       // find empty position
-      entity->position = myEngine->findValid(*iterator2,
-                                             0,
-                                             false);
+      entity->position = myEngine->findValid (*iterator2,
+                                              0,
+                                              false);
       if (entity->position ==
           std::make_pair(std::numeric_limits<unsigned int>::max(),
                          std::numeric_limits<unsigned int>::max()))
@@ -1044,14 +1044,14 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
 //                   (*iterator3).first, (*iterator3).second));
 
         // clean up
-        myEngine->unlock();
+//        myEngine->unlock();
         delete entity;
 
         break;
       } // end IF
 
-      RPG_Engine_EntityID_t id = myEngine->add(entity, false);
-      myEngine->unlock();
+      RPG_Engine_EntityID_t id = myEngine->add(entity, true);
+//      myEngine->unlock();
       ACE_DEBUG((LM_DEBUG,
                  ACE_TEXT("spawned \"%s\" [id: %u] @ [%u,%u]...\n"),
                  ACE_TEXT((*iterator).spawn.type.c_str()),

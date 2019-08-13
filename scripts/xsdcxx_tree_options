@@ -4,8 +4,8 @@
 #--export-xml-schema
 --extern-xml-schema rpg_XMLSchema.h
 --generate-comparison
---generate-extraction ACE_InputCDR
---generate-insertion ACE_OutputCDR
+#--generate-extraction ACE_InputCDR
+#--generate-insertion ACE_OutputCDR
 #--generate-intellisense
 --generate-ostream
 #--generate-polymorphic

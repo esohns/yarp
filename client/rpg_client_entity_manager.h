@@ -55,20 +55,20 @@ class RPG_Client_Entity_Manager
   // manage entities
   void add(const RPG_Engine_EntityID_t&, // id
            SDL_Surface*,                 // graphic handle
-           const bool& = false);         // free on remove() ?
+           bool = false);                // free on remove() ?
   void remove(const RPG_Engine_EntityID_t&, // id
               SDL_Rect&,                    // return value: "dirty" region
-              const bool& = true,           // locked access ?
-              const bool& = false);         // debug ?
+              bool = true,                  // locked access ?
+              bool = false);                // debug ?
   bool cached(const RPG_Engine_EntityID_t&) const; // id
 
   // draw the entity
   void put(const RPG_Engine_EntityID_t&,   // id
            const RPG_Graphics_Position_t&, // position (screen coordinates !)
            SDL_Rect&,                      // return value: "dirty" region
-           const bool&,                    // clip window ?
-           const bool& = true,             // locked access ?
-           const bool& = false);           // debug ?
+           bool,                           // clip window ?
+           bool = true,                    // locked access ?
+           bool = false);                  // debug ?
 
   // clear the stored BG
   void invalidateBG(const RPG_Engine_EntityID_t&); // id
@@ -95,9 +95,9 @@ class RPG_Client_Entity_Manager
   // restore the BG
   void restoreBG (const RPG_Engine_EntityID_t&, // id
                   SDL_Rect&,                    // return value: "dirty" region
-                  const bool&,                  // clip window ?
-                  const bool& = true,           // locked access ?
-                  const bool& = false);         // debug ?
+                  bool,                         // clip window ?
+                  bool = true,                  // locked access ?
+                  bool = false);                // debug ?
 
   Common_ILock*             myScreenLock;
   RPG_Graphics_IWindowBase* myWindow;

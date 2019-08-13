@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__COMBAT_RPG_COMBAT_XML_TYPES_H
-#define CXX__COMBAT_RPG_COMBAT_XML_TYPES_H
+#ifndef CXX_____RPG_COMBAT_XML_TYPES_H
+#define CXX_____RPG_COMBAT_XML_TYPES_H
 
 // Begin prologue.
 //
@@ -737,4 +737,4 @@ class RPG_Combat_Damage_Type_pskel: public ::xml_schema::complex_content
 //
 // End epilogue.
 
-#endif // CXX__COMBAT_RPG_COMBAT_XML_TYPES_H
+#endif // CXX_____RPG_COMBAT_XML_TYPES_H

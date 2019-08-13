@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__ENGINE_RPG_ENGINE_XML_TREE_H
-#define CXX__ENGINE_RPG_ENGINE_XML_TREE_H
+#ifndef CXX___RPG_ENGINE_XML_TREE_H
+#define CXX___RPG_ENGINE_XML_TREE_H
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -880,4 +880,4 @@ engine_state_t (const ::RPG_Engine_State_XMLTree_Type& x,
 //
 // End epilogue.
 
-#endif // CXX__ENGINE_RPG_ENGINE_XML_TREE_H
+#endif // CXX___RPG_ENGINE_XML_TREE_H

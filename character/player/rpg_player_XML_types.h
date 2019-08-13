@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__CHARACTER_PLAYER_RPG_PLAYER_XML_TYPES_H
-#define CXX__CHARACTER_PLAYER_RPG_PLAYER_XML_TYPES_H
+#ifndef CXX_____RPG_PLAYER_XML_TYPES_H
+#define CXX_____RPG_PLAYER_XML_TYPES_H
 
 // Begin prologue.
 //
@@ -563,4 +563,4 @@ class RPG_Player_State_Type_pskel: public virtual ::RPG_Player_StateBase_Type_ps
 //
 // End epilogue.
 
-#endif // CXX__CHARACTER_PLAYER_RPG_PLAYER_XML_TYPES_H
+#endif // CXX_____RPG_PLAYER_XML_TYPES_H

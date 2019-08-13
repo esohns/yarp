@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__CHANCE_DICE_RPG_DICE_XML_TREE_H
-#define CXX__CHANCE_DICE_RPG_DICE_XML_TREE_H
+#ifndef CXX_____RPG_DICE_XML_TREE_H
+#define CXX_____RPG_DICE_XML_TREE_H
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -362,4 +362,4 @@ operator<< (::xercesc::DOMElement&, const RPG_Dice_ValueRange_XMLTree_Type&);
 //
 // End epilogue.
 
-#endif // CXX__CHANCE_DICE_RPG_DICE_XML_TREE_H
+#endif // CXX_____RPG_DICE_XML_TREE_H

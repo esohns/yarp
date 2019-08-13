@@ -6,9 +6,7 @@
 #ifndef RPG_COMMON_FIXEDPERIOD_H
 #define RPG_COMMON_FIXEDPERIOD_H
 
-#include "rpg_common_exports.h"
-
-struct RPG_Common_Export RPG_Common_FixedPeriod
+struct RPG_Common_FixedPeriod
 {
   unsigned int seconds;
   unsigned int u_seconds;

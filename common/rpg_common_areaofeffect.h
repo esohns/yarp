@@ -21,8 +21,6 @@ enum RPG_Common_AreaOfEffect
   RPG_COMMON_AREAOFEFFECT_INVALID
 };
 
-#include "rpg_common_exports.h"
-
 #include "ace/Global_Macros.h"
 
 #include <map>
@@ -31,7 +29,7 @@ enum RPG_Common_AreaOfEffect
 typedef std::map<RPG_Common_AreaOfEffect, std::string> RPG_Common_AreaOfEffectToStringTable_t;
 typedef RPG_Common_AreaOfEffectToStringTable_t::const_iterator RPG_Common_AreaOfEffectToStringTableIterator_t;
 
-class RPG_Common_Export RPG_Common_AreaOfEffectHelper
+class RPG_Common_AreaOfEffectHelper
 {
  public:
   inline static void init()

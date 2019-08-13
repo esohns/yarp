@@ -213,12 +213,12 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
   Uint32* pixels = NULL;
   RPG_Engine_EntityID_t entity_id = 0, active_entity_id;
   float blend_factor = 1.0F;
-  myEngine->lock();
+//  myEngine->lock();
   RPG_Map_Size_t size = myEngine->getSize(false);
   active_entity_id = myEngine->getActive(false);
   RPG_Map_Positions_t visible_positions;
   RPG_Map_PositionsConstIterator_t visible_iterator;
-  RPG_Client_SeenPositionsConstIterator_t has_seen_iterator =
+  RPG_Engine_SeenPositionsConstIterator_t has_seen_iterator =
     myState->seen_positions.end ();
   RPG_Map_PositionsConstIterator_t has_seen_iterator_2;
   myState->lock.acquire ();
@@ -351,7 +351,7 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
       pixels[2] = color;
     } // end FOR
   myState->lock.release();
-  myEngine->unlock();
+//  myEngine->unlock();
   if (SDL_MUSTLOCK(mySurface))
     SDL_UnlockSurface(mySurface);
 

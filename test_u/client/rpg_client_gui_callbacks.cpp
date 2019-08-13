@@ -27,7 +27,8 @@
 
 #include "ace/Dirent_Selector.h"
 #include "ace/Log_Msg.h"
-#include "ace/Reactor.h"
+//#include "ace/Reactor.h"
+#include "ace/Synch.h"
 
 #include "common_file_tools.h"
 
@@ -3992,7 +3993,7 @@ item_toggled_GTK_cb (GtkWidget* widget_in,
     return TRUE; // propagate
   } // end IF
 
-  data_p->levelEngine->lock ();
+//  data_p->levelEngine->lock ();
   RPG_Engine_EntityID_t active_entity = data_p->levelEngine->getActive (false);
   unsigned char visible_radius_before = 0;
   if (active_entity)
@@ -4024,7 +4025,7 @@ item_toggled_GTK_cb (GtkWidget* widget_in,
       parameters.previous_position =
         std::make_pair (std::numeric_limits<unsigned int>::max (),
                         std::numeric_limits<unsigned int>::max ());
-      data_p->levelEngine->unlock ();
+//      data_p->levelEngine->unlock ();
       try
       {
         data_p->clientEngine->notify(COMMAND_E2C_ENTITY_VISION, parameters);
@@ -4035,10 +4036,10 @@ item_toggled_GTK_cb (GtkWidget* widget_in,
                    ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
                    ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_VISION).c_str())));
       }
-      data_p->levelEngine->lock ();
+//      data_p->levelEngine->lock ();
     } // end IF
   } // end IF
-  data_p->levelEngine->unlock ();
+//  data_p->levelEngine->unlock ();
 
   ::update_equipment(*data_p);
 

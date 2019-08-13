@@ -235,4 +235,8 @@ typedef RPG_Engine_LevelToExperienceList_t::const_iterator RPG_Engine_LevelToExp
 typedef std::map<unsigned char, RPG_Engine_LevelToExperienceList_t> RPG_Engine_CRToExperienceMap_t;
 typedef RPG_Engine_CRToExperienceMap_t::const_iterator RPG_Engine_CRToExperienceMapConstIterator_t;
 
+typedef std::map<RPG_Engine_EntityID_t, RPG_Map_Positions_t> RPG_Engine_SeenPositions_t;
+typedef RPG_Engine_SeenPositions_t::const_iterator RPG_Engine_SeenPositionsConstIterator_t;
+typedef RPG_Engine_SeenPositions_t::iterator RPG_Engine_SeenPositionsIterator_t;
+
 #endif

@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__MAGIC_RPG_MAGIC_XML_TYPES_H
-#define CXX__MAGIC_RPG_MAGIC_XML_TYPES_H
+#ifndef CXX___RPG_MAGIC_XML_TYPES_H
+#define CXX___RPG_MAGIC_XML_TYPES_H
 
 // Begin prologue.
 //
@@ -1440,4 +1440,4 @@ class RPG_Magic_Dictionary_Type_pskel: public ::xml_schema::complex_content
 //
 // End epilogue.
 
-#endif // CXX__MAGIC_RPG_MAGIC_XML_TYPES_H
+#endif // CXX___RPG_MAGIC_XML_TYPES_H

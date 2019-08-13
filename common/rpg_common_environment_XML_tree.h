@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX__COMMON_RPG_COMMON_ENVIRONMENT_XML_TREE_H
-#define CXX__COMMON_RPG_COMMON_ENVIRONMENT_XML_TREE_H
+#ifndef CXX___RPG_COMMON_ENVIRONMENT_XML_TREE_H
+#define CXX___RPG_COMMON_ENVIRONMENT_XML_TREE_H
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -44,7 +44,6 @@
 
 // Begin prologue.
 //
-#include "rpg_common_exports.h"
 //
 // End prologue.
 
@@ -81,7 +80,7 @@ class RPG_Common_Environment_XMLTree_Type;
 
 #include <xsd/cxx/xml/dom/parsing-header.hxx>
 
-class RPG_Common_Export RPG_Common_Plane_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_Plane_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -140,7 +139,7 @@ class RPG_Common_Export RPG_Common_Plane_XMLTree_Type: public ::xml_schema::stri
   static const value _xsd_RPG_Common_Plane_XMLTree_Type_indexes_[5];
 };
 
-class RPG_Common_Export RPG_Common_Terrain_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_Terrain_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -231,7 +230,7 @@ class RPG_Common_Export RPG_Common_Terrain_XMLTree_Type: public ::xml_schema::st
   static const value _xsd_RPG_Common_Terrain_XMLTree_Type_indexes_[37];
 };
 
-class RPG_Common_Export RPG_Common_Track_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_Track_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -290,7 +289,7 @@ class RPG_Common_Export RPG_Common_Track_XMLTree_Type: public ::xml_schema::stri
   static const value _xsd_RPG_Common_Track_XMLTree_Type_indexes_[5];
 };
 
-class RPG_Common_Export RPG_Common_Climate_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_Climate_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -348,7 +347,7 @@ class RPG_Common_Export RPG_Common_Climate_XMLTree_Type: public ::xml_schema::st
   static const value _xsd_RPG_Common_Climate_XMLTree_Type_indexes_[4];
 };
 
-class RPG_Common_Export RPG_Common_TimeOfDay_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_TimeOfDay_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -405,7 +404,7 @@ class RPG_Common_Export RPG_Common_TimeOfDay_XMLTree_Type: public ::xml_schema::
   static const value _xsd_RPG_Common_TimeOfDay_XMLTree_Type_indexes_[3];
 };
 
-class RPG_Common_Export RPG_Common_AmbientLighting_XMLTree_Type: public ::xml_schema::string
+class RPG_Common_AmbientLighting_XMLTree_Type: public ::xml_schema::string
 {
   public:
   enum value
@@ -462,7 +461,7 @@ class RPG_Common_Export RPG_Common_AmbientLighting_XMLTree_Type: public ::xml_sc
   static const value _xsd_RPG_Common_AmbientLighting_XMLTree_Type_indexes_[3];
 };
 
-class RPG_Common_Export RPG_Common_Environment_XMLTree_Type: public ::xml_schema::type
+class RPG_Common_Environment_XMLTree_Type: public ::xml_schema::type
 {
   public:
   // plane
@@ -626,66 +625,51 @@ class RPG_Common_Export RPG_Common_Environment_XMLTree_Type: public ::xml_schema
   outdoors_optional outdoors_;
 };
 
-RPG_Common_Export
 bool
 operator== (const RPG_Common_Environment_XMLTree_Type&, const RPG_Common_Environment_XMLTree_Type&);
 
-RPG_Common_Export
 bool
 operator!= (const RPG_Common_Environment_XMLTree_Type&, const RPG_Common_Environment_XMLTree_Type&);
 
 
 #include <iosfwd>
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_Plane_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_Plane_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_Terrain_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_Terrain_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_Track_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_Track_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_Climate_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_Climate_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_TimeOfDay_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_TimeOfDay_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, RPG_Common_AmbientLighting_XMLTree_Type::value);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_AmbientLighting_XMLTree_Type&);
 
-RPG_Common_Export
 ::std::ostream&
 operator<< (::std::ostream&, const RPG_Common_Environment_XMLTree_Type&);
 
@@ -703,85 +687,66 @@ operator<< (::std::ostream&, const RPG_Common_Environment_XMLTree_Type&);
 
 #include <xsd/cxx/xml/dom/auto-ptr.hxx>
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_Plane_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_Plane_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_Plane_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_Terrain_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_Terrain_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_Terrain_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_Track_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_Track_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_Track_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_Climate_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_Climate_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_Climate_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_TimeOfDay_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_TimeOfDay_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_TimeOfDay_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_AmbientLighting_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMAttr&, const RPG_Common_AmbientLighting_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xml_schema::list_stream&,
             const RPG_Common_AmbientLighting_XMLTree_Type&);
 
-RPG_Common_Export
 void
 operator<< (::xercesc::DOMElement&, const RPG_Common_Environment_XMLTree_Type&);
 
@@ -792,4 +757,4 @@ operator<< (::xercesc::DOMElement&, const RPG_Common_Environment_XMLTree_Type&);
 //
 // End epilogue.
 
-#endif // CXX__COMMON_RPG_COMMON_ENVIRONMENT_XML_TREE_H
+#endif // CXX___RPG_COMMON_ENVIRONMENT_XML_TREE_H

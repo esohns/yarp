@@ -45,7 +45,7 @@ struct state_t
   RPG_Graphics_Style         style;
 	RPG_Client_SelectionMode   selection_mode;
 	ACE_Thread_Mutex           lock;
-	RPG_Client_SeenPositions_t seen_positions;
+  RPG_Engine_SeenPositions_t seen_positions;
 	//
 	RPG_Map_Path_t             path;
 	RPG_Map_Position_t         source;

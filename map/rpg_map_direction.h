@@ -17,8 +17,6 @@ enum RPG_Map_Direction
   RPG_MAP_DIRECTION_INVALID
 };
 
-#include "rpg_map_exports.h"
-
 #include "ace/Global_Macros.h"
 
 #include <map>
@@ -27,7 +25,7 @@ enum RPG_Map_Direction
 typedef std::map<RPG_Map_Direction, std::string> RPG_Map_DirectionToStringTable_t;
 typedef RPG_Map_DirectionToStringTable_t::const_iterator RPG_Map_DirectionToStringTableIterator_t;
 
-class RPG_Map_Export RPG_Map_DirectionHelper
+class RPG_Map_DirectionHelper
 {
  public:
   inline static void init()
