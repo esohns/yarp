@@ -20,7 +20,7 @@
 #include "stdafx.h"
 
 #ifdef HAVE_CONFIG_H
-//#include "XML2CppCode-config.h"
+#include "XML2CppCode_config.h"
 #endif
 
 #include "xml2cppcode.h"
@@ -181,7 +181,7 @@ process_arguments(const int& argc_in,
       {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("unrecognized option \"%s\", aborting\n"),
-									 ACE_TEXT(argumentParser.last_option())));
+                   ACE_TEXT(argumentParser.last_option())));
 
         return false;
       }
@@ -258,13 +258,7 @@ do_printVersion(const std::string& programName_in)
 {
   ACE_TRACE(ACE_TEXT("::do_printVersion"));
 
-//#if defined(_MSC_VER)
-//  std::cout << programName_in << ACE_TEXT(" : ") << XML2CPPCODE_VERSION << std::endl;
-//#else
-////  // *TODO*: leave as-is for now (see Yarp/configure.ac)
-//  //std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
-//  std::cout << programName_in << ACE_TEXT(" : ") << XML2CPPCODE_VERSION << std::endl;
-//#endif
+  std::cout << programName_in << ACE_TEXT(" : ") << XML2CppCode_PACKAGE_VERSION << std::endl;
 
   // create version string...
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
@@ -312,8 +306,8 @@ do_printVersion(const std::string& programName_in)
 
 bool
 validate_arguments(const std::string& emitClassQualifier_in,
-									 const bool& emitStringConversionUtilities_in,
-									 const bool& emitTaggedUnions_in,
+                   const bool& emitStringConversionUtilities_in,
+                   const bool& emitTaggedUnions_in,
                    const std::string& filename_in,
                    const bool& generateIncludeHeader_in,
                    const std::string& directory_in,
@@ -328,7 +322,7 @@ validate_arguments(const std::string& emitClassQualifier_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid (XMLSchema) filename \"%s\", aborting\n"),
-							 ACE_TEXT(filename_in.c_str())));
+               ACE_TEXT(filename_in.c_str())));
 
     return false;
   } // end IF
@@ -338,7 +332,7 @@ validate_arguments(const std::string& emitClassQualifier_in,
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid target directory \"%s\", aborting\n"),
-							 ACE_TEXT(directory_in.c_str())));
+               ACE_TEXT(directory_in.c_str())));
 
     return false;
   } // end IF
@@ -348,7 +342,7 @@ validate_arguments(const std::string& emitClassQualifier_in,
   {
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("invalid preamble \"%s\", aborting\n"),
-							 ACE_TEXT(preamble_in.c_str())));
+               ACE_TEXT(preamble_in.c_str())));
 
     return false;
   } // end IF

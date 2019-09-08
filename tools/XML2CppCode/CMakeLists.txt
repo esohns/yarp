@@ -6,7 +6,17 @@ cmake_minimum_required(VERSION 2.8)
 #find_package(pthread REQUIRED)
 #find_package(xerces-c REQUIRED)
 
-#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/XML2CppCode-config.h)
+include (${CMAKE_CURRENT_SOURCE_DIR}/VersionConfig.cmake)
+
+if (UNIX)
+ set (NEWLINE_STYLE UNIX)
+elseif (WIN32)
+ set (NEWLINE_STYLE WIN32)
+endif ()
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake.in
+                ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_config.h
+                @ONLY
+                NEWLINE_STYLE ${NEWLINE_STYLE})
 
 ########### next target ###############
 set(XML2CppCode_SRCS
