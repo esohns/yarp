@@ -206,7 +206,7 @@ idle_initialize_UI_cb (gpointer userData_in)
     GTK_FRAME (gtk_builder_get_object ((*iterator_2).second.second,
                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
   ACE_ASSERT (frame);
-  gtk_widget_ref (GTK_WIDGET (frame));
+  g_object_ref (GTK_WIDGET (frame));
   gtk_widget_unparent (GTK_WIDGET (frame));
   gtk_box_pack_start (GTK_BOX (hbox),
                       GTK_WIDGET (frame),

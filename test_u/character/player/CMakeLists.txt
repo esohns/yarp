@@ -1,3 +1,36 @@
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src/ui/scripts/PreUIFramework.cmake)
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src/ui/scripts/SetUIFramework.cmake)
+
+if (CURSES_USE)
+elseif (GTK_USE)
+ include (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src/ui/scripts/SetGTKVersion.cmake)
+
+ if (CMAKE_BUILD_TYPE STREQUAL Debug)
+  add_definitions (-DG_ERRORCHECK_MUTEXES)
+ endif (CMAKE_BUILD_TYPE STREQUAL Debug)
+elseif (WXWIDGETS_USE)
+ message (STATUS "wxWidgets_DEFINITIONS: ${wxWidgets_DEFINITIONS}")
+ message (STATUS "wxWidgets_DEFINITIONS_DEBUG: ${wxWidgets_DEFINITIONS_DEBUG}")
+ message (STATUS "wxWidgets_CXX_FLAGS: ${wxWidgets_CXX_FLAGS}")
+ message (STATUS "wxWidgets_USE_FILE: ${wxWidgets_USE_FILE}")
+# # *NOTE*: re-enable ANSI mode, iff available
+# add_definitions (-DwxUSE_UNICODE=0)
+ foreach (DEFINITION ${wxWidgets_DEFINITIONS})
+  add_definitions (-D${DEFINITION})
+ endforeach ()
+ if (WIN32)
+#  add_definitions (-D__WXMSW__)
+#  add_definitions (-DWXUSINGDLL)
+  if (MSVC)
+   add_definitions (-DwxMSVC_VERSION_AUTO)
+  endif (MSVC)
+ endif (WIN32)
+ add_definitions (-DwxUSE_GUI=1)
+ if (CMAKE_BUILD_TYPE STREQUAL Debug)
+#   add_definitions (-D__WXDEBUG__)
+ endif (CMAKE_BUILD_TYPE STREQUAL Debug)
+endif ()
+
 if (UNIX)
  include(FindPkgConfig)
  pkg_check_modules(PKG_CONFIG_MODULE_SDL REQUIRED sdl)
@@ -21,6 +54,9 @@ elseif (WIN32)
                      ${GTK_INCLUDE_DIRS})
 endif ()
 
+if (WIN32)
+ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/include)
+endif (WIN32)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src/image)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src/log)
@@ -57,10 +93,9 @@ add_executable (${EXECUTABLE}
 if (UNIX)
  target_link_libraries (${EXECUTABLE}
                         pthread
-                        xerces-c
-                        ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
-                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
-                        ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
+#                        ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
+#                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
+#                        ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
                         xerces-c
                         ACE
                         Common CommonLog CommonTimer
@@ -76,12 +111,12 @@ elseif (WIN32)
  set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
-                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
-                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                       Common CommonLog CommonTimer
-                       RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item
-                       RPG_Character RPG_Monster RPG_Player RPG_Combat
-                       RPG_Map RPG_Graphics RPG_Engine)
+                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
+                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        Common CommonLog CommonTimer
+                        RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item
+                        RPG_Character RPG_Monster RPG_Player RPG_Combat
+                        RPG_Map RPG_Graphics RPG_Engine)
 endif ()
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
@@ -121,7 +156,7 @@ elseif (WIN32)
  set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
-                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                         $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                         Common CommonLog CommonTimer
                         ACEStream ACEStream_Network
@@ -151,8 +186,8 @@ set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITION
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 
-add_definitions (-D_WIN32_WINNT=0x0602)
-add_definitions (-DWINVER=0x0602)
+#add_definitions (-D_WIN32_WINNT=0x0602)
+#add_definitions (-DWINVER=0x0602)
 
 include_directories (${GTK_INCLUDE_DIRS}
                      $ENV{LIB_ROOT}/gtkglarea
@@ -191,12 +226,12 @@ elseif (WIN32)
 
  target_link_libraries (${EXECUTABLE}
                         Opengl32.lib Ntdll.lib
-                        $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
-                        $ENV{LIB_ROOT}/SDL_mixer/lib/x86/SDL_mixer.lib
+#                        $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDLmain.lib
+                        $ENV{LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL_mixer.lib
                         ${GTK_LIBRARIES}
-                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                         $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                        Common CommonLog CommonTimer CommonUI_GTK
+                        Common CommonError CommonLog CommonTimer CommonUI_GTK
                         ACEStream ACEStream_Miscellaneous ACEStream_Network
                         ACENetwork ACENetwork_Client
                         RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item

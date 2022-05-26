@@ -2,12 +2,12 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/Threads.cmake)
 
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/ACE.cmake)
 
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/image/scripts/png.cmake)
+
 if (UNIX)
  include (FindPkgConfig)
  pkg_check_modules (PKG_CONFIG_MODULE_SDL REQUIRED sdl)
  pkg_check_modules (PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
- pkg_check_modules (PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
-elseif (WIN32)
 endif ()
 
 ########### next target ###############
@@ -79,43 +79,27 @@ if (UNIX)
                              $<BUILD_INTERFACE:${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}>)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}>)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS}>)
 elseif (WIN32)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/SDL/include>)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/SDL_ttf/include>)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/libpng/cmake>)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/libpng>)
 endif ()
+target_include_directories (${LIBRARY} PUBLIC
+                            "$<BUILD_INTERFACE:${PNG_INCLUDE_DIRS}>")
 
 if (UNIX)
 elseif (WIN32)
  target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/src>)
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/msvc/src>)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/src>)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
 endif ()
 
-if (UNIX)
- target_include_directories (${LIBRARY} PUBLIC
-#                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules/ACE>)
-#                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/ACE_TAO/ACE>)
-                             $<BUILD_INTERFACE:/usr/local/src/ACE_wrappers>)
-elseif (WIN32)
- if (DEFINED ENV{ACE_ROOT})
-  target_include_directories (${LIBRARY} PUBLIC
-                              $<BUILD_INTERFACE:$ENV{ACE_ROOT}>)
- else ()
-  target_include_directories (${LIBRARY} PUBLIC
-                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/ACE_TAO/ACE>)
- endif (DEFINED ENV{ACE_ROOT})
-endif ()
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${ACE_INCLUDE_DIR}>)
 
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src>)
@@ -145,18 +129,18 @@ add_dependencies (${LIBRARY} RPG_Common RPG_Dice)
 
 set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
-target_link_libraries(${LIBRARY}
-                      ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
-                      ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
-                      ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
-target_link_libraries(${LIBRARY}
-                      $ENV{LIB_ROOT}/SDL/lib/x86/SDL.lib
-                      $ENV{LIB_ROOT}/SDL_ttf/lib/x86/SDL_ttf.lib
-                      $ENV{LIB_ROOT}/libpng/cmake/Debug/libpng16d.lib)
+target_link_libraries (${LIBRARY}
+                       ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
+                       ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
+                       ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
+target_link_libraries (${LIBRARY}
+                       $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL.lib
+                       $ENV{LIB_ROOT}/SDL_ttf/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL_ttf.lib
+                       $ENV{LIB_ROOT}/libpng/build/Debug/libpng16d.lib)
 
 # add PCH
-set_target_properties (${LIBRARY} PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
-cotire (${LIBRARY})
+target_precompile_headers (${LIBRARY}
+                           PRIVATE stdafx.h)
 
 ########### install files ###############
 install (FILES

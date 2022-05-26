@@ -37,27 +37,15 @@ add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 if (UNIX)
 elseif (WIN32)
  target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/src>)
+                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/msvc/src>)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/src>)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
 endif ()
 
-if (UNIX)
- target_include_directories (${LIBRARY} PUBLIC
-#                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules/ACE>)
-#                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/ACE_TAO/ACE>)
-                             $<BUILD_INTERFACE:/usr/local/src/ACE_wrappers>)
-elseif (WIN32)
- if (DEFINED ENV{ACE_ROOT})
-  target_include_directories (${LIBRARY} PUBLIC
-                              $<BUILD_INTERFACE:$ENV{ACE_ROOT}>)
- else ()
-  target_include_directories (${LIBRARY} PUBLIC
-                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/ACE_TAO/ACE>)
- endif (DEFINED ENV{ACE_ROOT})
-endif ()
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${ACE_INCLUDE_DIR}>)
 
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../3rd_party/xsd>)
@@ -87,8 +75,8 @@ add_dependencies (${LIBRARY} RPG_Dice RPG_Common RPG_Character RPG_Magic RPG_Ite
 set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
 # add PCH
-set_target_properties (${LIBRARY} PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
-cotire (${LIBRARY})
+target_precompile_headers (${LIBRARY}
+                           PRIVATE stdafx.h)
 
 ########### install files ###############
 install (FILES rpg_combat.xsd

@@ -19,6 +19,7 @@
 #ifndef SDL_GUI_MINIMAPWINDOW_H
 #define SDL_GUI_MINIMAPWINDOW_H
 
+#define _SDL_main_h
 #include "SDL.h"
 
 #include "ace/Global_Macros.h"

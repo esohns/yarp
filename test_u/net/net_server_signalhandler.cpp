@@ -29,7 +29,6 @@
 #include "ace/Proactor.h"
 #include "ace/Reactor.h"
 
-//#include "common_icontrol.h"
 #include "common_tools.h"
 
 #include "common_timer_manager_common.h"
@@ -40,14 +39,7 @@
 #include "rpg_net_protocol_network.h"
 
 Net_Server_SignalHandler::Net_Server_SignalHandler (long timerId_in)
-                                                    //Common_IControl* controller_in,
-                                                    //Common_IStatistic_T<RPG_Net_Protocol_RuntimeStatistic>* report_in,
-                                                    //bool useReactor_in)
- : inherited (COMMON_SIGNAL_DISPATCH_SIGNAL,
-              NULL,
-              this)          // event handler handle
- //, control_ (controller_in)
- //, report_ (report_in)
+ : inherited (this) // event handler handle
  , timerId_ (timerId_in)
 {
   RPG_TRACE (ACE_TEXT ("Net_Server_SignalHandler::Net_Server_SignalHandler"));
@@ -162,8 +154,7 @@ Net_Server_SignalHandler::handle (const struct Common_Signal& signal_in)
     //RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
     // step4: stop reactor (&& proactor, if applicable)
-    Common_Tools::finalizeEventDispatch (-1,     // stop reactor ?
-                                         -1,     // stop proactor ?
-                                         false);          // group ID (--> don't block !)
+    Common_Tools::finalizeEventDispatch (*inherited::configuration_->dispatchState,
+                                         false); // wait ?
   } // end IF
 }

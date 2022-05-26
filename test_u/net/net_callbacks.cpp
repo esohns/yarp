@@ -21,8 +21,6 @@
 
 #include "net_callbacks.h"
 
-//#include "glade/glade.h"
-
 #include "common_timer_manager.h"
 
 #include "common_ui_common.h"
@@ -33,11 +31,7 @@
 #include "common_ui_gtk_manager_common.h"
 
 #include "net_common.h"
-//#include "net_connection_common.h"
-//#include "net_connection_manager_common.h"
 #include "net_defines.h"
-
-#include "net_server_common.h"
 
 #include "rpg_dice.h"
 
@@ -48,11 +42,9 @@
 #include "rpg_client_defines.h"
 #include "rpg_client_ui_tools.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif /* __cplusplus */
-G_MODULE_EXPORT gboolean
+#include "net_server_common.h"
+
+gboolean
 idle_initialize_UI_cb (gpointer userData_in)
 {
   RPG_TRACE (ACE_TEXT ("::idle_initialize_UI_cb"));
@@ -158,7 +150,7 @@ idle_initialize_UI_cb (gpointer userData_in)
                               GTK_RC_TEXT);
   gtk_widget_modify_style (GTK_WIDGET (view_p),
                            rc_style_p);
-  gtk_rc_style_unref (rc_style_p);
+  g_object_unref (rc_style_p);
 
   // step4: initialize updates
   // schedule asynchronous updates of the log view
@@ -296,7 +288,7 @@ idle_initialize_UI_cb (gpointer userData_in)
   return FALSE; // G_SOURCE_REMOVE
 }
 
-G_MODULE_EXPORT gboolean
+gboolean
 idle_finalize_UI_cb (gpointer userData_in)
 {
   RPG_TRACE (ACE_TEXT ("::idle_finalize_UI_cb"));
@@ -307,7 +299,7 @@ idle_finalize_UI_cb (gpointer userData_in)
   return FALSE; // G_SOURCE_REMOVE
 }
 
-G_MODULE_EXPORT gboolean
+gboolean
 idle_update_log_display_cb (gpointer userData_in)
 {
   RPG_TRACE (ACE_TEXT ("::idle_update_log_display_cb"));
@@ -399,7 +391,7 @@ idle_update_log_display_cb (gpointer userData_in)
   return TRUE; // G_SOURCE_CONTINUE
 }
 
-G_MODULE_EXPORT gboolean
+gboolean
 idle_update_info_display_cb (gpointer userData_in)
 {
   RPG_TRACE (ACE_TEXT ("::idle_update_info_display_cb"));
@@ -524,7 +516,11 @@ idle_update_info_display_cb (gpointer userData_in)
 
 // -----------------------------------------------------------------------------
 
-G_MODULE_EXPORT gint
+#ifdef __cplusplus
+extern "C"
+{
+#endif /* __cplusplus */
+gint
 button_close_all_clicked_cb (GtkWidget* widget_in,
                              gpointer userData_in)
 {
@@ -547,7 +543,7 @@ button_close_all_clicked_cb (GtkWidget* widget_in,
   return FALSE;
 } // button_close_all_clicked_cb
 
-G_MODULE_EXPORT gint
+gint
 togglebutton_listen_toggled_cb (GtkWidget* widget_in,
                                 gpointer userData_in)
 {
@@ -570,13 +566,9 @@ togglebutton_listen_toggled_cb (GtkWidget* widget_in,
 
   if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget_in)))
   {
-    ACE_thread_t thread_id;
-    try
-    {
-      data_p->listenerHandle->start (thread_id);
-    }
-    catch (...)
-    {
+    try {
+      data_p->listenerHandle->start (NULL);
+    } catch (...) {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("caught exception in RPG_Net_Server_IListener::start(): \"%m\", continuing\n")));
     } // end catch
@@ -597,7 +589,7 @@ togglebutton_listen_toggled_cb (GtkWidget* widget_in,
   return FALSE;
 } // togglebutton_listen_toggled_cb
 
-G_MODULE_EXPORT gint
+gint
 button_report_clicked_cb (GtkWidget* widget_in,
                           gpointer userData_in)
 {
@@ -624,7 +616,7 @@ button_report_clicked_cb (GtkWidget* widget_in,
 
 // -----------------------------------------------------------------------------
 
-G_MODULE_EXPORT gint
+gint
 button_about_clicked_cb (GtkWidget* widget_in,
                          gpointer userData_in)
 {
@@ -674,7 +666,7 @@ button_about_clicked_cb (GtkWidget* widget_in,
   return FALSE;
 } // button_about_clicked_cb
 
-G_MODULE_EXPORT gint
+gint
 button_quit_clicked_cb (GtkWidget* widget_in,
                         gpointer userData_in)
 {
@@ -711,7 +703,6 @@ button_quit_clicked_cb (GtkWidget* widget_in,
 
   return FALSE;
 } // button_quit_clicked_cb
-
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

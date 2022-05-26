@@ -21,17 +21,29 @@
 #ifndef RPG_NET_PROTOCOL_STREAM_COMMON_H
 #define RPG_NET_PROTOCOL_STREAM_COMMON_H
 
+#include "ace/INET_Addr.h"
+
 #include "stream_common.h"
 #include "stream_session_data.h"
 
-//#include "rpg_net_protocol_configuration.h"
+#include "net_common.h"
+#include "net_iconnection.h"
+
+//#include "rpg_net_protocol_network.h"
+
+typedef Net_IConnection_T<ACE_INET_Addr,
+                          struct Net_StreamConnectionState,
+                          Net_StreamStatistic_t> RPG_Net_Protocol_IConnection_t;
 
 struct RPG_Net_Protocol_SessionData
  : Stream_SessionData
 {
   RPG_Net_Protocol_SessionData ()
    : Stream_SessionData ()
+   , connection (NULL)
   {}
+
+  RPG_Net_Protocol_IConnection_t* connection;
 };
 typedef Stream_SessionData_T<struct RPG_Net_Protocol_SessionData> RPG_Net_Protocol_SessionData_t;
 

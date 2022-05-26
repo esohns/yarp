@@ -25,7 +25,7 @@
 #include "ace/Atomic_Op.h"
 #include "ace/Synch_Traits.h"
 
-#include "common_referencecounter_base.h"
+#include "common_referencecounter.h"
 
 //#include "rpg_item_exports.h"
 #include "rpg_item_instance_common.h"
@@ -34,9 +34,9 @@
 	@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Item_Instance_Base
- : public Common_ReferenceCounterBase
+ : public Common_ReferenceCounter_T<ACE_MT_SYNCH>
 {
-  typedef Common_ReferenceCounterBase inherited;
+  typedef Common_ReferenceCounter_T<ACE_MT_SYNCH> inherited;
 
  public:
   inline RPG_Item_ID_t id () const { return id_; }

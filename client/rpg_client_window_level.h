@@ -26,6 +26,7 @@
 #include "ace/Global_Macros.h"
 #include "ace/Synch_Traits.h"
 
+#define _SDL_main_h
 #include "SDL.h"
 
 #include "rpg_map_common.h"

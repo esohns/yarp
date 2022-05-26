@@ -25,6 +25,7 @@
 #include <map>
 #include <string>
 
+#define _SDL_main_h
 #include "SDL.h"
 
 #include "ace/Synch_Traits.h"

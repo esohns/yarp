@@ -23,6 +23,7 @@
 
 #include "rpg_sound_incl.h"
 
+#define _SDL_main_h
 #include "SDL.h"
 #include "SDL_mixer.h"
 

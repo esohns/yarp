@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required (VERSION 2.8)
 
-project(Yarp CXX)
+project (Yarp CXX)
 
 #extract package version from VCS
 # find_package(Subversion)
@@ -10,9 +10,9 @@ project(Yarp CXX)
 #     set(SUBVERSION_REVISION ${ER_WC_REVISION})
 #   endif()
 # endif()
-find_package(Git)
+find_package (Git)
 if (GIT_FOUND)
- set(GIT_REVISION "539")
+ set (GIT_REVISION "539")
 endif ()
 
 # if(${SUBVERSION_REVISION})
@@ -20,7 +20,7 @@ endif ()
 #   set(PACKAGE_REVISION ${SUBVERSION_REVISION})
 # elseif(${GIT_REVISION})
 if (${GIT_REVISION})
-  message(STATUS "found git revision ${GIT_REVISION}...")
+  message (STATUS "found git revision ${GIT_REVISION}...")
   set (PACKAGE_REVISION ${GIT_REVISION})
 endif ()
 
@@ -66,15 +66,15 @@ if (DOXYGEN_SUPPORT)
 endif (DOXYGEN_SUPPORT)
 
 #Use solution folders.
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+set_property (GLOBAL PROPERTY USE_FOLDERS ON)
 
-list (APPEND CMAKE_MODULE_PATH "$ENV{LIB_ROOT}/cotire/CMake")
+#list (APPEND CMAKE_MODULE_PATH "$ENV{LIB_ROOT}/cotire/CMake")
 #list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/scripts")
-cmake_policy (SET CMP0011 NEW)
-include (cotire)
-set_directory_properties (PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
+#cmake_policy (SET CMP0011 NEW)
+#include (cotire)
+#set_directory_properties (PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
 
-option(DEBUG_DEBUGGER "debug using IDE" OFF)
+option (DEBUG_DEBUGGER "debug using IDE" OFF)
 if (DEBUG_DEBUGGER)
  add_definitions (-DDEBUG_DEBUGGER)
 endif (DEBUG_DEBUGGER)
@@ -102,38 +102,50 @@ configure_file (${CMAKE_CURRENT_SOURCE_DIR}/scripts/config.h.cmake.in
                 ${CMAKE_CURRENT_BINARY_DIR}/rpg_config.h
                 @ONLY
                 NEWLINE_STYLE ${NEWLINE_STYLE})
-
-add_definitions(-DHAVE_CONFIG_H)
+add_definitions (-DHAVE_CONFIG_H)
 # include rpg_config.h
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories (${CMAKE_CURRENT_BINARY_DIR})
+
+string (REPLACE ${CMAKE_SOURCE_DIR} "" BUILD_PATH_SUFFIX ${CMAKE_BINARY_DIR})
+string (SUBSTRING ${BUILD_PATH_SUFFIX} 1 -1 BUILD_PATH_SUFFIX)
+find_package (Common
+              REQUIRED
+              CONFIG
+              PATHS ${CMAKE_CURRENT_SOURCE_DIR}/modules ${CMAKE_CURRENT_SOURCE_DIR}/..
+              PATH_SUFFIXES Common/${BUILD_PATH_SUFFIX}
+              NO_DEFAULT_PATH)
+if (NOT EXISTS ${Common_DIR})
+ message (FATAL_ERROR "could not find package \"Common\", aborting")
+else ()
+ message (STATUS "found package \"Common\": \"${Common_DIR}\"")
+endif ()
 
 #add_subdirectory(../tools tools)
-add_subdirectory(chance)
-add_subdirectory(common)
-add_subdirectory(magic)
-add_subdirectory(item)
-add_subdirectory(character)
-add_subdirectory(combat)
-add_subdirectory(map)
-add_subdirectory(graphics)
-add_subdirectory(sound)
-add_subdirectory(engine)
-add_subdirectory(net)
-add_subdirectory(client)
-add_subdirectory(test_u)
+add_subdirectory (chance)
+add_subdirectory (common)
+add_subdirectory (magic)
+add_subdirectory (item)
+add_subdirectory (character)
+add_subdirectory (combat)
+add_subdirectory (map)
+add_subdirectory (graphics)
+add_subdirectory (sound)
+add_subdirectory (engine)
+add_subdirectory (net)
+add_subdirectory (client)
+add_subdirectory (test_u)
 
-set(DOC_FILES COPYING INSTALL AUTHORS NEWS README TODO)
-set(DOC_PATH "share/doc/${CPACK_PACKAGE_NAME}")
-install(FILES ${DOC_FILES}
-        DESTINATION ${DOC_PATH})
+set (DOC_FILES COPYING INSTALL AUTHORS NEWS README TODO)
+set (DOC_PATH "share/doc/${CPACK_PACKAGE_NAME}")
+install (FILES ${DOC_FILES}
+         DESTINATION ${DOC_PATH})
 
-option(INSTALL_DOCUMENTATION "install generated documentation" OFF)
-if(INSTALL_DOCUMENTATION)
-  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/html
-          DESTINATION ${DOC_PATH})
-  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/man/man3
-          DESTINATION share/man/man3)
-else(INSTALL_DOCUMENTATION)
-  message(STATUS "documentation will NOT be installed...")
-endif(INSTALL_DOCUMENTATION)
-
+option (INSTALL_DOCUMENTATION "install generated documentation" OFF)
+if (INSTALL_DOCUMENTATION)
+  install (DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/html
+           DESTINATION ${DOC_PATH})
+  install (DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api-doc/man/man3
+           DESTINATION share/man/man3)
+else (INSTALL_DOCUMENTATION)
+  message (STATUS "documentation will NOT be installed...")
+endif (INSTALL_DOCUMENTATION)

@@ -29,10 +29,11 @@
 #include "ace/ACE.h"
 #include "ace/Get_Opt.h"
 #include "ace/High_Res_Timer.h"
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
 #include "ace/Init_ACE.h"
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 #include "ace/Log_Msg.h"
+#include "ace/OS_main.h"
 
 #include "common_file_tools.h"
 
@@ -40,7 +41,7 @@
 
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
-#endif
+#endif // HAVE_CONFIG_H
 
 #include "rpg_dice.h"
 #include "rpg_dice_common_tools.h"

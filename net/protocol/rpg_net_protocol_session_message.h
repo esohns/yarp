@@ -27,6 +27,7 @@
 #include "stream_common.h"
 #include "stream_cachedmessageallocatorheap_base.h"
 #include "stream_configuration.h"
+#include "stream_control_message.h"
 #include "stream_session_message_base.h"
 #include "stream_messageallocatorheap_base.h"
 
@@ -37,12 +38,12 @@ class ACE_Allocator;
 class RPG_Net_Protocol_Message;
 
 class RPG_Net_Protocol_SessionMessage
- : public Stream_SessionMessageBase_T<struct Stream_AllocatorConfiguration,
+ : public Stream_SessionMessageBase_T<//struct Stream_AllocatorConfiguration,
                                       enum Stream_SessionMessageType,
                                       RPG_Net_Protocol_SessionData_t,
                                       struct Stream_UserData>
 {
-  typedef Stream_SessionMessageBase_T<struct Stream_AllocatorConfiguration,
+  typedef Stream_SessionMessageBase_T<//struct Stream_AllocatorConfiguration,
                                       enum Stream_SessionMessageType,
                                       RPG_Net_Protocol_SessionData_t,
                                       struct Stream_UserData> inherited;
@@ -63,7 +64,8 @@ class RPG_Net_Protocol_SessionMessage
   RPG_Net_Protocol_SessionMessage (Stream_SessionId_t,
                                    enum Stream_SessionMessageType,
                                    RPG_Net_Protocol_SessionData_t*&, // session data container handle
-                                   struct Stream_UserData*);
+                                   struct Stream_UserData*,
+                                   bool);                            // expedited ?
   inline virtual ~RPG_Net_Protocol_SessionMessage () {}
 
   // overloaded from ACE_Message_Block

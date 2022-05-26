@@ -23,8 +23,8 @@
 
 #include "stream_cachedmessageallocatorheap_base.h"
 
-#include "rpg_net_protocol_message.h"
 #include "rpg_net_protocol_session_message.h"
+#include "rpg_net_protocol_message.h"
 
 // forward declarations
 class ACE_Allocator;

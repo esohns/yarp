@@ -99,6 +99,16 @@
 // init static(s)
 static state_t state;
 
+// ******* WORKAROUND *************
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+FILE _iob[] = { *stdin, *stdout, *stderr };
+extern "C" FILE * __cdecl __iob_func (void)
+{
+  return _iob;
+}
+#endif // ACE_WIN32 || ACE_WIN64
+// ********************************
+
 Uint32
 event_timer_SDL_cb(Uint32 interval_in,
                    void* argument_in)
@@ -1463,8 +1473,7 @@ do_work(const mode_t& mode_in,
 
   struct Common_TimerConfiguration timer_configuration;
   COMMON_TIMERMANAGER_SINGLETON::instance ()->initialize (timer_configuration);
-  ACE_thread_t thread_id = 0;
-  COMMON_TIMERMANAGER_SINGLETON::instance ()->start (thread_id);
+  COMMON_TIMERMANAGER_SINGLETON::instance ()->start (NULL);
 
   // step1: init video
   // step1a: init video system

@@ -18,34 +18,30 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef NET_SERVER_COMMON_H
-#define NET_SERVER_COMMON_H
+#ifndef TEST_U_NET_SERVER_COMMON_H
+#define TEST_U_NET_SERVER_COMMON_H
 
-#include <deque>
-#include <vector>
-
-//#include "ace/Synch.h"
-
-#include "common.h"
+#include <list>
 
 #include "common_ui_common.h"
 
 #include "common_ui_gtk_common.h"
 
+#include "stream_common.h"
+
 #include "net_ilistener.h"
-//#include "net_configuration.h"
-//#include "net_stream_common.h"
 
+#include "rpg_net_protocol_session_message.h"
 #include "rpg_net_protocol_configuration.h"
-
-//#include "net_server_common.h"
+#include "rpg_net_protocol_message.h"
+#include "rpg_net_protocol_stream_common.h"
 
 // forward declaration(s)
+struct RPG_Client_Configuration;
 class Net_Client_TimeoutHandler;
 
 typedef Net_IListener_T<RPG_Net_Protocol_ConnectionConfiguration> RPG_Net_Protocol_IListener_t;
-typedef Stream_ISessionDataNotify_T<Stream_SessionId_t,
-                                    struct RPG_Net_Protocol_SessionData,
+typedef Stream_ISessionDataNotify_T<struct RPG_Net_Protocol_SessionData,
                                     enum Stream_SessionMessageType,
                                     RPG_Net_Protocol_Message,
                                     RPG_Net_Protocol_SessionMessage> RPG_Net_Protocol_ISessionNotify_t;
@@ -68,7 +64,7 @@ struct Net_Server_GTK_CBData
    //, subscribersLock ()
    , timerId (-1)
    , timeoutHandler (NULL)
- { };
+ {}
 
   bool                             allowUserRuntimeStatistic;
   struct RPG_Client_Configuration* configuration;

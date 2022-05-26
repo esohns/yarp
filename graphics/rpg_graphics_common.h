@@ -27,6 +27,7 @@
 
 #include "ace/Log_Msg.h"
 
+#define _SDL_main_h
 #include "SDL.h"
 #include "SDL_ttf.h"
 
@@ -74,7 +75,7 @@ struct RPG_Graphics_GraphicsCacheNode
   RPG_Graphics_GraphicTypeUnion type;
   SDL_Surface* image;
 
-  bool operator==(const struct RPG_Graphics_GraphicsCacheNode& rhs_in) const
+  bool operator== (const struct RPG_Graphics_GraphicsCacheNode& rhs_in) const
   {
     if (type.discriminator != rhs_in.type.discriminator)
       return false;

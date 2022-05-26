@@ -24,6 +24,7 @@
 #include <string>
 #include <vector>
 
+#define _SDL_main_h
 #include "SDL.h"
 
 #include "ace/Global_Macros.h"

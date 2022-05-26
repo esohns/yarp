@@ -431,7 +431,7 @@ test_u_main::do_work (struct GTK_CBData& userData_in,
     COMMON_UI_GTK_MANAGER_SINGLETON::instance ();
   ACE_ASSERT (gtk_manager_p);
   Common_UI_GTK_State_t& state_r =
-    const_cast<Common_UI_GTK_State_t&> (gtk_manager_p->getR_2 ());
+    const_cast<Common_UI_GTK_State_t&> (gtk_manager_p->getR ());
   state_r.builders[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN)] =
     std::make_pair (UIFile_in, static_cast<GtkBuilder*> (NULL));
   state_r.builders[ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
@@ -455,8 +455,7 @@ test_u_main::do_work (struct GTK_CBData& userData_in,
   userData_in.currentSprite = RPG_GRAPHICS_SPRITE_INVALID;
   userData_in.isTransient = false;
 
-  ACE_thread_t thread_id;
-  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start (thread_id);
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start (NULL);
   if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
   {
     ACE_DEBUG ((LM_ERROR,
@@ -708,7 +707,7 @@ test_u_main::run_i (int argc_in,
 //  ACE_ASSERT(gnomeProgram);
   struct GTK_CBData user_data;
   Common_UI_GtkBuilderDefinition_t ui_definition;
-  struct Common_UI_GTK_Configuration gtk_configuration;
+  Common_UI_GTK_Configuration_t gtk_configuration;
   gtk_configuration.argc = argc_in;
   gtk_configuration.argv = argv_in;
   gtk_configuration.CBData = &user_data;

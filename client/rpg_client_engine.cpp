@@ -146,7 +146,7 @@ RPG_Client_Engine::svc (void)
     ACE_ASSERT (actions_.empty ());
     lock_.release();
 
-    if (inherited::hasShutDown ())
+    if (isShuttingDown ())
       return 0;
   } // end WHILE
 

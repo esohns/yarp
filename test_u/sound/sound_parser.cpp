@@ -32,6 +32,7 @@
 #endif
 #include "ace/Log_Msg.h"
 
+#define _SDL_main_h
 #include "SDL.h"
 
 #include "common_file_tools.h"

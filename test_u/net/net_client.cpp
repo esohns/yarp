@@ -44,8 +44,10 @@
 
 #include "common_file_tools.h"
 
- //#include "common_logger.h"
+//#include "common_logger.h"
 #include "common_log_tools.h"
+
+#include "common_parser_common.h"
 
 #include "common_signal_tools.h"
 
@@ -67,7 +69,6 @@
 
 #include "net_client_defines.h"
 
-//#include "net_server_common.h"
 #include "net_server_defines.h"
 
 #ifdef HAVE_CONFIG_H
@@ -178,7 +179,8 @@ do_printUsage (const std::string& programName_in)
   std::cout << ACE_TEXT ("-v           : print version information and exit")
             << std::endl;
   std::cout << ACE_TEXT ("-x [VALUE]   : #dispatch threads [")
-            << NET_CLIENT_DEFAULT_NUMBER_OF_DISPATCH_THREADS
+            << ((COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR) ? NET_CLIENT_DEFAULT_NUMBER_OF_REACTOR_DISPATCH_THREADS
+                                                                                 : NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS)
             << ACE_TEXT ("]")
             << std::endl;
 }
@@ -235,7 +237,8 @@ do_processArguments (const int& argc_in,
   UIFile_out                      = path;
   printVersionAndExit_out         = false;
   numDispatchThreads_out          =
-    NET_CLIENT_DEFAULT_NUMBER_OF_DISPATCH_THREADS;
+    ((COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR) ? NET_CLIENT_DEFAULT_NUMBER_OF_REACTOR_DISPATCH_THREADS
+                                                                      : NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS);
 
   ACE_Get_Opt argumentParser (argc_in,
                               argv_in,
@@ -461,14 +464,15 @@ do_work (unsigned int maxNumConnections_in,
          const ACE_Sig_Set& signalSet_in,
          const ACE_Sig_Set& ignoredSignalSet_in,
          Common_SignalActions_t& previousSignalActions_inout,
-         sigset_t previousSignalMask_inout)
+         ACE_Sig_Set& previousSignalMask_inout)
 {
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step0a: initialize stream configuration object
-  struct Common_FlexParserAllocatorConfiguration allocator_configuration;
+  struct Common_Parser_FlexAllocatorConfiguration allocator_configuration;
   struct Stream_ModuleConfiguration module_configuration;
   struct RPG_Net_Protocol_ModuleHandlerConfiguration modulehandler_configuration;
+  modulehandler_configuration.allocatorConfiguration = &allocator_configuration;
   struct RPG_Net_Protocol_StreamConfiguration stream_configuration;
   RPG_Net_Protocol_StreamConfiguration_t stream_configuration_2;
 
@@ -517,10 +521,9 @@ do_work (unsigned int maxNumConnections_in,
                                    : NULL);
   stream_configuration_2.initialize (module_configuration,
                                      modulehandler_configuration,
-                                     allocator_configuration,
                                      stream_configuration);
-  CBData_in.configuration->connection_configuration.initialize (allocator_configuration,
-                                                                stream_configuration_2);
+  CBData_in.configuration->connection_configuration.streamConfiguration =
+    &stream_configuration_2;
 
   //  config.delete_module = false;
   // *WARNING*: set at runtime, by the appropriate connection handler
@@ -628,8 +631,7 @@ do_work (unsigned int maxNumConnections_in,
       std::make_pair (UIDefinitionFile_in, static_cast<GtkBuilder*> (NULL));
     //CBData_in.GTKState.userData = &CBData_in;
 
-    ACE_thread_t thread_id;
-    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start (thread_id);
+    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start (NULL);
     if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
     {
       ACE_DEBUG ((LM_ERROR,
@@ -647,7 +649,6 @@ do_work (unsigned int maxNumConnections_in,
       } // end IF
       COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
       Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
-                                     signalSet_in,
                                      previousSignalActions_inout,
                                      previousSignalMask_inout);
 
@@ -685,7 +686,6 @@ do_work (unsigned int maxNumConnections_in,
       COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
     COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
     Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
-                                   signalSet_in,
                                    previousSignalActions_inout,
                                    previousSignalMask_inout);
 
@@ -745,7 +745,6 @@ do_work (unsigned int maxNumConnections_in,
     COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
   COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
   Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
-                                 signalSet_in,
                                  previousSignalActions_inout,
                                  previousSignalMask_inout);
 
@@ -836,7 +835,8 @@ ACE_TMAIN (int argc_in,
   std::string UI_file = path;
   bool print_version_and_exit = false;
   unsigned int num_dispatch_threads =
-    NET_CLIENT_DEFAULT_NUMBER_OF_DISPATCH_THREADS;
+    ((COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR) ? NET_CLIENT_DEFAULT_NUMBER_OF_REACTOR_DISPATCH_THREADS
+                                                                      : NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS);
   struct RPG_Client_Configuration configuration;
 
   // step1b: parse/process/validate configuration
@@ -907,8 +907,8 @@ ACE_TMAIN (int argc_in,
     num_dispatch_threads = 1;
 
   // step1d: pre-init signal handling
-  ACE_Sig_Set signal_set (0);
-  ACE_Sig_Set ignored_signal_set (0);
+  ACE_Sig_Set signal_set (false); // fill ?
+  ACE_Sig_Set ignored_signal_set (false); // fill ?
   do_initializeSignals (use_reactor,
                         (statistics_reporting_interval == 0), // handle SIGUSR1/SIGBREAK
                                                               // iff regular reporting
@@ -916,8 +916,9 @@ ACE_TMAIN (int argc_in,
                         signal_set,
                         ignored_signal_set);
   Common_SignalActions_t previous_signal_actions;
-  sigset_t previous_signal_mask;
+  ACE_Sig_Set previous_signal_mask (false); // fill ?
   if (!Common_Signal_Tools::preInitialize (signal_set,
+                                           COMMON_SIGNAL_DISPATCH_SIGNAL,
                                            use_reactor,
                                            previous_signal_actions,
                                            previous_signal_mask))

@@ -33,6 +33,7 @@
 #include "ace/Get_Opt.h"
 #include "ace/High_Res_Timer.h"
 #include "ace/Log_Msg.h"
+#include "ace/OS_main.h"
 
 #include "common_file_tools.h"
 

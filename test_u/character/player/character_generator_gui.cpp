@@ -23,7 +23,7 @@
 
 #include "ace/OS_main.h"
 
-#include "SDL_main.h"
+//#include "SDL_main.h"
 
 #include "rpg_common_macros.h"
 
@@ -37,19 +37,9 @@ extern "C" FILE* __cdecl __iob_func (void)
 #endif // ACE_WIN32 || ACE_WIN64
 // ********************************
 
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-#ifdef __cplusplus
-extern "C"
-{
-#endif /* __cplusplus */
-int
-SDL_main (int argc_in,
-          char** argv_in)
-#else
 int
 ACE_TMAIN (int argc_in,
            ACE_TCHAR* argv_in[])
-#endif
 {
   RPG_TRACE (ACE_TEXT ("::main"));
 
@@ -62,8 +52,3 @@ ACE_TMAIN (int argc_in,
                              argv_in);
 #endif
 } // end main
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-#endif

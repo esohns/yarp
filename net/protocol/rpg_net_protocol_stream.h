@@ -39,10 +39,8 @@
 
 #include "rpg_net_protocol_common_modules.h"
 #include "rpg_net_protocol_configuration.h"
-//#include "rpg_net_protocol_exports.h"
-#include "rpg_net_protocol_message.h"
-//#include "rpg_net_protocol_network.h"
 #include "rpg_net_protocol_session_message.h"
+#include "rpg_net_protocol_message.h"
 
 typedef Net_Connection_Manager_T<ACE_MT_SYNCH,
                                  ACE_INET_Addr,
@@ -65,8 +63,6 @@ class RPG_Net_Protocol_Stream
                                          struct RPG_Net_Protocol_StreamConfiguration,
                                          struct Stream_Statistic,
                                          Common_Timer_Manager_t,
-                                         struct Common_FlexParserAllocatorConfiguration,
-                                         struct Stream_ModuleConfiguration,
                                          struct RPG_Net_Protocol_ModuleHandlerConfiguration,
                                          struct RPG_Net_Protocol_SessionData,
                                          RPG_Net_Protocol_SessionData_t,
@@ -87,8 +83,6 @@ class RPG_Net_Protocol_Stream
                                          struct RPG_Net_Protocol_StreamConfiguration,
                                          struct Stream_Statistic,
                                          Common_Timer_Manager_t,
-                                         struct Common_FlexParserAllocatorConfiguration,
-                                         struct Stream_ModuleConfiguration,
                                          struct RPG_Net_Protocol_ModuleHandlerConfiguration,
                                          struct RPG_Net_Protocol_SessionData,
                                          RPG_Net_Protocol_SessionData_t,

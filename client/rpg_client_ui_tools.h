@@ -23,9 +23,9 @@
 
 #include "ace/Global_Macros.h"
 
-#include "rpg_client_exports.h"
+//#include "rpg_client_exports.h"
 
-class RPG_Client_Export RPG_Client_UI_Tools
+class /*RPG_Client_Export*/ RPG_Client_UI_Tools
 {
  public:
 

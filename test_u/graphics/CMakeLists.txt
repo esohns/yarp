@@ -23,6 +23,9 @@ elseif (WIN32)
  include_directories (${GTK_INCLUDE_DIRS})
 endif ()
 
+if (WIN32)
+ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/include)
+endif (WIN32)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/image)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log)
@@ -75,7 +78,7 @@ elseif (WIN32)
  set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
-                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                         $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                         Common CommonLog CommonTimer
                         RPG_Dice RPG_Common RPG_Graphics)
@@ -140,19 +143,20 @@ if (UNIX)
 elseif (WIN32)
  set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
- target_link_libraries(${EXECUTABLE}
-                      Opengl32.lib Glu32.lib Secur32.lib Userenv.lib
-                      $ENV{LIB_ROOT}/SDL_mixer/lib/x86/SDL_mixer.lib
-                      $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
-                      $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                      Common CommonLog CommonTimer CommonUI CommonUI_GTK
-                      ACEStream ACEStream_Network
-                      ACENetwork
-                      RPG_Dice RPG_Chance RPG_Common
-                      RPG_Character RPG_Magic RPG_Item
-                      RPG_Monster RPG_Player RPG_Combat
-                      RPG_Map RPG_Engine RPG_Net RPG_Net_Protocol
-                      RPG_Sound RPG_Graphics RPG_Client)
+ target_link_libraries (${EXECUTABLE}
+                        Opengl32.lib Glu32.lib Secur32.lib Userenv.lib
+                        $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDLmain.lib
+                        $ENV{LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL_mixer.lib
+                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
+                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        Common CommonError CommonLog CommonTimer CommonUI CommonUI_GTK
+                        ACEStream ACEStream_Network
+                        ACENetwork
+                        RPG_Dice RPG_Chance RPG_Common
+                        RPG_Character RPG_Magic RPG_Item
+                        RPG_Monster RPG_Player RPG_Combat
+                        RPG_Map RPG_Engine RPG_Net RPG_Net_Protocol
+                        RPG_Sound RPG_Graphics RPG_Client)
 endif ()
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
@@ -165,9 +169,9 @@ file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
 create_target_launcher (graphics_parser
                         ARGS "-t"
                         FORWARD_ARGS
-                        RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/SDL/lib/x86
-                                             ${LIB_ROOT}/SDL_mixer/lib/x86
-                                             ${LIB_ROOT}/xerces-c/build/src/Debug
+                        RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
+                                             ${LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
+                                             ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
                                              ${LIB_ROOT}/ACE_TAO/ACE/lib
                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/Debug
                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/err/Debug
@@ -184,10 +188,10 @@ create_target_launcher (SDL_gui
                                              ${LIB_ROOT}/libpng/cmake/Debug
                                              ${LIB_ROOT}/openssl
                                              ${LIB_ROOT}/gtk2/bin
-                                             ${LIB_ROOT}/SDL/lib/x86
-                                             ${LIB_ROOT}/SDL_mixer/lib/x86
-                                             ${LIB_ROOT}/SDL_ttf/lib/x86
-                                             ${LIB_ROOT}/xerces-c/build/src/Debug
+                                             ${LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
+                                             ${LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
+                                             ${LIB_ROOT}/SDL_ttf/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
+                                             ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
                                              ${LIB_ROOT}/ACE_TAO/ACE/lib
                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/Debug
                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/err/Debug

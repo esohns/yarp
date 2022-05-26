@@ -18,13 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef NET_CLIENT_COMMON_H
-#define NET_CLIENT_COMMON_H
+#ifndef TEST_U_NET_CLIENT_COMMON_H
+#define TEST_U_NET_CLIENT_COMMON_H
 
 #include <deque>
 #include <vector>
-
-//#include "ace/Synch.h"
 
 #include "common.h"
 
@@ -35,18 +33,13 @@
 #include "stream_common.h"
 #include "stream_isessionnotify.h"
 
-//#include "net_configuration.h"
-//#include "net_stream_common.h"
-
-//#include "net_server_common.h"
-
 #include "rpg_net_protocol_message.h"
 #include "rpg_net_protocol_session_message.h"
 
 // forward declaration(s)
+struct RPG_Client_Configuration;
 class Net_Client_TimeoutHandler;
-typedef Stream_ISessionDataNotify_T<Stream_SessionId_t,
-                                    struct RPG_Net_Protocol_SessionData,
+typedef Stream_ISessionDataNotify_T<struct RPG_Net_Protocol_SessionData,
                                     enum Stream_SessionMessageType,
                                     RPG_Net_Protocol_Message,
                                     RPG_Net_Protocol_SessionMessage> RPG_Net_Protocol_ISessionNotify_t;

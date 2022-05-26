@@ -22,7 +22,6 @@
 #define RPG_Net_EventHandler_H
 
 #include "ace/Global_Macros.h"
-//#include "ace/Synch.h"
 
 #include "common.h"
 #include "common_iclone.h"
@@ -35,9 +34,9 @@
 
 #include "stream_misc_messagehandler.h"
 
+#include "rpg_net_protocol_session_message.h"
 #include "rpg_net_protocol_configuration.h"
 #include "rpg_net_protocol_message.h"
-#include "rpg_net_protocol_session_message.h"
 
 class RPG_Net_EventHandler
  : public Stream_Module_MessageHandler_T<ACE_MT_SYNCH,
@@ -46,7 +45,6 @@ class RPG_Net_EventHandler
                                          Stream_ControlMessage_t,
                                          RPG_Net_Protocol_Message,
                                          RPG_Net_Protocol_SessionMessage,
-                                         Stream_SessionId_t,
                                          struct RPG_Net_Protocol_SessionData,
                                          struct Stream_UserData>
 {
@@ -56,7 +54,6 @@ class RPG_Net_EventHandler
                                          Stream_ControlMessage_t,
                                          RPG_Net_Protocol_Message,
                                          RPG_Net_Protocol_SessionMessage,
-                                         Stream_SessionId_t,
                                          struct RPG_Net_Protocol_SessionData,
                                          struct Stream_UserData> inherited;
 

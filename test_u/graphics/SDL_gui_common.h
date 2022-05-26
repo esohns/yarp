@@ -31,6 +31,7 @@
 
 #include "rpg_map_common.h"
 
+#define _SDL_main_h
 #include "SDL.h"
 #include "SDL_opengl.h"
 

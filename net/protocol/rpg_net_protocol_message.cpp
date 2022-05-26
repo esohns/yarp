@@ -26,7 +26,7 @@
 #include "rpg_common_macros.h"
 
 RPG_Net_Protocol_Message::RPG_Net_Protocol_Message (unsigned int size_in)
- : inherited (size_in)
+ : inherited (1, size_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Message::RPG_Net_Protocol_Message"));
 

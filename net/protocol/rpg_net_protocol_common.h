@@ -27,7 +27,4 @@
 #include "stream_isessionnotify.h"
 #include "stream_session_data.h"
 
-//#include "rpg_net_protocol_message.h"
-//#include "rpg_net_protocol_session_message.h"
-
 #endif

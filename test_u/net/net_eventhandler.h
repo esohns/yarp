@@ -29,8 +29,7 @@
 
 // forward declaration(s)
 struct Common_UI_CBData;
-typedef Stream_ISessionDataNotify_T<Stream_SessionId_t,
-                                    struct RPG_Net_Protocol_SessionData,
+typedef Stream_ISessionDataNotify_T<struct RPG_Net_Protocol_SessionData,
                                     enum Stream_SessionMessageType,
                                     RPG_Net_Protocol_Message,
                                     RPG_Net_Protocol_SessionMessage> RPG_Net_Protocol_ISessionNotify_t;

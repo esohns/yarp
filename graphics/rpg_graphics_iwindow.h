@@ -21,6 +21,7 @@
 #ifndef RPG_GRAPHICS_IWINDOW_H
 #define RPG_GRAPHICS_IWINDOW_H
 
+#define _SDL_main_h
 #include "SDL.h"
 
 #include "rpg_graphics_colorname.h"

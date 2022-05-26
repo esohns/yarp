@@ -808,7 +808,7 @@ update_character_profile (const RPG_Player& player_in,
                                       ACE_TEXT_ALWAYS_CHAR ("known_spells_frame")));
   ACE_ASSERT (widget_p);
   if (!RPG_Magic_Common_Tools::hasArcaneCasterClass (player_class))
-    gtk_widget_hide_all (widget_p);
+    gtk_widget_hide (widget_p);
   else
     gtk_widget_show_all (widget_p);
 
@@ -2013,7 +2013,7 @@ idle_initialize_UI_cb (gpointer userData_in)
     GTK_FRAME (gtk_builder_get_object ((*iterator).second.second,
                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
   ACE_ASSERT (frame);
-  gtk_widget_ref (GTK_WIDGET (frame));
+  g_object_ref (GTK_WIDGET (frame));
   gtk_widget_unparent (GTK_WIDGET (frame));
   gtk_box_pack_start (GTK_BOX (hbox),
                       GTK_WIDGET (frame),
@@ -2355,7 +2355,7 @@ about_clicked_GTK_cb (GtkWidget* widget_in,
   } // end IF
 
   // draw it
-  if (!GTK_WIDGET_VISIBLE(about_dialog))
+  if (!gtk_widget_get_visible (about_dialog))
     gtk_widget_show_all(about_dialog);
 
   return FALSE;
@@ -3942,7 +3942,7 @@ equip_clicked_GTK_cb (GtkWidget* widget_in,
   ::update_equipment(*data_p);
 
   // draw it
-  if (!GTK_WIDGET_VISIBLE(equipment_dialog))
+  if (!gtk_widget_get_visible (equipment_dialog))
     gtk_widget_show_all(equipment_dialog);
 
   return FALSE;

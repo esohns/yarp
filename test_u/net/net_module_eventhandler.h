@@ -51,7 +51,6 @@ class RPG_Net_Module_EventHandler
                                          Stream_ControlMessage_t,
                                          RPG_Net_Protocol_Message,
                                          RPG_Net_Protocol_SessionMessage,
-                                         Stream_SessionId_t,
                                          struct RPG_Net_Protocol_SessionData,
                                          struct Stream_UserData>
 {
@@ -61,7 +60,6 @@ class RPG_Net_Module_EventHandler
                                          Stream_ControlMessage_t,
                                          RPG_Net_Protocol_Message,
                                          RPG_Net_Protocol_SessionMessage,
-                                         Stream_SessionId_t,
                                          struct RPG_Net_Protocol_SessionData,
                                          struct Stream_UserData> inherited;
 

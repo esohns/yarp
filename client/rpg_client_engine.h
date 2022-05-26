@@ -48,15 +48,16 @@ class RPG_Engine;
 class RPG_Client_Engine
  : public Common_TaskBase_T<ACE_MT_SYNCH,
                             Common_TimePolicy_t,
-                            Common_ILock_T<ACE_MT_SYNCH> >
+                            ACE_Message_Block,
+                            ACE_Message_Queue<ACE_MT_SYNCH>,
+                            ACE_Task<ACE_MT_SYNCH> >
  , public RPG_Engine_IClient
-// , public Common_ILock
- //, public Common_IControl
- //, public Common_IDumpState
 {
   typedef Common_TaskBase_T<ACE_MT_SYNCH,
                             Common_TimePolicy_t,
-                            Common_ILock_T<ACE_MT_SYNCH> > inherited;
+                            ACE_Message_Block,
+                            ACE_Message_Queue<ACE_MT_SYNCH>,
+                            ACE_Task<ACE_MT_SYNCH> > inherited;
 
  public:
   RPG_Client_Engine();
@@ -64,8 +65,9 @@ class RPG_Client_Engine
 
 //  // implement Common_IControl
 //  virtual void start (ACE_thread_t&) = 0; // return value: thread handle (if any)
-//  virtual void stop (bool = true); // locked access ?
+  inline virtual void stop (bool = true, bool = false) { ACE_ASSERT (false); ACE_NOTSUP; ACE_NOTREACHED (return;) }
 //  inline virtual bool isRunning () const { return (inherited::thr_count () > 0); }
+  inline virtual bool isShuttingDown () const { ACE_ASSERT (false); ACE_NOTSUP_RETURN (false); ACE_NOTREACHED (return false;) }
 
   // implement Common_IDumpState
   virtual void dump_state () const;

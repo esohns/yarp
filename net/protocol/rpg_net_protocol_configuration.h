@@ -32,11 +32,10 @@
 #include "net_connection_configuration.h"
 
 #include "rpg_net_protocol_common.h"
-#include "rpg_net_protocol_message.h"
 #include "rpg_net_protocol_session_message.h"
+#include "rpg_net_protocol_message.h"
 
-typedef Stream_ISessionDataNotify_T<Stream_SessionId_t,
-                                    struct RPG_Net_Protocol_SessionData,
+typedef Stream_ISessionDataNotify_T<struct RPG_Net_Protocol_SessionData,
                                     enum Stream_SessionMessageType,
                                     RPG_Net_Protocol_Message,
                                     RPG_Net_Protocol_SessionMessage> RPG_Net_Protocol_ISessionNotify_t;
@@ -75,19 +74,16 @@ struct RPG_Net_Protocol_StreamConfiguration
 #endif // _DEBUG
 };
 typedef Stream_Configuration_T<//empty_string_,
-                               struct Common_FlexParserAllocatorConfiguration,
                                struct RPG_Net_Protocol_StreamConfiguration,
-                               struct Stream_ModuleConfiguration,
                                struct RPG_Net_Protocol_ModuleHandlerConfiguration> RPG_Net_Protocol_StreamConfiguration_t;
 
 class RPG_Net_Protocol_ConnectionConfiguration
- : public Net_ConnectionConfiguration_T<struct Common_FlexParserAllocatorConfiguration,
-                                        RPG_Net_Protocol_StreamConfiguration_t,
-                                        NET_TRANSPORTLAYER_TCP>
+ : public Net_StreamConnectionConfiguration_T<RPG_Net_Protocol_StreamConfiguration_t,
+                                              NET_TRANSPORTLAYER_TCP>
 {
  public:
    RPG_Net_Protocol_ConnectionConfiguration ()
-   : Net_ConnectionConfiguration_T ()
+   : Net_StreamConnectionConfiguration_T ()
   {}
 };
 

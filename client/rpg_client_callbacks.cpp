@@ -807,7 +807,7 @@ update_character_profile (const RPG_Player& player_in,
                                       ACE_TEXT_ALWAYS_CHAR ("known_spells_frame")));
   ACE_ASSERT (widget_p);
   if (!RPG_Magic_Common_Tools::hasArcaneCasterClass (player_class))
-    gtk_widget_hide_all (widget_p);
+    gtk_widget_hide (widget_p);
   else
     gtk_widget_show_all (widget_p);
 

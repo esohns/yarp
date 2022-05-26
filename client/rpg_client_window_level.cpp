@@ -2605,7 +2605,7 @@ RPG_Client_Window_Level::initMessageWindow ()
     return false;
   } // end IF
 
-  message_window->initialize (myClient,
+  message_window->initialize (NULL,
                               RPG_CLIENT_MESSAGE_FONT,
                               RPG_CLIENT_MESSAGE_DEF_NUM_LINES);
   message_window->setScreen (inherited::screen_);

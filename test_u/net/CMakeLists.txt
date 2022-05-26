@@ -1,3 +1,36 @@
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/scripts/PreUIFramework.cmake)
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/scripts/SetUIFramework.cmake)
+
+if (CURSES_USE)
+elseif (GTK_USE)
+ include (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/scripts/SetGTKVersion.cmake)
+
+ if (CMAKE_BUILD_TYPE STREQUAL Debug)
+  add_definitions (-DG_ERRORCHECK_MUTEXES)
+ endif (CMAKE_BUILD_TYPE STREQUAL Debug)
+elseif (WXWIDGETS_USE)
+ message (STATUS "wxWidgets_DEFINITIONS: ${wxWidgets_DEFINITIONS}")
+ message (STATUS "wxWidgets_DEFINITIONS_DEBUG: ${wxWidgets_DEFINITIONS_DEBUG}")
+ message (STATUS "wxWidgets_CXX_FLAGS: ${wxWidgets_CXX_FLAGS}")
+ message (STATUS "wxWidgets_USE_FILE: ${wxWidgets_USE_FILE}")
+# # *NOTE*: re-enable ANSI mode, iff available
+# add_definitions (-DwxUSE_UNICODE=0)
+ foreach (DEFINITION ${wxWidgets_DEFINITIONS})
+  add_definitions (-D${DEFINITION})
+ endforeach ()
+ if (WIN32)
+#  add_definitions (-D__WXMSW__)
+#  add_definitions (-DWXUSINGDLL)
+  if (MSVC)
+   add_definitions (-DwxMSVC_VERSION_AUTO)
+  endif (MSVC)
+ endif (WIN32)
+ add_definitions (-DwxUSE_GUI=1)
+ if (CMAKE_BUILD_TYPE STREQUAL Debug)
+#   add_definitions (-D__WXDEBUG__)
+ endif (CMAKE_BUILD_TYPE STREQUAL Debug)
+endif ()
+
 if (UNIX)
  include (FindPkgConfig)
  pkg_check_modules (PKG_CONFIG_MODULE_SDL REQUIRED sdl)
@@ -47,9 +80,13 @@ if (GTKGLAREA_SUPPORT)
  include_directories ($ENV{LIB_ROOT}/gtkglarea)
 endif (GTKGLAREA_SUPPORT)
 
+if (WIN32)
+ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/include)
+endif ()
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/image)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/parser)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/signal)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/gtk)
@@ -92,9 +129,9 @@ elseif (WIN32)
  target_link_libraries (${EXECUTABLE}
                         Opengl32.lib legacy_stdio_definitions.lib
                         ${GTK_LIBRARIES}
-                        $ENV{LIB_ROOT}/SDL/lib/x86/SDL.lib
-                        $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
-                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                        $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL.lib
+#                        $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDLmain.lib
+                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                         $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                         Common CommonLog CommonSignal CommonTimer CommonUI_GTK
                         ACEStream ACEStream_Miscellaneous ACEStream_Network
@@ -148,9 +185,9 @@ elseif (WIN32)
  target_link_libraries (${EXECUTABLE}
                         Opengl32.lib legacy_stdio_definitions.lib
                         ${GTK_LIBRARIES}
-                        $ENV{LIB_ROOT}/SDL/lib/x86/SDL.lib
-                        $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
-                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                        $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL.lib
+#                        $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDLmain.lib
+                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                         $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                         Common CommonLog CommonSignal CommonTimer CommonUI_GTK
                         ACEStream ACEStream_Miscellaneous ACEStream_Network

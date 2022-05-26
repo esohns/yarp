@@ -22,15 +22,13 @@
 #define RPG_Net_EventHandler_H
 
 #include "ace/Global_Macros.h"
-//#include "ace/Synch.h"
 
 #include "stream_common.h"
 #include "stream_isessionnotify.h"
 
-//#include "net_message.h"
-//#include "net_messagehandler_base.h"
-
+#include "rpg_net_protocol_session_message.h"
 #include "rpg_net_protocol_configuration.h"
+#include "rpg_net_protocol_message.h"
 
 class RPG_Net_EventHandler
  : public RPG_Net_Protocol_ISessionNotify_t

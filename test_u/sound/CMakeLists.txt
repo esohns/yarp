@@ -50,12 +50,12 @@ elseif (WIN32)
 
  target_link_libraries (${EXECUTABLE}
                        legacy_stdio_definitions.lib
-                       $ENV{LIB_ROOT}/SDL/lib/x86/SDL.lib
-                       $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
-                       $ENV{LIB_ROOT}/SDL_mixer/lib/x86/SDL_mixer.lib
-                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                       $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL.lib
+                       $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDLmain.lib
+                       $ENV{LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL_mixer.lib
+                       $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                       Common CommonLog CommonTimer
+                       Common CommonError CommonLog CommonTimer
                        RPG_Dice RPG_Common RPG_Sound)
 endif ()
 
@@ -69,9 +69,9 @@ file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
 create_target_launcher (${EXECUTABLE}
                         ARGS "-t"
                         FORWARD_ARGS
-                        RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/SDL/lib/x86
-                                             ${LIB_ROOT}/SDL_mixer/lib/x86
-                                             ${LIB_ROOT}/xerces-c/build/src/Debug
+                        RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
+                                             ${LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
+                                             ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
                                              ${LIB_ROOT}/ACE_TAO/ACE/lib
                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/Debug
                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/err/Debug

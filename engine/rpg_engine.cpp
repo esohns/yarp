@@ -89,7 +89,9 @@ RPG_Engine::RPG_Engine ()
 
   // initialize network connector
   ACE_OS::memset (&netConfiguration_, 0, sizeof (netConfiguration_));
-  netConfiguration_.bufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
+  ACE_ASSERT (netConfiguration_.allocatorConfiguration);
+  netConfiguration_.allocatorConfiguration->defaultBufferSize =
+    RPG_NET_PROTOCOL_BUFFER_SIZE;
   netConfiguration_.messageAllocator = &messageAllocator_;
   // ******************* socket configuration data ****************************
   //netConfiguration_.socketConfiguration.bufferSize =

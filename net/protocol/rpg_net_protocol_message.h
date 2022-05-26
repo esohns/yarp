@@ -24,6 +24,7 @@
 #include "ace/Global_Macros.h"
 
 #include "stream_cachedmessageallocatorheap_base.h"
+#include "stream_control_message.h"
 #include "stream_data_message_base.h"
 #include "stream_messageallocatorheap_base.h"
 

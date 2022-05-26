@@ -38,6 +38,7 @@
 #include "ace/Thread_Manager.h"
 #include "ace/Version.h"
 
+#define _SDL_main_h
 #include "SDL.h"
 #include "SDL_mixer.h"
 //#include "SDL/SDL_framerate.h"
@@ -415,7 +416,8 @@ do_printUsage(const std::string& programName_in)
             << ACE_TEXT("]")
             << std::endl;
   std::cout << ACE_TEXT("-x [VALUE] : #dispatch threads [")
-            << NET_CLIENT_DEFAULT_NUMBER_OF_DISPATCH_THREADS
+            << ((COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR) ? NET_CLIENT_DEFAULT_NUMBER_OF_REACTOR_DISPATCH_THREADS
+                                                                                 : NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS)
             << ACE_TEXT("]")
             << std::endl;
   std::cout << ACE_TEXT("-z [STRING]: SDL video driver [\"")
@@ -552,7 +554,9 @@ do_processArguments(const int& argc_in,
 
   printVersionAndExit_out = false;
 
-  numDispatchThreads_out  = NET_CLIENT_DEFAULT_NUMBER_OF_DISPATCH_THREADS;
+  numDispatchThreads_out  =
+    ((COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR) ? NET_CLIENT_DEFAULT_NUMBER_OF_REACTOR_DISPATCH_THREADS
+                                                                      : NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS);
 
   videoDriver_out         =
       ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME);
@@ -694,8 +698,8 @@ do_processArguments(const int& argc_in,
 }
 
 bool
-do_runIntro(SDL_Surface*  targetSurface_in,
-            Common_ILock* screenLock_in)
+do_runIntro (SDL_Surface*  targetSurface_in/*,
+             Common_ILock* screenLock_in*/)
 {
   RPG_TRACE(ACE_TEXT("::do_runIntro"));
 
@@ -703,8 +707,8 @@ do_runIntro(SDL_Surface*  targetSurface_in,
 
   // step1: play intro music
   ACE_Time_Value length;
-  RPG_Sound_Common_Tools::play(EVENT_MAIN_TITLE,
-                               length);
+  RPG_Sound_Common_Tools::play (EVENT_MAIN_TITLE,
+                                length);
 
   // step2: show start logo
   RPG_Graphics_GraphicTypeUnion type;
@@ -724,36 +728,36 @@ do_runIntro(SDL_Surface*  targetSurface_in,
   // *TODO* stretch this image fullscreen
   SDL_Rect dirty_region;
   // center logo image
-  if (screenLock_in)
-    screenLock_in->lock();
-  RPG_Graphics_Surface::put(std::make_pair(((targetSurface_in->w - logo->w) / 2),  // location x
-                                           ((targetSurface_in->h - logo->h) / 2)), // location y
-                            *logo,
-                            targetSurface_in,
-                            dirty_region);
-  if (screenLock_in)
-    screenLock_in->unlock();
+  //if (screenLock_in)
+  //  screenLock_in->lock();
+  RPG_Graphics_Surface::put (std::make_pair (((targetSurface_in->w - logo->w) / 2),  // location x
+                                             ((targetSurface_in->h - logo->h) / 2)), // location y
+                             *logo,
+                             targetSurface_in,
+                             dirty_region);
+  //if (screenLock_in)
+  //  screenLock_in->unlock();
 
 //   SDL_FreeSurface(logo);
-  RPG_Graphics_Common_Tools::fade(true,                                                // fade in
-                                  5.0,                                                 // interval
-                                  RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK,
-                                                                   *targetSurface_in), // fade from black
-                                  screenLock_in,                                       // screen lock interface handle
-                                  targetSurface_in);                                   // target surface (e.g. screen)
+  RPG_Graphics_Common_Tools::fade (true,                                                // fade in
+                                   5.0,                                                 // interval
+                                   RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK,
+                                                                    *targetSurface_in), // fade from black
+                                   NULL,                                                // screen lock interface handle
+                                   targetSurface_in);                                   // target surface (e.g. screen)
   SDL_Event event;
-  do_SDL_waitForInput(10,     // wait 10 seconds max
-                      event);
+  do_SDL_waitForInput (10,     // wait 10 seconds max
+                       event);
 //   do_handleSDLEvent(event);
-  RPG_Graphics_Common_Tools::fade(false,                                               // fade out
-                                  3.0,                                                 // interval
-                                  RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK,
-                                                                   *targetSurface_in), // fade to black
-                                  screenLock_in,                                       // screen lock interface handle
-                                  targetSurface_in);                                   // target surface (e.g. screen)
+  RPG_Graphics_Common_Tools::fade (false,                                               // fade out
+                                   3.0,                                                 // interval
+                                   RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK,
+                                                                    *targetSurface_in), // fade to black
+                                   NULL,                                                // screen lock interface handle
+                                   targetSurface_in);                                   // target surface (e.g. screen)
 
   // clean up
-  SDL_FreeSurface(logo);
+  SDL_FreeSurface (logo);
 
   return true;
 }
@@ -769,11 +773,10 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
   GTKUserData_in.UIState =
-    &const_cast<Common_UI_GTK_State_t&> (COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->getR_2 ());
+    &const_cast<Common_UI_GTK_State_t&> (COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->getR ());
 
   COMMON_TIMERMANAGER_SINGLETON::instance ()->initialize (configuration_in.timer_configuration);
-  ACE_thread_t thread_id = 0;
-  COMMON_TIMERMANAGER_SINGLETON::instance ()->start (thread_id);
+  COMMON_TIMERMANAGER_SINGLETON::instance ()->start (NULL);
 
   // step1: init RPG engine
   RPG_Engine_Common_Tools::initialize (schemaRepository_in,
@@ -866,8 +869,8 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 
   // step3: run intro ?
   if (!skipIntro_in &&
-      !do_runIntro (GTKUserData_in.screen,
-                    &client_engine))
+      !do_runIntro (GTKUserData_in.screen/*,
+                    &client_engine*/))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to run intro, returning\n")));
@@ -927,14 +930,13 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   RPG_Graphics_IWindowBase* level_window = main_window.child (WINDOW_MAP);
   ACE_ASSERT (level_window);
   // init/add entity to the graphics cache
-  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->initialize (&client_engine,
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->initialize (NULL,
                                                                   level_window);
-  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->initialize (&client_engine,
+  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->initialize (NULL,
                                                                 level_window);
 
   // start painting...
-  thread_id = 0;
-  client_engine.start (thread_id);
+  client_engine.start (NULL);
   if (!client_engine.isRunning ())
   {
     ACE_DEBUG ((LM_ERROR,
@@ -1027,7 +1029,8 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   int group_id = -1;
   struct Common_EventDispatchConfiguration dispatch_configuration;
   dispatch_configuration.numberOfProactorThreads =
-      NET_CLIENT_DEFAULT_NUMBER_OF_DISPATCH_THREADS;
+    ((COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR) ? NET_CLIENT_DEFAULT_NUMBER_OF_REACTOR_DISPATCH_THREADS
+                                                                      : NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS);
   struct Common_EventDispatchState dispatch_state_s;
   dispatch_state_s.configuration = &dispatch_configuration;
   if (!Common_Tools::startEventDispatch (dispatch_state_s))
@@ -1058,8 +1061,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
     std::make_pair (UIDefinitionFile_in, static_cast<GtkBuilder*> (NULL));
   //GTKUserData_in.UIState->userData = &GTKUserData_in;
 
-  thread_id = 0;
-  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start (thread_id);
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start (NULL);
   if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
   {
     ACE_DEBUG((LM_ERROR,
@@ -1078,8 +1080,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 
     RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abort ();
     RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->wait ();
-    Common_Tools::finalizeEventDispatch (-1,
-                                         -1,
+    Common_Tools::finalizeEventDispatch (dispatch_state_s,
                                          false);
 
     return;
@@ -1380,9 +1381,8 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abort ();
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->wait ();
-    Common_Tools::finalizeEventDispatch (-1,
-                                         -1,
-                                         false);
+  Common_Tools::finalizeEventDispatch (dispatch_state_s,
+                                       false);
   // no more data will arrive from here on...
 
   ACE_DEBUG((LM_DEBUG,
@@ -1839,10 +1839,16 @@ ACE_TMAIN (int argc_in,
   bool log_to_file                  = false;
   bool trace_information            = false;
   bool print_version_and_exit       = false;
-  unsigned int num_dispatch_threads = NET_CLIENT_DEFAULT_NUMBER_OF_DISPATCH_THREADS;
+  unsigned int num_dispatch_threads =
+    ((COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR) ? NET_CLIENT_DEFAULT_NUMBER_OF_REACTOR_DISPATCH_THREADS
+                                                                      : NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS);
   std::string video_driver          =
       ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME);
   bool skip_intro                   = false;
+#if GTK_CHECK_VERSION (3,0,0)
+  std::string UI_CSS_file;
+#endif // GTK_CHECK_VERSION(3,0,0)
+
   if (!do_processArguments (argc_in,
                             argv_in,
                             mute_sound,
@@ -2176,7 +2182,7 @@ ACE_TMAIN (int argc_in,
     COMMON_UI_GTK_MANAGER_SINGLETON::instance ();
   ACE_ASSERT (gtk_manager_p);
   Common_UI_GTK_State_t& state_r =
-    const_cast<Common_UI_GTK_State_t&> (gtk_manager_p->getR_2 ());
+    const_cast<Common_UI_GTK_State_t&> (gtk_manager_p->getR ());
 #if defined (GTK_USE)
   GTK_user_data.progressData.state = &state_r;
   configuration.gtk_configuration.argc = argc_in;
@@ -2187,9 +2193,9 @@ ACE_TMAIN (int argc_in,
   configuration.gtk_configuration.eventHooks.initHook =
     idle_initialize_UI_cb;
   configuration.gtk_configuration.definition = &gtk_ui_definition;
-#if GTK_CHECK_VERSION(3,0,0)
+#if GTK_CHECK_VERSION (3,0,0)
   if (!UI_CSS_file.empty ())
-    configuration.configuration->GTKConfiguration.CSSProviders[UI_CSS_file] = NULL;
+    configuration.gtk_configuration.CSSProviders[UI_CSS_file] = NULL;
 #endif // GTK_CHECK_VERSION(3,0,0)
   //gtk_configuration_p = &configuration.GTKConfiguration;
 #endif // GTK_USE

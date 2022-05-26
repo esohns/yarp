@@ -28,11 +28,13 @@
 RPG_Net_Protocol_SessionMessage::RPG_Net_Protocol_SessionMessage (Stream_SessionId_t sessionId_in,
                                                                   Stream_SessionMessageType messageType_in,
                                                                   RPG_Net_Protocol_SessionData_t*& sessionData_in,
-                                                                  Stream_UserData* userData_in)
+                                                                  Stream_UserData* userData_in,
+                                                                  bool expedited_in)
  : inherited (sessionId_in,
               messageType_in,
               sessionData_in,
-              userData_in)
+              userData_in,
+              expedited_in) // expedited ?
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_SessionMessage::RPG_Net_Protocol_SessionMessage"));
 

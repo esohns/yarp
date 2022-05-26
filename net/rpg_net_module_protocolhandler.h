@@ -34,9 +34,9 @@
 #include "stream_streammodule_base.h"
 #include "stream_task_base_synch.h"
 
+#include "rpg_net_protocol_session_message.h"
 #include "rpg_net_protocol_configuration.h"
 #include "rpg_net_protocol_message.h"
-#include "rpg_net_protocol_session_message.h"
 
 // forward declaration(s)
 class Stream_IAllocator;
@@ -46,12 +46,10 @@ extern const char rpg_net_protocolhandler_module_name_string[];
 class RPG_Net_ProtocolHandler
  : public Stream_TaskBaseSynch_T<ACE_MT_SYNCH,
                                  Common_TimePolicy_t,
-                                 Common_ILock_T<ACE_MT_SYNCH>,
                                  struct RPG_Net_Protocol_ModuleHandlerConfiguration,
                                  Stream_ControlMessage_t,
                                  RPG_Net_Protocol_Message,
                                  RPG_Net_Protocol_SessionMessage,
-                                 Stream_SessionId_t,
                                  enum Stream_ControlType,
                                  enum Stream_SessionMessageType,
                                  struct Stream_UserData>
@@ -59,12 +57,10 @@ class RPG_Net_ProtocolHandler
 {
   typedef Stream_TaskBaseSynch_T<ACE_MT_SYNCH,
                                  Common_TimePolicy_t,
-                                 Common_ILock_T<ACE_MT_SYNCH>,
                                  struct RPG_Net_Protocol_ModuleHandlerConfiguration,
                                  Stream_ControlMessage_t,
                                  RPG_Net_Protocol_Message,
                                  RPG_Net_Protocol_SessionMessage,
-                                 Stream_SessionId_t,
                                  enum Stream_ControlType,
                                  enum Stream_SessionMessageType,
                                  struct Stream_UserData> inherited;
@@ -94,7 +90,7 @@ class RPG_Net_ProtocolHandler
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_ProtocolHandler& operator= (const RPG_Net_ProtocolHandler&))
 
   // implement Common_ITimerHandler
-  inline virtual const long get () const { ACE_ASSERT (false); ACE_NOTSUP_RETURN (-1); ACE_NOTREACHED (return -1;) }
+  inline virtual const long get_2 () const { ACE_ASSERT (false); ACE_NOTSUP_RETURN (-1); ACE_NOTREACHED (return -1;) }
   virtual void handle (const void*); // asynchronous completion token
 
   // helper methods

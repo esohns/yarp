@@ -8,21 +8,23 @@
 // *NOTE*: workaround quirky MSVC...
 #define NOMINMAX
 
+#include "targetver.h"
+
 // Windows Header Files
-#include <windows.h>
-#endif
-
-// System Library Header Files
-#include "SDL.h"
-//#include "png.h"
-
-#include "ace/OS.h"
-#include "ace/Synch.h"
-#include "ace/Log_Msg.h"
+#include "windows.h"
+#endif // _MSC_VER
 
 // C RunTime Header Files
 #include <string>
 #include <iostream>
+
+// System Library Header Files
+//#include "SDL.h"
+//#include "png.h"
+
+#include "ace/OS.h"
+//#include "ace/Synch.h"
+#include "ace/Log_Msg.h"
 
 // Local Header Files
 #include "rpg_common_macros.h"

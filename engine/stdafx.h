@@ -3,18 +3,20 @@
 //      are changed infrequently
 //
 #if defined _MSC_VER
-#define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
+#define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
+
+#include "targetver.h"
 
 // Windows Header Files
-#include <windows.h>
-#endif
+#include "windows.h"
+#endif // _MSC_VER
 
 // System Library Header Files
 #include "ace/OS.h"
 #include "ace/ACE.h"
 #include "ace/Log_Msg.h"
 #include "ace/Assert.h"
-#include "ace/Synch.h"
+//#include "ace/Synch.h"
 #include "ace/Task.h"
 #include "ace/Singleton.h"
 #include "ace/CDR_Stream.h"

@@ -52,7 +52,7 @@ elseif (WIN32)
  set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
-                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                         $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                         Common CommonError CommonLog CommonTimer
                         ACEStream ACEStream_Network
@@ -116,16 +116,16 @@ elseif (WIN32)
  set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
-                       $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
-                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
-                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                       Common CommonError CommonLog CommonTimer
-                       ACEStream ACEStream_Network
-                       ACENetwork
-                       RPG_Chance RPG_Dice RPG_Common
-                       RPG_Character RPG_Magic RPG_Item
-                       RPG_Player RPG_Monster RPG_Combat
-                       RPG_Map RPG_Graphics RPG_Net RPG_Net_Protocol RPG_Engine)
+                        $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDLmain.lib
+                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
+                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        Common CommonError CommonLog CommonTimer
+                        ACEStream ACEStream_Network
+                        ACENetwork
+                        RPG_Chance RPG_Dice RPG_Common
+                        RPG_Character RPG_Magic RPG_Item
+                        RPG_Player RPG_Monster RPG_Combat
+                        RPG_Map RPG_Graphics RPG_Net RPG_Net_Protocol RPG_Engine)
 endif ()
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
@@ -157,7 +157,7 @@ elseif (WIN32)
 
  target_link_libraries (${EXECUTABLE}
                         Userenv.lib
-                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                         $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                         Common CommonError CommonLog CommonTimer
                         RPG_Dice RPG_Common RPG_Map)

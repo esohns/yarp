@@ -21,7 +21,7 @@ if (UNIX)
 elseif (WIN32)
  set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
  target_link_libraries (${EXECUTABLE}
-                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                         $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                         RPG_Dice)
 endif ()
@@ -51,7 +51,7 @@ if (UNIX)
 elseif (WIN32)
  target_link_libraries (${EXECUTABLE}
                         Userenv.lib
-                        $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib
+                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                         $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                         Common CommonError CommonLog
                         RPG_Dice)

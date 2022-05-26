@@ -27,14 +27,9 @@
 
 #include "stream_streammodule_base.h"
 
-//#include "net_module_runtimestatistic.h"
-
-#include "rpg_net_protocol_message.h"
-//#include "rpg_net_protocol_module_IRCsplitter.h"
-//#include "rpg_net_protocol_module_IRCstreamer.h"
 #include "rpg_net_protocol_session_message.h"
+#include "rpg_net_protocol_message.h"
 #include "rpg_net_protocol_stream_common.h"
-//#include "rpg_net_protocol_IRCmessage.h"
 
 //typedef Net_Module_Statistic_ReaderTask_T<ACE_MT_SYNCH,
 //                                          Common_TimePolicy_t,

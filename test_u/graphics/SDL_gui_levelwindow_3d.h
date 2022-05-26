@@ -25,6 +25,7 @@
 
 #include "ace/Global_Macros.h"
 
+#define _SDL_main_h
 #include "SDL.h"
 
 #include "common_ilock.h"

@@ -1,3 +1,16 @@
+string (REPLACE ${CMAKE_SOURCE_DIR} "" BUILD_PATH_SUFFIX ${CMAKE_BINARY_DIR})
+string (SUBSTRING ${BUILD_PATH_SUFFIX} 1 -1 BUILD_PATH_SUFFIX)
+find_package (ACENetwork
+              REQUIRED
+              CONFIG
+              PATHS ${CMAKE_CURRENT_SOURCE_DIR}/../../modules ${CMAKE_CURRENT_SOURCE_DIR}/../../..
+              PATH_SUFFIXES ACENetwork/${BUILD_PATH_SUFFIX}
+              NO_DEFAULT_PATH)
+if (NOT EXISTS ${ACENetwork_DIR})
+ message (FATAL_ERROR "could not find package \"ACENetwork\", aborting")
+else ()
+ message (STATUS "found package \"ACENetwork\": \"${ACENetwork_DIR}\"")
+endif ()
 
 ########### next target ###############
 set (LIBRARY RPG_Net_Protocol)
@@ -24,20 +37,8 @@ set (${LIBRARY}_SRCS
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 
-if (UNIX)
- target_include_directories (${LIBRARY} PUBLIC
-#                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules/ACE>)
-#                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/ACE_TAO/ACE>)
-                             $<BUILD_INTERFACE:/usr/local/src/ACE_wrappers>)
-elseif (WIN32)
- if (DEFINED ENV{ACE_ROOT})
-  target_include_directories (${LIBRARY} PUBLIC
-                              $<BUILD_INTERFACE:$ENV{ACE_ROOT}>)
- else ()
-  target_include_directories (${LIBRARY} PUBLIC
-                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/ACE_TAO/ACE>)
- endif (DEFINED ENV{ACE_ROOT})
-endif ()
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${ACE_INCLUDE_DIR}>)
 
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src>)
@@ -46,7 +47,11 @@ if (WIN32)
                              $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/error>)
 endif (WIN32)
 target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/signal>)
+target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/timer>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/task>)
 
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../ACEStream/3rd_party/tree>)
@@ -106,9 +111,12 @@ add_dependencies (${LIBRARY} RPG_Net)
 
 set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
+target_link_libraries (${LIBRARY}
+                       ACENetwork)
+
 # add PCH
-set_target_properties (${LIBRARY} PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
-cotire (${LIBRARY})
+target_precompile_headers (${LIBRARY}
+                           PRIVATE stdafx.h)
 
 ########### install files ###############
 install (FILES

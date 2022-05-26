@@ -3,26 +3,29 @@
 //      are changed infrequently
 //
 #if defined _MSC_VER
-#define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
+#define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
 
 // *NOTE*: workaround quirky MSVC...
 #define NOMINMAX
 
-// Windows Header Files
-#include <windows.h>
-#endif
+#include "targetver.h"
 
-// System Library Header Files
-//#include "glade/glade.h"
-//#include "gtk/gtk.h"
-#include "SDL.h"
-//#include "png.h"
-#include "ace/OS.h"
-#include "ace/Log_Msg.h"
+// Windows Header Files
+#include "windows.h"
+#endif // _MSC_VER
 
 // C RunTime Header Files
 #include <string>
 #include <iostream>
+
+// System Library Header Files
+//#include "glade/glade.h"
+//#include "gtk/gtk.h"
+//#include "SDL.h"
+//#include "png.h"
+
+#include "ace/OS.h"
+#include "ace/Log_Msg.h"
 
 // Local Header Files
 #include "rpg_common_macros.h"

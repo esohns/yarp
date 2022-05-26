@@ -23,16 +23,16 @@
 
 #include "gtk/gtk.h"
 
+gboolean idle_initialize_UI_cb (gpointer);
+gboolean idle_finalize_UI_cb (gpointer);
+gboolean idle_update_log_display_cb (gpointer);
+gboolean idle_update_info_display_cb (gpointer);
+
 // GTK callback functions
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
-G_MODULE_EXPORT gboolean idle_initialize_UI_cb (gpointer);
-G_MODULE_EXPORT gboolean idle_finalize_UI_cb (gpointer);
-G_MODULE_EXPORT gboolean idle_update_log_display_cb (gpointer);
-G_MODULE_EXPORT gboolean idle_update_info_display_cb (gpointer);
-// -----------------------------------------------------------------------------
 G_MODULE_EXPORT gint button_close_all_clicked_cb (GtkWidget*, gpointer);
 G_MODULE_EXPORT gint togglebutton_listen_toggled_cb (GtkWidget*, gpointer);
 G_MODULE_EXPORT gint button_report_clicked_cb (GtkWidget*, gpointer);
