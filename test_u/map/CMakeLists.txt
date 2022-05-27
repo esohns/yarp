@@ -37,7 +37,7 @@ add_dependencies (${EXECUTABLE} RPG_Dice RPG_Chance RPG_Common RPG_Character RPG
 if (UNIX)
  target_link_libraries (${EXECUTABLE}
                         xerces-c
-                        ACE
+                        ${ACE_LIBRARY}
                         Common CommonError CommonLog CommonTimer
                         ACEStream ACEStream_Network
                         ACENetwork
@@ -101,7 +101,7 @@ if (UNIX)
                         ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
                         ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
                         xerces-c
-                        ACE
+                        ${ACE_LIBRARY}
                         Common CommonError CommonLog CommonTimer
                         ACEStream ACEStream_Network
                         ACENetwork
@@ -149,7 +149,7 @@ add_dependencies (${EXECUTABLE} RPG_Dice RPG_Common RPG_Map)
 if (UNIX)
  target_link_libraries (${EXECUTABLE}
                         xerces-c
-                        ACE
+                        ${ACE_LIBRARY}
                         Common CommonError CommonLog CommonTimer
                         RPG_Dice RPG_Common RPG_Map)
 elseif (WIN32)

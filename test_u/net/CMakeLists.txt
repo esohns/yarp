@@ -118,7 +118,7 @@ if (UNIX)
                         #$ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
                         X11
                         xerces-c
-                        ACE
+                        ${ACE_LIBRARY}
                         Common CommonLog CommonSignal CommonTimer CommonUI_GTK
                         ACEStream ACEStream_Miscellaneous ACEStream_Network
                         ACENetwork ACENetwork_Client
@@ -172,7 +172,7 @@ if (UNIX)
  #                       $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
                         X11
                         xerces-c
-                        ACE
+                        ${ACE_LIBRARY}
                         Common CommonLog CommonSignal CommonTimer CommonUI_GTK
                         ACEStream ACEStream_Miscellaneous ACEStream_Network
                         ACENetwork ACENetwork_Server

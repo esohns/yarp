@@ -97,7 +97,7 @@ if (UNIX)
 #                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
 #                        ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
                         xerces-c
-                        ACE
+                        ${ACE_LIBRARY}
                         Common CommonLog CommonTimer
                         RPG_Dice RPG_Chance RPG_Common
                         RPG_Character RPG_Magic RPG_Item
@@ -136,11 +136,11 @@ add_executable (${EXECUTABLE}
 
 if (UNIX)
  target_link_libraries (${EXECUTABLE}
-                        ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
-                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
-                        ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
+#                        ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
+#                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
+#                        ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
                         xerces-c
-                        ACE
+                        ${ACE_LIBRARY}
                         Common CommonLog CommonTimer
                         ACEStream ACEStream_Network
                         ACENetwork
@@ -205,7 +205,7 @@ if (UNIX)
                         ${PKG_CONFIG_MODULE_LIBGNOMEUI_LIBRARIES}
                         ${GTK_LIBRARIES}
                         xerces-c
-                        ACE
+                        ${ACE_LIBRARY}
                         Common CommonLog CommonTimer CommonUI_GTK
                         ACEStream ACEStream_Network
                         ACENetwork

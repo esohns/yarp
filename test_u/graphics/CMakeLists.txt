@@ -71,7 +71,7 @@ if (UNIX)
                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
                        ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
                        xerces-c
-                       ACE
+                       ${ACE_LIBRARY}
                        Common CommonLog CommonTimer
                        RPG_Dice RPG_Common RPG_Graphics)
 elseif (WIN32)
@@ -126,7 +126,7 @@ if (UNIX)
                        ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES}
                        GLU
                        xerces-c
-                       ACE
+                       ${ACE_LIBRARY}
                        Common CommonLog CommonTimer CommonUI CommonUI_GTK
                        ACEStream ACEStream_Network
                        ACENetwork

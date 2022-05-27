@@ -16,7 +16,7 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
 if (UNIX)
  target_link_libraries (${EXECUTABLE}
                         xerces-c
-                        ACE
+                        ${ACE_LIBRARY}
                         RPG_Dice)
 elseif (WIN32)
  set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
@@ -44,7 +44,7 @@ endif (WIN32)
 if (UNIX)
  target_link_libraries (${EXECUTABLE}
                         xerces-c
-                        ACE
+                        ${ACE_LIBRARY}
                         Common CommonLog
                         RPG_Dice
                         Common)

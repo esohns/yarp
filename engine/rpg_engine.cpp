@@ -310,8 +310,20 @@ RPG_Engine::start ()
   thread_handles[0] = 0;
   ACE_thread_t thread_ids[1];
   thread_ids[0] = 0;
+  char thread_name[BUFSIZ];
+  ACE_OS::memset (thread_name, 0, sizeof (char[BUFSIZ]));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  ACE_OS::strncpy (thread_name,
+                   ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_TASK_THREAD_NAME),
+                   std::min (static_cast<size_t> (BUFSIZ - 1), static_cast<size_t> (ACE_OS::strlen (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_TASK_THREAD_NAME)))));
+#else
+  ACE_ASSERT (COMMON_THREAD_PTHREAD_NAME_MAX_LENGTH <= BUFSIZ);
+  ACE_OS::strncpy (thread_name,
+                   ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_TASK_THREAD_NAME),
+                   std::min (static_cast<size_t> (COMMON_THREAD_PTHREAD_NAME_MAX_LENGTH - 1), static_cast<size_t> (ACE_OS::strlen (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_TASK_THREAD_NAME)))));
+#endif // ACE_WIN32 || ACE_WIN64
   const char* thread_names[1];
-  thread_names[0] = ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_TASK_THREAD_NAME);
+  thread_names[0] = thread_name;
   int result = inherited::activate ((THR_NEW_LWP |
                                      THR_JOINABLE |
                                      THR_INHERIT_SCHED),         // flags

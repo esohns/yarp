@@ -141,7 +141,7 @@ if (UNIX)
                         ${PKG_CONFIG_MODULE_GTHREAD_LIBRARIES}
                         ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES}
                         X11
-                        ACE
+                        ${ACE_LIBRARY}
                         Common CommonLog CommonTimer CommonUI CommonUI_GTK
                         ACEStream ACEStream_Network
                         ACENetwork

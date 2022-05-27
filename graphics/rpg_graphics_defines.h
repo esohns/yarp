@@ -85,7 +85,8 @@
 //#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "directx"
 #define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "windib"
 #elif defined(ACE_LINUX)
-#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "x11"
+//#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "x11"
+#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "wayland"
 //#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "nanox"
 //#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "dga"
 //#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "fbcon"

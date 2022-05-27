@@ -5,9 +5,7 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/ACE.cmake)
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/image/scripts/png.cmake)
 
 if (UNIX)
- include (FindPkgConfig)
- pkg_check_modules (PKG_CONFIG_MODULE_SDL REQUIRED sdl)
- pkg_check_modules (PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
+ include (${CMAKE_CURRENT_SOURCE_DIR}/../scripts/sdl.cmake)
 endif ()
 
 ########### next target ###############
@@ -129,14 +127,17 @@ add_dependencies (${LIBRARY} RPG_Common RPG_Dice)
 
 set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
-target_link_libraries (${LIBRARY}
-                       ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
-target_link_libraries (${LIBRARY}
-                       $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL.lib
-                       $ENV{LIB_ROOT}/SDL_ttf/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL_ttf.lib
-                       $ENV{LIB_ROOT}/libpng/build/Debug/libpng16d.lib)
+if (UNIX)
+ target_link_libraries (${LIBRARY}
+                        ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
+                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
+                        ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
+elseif (WIN32)
+ target_link_libraries (${LIBRARY}
+                        $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL.lib
+                        $ENV{LIB_ROOT}/SDL_ttf/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL_ttf.lib
+                        $ENV{LIB_ROOT}/libpng/build/Debug/libpng16d.lib)
+endif ()
 
 # add PCH
 target_precompile_headers (${LIBRARY}

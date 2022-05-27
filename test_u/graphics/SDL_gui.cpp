@@ -2068,7 +2068,7 @@ ACE_TMAIN (int argc_in,
 
   // step2: init SDL
   if (SDL_Init(SDL_INIT_TIMER |
-               //SDL_INIT_VIDEO |
+               SDL_INIT_VIDEO |
                SDL_INIT_NOPARACHUTE) == -1) // "...Prevents SDL from catching fatal signals..."
   {
     ACE_DEBUG((LM_ERROR,

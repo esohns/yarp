@@ -50,7 +50,7 @@ if (UNIX)
                                      ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
                                      ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
                                      xerces-c
-                                     ACE
+                                     ${ACE_LIBRARY}
                                      Common CommonLog
                                      RPG_Dice RPG_Chance RPG_Common
                                      RPG_Character RPG_Magic RPG_Item

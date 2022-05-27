@@ -42,7 +42,7 @@ if (UNIX)
                        ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
                        ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES}
                        xerces-c
-                       ACE
+                       ${ACE_LIBRARY}
                        Common CommonLog CommonTimer
                        RPG_Dice RPG_Common RPG_Sound)
 elseif (WIN32)
@@ -66,17 +66,30 @@ install(TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 
 ########### launcher ###############
 file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
-create_target_launcher (${EXECUTABLE}
-                        ARGS "-t"
-                        FORWARD_ARGS
-                        RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
-                                             ${LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
-                                             ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
-                                             ${LIB_ROOT}/ACE_TAO/ACE/lib
-                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/Debug
-                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/err/Debug
-                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/ui/Debug
-                                             ${PROJECT_SOURCE_DIR}/cmake/src/Debug
-                                             ${PROJECT_SOURCE_DIR}/cmake/src/modules/vis/Debug
-                        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/../..
-                        ENVIRONMENT foo=bar)
+if (UNIX)
+ create_target_launcher (${EXECUTABLE}
+                         ARGS "-t"
+#                        FORWARD_ARGS
+                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/ACE_TAO/ACE/lib
+                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test_u/sound
+                         ENVIRONMENT foo=bar)
+elseif (WIN32)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}.exe" COMMAND)
+ string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
+ create_target_launcher (${EXECUTABLE}
+                         COMMAND ${COMMAND}
+                         ARGS "-t"
+                         FORWARD_ARGS
+                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
+                                              ${LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
+                                              ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
+                                              ${LIB_ROOT}/ACE_TAO/ACE/lib
+                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/Debug
+                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/err/Debug
+                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/ui/Debug
+                                              ${PROJECT_SOURCE_DIR}/cmake/src/Debug
+                                              ${PROJECT_SOURCE_DIR}/cmake/src/modules/vis/Debug
+                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test_u/sound
+                         ENVIRONMENT foo=bar)
+endif ()
+

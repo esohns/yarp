@@ -78,7 +78,11 @@ RPG_Graphics_SDL_Tools::preInitializeVideo (const struct RPG_Graphics_SDL_VideoC
                ACE_TEXT(video_driver.c_str()),
                flags,
                ACE_TEXT(SDL_GetError())));
-
+    //    for (int i = SDL_GetNumVideoDrivers (); i >= 0; --i)
+    //      SDL_GetVideoDriver ()
+    char driver_name[BUFSIZ];
+    SDL_VideoDriverName (driver_name,
+                         sizeof (char[BUFSIZ]));
     return false;
   } // end IF
 
@@ -201,7 +205,7 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
   // sanity check
   char driver[BUFSIZ];
   if (!SDL_VideoDriverName (driver,
-                            sizeof (driver)))
+                            sizeof (char[BUFSIZ])))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_VideoDriverName(): \"%s\", aborting\n"),
@@ -210,34 +214,33 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
   } // end IF
 
   // retrieve/list "best" available video mode
-  const SDL_VideoInfo* videoInfo = NULL;
-  videoInfo = SDL_GetVideoInfo ();
-  ACE_ASSERT (videoInfo);
-  ACE_DEBUG ((LM_DEBUG,
-              ACE_TEXT ("*** video capabilities (driver: \"%s\") ***\nHW surfaces:\t\t\t\t\"%s\"\nwindow manager:\t\t\t\t\"%s\"\naccelerated HW --> HW [blits/colorkey/alpha]:\t\"%s\"/\"%s\"/\"%s\"\naccelerated SW --> HW [blits/colorkey/alpha]:\t\"%s\"/\"%s\"/\"%s\"\ncolor fills accelerated:\t\t\"%s\"\nvideo memory:\t\t\t\t%d kBytes\n*** (suggested) video mode ***\npalette:\t\t\t\t%@\nbits[bytes]/pixel:\t\t\t%d[%d]\nmask[RGBA]:\t\t\t\t%x %x %x %x\nshift[RGBA]:\t\t\t\t%d %d %d %d\nloss[RGBA]:\t\t\t\t%d %d %d %d\ntransparent colorkey:\t\t\t%d\noverall surface alpha:\t\t\t%d\n"),
-              driver,
-              (videoInfo->hw_available ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
-              (videoInfo->wm_available ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
-              (videoInfo->blit_hw ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
-              (videoInfo->blit_hw_CC ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
-              (videoInfo->blit_hw_A ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
-              (videoInfo->blit_sw ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
-              (videoInfo->blit_sw_CC ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
-              (videoInfo->blit_sw_A ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
-              (videoInfo->blit_fill ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
-              videoInfo->video_mem,
-              videoInfo->vfmt->palette,
-              videoInfo->vfmt->BitsPerPixel,
-              videoInfo->vfmt->BytesPerPixel,
-              videoInfo->vfmt->Rmask, videoInfo->vfmt->Gmask, videoInfo->vfmt->Bmask, videoInfo->vfmt->Amask,
-              videoInfo->vfmt->Rshift, videoInfo->vfmt->Gshift, videoInfo->vfmt->Bshift, videoInfo->vfmt->Ashift,
-              videoInfo->vfmt->Rloss, videoInfo->vfmt->Gloss, videoInfo->vfmt->Bloss, videoInfo->vfmt->Aloss,
-              videoInfo->vfmt->colorkey,
-              static_cast<int>(videoInfo->vfmt->alpha)));
+  const SDL_VideoInfo* video_info_p = SDL_GetVideoInfo ();
+  if (video_info_p)
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("*** video capabilities (driver: \"%s\") ***\nHW surfaces:\t\t\t\t\"%s\"\nwindow manager:\t\t\t\t\"%s\"\naccelerated HW --> HW [blits/colorkey/alpha]:\t\"%s\"/\"%s\"/\"%s\"\naccelerated SW --> HW [blits/colorkey/alpha]:\t\"%s\"/\"%s\"/\"%s\"\ncolor fills accelerated:\t\t\"%s\"\nvideo memory:\t\t\t\t%d kBytes\n*** (suggested) video mode ***\npalette:\t\t\t\t%@\nbits[bytes]/pixel:\t\t\t%d[%d]\nmask[RGBA]:\t\t\t\t%x %x %x %x\nshift[RGBA]:\t\t\t\t%d %d %d %d\nloss[RGBA]:\t\t\t\t%d %d %d %d\ntransparent colorkey:\t\t\t%d\noverall surface alpha:\t\t\t%d\n"),
+                driver,
+                (video_info_p->hw_available ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
+                (video_info_p->wm_available ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
+                (video_info_p->blit_hw ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
+                (video_info_p->blit_hw_CC ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
+                (video_info_p->blit_hw_A ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
+                (video_info_p->blit_sw ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
+                (video_info_p->blit_sw_CC ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
+                (video_info_p->blit_sw_A ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
+                (video_info_p->blit_fill ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
+                video_info_p->video_mem,
+                video_info_p->vfmt->palette,
+                video_info_p->vfmt->BitsPerPixel,
+                video_info_p->vfmt->BytesPerPixel,
+                video_info_p->vfmt->Rmask, video_info_p->vfmt->Gmask, video_info_p->vfmt->Bmask, video_info_p->vfmt->Amask,
+                video_info_p->vfmt->Rshift, video_info_p->vfmt->Gshift, video_info_p->vfmt->Bshift, video_info_p->vfmt->Ashift,
+                video_info_p->vfmt->Rloss, video_info_p->vfmt->Gloss, video_info_p->vfmt->Bloss, video_info_p->vfmt->Aloss,
+                video_info_p->vfmt->colorkey,
+                static_cast<int>(video_info_p->vfmt->alpha)));
 
   // set surface flags
   RPG_Graphics_Surface::SDL_surface_flags =
-      ((videoInfo->hw_available ? SDL_HWSURFACE : SDL_SWSURFACE) |
+      ((video_info_p && video_info_p->hw_available ? SDL_HWSURFACE : SDL_SWSURFACE) |
        SDL_SRCCOLORKEY | // "This flag turns on color keying for blits from this
                          // surface. ...Use SDL_SetColorKey to set or clear this
                          // flag after surface creation."
@@ -245,7 +248,7 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
                          // this surface. ...Use SDL_SetAlpha to set or clear
                          // this flag after surface creation."
   Uint32 SDL_surface_flags =
-      ((videoInfo->hw_available ? SDL_HWSURFACE : SDL_SWSURFACE) |
+      ((video_info_p && video_info_p->hw_available ? SDL_HWSURFACE : SDL_SWSURFACE) |
        SDL_ASYNCBLIT | // "...will usually slow down blitting on single CPU
                        // machines, but may provide a speed increase on SMP
                        // systems..."
@@ -256,17 +259,15 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
        // *TODO*: implement SDL_RESIZABLE ?
        (configuration_in.full_screen   ? (SDL_FULLSCREEN | SDL_NOFRAME) : 0));
   // get available fullscreen/hardware/... modes
-  SDL_Rect** modes = NULL;
-  modes = SDL_ListModes(NULL,               // use same as videoInfo
-                        SDL_surface_flags); // surface flags
+  SDL_Rect** modes = SDL_ListModes (NULL,               // use same as videoInfo
+                                    SDL_surface_flags); // surface flags
   // --> any valid modes available ?
   if (modes == NULL)
   {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("no available resolutions (flags: 0x%x) --> change settings, aborting\n"),
+               ACE_TEXT("no available resolutions (flags: 0x%x) --> change settings, continuing\n"),
                SDL_surface_flags));
-
-    return NULL;
+    goto continue_;
   } // end IF
   else if (modes == reinterpret_cast<SDL_Rect**>(-1))
   {
@@ -290,6 +291,7 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
                  modes[i]->h));
   } // end ELSE
 
+continue_:
   // check to see whether the requested mode is possible
   int suggested_bpp = SDL_VideoModeOK(configuration_in.screen_width,
                                       configuration_in.screen_height,

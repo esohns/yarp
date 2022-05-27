@@ -22,7 +22,7 @@ add_executable (${EXECUTABLE} ${${EXECUTABLE}_SRCS})
 if (UNIX)
  target_link_libraries (${EXECUTABLE}
                         xerces-c
-                        ACE
+                        ${ACE_LIBRARY}
                         Common CommonLog CommonTimer
                         RPG_Dice RPG_Chance RPG_Common
                         RPG_Character RPG_Magic RPG_Item
