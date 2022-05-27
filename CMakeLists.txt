@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 2.8)
 
-project (Yarp CXX)
+project (yarp CXX)
 
 #extract package version from VCS
 # find_package(Subversion)

@@ -29,13 +29,11 @@
 #include "ace/Synch_Traits.h"
 #include "ace/Task.h"
 
+#include "common_parser_common.h"
+
 #include "common_time_common.h"
 
-//#include "common_icontrol.h"
-
 #include "stream_allocatorheap.h"
-
-//#include "net_configuration.h"
 
 #include "rpg_map_common.h"
 #include "rpg_map_common_tools.h"
@@ -45,7 +43,6 @@
 
 #include "rpg_engine_common.h"
 #include "rpg_engine_entitymode.h"
-//#include "rpg_engine_exports.h"
 #include "rpg_engine_event_manager.h"
 #include "rpg_engine_level.h"
 #include "rpg_engine_messagequeue.h"
@@ -215,26 +212,27 @@ class RPG_Engine
   typedef ACE_Message_Queue<ACE_MT_SYNCH,
                             Common_TimePolicy_t> MESSAGE_QUEUE_T;
   typedef Stream_AllocatorHeap_T<ACE_MT_SYNCH,
-                                 struct Common_FlexParserAllocatorConfiguration> HEAP_ALLOCATOR_T;
+                                 struct Common_Parser_FlexAllocatorConfiguration> HEAP_ALLOCATOR_T;
 
   // atomic ID generator
   static ACE_Atomic_Op<ACE_Thread_Mutex,
-                       RPG_Engine_EntityID_t> currentID;
+                       RPG_Engine_EntityID_t>     currentID;
 
-  RPG_Engine_EntityID_t                       activePlayer_;
-  RPG_Engine_IClient*                         client_;
+  RPG_Engine_EntityID_t                           activePlayer_;
+  RPG_Engine_IClient*                             client_;
   //// implement blocking wait...
-  //ACE_Condition<ACE_Recursive_Thread_Mutex>   condition_;
-  RPG_Net_Protocol_IConnector_t*              connector_;
-  RPG_Engine_Entities_t                       entities_;
-  HEAP_ALLOCATOR_T                            heapAllocator_;
+  //ACE_Condition<ACE_Recursive_Thread_Mutex>     condition_;
+  RPG_Net_Protocol_IConnector_t*                  connector_;
+  RPG_Engine_Entities_t                           entities_;
+  HEAP_ALLOCATOR_T                                heapAllocator_;
   // make API re-entrant
-  mutable ACE_SYNCH_MUTEX                     lock_;
-  RPG_Net_Protocol_MessageAllocator           messageAllocator_;
-  RPG_Net_Protocol_ConnectionConfiguration    netConfiguration_;
+  mutable ACE_SYNCH_MUTEX                         lock_;
+  struct Common_Parser_FlexAllocatorConfiguration allocatorConfiguration_;
+  RPG_Net_Protocol_MessageAllocator               messageAllocator_;
+  RPG_Net_Protocol_ConnectionConfiguration        netConfiguration_;
   // *IMPORTANT NOTE*: need this ONLY to handle control messages...
-  RPG_Engine_MessageQueue                     queue_;
+  RPG_Engine_MessageQueue                         queue_;
 
-  RPG_Engine_SeenPositions_t                  seenPositions_;
+  RPG_Engine_SeenPositions_t                      seenPositions_;
 };
 #endif

@@ -75,6 +75,7 @@
 #define RPG_GRAPHICS_DEF_CACHESIZE                          50 // #graphics
 #define RPG_GRAPHICS_DICTIONARY_FILE                        "rpg_graphics.xml"
 #define RPG_GRAPHICS_DICTIONARY_INSTANCE                    "graphicsDictionary"
+#define RPG_GRAPHICS_SUB_DIRECTORY_STRING                   "graphics"
 
 // buffer for printing keyboard events (debug info)
 #define RPG_GRAPHICS_SDL_KEYSYM_BUFFER_SIZE                 32

@@ -76,15 +76,15 @@ test_u_main::print_usage(const std::string& programName_in)
   std::cout.setf(ios::boolalpha);
 
   std::string configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           true);
   std::string data_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           false);
-#if defined (DEBUG_DEBUGGER)
-  configuration_path = Common_File_Tools::getWorkingDirectory ();
-  data_path = Common_File_Tools::getWorkingDirectory ();
-#endif
 
   std::cout << ACE_TEXT("usage: ")
             << programName_in
@@ -150,7 +150,7 @@ test_u_main::print_usage(const std::string& programName_in)
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR("magic");
+  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DIRECTORY_STRING);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
@@ -204,15 +204,15 @@ test_u_main::process_arguments (const int& argc_in,
 
   // init configuration
   std::string configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           true);
   std::string data_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           false);
-#if defined (DEBUG_DEBUGGER)
-  configuration_path = Common_File_Tools::getWorkingDirectory ();
-  data_path = Common_File_Tools::getWorkingDirectory ();
-#endif
 
   clientUIFile_out = configuration_path;
   clientUIFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -244,7 +244,7 @@ test_u_main::process_arguments (const int& argc_in,
   magicDictionary_out = configuration_path;
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  magicDictionary_out += ACE_TEXT_ALWAYS_CHAR ("magic");
+  magicDictionary_out += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DIRECTORY_STRING);
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   magicDictionary_out += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
@@ -518,16 +518,17 @@ test_u_main::run_i (int argc_in,
 #endif
 
   // step1 init/validate configuration
+  Common_File_Tools::initialize (argv_in[0]);
   std::string configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           true);
   std::string data_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           false);
-#if defined(DEBUG_DEBUGGER)
-  configuration_path = Common_File_Tools::getWorkingDirectory ();
-  data_path = Common_File_Tools::getWorkingDirectory ();
-#endif
 
   // step1a: process commandline arguments
   std::string client_ui_file = configuration_path;
@@ -557,7 +558,7 @@ test_u_main::run_i (int argc_in,
   std::string magic_dictionary    = configuration_path;
   magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  magic_dictionary += ACE_TEXT_ALWAYS_CHAR("magic");
+  magic_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DIRECTORY_STRING);
   magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   magic_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);

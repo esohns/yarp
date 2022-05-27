@@ -66,11 +66,10 @@ do_printUsage (const std::string& programName_in)
   std::cout.setf (ios::boolalpha);
 
   std::string data_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
-                                                         false);
-#if defined (DEBUG_DEBUGGER)
-  data_path = Common_File_Tools::getWorkingDirectory();
-#endif
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          false);
 
   std::cout << ACE_TEXT("usage: ")
             << programName_in
@@ -124,11 +123,10 @@ do_processArguments (const int argc_in,
   RPG_TRACE (ACE_TEXT ("::do_processArguments"));
 
   std::string data_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           false);
-#if defined (DEBUG_DEBUGGER)
-  data_path = Common_File_Tools::getWorkingDirectory();
-#endif
 
   // init results
   buildCorridors_out      = PATH_FINDER_DEF_CORRIDORS;
@@ -263,10 +261,10 @@ do_work (bool buildCorridors_in,
   RPG_Map_Path_t current_path;
   RPG_Map_Positions_t used_positions;
   RPG_Dice_RollResult_t result;
-  RPG_Map_DoorsConstIterator_t target_door = map.plan.doors.end();
+  RPG_Map_DoorsConstIterator_t target_door = map.plan.doors.end ();
   unsigned int index = 1;
-  for (RPG_Map_DoorsConstIterator_t iterator = map.plan.doors.begin();
-       iterator != map.plan.doors.end();
+  for (RPG_Map_DoorsConstIterator_t iterator = map.plan.doors.begin ();
+       iterator != map.plan.doors.end ();
        iterator++)
   {
     // find target door:
@@ -274,30 +272,30 @@ do_work (bool buildCorridors_in,
     // - ignore doors that are already connected
     do
     {
-      target_door = map.plan.doors.begin();
-      result.clear();
-      RPG_Dice::generateRandomNumbers(map.plan.doors.size(),
-                                      1,
-                                      result);
-      std::advance(target_door, result.front() - 1);
+      target_door = map.plan.doors.begin ();
+      result.clear ();
+      RPG_Dice::generateRandomNumbers (static_cast<unsigned int> (map.plan.doors.size ()),
+                                       1,
+                                       result);
+      std::advance(target_door, result.front () - 1);
     } while ((target_door == iterator) ||
-             (used_positions.find((*target_door).position) != used_positions.end()));
+             (used_positions.find ((*target_door).position) != used_positions.end()));
 
-    RPG_Map_Pathfinding_Tools::findPath(std::make_pair(map.plan.size_x,
-                                                       map.plan.size_y),
-                                        map.plan.walls,
-                                        (*iterator).position,
-                                        (*iterator).outside,
-                                        (*target_door).position,
-                                        current_path);
-    if (current_path.empty())
+    RPG_Map_Pathfinding_Tools::findPath (std::make_pair (map.plan.size_x,
+                                                         map.plan.size_y),
+                                         map.plan.walls,
+                                         (*iterator).position,
+                                         (*iterator).outside,
+                                         (*target_door).position,
+                                         current_path);
+    if (current_path.empty ())
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("could not find a path [%u,%u] --> [%u,%u], continuing\n"),
-                 (*iterator).position.first,
-                 (*iterator).position.second,
-                 (*target_door).position.first,
-                 (*target_door).position.second));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("could not find a path [%u,%u] --> [%u,%u], continuing\n"),
+                  (*iterator).position.first,
+                  (*iterator).position.second,
+                  (*target_door).position.first,
+                  (*target_door).position.second));
 
       continue;
     } // end IF
@@ -479,12 +477,12 @@ ACE_TMAIN (int argc_in,
   } // end IF
 #endif
 
+  Common_File_Tools::initialize (argv_in[0]);
   std::string data_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           false);
-#if defined (DEBUG_DEBUGGER)
-  data_path = Common_File_Tools::getWorkingDirectory();
-#endif
 
   // step1: init
   // step1a set defaults

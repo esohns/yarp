@@ -60,11 +60,10 @@ do_printUsage (const std::string& programName_in)
   RPG_TRACE (ACE_TEXT ("::do_printUsage"));
 
   std::string configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           true);
-#if defined (DEBUG_DEBUGGER)
-  configuration_path = Common_File_Tools::getWorkingDirectory();
-#endif
 
   std::cout << ACE_TEXT("usage: ")
             << programName_in
@@ -103,11 +102,10 @@ do_processArguments(const int argc_in,
   RPG_TRACE(ACE_TEXT("::do_processArguments"));
 
   std::string configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           true);
-#if defined (DEBUG_DEBUGGER)
-  configuration_path = Common_File_Tools::getWorkingDirectory ();
-#endif
 
   // init configuration
   dumpDictionary_out      = false;
@@ -308,13 +306,13 @@ ACE_TMAIN(int argc_in,
 #endif
 
   // step1: init
+  Common_File_Tools::initialize (argv_in[0]);
   // step1a set defaults
   std::string configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           true);
-#if defined (DEBUG_DEBUGGER)
-  configuration_path = Common_File_Tools::getWorkingDirectory ();
-#endif
 
   // init configuration
   bool dump_dictionary           = false;

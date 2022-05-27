@@ -111,11 +111,10 @@ do_printUsage (const std::string& programName_in)
   std::cout.setf (ios::boolalpha);
 
   std::string configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           true);
-#if defined (DEBUG_DEBUGGER)
-  configuration_path = Common_File_Tools::getWorkingDirectory();
-#endif // #ifdef DEBUG_DEBUGGER
 
   std::cout << ACE_TEXT ("usage: ")
             << programName_in
@@ -206,11 +205,10 @@ do_processArguments (const int& argc_in,
   RPG_TRACE (ACE_TEXT ("::do_processArguments"));
 
   std::string configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           true);
-#if defined (DEBUG_DEBUGGER)
-  configuration_path = Common_File_Tools::getWorkingDirectory();
-#endif // #ifdef DEBUG_DEBUGGER
 
   // init results
   maxNumConnections_out           =
@@ -802,12 +800,12 @@ ACE_TMAIN (int argc_in,
   // start profile timer...
   process_profile.start();
 
+  Common_File_Tools::initialize (argv_in[0]);
   std::string configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           true);
-#if defined (DEBUG_DEBUGGER)
-  configuration_path = Common_File_Tools::getWorkingDirectory();
-#endif // #ifdef DEBUG_DEBUGGER
 
   // step1a set defaults
   unsigned int max_num_connections =

@@ -242,6 +242,10 @@ endif ()
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
+# add PCH
+target_precompile_headers (${EXECUTABLE}
+                           PRIVATE stdafx.h)
+
 ########### install files ###############
 install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 install (FILES ${EXECUTABLE}.glade DESTINATION share/RPG/config)

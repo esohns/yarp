@@ -21,6 +21,14 @@
 #ifndef RPG_MONSTER_DEFINES_H
 #define RPG_MONSTER_DEFINES_H
 
-#define RPG_MONSTER_DICTIONARY_FILE "rpg_monster.xml"
+#include "ace/config-lite.h"
+
+#define RPG_MONSTER_DICTIONARY_FILE      "rpg_monster.xml"
+
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#define RPG_MONSTER_SUB_DIRECTORY_STRING "character\\monster"
+#else
+#define RPG_MONSTER_SUB_DIRECTORY_STRING "character/monster"
+#endif // ACE_WIN32 || ACE_WIN64
 
 #endif

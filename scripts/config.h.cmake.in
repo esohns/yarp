@@ -2,38 +2,38 @@
 
 /* Name of package */
 //#cmakedefine @PROJECT_NAME@_PACKAGE "@PACKAGE@"
-#cmakedefine Yarp_PACKAGE "@PACKAGE@"
+#cmakedefine yarp_PACKAGE "@PACKAGE@"
 
 /* Define to the address where bug reports for this package should be sent. */
-#cmakedefine Yarp_PACKAGE_BUGREPORT "@PACKAGE_BUGREPORT@"
+#cmakedefine yarp_PACKAGE_BUGREPORT "@PACKAGE_BUGREPORT@"
 
 /* Define to the full name of this package. */
-#cmakedefine Yarp_PACKAGE_NAME "@PACKAGE_NAME@"
+#cmakedefine yarp_PACKAGE_NAME "@PACKAGE_NAME@"
 
 /* Define to the full name and version of this package. */
-#cmakedefine Yarp_PACKAGE_STRING "@PACKAGE_STRING@"
+#cmakedefine yarp_PACKAGE_STRING "@PACKAGE_STRING@"
 
 /* Define to the one symbol short name of this package. */
-#cmakedefine Yarp_PACKAGE_TARNAME "@PACKAGE_TARNAME@"
+#cmakedefine yarp_PACKAGE_TARNAME "@PACKAGE_TARNAME@"
 
 /* Define to the home page for this package. */
-#cmakedefine Yarp_PACKAGE_URL "@PACKAGE_URL@"
+#cmakedefine yarp_PACKAGE_URL "@PACKAGE_URL@"
 
 /* Define to the version of this package. */
-#cmakedefine Yarp_PACKAGE_VERSION "@PACKAGE_VERSION@"
-#cmakedefine Yarp_PACKAGE_VERSION_FULL "@PACKAGE_VERSION_FULL@"
+#cmakedefine yarp_PACKAGE_VERSION "@PACKAGE_VERSION@"
+#cmakedefine yarp_PACKAGE_VERSION_FULL "@PACKAGE_VERSION_FULL@"
 
-#cmakedefine Yarp_PACKAGE_DESCRIPTION "@PACKAGE_DESCRIPTION@"
-#cmakedefine Yarp_PACKAGE_DESCRIPTION_SUMMARY "@PACKAGE_DESCRIPTION_SUMMARY@"
+#cmakedefine yarp_PACKAGE_DESCRIPTION "@PACKAGE_DESCRIPTION@"
+#cmakedefine yarp_PACKAGE_DESCRIPTION_SUMMARY "@PACKAGE_DESCRIPTION_SUMMARY@"
 
 /* Version numbers of package */
 //#cmakedefine Common_VERSION_MAJOR @VERSION_MAJOR@
 //#cmakedefine Common_VERSION_MINOR @VERSION_MINOR@
 //#cmakedefine Common_VERSION_MICRO @VERSION_MICRO@
-#define Yarp_VERSION_MAJOR @VERSION_MAJOR@
-#define Yarp_VERSION_MINOR @VERSION_MINOR@
-#define Yarp_VERSION_MICRO @VERSION_MICRO@
-#cmakedefine Yarp_VERSION_DEVEL "@VERSION_DEVEL@"
+#define yarp_VERSION_MAJOR @VERSION_MAJOR@
+#define yarp_VERSION_MINOR @VERSION_MINOR@
+#define yarp_VERSION_MICRO @VERSION_MICRO@
+#cmakedefine yarp_VERSION_DEVEL "@VERSION_DEVEL@"
 
 /****************************************/
 #cmakedefine TRACING

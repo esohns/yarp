@@ -29,6 +29,7 @@
 #include "rpg_common_defines.h"
 #include "rpg_common_macros.h"
 #include "rpg_common_XML_tools.h"
+#include "rpg_common_xsderrorhandler.h"
 
 #include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_defines.h"
@@ -113,10 +114,10 @@ RPG_Graphics_Dictionary::initialize (const std::string& filename_in,
     //doc_p.parse(filename_in,
     //            RPG_XSDErrorHandler,
     //            flags);
-    doc_p.parse(filename_in,
-                *RPG_Common_XML_Tools::parser(),
-                flags,
-                properties);
+    doc_p.parse (filename_in,
+                 *RPG_Common_XML_Tools::parser(),
+                 flags,
+                 properties);
   }
   catch (const ::xml_schema::parsing& exception)
   {
@@ -137,11 +138,9 @@ RPG_Graphics_Dictionary::initialize (const std::string& filename_in,
 
   dictionary_p.post_RPG_Graphics_Dictionary_Type();
 
-#if defined (_DEBUG)
-  ACE_DEBUG((LM_DEBUG,
-            ACE_TEXT("finished parsing graphics dictionary file \"%s\"...\n"),
-            ACE_TEXT(filename_in.c_str())));
-#endif // _DEBUG
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("finished parsing graphics dictionary file \"%s\"...\n"),
+              ACE_TEXT (filename_in.c_str())));
 
   return true;
 }

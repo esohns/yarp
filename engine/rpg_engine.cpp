@@ -74,6 +74,7 @@ RPG_Engine::RPG_Engine ()
  , entities_ ()
  , heapAllocator_ ()
  , lock_ ()
+ , allocatorConfiguration_ ()
  , messageAllocator_ (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES)
  , netConfiguration_ ()
  , queue_ (RPG_ENGINE_MAX_QUEUE_SLOTS)
@@ -88,10 +89,9 @@ RPG_Engine::RPG_Engine ()
   inherited::grp_id (RPG_ENGINE_TASK_GROUP_ID);
 
   // initialize network connector
+  allocatorConfiguration_.defaultBufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
   ACE_OS::memset (&netConfiguration_, 0, sizeof (netConfiguration_));
-  ACE_ASSERT (netConfiguration_.allocatorConfiguration);
-  netConfiguration_.allocatorConfiguration->defaultBufferSize =
-    RPG_NET_PROTOCOL_BUFFER_SIZE;
+  netConfiguration_.allocatorConfiguration = &allocatorConfiguration_;
   netConfiguration_.messageAllocator = &messageAllocator_;
   // ******************* socket configuration data ****************************
   //netConfiguration_.socketConfiguration.bufferSize =

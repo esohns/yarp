@@ -40,77 +40,167 @@
 #include "common_file_tools.h"
 #include "common_defines.h"
 
+#include "common_error_tools.h"
+
+#include "common_string_tools.h"
+
 #ifdef HAVE_CONFIG_H
 #include "rpg_config.h"
-#endif
+#endif // HAVE_CONFIG_H
 
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
 #include "rpg_common_tools.h"
 
 std::string
-RPG_Common_File_Tools::getConfigurationDataDirectory (const std::string& baseDir_in,
+RPG_Common_File_Tools::getSourceDirectory (const std::string& packageName_in,
+                                           const std::string& moduleName_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Common_File_Tools::getSourceDirectory"));
+
+  // initialize return value(s)
+  std::string return_value;
+
+  // sanity check(s)
+  ACE_ASSERT (!packageName_in.empty ());
+
+#if defined (BASEDIR)
+  return_value = ACE_TEXT_ALWAYS_CHAR (BASEDIR);
+#else
+  ACE_TCHAR buffer_a[PATH_MAX];
+  ACE_OS::memset (buffer_a, 0, sizeof (ACE_TCHAR[PATH_MAX]));
+
+  ACE_TCHAR* string_p =
+    ACE_OS::getenv (ACE_TEXT (COMMON_ENVIRONMENT_DIRECTORY_ROOT_PROJECTS));
+  if (!string_p)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_OS::getenv(%s): \"%m\", aborting\n"),
+                ACE_TEXT (COMMON_ENVIRONMENT_DIRECTORY_ROOT_PROJECTS)));
+    return return_value;
+  } // end IF
+  return_value = ACE_TEXT_ALWAYS_CHAR (string_p);
+#endif // BASEDIR
+  return_value += ACE_DIRECTORY_SEPARATOR_STR;
+  //return_value += ACE_TEXT_ALWAYS_CHAR (ACE_DLL_PREFIX);
+  return_value += packageName_in;
+  if (!moduleName_in.empty ())
+  {
+    return_value += ACE_DIRECTORY_SEPARATOR_STR;
+    return_value += moduleName_in;
+  } // end IF
+
+  // sanity check(s)
+  if (unlikely (!Common_File_Tools::isDirectory (return_value)))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("not a directory (was: \"%s\"), aborting\n"),
+                ACE_TEXT (return_value.c_str ())));
+    return_value.clear ();
+  } // end IF
+
+  return return_value;
+}
+
+std::string
+RPG_Common_File_Tools::getConfigurationDataDirectory (const std::string& packageName_in,
+                                                      const std::string& moduleName_in,
+                                                      const std::string& moduleName2_in,
                                                       bool isConfiguration_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Common_File_Tools::getConfigurationDataDirectory"));
 
-  std::string result = baseDir_in;
-
-  if (baseDir_in.empty ())
-  {
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-    TCHAR buffer[PATH_MAX];
-    ACE_OS::memset (buffer, 0, sizeof (buffer));
-
-    HRESULT win_result =
-      SHGetFolderPath (NULL,                                         // hwndOwner
-                       CSIDL_PROGRAM_FILES | CSIDL_FLAG_DONT_VERIFY, // nFolder
-                       NULL,                                         // hToken
-                       SHGFP_TYPE_CURRENT,                           // dwFlags
-                       buffer);                                      // pszPath
-    if (FAILED (win_result))
-    {
-      ACE_OS::memset (buffer, 0, sizeof (buffer));
-      if (FormatMessage (FORMAT_MESSAGE_FROM_SYSTEM,                 // dwFlags
-                         NULL,                                       // lpSource
-                         win_result,                                 // dwMessageId
-                         MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT), // dwLanguageId
-                         buffer,                                     // lpBuffer
-                         PATH_MAX,                                   // nSize
-                         NULL) == 0)                                 // Arguments
-        ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("failed to FormatMessage(%d): \"%m\", continuing\n"),
-                    win_result));
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to SHGetFolderPath(CSIDL_PROGRAM_FILES): \"%s\", falling back\n"),
-                  buffer));
-
-      // fallback
-      return Common_File_Tools::getWorkingDirectory ();
-    } // end IF
-
-    result = ACE_TEXT_ALWAYS_CHAR (buffer);
-    result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    //result += ACE_TEXT_ALWAYS_CHAR (YARP_PACKAGE);
-#else
-    return Common_File_Tools::getWorkingDirectory ();
-#endif
-  } // end IF
-
-  result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  result += (isConfiguration_in ? ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_CONFIG_SUB)
-                                : ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_DATA_SUB));
+  // initialize return value(s)
+  std::string return_value;
 
   // sanity check(s)
-  if (!Common_File_Tools::isDirectory (result))
+  ACE_ASSERT (!packageName_in.empty ());
+
+  bool is_test_b =
+    (!ACE_OS::strncmp (moduleName_in.c_str (), ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_I_SUBDIRECTORY),
+                       ACE_OS::strlen (ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_I_SUBDIRECTORY))) ||
+     !ACE_OS::strncmp (moduleName_in.c_str (), ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                       ACE_OS::strlen (ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY))));
+
+  if (Common_Error_Tools::inDebugSession ())
   {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("not a directory: \"%s\", falling back\n"),
-                ACE_TEXT (result.c_str ())));
-    return Common_File_Tools::getWorkingDirectory ();
+    if (is_test_b)
+    {
+      // sanity check(s)
+      ACE_ASSERT (!Common_File_Tools::executable.empty ());
+
+      return_value =
+        RPG_Common_File_Tools::getSourceDirectory (packageName_in,
+                                                   ACE_TEXT_ALWAYS_CHAR (""));
+      return_value += ACE_DIRECTORY_SEPARATOR_STR;
+      return_value += moduleName_in;
+      return_value += ACE_DIRECTORY_SEPARATOR_STR;
+      return_value +=
+        (moduleName2_in.empty () ? Common_String_Tools::tolower (Common_File_Tools::basename (Common_File_Tools::executable, true))
+                                 : Common_String_Tools::tolower (Common_File_Tools::basename (moduleName2_in, true)));
+      return_value += ACE_DIRECTORY_SEPARATOR_STR;
+      return_value +=
+          (isConfiguration_in ? ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY)
+                              : ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_DATA_SUBDIRECTORY));
+    } // end IF
+    else
+    {
+      return_value = RPG_Common_File_Tools::getSourceDirectory (packageName_in,
+                                                                moduleName2_in);
+      return_value += ACE_DIRECTORY_SEPARATOR_STR;
+      return_value +=
+          (isConfiguration_in ? ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY)
+                              : ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_DATA_SUBDIRECTORY));
+    } // end ELSE
+    // sanity check(s)
+    ACE_ASSERT (Common_File_Tools::isDirectory (return_value));
+
+    return return_value;
   } // end IF
 
-  return result;
+  // not running in a debug session
+
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (is_test_b)
+  {
+    return_value = Common_File_Tools::getWorkingDirectory ();
+    return_value += ACE_DIRECTORY_SEPARATOR_STR;
+    //return_value +=
+    //  ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_PARENT_SUBDIRECTORY);
+    //return_value += ACE_DIRECTORY_SEPARATOR_STR;
+    return_value +=
+        (isConfiguration_in ? ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY)
+                            : ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_DATA_SUBDIRECTORY));
+    //return_value += ACE_DIRECTORY_SEPARATOR_STR;
+    //return_value +=
+    //  Common_String_Tools::tolower (Common_File_Tools::basename (Common_File_Tools::executable, true));
+  } // end IF
+  else
+  {
+    return_value = Common_File_Tools::getSourceDirectory (packageName_in,
+                                                          moduleName_in);
+    return_value += ACE_DIRECTORY_SEPARATOR_STR;
+    return_value +=
+      ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_PARENT_SUBDIRECTORY);
+    return_value += ACE_DIRECTORY_SEPARATOR_STR;
+    return_value +=
+        (isConfiguration_in ? ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY)
+                            : ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_DATA_SUBDIRECTORY));
+    //return_value += ACE_DIRECTORY_SEPARATOR_STR;
+    //return_value +=
+    //  Common_String_Tools::tolower (Common_File_Tools::basename (Common_File_Tools::executable, true));
+  } // end ELSE
+#else
+  return_value =
+    Common_File_Tools::getSystemConfigurationDataDirectory (packageName_in,
+                                                            moduleName_in,
+                                                            isConfiguration_in);
+#endif // ACE_WIN32 || ACE_WIN64
+
+  // sanity check(s)
+//  ACE_ASSERT (Common_File_Tools::isDirectory (return_value));
+
+  return return_value;
 }
 
 std::string
@@ -163,7 +253,7 @@ RPG_Common_File_Tools::getUserConfigurationDirectory ()
   result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   result += ACE_TEXT_ALWAYS_CHAR (".");
 #endif // ACE_WIN32 || ACE_WIN64
-  result += ACE_TEXT_ALWAYS_CHAR (Yarp_PACKAGE_NAME);
+  result += ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME);
 
   if (!Common_File_Tools::isDirectory (result))
   {

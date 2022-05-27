@@ -174,6 +174,7 @@ RPG_Common_XML_Tools::initialize (const std::string& schemaDirectory_in)
     path_string = schemaDirectory_in;
     path_string += ACE_DIRECTORY_SEPARATOR_STR_A;
     path_string += ACE_TEXT_ALWAYS_CHAR (entries[i]->d_name);
+    RPG_XercesErrorHandler.resetErrors ();
     if (unlikely (!parser_->loadGrammar (path_string.c_str (),
                                          Grammar::SchemaGrammarType,
                                          true) ||

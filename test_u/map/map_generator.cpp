@@ -83,11 +83,10 @@ do_printUsage (const std::string& programName_in)
   std::cout.setf (ios::boolalpha);
 
   std::string data_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           false);
-#if defined (DEBUG_DEBUGGER)
-  data_path = Common_File_Tools::getWorkingDirectory ();
-#endif
 
   std::cout << ACE_TEXT("usage: ")
             << programName_in
@@ -200,11 +199,10 @@ do_processArguments(const int argc_in,
   RPG_TRACE(ACE_TEXT("::do_processArguments"));
 
   std::string data_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           false);
-#if defined (DEBUG_DEBUGGER)
-  data_path = Common_File_Tools::getWorkingDirectory ();
-#endif
 
   // init results
   minRoomSize_out         = MAP_GENERATOR_DEF_MIN_ROOMSIZE;
@@ -562,12 +560,14 @@ ACE_TMAIN (int argc_in,
   } // end IF
 #endif
 
+  // step1: initialize configuration
+  Common_File_Tools::initialize (argv_in[0]);
+
   std::string data_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           false);
-#if defined (DEBUG_DEBUGGER)
-  data_path = Common_File_Tools::getWorkingDirectory ();
-#endif
 
   // step1: init
   // step1a set defaults

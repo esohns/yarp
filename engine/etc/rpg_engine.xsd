@@ -7,11 +7,11 @@
             attributeFormDefault="unqualified">
 
 <!-- include character player schema -->
-  <xsd:include schemaLocation="../character/player/rpg_player.xsd"/>
+  <xsd:include schemaLocation="rpg_player.xsd"/>
 <!-- include monster schema -->
-  <xsd:include schemaLocation="../character/monster/rpg_monster.xsd"/>
+  <xsd:include schemaLocation="rpg_monster.xsd"/>
 <!-- include map schema -->
-  <xsd:include schemaLocation="../map/rpg_map.xsd"/>
+  <xsd:include schemaLocation="rpg_map.xsd"/>
 
   <xsd:annotation>
     <xsd:documentation xml:lang="en">

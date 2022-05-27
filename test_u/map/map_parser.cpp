@@ -66,11 +66,10 @@ do_printUsage(const std::string& programName_in)
   RPG_TRACE(ACE_TEXT("::do_printUsage"));
 
   std::string data_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           false);
-#if defined (DEBUG_DEBUGGER)
-  data_path = Common_File_Tools::getWorkingDirectory ();
-#endif
 
   // enable verbatim boolean output
   std::cout.setf(ios::boolalpha);
@@ -131,11 +130,10 @@ do_processArguments (const int argc_in,
   RPG_TRACE (ACE_TEXT ("::do_processArguments"));
 
   std::string data_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           false);
-#if defined (DEBUG_DEBUGGER)
-  data_path = Common_File_Tools::getWorkingDirectory ();
-#endif
 
   // init results
   debugScanner_out = MAP_PARSER_DEF_DEBUG_SCANNER;
@@ -332,15 +330,15 @@ ACE_TMAIN (int argc_in,
   RPG_TRACE (ACE_TEXT ("::main"));
 
   std::string configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           true);
   std::string data_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           false);
-#if defined (DEBUG_DEBUGGER)
-  configuration_path = Common_File_Tools::getWorkingDirectory ();
-  data_path = Common_File_Tools::getWorkingDirectory ();
-#endif
 
   // step1: init
   // step1a set defaults

@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="urn:rpg"
+            xmlns="urn:rpg"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+<!-- include chance_dice schema -->
+  <xsd:include schemaLocation="rpg_dice.xsd"/>
+<!-- include common schema -->
+  <xsd:include schemaLocation="rpg_common.xsd"/>
+<!-- include common environment schema -->
+  <xsd:include schemaLocation="rpg_common_environment.xsd"/>
+<!-- include magic schema -->
+  <xsd:include schemaLocation="rpg_magic.xsd"/>
+<!-- include item schema -->
+  <xsd:include schemaLocation="rpg_item.xsd"/>
+<!-- include combat schema -->
+  <xsd:include schemaLocation="rpg_combat.xsd"/>
+<!-- include player schema -->
+  <xsd:include schemaLocation="rpg_player.xsd"/>
+
+  <xsd:annotation>
+    <xsd:documentation xml:lang="en">
+      RPG_Monster: monster-related types XML schema
+    </xsd:documentation>
+  </xsd:annotation>
+
+  <xsd:complexType name="RPG_Monster_Size_Type">
+    <xsd:sequence>
+      <xsd:element name="size" type="RPG_Common_Size_Type" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="isTall" type="xsd:boolean" use="optional" default="true"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_NaturalArmorClass_Type">
+    <xsd:sequence>
+      <xsd:element name="normal" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="touch" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="flatFooted" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Monster_SpecialPropertyTypeUnion_Type">
+    <xsd:union memberTypes="RPG_Character_Ability_Type RPG_Magic_AbilityType_Type"/>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Monster_SpecialBaseProperties_Type">
+    <xsd:sequence>
+      <xsd:element name="abilityClass" type="RPG_Magic_AbilityClass_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="type" type="RPG_Monster_SpecialPropertyTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="actionType" type="RPG_Common_ActionType_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="usage" type="RPG_Common_Usage_Type" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Monster_NaturalWeapon_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="NATURALWEAPON_ANY"/>
+      <xsd:enumeration value="NATURALWEAPON_BITE"/>
+      <xsd:enumeration value="NATURALWEAPON_BLAST"/>
+<!--       <xsd:enumeration value="NATURALWEAPON_BREATH"/> -->
+      <xsd:enumeration value="NATURALWEAPON_CLAW_TALON"/>
+      <xsd:enumeration value="NATURALWEAPON_CONSTRICT"/>
+<!--       <xsd:enumeration value="NATURALWEAPON_GAZE"/> -->
+      <xsd:enumeration value="NATURALWEAPON_GORE"/>
+      <xsd:enumeration value="NATURALWEAPON_HOOF"/>
+      <xsd:enumeration value="NATURALWEAPON_PINCER"/>
+      <xsd:enumeration value="NATURALWEAPON_ROCK_STONE"/>
+      <xsd:enumeration value="NATURALWEAPON_SLAP_SLAM"/>
+      <xsd:enumeration value="NATURALWEAPON_SPIT"/>
+      <xsd:enumeration value="NATURALWEAPON_STING"/>
+      <xsd:enumeration value="NATURALWEAPON_TAIL"/>
+      <xsd:enumeration value="NATURALWEAPON_TENTACLE"/>
+      <xsd:enumeration value="NATURALWEAPON_WEB"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Monster_WeaponTypeUnion_Type">
+    <xsd:union memberTypes="RPG_Monster_NaturalWeapon_Type RPG_Character_Ability_Type RPG_Item_WeaponType_Type RPG_Combat_SpecialAttack_Type"/>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Monster_SpecialDefensePreCondition_Type">
+    <xsd:sequence>
+      <xsd:element name="weaponType" type="RPG_Monster_WeaponTypeUnion_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="ownCondition" type="RPG_Common_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="targetCondition" type="RPG_Common_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="isMagicalWeapon" type="xsd:boolean" use="optional" default="false"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_DefenseAction_Type">
+    <xsd:sequence>
+      <xsd:element name="preCondition" type="RPG_Monster_SpecialDefensePreCondition_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="damage" type="RPG_Combat_Damage_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="ranged" type="RPG_Combat_RangedAttackProperties_Type" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_SpecialDefenseProperties_Type">
+    <xsd:complexContent>
+      <xsd:extension base="RPG_Monster_SpecialBaseProperties_Type">
+        <xsd:sequence>
+          <xsd:element name="action" type="RPG_Monster_DefenseAction_Type" minOccurs="1" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_AttackAction_Type">
+    <xsd:sequence>
+      <xsd:element name="weapon" type="RPG_Monster_WeaponTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="attackBonus" type="xsd:byte" minOccurs="0" maxOccurs="5"/>
+      <xsd:element name="attackForm" type="RPG_Combat_AttackForm_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="damage" type="RPG_Combat_Damage_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="effect" type="RPG_Magic_SpellLikeProperties_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="numAttacksPerRound" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="ranged" type="RPG_Combat_RangedAttackProperties_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="trigger" type="RPG_Character_Ability_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="allAdjacent" type="xsd:boolean" use="optional" default="false"/>
+    <xsd:attribute name="fullAttackIncludesNextAction" type="xsd:boolean" use="optional" default="false"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_Attack_Type">
+    <xsd:sequence>
+      <xsd:element name="baseAttackBonus" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="grappleBonus" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="standardAttackAction" type="RPG_Monster_AttackAction_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="fullAttackAction" type="RPG_Monster_AttackAction_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="actionsAreInclusive" type="xsd:boolean" use="optional" default="true"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_ActionTrigger_Type">
+    <xsd:sequence>
+      <xsd:element name="weapon" type="RPG_Monster_WeaponTypeUnion_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="numHits" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_SpecialAttackPreCondition_Type">
+    <xsd:sequence>
+      <xsd:element name="action" type="RPG_Monster_ActionTrigger_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="targetAlignment" type="RPG_Character_Alignment_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="ownCondition" type="RPG_Common_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="targetCondition" type="RPG_Common_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="minTargetSize" type="RPG_Common_Size_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="maxTargetSize" type="RPG_Common_Size_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="check" type="RPG_Combat_Check_Type" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_SpecialAttackProperties_Type">
+    <xsd:complexContent>
+      <xsd:extension base="RPG_Monster_SpecialBaseProperties_Type">
+        <xsd:sequence>
+          <xsd:element name="preCondition" type="RPG_Monster_SpecialAttackPreCondition_Type" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element name="action" type="RPG_Monster_AttackAction_Type" minOccurs="1" maxOccurs="1"/>
+    <!--       <xsd:element name="amount" type="RPG_Dice_Roll_Type" minOccurs="0" maxOccurs="1"/> -->
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_SpecialAbilityPreCondition_Type">
+    <xsd:sequence>
+      <xsd:element name="targetCondition" type="RPG_Common_Condition_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="maxTargetSize" type="RPG_Common_Size_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="check" type="RPG_Combat_Check_Type" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_SummonMonster_Type">
+    <xsd:sequence>
+      <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="amount" type="RPG_Dice_Roll_Type" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="successRate" type="xsd:float" use="optional" default="1.0"/>
+    <xsd:attribute name="actionsAreInclusive" type="xsd:boolean" use="optional" default="true"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_SpecialAbilityProperties_Type">
+    <xsd:complexContent>
+      <xsd:extension base="RPG_Monster_SpecialBaseProperties_Type">
+        <xsd:sequence>
+          <xsd:element name="preCondition" type="RPG_Monster_SpecialAbilityPreCondition_Type" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element name="summon" type="RPG_Monster_SummonMonster_Type" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element name="spell" type="RPG_Magic_SpellLikeProperties_Type" minOccurs="1" maxOccurs="unbounded"/>
+          <xsd:element name="ranged" type="RPG_Combat_RangedAttackProperties_Type" minOccurs="0" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_SavingThrowModifiers_Type">
+    <xsd:sequence>
+      <xsd:element name="fortitude" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="reflex" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="will" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Monster_Organization_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ORGANIZATION_ANY"/>
+      <xsd:enumeration value="ORGANIZATION_BAND"/>
+      <xsd:enumeration value="ORGANIZATION_BROOD"/>
+      <xsd:enumeration value="ORGANIZATION_COLONY"/>
+      <xsd:enumeration value="ORGANIZATION_CLAN"/>
+      <xsd:enumeration value="ORGANIZATION_CLUSTER"/>
+      <xsd:enumeration value="ORGANIZATION_CLUTCH"/>
+      <xsd:enumeration value="ORGANIZATION_COMPANY"/>
+      <xsd:enumeration value="ORGANIZATION_CROWD"/>
+      <xsd:enumeration value="ORGANIZATION_FLIGHT"/>
+      <xsd:enumeration value="ORGANIZATION_FLOCK"/>
+      <xsd:enumeration value="ORGANIZATION_GANG"/>
+      <xsd:enumeration value="ORGANIZATION_GROUP"/>
+      <xsd:enumeration value="ORGANIZATION_MOB"/>
+      <xsd:enumeration value="ORGANIZATION_PACK"/>
+      <xsd:enumeration value="ORGANIZATION_PAIR"/>
+      <xsd:enumeration value="ORGANIZATION_PATCH"/>
+      <xsd:enumeration value="ORGANIZATION_PRIDE"/>
+      <xsd:enumeration value="ORGANIZATION_SOLITARY"/>
+      <xsd:enumeration value="ORGANIZATION_SQUAD"/>
+      <xsd:enumeration value="ORGANIZATION_SWARM"/>
+      <xsd:enumeration value="ORGANIZATION_TEAM"/>
+      <xsd:enumeration value="ORGANIZATION_TRIBE"/>
+      <xsd:enumeration value="ORGANIZATION_TROOP"/>
+      <xsd:enumeration value="ORGANIZATION_TROUPE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Monster_OrganizationSlaverStep_Type">
+    <xsd:sequence>
+      <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="range" type="RPG_Dice_ValueRange_Type" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_OrganizationStep_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="RPG_Monster_Organization_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="range" type="RPG_Dice_ValueRange_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="slaves" type="RPG_Monster_OrganizationSlaverStep_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_Organizations_Type">
+    <xsd:sequence>
+      <xsd:element name="step" type="RPG_Monster_OrganizationStep_Type" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_AdvancementStep_Type">
+    <xsd:sequence>
+      <xsd:element name="size" type="RPG_Common_Size_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="range" type="RPG_Dice_ValueRange_Type" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_Advancement_Type">
+    <xsd:sequence>
+      <xsd:element name="step" type="RPG_Monster_AdvancementStep_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_PropertiesXML_Type">
+    <xsd:sequence>
+      <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="size" type="RPG_Monster_Size_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="type" type="RPG_Common_CreatureType_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="hitDice" type="RPG_Dice_Roll_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="initiative" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="speed" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="armorClass" type="RPG_Monster_NaturalArmorClass_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="specialDefense" type="RPG_Monster_SpecialDefenseProperties_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="attack" type="RPG_Monster_Attack_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="specialAttack" type="RPG_Monster_SpecialAttackProperties_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="specialAbility" type="RPG_Monster_SpecialAbilityProperties_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="space" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="reach" type="xsd:unsignedShort" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="saves" type="RPG_Monster_SavingThrowModifiers_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="attributes" type="RPG_Character_Attributes_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="skills" type="RPG_Character_Skills_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="feats" type="RPG_Character_Feats_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="environment" type="RPG_Common_Environment_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="organizations" type="RPG_Monster_Organizations_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="challengeRating" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="treasureModifier" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="alignment" type="RPG_Character_Alignment_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="advancements" type="RPG_Monster_Advancement_Type" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="levelAdjustment" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_StateBase_Type" id="skip0">
+    <xsd:complexContent>
+      <xsd:extension base="RPG_Player_StateBase_Type">
+        <xsd:sequence>
+          <xsd:element name="gold" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="inventory" type="RPG_Item_InventoryXML_Type" minOccurs="0" maxOccurs="1"/>
+          <xsd:element name="maxHP" type="xsd:unsignedShort" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_State_Type" id="skip1">
+    <xsd:complexContent>
+      <xsd:extension base="RPG_Monster_StateBase_Type">
+        <xsd:sequence>
+          <xsd:element name="type" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_Spawn_Type">
+    <xsd:sequence>
+      <xsd:element name="type" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="interval" type="RPG_Common_FixedPeriod_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="probability" type="xsd:float" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="max_num_spawned" type="xsd:unsignedInt" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="amble_probability" type="xsd:float" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Monster_Dictionary_Type" id="skip2">
+    <xsd:sequence>
+      <xsd:element name="monster" type="RPG_Monster_PropertiesXML_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+<!-- xml instance document(s) will contain a dictionary of different types of monsters -->
+  <xsd:element name="monsterDictionary" type="RPG_Monster_Dictionary_Type"/>
+
+</xsd:schema>

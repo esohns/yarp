@@ -30,8 +30,9 @@
 #include "ace/Init_ACE.h"
 #endif
 #include "ace/Log_Msg.h"
-//#include "ace/Synch.h"
+#include "ace/OS_main.h"
 
+#define _SDL_main_h
 #include "SDL.h"
 #include "SDL_syswm.h"
 #include "SDL_ttf.h"
@@ -42,9 +43,9 @@
 
 #include "common_timer_tools.h"
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #include "rpg_config.h"
-#endif
+#endif // HAVE_CONFIG_H
 
 #include "rpg_dice.h"
 #include "rpg_dice_common_tools.h"
@@ -53,6 +54,7 @@
 #include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
 #include "rpg_common_tools.h"
+#include "rpg_common_XML_tools.h"
 
 #include "rpg_magic_common_tools.h"
 #include "rpg_magic_defines.h"
@@ -222,18 +224,7 @@ do_printUsage(const std::string& programName_in)
   RPG_TRACE(ACE_TEXT("::do_printUsage"));
 
   // enable verbatim boolean output
-  std::cout.setf(ios::boolalpha);
-
-  std::string configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
-                                                          true);
-  std::string data_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
-                                                          false);
-#if defined (DEBUG_DEBUGGER)
-  configuration_path = Common_File_Tools::getWorkingDirectory ();
-  data_path = Common_File_Tools::getWorkingDirectory ();
-#endif
+  std::cout.setf (ios::boolalpha);
 
   std::cout << ACE_TEXT("usage: ")
             << programName_in
@@ -251,16 +242,12 @@ do_printUsage(const std::string& programName_in)
             << path
             << ACE_TEXT("]")
             << std::endl;
+  std::string data_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
+                                                          false); // data-
   path = data_path;
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR("graphics");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR("data");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#else
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DATA_SUB);
-#endif
   std::cout << ACE_TEXT("-d [DIR]   : graphics directory")
             << ACE_TEXT(" [\"")
             << path
@@ -271,13 +258,14 @@ do_printUsage(const std::string& programName_in)
             << RPG_CLIENT_DEF_DEBUG
             << ACE_TEXT("\"]")
             << std::endl;
+  std::string configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
+                                                          true); // configuration-
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR("graphics");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DICTIONARY_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-g [FILE]  : graphics dictionary (*.xml)")
             << ACE_TEXT(" [\"")
             << path
@@ -287,60 +275,57 @@ do_printUsage(const std::string& programName_in)
             << SDL_GUI_DEF_VIDEO_H
             << ACE_TEXT("]")
             << std::endl;
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_SUB_DIRECTORY_STRING),
+                                                          true); // configuration-
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR("item");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DICTIONARY_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-i [FILE]  : items dictionary (*.xml)")
             << ACE_TEXT(" [\"")
             << path
             << ACE_TEXT("\"]")
             << std::endl;
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_SUB_DIRECTORY_STRING),
+                                                          true);
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR("magic");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
   std::cout << ACE_TEXT("-m [FILE]  : magic dictionary (*.xml)")
             << ACE_TEXT(" [\"")
             << path
             << ACE_TEXT("\"]")
             << std::endl;
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_SUB_DIRECTORY_STRING),
+                                                          true); // configuration-
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR("character");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR ("monster");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-n [FILE]  : monster dictionary (*.xml)")
-            << ACE_TEXT(" [\"")
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_DICTIONARY_FILE);
+  std::cout << ACE_TEXT ("-n [FILE]  : monster dictionary (*.xml)")
+            << ACE_TEXT (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT("-o         : OpenGL mode")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT ("-o         : OpenGL mode")
+            << ACE_TEXT (" [")
             << false
-            << ACE_TEXT("]")
+            << ACE_TEXT ("]")
             << std::endl;
+  data_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
+                                                          false); // data-
   path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR ("engine");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR ("data");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#else
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   path +=
     RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
   path += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
@@ -370,117 +355,93 @@ do_printUsage(const std::string& programName_in)
 }
 
 bool
-do_processArguments(const int argc_in,
-                    ACE_TCHAR** argv_in, // cannot be const...
-                    std::string& magicDictionary_out,
-                    int& height_out,
-                    std::string& itemsDictionary_out,
-                    std::string& monsterDictionary_out,
-                    std::string& directory_out,
-                    bool& debugMode_out,
-                    std::string& graphicsDictionary_out,
-                    std::string& entityFile_out,
-                    bool& openGLMode_out,
-                    std::string& mapFile_out,
-                    bool& slideShowMode_out,
-                    bool& traceInformation_out,
-                    bool& printVersionAndExit_out,
-                    int& width_out,
-                    bool& validateXML_out)
+do_processArguments (const int argc_in,
+                     ACE_TCHAR** argv_in, // cannot be const...
+                     std::string& magicDictionary_out,
+                     int& height_out,
+                     std::string& itemsDictionary_out,
+                     std::string& monsterDictionary_out,
+                     std::string& directory_out,
+                     bool& debugMode_out,
+                     std::string& graphicsDictionary_out,
+                     std::string& entityFile_out,
+                     bool& openGLMode_out,
+                     bool& logToFile_out,
+                     std::string& mapFile_out,
+                     bool& slideShowMode_out,
+                     bool& traceInformation_out,
+                     bool& printVersionAndExit_out,
+                     int& width_out,
+                     bool& validateXML_out)
 {
-  RPG_TRACE(ACE_TEXT("::do_processArguments"));
+  RPG_TRACE (ACE_TEXT ("::do_processArguments"));
 
   // initialize results
   std::string configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_SUB_DIRECTORY_STRING),
                                                           true);
-  std::string data_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
-                                                          false);
-#if defined (DEBUG_DEBUGGER)
-  configuration_path = Common_File_Tools::getWorkingDirectory ();
-  data_path = Common_File_Tools::getWorkingDirectory ();
-#endif // DEBUG_DEBUGGER
-
   magicDictionary_out     = configuration_path;
   magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  magicDictionary_out += ACE_TEXT_ALWAYS_CHAR("magic");
-  magicDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif // DEBUG_DEBUGGER
-  magicDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
+  magicDictionary_out += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
 
   height_out              = SDL_GUI_DEF_VIDEO_H;
 
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_SUB_DIRECTORY_STRING),
+                                                          true); // configuration-
   itemsDictionary_out     = configuration_path;
   itemsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  itemsDictionary_out += ACE_TEXT_ALWAYS_CHAR("item");
-  itemsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif // DEBUG_DEBUGGER
-  itemsDictionary_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DICTIONARY_FILE);
+  itemsDictionary_out += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
 
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_SUB_DIRECTORY_STRING),
+                                                          true); // configuration-
   monsterDictionary_out   = configuration_path;
   monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  monsterDictionary_out += ACE_TEXT_ALWAYS_CHAR("character");
-  monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  monsterDictionary_out += ACE_TEXT_ALWAYS_CHAR("monster");
-  monsterDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif // DEBUG_DEBUGGER
-  monsterDictionary_out +=
-    ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_DICTIONARY_FILE);
+  monsterDictionary_out += ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_DICTIONARY_FILE);
 
   debugMode_out           = RPG_CLIENT_DEF_DEBUG;
 
+  std::string data_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
+                                                          false); // data-
   directory_out           = data_path;
   directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  directory_out += ACE_TEXT_ALWAYS_CHAR("graphics");
-  directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  directory_out += ACE_TEXT_ALWAYS_CHAR("data");
-#else
-  directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DATA_SUB);
-#endif // DEBUG_DEBUGGER
 
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
+                                                          true); // configuration-
   graphicsDictionary_out  = configuration_path;
   graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR("graphics");
-  graphicsDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif // DEBUG_DEBUGGER
-  graphicsDictionary_out +=
-    ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
+  graphicsDictionary_out += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
 
-#if defined (DEBUG_DEBUGGER)
-  entityFile_out = data_path;
-  entityFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  entityFile_out += ACE_TEXT_ALWAYS_CHAR ("engine");
-  entityFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  entityFile_out += ACE_TEXT_ALWAYS_CHAR ("data");
-  entityFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#else
   entityFile_out          =
     RPG_Player_Common_Tools::getPlayerProfilesDirectory ();
-#endif // DEBUG_DEBUGGER
   entityFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   entityFile_out +=
    RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
   entityFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
   openGLMode_out          = false;
+  logToFile_out           = false;
 
+  data_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
+                                                          false); // data-
   mapFile_out             = data_path;
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  mapFile_out += ACE_TEXT_ALWAYS_CHAR("engine");
-  mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  mapFile_out += ACE_TEXT_ALWAYS_CHAR("data");
-  mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#else
-  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
-  mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif // DEBUG_DEBUGGER
   mapFile_out +=
     RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
   mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
@@ -492,9 +453,9 @@ do_processArguments(const int argc_in,
 
   validateXML_out = false; // SDL_GUI_DEF_VALIDATE_XML;
 
-  ACE_Get_Opt argumentParser(argc_in,
-                             argv_in,
-                             ACE_TEXT("c::d:fg:h:i:m:n:op::stvw:x"));
+  ACE_Get_Opt argumentParser (argc_in,
+                              argv_in,
+                              ACE_TEXT ("c::d:fg:h:i:lm:n:op::stvw:x"));
 
   int option = 0;
   std::stringstream converter;
@@ -508,25 +469,21 @@ do_processArguments(const int argc_in,
           entityFile_out = argumentParser.opt_arg();
         else
           entityFile_out.clear();
-
         break;
       }
       case 'd':
       {
         directory_out = argumentParser.opt_arg();
-
         break;
       }
       case 'f':
       {
         debugMode_out = true;
-
         break;
       }
       case 'g':
       {
         graphicsDictionary_out = argumentParser.opt_arg();
-
         break;
       }
       case 'h':
@@ -535,31 +492,31 @@ do_processArguments(const int argc_in,
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
         converter >> height_out;
-
         break;
       }
       case 'i':
       {
         itemsDictionary_out = argumentParser.opt_arg();
-
+        break;
+      }
+      case 'l':
+      {
+        logToFile_out = true;
         break;
       }
       case 'm':
       {
         magicDictionary_out = argumentParser.opt_arg();
-
         break;
       }
       case 'n':
       {
         monsterDictionary_out = argumentParser.opt_arg();
-
         break;
       }
       case 'o':
       {
         openGLMode_out = true;
-
         break;
       }
       case 'p':
@@ -568,25 +525,21 @@ do_processArguments(const int argc_in,
           mapFile_out = argumentParser.opt_arg();
         else
           mapFile_out.clear();
-
         break;
       }
       case 's':
       {
         slideShowMode_out = true;
-
         break;
       }
       case 't':
       {
         traceInformation_out = true;
-
         break;
       }
       case 'v':
       {
         printVersionAndExit_out = true;
-
         break;
       }
       case 'w':
@@ -595,13 +548,11 @@ do_processArguments(const int argc_in,
         converter.str(ACE_TEXT_ALWAYS_CHAR(""));
         converter << argumentParser.opt_arg();
         converter >> width_out;
-
         break;
       }
       case 'x':
       {
         validateXML_out = false;
-
         break;
       }
       // error handling
@@ -610,7 +561,6 @@ do_processArguments(const int argc_in,
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("unrecognized option \"%s\", aborting\n"),
                    ACE_TEXT(argumentParser.last_option())));
-
         return false;
       }
       default:
@@ -618,7 +568,6 @@ do_processArguments(const int argc_in,
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("unrecognized option \"%c\", aborting\n"),
                    option));
-
         return false;
       }
     } // end SWITCH
@@ -825,9 +774,9 @@ do_slideshow(const std::string& graphicsDirectory_in,
         std::vector<RPG_Graphics_Tile>::const_iterator iterator =
             graphic.tileset.tiles.begin();
         result.clear();
-        RPG_Dice::generateRandomNumbers(graphic.tileset.tiles.size(),
-                                        1,
-                                        result);
+        RPG_Dice::generateRandomNumbers (static_cast<unsigned int> (graphic.tileset.tiles.size ()),
+                                         1,
+                                         result);
         std::advance(iterator, (result.front() - 1));
 
         // assemble filename
@@ -1570,14 +1519,14 @@ do_work(const mode_t& mode_in,
         ACE_DEBUG((LM_DEBUG,
                    ACE_TEXT("generating level map...\n")));
 
-        RPG_Engine_Level::create(mapConfiguration_in,
-                                 level);
+        RPG_Engine_Level::create (mapConfiguration_in,
+                                  level);
       } // end IF
       else
       {
-        if (!RPG_Engine_Level::load(map_in,
-                                    schemaRepository_in,
-                                    level))
+        if (!RPG_Engine_Level::load (map_in,
+                                     schemaRepository_in,
+                                     level))
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to RPG_Engine_Level::load(\"%s\"), aborting\n"),
@@ -1602,16 +1551,11 @@ do_work(const mode_t& mode_in,
 
       // step3: create/load initial entity
       std::string configuration_path =
-        RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+        RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                              ACE_TEXT_ALWAYS_CHAR (""),
+                                                              ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
                                                               true);
-#if defined (DEBUG_DEBUGGER)
-      configuration_path = Common_File_Tools::getWorkingDirectory ();
-#endif
       std::string schema_repository = configuration_path;
-      schema_repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-      schema_repository += ACE_TEXT_ALWAYS_CHAR ("engine");
-#endif
 
       struct RPG_Engine_Entity entity;
 //      entity.actions.clear();
@@ -1868,15 +1812,15 @@ do_printVersion(const std::string& programName_in)
 }
 
 int
-ACE_TMAIN(int argc_in,
-          ACE_TCHAR* argv_in[])
+ACE_TMAIN (int argc_in,
+           ACE_TCHAR* argv_in[])
 {
   RPG_TRACE(ACE_TEXT("::main"));
 
   // step0: init ACE
   // *PORTABILITY*: on Windows, ACE needs initialization...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-  if (ACE::init() == -1)
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::init () == -1)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
@@ -1907,86 +1851,74 @@ ACE_TMAIN(int argc_in,
   state.angle = 0.0F;
 
   // step1a set defaults
+  Common_File_Tools::initialize (argv_in[0]);
   std::string configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
-                                                          true);
-  std::string data_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
-                                                          false);
-#if defined (DEBUG_DEBUGGER)
-  configuration_path = Common_File_Tools::getWorkingDirectory ();
-  data_path = Common_File_Tools::getWorkingDirectory ();
-#endif
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_SUB_DIRECTORY_STRING),
+                                                          true); // configuration-
 
   std::string magic_dictionary    = configuration_path;
   magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  magic_dictionary += ACE_TEXT_ALWAYS_CHAR("magic");
-  magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
-  magic_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
+  magic_dictionary += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
 
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_SUB_DIRECTORY_STRING),
+                                                          true); // configuration-
   std::string items_dictionary    = configuration_path;
   items_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  items_dictionary += ACE_TEXT_ALWAYS_CHAR("item");
-  items_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
-  items_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DICTIONARY_FILE);
+  items_dictionary += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
 
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_SUB_DIRECTORY_STRING),
+                                                          true); // configuration-
   std::string monster_dictionary  = configuration_path;
   monster_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  monster_dictionary += ACE_TEXT_ALWAYS_CHAR("character");
-  monster_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  monster_dictionary += ACE_TEXT_ALWAYS_CHAR("monster");
-  monster_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
-  monster_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_MONSTER_DICTIONARY_FILE);
+  monster_dictionary += ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_DICTIONARY_FILE);
 
+  std::string data_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
+                                                          false); // data-
   std::string graphics_directory  = data_path;
-  graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  graphics_directory += ACE_TEXT_ALWAYS_CHAR("graphics");
-  graphics_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  graphics_directory += ACE_TEXT_ALWAYS_CHAR("data");
-#else
-  graphics_directory += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DATA_SUB);
-#endif
 
   unsigned int cache_size         = RPG_CLIENT_GRAPHICS_DEF_CACHESIZE;
 
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
+                                                          true); // configuration-
   std::string graphics_dictionary = configuration_path;
   graphics_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  graphics_dictionary += ACE_TEXT_ALWAYS_CHAR("graphics");
-  graphics_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
-  graphics_dictionary += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DICTIONARY_FILE);
+  graphics_dictionary += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
 
   mode_t mode                     = SDL_GUI_DEF_MODE;
 
   std::string entity_filename     =
-      RPG_Player_Common_Tools::getPlayerProfilesDirectory();
+      RPG_Player_Common_Tools::getPlayerProfilesDirectory ();
   entity_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  entity_filename += RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_DEF_NAME));
-  entity_filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+  entity_filename +=
+    RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
+  entity_filename += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT);
 
+  data_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
+                                                          false); // data-
   std::string map_filename        = data_path;
   map_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  map_filename += ACE_TEXT_ALWAYS_CHAR("engine");
-  map_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  map_filename += ACE_TEXT_ALWAYS_CHAR("data");
-  map_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#else
-  map_filename += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
-  map_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   map_filename +=
     RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
   map_filename += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
 
+  bool log_to_file_b              = false;
   bool slideshow_mode             = (SDL_GUI_DEF_MODE ==
                                      SDL_GUI_USERMODE_SLIDESHOW);
   bool trace_information          = false;
@@ -2017,26 +1949,27 @@ ACE_TMAIN(int argc_in,
   video_configuration.full_screen       = SDL_GUI_DEF_VIDEO_FULLSCREEN;
 
   // step1b: parse/process/validate configuration
-  if (!do_processArguments(argc_in,
-                           argv_in,
-                           magic_dictionary,
-                           video_configuration.screen_height,
-                           items_dictionary,
-                           monster_dictionary,
-                           graphics_directory,
-                           state.debug,
-                           graphics_dictionary,
-                           entity_filename,
-                           video_configuration.use_OpenGL,
-                           map_filename,
-                           slideshow_mode,
-                           trace_information,
-                           print_version_and_exit,
-                           video_configuration.screen_width,
-                           validate_XML))
+  if (!do_processArguments (argc_in,
+                            argv_in,
+                            magic_dictionary,
+                            video_configuration.screen_height,
+                            items_dictionary,
+                            monster_dictionary,
+                            graphics_directory,
+                            state.debug,
+                            graphics_dictionary,
+                            entity_filename,
+                            video_configuration.use_OpenGL,
+                            log_to_file_b,
+                            map_filename,
+                            slideshow_mode,
+                            trace_information,
+                            print_version_and_exit,
+                            video_configuration.screen_width,
+                            validate_XML))
   {
     // make 'em learn...
-    do_printUsage(std::string(ACE::basename(argv_in[0])));
+    do_printUsage (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0], ACE_DIRECTORY_SEPARATOR_CHAR)));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -2071,16 +2004,27 @@ ACE_TMAIN(int argc_in,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
-
     return EXIT_FAILURE;
   } // end IF
   mode = (slideshow_mode ? SDL_GUI_USERMODE_SLIDESHOW : mode);
 
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
+                                                          true); // configuration-
   std::string schema_repository = configuration_path;
-#if defined(DEBUG_DEBUGGER)
-  schema_repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_repository += ACE_TEXT_ALWAYS_CHAR("engine");
+  if (!RPG_Common_XML_Tools::initialize (schema_repository))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Common_XML_Tools::initialize(), returning\n")));
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini() == -1)
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
 #endif
+    return EXIT_FAILURE;
+  } // end IF
 
   // step1c: handle specific program modes
   if (print_version_and_exit)
@@ -2098,13 +2042,16 @@ ACE_TMAIN(int argc_in,
   } // end IF
 
   // step1d: initialize logging and/or tracing
-  std::string log_file;
-  if (!Common_Log_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
-                                            log_file,                  // logfile
-                                            false,                     // log to syslog ?
-                                            false,                     // trace messages ?
-                                            trace_information,         // debug messages ?
-                                            NULL))                     // logger
+  std::string log_file =
+    (log_to_file_b ? Common_Log_Tools::getLogFilename (yarp_PACKAGE_NAME,
+                                                       ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])))
+                   : ACE_TEXT_ALWAYS_CHAR (""));
+  if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
+                                            log_file,                                          // logfile
+                                            false,                                             // log to syslog ?
+                                            false,                                             // trace messages ?
+                                            trace_information,                                 // debug messages ?
+                                            NULL))                                             // logger
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));

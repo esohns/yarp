@@ -28,6 +28,10 @@
 
 #include "common_file_tools.h"
 
+#if defined (HAVE_CONFIG_H)
+#include "rpg_config.h"
+#endif // HAVE_CONFIG_H
+
 #include "rpg_dice.h"
 #include "rpg_dice_common.h"
 
@@ -54,6 +58,8 @@
 
 #include "rpg_player.h"
 #include "rpg_player_defines.h"
+
+#include "rpg_engine_defines.h"
 
 std::bitset<6>
 RPG_Player_Common_Tools::raceXMLTreeToRace(const RPG_Player_CharacterXML_XMLTree_Type::race_sequence& races_in)
@@ -571,33 +577,27 @@ RPG_Player_Common_Tools::getPlayerProfilesDirectory ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Player_Common_Tools::getPlayerProfilesDirectory"));
 
-#if defined (DEBUG_DEBUGGER)
-  std::string result = Common_File_Tools::getWorkingDirectory();
-  result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  result += ACE_TEXT_ALWAYS_CHAR("engine");
-  result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  result += ACE_TEXT_ALWAYS_CHAR("data");
-#else
-  std::string result = RPG_Common_File_Tools::getUserConfigurationDirectory();
-  result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  result += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILES_SUB);
-#endif
+  std::string result =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
+                                                          false); // data-
 
-  if (!Common_File_Tools::isDirectory(result))
+  if (!Common_File_Tools::isDirectory (result))
   {
-    if (!Common_File_Tools::createDirectory(result))
+    if (!Common_File_Tools::createDirectory (result))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to Common_File_Tools::createDirectory(\"%s\"), falling back\n"),
-                 ACE_TEXT(result.c_str())));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to Common_File_Tools::createDirectory(\"%s\"), falling back\n"),
+                  ACE_TEXT (result.c_str ())));
 
       // fallback
-      result = Common_File_Tools::getTempDirectory();
+      result = Common_File_Tools::getTempDirectory ();
     } // end IF
     else
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("created player profiles directory \"%s\"\n"),
-                 ACE_TEXT(result.c_str())));
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT ("created player profiles directory \"%s\"\n"),
+                  ACE_TEXT (result.c_str ())));
   } // end IF
 
   return result;

@@ -174,6 +174,10 @@ endif ()
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
+# add PCH
+target_precompile_headers (${EXECUTABLE}
+                           PRIVATE stdafx.h)
+
 ########### install files ###############
 install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 
@@ -203,6 +207,6 @@ elseif (WIN32)
                                               ${PROJECT_SOURCE_DIR}/../Common/cmake/src/ui/Debug
                                               ${PROJECT_SOURCE_DIR}/cmake/src/Debug
                                               ${PROJECT_SOURCE_DIR}/cmake/src/modules/vis/Debug
-                         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/..
+                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test_u/client
                          ENVIRONMENT foo=bar)
 endif ()

@@ -49,4 +49,6 @@
 // GTK
 #define RPG_MAP_GTK_MAP_FILTER_NAME   "maps"
 
+#define RPG_MAP_SUB_DIRECTORY_STRING  "map"
+
 #endif

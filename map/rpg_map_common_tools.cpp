@@ -19,11 +19,6 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-// *NOTE*: workaround for MSVC quirk with min/max
-//#if defined (_MSC_VER)
-//#define NOMINMAX
-//#endif
-
 #include "rpg_map_common_tools.h"
 
 #include <sstream>
@@ -37,9 +32,15 @@
 #include "common_defines.h"
 #include "common_file_tools.h"
 
+#include "common_error_tools.h"
+
+#if defined (HAVE_CONFIG_H)
+#include "rpg_config.h"
+#endif // HAVE_CONFIG_H
+
 #include "rpg_dice.h"
 
-//#include "rpg_common_defines.h"
+#include "rpg_common_defines.h"
 #include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
 
@@ -48,6 +49,8 @@
 #include "rpg_map_data.h"
 #include "rpg_map_parser_driver.h"
 #include "rpg_map_pathfinding_tools.h"
+
+#include "rpg_engine_defines.h"
 
 // init statics
 RPG_Map_DirectionToStringTable_t
@@ -4123,22 +4126,19 @@ RPG_Map_Common_Tools::getMapsDirectory()
 
   std::string result;
 
-  std::string data_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory(ACE_TEXT_ALWAYS_CHAR(BASEDIR),
-                                                           false);
-#if defined(DEBUG_DEBUGGER)
-  data_path = Common_File_Tools::getWorkingDirectory();
-#endif
-
-	result = data_path;
-	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
-	result += ACE_TEXT_ALWAYS_CHAR("engine");
-	result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-	result += ACE_TEXT_ALWAYS_CHAR("data");
-#else
-  result += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
-#endif
+  std::string data_path;
+  if (Common_Error_Tools::inDebugSession())
+    data_path =
+        RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                              ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
+                                                              ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_DATA_SUB),
+                                                              false);
+  else
+    data_path =
+        RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                              ACE_TEXT_ALWAYS_CHAR (RPG_MAP_MAPS_SUB),
+                                                              ACE_TEXT_ALWAYS_CHAR (""),
+                                                              false);
 
   if (!Common_File_Tools::isDirectory(result))
   {

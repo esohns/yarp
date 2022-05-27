@@ -172,20 +172,28 @@ create_target_launcher (graphics_parser
                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
                                              ${LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
                                              ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
+                                             ${LIB_ROOT}/libpng/build/Debug
                                              ${LIB_ROOT}/ACE_TAO/ACE/lib
                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/Debug
                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/err/Debug
                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/ui/Debug
                                              ${PROJECT_SOURCE_DIR}/cmake/src/Debug
                                              ${PROJECT_SOURCE_DIR}/cmake/src/modules/vis/Debug
-                        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/..
+                        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test_u/graphics
                         ENVIRONMENT foo=bar)
 
+if (UNIX)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}" COMMAND)
+elseif (WIN32)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}.exe" COMMAND)
+ string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
+endif ()
 create_target_launcher (SDL_gui
-                        ARGS "-t"
+                        COMMAND ${COMMAND}
+                        ARGS "-l -t"
                         FORWARD_ARGS
-                        RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/cmake/Debug
-                                             ${LIB_ROOT}/libpng/cmake/Debug
+                        RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
+                                             ${LIB_ROOT}/libpng/build/Debug
                                              ${LIB_ROOT}/openssl
                                              ${LIB_ROOT}/gtk2/bin
                                              ${LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
@@ -198,5 +206,5 @@ create_target_launcher (SDL_gui
                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/ui/Debug
                                              ${PROJECT_SOURCE_DIR}/cmake/src/Debug
                                              ${PROJECT_SOURCE_DIR}/cmake/src/modules/vis/Debug
-                        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/..
+                        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test_u/graphics
                         ENVIRONMENT foo=bar)

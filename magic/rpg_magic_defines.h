@@ -25,4 +25,6 @@
 
 #define RPG_MAGIC_DICTIONARY_FILE              "rpg_magic.xml"
 
+#define RPG_MAGIC_SUB_DIRECTORY_STRING         "magic"
+
 #endif

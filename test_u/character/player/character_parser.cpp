@@ -29,19 +29,21 @@
 #include "ace/ACE.h"
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
 #include "ace/Init_ACE.h"
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 #include "ace/Get_Opt.h"
 #include "ace/High_Res_Timer.h"
 #include "ace/Log_Msg.h"
 #include "ace/OS_main.h"
 
+#include "common_defines.h"
+
 #include "common_file_tools.h"
 
 #include "common_log_tools.h"
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #include "rpg_config.h"
-#endif
+#endif // HAVE_CONFIG_H
 
 #include "rpg_dice.h"
 #include "rpg_dice_common_tools.h"
@@ -88,11 +90,10 @@ do_printUsage (const std::string& programName_in)
   RPG_TRACE (ACE_TEXT ("::do_printUsage"));
 
   std::string configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           true);
-#if defined (DEBUG_DEBUGGER)
-  configuration_path = Common_File_Tools::getWorkingDirectory ();
-#endif
 
   std::cout << ACE_TEXT ("usage: ")
             << programName_in
@@ -125,7 +126,7 @@ do_printUsage (const std::string& programName_in)
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR ("magic");
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DIRECTORY_STRING);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
@@ -151,11 +152,10 @@ do_processArguments (int argc_in,
   RPG_TRACE (ACE_TEXT ("::do_processArguments"));
 
   std::string configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           true);
-#if defined (DEBUG_DEBUGGER)
-  configuration_path = Common_File_Tools::getWorkingDirectory ();
-#endif
 
   // init configuration
   player_filename_out =
@@ -177,7 +177,7 @@ do_processArguments (int argc_in,
   magic_dictionary_filename_out = configuration_path;
   magic_dictionary_filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  magic_dictionary_filename_out += ACE_TEXT_ALWAYS_CHAR ("magic");
+  magic_dictionary_filename_out += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DIRECTORY_STRING);
   magic_dictionary_filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   magic_dictionary_filename_out +=
@@ -393,14 +393,14 @@ ACE_TMAIN (int argc_in,
 #endif
 
   // step1: initialize configuration
+  Common_File_Tools::initialize (argv_in[0]);
 
   // step1a: set defaults
   std::string configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
                                                           true);
-#if defined (DEBUG_DEBUGGER)
-  configuration_path = Common_File_Tools::getWorkingDirectory ();
-#endif
 
   // init configuration
   std::string player_filename =
@@ -421,7 +421,7 @@ ACE_TMAIN (int argc_in,
   std::string magic_dictionary_filename = configuration_path;
   magic_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  magic_dictionary_filename += ACE_TEXT_ALWAYS_CHAR ("magic");
+  magic_dictionary_filename += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DIRECTORY_STRING);
   magic_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   magic_dictionary_filename += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);

@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="urn:rpg"
+            xmlns="urn:rpg"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+<!-- include dice schema -->
+  <xsd:include schemaLocation="rpg_dice.xsd"/>
+<!-- include common schema -->
+  <xsd:include schemaLocation="rpg_common.xsd"/>
+<!-- include magic schema -->
+  <xsd:include schemaLocation="rpg_magic.xsd"/>
+
+  <xsd:annotation>
+    <xsd:documentation xml:lang="en">
+      RPG_Item types XML schema
+    </xsd:documentation>
+  </xsd:annotation>
+
+  <xsd:simpleType name="RPG_Item_Type_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ITEM_ARMOR"/>
+      <xsd:enumeration value="ITEM_COMMODITY"/>
+      <xsd:enumeration value="ITEM_OTHER"/>
+      <xsd:enumeration value="ITEM_VALUABLE"/>
+      <xsd:enumeration value="ITEM_WEAPON"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Item_CommodityType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="COMMODITY_BEVERAGE"/>
+      <xsd:enumeration value="COMMODITY_FOOD"/>
+      <xsd:enumeration value="COMMODITY_LIGHT"/>
+      <xsd:enumeration value="COMMODITY_OTHER"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Item_CommodityBeverage_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="COMMODITY_BEVERAGE_BEER"/>
+      <xsd:enumeration value="COMMODITY_BEVERAGE_WATER"/>
+      <xsd:enumeration value="COMMODITY_BEVERAGE_WINE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Item_CommodityLight_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="COMMODITY_LIGHT_CANDLE"/>
+      <xsd:enumeration value="COMMODITY_LIGHT_LAMP"/>
+      <xsd:enumeration value="COMMODITY_LIGHT_LANTERN_BULLSEYE"/>
+      <xsd:enumeration value="COMMODITY_LIGHT_LANTERN_HOODED"/>
+      <xsd:enumeration value="COMMODITY_LIGHT_TORCH"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Item_CommodityUnion_Type">
+    <xsd:union memberTypes="RPG_Item_CommodityBeverage_Type RPG_Item_CommodityLight_Type"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Item_Money_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="MONEY_COIN_COPPER"/>
+      <xsd:enumeration value="MONEY_COIN_SILVER"/>
+      <xsd:enumeration value="MONEY_COIN_GOLD"/>
+      <xsd:enumeration value="MONEY_COIN_PLATINUM"/>
+      <xsd:enumeration value="MONEY_GEM"/>
+      <xsd:enumeration value="MONEY_PRECIOUS"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Item_WeaponCategory_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="WEAPONCATEGORY_SIMPLE"/>
+      <xsd:enumeration value="WEAPONCATEGORY_MARTIAL"/>
+      <xsd:enumeration value="WEAPONCATEGORY_EXOTIC"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Item_WeaponClass_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="WEAPONCLASS_UNARMED"/>
+      <xsd:enumeration value="WEAPONCLASS_LIGHT_MELEE"/>
+      <xsd:enumeration value="WEAPONCLASS_ONE_HANDED_MELEE"/>
+      <xsd:enumeration value="WEAPONCLASS_TWO_HANDED_MELEE"/>
+      <xsd:enumeration value="WEAPONCLASS_RANGED"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Item_WeaponType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="UNARMED_WEAPON_GAUNTLET"/>
+      <xsd:enumeration value="UNARMED_WEAPON_STRIKE"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_DAGGER"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_DAGGER_PUNCHING"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_GAUNTLET_SPIKED"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_MACE_LIGHT"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_SICKLE"/>
+      <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_CLUB"/>
+      <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_MACE_HEAVY"/>
+      <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_MORNINGSTAR"/>
+      <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_SHORTSPEAR"/>
+      <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_LONGSPEAR"/>
+      <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_QUARTERSTAFF"/>
+      <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_SPEAR"/>
+      <xsd:enumeration value="RANGED_WEAPON_CROSSBOW_LIGHT"/>
+      <xsd:enumeration value="RANGED_WEAPON_CROSSBOW_HEAVY"/>
+      <xsd:enumeration value="RANGED_WEAPON_DART"/>
+      <xsd:enumeration value="RANGED_WEAPON_JAVELIN"/>
+      <xsd:enumeration value="RANGED_WEAPON_SLING"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_AXE_THROWING"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_HAMMER_LIGHT"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_AXE_HAND"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_KUKRI"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_PICK_LIGHT"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_SAP"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_SHIELD_LIGHT"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_ARMOR_SPIKED"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_SHIELD_LIGHT_SPIKED"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_SWORD_SHORT"/>
+      <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_AXE_BATTLE"/>
+      <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_FLAIL_LIGHT"/>
+      <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_SWORD_LONG"/>
+      <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_PICK_HEAVY"/>
+      <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_RAPIER"/>
+      <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_SCIMITAR"/>
+      <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_SHIELD_HEAVY"/>
+      <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_SHIELD_HEAVY_SPIKED"/>
+      <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_TRIDENT"/>
+      <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_HAMMER_WAR"/>
+      <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_FALCHION"/>
+      <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_GLAIVE"/>
+      <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_AXE_GREAT"/>
+      <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_CLUB_GREAT"/>
+      <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_FLAIL_HEAVY"/>
+      <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_SWORD_GREAT"/>
+      <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_GUISARME"/>
+      <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_HALBERD"/>
+      <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_LANCE"/>
+      <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_RANSEUR"/>
+      <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_SCYTHE"/>
+      <xsd:enumeration value="RANGED_WEAPON_BOW_SHORT"/>
+      <xsd:enumeration value="RANGED_WEAPON_BOW_SHORT_COMPOSITE"/>
+      <xsd:enumeration value="RANGED_WEAPON_BOW_LONG"/>
+      <xsd:enumeration value="RANGED_WEAPON_BOW_LONG_COMPOSITE"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_KAMA"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_NUNCHAKU"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_SAI"/>
+      <xsd:enumeration value="LIGHT_MELEE_WEAPON_SIANGHAM"/>
+      <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_SWORD_BASTARD"/>
+      <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_AXE_WAR_DWARVEN"/>
+      <xsd:enumeration value="ONE_HANDED_MELEE_WEAPON_WHIP"/>
+      <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_AXE_ORC_DOUBLE"/>
+      <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_CHAIN_SPIKED"/>
+      <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_FLAIL_DIRE"/>
+      <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_HAMMER_GNOME_HOOKED"/>
+      <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_SWORD_TWO_BLADED"/>
+      <xsd:enumeration value="TWO_HANDED_MELEE_WEAPON_URGROSH_DWARVEN"/>
+      <xsd:enumeration value="RANGED_WEAPON_BOLAS"/>
+      <xsd:enumeration value="RANGED_WEAPON_CROSSBOW_HAND"/>
+      <xsd:enumeration value="RANGED_WEAPON_CROSSBOW_REPEATING_LIGHT"/>
+      <xsd:enumeration value="RANGED_WEAPON_CROSSBOW_REPEATING_HEAVY"/>
+      <xsd:enumeration value="RANGED_WEAPON_NET"/>
+      <xsd:enumeration value="RANGED_WEAPON_SHURIKEN"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Item_StorePrice_Type">
+    <xsd:sequence>
+      <xsd:element name="numGoldPieces" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="numSilverPieces" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Item_CriticalHitProperties_Type">
+    <xsd:sequence>
+      <xsd:element name="minToHitRoll" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="damageModifier" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Item_CreationCost_Type">
+    <xsd:sequence>
+      <xsd:element name="numGoldPieces" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="numExperiencePoints" type="xsd:unsignedInt" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Item_BaseProperties_Type">
+    <xsd:sequence>
+      <xsd:element name="baseWeight" type="xsd:unsignedShort" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="baseStorePrice" type="RPG_Item_StorePrice_Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="costToCreate" type="RPG_Item_CreationCost_Type" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Item_MagicalPrerequisites_Type">
+    <xsd:sequence>
+      <xsd:element name="minCasterLevel" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Item_PropertiesBase_Type">
+    <xsd:complexContent>
+      <xsd:extension base="RPG_Item_BaseProperties_Type">
+        <xsd:sequence>
+          <xsd:element name="aura" type="RPG_Magic_School_Type" minOccurs="0" maxOccurs="1"/>
+          <xsd:element name="prerequisites" type="RPG_Item_MagicalPrerequisites_Type" minOccurs="0" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Item_CommodityPropertiesBase_Type">
+    <xsd:complexContent>
+      <xsd:extension base="RPG_Item_PropertiesBase_Type">
+        <xsd:sequence>
+          <xsd:element name="type" type="RPG_Item_CommodityType_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="subType" type="RPG_Item_CommodityUnion_Type" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="RPG_Item_WeaponPropertiesBase_Type">
+    <xsd:complexContent>
+      <xsd:extension base="RPG_Item_PropertiesBase_Type">
+        <xsd:sequence>
+          <xsd:element name="type" type="RPG_Item_WeaponType_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="category" type="RPG_Item_WeaponCategory_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="weaponClass" type="RPG_Item_WeaponClass_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="baseDamage" type="RPG_Dice_Roll_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="criticalHit" type="RPG_Item_CriticalHitProperties_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="rangeIncrement" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+          <xsd:element name="typeOfDamage" type="RPG_Common_PhysicalDamageType_Type" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="isNonLethal" type="xsd:boolean" use="optional" default="false"/>
+        <xsd:attribute name="isReachWeapon" type="xsd:boolean" use="optional" default="false"/>
+        <xsd:attribute name="isDoubleWeapon" type="xsd:boolean" use="optional" default="false"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Item_WeaponPropertiesXML_Type">
+    <xsd:complexContent>
+      <xsd:extension base="RPG_Item_WeaponPropertiesBase_Type">
+        <xsd:sequence>
+          <xsd:element name="toHitModifier" type="xsd:byte" minOccurs="0" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:simpleType name="RPG_Item_ArmorCategory_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ARMORCATEGORY_GLOVES"/>
+      <xsd:enumeration value="ARMORCATEGORY_LIGHT"/>
+      <xsd:enumeration value="ARMORCATEGORY_MEDIUM"/>
+      <xsd:enumeration value="ARMORCATEGORY_HEAVY"/>
+      <xsd:enumeration value="ARMORCATEGORY_HELMET"/>
+      <xsd:enumeration value="ARMORCATEGORY_SHIELD"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RPG_Item_ArmorType_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ARMOR_NONE"/>
+      <xsd:enumeration value="ARMOR_PADDED"/>
+      <xsd:enumeration value="ARMOR_LEATHER"/>
+      <xsd:enumeration value="ARMOR_LEATHER_STUDDED"/>
+      <xsd:enumeration value="ARMOR_CHAIN_SHIRT"/>
+      <xsd:enumeration value="ARMOR_HIDE"/>
+      <xsd:enumeration value="ARMOR_MAIL_SCALE"/>
+      <xsd:enumeration value="ARMOR_MAIL_CHAIN"/>
+      <xsd:enumeration value="ARMOR_PLATE_BREAST"/>
+      <xsd:enumeration value="ARMOR_MAIL_SPLINT"/>
+      <xsd:enumeration value="ARMOR_MAIL_BANDED"/>
+      <xsd:enumeration value="ARMOR_PLATE_HALF"/>
+      <xsd:enumeration value="ARMOR_PLATE_FULL"/>
+      <xsd:enumeration value="ARMOR_BUCKLER"/>
+      <xsd:enumeration value="ARMOR_SHIELD_LIGHT_WOODEN"/>
+      <xsd:enumeration value="ARMOR_SHIELD_LIGHT_STEEL"/>
+      <xsd:enumeration value="ARMOR_SHIELD_HEAVY_WOODEN"/>
+      <xsd:enumeration value="ARMOR_SHIELD_HEAVY_STEEL"/>
+      <xsd:enumeration value="ARMOR_SHIELD_TOWER"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="RPG_Item_ArmorPropertiesBase_Type">
+    <xsd:complexContent>
+      <xsd:extension base="RPG_Item_PropertiesBase_Type">
+        <xsd:sequence>
+          <xsd:element name="type" type="RPG_Item_ArmorType_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="category" type="RPG_Item_ArmorCategory_Type" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="baseBonus" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="maxDexterityBonus" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="checkPenalty" type="xsd:byte" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="arcaneSpellFailure" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="baseSpeed" type="xsd:unsignedByte" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="RPG_Item_ArmorPropertiesXML_Type">
+    <xsd:complexContent>
+      <xsd:extension base="RPG_Item_ArmorPropertiesBase_Type">
+        <xsd:sequence>
+          <xsd:element name="defenseModifier" type="xsd:byte" minOccurs="0" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+ <xsd:complexType name="RPG_Item_BaseXML_Type">
+   <xsd:sequence>
+     <xsd:element name="type" type="RPG_Item_Type_Type" minOccurs="1" maxOccurs="1"/>
+<!--     <xsd:choice>
+       <xsd:element name="armor" type="RPG_Item_ArmorPropertiesXML_Type"/>
+       <xsd:element name="commodity" type="RPG_Item_CommodityPropertiesBase_Type"/>
+       <xsd:element name="weapon" type="RPG_Item_WeaponPropertiesXML_Type"/>
+     </xsd:choice>-->
+     <xsd:element name="armor" type="RPG_Item_ArmorPropertiesXML_Type" minOccurs="0" maxOccurs="1"/>
+     <xsd:element name="commodity" type="RPG_Item_CommodityPropertiesBase_Type" minOccurs="0" maxOccurs="1"/>
+     <xsd:element name="weapon" type="RPG_Item_WeaponPropertiesXML_Type" minOccurs="0" maxOccurs="1"/>
+   </xsd:sequence>
+ </xsd:complexType>
+
+ <xsd:complexType name="RPG_Item_InventoryXML_Type">
+   <xsd:sequence>
+     <xsd:element name="item" type="RPG_Item_BaseXML_Type" minOccurs="0" maxOccurs="unbounded"/>
+   </xsd:sequence>
+ </xsd:complexType>
+
+  <xsd:complexType name="RPG_Item_DictionaryXML_Type" id="skip0">
+    <xsd:sequence>
+      <xsd:element name="armor" type="RPG_Item_ArmorPropertiesXML_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="commodity" type="RPG_Item_CommodityPropertiesBase_Type" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="weapon" type="RPG_Item_WeaponPropertiesXML_Type" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- xml instance document(s) will contain a dictionary of different types of items -->
+  <xsd:element name="itemDictionary" type="RPG_Item_DictionaryXML_Type"/>
+
+</xsd:schema>

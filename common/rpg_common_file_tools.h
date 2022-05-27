@@ -25,14 +25,14 @@
 
 #include "ace/Global_Macros.h"
 
-//#include "rpg_common_exports.h"
-
 class RPG_Common_File_Tools
 {
  public:
-  // *PORTABILITY*: - on UNIX, this should be passed as a BASEDIR macro at compile time
-  //                - on WIN32, this should default to the working directory (*TODO*)
-  static std::string getConfigurationDataDirectory (const std::string&, // base directory
+  static std::string getSourceDirectory (const std::string&,  // package name
+                                         const std::string&); // module name
+  static std::string getConfigurationDataDirectory (const std::string&, // package name
+                                                    const std::string&, // module name
+                                                    const std::string&, // module2/executable name
                                                     bool);              // configuration ? : data
 
   // *NOTE*: (try to) create the directory if it doesn't exist

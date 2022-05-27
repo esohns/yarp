@@ -71,7 +71,7 @@
 // *TODO*: move these to client
 #define RPG_ENGINE_USES_REACTOR                     false
 
-
+#define RPG_ENGINE_SUB_DIRECTORY_STRING             "engine"
 
 // gtk
 #define RPG_ENGINE_GTK_LEVEL_FILTER                 "levels"

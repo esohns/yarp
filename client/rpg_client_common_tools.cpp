@@ -25,6 +25,10 @@
 
 #include "common_file_tools.h"
 
+#if defined (HAVE_CONFIG_H)
+#include "rpg_config.h"
+#endif // HAVE_CONFIG_H
+
 #include "rpg_common_defines.h"
 #include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
@@ -130,10 +134,10 @@ RPG_Client_Common_Tools::initializeUserProfiles()
   if (Common_File_Tools::isEmptyDirectory(profiles_directory))
   {
     std::string default_profile =
-      RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (BASEDIR),
+      RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                            ACE_TEXT_ALWAYS_CHAR (""),
+                                                            ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILES_SUB),
                                                             false);
-    default_profile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    default_profile += RPG_PLAYER_PROFILES_SUB;
     default_profile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     default_profile += RPG_Common_Tools::sanitize (RPG_PLAYER_DEF_NAME);
     default_profile += RPG_PLAYER_PROFILE_EXT;
