@@ -120,4 +120,4 @@ install (FILES
 install (TARGETS ${LIBRARY} LIBRARY
          DESTINATION lib)
 
-add_subdirectory (data)
+add_subdirectory (share)

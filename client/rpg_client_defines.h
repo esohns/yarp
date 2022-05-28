@@ -82,6 +82,8 @@
 // CONFIGDIR-specific
 #define RPG_CLIENT_CONFIG_SUB                             "client"
 
+#define RPG_CLIENT_SUB_DIRECTORY_STRING                   "client"
+
 // configuration file
 #define RPG_CLIENT_CONFIGURATION_FILE                     "rpg_client.ini"
 #define RPG_CLIENT_CONFIGURATION_SECTIONHEADER_CLIENT     "client"

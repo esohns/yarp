@@ -905,22 +905,22 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
       if ((current_element == MAPELEMENT_FLOOR) ||
           (current_element == MAPELEMENT_DOOR))
       {
-        // blend tile ? 
+        // blend tile ?
         if (is_visible)
         {
           if ((static_cast<unsigned int>(current_map_position.first) !=
                active_position.first)                                    ||
               (static_cast<unsigned int>(current_map_position.second) !=
                active_position.second))
-          {
+          { ACE_ASSERT (!myLightingCache.empty ());
             // step0: find blend mask
-            blendmask_iterator = myLightingCache.begin();
-            std::advance(blendmask_iterator,
-                          RPG_Map_Common_Tools::distanceMax(active_position,
-                                                            current_map_position) - 1);
+            blendmask_iterator = myLightingCache.begin ();
+            std::advance (blendmask_iterator,
+                          RPG_Map_Common_Tools::distanceMax (active_position,
+                                                             current_map_position) - 1);
 
             // step1: get background
-            RPG_Graphics_Surface::copy(*(*floor_iterator).surface,
+            RPG_Graphics_Surface::copy (*(*floor_iterator).surface,
                                         *myVisionTempTile);
 
             // step2: blend tiles

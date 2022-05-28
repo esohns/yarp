@@ -67,7 +67,7 @@ class RPG_Client_Engine
 //  virtual void start (ACE_thread_t&) = 0; // return value: thread handle (if any)
   inline virtual void stop (bool = true, bool = false) { ACE_ASSERT (false); ACE_NOTSUP; ACE_NOTREACHED (return;) }
 //  inline virtual bool isRunning () const { return (inherited::thr_count () > 0); }
-  inline virtual bool isShuttingDown () const { ACE_ASSERT (false); ACE_NOTSUP_RETURN (false); ACE_NOTREACHED (return false;) }
+  inline virtual bool isShuttingDown () const { /*ACE_ASSERT (false);*/ ACE_NOTSUP_RETURN (false); ACE_NOTREACHED (return false;) }
 
   // implement Common_IDumpState
   virtual void dump_state () const;

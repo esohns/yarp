@@ -47,6 +47,8 @@
 
 #define RPG_SOUND_DEF_FILE_EXT              ".ogg"
 
+#define RPG_SOUND_SUB_DIRECTORY_STRING      "sound"
+
 #define RPG_SOUND_DICTIONARY_FILE           "rpg_sound.xml"
 #define RPG_SOUND_DICTIONARY_INSTANCE       "soundDictionary"
 

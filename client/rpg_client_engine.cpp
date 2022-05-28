@@ -138,16 +138,15 @@ RPG_Client_Engine::svc (void)
 
   while (true)
   {
-    lock_.acquire ();
-    if (likely (actions_.empty ()))
-      condition_.wait (); // wait for an action
-    ACE_ASSERT (!actions_.empty ());
+    { ACE_GUARD_RETURN (ACE_Thread_Mutex, aGuard, lock_, -1);
+      while (likely (actions_.empty ()))
+      {
+        condition_.wait (); // wait for an action
+        if (isShuttingDown ())
+          return 0;
+      } // end WHILE
+    } // end lock scope
     handleActions();
-    ACE_ASSERT (actions_.empty ());
-    lock_.release();
-
-    if (isShuttingDown ())
-      return 0;
   } // end WHILE
 
   ACE_ASSERT (false);
@@ -864,6 +863,8 @@ void
 RPG_Client_Engine::handleActions ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::handleActions"));
+
+  ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);
 
   SDL_Rect dirty_region;
   for (RPG_Client_ActionsIterator_t iterator = actions_.begin ();

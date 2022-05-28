@@ -4126,20 +4126,12 @@ RPG_Map_Common_Tools::getMapsDirectory()
 
   std::string result;
 
-  std::string data_path;
-  if (Common_Error_Tools::inDebugSession())
-    data_path =
-        RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                              ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
-                                                              ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_DATA_SUB),
-                                                              false);
-  else
-    data_path =
-        RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                              ACE_TEXT_ALWAYS_CHAR (RPG_MAP_MAPS_SUB),
-                                                              ACE_TEXT_ALWAYS_CHAR (""),
-                                                              false);
-
+  std::string data_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
+                                                          false); // data-
+  result = data_path;
   if (!Common_File_Tools::isDirectory(result))
   {
     if (!Common_File_Tools::createDirectory(result))

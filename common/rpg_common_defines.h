@@ -37,8 +37,8 @@
 #define RPG_COMMON_XML_SCHEMA_FILE_EXT  ".xsd"
 
 // BASEDIR-specific
-#define RPG_COMMON_DATA_SUB             "data"
-#define RPG_COMMON_CONFIG_SUB           "config"
+#define RPG_COMMON_DATA_SUB             "share"
+#define RPG_COMMON_CONFIG_SUB           "etc"
 
 #if !defined(ACE_WIN32) && !defined(ACE_WIN64)
 #define RPG_COMMON_DEF_USER_LOGIN_BASE  "LOGNAME" // environment
