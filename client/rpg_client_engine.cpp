@@ -53,7 +53,7 @@ RPG_Client_Engine::RPG_Client_Engine()
               false,
               NULL),
    condition_ (lock_),
-//   myStop(false),
+   shutDown_ (false),
    engine_ (NULL),
    window_ (NULL),
    //myWidgetInterface(NULL),
@@ -84,8 +84,8 @@ RPG_Client_Engine::~RPG_Client_Engine()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::~RPG_Client_Engine"));
 
-  if (isRunning())
-    stop();
+  if (isRunning ())
+    stop (false, false);
 }
 
 int

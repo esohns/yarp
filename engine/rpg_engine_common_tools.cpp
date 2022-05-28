@@ -709,9 +709,9 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Player_Party_t& party_in
     {
       // try another solution...
       result.clear();
-      RPG_Dice::generateRandomNumbers(listOfCombatants.size(),
-                                      1,
-                                      result);
+      RPG_Dice::generateRandomNumbers (static_cast<unsigned int> (listOfCombatants.size ()),
+                                       1,
+                                       result);
       element.initiative = result.front() + element.DEXModifier;
     } // end ELSE
 
@@ -773,9 +773,9 @@ RPG_Engine_Common_Tools::getCombatantSequence(const RPG_Player_Party_t& party_in
     {
       // try another solution...
       result.clear();
-      RPG_Dice::generateRandomNumbers(listOfCombatants.size(),
-                                      1,
-                                      result);
+      RPG_Dice::generateRandomNumbers (static_cast<unsigned int> (listOfCombatants.size ()),
+                                       1,
+                                       result);
       current_conflict.initiative = (result.front() +
                                      current_conflict.DEXModifier);
     } // end ELSE
@@ -860,9 +860,9 @@ RPG_Engine_Common_Tools::performCombatRound(const RPG_Combat_AttackSituation& at
     {
       foeFinder = battleSequence_in.begin();
       result.clear();
-      RPG_Dice::generateRandomNumbers(battleSequence_in.size(),
-                                      1,
-                                      result);
+      RPG_Dice::generateRandomNumbers (static_cast<unsigned int> (battleSequence_in.size ()),
+                                       1,
+                                       result);
       std::advance(foeFinder, result.front() - 1);
     } while ((iterator == foeFinder) ||                                // dont't attack ourselves !
              ((*foeFinder).handle->isPlayerCharacter() == isPlayer) || // don't attack friends
@@ -1771,7 +1771,8 @@ RPG_Engine_Common_Tools::partyToACL(const RPG_Player_Party_t& party_in)
     return_value += (*iterator)->getLevel();
 
   // divide&round
-  return_value = (return_value + (party_in.size() >> 1)) / party_in.size();
+  return_value =
+    (return_value + (static_cast<unsigned int> (party_in.size ()) >> 1)) / static_cast<unsigned int> (party_in.size ());
 
   return (return_value == 0 ? 1 : return_value);
 }

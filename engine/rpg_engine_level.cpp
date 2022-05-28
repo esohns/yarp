@@ -618,10 +618,10 @@ RPG_Engine_Level::random(const struct RPG_Engine_LevelMetaData& metaData_in,
   if (!possible.empty())
   {
     unsigned int number = 0;
-    RPG_Dice::generateRandomNumbers((possible.size() < RPG_ENGINE_ENCOUNTER_DEF_TYPES_MAX) ? (possible.size() + 1)
-                                                                                           : (RPG_ENGINE_ENCOUNTER_DEF_TYPES_MAX + 1),
-                                    1,
-                                    result);
+    RPG_Dice::generateRandomNumbers (static_cast<unsigned int> ((possible.size () < RPG_ENGINE_ENCOUNTER_DEF_TYPES_MAX) ? (possible.size () + 1)
+                                                                                                                        : (RPG_ENGINE_ENCOUNTER_DEF_TYPES_MAX + 1)),
+                                     1,
+                                     result);
     number = (result.front() - 1);
 
     struct RPG_Engine_Spawn spawn;
@@ -631,9 +631,9 @@ RPG_Engine_Level::random(const struct RPG_Engine_LevelMetaData& metaData_in,
     {
       iterator = possible.begin();
       result.clear();
-      RPG_Dice::generateRandomNumbers(possible.size(),
-                                      1,
-                                      result);
+      RPG_Dice::generateRandomNumbers (static_cast<unsigned int> (possible.size ()),
+                                       1,
+                                       result);
       std::advance(iterator, (result.front() - 1));
       found = false;
       for (RPG_Engine_SpawnsConstIterator_t iterator2 = level_out.metadata.spawns.begin();

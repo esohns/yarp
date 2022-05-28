@@ -1738,7 +1738,7 @@ RPG_Engine::findValid (const RPG_Map_Position_t& center_in,
   // step3: choose a random position
   RPG_Map_PositionsConstIterator_t iterator = possible.begin ();
   RPG_Dice_RollResult_t roll_result;
-  RPG_Dice::generateRandomNumbers (possible.size (),
+  RPG_Dice::generateRandomNumbers (static_cast<unsigned int> (possible.size ()),
                                    1,
                                    roll_result);
   std::advance (iterator, roll_result.front () - 1);

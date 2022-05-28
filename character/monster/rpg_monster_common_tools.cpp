@@ -379,9 +379,9 @@ RPG_Monster_Common_Tools::generateRandomEncounter(const unsigned int& numDiffere
     do
     {
       result.clear();
-      RPG_Dice::generateRandomNumbers(list.size(),
-                                      1,
-                                      result);
+      RPG_Dice::generateRandomNumbers (static_cast<unsigned int> (list.size ()),
+                                       1,
+                                       result);
       choiceType = result.front() - 1; // list index
       // already used this type ?
       iterator = encounter_out.find(list[choiceType]);
@@ -414,9 +414,9 @@ RPG_Monster_Common_Tools::generateRandomEncounter(const unsigned int& numDiffere
     } // end IF
 
     result.clear();
-    RPG_Dice::generateRandomNumbers(possible_organizations.size(),
-                                    1,
-                                    result);
+    RPG_Dice::generateRandomNumbers (static_cast<unsigned int> (possible_organizations.size ()),
+                                     1,
+                                     result);
     int choiceOrganization = result.front() - 1; // list index
     RPG_Monster_OrganizationSetIterator_t iterator2 = possible_organizations.begin();
     std::advance(iterator2, choiceOrganization);
@@ -453,9 +453,9 @@ RPG_Monster_Common_Tools::generateRandomEncounter(const unsigned int& numDiffere
     {
       iterator = encounter_out.begin();
       result.clear();
-      RPG_Dice::generateRandomNumbers(encounter_out.size(),
-                                      1,
-                                      result);
+      RPG_Dice::generateRandomNumbers (static_cast<unsigned int> (encounter_out.size ()),
+                                       1,
+                                       result);
       std::advance(iterator, result.front() - 1);
       if ((*iterator).second) // don't go below 1...
       {

@@ -46,7 +46,7 @@ class RPG_Client_Entity_Manager
 {
   // singleton requires access to the ctor/dtor
   friend class ACE_Singleton<RPG_Client_Entity_Manager,
-                             ACE_SYNCH_RECURSIVE_MUTEX>;
+                             ACE_SYNCH_MUTEX>;
 
  public:
   // init (clipping)
@@ -106,8 +106,8 @@ class RPG_Client_Entity_Manager
 };
 
 typedef ACE_Singleton<RPG_Client_Entity_Manager,
-                      ACE_SYNCH_RECURSIVE_MUTEX> RPG_CLIENT_ENTITY_MANAGER_SINGLETON;
+                      ACE_SYNCH_MUTEX> RPG_CLIENT_ENTITY_MANAGER_SINGLETON;
 //RPG_CLIENT_SINGLETON_DECLARE(ACE_Singleton,
 //                             RPG_Client_Entity_Manager,
-//                             ACE_Recursive_Thread_Mutex);
+//                             ACE_Thread_Mutex);
 #endif

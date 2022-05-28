@@ -65,9 +65,9 @@ class RPG_Client_Engine
 
 //  // implement Common_IControl
 //  virtual void start (ACE_thread_t&) = 0; // return value: thread handle (if any)
-  inline virtual void stop (bool = true, bool = false) { ACE_ASSERT (false); ACE_NOTSUP; ACE_NOTREACHED (return;) }
+  inline virtual void stop (bool = true, bool = false) { shutDown_ = true; condition_.broadcast (); }
 //  inline virtual bool isRunning () const { return (inherited::thr_count () > 0); }
-  inline virtual bool isShuttingDown () const { /*ACE_ASSERT (false);*/ ACE_NOTSUP_RETURN (false); ACE_NOTREACHED (return false;) }
+  inline virtual bool isShuttingDown () const { return shutDown_; }
 
   // implement Common_IDumpState
   virtual void dump_state () const;
@@ -130,7 +130,7 @@ class RPG_Client_Engine
   // implement blocking wait...
   ACE_Condition<ACE_Thread_Mutex> condition_;
 
-//  bool                            myStop;
+  bool                            shutDown_;
 
   RPG_Engine*                     engine_;
   RPG_Graphics_IWindowBase*       window_;

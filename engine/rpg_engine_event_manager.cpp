@@ -1025,9 +1025,9 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
         break;
       } // end IF
       RPG_Dice_RollResult_t roll_result;
-      RPG_Dice::generateRandomNumbers(seed_points.size(),
-                                      1,
-                                      roll_result);
+      RPG_Dice::generateRandomNumbers (static_cast<unsigned int> (seed_points.size ()),
+                                       1,
+                                       roll_result);
       std::advance(iterator2, roll_result.front() - 1);
 
       // find empty position

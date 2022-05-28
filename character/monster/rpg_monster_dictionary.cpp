@@ -434,14 +434,6 @@ RPG_Monster_Dictionary::getProperties(const std::string& name_in) const
   return iterator->second;
 }
 
-unsigned int
-RPG_Monster_Dictionary::numEntries() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Monster_Dictionary::numEntries"));
-
-  return myMonsterDictionary.size();
-}
-
 RPG_Monster_List_t
 RPG_Monster_Dictionary::getEntries() const
 {

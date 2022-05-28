@@ -969,7 +969,8 @@ update_character_profile (const RPG_Player& player_in,
   RPG_Player_Equipment& player_equipment =
     const_cast<RPG_Player&> (player_in).getEquipment ();
   RPG_Item_Base* item_p = NULL;
-  RPG_Character_EquipmentSlot equipment_slot;
+  RPG_Character_EquipmentSlot equipment_slot =
+    RPG_CHARACTER_EQUIPMENTSLOT_INVALID;
   for (RPG_Item_ListIterator_t iterator = player_inventory.myItems.begin ();
        iterator != player_inventory.myItems.end ();
        iterator++)
@@ -2314,6 +2315,8 @@ idle_finalize_UI_cb (gpointer userData_in)
 //  gdk_window_deiconify (toplevel);
 //  // emit a signal...
 //  gtk_button_clicked (GTK_BUTTON (widget));
+
+  gtk_main_quit ();
 
   return FALSE; // G_SOURCE_REMOVE
 }

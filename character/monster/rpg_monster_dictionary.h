@@ -52,7 +52,7 @@ class RPG_Monster_Dictionary
             const bool& = false); // validate XML ?
 
   RPG_Monster_Properties getProperties(const std::string&) const; // name of monster
-  unsigned int numEntries() const;
+  inline unsigned int numEntries () const { return static_cast<unsigned int> (myMonsterDictionary.size ()); }
   RPG_Monster_List_t getEntries() const;
   void find(const RPG_Character_Alignment&,       // alignment
             const RPG_Common_Environment&,        // environment

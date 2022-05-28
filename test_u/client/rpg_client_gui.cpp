@@ -1361,6 +1361,8 @@ do_work (struct RPG_Client_Configuration& configuration_in,
                ACE_TEXT(SDL_GetError())));
   level_engine.stop();
   client_engine.stop();
+  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::close ();
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::close ();
   COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
   RPG_Client_Common_Tools::finalize ();
   RPG_Engine_Common_Tools::finalize ();
@@ -1697,19 +1699,9 @@ do_printVersion(const std::string& programName_in)
             << std::endl;
 }
 
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-#ifdef __cplusplus
-extern "C"
-{
-#endif /* __cplusplus */
-int
-SDL_main (int argc_in,
-          char** argv_in)
-#else
 int
 ACE_TMAIN (int argc_in,
            ACE_TCHAR** argv_in)
-#endif
 {
   RPG_TRACE (ACE_TEXT ("::main"));
 
@@ -2276,8 +2268,3 @@ ACE_TMAIN (int argc_in,
 
   return EXIT_SUCCESS;
 } // end main
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-#endif

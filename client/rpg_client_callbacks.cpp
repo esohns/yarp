@@ -109,10 +109,11 @@ update_equipment (const struct RPG_Client_GTK_CBData& data_in)
 
     g_list_free (entries);
   } // end IF
-  GtkWidget* current_box, *check_button, *label = NULL;
+  GtkWidget* current_box = NULL, *check_button = NULL, *label = NULL;
   RPG_Player_Equipment& player_equipment = player->getEquipment ();
   RPG_Item_Base* item = NULL;
-  RPG_Character_EquipmentSlot equipment_slot;
+  RPG_Character_EquipmentSlot equipment_slot =
+    RPG_CHARACTER_EQUIPMENTSLOT_INVALID;
   const RPG_Player_Inventory& player_inventory = player->getInventory ();
   std::string widget_name;
   for (RPG_Item_ListIterator_t iterator_2 = player_inventory.myItems.begin ();
@@ -968,7 +969,8 @@ update_character_profile (const RPG_Player& player_in,
   RPG_Player_Equipment& player_equipment =
     const_cast<RPG_Player&> (player_in).getEquipment ();
   RPG_Item_Base* item_p = NULL;
-  RPG_Character_EquipmentSlot equipment_slot;
+  RPG_Character_EquipmentSlot equipment_slot =
+    RPG_CHARACTER_EQUIPMENTSLOT_INVALID;
   for (RPG_Item_ListIterator_t iterator = player_inventory.myItems.begin ();
        iterator != player_inventory.myItems.end ();
        iterator++)

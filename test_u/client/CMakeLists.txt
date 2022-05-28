@@ -183,20 +183,26 @@ install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 
 ########### launcher ###############
 if (UNIX)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}" COMMAND)
  create_target_launcher (client_gui
+                         COMMAND ${COMMAND}
                          ARGS "-l -n -t"
                          FORWARD_ARGS
                          WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/..
                          ENVIRONMENT foo=bar)
 elseif (WIN32)
  file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}.exe" COMMAND)
+ string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
  create_target_launcher (client_gui
+                         COMMAND ${COMMAND}
                          ARGS "-l -n -t"
                          FORWARD_ARGS
-                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/cmake/Debug
+                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
                                               ${LIB_ROOT}/libpng/build/Debug
+                                              ${LIB_ROOT}/libepoxy/bin
                                               ${LIB_ROOT}/openssl
-                                              ${LIB_ROOT}/gtk2/bin
+                                              ${LIB_ROOT}/gtk3/bin
                                               ${LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
                                               ${LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
                                               ${LIB_ROOT}/SDL_ttf/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
