@@ -22,7 +22,7 @@ Makefile.in
 Makefile.am.user
 configure
 Makefile
-
+CMakeLists.txt.user
 
 *.sdf
 *.suo
@@ -38,21 +38,6 @@ Thumbs.db
 autoscan.log
 configure.scan
 
-/character/monster/rpg_player.xsd
-/client/rpg_character.xsd
-/client/rpg_combat.xsd
-/client/rpg_common.xsd
-/client/rpg_common_environment.xsd
-/client/rpg_dice.xsd
-/client/rpg_engine.xsd
-/client/rpg_graphics.xsd
-/client/rpg_item.xsd
-/client/rpg_magic.xsd
-/client/rpg_map.xsd
-/client/rpg_monster.xsd
-/client/rpg_player.xsd
-/map/rpg_common_environment.xsd
-
 /doc/html
 
 config.h
@@ -62,6 +47,3 @@ lex.backup
 parser_graph.txt
 parser_graph.xml
 parser_report.txt
-
-cmake/
-
