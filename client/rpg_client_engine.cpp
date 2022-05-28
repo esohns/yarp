@@ -476,10 +476,10 @@ RPG_Client_Engine::notify(enum RPG_Engine_Command command_in,
       type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
 //      engine_->lock();
       type.sprite =
-          (engine_->isMonster(parameters_in.entity_id, false) ? RPG_Client_Common_Tools::classToSprite(engine_->getClass(parameters_in.entity_id,
-                                                                                                                          false))
-                                                               : RPG_Client_Common_Tools::monsterToSprite(engine_->getName(parameters_in.entity_id,
-                                                                                                                           false)));
+          (engine_->isMonster (parameters_in.entity_id, false) ? RPG_Client_Common_Tools::monsterToSprite (engine_->getName (parameters_in.entity_id,
+                                                                                                                             false))
+                                                               : RPG_Client_Common_Tools::classToSprite (engine_->getClass (parameters_in.entity_id,
+                                                                                                                            false)));
 //      engine_->unlock ();
       sprite_graphic = RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
                                                               true,   // convert to display format
@@ -663,8 +663,8 @@ RPG_Client_Engine::notify(enum RPG_Engine_Command command_in,
     case COMMAND_E2C_ENTITY_VISION:
     {
       // sanity check(s)
-      ACE_ASSERT(window_);
-      ACE_ASSERT(parameters_in.entity_id);
+      ACE_ASSERT (window_);
+      ACE_ASSERT (parameters_in.entity_id);
 
       client_action.window    = window_;
       client_action.entity_id = parameters_in.entity_id;

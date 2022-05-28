@@ -92,9 +92,9 @@ class RPG_Client_Window_Level
                             SDL_Rect&);                // return value: "dirty" region
 
   // debug
-#ifdef _DEBUG
-  void toggleShowCoordinates ();
-#endif
+#if defined (_DEBUG)
+  inline void toggleShowCoordinates () { myShowCoordinates = !myShowCoordinates; }
+#endif // _DEBUG
 
  private:
   ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Level ())
@@ -119,9 +119,9 @@ class RPG_Client_Window_Level
   RPG_Client_Engine*              myClient;
   RPG_Client_Action               myClientAction;
   bool                            myDrawMinimap;
-#ifdef _DEBUG
+#if defined (_DEBUG)
   bool                            myShowCoordinates;
-#endif
+#endif // _DEBUG
   bool                            myShowMessages;
 
   struct RPG_Graphics_FloorTileSet     myCurrentFloorSet;

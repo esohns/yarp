@@ -57,9 +57,9 @@ RPG_Client_Window_Level::RPG_Client_Window_Level(const RPG_Graphics_SDLWindowBas
    myClient(NULL),
 //   myClientAction(),
    myDrawMinimap(RPG_CLIENT_MINIMAP_DEF_ISON),
-#ifdef _DEBUG
+#if defined (_DEBUG)
    myShowCoordinates(false),
-#endif
+#endif // _DEBUG
    myShowMessages(RPG_CLIENT_MESSAGE_DEF_ISON),
 //   myCurrentMapStyle(mapStyle_in),
 //   myCurrentFloorSet(),
@@ -413,16 +413,6 @@ RPG_Client_Window_Level::toggleDoor(const RPG_Map_Position_t& position_in)
     }
   } // end SWITCH
 }
-
-#ifdef _DEBUG
-void
-RPG_Client_Window_Level::toggleShowCoordinates()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::toggleShowCoordinates"));
-
-  myShowCoordinates = !myShowCoordinates;
-}
-#endif
 
 bool
 RPG_Client_Window_Level::initialize (RPG_Client_Engine* clientEngine_in,
@@ -905,49 +895,50 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
       if ((current_element == MAPELEMENT_FLOOR) ||
           (current_element == MAPELEMENT_DOOR))
       {
-        // blend tile ?
-        if (is_visible)
-        {
-          if ((static_cast<unsigned int>(current_map_position.first) !=
-               active_position.first)                                    ||
-              (static_cast<unsigned int>(current_map_position.second) !=
-               active_position.second))
-          { ACE_ASSERT (!myLightingCache.empty ());
-            // step0: find blend mask
-            blendmask_iterator = myLightingCache.begin ();
-            std::advance (blendmask_iterator,
-                          RPG_Map_Common_Tools::distanceMax (active_position,
-                                                             current_map_position) - 1);
+//        // blend tile ?
+//        if (is_visible &&
+//            !myLightingCache.empty ())
+//        {
+//          if ((static_cast<unsigned int>(current_map_position.first) !=
+//               active_position.first)                                    ||
+//              (static_cast<unsigned int>(current_map_position.second) !=
+//               active_position.second))
+//          {
+//            // step0: find blend mask
+//            blendmask_iterator = myLightingCache.begin ();
+//            std::advance (blendmask_iterator,
+//                          RPG_Map_Common_Tools::distanceMax (active_position,
+//                                                             current_map_position) - 1);
 
-            // step1: get background
-            RPG_Graphics_Surface::copy (*(*floor_iterator).surface,
-                                        *myVisionTempTile);
+//            // step1: get background
+//            RPG_Graphics_Surface::copy (*(*floor_iterator).surface,
+//                                        *myVisionTempTile);
 
-            // step2: blend tiles
-            if (SDL_BlitSurface(*blendmask_iterator, // source
-                                NULL,                // aspect (--> everything)
-                                myVisionTempTile,    // target
-                                &dirty_region))      // aspect
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("failed to SDL_BlitSurface(): %s, continuing\n"),
-                         ACE_TEXT(SDL_GetError())));
-          } // end IF
-        } // end IF
-        else if (has_been_seen)
-        {
-          // step1: get background
-          RPG_Graphics_Surface::copy(*(*floor_iterator).surface,
-                                      *myVisionTempTile);
+//            // step2: blend tiles
+//            if (SDL_BlitSurface(*blendmask_iterator, // source
+//                                NULL,                // aspect (--> everything)
+//                                myVisionTempTile,    // target
+//                                &dirty_region))      // aspect
+//              ACE_DEBUG((LM_ERROR,
+//                         ACE_TEXT("failed to SDL_BlitSurface(): %s, continuing\n"),
+//                         ACE_TEXT(SDL_GetError())));
+//          } // end IF
+//        } // end IF
+//        else if (has_been_seen)
+//        {
+//          // step1: get background
+//          RPG_Graphics_Surface::copy(*(*floor_iterator).surface,
+//                                      *myVisionTempTile);
 
-          // step2: blend tiles
-          if (SDL_BlitSurface(myVisionBlendTile, // source
-                              NULL,              // aspect (--> everything)
-                              myVisionTempTile,  // target
-                              &dirty_region))    // aspect
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("failed to SDL_BlitSurface(): %s, continuing\n"),
-                       ACE_TEXT(SDL_GetError())));
-        } // end IF
+//          // step2: blend tiles
+//          if (SDL_BlitSurface(myVisionBlendTile, // source
+//                              NULL,              // aspect (--> everything)
+//                              myVisionTempTile,  // target
+//                              &dirty_region))    // aspect
+//            ACE_DEBUG((LM_ERROR,
+//                       ACE_TEXT("failed to SDL_BlitSurface(): %s, continuing\n"),
+//                       ACE_TEXT(SDL_GetError())));
+//        } // end IF
         RPG_Graphics_Surface::put(screen_position,
                                   (is_visible ? (((static_cast<unsigned int>(current_map_position.first)  == active_position.first) &&
                                                   (static_cast<unsigned int>(current_map_position.second) == active_position.second)) ? *(*floor_iterator).surface
@@ -957,7 +948,7 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
                                   target_surface,
                                   dirty_region);
 
-#ifdef _DEBUG
+#if defined (_DEBUG)
         if (myShowCoordinates)
         {
           SDL_Rect rect;
@@ -993,7 +984,7 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
                                         target_surface,
                                         dirty_region);
         } // end IF
-#endif
+#endif // _DEBUG
 
         // step3: floor edges
         floor_edge_iterator = myFloorEdgeTiles.find(current_map_position);
@@ -1486,14 +1477,14 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
         {
           if (event_in.key.keysym.mod & KMOD_SHIFT)
           {
-#ifdef _DEBUG
+#if defined (_DEBUG)
             toggleShowCoordinates();
 
             // --> need a redraw
             myClientAction.command = COMMAND_WINDOW_DRAW;
             myClientAction.window = this;
             myClient->action(myClientAction);
-#endif
+#endif // _DEBUG
           } // end IF
           else
           {
@@ -1835,7 +1826,7 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
       bool has_seen =
         (myClientAction.entity_id ? myEngine->hasSeen (myClientAction.entity_id,
                                                        myClientAction.position,
-                                                       true)
+                                                       false)
                                   : false);
 //      myEngine->lock();
 
@@ -2013,7 +2004,7 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
         bool has_seen =
           (myClientAction.entity_id ? myEngine->hasSeen (myClientAction.entity_id,
                                                          map_position,
-                                                         true)
+                                                         false)
                                     : false);
         if ((myClientAction.entity_id == 0) ||
             !has_seen)

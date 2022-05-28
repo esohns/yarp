@@ -24,14 +24,11 @@
 //#include "glade/glade.h"
 #include "gtk/gtk.h"
 
-#include "ace/Synch.h"
-
 #include "rpg_player.h"
 
 #include "rpg_engine_common.h"
 
 #include "rpg_client_common.h"
-//#include "rpg_client_exports.h"
 
 void update_equipment (const struct RPG_Client_GTK_CBData&);
 void update_character_profile (const RPG_Player&, GtkBuilder*);
@@ -44,14 +41,19 @@ gint combobox_sort_function (GtkTreeModel*, // model
                              GtkTreeIter*,  // row 2
                              gpointer);     // user data
 
+// -----------------------------------------------------------------------------
+
+gboolean idle_initialize_UI_cb (gpointer);
+gboolean idle_finalize_UI_cb (gpointer);
+gboolean idle_raise_UI_cb (gpointer);
+
+// -----------------------------------------------------------------------------
+
 // GTK callback functions
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
-G_MODULE_EXPORT gboolean idle_initialize_UI_cb (gpointer);
-G_MODULE_EXPORT gboolean idle_finalize_UI_cb (gpointer);
-// -----------------------------------------------------------------------------
 G_MODULE_EXPORT gint create_character_clicked_GTK_cb (GtkWidget*, gpointer);
 G_MODULE_EXPORT gint drop_character_clicked_GTK_cb (GtkWidget*, gpointer);
 G_MODULE_EXPORT gint load_character_clicked_GTK_cb (GtkWidget*, gpointer);

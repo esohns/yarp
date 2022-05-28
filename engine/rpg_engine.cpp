@@ -648,20 +648,21 @@ RPG_Engine::add (struct RPG_Engine_Entity* entity_in,
 
     return id;
   }
-//  parameters.positions = visible_positions;
-//  try
-//  {
-//    client_->notify (COMMAND_E2C_ENTITY_VISION,
-//                     parameters);
-//  }
-//  catch (...)
-//  {
-//    ACE_DEBUG ((LM_ERROR,
-//                ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
-//                ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString (COMMAND_E2C_ENTITY_VISION).c_str ())));
-//  }
-//  if (!lockedAccess_in)
-//    lock_.acquire ();
+
+  parameters.positions = visible_positions;
+  try
+  {
+    client_->notify (COMMAND_E2C_ENTITY_VISION,
+                     parameters);
+  }
+  catch (...)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
+                ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString (COMMAND_E2C_ENTITY_VISION).c_str ())));
+  }
+  if (!lockedAccess_in)
+    lock_.acquire ();
 
   return id;
 }
@@ -2826,7 +2827,7 @@ RPG_Engine::handleEntities()
           RPG_Map_Positions_t positions;
           getVisiblePositions ((*iterator).first,
                                positions,
-                               true);
+                               false);
 //          { ACE_Guard<ACE_Thread_Mutex> aGuard (myLock);
             RPG_Engine_SeenPositionsIterator_t iterator_2 =
               seenPositions_.find ((*iterator).first);

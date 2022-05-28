@@ -149,8 +149,7 @@ RPG_Client_Window_Main::draw (SDL_Surface* targetSurface_in,
     for (unsigned int j = (offsetX_in + borderLeft_);
          j < (target_surface->w - borderRight_);
          j += (*iterator).second->w)
-      RPG_Graphics_Surface::put(std::make_pair(j,
-                                               i),
+      RPG_Graphics_Surface::put(std::make_pair(j,i),
                                 *(*iterator).second,
                                 target_surface,
                                 dirty_region);

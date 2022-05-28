@@ -1709,68 +1709,64 @@ combobox_sort_function (GtkTreeModel* model_in,
   return result;
 }
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif /* __cplusplus */
-G_MODULE_EXPORT gboolean
+gboolean
 idle_initialize_UI_cb (gpointer userData_in)
 {
   RPG_TRACE (ACE_TEXT ("::idle_initialize_UI_cb"));
 
   struct RPG_Client_GTK_CBData* data_p =
-    static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
+      static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
 
-  // sanity check(s)
+       // sanity check(s)
   ACE_ASSERT (data_p);
 
   Common_UI_GTK_BuildersConstIterator_t iterator =
-    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
+      data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
 
-  // step2: init dialog windows
+       // step2: init dialog windows
   GtkFileChooserDialog* filechooser_dialog =
-    GTK_FILE_CHOOSER_DIALOG (gtk_builder_get_object ((*iterator).second.second,
-                                                   ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_FILECHOOSER_NAME)));
+      GTK_FILE_CHOOSER_DIALOG (gtk_builder_get_object ((*iterator).second.second,
+                                                     ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_FILECHOOSER_NAME)));
   ACE_ASSERT (filechooser_dialog);
   data_p->mapFilter = gtk_file_filter_new ();
   if (!data_p->mapFilter)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to gtk_file_filter_new(): \"%m\", aborting\n")));
+               ACE_TEXT ("failed to gtk_file_filter_new(): \"%m\", aborting\n")));
 
-    // clean up
+         // clean up
     g_object_unref (G_OBJECT ((*iterator).second.second));
 
     return FALSE; // G_SOURCE_REMOVE
   } // end IF
   gtk_file_filter_set_name (data_p->mapFilter,
-                            ACE_TEXT (RPG_ENGINE_LEVEL_FILE_EXT));
+                           ACE_TEXT (RPG_ENGINE_LEVEL_FILE_EXT));
   std::string pattern = ACE_TEXT_ALWAYS_CHAR ("*");
   pattern += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
   gtk_file_filter_add_pattern (data_p->mapFilter,
-                               ACE_TEXT (pattern.c_str ()));
+                              ACE_TEXT (pattern.c_str ()));
   //gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(filechooser_dialog), userData_in.map_filter);
   //g_object_ref(G_OBJECT(userData_in.map_filter));
   data_p->entityFilter = gtk_file_filter_new ();
   if (!data_p->entityFilter)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to gtk_file_filter_new(): \"%m\", aborting\n")));
+               ACE_TEXT ("failed to gtk_file_filter_new(): \"%m\", aborting\n")));
 
-    // clean up
+         // clean up
     g_object_unref (G_OBJECT (data_p->mapFilter));
     g_object_unref (G_OBJECT ((*iterator).second.second));
 
     return FALSE; // G_SOURCE_REMOVE
   } // end IF
   gtk_file_filter_set_name (data_p->entityFilter,
-                            ACE_TEXT (RPG_PLAYER_PROFILE_EXT));
+                           ACE_TEXT (RPG_PLAYER_PROFILE_EXT));
   pattern = ACE_TEXT_ALWAYS_CHAR ("*");
   pattern += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT);
   gtk_file_filter_add_pattern (data_p->entityFilter,
-                               ACE_TEXT (pattern.c_str ()));
+                              ACE_TEXT (pattern.c_str ()));
   //gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(filechooser_dialog),
   //                            userData_in.entityFilter);
   //g_object_ref(G_OBJECT(userData_in.entity_filter));
@@ -1778,9 +1774,9 @@ idle_initialize_UI_cb (gpointer userData_in)
   if (!data_p->savedStateFilter)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to gtk_file_filter_new(): \"%m\", aborting\n")));
+               ACE_TEXT ("failed to gtk_file_filter_new(): \"%m\", aborting\n")));
 
-    // clean up
+         // clean up
     g_object_unref (G_OBJECT (data_p->entityFilter));
     g_object_unref (G_OBJECT (data_p->mapFilter));
     g_object_unref (G_OBJECT ((*iterator).second.second));
@@ -1788,34 +1784,34 @@ idle_initialize_UI_cb (gpointer userData_in)
     return FALSE; // G_SOURCE_REMOVE
   } // end IF
   gtk_file_filter_set_name (data_p->savedStateFilter,
-                            ACE_TEXT (RPG_ENGINE_STATE_EXT));
+                           ACE_TEXT (RPG_ENGINE_STATE_EXT));
   pattern = ACE_TEXT_ALWAYS_CHAR ("*");
   pattern += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_STATE_EXT);
   gtk_file_filter_add_pattern (data_p->savedStateFilter,
-                               ACE_TEXT (pattern.c_str ()));
+                              ACE_TEXT (pattern.c_str ()));
   //gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(filechooser_dialog), userData_in.savedstate_filter);
   //g_object_ref(G_OBJECT(userData_in.savedstate_filter));
 
   GtkWidget* about_dialog =
-    GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_ABOUT_NAME)));
+      GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_ABOUT_NAME)));
   ACE_ASSERT (about_dialog);
 
   GtkWidget* equipment_dialog =
-    GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_EQUIPMENT_NAME)));
+      GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_EQUIPMENT_NAME)));
   ACE_ASSERT (equipment_dialog);
 
-  // set window icon
+       // set window icon
   GtkWidget* main_dialog =
-    GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_MAIN_NAME)));
+      GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_MAIN_NAME)));
   ACE_ASSERT (main_dialog);
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = IMAGE_WM_ICON;
   RPG_Graphics_t icon_graphic =
-    RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->get (type);
+      RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->get (type);
   ACE_ASSERT (icon_graphic.type.image == IMAGE_WM_ICON);
   std::string path = RPG_Graphics_Common_Tools::getGraphicsDirectory ();
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -1825,29 +1821,29 @@ idle_initialize_UI_cb (gpointer userData_in)
   GtkWidget* image_icon = gtk_image_new_from_file (path.c_str ());
   ACE_ASSERT (image_icon);
   gtk_window_set_icon (GTK_WINDOW (main_dialog),
-                       gtk_image_get_pixbuf (GTK_IMAGE (image_icon)));
+                      gtk_image_get_pixbuf (GTK_IMAGE (image_icon)));
   //GdkWindow* main_dialog_window = gtk_widget_get_window(main_dialog);
   //gtk_window_set_title(,
   //                     caption.c_str());
 
   GtkWidget* main_entry_dialog =
-    GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_ENTRY_NAME)));
+      GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_ENTRY_NAME)));
   ACE_ASSERT (main_entry_dialog);
   GtkEntry* entry =
-    GTK_ENTRY (gtk_builder_get_object ((*iterator).second.second,
-                                     ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_ENTRY_NAME)));
+      GTK_ENTRY (gtk_builder_get_object ((*iterator).second.second,
+                                       ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_ENTRY_NAME)));
   ACE_ASSERT (entry);
   GtkEntryBuffer* entry_buffer =
-    gtk_entry_buffer_new (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME), // text
-                          -1);                                              // length in bytes (-1: \0-terminated)
+      gtk_entry_buffer_new (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME), // text
+                           -1);                                              // length in bytes (-1: \0-terminated)
   ACE_ASSERT (entry_buffer);
   if (!entry_buffer)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to gtk_entry_buffer_new(): \"%m\", aborting\n")));
+               ACE_TEXT ("failed to gtk_entry_buffer_new(): \"%m\", aborting\n")));
 
-    // clean up
+         // clean up
     g_object_unref (G_OBJECT (data_p->savedStateFilter));
     g_object_unref (G_OBJECT (data_p->entityFilter));
     g_object_unref (G_OBJECT (data_p->mapFilter));
@@ -1858,20 +1854,20 @@ idle_initialize_UI_cb (gpointer userData_in)
   gtk_entry_set_buffer (entry, entry_buffer);
   //   g_object_unref(G_OBJECT(entry_buffer));
 
-  // step3: populate comboboxes
-  // step3a: character repository
+       // step3: populate comboboxes
+       // step3a: character repository
   GtkComboBox* combobox =
-    GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
-                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
+      GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
+                                           ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
   ACE_ASSERT (combobox);
   gtk_cell_layout_clear (GTK_CELL_LAYOUT (combobox));
   GtkCellRenderer* renderer = gtk_cell_renderer_text_new ();
   if (!renderer)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to gtk_cell_renderer_text_new(): \"%m\", aborting\n")));
+               ACE_TEXT ("failed to gtk_cell_renderer_text_new(): \"%m\", aborting\n")));
 
-    // clean up
+         // clean up
     g_object_unref (G_OBJECT (data_p->savedStateFilter));
     g_object_unref (G_OBJECT (data_p->entityFilter));
     g_object_unref (G_OBJECT (data_p->mapFilter));
@@ -1880,19 +1876,19 @@ idle_initialize_UI_cb (gpointer userData_in)
     return FALSE; // G_SOURCE_REMOVE
   } // end IF
   gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combobox), renderer,
-                              TRUE); // expand ?
+                             TRUE); // expand ?
   //   gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(repository_combobox), renderer,
   //                                 ACE_TEXT_ALWAYS_CHAR("text"), 0);
   gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (combobox), renderer,
-                                  ACE_TEXT_ALWAYS_CHAR ("text"), 0,
-                                  NULL);
+                                 ACE_TEXT_ALWAYS_CHAR ("text"), 0,
+                                 NULL);
   GtkListStore* list = gtk_list_store_new (1, G_TYPE_STRING);
   if (!list)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to gtk_list_store_new(): \"%m\", aborting\n")));
+               ACE_TEXT ("failed to gtk_list_store_new(): \"%m\", aborting\n")));
 
-    // clean up
+         // clean up
     g_object_unref (G_OBJECT (data_p->savedStateFilter));
     g_object_unref (G_OBJECT (data_p->entityFilter));
     g_object_unref (G_OBJECT (data_p->mapFilter));
@@ -1905,19 +1901,19 @@ idle_initialize_UI_cb (gpointer userData_in)
   if (::load_files (REPOSITORY_PROFILES, list))
     gtk_widget_set_sensitive (GTK_WIDGET (combobox), TRUE);
 
-  // step3b: maps repository
+       // step3b: maps repository
   combobox =
-    GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
-                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_MAP_NAME)));
+      GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
+                                           ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_MAP_NAME)));
   ACE_ASSERT (combobox);
   gtk_cell_layout_clear (GTK_CELL_LAYOUT (combobox));
   renderer = gtk_cell_renderer_text_new ();
   if (!renderer)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to gtk_cell_renderer_text_new(): \"%m\", aborting\n")));
+               ACE_TEXT ("failed to gtk_cell_renderer_text_new(): \"%m\", aborting\n")));
 
-    // clean up
+         // clean up
     g_object_unref (G_OBJECT (data_p->savedStateFilter));
     g_object_unref (G_OBJECT (data_p->entityFilter));
     g_object_unref (G_OBJECT (data_p->mapFilter));
@@ -1926,19 +1922,19 @@ idle_initialize_UI_cb (gpointer userData_in)
     return FALSE; // G_SOURCE_REMOVE
   } // end IF
   gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combobox), renderer,
-                              TRUE); // expand ?
+                             TRUE); // expand ?
   //   gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(combobox), renderer,
   //                                 ACE_TEXT_ALWAYS_CHAR("text"), 0);
   gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (combobox), renderer,
-                                  ACE_TEXT_ALWAYS_CHAR ("text"), 0,
-                                  NULL);
+                                 ACE_TEXT_ALWAYS_CHAR ("text"), 0,
+                                 NULL);
   list = gtk_list_store_new (1, G_TYPE_STRING);
   if (!list)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to gtk_list_store_new(): \"%m\", aborting\n")));
+               ACE_TEXT ("failed to gtk_list_store_new(): \"%m\", aborting\n")));
 
-    // clean up
+         // clean up
     g_object_unref (G_OBJECT (data_p->savedStateFilter));
     g_object_unref (G_OBJECT (data_p->entityFilter));
     g_object_unref (G_OBJECT (data_p->mapFilter));
@@ -1951,19 +1947,19 @@ idle_initialize_UI_cb (gpointer userData_in)
   if (::load_files (REPOSITORY_MAPS, list))
     gtk_widget_set_sensitive (GTK_WIDGET (combobox), TRUE);
 
-  // step3c: savedstate repository
+       // step3c: savedstate repository
   combobox =
-    GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
-                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_ENGINESTATE_NAME)));
+      GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
+                                           ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_ENGINESTATE_NAME)));
   ACE_ASSERT (combobox);
   gtk_cell_layout_clear (GTK_CELL_LAYOUT (combobox));
   renderer = gtk_cell_renderer_text_new ();
   if (!renderer)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to gtk_cell_renderer_text_new(): \"%m\", aborting\n")));
+               ACE_TEXT ("failed to gtk_cell_renderer_text_new(): \"%m\", aborting\n")));
 
-    // clean up
+         // clean up
     g_object_unref (G_OBJECT (data_p->savedStateFilter));
     g_object_unref (G_OBJECT (data_p->entityFilter));
     g_object_unref (G_OBJECT (data_p->mapFilter));
@@ -1972,19 +1968,19 @@ idle_initialize_UI_cb (gpointer userData_in)
     return FALSE; // G_SOURCE_REMOVE
   } // end IF
   gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combobox), renderer,
-                              TRUE); // expand ?
+                             TRUE); // expand ?
   //   gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(combobox), renderer,
   //                                 ACE_TEXT_ALWAYS_CHAR("text"), 0);
   gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (combobox), renderer,
-                                  ACE_TEXT_ALWAYS_CHAR ("text"), 0,
-                                  NULL);
+                                 ACE_TEXT_ALWAYS_CHAR ("text"), 0,
+                                 NULL);
   list = gtk_list_store_new (1, G_TYPE_STRING);
   if (!list)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to gtk_list_store_new(): \"%m\", aborting\n")));
+               ACE_TEXT ("failed to gtk_list_store_new(): \"%m\", aborting\n")));
 
-    // clean up
+         // clean up
     g_object_unref (G_OBJECT (data_p->savedStateFilter));
     g_object_unref (G_OBJECT (data_p->entityFilter));
     g_object_unref (G_OBJECT (data_p->mapFilter));
@@ -1993,298 +1989,298 @@ idle_initialize_UI_cb (gpointer userData_in)
     return FALSE; // G_SOURCE_REMOVE
   } // end IF
   gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (list),
-                                   0,
-                                   (GtkTreeIterCompareFunc)combobox_sort_function,
-                                   GINT_TO_POINTER (0),
-                                   (GDestroyNotify)NULL);
+                                  0,
+                                  (GtkTreeIterCompareFunc)combobox_sort_function,
+                                  GINT_TO_POINTER (0),
+                                  (GDestroyNotify)NULL);
   gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (list),
-                                        0,
-                                        GTK_SORT_ASCENDING);
+                                       0,
+                                       GTK_SORT_ASCENDING);
   gtk_combo_box_set_model (combobox, GTK_TREE_MODEL (list));
   g_object_unref (G_OBJECT (list));
   if (::load_files (REPOSITORY_ENGINESTATE, list))
     gtk_widget_set_sensitive (GTK_WIDGET (combobox), TRUE);
 
   GtkHBox* hbox =
-    GTK_HBOX (gtk_builder_get_object ((*iterator).second.second,
-                                    ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_HBOX_MAIN_NAME)));
+      GTK_HBOX (gtk_builder_get_object ((*iterator).second.second,
+                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_HBOX_MAIN_NAME)));
   ACE_ASSERT (hbox);
   GtkFrame* frame =
-    GTK_FRAME (gtk_builder_get_object ((*iterator).second.second,
-                                     ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
+      GTK_FRAME (gtk_builder_get_object ((*iterator).second.second,
+                                       ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
   ACE_ASSERT (frame);
   g_object_ref (GTK_WIDGET (frame));
   gtk_widget_unparent (GTK_WIDGET (frame));
   gtk_box_pack_start (GTK_BOX (hbox),
-                      GTK_WIDGET (frame),
-                      FALSE, // expand
-                      FALSE, // fill
-                      0);    // padding
+                     GTK_WIDGET (frame),
+                     FALSE, // expand
+                     FALSE, // fill
+                     0);    // padding
 
-  // step4: (auto-)connect signals/slots
-  // *NOTE*: glade_xml_signal_autoconnect doesn't work reliably
-  //glade_xml_signal_autoconnect(xml);
-  // step4a: connect default signals
-  // *NOTE*: glade_xml_signal_connect_data doesn't work reliably
-  //   glade_xml_signal_connect_data(xml,
-  //                                 ACE_TEXT_ALWAYS_CHAR("properties_activated_GTK_cb"),
-  //                                 G_CALLBACK(properties_activated_GTK_cb),
-  //                                 userData_p);
+       // step4: (auto-)connect signals/slots
+       // *NOTE*: glade_xml_signal_autoconnect doesn't work reliably
+       //glade_xml_signal_autoconnect(xml);
+       // step4a: connect default signals
+       // *NOTE*: glade_xml_signal_connect_data doesn't work reliably
+       //   glade_xml_signal_connect_data(xml,
+       //                                 ACE_TEXT_ALWAYS_CHAR("properties_activated_GTK_cb"),
+       //                                 G_CALLBACK(properties_activated_GTK_cb),
+       //                                 userData_p);
   g_signal_connect (filechooser_dialog,
-                    ACE_TEXT_ALWAYS_CHAR ("response"),
-                    G_CALLBACK (gtk_widget_hide),
-                    &filechooser_dialog);
+                   ACE_TEXT_ALWAYS_CHAR ("response"),
+                   G_CALLBACK (gtk_widget_hide),
+                   &filechooser_dialog);
   g_signal_connect (about_dialog,
-                    ACE_TEXT_ALWAYS_CHAR ("response"),
-                    G_CALLBACK (gtk_widget_hide),
-                    &about_dialog);
+                   ACE_TEXT_ALWAYS_CHAR ("response"),
+                   G_CALLBACK (gtk_widget_hide),
+                   &about_dialog);
   g_signal_connect (equipment_dialog,
-                    ACE_TEXT_ALWAYS_CHAR ("response"),
-                    G_CALLBACK (gtk_widget_hide),
-                    &equipment_dialog);
+                   ACE_TEXT_ALWAYS_CHAR ("response"),
+                   G_CALLBACK (gtk_widget_hide),
+                   &equipment_dialog);
   g_signal_connect (main_entry_dialog,
-                    ACE_TEXT_ALWAYS_CHAR ("response"),
-                    G_CALLBACK (gtk_widget_hide),
-                    &main_entry_dialog);
+                   ACE_TEXT_ALWAYS_CHAR ("response"),
+                   G_CALLBACK (gtk_widget_hide),
+                   &main_entry_dialog);
   g_signal_connect (main_dialog,
-                    ACE_TEXT_ALWAYS_CHAR ("destroy"),
-                    G_CALLBACK (quit_clicked_GTK_cb),
-                    //                    G_CALLBACK(gtk_widget_destroyed),
-                    //                    &main_dialog,
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("destroy"),
+                   G_CALLBACK (quit_clicked_GTK_cb),
+                   //                    G_CALLBACK(gtk_widget_destroyed),
+                   //                    &main_dialog,
+                   userData_in);
 
-  // step4b: connect custom signals
+       // step4b: connect custom signals
   GtkButton* button = NULL;
   button = GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                              ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_CREATE_NAME)));
   ACE_ASSERT (button);
   g_signal_connect (button,
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (create_character_clicked_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                   G_CALLBACK (create_character_clicked_GTK_cb),
+                   userData_in);
 
   button = GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                              ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_DROP_NAME)));
   ACE_ASSERT (button);
   g_signal_connect (button,
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (drop_character_clicked_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                   G_CALLBACK (drop_character_clicked_GTK_cb),
+                   userData_in);
 
   button = GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                              ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_LOAD_NAME)));
   ACE_ASSERT (button);
   g_signal_connect (button,
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (load_character_clicked_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                   G_CALLBACK (load_character_clicked_GTK_cb),
+                   userData_in);
 
   button = GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                              ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_STORE_NAME)));
   ACE_ASSERT (button);
   g_signal_connect (button,
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (save_character_clicked_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                   G_CALLBACK (save_character_clicked_GTK_cb),
+                   userData_in);
 
   combobox =
-    GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
-                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
+      GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
+                                           ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
   ACE_ASSERT (combobox);
   g_signal_connect (combobox,
-                    ACE_TEXT_ALWAYS_CHAR ("changed"),
-                    G_CALLBACK (character_repository_combobox_changed_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("changed"),
+                   G_CALLBACK (character_repository_combobox_changed_GTK_cb),
+                   userData_in);
 
   button =
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_REFRESH_NAME)));
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_REFRESH_NAME)));
   ACE_ASSERT (button);
   g_signal_connect (button,
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (character_repository_button_clicked_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                   G_CALLBACK (character_repository_button_clicked_GTK_cb),
+                   userData_in);
 
   button =
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_MAP_CREATE_NAME)));
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_MAP_CREATE_NAME)));
   ACE_ASSERT (button);
   g_signal_connect (button,
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (create_map_clicked_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                   G_CALLBACK (create_map_clicked_GTK_cb),
+                   userData_in);
 
   button =
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_MAP_DROP_NAME)));
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_MAP_DROP_NAME)));
   ACE_ASSERT (button);
   g_signal_connect (button,
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (drop_map_clicked_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                   G_CALLBACK (drop_map_clicked_GTK_cb),
+                   userData_in);
 
   button =
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_MAP_LOAD_NAME)));
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_MAP_LOAD_NAME)));
   ACE_ASSERT (button);
   g_signal_connect (button,
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (load_map_clicked_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                   G_CALLBACK (load_map_clicked_GTK_cb),
+                   userData_in);
 
   button =
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_MAP_STORE_NAME)));
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_MAP_STORE_NAME)));
   ACE_ASSERT (button);
   g_signal_connect (button,
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (save_map_clicked_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                   G_CALLBACK (save_map_clicked_GTK_cb),
+                   userData_in);
 
   combobox =
-    GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
-                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_MAP_NAME)));
+      GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
+                                           ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_MAP_NAME)));
   ACE_ASSERT (combobox);
   g_signal_connect (combobox,
-                    ACE_TEXT_ALWAYS_CHAR ("changed"),
-                    G_CALLBACK (map_repository_combobox_changed_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("changed"),
+                   G_CALLBACK (map_repository_combobox_changed_GTK_cb),
+                   userData_in);
 
   button =
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_MAP_REFRESH_NAME)));
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_MAP_REFRESH_NAME)));
   ACE_ASSERT (button);
   g_signal_connect (button,
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (map_repository_button_clicked_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                   G_CALLBACK (map_repository_button_clicked_GTK_cb),
+                   userData_in);
 
   button =
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_ENGINESTATE_LOAD_NAME)));
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_ENGINESTATE_LOAD_NAME)));
   ACE_ASSERT (button);
   g_signal_connect (button,
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (load_state_clicked_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                   G_CALLBACK (load_state_clicked_GTK_cb),
+                   userData_in);
 
   button =
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_ENGINESTATE_STORE_NAME)));
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_ENGINESTATE_STORE_NAME)));
   ACE_ASSERT (button);
   g_signal_connect (button,
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (save_state_clicked_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                   G_CALLBACK (save_state_clicked_GTK_cb),
+                   userData_in);
 
   combobox =
-    GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
-                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_ENGINESTATE_NAME)));
+      GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
+                                           ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_ENGINESTATE_NAME)));
   ACE_ASSERT (combobox);
   g_signal_connect (combobox,
-                    ACE_TEXT_ALWAYS_CHAR ("changed"),
-                    G_CALLBACK (state_repository_combobox_changed_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("changed"),
+                   G_CALLBACK (state_repository_combobox_changed_GTK_cb),
+                   userData_in);
 
   button =
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_ENGINESTATE_REFRESH_NAME)));
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_ENGINESTATE_REFRESH_NAME)));
   ACE_ASSERT (button);
   g_signal_connect (button,
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (state_repository_button_clicked_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                   G_CALLBACK (state_repository_button_clicked_GTK_cb),
+                   userData_in);
 
   button =
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_SERVER_JOIN_NAME)));
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_SERVER_JOIN_NAME)));
   ACE_ASSERT (button);
   g_signal_connect (button,
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (join_game_clicked_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                   G_CALLBACK (join_game_clicked_GTK_cb),
+                   userData_in);
 
   button =
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_SERVER_PART_NAME)));
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_SERVER_PART_NAME)));
   ACE_ASSERT (button);
   g_signal_connect (button,
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (part_game_clicked_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                   G_CALLBACK (part_game_clicked_GTK_cb),
+                   userData_in);
 
   button =
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_EQUIP_NAME)));
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_EQUIP_NAME)));
   ACE_ASSERT (button);
   g_signal_connect (button,
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (equip_clicked_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                   G_CALLBACK (equip_clicked_GTK_cb),
+                   userData_in);
 
   button =
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_REST_NAME)));
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_REST_NAME)));
   ACE_ASSERT (button);
   g_signal_connect (button,
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (rest_clicked_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                   G_CALLBACK (rest_clicked_GTK_cb),
+                   userData_in);
 
   combobox =
-    GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
-                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_SERVER_NAME)));
+      GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
+                                           ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_SERVER_NAME)));
   ACE_ASSERT (combobox);
   g_signal_connect (combobox,
-                    ACE_TEXT_ALWAYS_CHAR ("changed"),
-                    G_CALLBACK (server_repository_combobox_changed_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("changed"),
+                   G_CALLBACK (server_repository_combobox_changed_GTK_cb),
+                   userData_in);
 
   button =
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_SERVER_REFRESH_NAME)));
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_SERVER_REFRESH_NAME)));
   ACE_ASSERT (button);
   g_signal_connect (button,
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (server_repository_button_clicked_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                   G_CALLBACK (server_repository_button_clicked_GTK_cb),
+                   userData_in);
 
   button =
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_ABOUT_NAME)));
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_ABOUT_NAME)));
   ACE_ASSERT (button);
   g_signal_connect (button,
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (about_clicked_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                   G_CALLBACK (about_clicked_GTK_cb),
+                   userData_in);
 
   button =
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_QUIT_NAME)));
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_QUIT_NAME)));
   ACE_ASSERT (button);
   g_signal_connect (button,
-                    ACE_TEXT_ALWAYS_CHAR ("clicked"),
-                    G_CALLBACK (quit_clicked_GTK_cb),
-                    userData_in);
+                   ACE_TEXT_ALWAYS_CHAR ("clicked"),
+                   G_CALLBACK (quit_clicked_GTK_cb),
+                   userData_in);
 
-  //   // step5: use correct screen
-  //   if (parentWidget_in)
-  //     gtk_window_set_screen(GTK_WINDOW(dialog),
-  //                           gtk_widget_get_screen(const_cast<GtkWidget*>(//parentWidget_in)));
+       //   // step5: use correct screen
+       //   if (parentWidget_in)
+       //     gtk_window_set_screen(GTK_WINDOW(dialog),
+       //                           gtk_widget_get_screen(const_cast<GtkWidget*>(//parentWidget_in)));
 
-  // step6: draw main dialog
+       // step6: draw main dialog
   gtk_widget_show_all (main_dialog);
 
-  // activate first repository entry (if any)
+       // activate first repository entry (if any)
   combobox =
-    GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
-                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
+      GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
+                                           ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
   ACE_ASSERT (combobox);
   if (gtk_widget_is_sensitive (GTK_WIDGET (combobox)))
     gtk_combo_box_set_active (combobox, 0);
   combobox =
-    GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
-                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_MAP_NAME)));
+      GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
+                                           ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_MAP_NAME)));
   ACE_ASSERT (combobox);
   if (gtk_widget_is_sensitive (GTK_WIDGET (combobox)))
     gtk_combo_box_set_active (combobox, 0);
@@ -2292,36 +2288,66 @@ idle_initialize_UI_cb (gpointer userData_in)
   return FALSE; // G_SOURCE_REMOVE
 }
 
-G_MODULE_EXPORT gboolean
+gboolean
 idle_finalize_UI_cb (gpointer userData_in)
 {
   RPG_TRACE (ACE_TEXT ("::idle_finalize_UI_cb"));
 
-  struct RPG_Client_GTK_CBData* data_p =
-   static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
+//  struct RPG_Client_GTK_CBData* data_p =
+//      static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
 
-  // sanity check(s)
-  ACE_ASSERT (data_p);
+//       // sanity check(s)
+//  ACE_ASSERT (data_p);
 
-  Common_UI_GTK_BuildersConstIterator_t iterator =
-    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
-  // sanity check(s)
-  ACE_ASSERT (iterator != data_p->UIState->builders.end ());
+//  Common_UI_GTK_BuildersConstIterator_t iterator =
+//      data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
+//  // sanity check(s)
+//  ACE_ASSERT (iterator != data_p->UIState->builders.end ());
 
-  GtkWidget* widget =
-    GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
-                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_SERVER_PART_NAME)));
-  ACE_ASSERT (widget);
-  // raise dialog window
-  GdkWindow* toplevel = gtk_widget_get_parent_window (widget);
-  ACE_ASSERT (toplevel);
-  gdk_window_deiconify (toplevel);
-  // emit a signal...
-  gtk_button_clicked (GTK_BUTTON (widget));
+//  GtkWidget* widget =
+//      GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
+//                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_SERVER_PART_NAME)));
+//  ACE_ASSERT (widget);
+//  // raise dialog window
+//  GdkWindow* toplevel = gtk_widget_get_parent_window (widget);
+//  ACE_ASSERT (toplevel);
+//  gdk_window_deiconify (toplevel);
+//  // emit a signal...
+//  gtk_button_clicked (GTK_BUTTON (widget));
 
   return FALSE; // G_SOURCE_REMOVE
 }
 
+gboolean
+idle_raise_UI_cb (gpointer userData_in)
+{
+  RPG_TRACE (ACE_TEXT ("::idle_raise_UI_cb"));
+
+  // sanity check(s)
+  struct RPG_Client_GTK_CBData* data_p =
+      static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
+  ACE_ASSERT (data_p);
+  Common_UI_GTK_BuildersConstIterator_t iterator =
+      data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
+  ACE_ASSERT (iterator != data_p->UIState->builders.end ());
+
+  // raise dialog window
+  GtkWidget* widget =
+      GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
+                                          ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_MAIN_NAME)));
+  ACE_ASSERT (widget);
+  GdkWindow* toplevel = gtk_widget_get_window (widget);
+  ACE_ASSERT (toplevel);
+  gdk_window_deiconify (toplevel);
+  gdk_window_show (toplevel);
+
+  return FALSE; // G_SOURCE_REMOVE
+}
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif /* __cplusplus */
 G_MODULE_EXPORT gint
 about_clicked_GTK_cb (GtkWidget* widget_in,
                       gpointer userData_in)

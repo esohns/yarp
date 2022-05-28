@@ -68,16 +68,10 @@ endif (DOXYGEN_SUPPORT)
 #Use solution folders.
 set_property (GLOBAL PROPERTY USE_FOLDERS ON)
 
-#list (APPEND CMAKE_MODULE_PATH "$ENV{LIB_ROOT}/cotire/CMake")
-#list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/scripts")
-#cmake_policy (SET CMP0011 NEW)
-#include (cotire)
-#set_directory_properties (PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
-
-option (DEBUG_DEBUGGER "debug using IDE" OFF)
-if (DEBUG_DEBUGGER)
- add_definitions (-DDEBUG_DEBUGGER)
-endif (DEBUG_DEBUGGER)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR
+    CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+ add_definitions (-D_DEBUG)
+endif ()
 
 if (UNIX)
  if (CMAKE_COMPILER_IS_GNUCC)

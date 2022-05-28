@@ -1129,6 +1129,12 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 
           //  break;
           //}
+          case SDLK_u:
+          {
+            g_idle_add (idle_raise_UI_cb,
+                        &GTKUserData_in);
+            break;
+          }
           default:
             break;
         } // end SWITCH
@@ -1344,10 +1350,11 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   } while (!done);
 
   ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("left event loop...\n")));
+             ACE_TEXT("left SDL event loop...\n")));
 
   // step7: clean up
-  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop (true,  // wait ?
+                                                      false);
   if (!SDL_RemoveTimer(GTKUserData_in.eventTimer))
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),

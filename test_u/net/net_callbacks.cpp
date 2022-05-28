@@ -450,7 +450,7 @@ idle_update_info_display_cb (gpointer userData_in)
         {
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("invalid/unknown event type (was: %d), continuing\n"),
-                      *iterator));
+                      *event_p));
           break;
         }
       } // end SWITCH
