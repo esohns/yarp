@@ -45,7 +45,7 @@ add_definitions(-DHAVE_CONFIG_H)
 
 if (UNIX)
 elseif (WIN32)
- include_directories ($ENV{LIB_ROOT}/xerces-c/build/src)
+ include_directories ($ENV{LIB_ROOT}/xerces-c/build/msvc/src)
  include_directories ($ENV{LIB_ROOT}/xerces-c/src)
 endif ()
 
@@ -73,7 +73,7 @@ if (UNIX)
 elseif (WIN32)
  target_link_libraries(XML2CppCode
                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                       $ENV{LIB_ROOT}/xerces-c/build/src/Debug/xerces-c_3D.lib)
+                       $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib)
 endif ()
 
 ########### install files ###############

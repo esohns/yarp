@@ -87,7 +87,7 @@ RPG_Dice::generateRandomNumbers (unsigned int range_in,
     results_out.push_back ((ACE_OS::rand_r (&usecs) % range_in) + 1);
 #else
     results_out.push_back ((::random () % range_in) + 1);
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
   } // end FOR
 }
 

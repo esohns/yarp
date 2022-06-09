@@ -148,7 +148,7 @@ XML_Parser::parseFile(const std::string& emitClassQualifier_in,
     reader->setContentHandler(&handler);
     reader->setErrorHandler(&handler);
     reader->parse(filename_in.c_str());
-    errorCount = reader->getErrorCount();
+    errorCount = static_cast<int> (reader->getErrorCount ());
   }
   catch (const OutOfMemoryException& exception_in)
   {
