@@ -91,7 +91,7 @@ process_arguments(const int argc_in,
       case 'r':
       {
         std::string range = argumentParser.opt_arg ();
-        unsigned int separator = range.find_first_of (ACE_TEXT_ALWAYS_CHAR ("-"), 0);
+        size_t separator = range.find_first_of (ACE_TEXT_ALWAYS_CHAR ("-"), 0);
         if (separator == std::string::npos)
         {
           ACE_DEBUG ((LM_ERROR,

@@ -5,14 +5,14 @@ if (UNIX)
   set (SDL1_FOUND TRUE)
   set (SDL1_INCLUDE_DIRS ${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS})
   set (SDL1_LIBRARIES ${PKG_CONFIG_MODULE_SDL_LIBRARIES})
- else ()
-  pkg_check_modules (PKG_CONFIG_MODULE_SDL2 SDL2)
-  if (PKG_CONFIG_MODULE_SDL2_FOUND)
-   set (SDL2_FOUND TRUE)
-   set (SDL2_INCLUDE_DIRS ${PKG_CONFIG_MODULE_SDL2_INCLUDE_DIRS})
-   set (SDL2_LIBRARIES ${PKG_CONFIG_MODULE_SDL2_LIBRARIES})
-  endif (PKG_CONFIG_MODULE_SDL2_FOUND)
  endif (PKG_CONFIG_MODULE_SDL_FOUND)
+
+ pkg_check_modules (PKG_CONFIG_MODULE_SDL2 SDL2)
+ if (PKG_CONFIG_MODULE_SDL2_FOUND)
+  set (SDL2_FOUND TRUE)
+  set (SDL2_INCLUDE_DIRS ${PKG_CONFIG_MODULE_SDL2_INCLUDE_DIRS})
+  set (SDL2_LIBRARIES ${PKG_CONFIG_MODULE_SDL2_LIBRARIES})
+ endif (PKG_CONFIG_MODULE_SDL2_FOUND)
 
  if (SDL1_FOUND)
   pkg_check_modules (PKG_CONFIG_MODULE_SDL_TTF SDL_ttf)
@@ -20,14 +20,137 @@ if (UNIX)
    set (SDL1_TTF_INCLUDE_DIRS ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS})
    set (SDL1_TTF_LIBRARIES ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES})
   endif (PKG_CONFIG_MODULE_SDL_TTF_FOUND)
- elseif (SDL2_FOUND)
+ endif (SDL1_FOUND)
+ 
+ if (SDL2_FOUND)
   pkg_check_modules (PKG_CONFIG_MODULE_SDL2_TTF SDL2_ttf)
   if (PKG_CONFIG_MODULE_SDL2_TTF_FOUND)
    set (SDL2_TTF_INCLUDE_DIRS ${PKG_CONFIG_MODULE_SDL2_TTF_INCLUDE_DIRS})
    set (SDL2_TTF_LIBRARIES ${PKG_CONFIG_MODULE_SDL2_TTF_LIBRARIES})
   endif (PKG_CONFIG_MODULE_SDL2_TTF_FOUND)
  endif ()
-endif (UNIX)
+elseif (WIN32)
+ if (VCPKG_SUPPORT)
+  find_package (SDL MODULE)
+  find_package (SDL_ttf MODULE)
+  find_path (SDL1_INCLUDE_DIR NAMES SDL.h
+             HINTS "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}"
+             PATH_SUFFIXES include
+             NO_DEFAULT_PATH)
+  if (SDL_FOUND)
+   message (STATUS "found SDL")
+   set (SDL1_FOUND TRUE)
+   set (SDL1_INCLUDE_DIRS "${SDL1_INCLUDE_DIR}")
+   if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR
+       CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+    set (SDL_LIB_DIR "${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}/debug/bin")
+   else ()
+    set (SDL_LIB_DIR "${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}/bin")
+   endif (CMAKE_BUILD_TYPE STREQUAL "Debug" OR
+          CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+  endif (SDL_FOUND)
+ endif (VCPKG_SUPPORT)
+ if (NOT SDL_FOUND)
+  find_path (SDL1_INCLUDE_DIRS NAMES SDL.h
+             PATHS "$ENV{LIB_ROOT}/SDL"
+             PATH_SUFFIXES include)
+  set (SDL1_LIB "SDL")
+  find_library (SDL1_LIBRARY
+                NAMES ${SDL1_LIB}
+                PATHS "$ENV{LIB_ROOT}/SDL/lib"
+                PATH_SUFFIXES ${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
+                NO_DEFAULT_PATH)
+  if (SDL1_INCLUDE_DIRS AND SDL1_LIBRARY)
+   message (STATUS "found SDL")
+   set (SDL1_FOUND TRUE)
+   set (SDL1_INCLUDE_DIRS "${SDL1_INCLUDE_DIRS}")
+   set (SDL1_LIBRARIES "${SDL1_LIBRARY}")
+   set (SDL1_LIB_DIR "$ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}")
+  else ()
+   message (WARNING "could not find SDL, continuing")
+  endif (SDL1_INCLUDE_DIRS AND SDL1_LIBRARY)
+
+  find_path (SDL1_TTF_INCLUDE_DIR NAMES SDL_ttf.h
+             PATHS "$ENV{LIB_ROOT}/SDL_ttf"
+             PATH_SUFFIXES include)
+  set (SDL1_TTF_LIB "SDL_ttf")
+  find_library (SDL1_TTF_LIBRARY
+                NAMES ${SDL1_TTF_LIB}
+                PATHS "$ENV{LIB_ROOT}/SDL_ttf/lib"
+                PATH_SUFFIXES ${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
+                NO_DEFAULT_PATH)
+  if (SDL1_TTF_INCLUDE_DIR AND SDL1_TTF_LIBRARY)
+   message (STATUS "found SDL_ttf")
+   set (SDL1_TTF_FOUND TRUE)
+   set (SDL1_TTF_INCLUDE_DIRS "${SDL1_TTF_INCLUDE_DIR}")
+   set (SDL1_TTF_LIBRARIES "${SDL1_TTF_LIBRARY}")
+   set (SDL1_TTF_LIB_DIR "$ENV{LIB_ROOT}/SDL_ttf/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}")
+  else ()
+   message (WARNING "could not find SDL_ttf, continuing")
+  endif (SDL1_TTF_INCLUDE_DIR AND SDL1_TTF_LIBRARY)
+ endif (NOT SDL_FOUND)
+
+ if (VCPKG_SUPPORT)
+  find_package (SDL2 MODULE)
+  find_package (SDL2_ttf MODULE)
+  find_path (SDL2_INCLUDE_DIR NAMES SDL.h
+             HINTS "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}"
+             PATH_SUFFIXES include
+             NO_DEFAULT_PATH)
+  if (SDL2_FOUND)
+   message (STATUS "found SDL2")
+   set (SDL2_FOUND TRUE)
+   set (SDL2_INCLUDE_DIRS "${SDL2_INCLUDE_DIR}")
+   if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR
+       CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+    set (SDL2_LIB_DIR "${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}/debug/bin")
+   else ()
+    set (SDL2_LIB_DIR "${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}/bin")
+   endif (CMAKE_BUILD_TYPE STREQUAL "Debug" OR
+          CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+  endif (SDL2_FOUND)
+ endif (VCPKG_SUPPORT)
+ if (NOT SDL2_FOUND)
+  find_path (SDL2_INCLUDE_DIR NAMES SDL.h
+             PATHS "$ENV{LIB_ROOT}/SDL2"
+             PATH_SUFFIXES include)
+  set (SDL2_LIB "SDL2")
+  find_library (SDL2_LIBRARY
+                NAMES ${SDL2_LIB}
+                PATHS "$ENV{LIB_ROOT}/SDL2/lib"
+                PATH_SUFFIXES ${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
+                NO_DEFAULT_PATH)
+  if (SDL2_INCLUDE_DIR AND SDL2_LIBRARY)
+   message (STATUS "found SDL2")
+   set (SDL2_FOUND TRUE)
+   set (SDL2_INCLUDE_DIRS "${SDL2_INCLUDE_DIR}")
+   set (SDL2_LIBRARIES "${SDL2_LIBRARY}")
+   set (SDL2_LIB_DIR "$ENV{LIB_ROOT}/SDL2/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}")
+  else ()
+   message (WARNING "could not find SDL2, continuing")
+  endif (SDL2_INCLUDE_DIR AND SDL2_LIBRARY)
+
+  find_path (SDL2_TTF_INCLUDE_DIR NAMES SDL_ttf.h
+             PATHS "$ENV{LIB_ROOT}/SDL2_ttf"
+             PATH_SUFFIXES include)
+  set (SDL2_TTF_LIB "SDL2_ttf")
+  find_library (SDL2_TTF_LIBRARY
+                NAMES ${SDL2_TTF_LIB}
+                PATHS "$ENV{LIB_ROOT}/SDL2_ttf/lib"
+                PATH_SUFFIXES ${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
+                NO_DEFAULT_PATH)
+  if (SDL2_TTF_INCLUDE_DIR AND SDL2_TTF_LIBRARY)
+   message (STATUS "found SDL2_ttf")
+   set (SDL2_TTF_FOUND TRUE)
+   set (SDL2_TTF_INCLUDE_DIRS "${SDL2_TTF_INCLUDE_DIR}")
+   set (SDL2_TTF_LIBRARIES "${SDL2_TTF_LIBRARY}")
+   set (SDL2_TTF_LIB_DIR "$ENV{LIB_ROOT}/SDL2_ttf/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}")
+  else ()
+   message (WARNING "could not find SDL2_ttf, continuing")
+  endif (SDL2_TTF_INCLUDE_DIR AND SDL2_TTF_LIBRARY)
+ endif (NOT SDL2_FOUND)
+endif ()
+
 if (SDL1_FOUND OR SDL2_FOUND)
  option (SDL_SUPPORT "SDL support" TRUE)
  if (SDL_SUPPORT)
@@ -35,3 +158,81 @@ if (SDL1_FOUND OR SDL2_FOUND)
  endif (SDL_SUPPORT)
 endif (SDL1_FOUND OR SDL2_FOUND)
 
+if (SDL_SUPPORT)
+ # *NOTE*: the first entry is the default option
+ if (SDL2_FOUND)
+  set (SDL_VERSION "SDL2" CACHE STRING "use SDL2 (default)")
+  set (SUPPORTED_SDL_VERSIONS "SDL2")
+ elseif (SDL1_FOUND)
+  set (SDL_VERSION "SDL" CACHE STRING "use SDL (default)")
+  set (SUPPORTED_SDL_VERSIONS "SDL")
+ endif ()
+ if (SDL1_FOUND)
+  set (SUPPORTED_SDL_VERSIONS "${SUPPORTED_SDL_VERSIONS};SDL")
+ endif (SDL1_FOUND)
+ if (SDL2_FOUND)
+  set (SUPPORTED_SDL_VERSIONS "${SUPPORTED_SDL_VERSIONS};SDL2")
+ endif (SDL2_FOUND)
+ list (REMOVE_DUPLICATES SUPPORTED_SDL_VERSIONS)
+ set_property (CACHE SDL_VERSION PROPERTY STRINGS ${SUPPORTED_SDL_VERSIONS})
+
+ if (NOT DEFINED SDL_VERSION_LAST)
+  set (SDL_VERSION_LAST "NotAVersion" CACHE STRING "last SDL version used")
+  mark_as_advanced (FORCE SDL_VERSION_LAST)
+ endif (NOT DEFINED SDL_VERSION_LAST)
+ if (NOT (${SDL_VERSION} MATCHES ${SDL_VERSION_LAST}))
+  unset (SDL_USE CACHE)
+  unset (SDL2_USE CACHE)
+  set (SDL_VERSION_LAST ${SDL_VERSION} CACHE STRING "Updating SDL Version Option" FORCE)
+ endif (NOT (${SDL_VERSION} MATCHES ${SDL_VERSION_LAST}))
+
+ if (${SDL_VERSION} STREQUAL "SDL")
+  message (STATUS "using SDL")
+  set (SDL_USE ON CACHE STRING "use SDL")
+  mark_as_advanced (FORCE SDL_USE)
+  add_definitions (-DSDL_USE)
+  set (SDL_INCLUDE_DIRS ${SDL_INCLUDE_DIRS})
+  set (SDL_LIBRARIES ${SDL_LIBRARIES})
+  set (SDL_LIB_DIR ${SDL_LIB_DIR})
+ elseif (${SDL_VERSION} STREQUAL "SDL2")
+  message (STATUS "using SDL2")
+  set (SDL2_USE ON CACHE STRING "use SDL2")
+  mark_as_advanced (FORCE SDL2_USE)
+  add_definitions (-DSDL2_USE)
+  set (SDL_INCLUDE_DIRS ${SDL2_INCLUDE_DIRS})
+  set (SDL_LIBRARIES ${SDL2_LIBRARIES})
+  set (SDL_LIB_DIR ${SDL2_LIB_DIR})
+ else ()
+  message (FATAL_ERROR "invalid/unknown SDL version, aborting")
+ endif ()
+
+ if (SDL_USE)
+  set (SDL_INCLUDE_DIRS "${SDL1_INCLUDE_DIRS};${SDL1_TTF_INCLUDE_DIRS}")
+  set (SDL_LIBRARIES "${SDL1_LIBRARIES};${SDL1_TTF_LIBRARIES}")
+  set (SDL_LIB_DIR "${SDL1_LIB_DIR};${SDL1_TTF_LIB_DIR}")
+ endif (SDL_USE)
+
+ if (SDL2_USE)
+  set (SDL_INCLUDE_DIRS "${SDL2_INCLUDE_DIRS};${SDL2_TTF_INCLUDE_DIRS}")
+  set (SDL_LIBRARIES "${SDL2_LIBRARIES};${SDL2_TTF_LIBRARIES}")
+  set (SDL_LIB_DIR "${SDL2_LIB_DIR};${SDL2_TTF_LIB_DIR}")
+ endif (SDL2_USE)
+endif (SDL_SUPPORT)
+
+# *NOTE*: unify include dirs and libraries; includers use SDL_INCLUDE_DIRS and SDL_LIBRARIES
+# *NOTE*: if no version has been selected, but SDL is supported, prefer SDL2 over SDL
+if (SDL_SUPPORT AND NOT SDL_USE AND NOT SDL2_USE)
+ message (WARNING "SDL version not selected, preferring SDL2 over SDL")
+ if (SDL2_FOUND)
+  set (SDL_INCLUDE_DIRS "${SDL1_INCLUDE_DIRS};${SDL1_TTF_INCLUDE_DIRS}")
+  set (SDL_LIBRARIES "${SDL1_LIBRARIES};${SDL1_TTF_LIBRARIES}")
+  set (SDL_LIB_DIR "${SDL1_LIB_DIR};${SDL1_TTF_LIB_DIR}")
+ elseif (SDL1_FOUND)
+  set (SDL_INCLUDE_DIRS "${SDL2_INCLUDE_DIRS};${SDL2_TTF_INCLUDE_DIRS}")
+  set (SDL_LIBRARIES "${SDL2_LIBRARIES};${SDL2_TTF_LIBRARIES}")
+  set (SDL_LIB_DIR "${SDL2_LIB_DIR};${SDL2_TTF_LIB_DIR}")
+ endif ()
+endif (SDL_SUPPORT AND NOT SDL_USE AND NOT SDL2_USE)
+#message (STATUS "SDL_INCLUDE_DIRS: ${SDL_INCLUDE_DIRS}")
+#message (STATUS "SDL_LIBRARIES: ${SDL_LIBRARIES}")
+#message (STATUS "SDL_LIB_DIRS: ${SDL_LIB_DIRS}")

@@ -89,6 +89,7 @@
 #include "net_callbacks.h"
 #include "net_client_common.h"
 #include "net_client_signalhandler.h"
+#include "net_defines.h"
 #include "net_eventhandler.h"
 //#include "net_module_eventhandler.h"
 

@@ -236,9 +236,9 @@ RPG_Map_Common_Tools::createFloorPlan(const unsigned int& dimensionX_in,
 
       // find a position within (!) the partition...
       roll_result.clear();
-      RPG_Dice::generateRandomNumbers(valid_area.size(),
-                                      1,
-                                      roll_result);
+      RPG_Dice::generateRandomNumbers (static_cast<unsigned int> (valid_area.size ()),
+                                       1,
+                                       roll_result);
       std::advance(area_iterator2, roll_result.front() - 1);
 
       seedPositions_out.insert(*area_iterator2);
@@ -259,7 +259,7 @@ RPG_Map_Common_Tools::createFloorPlan(const unsigned int& dimensionX_in,
       {
         roll_result.clear();
         area_iterator = (*rooms_iter).begin();
-        RPG_Dice::generateRandomNumbers((*rooms_iter).size(),
+        RPG_Dice::generateRandomNumbers(static_cast<unsigned int> ((*rooms_iter).size ()),
                                         1,
                                         roll_result);
         std::advance(area_iterator, roll_result.front() - 1);
@@ -429,7 +429,7 @@ RPG_Map_Common_Tools::makePartition(const unsigned int& dimensionX_in,
 
         // resolve by choosing a neighbour at random
         result.clear();
-        RPG_Dice::generateRandomNumbers(neighbours.size(),
+        RPG_Dice::generateRandomNumbers(static_cast<unsigned int> (neighbours.size ()),
                                         1,
                                         result);
         nearest_neighbour = neighbours.begin();
@@ -612,7 +612,7 @@ RPG_Map_Common_Tools::makePartition(const unsigned int& dimensionX_in,
       do
       {
         result.clear();
-        RPG_Dice::generateRandomNumbers(neighbours.size(),
+        RPG_Dice::generateRandomNumbers(static_cast<unsigned int> (neighbours.size ()),
                                         1,
                                         result);
         nearest_neighbour = neighbours.begin();
@@ -905,7 +905,7 @@ RPG_Map_Common_Tools::makeRooms(const unsigned int& dimensionX_in,
       // --> too slim/flat...
       do
       {
-        last_size = current_area.size();
+        last_size = static_cast<unsigned int> (current_area.size ());
 
         //displayRoom(dimensionX_in,
         //            dimensionY_in,
@@ -1434,7 +1434,7 @@ RPG_Map_Common_Tools::makeDoors(const unsigned int& dimensionX_in,
       if (maxDoorsPerRoom_in == std::numeric_limits<unsigned int>::max())
       {
         // for debugging purposes...
-        num_doors = doorPositions.size();
+        num_doors = static_cast<unsigned int> (doorPositions.size ());
         for (doorPosition_iterator = doorPositions.begin();
              doorPosition_iterator != doorPositions.end();
              doorPosition_iterator++)
@@ -1442,7 +1442,7 @@ RPG_Map_Common_Tools::makeDoors(const unsigned int& dimensionX_in,
       } // end IF
       else
       {
-        RPG_Dice::generateRandomNumbers((maxDoorsPerRoom_in ? ((maxDoorsPerRoom_in > doorPositions.size()) ? doorPositions.size()
+        RPG_Dice::generateRandomNumbers((maxDoorsPerRoom_in ? ((maxDoorsPerRoom_in > doorPositions.size()) ? static_cast<unsigned int> (doorPositions.size ())
                                                                                                            : maxDoorsPerRoom_in)
                                                             : doorPositions.size()),
                                         1,
@@ -1452,7 +1452,7 @@ RPG_Map_Common_Tools::makeDoors(const unsigned int& dimensionX_in,
         while (current_doors.size() < num_doors)
         {
           result.clear();
-          RPG_Dice::generateRandomNumbers(doorPositions.size(),
+          RPG_Dice::generateRandomNumbers(static_cast<unsigned int> (doorPositions.size ()),
                                           1,
                                           result);
           doorPosition_iterator = doorPositions.begin();
@@ -1588,7 +1588,7 @@ RPG_Map_Common_Tools::connectRooms(const unsigned int& dimensionX_in,
               possible_positions.insert(*doors_iter2);
       } // end IF
       result.clear();
-      RPG_Dice::generateRandomNumbers(possible_positions.size(),
+      RPG_Dice::generateRandomNumbers(static_cast<unsigned int> (possible_positions.size ()),
                                       1,
                                       result);
       target_door = possible_positions.begin();

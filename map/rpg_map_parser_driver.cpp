@@ -325,9 +325,10 @@ RPG_Map_ParserDriver::scan_begin(const std::string& buffer_in)
   // sanity check(s)
   ACE_ASSERT(myCurrentBufferState == NULL);
 
-  myCurrentBufferState = RPG_Map_Scanner__scan_bytes(buffer_in.c_str(),
-                                                     buffer_in.size(),
-                                                     myCurrentScannerState);
+  myCurrentBufferState =
+    RPG_Map_Scanner__scan_bytes (buffer_in.c_str (),
+                                 static_cast<int> (buffer_in.size ()),
+                                 myCurrentScannerState);
   if (myCurrentBufferState == NULL)
   {
     ACE_DEBUG((LM_ERROR,

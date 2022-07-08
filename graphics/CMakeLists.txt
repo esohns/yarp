@@ -4,9 +4,7 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/ACE.cmake)
 
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/image/scripts/png.cmake)
 
-if (UNIX)
- include (${CMAKE_CURRENT_SOURCE_DIR}/../scripts/sdl.cmake)
-endif ()
+include (${CMAKE_CURRENT_SOURCE_DIR}/../scripts/sdl.cmake)
 
 ########### next target ###############
 set (LIBRARY RPG_Graphics)
@@ -72,20 +70,14 @@ set (${LIBRARY}_SRCS
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 
-if (UNIX)
+if (LIBPNG_SUPPORT)
  target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}>)
+                             "$<BUILD_INTERFACE:${PNG_INCLUDE_DIRS}>")
+endif (LIBPNG_SUPPORT)
+if (SDL_SUPPORT)
  target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}>)
-elseif (WIN32)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/SDL/include>)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/SDL_ttf/include>)
-endif ()
-target_include_directories (${LIBRARY} PUBLIC
-                            "$<BUILD_INTERFACE:${PNG_INCLUDE_DIRS}>")
-
+                             "$<BUILD_INTERFACE:${SDL_INCLUDE_DIRS}>")
+endif (SDL_SUPPORT)
 if (UNIX)
 elseif (WIN32)
  target_include_directories (${LIBRARY} PUBLIC

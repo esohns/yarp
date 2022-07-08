@@ -28,54 +28,54 @@
 
 #include "ace/Global_Macros.h"
 
-//#include "rpg_graphics_exports.h"
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_colorname.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Graphics_SDL_Tools
 {
   // grant access to initColors()
   friend class RPG_Graphics_Common_Tools;
 
  public:
-  static bool preInitializeVideo(const struct RPG_Graphics_SDL_VideoConfiguration&, // configuration
-                           const std::string&);                          // window/icon caption
-  static bool initializeVideo(const struct RPG_Graphics_SDL_VideoConfiguration&, // configuration
-                        const std::string&,                           // window/icon caption
-                        SDL_Surface*&,                                // return value: window surface
-                        const bool& = true);                          // init window surface ?
-  static SDL_Surface* initializeScreen(const struct RPG_Graphics_SDL_VideoConfiguration&); // configuration
+  static bool preInitializeVideo (const struct RPG_Graphics_SDL_VideoConfiguration&, // configuration
+                                  const std::string&);                               // window/icon caption
+  static bool initializeVideo (const struct RPG_Graphics_SDL_VideoConfiguration&, // configuration
+                               const std::string&,                                // window/icon caption
+                               SDL_Surface*&,                                     // return value: window surface
+                               const bool& = true);                               // init window surface ?
+  static SDL_Surface* initializeScreen (const struct RPG_Graphics_SDL_VideoConfiguration&); // configuration
 
-  static std::string keyToString(const SDL_keysym&);
+#if defined (SDL_USE)
+  static std::string keyToString (const SDL_keysym&);
+#elif defined (SDL2_USE)
+  static std::string keyToString (const SDL_Keysym&);
+#endif // SDL_USE || SDL2_USE
 
-  static SDL_Color colorToSDLColor(const Uint32&,       // RGBA value
-                                   const SDL_Surface&); // target surface
-	static Uint32 getColor(const RPG_Graphics_ColorName&, // color name
-                         const SDL_Surface&,            // target surface
-                         const float& = 1.0F);          // blend factor (--> opacity)
+  static SDL_Color colorToSDLColor (ACE_UINT32,          // RGBA value
+                                    const SDL_Surface&); // target surface
+	static Uint32 getColor (const RPG_Graphics_ColorName&, // color name
+                          const SDL_Surface&,            // target surface
+                          const float& = 1.0F);          // blend factor (--> opacity)
 
-  static SDL_Rect boundingBox(const SDL_Rect&,  // rect 1
-                              const SDL_Rect&); // rect 2
-  static SDL_Rect intersect(const SDL_Rect&,  // rect 1
-                            const SDL_Rect&); // rect 2
-  static bool equal(const SDL_Rect&,  // rect 1
-                    const SDL_Rect&); // rect 2
+  static SDL_Rect boundingBox (const SDL_Rect&,  // rect 1
+                               const SDL_Rect&); // rect 2
+  static SDL_Rect intersect (const SDL_Rect&,  // rect 1
+                             const SDL_Rect&); // rect 2
+  static bool equal (const SDL_Rect&,  // rect 1
+                     const SDL_Rect&); // rect 2
   // *NOTE*: this returns rect1 - rect2; off course, this works only if the
   // result is a rectangular area, otherwise the result will be {0, 0, 0, 0}
-  static SDL_Rect difference(const SDL_Rect&,  // rect 1
-                             const SDL_Rect&); // rect 2
+  static SDL_Rect difference (const SDL_Rect&,  // rect 1
+                              const SDL_Rect&); // rect 2
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDL_Tools())
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Graphics_SDL_Tools())
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDL_Tools(const RPG_Graphics_SDL_Tools&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_SDL_Tools& operator=(const RPG_Graphics_SDL_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_SDL_Tools())
+  ACE_UNIMPLEMENTED_FUNC (~RPG_Graphics_SDL_Tools())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_SDL_Tools(const RPG_Graphics_SDL_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_SDL_Tools& operator=(const RPG_Graphics_SDL_Tools&))
 
   // helper methods
-  static void initColors();
+  static void initColors ();
 
   static bool                    myVideoPreInitialized;
   // predefined colors

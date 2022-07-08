@@ -268,7 +268,7 @@ RPG_Player_Player_Base::getAttackBonus(enum RPG_Common_Attribute modifier_in,
         RPG_Character_Common_Tools::getBaseAttackBonus(*iterator,
                                                        getLevel(*iterator));
     // append necessary entries
-    for (int diff = (bonus.size() - result.size());
+    for (int diff = static_cast<int> (bonus.size () - result.size ());
          diff > 0;
          diff--)
       result.push_back(0);

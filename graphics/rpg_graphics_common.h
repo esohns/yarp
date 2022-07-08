@@ -23,6 +23,7 @@
 
 #include <string>
 #include <map>
+#include <utility>
 #include <vector>
 
 #include "ace/Log_Msg.h"
@@ -62,18 +63,18 @@ typedef std::map<RPG_Graphics_TileSetGraphic, RPG_Graphics_t> RPG_Graphics_TileS
 typedef RPG_Graphics_TileSetDictionary_t::const_iterator RPG_Graphics_TileSetDictionaryIterator_t;
 struct RPG_Graphics_Dictionary_t
 {
-  RPG_Graphics_SpriteDictionary_t sprites;
-  RPG_Graphics_CursorDictionary_t cursors;
-  RPG_Graphics_FontDictionary_t fonts;
-  RPG_Graphics_ImageDictionary_t images;
-  RPG_Graphics_TileDictionary_t tiles;
+  RPG_Graphics_SpriteDictionary_t  sprites;
+  RPG_Graphics_CursorDictionary_t  cursors;
+  RPG_Graphics_FontDictionary_t    fonts;
+  RPG_Graphics_ImageDictionary_t   images;
+  RPG_Graphics_TileDictionary_t    tiles;
   RPG_Graphics_TileSetDictionary_t tilesets;
 };
 
 struct RPG_Graphics_GraphicsCacheNode
 {
   RPG_Graphics_GraphicTypeUnion type;
-  SDL_Surface* image;
+  SDL_Surface*                  image;
 
   bool operator== (const struct RPG_Graphics_GraphicsCacheNode& rhs_in) const
   {
@@ -96,17 +97,16 @@ struct RPG_Graphics_GraphicsCacheNode
         return (type.tilesetgraphic == rhs_in.type.tilesetgraphic);
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid RPG_Graphics_GraphicTypeUnion type (was: %d), continuing\n"),
-                   type.discriminator));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("invalid RPG_Graphics_GraphicTypeUnion type (was: %d), continuing\n"),
+                    type.discriminator));
         break;
       }
     } // end SWITCH
 
-    return false; }
-  bool operator!=(const struct RPG_Graphics_GraphicsCacheNode& rhs_in) const
-  {
-    return !(*this == rhs_in); }
+    return false;
+  }
+  inline bool operator!= (const struct RPG_Graphics_GraphicsCacheNode& rhs_in) const { return !(*this == rhs_in); }
 };
 typedef std::vector<struct RPG_Graphics_GraphicsCacheNode> RPG_Graphics_GraphicsCache_t;
 typedef RPG_Graphics_GraphicsCache_t::iterator RPG_Graphics_GraphicsCacheIterator_t;
@@ -123,8 +123,8 @@ typedef RPG_Graphics_Elements_t::const_iterator RPG_Graphics_ElementsConstIterat
 struct RPG_Graphics_Font_t
 {
   RPG_Graphics_Font type;
-  unsigned int size;
-  std::string file;
+  unsigned int      size;
+  std::string       file;
 };
 typedef std::vector<RPG_Graphics_Font_t> RPG_Graphics_Fonts_t;
 typedef RPG_Graphics_Fonts_t::const_iterator RPG_Graphics_FontsConstIterator_t;
@@ -145,8 +145,8 @@ typedef std::pair<unsigned int, unsigned int> RPG_Graphics_Size_t;
 // a set of (floor-, wall-, door-, ...) tiles
 struct RPG_Graphics_TileElement
 {
-  int offset_x;
-  int offset_y;
+  int          offset_x;
+  int          offset_y;
   SDL_Surface* surface;
 };
 
@@ -154,8 +154,8 @@ typedef std::vector<struct RPG_Graphics_TileElement> RPG_Graphics_FloorTiles_t;
 typedef RPG_Graphics_FloorTiles_t::const_iterator RPG_Graphics_FloorTilesConstIterator_t;
 struct RPG_Graphics_FloorTileSet
 {
-  unsigned int columns;
-  unsigned int rows;
+  unsigned int              columns;
+  unsigned int              rows;
   RPG_Graphics_FloorTiles_t tiles;
 };
 

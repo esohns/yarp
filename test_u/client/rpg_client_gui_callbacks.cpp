@@ -113,7 +113,8 @@ update_equipment (const struct RPG_Client_GTK_CBData& data_in)
   GtkWidget* current_box, *check_button, *label = NULL;
   RPG_Player_Equipment& player_equipment = player->getEquipment ();
   RPG_Item_Base* item = NULL;
-  RPG_Character_EquipmentSlot equipment_slot;
+  RPG_Character_EquipmentSlot equipment_slot =
+    RPG_CHARACTER_EQUIPMENTSLOT_INVALID;
   const RPG_Player_Inventory& player_inventory = player->getInventory ();
   std::string widget_name;
   for (RPG_Item_ListIterator_t iterator_2 = player_inventory.myItems.begin ();
@@ -733,7 +734,7 @@ update_character_profile (const RPG_Player& player_in,
   //GtkWidget* current_box = NULL;
   const RPG_Character_Skills_t& player_skills = player_in.getSkills ();
   gtk_table_resize (GTK_TABLE (widget_p),
-                    player_skills.size (), 2);
+                    static_cast<guint> (player_skills.size ()), 2);
   unsigned int index = 0;
   GtkAttachOptions attach_options = GTK_SHRINK;
   for (RPG_Character_SkillsConstIterator_t iterator = player_skills.begin ();
@@ -894,7 +895,7 @@ update_character_profile (const RPG_Player& player_in,
     processsed_types.insert (*iterator);
   } // end FOR
   gtk_table_resize (GTK_TABLE (widget_p),
-                    spells.size (), 2);
+                    static_cast<guint> (spells.size ()), 2);
   index = 0;
   for (std::map<RPG_Magic_SpellType, unsigned int>::const_iterator iterator = spells.begin ();
        iterator != spells.end ();

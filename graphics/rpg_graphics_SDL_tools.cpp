@@ -566,26 +566,27 @@ continue_:
     return NULL;
   } // end IF
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("*** screen flags ***\nsurface:\t\t\t\t%sRAM\nasynch blits:\t\t\t\t\"%s\"\nany video depth/pixel-format:\t\t\"%s\"\nsurface has exclusive palette:\t\t\"%s\"\ndouble-buffered:\t\t\t\"%s\"\nblit uses HW acceleration:\t\t\"%s\"\nblit uses a source color key:\t\t\"%s\"\nsurface is RLE encoded:\t\t\t\"%s\"\nblit uses source alpha blending:\t\"%s\"\nsurface uses preallocated memory:\t\"%s\"\n"),
-             ((screen->flags & SDL_HWSURFACE)   ? ACE_TEXT("Video") : ACE_TEXT("")),
-             ((screen->flags & SDL_ASYNCBLIT)   ? ACE_TEXT("yes")   : ACE_TEXT("no")),
-             ((screen->flags & SDL_ANYFORMAT)   ? ACE_TEXT("yes")   : ACE_TEXT("no")),
-             ((screen->flags & SDL_HWPALETTE)   ? ACE_TEXT("yes")   : ACE_TEXT("no")),
-             ((screen->flags & SDL_DOUBLEBUF)   ? ACE_TEXT("yes")   : ACE_TEXT("no")),
-             ((screen->flags & SDL_HWACCEL)     ? ACE_TEXT("yes")   : ACE_TEXT("no")),
-             ((screen->flags & SDL_SRCCOLORKEY) ? ACE_TEXT("yes")   : ACE_TEXT("no")),
-             ((screen->flags & SDL_RLEACCEL)    ? ACE_TEXT("yes")   : ACE_TEXT("no")),
-             ((screen->flags & SDL_SRCALPHA)    ? ACE_TEXT("yes")   : ACE_TEXT("no")),
-             ((screen->flags & SDL_PREALLOC)    ? ACE_TEXT("yes")   : ACE_TEXT("no"))));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("*** screen flags ***\nsurface:\t\t\t\t%sRAM\nasynch blits:\t\t\t\t\"%s\"\nany video depth/pixel-format:\t\t\"%s\"\nsurface has exclusive palette:\t\t\"%s\"\ndouble-buffered:\t\t\t\"%s\"\nblit uses HW acceleration:\t\t\"%s\"\nblit uses a source color key:\t\t\"%s\"\nsurface is RLE encoded:\t\t\t\"%s\"\nblit uses source alpha blending:\t\"%s\"\nsurface uses preallocated memory:\t\"%s\"\n"),
+              ((screen->flags & SDL_HWSURFACE)   ? ACE_TEXT("Video") : ACE_TEXT("")),
+              ((screen->flags & SDL_ASYNCBLIT)   ? ACE_TEXT("yes")   : ACE_TEXT("no")),
+              ((screen->flags & SDL_ANYFORMAT)   ? ACE_TEXT("yes")   : ACE_TEXT("no")),
+              ((screen->flags & SDL_HWPALETTE)   ? ACE_TEXT("yes")   : ACE_TEXT("no")),
+              ((screen->flags & SDL_DOUBLEBUF)   ? ACE_TEXT("yes")   : ACE_TEXT("no")),
+              ((screen->flags & SDL_HWACCEL)     ? ACE_TEXT("yes")   : ACE_TEXT("no")),
+              ((screen->flags & SDL_SRCCOLORKEY) ? ACE_TEXT("yes")   : ACE_TEXT("no")),
+              ((screen->flags & SDL_RLEACCEL)    ? ACE_TEXT("yes")   : ACE_TEXT("no")),
+              ((screen->flags & SDL_SRCALPHA)    ? ACE_TEXT("yes")   : ACE_TEXT("no")),
+              ((screen->flags & SDL_PREALLOC)    ? ACE_TEXT("yes")   : ACE_TEXT("no"))));
 
   return screen;
 }
 
+#if defined (SDL_USE)
 std::string
-RPG_Graphics_SDL_Tools::keyToString(const SDL_keysym& key_in)
+RPG_Graphics_SDL_Tools::keyToString (const SDL_keysym& key_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::keyToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::keyToString"));
 
   std::string result;
 
@@ -636,16 +637,66 @@ RPG_Graphics_SDL_Tools::keyToString(const SDL_keysym& key_in)
 
   return result;
 }
+#elif defined (SDL2_USE)
+std::string
+RPG_Graphics_SDL_Tools::keyToString (const SDL_Keysym& key_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::keyToString"));
+
+  std::string result;
+
+  char buffer[RPG_GRAPHICS_SDL_KEYSYM_BUFFER_SIZE];
+  result += ACE_TEXT("scancode: ");
+  ACE_OS::sprintf (buffer,
+                   ACE_TEXT_ALWAYS_CHAR("0x%02X"),
+                   key_in.scancode);
+  result += buffer;
+  result += ACE_TEXT_ALWAYS_CHAR ("\n");
+  result += ACE_TEXT ("name: \"");
+  result += SDL_GetKeyName (key_in.sym);
+  result += ACE_TEXT_ALWAYS_CHAR ("\"\n");
+  result += ACE_TEXT("modifier(s): ");
+  if (key_in.mod == KMOD_NONE)
+    result += ACE_TEXT("N/A");
+  else
+  {
+    if (key_in.mod & KMOD_NUM)
+      result += ACE_TEXT("NUMLOCK ");
+    if (key_in.mod & KMOD_CAPS)
+      result += ACE_TEXT("CAPSLOCK ");
+    if (key_in.mod & KMOD_LCTRL)
+      result += ACE_TEXT("LCTRL ");
+    if (key_in.mod & KMOD_RCTRL)
+      result += ACE_TEXT("RCTRL ");
+    if (key_in.mod & KMOD_LSHIFT)
+      result += ACE_TEXT("LSHIFT ");
+    if (key_in.mod & KMOD_RSHIFT)
+      result += ACE_TEXT("RSHIFT ");
+    if (key_in.mod & KMOD_LALT)
+      result += ACE_TEXT("LALT ");
+    if (key_in.mod & KMOD_RALT)
+      result += ACE_TEXT("RALT ");
+//     if (key_in.mod & KMOD_CTRL)
+//       result += ACE_TEXT("CTRL ");
+//     if (key_in.mod & KMOD_SHIFT)
+//       result += ACE_TEXT("SHIFT ");
+//     if (key_in.mod & KMOD_ALT)
+//       result += ACE_TEXT("ALT ");
+  } // end ELSE
+
+  return result;
+}
+#endif // SDL_USE || SDL2_USE
 
 SDL_Color
-RPG_Graphics_SDL_Tools::colorToSDLColor(const Uint32& color_in,
-                                        const SDL_Surface& targetSurface_in)
+RPG_Graphics_SDL_Tools::colorToSDLColor (ACE_UINT32 color_in,
+                                         const SDL_Surface& targetSurface_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::colorToSDLColor"));
 
   // init return value
   SDL_Color result;
-  ACE_OS::memset(&result, 0, sizeof(result));
+  ACE_OS::memset (&result, 0, sizeof (SDL_Color));
 
   // extract components from the 32-bit color value
   result.r =
@@ -654,7 +705,7 @@ RPG_Graphics_SDL_Tools::colorToSDLColor(const Uint32& color_in,
           (color_in & targetSurface_in.format->Gmask) >> targetSurface_in.format->Gshift;
   result.b =
           (color_in & targetSurface_in.format->Bmask) >> targetSurface_in.format->Bshift;
-  result.unused = 0;
+  //result.unused = 0;
 
   return result;
 }
@@ -679,11 +730,11 @@ RPG_Graphics_SDL_Tools::getColor(const RPG_Graphics_ColorName& colorName_in,
     return result;
   } // end IF
 
-  result = SDL_MapRGBA(targetSurface_in.format,
-                       (*iterator).second.r,
-                       (*iterator).second.g,
-                       (*iterator).second.b,
-											 static_cast<Uint8>((*iterator).second.a * blendFactor_in));
+  result = SDL_MapRGBA (targetSurface_in.format,
+                        (*iterator).second.r,
+                        (*iterator).second.g,
+                        (*iterator).second.b,
+                        static_cast<Uint8>((*iterator).second.a * blendFactor_in));
 
   return result;
 }

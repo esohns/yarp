@@ -733,7 +733,7 @@ update_character_profile (const RPG_Player& player_in,
   //GtkWidget* current_box = NULL;
   const RPG_Character_Skills_t& player_skills = player_in.getSkills ();
   gtk_table_resize (GTK_TABLE (widget_p),
-                    player_skills.size (), 2);
+                    static_cast<guint> (player_skills.size ()), 2);
   unsigned int index = 0;
   GtkAttachOptions attach_options = GTK_SHRINK;
   for (RPG_Character_SkillsConstIterator_t iterator = player_skills.begin ();
@@ -894,7 +894,7 @@ update_character_profile (const RPG_Player& player_in,
     processsed_types.insert (*iterator);
   } // end FOR
   gtk_table_resize (GTK_TABLE (widget_p),
-                    spells.size (), 2);
+                    static_cast<unsigned int> (spells.size ()), 2);
   index = 0;
   for (std::map<RPG_Magic_SpellType, unsigned int>::const_iterator iterator = spells.begin ();
        iterator != spells.end ();

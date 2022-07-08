@@ -942,10 +942,10 @@ RPG_Graphics_Cursor_Manager::storeHighlightBG(const RPG_Map_PositionList_t& mapP
   ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
 
   // grow/shrink cache as necessary
-  int delta = myHighlightBGCache.size() - mapPositions_in.size();
+  ACE_INT64 delta = myHighlightBGCache.size() - mapPositions_in.size();
   if (delta > 0)
   {
-    for (int i = delta;
+    for (ACE_INT64 i = delta;
          i > 0;
          i--)
     {
@@ -956,7 +956,7 @@ RPG_Graphics_Cursor_Manager::storeHighlightBG(const RPG_Map_PositionList_t& mapP
   else if (delta < 0)
   {
     SDL_Surface* new_entry = NULL;
-    for (int i = -delta;
+    for (ACE_INT64 i = -delta;
          i > 0;
          i--)
     {

@@ -300,7 +300,7 @@ RPG_Sound_Event_Manager::handle(const void* act_in)
     RPG_Sound_SampleRepositoryConstIterator_t iterator =
         sample_repository.begin();
     RPG_Dice_RollResult_t roll_result;
-    RPG_Dice::generateRandomNumbers(sample_repository.size(),
+    RPG_Dice::generateRandomNumbers(static_cast<unsigned int> (sample_repository.size ()),
                                     1,
                                     roll_result);
     std::advance(iterator, roll_result.front() - 1);

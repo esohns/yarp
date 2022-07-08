@@ -419,7 +419,7 @@ RPG_Player::random()
           while (numChosen < numKnownSpells)
           {
             result.clear();
-            RPG_Dice::generateRandomNumbers(available.size(),
+            RPG_Dice::generateRandomNumbers(static_cast<unsigned int> (available.size ()),
                                             (numKnownSpells - numChosen),
                                             result);
 
@@ -477,8 +477,8 @@ RPG_Player::random()
             break; // done
 
           result.clear();
-          RPG_Dice::generateRandomNumbers((RPG_Magic_Common_Tools::isDivineCasterClass(*iterator) ? available.size()
-                                                                                                  : knownSpells.size()),
+          RPG_Dice::generateRandomNumbers((RPG_Magic_Common_Tools::isDivineCasterClass (*iterator) ? static_cast<unsigned int> (available.size ())
+                                                                                                   : static_cast<unsigned int> (knownSpells.size ())),
                                           numSpells,
                                           result);
           int index = 0;
@@ -533,7 +533,7 @@ RPG_Player::random()
         while (numChosen < numKnownSpells)
         {
           result.clear();
-          RPG_Dice::generateRandomNumbers(available.size(),
+          RPG_Dice::generateRandomNumbers(static_cast<unsigned int> (available.size ()),
                                           (numKnownSpells - numChosen),
                                           result);
 
@@ -584,7 +584,7 @@ RPG_Player::random()
             continue; // done
 
           result.clear();
-          RPG_Dice::generateRandomNumbers(available.size(),
+          RPG_Dice::generateRandomNumbers(static_cast<unsigned int> (available.size ()),
                                           numSpells,
                                           result);
           int index = 0;
