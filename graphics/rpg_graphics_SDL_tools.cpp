@@ -51,7 +51,24 @@ RPG_Graphics_SDL_Tools::preInitializeVideo (const struct RPG_Graphics_SDL_VideoC
   if (myVideoPreInitialized)
     return true; // nothing to do
 
-  // step1: init video subsystem
+#if defined (SDL2_USE)
+  int number_of_video_drivers_i = SDL_GetNumVideoDrivers ();
+  if (number_of_video_drivers_i < 0)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_GetNumVideoDrivers(): \"%s\", aborting\n"),
+                ACE_TEXT (SDL_GetError ())));
+    return false;
+  } // end IF
+  for (int i = 0;
+       i < number_of_video_drivers_i;
+       ++i)
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("[%d]: video driver: \"%s\"\n"),
+                i, ACE_TEXT (SDL_GetVideoDriver (i))));
+#endif // SDL2_USE
+
+  // step1: initialize video subsystem
   std::string video_driver = configuration_in.video_driver;
   if (video_driver.empty ())
   {

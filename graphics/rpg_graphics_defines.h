@@ -85,7 +85,7 @@
 #if defined (SDL_USE)
 #define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "windib"
 #elif defined (SDL2_USE)
-#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "directx"
+#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "windows"
 #endif // SDL_USE || SDL2_USE
 #elif defined (ACE_LINUX)
 //#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "x11"
