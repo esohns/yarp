@@ -71,14 +71,16 @@ RPG_Sound_Event_Manager::dirent_comparator(const dirent** entry1_in,
 RPG_Sound_Event_Manager::RPG_Sound_Event_Manager()
  : inherited (this,
               false)
- , myTimerID(-1),
-//   myRepository(),
-   myUseCDROM(RPG_SOUND_AMBIENT_DEF_USE_CD),
-   myCDROM(NULL),
-   myTrackOrChannel(-1),
-   myInitialized(false)
+ , myTimerID (-1)
+// , myRepository ()
+#if defined (SDL_USE)
+ , myUseCDROM (RPG_SOUND_AMBIENT_DEF_USE_CD)
+ , myCDROM (NULL)
+#endif // SDL_USE
+ , myTrackOrChannel (-1)
+ , myInitialized (false)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Sound_Event_Manager::RPG_Sound_Event_Manager"));
+  RPG_TRACE (ACE_TEXT ("RPG_Sound_Event_Manager::RPG_Sound_Event_Manager"));
 
 }
 
@@ -123,7 +125,9 @@ RPG_Sound_Event_Manager::initialize (const std::string& repository_in,
   } // end IF
   myRepository = path;
 
+#if defined (SDL_USE)
   myUseCDROM = useCD_in;
+#endif // SDL_USE
 }
 
 void
@@ -134,16 +138,17 @@ RPG_Sound_Event_Manager::finalize ()
   ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
 
   if (myInitialized)
-  {
-    ACE_ASSERT(myCDROM);
-
-    if (SDL_CDStop(myCDROM))
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_CDStop(\"%s\"): \"%s\", continuing\n"),
-                 ACE_TEXT(SDL_CDName(myCDROM->id)),
-                 ACE_TEXT(SDL_GetError())));
-    SDL_CDClose(myCDROM);
+  { 
+#if defined (SDL_USE)
+    ACE_ASSERT (myCDROM);
+    if (SDL_CDStop (myCDROM))
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_CDStop(\"%s\"): \"%s\", continuing\n"),
+                  ACE_TEXT (SDL_CDName (myCDROM->id)),
+                  ACE_TEXT (SDL_GetError ())));
+    SDL_CDClose (myCDROM);
     myCDROM = NULL;
+#endif // SDL_USE
 
     myInitialized = false;
   } // end IF
@@ -186,21 +191,22 @@ RPG_Sound_Event_Manager::stop()
   if (myTrackOrChannel == -1)
     return; // nothing to do...
 
+#if defined (SDL_USE)
   if (myUseCDROM)
-  {
-    ACE_ASSERT(myCDROM);
+  { ACE_ASSERT(myCDROM);
 
-    cancel(false);
+    cancel (false);
 
-    if (SDL_CDStatus(myCDROM) != CD_STOPPED)
-      if (SDL_CDStop(myCDROM))
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to SDL_CDStop(\"%s\"): \"%s\", continuing\n"),
-                   ACE_TEXT(SDL_CDName(myCDROM->id)),
-                   ACE_TEXT(SDL_GetError())));
+    if (SDL_CDStatus (myCDROM) != CD_STOPPED)
+      if (SDL_CDStop (myCDROM))
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to SDL_CDStop(\"%s\"): \"%s\", continuing\n"),
+                    ACE_TEXT (SDL_CDName (myCDROM->id)),
+                    ACE_TEXT (SDL_GetError ())));
   } // end IF
   else
-    RPG_Sound_Common_Tools::stop(myTrackOrChannel);
+#endif // SDL_USE
+    RPG_Sound_Common_Tools::stop (myTrackOrChannel);
   myTrackOrChannel = -1;
 }
 
@@ -214,66 +220,69 @@ RPG_Sound_Event_Manager::isPlaying() const
   if (myTrackOrChannel == -1)
     return false;
 
+#if defined (SDL_USE)
   if (myUseCDROM)
   {
-    ACE_ASSERT(myCDROM);
-
-    return (SDL_CDStatus(myCDROM) == CD_PLAYING);
+    ACE_ASSERT (myCDROM);
+    return (SDL_CDStatus (myCDROM) == CD_PLAYING);
   } // end IF
+#endif // SDL_USE
 
-  return RPG_Sound_Common_Tools::isPlaying(myTrackOrChannel);
+  return RPG_Sound_Common_Tools::isPlaying (myTrackOrChannel);
 }
 
 void
-RPG_Sound_Event_Manager::handle(const void* act_in)
+RPG_Sound_Event_Manager::handle (const void* act_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Sound_Event_Manager::handleTimeout"));
+  RPG_TRACE (ACE_TEXT ("RPG_Sound_Event_Manager::handle"));
 
-  ACE_UNUSED_ARG(act_in);
+  ACE_UNUSED_ARG (act_in);
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  ACE_Guard<ACE_Thread_Mutex> aGuard (myLock);
 
   // sanity check: initialized ?
+#if defined (SDL_USE)
   if (myUseCDROM &&
       !myInitialized)
   {
-    initCD();
+    initCD ();
     ACE_ASSERT(myInitialized);
   } // end IF
+#endif // SDL_USE
 
   // play (another) track/sound...
   ACE_Time_Value length = ACE_Time_Value::max_time;
+#if defined (SDL_USE)
   if (myUseCDROM)
   {
     ACE_ASSERT(myCDROM);
-    myTrackOrChannel = RPG_Sound_Common_Tools::playRandomTrack(myCDROM);
+    myTrackOrChannel = RPG_Sound_Common_Tools::playRandomTrack (myCDROM);
     if (myTrackOrChannel == -1)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Sound_Common_Tools::playRandomTrack, returning")));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to RPG_Sound_Common_Tools::playRandomTrack, returning")));
       return;
     } // end IF
 
     // compute length
     int minutes, seconds, frames;
-    FRAMES_TO_MSF(myCDROM->track[myTrackOrChannel].length,
-                  &minutes, &seconds, &frames);
+    FRAMES_TO_MSF (myCDROM->track[myTrackOrChannel].length,
+                   &minutes, &seconds, &frames);
     // *NOTE*: allow an extra little bit...
-    length.set((minutes * 60) + seconds + RPG_SOUND_CDTRACK_DEF_PAD, 0);
+    length.set ((minutes * 60) + seconds + RPG_SOUND_CDTRACK_DEF_PAD, 0);
   } // end IF
   else
+#endif // SDL_USE
   {
     // retrieve all sample files...
     ACE_Dirent_Selector entries;
-    if (entries.open(ACE_TEXT(myRepository.c_str()),
-                     &RPG_Sound_Event_Manager::dirent_selector,
-                     &RPG_Sound_Event_Manager::dirent_comparator) == -1)
+    if (entries.open (ACE_TEXT(myRepository.c_str()),
+                      &RPG_Sound_Event_Manager::dirent_selector,
+                      &RPG_Sound_Event_Manager::dirent_comparator) == -1)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Dirent_Selector::open(\"%s\"): \"%m\", returning"),
-                 ACE_TEXT(myRepository.c_str())));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE_Dirent_Selector::open(\"%s\"): \"%m\", returning"),
+                  ACE_TEXT (myRepository.c_str())));
       return;
     } // end IF
     RPG_Sound_SampleRepository_t sample_repository;
@@ -333,10 +342,11 @@ RPG_Sound_Event_Manager::handle(const void* act_in)
   } // end IF
 }
 
+#if defined (SDL_USE)
 void
-RPG_Sound_Event_Manager::initCD(const int& drive_in)
+RPG_Sound_Event_Manager::initializeCD (const int& drive_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Sound_Event_Manager::initCD"));
+  RPG_TRACE (ACE_TEXT ("RPG_Sound_Event_Manager::initializeCD"));
 
   if (myInitialized)
     return;
@@ -455,9 +465,10 @@ RPG_Sound_Event_Manager::initCD(const int& drive_in)
 
   myInitialized = true;
 }
+#endif // SDL_USE
 
 void
-RPG_Sound_Event_Manager::cancel(const bool& lockedAccess_in)
+RPG_Sound_Event_Manager::cancel (bool lockedAccess_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Sound_Event_Manager::cancel"));
 

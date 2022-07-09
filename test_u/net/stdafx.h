@@ -21,3 +21,6 @@
 
 // Local Header Files
 #include "rpg_common_macros.h"
+
+#include "net_client_common.h"
+#include "net_server_common.h"

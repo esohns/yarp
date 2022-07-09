@@ -31,36 +31,28 @@ elseif (WXWIDGETS_USE)
  endif (CMAKE_BUILD_TYPE STREQUAL Debug)
 endif ()
 
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/sdl.cmake)
+
 if (UNIX)
  include(FindPkgConfig)
  pkg_check_modules(PKG_CONFIG_MODULE_XERCES_C REQUIRED xerces-c)
- pkg_check_modules(PKG_CONFIG_MODULE_SDL REQUIRED sdl)
-#pkg_check_modules(PKG_CONFIG_MODULE_SDL_GFX REQUIRED SDL_gfx)
- pkg_check_modules(PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
  pkg_check_modules(PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
  pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
- pkg_check_modules(PKG_CONFIG_MODULE_GTHREAD REQUIRED gthread-2.0)
- pkg_check_modules(PKG_CONFIG_MODULE_LIBGTK REQUIRED gtk+-2.0)
-elseif(WIN32)
-endif ()
+endif (UNIX)
 
 include_directories (${GTK_INCLUDE_DIRS}
                      $ENV{LIB_ROOT}/gtkglarea)
 if (UNIX)
  include_directories(${PKG_CONFIG_MODULE_XERCES_C_INCLUDE_DIRS}
-                     ${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
-#                    ${PKG_CONFIG_MODULE_SDL_GFX_INCLUDE_DIRS}
-                     ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}
                      ${PKG_CONFIG_MODULE_SDL_MIXER_INCLUDE_DIRS}
-                     ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS}
-                     ${PKG_CONFIG_MODULE_GTHREAD_INCLUDE_DIRS}
-                     ${PKG_CONFIG_MODULE_LIBGLADE_INCLUDE_DIRS})
+                     ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
 elseif (WIN32)
- include_directories($ENV{LIB_ROOT}/xerces-c/src
-                     $ENV{LIB_ROOT}/SDL/include
-                     $ENV{LIB_ROOT}/SDL_mixer/include
-                     $ENV{LIB_ROOT}/SDL_ttf/include)
+ include_directories ($ENV{LIB_ROOT}/xerces-c/src
+                      $ENV{LIB_ROOT}/SDL_mixer/include)
 endif ()
+if (SDL_SUPPORT)
+ include_directories (${SDL_INCLUDE_DIRS})
+endif (SDL_SUPPORT)
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/image)
@@ -130,16 +122,17 @@ add_dependencies(${EXECUTABLE} RPG_Chance RPG_Dice RPG_Common
                                RPG_Map RPG_Graphics RPG_Sound RPG_Engine
                                RPG_Client)
 
+if (SDL_SUPPORT)
+ target_link_libraries (${EXECUTABLE}
+                        ${SDL_LIBRARIES})
+endif (SDL_SUPPORT)
 if (UNIX)
  target_link_libraries (${EXECUTABLE}
                         ${PKG_CONFIG_MODULE_XERCES_C_LIBRARIES}
-                        ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
-#                      ${PKG_CONFIG_MODULE_SDL_GFX_LIBRARIES}
-                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
                         ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES}
                         ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
                         ${PKG_CONFIG_MODULE_GTHREAD_LIBRARIES}
-                        ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES}
+#                        ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES}
                         X11
                         ${ACE_LIBRARY}
                         Common CommonLog CommonTimer CommonUI CommonUI_GTK
@@ -157,7 +150,6 @@ elseif (WIN32)
 
  target_link_libraries (${EXECUTABLE}
                         Opengl32.lib
-                        $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDLmain.lib
                         $ENV{LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL_mixer.lib
 #                      SDL_gfx
                         ${GTK_LIBRARIES}
@@ -194,6 +186,8 @@ elseif (WIN32)
  file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
  file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}.exe" COMMAND)
  string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
+ file (TO_CMAKE_PATH "${SDL_LIB_DIR}" SDL_LIB_PATH)
+ file (TO_CMAKE_PATH "${GTK_LIB_DIRS}" GTK_LIB_PATH)
  create_target_launcher (client_gui
                          COMMAND ${COMMAND}
                          ARGS "-l -n -t"
@@ -202,17 +196,16 @@ elseif (WIN32)
                                               ${LIB_ROOT}/libpng/build/Debug
                                               ${LIB_ROOT}/libepoxy/bin
                                               ${LIB_ROOT}/openssl
-                                              ${LIB_ROOT}/gtk3/bin
-                                              ${LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
+                                              ${SDL_LIB_PATH}
                                               ${LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
-                                              ${LIB_ROOT}/SDL_ttf/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
                                               ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
                                               ${LIB_ROOT}/ACE_TAO/ACE/lib
-                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/Debug
-                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/err/Debug
-                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/ui/Debug
-                                              ${PROJECT_SOURCE_DIR}/cmake/src/Debug
-                                              ${PROJECT_SOURCE_DIR}/cmake/src/modules/vis/Debug
+                                              ${GTK_LIB_PATH}
+#                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/Debug
+#                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/err/Debug
+#                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/ui/Debug
+#                                              ${PROJECT_SOURCE_DIR}/cmake/src/Debug
+#                                              ${PROJECT_SOURCE_DIR}/cmake/src/modules/vis/Debug
                          WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test_u/client
                          ENVIRONMENT foo=bar)
 endif ()

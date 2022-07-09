@@ -21,6 +21,8 @@
 #ifndef RPG_GRAPHICS_IWINDOWBASE_H
 #define RPG_GRAPHICS_IWINDOWBASE_H
 
+#define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 
 #include "common_ilock.h"
@@ -31,7 +33,7 @@
 class RPG_Graphics_IWindowBase
 {
  public:
-  virtual ~RPG_Graphics_IWindowBase () {};
+  //inline virtual ~RPG_Graphics_IWindowBase () {}
 
   virtual void initialize (Common_ILock* = NULL, // screen lock interface handle
                            bool = false) = 0;    // double-buffered screen ?
@@ -49,8 +51,15 @@ class RPG_Graphics_IWindowBase
   virtual SDL_Rect getDirty () const = 0; // return value: "dirty" area
   virtual void update (SDL_Surface* = NULL) = 0; // target surface (default: screen)
 
+#if defined (SDL_USE)
   virtual void setScreen (SDL_Surface*) = 0; // (default) screen
   virtual SDL_Surface* getScreen () const = 0; // (default) screen
+#elif defined (SDL2_USE)
+  virtual void setRenderer (SDL_Renderer*) = 0; // (default) renderer
+  virtual void setScreen (SDL_Window*) = 0; // (default) screen
+  virtual SDL_Renderer* getRenderer () const = 0; // (default) renderer
+  virtual SDL_Window* getScreen() const = 0; // (default) screen
+#endif // SDL_USE || SDL2_USE
   virtual RPG_Graphics_IWindowBase* getParent () const = 0; // return value: parent window handle (if any)
 
   virtual void addChild (RPG_Graphics_IWindowBase*) = 0; // window handle

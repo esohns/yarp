@@ -19,11 +19,15 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-#if defined (_MSC_VER)
-#define NOMINMAX
-#endif
-
 #include "rpg_graphics_cursor_manager.h"
+
+#include <limits>
+#include <sstream>
+
+#include "ace/OS.h"
+#include "ace/Log_Msg.h"
+
+#include "rpg_common_macros.h"
 
 #include "rpg_graphics_defines.h"
 #include "rpg_graphics_iwindow.h"
@@ -31,13 +35,6 @@
 #include "rpg_graphics_dictionary.h"
 #include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_SDL_tools.h"
-
-#include "rpg_common_macros.h"
-
-#include "ace/OS.h"
-#include "ace/Log_Msg.h"
-
-#include <limits>
 
 RPG_Graphics_Cursor_Manager::RPG_Graphics_Cursor_Manager()
  : myCurrentType(CURSOR_NORMAL),
@@ -114,9 +111,9 @@ RPG_Graphics_Cursor_Manager::initialize (Common_ILock* screenLock_in,
 }
 
 void
-RPG_Graphics_Cursor_Manager::reset(const bool& update_in,
-                                   const bool& lockedAccess_in,
-                                   const bool& debug_in)
+RPG_Graphics_Cursor_Manager::reset (bool update_in,
+                                    bool lockedAccess_in,
+                                    bool debug_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::reset"));
 
@@ -139,21 +136,13 @@ RPG_Graphics_Cursor_Manager::reset(const bool& update_in,
                                   std::numeric_limits<unsigned int>::max()));
 }
 
-RPG_Graphics_Cursor
-RPG_Graphics_Cursor_Manager::type() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::type"));
-
-  return myCurrentType;
-}
-
 SDL_Rect
-RPG_Graphics_Cursor_Manager::area(const RPG_Graphics_Position_t& viewport_in) const
+RPG_Graphics_Cursor_Manager::area (const RPG_Graphics_Position_t& viewport_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::area"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Cursor_Manager::area"));
 
   // sanity check(s)
-  ACE_ASSERT(myHighlightWindow);
+  ACE_ASSERT (myHighlightWindow);
 
   SDL_Rect result = {0, 0, 0, 0};
 
@@ -161,10 +150,10 @@ RPG_Graphics_Cursor_Manager::area(const RPG_Graphics_Position_t& viewport_in) co
   if (myBG)
   {
     SDL_Rect bg_area;
-    bg_area.x = static_cast<Sint16>(myBGPosition.first);
-    bg_area.y = static_cast<Sint16>(myBGPosition.second);
-    bg_area.w = static_cast<Uint16>(myBG->w);
-    bg_area.h = static_cast<Uint16>(myBG->h);
+    bg_area.x = static_cast<Sint16> (myBGPosition.first);
+    bg_area.y = static_cast<Sint16> (myBGPosition.second);
+    bg_area.w = static_cast<Uint16> (myBG->w);
+    bg_area.h = static_cast<Uint16> (myBG->h);
     result = RPG_Graphics_SDL_Tools::boundingBox (result,
                                                   bg_area);
   } // end IF
@@ -172,8 +161,13 @@ RPG_Graphics_Cursor_Manager::area(const RPG_Graphics_Position_t& viewport_in) co
   // step2: highlight background(s)
   SDL_Rect highlight_area = {0, 0, 0, 0};
   RPG_Graphics_Position_t screen_position;
+
+#if defined (SDL_USE)
   SDL_Surface* screen = myHighlightWindow->getScreen ();
-  ACE_ASSERT(screen);
+#elif defined (SDL2_USE)
+  SDL_Surface* screen = SDL_GetWindowSurface (myHighlightWindow->getScreen ());
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (screen);
   for (RPG_Graphics_TileCacheConstIterator_t iterator = myHighlightBGCache.begin();
        iterator != myHighlightBGCache.end();
        iterator++)
@@ -195,9 +189,9 @@ RPG_Graphics_Cursor_Manager::area(const RPG_Graphics_Position_t& viewport_in) co
 }
 
 RPG_Graphics_Position_t
-RPG_Graphics_Cursor_Manager::position(const bool& highlight_in) const
+RPG_Graphics_Cursor_Manager::position (bool highlight_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Cursor_Manager::type"));
 
   if (highlight_in)
     return myHighlightBGCache.front().first;
@@ -211,15 +205,15 @@ RPG_Graphics_Cursor_Manager::position(const bool& highlight_in) const
 }
 
 void
-RPG_Graphics_Cursor_Manager::put(const RPG_Graphics_Position_t& position_in,
-                                 const RPG_Graphics_Position_t& view_in,
-                                 const RPG_Map_Size_t& mapSize_in,
-                                 SDL_Rect& dirtyRegion_out,
-                                 const bool& drawHighlight_in,
-                                 const bool& lockedAccess_in,
-                                 const bool& debug_in)
+RPG_Graphics_Cursor_Manager::put (const RPG_Graphics_Position_t& position_in,
+                                  const RPG_Graphics_Position_t& view_in,
+                                  const RPG_Map_Size_t& mapSize_in,
+                                  SDL_Rect& dirtyRegion_out,
+                                  bool drawHighlight_in,
+                                  bool lockedAccess_in,
+                                  bool debug_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::put"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Cursor_Manager::put"));
 
   // sanity check(s)
   ACE_ASSERT(myHighlightWindow);
@@ -270,11 +264,11 @@ RPG_Graphics_Cursor_Manager::put(const RPG_Graphics_Position_t& position_in,
 }
 
 void
-RPG_Graphics_Cursor_Manager::setCursor(const RPG_Graphics_Cursor& type_in,
-                                       SDL_Rect& dirtyRegion_out,
-                                       const bool& lockedAccess_in)
+RPG_Graphics_Cursor_Manager::setCursor (const RPG_Graphics_Cursor& type_in,
+                                        SDL_Rect& dirtyRegion_out,
+                                        bool lockedAccess_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::setCursor"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Cursor_Manager::setCursor"));
 
   // step0: init return value(s)
   ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
@@ -368,10 +362,10 @@ RPG_Graphics_Cursor_Manager::setCursor(const RPG_Graphics_Cursor& type_in,
 }
 
 void
-RPG_Graphics_Cursor_Manager::putCursor(const RPG_Graphics_Offset_t& offset_in,
-                                       SDL_Rect& dirtyRegion_out,
-                                       const bool& lockedAccess_in,
-                                       const bool& debug_in)
+RPG_Graphics_Cursor_Manager::putCursor (const RPG_Graphics_Offset_t& offset_in,
+                                        SDL_Rect& dirtyRegion_out,
+                                        bool lockedAccess_in,
+                                        bool debug_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::putCursor"));
 
@@ -380,8 +374,13 @@ RPG_Graphics_Cursor_Manager::putCursor(const RPG_Graphics_Offset_t& offset_in,
 
   // sanity check(s)
   ACE_ASSERT(myHighlightWindow);
-  SDL_Surface* target_surface = myHighlightWindow->getScreen();
-  ACE_ASSERT(target_surface);
+#if defined (SDL_USE)
+  SDL_Surface* target_surface = myHighlightWindow->getScreen ();
+#elif defined (SDL2_USE)
+  SDL_Surface* target_surface =
+    SDL_GetWindowSurface (myHighlightWindow->getScreen ());
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (target_surface);
   if ((offset_in.first  >= target_surface->w) ||
       (offset_in.second >= target_surface->h))
     return; // nothing to do
@@ -458,15 +457,17 @@ RPG_Graphics_Cursor_Manager::putCursor(const RPG_Graphics_Offset_t& offset_in,
 //    RPG_Graphics_Surface::unclip();
     if (myScreenLock && lockedAccess_in)
       myScreenLock->lock();
-    RPG_Graphics_Surface::putText(FONT_MAIN_SMALL,
-                                  text,
-                                  RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_Graphics_SDL_Tools::getColor(RPG_GRAPHICS_FONT_DEF_COLOR,
-                                                                                                           *target_surface),
-                                                                          *target_surface),
+    RPG_Graphics_Surface::putText (FONT_MAIN_SMALL,
+                                   text,
+                                   RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_Graphics_SDL_Tools::getColor (RPG_GRAPHICS_FONT_DEF_COLOR,
+                                                                                                              *target_surface->format,
+                                                                                                              1.0F),
+                                                                            *target_surface),
                                   true, // add shade
-                                  RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_Graphics_SDL_Tools::getColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
-                                                                                                           *target_surface),
-                                                                          *target_surface),
+                                  RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_Graphics_SDL_Tools::getColor (RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
+                                                                                                             *target_surface->format,
+                                                                                                             1.0F),
+                                                                           *target_surface),
                                   std::make_pair((((window_area.w / 2) - text_size.first) / 2),
                                                  ((border_top - text_size.second) / 2)),
                                   target_surface,
@@ -512,11 +513,11 @@ RPG_Graphics_Cursor_Manager::putCursor(const RPG_Graphics_Offset_t& offset_in,
 }
 
 void
-RPG_Graphics_Cursor_Manager::restoreBG(SDL_Rect& dirtyRegion_out,
-                                       const SDL_Rect* clipRectangle_in,
-                                       const bool& lockedAccess_in)
+RPG_Graphics_Cursor_Manager::restoreBG (SDL_Rect& dirtyRegion_out,
+                                        const SDL_Rect* clipRectangle_in,
+                                        bool lockedAccess_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::restoreBG"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Cursor_Manager::restoreBG"));
 
   // step0: init return value(s)
   ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
@@ -528,8 +529,13 @@ RPG_Graphics_Cursor_Manager::restoreBG(SDL_Rect& dirtyRegion_out,
                       std::numeric_limits<unsigned int>::max())))
     return; // nothing to do
   ACE_ASSERT(myHighlightWindow);
-  SDL_Surface* target_surface = myHighlightWindow->getScreen();
-  ACE_ASSERT(target_surface);
+#if defined (SDL_USE)
+  SDL_Surface* target_surface = myHighlightWindow->getScreen ();
+#elif defined (SDL2_USE)
+  SDL_Surface* target_surface =
+    SDL_GetWindowSurface (myHighlightWindow->getScreen ());
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (target_surface);
 
   // init dirty region
   dirtyRegion_out.x = static_cast<int16_t>(myBGPosition.first);
@@ -568,18 +574,23 @@ RPG_Graphics_Cursor_Manager::restoreBG(SDL_Rect& dirtyRegion_out,
 }
 
 void
-RPG_Graphics_Cursor_Manager::updateBG(SDL_Rect& dirtyRegion_out,
-                                      const SDL_Rect* clipRect_in,
-                                      const bool& lockedAccess_in,
-                                      const bool& debug_in)
+RPG_Graphics_Cursor_Manager::updateBG (SDL_Rect& dirtyRegion_out,
+                                       const SDL_Rect* clipRect_in,
+                                       bool lockedAccess_in,
+                                       bool debug_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::updateBG"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Cursor_Manager::updateBG"));
 
   // sanity check(s)
   ACE_ASSERT(myBG);
   ACE_ASSERT(myHighlightWindow);
-  SDL_Surface* target_surface = myHighlightWindow->getScreen();
-  ACE_ASSERT(target_surface);
+#if defined (SDL_USE)
+  SDL_Surface* target_surface = myHighlightWindow->getScreen ();
+#elif defined (SDL2_USE)
+  SDL_Surface* target_surface =
+    SDL_GetWindowSurface (myHighlightWindow->getScreen ());
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (target_surface);
 
   // init return value(s)
   ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
@@ -666,18 +677,16 @@ RPG_Graphics_Cursor_Manager::updateBG(SDL_Rect& dirtyRegion_out,
                             *new_bg);
 
   // step5: mask the "dirty" bit of the cached bg
-  if (SDL_FillRect(myBG,
-                   &intersection,
-                   RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK_A0, // transparent
-                                                    *myBG)))
+  if (SDL_FillRect (myBG,
+                    &intersection,
+                    RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK_A0, // transparent
+                                                      *myBG->format,
+                                                      1.0F)))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_FillRect(): \"%s\", aborting\n"),
-               ACE_TEXT(SDL_GetError())));
-
-    // clean up
-    SDL_FreeSurface(new_bg);
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_FillRect(): \"%s\", aborting\n"),
+                ACE_TEXT (SDL_GetError ())));
+    SDL_FreeSurface (new_bg);
     return;
   } // end IF
 
@@ -760,14 +769,14 @@ RPG_Graphics_Cursor_Manager::getHighlightBGPosition(const unsigned int& index_in
 }
 
 void
-RPG_Graphics_Cursor_Manager::putHighlights(const RPG_Map_PositionList_t& mapPositions_in,
-                                           const RPG_Graphics_Offsets_t& graphicsPositions_in,
-                                           const RPG_Graphics_Position_t& viewPort_in,
-                                           SDL_Rect& dirtyRegion_out,
-																					 const bool& lockedAccess_in,
-																					 const bool& debug_in)
+RPG_Graphics_Cursor_Manager::putHighlights (const RPG_Map_PositionList_t& mapPositions_in,
+                                            const RPG_Graphics_Offsets_t& graphicsPositions_in,
+                                            const RPG_Graphics_Position_t& viewPort_in,
+                                            SDL_Rect& dirtyRegion_out,
+                                            bool lockedAccess_in,
+                                            bool debug_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::putHighlights"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Cursor_Manager::putHighlights"));
 
   // step0: init return value(s)
   ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
@@ -775,8 +784,13 @@ RPG_Graphics_Cursor_Manager::putHighlights(const RPG_Map_PositionList_t& mapPosi
   // sanity check
   ACE_ASSERT(myHighlightTile);
   ACE_ASSERT(myHighlightWindow);
-  SDL_Surface* target_surface = myHighlightWindow->getScreen();
-  ACE_ASSERT(target_surface);
+#if defined (SDL_USE)
+  SDL_Surface* target_surface = myHighlightWindow->getScreen ();
+#elif defined (SDL2_USE)
+  SDL_Surface* target_surface =
+    SDL_GetWindowSurface (myHighlightWindow->getScreen ());
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (target_surface);
 
   // step1: restore old backgrounds
 	if (myScreenLock && lockedAccess_in)
@@ -874,20 +888,22 @@ RPG_Graphics_Cursor_Manager::putHighlights(const RPG_Map_PositionList_t& mapPosi
       dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
                                                             dirtyRegion_out);
     } // end ELSE
-    RPG_Graphics_Surface::putText(FONT_MAIN_SMALL,
-                                  text,
-                                  RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_Graphics_SDL_Tools::getColor(RPG_GRAPHICS_FONT_DEF_COLOR,
-                                                                                                           *target_surface),
-                                                                          *target_surface),
-                                  true, // add shade
-                                  RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_Graphics_SDL_Tools::getColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
-                                                                                                           *target_surface),
-                                                                          *target_surface),
-                                  std::make_pair((((window_area.w * 3) / 4) -
-                                                  (text_size.first / 2)),
-                                                 ((border_top - text_size.second) / 2)),
-                                  target_surface,
-                                  dirty_region);
+    RPG_Graphics_Surface::putText (FONT_MAIN_SMALL,
+                                   text,
+                                   RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_Graphics_SDL_Tools::getColor (RPG_GRAPHICS_FONT_DEF_COLOR,
+                                                                                                              *target_surface->format,
+                                                                                                              1.0F),
+                                                                            *target_surface),
+                                   true, // add shade
+                                   RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_Graphics_SDL_Tools::getColor (RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
+                                                                                                              *target_surface->format,
+                                                                                                              1.0F),
+                                                                            *target_surface),
+                                   std::make_pair((((window_area.w * 3) / 4) -
+                                                   (text_size.first / 2)),
+                                                  ((border_top - text_size.second) / 2)),
+                                   target_surface,
+                                   dirty_region);
     dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
                                                           dirtyRegion_out);
 
@@ -896,45 +912,60 @@ RPG_Graphics_Cursor_Manager::putHighlights(const RPG_Map_PositionList_t& mapPosi
     ACE_ASSERT(target_surface->w >= highlight_bg->w);
     ACE_ASSERT(target_surface->h >= highlight_bg->h);
 
-    RPG_Graphics_Surface::unclip();
-    RPG_Graphics_Surface::put(std::make_pair((target_surface->w - highlight_bg->w),
-                                             0),
-                              *highlight_bg,
-                              target_surface,
-                              dirty_region);
-    RPG_Graphics_Surface::clip();
+#if defined (SDL_USE)
+    RPG_Graphics_Surface::unclip ();
+#elif defined (SDL2_USE)
+    RPG_Graphics_Surface::unclip (myHighlightWindow->getScreen ());
+#endif // SDL_USE || SDL2_USE
+    RPG_Graphics_Surface::put (std::make_pair ((target_surface->w - highlight_bg->w),
+                                               0),
+                               *highlight_bg,
+                               target_surface,
+                               dirty_region);
+#if defined (SDL_USE)
+    RPG_Graphics_Surface::clip ();
+#elif defined (SDL2_USE)
+    RPG_Graphics_Surface::clip (myHighlightWindow->getScreen ());
+#endif // SDL_USE || SDL2_USE
 
     dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
                                                           dirtyRegion_out);
   } // end IF
 
-	// step4: update (part(s) of) cursor bg
-	for (std::vector<SDL_Rect>::const_iterator iterator = clip_rectangles.begin();
-			 iterator != clip_rectangles.end();
-			 iterator++)
-	{
-		updateBG(dirty_region,
-						 &(*iterator),
-						 false,
-						 debug_in);
-		dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-																													dirtyRegion_out);
-	} // end FOR
-	if (myScreenLock && lockedAccess_in)
-		myScreenLock->unlock();
-	myHighlightWindow->unclip();
+  // step4: update (part(s) of) cursor bg
+  for (std::vector<SDL_Rect>::const_iterator iterator = clip_rectangles.begin ();
+       iterator != clip_rectangles.end ();
+       iterator++)
+  {
+    updateBG (dirty_region,
+              &(*iterator),
+              false,
+              debug_in);
+    dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
+                                                           dirtyRegion_out);
+  } // end FOR
+  if (myScreenLock && lockedAccess_in)
+    myScreenLock->unlock ();
+  myHighlightWindow->unclip ();
 }
 
 void
-RPG_Graphics_Cursor_Manager::storeHighlightBG(const RPG_Map_PositionList_t& mapPositions_in,
-                                              const RPG_Graphics_Offsets_t& graphicsPositions_in,
-                                              SDL_Rect& dirtyRegion_out,
-                                              const bool& lockedAccess_in)
+RPG_Graphics_Cursor_Manager::storeHighlightBG (const RPG_Map_PositionList_t& mapPositions_in,
+                                               const RPG_Graphics_Offsets_t& graphicsPositions_in,
+                                               SDL_Rect& dirtyRegion_out,
+                                               bool lockedAccess_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::storeHighlightBG"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Cursor_Manager::storeHighlightBG"));
 
   // sanity check
   ACE_ASSERT(myHighlightWindow);
+#if defined (SDL_USE)
+  SDL_Surface* target_surface = myHighlightWindow->getScreen ();
+#elif defined (SDL2_USE)
+  SDL_Surface* target_surface =
+    SDL_GetWindowSurface (myHighlightWindow->getScreen ());
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (target_surface);
   ACE_ASSERT(!mapPositions_in.empty());
   ACE_ASSERT(mapPositions_in.size() == graphicsPositions_in.size());
 
@@ -1015,32 +1046,37 @@ RPG_Graphics_Cursor_Manager::storeHighlightBG(const RPG_Map_PositionList_t& mapP
        map_position_iterator != mapPositions_in.end();
        map_position_iterator++, graphics_position_iterator++, cache_iterator++)
   {
-    RPG_Graphics_Surface::clear((*cache_iterator).second);
-    RPG_Graphics_Surface::get(*graphics_position_iterator,
-                              true, // use (fast) blitting method
-                              *myHighlightWindow->getScreen(),
-                              *(*cache_iterator).second);
+    RPG_Graphics_Surface::clear ((*cache_iterator).second);
+    RPG_Graphics_Surface::get (*graphics_position_iterator,
+                               true, // use (fast) blitting method
+                               *target_surface,
+                               *(*cache_iterator).second);
     (*cache_iterator).first = *map_position_iterator;
   } // end FOR
 //  myHighlightWindow->unclip();
 }
 
 void
-RPG_Graphics_Cursor_Manager::restoreHighlightBG(const RPG_Graphics_Position_t& viewPort_in,
-                                                SDL_Rect& dirtyRegion_out,
-                                                const SDL_Rect* clipRectangle_in,
-                                                const bool& lockedAccess_in,
-                                                const bool& debug_in)
+RPG_Graphics_Cursor_Manager::restoreHighlightBG (const RPG_Graphics_Position_t& viewPort_in,
+                                                 SDL_Rect& dirtyRegion_out,
+                                                 const SDL_Rect* clipRectangle_in,
+                                                 bool lockedAccess_in,
+                                                 bool debug_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::restoreHighlightBG"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Cursor_Manager::restoreHighlightBG"));
 
   // step0: init return value(s)
   ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
 
   // sanity check(s)
   ACE_ASSERT(myHighlightWindow);
-  SDL_Surface* target_surface = myHighlightWindow->getScreen();
-  ACE_ASSERT(target_surface);
+#if defined (SDL_USE)
+  SDL_Surface* target_surface = myHighlightWindow->getScreen ();
+#elif defined (SDL2_USE)
+  SDL_Surface* target_surface =
+    SDL_GetWindowSurface (myHighlightWindow->getScreen ());
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (target_surface);
   ACE_ASSERT(!myHighlightBGCache.empty());
   if ((myHighlightBGCache.size() == 1) &&
       (myHighlightBGCache.front().first ==
@@ -1121,18 +1157,23 @@ RPG_Graphics_Cursor_Manager::restoreHighlightBG(const RPG_Graphics_Position_t& v
 }
 
 void
-RPG_Graphics_Cursor_Manager::updateHighlightBG(const RPG_Graphics_Position_t& viewPort_in, 
-                                               SDL_Rect& dirtyRegion_out,
-                                               const SDL_Rect* clipRectangle_in,
-                                               const bool& lockedAccess_in,
-                                               const bool& debug_in)
+RPG_Graphics_Cursor_Manager::updateHighlightBG (const RPG_Graphics_Position_t& viewPort_in, 
+                                                SDL_Rect& dirtyRegion_out,
+                                                const SDL_Rect* clipRectangle_in,
+                                                bool lockedAccess_in,
+                                                bool debug_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::updateHighlightBG"));
 
   // sanity check(s)
   ACE_ASSERT(myHighlightWindow);
-  SDL_Surface* target_surface = myHighlightWindow->getScreen();
-  ACE_ASSERT(target_surface);
+#if defined (SDL_USE)
+  SDL_Surface* target_surface = myHighlightWindow->getScreen ();
+#elif defined (SDL2_USE)
+  SDL_Surface* target_surface =
+    SDL_GetWindowSurface (myHighlightWindow->getScreen ());
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (target_surface);
 
   // init return value(s)
   ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
@@ -1220,26 +1261,24 @@ RPG_Graphics_Cursor_Manager::updateHighlightBG(const RPG_Graphics_Position_t& vi
     // --> adjust intersection coordinates (relative to cached bg surface)
     clip_rectangle.x -= screen_position.first;
     clip_rectangle.y -= screen_position.second;
-    if (SDL_FillRect((*iterator).second,
-                     &clip_rectangle,
-                     RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK_A0, // transparent
-                                                      *(*iterator).second)))
+    if (SDL_FillRect ((*iterator).second,
+                      &clip_rectangle,
+                      RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK_A0, // transparent
+                                                        *(*iterator).second->format,
+                                                        1.0F)))
     {
-      ACE_DEBUG((LM_ERROR,
-                           ACE_TEXT("failed to SDL_FillRect(): \"%s\", continuing\n"),
-                           ACE_TEXT(SDL_GetError())));
-
-      // clean up
-      SDL_FreeSurface(new_background);
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_FillRect(): \"%s\", continuing\n"),
+                  ACE_TEXT (SDL_GetError ())));
+      SDL_FreeSurface (new_background);
       continue;
     } // end IF
 
     // blit the cached/masked bg onto the fresh copy
-    if (SDL_BlitSurface((*iterator).second, // source
-                                            NULL,               // aspect (--> everything)
-                                            new_background,     // target
-                                            NULL))              // aspect (--> everything)
+    if (SDL_BlitSurface ((*iterator).second, // source
+                         NULL,               // aspect (--> everything)
+                         new_background,     // target
+                         NULL))              // aspect (--> everything)
     {
       ACE_DEBUG((LM_ERROR,
                            ACE_TEXT("failed to SDL_BlitSurface(): %s, continuing\n"),

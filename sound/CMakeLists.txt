@@ -2,17 +2,11 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/Threads.cmake)
 
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/ACE.cmake)
 
-if (UNIX)
- include (FindPkgConfig)
- pkg_check_modules (PKG_CONFIG_MODULE_SDL REQUIRED sdl)
- pkg_check_modules (PKG_CONFIG_MODULE_SDL_Mixer REQUIRED SDL_mixer)
-elseif (WIN32)
-endif ()
+include (${CMAKE_CURRENT_SOURCE_DIR}/../scripts/sdl.cmake)
 
 ########### next target ###############
 set (LIBRARY RPG_Sound)
 set (${LIBRARY}_SRCS
-    # rpg_XMLSchema_XML_types.h
      rpg_sound.h
      rpg_sound_category.h
      rpg_sound_common.h
@@ -21,7 +15,6 @@ set (${LIBRARY}_SRCS
      rpg_sound_defines.h
      rpg_sound_event_manager.cpp
      rpg_sound_event_manager.h
-    # rpg_sound_exports.h
      rpg_sound_dictionary.cpp
      rpg_sound_dictionary.h
      rpg_sound_event.h
@@ -36,18 +29,10 @@ set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS B
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 
-if (UNIX)
+if (SDL_SUPPORT)
  target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}>)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}>)
-elseif (WIN32)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/SDL/include>)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/SDL_Mixer/include>)
-endif ()
-
+                             "$<BUILD_INTERFACE:${SDL_INCLUDE_DIRS}>")
+endif (SDL_SUPPORT)
 if (WIN32)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/msvc/src>)

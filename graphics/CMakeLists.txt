@@ -9,8 +9,6 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../scripts/sdl.cmake)
 ########### next target ###############
 set (LIBRARY RPG_Graphics)
 set (${LIBRARY}_SRCS
-   #  rpg_XMLSchema_XML_tree.h
-   #  rpg_XMLSchema_XML_types.h
      rpg_graphics_SDL_tools.cpp
      rpg_graphics_SDL_tools.h
      rpg_graphics_SDL_window_base.cpp
@@ -25,7 +23,6 @@ set (${LIBRARY}_SRCS
      rpg_graphics_XML_types.h
      rpg_graphics_category.h
      rpg_graphics_common.h
-     #rpg_graphics_exports.h
      rpg_graphics_common_tools.cpp
      rpg_graphics_common_tools.h
      rpg_graphics_cursor.h
@@ -65,6 +62,12 @@ set (${LIBRARY}_SRCS
      rpg_graphics_toplevel.cpp
      rpg_graphics_toplevel.h
      rpg_graphics_wallstyle.h)
+if (SDL2_USE)
+ set (${LIBRARY}_SRCS
+      ${${LIBRARY}_SRCS}
+      rpg_graphics_texture.cpp
+      rpg_graphics_texture.h)
+endif (SDL2_USE)
 
 #set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_GRAPHICS_BUILD_DLL)
 
@@ -121,15 +124,15 @@ set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
 if (UNIX)
  target_link_libraries (${LIBRARY}
-                        ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
-                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
                         ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
 elseif (WIN32)
  target_link_libraries (${LIBRARY}
-                        $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL.lib
-                        $ENV{LIB_ROOT}/SDL_ttf/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL_ttf.lib
                         $ENV{LIB_ROOT}/libpng/build/Debug/libpng16d.lib)
 endif ()
+if (SDL_SUPPORT)
+ target_link_libraries (${LIBRARY}
+                        ${SDL_LIBRARIES})
+endif (SDL_SUPPORT)
 
 # add PCH
 target_precompile_headers (${LIBRARY}
@@ -149,7 +152,6 @@ install (FILES
          rpg_graphics_XML_types.h
          rpg_graphics_category.h
          rpg_graphics_common.h
-#         rpg_graphics_exports.h
          rpg_graphics_common_tools.h
          rpg_graphics_cursor.h
          rpg_graphics_cursor_manager.h
@@ -175,6 +177,7 @@ install (FILES
          rpg_graphics_stairsstyle.h
          rpg_graphics_styleunion.h
          rpg_graphics_surface.h
+         rpg_graphics_texture.h
          rpg_graphics_tile.h
          rpg_graphics_tilegraphic.h
          rpg_graphics_tileset.h

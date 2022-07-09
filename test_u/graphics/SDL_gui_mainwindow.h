@@ -24,10 +24,10 @@
 #include <string>
 
 #define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 
 #include "ace/Global_Macros.h"
-//#include "ace/Synch.h"
 
 #include "common_ilock.h"
 
@@ -50,9 +50,6 @@
 // forward declarations
 class RPG_Engine;
 
-/**
-  @author Erik Sohns <erik.sohns@web.de>
-*/
 class SDL_GUI_MainWindow
  : public RPG_Graphics_TopLevel,
    public Common_ILock

@@ -24,20 +24,16 @@
 #include <string>
 
 #define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 
 #include "ace/Global_Macros.h"
 #include "ace/Time_Value.h"
-//#include "ace/Synch.h"
 
-//#include "rpg_sound_exports.h"
 #include "rpg_sound_defines.h"
 #include "rpg_sound_common.h"
 #include "rpg_sound_incl.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Sound_Common_Tools
 {
  public:
@@ -62,9 +58,11 @@ class RPG_Sound_Common_Tools
   static bool isPlaying (const int& = -1); // channel (-1: ALL channels)
   static void stop (const int& = -1); // channel (-1: ALL channels)
 
-  // *NOTE*: returns the track# that is playing...
-  // *NOTE*: passing NULL will invoke all commands on the last drive SDL_OpenCD()ed...
+#if defined (SDL_USE)
+  // *NOTE*: returns the track# that is playing
+  // *NOTE*: passing NULL will invoke all commands on the last drive SDL_OpenCD()ed
   static int playRandomTrack (SDL_CD* = NULL); // CDROM handle
+#endif // SDL_USE
 
  private:
   ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Common_Tools())

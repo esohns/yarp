@@ -79,7 +79,6 @@ RPG_Client_Window_Message::handleEvent (const SDL_Event& event_in,
 
       // *WARNING*: falls through !
     }
-    case SDL_ACTIVEEVENT:
     case SDL_KEYDOWN:
     case SDL_KEYUP:
     case SDL_MOUSEBUTTONDOWN:
@@ -91,8 +90,15 @@ RPG_Client_Window_Message::handleEvent (const SDL_Event& event_in,
     case SDL_JOYBUTTONUP:
     case SDL_QUIT:
     case SDL_SYSWMEVENT:
+#if defined (SDL_USE)
+    case SDL_ACTIVEEVENT:
     case SDL_VIDEORESIZE:
     case SDL_VIDEOEXPOSE:
+#elif defined (SDL2_USE)
+    case SDL_WINDOWEVENT_SHOWN:
+    case SDL_WINDOWEVENT_RESIZED:
+    case SDL_WINDOWEVENT_EXPOSED:
+#endif // SDL_USE || SDL2_USE
     case SDL_USEREVENT:
     case RPG_GRAPHICS_SDL_HOVEREVENT:
     default:
@@ -123,15 +129,22 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
   RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Message::draw"));
 
   // sanity check(s)
-  SDL_Surface* target_surface_p = (targetSurface_in ? targetSurface_in
-                                                    : inherited::screen_);
-  ACE_ASSERT (target_surface_p);
+  ACE_ASSERT (inherited::parent_);
+  ACE_ASSERT (inherited::screen_);
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = inherited::screen_;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
+  SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
+                                                  : surface_p);
+  ACE_ASSERT (target_surface);
   ACE_UNUSED_ARG (offsetX_in);
   ACE_UNUSED_ARG (offsetY_in);
-  ACE_ASSERT (inherited::parent_);
 
   SDL_Rect dirty_region;
-  ACE_OS::memset (&dirty_region, 0, sizeof (dirty_region));
+  ACE_OS::memset (&dirty_region, 0, sizeof (SDL_Rect));
 
   // step0: restore background
   if (inherited::screenLock_)
@@ -140,12 +153,8 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
   //  inherited::restoreBG(dirty_region);
 
   // step1: compute required size / offset
-  ACE_OS::memset (&(inherited::clipRectangle_),
-                  0,
-                  sizeof (inherited::clipRectangle_));
-  {
-    ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
-
+  ACE_OS::memset (&(inherited::clipRectangle_), 0, sizeof (SDL_Rect));
+  { ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
     RPG_Graphics_TextSize_t text_size = std::make_pair(0, 0);
     unsigned int index = 0;
     for (Common_MessageStackConstIterator_t iterator = messages_.begin ();
@@ -155,8 +164,8 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
       text_size = RPG_Graphics_Common_Tools::textSize (font_, *iterator);
       inherited::clipRectangle_.h += text_size.second + 1;
       inherited::clipRectangle_.w =
-          ((inherited::clipRectangle_.w < text_size.first) ? text_size.first
-                                                           : inherited::clipRectangle_.w);
+          ((inherited::clipRectangle_.w < static_cast<int> (text_size.first)) ? static_cast<int> (text_size.first)
+                                                                              : inherited::clipRectangle_.w);
     } // end FOR
     // add some padding
     inherited::clipRectangle_.w += 2;
@@ -193,8 +202,9 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
 
       return;
     } // end IF
-    RPG_Graphics_Surface::fill (RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK_A50,
-                                                                 *BG_),
+    RPG_Graphics_Surface::fill (RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK_A50,
+                                                                  *BG_->format,
+                                                                  1.0F),
                                 BG_);
 
     // initialize clipping
@@ -202,8 +212,8 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
     //     offsetX_in,
     //     offsetY_in);
     SDL_Rect clip_rect_orig;
-    SDL_GetClipRect (target_surface_p, &clip_rect_orig);
-    if (!SDL_SetClipRect (target_surface_p, &(inherited::clipRectangle_)))
+    SDL_GetClipRect (target_surface, &clip_rect_orig);
+    if (!SDL_SetClipRect (target_surface, &(inherited::clipRectangle_)))
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_SetClipRect(): %s, returning\n"),
@@ -219,7 +229,7 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
     RPG_Graphics_Surface::put (std::make_pair (inherited::clipRectangle_.x,
                                                inherited::clipRectangle_.y),
                                *BG_,
-                               target_surface_p,
+                               target_surface,
                                dirty_region);
 
     // draw messages
@@ -232,22 +242,22 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
       RPG_Graphics_Surface::putText (font_,
                                      *iterator,
                                      RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_CLIENT_MESSAGE_COLOR,
-                                                                              *target_surface_p),
+                                                                              *target_surface),
                                      RPG_CLIENT_MESSAGE_SHADE_LINES,
                                      RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_CLIENT_MESSAGE_SHADECOLOR,
-                                                                              *target_surface_p),
+                                                                              *target_surface),
                                      std::make_pair (parent_area.x +
                                                      ((parent_area.w - text_size.first) / 2),
                                                      (parent_area.y +
                                                       parent_area.h -
                                                       (index * (text_size.second + 1)))),
-                                     target_surface_p,
+                                     target_surface,
                                      dirty_region);
     } // end FOR
 
     // reset clipping
 //    unclip(targetSurface);
-    if (!SDL_SetClipRect (target_surface_p, &clip_rect_orig))
+    if (!SDL_SetClipRect (target_surface, &clip_rect_orig))
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_SetClipRect(): %s, returning\n"),

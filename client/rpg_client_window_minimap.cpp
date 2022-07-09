@@ -128,7 +128,6 @@ RPG_Client_Window_MiniMap::handleEvent (const SDL_Event& event_in,
 
       // *WARNING*: falls through !
     }
-    case SDL_ACTIVEEVENT:
     case SDL_KEYDOWN:
     case SDL_KEYUP:
     case SDL_MOUSEBUTTONDOWN:
@@ -140,16 +139,23 @@ RPG_Client_Window_MiniMap::handleEvent (const SDL_Event& event_in,
     case SDL_JOYBUTTONUP:
     case SDL_QUIT:
     case SDL_SYSWMEVENT:
+#if defined (SDL_USE)
+    case SDL_ACTIVEEVENT:
     case SDL_VIDEORESIZE:
     case SDL_VIDEOEXPOSE:
+#elif defined (SDL2_USE)
+    case SDL_WINDOWEVENT_SHOWN:
+    case SDL_WINDOWEVENT_RESIZED:
+    case SDL_WINDOWEVENT_EXPOSED:
+#endif // SDL_USE || SDL2_USE
     case SDL_USEREVENT:
     case RPG_GRAPHICS_SDL_HOVEREVENT:
     default:
     {
       // delegate these to the parent...
-      getParent()->handleEvent(event_in,
-                               window_in,
-                               dirtyRegion_out);
+      getParent ()->handleEvent (event_in,
+                                 window_in,
+                                 dirtyRegion_out);
 
       break;
     }
@@ -172,14 +178,21 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
   RPG_TRACE (ACE_TEXT ("RPG_Client_Window_MiniMap::draw"));
 
   // sanity check(s)
+  ACE_ASSERT (inherited::screen_);
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = inherited::screen_;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
+  ACE_ASSERT (myClient);
+  ACE_ASSERT (myEngine);
+  ACE_ASSERT (mySurface);
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : inherited::screen_);
-  ACE_ASSERT(target_surface);
-  ACE_UNUSED_ARG(offsetX_in);
-  ACE_UNUSED_ARG(offsetY_in);
-  ACE_ASSERT(myClient);
-  ACE_ASSERT(myEngine);
-  ACE_ASSERT(mySurface);
+                                                  : surface_p);
+  ACE_ASSERT (target_surface);
+  ACE_UNUSED_ARG (offsetX_in);
+  ACE_UNUSED_ARG (offsetY_in);
 
   // init clipping
   clip();

@@ -26,6 +26,7 @@
 #include "ace/Global_Macros.h"
 
 #define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 
 #include "rpg_graphics_cursor.h"
@@ -36,16 +37,12 @@
 #include "rpg_graphics_tilesetgraphic.h"
 #include "rpg_graphics_toplevel.h"
 
-//#include "rpg_client_exports.h"
 #include "rpg_client_iwindow.h"
 
 // forward declaration(s)
 class RPG_Client_Engine;
 class RPG_Engine;
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Client_Window_Main
  : public RPG_Graphics_TopLevel
  , public RPG_Client_IWindow

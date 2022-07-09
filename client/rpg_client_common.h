@@ -26,11 +26,11 @@
 #include <string>
 
 #define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 
 #include "ace/Synch_Traits.h"
 
-//#include "glade/glade.h"
 #include "gtk/gtk.h"
 
 #include "common.h"
@@ -93,7 +93,11 @@ struct RPG_Client_GTK_CBData
   GtkFileFilter*                         entityFilter;
   GtkFileFilter*                         mapFilter;
   GtkFileFilter*                         savedStateFilter;
+#if defined (SDL_USE)
   SDL_Surface*                           screen;
+#elif defined (SDL2_USE)
+  SDL_Window*                            screen;
+#endif // SDL_USE || SDL2_USE
   ACE_Thread_Mutex                       screenLock; // video access
   SDL_TimerID                            eventTimer;
   RPG_Client_Engine*                     clientEngine;

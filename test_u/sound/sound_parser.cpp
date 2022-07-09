@@ -33,6 +33,7 @@
 #include "ace/Log_Msg.h"
 
 #define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 
 #include "common_file_tools.h"
@@ -606,10 +607,17 @@ ACE_TMAIN (int argc_in,
   } // end IF
 
   // step2: init SDL
-  if (SDL_Init (SDL_INIT_TIMER |
-                SDL_INIT_AUDIO |
-                SDL_INIT_CDROM |
-                SDL_INIT_NOPARACHUTE) == -1) // "...Prevents SDL from catching fatal signals..."
+#if defined (SDL_USE)
+  Uint32 SDL_init_flags = SDL_INIT_TIMER |
+                          SDL_INIT_AUDIO |
+                          SDL_INIT_CDROM |
+                          SDL_INIT_NOPARACHUTE; // "...Prevents SDL from catching fatal signals..."
+#elif defined (SDL2_USE)
+  Uint32 SDL_init_flags = SDL_INIT_TIMER |
+                          SDL_INIT_AUDIO |
+                          SDL_INIT_NOPARACHUTE; // "...Prevents SDL from catching fatal signals..."
+#endif // SDL_USE || SDL2_USE
+  if (SDL_Init (SDL_init_flags) == -1)
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_Init(): \"%s\", aborting\n"),
@@ -626,11 +634,14 @@ ACE_TMAIN (int argc_in,
   } // end IF
   // ***** keyboard setup *****
   // enable Unicode translation
+
+#if defined (SDL_USE)
   SDL_EnableUNICODE (1);
   // enable key repeat
   SDL_EnableKeyRepeat (SDL_DEFAULT_REPEAT_DELAY,
                        SDL_DEFAULT_REPEAT_INTERVAL);
-//   // ignore keyboard events
+#endif // SDL_USE
+  //   // ignore keyboard events
 //   SDL_EventState(SDL_KEYDOWN, SDL_IGNORE);
 //   SDL_EventState(SDL_KEYUP, SDL_IGNORE);
 

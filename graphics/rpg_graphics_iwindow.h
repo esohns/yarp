@@ -22,6 +22,7 @@
 #define RPG_GRAPHICS_IWINDOW_H
 
 #define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 
 #include "rpg_graphics_colorname.h"
@@ -33,7 +34,7 @@ class RPG_Graphics_IWindow
  : public virtual RPG_Graphics_IWindowBase
 {
  public:
-  virtual ~RPG_Graphics_IWindow () {};
+  //inline virtual ~RPG_Graphics_IWindow () {}
 
   virtual void show (SDL_Rect&) = 0; // return value: "dirty" region
   virtual void hide (SDL_Rect&) = 0; // return value: "dirty" region

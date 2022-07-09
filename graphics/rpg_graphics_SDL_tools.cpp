@@ -21,6 +21,8 @@
 
 #include "rpg_graphics_SDL_tools.h"
 
+#include <sstream>
+
 #include "ace/OS.h"
 #include "ace/Log_Msg.h"
 
@@ -43,7 +45,7 @@ bool
 RPG_Graphics_SDL_Tools::preInitializeVideo (const struct RPG_Graphics_SDL_VideoConfiguration& configuration_in,
                                             const std::string& caption_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::preInitVideo"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::preInitVideo"));
 
   // sanity check
   if (myVideoPreInitialized)
@@ -51,7 +53,7 @@ RPG_Graphics_SDL_Tools::preInitializeVideo (const struct RPG_Graphics_SDL_VideoC
 
   // step1: init video subsystem
   std::string video_driver = configuration_in.video_driver;
-  if (video_driver.empty())
+  if (video_driver.empty ())
   {
     char* environment =
         ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_SDL_VIDEO_DRIVER_ENV_VAR));
@@ -61,7 +63,8 @@ RPG_Graphics_SDL_Tools::preInitializeVideo (const struct RPG_Graphics_SDL_VideoC
   // sanity check
   if (video_driver.empty())
   {
-    video_driver = ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME); // fallback
+    video_driver =
+      ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME); // fallback
 
     ACE_DEBUG((LM_DEBUG,
                ACE_TEXT("using video driver: \"%s\"\n"),
@@ -69,64 +72,90 @@ RPG_Graphics_SDL_Tools::preInitializeVideo (const struct RPG_Graphics_SDL_VideoC
   } // end IF
 
   // set flags passed to SDL_StartEventLoop
+  int result = -1;
+#if defined (SDL_USE)
   Uint32 flags = 0;
-  if (SDL_VideoInit(video_driver.c_str(), // driver name
-                    flags) == -1)         // flags
+  result = SDL_VideoInit (video_driver.c_str (), // driver name
+                          flags);
+#elif defined (SDL2_USE)
+  result = SDL_VideoInit (video_driver.c_str ()); // driver name
+#endif // SDL_USE || SDL2_USE
+  if (result < 0)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_VideoInit(\"%s\", %x): \"%s\", aborting\n"),
-               ACE_TEXT(video_driver.c_str()),
-               flags,
-               ACE_TEXT(SDL_GetError())));
-    //    for (int i = SDL_GetNumVideoDrivers (); i >= 0; --i)
-    //      SDL_GetVideoDriver ()
+#if defined (SDL_USE)
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_VideoInit(\"%s\", %x): \"%s\", aborting\n"),
+                ACE_TEXT (video_driver.c_str()),
+                flags,
+                ACE_TEXT (SDL_GetError ())));
     char driver_name[BUFSIZ];
     SDL_VideoDriverName (driver_name,
                          sizeof (char[BUFSIZ]));
+#elif defined (SDL2_USE)
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_VideoInit(\"%s\"): \"%s\", aborting\n"),
+                ACE_TEXT (video_driver.c_str ()),
+                ACE_TEXT (SDL_GetError ())));
+#endif // SDL_USE || SDL2_USE
     return false;
   } // end IF
 
   // debug info
+  SDL_version version_s;
+#if defined (SDL_USE)
   SDL_SysWMinfo wm_info;
-  ACE_OS::memset(&wm_info, 0, sizeof(wm_info));
-  SDL_VERSION(&wm_info.version);
-  if (SDL_GetWMInfo(&wm_info) <= 0)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_GetWMInfo(): \"%s\", continuing"),
-               ACE_TEXT(SDL_GetError())));
+  ACE_OS::memset (&wm_info, 0, sizeof (SDL_SysWMinfo));
+  SDL_VERSION (&wm_info.version);
+  if (SDL_GetWMInfo (&wm_info) <= 0)
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_GetWMInfo(): \"%s\", continuing"),
+                ACE_TEXT (SDL_GetError ())));
+  version_s = wm_info.version;
+#elif defined (SDL2_USE)
+  SDL_VERSION (&version_s);
+#endif // SDL_USE || SDL2_USE
   std::ostringstream version_number;
-  version_number << static_cast<unsigned int>(wm_info.version.major);
+  version_number << static_cast<unsigned int>(version_s.major);
   version_number << ACE_TEXT_ALWAYS_CHAR(".");
-  version_number << static_cast<unsigned int>(wm_info.version.minor);
+  version_number << static_cast<unsigned int>(version_s.minor);
   version_number << ACE_TEXT_ALWAYS_CHAR(".");
-  version_number << static_cast<unsigned int>(wm_info.version.patch);
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("*** wm info (SDL version: %s) ***\nwindow: \t\t%@\nOpenGL context: \t\t%@\n"),
-             ACE_TEXT(version_number.str().c_str()),
-             wm_info.window,
-             wm_info.hglrc));
+  version_number << static_cast<unsigned int>(version_s.patch);
+#if defined (SDL_USE)
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("*** wm info (SDL version: %s) ***\nwindow: \t\t%@\nOpenGL context: \t\t%@\n"),
+              ACE_TEXT (version_number.str ().c_str ()),
+              wm_info.window,
+              wm_info.hglrc));
 #else
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("*** wm info (SDL version: %s) ***\nsubsystem:\t\t\t\t%d\ndisplay:\t\t\t\t%@\nwindow:\t\t\t\t\t%u\nfull-screen window:\t\t\t%u\nmanaged input window:\t\t\t%u\nrender display:\t\t\t\t%@\n"),
-             ACE_TEXT(version_number.str().c_str()),
-             wm_info.subsystem,
-             wm_info.info.x11.display,
-             wm_info.info.x11.window,
-             wm_info.info.x11.fswindow,
-             wm_info.info.x11.wmwindow,
-             wm_info.info.x11.gfxdisplay));
-#endif
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("*** wm info (SDL version: %s) ***\nsubsystem:\t\t\t\t%d\ndisplay:\t\t\t\t%@\nwindow:\t\t\t\t\t%u\nfull-screen window:\t\t\t%u\nmanaged input window:\t\t\t%u\nrender display:\t\t\t\t%@\n"),
+              ACE_TEXT (version_number.str ().c_str ()),
+              wm_info.subsystem,
+              wm_info.info.x11.display,
+              wm_info.info.x11.window,
+              wm_info.info.x11.fswindow,
+              wm_info.info.x11.wmwindow,
+              wm_info.info.x11.gfxdisplay));
+#endif // ACE_WIN32 || ACE_WIN64
+#elif defined (SDL2_USE)
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("*** SDL version: %s ***\n"),
+              ACE_TEXT (version_number.str ().c_str ())));
+#endif // SDL_USE || SDL2_USE
 
   // step2: set window/icon caption
-  SDL_WM_SetCaption(caption_in.c_str(),  // window caption
-                    caption_in.c_str()); // icon caption
+#if defined (SDL_USE)
+  SDL_WM_SetCaption (caption_in.c_str (),  // window caption
+                     caption_in.c_str ()); // icon caption
+#endif // SDL_USE
 
   myVideoPreInitialized = true;
 
   return true;
 }
 
+#if defined (SDL_USE)
 bool
 RPG_Graphics_SDL_Tools::initializeVideo (const struct RPG_Graphics_SDL_VideoConfiguration& configuration_in,
                                          const std::string& caption_in,
@@ -140,12 +169,11 @@ RPG_Graphics_SDL_Tools::initializeVideo (const struct RPG_Graphics_SDL_VideoConf
 
   // sanity check
   if (!myVideoPreInitialized)
-    if (!preInitializeVideo(configuration_in,
-                            caption_in))
+    if (!preInitializeVideo (configuration_in,
+                             caption_in))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Graphics_SDL_Tools::preInitVideo(), aborting\n")));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::preInitVideo(), aborting\n")));
       return false;
     } // end IF
   ACE_ASSERT(myVideoPreInitialized);
@@ -581,6 +609,162 @@ continue_:
 
   return screen;
 }
+#elif defined (SDL2_USE)
+bool
+RPG_Graphics_SDL_Tools::initializeVideo (const struct RPG_Graphics_SDL_VideoConfiguration& configuration_in,
+                                         const std::string& caption_in,
+                                         SDL_Window*& windowHandle_out,
+                                         bool initializeWindow_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::initializeVideo"));
+
+  // initialize return value(s)
+  windowHandle_out = NULL;
+
+  // sanity check
+  if (!myVideoPreInitialized)
+    if (!preInitializeVideo (configuration_in,
+                             caption_in))
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::preInitVideo(), aborting\n")));
+      return false;
+    } // end IF
+  ACE_ASSERT (myVideoPreInitialized);
+
+  //// set window icon
+  //RPG_Graphics_GraphicTypeUnion type;
+  //type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
+  //type.image = IMAGE_WM_ICON;
+  //RPG_Graphics_t icon_graphic =
+  //  RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->get (type);
+  //ACE_ASSERT(icon_graphic.type.image == IMAGE_WM_ICON);
+  //std::string path = RPG_Graphics_Common_Tools::getGraphicsDirectory ();
+  //path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  //path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_IMAGES_SUB);
+  //path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  //path += icon_graphic.file;
+  //SDL_Surface* icon_image = NULL;
+  //icon_image = RPG_Graphics_Surface::load (path,   // graphics file
+  //                                         false); // don't convert to display format (no screen yet !)
+  //if (!icon_image)
+  //{
+  //  ACE_DEBUG((LM_ERROR,
+  //             ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadFile(\"%s\"), aborting\n"),
+  //             ACE_TEXT(path.c_str())));
+
+  //  return false;
+  //} // end IF
+  //SDL_WM_SetIcon(icon_image, // surface
+  //               NULL);      // mask (--> everything)
+
+  // step3: init screen
+  if (initializeWindow_in)
+  {
+    windowHandle_out =
+      RPG_Graphics_SDL_Tools::initializeScreen (configuration_in,
+                                                caption_in);
+    if (!windowHandle_out)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::initializeScreen(%d,%d,%d), aborting\n"),
+                  configuration_in.screen_width,
+                  configuration_in.screen_height,
+                  configuration_in.screen_colordepth));
+      return false;
+    } // end IF
+  } // end IF
+
+  return true;
+}
+
+SDL_Window*
+RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoConfiguration& configuration_in,
+                                          const std::string& caption_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::initializeScreen"));
+
+  // init return value
+  SDL_Window* result = NULL;
+
+  // get available fullscreen/hardware/... modes
+  int number_of_video_displays_i = SDL_GetNumVideoDisplays ();
+  if (number_of_video_displays_i < 0)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_GetNumVideoDisplays(): \"%s\", aborting\n"),
+                ACE_TEXT (SDL_GetError ())));
+    return NULL;
+  } // end IF
+  for (int i = 0;
+       i < number_of_video_displays_i;
+       i++)
+  {
+    int number_of_display_modes_i = SDL_GetNumDisplayModes (i);
+    if (number_of_display_modes_i < 0)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_GetNumDisplayModes(%d): \"%s\", aborting\n"),
+                  i,
+                  ACE_TEXT (SDL_GetError ())));
+      return NULL;
+    } // end IF
+
+    // print valid modes
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("*** available resolutions (display: %d) ***\n"),
+                i));
+
+    SDL_DisplayMode display_mode_s;
+    ACE_OS::memset (&display_mode_s, 0, sizeof (SDL_DisplayMode));
+    for (int j = 0;
+         j < number_of_display_modes_i;
+         j++)
+    {
+      int result_2 = SDL_GetDisplayMode (i, j, &display_mode_s);
+      if (result_2 < 0)
+      {
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to SDL_GetDisplayMode(%u,%u): \"%s\", aborting\n"),
+                    i, j,
+                    ACE_TEXT (SDL_GetError ())));
+        return NULL;
+      } // end IF
+
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT ("[%d]: %u bpp, %d x %d @ %u Hz\n"),
+                  j + 1,
+                  SDL_BITSPERPIXEL (display_mode_s.format),
+                  display_mode_s.w,
+                  display_mode_s.h,
+                  display_mode_s.refresh_rate));
+    } // end FOR
+  } // end FOR
+
+  // open SDL window
+  Uint32 flags_i = 0;
+  if (configuration_in.use_OpenGL)
+    flags_i |= SDL_WINDOW_OPENGL;
+  result = SDL_CreateWindow (caption_in.c_str (),
+                             SDL_WINDOWPOS_UNDEFINED,
+                             SDL_WINDOWPOS_UNDEFINED,
+                             configuration_in.screen_width,
+                             configuration_in.screen_height,
+                             flags_i);
+  if (!result)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_CreateWindow(\"%s\", %d, %d, 0x%x): \"%s\", aborting\n"),
+                configuration_in.screen_width,
+                configuration_in.screen_height,
+                flags_i,
+                ACE_TEXT (SDL_GetError ())));
+    return NULL;
+  } // end IF
+
+  return result;
+}
+#endif // SDL_USE || SDL2_USE
 
 #if defined (SDL_USE)
 std::string
@@ -711,32 +895,26 @@ RPG_Graphics_SDL_Tools::colorToSDLColor (ACE_UINT32 color_in,
 }
 
 Uint32
-RPG_Graphics_SDL_Tools::getColor(const RPG_Graphics_ColorName& colorName_in,
-                                 const SDL_Surface& targetSurface_in,
-																 const float& blendFactor_in) // opacity
+RPG_Graphics_SDL_Tools::getColor (const RPG_Graphics_ColorName& colorName_in,
+                                  const SDL_PixelFormat& pixelFormat_in,
+                                  const float& blendFactor_in) // opacity
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::getColor"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::getColor"));
 
-  // init return value(s)
-  Uint32 result = 0;
-
-  RPG_Graphics_ColorMapConstIterator_t iterator = myColors.find(colorName_in);
-  if (iterator == myColors.end())
+  RPG_Graphics_ColorMapConstIterator_t iterator = myColors.find (colorName_in);
+  if (iterator == myColors.end ())
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("unknown/invalid color (was: \"%s\"), aborting\n"),
-               ACE_TEXT(RPG_Graphics_ColorNameHelper::RPG_Graphics_ColorNameToString(colorName_in).c_str())));
-
-    return result;
+               ACE_TEXT(RPG_Graphics_ColorNameHelper::RPG_Graphics_ColorNameToString (colorName_in).c_str ())));
+    return 0;
   } // end IF
 
-  result = SDL_MapRGBA (targetSurface_in.format,
-                        (*iterator).second.r,
-                        (*iterator).second.g,
-                        (*iterator).second.b,
-                        static_cast<Uint8>((*iterator).second.a * blendFactor_in));
-
-  return result;
+  return SDL_MapRGBA (&pixelFormat_in,
+                      (*iterator).second.r,
+                      (*iterator).second.g,
+                      (*iterator).second.b,
+                      static_cast<Uint8> ((*iterator).second.a * blendFactor_in));
 }
 
 void

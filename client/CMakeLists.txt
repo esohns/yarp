@@ -35,15 +35,7 @@ elseif (WXWIDGETS_USE)
  endif (CMAKE_BUILD_TYPE STREQUAL Debug)
 endif ()
 
-if (UNIX)
- include (FindPkgConfig)
- pkg_check_modules (PKG_CONFIG_MODULE_SDL REQUIRED sdl)
- pkg_check_modules (PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
- pkg_check_modules (PKG_CONFIG_MODULE_LIBGTK REQUIRED gtk+-2.0)
-# pkg_check_modules (PKG_CONFIG_MODULE_LIBGNOMEUI REQUIRED libgnomeui-2.0>=1.110.0)
-# pkg_check_modules (PKG_CONFIG_MODULE_GMODULE REQUIRED gmodule-export-2.0)
-elseif (WIN32)
-endif ()
+include (${CMAKE_CURRENT_SOURCE_DIR}/../scripts/sdl.cmake)
 
 ########### next target ###############
 set (LIBRARY RPG_Client)
@@ -58,7 +50,6 @@ set (${LIBRARY}_SRCS
      rpg_client_engine.cpp
      rpg_client_entity_manager.h
      rpg_client_entity_manager.cpp
-   #  rpg_client_exports.h
      rpg_client_iwindow.h
      rpg_client_iwindow_level.h
      rpg_client_ui_tools.h
@@ -78,24 +69,22 @@ set (${LIBRARY}_SRCS
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 
-if (UNIX)
- set_source_files_properties(${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
-elseif (WIN32)
- set_source_files_properties(${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
-endif ()
+#if (UNIX)
+# set_source_files_properties(${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
+#elseif (WIN32)
+# set_source_files_properties(${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
+#endif ()
 
-if (UNIX)
+if (SDL_SUPPORT)
  target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}>)
+                             "$<BUILD_INTERFACE:${SDL_INCLUDE_DIRS}>")
+endif (SDL_SUPPORT)
+if (UNIX)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:${PKG_CONFIG_MODULE_LIBGNOMEUI_INCLUDE_DIRS}>)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:${PKG_CONFIG_MODULE_LIBGLADE_INCLUDE_DIRS}>)
+# target_include_directories (${LIBRARY} PUBLIC
+#                             $<BUILD_INTERFACE:${PKG_CONFIG_MODULE_LIBGLADE_INCLUDE_DIRS}>)
 elseif (WIN32)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/SDL/include>)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/SDL_ttf/include>)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/SDL_mixer/include>)
  target_include_directories (${LIBRARY} PUBLIC
@@ -107,10 +96,10 @@ elseif (WIN32)
 endif ()
 target_include_directories (${LIBRARY} PUBLIC
                             "$<BUILD_INTERFACE:${GTK_INCLUDE_DIRS}>")
-if (GTKGLAREA_SUPPORT)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/gtkglarea>)
-endif (GTKGLAREA_SUPPORT)
+#if (GTKGLAREA_SUPPORT)
+# target_include_directories (${LIBRARY} PUBLIC
+#                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/gtkglarea>)
+#endif (GTKGLAREA_SUPPORT)
 
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${ACE_INCLUDE_DIR}>)

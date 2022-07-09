@@ -1,26 +1,20 @@
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/sdl.cmake)
+
 if (UNIX)
  include(FindPkgConfig)
- pkg_check_modules(PKG_CONFIG_MODULE_SDL REQUIRED sdl)
  pkg_check_modules(PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
- pkg_check_modules(PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
- pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
- pkg_check_modules(PKG_CONFIG_MODULE_LIBGTK REQUIRED gtk+-2.0)
 elseif (WIN32)
 # add_definitions (-D__IDataObject_INTERFACE_DEFINED__)
  add_definitions (-D_USE_MATH_DEFINES)
 endif ()
 
+if (SDL_SUPPORT)
+ include_directories (${SDL_INCLUDE_DIRS})
+endif (SDL_SUPPORT)
 if (UNIX)
- include_directories(${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
-                     ${PKG_CONFIG_MODULE_SDL_MIXER_INCLUDE_DIRS}
-                     ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}
-                     ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS}
-                     ${PKG_CONFIG_MODULE_LIBGLADE_INCLUDE_DIRS})
+ include_directories (${PKG_CONFIG_MODULE_SDL_MIXER_INCLUDE_DIRS})
 elseif (WIN32)
- include_directories($ENV{LIB_ROOT}/SDL/include
-                     $ENV{LIB_ROOT}/SDL_mixer/include
-                     $ENV{LIB_ROOT}/SDL_ttf/include)
- include_directories (${GTK_INCLUDE_DIRS})
+ include_directories ($ENV{LIB_ROOT}/SDL_mixer/include)
 endif ()
 
 if (WIN32)
@@ -36,19 +30,19 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/gtk)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../ACEStream/3rd_party/tree)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../ACEStream/src)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../common
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../item
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../character
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../magic
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../combat
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../character/player
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../character/monster
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../map
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../engine
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../client
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../graphics
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../sound)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../common
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../item
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../character
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../magic
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../combat
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../character/player
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../character/monster
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../map
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../engine
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../client
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../graphics
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../sound)
 
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
@@ -65,12 +59,14 @@ endif ()
 
 add_executable(${EXECUTABLE} ${${EXECUTABLE}_SRCS})
 
+if (SDL_SUPPORT)
+ target_link_libraries (${EXECUTABLE}
+                        ${SDL_LIBRARIES})
+endif (SDL_SUPPORT)
 if (UNIX)
  target_link_libraries(${EXECUTABLE}
-                       ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
                        xerces-c
+                       ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
                        ${ACE_LIBRARY}
                        Common CommonLog CommonTimer
                        RPG_Dice RPG_Common RPG_Graphics)
@@ -117,35 +113,36 @@ add_dependencies(${EXECUTABLE}
                  RPG_Magic RPG_Item RPG_Character RPG_Monster RPG_Player RPG_Combat
                  RPG_Map RPG_Engine RPG_Sound RPG_Graphics RPG_Client)
 
+if (SDL_SUPPORT)
+ target_link_libraries (${EXECUTABLE}
+                        ${SDL_LIBRARIES})
+endif (SDL_SUPPORT)
 if (UNIX)
- target_link_libraries(${EXECUTABLE}
-                       ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES}
-                       GLU
-                       xerces-c
-                       ${ACE_LIBRARY}
-                       Common CommonLog CommonTimer CommonUI CommonUI_GTK
-                       ACEStream ACEStream_Network
-                       ACENetwork
-                       RPG_Dice RPG_Chance RPG_Common
-                       RPG_Character RPG_Magic RPG_Item
-                       RPG_Monster RPG_Player RPG_Combat
-                       RPG_Map RPG_Engine RPG_Net RPG_Net_Protocol
-                       RPG_Sound RPG_Graphics RPG_Client
-                       RPG_Character RPG_Magic RPG_Item
-                       RPG_Dice RPG_Common RPG_Monster RPG_Map
-                       RPG_Combat RPG_Chance RPG_Net RPG_Sound
-                       RPG_Character RPG_Player
-                       ACEStream_Network)
+ target_link_libraries (${EXECUTABLE}
+                        ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES}
+                        ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
+#                        ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES}
+                        GLU
+                        xerces-c
+                        ${ACE_LIBRARY}
+                        Common CommonLog CommonTimer CommonUI CommonUI_GTK
+                        ACEStream ACEStream_Network
+                        ACENetwork
+                        RPG_Dice RPG_Chance RPG_Common
+                        RPG_Character RPG_Magic RPG_Item
+                        RPG_Monster RPG_Player RPG_Combat
+                        RPG_Map RPG_Engine RPG_Net RPG_Net_Protocol
+                        RPG_Sound RPG_Graphics RPG_Client
+                        RPG_Character RPG_Magic RPG_Item
+                        RPG_Dice RPG_Common RPG_Monster RPG_Map
+                        RPG_Combat RPG_Chance RPG_Net RPG_Sound
+                        RPG_Character RPG_Player
+                        ACEStream_Network)
 elseif (WIN32)
  set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
                         Opengl32.lib Glu32.lib Secur32.lib Userenv.lib
-                        $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDLmain.lib
                         $ENV{LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL_mixer.lib
                         $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                         $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib

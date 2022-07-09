@@ -87,31 +87,38 @@ SDL_GUI_MainWindow::init(state_t* state_in,
 }
 
 void
-SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
-                         unsigned int offsetX_in,
-                         unsigned int offsetY_in)
+SDL_GUI_MainWindow::draw (SDL_Surface* targetSurface_in,
+                          unsigned int offsetX_in,
+                          unsigned int offsetY_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::draw"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_MainWindow::draw"));
 
   // sanity check(s)
+  ACE_ASSERT (inherited::screen_);
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = inherited::screen_;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : inherited::screen_);
-  ACE_ASSERT(target_surface);
-  ACE_ASSERT(static_cast<int>(offsetX_in) <= target_surface->w);
-  ACE_ASSERT(static_cast<int>(offsetY_in) <= target_surface->h);
+                                                  : surface_p);
+  ACE_ASSERT (target_surface);
+  ACE_ASSERT (static_cast<int> (offsetX_in) <= target_surface->w);
+  ACE_ASSERT (static_cast<int> (offsetY_in) <= target_surface->h);
 
   // *NOTE*: drawBorder() does its own locking
   // step1: draw borders
-  drawBorder(target_surface,
-             offsetX_in,
-             offsetY_in);
+  drawBorder (target_surface,
+              offsetX_in,
+              offsetY_in);
 
   lock();
 
   // step2: draw title
-  drawTitle(myTitleFont,
-            title_,
-            target_surface);
+  drawTitle (myTitleFont,
+             title_,
+             target_surface);
 
   // step3: fill central area
   SDL_Rect prev_clip_rect, clip_rect, dirty_region;
@@ -197,14 +204,14 @@ SDL_GUI_MainWindow::draw(SDL_Surface* targetSurface_in,
 }
 
 void
-SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
-                                RPG_Graphics_IWindowBase* window_in,
-                                SDL_Rect& dirtyRegion_out)
+SDL_GUI_MainWindow::handleEvent (const SDL_Event& event_in,
+                                 RPG_Graphics_IWindowBase* window_in,
+                                 SDL_Rect& dirtyRegion_out)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::handleEvent"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_MainWindow::handleEvent"));
 
   // init return value(s)
-  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("SDL_GUI_MainWindow::handleEvent\n")));
@@ -212,8 +219,13 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
   switch (event_in.type)
   {
     // *** visibility ***
+#if defined (SDL_USE)
     case SDL_ACTIVEEVENT:
+#elif defined (SDL2_USE)
+    case SDL_WINDOWEVENT_SHOWN:
+#endif // SDL_USE || SDL2_USE
     {
+#if defined (SDL_USE)
       if (event_in.active.state & SDL_APPMOUSEFOCUS)
       {
         if (event_in.active.gain & SDL_APPMOUSEFOCUS)
@@ -275,6 +287,7 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
 //                      ACE_TEXT("iconified...\n")));
         } // end ELSE
       } // end IF
+#endif // SDL_USE || SDL2_USE
 
       break;
     }
@@ -290,6 +303,15 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
       {
         case SDLK_s:
         {
+          // sanity check(s)
+          ACE_ASSERT (inherited::screen_);
+#if defined (SDL_USE)
+          SDL_Surface* surface_p = inherited::screen_;
+#elif defined (SDL2_USE)
+          SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
+#endif // SDL_USE || SDL2_USE
+          ACE_ASSERT (surface_p);
+
           std::ostringstream converter;
           converter << myScreenshotIndex++;
           std::string dump_path = Common_File_Tools::getTempDirectory();
@@ -298,9 +320,9 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
           dump_path += ACE_TEXT_ALWAYS_CHAR("_");
           dump_path += converter.str();
           dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_SCREENSHOT_DEF_EXT);
-          RPG_Graphics_Surface::savePNG(*SDL_GetVideoSurface(), // image
-                                        dump_path,              // file
-                                        false);                 // no alpha
+          RPG_Graphics_Surface::savePNG (*surface_p, // image
+                                         dump_path,  // file
+                                         false);     // no alpha
 
           break;
         }
@@ -514,20 +536,33 @@ SDL_GUI_MainWindow::handleEvent(const SDL_Event& event_in,
 
       break;
     }
+#if defined (SDL_USE)
     case SDL_VIDEORESIZE:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_VIDEORESIZE event...\n")));
-
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT ("SDL_VIDEORESIZE event...\n")));
       break;
     }
     case SDL_VIDEOEXPOSE:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("SDL_VIDEOEXPOSE event...\n")));
-
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT ("SDL_VIDEOEXPOSE event...\n")));
       break;
     }
+#elif defined (SDL2_USE)
+    case SDL_WINDOWEVENT_RESIZED:
+    {
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT ("SDL_WINDOWEVENT_RESIZED event...\n")));
+      break;
+    }
+    case SDL_WINDOWEVENT_EXPOSED:
+    {
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT ("SDL_WINDOWEVENT_EXPOSED event...\n")));
+      break;
+    }
+#endif // SDL_USE || SDL2_USE
     case RPG_GRAPHICS_SDL_HOVEREVENT:
     {
 //       ACE_DEBUG((LM_DEBUG,
@@ -931,11 +966,19 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::drawBorder"));
 
   // sanity check(s)
+  ACE_ASSERT (inherited::screen_);
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = inherited::screen_;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
+  // sanity check(s)
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : inherited::screen_);
-  ACE_ASSERT(target_surface);
-  ACE_ASSERT(static_cast<int>(offsetX_in) <= target_surface->w);
-  ACE_ASSERT(static_cast<int>(offsetY_in) <= target_surface->h);
+                                                  : surface_p);
+  ACE_ASSERT (target_surface);
+  ACE_ASSERT (static_cast<int> (offsetX_in) <= target_surface->w);
+  ACE_ASSERT (static_cast<int> (offsetY_in) <= target_surface->h);
 
   lock();
 
@@ -1104,10 +1147,18 @@ SDL_GUI_MainWindow::drawTitle(const RPG_Graphics_Font& font_in,
   if (text_in.empty())
     return;
 
-  // sanity check
+  // sanity check(s)
+  ACE_ASSERT (inherited::screen_);
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = inherited::screen_;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
+  // sanity check(s)
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : inherited::screen_);
-  ACE_ASSERT(target_surface);
+                                                  : surface_p);
+  ACE_ASSERT (target_surface);
 
   RPG_Graphics_TextSize_t title_size =
       RPG_Graphics_Common_Tools::textSize(font_in,
@@ -1127,19 +1178,21 @@ SDL_GUI_MainWindow::drawTitle(const RPG_Graphics_Font& font_in,
     return;
   } // end IF
 
-  RPG_Graphics_Surface::putText(font_in,
-                                text_in,
-                                RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_Graphics_SDL_Tools::getColor(RPG_GRAPHICS_FONT_DEF_COLOR,
-                                                                                                         *target_surface),
-                                                                        *target_surface),
-                                true, // add shade
-                                RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_Graphics_SDL_Tools::getColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
-                                                                                                         *target_surface),
-                                                                        *target_surface),
-                                std::make_pair(borderLeft_,                             // top left
-                                               ((borderTop_ - title_size.second) / 2)), // center of top border
-                                target_surface,
-                                dirty_region);
+  RPG_Graphics_Surface::putText (font_in,
+                                 text_in,
+                                 RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_Graphics_SDL_Tools::getColor (RPG_GRAPHICS_FONT_DEF_COLOR,
+                                                                                                            *target_surface->format,
+                                                                                                            1.0F),
+                                                                          *target_surface),
+                                 true, // add shade
+                                 RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_Graphics_SDL_Tools::getColor (RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
+                                                                                                            *target_surface->format,
+                                                                                                            1.0F),
+                                                                          *target_surface),
+                                 std::make_pair (borderLeft_,                             // top left
+                                                 ((borderTop_ - title_size.second) / 2)), // center of top border
+                                 target_surface,
+                                 dirty_region);
   invalidate(dirty_region);
   if (!SDL_SetClipRect(target_surface, NULL))
   {

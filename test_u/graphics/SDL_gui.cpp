@@ -33,6 +33,7 @@
 #include "ace/OS_main.h"
 
 #define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 #include "SDL_syswm.h"
 #include "SDL_ttf.h"
@@ -731,21 +732,24 @@ do_slideshow(const std::string& graphicsDirectory_in,
 
           continue;
         } // end IF
-        RPG_Graphics_Surface::fill(RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK,
-                                                                    *image),
-                                   image);
-        if (!RPG_Graphics_Surface::putText(type.font,
-                                           text,
-                                           RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_Graphics_SDL_Tools::getColor(SDL_GUI_DEF_TILE_INDEX_COLOR,
-                                                                                                                    *image),
-                                                                                   *image),
-                                           false, // add shade ?
-                                           RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_Graphics_SDL_Tools::getColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
-                                                                                                                    *image),
-                                                                                   *image),
-                                           std::make_pair(0, 0),
-                                           image,
-                                           dirty_region))
+        RPG_Graphics_Surface::fill (RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK,
+                                                                      *image->format,
+                                                                      1.0F),
+                                    image);
+        if (!RPG_Graphics_Surface::putText (type.font,
+                                            text,
+                                            RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_Graphics_SDL_Tools::getColor (SDL_GUI_DEF_TILE_INDEX_COLOR,
+                                                                                                                       *image->format,
+                                                                                                                       1.0F),
+                                                                                     *image),
+                                            false, // add shade ?
+                                            RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_Graphics_SDL_Tools::getColor (RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
+                                                                                                                       *image->format,
+                                                                                                                       1.0F),
+                                                                                     *image),
+                                            std::make_pair (0, 0),
+                                            image,
+                                            dirty_region))
         {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("failed to RPG_Graphics_Surface::putText(%s), continuing\n"),
@@ -837,32 +841,47 @@ do_slideshow(const std::string& graphicsDirectory_in,
     } // end SWITCH
     ACE_ASSERT(image);
 
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("showing graphics type \"%s\"...\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::toString(type).c_str())));
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("showing graphics type \"%s\"...\n"),
+                ACE_TEXT (RPG_Graphics_Common_Tools::toString (type).c_str ())));
 
     // step4: draw image to screen
-    RPG_Graphics_Surface::put(std::make_pair(((state.screen->w - image->w) / 2),  // location x
-                                             ((state.screen->h - image->h) / 2)), // location y
-                              *image,                           // image
-                              state.screen,                     // screen
-                              dirty_region);                    // return value: "dirty" region
-    if (SDL_Flip(state.screen))
+#if defined (SDL_USE)
+    SDL_Surface* surface_p = state.screen;
+#elif defined (SDL2_USE)
+    SDL_Surface* surface_p = SDL_GetWindowSurface (state.screen);
+#endif // SDL_USE || SDL2_USE
+    RPG_Graphics_Surface::put (std::make_pair (((surface_p->w - image->w) / 2),  // location x
+                                               ((surface_p->h - image->h) / 2)), // location y
+                               *image,                                           // image
+                               surface_p,                                        // screen
+                               dirty_region);                                    // return value: "dirty" region
+#if defined (SDL_USE)
+    if (SDL_Flip (state.screen))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_Flip(): \"%s\", aborting\n"),
-                 ACE_TEXT(SDL_GetError())));
-
-      // clean up
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_Flip(): \"%s\", returning\n"),
+                  ACE_TEXT (SDL_GetError ())));
       if (release_image)
-        SDL_FreeSurface(image);
-
+        SDL_FreeSurface (image);
       return;
     } // end IF
+#elif defined (SDL2_USE)
+    if (SDL_UpdateWindowSurface (state.screen) < 0)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_UpdateWindowSurface(%@): \"%s\", continuing\n"),
+                  state.screen,
+                  ACE_TEXT (SDL_GetError ())));
+      if (release_image)
+        SDL_FreeSurface(image);
+      return;
+    } // end IF
+#endif // SDL_USE || SDL2_USE
 
     // step5: wait a little while
-    do_SDL_waitForInput(SDL_GUI_DEF_SLIDESHOW_DELAY, // second(s)
-                        sdl_event);                  // return value: event
+    do_SDL_waitForInput (SDL_GUI_DEF_SLIDESHOW_DELAY, // second(s)
+                         sdl_event);                  // return value: event
     switch (sdl_event.type)
     {
       case SDL_KEYDOWN:
@@ -1183,7 +1202,11 @@ do_UI(struct RPG_Engine_Entity& entity_in,
           break; // leave
         // *WARNING*: falls through !
       }
+#if defined (SDL_USE)
       case SDL_ACTIVEEVENT:
+#elif defined (SDL2_USE)
+      case SDL_WINDOWEVENT_SHOWN:
+#endif // SDL_USE || SDL2_USE
       case SDL_MOUSEBUTTONDOWN:
       case SDL_MOUSEMOTION:
       case RPG_GRAPHICS_SDL_HOVEREVENT: // hovering...
@@ -1316,9 +1339,17 @@ do_UI(struct RPG_Engine_Entity& entity_in,
 
         break;
       }
+#if defined (SDL_USE)
       case SDL_VIDEORESIZE:
+#elif defined (SDL2_USE)
+      case SDL_WINDOWEVENT_RESIZED:
+#endif // SDL_USE || SDL2_USE
         break;
+#if defined (SDL_USE)
       case SDL_VIDEOEXPOSE:
+#elif defined (SDL2_USE)
+      case SDL_WINDOWEVENT_EXPOSED:
+#endif // SDL_USE || SDL2_USE
       {
         //int x, y;
         //Uint8 button_state = SDL_GetMouseState(&x, &y);
@@ -1336,7 +1367,11 @@ do_UI(struct RPG_Engine_Entity& entity_in,
     // redraw cursor ?
     switch (sdl_event.type)
     {
+#if defined (SDL_USE)
       case SDL_ACTIVEEVENT:
+#elif defined (SDL2_USE)
+      case SDL_WINDOWEVENT_SHOWN:
+#endif // SDL_USE || SDL2_USE
       case SDL_KEYDOWN:
       case SDL_MOUSEBUTTONDOWN:
       {
@@ -1460,10 +1495,10 @@ do_work(const mode_t& mode_in,
   } // end IF
 
   // step1d: init video window
-  if (!RPG_Graphics_SDL_Tools::initializeVideo(videoConfiguration_in,                     // configuration
-                                               ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION), // window/icon caption
-                                               state.screen,                              // return value: window surface
-                                               true))                                     // init window surface ?
+  if (!RPG_Graphics_SDL_Tools::initializeVideo (videoConfiguration_in,                     // configuration
+                                                ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION), // window/icon caption
+                                                state.screen,                              // return value: window surface
+                                                true))                                     // init window surface ?
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::initVideo, returning\n")));
@@ -1473,8 +1508,10 @@ do_work(const mode_t& mode_in,
 
   // step2: init input
   struct RPG_Client_SDL_InputConfiguration input_configuration;
+#if defined (SDL_USE)
   input_configuration.key_repeat_initial_delay = SDL_DEFAULT_REPEAT_DELAY;
   input_configuration.key_repeat_interval = SDL_DEFAULT_REPEAT_INTERVAL;
+#endif // SDL_USE || SDL2_USE
   input_configuration.use_UNICODE = true;
   if (!RPG_Client_Common_Tools::initializeSDLInput(input_configuration))
   {
@@ -1490,24 +1527,31 @@ do_work(const mode_t& mode_in,
   std::string title
     //= ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE)
     ;
-  SDL_GUI_MainWindow main_window(std::make_pair(state.screen->w,
-                                                state.screen->h), // size
-                                 type,                            // interface elements
-                                 title,                           // title (== caption)
-                                 FONT_MAIN_LARGE);                // title font
-  main_window.setScreen(state.screen);
+
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = state.screen;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (state.screen);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
+  SDL_GUI_MainWindow main_window (std::make_pair (surface_p->w,
+                                                  surface_p->h), // size
+                                 type,                           // interface elements
+                                 title,                          // title (== caption)
+                                 FONT_MAIN_LARGE);               // title font
+  main_window.setScreen (state.screen);
 
   // ***** mouse setup *****
-  SDL_WarpMouse((state.screen->w / 2),
-                (state.screen->h / 2));
+#if defined (SDL_USE)
+  SDL_WarpMouse ((surface_p->w / 2), (surface_p->h / 2));
+#endif // SDL_USE || SDL2_USE
 
   switch (mode_in)
   {
     case SDL_GUI_USERMODE_SLIDESHOW:
     {
-      do_slideshow(graphicsDirectory_in,
-                   &main_window);
-
+      do_slideshow (graphicsDirectory_in,
+                    &main_window);
       break;
     }
     case SDL_GUI_USERMODE_FLOOR_PLAN:
@@ -1765,35 +1809,36 @@ do_printVersion(const std::string& programName_in)
 
   // step2: SDL version
   SDL_version sdl_version;
-  ACE_OS::memset(&sdl_version, 0, sizeof(sdl_version));
-  SDL_VERSION(&sdl_version);
+  ACE_OS::memset (&sdl_version, 0, sizeof (SDL_version));
+  SDL_VERSION (&sdl_version);
   std::ostringstream version_number;
   version_number << sdl_version.major;
   version_number << ACE_TEXT_ALWAYS_CHAR(".");
   version_number << sdl_version.minor;
   version_number << ACE_TEXT_ALWAYS_CHAR(".");
   version_number << sdl_version.patch;
-  std::cout << ACE_TEXT("SDL (compiled): ")
+  std::cout << ACE_TEXT ("SDL (compiled): ")
             << version_number.str()
             << std::endl;
-  const SDL_version* sdl_version_p = SDL_Linked_Version();
+#if defined (SDL_USE)
+  const SDL_version* sdl_version_p = SDL_Linked_Version ();
   if (!sdl_version_p)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_Linked_Version(): \"%s\", aborting\n"),
-               ACE_TEXT(SDL_GetError())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_Linked_Version(): \"%s\", returning\n"),
+                ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
-  version_number.str("");
+  version_number.str ("");
   version_number << sdl_version_p->major;
-  version_number << ACE_TEXT_ALWAYS_CHAR(".");
+  version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << sdl_version_p->minor;
-  version_number << ACE_TEXT_ALWAYS_CHAR(".");
+  version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << sdl_version_p->patch;
-  std::cout << ACE_TEXT("SDL (linked): ")
-            << version_number.str()
+  std::cout << ACE_TEXT ("SDL (linked): ")
+            << version_number.str ()
             << std::endl;
+#endif // SDL_USE
 
   // step3: ACE version
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta
@@ -2112,15 +2157,17 @@ ACE_TMAIN (int argc_in,
 //    ACE_DEBUG((LM_DEBUG,
 //               ACE_TEXT("enabled SDL_SYSWMEVENT events...\n")));
 //  } // end IF
-  event_state = SDL_EventState(SDL_ACTIVEEVENT, SDL_QUERY);
+#if defined (SDL_USE)
+  event_state = SDL_EventState (SDL_ACTIVEEVENT, SDL_QUERY);
   if ((event_state == SDL_IGNORE) ||
       (event_state == SDL_DISABLE))
   {
-    SDL_EventState(SDL_ACTIVEEVENT, SDL_ENABLE);
+    SDL_EventState (SDL_ACTIVEEVENT, SDL_ENABLE);
 
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("enabled SDL_ACTIVEEVENT events...\n")));
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("enabled SDL_ACTIVEEVENT events...\n")));
   } // end IF
+#endif // SDL_USE
 
   // step3: do actual work
   ACE_High_Res_Timer timer;

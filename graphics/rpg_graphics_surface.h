@@ -26,11 +26,11 @@
 #include "ace/Global_Macros.h"
 
 #define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_cursor.h"
-//#include "rpg_graphics_exports.h"
 #include "rpg_graphics_font.h"
 #include "rpg_graphics_image.h"
 #include "rpg_graphics_sprite.h"
@@ -38,9 +38,6 @@
 #include "rpg_graphics_tilesetgraphic.h"
 #include "rpg_graphics_graphictypeunion.h"
 
-/**
-  @author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Graphics_Surface
 {
  public:
@@ -65,35 +62,40 @@ class RPG_Graphics_Surface
   SDL_Surface* surface() const;
 
   // clip/unclip the SDL window ("screen");
-  static void clip();
-  static void unclip();
+#if defined (SDL_USE)
+  static void clip ();
+  static void unclip ();
+#elif defined (SDL2_USE)
+  static void clip (SDL_Window*); // window handle
+  static void unclip (SDL_Window*); // window handle
+#endif // SDL_USE || SDL2_USE
 
   // *NOTE*: results need to be SDL_FreeSurface()d !
   // *WARNING*: display format is not available until AFTER SDL_SetVideoMode() !
-  static SDL_Surface* load(const std::string&, // file
-                           const bool&);       // convert to display format ?
+  static SDL_Surface* load (const std::string&, // file
+                            bool);              // convert to display format ?
 
-  static void savePNG(const SDL_Surface&, // image
-                      const std::string&, // file
-                      const bool&);       // with alpha ?
+  static void savePNG (const SDL_Surface&, // image
+                       const std::string&, // file
+                       bool);              // with alpha ?
 
   // *NOTE*: results need to be SDL_FreeSurface()d !
-  static SDL_Surface* create(const unsigned int&,  // width
-                             const unsigned int&); // height
-  static void copy(const SDL_Surface&, // source surface
-                   SDL_Surface&);      // target surface
+  static SDL_Surface* create (unsigned int,  // width
+                              unsigned int); // height
+  static void copy (const SDL_Surface&, // source surface
+                    SDL_Surface&);      // target surface
   // *NOTE*: results need to be SDL_FreeSurface()d !
   static SDL_Surface* copy(const SDL_Surface&); // source surface
 
   // *NOTE*: results need to be SDL_FreeSurface()d !
   static SDL_Surface* get(const RPG_Graphics_Offset_t&, // offset (top left == 0,0)
-                          const unsigned int&,          // width
-                          const unsigned int&,          // height
+                          unsigned int,                 // width
+                          unsigned int,                 // height
                           const SDL_Surface&);          // source surface
-  static void get(const RPG_Graphics_Offset_t&, // offset (top left == 0,0)
-                  const bool&,                  // blit to target surface ?
-                  const SDL_Surface&,           // source surface
-                  SDL_Surface&);                // target surface
+  static void get (const RPG_Graphics_Offset_t&, // offset (top left == 0,0)
+                   bool,                  // blit to target surface ?
+                   const SDL_Surface&,           // source surface
+                   SDL_Surface&);                // target surface
   static void put(const RPG_Graphics_Offset_t&, // offset (top left == 0,0)
                   const SDL_Surface&,           // source surface
                   SDL_Surface*,                 // target surface (e.g. screen)
@@ -101,36 +103,39 @@ class RPG_Graphics_Surface
   static bool putText(const RPG_Graphics_Font&,     // font
                       const std::string&,           // string
                       const SDL_Color&,             // color
-                      const bool&,                  // shade ?
+                      bool,                         // shade ?
                       const SDL_Color&,             // shade color
                       const RPG_Graphics_Offset_t&, // offset (top left == 0,0)
                       SDL_Surface*,                 // target surface (e.g. screen)
                       SDL_Rect&);                   // return value: "dirty" region
-  static void putRectangle(const SDL_Rect&, // rectangle
-                           const Uint32&,   // color
-                           SDL_Surface*);   // target surface (e.g. screen)
+  static void putRectangle (const SDL_Rect&, // rectangle
+                            Uint32,   // color
+                            SDL_Surface*);   // target surface (e.g. screen)
 
-  static void alpha(const Uint8&,  // alpha (0: transparent --> 255: opaque)
-                    SDL_Surface&); // target surface
+  static void alpha (Uint8,  // alpha (0: transparent --> 255: opaque)
+                     SDL_Surface&); // target surface
   // *NOTE*: results need to be SDL_FreeSurface()d !
-  static SDL_Surface* alpha(const SDL_Surface&,               // source surface
-                            const Uint8& = SDL_ALPHA_OPAQUE); // alpha (0: transparent --> 255: opaque)
-  static void clear(SDL_Surface*,            // target surface
+  static SDL_Surface* alpha (const SDL_Surface&,        // source surface
+                             Uint8 = SDL_ALPHA_OPAQUE); // alpha (0: transparent --> 255: opaque)
+  static void clear (SDL_Surface*,            // target surface
+                     const SDL_Rect* = NULL); // clip area (if any)
+  static void fill (Uint32,           // color
+                    SDL_Surface*,            // target surface
                     const SDL_Rect* = NULL); // clip area (if any)
-  static void fill(const Uint32&,           // color
-                   SDL_Surface*,            // target surface
-                   const SDL_Rect* = NULL); // clip area (if any)
 
   // refresh (partial) screen surface
-  static void update(const SDL_Rect&, // "dirty" rectangle
-                     SDL_Surface*);   // target surface (e.g. screen)
+#if defined (SDL_USE)
+  static void update (const SDL_Rect&, // "dirty" rectangle
+                      SDL_Surface*);   // target surface (e.g. screen)
+#elif defined (SDL2_USE)
+  static void update (const SDL_Rect&, // "dirty" rectangle
+                      SDL_Window*);    // target window (e.g. screen)
+#endif // SDL_USE || SDL2_USE
 
  private:
   // helper methods
-  static SDL_Surface* loadPNG(const std::string&,    // filename
-                              FILE*);                // file handle
-//                              const unsigned char*); // source buffer
-//                              const unsigned char&); // alpha (0: transparent --> 255: opaque)
+  static SDL_Surface* loadPNG (const std::string&, // filename
+                               FILE*);             // file handle
 
   SDL_Surface*                  mySurface;
   RPG_Graphics_GraphicTypeUnion myType;

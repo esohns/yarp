@@ -109,10 +109,10 @@ RPG_Sound_Common_Tools::initialize (const struct RPG_Sound_SDLConfiguration& con
     //
     //     return;
     //   } // end IF
-    if (Mix_OpenAudio(config_in.frequency,
-                      config_in.format,
-                      config_in.channels,
-                      config_in.chunksize) < 0)
+    if (Mix_OpenAudio (config_in.frequency,
+                       config_in.format,
+                       config_in.channels,
+                       config_in.chunksize) < 0)
     {
       ACE_DEBUG((LM_ERROR,
                   ACE_TEXT("failed to Mix_OpenAudio(): \"%s\", aborting\n"),
@@ -120,8 +120,8 @@ RPG_Sound_Common_Tools::initialize (const struct RPG_Sound_SDLConfiguration& con
 
       return false;
     } // end IF
-    if (Mix_AllocateChannels(RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS) !=
-        RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS)
+
+    if (Mix_AllocateChannels (RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS) != RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS)
     {
       ACE_DEBUG((LM_ERROR,
                   ACE_TEXT("failed to Mix_AllocateChannels(%d): \"%s\", aborting\n"),
@@ -139,9 +139,9 @@ RPG_Sound_Common_Tools::initialize (const struct RPG_Sound_SDLConfiguration& con
     RPG_Sound_Common_Tools::myConfig.channels = 0;
     RPG_Sound_Common_Tools::myConfig.chunksize = 0;
     std::string format_string;
-    if (Mix_QuerySpec(&RPG_Sound_Common_Tools::myConfig.frequency,
-                      &RPG_Sound_Common_Tools::myConfig.format,
-                      &RPG_Sound_Common_Tools::myConfig.channels) == 0)
+    if (Mix_QuerySpec (&RPG_Sound_Common_Tools::myConfig.frequency,
+                       &RPG_Sound_Common_Tools::myConfig.format,
+                       &RPG_Sound_Common_Tools::myConfig.channels) == 0)
     {
       ACE_DEBUG((LM_ERROR,
                   ACE_TEXT("failed to Mix_QuerySpec(): \"%s\", aborting\n"),
@@ -171,13 +171,15 @@ RPG_Sound_Common_Tools::initialize (const struct RPG_Sound_SDLConfiguration& con
         return false;
       }
     } // end SWITCH
-    char driver[MAXPATHLEN];
-    if (!SDL_AudioDriverName(driver,
-                              sizeof(driver)))
+
+#if defined (SDL_USE)
+    char driver[BUFSIZ];
+    if (!SDL_AudioDriverName (driver,
+                              sizeof (char[BUFSIZ])))
     {
-      ACE_DEBUG((LM_ERROR,
-                  ACE_TEXT("failed to SDL_AudioDriverName(): \"%s\", aborting\n"),
-                  ACE_TEXT(SDL_GetError())));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_AudioDriverName(): \"%s\", aborting\n"),
+                  ACE_TEXT (SDL_GetError ())));
       return false;
     } // end IF
 
@@ -187,7 +189,14 @@ RPG_Sound_Common_Tools::initialize (const struct RPG_Sound_SDLConfiguration& con
                 RPG_Sound_Common_Tools::myConfig.frequency,
                 ACE_TEXT(format_string.c_str()),
                 RPG_Sound_Common_Tools::myConfig.channels,
-                (useCD_in ? ACE_TEXT(SDL_CDName(0)) : ACE_TEXT("N/A"))));
+                (useCD_in ? ACE_TEXT (SDL_CDName(0)) : ACE_TEXT ("N/A"))));
+#elif defined (SDL2_USE)
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT("*** audio capabilities ***\nfrequency:\t%d\nformat:\t\t%s\nchannels:\t%d\n"),
+                RPG_Sound_Common_Tools::myConfig.frequency,
+                ACE_TEXT(format_string.c_str()),
+                RPG_Sound_Common_Tools::myConfig.channels));
+#endif // SDL_USE || SDL2_USE
 
     int total = Mix_GetNumChunkDecoders();
     ACE_DEBUG((LM_DEBUG,
@@ -539,10 +548,11 @@ RPG_Sound_Common_Tools::stop(const int& channel_in)
   Mix_HaltChannel(-1);
 }
 
+#if defined (SDL_USE)
 int
-RPG_Sound_Common_Tools::playRandomTrack(SDL_CD* cdrom_in)
+RPG_Sound_Common_Tools::playRandomTrack (SDL_CD* cdrom_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::playRandomTrack"));
+  RPG_TRACE (ACE_TEXT ("RPG_Sound_Common_Tools::playRandomTrack"));
 
   // sanity check(s)
   ACE_ASSERT(cdrom_in);
@@ -602,6 +612,7 @@ RPG_Sound_Common_Tools::playRandomTrack(SDL_CD* cdrom_in)
 
   return result;
 }
+#endif // SDL_USE
 
 void
 RPG_Sound_Common_Tools::initializeStringConversionTables ()

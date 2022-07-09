@@ -27,6 +27,7 @@
 #include "ace/Synch_Traits.h"
 
 #define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 
 #include "rpg_map_common.h"

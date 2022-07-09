@@ -24,10 +24,10 @@
 #include "ace/Global_Macros.h"
 
 #define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 
 #include "rpg_graphics_cursor.h"
-//#include "rpg_graphics_exports.h"
 #include "rpg_graphics_font.h"
 #include "rpg_graphics_image.h"
 #include "rpg_graphics_sprite.h"
@@ -36,9 +36,6 @@
 #include "rpg_graphics_graphictypeunion.h"
 #include "rpg_graphics_SDL_window_base.h"
 
-/**
-  @author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Graphics_TopLevel
  : public RPG_Graphics_SDLWindowBase
 {

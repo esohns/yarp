@@ -22,6 +22,7 @@
 #define RPG_CLIENT_IWINDOW_H
 
 #define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 
 #include "rpg_graphics_iwindow_base.h"

@@ -26,6 +26,7 @@
 #include "ace/Global_Macros.h"
 
 #define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 
 #include "common_ilock.h"
@@ -45,9 +46,6 @@
 // forward declarations
 class RPG_Engine;
 
-/**
-  @author Erik Sohns <erik.sohns@web.de>
-*/
 class SDL_GUI_LevelWindow_3D
  : public RPG_Graphics_SDLWindowBase,
    public RPG_Client_IWindowLevel,

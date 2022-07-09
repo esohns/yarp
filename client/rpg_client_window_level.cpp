@@ -472,11 +472,18 @@ RPG_Client_Window_Level::drawChild (const RPG_Graphics_WindowType& child_in,
   ACE_Guard<ACE_Thread_Mutex> aGuard (myLock);
 
   // sanity check(s)
-  ACE_ASSERT(child_in != RPG_GRAPHICS_WINDOWTYPE_INVALID);
-  // set target surface
+  ACE_ASSERT (inherited::screen_);
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = inherited::screen_;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
+  // sanity check(s)
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : inherited::screen_);
-  ACE_ASSERT(target_surface);
+                                                  : surface_p);
+  ACE_ASSERT (target_surface);
+  ACE_ASSERT (child_in != RPG_GRAPHICS_WINDOWTYPE_INVALID);
 
   // draw any child(ren) of a specific type
   for (RPG_Graphics_WindowsIterator_t iterator = inherited::children_.begin ();
@@ -680,14 +687,22 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
   RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::draw"));
 
   // sanity check(s)
+  ACE_ASSERT (inherited::screen_);
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = inherited::screen_;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
+  // sanity check(s)
+  SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
+                                                  : surface_p);
+  ACE_ASSERT (target_surface);
   ACE_ASSERT (myEngine);
   ACE_ASSERT (myCeilingTile);
   ACE_ASSERT (myOffMapTile);
   ACE_ASSERT (myInvisibleTile);
   ACE_ASSERT (myVisionBlendTile);
-  SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : inherited::screen_);
-  ACE_ASSERT (target_surface);
   ACE_ASSERT (static_cast<int> (offsetX_in) <= target_surface->w);
   ACE_ASSERT (static_cast<int> (offsetY_in) <= target_surface->h);
 
@@ -2198,7 +2213,6 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
 
       break;
     }
-    case SDL_ACTIVEEVENT:
     case SDL_KEYUP:
     case SDL_MOUSEBUTTONUP:
     case SDL_JOYAXISMOTION:
@@ -2208,8 +2222,15 @@ RPG_Client_Window_Level::handleEvent(const SDL_Event& event_in,
     case SDL_JOYBUTTONUP:
     case SDL_QUIT:
     case SDL_SYSWMEVENT:
+#if defined (SDL_USE)
+    case SDL_ACTIVEEVENT:
     case SDL_VIDEORESIZE:
     case SDL_VIDEOEXPOSE:
+#elif defined (SDL2_USE)
+    case SDL_WINDOWEVENT_SHOWN:
+    case SDL_WINDOWEVENT_RESIZED:
+    case SDL_WINDOWEVENT_EXPOSED:
+#endif // SDL_USE || SDL2_USE
     default:
     {
       // delegate these to the parent...
@@ -2528,7 +2549,8 @@ RPG_Client_Window_Level::initWallBlend (bool halfHeightWalls_in)
   if (SDL_FillRect (myWallBlend,
                     NULL,
                     RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK_A10,
-                                                      *myWallBlend)))
+                                                      *myWallBlend->format,
+                                                      1.0F)))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_FillRect(): %s, returning\n"),

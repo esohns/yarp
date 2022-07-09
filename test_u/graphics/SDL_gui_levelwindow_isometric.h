@@ -24,6 +24,7 @@
 #include <string>
 
 #define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 
 #include "ace/Global_Macros.h"
@@ -46,9 +47,6 @@
 // forward declarations
 class RPG_Engine;
 
-/**
-  @author Erik Sohns <erik.sohns@web.de>
-*/
 class SDL_GUI_LevelWindow_Isometric
  : public RPG_Graphics_SDLWindowBase,
    public RPG_Client_IWindowLevel,

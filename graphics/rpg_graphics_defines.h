@@ -81,10 +81,13 @@
 #define RPG_GRAPHICS_SDL_KEYSYM_BUFFER_SIZE                 32
 
 #define RPG_GRAPHICS_SDL_VIDEO_DRIVER_ENV_VAR               "SDL_VIDEODRIVER"
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-//#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "directx"
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#if defined (SDL_USE)
 #define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "windib"
-#elif defined(ACE_LINUX)
+#elif defined (SDL2_USE)
+#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "directx"
+#endif // SDL_USE || SDL2_USE
+#elif defined (ACE_LINUX)
 //#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "x11"
 #define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "wayland"
 //#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "nanox"
@@ -94,7 +97,7 @@
 //#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "svgalib"
 #else
 #define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              ""
-#endif
+#endif // ACE_WINXX || ACE_LINUX
 
 #define RPG_GRAPHICS_OPENGL_DEF_HW_ACCELERATION             true
 // see also http://wiki.libsdl.org/SDL_GLcontextFlag

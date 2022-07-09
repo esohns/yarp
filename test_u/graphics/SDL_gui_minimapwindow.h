@@ -20,6 +20,7 @@
 #define SDL_GUI_MINIMAPWINDOW_H
 
 #define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 
 #include "ace/Global_Macros.h"

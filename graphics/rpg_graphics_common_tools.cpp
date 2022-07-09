@@ -36,7 +36,6 @@
 #include "common_ilock.h"
 
 #include "rpg_common_macros.h"
-//#include "rpg_common_ilock.h"
 
 #include "rpg_dice_common.h"
 #include "rpg_dice.h"
@@ -45,6 +44,9 @@
 #include "rpg_graphics_dictionary.h"
 #include "rpg_graphics_SDL_tools.h"
 #include "rpg_graphics_surface.h"
+#if defined (SDL2_USE)
+#include "rpg_graphics_texture.h"
+#endif // SDL2_USE
 
 // init statics
 RPG_Graphics_CategoryToStringTable_t RPG_Graphics_CategoryHelper::myRPG_Graphics_CategoryToStringTable;
@@ -150,26 +152,27 @@ RPG_Graphics_Common_Tools::initialize (const std::string& directory_in,
 void
 RPG_Graphics_Common_Tools::finalize ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::finalize"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::finalize"));
 
-  // synch cache access
-  {
-    ACE_Guard<ACE_Thread_Mutex> aGuard(myCacheLock);
-
+  { ACE_Guard<ACE_Thread_Mutex> aGuard(myCacheLock);
     // clear the graphics cache
-    for (RPG_Graphics_GraphicsCacheIterator_t iter = myGraphicsCache.begin();
-         iter != myGraphicsCache.end();
+    for (RPG_Graphics_GraphicsCacheIterator_t iter = myGraphicsCache.begin ();
+         iter != myGraphicsCache.end ();
          iter++)
-      SDL_FreeSurface((*iter).image);
-    myGraphicsCache.clear();
+//#if defined (SDL_USE)
+      SDL_FreeSurface ((*iter).image);
+//#elif defined (SDL2_USE)
+//      SDL_DestroyTexture ((*iter).image);
+//#endif // SDL_USE || SDL2_USE
+    myGraphicsCache.clear ();
     myOldestCacheEntry = 0;
 
     // clear the font cache
-    for (RPG_Graphics_FontCacheIterator_t iter = myFontCache.begin();
-         iter != myFontCache.end();
+    for (RPG_Graphics_FontCacheIterator_t iter = myFontCache.begin ();
+         iter != myFontCache.end ();
          iter++)
-      TTF_CloseFont((*iter).second);
-    myFontCache.clear();
+      TTF_CloseFont ((*iter).second);
+    myFontCache.clear ();
   } // end lock scope
 
   myInitialized = false;
@@ -1623,11 +1626,11 @@ RPG_Graphics_Common_Tools::loadDoorTileSet(const RPG_Graphics_DoorStyle& style_i
 }
 
 SDL_Surface*
-RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_GraphicTypeUnion& type_in,
-                                       const bool& convertToDisplayFormat_in,
-                                       const bool& cacheGraphic_in)
+RPG_Graphics_Common_Tools::loadGraphic (const RPG_Graphics_GraphicTypeUnion& type_in,
+                                        bool convertToDisplayFormat_in,
+                                        bool cacheGraphic_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadGraphic"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::loadGraphic"));
 
   RPG_Graphics_GraphicsCacheIterator_t iter;
   struct RPG_Graphics_GraphicsCacheNode node;
@@ -1719,6 +1722,120 @@ RPG_Graphics_Common_Tools::loadGraphic(const RPG_Graphics_GraphicTypeUnion& type
 
   return node.image;
 }
+#if defined (SDL2_USE)
+SDL_Texture*
+RPG_Graphics_Common_Tools::loadGraphic (SDL_Renderer* renderer_in,
+                                        const RPG_Graphics_GraphicTypeUnion& type_in/*,
+                                        bool cacheGraphic_in*/)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::loadGraphic"));
+
+  RPG_Graphics_GraphicsCacheIterator_t iter;
+  struct RPG_Graphics_GraphicsCacheNode node;
+  node.type = type_in;
+  // initialize return value(s)
+  node.image = NULL;
+  SDL_Texture* result = NULL;
+
+  // step1: graphic already cached ?
+  //if (cacheGraphic_in)
+  //{
+  //  // synch access to graphics cache
+  //  { ACE_Guard<ACE_Thread_Mutex> aGuard (myCacheLock);
+  //    for (iter = myGraphicsCache.begin();
+  //         iter != myGraphicsCache.end();
+  //         iter++)
+  //      if ((*iter) == node)
+  //        break;
+
+  //    if (iter != myGraphicsCache.end())
+  //      return (*iter).image;
+  //  } // end lock scope
+  //} // end IF
+
+  // step2: load image from file
+  // retrieve properties from the dictionary
+  RPG_Graphics_t graphic;
+  graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
+  graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
+  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type_in);
+  ACE_ASSERT((graphic.category != RPG_GRAPHICS_CATEGORY_INVALID) &&
+             (graphic.type.discriminator == type_in.discriminator)); // too weak
+  // sanity check
+  if ((graphic.category != CATEGORY_CURSOR)    &&
+      (graphic.category != CATEGORY_INTERFACE) &&
+      (graphic.category != CATEGORY_IMAGE)     &&
+      (graphic.category != CATEGORY_SPRITE)    &&
+      (graphic.category != CATEGORY_TILE))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("invalid category (was: \"%s\"): \"%s\" not an image type, aborting\n"),
+                ACE_TEXT (RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString (graphic.category).c_str ()),
+                ACE_TEXT (RPG_Graphics_Common_Tools::toString (graphic.type).c_str ())));
+    return NULL;
+  } // end IF
+
+  // assemble path
+  std::string filename;
+  RPG_Graphics_Common_Tools::graphicToFile (graphic, filename);
+  ACE_ASSERT (!filename.empty ());
+
+  // load file
+  SDL_Surface* surface_p = RPG_Graphics_Surface::load (filename,
+                                                       true);
+  if (!surface_p)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
+                ACE_TEXT (filename.c_str())));
+    return NULL;
+  } // end IF
+  //node.image = RPG_Graphics_Texture::load (filename);
+  //if (!node.image)
+  //{
+  //  ACE_DEBUG ((LM_ERROR,
+  //              ACE_TEXT ("failed to RPG_Graphics_Texture::load(\"%s\"), aborting\n"),
+  //              ACE_TEXT (filename.c_str())));
+  //  return NULL;
+  //} // end IF
+
+  //// step3: update cache
+  //if (cacheGraphic_in)
+  //{
+  //  // synch cache access
+  //  { ACE_Guard<ACE_Thread_Mutex> aGuard(myCacheLock);
+  //    if (myGraphicsCache.size () == myCacheSize)
+  //    {
+  //      iter = myGraphicsCache.begin ();
+  //      ACE_ASSERT(myGraphicsCache.size () >= myOldestCacheEntry);
+  //      std::advance (iter, myOldestCacheEntry);
+  //      // *TODO*: what if it's still being used ?...
+  //      SDL_DestroyTexture((*iter).image);
+  //      myGraphicsCache.erase (iter);
+  //      myOldestCacheEntry++;
+  //      if (myOldestCacheEntry == myCacheSize)
+  //        myOldestCacheEntry = 0;
+  //    } // end IF
+  //    myGraphicsCache.push_back (node);
+  //  } // end lock scope
+  //} // end IF
+
+  //return node.image;
+
+  result = SDL_CreateTextureFromSurface (renderer_in,
+                                         surface_p);
+  if (!result)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_CreateTextureFromSurface(): \"%s\", returning\n"),
+                ACE_TEXT (SDL_GetError ())));
+    SDL_FreeSurface (surface_p); surface_p = NULL;
+    return NULL;
+  } // end IF
+
+  return result;
+}
+#endif // SDL2_USE
 
 SDL_Surface*
 RPG_Graphics_Common_Tools::renderText(const RPG_Graphics_Font& font_in,
@@ -1755,110 +1872,129 @@ RPG_Graphics_Common_Tools::renderText(const RPG_Graphics_Font& font_in,
   return result;
 }
 
+#if defined (SDL_USE)
 void
-RPG_Graphics_Common_Tools::fade(const bool& fadeIn_in,
-                                const float& interval_in,
-                                const Uint32& color_in,
-                                Common_ILock* screenLock_in,
-                                SDL_Surface* targetSurface_in)
+RPG_Graphics_Common_Tools::fade (bool fadeIn_in,
+                                 float interval_in,
+                                 Uint32 color_in,
+                                 Common_ILock* screenLock_in,
+                                 SDL_Surface* targetSurface_in)
+#elif defined (SDL2_USE)
+void
+RPG_Graphics_Common_Tools::fade (bool fadeIn_in,
+                                 float interval_in,
+                                 Uint32 color_in,
+                                 Common_ILock* screenLock_in,
+                                 SDL_Window* targetWindow_in)
+#endif // SDL_USE || SDL2_USE
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::fade"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::fade"));
+
+  // sanity check(s)
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = targetSurface_in;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (targetWindow_in);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
 
   SDL_Surface* target_image = NULL;
   // step1: create a screen-sized surface without an alpha-channel
   // --> i.e. (alpha mask == 0)
-  target_image = SDL_CreateRGBSurface(RPG_Graphics_Surface::SDL_surface_flags,
-                                      targetSurface_in->w,
-                                      targetSurface_in->h,
-                                      targetSurface_in->format->BitsPerPixel,
-                                      targetSurface_in->format->Rmask,
-                                      targetSurface_in->format->Gmask,
-                                      targetSurface_in->format->Bmask,
-                                      0);
+  target_image = SDL_CreateRGBSurface (RPG_Graphics_Surface::SDL_surface_flags,
+                                       surface_p->w,
+                                       surface_p->h,
+                                       surface_p->format->BitsPerPixel,
+                                       surface_p->format->Rmask,
+                                       surface_p->format->Gmask,
+                                       surface_p->format->Bmask,
+                                       0);
   if (!target_image)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_CreateRGBSurface(): %s, aborting\n"),
-               ACE_TEXT(SDL_GetError())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_CreateRGBSurface(): %s, returning\n"),
+                ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
 
   if (fadeIn_in)
   {
     // ...copy the pixel data from the framebuffer
-    if (SDL_BlitSurface(targetSurface_in,
-                        NULL,
-                        target_image,
-                        NULL))
+    if (SDL_BlitSurface (surface_p,
+                         NULL,
+                         target_image,
+                         NULL))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-                 ACE_TEXT(SDL_GetError())));
-
-      // clean up
-      SDL_FreeSurface(target_image);
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_BlitSurface(): %s, aborting\n"),
+                  ACE_TEXT (SDL_GetError ())));
+      SDL_FreeSurface (target_image);
       return;
     } // end IF
 
     // set the screen to the background color (black ?)
     if (screenLock_in)
       screenLock_in->lock();
-    if (SDL_FillRect(targetSurface_in, // target surface
-                     NULL,             // fill screen
-                     color_in))        // black ?
+    if (SDL_FillRect (surface_p, // target surface
+                      NULL,      // fill screen
+                      color_in)) // black ?
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
-                 ACE_TEXT(SDL_GetError())));
-
-      // clean up
-      SDL_FreeSurface(target_image);
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_FillRect(): %s, returning\n"),
+                  ACE_TEXT (SDL_GetError ())));
+      SDL_FreeSurface (target_image);
       return;
     } // end IF
     if (screenLock_in)
       screenLock_in->unlock();
     // ...and display that
-    if (SDL_Flip(targetSurface_in))
+#if defined (SDL_USE)
+    if (SDL_Flip (surface_p))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_Flip(): %s, aborting\n"),
-                 ACE_TEXT(SDL_GetError())));
-
-      // clean up
-      SDL_FreeSurface(target_image);
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_Flip(): %s, aborting\n"),
+                  ACE_TEXT (SDL_GetError ())));
+      SDL_FreeSurface (target_image);
       return;
     } // end IF
+#elif defined (SDL2_USE)
+    if (SDL_UpdateWindowSurface (targetWindow_in) < 0)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_UpdateWindowSurface(%@): \"%s\", continuing\n"),
+                  targetWindow_in,
+                  ACE_TEXT (SDL_GetError ())));
+#endif // SDL_USE || SDL2_USE
   } // end IF
   else
   {
     // fill the target image with the requested color
-    if (SDL_FillRect(target_image, // target image
-                     NULL,         // fill image
-                     color_in))    // target color
+    if (SDL_FillRect (target_image, // target image
+                      NULL,         // fill image
+                      color_in))    // target color
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
-                 ACE_TEXT(SDL_GetError())));
-
-      // clean up
-      SDL_FreeSurface(target_image);
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_FillRect(): %s, aborting\n"),
+                  ACE_TEXT (SDL_GetError ())));
+      SDL_FreeSurface (target_image);
       return;
     } // end IF
   } // end ELSE
 
   // step4: slowly fade in/out
-  fade(interval_in,
-       target_image,
-       screenLock_in,
-       targetSurface_in);
+#if defined (SDL_USE)
+  fade (interval_in,
+        target_image,
+        screenLock_in,
+        targetSurface_in);
+#elif defined (SDL2_USE)
+  fade (interval_in,
+        target_image,
+        screenLock_in,
+        targetWindow_in);
+#endif // SDL_USE || SDL2_USE
 
   // clean up
-  SDL_FreeSurface(target_image);
+  SDL_FreeSurface (target_image);
 }
 
 RPG_Graphics_Style
@@ -2159,26 +2295,52 @@ RPG_Graphics_Common_Tools::initializeFonts()
 //   } // end IF
 // }
 
+#if defined (SDL_USE)
 void
-RPG_Graphics_Common_Tools::fade(const float& interval_in,
-                                SDL_Surface* targetImage_in,
-                                Common_ILock* screenLock_in,
-                                SDL_Surface* targetSurface_in)
+RPG_Graphics_Common_Tools::fade (float interval_in,
+                                 SDL_Surface* targetImage_in,
+                                 Common_ILock* screenLock_in,
+                                 SDL_Surface* targetSurface_in)
+#elif defined (SDL2_USE)
+void
+RPG_Graphics_Common_Tools::fade (float interval_in,
+                                 SDL_Surface* targetImage_in,
+                                 Common_ILock* screenLock_in,
+                                 SDL_Window* targetWindow_in)
+#endif // SDL_USE || SDL2_USE
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::fade"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::fade"));
+
+  // sanity check(s)
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = targetSurface_in;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (targetWindow_in);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
 
   // calculate the number of blends
   int n_steps = static_cast<int>(RPG_GRAPHICS_FADE_REFRESH_RATE * interval_in);
-  if (SDL_SetAlpha(targetImage_in,
-                   (SDL_SRCALPHA | SDL_RLEACCEL), // alpha blending/RLE acceleration
-                   (SDL_ALPHA_OPAQUE / n_steps)))
+#if defined (SDL_USE)
+  if (SDL_SetAlpha (targetImage_in,
+                    (SDL_SRCALPHA | SDL_RLEACCEL), // alpha blending/RLE acceleration
+                    (SDL_ALPHA_OPAQUE / n_steps)))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetAlpha(): %s, aborting\n"),
-               ACE_TEXT(SDL_GetError())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_SetAlpha(): \"%s\", returning\n"),
+                ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
+#elif defined (SDL2_USE)
+  if (SDL_SetSurfaceAlphaMod (targetImage_in,
+                              n_steps) < 0)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_SetSurfaceAlphaMod(): \"%s\", returning\n"),
+                ACE_TEXT (SDL_GetError ())));
+    return;
+  } // end IF
+#endif // SDL_USE || SDL2_USE
 
   Uint32 cur_clock, end_clock, start_clock, sleeptime, elapsed;
   start_clock = cur_clock = SDL_GetTicks();
@@ -2191,27 +2353,34 @@ RPG_Graphics_Common_Tools::fade(const float& interval_in,
     // will slowly add up to full brightness, while
     // drawing over the screen with semi-transparent
     // darkness repeatedly gives a fade-out effect
-    if (SDL_BlitSurface(targetImage_in,
-                        NULL,
-                        targetSurface_in,
-                        NULL))
+    if (SDL_BlitSurface (targetImage_in,
+                         NULL,
+                         surface_p,
+                         NULL))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-                 ACE_TEXT(SDL_GetError())));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_BlitSurface(): %s, returning\n"),
+                  ACE_TEXT (SDL_GetError ())));
       return;
     } // end IF
     if (screenLock_in)
       screenLock_in->unlock();
-    if (SDL_Flip(targetSurface_in))
+#if defined (SDL_USE)
+    if (SDL_Flip (surface_p))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_Flip(): %s, aborting\n"),
-                 ACE_TEXT(SDL_GetError())));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_Flip(): %s, aborting\n"),
+                  ACE_TEXT (SDL_GetError ())));
+      SDL_FreeSurface (target_image);
       return;
     } // end IF
+#elif defined (SDL2_USE)
+    if (SDL_UpdateWindowSurface (targetWindow_in) < 0)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_UpdateWindowSurface(%@): \"%s\", continuing\n"),
+                  targetWindow_in,
+                  ACE_TEXT (SDL_GetError ())));
+#endif // SDL_USE || SDL2_USE
 
     // delay a little while, to impress the blended image
     elapsed = SDL_GetTicks() - cur_clock;
@@ -2223,21 +2392,31 @@ RPG_Graphics_Common_Tools::fade(const float& interval_in,
   } // end WHILE
 
   // ensure that the target image is fully faded in
-  if (SDL_SetAlpha(targetImage_in,
-                   0, // alpha blending/RLE acceleration
-                   0))
+#if defined (SDL_USE)
+  if (SDL_SetAlpha (targetImage_in,
+                    0, // alpha blending/RLE acceleration
+                    0))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetAlpha(): %s, aborting\n"),
-               ACE_TEXT(SDL_GetError())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_SetAlpha(): %s, returning\n"),
+                ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
+#elif defined (SDL2_USE)
+  if (SDL_SetSurfaceAlphaMod (targetImage_in,
+                              255) < 0)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_SetSurfaceAlphaMod(): \"%s\", returning\n"),
+                ACE_TEXT (SDL_GetError ())));
+    return;
+  } // end IF
+#endif // SDL_USE || SDL2_USE
   if (screenLock_in)
     screenLock_in->lock();
   if (SDL_BlitSurface (targetImage_in,
                        NULL,
-                       targetSurface_in,
+                       surface_p,
                        NULL))
   {
     ACE_DEBUG ((LM_ERROR,
@@ -2247,13 +2426,22 @@ RPG_Graphics_Common_Tools::fade(const float& interval_in,
   } // end IF
   if (screenLock_in)
     screenLock_in->unlock ();
-  if (SDL_Flip (targetSurface_in))
+#if defined (SDL_USE)
+  if (SDL_Flip (surface_p))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_Flip(): %s, aborting\n"),
                 ACE_TEXT (SDL_GetError ())));
+    SDL_FreeSurface (target_image);
     return;
   } // end IF
+#elif defined (SDL2_USE)
+  if (SDL_UpdateWindowSurface (targetWindow_in) < 0)
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_UpdateWindowSurface(%@): \"%s\", continuing\n"),
+                targetWindow_in,
+                ACE_TEXT (SDL_GetError ())));
+#endif // SDL_USE || SDL2_USE
 }
 
 RPG_Graphics_Position_t

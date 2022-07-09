@@ -24,6 +24,7 @@
 #include <string>
 
 #define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 
 #include "ace/Global_Macros.h"
@@ -32,17 +33,11 @@
 
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_colorname.h"
-//#include "rpg_graphics_exports.h"
 #include "rpg_graphics_iwindow.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Graphics_SDLWindowBase
  : public RPG_Graphics_IWindow
 {
-  //typedef RPG_Graphics_IWindow inherited;
-
  public:
   virtual ~RPG_Graphics_SDLWindowBase ();
 
@@ -70,8 +65,15 @@ class RPG_Graphics_SDLWindowBase
   virtual void update (SDL_Surface* = NULL); // target surface (default: screen)
   virtual void invalidate (const SDL_Rect&); // "dirty" area
 
-  virtual void setScreen (SDL_Surface*);   // (default) screen
-  virtual SDL_Surface* getScreen () const; // (default) screen
+#if defined (SDL_USE)
+  inline virtual void setScreen (SDL_Surface* screen_in) { ACE_ASSERT (screen_in); screen_ = screen_in; }
+  inline virtual SDL_Surface* getScreen () const { return (screen_ ? screen_ : SDL_GetVideoSurface ()); }
+#elif defined (SDL2_USE)
+  inline virtual void setRenderer (SDL_Renderer* renderer_in) { ACE_ASSERT (renderer_in); renderer_ = renderer_in; }
+  inline virtual void setScreen (SDL_Window* window_in) { ACE_ASSERT (window_in); screen_ = window_in; }
+  inline virtual SDL_Renderer* getRenderer () const { return renderer_; }
+  inline virtual SDL_Window* getScreen () const { return screen_; }
+#endif // SDL_USE || SDL2_USE
 
   virtual RPG_Graphics_WindowType getType () const;
 
@@ -111,7 +113,12 @@ class RPG_Graphics_SDLWindowBase
   virtual void refresh (SDL_Surface* = NULL); // target surface (default: screen)
 
   // default screen
+#if defined (SDL_USE)
   SDL_Surface*                  screen_;
+#elif defined (SDL2_USE)
+  SDL_Renderer*                 renderer_;
+  SDL_Window*                   screen_;
+#endif // SDL_USE || SDL2_USE
   Common_ILock*                 screenLock_;
 
   // border sizes
@@ -156,7 +163,7 @@ class RPG_Graphics_SDLWindowBase
   RPG_Graphics_InvalidRegions_t invalidRegions_;
   bool                          flip_;
 
-  RPG_Graphics_WindowType       type_;
+  enum RPG_Graphics_WindowType  type_;
 };
 
 #endif

@@ -25,6 +25,7 @@
 #include <vector>
 
 #define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 
 #include "ace/Global_Macros.h"
@@ -36,11 +37,7 @@
 #include "common_timer_handler.h"
 
 #include "rpg_sound_defines.h"
-//#include "rpg_sound_exports.h"
 
-/**
-  @author Erik Sohns <erik.sohns@web.de>
- */
 class RPG_Sound_Event_Manager
  : public Common_Timer_Handler
 {
@@ -74,8 +71,10 @@ class RPG_Sound_Event_Manager
   static int dirent_selector(const dirent*);
   static int dirent_comparator(const dirent**,
                                const dirent**);
-  void initCD(const int& = 0); // drive (0: default)
-  void cancel(const bool& = true); // locked access ?
+#if defined (SDL_USE)
+  void initializeCD (const int& = 0); // drive (0: default)
+#endif // SDL_USE
+  void cancel (bool = true); // locked access ?
 
   // helper types
   typedef std::vector<std::string> RPG_Sound_SampleRepository_t;
@@ -84,8 +83,10 @@ class RPG_Sound_Event_Manager
   mutable ACE_SYNCH_MUTEX myLock;
   long                    myTimerID;
   std::string             myRepository;
+#if defined (SDL_USE)
   bool                    myUseCDROM;
   SDL_CD*                 myCDROM;
+#endif // SDL_USE
   int                     myTrackOrChannel;
   bool                    myInitialized;
 };

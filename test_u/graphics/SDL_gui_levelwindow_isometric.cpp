@@ -219,17 +219,22 @@ SDL_GUI_LevelWindow_Isometric::getView() const
 }
 
 void
-SDL_GUI_LevelWindow_Isometric::initialize(state_t* state_in,
-                                    Common_ILock* screenLock_in)
+SDL_GUI_LevelWindow_Isometric::initialize (state_t* state_in,
+                                           Common_ILock* screenLock_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::init"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_Isometric::init"));
 
   // sanity check(s)
-  ACE_ASSERT(state_in);
+  ACE_ASSERT (state_in);
+  ACE_ASSERT (state_in->screen);
 
   myState = state_in;
   inherited::initialize (screenLock_in,
+#if defined (SDL_USE)
                          (state_in->screen->flags & SDL_DOUBLEBUF));
+#elif defined (SDL2_USE)
+                         true);
+#endif // SDL_USE || SDL2_USE
 
   // init style
   RPG_Graphics_StyleUnion style;
@@ -293,25 +298,31 @@ SDL_GUI_LevelWindow_Isometric::drawBorder(SDL_Surface* targetSurface_in,
 }
 
 void
-SDL_GUI_LevelWindow_Isometric::draw(SDL_Surface* targetSurface_in,
-                                    unsigned int offsetX_in,
-                                    unsigned int offsetY_in)
+SDL_GUI_LevelWindow_Isometric::draw (SDL_Surface* targetSurface_in,
+                                     unsigned int offsetX_in,
+                                     unsigned int offsetY_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::draw"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_Isometric::draw"));
 
   // sanity check(s)
+  ACE_ASSERT (inherited::screen_);
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = inherited::screen_;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : inherited::screen_);
-  ACE_ASSERT(target_surface);
-  ACE_ASSERT(myCurrentOffMapTile);
-//   ACE_ASSERT(myCurrentCeilingTile);
-  ACE_ASSERT(static_cast<int>(offsetX_in) <= target_surface->w);
-  ACE_ASSERT(static_cast<int>(offsetY_in) <= target_surface->h);
+                                                  : surface_p);
+  ACE_ASSERT (target_surface);
+  ACE_ASSERT (static_cast<int> (offsetX_in) <= target_surface->w);
+  ACE_ASSERT (static_cast<int> (offsetY_in) <= target_surface->h);
+  ACE_ASSERT (myCurrentOffMapTile);
 
   // init clipping
-  clip(target_surface,
-       offsetX_in,
-       offsetY_in);
+  clip (target_surface,
+        offsetX_in,
+        offsetY_in);
 
   // position of the top right corner
   RPG_Graphics_Position_t top_right = std::make_pair(0, 0);
@@ -515,19 +526,21 @@ SDL_GUI_LevelWindow_Isometric::draw(SDL_Surface* targetSurface_in,
           tile_text += ACE_TEXT("]");
           tile_text_size = RPG_Graphics_Common_Tools::textSize(FONT_MAIN_NORMAL,
                                                                tile_text);
-          RPG_Graphics_Surface::putText(FONT_MAIN_NORMAL,
-                                        tile_text,
-                                        RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_Graphics_SDL_Tools::getColor(SDL_GUI_DEF_TILE_INDEX_COLOR,
-                                        *target_surface),
-                                        *target_surface),
-                                        true, // add shade
-                                        RPG_Graphics_SDL_Tools::colorToSDLColor(RPG_Graphics_SDL_Tools::getColor(RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
-                                        *target_surface),
-                                        *target_surface),
-                                        std::make_pair((rect.x + ((rect.w - tile_text_size.first) / 2)),
-                                        (rect.y + ((rect.h - tile_text_size.second) / 2))),
-                                        target_surface,
-                                        dirty_region);
+          RPG_Graphics_Surface::putText (FONT_MAIN_NORMAL,
+                                         tile_text,
+                                         RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_Graphics_SDL_Tools::getColor (SDL_GUI_DEF_TILE_INDEX_COLOR,
+                                                                                                                    *target_surface->format,
+                                                                                                                    1.0F),
+                                                                                  *target_surface),
+                                         true, // add shade
+                                         RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_Graphics_SDL_Tools::getColor (RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
+                                                                                                                    *target_surface->format,
+                                                                                                                    1.0F),
+                                                                                  *target_surface),
+                                         std::make_pair ((rect.x + ((rect.w - tile_text_size.first) / 2)),
+                                         (rect.y + ((rect.h - tile_text_size.second) / 2))),
+                                         target_surface,
+                                         dirty_region);
         } // end IF
 
         // step3: floor edges
@@ -1863,7 +1876,6 @@ set_cursor:
 
       break;
     }
-    case SDL_ACTIVEEVENT:
     case SDL_KEYUP:
     case SDL_MOUSEBUTTONUP:
     case SDL_JOYAXISMOTION:
@@ -1873,8 +1885,15 @@ set_cursor:
     case SDL_JOYBUTTONUP:
     case SDL_QUIT:
     case SDL_SYSWMEVENT:
+#if defined (SDL_USE)
+    case SDL_ACTIVEEVENT:
     case SDL_VIDEORESIZE:
     case SDL_VIDEOEXPOSE:
+#elif defined (SDL2_USE)
+    case SDL_WINDOWEVENT_SHOWN:
+    case SDL_WINDOWEVENT_RESIZED:
+    case SDL_WINDOWEVENT_EXPOSED:
+#endif // SDL_USE || SDL2_USE
     default:
       break;
   } // end SWITCH
@@ -2889,19 +2908,16 @@ SDL_GUI_LevelWindow_Isometric::initWallBlend(const bool& halfHeightWalls_in)
     return;
   } // end IF
 
-  if (SDL_FillRect(myWallBlend,
-                   NULL,
-                   RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK_A10,
-                                                    *myWallBlend)))
+  if (SDL_FillRect (myWallBlend,
+                    NULL,
+                    RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK_A10,
+                                                      *myWallBlend->format,
+                                                      1.0F)))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
                ACE_TEXT(SDL_GetError())));
-
-    // clean up
-    SDL_FreeSurface(myWallBlend);
-    myWallBlend = NULL;
-
+    SDL_FreeSurface (myWallBlend); myWallBlend = NULL;
     return;
   } // end IF
 

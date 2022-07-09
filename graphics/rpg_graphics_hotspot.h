@@ -24,16 +24,13 @@
 #include "ace/Global_Macros.h"
 
 #define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_cursor.h"
-//#include "rpg_graphics_exports.h"
 #include "rpg_graphics_SDL_window_base.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Graphics_HotSpot
  : public RPG_Graphics_SDLWindowBase
 {

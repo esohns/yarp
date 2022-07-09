@@ -21,7 +21,18 @@
 #ifndef SDL_GUI_COMMON_H
 #define SDL_GUI_COMMON_H
 
-#include "rpg_client_common.h"
+#include "ace/config-lite.h"
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#include "gl/GL.h"
+#else
+#include "GL/gl.h"
+#endif // ACE_WIN32 || ACE_WIN64
+
+#define _SDL_main_h
+#define SDL_main_h_
+#include "SDL.h"
+
+#include "rpg_map_common.h"
 
 #include "rpg_graphics_floorstyle.h"
 #include "rpg_graphics_edgestyle.h"
@@ -29,17 +40,15 @@
 #include "rpg_graphics_doorstyle.h"
 #include "rpg_graphics_style.h"
 
-#include "rpg_map_common.h"
-
-#define _SDL_main_h
-#include "SDL.h"
-#include "SDL_opengl.h"
-
-//#include "ace/Synch.h"
+#include "rpg_client_common.h"
 
 struct state_t
 {
+#if defined (SDL_USE)
   SDL_Surface*               screen;
+#elif defined (SDL2_USE)
+  SDL_Window*                screen;
+#endif // SDL_USE || SDL2_USE
   ACE_Thread_Mutex           hover_lock;
   unsigned int               hover_time;
   bool                       debug;

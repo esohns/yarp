@@ -29,6 +29,7 @@
 #include "ace/Log_Msg.h"
 
 #define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 #include "SDL_ttf.h"
 
@@ -74,7 +75,11 @@ struct RPG_Graphics_Dictionary_t
 struct RPG_Graphics_GraphicsCacheNode
 {
   RPG_Graphics_GraphicTypeUnion type;
+//#if defined (SDL_USE)
   SDL_Surface*                  image;
+//#elif defined (SDL2_USE)
+//  SDL_Texture*                  image;
+//#endif // SDL_USE || SDL2_USE
 
   bool operator== (const struct RPG_Graphics_GraphicsCacheNode& rhs_in) const
   {

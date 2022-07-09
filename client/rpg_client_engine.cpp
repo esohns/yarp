@@ -1282,8 +1282,14 @@ RPG_Client_Engine::handleActions ()
                       (*iterator).window));
           continue;
         }
+#if defined (SDL_USE)
+        SDL_Surface* surface_p = (*iterator).window->getScreen ();
+#elif defined (SDL2_USE)
+        SDL_Surface* surface_p =
+          SDL_GetWindowSurface ((*iterator).window->getScreen ());
+#endif // SDL_USE || SDL2_USE
         try {
-          client_window->drawBorder ((*iterator).window->getScreen (),
+          client_window->drawBorder (surface_p,
                                      0,
                                      0);
         } catch (...) {
@@ -1398,10 +1404,14 @@ RPG_Client_Engine::handleActions ()
         else
         {
           // no map --> iconify
+#if defined (SDL_USE)
           if (SDL_WM_IconifyWindow () == 0)
             ACE_DEBUG ((LM_ERROR,
                         ACE_TEXT ("failed to SDL_WM_IconifyWindow(): \"%s\", continuing\n"),
                         ACE_TEXT (SDL_GetError ())));
+#elif defined (SDL2_USE)
+          SDL_MinimizeWindow ((*iterator).window->getScreen ());
+#endif // SDL_USE || SDL2_USE
         } // end IF
         gchar* caption_utf8 = Common_UI_GTK_Tools::localeToUTF8 (caption);
 // *TODO*: this will not return on VS2010...

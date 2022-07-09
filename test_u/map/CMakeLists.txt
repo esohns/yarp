@@ -1,10 +1,9 @@
 if (UNIX)
  include (FindPkgConfig)
- pkg_check_modules (PKG_CONFIG_MODULE_SDL REQUIRED sdl)
- pkg_check_modules (PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
  pkg_check_modules (PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
-elseif (WIN32)
-endif ()
+endif (UNIX)
+
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/sdl.cmake)
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log)
@@ -77,15 +76,16 @@ set (${EXECUTABLE}_SRCS
 set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
 
 if (UNIX)
- include_directories (${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
-                      ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}
-                      ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
+ include_directories (${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
 elseif (WIN32)
- include_directories ($ENV{LIB_ROOT}/SDL/include
-                      $ENV{LIB_ROOT}/SDL_ttf/include
-                      $ENV{LIB_ROOT}/libpng)
+ include_directories ($ENV{LIB_ROOT}/libpng)
 endif ()
+if (SDL_SUPPORT)
+ include_directories (${SDL_INCLUDE_DIRS})
+endif (SDL_SUPPORT)
+
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../3rd_party/xsd)
+
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../graphics)
 
 add_executable (${EXECUTABLE}
@@ -95,10 +95,12 @@ add_dependencies (${EXECUTABLE}
                   RPG_Dice RPG_Common RPG_Character RPG_Magic RPG_Item
                   RPG_Monster RPG_Player RPG_Combat RPG_Map RPG_Graphics RPG_Engine)
 
+if (SDL_SUPPORT)
+ target_link_libraries (${EXECUTABLE}
+                        ${SDL_LIBRARIES})
+endif (SDL_SUPPORT)
 if (UNIX)
  target_link_libraries (${EXECUTABLE}
-                        ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
-                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
                         ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
                         xerces-c
                         ${ACE_LIBRARY}
@@ -116,7 +118,6 @@ elseif (WIN32)
  set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
-                        $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDLmain.lib
                         $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                         $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                         Common CommonError CommonLog CommonTimer

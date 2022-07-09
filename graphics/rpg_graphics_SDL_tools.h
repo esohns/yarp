@@ -24,6 +24,7 @@
 #include <string>
 
 #define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 
 #include "ace/Global_Macros.h"
@@ -39,11 +40,20 @@ class RPG_Graphics_SDL_Tools
  public:
   static bool preInitializeVideo (const struct RPG_Graphics_SDL_VideoConfiguration&, // configuration
                                   const std::string&);                               // window/icon caption
+#if defined (SDL_USE)
   static bool initializeVideo (const struct RPG_Graphics_SDL_VideoConfiguration&, // configuration
                                const std::string&,                                // window/icon caption
                                SDL_Surface*&,                                     // return value: window surface
                                const bool& = true);                               // init window surface ?
   static SDL_Surface* initializeScreen (const struct RPG_Graphics_SDL_VideoConfiguration&); // configuration
+#elif defined (SDL2_USE)
+  static bool initializeVideo (const struct RPG_Graphics_SDL_VideoConfiguration&, // configuration
+                               const std::string&,                                // window/icon caption
+                               SDL_Window*&,                                      // return value: window handle
+                               bool = true);                                      // initialize window surface ?
+  static SDL_Window* initializeScreen (const struct RPG_Graphics_SDL_VideoConfiguration&, // configuration
+                                       const std::string&);                               // window/icon caption
+#endif // SDL_USE || SDL2_USE
 
 #if defined (SDL_USE)
   static std::string keyToString (const SDL_keysym&);
@@ -54,7 +64,7 @@ class RPG_Graphics_SDL_Tools
   static SDL_Color colorToSDLColor (ACE_UINT32,          // RGBA value
                                     const SDL_Surface&); // target surface
 	static Uint32 getColor (const RPG_Graphics_ColorName&, // color name
-                          const SDL_Surface&,            // target surface
+                          const SDL_PixelFormat&,        // pixel format
                           const float& = 1.0F);          // blend factor (--> opacity)
 
   static SDL_Rect boundingBox (const SDL_Rect&,  // rect 1

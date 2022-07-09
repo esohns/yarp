@@ -39,6 +39,7 @@
 #include "ace/Version.h"
 
 #define _SDL_main_h
+#define SDL_main_h_
 #include "SDL.h"
 #include "SDL_mixer.h"
 //#include "SDL/SDL_framerate.h"
@@ -133,10 +134,10 @@ extern "C" FILE* __cdecl __iob_func (void)
 // ********************************
 
 Uint32
-event_timer_SDL_cb(Uint32 interval_in,
-                   void* argument_in)
+event_timer_SDL_cb (Uint32 interval_in,
+                    void* argument_in)
 {
-  RPG_TRACE(ACE_TEXT("::event_timer_SDL_cb"));
+  RPG_TRACE (ACE_TEXT ("::event_timer_SDL_cb"));
 
   struct RPG_Client_GTK_CBData* data =
       static_cast<struct RPG_Client_GTK_CBData*>(argument_in);
@@ -144,7 +145,11 @@ event_timer_SDL_cb(Uint32 interval_in,
   ACE_ASSERT (data->UIState);
 
   SDL_Event sdl_event;
+#if defined (SDL_USE)
   sdl_event.type = SDL_NOEVENT;
+#elif defined (SDL2_USE)
+  sdl_event.type = SDL_FIRSTEVENT;
+#endif // SDL_USE || SDL2_USE
 
   // synch access
   { ACE_Guard<ACE_Thread_Mutex> aGuard (data->UIState->lock);
@@ -678,12 +683,21 @@ do_processArguments(const int& argc_in,
 }
 
 bool
-do_runIntro (SDL_Surface*  targetSurface_in/*,
-             Common_ILock* screenLock_in*/)
+#if defined (SDL_USE)
+do_runIntro (SDL_Surface* targetSurface_in)
+#elif defined (SDL2_USE)
+do_runIntro (SDL_Window* targetWindow_in)
+#endif // SDL_USE || SDL2_USE
 {
-  RPG_TRACE(ACE_TEXT("::do_runIntro"));
+  RPG_TRACE (ACE_TEXT ("::do_runIntro"));
 
-  ACE_ASSERT(targetSurface_in);
+  // sanity check(s)
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = targetSurface_in;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (targetWindow_in);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
 
   // step1: play intro music
   ACE_Time_Value length;
@@ -694,9 +708,10 @@ do_runIntro (SDL_Surface*  targetSurface_in/*,
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = IMAGE_INTRO_MAIN;
-  SDL_Surface* logo = RPG_Graphics_Common_Tools::loadGraphic(type,
-                                                             true,   // convert to display format
-                                                             false); // don't cache
+  SDL_Surface* logo =
+    RPG_Graphics_Common_Tools::loadGraphic (type,
+                                            true,   // convert to display format
+                                            false); // don't cache
   if (!logo)
   {
     ACE_DEBUG((LM_ERROR,
@@ -710,31 +725,53 @@ do_runIntro (SDL_Surface*  targetSurface_in/*,
   // center logo image
   //if (screenLock_in)
   //  screenLock_in->lock();
-  RPG_Graphics_Surface::put (std::make_pair (((targetSurface_in->w - logo->w) / 2),  // location x
-                                             ((targetSurface_in->h - logo->h) / 2)), // location y
+  RPG_Graphics_Surface::put (std::make_pair (((surface_p->w - logo->w) / 2),  // location x
+                                             ((surface_p->h - logo->h) / 2)), // location y
                              *logo,
-                             targetSurface_in,
+                             surface_p,
                              dirty_region);
   //if (screenLock_in)
   //  screenLock_in->unlock();
 
 //   SDL_FreeSurface(logo);
-  RPG_Graphics_Common_Tools::fade (true,                                                // fade in
-                                   5.0,                                                 // interval
-                                   RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK,
-                                                                    *targetSurface_in), // fade from black
-                                   NULL,                                                // screen lock interface handle
-                                   targetSurface_in);                                   // target surface (e.g. screen)
+#if defined (SDL_USE)
+  RPG_Graphics_Common_Tools::fade (true,                                          // fade in
+                                   5.0,                                           // interval
+                                   RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK,
+                                                                     *surface_p->format,
+                                                                     1.0F),       // fade from black
+                                   NULL,                                          // screen lock interface handle
+                                   targetSurface_in);                             // target surface (e.g. screen)
+#elif defined (SDL2_USE)
+  RPG_Graphics_Common_Tools::fade (true,                                          // fade in
+                                   5.0,                                           // interval
+                                   RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK,
+                                                                     *surface_p->format,
+                                                                     1.0F),       // fade from black
+                                   NULL,                                          // screen lock interface handle
+                                   targetWindow_in);                              // target window (e.g. screen)
+#endif // SDL_USE || SDL2_USE
   SDL_Event event;
   do_SDL_waitForInput (10,     // wait 10 seconds max
                        event);
 //   do_handleSDLEvent(event);
-  RPG_Graphics_Common_Tools::fade (false,                                               // fade out
-                                   3.0,                                                 // interval
-                                   RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK,
-                                                                    *targetSurface_in), // fade to black
-                                   NULL,                                                // screen lock interface handle
-                                   targetSurface_in);                                   // target surface (e.g. screen)
+#if defined (SDL_USE)
+  RPG_Graphics_Common_Tools::fade (false,                                         // fade out
+                                   3.0,                                           // interval
+                                   RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK,
+                                                                     *surface_p->format,
+                                                                     1.0F),       // fade to black
+                                   NULL,                                          // screen lock interface handle
+                                   targetSurface_in);                             // target surface (e.g. screen)
+#elif defined (SDL2_USE)
+  RPG_Graphics_Common_Tools::fade (false,                                         // fade out
+                                   3.0,                                           // interval
+                                   RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK,
+                                                                     *surface_p->format,
+                                                                     1.0F),       // fade to black
+                                   NULL,                                          // screen lock interface handle
+                                   targetWindow_in);                              // target window (e.g. screen)
+#endif // SDL_USE || SDL2_USE
 
   // clean up
   SDL_FreeSurface (logo);
@@ -844,8 +881,10 @@ do_work (struct RPG_Client_Configuration& configuration_in,
                                                                  dirty_region);
 
   // ***** mouse setup *****
+#if defined (SDL_USE)
   SDL_WarpMouse ((GTKUserData_in.screen->w / 2),
                  (GTKUserData_in.screen->h / 2));
+#endif // SDL_USE
 
   // step3: run intro ?
   if (!skipIntro_in &&
@@ -864,11 +903,18 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   std::string title
     //= ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);
     ;
-  RPG_Client_Window_Main main_window (RPG_Graphics_Size_t (GTKUserData_in.screen->w,
-                                                           GTKUserData_in.screen->h), // size
-                                      type,                                           // interface elements
-                                      title,                                          // title (== caption)
-                                      FONT_MAIN_LARGE);                               // title font
+
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = GTKUserData_in.screen;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (GTKUserData_in.screen);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
+  RPG_Client_Window_Main main_window (RPG_Graphics_Size_t (surface_p->w,
+                                                           surface_p->h), // size
+                                      type,                               // interface elements
+                                      title,                              // title (== caption)
+                                      FONT_MAIN_LARGE);                   // title font
   main_window.setScreen (GTKUserData_in.screen);
   if (!main_window.initialize (&client_engine,
                                RPG_CLIENT_WINDOW_DEF_EDGE_AUTOSCROLL,
@@ -1074,7 +1120,11 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   RPG_Graphics_Position_t mouse_position;
   do
   {
+#if defined (SDL_USE)
     sdl_event.type = SDL_NOEVENT;
+#elif defined (SDL2_USE)
+    sdl_event.type = SDL_FIRSTEVENT;
+#endif // SDL_USE || SDL2_USE
     window = NULL;
     client_action.command = RPG_CLIENT_COMMAND_INVALID;
     client_action.position = std::make_pair(std::numeric_limits<int>::max(),
@@ -1143,6 +1193,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
           break; // leave
         // *WARNING*: falls through !
       }
+#if defined (SDL_USE)
       case SDL_ACTIVEEVENT:
       {
         // *NOTE*: when the mouse leaves the window, it's NOT hovering
@@ -1173,6 +1224,30 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 
         // *WARNING*: falls through !
       }
+#elif defined (SDL2_USE)
+      case SDL_WINDOWEVENT_ENTER:
+      {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("gained mouse coverage...\n")));
+
+                    // synch access
+        ACE_Guard<ACE_Thread_Mutex> aGuard(GTKUserData_in.UIState->lock);
+
+        GTKUserData_in.doHover = true;
+        break;
+      }
+      case SDL_WINDOWEVENT_LEAVE:
+      {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("lost mouse coverage...\n")));
+
+                    // synch access
+        ACE_Guard<ACE_Thread_Mutex> aGuard(GTKUserData_in.UIState->lock);
+
+        GTKUserData_in.doHover = false;
+        break;
+      }
+#endif // SDL_USE || SDL2_USE
       case SDL_MOUSEMOTION:
       case SDL_MOUSEBUTTONDOWN:
       case RPG_GRAPHICS_SDL_HOVEREVENT: // hovering...
@@ -1269,9 +1344,17 @@ do_work (struct RPG_Client_Configuration& configuration_in,
       case SDL_JOYBUTTONDOWN:
       case SDL_JOYBUTTONUP:
       case SDL_SYSWMEVENT:
+#if defined (SDL_USE)
       case SDL_VIDEORESIZE:
+#elif defined (SDL2_USE)
+      case SDL_WINDOWEVENT_RESIZED:
+#endif // SDL_USE || SDL2_USE
         break;
+#if defined (SDL_USE)
       case SDL_VIDEOEXPOSE:
+#elif defined (SDL2_USE)
+      case SDL_WINDOWEVENT_EXPOSED:
+#endif // SDL_USE || SDL2_USE
       {
         int x, y;
         Uint8 button_state = SDL_GetMouseState(&x, &y);
@@ -1661,7 +1744,8 @@ do_printVersion(const std::string& programName_in)
   std::cout << ACE_TEXT("SDL (compiled against): ")
             << version_number.str()
             << std::endl;
-  const SDL_version* sdl_version_linked = SDL_Linked_Version();
+#if defined (SDL_USE)
+  const SDL_version* sdl_version_linked = SDL_Linked_Version ();
   version_number.str("");
   version_number << sdl_version_linked->major;
   version_number << ACE_TEXT(".");
@@ -1681,6 +1765,7 @@ do_printVersion(const std::string& programName_in)
   std::cout << ACE_TEXT("SDL_mixer (linked against): ")
             << version_number.str()
             << std::endl;
+#endif // SDL_USE
 
   // step3: print compiler name/version
   version_number.str(ACE_TEXT_ALWAYS_CHAR(""));
@@ -1995,10 +2080,12 @@ ACE_TMAIN (int argc_in,
 
   // *** input ***
   configuration.input_configuration.use_UNICODE              = true;
+#if defined (SDL_USE)
   configuration.input_configuration.key_repeat_initial_delay =
       SDL_DEFAULT_REPEAT_DELAY;
   configuration.input_configuration.key_repeat_interval      =
       SDL_DEFAULT_REPEAT_INTERVAL;
+#endif // SDL_USE
   // *** sound ***
   configuration.audio_configuration.mute                        = mute_sound;
   configuration.audio_configuration.SDL_configuration.frequency =
@@ -2089,16 +2176,19 @@ ACE_TMAIN (int argc_in,
   SDL_init_flags |= (configuration.audio_configuration.mute ? 0
                                                             : SDL_INIT_AUDIO); // audio
   SDL_init_flags |= SDL_INIT_VIDEO;                                            // video
+#if defined (SDL_USE)
   SDL_init_flags |=
       ((configuration.audio_configuration.mute ||
         !configuration.audio_configuration.use_CD) ? 0
                                                    : SDL_INIT_CDROM);          // audioCD playback
+#endif // SDL_USE
 //  SDL_init_flags |= SDL_INIT_JOYSTICK;                                         // joystick
   SDL_init_flags |= SDL_INIT_NOPARACHUTE;                                        /**< Don't catch fatal signals */
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#else
   SDL_init_flags |= SDL_INIT_EVENTTHREAD;                                        /**< Not supported on all OS's */
-#endif
-  if (SDL_Init(SDL_init_flags) == -1)
+#endif // ACE_WIN32 || ACE_WIN64
+  if (SDL_Init (SDL_init_flags) == -1)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_Init(0x%x): \"%s\", aborting\n"),

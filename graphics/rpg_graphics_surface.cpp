@@ -186,46 +186,61 @@ RPG_Graphics_Surface::init(SDL_Surface* surface_in,
 }
 
 void
-RPG_Graphics_Surface::clip()
+#if defined (SDL_USE)
+RPG_Graphics_Surface::clip ()
+#elif defined (SDL2_USE)
+RPG_Graphics_Surface::clip (SDL_Window* window_in)
+#endif // SDL_USE || SDL2_USE
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::clip"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::clip"));
 
-  SDL_Surface* video_surface = SDL_GetVideoSurface();
   // sanity check(s)
-  if (((myClipRectangle.x == 0) &&
-       (myClipRectangle.y == 0) &&
-       (myClipRectangle.w == 0) &&
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = SDL_GetVideoSurface ();
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (window_in);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
+  if (((myClipRectangle.w == 0) ||
        (myClipRectangle.h == 0)) ||
-      !video_surface)
+      !surface_p)
     return; // nothing to do
 
-  SDL_SetClipRect(video_surface,
-	              &myClipRectangle);
+  SDL_SetClipRect (surface_p,
+	                 &myClipRectangle);
 }
 
 void
-RPG_Graphics_Surface::unclip()
+#if defined (SDL_USE)
+RPG_Graphics_Surface::unclip ()
+#elif defined (SDL2_USE)
+RPG_Graphics_Surface::unclip (SDL_Window* window_in)
+#endif // SDL_USE || SDL2_USE
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::unclip"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::unclip"));
 
-  SDL_Surface* video_surface = SDL_GetVideoSurface();
   // sanity check(s)
-  if (!video_surface)
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = SDL_GetVideoSurface ();
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (window_in);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
+  if (!surface_p)
     return; // nothing to do
 
   // cache previous entry
-  SDL_GetClipRect(video_surface,
-                  &myClipRectangle);
+  SDL_GetClipRect (surface_p,
+                   &myClipRectangle);
 
-  SDL_SetClipRect(video_surface,
-	              NULL);
+  SDL_SetClipRect (surface_p, NULL);
 }
 
 SDL_Surface*
-RPG_Graphics_Surface::load(const std::string& filename_in,
-                           const bool& convertToDisplayFormat_in)
+RPG_Graphics_Surface::load (const std::string& filename_in,
+                            bool convertToDisplayFormat_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::load"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::load"));
 
   // init return value(s)
   SDL_Surface* result = NULL;
@@ -240,38 +255,21 @@ RPG_Graphics_Surface::load(const std::string& filename_in,
     return NULL;
   } // end IF
 
-  //// load complete file into memory
-  //// *TODO*: this isn't really necessary...
-  //unsigned char* srcbuf = NULL;
-  //if (!Common_File_Tools::loadFile(filename_in,
-  //                                 srcbuf))
-  //{
-  //  ACE_DEBUG ((LM_ERROR,
-  //              ACE_TEXT ("failed to Common_File_Tools::loadFile(\"%s\"), aborting\n"),
-  //              ACE_TEXT (filename_in.c_str()));
-
-  //  return NULL;
-  //} // end IF
   FILE* file_ptr = NULL;
-  if ((file_ptr = ACE_OS::fopen (filename_in.c_str(),                  // filename
+  if ((file_ptr = ACE_OS::fopen (filename_in.c_str (),                  // filename
 	                               ACE_TEXT_ALWAYS_CHAR ("rb"))) == NULL) // mode
 
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to ACE_OS::fopen(\"%s\"): \"%m\", aborting\n"),
                 ACE_TEXT (filename_in.c_str ())));
-
     return NULL;
   } // end IF
 
-  //// *NOTE*: beyond this point:
-  //// - delete[] srcbuf
-
   // extract SDL surface from PNG
-  result = RPG_Graphics_Surface::loadPNG(std::string(ACE::basename(filename_in.c_str())),
-	                                       file_ptr);
-//                                         srcbuf);
-//                                         alpha_in);
+  result =
+    RPG_Graphics_Surface::loadPNG (ACE_TEXT_ALWAYS_CHAR (ACE::basename (filename_in.c_str ())),
+	                                 file_ptr);
   if (!result)
   {
     ACE_DEBUG ((LM_ERROR,
@@ -299,38 +297,33 @@ RPG_Graphics_Surface::load(const std::string& filename_in,
   {
     SDL_Surface* convert = NULL;
 
-//     // enable "per-surface" alpha blending
-//     if (SDL_SetAlpha(result,
-//                       (SDL_SRCALPHA | SDL_RLEACCEL), // alpha blending/RLE acceleration
-//                       alpha_in))
-//     {
-//       ACE_DEBUG((LM_ERROR,
-//                   ACE_TEXT("failed to SDL_SetAlpha(%u): %s, aborting\n"),
-//                   static_cast<unsigned long> (alpha_in),
-//                   SDL_GetError()));
-    //
-//       // clean up
-//       SDL_FreeSurface(result);
-    //
-//       return NULL;
-//     } // end IF
-
+#if defined (SDL_USE)
     // convert surface to the pixel format/colors of the video framebuffer
     // --> allows fast(er) blitting
 //     convert = SDL_DisplayFormat(result);
-    convert = SDL_DisplayFormatAlpha(result);
+    convert = SDL_DisplayFormatAlpha (result);
     if (!convert)
     {
       ACE_DEBUG ((LM_ERROR,
 //                  ACE_TEXT("failed to SDL_DisplayFormat(): %s, aborting\n"),
                   ACE_TEXT ("failed to SDL_DisplayFormatAlpha(): \"%s\", aborting\n"),
                   ACE_TEXT (SDL_GetError ())));
-
-      // clean up
       SDL_FreeSurface (result);
-
       return NULL;
     } // end IF
+#elif defined (SDL2_USE)
+    convert = SDL_ConvertSurfaceFormat (result,
+                                        SDL_PIXELFORMAT_RGBA8888,
+                                        0);
+    if (!convert)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_ConvertSurfaceFormat(): \"%s\", aborting\n"),
+                  ACE_TEXT (SDL_GetError ())));
+      SDL_FreeSurface (result);
+      return NULL;
+    } // end IF
+#endif // SDL_USE || SDL2_USE
 
     // clean up
     SDL_FreeSurface (result);
@@ -341,9 +334,9 @@ RPG_Graphics_Surface::load(const std::string& filename_in,
 }
 
 void
-RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
-                              const std::string& targetFile_in,
-                              const bool& alpha_in)
+RPG_Graphics_Surface::savePNG (const SDL_Surface& surface_in,
+                               const std::string& targetFile_in,
+                               bool alpha_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::savePNG"));
 
@@ -559,22 +552,23 @@ RPG_Graphics_Surface::savePNG(const SDL_Surface& surface_in,
 }
 
 SDL_Surface*
-RPG_Graphics_Surface::create(const unsigned int& width_in,
-                             const unsigned int& height_in)
+RPG_Graphics_Surface::create (unsigned int width_in,
+                              unsigned int height_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::create"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::create"));
 
   SDL_Surface* result = NULL;
   // *NOTE*: surface is initialized as transparent
-  result = SDL_CreateRGBSurface(RPG_Graphics_Surface::SDL_surface_flags,
-                                static_cast<int>(width_in),
-                                static_cast<int>(height_in),
+  result =
+    SDL_CreateRGBSurface (RPG_Graphics_Surface::SDL_surface_flags,
+                          static_cast<int> (width_in),
+                          static_cast<int> (height_in),
 //                                 (bit_depth * 8),
-                                32,
-                                ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x000000FF : 0xFF000000),
-                                ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x0000FF00 : 0x00FF0000),
-                                ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x00FF0000 : 0x0000FF00),
-                                ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0xFF000000 : 0x000000FF));
+                          32,
+                          ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x000000FF : 0xFF000000),
+                          ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x0000FF00 : 0x00FF0000),
+                          ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x00FF0000 : 0x0000FF00),
+                          ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0xFF000000 : 0x000000FF));
 //                                 Rmask,
 //                                 Gmask,
 //                                 Bmask,
@@ -592,12 +586,12 @@ RPG_Graphics_Surface::create(const unsigned int& width_in,
 }
 
 SDL_Surface*
-RPG_Graphics_Surface::get(const RPG_Graphics_Offset_t& offset_in,
-                          const unsigned int& width_in,
-                          const unsigned int& height_in,
-                          const SDL_Surface& source_in)
+RPG_Graphics_Surface::get (const RPG_Graphics_Offset_t& offset_in,
+                           unsigned int width_in,
+                           unsigned int height_in,
+                           const SDL_Surface& source_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::get"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::get"));
 
   // sanity check(s)
   ACE_ASSERT(width_in <= static_cast<unsigned int>(source_in.w));
@@ -679,16 +673,16 @@ RPG_Graphics_Surface::get(const RPG_Graphics_Offset_t& offset_in,
 }
 
 void
-RPG_Graphics_Surface::get(const RPG_Graphics_Offset_t& offset_in,
-                          const bool& blit_in,
-                          const SDL_Surface& source_in,
-                          SDL_Surface& target_inout)
+RPG_Graphics_Surface::get (const RPG_Graphics_Offset_t& offset_in,
+                           bool blit_in,
+                           const SDL_Surface& source_in,
+                           SDL_Surface& target_inout)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::get"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::get"));
 
   // sanity check(s)
-  ACE_ASSERT(target_inout.w <= source_in.w);
-  ACE_ASSERT(target_inout.h <= source_in.h);
+  ACE_ASSERT (target_inout.w <= source_in.w);
+  ACE_ASSERT (target_inout.h <= source_in.h);
 
   // clip where necessary...
   unsigned int clipped_width, clipped_height;
@@ -801,31 +795,31 @@ RPG_Graphics_Surface::put(const RPG_Graphics_Offset_t& offset_in,
 }
 
 bool
-RPG_Graphics_Surface::putText(const RPG_Graphics_Font& font_in,
-                              const std::string& textString_in,
-                              const SDL_Color& color_in,
-                              const bool& shade_in,
-                              const SDL_Color& shadeColor_in,
-                              const RPG_Graphics_Offset_t& offset_in,
-                              SDL_Surface* targetSurface_in,
-                              SDL_Rect& dirtyRegion_out)
+RPG_Graphics_Surface::putText (const RPG_Graphics_Font& font_in,
+                               const std::string& textString_in,
+                               const SDL_Color& color_in,
+                               bool shade_in,
+                               const SDL_Color& shadeColor_in,
+                               const RPG_Graphics_Offset_t& offset_in,
+                               SDL_Surface* targetSurface_in,
+                               SDL_Rect& dirtyRegion_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::putText"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::putText"));
 
   // init return value(s)
-  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
 
   // sanity check(s)
-  ACE_ASSERT(targetSurface_in);
+  ACE_ASSERT (targetSurface_in);
 
   SDL_Surface* rendered_text = NULL;
   SDL_Rect dirty_region;
   // step1: render shade ?
   if (shade_in)
   {
-    rendered_text = RPG_Graphics_Common_Tools::renderText(font_in,
-                                                          textString_in,
-                                                          shadeColor_in);
+    rendered_text = RPG_Graphics_Common_Tools::renderText (font_in,
+                                                           textString_in,
+                                                           shadeColor_in);
     if (!rendered_text)
     {
       ACE_DEBUG((LM_ERROR,
@@ -877,16 +871,16 @@ RPG_Graphics_Surface::putText(const RPG_Graphics_Font& font_in,
 }
 
 void
-RPG_Graphics_Surface::putRectangle(const SDL_Rect& rectangle_in,
-                                   const Uint32& color_in,
-                                   SDL_Surface* targetSurface_in)
+RPG_Graphics_Surface::putRectangle (const SDL_Rect& rectangle_in,
+                                    Uint32 color_in,
+                                    SDL_Surface* targetSurface_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::putRectangle"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::putRectangle"));
 
   // sanity check(s)
-  ACE_ASSERT(targetSurface_in);
+  ACE_ASSERT (targetSurface_in);
   SDL_Rect intersection;
-  ACE_OS::memset(&intersection, 0, sizeof(SDL_Rect));
+  ACE_OS::memset(&intersection, 0, sizeof (SDL_Rect));
   intersection = RPG_Graphics_SDL_Tools::intersect(rectangle_in,
                                                    targetSurface_in->clip_rect);
   if ((intersection.w == 0) || (intersection.h == 0))
@@ -950,10 +944,10 @@ RPG_Graphics_Surface::putRectangle(const SDL_Rect& rectangle_in,
 }
 
 void
-RPG_Graphics_Surface::alpha(const Uint8& opacity_in,
-                            SDL_Surface& targetImage_in)
+RPG_Graphics_Surface::alpha (Uint8 opacity_in,
+                             SDL_Surface& targetImage_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::alpha"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::alpha"));
 
   // *NOTE*: SDL_SetAlpha() will not work, as transparent pixels should remain
   // that way --> do it manually
@@ -990,13 +984,13 @@ RPG_Graphics_Surface::alpha(const Uint8& opacity_in,
 }
 
 SDL_Surface*
-RPG_Graphics_Surface::alpha(const SDL_Surface& sourceImage_in,
-                            const Uint8& opacity_in)
+RPG_Graphics_Surface::alpha (const SDL_Surface& sourceImage_in,
+                             Uint8 opacity_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::alpha"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::alpha"));
 
   SDL_Surface* result = NULL;
-  result = RPG_Graphics_Surface::copy(sourceImage_in);
+  result = RPG_Graphics_Surface::copy (sourceImage_in);
   if (!result)
   {
     ACE_DEBUG((LM_ERROR,
@@ -1045,43 +1039,44 @@ RPG_Graphics_Surface::alpha(const SDL_Surface& sourceImage_in,
 }
 
 void
-RPG_Graphics_Surface::clear(SDL_Surface* targetSurface_in,
+RPG_Graphics_Surface::clear (SDL_Surface* targetSurface_in,
+                             const SDL_Rect* clipRectangle_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::clear"));
+
+  ACE_ASSERT (targetSurface_in);
+
+  RPG_Graphics_Surface::fill (RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK_A0, // transparent
+                                                                *targetSurface_in->format,
+                                                                1.0F),
+                              targetSurface_in,
+                              clipRectangle_in);
+}
+
+void
+RPG_Graphics_Surface::fill (Uint32 color_in,
+                            SDL_Surface* targetSurface_in,
                             const SDL_Rect* clipRectangle_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::clear"));
-
-  ACE_ASSERT(targetSurface_in);
-
-  fill(RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK_A0, // transparent
-                                        *targetSurface_in),
-       targetSurface_in,
-       clipRectangle_in);
-}
-
-void
-RPG_Graphics_Surface::fill(const Uint32& color_in,
-                           SDL_Surface* targetSurface_in,
-                           const SDL_Rect* clipRectangle_in)
-{
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::fill"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::fill"));
 
   // sanity check
-  ACE_ASSERT(targetSurface_in);
+  ACE_ASSERT (targetSurface_in);
 
   // fill with color
-  if (SDL_FillRect(targetSurface_in,                        // target
-                   const_cast<SDL_Rect*>(clipRectangle_in), // aspect
-                   color_in))                               // color
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_FillRect(): \"%s\", continuing\n"),
-               ACE_TEXT(SDL_GetError())));
+  if (SDL_FillRect (targetSurface_in,                        // target
+                    const_cast<SDL_Rect*>(clipRectangle_in), // aspect
+                    color_in))                               // color
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_FillRect(): \"%s\", continuing\n"),
+                ACE_TEXT (SDL_GetError ())));
 }
 
 void
-RPG_Graphics_Surface::copy(const SDL_Surface& sourceImage_in,
-                           SDL_Surface& targetImage_in)
+RPG_Graphics_Surface::copy (const SDL_Surface& sourceImage_in,
+                            SDL_Surface& targetImage_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::copy"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::copy"));
 
   // sanity check(s)
   ACE_ASSERT((sourceImage_in.w == targetImage_in.w) &&
@@ -1204,35 +1199,50 @@ RPG_Graphics_Surface::copy(const SDL_Surface& sourceImage_in)
 }
 
 void
-RPG_Graphics_Surface::update(const SDL_Rect& dirty_in,
-                             SDL_Surface* targetSurface_in)
+#if defined (SDL_USE)
+RPG_Graphics_Surface::update (const SDL_Rect& dirty_in,
+                              SDL_Surface* targetSurface_in)
+#elif defined (SDL2_USE)
+RPG_Graphics_Surface::update (const SDL_Rect& dirty_in,
+                              SDL_Window* targetWindow_in)
+#endif // SDL_USE || SDL2_USE
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::update"));
 
   // sanity check
-  ACE_ASSERT(targetSurface_in);
+#if defined (SDL_USE)
+  ACE_ASSERT (targetSurface_in);
+#elif defined (SDL2_USE)
+  ACE_ASSERT (targetWindow_in);
+#endif // SDL_USE || SDL2_USE
 
   // handle clipping
+#if defined (SDL_USE)
   SDL_Rect intersection =
-      RPG_Graphics_SDL_Tools::intersect(targetSurface_in->clip_rect, dirty_in);
+      RPG_Graphics_SDL_Tools::intersect (targetSurface_in->clip_rect, dirty_in);
   if ((intersection.w == 0) || (intersection.h == 0))
     return; // nothing to do...
+#endif // SDL_USE
 
+#if defined (SDL_USE)
   //SDL_UpdateRects(targetSurface_in,
   //                1,
   //                &dirty_in);
-  SDL_UpdateRect(targetSurface_in,
-                 intersection.x, intersection.y,
-                 intersection.w, intersection.h);
+  SDL_UpdateRect (targetSurface_in,
+                  intersection.x, intersection.y,
+                  intersection.w, intersection.h);
+#elif defined (SDL2_USE)
+  SDL_UpdateWindowSurfaceRects (targetWindow_in,
+                                &dirty_in,
+                                1);
+#endif // SDL_USE || SDL2_USE
 }
 
 SDL_Surface*
-RPG_Graphics_Surface::loadPNG(const std::string& filename_in,
-                              FILE* file_in)
-//                              const unsigned char* buffer_in)
-//                              const unsigned char& alpha_in)
+RPG_Graphics_Surface::loadPNG (const std::string& filename_in,
+                               FILE* file_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::loadPNG"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::loadPNG"));
 
   // init return value(s)
   SDL_Surface* result = NULL;

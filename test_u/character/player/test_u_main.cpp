@@ -401,8 +401,10 @@ test_u_main::do_work (struct GTK_CBData& userData_in,
                                        itemDictionary_in,
                                        empty);
   struct RPG_Client_SDL_InputConfiguration input_configuration;
+#if defined (SDL_USE)
   input_configuration.key_repeat_initial_delay = SDL_DEFAULT_REPEAT_DELAY;
   input_configuration.key_repeat_interval = SDL_DEFAULT_REPEAT_INTERVAL;
+#endif // SDL_USE
   input_configuration.use_UNICODE = true;
   struct RPG_Sound_SDLConfiguration sound_configuration;
   sound_configuration.frequency = RPG_SOUND_AUDIO_DEF_FREQUENCY;

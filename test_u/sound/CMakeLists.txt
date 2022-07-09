@@ -1,20 +1,18 @@
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/sdl.cmake)
+
 if (UNIX)
  include (FindPkgConfig)
  pkg_check_modules (PKG_CONFIG_MODULE_XERCES REQUIRED xerces-c)
- pkg_check_modules (PKG_CONFIG_MODULE_SDL REQUIRED sdl)
- pkg_check_modules (PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
-elseif (WIN32)
-endif ()
+endif (UNIX)
 
 if (UNIX)
- include_directories (${PKG_CONFIG_MODULE_XERCES_INCLUDE_DIRS}
-                      ${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
-                      ${PKG_CONFIG_MODULE_SDL_MIXER_INCLUDE_DIRS})
+ include_directories (${PKG_CONFIG_MODULE_XERCES_INCLUDE_DIRS})
 elseif (WIN32)
- include_directories ($ENV{LIB_ROOT}/xerces-c/src
-                      $ENV{LIB_ROOT}/SDL/include
-                      $ENV{LIB_ROOT}/SDL_mixer/include)
+ include_directories ($ENV{LIB_ROOT}/xerces-c/src)
 endif ()
+if (SDL_SUPPORT)
+ include_directories (${SDL_INCLUDE_DIRS})
+endif (SDL_SUPPORT)
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log)
@@ -36,11 +34,13 @@ set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITION
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 
+if (SDL_SUPPORT)
+ target_link_libraries (${EXECUTABLE}
+                        ${SDL_LIBRARIES})
+endif (SDL_SUPPORT)
 if (UNIX)
  target_link_libraries(${EXECUTABLE}
                        ${PKG_CONFIG_MODULE_XERCES_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
-                       ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES}
                        xerces-c
                        ${ACE_LIBRARY}
                        Common CommonLog CommonTimer
@@ -50,9 +50,6 @@ elseif (WIN32)
 
  target_link_libraries (${EXECUTABLE}
                        legacy_stdio_definitions.lib
-                       $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL.lib
-                       $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDLmain.lib
-                       $ENV{LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL_mixer.lib
                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                        Common CommonError CommonLog CommonTimer

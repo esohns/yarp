@@ -177,22 +177,26 @@ RPG_Client_Entity_Manager::cached(const RPG_Engine_EntityID_t& id_in) const
 }
 
 void
-RPG_Client_Entity_Manager::put(const RPG_Engine_EntityID_t& id_in,
-                               const RPG_Graphics_Position_t& position_in,
-                               SDL_Rect& dirtyRegion_out,
-                               bool clipWindow_in,
-                               bool lockedAccess_in,
-                               bool debug_in)
+RPG_Client_Entity_Manager::put (const RPG_Engine_EntityID_t& id_in,
+                                const RPG_Graphics_Position_t& position_in,
+                                SDL_Rect& dirtyRegion_out,
+                                bool clipWindow_in,
+                                bool lockedAccess_in,
+                                bool debug_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::put"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Entity_Manager::put"));
 
   // step0: init return value(s)
   ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
 
   // sanity check(s)
   ACE_ASSERT(myWindow);
-  SDL_Surface* target_surface = myWindow->getScreen();
-  ACE_ASSERT(target_surface);
+#if defined (SDL_USE)
+  SDL_Surface* target_surface = myWindow->getScreen ();
+#elif defined (SDL2_USE)
+  SDL_Surface* target_surface = SDL_GetWindowSurface (myWindow->getScreen ());
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (target_surface);
   RPG_Client_EntityCacheIterator_t iterator = myCache.find(id_in);
   if (iterator == myCache.end())
   {
@@ -304,7 +308,7 @@ RPG_Client_Entity_Manager::put(const RPG_Engine_EntityID_t& id_in,
 																	   lockedAccess_in,
 																	   debug_in);
   dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-	                                                    dirtyRegion_out);
+	                                                      dirtyRegion_out);
 
   if (debug_in)
   {
@@ -312,32 +316,43 @@ RPG_Client_Entity_Manager::put(const RPG_Engine_EntityID_t& id_in,
     ACE_ASSERT(target_surface->w >= (*iterator).second.bg->w);
     ACE_ASSERT(target_surface->h >= (*iterator).second.bg->h);
 
-    RPG_Graphics_Surface::unclip();
-    RPG_Graphics_Surface::put(std::make_pair((target_surface->w - (*iterator).second.bg->w),
-                                             (target_surface->h - (*iterator).second.bg->h)),
-                              *(*iterator).second.bg,
-                              target_surface,
-                              dirty_region);
-    RPG_Graphics_Surface::clip();
-
-    dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-                                                          dirtyRegion_out);
+#if defined (SDL_USE)
+    RPG_Graphics_Surface::unclip ();
+#elif defined (SDL2_USE)
+    RPG_Graphics_Surface::unclip (myWindow->getScreen ());
+#endif // SDL_USE || SDL2_USE
+    RPG_Graphics_Surface::put (std::make_pair ((target_surface->w - (*iterator).second.bg->w),
+                                               (target_surface->h - (*iterator).second.bg->h)),
+                               *(*iterator).second.bg,
+                               target_surface,
+                               dirty_region);
+#if defined (SDL_USE)
+    RPG_Graphics_Surface::clip ();
+#elif defined (SDL2_USE)
+    RPG_Graphics_Surface::clip (myWindow->getScreen ());
+#endif // SDL_USE || SDL2_USE
+    dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
+                                                           dirtyRegion_out);
   } // end IF
 }
 
 void
-RPG_Client_Entity_Manager::restoreBG(const RPG_Engine_EntityID_t& id_in,
-                                     SDL_Rect& dirtyRegion_out,
-                                     bool clipWindow_in,
-                                     bool lockedAccess_in,
-                                     bool debug_in)
+RPG_Client_Entity_Manager::restoreBG (const RPG_Engine_EntityID_t& id_in,
+                                      SDL_Rect& dirtyRegion_out,
+                                      bool clipWindow_in,
+                                      bool lockedAccess_in,
+                                      bool debug_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::restoreBG"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Entity_Manager::restoreBG"));
 
   // sanity check(s)
   ACE_ASSERT(myWindow);
+#if defined (SDL_USE)
   SDL_Surface* target_surface = myWindow->getScreen();
-  ACE_ASSERT(target_surface);
+#elif defined (SDL2_USE)
+  SDL_Surface* target_surface = SDL_GetWindowSurface(myWindow->getScreen());
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (target_surface);
   RPG_Client_EntityCacheConstIterator_t iterator = myCache.find(id_in);
   if (iterator == myCache.end())
   {

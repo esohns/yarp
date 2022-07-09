@@ -75,20 +75,33 @@ class RPG_Graphics_Common_Tools
   static void loadDoorTileSet(const RPG_Graphics_DoorStyle&, // style
                               struct RPG_Graphics_DoorTileSet&);  // return value: tileset
   // *NOTE*: uncached (!) surfaces need to be SDL_FreeSurface()ed by the user !
-  static SDL_Surface* loadGraphic(const RPG_Graphics_GraphicTypeUnion&, // type
-                                  const bool&,                          // convert to display format ?
-                                  const bool&);                         // cache graphic ?
+  static SDL_Surface* loadGraphic (const RPG_Graphics_GraphicTypeUnion&, // type
+                                   bool,                                 // convert to display format ?
+                                   bool);                                // cache graphic ?
+#if defined (SDL2_USE)
+  static SDL_Texture* loadGraphic (SDL_Renderer*,                          // renderer handle
+                                   const RPG_Graphics_GraphicTypeUnion&/*, // type
+                                   bool*/);                                // cache graphic ?
+#endif // SDL2_USE
 
   static SDL_Surface* renderText(const RPG_Graphics_Font&, // font
                                  const std::string&,       // string
                                  const SDL_Color&);        // color
 
   // *NOTE*: source/target image must already be loaded into the framebuffer !
-  static void fade(const bool&,   // fade in ? (else out)
-                   const float&,  // interval (seconds)
-                   const Uint32&, // fade to/from color
-                   Common_ILock*, // lock interface handle
-                   SDL_Surface*); // target surface (e.g. screen)
+#if defined (SDL_USE)
+  static void fade (bool,          // fade-in ? : -out
+                    float,         // interval (seconds)
+                    Uint32,        // fade to/from color
+                    Common_ILock*, // lock interface handle
+                    SDL_Surface*); // target surface (e.g. screen)
+#elif defined (SDL2_USE)
+  static void fade (bool,          // fade-in ? : -out
+                    float,         // interval (seconds)
+                    Uint32,        // fade to/from color
+                    Common_ILock*, // lock interface handle
+                    SDL_Window*);  // target window (e.g. screen)
+#endif // SDL_USE || SDL2_USE
 
   static RPG_Graphics_Style random(const RPG_Graphics_Style&); // graphics style
 
@@ -103,10 +116,10 @@ class RPG_Graphics_Common_Tools
                                             const RPG_Graphics_Position_t&); // viewport (map coordinates !)
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Common_Tools())
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Graphics_Common_Tools())
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Common_Tools(const RPG_Graphics_Common_Tools&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Common_Tools& operator=(const RPG_Graphics_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (~RPG_Graphics_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_Common_Tools (const RPG_Graphics_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_Common_Tools& operator= (const RPG_Graphics_Common_Tools&))
 
   // helper methods
   static void initializeStringConversionTables();
@@ -116,10 +129,17 @@ class RPG_Graphics_Common_Tools
   static RPG_Graphics_GraphicTypeUnion styleToType(const RPG_Graphics_StyleUnion&, // style (generic)
                                                    const bool& = false);           // half-height (wallstyle only) ?
 
-  static void fade(const float&,  // interval (seconds)
-                   SDL_Surface*,  // target image
-                   Common_ILock*, // lock interface handle
-                   SDL_Surface*); // target surface (e.g. screen)
+#if defined (SDL_USE)
+  static void fade (float,         // interval (seconds)
+                    SDL_Surface*,  // target image
+                    Common_ILock*, // lock interface handle
+                    SDL_Surface*); // target surface (e.g. screen)
+#elif defined (SDL2_USE)
+  static void fade (float,         // interval (seconds)
+                    SDL_Surface*,  // target image
+                    Common_ILock*, // lock interface handle
+                    SDL_Window*);  // target window (e.g. screen)
+#endif // SDL_USE || SDL2_USE
 
   static std::string                  myGraphicsDirectory;
 

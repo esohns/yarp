@@ -31,27 +31,23 @@ elseif (WXWIDGETS_USE)
  endif (CMAKE_BUILD_TYPE STREQUAL Debug)
 endif ()
 
-if (UNIX)
- include(FindPkgConfig)
- pkg_check_modules(PKG_CONFIG_MODULE_SDL REQUIRED sdl)
- pkg_check_modules(PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
-# pkg_check_modules(PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
- pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
- pkg_check_modules(PKG_CONFIG_MODULE_LIBGTK REQUIRED gtk+-2.0)
-# pkg_check_modules(PKG_CONFIG_MODULE_LIBGNOMEUI REQUIRED libgnomeui-2.0>=1.110.0)
-elseif (WIN32)
-endif ()
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../../scripts/sdl.cmake)
 
 if (UNIX)
- include_directories(${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
-                     ${PKG_CONFIG_MODULE_SDL_MIXER_INCLUDE_DIRS}
-                     ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}
+ include(FindPkgConfig)
+ pkg_check_modules(PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
+ pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
+endif (UNIX)
+
+if (SDL_SUPPORT)
+ include_directories (${SDL_INCLUDE_DIRS})
+endif (SDL_SUPPORT)
+include_directories (${GTK_INCLUDE_DIRS})
+if (UNIX)
+ include_directories(${PKG_CONFIG_MODULE_SDL_MIXER_INCLUDE_DIRS}
                      ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
 elseif (WIN32)
- include_directories($ENV{LIB_ROOT}/SDL/include
-                     $ENV{LIB_ROOT}/SDL_mixer/include
-                     $ENV{LIB_ROOT}/SDL_ttf/include
-                     ${GTK_INCLUDE_DIRS})
+ include_directories ($ENV{LIB_ROOT}/SDL_mixer/include)
 endif ()
 
 if (WIN32)
@@ -90,11 +86,13 @@ set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITION
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 
+if (SDL_SUPPORT)
+ target_link_libraries (${EXECUTABLE}
+                        ${SDL_LIBRARIES})
+endif (SDL_SUPPORT)
 if (UNIX)
  target_link_libraries (${EXECUTABLE}
                         pthread
-#                        ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
-#                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
 #                        ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
                         xerces-c
                         ${ACE_LIBRARY}
@@ -134,10 +132,12 @@ set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITION
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 
+if (SDL_SUPPORT)
+ target_link_libraries (${EXECUTABLE}
+                        ${SDL_LIBRARIES})
+endif (SDL_SUPPORT)
 if (UNIX)
  target_link_libraries (${EXECUTABLE}
-#                        ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
-#                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
 #                        ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
                         xerces-c
                         ${ACE_LIBRARY}
@@ -190,18 +190,19 @@ add_executable (${EXECUTABLE}
 #add_definitions (-DWINVER=0x0602)
 
 include_directories (${GTK_INCLUDE_DIRS}
-                     $ENV{LIB_ROOT}/gtkglarea
-                     ${PKG_CONFIG_MODULE_LIBGLADE_INCLUDE_DIRS}
+#                     $ENV{LIB_ROOT}/gtkglarea
                      ${PKG_CONFIG_MODULE_LIBGNOMEUI_INCLUDE_DIRS})
 
+if (SDL_SUPPORT)
+ target_link_libraries (${EXECUTABLE}
+                        ${SDL_LIBRARIES})
+endif (SDL_SUPPORT)
 if (UNIX)
  target_link_libraries (${EXECUTABLE}
-                        ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
                         ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES}
-                        ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
                         ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
                         X11
-                        ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES}
+#                        ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES}
                         ${PKG_CONFIG_MODULE_LIBGNOMEUI_LIBRARIES}
                         ${GTK_LIBRARIES}
                         xerces-c
@@ -226,7 +227,6 @@ elseif (WIN32)
 
  target_link_libraries (${EXECUTABLE}
                         Opengl32.lib Ntdll.lib
-#                        $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDLmain.lib
                         $ENV{LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL_mixer.lib
                         ${GTK_LIBRARIES}
                         $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib

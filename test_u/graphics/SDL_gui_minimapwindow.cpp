@@ -123,7 +123,6 @@ SDL_GUI_MinimapWindow::handleEvent(const SDL_Event& event_in,
 
       break;
     }
-    case SDL_ACTIVEEVENT:
     case SDL_KEYDOWN:
     case SDL_KEYUP:
     case SDL_MOUSEBUTTONUP:
@@ -135,15 +134,22 @@ SDL_GUI_MinimapWindow::handleEvent(const SDL_Event& event_in,
     case SDL_JOYBUTTONUP:
     case SDL_QUIT:
     case SDL_SYSWMEVENT:
+#if defined (SDL_USE)
+    case SDL_ACTIVEEVENT:
     case SDL_VIDEORESIZE:
     case SDL_VIDEOEXPOSE:
+#elif defined (SDL2_USE)
+    case SDL_WINDOWEVENT_SHOWN:
+    case SDL_WINDOWEVENT_RESIZED:
+    case SDL_WINDOWEVENT_EXPOSED:
+#endif // SDL_USE || SDL2_USE
     case SDL_USEREVENT:
     case RPG_GRAPHICS_SDL_HOVEREVENT:
     {
       // delegate these to the parent...
-      getParent()->handleEvent(event_in,
-                               window_in,
-                               dirtyRegion_out);
+      getParent ()->handleEvent (event_in,
+                                 window_in,
+                                 dirtyRegion_out);
 
       break;
     }
@@ -166,34 +172,46 @@ SDL_GUI_MinimapWindow::initialize(state_t* state_in,
 
   // sanity check(s)
   ACE_ASSERT (state_in);
+  ACE_ASSERT (state_in->screen);
 
   myState = state_in;
   inherited::initialize (screenLock_in,
+#if defined (SDL_USE)
                          (state_in->screen->flags & SDL_DOUBLEBUF));
+#elif defined (SDL2_USE)
+                         true);
+#endif // SDL_USE || SDL2_USE
 }
 
 void
-SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
-                            unsigned int offsetX_in,
-                            unsigned int offsetY_in)
+SDL_GUI_MinimapWindow::draw (SDL_Surface* targetSurface_in,
+                             unsigned int offsetX_in,
+                             unsigned int offsetY_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::draw"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_MinimapWindow::draw"));
 
   // sanity check(s)
+  ACE_ASSERT (inherited::screen_);
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = inherited::screen_;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : screen_);
-  ACE_ASSERT(target_surface);
-  ACE_UNUSED_ARG(offsetX_in);
-  ACE_UNUSED_ARG(offsetY_in);
-  ACE_ASSERT(myEngine);
-  ACE_ASSERT(mySurface);
+                                                  : surface_p);
+  ACE_ASSERT (target_surface);
+  ACE_UNUSED_ARG (offsetX_in);
+  ACE_UNUSED_ARG (offsetY_in);
+  ACE_ASSERT (myEngine);
+  ACE_ASSERT (mySurface);
 
   // init surface
   SDL_Rect dirty_region;
-  RPG_Graphics_Surface::put(std::make_pair(0, 0),
-                            *myBG,
-                            mySurface,
-                            dirty_region);
+  RPG_Graphics_Surface::put (std::make_pair(0, 0),
+                             *myBG,
+                             mySurface,
+                             dirty_region);
 
   // lock surface during pixel access
   if (SDL_MUSTLOCK((mySurface)))
@@ -324,7 +342,7 @@ SDL_GUI_MinimapWindow::draw(SDL_Surface* targetSurface_in,
         } // end IF
       } // end IF
       color = RPG_Graphics_SDL_Tools::getColor (color_name,
-                                                *mySurface,
+                                                *mySurface->format,
                                                 blend_factor);
 
       // step3: draw tile onto surface

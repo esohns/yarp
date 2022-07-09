@@ -25,9 +25,19 @@
 #include <cmath>
 #include <sstream>
 
-#include "ace/Log_Msg.h"
+#include "ace/config-lite.h"
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#include "gl/GL.h"
+#include "gl/GLU.h"
+#else
+#include "GL/gl.h"
+#endif // ACE_WIN32 || ACE_WIN64
 
+#if defined (SDL_USE)
 #include "SDL_opengl.h"
+#endif // SDL_USE
+
+#include "ace/Log_Msg.h"
 
 #include "rpg_common_defines.h"
 #include "rpg_common_macros.h"
@@ -76,9 +86,9 @@ SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D(const RPG_Graphics_SDLWindowBase&
 //                                        myEngine->getSize().second / 2)),
 //   myHighlightBG(NULL),
 //   myHighlightTile(NULL),
-   myMinimapIsOn(RPG_CLIENT_MINIMAP_DEF_ISON)
+   myMinimapIsOn (RPG_CLIENT_MINIMAP_DEF_ISON)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D"));
 
   myEngine->initialize (this);
 
@@ -226,17 +236,22 @@ SDL_GUI_LevelWindow_3D::getView() const
 }
 
 void
-SDL_GUI_LevelWindow_3D::initialize(state_t* state_in,
-                                   Common_ILock* screenLock_in)
+SDL_GUI_LevelWindow_3D::initialize (state_t* state_in,
+                                    Common_ILock* screenLock_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::init"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_3D::init"));
 
   // sanity check(s)
-  ACE_ASSERT(state_in);
+  ACE_ASSERT (state_in);
+  ACE_ASSERT (state_in->screen);
 
   myState = state_in;
   inherited::initialize (screenLock_in,
+#if defined (SDL_USE)
                          (state_in->screen->flags & SDL_DOUBLEBUF));
+#elif defined (SDL2_USE)
+                         true);
+#endif // SDL_USE || SDL2_USE
 
   GLfloat ratio = (static_cast<float>(clipRectangle_.w) /
                    static_cast<float>(clipRectangle_.h));
@@ -368,26 +383,33 @@ SDL_GUI_LevelWindow_3D::drawBorder(SDL_Surface* targetSurface_in,
 }
 
 void
-SDL_GUI_LevelWindow_3D::draw(SDL_Surface* targetSurface_in,
-                             unsigned int offsetX_in,
-                             unsigned int offsetY_in)
+SDL_GUI_LevelWindow_3D::draw (SDL_Surface* targetSurface_in,
+                              unsigned int offsetX_in,
+                              unsigned int offsetY_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::draw"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_3D::draw"));
 
   // sanity check(s)
+  ACE_ASSERT (inherited::screen_);
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = inherited::screen_;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : inherited::screen_);
-  ACE_ASSERT(target_surface);
-  ACE_ASSERT(myState);
+                                                  : surface_p);
+  ACE_ASSERT (target_surface);
+  ACE_ASSERT (myState);
 //  ACE_ASSERT(myCurrentOffMapTile);
 //  ACE_ASSERT(myCurrentCeilingTile);
-  ACE_ASSERT(static_cast<int>(offsetX_in) <= target_surface->w);
-  ACE_ASSERT(static_cast<int>(offsetY_in) <= target_surface->h);
+  ACE_ASSERT (static_cast<int> (offsetX_in) <= target_surface->w);
+  ACE_ASSERT (static_cast<int> (offsetY_in) <= target_surface->h);
 
   // init clipping
-  clip(target_surface,
-       offsetX_in,
-       offsetY_in);
+  clip (target_surface,
+        offsetX_in,
+        offsetY_in);
 
   if (inherited::screenLock_)
     inherited::screenLock_->lock();
@@ -608,11 +630,11 @@ SDL_GUI_LevelWindow_3D::draw(SDL_Surface* targetSurface_in,
 }
 
 void
-SDL_GUI_LevelWindow_3D::update(SDL_Surface* targetSurface_in)
+SDL_GUI_LevelWindow_3D::update (SDL_Surface* targetSurface_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::update"));
 
-  ACE_UNUSED_ARG(targetSurface_in);
+  ACE_UNUSED_ARG (targetSurface_in);
 
   /*
    * Swap the buffers. This this tells the driver to
@@ -624,7 +646,11 @@ SDL_GUI_LevelWindow_3D::update(SDL_Surface* targetSurface_in)
    * from the application drawing on areas of the
    * screen that are being updated at the same time.
    */
-  SDL_GL_SwapBuffers();
+#if defined (SDL_USE)
+  SDL_GL_SwapBuffers ();
+#elif defined (SDL2_USE)
+  SDL_GL_SwapWindow (inherited::screen_);
+#endif // SDL_USE
 }
 
 void
@@ -1189,7 +1215,6 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
 
       break;
     }
-    case SDL_ACTIVEEVENT:
     case SDL_KEYUP:
     case SDL_MOUSEBUTTONUP:
     case SDL_JOYAXISMOTION:
@@ -1199,8 +1224,15 @@ SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
     case SDL_JOYBUTTONUP:
     case SDL_QUIT:
     case SDL_SYSWMEVENT:
+#if defined (SDL_USE)
+    case SDL_ACTIVEEVENT:
     case SDL_VIDEORESIZE:
     case SDL_VIDEOEXPOSE:
+#elif defined (SDL2_USE)
+    case SDL_WINDOWEVENT_SHOWN:
+    case SDL_WINDOWEVENT_RESIZED:
+    case SDL_WINDOWEVENT_EXPOSED:
+#endif // SDL_USE || SDL2_USE
     default:
       break;
   } // end SWITCH
@@ -1413,7 +1445,6 @@ SDL_GUI_LevelWindow_3D::notify(enum RPG_Engine_Command command_in,
 
       RPG_Graphics_Surface::update (dirty_region,
                                     getScreen ());
-
       break;
     }
     case COMMAND_E2C_ENTITY_REMOVE:
@@ -1541,44 +1572,51 @@ SDL_GUI_LevelWindow_3D::updateMessageWindow(const std::string& message_in)
 void
 SDL_GUI_LevelWindow_3D::clear()
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::clear"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_3D::clear"));
 
-  // init clipping
+  // sanity check(s)
+  ACE_ASSERT (inherited::screen_);
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = inherited::screen_;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
+
+  // initialize clipping
   SDL_Rect old_clip_rect;
-  SDL_GetClipRect(inherited::screen_, &old_clip_rect);
+  SDL_GetClipRect (surface_p, &old_clip_rect);
 
-  if (!SDL_SetClipRect(inherited::screen_, &clipRectangle_))
+  if (!SDL_SetClipRect (surface_p, &clipRectangle_))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_SetClipRect(): \"%s\", returning\n"),
+                ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
 
-  if (SDL_FillRect(inherited::screen_,                                     // target surface
-                   &clipRectangle_,                                  // rectangle
-                   RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK,
-                                                    *inherited::screen_))) // color
+  if (SDL_FillRect (surface_p,                                      // target surface
+                    &clipRectangle_,                                // rectangle
+                    RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK,
+                                                      *surface_p->format,
+                                                      1.0F)))       // color
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
-               SDL_GetError()));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_FillRect(): \"%s\", returning\n"),
+                ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
 
   // reset clipping
-  if (!SDL_SetClipRect(inherited::screen_, &old_clip_rect))
+  if (!SDL_SetClipRect (surface_p, &old_clip_rect))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               SDL_GetError()));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_SetClipRect(): \"%s\", returning\n"),
+                ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
 
-  invalidate(clipRectangle_);
+  invalidate (clipRectangle_);
 }
 
 bool
@@ -1966,10 +2004,11 @@ SDL_GUI_LevelWindow_3D::initWallBlend(const bool& halfHeightWalls_in)
     return;
   } // end IF
 
-  if (SDL_FillRect(myWallBlend,
-                   NULL,
-                   RPG_Graphics_SDL_Tools::getColor(COLOR_BLACK_A10,
-                                                    *myWallBlend)))
+  if (SDL_FillRect (myWallBlend,
+                    NULL,
+                    RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK_A10,
+                                                      *myWallBlend->format,
+                                                      1.0F)))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),

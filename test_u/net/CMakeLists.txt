@@ -31,15 +31,12 @@ elseif (WXWIDGETS_USE)
  endif (CMAKE_BUILD_TYPE STREQUAL Debug)
 endif ()
 
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/sdl.cmake)
+
 if (UNIX)
  include (FindPkgConfig)
- pkg_check_modules (PKG_CONFIG_MODULE_SDL REQUIRED sdl)
  pkg_check_modules (PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
- pkg_check_modules (PKG_CONFIG_MODULE_LIBGTK REQUIRED gtk+-2.0)
-# pkg_check_modules (PKG_CONFIG_MODULE_LIBGNOMEUI REQUIRED libgnomeui-2.0>=1.110.0)
-# pkg_check_modules (PKG_CONFIG_MODULE_GMODULE REQUIRED gmodule-export-2.0)
-elseif (WIN32)
-endif ()
+endif (UNIX)
 
 ########### next target ###############
 set (EXECUTABLE net_client)
@@ -67,18 +64,18 @@ endif ()
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 
+if (SDL_SUPPORT)
+ include_directories (${SDL_INCLUDE_DIRS})
+endif (SDL_SUPPORT)
 include_directories (${GTK_INCLUDE_DIRS})
 if (UNIX)
- include_directories (${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
-                      ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
+ include_directories (${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
 elseif (WIN32)
- include_directories ($ENV{LIB_ROOT}/SDL/include
-                      $ENV{LIB_ROOT}/SDL_mixer/include
-                      $ENV{LIB_ROOT}/SDL_ttf/include)
+ include_directories ($ENV{LIB_ROOT}/SDL_mixer/include)
 endif ()
-if (GTKGLAREA_SUPPORT)
- include_directories ($ENV{LIB_ROOT}/gtkglarea)
-endif (GTKGLAREA_SUPPORT)
+#if (GTKGLAREA_SUPPORT)
+# include_directories ($ENV{LIB_ROOT}/gtkglarea)
+#endif (GTKGLAREA_SUPPORT)
 
 if (WIN32)
  include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/include)
@@ -111,11 +108,13 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../3rd_party/xsd
                      ${CMAKE_CURRENT_SOURCE_DIR}/../../net/protocol
                      ${CMAKE_CURRENT_SOURCE_DIR}/../../client)
 
+if (SDL_SUPPORT)
+ target_link_libraries (${EXECUTABLE}
+                        ${SDL_LIBRARIES})
+endif (SDL_SUPPORT)
 if (UNIX)
  target_link_libraries (${EXECUTABLE}
                         ${GTK_LIBRARIES}
-                        #$ENV{LIB_ROOT}/SDL/lib/x86/SDL.lib
-                        #$ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
                         X11
                         xerces-c
                         ${ACE_LIBRARY}
@@ -129,8 +128,6 @@ elseif (WIN32)
  target_link_libraries (${EXECUTABLE}
                         Opengl32.lib legacy_stdio_definitions.lib
                         ${GTK_LIBRARIES}
-                        $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL.lib
-#                        $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDLmain.lib
                         $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                         $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                         Common CommonLog CommonSignal CommonTimer CommonUI_GTK
@@ -165,11 +162,13 @@ endif ()
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 
+if (SDL_SUPPORT)
+ target_link_libraries (${EXECUTABLE}
+                        ${SDL_LIBRARIES})
+endif (SDL_SUPPORT)
 if (UNIX)
  target_link_libraries (${EXECUTABLE}
                         ${GTK_LIBRARIES}
-#                        $ENV{LIB_ROOT}/SDL/lib/x86/SDL.lib
- #                       $ENV{LIB_ROOT}/SDL/lib/x86/SDLmain.lib
                         X11
                         xerces-c
                         ${ACE_LIBRARY}
@@ -185,8 +184,6 @@ elseif (WIN32)
  target_link_libraries (${EXECUTABLE}
                         Opengl32.lib legacy_stdio_definitions.lib
                         ${GTK_LIBRARIES}
-                        $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL.lib
-#                        $ENV{LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDLmain.lib
                         $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                         $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                         Common CommonLog CommonSignal CommonTimer CommonUI_GTK

@@ -91,23 +91,27 @@ RPG_Client_Common_Tools::initializeClientDictionaries ()
 bool
 RPG_Client_Common_Tools::initializeSDLInput(const RPG_Client_SDL_InputConfiguration& SDLInputConfiguration_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::initSDLInput"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Common_Tools::initSDLInput"));
 
   // ***** keyboard setup *****
   // Unicode translation
+#if defined (SDL_USE)
   int previous_state =
-    SDL_EnableUNICODE((SDLInputConfiguration_in.use_UNICODE ? 1 : 0));
-  ACE_UNUSED_ARG(previous_state);
+    SDL_EnableUNICODE (SDLInputConfiguration_in.use_UNICODE ? 1 : 0);
+  ACE_UNUSED_ARG (previous_state);
+#endif // SDL_USE
 
   // key repeat rates
-  if (SDL_EnableKeyRepeat(SDLInputConfiguration_in.key_repeat_initial_delay,
-                          SDLInputConfiguration_in.key_repeat_interval))
+#if defined (SDL_USE)
+  if (SDL_EnableKeyRepeat (SDLInputConfiguration_in.key_repeat_initial_delay,
+                           SDLInputConfiguration_in.key_repeat_interval))
   {
-    ACE_DEBUG((LM_ERROR,
-              ACE_TEXT("failed to SDL_EnableKeyRepeat(): \"%s\", aborting\n"),
-              ACE_TEXT(SDL_GetError())));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_EnableKeyRepeat(): \"%s\", aborting\n"),
+                ACE_TEXT (SDL_GetError ())));
     return false;
   } // end IF
+#endif // SDL_USE
 
   //   // ignore keyboard events
   //   SDL_EventState(SDL_KEYDOWN, SDL_IGNORE);

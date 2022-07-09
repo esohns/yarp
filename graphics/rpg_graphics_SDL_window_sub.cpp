@@ -27,6 +27,7 @@
 #include "rpg_common_macros.h"
 
 #include "ace/Log_Msg.h"
+#include "ace/OS.h"
 
 RPG_Graphics_SDLWindowSub::RPG_Graphics_SDLWindowSub (const RPG_Graphics_WindowType& type_in,
                                                       const RPG_Graphics_SDLWindowBase& parent_in,
@@ -151,6 +152,15 @@ RPG_Graphics_SDLWindowSub::saveBG (const SDL_Rect& area_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowSub::saveBG"));
 
+  // sanity check(s)
+  ACE_ASSERT (inherited::screen_);
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = inherited::screen_;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
+
   if (!BGHasBeenSaved_)
   {
     BGHasBeenSaved_ = true;
@@ -174,11 +184,17 @@ RPG_Graphics_SDLWindowSub::saveBG (const SDL_Rect& area_in)
 
   SDL_Rect area = inherited::clipRectangle_;
   area = RPG_Graphics_SDL_Tools::intersect (area, area_in);
-  RPG_Graphics_Surface::get (std::make_pair (area.x,
-                                             area.y),
+#if defined (SDL_USE)
+  RPG_Graphics_Surface::get (std::make_pair (area.x, area.y),
                              true,
                              *inherited::screen_,
                              *BG_);
+#elif defined (SDL2_USE)
+  RPG_Graphics_Surface::get (std::make_pair (area.x, area.y),
+                             true,
+                             *surface_p,
+                             *BG_);
+#endif // SDL_USE || SDL2_USE
 }
 
 void
@@ -186,18 +202,25 @@ RPG_Graphics_SDLWindowSub::restoreBG (SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowSub::restoreBG"));
 
+  // sanity check(s)
+  ACE_ASSERT (inherited::screen_);
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = inherited::screen_;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
+  ACE_ASSERT(BG_);
+
   // step0: init return value(s)
   ACE_OS::memset (&dirtyRegion_out, 0, sizeof (dirtyRegion_out));
-
-  // sanity check(s)
-  ACE_ASSERT (BG_);
 
   if (inherited::screenLock_)
     screenLock_->lock ();
   RPG_Graphics_Surface::put (std::make_pair (clipRectangle_.x,
                                              clipRectangle_.y),
                              *BG_,
-                             inherited::screen_,
+                             surface_p,
                              dirtyRegion_out);
   if (inherited::screenLock_)
     screenLock_->unlock ();

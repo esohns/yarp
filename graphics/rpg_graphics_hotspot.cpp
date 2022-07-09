@@ -21,13 +21,15 @@
 
 #include "rpg_graphics_hotspot.h"
 
+#include "ace/OS.h"
+
+#include "rpg_common_macros.h"
+
 #include "rpg_graphics_defines.h"
 #include "rpg_graphics_dictionary.h"
 #include "rpg_graphics_surface.h"
 #include "rpg_graphics_common_tools.h"
 #include "rpg_graphics_SDL_tools.h"
-
-#include "rpg_common_macros.h"
 
 RPG_Graphics_HotSpot::RPG_Graphics_HotSpot (const RPG_Graphics_SDLWindowBase& parent_in,
                                             const RPG_Graphics_Size_t& size_in,
@@ -78,11 +80,11 @@ RPG_Graphics_HotSpot::getView() const
 }
 
 void
-RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
-                                  RPG_Graphics_IWindowBase* window_in,
-                                  SDL_Rect& dirtyRegion_out)
+RPG_Graphics_HotSpot::handleEvent (const SDL_Event& event_in,
+                                   RPG_Graphics_IWindowBase* window_in,
+                                   SDL_Rect& dirtyRegion_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::handleEvent"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_HotSpot::handleEvent"));
 
   // init return value(s)
   ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
@@ -92,12 +94,9 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
 //              ACE_TEXT(RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(myType).c_str())));
 
   RPG_Graphics_IWindow* parent = NULL;
-  try
-  {
+  try {
     parent = dynamic_cast<RPG_Graphics_IWindow*>(getParent());
-  }
-  catch (...)
-  {
+  } catch (...) {
     parent = NULL;
   }
   if (!parent)
@@ -149,7 +148,6 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
 
       // *WARNING*: falls through !
     }
-    case SDL_ACTIVEEVENT:
     case SDL_KEYDOWN:
     case SDL_KEYUP:
     case SDL_MOUSEBUTTONDOWN:
@@ -161,8 +159,15 @@ RPG_Graphics_HotSpot::handleEvent(const SDL_Event& event_in,
     case SDL_JOYBUTTONUP:
     case SDL_QUIT:
     case SDL_SYSWMEVENT:
+#if defined (SDL_USE)
+    case SDL_ACTIVEEVENT:
     case SDL_VIDEORESIZE:
     case SDL_VIDEOEXPOSE:
+#elif defined (SDL2_USE)
+    case SDL_WINDOWEVENT_SHOWN:
+    case SDL_WINDOWEVENT_RESIZED:
+    case SDL_WINDOWEVENT_EXPOSED:
+#endif // SDL_USE || SDL2_USE
     case SDL_USEREVENT:
     case RPG_GRAPHICS_SDL_HOVEREVENT:
     default:
@@ -201,12 +206,19 @@ RPG_Graphics_HotSpot::draw (SDL_Surface* targetSurface_in,
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_HotSpot::draw"));
 
   // sanity check(s)
+  ACE_ASSERT (inherited::screen_);
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = inherited::screen_;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
   // sanity check(s)
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : inherited::screen_);
-  ACE_ASSERT(target_surface);
-  ACE_UNUSED_ARG(offsetX_in);
-  ACE_UNUSED_ARG(offsetY_in);
+                                                  : surface_p);
+  ACE_ASSERT (target_surface);
+  ACE_UNUSED_ARG (offsetX_in);
+  ACE_UNUSED_ARG (offsetY_in);
 
 //   // init clipping
 //   SDL_Rect clipRect;
@@ -225,9 +237,10 @@ RPG_Graphics_HotSpot::draw (SDL_Surface* targetSurface_in,
 
   if (myDebug)
     RPG_Graphics_Surface::putRectangle (inherited::clipRectangle_,      // rectangle
-                                       RPG_Graphics_SDL_Tools::getColor(RPG_GRAPHICS_WINDOW_HOTSPOT_DEF_COLOR, // color
-                                                                        *target_surface),
-                                       target_surface); // target surface
+                                        RPG_Graphics_SDL_Tools::getColor (RPG_GRAPHICS_WINDOW_HOTSPOT_DEF_COLOR, // color
+                                                                          *target_surface->format,
+                                                                          1.0F),
+                                        target_surface); // target surface
 
   // remember position of last realization
   lastAbsolutePosition_ = std::make_pair (inherited::clipRectangle_.x,

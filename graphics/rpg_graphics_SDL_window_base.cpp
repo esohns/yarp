@@ -342,26 +342,6 @@ RPG_Graphics_SDLWindowBase::removeChild (RPG_Graphics_IWindowBase* child_in)
 }
 
 void
-RPG_Graphics_SDLWindowBase::setScreen (SDL_Surface* screen_in)
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::setScreen"));
-
-  // sanity check(s)
-  ACE_ASSERT (screen_in);
-
-  screen_ = screen_in;
-}
-
-SDL_Surface*
-RPG_Graphics_SDLWindowBase::getScreen () const
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::getScreen"));
-
-  return (screen_ ? screen_
-                  : SDL_GetVideoSurface ());
-}
-
-void
 RPG_Graphics_SDLWindowBase::show (SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::show"));
@@ -397,6 +377,12 @@ RPG_Graphics_SDLWindowBase::clear (const RPG_Graphics_ColorName& color_in,
 
   // sanity check(s)
   ACE_ASSERT (screen_);
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = screen_;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (screen_);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
 
   // *NOTE*: SDL_FillRect may modify the dstrect argument --> save it first
   SDL_Rect dstrect = clipRectangle_;
@@ -405,19 +391,17 @@ RPG_Graphics_SDLWindowBase::clear (const RPG_Graphics_ColorName& color_in,
 
   if (screenLock_)
     screenLock_->lock ();
-  if (SDL_FillRect (screen_,                                      // target surface
+  if (SDL_FillRect (surface_p,                                    // target surface
                     &dstrect,                                     // fill area
                     RPG_Graphics_SDL_Tools::getColor (color_in,
-                                                      *screen_))) // color
+                                                      *surface_p->format,
+                                                      1.0F)))     // color
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to SDL_FillRect(): \"%s\", aborting\n"),
+                ACE_TEXT ("failed to SDL_FillRect(): \"%s\", returning\n"),
                 ACE_TEXT (SDL_GetError ())));
-
-    // clean up
     if (screenLock_)
       screenLock_->unlock ();
-
     return;
   } // end IF
   if (screenLock_)
@@ -470,9 +454,16 @@ RPG_Graphics_SDLWindowBase::update (SDL_Surface* targetSurface_in)
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::update"));
 
   // sanity check(s)
-  SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : screen_);
-  ACE_ASSERT (target_surface);
+  ACE_ASSERT (screen_);
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = screen_;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (screen_);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
+  SDL_Surface* target_surface_p = (targetSurface_in ? targetSurface_in
+                                                    : surface_p);
+  ACE_ASSERT (target_surface_p);
 
   // compute bounding box of dirty areas
   SDL_Rect dirty_region = getDirty ();
@@ -496,18 +487,38 @@ RPG_Graphics_SDLWindowBase::update (SDL_Surface* targetSurface_in)
     screenLock_->lock ();
   if (flip_)
   {
-    if (SDL_Flip (target_surface) == -1)
+#if defined (SDL_USE)
+    if (SDL_Flip (target_surface_p) == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_Flip(%@): \"%s\", continuing\n"),
-                  target_surface,
+                  target_surface_p,
                   ACE_TEXT (SDL_GetError ())));
+#elif defined (SDL2_USE)
+    if (SDL_UpdateWindowSurface (screen_) < 0)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_UpdateWindowSurface(%@): \"%s\", continuing\n"),
+                  screen_,
+                  ACE_TEXT (SDL_GetError ())));
+#endif // SDL_USE || SDL2_USE
   } // end IF
   else
-    SDL_UpdateRect (target_surface,
+  {
+#if defined (SDL_USE)
+    SDL_UpdateRect (target_surface_p,
                     dirty_region.x,
                     dirty_region.y,
                     dirty_region.w,
                     dirty_region.h);
+#elif defined (SDL2_USE)
+    if (SDL_UpdateWindowSurfaceRects (screen_,
+                                      &dirty_region,
+                                      1) < 0)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_UpdateWindowSurfaceRects(%@): \"%s\", continuing\n"),
+                  screen_,
+                  ACE_TEXT (SDL_GetError ())));
+#endif // SDL_USE || SDL2_USE
+  } // end ELSE
   if (screenLock_)
     screenLock_->unlock ();
 
@@ -838,8 +849,15 @@ RPG_Graphics_SDLWindowBase::clip (SDL_Surface* targetSurface_in,
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::clip"));
 
   // sanity check(s)
+  ACE_ASSERT (screen_);
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = screen_;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (screen_);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
   SDL_Surface* target_surface_p = (targetSurface_in ? targetSurface_in
-                                                    : screen_);
+                                                    : surface_p);
   ACE_ASSERT (target_surface_p);
 
 	SDL_Rect clip_rectangle = clipRectangle_;
@@ -856,8 +874,15 @@ RPG_Graphics_SDLWindowBase::unclip (SDL_Surface* targetSurface_in)
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::unclip"));
 
   // sanity check(s)
+  ACE_ASSERT (screen_);
+#if defined (SDL_USE)
+  SDL_Surface* surface_p = screen_;
+#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = SDL_GetWindowSurface (screen_);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
   SDL_Surface* target_surface_p = (targetSurface_in ? targetSurface_in
-                                                    : screen_);
+                                                    : surface_p);
   ACE_ASSERT (target_surface_p);
 
   // restore previous clip rectangle
