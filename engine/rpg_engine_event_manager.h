@@ -71,7 +71,7 @@ class RPG_Engine_Event_Manager
   long schedule(RPG_Engine_Event_t*,   // event handle
                 const ACE_Time_Value&, // interval (or delay)
                 bool = false);         // one-shot ?
-  void cancel(const long&); // timer (!) id
+  void cancel (long); // timer (!) id
 
   // manage entities
   void add(const RPG_Engine_EntityID_t&, // id

@@ -2326,7 +2326,7 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
 
         return false;
       } // end IF
-      if (SDL_BlitSurface(myWallBlend,
+      if (SDL_BlitSurface(myCurrentWallSet.west.surface,
                           NULL,
                           copy,
                           NULL))
@@ -2352,7 +2352,7 @@ RPG_Client_Window_Level::setStyle(const RPG_Graphics_StyleUnion& style_in)
 
         return false;
       } // end IF
-      if (SDL_BlitSurface(myWallBlend,
+      if (SDL_BlitSurface(myCurrentWallSet.north.surface,
                           NULL,
                           copy,
                           NULL))

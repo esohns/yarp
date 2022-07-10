@@ -187,7 +187,7 @@ RPG_Client_Entity_Manager::put (const RPG_Engine_EntityID_t& id_in,
   RPG_TRACE (ACE_TEXT ("RPG_Client_Entity_Manager::put"));
 
   // step0: init return value(s)
-  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
 
   // sanity check(s)
   ACE_ASSERT(myWindow);
@@ -197,13 +197,12 @@ RPG_Client_Entity_Manager::put (const RPG_Engine_EntityID_t& id_in,
   SDL_Surface* target_surface = SDL_GetWindowSurface (myWindow->getScreen ());
 #endif // SDL_USE || SDL2_USE
   ACE_ASSERT (target_surface);
-  RPG_Client_EntityCacheIterator_t iterator = myCache.find(id_in);
-  if (iterator == myCache.end())
+  RPG_Client_EntityCacheIterator_t iterator = myCache.find (id_in);
+  if (iterator == myCache.end ())
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid entity ID (was: %u), returning\n"),
                id_in));
-
     return;
   } // end IF
 
@@ -221,49 +220,45 @@ RPG_Client_Entity_Manager::put (const RPG_Engine_EntityID_t& id_in,
 	SDL_Rect clip_rectangle, dirty_region;
 	// *NOTE*: entities are drawn "centered" on the floor tile
 	clip_rectangle.x = (position_in.first +
-											((RPG_GRAPHICS_TILE_FLOOR_WIDTH -
-											(*iterator).second.graphic->w) / 2));
+                      ((RPG_GRAPHICS_TILE_FLOOR_WIDTH -
+                      (*iterator).second.graphic->w) / 2));
 	clip_rectangle.y = (position_in.second +
-											(RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) -
-											(*iterator).second.graphic->h);
-	clip_rectangle.w = (*iterator).second.graphic->w;
-	clip_rectangle.h = (*iterator).second.graphic->h;
-	RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(dirty_region,
-																															 &clip_rectangle,
-																															 false);
-	dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-																												dirtyRegion_out);
-	RPG_Client_IWindowLevel* window = NULL;
-	try
-	{
-		window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
-	}
-	catch (...)
-	{
-		window = NULL;
-	}
-	if (!window)
-	{
-		ACE_DEBUG((LM_ERROR,
-							 ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), returning\n"),
-							 myWindow));
+                      (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) -
+                      (*iterator).second.graphic->h);
+  clip_rectangle.w = (*iterator).second.graphic->w;
+  clip_rectangle.h = (*iterator).second.graphic->h;
+  //RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(dirty_region,
+  //                                                             &clip_rectangle,
+  //                                                             false);
+  //dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+  //                                                      dirtyRegion_out);
+  RPG_Client_IWindowLevel* window = NULL;
+  try {
+    window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
+  } catch (...) {
+    window = NULL;
+  }
+  if (!window)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), returning\n"),
+                myWindow));
+    if (myScreenLock && lockedAccess_in)
+      myScreenLock->unlock();
+    return;
+  } // end IF
+  //RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->restoreHighlightBG (window->getView(),
+  //                                                                        dirty_region,
+  //                                                                        &clip_rectangle,
+  //                                                                        false,
+  //                                                                        debug_in);
+  //dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
+  //                                                       dirtyRegion_out);
 
-		// clean up
-		if (myScreenLock && lockedAccess_in)
-			myScreenLock->unlock();
+  // step2b: load bg image
+  RPG_Graphics_Position_t screen_coordinates = std::make_pair (clip_rectangle.x,
+                                                               clip_rectangle.y);
 
-		return;
-	} // end IF
-	RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(window->getView(),
-																																				dirty_region,
-																																				&clip_rectangle,
-																																				false,
-																																				debug_in);
-	dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-																												dirtyRegion_out);
-	// step2b: load bg image
-  RPG_Graphics_Position_t screen_coordinates =
-		std::make_pair(clip_rectangle.x, clip_rectangle.y);
   RPG_Graphics_Surface::get(screen_coordinates,
                             true, // use (fast) blitting method
                             *target_surface,
@@ -278,8 +273,8 @@ RPG_Client_Entity_Manager::put (const RPG_Engine_EntityID_t& id_in,
   // the target surface (myWindow) is already clipped to the SDL window area...
 //  myWindow->getArea(clip_rectangle, false);
   clip_rectangle = target_surface->clip_rect;
-  dirty_region = RPG_Graphics_SDL_Tools::intersect(dirty_region,
-												   clip_rectangle);
+  dirty_region = RPG_Graphics_SDL_Tools::intersect (dirty_region,
+                                                    clip_rectangle);
 
   // place graphic
   if (clipWindow_in)
@@ -288,27 +283,27 @@ RPG_Client_Entity_Manager::put (const RPG_Engine_EntityID_t& id_in,
                             *(*iterator).second.graphic,
                             target_surface,
                             dirty_region);
+  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+                                                        dirtyRegion_out);
   if (lockedAccess_in && myScreenLock)
     myScreenLock->unlock();
   if (clipWindow_in)
     myWindow->unclip();
-  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-														dirtyRegion_out);
 
   // update cursor / highlight(s)
-  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG(dirty_region,
-															  &dirtyRegion_out,
-															  lockedAccess_in,
-															  debug_in);
-  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-														dirtyRegion_out);
-  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateHighlightBG(window->getView(),
-																	   dirty_region,
-																	   &dirtyRegion_out,
-																	   lockedAccess_in,
-																	   debug_in);
-  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-	                                                      dirtyRegion_out);
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->updateBG (dirty_region,
+                                                                &dirtyRegion_out,
+                                                                lockedAccess_in,
+                                                                debug_in);
+  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
+                                                         dirtyRegion_out);
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->updateHighlightBG (window->getView(),
+                                                                         dirty_region,
+                                                                         &dirtyRegion_out,
+                                                                         lockedAccess_in,
+                                                                         debug_in);
+  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
+                                                         dirtyRegion_out);
 
   if (debug_in)
   {
@@ -405,38 +400,34 @@ RPG_Client_Entity_Manager::restoreBG (const RPG_Engine_EntityID_t& id_in,
   if (clipWindow_in)
     myWindow->unclip();
 
-	// update cursor / highlight(s) ?
-	SDL_Rect dirty_region;
-	RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG(dirty_region,
-                                                                &dirtyRegion_out,
-                                                                lockedAccess_in,
-                                                                debug_in);
-	dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-                                                            dirtyRegion_out);
-	RPG_Client_IWindowLevel* window = NULL;
-	try
-	{
-		window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
-	}
-	catch (...)
-	{
-		window = NULL;
-	}
-	if (!window)
-	{
-		ACE_DEBUG((LM_ERROR,
-							 ACE_TEXT("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), returning\n"),
-			         myWindow));
-
-		return;
-	} // end IF
-	RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateHighlightBG(window->getView(),
-		                                                                   dirty_region,
-																																			 &dirtyRegion_out,
-																																			 lockedAccess_in,
-																																			 debug_in);
-	dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-																												dirtyRegion_out);
+	//// update cursor / highlight(s) ?
+	//SDL_Rect dirty_region;
+	//RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG(dirty_region,
+ //                                                               &dirtyRegion_out,
+ //                                                               lockedAccess_in,
+ //                                                               debug_in);
+ // dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+ //                                                       dirtyRegion_out);
+ // RPG_Client_IWindowLevel* window = NULL;
+ // try {
+ //   window = dynamic_cast<RPG_Client_IWindowLevel*>(myWindow);
+ // } catch (...) {
+ //   window = NULL;
+ // }
+ // if (!window)
+ // {
+ //   ACE_DEBUG ((LM_ERROR,
+ //               ACE_TEXT ("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), returning\n"),
+ //               myWindow));
+ //   return;
+ // } // end IF
+ // RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateHighlightBG(window->getView(),
+ //                                                                       dirty_region,
+ //                                                                       &dirtyRegion_out,
+ //                                                                       lockedAccess_in,
+ //                                                                       debug_in);
+ // dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
+ //                                                       dirtyRegion_out);
 }
 
 void

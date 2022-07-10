@@ -65,7 +65,7 @@ class RPG_Graphics_SDL_Tools
                                     const SDL_Surface&); // target surface
 	static Uint32 getColor (const RPG_Graphics_ColorName&, // color name
                           const SDL_PixelFormat&,        // pixel format
-                          const float& = 1.0F);          // blend factor (--> opacity)
+                          float = 1.0F);                 // blend factor (--> opacity)
 
   static SDL_Rect boundingBox (const SDL_Rect&,  // rect 1
                                const SDL_Rect&); // rect 2

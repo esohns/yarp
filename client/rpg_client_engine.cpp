@@ -136,6 +136,16 @@ RPG_Client_Engine::svc (void)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::svc"));
 
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#if COMMON_OS_WIN32_TARGET_PLATFORM(0x0A00) // _WIN32_WINNT_WIN10
+  Common_Error_Tools::setThreadName (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_ENGINE_THREAD_NAME),
+                                     NULL);
+#else
+  Common_Error_Tools::setThreadName (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_ENGINE_THREAD_NAME),
+                                     0);
+#endif // _WIN32_WINNT_WIN10
+#endif // ACE_WIN32 || ACE_WIN64
+
   while (true)
   {
     { ACE_GUARD_RETURN (ACE_Thread_Mutex, aGuard, lock_, -1);
@@ -566,10 +576,10 @@ RPG_Client_Engine::notify(enum RPG_Engine_Command command_in,
       if (parameters_in.entity_id == active_entity_id)
       {
         // *NOTE*: re-drawing the window will invalidate cursor/hightlight BG...
-        client_action.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
-        action(client_action);
-        client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
-        action(client_action);
+        //client_action.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
+        //action(client_action);
+        //client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
+        //action(client_action);
 
         if (getCenterOnActive ())
         {
@@ -601,17 +611,19 @@ RPG_Client_Engine::notify(enum RPG_Engine_Command command_in,
 
 //        client_action.command = COMMAND_TILE_HIGHLIGHT_STORE_BG;
 //        action(client_action);
-        client_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
-        action (client_action);
-        client_action.command = COMMAND_CURSOR_DRAW;
+        //client_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
+        //action (client_action);
+        //client_action.command = COMMAND_CURSOR_DRAW;
+        do_action = false;
+
       } // end IF
       else
       {
         // update the minimap ?
         if (active_entity_id &&
             engine_->hasSeen (active_entity_id,
-                               client_action.position,
-                               true))
+                              client_action.position,
+                              true))
         {
           client_action.command = COMMAND_WINDOW_UPDATE_MINIMAP;
           action (client_action);
@@ -637,8 +649,8 @@ RPG_Client_Engine::notify(enum RPG_Engine_Command command_in,
           if ((active_entity_id == parameters_in.entity_id) ||
               (active_entity_id &&
                engine_->canSee (active_entity_id,
-                                 parameters_in.entity_id,
-                                 false))                    ||
+                                parameters_in.entity_id,
+                                false))                    ||
               debug_)
               client_action.command = COMMAND_ENTITY_DRAW;
 //          engine_->unlock ();
@@ -655,6 +667,8 @@ RPG_Client_Engine::notify(enum RPG_Engine_Command command_in,
                                                   map_area,
                                                   false)) // all
             client_action.command = COMMAND_ENTITY_REMOVE;
+          else
+            do_action = false;
         } // end ELSE
       } // end ELSE
 

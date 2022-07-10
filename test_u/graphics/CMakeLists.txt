@@ -184,6 +184,8 @@ if (UNIX)
 elseif (WIN32)
  file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}.exe" COMMAND)
  string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
+ file (TO_CMAKE_PATH "${SDL_LIB_DIR}" SDL_LIB_PATH)
+ file (TO_CMAKE_PATH "${GTK_LIB_DIRS}" GTK_LIB_PATH)
 endif ()
 create_target_launcher (SDL_gui
                         COMMAND ${COMMAND}
@@ -192,16 +194,14 @@ create_target_launcher (SDL_gui
                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
                                              ${LIB_ROOT}/libpng/build/Debug
                                              ${LIB_ROOT}/openssl
-                                             ${LIB_ROOT}/gtk2/bin
-                                             ${LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
-                                             ${LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
-                                             ${LIB_ROOT}/SDL_ttf/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
+                                             ${SDL_LIB_PATH}
                                              ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
                                              ${LIB_ROOT}/ACE_TAO/ACE/lib
-                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/Debug
-                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/err/Debug
-                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/ui/Debug
-                                             ${PROJECT_SOURCE_DIR}/cmake/src/Debug
-                                             ${PROJECT_SOURCE_DIR}/cmake/src/modules/vis/Debug
+                                             ${GTK_LIB_PATH}
+#                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/Debug
+#                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/err/Debug
+#                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/ui/Debug
+#                                             ${PROJECT_SOURCE_DIR}/cmake/src/Debug
+#                                             ${PROJECT_SOURCE_DIR}/cmake/src/modules/vis/Debug
                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test_u/graphics
                         ENVIRONMENT foo=bar)

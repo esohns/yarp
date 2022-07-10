@@ -162,10 +162,10 @@ event_timer_SDL_cb (Uint32 interval_in,
       sdl_event.type = RPG_GRAPHICS_SDL_HOVEREVENT;
       sdl_event.user.code = static_cast<int>(data->hoverTime);
 
-      if (SDL_PushEvent(&sdl_event))
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
-                   ACE_TEXT(SDL_GetError())));
+      if (SDL_PushEvent (&sdl_event) < 0)
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),
+                    ACE_TEXT (SDL_GetError ())));
     } // end IF
   } // end lock scope
 
@@ -174,10 +174,10 @@ event_timer_SDL_cb (Uint32 interval_in,
 }
 
 Uint32
-input_timer_SDL_cb(Uint32 interval_in,
-                   void* argument_in)
+input_timer_SDL_cb (Uint32 interval_in,
+                    void* argument_in)
 {
-  RPG_TRACE(ACE_TEXT("::input_timer_SDL_cb"));
+  RPG_TRACE (ACE_TEXT ("::input_timer_SDL_cb"));
 
   // create a timer event
   SDL_Event sdl_event;
@@ -185,10 +185,10 @@ input_timer_SDL_cb(Uint32 interval_in,
   sdl_event.user.data1 = argument_in;
 
   // push it onto the event queue
-  if (SDL_PushEvent(&sdl_event))
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
-               ACE_TEXT(SDL_GetError())));
+  if (SDL_PushEvent (&sdl_event) < 0)
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),
+                ACE_TEXT (SDL_GetError ())));
 
   // one-shot timer --> cancel
   return 0;
@@ -196,36 +196,35 @@ input_timer_SDL_cb(Uint32 interval_in,
 
 // wait for an input event; stop after timeout_in second(s) (0: wait forever)
 void
-do_SDL_waitForInput(const unsigned int& timeout_in,
-                    SDL_Event& event_out)
+do_SDL_waitForInput (unsigned int timeout_in,
+                     SDL_Event& event_out)
 {
   RPG_TRACE(ACE_TEXT("::do_SDL_waitForInput"));
 
   SDL_TimerID timer = NULL;
   if (timeout_in)
-    timer = SDL_AddTimer((timeout_in * 1000), // interval (ms)
-                         input_timer_SDL_cb,  // timeout callback
-                         NULL);               // callback argument
-  ACE_ASSERT(timer);
-  if (!timer)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_AddTimer(%u): \"%s\", aborting\n"),
-               (timeout_in * 1000),
-               ACE_TEXT(SDL_GetError())));
-
-    return;
+    timer = SDL_AddTimer ((timeout_in * 1000), // interval (ms)
+                          input_timer_SDL_cb,  // timeout callback
+                          NULL);               // callback argument
+    if (!timer)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_AddTimer(%u): \"%s\", returning\n"),
+                  (timeout_in * 1000),
+                  ACE_TEXT (SDL_GetError ())));
+      return;
+    } // end IF
   } // end IF
 
   // loop until something interesting happens
   do
   {
-    if (SDL_WaitEvent(&event_out) != 1)
+    if (SDL_WaitEvent (&event_out) != 1)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
-                 ACE_TEXT(SDL_GetError())));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
+                  ACE_TEXT (SDL_GetError ())));
       // what else can we do ?
       break;
     } // end IF
@@ -241,12 +240,10 @@ do_SDL_waitForInput(const unsigned int& timeout_in,
   // clean up
   if (timeout_in &&
       (event_out.type != RPG_CLIENT_SDL_TIMEREVENT))
-    if (!SDL_RemoveTimer(timer))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
-               ACE_TEXT(SDL_GetError())));
-  } // end IF
+    if (!SDL_RemoveTimer (timer))
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
+                  ACE_TEXT (SDL_GetError ())));
 }
 
 void
@@ -255,7 +252,7 @@ do_printUsage (const std::string& programName_in)
   RPG_TRACE(ACE_TEXT("::do_printUsage"));
 
   // enable verbatim boolean output
-  std::cout.setf(ios::boolalpha);
+  std::cout.setf (ios::boolalpha);
 
   std::cout << ACE_TEXT("usage: ")
             << programName_in
@@ -2046,9 +2043,9 @@ ACE_TMAIN (int argc_in,
   //                      &GTK_user_data.logStackLock);
   std::string log_file;
   if (log_to_file)
-    log_file = Common_Log_Tools::getLogFilename (ACE_TEXT_ALWAYS_CHAR (""),
-                                                 ACE::basename (argv_in[0]));
-  if (!Common_Log_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
+    log_file = Common_Log_Tools::getLogFilename (yarp_PACKAGE_NAME,
+                                                 ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
+  if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
                                             log_file,                  // logfile
                                             false,                     // log to syslog ?
                                             false,                     // trace messages ?

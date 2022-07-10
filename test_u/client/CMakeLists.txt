@@ -129,13 +129,13 @@ endif (SDL_SUPPORT)
 if (UNIX)
  target_link_libraries (${EXECUTABLE}
                         ${PKG_CONFIG_MODULE_XERCES_C_LIBRARIES}
-                        ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES}
+#                        ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES}
                         ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
-                        ${PKG_CONFIG_MODULE_GTHREAD_LIBRARIES}
+#                        ${PKG_CONFIG_MODULE_GTHREAD_LIBRARIES}
 #                        ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES}
                         X11
                         ${ACE_LIBRARY}
-                        Common CommonLog CommonTimer CommonUI CommonUI_GTK
+                        Common CommonError CommonLog CommonTimer CommonUI CommonUI_GTK
                         ACEStream ACEStream_Network
                         ACENetwork
                         RPG_Chance RPG_Dice RPG_Common
@@ -150,12 +150,10 @@ elseif (WIN32)
 
  target_link_libraries (${EXECUTABLE}
                         Opengl32.lib
-                        $ENV{LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL_mixer.lib
-#                      SDL_gfx
                         ${GTK_LIBRARIES}
                         $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                         $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                        Common CommonLog CommonSignal CommonTimer CommonUI_GTK
+                        Common CommonError CommonLog CommonSignal CommonTimer CommonUI_GTK
                         ACEStream ACEStream_Network
                         ACENetwork
                         RPG_Chance RPG_Dice RPG_Common
@@ -197,7 +195,6 @@ elseif (WIN32)
                                               ${LIB_ROOT}/libepoxy/bin
                                               ${LIB_ROOT}/openssl
                                               ${SDL_LIB_PATH}
-                                              ${LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
                                               ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
                                               ${LIB_ROOT}/ACE_TAO/ACE/lib
                                               ${GTK_LIB_PATH}

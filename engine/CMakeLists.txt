@@ -51,10 +51,6 @@ endif ()
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${ACE_INCLUDE_DIR}>)
 
-if (WIN32)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/include>)
-endif (WIN32)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src>)
 target_include_directories (${LIBRARY} PUBLIC
@@ -86,6 +82,8 @@ target_include_directories (${LIBRARY} PUBLIC
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../ACENetwork/src/client_server>)
 
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../3rd_party/bison>)
 target_include_directories (${LIBRARY} PUBLIC

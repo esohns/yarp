@@ -86,8 +86,6 @@ if (UNIX)
 #                             $<BUILD_INTERFACE:${PKG_CONFIG_MODULE_LIBGLADE_INCLUDE_DIRS}>)
 elseif (WIN32)
  target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/SDL_mixer/include>)
- target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/msvc/src>)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/src>)
@@ -143,6 +141,8 @@ target_include_directories (${LIBRARY} PUBLIC
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../ACENetwork/src/client_server>)
 
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../3rd_party/xsd>)
 target_include_directories (${LIBRARY} PUBLIC

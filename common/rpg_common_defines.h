@@ -21,14 +21,10 @@
 #ifndef RPG_COMMON_DEFINES_H
 #define RPG_COMMON_DEFINES_H
 
-#include "ace/Default_Constants.h"
-//#include <limits>
+#include "ace/config-lite.h"
 
 #define RPG_COMMON_MAX_SPELL_LEVEL      9
 #define RPG_COMMON_MAX_CLASS_LEVEL      20
-
-// *IMPORTANT NOTE*: used for libc calls (i.e. char buffers, mostly)
-//#define RPG_COMMON_BUFSIZE              512 // bytes
 
 // XML-specific
 // *NOTE*: refer to the XSD C++/Tree manual for details
@@ -40,10 +36,10 @@
 #define RPG_COMMON_DATA_SUB             "share"
 #define RPG_COMMON_CONFIG_SUB           "etc"
 
-#if !defined(ACE_WIN32) && !defined(ACE_WIN64)
-#define RPG_COMMON_DEF_USER_LOGIN_BASE  "LOGNAME" // environment
-#else
+#if defined (ACE_WIN32) && defined (ACE_WIN64)
 #define RPG_COMMON_DEF_USER_LOGIN_BASE  "USERNAME" // environment
-#endif
+#else
+#define RPG_COMMON_DEF_USER_LOGIN_BASE  "LOGNAME" // environment
+#endif // ACE_WIN32 || ACE_WIN64
 
 #endif

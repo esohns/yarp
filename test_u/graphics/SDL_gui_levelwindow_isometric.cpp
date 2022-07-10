@@ -25,6 +25,8 @@
 
 #include "ace/Log_Msg.h"
 
+#include "common_file_tools.h"
+
 #include "rpg_common_defines.h"
 #include "rpg_common_macros.h"
 
@@ -921,10 +923,10 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
                                            RPG_Graphics_IWindowBase* window_in,
                                            SDL_Rect& dirtyRegion_out)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::handleEvent"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_Isometric::handleEvent"));
 
   // init return value(s)
-  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
 
   RPG_Engine_EntityID_t entity_id = 0;
   SDL_Rect dirty_region = {0, 0, 0, 0};
@@ -1305,7 +1307,7 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
               sdl_event.motion.which = std::numeric_limits<unsigned char>::max(); // flag as fake
               sdl_event.motion.x = cursor_position.first;
               sdl_event.motion.y = cursor_position.second;
-              if (SDL_PushEvent(&sdl_event))
+              if (SDL_PushEvent (&sdl_event) < 0)
                 ACE_DEBUG((LM_ERROR,
                            ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
                            ACE_TEXT(SDL_GetError())));
@@ -1436,21 +1438,22 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
       entity_id = myEngine->getActive(false);
       has_seen = hasSeen(entity_id, map_position);
       // inside map ?
-      if (map_position ==
-          std::make_pair(std::numeric_limits<unsigned int>::max(),
-                         std::numeric_limits<unsigned int>::max()))
-        goto set_cursor; // off-map
+      //if (map_position ==
+      //    std::make_pair(std::numeric_limits<unsigned int>::max(),
+      //                   std::numeric_limits<unsigned int>::max()))
+      //  goto set_cursor; // off-map
       // (re-)draw "active" tile highlight(s) ?
       if ((map_position ==
            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->getHighlightBGPosition()) &&
           (event_in.motion.which != std::numeric_limits<unsigned char>::max())) // fake event ?
         goto set_cursor; // same map square/not initiating pathing --> nothing to do...
-      if (!has_seen)
-        goto set_cursor; // player hasn't yet seen this position
+      //if (!has_seen)
+      //  goto set_cursor; // player hasn't yet seen this position
 
       // *NOTE*: --> (re-)draw/remove tile highlight(s)...
 
-      toggle_on = myEngine->isValid(map_position, false);
+      toggle_on = true;
+        //myEngine->isValid(map_position, false);
       // unmapped area/invalid position ?
       if (toggle_on)
       {
@@ -1458,7 +1461,7 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
         // - the cursor bg is dirty, needs an update
         // - the highlight needs to be redrawn
         // - the cursor needs to be redrawn
-        // --> handled by the cursor manager
+        //   --> handled by the cursor manager
 
         // step1: determine the highlighted area
         switch (myState->selection_mode)
@@ -2145,8 +2148,7 @@ SDL_GUI_LevelWindow_Isometric::notify (enum RPG_Engine_Command command_in,
                                      seen_positions,
                                      true);
       { ACE_Guard<ACE_Thread_Mutex> aGuard (myState->lock);
-        ACE_ASSERT (myState->seen_positions.find (parameters_in.entity_id) ==
-                    myState->seen_positions.end ());
+        ACE_ASSERT (myState->seen_positions.find (parameters_in.entity_id) == myState->seen_positions.end ());
         myState->seen_positions[parameters_in.entity_id] = seen_positions;
       } // end lock scope
 
@@ -2168,7 +2170,7 @@ SDL_GUI_LevelWindow_Isometric::notify (enum RPG_Engine_Command command_in,
       { ACE_Guard<ACE_Thread_Mutex> aGuard (myState->lock);
         RPG_Engine_SeenPositionsIterator_t iterator =
           myState->seen_positions.find (parameters_in.entity_id);
-        ACE_ASSERT (iterator != myState->seen_positions.end ());
+        ACE_ASSERT (iterator != myState->seen_positions.end ()); // *TODO*
         (*iterator).second.insert (seen_positions.begin (),
                                    seen_positions.end ());
       } // end lock scope
@@ -2207,7 +2209,7 @@ SDL_GUI_LevelWindow_Isometric::notify (enum RPG_Engine_Command command_in,
                                                                  myState->debug);
           invalidate (dirty_region);
           redrawCursor (RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->position (false),
-                        true,
+                        false,
                         true);
           update_parent = true;
         } // end IF
@@ -2457,9 +2459,9 @@ SDL_GUI_LevelWindow_Isometric::updateMessageWindow(const std::string& message_in
 }
 
 void
-SDL_GUI_LevelWindow_Isometric::redrawCursor(const RPG_Graphics_Position_t& position_in,
-                      const bool& updateBGCacheFirst_in,
-                                            const bool& lockedAccess_in)
+SDL_GUI_LevelWindow_Isometric::redrawCursor (const RPG_Graphics_Position_t& position_in,
+                                             bool updateBGCacheFirst_in,
+                                             bool lockedAccess_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::redrawCursor"));
 
@@ -2599,13 +2601,9 @@ SDL_GUI_LevelWindow_Isometric::setStyle(const RPG_Graphics_StyleUnion& style_in)
 
       initWallBlend(myState->style.half_height_walls);
 
-//#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
-//      std::string dump_path_base = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
-//#else
-//      std::string dump_path_base = ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR));
-//#endif
-//      dump_path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//      std::string dump_path;
+      //std::string dump_path_base = Common_File_Tools::getTempDirectory ();
+      //dump_path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+      //std::string dump_path;
 //       dump_path = dump_path_base;
 //       dump_path += ACE_TEXT("wall_n.png");
 //       RPG_Graphics_Surface::savePNG(*myCurrentWallSet.north.surface, // image
@@ -2637,7 +2635,7 @@ SDL_GUI_LevelWindow_Isometric::setStyle(const RPG_Graphics_StyleUnion& style_in)
 
         return false;
       } // end IF
-      if (SDL_BlitSurface(myWallBlend,
+      if (SDL_BlitSurface(myCurrentWallSet.west.surface,
                           NULL,
                           copy,
                           NULL))
@@ -2663,7 +2661,7 @@ SDL_GUI_LevelWindow_Isometric::setStyle(const RPG_Graphics_StyleUnion& style_in)
 
         return false;
       } // end IF
-      if (SDL_BlitSurface(myWallBlend,
+      if (SDL_BlitSurface(myCurrentWallSet.north.surface,
                           NULL,
                           copy,
                           NULL))
@@ -2680,26 +2678,26 @@ SDL_GUI_LevelWindow_Isometric::setStyle(const RPG_Graphics_StyleUnion& style_in)
       SDL_FreeSurface(myCurrentWallSet.north.surface);
       myCurrentWallSet.north.surface = copy;
 
-//       dump_path = dump_path_base;
-//       dump_path += ACE_TEXT("wall_n_blended.png");
-//       RPG_Graphics_Surface::savePNG(*myCurrentWallSet.north.surface, // image
-//                                     dump_path,                       // file
-//                                     true);                           // WITH alpha
-//       dump_path = dump_path_base;
-//       dump_path += ACE_TEXT("wall_s_blended.png");
-//       RPG_Graphics_Surface::savePNG(*myCurrentWallSet.south.surface, // image
-//                                     dump_path,                       // file
-//                                     true);                           // WITH alpha
-//       dump_path = dump_path_base;
-//       dump_path += ACE_TEXT("wall_w_blended.png");
-//       RPG_Graphics_Surface::savePNG(*myCurrentWallSet.west.surface, // image
-//                                     dump_path,                      // file
-//                                     true);                          // WITH alpha
-//       dump_path = dump_path_base;
-//       dump_path += ACE_TEXT("wall_e_blended.png");
-//       RPG_Graphics_Surface::savePNG(*myCurrentWallSet.east.surface, // image
-//                                     dump_path,                      // file
-//                                     true);                          // WITH alpha
+       //dump_path = dump_path_base;
+       //dump_path += ACE_TEXT("wall_n_blended.png");
+       //RPG_Graphics_Surface::savePNG(*myCurrentWallSet.north.surface, // image
+       //                              dump_path,                       // file
+       //                              true);                           // WITH alpha
+       //dump_path = dump_path_base;
+       //dump_path += ACE_TEXT("wall_s_blended.png");
+       //RPG_Graphics_Surface::savePNG(*myCurrentWallSet.south.surface, // image
+       //                              dump_path,                       // file
+       //                              true);                           // WITH alpha
+       //dump_path = dump_path_base;
+       //dump_path += ACE_TEXT("wall_w_blended.png");
+       //RPG_Graphics_Surface::savePNG(*myCurrentWallSet.west.surface, // image
+       //                              dump_path,                      // file
+       //                              true);                          // WITH alpha
+       //dump_path = dump_path_base;
+       //dump_path += ACE_TEXT("wall_e_blended.png");
+       //RPG_Graphics_Surface::savePNG(*myCurrentWallSet.east.surface, // image
+       //                              dump_path,                      // file
+       //                              true);                          // WITH alpha
 
       // adjust EAST wall opacity
       SDL_Surface* shaded_wall = NULL;
@@ -2762,26 +2760,26 @@ SDL_GUI_LevelWindow_Isometric::setStyle(const RPG_Graphics_StyleUnion& style_in)
       SDL_FreeSurface(myCurrentWallSet.north.surface);
       myCurrentWallSet.north.surface = shaded_wall;
 
-//       dump_path = dump_path_base;
-//       dump_path += ACE_TEXT("wall_n_shaded.png");
-//       RPG_Graphics_Surface::savePNG(*myCurrentWallSet.north.surface, // image
-//                                     dump_path,                       // file
-//                                     true);                           // WITH alpha
-//       dump_path = dump_path_base;
-//       dump_path += ACE_TEXT("wall_s_shaded.png");
-//       RPG_Graphics_Surface::savePNG(*myCurrentWallSet.south.surface, // image
-//                                     dump_path,                       // file
-//                                     true);                           // WITH alpha
-//       dump_path = dump_path_base;
-//       dump_path += ACE_TEXT("wall_w_shaded.png");
-//       RPG_Graphics_Surface::savePNG(*myCurrentWallSet.west.surface, // image
-//                                     dump_path,                      // file
-//                                     true);                          // WITH alpha
-//       dump_path = dump_path_base;
-//       dump_path += ACE_TEXT("wall_e_shaded.png");
-//       RPG_Graphics_Surface::savePNG(*myCurrentWallSet.east.surface, // image
-//                                     dump_path,                      // file
-//                                     true);                          // WITH alpha
+       //dump_path = dump_path_base;
+       //dump_path += ACE_TEXT("wall_n_shaded.png");
+       //RPG_Graphics_Surface::savePNG(*myCurrentWallSet.north.surface, // image
+       //                              dump_path,                       // file
+       //                              true);                           // WITH alpha
+       //dump_path = dump_path_base;
+       //dump_path += ACE_TEXT("wall_s_shaded.png");
+       //RPG_Graphics_Surface::savePNG(*myCurrentWallSet.south.surface, // image
+       //                              dump_path,                       // file
+       //                              true);                           // WITH alpha
+       //dump_path = dump_path_base;
+       //dump_path += ACE_TEXT("wall_w_shaded.png");
+       //RPG_Graphics_Surface::savePNG(*myCurrentWallSet.west.surface, // image
+       //                              dump_path,                      // file
+       //                              true);                          // WITH alpha
+       //dump_path = dump_path_base;
+       //dump_path += ACE_TEXT("wall_e_shaded.png");
+       //RPG_Graphics_Surface::savePNG(*myCurrentWallSet.east.surface, // image
+       //                              dump_path,                      // file
+       //                              true);                          // WITH alpha
 
       // update wall tiles / position
       RPG_Client_Common_Tools::updateWalls(myCurrentWallSet,
@@ -2914,20 +2912,20 @@ SDL_GUI_LevelWindow_Isometric::initWallBlend(const bool& halfHeightWalls_in)
                                                       *myWallBlend->format,
                                                       1.0F)))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
-               ACE_TEXT(SDL_GetError())));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT("failed to SDL_FillRect(): %s, aborting\n"),
+                ACE_TEXT (SDL_GetError ())));
     SDL_FreeSurface (myWallBlend); myWallBlend = NULL;
     return;
   } // end IF
 
-//   std::string dump_path_base = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DEF_DUMP_DIR);
-//   dump_path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//   std::string dump_path = dump_path_base;
-//   dump_path += ACE_TEXT("wall_blend.png");
-//   RPG_Graphics_Surface::savePNG(*myWallBlend, // image
-//                                 dump_path,    // file
-//                                 true);        // WITH alpha
+   //std::string dump_path_base = Common_File_Tools::getTempDirectory();
+   //dump_path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+   //std::string dump_path = dump_path_base;
+   //dump_path += ACE_TEXT("wall_blend.png");
+   //RPG_Graphics_Surface::savePNG(*myWallBlend, // image
+   //                              dump_path,    // file
+   //                              true);        // WITH alpha
 }
 
 void

@@ -22,6 +22,7 @@
 #include "rpg_engine.h"
 
 #include <cmath>
+#include <fstream>
 
 #include "ace/Log_Msg.h"
 
@@ -223,6 +224,16 @@ int
 RPG_Engine::svc (void)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::svc"));
+
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#if COMMON_OS_WIN32_TARGET_PLATFORM(0x0A00) // _WIN32_WINNT_WIN10
+  Common_Error_Tools::setThreadName (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_TASK_THREAD_NAME),
+                                     NULL);
+#else
+  Common_Error_Tools::setThreadName (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_TASK_THREAD_NAME),
+                                     0);
+#endif // _WIN32_WINNT_WIN10
+#endif // ACE_WIN32 || ACE_WIN64
 
   // sanity check(s)
   MESSAGE_QUEUE_T* message_queue_p = inherited::msg_queue ();
@@ -821,14 +832,12 @@ RPG_Engine::action (const RPG_Engine_EntityID_t& id_in,
     case COMMAND_TRAVEL:
     {
       // if the entity is currently travelling, change the previous destination
-      if ((*iterator).second->modes.find (ENTITYMODE_TRAVELLING) !=
-          (*iterator).second->modes.end ())
-      {
+      if ((*iterator).second->modes.find (ENTITYMODE_TRAVELLING) != (*iterator).second->modes.end ())
+      { ACE_ASSERT (!(*iterator).second->actions.empty ()); // *TODO*
         while ((*iterator).second->actions.front ().command == COMMAND_STEP)
           (*iterator).second->actions.pop_front ();
 
-        ACE_ASSERT ((*iterator).second->actions.front ().command ==
-                    COMMAND_TRAVEL);
+        ACE_ASSERT ((*iterator).second->actions.front ().command == COMMAND_TRAVEL);
         (*iterator).second->actions.pop_front ();
         (*iterator).second->actions.push_front (action_in);
 

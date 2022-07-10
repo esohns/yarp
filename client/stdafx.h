@@ -3,7 +3,9 @@
 //      are changed infrequently
 //
 #if defined _MSC_VER
-#define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
+#define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
+
+#include "targetver.h"
 
 // *NOTE*: workaround quirky MSVC...
 #define NOMINMAX
@@ -13,29 +15,12 @@
 #endif
 
 // System Library Header Files
-#include "ace/OS.h"
-#include "ace/ACE.h"
-#include "ace/Synch.h"
-#include "ace/Task.h"
 #include "ace/Log_Msg.h"
-#include "ace/Singleton.h"
 
 // C RunTime Header Files
 #include <string>
-#include <map>
-#include <vector>
-#include <set>
-#include <list>
-#include <functional>
-#include <deque>
-#include <iterator>
-#include <iostream>
 
 // Local Library Header Files
-//#include "glade/glade.h"
-//#include "gtk/gtk.h"
-#include "SDL.h"
-#include "SDL_ttf.h"
 #include "xsd/cxx/config.hxx"
 #include "xsd/cxx/pre.hxx"
 

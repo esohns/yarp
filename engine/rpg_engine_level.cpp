@@ -21,7 +21,10 @@
 
 #include "rpg_engine_level.h"
 
+#include <fstream>
+
 #include "ace/Log_Msg.h"
+#include "ace/OS.h"
 
 #include "common_file_tools.h"
 
@@ -948,9 +951,9 @@ RPG_Engine_Level::levelToLevelXML(const struct RPG_Engine_LevelData& level_in)
 }
 
 struct RPG_Engine_LevelData
-RPG_Engine_Level::levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type& level_in)
+RPG_Engine_Level::levelXMLToLevel (const RPG_Engine_Level_XMLTree_Type& level_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Level::levelXMLToLevel"));
+  RPG_TRACE (ACE_TEXT ("RPG_Engine_Level::levelXMLToLevel"));
 
   // init return value
   struct RPG_Engine_LevelData result;
@@ -1007,23 +1010,20 @@ RPG_Engine_Level::levelXMLToLevel(const RPG_Engine_Level_XMLTree_Type& level_in)
     result.metadata.spawns.push_back(spawn);
   } // end IF
 
-  result.metadata.max_num_spawned = level_in.max_num_spawned();
+  result.metadata.max_num_spawned = level_in.max_num_spawned ();
 
-  RPG_Map_ParserDriver parser_driver(false, false);
-  parser_driver.init(&result.map.start,
-                     &result.map.seeds,
-                     &result.map.plan,
-                     false, false);
-  if (!parser_driver.parse(level_in.map(), true))
-	{
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to parse map, aborting\n")));
-
-		// clean up
-		ACE_OS::memset(&result, 0, sizeof(result));
-
-		return result;
-	} // end IF
+  RPG_Map_ParserDriver parser_driver (false, false);
+  parser_driver.init (&result.map.start,
+                      &result.map.seeds,
+                      &result.map.plan,
+                      false, false);
+  if (!parser_driver.parse (level_in.map (), true))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to parse map, aborting\n")));
+    ACE_OS::memset (&result, 0, sizeof (struct RPG_Engine_LevelData));
+    return result;
+  } // end IF
 
   return result;
 }

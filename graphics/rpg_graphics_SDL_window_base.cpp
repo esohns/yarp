@@ -161,7 +161,7 @@ RPG_Graphics_SDLWindowBase::getDirty () const
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::getDirty"));
 
   SDL_Rect result = {0, 0, 0, 0};
-  for (RPG_Graphics_DirtyRegionsConstIterator_t iterator = invalidRegions_.begin ();
+  for (RPG_Graphics_InvalidRegionsConstIterator_t iterator = invalidRegions_.begin ();
        iterator != invalidRegions_.end ();
        iterator++)
     result = RPG_Graphics_SDL_Tools::boundingBox (result,

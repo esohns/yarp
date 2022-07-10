@@ -914,7 +914,7 @@ RPG_Graphics_SDL_Tools::colorToSDLColor (ACE_UINT32 color_in,
 Uint32
 RPG_Graphics_SDL_Tools::getColor (const RPG_Graphics_ColorName& colorName_in,
                                   const SDL_PixelFormat& pixelFormat_in,
-                                  const float& blendFactor_in) // opacity
+                                  float blendFactor_in) // opacity
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::getColor"));
 

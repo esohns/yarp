@@ -1351,17 +1351,17 @@ RPG_Graphics_Surface::loadPNG (const std::string& filename_in,
                &compression,
                &filter);
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("loading PNG \"%s\" [wxh,d,#c,t,i,c,f]: %ux%u,%d,%u,%d,%d,%d,%d...\n"),
-             ACE_TEXT(filename_in.c_str()),
-             width,
-             height,
-             bit_depth,
-             static_cast<unsigned int>(png_get_channels(png_ptr, info_ptr)),
-             color_type,
-             interlace,
-             compression,
-             filter));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("loading PNG \"%s\" [wxh,d,#c,t,i,c,f]: %ux%u,%d,%u,%d,%d,%d,%d...\n"),
+              ACE_TEXT (filename_in.c_str()),
+              width,
+              height,
+              bit_depth,
+              static_cast<unsigned int> (png_get_channels (png_ptr, info_ptr)),
+              color_type,
+              interlace,
+              compression,
+              filter));
 
   // reduce 16 bit per channel to 8 bit per channel
   // --> strip the second byte of information from a 16-bit depth file

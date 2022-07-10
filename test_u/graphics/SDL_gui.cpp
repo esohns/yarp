@@ -113,18 +113,16 @@ extern "C" FILE * __cdecl __iob_func (void)
 // ********************************
 
 Uint32
-event_timer_SDL_cb(Uint32 interval_in,
-                   void* argument_in)
+event_timer_SDL_cb (Uint32 interval_in,
+                    void* argument_in)
 {
-  RPG_TRACE(ACE_TEXT("::event_timer_SDL_cb"));
+  RPG_TRACE (ACE_TEXT ("::event_timer_SDL_cb"));
 
-  state_t* state_p = static_cast<state_t*>(argument_in);
+  state_t* state_p = static_cast<state_t*> (argument_in);
   ACE_ASSERT(state_p);
 
   // synch access
-  {
-    ACE_Guard<ACE_Thread_Mutex> aGuard (state_p->hover_lock);
-
+  { ACE_Guard<ACE_Thread_Mutex> aGuard (state_p->hover_lock);
     state_p->hover_time += interval_in;
     if (state_p->hover_time > RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_DELAY)
     {
@@ -133,10 +131,10 @@ event_timer_SDL_cb(Uint32 interval_in,
       sdl_event.type = RPG_GRAPHICS_SDL_HOVEREVENT;
       sdl_event.user.code = state_p->hover_time;
 
-      if (SDL_PushEvent(&sdl_event))
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
-                   ACE_TEXT(SDL_GetError())));
+      if (SDL_PushEvent (&sdl_event) < 0)
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),
+                    ACE_TEXT (SDL_GetError ())));
     } // end IF
 
     state_p->angle++;
@@ -149,10 +147,10 @@ event_timer_SDL_cb(Uint32 interval_in,
 }
 
 Uint32
-input_timer_SDL_cb(Uint32 interval_in,
-                   void* argument_in)
+input_timer_SDL_cb (Uint32 interval_in,
+                    void* argument_in)
 {
-  RPG_TRACE(ACE_TEXT("::input_timer_SDL_cb"));
+  RPG_TRACE (ACE_TEXT ("::input_timer_SDL_cb"));
 
   // create a timer event
   SDL_Event sdl_event;
@@ -160,7 +158,7 @@ input_timer_SDL_cb(Uint32 interval_in,
   sdl_event.user.data1 = argument_in;
 
   // push it onto the event queue
-  if (SDL_PushEvent(&sdl_event))
+  if (SDL_PushEvent (&sdl_event) < 0)
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
                ACE_TEXT(SDL_GetError())));
@@ -171,36 +169,35 @@ input_timer_SDL_cb(Uint32 interval_in,
 
 // wait for an input event; stop after timeout_in second(s) (0: wait forever)
 void
-do_SDL_waitForInput(const unsigned int& timeout_in,
-                    SDL_Event& event_out)
+do_SDL_waitForInput (unsigned int timeout_in,
+                     SDL_Event& event_out)
 {
-  RPG_TRACE(ACE_TEXT("::do_SDL_waitForInput"));
+  RPG_TRACE (ACE_TEXT ("::do_SDL_waitForInput"));
 
   SDL_TimerID timer = NULL;
   if (timeout_in)
-    timer = SDL_AddTimer((timeout_in * 1000), // interval (ms)
-                         input_timer_SDL_cb,  // timeout callback
-                         NULL);               // callback argument
-  ACE_ASSERT(timer);
-  if (!timer)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_AddTimer(%u): \"%s\", aborting\n"),
-               (timeout_in * 1000),
-               ACE_TEXT(SDL_GetError())));
-
-    return;
+    timer = SDL_AddTimer ((timeout_in * 1000), // interval (ms)
+                          input_timer_SDL_cb,  // timeout callback
+                          NULL);               // callback argument
+    if (!timer)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_AddTimer(%u): \"%s\", returning\n"),
+                  (timeout_in * 1000),
+                  ACE_TEXT (SDL_GetError ())));
+      return;
+    } // end IF
   } // end IF
 
   // loop until something interesting happens
   do
   {
-    if (SDL_WaitEvent(&event_out) != 1)
+    if (SDL_WaitEvent (&event_out) != 1)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
-                 ACE_TEXT(SDL_GetError())));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
+                  ACE_TEXT (SDL_GetError ())));
       break;
     } // end IF
     if ((event_out.type == SDL_KEYDOWN)         ||
@@ -213,10 +210,10 @@ do_SDL_waitForInput(const unsigned int& timeout_in,
   // clean up
   if (timeout_in &&
       (event_out.type != SDL_GUI_SDL_TIMEREVENT))
-    if (!SDL_RemoveTimer(timer))
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
-                 ACE_TEXT(SDL_GetError())));
+    if (!SDL_RemoveTimer (timer))
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
+                  ACE_TEXT (SDL_GetError ())));
 }
 
 void

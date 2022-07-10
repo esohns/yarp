@@ -117,8 +117,8 @@ class SDL_GUI_LevelWindow_Isometric
                const RPG_Map_Position_t&) const;
   void redrawCursor(const RPG_Graphics_Position_t& =
                     RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position(false), // screen position
-                    const bool& = true,                                                 // update bg cache first ?
-                    const bool& = true);                                                // locked access (engine) ?
+                    bool = true,                                                 // update bg cache first ?
+                    bool = true);                                                // locked access (engine) ?
 
   void initCeiling();
   void initWallBlend(const bool&); // half-height walls ?
@@ -126,34 +126,34 @@ class SDL_GUI_LevelWindow_Isometric
 //  void restoreBG();
   void initTiles();
 
-  state_t*                        myState;
-  RPG_Engine*                     myEngine;
+  state_t*                             myState;
+  RPG_Engine*                          myEngine;
 
   struct RPG_Graphics_FloorTileSet     myCurrentFloorSet;
   struct RPG_Graphics_FloorEdgeTileSet myCurrentFloorEdgeSet;
   struct RPG_Graphics_WallTileSet      myCurrentWallSet;
-  SDL_Surface*                    myCurrentCeilingTile;
+  SDL_Surface*                         myCurrentCeilingTile;
   struct RPG_Graphics_DoorTileSet      myCurrentDoorSet;
-  SDL_Surface*                    myCurrentOffMapTile;
+  SDL_Surface*                         myCurrentOffMapTile;
 
   // floor edge tiles / position
-  RPG_Graphics_FloorEdgeTileMap_t myFloorEdgeTiles;
+  RPG_Graphics_FloorEdgeTileMap_t      myFloorEdgeTiles;
 
   // wall tiles / position
-  RPG_Graphics_WallTileMap_t      myWallTiles;
+  RPG_Graphics_WallTileMap_t           myWallTiles;
 
-  bool                            myHideFloor;
-  bool                            myHideWalls;
+  bool                                 myHideFloor;
+  bool                                 myHideWalls;
 
-  SDL_Surface*                    myWallBlend;
+  SDL_Surface*                         myWallBlend;
 
   // door tiles / position
-  RPG_Graphics_DoorTileMap_t      myDoorTiles;
+  RPG_Graphics_DoorTileMap_t           myDoorTiles;
 
   // center of displayed map area (map coordinates)
-  RPG_Graphics_Position_t         myView;
+  RPG_Graphics_Position_t              myView;
 
-  bool                            myMinimapIsOn;
+  bool                                 myMinimapIsOn;
 };
 
 #endif

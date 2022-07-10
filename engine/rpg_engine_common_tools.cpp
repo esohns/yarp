@@ -27,10 +27,7 @@
 #include <string>
 
 #include "ace/Log_Msg.h"
-
-//#include <xercesc/util/XMLString.hpp>
-//#include <xercesc/util/XMLUri.hpp>
-//#include <xercesc/util/XMLURL.hpp>
+#include "ace/OS.h"
 
 #include "common_file_tools.h"
 

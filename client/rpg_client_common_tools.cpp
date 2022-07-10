@@ -984,9 +984,9 @@ RPG_Client_Common_Tools::getCursor(const RPG_Map_Position_t& position_in,
   // (closed/locked) door ?
   if (engine_in.getElement(position_in, lockedAcces_in) == MAPELEMENT_DOOR)
   {
-    RPG_Map_DoorState door_state = engine_in.state(position_in, lockedAcces_in);
-    if (((door_state == DOORSTATE_CLOSED) ||
-         (door_state == DOORSTATE_LOCKED))               &&
+    //RPG_Map_DoorState door_state = engine_in.state(position_in, lockedAcces_in);
+    if (/*((door_state == DOORSTATE_CLOSED) ||
+         (door_state == DOORSTATE_LOCKED))               &&*/
         id_in                                            &&
         RPG_Map_Common_Tools::isAdjacent(entity_position,
                                          position_in))

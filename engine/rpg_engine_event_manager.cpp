@@ -145,7 +145,17 @@ RPG_Engine_Event_Manager::close(u_long arg_in)
 int
 RPG_Engine_Event_Manager::svc(void)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Event_Manager::svc"));
+  RPG_TRACE (ACE_TEXT ("RPG_Engine_Event_Manager::svc"));
+
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#if COMMON_OS_WIN32_TARGET_PLATFORM(0x0A00) // _WIN32_WINNT_WIN10
+  Common_Error_Tools::setThreadName (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_AI_TASK_THREAD_NAME),
+                                     NULL);
+#else
+  Common_Error_Tools::setThreadName (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_AI_TASK_THREAD_NAME),
+                                     0);
+#endif // _WIN32_WINNT_WIN10
+#endif // ACE_WIN32 || ACE_WIN64
 
   int result = -1;
   RPG_Engine_Event_t* event = NULL;
@@ -568,7 +578,7 @@ RPG_Engine_Event_Manager::schedule(RPG_Engine_Event_t* event_in,
 }
 
 void
-RPG_Engine_Event_Manager::cancel (const long& id_in)
+RPG_Engine_Event_Manager::cancel (long id_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine_Event_Manager::cancel"));
 
@@ -590,8 +600,7 @@ RPG_Engine_Event_Manager::cancel (const long& id_in)
     ACE_Guard<ACE_Thread_Mutex> aGuard (myLock);
 
     RPG_Engine_EventTimersConstIterator_t iterator = myTimers.find (id_in);
-    ACE_ASSERT (iterator != myTimers.end ());
-    if (iterator == myTimers.end ())
+    if (iterator == myTimers.end ()) // <-- *TODO*
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("invalid timer id (was: %d), aborting\n"),
@@ -681,20 +690,23 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
         {
           // step1: sort targets by distance
           RPG_Engine_EntityList_t possible_targets =
-              myEngine->entities((*iterator).second->position,
-                                 false);
-          ACE_ASSERT(!possible_targets.empty() &&
-                      (possible_targets.front() == (*iterator).first));
-          possible_targets.erase(possible_targets.begin());
+              myEngine->entities ((*iterator).second->position,
+                                  false);
 
-          // step2: remove fellow monsters
+          // step2: remove self
+          RPG_Engine_EntityListIterator_t iterator_2 =
+            std::find (possible_targets.begin (), possible_targets.end (), (*iterator).first);
+          ACE_ASSERT (iterator_2 != possible_targets.end());
+          possible_targets.erase (iterator_2);
+
+          // step3: remove fellow monsters
           struct monster_remove monster_remove = {myEngine, false, true};
-          possible_targets.remove_if(monster_remove);
+          possible_targets.remove_if (monster_remove);
 
-          // step3: remove invisible (== cannot (currently) see) targets
+          // step4: remove invisible (== cannot (currently) see) targets
           struct invisible_remove invisible_remove =
               {myEngine, false, (*iterator).first};
-          possible_targets.remove_if(invisible_remove);
+          possible_targets.remove_if (invisible_remove);
 
           if (possible_targets.empty())
           {
