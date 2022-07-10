@@ -66,8 +66,8 @@ file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
 if (UNIX)
  create_target_launcher (${EXECUTABLE}
                          ARGS "-t"
-#                        FORWARD_ARGS
-                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/ACE_TAO/ACE/lib
+                         FORWARD_ARGS
+#                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/ACE_TAO/ACE/lib
                          WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test_u/sound
                          ENVIRONMENT foo=bar)
 elseif (WIN32)

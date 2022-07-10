@@ -63,7 +63,7 @@ class RPG_Graphics_SDL_Tools
 
   static SDL_Color colorToSDLColor (ACE_UINT32,          // RGBA value
                                     const SDL_Surface&); // target surface
-	static Uint32 getColor (const RPG_Graphics_ColorName&, // color name
+  static Uint32 getColor (const RPG_Graphics_ColorName&, // color name
                           const SDL_PixelFormat&,        // pixel format
                           float = 1.0F);                 // blend factor (--> opacity)
 

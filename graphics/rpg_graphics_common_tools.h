@@ -23,13 +23,18 @@
 
 #include <string>
 
+#if defined (SDL2_USE)
+#define _SDL_main_h
+#define SDL_main_h_
+#include "SDL.h"
+#endif // SDL2_USE
+
 #include "ace/Global_Macros.h"
 #include "ace/Synch_Traits.h"
 
 #include "rpg_map_common.h"
 
 #include "rpg_graphics_common.h"
-//#include "rpg_graphics_exports.h"
 #include "rpg_graphics_incl.h"
 
 // forward declarations

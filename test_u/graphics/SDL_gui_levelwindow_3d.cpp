@@ -31,6 +31,7 @@
 #include "gl/GLU.h"
 #else
 #include "GL/gl.h"
+#include "GL/glu.h"
 #endif // ACE_WIN32 || ACE_WIN64
 
 #if defined (SDL_USE)

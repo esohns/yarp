@@ -23,6 +23,12 @@
 #include <sstream>
 #include <string>
 
+#define _SDL_main_h
+#define SDL_main_h_
+#include "SDL.h"
+#include "SDL_mixer.h"
+//#include "SDL/SDL_framerate.h"
+
 #include "ace/Configuration.h"
 #include "ace/Configuration_Import_Export.h"
 #include "ace/Get_Opt.h"
@@ -34,15 +40,8 @@
 #include "ace/Profile_Timer.h"
 #include "ace/Sig_Handler.h"
 #include "ace/Signal.h"
-#include "ace/Synch.h"
 #include "ace/Thread_Manager.h"
 #include "ace/Version.h"
-
-#define _SDL_main_h
-#define SDL_main_h_
-#include "SDL.h"
-#include "SDL_mixer.h"
-//#include "SDL/SDL_framerate.h"
 
 #include "common_file_tools.h"
 
@@ -2183,7 +2182,11 @@ ACE_TMAIN (int argc_in,
   SDL_init_flags |= SDL_INIT_NOPARACHUTE;                                        /**< Don't catch fatal signals */
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
 #else
+#if defined (SDL_USE)
   SDL_init_flags |= SDL_INIT_EVENTTHREAD;                                        /**< Not supported on all OS's */
+#elif defined (SDL2_USE)
+  SDL_init_flags |= SDL_INIT_EVENTS;
+#endif // SDL_USE || SL2_USE
 #endif // ACE_WIN32 || ACE_WIN64
   if (SDL_Init (SDL_init_flags) == -1)
   {

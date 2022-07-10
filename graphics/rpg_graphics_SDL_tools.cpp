@@ -760,8 +760,8 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
 
   // open SDL window
   Uint32 flags_i = 0;
-  if (configuration_in.use_OpenGL)
-    flags_i |= SDL_WINDOW_OPENGL;
+//  if (configuration_in.use_OpenGL)
+//    flags_i |= SDL_WINDOW_OPENGL;
   result = SDL_CreateWindow (caption_in.c_str (),
                              SDL_WINDOWPOS_UNDEFINED,
                              SDL_WINDOWPOS_UNDEFINED,

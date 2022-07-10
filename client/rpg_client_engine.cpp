@@ -1429,10 +1429,13 @@ RPG_Client_Engine::handleActions ()
         } // end IF
         gchar* caption_utf8 = Common_UI_GTK_Tools::localeToUTF8 (caption);
 // *TODO*: this will not return on VS2010...
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#else
+#if defined (SDL_USE)
         SDL_WM_SetCaption (caption_utf8,  // window caption
                            caption_utf8); // icon caption
-#endif
+#endif // SDL_USE
+#endif // ACE_WIN32 || ACE_WIN64
         // clean up
         g_free (caption_utf8);
 

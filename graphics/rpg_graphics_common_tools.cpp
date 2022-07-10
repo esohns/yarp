@@ -2371,7 +2371,6 @@ RPG_Graphics_Common_Tools::fade (float interval_in,
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_Flip(): %s, aborting\n"),
                   ACE_TEXT (SDL_GetError ())));
-      SDL_FreeSurface (target_image);
       return;
     } // end IF
 #elif defined (SDL2_USE)
@@ -2432,7 +2431,6 @@ RPG_Graphics_Common_Tools::fade (float interval_in,
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_Flip(): %s, aborting\n"),
                 ACE_TEXT (SDL_GetError ())));
-    SDL_FreeSurface (target_image);
     return;
   } // end IF
 #elif defined (SDL2_USE)

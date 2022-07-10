@@ -245,7 +245,7 @@ RPG_Sound_Event_Manager::handle (const void* act_in)
   if (myUseCDROM &&
       !myInitialized)
   {
-    initCD ();
+    initializeCD ();
     ACE_ASSERT(myInitialized);
   } // end IF
 #endif // SDL_USE

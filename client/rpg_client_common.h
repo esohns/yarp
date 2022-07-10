@@ -29,9 +29,9 @@
 #define SDL_main_h_
 #include "SDL.h"
 
-#include "ace/Synch_Traits.h"
-
 #include "gtk/gtk.h"
+
+#include "ace/Synch_Traits.h"
 
 #include "common.h"
 
@@ -79,7 +79,7 @@ struct RPG_Client_GTK_CBData
    , screen (NULL)
    , screenLock (NULL,
                  NULL)
-   , eventTimer (NULL)
+   , eventTimer (0)
    , clientEngine (NULL)
    , schemaRepository ()
    , entity ()

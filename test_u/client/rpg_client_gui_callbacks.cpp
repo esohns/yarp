@@ -100,12 +100,12 @@ update_equipment (const struct RPG_Client_GTK_CBData& data_in)
 //   ACE_ASSERT(entries);
   if (entries)
   {
-    for (GList* iterator = entries;
-         iterator;
-         iterator = g_list_next (iterator))
+    for (GList* iterator_2 = entries;
+         iterator_2;
+         iterator_2 = g_list_next (iterator_2))
     {
       // *NOTE*: effectively removes the widget from the container...
-      gtk_widget_destroy (GTK_WIDGET (iterator->data));
+      gtk_widget_destroy (GTK_WIDGET (iterator_2->data));
     } // end FOR
 
     g_list_free (entries);

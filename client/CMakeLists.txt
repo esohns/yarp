@@ -199,7 +199,6 @@ install (FILES
          rpg_client_defines.h
          rpg_client_engine.h
          rpg_client_entity_manager.h
-       #  rpg_client_exports.h
          rpg_client_iwindow.h
          rpg_client_iwindow_level.h
          rpg_client_ui_tools.h

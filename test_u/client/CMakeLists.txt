@@ -36,7 +36,6 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/sdl.cmake)
 if (UNIX)
  include(FindPkgConfig)
  pkg_check_modules(PKG_CONFIG_MODULE_XERCES_C REQUIRED xerces-c)
- pkg_check_modules(PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
  pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
 endif (UNIX)
 
@@ -44,11 +43,9 @@ include_directories (${GTK_INCLUDE_DIRS}
                      $ENV{LIB_ROOT}/gtkglarea)
 if (UNIX)
  include_directories(${PKG_CONFIG_MODULE_XERCES_C_INCLUDE_DIRS}
-                     ${PKG_CONFIG_MODULE_SDL_MIXER_INCLUDE_DIRS}
                      ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
 elseif (WIN32)
- include_directories ($ENV{LIB_ROOT}/xerces-c/src
-                      $ENV{LIB_ROOT}/SDL_mixer/include)
+ include_directories ($ENV{LIB_ROOT}/xerces-c/src)
 endif ()
 if (SDL_SUPPORT)
  include_directories (${SDL_INCLUDE_DIRS})
@@ -174,11 +171,11 @@ install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 ########### launcher ###############
 if (UNIX)
  file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}" COMMAND)
- create_target_launcher (client_gui
+ create_target_launcher (${EXECUTABLE}
                          COMMAND ${COMMAND}
                          ARGS "-l -n -t"
                          FORWARD_ARGS
-                         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/..
+                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test_u/client
                          ENVIRONMENT foo=bar)
 elseif (WIN32)
  file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
@@ -186,7 +183,7 @@ elseif (WIN32)
  string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
  file (TO_CMAKE_PATH "${SDL_LIB_DIR}" SDL_LIB_PATH)
  file (TO_CMAKE_PATH "${GTK_LIB_DIRS}" GTK_LIB_PATH)
- create_target_launcher (client_gui
+ create_target_launcher (${EXECUTABLE}
                          COMMAND ${COMMAND}
                          ARGS "-l -n -t"
                          FORWARD_ARGS
