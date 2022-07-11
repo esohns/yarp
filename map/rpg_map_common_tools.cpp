@@ -3864,10 +3864,10 @@ RPG_Map_Common_Tools::floodFill(const RPG_Map_Position_t& position_in,
   std::stack<RPG_Map_Position_t> position_stack;
   position_stack.push(position_in);
   struct RPG_Map_Door position_door;
+  RPG_Map_Position_t tl, t, tr, l, r, bl, b, br;
   while (!position_stack.empty())
   {
     // compute 8 neighbours
-    RPG_Map_Position_t tl, t, tr, l, r, bl, b, br;
     tl = position_stack.top(); tl.first--; tl.second--;
     t = position_stack.top(); t.second--;
     tr = position_stack.top(); tr.first++; tr.second--;

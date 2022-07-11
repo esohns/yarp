@@ -1168,13 +1168,6 @@ do_work (struct RPG_Client_Configuration& configuration_in,
       {
         switch (sdl_event.key.keysym.sym)
         {
-          //case SDLK_q:
-          //{
-          //  // finished event processing
-          //  done = true;
-
-          //  break;
-          //}
           case SDLK_u:
           {
             g_idle_add (idle_raise_UI_cb,
@@ -1185,8 +1178,6 @@ do_work (struct RPG_Client_Configuration& configuration_in,
             break;
         } // end SWITCH
 
-        if (done)
-          break; // leave
         // *WARNING*: falls through !
       }
 #if defined (SDL_USE)
@@ -1220,30 +1211,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 
         // *WARNING*: falls through !
       }
-#elif defined (SDL2_USE)
-      case SDL_WINDOWEVENT_ENTER:
-      {
-//           ACE_DEBUG((LM_DEBUG,
-//                      ACE_TEXT("gained mouse coverage...\n")));
-
-                    // synch access
-        ACE_Guard<ACE_Thread_Mutex> aGuard(GTKUserData_in.UIState->lock);
-
-        GTKUserData_in.doHover = true;
-        break;
-      }
-      case SDL_WINDOWEVENT_LEAVE:
-      {
-//           ACE_DEBUG((LM_DEBUG,
-//                      ACE_TEXT("lost mouse coverage...\n")));
-
-                    // synch access
-        ACE_Guard<ACE_Thread_Mutex> aGuard(GTKUserData_in.UIState->lock);
-
-        GTKUserData_in.doHover = false;
-        break;
-      }
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE
       case SDL_MOUSEMOTION:
       case SDL_MOUSEBUTTONDOWN:
       case RPG_GRAPHICS_SDL_HOVEREVENT: // hovering...
@@ -1331,26 +1299,108 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 
         break;
       }
-      case RPG_CLIENT_SDL_TIMEREVENT:
+#if defined (SDL2_USE)
+      case SDL_APP_TERMINATING:
+      case SDL_APP_LOWMEMORY:
+      case SDL_APP_WILLENTERBACKGROUND:
+      case SDL_APP_DIDENTERBACKGROUND:
+      case SDL_APP_WILLENTERFOREGROUND:
+      case SDL_APP_DIDENTERFOREGROUND:
+      case SDL_LOCALECHANGED:
+      case SDL_DISPLAYEVENT:
+      case SDL_WINDOWEVENT:
+      {
+        if (sdl_event.type != SDL_WINDOWEVENT)
+          goto continue_;
+        switch (sdl_event.window.event)
+        {
+          case SDL_WINDOWEVENT_EXPOSED:
+          case SDL_WINDOWEVENT_RESIZED:
+            break;
+          case SDL_WINDOWEVENT_ENTER:
+          {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("gained mouse coverage...\n")));
+
+            // synch access
+            ACE_Guard<ACE_Thread_Mutex> aGuard(GTKUserData_in.UIState->lock);
+
+            GTKUserData_in.doHover = true;
+            break;
+          }
+          case SDL_WINDOWEVENT_LEAVE:
+          {
+//           ACE_DEBUG((LM_DEBUG,
+//                      ACE_TEXT("lost mouse coverage...\n")));
+
+            // synch access
+            ACE_Guard<ACE_Thread_Mutex> aGuard(GTKUserData_in.UIState->lock);
+
+            GTKUserData_in.doHover = false;
+            break;
+          }
+
+          default:
+            break;
+        } // end SWITCH
+
+        // *WARNING*: falls through !
+continue_:;
+      }
+#endif // SDL2_USE
+      case SDL_SYSWMEVENT:
+#if defined (SDL_USE)
+      case SDL_VIDEORESIZE:
+      case SDL_VIDEOEXPOSE:
+#endif // SDL_USE
       case SDL_KEYUP:
+#if defined (SDL2_USE)
+      case SDL_TEXTEDITING:
+      case SDL_TEXTINPUT:
+      case SDL_KEYMAPCHANGED:
+      case SDL_TEXTEDITING_EXT:
+#endif // SDL2_USE
       case SDL_MOUSEBUTTONUP:
+#if defined (SDL2_USE)
+      case SDL_MOUSEWHEEL:
+#endif // SDL2_USE
       case SDL_JOYAXISMOTION:
       case SDL_JOYBALLMOTION:
       case SDL_JOYHATMOTION:
       case SDL_JOYBUTTONDOWN:
       case SDL_JOYBUTTONUP:
-      case SDL_SYSWMEVENT:
-#if defined (SDL_USE)
-      case SDL_VIDEORESIZE:
-#elif defined (SDL2_USE)
-      case SDL_WINDOWEVENT_RESIZED:
-#endif // SDL_USE || SDL2_USE
-        break;
-#if defined (SDL_USE)
-      case SDL_VIDEOEXPOSE:
-#elif defined (SDL2_USE)
-      case SDL_WINDOWEVENT_EXPOSED:
-#endif // SDL_USE || SDL2_USE
+#if defined (SDL2_USE)
+      case SDL_JOYDEVICEADDED:
+      case SDL_JOYDEVICEREMOVED:
+      case SDL_CONTROLLERAXISMOTION:
+      case SDL_CONTROLLERBUTTONDOWN:
+      case SDL_CONTROLLERBUTTONUP:
+      case SDL_CONTROLLERDEVICEADDED:
+      case SDL_CONTROLLERDEVICEREMOVED:
+      case SDL_CONTROLLERDEVICEREMAPPED:
+      case SDL_CONTROLLERTOUCHPADDOWN:
+      case SDL_CONTROLLERTOUCHPADMOTION:
+      case SDL_CONTROLLERTOUCHPADUP:
+      case SDL_CONTROLLERSENSORUPDATE:
+      case SDL_FINGERDOWN:
+      case SDL_FINGERUP:
+      case SDL_FINGERMOTION:
+      case SDL_DOLLARGESTURE:
+      case SDL_DOLLARRECORD:
+      case SDL_MULTIGESTURE:
+      case SDL_CLIPBOARDUPDATE:
+      case SDL_DROPFILE:
+      case SDL_DROPTEXT:
+      case SDL_DROPBEGIN:
+      case SDL_DROPCOMPLETE:
+      case SDL_AUDIODEVICEADDED:
+      case SDL_AUDIODEVICEREMOVED:
+      case SDL_SENSORUPDATE:
+      case SDL_RENDER_TARGETS_RESET:
+      case SDL_RENDER_DEVICE_RESET:
+      case SDL_POLLSENTINEL:
+#endif // SDL2_USE
+      case RPG_CLIENT_SDL_TIMEREVENT:
       {
         int x, y;
         Uint8 button_state = SDL_GetMouseState(&x, &y);
@@ -1363,8 +1413,8 @@ do_work (struct RPG_Client_Configuration& configuration_in,
       default:
       {
         ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unknown/invalid SDL event type (was: %d), continuing\n"),
-                   sdl_event.type));
+                   ACE_TEXT("unknown/invalid SDL event type (was: %d: 0x%x), continuing\n"),
+                   sdl_event.type, sdl_event.type));
 
         break;
       }

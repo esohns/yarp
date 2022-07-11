@@ -889,37 +889,34 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
           ACE_ASSERT(current_action.position != (*iterator).second->position);
 
           // step1: compute path first/again ?
-          if (current_action.path.empty() ||
-              (current_action.path.back().first != current_action.position)) // pursuit mode...
+          if (current_action.path.empty () ||
+              (current_action.path.back ().first != current_action.position)) // pursuit mode...
           {
-            current_action.path.clear();
+            current_action.path.clear ();
 
             // obstacles:
             // - walls
             // - (closed, locked) doors
             // - entities
-            RPG_Map_Positions_t obstacles =
-                myEngine->getObstacles(true,   // include entities
-                                       false); // don't lock
+            RPG_Map_Positions_t obstacles = myEngine->getObstacles (true,   // include entities
+                                                                    false); // don't lock
             // - start, end positions never are obstacles...
-            obstacles.erase((*iterator).second->position);
-            obstacles.erase(current_action.position);
+            obstacles.erase ((*iterator).second->position);
+            obstacles.erase (current_action.position);
 
-            if (!myEngine->findPath((*iterator).second->position,
-                                    current_action.position,
-                                    obstacles,
-                                    current_action.path))
+            if (!myEngine->findPath ((*iterator).second->position,
+                                     current_action.position,
+                                     obstacles,
+                                     current_action.path))
             {
               // *NOTE*: --> no/invalid path, cannot proceed...
               (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
               done_current_action = true;
               break; // stop & cancel path...
             } // end IF
-            ACE_ASSERT(!current_action.path.empty());
-            ACE_ASSERT((current_action.path.front().first ==
-                        (*iterator).second->position) &&
-                        (current_action.path.back().first ==
-                         current_action.position));
+            ACE_ASSERT(!current_action.path.empty ());
+            ACE_ASSERT((current_action.path.front ().first == (*iterator).second->position) &&
+                       (current_action.path.back ().first == current_action.position));
             current_action.path.pop_front();
 
             (*iterator).second->modes.insert(ENTITYMODE_TRAVELLING);
@@ -928,12 +925,12 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
 
           // step2: (try to) step to the next adjacent position
           next_action.command = COMMAND_STEP;
-          next_action.position = current_action.path.front().first;
+          next_action.position = current_action.path.front ().first;
           do_next_action = true;
 
           // step3: check: done ?
           current_action.path.pop_front();
-          done_current_action = current_action.path.empty();
+          done_current_action = current_action.path.empty ();
           if (done_current_action)
           {
             ACE_ASSERT(next_action.position == current_action.position);

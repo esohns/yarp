@@ -650,7 +650,8 @@ RPG_Client_Engine::notify(enum RPG_Engine_Command command_in,
               (active_entity_id &&
                engine_->canSee (active_entity_id,
                                 parameters_in.entity_id,
-                                false))                    ||
+                                false))                     ||
+              !active_entity_id                             || // player has died ?
               debug_)
               client_action.command = COMMAND_ENTITY_DRAW;
 //          engine_->unlock ();
