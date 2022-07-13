@@ -649,32 +649,6 @@ RPG_Graphics_SDL_Tools::initializeVideo (const struct RPG_Graphics_SDL_VideoConf
     } // end IF
   ACE_ASSERT (myVideoPreInitialized);
 
-  //// set window icon
-  //RPG_Graphics_GraphicTypeUnion type;
-  //type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
-  //type.image = IMAGE_WM_ICON;
-  //RPG_Graphics_t icon_graphic =
-  //  RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->get (type);
-  //ACE_ASSERT(icon_graphic.type.image == IMAGE_WM_ICON);
-  //std::string path = RPG_Graphics_Common_Tools::getGraphicsDirectory ();
-  //path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  //path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_IMAGES_SUB);
-  //path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  //path += icon_graphic.file;
-  //SDL_Surface* icon_image = NULL;
-  //icon_image = RPG_Graphics_Surface::load (path,   // graphics file
-  //                                         false); // don't convert to display format (no screen yet !)
-  //if (!icon_image)
-  //{
-  //  ACE_DEBUG((LM_ERROR,
-  //             ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadFile(\"%s\"), aborting\n"),
-  //             ACE_TEXT(path.c_str())));
-
-  //  return false;
-  //} // end IF
-  //SDL_WM_SetIcon(icon_image, // surface
-  //               NULL);      // mask (--> everything)
-
   // step3: init screen
   if (initializeWindow_in)
   {
@@ -690,6 +664,32 @@ RPG_Graphics_SDL_Tools::initializeVideo (const struct RPG_Graphics_SDL_VideoConf
                   configuration_in.screen_colordepth));
       return false;
     } // end IF
+
+    // set window icon
+    RPG_Graphics_GraphicTypeUnion type;
+    type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
+    type.image = IMAGE_WM_ICON;
+    RPG_Graphics_t icon_graphic =
+      RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->get (type);
+    ACE_ASSERT(icon_graphic.type.image == IMAGE_WM_ICON);
+    std::string path = RPG_Graphics_Common_Tools::getGraphicsDirectory ();
+    path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_IMAGES_SUB);
+    path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    path += icon_graphic.file;
+    SDL_Surface* icon_image = NULL;
+    icon_image = RPG_Graphics_Surface::load (path,   // graphics file
+                                             false); // don't convert to display format (no screen yet !)
+    if (!icon_image)
+    {
+      ACE_DEBUG((LM_ERROR,
+                 ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadFile(\"%s\"), aborting\n"),
+                 ACE_TEXT(path.c_str())));
+      SDL_DestroyWindow (windowHandle_out); windowHandle_out = NULL;
+      return false;
+    } // end IF
+    SDL_SetWindowIcon (windowHandle_out, // window handle
+                       icon_image);      // surface
   } // end IF
 
   return true;

@@ -253,16 +253,16 @@ do_printUsage (const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf (ios::boolalpha);
 
-  std::cout << ACE_TEXT("usage: ")
+  std::cout << ACE_TEXT ("usage: ")
             << programName_in
-            << ACE_TEXT(" [OPTIONS]")
+            << ACE_TEXT (" [OPTIONS]")
             << std::endl
             << std::endl;
-  std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-a         : no audio")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT ("currently available options:") << std::endl;
+  std::cout << ACE_TEXT ("-a         : no audio")
+            << ACE_TEXT (" [")
             << false
-            << ACE_TEXT("]")
+            << ACE_TEXT ("]")
             << std::endl;
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -272,15 +272,15 @@ do_printUsage (const std::string& programName_in)
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_CONFIGURATION_FILE);
-  std::cout << ACE_TEXT("-c [FILE]  : configuration file")
-            << ACE_TEXT(" [\"")
+  std::cout << ACE_TEXT ("-c [FILE]  : configuration file")
+            << ACE_TEXT (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT("-d         : debug mode")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT ("-d         : debug mode")
+            << ACE_TEXT (" [")
             << RPG_CLIENT_DEF_DEBUG
-            << ACE_TEXT("]")
+            << ACE_TEXT ("]")
             << std::endl;
   configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -290,10 +290,10 @@ do_printUsage (const std::string& programName_in)
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-e [FILE]  : monster dictionary (*.xml)")
-            << ACE_TEXT(" [\"")
+  std::cout << ACE_TEXT ("-e [FILE]  : monster dictionary (*.xml)")
+            << ACE_TEXT (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT ("\"]")
             << std::endl;
   std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -305,11 +305,11 @@ do_printUsage (const std::string& programName_in)
   path +=
       RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
   path += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
-  std::cout << ACE_TEXT("-f [FILE]  : level plan (*")
+  std::cout << ACE_TEXT ("-f [FILE]  : level plan (*")
             << ACE_TEXT (RPG_ENGINE_LEVEL_FILE_EXT)
-            << ACE_TEXT(") [\"")
+            << ACE_TEXT (") [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT ("\"]")
             << std::endl;
   configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -319,10 +319,10 @@ do_printUsage (const std::string& programName_in)
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-g [FILE]  : graphics dictionary (*.xml)")
-            << ACE_TEXT(" [\"")
+  std::cout << ACE_TEXT ("-g [FILE]  : graphics dictionary (*.xml)")
+            << ACE_TEXT (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT ("\"]")
             << std::endl;
   configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -332,15 +332,15 @@ do_printUsage (const std::string& programName_in)
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-i [FILE]  : item dictionary (*.xml)")
-            << ACE_TEXT(" [\"")
+  std::cout << ACE_TEXT ("-i [FILE]  : item dictionary (*.xml)")
+            << ACE_TEXT (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT("-l         : log to a file")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT ("-l         : log to a file")
+            << ACE_TEXT (" [")
             << false
-            << ACE_TEXT("]")
+            << ACE_TEXT ("]")
             << std::endl;
   configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -350,15 +350,15 @@ do_printUsage (const std::string& programName_in)
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-m [FILE]  : magic dictionary (*.xml)")
-            << ACE_TEXT(" [\"")
+  std::cout << ACE_TEXT ("-m [FILE]  : magic dictionary (*.xml)")
+            << ACE_TEXT (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT("-n         : skip intro")
-            << ACE_TEXT(" [\"")
+  std::cout << ACE_TEXT ("-n         : skip intro")
+            << ACE_TEXT (" [\"")
             << false
-            << ACE_TEXT("\"]")
+            << ACE_TEXT ("\"]")
             << std::endl;
   configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -366,10 +366,10 @@ do_printUsage (const std::string& programName_in)
                                                             ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
                                                             true);
   path = configuration_path;
-  std::cout << ACE_TEXT("-r [DIR]   : schema repository")
-            << ACE_TEXT(" [\"")
+  std::cout << ACE_TEXT ("-r [DIR]   : schema repository")
+            << ACE_TEXT (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT ("\"]")
             << std::endl;
   configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -379,15 +379,15 @@ do_printUsage (const std::string& programName_in)
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-s [FILE]  : sound dictionary (*.xml)")
-            << ACE_TEXT(" [\"")
+  std::cout << ACE_TEXT ("-s [FILE]  : sound dictionary (*.xml)")
+            << ACE_TEXT (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT("-t         : trace information")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT ("-t         : trace information")
+            << ACE_TEXT (" [")
             << false
-            << ACE_TEXT("]")
+            << ACE_TEXT ("]")
             << std::endl;
   configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -397,24 +397,24 @@ do_printUsage (const std::string& programName_in)
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_UI_FILE);
-  std::cout << ACE_TEXT("-u [FILE]  : UI file")
-            << ACE_TEXT(" [\"")
+  std::cout << ACE_TEXT ("-u [FILE]  : UI file")
+            << ACE_TEXT (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT("-v         : print version information and exit")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT ("-v         : print version information and exit")
+            << ACE_TEXT (" [")
             << false
-            << ACE_TEXT("]")
+            << ACE_TEXT ("]")
             << std::endl;
-  std::cout << ACE_TEXT("-x [VALUE] : #dispatch threads [")
+  std::cout << ACE_TEXT ("-x [VALUE] : #dispatch threads [")
             << ((COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR) ? NET_CLIENT_DEFAULT_NUMBER_OF_REACTOR_DISPATCH_THREADS
                                                                                  : NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS)
-            << ACE_TEXT("]")
+            << ACE_TEXT ("]")
             << std::endl;
-  std::cout << ACE_TEXT("-z [STRING]: SDL video driver [\"")
-            << ACE_TEXT(RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME)
-            << ACE_TEXT("\"]")
+  std::cout << ACE_TEXT ("-z [STRING]: SDL video driver [\"")
+            << ACE_TEXT (RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME)
+            << ACE_TEXT ("\"]")
             << std::endl;
 }
 
@@ -540,19 +540,19 @@ do_processArguments(const int& argc_in,
                                                                       : NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS);
 
   videoDriver_out         =
-      ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME);
+      ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME);
 
-  ACE_Get_Opt argumentParser(argc_in,
-                             argv_in,
-                             ACE_TEXT("ac:de:f:g:i:lm:nr:s:tu:vx:z:"),
-                             1,                         // skip command name
-                             1,                         // report parsing errors
-                             ACE_Get_Opt::PERMUTE_ARGS, // ordering
-                             0);                        // don't use long options
+  ACE_Get_Opt argumentParser (argc_in,
+                              argv_in,
+                              ACE_TEXT ("ac:de:f:g:i:lm:nr:s:tu:vx:z:"),
+                              1,                         // skip command name
+                              1,                         // report parsing errors
+                              ACE_Get_Opt::PERMUTE_ARGS, // ordering
+                              0);                        // don't use long options
 
   int option = 0;
   std::stringstream converter;
-  while ((option = argumentParser()) != EOF)
+  while ((option = argumentParser ()) != EOF)
   {
     switch (option)
     {
@@ -563,7 +563,7 @@ do_processArguments(const int& argc_in,
       }
       case 'c':
       {
-        configurationFile_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
+        configurationFile_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         break;
       }
       case 'd':
@@ -573,22 +573,22 @@ do_processArguments(const int& argc_in,
       }
       case 'e':
       {
-        monsterDictionary_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
+        monsterDictionary_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         break;
       }
       case 'f':
       {
-        floorPlan_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
+        floorPlan_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         break;
       }
       case 'g':
       {
-        graphicsDictionary_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
+        graphicsDictionary_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         break;
       }
       case 'i':
       {
-        itemDictionary_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
+        itemDictionary_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         break;
       }
       case 'l':
@@ -598,7 +598,7 @@ do_processArguments(const int& argc_in,
       }
       case 'm':
       {
-        magicDictionary_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
+        magicDictionary_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         break;
       }
       case 'n':
@@ -608,12 +608,12 @@ do_processArguments(const int& argc_in,
       }
       case 'r':
       {
-        schemaRepository_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
+        schemaRepository_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         break;
       }
       case 's':
       {
-        soundDictionary_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
+        soundDictionary_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         break;
       }
       case 't':
@@ -623,7 +623,7 @@ do_processArguments(const int& argc_in,
       }
       case 'u':
       {
-        UIfile_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
+        UIfile_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         break;
       }
       case 'v':
@@ -633,43 +633,43 @@ do_processArguments(const int& argc_in,
       }
       case 'x':
       {
-        converter.clear();
-        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-        converter << ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
+        converter.clear ();
+        converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+        converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         converter >> numDispatchThreads_out;
         break;
       }
       case 'z':
       {
-        videoDriver_out = ACE_TEXT_ALWAYS_CHAR(argumentParser.opt_arg());
+        videoDriver_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         break;
       }
       // error handling
       case ':':
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("option \"%c\" requires an argument, aborting\n"),
-                   argumentParser.opt_opt()));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("option \"%c\" requires an argument, aborting\n"),
+                    argumentParser.opt_opt ()));
         return false;
       }
       case '?':
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unrecognized option \"%s\", aborting\n"),
-                   ACE_TEXT(argumentParser.last_option())));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("unrecognized option \"%s\", aborting\n"),
+                    ACE_TEXT (argumentParser.last_option ())));
         return false;
       }
       case 0:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("found long option \"%s\", aborting\n"),
-                   ACE_TEXT(argumentParser.long_option())));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("found long option \"%s\", aborting\n"),
+                    ACE_TEXT (argumentParser.long_option ())));
         return false;
       }
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("parse error, aborting\n")));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("parse error, aborting\n")));
         return false;
       }
     } // end SWITCH
@@ -849,11 +849,8 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::initVideo(), returning\n")));
-
-    // clean up
     RPG_Client_Common_Tools::finalize ();
     RPG_Engine_Common_Tools::finalize ();
-
     return;
   } // end IF
   ACE_ASSERT (GTKUserData_in.screen != NULL);
@@ -863,11 +860,8 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Graphics_Common_Tools::initialize(): \"%m\", returning\n")));
-
-    // clean up
     RPG_Client_Common_Tools::finalize ();
     RPG_Engine_Common_Tools::finalize ();
-
     return;
   } // end IF
 
@@ -889,6 +883,8 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to run intro, returning\n")));
+    RPG_Client_Common_Tools::finalize ();
+    RPG_Engine_Common_Tools::finalize ();
     return;
   } // end IF
 
@@ -919,6 +915,8 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Client_Window_Main::initialize (), returning\n")));
+    RPG_Client_Common_Tools::finalize();
+    RPG_Engine_Common_Tools::finalize();
     return;
   } // end IF
 
@@ -963,12 +961,9 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to start client engine, returning\n")));
-
-    // clean up
     level_engine.stop ();
     RPG_Client_Common_Tools::finalize ();
     RPG_Engine_Common_Tools::finalize ();
-
     return;
   } // end IF
 
@@ -984,13 +979,10 @@ do_work (struct RPG_Client_Configuration& configuration_in,
                 ACE_TEXT ("failed to SDL_AddTimer(%u): \"%s\", returning\n"),
                 RPG_CLIENT_SDL_EVENT_TIMEOUT,
                 ACE_TEXT (SDL_GetError ())));
-
-    // clean up
 //    level_engine.stop();
     client_engine.stop ();
     RPG_Client_Common_Tools::finalize ();
     RPG_Engine_Common_Tools::finalize ();
-
     return;
   } // end IF
 
@@ -1027,8 +1019,6 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to initialize network event dispatch, returning\n")));
-
-    // clean up
     if (!SDL_RemoveTimer(GTKUserData_in.eventTimer))
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
@@ -1037,7 +1027,6 @@ do_work (struct RPG_Client_Configuration& configuration_in,
     client_engine.stop();
     RPG_Client_Common_Tools::finalize ();
     RPG_Engine_Common_Tools::finalize ();
-
     return;
   } // end IF
 
@@ -1059,8 +1048,6 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to start network event dispatch, returning\n")));
-
-    // clean up
     if (!SDL_RemoveTimer (GTKUserData_in.eventTimer))
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
@@ -1069,7 +1056,6 @@ do_work (struct RPG_Client_Configuration& configuration_in,
     client_engine.stop ();
     RPG_Client_Common_Tools::finalize ();
     RPG_Engine_Common_Tools::finalize ();
-
     return;
   } // end IF
 
@@ -1088,8 +1074,6 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to start GTK event dispatch, returning\n")));
-
-    // clean up
     if (!SDL_RemoveTimer(GTKUserData_in.eventTimer))
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
@@ -1099,12 +1083,10 @@ do_work (struct RPG_Client_Configuration& configuration_in,
     COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
     RPG_Client_Common_Tools::finalize ();
     RPG_Engine_Common_Tools::finalize ();
-
     RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abort ();
     RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->wait ();
     Common_Tools::finalizeEventDispatch (dispatch_state_s,
                                          false);
-
     return;
   } // end IF
 
@@ -1123,15 +1105,15 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 #endif // SDL_USE || SDL2_USE
     window = NULL;
     client_action.command = RPG_CLIENT_COMMAND_INVALID;
-    client_action.position = std::make_pair(std::numeric_limits<int>::max(),
-                                            std::numeric_limits<int>::max());
+    client_action.position = std::make_pair (std::numeric_limits<int>::max (),
+                                             std::numeric_limits<int>::max ());
     client_action.window = NULL;
     client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
     client_action.entity_id = 0;
-    client_action.path.clear();
-    mouse_position = std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                    std::numeric_limits<unsigned int>::max());
-    ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
+    client_action.path.clear ();
+    mouse_position = std::make_pair (std::numeric_limits<unsigned int>::max (),
+                                     std::numeric_limits<unsigned int>::max ());
+    ACE_OS::memset (&dirty_region, 0, sizeof (SDL_Rect));
 
     // step6a: get next pending event
 //     if (SDL_PollEvent(&event) == -1)
@@ -1142,12 +1124,11 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 //
 //       break;
 //     } // end IF
-    if (SDL_WaitEvent(&sdl_event) == 0)
+    if (SDL_WaitEvent (&sdl_event) == 0)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
-                 ACE_TEXT(SDL_GetError())));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
+                  ACE_TEXT (SDL_GetError ())));
       break;
     } // end IF
 
@@ -1155,10 +1136,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
     if ((sdl_event.type != RPG_GRAPHICS_SDL_HOVEREVENT) &&
         //(sdl_event.type != RPG_CLIENT_SDL_GTKEVENT) &&
         (sdl_event.type != RPG_CLIENT_SDL_TIMEREVENT))
-    {
-      // synch access
-      ACE_Guard<ACE_Thread_Mutex> aGuard (GTKUserData_in.UIState->lock);
-
+    { ACE_Guard<ACE_Thread_Mutex> aGuard (GTKUserData_in.UIState->lock);
       GTKUserData_in.hoverTime = 0;
     } // end IF
 
@@ -1231,17 +1209,14 @@ do_work (struct RPG_Client_Configuration& configuration_in,
             Uint8 button_state = SDL_GetMouseState(&x, &y);
             ACE_UNUSED_ARG(button_state);
             mouse_position = std::make_pair(x, y);
-
             break;
           }
         } // end SWITCH
-        window = main_window.getWindow(mouse_position);
+        window = main_window.getWindow (mouse_position);
         if (!window)
-        {
-          ACE_DEBUG((LM_DEBUG,
-                     ACE_TEXT("failed to RPG_Graphics_SDLWindowBase::getWindow(%u,%u), continuing\n"),
-                     mouse_position.first, mouse_position.second));
-        } // end IF
+          ACE_DEBUG ((LM_DEBUG,
+                      ACE_TEXT ("failed to RPG_Graphics_SDLWindowBase::getWindow(%u,%u), continuing\n"),
+                      mouse_position.first, mouse_position.second));
 
         // first steps on mouse motion:
         // 0. (re-)draw cursor (handled below)
@@ -1256,16 +1231,13 @@ do_work (struct RPG_Client_Configuration& configuration_in,
           {
             sdl_event.type = RPG_GRAPHICS_SDL_MOUSEMOVEOUT;
 
-            try
-            {
-              previous_window->handleEvent(sdl_event,
-                                           previous_window,
-                                           dirty_region);
-            }
-            catch (...)
-            {
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
+            try {
+              previous_window->handleEvent (sdl_event,
+                                            previous_window,
+                                            dirty_region);
+            } catch (...) {
+              ACE_DEBUG ((LM_ERROR,
+                          ACE_TEXT ("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
             }
 
             sdl_event.type = SDL_MOUSEMOTION;
@@ -1277,16 +1249,13 @@ do_work (struct RPG_Client_Configuration& configuration_in,
         // 2. notify "active" window (if any)
         if (window)
         {
-          try
-          {
-            window->handleEvent(sdl_event,
-                                window,
-                                dirty_region);
-          }
-          catch (...)
-          {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
+          try {
+            window->handleEvent (sdl_event,
+                                 window,
+                                 dirty_region);
+          } catch (...) {
+            ACE_DEBUG ((LM_ERROR,
+                        ACE_TEXT ("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
           }
         } // end IF
 
@@ -1403,19 +1372,17 @@ continue_:;
       case RPG_CLIENT_SDL_TIMEREVENT:
       {
         int x, y;
-        Uint8 button_state = SDL_GetMouseState(&x, &y);
-        ACE_UNUSED_ARG(button_state);
-        mouse_position = std::make_pair(x, y);
-        window = main_window.getWindow(mouse_position);
-
+        Uint8 button_state = SDL_GetMouseState (&x, &y);
+        ACE_UNUSED_ARG (button_state);
+        mouse_position = std::make_pair (x, y);
+        window = main_window.getWindow (mouse_position);
         break;
       }
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unknown/invalid SDL event type (was: %d: 0x%x), continuing\n"),
-                   sdl_event.type, sdl_event.type));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("unknown/invalid SDL event type (was: %d: 0x%x), continuing\n"),
+                    sdl_event.type, sdl_event.type));
         break;
       }
     } // end SWITCH
@@ -1426,7 +1393,7 @@ continue_:;
     {
       client_action.command = COMMAND_WINDOW_REFRESH;
       client_action.window = window;
-      client_engine.action(client_action);
+      client_engine.action (client_action);
     } // end IF
 
     // redraw cursor ?
@@ -1454,7 +1421,7 @@ continue_:;
         client_action.command = COMMAND_CURSOR_DRAW;
         client_action.position = mouse_position;
         client_action.window = window;
-        client_engine.action(client_action);
+        client_engine.action (client_action);
 
         break;
       }
@@ -1478,18 +1445,18 @@ continue_:;
 //     } // end IF
   } while (!done);
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("left SDL event loop...\n")));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("left SDL event loop...\n")));
 
   // step7: clean up
   COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop (true,  // wait ?
                                                       false);
   if (!SDL_RemoveTimer(GTKUserData_in.eventTimer))
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
-               ACE_TEXT(SDL_GetError())));
-  level_engine.stop();
-  client_engine.stop();
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
+                ACE_TEXT (SDL_GetError ())));
+  level_engine.stop ();
+  client_engine.stop ();
   RPG_CLIENT_ENTITY_MANAGER_SINGLETON::close ();
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::close ();
   COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
@@ -1503,8 +1470,8 @@ continue_:;
                                        false);
   // no more data will arrive from here on...
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished working...\n")));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("finished working...\n")));
 }
 
 void
@@ -1542,35 +1509,33 @@ do_parseIniFile (const std::string& iniFilename_in,
   config_out.network_configuration.channel  = RPG_ENGINE_NETWORK_DEF_CHANNEL;
 
   ACE_Configuration_Heap config_heap;
-  if (config_heap.open())
+  if (config_heap.open ())
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("ACE_Configuration_Heap::open failed, returning\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("ACE_Configuration_Heap::open failed, returning\n")));
 
     return;
   } // end IF
 
-  ACE_Ini_ImpExp import(config_heap);
-  if (import.import_config(iniFilename_in.c_str()))
+  ACE_Ini_ImpExp import (config_heap);
+  if (import.import_config (iniFilename_in.c_str()))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("ACE_Ini_ImpExp::import_config(\"%s\") failed, returning\n"),
-               ACE_TEXT(iniFilename_in.c_str())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("ACE_Ini_ImpExp::import_config(\"%s\") failed, returning\n"),
+                ACE_TEXT (iniFilename_in.c_str ())));
     return;
   } // end IF
 
   // find/open "client" section...
   ACE_Configuration_Section_Key section_key;
-  if (config_heap.open_section(config_heap.root_section(),
-                               ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_CONFIGURATION_SECTIONHEADER_CLIENT),
-                               0, // MUST exist !
-                               section_key) != 0)
+  if (config_heap.open_section (config_heap.root_section (),
+                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_CONFIGURATION_SECTIONHEADER_CLIENT),
+                                0, // MUST exist !
+                                section_key) != 0)
   {
-    ACE_ERROR((LM_ERROR,
-               ACE_TEXT("failed to ACE_Configuration_Heap::open_section(%s), returning\n"),
-               ACE_TEXT(RPG_CLIENT_CONFIGURATION_SECTIONHEADER_CONNECTION)));
-
+    ACE_ERROR ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_Configuration_Heap::open_section(%s), returning\n"),
+                ACE_TEXT (RPG_CLIENT_CONFIGURATION_SECTIONHEADER_CONNECTION)));
     return;
   } // end IF
 
@@ -1579,19 +1544,18 @@ do_parseIniFile (const std::string& iniFilename_in,
   ACE_TString val_name, val_value;
   ACE_Configuration::VALUETYPE val_type;
   std::istringstream converter;
-  while (config_heap.enumerate_values(section_key,
-                                      val_index,
-                                      val_name,
-                                      val_type) == 0)
+  while (config_heap.enumerate_values (section_key,
+                                       val_index,
+                                       val_name,
+                                       val_type) == 0)
   {
-    if (config_heap.get_string_value(section_key,
-                                     val_name.c_str(),
-                                     val_value))
+    if (config_heap.get_string_value (section_key,
+                                      val_name.c_str (),
+                                      val_value))
     {
-      ACE_ERROR((LM_ERROR,
-                 ACE_TEXT("failed to ACE_Configuration_Heap::get_string_value(%s), returning\n"),
-                 ACE_TEXT(val_name.c_str())));
-
+      ACE_ERROR ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE_Configuration_Heap::get_string_value(%s), returning\n"),
+                  ACE_TEXT (val_name.c_str ())));
       return;
     } // end IF
 
@@ -1601,97 +1565,94 @@ do_parseIniFile (const std::string& iniFilename_in,
 //                val_type));
 
     // *TODO*: move these strings...
-    if (val_name == ACE_TEXT("audio_frequency"))
+    if (val_name == ACE_TEXT ("audio_frequency"))
     {
       config_out.audio_configuration.SDL_configuration.frequency =
-          ::atoi(val_value.c_str());
+          ::atoi (val_value.c_str ());
     }
 //     else if (val_name == ACE_TEXT("audio_format"))
 //     {
 //       audioConfig_out.SDL_configuration.format = ::atoi(val_value.c_str());
 //     }
-    else if (val_name == ACE_TEXT("audio_channels"))
+    else if (val_name == ACE_TEXT ("audio_channels"))
     {
       config_out.audio_configuration.SDL_configuration.channels =
-          ::atoi(val_value.c_str());
+          ::atoi (val_value.c_str ());
     }
-    else if (val_name == ACE_TEXT("audio_chunksize"))
+    else if (val_name == ACE_TEXT ("audio_chunksize"))
     {
       config_out.audio_configuration.SDL_configuration.chunksize =
-          ::atoi(val_value.c_str());
+          ::atoi (val_value.c_str ());
     }
     else if (val_name == ACE_TEXT("audio_cd"))
     {
-      converter.str(val_value.c_str());
+      converter.str(val_value.c_str ());
       converter >> config_out.audio_configuration.use_CD;
-      if (converter.fail())
+      if (converter.fail ())
       {
-        converter.clear();
+        converter.clear ();
         converter >> std::boolalpha >> config_out.audio_configuration.use_CD;
       } // end IF
     }
-    else if (val_name == ACE_TEXT("screen_width"))
+    else if (val_name == ACE_TEXT ("screen_width"))
     {
-      config_out.video_configuration.screen_width = ::atoi(val_value.c_str());
+      config_out.video_configuration.screen_width = ::atoi (val_value.c_str ());
     }
-    else if (val_name == ACE_TEXT("screen_height"))
+    else if (val_name == ACE_TEXT ("screen_height"))
     {
-      config_out.video_configuration.screen_height = ::atoi(val_value.c_str());
+      config_out.video_configuration.screen_height = ::atoi (val_value.c_str ());
     }
-    else if (val_name == ACE_TEXT("screen_colordepth"))
+    else if (val_name == ACE_TEXT ("screen_colordepth"))
     {
       config_out.video_configuration.screen_colordepth =
-          ::atoi(val_value.c_str());
+          ::atoi (val_value.c_str ());
     }
-    else if (val_name == ACE_TEXT("screen_fullscreen"))
+    else if (val_name == ACE_TEXT ("screen_fullscreen"))
     {
-      converter.str(val_value.c_str());
+      converter.str (val_value.c_str ());
       converter >> config_out.video_configuration.full_screen;
-      if (converter.fail())
+      if (converter.fail ())
       {
-        converter.clear();
-        converter >> std::boolalpha
-                  >> config_out.video_configuration.full_screen;
+        converter.clear ();
+        converter >> std::boolalpha >> config_out.video_configuration.full_screen;
       } // end IF
     }
     else
     {
-      ACE_ERROR((LM_ERROR,
-                 ACE_TEXT("unexpected key \"%s\", continuing\n"),
-                 ACE_TEXT(val_name.c_str())));
+      ACE_ERROR ((LM_ERROR,
+                  ACE_TEXT ("unexpected key \"%s\", continuing\n"),
+                  ACE_TEXT (val_name.c_str ())));
     } // end ELSE
 
     ++val_index;
   } // end WHILE
 
    // find/open "connection" section...
-   if (config_heap.open_section(config_heap.root_section(),
-                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_CONFIGURATION_SECTIONHEADER_CONNECTION),
-                                0, // MUST exist !
-                                section_key) != 0)
+   if (config_heap.open_section (config_heap.root_section (),
+                                 ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_CONFIGURATION_SECTIONHEADER_CONNECTION),
+                                 0, // MUST exist !
+                                 section_key) != 0)
    {
-     ACE_ERROR((LM_ERROR,
-                ACE_TEXT("failed to ACE_Configuration_Heap::open_section(\"%s\"), returning\n"),
-                ACE_TEXT(RPG_CLIENT_CONFIGURATION_SECTIONHEADER_CONNECTION)));
-
+     ACE_ERROR ((LM_ERROR,
+                 ACE_TEXT ("failed to ACE_Configuration_Heap::open_section(\"%s\"), returning\n"),
+                 ACE_TEXT (RPG_CLIENT_CONFIGURATION_SECTIONHEADER_CONNECTION)));
      return;
    } // end IF
 
    // import values...
    val_index = 0;
-   while (config_heap.enumerate_values(section_key,
-                                       val_index,
-                                       val_name,
-                                       val_type) == 0)
+   while (config_heap.enumerate_values (section_key,
+                                        val_index,
+                                        val_name,
+                                        val_type) == 0)
    {
-     if (config_heap.get_string_value(section_key,
-                                      val_name.c_str(),
-                                      val_value))
+     if (config_heap.get_string_value (section_key,
+                                       val_name.c_str (),
+                                       val_value))
      {
-       ACE_ERROR((LM_ERROR,
-                  ACE_TEXT("failed to ACE_Configuration_Heap::get_string_value(%s), returning\n"),
-                  ACE_TEXT(val_name.c_str())));
-
+       ACE_ERROR ((LM_ERROR,
+                   ACE_TEXT ("failed to ACE_Configuration_Heap::get_string_value(%s), returning\n"),
+                   ACE_TEXT (val_name.c_str ())));
        return;
      } // end IF
 
@@ -1701,61 +1662,61 @@ do_parseIniFile (const std::string& iniFilename_in,
  //                val_type));
 
      // *TODO*: move these strings...
-     if (val_name == ACE_TEXT("server"))
+     if (val_name == ACE_TEXT ("server"))
      {
-       config_out.network_configuration.server = val_value.c_str();
+       config_out.network_configuration.server = val_value.c_str ();
      }
-     else if (val_name == ACE_TEXT("port"))
+     else if (val_name == ACE_TEXT ("port"))
      {
-       config_out.network_configuration.port = ::atoi(val_value.c_str());
+       config_out.network_configuration.port = ::atoi (val_value.c_str ());
      }
-     else if (val_name == ACE_TEXT("password"))
+     else if (val_name == ACE_TEXT ("password"))
      {
-       config_out.network_configuration.password = val_value.c_str();
+       config_out.network_configuration.password = val_value.c_str ();
      }
-     else if (val_name == ACE_TEXT("nick"))
+     else if (val_name == ACE_TEXT ("nick"))
      {
-       config_out.network_configuration.nick = val_value.c_str();
+       config_out.network_configuration.nick = val_value.c_str ();
      }
-     else if (val_name == ACE_TEXT("user"))
+     else if (val_name == ACE_TEXT ("user"))
      {
-       config_out.network_configuration.user = val_value.c_str();
+       config_out.network_configuration.user = val_value.c_str ();
      }
-     else if (val_name == ACE_TEXT("realname"))
+     else if (val_name == ACE_TEXT ("realname"))
      {
-       config_out.network_configuration.realname = val_value.c_str();
+       config_out.network_configuration.realname = val_value.c_str ();
      }
-     else if (val_name == ACE_TEXT("channel"))
+     else if (val_name == ACE_TEXT ("channel"))
      {
-       config_out.network_configuration.channel = val_value.c_str();
+       config_out.network_configuration.channel = val_value.c_str ();
      }
      else
      {
-       ACE_ERROR((LM_ERROR,
-                  ACE_TEXT("unexpected key \"%s\", continuing\n"),
-                  ACE_TEXT(val_name.c_str())));
+       ACE_ERROR ((LM_ERROR,
+                   ACE_TEXT ("unexpected key \"%s\", continuing\n"),
+                   ACE_TEXT (val_name.c_str ())));
      } // end ELSE
 
      ++val_index;
    } // end WHILE
 
-   ACE_DEBUG((LM_DEBUG,
-              ACE_TEXT("imported \"%s\"...\n"),
-              ACE_TEXT(iniFilename_in.c_str())));
+   ACE_DEBUG ((LM_DEBUG,
+               ACE_TEXT ("imported \"%s\"...\n"),
+               ACE_TEXT (iniFilename_in.c_str ())));
 }
 
 void
-do_printVersion(const std::string& programName_in)
+do_printVersion (const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
   // step1: print program name/version
 //   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
   std::cout << programName_in
-#ifdef HAVE_CONFIG_H
-            << ACE_TEXT(" : ")
-            //<< YARP_VERSION
-#endif
+#if defined (HAVE_CONFIG_H)
+            << ACE_TEXT (" : ")
+            << yarp_PACKAGE_VERSION_FULL
+#endif // HAVE_CONFIG_H
             << std::endl;
 
   // step2: print ACE version
@@ -1764,69 +1725,69 @@ do_printVersion(const std::string& programName_in)
   // version number... We need this, as the library soname is compared to this
   // string
   std::ostringstream version_number;
-  version_number << ACE::major_version();
-  version_number << ACE_TEXT(".");
-  version_number << ACE::minor_version();
-  if (ACE::beta_version())
+  version_number << ACE::major_version ();
+  version_number << ACE_TEXT (".");
+  version_number << ACE::minor_version ();
+  if (ACE::beta_version ())
   {
-    version_number << ACE_TEXT(".");
-    version_number << ACE::beta_version();
+    version_number << ACE_TEXT (".");
+    version_number << ACE::beta_version ();
   } // end IF
 
 //   std::cout << "ACE: " << ACE_VERSION << std::endl;
-  std::cout << ACE_TEXT("ACE: ")
-            << version_number.str()
+  std::cout << ACE_TEXT ("ACE: ")
+            << version_number.str ()
             << std::endl;
 
   // step3: print SDL version(s)
   SDL_version sdl_version_compiled;
-  SDL_VERSION(&sdl_version_compiled);
-  version_number.str(ACE_TEXT_ALWAYS_CHAR(""));
+  SDL_VERSION (&sdl_version_compiled);
+  version_number.str (ACE_TEXT_ALWAYS_CHAR(""));
   version_number << sdl_version_compiled.major;
-  version_number << ACE_TEXT(".");
+  version_number << ACE_TEXT (".");
   version_number << sdl_version_compiled.minor;
-  version_number << ACE_TEXT(".");
+  version_number << ACE_TEXT (".");
   version_number << sdl_version_compiled.patch;
-  std::cout << ACE_TEXT("SDL (compiled against): ")
-            << version_number.str()
+  std::cout << ACE_TEXT ("SDL (compiled against): ")
+            << version_number.str ()
             << std::endl;
 #if defined (SDL_USE)
   const SDL_version* sdl_version_linked = SDL_Linked_Version ();
-  version_number.str("");
+  version_number.str ("");
   version_number << sdl_version_linked->major;
-  version_number << ACE_TEXT(".");
+  version_number << ACE_TEXT (".");
   version_number << sdl_version_linked->minor;
-  version_number << ACE_TEXT(".");
+  version_number << ACE_TEXT (".");
   version_number << sdl_version_linked->patch;
-  std::cout << ACE_TEXT("SDL (linked against): ")
-            << version_number.str()
+  std::cout << ACE_TEXT ("SDL (linked against): ")
+            << version_number.str ()
             << std::endl;
-  const SDL_version* mix_version_linked = Mix_Linked_Version();
-  version_number.str(ACE_TEXT_ALWAYS_CHAR(""));
+  const SDL_version* mix_version_linked = Mix_Linked_Version ();
+  version_number.str(ACE_TEXT_ALWAYS_CHAR (""));
   version_number << mix_version_linked->major;
-  version_number << ACE_TEXT(".");
+  version_number << ACE_TEXT (".");
   version_number << mix_version_linked->minor;
-  version_number << ACE_TEXT(".");
+  version_number << ACE_TEXT (".");
   version_number << mix_version_linked->patch;
-  std::cout << ACE_TEXT("SDL_mixer (linked against): ")
-            << version_number.str()
+  std::cout << ACE_TEXT ("SDL_mixer (linked against): ")
+            << version_number.str ()
             << std::endl;
 #endif // SDL_USE
 
   // step3: print compiler name/version
-  version_number.str(ACE_TEXT_ALWAYS_CHAR(""));
-  version_number << ACE::compiler_name();
-  version_number << ACE_TEXT(" ");
-  version_number << ACE::compiler_major_version();
-  version_number << ACE_TEXT(".");
-  version_number << ACE::compiler_minor_version();
-  if (ACE::compiler_beta_version())
+  version_number.str (ACE_TEXT_ALWAYS_CHAR (""));
+  version_number << ACE::compiler_name ();
+  version_number << ACE_TEXT (" ");
+  version_number << ACE::compiler_major_version ();
+  version_number << ACE_TEXT (".");
+  version_number << ACE::compiler_minor_version ();
+  if (ACE::compiler_beta_version ())
   {
-    version_number << ACE_TEXT(".");
-    version_number << ACE::compiler_beta_version();
+    version_number << ACE_TEXT (".");
+    version_number << ACE::compiler_beta_version ();
   } // end IF
-  std::cout << ACE_TEXT("compiled by: ")
-            << version_number.str()
+  std::cout << ACE_TEXT ("compiled by: ")
+            << version_number.str ()
             << std::endl;
 }
 
@@ -1980,7 +1941,7 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -2017,7 +1978,7 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -2033,7 +1994,7 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_SUCCESS;
   } // end IF
@@ -2111,7 +2072,7 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -2252,7 +2213,7 @@ ACE_TMAIN (int argc_in,
   if (ACE::fini () == -1)
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -2271,7 +2232,7 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -2347,7 +2308,7 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -2392,7 +2353,7 @@ ACE_TMAIN (int argc_in,
               elapsed_time.system_time,
               ACE_TEXT (user_time_string.c_str ()),
               ACE_TEXT (system_time_string.c_str ())));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
   Common_Log_Tools::finalizeLogging ();
 
@@ -2404,7 +2365,7 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
   return EXIT_SUCCESS;
 } // end main
