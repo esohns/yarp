@@ -264,13 +264,13 @@ RPG_Engine_Common_Tools::createEntity()
 struct RPG_Engine_Entity
 RPG_Engine_Common_Tools::createEntity(// base attributes
                                       const std::string& type_in,                     // type
-                                      const unsigned short int& maxHP_in,             // max HP
+                                      unsigned short maxHP_in,                        // max HP
                                       // extended data
-                                      const unsigned int& wealth_in,                  // wealth (GP)
+                                      unsigned int wealth_in,                         // wealth (GP)
                                       const RPG_Item_List_t& items_in,                // list of (carried) items
                                       // current status
                                       const RPG_Character_Conditions_t& condition_in, // condition
-                                      const short int& HP_in,                         // HP
+                                      short HP_in,                                    // HP
                                       const RPG_Magic_Spells_t& spells_in)            // set of memorized/prepared spells (if any)
 {
   RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::createEntity"));
@@ -286,7 +286,7 @@ RPG_Engine_Common_Tools::createEntity(// base attributes
   RPG_Monster_Properties properties =
       RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(type_in);
   // compute individual hitpoints ?
-  unsigned int max_HP = maxHP_in;
+  unsigned short max_HP = maxHP_in;
   if (max_HP == 0)
   {
     RPG_Dice_RollResult_t result_values;
@@ -320,8 +320,8 @@ RPG_Engine_Common_Tools::createEntity(// base attributes
                                items_in,
                                // current status
                                condition,
-                               ((HP_in == std::numeric_limits<short int>::max()) ? max_HP
-                                                                                 : HP_in),
+                               ((HP_in == std::numeric_limits<short>::max()) ? max_HP
+                                                                             : HP_in),
                                // ...more extended data
                                false));
   if (!result.character)

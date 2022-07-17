@@ -797,11 +797,10 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
           for (;
                iterator2 != level_metadata.spawns.end();
                iterator2++)
-            if (((*iterator2).spawn.type ==
-                 (*iterator).second->character->getName()) &&
-                !RPG_Dice::probability((*iterator2).spawn.amble_probability))
+            if ((*iterator2).spawn.type == (*iterator).second->character->getName ())
             {
-              do_amble = true;
+              if (RPG_Dice::probability ((*iterator2).spawn.amble_probability))
+                do_amble = true;
               break;
             } // end IF
           if (!do_amble)
@@ -980,14 +979,13 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
 
       // OK: spawn an instance
       struct RPG_Engine_Entity* entity = NULL;
-      ACE_NEW_NORETURN(entity,
-                       struct RPG_Engine_Entity());
+      ACE_NEW_NORETURN (entity,
+                        struct RPG_Engine_Entity ());
       if (!entity)
       {
         ACE_DEBUG((LM_CRITICAL,
                    ACE_TEXT("unable to allocate memory(%u), aborting\n"),
-                   sizeof(struct RPG_Engine_Entity)));
-
+                   sizeof (struct RPG_Engine_Entity)));
         break;
       } // end IF
       // *TODO*: define max HP, treasure (gold, items, ...), spells
@@ -995,16 +993,16 @@ RPG_Engine_Event_Manager::handleEvent(const RPG_Engine_Event_t& event_in)
       unsigned int gold = 0;
       RPG_Item_List_t items;
       RPG_Character_Conditions_t condition;
-      condition.insert(CONDITION_NORMAL);
-      short int hitpoints = 1;
+      condition.insert (CONDITION_NORMAL);
+      short hitpoints = std::numeric_limits<short>::max (); // spawns are healthy
       RPG_Magic_Spells_t spells;
-      *entity = RPG_Engine_Common_Tools::createEntity((*iterator).spawn.type,
-                                                      max_hitpoints,
-                                                      gold,
-                                                      items,
-                                                      condition,
-                                                      hitpoints,
-                                                      spells);
+      *entity = RPG_Engine_Common_Tools::createEntity ((*iterator).spawn.type,
+                                                       max_hitpoints,
+                                                       gold,
+                                                       items,
+                                                       condition,
+                                                       hitpoints,
+                                                       spells);
       if (!entity->character)
       {
         ACE_DEBUG((LM_ERROR,

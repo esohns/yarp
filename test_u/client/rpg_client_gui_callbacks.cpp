@@ -79,25 +79,22 @@ update_equipment (const struct RPG_Client_GTK_CBData& data_in)
   ACE_ASSERT (data_in.UIState);
   ACE_ASSERT (data_in.entity.character);
   ACE_ASSERT (data_in.entity.character->isPlayerCharacter ());
-  RPG_Player* player = dynamic_cast<RPG_Player*> (data_in.entity.character);
+  RPG_Player* player = static_cast<RPG_Player*> (data_in.entity.character);
   ACE_ASSERT (player);
-
   Common_UI_GTK_BuildersConstIterator_t iterator =
     data_in.UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
-  // sanity check(s)
   ACE_ASSERT (iterator != data_in.UIState->builders.end ());
 
   std::string text;
   std::stringstream converter;
-  GtkWidget* current = NULL;
+  GtkGrid* current = NULL;
 
   // step1: list equipment
   current =
-    GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
-                                        ACE_TEXT_ALWAYS_CHAR ("equipment_vbox")));
-  ACE_ASSERT(current);
+    GTK_GRID (gtk_builder_get_object ((*iterator).second.second,
+                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_TABLE_EQUIPENT_NAME)));
+  ACE_ASSERT (current);
   GList* entries = gtk_container_get_children (GTK_CONTAINER (current));
-//   ACE_ASSERT(entries);
   if (entries)
   {
     for (GList* iterator_2 = entries;
@@ -107,19 +104,19 @@ update_equipment (const struct RPG_Client_GTK_CBData& data_in)
       // *NOTE*: effectively removes the widget from the container...
       gtk_widget_destroy (GTK_WIDGET (iterator_2->data));
     } // end FOR
-
     g_list_free (entries);
   } // end IF
-  GtkWidget* current_box, *check_button, *label = NULL;
+  GtkWidget* check_button, *label = NULL;
   RPG_Player_Equipment& player_equipment = player->getEquipment ();
   RPG_Item_Base* item = NULL;
   RPG_Character_EquipmentSlot equipment_slot =
     RPG_CHARACTER_EQUIPMENTSLOT_INVALID;
   const RPG_Player_Inventory& player_inventory = player->getInventory ();
   std::string widget_name;
+  int i = 0;
   for (RPG_Item_ListIterator_t iterator_2 = player_inventory.myItems.begin ();
        iterator_2 != player_inventory.myItems.end ();
-       iterator_2++)
+       iterator_2++, ++i)
   {
     item = NULL;
     // retrieve item handle
@@ -195,17 +192,13 @@ update_equipment (const struct RPG_Client_GTK_CBData& data_in)
       }
     } // end SWITCH
 
-    current_box = NULL;
-    current_box = gtk_hbox_new (TRUE, // homogeneous
-                                0);   // spacing
-    ACE_ASSERT (current_box);
     label = NULL;
     label = gtk_label_new (text.c_str ());
     ACE_ASSERT (label);
-    gtk_box_pack_start (GTK_BOX (current_box), label,
-                        TRUE, // expand
-                        TRUE, // fill
-                        0);   // padding
+    gtk_grid_attach (current,
+                     label,
+                     0, i,
+                     1,1);
     check_button = NULL;
     check_button = gtk_check_button_new ();
     ACE_ASSERT (check_button);
@@ -227,19 +220,178 @@ update_equipment (const struct RPG_Client_GTK_CBData& data_in)
                       G_CALLBACK (item_toggled_GTK_cb),
                       &const_cast<struct RPG_Client_GTK_CBData&> (data_in));
 
-    gtk_box_pack_start (GTK_BOX (current_box), check_button,
-                        TRUE, // expand
-                        TRUE, // fill
-                        0);   // padding
-
-//     gtk_container_add(GTK_CONTAINER(current), label);
-    gtk_box_pack_start (GTK_BOX (current), current_box,
-                        TRUE, // expand
-                        TRUE, // fill
-                        0);   // padding
+    gtk_grid_attach (current, check_button,
+                     1, i,
+                     1, 1);
   } // end FOR
 
-  gtk_widget_show_all (current);
+  gtk_widget_show_all (GTK_WIDGET (current));
+}
+
+void
+update_inventory (const RPG_Player& player_in,
+                  GtkBuilder* xml_in)
+{
+  RPG_TRACE (ACE_TEXT ("::update_inventory"));
+
+  // sanity check(s)
+  ACE_ASSERT (xml_in);
+
+  // step17: inventory
+  GtkWidget* widget_p =
+    GTK_WIDGET (gtk_builder_get_object (xml_in,
+                                      ACE_TEXT_ALWAYS_CHAR("inventory_items_vbox")));
+  ACE_ASSERT (widget_p);
+  GList* entries = gtk_container_get_children (GTK_CONTAINER (widget_p));
+//   ACE_ASSERT(entries);
+  if (entries)
+  {
+    //for (GList* iterator = entries;
+    //     iterator;
+    //     iterator = g_list_next(iterator))
+    //{
+    //  // *NOTE*: effectively removes the widget from the container...
+    //  gtk_widget_destroy(GTK_WIDGET(iterator->data));
+    //} // end FOR
+
+    //g_list_free(entries);
+    g_list_free_full (entries,
+                      (GDestroyNotify)gtk_widget_destroy);
+  } // end IF
+  const RPG_Player_Inventory& player_inventory = player_in.getInventory ();
+  RPG_Player_Equipment& player_equipment =
+    const_cast<RPG_Player&> (player_in).getEquipment ();
+  std::string text;
+  GtkWidget* label_p = NULL;
+  RPG_Item_Base* item_p = NULL;
+  RPG_Character_EquipmentSlot equipment_slot =
+    RPG_CHARACTER_EQUIPMENTSLOT_INVALID;
+  for (RPG_Item_ListIterator_t iterator = player_inventory.myItems.begin ();
+       iterator != player_inventory.myItems.end ();
+       iterator++)
+  {
+    item_p = NULL;
+
+    // retrieve item handle
+    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance ()->get (*iterator,
+                                                                item_p))
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid item (ID: %d), returning\n"),
+                  *iterator));
+      return;
+    } // end IF
+    ACE_ASSERT (item_p);
+
+    switch (item_p->type ())
+    {
+      case ITEM_ARMOR:
+      {
+        RPG_Item_Armor* armor_p = NULL;
+        try {
+          armor_p = dynamic_cast<RPG_Item_Armor*> (item_p);
+        } catch (...) {
+          armor_p = NULL;
+        }
+        if (!armor_p)
+        {
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("failed to dynamic_cast<RPG_Item_Armor*>(%@), returning\n"),
+                      item_p));
+          return;
+        } // end IF
+        text =
+          RPG_Common_Tools::enumToString (RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString (armor_p->armorType ()));
+
+        break;
+      }
+      case ITEM_COMMODITY:
+      {
+        RPG_Item_Commodity* commodity_p = NULL;
+        try {
+          commodity_p = dynamic_cast<RPG_Item_Commodity*> (item_p);
+        } catch (...) {
+          commodity_p = NULL;
+        }
+        if (!commodity_p)
+        {
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("failed to dynamic_cast<RPG_Item_Commodity*>(%@), returning\n"),
+                      item_p));
+          return;
+        } // end IF
+
+        RPG_Item_CommodityUnion commodity_type = commodity_p->subtype ();
+        switch (commodity_type.discriminator)
+        {
+          case RPG_Item_CommodityUnion::COMMODITYBEVERAGE:
+          {
+            text =
+              RPG_Common_Tools::enumToString (RPG_Item_CommodityBeverageHelper::RPG_Item_CommodityBeverageToString (commodity_type.commoditybeverage));
+            break;
+          }
+          case RPG_Item_CommodityUnion::COMMODITYLIGHT:
+          {
+            text =
+              RPG_Common_Tools::enumToString (RPG_Item_CommodityLightHelper::RPG_Item_CommodityLightToString (commodity_type.commoditylight));
+            break;
+          }
+          default:
+          {
+            ACE_DEBUG ((LM_ERROR,
+                        ACE_TEXT ("invalid commodity subtype (was: %d), returning\n"),
+                        commodity_type.discriminator));
+            return;
+          }
+        } // end SWITCH
+
+        break;
+      }
+      case ITEM_WEAPON:
+      {
+        RPG_Item_Weapon* weapon_p = NULL;
+        try {
+          weapon_p = dynamic_cast<RPG_Item_Weapon*> (item_p);
+        } catch (...) {
+          weapon_p = NULL;
+        }
+        if (!weapon_p)
+        {
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("failed to dynamic_cast<RPG_Item_Weapon*>(%@), returning\n"),
+                      item_p));
+          return;
+        } // end IF
+
+        // *TODO*: pretty-print this string
+        text =
+          RPG_Common_Tools::enumToString (RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString (weapon_p->weaponType_), false); // don't strip leading "xxx_"
+
+        break;
+      }
+      default:
+      {
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("invalid item type (was: \"%s\"), returning\n"),
+                    ACE_TEXT (RPG_Item_TypeHelper::RPG_Item_TypeToString (item_p->type ()).c_str ())));
+        return;
+      }
+    } // end SWITCH
+
+    // equipped ? --> add '*'
+    if (player_equipment.isEquipped (*iterator, equipment_slot))
+      text += ACE_TEXT_ALWAYS_CHAR ('*');
+
+    label_p = NULL;
+    label_p = gtk_label_new (text.c_str ());
+    ACE_ASSERT (label_p);
+//     gtk_container_add (GTK_CONTAINER (widget_p), label_p);
+    gtk_box_pack_start (GTK_BOX (widget_p), label_p,
+                        FALSE, // expand
+                        FALSE, // fill
+                        0);    // padding
+  } // end FOR
+  gtk_widget_show_all (widget_p);
 }
 
 void
@@ -249,7 +401,7 @@ update_character_profile (const RPG_Player& player_in,
   RPG_TRACE (ACE_TEXT ("::update_character_profile"));
 
   // sanity check(s)
-  ACE_ASSERT(xml_in);
+  ACE_ASSERT (xml_in);
 
   std::string text;
   std::stringstream converter;
@@ -946,167 +1098,8 @@ update_character_profile (const RPG_Player& player_in,
   gtk_widget_show_all (widget_p);
 
   // step17: inventory
-  widget_p =
-    GTK_WIDGET (gtk_builder_get_object (xml_in,
-                                      ACE_TEXT_ALWAYS_CHAR("inventory_items_vbox")));
-  ACE_ASSERT (widget_p);
-  entries = gtk_container_get_children (GTK_CONTAINER (widget_p));
-//   ACE_ASSERT(entries);
-  if (entries)
-  {
-    //for (GList* iterator = entries;
-    //     iterator;
-    //     iterator = g_list_next(iterator))
-    //{
-    //  // *NOTE*: effectively removes the widget from the container...
-    //  gtk_widget_destroy(GTK_WIDGET(iterator->data));
-    //} // end FOR
-
-    //g_list_free(entries);
-    g_list_free_full (entries,
-                      (GDestroyNotify)gtk_widget_destroy);
-  } // end IF
-  const RPG_Player_Inventory& player_inventory = player_in.getInventory ();
-  RPG_Player_Equipment& player_equipment =
-    const_cast<RPG_Player&> (player_in).getEquipment ();
-  RPG_Item_Base* item_p = NULL;
-  RPG_Character_EquipmentSlot equipment_slot =
-    RPG_CHARACTER_EQUIPMENTSLOT_INVALID;
-  for (RPG_Item_ListIterator_t iterator = player_inventory.myItems.begin ();
-       iterator != player_inventory.myItems.end ();
-       iterator++)
-  {
-    item_p = NULL;
-
-    // retrieve item handle
-    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance ()->get (*iterator,
-                                                                item_p))
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("invalid item (ID: %d), returning\n"),
-                  *iterator));
-      return;
-    } // end IF
-    ACE_ASSERT (item_p);
-
-    switch (item_p->type ())
-    {
-      case ITEM_ARMOR:
-      {
-        RPG_Item_Armor* armor_p = NULL;
-        try
-        {
-          armor_p = dynamic_cast<RPG_Item_Armor*> (item_p);
-        }
-        catch (...)
-        {
-          armor_p = NULL;
-        }
-        if (!armor_p)
-        {
-          ACE_DEBUG ((LM_ERROR,
-                      ACE_TEXT ("failed to dynamic_cast<RPG_Item_Armor*>(%@), returning\n"),
-                      item_p));
-          return;
-        } // end IF
-        text =
-          RPG_Common_Tools::enumToString (RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString (armor_p->armorType ()));
-
-        break;
-      }
-      case ITEM_COMMODITY:
-      {
-        RPG_Item_Commodity* commodity_p = NULL;
-        try
-        {
-          commodity_p = dynamic_cast<RPG_Item_Commodity*> (item_p);
-        }
-        catch (...)
-        {
-          commodity_p = NULL;
-        }
-        if (!commodity_p)
-        {
-          ACE_DEBUG ((LM_ERROR,
-                      ACE_TEXT ("failed to dynamic_cast<RPG_Item_Commodity*>(%@), returning\n"),
-                      item_p));
-          return;
-        } // end IF
-
-        RPG_Item_CommodityUnion commodity_type = commodity_p->subtype ();
-        switch (commodity_type.discriminator)
-        {
-          case RPG_Item_CommodityUnion::COMMODITYBEVERAGE:
-          {
-            text =
-              RPG_Common_Tools::enumToString (RPG_Item_CommodityBeverageHelper::RPG_Item_CommodityBeverageToString (commodity_type.commoditybeverage));
-            break;
-          }
-          case RPG_Item_CommodityUnion::COMMODITYLIGHT:
-          {
-            text =
-              RPG_Common_Tools::enumToString (RPG_Item_CommodityLightHelper::RPG_Item_CommodityLightToString (commodity_type.commoditylight));
-            break;
-          }
-          default:
-          {
-            ACE_DEBUG ((LM_ERROR,
-                        ACE_TEXT ("invalid commodity subtype (was: %d), returning\n"),
-                        commodity_type.discriminator));
-            return;
-          }
-        } // end SWITCH
-
-        break;
-      }
-      case ITEM_WEAPON:
-      {
-        RPG_Item_Weapon* weapon_p = NULL;
-        try
-        {
-          weapon_p = dynamic_cast<RPG_Item_Weapon*> (item_p);
-        }
-        catch (...)
-        {
-          weapon_p = NULL;
-        }
-        if (!weapon_p)
-        {
-          ACE_DEBUG ((LM_ERROR,
-                      ACE_TEXT ("failed to dynamic_cast<RPG_Item_Weapon*>(%@), returning\n"),
-                      item_p));
-          return;
-        } // end IF
-
-        // *TODO*: pretty-print this string
-        text =
-          RPG_Common_Tools::enumToString (RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString (weapon_p->weaponType_), false); // don't strip leading "xxx_"
-
-        break;
-      }
-      default:
-      {
-        ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("invalid item type (was: \"%s\"), returning\n"),
-                    ACE_TEXT (RPG_Item_TypeHelper::RPG_Item_TypeToString (item_p->type ()).c_str ())));
-        return;
-      }
-    } // end SWITCH
-
-    // equipped ? --> add '*'
-    if (player_equipment.isEquipped (*iterator, equipment_slot))
-      text += ACE_TEXT_ALWAYS_CHAR ('*');
-
-    label_p = NULL;
-    label_p = gtk_label_new (text.c_str ());
-    ACE_ASSERT (label_p);
-//     gtk_container_add (GTK_CONTAINER (widget_p), label_p);
-    gtk_box_pack_start (GTK_BOX (widget_p), label_p,
-                        FALSE, // expand
-                        FALSE, // fill
-                        0);    // padding
-  } // end FOR
-  gtk_widget_show_all (widget_p);
+  update_inventory (player_in,
+                    xml_in);
 }
 
 void
@@ -2038,8 +2031,8 @@ idle_initialize_UI_cb (gpointer userData_in)
                    &about_dialog);
   g_signal_connect (equipment_dialog,
                    ACE_TEXT_ALWAYS_CHAR ("response"),
-                   G_CALLBACK (gtk_widget_hide),
-                   &equipment_dialog);
+                   G_CALLBACK (equipment_dialog_response_cb),
+                   userData_in);
   g_signal_connect (main_entry_dialog,
                    ACE_TEXT_ALWAYS_CHAR ("response"),
                    G_CALLBACK (gtk_widget_hide),
@@ -3941,44 +3934,59 @@ equip_clicked_GTK_cb (GtkWidget* widget_in,
   RPG_TRACE (ACE_TEXT ("::equip_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG (widget_in);
-  struct RPG_Client_GTK_CBData* data_p =
-    static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
 
   // sanity check(s)
+  struct RPG_Client_GTK_CBData* data_p =
+    static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
   ACE_ASSERT (data_p);
   ACE_ASSERT (data_p->entity.character);
   ACE_ASSERT (data_p->entity.character->isPlayerCharacter ());
-  RPG_Player* player = dynamic_cast<RPG_Player*> (data_p->entity.character);
+  RPG_Player* player = static_cast<RPG_Player*> (data_p->entity.character);
   ACE_ASSERT (player);
-
   Common_UI_GTK_BuildersConstIterator_t iterator =
     data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
-  // sanity check(s)
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
-
-  // retrieve about dialog handle
   GtkWidget* equipment_dialog =
-      GTK_WIDGET(gtk_builder_get_object((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_EQUIPMENT_NAME)));
-  ACE_ASSERT(equipment_dialog);
-  if (!equipment_dialog)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to gtk_builder_get_object(\"%s\"): \"%m\", aborting\n"),
-               ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_EQUIPMENT_NAME)));
-    return TRUE; // propagate
-  } // end IF
+      GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
+                                          ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_EQUIPMENT_NAME)));
+  ACE_ASSERT (equipment_dialog);
 
-  ::update_equipment(*data_p);
+  ::update_equipment (*data_p);
 
   // draw it
   if (!gtk_widget_get_visible (equipment_dialog))
-    gtk_widget_show_all(equipment_dialog);
+    gtk_widget_show_all (equipment_dialog);
 
   return FALSE;
 }
 
-G_MODULE_EXPORT gint
+void
+equipment_dialog_response_cb (GtkDialog* dialog_in,
+                              gint responseId_in,
+                              gpointer userData_in)
+{
+  RPG_TRACE (ACE_TEXT ("::equipment_dialog_response_cb"));
+
+  // sanity check(s)
+  struct RPG_Client_GTK_CBData* data_p =
+    static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
+  ACE_ASSERT (data_p);
+  ACE_ASSERT (data_p->entity.character);
+  ACE_ASSERT (data_p->entity.character->isPlayerCharacter ());
+  RPG_Player* player = static_cast<RPG_Player*> (data_p->entity.character);
+  ACE_ASSERT (player);
+  Common_UI_GTK_BuildersConstIterator_t iterator =
+    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
+  ACE_ASSERT (iterator != data_p->UIState->builders.end ());
+
+  if (responseId_in == GTK_RESPONSE_OK)
+    ::update_inventory (*player,
+                        (*iterator).second.second);
+
+  gtk_widget_hide (GTK_WIDGET (dialog_in));
+}
+
+gint
 item_toggled_GTK_cb (GtkWidget* widget_in,
                      gpointer userData_in)
 {

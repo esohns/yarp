@@ -30,7 +30,11 @@
 
 // gnome / gtk
 #define RPG_CLIENT_GNOME_APPLICATION_ID                   "rpg_client"
+#if defined (GTK2_USE)
 #define RPG_CLIENT_GTK_UI_FILE                            "rpg_client.gtk2"
+#elif defined (GTK3_USE)
+#define RPG_CLIENT_GTK_UI_FILE                            "rpg_client.gtk3"
+#endif // GTK2_USE || GTK3_USE
 #define RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN         "client"
 
 // gtk widget names
@@ -77,7 +81,10 @@
 //
 #define RPG_CLIENT_GTK_HBOX_MAIN_NAME                     "main_hbox"
 #define RPG_CLIENT_GTK_VBOX_TOOLS_NAME                    "tools_vbox"
+//
 #define RPG_CLIENT_GTK_FRAME_CHARACTER_NAME               "character_frame"
+//
+#define RPG_CLIENT_GTK_TABLE_EQUIPENT_NAME                "equipment_table"
 
 // CONFIGDIR-specific
 #define RPG_CLIENT_CONFIG_SUB                             "client"

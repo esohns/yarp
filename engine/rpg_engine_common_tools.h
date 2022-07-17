@@ -80,13 +80,13 @@ class RPG_Engine_Common_Tools
   static struct RPG_Engine_Entity createEntity();
   static struct RPG_Engine_Entity createEntity(// base attributes
                                                const std::string&,                // creature type
-                                               const unsigned short int&,         // max HP
+                                               unsigned short,                    // max HP
                                                // extended data
-                                               const unsigned int&,               // wealth (GP)
+                                               unsigned int,                      // wealth (GP)
                                                const RPG_Item_List_t&,            // list of (carried) items
                                                // current status
                                                const RPG_Character_Conditions_t&, // condition
-                                               const short int&,                  // HP
+                                               short,                             // HP
                                                const RPG_Magic_Spells_t&);        // set of memorized/prepared spells (if any)
 
   static std::string info (const struct RPG_Engine_Entity&); // entity

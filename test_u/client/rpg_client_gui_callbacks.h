@@ -79,6 +79,7 @@ G_MODULE_EXPORT gint server_repository_combobox_changed_GTK_cb (GtkWidget*, gpoi
 G_MODULE_EXPORT gint server_repository_button_clicked_GTK_cb (GtkWidget*, gpointer);
 //
 G_MODULE_EXPORT gint equip_clicked_GTK_cb (GtkWidget*, gpointer);
+G_MODULE_EXPORT void equipment_dialog_response_cb (GtkDialog*, gint, gpointer);
 G_MODULE_EXPORT gint item_toggled_GTK_cb (GtkWidget*, gpointer);
 G_MODULE_EXPORT gint rest_clicked_GTK_cb (GtkWidget*, gpointer);
 //
