@@ -185,6 +185,27 @@
                     <child>
                       <placeholder/>
                     </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -874,43 +895,19 @@
                             <property name="homogeneous">True</property>
                             <property name="layout_style">spread</property>
                             <child>
-                              <object class="GtkButton" id="server_join">
+                              <object class="GtkToggleButton" id="togglebutton_join_part">
                                 <property name="label">gtk-connect</property>
                                 <property name="visible">True</property>
-                                <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
-                                <property name="can_default">True</property>
-                                <property name="has_default">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="relief">half</property>
-                                <property name="use_underline">True</property>
                                 <property name="use_stock">True</property>
-                                <property name="focus_on_click">False</property>
-                                <signal name="clicked" handler="join_game_clicked_GTK_cb" swapped="no"/>
+                                <signal name="toggled" handler="togglebutton_join_part_toggled_cb" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
-                                <property name="fill">False</property>
+                                <property name="fill">True</property>
                                 <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="server_part">
-                                <property name="label">gtk-disconnect</property>
-                                <property name="visible">True</property>
-                                <property name="sensitive">False</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="relief">half</property>
-                                <property name="use_underline">True</property>
-                                <property name="use_stock">True</property>
-                                <property name="focus_on_click">False</property>
-                                <signal name="clicked" handler="part_game_clicked_GTK_cb" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">1</property>
                               </packing>
                             </child>
                           </object>
@@ -1844,6 +1841,12 @@
                                 <child>
                                   <placeholder/>
                                 </child>
+                                <child>
+                                  <placeholder/>
+                                </child>
+                                <child>
+                                  <placeholder/>
+                                </child>
                               </object>
                             </child>
                           </object>
@@ -1940,6 +1943,12 @@
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
                                             <property name="n_columns">2</property>
+                                            <child>
+                                              <placeholder/>
+                                            </child>
+                                            <child>
+                                              <placeholder/>
+                                            </child>
                                             <child>
                                               <placeholder/>
                                             </child>

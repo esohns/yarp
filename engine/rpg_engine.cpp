@@ -661,13 +661,12 @@ RPG_Engine::add (struct RPG_Engine_Entity* entity_in,
   }
 
   parameters.positions = visible_positions;
-  try
-  {
+  parameters.visible_radius = getVisibleRadius (id,
+                                                true);
+  try {
     client_->notify (COMMAND_E2C_ENTITY_VISION,
                      parameters);
-  }
-  catch (...)
-  {
+  } catch (...) {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
                 ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString (COMMAND_E2C_ENTITY_VISION).c_str ())));
@@ -2224,16 +2223,20 @@ RPG_Engine::hasSeen (const RPG_Engine_EntityID_t& id_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::hasSeen"));
 
+  bool result = false;
+  RPG_Map_PositionsConstIterator_t iterator2;
+
   if (lockedAccess_in)
     lock_.acquire ();
 
   RPG_Engine_SeenPositionsConstIterator_t iterator =
     seenPositions_.find (id_in);
-  ACE_ASSERT (iterator != seenPositions_.end ());
-  RPG_Map_PositionsConstIterator_t iterator2 =
-    (*iterator).second.find (position_in);
-  bool result = (iterator2 != (*iterator).second.end ());
+  if (iterator == seenPositions_.end ())
+    goto error; // unknown entity id
+  iterator2 = (*iterator).second.find (position_in);
+  result = (iterator2 != (*iterator).second.end ());
 
+error:
   if (lockedAccess_in)
     lock_.release ();
 

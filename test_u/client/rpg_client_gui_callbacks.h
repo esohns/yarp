@@ -73,8 +73,7 @@ G_MODULE_EXPORT gint save_state_clicked_GTK_cb (GtkWidget*, gpointer);
 G_MODULE_EXPORT gint state_repository_combobox_changed_GTK_cb (GtkWidget*, gpointer);
 G_MODULE_EXPORT gint state_repository_button_clicked_GTK_cb (GtkWidget*, gpointer);
 //
-G_MODULE_EXPORT gint join_game_clicked_GTK_cb (GtkWidget*, gpointer);
-G_MODULE_EXPORT gint part_game_clicked_GTK_cb (GtkWidget*, gpointer);
+G_MODULE_EXPORT void togglebutton_join_part_toggled_cb (GtkToggleButton*, gpointer);
 G_MODULE_EXPORT gint server_repository_combobox_changed_GTK_cb (GtkWidget*, gpointer);
 G_MODULE_EXPORT gint server_repository_button_clicked_GTK_cb (GtkWidget*, gpointer);
 //

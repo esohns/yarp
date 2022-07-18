@@ -252,9 +252,9 @@ RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Size_t& size_in,
 //              (*current_node).first.position.first,
 //              (*current_node).first.position.second,
 //              (*current_node).second));
-  RPG_Map_AStar_NodeListConstIterator_t previous_node = closedPath.begin();
-  path_out.push_front(std::make_pair((*current_node).first.position,
-                                     RPG_MAP_DIRECTION_INVALID));
+  RPG_Map_AStar_NodeListConstIterator_t previous_node = closedPath.begin ();
+  path_out.push_front (std::make_pair ((*current_node).first.position,
+                                       RPG_MAP_DIRECTION_INVALID));
   for (;
        (*current_node).first.position != start_in;
        index++)

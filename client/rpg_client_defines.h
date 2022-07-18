@@ -53,8 +53,7 @@
 #define RPG_CLIENT_GTK_BUTTON_MAP_STORE_NAME              "map_store"
 #define RPG_CLIENT_GTK_BUTTON_MAP_REFRESH_NAME            "map_refresh"
 //
-#define RPG_CLIENT_GTK_BUTTON_SERVER_JOIN_NAME            "server_join"
-#define RPG_CLIENT_GTK_BUTTON_SERVER_PART_NAME            "server_part"
+#define RPG_CLIENT_GTK_TOGGLEBUTTON_SERVER_JOIN_PART_NAME "togglebutton_join_part"
 #define RPG_CLIENT_GTK_BUTTON_SERVER_REFRESH_NAME         "server_refresh"
 //
 #define RPG_CLIENT_GTK_BUTTON_ENGINESTATE_LOAD_NAME       "engine_state_load"

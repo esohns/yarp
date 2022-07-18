@@ -37,16 +37,12 @@
 #include "rpg_graphics_SDL_window_base.h"
 
 #include "rpg_client_common.h"
-//#include "rpg_client_exports.h"
 #include "rpg_client_iwindow_level.h"
 
 // forward declaration(s)
 class RPG_Client_Engine;
 class RPG_Engine;
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Client_Window_Level
  : public RPG_Graphics_SDLWindowBase
  , public RPG_Client_IWindowLevel
@@ -128,7 +124,7 @@ class RPG_Client_Window_Level
   struct RPG_Graphics_FloorTileSet     myCurrentFloorSet;
   struct RPG_Graphics_FloorEdgeTileSet myCurrentFloorEdgeSet;
   struct RPG_Graphics_WallTileSet      myCurrentWallSet;
-  SDL_Surface*                    myCeilingTile;
+  SDL_Surface*                         myCeilingTile;
   struct RPG_Graphics_DoorTileSet      myCurrentDoorSet;
   SDL_Surface*                    myOffMapTile;
   SDL_Surface*                    myInvisibleTile;
