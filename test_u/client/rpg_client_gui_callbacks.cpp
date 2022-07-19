@@ -90,12 +90,20 @@ update_equipment (const struct RPG_Client_GTK_CBData& data_in)
 
   std::string text;
   std::stringstream converter;
+#if defined (GTK3_USE)
   GtkGrid* current = NULL;
-
+#else
+  GtkTable* current = NULL;
+#endif // GTK3_USE
   // step1: list equipment
   current =
+#if defined (GTK3_USE)
     GTK_GRID (gtk_builder_get_object ((*iterator).second.second,
                                       ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_TABLE_EQUIPENT_NAME)));
+#else
+      GTK_TABLE (gtk_builder_get_object ((*iterator).second.second,
+                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_TABLE_EQUIPENT_NAME)));
+#endif // GTK3_USE
   ACE_ASSERT (current);
   GList* entries = gtk_container_get_children (GTK_CONTAINER (current));
   if (entries)
@@ -198,10 +206,17 @@ update_equipment (const struct RPG_Client_GTK_CBData& data_in)
     label = NULL;
     label = gtk_label_new (text.c_str ());
     ACE_ASSERT (label);
+#if defined (GTK3_USE)
     gtk_grid_attach (current,
                      label,
                      0, i,
                      1,1);
+#else
+    gtk_table_attach_defaults (current,
+                               label,
+                               0, 1,
+                               i, i + 1);
+#endif // GTK3_USE
     check_button = NULL;
     check_button = gtk_check_button_new ();
     ACE_ASSERT (check_button);
@@ -222,10 +237,17 @@ update_equipment (const struct RPG_Client_GTK_CBData& data_in)
                       ACE_TEXT_ALWAYS_CHAR ("toggled"),
                       G_CALLBACK (item_toggled_GTK_cb),
                       &const_cast<struct RPG_Client_GTK_CBData&> (data_in));
-
-    gtk_grid_attach (current, check_button,
+#if defined (GTK3_USE)
+    gtk_grid_attach (current,
+                     check_button,
                      1, i,
                      1, 1);
+#else
+    gtk_table_attach_defaults (current,
+                               check_button,
+                               1, 2,
+                               i, i + 1);
+#endif // GTK3_USE
   } // end FOR
 
   gtk_widget_show_all (GTK_WIDGET (current));

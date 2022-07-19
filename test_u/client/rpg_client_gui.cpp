@@ -854,6 +854,23 @@ do_work (struct RPG_Client_Configuration& configuration_in,
     return;
   } // end IF
   ACE_ASSERT (GTKUserData_in.screen != NULL);
+//#if defined(SDL2_USE)
+//  Uint32 flags_i = SDL_RENDERER_ACCELERATED;
+//  GTKUserData_in.renderer = SDL_CreateRenderer (GTKUserData_in.screen,
+//                                                -1,
+//                                                flags_i);
+//  if (!GTKUserData_in.renderer)
+//  {
+//    ACE_DEBUG ((LM_ERROR,
+//                ACE_TEXT ("failed to SDL_CreateRenderer(-1,0x%x): \"%s\", aborting\n"),
+//                flags_i,
+//                ACE_TEXT (SDL_GetError ())));
+//    RPG_Client_Common_Tools::finalize ();
+//    RPG_Engine_Common_Tools::finalize ();
+//    return;
+//  } // end IF
+//#endif // SDL2_USE
+
   if (!RPG_Graphics_Common_Tools::initialize (configuration_in.graphics_directory,
                                               RPG_CLIENT_GRAPHICS_DEF_CACHESIZE,
                                               true))
@@ -898,10 +915,21 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 
 #if defined (SDL_USE)
   SDL_Surface* surface_p = GTKUserData_in.screen;
+  ACE_ASSERT (surface_p);
 #elif defined (SDL2_USE)
   SDL_Surface* surface_p = SDL_GetWindowSurface (GTKUserData_in.screen);
-#endif // SDL_USE || SDL2_USE
   ACE_ASSERT (surface_p);
+//  GTKUserData_in.renderer = SDL_CreateSoftwareRenderer (surface_p);
+//  if (!GTKUserData_in.renderer)
+//  {
+//    ACE_DEBUG ((LM_ERROR,
+//                ACE_TEXT ("failed to SDL_CreateSoftwareRenderer(): \"%s\", aborting\n"),
+//                ACE_TEXT (SDL_GetError ())));
+//    RPG_Client_Common_Tools::finalize ();
+//    RPG_Engine_Common_Tools::finalize ();
+//    return;
+//  } // end IF
+#endif // SDL_USE || SDL2_USE
   RPG_Client_Window_Main main_window (RPG_Graphics_Size_t (surface_p->w,
                                                            surface_p->h), // size
                                       type,                               // interface elements
@@ -968,7 +996,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   } // end IF
 
   // step4d: start timer (triggers hover events)
-  GTKUserData_in.eventTimer = NULL;
+  GTKUserData_in.eventTimer = 0;
   GTKUserData_in.eventTimer =
     SDL_AddTimer (RPG_CLIENT_SDL_EVENT_TIMEOUT, // interval (ms)
                   event_timer_SDL_cb,           // event timer callback

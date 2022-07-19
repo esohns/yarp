@@ -701,8 +701,10 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::initializeScreen"));
 
-  // init return value
+  // initialize return value
   SDL_Window* result = NULL;
+
+  int result_2 = -1;
 
   // get available fullscreen/hardware/... modes
   int number_of_video_displays_i = SDL_GetNumVideoDisplays ();
@@ -738,7 +740,7 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
          j < number_of_display_modes_i;
          j++)
     {
-      int result_2 = SDL_GetDisplayMode (i, j, &display_mode_s);
+      result_2 = SDL_GetDisplayMode (i, j, &display_mode_s);
       if (result_2 < 0)
       {
         ACE_DEBUG ((LM_ERROR,
@@ -758,17 +760,51 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
     } // end FOR
   } // end FOR
 
+  // select a render driver
+  // - use a render driver supporting software rendering
+  SDL_RendererInfo render_driver_info_s;
+  uint32_t renderer_flags = SDL_RENDERER_SOFTWARE;
+  int32_t number_of_render_drivers = SDL_GetNumRenderDrivers(), index = 0;
+
+  while (index < number_of_render_drivers) {
+    if (SDL_GetRenderDriverInfo(index, &render_driver_info_s) < 0)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_GetRenderDriverInfo(%d): \"%s\", aborting\n"),
+                  index,
+                  ACE_TEXT (SDL_GetError ())));
+      return NULL;
+    } // end IF
+    if (((render_driver_info_s.flags & renderer_flags) == renderer_flags) &&
+        ((render_driver_info_s.flags & SDL_RENDERER_SOFTWARE) == SDL_RENDERER_SOFTWARE))
+    {
+      SDL_SetHint (SDL_HINT_RENDER_DRIVER, render_driver_info_s.name);
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT ("pre-selecting \"%s\" render driver\n"),
+                  ACE_TEXT (render_driver_info_s.name)));
+      break;
+    } // end IF
+    ++index;
+  } // end WHILE
+
   // open SDL window
-  Uint32 flags_i = 0;
-//  if (configuration_in.use_OpenGL)
-//    flags_i |= SDL_WINDOW_OPENGL;
-  result = SDL_CreateWindow (caption_in.c_str (),
-                             SDL_WINDOWPOS_UNDEFINED,
-                             SDL_WINDOWPOS_UNDEFINED,
-                             configuration_in.screen_width,
-                             configuration_in.screen_height,
-                             flags_i);
-  if (!result)
+  Uint32 flags_i = SDL_WINDOW_SHOWN;
+  //  if (configuration_in.use_OpenGL)
+  //    flags_i |= SDL_WINDOW_OPENGL;
+  //  result = SDL_CreateWindow (caption_in.c_str (),
+  //                             SDL_WINDOWPOS_UNDEFINED,
+  //                             SDL_WINDOWPOS_UNDEFINED,
+  //                             configuration_in.screen_width,
+  //                             configuration_in.screen_height,
+  //                             flags_i);
+  //  if (!result)
+  SDL_Renderer *renderer = NULL;
+  result_2 = SDL_CreateWindowAndRenderer (configuration_in.screen_width,
+                                          configuration_in.screen_height,
+                                          flags_i,
+                                          &result,
+                                          &renderer);
+  if (result_2 < 0)
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_CreateWindow(\"%s\", %d, %d, 0x%x): \"%s\", aborting\n"),
@@ -778,6 +814,13 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
                 ACE_TEXT (SDL_GetError ())));
     return NULL;
   } // end IF
+  ACE_ASSERT (result && renderer);
+
+  SDL_GetRendererInfo (renderer,
+                       &render_driver_info_s);
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("using \"%s\" render driver\n"),
+              ACE_TEXT (render_driver_info_s.name)));
 
   return result;
 }

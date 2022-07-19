@@ -88,13 +88,12 @@
 #define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "windows"
 #endif // SDL_USE || SDL2_USE
 #elif defined (ACE_LINUX)
-//#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "x11"
-#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "wayland"
-//#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "nanox"
-//#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "dga"
-//#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "fbcon"
-//#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "directfb"
-//#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME         "svgalib"
+#if defined (SDL_USE)
+#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "x11"
+#elif defined (SDL2_USE)
+#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "x11"
+//#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "wayland"
+#endif // SDL_USE || SDL2_USE
 #else
 #define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              ""
 #endif // ACE_WINXX || ACE_LINUX

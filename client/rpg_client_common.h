@@ -76,7 +76,12 @@ struct RPG_Client_GTK_CBData
    , entityFilter (NULL)
    , mapFilter (NULL)
    , savedStateFilter (NULL)
+#if defined (SDL_USE)
    , screen (NULL)
+#elif defined (SDL2_USE)
+   , renderer (NULL)
+   , screen (NULL)
+#endif // SDL_USE || SDL2_USE
    , screenLock (NULL,
                  NULL)
    , eventTimer (0)
@@ -96,6 +101,7 @@ struct RPG_Client_GTK_CBData
 #if defined (SDL_USE)
   SDL_Surface*                           screen;
 #elif defined (SDL2_USE)
+  SDL_Renderer*                          renderer;
   SDL_Window*                            screen;
 #endif // SDL_USE || SDL2_USE
   ACE_Thread_Mutex                       screenLock; // video access
