@@ -73,7 +73,7 @@ RPG_Dice::generateRandomNumbers (unsigned int range_in,
   results_out.clear ();
 
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-  unsigned int usecs = 0;
+  unsigned int usecs = static_cast<unsigned int> (COMMON_TIME_NOW.usec());
 #endif // ACE_WIN32 || ACE_WIN64
   for (unsigned int i = 0;
        i < numRolls_in;
@@ -83,7 +83,6 @@ RPG_Dice::generateRandomNumbers (unsigned int range_in,
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     // *NOTE*: use ACE_OS::rand_r() for improved thread safety !
     //results_out.push_back((ACE_OS::rand() % range_in) + 1);
-    usecs = static_cast<unsigned int> (COMMON_TIME_NOW.usec ());
     results_out.push_back ((ACE_OS::rand_r (&usecs) % range_in) + 1);
 #else
     results_out.push_back ((::random () % range_in) + 1);

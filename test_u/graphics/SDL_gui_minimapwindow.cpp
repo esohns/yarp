@@ -62,13 +62,13 @@ SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase& p
                                                 false); // don't cache this one
   ACE_ASSERT(myBG);
 
-  mySurface = RPG_Graphics_Surface::copy(*myBG);
-  ACE_ASSERT(mySurface);
+  mySurface = RPG_Graphics_Surface::copy (*myBG);
+  ACE_ASSERT (mySurface);
 
   // adjust position, size
   SDL_Rect parent_area;
-  ACE_ASSERT(inherited::parent_);
-  inherited::parent_->getArea(parent_area);
+  ACE_ASSERT (inherited::parent_);
+  inherited::parent_->getArea (parent_area, false);
   clipRectangle_.x =
       ((offset_in.first == std::numeric_limits<int>::max()) ? ((parent_area.x + parent_area.w) -
                                                                myBG->w                         -

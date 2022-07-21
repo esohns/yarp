@@ -19,7 +19,7 @@ if (UNIX)
                         ${ACE_LIBRARY}
                         RPG_Dice)
 elseif (WIN32)
- set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+# set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
  target_link_libraries (${EXECUTABLE}
                         $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                         $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib

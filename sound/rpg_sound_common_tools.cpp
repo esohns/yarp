@@ -533,19 +533,19 @@ RPG_Sound_Common_Tools::play(const std::string& file_in,
 }
 
 bool
-RPG_Sound_Common_Tools::isPlaying(const int& channel_in)
+RPG_Sound_Common_Tools::isPlaying (int channel_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::isPlaying"));
 
-  return Mix_Playing(channel_in);
+  return Mix_Playing (channel_in);
 }
 
 void
-RPG_Sound_Common_Tools::stop(const int& channel_in)
+RPG_Sound_Common_Tools::stop (int channel_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Common_Tools::stop"));
 
-  Mix_HaltChannel(-1);
+  Mix_HaltChannel (channel_in);
 }
 
 #if defined (SDL_USE)

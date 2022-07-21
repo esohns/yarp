@@ -31,8 +31,8 @@
 RPG_Client_Window_Message::RPG_Client_Window_Message (const RPG_Graphics_SDLWindowBase& parent_in)
  : inherited (WINDOW_MESSAGE,           // type
               parent_in,                // parent
-              std::make_pair(0, 0),     // offset
-              ACE_TEXT_ALWAYS_CHAR(""))//, // title
+              std::make_pair (0, 0),    // offset
+              ACE_TEXT_ALWAYS_CHAR (""))//, // title
 //              NULL)                     // background
  , BG_ (NULL)
  , client_ (NULL)
@@ -305,7 +305,7 @@ RPG_Client_Window_Message::push (const std::string& message_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Message::push"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
+  ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);
 
   // age cache ?
   if (messages_.size () == RPG_CLIENT_MESSAGE_CACHE_SIZE)

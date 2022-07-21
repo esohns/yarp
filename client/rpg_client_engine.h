@@ -78,8 +78,8 @@ class RPG_Client_Engine
 
   void redraw ();
   // *TODO* these need consideration/redesign
-  void setStyle (const RPG_Graphics_Style&); // style
-  RPG_Graphics_Style getStyle () const; // return value: graphics style
+  inline void setStyle (const RPG_Graphics_Style& style_in) { state_.style = style_in; }
+  inline RPG_Graphics_Style getStyle () const { return state_.style; }
   // *NOTE*: this triggers a complete redraw !
   void setView (const RPG_Map_Position_t&);
 
@@ -103,9 +103,9 @@ class RPG_Client_Engine
                    bool = false);             // debug ?
   void action (const RPG_Client_Action&); // action
 
-  void mode (const RPG_Client_SelectionMode&); // set mode
-  //void clear(const RPG_Client_SelectionMode&); // clear mode
-  RPG_Client_SelectionMode mode () const; // return value: current mode
+  inline void mode (const enum RPG_Client_SelectionMode mode_in) { selectionMode_ = mode_in; }
+  inline void clear () { selectionMode_ = SELECTIONMODE_NORMAL; }
+  inline enum RPG_Client_SelectionMode mode () const { return selectionMode_; }
 
   void centerOnActive (bool); // keep active player centered ?
   bool getCenterOnActive () const; // return value: keep active player centered ?

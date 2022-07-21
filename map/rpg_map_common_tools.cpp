@@ -293,13 +293,13 @@ RPG_Map_Common_Tools::makePartition(const unsigned int& dimensionX_in,
     seed_positions.clear();
     result_x.clear(); result_y.clear();
     RPG_Dice::generateRandomNumbers(dimensionX_in,
-                                    numRooms_in,
+                                    numRooms_in * 2,
                                     result_x);
     RPG_Dice::generateRandomNumbers(dimensionY_in,
-                                    numRooms_in,
+                                    numRooms_in * 2,
                                     result_y);
     for (unsigned int i = 0;
-         i < numRooms_in;
+         i < numRooms_in * 2;
          i++)
     {
       seed_positions.insert(std::make_pair(result_x[i] - 1,
@@ -1444,7 +1444,7 @@ RPG_Map_Common_Tools::makeDoors(const unsigned int& dimensionX_in,
       {
         RPG_Dice::generateRandomNumbers((maxDoorsPerRoom_in ? ((maxDoorsPerRoom_in > doorPositions.size()) ? static_cast<unsigned int> (doorPositions.size ())
                                                                                                            : maxDoorsPerRoom_in)
-                                                            : doorPositions.size()),
+                                                            : static_cast<unsigned int> (doorPositions.size ())),
                                         1,
                                         result);
         num_doors = result[0];

@@ -25,7 +25,7 @@
 #define RPG_SOUND_AUDIO_DEF_FORMAT          AUDIO_S16SYS
 #define RPG_SOUND_AUDIO_DEF_CHANNELS        2 // *NOTE*: 1: mono, 2: stereo
 #define RPG_SOUND_AUDIO_DEF_CHUNKSIZE       4096
-#define RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS   15 // #concurrent sounds
+#define RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS   32 // #concurrent sounds
 
 #define RPG_SOUND_AMBIENT_DEF_USE_CD        false
 #define RPG_SOUND_AMBIENT_DEF_VOLUME        8 // (0-128)

@@ -21,7 +21,7 @@
 
 #include "SDL_gui_levelwindow_3d.h"
 
-#define _USE_MATH_DEFINES
+//#define _USE_MATH_DEFINES
 #include <cmath>
 #include <sstream>
 

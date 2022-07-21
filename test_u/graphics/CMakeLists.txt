@@ -71,7 +71,7 @@ if (UNIX)
                        Common CommonLog CommonTimer
                        RPG_Dice RPG_Common RPG_Graphics)
 elseif (WIN32)
- set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+# set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
                         $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
@@ -139,7 +139,7 @@ if (UNIX)
                         RPG_Character RPG_Player
                         ACEStream_Network)
 elseif (WIN32)
- set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+# set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
                         Opengl32.lib Glu32.lib Secur32.lib Userenv.lib

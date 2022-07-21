@@ -211,7 +211,7 @@ RPG_Sound_Event_Manager::stop()
 }
 
 bool
-RPG_Sound_Event_Manager::isPlaying() const
+RPG_Sound_Event_Manager::isPlaying () const
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Event_Manager::isPlaying"));
 

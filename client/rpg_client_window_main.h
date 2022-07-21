@@ -54,7 +54,7 @@ class RPG_Client_Window_Main
                           const RPG_Graphics_GraphicTypeUnion&,        // (element) type
                           const std::string&,                          // title
                           const RPG_Graphics_Font& = FONT_MAIN_LARGE); // title font
-  virtual ~RPG_Client_Window_Main ();
+  inline virtual ~RPG_Client_Window_Main () {}
 
   // initialize different hotspots
   // *WARNING*: call this AFTER setScreen() !

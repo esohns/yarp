@@ -2514,29 +2514,33 @@ drop_character_clicked_GTK_cb (GtkWidget* widget_in,
   RPG_TRACE (ACE_TEXT ("::drop_character_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG (widget_in);
+
+  // sanity check(s)
   struct RPG_Client_GTK_CBData* data_p =
     static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
-
-  // sanity check(s)
   ACE_ASSERT (data_p);
-
   Common_UI_GTK_BuildersConstIterator_t iterator =
     data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
-  // sanity check(s)
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
+  ACE_ASSERT (data_p->entity.character);
 
-  // clean up
-  if (data_p->entity.character)
-  {
-    delete data_p->entity.character;
-    data_p->entity.character = NULL;
-    data_p->entity.position =
-      std::make_pair (std::numeric_limits<unsigned int>::max (),
-                      std::numeric_limits<unsigned int>::max ());
-    data_p->entity.modes.clear ();
-    data_p->entity.actions.clear ();
-    data_p->entity.is_spawned = false;
-  } // end IF
+  // assemble target filename
+  std::string profiles_directory =
+    RPG_Player_Common_Tools::getPlayerProfilesDirectory();
+  std::string filename = profiles_directory;
+  filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  filename += data_p->entity.character->getName();
+  filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+  Common_File_Tools::deleteFile (filename);
+
+  delete data_p->entity.character;
+  data_p->entity.character = NULL;
+  data_p->entity.position =
+    std::make_pair (std::numeric_limits<unsigned int>::max (),
+                    std::numeric_limits<unsigned int>::max ());
+  data_p->entity.modes.clear ();
+  data_p->entity.actions.clear ();
+  data_p->entity.is_spawned = false;
 
   // reset profile widgets
   ::reset_character_profile ((*iterator).second.second);
@@ -2582,7 +2586,7 @@ drop_character_clicked_GTK_cb (GtkWidget* widget_in,
   gtk_widget_set_sensitive (GTK_WIDGET (button_2), FALSE);
 
   // make this insensitive
-  gtk_widget_set_sensitive (widget_in, FALSE);
+  //gtk_widget_set_sensitive (widget_in, FALSE);
 
   // make equip button insensitive (if it's not already)
   button =
@@ -2597,6 +2601,14 @@ drop_character_clicked_GTK_cb (GtkWidget* widget_in,
                                       ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_REST_NAME)));
   ACE_ASSERT (button);
   gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
+
+  // reset available characters combobox
+  GtkComboBox* combobox =
+      GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
+                                             ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
+  ACE_ASSERT (combobox);
+  g_signal_emit_by_name (G_OBJECT (combobox),
+                         ACE_TEXT_ALWAYS_CHAR ("changed"));
 
   return FALSE;
 }
@@ -2694,10 +2706,10 @@ load_character_clicked_GTK_cb (GtkWidget* widget_in,
   gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 
   // make drop button sensitive (if it's not already)
-  button = GTK_BUTTON(gtk_builder_get_object((*iterator).second.second,
-                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_DROP_NAME)));
-  ACE_ASSERT(button);
-  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+  //button = GTK_BUTTON(gtk_builder_get_object((*iterator).second.second,
+  //                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_DROP_NAME)));
+  //ACE_ASSERT(button);
+  //gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   // make load button insensitive (if it's not already)
   gtk_widget_set_sensitive(widget_in, FALSE);
@@ -2753,16 +2765,12 @@ save_character_clicked_GTK_cb(GtkWidget* widget_in,
   filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
 
   RPG_Player* player_p = NULL;
-  try
-  {
+  try {
     player_p = dynamic_cast<RPG_Player*>(data_p->entity.character);
-  }
-  catch (...)
-  {
+  } catch (...) {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in dynamic_cast<RPG_Player*>(%@), aborting\n"),
                data_p->entity.character));
-
     return FALSE;
   }
   if (!player_p)
@@ -2770,7 +2778,6 @@ save_character_clicked_GTK_cb(GtkWidget* widget_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to dynamic_cast<RPG_Player*>(%@), aborting\n"),
                data_p->entity.character));
-
     return FALSE;
   }
   if (!player_p->save(filename))
@@ -2786,10 +2793,11 @@ save_character_clicked_GTK_cb(GtkWidget* widget_in,
   gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
 
   // make drop button insensitive (if it's not already)
-  button = GTK_BUTTON(gtk_builder_get_object((*iterator).second.second,
-                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_DROP_NAME)));
-  ACE_ASSERT(button);
-  gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+  //button =
+  //  GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+  //                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_DROP_NAME)));
+  //ACE_ASSERT (button);
+  //gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
   // make save button insensitive
   gtk_widget_set_sensitive(widget_in, FALSE);
@@ -2797,22 +2805,19 @@ save_character_clicked_GTK_cb(GtkWidget* widget_in,
   return FALSE;
 }
 
-G_MODULE_EXPORT gint
-character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
-                                             gpointer userData_in)
+gint
+character_repository_combobox_changed_GTK_cb (GtkWidget* widget_in,
+                                              gpointer userData_in)
 {
-  RPG_TRACE(ACE_TEXT("::character_repository_combobox_changed_GTK_cb"));
-
-  struct RPG_Client_GTK_CBData* data_p =
-    static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
+  RPG_TRACE (ACE_TEXT ("::character_repository_combobox_changed_GTK_cb"));
 
   // sanity check(s)
   ACE_ASSERT (widget_in);
+  struct RPG_Client_GTK_CBData* data_p =
+    static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
   ACE_ASSERT (data_p);
-
   Common_UI_GTK_BuildersConstIterator_t iterator =
     data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
-  // sanity check(s)
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
 
   // retrieve active item
@@ -2829,7 +2834,7 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
     GTK_FRAME (gtk_builder_get_object ((*iterator).second.second,
                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_FRAME_CHARACTER_NAME)));
   ACE_ASSERT (frame);
-  if (!gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget_in), &selected))
+  if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget_in), &selected))
   {
     // *WARNING*: refreshing the combobox triggers removal of items
     // which also generates this signal...
@@ -2841,11 +2846,20 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
                                        ACE_TEXT_ALWAYS_CHAR ("image_sprite")));
     ACE_ASSERT (image);
     gtk_image_clear (image);
+
     // desensitize tools vbox
     gtk_widget_set_sensitive (GTK_WIDGET (vbox), FALSE);
+
     // remove character frame widget
     gtk_widget_set_sensitive (GTK_WIDGET (frame), FALSE);
     gtk_widget_hide (GTK_WIDGET (frame));
+
+    // make drop button insensitive (if it's not already)
+    GtkButton* button =
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                          ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_DROP_NAME)));
+    ACE_ASSERT (button);
+    gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
     return FALSE;
   } // end IF
@@ -2887,10 +2901,10 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   short int hitpoints = std::numeric_limits<short int>::max();
   RPG_Magic_Spells_t spells;
   data_p->entity.character = RPG_Player::load(filename,
-                                            data_p->schemaRepository,
-                                            condition,
-                                            hitpoints,
-                                            spells);
+                                              data_p->schemaRepository,
+                                              condition,
+                                              hitpoints,
+                                              spells);
   if (!data_p->entity.character)
   {
     ACE_DEBUG((LM_ERROR,
@@ -2918,12 +2932,19 @@ character_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
   if (!RPG_Engine_Common_Tools::isCharacterDisabled(data_p->entity.character))
     gtk_widget_set_sensitive(GTK_WIDGET(button_2), TRUE);
 
-  // make equip button sensitive (if it's not already)
+  // make drop button sensitive (if it's not already)
   GtkButton* button =
-    GTK_BUTTON(gtk_builder_get_object((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_EQUIP_NAME)));
-  ACE_ASSERT(button);
-  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_DROP_NAME)));
+  ACE_ASSERT (button);
+  gtk_widget_set_sensitive (GTK_WIDGET (button), TRUE);
+
+  // make equip button sensitive (if it's not already)
+  button =
+    GTK_BUTTON(gtk_builder_get_object ((*iterator).second.second,
+                                       ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_EQUIP_NAME)));
+  ACE_ASSERT (button);
+  gtk_widget_set_sensitive (GTK_WIDGET (button), TRUE);
 
   return FALSE;
 }
@@ -4051,25 +4072,25 @@ item_toggled_GTK_cb (GtkWidget* widget_in,
       parameters.entity_id = active_entity;
       parameters.condition = RPG_COMMON_CONDITION_INVALID;
       data_p->levelEngine->getVisiblePositions (active_entity,
-                                              parameters.positions,
-                                              false);
+                                                parameters.positions,
+                                                false);
       parameters.previous_position =
         std::make_pair (std::numeric_limits<unsigned int>::max (),
                         std::numeric_limits<unsigned int>::max ());
 //      data_p->levelEngine->unlock ();
       try {
-        data_p->clientEngine->notify(COMMAND_E2C_ENTITY_VISION, parameters);
+        data_p->clientEngine->notify (COMMAND_E2C_ENTITY_VISION, parameters);
       } catch (...) {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
-                   ACE_TEXT(RPG_Engine_CommandHelper::RPG_Engine_CommandToString(COMMAND_E2C_ENTITY_VISION).c_str())));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
+                    ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString (COMMAND_E2C_ENTITY_VISION).c_str ())));
       }
 //      data_p->levelEngine->lock ();
     } // end IF
   } // end IF
 //  data_p->levelEngine->unlock ();
 
-  ::update_equipment(*data_p);
+  ::update_equipment (*data_p);
 
   return FALSE;
 }

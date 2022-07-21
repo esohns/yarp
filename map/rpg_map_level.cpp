@@ -785,27 +785,27 @@ RPG_Map_Level::isCorner(const RPG_Map_Position_t& position_in) const
 }
 
 RPG_Map_Element
-RPG_Map_Level::getElement(const RPG_Map_Position_t& position_in) const
+RPG_Map_Level::getElement (const RPG_Map_Position_t& position_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Level::getElement"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Level::getElement"));
 
-  // sanity check
-  if ((position_in.first  == std::numeric_limits<unsigned int>::max()) ||
-      (position_in.second == std::numeric_limits<unsigned int>::max()))
+  // sanity check(s)
+  if ((position_in.first  == std::numeric_limits<unsigned int>::max ()) ||
+      (position_in.second == std::numeric_limits<unsigned int>::max ()))
     return MAPELEMENT_INVALID;
 
   // unmapped/off-map ?
   if ((position_in.first  >= myMap.plan.size_x) ||
       (position_in.second >= myMap.plan.size_y) ||
-      (myMap.plan.unmapped.find(position_in) != myMap.plan.unmapped.end()))
+      (myMap.plan.unmapped.find (position_in) != myMap.plan.unmapped.end ()))
     return MAPELEMENT_UNMAPPED;
 
-  if (myMap.plan.walls.find(position_in) != myMap.plan.walls.end())
+  if (myMap.plan.walls.find (position_in) != myMap.plan.walls.end ())
     return MAPELEMENT_WALL;
 
   struct RPG_Map_Door position_door;
   position_door.position = position_in;
-  if (myMap.plan.doors.find(position_door) != myMap.plan.doors.end())
+  if (myMap.plan.doors.find (position_door) != myMap.plan.doors.end ())
     return MAPELEMENT_DOOR;
 
   return MAPELEMENT_FLOOR;
@@ -821,15 +821,12 @@ RPG_Map_Level::state(const RPG_Map_Position_t& position_in) const
   position_door.outside = RPG_MAP_DIRECTION_INVALID;
   position_door.state = RPG_MAP_DOORSTATE_INVALID;
 
-  RPG_Map_DoorsConstIterator_t iterator = myMap.plan.doors.find(position_door);
-  // sanity check
-  ACE_ASSERT(iterator != myMap.plan.doors.end());
+  RPG_Map_DoorsConstIterator_t iterator = myMap.plan.doors.find (position_door);
   if (iterator == myMap.plan.doors.end())
-  {
+  { ACE_ASSERT (false);
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("invalid argument (was: [%u,%u]), aborting\n"),
                position_in.first, position_in.second));
-
     return RPG_MAP_DOORSTATE_INVALID;
   } // end IF
 

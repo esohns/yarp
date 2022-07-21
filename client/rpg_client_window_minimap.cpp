@@ -59,32 +59,34 @@ RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap (const RPG_Graphics_SDLWind
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = IMAGE_INTERFACE_MINIMAP;
-  myBG = RPG_Graphics_Common_Tools::loadGraphic(type,
-                                                true,   // convert to display format
-                                                false); // don't cache this one
-  ACE_ASSERT(myBG);
+  myBG = RPG_Graphics_Common_Tools::loadGraphic (type,
+                                                 true,   // convert to display format
+                                                 false); // don't cache this one
+  ACE_ASSERT (myBG);
 
-  mySurface = RPG_Graphics_Surface::copy(*myBG);
-  ACE_ASSERT(mySurface);
+  mySurface = RPG_Graphics_Surface::copy (*myBG);
+  ACE_ASSERT (mySurface);
 
   // adjust position, size
   SDL_Rect parent_area;
-  parent_in.getArea (parent_area, true);
-  parent_in.getBorders (borderTop_,
-                        borderBottom_,
-                        borderLeft_,
-                        borderRight_,
-                        true);
+  parent_in.getArea (parent_area, false);
+  //parent_in.getArea (parent_area, true);
+  //parent_in.getBorders (borderTop_,
+  //                      borderBottom_,
+  //                      borderLeft_,
+  //                      borderRight_,
+  //                      true);
   inherited::clipRectangle_.x =
-    ((offset_in.first == std::numeric_limits<int>::max ()) ? ((parent_area.w - 1) -
-                                                              borderRight_                   -
-                                                              myBG->w                         -
+    ((offset_in.first == std::numeric_limits<int>::max ()) ? (/*(parent_area.w - 1)          -
+                                                              borderRight_                   -*/
+                                                              (parent_area.x + parent_area.w) -
+                                                              myBG->w                        -
                                                               RPG_CLIENT_MINIMAP_DEF_OFFSET_X)
                                                            : offset_in.first);
   inherited::clipRectangle_.y =
-    ((offset_in.second == std::numeric_limits<int>::max ()) ? (parent_area.y +
-                                                                borderTop_                     +
-                                                                RPG_CLIENT_MINIMAP_DEF_OFFSET_Y)
+    ((offset_in.second == std::numeric_limits<int>::max ()) ? (parent_area.y                  +
+                                                               /*borderTop_ + */
+                                                               RPG_CLIENT_MINIMAP_DEF_OFFSET_Y)
                                                             : offset_in.second);
   inherited::clipRectangle_.w = mySurface->w;
   inherited::clipRectangle_.h = mySurface->h;
@@ -195,36 +197,33 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
   ACE_UNUSED_ARG (offsetY_in);
 
   // init clipping
-  clip();
+  clip ();
 
   // init surface
   SDL_Rect dirty_region;
   // lock surface during pixel access
-  if (SDL_MUSTLOCK((mySurface)))
-    if (SDL_LockSurface(mySurface))
+  if (SDL_MUSTLOCK ((mySurface)))
+    if (SDL_LockSurface (mySurface))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_LockSurface(): \"%s\", returning\n"),
-                 ACE_TEXT(SDL_GetError())));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_LockSurface(): \"%s\", returning\n"),
+                  ACE_TEXT (SDL_GetError ())));
       return;
     } // end IF
-  RPG_Graphics_Surface::put(std::make_pair(0, 0),
-                            *myBG,
-                            mySurface,
-                            dirty_region);
-
-  // lock engine
-//  myEngine->lock();
+  RPG_Graphics_Surface::put (std::make_pair (0, 0),
+                             *myBG,
+                             mySurface,
+                             dirty_region);
 
   RPG_Map_Position_t map_position;
   RPG_Client_MiniMapTile tile = RPG_CLIENT_MINIMAPTILE_INVALID;
   Uint32 color = 0;
   SDL_Rect destrect = {0, 0, 3, 2};
   Uint32* pixels = NULL;
-  RPG_Engine_EntityID_t active_entity_id = myEngine->getActive(false);
+  myEngine->lock ();
+  RPG_Engine_EntityID_t active_entity_id = myEngine->getActive (false);
   RPG_Engine_EntityID_t entity_id = 0;
-  RPG_Map_Size_t map_size = myEngine->getSize(false);
+  RPG_Map_Size_t map_size = myEngine->getSize (false);
   for (unsigned int y = 0;
        y < map_size.second;
        y++)
@@ -233,10 +232,10 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
          x++)
     {
       // step1: retrieve appropriate symbol
-      map_position = std::make_pair(x, y);
+      map_position = std::make_pair (x, y);
       tile = RPG_CLIENT_MINIMAPTILE_INVALID;
-      entity_id = myEngine->hasEntity(map_position,
-                                      false);
+      entity_id = myEngine->hasEntity (map_position,
+                                       false);
       
       if (entity_id)
       {
@@ -244,12 +243,12 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
           tile = MINIMAPTILE_PLAYER_ACTIVE;
         else
         {
-          if (myEngine->canSee(active_entity_id,
-                               map_position,
-                               false))
-            tile = (myEngine->isMonster(entity_id,
-                                        false) ? MINIMAPTILE_MONSTER
-                                               : MINIMAPTILE_PLAYER);
+          if (myEngine->canSee (active_entity_id,
+                                map_position,
+                                false))
+            tile = (myEngine->isMonster (entity_id,
+                                         false) ? MINIMAPTILE_MONSTER
+                                                : MINIMAPTILE_PLAYER);
         } // end ELSE
       } // end IF
 
@@ -259,8 +258,8 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
                                map_position,
                                false))
         {
-          switch (myEngine->getElement(map_position,
-                                       false))
+          switch (myEngine->getElement (map_position,
+                                        false))
           {
             case MAPELEMENT_UNMAPPED:
               tile = MINIMAPTILE_NONE; break;
@@ -274,11 +273,10 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
               tile = MINIMAPTILE_DOOR; break;
             default:
             {
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("invalid map element ([%u,%u] was: %d), continuing\n"),
-                         x, y,
-                         myEngine->getElement(map_position, false)));
-
+              ACE_DEBUG ((LM_ERROR,
+                          ACE_TEXT ("invalid map element ([%u,%u] was: %d), continuing\n"),
+                          x, y,
+                          myEngine->getElement (map_position, false)));
               continue;
             }
           } // end SWITCH
@@ -286,7 +284,7 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
         else
           tile = MINIMAPTILE_NONE;
       } // end IF
-      ACE_ASSERT(tile != RPG_CLIENT_MINIMAPTILE_INVALID);
+      ACE_ASSERT (tile != RPG_CLIENT_MINIMAPTILE_INVALID);
 
       // step2: map symbol to color
       color = 0;
@@ -310,10 +308,9 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
           color = RPG_CLIENT_MINIMAPCOLOR_WALL; break;
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid minimap tile type (was: %d), continuing\n"),
-                     tile));
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid minimap tile type (was: %d), continuing\n"),
+                      tile));
           continue;
         }
       } // end SWITCH
@@ -322,36 +319,35 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
       // *NOTE*: a minimap symbol has this shape: _ C _
       //                                          C C C
       // where "_" is transparent and "C" is a colored pixel
-      ACE_ASSERT(mySurface->format->BytesPerPixel == 4);
+      ACE_ASSERT (mySurface->format->BytesPerPixel == 4);
 
       // step3a: row 1
       destrect.x = 40 + (2 * x) - (2 * y);
       destrect.y = x + y;
-      pixels = reinterpret_cast<Uint32*>(static_cast<char*>(mySurface->pixels) +
-                                         (mySurface->pitch * (destrect.y + 6)) +
-                                         ((destrect.x + 6) * mySurface->format->BytesPerPixel));
+      pixels = reinterpret_cast<Uint32*> (static_cast<char*> (mySurface->pixels) +
+                                          (mySurface->pitch * (destrect.y + 6)) +
+                                          ((destrect.x + 6) * mySurface->format->BytesPerPixel));
 //       pixels[0] = transparent -> don't write
       pixels[1] = color;
 //       pixels[2] = transparent -> don't write
       // step3b: row 2
-      pixels = reinterpret_cast<Uint32*>(static_cast<char*>(mySurface->pixels) +
-                                         (mySurface->pitch * (destrect.y + 7)) +
-                                         ((destrect.x + 6) * mySurface->format->BytesPerPixel));
+      pixels = reinterpret_cast<Uint32*> (static_cast<char*> (mySurface->pixels) +
+                                          (mySurface->pitch * (destrect.y + 7)) +
+                                          ((destrect.x + 6) * mySurface->format->BytesPerPixel));
       pixels[0] = color;
       pixels[1] = color;
       pixels[2] = color;
     } // end FOR
 
-  // unlock engine
-//  myEngine->unlock ();
+  myEngine->unlock ();
 
   if (SDL_MUSTLOCK (mySurface))
     SDL_UnlockSurface (mySurface);
 
   // step4: paint surface
-  ACE_OS::memset (&dirty_region, 0, sizeof (dirty_region));
+  ACE_OS::memset (&dirty_region, 0, sizeof (SDL_Rect));
   if (inherited::screenLock_)
-    inherited::screenLock_->lock();
+    inherited::screenLock_->lock ();
   RPG_Graphics_Surface::put (std::make_pair (clipRectangle_.x,
                                              clipRectangle_.y),
                              *mySurface,

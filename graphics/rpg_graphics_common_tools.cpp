@@ -19,8 +19,8 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-// *NOTE*: workaround quirky MSVC...
-#define NOMINMAX
+//// *NOTE*: workaround quirky MSVC...
+//#define NOMINMAX
 
 #include "rpg_graphics_common_tools.h"
 
@@ -2472,7 +2472,7 @@ RPG_Graphics_Common_Tools::screenToMap (const RPG_Graphics_Position_t& position_
         RPG_GRAPHICS_TILE_WIDTH_MOD  * RPG_GRAPHICS_TILE_HEIGHT_MOD) /
       (2 * RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD);
 
-  map_position.first -= 2; // *TODO*
+  map_position.first -= 1; // *TODO*
 
   // sanity check: off-map position ?
   if ((map_position.first  >= mapSize_in.first) ||

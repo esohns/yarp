@@ -64,47 +64,47 @@ class RPG_Engine_Event_Manager
                              ACE_SYNCH_RECURSIVE_MUTEX>;
 
  public:
-  void init(RPG_Engine*); // engine handle
+  void initialize (RPG_Engine*); // engine handle
 
   // manage generic event sources
-	// *IMPORTANT*: fire&forget API !!!
-  long schedule(RPG_Engine_Event_t*,   // event handle
-                const ACE_Time_Value&, // interval (or delay)
-                bool = false);         // one-shot ?
+	// *IMPORTANT*: fire-and-forget API (first argument)
+  long schedule (RPG_Engine_Event_t*,   // event handle
+                 const ACE_Time_Value&, // interval (or delay)
+                 bool = false);         // one-shot ?
   void cancel (long); // timer (!) id
 
   // manage entities
-  void add(const RPG_Engine_EntityID_t&, // id
-           const ACE_Time_Value&);       // activation interval
-  void remove(const RPG_Engine_EntityID_t&); // id
-  void reschedule(const RPG_Engine_EntityID_t&, // id
-                  const ACE_Time_Value&);       // activation interval
+  void add (const RPG_Engine_EntityID_t&, // id
+            const ACE_Time_Value&);       // activation interval
+  void remove (const RPG_Engine_EntityID_t&); // id
+  void reschedule (const RPG_Engine_EntityID_t&, // id
+                   const ACE_Time_Value&);       // activation interval
 
   // implement Common_IControl
-  virtual void start();
-  virtual void stop(bool = true); // locked access ?
-  virtual bool isRunning() const;
+  virtual void start ();
+  virtual void stop (bool = true); // locked access ?
+  inline virtual bool isRunning () const { return (inherited::thr_count () > 0); }
 
   // implement RPG_Common_IDumpState
-  virtual void dump_state() const;
+  virtual void dump_state () const;
 
  private:
-  virtual ~RPG_Engine_Event_Manager();
-  RPG_Engine_Event_Manager();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Event_Manager(const RPG_Engine_Event_Manager&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Engine_Event_Manager& operator=(const RPG_Engine_Event_Manager&))
+  virtual ~RPG_Engine_Event_Manager ();
+  RPG_Engine_Event_Manager ();
+  ACE_UNIMPLEMENTED_FUNC (RPG_Engine_Event_Manager (const RPG_Engine_Event_Manager&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Engine_Event_Manager& operator= (const RPG_Engine_Event_Manager&))
 
   // implement task-based members
-  virtual int open(void* = NULL);
-  virtual int close(u_long = 0);
-  virtual int svc(void);
+  virtual int open (void* = NULL);
+  virtual int close (u_long = 0);
+  virtual int svc (void);
 
   // implement RPG_Common_ITimer interface
   virtual void handle (const void*); // ACT (if any)
 
 	// helper methods
-	void cancel_all();
-	void handleEvent(const RPG_Engine_Event_t&);
+	void cancel_all ();
+	void handleEvent (const RPG_Engine_Event_t&);
 
   RPG_Engine* myEngine;
 
@@ -121,7 +121,7 @@ class RPG_Engine_Event_Manager
     bool        locked_access;
     bool        remove_monsters;
 
-    bool operator()(const RPG_Engine_EntityID_t&);
+    bool operator() (const RPG_Engine_EntityID_t&);
   };
   struct invisible_remove
   {
@@ -129,7 +129,7 @@ class RPG_Engine_Event_Manager
     bool                  locked_access;
     RPG_Engine_EntityID_t entity_id;
 
-    bool operator()(const RPG_Engine_EntityID_t&);
+    bool operator() (const RPG_Engine_EntityID_t&);
   };
 
   ACE_SYNCH_MUTEX           myLock;

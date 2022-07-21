@@ -55,8 +55,8 @@ class RPG_Sound_Common_Tools
   static int play (const std::string&,   // sound file
                    const unsigned char&, // volume (0-128)
                    ACE_Time_Value&);     // return value: length
-  static bool isPlaying (const int& = -1); // channel (-1: ALL channels)
-  static void stop (const int& = -1); // channel (-1: ALL channels)
+  static bool isPlaying (int = -1); // channel (-1: ALL channels)
+  static void stop (int = -1); // channel (-1: ALL channels)
 
 #if defined (SDL_USE)
   // *NOTE*: returns the track# that is playing

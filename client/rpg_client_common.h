@@ -232,7 +232,7 @@ struct RPG_Client_Action
   RPG_Map_Positions_t       positions;
   unsigned char             radius; // map squares
 };
-typedef std::deque<RPG_Client_Action> RPG_Client_Actions_t;
+typedef std::deque<struct RPG_Client_Action> RPG_Client_Actions_t;
 typedef RPG_Client_Actions_t::const_iterator RPG_Client_ActionsIterator_t;
 
 // *TODO*

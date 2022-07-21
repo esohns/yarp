@@ -370,7 +370,7 @@ RPG_Graphics_Cursor_Manager::putCursor (const RPG_Graphics_Offset_t& offset_in,
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Cursor_Manager::putCursor"));
 
   // step0: init return value(s)
-  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
 
   // sanity check(s)
   ACE_ASSERT(myHighlightWindow);
@@ -520,7 +520,7 @@ RPG_Graphics_Cursor_Manager::restoreBG (SDL_Rect& dirtyRegion_out,
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Cursor_Manager::restoreBG"));
 
   // step0: init return value(s)
-  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
 
   // sanity check(s)
   if (!myBG                                                      ||

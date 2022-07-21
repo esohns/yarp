@@ -1100,15 +1100,15 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start (NULL);
   if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to start GTK event dispatch, returning\n")));
-    if (!SDL_RemoveTimer(GTKUserData_in.eventTimer))
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
-                 ACE_TEXT(SDL_GetError())));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to start GTK event dispatch, returning\n")));
+    if (!SDL_RemoveTimer (GTKUserData_in.eventTimer))
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
+                  ACE_TEXT (SDL_GetError ())));
     //		level_engine.stop();
-    client_engine.stop();
-    COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
+    client_engine.stop ();
+    COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
     RPG_Client_Common_Tools::finalize ();
     RPG_Engine_Common_Tools::finalize ();
     RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abort ();
@@ -1195,21 +1195,21 @@ do_work (struct RPG_Client_Configuration& configuration_in,
         {
           if (sdl_event.active.gain & SDL_APPMOUSEFOCUS)
           {
-//           ACE_DEBUG((LM_DEBUG,
-//                      ACE_TEXT("gained mouse coverage...\n")));
+//           ACE_DEBUG ((LM_DEBUG,
+//                       ACE_TEXT ("gained mouse coverage...\n")));
 
             // synch access
-            ACE_Guard<ACE_Thread_Mutex> aGuard(GTKUserData_in.UIState->lock);
+            ACE_Guard<ACE_Thread_Mutex> aGuard (GTKUserData_in.UIState->lock);
 
             GTKUserData_in.doHover = true;
           } // end IF
           else
           {
-//           ACE_DEBUG((LM_DEBUG,
-//                      ACE_TEXT("lost mouse coverage...\n")));
+//           ACE_DEBUG ((LM_DEBUG,
+//                       ACE_TEXT ("lost mouse coverage...\n")));
 
             // synch access
-            ACE_Guard<ACE_Thread_Mutex> aGuard(GTKUserData_in.UIState->lock);
+            ACE_Guard<ACE_Thread_Mutex> aGuard (GTKUserData_in.UIState->lock);
 
             GTKUserData_in.doHover = false;
           } // end ELSE
@@ -1226,17 +1226,23 @@ do_work (struct RPG_Client_Configuration& configuration_in,
         switch (sdl_event.type)
         {
           case SDL_MOUSEMOTION:
-            mouse_position = std::make_pair(sdl_event.motion.x,
-                                            sdl_event.motion.y); break;
+          {
+            mouse_position = std::make_pair (sdl_event.motion.x,
+                                             sdl_event.motion.y);
+            break;
+          }
           case SDL_MOUSEBUTTONDOWN:
-            mouse_position = std::make_pair(sdl_event.button.x,
-                                            sdl_event.button.y); break;
+          {
+            mouse_position = std::make_pair (sdl_event.button.x,
+                                             sdl_event.button.y);
+            break;
+          }
           default:
           {
             int x, y;
-            Uint8 button_state = SDL_GetMouseState(&x, &y);
-            ACE_UNUSED_ARG(button_state);
-            mouse_position = std::make_pair(x, y);
+            Uint8 button_state = SDL_GetMouseState (&x, &y);
+            ACE_UNUSED_ARG (button_state);
+            mouse_position = std::make_pair (x, y);
             break;
           }
         } // end SWITCH
@@ -1316,22 +1322,22 @@ do_work (struct RPG_Client_Configuration& configuration_in,
             break;
           case SDL_WINDOWEVENT_ENTER:
           {
-//           ACE_DEBUG((LM_DEBUG,
-//                      ACE_TEXT("gained mouse coverage...\n")));
+//           ACE_DEBUG ((LM_DEBUG,
+//                       ACE_TEXT ("gained mouse coverage...\n")));
 
             // synch access
-            ACE_Guard<ACE_Thread_Mutex> aGuard(GTKUserData_in.UIState->lock);
+            ACE_Guard<ACE_Thread_Mutex> aGuard (GTKUserData_in.UIState->lock);
 
             GTKUserData_in.doHover = true;
             break;
           }
           case SDL_WINDOWEVENT_LEAVE:
           {
-//           ACE_DEBUG((LM_DEBUG,
-//                      ACE_TEXT("lost mouse coverage...\n")));
+//           ACE_DEBUG ((LM_DEBUG,
+//                       ACE_TEXT ("lost mouse coverage...\n")));
 
             // synch access
-            ACE_Guard<ACE_Thread_Mutex> aGuard(GTKUserData_in.UIState->lock);
+            ACE_Guard<ACE_Thread_Mutex> aGuard (GTKUserData_in.UIState->lock);
 
             GTKUserData_in.doHover = false;
             break;
@@ -1487,7 +1493,7 @@ continue_:;
   client_engine.stop ();
   RPG_CLIENT_ENTITY_MANAGER_SINGLETON::close ();
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::close ();
-  COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
+  COMMON_TIMERMANAGER_SINGLETON::instance()->stop ();
   RPG_Client_Common_Tools::finalize ();
   RPG_Engine_Common_Tools::finalize ();
   // done handling UI events

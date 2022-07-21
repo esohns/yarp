@@ -106,7 +106,7 @@ if (UNIX)
                         RPG_Common
                         Common)
 elseif (WIN32)
- set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+# set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
                         $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
@@ -153,7 +153,7 @@ if (UNIX)
                         RPG_Common RPG_Monster RPG_Combat RPG_Map
                         RPG_Player)
 elseif (WIN32)
- set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+# set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
                         $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
@@ -223,7 +223,7 @@ if (UNIX)
                         Common
                         ACEStream_Network)
 elseif (WIN32)
- set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+# set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
                         Opengl32.lib Ntdll.lib

@@ -48,7 +48,7 @@ if (UNIX)
                         RPG_Dice RPG_Character RPG_Magic RPG_Item
                         RPG_Common RPG_Combat RPG_Player RPG_Chance)
 elseif (WIN32)
- set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+# set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
                         $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
@@ -115,7 +115,7 @@ if (UNIX)
                         RPG_Dice RPG_Character RPG_Magic RPG_Item
                         RPG_Common RPG_Combat RPG_Player RPG_Chance)
 elseif (WIN32)
- set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+# set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
                         $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
@@ -154,7 +154,7 @@ if (UNIX)
                         Common CommonError CommonLog CommonTimer
                         RPG_Dice RPG_Common RPG_Map)
 elseif (WIN32)
- set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+# set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
                         Userenv.lib

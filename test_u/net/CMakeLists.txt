@@ -123,7 +123,7 @@ if (UNIX)
                         ACENetwork ACENetwork_Client
                         RPG_Dice RPG_Common RPG_Net RPG_Net_Protocol)
 elseif (WIN32)
- set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+# set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
                         Opengl32.lib legacy_stdio_definitions.lib
@@ -179,7 +179,7 @@ if (UNIX)
                         ACEStream_Network
                         RPG_Net)
 elseif (WIN32)
- set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+# set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
                         Opengl32.lib legacy_stdio_definitions.lib

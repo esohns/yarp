@@ -46,7 +46,7 @@ if (UNIX)
                        Common CommonLog CommonTimer
                        RPG_Dice RPG_Common RPG_Sound)
 elseif (WIN32)
- set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+# set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
                        legacy_stdio_definitions.lib

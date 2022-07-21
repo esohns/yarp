@@ -62,12 +62,6 @@ RPG_Client_Window_Main::RPG_Client_Window_Main (const RPG_Graphics_Size_t& size_
 
 }
 
-RPG_Client_Window_Main::~RPG_Client_Window_Main()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Main::~RPG_Client_Window_Main"));
-
-}
-
 bool
 RPG_Client_Window_Main::initialize (RPG_Client_Engine* clientEngine_in,
                                     bool doAutoEdgeScroll_in,
@@ -112,7 +106,7 @@ RPG_Client_Window_Main::draw (SDL_Surface* targetSurface_in,
   ACE_ASSERT (target_surface);
   ACE_ASSERT (static_cast<int>(offsetX_in) <= target_surface->w);
   ACE_ASSERT (static_cast<int>(offsetY_in) <= target_surface->h);
-  ACE_ASSERT (myEngine);
+  //ACE_ASSERT (myEngine);
 
 //   // init clipping
 //   clip(targetSurface,
@@ -120,7 +114,7 @@ RPG_Client_Window_Main::draw (SDL_Surface* targetSurface_in,
 //        offsetY_in);
 
   // step1: draw borders
-  myEngine->lock();
+  //myEngine->lock ();
   drawBorder (target_surface,
               offsetX_in,
               offsetY_in);
@@ -140,10 +134,7 @@ RPG_Client_Window_Main::draw (SDL_Surface* targetSurface_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
                ACE_TEXT(SDL_GetError())));
-
-    // clean up
-    myEngine->unlock();
-
+    //myEngine->unlock();
     return;
   } // end IF
   RPG_Graphics_InterfaceElementsConstIterator_t iterator;
@@ -165,10 +156,7 @@ RPG_Client_Window_Main::draw (SDL_Surface* targetSurface_in,
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
                ACE_TEXT(SDL_GetError())));
-
-    // clean up
-    myEngine->unlock();
-
+    //myEngine->unlock ();
     return;
   } // end IF
 
@@ -186,10 +174,7 @@ RPG_Client_Window_Main::draw (SDL_Surface* targetSurface_in,
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
                  ACE_TEXT(SDL_GetError())));
-
-      // clean up
-      myEngine->unlock();
-
+      //myEngine->unlock ();
       return;
     } // end IF
 
@@ -213,33 +198,27 @@ RPG_Client_Window_Main::draw (SDL_Surface* targetSurface_in,
                                    target_surface,
                                    dirty_region);
 //    invalidate(clip_rect);
-    if (!SDL_SetClipRect(target_surface, NULL))
+    if (!SDL_SetClipRect (target_surface, NULL))
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
                  ACE_TEXT(SDL_GetError())));
-
-      // clean up
-      myEngine->unlock();
-
+      //myEngine->unlock ();
       return;
     } // end IF
   } // end IF
-  myEngine->unlock ();
+  //myEngine->unlock ();
 
   // step4: realize hotspots (and any other children)
   for (RPG_Graphics_WindowsIterator_t iterator = children_.begin();
        iterator != children_.end();
        iterator++)
   {
-    try
-    {
+    try {
       (*iterator)->draw (target_surface,
                          offsetX_in,
                          offsetY_in);
-    }
-    catch (...)
-    {
+    } catch (...) {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw(), continuing\n")));
     }
@@ -247,8 +226,8 @@ RPG_Client_Window_Main::draw (SDL_Surface* targetSurface_in,
 
   // whole window needs a refresh...
   SDL_Rect dirtyRegion;
-  SDL_GetClipRect(target_surface, &dirtyRegion);
-  invalidate(dirtyRegion);
+  SDL_GetClipRect (target_surface, &dirtyRegion);
+  invalidate (dirtyRegion);
 
 //   // restore previous clipping area
 //   unclip(targetSurface);
