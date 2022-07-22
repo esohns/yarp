@@ -151,7 +151,7 @@ RPG_Client_Window_Main::draw (SDL_Surface* targetSurface_in,
                                 target_surface,
                                 dirty_region);
 //  invalidate(clip_rect);
-  if (!SDL_SetClipRect(target_surface, NULL))
+  if (!SDL_SetClipRect (target_surface, NULL))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),

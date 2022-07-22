@@ -23,7 +23,7 @@
 
 // task-specific
 #define RPG_ENGINE_TASK_GROUP_ID                    102
-#define RPG_ENGINE_TASK_THREAD_NAME                 "RPG state engine"
+#define RPG_ENGINE_TASK_THREAD_NAME                 "RPG engine"
 #define RPG_ENGINE_AI_TASK_GROUP_ID                 103
 #define RPG_ENGINE_AI_TASK_THREAD_NAME              "RPG AI"
 #define RPG_ENGINE_AI_DEF_NUM_THREADS               3

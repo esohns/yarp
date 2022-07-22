@@ -23,9 +23,9 @@
 
 // task-specific
 #define RPG_CLIENT_GTK_UI_THREAD_GROUP_ID                 102
-#define RPG_CLIENT_GTK_UI_THREAD_NAME                     "RPG UI dispatch"
+#define RPG_CLIENT_GTK_UI_THREAD_NAME                     "UI dispatch"
 #define RPG_CLIENT_ENGINE_THREAD_GROUP_ID                 104
-#define RPG_CLIENT_ENGINE_THREAD_NAME                     "RPG graphics engine"
+#define RPG_CLIENT_ENGINE_THREAD_NAME                     "RPG client"
 #define RPG_CLIENT_ENGINE_MAX_QUEUE_SLOTS                 100
 
 // gnome / gtk

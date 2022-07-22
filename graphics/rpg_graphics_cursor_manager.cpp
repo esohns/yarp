@@ -456,26 +456,26 @@ RPG_Graphics_Cursor_Manager::putCursor (const RPG_Graphics_Offset_t& offset_in,
     } // end ELSE
 //    RPG_Graphics_Surface::unclip();
     if (myScreenLock && lockedAccess_in)
-      myScreenLock->lock();
+      myScreenLock->lock ();
     RPG_Graphics_Surface::putText (FONT_MAIN_SMALL,
                                    text,
                                    RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_Graphics_SDL_Tools::getColor (RPG_GRAPHICS_FONT_DEF_COLOR,
                                                                                                               *target_surface->format,
                                                                                                               1.0F),
                                                                             *target_surface),
-                                  true, // add shade
-                                  RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_Graphics_SDL_Tools::getColor (RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
-                                                                                                             *target_surface->format,
-                                                                                                             1.0F),
-                                                                           *target_surface),
-                                  std::make_pair((((window_area.w / 2) - text_size.first) / 2),
-                                                 ((border_top - text_size.second) / 2)),
-                                  target_surface,
-                                  dirty_region);
+                                   true, // add shade
+                                   RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_Graphics_SDL_Tools::getColor (RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
+                                                                                                              *target_surface->format,
+                                                                                                              1.0F),
+                                                                            *target_surface),
+                                   std::make_pair ((((window_area.w / 2) - text_size.first) / 2),
+                                                   ((border_top - text_size.second) / 2)),
+                                   target_surface,
+                                   dirty_region);
 
     // step2: show bg surface in left upper corner
-    ACE_ASSERT(target_surface->w >= myBG->w);
-    ACE_ASSERT(target_surface->h >= myBG->h);
+    ACE_ASSERT (target_surface->w >= myBG->w);
+    ACE_ASSERT (target_surface->h >= myBG->h);
 
     // compute bounding box
     dirty_region.x = 0;
@@ -483,33 +483,33 @@ RPG_Graphics_Cursor_Manager::putCursor (const RPG_Graphics_Offset_t& offset_in,
     dirty_region.w = myBG->w;
     dirty_region.h = myBG->h;
 
-    RPG_Graphics_Surface::put(std::make_pair(dirty_region.x,
-                                             dirty_region.y),
-                              *myBG,
-                              target_surface,
-                              dirty_region);
+    RPG_Graphics_Surface::put (std::make_pair (dirty_region.x,
+                                               dirty_region.y),
+                               *myBG,
+                               target_surface,
+                               dirty_region);
     if (myScreenLock && lockedAccess_in)
-      myScreenLock->unlock();
+      myScreenLock->unlock ();
 //    RPG_Graphics_Surface::clip();
 
-    dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirtyRegion_out,
-                                                          dirty_region);
+    dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirtyRegion_out,
+                                                           dirty_region);
   } // end IF
 
   // step3: place cursor
 //	RPG_Graphics_Surface::unclip();
   if (myScreenLock && lockedAccess_in)
     myScreenLock->lock();
-  RPG_Graphics_Surface::put(offset_in,
-                            *myCurrentGraphic,
-                            target_surface,
-                            dirty_region);
+  RPG_Graphics_Surface::put (offset_in,
+                             *myCurrentGraphic,
+                             target_surface,
+                             dirty_region);
   if (myScreenLock && lockedAccess_in)
-    myScreenLock->unlock();
+    myScreenLock->unlock ();
 //	RPG_Graphics_Surface::clip();
 
-  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirtyRegion_out,
-                                                        dirty_region);
+  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirtyRegion_out,
+                                                         dirty_region);
 }
 
 void
@@ -525,10 +525,10 @@ RPG_Graphics_Cursor_Manager::restoreBG (SDL_Rect& dirtyRegion_out,
   // sanity check(s)
   if (!myBG                                                      ||
       (myBGPosition ==
-       std::make_pair(std::numeric_limits<unsigned int>::max(),
-                      std::numeric_limits<unsigned int>::max())))
+       std::make_pair (std::numeric_limits<unsigned int>::max (),
+                       std::numeric_limits<unsigned int>::max ())))
     return; // nothing to do
-  ACE_ASSERT(myHighlightWindow);
+  ACE_ASSERT (myHighlightWindow);
 #if defined (SDL_USE)
   SDL_Surface* target_surface = myHighlightWindow->getScreen ();
 #elif defined (SDL2_USE)
@@ -538,39 +538,39 @@ RPG_Graphics_Cursor_Manager::restoreBG (SDL_Rect& dirtyRegion_out,
   ACE_ASSERT (target_surface);
 
   // init dirty region
-  dirtyRegion_out.x = static_cast<int16_t>(myBGPosition.first);
-  dirtyRegion_out.y = static_cast<int16_t>(myBGPosition.second);
-  dirtyRegion_out.w = static_cast<uint16_t>(myBG->w);
-  dirtyRegion_out.h = static_cast<uint16_t>(myBG->h);
-	SDL_Rect clip_rectangle;
-	myHighlightWindow->getArea(clip_rectangle, true);
-	dirtyRegion_out = RPG_Graphics_SDL_Tools::intersect(dirtyRegion_out,
-														clip_rectangle);
-	clip_rectangle = dirtyRegion_out;
-	SDL_Rect source_clip_rectangle = {0, 0, dirtyRegion_out.w, dirtyRegion_out.h};
-	if (clipRectangle_in)
-	{
-		clip_rectangle = RPG_Graphics_SDL_Tools::intersect(*clipRectangle_in,
-                                                       clip_rectangle);
-		source_clip_rectangle = clip_rectangle;
-		source_clip_rectangle.x -= myBGPosition.first;
-		source_clip_rectangle.y -= myBGPosition.second;
-	} // end IF
-	// sanity check
-	if (!clip_rectangle.w || !clip_rectangle.h)
-		return; // nothing to do...
+  dirtyRegion_out.x = static_cast<int16_t> (myBGPosition.first);
+  dirtyRegion_out.y = static_cast<int16_t> (myBGPosition.second);
+  dirtyRegion_out.w = static_cast<uint16_t> (myBG->w);
+  dirtyRegion_out.h = static_cast<uint16_t> (myBG->h);
+  SDL_Rect clip_rectangle;
+  myHighlightWindow->getArea (clip_rectangle, true);
+  dirtyRegion_out = RPG_Graphics_SDL_Tools::intersect (dirtyRegion_out,
+                                                        clip_rectangle);
+  clip_rectangle = dirtyRegion_out;
+  SDL_Rect source_clip_rectangle = {0, 0, dirtyRegion_out.w, dirtyRegion_out.h};
+  if (clipRectangle_in)
+  {
+    clip_rectangle = RPG_Graphics_SDL_Tools::intersect (*clipRectangle_in,
+                                                        clip_rectangle);
+    source_clip_rectangle = clip_rectangle;
+    source_clip_rectangle.x -= myBGPosition.first;
+    source_clip_rectangle.y -= myBGPosition.second;
+  } // end IF
+  // sanity check
+  if (!clip_rectangle.w || !clip_rectangle.h)
+    return; // nothing to do...
   if (lockedAccess_in && myScreenLock)
     myScreenLock->lock();
   // restore / clear background
-  if (SDL_BlitSurface(myBG,                   // source
-		              &source_clip_rectangle, // aspect
-                      target_surface,         // target
-                      &clip_rectangle))       // position, result
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_BlitSurface(): \"%s\", continuing\n"),
-               ACE_TEXT(SDL_GetError())));
+  if (SDL_BlitSurface (myBG,                   // source
+                       &source_clip_rectangle, // aspect
+                       target_surface,         // target
+                       &clip_rectangle))       // position, result
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_BlitSurface(): \"%s\", continuing\n"),
+                ACE_TEXT (SDL_GetError ())));
   if (lockedAccess_in && myScreenLock)
-    myScreenLock->unlock();
+    myScreenLock->unlock ();
 }
 
 void

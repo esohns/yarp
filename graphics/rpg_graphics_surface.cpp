@@ -759,15 +759,15 @@ RPG_Graphics_Surface::get (const RPG_Graphics_Offset_t& offset_in,
 }
 
 void
-RPG_Graphics_Surface::put(const RPG_Graphics_Offset_t& offset_in,
-                          const SDL_Surface& image_in,
-                          SDL_Surface* targetSurface_in,
-                          SDL_Rect& dirtyRegion_out)
+RPG_Graphics_Surface::put (const RPG_Graphics_Offset_t& offset_in,
+                           const SDL_Surface& image_in,
+                           SDL_Surface* targetSurface_in,
+                           SDL_Rect& dirtyRegion_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::put"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::put"));
 
   // init return value(s)
-  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
 
   // sanity check(s)
   ACE_ASSERT(targetSurface_in);
@@ -778,10 +778,10 @@ RPG_Graphics_Surface::put(const RPG_Graphics_Offset_t& offset_in,
   target_rectangle.y = static_cast<Sint16>(offset_in.second);
   target_rectangle.w = 0; // *NOTE*: ignored
   target_rectangle.h = 0; // *NOTE*: ignored
-  if (SDL_BlitSurface(&const_cast<SDL_Surface&>(image_in), // source
-                      NULL,                                // aspect (--> everything)
-                      targetSurface_in,                    // target
-                      &target_rectangle))                  // aspect
+  if (SDL_BlitSurface(&const_cast<SDL_Surface&> (image_in), // source
+                      NULL,                                 // aspect (--> everything)
+                      targetSurface_in,                     // target
+                      &target_rectangle))                   // aspect
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to SDL_BlitSurface(): \"%s\", returning\n"),
@@ -963,24 +963,24 @@ RPG_Graphics_Surface::alpha (Uint8 opacity_in,
       return;
     } // end IF
 
-  Uint32* pixels = static_cast<Uint32*>(targetImage_in.pixels);
+  Uint32* pixels = static_cast<Uint32*> (targetImage_in.pixels);
   for (unsigned int j = 0;
-       j < static_cast<unsigned int>(targetImage_in.h);
+       j < static_cast<unsigned int> (targetImage_in.h);
        j++)
     for (unsigned int i = 0;
-         i < static_cast<unsigned int>(targetImage_in.w);
+         i < static_cast<unsigned int> (targetImage_in.w);
          i++)
   {
     // ignore transparent pixels
     if (((pixels[(targetImage_in.w * j) + i] & targetImage_in.format->Amask) >> targetImage_in.format->Ashift) == SDL_ALPHA_TRANSPARENT)
       continue;
 
-    pixels[(targetImage_in.w * j) + i] &= ~static_cast<Uint32>((SDL_ALPHA_OPAQUE << targetImage_in.format->Ashift));
-    pixels[(targetImage_in.w * j) + i] |= (static_cast<Uint32>(opacity_in) << targetImage_in.format->Ashift);
+    pixels[(targetImage_in.w * j) + i] &= ~static_cast<Uint32> ((SDL_ALPHA_OPAQUE << targetImage_in.format->Ashift));
+    pixels[(targetImage_in.w * j) + i] |= (static_cast<Uint32> (opacity_in) << targetImage_in.format->Ashift);
   } // end FOR
 
-  if (SDL_MUSTLOCK((&targetImage_in)))
-    SDL_UnlockSurface(&targetImage_in);
+  if (SDL_MUSTLOCK ((&targetImage_in)))
+    SDL_UnlockSurface (&targetImage_in);
 }
 
 SDL_Surface*
@@ -1132,25 +1132,24 @@ RPG_Graphics_Surface::copy (const SDL_Surface& sourceImage_in,
 }
 
 SDL_Surface*
-RPG_Graphics_Surface::copy(const SDL_Surface& sourceImage_in)
+RPG_Graphics_Surface::copy (const SDL_Surface& sourceImage_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::copy"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::copy"));
 
   SDL_Surface* result = NULL;
-  result = SDL_CreateRGBSurface(RPG_Graphics_Surface::SDL_surface_flags,
-                                sourceImage_in.w,
-                                sourceImage_in.h,
-                                sourceImage_in.format->BitsPerPixel,
-                                sourceImage_in.format->Rmask,
-                                sourceImage_in.format->Gmask,
-                                sourceImage_in.format->Bmask,
-                                sourceImage_in.format->Amask);
+  result = SDL_CreateRGBSurface (RPG_Graphics_Surface::SDL_surface_flags,
+                                 sourceImage_in.w,
+                                 sourceImage_in.h,
+                                 sourceImage_in.format->BitsPerPixel,
+                                 sourceImage_in.format->Rmask,
+                                 sourceImage_in.format->Gmask,
+                                 sourceImage_in.format->Bmask,
+                                 sourceImage_in.format->Amask);
   if (!result)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_CreateRGBSurface(): \"%s\", aborting\n"),
-               ACE_TEXT(SDL_GetError())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_CreateRGBSurface(): \"%s\", aborting\n"),
+                ACE_TEXT (SDL_GetError ())));
     return NULL;
   } // end IF
 

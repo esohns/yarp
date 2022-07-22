@@ -61,7 +61,7 @@ class RPG_Graphics_SDL_Tools
   static std::string keyToString (const SDL_Keysym&);
 #endif // SDL_USE || SDL2_USE
 
-  static SDL_Color colorToSDLColor (ACE_UINT32,          // RGBA value
+  static SDL_Color colorToSDLColor (Uint32,              // RGBA value (SDL format)
                                     const SDL_Surface&); // target surface
   static Uint32 getColor (const RPG_Graphics_ColorName&, // color name
                           const SDL_PixelFormat&,        // pixel format

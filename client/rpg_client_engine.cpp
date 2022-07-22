@@ -948,7 +948,14 @@ next:
       break;
     }
     case COMMAND_SET_VISION_RADIUS:
-    { ACE_ASSERT (client_action.window);
+    { ACE_ASSERT (engine_);
+      ACE_ASSERT(client_action.entity_id);
+      RPG_Engine_EntityID_t active_entity_id = engine_->getActive (true);
+      if (!active_entity_id ||
+          (active_entity_id != client_action.entity_id))
+        break; // nothing to do (yet)
+
+      ACE_ASSERT (client_action.window);
       RPG_Client_IWindowLevel* level_window = NULL;
       try {
         level_window =
@@ -973,15 +980,6 @@ next:
                     client_action.radius));
         goto continue_;
       }
-
-      // --> update whole window (*NOTE*: the draw() call above invalidates the whole window)
-      //try {
-      //  (*iterator).window->invalidate (dirty_region);
-      //} catch (...) {
-      //  ACE_DEBUG ((LM_ERROR,
-      //              ACE_TEXT ("caught exception in RPG_Graphics_IWindowBase::invalidate(), continuing\n")));
-      //  continue;
-      //}
 
       break;
     }

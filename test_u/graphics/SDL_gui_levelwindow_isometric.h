@@ -78,53 +78,54 @@ class SDL_GUI_LevelWindow_Isometric
 
   // (re-)init / set level properties
   // implement (part of) RPG_Client_IWindowLevel
-  virtual void toggleDoor(const RPG_Map_Position_t&); // door position
-  virtual void setBlendRadius(unsigned char); // radius
-  virtual void updateMinimap();
-  virtual void updateMessageWindow(const std::string&); // message
+  virtual void toggleDoor (const RPG_Map_Position_t&); // door position
+  virtual void setBlendRadius (unsigned char); // radius
+  virtual void updateMinimap ();
+  virtual void updateMessageWindow (const std::string&); // message
 
-  bool setStyle(const RPG_Graphics_StyleUnion&);
+  inline virtual void toggleFloorBlend () { myFloorBlend = !myFloorBlend; }
+
+  bool setStyle (const RPG_Graphics_StyleUnion&);
 
   // implement RPG_Client_IWindow
-  virtual void drawBorder(SDL_Surface* = NULL, // target surface (default: screen)
-                          unsigned int = 0,    // offset x (top-left = [0,0])
-                          unsigned int = 0);   // offset y (top-left = [0,0])
+  virtual void drawBorder (SDL_Surface* = NULL, // target surface (default: screen)
+                           unsigned int = 0,    // offset x (top-left = [0,0])
+                           unsigned int = 0);   // offset y (top-left = [0,0])
   // implement (part of) RPG_Graphics_IWindowBase
-  virtual void draw(SDL_Surface* = NULL, // target surface (default: screen)
-                    unsigned int = 0,    // offset x (top-left = [0,0])
-                    unsigned int = 0);   // offset y (top-left = [0,0])
-  virtual void handleEvent(const SDL_Event&,          // event
-                           RPG_Graphics_IWindowBase*, // target window (NULL: this)
-                           SDL_Rect&);                // return value: "dirty" region
+  virtual void draw (SDL_Surface* = NULL, // target surface (default: screen)
+                     unsigned int = 0,    // offset x (top-left = [0,0])
+                     unsigned int = 0);   // offset y (top-left = [0,0])
+  virtual void handleEvent (const SDL_Event&,          // event
+                            RPG_Graphics_IWindowBase*, // target window (NULL: this)
+                            SDL_Rect&);                // return value: "dirty" region
 
   // implement RPG_Engine_IClient
   //virtual void redraw();
   //// *NOTE*: this triggers a complete redraw !
   //virtual void updateEntity(const RPG_Engine_EntityID_t&);
-  virtual void notify(enum RPG_Engine_Command,
-                      const struct RPG_Engine_ClientNotificationParameters&);
+  virtual void notify (enum RPG_Engine_Command,
+                       const struct RPG_Engine_ClientNotificationParameters&);
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow_Isometric())
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow_Isometric(const SDL_GUI_LevelWindow_Isometric&))
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow_Isometric& operator=(const SDL_GUI_LevelWindow_Isometric&))
+  ACE_UNIMPLEMENTED_FUNC (SDL_GUI_LevelWindow_Isometric ())
+  ACE_UNIMPLEMENTED_FUNC (SDL_GUI_LevelWindow_Isometric (const SDL_GUI_LevelWindow_Isometric&))
+  ACE_UNIMPLEMENTED_FUNC (SDL_GUI_LevelWindow_Isometric& operator= (const SDL_GUI_LevelWindow_Isometric&))
 
   // helper types
   typedef std::pair<int, int> RPG_Position_t;
 
   // helper methods
-  bool hasSeen(const RPG_Engine_EntityID_t&,
-               const RPG_Map_Position_t&) const;
-  void redrawCursor(const RPG_Graphics_Position_t& =
-                    RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position(false), // screen position
-                    bool = true,                                                 // update bg cache first ?
-                    bool = true);                                                // locked access (engine) ?
+  bool hasSeen (const RPG_Engine_EntityID_t&,
+                const RPG_Map_Position_t&) const;
+  void redrawCursor (const RPG_Graphics_Position_t& = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->position (false), // screen position
+                     bool = true,                                                        // update bg cache first ?
+                     bool = true);                                                       // locked access (engine) ?
 
-  void initCeiling();
-  void initWallBlend(const bool&); // half-height walls ?
-  void initMiniMap(RPG_Engine*); // level state handle
+  void initCeiling ();
+  void initWallBlend (bool); // half-height walls ?
+  void initMiniMap (RPG_Engine*); // level state handle
 //  void restoreBG();
-  void initTiles();
+  void initTiles ();
 
   state_t*                             myState;
   RPG_Engine*                          myEngine;
@@ -143,6 +144,7 @@ class SDL_GUI_LevelWindow_Isometric
   RPG_Graphics_WallTileMap_t           myWallTiles;
 
   bool                                 myHideFloor;
+  bool                                 myFloorBlend;
   bool                                 myHideWalls;
 
   SDL_Surface*                         myWallBlend;

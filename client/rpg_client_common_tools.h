@@ -63,29 +63,29 @@ class RPG_Client_Common_Tools
                           bool = true);                               // init SDL ?
   static void finalize ();
 
-  static void initFloorEdges(const RPG_Engine&,                      // state / engine
-                             const struct RPG_Graphics_FloorEdgeTileSet&, // appropriate (style) tileset
-                             RPG_Graphics_FloorEdgeTileMap_t&);      // return value: floor edge tiles / position
-  static void updateFloorEdges(const struct RPG_Graphics_FloorEdgeTileSet&, // appropriate (style) tileset
-                               RPG_Graphics_FloorEdgeTileMap_t&);      // input/output value: floor edge tiles / position
-  static void initWalls(const RPG_Engine&,                 // state / engine
-                        const struct RPG_Graphics_WallTileSet&, // appropriate (style) tileset
-                        RPG_Graphics_WallTileMap_t&);      // return value: wall tiles / position
-  static void updateWalls(const struct RPG_Graphics_WallTileSet&, // appropriate (style) tileset
-                          RPG_Graphics_WallTileMap_t&);      // input/output value: wall tiles / position
-  static void initDoors(const RPG_Engine&,                 // state / engine
-                        const struct RPG_Graphics_DoorTileSet&, // appropriate (style) tileset
-                        RPG_Graphics_DoorTileMap_t&);      // return value: door tiles / position
-  static void updateDoors(const struct RPG_Graphics_DoorTileSet&, // appropriate (style) tileset
-                          const RPG_Engine&,                 // state / engine
-                          RPG_Graphics_DoorTileMap_t&);      // input/output value: door tiles / position
+  static void initFloorEdges (const RPG_Engine&,                      // state / engine
+                              const struct RPG_Graphics_FloorEdgeTileSet&, // appropriate (style) tileset
+                              RPG_Graphics_FloorEdgeTileMap_t&);      // return value: floor edge tiles / position
+  static void updateFloorEdges (const struct RPG_Graphics_FloorEdgeTileSet&, // appropriate (style) tileset
+                                RPG_Graphics_FloorEdgeTileMap_t&);      // input/output value: floor edge tiles / position
+  static void initWalls (const RPG_Engine&,                 // state / engine
+                         const struct RPG_Graphics_WallTileSet&, // appropriate (style) tileset
+                         RPG_Graphics_WallTileMap_t&);      // return value: wall tiles / position
+  static void updateWalls (const struct RPG_Graphics_WallTileSet&, // appropriate (style) tileset
+                           RPG_Graphics_WallTileMap_t&);      // input/output value: wall tiles / position
+  static void initDoors (const RPG_Engine&,                 // state / engine
+                         const struct RPG_Graphics_DoorTileSet&, // appropriate (style) tileset
+                         RPG_Graphics_DoorTileMap_t&);      // return value: door tiles / position
+  static void updateDoors (const struct RPG_Graphics_DoorTileSet&, // appropriate (style) tileset
+                           const RPG_Engine&,                 // state / engine
+                           RPG_Graphics_DoorTileMap_t&);      // input/output value: door tiles / position
 
-  static RPG_Graphics_Sprite classToSprite(const RPG_Character_Class&);
-  static RPG_Graphics_Sprite monsterToSprite(const std::string&);
+  static RPG_Graphics_Sprite classToSprite (const RPG_Character_Class&);
+  static RPG_Graphics_Sprite monsterToSprite (const std::string&);
 
   static bool hasCeiling (const RPG_Map_Position_t&, // position
                           const RPG_Engine&,         // state / engine
-                          const bool& = true);       // locked access ?
+                          bool = true);              // locked access ?
   static bool isVisible (const RPG_Graphics_Positions_t&, // positions (map coordinates !)
                          const RPG_Graphics_Size_t&,      // window size
                          const RPG_Graphics_Position_t&,  // viewport (map coordinates !)
@@ -93,21 +93,21 @@ class RPG_Client_Common_Tools
                          bool = true);                    // any ? : all
   static bool hasHighlight (const RPG_Map_Position_t&, // position
                             const RPG_Engine&,         // state / engine
-                            const bool& = true);       // locked access ?
-  static RPG_Graphics_Orientation getDoorOrientation(const RPG_Map_Position_t&, // door position
-                                                     const RPG_Engine&,         // state / engine
-                                                     const bool& = true);       // locked access ?
+                            bool = true);              // locked access ?
+  static RPG_Graphics_Orientation getDoorOrientation (const RPG_Map_Position_t&, // door position
+                                                      const RPG_Engine&,         // state / engine
+                                                      bool = true);              // locked access ?
 
-  static RPG_Graphics_Cursor getCursor(const RPG_Map_Position_t&,       // position
-                                       const RPG_Engine_EntityID_t&,    // active player
-                                       const bool&,                     // has player seen this position ?
-                                       const RPG_Client_SelectionMode&, // current selection mode
-                                       const RPG_Engine&,               // state / engine
-                                       const bool& = true);             // locked access ?
+  static RPG_Graphics_Cursor getCursor (const RPG_Map_Position_t&,       // position
+                                        const RPG_Engine_EntityID_t&,    // active player
+                                        bool,                            // has player seen this position ?
+                                        const RPG_Client_SelectionMode&, // current selection mode
+                                        const RPG_Engine&,               // state / engine
+                                        bool = true);                    // locked access ?
 
   static RPG_Graphics_Positions_t mapToGraphicsPositions (const RPG_Map_Positions_t&);
 
-  static RPG_Graphics_Style environmentToStyle(const RPG_Common_Environment&); // environment
+  static RPG_Graphics_Style environmentToStyle (const RPG_Common_Environment&); // environment
 
  private:
   ACE_UNIMPLEMENTED_FUNC (RPG_Client_Common_Tools ())
@@ -116,7 +116,7 @@ class RPG_Client_Common_Tools
   ACE_UNIMPLEMENTED_FUNC (RPG_Client_Common_Tools& operator= (const RPG_Client_Common_Tools&))
 
   // helper methods
-  static void initializeUserProfiles();
+  static void initializeUserProfiles ();
 };
 
 #endif

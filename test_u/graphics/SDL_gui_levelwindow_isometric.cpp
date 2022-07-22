@@ -50,30 +50,30 @@
 
 SDL_GUI_LevelWindow_Isometric::SDL_GUI_LevelWindow_Isometric(const RPG_Graphics_SDLWindowBase& parent_in,
                                                              RPG_Engine* engine_in)
- : inherited(WINDOW_MAP,           // type
-             parent_in,            // parent
-             std::make_pair(0, 0), // offset
-             std::string()),       // title
-//              NULL),                // background
-   myState(NULL),
-   myEngine(engine_in),
+ : inherited (WINDOW_MAP,            // type
+              parent_in,             // parent
+              std::make_pair (0, 0), // offset
+              std::string ())        // title
+ , myState (NULL)
+ , myEngine (engine_in)
 //    myCurrentFloorSet(),
 //    myCurrentWallSet(),
-   myCurrentCeilingTile(NULL),
+ , myCurrentCeilingTile (NULL)
 //    myCurrentDoorSet(),
-   myCurrentOffMapTile(NULL),
+ , myCurrentOffMapTile (NULL)
 //    myFloorEdgeTiles(),
 //    myWallTiles(),
-   myHideFloor(false),
-   myHideWalls(false),
-   myWallBlend(NULL),
-   myView(std::make_pair(std::numeric_limits<unsigned int>::max(),
-                         std::numeric_limits<unsigned int>::max())),
+ , myHideFloor (false)
+ , myFloorBlend (false)
+ , myHideWalls (false)
+ , myWallBlend (NULL)
+ , myView (std::make_pair (std::numeric_limits<unsigned int>::max (),
+                           std::numeric_limits<unsigned int>::max ()))
 //   myHighlightBGPosition(std::make_pair(myEngine->getSize().first / 2,
 //                                        myEngine->getSize().second / 2)),
 //   myHighlightBG(NULL),
 //   myHighlightTile(NULL),
-   myMinimapIsOn(RPG_CLIENT_MINIMAP_DEF_ISON)
+ , myMinimapIsOn (RPG_CLIENT_MINIMAP_DEF_ISON)
 {
   RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_Isometric::SDL_GUI_LevelWindow"));
 
@@ -500,10 +500,44 @@ SDL_GUI_LevelWindow_Isometric::draw (SDL_Surface* targetSurface_in,
           (current_map_element == MAPELEMENT_DOOR))
       {
         if (!myHideFloor)
-          RPG_Graphics_Surface::put(screen_position,
-                                    *(*floor_iterator).surface,
-                                    target_surface,
-                                    dirty_region);
+        {
+          if (myFloorBlend)
+          {
+            RPG_Map_Position_t active_position =
+              myEngine->getPosition (active_entity_id, false);
+            unsigned char visible_radius_i =
+              myEngine->getVisibleRadius (active_entity_id, false);
+            unsigned int distance_i = RPG_Map_Common_Tools::distanceMax (active_position,
+                                                                         current_map_position);
+            SDL_Surface* blend_tile_p =
+              RPG_Graphics_Surface::copy (*myCurrentOffMapTile);
+            ACE_ASSERT (blend_tile_p);
+            Uint8 quantum = static_cast<Uint8> (SDL_ALPHA_OPAQUE / visible_radius_i);
+            RPG_Graphics_Surface::alpha (distance_i > visible_radius_i ? SDL_ALPHA_OPAQUE
+                                                                       : (distance_i * quantum), // opacity
+                                         *blend_tile_p);
+            SDL_Surface* floor_tile_p =
+              RPG_Graphics_Surface::copy (*(*floor_iterator).surface);
+            ACE_ASSERT (floor_tile_p);
+            //SDL_SetSurfaceAlphaMod (floor_tile_p,
+            //                        SDL_ALPHA_OPAQUE - ((distance_i * quantum) % 255)); // opacity
+            SDL_BlitSurface (blend_tile_p,   // source
+                             NULL,           // aspect (--> everything)
+                             floor_tile_p,   // target
+                             NULL);          // aspect
+            SDL_FreeSurface (blend_tile_p);
+            RPG_Graphics_Surface::put (screen_position,
+                                       *floor_tile_p,
+                                       target_surface,
+                                       dirty_region);
+            SDL_FreeSurface (floor_tile_p);
+          } // end IF
+          else
+            RPG_Graphics_Surface::put (screen_position,
+                                       *(*floor_iterator).surface,
+                                       target_surface,
+                                       dirty_region);
+        } // end IF
 
         if (myState->debug)
         {
@@ -513,7 +547,9 @@ SDL_GUI_LevelWindow_Isometric::draw (SDL_Surface* targetSurface_in,
           rect.w = (*floor_iterator).surface->w;
           rect.h = (*floor_iterator).surface->h;
           RPG_Graphics_Surface::putRectangle(rect,                         // rectangle
-                                             SDL_GUI_DEF_TILE_FRAME_COLOR, // color
+                                             RPG_Graphics_SDL_Tools::getColor (SDL_GUI_DEF_TILE_FRAME_COLOR,
+                                                                               *target_surface->format,
+                                                                               1.0F), // color
                                              target_surface);              // target surface
           converter.str(ACE_TEXT(""));
           converter.clear();
@@ -1095,11 +1131,22 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
 
             // redraw
             draw();
-            getArea(dirtyRegion_out);
+            getArea (dirtyRegion_out);
             redraw_cursor = true;
 
             break;
           } // end IF
+          else if (event_in.key.keysym.mod & KMOD_CTRL)
+          {
+            toggleFloorBlend ();
+
+            // redraw
+            draw();
+            getArea (dirtyRegion_out);
+            redraw_cursor = true;
+
+            break;
+          } // end ELSE IF
 
           myState->style.floor =
               static_cast<RPG_Graphics_FloorStyle>(myState->style.floor + 1);
@@ -2880,7 +2927,7 @@ SDL_GUI_LevelWindow_Isometric::initCeiling()
 }
 
 void
-SDL_GUI_LevelWindow_Isometric::initWallBlend(const bool& halfHeightWalls_in)
+SDL_GUI_LevelWindow_Isometric::initWallBlend (bool halfHeightWalls_in)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::initWallBlend"));
 

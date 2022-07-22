@@ -259,7 +259,7 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
                                      std::make_pair (inherited::clipRectangle_.x,
                                                      inherited::clipRectangle_.y +
                                                      (inherited::clipRectangle_.h -
-                                                      (index * (text_size.second + 1)))),
+                                                      ((index + 1) * (text_size.second + 1)))),
                                      target_surface,
                                      dirty_region);
     } // end FOR

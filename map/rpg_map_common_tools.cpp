@@ -59,32 +59,32 @@ RPG_Map_DoorStateToStringTable_t
 RPG_Map_DoorStateHelper::myRPG_Map_DoorStateToStringTable;
 
 void
-RPG_Map_Common_Tools::initializeStringConversionTables()
+RPG_Map_Common_Tools::initializeStringConversionTables ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::initStringConversionTables"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::initStringConversionTables"));
 
-  RPG_Map_DirectionHelper::init();
-  RPG_Map_DoorStateHelper::init();
+  RPG_Map_DirectionHelper::init ();
+  RPG_Map_DoorStateHelper::init ();
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("RPG_Map_Common_Tools: initialized string conversion tables...\n")));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("RPG_Map_Common_Tools: initialized string conversion tables...\n")));
 }
 
 void
-RPG_Map_Common_Tools::createFloorPlan(const unsigned int& dimensionX_in,
-                                      const unsigned int& dimensionY_in,
-                                      const unsigned int& numAreas_in,
-                                      const bool& wantSquareRooms_in,
-                                      const bool& maximizeRooms_in,
-                                      const unsigned int& minRoomArea_in,
-                                      const bool& wantDoors_in,
-                                      const bool& wantCorridors_in,
-                                      const bool& doorFillsPosition_in,
-                                      const unsigned int& maxDoorsPerRoom_in,
-                                      RPG_Map_Positions_t& seedPositions_out,
-                                      struct RPG_Map_FloorPlan& floorPlan_out)
+RPG_Map_Common_Tools::createFloorPlan (unsigned int dimensionX_in,
+                                       unsigned int dimensionY_in,
+                                       unsigned int numAreas_in,
+                                       bool wantSquareRooms_in,
+                                       bool maximizeRooms_in,
+                                       unsigned int minRoomArea_in,
+                                       bool wantDoors_in,
+                                       bool wantCorridors_in,
+                                       bool doorFillsPosition_in,
+                                       unsigned int maxDoorsPerRoom_in,
+                                       RPG_Map_Positions_t& seedPositions_out,
+                                       struct RPG_Map_FloorPlan& floorPlan_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::createFloorPlan"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::createFloorPlan"));
 
   // init return value(s)
   seedPositions_out.clear();
@@ -272,14 +272,14 @@ RPG_Map_Common_Tools::createFloorPlan(const unsigned int& dimensionX_in,
 }
 
 void
-RPG_Map_Common_Tools::makePartition(const unsigned int& dimensionX_in,
-                                    const unsigned int& dimensionY_in,
-                                    const unsigned int& numRooms_in,
-                                    const bool& resolveConflicts_in,
-                                    RPG_Map_Positions_t& conflicts_out,
-                                    RPG_Map_Partition_t& partition_out)
+RPG_Map_Common_Tools::makePartition (unsigned int dimensionX_in,
+                                     unsigned int dimensionY_in,
+                                     unsigned int numRooms_in,
+                                     bool resolveConflicts_in,
+                                     RPG_Map_Positions_t& conflicts_out,
+                                     RPG_Map_Partition_t& partition_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::makePartition"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::makePartition"));
 
   // init return value(s)
   conflicts_out.clear();
@@ -641,11 +641,11 @@ RPG_Map_Common_Tools::makePartition(const unsigned int& dimensionX_in,
 }
 
 void
-RPG_Map_Common_Tools::displayPartition(const unsigned int& dimensionX_in,
-                                       const unsigned int& dimensionY_in,
-                                       const RPG_Map_Positions_t& conflicts_in,
-                                       const RPG_Map_Positions_t& seedPositions_in,
-                                       const RPG_Map_Partition_t& partition_in)
+RPG_Map_Common_Tools::displayPartition (unsigned int dimensionX_in,
+                                        unsigned int dimensionY_in,
+                                        const RPG_Map_Positions_t& conflicts_in,
+                                        const RPG_Map_Positions_t& seedPositions_in,
+                                        const RPG_Map_Partition_t& partition_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayPartition"));
 
@@ -863,16 +863,16 @@ RPG_Map_Common_Tools::findMaxSquare(const RPG_Map_Area_t& room_in,
 }
 
 void
-RPG_Map_Common_Tools::makeRooms(const unsigned int& dimensionX_in,
-                                const unsigned int& dimensionY_in,
-                                const RPG_Map_Partition_t& partition_in,
-                                const bool& wantSquareRooms_in,
-                                const bool& wantRoomSeparation_in,
-                                const bool& cropAreas_in,
-                                const bool& maximizeRooms_in,
-                                const unsigned int& minRoomArea_in,
-                                RPG_Map_AreaList_t& rooms_out,
-                                RPG_Map_AreaList_t& boundaries_out)
+RPG_Map_Common_Tools::makeRooms (unsigned int dimensionX_in,
+                                 unsigned int dimensionY_in,
+                                 const RPG_Map_Partition_t& partition_in,
+                                 bool wantSquareRooms_in,
+                                 bool wantRoomSeparation_in,
+                                 bool cropAreas_in,
+                                 bool maximizeRooms_in,
+                                 unsigned int minRoomArea_in,
+                                 RPG_Map_AreaList_t& rooms_out,
+                                 RPG_Map_AreaList_t& boundaries_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::makeRooms"));
 
@@ -1273,11 +1273,11 @@ RPG_Map_Common_Tools::makeRooms(const unsigned int& dimensionX_in,
 }
 
 void
-RPG_Map_Common_Tools::displayRooms(const unsigned int& dimensionX_in,
-                                   const unsigned int& dimensionY_in,
-                                   const RPG_Map_AreaList_t& rooms_in)
+RPG_Map_Common_Tools::displayRooms (unsigned int dimensionX_in,
+                                    unsigned int dimensionY_in,
+                                    const RPG_Map_AreaList_t& rooms_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayRooms"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::displayRooms"));
 
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT("room(s)...\n")));
@@ -1321,11 +1321,11 @@ RPG_Map_Common_Tools::displayRooms(const unsigned int& dimensionX_in,
 }
 
 void
-RPG_Map_Common_Tools::displayRoom(const unsigned int& dimensionX_in,
-                                  const unsigned int& dimensionY_in,
-                                  const RPG_Map_Area_t& room_in)
+RPG_Map_Common_Tools::displayRoom (unsigned int dimensionX_in,
+                                   unsigned int dimensionY_in,
+                                   const RPG_Map_Area_t& room_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayRoom"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::displayRoom"));
 
   RPG_Map_AreaConstIterator_t iterator = room_in.end();
   for (unsigned int y = 0;
@@ -1347,14 +1347,14 @@ RPG_Map_Common_Tools::displayRoom(const unsigned int& dimensionX_in,
 }
 
 void
-RPG_Map_Common_Tools::makeDoors(const unsigned int& dimensionX_in,
-                                const unsigned int& dimensionY_in,
-                                const RPG_Map_AreaList_t& boundaries_in,
-                                const bool& doorFillsPosition_in,
-                                const unsigned int& maxDoorsPerRoom_in,
-                                RPG_Map_AreaList_t& doors_out)
+RPG_Map_Common_Tools::makeDoors (unsigned int dimensionX_in,
+                                 unsigned int dimensionY_in,
+                                 const RPG_Map_AreaList_t& boundaries_in,
+                                 bool doorFillsPosition_in,
+                                 unsigned int maxDoorsPerRoom_in,
+                                 RPG_Map_AreaList_t& doors_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::makeDoors"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::makeDoors"));
 
   // init return value(s)
   doors_out.clear();
@@ -1471,14 +1471,14 @@ RPG_Map_Common_Tools::makeDoors(const unsigned int& dimensionX_in,
 }
 
 void
-RPG_Map_Common_Tools::connectRooms(const unsigned int& dimensionX_in,
-                                   const unsigned int& dimensionY_in,
-                                   const RPG_Map_AreaList_t& boundaries_in,
-                                   const RPG_Map_AreaList_t& doors_in,
-                                   const RPG_Map_AreaList_t& rooms_in,
-                                   struct RPG_Map_FloorPlan& level_out)
+RPG_Map_Common_Tools::connectRooms (unsigned int dimensionX_in,
+                                    unsigned int dimensionY_in,
+                                    const RPG_Map_AreaList_t& boundaries_in,
+                                    const RPG_Map_AreaList_t& doors_in,
+                                    const RPG_Map_AreaList_t& rooms_in,
+                                    struct RPG_Map_FloorPlan& level_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::connectRooms"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::connectRooms"));
 
   // init return value(s)
 //   level_out.size_x = dimensionX_in;
@@ -1911,13 +1911,13 @@ RPG_Map_Common_Tools::buildCorridor(const RPG_Map_Path_t& path_in,
 }
 
 void
-RPG_Map_Common_Tools::buildSquare(const RPG_Map_Position_t& center_in,
-                                  const RPG_Map_Size_t& size_in,
-                                  const unsigned int& radius_in,
-                                  const bool& fillArea_in,
-                                  RPG_Map_Positions_t& area_out)
+RPG_Map_Common_Tools::buildSquare (const RPG_Map_Position_t& center_in,
+                                   const RPG_Map_Size_t& size_in,
+                                   unsigned int radius_in,
+                                   bool fillArea_in,
+                                   RPG_Map_Positions_t& area_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::buildSquare"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::buildSquare"));
 
   // init result(s)
   area_out.clear();
@@ -2036,13 +2036,13 @@ RPG_Map_Common_Tools::buildSquare(const RPG_Map_Position_t& center_in,
 }
 
 void
-RPG_Map_Common_Tools::buildCircle(const RPG_Map_Position_t& center_in,
-                                  const RPG_Map_Size_t& size_in,
-                                  const unsigned int& radius_in,
-                                  const bool& fillArea_in,
-                                  RPG_Map_Positions_t& area_out)
+RPG_Map_Common_Tools::buildCircle (const RPG_Map_Position_t& center_in,
+                                   const RPG_Map_Size_t& size_in,
+                                   unsigned int radius_in,
+                                   bool fillArea_in,
+                                   RPG_Map_Positions_t& area_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::buildCircle"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::buildCircle"));
 
   // init result(s)
   area_out.clear();
@@ -2187,36 +2187,36 @@ RPG_Map_Common_Tools::dump(const RPG_Map_Area_t& zone_in)
 }
 
 unsigned int
-RPG_Map_Common_Tools::distance(const RPG_Map_Position_t& position1_in,
-                               const RPG_Map_Position_t& position2_in)
+RPG_Map_Common_Tools::distance (const RPG_Map_Position_t& position1_in,
+                                const RPG_Map_Position_t& position2_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::distance"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::distance"));
 
-  return (::abs(static_cast<int>(position1_in.first)  -
-                static_cast<int>(position2_in.first)) +
-          ::abs(static_cast<int>(position1_in.second) -
-                static_cast<int>(position2_in.second)));
+  return (::abs (static_cast<int> (position1_in.first)  -
+                 static_cast<int> (position2_in.first)) +
+          ::abs (static_cast<int> (position1_in.second) -
+                 static_cast<int> (position2_in.second)));
 }
 
 unsigned int
-RPG_Map_Common_Tools::distanceMax(const RPG_Map_Position_t& position1_in,
-                                  const RPG_Map_Position_t& position2_in)
+RPG_Map_Common_Tools::distanceMax (const RPG_Map_Position_t& position1_in,
+                                   const RPG_Map_Position_t& position2_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::distanceMax"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::distanceMax"));
 
-  unsigned int distance_1 = ::abs(static_cast<int>(position1_in.first)  -
-                                  static_cast<int>(position2_in.first));
-  unsigned int distance_2 = ::abs(static_cast<int>(position1_in.second) -
-                                  static_cast<int>(position2_in.second));
+  unsigned int distance_1 = ::abs (static_cast<int> (position1_in.first)  -
+                                   static_cast<int> (position2_in.first));
+  unsigned int distance_2 = ::abs (static_cast<int> (position1_in.second) -
+                                   static_cast<int> (position2_in.second));
 
   return ((distance_1 > distance_2) ? distance_1 : distance_2);
 }
 
 bool
-RPG_Map_Common_Tools::isAdjacent(const RPG_Map_Position_t& position1_in,
-                                 const RPG_Map_Position_t& position2_in)
+RPG_Map_Common_Tools::isAdjacent (const RPG_Map_Position_t& position1_in,
+                                  const RPG_Map_Position_t& position2_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::isAdjacent"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::isAdjacent"));
 
   return (distanceMax(position1_in, position2_in) == 1);
 }
@@ -2756,33 +2756,33 @@ RPG_Map_Common_Tools::roomsAreSquare(const struct RPG_Map& map_in)
 }
 
 bool
-RPG_Map_Common_Tools::hasLineOfSight(const RPG_Map_Position_t& source_in,
-                                     const RPG_Map_Position_t& target_in,
-                                     const RPG_Map_Positions_t& obstacles_in,
-                                     const bool& allowTargetIsObstacle_in)
+RPG_Map_Common_Tools::hasLineOfSight (const RPG_Map_Position_t& source_in,
+                                      const RPG_Map_Position_t& target_in,
+                                      const RPG_Map_Positions_t& obstacles_in,
+                                      bool allowTargetIsObstacle_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::hasLineOfSight"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::hasLineOfSight"));
 
   // step1: compute shortest path (== line-of-sight)
   RPG_Map_PositionList_t path;
-  RPG_Map_Pathfinding_Tools::findPath(source_in,
-                                      target_in,
-                                      path);
+  RPG_Map_Pathfinding_Tools::findPath (source_in,
+                                       target_in,
+                                       path);
 
   // step2: path blocked at some point ?
   RPG_Map_Positions_t line_of_sight, blocked;
-  line_of_sight.insert(path.begin(), path.end());
-  std::set_intersection(obstacles_in.begin(), obstacles_in.end(),
-                        line_of_sight.begin(), line_of_sight.end(),
-                        std::inserter(blocked, blocked.begin()));
+  line_of_sight.insert (path.begin (), path.end ());
+  std::set_intersection (obstacles_in.begin (), obstacles_in.end (),
+                         line_of_sight.begin (), line_of_sight.end (),
+                         std::inserter (blocked, blocked.begin ()));
 
   // *NOTE*: if target_in is an obstacle itself, the view (!) is NOT blocked
   // as long as there are no other obstacles in the path...
   if (allowTargetIsObstacle_in &&
-      (obstacles_in.find(target_in) != obstacles_in.end()))
-    return (blocked.size() == 1);
+      (obstacles_in.find (target_in) != obstacles_in.end ()))
+    return (blocked.size () == 1);
 
-  return blocked.empty();
+  return blocked.empty ();
 }
 
 unsigned int
@@ -3293,12 +3293,12 @@ RPG_Map_Common_Tools::crop(RPG_Map_Area_t& room_inout)
 // }
 
 bool
-RPG_Map_Common_Tools::turn(const RPG_Map_Area_t& map_in,
-                           const RPG_Map_Position_t& position_in,
-                           const ORIGIN& origin_in,
-                           const bool& clockwise_in,
-                           bool& isCorner_out,
-                           RPG_Map_Direction& next_out)
+RPG_Map_Common_Tools::turn (const RPG_Map_Area_t& map_in,
+                            const RPG_Map_Position_t& position_in,
+                            const ORIGIN& origin_in,
+                            bool clockwise_in,
+                            bool& isCorner_out,
+                            RPG_Map_Direction& next_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::turn"));
 
@@ -3452,11 +3452,11 @@ RPG_Map_Common_Tools::turn(const RPG_Map_Area_t& map_in,
 }
 
 void
-RPG_Map_Common_Tools::findDoorPositions(const RPG_Map_Area_t& room_in,
-                                        const bool& doorFillsPosition_in,
-                                        RPG_Map_PositionList_t& doorPositions_out)
+RPG_Map_Common_Tools::findDoorPositions (const RPG_Map_Area_t& room_in,
+                                         bool doorFillsPosition_in,
+                                         RPG_Map_PositionList_t& doorPositions_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::findDoorPositions"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::findDoorPositions"));
 
   // init return value(s)
   doorPositions_out.clear();
@@ -3753,13 +3753,13 @@ RPG_Map_Common_Tools::door2exitDirection(const RPG_Map_Area_t& room_in,
 }
 
 void
-RPG_Map_Common_Tools::displayCorridors(const unsigned int& dimensionX_in,
-                                       const unsigned int& dimensionY_in,
-                                       const RPG_Map_AreaList_t& rooms_in,
-                                       const RPG_Map_AreaList_t& doors_in,
-                                       const RPG_Map_AreaList_t& corridors_in)
+RPG_Map_Common_Tools::displayCorridors (unsigned int dimensionX_in,
+                                        unsigned int dimensionY_in,
+                                        const RPG_Map_AreaList_t& rooms_in,
+                                        const RPG_Map_AreaList_t& doors_in,
+                                        const RPG_Map_AreaList_t& corridors_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayCorridors"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::displayCorridors"));
 
   RPG_Map_Position_t current_position;
   unsigned int index = 0;

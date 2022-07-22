@@ -933,7 +933,7 @@ RPG_Graphics_SDL_Tools::keyToString (const SDL_Keysym& key_in)
 #endif // SDL_USE || SDL2_USE
 
 SDL_Color
-RPG_Graphics_SDL_Tools::colorToSDLColor (ACE_UINT32 color_in,
+RPG_Graphics_SDL_Tools::colorToSDLColor (Uint32 SDLColor_in,
                                          const SDL_Surface& targetSurface_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::colorToSDLColor"));
@@ -944,11 +944,11 @@ RPG_Graphics_SDL_Tools::colorToSDLColor (ACE_UINT32 color_in,
 
   // extract components from the 32-bit color value
   result.r =
-          (color_in & targetSurface_in.format->Rmask) >> targetSurface_in.format->Rshift;
+          (SDLColor_in & targetSurface_in.format->Rmask) >> targetSurface_in.format->Rshift;
   result.g =
-          (color_in & targetSurface_in.format->Gmask) >> targetSurface_in.format->Gshift;
+          (SDLColor_in & targetSurface_in.format->Gmask) >> targetSurface_in.format->Gshift;
   result.b =
-          (color_in & targetSurface_in.format->Bmask) >> targetSurface_in.format->Bshift;
+          (SDLColor_in & targetSurface_in.format->Bmask) >> targetSurface_in.format->Bshift;
   //result.unused = 0;
 
   return result;

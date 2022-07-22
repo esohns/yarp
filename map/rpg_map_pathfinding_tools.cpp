@@ -309,19 +309,19 @@ RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Size_t& size_in,
 }
 
 void
-RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Position_t& start_in,
-                                    const RPG_Map_Position_t& end_in,
-                                    RPG_Map_PositionList_t& path_out)
+RPG_Map_Pathfinding_Tools::findPath (const RPG_Map_Position_t& start_in,
+                                     const RPG_Map_Position_t& end_in,
+                                     RPG_Map_PositionList_t& path_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Pathfinding_Tools::findPath"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Pathfinding_Tools::findPath"));
 
   // init return value(s)
-  path_out.clear();
+  path_out.clear ();
 
-  int dx    = ::abs(static_cast<int>(end_in.first)  -
-                    static_cast<int>(start_in.first));
-  int dy    = ::abs(static_cast<int>(end_in.second) -
-                    static_cast<int>(start_in.second));
+  int dx    = ::abs (static_cast<int> (end_in.first)  -
+                     static_cast<int> (start_in.first));
+  int dy    = ::abs (static_cast<int> (end_in.second) -
+                     static_cast<int> (start_in.second));
   int x     = start_in.first;
   int y     = start_in.second;
   int n     = 1 + dx + dy;
@@ -335,7 +335,7 @@ RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Position_t& start_in,
        n > 0;
        --n)
   {
-    path_out.push_back(std::make_pair(x, y));
+    path_out.push_back (std::make_pair (x, y));
 
     if (error > 0)
     {
@@ -351,10 +351,10 @@ RPG_Map_Pathfinding_Tools::findPath(const RPG_Map_Position_t& start_in,
 }
 
 RPG_Map_Direction
-RPG_Map_Pathfinding_Tools::getDirection(const RPG_Map_Position_t& startPosition_in,
-                                        const RPG_Map_Position_t& endPosition_in)
+RPG_Map_Pathfinding_Tools::getDirection (const RPG_Map_Position_t& startPosition_in,
+                                         const RPG_Map_Position_t& endPosition_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Pathfinding_Tools::getDirection"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Pathfinding_Tools::getDirection"));
 
   // sanity check
   if (startPosition_in == endPosition_in)
