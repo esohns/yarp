@@ -488,30 +488,23 @@ RPG_Client_Window_Level::drawChild (const RPG_Graphics_WindowType& child_in,
        iterator != inherited::children_.end ();
        iterator++)
   {
-    if (((*iterator)->getType () != child_in) ||
+    if (((*iterator)->getType () != child_in)             ||
         ((child_in == WINDOW_MINIMAP) && !myDrawMinimap)  || // minimap switched off...
         ((child_in == WINDOW_MESSAGE) && !myShowMessages))   // message window switched off...
       continue;
 
-    ACE_GUARD (ACE_Reverse_Lock<ACE_Thread_Mutex>, aGuard_2, reverse_lock); // relinquish lock temporarily
-    try {
-      (*iterator)->draw (target_surface,
-                         offsetX_in,
-                         offsetY_in);
-    } catch (...) {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("caught exception in RPG_Graphics_IWindow::draw(), continuing\n")));
-    }
+    myClientAction.command = COMMAND_WINDOW_DRAW;
+    myClientAction.window = *iterator;
+    myClient->action (myClientAction);
 
     if (refresh_in)
     {
-      try {
-        (*iterator)->update (target_surface);
-      } catch (...) {
-        ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("caught exception in RPG_Graphics_IWindow::update(), continuing\n")));
-      }
+      myClientAction.command = COMMAND_WINDOW_REFRESH;
+      myClient->action (myClientAction);
     } // end IF
+
+    // reset window
+    myClientAction.window = this;
   } // end FOR
 }
 
@@ -757,18 +750,18 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
   // lock engine
   myEngine->lock ();
 
-  RPG_Engine_EntityID_t active_entity_id = myEngine->getActive(false);
+  RPG_Engine_EntityID_t active_entity_id = myEngine->getActive (false);
   RPG_Map_Position_t active_position =
-      std::make_pair(std::numeric_limits<unsigned int>::max(),
-                     std::numeric_limits<unsigned int>::max());
+      std::make_pair (std::numeric_limits<unsigned int>::max (),
+                      std::numeric_limits<unsigned int>::max ());
   RPG_Map_Positions_t visible_positions;
   if (active_entity_id)
   {
-    active_position = myEngine->getPosition(active_entity_id,
-                                            false);
-    myEngine->getVisiblePositions(active_entity_id,
-                                  visible_positions,
-                                  false);
+    active_position = myEngine->getPosition (active_entity_id,
+                                             false);
+    myEngine->getVisiblePositions (active_entity_id,
+                                   visible_positions,
+                                   false);
   } // end IF
 
   // pass 1:
@@ -1332,18 +1325,16 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
        iterator != children_.end();
        iterator++)
   {
-    if ((((*iterator)->getType() == WINDOW_MINIMAP) && !myDrawMinimap) ||
-        (((*iterator)->getType() == WINDOW_MESSAGE) && !myShowMessages))
+    if ((((*iterator)->getType () == WINDOW_MINIMAP) && !myDrawMinimap) ||
+        (((*iterator)->getType () == WINDOW_MESSAGE) && !myShowMessages))
       continue;
 
-    try {
-      (*iterator)->draw (target_surface,
-                         offsetX_in,
-                         offsetY_in);
-    } catch (...) {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("caught exception in RPG_Graphics_IWindow::draw(), continuing\n")));
-    }
+    myClientAction.command = COMMAND_WINDOW_DRAW;
+    myClientAction.window = *iterator;
+    myClient->action (myClientAction);
+
+    // reset window
+    myClientAction.window = this;
   } // end FOR
 
   // whole viewport needs a refresh...

@@ -982,7 +982,7 @@ RPG_Graphics_SDL_Tools::initColors()
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::initColors"));
 
-  myColors.clear();
+  myColors.clear ();
   RPG_Graphics_ColorRGBA color;
   for (int i = 0;
        i < RPG_GRAPHICS_COLORNAME_MAX;
@@ -1130,9 +1130,9 @@ RPG_Graphics_SDL_Tools::initColors()
         break;
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unknown/invalid color (was: %d), aborting\n"),
-                   i));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("unknown/invalid color (was: %d), aborting\n"),
+                    i));
 
         return;
       }
@@ -1141,15 +1141,15 @@ RPG_Graphics_SDL_Tools::initColors()
     myColors[static_cast<RPG_Graphics_ColorName>(i)] = color;
   } // end FOR
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("RPG_Graphics_SDL_Tools: initialized colors...\n")));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("RPG_Graphics_SDL_Tools: initialized colors...\n")));
 }
 
 SDL_Rect
-RPG_Graphics_SDL_Tools::boundingBox(const SDL_Rect& rect1_in,
-                                    const SDL_Rect& rect2_in)
+RPG_Graphics_SDL_Tools::boundingBox (const SDL_Rect& rect1_in,
+                                     const SDL_Rect& rect2_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::boundingBox"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::boundingBox"));
 
   // sanity check(s)
   if ((rect1_in.w == 0) || (rect1_in.h == 0))

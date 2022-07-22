@@ -69,23 +69,23 @@ RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap (const RPG_Graphics_SDLWind
 
   // adjust position, size
   SDL_Rect parent_area;
-  parent_in.getArea (parent_area, false);
-  //parent_in.getArea (parent_area, true);
-  //parent_in.getBorders (borderTop_,
-  //                      borderBottom_,
-  //                      borderLeft_,
-  //                      borderRight_,
-  //                      true);
+  //parent_in.getArea (parent_area, false);
+  parent_in.getArea (parent_area, true);
+  parent_in.getBorders (borderTop_,
+                        borderBottom_,
+                        borderLeft_,
+                        borderRight_,
+                        true);
   inherited::clipRectangle_.x =
-    ((offset_in.first == std::numeric_limits<int>::max ()) ? (/*(parent_area.w - 1)          -
-                                                              borderRight_                   -*/
-                                                              (parent_area.x + parent_area.w) -
+    ((offset_in.first == std::numeric_limits<int>::max ()) ? ((parent_area.w - 1)            -
+                                                              borderRight_                   -
+                                                              //(parent_area.x + parent_area.w) -
                                                               myBG->w                        -
                                                               RPG_CLIENT_MINIMAP_DEF_OFFSET_X)
                                                            : offset_in.first);
   inherited::clipRectangle_.y =
     ((offset_in.second == std::numeric_limits<int>::max ()) ? (parent_area.y                  +
-                                                               /*borderTop_ + */
+                                                               borderTop_                     +
                                                                RPG_CLIENT_MINIMAP_DEF_OFFSET_Y)
                                                             : offset_in.second);
   inherited::clipRectangle_.w = mySurface->w;
@@ -111,7 +111,7 @@ RPG_Client_Window_MiniMap::handleEvent (const SDL_Event& event_in,
   RPG_TRACE (ACE_TEXT ("RPG_Client_Window_MiniMap::handleEvent"));
 
   // init return value(s)
-  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (dirtyRegion_out));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
 
   //   ACE_DEBUG((LM_DEBUG,
   //              ACE_TEXT("RPG_Client_Window_MiniMap::handleEvent(%s)\n"),
@@ -199,7 +199,7 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
   // init clipping
   clip ();
 
-  // init surface
+  // initialize surface
   SDL_Rect dirty_region;
   // lock surface during pixel access
   if (SDL_MUSTLOCK ((mySurface)))
@@ -217,6 +217,7 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
 
   RPG_Map_Position_t map_position;
   RPG_Client_MiniMapTile tile = RPG_CLIENT_MINIMAPTILE_INVALID;
+  enum RPG_Graphics_ColorName color_name;
   Uint32 color = 0;
   SDL_Rect destrect = {0, 0, 3, 2};
   Uint32* pixels = NULL;
@@ -227,7 +228,7 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
   for (unsigned int y = 0;
        y < map_size.second;
        y++)
-    for (unsigned int x = 1; // *TODO*: why ?
+    for (unsigned int x = 0;
          x < map_size.first;
          x++)
     {
@@ -236,7 +237,6 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
       tile = RPG_CLIENT_MINIMAPTILE_INVALID;
       entity_id = myEngine->hasEntity (map_position,
                                        false);
-      
       if (entity_id)
       {
         if (entity_id == active_entity_id)
@@ -291,21 +291,21 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
       switch (tile)
       {
         case MINIMAPTILE_NONE:
-          color = RPG_CLIENT_MINIMAPCOLOR_UNMAPPED; break;
+          color_name = RPG_CLIENT_MINIMAPCOLOR_UNMAPPED; break;
         case MINIMAPTILE_DOOR:
-          color = RPG_CLIENT_MINIMAPCOLOR_DOOR; break;
+          color_name = RPG_CLIENT_MINIMAPCOLOR_DOOR; break;
         case MINIMAPTILE_FLOOR:
-          color = RPG_CLIENT_MINIMAPCOLOR_FLOOR; break;
+          color_name = RPG_CLIENT_MINIMAPCOLOR_FLOOR; break;
         case MINIMAPTILE_MONSTER:
-          color = RPG_CLIENT_MINIMAPCOLOR_MONSTER; break;
+          color_name = RPG_CLIENT_MINIMAPCOLOR_MONSTER; break;
         case MINIMAPTILE_PLAYER:
-          color = RPG_CLIENT_MINIMAPCOLOR_PLAYER; break;
+          color_name = RPG_CLIENT_MINIMAPCOLOR_PLAYER; break;
         case MINIMAPTILE_PLAYER_ACTIVE:
-          color = RPG_CLIENT_MINIMAPCOLOR_PLAYER_ACTIVE; break;
+          color_name = RPG_CLIENT_MINIMAPCOLOR_PLAYER_ACTIVE; break;
         case MINIMAPTILE_STAIRS:
-          color = RPG_CLIENT_MINIMAPCOLOR_STAIRS; break;
+          color_name = RPG_CLIENT_MINIMAPCOLOR_STAIRS; break;
         case MINIMAPTILE_WALL:
-          color = RPG_CLIENT_MINIMAPCOLOR_WALL; break;
+          color_name = RPG_CLIENT_MINIMAPCOLOR_WALL; break;
         default:
         {
           ACE_DEBUG ((LM_ERROR,
@@ -314,6 +314,12 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
           continue;
         }
       } // end SWITCH
+
+      // step2: convert color
+      color =
+        RPG_Graphics_SDL_Tools::getColor (color_name,
+                                          *mySurface->format,
+                                          1.0F);
 
       // step3: draw tile onto surface
       // *NOTE*: a minimap symbol has this shape: _ C _
@@ -348,8 +354,8 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
   ACE_OS::memset (&dirty_region, 0, sizeof (SDL_Rect));
   if (inherited::screenLock_)
     inherited::screenLock_->lock ();
-  RPG_Graphics_Surface::put (std::make_pair (clipRectangle_.x,
-                                             clipRectangle_.y),
+  RPG_Graphics_Surface::put (std::make_pair (target_surface->clip_rect.x,
+                                             target_surface->clip_rect.y),
                              *mySurface,
                              target_surface,
                              dirty_region);
@@ -363,8 +369,8 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
   invalidate (dirty_region);
 
   // remember position of last realization
-  lastAbsolutePosition_ = std::make_pair (clipRectangle_.x,
-                                          clipRectangle_.y);
+  lastAbsolutePosition_ = std::make_pair (target_surface->clip_rect.x,
+                                          target_surface->clip_rect.y);
 
   if (myDebug)
   {

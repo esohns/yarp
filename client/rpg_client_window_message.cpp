@@ -154,8 +154,8 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
 
   // step1: compute required size / offset
   ACE_OS::memset (&(inherited::clipRectangle_), 0, sizeof (SDL_Rect));
-  { ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
-    RPG_Graphics_TextSize_t text_size = std::make_pair(0, 0);
+  { ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);
+    RPG_Graphics_TextSize_t text_size = std::make_pair (0, 0);
     unsigned int index = 0;
     for (Common_MessageStackConstIterator_t iterator = messages_.begin ();
          ((iterator != messages_.end ()) && (index < numLines_));
@@ -171,12 +171,12 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
     inherited::clipRectangle_.w += 2;
     inherited::clipRectangle_.h += 1;
     SDL_Rect parent_area;
-    inherited::parent_->getArea (parent_area);
+    inherited::parent_->getArea (parent_area, false);
     inherited::clipRectangle_.x = (parent_area.x +
-                    ((parent_area.w - inherited::clipRectangle_.w) / 2));
+                                   ((parent_area.w - inherited::clipRectangle_.w) / 2));
     inherited::clipRectangle_.y = (parent_area.y +
-                    parent_area.h -
-                    inherited::clipRectangle_.h);
+                                   parent_area.h -
+                                   inherited::clipRectangle_.h);
 
     // save background
     inherited::saveBG (inherited::clipRectangle_); // --> save everything
@@ -205,7 +205,8 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
     RPG_Graphics_Surface::fill (RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK_A50,
                                                                   *BG_->format,
                                                                   1.0F),
-                                BG_);
+                                BG_,
+                                NULL);
 
     // initialize clipping
     //clip(targetSurface,
@@ -234,6 +235,15 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
 
     // draw messages
     index = 0;
+    ACE_UINT32 text_color_i, shade_color_i;
+    text_color_i =
+      RPG_Graphics_SDL_Tools::getColor (RPG_CLIENT_MESSAGE_COLOR,
+                                        *target_surface->format,
+                                        1.0F);
+    shade_color_i = 
+      RPG_Graphics_SDL_Tools::getColor (RPG_CLIENT_MESSAGE_SHADECOLOR,
+                                        *target_surface->format,
+                                        1.0F);
     for (Common_MessageStackConstIterator_t iterator = messages_.begin ();
          ((iterator != messages_.end ()) && (index < numLines_));
          iterator++, index++)
@@ -241,15 +251,14 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
       text_size = RPG_Graphics_Common_Tools::textSize (font_, *iterator);
       RPG_Graphics_Surface::putText (font_,
                                      *iterator,
-                                     RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_CLIENT_MESSAGE_COLOR,
+                                     RPG_Graphics_SDL_Tools::colorToSDLColor (text_color_i,
                                                                               *target_surface),
                                      RPG_CLIENT_MESSAGE_SHADE_LINES,
-                                     RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_CLIENT_MESSAGE_SHADECOLOR,
+                                     RPG_Graphics_SDL_Tools::colorToSDLColor (shade_color_i,
                                                                               *target_surface),
-                                     std::make_pair (parent_area.x +
-                                                     ((parent_area.w - text_size.first) / 2),
-                                                     (parent_area.y +
-                                                      parent_area.h -
+                                     std::make_pair (inherited::clipRectangle_.x,
+                                                     inherited::clipRectangle_.y +
+                                                     (inherited::clipRectangle_.h -
                                                       (index * (text_size.second + 1)))),
                                      target_surface,
                                      dirty_region);
