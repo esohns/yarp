@@ -25,13 +25,9 @@
 
 #include "rpg_item_armortype.h"
 #include "rpg_item_base.h"
- //#include "rpg_item_exports.h"
 #include "rpg_item_instance_base.h"
 #include "rpg_item_instance_manager.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Item_Armor
  : public RPG_Item_Instance_Base,
    public RPG_Item_Base

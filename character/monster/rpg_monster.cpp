@@ -21,8 +21,10 @@
 
 #include "rpg_monster.h"
 
-#include "rpg_monster_common.h"
-#include "rpg_monster_dictionary.h"
+#include "ace/Log_Msg.h"
+
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
 
 #include "rpg_item_common.h"
 #include "rpg_item_dictionary.h"
@@ -31,67 +33,59 @@
 #include "rpg_character_common_tools.h"
 #include "rpg_character_race_common_tools.h"
 
-#include "rpg_common_macros.h"
-#include "rpg_common_tools.h"
+#include "rpg_monster_common.h"
+#include "rpg_monster_dictionary.h"
 
-#include <ace/Log_Msg.h>
-
-RPG_Monster::RPG_Monster(// base attributes
-                         const std::string& name_in,
-                         const RPG_Common_CreatureType& type_in,
-                         const RPG_Character_Alignment& alignment_in,
-                         const RPG_Character_Attributes& attributes_in,
-                         const RPG_Character_Skills_t& skills_in,
-                         const RPG_Character_Feats_t& feats_in,
-                         const RPG_Character_Abilities_t& abilities_in,
-                         const RPG_Monster_Size& defaultSize_in,
-                         const unsigned short int& maxHitPoints_in,
-                         const RPG_Magic_SpellTypes_t& knownSpells_in,
-                         // extended data
-                         const unsigned int& wealth_in,
-                         const RPG_Magic_Spells_t& spells_in,
-                         const RPG_Item_List_t& inventory_in,
-                         // current status
-                         const RPG_Character_Conditions_t& condition_in,
-                         const unsigned short int& hitpoints_in,
-                         // ...more extended data
-                         const bool& isSummoned_in)
- : inherited(// base attributes
-             name_in,
-             alignment_in,
-             attributes_in,
-             skills_in,
-             feats_in,
-             abilities_in,
-             maxHitPoints_in,
-             knownSpells_in,
-             // current status
-             condition_in,
-             hitpoints_in,
-             wealth_in,
-             spells_in,
-             inventory_in),
-   myType(type_in),
-   mySize(defaultSize_in),
-   myIsSummoned(isSummoned_in)
+RPG_Monster::RPG_Monster (// base attributes
+                          const std::string& name_in,
+                          const RPG_Common_CreatureType& type_in,
+                          const RPG_Character_Alignment& alignment_in,
+                          const RPG_Character_Attributes& attributes_in,
+                          const RPG_Character_Skills_t& skills_in,
+                          const RPG_Character_Feats_t& feats_in,
+                          const RPG_Character_Abilities_t& abilities_in,
+                          const RPG_Monster_Size& defaultSize_in,
+                          unsigned short maxHitPoints_in,
+                          const RPG_Magic_SpellTypes_t& knownSpells_in,
+                          // extended data
+                          unsigned int wealth_in,
+                          const RPG_Magic_Spells_t& spells_in,
+                          const RPG_Item_List_t& inventory_in,
+                          // current status
+                          const RPG_Character_Conditions_t& condition_in,
+                          unsigned short hitpoints_in,
+                          // ...more extended data
+                          bool isSummoned_in)
+ : inherited (// base attributes
+              name_in,
+              alignment_in,
+              attributes_in,
+              skills_in,
+              feats_in,
+              abilities_in,
+              maxHitPoints_in,
+              knownSpells_in,
+              // current status
+              condition_in,
+              hitpoints_in,
+              wealth_in,
+              spells_in,
+              inventory_in),
+   myType (type_in),
+   mySize (defaultSize_in),
+   myIsSummoned (isSummoned_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Monster::RPG_Monster"));
+  RPG_TRACE (ACE_TEXT ("RPG_Monster::RPG_Monster"));
 
 }
 
-RPG_Monster::RPG_Monster(const RPG_Monster& monster_in)
- : inherited(monster_in),
-   myType(monster_in.myType),
-   mySize(monster_in.mySize),
-   myIsSummoned(monster_in.myIsSummoned)
+RPG_Monster::RPG_Monster (const RPG_Monster& monster_in)
+ : inherited (monster_in),
+   myType (monster_in.myType),
+   mySize (monster_in.mySize),
+   myIsSummoned (monster_in.myIsSummoned)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Monster::RPG_Monster"));
-
-}
-
-RPG_Monster::~RPG_Monster()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Monster::~RPG_Monster"));
+  RPG_TRACE (ACE_TEXT ("RPG_Monster::RPG_Monster"));
 
 }
 
@@ -107,30 +101,6 @@ RPG_Monster::~RPG_Monster()
 //
 //   return *this;
 // }
-
-const RPG_Common_CreatureType&
-RPG_Monster::getType() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Monster::getType"));
-
-  return myType;
-}
-
-const RPG_Monster_Size&
-RPG_Monster::getSize() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Monster::getSize"));
-
-  return mySize;
-}
-
-bool
-RPG_Monster::isSummoned() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Monster::isSummoned"));
-
-  return myIsSummoned;
-}
 
 ACE_INT8
 RPG_Monster::getArmorClass(enum RPG_Combat_DefenseSituation defenseSituation_in) const
@@ -311,30 +281,14 @@ RPG_Monster::getSpeed(bool isRunning_in,
 }
 
 bool
-RPG_Monster::gainExperience(const unsigned int& XP_in)
+RPG_Monster::gainExperience (unsigned int XP_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Monster::gainExperience"));
+  RPG_TRACE (ACE_TEXT ("RPG_Monster::gainExperience"));
 
   // *TODO*
   ACE_ASSERT(false);
 
-	return false;
-}
-
-bool
-RPG_Monster::isPlayerCharacter() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Monster::isPlayerCharacter"));
-
   return false;
-}
-
-RPG_Player_Equipment&
-RPG_Monster::getEquipment()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Monster::getEquipment"));
-
-  return inherited::myEquipment;
 }
 
 void
@@ -346,37 +300,39 @@ RPG_Monster::dump() const
 //              ACE_TEXT("Monster (type: \"%s\")\n"),
 //              RPG_Monster_Common_Tools::typeToString(myType).c_str()));
 
-  inherited::dump();
+  inherited::dump ();
 }
 
 RPG_Character_BaseAttackBonus_t
-RPG_Monster::getAttackBonus(enum RPG_Common_Attribute modifier_in,
-                            enum RPG_Combat_AttackSituation situation_in) const
+RPG_Monster::getAttackBonus (enum RPG_Common_Attribute modifier_in,
+                             enum RPG_Combat_AttackSituation situation_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Monster::getAttackBonus"));
+  RPG_TRACE (ACE_TEXT ("RPG_Monster::getAttackBonus"));
 
-  ACE_ASSERT((modifier_in == ATTRIBUTE_DEXTERITY) ||
-             (modifier_in == ATTRIBUTE_STRENGTH));
+  // sanity check(s)
+  ACE_ASSERT((modifier_in == ATTRIBUTE_DEXTERITY) || (modifier_in == ATTRIBUTE_STRENGTH));
 
-  ACE_ASSERT(false);
+  ACE_ASSERT (false); // *TODO*
+
   RPG_Character_BaseAttackBonus_t result;
 #if defined (_MSC_VER)
   return result;
 #else
-  ACE_NOTREACHED(return result;)
-#endif
+  ACE_NOTREACHED (return result;)
+#endif // _MSC_VER
 }
 
 ACE_INT8
-RPG_Monster::getShieldBonus() const
+RPG_Monster::getShieldBonus () const
 {
   RPG_TRACE(ACE_TEXT("RPG_Monster::getShieldBonus"));
 
-  ACE_ASSERT(false);
+  ACE_ASSERT (false); // *TODO*
+
   signed char result = 0;
 #if defined (_MSC_VER)
   return result;
 #else
-  ACE_NOTREACHED(return result;)
-#endif
+  ACE_NOTREACHED (return result;)
+#endif // _MSC_VER
 }

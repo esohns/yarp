@@ -38,10 +38,14 @@
 #include "rpg_common_macros.h"
 #include "rpg_common_tools.h"
 
+#include "rpg_dice_common_tools.h"
+
 #include "rpg_magic_common_tools.h"
 
 #include "rpg_item_armor.h"
 #include "rpg_item_commodity.h"
+#include "rpg_item_common.h"
+#include "rpg_item_dictionary.h"
 #include "rpg_item_instance_manager.h"
 #include "rpg_item_weapon.h"
 
@@ -609,7 +613,7 @@ update_character_profile (const RPG_Player& player_in,
       }
     } // end SWITCH
     text += ACE_TEXT_ALWAYS_CHAR (" ");
-    switch (player_alignment.civic)
+    switch (player_alignment.ethic)
     {
       case RPG_CHARACTER_ALIGNMENTETHIC_MAX:
       case RPG_CHARACTER_ALIGNMENTETHIC_INVALID:
@@ -642,21 +646,6 @@ update_character_profile (const RPG_Player& player_in,
   converter << player_in.getNumTotalHitPoints ();
   widget_p = GTK_WIDGET (gtk_builder_get_object (xml_in,
                                                ACE_TEXT_ALWAYS_CHAR ("hitpoints")));
-  ACE_ASSERT (widget_p);
-  gtk_label_set_text (GTK_LABEL (widget_p),
-                      converter.str ().c_str ());
-
-  // step7: AC
-  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
-  converter.clear ();
-  converter << static_cast<int> (player_in.getArmorClass (DEFENSE_NORMAL));
-  converter << ACE_TEXT_ALWAYS_CHAR(" / ");
-  converter << static_cast<int> (player_in.getArmorClass (DEFENSE_TOUCH));
-  converter << ACE_TEXT_ALWAYS_CHAR(" / ");
-  converter << static_cast<int> (player_in.getArmorClass (DEFENSE_FLATFOOTED));
-  widget_p =
-    GTK_WIDGET (gtk_builder_get_object (xml_in,
-                                      ACE_TEXT_ALWAYS_CHAR ("armorclass")));
   ACE_ASSERT (widget_p);
   gtk_label_set_text (GTK_LABEL (widget_p),
                       converter.str ().c_str ());
@@ -805,6 +794,64 @@ update_character_profile (const RPG_Player& player_in,
   widget_p =
       GTK_WIDGET (gtk_builder_get_object (xml_in,
                                         ACE_TEXT_ALWAYS_CHAR ("charisma")));
+  ACE_ASSERT (widget_p);
+  gtk_label_set_text (GTK_LABEL (widget_p),
+                      converter.str ().c_str ());
+
+  // step7: Attack
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
+  enum RPG_Common_Attribute attribute_e =
+      (player_in.getAttribute (ATTRIBUTE_STRENGTH) > player_in.getAttribute (ATTRIBUTE_DEXTERITY) ? ATTRIBUTE_STRENGTH
+                                                                                                  : ATTRIBUTE_DEXTERITY);
+  RPG_Character_BaseAttackBonus_t attack_bonusses =
+      player_in.getAttackBonus (attribute_e,
+                                ATTACK_NORMAL);
+  converter << static_cast<int> (attack_bonusses.front ());
+  converter << ACE_TEXT_ALWAYS_CHAR (" / ");
+  attack_bonusses = player_in.getAttackBonus (attribute_e,
+                                              ATTACK_BACKSTAB);
+  converter << static_cast<int> (attack_bonusses.front ());
+  converter << ACE_TEXT_ALWAYS_CHAR (" / ");
+  attack_bonusses = player_in.getAttackBonus (attribute_e,
+                                              ATTACK_SURPRISE);
+  converter << static_cast<int> (attack_bonusses.front ());
+  widget_p =
+      GTK_WIDGET (gtk_builder_get_object (xml_in,
+                                          ACE_TEXT_ALWAYS_CHAR ("attack")));
+  ACE_ASSERT (widget_p);
+  gtk_label_set_text (GTK_LABEL (widget_p),
+                      converter.str ().c_str ());
+
+  // step8: Damage
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
+  RPG_Item_WeaponType weapon_type =
+      const_cast<RPG_Player&> (player_in).getEquipment ().getPrimaryWeapon (player_in.getOffHand ());
+  if (weapon_type == RPG_ITEM_WEAPONTYPE_INVALID)
+    weapon_type =
+        const_cast<RPG_Player&> (player_in).getEquipment().getSecondaryWeapon (player_in.getOffHand ());
+  RPG_Item_WeaponProperties weapon_properties =
+      RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getWeaponProperties (weapon_type);
+  converter << RPG_Dice_Common_Tools::toString (weapon_properties.baseDamage);
+  widget_p =
+      GTK_WIDGET (gtk_builder_get_object (xml_in,
+                                          ACE_TEXT_ALWAYS_CHAR ("damage")));
+  ACE_ASSERT (widget_p);
+  gtk_label_set_text (GTK_LABEL (widget_p),
+                      converter.str ().c_str ());
+
+  // step9: AC
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
+  converter << static_cast<int> (player_in.getArmorClass (DEFENSE_NORMAL));
+  converter << ACE_TEXT_ALWAYS_CHAR(" / ");
+  converter << static_cast<int> (player_in.getArmorClass (DEFENSE_TOUCH));
+  converter << ACE_TEXT_ALWAYS_CHAR(" / ");
+  converter << static_cast<int> (player_in.getArmorClass (DEFENSE_FLATFOOTED));
+  widget_p =
+      GTK_WIDGET (gtk_builder_get_object (xml_in,
+                                        ACE_TEXT_ALWAYS_CHAR ("armorclass")));
   ACE_ASSERT (widget_p);
   gtk_label_set_text (GTK_LABEL (widget_p),
                       converter.str ().c_str ());
@@ -1241,13 +1288,6 @@ reset_character_profile (GtkBuilder* xml_in)
   ACE_ASSERT (current);
   gtk_label_set_text (GTK_LABEL (current), NULL);
 
-  // step1g: AC
-  current =
-    GTK_WIDGET (gtk_builder_get_object (xml_in,
-                                      ACE_TEXT_ALWAYS_CHAR ("armorclass")));
-  ACE_ASSERT (current);
-  gtk_label_set_text (GTK_LABEL (current), NULL);
-
   // step1h: XP
   current =
     GTK_WIDGET (gtk_builder_get_object (xml_in,
@@ -1314,6 +1354,13 @@ reset_character_profile (GtkBuilder* xml_in)
   current =
     GTK_WIDGET (gtk_builder_get_object (xml_in,
                                       ACE_TEXT_ALWAYS_CHAR ("charisma")));
+  ACE_ASSERT (current);
+  gtk_label_set_text (GTK_LABEL (current), NULL);
+
+  // step1g: AC
+  current =
+      GTK_WIDGET (gtk_builder_get_object (xml_in,
+                                        ACE_TEXT_ALWAYS_CHAR ("armorclass")));
   ACE_ASSERT (current);
   gtk_label_set_text (GTK_LABEL (current), NULL);
 
@@ -4021,8 +4068,12 @@ equipment_dialog_response_cb (GtkDialog* dialog_in,
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
 
   if (responseId_in == GTK_RESPONSE_OK)
+  {
+    ::update_entity_profile (data_p->entity,
+                             (*iterator).second.second);
     ::update_inventory (*player,
                         (*iterator).second.second);
+  } // end IF
 
   gtk_widget_hide (GTK_WIDGET (dialog_in));
 }

@@ -48,105 +48,101 @@
 #include "rpg_combat_defensesituation.h"
 
 #include "rpg_player_base.h"
-//#include "rpg_player_exports.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Player_Player_Base
  : public RPG_Player_Base
 {
   typedef RPG_Player_Base inherited;
 
  public:
-  virtual ~RPG_Player_Player_Base();
+  inline virtual ~RPG_Player_Player_Base () {}
 
   // retrieve basic player character data
-  enum RPG_Character_Gender getGender() const;
-  const RPG_Character_Race_t& getRace() const;
-  const struct RPG_Character_Class& getClass() const;
-  enum RPG_Character_OffHand getOffHand() const;
-  enum RPG_Common_Size getSize() const;
+  enum RPG_Character_Gender getGender () const;
+  const RPG_Character_Race_t& getRace () const;
+  const struct RPG_Character_Class& getClass () const;
+  enum RPG_Character_OffHand getOffHand () const;
+  enum RPG_Common_Size getSize () const;
 
-  unsigned int getExperience() const;
+  inline unsigned int getExperience () const { return myExperience; }
   // compute dynamically from class/XP
-  unsigned char getLevel(const RPG_Common_SubClass& = SUBCLASS_NONE) const; // subclass
+  unsigned char getLevel (const RPG_Common_SubClass& = SUBCLASS_NONE) const; // subclass
 
   // access current equipment
-  RPG_Player_Equipment& getEquipment();
+  inline RPG_Player_Equipment& getEquipment () { return inherited::myEquipment; }
 
   // implement (part of) RPG_IPlayer
-  virtual RPG_Character_BaseAttackBonus_t getAttackBonus(enum RPG_Common_Attribute, // modifier
-                                                         enum RPG_Combat_AttackSituation) const;
-  virtual ACE_INT8 getArmorClass(enum RPG_Combat_DefenseSituation) const;
+  virtual RPG_Character_BaseAttackBonus_t getAttackBonus (enum RPG_Common_Attribute, // modifier
+                                                          enum RPG_Combat_AttackSituation) const;
+  virtual ACE_INT8 getArmorClass (enum RPG_Combat_DefenseSituation) const;
 
   // *NOTE*: return value unit is feet
-  virtual unsigned short getReach(unsigned short&, // return value: base range (if any)
-                                  bool&) const;    // return value: reach is absolute ?
-  virtual unsigned char getSpeed(bool = false,                                 // running ?
-                                 enum RPG_Common_AmbientLighting = AMBIENCE_BRIGHT, // environment
-                                 enum RPG_Common_Terrain = TERRAIN_ANY,             // terrain
-                                 enum RPG_Common_Track = TRACK_NONE) const;         // track
+  virtual unsigned short getReach (unsigned short&, // return value: base range (if any)
+                                   bool&) const;    // return value: reach is absolute ?
+  virtual unsigned char getSpeed (bool = false,                                 // running ?
+                                  enum RPG_Common_AmbientLighting = AMBIENCE_BRIGHT, // environment
+                                  enum RPG_Common_Terrain = TERRAIN_ANY,             // terrain
+                                  enum RPG_Common_Track = TRACK_NONE) const;         // track
 
-  virtual bool isPlayerCharacter() const;
+  virtual bool isPlayerCharacter () const;
 
-  virtual bool gainExperience(const unsigned int&); // XP
+  virtual bool gainExperience (unsigned int); // XP
 
-  unsigned int rest(const RPG_Common_Camp&, // type of rest
-                    const unsigned int&);   // hours
-  void defaultEquip();
+  unsigned int rest (const RPG_Common_Camp&, // type of rest
+                     unsigned int);          // hours
+  void defaultEquip ();
 
-  virtual void status() const;
+  virtual void status () const;
 
-  virtual void dump() const;
+  virtual void dump () const;
 
  protected:
-  RPG_Player_Player_Base(// base attributes
-                         const std::string&,                // name
-                         enum RPG_Character_Gender,       // gender
-                         const RPG_Character_Race_t&,       // race
-                         const struct RPG_Character_Class&,        // class(es)
-                         const struct RPG_Character_Alignment&,    // alignment
-                         const struct RPG_Character_Attributes&,   // base attributes
-                         const RPG_Character_Skills_t&,     // skills
-                         const RPG_Character_Feats_t&,      // base feats
-                         const RPG_Character_Abilities_t&,  // base abilities
-                         enum RPG_Character_OffHand,      // off-hand
-                         const unsigned short int&,         // max HP
-                         const RPG_Magic_SpellTypes_t&,     // set of known spells (if any)
-                         // current status
-                         const RPG_Character_Conditions_t&, // condition
-                         const short int&,                  // HP
-                         const unsigned int&,               // XP
-                         const unsigned int&,               // wealth (GP)
-                         const RPG_Magic_Spells_t&,         // list of prepared spells (if any)
-                         const RPG_Item_List_t&);           // list of (carried) items
-  RPG_Player_Player_Base(const RPG_Player_Player_Base&);
+  RPG_Player_Player_Base (// base attributes
+                          const std::string&,                     // name
+                          enum RPG_Character_Gender,              // gender
+                          const RPG_Character_Race_t&,            // race
+                          const struct RPG_Character_Class&,      // class(es)
+                          const struct RPG_Character_Alignment&,  // alignment
+                          const struct RPG_Character_Attributes&, // base attributes
+                          const RPG_Character_Skills_t&,          // skills
+                          const RPG_Character_Feats_t&,           // base feats
+                          const RPG_Character_Abilities_t&,       // base abilities
+                          enum RPG_Character_OffHand,             // off-hand
+                          unsigned short,                         // max HP
+                          const RPG_Magic_SpellTypes_t&,          // set of known spells (if any)
+                          // current status
+                          const RPG_Character_Conditions_t&,      // condition
+                          short,                                  // HP
+                          unsigned int,                           // XP
+                          unsigned int,                           // wealth (GP)
+                          const RPG_Magic_Spells_t&,              // list of prepared spells (if any)
+                          const RPG_Item_List_t&);                // list of (carried) items
+  RPG_Player_Player_Base (const RPG_Player_Player_Base&);
 
 //   RPG_Character_Player_Base& operator=(const RPG_Character_Player_Base&);
-  void init(// base attributes
-            const std::string&,                // name
-            enum RPG_Character_Gender,       // gender
-            const RPG_Character_Race_t&,       // race
-            const struct RPG_Character_Class&,        // class(es)
-            const struct RPG_Character_Alignment&,    // alignment
-            const struct RPG_Character_Attributes&,   // base attributes
-            const RPG_Character_Skills_t&,     // skills
-            const RPG_Character_Feats_t&,      // base feats
-            const RPG_Character_Abilities_t&,  // base abilities
-            enum RPG_Character_OffHand,      // off-hand
-            const unsigned short int&,         // max HP
-            const RPG_Magic_SpellTypes_t&,     // set of known spells (if any)
-            // current status
-            const RPG_Character_Conditions_t&, // condition
-            const short int&,                  // HP
-            const unsigned int&,               // XP
-            const unsigned int&,               // wealth (GP)
-            const RPG_Magic_Spells_t&,         // list of prepared spells (if any)
-            const RPG_Item_List_t&);           // list of (carried) items
+  void initialize (// base attributes
+                   const std::string&,                     // name
+                   enum RPG_Character_Gender,              // gender
+                   const RPG_Character_Race_t&,            // race
+                   const struct RPG_Character_Class&,      // class(es)
+                   const struct RPG_Character_Alignment&,  // alignment
+                   const struct RPG_Character_Attributes&, // base attributes
+                   const RPG_Character_Skills_t&,          // skills
+                   const RPG_Character_Feats_t&,           // base feats
+                   const RPG_Character_Abilities_t&,       // base abilities
+                   enum RPG_Character_OffHand,             // off-hand
+                   unsigned short,                         // max HP
+                   const RPG_Magic_SpellTypes_t&,          // set of known spells (if any)
+                   // current status
+                   const RPG_Character_Conditions_t&,      // condition
+                   short,                                  // HP
+                   unsigned int,                           // XP
+                   unsigned int,                           // wealth (GP)
+                   const RPG_Magic_Spells_t&,              // list of prepared spells (if any)
+                   const RPG_Item_List_t&);                // list of (carried) items
 
   // implement (part of) RPG_IPlayer
-  virtual ACE_INT8 getShieldBonus() const;
+  virtual ACE_INT8 getShieldBonus () const;
 
   enum RPG_Character_Gender  myGender;
   RPG_Character_Race_t       myRace;
@@ -154,8 +150,8 @@ class RPG_Player_Player_Base
   enum RPG_Character_OffHand myOffHand;
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Player_Player_Base())
-  ACE_UNIMPLEMENTED_FUNC(RPG_Player_Player_Base& operator=(const RPG_Player_Player_Base&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Player_Player_Base ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Player_Player_Base& operator= (const RPG_Player_Player_Base&))
 
   unsigned int               myExperience;
   enum RPG_Common_Size       mySize;

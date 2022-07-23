@@ -57,64 +57,64 @@
 #include "rpg_player_defines.h"
 #include "rpg_player_XML_tree.h"
 
-RPG_Player::RPG_Player(// base attributes
-                       const std::string& name_in,
-                       enum RPG_Character_Gender gender_in,
-                       const RPG_Character_Race_t& race_in,
-                       const struct RPG_Character_Class& class_in,
-                       const struct RPG_Character_Alignment& alignment_in,
-                       const struct RPG_Character_Attributes& attributes_in,
-                       const RPG_Character_Skills_t& skills_in,
-                       const RPG_Character_Feats_t& feats_in,
-                       const RPG_Character_Abilities_t& abilities_in,
-                       enum RPG_Character_OffHand offhand_in,
-                       const unsigned short int& maxHitPoints_in,
-                       const RPG_Magic_SpellTypes_t& knownSpells_in,
-                       // extended data
-                       const unsigned int& experience_in,
-                       const unsigned int& wealth_in,
-                       const RPG_Item_List_t& inventory_in,
-                       // current status
-                       const RPG_Character_Conditions_t& condition_in,
-                       const short int& hitpoints_in,
-                       const RPG_Magic_Spells_t& spells_in)
- : inherited(// base attributes
-             name_in,
-             gender_in,
-             race_in,
-             class_in,
-             alignment_in,
-             attributes_in,
-             skills_in,
-             feats_in,
-             abilities_in,
-             offhand_in,
-             maxHitPoints_in,
-             knownSpells_in,
-             // current status
-             condition_in,
-             hitpoints_in,
-             experience_in,
-             wealth_in,
-             spells_in,
-             inventory_in)
+RPG_Player::RPG_Player (// base attributes
+                        const std::string& name_in,
+                        enum RPG_Character_Gender gender_in,
+                        const RPG_Character_Race_t& race_in,
+                        const struct RPG_Character_Class& class_in,
+                        const struct RPG_Character_Alignment& alignment_in,
+                        const struct RPG_Character_Attributes& attributes_in,
+                        const RPG_Character_Skills_t& skills_in,
+                        const RPG_Character_Feats_t& feats_in,
+                        const RPG_Character_Abilities_t& abilities_in,
+                        enum RPG_Character_OffHand offhand_in,
+                        unsigned short maxHitPoints_in,
+                        const RPG_Magic_SpellTypes_t& knownSpells_in,
+                        // extended data
+                        unsigned int experience_in,
+                        unsigned int wealth_in,
+                        const RPG_Item_List_t& inventory_in,
+                        // current status
+                        const RPG_Character_Conditions_t& condition_in,
+                        short hitpoints_in,
+                        const RPG_Magic_Spells_t& spells_in)
+ : inherited (// base attributes
+              name_in,
+              gender_in,
+              race_in,
+              class_in,
+              alignment_in,
+              attributes_in,
+              skills_in,
+              feats_in,
+              abilities_in,
+              offhand_in,
+              maxHitPoints_in,
+              knownSpells_in,
+              // current status
+              condition_in,
+              hitpoints_in,
+              experience_in,
+              wealth_in,
+              spells_in,
+              inventory_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player::RPG_Player"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player::RPG_Player"));
 
   // wear default items...
-  defaultEquip();
+  defaultEquip ();
 //   myEquipment.dump();
 }
 
-RPG_Player::RPG_Player(const RPG_Player& player_in)
+RPG_Player::RPG_Player (const RPG_Player& player_in)
  : inherited(player_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player::RPG_Player"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player::RPG_Player"));
 
 }
 
 RPG_Player*
-RPG_Player::random()
+RPG_Player::random ()
 {
   RPG_TRACE(ACE_TEXT("RPG_Player::random"));
 
@@ -834,28 +834,28 @@ RPG_Player::random()
 
   // step14: instantiate player character
   RPG_Player* player_p = NULL;
-  ACE_NEW_NORETURN(player_p,
-                   RPG_Player(// base attributes
-                              name,
-                              gender,
-                              player_race,
-                              player_class,
-                              alignment,
-                              attributes,
-                              skills,
-                              feats,
-                              abilities,
-                              offHand,
-                              hitpoints,
-                              knownSpells,
-                              // extended data
-                              0,
-                              RPG_PLAYER_START_MONEY,
-                              items,
-                              // current status
-                              condition,
-                              hitpoints, // start healthy
-                              spells));
+  ACE_NEW_NORETURN (player_p,
+                    RPG_Player(// base attributes
+                               name,
+                               gender,
+                               player_race,
+                               player_class,
+                               alignment,
+                               attributes,
+                               skills,
+                               feats,
+                               abilities,
+                               offHand,
+                               hitpoints,
+                               knownSpells,
+                               // extended data
+                               0,
+                               RPG_PLAYER_START_MONEY,
+                               items,
+                               // current status
+                               condition,
+                               hitpoints, // start healthy
+                               spells));
   if (!player_p)
   {
     ACE_DEBUG((LM_CRITICAL,
@@ -869,47 +869,39 @@ RPG_Player::random()
 }
 
 RPG_Player*
-RPG_Player::load(const std::string& filename_in,
-                 const std::string& schemaRepository_in,
-                 // current status
-                 const RPG_Character_Conditions_t& condition_in,
-                 const short int& HP_in,
-                 const RPG_Magic_Spells_t& spells_in)
+RPG_Player::load (const std::string& filename_in,
+                  const std::string& schemaRepository_in,
+                  // current status
+                  const RPG_Character_Conditions_t& condition_in,
+                  short HP_in,
+                  const RPG_Magic_Spells_t& spells_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player::load"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player::load"));
 
   // sanity check(s)
-  if (!Common_File_Tools::isReadable(filename_in))
+  if (!Common_File_Tools::isReadable (filename_in))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
-               ACE_TEXT(filename_in.c_str())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
+                ACE_TEXT (filename_in.c_str ())));
     return NULL;
   } // end IF
 
   std::ifstream ifs;
-  ifs.exceptions(std::ifstream::badbit | std::ifstream::failbit);
-  try
-  {
-    ifs.open(filename_in.c_str(),
-             std::ios_base::in);
-  }
-  catch (std::ios_base::failure exception)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to std::ifstream::open(\"%s\"): caught exception: \"%s\", aborting\n"),
-               ACE_TEXT(filename_in.c_str()),
-               ACE_TEXT(exception.what())));
-
+  ifs.exceptions (std::ifstream::badbit | std::ifstream::failbit);
+  try {
+    ifs.open (filename_in.c_str(),
+              std::ios_base::in);
+  } catch (std::ios_base::failure exception) {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to std::ifstream::open(\"%s\"): caught exception: \"%s\", aborting\n"),
+                ACE_TEXT (filename_in.c_str ()),
+                ACE_TEXT (exception.what ())));
     return NULL;
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to std::ifstream::open(\"%s\"): caught exception, aborting\n"),
-               ACE_TEXT(filename_in.c_str())));
-
+  } catch (...) {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to std::ifstream::open(\"%s\"): caught exception, aborting\n"),
+                ACE_TEXT (filename_in.c_str ())));
     return NULL;
   }
 
@@ -929,355 +921,256 @@ RPG_Player::load(const std::string& filename_in,
   path = schemaRepository_in;
 #endif
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_SCHEMA_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_SCHEMA_FILE);
   // sanity check(s)
-  if (!Common_File_Tools::isReadable(path))
+  if (!Common_File_Tools::isReadable (path))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to Common_File_Tools::isReadable(\"%s\"), aborting\n"),
-               ACE_TEXT(path.c_str())));
-
-    // clean up
-    try
-    {
-      ifs.close();
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to Common_File_Tools::isReadable(\"%s\"), aborting\n"),
+                ACE_TEXT (path.c_str ())));
+    try {
+      ifs.close ();
+    } catch (std::ios_base::failure exception) {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to std::ifstream::close(\"%s\"): caught exception: \"%s\", aborting\n"),
+                  ACE_TEXT (filename_in.c_str ()),
+                  ACE_TEXT (exception.what ())));
+    } catch (...) {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to std::ifstream::close(\"%s\"): caught exception, aborting\n"),
+                  ACE_TEXT (filename_in.c_str ())));
     }
-    catch (std::ios_base::failure exception)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to std::ifstream::close(\"%s\"): caught exception: \"%s\", aborting\n"),
-                 ACE_TEXT(filename_in.c_str()),
-                 ACE_TEXT(exception.what())));
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to std::ifstream::close(\"%s\"): caught exception, aborting\n"),
-                 ACE_TEXT(filename_in.c_str())));
-    }
-
     return NULL;
   } // end IF
-  props.schema_location(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE),
-                        path);
+  props.schema_location (ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_XML_TARGET_NAMESPACE),
+                         path);
 //   props.no_namespace_schema_location(RPG_PLAYER_SCHEMA_FILE);
 //   props.schema_location("http://www.w3.org/XML/1998/namespace", "xml.xsd");
   std::auto_ptr<RPG_Player_PlayerXML_XMLTree_Type> player_p;
-  try
-  {
-    player_p = ::player_t(ifs,
-                          RPG_XSDErrorHandler,
-                          flags,
-                          props);
-  }
-  catch (const ::xml_schema::parsing& exception)
-  {
+  try {
+    player_p = ::player_t (ifs,
+                           RPG_XSDErrorHandler,
+                           flags,
+                           props);
+  } catch (const ::xml_schema::parsing& exception) {
     std::ostringstream converter;
     converter << exception;
-    std::string text = converter.str();
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to player_t(\"%s\"): exception occurred: \"%s\", aborting\n"),
-               ACE_TEXT(filename_in.c_str()),
-               ACE_TEXT(text.c_str())));
-
-    // clean up
-    try
-    {
-      ifs.close();
+    std::string text = converter.str ();
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to player_t(\"%s\"): exception occurred: \"%s\", aborting\n"),
+                ACE_TEXT (filename_in.c_str ()),
+                ACE_TEXT (text.c_str ())));
+    try {
+      ifs.close ();
+    } catch (std::ios_base::failure exception) {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to std::ifstream::close(\"%s\"): caught exception: \"%s\", aborting\n"),
+                  ACE_TEXT (filename_in.c_str ()),
+                  ACE_TEXT (exception.what ())));
+    } catch (...) {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to std::ifstream::close(\"%s\"): caught exception, aborting\n"),
+                  ACE_TEXT (filename_in.c_str ())));
     }
-    catch (std::ios_base::failure exception)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to std::ifstream::close(\"%s\"): caught exception: \"%s\", aborting\n"),
-                 ACE_TEXT(filename_in.c_str()),
-                 ACE_TEXT(exception.what())));
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to std::ifstream::close(\"%s\"): caught exception, aborting\n"),
-                 ACE_TEXT(filename_in.c_str())));
-    }
-
     return NULL;
-  }
-  catch (const ::xml_schema::exception& exception)
-  {
+  } catch (const ::xml_schema::exception& exception) {
     std::ostringstream converter;
     converter << exception;
-    std::string text = converter.str();
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to player_t(\"%s\"): exception occurred: \"%s\", aborting\n"),
-               ACE_TEXT(filename_in.c_str()),
-               ACE_TEXT(text.c_str())));
-
-    // clean up
-    try
-    {
-      ifs.close();
+    std::string text = converter.str ();
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to player_t(\"%s\"): exception occurred: \"%s\", aborting\n"),
+                ACE_TEXT (filename_in.c_str ()),
+                ACE_TEXT (text.c_str ())));
+    try {
+      ifs.close ();
+    } catch (std::ios_base::failure exception) {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to std::ifstream::close(\"%s\"): caught exception: \"%s\", aborting\n"),
+                  ACE_TEXT (filename_in.c_str ()),
+                  ACE_TEXT (exception.what ())));
+    } catch (...) {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to std::ifstream::close(\"%s\"): caught exception, aborting\n"),
+                  ACE_TEXT (filename_in.c_str ())));
     }
-    catch (std::ios_base::failure exception)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to std::ifstream::close(\"%s\"): caught exception: \"%s\", aborting\n"),
-                 ACE_TEXT(filename_in.c_str()),
-                 ACE_TEXT(exception.what())));
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to std::ifstream::close(\"%s\"): caught exception, aborting\n"),
-                 ACE_TEXT(filename_in.c_str())));
-    }
-
     return NULL;
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to player_t(\"%s\"): exception occurred, aborting\n"),
-               ACE_TEXT(filename_in.c_str())));
-
-    // clean up
-    try
-    {
-      ifs.close();
+  } catch (...) {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to player_t(\"%s\"): exception occurred, aborting\n"),
+                ACE_TEXT (filename_in.c_str ())));
+    try {
+      ifs.close ();
+    } catch (std::ios_base::failure exception) {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to std::ifstream::close(\"%s\"): caught exception: \"%s\", aborting\n"),
+                  ACE_TEXT (filename_in.c_str ()),
+                  ACE_TEXT (exception.what ())));
+    } catch (...) {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to std::ifstream::close(\"%s\"): caught exception, aborting\n"),
+                  ACE_TEXT (filename_in.c_str ())));
     }
-    catch (std::ios_base::failure exception)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to std::ifstream::close(\"%s\"): caught exception: \"%s\", aborting\n"),
-                 ACE_TEXT(filename_in.c_str()),
-                 ACE_TEXT(exception.what())));
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to std::ifstream::close(\"%s\"): caught exception, aborting\n"),
-                 ACE_TEXT(filename_in.c_str())));
-    }
-
     return NULL;
   }
 
-  try
-  {
-    ifs.close();
-  }
-  catch (std::ios_base::failure exception)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to std::ifstream::close(\"%s\"): caught exception: \"%s\", aborting\n"),
-               ACE_TEXT(filename_in.c_str()),
-               ACE_TEXT(exception.what())));
-
+  try {
+    ifs.close ();
+  } catch (std::ios_base::failure exception) {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to std::ifstream::close(\"%s\"): caught exception: \"%s\", aborting\n"),
+                ACE_TEXT (filename_in.c_str ()),
+                ACE_TEXT (exception.what ())));
     return NULL;
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to std::ifstream::close(\"%s\"): caught exception, aborting\n"),
-               ACE_TEXT(filename_in.c_str())));
-
+  } catch (...) {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to std::ifstream::close(\"%s\"): caught exception, aborting\n"),
+                ACE_TEXT (filename_in.c_str ())));
     return NULL;
   }
 
-  return RPG_Player_Common_Tools::playerXMLToPlayer(*player_p,
-                                                    condition_in,
-                                                    HP_in,
-                                                    spells_in);
+  return RPG_Player_Common_Tools::playerXMLToPlayer (*player_p,
+                                                     condition_in,
+                                                     HP_in,
+                                                     spells_in);
 }
 
 bool
-RPG_Player::save(const std::string& filename_in) const
+RPG_Player::save (const std::string& filename_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player::save"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player::save"));
 
   std::string filename = filename_in;
-  if (filename.empty())
+  if (filename.empty ())
   {
-    filename = RPG_Player_Common_Tools::getPlayerProfilesDirectory();
+    filename = RPG_Player_Common_Tools::getPlayerProfilesDirectory ();
     filename += ACE_DIRECTORY_SEPARATOR_CHAR;
-    filename += RPG_Common_Tools::sanitize(inherited::getName());
-    filename += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+    filename += RPG_Common_Tools::sanitize (inherited::getName ());
+    filename += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT);
   } // end IF
 
   std::ofstream ofs;
   ofs.exceptions(std::ofstream::badbit | std::ofstream::failbit);
-  try
-  {
-    ofs.open(filename.c_str(),
-             (std::ios_base::out | std::ios_base::trunc));
-  }
-  catch (std::ios_base::failure exception)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to std::ofstream::open(\"%s\"): \"%s\", aborting\n"),
-               ACE_TEXT(filename.c_str()),
-               ACE_TEXT(exception.what())));
-
+  try {
+    ofs.open (filename.c_str (),
+              (std::ios_base::out | std::ios_base::trunc));
+  } catch (std::ios_base::failure exception) {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to std::ofstream::open(\"%s\"): \"%s\", aborting\n"),
+                ACE_TEXT (filename.c_str ()),
+                ACE_TEXT (exception.what ())));
     return false;
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to std::ofstream::open(\"%s\"), aborting\n"),
-               ACE_TEXT(filename.c_str())));
-
+  } catch (...) {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to std::ofstream::open(\"%s\"), aborting\n"),
+                ACE_TEXT (filename.c_str ())));
     return false;
   }
 
   RPG_Player_PlayerXML_XMLTree_Type* player_model_p = NULL;
-  player_model_p = RPG_Player_Common_Tools::playerToPlayerXML(*this);
+  player_model_p = RPG_Player_Common_Tools::playerToPlayerXML (*this);
   if (!player_model_p)
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to RPG_Player_Common_Tools::playerToPlayerXML(), aborting\n")));
-
-    // clean up
-    try
-    {
-      ofs.close();
+    try {
+      ofs.close ();
+    } catch (std::ios_base::failure exception) {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to std::ofstream::close(): \"%s\", aborting\n"),
+                  ACE_TEXT (exception.what ())));
+    } catch (...) {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to std::ofstream::close(), aborting\n")));
     }
-    catch (std::ios_base::failure exception)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to std::ofstream::close(): \"%s\", aborting\n"),
-                 ACE_TEXT(exception.what())));
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to std::ofstream::close(), aborting\n")));
-    }
-
     return false;
   } // end IF
 
   ::xml_schema::namespace_infomap map;
-  map[""].name = ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE);
-  map[""].schema = ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_SCHEMA_FILE);
-  std::string character_set(ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_SCHEMA_CHARSET));
+  map[""].name = ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_XML_TARGET_NAMESPACE);
+  map[""].schema = ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_SCHEMA_FILE);
+  std::string character_set (ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_XML_SCHEMA_CHARSET));
   //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
   ::xml_schema::flags flags = 0;
-  try
-  {
-    ::player_t(ofs,
-               *player_model_p,
-               map,
-               character_set,
-               flags);
-  }
-  catch (std::ios_base::failure exception)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("(\"%s\") write error: \"%s\", aborting\n"),
-               ACE_TEXT(filename_in.c_str()),
-               ACE_TEXT(exception.what())));
-
-    // clean up
-    try
-    {
-      ofs.close();
-    }
-    catch (std::ios_base::failure exception)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to std::ofstream::close(): \"%s\", aborting\n"),
-                 ACE_TEXT(exception.what())));
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to std::ofstream::close(), aborting\n")));
+  try {
+    ::player_t (ofs,
+                *player_model_p,
+                map,
+                character_set,
+                flags);
+  } catch (std::ios_base::failure exception) {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("(\"%s\") write error: \"%s\", aborting\n"),
+                ACE_TEXT (filename_in.c_str ()),
+                ACE_TEXT (exception.what ())));
+    try {
+      ofs.close ();
+    } catch (std::ios_base::failure exception) {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to std::ofstream::close(): \"%s\", aborting\n"),
+                  ACE_TEXT (exception.what ())));
+    } catch (...) {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to std::ofstream::close(), aborting\n")));
     }
     delete player_model_p;
-
     return false;
-  }
-  catch (const ::xml_schema::serialization& exception)
-  {
+  } catch (const ::xml_schema::serialization& exception) {
     std::ostringstream converter;
     converter << exception;
-    std::string text = converter.str();
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("(\"%s\") exception: \"%s\", aborting\n"),
-               ACE_TEXT(filename_in.c_str()),
-               ACE_TEXT(text.c_str())));
-
-    // clean up
-    try
-    {
-      ofs.close();
-    }
-    catch (std::ios_base::failure exception)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to std::ofstream::close(): \"%s\", aborting\n"),
-                 ACE_TEXT(exception.what())));
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to std::ofstream::close(), aborting\n")));
+    std::string text = converter.str ();
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("(\"%s\") exception: \"%s\", aborting\n"),
+                ACE_TEXT (filename_in.c_str ()),
+                ACE_TEXT (text.c_str ())));
+    try {
+      ofs.close ();
+    } catch (std::ios_base::failure exception) {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to std::ofstream::close(): \"%s\", aborting\n"),
+                  ACE_TEXT (exception.what ())));
+    } catch (...) {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to std::ofstream::close(), aborting\n")));
     }
     delete player_model_p;
-
     return false;
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("(\"%s\") exception, aborting\n"),
-               ACE_TEXT(filename_in.c_str())));
-
-    // clean up
-    try
-    {
-      ofs.close();
-    }
-    catch (std::ios_base::failure exception)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to std::ofstream::close(): \"%s\", aborting\n"),
-                 ACE_TEXT(exception.what())));
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to std::ofstream::close(), aborting\n")));
+  } catch (...) {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("(\"%s\") exception, aborting\n"),
+                ACE_TEXT (filename_in.c_str ())));
+    try {
+      ofs.close ();
+    } catch (std::ios_base::failure exception) {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to std::ofstream::close(): \"%s\", aborting\n"),
+                  ACE_TEXT (exception.what ())));
+    } catch (...) {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to std::ofstream::close(), aborting\n")));
     }
     delete player_model_p;
-
     return false;
   }
 
-  delete player_model_p;
+  delete player_model_p; player_model_p = NULL;
 
-  try
-  {
-    ofs.close();
-  }
-  catch (std::ios_base::failure exception)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to std::ofstream::close(): \"%s\", aborting\n"),
-               ACE_TEXT(exception.what())));
-
+  try {
+    ofs.close ();
+  } catch (std::ios_base::failure exception) {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to std::ofstream::close(): \"%s\", aborting\n"),
+                ACE_TEXT (exception.what ())));
     return false;
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to std::ofstream::close(), aborting\n")));
-
+  } catch (...) {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to std::ofstream::close(), aborting\n")));
     return false;
   }
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("saved player \"%s\" to file: \"%s\"\n"),
-             ACE_TEXT(getName().c_str()),
-             ACE_TEXT(filename_in.c_str())));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("saved player \"%s\" to file: \"%s\"\n"),
+              ACE_TEXT (getName ().c_str ()),
+              ACE_TEXT (filename_in.c_str ())));
 
   return true;
 }
@@ -1285,7 +1178,7 @@ RPG_Player::save(const std::string& filename_in) const
 RPG_Player*
 RPG_Player::dummy()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player::dummy"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player::dummy"));
 
   // init result
   std::string name = ACE_TEXT("");

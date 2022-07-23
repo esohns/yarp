@@ -174,7 +174,7 @@ do_SDL_waitForInput (unsigned int timeout_in,
 {
   RPG_TRACE (ACE_TEXT ("::do_SDL_waitForInput"));
 
-  SDL_TimerID timer = NULL;
+  SDL_TimerID timer = 0;
   if (timeout_in)
   {
     timer = SDL_AddTimer ((timeout_in * 1000), // interval (ms)
@@ -1688,7 +1688,7 @@ do_work (mode_t mode_in,
       level_engine.unlock ();
 
       // step6: start timer (triggers hover events)
-      SDL_TimerID timer = NULL;
+      SDL_TimerID timer = 0;
       timer = SDL_AddTimer (SDL_GUI_SDL_EVENT_TIMEOUT, // interval (ms)
                             event_timer_SDL_cb,        // event timer callback
                             &state);                   // callback argument

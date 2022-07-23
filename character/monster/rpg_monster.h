@@ -40,73 +40,69 @@
 
 #include "rpg_player_base.h"
 
-//#include "rpg_monster_exports.h"
 #include "rpg_monster_size.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Monster
  : public RPG_Player_Base
 {
   typedef RPG_Player_Base inherited;
 
  public:
-  RPG_Monster(// base attributes
-              const std::string&,                // name
-              const struct RPG_Common_CreatureType&,    // type
-              const struct RPG_Character_Alignment&,    // alignment
-              const struct RPG_Character_Attributes&,   // base attributes
-              const RPG_Character_Skills_t&,     // skills
-              const RPG_Character_Feats_t&,      // base feats
-              const RPG_Character_Abilities_t&,  // base abilities
-              const struct RPG_Monster_Size&,           // (default) size
-              const unsigned short int&,         // max HP
-              const RPG_Magic_SpellTypes_t&,     // set of known spells (if any)
-              // extended data
-              const unsigned int&,               // wealth (GP)
-              const RPG_Magic_Spells_t&,         // set of memorized/prepared spells (if any)
-              const RPG_Item_List_t&,            // list of (carried) items
-              // current status
-              const RPG_Character_Conditions_t&, // condition
-              const unsigned short int&,         // HP
-              // ...more extended data
-              const bool& = false);              // summoned ?
-  RPG_Monster(const RPG_Monster&);
-  virtual ~RPG_Monster();
+  RPG_Monster (// base attributes
+               const std::string&,                     // name
+               const struct RPG_Common_CreatureType&,  // type
+               const struct RPG_Character_Alignment&,  // alignment
+               const struct RPG_Character_Attributes&, // base attributes
+               const RPG_Character_Skills_t&,          // skills
+               const RPG_Character_Feats_t&,           // base feats
+               const RPG_Character_Abilities_t&,       // base abilities
+               const struct RPG_Monster_Size&,         // (default) size
+               unsigned short,                         // max HP
+               const RPG_Magic_SpellTypes_t&,          // set of known spells (if any)
+               // extended data
+               unsigned int,                           // wealth (GP)
+               const RPG_Magic_Spells_t&,              // set of memorized/prepared spells (if any)
+               const RPG_Item_List_t&,                 // list of (carried) items
+               // current status
+               const RPG_Character_Conditions_t&,      // condition
+               unsigned short,                         // HP
+               // ...more extended data
+               bool = false);                          // summoned ?
+  RPG_Monster (const RPG_Monster&);
+  inline virtual ~RPG_Monster () {}
 //   RPG_Monster& operator=(const RPG_Monster&);
 
-  const struct RPG_Common_CreatureType& getType() const;
-  const struct RPG_Monster_Size& getSize() const;
-  bool isSummoned() const;
+  inline const struct RPG_Common_CreatureType& getType () const { return myType; }
+  inline const struct RPG_Monster_Size& getSize () const { return mySize; }
+  inline bool isSummoned () const { return myIsSummoned; }
 
   // access current equipment (if any)
-  RPG_Player_Equipment& getEquipment();
+  inline RPG_Player_Equipment& getEquipment () { return inherited::myEquipment; }
 
   // implement (part of) RPG_IPlayer
-  virtual ACE_INT8 getArmorClass(enum RPG_Combat_DefenseSituation) const;
+  virtual ACE_INT8 getArmorClass (enum RPG_Combat_DefenseSituation) const;
 
-  virtual unsigned short getReach(unsigned short&, // return value: base range (if any)
-                                  bool&) const;    // return value: reach is absolute ?
+  virtual unsigned short getReach (unsigned short&, // return value: base range (if any)
+                                   bool&) const;    // return value: reach is absolute ?
   virtual ACE_UINT8 getSpeed (bool = false,                                      // running ?
                               enum RPG_Common_AmbientLighting = AMBIENCE_BRIGHT, // environment
                               enum RPG_Common_Terrain = TERRAIN_ANY,             // terrain
                               enum RPG_Common_Track = TRACK_NONE) const;         // track
 
-  virtual bool gainExperience(const unsigned int&); // XP
+  virtual bool gainExperience (unsigned int); // XP
 
-  virtual bool isPlayerCharacter() const;
+  inline virtual bool isPlayerCharacter () const { return false; }
 
-  virtual void dump() const;
+  virtual void dump () const;
 
  private:
   ACE_UNIMPLEMENTED_FUNC (RPG_Monster ())
 
   // helper methods
   // implement (part of) RPG_IPlayer
-  virtual RPG_Character_BaseAttackBonus_t getAttackBonus(enum RPG_Common_Attribute, // modifier
-                                                         enum RPG_Combat_AttackSituation) const;
-  virtual ACE_INT8 getShieldBonus() const;
+  virtual RPG_Character_BaseAttackBonus_t getAttackBonus (enum RPG_Common_Attribute, // modifier
+                                                          enum RPG_Combat_AttackSituation) const;
+  virtual ACE_INT8 getShieldBonus () const;
 
   struct RPG_Common_CreatureType myType;
   struct RPG_Monster_Size        mySize;

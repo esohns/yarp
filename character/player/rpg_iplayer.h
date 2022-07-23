@@ -21,15 +21,15 @@
 #ifndef RPG_IPLAYER_H
 #define RPG_IPLAYER_H
 
-#include "rpg_combat_attacksituation.h"
-#include "rpg_combat_defensesituation.h"
-
-#include "rpg_character_common.h"
-
 #include "rpg_common_attribute.h"
 #include "rpg_common_terrain.h"
 #include "rpg_common_track.h"
 #include "rpg_common_ambientlighting.h"
+
+#include "rpg_character_common.h"
+
+#include "rpg_combat_attacksituation.h"
+#include "rpg_combat_defensesituation.h"
 
 class RPG_IPlayer
 {
@@ -37,10 +37,10 @@ class RPG_IPlayer
   // *NOTE*: to shut up the compiler (gcc4) complaining about missing virtual dtors, set
   // -Wno-non-virtual-dtor in the project settings...
    
-  virtual RPG_Character_BaseAttackBonus_t getAttackBonus(enum RPG_Common_Attribute, // modifier
-                                                         enum RPG_Combat_AttackSituation) const = 0;
-  virtual ACE_INT8 getArmorClass(enum RPG_Combat_DefenseSituation) const = 0;
-  virtual ACE_INT8 getShieldBonus() const = 0;
+  virtual RPG_Character_BaseAttackBonus_t getAttackBonus (enum RPG_Common_Attribute, // modifier
+                                                          enum RPG_Combat_AttackSituation) const = 0;
+  virtual ACE_INT8 getArmorClass (enum RPG_Combat_DefenseSituation) const = 0;
+  virtual ACE_INT8 getShieldBonus () const = 0;
 
   virtual unsigned short getReach (unsigned short&,  // return value: base range (if any)
                                    bool&) const = 0; // return value: reach is absolute ?
@@ -52,10 +52,10 @@ class RPG_IPlayer
   // get a hint if this is a PC/NPC
   virtual bool isPlayerCharacter () const = 0;
 
-  virtual bool gainExperience(const unsigned int&) = 0; // XP
+  virtual bool gainExperience (unsigned int) = 0; // XP
 
-  virtual void status() const = 0;
-  virtual void dump() const = 0;
+  virtual void status () const = 0;
+  virtual void dump () const = 0;
 };
 
 #endif

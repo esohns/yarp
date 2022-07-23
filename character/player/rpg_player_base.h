@@ -53,93 +53,90 @@
 
 #include "rpg_iplayer.h"
 #include "rpg_player_equipment.h"
-//#include "rpg_player_exports.h"
 #include "rpg_player_inventory.h"
 
 /**
 base class of all PCs, NPCs and monsters
-
-  @author Erik Sohns <erik.sohns@web.de>
  */
 class RPG_Player_Base
  : public RPG_IPlayer
 {
  public:
-  virtual ~RPG_Player_Base();
+  inline virtual ~RPG_Player_Base () {}
 
   // retrieve basic character data
-  const std::string& getName() const;
-  const RPG_Character_Alignment& getAlignment() const;
+  inline const std::string& getName () const { return myName; }
+  inline const RPG_Character_Alignment& getAlignment () const { return myAlignment; }
 
-  const RPG_Character_Conditions_t& getCondition() const;
+  inline const RPG_Character_Conditions_t& getCondition () const { return myCondition; }
 
   // retrieve base attributes
-  ACE_UINT8 getAttribute(enum RPG_Common_Attribute) const;
+  ACE_UINT8 getAttribute (enum RPG_Common_Attribute) const;
 
-  const RPG_Character_Feats_t& getFeats() const;
-  const RPG_Character_Abilities_t& getAbilities() const;
-  const RPG_Character_Skills_t& getSkills() const;
+  inline const RPG_Character_Feats_t& getFeats () const { return myFeats; }
+  inline const RPG_Character_Abilities_t& getAbilities () const { return myAbilities; }
+  inline const RPG_Character_Skills_t& getSkills () const { return mySkills; }
 
   // retrieve skill value (if any)
-  void getSkillRank(enum RPG_Common_Skill, // skill
-                    ACE_UINT8&) const;     // result: value (0: doesn't exist)
+  void getSkillRank (enum RPG_Common_Skill, // skill
+                     ACE_UINT8&) const;     // result: value (0: doesn't exist)
 
-  bool hasFeat(enum RPG_Character_Feat) const; // feat
-  bool hasAbility(enum RPG_Character_Ability) const; // ability
-  bool hasCondition(enum RPG_Common_Condition) const; // condition
+  bool hasFeat (enum RPG_Character_Feat) const; // feat
+  bool hasAbility (enum RPG_Character_Ability) const; // ability
+  bool hasCondition (enum RPG_Common_Condition) const; // condition
 
-  unsigned short int getNumTotalHitPoints() const;
-  short int getNumHitPoints() const;
+  inline unsigned short getNumTotalHitPoints () const { return myNumTotalHitPoints; }
+  inline short getNumHitPoints () const { return myNumHitPoints; }
 
-  unsigned int getWealth() const;
+  inline unsigned int getWealth () const { return myWealth; }
 
-  const RPG_Magic_SpellTypes_t& getKnownSpells() const;
-  const RPG_Magic_Spells_t& getSpells() const;
+  inline const RPG_Magic_SpellTypes_t& getKnownSpells () const { return myKnownSpells; }
+  inline const RPG_Magic_Spells_t& getSpells () const { return mySpells; }
 
-  const RPG_Player_Inventory& getInventory() const;
+  inline const RPG_Player_Inventory& getInventory () const { return myInventory; }
 //   const RPG_Character_Equipment getEquipment() const;
 
   // sustain some damage (melee, magic, ...)
-  void sustainDamage(const RPG_Combat_Damage&); // damage
+  void sustainDamage (const RPG_Combat_Damage&); // damage
 
   // implement (part of) RPG_IPlayer
-  virtual void status() const;
-  virtual void dump() const;
+  virtual void status () const;
+  virtual void dump () const;
 
  protected:
-  RPG_Player_Base(// base attributes
-                  const std::string&,                // name
-                  const RPG_Character_Alignment&,    // alignment
-                  const RPG_Character_Attributes&,   // base attributes
-                  const RPG_Character_Skills_t&,     // skills
-                  const RPG_Character_Feats_t&,      // base feats
-                  const RPG_Character_Abilities_t&,  // base abilities
-                  const unsigned short int&,         // max HP
-                  const RPG_Magic_SpellTypes_t&,     // set of known spells (bard / sorcerer)
-                  // current status
-                  const RPG_Character_Conditions_t&, // condition
-                  const short int&,                  // HP
-                  const unsigned int&,               // wealth (GP)
-                  const RPG_Magic_Spells_t&,         // list of memorized/prepared spells (!bard)
-                  const RPG_Item_List_t&);           // list of (carried) items
-  RPG_Player_Base(const RPG_Player_Base&);
+  RPG_Player_Base (// base attributes
+                   const std::string&,                // name
+                   const RPG_Character_Alignment&,    // alignment
+                   const RPG_Character_Attributes&,   // base attributes
+                   const RPG_Character_Skills_t&,     // skills
+                   const RPG_Character_Feats_t&,      // base feats
+                   const RPG_Character_Abilities_t&,  // base abilities
+                   unsigned short,                    // max HP
+                   const RPG_Magic_SpellTypes_t&,     // set of known spells (bard / sorcerer)
+                   // current status
+                   const RPG_Character_Conditions_t&, // condition
+                   short,                             // HP
+                   unsigned int,                      // wealth (GP)
+                   const RPG_Magic_Spells_t&,         // list of memorized/prepared spells (!bard)
+                   const RPG_Item_List_t&);           // list of (carried) items
+  RPG_Player_Base (const RPG_Player_Base&);
 
 //   RPG_Player_Base& operator=(const RPG_Player_Base&);
-  void init(// base attributes
-            const std::string&,                // name
-            const RPG_Character_Alignment&,    // alignment
-            const RPG_Character_Attributes&,   // base attributes
-            const RPG_Character_Skills_t&,     // skills
-            const RPG_Character_Feats_t&,      // base feats
-            const RPG_Character_Abilities_t&,  // base abilities
-            const unsigned short int&,         // max HP
-            const RPG_Magic_SpellTypes_t&,     // set of known spells (bard / sorcerer)
-            // current status
-            const RPG_Character_Conditions_t&, // condition
-            const short int&,                  // HP
-            const unsigned int&,               // wealth (GP)
-            const RPG_Magic_Spells_t&,         // list of memorized/prepared spells (!bard)
-            const RPG_Item_List_t&);           // list of (carried) items
+  void initialize (// base attributes
+                   const std::string&,                // name
+                   const RPG_Character_Alignment&,    // alignment
+                   const RPG_Character_Attributes&,   // base attributes
+                   const RPG_Character_Skills_t&,     // skills
+                   const RPG_Character_Feats_t&,      // base feats
+                   const RPG_Character_Abilities_t&,  // base abilities
+                   unsigned short,                    // max HP
+                   const RPG_Magic_SpellTypes_t&,     // set of known spells (bard / sorcerer)
+                   // current status
+                   const RPG_Character_Conditions_t&, // condition
+                   short,                             // HP
+                   unsigned int,                      // wealth (GP)
+                   const RPG_Magic_Spells_t&,         // list of memorized/prepared spells (!bard)
+                   const RPG_Item_List_t&);           // list of (carried) items
 
   unsigned int               myWealth;
 
@@ -149,7 +146,7 @@ class RPG_Player_Base
   RPG_Player_Inventory       myInventory;
   RPG_Player_Equipment       myEquipment;
 
-  short int                  myNumHitPoints;
+  short                      myNumHitPoints;
   RPG_Character_Conditions_t myCondition;
 
   RPG_Character_Attributes   myAttributes;
@@ -158,12 +155,12 @@ class RPG_Player_Base
   RPG_Character_Skills_t     mySkills;
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Player_Base())
-  ACE_UNIMPLEMENTED_FUNC(RPG_Player_Base& operator=(const RPG_Player_Base&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Player_Base())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Player_Base& operator= (const RPG_Player_Base&))
 
   std::string                myName;
   RPG_Character_Alignment    myAlignment;
-  unsigned short int         myNumTotalHitPoints;
+  unsigned short             myNumTotalHitPoints;
 };
 
 #endif

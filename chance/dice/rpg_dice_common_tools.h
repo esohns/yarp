@@ -28,9 +28,6 @@
 #include "rpg_dice_roll.h"
 #include "rpg_dice_valuerange.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Dice_Common_Tools
 {
  public:

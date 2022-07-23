@@ -38,27 +38,23 @@
 
 #include "rpg_combat_common.h"
 #include "rpg_combat_damage.h"
-//#include "rpg_combat_exports.h"
 #include "rpg_combat_incl.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Combat_Common_Tools
 {
  public:
-  static void initializeStringConversionTables();
+  static void initializeStringConversionTables ();
 
-  static const std::string toString(const RPG_Combat_AttackForms_t&); // attack forms
-  static const std::string toString(const RPG_Combat_Damage&); // damage
+  static const std::string toString (const RPG_Combat_AttackForms_t&); // attack forms
+  static const std::string toString (const RPG_Combat_Damage&); // damage
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Combat_Common_Tools())
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Combat_Common_Tools())
-  ACE_UNIMPLEMENTED_FUNC(RPG_Combat_Common_Tools(const RPG_Combat_Common_Tools&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Combat_Common_Tools& operator=(const RPG_Combat_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Combat_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (~RPG_Combat_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Combat_Common_Tools (const RPG_Combat_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Combat_Common_Tools& operator= (const RPG_Combat_Common_Tools&))
 
-  static const std::string toString(const RPG_Combat_DamageTypeUnion&); // damage type
+  static const std::string toString (const RPG_Combat_DamageTypeUnion&); // damage type
 };
 
 #endif

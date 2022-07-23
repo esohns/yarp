@@ -200,7 +200,7 @@ do_SDL_waitForInput (unsigned int timeout_in,
 {
   RPG_TRACE(ACE_TEXT("::do_SDL_waitForInput"));
 
-  SDL_TimerID timer = NULL;
+  SDL_TimerID timer = 0;
   if (timeout_in)
   {
     timer = SDL_AddTimer ((timeout_in * 1000), // interval (ms)
@@ -1164,7 +1164,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
     if ((sdl_event.type != RPG_GRAPHICS_SDL_HOVEREVENT) &&
         //(sdl_event.type != RPG_CLIENT_SDL_GTKEVENT) &&
         (sdl_event.type != RPG_CLIENT_SDL_TIMEREVENT))
-    { ACE_Guard<ACE_Thread_Mutex> aGuard (GTKUserData_in.UIState->lock);
+    { ACE_GUARD (ACE_Thread_Mutex, aGuard, GTKUserData_in.UIState->lock);
       GTKUserData_in.hoverTime = 0;
     } // end IF
 

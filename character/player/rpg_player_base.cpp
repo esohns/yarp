@@ -21,78 +21,78 @@
 
 #include "rpg_player_base.h"
 
-#include "rpg_combat_incl.h"
-#include "rpg_combat_common.h"
+#include <string>
 
-#include "rpg_character_common_tools.h"
-#include "rpg_character_skills_common_tools.h"
+#include "ace/Log_Msg.h"
 
-#include "rpg_item_common.h"
-#include "rpg_item_dictionary.h"
-
-#include "rpg_magic_common_tools.h"
+#include "rpg_common_macros.h"
 
 #include "rpg_dice_incl.h"
 #include "rpg_dice_common.h"
 #include "rpg_dice.h"
 
-#include "rpg_common_macros.h"
+#include "rpg_magic_common_tools.h"
 
-#include <ace/Log_Msg.h>
+#include "rpg_item_common.h"
+#include "rpg_item_dictionary.h"
 
-#include <string>
+#include "rpg_character_common_tools.h"
+#include "rpg_character_skills_common_tools.h"
 
-RPG_Player_Base::RPG_Player_Base(// base attributes
-																 const std::string& name_in,
-																 const RPG_Character_Alignment& alignment_in,
-																 const RPG_Character_Attributes& attributes_in,
-																 const RPG_Character_Skills_t& skills_in,
-																 const RPG_Character_Feats_t& feats_in,
-																 const RPG_Character_Abilities_t& abilities_in,
-																 const unsigned short int& maxHitPoints_in,
-																 const RPG_Magic_SpellTypes_t& knownSpells_in,
-																 // current status
-																 const RPG_Character_Conditions_t& condition_in,
-																 const short int& hitpoints_in,
-																 const unsigned int& wealth_in,
-																 const RPG_Magic_Spells_t& spells_in,
-																 const RPG_Item_List_t& inventory_in)
- : myWealth(wealth_in),
-   myKnownSpells(knownSpells_in),
-   mySpells(spells_in),
-   myInventory(inventory_in),
+#include "rpg_combat_incl.h"
+#include "rpg_combat_common.h"
+
+RPG_Player_Base::RPG_Player_Base (// base attributes
+                                  const std::string& name_in,
+                                  const RPG_Character_Alignment& alignment_in,
+                                  const RPG_Character_Attributes& attributes_in,
+                                  const RPG_Character_Skills_t& skills_in,
+                                  const RPG_Character_Feats_t& feats_in,
+                                  const RPG_Character_Abilities_t& abilities_in,
+                                  unsigned short maxHitPoints_in,
+                                  const RPG_Magic_SpellTypes_t& knownSpells_in,
+                                  // current status
+                                  const RPG_Character_Conditions_t& condition_in,
+                                  short hitpoints_in,
+                                  unsigned int wealth_in,
+                                  const RPG_Magic_Spells_t& spells_in,
+                                  const RPG_Item_List_t& inventory_in)
+ : myWealth (wealth_in),
+   myKnownSpells (knownSpells_in),
+   mySpells (spells_in),
+   myInventory (inventory_in),
 //    myEquipment(), // start naked
-   myNumHitPoints(hitpoints_in),
-   myCondition(condition_in),
-   myAttributes(attributes_in),
-   myFeats(feats_in),
-   myAbilities(abilities_in),
-   mySkills(skills_in),
-   myName(name_in),
-   myAlignment(alignment_in),
-   myNumTotalHitPoints(maxHitPoints_in)
+   myNumHitPoints (hitpoints_in),
+   myCondition (condition_in),
+   myAttributes (attributes_in),
+   myFeats (feats_in),
+   myAbilities (abilities_in),
+   mySkills (skills_in),
+   myName (name_in),
+   myAlignment (alignment_in),
+   myNumTotalHitPoints (maxHitPoints_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::RPG_Player_Base"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Base::RPG_Player_Base"));
 
 }
 
-RPG_Player_Base::RPG_Player_Base(const RPG_Player_Base& playerBase_in)
- : myWealth(playerBase_in.myWealth),
-   myKnownSpells(playerBase_in.myKnownSpells),
-   mySpells(playerBase_in.mySpells),
-   myInventory(playerBase_in.myInventory),
-   myEquipment(playerBase_in.myEquipment),
-   myNumHitPoints(playerBase_in.myNumHitPoints),
-   myCondition(playerBase_in.myCondition),
-   myAttributes(playerBase_in.myAttributes),
-   myFeats(playerBase_in.myFeats),
-   myAbilities(playerBase_in.myAbilities),
-   mySkills(playerBase_in.mySkills),
-   myName(playerBase_in.myName),
-   myAlignment(playerBase_in.myAlignment),
-   myNumTotalHitPoints(playerBase_in.myNumTotalHitPoints)
+RPG_Player_Base::RPG_Player_Base (const RPG_Player_Base& playerBase_in)
+ : myWealth (playerBase_in.myWealth),
+   myKnownSpells (playerBase_in.myKnownSpells),
+   mySpells (playerBase_in.mySpells),
+   myInventory (playerBase_in.myInventory),
+   myEquipment (playerBase_in.myEquipment),
+   myNumHitPoints (playerBase_in.myNumHitPoints),
+   myCondition (playerBase_in.myCondition),
+   myAttributes (playerBase_in.myAttributes),
+   myFeats (playerBase_in.myFeats),
+   myAbilities (playerBase_in.myAbilities),
+   mySkills (playerBase_in.mySkills),
+   myName (playerBase_in.myName),
+   myAlignment (playerBase_in.myAlignment),
+   myNumTotalHitPoints (playerBase_in.myNumTotalHitPoints)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::RPG_Player_Base"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Base::RPG_Player_Base"));
 
 }
 
@@ -121,29 +121,29 @@ RPG_Player_Base::RPG_Player_Base(const RPG_Player_Base& playerBase_in)
 // }
 
 void
-RPG_Player_Base::init(// base attributes
-					            const std::string& name_in,
-					            const RPG_Character_Alignment& alignment_in,
-					            const RPG_Character_Attributes& attributes_in,
-					            const RPG_Character_Skills_t& skills_in,
-					            const RPG_Character_Feats_t& feats_in,
-					            const RPG_Character_Abilities_t& abilities_in,
-					            const unsigned short int& maxHitPoints_in,
-					            const RPG_Magic_SpellTypes_t& knownSpells_in,
-					            // current status
-					            const RPG_Character_Conditions_t& condition_in,
-					            const short int& hitpoints_in,
-					            const unsigned int& wealth_in,
-					            const RPG_Magic_Spells_t& spells_in,
-					            const RPG_Item_List_t& inventory_in)
+RPG_Player_Base::initialize (// base attributes
+                             const std::string& name_in,
+                             const RPG_Character_Alignment& alignment_in,
+                             const RPG_Character_Attributes& attributes_in,
+                             const RPG_Character_Skills_t& skills_in,
+                             const RPG_Character_Feats_t& feats_in,
+                             const RPG_Character_Abilities_t& abilities_in,
+                             unsigned short maxHitPoints_in,
+                             const RPG_Magic_SpellTypes_t& knownSpells_in,
+                             // current status
+                             const RPG_Character_Conditions_t& condition_in,
+                             short hitpoints_in,
+                             unsigned int wealth_in,
+                             const RPG_Magic_Spells_t& spells_in,
+                             const RPG_Item_List_t& inventory_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::init"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Base::initialize"));
 
   myWealth            = wealth_in;
   myKnownSpells       = knownSpells_in;
   mySpells            = spells_in;
   myInventory         = inventory_in;
-  myEquipment.strip();
+  myEquipment.strip ();
   myNumHitPoints      = hitpoints_in;
   myCondition         = condition_in;
   myAttributes        = attributes_in;
@@ -155,40 +155,10 @@ RPG_Player_Base::init(// base attributes
   myNumTotalHitPoints = hitpoints_in;
 }
 
-RPG_Player_Base::~RPG_Player_Base()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::~RPG_Player_Base"));
-
-}
-
-const std::string&
-RPG_Player_Base::getName() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::getName"));
-
-  return myName;
-}
-
-const RPG_Character_Alignment&
-RPG_Player_Base::getAlignment() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::getAlignment"));
-
-  return myAlignment;
-}
-
-const RPG_Character_Conditions_t&
-RPG_Player_Base::getCondition() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::getCondition"));
-
-  return myCondition;
-}
-
 ACE_UINT8
-RPG_Player_Base::getAttribute(enum RPG_Common_Attribute attribute_in) const
+RPG_Player_Base::getAttribute (enum RPG_Common_Attribute attribute_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::getAttribute"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Base::getAttribute"));
 
   switch (attribute_in)
   {
@@ -215,30 +185,6 @@ RPG_Player_Base::getAttribute(enum RPG_Common_Attribute attribute_in) const
   } // end SWITCH
 
   return 0;
-}
-
-const RPG_Character_Feats_t&
-RPG_Player_Base::getFeats() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::getFeats"));
-
-  return myFeats;
-}
-
-const RPG_Character_Abilities_t&
-RPG_Player_Base::getAbilities() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::getAbilities"));
-
-  return myAbilities;
-}
-
-const RPG_Character_Skills_t&
-RPG_Player_Base::getSkills() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::getSkills"));
-
-  return mySkills;
 }
 
 void
@@ -273,30 +219,6 @@ RPG_Player_Base::hasAbility(enum RPG_Character_Ability ability_in) const
   return (myAbilities.find(ability_in) != myAbilities.end());
 }
 
-const RPG_Magic_SpellTypes_t&
-RPG_Player_Base::getKnownSpells() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::getKnownSpells"));
-
-  return myKnownSpells;
-}
-
-const RPG_Magic_Spells_t&
-RPG_Player_Base::getSpells() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::getSpells"));
-
-  return mySpells;
-}
-
-const RPG_Player_Inventory&
-RPG_Player_Base::getInventory() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::getInventory"));
-
-  return myInventory;
-}
-
 // const RPG_Player_Equipment
 // RPG_Player_Base::getEquipment() const
 // {
@@ -304,30 +226,6 @@ RPG_Player_Base::getInventory() const
 //
 //   return myEquipment;
 // }
-
-unsigned short int
-RPG_Player_Base::getNumTotalHitPoints() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::getNumTotalHitPoints"));
-
-  return myNumTotalHitPoints;
-}
-
-short int
-RPG_Player_Base::getNumHitPoints() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::getNumHitPoints"));
-
-  return myNumHitPoints;
-}
-
-unsigned int
-RPG_Player_Base::getWealth() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::getWealth"));
-
-  return myWealth;
-}
 
 bool
 RPG_Player_Base::hasCondition(enum RPG_Common_Condition condition_in) const

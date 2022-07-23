@@ -57,55 +57,49 @@ RPG_Player_Player_Base::RPG_Player_Player_Base (// base attributes
                                                 const RPG_Character_Feats_t& feats_in,
                                                 const RPG_Character_Abilities_t& abilities_in,
                                                 enum RPG_Character_OffHand offHand_in,
-                                                const unsigned short int& maxHitPoints_in,
+                                                unsigned short maxHitPoints_in,
                                                 const RPG_Magic_SpellTypes_t& knownSpells_in,
                                                 // current status
                                                 const RPG_Character_Conditions_t& condition_in,
-                                                const short int& hitpoints_in,
-                                                const unsigned int& experience_in,
-                                                const unsigned int& wealth_in,
+                                                short hitpoints_in,
+                                                unsigned int experience_in,
+                                                unsigned int wealth_in,
                                                 const RPG_Magic_Spells_t& spells_in,
                                                 const RPG_Item_List_t& inventory_in)
- : inherited(name_in,
-             alignment_in,
-             attributes_in,
-             skills_in,
-             feats_in,
-             abilities_in,
-             maxHitPoints_in,
-             knownSpells_in,
-             condition_in,
-             hitpoints_in,
-             wealth_in,
-             spells_in,
-             inventory_in),
-   myGender(gender_in),
-   myRace(race_in),
-   myClass(class_in),
-   myOffHand(offHand_in),
-   myExperience(experience_in),
-   mySize(RPG_Character_Race_Common_Tools::raceToSize(race_in))
+ : inherited (name_in,
+              alignment_in,
+              attributes_in,
+              skills_in,
+              feats_in,
+              abilities_in,
+              maxHitPoints_in,
+              knownSpells_in,
+              condition_in,
+              hitpoints_in,
+              wealth_in,
+              spells_in,
+              inventory_in),
+   myGender (gender_in),
+   myRace (race_in),
+   myClass (class_in),
+   myOffHand (offHand_in),
+   myExperience (experience_in),
+   mySize (RPG_Character_Race_Common_Tools::raceToSize (race_in))
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::RPG_Player_Player_Base"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::RPG_Player_Player_Base"));
 
 }
 
-RPG_Player_Player_Base::RPG_Player_Player_Base(const RPG_Player_Player_Base& playerBase_in)
- : inherited(playerBase_in),
-   myGender(playerBase_in.myGender),
-   myRace(playerBase_in.myRace),
-   myClass(playerBase_in.myClass),
-   myOffHand(playerBase_in.myOffHand),
-   myExperience(playerBase_in.myExperience),
-   mySize(playerBase_in.mySize)
+RPG_Player_Player_Base::RPG_Player_Player_Base (const RPG_Player_Player_Base& playerBase_in)
+ : inherited (playerBase_in),
+   myGender (playerBase_in.myGender),
+   myRace (playerBase_in.myRace),
+   myClass (playerBase_in.myClass),
+   myOffHand (playerBase_in.myOffHand),
+   myExperience (playerBase_in.myExperience),
+   mySize (playerBase_in.mySize)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::RPG_Player_Player_Base"));
-
-}
-
-RPG_Player_Player_Base::~RPG_Player_Player_Base()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::~RPG_Player_Player_Base"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::RPG_Player_Player_Base"));
 
 }
 
@@ -125,45 +119,45 @@ RPG_Player_Player_Base::~RPG_Player_Player_Base()
 // }
 
 void
-RPG_Player_Player_Base::init (// base attributes
-                              const std::string& name_in,
-                              enum RPG_Character_Gender gender_in,
-                              const RPG_Character_Race_t& race_in,
-                              const struct RPG_Character_Class& class_in,
-                              const struct RPG_Character_Alignment& alignment_in,
-                              const struct RPG_Character_Attributes& attributes_in,
-                              const RPG_Character_Skills_t& skills_in,
-                              const RPG_Character_Feats_t& feats_in,
-                              const RPG_Character_Abilities_t& abilities_in,
-                              enum RPG_Character_OffHand offHand_in,
-                              const unsigned short int& maxHitPoints_in,
-                              const RPG_Magic_SpellTypes_t& knownSpells_in,
-                              // current status
-                              const RPG_Character_Conditions_t& condition_in,
-                              const short int& hitpoints_in,
-                              const unsigned int& experience_in,
-                              const unsigned int& wealth_in,
-                              const RPG_Magic_Spells_t& spells_in,
-                              const RPG_Item_List_t& inventory_in)
+RPG_Player_Player_Base::initialize (// base attributes
+                                    const std::string& name_in,
+                                    enum RPG_Character_Gender gender_in,
+                                    const RPG_Character_Race_t& race_in,
+                                    const struct RPG_Character_Class& class_in,
+                                    const struct RPG_Character_Alignment& alignment_in,
+                                    const struct RPG_Character_Attributes& attributes_in,
+                                    const RPG_Character_Skills_t& skills_in,
+                                    const RPG_Character_Feats_t& feats_in,
+                                    const RPG_Character_Abilities_t& abilities_in,
+                                    enum RPG_Character_OffHand offHand_in,
+                                    unsigned short maxHitPoints_in,
+                                    const RPG_Magic_SpellTypes_t& knownSpells_in,
+                                    // current status
+                                    const RPG_Character_Conditions_t& condition_in,
+                                    short hitpoints_in,
+                                    unsigned int experience_in,
+                                    unsigned int wealth_in,
+                                    const RPG_Magic_Spells_t& spells_in,
+                                    const RPG_Item_List_t& inventory_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::init"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::init"));
 
   // init base class
-  inherited::init(// base attributes
-                  name_in,
-                  alignment_in,
-                  attributes_in,
-                  skills_in,
-                  feats_in,
-                  abilities_in,
-                  maxHitPoints_in,
-                  knownSpells_in,
-                  // current status
-                  condition_in,
-                  hitpoints_in,
-                  wealth_in,
-                  spells_in,
-                  inventory_in);
+  inherited::initialize (// base attributes
+                         name_in,
+                         alignment_in,
+                         attributes_in,
+                         skills_in,
+                         feats_in,
+                         abilities_in,
+                         maxHitPoints_in,
+                         knownSpells_in,
+                         // current status
+                         condition_in,
+                         hitpoints_in,
+                         wealth_in,
+                         spells_in,
+                         inventory_in);
 
   myGender     = gender_in;
   myRace       = race_in;
@@ -230,60 +224,44 @@ RPG_Player_Player_Base::getLevel(const RPG_Common_SubClass& subClass_in) const
   return result;
 }
 
-unsigned int
-RPG_Player_Player_Base::getExperience() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getExperience"));
-
-  return myExperience;
-}
-
-RPG_Player_Equipment&
-RPG_Player_Player_Base::getEquipment()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getEquipment"));
-
-  return inherited::myEquipment;
-}
-
 RPG_Character_BaseAttackBonus_t
-RPG_Player_Player_Base::getAttackBonus(enum RPG_Common_Attribute modifier_in,
-                                       enum RPG_Combat_AttackSituation attackSituation_in) const
+RPG_Player_Player_Base::getAttackBonus (enum RPG_Common_Attribute modifier_in,
+                                        enum RPG_Combat_AttackSituation attackSituation_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getAttackBonus"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::getAttackBonus"));
 
-  ACE_ASSERT((modifier_in == ATTRIBUTE_DEXTERITY) ||
-             (modifier_in == ATTRIBUTE_STRENGTH));
+  // sanity check(s)
+  ACE_ASSERT ((modifier_in == ATTRIBUTE_DEXTERITY) || (modifier_in == ATTRIBUTE_STRENGTH));
 
   // *NOTE*: Attack Bonus = base attack bonus + STR/DEX modifier + size modifier
   //         [+ range penalty + other modifiers]
   RPG_Character_BaseAttackBonus_t result;
 
   // attack bonusses stack for multiclass characters...
-  for (RPG_Character_SubClassesIterator_t iterator = myClass.subClasses.begin();
-       iterator != myClass.subClasses.end();
+  for (RPG_Character_SubClassesIterator_t iterator = myClass.subClasses.begin ();
+       iterator != myClass.subClasses.end ();
        iterator++)
   {
     RPG_Character_BaseAttackBonus_t bonus =
-        RPG_Character_Common_Tools::getBaseAttackBonus(*iterator,
-                                                       getLevel(*iterator));
+        RPG_Character_Common_Tools::getBaseAttackBonus (*iterator,
+                                                        getLevel (*iterator));
     // append necessary entries
     for (int diff = static_cast<int> (bonus.size () - result.size ());
          diff > 0;
          diff--)
-      result.push_back(0);
+      result.push_back (0);
     int index = 0;
-    for (RPG_Character_BaseAttackBonusConstIterator_t iterator2 = bonus.begin();
-         iterator2 != bonus.end();
+    for (RPG_Character_BaseAttackBonusConstIterator_t iterator2 = bonus.begin ();
+         iterator2 != bonus.end ();
          iterator2++, index++)
       result[index] += *iterator2;
   } // end FOR
 
   int abilityModifier =
-      RPG_Character_Common_Tools::getAttributeAbilityModifier(getAttribute(modifier_in));
-  int sizeModifier = RPG_Common_Tools::getSizeModifier(getSize());
-  for (RPG_Character_BaseAttackBonusIterator_t iterator = result.begin();
-       iterator != result.end();
+      RPG_Character_Common_Tools::getAttributeAbilityModifier (getAttribute (modifier_in));
+  int sizeModifier = RPG_Common_Tools::getSizeModifier (getSize ());
+  for (RPG_Character_BaseAttackBonusIterator_t iterator = result.begin ();
+       iterator != result.end ();
        iterator++)
   {
     (*iterator) += abilityModifier;
@@ -294,42 +272,42 @@ RPG_Player_Player_Base::getAttackBonus(enum RPG_Common_Attribute modifier_in,
 }
 
 ACE_INT8
-RPG_Player_Player_Base::getArmorClass(enum RPG_Combat_DefenseSituation defenseSituation_in) const
+RPG_Player_Player_Base::getArmorClass (enum RPG_Combat_DefenseSituation defenseSituation_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getArmorClass"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::getArmorClass"));
 
   // *NOTE*: AC = 10 + armor bonus + shield bonus + DEX modifier + size modifier
   //         [+ other modifiers]
   signed char result = 10;
 
   // retrieve equipped armor type
+  RPG_Item_ArmorProperties properties_s;
+  ACE_OS::memset (&properties_s, 0, sizeof (RPG_Item_ArmorProperties));
   RPG_Item_ArmorType type = myEquipment.getBodyArmor();
-  RPG_Item_ArmorProperties properties;
-  ACE_OS::memset(&properties, 0, sizeof(properties));
   if (type != ARMOR_NONE)
   {
-    properties =
-        RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
-    result += properties.baseBonus;
+    properties_s =
+        RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getArmorProperties (type);
+    result += properties_s.baseBonus;
   } // end IF
-  result += getShieldBonus();
+  result += getShieldBonus ();
 
   // consider defense situation
   int DEX_modifier = 0;
   if (defenseSituation_in != DEFENSE_FLATFOOTED)
   {
     DEX_modifier =
-        RPG_Character_Common_Tools::getAttributeAbilityModifier(getAttribute(ATTRIBUTE_DEXTERITY));
+        RPG_Character_Common_Tools::getAttributeAbilityModifier (getAttribute (ATTRIBUTE_DEXTERITY));
     if (type != ARMOR_NONE)
       DEX_modifier =
-          std::min<int>(static_cast<int>(properties.maxDexterityBonus),
-                        DEX_modifier);
+          std::min<int> (static_cast<int> (properties_s.maxDexterityBonus),
+                         DEX_modifier);
   } // end IF
   result += DEX_modifier;
 
   // *NOTE*: usually, this is irrelevant (SIZE_MEDIUM --> +/-0), but may have
   // changed temporarily, magically etc...
-  result += RPG_Common_Tools::getSizeModifier(getSize());
+  result += RPG_Common_Tools::getSizeModifier (getSize ());
 
   return result;
 }
@@ -492,47 +470,46 @@ RPG_Player_Player_Base::isPlayerCharacter() const
 }
 
 bool
-RPG_Player_Player_Base::gainExperience(const unsigned int& XP_in)
+RPG_Player_Player_Base::gainExperience (unsigned int XP_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::gainExperience"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::gainExperience"));
 
   std::vector<unsigned char> levels;
-	for (RPG_Character_SubClassesIterator_t iterator = myClass.subClasses.begin();
-	     iterator != myClass.subClasses.end();
-	     iterator++)
-		levels.push_back(getLevel(*iterator));
+  for (RPG_Character_SubClassesIterator_t iterator = myClass.subClasses.begin ();
+       iterator != myClass.subClasses.end ();
+       iterator++)
+    levels.push_back (getLevel (*iterator));
 
   myExperience += XP_in;
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("\"%s\" gained %u XP (total: %u)...\n"),
-             ACE_TEXT(getName().c_str()),
-             XP_in,
-             myExperience));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("\"%s\" gained %u XP (total: %u)...\n"),
+              ACE_TEXT (getName ().c_str ()),
+              XP_in,
+              myExperience));
 
-	// gained a class level ?
-	unsigned int index = 0;
-	for (RPG_Character_SubClassesIterator_t iterator = myClass.subClasses.begin();
-	     iterator != myClass.subClasses.end();
-	     iterator++, index++)
-		if (getLevel(*iterator) != levels[index])
-	  {
-		  ACE_DEBUG((LM_DEBUG,
-		             ACE_TEXT("player: \"%s\" (XP: %d) has reached level %u as %s...\n"),
-		             ACE_TEXT(getName().c_str()),
-		             myExperience,
-		             static_cast<unsigned int>(getLevel(*iterator)),
-		             ACE_TEXT(RPG_Common_SubClassHelper::RPG_Common_SubClassToString(*iterator).c_str())));
+  // gained a class level ?
+  unsigned int index = 0;
+  for (RPG_Character_SubClassesIterator_t iterator = myClass.subClasses.begin ();
+       iterator != myClass.subClasses.end ();
+       iterator++, index++)
+    if (getLevel (*iterator) != levels[index])
+    {
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT ("player: \"%s\" (XP: %d) has reached level %u as %s...\n"),
+                  ACE_TEXT (getName ().c_str ()),
+                  myExperience,
+                  static_cast<unsigned int> (getLevel (*iterator)),
+                  ACE_TEXT (RPG_Common_SubClassHelper::RPG_Common_SubClassToString (*iterator).c_str ())));
+      return true;
+    } // end IF
 
-			return true;
-		} // end IF
-
-	return false;
+  return false;
 }
 
 unsigned int
-RPG_Player_Player_Base::rest(const RPG_Common_Camp& type_in,
-                             const unsigned int& hours_in)
+RPG_Player_Player_Base::rest (const RPG_Common_Camp& type_in,
+                              unsigned int hours_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::rest"));
 
