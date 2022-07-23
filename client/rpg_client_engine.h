@@ -42,9 +42,6 @@
 // forward declaration(s)
 class RPG_Engine;
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Client_Engine
  : public Common_TaskBase_T<ACE_MT_SYNCH,
                             Common_TimePolicy_t,
@@ -76,7 +73,7 @@ class RPG_Client_Engine
   virtual bool lock (bool = true); // block ?
   virtual int unlock (bool = false); // unlock completely ?
 
-  void redraw ();
+  void redraw (bool = true); // refresh ?
   // *TODO* these need consideration/redesign
   inline void setStyle (const RPG_Graphics_Style& style_in) { state_.style = style_in; }
   inline RPG_Graphics_Style getStyle () const { return state_.style; }

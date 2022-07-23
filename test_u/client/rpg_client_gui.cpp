@@ -1174,6 +1174,12 @@ do_work (struct RPG_Client_Configuration& configuration_in,
       {
         switch (sdl_event.key.keysym.sym)
         {
+          case SDLK_l:
+          {
+            g_idle_add (idle_leave_game_cb,
+                        &GTKUserData_in);
+            break;
+          }
           case SDLK_u:
           {
             g_idle_add (idle_raise_UI_cb,

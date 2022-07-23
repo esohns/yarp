@@ -45,7 +45,7 @@
 #include "rpg_client_iwindow.h"
 #include "rpg_client_iwindow_level.h"
 
-RPG_Client_Engine::RPG_Client_Engine()
+RPG_Client_Engine::RPG_Client_Engine ()
 //  : myQueue(RPG_CLIENT_MAX_QUEUE_SLOTS),
  : inherited (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_ENGINE_THREAD_NAME),
               RPG_CLIENT_ENGINE_THREAD_GROUP_ID,
@@ -77,10 +77,10 @@ RPG_Client_Engine::RPG_Client_Engine()
   state_.style.wall = RPG_CLIENT_GRAPHICS_DEF_WALLSTYLE;
 
   // set group ID for worker thread(s)
-  inherited::grp_id(RPG_CLIENT_ENGINE_THREAD_GROUP_ID);
+  inherited::grp_id (RPG_CLIENT_ENGINE_THREAD_GROUP_ID);
 }
 
-RPG_Client_Engine::~RPG_Client_Engine()
+RPG_Client_Engine::~RPG_Client_Engine ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::~RPG_Client_Engine"));
 
@@ -89,7 +89,7 @@ RPG_Client_Engine::~RPG_Client_Engine()
 }
 
 int
-RPG_Client_Engine::close(u_long arg_in)
+RPG_Client_Engine::close (u_long arg_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::close"));
 
@@ -114,21 +114,19 @@ RPG_Client_Engine::close(u_long arg_in)
     }
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid argument: %u, returning\n"),
-                 arg_in));
-
-      // what else can we do ?
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid argument: %u, returning\n"),
+                  arg_in));
       break;
     }
   } // end SWITCH
 
-  ACE_ASSERT(false);
+  ACE_ASSERT (false);
 #if defined (_MSC_VER)
   return -1;
 #else
-  ACE_NOTREACHED(return -1;)
-#endif
+  ACE_NOTREACHED (return -1;)
+#endif // _MSC_VER
 }
 
 int
@@ -167,142 +165,60 @@ RPG_Client_Engine::svc (void)
 #endif // _MSC_VER
 }
 
-//void
-//RPG_Client_Engine::start ()
-//{
-//  RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::start"));
-
-//  // sanity check
-//  ACE_ASSERT (!isRunning ());
-
-//  // OK: start worker thread
-//  ACE_hthread_t thread_handles[1];
-//  thread_handles[0] = 0;
-//  ACE_thread_t thread_ids[1];
-//  thread_ids[0] = 0;
-//  char thread_name[BUFSIZ];
-//  ACE_OS::memset (thread_name, 0, sizeof (thread_name));
-//  ACE_OS::strcpy (thread_name,
-//                  ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_ENGINE_THREAD_NAME));
-//  const char* thread_names[1];
-//  thread_names[0] = thread_name;
-//  // *IMPORTANT NOTE*: MUST be THR_JOINABLE !!!
-//  int return_value = 0;
-//  return_value = inherited::activate ((THR_NEW_LWP |
-//                                       THR_JOINABLE |
-//                                       THR_INHERIT_SCHED),         // flags
-//                                      1,                           // number of threads
-//                                      0,                           // force spawning
-//                                      ACE_DEFAULT_THREAD_PRIORITY, // priority
-//                                      inherited::grp_id (),        // group id --> has been set (see above)
-//                                      NULL,                        // corresp. task --> use 'this'
-//                                      thread_handles,              // thread handle(s)
-//                                      NULL,                        // thread stack(s)
-//                                      NULL,                        // thread stack size(s)
-//                                      thread_ids,                  // thread id(s)
-//                                      thread_names);               // thread name(s)
-//  if (return_value == -1)
-//  {
-//    ACE_DEBUG ((LM_ERROR,
-//                ACE_TEXT ("failed to ACE_Task_Base::activate(): \"%m\", returning\n")));
-//    return;
-//  } // end IF
-
-//  ACE_DEBUG ((LM_DEBUG,
-//              ACE_TEXT ("(%s) started worker thread (group: %d, id: %u)...\n"),
-//              ACE_TEXT (thread_name),
-//              inherited::grp_id (),
-//              thread_ids[0]));
-//}
-
-//void
-//RPG_Client_Engine::stop(bool lockedAccess_in)
-//{
-//  RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::stop"));
-
-//  // sanity check
-//  if (!isRunning())
-//    return;
-
-//  if (lockedAccess_in)
-//    lock_.acquire();
-
-//  myStop = true;
-
-//  // wake up the (waiting) worker thread(s)
-//  condition_.broadcast();
-
-//  if (lockedAccess_in)
-//    lock_.release();
-
-//  // ... and wait for the worker thread to join
-//  if (inherited::wait() == -1)
-//  {
-//    ACE_DEBUG((LM_ERROR,
-//               ACE_TEXT("failed to ACE_Task_Base::wait(): \"%m\", returning")));
-
-//    return;
-//  } // end IF
-
-//  ACE_DEBUG((LM_DEBUG,
-//             ACE_TEXT("(%s) joined worker thread...\n"),
-//             ACE_TEXT(RPG_CLIENT_ENGINE_THREAD_NAME)));
-//}
-
 void
-RPG_Client_Engine::dump_state() const
+RPG_Client_Engine::dump_state () const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::dump_state"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(lock_);
+  ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("current queue size: %d\n"),
-             actions_.size()));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("current queue size: %d\n"),
+              actions_.size ()));
 }
 
 bool
-RPG_Client_Engine::lock(bool block_in)
+RPG_Client_Engine::lock (bool block_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::lock"));
 
   ACE_UNUSED_ARG (block_in);
 
-  if (screenLock_.acquire(NULL) == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Thread_Mutex::acquire: \"%m\", continuing\n")));
+  if (screenLock_.acquire (NULL) == -1)
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_Thread_Mutex::acquire: \"%m\", continuing\n")));
 
   return true;
 }
 
 int
-RPG_Client_Engine::unlock(bool unlock_in)
+RPG_Client_Engine::unlock (bool unlock_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::unlock"));
 
   ACE_UNUSED_ARG (unlock_in);
 
-  if (screenLock_.release() == -1)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE_Thread_Mutex::release: \"%m\", continuing\n")));
+  if (screenLock_.release () == -1)
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_Thread_Mutex::release: \"%m\", continuing\n")));
 
   return 0;
 }
 
 void
-RPG_Client_Engine::redraw()
+RPG_Client_Engine::redraw (bool refresh_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::redraw"));
 
   // sanity check
-  ACE_ASSERT(window_);
+  ACE_ASSERT (window_);
 
   // step1: draw map window
   RPG_Client_Action new_action;
   new_action.command = COMMAND_WINDOW_DRAW;
   new_action.position =
-      std::make_pair(std::numeric_limits<unsigned int>::max(),
-                     std::numeric_limits<unsigned int>::max());
+      std::make_pair (std::numeric_limits<unsigned int>::max (),
+                      std::numeric_limits<unsigned int>::max ());
   new_action.window = window_;
   new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
   new_action.entity_id = 0;
@@ -310,9 +226,12 @@ RPG_Client_Engine::redraw()
 
   action (new_action);
 
-  // step2: refresh the window
-  new_action.command = COMMAND_WINDOW_REFRESH;
-  action (new_action);
+  // step2: refresh the window ?
+  if (refresh_in)
+  {
+    new_action.command = COMMAND_WINDOW_REFRESH;
+    action (new_action);
+  } // end IF
 }
 
 void
@@ -321,7 +240,7 @@ RPG_Client_Engine::setView (const RPG_Map_Position_t& position_in)
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::setView"));
 
   // sanity check
-  ACE_ASSERT(window_);
+  ACE_ASSERT (window_);
 
   RPG_Client_Action new_action;
   new_action.command = COMMAND_SET_VIEW;
@@ -465,8 +384,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
     }
     case COMMAND_E2C_ENTITY_HIT:
     case COMMAND_E2C_ENTITY_MISS:
-    {
-      // sanity check(s)
+    { // sanity check(s)
       ACE_ASSERT (parameters_in.entity_id);
       client_action.entity_id = parameters_in.entity_id;
       client_action.command = COMMAND_PLAY_SOUND;
@@ -479,7 +397,51 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
     case COMMAND_E2C_ENTITY_CONDITION:
     {
       client_action.command = COMMAND_PLAY_SOUND;
-      client_action.sound = EVENT_CONDITION_WEAK;
+      bool entity_is_down_b = false;
+      switch (parameters_in.condition)
+      {
+        case CONDITION_ALTERNATE_FORM:
+        case CONDITION_NORMAL:
+        case CONDITION_INCORPOREAL:
+        case CONDITION_INVISIBLE:
+        case CONDITION_STABLE:
+          client_action.sound = EVENT_CONDITION_ILL; // *TODO*
+          break;
+        case CONDITION_DEAD:
+        case CONDITION_DISABLED:
+        case CONDITION_DYING:
+        case CONDITION_UNCONSCIOUS:
+        {
+          entity_is_down_b = true;
+
+          // *WARNING*: falls through
+        }
+        default:
+        {
+          client_action.sound = EVENT_CONDITION_WEAK;
+          break;
+        }
+      } // end SWITCH
+
+      if (entity_is_down_b && 
+          parameters_in.entity_id == engine_->getActive (true))
+      {
+        // raise the UI
+        SDL_Event sdl_event_u;
+        sdl_event_u.type = SDL_KEYDOWN;
+        sdl_event_u.key.keysym.sym = SDLK_u;
+        if (SDL_PushEvent (&sdl_event_u) < 0)
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),
+                      ACE_TEXT (SDL_GetError ())));
+
+        // leave the game
+        sdl_event_u.key.keysym.sym = SDLK_l;
+        if (SDL_PushEvent (&sdl_event_u) < 0)
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),
+                      ACE_TEXT (SDL_GetError ())));
+      } // end IF
 
       break;
     }
@@ -667,8 +629,8 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
     }
     case COMMAND_E2C_ENTITY_LEVEL_UP:
     {
-      // *TODO*
-      do_action = false;
+      client_action.command = COMMAND_PLAY_SOUND;
+      client_action.sound = EVENT_XP_LEVELUP;
 
       break;
     }

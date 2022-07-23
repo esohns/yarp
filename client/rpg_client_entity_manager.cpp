@@ -126,54 +126,53 @@ RPG_Client_Entity_Manager::add(const RPG_Engine_EntityID_t& id_in,
 }
 
 void
-RPG_Client_Entity_Manager::remove(const RPG_Engine_EntityID_t& id_in,
-                                  SDL_Rect& dirtyRegion_out,
-                                  bool lockedAccess_in,
-                                  bool debug_in)
+RPG_Client_Entity_Manager::remove (const RPG_Engine_EntityID_t& id_in,
+                                   SDL_Rect& dirtyRegion_out,
+                                   bool lockedAccess_in,
+                                   bool debug_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::remove"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Entity_Manager::remove"));
 
   // init return value(s)
-  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
 
   // sanity check(s)
-  RPG_Client_EntityCacheConstIterator_t iterator = myCache.find(id_in);
-  if (iterator == myCache.end())
+  RPG_Client_EntityCacheConstIterator_t iterator = myCache.find (id_in);
+  if (iterator == myCache.end ())
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid entity ID (was: %u), returning\n"),
-               id_in));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("invalid entity ID (was: %u), returning\n"),
+                id_in));
     return;
   } // end IF
 
   // step0: restore old background
   if (myScreenLock && lockedAccess_in)
-    myScreenLock->lock();
-  restoreBG(id_in,
-            dirtyRegion_out,
-            true,
-            false,
-            debug_in);
+    myScreenLock->lock ();
+  restoreBG (id_in,
+             dirtyRegion_out,
+             true,
+             false,
+             debug_in);
   if (myScreenLock && lockedAccess_in)
-    myScreenLock->unlock();
+    myScreenLock->unlock ();
 
   // clean up
   if ((*iterator).second.free_on_remove)
-    SDL_FreeSurface((*iterator).second.graphic);
-  SDL_FreeSurface((*iterator).second.bg);
+    SDL_FreeSurface ((*iterator).second.graphic);
+  SDL_FreeSurface ((*iterator).second.bg);
 
-  myCache.erase((*iterator).first);
+  myCache.erase ((*iterator).first);
 }
 
 bool
-RPG_Client_Entity_Manager::cached(const RPG_Engine_EntityID_t& id_in) const
+RPG_Client_Entity_Manager::cached (const RPG_Engine_EntityID_t& id_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Entity_Manager::cached"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Entity_Manager::cached"));
 
-  RPG_Client_EntityCacheConstIterator_t iterator = myCache.find(id_in);
+  RPG_Client_EntityCacheConstIterator_t iterator = myCache.find (id_in);
 
-  return (iterator != myCache.end());
+  return (iterator != myCache.end ());
 }
 
 void

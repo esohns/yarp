@@ -71,16 +71,16 @@ class RPG_Engine
   // implement Common_IControl
   virtual void start ();
   virtual void stop (bool = true); // locked access ?
-  virtual bool isRunning () const;
+  inline virtual bool isRunning () const { return (inherited::thr_count () > 0); }
 
   static void wait_all ();
 
   // implement Common_IDumpState
   virtual void dump_state () const;
 
-//  // *WARNING*: handle with care !
-  void lock () const;
-  void unlock () const;
+  // *WARNING*: handle with care !
+  inline void lock () const { lock_.acquire (); }
+  inline void unlock () const { lock_.release (); }
 
   void initialize (RPG_Engine_IClient*); // client interface handle
   // *WARNING*: DO NOT USE while the engine isRunning() !

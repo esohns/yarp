@@ -47,6 +47,8 @@ gboolean idle_initialize_UI_cb (gpointer);
 gboolean idle_finalize_UI_cb (gpointer);
 gboolean idle_raise_UI_cb (gpointer);
 
+gboolean idle_leave_game_cb (gpointer);
+
 // -----------------------------------------------------------------------------
 
 // GTK callback functions

@@ -881,25 +881,24 @@ RPG_Graphics_Surface::putRectangle (const SDL_Rect& rectangle_in,
   ACE_ASSERT (targetSurface_in);
   SDL_Rect intersection;
   ACE_OS::memset(&intersection, 0, sizeof (SDL_Rect));
-  intersection = RPG_Graphics_SDL_Tools::intersect(rectangle_in,
-                                                   targetSurface_in->clip_rect);
+  intersection = RPG_Graphics_SDL_Tools::intersect (rectangle_in,
+                                                    targetSurface_in->clip_rect);
   if ((intersection.w == 0) || (intersection.h == 0))
     return; // rectangle is COMPLETELY outside of target surface...
 
   // lock surface during pixel access
-  if (SDL_MUSTLOCK((targetSurface_in)))
-    if (SDL_LockSurface(targetSurface_in))
+  if (SDL_MUSTLOCK ((targetSurface_in)))
+    if (SDL_LockSurface (targetSurface_in))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_LockSurface(): \"%s\", returning\n"),
-               ACE_TEXT(SDL_GetError())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_LockSurface(): \"%s\", returning\n"),
+                ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
 
   Uint32* pixels = static_cast<Uint32*>(targetSurface_in->pixels);
-	for (int y = intersection.y;
-			 y < (intersection.y + intersection.h);
+  for (int y = intersection.y;
+       y < (intersection.y + intersection.h);
        y++)
   {
     // sanity check
@@ -909,11 +908,11 @@ RPG_Graphics_Surface::putRectangle (const SDL_Rect& rectangle_in,
       break;
 
     // top/bottom row(s)
-		if ((y == intersection.y) ||
-				(y == (intersection.y + intersection.h - 1)))
+    if ((y == intersection.y) ||
+        (y == (intersection.y + intersection.h - 1)))
     {
-			for (int x = intersection.x;
-					 x < (intersection.x + intersection.w);
+      for (int x = intersection.x;
+           x < (intersection.x + intersection.w);
            x++)
       {
         // sanity check
@@ -929,18 +928,18 @@ RPG_Graphics_Surface::putRectangle (const SDL_Rect& rectangle_in,
     } // end IF
 
     // left/right column(s)
-		if (intersection.x > 0) // sanity check
-			pixels[(targetSurface_in->w * y) + intersection.x] = color_in;
+    if (intersection.x > 0) // sanity check
+      pixels[(targetSurface_in->w * y) + intersection.x] = color_in;
 
     // sanity check
-		if ((intersection.x + intersection.w) >= targetSurface_in->w)
+    if ((intersection.x + intersection.w) >= targetSurface_in->w)
       continue;
 
-		pixels[(targetSurface_in->w * y) + intersection.x + (intersection.w - 1)] = color_in;
+    pixels[(targetSurface_in->w * y) + intersection.x + (intersection.w - 1)] = color_in;
   } // end FOR
 
-  if (SDL_MUSTLOCK(targetSurface_in))
-    SDL_UnlockSurface(targetSurface_in);
+  if (SDL_MUSTLOCK (targetSurface_in))
+    SDL_UnlockSurface (targetSurface_in);
 }
 
 void

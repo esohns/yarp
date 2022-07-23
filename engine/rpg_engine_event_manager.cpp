@@ -250,30 +250,30 @@ RPG_Engine_Event_Manager::remove (const RPG_Engine_EntityID_t& id_in)
   ACE_ASSERT (id_in);
 
   long timer_id = -1;
-  { ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  { ACE_GUARD (ACE_Thread_Mutex, aGuard, myLock);
     RPG_Engine_EntityTimersConstIterator_t iterator =
-        myEntityTimers.find (id_in);
-    ACE_ASSERT(iterator != myEntityTimers.end ());
+      myEntityTimers.find (id_in);
+    //ACE_ASSERT (iterator != myEntityTimers.end ());
     if (iterator == myEntityTimers.end ())
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid entity ID (was: %u), aborting\n"),
-                 id_in));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid entity ID (was: %u), returning\n"),
+                  id_in));
       return;
     } // end IF
     timer_id = (*iterator).second;
 
-    myEntityTimers.erase((*iterator).first);
+    myEntityTimers.erase ((*iterator).first);
   } // end lock scope
 
   // cancel corresponding activation timer
-  ACE_ASSERT(timer_id != -1);
-  cancel(timer_id);
+  ACE_ASSERT (timer_id != -1);
+  cancel (timer_id);
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("cancelled activation timer (ID: %d) for entity %u\n"),
-             timer_id,
-             id_in));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("cancelled activation timer (ID: %d) for entity %u\n"),
+              timer_id,
+              id_in));
 }
 
 void

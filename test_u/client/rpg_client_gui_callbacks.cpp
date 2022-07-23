@@ -2357,6 +2357,29 @@ idle_raise_UI_cb (gpointer userData_in)
   return FALSE; // G_SOURCE_REMOVE
 }
 
+gboolean
+idle_leave_game_cb (gpointer userData_in)
+{
+  RPG_TRACE (ACE_TEXT ("::idle_leave_game_cb"));
+
+  // sanity check(s)
+  struct RPG_Client_GTK_CBData* data_p =
+      static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
+  ACE_ASSERT (data_p);
+  Common_UI_GTK_BuildersConstIterator_t iterator =
+      data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
+  ACE_ASSERT (iterator != data_p->UIState->builders.end ());
+
+  GtkToggleButton* toggle_button_p =
+      GTK_TOGGLE_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                                 ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_TOGGLEBUTTON_SERVER_JOIN_PART_NAME)));
+  ACE_ASSERT (toggle_button_p);
+  if (gtk_toggle_button_get_active (toggle_button_p))
+    gtk_toggle_button_set_active (toggle_button_p, FALSE);
+
+  return FALSE; // G_SOURCE_REMOVE
+}
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -3880,7 +3903,7 @@ togglebutton_join_part_toggled_cb (GtkToggleButton* toggleButton_in,
   // deactivate the current character
   RPG_Engine_EntityID_t id = data_p->levelEngine->getActive();
   if (id)
-    data_p->levelEngine->remove(id);
+    data_p->levelEngine->remove (id);
 
   // stop ambient sound
   RPG_SOUND_EVENT_MANAGER_SINGLETON::instance ()->stop ();
@@ -3911,36 +3934,37 @@ togglebutton_join_part_toggled_cb (GtkToggleButton* toggleButton_in,
 
   // make map create button sensitive
   button =
-      GTK_BUTTON(gtk_builder_get_object((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_CREATE_NAME)));
-  ACE_ASSERT(button);
-  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_MAP_CREATE_NAME)));
+  ACE_ASSERT (button);
+  gtk_widget_set_sensitive (GTK_WIDGET (button), TRUE);
 
   // make map load button sensitive
   button =
-      GTK_BUTTON(gtk_builder_get_object((*iterator).second.second,
-                                      ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_MAP_LOAD_NAME)));
-  ACE_ASSERT(button);
-  gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_MAP_LOAD_NAME)));
+  ACE_ASSERT (button);
+  gtk_widget_set_sensitive (GTK_WIDGET (button), TRUE);
 
   // make character combox sensitive
   GtkComboBox* combo_box =
-      GTK_COMBO_BOX(gtk_builder_get_object((*iterator).second.second,
-                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
-  ACE_ASSERT(combo_box);
-  gtk_widget_set_sensitive(GTK_WIDGET(combo_box), TRUE);
+    GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
+                                           ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME)));
+  ACE_ASSERT (combo_box);
+  gtk_widget_set_sensitive (GTK_WIDGET (combo_box), TRUE);
 
   // make map combobox sensitive
   combo_box =
-      GTK_COMBO_BOX(gtk_builder_get_object((*iterator).second.second,
-                                         ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_COMBOBOX_MAP_NAME)));
-  ACE_ASSERT(combo_box);
-  gtk_widget_set_sensitive(GTK_WIDGET(combo_box), TRUE);
+    GTK_COMBO_BOX (gtk_builder_get_object ((*iterator).second.second,
+                                           ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_COMBOBOX_MAP_NAME)));
+  ACE_ASSERT (combo_box);
+  gtk_widget_set_sensitive (GTK_WIDGET (combo_box), TRUE);
 
   // make quit button insensitive
-  button = GTK_BUTTON(gtk_builder_get_object((*iterator).second.second,
-                                           ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_BUTTON_QUIT_NAME)));
-  ACE_ASSERT(button);
+  button =
+    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_QUIT_NAME)));
+  ACE_ASSERT (button);
   gtk_widget_set_sensitive (GTK_WIDGET (button), TRUE);
 }
 
