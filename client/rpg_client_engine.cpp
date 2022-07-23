@@ -255,7 +255,8 @@ RPG_Client_Engine::setView (const RPG_Map_Position_t& position_in)
 
 void
 RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
-                           const struct RPG_Engine_ClientNotificationParameters& parameters_in)
+                           const struct RPG_Engine_ClientNotificationParameters& parameters_in,
+                           bool lockedAccess_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::notify"));
 
@@ -337,13 +338,13 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       SDL_Surface* sprite_graphic = NULL;
       RPG_Graphics_GraphicTypeUnion type;
       type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-      engine_->lock ();
+      if (lockedAccess_in) engine_->lock ();
       type.sprite =
           (engine_->isMonster (parameters_in.entity_id, false) ? RPG_Client_Common_Tools::monsterToSprite (engine_->getName (parameters_in.entity_id,
                                                                                                                              false))
                                                                : RPG_Client_Common_Tools::classToSprite (engine_->getClass (parameters_in.entity_id,
                                                                                                                             false)));
-      engine_->unlock ();
+      if (lockedAccess_in) engine_->unlock ();
       sprite_graphic = RPG_Graphics_Common_Tools::loadGraphic (type,   // sprite
                                                                true,   // convert to display format
                                                                false); // don't cache
@@ -461,7 +462,9 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       client_action.window    = window_;
 
       // *NOTE*: when using (dynamic) lighting, redraw the whole window...
-      RPG_Engine_EntityID_t active_entity_id = engine_->getActive (true);
+      if (lockedAccess_in) engine_->lock ();
+      RPG_Engine_EntityID_t active_entity_id = engine_->getActive (false);
+      if (lockedAccess_in) engine_->unlock ();
       RPG_Client_IWindowLevel* window_p =
           dynamic_cast<RPG_Client_IWindowLevel*> (window_);
       ACE_ASSERT (window_p);
@@ -513,14 +516,16 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       else
       {
         // update the minimap ?
+        if (lockedAccess_in) engine_->lock ();
         if (active_entity_id &&
             engine_->hasSeen (active_entity_id,
                               client_action.position,
-                              true))
+                              false))
         {
           client_action.command = COMMAND_WINDOW_UPDATE_MINIMAP;
           action (client_action);
         } // end IF
+        if (lockedAccess_in) engine_->unlock ();
 
         // draw sprite ?
         SDL_Rect window_area, map_area;
@@ -537,7 +542,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
                                                 map_area,
                                                 false)) // all
         {
-          engine_->lock ();
+          if (lockedAccess_in) engine_->lock ();
           RPG_Engine_EntityID_t active_entity_id = engine_->getActive (false);
           if ((active_entity_id == parameters_in.entity_id) ||
               (active_entity_id &&
@@ -548,7 +553,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
             client_action.command = COMMAND_ENTITY_DRAW;
           else
             do_action = false;
-          engine_->unlock ();
+          if (lockedAccess_in) engine_->unlock ();
         } // end IF
         else
         {

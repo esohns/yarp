@@ -1342,13 +1342,14 @@ SDL_GUI_LevelWindow_3D::initialize(const RPG_Graphics_Style& style_in)
 }
 
 void
-SDL_GUI_LevelWindow_3D::notify(enum RPG_Engine_Command command_in,
-                               const struct RPG_Engine_ClientNotificationParameters& parameters_in)
+SDL_GUI_LevelWindow_3D::notify (enum RPG_Engine_Command command_in,
+                                const struct RPG_Engine_ClientNotificationParameters& parameters_in,
+                                bool lockedAccess_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::notify"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_3D::notify"));
 
   // sanity check(s)
-  ACE_ASSERT(myEngine);
+  ACE_ASSERT (myEngine);
 
   switch (command_in)
   {
@@ -1358,7 +1359,7 @@ SDL_GUI_LevelWindow_3D::notify(enum RPG_Engine_Command command_in,
     case COMMAND_DOOR_OPEN:
     {
       RPG_Map_Position_t position = *parameters_in.positions.begin();
-//      myEngine->lock();
+      if (lockedAccess_in) myEngine->lock ();
       RPG_Map_DoorState door_state = myEngine->state(position, false);
 
       // change tile accordingly
@@ -1366,7 +1367,7 @@ SDL_GUI_LevelWindow_3D::notify(enum RPG_Engine_Command command_in,
           RPG_Client_Common_Tools::getDoorOrientation(position,
                                                       *myEngine,
                                                       false);
-//      myEngine->unlock();
+      if (lockedAccess_in) myEngine->unlock ();
       switch (orientation)
       {
         case ORIENTATION_HORIZONTAL:
@@ -1410,13 +1411,13 @@ SDL_GUI_LevelWindow_3D::notify(enum RPG_Engine_Command command_in,
       SDL_Surface* sprite_graphic = NULL;
       RPG_Graphics_GraphicTypeUnion type;
       type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-//      myEngine->lock();
+      if (lockedAccess_in) myEngine->lock ();
       type.sprite =
           (myEngine->isMonster(parameters_in.entity_id, false) ? RPG_Client_Common_Tools::classToSprite(myEngine->getClass(parameters_in.entity_id,
                                                                                                                           false))
                                                                : RPG_Client_Common_Tools::monsterToSprite(myEngine->getName(parameters_in.entity_id,
                                                                                                                            false)));
-//      myEngine->unlock();
+      if (lockedAccess_in) myEngine->unlock ();
       sprite_graphic =
           RPG_Graphics_Common_Tools::loadGraphic(type,   // sprite
                                                  true,   // convert to display format

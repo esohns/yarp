@@ -903,7 +903,7 @@ RPG_Client_Common_Tools::hasHighlight (const RPG_Map_Position_t& position_in,
                             lockedAccess_in));
 }
 
-RPG_Graphics_Orientation
+enum RPG_Graphics_Orientation
 RPG_Client_Common_Tools::getDoorOrientation (const RPG_Map_Position_t& position_in,
                                              const RPG_Engine& engine_in,
                                              bool lockedAccess_in)
@@ -926,7 +926,7 @@ RPG_Client_Common_Tools::getDoorOrientation (const RPG_Map_Position_t& position_
   return ORIENTATION_VERTICAL;
 }
 
-RPG_Graphics_Cursor
+enum RPG_Graphics_Cursor
 RPG_Client_Common_Tools::getCursor (const RPG_Map_Position_t& position_in,
                                     const RPG_Engine_EntityID_t& id_in,
                                     bool hasSeen_in,
@@ -934,13 +934,13 @@ RPG_Client_Common_Tools::getCursor (const RPG_Map_Position_t& position_in,
                                     const RPG_Engine& engine_in,
                                     bool lockedAcces_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::getCursor"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Common_Tools::getCursor"));
 
-  RPG_Graphics_Cursor result = CURSOR_NORMAL;
+  enum RPG_Graphics_Cursor result = CURSOR_NORMAL;
 
   RPG_Map_Position_t entity_position =
-      std::make_pair(std::numeric_limits<unsigned int>::max(),
-                     std::numeric_limits<unsigned int>::max());
+      std::make_pair (std::numeric_limits<unsigned int>::max (),
+                      std::numeric_limits<unsigned int>::max ());
   if (id_in)
     entity_position = engine_in.getPosition(id_in, lockedAcces_in);
 
@@ -975,10 +975,10 @@ RPG_Client_Common_Tools::getCursor (const RPG_Map_Position_t& position_in,
 
   // monster ?
   RPG_Engine_EntityID_t entity_id =
-      engine_in.hasEntity(position_in, lockedAcces_in);
+      engine_in.hasEntity (position_in, lockedAcces_in);
   if (id_in &&
       entity_id &&
-      engine_in.isMonster(entity_id, lockedAcces_in))
+      engine_in.isMonster (entity_id, lockedAcces_in))
     return CURSOR_TARGET;
 
   // (closed/locked) door ?
@@ -988,8 +988,8 @@ RPG_Client_Common_Tools::getCursor (const RPG_Map_Position_t& position_in,
     if (/*((door_state == DOORSTATE_CLOSED) ||
          (door_state == DOORSTATE_LOCKED))               &&*/
         id_in                                            &&
-        RPG_Map_Common_Tools::isAdjacent(entity_position,
-                                         position_in))
+        RPG_Map_Common_Tools::isAdjacent (entity_position,
+                                          position_in))
       return CURSOR_DOOR_OPEN;
   } // end IF
 

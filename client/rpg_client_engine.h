@@ -91,7 +91,8 @@ class RPG_Client_Engine
   //virtual void removeEntity(const RPG_Engine_EntityID_t&);
   //virtual void updateEntity(const RPG_Engine_EntityID_t&);
   virtual void notify (enum RPG_Engine_Command,
-                       const struct RPG_Engine_ClientNotificationParameters&);
+                       const struct RPG_Engine_ClientNotificationParameters&,
+                       bool = true); // lock (engine) ?
 
   // *WARNING*: window handle needs to be of WINDOW_MAP type !!!
   void initialize (RPG_Engine*,               // (level) state

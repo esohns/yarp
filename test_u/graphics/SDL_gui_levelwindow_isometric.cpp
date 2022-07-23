@@ -2056,7 +2056,8 @@ SDL_GUI_LevelWindow_Isometric::initialize(const RPG_Graphics_Style& style_in)
 
 void
 SDL_GUI_LevelWindow_Isometric::notify (enum RPG_Engine_Command command_in,
-                                       const struct RPG_Engine_ClientNotificationParameters& parameters_in)
+                                       const struct RPG_Engine_ClientNotificationParameters& parameters_in,
+                                       bool lockedAccess_in)
 {
   RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_Isometric::notify"));
 
@@ -2074,7 +2075,7 @@ SDL_GUI_LevelWindow_Isometric::notify (enum RPG_Engine_Command command_in,
     case COMMAND_DOOR_OPEN:
     {
       RPG_Map_Position_t position = *parameters_in.positions.begin ();
-//      myEngine->lock ();
+      if (lockedAccess_in) myEngine->lock ();
       RPG_Map_DoorState door_state = myEngine->state (position, false);
 
       // change tile accordingly
@@ -2082,7 +2083,7 @@ SDL_GUI_LevelWindow_Isometric::notify (enum RPG_Engine_Command command_in,
         RPG_Client_Common_Tools::getDoorOrientation (position,
                                                      *myEngine,
                                                      false);
-//      myEngine->unlock ();
+      if (lockedAccess_in) myEngine->unlock ();
       switch (orientation)
       {
         case ORIENTATION_HORIZONTAL:
@@ -2134,13 +2135,13 @@ SDL_GUI_LevelWindow_Isometric::notify (enum RPG_Engine_Command command_in,
       SDL_Surface* sprite_graphic = NULL;
       RPG_Graphics_GraphicTypeUnion type;
       type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-//      myEngine->lock ();
+      if (lockedAccess_in) myEngine->lock ();
       type.sprite =
         (myEngine->isMonster (parameters_in.entity_id, false) ? RPG_Client_Common_Tools::monsterToSprite (myEngine->getName (parameters_in.entity_id,
                                                                                                                              false))
                                                               : RPG_Client_Common_Tools::classToSprite (myEngine->getClass (parameters_in.entity_id,
                                                                                                                             false)));
-//      myEngine->unlock ();
+      if (lockedAccess_in) myEngine->unlock ();
       sprite_graphic =
           RPG_Graphics_Common_Tools::loadGraphic (type,   // sprite
                                                   true,   // convert to display format
@@ -2155,7 +2156,7 @@ SDL_GUI_LevelWindow_Isometric::notify (enum RPG_Engine_Command command_in,
       ACE_OS::memset (&map_area, 0, sizeof (SDL_Rect));
       getArea (window_area, true);
       getArea (map_area, false);
-//      myEngine->lock ();
+      if (lockedAccess_in) myEngine->lock ();
       RPG_Engine_EntityID_t active_entity_id = myEngine->getActive (false);
       RPG_Graphics_Positions_t positions;
       positions.push_back (*parameters_in.positions.begin ());
@@ -2187,13 +2188,13 @@ SDL_GUI_LevelWindow_Isometric::notify (enum RPG_Engine_Command command_in,
                       true);
         update_parent = true;
       } // end IF
-//      myEngine->unlock ();
 
       // init vision cache
       RPG_Map_Positions_t seen_positions;
       myEngine->getVisiblePositions (parameters_in.entity_id,
                                      seen_positions,
-                                     true);
+                                     false);
+      if (lockedAccess_in) myEngine->unlock ();
       { ACE_Guard<ACE_Thread_Mutex> aGuard (myState->lock);
         ACE_ASSERT (myState->seen_positions.find (parameters_in.entity_id) == myState->seen_positions.end ());
         myState->seen_positions[parameters_in.entity_id] = seen_positions;
@@ -2236,7 +2237,7 @@ SDL_GUI_LevelWindow_Isometric::notify (enum RPG_Engine_Command command_in,
                                               map_area,
                                               false)) // all
       {
-//        myEngine->lock ();
+        if (lockedAccess_in) myEngine->lock ();
         RPG_Engine_EntityID_t active_entity_id = myEngine->getActive (false);
         if ((active_entity_id == parameters_in.entity_id) ||
             (active_entity_id &&
@@ -2260,7 +2261,7 @@ SDL_GUI_LevelWindow_Isometric::notify (enum RPG_Engine_Command command_in,
                         true);
           update_parent = true;
         } // end IF
-//        myEngine->unlock ();
+        if (lockedAccess_in) myEngine->unlock ();
       } // end IF
       else
       {

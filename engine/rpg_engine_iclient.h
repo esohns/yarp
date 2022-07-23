@@ -19,11 +19,11 @@
 #ifndef RPG_ENGINE_ICLIENT_H
 #define RPG_ENGINE_ICLIENT_H
 
-#include "rpg_engine_common.h"
+//#include "SDL/SDL.h"
 
 //#include "rpg_map_common.h"
 
-//#include <SDL/SDL.h>
+#include "rpg_engine_common.h"
 
 class RPG_Engine_IClient
 {
@@ -38,7 +38,8 @@ class RPG_Engine_IClient
   //virtual void removeEntity(const RPG_Engine_EntityID_t&) = 0;
   //virtual void updateEntity(const RPG_Engine_EntityID_t&) = 0;
   virtual void notify (enum RPG_Engine_Command,
-                       const struct RPG_Engine_ClientNotificationParameters&) = 0;
+                       const struct RPG_Engine_ClientNotificationParameters&,
+                       bool = true) = 0; // lock (engine) ?
 };
 
 #endif // RPG_ENGINE_ICLIENT_H

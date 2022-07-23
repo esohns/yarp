@@ -556,7 +556,8 @@ RPG_Engine::set (const struct RPG_Engine_LevelData& level_in)
   try
   {
     client_->notify (COMMAND_E2C_INIT,
-                     parameters);
+                     parameters,
+                     true);
   }
   catch (...)
   {
@@ -594,7 +595,7 @@ RPG_Engine::add (struct RPG_Engine_Entity* entity_in,
     seenPositions_[id] = visible_positions;
   } // end lock scope
   if (lockedAccess_in)
-    lock_.release();
+    lock_.release ();
 
   // notify AI
   float temp =
@@ -622,7 +623,8 @@ RPG_Engine::add (struct RPG_Engine_Entity* entity_in,
                       std::numeric_limits<unsigned int>::max ());
   try {
     client_->notify (COMMAND_E2C_ENTITY_ADD,
-                     parameters);
+                     parameters,
+                     lockedAccess_in);
   } catch (...) {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), returning\n"),
@@ -632,10 +634,11 @@ RPG_Engine::add (struct RPG_Engine_Entity* entity_in,
 
   parameters.positions = visible_positions;
   parameters.visible_radius = getVisibleRadius (id,
-                                                true);
+                                                lockedAccess_in);
   try {
     client_->notify (COMMAND_E2C_ENTITY_VISION,
-                     parameters);
+                     parameters,
+                     lockedAccess_in);
   } catch (...) {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
@@ -657,7 +660,7 @@ RPG_Engine::remove (const RPG_Engine_EntityID_t& id_in)
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance ()->remove (id_in);
 
   struct RPG_Engine_ClientNotificationParameters parameters;
-  { ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
+  { ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);
     RPG_Engine_EntitiesIterator_t iterator = entities_.find (id_in);
     if (iterator == entities_.end ())
     {
@@ -693,7 +696,8 @@ RPG_Engine::remove (const RPG_Engine_EntityID_t& id_in)
                     std::numeric_limits<unsigned int>::max ());
   try {
     client_->notify (COMMAND_E2C_ENTITY_REMOVE,
-                     parameters);
+                     parameters,
+                     true);
   } catch (...) {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
@@ -2594,7 +2598,7 @@ RPG_Engine::handleEntities ()
         case COMMAND_STEP:
         {
           // position blocked ?
-          if (isBlocked(current_action.position))
+          if (isBlocked (current_action.position))
           {
             if ((*iterator).second->modes.find (ENTITYMODE_TRAVELLING) !=
                 (*iterator).second->modes.end ())
@@ -2603,11 +2607,9 @@ RPG_Engine::handleEntities ()
               (*iterator).second->modes.erase (ENTITYMODE_TRAVELLING);
 
               // remove all queued steps + travel action
-              while ((*iterator).second->actions.front ().command ==
-                     COMMAND_STEP)
+              while ((*iterator).second->actions.front ().command == COMMAND_STEP)
                 (*iterator).second->actions.pop_front ();
-              ACE_ASSERT ((*iterator).second->actions.front ().command ==
-                          COMMAND_TRAVEL);
+              ACE_ASSERT ((*iterator).second->actions.front ().command == COMMAND_TRAVEL);
             } // end IF
 
             action_complete = true;
@@ -2683,7 +2685,8 @@ RPG_Engine::handleEntities ()
   {
     try {
       client_->notify ((*iterator).first,
-                       (*iterator).second);
+                       (*iterator).second,
+                       true);
     } catch (...) {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
@@ -2694,10 +2697,10 @@ RPG_Engine::handleEntities ()
   // remove entity ?
   if (remove_id)
   {
-    RPG_Engine_EntityID_t active_entity_id = getActive (true);
     remove (remove_id);
 
     // has active entity left the game ?
+    RPG_Engine_EntityID_t active_entity_id = getActive (true);
     if (remove_id == active_entity_id)
     {
       // notify client
@@ -2710,7 +2713,9 @@ RPG_Engine::handleEntities ()
           std::make_pair (std::numeric_limits<unsigned int>::max (),
                           std::numeric_limits<unsigned int>::max ());
       try {
-        client_->notify (COMMAND_E2C_QUIT, parameters);
+        client_->notify (COMMAND_E2C_QUIT,
+                         parameters,
+                         true);
       } catch (...) {
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),

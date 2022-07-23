@@ -104,7 +104,8 @@ class SDL_GUI_LevelWindow_Isometric
   //// *NOTE*: this triggers a complete redraw !
   //virtual void updateEntity(const RPG_Engine_EntityID_t&);
   virtual void notify (enum RPG_Engine_Command,
-                       const struct RPG_Engine_ClientNotificationParameters&);
+                       const struct RPG_Engine_ClientNotificationParameters&,
+                       bool = true);
 
  private:
   ACE_UNIMPLEMENTED_FUNC (SDL_GUI_LevelWindow_Isometric ())

@@ -35,9 +35,6 @@
 #include "rpg_client_common.h"
 //#include "rpg_client_exports.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Client_Common_Tools
 {
  public:
@@ -94,16 +91,16 @@ class RPG_Client_Common_Tools
   static bool hasHighlight (const RPG_Map_Position_t&, // position
                             const RPG_Engine&,         // state / engine
                             bool = true);              // locked access ?
-  static RPG_Graphics_Orientation getDoorOrientation (const RPG_Map_Position_t&, // door position
-                                                      const RPG_Engine&,         // state / engine
-                                                      bool = true);              // locked access ?
+  static enum RPG_Graphics_Orientation getDoorOrientation (const RPG_Map_Position_t&, // door position
+                                                           const RPG_Engine&,         // state / engine
+                                                           bool = true);              // locked access ?
 
-  static RPG_Graphics_Cursor getCursor (const RPG_Map_Position_t&,       // position
-                                        const RPG_Engine_EntityID_t&,    // active player
-                                        bool,                            // has player seen this position ?
-                                        const RPG_Client_SelectionMode&, // current selection mode
-                                        const RPG_Engine&,               // state / engine
-                                        bool = true);                    // locked access ?
+  static enum RPG_Graphics_Cursor getCursor (const RPG_Map_Position_t&,       // position
+                                             const RPG_Engine_EntityID_t&,    // active player
+                                             bool,                            // has player seen this position ?
+                                             const RPG_Client_SelectionMode&, // current selection mode
+                                             const RPG_Engine&,               // state / engine
+                                             bool = true);                    // locked access ?
 
   static RPG_Graphics_Positions_t mapToGraphicsPositions (const RPG_Map_Positions_t&);
 
