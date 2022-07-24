@@ -113,6 +113,22 @@ RPG_Player::RPG_Player (const RPG_Player& player_in)
 
 }
 
+struct RPG_Dice_Roll
+RPG_Player::getHitDicePerLevel (enum RPG_Common_SubClass subClass_in) const
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Player::getHitDicePerLevel"));
+
+  struct RPG_Dice_Roll result;
+
+  // retrieve hit die/level for requested subclass
+  result.typeDice = RPG_Character_Common_Tools::getHitDie (subClass_in);
+  result.numDice = 1;
+  result.modifier =
+      RPG_Character_Common_Tools::getAttributeAbilityModifier (myAttributes.constitution);
+
+  return result;
+}
+
 RPG_Player*
 RPG_Player::random ()
 {
@@ -350,7 +366,7 @@ RPG_Player::random ()
     offHand = OFFHAND_RIGHT;
 
   // step10: (initial) Hit Points
-  unsigned short int hitpoints = 0;
+  short hitpoints = 0;
 //   roll.numDice = 1;
 //   roll.typeDice = RPG_Character_Common_Tools::getHitDie(player_class.subClass);
 //   roll.modifier = 0;
@@ -360,7 +376,9 @@ RPG_Player::random ()
 //                          result);
 //   hitpoints = result.front();
   // *NOTE*: players start with maxed HP...
-  hitpoints = RPG_Character_Common_Tools::getHitDie(player_subclass);
+  hitpoints = RPG_Character_Common_Tools::getHitDie (player_subclass);
+  hitpoints +=
+      RPG_Character_Common_Tools::getAttributeAbilityModifier (attributes.constitution);
 
   // step11: (initial) set of spells
   unsigned int numKnownSpells = 0;

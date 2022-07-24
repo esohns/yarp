@@ -121,7 +121,7 @@ class RPG_Player_Base
                    const RPG_Item_List_t&);           // list of (carried) items
   RPG_Player_Base (const RPG_Player_Base&);
 
-//   RPG_Player_Base& operator=(const RPG_Player_Base&);
+//   RPG_Player_Base& operator= (const RPG_Player_Base&);
   void initialize (// base attributes
                    const std::string&,                // name
                    const RPG_Character_Alignment&,    // alignment
@@ -138,29 +138,29 @@ class RPG_Player_Base
                    const RPG_Magic_Spells_t&,         // list of memorized/prepared spells (!bard)
                    const RPG_Item_List_t&);           // list of (carried) items
 
-  unsigned int               myWealth;
+  unsigned int                    myWealth;
 
-  RPG_Magic_SpellTypes_t     myKnownSpells;
-  RPG_Magic_Spells_t         mySpells;
+  RPG_Magic_SpellTypes_t          myKnownSpells;
+  RPG_Magic_Spells_t              mySpells;
 
-  RPG_Player_Inventory       myInventory;
-  RPG_Player_Equipment       myEquipment;
+  RPG_Player_Inventory            myInventory;
+  RPG_Player_Equipment            myEquipment;
 
-  short                      myNumHitPoints;
-  RPG_Character_Conditions_t myCondition;
+  short                           myNumHitPoints;
+  RPG_Character_Conditions_t      myCondition;
 
-  RPG_Character_Attributes   myAttributes;
-  RPG_Character_Feats_t      myFeats;
-  RPG_Character_Abilities_t  myAbilities;
-  RPG_Character_Skills_t     mySkills;
+  struct RPG_Character_Attributes myAttributes;
+  RPG_Character_Feats_t           myFeats;
+  RPG_Character_Abilities_t       myAbilities;
+  RPG_Character_Skills_t          mySkills;
 
  private:
-  ACE_UNIMPLEMENTED_FUNC (RPG_Player_Base())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Player_Base ())
   ACE_UNIMPLEMENTED_FUNC (RPG_Player_Base& operator= (const RPG_Player_Base&))
 
-  std::string                myName;
-  RPG_Character_Alignment    myAlignment;
-  unsigned short             myNumTotalHitPoints;
+  std::string                     myName;
+  struct RPG_Character_Alignment  myAlignment;
+  unsigned short                  myNumTotalHitPoints;
 };
 
 #endif

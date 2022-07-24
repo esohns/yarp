@@ -89,7 +89,7 @@ class RPG_Monster
                               enum RPG_Common_Terrain = TERRAIN_ANY,             // terrain
                               enum RPG_Common_Track = TRACK_NONE) const;         // track
 
-  virtual bool gainExperience (unsigned int); // XP
+  virtual enum RPG_Common_SubClass gainExperience (unsigned int); // XP
 
   inline virtual bool isPlayerCharacter () const { return false; }
 
@@ -103,6 +103,7 @@ class RPG_Monster
   virtual RPG_Character_BaseAttackBonus_t getAttackBonus (enum RPG_Common_Attribute, // modifier
                                                           enum RPG_Combat_AttackSituation) const;
   virtual ACE_INT8 getShieldBonus () const;
+  virtual struct RPG_Dice_Roll getHitDicePerLevel (enum RPG_Common_SubClass) const;
 
   struct RPG_Common_CreatureType myType;
   struct RPG_Monster_Size        mySize;

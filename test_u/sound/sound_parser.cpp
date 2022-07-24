@@ -103,7 +103,7 @@ do_SDL_waitForInput (unsigned int timeout_in)
 {
   RPG_TRACE (ACE_TEXT ("::do_SDL_waitForInput"));
 
-  SDL_TimerID timer = NULL;
+  SDL_TimerID timer = 0;
   if (timeout_in)
     timer = SDL_AddTimer ((timeout_in * 1000), // interval (ms)
                           timer_SDL_cb,       // timeout callback

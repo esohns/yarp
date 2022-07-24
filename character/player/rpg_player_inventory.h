@@ -24,12 +24,7 @@
 #include "ace/Global_Macros.h"
 
 #include "rpg_item_instance_common.h"
- 
- //#include "rpg_player_exports.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Player_Inventory
 {
  public:

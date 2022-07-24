@@ -637,6 +637,24 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       client_action.command = COMMAND_PLAY_SOUND;
       client_action.sound = EVENT_XP_LEVELUP;
 
+      // raise the UI
+      SDL_Event sdl_event_u;
+      sdl_event_u.type = SDL_KEYDOWN;
+      sdl_event_u.key.keysym.sym = SDLK_u;
+      if (SDL_PushEvent (&sdl_event_u) < 0)
+        ACE_DEBUG ((LM_ERROR,
+                   ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),
+                   ACE_TEXT (SDL_GetError ())));
+
+      // notify level up
+      ACE_ASSERT (parameters_in.subclass != RPG_COMMON_SUBCLASS_INVALID);
+      sdl_event_u.key.padding2 = parameters_in.subclass;
+      sdl_event_u.key.keysym.sym = SDLK_y;
+      if (SDL_PushEvent (&sdl_event_u) < 0)
+        ACE_DEBUG ((LM_ERROR,
+                   ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),
+                   ACE_TEXT (SDL_GetError ())));
+
       break;
     }
     case COMMAND_E2C_INIT:

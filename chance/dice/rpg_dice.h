@@ -28,14 +28,11 @@
 
 #include "rpg_dice_common.h"
 #include "rpg_dice_dietype.h"
-//#include "rpg_dice_exports.h"
 #include "rpg_dice_roll.h"
 #include "rpg_dice_valuerange.h"
 
 /**
 simulate rolling (n-sided) dice
-
-@author Erik Sohns <erik.sohns@web.de>
 */
 class RPG_Dice
 {

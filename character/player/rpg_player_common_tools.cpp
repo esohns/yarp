@@ -62,7 +62,7 @@
 #include "rpg_engine_defines.h"
 
 std::bitset<6>
-RPG_Player_Common_Tools::raceXMLTreeToRace(const RPG_Player_CharacterXML_XMLTree_Type::race_sequence& races_in)
+RPG_Player_Common_Tools::raceXMLTreeToRace (const RPG_Player_CharacterXML_XMLTree_Type::race_sequence& races_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::raceXMLTreeToRace"));
 
@@ -82,7 +82,7 @@ RPG_Player_Common_Tools::raceXMLTreeToRace(const RPG_Player_CharacterXML_XMLTree
 }
 
 RPG_Character_Abilities_t
-RPG_Player_Common_Tools::abilitiesXMLTreeToAbilities(const RPG_Player_Abilities_XMLTree_Type& abilities_in)
+RPG_Player_Common_Tools::abilitiesXMLTreeToAbilities (const RPG_Player_Abilities_XMLTree_Type& abilities_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::abilitiesXMLTreeToAbilities"));
 
@@ -98,7 +98,7 @@ RPG_Player_Common_Tools::abilitiesXMLTreeToAbilities(const RPG_Player_Abilities_
 }
 
 RPG_Magic_SpellTypes_t
-RPG_Player_Common_Tools::spellsXMLTreeToSpellTypes(const RPG_Player_Spells_XMLTree_Type& spells_in)
+RPG_Player_Common_Tools::spellsXMLTreeToSpellTypes (const RPG_Player_Spells_XMLTree_Type& spells_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::spellsXMLTreeToSpellTypes"));
 
@@ -113,7 +113,7 @@ RPG_Player_Common_Tools::spellsXMLTreeToSpellTypes(const RPG_Player_Spells_XMLTr
 }
 
 RPG_Character_Conditions_t
-RPG_Player_Common_Tools::conditionsXMLTreeToConditions(const RPG_Player_Conditions_XMLTree_Type& conditions_in)
+RPG_Player_Common_Tools::conditionsXMLTreeToConditions (const RPG_Player_Conditions_XMLTree_Type& conditions_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::conditionsXMLTreeToConditions"));
 
@@ -128,7 +128,7 @@ RPG_Player_Common_Tools::conditionsXMLTreeToConditions(const RPG_Player_Conditio
 }
 
 RPG_Magic_Spells_t
-RPG_Player_Common_Tools::spellsXMLTreeToSpells(const RPG_Player_Spells_XMLTree_Type& spells_in)
+RPG_Player_Common_Tools::spellsXMLTreeToSpells (const RPG_Player_Spells_XMLTree_Type& spells_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::spellsXMLTreeToSpells"));
 
@@ -143,7 +143,7 @@ RPG_Player_Common_Tools::spellsXMLTreeToSpells(const RPG_Player_Spells_XMLTree_T
 }
 
 unsigned int
-RPG_Player_Common_Tools::restParty(RPG_Player_Party_t& party_in)
+RPG_Player_Common_Tools::restParty (RPG_Player_Party_t& party_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::restParty"));
 
@@ -190,27 +190,27 @@ RPG_Player_Common_Tools::restParty(RPG_Player_Party_t& party_in)
   } // end FOR
 
   // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("max. recovery time: %d days\n"),
-             maxRecoveryTime));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("max. recovery time: %d days\n"),
+              maxRecoveryTime));
 
-  for (iterator = party_in.begin();
-       iterator != party_in.end();
+  for (iterator = party_in.begin ();
+       iterator != party_in.end ();
        iterator++)
   {
-    (*iterator)->rest(REST_FULL,
-                     (maxRecoveryTime * 24));
+    (*iterator)->rest (REST_FULL,
+                       (maxRecoveryTime * 24));
   } // end FOR
 
   return (maxRecoveryTime * 24 * 3600);
 }
 
 RPG_Player*
-RPG_Player_Common_Tools::playerXMLToPlayer(const RPG_Player_PlayerXML_XMLTree_Type& player_in,
-                                           // current status
-                                           const RPG_Character_Conditions_t& condition_in,
-                                           const short int& HP_in,
-                                           const RPG_Magic_Spells_t& spells_in)
+RPG_Player_Common_Tools::playerXMLToPlayer (const RPG_Player_PlayerXML_XMLTree_Type& player_in,
+                                            // current status
+                                            const RPG_Character_Conditions_t& condition_in,
+                                            short HP_in,
+                                            const RPG_Magic_Spells_t& spells_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::playerXMLToPlayer"));
 
@@ -284,7 +284,7 @@ RPG_Player_Common_Tools::playerXMLToPlayer(const RPG_Player_PlayerXML_XMLTree_Ty
 }
 
 RPG_Player_PlayerXML_XMLTree_Type*
-RPG_Player_Common_Tools::playerToPlayerXML(const RPG_Player& player_in)
+RPG_Player_Common_Tools::playerToPlayerXML (const RPG_Player& player_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::playerToPlayerXML"));
 

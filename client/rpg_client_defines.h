@@ -62,6 +62,7 @@
 //
 #define RPG_CLIENT_GTK_BUTTON_EQUIP_NAME                  "equip"
 #define RPG_CLIENT_GTK_BUTTON_REST_NAME                   "rest"
+#define RPG_CLIENT_GTK_BUTTON_LEVELUP_NAME                "levelup"
 //
 #define RPG_CLIENT_GTK_COMBOBOX_CHARACTER_NAME            "character_repository_combobox"
 #define RPG_CLIENT_GTK_COMBOBOX_MAP_NAME                  "map_repository_combobox"
@@ -74,6 +75,7 @@
 #define RPG_CLIENT_GTK_DIALOG_ENTRY_TITLE                 "please insert data..."
 #define RPG_CLIENT_GTK_DIALOG_EQUIPMENT_NAME              "equipment_dialog"
 #define RPG_CLIENT_GTK_DIALOG_FILECHOOSER_NAME            "filechooser_dialog"
+#define RPG_CLIENT_GTK_DIALOG_LEVELUP_NAME                "levelup_dialog"
 #define RPG_CLIENT_GTK_DIALOG_MAIN_NAME                   "main_dialog"
 //
 #define RPG_CLIENT_GTK_ENTRY_NAME                         "name_entry"
@@ -83,7 +85,24 @@
 //
 #define RPG_CLIENT_GTK_FRAME_CHARACTER_NAME               "character_frame"
 //
+#define RPG_CLIENT_GTK_LABEL_HITPOINTS_NAME               "hitpoints_label2"
+#define RPG_CLIENT_GTK_LABEL_HITDICE_NAME                 "hitdice_label"
+#define RPG_CLIENT_GTK_LABEL_POINTSREMAINING_NAME         "pointsremaining"
+//
+#define RPG_CLIENT_GTK_LISTSTORE_FEATS_NAME               "liststore_feats"
+#define RPG_CLIENT_GTK_LISTSTORE_SPELLS_NAME              "liststore_spells"
+//
+#define RPG_CLIENT_GTK_SPINBUTTON_STRENGTH_NAME           "spinbutton_strength"
+#define RPG_CLIENT_GTK_SPINBUTTON_DEXTERITY_NAME          "spinbutton_dexterity"
+#define RPG_CLIENT_GTK_SPINBUTTON_CONSTITUTION_NAME       "spinbutton_constitution"
+#define RPG_CLIENT_GTK_SPINBUTTON_INTELLIGENCE_NAME       "spinbutton_intelligence"
+#define RPG_CLIENT_GTK_SPINBUTTON_WISDOM_NAME             "spinbutton_wisdom"
+#define RPG_CLIENT_GTK_SPINBUTTON_CHARISMA_NAME           "spinbutton_charisma"
+//
 #define RPG_CLIENT_GTK_TABLE_EQUIPENT_NAME                "equipment_table"
+//
+#define RPG_CLIENT_GTK_TREEVIEW_FEATS_NAME                "treeview_feats"
+#define RPG_CLIENT_GTK_TREEVIEW_SPELLS_NAME               "treeview_spells"
 
 // CONFIGDIR-specific
 #define RPG_CLIENT_CONFIG_SUB                             "client"

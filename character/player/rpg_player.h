@@ -56,6 +56,9 @@ class RPG_Player
   RPG_Player (const RPG_Player&);
   inline virtual ~RPG_Player () {}
 
+  // implement (part of) RPG_IPlayer
+  virtual struct RPG_Dice_Roll getHitDicePerLevel (enum RPG_Common_SubClass) const;
+
   // *WARNING*: result needs to be delete()d !
   static RPG_Player* random (); // return value: (random) player
   // *WARNING*: result needs to be deleted(d) !

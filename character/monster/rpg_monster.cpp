@@ -280,15 +280,15 @@ RPG_Monster::getSpeed(bool isRunning_in,
   return result;
 }
 
-bool
+enum RPG_Common_SubClass
 RPG_Monster::gainExperience (unsigned int XP_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Monster::gainExperience"));
 
   // *TODO*
-  ACE_ASSERT(false);
+  ACE_ASSERT (false);
 
-  return false;
+  return RPG_COMMON_SUBCLASS_INVALID;
 }
 
 void
@@ -325,7 +325,7 @@ RPG_Monster::getAttackBonus (enum RPG_Common_Attribute modifier_in,
 ACE_INT8
 RPG_Monster::getShieldBonus () const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Monster::getShieldBonus"));
+  RPG_TRACE (ACE_TEXT ("RPG_Monster::getShieldBonus"));
 
   ACE_ASSERT (false); // *TODO*
 
@@ -335,4 +335,19 @@ RPG_Monster::getShieldBonus () const
 #else
   ACE_NOTREACHED (return result;)
 #endif // _MSC_VER
+}
+
+struct RPG_Dice_Roll
+RPG_Monster::getHitDicePerLevel (enum RPG_Common_SubClass subClass_in) const
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Monster::getHitDicePerLevel"));
+
+  ACE_UNUSED_ARG (subClass_in);
+
+  // step1: retrieve base hit dice (type)
+  const RPG_Monster_Properties& properties =
+      RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties (getName ());
+
+  ACE_ASSERT (false); // *TODO*
+  return properties.hitDice;
 }

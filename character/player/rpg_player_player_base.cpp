@@ -469,7 +469,7 @@ RPG_Player_Player_Base::isPlayerCharacter() const
   return true;
 }
 
-bool
+enum RPG_Common_SubClass
 RPG_Player_Player_Base::gainExperience (unsigned int XP_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::gainExperience"));
@@ -501,10 +501,10 @@ RPG_Player_Player_Base::gainExperience (unsigned int XP_in)
                   myExperience,
                   static_cast<unsigned int> (getLevel (*iterator)),
                   ACE_TEXT (RPG_Common_SubClassHelper::RPG_Common_SubClassToString (*iterator).c_str ())));
-      return true;
+      return *iterator;
     } // end IF
 
-  return false;
+  return RPG_COMMON_SUBCLASS_INVALID;
 }
 
 unsigned int

@@ -223,6 +223,7 @@ struct RPG_Engine_ClientNotificationParameters
   enum RPG_Common_Condition condition;
   RPG_Map_Positions_t       positions;
   RPG_Map_Position_t        previous_position;
+  enum RPG_Common_SubClass  subclass;
   unsigned char             visible_radius;
   std::string               message;
 };

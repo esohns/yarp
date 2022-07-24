@@ -31,54 +31,50 @@
 
 #include "rpg_character_common.h"
 #include "rpg_character_encumbrance.h"
-//#include "rpg_character_exports.h"
 #include "rpg_character_incl.h"
 #include "rpg_character_class_common.h"
 #include "rpg_character_race_common.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Character_Common_Tools
 {
  public:
   // init string conversion (and other) tables
-  static void initialize();
+  static void initialize ();
 
-  static std::string toString(const RPG_Character_Race_t&); // race(es)
-  static std::string toString(const RPG_Character_Class&); // class(es)
-  static std::string toString(const RPG_Character_Alignment&); // alignment
-  static std::string toString(const RPG_Character_Attributes&); // attributes
-  static std::string toString(const RPG_Character_Conditions_t&); // condition
+  static std::string toString (const RPG_Character_Race_t&); // race(es)
+  static std::string toString (const RPG_Character_Class&); // class(es)
+  static std::string toString (const RPG_Character_Alignment&); // alignment
+  static std::string toString (const RPG_Character_Attributes&); // attributes
+  static std::string toString (const RPG_Character_Conditions_t&); // condition
 
-  static bool match(const RPG_Character_Alignment&,  // a
-                    const RPG_Character_Alignment&); // b
+  static bool match (const RPG_Character_Alignment&,  // a
+                     const RPG_Character_Alignment&); // b
 
-  static signed char getAttributeAbilityModifier(const unsigned char&); // attribute ability score
-  static bool getAttributeCheck(const unsigned char&); // attribute ability score
-  static RPG_Dice_DieType getHitDie(const RPG_Common_SubClass&); // subclass
-  static RPG_Character_BaseAttackBonus_t getBaseAttackBonus(const RPG_Common_SubClass&, // subClass
-                                                            const unsigned char&);      // class level
-  static RPG_Character_Encumbrance getEncumbrance(const unsigned char&,   // strength
-                                                  const RPG_Common_Size&, // size
-                                                  const unsigned short&,  // (carried) weight
-                                                  const bool& = true);    // is biped ?
-  static void getLoadModifiers(const RPG_Character_Encumbrance&, // encumbrance
-                               const unsigned char&,             // (base) speed
-                               signed char&,                     // max Dex modifier (AC)
-                               signed char&,                     // (armor) check penalty
-                               unsigned char&,                   // (reduced) speed
-                               unsigned char&);                  // run modifier
-  static unsigned char getReducedSpeed(const unsigned char&); // (base) speed
+  static signed char getAttributeAbilityModifier (unsigned char); // attribute ability score
+  static bool getAttributeCheck (unsigned char); // attribute ability score
+  static enum RPG_Dice_DieType getHitDie (enum RPG_Common_SubClass); // subclass
+  static RPG_Character_BaseAttackBonus_t getBaseAttackBonus (enum RPG_Common_SubClass, // subClass
+                                                             unsigned char);           // class level
+  static RPG_Character_Encumbrance getEncumbrance (unsigned char,        // strength
+                                                   enum RPG_Common_Size, // size
+                                                   unsigned short,       // (carried) weight
+                                                   bool = true);         // is biped ?
+  static void getLoadModifiers (enum RPG_Character_Encumbrance, // encumbrance
+                                unsigned char,                  // (base) speed
+                                signed char&,                   // return value: max Dex modifier (AC)
+                                signed char&,                   // return value: (armor) check penalty
+                                unsigned char&,                 // return value: (reduced) speed
+                                unsigned char&);                // return value: run modifier
+  static unsigned char getReducedSpeed (unsigned char); // (base) speed
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools())
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Character_Common_Tools())
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools(const RPG_Character_Common_Tools&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools& operator=(const RPG_Character_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC(~RPG_Character_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools (const RPG_Character_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools& operator= (const RPG_Character_Common_Tools&))
 
-  static void initializeStringConversionTables();
-  static void initializeEncumbranceTable();
+  static void initializeStringConversionTables ();
+  static void initializeEncumbranceTable ();
 
   struct RPG_Character_EncumbranceEntry_t
   {

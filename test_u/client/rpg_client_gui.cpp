@@ -1186,6 +1186,14 @@ do_work (struct RPG_Client_Configuration& configuration_in,
                         &GTKUserData_in);
             break;
           }
+          case SDLK_y:
+          {
+            GTKUserData_in.subClass =
+                static_cast<enum RPG_Common_SubClass> (sdl_event.key.padding2);
+            g_idle_add (idle_level_up_cb,
+                        &GTKUserData_in);
+            break;
+          }
           default:
             break;
         } // end SWITCH

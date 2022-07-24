@@ -204,19 +204,19 @@ RPG_Player_Base::getSkillRank(enum RPG_Common_Skill skill_in,
 }
 
 bool
-RPG_Player_Base::hasFeat(enum RPG_Character_Feat feat_in) const
+RPG_Player_Base::hasFeat (enum RPG_Character_Feat feat_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::hasFeat"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Base::hasFeat"));
 
-  return (myFeats.find(feat_in) != myFeats.end());
+  return (myFeats.find (feat_in) != myFeats.end ());
 }
 
 bool
-RPG_Player_Base::hasAbility(enum RPG_Character_Ability ability_in) const
+RPG_Player_Base::hasAbility (enum RPG_Character_Ability ability_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::hasAbility"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Base::hasAbility"));
 
-  return (myAbilities.find(ability_in) != myAbilities.end());
+  return (myAbilities.find (ability_in) != myAbilities.end ());
 }
 
 // const RPG_Player_Equipment
@@ -228,17 +228,17 @@ RPG_Player_Base::hasAbility(enum RPG_Character_Ability ability_in) const
 // }
 
 bool
-RPG_Player_Base::hasCondition(enum RPG_Common_Condition condition_in) const
+RPG_Player_Base::hasCondition (enum RPG_Common_Condition condition_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::hasCondition"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Base::hasCondition"));
 
-  return (myCondition.find(condition_in) != myCondition.end());
+  return (myCondition.find (condition_in) != myCondition.end ());
 }
 
 void
-RPG_Player_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
+RPG_Player_Base::sustainDamage (const RPG_Combat_Damage& damage_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::sustainDamage"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Base::sustainDamage"));
 
   signed short damage_value = 0;
   signed short total_damage_value = 0;
@@ -286,55 +286,55 @@ RPG_Player_Base::sustainDamage(const RPG_Combat_Damage& damage_in)
       myCondition.insert(CONDITION_UNCONSCIOUS);
   } // end IF
 
-  ACE_DEBUG((LM_INFO,
-             ACE_TEXT("\"%s\" (HP: %d/%d) suffers damage of %d HP%s...\n"),
-             ACE_TEXT(getName().c_str()),
-             (myNumHitPoints + total_damage_value),
-             myNumTotalHitPoints,
-             total_damage_value,
-             (!hasCondition(CONDITION_NORMAL) ? ACE_TEXT(" --> DOWN") : ACE_TEXT(""))));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("\"%s\" (HP: %d/%d) suffers damage of %d HP%s...\n"),
+              ACE_TEXT (getName().c_str()),
+              (myNumHitPoints + total_damage_value),
+              myNumTotalHitPoints,
+              total_damage_value,
+              (!hasCondition (CONDITION_NORMAL) ? ACE_TEXT(" --> DOWN") : ACE_TEXT(""))));
 }
 
 void
-RPG_Player_Base::status() const
+RPG_Player_Base::status () const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::status"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Base::status"));
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("condition: %s\nHP: %d/%d\nwealth: %d GP\n"),
-             ACE_TEXT(RPG_Character_Common_Tools::toString(myCondition).c_str()),
-             myNumHitPoints,
-             myNumTotalHitPoints,
-             myWealth));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("condition: %s\nHP: %d/%d\nwealth: %d GP\n"),
+              ACE_TEXT (RPG_Character_Common_Tools::toString(myCondition).c_str()),
+              myNumHitPoints,
+              myNumTotalHitPoints,
+              myWealth));
 }
 
 void
-RPG_Player_Base::dump() const
+RPG_Player_Base::dump () const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::dump"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Base::dump"));
 
   std::string spells;
-  if (!myKnownSpells.empty())
+  if (!myKnownSpells.empty ())
   {
-    spells += ACE_TEXT_ALWAYS_CHAR("known:\n");
-    spells += RPG_Magic_Common_Tools::toString(myKnownSpells);
+    spells += ACE_TEXT_ALWAYS_CHAR ("known:\n");
+    spells += RPG_Magic_Common_Tools::toString (myKnownSpells);
   } // end IF
-  if (!mySpells.empty())
+  if (!mySpells.empty ())
   {
-    spells += ACE_TEXT_ALWAYS_CHAR("memorized:\n");
-    spells += RPG_Magic_Common_Tools::toString(mySpells);
+    spells += ACE_TEXT_ALWAYS_CHAR ("memorized:\n");
+    spells += RPG_Magic_Common_Tools::toString (mySpells);
   } // end IF
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("Name: \"%s\"\nAlignment: \"%s\"\nAttributes:\n===========\n%sSkills:\n=======\n%sFeats:\n======\n%sAbilities:\n==========\n%sSpells:\n==========\n%sItems:\n======\n"),
-             ACE_TEXT(myName.c_str()),
-             ACE_TEXT(RPG_Character_Common_Tools::toString(myAlignment).c_str()),
-             ACE_TEXT(RPG_Character_Common_Tools::toString(myAttributes).c_str()),
-             ACE_TEXT(RPG_Character_Skills_Common_Tools::toString(mySkills).c_str()),
-             ACE_TEXT(RPG_Character_Skills_Common_Tools::toString(myFeats).c_str()),
-             ACE_TEXT(RPG_Character_Skills_Common_Tools::toString(myAbilities).c_str()),
-             ACE_TEXT(spells.c_str())));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT("Name: \"%s\"\nAlignment: \"%s\"\nAttributes:\n===========\n%sSkills:\n=======\n%sFeats:\n======\n%sAbilities:\n==========\n%sSpells:\n==========\n%sItems:\n======\n"),
+              ACE_TEXT (myName.c_str ()),
+              ACE_TEXT (RPG_Character_Common_Tools::toString (myAlignment).c_str ()),
+              ACE_TEXT (RPG_Character_Common_Tools::toString (myAttributes).c_str ()),
+              ACE_TEXT (RPG_Character_Skills_Common_Tools::toString (mySkills).c_str ()),
+              ACE_TEXT (RPG_Character_Skills_Common_Tools::toString (myFeats).c_str ()),
+              ACE_TEXT (RPG_Character_Skills_Common_Tools::toString (myAbilities).c_str ()),
+              ACE_TEXT (spells.c_str ())));
 
   // dump items
-  myInventory.dump();
+  myInventory.dump ();
 }

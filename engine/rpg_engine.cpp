@@ -2418,7 +2418,9 @@ RPG_Engine::handleEntities ()
                                                      player_base_p->getLevel (),
                                                      1,
                                                      1);
-              bool level_up = player_base_p->gainExperience (xp);
+              enum RPG_Common_SubClass subclass_e =
+                  player_base_p->gainExperience (xp);
+              bool level_up = (subclass_e != RPG_COMMON_SUBCLASS_INVALID);
 
               parameters.entity_id = (*iterator).first;
               // append some more info to the message
@@ -2437,9 +2439,11 @@ RPG_Engine::handleEntities ()
               if (level_up)
               {
                 parameters.entity_id = (*iterator).first;
+                parameters.subclass = subclass_e;
                 notifications.push_back (std::make_pair (COMMAND_E2C_ENTITY_LEVEL_UP,
                                                          parameters));
                 parameters.entity_id = 0;
+                parameters.subclass = RPG_COMMON_SUBCLASS_INVALID;
 
                 parameters.entity_id = (*iterator).first;
                 parameters.message += (*iterator).second->character->getName ();

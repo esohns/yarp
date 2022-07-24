@@ -31,24 +31,23 @@
 #include "rpg_magic_common.h"
 
 #include "rpg_player_common.h"
-//#include "rpg_player_exports.h"
 #include "rpg_player_XML_tree.h"
 
 class RPG_Player_Common_Tools
 {
  public:
-  static unsigned int restParty(RPG_Player_Party_t&); // party of players
+  static unsigned int restParty (RPG_Player_Party_t&); // party of players
 
   // *WARNING*: result needs to be delete()d !
-  static RPG_Player* playerXMLToPlayer(const RPG_Player_PlayerXML_XMLTree_Type&, // player model
-                                       // current status
-                                       const RPG_Character_Conditions_t&,        // condition
-                                       const short int&,                         // HP
-                                       const RPG_Magic_Spells_t&);               // list of prepared spells (if any)
+  static RPG_Player* playerXMLToPlayer (const RPG_Player_PlayerXML_XMLTree_Type&, // player model
+                                        // current status
+                                        const RPG_Character_Conditions_t&,        // condition
+                                        short,                                    // HP
+                                        const RPG_Magic_Spells_t&);               // list of prepared spells (if any)
   // *WARNING*: result needs to be delete()d !
-  static RPG_Player_PlayerXML_XMLTree_Type* playerToPlayerXML(const RPG_Player&);
+  static RPG_Player_PlayerXML_XMLTree_Type* playerToPlayerXML (const RPG_Player&);
 
-  static std::string getPlayerProfilesDirectory();
+  static std::string getPlayerProfilesDirectory ();
 
  private:
   ACE_UNIMPLEMENTED_FUNC (RPG_Player_Common_Tools ())
@@ -57,12 +56,12 @@ class RPG_Player_Common_Tools
   ACE_UNIMPLEMENTED_FUNC (RPG_Player_Common_Tools& operator= (const RPG_Player_Common_Tools&))
 
   // *WARNING*: MSVC refuses to compile RPG_Character_Race_t
-  static std::bitset<6> raceXMLTreeToRace(const RPG_Player_CharacterXML_XMLTree_Type::race_sequence&); // race (XML format)
-  static RPG_Character_Abilities_t abilitiesXMLTreeToAbilities(const RPG_Player_Abilities_XMLTree_Type&); // abilities (XML format)
+  static std::bitset<6> raceXMLTreeToRace (const RPG_Player_CharacterXML_XMLTree_Type::race_sequence&); // race (XML format)
+  static RPG_Character_Abilities_t abilitiesXMLTreeToAbilities (const RPG_Player_Abilities_XMLTree_Type&); // abilities (XML format)
 
-  static RPG_Magic_SpellTypes_t spellsXMLTreeToSpellTypes(const RPG_Player_Spells_XMLTree_Type&); // spells (XML format)
-  static RPG_Character_Conditions_t conditionsXMLTreeToConditions(const RPG_Player_Conditions_XMLTree_Type&); // condition (XML format)
-  static RPG_Magic_Spells_t spellsXMLTreeToSpells(const RPG_Player_Spells_XMLTree_Type&); // spells (XML format)
+  static RPG_Magic_SpellTypes_t spellsXMLTreeToSpellTypes (const RPG_Player_Spells_XMLTree_Type&); // spells (XML format)
+  static RPG_Character_Conditions_t conditionsXMLTreeToConditions (const RPG_Player_Conditions_XMLTree_Type&); // condition (XML format)
+  static RPG_Magic_Spells_t spellsXMLTreeToSpells (const RPG_Player_Spells_XMLTree_Type&); // spells (XML format)
 };
 
 #endif

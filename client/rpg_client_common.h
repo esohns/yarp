@@ -91,6 +91,7 @@ struct RPG_Client_GTK_CBData
    , levelEngine (NULL)
    , levelMetadata ()
    , mapConfiguration ()
+   , subClass (RPG_COMMON_SUBCLASS_INVALID)
   {}
 
   bool                                   doHover;
@@ -112,6 +113,8 @@ struct RPG_Client_GTK_CBData
   RPG_Engine*                            levelEngine;
   struct RPG_Engine_LevelMetaData        levelMetadata;
   struct RPG_Map_FloorPlan_Configuration mapConfiguration;
+  // runtime state
+  enum RPG_Common_SubClass               subClass;
 };
 
 struct RPG_Client_SDL_InputConfiguration

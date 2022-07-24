@@ -31,6 +31,7 @@
 #include "rpg_client_common.h"
 
 void update_equipment (const struct RPG_Client_GTK_CBData&);
+void update_levelup (const struct RPG_Client_GTK_CBData&);
 void update_character_profile (const RPG_Player&, GtkBuilder*);
 void update_entity_profile (const struct RPG_Engine_Entity&, GtkBuilder*);
 void reset_character_profile (GtkBuilder*);
@@ -48,6 +49,7 @@ gboolean idle_finalize_UI_cb (gpointer);
 gboolean idle_raise_UI_cb (gpointer);
 
 gboolean idle_leave_game_cb (gpointer);
+gboolean idle_level_up_cb (gpointer);
 
 // -----------------------------------------------------------------------------
 
@@ -83,6 +85,11 @@ G_MODULE_EXPORT gint equip_clicked_GTK_cb (GtkWidget*, gpointer);
 G_MODULE_EXPORT void equipment_dialog_response_cb (GtkDialog*, gint, gpointer);
 G_MODULE_EXPORT gint item_toggled_GTK_cb (GtkWidget*, gpointer);
 G_MODULE_EXPORT gint rest_clicked_GTK_cb (GtkWidget*, gpointer);
+G_MODULE_EXPORT void levelup_clicked_cb (GtkButton*, gpointer);
+G_MODULE_EXPORT void hitdice_button_clicked_cb (GtkButton*, gpointer);
+//G_MODULE_EXPORT void spinbutton_attribute_change_value_cb (GtkSpinButton*, GtkScrollType, gpointer);
+G_MODULE_EXPORT void spinbutton_attribute_value_changed_cb (GtkSpinButton*, gpointer);
+G_MODULE_EXPORT void levelup_dialog_response_cb (GtkDialog*, gint, gpointer);
 //
 G_MODULE_EXPORT gint about_clicked_GTK_cb (GtkWidget*, gpointer);
 G_MODULE_EXPORT gint quit_clicked_GTK_cb (GtkWidget*, gpointer);

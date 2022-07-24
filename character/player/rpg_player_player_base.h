@@ -86,7 +86,7 @@ class RPG_Player_Player_Base
 
   virtual bool isPlayerCharacter () const;
 
-  virtual bool gainExperience (unsigned int); // XP
+  virtual enum RPG_Common_SubClass gainExperience (unsigned int); // XP
 
   unsigned int rest (const RPG_Common_Camp&, // type of rest
                      unsigned int);          // hours
