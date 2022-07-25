@@ -4343,7 +4343,6 @@ levelup_clicked_cb (GtkButton* button_in,
                                           ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_LEVELUP_NAME)));
   ACE_ASSERT (dialog_p);
 
-  data_p->subClass = SUBCLASS_PALADIN;
   ::update_levelup (*data_p);
 
   // draw it
