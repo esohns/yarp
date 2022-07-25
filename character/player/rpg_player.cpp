@@ -49,6 +49,7 @@
 #include "rpg_item_weapon.h"
 
 #include "rpg_character_common_tools.h"
+#include "rpg_character_defines.h"
 #include "rpg_character_class_common_tools.h"
 #include "rpg_character_race_common_tools.h"
 #include "rpg_character_skills_common_tools.h"
@@ -134,7 +135,7 @@ RPG_Player::getFeatsPerLevel (enum RPG_Common_SubClass subClass_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Player::getFeatsPerLevel"));
 
-  ACE_UINT8 result = RPG_PLAYER_FEAT_LEVELUP_POINTS;
+  ACE_UINT8 result = RPG_CHARACTER_FEAT_LEVELUP_POINTS;
 
   ACE_UINT8 class_level_i = inherited::getLevel (subClass_in);
 

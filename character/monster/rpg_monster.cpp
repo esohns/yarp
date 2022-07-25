@@ -252,14 +252,14 @@ RPG_Monster::getSpeed(bool isRunning_in,
                                                                                              true);
   signed char maxDexModifierAC = std::numeric_limits<signed char>::max();
   signed char armorCheckPenalty = 0;
-  unsigned char runModifier = RPG_CHARACTER_DEF_RUN_MODIFIER_MEDIUM;
-  RPG_Character_Common_Tools::getLoadModifiers(((encumbrance_by_armor > encumbrance_by_load) ? encumbrance_by_armor
-                                                                                             : encumbrance_by_load),
-                                               properties.speed,
-                                               maxDexModifierAC,
-                                               armorCheckPenalty,
-                                               result,
-                                               runModifier);
+  unsigned char runModifier = RPG_CHARACTER_RUN_MODIFIER_MEDIUM;
+  RPG_Character_Common_Tools::getLoadModifiers (((encumbrance_by_armor > encumbrance_by_load) ? encumbrance_by_armor
+                                                                                              : encumbrance_by_load),
+                                                properties.speed,
+                                                maxDexModifierAC,
+                                                armorCheckPenalty,
+                                                result,
+                                                runModifier);
 
   float modifier = 1.0F;
   // step3: consider vision [equipment / ambient lighting]

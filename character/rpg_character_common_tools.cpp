@@ -643,7 +643,7 @@ RPG_Character_Common_Tools::getLoadModifiers (enum RPG_Character_Encumbrance enc
   maxDexModifierAC_out = std::numeric_limits<signed char>::max();
   armorCheckPenalty_out = 0;
   speed_out = baseSpeed_in;
-  runModifier_out = RPG_CHARACTER_DEF_RUN_MODIFIER_MEDIUM;
+  runModifier_out = RPG_CHARACTER_RUN_MODIFIER_MEDIUM;
 
   switch (encumbrance_in)
   {
@@ -662,16 +662,15 @@ RPG_Character_Common_Tools::getLoadModifiers (enum RPG_Character_Encumbrance enc
       maxDexModifierAC_out = 1;
       armorCheckPenalty_out = -6;
       speed_out = getReducedSpeed(baseSpeed_in);
-      runModifier_out = RPG_CHARACTER_DEF_RUN_MODIFIER_HEAVY;
+      runModifier_out = RPG_CHARACTER_RUN_MODIFIER_HEAVY;
 
       break;
     }
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid load (was: %u), aborting\n"),
-                 RPG_Character_EncumbranceHelper::RPG_Character_EncumbranceToString(encumbrance_in).c_str()));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid load (was: %u), aborting\n"),
+                  ACE_TEXT (RPG_Character_EncumbranceHelper::RPG_Character_EncumbranceToString (encumbrance_in).c_str ())));
       break;
     }
   } // end SWITCH

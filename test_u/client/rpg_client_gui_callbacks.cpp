@@ -49,6 +49,8 @@
 #include "rpg_item_instance_manager.h"
 #include "rpg_item_weapon.h"
 
+#include "rpg_character_defines.h"
+
 #include "rpg_player_common_tools.h"
 #include "rpg_player_defines.h"
 
@@ -378,7 +380,7 @@ update_levelup (const struct RPG_Client_GTK_CBData& data_in)
   ACE_ASSERT (label_p);
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
-  converter << RPG_PLAYER_ATTRIBUTE_LEVELUP_POINTS;
+  converter << RPG_CHARACTER_ATTRIBUTE_LEVELUP_POINTS;
   gtk_label_set_text (label_p,
                       converter.str ().c_str ());
 
@@ -4583,7 +4585,7 @@ spinbutton_attribute_value_changed_cb (GtkSpinButton* spinButton_in,
   GtkLabel* label_p = NULL;
   std::stringstream converter;
   unsigned int points_remaining_i = 0;
-  if (num_values_changed_i > RPG_PLAYER_ATTRIBUTE_LEVELUP_POINTS)
+  if (num_values_changed_i > RPG_CHARACTER_ATTRIBUTE_LEVELUP_POINTS)
   {
     value_2 = gtk_spin_button_get_value_as_int (spinButton_in);
     --value_2;
@@ -4600,7 +4602,7 @@ spinbutton_attribute_value_changed_cb (GtkSpinButton* spinButton_in,
                                          ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_LABEL_POINTSREMAINING_NAME)));
   ACE_ASSERT (label_p);
   points_remaining_i =
-      RPG_PLAYER_ATTRIBUTE_LEVELUP_POINTS - num_values_changed_i;
+      RPG_CHARACTER_ATTRIBUTE_LEVELUP_POINTS - num_values_changed_i;
   converter << points_remaining_i;
   gtk_label_set_text (label_p,
                       converter.str ().c_str ());

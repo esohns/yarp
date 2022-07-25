@@ -21,17 +21,18 @@
 
 #include "rpg_character_skills_common_tools.h"
 
-#include "rpg_character_common_tools.h"
-
-#include <rpg_dice_common.h>
-#include <rpg_dice.h>
-
-#include <rpg_common_macros.h>
-
-#include <ace/Log_Msg.h>
-
-#include <string>
 #include <sstream>
+#include <string>
+
+#include "ace/Log_Msg.h"
+
+#include "rpg_dice.h"
+#include "rpg_dice_common.h"
+
+#include "rpg_common_macros.h"
+
+#include "rpg_character_common_tools.h"
+#include "rpg_character_defines.h"
 
 // init statics
 RPG_Character_Feats_t RPG_Character_Skills_Common_Tools::myFighterBonusFeatsTable;
@@ -40,19 +41,19 @@ RPG_Character_Skills_Common_Tools::RPG_Character_ClassSkillsTable_t RPG_Characte
 RPG_Character_Skills_Common_Tools::RPG_Character_FeatPrerequisitesTable_t RPG_Character_Skills_Common_Tools::myFeatPrerequisitesTable;
 
 void
-RPG_Character_Skills_Common_Tools::initialize()
+RPG_Character_Skills_Common_Tools::initialize ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::init"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::init"));
 
-  initializeClassSkillsTable();
-  initializeFeatPrerequisitesTable();
-  initializeBonusFeatsTables();
+  initializeClassSkillsTable ();
+  initializeFeatPrerequisitesTable ();
+  initializeBonusFeatsTables ();
 }
 
 void
-RPG_Character_Skills_Common_Tools::initializeBonusFeatsTables()
+RPG_Character_Skills_Common_Tools::initializeBonusFeatsTables ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::initBonusFeatsTables"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::initBonusFeatsTables"));
 
   // clean table
   myFighterBonusFeatsTable.clear();
@@ -127,14 +128,14 @@ RPG_Character_Skills_Common_Tools::initializeBonusFeatsTables()
   myWizardBonusFeatsTable.insert(FEAT_SCRIBE_SCROLL);
   myWizardBonusFeatsTable.insert(FEAT_SPELL_MASTERY);
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("RPG_Character_Skills_Common_Tools: initialized bonus feat tables...\n")));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("RPG_Character_Skills_Common_Tools: initialized bonus feat tables...\n")));
 }
 
 void
-RPG_Character_Skills_Common_Tools::initializeFeatPrerequisitesTable()
+RPG_Character_Skills_Common_Tools::initializeFeatPrerequisitesTable ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable"));
 
   // clean tables
   myFeatPrerequisitesTable.clear();
@@ -1169,15 +1170,15 @@ RPG_Character_Skills_Common_Tools::initializeFeatPrerequisitesTable()
   myFeatPrerequisitesTable.insert(std::make_pair(FEAT_WHIRLWIND_ATTACK, prerequisites));
   prerequisites.clear();
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("RPG_Character_Skills_Common_Tools: initialized feat prerequisite table (%u rule(s))...\n"),
-             myFeatPrerequisitesTable.size()));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("RPG_Character_Skills_Common_Tools: initialized feat prerequisite table (%u rule(s))...\n"),
+              myFeatPrerequisitesTable.size ()));
 }
 
 void
-RPG_Character_Skills_Common_Tools::initializeClassSkillsTable()
+RPG_Character_Skills_Common_Tools::initializeClassSkillsTable ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::initClassSkillsTable"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::initClassSkillsTable"));
 
   // clean tables
   myClassSkillsTable.clear();
@@ -1419,8 +1420,8 @@ RPG_Character_Skills_Common_Tools::initializeClassSkillsTable()
   skillSet.insert(SKILL_USE_MAGIC_DEVICE);
   myClassSkillsTable.insert(std::make_pair(SUBCLASS_BARD, skillSet));
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("RPG_Character_Skills_Common_Tools: initialized class skill table...\n")));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("RPG_Character_Skills_Common_Tools: initialized class skill table...\n")));
 }
 
 bool
@@ -1468,7 +1469,6 @@ RPG_Character_Skills_Common_Tools::getSkillPoints (enum RPG_Common_SubClass subC
 //     case SUBCLASS_SHAMAN:
     {
       baseValue += 2;
-
       break;
     }
 //     case SUBCLASS_BARBARIAN:
@@ -1476,28 +1476,24 @@ RPG_Character_Skills_Common_Tools::getSkillPoints (enum RPG_Common_SubClass subC
 //     case SUBCLASS_MONK:
     {
       baseValue += 4;
-
       break;
     }
     case SUBCLASS_RANGER:
     case SUBCLASS_BARD:
     {
       baseValue += 6;
-
       break;
     }
     case SUBCLASS_THIEF:
     {
       baseValue += 8;
-
       break;
     }
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid subclass: \"%s\", aborting\n"),
-                 RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str()));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid subclass: \"%s\", aborting\n"),
+                  ACE_TEXT (RPG_Common_SubClassHelper::RPG_Common_SubClassToString (subClass_in).c_str ())));
       return 0;
     }
   } // end SWITCH
@@ -1522,9 +1518,9 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities (const RPG_Character_Rac
   baseFeats_out.clear ();
   baseAbilities_out.clear ();
   // everybody starts with one feat
-  numInitialFeats_out = 1;
+  numInitialFeats_out = RPG_CHARACTER_FEAT_INITIAL_POINTS;
   // everybody gets one new feat per level
-  unsigned int numFeats = 1;
+  unsigned int numFeats = RPG_CHARACTER_FEAT_LEVELUP_POINTS;
 
   switch (subClass_in)
   {

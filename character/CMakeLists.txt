@@ -21,9 +21,9 @@ set (${LIBRARY}_SRCS
      rpg_character_common.h
      rpg_character_common_tools.cpp
      rpg_character_common_tools.h
+     rpg_character_defines.h
      rpg_character_encumbrance.h
      rpg_character_equipmentslot.h
- #    rpg_character_exports.h
      rpg_character_feat.h
      rpg_character_feats.h
      rpg_character_gender.h
@@ -122,9 +122,9 @@ install (FILES
          rpg_character_classxml.h
          rpg_character_common.h
          rpg_character_common_tools.h
+         rpg_character_defines.h
          rpg_character_encumbrance.h
          rpg_character_equipmentslot.h
-#         rpg_character_exports.h
          rpg_character_feat.h
          rpg_character_feats.h
          rpg_character_gender.h

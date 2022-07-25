@@ -21,20 +21,17 @@
 #ifndef RPG_PLAYER_DEFINES_H
 #define RPG_PLAYER_DEFINES_H
 
-#define RPG_PLAYER_START_MONEY              0 // GP
-#define RPG_PLAYER_ATTRIBUTE_LEVELUP_POINTS 2
-#define RPG_PLAYER_ATTRIBUTE_MAXIMUM        20
-#define RPG_PLAYER_ATTRIBUTE_MINIMUM_SUM    80
-#define RPG_PLAYER_FEAT_LEVELUP_POINTS      1
-#define RPG_PLAYER_MULTIRACE_PROBABILITY    0.3F // 30%
-#define RPG_PLAYER_MULTICLASS_PROBABILITY   0.2F // 20%
+#define RPG_PLAYER_ATTRIBUTE_MINIMUM_SUM  80
+#define RPG_PLAYER_START_MONEY            0 // GP
+#define RPG_PLAYER_MULTIRACE_PROBABILITY  0.3F // 30%
+#define RPG_PLAYER_MULTICLASS_PROBABILITY 0.2F // 20%
 
 // XML-specific
-#define RPG_PLAYER_SCHEMA_FILE              "rpg_player.xsd"
-#define RPG_PLAYER_PROFILE_EXT              ".profile"
+#define RPG_PLAYER_SCHEMA_FILE            "rpg_player.xsd"
+#define RPG_PLAYER_PROFILE_EXT            ".profile"
 
-#define RPG_PLAYER_DEF_NAME                 "default player"
+#define RPG_PLAYER_DEF_NAME               "default player"
 
-#define RPG_PLAYER_PROFILES_SUB             "profiles"
+#define RPG_PLAYER_PROFILES_SUB           "profiles"
 
 #endif
