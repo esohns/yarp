@@ -129,10 +129,222 @@ RPG_Player::getHitDicePerLevel (enum RPG_Common_SubClass subClass_in) const
   return result;
 }
 
+ACE_UINT8
+RPG_Player::getFeatsPerLevel (enum RPG_Common_SubClass subClass_in) const
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Player::getFeatsPerLevel"));
+
+  ACE_UINT8 result = RPG_PLAYER_FEAT_LEVELUP_POINTS;
+
+  ACE_UINT8 class_level_i = inherited::getLevel (subClass_in);
+
+  if (class_level_i == 1)
+  {
+    if (myRace.test (RACE_HUMAN - 1))
+      ++result; // at first level, humans receive an extra feat
+    else if (myRace.test (RACE_ELF - 1))
+      ++result; // at first level, elves receive Martial Weapon Proficiency (longsword,
+                // rapier, longbow (including composite longbow), and shortbow (including
+                // composite shortbow)
+  } // end IF
+
+  switch (subClass_in)
+  {
+    case SUBCLASS_FIGHTER:
+    { // *NOTE*: these must be combat-oriented- "fighter bonus feats"
+      if ((class_level_i == 1) ||     // at first level
+          ((class_level_i % 2) == 0)) // on even levels
+        ++result;
+      break;
+    }
+    case SUBCLASS_RANGER:
+    {
+      if (class_level_i == 1) // at first level
+        ++result; // Track
+      else if (class_level_i == 2) // at second level
+        ++result; // Rapid Shot || Two-Weapon Fighting
+      else if (class_level_i == 3) // at third level
+        ++result; // Endurance
+      else if (class_level_i == 6) // at sixth level
+        ++result; // Manyshot || Improved Two-Weapon Fighting
+      else if (class_level_i == 11) // at eleventh level
+        ++result; // Improved Precise Shot || Greater Two-Weapon Fighting
+      break;
+    }
+    case SUBCLASS_CLERIC:
+    {
+      // *TODO*: "...A cleric who chooses the War domain receives the Weapon
+      //         Focus feat related to his deity’s weapon as a bonus feat. He
+      //         also receives the appropriate Martial Weapon Proficiency feat
+      //         as a bonus feat, if the weapon falls into that category. ..."
+      if (class_level_i == 1) // at first level
+        result += 2;
+      break;
+    }
+//    case SUBCLASS_MONK:
+//    {
+//      if (class_level_i == 1)
+//        result += 2; // Improved Unarmed Strike && (Improved Grapple || Stunning Fist)
+//      else if (class_level_i == 2)
+//        ++result; // Combat Reflexes || Deflect Arrows
+//      else if (class_level_i == 6)
+//        ++result; // Improved Disarm || Improved Trip
+//      break;
+//    }
+    case SUBCLASS_THIEF:
+    {
+      // *TODO*: only iff feat (instead of "special ability") is chosen
+      if ((class_level_i == 10) || // at tenth level
+          ((class_level_i > 10) &&
+           ((class_level_i - 10) % 3) == 0)) // ...and every three levels thereafter
+        ++result;
+      break;
+    }
+    case SUBCLASS_WIZARD:
+    {
+      if (class_level_i == 1) // at first level
+        ++result; // Scribe Scroll
+      else if ((class_level_i % 5) == 0) // every five levels thereafter
+        ++result; // metamagic-, item creation-, or Spell Mastery
+      break;
+    }
+    case SUBCLASS_BARD:
+    case SUBCLASS_DRUID:
+    case SUBCLASS_PALADIN:
+    case SUBCLASS_SORCERER:
+//     case SUBCLASS_WARLOCK:
+//     case SUBCLASS_AVENGER:
+//     case SUBCLASS_INVOKER:
+//     case SUBCLASS_SHAMAN:
+//     case SUBCLASS_WARLORD:
+    {
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG ((LM_ERROR,
+                 ACE_TEXT ("invalid subclass: \"%s\", aborting\n"),
+                 RPG_Common_SubClassHelper::RPG_Common_SubClassToString (subClass_in).c_str()));
+      break;
+    }
+  } // end SWITCH
+
+  return result;
+}
+
+ACE_UINT8
+RPG_Player::getSkillsPerLevel (enum RPG_Common_SubClass subClass_in) const
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Player::getSkillsPerLevel"));
+
+  ACE_UINT8 result = 0;
+
+  switch (subClass_in)
+  {
+    case SUBCLASS_CLERIC:
+    case SUBCLASS_FIGHTER:
+    case SUBCLASS_PALADIN:
+    case SUBCLASS_SORCERER:
+    case SUBCLASS_WIZARD:
+    {
+      result = 2;
+      break;
+    }
+//     case SUBCLASS_BARBARIAN:
+//     {
+//       result = 4;
+//       result +=
+//     }
+//     case SUBCLASS_WARLORD:
+//    {
+//      break;
+//    }
+    case SUBCLASS_DRUID:
+//     case SUBCLASS_MONK:
+    {
+      result = 4;
+      break;
+    }
+    case SUBCLASS_BARD:
+    case SUBCLASS_RANGER:
+    {
+      result = 6;
+      break;
+    }
+    case SUBCLASS_THIEF:
+    {
+      result = 8;
+      break;
+    }
+//     case SUBCLASS_AVENGER:
+//     case SUBCLASS_INVOKER:
+//     case SUBCLASS_SHAMAN:
+//    {
+//      break;
+//    }
+//     case SUBCLASS_WARLOCK:
+//    {
+//      break;
+//    }
+    default:
+    {
+      ACE_DEBUG ((LM_ERROR,
+                 ACE_TEXT ("invalid subclass: \"%s\", aborting\n"),
+                 RPG_Common_SubClassHelper::RPG_Common_SubClassToString (subClass_in).c_str()));
+      break;
+    }
+  } // end SWITCH
+  result +=
+      RPG_Character_Common_Tools::getAttributeAbilityModifier (myAttributes.intelligence);
+
+  ACE_UINT8 class_level_i = inherited::getLevel (subClass_in);
+  if (myRace.test (RACE_HUMAN - 1))
+  {
+   if (class_level_i == 1)
+     result += 4; // at first level, humans receive four extra skill points
+   else
+     ++result; // humans receive an extra skill point every level
+  } // end IF
+
+  return result;
+}
+
+unsigned short
+RPG_Player::getKnownSpellsPerLevel (enum RPG_Common_SubClass subClass_in,
+                                    ACE_UINT8 spellLevel_in) const
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Player::getKnownSpellsPerLevel"));
+
+  // sanity check(s)
+  if (!RPG_Magic_Common_Tools::isCasterClass (subClass_in))
+    return 0;
+
+  unsigned short result = 0;
+
+  ACE_UINT8 class_level_i = inherited::getLevel (subClass_in);
+
+  switch (subClass_in)
+  {
+    case SUBCLASS_BARD:
+    case SUBCLASS_SORCERER:
+    {
+      result = RPG_Magic_Common_Tools::getNumKnownSpells (subClass_in,
+                                                          class_level_i,
+                                                          spellLevel_in);
+      break;
+    }
+    case SUBCLASS_WIZARD:
+    default:
+      return std::numeric_limits<unsigned short>::max (); // ALL
+  } // end SWITCH
+
+  return result;
+}
+
 RPG_Player*
 RPG_Player::random ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player::random"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player::random"));
 
   // step1: name
   std::string name;
@@ -181,22 +393,22 @@ RPG_Player::random ()
                                   1,
                                   result);
   race = static_cast<RPG_Character_Race>(result.front());
-	player_race.flip(race - 1);
-	if (RPG_Dice::probability(RPG_PLAYER_MULTIRACE_PROBABILITY))
-	{
-		RPG_Character_Race race_2 = RPG_CHARACTER_RACE_INVALID;
-		do
-		{
-			result.clear();
-			RPG_Dice::generateRandomNumbers((RPG_CHARACTER_RACE_MAX - 1),
-				                              1,
-																			result);
-			race_2 = static_cast<RPG_Character_Race>(result.front());
-		} while ((race == race_2) ||
-			       !RPG_Character_Race_Common_Tools::isCompatible(race,
-			                                                      race_2));
-		player_race.flip(race_2 - 1);
-	} // end IF
+  player_race.flip(race - 1);
+  if (RPG_Dice::probability(RPG_PLAYER_MULTIRACE_PROBABILITY))
+  {
+    RPG_Character_Race race_2 = RPG_CHARACTER_RACE_INVALID;
+    do
+    {
+      result.clear();
+      RPG_Dice::generateRandomNumbers ((RPG_CHARACTER_RACE_MAX - 1),
+                                       1,
+                                       result);
+      race_2 = static_cast<RPG_Character_Race> (result.front ());
+    } while ((race == race_2) ||
+             !RPG_Character_Race_Common_Tools::isCompatible (race,
+                                                             race_2));
+    player_race.flip (race_2 - 1);
+  } // end IF
 
   // step4: class
   RPG_Character_Class player_class;
@@ -210,35 +422,34 @@ RPG_Player::random ()
   player_class.metaClass =
       RPG_Character_Class_Common_Tools::subClassToMetaClass(player_subclass);
   player_class.subClasses.insert(player_subclass);
-	if (RPG_Dice::probability(RPG_PLAYER_MULTICLASS_PROBABILITY))
-	{
-		// step1: determine number of subclasses (3 max)
-		unsigned int num_subclasses = 1;
-		result.clear();
-		RPG_Dice::generateRandomNumbers(2,
-			                              1,
-                                    result);
-		num_subclasses = result.front();
+  if (RPG_Dice::probability(RPG_PLAYER_MULTICLASS_PROBABILITY))
+  {
+    // step1: determine number of subclasses (3 max)
+    unsigned int num_subclasses = 1;
+    result.clear ();
+    RPG_Dice::generateRandomNumbers (2,
+                                     1,
+                                     result);
+    num_subclasses = result.front ();
 
-		// step2: determine subclass type(s)
-		RPG_Common_SubClass player_subclass_temp = RPG_COMMON_SUBCLASS_INVALID;
-		for (unsigned int i = 0;
-			   i < num_subclasses;
-				 i++)
-		{
-			player_subclass_temp = RPG_COMMON_SUBCLASS_INVALID;
-			do
-			{
-				result.clear();
-				RPG_Dice::generateRandomNumbers((RPG_COMMON_SUBCLASS_MAX - 1),
-			                              		1,
-					                              result);
-				player_subclass_temp = static_cast<RPG_Common_SubClass>(result.front());
-			} while (player_class.subClasses.find(player_subclass_temp) !=
-							 player_class.subClasses.end());
-			player_class.subClasses.insert(player_subclass_temp);
-		} // end FOR
-	} // end IF
+    // step2: determine subclass type(s)
+    RPG_Common_SubClass player_subclass_temp = RPG_COMMON_SUBCLASS_INVALID;
+    for (unsigned int i = 0;
+         i < num_subclasses;
+         i++)
+    {
+      player_subclass_temp = RPG_COMMON_SUBCLASS_INVALID;
+      do
+      {
+        result.clear();
+        RPG_Dice::generateRandomNumbers ((RPG_COMMON_SUBCLASS_MAX - 1),
+                                         1,
+                                         result);
+        player_subclass_temp = static_cast<RPG_Common_SubClass> (result.front ());
+      } while (player_class.subClasses.find(player_subclass_temp) != player_class.subClasses.end ());
+      player_class.subClasses.insert (player_subclass_temp);
+    } // end FOR
+  } // end IF
 
   // step5: alignment
   RPG_Character_Alignment alignment;
@@ -311,14 +522,14 @@ RPG_Player::random ()
 
   // step8: (initial) feats & abilities
   RPG_Character_Feats_t feats;
-  unsigned int initialFeats = 0;
+  unsigned int initial_feats_i = 0;
   RPG_Character_Abilities_t abilities;
-  RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(race,
-                                                          player_subclass,
-                                                          1,
-                                                          feats,
-                                                          initialFeats,
-                                                          abilities);
+  RPG_Character_Skills_Common_Tools::getNumFeatsAbilities (race,
+                                                           player_subclass,
+                                                           1,
+                                                           feats,
+                                                           initial_feats_i,
+                                                           abilities);
   RPG_Character_FeatsIterator_t iterator2;
   RPG_Character_Feat feat = RPG_CHARACTER_FEAT_INVALID;
   do
@@ -349,8 +560,8 @@ RPG_Player::random ()
       continue;
     } // end IF
 
-    feats.insert(feat);
-  } while (feats.size() < initialFeats);
+    feats.insert (feat);
+  } while (feats.size () < initial_feats_i);
 
   // step9: off-hand
   RPG_Character_OffHand offHand = OFFHAND_LEFT;

@@ -351,3 +351,42 @@ RPG_Monster::getHitDicePerLevel (enum RPG_Common_SubClass subClass_in) const
   ACE_ASSERT (false); // *TODO*
   return properties.hitDice;
 }
+
+ACE_UINT8
+RPG_Monster::getFeatsPerLevel (enum RPG_Common_SubClass subClass_in) const
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Monster::getFeatsPerLevel"));
+
+  ACE_UNUSED_ARG (subClass_in);
+
+  ACE_UINT8 result = 0;
+
+  ACE_ASSERT (false); // *TODO*
+  return result;
+}
+
+ACE_UINT8
+RPG_Monster::getSkillsPerLevel (enum RPG_Common_SubClass subClass_in) const
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Monster::getSkillsPerLevel"));
+
+  ACE_UNUSED_ARG (subClass_in);
+
+  ACE_UINT8 result = 0;
+
+  ACE_ASSERT (false); // *TODO*
+  return result;
+}
+
+unsigned short
+RPG_Monster::getKnownSpellsPerLevel (enum RPG_Common_SubClass subClass_in,
+                                     ACE_UINT8 spellLevel_in) const
+{
+  ACE_UNUSED_ARG (subClass_in);
+  ACE_UNUSED_ARG (spellLevel_in);
+
+  ACE_UINT8 result = 0;
+
+  ACE_ASSERT (false); // *TODO*
+  return result;
+}

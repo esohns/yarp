@@ -104,6 +104,10 @@ class RPG_Monster
                                                           enum RPG_Combat_AttackSituation) const;
   virtual ACE_INT8 getShieldBonus () const;
   virtual struct RPG_Dice_Roll getHitDicePerLevel (enum RPG_Common_SubClass) const;
+  virtual ACE_UINT8 getFeatsPerLevel (enum RPG_Common_SubClass) const;
+  virtual ACE_UINT8 getSkillsPerLevel (enum RPG_Common_SubClass) const;
+  virtual unsigned short getKnownSpellsPerLevel (enum RPG_Common_SubClass, // (spellcaster-) subclass
+                                                 ACE_UINT8) const;         // spell level
 
   struct RPG_Common_CreatureType myType;
   struct RPG_Monster_Size        mySize;

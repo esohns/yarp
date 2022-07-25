@@ -34,12 +34,8 @@
 
 #include "rpg_magic_common.h"
 #include "rpg_magic_dictionary.h"
-//#include "rpg_magic_exports.h"
 #include "rpg_magic_incl.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Magic_Common_Tools
 {
   // allow access to some specific helper methods
@@ -60,9 +56,9 @@ class RPG_Magic_Common_Tools
   static bool hasCasterClass (const RPG_Character_Class&); // class(es)
   static bool hasDivineCasterClass (const RPG_Character_Class&); // class(es)
   static bool hasArcaneCasterClass (const RPG_Character_Class&); // class(es)
-  static unsigned int getNumKnownSpells (enum RPG_Common_SubClass, // subclass
-                                         RPG_Character_Level_t,    // class level
-                                         ACE_UINT8);               // spell level (Bard/Sorcerer)
+  static unsigned short getNumKnownSpells (enum RPG_Common_SubClass, // subclass
+                                           RPG_Character_Level_t,    // class level
+                                           ACE_UINT8);               // spell level (Bard/Sorcerer)
   static unsigned int getNumSpells (enum RPG_Common_SubClass, // subclass
                                     RPG_Character_Level_t,    // class level
                                     ACE_UINT8);               // spell level (== 0xFF ? total # spell slots)

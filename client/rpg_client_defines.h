@@ -88,8 +88,12 @@
 #define RPG_CLIENT_GTK_LABEL_HITPOINTS_NAME               "hitpoints_label2"
 #define RPG_CLIENT_GTK_LABEL_HITDICE_NAME                 "hitdice_label"
 #define RPG_CLIENT_GTK_LABEL_POINTSREMAINING_NAME         "pointsremaining"
+#define RPG_CLIENT_GTK_LABEL_FEATSREMAINING_NAME          "featsremaining"
+#define RPG_CLIENT_GTK_LABEL_SKILLSREMAINING_NAME         "skillsremaining"
+#define RPG_CLIENT_GTK_LABEL_SPELLSREMAINING_NAME         "spellsremaining"
 //
 #define RPG_CLIENT_GTK_LISTSTORE_FEATS_NAME               "liststore_feats"
+#define RPG_CLIENT_GTK_LISTSTORE_SKILLS_NAME              "liststore_skills"
 #define RPG_CLIENT_GTK_LISTSTORE_SPELLS_NAME              "liststore_spells"
 //
 #define RPG_CLIENT_GTK_SPINBUTTON_STRENGTH_NAME           "spinbutton_strength"
@@ -102,6 +106,7 @@
 #define RPG_CLIENT_GTK_TABLE_EQUIPENT_NAME                "equipment_table"
 //
 #define RPG_CLIENT_GTK_TREEVIEW_FEATS_NAME                "treeview_feats"
+#define RPG_CLIENT_GTK_TREEVIEW_SKILLS_NAME               "treeview_skills"
 #define RPG_CLIENT_GTK_TREEVIEW_SPELLS_NAME               "treeview_spells"
 
 // CONFIGDIR-specific

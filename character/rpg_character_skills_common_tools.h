@@ -38,48 +38,45 @@
 #include "rpg_character_common_tools.h"
 #include "rpg_character_skills_common.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Character_Skills_Common_Tools
 {
   // allow access to initialization methods
   friend class RPG_Character_Common_Tools;
 
  public:
-  static const bool isClassSkill(const RPG_Common_SubClass&, // subclass
-                                 const RPG_Common_Skill&);   // skill
-  static const unsigned int getSkillPoints(const RPG_Common_SubClass&, // subclass
-                                           const short int&,           // INT modifier
-                                           unsigned int&);             // return value: initial points (level 1)
-  static const unsigned int getNumFeatsAbilities(const RPG_Character_Race&,   // race
-                                                 const RPG_Common_SubClass&,  // subclass
-                                                 const unsigned char&,        // current level
-                                                 RPG_Character_Feats_t&,      // return value: base feats
-                                                 unsigned int&,               // return value: initial feats (level 1)
-                                                 RPG_Character_Abilities_t&); // return value: base abilities
+  static bool isClassSkill (enum RPG_Common_SubClass, // subclass
+                            enum RPG_Common_Skill);   // skill
+  static unsigned int getSkillPoints (enum RPG_Common_SubClass, // subclass
+                                      short,                    // INT modifier
+                                      unsigned int&);           // return value: initial points (level 1)
+  static unsigned int getNumFeatsAbilities (const RPG_Character_Race&,   // race
+                                            enum RPG_Common_SubClass,    // subclass
+                                            ACE_UINT8,                   // current level
+                                            RPG_Character_Feats_t&,      // return value: base feats
+                                            unsigned int&,               // return value: initial feats (level 1)
+                                            RPG_Character_Abilities_t&); // return value: base abilities
 
-  static const bool meetsFeatPrerequisites(const RPG_Character_Feat&,         // feat
-                                           const RPG_Common_SubClass&,        // subclass
-                                           const unsigned char&,              // current level
-                                           const RPG_Character_Attributes&,   // base attributes
-                                           const RPG_Character_Skills_t&,     // skills
-                                           const RPG_Character_Feats_t&,      // feats
-                                           const RPG_Character_Abilities_t&); // abilities
+  static bool meetsFeatPrerequisites (enum RPG_Character_Feat,           // feat
+                                      enum RPG_Common_SubClass,          // subclass
+                                      ACE_UINT8,                         // current level
+                                      const RPG_Character_Attributes&,   // base attributes
+                                      const RPG_Character_Skills_t&,     // skills
+                                      const RPG_Character_Feats_t&,      // feats
+                                      const RPG_Character_Abilities_t&); // abilities
 
   // debug info
-  static const std::string toString (const RPG_Character_Skills_t&); // skills
-  static const std::string toString (const RPG_Character_Feats_t&); // feats
-  static const std::string toString (const RPG_Character_Abilities_t&); // abilities
+  static std::string toString (const RPG_Character_Skills_t&); // skills
+  static std::string toString (const RPG_Character_Feats_t&); // feats
+  static std::string toString (const RPG_Character_Abilities_t&); // abilities
 
   static RPG_Character_Feats_t                myFighterBonusFeatsTable;
   static RPG_Character_Feats_t                myWizardBonusFeatsTable;
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Skills_Common_Tools())
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Character_Skills_Common_Tools())
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Skills_Common_Tools(const RPG_Character_Skills_Common_Tools&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Skills_Common_Tools& operator=(const RPG_Character_Skills_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Character_Skills_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (~RPG_Character_Skills_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Character_Skills_Common_Tools (const RPG_Character_Skills_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Character_Skills_Common_Tools& operator= (const RPG_Character_Skills_Common_Tools&))
 
   // some useful types
   typedef std::set<RPG_Common_Skill> RPG_Character_ClassSkillsSet_t;
@@ -95,10 +92,10 @@ class RPG_Character_Skills_Common_Tools
   static void initialize ();
 
   // helper methods
-  static void initializeStringConversionTables();
-  static void initializeClassSkillsTable();
-  static void initializeFeatPrerequisitesTable();
-  static void initializeBonusFeatsTables();
+  static void initializeStringConversionTables ();
+  static void initializeClassSkillsTable ();
+  static void initializeFeatPrerequisitesTable ();
+  static void initializeBonusFeatsTables ();
 
   static RPG_Character_ClassSkillsTable_t       myClassSkillsTable;
   static RPG_Character_FeatPrerequisitesTable_t myFeatPrerequisitesTable;

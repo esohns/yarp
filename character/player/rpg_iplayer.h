@@ -40,6 +40,10 @@ class RPG_IPlayer
   virtual ACE_INT8 getShieldBonus () const = 0;
 
   virtual struct RPG_Dice_Roll getHitDicePerLevel (enum RPG_Common_SubClass) const = 0;
+  virtual ACE_UINT8 getFeatsPerLevel (enum RPG_Common_SubClass) const = 0;
+  virtual ACE_UINT8 getSkillsPerLevel (enum RPG_Common_SubClass) const = 0;
+  virtual unsigned short getKnownSpellsPerLevel (enum RPG_Common_SubClass, // (spellcaster-) subclass
+                                                 ACE_UINT8) const = 0;     // spell level
 
   virtual unsigned short getReach (unsigned short&,  // return value: base range (if any)
                                    bool&) const = 0; // return value: reach is absolute ?

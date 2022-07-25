@@ -58,15 +58,15 @@ class RPG_Player_Player_Base
   inline virtual ~RPG_Player_Player_Base () {}
 
   // retrieve basic player character data
-  enum RPG_Character_Gender getGender () const;
-  const RPG_Character_Race_t& getRace () const;
-  const struct RPG_Character_Class& getClass () const;
-  enum RPG_Character_OffHand getOffHand () const;
-  enum RPG_Common_Size getSize () const;
+  inline enum RPG_Character_Gender getGender () const { return myGender; }
+  inline const RPG_Character_Race_t& getRace () const { return myRace; }
+  inline const struct RPG_Character_Class& getClass () const { return myClass; }
+  inline enum RPG_Character_OffHand getOffHand () const { return myOffHand; }
+  inline enum RPG_Common_Size getSize () const { return mySize; }
 
   inline unsigned int getExperience () const { return myExperience; }
   // compute dynamically from class/XP
-  unsigned char getLevel (const RPG_Common_SubClass& = SUBCLASS_NONE) const; // subclass
+  ACE_UINT8 getLevel (const RPG_Common_SubClass& = SUBCLASS_NONE) const; // subclass
 
   // access current equipment
   inline RPG_Player_Equipment& getEquipment () { return inherited::myEquipment; }

@@ -246,6 +246,12 @@
                     <child>
                       <placeholder/>
                     </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -374,6 +380,16 @@
       <!-- column-name text -->
       <column type="gchararray"/>
       <!-- column-name value -->
+      <column type="gint"/>
+    </columns>
+  </object>
+  <object class="GtkListStore" id="liststore_skills">
+    <columns>
+      <!-- column-name text -->
+      <column type="gchararray"/>
+      <!-- column-name value -->
+      <column type="gint"/>
+      <!-- column-name value2 -->
       <column type="gint"/>
     </columns>
   </object>
@@ -860,22 +876,68 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkScrolledWindow" id="scrolledwindow1">
+                      <object class="GtkVBox" id="vbox3">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="hscrollbar_policy">automatic</property>
-                        <property name="vscrollbar_policy">automatic</property>
-                        <property name="shadow_type">etched-out</property>
+                        <property name="can_focus">False</property>
                         <child>
-                          <object class="GtkTreeView" id="treeview_feats">
-                            <property name="width_request">300</property>
+                          <object class="GtkScrolledWindow" id="scrolledwindow1">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="model">liststore_feats</property>
-                            <property name="headers_visible">False</property>
-                            <property name="headers_clickable">False</property>
-                            <property name="fixed_height_mode">True</property>
+                            <property name="hscrollbar_policy">automatic</property>
+                            <property name="vscrollbar_policy">automatic</property>
+                            <property name="shadow_type">etched-out</property>
+                            <child>
+                              <object class="GtkTreeView" id="treeview_feats">
+                                <property name="width_request">300</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="model">liststore_feats</property>
+                                <property name="headers_visible">False</property>
+                                <property name="headers_clickable">False</property>
+                                <property name="fixed_height_mode">True</property>
+                              </object>
+                            </child>
                           </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkHBox" id="hbox4">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <object class="GtkLabel" id="label_pointsremaining1">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">Feats  remaining:</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="featsremaining">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">0</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
                         </child>
                       </object>
                     </child>
@@ -907,51 +969,66 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkTable" id="skills_table1">
+                      <object class="GtkVBox" id="vbox4">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="n_columns">2</property>
                         <child>
-                          <placeholder/>
+                          <object class="GtkScrolledWindow" id="scrolledwindow3">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="hscrollbar_policy">automatic</property>
+                            <property name="vscrollbar_policy">automatic</property>
+                            <child>
+                              <object class="GtkTreeView" id="treeview_skills">
+                                <property name="width_request">300</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="model">liststore_skills</property>
+                                <property name="headers_visible">False</property>
+                                <property name="headers_clickable">False</property>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
                         </child>
                         <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
+                          <object class="GtkHBox" id="hbox5">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <object class="GtkLabel" id="label_pointsremaining2">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">Skill points  remaining:</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="skillsremaining">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">0</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
                         </child>
                       </object>
                     </child>
@@ -983,19 +1060,65 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkScrolledWindow" id="scrolledwindow2">
+                      <object class="GtkVBox" id="vbox5">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="hscrollbar_policy">automatic</property>
-                        <property name="vscrollbar_policy">automatic</property>
-                        <property name="shadow_type">etched-out</property>
+                        <property name="can_focus">False</property>
                         <child>
-                          <object class="GtkTreeView" id="treeview_spells">
-                            <property name="width_request">250</property>
+                          <object class="GtkScrolledWindow" id="scrolledwindow2">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="model">liststore_spells</property>
+                            <property name="hscrollbar_policy">automatic</property>
+                            <property name="vscrollbar_policy">automatic</property>
+                            <property name="shadow_type">etched-out</property>
+                            <child>
+                              <object class="GtkTreeView" id="treeview_spells">
+                                <property name="width_request">250</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="model">liststore_spells</property>
+                              </object>
+                            </child>
                           </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkHBox" id="hbox6">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <object class="GtkLabel" id="label_pointsremaining3">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">Spells  remaining:</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="spellsremaining">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">0</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
                         </child>
                       </object>
                     </child>
@@ -2659,6 +2782,12 @@
                                 <child>
                                   <placeholder/>
                                 </child>
+                                <child>
+                                  <placeholder/>
+                                </child>
+                                <child>
+                                  <placeholder/>
+                                </child>
                               </object>
                             </child>
                           </object>
@@ -2755,6 +2884,12 @@
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
                                             <property name="n_columns">2</property>
+                                            <child>
+                                              <placeholder/>
+                                            </child>
+                                            <child>
+                                              <placeholder/>
+                                            </child>
                                             <child>
                                               <placeholder/>
                                             </child>

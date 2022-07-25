@@ -167,59 +167,19 @@ RPG_Player_Player_Base::initialize (// base attributes
   mySize       = RPG_Character_Race_Common_Tools::raceToSize(race_in);
 }
 
-enum RPG_Character_Gender
-RPG_Player_Player_Base::getGender() const
+ACE_UINT8
+RPG_Player_Player_Base::getLevel (const RPG_Common_SubClass& subClass_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getGender"));
-
-  return myGender;
-}
-
-const RPG_Character_Race_t&
-RPG_Player_Player_Base::getRace() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getRace"));
-
-  return myRace;
-}
-
-const struct RPG_Character_Class&
-RPG_Player_Player_Base::getClass() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getClass"));
-
-  return myClass;
-}
-
-enum RPG_Character_OffHand
-RPG_Player_Player_Base::getOffHand() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getOffHand"));
-
-  return myOffHand;
-}
-
-enum RPG_Common_Size
-RPG_Player_Player_Base::getSize() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getSize"));
-
-  return mySize;
-}
-
-unsigned char
-RPG_Player_Player_Base::getLevel(const RPG_Common_SubClass& subClass_in) const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getLevel"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::getLevel"));
 
   // *TODO*: implement class-specific tables
-  ACE_UNUSED_ARG(subClass_in);
+  ACE_UNUSED_ARG (subClass_in);
 
   unsigned char result = 0;
 
   result =
-      static_cast<unsigned char>(ACE_OS::floor((1.0 +
-                                                ::sqrt(static_cast<double>(myExperience / 125) + 1.0)) / 2.0));
+      static_cast<ACE_UINT8> (ACE_OS::floor ((1.0 +
+                                             ::sqrt (static_cast<double> (myExperience / 125) + 1.0)) / 2.0));
 
   return result;
 }

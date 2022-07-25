@@ -2048,7 +2048,7 @@ RPG_Magic_Common_Tools::hasArcaneCasterClass (const RPG_Character_Class& class_i
   return false;
 }
 
-unsigned int
+unsigned short
 RPG_Magic_Common_Tools::getNumKnownSpells (enum RPG_Common_SubClass subClass_in,
                                            RPG_Character_Level_t classLevel_in,
                                            ACE_UINT8 spellLevel_in)
@@ -2056,8 +2056,8 @@ RPG_Magic_Common_Tools::getNumKnownSpells (enum RPG_Common_SubClass subClass_in,
   RPG_TRACE (ACE_TEXT ("RPG_Magic_Common_Tools::getNumKnownSpells"));
 
   // sanity check(s)
-  ACE_ASSERT(classLevel_in <= RPG_COMMON_MAX_CLASS_LEVEL);
-  if (!RPG_Magic_Common_Tools::isCasterClass(subClass_in))
+  ACE_ASSERT (classLevel_in <= RPG_COMMON_MAX_CLASS_LEVEL);
+  if (!RPG_Magic_Common_Tools::isCasterClass (subClass_in))
     return 0;
 
   switch (subClass_in)
@@ -2065,46 +2065,44 @@ RPG_Magic_Common_Tools::getNumKnownSpells (enum RPG_Common_SubClass subClass_in,
     case SUBCLASS_BARD:
     case SUBCLASS_SORCERER:
     { // sanity check(s)
-      ACE_ASSERT(spellLevel_in <= RPG_COMMON_MAX_SPELL_LEVEL);
+      ACE_ASSERT (spellLevel_in <= RPG_COMMON_MAX_SPELL_LEVEL);
 
-      RPG_Magic_ClassLevelSpellLevelPair_t levelPair = std::make_pair(classLevel_in, spellLevel_in);
-      RPG_Magic_SubClassLevelPair_t combination = std::make_pair(subClass_in, levelPair);
+      RPG_Magic_ClassLevelSpellLevelPair_t levelPair =
+          std::make_pair (classLevel_in, spellLevel_in);
+      RPG_Magic_SubClassLevelPair_t combination =
+          std::make_pair (subClass_in, levelPair);
+      RPG_Magic_NumSpellsTableIterator_t iterator =
+          myNumSpellsKnownTable.find (combination);
 
-      RPG_Magic_NumSpellsTableIterator_t iterator = myNumSpellsKnownTable.find(combination);
-
-      return ((iterator != myNumSpellsKnownTable.end()) ? iterator->second
-                                                        : 0);
+      return ((iterator != myNumSpellsKnownTable.end ()) ? iterator->second
+                                                         : 0);
     }
     case SUBCLASS_WIZARD:
-      break;
     default:
-      return std::numeric_limits<unsigned int>::max(); // ALL
+      return std::numeric_limits<unsigned short>::max (); // ALL
   } // end SWITCH
-
-  // sanity check(s)
-  ACE_UNUSED_ARG(spellLevel_in);
 
   return (RPG_MAGIC_DEF_NUM_NEW_SPELLS_PER_LEVEL * classLevel_in);
 }
 
 unsigned int
-RPG_Magic_Common_Tools::getNumSpells(enum RPG_Common_SubClass subClass_in,
-                                     RPG_Character_Level_t classLevel_in,
-                                     ACE_UINT8 spellLevel_in)
+RPG_Magic_Common_Tools::getNumSpells (enum RPG_Common_SubClass subClass_in,
+                                      RPG_Character_Level_t classLevel_in,
+                                      ACE_UINT8 spellLevel_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Magic_Common_Tools::getNumSpells"));
 
   // sanity check(s)
-  ACE_ASSERT(classLevel_in <= RPG_COMMON_MAX_CLASS_LEVEL);
-  if (!RPG_Magic_Common_Tools::isCasterClass(subClass_in))
+  ACE_ASSERT (classLevel_in <= RPG_COMMON_MAX_CLASS_LEVEL);
+  if (!RPG_Magic_Common_Tools::isCasterClass (subClass_in))
     return 0;
 
   unsigned int result = 0;
   RPG_Magic_NumSpellsTableIterator_t iterator;
-  if (spellLevel_in == std::numeric_limits<unsigned char>::max())
+  if (spellLevel_in == std::numeric_limits<unsigned char>::max ())
   {
-    for (iterator = myNumSpellsTable.begin();
-         iterator != myNumSpellsTable.end();
+    for (iterator = myNumSpellsTable.begin ();
+         iterator != myNumSpellsTable.end ();
          iterator++)
       if (((*iterator).first.first == subClass_in) &&
           ((*iterator).first.second.first <= classLevel_in) &&
@@ -2113,10 +2111,12 @@ RPG_Magic_Common_Tools::getNumSpells(enum RPG_Common_SubClass subClass_in,
   } // end IF
   else
   {
-    RPG_Magic_ClassLevelSpellLevelPair_t levelPair = std::make_pair(classLevel_in, spellLevel_in);
-    RPG_Magic_SubClassLevelPair_t combination = std::make_pair(subClass_in, levelPair);
-    iterator = myNumSpellsTable.find(combination);
-    if (iterator != myNumSpellsTable.end())
+    RPG_Magic_ClassLevelSpellLevelPair_t levelPair =
+        std::make_pair (classLevel_in, spellLevel_in);
+    RPG_Magic_SubClassLevelPair_t combination =
+        std::make_pair (subClass_in, levelPair);
+    iterator = myNumSpellsTable.find (combination);
+    if (iterator != myNumSpellsTable.end ())
       result = (*iterator).second;
   } // end ELSE
 

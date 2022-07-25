@@ -1423,38 +1423,37 @@ RPG_Character_Skills_Common_Tools::initializeClassSkillsTable()
              ACE_TEXT("RPG_Character_Skills_Common_Tools: initialized class skill table...\n")));
 }
 
-const bool
-RPG_Character_Skills_Common_Tools::isClassSkill(const RPG_Common_SubClass& subClass_in,
-                                                const RPG_Common_Skill& skill_in)
+bool
+RPG_Character_Skills_Common_Tools::isClassSkill (enum RPG_Common_SubClass subClass_in,
+                                                 enum RPG_Common_Skill skill_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::isClassSkill"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::isClassSkill"));
 
-  RPG_Character_ClassSkillsTableIterator_t iterator = myClassSkillsTable.find(subClass_in);
-  if (iterator == myClassSkillsTable.end())
+  RPG_Character_ClassSkillsTableIterator_t iterator =
+      myClassSkillsTable.find (subClass_in);
+  if (iterator == myClassSkillsTable.end ())
   {
-    // debug info
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("isClassSkill(\"%s\", \"%s\"): missing table for subclass, aborting\n"),
-               RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str(),
-               RPG_Common_SkillHelper::RPG_Common_SkillToString(skill_in).c_str()));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("isClassSkill(\"%s\", \"%s\"): missing table for subclass, aborting\n"),
+                ACE_TEXT (RPG_Common_SubClassHelper::RPG_Common_SubClassToString (subClass_in).c_str ()),
+                ACE_TEXT (RPG_Common_SkillHelper::RPG_Common_SkillToString (skill_in).c_str ())));
     return false;
   } // end IF
 
-  return (iterator->second.find(skill_in) != iterator->second.end());
+  return (iterator->second.find (skill_in) != iterator->second.end ());
 }
 
-const unsigned int
-RPG_Character_Skills_Common_Tools::getSkillPoints(const RPG_Common_SubClass& subClass_in,
-                                                  const short int& INTModifier_in,
-                                                  unsigned int& initialPoints_out)
+unsigned int
+RPG_Character_Skills_Common_Tools::getSkillPoints (enum RPG_Common_SubClass subClass_in,
+                                                   short INTModifier_in,
+                                                   unsigned int& initialPoints_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::getSkillPoints"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::getSkillPoints"));
 
   // init defaults
   initialPoints_out = 0;
 
-  short int baseValue = INTModifier_in;
+  short baseValue = INTModifier_in;
   switch (subClass_in)
   {
     case SUBCLASS_FIGHTER:
@@ -1509,19 +1508,19 @@ RPG_Character_Skills_Common_Tools::getSkillPoints(const RPG_Common_SubClass& sub
   return ((baseValue > 1) ? baseValue : 1);
 }
 
-const unsigned int
-RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const RPG_Character_Race& race_in,
-                                                        const RPG_Common_SubClass& subClass_in,
-                                                        const unsigned char& currentLevel_in,
-                                                        RPG_Character_Feats_t& baseFeats_out,
-                                                        unsigned int& numInitialFeats_out,
-                                                        RPG_Character_Abilities_t& baseAbilities_out)
+unsigned int
+RPG_Character_Skills_Common_Tools::getNumFeatsAbilities (const RPG_Character_Race& race_in,
+                                                         enum RPG_Common_SubClass subClass_in,
+                                                         ACE_UINT8 currentLevel_in,
+                                                         RPG_Character_Feats_t& baseFeats_out,
+                                                         unsigned int& numInitialFeats_out,
+                                                         RPG_Character_Abilities_t& baseAbilities_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::getNumFeatsAbilities"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::getNumFeatsAbilities"));
 
   // init defaults
-  baseFeats_out.clear();
-  baseAbilities_out.clear();
+  baseFeats_out.clear ();
+  baseAbilities_out.clear ();
   // everybody starts with one feat
   numInitialFeats_out = 1;
   // everybody gets one new feat per level
@@ -1531,13 +1530,13 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const RPG_Character_Race
   {
     case SUBCLASS_FIGHTER:
     {
-      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
-      baseFeats_out.insert(FEAT_PROFICIENCY_MARTIAL_WEAPONS);
-      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_LIGHT);
-      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_MEDIUM);
-      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_HEAVY);
-      baseFeats_out.insert(FEAT_PROFICIENCY_SHIELD);
-      baseFeats_out.insert(FEAT_PROFICIENCY_TOWER_SHIELD);
+      baseFeats_out.insert (FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+      baseFeats_out.insert (FEAT_PROFICIENCY_MARTIAL_WEAPONS);
+      baseFeats_out.insert (FEAT_PROFICIENCY_ARMOR_LIGHT);
+      baseFeats_out.insert (FEAT_PROFICIENCY_ARMOR_MEDIUM);
+      baseFeats_out.insert (FEAT_PROFICIENCY_ARMOR_HEAVY);
+      baseFeats_out.insert (FEAT_PROFICIENCY_SHIELD);
+      baseFeats_out.insert (FEAT_PROFICIENCY_TOWER_SHIELD);
 
       // fighters get a bonus (combat-oriented) feat at levels 1, 2, 4, 6, 8, 10, ...
       if (currentLevel_in == 1)
@@ -1554,24 +1553,24 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const RPG_Character_Race
     case SUBCLASS_PALADIN:
 //     case SUBCLASS_WARLORD:
     {
-      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
-      baseFeats_out.insert(FEAT_PROFICIENCY_MARTIAL_WEAPONS);
-      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_LIGHT);
-      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_MEDIUM);
-      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_HEAVY);
-      baseFeats_out.insert(FEAT_PROFICIENCY_SHIELD);
+      baseFeats_out.insert (FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+      baseFeats_out.insert (FEAT_PROFICIENCY_MARTIAL_WEAPONS);
+      baseFeats_out.insert (FEAT_PROFICIENCY_ARMOR_LIGHT);
+      baseFeats_out.insert (FEAT_PROFICIENCY_ARMOR_MEDIUM);
+      baseFeats_out.insert (FEAT_PROFICIENCY_ARMOR_HEAVY);
+      baseFeats_out.insert (FEAT_PROFICIENCY_SHIELD);
 
-      baseAbilities_out.insert(ABILITY_SPELLS);
+      baseAbilities_out.insert (ABILITY_SPELLS);
 
       break;
     }
     case SUBCLASS_WIZARD:
     {
       // TODO: proficient with dagger, club, crossbow (heavy, light) and quarterstaff ONLY
-      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
-      baseFeats_out.insert(FEAT_SCRIBE_SCROLL);
+      baseFeats_out.insert (FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+      baseFeats_out.insert (FEAT_SCRIBE_SCROLL);
 
-      baseAbilities_out.insert(ABILITY_SPELLS);
+      baseAbilities_out.insert (ABILITY_SPELLS);
 
       // wizards get a bonus (magic-oriented) feat at levels 5, 10, 15, 20, ...
       if ((currentLevel_in % 5) == 0)
@@ -1584,9 +1583,9 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const RPG_Character_Race
     case SUBCLASS_SORCERER:
 //     case SUBCLASS_WARLOCK:
     {
-      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+      baseFeats_out.insert (FEAT_PROFICIENCY_SIMPLE_WEAPONS);
 
-      baseAbilities_out.insert(ABILITY_SPELLS);
+      baseAbilities_out.insert (ABILITY_SPELLS);
 
       break;
     }
@@ -1850,10 +1849,10 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities(const RPG_Character_Race
   return numFeats;
 }
 
-const std::string
-RPG_Character_Skills_Common_Tools::toString(const RPG_Character_Skills_t& skills_in)
+std::string
+RPG_Character_Skills_Common_Tools::toString (const RPG_Character_Skills_t& skills_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::skillsToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::skillsToString"));
 
   std::string result;
 
@@ -1874,10 +1873,10 @@ RPG_Character_Skills_Common_Tools::toString(const RPG_Character_Skills_t& skills
   return result;
 }
 
-const std::string
-RPG_Character_Skills_Common_Tools::toString(const RPG_Character_Feats_t& feats_in)
+std::string
+RPG_Character_Skills_Common_Tools::toString (const RPG_Character_Feats_t& feats_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::featsToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::featsToString"));
 
   std::string result;
 
@@ -1892,8 +1891,8 @@ RPG_Character_Skills_Common_Tools::toString(const RPG_Character_Feats_t& feats_i
   return result;
 }
 
-const std::string
-RPG_Character_Skills_Common_Tools::toString(const RPG_Character_Abilities_t& abilities_in)
+std::string
+RPG_Character_Skills_Common_Tools::toString (const RPG_Character_Abilities_t& abilities_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::abilitiesToString"));
 
@@ -1910,24 +1909,23 @@ RPG_Character_Skills_Common_Tools::toString(const RPG_Character_Abilities_t& abi
   return result;
 }
 
-const bool
-RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites (const RPG_Character_Feat& feat_in,
-                                                           const RPG_Common_SubClass& subClass_in,
-                                                           const unsigned char& currentLevel_in,
+bool
+RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites (enum RPG_Character_Feat feat_in,
+                                                           enum RPG_Common_SubClass subClass_in,
+                                                           ACE_UINT8 currentLevel_in,
                                                            const RPG_Character_Attributes& attributes_in,
                                                            const RPG_Character_Skills_t& skills_in,
                                                            const RPG_Character_Feats_t& feats_in,
                                                            const RPG_Character_Abilities_t& abilities_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites"));
 
   // debug info
-  if (RPG_Character_FeatHelper::RPG_Character_FeatToString(feat_in) == ACE_TEXT_ALWAYS_CHAR("RPG_CHARACTER_FEAT_INVALID"))
+  if (RPG_Character_FeatHelper::RPG_Character_FeatToString (feat_in) == ACE_TEXT_ALWAYS_CHAR ("RPG_CHARACTER_FEAT_INVALID"))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid feat: %d, aborting\n"),
-               feat_in));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("invalid feat: %d, aborting\n"),
+                feat_in));
     return false;
   } // end IF
 

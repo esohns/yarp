@@ -397,10 +397,51 @@ update_levelup (const struct RPG_Client_GTK_CBData& data_in)
       continue;
     gtk_list_store_append (list_store_p, &tree_iter);
     gtk_list_store_set (list_store_p, &tree_iter,
-                        0, ACE_TEXT (RPG_Character_FeatHelper::RPG_Character_FeatToString (static_cast<enum RPG_Character_Feat> (i)).c_str ()), // column 0
+                        0, ACE_TEXT (RPG_Common_Tools::enumToString (RPG_Character_FeatHelper::RPG_Character_FeatToString (static_cast<enum RPG_Character_Feat> (i))).c_str ()), // column 0
                         1, i,
                         -1);
   } // end FOR
+
+  label_p =
+      GTK_LABEL (gtk_builder_get_object ((*iterator).second.second,
+                                       ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_LABEL_FEATSREMAINING_NAME)));
+  ACE_ASSERT (label_p);
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
+  converter << static_cast<unsigned int> (player->getFeatsPerLevel (data_in.subClass));
+  gtk_label_set_text (label_p,
+                      converter.str ().c_str ());
+
+  // step4: populate list of (new) skills
+  list_store_p =
+      GTK_LIST_STORE (gtk_builder_get_object ((*iterator).second.second,
+                                              ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_LISTSTORE_SKILLS_NAME)));
+  ACE_ASSERT (list_store_p);
+  gtk_list_store_clear (list_store_p);
+  const RPG_Character_Skills_t& skills_a = player->getSkills ();
+  for (int i = SKILL_APPRAISE;
+       i < RPG_COMMON_SKILL_MAX;
+       ++i)
+  {
+    if (skills_a.find (static_cast<enum RPG_Common_Skill> (i)) != skills_a.end ())
+      continue;
+    gtk_list_store_append (list_store_p, &tree_iter);
+    gtk_list_store_set (list_store_p, &tree_iter,
+                        0, ACE_TEXT (RPG_Common_Tools::enumToString (RPG_Common_SkillHelper::RPG_Common_SkillToString (static_cast<enum RPG_Common_Skill> (i))).c_str ()), // column 0
+                        1, i,
+                        2, 0,
+                        -1);
+  } // end FOR
+
+  label_p =
+      GTK_LABEL (gtk_builder_get_object ((*iterator).second.second,
+                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_LABEL_SKILLSREMAINING_NAME)));
+  ACE_ASSERT (label_p);
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
+  converter << static_cast<unsigned int> (player->getSkillsPerLevel (data_in.subClass));
+  gtk_label_set_text (label_p,
+                      converter.str ().c_str ());
 
   // step5: populate list of (new) (known) spells
   list_store_p =
@@ -417,10 +458,32 @@ update_levelup (const struct RPG_Client_GTK_CBData& data_in)
       continue;
     gtk_list_store_append (list_store_p, &tree_iter);
     gtk_list_store_set (list_store_p, &tree_iter,
-                        0, ACE_TEXT (RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString (static_cast<enum RPG_Magic_SpellType> (i)).c_str ()), // column 0
+                        0, ACE_TEXT (RPG_Common_Tools::enumToString (RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString (static_cast<enum RPG_Magic_SpellType> (i))).c_str ()), // column 0
                         1, i,
                         -1);
   } // end FOR
+
+  label_p =
+      GTK_LABEL (gtk_builder_get_object ((*iterator).second.second,
+                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_LABEL_SPELLSREMAINING_NAME)));
+  ACE_ASSERT (label_p);
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
+  unsigned short number_of_known_spells_i = 0;
+  for (ACE_UINT8 i = 0;
+       i < RPG_COMMON_MAX_SPELL_LEVEL;
+       ++i)
+  {
+    unsigned short number_of_spells_per_level_i =
+        player->getKnownSpellsPerLevel (data_in.subClass,
+                                        i);
+    number_of_known_spells_i +=
+        (std::numeric_limits<unsigned short>::max () == number_of_spells_per_level_i ? 0
+                                                                                     : number_of_spells_per_level_i);
+  } // end FOR
+  converter << number_of_known_spells_i;
+  gtk_label_set_text (label_p,
+                      converter.str ().c_str ());
 }
 
 void
@@ -2267,6 +2330,38 @@ idle_initialize_UI_cb (gpointer userData_in)
                                                NULL);
   gtk_tree_selection_set_mode (gtk_tree_view_get_selection (tree_view),
                                GTK_SELECTION_MULTIPLE);
+  GtkTreeSelection* tree_selection_p = gtk_tree_view_get_selection (tree_view);
+  ACE_ASSERT (tree_selection_p);
+  g_signal_connect (G_OBJECT (tree_selection_p),
+                    ACE_TEXT_ALWAYS_CHAR ("changed"),
+                    G_CALLBACK (treeview_feats_selection_changed_cb),
+                    userData_in);
+
+  tree_view =
+      GTK_TREE_VIEW (gtk_builder_get_object ((*iterator).second.second,
+                                             ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_TREEVIEW_SKILLS_NAME)));
+  ACE_ASSERT (tree_view);
+  renderer = gtk_cell_renderer_text_new ();
+  gtk_tree_view_insert_column_with_attributes (tree_view,
+                                               0,
+                                               ACE_TEXT_ALWAYS_CHAR ("Text"),
+                                               renderer,
+                                               ACE_TEXT_ALWAYS_CHAR ("text"), 0,
+//                                               ACE_TEXT_ALWAYS_CHAR ("value2"), 1,
+                                               NULL);
+  renderer = gtk_cell_renderer_text_new ();
+  gtk_tree_view_insert_column_with_attributes (tree_view,
+                                               1,
+                                               ACE_TEXT_ALWAYS_CHAR ("Value"),
+                                               renderer,
+                                               ACE_TEXT_ALWAYS_CHAR ("value2"), 0,
+                                               NULL);
+  tree_selection_p = gtk_tree_view_get_selection (tree_view);
+  ACE_ASSERT (tree_selection_p);
+  g_signal_connect (G_OBJECT (tree_selection_p),
+                   ACE_TEXT_ALWAYS_CHAR ("changed"),
+                   G_CALLBACK (treeview_skills_selection_changed_cb),
+                   userData_in);
 
   tree_view =
       GTK_TREE_VIEW (gtk_builder_get_object ((*iterator).second.second,
@@ -2282,6 +2377,12 @@ idle_initialize_UI_cb (gpointer userData_in)
                                                NULL);
   gtk_tree_selection_set_mode (gtk_tree_view_get_selection (tree_view),
                                GTK_SELECTION_MULTIPLE);
+  tree_selection_p = gtk_tree_view_get_selection (tree_view);
+  ACE_ASSERT (tree_selection_p);
+  g_signal_connect (G_OBJECT (tree_selection_p),
+                   ACE_TEXT_ALWAYS_CHAR ("changed"),
+                   G_CALLBACK (treeview_spells_selection_changed_cb),
+                   userData_in);
 
  // step4: (auto-)connect signals/slots
  // *NOTE*: glade_xml_signal_autoconnect doesn't work reliably
@@ -2310,8 +2411,8 @@ idle_initialize_UI_cb (gpointer userData_in)
   g_signal_connect (main_dialog,
                     ACE_TEXT_ALWAYS_CHAR ("destroy"),
                     G_CALLBACK (quit_clicked_GTK_cb),
-                    //                    G_CALLBACK(gtk_widget_destroyed),
-                    //                    &main_dialog,
+//                    G_CALLBACK(gtk_widget_destroyed),
+//                    &main_dialog,
                     userData_in);
 
   // step4b: connect custom signals
@@ -4270,115 +4371,130 @@ hitdice_button_clicked_cb (GtkButton* button_in,
                       converter.str ().c_str ());
 }
 
-//void
-//spinbutton_attribute_change_value_cb (GtkSpinButton* spinButton_in,
-//                                      GtkScrollType scrollType_in,
+void
+treeview_feats_selection_changed_cb (GtkTreeSelection* selection_in,
+                                     gpointer userData_in)
+{
+  RPG_TRACE (ACE_TEXT ("::treeview_feats_selection_changed_cb"));
+
+  // sanity check(s)
+  struct RPG_Client_GTK_CBData* data_p =
+      static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
+  ACE_ASSERT (data_p);
+  ACE_ASSERT (data_p->entity.character);
+  ACE_ASSERT (data_p->entity.character->isPlayerCharacter ());
+  RPG_Player* player = static_cast<RPG_Player*> (data_p->entity.character);
+  ACE_ASSERT (player);
+  ACE_ASSERT (data_p->UIState);
+  Common_UI_GTK_BuildersConstIterator_t iterator =
+      data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
+  ACE_ASSERT (iterator != data_p->UIState->builders.end ());
+
+  gint selected_rows_i = gtk_tree_selection_count_selected_rows (selection_in);
+  GtkLabel* label_p =
+      GTK_LABEL (gtk_builder_get_object ((*iterator).second.second,
+                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_LABEL_FEATSREMAINING_NAME)));
+  ACE_ASSERT (label_p);
+  std::ostringstream converter;
+  converter << player->getFeatsPerLevel (data_p->subClass) - selected_rows_i;
+  gtk_label_set_text (label_p,
+                      converter.str ().c_str ());
+}
+
+//gboolean
+//treeview_feats_button_press_event_cb (GtkWidget* widget_in,
+//                                      GdkEventButton* event_in,
 //                                      gpointer userData_in)
 //{
-//  RPG_TRACE (ACE_TEXT ("::spinbutton_attribute_change_value_cb"));
+//  RPG_TRACE (ACE_TEXT ("::treeview_feats_button_press_event_cb"));
+
+//  ACE_UNUSED_ARG (widget_in);
 
 //  // sanity check(s)
-//  if (setting_up_levelup_attributes)
-//    return;
 //  struct RPG_Client_GTK_CBData* data_p =
 //      static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
 //  ACE_ASSERT (data_p);
 //  ACE_ASSERT (data_p->UIState);
-//  ACE_ASSERT (data_p->entity.character);
-//  ACE_ASSERT (data_p->entity.character->isPlayerCharacter ());
-//  RPG_Player* player = static_cast<RPG_Player*> (data_p->entity.character);
-//  ACE_ASSERT (player);
 //  Common_UI_GTK_BuildersConstIterator_t iterator =
 //      data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
 //  ACE_ASSERT (iterator != data_p->UIState->builders.end ());
-
-//  // test: which attribute changed ?
-//  enum RPG_Common_Attribute attribute_e = RPG_COMMON_ATTRIBUTE_INVALID;
-//  if (!ACE_OS::strcmp (gtk_buildable_get_name (GTK_BUILDABLE (spinButton_in)),
-//                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_SPINBUTTON_STRENGTH_NAME)))
-//    attribute_e = ATTRIBUTE_STRENGTH;
-//  else if (!ACE_OS::strcmp (gtk_buildable_get_name (GTK_BUILDABLE (spinButton_in)),
-//                           ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_SPINBUTTON_DEXTERITY_NAME)))
-//    attribute_e = ATTRIBUTE_DEXTERITY;
-//  else if (!ACE_OS::strcmp (gtk_buildable_get_name (GTK_BUILDABLE (spinButton_in)),
-//                           ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_SPINBUTTON_CONSTITUTION_NAME)))
-//    attribute_e = ATTRIBUTE_CONSTITUTION;
-//  else if (!ACE_OS::strcmp (gtk_buildable_get_name (GTK_BUILDABLE (spinButton_in)),
-//                           ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_SPINBUTTON_INTELLIGENCE_NAME)))
-//    attribute_e = ATTRIBUTE_INTELLIGENCE;
-//  else if (!ACE_OS::strcmp (gtk_buildable_get_name (GTK_BUILDABLE (spinButton_in)),
-//                           ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_SPINBUTTON_WISDOM_NAME)))
-//    attribute_e = ATTRIBUTE_WISDOM;
-//  else if (!ACE_OS::strcmp (gtk_buildable_get_name (GTK_BUILDABLE (spinButton_in)),
-//                           ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_SPINBUTTON_CHARISMA_NAME)))
-//    attribute_e = ATTRIBUTE_CHARISMA;
-//  else
-//    ACE_ASSERT (false);
-//  gint value_i = gtk_spin_button_get_value_as_int (spinButton_in);
-//  gint value_2 = player->getAttribute (attribute_e);
-
-//  // test: value went up / down ?
-//  GtkLabel* label_p =
-//      GTK_LABEL (gtk_builder_get_object ((*iterator).second.second,
-//                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_LABEL_POINTSREMAINING_NAME)));
-//  ACE_ASSERT (label_p);
-//  std::stringstream converter;
-//  converter.str (gtk_label_get_text (label_p));
-//  unsigned int points_remaining_i = 0;
-//  converter >> points_remaining_i;
-
-//  GtkScrollType scroll_type_e = GTK_SCROLL_NONE;
-//  switch (scrollType_in)
-//  {
-//    case GTK_SCROLL_STEP_BACKWARD:
-//    case GTK_SCROLL_STEP_DOWN:
-//    case GTK_SCROLL_STEP_LEFT:
-//    {
-//      if (!points_remaining_i ||
-//          (value_i == value_2))
-//      {
-//        scroll_type_e = GTK_SCROLL_STEP_FORWARD;
-//        goto reset;
-//      } // end IF
-
-//      ++points_remaining_i;
-
-//      break;
-//    }
-//    case GTK_SCROLL_STEP_FORWARD:
-//    case GTK_SCROLL_STEP_UP:
-//    case GTK_SCROLL_STEP_RIGHT:
-//    {
-//      if (!points_remaining_i ||
-//          (value_i > RPG_PLAYER_ATTRIBUTE_MAXIMUM))
-//      {
-//        scroll_type_e = GTK_SCROLL_STEP_BACKWARD;
-//        goto reset;
-//      } // end IF
-
-//      --points_remaining_i;
-
-//      break;
-//    }
-//    default:
-//      break;
-//  } // end SWITCH
-
-//  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
-//  converter.clear ();
-//  converter << points_remaining_i;
-//  gtk_label_set_text (label_p,
-//                      converter.str ().c_str ());
-
-//  return;
-
-//reset:
-//  // cannot go below current value | higher than RPG_PLAYER_ATTRIBUTE_MAXIMUM
-//  g_signal_emit_by_name (G_OBJECT (spinButton_in),
-//                         ACE_TEXT_ALWAYS_CHAR ("change-value"),
-//                         scroll_type_e,
-//                         userData_in);
+//  GtkTreeView* tree_view_p =
+//      GTK_TREE_VIEW (gtk_builder_get_object ((*iterator).second.second,
+//                                             ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_TREEVIEW_FEATS_NAME)));
+//  ACE_ASSERT (tree_view_p);
 //}
+
+void
+treeview_skills_selection_changed_cb (GtkTreeSelection* selection_in,
+                                      gpointer userData_in)
+{
+  RPG_TRACE (ACE_TEXT ("::treeview_skills_selection_changed_cb"));
+
+  // sanity check(s)
+  struct RPG_Client_GTK_CBData* data_p =
+      static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
+  ACE_ASSERT (data_p);
+  ACE_ASSERT (data_p->entity.character);
+  ACE_ASSERT (data_p->entity.character->isPlayerCharacter ());
+  RPG_Player* player = static_cast<RPG_Player*> (data_p->entity.character);
+  ACE_ASSERT (player);
+  ACE_ASSERT (data_p->UIState);
+  Common_UI_GTK_BuildersConstIterator_t iterator =
+      data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
+  ACE_ASSERT (iterator != data_p->UIState->builders.end ());
+
+  gint selected_rows_i = gtk_tree_selection_count_selected_rows (selection_in);
+  GtkLabel* label_p =
+      GTK_LABEL (gtk_builder_get_object ((*iterator).second.second,
+                                       ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_LABEL_SKILLSREMAINING_NAME)));
+  ACE_ASSERT (label_p);
+  std::ostringstream converter;
+  converter << player->getSkillsPerLevel (data_p->subClass) - selected_rows_i;
+  gtk_label_set_text (label_p,
+                      converter.str ().c_str ());
+}
+
+void
+treeview_spells_selection_changed_cb (GtkTreeSelection* selection_in,
+                                     gpointer userData_in)
+{
+  RPG_TRACE (ACE_TEXT ("::treeview_spells_selection_changed_cb"));
+
+  // sanity check(s)
+  struct RPG_Client_GTK_CBData* data_p =
+      static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
+  ACE_ASSERT (data_p);
+  ACE_ASSERT (data_p->entity.character);
+  ACE_ASSERT (data_p->entity.character->isPlayerCharacter ());
+  RPG_Player* player = static_cast<RPG_Player*> (data_p->entity.character);
+  ACE_ASSERT (player);
+  ACE_ASSERT (data_p->UIState);
+  Common_UI_GTK_BuildersConstIterator_t iterator =
+      data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
+  ACE_ASSERT (iterator != data_p->UIState->builders.end ());
+
+  gint selected_rows_i = gtk_tree_selection_count_selected_rows (selection_in);
+  GtkLabel* label_p =
+      GTK_LABEL (gtk_builder_get_object ((*iterator).second.second,
+                                       ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_LABEL_SPELLSREMAINING_NAME)));
+  ACE_ASSERT (label_p);
+  std::ostringstream converter;
+  unsigned short number_of_known_spells_i = 0;
+  for (ACE_UINT8 i = 0;
+       i < RPG_COMMON_MAX_SPELL_LEVEL;
+       ++i)
+  {
+    unsigned short number_of_spells_per_level_i =
+        player->getKnownSpellsPerLevel (data_p->subClass,
+                                        i);
+    number_of_known_spells_i +=
+        (std::numeric_limits<unsigned short>::max () == number_of_spells_per_level_i ? 0
+                                                                                     : number_of_spells_per_level_i);
+  } // end FOR
+  converter << number_of_known_spells_i - selected_rows_i;
+  gtk_label_set_text (label_p,
+                      converter.str ().c_str ());
+}
 
 void
 spinbutton_attribute_value_changed_cb (GtkSpinButton* spinButton_in,
