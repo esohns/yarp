@@ -77,8 +77,9 @@
 
 // global variables
 bool untoggling_server_join_button = false;
-//bool setting_up_levelup_attributes = false;
+// bool setting_up_levelup_attributes = false;
 struct RPG_Dice_Roll current_dice_roll;
+std::string current_path;
 
 void
 update_equipment (const struct RPG_Client_GTK_CBData& data_in)
@@ -2330,10 +2331,10 @@ idle_initialize_UI_cb (gpointer userData_in)
                                                ACE_TEXT_ALWAYS_CHAR ("text"), 0,
 //                                               ACE_TEXT_ALWAYS_CHAR ("value"), 1,
                                                NULL);
-  gtk_tree_selection_set_mode (gtk_tree_view_get_selection (tree_view),
-                               GTK_SELECTION_MULTIPLE);
   GtkTreeSelection* tree_selection_p = gtk_tree_view_get_selection (tree_view);
   ACE_ASSERT (tree_selection_p);
+  gtk_tree_selection_set_mode (tree_selection_p,
+                               GTK_SELECTION_MULTIPLE);
   g_signal_connect (G_OBJECT (tree_selection_p),
                     ACE_TEXT_ALWAYS_CHAR ("changed"),
                     G_CALLBACK (treeview_feats_selection_changed_cb),
@@ -2345,25 +2346,37 @@ idle_initialize_UI_cb (gpointer userData_in)
   ACE_ASSERT (tree_view);
   renderer = gtk_cell_renderer_text_new ();
   gtk_tree_view_insert_column_with_attributes (tree_view,
-                                               0,
+                                               -1,
                                                ACE_TEXT_ALWAYS_CHAR ("Text"),
                                                renderer,
                                                ACE_TEXT_ALWAYS_CHAR ("text"), 0,
-//                                               ACE_TEXT_ALWAYS_CHAR ("value2"), 1,
                                                NULL);
   renderer = gtk_cell_renderer_text_new ();
+  GValue value_s = G_VALUE_INIT;
+  g_value_init (&value_s, G_TYPE_BOOLEAN);
+  g_value_set_boolean (&value_s, TRUE);
+  g_object_set_property (G_OBJECT (renderer),
+                         ACE_TEXT_ALWAYS_CHAR ("editable"),
+                         &value_s);
+  g_value_unset (&value_s);
+  g_signal_connect (G_OBJECT (renderer),
+                    ACE_TEXT_ALWAYS_CHAR ("editing-started"),
+                    G_CALLBACK (cellrenderer_skills_editing_started_cb),
+                    userData_in);
   gtk_tree_view_insert_column_with_attributes (tree_view,
-                                               1,
+                                               -1,
                                                ACE_TEXT_ALWAYS_CHAR ("Value"),
                                                renderer,
-                                               ACE_TEXT_ALWAYS_CHAR ("value2"), 0,
+                                               ACE_TEXT_ALWAYS_CHAR ("text"), 2,
                                                NULL);
   tree_selection_p = gtk_tree_view_get_selection (tree_view);
   ACE_ASSERT (tree_selection_p);
+  gtk_tree_selection_set_mode (tree_selection_p,
+                               GTK_SELECTION_MULTIPLE);
   g_signal_connect (G_OBJECT (tree_selection_p),
-                   ACE_TEXT_ALWAYS_CHAR ("changed"),
-                   G_CALLBACK (treeview_skills_selection_changed_cb),
-                   userData_in);
+                    ACE_TEXT_ALWAYS_CHAR ("changed"),
+                    G_CALLBACK (treeview_skills_selection_changed_cb),
+                    userData_in);
 
   tree_view =
       GTK_TREE_VIEW (gtk_builder_get_object ((*iterator).second.second,
@@ -2377,10 +2390,10 @@ idle_initialize_UI_cb (gpointer userData_in)
                                                ACE_TEXT_ALWAYS_CHAR ("text"), 0,
 //                                               ACE_TEXT_ALWAYS_CHAR ("value"), 1,
                                                NULL);
-  gtk_tree_selection_set_mode (gtk_tree_view_get_selection (tree_view),
-                               GTK_SELECTION_MULTIPLE);
   tree_selection_p = gtk_tree_view_get_selection (tree_view);
   ACE_ASSERT (tree_selection_p);
+  gtk_tree_selection_set_mode (tree_selection_p,
+                               GTK_SELECTION_MULTIPLE);
   g_signal_connect (G_OBJECT (tree_selection_p),
                    ACE_TEXT_ALWAYS_CHAR ("changed"),
                    G_CALLBACK (treeview_spells_selection_changed_cb),
@@ -4444,8 +4457,28 @@ treeview_skills_selection_changed_cb (GtkTreeSelection* selection_in,
   Common_UI_GTK_BuildersConstIterator_t iterator =
       data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
+  GtkListStore* list_store_p =
+      GTK_LIST_STORE (gtk_builder_get_object ((*iterator).second.second,
+                                              ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_LISTSTORE_SKILLS_NAME)));
+  ACE_ASSERT (list_store_p);
 
-  gint selected_rows_i = gtk_tree_selection_count_selected_rows (selection_in);
+  gint selected_rows_i = 0;
+//  selected_rows_i = gtk_tree_selection_count_selected_rows (selection_in);
+  GtkTreeIter tree_iterator;
+  gboolean valid = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (list_store_p),
+                                                  &tree_iterator);
+  while (valid)
+  {
+    gint data_i = 0;
+    gtk_tree_model_get (GTK_TREE_MODEL (list_store_p),
+                        &tree_iterator,
+                        2, &data_i,
+                        -1);
+    selected_rows_i += data_i;
+    valid = gtk_tree_model_iter_next (GTK_TREE_MODEL (list_store_p),
+                                      &tree_iterator);
+  } // end WHILE
+
   GtkLabel* label_p =
       GTK_LABEL (gtk_builder_get_object ((*iterator).second.second,
                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_LABEL_SKILLSREMAINING_NAME)));
@@ -4457,8 +4490,71 @@ treeview_skills_selection_changed_cb (GtkTreeSelection* selection_in,
 }
 
 void
-treeview_spells_selection_changed_cb (GtkTreeSelection* selection_in,
+cellrenderer_skills_editing_started_cb (GtkCellRenderer* renderer_in,
+                                        GtkCellEditable* editable_in,
+                                        char* path_in,
+                                        gpointer userData_in)
+{
+  RPG_TRACE (ACE_TEXT ("::cellrenderer_skills_editing_started_cb"));
+
+  // sanity check(s)
+  ACE_ASSERT (path_in);
+
+  g_signal_connect (G_OBJECT (editable_in),
+                    ACE_TEXT_ALWAYS_CHAR ("editing-done"),
+                    G_CALLBACK (celleditable_skills_editing_done_cb),
+                    userData_in);
+
+  current_path = path_in;
+}
+
+void
+celleditable_skills_editing_done_cb (GtkCellEditable* editable_in,
                                      gpointer userData_in)
+{
+  RPG_TRACE (ACE_TEXT ("::celleditable_skills_editing_done_cb"));
+
+  // sanity check(s)
+  ACE_ASSERT (!current_path.empty ());
+  ACE_ASSERT (GTK_IS_ENTRY (editable_in));
+  struct RPG_Client_GTK_CBData* data_p =
+      static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
+  ACE_ASSERT (data_p);
+  ACE_ASSERT (data_p->UIState);
+  Common_UI_GTK_BuildersConstIterator_t iterator =
+      data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
+  ACE_ASSERT (iterator != data_p->UIState->builders.end ());
+  GtkListStore* list_store_p =
+      GTK_LIST_STORE (gtk_builder_get_object ((*iterator).second.second,
+                                            ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_LISTSTORE_SKILLS_NAME)));
+  ACE_ASSERT (list_store_p);
+
+  GtkTreeIter tree_iterator;
+  if (!gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (list_store_p),
+                                            &tree_iterator,
+                                            current_path.c_str ()))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to gtk_tree_model_get_iter_from_string() (was: \"%s\"), returning\n"),
+                ACE_TEXT (current_path.c_str ())));
+    return;
+  } // end IF
+
+  GtkEntry* entry_p = GTK_ENTRY (editable_in);
+  ACE_ASSERT (entry_p);
+  std::istringstream converter;
+  converter.str (gtk_entry_buffer_get_text (gtk_entry_get_buffer (entry_p)));
+  gint value_i = 0;
+  converter >> value_i;
+  gtk_list_store_set (list_store_p,
+                      &tree_iterator,
+                      2, value_i,
+                      -1);
+}
+
+void
+treeview_spells_selection_changed_cb (GtkTreeSelection* selection_in,
+                                      gpointer userData_in)
 {
   RPG_TRACE (ACE_TEXT ("::treeview_spells_selection_changed_cb"));
 

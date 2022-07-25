@@ -895,6 +895,7 @@
                                 <property name="headers_visible">False</property>
                                 <property name="headers_clickable">False</property>
                                 <property name="fixed_height_mode">True</property>
+                                <signal name="button-press-event" handler="treeview_feats_button_press_event_cb" swapped="no"/>
                               </object>
                             </child>
                           </object>
@@ -986,6 +987,7 @@
                                 <property name="model">liststore_skills</property>
                                 <property name="headers_visible">False</property>
                                 <property name="headers_clickable">False</property>
+                                <property name="show_expanders">False</property>
                               </object>
                             </child>
                           </object>

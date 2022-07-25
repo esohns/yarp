@@ -92,6 +92,8 @@ G_MODULE_EXPORT void spinbutton_attribute_value_changed_cb (GtkSpinButton*, gpoi
 G_MODULE_EXPORT void treeview_feats_selection_changed_cb (GtkTreeSelection*, gpointer);
 //G_MODULE_EXPORT gboolean treeview_feats_button_press_event_cb (GtkWidget*, GdkEventButton*, gpointer);
 G_MODULE_EXPORT void treeview_skills_selection_changed_cb (GtkTreeSelection*, gpointer);
+G_MODULE_EXPORT void cellrenderer_skills_editing_started_cb (GtkCellRenderer*, GtkCellEditable*, char*, gpointer);
+G_MODULE_EXPORT void celleditable_skills_editing_done_cb (GtkCellEditable*, gpointer);
 G_MODULE_EXPORT void treeview_spells_selection_changed_cb (GtkTreeSelection*, gpointer);
 G_MODULE_EXPORT void levelup_dialog_response_cb (GtkDialog*, gint, gpointer);
 //
