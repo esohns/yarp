@@ -49,20 +49,20 @@ enum RPG_Character_Feat_Prerequisite_Type
 
 struct RPG_Character_Feat_Prerequisite
 {
-  RPG_Character_Feat_Prerequisite_Type prerequisiteType;
+  enum RPG_Character_Feat_Prerequisite_Type prerequisiteType;
 
   // *CONSIDER*: use a union ?
-  RPG_Character_Feat requiredOtherFeat;            // if applicable
-  RPG_Common_Attribute attribute;                  // if applicable
-  unsigned char minValue;                          // if applicable
-  RPG_Common_Skill skill;                          // if applicable
+  enum RPG_Character_Feat requiredOtherFeat;       // if applicable
+  enum RPG_Common_Attribute attribute;             // if applicable
+  ACE_UINT8 minValue;                              // if applicable
+  enum RPG_Common_Skill skill;                     // if applicable
   RPG_Character_SubClasses_t restrictedSubClasses; // if applicable
-  RPG_Character_Ability requiredAbility;           // if applicable
+  enum RPG_Character_Ability requiredAbility;      // if applicable
 };
 
 // some useful types
-typedef std::pair<RPG_Common_Skill, char> RPG_Character_SkillsItem_t;
-typedef std::map<RPG_Common_Skill, char> RPG_Character_Skills_t;
+typedef std::pair<RPG_Common_Skill, ACE_INT8> RPG_Character_SkillsItem_t;
+typedef std::map<RPG_Common_Skill, ACE_INT8> RPG_Character_Skills_t;
 // typedef RPG_Character_Skills_t::value_type RPG_Character_SkillsItem_t;
 typedef RPG_Character_Skills_t::iterator RPG_Character_SkillsIterator_t;
 typedef RPG_Character_Skills_t::const_iterator RPG_Character_SkillsConstIterator_t;

@@ -72,6 +72,7 @@ class RPG_Player_Base
 
   // retrieve base attributes
   ACE_UINT8 getAttribute (enum RPG_Common_Attribute) const;
+  inline const struct RPG_Character_Attributes& getAttributes () const { return myAttributes; }
 
   inline const RPG_Character_Feats_t& getFeats () const { return myFeats; }
   inline const RPG_Character_Abilities_t& getAbilities () const { return myAbilities; }
@@ -86,6 +87,7 @@ class RPG_Player_Base
   bool hasCondition (enum RPG_Common_Condition) const; // condition
 
   inline unsigned short getNumTotalHitPoints () const { return myNumTotalHitPoints; }
+  inline void setNumTotalHitPoints (unsigned short numberOfTotalHitPoints_in) { myNumTotalHitPoints = numberOfTotalHitPoints_in; }
   inline short getNumHitPoints () const { return myNumHitPoints; }
 
   inline unsigned int getWealth () const { return myWealth; }
