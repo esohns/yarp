@@ -81,6 +81,7 @@ if (WIN32)
  include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/include)
 endif ()
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/event)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/image)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/parser)
@@ -118,7 +119,7 @@ if (UNIX)
                         X11
                         xerces-c
                         ${ACE_LIBRARY}
-                        Common CommonLog CommonSignal CommonTimer CommonUI_GTK
+                        Common CommonEvent CommonLog CommonSignal CommonTimer CommonUI_GTK
                         ACEStream ACEStream_Miscellaneous ACEStream_Network
                         ACENetwork ACENetwork_Client
                         RPG_Dice RPG_Common RPG_Net RPG_Net_Protocol)
@@ -172,7 +173,7 @@ if (UNIX)
                         X11
                         xerces-c
                         ${ACE_LIBRARY}
-                        Common CommonLog CommonSignal CommonTimer CommonUI_GTK
+                        Common CommonEvent CommonLog CommonSignal CommonTimer CommonUI_GTK
                         ACEStream ACEStream_Miscellaneous ACEStream_Network
                         ACENetwork ACENetwork_Server
                         RPG_Dice RPG_Common RPG_Net RPG_Net_Protocol

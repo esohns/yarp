@@ -154,7 +154,7 @@ Net_Server_SignalHandler::handle (const struct Common_Signal& signal_in)
     //RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
 
     // step4: stop reactor (&& proactor, if applicable)
-    Common_Tools::finalizeEventDispatch (*inherited::configuration_->dispatchState,
-                                         false); // wait ?
+    Common_Event_Tools::finalizeEventDispatch (*inherited::configuration_->dispatchState,
+                                               false); // wait ?
   } // end IF
 }

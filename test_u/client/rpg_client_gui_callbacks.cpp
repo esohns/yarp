@@ -4848,7 +4848,8 @@ levelup_dialog_response_cb (GtkDialog* dialog_in,
     ACE_ASSERT (tree_selection_p);
     list_p = gtk_tree_selection_get_selected_rows (tree_selection_p,
                                                    NULL);
-    ACE_ASSERT (list_p);
+    if (!list_p)
+      goto continue_; // no selection
     list_store_p =
         GTK_LIST_STORE (gtk_builder_get_object ((*iterator).second.second,
                                                 ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_LISTSTORE_SPELLS_NAME)));
@@ -4871,6 +4872,7 @@ levelup_dialog_response_cb (GtkDialog* dialog_in,
     } // end FOR
     g_list_free_full (list_p, (GDestroyNotify)gtk_tree_path_free);
 
+continue_:
     ::update_entity_profile (data_p->entity,
                              (*iterator).second.second);
 

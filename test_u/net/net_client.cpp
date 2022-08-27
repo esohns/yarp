@@ -534,7 +534,7 @@ do_work (unsigned int maxNumConnections_in,
   //	config.lastCollectionTimestamp = ACE_Time_Value::zero;
 
   // step0b: initialize event dispatch
-  if (!Common_Tools::initializeEventDispatch (CBData_in.configuration->dispatch_configuration))
+  if (!Common_Event_Tools::initializeEventDispatch (CBData_in.configuration->dispatch_configuration))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to Common_Tools::initializeEventDispatch(), returning\n")));
@@ -658,7 +658,7 @@ do_work (unsigned int maxNumConnections_in,
   // step4b: initialize worker(s)
   int group_id = -1;
   struct Common_EventDispatchState dispatch_state_s;
-  if (!Common_Tools::startEventDispatch (dispatch_state_s))
+  if (!Common_Event_Tools::startEventDispatch (dispatch_state_s))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to start event dispatch, returning\n")));

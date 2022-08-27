@@ -1803,12 +1803,12 @@ RPG_Client_Window_Level::handleEvent (const SDL_Event& event_in,
         myClient->action (myClientAction);
 
         // step2: invalidate tile highlight background
-        myClientAction.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
-        myClient->action (myClientAction);
+//        myClientAction.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
+//        myClient->action (myClientAction);
         // *NOTE*: this MAY also invalidate the current cursor bg. The cursor
         // gets redrawn anyway later; (safely) assume it to be so...
-        myClientAction.command = COMMAND_CURSOR_INVALIDATE_BG;
-        myClient->action (myClientAction);
+//        myClientAction.command = COMMAND_CURSOR_INVALIDATE_BG;
+//        myClient->action (myClientAction);
 
         enum RPG_Client_SelectionMode current_mode = myClient->mode ();
         switch (current_mode)

@@ -473,9 +473,9 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       {
         // *NOTE*: re-drawing the window will invalidate cursor/hightlight BG...
         client_action.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
-        action(client_action);
+        action (client_action);
         client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
-        action(client_action);
+        action (client_action);
 
         if (getCenterOnActive ())
         {

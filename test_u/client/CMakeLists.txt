@@ -52,6 +52,7 @@ if (SDL_SUPPORT)
 endif (SDL_SUPPORT)
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/event)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/image)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/signal)
@@ -132,7 +133,7 @@ if (UNIX)
 #                        ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES}
                         X11
                         ${ACE_LIBRARY}
-                        Common CommonError CommonLog CommonTimer CommonUI CommonUI_GTK
+                        Common CommonError CommonEvent CommonLog CommonTimer CommonUI CommonUI_GTK
                         ACEStream ACEStream_Network
                         ACENetwork
                         RPG_Chance RPG_Dice RPG_Common

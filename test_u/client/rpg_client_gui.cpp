@@ -1043,7 +1043,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 
   // step5b: setup dispatch of network events
   bool serialize_output = false;
-  if (!Common_Tools::initializeEventDispatch (configuration_in.dispatch_configuration))
+  if (!Common_Event_Tools::initializeEventDispatch (configuration_in.dispatch_configuration))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to initialize network event dispatch, returning\n")));
@@ -1072,7 +1072,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
                                                                       : NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS);
   struct Common_EventDispatchState dispatch_state_s;
   dispatch_state_s.configuration = &dispatch_configuration;
-  if (!Common_Tools::startEventDispatch (dispatch_state_s))
+  if (!Common_Event_Tools::startEventDispatch (dispatch_state_s))
   {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("failed to start network event dispatch, returning\n")));
@@ -1113,8 +1113,8 @@ do_work (struct RPG_Client_Configuration& configuration_in,
     RPG_Engine_Common_Tools::finalize ();
     RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abort ();
     RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->wait ();
-    Common_Tools::finalizeEventDispatch (dispatch_state_s,
-                                         false);
+    Common_Event_Tools::finalizeEventDispatch (dispatch_state_s,
+                                               false);
     return;
   } // end IF
 
@@ -1514,8 +1514,8 @@ continue_:;
 
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abort ();
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->wait ();
-  Common_Tools::finalizeEventDispatch (dispatch_state_s,
-                                       false);
+  Common_Event_Tools::finalizeEventDispatch (dispatch_state_s,
+                                             true); // wait for completion ?
   // no more data will arrive from here on...
 
   ACE_DEBUG ((LM_DEBUG,
@@ -2371,36 +2371,36 @@ ACE_TMAIN (int argc_in,
     Common_Timer_Tools::periodToString (user_time);
   system_time_string =
     Common_Timer_Tools::periodToString (system_time);
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
   ACE_DEBUG ((LM_DEBUG,
-              ACE_TEXT(" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\nmaximum resident set size = %d\nintegral shared memory size = %d\nintegral unshared data size = %d\nintegral unshared stack size = %d\npage reclaims = %d\npage faults = %d\nswaps = %d\nblock input operations = %d\nblock output operations = %d\nmessages sent = %d\nmessages received = %d\nsignals received = %d\nvoluntary context switches = %d\ninvoluntary context switches = %d\n"),
-              elapsed_time.real_time,
-              elapsed_time.user_time,
-              elapsed_time.system_time,
-              ACE_TEXT(user_time_string.c_str()),
-              ACE_TEXT(system_time_string.c_str()),
-              elapsed_rusage.ru_maxrss,
-              elapsed_rusage.ru_ixrss,
-              elapsed_rusage.ru_idrss,
-              elapsed_rusage.ru_isrss,
-              elapsed_rusage.ru_minflt,
-              elapsed_rusage.ru_majflt,
-              elapsed_rusage.ru_nswap,
-              elapsed_rusage.ru_inblock,
-              elapsed_rusage.ru_oublock,
-              elapsed_rusage.ru_msgsnd,
-              elapsed_rusage.ru_msgrcv,
-              elapsed_rusage.ru_nsignals,
-              elapsed_rusage.ru_nvcsw,
-              elapsed_rusage.ru_nivcsw));
+             ACE_TEXT (" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\n"),
+             elapsed_time.real_time,
+             elapsed_time.user_time,
+             elapsed_time.system_time,
+             ACE_TEXT (user_time_string.c_str ()),
+             ACE_TEXT (system_time_string.c_str ())));
 #else
   ACE_DEBUG ((LM_DEBUG,
-              ACE_TEXT (" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\n"),
-              elapsed_time.real_time,
-              elapsed_time.user_time,
-              elapsed_time.system_time,
-              ACE_TEXT (user_time_string.c_str ()),
-              ACE_TEXT (system_time_string.c_str ())));
+             ACE_TEXT (" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\nmaximum resident set size = %d\nintegral shared memory size = %d\nintegral unshared data size = %d\nintegral unshared stack size = %d\npage reclaims = %d\npage faults = %d\nswaps = %d\nblock input operations = %d\nblock output operations = %d\nmessages sent = %d\nmessages received = %d\nsignals received = %d\nvoluntary context switches = %d\ninvoluntary context switches = %d\n"),
+             elapsed_time.real_time,
+             elapsed_time.user_time,
+             elapsed_time.system_time,
+             ACE_TEXT (user_time_string.c_str ()),
+             ACE_TEXT (system_time_string.c_str ()),
+             elapsed_rusage.ru_maxrss,
+             elapsed_rusage.ru_ixrss,
+             elapsed_rusage.ru_idrss,
+             elapsed_rusage.ru_isrss,
+             elapsed_rusage.ru_minflt,
+             elapsed_rusage.ru_majflt,
+             elapsed_rusage.ru_nswap,
+             elapsed_rusage.ru_inblock,
+             elapsed_rusage.ru_oublock,
+             elapsed_rusage.ru_msgsnd,
+             elapsed_rusage.ru_msgrcv,
+             elapsed_rusage.ru_nsignals,
+             elapsed_rusage.ru_nvcsw,
+             elapsed_rusage.ru_nivcsw));
 #endif // ACE_WIN32 || ACE_WIN64
 
   Common_Log_Tools::finalizeLogging ();
