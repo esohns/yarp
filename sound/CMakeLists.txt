@@ -7,6 +7,7 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../scripts/sdl.cmake)
 ########### next target ###############
 set (LIBRARY RPG_Sound)
 set (${LIBRARY}_SRCS
+     stdafx.h
      rpg_sound.h
      rpg_sound_category.h
      rpg_sound_common.h

@@ -144,14 +144,14 @@ if (UNIX)
                         RPG_Net RPG_Net_Protocol RPG_Net RPG_Client RPG_Graphics
                         ACEStream_Network)
 elseif (WIN32)
-# set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+ set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
                         Opengl32.lib
                         ${GTK_LIBRARIES}
                         $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                         $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                        Common CommonError CommonLog CommonSignal CommonTimer CommonUI_GTK
+                        Common CommonError CommonEvent CommonLog CommonSignal CommonTimer CommonUI_GTK
                         ACEStream ACEStream_Network
                         ACENetwork
                         RPG_Chance RPG_Dice RPG_Common

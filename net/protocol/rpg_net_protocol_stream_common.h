@@ -26,6 +26,8 @@
 #include "stream_common.h"
 #include "stream_session_data.h"
 
+#include "stream_net_common.h"
+
 #include "net_common.h"
 #include "net_iconnection.h"
 
@@ -41,9 +43,11 @@ struct RPG_Net_Protocol_SessionData
   RPG_Net_Protocol_SessionData ()
    : Stream_SessionData ()
    , connection (NULL)
+   , connectionStates ()
   {}
 
   RPG_Net_Protocol_IConnection_t* connection;
+  Stream_Net_ConnectionStates_t   connectionStates;
 };
 typedef Stream_SessionData_T<struct RPG_Net_Protocol_SessionData> RPG_Net_Protocol_SessionData_t;
 

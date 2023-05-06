@@ -332,14 +332,14 @@ idle_update_log_display_cb (gpointer userData_in)
                                 &text_iterator);
 
   gchar* converted_text = NULL;
-  { ACE_Guard<ACE_SYNCH_MUTEX> aGuard (data_p->UIState->lock);
+  { ACE_Guard<ACE_SYNCH_MUTEX> aGuard (data_p->UIState->logQueueLock);
     // sanity check
-    if (data_p->UIState->logStack.empty ())
+    if (data_p->UIState->logQueue.empty ())
       return TRUE; // G_SOURCE_CONTINUE
 
     // step1: convert text
-    for (Common_MessageStackConstIterator_t iterator_2 = data_p->UIState->logStack.begin ();
-         iterator_2 != data_p->UIState->logStack.end ();
+    for (Common_Log_MessageQueueConstIterator_t iterator_2 = data_p->UIState->logQueue.begin ();
+         iterator_2 != data_p->UIState->logQueue.end ();
          iterator_2++)
     {
       converted_text = Common_UI_GTK_Tools::localeToUTF8 (*iterator_2);
@@ -361,7 +361,7 @@ idle_update_log_display_cb (gpointer userData_in)
       g_free (converted_text);
     } // end FOR
 
-    data_p->UIState->logStack.clear ();
+    data_p->UIState->logQueue.clear ();
   } // end lock scope
 
   // step3: scroll the view accordingly

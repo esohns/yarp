@@ -131,7 +131,7 @@ elseif (WIN32)
                         ${GTK_LIBRARIES}
                         $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                         $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                        Common CommonLog CommonSignal CommonTimer CommonUI_GTK
+                        Common CommonEvent CommonLog CommonSignal CommonTimer CommonUI_GTK
                         ACEStream ACEStream_Miscellaneous ACEStream_Network
                         ACENetwork ACENetwork_Client
                         RPG_Dice RPG_Common RPG_Net RPG_Net_Protocol)
@@ -187,7 +187,7 @@ elseif (WIN32)
                         ${GTK_LIBRARIES}
                         $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                         $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                        Common CommonLog CommonSignal CommonTimer CommonUI_GTK
+                        Common CommonEvent CommonLog CommonSignal CommonTimer CommonUI_GTK
                         ACEStream ACEStream_Miscellaneous ACEStream_Network
                         ACENetwork ACENetwork_Server
                         RPG_Dice RPG_Common RPG_Net RPG_Net_Protocol)

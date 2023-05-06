@@ -28,7 +28,7 @@
 
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
 #include "ace/Init_ACE.h"
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 #include "ace/Get_Opt.h"
 #include "ace/High_Res_Timer.h"
 #include "ace/POSIX_Proactor.h"
@@ -38,14 +38,15 @@
 #include "ace/Signal.h"
 #include "ace/Version.h"
 
-#ifdef RPG_ENABLE_VALGRIND_SUPPORT
+#if defined (VALGRIND_USE)
 #include "valgrind/valgrind.h"
-#endif
+#endif // VALGRIND_USE
 
 #include "common_file_tools.h"
+#include "common_os_tools.h"
 
+#include "common_logger_queue.h"
 #include "common_log_tools.h"
-//#include "common_logger.h"
 
 #include "common_parser_common.h"
 
@@ -69,9 +70,9 @@
 #include "net_server_common_tools.h"
 #include "net_server_defines.h"
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #include "rpg_config.h"
-#endif
+#endif // HAVE_CONFIG_H
 
 #include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
@@ -882,7 +883,7 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
   // *PROCESS PROFILE*
   ACE_Profile_Timer process_profile;
@@ -951,7 +952,7 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -985,7 +986,7 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -1005,7 +1006,8 @@ ACE_TMAIN (int argc_in,
   ACE_Sig_Set previous_signal_mask (false); // fill ?
   if (!Common_Signal_Tools::preInitialize (signal_set,
                                            COMMON_SIGNAL_DISPATCH_SIGNAL,
-                                           use_reactor,
+                                           true,
+                                           true,
                                            previous_signal_actions,
                                            previous_signal_mask))
   {
@@ -1017,7 +1019,7 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -1054,7 +1056,7 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -1069,7 +1071,7 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_SUCCESS;
   } // end IF
@@ -1081,18 +1083,18 @@ ACE_TMAIN (int argc_in,
 //#if defined (ACE_WIN32) || defined (ACE_WIN64)
 //  use_fd_based_reactor = (use_reactor && !COMMON_EVENT_WINXX_USE_WFMO_REACTOR);
 //#endif
-  if (!Common_Tools::setResourceLimits (use_fd_based_reactor, // file descriptors
-                                        true))                // stack traces
+  if (!Common_OS_Tools::setResourceLimits (use_fd_based_reactor, // file descriptors
+                                           true))                // stack traces
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to Common_Tools::setResourceLimits(), aborting\n")));
+                ACE_TEXT ("failed to Common_OS_Tools::setResourceLimits(), aborting\n")));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -1153,7 +1155,7 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -1170,7 +1172,15 @@ ACE_TMAIN (int argc_in,
     Common_Timer_Tools::periodToString (system_time);
 
   // debug info
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT (" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\n"),
+              elapsed_time.real_time,
+              elapsed_time.user_time,
+              elapsed_time.system_time,
+              ACE_TEXT (user_time_string.c_str ()),
+              ACE_TEXT (system_time_string.c_str ())));
+#else
   ACE_DEBUG((LM_DEBUG,
              ACE_TEXT(" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\nmaximum resident set size = %d\nintegral shared memory size = %d\nintegral unshared data size = %d\nintegral unshared stack size = %d\npage reclaims = %d\npage faults = %d\nswaps = %d\nblock input operations = %d\nblock output operations = %d\nmessages sent = %d\nmessages received = %d\nsignals received = %d\nvoluntary context switches = %d\ninvoluntary context switches = %d\n"),
              elapsed_time.real_time,
@@ -1192,15 +1202,7 @@ ACE_TMAIN (int argc_in,
              elapsed_rusage.ru_nsignals,
              elapsed_rusage.ru_nvcsw,
              elapsed_rusage.ru_nivcsw));
-#else
-  ACE_DEBUG ((LM_DEBUG,
-              ACE_TEXT (" --> Process Profile <--\nreal time = %A seconds\nuser time = %A seconds\nsystem time = %A seconds\n --> Resource Usage <--\nuser time used: %s\nsystem time used: %s\n"),
-              elapsed_time.real_time,
-              elapsed_time.user_time,
-              elapsed_time.system_time,
-              ACE_TEXT (user_time_string.c_str ()),
-              ACE_TEXT (system_time_string.c_str ())));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
 // *PORTABILITY*: on Windows, must fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -1210,7 +1212,7 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
   return EXIT_SUCCESS;
 } // end main

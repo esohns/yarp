@@ -65,12 +65,12 @@ class RPG_Client_Window_Message
   // helper methods
   void initScrollSpots ();
 
-  SDL_Surface*          BG_;
-  RPG_Client_Engine*    client_;
-  RPG_Graphics_Font     font_;
-  ACE_Thread_Mutex      lock_;
-  Common_MessageStack_t messages_;
-  unsigned int          numLines_;
+  SDL_Surface*              BG_;
+  RPG_Client_Engine*        client_;
+  RPG_Graphics_Font         font_;
+  ACE_Thread_Mutex          lock_;
+  Common_Log_MessageQueue_t messages_;
+  unsigned int              numLines_;
 };
 
 #endif // RPG_CLIENT_WINDOW_MESSAGE_H

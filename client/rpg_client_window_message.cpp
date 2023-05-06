@@ -157,7 +157,7 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
   { ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);
     RPG_Graphics_TextSize_t text_size = std::make_pair (0, 0);
     unsigned int index = 0;
-    for (Common_MessageStackConstIterator_t iterator = messages_.begin ();
+    for (Common_Log_MessageQueueConstIterator_t iterator = messages_.begin ();
          ((iterator != messages_.end ()) && (index < numLines_));
          iterator++, index++)
     {
@@ -244,7 +244,7 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
       RPG_Graphics_SDL_Tools::getColor (RPG_CLIENT_MESSAGE_SHADECOLOR,
                                         *target_surface->format,
                                         1.0F);
-    for (Common_MessageStackConstIterator_t iterator = messages_.begin ();
+    for (Common_Log_MessageQueueConstIterator_t iterator = messages_.begin ();
          ((iterator != messages_.end ()) && (index < numLines_));
          iterator++, index++)
     {
