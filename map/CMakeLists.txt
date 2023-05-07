@@ -106,8 +106,9 @@ target_precompile_headers (${LIBRARY}
                            PRIVATE stdafx.h)
 
 ########### install files ###############
-install (FILES rpg_map.xsd
-         DESTINATION share/RPG/config)
+install (FILES
+         etc/rpg_map.xsd
+         DESTINATION ${INSTALL_SHARE_DIR} COMPONENT config)
 install (FILES
          rpg_map_common.h
          rpg_map_common_tools.h

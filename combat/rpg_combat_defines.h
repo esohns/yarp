@@ -21,4 +21,6 @@
 #ifndef RPG_COMBAT_DEFINES_H
 #define RPG_COMBAT_DEFINES_H
 
-#endif
+#define RPG_COMBAT_SUB_DIRECTORY_STRING "combat"
+
+#endif // RPG_COMBAT_DEFINES_H

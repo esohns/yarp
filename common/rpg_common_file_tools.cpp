@@ -177,15 +177,9 @@ RPG_Common_File_Tools::getConfigurationDataDirectory (const std::string& package
   } // end IF
   else
   {
-    return_value = Common_File_Tools::getSourceDirectory (packageName_in,
-                                                          moduleName_in);
+    return_value = Common_File_Tools::getWorkingDirectory ();
     return_value += ACE_DIRECTORY_SEPARATOR_STR;
-    return_value +=
-      ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_PARENT_SUBDIRECTORY);
-    return_value += ACE_DIRECTORY_SEPARATOR_STR;
-    return_value +=
-        (isConfiguration_in ? ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY)
-                            : ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_DATA_SUBDIRECTORY));
+    return_value += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_DATA_SUBDIRECTORY);
     //return_value += ACE_DIRECTORY_SEPARATOR_STR;
     //return_value +=
     //  Common_String_Tools::tolower (Common_File_Tools::basename (Common_File_Tools::executable, true));

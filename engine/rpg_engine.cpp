@@ -872,21 +872,26 @@ RPG_Engine::load (const std::string& filename_in,
   //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
   ::xml_schema::flags flags = 0;
   ::xml_schema::properties props;
-  std::string base_path;
-  // *NOTE*: use the working directory as a fallback...
-  if (schemaRepository_in.empty ())
-    base_path = Common_File_Tools::getWorkingDirectory ();
+  std::string path;
+  ACE_ASSERT (!schemaRepository_in.empty ());
+  if (Common_Error_Tools::inDebugSession ())
+  {
+    path = schemaRepository_in;
+    path += ACE_DIRECTORY_SEPARATOR_STR;
+    path += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
+    path += ACE_DIRECTORY_SEPARATOR_STR;
+    path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+  } // end IF
   else
-    base_path = schemaRepository_in;
-  std::string schema_filename = base_path;
-  schema_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_SCHEMA_FILE);
+   path = schemaRepository_in;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SCHEMA_FILE);
   // sanity check(s)
-  if (!Common_File_Tools::isReadable (schema_filename))
+  if (!Common_File_Tools::isReadable (path))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
-                ACE_TEXT (schema_filename.c_str ())));
+                ACE_TEXT (path.c_str ())));
 
     // clean up
     try {
@@ -908,13 +913,10 @@ RPG_Engine::load (const std::string& filename_in,
     return false;
   } // end IF
   // *NOTE*: support paths with spaces
-  schema_filename = RPG_Common_Tools::sanitizeURI (schema_filename);
-  schema_filename.insert (0, ACE_TEXT_ALWAYS_CHAR ("file:///"));
-
-  std::string target_name_space =
-    ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_XML_TARGET_NAMESPACE);
-  props.schema_location (target_name_space,
-                         schema_filename);
+  path = RPG_Common_Tools::sanitizeURI (path);
+  path.insert (0, ACE_TEXT_ALWAYS_CHAR ("file:///"));
+  props.schema_location (ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_XML_TARGET_NAMESPACE),
+                         path);
 //   props.no_namespace_schema_location(RPG_ENGINE_SCHEMA_FILE);
 //   props.schema_location("http://www.w3.org/XML/1998/namespace", "xml.xsd");
   std::auto_ptr<RPG_Engine_State_XMLTree_Type> engine_state_p;
@@ -1016,7 +1018,7 @@ RPG_Engine::load (const std::string& filename_in,
   struct RPG_Engine_LevelData level;
   RPG_Engine_State_XMLTree_Type::entities_sequence& entities =
     engine_state_p->entities ();
-  base_path = RPG_Player_Common_Tools::getPlayerProfilesDirectory ();
+  path = RPG_Player_Common_Tools::getPlayerProfilesDirectory ();
   std::string filename;
   RPG_Magic_Spells_t spells;
   RPG_Character_Conditions_t condition;
@@ -1040,7 +1042,7 @@ RPG_Engine::load (const std::string& filename_in,
     {
       const RPG_Player_State_XMLTree_Type& player_state =
         (*iterator).player ().get ();
-      filename = base_path;
+      filename = path;
       filename += ACE_DIRECTORY_SEPARATOR_CHAR;
       filename += player_state.file ();
       const RPG_Player_Conditions_XMLTree_Type::condition_sequence& condition_xml =

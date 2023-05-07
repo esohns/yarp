@@ -86,7 +86,7 @@ RPG_Engine_EntityModeToStringTable_t RPG_Engine_EntityModeHelper::myRPG_Engine_E
 RPG_Engine_CRToExperienceMap_t RPG_Engine_Common_Tools::myCRToExperienceMap;
 
 void
-RPG_Engine_Common_Tools::initialize (const std::string& schemaDirectory_in,
+RPG_Engine_Common_Tools::initialize (const std::vector<std::string>& schemaDirectories_in,
                                      const std::string& magicDictionaryFile_in,
                                      const std::string& itemDictionaryFile_in,
                                      const std::string& monsterDictionaryFile_in)
@@ -111,7 +111,7 @@ RPG_Engine_Common_Tools::initialize (const std::string& schemaDirectory_in,
   RPG_Character_Common_Tools::initialize ();
 
   // step1c: initialize dictionaries
-  if (!RPG_Common_XML_Tools::initialize (schemaDirectory_in))
+  if (!RPG_Common_XML_Tools::initialize (schemaDirectories_in))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Common_XML_Tools::initialize(), returning\n")));

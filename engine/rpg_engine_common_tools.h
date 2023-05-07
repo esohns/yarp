@@ -64,10 +64,10 @@ class RPG_Engine_Common_Tools
   //                - static tables (skills, spells, experience, ...)
   //                - XML parsing facilities
   //                - dictionaries (spells, items, monsters, ...)
-  static void initialize(const std::string&,  // schema directory
-                         const std::string&,  // magic dictionary file
-                         const std::string&,  // item dictionary file
-                         const std::string&); // monster dictionary file
+  static void initialize (const std::vector<std::string>&, // schema directories
+                          const std::string&,              // magic dictionary file
+                          const std::string&,              // item dictionary file
+                          const std::string&);             // monster dictionary file
   static void finalize();
 
 	// ***** event-related *****

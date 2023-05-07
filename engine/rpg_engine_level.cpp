@@ -27,6 +27,9 @@
 #include "ace/OS.h"
 
 #include "common_file_tools.h"
+#include "common_defines.h"
+
+#include "common_error_tools.h"
 
 #include "rpg_dice.h"
 #include "rpg_dice_common.h"
@@ -164,42 +167,33 @@ RPG_Engine_Level::load(const std::string& filename_in,
 //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
   ::xml_schema::flags flags = 0;
   ::xml_schema::properties props;
-  std::string base_path;
-  // *NOTE*: use the working directory as a fallback...
-  if (schemaRepository_in.empty ())
-    base_path = Common_File_Tools::getWorkingDirectory ();
-  else
+  std::string path;
+  ACE_ASSERT (!schemaRepository_in.empty ());
+  if (Common_Error_Tools::inDebugSession ())
   {
-    // sanity check(s)
-    if (!Common_File_Tools::isDirectory (schemaRepository_in))
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to Common_File_Tools::isDirectory(\"%s\"), aborting\n"),
-                  ACE_TEXT (schemaRepository_in.c_str ())));
-      return false;
-    } // end IF
-
-    base_path = schemaRepository_in;
-  } // end ELSE
-  std::string schema_filename = base_path;
-  schema_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_SCHEMA_FILE);
+    path = schemaRepository_in;
+    path += ACE_DIRECTORY_SEPARATOR_STR;
+    path += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
+    path += ACE_DIRECTORY_SEPARATOR_STR;
+    path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+  } // end IF
+  else
+   path = schemaRepository_in;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SCHEMA_FILE);
   // sanity check(s)
-  if (!Common_File_Tools::isReadable(schema_filename))
+  if (!Common_File_Tools::isReadable (path))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Common_File_Tools::isReadable(\"%s\"), aborting\n"),
-                ACE_TEXT (schema_filename.c_str ())));
+                ACE_TEXT (path.c_str ())));
     return false;
   } // end IF
   // *NOTE*: support paths with spaces
-  schema_filename = RPG_Common_Tools::sanitizeURI (schema_filename);
-  schema_filename.insert (0, ACE_TEXT_ALWAYS_CHAR ("file:///"));
-
-  std::string target_name_space =
-    ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_XML_TARGET_NAMESPACE);
-  props.schema_location (target_name_space,
-                         schema_filename);
+  path = RPG_Common_Tools::sanitizeURI (path);
+  path.insert (0, ACE_TEXT_ALWAYS_CHAR ("file:///"));
+  props.schema_location (ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_XML_TARGET_NAMESPACE),
+                         path);
 //   props.no_namespace_schema_location(RPG_CHARACTER_PLAYER_SCHEMA_FILE);
 //   props.schema_location("http://www.w3.org/XML/1998/namespace", "xml.xsd");
 

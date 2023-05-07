@@ -1,6 +1,27 @@
+include (${CMAKE_CURRENT_SOURCE_DIR}/scripts/VersionConfig.cmake)
+
+set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/modules/Common/scripts;${CMAKE_CURRENT_SOURCE_DIR}/../Common/scripts;${CMAKE_CURRENT_SOURCE_DIR}/scripts")
+include (Configuration)
+include (Macros)
+include (OS)
+
 cmake_minimum_required (VERSION 2.8)
 
 project (yarp CXX)
+
+# make relative paths absolute (needed later on)
+foreach (path BIN CMAKE SHARE INCLUDE LIB)
+ set (var INSTALL_${path}_DIR)
+# if (NOT IS_ABSOLUTE "${${var}}")
+ string (TOLOWER "${path}" RELATIVE_INSTALL_PATH)
+
+ if (UNIX)
+  set (${var} "${CMAKE_INSTALL_PREFIX}/${RELATIVE_INSTALL_PATH}")
+ elseif (WIN32)
+  set (${var} ${RELATIVE_INSTALL_PATH})
+ endif ()
+# message (STATUS "set \"${var}\" to \"${${var}}\"")
+endforeach ()
 
 #extract package version from VCS
 # find_package(Subversion)
@@ -20,29 +41,29 @@ endif ()
 #   set(PACKAGE_REVISION ${SUBVERSION_REVISION})
 # elseif(${GIT_REVISION})
 if (${GIT_REVISION})
-  message (STATUS "found git revision ${GIT_REVISION}...")
-  set (PACKAGE_REVISION ${GIT_REVISION})
-endif ()
+ message (STATUS "found git revision ${GIT_REVISION}...")
+ set (PACKAGE_REVISION ${GIT_REVISION})
+endif (${GIT_REVISION})
 
-set(CPACK_PACKAGE_DESCRIPTION "(yet another) role-playing game system framework")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A RPG system framework")
-set(CPACK_PACKAGE_NAME "Yarp")
-#set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.3.6), libgcc1 (>= 1:4.1)")
+set (CPACK_PACKAGE_DESCRIPTION "(yet another) role-playing game system framework")
+set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "A RPG system framework")
+set (CPACK_PACKAGE_NAME "Yarp")
+#set (CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.3.6), libgcc1 (>= 1:4.1)")
 
-set(CPACK_PACKAGE_CONTACT "Erik Sohns <erik.sohns@web.de>")
-#set(CPACK_PACKAGE_VENDOR "Erik Sohns")
-set(CPACK_PACKAGE_VERSION_MAJOR "0")
-set(CPACK_PACKAGE_VERSION_MINOR "1")
-set(CPACK_PACKAGE_VERSION_PATCH ${PACKAGE_REVISION})
+#set (CPACK_PACKAGE_CONTACT "Erik Sohns <erik.sohns@posteo.de>")
+#set (CPACK_PACKAGE_VENDOR "Erik Sohns")
+#set (CPACK_PACKAGE_VERSION_MAJOR "0")
+#set (CPACK_PACKAGE_VERSION_MINOR "1")
+#set (CPACK_PACKAGE_VERSION_PATCH ${PACKAGE_REVISION})
 # set(CPACK_PACKAGE_VERSION_PATCH "0")
-set(VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+#set (VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
 
-message(STATUS "configuring ${CPACK_PACKAGE_NAME} version ${VERSION}...")
+#message (STATUS "configuring ${CPACK_PACKAGE_NAME} version ${VERSION}...")
 
-set(CPACK_GENERATOR "DEB;RPM;")
-set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}-${CMAKE_SYSTEM_PROCESSOR}")
+#set (CPACK_GENERATOR "DEB;RPM;")
+#set (CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}-${CMAKE_SYSTEM_PROCESSOR}")
 
-include(CPack)
+include (CPack)
 
 option (DOXYGEN_SUPPORT "generate documentation" OFF)
 if (DOXYGEN_SUPPORT)
@@ -80,10 +101,6 @@ if (UNIX)
   set (CMAKE_STATIC_LINKER_FLAGS "-Wl,-z,multidefs")
  endif (CMAKE_COMPILER_IS_GNUCC)
 endif (UNIX)
-
-include (${CMAKE_CURRENT_SOURCE_DIR}/../Common/scripts/Configuration.cmake)
-include (${CMAKE_CURRENT_SOURCE_DIR}/../Common/scripts/Macros.cmake)
-include (${CMAKE_CURRENT_SOURCE_DIR}/scripts/VersionConfig.cmake)
 
 if (UNIX)
  set (NEWLINE_STYLE UNIX)
@@ -131,7 +148,8 @@ add_subdirectory (test_u)
 
 set (DOC_FILES COPYING INSTALL AUTHORS NEWS README TODO)
 set (DOC_PATH "share/doc/${CPACK_PACKAGE_NAME}")
-install (FILES ${DOC_FILES}
+install (FILES
+         ${DOC_FILES}
          DESTINATION ${DOC_PATH})
 
 option (INSTALL_DOCUMENTATION "install generated documentation" OFF)

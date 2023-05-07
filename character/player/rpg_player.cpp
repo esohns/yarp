@@ -26,7 +26,10 @@
 
 #include "ace/Log_Msg.h"
 
+#include "common_defines.h"
 #include "common_file_tools.h"
+
+#include "common_error_tools.h"
 
 #include "rpg_common_defines.h"
 #include "rpg_common_macros.h"
@@ -1139,18 +1142,18 @@ RPG_Player::load (const std::string& filename_in,
   ::xml_schema::flags flags = 0;
   ::xml_schema::properties props;
   std::string path;
-  // *NOTE*: use the working directory as a fallback...
   ACE_ASSERT (!schemaRepository_in.empty ());
-#if defined (DEBUG_DEBUGGER)
-  path = Common_File_Tools::getWorkingDirectory ();
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR ("character");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR ("player");
-#else
-  path = schemaRepository_in;
-#endif
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  if (Common_Error_Tools::inDebugSession ())
+  {
+    path = schemaRepository_in;
+    path += ACE_DIRECTORY_SEPARATOR_STR;
+    path += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_SUB_DIRECTORY_STRING);
+    path += ACE_DIRECTORY_SEPARATOR_STR;
+    path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+  } // end IF
+  else
+   path = schemaRepository_in;
+  path += ACE_DIRECTORY_SEPARATOR_STR;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_SCHEMA_FILE);
   // sanity check(s)
   if (!Common_File_Tools::isReadable (path))

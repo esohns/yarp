@@ -77,20 +77,11 @@ RPG_Common_XML_Tools::dirent_comparator (const dirent** entry1_in,
 }
 
 bool
-RPG_Common_XML_Tools::initialize (const std::string& schemaDirectory_in)
+RPG_Common_XML_Tools::initialize (const std::vector<std::string>& schemaDirectories_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Common_XML_Tools::initialize"));
 
   int result = -1;
-
-  // sanity check(s)
-  if (!Common_File_Tools::isDirectory (schemaDirectory_in))
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("invalid argument, not a directory (was: \"%s\"), aborting\n"),
-                ACE_TEXT (schemaDirectory_in.c_str ())));
-    return false;
-  } // end IF
 
   if (!RPG_Common_XML_Tools::initialized_)
     XMLPlatformUtils::Initialize ();
@@ -154,52 +145,57 @@ RPG_Common_XML_Tools::initialize (const std::string& schemaDirectory_in)
   } // end IF
   ACE_ASSERT (parser_);
 
-  // retrieve all XML schema files in given directory
-  std::string path_string;
-  ACE_Dirent_Selector entries;
-  result = entries.open (ACE_TEXT (schemaDirectory_in.c_str ()),
-                         &RPG_Common_XML_Tools::dirent_selector,
-                         &RPG_Common_XML_Tools::dirent_comparator);
-  if (unlikely (result == -1))
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to ACE_Dirent_Selector::open(\"%s\"): \"%m\", aborting\n"),
-                ACE_TEXT (schemaDirectory_in.c_str ())));
-    return false;
-  } // end IF
-  for (unsigned int i = 0;
-       i < static_cast<unsigned int> (entries.length ());
-       i++)
-  {
-    path_string = schemaDirectory_in;
-    path_string += ACE_DIRECTORY_SEPARATOR_STR_A;
-    path_string += ACE_TEXT_ALWAYS_CHAR (entries[i]->d_name);
-    RPG_XercesErrorHandler.resetErrors ();
-    if (unlikely (!parser_->loadGrammar (path_string.c_str (),
-                                         Grammar::SchemaGrammarType,
-                                         true) ||
-                  RPG_XercesErrorHandler.failed ()))
+  // load all required XML schema files
+  for (std::vector<std::string>::const_iterator iterator = schemaDirectories_in.begin ();
+       iterator != schemaDirectories_in.end ();
+       ++iterator)
+  { // sanity check(s)
+    ACE_ASSERT (Common_File_Tools::isDirectory (*iterator));
+
+    std::string path_string;
+    ACE_Dirent_Selector entries;
+    result = entries.open (ACE_TEXT ((*iterator).c_str ()),
+                           &RPG_Common_XML_Tools::dirent_selector,
+                           &RPG_Common_XML_Tools::dirent_comparator);
+    if (unlikely (result == -1))
     {
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to SAX2XMLReader::loadGrammar(\"%s\"), aborting\n"),
-                  ACE_TEXT (path_string.c_str ())));
-      result = entries.close ();
-      if (result == -1)
-        ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("failed to ACE_Dirent_Selector::close(): \"%m\", continuing\n")));
+                  ACE_TEXT ("failed to ACE_Dirent_Selector::open(\"%s\"): \"%m\", aborting\n"),
+                  ACE_TEXT ((*iterator).c_str ())));
       return false;
     } // end IF
-#if defined (_DEBUG)
-    ACE_DEBUG ((LM_DEBUG,
-                ACE_TEXT ("loaded XML schema \"%s\"\n"),
-                ACE_TEXT (entries[i]->d_name)));
-#endif // _DEBUG
+    for (unsigned int i = 0;
+         i < static_cast<unsigned int> (entries.length ());
+         i++)
+    {
+      path_string = *iterator;
+      path_string += ACE_DIRECTORY_SEPARATOR_STR_A;
+      path_string += ACE_TEXT_ALWAYS_CHAR (entries[i]->d_name);
+      RPG_XercesErrorHandler.resetErrors ();
+      if (unlikely (!parser_->loadGrammar (path_string.c_str (),
+                                           Grammar::SchemaGrammarType,
+                                           true) ||
+                    RPG_XercesErrorHandler.failed ()))
+      {
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to SAX2XMLReader::loadGrammar(\"%s\"), aborting\n"),
+                    ACE_TEXT (path_string.c_str ())));
+        result = entries.close ();
+        if (result == -1)
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("failed to ACE_Dirent_Selector::close(): \"%m\", continuing\n")));
+        return false;
+      } // end IF
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT ("loaded XML schema \"%s\"\n"),
+                  ACE_TEXT (entries[i]->d_name)));
+    } // end FOR
+    grammarPool_->lockPool ();
+    result = entries.close ();
+    if (unlikely (result == -1))
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE_Dirent_Selector::close(): \"%m\", continuing\n")));
   } // end FOR
-  grammarPool_->lockPool ();
-  result = entries.close ();
-  if (unlikely (result == -1))
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to ACE_Dirent_Selector::close(): \"%m\", continuing\n")));
 
   initialized_ = true;
 

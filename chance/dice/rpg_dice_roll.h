@@ -6,7 +6,6 @@
 #ifndef RPG_DICE_ROLL_H
 #define RPG_DICE_ROLL_H
 
-//#include "rpg_dice_exports.h"
 #include "rpg_dice_dietype.h"
 
  struct RPG_Dice_Roll

@@ -7,9 +7,9 @@
             attributeFormDefault="unqualified">
 
 <!-- include engine schema -->
-  <xsd:include schemaLocation="../engine/rpg_engine.xsd"/>
+  <xsd:include schemaLocation="rpg_engine.xsd"/>
 <!-- include graphics schema -->
-  <xsd:include schemaLocation="../graphics/rpg_graphics.xsd"/>
+  <xsd:include schemaLocation="rpg_graphics.xsd"/>
 
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
 <!--   import graphics schema (as declared above) -->

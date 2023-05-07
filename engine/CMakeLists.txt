@@ -137,8 +137,9 @@ target_precompile_headers (${LIBRARY}
                            PRIVATE stdafx.h)
 
 ########### install files ###############
-install (FILES rpg_engine.xsd
-         DESTINATION share/RPG/config)
+install (FILES
+         etc/rpg_engine.xsd
+         DESTINATION ${INSTALL_SHARE_DIR} COMPONENT config)
 install (FILES
          rpg_engine.h
          rpg_engine_command.h
@@ -157,3 +158,5 @@ install (FILES
          DESTINATION include)
 install (TARGETS ${LIBRARY} LIBRARY
          DESTINATION lib)
+
+add_subdirectory (share)

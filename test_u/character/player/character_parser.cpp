@@ -260,7 +260,9 @@ do_work (const std::string& magicDictionaryFilename_in,
   // step1b: initialize facilities
   RPG_Dice_Common_Tools::initializeStringConversionTables ();
   RPG_Common_Tools::initializeStringConversionTables ();
-  if (!RPG_Common_XML_Tools::initialize (schemaRepository_in))
+  std::vector<std::string> schema_directories_a;
+  schema_directories_a.push_back (schemaRepository_in);
+  if (!RPG_Common_XML_Tools::initialize (schema_directories_a))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Common_XML_Tools::initialize(), returning\n")));

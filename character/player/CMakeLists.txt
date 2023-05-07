@@ -5,14 +5,13 @@
 ########### next target ###############
 set (LIBRARY RPG_Player)
 set (${LIBRARY}_SRCS
-  #  rpg_XMLSchema_XML_tree.h
+     stdafx.h
      rpg_iplayer.h
      rpg_player.cpp
      rpg_player.h
      rpg_player_abilities.h
      rpg_player_base.cpp
      rpg_player_base.h
-  #  rpg_player_basexml.h
      rpg_player_common.h
      rpg_player_common_tools.cpp
      rpg_player_common_tools.h
@@ -21,7 +20,6 @@ set (${LIBRARY}_SRCS
      rpg_player_equipment.cpp
      rpg_player_equipment.h
      rpg_player_equipment_common.h
-  #  rpg_player_exports.h
      rpg_player_inventory.cpp
      rpg_player_inventory.h
      rpg_player_player_base.cpp
@@ -52,6 +50,8 @@ target_include_directories (${LIBRARY} PUBLIC
 
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/error>)
 
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../3rd_party/xsd>)
@@ -89,8 +89,8 @@ target_precompile_headers (${LIBRARY}
 
 ########### install files ###############
 install (FILES
-         rpg_player.xsd
-         DESTINATION share/RPG/config)
+         etc/rpg_player.xsd
+         DESTINATION ${INSTALL_SHARE_DIR} COMPONENT config)
 install (FILES
          rpg_iplayer.h
          rpg_player.h

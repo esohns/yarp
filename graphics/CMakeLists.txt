@@ -140,9 +140,9 @@ target_precompile_headers (${LIBRARY}
 
 ########### install files ###############
 install (FILES
-         rpg_graphics.xml
-         rpg_graphics.xsd
-         DESTINATION share/RPG/config)
+         etc/rpg_graphics.xml
+         etc/rpg_graphics.xsd
+         DESTINATION ${INSTALL_SHARE_DIR} COMPONENT config)
 install (FILES
          rpg_graphics_SDL_tools.h
          rpg_graphics_SDL_window_base.h

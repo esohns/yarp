@@ -22,13 +22,12 @@
 #define RPG_COMMON_XML_TOOLS_H
 
 #include <string>
+#include <vector>
 
 #include "ace/Global_Macros.h"
 
 #include "xercesc/framework/XMLGrammarPool.hpp"
 #include "xercesc/sax2/SAX2XMLReader.hpp"
-
-//#include "rpg_common_exports.h"
 
 // forward declarations
 struct dirent;
@@ -36,7 +35,7 @@ struct dirent;
 class RPG_Common_XML_Tools
 {
  public:
-   static bool initialize (const std::string&); // schema path
+   static bool initialize (const std::vector<std::string>&); // schema paths
    static void finalize ();
 
    static ::xercesc::SAX2XMLReader* parser ();

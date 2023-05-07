@@ -191,9 +191,11 @@ target_precompile_headers (${LIBRARY}
 
 ########### install files ###############
 install (FILES
-         rpg_client.glade
-         rpg_client.ini
-         DESTINATION share/RPG/config)
+         etc/rpg_client.glade
+         etc/rpg_client.gtk2
+         etc/rpg_client.gtk3
+         etc/rpg_client.ini
+         DESTINATION ${INSTALL_SHARE_DIR} COMPONENT config)
 install (FILES
          rpg_client_callbacks.h
          rpg_client_common.h

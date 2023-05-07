@@ -98,9 +98,9 @@ target_precompile_headers (${LIBRARY}
 
 ########### install files ###############
 install (FILES
-         rpg_monster.xsd
-         rpg_monster.xml
-         DESTINATION share/RPG/config)
+         etc/rpg_monster.xsd
+         etc/rpg_monster.xml
+         DESTINATION ${INSTALL_SHARE_DIR} COMPONENT config)
 install (FILES
          rpg_monster.h
          rpg_monster_actiontrigger.h

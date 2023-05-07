@@ -382,7 +382,7 @@ test_u_main::process_arguments (const int& argc_in,
 
 void
 test_u_main::do_work (struct GTK_CBData& userData_in,
-                      const std::string& schemaDirectory_in,
+                      const std::string& schemaRepository_in,
                       const std::string& clientUIFile_in,
                       const std::string& magicDictionary_in,
                       const std::string& itemDictionary_in,
@@ -395,8 +395,10 @@ test_u_main::do_work (struct GTK_CBData& userData_in,
   //// step0a: init XML parsing
   //RPG_Common_XML_Tools::init(schemaDirectory_in);
   // step0b: init RPG engine
+  std::vector<std::string> schema_directories_a;
+  schema_directories_a.push_back (schemaRepository_in);
   std::string empty;
-  RPG_Engine_Common_Tools::initialize (schemaDirectory_in,
+  RPG_Engine_Common_Tools::initialize (schema_directories_a,
                                        magicDictionary_in,
                                        itemDictionary_in,
                                        empty);
@@ -440,7 +442,7 @@ test_u_main::do_work (struct GTK_CBData& userData_in,
     std::make_pair (clientUIFile_in, static_cast<GtkBuilder*> (NULL));
   //userData_in.GTKState.userData = &userData_in;
 
-  userData_in.schemaRepository = schemaDirectory_in;
+  userData_in.schemaRepository = schemaRepository_in;
   userData_in.entity.character = NULL;
   userData_in.entity.position =
     std::make_pair (std::numeric_limits<unsigned int>::max (),

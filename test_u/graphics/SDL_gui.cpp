@@ -1402,7 +1402,9 @@ do_work (mode_t mode_in,
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step0: init: random seed, string conversion facilities, ...
-  RPG_Engine_Common_Tools::initialize (schemaRepository_in,
+  std::vector<std::string> schema_directories_a;
+  schema_directories_a.push_back (schemaRepository_in);
+  RPG_Engine_Common_Tools::initialize (schema_directories_a,
                                        magicDictionary_in,
                                        itemsDictionary_in,
                                        monsterDictionary_in);
@@ -1997,17 +1999,17 @@ ACE_TMAIN (int argc_in,
                                                           ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
                                                           true); // configuration-
   std::string schema_repository = configuration_path;
-  if (!RPG_Common_XML_Tools::initialize (schema_repository))
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Common_XML_Tools::initialize(), returning\n")));
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
-    return EXIT_FAILURE;
-  } // end IF
+//  if (!RPG_Common_XML_Tools::initialize (schema_repository))
+//  {
+//    ACE_DEBUG ((LM_ERROR,
+//                ACE_TEXT ("failed to RPG_Common_XML_Tools::initialize(), returning\n")));
+//#if defined (ACE_WIN32) || defined (ACE_WIN64)
+//    if (ACE::fini() == -1)
+//      ACE_DEBUG((LM_ERROR,
+//                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
+//#endif
+//    return EXIT_FAILURE;
+//  } // end IF
 
   // step1c: handle specific program modes
   if (print_version_and_exit)

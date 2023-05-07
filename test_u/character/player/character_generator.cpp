@@ -1100,7 +1100,7 @@ do_generatePlayer ()
 }
 
 void
-do_work (const std::string& schemaDirectory_in,
+do_work (const std::string& schemaRepository_in,
          const std::string& magicDictionaryFilename_in,
          const std::string& itemDictionaryFilename_in,
          const std::string& graphicsDictionary_in,
@@ -1113,7 +1113,9 @@ do_work (const std::string& schemaDirectory_in,
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step1: init engine (randomization, string conversion facilities, ...)
-  RPG_Engine_Common_Tools::initialize (schemaDirectory_in,
+  std::vector<std::string> schema_directories_a;
+  schema_directories_a.push_back (schemaRepository_in);
+  RPG_Engine_Common_Tools::initialize (schema_directories_a,
                                        magicDictionaryFilename_in,
                                        itemDictionaryFilename_in,
                                        std::string ());

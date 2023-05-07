@@ -7,19 +7,19 @@
             attributeFormDefault="unqualified">
 
 <!-- include chance_dice schema -->
-  <xsd:include schemaLocation="../../chance/dice/rpg_dice.xsd"/>
+  <xsd:include schemaLocation="rpg_dice.xsd"/>
 <!-- include common schema -->
-  <xsd:include schemaLocation="../../common/rpg_common.xsd"/>
+  <xsd:include schemaLocation="rpg_common.xsd"/>
 <!-- include common environment schema -->
-  <xsd:include schemaLocation="../../common/rpg_common_environment.xsd"/>
+  <xsd:include schemaLocation="rpg_common_environment.xsd"/>
 <!-- include magic schema -->
-  <xsd:include schemaLocation="../../magic/rpg_magic.xsd"/>
+  <xsd:include schemaLocation="rpg_magic.xsd"/>
 <!-- include item schema -->
-  <xsd:include schemaLocation="../../item/rpg_item.xsd"/>
+  <xsd:include schemaLocation="rpg_item.xsd"/>
 <!-- include combat schema -->
-  <xsd:include schemaLocation="../../combat/rpg_combat.xsd"/>
+  <xsd:include schemaLocation="rpg_combat.xsd"/>
 <!-- include player schema -->
-  <xsd:include schemaLocation="../player/rpg_player.xsd"/>
+  <xsd:include schemaLocation="rpg_player.xsd"/>
 
   <xsd:annotation>
     <xsd:documentation xml:lang="en">

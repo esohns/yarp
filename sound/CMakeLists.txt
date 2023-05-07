@@ -86,9 +86,9 @@ target_precompile_headers (${LIBRARY}
 
 ########### install files ###############
 install (FILES
-         rpg_sound.xml
-         rpg_sound.xsd
-         DESTINATION share/RPG/config)
+         etc/rpg_sound.xml
+         etc/rpg_sound.xsd
+         DESTINATION ${INSTALL_SHARE_DIR} COMPONENT config)
 install (FILES
          rpg_sound.h
          rpg_sound_category.h

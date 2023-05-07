@@ -7,7 +7,7 @@
             attributeFormDefault="qualified">
 
   <!-- include common schema -->
-  <xsd:include schemaLocation="../common/rpg_common.xsd"/>
+  <xsd:include schemaLocation="rpg_common.xsd"/>
 
 <!--   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/> -->
 <!--   import chance_dice schema (as declared above) -->

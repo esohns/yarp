@@ -32,9 +32,7 @@
 #define RPG_COMMON_XML_TARGET_NAMESPACE "urn:rpg"
 #define RPG_COMMON_XML_SCHEMA_FILE_EXT  ".xsd"
 
-// BASEDIR-specific
-#define RPG_COMMON_DATA_SUB             "share"
-#define RPG_COMMON_CONFIG_SUB           "etc"
+#define RPG_COMMON_SUB_DIRECTORY_STRING "common"
 
 #if defined (ACE_WIN32) && defined (ACE_WIN64)
 #define RPG_COMMON_DEF_USER_LOGIN_BASE  "USERNAME" // environment
@@ -42,4 +40,4 @@
 #define RPG_COMMON_DEF_USER_LOGIN_BASE  "LOGNAME" // environment
 #endif // ACE_WIN32 || ACE_WIN64
 
-#endif
+#endif // RPG_COMMON_DEFINES_H

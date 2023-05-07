@@ -114,9 +114,9 @@ target_precompile_headers (${LIBRARY}
 
 ########### install files ###############
 install (FILES
-         rpg_common.xsd
-         rpg_common_environment.xsd
-         DESTINATION share/RPG/config)
+         etc/rpg_common.xsd
+         etc/rpg_common_environment.xsd
+         DESTINATION ${INSTALL_SHARE_DIR} COMPONENT config)
 install (FILES
         # rpg_XMLSchema_XML_tree.h
         #rpg_XMLSchema_XML_types.h

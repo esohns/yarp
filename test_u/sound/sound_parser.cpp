@@ -326,10 +326,10 @@ do_work (bool dumpDictionary_in,
   sound_configuration.channels = RPG_SOUND_AUDIO_DEF_CHANNELS;
   sound_configuration.chunksize = RPG_SOUND_AUDIO_DEF_CHUNKSIZE;
   if (!RPG_Sound_Common_Tools::initialize (sound_configuration,
-                                     path_in,
-                                     RPG_SOUND_AMBIENT_DEF_USE_CD,
-                                     RPG_SOUND_DEF_CACHESIZE,
-                                     false))
+                                           path_in,
+                                           RPG_SOUND_AMBIENT_DEF_USE_CD,
+                                           RPG_SOUND_DEF_CACHESIZE,
+                                           false))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Sound_Common_Tools::init(), returning\n")));
@@ -337,7 +337,9 @@ do_work (bool dumpDictionary_in,
   } // end IF
 
   // step2: initialize sound dictionary
-  if (!RPG_Common_XML_Tools::initialize (schemaRepository_in))
+  std::vector<std::string> schema_directories_a;
+  schema_directories_a.push_back (schemaRepository_in);
+  if (!RPG_Common_XML_Tools::initialize (schema_directories_a))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Common_XML_Tools::initialize(), returning\n")));

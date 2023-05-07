@@ -110,9 +110,9 @@ target_precompile_headers (${LIBRARY}
 
 ########### install files ###############
 install (FILES
-         rpg_item.xsd
-         rpg_item.xml
-         DESTINATION share/RPG/config)
+         etc/rpg_item.xsd
+         etc/rpg_item.xml
+         DESTINATION ${INSTALL_SHARE_DIR} COMPONENT config)
 install (FILES
          rpg_item_XML_parser.h
          rpg_item_XML_tree.h

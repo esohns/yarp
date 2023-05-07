@@ -7,11 +7,11 @@
             attributeFormDefault="unqualified">
 
 <!-- include dice schema -->
-  <xsd:include schemaLocation="../chance/dice/rpg_dice.xsd"/>
+  <xsd:include schemaLocation="rpg_dice.xsd"/>
 <!-- include common schema -->
-  <xsd:include schemaLocation="../common/rpg_common.xsd"/>
+  <xsd:include schemaLocation="rpg_common.xsd"/>
 <!-- include magic schema -->
-  <xsd:include schemaLocation="../magic/rpg_magic.xsd"/>
+  <xsd:include schemaLocation="rpg_magic.xsd"/>
 
   <xsd:annotation>
     <xsd:documentation xml:lang="en">

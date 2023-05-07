@@ -102,9 +102,9 @@ target_precompile_headers (${LIBRARY}
 
 ########### install files ###############
 install (FILES
-         rpg_magic.xml
-         rpg_magic.xsd
-         DESTINATION share/RPG/config)
+         etc/rpg_magic.xml
+         etc/rpg_magic.xsd
+         DESTINATION ${INSTALL_SHARE_DIR} COMPONENT config)
 install (FILES
          rpg_magic_XML_parser.h
          rpg_magic_XML_tree.h

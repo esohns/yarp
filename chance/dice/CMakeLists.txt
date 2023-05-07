@@ -10,8 +10,8 @@ set (${LIBRARY}_SRCS
      rpg_dice_common.h
      rpg_dice_common_tools.cpp
      rpg_dice_common_tools.h
+     rpg_dice_defines.h
      rpg_dice_dietype.h
-#     rpg_dice_exports.h
      rpg_dice_incl.h
      rpg_dice_roll.h
      rpg_dice_valuerange.h
@@ -74,14 +74,14 @@ target_precompile_headers (${LIBRARY}
                            PRIVATE stdafx.h)
 
 ########### install files ###############
-install (FILES rpg_dice.xsd
-         DESTINATION share/RPG/config)
+install (FILES etc/rpg_dice.xsd
+         DESTINATION ${INSTALL_SHARE_DIR} COMPONENT config)
 install (FILES
          rpg_dice.h
          rpg_dice_common.h
          rpg_dice_common_tools.h
+         rpg_dice_defines.h
          rpg_dice_dietype.h
-#       rpg_dice_exports.h
          rpg_dice_incl.h
          rpg_dice_roll.h
          rpg_dice_valuerange.h

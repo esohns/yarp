@@ -7,7 +7,7 @@
             attributeFormDefault="unqualified">
 
 <!-- include common environment schema -->
-  <xsd:include schemaLocation="../common/rpg_common_environment.xsd"/>
+  <xsd:include schemaLocation="rpg_common_environment.xsd"/>
 
   <xsd:annotation>
     <xsd:documentation xml:lang="en">

@@ -1,5 +1,4 @@
 ########### install files ###############
 install(FILES
-        dungeon_one.level
-        DESTINATION share/RPG/data/maps)
-
+        default_map.txt
+        DESTINATION ${INSTALL_SHARE_DIR} COMPONENT config)

@@ -34,4 +34,10 @@
 
 #define RPG_PLAYER_PROFILES_SUB           "profiles"
 
-#endif
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#define RPG_PLAYER_SUB_DIRECTORY_STRING   "character\\player"
+#else
+#define RPG_PLAYER_SUB_DIRECTORY_STRING   "character/player"
+#endif // ACE_WIN32 || ACE_WIN64
+
+#endif // RPG_PLAYER_DEFINES_H

@@ -797,15 +797,15 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
 
   int i, j;
   RPG_Client_SignedPosition_t current_map_position =
-      std::make_pair(std::numeric_limits<int>::max (),
-                     std::numeric_limits<int>::max ());
+      std::make_pair (std::numeric_limits<int>::max (),
+                      std::numeric_limits<int>::max ());
   RPG_Graphics_FloorTilesConstIterator_t floor_iterator =
       myCurrentFloorSet.tiles.begin ();
   RPG_Graphics_FloorTilesConstIterator_t begin_row =
       myCurrentFloorSet.tiles.begin ();
   RPG_Graphics_Position_t screen_position =
-      std::make_pair(std::numeric_limits<unsigned int>::max (),
-                     std::numeric_limits<unsigned int>::max ());
+      std::make_pair (std::numeric_limits<unsigned int>::max (),
+                      std::numeric_limits<unsigned int>::max ());
   RPG_Map_Size_t map_size = myEngine->getSize (false);
   RPG_Map_Element current_element = MAPELEMENT_INVALID;
   bool is_visible, has_been_seen;
@@ -819,22 +819,21 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
   RPG_Graphics_TextSize_t tile_text_size;
 
   // pass 1
-  for (i = -static_cast<int>(top_right.second);
-       i <= static_cast<int>(top_right.second);
+  for (i = -static_cast<int> (top_right.second);
+       i <= static_cast<int> (top_right.second);
        i++)
   {
     current_map_position.second = myView.second + i;
+
     // step0: off the map ? --> continue
     if ((current_map_position.second < 0) ||
         (current_map_position.second >= static_cast<int>(map_size.second)))
       continue;
 
     // step1: floor tile rotation
-    begin_row = myCurrentFloorSet.tiles.begin();
-    //std::advance(begin_row, (current_map_position.second % myCurrentFloorSet.rows) * myCurrentFloorSet.columns);
-    std::advance(begin_row,
-                 (current_map_position.second %
-                  (myCurrentFloorSet.tiles.size() / myCurrentFloorSet.columns)));
+    begin_row = myCurrentFloorSet.tiles.begin ();
+    std::advance (begin_row,
+                  current_map_position.second % (myCurrentFloorSet.tiles.size () / myCurrentFloorSet.columns));
 
     for (j = diff + i;
          (j + i) <= sum;
@@ -844,11 +843,11 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
 
       // step0: off the map ? --> continue
       if ((current_map_position.first < 0) ||
-          (current_map_position.first >= static_cast<int>(map_size.first)))
+          (current_map_position.first >= static_cast<int> (map_size.first)))
         continue;
 
       is_visible =
-          (visible_positions.find(current_map_position) != visible_positions.end());
+          (visible_positions.find (current_map_position) != visible_positions.end ());
       has_been_seen =
         (active_entity_id ? myEngine->hasSeen (active_entity_id,
                                                current_map_position,
@@ -1300,8 +1299,8 @@ off_map:
   myEngine->unlock ();
 
   // realize any children
-  for (RPG_Graphics_WindowsIterator_t iterator = children_.begin();
-       iterator != children_.end();
+  for (RPG_Graphics_WindowsIterator_t iterator = children_.begin ();
+       iterator != children_.end ();
        iterator++)
   {
     if ((((*iterator)->getType () == WINDOW_MINIMAP) && !myDrawMinimap) ||
@@ -1541,19 +1540,19 @@ RPG_Client_Window_Level::handleEvent (const SDL_Event& event_in,
                 myClientAction.source = myClientAction.position;
 
                 // initial radius == 0
-                myClientAction.positions.insert(myClientAction.position);
+                myClientAction.positions.insert (myClientAction.position);
 
-                myClient->mode(((event_in.key.keysym.mod & KMOD_SHIFT) ? SELECTIONMODE_AIM_SQUARE
-                                                                       : SELECTIONMODE_AIM_CIRCLE));
+                myClient->mode (((event_in.key.keysym.mod & KMOD_SHIFT) ? SELECTIONMODE_AIM_SQUARE
+                                                                        : SELECTIONMODE_AIM_CIRCLE));
               } // end ELSE
 
               break;
             }
             default:
             {
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("invalid selection mode (was: %u), continuing\n"),
-                         myClient->mode()));
+              ACE_DEBUG ((LM_ERROR,
+                          ACE_TEXT ("invalid selection mode (was: %u), continuing\n"),
+                          myClient->mode ()));
               break;
             }
           } // end SWITCH
@@ -1566,10 +1565,10 @@ RPG_Client_Window_Level::handleEvent (const SDL_Event& event_in,
             sdl_event.type = SDL_MOUSEMOTION;
             sdl_event.motion.x = cursor_position.first;
             sdl_event.motion.y = cursor_position.second;
-            if (SDL_PushEvent(&sdl_event))
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
-                         ACE_TEXT(SDL_GetError())));
+            if (SDL_PushEvent (&sdl_event))
+              ACE_DEBUG ((LM_ERROR,
+                          ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),
+                          ACE_TEXT (SDL_GetError ())));
 
 //            // step2: draw tile highlight
 //            myClientAction.command = COMMAND_TILE_HIGHLIGHT_DRAW;
@@ -1609,29 +1608,15 @@ RPG_Client_Window_Level::handleEvent (const SDL_Event& event_in,
         case SDLK_RIGHT:
         {
           RPG_Map_Direction direction = RPG_MAP_DIRECTION_INVALID;
-          myClientAction.position = getView();
+          myClientAction.position = getView ();
           switch (event_in.key.keysym.sym)
           {
-//             case SDLK_UP:
-//               mapWindow->setView(0,
-//                                  -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET); break;
-//             case SDLK_DOWN:
-//               mapWindow->setView(0,
-//                                  RPG_GRAPHICS_WINDOW_SCROLL_OFFSET); break;
-//             case SDLK_LEFT:
-//               mapWindow->setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-//                                  0); break;
-//             case SDLK_RIGHT:
-//               mapWindow->setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-//                                  0); break;
             case SDLK_UP:
             {
               if (event_in.key.keysym.mod & KMOD_SHIFT)
               {
                 myClientAction.position.first--;
                 myClientAction.position.second--;
-                //setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                //        -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
               } // end IF
               else
                 direction = DIRECTION_UP;
@@ -1644,8 +1629,6 @@ RPG_Client_Window_Level::handleEvent (const SDL_Event& event_in,
               {
                 myClientAction.position.first++;
                 myClientAction.position.second++;
-                //setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                //        RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
               } // end IF
               else
                 direction = DIRECTION_DOWN;
@@ -1658,8 +1641,6 @@ RPG_Client_Window_Level::handleEvent (const SDL_Event& event_in,
               {
                 myClientAction.position.first--;
                 myClientAction.position.second++;
-                //setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                //        RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
               } // end IF
               else
                 direction = DIRECTION_LEFT;
@@ -1672,8 +1653,6 @@ RPG_Client_Window_Level::handleEvent (const SDL_Event& event_in,
               {
                 myClientAction.position.first++;
                 myClientAction.position.second--;
-                //setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                //        -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
               } // end IF
               else
                 direction = DIRECTION_RIGHT;
@@ -1682,10 +1661,9 @@ RPG_Client_Window_Level::handleEvent (const SDL_Event& event_in,
             }
             default:
             {
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("invalid key (was: %u), aborting\n"),
-                         event_in.key.keysym.sym));
-
+              ACE_DEBUG ((LM_ERROR,
+                          ACE_TEXT ("invalid key (was: %u), aborting\n"),
+                          event_in.key.keysym.sym));
               break;
             }
           } // end SWITCH
@@ -1720,20 +1698,20 @@ RPG_Client_Window_Level::handleEvent (const SDL_Event& event_in,
                 player_action.position.first++; break;
               default:
               {
-                ACE_DEBUG((LM_ERROR,
-                           ACE_TEXT("invalid direction (was: \"%s\"), aborting\n"),
-                           ACE_TEXT(RPG_Map_DirectionHelper::RPG_Map_DirectionToString(direction).c_str())));
+                ACE_DEBUG ((LM_ERROR,
+                            ACE_TEXT ("invalid direction (was: \"%s\"), aborting\n"),
+                            ACE_TEXT (RPG_Map_DirectionHelper::RPG_Map_DirectionToString (direction).c_str ())));
                 break;
               }
             } // end SWITCH
-            player_action.path.clear();
+            player_action.path.clear ();
             player_action.target = 0;
 
-            if (myEngine->isValid(player_action.position, false))
+            if (myEngine->isValid (player_action.position, false))
             {
-              myEngine->action(myClientAction.entity_id,
-                               player_action,
-                               false);
+              myEngine->action (myClientAction.entity_id,
+                                player_action,
+                                false);
 
 //              // adjust view ?
 //              if (myClient->getCenterOnActive())
@@ -1748,7 +1726,7 @@ RPG_Client_Window_Level::handleEvent (const SDL_Event& event_in,
           else
           {
             myClientAction.command = COMMAND_SET_VIEW;
-            myClient->action(myClientAction);
+            myClient->action (myClientAction);
           } // end ELSE
 
           break;
@@ -1801,14 +1779,6 @@ RPG_Client_Window_Level::handleEvent (const SDL_Event& event_in,
         // step1: restore/clear old tile highlight background
         myClientAction.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
         myClient->action (myClientAction);
-
-        // step2: invalidate tile highlight background
-//        myClientAction.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
-//        myClient->action (myClientAction);
-        // *NOTE*: this MAY also invalidate the current cursor bg. The cursor
-        // gets redrawn anyway later; (safely) assume it to be so...
-//        myClientAction.command = COMMAND_CURSOR_INVALIDATE_BG;
-//        myClient->action (myClientAction);
 
         enum RPG_Client_SelectionMode current_mode = myClient->mode ();
         switch (current_mode)
@@ -1910,7 +1880,7 @@ RPG_Client_Window_Level::handleEvent (const SDL_Event& event_in,
 
         // draw tile highlight(s)
         myClientAction.command = COMMAND_TILE_HIGHLIGHT_DRAW;
-        myClient->action(myClientAction);
+        myClient->action (myClientAction);
       } // end IF
 
       // set an appropriate cursor
@@ -1961,7 +1931,7 @@ RPG_Client_Window_Level::handleEvent (const SDL_Event& event_in,
         //           map_position.first,
         //           map_position.second));
 
-        myClientAction.entity_id = myEngine->getActive(false);
+        myClientAction.entity_id = myEngine->getActive (false);
         bool has_seen =
           (myClientAction.entity_id ? myEngine->hasSeen (myClientAction.entity_id,
                                                          map_position,
@@ -1981,7 +1951,7 @@ RPG_Client_Window_Level::handleEvent (const SDL_Event& event_in,
         player_action.command = RPG_ENGINE_COMMAND_INVALID;
         player_action.position = map_position;
         //player_action.path.clear();
-        player_action.target = myEngine->hasEntity(map_position, false);
+        player_action.target = myEngine->hasEntity (map_position, false);
         // self ?
         if (player_action.target == myClientAction.entity_id)
         {
@@ -2005,7 +1975,7 @@ RPG_Client_Window_Level::handleEvent (const SDL_Event& event_in,
                                    map_position,
                                    false)                    &&
               (myClient->mode () == SELECTIONMODE_PATH)      &&
-              !myClientAction.path.empty())
+              !myClientAction.path.empty ())
           {
             // sanity checks
             ACE_ASSERT (myClientAction.path.front ().first == myClientAction.position);
@@ -2068,9 +2038,9 @@ RPG_Client_Window_Level::handleEvent (const SDL_Event& event_in,
               player_action.position = map_position;
 
               if (!ignore_door)
-                myEngine->action(myClientAction.entity_id,
-                                 player_action,
-                                 false);
+                myEngine->action (myClientAction.entity_id,
+                                  player_action,
+                                  false);
             } // end IF
             else if ((door_state == DOORSTATE_CLOSED) ||
                      (door_state == DOORSTATE_LOCKED))
@@ -2185,14 +2155,14 @@ RPG_Client_Window_Level::handleEvent (const SDL_Event& event_in,
 bool
 RPG_Client_Window_Level::setStyle (const RPG_Graphics_StyleUnion& style_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::setStyle"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::setStyle"));
 
   switch (style_in.discriminator)
   {
     case RPG_Graphics_StyleUnion::EDGESTYLE:
     {
-      RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(style_in.edgestyle,
-                                                      myCurrentFloorEdgeSet);
+      RPG_Graphics_Common_Tools::loadFloorEdgeTileSet (style_in.edgestyle,
+                                                       myCurrentFloorEdgeSet);
       // sanity check
       if ((myCurrentFloorEdgeSet.west.surface == NULL) &&
           (myCurrentFloorEdgeSet.north.surface == NULL) &&
@@ -2207,9 +2177,9 @@ RPG_Client_Window_Level::setStyle (const RPG_Graphics_StyleUnion& style_in)
           (myCurrentFloorEdgeSet.left.surface == NULL) &&
           (myCurrentFloorEdgeSet.bottom.surface == NULL))
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("edge-style \"%s\" has no tiles, continuing\n"),
-                   ACE_TEXT(RPG_Graphics_EdgeStyleHelper::RPG_Graphics_EdgeStyleToString(style_in.edgestyle).c_str())));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("edge-style \"%s\" has no tiles, continuing\n"),
+                    ACE_TEXT (RPG_Graphics_EdgeStyleHelper::RPG_Graphics_EdgeStyleToString (style_in.edgestyle).c_str ())));
       } // end IF
 
       // update floor edge tiles / position
@@ -2223,11 +2193,11 @@ RPG_Client_Window_Level::setStyle (const RPG_Graphics_StyleUnion& style_in)
       RPG_Graphics_Common_Tools::loadFloorTileSet (style_in.floorstyle,
                                                    myCurrentFloorSet);
       // sanity check
-      if (myCurrentFloorSet.tiles.empty())
+      if (myCurrentFloorSet.tiles.empty ())
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("floor-style \"%s\" has no tiles, continuing\n"),
-                   ACE_TEXT(RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString(style_in.floorstyle).c_str())));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("floor-style \"%s\" has no tiles, continuing\n"),
+                    ACE_TEXT (RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString (style_in.floorstyle).c_str ())));
       } // end IF
 
       break;
@@ -2243,10 +2213,9 @@ RPG_Client_Window_Level::setStyle (const RPG_Graphics_StyleUnion& style_in)
           (myCurrentWallSet.north.surface == NULL) ||
           (myCurrentWallSet.south.surface == NULL))
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("wall-style \"%s\" is incomplete, aborting\n"),
-                   ACE_TEXT(RPG_Graphics_WallStyleHelper::RPG_Graphics_WallStyleToString(style_in.wallstyle).c_str())));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("wall-style \"%s\" is incomplete, aborting\n"),
+                    ACE_TEXT (RPG_Graphics_WallStyleHelper::RPG_Graphics_WallStyleToString (style_in.wallstyle).c_str ())));
         return false;
       } // end IF
 
@@ -2257,8 +2226,8 @@ RPG_Client_Window_Level::setStyle (const RPG_Graphics_StyleUnion& style_in)
       copy = RPG_Graphics_Surface::copy (*myCurrentWallSet.east.surface);
       if (!copy)
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to RPG_Graphics_Surface::copy(), aborting\n")));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to RPG_Graphics_Surface::copy(), aborting\n")));
 
         return false;
       } // end IF
@@ -2277,99 +2246,94 @@ RPG_Client_Window_Level::setStyle (const RPG_Graphics_StyleUnion& style_in)
       myCurrentWallSet.west.surface = copy;
 
       // *NOTE*: north is just a "darkened" version of south...
-      copy = RPG_Graphics_Surface::copy(*myCurrentWallSet.south.surface);
+      copy = RPG_Graphics_Surface::copy (*myCurrentWallSet.south.surface);
       if (!copy)
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to RPG_Graphics_Surface::copy(), aborting\n")));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to RPG_Graphics_Surface::copy(), aborting\n")));
         return false;
       } // end IF
-      if (SDL_BlitSurface(myCurrentWallSet.north.surface,
-                          NULL,
-                          copy,
-                          NULL))
+      if (SDL_BlitSurface (myCurrentWallSet.north.surface,
+                           NULL,
+                           copy,
+                           NULL))
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-                   ACE_TEXT(SDL_GetError())));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to SDL_BlitSurface(): %s, aborting\n"),
+                    ACE_TEXT (SDL_GetError ())));
 
         // clean up
-        SDL_FreeSurface(copy);
+        SDL_FreeSurface (copy);
 
         return false;
       } // end IF
-      SDL_FreeSurface(myCurrentWallSet.north.surface);
+      SDL_FreeSurface (myCurrentWallSet.north.surface);
       myCurrentWallSet.north.surface = copy;
 
       // set wall opacity
       SDL_Surface* shaded_wall = NULL;
       shaded_wall =
-          RPG_Graphics_Surface::alpha(*myCurrentWallSet.east.surface,
-                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY * SDL_ALPHA_OPAQUE)));
+          RPG_Graphics_Surface::alpha (*myCurrentWallSet.east.surface,
+                                       static_cast<Uint8> ((RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
-                   static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY * SDL_ALPHA_OPAQUE))));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
+                    static_cast<Uint8> ((RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY * SDL_ALPHA_OPAQUE))));
         return false;
       } // end IF
-      SDL_FreeSurface(myCurrentWallSet.east.surface);
+      SDL_FreeSurface (myCurrentWallSet.east.surface);
       myCurrentWallSet.east.surface = shaded_wall;
 
       shaded_wall =
-          RPG_Graphics_Surface::alpha(*myCurrentWallSet.west.surface,
-                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+          RPG_Graphics_Surface::alpha (*myCurrentWallSet.west.surface,
+                                       static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
-                   static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE))));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
+                    static_cast<Uint8> ((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE))));
         return false;
       } // end IF
-      SDL_FreeSurface(myCurrentWallSet.west.surface);
+      SDL_FreeSurface (myCurrentWallSet.west.surface);
       myCurrentWallSet.west.surface = shaded_wall;
 
       shaded_wall =
-          RPG_Graphics_Surface::alpha(*myCurrentWallSet.south.surface,
-                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY * SDL_ALPHA_OPAQUE)));
+          RPG_Graphics_Surface::alpha (*myCurrentWallSet.south.surface,
+                                       static_cast<Uint8> ((RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
-                   static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY * SDL_ALPHA_OPAQUE))));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
+                    static_cast<Uint8> ((RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY * SDL_ALPHA_OPAQUE))));
         return false;
       } // end IF
-      SDL_FreeSurface(myCurrentWallSet.south.surface);
+      SDL_FreeSurface (myCurrentWallSet.south.surface);
       myCurrentWallSet.south.surface = shaded_wall;
 
       shaded_wall =
-          RPG_Graphics_Surface::alpha(*myCurrentWallSet.north.surface,
-                                      static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+          RPG_Graphics_Surface::alpha (*myCurrentWallSet.north.surface,
+                                       static_cast<Uint8> ((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE)));
       if (!shaded_wall)
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
-                   static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE))));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
+                    static_cast<Uint8> ((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE))));
         return false;
       } // end IF
-      SDL_FreeSurface(myCurrentWallSet.north.surface);
+      SDL_FreeSurface (myCurrentWallSet.north.surface);
       myCurrentWallSet.north.surface = shaded_wall;
 
       // init wall tiles / position
-      RPG_Client_Common_Tools::updateWalls(myCurrentWallSet,
-                                           myWallTiles);
+      RPG_Client_Common_Tools::updateWalls (myCurrentWallSet,
+                                            myWallTiles);
 
       break;
     }
     case RPG_Graphics_StyleUnion::DOORSTYLE:
     {
-      RPG_Graphics_Common_Tools::loadDoorTileSet(style_in.doorstyle,
-                                                 myCurrentDoorSet);
+      RPG_Graphics_Common_Tools::loadDoorTileSet (style_in.doorstyle,
+                                                  myCurrentDoorSet);
       // sanity check
       if ((myCurrentDoorSet.horizontal_open.surface == NULL)   ||
           (myCurrentDoorSet.vertical_open.surface == NULL)     ||
@@ -2377,26 +2341,24 @@ RPG_Client_Window_Level::setStyle (const RPG_Graphics_StyleUnion& style_in)
           (myCurrentDoorSet.vertical_closed.surface == NULL)   ||
           (myCurrentDoorSet.broken.surface == NULL))
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("door-style \"%s\" is incomplete, aborting\n"),
-                   ACE_TEXT(RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString(style_in.doorstyle).c_str())));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("door-style \"%s\" is incomplete, aborting\n"),
+                    ACE_TEXT (RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString (style_in.doorstyle).c_str ())));
         return false;
       } // end IF
 
       // init door tiles / position
-      RPG_Client_Common_Tools::updateDoors(myCurrentDoorSet,
-                                           *myEngine,
-                                           myDoorTiles);
+      RPG_Client_Common_Tools::updateDoors (myCurrentDoorSet,
+                                            *myEngine,
+                                            myDoorTiles);
 
       break;
     }
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid style (was: %d), aborting\n"),
-                 style_in.discriminator));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid style (was: %d), aborting\n"),
+                  style_in.discriminator));
       return false;
     }
   } // end SWITCH
@@ -2407,49 +2369,46 @@ RPG_Client_Window_Level::setStyle (const RPG_Graphics_StyleUnion& style_in)
 void
 RPG_Client_Window_Level::initCeiling()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::initCeiling"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::initCeiling"));
 
   // sanity check
   if (myCeilingTile)
   {
-    SDL_FreeSurface(myCeilingTile);
-    myCeilingTile = NULL;
+    SDL_FreeSurface (myCeilingTile); myCeilingTile = NULL;
   } // end IF
 
   // load tile for ceiling
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
   type.tilegraphic = TILE_CEILING;
-  myCeilingTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
-                                                         true,   // convert to display format
-                                                         false); // don't cache
+  myCeilingTile = RPG_Graphics_Common_Tools::loadGraphic (type,   // tile
+                                                          true,   // convert to display format
+                                                          false); // don't cache
   if (!myCeilingTile)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::toString(type).c_str())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
+                ACE_TEXT (RPG_Graphics_Common_Tools::toString (type).c_str ())));
     return;
   } // end IF
 
   SDL_Surface* shaded_ceiling = NULL;
   shaded_ceiling =
-      RPG_Graphics_Surface::alpha(*myCeilingTile,
-                                  static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE)));
+      RPG_Graphics_Surface::alpha (*myCeilingTile,
+                                   static_cast<Uint8> ((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE)));
   if (!shaded_ceiling)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
-               static_cast<Uint8>((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE))));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
+                static_cast<Uint8> ((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE))));
 
     // clean up
-    SDL_FreeSurface(myCeilingTile);
-    myCeilingTile = NULL;
+    SDL_FreeSurface (myCeilingTile); myCeilingTile = NULL;
 
     return;
   } // end IF
 
-  SDL_FreeSurface(myCeilingTile);
+  SDL_FreeSurface (myCeilingTile);
   myCeilingTile = shaded_ceiling;
 }
 
@@ -2461,8 +2420,7 @@ RPG_Client_Window_Level::initWallBlend (bool halfHeightWalls_in)
   // sanity check
   if (myWallBlend)
   {
-    SDL_FreeSurface (myWallBlend);
-    myWallBlend = NULL;
+    SDL_FreeSurface (myWallBlend); myWallBlend = NULL;
   } // end IF
 
   myWallBlend =
@@ -2513,9 +2471,9 @@ RPG_Client_Window_Level::initMiniMap (bool debug_in)
                                                debug_in));
   if (!minimap_window)
   {
-    ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate memory(%u): %m, aborting\n"),
-               sizeof(RPG_Client_Window_MiniMap)));
+    ACE_DEBUG ((LM_CRITICAL,
+                ACE_TEXT ("failed to allocate memory(%u): %m, aborting\n"),
+                sizeof (RPG_Client_Window_MiniMap)));
     return false;
   } // end IF
 

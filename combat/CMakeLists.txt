@@ -17,7 +17,7 @@ set (${LIBRARY}_SRCS
      rpg_combat_damageduration.h
      rpg_combat_damagereductiontype.h
      rpg_combat_defensesituation.h
-   #  rpg_combat_exports.h
+     rpg_combat_defines.h
      rpg_combat_incl.h
      rpg_combat_otherdamage.h
      rpg_combat_otherdamagetype.h
@@ -79,8 +79,9 @@ target_precompile_headers (${LIBRARY}
                            PRIVATE stdafx.h)
 
 ########### install files ###############
-install (FILES rpg_combat.xsd
-         DESTINATION share/RPG/config)
+install (FILES
+         etc/rpg_combat.xsd
+         DESTINATION ${INSTALL_SHARE_DIR} COMPONENT config)
 install (FILES
          rpg_combat_attackform.h
          rpg_combat_attacksituation.h
@@ -95,7 +96,7 @@ install (FILES
          rpg_combat_damagereductiontype.h
          rpg_combat_damagetypeunion.h
          rpg_combat_defensesituation.h
-        # rpg_combat_exports.h
+         rpg_combat_defines.h
          rpg_combat_incl.h
          rpg_combat_otherdamage.h
          rpg_combat_otherdamagetype.h

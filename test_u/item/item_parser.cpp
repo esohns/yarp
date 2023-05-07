@@ -187,21 +187,19 @@ do_work (const std::string& schemaRepository_in,
   RPG_Item_Common_Tools::initializeStringConversionTables ();
 
   // step2: initialize item dictionary
-  if (!RPG_Common_XML_Tools::initialize (schemaRepository_in))
+  std::vector<std::string> schema_directories_a;
+  schema_directories_a.push_back (schemaRepository_in);
+  if (!RPG_Common_XML_Tools::initialize (schema_directories_a))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Common_XML_Tools::initialize(), returning\n")));
     return;
   } // end IF
-  try
-  {
+  try {
     RPG_ITEM_DICTIONARY_SINGLETON::instance ()->init (fileName_in);
-  }
-  catch(...)
-  {
+  } catch (...) {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("caught exception in RPG_Item_Dictionary::init, returning\n")));
-
     return;
   }
 

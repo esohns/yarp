@@ -62,20 +62,26 @@
 
 #include "net_client_defines.h"
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #include "rpg_config.h"
-#endif
+#endif // HAVE_CONFIG_H
+
+#include "rpg_chance_defines.h"
+
+#include "rpg_dice_defines.h"
 
 #include "rpg_common_defines.h"
 #include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
 #include "rpg_common_tools.h"
 
+#include "rpg_character_defines.h"
+
 #include "rpg_magic_defines.h"
 
 #include "rpg_item_defines.h"
 
-#include "rpg_character_defines.h"
+#include "rpg_combat_defines.h"
 
 #include "rpg_player.h"
 #include "rpg_player_common_tools.h"
@@ -506,12 +512,7 @@ do_processArguments(const int& argc_in,
 
   skipIntro_out           = false;
 
-  configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                            ACE_TEXT_ALWAYS_CHAR (""),
-                                                            ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
-                                                            true);
-  schemaRepository_out    = configuration_path;
+  schemaRepository_out    = Common_File_Tools::getWorkingDirectory ();
 
   configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -792,13 +793,87 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   COMMON_TIMERMANAGER_SINGLETON::instance ()->start (NULL);
 
   // step1: init RPG engine
-  RPG_Engine_Common_Tools::initialize (schemaRepository_in,
+  std::vector<std::string> schema_directories_a;
+  if (Common_Error_Tools::inDebugSession ())
+  {
+    std::string schema_path = schemaRepository_in;
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_CHANCE_SUB_DIRECTORY_STRING);
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_DICE_SUB_DIRECTORY_STRING);
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    schema_directories_a.push_back (schema_path);
+
+    schema_path = schemaRepository_in;
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_SUB_DIRECTORY_STRING);
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    schema_directories_a.push_back (schema_path);
+
+    schema_path = schemaRepository_in;
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_CHARACTER_SUB_DIRECTORY_STRING);
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    schema_directories_a.push_back (schema_path);
+
+    schema_path = schemaRepository_in;
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_SUB_DIRECTORY_STRING);
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    schema_directories_a.push_back (schema_path);
+
+    schema_path = schemaRepository_in;
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_SUB_DIRECTORY_STRING);
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    schema_directories_a.push_back (schema_path);
+
+    schema_path = schemaRepository_in;
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_COMBAT_SUB_DIRECTORY_STRING);
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    schema_directories_a.push_back (schema_path);
+
+    schema_path = schemaRepository_in;
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_SUB_DIRECTORY_STRING);
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    schema_directories_a.push_back (schema_path);
+
+    schema_path = schemaRepository_in;
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_SUB_DIRECTORY_STRING);
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    schema_directories_a.push_back (schema_path);
+
+    schema_path = schemaRepository_in;
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_SUB_DIRECTORY_STRING);
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    schema_directories_a.push_back (schema_path);
+
+    schema_path = schemaRepository_in;
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING);
+    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    schema_directories_a.push_back (schema_path);
+  } // end IF
+  else
+    schema_directories_a.push_back (schemaRepository_in);
+  RPG_Engine_Common_Tools::initialize (schema_directories_a,
                                        configuration_in.magic_dictionary,
                                        configuration_in.item_dictionary,
                                        configuration_in.monster_dictionary);
-#if defined (DEBUG_DEBUGGER)
-  RPG_Client_Common_Tools::initializeClientDictionaries ();
-#endif // DEBUG_DEBUGGER
   if (!RPG_Client_Common_Tools::initialize (configuration_in.input_configuration,
                                             configuration_in.audio_configuration.SDL_configuration,
                                             configuration_in.audio_configuration.repository,
@@ -1930,12 +2005,7 @@ ACE_TMAIN (int argc_in,
   UI_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   UI_file += ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_UI_FILE);
 
-  configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                            ACE_TEXT_ALWAYS_CHAR (""),
-                                                            ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
-                                                            true); // configuration-
-  std::string schema_repository     = configuration_path;
+  std::string schema_repository     = Common_File_Tools::getWorkingDirectory ();
 
   std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),

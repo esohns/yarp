@@ -167,7 +167,9 @@ target_precompile_headers (${EXECUTABLE}
                            PRIVATE stdafx.h)
 
 ########### install files ###############
-install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
+install (TARGETS ${EXECUTABLE}
+#         EXPORT ${PROJECT_NAME}Targets
+         RUNTIME DESTINATION ${INSTALL_BIN_DIR} COMPONENT test_u)
 
 ########### launcher ###############
 if (UNIX)
@@ -176,9 +178,59 @@ if (UNIX)
                          COMMAND ${COMMAND}
                          ARGS "-l -n -t"
                          FORWARD_ARGS
-                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test_u/client
+                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                          ENVIRONMENT foo=bar)
 elseif (WIN32)
+ get_filename_component (ACE_LIB_PATH ${ACE_LIBRARY}
+                         DIRECTORY)
+# set (ACE_DLL_FILE ACE${LIB_FILE_SUFFIX}.dll)
+ set (ACE_DLL_FILE ACE.dll)
+ set (ACE_DLL_FQPATH ${ACE_LIB_PATH}/${ACE_DLL_FILE})
+ set (ACED_DLL_FILE ACEd.dll)
+ set (ACED_DLL_FQPATH ${ACE_LIB_PATH}/${ACED_DLL_FILE})
+ set (ACE_SSL_DLL_FILE ACE_SSLd.dll)
+ set (ACE_SSL_DLL_FQPATH ${ACE_LIB_PATH}/${ACE_SSL_DLL_FILE})
+ file (TO_NATIVE_PATH $ENV{LIB_ROOT} LIB_ROOT)
+ string (REPLACE "\\" "\\\\" LIB_ROOT ${LIB_ROOT})
+ install (FILES ${ACE_DLL_FQPATH} ${ACED_DLL_FQPATH}
+                ${ACE_SSL_DLL_FQPATH}
+                ${LIB_ROOT}/gtk3/bin/libatk-1.0-0.dll
+                ${LIB_ROOT}/gtk3/bin/libfreetype-6.dll
+                ${LIB_ROOT}/gtk3/bin/libintl-8.dll
+                ${LIB_ROOT}/gtk3/bin/libcairo-2.dll
+                ${LIB_ROOT}/gtk3/bin/libcairo-gobject-2.dll
+                ${LIB_ROOT}/gtk3/bin/libfontconfig-1.dll
+                ${LIB_ROOT}/gtk3/bin/libgio-2.0-0.dll
+                ${LIB_ROOT}/gtk3/bin/libglib-2.0-0.dll
+                ${LIB_ROOT}/gtk3/bin/libgmodule-2.0-0.dll
+                ${LIB_ROOT}/gtk3/bin/libgobject-2.0-0.dll
+                ${LIB_ROOT}/gtk3/bin/libgthread-2.0-0.dll
+                ${LIB_ROOT}/gtk3/bin/libgdk_pixbuf-2.0-0.dll
+                ${LIB_ROOT}/gtk3/bin/libgdk-3-0.dll
+                ${LIB_ROOT}/gtk3/bin/libgtk-3-0.dll
+                ${LIB_ROOT}/gtk3/bin/libpango-1.0-0.dll
+                ${LIB_ROOT}/gtk3/bin/libpangocairo-1.0-0.dll
+                ${LIB_ROOT}/gtk3/bin/libpangoft2-1.0-0.dll
+                ${LIB_ROOT}/gtk3/bin/libpangowin32-1.0-0.dll
+                ${LIB_ROOT}/gtk3/bin/libiconv-2.dll
+                ${LIB_ROOT}/gtk3/bin/libpng15-15.dll
+                ${LIB_ROOT}/gtk3/bin/liblzma-5.dll
+                ${LIB_ROOT}/gtk3/bin/zlib1.dll
+                ${LIB_ROOT}/gtk3/bin/libxml2-2.dll
+                ${LIB_ROOT}/gtk3/bin/libffi-6.dll
+                ${LIB_ROOT}/gtk3/bin/libwinpthread-1.dll
+                ${LIB_ROOT}/gtk3/bin/libpixman-1-0.dll
+                ${LIB_ROOT}/SDL2_mixer/lib/x64/SDL2_mixer.dll
+                ${LIB_ROOT}/SDL2_ttf/lib/x64/SDL2_ttf.dll
+                ${LIB_ROOT}/SDL2/lib/x64/SDL2.dll
+                ${LIB_ROOT}/xerces-c/build/msvc/src/${CMAKE_BUILD_TYPE}/xerces-c_3_2D.dll
+                ${LIB_ROOT}/libepoxy/bin/epoxy-0.dll
+                ${LIB_ROOT}/libpng/build/${CMAKE_BUILD_TYPE}/libpng16d.dll
+                ${LIB_ROOT}/openssl/libcrypto-3-x64.dll
+                ${LIB_ROOT}/openssl/libssl-3-x64.dll
+                ${LIB_ROOT}/zlib/build/${CMAKE_BUILD_TYPE}/zlibd.dll
+          DESTINATION ${INSTALL_BIN_DIR} COMPONENT test_u)
+
  file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
  file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}.exe" COMMAND)
  string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
@@ -201,6 +253,6 @@ elseif (WIN32)
 #                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/ui/Debug
 #                                              ${PROJECT_SOURCE_DIR}/cmake/src/Debug
 #                                              ${PROJECT_SOURCE_DIR}/cmake/src/modules/vis/Debug
-                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test_u/client
+                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                          ENVIRONMENT foo=bar)
 endif ()

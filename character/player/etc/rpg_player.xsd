@@ -7,13 +7,13 @@
             attributeFormDefault="qualified">
 
 <!-- include common schema -->
-  <xsd:include schemaLocation="../../common/rpg_common.xsd"/>
+  <xsd:include schemaLocation="rpg_common.xsd"/>
 <!-- include magic schema -->
-  <xsd:include schemaLocation="../../magic/rpg_magic.xsd"/>
+  <xsd:include schemaLocation="rpg_magic.xsd"/>
 <!-- include item schema -->
-  <xsd:include schemaLocation="../../item/rpg_item.xsd"/>
+  <xsd:include schemaLocation="rpg_item.xsd"/>
 <!-- include character schema -->
-  <xsd:include schemaLocation="../rpg_character.xsd"/>
+  <xsd:include schemaLocation="rpg_character.xsd"/>
 
   <xsd:annotation>
     <xsd:documentation xml:lang="en">

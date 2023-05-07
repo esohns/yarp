@@ -106,8 +106,9 @@ target_precompile_headers (${LIBRARY}
                            PRIVATE stdafx.h)
 
 ########### install files ###############
-install (FILES rpg_character.xsd
-         DESTINATION share/RPG/config)
+install (FILES
+         etc/rpg_character.xsd
+         DESTINATION ${INSTALL_SHARE_DIR} COMPONENT config)
 install (FILES
 #         rpg_XMLSchema_XML_tree.h
          rpg_character_ability.h

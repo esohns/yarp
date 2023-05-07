@@ -1,12 +1,11 @@
-include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/Threads.cmake)
-
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/ACE.cmake)
 
 ########### next target ###############
 set (LIBRARY RPG_Chance)
 set (${LIBRARY}_SRCS
      rpg_chance_common_tools.cpp
-     rpg_chance_common_tools.h)
+     rpg_chance_common_tools.h
+     rpg_chance_defines.h)
 
 #set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_CHANCE_BUILD_DLL)
 
@@ -37,7 +36,7 @@ target_precompile_headers (${LIBRARY}
 ########### install files ###############
 install (FILES
          rpg_chance_common_tools.h
-       # rpg_chance_exports.h
+         rpg_chance_defines.h
          DESTINATION include)
 install (TARGETS ${LIBRARY} LIBRARY DESTINATION lib)
 
