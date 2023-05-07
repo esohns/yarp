@@ -1470,7 +1470,7 @@
     <type>TILE_OFF_MAP</type>
     <tile>
       <type>TILETYPE_FLOOR</type>
-      <file>floor_dark_0_0.png</file>
+      <file>floor_black.png</file>
     </tile>
   </graphic>
   <graphic>

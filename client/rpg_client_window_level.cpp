@@ -104,7 +104,7 @@ RPG_Client_Window_Level::RPG_Client_Window_Level (const RPG_Graphics_SDLWindowBa
 
   ACE_OS::memset (&myCurrentFloorEdgeSet, 0, sizeof (struct RPG_Graphics_FloorEdgeTileSet));
   ACE_OS::memset (&myCurrentWallSet, 0, sizeof (struct RPG_Graphics_WallTileSet));
-  ACE_OS::memset(&myCurrentDoorSet, 0, sizeof (struct RPG_Graphics_DoorTileSet));
+  ACE_OS::memset (&myCurrentDoorSet, 0, sizeof (struct RPG_Graphics_DoorTileSet));
 //   RPG_Client_Common_Tools::initFloorEdges(myEngine->getFloorPlan(),
 //                                           myCurrentFloorEdgeSet,
 //                                           myFloorEdgeTiles);
@@ -171,80 +171,80 @@ RPG_Client_Window_Level::RPG_Client_Window_Level (const RPG_Graphics_SDLWindowBa
 
 RPG_Client_Window_Level::~RPG_Client_Window_Level()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::~RPG_Client_Window_Level"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::~RPG_Client_Window_Level"));
 
   // clean up
-  for (RPG_Graphics_FloorTilesConstIterator_t iterator = myCurrentFloorSet.tiles.begin();
-       iterator != myCurrentFloorSet.tiles.end();
+  for (RPG_Graphics_FloorTilesConstIterator_t iterator = myCurrentFloorSet.tiles.begin ();
+       iterator != myCurrentFloorSet.tiles.end ();
        iterator++)
-    SDL_FreeSurface((*iterator).surface);
+    SDL_FreeSurface ((*iterator).surface);
 
   if (myCurrentFloorEdgeSet.east.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.east.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.east.surface);
   if (myCurrentFloorEdgeSet.west.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.west.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.west.surface);
   if (myCurrentFloorEdgeSet.north.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.north.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.north.surface);
   if (myCurrentFloorEdgeSet.south.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.south.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.south.surface);
   if (myCurrentFloorEdgeSet.south_east.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.south_east.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.south_east.surface);
   if (myCurrentFloorEdgeSet.south_west.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.south_west.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.south_west.surface);
   if (myCurrentFloorEdgeSet.north_east.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.north_east.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.north_east.surface);
   if (myCurrentFloorEdgeSet.north_west.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.north_west.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.north_west.surface);
   if (myCurrentFloorEdgeSet.top.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.top.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.top.surface);
   if (myCurrentFloorEdgeSet.right.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.right.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.right.surface);
   if (myCurrentFloorEdgeSet.left.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.left.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.left.surface);
   if (myCurrentFloorEdgeSet.bottom.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.bottom.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.bottom.surface);
 
   if (myCurrentWallSet.east.surface)
-    SDL_FreeSurface(myCurrentWallSet.east.surface);
+    SDL_FreeSurface (myCurrentWallSet.east.surface);
   if (myCurrentWallSet.west.surface)
-    SDL_FreeSurface(myCurrentWallSet.west.surface);
+    SDL_FreeSurface (myCurrentWallSet.west.surface);
   if (myCurrentWallSet.north.surface)
-    SDL_FreeSurface(myCurrentWallSet.north.surface);
+    SDL_FreeSurface (myCurrentWallSet.north.surface);
   if (myCurrentWallSet.south.surface)
-    SDL_FreeSurface(myCurrentWallSet.south.surface);
+    SDL_FreeSurface (myCurrentWallSet.south.surface);
 
   if (myWallBlend)
-    SDL_FreeSurface(myWallBlend);
+    SDL_FreeSurface (myWallBlend);
 
-  for (RPG_Client_BlendingMaskCacheIterator_t iterator = myLightingCache.begin();
-       iterator != myLightingCache.end();
+  for (RPG_Client_BlendingMaskCacheIterator_t iterator = myLightingCache.begin ();
+       iterator != myLightingCache.end ();
        iterator++)
-    SDL_FreeSurface(*iterator);
+    SDL_FreeSurface (*iterator);
 
   if (myCurrentDoorSet.horizontal_open.surface)
-    SDL_FreeSurface(myCurrentDoorSet.horizontal_open.surface);
+    SDL_FreeSurface (myCurrentDoorSet.horizontal_open.surface);
   if (myCurrentDoorSet.vertical_open.surface)
-    SDL_FreeSurface(myCurrentDoorSet.vertical_open.surface);
+    SDL_FreeSurface (myCurrentDoorSet.vertical_open.surface);
   if (myCurrentDoorSet.horizontal_closed.surface)
-    SDL_FreeSurface(myCurrentDoorSet.horizontal_closed.surface);
+    SDL_FreeSurface (myCurrentDoorSet.horizontal_closed.surface);
   if (myCurrentDoorSet.vertical_closed.surface)
-    SDL_FreeSurface(myCurrentDoorSet.vertical_closed.surface);
+    SDL_FreeSurface (myCurrentDoorSet.vertical_closed.surface);
   if (myCurrentDoorSet.broken.surface)
-    SDL_FreeSurface(myCurrentDoorSet.broken.surface);
+    SDL_FreeSurface (myCurrentDoorSet.broken.surface);
 
   if (myCeilingTile)
-    SDL_FreeSurface(myCeilingTile);
+    SDL_FreeSurface (myCeilingTile);
 
   if (myOffMapTile)
-    SDL_FreeSurface(myOffMapTile);
+    SDL_FreeSurface (myOffMapTile);
 
   if (myInvisibleTile)
-    SDL_FreeSurface(myInvisibleTile);
+    SDL_FreeSurface (myInvisibleTile);
 
   if (myVisionBlendTile)
-    SDL_FreeSurface(myVisionBlendTile);
+    SDL_FreeSurface (myVisionBlendTile);
   if (myVisionTempTile)
-    SDL_FreeSurface(myVisionTempTile);
+    SDL_FreeSurface (myVisionTempTile);
 }
 
 void
@@ -252,7 +252,7 @@ RPG_Client_Window_Level::setView(const RPG_Map_Position_t& view_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Client_Window_Level::setView"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  ACE_Guard<ACE_Thread_Mutex> aGuard (myLock);
 
   myView = view_in;
 }

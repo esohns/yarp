@@ -43,23 +43,23 @@ class RPG_Graphics_Surface
  public:
   static Uint32 SDL_surface_flags;
 
-  RPG_Graphics_Surface();
-  RPG_Graphics_Surface(const RPG_Graphics_Surface&);
+  RPG_Graphics_Surface ();
+  RPG_Graphics_Surface (const RPG_Graphics_Surface&);
   // *NOTE*: if ownership is rejected, the surface will be cached...
-  RPG_Graphics_Surface(const RPG_Graphics_GraphicTypeUnion&, // type
-                       const bool&);                         // assume ownership ?
-  RPG_Graphics_Surface(SDL_Surface*, // SDL surface
-                       const bool&); // assume ownership ?
-  virtual ~RPG_Graphics_Surface();
+  RPG_Graphics_Surface (const RPG_Graphics_GraphicTypeUnion&, // type
+                        bool);                                // assume ownership ?
+  RPG_Graphics_Surface (SDL_Surface*, // SDL surface
+                        bool);        // assume ownership ?
+  virtual ~RPG_Graphics_Surface ();
 
   // *NOTE*: if ownership is rejected, the surface will be cached...
-  void init(const RPG_Graphics_GraphicTypeUnion&, // type
-            const bool&);                         // assume ownership ?
-  void init(SDL_Surface*, // SDL surface
-            const bool&); // assume ownership ?
-  RPG_Graphics_GraphicTypeUnion type() const;
+  void init (const RPG_Graphics_GraphicTypeUnion&, // type
+             bool);                                // assume ownership ?
+  void init (SDL_Surface*, // SDL surface
+             bool);        // assume ownership ?
+  RPG_Graphics_GraphicTypeUnion type () const;
   // *WARNING*: NEVER SDL_FreeSurface() the return argument !
-  SDL_Surface* surface() const;
+  SDL_Surface* surface () const;
 
   // clip/unclip the SDL window ("screen");
 #if defined (SDL_USE)

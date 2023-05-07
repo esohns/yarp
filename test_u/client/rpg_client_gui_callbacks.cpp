@@ -4788,7 +4788,8 @@ levelup_dialog_response_cb (GtkDialog* dialog_in,
     ACE_ASSERT (tree_selection_p);
     GList* list_p = gtk_tree_selection_get_selected_rows (tree_selection_p,
                                                           NULL);
-    ACE_ASSERT (list_p);
+    if (!list_p)
+      goto continue_; // no selection
     GtkTreeIter tree_iterator;
     GtkListStore* list_store_p =
         GTK_LIST_STORE (gtk_builder_get_object ((*iterator).second.second,
@@ -4811,7 +4812,7 @@ levelup_dialog_response_cb (GtkDialog* dialog_in,
       const_cast<RPG_Character_Feats_t&> (player->getFeats ()).insert (static_cast<enum RPG_Character_Feat> (data_i));
     } // end FOR
     g_list_free_full (list_p, (GDestroyNotify)gtk_tree_path_free);
-
+continue_:
     RPG_Character_Skills_t& skills_a =
         const_cast<RPG_Character_Skills_t&> (player->getSkills ());
     list_store_p =
@@ -4849,7 +4850,7 @@ levelup_dialog_response_cb (GtkDialog* dialog_in,
     list_p = gtk_tree_selection_get_selected_rows (tree_selection_p,
                                                    NULL);
     if (!list_p)
-      goto continue_; // no selection
+      goto continue_2; // no selection
     list_store_p =
         GTK_LIST_STORE (gtk_builder_get_object ((*iterator).second.second,
                                                 ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_LISTSTORE_SPELLS_NAME)));
@@ -4872,7 +4873,7 @@ levelup_dialog_response_cb (GtkDialog* dialog_in,
     } // end FOR
     g_list_free_full (list_p, (GDestroyNotify)gtk_tree_path_free);
 
-continue_:
+continue_2:
     ::update_entity_profile (data_p->entity,
                              (*iterator).second.second);
 

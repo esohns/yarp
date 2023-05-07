@@ -73,8 +73,8 @@ class RPG_Graphics_Common_Tools
   static void loadFloorTileSet(const RPG_Graphics_FloorStyle&, // style
                                struct RPG_Graphics_FloorTileSet&);  // return value: tileset
   // *NOTE*: tileset needs to be SDL_FreeSurface()ed by the user !
-  static void loadWallTileSet(const RPG_Graphics_WallStyle&, // style
-                              const bool&,                   // half-height walls ?
+  static void loadWallTileSet(const RPG_Graphics_WallStyle&,      // style
+                              bool,                               // half-height walls ?
                               struct RPG_Graphics_WallTileSet&);  // return value: tileset
     // *NOTE*: tileset needs to be SDL_FreeSurface()ed by the user !
   static void loadDoorTileSet(const RPG_Graphics_DoorStyle&, // style
@@ -132,7 +132,7 @@ class RPG_Graphics_Common_Tools
 
   // convert style (wall-, floor-, ...) to appropriate graphic (meta)type
   static RPG_Graphics_GraphicTypeUnion styleToType(const RPG_Graphics_StyleUnion&, // style (generic)
-                                                   const bool& = false);           // half-height (wallstyle only) ?
+                                                   bool = false);                  // half-height (wallstyle only) ?
 
 #if defined (SDL_USE)
   static void fade (float,         // interval (seconds)

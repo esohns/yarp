@@ -983,9 +983,10 @@ do_generatePlayer ()
       if (!RPG_Magic_Common_Tools::isDivineCasterClass (*iterator))
       {
         // step2: compute # known spells
-        num_known_spells = RPG_Magic_Common_Tools::getNumKnownSpells (*iterator,
-                                                                      1,
-                                                                      i);
+        num_known_spells =
+          static_cast<unsigned char> (RPG_Magic_Common_Tools::getNumKnownSpells (*iterator,
+                                                                                 1,
+                                                                                 i));
 
         ACE_DEBUG ((LM_DEBUG,
                     ACE_TEXT ("number of initial known spells (lvl %d) for subClass \"%s\" is: %d...\n"),

@@ -19,9 +19,6 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-//// *NOTE*: workaround quirky MSVC...
-//#define NOMINMAX
-
 #include "rpg_graphics_common_tools.h"
 
 #include <sstream>
@@ -109,8 +106,8 @@ RPG_Graphics_Common_Tools::initialize (const std::string& directory_in,
     if (!Common_File_Tools::isDirectory (directory_in))
     {
       // re-try with resolved path
-      std::string resolved_path = Common_File_Tools::realPath(directory_in);
-      if (!Common_File_Tools::isDirectory(resolved_path))
+      std::string resolved_path = Common_File_Tools::realPath (directory_in);
+      if (!Common_File_Tools::isDirectory (resolved_path))
       {
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("invalid argument \"%s\": not a directory, aborting\n"),
@@ -179,336 +176,332 @@ RPG_Graphics_Common_Tools::finalize ()
 }
 
 std::string
-RPG_Graphics_Common_Tools::getGraphicsDirectory()
+RPG_Graphics_Common_Tools::getGraphicsDirectory ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::getGraphicsDirectory"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::getGraphicsDirectory"));
 
   // sanity check
-  ACE_ASSERT(!myGraphicsDirectory.empty());
+  ACE_ASSERT(!myGraphicsDirectory.empty ());
 
   return myGraphicsDirectory;
 }
 
 std::string
-RPG_Graphics_Common_Tools::toString(const RPG_Graphics_StyleUnion& style_in)
+RPG_Graphics_Common_Tools::toString (const RPG_Graphics_StyleUnion& style_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::styleToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::styleToString"));
 
   switch (style_in.discriminator)
   {
     case RPG_Graphics_StyleUnion::FLOORSTYLE:
-      return RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString(style_in.floorstyle);
+      return RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString (style_in.floorstyle);
     case RPG_Graphics_StyleUnion::EDGESTYLE:
-      return RPG_Graphics_EdgeStyleHelper::RPG_Graphics_EdgeStyleToString(style_in.edgestyle);
+      return RPG_Graphics_EdgeStyleHelper::RPG_Graphics_EdgeStyleToString (style_in.edgestyle);
     case RPG_Graphics_StyleUnion::STAIRSSTYLE:
-      return RPG_Graphics_StairsStyleHelper::RPG_Graphics_StairsStyleToString(style_in.stairsstyle);
+      return RPG_Graphics_StairsStyleHelper::RPG_Graphics_StairsStyleToString (style_in.stairsstyle);
     case RPG_Graphics_StyleUnion::WALLSTYLE:
-      return RPG_Graphics_WallStyleHelper::RPG_Graphics_WallStyleToString(style_in.wallstyle);
+      return RPG_Graphics_WallStyleHelper::RPG_Graphics_WallStyleToString (style_in.wallstyle);
     case RPG_Graphics_StyleUnion::DOORSTYLE:
-      return RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString(style_in.doorstyle);
+      return RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString (style_in.doorstyle);
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid style (was: %d), aborting\n"),
-                 style_in.discriminator));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid style (was: %d), aborting\n"),
+                  style_in.discriminator));
       break;
     }
   } // end SWITCH
 
-  return std::string(ACE_TEXT_ALWAYS_CHAR("INVALID"));
+  return std::string(ACE_TEXT_ALWAYS_CHAR ("INVALID"));
 }
 
 std::string
-RPG_Graphics_Common_Tools::toString(const RPG_Graphics_GraphicTypeUnion& type_in)
+RPG_Graphics_Common_Tools::toString (const RPG_Graphics_GraphicTypeUnion& type_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::typeToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::typeToString"));
 
   switch (type_in.discriminator)
   {
     case RPG_Graphics_GraphicTypeUnion::CURSOR:
-      return RPG_Graphics_CursorHelper::RPG_Graphics_CursorToString(type_in.cursor);
+      return RPG_Graphics_CursorHelper::RPG_Graphics_CursorToString (type_in.cursor);
     case RPG_Graphics_GraphicTypeUnion::FONT:
-      return RPG_Graphics_FontHelper::RPG_Graphics_FontToString(type_in.font);
+      return RPG_Graphics_FontHelper::RPG_Graphics_FontToString (type_in.font);
     case RPG_Graphics_GraphicTypeUnion::IMAGE:
-      return RPG_Graphics_ImageHelper::RPG_Graphics_ImageToString(type_in.image);
+      return RPG_Graphics_ImageHelper::RPG_Graphics_ImageToString (type_in.image);
     case RPG_Graphics_GraphicTypeUnion::SPRITE:
-      return RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(type_in.sprite);
+      return RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString (type_in.sprite);
     case RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC:
-      return RPG_Graphics_TileGraphicHelper::RPG_Graphics_TileGraphicToString(type_in.tilegraphic);
+      return RPG_Graphics_TileGraphicHelper::RPG_Graphics_TileGraphicToString (type_in.tilegraphic);
     case RPG_Graphics_GraphicTypeUnion::TILESETGRAPHIC:
-      return RPG_Graphics_TileSetGraphicHelper::RPG_Graphics_TileSetGraphicToString(type_in.tilesetgraphic);
+      return RPG_Graphics_TileSetGraphicHelper::RPG_Graphics_TileSetGraphicToString (type_in.tilesetgraphic);
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid RPG_Graphics_GraphicTypeUnion type (was: %d), aborting\n"),
-                 type_in.discriminator));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid RPG_Graphics_GraphicTypeUnion type (was: %d), aborting\n"),
+                  type_in.discriminator));
       break;
     }
   } // end SWITCH
 
-  return std::string(ACE_TEXT_ALWAYS_CHAR("INVALID"));
+  return std::string (ACE_TEXT_ALWAYS_CHAR ("INVALID"));
 }
 
 std::string
-RPG_Graphics_Common_Tools::toString(const RPG_Graphics_Tile& tile_in)
+RPG_Graphics_Common_Tools::toString (const RPG_Graphics_Tile& tile_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::tileToString"));
 
   std::string result;
 
-  result += ACE_TEXT_ALWAYS_CHAR("type: ");
+  result += ACE_TEXT_ALWAYS_CHAR ("type: ");
   result +=
-      RPG_Graphics_TileTypeHelper::RPG_Graphics_TileTypeToString(tile_in.type);
-  result += ACE_TEXT_ALWAYS_CHAR("\n");
-  result += ACE_TEXT_ALWAYS_CHAR("reference: ");
+      RPG_Graphics_TileTypeHelper::RPG_Graphics_TileTypeToString (tile_in.type);
+  result += ACE_TEXT_ALWAYS_CHAR ("\n");
+  result += ACE_TEXT_ALWAYS_CHAR ("reference: ");
   switch (tile_in.reference.discriminator)
   {
     case RPG_Graphics_GraphicTypeUnion::CURSOR:
       result +=
-          RPG_Graphics_CursorHelper::RPG_Graphics_CursorToString(tile_in.reference.cursor); break;
+          RPG_Graphics_CursorHelper::RPG_Graphics_CursorToString (tile_in.reference.cursor); break;
     case RPG_Graphics_GraphicTypeUnion::FONT:
       result +=
-          RPG_Graphics_FontHelper::RPG_Graphics_FontToString(tile_in.reference.font); break;
+          RPG_Graphics_FontHelper::RPG_Graphics_FontToString (tile_in.reference.font); break;
     case RPG_Graphics_GraphicTypeUnion::IMAGE:
       result +=
-          RPG_Graphics_ImageHelper::RPG_Graphics_ImageToString(tile_in.reference.image); break;
+          RPG_Graphics_ImageHelper::RPG_Graphics_ImageToString (tile_in.reference.image); break;
     case RPG_Graphics_GraphicTypeUnion::SPRITE:
       result +=
-          RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString(tile_in.reference.sprite); break;
+          RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString (tile_in.reference.sprite); break;
     case RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC:
       result +=
-          RPG_Graphics_TileGraphicHelper::RPG_Graphics_TileGraphicToString(tile_in.reference.tilegraphic); break;
+          RPG_Graphics_TileGraphicHelper::RPG_Graphics_TileGraphicToString (tile_in.reference.tilegraphic); break;
     case RPG_Graphics_GraphicTypeUnion::TILESETGRAPHIC:
       result +=
-          RPG_Graphics_TileSetGraphicHelper::RPG_Graphics_TileSetGraphicToString(tile_in.reference.tilesetgraphic); break;
+          RPG_Graphics_TileSetGraphicHelper::RPG_Graphics_TileSetGraphicToString (tile_in.reference.tilesetgraphic); break;
     case RPG_Graphics_GraphicTypeUnion::INVALID:
-      result += ACE_TEXT_ALWAYS_CHAR("N/A"); break;
+      result += ACE_TEXT_ALWAYS_CHAR ("N/A"); break;
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid RPG_Graphics_GraphicTypeUnion type (was: %d), continuing\n"),
-                 tile_in.reference.discriminator));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid RPG_Graphics_GraphicTypeUnion type (was: %d), continuing\n"),
+                  tile_in.reference.discriminator));
       break;
     }
   } // end SWITCH
-  result += ACE_TEXT_ALWAYS_CHAR("\n");
-  result += ACE_TEXT_ALWAYS_CHAR("style: ");
+  result += ACE_TEXT_ALWAYS_CHAR ("\n");
+  result += ACE_TEXT_ALWAYS_CHAR ("style: ");
   if (tile_in.style.discriminator == RPG_Graphics_StyleUnion::INVALID)
-    result += ACE_TEXT_ALWAYS_CHAR("N/A");
+    result += ACE_TEXT_ALWAYS_CHAR ("N/A");
   else
-    result += RPG_Graphics_Common_Tools::toString(tile_in.style);
-  result += ACE_TEXT_ALWAYS_CHAR("\n");
-  result += ACE_TEXT_ALWAYS_CHAR("orientation: ");
+    result += RPG_Graphics_Common_Tools::toString (tile_in.style);
+  result += ACE_TEXT_ALWAYS_CHAR ("\n");
+  result += ACE_TEXT_ALWAYS_CHAR ("orientation: ");
   result +=
       ((tile_in.orientation ==
-        RPG_GRAPHICS_ORIENTATION_INVALID) ? ACE_TEXT("N/A")
-                                          : RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString(tile_in.orientation));
-  result += ACE_TEXT_ALWAYS_CHAR("\n");
-  result += ACE_TEXT_ALWAYS_CHAR("file: ");
+        RPG_GRAPHICS_ORIENTATION_INVALID) ? ACE_TEXT ("N/A")
+                                          : RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString (tile_in.orientation));
+  result += ACE_TEXT_ALWAYS_CHAR ("\n");
+  result += ACE_TEXT_ALWAYS_CHAR ("file: ");
   result += tile_in.file;
-  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  result += ACE_TEXT_ALWAYS_CHAR ("\n");
   std::ostringstream converter;
-  result += ACE_TEXT_ALWAYS_CHAR("offset (x,y): ");
+  result += ACE_TEXT_ALWAYS_CHAR ("offset (x,y): ");
   converter << tile_in.offsetX;
-  result += converter.str();
-  result += ACE_TEXT_ALWAYS_CHAR(",");
-  converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-  converter.clear();
+  result += converter.str ();
+  result += ACE_TEXT_ALWAYS_CHAR (",");
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
   converter << tile_in.offsetY;
-  result += converter.str();
-  result += ACE_TEXT_ALWAYS_CHAR("\n");
-  result += ACE_TEXT_ALWAYS_CHAR("open/broken: ");
-  result += (tile_in.open ? ACE_TEXT_ALWAYS_CHAR("true")
-                          : ACE_TEXT_ALWAYS_CHAR("false"));
-  result += ACE_TEXT("/");
-  result += (tile_in.broken ? ACE_TEXT_ALWAYS_CHAR("true")
-                            : ACE_TEXT_ALWAYS_CHAR("false"));
-  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  result += converter.str ();
+  result += ACE_TEXT_ALWAYS_CHAR ("\n");
+  result += ACE_TEXT_ALWAYS_CHAR ("open/broken: ");
+  result += (tile_in.open ? ACE_TEXT_ALWAYS_CHAR ("true")
+                          : ACE_TEXT_ALWAYS_CHAR ("false"));
+  result += ACE_TEXT ("/");
+  result += (tile_in.broken ? ACE_TEXT_ALWAYS_CHAR ("true")
+                            : ACE_TEXT_ALWAYS_CHAR ("false"));
+  result += ACE_TEXT_ALWAYS_CHAR ("\n");
 
   return result;
 }
 
 std::string
-RPG_Graphics_Common_Tools::toString(const RPG_Graphics_TileSet& tileSet_in)
+RPG_Graphics_Common_Tools::toString (const RPG_Graphics_TileSet& tileSet_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::toString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::toString"));
 
   std::string result;
 
-  result += ACE_TEXT_ALWAYS_CHAR("type: ");
+  result += ACE_TEXT_ALWAYS_CHAR ("type: ");
   result +=
-      RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString(tileSet_in.type);
-  result += ACE_TEXT_ALWAYS_CHAR("\n");
-  result += ACE_TEXT_ALWAYS_CHAR("style: ");
-  result += RPG_Graphics_Common_Tools::toString(tileSet_in.style);
+      RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString (tileSet_in.type);
+  result += ACE_TEXT_ALWAYS_CHAR ("\n");
+  result += ACE_TEXT_ALWAYS_CHAR ("style: ");
+  result += RPG_Graphics_Common_Tools::toString (tileSet_in.style);
   if (tileSet_in.type == TILESETTYPE_WALL)
-    result += (tileSet_in.half ? ACE_TEXT_ALWAYS_CHAR("[half height]")
-                               : ACE_TEXT_ALWAYS_CHAR("[full height]"));
-  result += ACE_TEXT_ALWAYS_CHAR("\n");
-  result += ACE_TEXT_ALWAYS_CHAR("tiles[");
+    result += (tileSet_in.half ? ACE_TEXT_ALWAYS_CHAR ("[half height]")
+                               : ACE_TEXT_ALWAYS_CHAR ("[full height]"));
+  result += ACE_TEXT_ALWAYS_CHAR ("\n");
+  result += ACE_TEXT_ALWAYS_CHAR ("tiles[");
   std::ostringstream converter;
-  converter << tileSet_in.tiles.size();
-  result += converter.str();
-  result += ACE_TEXT_ALWAYS_CHAR("]:\n");
-  result += ACE_TEXT_ALWAYS_CHAR("------\n");
-  for (RPG_Graphics_TileSetConstIterator_t iterator = tileSet_in.tiles.begin();
-       iterator != tileSet_in.tiles.end();
+  converter << tileSet_in.tiles.size ();
+  result += converter.str ();
+  result += ACE_TEXT_ALWAYS_CHAR ("]:\n");
+  result += ACE_TEXT_ALWAYS_CHAR ("------\n");
+  for (RPG_Graphics_TileSetConstIterator_t iterator = tileSet_in.tiles.begin ();
+       iterator != tileSet_in.tiles.end ();
        iterator++)
   {
-    result += RPG_Graphics_Common_Tools::toString(*iterator);
-    result += ACE_TEXT_ALWAYS_CHAR("------\n");
+    result += RPG_Graphics_Common_Tools::toString (*iterator);
+    result += ACE_TEXT_ALWAYS_CHAR ("------\n");
   } // end FOR
 
   return result;
 }
 
 std::string
-RPG_Graphics_Common_Tools::toString(const RPG_Graphics_ElementTypeUnion& elementType_in)
+RPG_Graphics_Common_Tools::toString (const RPG_Graphics_ElementTypeUnion& elementType_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::toString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::toString"));
 
   switch (elementType_in.discriminator)
   {
     case RPG_Graphics_ElementTypeUnion::INTERFACEELEMENTTYPE:
-      return RPG_Graphics_InterfaceElementTypeHelper::RPG_Graphics_InterfaceElementTypeToString(elementType_in.interfaceelementtype);
+      return RPG_Graphics_InterfaceElementTypeHelper::RPG_Graphics_InterfaceElementTypeToString (elementType_in.interfaceelementtype);
     case RPG_Graphics_ElementTypeUnion::HOTSPOTTYPE:
-      return RPG_Graphics_HotspotTypeHelper::RPG_Graphics_HotspotTypeToString(elementType_in.hotspottype);
+      return RPG_Graphics_HotspotTypeHelper::RPG_Graphics_HotspotTypeToString (elementType_in.hotspottype);
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid element type (was: %d), aborting\n"),
-                 elementType_in.discriminator));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid element type (was: %d), aborting\n"),
+                  elementType_in.discriminator));
       break;
     }
   } // end SWITCH
 
-  return std::string(ACE_TEXT_ALWAYS_CHAR("INVALID"));
+  return std::string (ACE_TEXT_ALWAYS_CHAR ("INVALID"));
 }
 
 std::string
-RPG_Graphics_Common_Tools::toString(const RPG_Graphics_Elements_t& elements_in)
+RPG_Graphics_Common_Tools::toString (const RPG_Graphics_Elements_t& elements_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::elementsToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::elementsToString"));
 
   std::string result;
 
   std::ostringstream converter;
   unsigned long index = 1;
-  for (RPG_Graphics_ElementsConstIterator_t iterator = elements_in.begin();
-       iterator != elements_in.end();
+  for (RPG_Graphics_ElementsConstIterator_t iterator = elements_in.begin ();
+       iterator != elements_in.end ();
        iterator++, index++)
   {
-    result += ACE_TEXT_ALWAYS_CHAR("#");
-    converter.clear();
-    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+    result += ACE_TEXT_ALWAYS_CHAR ("#");
+    converter.clear ();
+    converter.str(ACE_TEXT_ALWAYS_CHAR (""));
     converter << index;
-    result += converter.str();
-    result += ACE_TEXT_ALWAYS_CHAR(" ");
-    result += RPG_Graphics_Common_Tools::toString((*iterator).type);
-    result += ACE_TEXT_ALWAYS_CHAR(" {x: ");
-    converter.clear();
-    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+    result += converter.str ();
+    result += ACE_TEXT_ALWAYS_CHAR (" ");
+    result += RPG_Graphics_Common_Tools::toString ((*iterator).type);
+    result += ACE_TEXT_ALWAYS_CHAR (" {x: ");
+    converter.clear ();
+    converter.str(ACE_TEXT_ALWAYS_CHAR (""));
     converter << (*iterator).offsetX;
-    result += converter.str();
-    result += ACE_TEXT_ALWAYS_CHAR(", y: ");
-    converter.clear();
-    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+    result += converter.str ();
+    result += ACE_TEXT_ALWAYS_CHAR (", y: ");
+    converter.clear ();
+    converter.str(ACE_TEXT_ALWAYS_CHAR (""));
     converter << (*iterator).offsetY;
-    result += converter.str();
-    result += ACE_TEXT_ALWAYS_CHAR(", w: ");
-    converter.clear();
-    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+    result += converter.str ();
+    result += ACE_TEXT_ALWAYS_CHAR (", w: ");
+    converter.clear ();
+    converter.str(ACE_TEXT_ALWAYS_CHAR (""));
     converter << (*iterator).width;
-    result += converter.str();
-    result += ACE_TEXT_ALWAYS_CHAR(", h: ");
+    result += converter.str ();
+    result += ACE_TEXT_ALWAYS_CHAR (", h: ");
     converter.clear();
-    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
+    converter.str(ACE_TEXT_ALWAYS_CHAR (""));
     converter << (*iterator).height;
-    result += converter.str();
-    result += ACE_TEXT_ALWAYS_CHAR("}\n");
+    result += converter.str ();
+    result += ACE_TEXT_ALWAYS_CHAR ("}\n");
   } // end FOR
 
   return result;
 }
 
 std::string
-RPG_Graphics_Common_Tools::toString(const RPG_Graphics_t& graphic_in)
+RPG_Graphics_Common_Tools::toString (const RPG_Graphics_t& graphic_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::graphicToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::graphicToString"));
 
   std::string result;
 
-  result += ACE_TEXT_ALWAYS_CHAR("category: ");
+  result += ACE_TEXT_ALWAYS_CHAR ("category: ");
   result +=
-      RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic_in.category);
-  result += ACE_TEXT_ALWAYS_CHAR("\n");
+      RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString (graphic_in.category);
+  result += ACE_TEXT_ALWAYS_CHAR ("\n");
 
-  result += ACE_TEXT_ALWAYS_CHAR("type: ");
-  result += RPG_Graphics_Common_Tools::toString(graphic_in.type);
-  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  result += ACE_TEXT_ALWAYS_CHAR ("type: ");
+  result += RPG_Graphics_Common_Tools::toString (graphic_in.type);
+  result += ACE_TEXT_ALWAYS_CHAR ("\n");
 
-  result += ACE_TEXT_ALWAYS_CHAR("tile: ");
+  result += ACE_TEXT_ALWAYS_CHAR ("tile: ");
   if (graphic_in.tile.type == RPG_GRAPHICS_TILETYPE_INVALID)
-    result += ACE_TEXT_ALWAYS_CHAR("N/A\n");
+    result += ACE_TEXT_ALWAYS_CHAR ("N/A\n");
   else
   {
-    result += ACE_TEXT_ALWAYS_CHAR("\n");
-    result += RPG_Graphics_Common_Tools::toString(graphic_in.tile);
-    result += ACE_TEXT_ALWAYS_CHAR("\n");
+    result += ACE_TEXT_ALWAYS_CHAR ("\n");
+    result += RPG_Graphics_Common_Tools::toString (graphic_in.tile);
+    result += ACE_TEXT_ALWAYS_CHAR ("\n");
   } // end ELSE
 
-  result += ACE_TEXT_ALWAYS_CHAR("tileset: ");
+  result += ACE_TEXT_ALWAYS_CHAR ("tileset: ");
   if (graphic_in.tileset.type == RPG_GRAPHICS_TILESETTYPE_INVALID)
-    result += ACE_TEXT_ALWAYS_CHAR("N/A\n");
+    result += ACE_TEXT_ALWAYS_CHAR ("N/A\n");
   else
   {
-    result += ACE_TEXT_ALWAYS_CHAR("\n");
-    result += RPG_Graphics_Common_Tools::toString(graphic_in.tileset);
-    result += ACE_TEXT_ALWAYS_CHAR("\n");
+    result += ACE_TEXT_ALWAYS_CHAR ("\n");
+    result += RPG_Graphics_Common_Tools::toString (graphic_in.tileset);
+    result += ACE_TEXT_ALWAYS_CHAR ("\n");
   } // end ELSE
 
-  result += ACE_TEXT_ALWAYS_CHAR("elements: ");
-  if (graphic_in.elements.empty())
-    result += ACE_TEXT_ALWAYS_CHAR("N/A\n");
+  result += ACE_TEXT_ALWAYS_CHAR ("elements: ");
+  if (graphic_in.elements.empty ())
+    result += ACE_TEXT_ALWAYS_CHAR ("N/A\n");
   else
   {
-    result += ACE_TEXT_ALWAYS_CHAR("\n");
-    result += RPG_Graphics_Common_Tools::toString(graphic_in.elements);
+    result += ACE_TEXT_ALWAYS_CHAR ("\n");
+    result += RPG_Graphics_Common_Tools::toString (graphic_in.elements);
   } // end ELSE
 
-  result += ACE_TEXT_ALWAYS_CHAR("file: ");
-  if (graphic_in.file.empty())
-    result += ACE_TEXT_ALWAYS_CHAR("N/A\n");
+  result += ACE_TEXT_ALWAYS_CHAR ("file: ");
+  if (graphic_in.file.empty ())
+    result += ACE_TEXT_ALWAYS_CHAR ("N/A\n");
   else
   {
-    result += ACE_TEXT_ALWAYS_CHAR("\"");
+    result += ACE_TEXT_ALWAYS_CHAR ("\"");
     result += graphic_in.file;
-    result += ACE_TEXT_ALWAYS_CHAR("\"\n");
+    result += ACE_TEXT_ALWAYS_CHAR ("\"\n");
   } // end ELSE
 
-  result += ACE_TEXT_ALWAYS_CHAR("size: ");
+  result += ACE_TEXT_ALWAYS_CHAR ("size: ");
   if (graphic_in.size == 0)
-    result += ACE_TEXT_ALWAYS_CHAR("N/A\n");
+    result += ACE_TEXT_ALWAYS_CHAR ("N/A\n");
   else
   {
     std::ostringstream converter;
     converter << graphic_in.size;
-    result += converter.str();
-    result += ACE_TEXT_ALWAYS_CHAR("\n");
+    result += converter.str ();
+    result += ACE_TEXT_ALWAYS_CHAR ("\n");
   } // end ELSE
 
   return result;
 }
 
 RPG_Graphics_GraphicTypeUnion
-RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in,
-                                       const bool& halfHeight_in)
+RPG_Graphics_Common_Tools::styleToType (const RPG_Graphics_StyleUnion& style_in,
+                                        bool halfHeight_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::styleToType"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::styleToType"));
 
   RPG_Graphics_GraphicTypeUnion result;
   result.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
@@ -550,10 +543,9 @@ RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in,
           result.tilesetgraphic = TILESET_FLOOR_WATER; break;
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid floor-style (was: \"%s\"), aborting\n"),
-                     ACE_TEXT(RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString(style_in.floorstyle).c_str())));
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid floor-style (was: \"%s\"), aborting\n"),
+                      ACE_TEXT (RPG_Graphics_FloorStyleHelper::RPG_Graphics_FloorStyleToString (style_in.floorstyle).c_str ())));
           return result;
         }
       } // end SWITCH
@@ -568,10 +560,9 @@ RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in,
           result.tilesetgraphic = TILESET_EDGE_FLOOR_STONE_COBBLED; break;
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid edge-style (was: \"%s\"), aborting\n"),
-                     ACE_TEXT(RPG_Graphics_EdgeStyleHelper::RPG_Graphics_EdgeStyleToString(style_in.edgestyle).c_str())));
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid edge-style (was: \"%s\"), aborting\n"),
+                      ACE_TEXT (RPG_Graphics_EdgeStyleHelper::RPG_Graphics_EdgeStyleToString (style_in.edgestyle).c_str ())));
           return result;
         }
       } // end SWITCH
@@ -623,10 +614,9 @@ RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in,
                              : TILESET_WALL_VINE_COVERED); break;
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid wall-style (was: \"%s\"), aborting\n"),
-                     ACE_TEXT(RPG_Graphics_WallStyleHelper::RPG_Graphics_WallStyleToString(style_in.wallstyle).c_str())));
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid wall-style (was: \"%s\"), aborting\n"),
+                      ACE_TEXT (RPG_Graphics_WallStyleHelper::RPG_Graphics_WallStyleToString (style_in.wallstyle).c_str ())));
           return result;
         }
       } // end SWITCH
@@ -641,10 +631,9 @@ RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in,
           result.tilesetgraphic = TILESET_DOOR_WOOD; break;
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("unsupported door-style (was: \"%s\"), aborting\n"),
-                     ACE_TEXT(RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString(style_in.doorstyle).c_str())));
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("unsupported door-style (was: \"%s\"), aborting\n"),
+                      ACE_TEXT (RPG_Graphics_DoorStyleHelper::RPG_Graphics_DoorStyleToString (style_in.doorstyle).c_str ())));
           return result;
         }
       } // end SWITCH
@@ -653,9 +642,9 @@ RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in,
     }
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid style type (was: %d), aborting\n"),
-                 style_in.discriminator));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid style type (was: %d), aborting\n"),
+                  style_in.discriminator));
 
       return result;
     }
@@ -667,10 +656,10 @@ RPG_Graphics_Common_Tools::styleToType(const RPG_Graphics_StyleUnion& style_in,
 }
 
 void
-RPG_Graphics_Common_Tools::graphicToFile(const RPG_Graphics_t& graphic_in,
-                                         std::string& file_out)
+RPG_Graphics_Common_Tools::graphicToFile (const RPG_Graphics_t& graphic_in,
+                                          std::string& file_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::graphicToFile"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::graphicToFile"));
 
   // init return value(s)
   file_out = myGraphicsDirectory;
@@ -681,7 +670,7 @@ RPG_Graphics_Common_Tools::graphicToFile(const RPG_Graphics_t& graphic_in,
     case CATEGORY_CURSOR:
     {
       // assemble path
-      file_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_CURSORS_SUB);
+      file_out += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_TILE_CURSORS_SUB);
       file_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       file_out += graphic_in.file;
 
@@ -690,7 +679,7 @@ RPG_Graphics_Common_Tools::graphicToFile(const RPG_Graphics_t& graphic_in,
     case CATEGORY_FONT:
     {
       // assemble path
-      file_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_FONTS_SUB);
+      file_out += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_TILE_FONTS_SUB);
       file_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       file_out += graphic_in.file;
 
@@ -700,7 +689,7 @@ RPG_Graphics_Common_Tools::graphicToFile(const RPG_Graphics_t& graphic_in,
     case CATEGORY_IMAGE:
     {
       // assemble path
-      file_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_IMAGES_SUB);
+      file_out += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_TILE_IMAGES_SUB);
       file_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       file_out += graphic_in.file;
 
@@ -709,7 +698,7 @@ RPG_Graphics_Common_Tools::graphicToFile(const RPG_Graphics_t& graphic_in,
     case CATEGORY_SPRITE:
     {
       // assemble path
-      file_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_CREATURES_SUB);
+      file_out += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_TILE_CREATURES_SUB);
       file_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       file_out += graphic_in.file;
 
@@ -723,35 +712,33 @@ RPG_Graphics_Common_Tools::graphicToFile(const RPG_Graphics_t& graphic_in,
       while (graphic.tile.reference.discriminator !=
              RPG_Graphics_GraphicTypeUnion::INVALID)
       {
-        ACE_DEBUG((LM_DEBUG,
-                   ACE_TEXT("%s --> %s\n"),
-                   ACE_TEXT(RPG_Graphics_Common_Tools::toString(current_type).c_str()),
-                   ACE_TEXT(RPG_Graphics_Common_Tools::toString(graphic.tile.reference).c_str())));
+        ACE_DEBUG ((LM_DEBUG,
+                    ACE_TEXT ("%s --> %s\n"),
+                    ACE_TEXT (RPG_Graphics_Common_Tools::toString (current_type).c_str ()),
+                    ACE_TEXT (RPG_Graphics_Common_Tools::toString (graphic.tile.reference).c_str ())));
 
         current_type = graphic.tile.reference;
 
         // retrieve properties from the dictionary
         graphic =
-            RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(graphic.tile.reference);
+            RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->get (graphic.tile.reference);
       } // end WHILE
 
       // assemble path
       switch (graphic.tile.type)
       {
         case TILETYPE_FLOOR:
-          file_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_FLOORS_SUB); break;
+          file_out += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_TILE_FLOORS_SUB); break;
         case TILETYPE_WALL:
-          file_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_WALLS_SUB); break;
+          file_out += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_TILE_WALLS_SUB); break;
         case TILETYPE_DOOR:
-          file_out += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DOORS_SUB); break;
+          file_out += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_TILE_DOORS_SUB); break;
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid tile type (was: \"%s\"), aborting\n"),
-                     ACE_TEXT(RPG_Graphics_TileTypeHelper::RPG_Graphics_TileTypeToString(graphic.tile.type).c_str())));
-
-          file_out.clear();
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid tile type (was: \"%s\"), aborting\n"),
+                      ACE_TEXT (RPG_Graphics_TileTypeHelper::RPG_Graphics_TileTypeToString (graphic.tile.type).c_str ())));
+          file_out.clear ();
           return;
         }
       } // end SWITCH
@@ -763,125 +750,120 @@ RPG_Graphics_Common_Tools::graphicToFile(const RPG_Graphics_t& graphic_in,
     case CATEGORY_TILESET:
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid category (was: \"%s\"), aborting\n"),
-                 ACE_TEXT(RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic_in.category).c_str())));
-
-      file_out.clear();
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid category (was: \"%s\"), aborting\n"),
+                  ACE_TEXT (RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString (graphic_in.category).c_str ())));
+      file_out.clear ();
       return;
     }
   } // end SWITCH
 }
 
 RPG_Graphics_TextSize_t
-RPG_Graphics_Common_Tools::textSize(const RPG_Graphics_Font& font_in,
-                                    const std::string& textString_in)
+RPG_Graphics_Common_Tools::textSize (const RPG_Graphics_Font& font_in,
+                                     const std::string& textString_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::textSize"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::textSize"));
 
   int width = 0;
   int height = 0;
 
   // synch cache access
-  {
-    ACE_Guard<ACE_Thread_Mutex> aGuard(myCacheLock);
-
+  { ACE_Guard<ACE_Thread_Mutex> aGuard (myCacheLock);
     // step1: retrieve font cache entry
-    RPG_Graphics_FontCacheIterator_t iterator = myFontCache.find(font_in);
-    if (iterator == myFontCache.end())
+    RPG_Graphics_FontCacheIterator_t iterator = myFontCache.find (font_in);
+    if (iterator == myFontCache.end ())
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("font \"%s\" not in cache (yet), aborting\n"),
-                 ACE_TEXT(RPG_Graphics_FontHelper::RPG_Graphics_FontToString(font_in).c_str())));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("font \"%s\" not in cache (yet), aborting\n"),
+                  ACE_TEXT (RPG_Graphics_FontHelper::RPG_Graphics_FontToString (font_in).c_str ())));
 
-      return RPG_Graphics_TextSize_t(0, 0);
+      return RPG_Graphics_TextSize_t (0, 0);
     } // end IF
 
-    if (TTF_SizeText((*iterator).second,
-                     textString_in.c_str(),
-                     &width,
-                     &height))
+    if (TTF_SizeText ((*iterator).second,
+                      textString_in.c_str (),
+                      &width, &height))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to TTF_SizeText(\"%s\", \"%s\"): %s, aborting\n"),
-                 ACE_TEXT(RPG_Graphics_FontHelper::RPG_Graphics_FontToString(font_in).c_str()),
-                 ACE_TEXT(textString_in.c_str()),
-                 ACE_TEXT(SDL_GetError())));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to TTF_SizeText(\"%s\", \"%s\"): %s, aborting\n"),
+                  ACE_TEXT (RPG_Graphics_FontHelper::RPG_Graphics_FontToString (font_in).c_str ()),
+                  ACE_TEXT (textString_in.c_str ()),
+                  ACE_TEXT (SDL_GetError ())));
 
-      return RPG_Graphics_TextSize_t(0, 0);
+      return RPG_Graphics_TextSize_t (0, 0);
     } // end IF
   } // end lock scope
 
-  return std::make_pair(static_cast<unsigned int>(width),
-                        static_cast<unsigned int>(height));
+  return std::make_pair (static_cast<unsigned int> (width),
+                         static_cast<unsigned int> (height));
 }
 
 void
 RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& style_in,
                                                 struct RPG_Graphics_FloorEdgeTileSet& tileSet_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadFloorEdgeTileSet"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::loadFloorEdgeTileSet"));
 
   // init return value(s)
   if (tileSet_out.east.surface)
   {
-    SDL_FreeSurface(tileSet_out.east.surface);
+    SDL_FreeSurface (tileSet_out.east.surface);
     tileSet_out.east.surface = NULL;
   } // end IF
   if (tileSet_out.west.surface)
   {
-    SDL_FreeSurface(tileSet_out.west.surface);
+    SDL_FreeSurface (tileSet_out.west.surface);
     tileSet_out.west.surface = NULL;
   } // end IF
   if (tileSet_out.north.surface)
   {
-    SDL_FreeSurface(tileSet_out.north.surface);
+    SDL_FreeSurface (tileSet_out.north.surface);
     tileSet_out.north.surface = NULL;
   } // end IF
   if (tileSet_out.south.surface)
   {
-    SDL_FreeSurface(tileSet_out.south.surface);
+    SDL_FreeSurface (tileSet_out.south.surface);
     tileSet_out.south.surface = NULL;
   } // end IF
   if (tileSet_out.south_west.surface)
   {
-    SDL_FreeSurface(tileSet_out.south_west.surface);
+    SDL_FreeSurface (tileSet_out.south_west.surface);
     tileSet_out.south_west.surface = NULL;
   } // end IF
   if (tileSet_out.south_east.surface)
   {
-    SDL_FreeSurface(tileSet_out.south_east.surface);
+    SDL_FreeSurface (tileSet_out.south_east.surface);
     tileSet_out.south_east.surface = NULL;
   } // end IF
   if (tileSet_out.north_west.surface)
   {
-    SDL_FreeSurface(tileSet_out.north_west.surface);
+    SDL_FreeSurface (tileSet_out.north_west.surface);
     tileSet_out.north_west.surface = NULL;
   } // end IF
   if (tileSet_out.north_east.surface)
   {
-    SDL_FreeSurface(tileSet_out.north_east.surface);
+    SDL_FreeSurface (tileSet_out.north_east.surface);
     tileSet_out.north_east.surface = NULL;
   } // end IF
   if (tileSet_out.top.surface)
   {
-    SDL_FreeSurface(tileSet_out.top.surface);
+    SDL_FreeSurface (tileSet_out.top.surface);
     tileSet_out.top.surface = NULL;
   } // end IF
   if (tileSet_out.right.surface)
   {
-    SDL_FreeSurface(tileSet_out.right.surface);
+    SDL_FreeSurface (tileSet_out.right.surface);
     tileSet_out.right.surface = NULL;
   } // end IF
   if (tileSet_out.left.surface)
   {
-    SDL_FreeSurface(tileSet_out.left.surface);
+    SDL_FreeSurface (tileSet_out.left.surface);
     tileSet_out.left.surface = NULL;
   } // end IF
   if (tileSet_out.bottom.surface)
   {
-    SDL_FreeSurface(tileSet_out.bottom.surface);
+    SDL_FreeSurface (tileSet_out.bottom.surface);
     tileSet_out.bottom.surface = NULL;
   } // end IF
 
@@ -895,10 +877,9 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& st
   // sanity check(s)
   if (graphic_type.discriminator == RPG_Graphics_GraphicTypeUnion::INVALID)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Common_Tools::styleToType(\"%s\"), aborting\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::toString(style).c_str())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Common_Tools::styleToType(\"%s\"), aborting\n"),
+                ACE_TEXT (RPG_Graphics_Common_Tools::toString (style).c_str ())));
     return;
   } // end IF
 
@@ -906,15 +887,15 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& st
   RPG_Graphics_t graphic;
   graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
   // retrieve properties from the dictionary
-  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(graphic_type);
-  ACE_ASSERT(graphic.type.discriminator == graphic_type.discriminator); // too weak
+  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->get (graphic_type);
+  ACE_ASSERT (graphic.type.discriminator == graphic_type.discriminator); // too weak
   // sanity check(s)
   if (graphic.category != CATEGORY_TILESET)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Dictionary::get(\"%s\"): not a tileset (was: \"%s\"), aborting\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::toString(graphic.type).c_str()),
-               ACE_TEXT(RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str())));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Dictionary::get(\"%s\"): not a tileset (was: \"%s\"), aborting\n"),
+                ACE_TEXT (RPG_Graphics_Common_Tools::toString (graphic.type).c_str ()),
+                ACE_TEXT (RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString (graphic.category).c_str ())));
 
     return;
   } // end IF
@@ -922,7 +903,7 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& st
   // assemble base path
   std::string path_base = myGraphicsDirectory;
   path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path_base += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_FLOORS_SUB);
+  path_base += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_TILE_FLOORS_SUB);
   path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 
   std::string path = path_base;
@@ -931,8 +912,8 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& st
   std::istringstream converter;
 //  size_t edge_position = std::string::npos;
   size_t edge_position = -1;
-  for (RPG_Graphics_TileSetConstIterator_t iterator = graphic.tileset.tiles.begin();
-       iterator != graphic.tileset.tiles.end();
+  for (RPG_Graphics_TileSetConstIterator_t iterator = graphic.tileset.tiles.begin ();
+       iterator != graphic.tileset.tiles.end ();
        iterator++)
   {
     current_tile.offset_x = (*iterator).offsetX;
@@ -943,73 +924,73 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& st
     path = path_base;
     path += (*iterator).file;
     current_tile.surface =
-        RPG_Graphics_Surface::load(path,  // file
-                                   true); // convert to display format
+        RPG_Graphics_Surface::load (path,  // file
+                                    true); // convert to display format
     if (!current_tile.surface)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
-                 ACE_TEXT(path.c_str())));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
+                  ACE_TEXT (path.c_str ())));
 
       // clean up
       if (tileSet_out.east.surface)
       {
-        SDL_FreeSurface(tileSet_out.east.surface);
+        SDL_FreeSurface (tileSet_out.east.surface);
         tileSet_out.east.surface = NULL;
       } // end IF
       if (tileSet_out.west.surface)
       {
-        SDL_FreeSurface(tileSet_out.west.surface);
+        SDL_FreeSurface (tileSet_out.west.surface);
         tileSet_out.west.surface = NULL;
       } // end IF
       if (tileSet_out.north.surface)
       {
-        SDL_FreeSurface(tileSet_out.north.surface);
+        SDL_FreeSurface (tileSet_out.north.surface);
         tileSet_out.north.surface = NULL;
       } // end IF
       if (tileSet_out.south.surface)
       {
-        SDL_FreeSurface(tileSet_out.south.surface);
+        SDL_FreeSurface (tileSet_out.south.surface);
         tileSet_out.south.surface = NULL;
       } // end IF
       if (tileSet_out.south_west.surface)
       {
-        SDL_FreeSurface(tileSet_out.south_west.surface);
+        SDL_FreeSurface (tileSet_out.south_west.surface);
         tileSet_out.south_west.surface = NULL;
       } // end IF
       if (tileSet_out.south_east.surface)
       {
-        SDL_FreeSurface(tileSet_out.south_east.surface);
+        SDL_FreeSurface (tileSet_out.south_east.surface);
         tileSet_out.south_east.surface = NULL;
       } // end IF
       if (tileSet_out.north_west.surface)
       {
-        SDL_FreeSurface(tileSet_out.north_west.surface);
+        SDL_FreeSurface (tileSet_out.north_west.surface);
         tileSet_out.north_west.surface = NULL;
       } // end IF
       if (tileSet_out.north_east.surface)
       {
-        SDL_FreeSurface(tileSet_out.north_east.surface);
+        SDL_FreeSurface (tileSet_out.north_east.surface);
         tileSet_out.north_east.surface = NULL;
       } // end IF
       if (tileSet_out.top.surface)
       {
-        SDL_FreeSurface(tileSet_out.top.surface);
+        SDL_FreeSurface (tileSet_out.top.surface);
         tileSet_out.top.surface = NULL;
       } // end IF
       if (tileSet_out.right.surface)
       {
-        SDL_FreeSurface(tileSet_out.right.surface);
+        SDL_FreeSurface (tileSet_out.right.surface);
         tileSet_out.right.surface = NULL;
       } // end IF
       if (tileSet_out.left.surface)
       {
-        SDL_FreeSurface(tileSet_out.left.surface);
+        SDL_FreeSurface (tileSet_out.left.surface);
         tileSet_out.left.surface = NULL;
       } // end IF
       if (tileSet_out.bottom.surface)
       {
-        SDL_FreeSurface(tileSet_out.bottom.surface);
+        SDL_FreeSurface (tileSet_out.bottom.surface);
         tileSet_out.bottom.surface = NULL;
       } // end IF
 
@@ -1019,78 +1000,78 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& st
     // extract position/type from the filename (i.e. "floor_xxx_yyy_zzz_edge#.png")
     converter.clear();
     converter.str((*iterator).file);
-    edge_position = (*iterator).file.find(ACE_TEXT_ALWAYS_CHAR("edge"), 7, 4);
+    edge_position = (*iterator).file.find (ACE_TEXT_ALWAYS_CHAR("edge"), 7, 4);
     if (edge_position == std::string::npos)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to find \"edge\" sequence in filename (was: \"%s\"), aborting\n"),
-                 ACE_TEXT((*iterator).file.c_str())));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to find \"edge\" sequence in filename (was: \"%s\"), aborting\n"),
+                  ACE_TEXT ((*iterator).file.c_str ())));
 
       // clean up
       if (tileSet_out.east.surface)
       {
-        SDL_FreeSurface(tileSet_out.east.surface);
+        SDL_FreeSurface (tileSet_out.east.surface);
         tileSet_out.east.surface = NULL;
       } // end IF
       if (tileSet_out.west.surface)
       {
-        SDL_FreeSurface(tileSet_out.west.surface);
+        SDL_FreeSurface (tileSet_out.west.surface);
         tileSet_out.west.surface = NULL;
       } // end IF
       if (tileSet_out.north.surface)
       {
-        SDL_FreeSurface(tileSet_out.north.surface);
+        SDL_FreeSurface (tileSet_out.north.surface);
         tileSet_out.north.surface = NULL;
       } // end IF
       if (tileSet_out.south.surface)
       {
-        SDL_FreeSurface(tileSet_out.south.surface);
+        SDL_FreeSurface (tileSet_out.south.surface);
         tileSet_out.south.surface = NULL;
       } // end IF
       if (tileSet_out.south_west.surface)
       {
-        SDL_FreeSurface(tileSet_out.south_west.surface);
+        SDL_FreeSurface (tileSet_out.south_west.surface);
         tileSet_out.south_west.surface = NULL;
       } // end IF
       if (tileSet_out.south_east.surface)
       {
-        SDL_FreeSurface(tileSet_out.south_east.surface);
+        SDL_FreeSurface (tileSet_out.south_east.surface);
         tileSet_out.south_east.surface = NULL;
       } // end IF
       if (tileSet_out.north_west.surface)
       {
-        SDL_FreeSurface(tileSet_out.north_west.surface);
+        SDL_FreeSurface (tileSet_out.north_west.surface);
         tileSet_out.north_west.surface = NULL;
       } // end IF
       if (tileSet_out.north_east.surface)
       {
-        SDL_FreeSurface(tileSet_out.north_east.surface);
+        SDL_FreeSurface (tileSet_out.north_east.surface);
         tileSet_out.north_east.surface = NULL;
       } // end IF
       if (tileSet_out.top.surface)
       {
-        SDL_FreeSurface(tileSet_out.top.surface);
+        SDL_FreeSurface (tileSet_out.top.surface);
         tileSet_out.top.surface = NULL;
       } // end IF
       if (tileSet_out.right.surface)
       {
-        SDL_FreeSurface(tileSet_out.right.surface);
+        SDL_FreeSurface (tileSet_out.right.surface);
         tileSet_out.right.surface = NULL;
       } // end IF
       if (tileSet_out.left.surface)
       {
-        SDL_FreeSurface(tileSet_out.left.surface);
+        SDL_FreeSurface (tileSet_out.left.surface);
         tileSet_out.left.surface = NULL;
       } // end IF
       if (tileSet_out.bottom.surface)
       {
-        SDL_FreeSurface(tileSet_out.bottom.surface);
+        SDL_FreeSurface (tileSet_out.bottom.surface);
         tileSet_out.bottom.surface = NULL;
       } // end IF
 
       return;
     } // end IF
-    converter.ignore(edge_position + 4);
+    converter.ignore (edge_position + 4);
     converter >> type;
     switch (type)
     {
@@ -1120,34 +1101,33 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle& st
         tileSet_out.bottom = current_tile; break;
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid edgetile type (was: %u), continuing\n"),
-                   type));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("invalid edgetile type (was: %u), continuing\n"),
+                    type));
         break;
       }
     } // end SWITCH
   } // end FOR
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("loaded tileset \"%s\" (type: \"%s\", style: \"%s\")...\n"),
-             ACE_TEXT(RPG_Graphics_Common_Tools::toString(graphic.type).c_str()),
-             ACE_TEXT(RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString(graphic.tileset.type).c_str()),
-             ACE_TEXT(RPG_Graphics_Common_Tools::toString(graphic.tileset.style).c_str())));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("loaded tileset \"%s\" (type: \"%s\", style: \"%s\")...\n"),
+              ACE_TEXT (RPG_Graphics_Common_Tools::toString (graphic.type).c_str ()),
+              ACE_TEXT (RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString (graphic.tileset.type).c_str ()),
+              ACE_TEXT (RPG_Graphics_Common_Tools::toString (graphic.tileset.style).c_str ())));
 }
 
 void
-RPG_Graphics_Common_Tools::loadFloorTileSet(const RPG_Graphics_FloorStyle& style_in,
-                                            struct RPG_Graphics_FloorTileSet& tileSet_out)
+RPG_Graphics_Common_Tools::loadFloorTileSet (const RPG_Graphics_FloorStyle& style_in,
+                                             struct RPG_Graphics_FloorTileSet& tileSet_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadFloorTileSet"));
 
   // init return value(s)
-  for (RPG_Graphics_FloorTilesConstIterator_t iterator = tileSet_out.tiles.begin();
-       iterator != tileSet_out.tiles.end();
+  for (RPG_Graphics_FloorTilesConstIterator_t iterator = tileSet_out.tiles.begin ();
+       iterator != tileSet_out.tiles.end ();
        iterator++)
-    SDL_FreeSurface((*iterator).surface);
-  tileSet_out.tiles.clear();
+    SDL_FreeSurface ((*iterator).surface);
+  tileSet_out.tiles.clear ();
   tileSet_out.columns = 0;
   tileSet_out.rows = 0;
 
@@ -1161,9 +1141,9 @@ RPG_Graphics_Common_Tools::loadFloorTileSet(const RPG_Graphics_FloorStyle& style
   // sanity check(s)
   if (graphic_type.discriminator == RPG_Graphics_GraphicTypeUnion::INVALID)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Common_Tools::styleToType(\"%s\"), aborting\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::toString(style).c_str())));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Common_Tools::styleToType(\"%s\"), aborting\n"),
+                ACE_TEXT (RPG_Graphics_Common_Tools::toString (style).c_str ())));
 
     return;
   } // end IF
@@ -1177,10 +1157,10 @@ RPG_Graphics_Common_Tools::loadFloorTileSet(const RPG_Graphics_FloorStyle& style
   // sanity check(s)
   if (graphic.category != CATEGORY_TILESET)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Dictionary::get(\"%s\"): not a tileset (was: \"%s\"), aborting\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::toString(graphic.type).c_str()),
-               ACE_TEXT(RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str())));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Dictionary::get(\"%s\"): not a tileset (was: \"%s\"), aborting\n"),
+                ACE_TEXT (RPG_Graphics_Common_Tools::toString (graphic.type).c_str ()),
+                ACE_TEXT (RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString (graphic.category).c_str ())));
 
     return;
   } // end IF
@@ -1188,7 +1168,7 @@ RPG_Graphics_Common_Tools::loadFloorTileSet(const RPG_Graphics_FloorStyle& style
   // assemble base path
   std::string path_base = myGraphicsDirectory;
   path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path_base += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_FLOORS_SUB);
+  path_base += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_TILE_FLOORS_SUB);
   path_base += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 
   std::string path = path_base;
@@ -1196,8 +1176,8 @@ RPG_Graphics_Common_Tools::loadFloorTileSet(const RPG_Graphics_FloorStyle& style
   unsigned long column = 0;
   unsigned long row = 0;
   std::istringstream converter;
-  for (RPG_Graphics_TileSetConstIterator_t iterator = graphic.tileset.tiles.begin();
-       iterator != graphic.tileset.tiles.end();
+  for (RPG_Graphics_TileSetConstIterator_t iterator = graphic.tileset.tiles.begin ();
+       iterator != graphic.tileset.tiles.end ();
        iterator++)
   {
     current_tile.offset_x = (*iterator).offsetX;
@@ -1208,71 +1188,70 @@ RPG_Graphics_Common_Tools::loadFloorTileSet(const RPG_Graphics_FloorStyle& style
     path = path_base;
     path += (*iterator).file;
     current_tile.surface =
-        RPG_Graphics_Surface::load(path,  // file
-                                   true); // convert to display format
+        RPG_Graphics_Surface::load (path,  // file
+                                    true); // convert to display format
     if (!current_tile.surface)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
-                 ACE_TEXT(path.c_str())));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
+                  ACE_TEXT (path.c_str ())));
 
       // clean up
-      for (RPG_Graphics_FloorTilesConstIterator_t iterator = tileSet_out.tiles.begin();
-           iterator != tileSet_out.tiles.end();
+      for (RPG_Graphics_FloorTilesConstIterator_t iterator = tileSet_out.tiles.begin ();
+           iterator != tileSet_out.tiles.end ();
            iterator++)
-        SDL_FreeSurface((*iterator).surface);
-      tileSet_out.tiles.clear();
+        SDL_FreeSurface ((*iterator).surface);
+      tileSet_out.tiles.clear ();
 
       return;
     } // end IF
 
     // extract column/row from the filename (i.e.
     // "floor_xxx_yyy_zzz_..._column#_row#.png")
-    converter.clear();
-    converter.str((*iterator).file);
-    converter.ignore((*iterator).file.size(), '_');
-    while (ACE_OS::ace_isdigit(converter.peek()) == 0)
-      converter.ignore((*iterator).file.size(), '_');
+    converter.clear ();
+    converter.str ((*iterator).file);
+    converter.ignore ((*iterator).file.size (), '_');
+    while (ACE_OS::ace_isdigit (converter.peek ()) == 0)
+      converter.ignore ((*iterator).file.size (), '_');
     converter >> column;
-    converter.ignore((*iterator).file.size(), '_');
+    converter.ignore ((*iterator).file.size (), '_');
     converter >> row;
 
     if (column > tileSet_out.columns)
       tileSet_out.columns = column;
     if (row > tileSet_out.rows)
       tileSet_out.rows = row;
-    tileSet_out.tiles.push_back(current_tile);
+    tileSet_out.tiles.push_back (current_tile);
   } // end FOR
   tileSet_out.columns++; tileSet_out.rows++;
-  ACE_ASSERT(tileSet_out.tiles.size() ==
-             (tileSet_out.columns * tileSet_out.rows));
+  ACE_ASSERT (tileSet_out.tiles.size () == (tileSet_out.columns * tileSet_out.rows));
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("loaded tileset \"%s\" (type: %s, style: %s, %u tile(s) [%u x %u])...\n"),
-             ACE_TEXT(RPG_Graphics_Common_Tools::toString(graphic.type).c_str()),
-             ACE_TEXT(RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString(graphic.tileset.type).c_str()),
-             ACE_TEXT(RPG_Graphics_Common_Tools::toString(graphic.tileset.style).c_str()),
-             tileSet_out.tiles.size(),
-             tileSet_out.columns,
-             tileSet_out.rows));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("loaded tileset \"%s\" (type: %s, style: %s, %u tile(s) [%u x %u])...\n"),
+              ACE_TEXT (RPG_Graphics_Common_Tools::toString (graphic.type).c_str ()),
+              ACE_TEXT (RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString (graphic.tileset.type).c_str ()),
+              ACE_TEXT (RPG_Graphics_Common_Tools::toString (graphic.tileset.style).c_str ()),
+              tileSet_out.tiles.size (),
+              tileSet_out.columns,
+              tileSet_out.rows));
 }
 
 void
-RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_in,
-                                           const bool& halfHeight_in,
-                                           struct RPG_Graphics_WallTileSet& tileSet_out)
+RPG_Graphics_Common_Tools::loadWallTileSet (const RPG_Graphics_WallStyle& style_in,
+                                            bool halfHeight_in,
+                                            struct RPG_Graphics_WallTileSet& tileSet_out)
 {
   RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadWallTileSet"));
 
   // init return value(s)
   if (tileSet_out.west.surface)
-    SDL_FreeSurface(tileSet_out.west.surface);
+    SDL_FreeSurface (tileSet_out.west.surface);
   if (tileSet_out.east.surface)
-    SDL_FreeSurface(tileSet_out.east.surface);
+    SDL_FreeSurface (tileSet_out.east.surface);
   if (tileSet_out.north.surface)
-    SDL_FreeSurface(tileSet_out.north.surface);
+    SDL_FreeSurface (tileSet_out.north.surface);
   if (tileSet_out.south.surface)
-    SDL_FreeSurface(tileSet_out.south.surface);
+    SDL_FreeSurface (tileSet_out.south.surface);
   tileSet_out.west.offset_x = 0;
   tileSet_out.west.offset_y = 0;
   tileSet_out.west.surface = NULL;
@@ -1296,9 +1275,9 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
   // sanity check(s)
   if (graphic_type.discriminator == RPG_Graphics_GraphicTypeUnion::INVALID)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Common_Tools::styleToType(\"%s\"), aborting\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::toString(style).c_str())));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Common_Tools::styleToType(\"%s\"), aborting\n"),
+                ACE_TEXT (RPG_Graphics_Common_Tools::toString (style).c_str ())));
 
     return;
   } // end IF
@@ -1308,14 +1287,14 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
   graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
   // retrieve properties from the dictionary
   graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(graphic_type);
-  ACE_ASSERT(graphic.type.discriminator == graphic_type.discriminator); // too weak
+  ACE_ASSERT (graphic.type.discriminator == graphic_type.discriminator); // too weak
   // sanity check(s)
   if (graphic.category != CATEGORY_TILESET)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Dictionary::get(\"%s\"): not a tileset (was: %s), aborting\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::toString(graphic.type).c_str()),
-               ACE_TEXT(RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str())));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Dictionary::get(\"%s\"): not a tileset (was: %s), aborting\n"),
+                ACE_TEXT (RPG_Graphics_Common_Tools::toString (graphic.type).c_str ()),
+                ACE_TEXT (RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString (graphic.category).c_str ())));
 
     return;
   } // end IF
@@ -1328,8 +1307,8 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
 
   std::string path = path_base;
   struct RPG_Graphics_TileElement current_tile;
-  for (RPG_Graphics_TileSetConstIterator_t iterator = graphic.tileset.tiles.begin();
-       iterator != graphic.tileset.tiles.end();
+  for (RPG_Graphics_TileSetConstIterator_t iterator = graphic.tileset.tiles.begin ();
+       iterator != graphic.tileset.tiles.end ();
        iterator++)
   {
     current_tile.offset_x = (*iterator).offsetX;
@@ -1340,23 +1319,23 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
     path = path_base;
     path += (*iterator).file;
     current_tile.surface =
-        RPG_Graphics_Surface::load(path,  // file
-                                   true); // convert to display format
+        RPG_Graphics_Surface::load (path,  // file
+                                    true); // convert to display format
     if (!current_tile.surface)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
-                 ACE_TEXT(path.c_str())));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
+                  ACE_TEXT (path.c_str ())));
 
       // clean up
       if (tileSet_out.west.surface)
-        SDL_FreeSurface(tileSet_out.west.surface);
+        SDL_FreeSurface (tileSet_out.west.surface);
       if (tileSet_out.east.surface)
-        SDL_FreeSurface(tileSet_out.east.surface);
+        SDL_FreeSurface (tileSet_out.east.surface);
       if (tileSet_out.north.surface)
-        SDL_FreeSurface(tileSet_out.north.surface);
+        SDL_FreeSurface (tileSet_out.north.surface);
       if (tileSet_out.south.surface)
-        SDL_FreeSurface(tileSet_out.south.surface);
+        SDL_FreeSurface (tileSet_out.south.surface);
       tileSet_out.west.offset_x = 0;
       tileSet_out.west.offset_y = 0;
       tileSet_out.west.surface = NULL;
@@ -1385,19 +1364,19 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
         tileSet_out.south = current_tile; break;
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid orientation \"%s\", aborting\n"),
-                   ACE_TEXT(RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString((*iterator).orientation).c_str())));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("invalid orientation \"%s\", aborting\n"),
+                    ACE_TEXT (RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString ((*iterator).orientation).c_str ())));
 
         // clean up
         if (tileSet_out.west.surface)
-          SDL_FreeSurface(tileSet_out.west.surface);
+          SDL_FreeSurface (tileSet_out.west.surface);
         if (tileSet_out.east.surface)
-          SDL_FreeSurface(tileSet_out.east.surface);
+          SDL_FreeSurface (tileSet_out.east.surface);
         if (tileSet_out.north.surface)
-          SDL_FreeSurface(tileSet_out.north.surface);
+          SDL_FreeSurface (tileSet_out.north.surface);
         if (tileSet_out.south.surface)
-          SDL_FreeSurface(tileSet_out.south.surface);
+          SDL_FreeSurface (tileSet_out.south.surface);
         tileSet_out.west.offset_x = 0;
         tileSet_out.west.offset_y = 0;
         tileSet_out.west.surface = NULL;
@@ -1416,31 +1395,31 @@ RPG_Graphics_Common_Tools::loadWallTileSet(const RPG_Graphics_WallStyle& style_i
     } // end SWITCH
   } // end FOR
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("loaded tileset \"%s\" (type: %s, style: %s, %u tile(s))...\n"),
-             ACE_TEXT(RPG_Graphics_Common_Tools::toString(graphic.type).c_str()),
-             ACE_TEXT(RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString(graphic.tileset.type).c_str()),
-             ACE_TEXT(RPG_Graphics_Common_Tools::toString(graphic.tileset.style).c_str()),
-             4));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("loaded tileset \"%s\" (type: %s, style: %s, %u tile(s))...\n"),
+              ACE_TEXT (RPG_Graphics_Common_Tools::toString (graphic.type).c_str ()),
+              ACE_TEXT (RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString (graphic.tileset.type).c_str ()),
+              ACE_TEXT (RPG_Graphics_Common_Tools::toString (graphic.tileset.style).c_str ()),
+              4));
 }
 
 void
-RPG_Graphics_Common_Tools::loadDoorTileSet(const RPG_Graphics_DoorStyle& style_in,
-                                           struct RPG_Graphics_DoorTileSet& tileSet_out)
+RPG_Graphics_Common_Tools::loadDoorTileSet (const RPG_Graphics_DoorStyle& style_in,
+                                            struct RPG_Graphics_DoorTileSet& tileSet_out)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::loadDoorTileSet"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::loadDoorTileSet"));
 
   // init return value(s)
   if (tileSet_out.horizontal_open.surface)
-    SDL_FreeSurface(tileSet_out.horizontal_open.surface);
+    SDL_FreeSurface (tileSet_out.horizontal_open.surface);
   if (tileSet_out.vertical_open.surface)
-    SDL_FreeSurface(tileSet_out.vertical_open.surface);
+    SDL_FreeSurface (tileSet_out.vertical_open.surface);
   if (tileSet_out.horizontal_closed.surface)
-    SDL_FreeSurface(tileSet_out.horizontal_closed.surface);
+    SDL_FreeSurface (tileSet_out.horizontal_closed.surface);
   if (tileSet_out.vertical_closed.surface)
-    SDL_FreeSurface(tileSet_out.vertical_closed.surface);
+    SDL_FreeSurface (tileSet_out.vertical_closed.surface);
   if (tileSet_out.broken.surface)
-    SDL_FreeSurface(tileSet_out.broken.surface);
+    SDL_FreeSurface (tileSet_out.broken.surface);
   tileSet_out.horizontal_open.offset_x = 0;
   tileSet_out.horizontal_open.offset_y = 0;
   tileSet_out.horizontal_open.surface = NULL;
@@ -1463,14 +1442,13 @@ RPG_Graphics_Common_Tools::loadDoorTileSet(const RPG_Graphics_DoorStyle& style_i
   style.doorstyle = style_in;
   RPG_Graphics_GraphicTypeUnion graphic_type;
   graphic_type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
-  graphic_type = RPG_Graphics_Common_Tools::styleToType(style);
+  graphic_type = RPG_Graphics_Common_Tools::styleToType (style);
   // sanity check(s)
   if (graphic_type.discriminator == RPG_Graphics_GraphicTypeUnion::INVALID)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Common_Tools::styleToType(\"%s\"), aborting\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::toString(style).c_str())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Common_Tools::styleToType(\"%s\"), aborting\n"),
+                ACE_TEXT (RPG_Graphics_Common_Tools::toString (style).c_str ())));
     return;
   } // end IF
 
@@ -1478,16 +1456,15 @@ RPG_Graphics_Common_Tools::loadDoorTileSet(const RPG_Graphics_DoorStyle& style_i
   RPG_Graphics_t graphic;
   graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
   // retrieve properties from the dictionary
-  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(graphic_type);
-  ACE_ASSERT(graphic.type.discriminator == graphic_type.discriminator); // too weak
+  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->get (graphic_type);
+  ACE_ASSERT (graphic.type.discriminator == graphic_type.discriminator); // too weak
   // sanity check(s)
   if (graphic.category != CATEGORY_TILESET)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Dictionary::get(\"%s\"): not a tileset (was: %s), aborting\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::toString(graphic.type).c_str()),
-               ACE_TEXT(RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Dictionary::get(\"%s\"): not a tileset (was: %s), aborting\n"),
+                ACE_TEXT (RPG_Graphics_Common_Tools::toString (graphic.type).c_str ()),
+                ACE_TEXT (RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString (graphic.category).c_str ())));
     return;
   } // end IF
 
@@ -1499,8 +1476,8 @@ RPG_Graphics_Common_Tools::loadDoorTileSet(const RPG_Graphics_DoorStyle& style_i
 
   std::string path = path_base;
   struct RPG_Graphics_TileElement current_tile;
-  for (RPG_Graphics_TileSetConstIterator_t iterator = graphic.tileset.tiles.begin();
-       iterator != graphic.tileset.tiles.end();
+  for (RPG_Graphics_TileSetConstIterator_t iterator = graphic.tileset.tiles.begin ();
+       iterator != graphic.tileset.tiles.end ();
        iterator++)
   {
     current_tile.offset_x = (*iterator).offsetX;
@@ -1511,25 +1488,25 @@ RPG_Graphics_Common_Tools::loadDoorTileSet(const RPG_Graphics_DoorStyle& style_i
     path = path_base;
     path += (*iterator).file;
     current_tile.surface =
-        RPG_Graphics_Surface::load(path,  // file
-                                   true); // convert to display format
+        RPG_Graphics_Surface::load (path,  // file
+                                    true); // convert to display format
     if (!current_tile.surface)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
-                 ACE_TEXT(path.c_str())));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
+                  ACE_TEXT (path.c_str ())));
 
       // clean up
       if (tileSet_out.horizontal_open.surface)
-        SDL_FreeSurface(tileSet_out.horizontal_open.surface);
+        SDL_FreeSurface (tileSet_out.horizontal_open.surface);
       if (tileSet_out.vertical_open.surface)
-        SDL_FreeSurface(tileSet_out.vertical_open.surface);
+        SDL_FreeSurface (tileSet_out.vertical_open.surface);
       if (tileSet_out.horizontal_closed.surface)
-        SDL_FreeSurface(tileSet_out.horizontal_closed.surface);
+        SDL_FreeSurface (tileSet_out.horizontal_closed.surface);
       if (tileSet_out.vertical_closed.surface)
-        SDL_FreeSurface(tileSet_out.vertical_closed.surface);
+        SDL_FreeSurface (tileSet_out.vertical_closed.surface);
       if (tileSet_out.broken.surface)
-        SDL_FreeSurface(tileSet_out.broken.surface);
+        SDL_FreeSurface (tileSet_out.broken.surface);
       tileSet_out.horizontal_open.offset_x = 0;
       tileSet_out.horizontal_open.offset_y = 0;
       tileSet_out.horizontal_open.surface = NULL;
@@ -1581,21 +1558,21 @@ RPG_Graphics_Common_Tools::loadDoorTileSet(const RPG_Graphics_DoorStyle& style_i
       }
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid orientation \"%s\", aborting\n"),
-                   ACE_TEXT(RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString((*iterator).orientation).c_str())));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("invalid orientation \"%s\", aborting\n"),
+                    ACE_TEXT (RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString ((*iterator).orientation).c_str ())));
 
         // clean up
         if (tileSet_out.horizontal_open.surface)
-          SDL_FreeSurface(tileSet_out.horizontal_open.surface);
+          SDL_FreeSurface (tileSet_out.horizontal_open.surface);
         if (tileSet_out.vertical_open.surface)
-          SDL_FreeSurface(tileSet_out.vertical_open.surface);
+          SDL_FreeSurface (tileSet_out.vertical_open.surface);
         if (tileSet_out.horizontal_closed.surface)
-          SDL_FreeSurface(tileSet_out.horizontal_closed.surface);
+          SDL_FreeSurface (tileSet_out.horizontal_closed.surface);
         if (tileSet_out.vertical_closed.surface)
-          SDL_FreeSurface(tileSet_out.vertical_closed.surface);
+          SDL_FreeSurface (tileSet_out.vertical_closed.surface);
         if (tileSet_out.broken.surface)
-          SDL_FreeSurface(tileSet_out.broken.surface);
+          SDL_FreeSurface (tileSet_out.broken.surface);
         tileSet_out.horizontal_open.offset_x = 0;
         tileSet_out.horizontal_open.offset_y = 0;
         tileSet_out.horizontal_open.surface = NULL;
@@ -1617,12 +1594,12 @@ RPG_Graphics_Common_Tools::loadDoorTileSet(const RPG_Graphics_DoorStyle& style_i
     } // end SWITCH
   } // end FOR
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("loaded tileset \"%s\" (type: %s, style: %s, %u tile(s))...\n"),
-             ACE_TEXT(RPG_Graphics_Common_Tools::toString(graphic.type).c_str()),
-             ACE_TEXT(RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString(graphic.tileset.type).c_str()),
-             ACE_TEXT(RPG_Graphics_Common_Tools::toString(graphic.tileset.style).c_str()),
-             5));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("loaded tileset \"%s\" (type: %s, style: %s, %u tile(s))...\n"),
+              ACE_TEXT (RPG_Graphics_Common_Tools::toString (graphic.type).c_str ()),
+              ACE_TEXT (RPG_Graphics_TileSetTypeHelper::RPG_Graphics_TileSetTypeToString (graphic.tileset.type).c_str ()),
+              ACE_TEXT (RPG_Graphics_Common_Tools::toString (graphic.tileset.style).c_str ()),
+              5));
 }
 
 SDL_Surface*
@@ -1635,23 +1612,21 @@ RPG_Graphics_Common_Tools::loadGraphic (const RPG_Graphics_GraphicTypeUnion& typ
   RPG_Graphics_GraphicsCacheIterator_t iter;
   struct RPG_Graphics_GraphicsCacheNode node;
   node.type = type_in;
-  // init return value(s)
+  // initialize return value(s)
   node.image = NULL;
 
   // step1: graphic already cached ?
   if (cacheGraphic_in)
   {
     // synch access to graphics cache
-    {
-      ACE_Guard<ACE_Thread_Mutex> aGuard(myCacheLock);
-
-      for (iter = myGraphicsCache.begin();
-           iter != myGraphicsCache.end();
+    { ACE_Guard<ACE_Thread_Mutex> aGuard(myCacheLock);
+      for (iter = myGraphicsCache.begin ();
+           iter != myGraphicsCache.end ();
            iter++)
         if ((*iter) == node)
           break;
 
-      if (iter != myGraphicsCache.end())
+      if (iter != myGraphicsCache.end ())
         return (*iter).image;
     } // end lock scope
   } // end IF
@@ -1661,9 +1636,9 @@ RPG_Graphics_Common_Tools::loadGraphic (const RPG_Graphics_GraphicTypeUnion& typ
   RPG_Graphics_t graphic;
   graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
   graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
-  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance()->get(type_in);
-  ACE_ASSERT((graphic.category != RPG_GRAPHICS_CATEGORY_INVALID) &&
-             (graphic.type.discriminator == type_in.discriminator)); // too weak
+  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->get (type_in);
+  ACE_ASSERT ((graphic.category != RPG_GRAPHICS_CATEGORY_INVALID) &&
+              (graphic.type.discriminator == type_in.discriminator)); // too weak
   // sanity check
   if ((graphic.category != CATEGORY_CURSOR)    &&
       (graphic.category != CATEGORY_INTERFACE) &&
@@ -1671,28 +1646,27 @@ RPG_Graphics_Common_Tools::loadGraphic (const RPG_Graphics_GraphicTypeUnion& typ
       (graphic.category != CATEGORY_SPRITE)    &&
       (graphic.category != CATEGORY_TILE))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid category (was: \"%s\"): \"%s\" not an image type, aborting\n"),
-               ACE_TEXT(RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString(graphic.category).c_str()),
-               ACE_TEXT(RPG_Graphics_Common_Tools::toString(graphic.type).c_str())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("invalid category (was: \"%s\"): \"%s\" not an image type, aborting\n"),
+                ACE_TEXT (RPG_Graphics_CategoryHelper::RPG_Graphics_CategoryToString (graphic.category).c_str ()),
+                ACE_TEXT (RPG_Graphics_Common_Tools::toString (graphic.type).c_str ())));
     return NULL;
   } // end IF
 
   // assemble path
   std::string filename;
-  RPG_Graphics_Common_Tools::graphicToFile(graphic, filename);
-  ACE_ASSERT(!filename.empty());
+  RPG_Graphics_Common_Tools::graphicToFile (graphic, filename);
+  ACE_ASSERT (!filename.empty ());
 
   // load file
-  node.image = RPG_Graphics_Surface::load(filename,                   // file
-                                          convertToDisplayFormat_in); // convert to display format
+  node.image =
+    RPG_Graphics_Surface::load (filename,                   // file
+                                convertToDisplayFormat_in); // convert to display format
   if (!node.image)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
-               ACE_TEXT(filename.c_str())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Surface::load(\"%s\"), aborting\n"),
+                ACE_TEXT (filename.c_str ())));
     return NULL;
   } // end IF
 
@@ -1700,23 +1674,21 @@ RPG_Graphics_Common_Tools::loadGraphic (const RPG_Graphics_GraphicTypeUnion& typ
   if (cacheGraphic_in)
   {
     // synch cache access
-    {
-      ACE_Guard<ACE_Thread_Mutex> aGuard(myCacheLock);
-
+    { ACE_Guard<ACE_Thread_Mutex> aGuard (myCacheLock);
       if (myGraphicsCache.size() == myCacheSize)
       {
         iter = myGraphicsCache.begin();
         ACE_ASSERT(myGraphicsCache.size() >= myOldestCacheEntry);
-        std::advance(iter, myOldestCacheEntry);
+        std::advance (iter, myOldestCacheEntry);
         // *TODO*: what if it's still being used ?...
-        SDL_FreeSurface((*iter).image);
-        myGraphicsCache.erase(iter);
+        SDL_FreeSurface ((*iter).image);
+        myGraphicsCache.erase (iter);
         myOldestCacheEntry++;
         if (myOldestCacheEntry == myCacheSize)
           myOldestCacheEntry = 0;
       } // end IF
 
-      myGraphicsCache.push_back(node);
+      myGraphicsCache.push_back (node);
     } // end lock scope
   } // end IF
 
@@ -1838,34 +1810,31 @@ RPG_Graphics_Common_Tools::loadGraphic (SDL_Renderer* renderer_in,
 #endif // SDL2_USE
 
 SDL_Surface*
-RPG_Graphics_Common_Tools::renderText(const RPG_Graphics_Font& font_in,
-                                      const std::string& textString_in,
-                                      const SDL_Color& color_in)
+RPG_Graphics_Common_Tools::renderText (const RPG_Graphics_Font& font_in,
+                                       const std::string& textString_in,
+                                       const SDL_Color& color_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Common_Tools::renderText"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::renderText"));
 
   // init return value(s)
   SDL_Surface* result = NULL;
 
   // synch cache access
-  {
-    ACE_Guard<ACE_Thread_Mutex> aGuard(myCacheLock);
-
+  { ACE_Guard<ACE_Thread_Mutex> aGuard(myCacheLock);
     // step1: retrieve font cache entry
-    RPG_Graphics_FontCacheIterator_t iterator = myFontCache.find(font_in);
-    ACE_ASSERT(iterator != myFontCache.end());
+    RPG_Graphics_FontCacheIterator_t iterator = myFontCache.find (font_in);
+    ACE_ASSERT (iterator != myFontCache.end ());
 
-    result = TTF_RenderText_Blended((*iterator).second,
-                                    textString_in.c_str(),
-                                    color_in);
+    result = TTF_RenderText_Blended ((*iterator).second,
+                                     textString_in.c_str (),
+                                     color_in);
   } // end lock scope
   if (!result)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to TTF_RenderText_Blended(\"%s\"): %s, aborting\n"),
-               ACE_TEXT(textString_in.c_str()),
-               ACE_TEXT(SDL_GetError())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to TTF_RenderText_Blended(\"%s\"): %s, aborting\n"),
+                ACE_TEXT (textString_in.c_str ()),
+                ACE_TEXT (SDL_GetError ())));
     return NULL;
   } // end IF
 
