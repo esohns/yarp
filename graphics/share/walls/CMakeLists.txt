@@ -88,4 +88,4 @@ install(FILES
         wall_vine_covered_h_n.png
         wall_vine_covered_h_s.png
         wall_vine_covered_h_w.png
-        DESTINATION share/RPG/data/graphics/walls)
+        DESTINATION ${INSTALL_SHARE_DIR}/walls COMPONENT data)

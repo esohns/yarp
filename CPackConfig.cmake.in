@@ -201,7 +201,7 @@ set (CPACK_NSIS_DISPLAY_NAME "@PROJECT_NAME@")
 
 set (CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
 #set (CPACK_NSIS_EXECUTABLES_DIRECTORY )
-set (CPACK_NSIS_EXTRA_INSTALL_COMMANDS "CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\client.lnk' '$INSTDIR\\\\bin\\\\client_gui.exe' '-g$INSTDIR\\\\share\\\\rpg_client.gtk3 -l -t' $INSTDIR\\\\include\\\\image_icon.ico 0 SW_SHOWNORMAL ALT|CONTROL|SHIFT|F1 'client GUI'")
+set (CPACK_NSIS_EXTRA_INSTALL_COMMANDS "CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\client.lnk' '$INSTDIR\\\\bin\\\\client_gui.exe' '-l -n -t' $INSTDIR\\\\include\\\\image_icon.ico 0 SW_SHOWNORMAL ALT|CONTROL|SHIFT|F1 'client GUI'")
 set (CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "Delete '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\client.lnk'")
 
  set (CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.github.com\\\\esohns\\\\@PROJECT_NAME@")

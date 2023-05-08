@@ -1,6 +1,6 @@
 ########### install files ###############
-install(FILES
-        goblin.png
-        human.png
-        priest.png
-        DESTINATION share/RPG/data/graphics/creatures)
+install (FILES
+         goblin.png
+         human.png
+         priest.png
+         DESTINATION ${INSTALL_SHARE_DIR}/creatures COMPONENT data)

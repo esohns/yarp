@@ -17,4 +17,4 @@ install(FILES
         cursor_target_help.png
         cursor_target_invalid.png
         cursor_target_red.png
-        DESTINATION share/RPG/data/graphics/cursors)
+        DESTINATION ${INSTALL_SHARE_DIR}/cursors COMPONENT data)

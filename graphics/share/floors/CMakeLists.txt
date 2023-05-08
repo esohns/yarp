@@ -9,6 +9,7 @@ install(FILES
         floor_air_2_0.png
         floor_air_2_1.png
         floor_air_2_2.png
+        floor_black.png
         floor_carpet_0_0.png
         floor_carpet_0_1.png
         floor_carpet_1_0.png
@@ -123,4 +124,4 @@ install(FILES
         floor_water_2_0.png
         floor_water_2_1.png
         floor_water_2_2.png
-        DESTINATION share/RPG/data/graphics/floors)
+        DESTINATION ${INSTALL_SHARE_DIR}/floors COMPONENT data)

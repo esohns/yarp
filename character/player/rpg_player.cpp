@@ -1152,7 +1152,7 @@ RPG_Player::load (const std::string& filename_in,
     path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
   } // end IF
   else
-   path = schemaRepository_in;
+    path = schemaRepository_in;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_SCHEMA_FILE);
   // sanity check(s)
@@ -1175,6 +1175,9 @@ RPG_Player::load (const std::string& filename_in,
     }
     return NULL;
   } // end IF
+  // *NOTE*: support paths with spaces
+  path = RPG_Common_Tools::sanitizeURI (path);
+  path.insert (0, ACE_TEXT_ALWAYS_CHAR ("file:///"));
   props.schema_location (ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_XML_TARGET_NAMESPACE),
                          path);
 //   props.no_namespace_schema_location(RPG_PLAYER_SCHEMA_FILE);

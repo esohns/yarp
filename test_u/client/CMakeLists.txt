@@ -230,6 +230,11 @@ elseif (WIN32)
                 ${LIB_ROOT}/openssl/libssl-3-x64.dll
                 ${LIB_ROOT}/zlib/build/${CMAKE_BUILD_TYPE}/zlibd.dll
           DESTINATION ${INSTALL_BIN_DIR} COMPONENT test_u)
+ install (FILES
+          ${LIB_ROOT}/gtk3/share/glib-2.0/schemas/gschemas.compiled
+          ${LIB_ROOT}/gtk3/share/glib-2.0/schemas/org.gtk.Settings.ColorChooser.gschema.xml
+          ${LIB_ROOT}/gtk3/share/glib-2.0/schemas/org.gtk.Settings.FileChooser.gschema.xml
+          DESTINATION ${INSTALL_SHARE_DIR}/glib-2.0/schemas COMPONENT config)
 
  file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
  file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}.exe" COMMAND)

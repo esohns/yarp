@@ -1,13 +1,14 @@
 ########### install files ###############
-install(FILES  sound_bell.ogg sound_condition_ill.ogg  	sound_condition_weak.ogg sound_counting.ogg sound_door_close.ogg sound_door_open.ogg  	sound_fountain.ogg sound_sword_hit.ogg sound_sword_miss.ogg sound_walk.ogg  	sound_xp_levelup.ogg DESTINATION share/RPG/data/sound/effect)
-
-#original Makefile.am contents follow:
-
-#pkgdatadir = $(datadir)/@META_PACKAGE@
-#sounddir = $(pkgdatadir)/data/sound/effect
-#sound_DATA = sound_bell.ogg sound_condition_ill.ogg \
-#	sound_condition_weak.ogg sound_counting.ogg sound_door_close.ogg sound_door_open.ogg \
-#	sound_fountain.ogg sound_sword_hit.ogg sound_sword_miss.ogg sound_walk.ogg \
-#	sound_xp_levelup.ogg
-#
-#EXTRA_DIST = $(sound_DATA)
+install (FILES
+         sound_bell.ogg
+         sound_condition_ill.ogg
+         sound_condition_weak.ogg
+         sound_counting.ogg
+         sound_door_close.ogg
+         sound_door_open.ogg
+         sound_fountain.ogg
+         sound_sword_hit.ogg
+         sound_sword_miss.ogg
+         sound_walk.ogg
+         sound_xp_levelup.ogg
+         DESTINATION ${INSTALL_SHARE_DIR}/effect COMPONENT data)

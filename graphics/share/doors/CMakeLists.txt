@@ -9,4 +9,4 @@ install(FILES
         drawbridge_wood_closed_v.png
         drawbridge_wood_open_h.png
         drawbridge_wood_open_v.png
-        DESTINATION share/RPG/data/graphics/doors)
+        DESTINATION ${INSTALL_SHARE_DIR}/doors COMPONENT data)
