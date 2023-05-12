@@ -779,11 +779,11 @@ RPG_Graphics_Cursor_Manager::putHighlights (const RPG_Map_PositionList_t& mapPos
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Cursor_Manager::putHighlights"));
 
   // step0: init return value(s)
-  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
 
   // sanity check
-  ACE_ASSERT(myHighlightTile);
-  ACE_ASSERT(myHighlightWindow);
+  ACE_ASSERT (myHighlightTile);
+  ACE_ASSERT (myHighlightWindow);
 #if defined (SDL_USE)
   SDL_Surface* target_surface = myHighlightWindow->getScreen ();
 #elif defined (SDL2_USE)
@@ -794,43 +794,43 @@ RPG_Graphics_Cursor_Manager::putHighlights (const RPG_Map_PositionList_t& mapPos
 
   // step1: restore old backgrounds
 	if (myScreenLock && lockedAccess_in)
-    myScreenLock->lock();
-  restoreHighlightBG(viewPort_in,
-                     dirtyRegion_out,
-                     NULL,
-                     false,
-										 debug_in);
+    myScreenLock->lock ();
+  restoreHighlightBG (viewPort_in,
+                      dirtyRegion_out,
+                      NULL,
+                      false,
+                      debug_in);
 
   // step2: get new backgrounds
   SDL_Rect dirty_region;
-  storeHighlightBG(mapPositions_in,
-                   graphicsPositions_in,
-                   dirty_region,
-                   false);
-  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-                                                        dirtyRegion_out);
+  storeHighlightBG (mapPositions_in,
+                    graphicsPositions_in,
+                    dirty_region,
+                    false);
+  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
+                                                         dirtyRegion_out);
 
   // step3: place highlights
-	std::vector<SDL_Rect> clip_rectangles;
-	SDL_Rect clip_rectangle = {static_cast<Sint16>(myBGPosition.first),
-														 static_cast<Sint16>(myBGPosition.second),
-														 static_cast<Uint16>(myBG->w),
-														 static_cast<Uint16>(myBG->h)}, temp_rectangle;
+  std::vector<SDL_Rect> clip_rectangles;
+  SDL_Rect clip_rectangle = {static_cast<Sint16>(myBGPosition.first),
+                             static_cast<Sint16>(myBGPosition.second),
+                             static_cast<Uint16>(myBG->w),
+                             static_cast<Uint16>(myBG->h)}, temp_rectangle;
   myHighlightWindow->clip();
-  for (RPG_Graphics_OffsetsConstIterator_t iterator = graphicsPositions_in.begin();
-       iterator != graphicsPositions_in.end();
+  for (RPG_Graphics_OffsetsConstIterator_t iterator = graphicsPositions_in.begin ();
+       iterator != graphicsPositions_in.end ();
        iterator++)
   {
-    RPG_Graphics_Surface::put(*iterator,
-                              *myHighlightTile,
-                              target_surface,
-                              dirty_region);
-    dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-                                                          dirtyRegion_out);
-		temp_rectangle = RPG_Graphics_SDL_Tools::intersect(clip_rectangle,
-																											 dirty_region);
-		if (temp_rectangle.w || temp_rectangle.h)
-			clip_rectangles.push_back(temp_rectangle);
+    RPG_Graphics_Surface::put (*iterator,
+                               *myHighlightTile,
+                               target_surface,
+                               dirty_region);
+    dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
+                                                           dirtyRegion_out);
+    temp_rectangle = RPG_Graphics_SDL_Tools::intersect (clip_rectangle,
+                                                        dirty_region);
+    if (temp_rectangle.w || temp_rectangle.h)
+      clip_rectangles.push_back (temp_rectangle);
   } // end FOR
 
   if (debug_in)
@@ -957,7 +957,7 @@ RPG_Graphics_Cursor_Manager::storeHighlightBG (const RPG_Map_PositionList_t& map
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Cursor_Manager::storeHighlightBG"));
 
-  // sanity check
+  // sanity check(s)
   ACE_ASSERT(myHighlightWindow);
 #if defined (SDL_USE)
   SDL_Surface* target_surface = myHighlightWindow->getScreen ();
@@ -966,22 +966,23 @@ RPG_Graphics_Cursor_Manager::storeHighlightBG (const RPG_Map_PositionList_t& map
     SDL_GetWindowSurface (myHighlightWindow->getScreen ());
 #endif // SDL_USE || SDL2_USE
   ACE_ASSERT (target_surface);
-  ACE_ASSERT(!mapPositions_in.empty());
-  ACE_ASSERT(mapPositions_in.size() == graphicsPositions_in.size());
+  if (mapPositions_in.empty ())
+    return; // nothing to do
+  ACE_ASSERT (mapPositions_in.size () == graphicsPositions_in.size ());
 
   // init return value(s)
-  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
 
   // grow/shrink cache as necessary
-  ACE_INT64 delta = myHighlightBGCache.size() - mapPositions_in.size();
+  ACE_INT64 delta = myHighlightBGCache.size() - mapPositions_in.size ();
   if (delta > 0)
   {
     for (ACE_INT64 i = delta;
          i > 0;
          i--)
     {
-      SDL_FreeSurface(myHighlightBGCache.back().second);
-      myHighlightBGCache.pop_back();
+      SDL_FreeSurface (myHighlightBGCache.back ().second);
+      myHighlightBGCache.pop_back ();
     } // end FOR
   } // end IF
   else if (delta < 0)
@@ -991,23 +992,22 @@ RPG_Graphics_Cursor_Manager::storeHighlightBG (const RPG_Map_PositionList_t& map
          i > 0;
          i--)
     {
-      new_entry = RPG_Graphics_Surface::create(RPG_GRAPHICS_TILE_FLOOR_WIDTH,
-                                               RPG_GRAPHICS_TILE_FLOOR_HEIGHT);
+      new_entry = RPG_Graphics_Surface::create (RPG_GRAPHICS_TILE_FLOOR_WIDTH,
+                                                RPG_GRAPHICS_TILE_FLOOR_HEIGHT);
       if (!new_entry)
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), aborting\n"),
-                   RPG_GRAPHICS_TILE_FLOOR_WIDTH,
-                   RPG_GRAPHICS_TILE_FLOOR_HEIGHT));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to RPG_Graphics_Surface::create(%u,%u), returning\n"),
+                    RPG_GRAPHICS_TILE_FLOOR_WIDTH,
+                    RPG_GRAPHICS_TILE_FLOOR_HEIGHT));
         return;
       } // end IF
-      myHighlightBGCache.push_back(std::make_pair(std::make_pair(std::numeric_limits<unsigned int>::max(),
-                                                                 std::numeric_limits<unsigned int>::max()),
-                                                  new_entry));
+      myHighlightBGCache.push_back (std::make_pair (std::make_pair (std::numeric_limits<unsigned int>::max (),
+                                                                    std::numeric_limits<unsigned int>::max ()),
+                                                    new_entry));
     } // end IF
   } // end ELSEIF
-  ACE_ASSERT(myHighlightBGCache.size() == mapPositions_in.size());
+  ACE_ASSERT (myHighlightBGCache.size () == mapPositions_in.size ());
 
   // step1: restore (part of) the cursor bg so it is not included. This is safe,
   // as the highlight is only redrawn when the cursor moves --> the cursor will
@@ -1016,34 +1016,34 @@ RPG_Graphics_Cursor_Manager::storeHighlightBG (const RPG_Map_PositionList_t& map
   RPG_Graphics_OffsetsConstIterator_t graphics_position_iterator =
     graphicsPositions_in.begin();
   SDL_Rect clip_rectangle = {static_cast<Sint16>((*graphics_position_iterator).first),
-														 static_cast<Sint16>((*graphics_position_iterator).second),
-														 static_cast<Uint16>(myHighlightTile->w),
-														 static_cast<Uint16>(myHighlightTile->h)};
-	SDL_Rect temp_rectangle = {0, 0,
-														 static_cast<Uint16>(myHighlightTile->w),
-														 static_cast<Uint16>(myHighlightTile->h)};
-	for (++graphics_position_iterator;
-			 graphics_position_iterator != graphicsPositions_in.end();
-			 graphics_position_iterator++)
-	{
-		temp_rectangle.x = static_cast<Sint16>((*graphics_position_iterator).first);
-		temp_rectangle.y = static_cast<Sint16>((*graphics_position_iterator).second);
-		clip_rectangle = RPG_Graphics_SDL_Tools::boundingBox(clip_rectangle,
-																												 temp_rectangle);
-	} // end FOR
+                             static_cast<Sint16>((*graphics_position_iterator).second),
+                             static_cast<Uint16>(myHighlightTile->w),
+                             static_cast<Uint16>(myHighlightTile->h)};
+  SDL_Rect temp_rectangle = {0, 0,
+                             static_cast<Uint16>(myHighlightTile->w),
+                             static_cast<Uint16>(myHighlightTile->h)};
+  for (++graphics_position_iterator;
+       graphics_position_iterator != graphicsPositions_in.end ();
+       graphics_position_iterator++)
+  {
+    temp_rectangle.x = static_cast<Sint16>((*graphics_position_iterator).first);
+    temp_rectangle.y = static_cast<Sint16>((*graphics_position_iterator).second);
+    clip_rectangle = RPG_Graphics_SDL_Tools::boundingBox (clip_rectangle,
+                                                          temp_rectangle);
+  } // end FOR
   if (lockedAccess_in && myScreenLock)
-    myScreenLock->lock();
-  restoreBG(dirtyRegion_out,
-						&clip_rectangle,
-            false);
+    myScreenLock->lock ();
+  restoreBG (dirtyRegion_out,
+             &clip_rectangle,
+             false);
   if (lockedAccess_in && myScreenLock)
-    myScreenLock->unlock();
+    myScreenLock->unlock ();
 
-  RPG_Graphics_TileCacheIterator_t cache_iterator = myHighlightBGCache.begin();
-	graphics_position_iterator = graphicsPositions_in.begin();
+  RPG_Graphics_TileCacheIterator_t cache_iterator = myHighlightBGCache.begin ();
+  graphics_position_iterator = graphicsPositions_in.begin ();
 //  myHighlightWindow->clip();
-  for (RPG_Map_PositionListConstIterator_t map_position_iterator = mapPositions_in.begin();
-       map_position_iterator != mapPositions_in.end();
+  for (RPG_Map_PositionListConstIterator_t map_position_iterator = mapPositions_in.begin ();
+       map_position_iterator != mapPositions_in.end ();
        map_position_iterator++, graphics_position_iterator++, cache_iterator++)
   {
     RPG_Graphics_Surface::clear ((*cache_iterator).second);

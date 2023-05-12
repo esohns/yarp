@@ -2133,8 +2133,8 @@ ACE_TMAIN (int argc_in,
 
   struct RPG_Client_GTK_CBData GTK_user_data;
 
-  GTK_user_data.levelMetadata.name                 =
-      ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME);
+  GTK_user_data.levelMetadata.name =
+      ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME);
   //
   GTK_user_data.levelMetadata.environment.plane =
       RPG_ENGINE_ENVIRONMENT_DEF_PLANE;
@@ -2150,7 +2150,7 @@ ACE_TMAIN (int argc_in,
       RPG_ENGINE_ENVIRONMENT_DEF_OUTDOORS;
   //
   struct RPG_Engine_Spawn spawn;
-  spawn.spawn.type = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_ENCOUNTER_DEF_TYPE);
+  spawn.spawn.type = ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_ENCOUNTER_DEF_TYPE);
   spawn.spawn.interval.seconds = RPG_ENGINE_ENCOUNTER_DEF_TIMER_INTERVAL;
   spawn.spawn.interval.u_seconds = 0;
   spawn.spawn.probability =	RPG_ENGINE_ENCOUNTER_DEF_PROBABILITY;
@@ -2161,7 +2161,7 @@ ACE_TMAIN (int argc_in,
   GTK_user_data.levelMetadata.max_num_spawned =
       RPG_ENGINE_ENCOUNTER_DEF_NUM_SPAWNED_MAX;
   //
-  GTK_user_data.mapConfiguration.min_room_size          =
+  GTK_user_data.mapConfiguration.min_room_size =
       RPG_CLIENT_MAP_DEF_MIN_ROOM_SIZE;
   GTK_user_data.mapConfiguration.doors =
       RPG_CLIENT_MAP_DEF_DOORS;
@@ -2243,11 +2243,14 @@ ACE_TMAIN (int argc_in,
                                                             ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_SUB_DIRECTORY_STRING),
                                                             false); // data-
   configuration.audio_configuration.repository                  = data_path;
-  configuration.audio_configuration.dictionary = sound_dictionary;
+  configuration.audio_configuration.dictionary                  =
+    sound_dictionary;
 
   // *** graphics ***
-  configuration.video_configuration.screen_width      = RPG_CLIENT_VIDEO_DEF_WIDTH;
-  configuration.video_configuration.screen_height     = RPG_CLIENT_VIDEO_DEF_HEIGHT;
+  configuration.video_configuration.screen_width      =
+    RPG_CLIENT_VIDEO_DEF_WIDTH;
+  configuration.video_configuration.screen_height     =
+    RPG_CLIENT_VIDEO_DEF_HEIGHT;
   configuration.video_configuration.screen_colordepth =
       RPG_CLIENT_VIDEO_DEF_BPP;
   configuration.video_configuration.double_buffer     =

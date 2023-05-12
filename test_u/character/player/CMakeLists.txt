@@ -168,12 +168,16 @@ endif ()
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
+# add PCH
+target_precompile_headers (${EXECUTABLE}
+                           PRIVATE stdafx.h)
+
 ########### install files ###############
 install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 
 ########### next target ###############
-set (EXECUTABLE character_generator_gui)
-set (${EXECUTABLE}_SRCS
+set (EXECUTABLE_2 character_generator_gui)
+set (${EXECUTABLE_2}_SRCS
      character_generator_gui.cpp
      character_generator_gui_callbacks.cpp
      character_generator_gui_callbacks.h
@@ -181,10 +185,10 @@ set (${EXECUTABLE}_SRCS
      test_u_main.cpp
      test_u_main.h)
 
-set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"/usr/local/share/RPG\";CONFIGDIR=\".\"")
+set_source_files_properties (${${EXECUTABLE_2}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"/usr/local/share/RPG\";CONFIGDIR=\".\"")
 
-add_executable (${EXECUTABLE}
-                ${${EXECUTABLE}_SRCS})
+add_executable (${EXECUTABLE_2}
+                ${${EXECUTABLE_2}_SRCS})
 
 #add_definitions (-D_WIN32_WINNT=0x0602)
 #add_definitions (-DWINVER=0x0602)
@@ -194,11 +198,11 @@ include_directories (${GTK_INCLUDE_DIRS}
                      ${PKG_CONFIG_MODULE_LIBGNOMEUI_INCLUDE_DIRS})
 
 if (SDL_SUPPORT)
- target_link_libraries (${EXECUTABLE}
+ target_link_libraries (${EXECUTABLE_2}
                         ${SDL_LIBRARIES})
 endif (SDL_SUPPORT)
 if (UNIX)
- target_link_libraries (${EXECUTABLE}
+ target_link_libraries (${EXECUTABLE_2}
                         ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES}
                         ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
                         X11
@@ -223,9 +227,9 @@ if (UNIX)
                         Common
                         ACEStream_Network)
 elseif (WIN32)
-# set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+# set_target_properties (${EXECUTABLE_2} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
- target_link_libraries (${EXECUTABLE}
+ target_link_libraries (${EXECUTABLE_2}
                         Opengl32.lib Ntdll.lib
                         $ENV{LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL_mixer.lib
                         ${GTK_LIBRARIES}
@@ -240,12 +244,67 @@ elseif (WIN32)
                         RPG_Net RPG_Net_Protocol)
 endif ()
 
-set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
+set_property (TARGET ${EXECUTABLE_2} PROPERTY FOLDER "test_u")
 
 # add PCH
-target_precompile_headers (${EXECUTABLE}
+target_precompile_headers (${EXECUTABLE_2}
                            PRIVATE stdafx.h)
 
 ########### install files ###############
-install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
-install (FILES ${EXECUTABLE}.glade DESTINATION share/RPG/config)
+install (TARGETS ${EXECUTABLE_2} RUNTIME DESTINATION bin)
+install (FILES ${EXECUTABLE_2}.glade DESTINATION share/RPG/config)
+
+########### launcher ###############
+if (UNIX)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}" COMMAND)
+ create_target_launcher (${EXECUTABLE}
+                         COMMAND ${COMMAND}
+                         ARGS "-t"
+                         FORWARD_ARGS
+                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                         ENVIRONMENT foo=bar)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE_2}" COMMAND)
+ create_target_launcher (${EXECUTABLE_2}
+                         COMMAND ${COMMAND}
+                         ARGS "-l -t"
+                         FORWARD_ARGS
+                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                         ENVIRONMENT foo=bar)
+elseif (WIN32)
+ get_filename_component (ACE_LIB_PATH ${ACE_LIBRARY}
+                         DIRECTORY)
+# file (TO_NATIVE_PATH $ENV{LIB_ROOT} LIB_ROOT)
+# string (REPLACE "\\" "\\\\" LIB_ROOT ${LIB_ROOT})
+ file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}.exe" COMMAND)
+ string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
+ file (TO_CMAKE_PATH "${SDL_LIB_DIR}" SDL_LIB_PATH)
+ file (TO_CMAKE_PATH "${GTK_LIB_DIRS}" GTK_LIB_PATH)
+ create_target_launcher (${EXECUTABLE}
+                         COMMAND ${COMMAND}
+                         ARGS "-t"
+                         FORWARD_ARGS
+                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
+                                              ${LIB_ROOT}/libpng/build/Debug
+                                              ${SDL_LIB_PATH}
+                                              ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
+                                              ${LIB_ROOT}/ACE_TAO/ACE/lib
+                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                         ENVIRONMENT foo=bar)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE_2}.exe" COMMAND)
+ string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
+ create_target_launcher (${EXECUTABLE_2}
+                         COMMAND ${COMMAND}
+                         ARGS "-l -t"
+                         FORWARD_ARGS
+                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
+                                              ${LIB_ROOT}/libpng/build/Debug
+                                              ${LIB_ROOT}/libepoxy/bin
+                                              ${LIB_ROOT}/openssl
+                                              ${SDL_LIB_PATH}
+                                              ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
+                                              ${LIB_ROOT}/ACE_TAO/ACE/lib
+                                              ${GTK_LIB_PATH}
+                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                         ENVIRONMENT foo=bar)
+endif ()

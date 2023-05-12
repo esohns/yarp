@@ -34,7 +34,13 @@
 #define CHARACTER_GENERATOR_GTK_BUTTON_IMAGEPREV_NAME "previous_button"
 #define CHARACTER_GENERATOR_GTK_HBOX_NAME             "hbox"
 
+#if defined (GTK2_USE)
+#define CHARACTER_GENERATOR_GTK_GLADE_FILE            "character_generator_gui.gtk2"
+#elif defined (GTK3_USE)
+#define CHARACTER_GENERATOR_GTK_GLADE_FILE            "character_generator_gui.gtk3"
+#else
 #define CHARACTER_GENERATOR_GTK_GLADE_FILE            "character_generator_gui.glade"
+#endif // GTK2_USE || GTK3_USE
 
 typedef std::vector<RPG_Graphics_Sprite> Character_Generator_GUI_SpriteGallery_t;
 typedef Character_Generator_GUI_SpriteGallery_t::const_iterator Character_Generator_GUI_SpriteGalleryIterator_t;

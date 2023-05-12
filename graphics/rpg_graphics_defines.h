@@ -73,6 +73,7 @@
 #define RPG_GRAPHICS_WINDOW_SCROLL_OFFSET                   1
 
 #define RPG_GRAPHICS_DEF_CACHESIZE                          50 // #graphics
+#define RPG_GRAPHICS_SCHEMA_FILE                            "rpg_graphics.xsd"
 #define RPG_GRAPHICS_DICTIONARY_FILE                        "rpg_graphics.xml"
 #define RPG_GRAPHICS_DICTIONARY_INSTANCE                    "graphicsDictionary"
 #define RPG_GRAPHICS_SUB_DIRECTORY_STRING                   "graphics"

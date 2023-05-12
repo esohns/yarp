@@ -28,7 +28,7 @@
 #include "ace/High_Res_Timer.h"
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
 #include "ace/Init_ACE.h"
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 #include "ace/Log_Msg.h"
 #include "ace/OS_main.h"
 
@@ -1402,8 +1402,13 @@ do_work (mode_t mode_in,
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step0: init: random seed, string conversion facilities, ...
+  std::string schema_repository_string = schemaRepository_in;
+  schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository_string += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
+  schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository_string += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
   std::vector<std::string> schema_directories_a;
-  schema_directories_a.push_back (schemaRepository_in);
+  schema_directories_a.push_back (schema_repository_string);
   RPG_Engine_Common_Tools::initialize (schema_directories_a,
                                        magicDictionary_in,
                                        itemsDictionary_in,
@@ -1546,12 +1551,12 @@ do_work (mode_t mode_in,
                                                                      dirty_region);
 
       // step3: create/load initial entity
-      std::string configuration_path =
-        RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                              ACE_TEXT_ALWAYS_CHAR (""),
-                                                              ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
-                                                              true);
-      std::string schema_repository = configuration_path;
+      //std::string configuration_path =
+      //  RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+      //                                                        ACE_TEXT_ALWAYS_CHAR (""),
+      //                                                        ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
+      //                                                        true);
+      //std::string schema_repository = configuration_path;
 
       struct RPG_Engine_Entity entity;
 //      entity.actions.clear();
@@ -1581,7 +1586,7 @@ do_work (mode_t mode_in,
         short int HP = std::numeric_limits<short int>::max ();
         RPG_Magic_Spells_t spells;
         entity.character = RPG_Player::load (entity_in,
-                                             schema_repository,
+                                             schemaRepository_in,
                                              condition,
                                              HP,
                                              spells);
@@ -1993,23 +1998,7 @@ ACE_TMAIN (int argc_in,
   } // end IF
   mode = (slideshow_mode ? SDL_GUI_USERMODE_SLIDESHOW : mode);
 
-  configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (""),
-                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
-                                                          true); // configuration-
-  std::string schema_repository = configuration_path;
-//  if (!RPG_Common_XML_Tools::initialize (schema_repository))
-//  {
-//    ACE_DEBUG ((LM_ERROR,
-//                ACE_TEXT ("failed to RPG_Common_XML_Tools::initialize(), returning\n")));
-//#if defined (ACE_WIN32) || defined (ACE_WIN64)
-//    if (ACE::fini() == -1)
-//      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-//#endif
-//    return EXIT_FAILURE;
-//  } // end IF
+  std::string schema_repository = Common_File_Tools::getWorkingDirectory ();
 
   // step1c: handle specific program modes
   if (print_version_and_exit)

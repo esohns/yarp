@@ -26,8 +26,11 @@
 
 #include "ace/Log_Msg.h"
 
+#include "common_file_tools.h"
+
 #include "rpg_common_defines.h"
 #include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
 #include "rpg_common_XML_tools.h"
 #include "rpg_common_xsderrorhandler.h"
 
@@ -109,8 +112,14 @@ RPG_Graphics_Dictionary::initialize (const std::string& filename_in,
   if (!validateXML_in)
     flags = flags | ::xml_schema::flags::dont_validate;
   ::xml_schema::properties properties;
-  try
-  {
+  //std::string path = Common_File_Tools::directory (filename_in);
+  //path += ACE_DIRECTORY_SEPARATOR_STR;
+  //path += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SCHEMA_FILE);
+  //path = RPG_Common_Tools::sanitizeURI (path);
+  //path.insert (0, ACE_TEXT_ALWAYS_CHAR ("file:///"));
+  //properties.schema_location (ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_XML_TARGET_NAMESPACE),
+  //                            path);
+  try {
     //doc_p.parse(filename_in,
     //            RPG_XSDErrorHandler,
     //            flags);
@@ -118,9 +127,7 @@ RPG_Graphics_Dictionary::initialize (const std::string& filename_in,
                  *RPG_Common_XML_Tools::parser(),
                  flags,
                  properties);
-  }
-  catch (const ::xml_schema::parsing& exception)
-  {
+  } catch (const ::xml_schema::parsing& exception) {
     std::ostringstream converter;
     converter << exception;
     std::string text = converter.str();
@@ -128,9 +135,7 @@ RPG_Graphics_Dictionary::initialize (const std::string& filename_in,
                ACE_TEXT("RPG_Graphics_Dictionary::init(): exception occurred: \"%s\", aborting\n"),
                ACE_TEXT(text.c_str())));
     return false;
-  }
-  catch (...)
-  {
+  } catch (...) {
     ACE_DEBUG((LM_ERROR,
                ACE_TEXT("RPG_Graphics_Dictionary::init(): exception occurred, aborting\n")));
     return false;

@@ -4829,11 +4829,12 @@ continue_:
                           1, &data_i,
                           2, &data_2,
                           -1);
+      RPG_Character_SkillsIterator_t iterator_2;
+      enum RPG_Common_Skill skill_e;
       if (!data_2) // value is zero ? continue : proceed
         goto next;
-      enum RPG_Common_Skill skill_e =
-          static_cast<enum RPG_Common_Skill> (data_i);
-      RPG_Character_SkillsIterator_t iterator_2 = skills_a.find (skill_e);
+      skill_e = static_cast<enum RPG_Common_Skill> (data_i);
+      iterator_2 = skills_a.find (skill_e);
       if (iterator_2 == skills_a.end ())
         skills_a.insert (std::make_pair (skill_e, data_2));
       else

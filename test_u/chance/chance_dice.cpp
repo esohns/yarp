@@ -189,12 +189,9 @@ do_work (const RPG_Dice_Roll& rollSpecs_in,
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step1: initialize randomization
-  try
-  {
+  try {
     RPG_Dice::initialize ();
-  }
-  catch (...)
-  {
+  } catch (...) {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("caught exception in RPG_Dice::initialize, returning\n")));
     return;
@@ -202,14 +199,11 @@ do_work (const RPG_Dice_Roll& rollSpecs_in,
 
   // step2a: generate some random numbers...
   RPG_Dice_RollResult_t result;
-  try
-  {
+  try {
     RPG_Dice::generateRandomNumbers (rollSpecs_in.typeDice, // see enum
                                      numRolls_in,
                                      result);
-  }
-  catch (...)
-  {
+  } catch (...) {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("caught exception in RPG_Dice::generateRandomNumbers, returning\n")));
     return;
@@ -258,14 +252,11 @@ do_work (const RPG_Dice_Roll& rollSpecs_in,
 
   // step2b: generate some random dice rolls...
   result.clear ();
-  try
-  {
+  try {
     RPG_Dice::simulateRoll (rollSpecs_in,
                             numRolls_in,
                             result);
-  }
-  catch (...)
-  {
+  } catch (...) {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("caught exception in RPG_Dice::simulateRoll, returning\n")));
     return;

@@ -1618,7 +1618,7 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
 
                   // pointing at an invalid (i.e. unreachable) position (still on the map though)
                   // --> erase cached path (and tile highlights)
-                //	RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG(map_position);
+                	RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->resetHighlightBG (map_position);
                   myState->path.clear();
                 } // end IF
               } // end IF
@@ -1626,8 +1626,8 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
               {
                 // pointing at curent position
                 // --> erase cached path (and tile highlights)
-                //RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG(map_position);
-                myState->path.clear();
+                RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->resetHighlightBG (map_position);
+                myState->path.clear ();
               } // end ELSE
 
               // step2: compute (screen) positions
@@ -1689,18 +1689,18 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
       // step2: draw/remove highlight(s)
       screenLock_->lock();
       if (toggle_on)
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlights(myState->positions,
-                                                                         screen_positions,
-                                                                         myView,
-                                                                         dirtyRegion_out,
-                                                                         false,
-                                                                         myState->debug);
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->putHighlights (myState->positions,
+                                                                           screen_positions,
+                                                                           myView,
+                                                                           dirtyRegion_out,
+                                                                           false,
+                                                                           myState->debug);
       else // --> moved into an "invalid" map position (i.e. unmapped, closed door, wall, ...)
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG(myView,
-                                                                              dirtyRegion_out,
-                                                                              NULL,
-                                                                              false,
-                                                                              myState->debug);
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->restoreHighlightBG (myView,
+                                                                                dirtyRegion_out,
+                                                                                NULL,
+                                                                                false,
+                                                                                myState->debug);
       screenLock_->unlock();
 
 set_cursor:

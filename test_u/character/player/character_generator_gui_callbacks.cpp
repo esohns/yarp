@@ -138,8 +138,7 @@ idle_initialize_UI_cb (gpointer userData_in)
 {
   RPG_TRACE (ACE_TEXT ("::idle_initialize_UI_cb"));
 
-  struct RPG_Client_GTK_CBData* data_p =
-    static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
+  struct GTK_CBData* data_p = static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (data_p);
@@ -399,7 +398,7 @@ about_clicked_GTK_cb (GtkWidget* widget_in,
   RPG_TRACE (ACE_TEXT ("::about_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG (widget_in);
-  GTK_CBData* data_p = static_cast<GTK_CBData*> (userData_in);
+  struct GTK_CBData* data_p = static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (data_p);
@@ -444,7 +443,7 @@ create_character_clicked_GTK_cb (GtkWidget* widget_in,
   RPG_TRACE (ACE_TEXT ("::create_character_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG (widget_in);
-  GTK_CBData* data_p = static_cast<GTK_CBData*> (userData_in);
+  struct GTK_CBData* data_p = static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (data_p);
@@ -515,7 +514,7 @@ drop_character_clicked_GTK_cb (GtkWidget* widget_in,
   RPG_TRACE (ACE_TEXT ("::drop_character_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG (widget_in);
-  GTK_CBData* data_p = static_cast<GTK_CBData*> (userData_in);
+  struct GTK_CBData* data_p = static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (data_p);
@@ -668,7 +667,7 @@ load_character_clicked_GTK_cb (GtkWidget* widget_in,
   RPG_TRACE (ACE_TEXT ("::load_character_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG (widget_in);
-  GTK_CBData* data_p = static_cast<GTK_CBData*> (userData_in);
+  struct GTK_CBData* data_p = static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (data_p);
@@ -703,7 +702,7 @@ character_file_activated_GTK_cb (GtkWidget* widget_in,
   RPG_TRACE (ACE_TEXT ("::character_file_activated_GTK_cb"));
 
   ACE_UNUSED_ARG (widget_in);
-  GTK_CBData* data_p = static_cast<GTK_CBData*> (userData_in);
+  struct GTK_CBData* data_p = static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (data_p);
@@ -827,7 +826,7 @@ store_character_clicked_GTK_cb (GtkWidget* widget_in,
   RPG_TRACE (ACE_TEXT ("::store_character_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG (widget_in);
-  GTK_CBData* data_p = static_cast<GTK_CBData*> (userData_in);
+  struct GTK_CBData* data_p = static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (data_p);
@@ -892,7 +891,7 @@ character_repository_combobox_changed_GTK_cb (GtkWidget* widget_in,
 {
   RPG_TRACE (ACE_TEXT ("::character_repository_combobox_changed_GTK_cb"));
 
-  GTK_CBData* data_p = static_cast<GTK_CBData*> (userData_in);
+  struct GTK_CBData* data_p = static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (widget_in);
@@ -1021,7 +1020,7 @@ character_repository_button_clicked_GTK_cb (GtkWidget* widget_in,
   RPG_TRACE (ACE_TEXT ("::character_repository_button_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG (widget_in);
-  GTK_CBData* data_p = static_cast<GTK_CBData*> (userData_in);
+  struct GTK_CBData* data_p = static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (data_p);
@@ -1060,7 +1059,7 @@ prev_image_clicked_GTK_cb (GtkWidget* widget_in,
   RPG_TRACE (ACE_TEXT ("::prev_image_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG (widget_in);
-  GTK_CBData* data_p = static_cast<GTK_CBData*> (userData_in);
+  struct GTK_CBData* data_p = static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (data_p);
@@ -1096,7 +1095,7 @@ next_image_clicked_GTK_cb (GtkWidget* widget_in,
   RPG_TRACE (ACE_TEXT ("::next_image_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG (widget_in);
-  GTK_CBData* data_p = static_cast<GTK_CBData*> (userData_in);
+  struct GTK_CBData* data_p = static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (data_p);

@@ -137,7 +137,7 @@ RPG_Common_File_Tools::getConfigurationDataDirectory (const std::string& package
       return_value += ACE_DIRECTORY_SEPARATOR_STR;
       return_value +=
         (moduleName2_in.empty () ? Common_String_Tools::tolower (Common_File_Tools::basename (Common_File_Tools::executable, true))
-                                 : Common_String_Tools::tolower (Common_File_Tools::basename (moduleName2_in, true)));
+                                 : Common_String_Tools::tolower (moduleName2_in));
       return_value += ACE_DIRECTORY_SEPARATOR_STR;
       return_value +=
           (isConfiguration_in ? ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY)
@@ -153,7 +153,7 @@ RPG_Common_File_Tools::getConfigurationDataDirectory (const std::string& package
                               : ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_DATA_SUBDIRECTORY));
     } // end ELSE
     // sanity check(s)
-    ACE_ASSERT (Common_File_Tools::isDirectory (return_value));
+    //ACE_ASSERT (Common_File_Tools::isDirectory (return_value));
 
     return return_value;
   } // end IF
