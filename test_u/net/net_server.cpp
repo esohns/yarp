@@ -229,10 +229,6 @@ do_processArguments (const int& argc_in,
   traceInformation_out            = false;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-//  path += ACE_TEXT_ALWAYS_CHAR("net");
-//  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//#endif
   path += ACE_TEXT_ALWAYS_CHAR (NET_SERVER_UI_FILE);
   UIFile_out                      = path;
   printVersionAndExit_out         = false;
@@ -914,10 +910,6 @@ ACE_TMAIN (int argc_in,
   bool trace_information = false;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//#if defined (DEBUG_DEBUGGER)
-//  path += ACE_TEXT_ALWAYS_CHAR ("net");
-//  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//#endif // #ifdef DEBUG_DEBUGGER
   path += ACE_TEXT_ALWAYS_CHAR (NET_SERVER_UI_FILE);
   std::string UI_file = path;
   bool print_version_and_exit = false;

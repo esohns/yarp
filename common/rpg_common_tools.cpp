@@ -29,9 +29,6 @@
 #include "ace/OS.h"
 #include "ace/Log_Msg.h"
 #include "ace/Log_Msg_Backend.h"
-#include "ace/Proactor.h"
-#include "ace/POSIX_Proactor.h"
-#include "ace/Reactor.h"
 
 #include "rpg_common_macros.h"
 #include "rpg_common_defines.h"
@@ -63,65 +60,66 @@ RPG_Common_TimeOfDayToStringTable_t RPG_Common_TimeOfDayHelper::myRPG_Common_Tim
 RPG_Common_AmbientLightingToStringTable_t RPG_Common_AmbientLightingHelper::myRPG_Common_AmbientLightingToStringTable;
 
 void
-RPG_Common_Tools::initializeStringConversionTables()
+RPG_Common_Tools::initializeStringConversionTables ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::initStringConversionTables"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::initStringConversionTables"));
 
-  RPG_Common_CreatureMetaTypeHelper::init();
-  RPG_Common_CreatureSubTypeHelper::init();
-  RPG_Common_SubClassHelper::init();
-  RPG_Common_AttributeHelper::init();
-  RPG_Common_ConditionHelper::init();
-  RPG_Common_SizeHelper::init();
-  RPG_Common_SkillHelper::init();
-  RPG_Common_PhysicalDamageTypeHelper::init();
-  RPG_Common_ActionTypeHelper::init();
-  RPG_Common_AreaOfEffectHelper::init();
-  RPG_Common_EffectTypeHelper::init();
-  RPG_Common_CounterMeasureHelper::init();
-  RPG_Common_CheckTypeHelper::init();
-  RPG_Common_SavingThrowHelper::init();
-  RPG_Common_SaveReductionTypeHelper::init();
-  RPG_Common_CampHelper::init();
+  RPG_Common_CreatureMetaTypeHelper::init ();
+  RPG_Common_CreatureSubTypeHelper::init ();
+  RPG_Common_SubClassHelper::init ();
+  RPG_Common_AttributeHelper::init ();
+  RPG_Common_ConditionHelper::init ();
+  RPG_Common_SizeHelper::init ();
+  RPG_Common_SkillHelper::init ();
+  RPG_Common_PhysicalDamageTypeHelper::init ();
+  RPG_Common_ActionTypeHelper::init ();
+  RPG_Common_AreaOfEffectHelper::init ();
+  RPG_Common_EffectTypeHelper::init ();
+  RPG_Common_CounterMeasureHelper::init ();
+  RPG_Common_CheckTypeHelper::init ();
+  RPG_Common_SavingThrowHelper::init ();
+  RPG_Common_SaveReductionTypeHelper::init ();
+  RPG_Common_CampHelper::init ();
 
-  RPG_Common_PlaneHelper::init();
-  RPG_Common_TerrainHelper::init();
-  RPG_Common_TrackHelper::init();
-  RPG_Common_ClimateHelper::init();
-  RPG_Common_TimeOfDayHelper::init();
-  RPG_Common_AmbientLightingHelper::init();
+  RPG_Common_PlaneHelper::init ();
+  RPG_Common_TerrainHelper::init ();
+  RPG_Common_TrackHelper::init ();
+  RPG_Common_ClimateHelper::init ();
+  RPG_Common_TimeOfDayHelper::init ();
+  RPG_Common_AmbientLightingHelper::init ();
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("RPG_Common_Tools: initialized string conversion tables...\n")));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("RPG_Common_Tools: initialized string conversion tables...\n")));
 }
 
 std::string
-RPG_Common_Tools::toString(const RPG_Common_CreatureType& type_in)
+RPG_Common_Tools::toString (const struct RPG_Common_CreatureType& type_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::creatureTypeToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::toString"));
 
-  std::string result = RPG_Common_CreatureMetaTypeHelper::RPG_Common_CreatureMetaTypeToString(type_in.metaType);
-  if (!type_in.subTypes.empty())
+  std::string result =
+    RPG_Common_CreatureMetaTypeHelper::RPG_Common_CreatureMetaTypeToString (type_in.metaType);
+  if (!type_in.subTypes.empty ())
   {
     result += ACE_TEXT_ALWAYS_CHAR(" / (");
-    for (std::vector<RPG_Common_CreatureSubType>::const_iterator iterator = type_in.subTypes.begin();
-         iterator != type_in.subTypes.end();
+    for (std::vector<RPG_Common_CreatureSubType>::const_iterator iterator = type_in.subTypes.begin ();
+         iterator != type_in.subTypes.end ();
          iterator++)
     {
-      result += RPG_Common_CreatureSubTypeHelper::RPG_Common_CreatureSubTypeToString(*iterator);
-      result += ACE_TEXT_ALWAYS_CHAR("|");
+      result += RPG_Common_CreatureSubTypeHelper::RPG_Common_CreatureSubTypeToString (*iterator);
+      result += ACE_TEXT_ALWAYS_CHAR ("|");
     } // end FOR
-    result.erase(--(result.end()));
-    result += ACE_TEXT_ALWAYS_CHAR(")");
+    result.erase (--(result.end ()));
+    result += ACE_TEXT_ALWAYS_CHAR (")");
   } // end IF
 
   return result;
 }
 
-RPG_Common_Attribute
-RPG_Common_Tools::savingThrowToAttribute(const RPG_Common_SavingThrow& save_in)
+enum RPG_Common_Attribute
+RPG_Common_Tools::savingThrowToAttribute (const enum RPG_Common_SavingThrow& save_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::savingThrowToAttribute"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::savingThrowToAttribute"));
 
   switch (save_in)
   {
@@ -133,11 +131,9 @@ RPG_Common_Tools::savingThrowToAttribute(const RPG_Common_SavingThrow& save_in)
       return ATTRIBUTE_WISDOM;
     default:
     {
-      // debug info
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("invalid saving throw type: \"%s\", aborting\n"),
-                 RPG_Common_SavingThrowHelper::RPG_Common_SavingThrowToString(save_in).c_str()));
-
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT ("invalid saving throw type: \"%s\", aborting\n"),
+                  ACE_TEXT (RPG_Common_SavingThrowHelper::RPG_Common_SavingThrowToString (save_in).c_str ())));
       break;
     }
   } // end SWITCH
@@ -146,51 +142,56 @@ RPG_Common_Tools::savingThrowToAttribute(const RPG_Common_SavingThrow& save_in)
 }
 
 std::string
-RPG_Common_Tools::toString(const RPG_Common_SavingThrowCheck& save_in)
+RPG_Common_Tools::toString (const struct RPG_Common_SavingThrowCheck& save_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::savingThrowToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::toString"));
 
   std::string result;
 
-  result += ACE_TEXT_ALWAYS_CHAR("type: ");
-  result += RPG_Common_SavingThrowHelper::RPG_Common_SavingThrowToString(save_in.type);
-  result += ACE_TEXT_ALWAYS_CHAR("\n");
-  result += ACE_TEXT_ALWAYS_CHAR("attribute: ");
-  result += RPG_Common_AttributeHelper::RPG_Common_AttributeToString(save_in.attribute);
-  result += ACE_TEXT_ALWAYS_CHAR("\n");
-  result += ACE_TEXT_ALWAYS_CHAR("DC: ");
+  result += ACE_TEXT_ALWAYS_CHAR ("type: ");
+  result += 
+    RPG_Common_SavingThrowHelper::RPG_Common_SavingThrowToString (save_in.type);
+  result += ACE_TEXT_ALWAYS_CHAR ("\n");
+  result += ACE_TEXT_ALWAYS_CHAR ("attribute: ");
+  result += 
+    RPG_Common_AttributeHelper::RPG_Common_AttributeToString (save_in.attribute);
+  result += ACE_TEXT_ALWAYS_CHAR ("\n");
+  result += ACE_TEXT_ALWAYS_CHAR ("DC: ");
   std::stringstream converter;
-  converter << static_cast<unsigned int>(save_in.difficultyClass);
-  result += converter.str();
-  result += ACE_TEXT_ALWAYS_CHAR("\n");
-  result += ACE_TEXT_ALWAYS_CHAR("reduction: ");
-  result += RPG_Common_SaveReductionTypeHelper::RPG_Common_SaveReductionTypeToString(save_in.reduction);
-  result += ACE_TEXT_ALWAYS_CHAR("\n");
+  converter << static_cast<unsigned int> (save_in.difficultyClass);
+  result += converter.str ();
+  result += ACE_TEXT_ALWAYS_CHAR ("\n");
+  result += ACE_TEXT_ALWAYS_CHAR ("reduction: ");
+  result += 
+    RPG_Common_SaveReductionTypeHelper::RPG_Common_SaveReductionTypeToString (save_in.reduction);
+  result += ACE_TEXT_ALWAYS_CHAR ("\n");
 
   return result;
 }
 
 std::string
-RPG_Common_Tools::toString(const RPG_Common_Environment& environment_in)
+RPG_Common_Tools::toString (const struct RPG_Common_Environment& environment_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::environmentToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::environmentToString"));
 
   std::string result;
 
-  result += RPG_Common_TerrainHelper::RPG_Common_TerrainToString(environment_in.terrain);
+  result +=
+    RPG_Common_TerrainHelper::RPG_Common_TerrainToString (environment_in.terrain);
   if (environment_in.climate != RPG_COMMON_CLIMATE_INVALID)
   {
-    result += ACE_TEXT_ALWAYS_CHAR("|");
-    result += RPG_Common_ClimateHelper::RPG_Common_ClimateToString(environment_in.climate);
+    result += ACE_TEXT_ALWAYS_CHAR ("|");
+    result +=
+      RPG_Common_ClimateHelper::RPG_Common_ClimateToString (environment_in.climate);
   } // end IF
 
   return result;
 }
 
-RPG_Common_Plane
-RPG_Common_Tools::terrainToPlane(const RPG_Common_Terrain& terrain_in)
+enum RPG_Common_Plane
+RPG_Common_Tools::terrainToPlane (const enum RPG_Common_Terrain& terrain_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::terrainToPlane"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::terrainToPlane"));
 
   switch (terrain_in)
   {
@@ -244,10 +245,9 @@ RPG_Common_Tools::terrainToPlane(const RPG_Common_Terrain& terrain_in)
     }
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid terrain: \"%s\", aborting\n"),
-                 RPG_Common_TerrainHelper::RPG_Common_TerrainToString(terrain_in).c_str()));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid terrain: \"%s\", aborting\n"),
+                  ACE_TEXT (RPG_Common_TerrainHelper::RPG_Common_TerrainToString (terrain_in).c_str ())));
       break;
     }
   } // end SWITCH
@@ -256,10 +256,10 @@ RPG_Common_Tools::terrainToPlane(const RPG_Common_Terrain& terrain_in)
 }
 
 bool
-RPG_Common_Tools::match(const RPG_Common_Environment& environmentA_in,
-                        const RPG_Common_Environment& environmentB_in)
+RPG_Common_Tools::match (const struct RPG_Common_Environment& environmentA_in,
+                         const struct RPG_Common_Environment& environmentB_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::match"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::match"));
 
   if ((environmentA_in.terrain == TERRAIN_ANY) ||
       (environmentB_in.terrain == TERRAIN_ANY))
@@ -341,10 +341,9 @@ RPG_Common_Tools::match(const RPG_Common_Environment& environmentA_in,
         case TERRAIN_PLANE_OUTER_STRONG_ANY:
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid terrain: \"%s\", aborting\n"),
-                     RPG_Common_TerrainHelper::RPG_Common_TerrainToString(environmentA_in.terrain).c_str()));
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid terrain: \"%s\", aborting\n"),
+                      ACE_TEXT (RPG_Common_TerrainHelper::RPG_Common_TerrainToString (environmentA_in.terrain).c_str ())));
           break;
         }
       } // end SWITCH
@@ -353,10 +352,9 @@ RPG_Common_Tools::match(const RPG_Common_Environment& environmentA_in,
     }
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid plane: \"%s\", aborting\n"),
-                 RPG_Common_PlaneHelper::RPG_Common_PlaneToString(planeA).c_str()));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid plane: \"%s\", aborting\n"),
+                  ACE_TEXT (RPG_Common_PlaneHelper::RPG_Common_PlaneToString (planeA).c_str ())));
       break;
     }
   } // end SWITCH
@@ -365,9 +363,9 @@ RPG_Common_Tools::match(const RPG_Common_Environment& environmentA_in,
 }
 
 signed char
-RPG_Common_Tools::getSizeModifier(const RPG_Common_Size& size_in)
+RPG_Common_Tools::getSizeModifier(const enum RPG_Common_Size& size_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::getSizeModifier"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::getSizeModifier"));
 
   // SIZE_FINE:       8
   // SIZE_DIMINUTIVE: 4
@@ -383,21 +381,16 @@ RPG_Common_Tools::getSizeModifier(const RPG_Common_Size& size_in)
     return 0;
 
   signed char result = 1;
-  result <<= ::abs(SIZE_MEDIUM - size_in - 1);
-
-  //ACE_DEBUG((LM_DEBUG,
-  //           ACE_TEXT("size (\"%s\") --> modifier: %d...\n"),
-  //           RPG_Common_SizeHelper::RPG_Common_SizeToString(size_in).c_str(),
-  //           static_cast<int>(((size_in > SIZE_MEDIUM) ? -result : result))));
+  result <<= ::abs (SIZE_MEDIUM - size_in - 1);
 
   return ((size_in > SIZE_MEDIUM) ? -result : result);
 }
 
 float
-RPG_Common_Tools::getSizeModifierLoad(const RPG_Common_Size& size_in,
-                                      const bool& isBiped_in)
+RPG_Common_Tools::getSizeModifierLoad (const enum RPG_Common_Size& size_in,
+                                       bool isBiped_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::getSizeModifierLoad"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::getSizeModifierLoad"));
 
   // SIZE_FINE:       1/8 | 1/4
   // SIZE_DIMINUTIVE: 1/4 | 1/2
@@ -430,10 +423,9 @@ RPG_Common_Tools::getSizeModifierLoad(const RPG_Common_Size& size_in,
       return (isBiped_in ? 16.0F  : 24.0F);
     default:
     {
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("invalid size (was: \"%s\"), aborting\n"),
-                 RPG_Common_SizeHelper::RPG_Common_SizeToString(size_in).c_str()));
-
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT ("invalid size (was: \"%s\"), aborting\n"),
+                  ACE_TEXT (RPG_Common_SizeHelper::RPG_Common_SizeToString (size_in).c_str ())));
       break;
     }
   } // end SWITCH
@@ -442,10 +434,10 @@ RPG_Common_Tools::getSizeModifierLoad(const RPG_Common_Size& size_in,
 }
 
 unsigned short
-RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in,
-                              const bool& isTall_in)
+RPG_Common_Tools::sizeToReach (const enum RPG_Common_Size& size_in,
+                               bool isTall_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::sizeToReach"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::sizeToReach"));
 
   switch (size_in)
   {
@@ -466,10 +458,9 @@ RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in,
       return (isTall_in ? 30 : 20);
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid size: \"%s\", aborting\n"),
-                 RPG_Common_SizeHelper::RPG_Common_SizeToString(size_in).c_str()));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid size: \"%s\", aborting\n"),
+                  ACE_TEXT (RPG_Common_SizeHelper::RPG_Common_SizeToString (size_in).c_str ())));
       break;
     }
   } // end SWITCH
@@ -478,9 +469,9 @@ RPG_Common_Tools::sizeToReach(const RPG_Common_Size& size_in,
 }
 
 unsigned short
-RPG_Common_Tools::environmentToRadius(const RPG_Common_Environment& environment_in)
+RPG_Common_Tools::environmentToRadius (const struct RPG_Common_Environment& environment_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::environmentToRadius"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::environmentToRadius"));
 
   if (environment_in.outdoors)
   {
@@ -500,10 +491,9 @@ RPG_Common_Tools::environmentToRadius(const RPG_Common_Environment& environment_
       break; // --> depends on other factors...
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid (ambient) lighting: \"%s\", aborting\n"),
-                 RPG_Common_AmbientLightingHelper::RPG_Common_AmbientLightingToString(environment_in.lighting).c_str()));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid (ambient) lighting: \"%s\", aborting\n"),
+                  ACE_TEXT (RPG_Common_AmbientLightingHelper::RPG_Common_AmbientLightingToString (environment_in.lighting).c_str ())));
       break;
     }
   } // end SWITCH
@@ -512,16 +502,16 @@ RPG_Common_Tools::environmentToRadius(const RPG_Common_Environment& environment_
 }
 
 float
-RPG_Common_Tools::terrainToSpeedModifier(const RPG_Common_Terrain& terrain_in,
-                                         const RPG_Common_Track& track_in)
+RPG_Common_Tools::terrainToSpeedModifier (const enum RPG_Common_Terrain& terrain_in,
+                                          const enum RPG_Common_Track& track_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::terrain2SpeedModifier"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::terrain2SpeedModifier"));
 
   // sanity check
-  ACE_ASSERT((track_in == TRACK_NONE)    ||
-             (track_in == TRACK_HIGHWAY) ||
-             (track_in == TRACK_ROAD)    ||
-             (track_in == TRACK_TRAIL));
+  ACE_ASSERT ((track_in == TRACK_NONE)    ||
+              (track_in == TRACK_HIGHWAY) ||
+              (track_in == TRACK_ROAD)    ||
+              (track_in == TRACK_TRAIL));
 
   switch (terrain_in)
   {
@@ -542,10 +532,9 @@ RPG_Common_Tools::terrainToSpeedModifier(const RPG_Common_Terrain& terrain_in,
           return 0.5F;
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid track: \"%s\", aborting\n"),
-                     RPG_Common_TrackHelper::RPG_Common_TrackToString(track_in).c_str()));
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid track: \"%s\", aborting\n"),
+                      ACE_TEXT (RPG_Common_TrackHelper::RPG_Common_TrackToString (track_in).c_str ())));
           break;
         }
       } // end SWITCH
@@ -564,10 +553,9 @@ RPG_Common_Tools::terrainToSpeedModifier(const RPG_Common_Terrain& terrain_in,
           return 0.5F;
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid track: \"%s\", aborting\n"),
-                     RPG_Common_TrackHelper::RPG_Common_TrackToString(track_in).c_str()));
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid track: \"%s\", aborting\n"),
+                      ACE_TEXT (RPG_Common_TrackHelper::RPG_Common_TrackToString (track_in).c_str ())));
           break;
         }
       } // end SWITCH
@@ -587,10 +575,9 @@ RPG_Common_Tools::terrainToSpeedModifier(const RPG_Common_Terrain& terrain_in,
           return 0.5F;
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid track: \"%s\", aborting\n"),
-                     RPG_Common_TrackHelper::RPG_Common_TrackToString(track_in).c_str()));
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid track: \"%s\", aborting\n"),
+                      ACE_TEXT (RPG_Common_TrackHelper::RPG_Common_TrackToString (track_in).c_str ())));
           break;
         }
       } // end SWITCH
@@ -610,10 +597,9 @@ RPG_Common_Tools::terrainToSpeedModifier(const RPG_Common_Terrain& terrain_in,
           return 0.25F;
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid track: \"%s\", aborting\n"),
-                     RPG_Common_TrackHelper::RPG_Common_TrackToString(track_in).c_str()));
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid track: \"%s\", aborting\n"),
+                      ACE_TEXT (RPG_Common_TrackHelper::RPG_Common_TrackToString (track_in).c_str ())));
           break;
         }
       } // end SWITCH
@@ -632,10 +618,9 @@ RPG_Common_Tools::terrainToSpeedModifier(const RPG_Common_Terrain& terrain_in,
           return 0.75F;
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid track: \"%s\", aborting\n"),
-                     RPG_Common_TrackHelper::RPG_Common_TrackToString(track_in).c_str()));
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid track: \"%s\", aborting\n"),
+                      ACE_TEXT (RPG_Common_TrackHelper::RPG_Common_TrackToString (track_in).c_str ())));
           break;
         }
       } // end SWITCH
@@ -654,10 +639,9 @@ RPG_Common_Tools::terrainToSpeedModifier(const RPG_Common_Terrain& terrain_in,
           return 0.5F;
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid track: \"%s\", aborting\n"),
-                     RPG_Common_TrackHelper::RPG_Common_TrackToString(track_in).c_str()));
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid track: \"%s\", aborting\n"),
+                      ACE_TEXT (RPG_Common_TrackHelper::RPG_Common_TrackToString (track_in).c_str ())));
           break;
         }
       } // end SWITCH
@@ -676,10 +660,9 @@ RPG_Common_Tools::terrainToSpeedModifier(const RPG_Common_Terrain& terrain_in,
           return 0.75F;
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid track: \"%s\", aborting\n"),
-                     RPG_Common_TrackHelper::RPG_Common_TrackToString(track_in).c_str()));
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid track: \"%s\", aborting\n"),
+                      ACE_TEXT (RPG_Common_TrackHelper::RPG_Common_TrackToString (track_in).c_str ())));
           break;
         }
       } // end SWITCH
@@ -699,10 +682,9 @@ RPG_Common_Tools::terrainToSpeedModifier(const RPG_Common_Terrain& terrain_in,
           return 0.5F;
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid track: \"%s\", aborting\n"),
-                     RPG_Common_TrackHelper::RPG_Common_TrackToString(track_in).c_str()));
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid track: \"%s\", aborting\n"),
+                      ACE_TEXT (RPG_Common_TrackHelper::RPG_Common_TrackToString (track_in).c_str ())));
           break;
         }
       } // end SWITCH
@@ -721,10 +703,9 @@ RPG_Common_Tools::terrainToSpeedModifier(const RPG_Common_Terrain& terrain_in,
           return 0.75F;
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid track: \"%s\", aborting\n"),
-                     RPG_Common_TrackHelper::RPG_Common_TrackToString(track_in).c_str()));
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid track: \"%s\", aborting\n"),
+                      ACE_TEXT (RPG_Common_TrackHelper::RPG_Common_TrackToString (track_in).c_str ())));
           break;
         }
       } // end SWITCH
@@ -733,10 +714,9 @@ RPG_Common_Tools::terrainToSpeedModifier(const RPG_Common_Terrain& terrain_in,
     }
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid terrain: \"%s\", aborting\n"),
-                 RPG_Common_TerrainHelper::RPG_Common_TerrainToString(terrain_in).c_str()));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid terrain: \"%s\", aborting\n"),
+                  ACE_TEXT (RPG_Common_TerrainHelper::RPG_Common_TerrainToString (terrain_in).c_str ())));
       break;
     }
   } // end SWITCH
@@ -745,10 +725,10 @@ RPG_Common_Tools::terrainToSpeedModifier(const RPG_Common_Terrain& terrain_in,
 }
 
 std::string
-RPG_Common_Tools::enumToString(const std::string& enumString_in,
-                               const bool& chopPrefix_in)
+RPG_Common_Tools::enumToString (const std::string& enumString_in,
+                                bool chopPrefix_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::enumToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::enumToString"));
 
   std::string result = enumString_in;
 
@@ -759,11 +739,11 @@ RPG_Common_Tools::enumToString(const std::string& enumString_in,
   {
     std::string::size_type underscore = result.find('_', 0);
 // *TODO*: there is a linking problem using std::string::npos in MSVC 2010...
-#if defined(_MSC_VER) && (_MSC_VER >= 1600) /* VS2010 or newer */
+#if defined (_MSC_VER) && (_MSC_VER >= 1600) /* VS2010 or newer */
     if (underscore != -1)
 #else
     if (underscore != std::string::npos)
-#endif
+#endif // _MSC_VER >= 1600
     {
       std::string::iterator last = result.begin();
       std::advance(last, underscore + 1); // *NOTE*: move one past '_'
@@ -784,61 +764,24 @@ RPG_Common_Tools::enumToString(const std::string& enumString_in,
   return result;
 }
 
-//bool
-//RPG_Common_Tools::period2String (const ACE_Time_Value& period_in,
-//                                 std::string& timeString_out)
-//{
-//  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::period2String"));
-//
-//  // init return value(s)
-//  timeString_out.resize (0);
-//
-//  // extract hours and minutes...
-//  ACE_Time_Value temp = period_in;
-//  int hours = static_cast<int>(temp.sec ()) / (60 * 60);
-//  temp.sec (temp.sec () % (60 * 60));
-//
-//  int minutes = static_cast<int>(temp.sec ()) / 60;
-//  temp.sec (temp.sec () % 60);
-//
-//  char time_string[BUFSIZ];
-//  // *TODO*: rewrite this in C++...
-//  if (ACE_OS::snprintf (time_string,
-//                        sizeof (time_string),
-//                        ACE_TEXT_ALWAYS_CHAR ("%d:%d:%d.%d"),
-//                        hours,
-//                        minutes,
-//                        static_cast<int>(temp.sec ()),
-//                        static_cast<int>(temp.usec ())) < 0)
-//  {
-//    ACE_DEBUG ((LM_ERROR,
-//                ACE_TEXT ("failed to ACE_OS::snprintf(): \"%m\", aborting\n")));
-//    return false;
-//  } // end IF
-//
-//  timeString_out = time_string;
-//
-//  return true;
-//}
-//
 std::string
-RPG_Common_Tools::sanitizeURI(const std::string& uri_in)
+RPG_Common_Tools::sanitizeURI (const std::string& uri_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::sanitizeURI"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::sanitizeURI"));
 
   std::string result = uri_in;
 
-  std::replace(result.begin(),
-               result.end(),
-               '\\', '/');
+  std::replace (result.begin(),
+                result.end(),
+                '\\', '/');
   size_t position;
   do
   {
-    position = result.find(' ', 0);
+    position = result.find (' ', 0);
     if (position == std::string::npos)
       break;
 
-    result.replace(position, 1, ACE_TEXT_ALWAYS_CHAR("%20"));
+    result.replace (position, 1, ACE_TEXT_ALWAYS_CHAR ("%20"));
   } while (true);
   //XMLCh* transcoded_string =
   //	XMLString::transcode(result.c_str(),
@@ -868,34 +811,15 @@ RPG_Common_Tools::sanitizeURI(const std::string& uri_in)
 }
 
 std::string
-RPG_Common_Tools::sanitize(const std::string& string_in)
+RPG_Common_Tools::sanitize (const std::string& string_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::sanitize"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::sanitize"));
 
   std::string result = string_in;
 
-  std::replace(result.begin(),
-               result.end(),
-               ' ', '_');
+  std::replace (result.begin(),
+                result.end(),
+                ' ', '_');
 
   return result;
 }
-//
-//std::string
-//RPG_Common_Tools::strip(const std::string& string_in)
-//{
-//  RPG_TRACE(ACE_TEXT("RPG_Common_Tools::strip"));
-//
-//  std::string result = string_in;
-//
-//  // *TODO*: remove tabs & other non-printable characters
-//  std::string::size_type current_space = std::string::npos;
-//  while ((current_space = result.find(' ',
-//                                      0)) == 0)
-//    result.erase(current_space, 1);
-//  while ((current_space = result.rfind(' ',
-//                                       std::string::npos)) == (result.size() - 1))
-//    result.erase(current_space, 1);
-//
-//  return result;
-//}

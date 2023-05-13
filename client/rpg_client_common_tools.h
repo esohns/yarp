@@ -33,16 +33,13 @@
 #include "rpg_engine.h"
 
 #include "rpg_client_common.h"
-//#include "rpg_client_exports.h"
 
 class RPG_Client_Common_Tools
 {
  public:
-#if defined (DEBUG_DEBUGGER)
   // loads sound and graphics schemata
   static bool initializeClientDictionaries ();
-#endif // DEBUG_DEBUGGER
-  static bool initializeSDLInput(const RPG_Client_SDL_InputConfiguration&); // SDL input configuration
+  static bool initializeSDLInput (const struct RPG_Client_SDL_InputConfiguration&); // SDL input configuration
   // *NOTE*: initializes cursor manager singleton/dictionaries
   static bool initialize (// *** input ***
                           const struct RPG_Client_SDL_InputConfiguration&, // SDL input configuration

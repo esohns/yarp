@@ -23,8 +23,6 @@
 
 #include <vector>
 
-#include "ace/Assert.h"
-
 #include "rpg_dice_dietype.h"
 #include "rpg_dice_roll.h"
 

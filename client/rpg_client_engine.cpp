@@ -135,7 +135,7 @@ RPG_Client_Engine::svc (void)
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::svc"));
 
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-#if COMMON_OS_WIN32_TARGET_PLATFORM(0x0A00) // _WIN32_WINNT_WIN10
+#if COMMON_OS_WIN32_TARGET_PLATFORM (0x0A00) // _WIN32_WINNT_WIN10
   Common_Error_Tools::setThreadName (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_ENGINE_THREAD_NAME),
                                      NULL);
 #else
@@ -154,7 +154,7 @@ RPG_Client_Engine::svc (void)
           return 0;
       } // end WHILE
     } // end lock scope
-    handleActions();
+    handleActions ();
   } // end WHILE
 
   ACE_ASSERT (false);

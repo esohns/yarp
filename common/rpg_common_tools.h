@@ -32,59 +32,50 @@
 #include "rpg_common.h"
 #include "rpg_common_incl.h"
 #include "rpg_common_environment_incl.h"
-//#include "rpg_common_exports.h"
 
 // forward declaration(s)
 class ACE_Log_Msg_Backend;
 class ACE_Event_Handler;
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Common_Tools
 {
  public:
   static void initializeStringConversionTables();
 
-  static RPG_Common_Attribute savingThrowToAttribute(const RPG_Common_SavingThrow&); // save
-  static std::string toString(const RPG_Common_CreatureType&); // type
-  static std::string toString(const RPG_Common_SavingThrowCheck&); // save
-  static std::string toString(const RPG_Common_Environment&); // environment
+  static enum RPG_Common_Attribute savingThrowToAttribute (const enum RPG_Common_SavingThrow&); // save
+  static std::string toString (const struct RPG_Common_CreatureType&); // type
+  static std::string toString (const struct RPG_Common_SavingThrowCheck&); // save
+  static std::string toString (const struct RPG_Common_Environment&); // environment
 
-  static RPG_Common_Plane terrainToPlane(const RPG_Common_Terrain&);
-  static bool match(const RPG_Common_Environment&,  // a
-                    const RPG_Common_Environment&); // b
+  static enum RPG_Common_Plane terrainToPlane (const enum RPG_Common_Terrain&);
+  static bool match (const struct RPG_Common_Environment&,  // a
+                     const struct RPG_Common_Environment&); // b
 
   // *NOTE*: use for attack bonus / armor class
-  static signed char getSizeModifier(const RPG_Common_Size&);
+  static signed char getSizeModifier (const enum RPG_Common_Size&);
   // *NOTE*: use for encumbrance
-  static float getSizeModifierLoad(const RPG_Common_Size&,
-                                   const bool& = true); // is biped ?
-  static unsigned short sizeToReach(const RPG_Common_Size&,
-                                    const bool& = true); // is tall ? : long
-  static unsigned short environmentToRadius(const RPG_Common_Environment&);
-  static float terrainToSpeedModifier(const RPG_Common_Terrain& = TERRAIN_ANY, // terrain
-                                      const RPG_Common_Track& = TRACK_NONE);   // track type
+  static float getSizeModifierLoad (const enum RPG_Common_Size&,
+                                    bool = true); // is biped ?
+  static unsigned short sizeToReach (const enum RPG_Common_Size&,
+                                     bool = true); // is tall ? : long
+  static unsigned short environmentToRadius (const struct RPG_Common_Environment&);
+  static float terrainToSpeedModifier (const enum RPG_Common_Terrain& = TERRAIN_ANY, // terrain
+                                       const enum RPG_Common_Track& = TRACK_NONE);   // track type
 
   // use this to "pretty-print" enumerated (i.e. XML-) values
   // e.g. "SUBCLASS_MONK" --> "Monk"
-  static std::string enumToString(const std::string&,  // string representation
-                                  const bool& = true); // chop prefix ?
+  static std::string enumToString (const std::string&, // string representation
+                                   bool = true);       // chop prefix ?
 
- // // use this to generate a "condensed" period string
- // // - uses snprintf internally: "%H:%M:%S.usec"
- // static bool period2String(const ACE_Time_Value&, // period
- //                           std::string&);         // return value: corresp. string
-
-  static std::string sanitizeURI(const std::string&); // URI
-  static std::string sanitize(const std::string&); // string
+  static std::string sanitizeURI (const std::string&); // URI
+  static std::string sanitize (const std::string&); // string
   //static std::string strip(const std::string&); // string
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools())
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Common_Tools())
-  ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools(const RPG_Common_Tools&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Common_Tools& operator=(const RPG_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (~RPG_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Common_Tools (const RPG_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Common_Tools& operator= (const RPG_Common_Tools&))
 };
 
 #endif

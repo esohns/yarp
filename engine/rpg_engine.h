@@ -195,8 +195,8 @@ class RPG_Engine
     bool                    locked_access;
     RPG_Map_Position_t      reference_position;
 
-    bool operator()(const RPG_Engine_EntityID_t&,
-                    const RPG_Engine_EntityID_t&);
+    bool operator() (const RPG_Engine_EntityID_t&,
+                     const RPG_Engine_EntityID_t&);
   };
 
   void clearEntityActions (const RPG_Engine_EntityID_t& = 0, // entity ID (default: ALL)

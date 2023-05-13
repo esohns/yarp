@@ -21,21 +21,21 @@
 
 #include "rpg_character_race_common_tools.h"
 
-#include <rpg_common_macros.h>
+#include "ace/Log_Msg.h"
 
-#include <ace/Log_Msg.h>
+#include "rpg_common_macros.h"
 
 enum RPG_Common_Size
-RPG_Character_Race_Common_Tools::raceToSize(const RPG_Character_Race_t& races_in)
+RPG_Character_Race_Common_Tools::raceToSize (const RPG_Character_Race_t& races_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Race_Common_Tools::raceToSize"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Race_Common_Tools::raceToSize"));
 
   // sanity checks
-  if (races_in.none())
+  if (races_in.none ())
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid race (was: \"%s\"), aborting\n"),
-               RPG_Character_RaceHelper::RPG_Character_RaceToString(RACE_NONE).c_str()));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("invalid race (was: \"%s\"), aborting\n"),
+                RPG_Character_RaceHelper::RPG_Character_RaceToString (RACE_NONE).c_str ()));
     return RPG_COMMON_SIZE_INVALID;
   } // end IF
 
@@ -44,9 +44,9 @@ RPG_Character_Race_Common_Tools::raceToSize(const RPG_Character_Race_t& races_in
   enum RPG_Common_Size base_size = SIZE_SMALL;
   unsigned int race_index = 1;
   for (unsigned int index = 0;
-       index < races_in.size();
+       index < races_in.size ();
        index++, race_index++)
-    if (races_in.test(index))
+    if (races_in.test (index))
     {
       base_size =
         RPG_Character_Race_Common_Tools::raceToSize (static_cast<enum RPG_Character_Race> (race_index));
@@ -60,7 +60,7 @@ RPG_Character_Race_Common_Tools::raceToSize(const RPG_Character_Race_t& races_in
 ACE_UINT8
 RPG_Character_Race_Common_Tools::raceToSpeed (enum RPG_Character_Race race_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Race_Common_Tools::raceToSpeed"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Race_Common_Tools::raceToSpeed"));
 
   switch (race_in)
   {
@@ -74,10 +74,9 @@ RPG_Character_Race_Common_Tools::raceToSpeed (enum RPG_Character_Race race_in)
       return 30;
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid race (was: \"%s\"), aborting\n"),
-                 RPG_Character_RaceHelper::RPG_Character_RaceToString(race_in).c_str()));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid race (was: \"%s\"), aborting\n"),
+                  RPG_Character_RaceHelper::RPG_Character_RaceToString (race_in).c_str ()));
       break;
     }
   } // end SWITCH
@@ -89,7 +88,7 @@ bool
 RPG_Character_Race_Common_Tools::isCompatible (enum RPG_Character_Race race1_in,
                                                enum RPG_Character_Race race2_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Race_Common_Tools::isCompatible"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Race_Common_Tools::isCompatible"));
 
   switch (race1_in)
   {
@@ -180,20 +179,20 @@ bool
 RPG_Character_Race_Common_Tools::hasRace (const RPG_Character_Race_t& races_in,
                                           enum RPG_Character_Race race_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Race_Common_Tools::race2Speed"));
+  RPG_TRACE(ACE_TEXT("RPG_Character_Race_Common_Tools::raceToSpeed"));
 
   // sanity checks
-  ACE_ASSERT(race_in < RPG_CHARACTER_RACE_MAX);
+  ACE_ASSERT (race_in < RPG_CHARACTER_RACE_MAX);
   if (race_in == RACE_NONE)
-    return races_in.none();
+    return races_in.none ();
 
-  return races_in.test(static_cast<size_t>(race_in) - 1);
+  return races_in.test (static_cast<size_t> (race_in) - 1);
 }
 
 enum RPG_Common_Size
 RPG_Character_Race_Common_Tools::raceToSize (enum RPG_Character_Race race_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Race_Common_Tools::race2Size"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Race_Common_Tools::raceToSize"));
 
   switch (race_in)
   {
@@ -207,9 +206,9 @@ RPG_Character_Race_Common_Tools::raceToSize (enum RPG_Character_Race race_in)
       return SIZE_MEDIUM;
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid race (was: \"%s\"), aborting\n"),
-                 RPG_Character_RaceHelper::RPG_Character_RaceToString(race_in).c_str()));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid race (was: \"%s\"), aborting\n"),
+                  RPG_Character_RaceHelper::RPG_Character_RaceToString (race_in).c_str ()));
       break;
     }
   } // end SWITCH

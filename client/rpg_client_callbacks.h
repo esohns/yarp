@@ -29,7 +29,6 @@
 #include "rpg_engine_common.h"
 
 #include "rpg_client_common.h"
-//#include "rpg_client_exports.h"
 
 void update_equipment (const struct RPG_Client_GTK_CBData&);
 void update_character_profile (const RPG_Player&, GtkBuilder*);

@@ -25,11 +25,6 @@
 
 #include "rpg_dice_dietype.h"
 
-//#include "rpg_chance_exports.h"
-
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Chance_Common_Tools
 {
  public:

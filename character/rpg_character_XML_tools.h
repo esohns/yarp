@@ -23,18 +23,14 @@
 
 #include "ace/Global_Macros.h"
 
-//#include "rpg_character_exports.h"
 #include "rpg_character_skills_common.h"
 #include "rpg_character_XML_tree.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Character_XML_Tools
 {
  public:
-  static RPG_Character_Skills_t skillsXMLTreeToSkills(const RPG_Character_Skills_XMLTree_Type&); // skills (XML format)
-  static RPG_Character_Feats_t featsXMLTreeToFeats(const RPG_Character_Feats_XMLTree_Type&); // feats (XML format)
+  static RPG_Character_Skills_t skillsXMLTreeToSkills (const RPG_Character_Skills_XMLTree_Type&); // skills (XML format)
+  static RPG_Character_Feats_t featsXMLTreeToFeats (const RPG_Character_Feats_XMLTree_Type&); // feats (XML format)
 
  private:
   ACE_UNIMPLEMENTED_FUNC(RPG_Character_XML_Tools())

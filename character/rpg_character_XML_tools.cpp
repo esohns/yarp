@@ -26,39 +26,36 @@
 #include "rpg_common_macros.h"
 #include "rpg_common_skill.h"
 
-#include <ace/Log_Msg.h>
-
-#include <string>
-#include <sstream>
+//#include "ace/Log_Msg.h"
 
 RPG_Character_Skills_t
-RPG_Character_XML_Tools::skillsXMLTreeToSkills(const RPG_Character_Skills_XMLTree_Type& skills_in)
+RPG_Character_XML_Tools::skillsXMLTreeToSkills (const RPG_Character_Skills_XMLTree_Type& skills_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_XML_Tools::skillsXMLTreeToSkills"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_XML_Tools::skillsXMLTreeToSkills"));
 
-  // init result
+  // initialize result
   RPG_Character_Skills_t result;
 
-  for (RPG_Character_Skills_XMLTree_Type::skill_const_iterator iterator = skills_in.skill().begin();
-       iterator != skills_in.skill().end();
+  for (RPG_Character_Skills_XMLTree_Type::skill_const_iterator iterator = skills_in.skill ().begin ();
+       iterator != skills_in.skill ().end ();
        iterator++)
-    result[RPG_Common_SkillHelper::stringToRPG_Common_Skill((*iterator).skill())] = (*iterator).rank();
+    result[RPG_Common_SkillHelper::stringToRPG_Common_Skill ((*iterator).skill ())] = (*iterator).rank ();
 
   return result;
 }
 
 RPG_Character_Feats_t
-RPG_Character_XML_Tools::featsXMLTreeToFeats(const RPG_Character_Feats_XMLTree_Type& feats_in)
+RPG_Character_XML_Tools::featsXMLTreeToFeats (const RPG_Character_Feats_XMLTree_Type& feats_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_XML_Tools::featsXMLTreeToFeats"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_XML_Tools::featsXMLTreeToFeats"));
 
-  // init result
+  // initialize result
   RPG_Character_Feats_t result;
 
-  for (RPG_Character_Feats_XMLTree_Type::feat_const_iterator iterator = feats_in.feat().begin();
-       iterator != feats_in.feat().end();
+  for (RPG_Character_Feats_XMLTree_Type::feat_const_iterator iterator = feats_in.feat ().begin ();
+       iterator != feats_in.feat ().end ();
        iterator++)
-    result.insert(RPG_Character_FeatHelper::stringToRPG_Character_Feat(*iterator));
+    result.insert (RPG_Character_FeatHelper::stringToRPG_Character_Feat (*iterator));
 
   return result;
 }

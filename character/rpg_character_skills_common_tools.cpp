@@ -56,77 +56,77 @@ RPG_Character_Skills_Common_Tools::initializeBonusFeatsTables ()
   RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::initBonusFeatsTables"));
 
   // clean table
-  myFighterBonusFeatsTable.clear();
+  myFighterBonusFeatsTable.clear ();
 
-  myFighterBonusFeatsTable.insert(FEAT_BLIND_FIGHT);
-  myFighterBonusFeatsTable.insert(FEAT_COMBAT_EXPERTISE);
-  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_DISARM);
-  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_FEINT);
-  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_TRIP);
-  myFighterBonusFeatsTable.insert(FEAT_WHIRLWIND_ATTACK);
-  myFighterBonusFeatsTable.insert(FEAT_COMBAT_REFLEXES);
-  myFighterBonusFeatsTable.insert(FEAT_DODGE);
-  myFighterBonusFeatsTable.insert(FEAT_MOBILITY);
-  myFighterBonusFeatsTable.insert(FEAT_SPRING_ATTACK);
-  myFighterBonusFeatsTable.insert(FEAT_PROFICIENCY_EXOTIC_WEAPONS);
-  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_CRITICAL);
-  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_INITIATIVE);
-  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_SHIELD_BASH);
-  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_UNARMED_STRIKE);
-  myFighterBonusFeatsTable.insert(FEAT_DEFLECT_ARROWS);
-  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_GRAPPLE);
-  myFighterBonusFeatsTable.insert(FEAT_SNATCH_ARROWS);
-  myFighterBonusFeatsTable.insert(FEAT_STUNNING_FIST);
-  myFighterBonusFeatsTable.insert(FEAT_MOUNTED_COMBAT);
-  myFighterBonusFeatsTable.insert(FEAT_MOUNTED_ARCHERY);
-  myFighterBonusFeatsTable.insert(FEAT_RIDE_BY_ATTACK);
-  myFighterBonusFeatsTable.insert(FEAT_SPIRITED_CHARGE);
-  myFighterBonusFeatsTable.insert(FEAT_TRAMPLE);
-  myFighterBonusFeatsTable.insert(FEAT_POINT_BLANK_SHOT);
-  myFighterBonusFeatsTable.insert(FEAT_FAR_SHOT);
-  myFighterBonusFeatsTable.insert(FEAT_PRECISE_SHOT);
-  myFighterBonusFeatsTable.insert(FEAT_RAPID_SHOT);
-  myFighterBonusFeatsTable.insert(FEAT_MANY_SHOT);
-  myFighterBonusFeatsTable.insert(FEAT_SHOT_ON_THE_RUN);
-  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_PRECISE_SHOT);
-  myFighterBonusFeatsTable.insert(FEAT_POWER_ATTACK);
-  myFighterBonusFeatsTable.insert(FEAT_CLEAVE);
-  myFighterBonusFeatsTable.insert(FEAT_GREAT_CLEAVE);
-  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_BULL_RUSH);
-  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_OVERRUN);
-  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_SUNDER);
-  myFighterBonusFeatsTable.insert(FEAT_QUICK_DRAW);
-  myFighterBonusFeatsTable.insert(FEAT_RAPID_RELOAD);
-  myFighterBonusFeatsTable.insert(FEAT_TWO_WEAPON_FIGHTING);
-  myFighterBonusFeatsTable.insert(FEAT_TWO_WEAPON_DEFENSE);
-  myFighterBonusFeatsTable.insert(FEAT_IMPROVED_TWO_WEAPON_FIGHTING);
-  myFighterBonusFeatsTable.insert(FEAT_GREATER_TWO_WEAPON_FIGHTING);
-  myFighterBonusFeatsTable.insert(FEAT_WEAPON_FINESSE);
-  myFighterBonusFeatsTable.insert(FEAT_WEAPON_FOCUS);
-  myFighterBonusFeatsTable.insert(FEAT_WEAPON_SPECIALIZATION);
-  myFighterBonusFeatsTable.insert(FEAT_GREATER_WEAPON_FOCUS);
-  myFighterBonusFeatsTable.insert(FEAT_GREATER_WEAPON_SPECIALIZATION);
+  myFighterBonusFeatsTable.insert (FEAT_BLIND_FIGHT);
+  myFighterBonusFeatsTable.insert (FEAT_COMBAT_EXPERTISE);
+  myFighterBonusFeatsTable.insert (FEAT_IMPROVED_DISARM);
+  myFighterBonusFeatsTable.insert (FEAT_IMPROVED_FEINT);
+  myFighterBonusFeatsTable.insert (FEAT_IMPROVED_TRIP);
+  myFighterBonusFeatsTable.insert (FEAT_WHIRLWIND_ATTACK);
+  myFighterBonusFeatsTable.insert (FEAT_COMBAT_REFLEXES);
+  myFighterBonusFeatsTable.insert (FEAT_DODGE);
+  myFighterBonusFeatsTable.insert (FEAT_MOBILITY);
+  myFighterBonusFeatsTable.insert (FEAT_SPRING_ATTACK);
+  myFighterBonusFeatsTable.insert (FEAT_PROFICIENCY_EXOTIC_WEAPONS);
+  myFighterBonusFeatsTable.insert (FEAT_IMPROVED_CRITICAL);
+  myFighterBonusFeatsTable.insert (FEAT_IMPROVED_INITIATIVE);
+  myFighterBonusFeatsTable.insert (FEAT_IMPROVED_SHIELD_BASH);
+  myFighterBonusFeatsTable.insert (FEAT_IMPROVED_UNARMED_STRIKE);
+  myFighterBonusFeatsTable.insert (FEAT_DEFLECT_ARROWS);
+  myFighterBonusFeatsTable.insert (FEAT_IMPROVED_GRAPPLE);
+  myFighterBonusFeatsTable.insert (FEAT_SNATCH_ARROWS);
+  myFighterBonusFeatsTable.insert (FEAT_STUNNING_FIST);
+  myFighterBonusFeatsTable.insert (FEAT_MOUNTED_COMBAT);
+  myFighterBonusFeatsTable.insert (FEAT_MOUNTED_ARCHERY);
+  myFighterBonusFeatsTable.insert (FEAT_RIDE_BY_ATTACK);
+  myFighterBonusFeatsTable.insert (FEAT_SPIRITED_CHARGE);
+  myFighterBonusFeatsTable.insert (FEAT_TRAMPLE);
+  myFighterBonusFeatsTable.insert (FEAT_POINT_BLANK_SHOT);
+  myFighterBonusFeatsTable.insert (FEAT_FAR_SHOT);
+  myFighterBonusFeatsTable.insert (FEAT_PRECISE_SHOT);
+  myFighterBonusFeatsTable.insert (FEAT_RAPID_SHOT);
+  myFighterBonusFeatsTable.insert (FEAT_MANY_SHOT);
+  myFighterBonusFeatsTable.insert (FEAT_SHOT_ON_THE_RUN);
+  myFighterBonusFeatsTable.insert (FEAT_IMPROVED_PRECISE_SHOT);
+  myFighterBonusFeatsTable.insert (FEAT_POWER_ATTACK);
+  myFighterBonusFeatsTable.insert (FEAT_CLEAVE);
+  myFighterBonusFeatsTable.insert (FEAT_GREAT_CLEAVE);
+  myFighterBonusFeatsTable.insert (FEAT_IMPROVED_BULL_RUSH);
+  myFighterBonusFeatsTable.insert (FEAT_IMPROVED_OVERRUN);
+  myFighterBonusFeatsTable.insert (FEAT_IMPROVED_SUNDER);
+  myFighterBonusFeatsTable.insert (FEAT_QUICK_DRAW);
+  myFighterBonusFeatsTable.insert (FEAT_RAPID_RELOAD);
+  myFighterBonusFeatsTable.insert (FEAT_TWO_WEAPON_FIGHTING);
+  myFighterBonusFeatsTable.insert (FEAT_TWO_WEAPON_DEFENSE);
+  myFighterBonusFeatsTable.insert (FEAT_IMPROVED_TWO_WEAPON_FIGHTING);
+  myFighterBonusFeatsTable.insert (FEAT_GREATER_TWO_WEAPON_FIGHTING);
+  myFighterBonusFeatsTable.insert (FEAT_WEAPON_FINESSE);
+  myFighterBonusFeatsTable.insert (FEAT_WEAPON_FOCUS);
+  myFighterBonusFeatsTable.insert (FEAT_WEAPON_SPECIALIZATION);
+  myFighterBonusFeatsTable.insert (FEAT_GREATER_WEAPON_FOCUS);
+  myFighterBonusFeatsTable.insert (FEAT_GREATER_WEAPON_SPECIALIZATION);
 
   // clean table
-  myWizardBonusFeatsTable.clear();
+  myWizardBonusFeatsTable.clear ();
 
-  myWizardBonusFeatsTable.insert(FEAT_EMPOWER_SPELL);
-  myWizardBonusFeatsTable.insert(FEAT_ENLARGE_SPELL);
-  myWizardBonusFeatsTable.insert(FEAT_EXTEND_SPELL);
-  myWizardBonusFeatsTable.insert(FEAT_HEIGHTEN_SPELL);
-  myWizardBonusFeatsTable.insert(FEAT_MAXIMIZE_SPELL);
-  myWizardBonusFeatsTable.insert(FEAT_QUICKEN_SPELL);
-  myWizardBonusFeatsTable.insert(FEAT_SILENT_SPELL);
-  myWizardBonusFeatsTable.insert(FEAT_WIDEN_SPELL);
-  myWizardBonusFeatsTable.insert(FEAT_BREW_POTION);
-  myWizardBonusFeatsTable.insert(FEAT_CRAFT_MAGIC_ARMS_AND_ARMOR);
-  myWizardBonusFeatsTable.insert(FEAT_CRAFT_ROD);
-  myWizardBonusFeatsTable.insert(FEAT_CRAFT_STAFF);
-  myWizardBonusFeatsTable.insert(FEAT_CRAFT_WAND);
-  myWizardBonusFeatsTable.insert(FEAT_CRAFT_WONDROUS_ITEM);
-  myWizardBonusFeatsTable.insert(FEAT_FORGE_RING);
-  myWizardBonusFeatsTable.insert(FEAT_SCRIBE_SCROLL);
-  myWizardBonusFeatsTable.insert(FEAT_SPELL_MASTERY);
+  myWizardBonusFeatsTable.insert (FEAT_EMPOWER_SPELL);
+  myWizardBonusFeatsTable.insert (FEAT_ENLARGE_SPELL);
+  myWizardBonusFeatsTable.insert (FEAT_EXTEND_SPELL);
+  myWizardBonusFeatsTable.insert (FEAT_HEIGHTEN_SPELL);
+  myWizardBonusFeatsTable.insert (FEAT_MAXIMIZE_SPELL);
+  myWizardBonusFeatsTable.insert (FEAT_QUICKEN_SPELL);
+  myWizardBonusFeatsTable.insert (FEAT_SILENT_SPELL);
+  myWizardBonusFeatsTable.insert (FEAT_WIDEN_SPELL);
+  myWizardBonusFeatsTable.insert (FEAT_BREW_POTION);
+  myWizardBonusFeatsTable.insert (FEAT_CRAFT_MAGIC_ARMS_AND_ARMOR);
+  myWizardBonusFeatsTable.insert (FEAT_CRAFT_ROD);
+  myWizardBonusFeatsTable.insert (FEAT_CRAFT_STAFF);
+  myWizardBonusFeatsTable.insert (FEAT_CRAFT_WAND);
+  myWizardBonusFeatsTable.insert (FEAT_CRAFT_WONDROUS_ITEM);
+  myWizardBonusFeatsTable.insert (FEAT_FORGE_RING);
+  myWizardBonusFeatsTable.insert (FEAT_SCRIBE_SCROLL);
+  myWizardBonusFeatsTable.insert (FEAT_SPELL_MASTERY);
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("RPG_Character_Skills_Common_Tools: initialized bonus feat tables...\n")));
@@ -135,10 +135,10 @@ RPG_Character_Skills_Common_Tools::initializeBonusFeatsTables ()
 void
 RPG_Character_Skills_Common_Tools::initializeFeatPrerequisitesTable ()
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::initFeatPrerequisitesTable"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::initializeFeatPrerequisitesTable"));
 
   // clean tables
-  myFeatPrerequisitesTable.clear();
+  myFeatPrerequisitesTable.clear ();
 
   RPG_Character_Feat_Prerequisite prerequisite;
   prerequisite.minValue = 0;
@@ -153,51 +153,51 @@ RPG_Character_Skills_Common_Tools::initializeFeatPrerequisitesTable ()
   // FEAT_ARMOR_PROFICIENCY_HEAVY
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_ARMOR_MEDIUM;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_ARMOR_LIGHT;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_PROFICIENCY_ARMOR_HEAVY, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_PROFICIENCY_ARMOR_HEAVY, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_ARMOR_PROFICIENCY_MEDIUM
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_ARMOR_LIGHT;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_PROFICIENCY_ARMOR_MEDIUM, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_PROFICIENCY_ARMOR_MEDIUM, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_AUGMENT_SUMMONING
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_SPELL_FOCUS;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_AUGMENT_SUMMONING, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_AUGMENT_SUMMONING, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_BREW_POTION
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCASTERLEVEL;
   prerequisite.minValue = 3;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_BREW_POTION, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_BREW_POTION, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_CLEAVE
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_STRENGTH;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
@@ -208,207 +208,207 @@ RPG_Character_Skills_Common_Tools::initializeFeatPrerequisitesTable ()
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_CLEAVE, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_CLEAVE, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_COMBAT_EXPERTISE
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_INTELLIGENCE;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_COMBAT_EXPERTISE, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_COMBAT_EXPERTISE, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_CRAFT_MAGIC_ARMS_AND_ARMOR
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCASTERLEVEL;
   prerequisite.minValue = 5;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_CRAFT_MAGIC_ARMS_AND_ARMOR, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_CRAFT_MAGIC_ARMS_AND_ARMOR, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_CRAFT_ROD
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCASTERLEVEL;
   prerequisite.minValue = 9;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_CRAFT_ROD, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_CRAFT_ROD, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_CRAFT_STAFF
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCASTERLEVEL;
   prerequisite.minValue = 12;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_CRAFT_STAFF, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_CRAFT_STAFF, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_CRAFT_WAND
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCASTERLEVEL;
   prerequisite.minValue = 5;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_CRAFT_WAND, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_CRAFT_WAND, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_CRAFT_WONDROUS_ITEM
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCASTERLEVEL;
   prerequisite.minValue = 3;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_CRAFT_WONDROUS_ITEM, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_CRAFT_WONDROUS_ITEM, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_DEFLECT_ARROWS
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_DEXTERITY;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_IMPROVED_UNARMED_STRIKE;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_DEFLECT_ARROWS, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_DEFLECT_ARROWS, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_DODGE
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_DEXTERITY;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_DODGE, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_DODGE, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_PROFICIENCY_EXOTIC_WEAPONS
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
   prerequisite.minValue = 1;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_PROFICIENCY_EXOTIC_WEAPONS, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_PROFICIENCY_EXOTIC_WEAPONS, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_EXTRA_TURNING
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
   // ability to turn or rebuke creatures
-  prerequisite.restrictedSubClasses.insert(SUBCLASS_PALADIN);
-  prerequisite.restrictedSubClasses.insert(SUBCLASS_CLERIC);
-//   prerequisite.restrictedSubClasses.push_back(SUBCLASS_PALADIN);
-//   prerequisite.restrictedSubClasses.push_back(SUBCLASS_CLERIC);
-  prerequisites.push_back(prerequisite);
+  prerequisite.restrictedSubClasses.insert (SUBCLASS_PALADIN);
+  prerequisite.restrictedSubClasses.insert (SUBCLASS_CLERIC);
+//   prerequisite.restrictedSubClasses.push_back (SUBCLASS_PALADIN);
+//   prerequisite.restrictedSubClasses.push_back (SUBCLASS_CLERIC);
+  prerequisites.push_back (prerequisite);
 
-  prerequisite.restrictedSubClasses.clear();
+  prerequisite.restrictedSubClasses.clear ();
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_EXTRA_TURNING, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_EXTRA_TURNING, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_FAR_SHOT
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_POINT_BLANK_SHOT;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_FAR_SHOT, prerequisites));
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_FAR_SHOT, prerequisites));
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
-  prerequisites.clear();
+  prerequisites.clear ();
 
   // FEAT_FORGE_RING
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCASTERLEVEL;
   prerequisite.minValue = 12;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_FORGE_RING, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_FORGE_RING, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_GREAT_CLEAVE
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_STRENGTH;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_CLEAVE;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_POWER_ATTACK;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
   prerequisite.minValue = 4;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_GREAT_CLEAVE, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_GREAT_CLEAVE, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_GREATER_SPELL_PENETRATION
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_SPELL_PENETRATION;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_GREATER_SPELL_PENETRATION, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_GREATER_SPELL_PENETRATION, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_GREATER_TWO_WEAPON_FIGHTING
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_DEXTERITY;
   prerequisite.minValue = 19;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_IMPROVED_TWO_WEAPON_FIGHTING;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_TWO_WEAPON_FIGHTING;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
   prerequisite.minValue = 11;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_GREATER_TWO_WEAPON_FIGHTING, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_GREATER_TWO_WEAPON_FIGHTING, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_GREATER_WEAPON_FOCUS
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -416,29 +416,29 @@ RPG_Character_Skills_Common_Tools::initializeFeatPrerequisitesTable ()
   // *TODO* requires proficiency for a SPECIFIC weapon !
   // FEAT_PROFICIENCY_SIMPLE_WEAPONS
   // FEAT_PROFICIENCY_EXOTIC_WEAPONS
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_WEAPON_FOCUS;
   // *TODO* requires focus for a SPECIFIC weapon !
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCLASSLEVEL;
   prerequisite.minValue = 8;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
   prerequisite.restrictedSubClasses.insert(SUBCLASS_FIGHTER);
 //   prerequisite.restrictedSubClasses.push_back(SUBCLASS_FIGHTER);
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
-  prerequisite.restrictedSubClasses.clear();
+  prerequisite.restrictedSubClasses.clear ();
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_GREATER_WEAPON_FOCUS, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_GREATER_WEAPON_FOCUS, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_GREATER_WEAPON_SPECIALIZATION
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -446,55 +446,55 @@ RPG_Character_Skills_Common_Tools::initializeFeatPrerequisitesTable ()
   // *TODO* requires proficiency for a SPECIFIC weapon !
   // FEAT_PROFICIENCY_SIMPLE_WEAPONS
   // FEAT_PROFICIENCY_EXOTIC_WEAPONS
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_GREATER_WEAPON_FOCUS;
   // *TODO* requires greater focus for a SPECIFIC weapon !
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_WEAPON_FOCUS;
   // *TODO* requires focus for a SPECIFIC weapon !
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_WEAPON_SPECIALIZATION;
   // *TODO* requires specialization for a SPECIFIC weapon !
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCLASSLEVEL;
   prerequisite.minValue = 12;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
-  prerequisite.restrictedSubClasses.insert(SUBCLASS_FIGHTER);
+  prerequisite.restrictedSubClasses.insert (SUBCLASS_FIGHTER);
 //   prerequisite.restrictedSubClasses.push_back(SUBCLASS_FIGHTER);
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
-  prerequisite.restrictedSubClasses.clear();
+  prerequisite.restrictedSubClasses.clear ();
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_GREATER_WEAPON_SPECIALIZATION, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_GREATER_WEAPON_SPECIALIZATION, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_IMPROVED_BULL_RUSH
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_STRENGTH;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_POWER_ATTACK;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_BULL_RUSH, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_IMPROVED_BULL_RUSH, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_IMPROVED_CRITICAL
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -502,36 +502,36 @@ RPG_Character_Skills_Common_Tools::initializeFeatPrerequisitesTable ()
   // *TODO* requires proficiency for a SPECIFIC weapon !
   // FEAT_PROFICIENCY_SIMPLE_WEAPONS
   // FEAT_PROFICIENCY_EXOTIC_WEAPONS
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
   prerequisite.minValue = 8;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_CRITICAL, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_IMPROVED_CRITICAL, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_IMPROVED_DISARM
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_INTELLIGENCE;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_COMBAT_EXPERTISE;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_DISARM, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_IMPROVED_DISARM, prerequisites));
+  prerequisites.clear ();
 
   // *TODO*: FEAT_IMPROVED_FAMILIAR
 
@@ -539,130 +539,130 @@ RPG_Character_Skills_Common_Tools::initializeFeatPrerequisitesTable ()
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_INTELLIGENCE;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_COMBAT_EXPERTISE;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_FEINT, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_IMPROVED_FEINT, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_IMPROVED_GRAPPLE
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_DEXTERITY;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_IMPROVED_UNARMED_STRIKE;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_GRAPPLE, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_IMPROVED_GRAPPLE, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_IMPROVED_OVERRUN
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_STRENGTH;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_POWER_ATTACK;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_OVERRUN, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_IMPROVED_OVERRUN, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_IMPROVED_PRECISE_SHOT
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_DEXTERITY;
   prerequisite.minValue = 19;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_POINT_BLANK_SHOT;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
   prerequisite.requiredOtherFeat = FEAT_PRECISE_SHOT;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
   prerequisite.minValue = 11;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_PRECISE_SHOT, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_IMPROVED_PRECISE_SHOT, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_IMPROVED_SHIELD_BASH
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_SHIELD;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_SHIELD_BASH, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_IMPROVED_SHIELD_BASH, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_IMPROVED_SUNDER
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_STRENGTH;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_POWER_ATTACK;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_SUNDER, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_IMPROVED_SUNDER, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_IMPROVED_TRIP
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_INTELLIGENCE;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_COMBAT_EXPERTISE;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_TRIP, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_IMPROVED_TRIP, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_IMPROVED_TURNING
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
@@ -671,418 +671,418 @@ RPG_Character_Skills_Common_Tools::initializeFeatPrerequisitesTable ()
   prerequisite.restrictedSubClasses.insert(SUBCLASS_CLERIC);
 //   prerequisite.restrictedSubClasses.push_back(SUBCLASS_PALADIN);
 //   prerequisite.restrictedSubClasses.push_back(SUBCLASS_CLERIC);
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
-  prerequisite.restrictedSubClasses.clear();
+  prerequisite.restrictedSubClasses.clear ();
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_TURNING, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_IMPROVED_TURNING, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_IMPROVED_TWO_WEAPON_FIGHTING
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_DEXTERITY;
   prerequisite.minValue = 17;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_TWO_WEAPON_FIGHTING;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
   prerequisite.minValue = 6;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_IMPROVED_TWO_WEAPON_FIGHTING, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_IMPROVED_TWO_WEAPON_FIGHTING, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_LEADERSHIP
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCLASSLEVEL;
   prerequisite.minValue = 6;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_LEADERSHIP, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_LEADERSHIP, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_MANY_SHOT
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_DEXTERITY;
   prerequisite.minValue = 17;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_POINT_BLANK_SHOT;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
   prerequisite.requiredOtherFeat = FEAT_RAPID_SHOT;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
   prerequisite.minValue = 6;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_MANY_SHOT, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_MANY_SHOT, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_MOBILITY
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_DEXTERITY;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_DODGE;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_MOBILITY, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_MOBILITY, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_MOUNTED_ARCHERY
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINSKILLRANK;
   prerequisite.skill = SKILL_RIDE;
   prerequisite.minValue = 1;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.skill = RPG_COMMON_SKILL_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_MOUNTED_COMBAT;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_MOUNTED_ARCHERY, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_MOUNTED_ARCHERY, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_MOUNTED_COMBAT
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINSKILLRANK;
   prerequisite.skill = SKILL_RIDE;
   prerequisite.minValue = 1;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.skill = RPG_COMMON_SKILL_INVALID;
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_MOUNTED_COMBAT, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_MOUNTED_COMBAT, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_NATURAL_SPELL
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_WISDOM;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_ABILITY;
   prerequisite.requiredAbility = ABILITY_ALTERNATE_FORM;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredAbility = RPG_CHARACTER_ABILITY_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_NATURAL_SPELL, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_NATURAL_SPELL, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_POWER_ATTACK
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_STRENGTH;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_POWER_ATTACK, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_POWER_ATTACK, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_PRECISE_SHOT
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_POINT_BLANK_SHOT;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_PRECISE_SHOT, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_PRECISE_SHOT, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_QUICK_DRAW
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
   prerequisite.minValue = 1;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_QUICK_DRAW, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_QUICK_DRAW, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_RAPID_RELOAD
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_MARTIAL_WEAPONS;
   // *TODO*: requires proficiency with SPECIAL weapon (crossbow) !
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_RAPID_RELOAD, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_RAPID_RELOAD, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_RAPID_SHOT
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_DEXTERITY;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_POINT_BLANK_SHOT;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_RAPID_SHOT, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_RAPID_SHOT, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_RIDE_BY_ATTACK
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINSKILLRANK;
   prerequisite.skill = SKILL_RIDE;
   prerequisite.minValue = 1;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.skill = RPG_COMMON_SKILL_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_MOUNTED_COMBAT;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_RIDE_BY_ATTACK, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_RIDE_BY_ATTACK, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_SCRIBE_SCROLL
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCASTERLEVEL;
   prerequisite.minValue = 1;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_SCRIBE_SCROLL, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_SCRIBE_SCROLL, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_SHOT_ON_THE_RUN
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_DEXTERITY;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_DODGE;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_MOBILITY;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_POINT_BLANK_SHOT;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
   prerequisite.minValue = 4;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_SHOT_ON_THE_RUN, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_SHOT_ON_THE_RUN, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_SNATCH_ARROWS
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_DEXTERITY;
   prerequisite.minValue = 15;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_DEFLECT_ARROWS;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_IMPROVED_UNARMED_STRIKE;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_SNATCH_ARROWS, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_SNATCH_ARROWS, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_SPELL_MASTERY
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCASTERLEVEL;
   prerequisite.minValue = 1;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
   prerequisite.restrictedSubClasses.insert(SUBCLASS_WIZARD);
 //   prerequisite.restrictedSubClasses.push_back(SUBCLASS_WIZARD);
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
-  prerequisite.restrictedSubClasses.clear();
+  prerequisite.restrictedSubClasses.clear ();
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_SPELL_MASTERY, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_SPELL_MASTERY, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_SPIRITED_CHARGE
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINSKILLRANK;
   prerequisite.skill = SKILL_RIDE;
   prerequisite.minValue = 1;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.skill = RPG_COMMON_SKILL_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_MOUNTED_COMBAT;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_RIDE_BY_ATTACK;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_SPIRITED_CHARGE, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_SPIRITED_CHARGE, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_STUNNING_FIST
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_DEXTERITY;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.attribute = ATTRIBUTE_WISDOM;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_IMPROVED_UNARMED_STRIKE;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
   prerequisite.minValue = 8;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_STUNNING_FIST, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_STUNNING_FIST, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_PROFICIENCY_TOWER_SHIELD
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_PROFICIENCY_SHIELD;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_PROFICIENCY_TOWER_SHIELD, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_PROFICIENCY_TOWER_SHIELD, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_TRAMPLE
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINSKILLRANK;
   prerequisite.skill = SKILL_RIDE;
   prerequisite.minValue = 1;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.skill = RPG_COMMON_SKILL_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_MOUNTED_COMBAT;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_TRAMPLE, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_TRAMPLE, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_TWO_WEAPON_DEFENSE
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_DEXTERITY;
   prerequisite.minValue = 15;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_TWO_WEAPON_FIGHTING;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_TWO_WEAPON_DEFENSE, prerequisites));
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_TWO_WEAPON_DEFENSE, prerequisites));
   prerequisites.clear();
 
   // FEAT_TWO_WEAPON_FIGHTING
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_DEXTERITY;
   prerequisite.minValue = 15;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_TWO_WEAPON_FIGHTING, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_TWO_WEAPON_FIGHTING, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_WEAPON_FINESSE
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
   prerequisite.minValue = 1;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_WEAPON_FINESSE, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_WEAPON_FINESSE, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_WEAPON_FOCUS
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -1090,18 +1090,18 @@ RPG_Character_Skills_Common_Tools::initializeFeatPrerequisitesTable ()
   // *TODO* requires proficiency for a SPECIFIC weapon !
   // FEAT_PROFICIENCY_SIMPLE_WEAPONS
   // FEAT_PROFICIENCY_EXOTIC_WEAPONS
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
   prerequisite.minValue = 1;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_WEAPON_FOCUS, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_WEAPON_FOCUS, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_WEAPON_SPECIALIZATION
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
@@ -1109,66 +1109,66 @@ RPG_Character_Skills_Common_Tools::initializeFeatPrerequisitesTable ()
   // *TODO* requires proficiency for a SPECIFIC weapon !
   // FEAT_PROFICIENCY_SIMPLE_WEAPONS
   // FEAT_PROFICIENCY_EXOTIC_WEAPONS
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_WEAPON_FOCUS;
   // *TODO* requires focus for a SPECIFIC weapon !
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINCLASSLEVEL;
   prerequisite.minValue = 4;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES;
-  prerequisite.restrictedSubClasses.insert(SUBCLASS_FIGHTER);
+  prerequisite.restrictedSubClasses.insert (SUBCLASS_FIGHTER);
 //   prerequisite.restrictedSubClasses.push_back(SUBCLASS_FIGHTER);
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
-  prerequisite.restrictedSubClasses.clear();
+  prerequisite.restrictedSubClasses.clear ();
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_WEAPON_SPECIALIZATION, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_WEAPON_SPECIALIZATION, prerequisites));
+  prerequisites.clear ();
 
   // FEAT_WHIRLWIND_ATTACK
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINATTRIBUTESCORE;
   prerequisite.attribute = ATTRIBUTE_DEXTERITY;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = ATTRIBUTE_INTELLIGENCE;
   prerequisite.minValue = 13;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   prerequisite.minValue = 0;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_OTHERFEAT;
   prerequisite.requiredOtherFeat = FEAT_COMBAT_EXPERTISE;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_DODGE;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_MOBILITY;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = FEAT_SPRING_ATTACK;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.requiredOtherFeat = RPG_CHARACTER_FEAT_INVALID;
 
   prerequisite.prerequisiteType = FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS;
   prerequisite.minValue = 4;
-  prerequisites.push_back(prerequisite);
+  prerequisites.push_back (prerequisite);
 
   prerequisite.minValue = 0;
 
-  myFeatPrerequisitesTable.insert(std::make_pair(FEAT_WHIRLWIND_ATTACK, prerequisites));
-  prerequisites.clear();
+  myFeatPrerequisitesTable.insert (std::make_pair (FEAT_WHIRLWIND_ATTACK, prerequisites));
+  prerequisites.clear ();
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("RPG_Character_Skills_Common_Tools: initialized feat prerequisite table (%u rule(s))...\n"),
@@ -1178,247 +1178,247 @@ RPG_Character_Skills_Common_Tools::initializeFeatPrerequisitesTable ()
 void
 RPG_Character_Skills_Common_Tools::initializeClassSkillsTable ()
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::initClassSkillsTable"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::initializeClassSkillsTable"));
 
   // clean tables
-  myClassSkillsTable.clear();
+  myClassSkillsTable.clear ();
 
   // RPG_Character_SubClass / RPG_Character_Skill
   RPG_Character_ClassSkillsSet_t skillSet;
   // SUBCLASS_FIGHTER
-  skillSet.insert(SKILL_CLIMB);
-  skillSet.insert(SKILL_CRAFT_FLETCHER);
-  skillSet.insert(SKILL_CRAFT_BOWYER);
-  skillSet.insert(SKILL_CRAFT_SMITH_ARMOR);
-  skillSet.insert(SKILL_CRAFT_SMITH_BLACK);
-  skillSet.insert(SKILL_CRAFT_SMITH_WEAPON);
-  skillSet.insert(SKILL_CRAFT_OTHER);
-  skillSet.insert(SKILL_HANDLE_ANIMAL);
-  skillSet.insert(SKILL_INTIMIDATE);
-  skillSet.insert(SKILL_JUMP);
-  skillSet.insert(SKILL_RIDE);
-  skillSet.insert(SKILL_SWIM);
-  myClassSkillsTable.insert(std::make_pair(SUBCLASS_FIGHTER, skillSet));
+  skillSet.insert (SKILL_CLIMB);
+  skillSet.insert (SKILL_CRAFT_FLETCHER);
+  skillSet.insert (SKILL_CRAFT_BOWYER);
+  skillSet.insert (SKILL_CRAFT_SMITH_ARMOR);
+  skillSet.insert (SKILL_CRAFT_SMITH_BLACK);
+  skillSet.insert (SKILL_CRAFT_SMITH_WEAPON);
+  skillSet.insert (SKILL_CRAFT_OTHER);
+  skillSet.insert (SKILL_HANDLE_ANIMAL);
+  skillSet.insert (SKILL_INTIMIDATE);
+  skillSet.insert (SKILL_JUMP);
+  skillSet.insert (SKILL_RIDE);
+  skillSet.insert (SKILL_SWIM);
+  myClassSkillsTable.insert (std::make_pair (SUBCLASS_FIGHTER, skillSet));
 
-  skillSet.clear();
+  skillSet.clear ();
   // SUBCLASS_PALADIN
-  skillSet.insert(SKILL_CONCENTRATION);
-  skillSet.insert(SKILL_CRAFT_FLETCHER);
-  skillSet.insert(SKILL_CRAFT_BOWYER);
-  skillSet.insert(SKILL_CRAFT_SMITH_ARMOR);
-  skillSet.insert(SKILL_CRAFT_SMITH_BLACK);
-  skillSet.insert(SKILL_CRAFT_SMITH_WEAPON);
-  skillSet.insert(SKILL_CRAFT_OTHER);
-  skillSet.insert(SKILL_DIPLOMACY);
-  skillSet.insert(SKILL_HANDLE_ANIMAL);
-  skillSet.insert(SKILL_HEAL);
-  skillSet.insert(SKILL_KNOWLEDGE_NOBILITY_ROYALTY);
-  skillSet.insert(SKILL_KNOWLEDGE_RELIGION);
-  skillSet.insert(SKILL_PROFESSION);
-  skillSet.insert(SKILL_RIDE);
-  skillSet.insert(SKILL_SENSE_MOTIVE);
-  myClassSkillsTable.insert(std::make_pair(SUBCLASS_PALADIN, skillSet));
+  skillSet.insert (SKILL_CONCENTRATION);
+  skillSet.insert (SKILL_CRAFT_FLETCHER);
+  skillSet.insert (SKILL_CRAFT_BOWYER);
+  skillSet.insert (SKILL_CRAFT_SMITH_ARMOR);
+  skillSet.insert (SKILL_CRAFT_SMITH_BLACK);
+  skillSet.insert (SKILL_CRAFT_SMITH_WEAPON);
+  skillSet.insert (SKILL_CRAFT_OTHER);
+  skillSet.insert (SKILL_DIPLOMACY);
+  skillSet.insert (SKILL_HANDLE_ANIMAL);
+  skillSet.insert (SKILL_HEAL);
+  skillSet.insert (SKILL_KNOWLEDGE_NOBILITY_ROYALTY);
+  skillSet.insert (SKILL_KNOWLEDGE_RELIGION);
+  skillSet.insert (SKILL_PROFESSION);
+  skillSet.insert (SKILL_RIDE);
+  skillSet.insert (SKILL_SENSE_MOTIVE);
+  myClassSkillsTable.insert (std::make_pair (SUBCLASS_PALADIN, skillSet));
 
-  skillSet.clear();
+  skillSet.clear ();
   // SUBCLASS_RANGER
-  skillSet.insert(SKILL_CLIMB);
-  skillSet.insert(SKILL_CONCENTRATION);
-  skillSet.insert(SKILL_CRAFT_FLETCHER);
-  skillSet.insert(SKILL_CRAFT_BOWYER);
-  skillSet.insert(SKILL_CRAFT_SMITH_ARMOR);
-  skillSet.insert(SKILL_CRAFT_SMITH_BLACK);
-  skillSet.insert(SKILL_CRAFT_SMITH_WEAPON);
-  skillSet.insert(SKILL_CRAFT_OTHER);
-  skillSet.insert(SKILL_HANDLE_ANIMAL);
-  skillSet.insert(SKILL_HEAL);
-  skillSet.insert(SKILL_HIDE);
-  skillSet.insert(SKILL_JUMP);
-  skillSet.insert(SKILL_KNOWLEDGE_DUNGEONS);
-  skillSet.insert(SKILL_KNOWLEDGE_GEOGRAPHY);
-  skillSet.insert(SKILL_KNOWLEDGE_NATURE);
-  skillSet.insert(SKILL_LISTEN);
-  skillSet.insert(SKILL_MOVE_SILENTLY);
-  skillSet.insert(SKILL_PROFESSION);
-  skillSet.insert(SKILL_RIDE);
-  skillSet.insert(SKILL_SEARCH);
-  skillSet.insert(SKILL_SPOT);
-  skillSet.insert(SKILL_SURVIVAL);
-  skillSet.insert(SKILL_SWIM);
-  skillSet.insert(SKILL_USE_ROPE);
-  myClassSkillsTable.insert(std::make_pair(SUBCLASS_RANGER, skillSet));
+  skillSet.insert (SKILL_CLIMB);
+  skillSet.insert (SKILL_CONCENTRATION);
+  skillSet.insert (SKILL_CRAFT_FLETCHER);
+  skillSet.insert (SKILL_CRAFT_BOWYER);
+  skillSet.insert (SKILL_CRAFT_SMITH_ARMOR);
+  skillSet.insert (SKILL_CRAFT_SMITH_BLACK);
+  skillSet.insert (SKILL_CRAFT_SMITH_WEAPON);
+  skillSet.insert (SKILL_CRAFT_OTHER);
+  skillSet.insert (SKILL_HANDLE_ANIMAL);
+  skillSet.insert (SKILL_HEAL);
+  skillSet.insert (SKILL_HIDE);
+  skillSet.insert (SKILL_JUMP);
+  skillSet.insert (SKILL_KNOWLEDGE_DUNGEONS);
+  skillSet.insert (SKILL_KNOWLEDGE_GEOGRAPHY);
+  skillSet.insert (SKILL_KNOWLEDGE_NATURE);
+  skillSet.insert (SKILL_LISTEN);
+  skillSet.insert (SKILL_MOVE_SILENTLY);
+  skillSet.insert (SKILL_PROFESSION);
+  skillSet.insert (SKILL_RIDE);
+  skillSet.insert (SKILL_SEARCH);
+  skillSet.insert (SKILL_SPOT);
+  skillSet.insert (SKILL_SURVIVAL);
+  skillSet.insert (SKILL_SWIM);
+  skillSet.insert (SKILL_USE_ROPE);
+  myClassSkillsTable.insert (std::make_pair (SUBCLASS_RANGER, skillSet));
 
-//   skillSet.clear();
+//   skillSet.clear ();
 //   // SUBCLASS_BARBARIAN
-//   skillSet.insert(SKILL_CLIMB);
-//   skillSet.insert(SKILL_CRAFT_FLETCHER);
-//   skillSet.insert(SKILL_CRAFT_BOWYER);
-//   skillSet.insert(SKILL_CRAFT_SMITH_ARMOR);
-//   skillSet.insert(SKILL_CRAFT_SMITH_BLACK);
-//   skillSet.insert(SKILL_CRAFT_SMITH_WEAPON);
-//   skillSet.insert(SKILL_CRAFT_OTHER);
-//   skillSet.insert(SKILL_HANDLE_ANIMAL);
-//   skillSet.insert(SKILL_HEAL);
-//   skillSet.insert(SKILL_INTIMIDATE);
-//   skillSet.insert(SKILL_JUMP);
-//   skillSet.insert(SKILL_LISTEN);
-//   skillSet.insert(SKILL_RIDE);
-//   skillSet.insert(SKILL_SURVIVAL);
-//   skillSet.insert(SKILL_SWIM);
-//   myClassSkillsTable.insert(std::make_pair(SUBCLASS_BARBARIAN, skillSet));
+//   skillSet.insert (SKILL_CLIMB);
+//   skillSet.insert (SKILL_CRAFT_FLETCHER);
+//   skillSet.insert (SKILL_CRAFT_BOWYER);
+//   skillSet.insert (SKILL_CRAFT_SMITH_ARMOR);
+//   skillSet.insert (SKILL_CRAFT_SMITH_BLACK);
+//   skillSet.insert (SKILL_CRAFT_SMITH_WEAPON);
+//   skillSet.insert (SKILL_CRAFT_OTHER);
+//   skillSet.insert (SKILL_HANDLE_ANIMAL);
+//   skillSet.insert (SKILL_HEAL);
+//   skillSet.insert (SKILL_INTIMIDATE);
+//   skillSet.insert (SKILL_JUMP);
+//   skillSet.insert (SKILL_LISTEN);
+//   skillSet.insert (SKILL_RIDE);
+//   skillSet.insert (SKILL_SURVIVAL);
+//   skillSet.insert (SKILL_SWIM);
+//   myClassSkillsTable.insert (std::make_pair (SUBCLASS_BARBARIAN, skillSet));
 
-  skillSet.clear();
+  skillSet.clear ();
   // SUBCLASS_WIZARD
-  skillSet.insert(SKILL_CONCENTRATION);
-  skillSet.insert(SKILL_CRAFT_ALCHEMY);
-  skillSet.insert(SKILL_DECIPHER_SCRIPT);
-  skillSet.insert(SKILL_KNOWLEDGE_ARCANA);
-  skillSet.insert(SKILL_KNOWLEDGE_ARCHITECTURE_ENGINEERING);
-  skillSet.insert(SKILL_KNOWLEDGE_DUNGEONS);
-  skillSet.insert(SKILL_KNOWLEDGE_GEOGRAPHY);
-  skillSet.insert(SKILL_KNOWLEDGE_HISTORY);
-  skillSet.insert(SKILL_KNOWLEDGE_LOCAL);
-  skillSet.insert(SKILL_KNOWLEDGE_NATURE);
-  skillSet.insert(SKILL_KNOWLEDGE_NOBILITY_ROYALTY);
-  skillSet.insert(SKILL_KNOWLEDGE_RELIGION);
-  skillSet.insert(SKILL_KNOWLEDGE_PLANES);
-  skillSet.insert(SKILL_PROFESSION);
-  skillSet.insert(SKILL_SPELLCRAFT);
-  myClassSkillsTable.insert(std::make_pair(SUBCLASS_WIZARD, skillSet));
+  skillSet.insert (SKILL_CONCENTRATION);
+  skillSet.insert (SKILL_CRAFT_ALCHEMY);
+  skillSet.insert (SKILL_DECIPHER_SCRIPT);
+  skillSet.insert (SKILL_KNOWLEDGE_ARCANA);
+  skillSet.insert (SKILL_KNOWLEDGE_ARCHITECTURE_ENGINEERING);
+  skillSet.insert (SKILL_KNOWLEDGE_DUNGEONS);
+  skillSet.insert (SKILL_KNOWLEDGE_GEOGRAPHY);
+  skillSet.insert (SKILL_KNOWLEDGE_HISTORY);
+  skillSet.insert (SKILL_KNOWLEDGE_LOCAL);
+  skillSet.insert (SKILL_KNOWLEDGE_NATURE);
+  skillSet.insert (SKILL_KNOWLEDGE_NOBILITY_ROYALTY);
+  skillSet.insert (SKILL_KNOWLEDGE_RELIGION);
+  skillSet.insert (SKILL_KNOWLEDGE_PLANES);
+  skillSet.insert (SKILL_PROFESSION);
+  skillSet.insert (SKILL_SPELLCRAFT);
+  myClassSkillsTable.insert (std::make_pair (SUBCLASS_WIZARD, skillSet));
 
-  skillSet.clear();
+  skillSet.clear ();
   // SUBCLASS_SORCERER
-  skillSet.insert(SKILL_BLUFF);
-  skillSet.insert(SKILL_CONCENTRATION);
-  skillSet.insert(SKILL_CRAFT_ALCHEMY);
-  skillSet.insert(SKILL_KNOWLEDGE_ARCANA);
-  skillSet.insert(SKILL_PROFESSION);
-  skillSet.insert(SKILL_SPELLCRAFT);
-  myClassSkillsTable.insert(std::make_pair(SUBCLASS_SORCERER, skillSet));
+  skillSet.insert (SKILL_BLUFF);
+  skillSet.insert (SKILL_CONCENTRATION);
+  skillSet.insert (SKILL_CRAFT_ALCHEMY);
+  skillSet.insert (SKILL_KNOWLEDGE_ARCANA);
+  skillSet.insert (SKILL_PROFESSION);
+  skillSet.insert (SKILL_SPELLCRAFT);
+  myClassSkillsTable.insert (std::make_pair (SUBCLASS_SORCERER, skillSet));
 
-  skillSet.clear();
+  skillSet.clear ();
   // SUBCLASS_CLERIC
-  skillSet.insert(SKILL_CONCENTRATION);
-  skillSet.insert(SKILL_CRAFT_ALCHEMY);
-  skillSet.insert(SKILL_DIPLOMACY);
-  skillSet.insert(SKILL_HEAL);
-  skillSet.insert(SKILL_KNOWLEDGE_ARCANA);
-  skillSet.insert(SKILL_KNOWLEDGE_HISTORY);
-  skillSet.insert(SKILL_KNOWLEDGE_RELIGION);
-  skillSet.insert(SKILL_KNOWLEDGE_PLANES);
-  skillSet.insert(SKILL_PROFESSION);
-  skillSet.insert(SKILL_SPELLCRAFT);
-  myClassSkillsTable.insert(std::make_pair(SUBCLASS_CLERIC, skillSet));
+  skillSet.insert (SKILL_CONCENTRATION);
+  skillSet.insert (SKILL_CRAFT_ALCHEMY);
+  skillSet.insert (SKILL_DIPLOMACY);
+  skillSet.insert (SKILL_HEAL);
+  skillSet.insert (SKILL_KNOWLEDGE_ARCANA);
+  skillSet.insert (SKILL_KNOWLEDGE_HISTORY);
+  skillSet.insert (SKILL_KNOWLEDGE_RELIGION);
+  skillSet.insert (SKILL_KNOWLEDGE_PLANES);
+  skillSet.insert (SKILL_PROFESSION);
+  skillSet.insert (SKILL_SPELLCRAFT);
+  myClassSkillsTable.insert (std::make_pair (SUBCLASS_CLERIC, skillSet));
 
-  skillSet.clear();
+  skillSet.clear ();
   // SUBCLASS_DRUID
-  skillSet.insert(SKILL_CONCENTRATION);
-  skillSet.insert(SKILL_CRAFT_ALCHEMY);
-  skillSet.insert(SKILL_DIPLOMACY);
-  skillSet.insert(SKILL_HANDLE_ANIMAL);
-  skillSet.insert(SKILL_HEAL);
-  skillSet.insert(SKILL_KNOWLEDGE_NATURE);
-  skillSet.insert(SKILL_LISTEN);
-  skillSet.insert(SKILL_PROFESSION);
-  skillSet.insert(SKILL_RIDE);
-  skillSet.insert(SKILL_SPELLCRAFT);
-  skillSet.insert(SKILL_SPOT);
-  skillSet.insert(SKILL_SURVIVAL);
-  skillSet.insert(SKILL_SWIM);
-  myClassSkillsTable.insert(std::make_pair(SUBCLASS_DRUID, skillSet));
+  skillSet.insert (SKILL_CONCENTRATION);
+  skillSet.insert (SKILL_CRAFT_ALCHEMY);
+  skillSet.insert (SKILL_DIPLOMACY);
+  skillSet.insert (SKILL_HANDLE_ANIMAL);
+  skillSet.insert (SKILL_HEAL);
+  skillSet.insert (SKILL_KNOWLEDGE_NATURE);
+  skillSet.insert (SKILL_LISTEN);
+  skillSet.insert (SKILL_PROFESSION);
+  skillSet.insert (SKILL_RIDE);
+  skillSet.insert (SKILL_SPELLCRAFT);
+  skillSet.insert (SKILL_SPOT);
+  skillSet.insert (SKILL_SURVIVAL);
+  skillSet.insert (SKILL_SWIM);
+  myClassSkillsTable.insert (std::make_pair (SUBCLASS_DRUID, skillSet));
 
-// // //   skillSet.clear();
+// // //   skillSet.clear ();
 // // //   // SUBCLASS_MONK
-// // //   skillSet.insert(SKILL_BALANCE);
-// // //   skillSet.insert(SKILL_CLIMB);
-// // //   skillSet.insert(SKILL_CONCENTRATION);
-// // //   skillSet.insert(SKILL_CRAFT_ALCHEMY);
-// // //   skillSet.insert(SKILL_DIPLOMACY);
-// // //   skillSet.insert(SKILL_ESCAPE_ARTIST);
-// // //   skillSet.insert(SKILL_HIDE);
-// // //   skillSet.insert(SKILL_JUMP);
-// // //   skillSet.insert(SKILL_KNOWLEDGE_ARCANA);
-// // //   skillSet.insert(SKILL_KNOWLEDGE_RELIGION);
-// // //   skillSet.insert(SKILL_LISTEN);
-// // //   skillSet.insert(SKILL_MOVE_SILENTLY);
-// // //   skillSet.insert(SKILL_PERFORM);
-// // //   skillSet.insert(SKILL_PROFESSION);
-// // //   skillSet.insert(SKILL_SENSE_MOTIVE);
-// // //   skillSet.insert(SKILL_SPOT);
-// // //   skillSet.insert(SKILL_SWIM);
-// // //   skillSet.insert(SKILL_TUMBLE);
-// // //   myClassSkillsTable.insert(std::make_pair(SUBCLASS_MONK, skillSet));
+// // //   skillSet.insert (SKILL_BALANCE);
+// // //   skillSet.insert (SKILL_CLIMB);
+// // //   skillSet.insert (SKILL_CONCENTRATION);
+// // //   skillSet.insert (SKILL_CRAFT_ALCHEMY);
+// // //   skillSet.insert (SKILL_DIPLOMACY);
+// // //   skillSet.insert (SKILL_ESCAPE_ARTIST);
+// // //   skillSet.insert (SKILL_HIDE);
+// // //   skillSet.insert (SKILL_JUMP);
+// // //   skillSet.insert (SKILL_KNOWLEDGE_ARCANA);
+// // //   skillSet.insert (SKILL_KNOWLEDGE_RELIGION);
+// // //   skillSet.insert (SKILL_LISTEN);
+// // //   skillSet.insert (SKILL_MOVE_SILENTLY);
+// // //   skillSet.insert (SKILL_PERFORM);
+// // //   skillSet.insert (SKILL_PROFESSION);
+// // //   skillSet.insert (SKILL_SENSE_MOTIVE);
+// // //   skillSet.insert (SKILL_SPOT);
+// // //   skillSet.insert (SKILL_SWIM);
+// // //   skillSet.insert (SKILL_TUMBLE);
+// // //   myClassSkillsTable.insert (std::make_pair (SUBCLASS_MONK, skillSet));
 
-  skillSet.clear();
+  skillSet.clear ();
   // SUBCLASS_THIEF
-  skillSet.insert(SKILL_APPRAISE);
-  skillSet.insert(SKILL_BALANCE);
-  skillSet.insert(SKILL_BLUFF);
-  skillSet.insert(SKILL_CLIMB);
-  skillSet.insert(SKILL_CRAFT_TRAP);
-  skillSet.insert(SKILL_DECIPHER_SCRIPT);
-  skillSet.insert(SKILL_DIPLOMACY);
-  skillSet.insert(SKILL_DISABLE_DEVICE);
-  skillSet.insert(SKILL_DISGUISE);
-  skillSet.insert(SKILL_ESCAPE_ARTIST);
-  skillSet.insert(SKILL_FORGERY);
-  skillSet.insert(SKILL_GATHER_INFORMATION);
-  skillSet.insert(SKILL_HIDE);
-  skillSet.insert(SKILL_INTIMIDATE);
-  skillSet.insert(SKILL_JUMP);
-  skillSet.insert(SKILL_KNOWLEDGE_LOCAL);
-  skillSet.insert(SKILL_LISTEN);
-  skillSet.insert(SKILL_MOVE_SILENTLY);
-  skillSet.insert(SKILL_OPEN_LOCK);
-  skillSet.insert(SKILL_PERFORM);
-  skillSet.insert(SKILL_PROFESSION);
-  skillSet.insert(SKILL_SEARCH);
-  skillSet.insert(SKILL_SENSE_MOTIVE);
-  skillSet.insert(SKILL_SLEIGHT_OF_HAND);
-  skillSet.insert(SKILL_SPOT);
-  skillSet.insert(SKILL_SWIM);
-  skillSet.insert(SKILL_TUMBLE);
-  skillSet.insert(SKILL_USE_MAGIC_DEVICE);
-  skillSet.insert(SKILL_USE_ROPE);
-  myClassSkillsTable.insert(std::make_pair(SUBCLASS_THIEF, skillSet));
+  skillSet.insert (SKILL_APPRAISE);
+  skillSet.insert (SKILL_BALANCE);
+  skillSet.insert (SKILL_BLUFF);
+  skillSet.insert (SKILL_CLIMB);
+  skillSet.insert (SKILL_CRAFT_TRAP);
+  skillSet.insert (SKILL_DECIPHER_SCRIPT);
+  skillSet.insert (SKILL_DIPLOMACY);
+  skillSet.insert (SKILL_DISABLE_DEVICE);
+  skillSet.insert (SKILL_DISGUISE);
+  skillSet.insert (SKILL_ESCAPE_ARTIST);
+  skillSet.insert (SKILL_FORGERY);
+  skillSet.insert (SKILL_GATHER_INFORMATION);
+  skillSet.insert (SKILL_HIDE);
+  skillSet.insert (SKILL_INTIMIDATE);
+  skillSet.insert (SKILL_JUMP);
+  skillSet.insert (SKILL_KNOWLEDGE_LOCAL);
+  skillSet.insert (SKILL_LISTEN);
+  skillSet.insert (SKILL_MOVE_SILENTLY);
+  skillSet.insert (SKILL_OPEN_LOCK);
+  skillSet.insert (SKILL_PERFORM);
+  skillSet.insert (SKILL_PROFESSION);
+  skillSet.insert (SKILL_SEARCH);
+  skillSet.insert (SKILL_SENSE_MOTIVE);
+  skillSet.insert (SKILL_SLEIGHT_OF_HAND);
+  skillSet.insert (SKILL_SPOT);
+  skillSet.insert (SKILL_SWIM);
+  skillSet.insert (SKILL_TUMBLE);
+  skillSet.insert (SKILL_USE_MAGIC_DEVICE);
+  skillSet.insert (SKILL_USE_ROPE);
+  myClassSkillsTable.insert (std::make_pair (SUBCLASS_THIEF, skillSet));
 
-  skillSet.clear();
+  skillSet.clear ();
   // SUBCLASS_BARD
-  skillSet.insert(SKILL_APPRAISE);
-  skillSet.insert(SKILL_BALANCE);
-  skillSet.insert(SKILL_BLUFF);
-  skillSet.insert(SKILL_CLIMB);
-  skillSet.insert(SKILL_CONCENTRATION);
-  skillSet.insert(SKILL_CRAFT_ALCHEMY);
-  skillSet.insert(SKILL_DECIPHER_SCRIPT);
-  skillSet.insert(SKILL_DIPLOMACY);
-  skillSet.insert(SKILL_DISGUISE);
-  skillSet.insert(SKILL_ESCAPE_ARTIST);
-  skillSet.insert(SKILL_GATHER_INFORMATION);
-  skillSet.insert(SKILL_HIDE);
-  skillSet.insert(SKILL_JUMP);
-  skillSet.insert(SKILL_KNOWLEDGE_ARCANA);
-  skillSet.insert(SKILL_KNOWLEDGE_ARCHITECTURE_ENGINEERING);
-  skillSet.insert(SKILL_KNOWLEDGE_DUNGEONS);
-  skillSet.insert(SKILL_KNOWLEDGE_GEOGRAPHY);
-  skillSet.insert(SKILL_KNOWLEDGE_HISTORY);
-  skillSet.insert(SKILL_KNOWLEDGE_LOCAL);
-  skillSet.insert(SKILL_KNOWLEDGE_NATURE);
-  skillSet.insert(SKILL_KNOWLEDGE_NOBILITY_ROYALTY);
-  skillSet.insert(SKILL_KNOWLEDGE_RELIGION);
-  skillSet.insert(SKILL_KNOWLEDGE_PLANES);
-  skillSet.insert(SKILL_LISTEN);
-  skillSet.insert(SKILL_MOVE_SILENTLY);
-  skillSet.insert(SKILL_PERFORM);
-  skillSet.insert(SKILL_PROFESSION);
-  skillSet.insert(SKILL_SENSE_MOTIVE);
-  skillSet.insert(SKILL_SLEIGHT_OF_HAND);
-  skillSet.insert(SKILL_SPEAK_LANGUAGE);
-  skillSet.insert(SKILL_SPELLCRAFT);
-  skillSet.insert(SKILL_SPOT);
-  skillSet.insert(SKILL_SWIM);
-  skillSet.insert(SKILL_TUMBLE);
-  skillSet.insert(SKILL_USE_MAGIC_DEVICE);
-  myClassSkillsTable.insert(std::make_pair(SUBCLASS_BARD, skillSet));
+  skillSet.insert (SKILL_APPRAISE);
+  skillSet.insert (SKILL_BALANCE);
+  skillSet.insert (SKILL_BLUFF);
+  skillSet.insert (SKILL_CLIMB);
+  skillSet.insert (SKILL_CONCENTRATION);
+  skillSet.insert (SKILL_CRAFT_ALCHEMY);
+  skillSet.insert (SKILL_DECIPHER_SCRIPT);
+  skillSet.insert (SKILL_DIPLOMACY);
+  skillSet.insert (SKILL_DISGUISE);
+  skillSet.insert (SKILL_ESCAPE_ARTIST);
+  skillSet.insert (SKILL_GATHER_INFORMATION);
+  skillSet.insert (SKILL_HIDE);
+  skillSet.insert (SKILL_JUMP);
+  skillSet.insert (SKILL_KNOWLEDGE_ARCANA);
+  skillSet.insert (SKILL_KNOWLEDGE_ARCHITECTURE_ENGINEERING);
+  skillSet.insert (SKILL_KNOWLEDGE_DUNGEONS);
+  skillSet.insert (SKILL_KNOWLEDGE_GEOGRAPHY);
+  skillSet.insert (SKILL_KNOWLEDGE_HISTORY);
+  skillSet.insert (SKILL_KNOWLEDGE_LOCAL);
+  skillSet.insert (SKILL_KNOWLEDGE_NATURE);
+  skillSet.insert (SKILL_KNOWLEDGE_NOBILITY_ROYALTY);
+  skillSet.insert (SKILL_KNOWLEDGE_RELIGION);
+  skillSet.insert (SKILL_KNOWLEDGE_PLANES);
+  skillSet.insert (SKILL_LISTEN);
+  skillSet.insert (SKILL_MOVE_SILENTLY);
+  skillSet.insert (SKILL_PERFORM);
+  skillSet.insert (SKILL_PROFESSION);
+  skillSet.insert (SKILL_SENSE_MOTIVE);
+  skillSet.insert (SKILL_SLEIGHT_OF_HAND);
+  skillSet.insert (SKILL_SPEAK_LANGUAGE);
+  skillSet.insert (SKILL_SPELLCRAFT);
+  skillSet.insert (SKILL_SPOT);
+  skillSet.insert (SKILL_SWIM);
+  skillSet.insert (SKILL_TUMBLE);
+  skillSet.insert (SKILL_USE_MAGIC_DEVICE);
+  myClassSkillsTable.insert (std::make_pair (SUBCLASS_BARD, skillSet));
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("RPG_Character_Skills_Common_Tools: initialized class skill table...\n")));
@@ -1589,52 +1589,52 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities (const RPG_Character_Rac
 //     case SUBCLASS_AVENGER:
 //     case SUBCLASS_INVOKER:
     {
-      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+      baseFeats_out.insert (FEAT_PROFICIENCY_SIMPLE_WEAPONS);
       // TODO: a cleric with the War domain receives the appropriate WEAPON_FOCUS and MARTIAL_WEAPON proficiency...
-      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_LIGHT);
-      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_MEDIUM);
-      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_HEAVY);
-      baseFeats_out.insert(FEAT_PROFICIENCY_SHIELD);
+      baseFeats_out.insert (FEAT_PROFICIENCY_ARMOR_LIGHT);
+      baseFeats_out.insert (FEAT_PROFICIENCY_ARMOR_MEDIUM);
+      baseFeats_out.insert (FEAT_PROFICIENCY_ARMOR_HEAVY);
+      baseFeats_out.insert (FEAT_PROFICIENCY_SHIELD);
 
-      baseAbilities_out.insert(ABILITY_SPELLS);
+      baseAbilities_out.insert (ABILITY_SPELLS);
 
       break;
     }
 //     case SUBCLASS_BARBARIAN:
 //     case SUBCLASS_SHAMAN:
 //     {
-//       baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
-//       baseFeats_out.insert(FEAT_PROFICIENCY_MARTIAL_WEAPONS);
-//       baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_LIGHT);
-//       baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_MEDIUM);
-//       baseFeats_out.insert(FEAT_PROFICIENCY_SHIELD);
+//       baseFeats_out.insert (FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+//       baseFeats_out.insert (FEAT_PROFICIENCY_MARTIAL_WEAPONS);
+//       baseFeats_out.insert (FEAT_PROFICIENCY_ARMOR_LIGHT);
+//       baseFeats_out.insert (FEAT_PROFICIENCY_ARMOR_MEDIUM);
+//       baseFeats_out.insert (FEAT_PROFICIENCY_SHIELD);
 //
 //       break;
 //     }
     case SUBCLASS_DRUID:
     {
       // *TODO*: proficient with dagger, club, dart, quarterstaff, scimitar, sickle shortspear, sling and spear ONLY (+ natural attacks)
-      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+      baseFeats_out.insert (FEAT_PROFICIENCY_SIMPLE_WEAPONS);
       // *TODO*: prohibited from wearing metal armor !
-      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_LIGHT);
-      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_MEDIUM);
+      baseFeats_out.insert (FEAT_PROFICIENCY_ARMOR_LIGHT);
+      baseFeats_out.insert (FEAT_PROFICIENCY_ARMOR_MEDIUM);
       // *TODO*: prohibited from using metal shields !
-      baseFeats_out.insert(FEAT_PROFICIENCY_SHIELD);
+      baseFeats_out.insert (FEAT_PROFICIENCY_SHIELD);
 
-      baseAbilities_out.insert(ABILITY_SPELLS);
-      baseAbilities_out.insert(ABILITY_NATURAL_WEAPONS);
-      baseAbilities_out.insert(ABILITY_ANIMAL_COMPANION);
+      baseAbilities_out.insert (ABILITY_SPELLS);
+      baseAbilities_out.insert (ABILITY_NATURAL_WEAPONS);
+      baseAbilities_out.insert (ABILITY_ANIMAL_COMPANION);
       if (currentLevel_in >= 2)
       {
-        baseAbilities_out.insert(ABILITY_WOODLAND_STRIDE);
+        baseAbilities_out.insert (ABILITY_WOODLAND_STRIDE);
       } // end IF
       if (currentLevel_in >= 5)
       {
-        baseAbilities_out.insert(ABILITY_ALTERNATE_FORM);
+        baseAbilities_out.insert (ABILITY_ALTERNATE_FORM);
       } // end IF
       if (currentLevel_in >= 9)
       {
-        baseAbilities_out.insert(ABILITY_IMMUNITY_POISON);
+        baseAbilities_out.insert (ABILITY_IMMUNITY_POISON);
       } // end IF
 
       break;
@@ -1690,114 +1690,114 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities (const RPG_Character_Rac
 //     }
     case SUBCLASS_RANGER:
     {
-      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
-      baseFeats_out.insert(FEAT_PROFICIENCY_MARTIAL_WEAPONS);
-      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_LIGHT);
-      baseFeats_out.insert(FEAT_PROFICIENCY_SHIELD);
-      baseFeats_out.insert(FEAT_TRACK);
+      baseFeats_out.insert (FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+      baseFeats_out.insert (FEAT_PROFICIENCY_MARTIAL_WEAPONS);
+      baseFeats_out.insert (FEAT_PROFICIENCY_ARMOR_LIGHT);
+      baseFeats_out.insert (FEAT_PROFICIENCY_SHIELD);
+      baseFeats_out.insert (FEAT_TRACK);
       if (currentLevel_in >= 2)
       {
         // *TODO*: choose EITHER of these two
-        baseFeats_out.insert(FEAT_RAPID_SHOT);
-        baseFeats_out.insert(FEAT_TWO_WEAPON_FIGHTING);
+        baseFeats_out.insert (FEAT_RAPID_SHOT);
+        baseFeats_out.insert (FEAT_TWO_WEAPON_FIGHTING);
       } // end IF
       if (currentLevel_in >= 3)
       {
-        baseFeats_out.insert(FEAT_ENDURANCE);
+        baseFeats_out.insert (FEAT_ENDURANCE);
       } // end IF
       if (currentLevel_in >= 6)
       {
         // *TODO*: choose EITHER of these two
-        baseFeats_out.insert(FEAT_MANY_SHOT);
-        baseFeats_out.insert(FEAT_IMPROVED_TWO_WEAPON_FIGHTING);
+        baseFeats_out.insert (FEAT_MANY_SHOT);
+        baseFeats_out.insert (FEAT_IMPROVED_TWO_WEAPON_FIGHTING);
       } // end IF
       if (currentLevel_in >= 11)
       {
         // *TODO*: choose EITHER of these two
-        baseFeats_out.insert(FEAT_IMPROVED_PRECISE_SHOT);
-        baseFeats_out.insert(FEAT_GREATER_TWO_WEAPON_FIGHTING);
+        baseFeats_out.insert (FEAT_IMPROVED_PRECISE_SHOT);
+        baseFeats_out.insert (FEAT_GREATER_TWO_WEAPON_FIGHTING);
       } // end IF
 
       if (currentLevel_in >= 4)
       {
-        baseAbilities_out.insert(ABILITY_ANIMAL_COMPANION);
-        baseAbilities_out.insert(ABILITY_SPELLS);
+        baseAbilities_out.insert (ABILITY_ANIMAL_COMPANION);
+        baseAbilities_out.insert (ABILITY_SPELLS);
       } // end IF
       if (currentLevel_in >= 7)
       {
-        baseAbilities_out.insert(ABILITY_WOODLAND_STRIDE);
+        baseAbilities_out.insert (ABILITY_WOODLAND_STRIDE);
       } // end IF
       if (currentLevel_in >= 9)
       {
-        baseAbilities_out.insert(ABILITY_EVASION);
+        baseAbilities_out.insert (ABILITY_EVASION);
       } // end IF
 
       break;
     }
     case SUBCLASS_BARD:
     {
-      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+      baseFeats_out.insert (FEAT_PROFICIENCY_SIMPLE_WEAPONS);
       // *TODO*: proficient with longsword, rapier, sap, short sword, shortbow and whip ONLY
-      baseFeats_out.insert(FEAT_PROFICIENCY_MARTIAL_WEAPONS);
-      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_LIGHT);
-      baseFeats_out.insert(FEAT_PROFICIENCY_SHIELD);
+      baseFeats_out.insert (FEAT_PROFICIENCY_MARTIAL_WEAPONS);
+      baseFeats_out.insert (FEAT_PROFICIENCY_ARMOR_LIGHT);
+      baseFeats_out.insert (FEAT_PROFICIENCY_SHIELD);
 
-      baseAbilities_out.insert(ABILITY_SPELLS);
+      baseAbilities_out.insert (ABILITY_SPELLS);
 
       break;
     }
     case SUBCLASS_THIEF:
     {
-      baseFeats_out.insert(FEAT_PROFICIENCY_SIMPLE_WEAPONS);
+      baseFeats_out.insert (FEAT_PROFICIENCY_SIMPLE_WEAPONS);
       // *TODO*: proficient with hand crossbow, rapier, sap, short sword and shortbow ONLY
-      baseFeats_out.insert(FEAT_PROFICIENCY_MARTIAL_WEAPONS);
-      baseFeats_out.insert(FEAT_PROFICIENCY_ARMOR_LIGHT);
+      baseFeats_out.insert (FEAT_PROFICIENCY_MARTIAL_WEAPONS);
+      baseFeats_out.insert (FEAT_PROFICIENCY_ARMOR_LIGHT);
 
       if (currentLevel_in >= 2)
       {
-        baseAbilities_out.insert(ABILITY_EVASION);
+        baseAbilities_out.insert (ABILITY_EVASION);
       } // end IF
       if (currentLevel_in >= 3)
       {
-        baseAbilities_out.insert(ABILITY_SENSE_TRAPS);
+        baseAbilities_out.insert (ABILITY_SENSE_TRAPS);
       } // end IF
       if (currentLevel_in >= 4)
       {
-        baseAbilities_out.insert(ABILITY_UNCANNY_DODGE);
+        baseAbilities_out.insert (ABILITY_UNCANNY_DODGE);
       } // end IF
       if (currentLevel_in >= 8)
       {
-        baseAbilities_out.insert(ABILITY_IMPROVED_UNCANNY_DODGE);
+        baseAbilities_out.insert (ABILITY_IMPROVED_UNCANNY_DODGE);
       } // end IF
       if (currentLevel_in >= 10)
       {
         unsigned int numChoices = 1 + ((currentLevel_in - 10) / 3);
         // choose numChoices among these...
         RPG_Character_Abilities_t choiceList;
-        choiceList.insert(ABILITY_CRIPPLING_STRIKE);
-        choiceList.insert(ABILITY_DEFENSIVE_ROLL);
-        choiceList.insert(ABILITY_IMPROVED_EVASION);
-        choiceList.insert(ABILITY_OPPORTUNIST);
-        choiceList.insert(ABILITY_SKILL_MASTERY);
-        choiceList.insert(ABILITY_SLIPPERY_MIND);
-        choiceList.insert(ABILITY_BONUS_FEAT);
+        choiceList.insert (ABILITY_CRIPPLING_STRIKE);
+        choiceList.insert (ABILITY_DEFENSIVE_ROLL);
+        choiceList.insert (ABILITY_IMPROVED_EVASION);
+        choiceList.insert (ABILITY_OPPORTUNIST);
+        choiceList.insert (ABILITY_SKILL_MASTERY);
+        choiceList.insert (ABILITY_SLIPPERY_MIND);
+        choiceList.insert (ABILITY_BONUS_FEAT);
 
         // sanity check: make sure we can satisfy this requirement !!!
         unsigned int options = 0;
-        for (RPG_Character_AbilitiesConstIterator_t iterator = choiceList.begin();
-             iterator != choiceList.end();
+        for (RPG_Character_AbilitiesConstIterator_t iterator = choiceList.begin ();
+             iterator != choiceList.end ();
              iterator++)
         {
-          if (baseAbilities_out.find(*iterator) == baseAbilities_out.end())
+          if (baseAbilities_out.find (*iterator) == baseAbilities_out.end ())
             options++;
         } // end FOR
         if (options < numChoices)
         {
-          ACE_DEBUG((LM_WARNING,
-                     ACE_TEXT("%d/%d abilities already acquired --> cannot choose %d among them\n"),
-                     choiceList.size() - options,
-                     choiceList.size(),
-                     numChoices));
+          ACE_DEBUG ((LM_WARNING,
+                      ACE_TEXT ("%d/%d abilities already acquired --> cannot choose %d among them\n"),
+                      choiceList.size () - options,
+                      choiceList.size (),
+                      numChoices));
 
           // what else can we do ?
           numChoices = options;
@@ -1809,13 +1809,13 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities (const RPG_Character_Rac
         while (numChoices)
         {
           // choose random ability
-          iterator = choiceList.begin();
-          result.clear();
-          RPG_Dice::generateRandomNumbers(choiceList.size(),
-                                          1,
-                                          result);
-          std::advance(iterator, result.front() - 1);
-          position = baseAbilities_out.insert(*iterator);
+          iterator = choiceList.begin ();
+          result.clear ();
+          RPG_Dice::generateRandomNumbers (static_cast<unsigned int> (choiceList.size ()),
+                                           1,
+                                           result);
+          std::advance (iterator, result.front () - 1);
+          position = baseAbilities_out.insert (*iterator);
 
           if (position.second == false)
             continue; // already have this ability --> try again...
@@ -1828,19 +1828,16 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities (const RPG_Character_Rac
     }
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid subclass: \"%s\", aborting\n"),
-                 RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str()));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid subclass: \"%s\", aborting\n"),
+                  RPG_Common_SubClassHelper::RPG_Common_SubClassToString (subClass_in).c_str()));
       return 0;
     }
   } // end SWITCH
 
   // humans get one additional initial feat
   if (race_in == RACE_HUMAN)
-  {
     numInitialFeats_out += 1;
-  } // end IF
 
   return numFeats;
 }
@@ -1848,22 +1845,22 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities (const RPG_Character_Rac
 std::string
 RPG_Character_Skills_Common_Tools::toString (const RPG_Character_Skills_t& skills_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::skillsToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::toString"));
 
   std::string result;
 
   std::ostringstream converter;
-  for (RPG_Character_SkillsConstIterator_t iterator = skills_in.begin();
-       iterator != skills_in.end();
+  for (RPG_Character_SkillsConstIterator_t iterator = skills_in.begin ();
+       iterator != skills_in.end ();
        iterator++)
   {
-    result += RPG_Common_SkillHelper::RPG_Common_SkillToString(iterator->first);
-    result += ACE_TEXT_ALWAYS_CHAR(": ");
-    converter.clear();
-    converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-    converter << static_cast<int>(iterator->second);
-    result += converter.str();
-    result += ACE_TEXT_ALWAYS_CHAR("\n");
+    result += RPG_Common_SkillHelper::RPG_Common_SkillToString (iterator->first);
+    result += ACE_TEXT_ALWAYS_CHAR (": ");
+    converter.clear ();
+    converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+    converter << static_cast<int> (iterator->second);
+    result += converter.str ();
+    result += ACE_TEXT_ALWAYS_CHAR ("\n");
   } // end FOR
 
   return result;
@@ -1872,16 +1869,16 @@ RPG_Character_Skills_Common_Tools::toString (const RPG_Character_Skills_t& skill
 std::string
 RPG_Character_Skills_Common_Tools::toString (const RPG_Character_Feats_t& feats_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::featsToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::toString"));
 
   std::string result;
 
-  for (RPG_Character_FeatsConstIterator_t iterator = feats_in.begin();
-       iterator != feats_in.end();
+  for (RPG_Character_FeatsConstIterator_t iterator = feats_in.begin ();
+       iterator != feats_in.end ();
        iterator++)
   {
-    result += RPG_Character_FeatHelper::RPG_Character_FeatToString(*iterator);
-    result += ACE_TEXT_ALWAYS_CHAR("\n");
+    result += RPG_Character_FeatHelper::RPG_Character_FeatToString (*iterator);
+    result += ACE_TEXT_ALWAYS_CHAR ("\n");
   } // end FOR
 
   return result;
@@ -1890,16 +1887,16 @@ RPG_Character_Skills_Common_Tools::toString (const RPG_Character_Feats_t& feats_
 std::string
 RPG_Character_Skills_Common_Tools::toString (const RPG_Character_Abilities_t& abilities_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Common_Tools::abilitiesToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::toString"));
 
   std::string result;
 
-  for (RPG_Character_AbilitiesConstIterator_t iterator = abilities_in.begin();
-       iterator != abilities_in.end();
+  for (RPG_Character_AbilitiesConstIterator_t iterator = abilities_in.begin ();
+       iterator != abilities_in.end ();
        iterator++)
   {
-    result += RPG_Character_AbilityHelper::RPG_Character_AbilityToString(*iterator);
-    result += ACE_TEXT_ALWAYS_CHAR("\n");
+    result += RPG_Character_AbilityHelper::RPG_Character_AbilityToString (*iterator);
+    result += ACE_TEXT_ALWAYS_CHAR ("\n");
   } // end FOR
 
   return result;
@@ -1930,16 +1927,16 @@ RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites (enum RPG_Character_Fe
 //              iterator->second.c_str()));
 
   // find feat prerequisites
-  RPG_Character_FeatPrerequisitesTableIterator_t iterator2 = myFeatPrerequisitesTable.find(feat_in);
-  if (iterator2 == myFeatPrerequisitesTable.end())
+  RPG_Character_FeatPrerequisitesTableIterator_t iterator2 = myFeatPrerequisitesTable.find (feat_in);
+  if (iterator2 == myFeatPrerequisitesTable.end ())
   {
     // apparently there are no prerequisites...
     return true;
   } // end IF
 
   // iterate over prerequisites
-  for (RPG_Character_Feat_PrerequisitesIterator_t iterator3 = iterator2->second.begin();
-       iterator3 != iterator2->second.end();
+  for (RPG_Character_Feat_PrerequisitesIterator_t iterator3 = iterator2->second.begin ();
+       iterator3 != iterator2->second.end ();
        iterator3++)
   {
     switch ((*iterator3).prerequisiteType)
@@ -2010,10 +2007,9 @@ RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites (enum RPG_Character_Fe
           }
           default:
           {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("invalid attribute: \"%s\", aborting\n"),
-                       RPG_Common_AttributeHelper::RPG_Common_AttributeToString((*iterator3).attribute).c_str()));
-
+            ACE_DEBUG ((LM_ERROR,
+                        ACE_TEXT ("invalid attribute: \"%s\", aborting\n"),
+                        ACE_TEXT (RPG_Common_AttributeHelper::RPG_Common_AttributeToString ((*iterator3).attribute).c_str ())));
             break;
           }
         } // end SWITCH
@@ -2046,9 +2042,9 @@ RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites (enum RPG_Character_Fe
       }
       case FEAT_PREREQUISITETYPE_MINBASEATTACKBONUS:
       {
-        RPG_Character_BaseAttackBonus_t BAB = RPG_Character_Common_Tools::getBaseAttackBonus(subClass_in,
-                                                                                             currentLevel_in);
-        if (BAB.front() >= (*iterator3).minValue)
+        RPG_Character_BaseAttackBonus_t BAB = RPG_Character_Common_Tools::getBaseAttackBonus (subClass_in,
+                                                                                              currentLevel_in);
+        if (BAB.front () >= (*iterator3).minValue)
         {
           // OK
           continue;
@@ -2065,8 +2061,8 @@ RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites (enum RPG_Character_Fe
       }
       case FEAT_PREREQUISITETYPE_MINSKILLRANK:
       {
-        RPG_Character_SkillsConstIterator_t iterator4 = skills_in.find((*iterator3).skill);
-        if (iterator4 != skills_in.end())
+        RPG_Character_SkillsConstIterator_t iterator4 = skills_in.find ((*iterator3).skill);
+        if (iterator4 != skills_in.end ())
         {
           if (iterator4->second >= (*iterator3).minValue)
           {
@@ -2087,7 +2083,7 @@ RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites (enum RPG_Character_Fe
       }
       case FEAT_PREREQUISITETYPE_MINCLASSLEVEL:
       {
-        if (((*iterator3).restrictedSubClasses.find(subClass_in) != (*iterator3).restrictedSubClasses.end()) &&
+        if (((*iterator3).restrictedSubClasses.find (subClass_in) != (*iterator3).restrictedSubClasses.end ()) &&
             (currentLevel_in < (*iterator3).minValue))
         {
           // OK
@@ -2105,7 +2101,7 @@ RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites (enum RPG_Character_Fe
       }
       case FEAT_PREREQUISITETYPE_MINCASTERLEVEL:
       {
-        if ((abilities_in.find(ABILITY_SPELLS) != abilities_in.end()) &&
+        if ((abilities_in.find (ABILITY_SPELLS) != abilities_in.end ()) &&
             (currentLevel_in < (*iterator3).minValue))
         {
           // OK
@@ -2124,7 +2120,7 @@ RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites (enum RPG_Character_Fe
       }
       case FEAT_PREREQUISITETYPE_RESTRICTEDCLASSES:
       {
-        if ((*iterator3).restrictedSubClasses.find(subClass_in) != (*iterator3).restrictedSubClasses.end())
+        if ((*iterator3).restrictedSubClasses.find (subClass_in) != (*iterator3).restrictedSubClasses.end ())
         {
           // OK
           continue;
@@ -2140,7 +2136,7 @@ RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites (enum RPG_Character_Fe
       }
       case FEAT_PREREQUISITETYPE_ABILITY:
       {
-        if (abilities_in.find((*iterator3).requiredAbility) != abilities_in.end())
+        if (abilities_in.find ((*iterator3).requiredAbility) != abilities_in.end ())
         {
           // OK
           continue;
@@ -2157,10 +2153,9 @@ RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites (enum RPG_Character_Fe
       }
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid prerequisite type: %d, aborting\n"),
-                   (*iterator3).prerequisiteType));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("invalid prerequisite type: %d, aborting\n"),
+                    (*iterator3).prerequisiteType));
         return false;
       }
     } // end SWITCH

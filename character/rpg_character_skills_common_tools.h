@@ -25,6 +25,7 @@
 #include <set>
 #include <vector>
 
+#include "ace/Basic_Types.h"
 #include "ace/Global_Macros.h"
 
 #include "rpg_dice_incl.h"
@@ -33,9 +34,7 @@
 
 #include "rpg_character_incl.h"
 
-//#include "rpg_character_exports.h"
 #include "rpg_character_common.h"
-#include "rpg_character_common_tools.h"
 #include "rpg_character_skills_common.h"
 
 class RPG_Character_Skills_Common_Tools

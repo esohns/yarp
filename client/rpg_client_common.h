@@ -24,6 +24,8 @@
 #include <deque>
 #include <map>
 #include <string>
+#include <utility>
+#include <vector>
 
 #define _SDL_main_h
 #define SDL_main_h_

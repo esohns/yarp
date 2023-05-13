@@ -30,10 +30,10 @@ bool
 RPG_Character_Class_Common_Tools::hasSubClass (const RPG_Character_Class& class_in,
                                                enum RPG_Common_SubClass subClass_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::hasSubClass"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Class_Common_Tools::hasSubClass"));
 
-  for (RPG_Character_SubClassesIterator_t iterator = class_in.subClasses.begin();
-       iterator != class_in.subClasses.end();
+  for (RPG_Character_SubClassesIterator_t iterator = class_in.subClasses.begin ();
+       iterator != class_in.subClasses.end ();
        iterator++)
     if ((*iterator) == subClass_in)
       return true;
@@ -44,7 +44,7 @@ RPG_Character_Class_Common_Tools::hasSubClass (const RPG_Character_Class& class_
 enum RPG_Character_MetaClass
 RPG_Character_Class_Common_Tools::subClassToMetaClass (enum RPG_Common_SubClass subClass_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::subClassToMetaClass"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Class_Common_Tools::subClassToMetaClass"));
 
   switch (subClass_in)
   {
@@ -70,9 +70,9 @@ RPG_Character_Class_Common_Tools::subClassToMetaClass (enum RPG_Common_SubClass 
       return METACLASS_ROGUE;
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid subclass: %s, aborting\n"),
-                 RPG_Common_SubClassHelper::RPG_Common_SubClassToString(subClass_in).c_str()));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid subclass: %s, aborting\n"),
+                  RPG_Common_SubClassHelper::RPG_Common_SubClassToString (subClass_in).c_str ()));
     }
   } // end SWITCH
 
@@ -80,17 +80,17 @@ RPG_Character_Class_Common_Tools::subClassToMetaClass (enum RPG_Common_SubClass 
 }
 
 RPG_Character_Class
-RPG_Character_Class_Common_Tools::classXMLTreeToClass(const RPG_Character_ClassXML_XMLTree_Type& class_in)
+RPG_Character_Class_Common_Tools::classXMLTreeToClass (const RPG_Character_ClassXML_XMLTree_Type& class_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Class_Common_Tools::classXMLTreeToClass"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Class_Common_Tools::classXMLTreeToClass"));
 
   RPG_Character_Class result;
 
-  result.metaClass = RPG_Character_MetaClassHelper::stringToRPG_Character_MetaClass(class_in.metaClass());
-  for (RPG_Character_ClassXML_XMLTree_Type::subClass_const_iterator iterator = class_in.subClass().begin();
-       iterator != class_in.subClass().end();
+  result.metaClass = RPG_Character_MetaClassHelper::stringToRPG_Character_MetaClass (class_in.metaClass ());
+  for (RPG_Character_ClassXML_XMLTree_Type::subClass_const_iterator iterator = class_in.subClass ().begin ();
+       iterator != class_in.subClass ().end ();
        iterator++)
-    result.subClasses.insert(RPG_Common_SubClassHelper::stringToRPG_Common_SubClass(*iterator));
+    result.subClasses.insert (RPG_Common_SubClassHelper::stringToRPG_Common_SubClass (*iterator));
 
   return result;
 }

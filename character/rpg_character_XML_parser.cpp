@@ -21,11 +21,11 @@
 
 #include "rpg_character_XML_parser.h"
 
+#include "ace/Log_Msg.h"
+
+#include "rpg_common_macros.h"
+
 #include "rpg_character_incl.h"
-
-#include <rpg_common_macros.h>
-
-#include <ace/Log_Msg.h>
 
 RPG_Character_Gender RPG_Character_Gender_Type::post_RPG_Character_Gender_Type()
 {

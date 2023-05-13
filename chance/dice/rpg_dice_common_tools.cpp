@@ -38,10 +38,9 @@ RPG_Dice_Common_Tools::initializeStringConversionTables ()
   RPG_TRACE (ACE_TEXT ("RPG_Dice_Common_Tools::initializeStringConversionTables"));
 
   RPG_Dice_DieTypeHelper::initialize ();
-#if defined (_DEBUG)
+
   ACE_DEBUG ((LM_DEBUG,
-              ACE_TEXT("RPG_Dice_Common_Tools: initialized string conversion table...\n")));
-#endif // _DEBUG
+              ACE_TEXT ("RPG_Dice_Common_Tools: initialized string conversion table...\n")));
 }
 
 std::string
@@ -135,7 +134,7 @@ operator-- (RPG_Dice_DieType& dieType_inout)
     case D_12: dieType_inout = D_10; break;
     case D_20: dieType_inout = D_12; break;
     case D_100: dieType_inout = D_20; break;
-    default: ACE_ASSERT(false); // changed enum but forgot to adjust the operator...
+    default: ACE_ASSERT (false); // changed enum but forgot to adjust the operator...
   } // end SWITCH
 
   return dieType_inout;
