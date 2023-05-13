@@ -42,7 +42,6 @@
 #include "net_server_asynchlistener.h"
 #include "net_server_listener.h"
 
-//#include "rpg_net_protocol_exports.h"
 #include "rpg_net_protocol_stream.h"
 //#include "rpg_net_protocol_stream_common.h"
 

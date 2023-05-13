@@ -35,10 +35,11 @@
 
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
 #else
-#include "common_tools.h"
+#include "common_os_tools.h"
 #endif // ACE_WIN32 || ACE_WIN64
 #include "common_file_tools.h"
 #include "common_defines.h"
+#include "common_macros.h"
 
 #include "common_error_tools.h"
 
@@ -240,7 +241,7 @@ RPG_Common_File_Tools::getUserConfigurationDirectory ()
   result = ACE_TEXT_ALWAYS_CHAR (buffer);
   result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
-  std::string user_name = Common_Tools::getUserName ();
+  std::string user_name = Common_OS_Tools::getUserName ();
   ACE_ASSERT (!user_name.empty ());
   result = Common_File_Tools::getHomeDirectory (user_name);
   ACE_ASSERT (!result.empty ());

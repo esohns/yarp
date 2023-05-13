@@ -41,6 +41,7 @@ endif (UNIX)
 ########### next target ###############
 set (EXECUTABLE net_client)
 set (${EXECUTABLE}_SRCS
+     stdafx.h
      net_callbacks.cpp
      net_callbacks.h
      net_client.cpp
@@ -54,12 +55,6 @@ set (${EXECUTABLE}_SRCS
      net_eventhandler.h)
 #     net_module_eventhandler.cpp
 #     net_module_eventhandler.h)
-
-if (UNIX)
- set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
-elseif (WIN32)
- set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
-endif ()
 
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
@@ -148,6 +143,7 @@ install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 ########### next target ###############
 set (EXECUTABLE_2 net_server)
 set (${EXECUTABLE_2}_SRCS
+     stdafx.h
      net_callbacks.cpp
      net_callbacks.h
      net_defines.h
@@ -157,12 +153,6 @@ set (${EXECUTABLE_2}_SRCS
      net_server_signalhandler.h
      net_eventhandler.cpp
      net_eventhandler.h)
-
-if (UNIX)
- set_source_files_properties(${${EXECUTABLE_2}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
-elseif (WIN32)
- set_source_files_properties(${${EXECUTABLE_2}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
-endif ()
 
 add_executable (${EXECUTABLE_2}
                 ${${EXECUTABLE_2}_SRCS})

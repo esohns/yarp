@@ -15,6 +15,7 @@ endif ()
 ########### next target ###############
 set (LIBRARY RPG_Net_Protocol)
 set (${LIBRARY}_SRCS
+     stdafx.h
      rpg_net_protocol_common.h
      rpg_net_protocol_common_modules.h
      rpg_net_protocol_configuration.h

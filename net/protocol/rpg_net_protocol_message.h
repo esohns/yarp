@@ -28,7 +28,7 @@
 #include "stream_data_message_base.h"
 #include "stream_messageallocatorheap_base.h"
 
-#include "rpg_net_protocol_common.h"
+//#include "rpg_net_protocol_common.h"
 
 // forward declaration(s)
 class ACE_Allocator;

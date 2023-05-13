@@ -21,8 +21,6 @@
 #ifndef RPG_NET_PROTOCOL_CONFIGURATION_H
 #define RPG_NET_PROTOCOL_CONFIGURATION_H
 
-#include "ace/Time_Value.h"
-
 #include "common_configuration.h"
 
 #include "stream_common.h"
@@ -31,7 +29,7 @@
 #include "net_common.h"
 #include "net_connection_configuration.h"
 
-#include "rpg_net_protocol_common.h"
+//#include "rpg_net_protocol_common.h"
 #include "rpg_net_protocol_session_message.h"
 #include "rpg_net_protocol_message.h"
 

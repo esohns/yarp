@@ -28,6 +28,8 @@
 
 #include "common_file_tools.h"
 
+#include "common_error_tools.h"
+
 #include "rpg_dice.h"
 #include "rpg_dice_common.h"
 

@@ -4785,12 +4785,13 @@ levelup_dialog_response_cb (GtkDialog* dialog_in,
     GtkTreeSelection* tree_selection_p =
         gtk_tree_view_get_selection (tree_view_p);
     ACE_ASSERT (tree_selection_p);
+    GtkTreeIter tree_iterator;
+    GtkListStore* list_store_p;
     GList* list_p = gtk_tree_selection_get_selected_rows (tree_selection_p,
-                                                          NULL);
+                                                          NULL);    
     if (!list_p)
       goto continue_; // no selection
-    GtkTreeIter tree_iterator;
-    GtkListStore* list_store_p =
+    list_store_p =
         GTK_LIST_STORE (gtk_builder_get_object ((*iterator).second.second,
                                                 ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_LISTSTORE_FEATS_NAME)));
     ACE_ASSERT (list_store_p);

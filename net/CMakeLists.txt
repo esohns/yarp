@@ -5,11 +5,11 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/ACE.cmake)
 ########### next target ###############
 set (LIBRARY RPG_Net)
 set (${LIBRARY}_SRCS
+     stdafx.h
      rpg_net_common.h
      rpg_net_common_tools.cpp
      rpg_net_common_tools.h
      rpg_net_defines.h
- #   rpg_net_exports.h
      rpg_net_eventhandler.cpp
      rpg_net_eventhandler.h
      rpg_net_module_eventhandler.cpp
@@ -73,7 +73,7 @@ target_include_directories (${LIBRARY} PUBLIC
 
 #add_dependencies (RPG_Net RPG_Stream)
 
-set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
+#set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
 if (WIN32)
  target_link_libraries (${LIBRARY}
@@ -90,14 +90,12 @@ install (FILES
          rpg_net_common_tools.h
          rpg_net_defines.h
          rpg_net_eventhandler.h
-      #  rpg_net_exports.h
          rpg_net_module_eventhandler.h
          rpg_net_module_protocolhandler.h
          rpg_net_packet_headers.h
          rpg_net_remote_comm.h
          DESTINATION include)
-install (TARGETS ${LIBRARY} LIBRARY
-         DESTINATION lib)
+install (TARGETS ${LIBRARY} LIBRARY DESTINATION lib)
 
 #add_subdirectory(stream)
 add_subdirectory (protocol)

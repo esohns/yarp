@@ -9,6 +9,7 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../scripts/sdl.cmake)
 ########### next target ###############
 set (LIBRARY RPG_Graphics)
 set (${LIBRARY}_SRCS
+     stdafx.h
      rpg_graphics_SDL_tools.cpp
      rpg_graphics_SDL_tools.h
      rpg_graphics_SDL_window_base.cpp
@@ -120,11 +121,11 @@ target_include_directories (${LIBRARY} PUBLIC
 
 add_dependencies (${LIBRARY} RPG_Common RPG_Dice)
 
-set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
+#set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
 if (UNIX)
  target_link_libraries (${LIBRARY}
-                        ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES})
+                        ${PNG_LIBRARIES})
 elseif (WIN32)
  target_link_libraries (${LIBRARY}
                         $ENV{LIB_ROOT}/libpng/build/Debug/libpng16d.lib)

@@ -1280,9 +1280,9 @@ extern int RPG_Map_Scanner_lex (yyscan_t yyscanner);
  */
 YY_DECL
 {
-	register yy_state_type yy_current_state;
-	register char *yy_cp, *yy_bp;
-	register int yy_act;
+  yy_state_type yy_current_state;
+  char *yy_cp, *yy_bp;
+  int yy_act;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 /* %% [7.0] user's declarations go here */
@@ -1625,9 +1625,9 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 /* %endif */
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-	register char *dest = YY_CURRENT_BUFFER_LVALUE->yy_ch_buf;
-	register char *source = yyg->yytext_ptr;
-	register int number_to_move, i;
+  char *dest = YY_CURRENT_BUFFER_LVALUE->yy_ch_buf;
+  char *source = yyg->yytext_ptr;
+  int number_to_move, i;
 	int ret_val;
 
 	if ( yyg->yy_c_buf_p > &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[yyg->yy_n_chars + 1] )
@@ -1765,8 +1765,8 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 /* %if-c++-only */
 /* %endif */
 {
-	register yy_state_type yy_current_state;
-	register char *yy_cp;
+  yy_state_type yy_current_state;
+  char *yy_cp;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 /* %% [15.0] code to get the start state into yy_current_state goes here */
@@ -1797,7 +1797,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 /* %if-c++-only */
 /* %endif */
 {
-	register int yy_is_jam;
+  int yy_is_jam;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner; /* This var may be unused depending upon options. */
 /* %% [17.0] code to find the next state, and perhaps do backing up, goes here */
 
