@@ -66,6 +66,8 @@
 #include "rpg_monster_defines.h"
 #include "rpg_monster_dictionary.h"
 
+#include "rpg_engine_defines.h"
+
 void
 do_printUsage (const std::string& programName_in)
 {
@@ -117,8 +119,8 @@ do_processArguments (const int& argc_in,
 
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_SUB_DIRECTORY_STRING),
                                                           true);
 
   // init results
@@ -126,12 +128,6 @@ do_processArguments (const int& argc_in,
 
   monsterDictionaryFilename_out = configuration_path;
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR("character");
-  monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR("monster");
-  monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   monsterDictionaryFilename_out +=
     ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_DICTIONARY_FILE);
 
@@ -213,8 +209,13 @@ do_work (const std::string& schemaRepository_in,
   RPG_Dice::initialize ();
   RPG_Dice_Common_Tools::initializeStringConversionTables ();
   RPG_Common_Tools::initializeStringConversionTables ();
+  std::string schema_repository_string = schemaRepository_in;
+  schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository_string += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
+  schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository_string += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
   std::vector<std::string> schema_directories_a;
-  schema_directories_a.push_back (schemaRepository_in);
+  schema_directories_a.push_back (schema_repository_string);
   if (!RPG_Common_XML_Tools::initialize (schema_directories_a))
   {
     ACE_DEBUG ((LM_ERROR,
@@ -323,29 +324,18 @@ ACE_TMAIN (int argc_in,
   // step1a: set defaults
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_SUB_DIRECTORY_STRING),
                                                           true);
 
   bool dump_dictionary = false;
 
   std::string monster_dictionary_filename = configuration_path;
   monster_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  monster_dictionary_filename += ACE_TEXT_ALWAYS_CHAR ("character");
-  monster_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  monster_dictionary_filename += ACE_TEXT_ALWAYS_CHAR ("monster");
-  monster_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   monster_dictionary_filename +=
     ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_DICTIONARY_FILE);
 
-  std::string schema_directory = configuration_path;
-#if defined (DEBUG_DEBUGGER)
-  schema_directory = Common_File_Tools::getWorkingDirectory ();
-  schema_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_directory += ACE_TEXT_ALWAYS_CHAR ("engine");
-#endif
+  std::string schema_repository = Common_File_Tools::getWorkingDirectory ();
 
   bool trace_information = false;
   bool print_version_and_exit = false;
@@ -375,7 +365,7 @@ ACE_TMAIN (int argc_in,
 
   // step1b: validate arguments
   if (!Common_File_Tools::isReadable (monster_dictionary_filename) ||
-      !Common_File_Tools::isDirectory (schema_directory))
+      !Common_File_Tools::isDirectory (schema_repository))
   {
     // make 'em learn...
     do_printUsage (ACE::basename (argv_in[0]));
@@ -431,7 +421,7 @@ ACE_TMAIN (int argc_in,
   timer.start ();
 
   // step2: do actual work
-  do_work (schema_directory,
+  do_work (schema_repository,
            monster_dictionary_filename,
            validate_XML,
            dump_dictionary);

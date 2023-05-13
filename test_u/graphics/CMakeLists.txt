@@ -82,11 +82,15 @@ endif ()
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
+# add PCH
+target_precompile_headers (${EXECUTABLE}
+                           PRIVATE stdafx.h)
+
 install(TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 
 ########### next target ###############
-set (EXECUTABLE SDL_gui)
-set (${EXECUTABLE}_SRCS
+set (EXECUTABLE_2 SDL_gui)
+set (${EXECUTABLE_2}_SRCS
      SDL_gui.cpp
      SDL_gui_common.h
      SDL_gui_defines.h
@@ -100,25 +104,25 @@ set (${EXECUTABLE}_SRCS
      SDL_gui_minimapwindow.h)
 
 if (UNIX)
- set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
+ set_source_files_properties(${${EXECUTABLE_2}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
 elseif (WIN32)
- set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
+ set_source_files_properties(${${EXECUTABLE_2}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
 endif ()
 
-add_executable (${EXECUTABLE}
-                ${${EXECUTABLE}_SRCS})
+add_executable (${EXECUTABLE_2}
+                ${${EXECUTABLE_2}_SRCS})
 
-add_dependencies(${EXECUTABLE}
+add_dependencies(${EXECUTABLE_2}
                  RPG_Dice RPG_Chance RPG_Common
                  RPG_Magic RPG_Item RPG_Character RPG_Monster RPG_Player RPG_Combat
                  RPG_Map RPG_Engine RPG_Sound RPG_Graphics RPG_Client)
 
 if (SDL_SUPPORT)
- target_link_libraries (${EXECUTABLE}
+ target_link_libraries (${EXECUTABLE_2}
                         ${SDL_LIBRARIES})
 endif (SDL_SUPPORT)
 if (UNIX)
- target_link_libraries (${EXECUTABLE}
+ target_link_libraries (${EXECUTABLE_2}
                         ${PKG_CONFIG_MODULE_SDL_MIXER_LIBRARIES}
                         ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
 #                        ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES}
@@ -139,9 +143,9 @@ if (UNIX)
                         RPG_Character RPG_Player
                         ACEStream_Network)
 elseif (WIN32)
-# set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+# set_target_properties (${EXECUTABLE_2} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
- target_link_libraries (${EXECUTABLE}
+ target_link_libraries (${EXECUTABLE_2}
                         Opengl32.lib Glu32.lib Secur32.lib Userenv.lib
                         $ENV{LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL_mixer.lib
                         $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
@@ -156,38 +160,44 @@ elseif (WIN32)
                         RPG_Sound RPG_Graphics RPG_Client)
 endif ()
 
-set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
+set_property (TARGET ${EXECUTABLE_2} PROPERTY FOLDER "test_u")
+
+# add PCH
+target_precompile_headers (${EXECUTABLE_2}
+                           PRIVATE stdafx.h)
 
 ########### install files ###############
-install(TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
+install(TARGETS ${EXECUTABLE_2} RUNTIME DESTINATION bin)
 
 ########### launcher ###############
 file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
-create_target_launcher (graphics_parser
-                        ARGS "-t"
-                        FORWARD_ARGS
-                        RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
-                                             ${LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
-                                             ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
-                                             ${LIB_ROOT}/libpng/build/Debug
-                                             ${LIB_ROOT}/ACE_TAO/ACE/lib
-                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/Debug
-                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/err/Debug
-                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/ui/Debug
-                                             ${PROJECT_SOURCE_DIR}/cmake/src/Debug
-                                             ${PROJECT_SOURCE_DIR}/cmake/src/modules/vis/Debug
-                        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-                        ENVIRONMENT foo=bar)
-
+file (TO_CMAKE_PATH "${SDL_LIB_DIR}" SDL_LIB_PATH)
 if (UNIX)
  file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}" COMMAND)
 elseif (WIN32)
  file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}.exe" COMMAND)
  string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
- file (TO_CMAKE_PATH "${SDL_LIB_DIR}" SDL_LIB_PATH)
+endif ()
+create_target_launcher (${EXECUTABLE}
+                        COMMAND ${COMMAND}
+                        ARGS "-d -t"
+                        FORWARD_ARGS
+                        RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
+                                             ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
+                                             ${LIB_ROOT}/libpng/build/Debug
+                                             ${LIB_ROOT}/ACE_TAO/ACE/lib
+                                             ${SDL_LIB_PATH}
+                        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                        ENVIRONMENT foo=bar)
+
+if (UNIX)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE_2}" COMMAND)
+elseif (WIN32)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE_2}.exe" COMMAND)
+ string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
  file (TO_CMAKE_PATH "${GTK_LIB_DIRS}" GTK_LIB_PATH)
 endif ()
-create_target_launcher (SDL_gui
+create_target_launcher (${EXECUTABLE_2}
                         COMMAND ${COMMAND}
                         ARGS "-l -t"
                         FORWARD_ARGS
@@ -198,10 +208,5 @@ create_target_launcher (SDL_gui
                                              ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
                                              ${LIB_ROOT}/ACE_TAO/ACE/lib
                                              ${GTK_LIB_PATH}
-#                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/Debug
-#                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/err/Debug
-#                                             ${PROJECT_SOURCE_DIR}/../Common/cmake/src/ui/Debug
-#                                             ${PROJECT_SOURCE_DIR}/cmake/src/Debug
-#                                             ${PROJECT_SOURCE_DIR}/cmake/src/modules/vis/Debug
                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                         ENVIRONMENT foo=bar)

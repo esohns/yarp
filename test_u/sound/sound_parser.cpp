@@ -59,6 +59,8 @@
 #include "rpg_sound_defines.h"
 #include "rpg_sound_dictionary.h"
 
+#include "rpg_engine_defines.h"
+
 #define SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS false
 #define SDL_TIMEREVENT                     SDL_USEREVENT
 
@@ -198,35 +200,23 @@ do_processArguments (const int argc_in,
   // initialize results
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_SUB_DIRECTORY_STRING),
                                                           true);
   std::string data_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_SUB_DIRECTORY_STRING),
                                                           false);
 
   dumpDictionary_out = false;
 
   directory_out = data_path;
-  directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  directory_out += ACE_TEXT_ALWAYS_CHAR ("sound");
-  directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  directory_out += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
-#else
-  directory_out += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DATA_SUB);
-#endif // DEBUG_DEBUGGER
 
   playRandomSounds_out = SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS;
 
   filename_out = configuration_path;
   filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  filename_out += ACE_TEXT_ALWAYS_CHAR ("sound");
-  filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif // DEBUG_DEBUGGER
   filename_out += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DICTIONARY_FILE);
 
   traceInformation_out = false;
@@ -337,8 +327,13 @@ do_work (bool dumpDictionary_in,
   } // end IF
 
   // step2: initialize sound dictionary
+  std::string schema_repository_string = schemaRepository_in;
+  schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository_string += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
+  schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository_string += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
   std::vector<std::string> schema_directories_a;
-  schema_directories_a.push_back (schemaRepository_in);
+  schema_directories_a.push_back (schema_repository_string);
   if (!RPG_Common_XML_Tools::initialize (schema_directories_a))
   {
     ACE_DEBUG ((LM_ERROR,
@@ -482,45 +477,25 @@ ACE_TMAIN (int argc_in,
   Common_File_Tools::initialize(argv_in[0]);
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_SUB_DIRECTORY_STRING),
                                                           true);
   std::string data_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_SUB_DIRECTORY_STRING),
                                                           false);
-#if defined (DEBUG_DEBUGGER)
-  configuration_path = Common_File_Tools::getWorkingDirectory ();
-  data_path = Common_File_Tools::getWorkingDirectory ();
-#endif // DEBUG_DEBUGGER
 
   bool dump_dictionary = false;
 
   std::string sound_directory = data_path;
-  sound_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  sound_directory += ACE_TEXT_ALWAYS_CHAR ("sound");
-  sound_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  sound_directory += ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_DATA_SUB);
-#else
-  sound_directory += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DATA_SUB);
-#endif // DEBUG_DEBUGGER
 
   bool play_random_sounds = SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS;
 
-  std::string schema_repository = configuration_path;
-#if defined (DEBUG_DEBUGGER)
-  schema_repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_repository += ACE_TEXT_ALWAYS_CHAR("engine");
-#endif // DEBUG_DEBUGGER
+  std::string schema_repository = Common_File_Tools::getWorkingDirectory ();
 
   std::string filename = configuration_path;
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  filename += ACE_TEXT_ALWAYS_CHAR ("sound");
-  filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif // DEBUG_DEBUGGER
   filename += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DICTIONARY_FILE);
 
   bool trace_information = false;

@@ -186,40 +186,35 @@ do_processArguments (int argc_in,
 {
   RPG_TRACE (ACE_TEXT ("::do_processArguments"));
 
-  std::string configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
-                                                          ACE_TEXT_ALWAYS_CHAR (""),
-                                                          true);
-
   // init results
   numBattles_out = COMBAT_SIMULATOR_DEF_NUM_BATTLES;
   numFoes_out = COMBAT_SIMULATOR_DEF_NUM_FOES;
 
+  std::string configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_SUB_DIRECTORY_STRING),
+                                                          true);
   magicDictionaryFilename_out   = configuration_path;
   magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DIRECTORY_STRING);
-  magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
 
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_SUB_DIRECTORY_STRING),
+                                                          true);
   itemDictionaryFilename_out    = configuration_path;
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR ("item");
-  itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
 
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_SUB_DIRECTORY_STRING),
+                                                          true);
   monsterDictionaryFilename_out = configuration_path;
   monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR ("character");
-  monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR ("monster");
-  monsterDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   monsterDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_DICTIONARY_FILE);
 
   numMonsterTypes_out           = COMBAT_SIMULATOR_DEF_NUM_FOE_TYPES;
@@ -454,8 +449,13 @@ do_work (const std::string& schemaRepository_in,
   RPG_Dice::initialize ();
   RPG_Dice_Common_Tools::initializeStringConversionTables ();
   RPG_Common_Tools::initializeStringConversionTables ();
+  std::string schema_repository_string = schemaRepository_in;
+  schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository_string += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
+  schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository_string += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
   std::vector<std::string> schema_directories_a;
-  schema_directories_a.push_back (schemaRepository_in);
+  schema_directories_a.push_back (schema_repository_string);
   if (!RPG_Common_XML_Tools::initialize (schema_directories_a))
   {
     ACE_DEBUG ((LM_ERROR,
@@ -637,41 +637,32 @@ ACE_TMAIN (int argc_in,
   // step1a: set defaults
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_SUB_DIRECTORY_STRING),
                                                           true);
-
   std::string item_dictionary_filename    = configuration_path;
   item_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  item_dictionary_filename += ACE_TEXT_ALWAYS_CHAR ("item");
-  item_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   item_dictionary_filename += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
 
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_SUB_DIRECTORY_STRING),
+                                                          true);
   std::string magic_dictionary_filename   = configuration_path;
   magic_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  magic_dictionary_filename += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DIRECTORY_STRING);
-  magic_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   magic_dictionary_filename += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
 
+  configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_SUB_DIRECTORY_STRING),
+                                                          true);
   std::string monster_dictionary_filename = configuration_path;
   monster_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  monster_dictionary_filename += ACE_TEXT_ALWAYS_CHAR ("character");
-  monster_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  monster_dictionary_filename += ACE_TEXT_ALWAYS_CHAR ("monster");
-  monster_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   monster_dictionary_filename += ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_DICTIONARY_FILE);
 
-  std::string schema_repository = configuration_path;
-#if defined (DEBUG_DEBUGGER)
-  schema_repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_repository += ACE_TEXT_ALWAYS_CHAR ("engine");
-#endif // DEBUG_DEBUGGER
+  std::string schema_repository = Common_File_Tools::getWorkingDirectory ();
 
   unsigned int num_foes                   = COMBAT_SIMULATOR_DEF_NUM_FOES;
   unsigned int num_monster_types          = COMBAT_SIMULATOR_DEF_NUM_FOE_TYPES;

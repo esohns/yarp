@@ -21,6 +21,7 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/timer)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../common)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../sound)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../engine)
 
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
@@ -56,6 +57,10 @@ elseif (WIN32)
                        RPG_Dice RPG_Common RPG_Sound)
 endif ()
 
+# add PCH
+target_precompile_headers (${EXECUTABLE}
+                           PRIVATE stdafx.h)
+
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
 ########### install files ###############
@@ -63,30 +68,26 @@ install(TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 
 ########### launcher ###############
 file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
+file (TO_CMAKE_PATH "${SDL_LIB_DIR}" SDL_LIB_PATH)
 if (UNIX)
  create_target_launcher (${EXECUTABLE}
-                         ARGS "-t"
+                         ARGS "-d -t"
                          FORWARD_ARGS
 #                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/ACE_TAO/ACE/lib
-                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test_u/sound
+                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                          ENVIRONMENT foo=bar)
 elseif (WIN32)
  file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}.exe" COMMAND)
  string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
  create_target_launcher (${EXECUTABLE}
                          COMMAND ${COMMAND}
-                         ARGS "-t"
+                         ARGS "-d -t"
                          FORWARD_ARGS
-                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/SDL/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
-                                              ${LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}
+                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
                                               ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
+                                              ${LIB_ROOT}/libpng/build/Debug
                                               ${LIB_ROOT}/ACE_TAO/ACE/lib
-                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/Debug
-                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/err/Debug
-                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/ui/Debug
-                                              ${PROJECT_SOURCE_DIR}/cmake/src/Debug
-                                              ${PROJECT_SOURCE_DIR}/cmake/src/modules/vis/Debug
-                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test_u/sound
+                                              ${SDL_LIB_PATH}
+                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                          ENVIRONMENT foo=bar)
 endif ()
-

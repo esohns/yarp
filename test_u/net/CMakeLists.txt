@@ -139,11 +139,15 @@ endif ()
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
+# add PCH
+target_precompile_headers (${EXECUTABLE}
+                           PRIVATE stdafx.h)
+
 install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 
 ########### next target ###############
-set (EXECUTABLE net_server)
-set (${EXECUTABLE}_SRCS
+set (EXECUTABLE_2 net_server)
+set (${EXECUTABLE_2}_SRCS
      net_callbacks.cpp
      net_callbacks.h
      net_defines.h
@@ -155,20 +159,20 @@ set (${EXECUTABLE}_SRCS
      net_eventhandler.h)
 
 if (UNIX)
- set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
+ set_source_files_properties(${${EXECUTABLE_2}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
 elseif (WIN32)
- set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
+ set_source_files_properties(${${EXECUTABLE_2}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
 endif ()
 
-add_executable (${EXECUTABLE}
-                ${${EXECUTABLE}_SRCS})
+add_executable (${EXECUTABLE_2}
+                ${${EXECUTABLE_2}_SRCS})
 
 if (SDL_SUPPORT)
- target_link_libraries (${EXECUTABLE}
+ target_link_libraries (${EXECUTABLE_2}
                         ${SDL_LIBRARIES})
 endif (SDL_SUPPORT)
 if (UNIX)
- target_link_libraries (${EXECUTABLE}
+ target_link_libraries (${EXECUTABLE_2}
                         ${GTK_LIBRARIES}
                         X11
                         xerces-c
@@ -182,7 +186,7 @@ if (UNIX)
 elseif (WIN32)
 # set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
- target_link_libraries (${EXECUTABLE}
+ target_link_libraries (${EXECUTABLE_2}
                         Opengl32.lib legacy_stdio_definitions.lib
                         ${GTK_LIBRARIES}
                         $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
@@ -193,6 +197,48 @@ elseif (WIN32)
                         RPG_Dice RPG_Common RPG_Net RPG_Net_Protocol)
 endif ()
 
-set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
+set_property (TARGET ${EXECUTABLE_2} PROPERTY FOLDER "test_u")
+
+# add PCH
+target_precompile_headers (${EXECUTABLE_2}
+                           PRIVATE stdafx.h)
 
 install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
+
+########### launcher #####################
+file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
+file (TO_CMAKE_PATH "${SDL_LIB_DIR}" SDL_LIB_PATH)
+if (UNIX)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}" COMMAND)
+elseif (WIN32)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}.exe" COMMAND)
+ string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
+endif ()
+create_target_launcher (${EXECUTABLE}
+                        COMMAND ${COMMAND}
+                        ARGS "-t"
+                        FORWARD_ARGS
+                        RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
+                                             ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
+                                             ${LIB_ROOT}/libpng/build/Debug
+                                             ${LIB_ROOT}/ACE_TAO/ACE/lib
+                                             ${SDL_LIB_PATH}
+                        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                        ENVIRONMENT foo=bar)
+if (UNIX)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE_2}" COMMAND)
+elseif (WIN32)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE_2}.exe" COMMAND)
+ string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
+endif ()
+create_target_launcher (${EXECUTABLE_2}
+                        COMMAND ${COMMAND}
+                        ARGS "-t"
+                        FORWARD_ARGS
+                        RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
+                                             ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
+                                             ${LIB_ROOT}/libpng/build/Debug
+                                             ${LIB_ROOT}/ACE_TAO/ACE/lib
+                                             ${SDL_LIB_PATH}
+                        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                        ENVIRONMENT foo=bar)

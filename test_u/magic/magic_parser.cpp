@@ -55,6 +55,8 @@
 
 #include "rpg_character_common_tools.h"
 
+#include "rpg_engine_defines.h"
+
 void
 do_printUsage(const std::string& programName_in)
 {
@@ -105,8 +107,8 @@ do_processArguments (int argc_in,
   // init results
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_SUB_DIRECTORY_STRING),
                                                           true);
 
   dumpDictionary_out          = false;
@@ -114,10 +116,6 @@ do_processArguments (int argc_in,
 
   magicDictionaryFilename_out = configuration_path;
   magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  magicDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DIRECTORY_STRING);
-  magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   magicDictionaryFilename_out +=
     ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
 
@@ -201,8 +199,13 @@ do_work (const std::string& schemaRepository_in,
   RPG_Magic_Common_Tools::initialize();
 
   // step2: initialize spell dictionary
+  std::string schema_repository_string = schemaRepository_in;
+  schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository_string += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
+  schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository_string += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
   std::vector<std::string> schema_directories_a;
-  schema_directories_a.push_back (schemaRepository_in);
+  schema_directories_a.push_back (schema_repository_string);
   if (!RPG_Common_XML_Tools::initialize (schema_directories_a))
   {
     ACE_DEBUG ((LM_ERROR,
@@ -306,8 +309,8 @@ ACE_TMAIN(int argc_in,
   // step1a set defaults
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_SUB_DIRECTORY_STRING),
                                                           true);
 
   bool dump_dictionary                  = false;
@@ -315,18 +318,9 @@ ACE_TMAIN(int argc_in,
 
   std::string magic_dictionary_filename = configuration_path;
   magic_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  magic_dictionary_filename += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DIRECTORY_STRING);
-  magic_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   magic_dictionary_filename += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
 
-  std::string schema_directory = configuration_path;
-#if defined (DEBUG_DEBUGGER)
-  schema_directory = Common_File_Tools::getWorkingDirectory ();
-  schema_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_directory += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DIRECTORY_STRING);
-#endif
+  std::string schema_repository = Common_File_Tools::getWorkingDirectory ();
 
   bool trace_information                = false;
   bool print_version_and_exit           = false;
@@ -355,7 +349,7 @@ ACE_TMAIN(int argc_in,
 
   // step1b: validate arguments
   if (!Common_File_Tools::isReadable(magic_dictionary_filename) ||
-      !Common_File_Tools::isDirectory (schema_directory))
+      !Common_File_Tools::isDirectory (schema_repository))
   {
     // make 'em learn...
     do_printUsage (ACE::basename (argv_in[0]));
@@ -410,7 +404,7 @@ ACE_TMAIN(int argc_in,
   ACE_High_Res_Timer timer;
   timer.start ();
   // step2: do actual work
-  do_work (schema_directory,
+  do_work (schema_repository,
            dump_dictionary,
            group_levels,
            magic_dictionary_filename);

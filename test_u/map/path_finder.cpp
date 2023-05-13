@@ -124,8 +124,8 @@ do_processArguments (const int argc_in,
 
   std::string data_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MAP_SUB_DIRECTORY_STRING),
                                                           false);
 
   // init results
@@ -134,18 +134,9 @@ do_processArguments (const int argc_in,
 
   floorPlan_out           = data_path;
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR("map");
-  floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR("data");
-  floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#else
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
-  floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   floorPlan_out +=
-      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME));
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
+      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP_FILE));
+  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT);
 
   traceInformation_out    = false;
   printVersionAndExit_out = false;
@@ -480,8 +471,8 @@ ACE_TMAIN (int argc_in,
   Common_File_Tools::initialize (argv_in[0]);
   std::string data_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MAP_SUB_DIRECTORY_STRING),
                                                           false);
 
   // step1: init
@@ -491,18 +482,9 @@ ACE_TMAIN (int argc_in,
 
   std::string floor_plan      = data_path;
   floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  floor_plan += ACE_TEXT_ALWAYS_CHAR("map");
-  floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  floor_plan += ACE_TEXT_ALWAYS_CHAR("data");
-  floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#else
-  floor_plan += ACE_TEXT_ALWAYS_CHAR (RPG_MAP_MAPS_SUB);
-  floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   floor_plan +=
-    RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
-  floor_plan += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
+    RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_MAP_DEF_MAP_FILE));
+  floor_plan += ACE_TEXT_ALWAYS_CHAR (RPG_MAP_FILE_EXT);
 
   bool trace_information      = false;
   bool print_version_and_exit = false;

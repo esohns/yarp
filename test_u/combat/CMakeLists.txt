@@ -77,5 +77,33 @@ endif ()
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")
 
+# add PCH
+target_precompile_headers (${EXECUTABLE}
+                           PRIVATE stdafx.h)
+
 ########### install files ###############
 install(TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
+
+if (UNIX)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}" COMMAND)
+ create_target_launcher (${EXECUTABLE}
+                         COMMAND ${COMMAND}
+                         ARGS "-t"
+                         FORWARD_ARGS
+                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                         ENVIRONMENT foo=bar)
+elseif (WIN32)
+ get_filename_component (ACE_LIB_PATH ${ACE_LIBRARY}
+                         DIRECTORY)
+ file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}.exe" COMMAND)
+ string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
+ create_target_launcher (${EXECUTABLE}
+                         COMMAND ${COMMAND}
+                         ARGS "-t"
+                         FORWARD_ARGS
+                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
+                                              ${LIB_ROOT}/ACE_TAO/ACE/lib
+                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                         ENVIRONMENT foo=bar)
+endif ()

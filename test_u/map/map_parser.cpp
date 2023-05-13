@@ -131,8 +131,8 @@ do_processArguments (const int argc_in,
 
   std::string data_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MAP_SUB_DIRECTORY_STRING),
                                                           false);
 
   // init results
@@ -141,16 +141,6 @@ do_processArguments (const int argc_in,
 
   mapFile_out = data_path;
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  mapFile_out += (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR ("engine")
-                                          : ACE_TEXT_ALWAYS_CHAR ("map"));
-  mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  mapFile_out += ACE_TEXT_ALWAYS_CHAR("data");
-  mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#else
-  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
-  mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   mapFile_out += (MAP_GENERATOR_DEF_LEVEL ? RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME))
                                           : ACE_TEXT_ALWAYS_CHAR (RPG_MAP_DEF_MAP_FILE));
   mapFile_out += (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
@@ -329,15 +319,10 @@ ACE_TMAIN (int argc_in,
 {
   RPG_TRACE (ACE_TEXT ("::main"));
 
-  std::string configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
-                                                          ACE_TEXT_ALWAYS_CHAR (""),
-                                                          true);
   std::string data_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MAP_SUB_DIRECTORY_STRING),
                                                           false);
 
   // step1: init
@@ -346,27 +331,12 @@ ACE_TMAIN (int argc_in,
   bool debug_parser           = MAP_PARSER_DEF_DEBUG_PARSER;
   std::string map_file        = data_path;
   map_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  map_file += (MAP_GENERATOR_DEF_LEVEL ? RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR ("engine"))
-                                       : ACE_TEXT_ALWAYS_CHAR ("map"));
-  map_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  map_file += ACE_TEXT_ALWAYS_CHAR ("data");
-  map_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#else
-  map_file += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
-  map_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   map_file += (MAP_GENERATOR_DEF_LEVEL ? RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME))
                                        : ACE_TEXT_ALWAYS_CHAR (RPG_MAP_DEF_MAP_FILE));
   map_file += (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT)
                                        : ACE_TEXT_ALWAYS_CHAR (RPG_MAP_FILE_EXT));
 
-  std::string schema_directory = configuration_path;
-#if defined (DEBUG_DEBUGGER)
-  schema_directory = Common_File_Tools::getWorkingDirectory ();
-  schema_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_directory += ACE_TEXT_ALWAYS_CHAR ("engine");
-#endif
+  std::string schema_repository = Common_File_Tools::getWorkingDirectory ();
 
   bool trace_information      = false;
   bool print_version_and_exit = false;
@@ -396,7 +366,7 @@ ACE_TMAIN (int argc_in,
 
   // step1bb: validate arguments
   if (!Common_File_Tools::isReadable (map_file) ||
-      !Common_File_Tools::isDirectory (schema_directory))
+      !Common_File_Tools::isDirectory (schema_repository))
   {
     // make 'em learn...
     do_printUsage (ACE::basename (argv_in[0]));
@@ -454,7 +424,7 @@ ACE_TMAIN (int argc_in,
   ACE_High_Res_Timer timer;
   timer.start ();
   // step2: do actual work
-  do_work (schema_directory,
+  do_work (schema_repository,
            debug_scanner,
            debug_parser,
            map_file);

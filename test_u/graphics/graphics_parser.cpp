@@ -54,6 +54,8 @@
 #include "rpg_graphics_defines.h"
 #include "rpg_graphics_dictionary.h"
 
+#include "rpg_engine_defines.h"
+
 void
 do_printUsage (const std::string& programName_in)
 {
@@ -101,30 +103,25 @@ do_processArguments(const int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::do_processArguments"));
 
-  std::string configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
-                                                          ACE_TEXT_ALWAYS_CHAR (""),
-                                                          true);
-
   // init configuration
   dumpDictionary_out      = false;
 
+  std::string configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
+                                                          true);
   filename_out            = configuration_path;
   filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  filename_out += ACE_TEXT_ALWAYS_CHAR ("graphics");
-  filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   filename_out += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
 
   traceInformation_out    = false;
   printVersionAndExit_out = false;
   validateXML_out         = true;
 
-  ACE_Get_Opt argumentParser(argc_in,
-                             argv_in,
-                             ACE_TEXT("dg:tvx"));
+  ACE_Get_Opt argumentParser (argc_in,
+                              argv_in,
+                              ACE_TEXT("dg:tvx"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -195,8 +192,13 @@ do_work (const std::string& schemaRepository_in,
   // step0: init: random seed, string conversion facilities, ...
   RPG_Dice::initialize ();
   RPG_Dice_Common_Tools::initializeStringConversionTables ();
+  std::string schema_repository_string = schemaRepository_in;
+  schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository_string += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
+  schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository_string += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
   std::vector<std::string> schema_directories_a;
-  schema_directories_a.push_back (schemaRepository_in);
+  schema_directories_a.push_back (schema_repository_string);
   if (!RPG_Common_XML_Tools::initialize (schema_directories_a))
   {
     ACE_DEBUG ((LM_ERROR,
@@ -234,7 +236,7 @@ do_work (const std::string& schemaRepository_in,
 } // end do_work
 
 void
-do_printVersion(const std::string& programName_in)
+do_printVersion (const std::string& programName_in)
 {
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
@@ -290,14 +292,14 @@ do_printVersion(const std::string& programName_in)
 }
 
 int
-ACE_TMAIN(int argc_in,
-          ACE_TCHAR** argv_in)
+ACE_TMAIN (int argc_in,
+           ACE_TCHAR** argv_in)
 {
   RPG_TRACE(ACE_TEXT("::main"));
 
   // step0: init ACE
   // *PORTABILITY*: on Windows, init ACE...
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::init() == -1)
   {
     ACE_DEBUG((LM_ERROR,
@@ -310,42 +312,32 @@ ACE_TMAIN(int argc_in,
   // step1: init
   Common_File_Tools::initialize (argv_in[0]);
   // step1a set defaults
-  std::string configuration_path =
-    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
-                                                          ACE_TEXT_ALWAYS_CHAR (""),
-                                                          true);
-
   // init configuration
   bool dump_dictionary           = false;
 
+  std::string configuration_path =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
+                                                          true);
   std::string filename           = configuration_path;
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  filename += ACE_TEXT_ALWAYS_CHAR ("graphics");
-  filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   filename += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
 
-  std::string schema_directory   = configuration_path;
-#if defined (DEBUG_DEBUGGER)
-  schema_directory = Common_File_Tools::getWorkingDirectory ();
-  schema_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_directory += ACE_TEXT_ALWAYS_CHAR ("graphics");
-#endif
+  std::string schema_repository = Common_File_Tools::getWorkingDirectory ();
 
   bool trace_information         = false;
   bool print_version_and_exit    = false;
   bool validate_XML              = true;
 
   // step1b: parse/process/validate configuration
-  if (!do_processArguments(argc_in,
-                           argv_in,
-                           dump_dictionary,
-                           filename,
-                           trace_information,
-                           print_version_and_exit,
-                           validate_XML))
+  if (!do_processArguments (argc_in,
+                            argv_in,
+                            dump_dictionary,
+                            filename,
+                            trace_information,
+                            print_version_and_exit,
+                            validate_XML))
   {
     // make 'em learn...
     do_printUsage(std::string(ACE::basename(argv_in[0])));
@@ -362,7 +354,7 @@ ACE_TMAIN(int argc_in,
 
   // step1b: validate arguments
   if (!Common_File_Tools::isReadable (filename)         ||
-      !Common_File_Tools::isDirectory (schema_directory))
+      !Common_File_Tools::isDirectory (schema_repository))
   {
     // make 'em learn...
     do_printUsage(std::string(ACE::basename(argv_in[0])));
@@ -417,7 +409,7 @@ ACE_TMAIN(int argc_in,
   // step2: do actual work
   ACE_High_Res_Timer timer;
   timer.start ();
-  do_work (schema_directory,
+  do_work (schema_repository,
            dump_dictionary,
            filename,
            validate_XML);

@@ -200,8 +200,8 @@ do_processArguments(const int argc_in,
 
   std::string data_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MAP_SUB_DIRECTORY_STRING),
                                                           false);
 
   // init results
@@ -213,16 +213,14 @@ do_processArguments(const int argc_in,
 
   outputFile_out          = data_path;
   outputFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  outputFile_out += ACE_TEXT_ALWAYS_CHAR("map");
-  outputFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  outputFile_out += ACE_TEXT_ALWAYS_CHAR("data");
-  outputFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#else
-  outputFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
-  outputFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
-  std::string default_output_path = outputFile_out;
+  std::string default_output_file = outputFile_out;
+  default_output_file +=
+      (level_out ? RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME))
+                 : ACE_TEXT_ALWAYS_CHAR (RPG_MAP_DEF_MAP_FILE));
+  default_output_file +=
+      (level_out ? ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT)
+                 : ACE_TEXT_ALWAYS_CHAR (RPG_MAP_FILE_EXT));
+  outputFile_out = default_output_file;
 
   dump_out                = MAP_GENERATOR_DEF_DUMP;
 
@@ -370,16 +368,6 @@ do_processArguments(const int argc_in,
       }
     } // end SWITCH
   } // end WHILE
-
-  if (default_output_path == outputFile_out)
-  {
-    outputFile_out +=
-      (level_out ? RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME))
-                 : ACE_TEXT_ALWAYS_CHAR (RPG_MAP_DEF_MAP_FILE));
-    outputFile_out +=
-      (level_out ? ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT)
-                 : ACE_TEXT_ALWAYS_CHAR (RPG_MAP_FILE_EXT));
-  } // end IF
 
   return true;
 }
@@ -565,8 +553,8 @@ ACE_TMAIN (int argc_in,
 
   std::string data_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MAP_SUB_DIRECTORY_STRING),
                                                           false);
 
   // step1: init
@@ -586,15 +574,6 @@ ACE_TMAIN (int argc_in,
 
   std::string output_file         = data_path;
   output_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  output_file += ACE_TEXT_ALWAYS_CHAR("map");
-  output_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  output_file += ACE_TEXT_ALWAYS_CHAR("data");
-  output_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#else
-  output_file += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
-  output_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   std::string default_output_file = output_file;
   default_output_file +=
       (MAP_GENERATOR_DEF_LEVEL ? RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME))

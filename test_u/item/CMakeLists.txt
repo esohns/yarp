@@ -6,7 +6,8 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
                      ${CMAKE_CURRENT_SOURCE_DIR}/../../common
                      ${CMAKE_CURRENT_SOURCE_DIR}/../../item
                      ${CMAKE_CURRENT_SOURCE_DIR}/../../character
-                     ${CMAKE_CURRENT_SOURCE_DIR}/../../magic)
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../magic
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../engine)
 
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
@@ -47,3 +48,24 @@ target_precompile_headers (${EXECUTABLE}
                            PRIVATE stdafx.h)
 
 install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
+
+########### launcher ###############
+file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
+file (TO_CMAKE_PATH "${SDL_LIB_DIR}" SDL_LIB_PATH)
+if (UNIX)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}" COMMAND)
+elseif (WIN32)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}.exe" COMMAND)
+ string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
+endif ()
+create_target_launcher (${EXECUTABLE}
+                        COMMAND ${COMMAND}
+                        ARGS "-d -t"
+                        FORWARD_ARGS
+                        RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
+                                             ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
+                                             ${LIB_ROOT}/libpng/build/Debug
+                                             ${LIB_ROOT}/ACE_TAO/ACE/lib
+                                             ${SDL_LIB_PATH}
+                        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                        ENVIRONMENT foo=bar)

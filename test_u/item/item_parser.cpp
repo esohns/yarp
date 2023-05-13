@@ -53,6 +53,8 @@
 #include "rpg_item_defines.h"
 #include "rpg_item_dictionary.h"
 
+#include "rpg_engine_defines.h"
+
 void
 do_printUsage(const std::string& programName_in)
 {
@@ -96,31 +98,27 @@ do_processArguments(const int& argc_in,
                     bool& traceInformation_out,
                     bool& printVersionAndExit_out)
 {
-  RPG_TRACE(ACE_TEXT("::do_processArguments"));
+  RPG_TRACE (ACE_TEXT ("::do_processArguments"));
 
   // init results
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_SUB_DIRECTORY_STRING),
                                                           true);
 
   dumpItemDictionary_out     = false;
 
   itemDictionaryFilename_out = configuration_path;
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR("item");
-  itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
-  itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DICTIONARY_FILE);
+  itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
 
   traceInformation_out       = false;
   printVersionAndExit_out    = false;
 
-  ACE_Get_Opt argumentParser(argc_in,
-                             argv_in,
-                             ACE_TEXT("di:tv"));
+  ACE_Get_Opt argumentParser (argc_in,
+                              argv_in,
+                              ACE_TEXT("di:tv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -187,8 +185,13 @@ do_work (const std::string& schemaRepository_in,
   RPG_Item_Common_Tools::initializeStringConversionTables ();
 
   // step2: initialize item dictionary
+  std::string schema_repository_string = schemaRepository_in;
+  schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository_string += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
+  schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository_string += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
   std::vector<std::string> schema_directories_a;
-  schema_directories_a.push_back (schemaRepository_in);
+  schema_directories_a.push_back (schema_repository_string);
   if (!RPG_Common_XML_Tools::initialize (schema_directories_a))
   {
     ACE_DEBUG ((LM_ERROR,
@@ -291,26 +294,17 @@ ACE_TMAIN (int argc_in,
   // step1a set defaults
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                          ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_SUB_DIRECTORY_STRING),
                                                           true);
 
   bool dump_item_dictionary            = false;
 
   std::string item_dictionary_filename = configuration_path;
   item_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  item_dictionary_filename += ACE_TEXT_ALWAYS_CHAR("item");
-  item_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
-  item_dictionary_filename += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DICTIONARY_FILE);
+  item_dictionary_filename += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
 
-  std::string schema_directory = configuration_path;
-#if defined (DEBUG_DEBUGGER)
-  schema_directory = Common_File_Tools::getWorkingDirectory ();
-  schema_directory += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_directory += ACE_TEXT_ALWAYS_CHAR ("item");
-#endif
+  std::string schema_repository = Common_File_Tools::getWorkingDirectory ();
 
   bool trace_information               = false;
   bool print_version_and_exit          = false;
@@ -338,7 +332,7 @@ ACE_TMAIN (int argc_in,
 
   // step1b: validate arguments
   if (!Common_File_Tools::isReadable (item_dictionary_filename) ||
-      !Common_File_Tools::isDirectory (schema_directory))
+      !Common_File_Tools::isDirectory (schema_repository))
   {
     // make 'em learn...
     do_printUsage (ACE::basename (argv_in[0]));
@@ -393,7 +387,7 @@ ACE_TMAIN (int argc_in,
   ACE_High_Res_Timer timer;
   timer.start ();
   // step2: do work
-  do_work (schema_directory,
+  do_work (schema_repository,
            dump_item_dictionary,
            item_dictionary_filename);
   timer.stop ();

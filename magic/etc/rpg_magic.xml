@@ -3072,6 +3072,9 @@
     <target target="TARGET_SINGLE">
     </target>
     <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>1</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
@@ -3108,6 +3111,9 @@
       <shape>AREA_RING</shape>
     </target>
     <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>1</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
@@ -4533,6 +4539,9 @@
     <target target="TARGET_SINGLE">
     </target>
     <duration duration="DURATION_TIMED" dismissible="true">
+      <base>
+        <value>1</value>
+      </base>
       <levelIncrement>1</levelIncrement>
     </duration>
     <effect>
