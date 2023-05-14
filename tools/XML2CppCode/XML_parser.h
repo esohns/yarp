@@ -21,41 +21,37 @@
 #ifndef XML_PARSER_H
 #define XML_PARSER_H
 
-#include "ace/Global_Macros.h"
-#include "ace/Singleton.h"
-#include "ace/Synch.h"
-
 #include <string>
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
+#include "ace/Global_Macros.h"
+#include "ace/Singleton.h"
+#include "ace/Thread_Mutex.h"
+
 class XML_Parser
 {
-  // we use the singleton pattern, so we need to enable access to the ctor/dtors
+  // use the singleton pattern, so enable access to the ctor/dtors
   friend class ACE_Singleton<XML_Parser,
                              ACE_Thread_Mutex>;
 
  public:
   // init item dictionary
-  void parseFile(const std::string&, // emit class qualifier (DLL import/export symbols) ?
-				 const bool&,        // emit string conversion utilities ?
-                 const bool&,        // emit "tagged" unions ?
-                 const std::string&, // (XMLSchema) filename
-                 const bool&,        // generate separate include header
-                 const std::string&, // target directory
-                 const std::string&, // preamble filename
-                 const bool&,        // file-per-definition ?
-                 const std::string&, // type prefix
-                 const std::string&, // type postfix
-                 const bool&);       // validate document
+  void parseFile (const std::string&, // emit class qualifier (DLL import/export symbols) ?
+                  bool,               // emit string conversion utilities ?
+                  bool,               // emit "tagged" unions ?
+                  const std::string&, // (XMLSchema) filename
+                  bool,               // generate separate include header
+                  const std::string&, // target directory
+                  const std::string&, // preamble filename
+                  bool,               // file-per-definition ?
+                  const std::string&, // type prefix
+                  const std::string&, // type postfix
+                  bool);              // validate document ?
 
  private:
-  // safety measures
-  XML_Parser();
-  virtual ~XML_Parser();
-  ACE_UNIMPLEMENTED_FUNC(XML_Parser(const XML_Parser&));
-  ACE_UNIMPLEMENTED_FUNC(XML_Parser& operator=(const XML_Parser&));
+  XML_Parser ();
+  inline virtual ~XML_Parser () {}
+  ACE_UNIMPLEMENTED_FUNC (XML_Parser (const XML_Parser&));
+  ACE_UNIMPLEMENTED_FUNC (XML_Parser& operator= (const XML_Parser&));
 };
 
 typedef ACE_Singleton<XML_Parser,

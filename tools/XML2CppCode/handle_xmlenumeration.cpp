@@ -21,43 +21,39 @@
 
 #include "handle_xmlenumeration.h"
 
-#include "xml2cppcode.h"
-
-#include <ace/Log_Msg.h>
-
 #include <iomanip>
 #include <algorithm>
 #include <locale>
 #include <functional>
 
-#if !defined (ACE_WIN32) && !defined (ACE_WIN64)
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#else
 #include <bits/ios_base.h>
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
-Handle_XMLEnumeration::Handle_XMLEnumeration(std::ofstream& targetFile_in,
-																						 const std::string& typePrefix_in,
-																						 const bool& emitStringConversionHelper_in,
-																						 const std::string& emitClassQualifier_in)
- : myOutputFile(targetFile_in),
-   myTypePrefix(typePrefix_in),
-   myEmitStringConversionHelper(emitStringConversionHelper_in),
-   myEmitClassQualifier(emitClassQualifier_in),
-   myIsFirstElement(true)
+#include "ace/Log_Msg.h"
+
+#include "xml2cppcode.h"
+
+Handle_XMLEnumeration::Handle_XMLEnumeration (std::ofstream& targetFile_in,
+                                              const std::string& typePrefix_in,
+                                              bool emitStringConversionHelper_in,
+                                              const std::string& emitClassQualifier_in)
+ : myOutputFile (targetFile_in),
+   myTypePrefix (typePrefix_in),
+   myEmitStringConversionHelper (emitStringConversionHelper_in),
+   myEmitClassQualifier (emitClassQualifier_in),
+   myIsFirstElement (true)
 //    myEnumName()
 {
   ACE_TRACE(ACE_TEXT("Handle_XMLEnumeration::Handle_XMLEnumeration"));
 
 }
 
-Handle_XMLEnumeration::~Handle_XMLEnumeration()
+void
+Handle_XMLEnumeration::startElement (const std::string& enumeration_in)
 {
-  ACE_TRACE(ACE_TEXT("Handle_XMLEnumeration::~Handle_XMLEnumeration"));
-
-}
-
-void Handle_XMLEnumeration::startElement(const std::string& enumeration_in)
-{
-  ACE_TRACE(ACE_TEXT("Handle_XMLEnumeration::startElement"));
+  ACE_TRACE (ACE_TEXT ("Handle_XMLEnumeration::startElement"));
 
   myEnumName = enumeration_in;
 
@@ -68,12 +64,13 @@ void Handle_XMLEnumeration::startElement(const std::string& enumeration_in)
                << std::endl;
 }
 
-void Handle_XMLEnumeration::handleData(const std::string& enumValue_in)
+void
+Handle_XMLEnumeration::handleData (const std::string& enumValue_in)
 {
-  ACE_TRACE(ACE_TEXT("Handle_XMLEnumeration::handleData"));
+  ACE_TRACE (ACE_TEXT ("Handle_XMLEnumeration::handleData"));
 
-  myOutputFile << std::setw(XML2CPPCODE_INDENT)
-               << ACE_TEXT_ALWAYS_CHAR(" ")
+  myOutputFile << std::setw (XML2CPPCODE_INDENT)
+               << ACE_TEXT_ALWAYS_CHAR (" ")
                << enumValue_in;
   myOutputFile << (myIsFirstElement ? ACE_TEXT_ALWAYS_CHAR(" = 0,")
                                     : ACE_TEXT_ALWAYS_CHAR(","));
@@ -82,54 +79,54 @@ void Handle_XMLEnumeration::handleData(const std::string& enumValue_in)
   if (myIsFirstElement)
     myIsFirstElement = false;
 
-  myElements.push_back(enumValue_in);
+  myElements.push_back (enumValue_in);
 }
 
-void Handle_XMLEnumeration::endElement()
+void Handle_XMLEnumeration::endElement ()
 {
-  ACE_TRACE(ACE_TEXT("Handle_XMLEnumeration::endElement"));
+  ACE_TRACE (ACE_TEXT ("Handle_XMLEnumeration::endElement"));
 
   std::string final_element = myEnumName;
   // transform to uppercase
-  std::transform(final_element.begin(),
-                 final_element.end(),
-                 final_element.begin(),
-                 std::bind2nd(std::ptr_fun(&std::toupper<char>),
-                              std::locale("")));
+  std::transform (final_element.begin (),
+                  final_element.end (),
+                  final_element.begin (),
+                  std::bind2nd (std::ptr_fun (&std::toupper<char>),
+                                std::locale ("")));
 
-  myOutputFile << std::setw(XML2CPPCODE_INDENT) << ACE_TEXT_ALWAYS_CHAR(" ");
-  myOutputFile << ACE_TEXT_ALWAYS_CHAR("//") << std::endl;
-  myOutputFile << std::setw(XML2CPPCODE_INDENT) << ACE_TEXT_ALWAYS_CHAR(" ");
-  myOutputFile << final_element << ACE_TEXT_ALWAYS_CHAR("_MAX,") << std::endl;
-  myOutputFile << std::setw(XML2CPPCODE_INDENT) << ACE_TEXT_ALWAYS_CHAR(" ");
-  myOutputFile << final_element << ACE_TEXT_ALWAYS_CHAR("_INVALID") << std::endl;
-  myOutputFile << ACE_TEXT_ALWAYS_CHAR("};") << std::endl;
-  myOutputFile << std::endl;
+  myOutputFile << std::setw (XML2CPPCODE_INDENT) << ACE_TEXT_ALWAYS_CHAR (" ");
+  myOutputFile << ACE_TEXT_ALWAYS_CHAR ("//") << std::endl;
+  myOutputFile << std::setw (XML2CPPCODE_INDENT) << ACE_TEXT_ALWAYS_CHAR (" ");
+  myOutputFile << final_element << ACE_TEXT_ALWAYS_CHAR ("_MAX,") << std::endl;
+  myOutputFile << std::setw (XML2CPPCODE_INDENT) << ACE_TEXT_ALWAYS_CHAR (" ");
+  myOutputFile << final_element << ACE_TEXT_ALWAYS_CHAR ("_INVALID") << std::endl;
+  myOutputFile << ACE_TEXT_ALWAYS_CHAR ("};") << std::endl << std::endl;
 
   if (myEmitStringConversionHelper)
-    emitStringConversionTable();
+    emitStringConversionTable ();
 }
 
-void Handle_XMLEnumeration::emitStringConversionTable()
+void
+Handle_XMLEnumeration::emitStringConversionTable ()
 {
-  ACE_TRACE(ACE_TEXT("Handle_XMLEnumeration::emitStringConversionTable"));
+  ACE_TRACE (ACE_TEXT ("Handle_XMLEnumeration::emitStringConversionTable"));
 
   if (!myEmitClassQualifier.empty())
   {
     std::string exports_filename = myTypePrefix;
-    exports_filename += ACE_TEXT_ALWAYS_CHAR("_");
-    exports_filename += ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_DLL_EXPORT_INCLUDE_SUFFIX);
-    exports_filename += ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_HEADER_EXTENSION);
+    exports_filename += ACE_TEXT_ALWAYS_CHAR ("_");
+    exports_filename += ACE_TEXT_ALWAYS_CHAR (XML2CPPCODE_DLL_EXPORT_INCLUDE_SUFFIX);
+    exports_filename += ACE_TEXT_ALWAYS_CHAR (XML2CPPCODE_HEADER_EXTENSION);
     // transform to lowercase
-    std::transform(exports_filename.begin(),
-                   exports_filename.end(),
-                   exports_filename.begin(),
-                   std::bind2nd(std::ptr_fun(&std::tolower<char>),
-                                std::locale("")));
+    std::transform (exports_filename.begin (),
+                    exports_filename.end (),
+                    exports_filename.begin (),
+                    std::bind2nd (std::ptr_fun (&std::tolower<char>),
+                                  std::locale ("")));
 
-		myOutputFile << ACE_TEXT_ALWAYS_CHAR("#include \"");
-		myOutputFile << exports_filename.c_str();
-		myOutputFile << ACE_TEXT_ALWAYS_CHAR("\"") << std::endl << std::endl;
+    myOutputFile << ACE_TEXT_ALWAYS_CHAR("#include \"");
+    myOutputFile << exports_filename.c_str();
+    myOutputFile << ACE_TEXT_ALWAYS_CHAR("\"") << std::endl << std::endl;
   } // end IF
 
   myOutputFile << ACE_TEXT_ALWAYS_CHAR("#include \"ace/Global_Macros.h\"") << std::endl;

@@ -21,35 +21,32 @@
 #ifndef HANDLE_XMLSTRUCT_H
 #define HANDLE_XMLSTRUCT_H
 
-#include "handle_xmlsequence.h"
+#include <string>
 
 #include "ace/Global_Macros.h"
 
-#include <string>
+#include "handle_xmlsequence.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class Handle_XMLStruct
  : public Handle_XMLSequence
 {
- public:
-  Handle_XMLStruct(std::ofstream&,      // target file stream
-                   const std::string&,  // type prefix
-                   const std::string&,  // type postfix
-                   const std::string&); // emit class qualifier (DLL symbol import/export) ?
-  virtual ~Handle_XMLStruct();
-
-  virtual void startElement(const std::string&); // name of struct
-  virtual void handleData(const std::string&); // base class (if any)
-  virtual void endElement();
-
- private:
   typedef Handle_XMLSequence inherited;
 
-  ACE_UNIMPLEMENTED_FUNC(Handle_XMLStruct());
-  ACE_UNIMPLEMENTED_FUNC(Handle_XMLStruct(const Handle_XMLStruct&));
-  ACE_UNIMPLEMENTED_FUNC(Handle_XMLStruct& operator=(const Handle_XMLStruct&));
+ public:
+  Handle_XMLStruct (std::ofstream&,      // target file stream
+                    const std::string&,  // type prefix
+                    const std::string&,  // type postfix
+                    const std::string&); // emit class qualifier (DLL symbol import/export) ?
+  inline virtual ~Handle_XMLStruct () {}
+
+  virtual void startElement (const std::string&); // name of struct
+  virtual void handleData (const std::string&); // base class (if any)
+  virtual void endElement ();
+
+ private:
+  ACE_UNIMPLEMENTED_FUNC (Handle_XMLStruct ());
+  ACE_UNIMPLEMENTED_FUNC (Handle_XMLStruct (const Handle_XMLStruct&));
+  ACE_UNIMPLEMENTED_FUNC (Handle_XMLStruct& operator= (const Handle_XMLStruct&));
 
   std::string myBaseType;
 };

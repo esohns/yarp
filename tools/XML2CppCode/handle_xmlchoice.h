@@ -21,40 +21,37 @@
 #ifndef HANDLE_XMLCHOICE_H
 #define HANDLE_XMLCHOICE_H
 
-#include "iXML_definition_handler.h"
-
-#include "ace/Global_Macros.h"
-
 #include <string>
 #include <fstream>
 #include <vector>
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
+#include "ace/Global_Macros.h"
+
+#include "iXML_definition_handler.h"
+
 class Handle_XMLChoice
  : public IXML_Definition_Handler
 {
- public:
-  Handle_XMLChoice(std::ofstream&,      // target file stream
-                   const unsigned int&, // nesting level
-                   const std::string&,  // emit class qualifier (DLL import/export symbols) ?
-                   const std::string&,  // type prefix
-                   const std::string&,  // type postfix
-                   const bool&,         // is vector-type ?
-                   const bool& = true); // emit iterator type(s), if applicable ?
-  virtual ~Handle_XMLChoice();
-
-  virtual void startElement(const std::string&); // type name
-  virtual void handleData(const std::string&); // union item
-  virtual void endElement();
-
- private:
   typedef IXML_Definition_Handler inherited;
 
-  ACE_UNIMPLEMENTED_FUNC(Handle_XMLChoice());
-  ACE_UNIMPLEMENTED_FUNC(Handle_XMLChoice(const Handle_XMLChoice&));
-  ACE_UNIMPLEMENTED_FUNC(Handle_XMLChoice& operator=(const Handle_XMLChoice&));
+ public:
+  Handle_XMLChoice (std::ofstream&,     // target file stream
+                    unsigned int,       // nesting level
+                    const std::string&, // emit class qualifier (DLL import/export symbols) ?
+                    const std::string&, // type prefix
+                    const std::string&, // type postfix
+                    bool,               // is vector-type ?
+                    bool = true);       // emit iterator type(s), if applicable ?
+  inline virtual ~Handle_XMLChoice () {}
+
+  virtual void startElement (const std::string&); // type name
+  virtual void handleData (const std::string&); // union item
+  virtual void endElement ();
+
+ private:
+  ACE_UNIMPLEMENTED_FUNC (Handle_XMLChoice ());
+  ACE_UNIMPLEMENTED_FUNC (Handle_XMLChoice (const Handle_XMLChoice&));
+  ACE_UNIMPLEMENTED_FUNC (Handle_XMLChoice& operator= (const Handle_XMLChoice&));
 
   std::ofstream& myOutputFile;
   unsigned int   myNestingLevel;

@@ -38,9 +38,6 @@ class Handle_XMLSequence;
 
 XERCES_CPP_NAMESPACE_USE
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class XML_Handler
  : public XML_Handler_Base//,
 //    private XMLFormatTarget
@@ -49,17 +46,17 @@ class XML_Handler
   friend class Handle_XMLSequence;
 
  public:
-  XML_Handler(const std::string&,  // emit class qualifier (DLL import/export symbols) ?
-							const bool&,         // emit string conversion utilities ?
-              const bool&,         // emit "tagged" unions ?
-              const std::string&,  // schema file
-              const bool&,         // generate include header ?
-              const std::string&,  // target output directory
-              const std::string&,  // preamble
-              const bool&,         // file-per-definition ?
-              const std::string&,  // type prefix (used to generate identifiers for unions)
-              const std::string&); // type postfix (used to generate type identifiers)
-  virtual ~XML_Handler();
+  XML_Handler (const std::string&,  // emit class qualifier (DLL import/export symbols) ?
+               bool,                // emit string conversion utilities ?
+               bool,                // emit "tagged" unions ?
+               const std::string&,  // schema file
+               bool,                // generate include header ?
+               const std::string&,  // target output directory
+               const std::string&,  // preamble
+               bool,                // file-per-definition ?
+               const std::string&,  // type prefix (used to generate identifiers for unions)
+               const std::string&); // type postfix (used to generate type identifiers)
+  inline virtual ~XML_Handler () {}
 
   // -----------------------------------------------------------------------
   // Implementation of the SAX ContentHandler interface

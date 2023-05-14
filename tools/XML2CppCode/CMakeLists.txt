@@ -19,27 +19,28 @@ configure_file (${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake.in
                 NEWLINE_STYLE ${NEWLINE_STYLE})
 
 ########### next target ###############
-set(XML2CppCode_SRCS
-    XML_handler.cpp
-    XML_handler.h
-    XML_handler_base.cpp
-    XML_handler_base.h
-    XML_parser.cpp
-    XML_parser.h
-    handle_xmlchoice.cpp
-    handle_xmlchoice.h
-    handle_xmlenumeration.cpp
-    handle_xmlenumeration.h
-    handle_xmlsequence.cpp
-    handle_xmlsequence.h
-    handle_xmlstruct.cpp
-    handle_xmlstruct.h
-    handle_xmlunion.cpp
-    handle_xmlunion.h
-    iXML_definition_handler.h
-    main.cpp
-    xml2cppcode_common_tools.cpp
-    xml2cppcode_common_tools.h)
+set (XML2CppCode_SRCS
+     stdafx.h
+     XML_handler.cpp
+     XML_handler.h
+     XML_handler_base.cpp
+     XML_handler_base.h
+     XML_parser.cpp
+     XML_parser.h
+     handle_xmlchoice.cpp
+     handle_xmlchoice.h
+     handle_xmlenumeration.cpp
+     handle_xmlenumeration.h
+     handle_xmlsequence.cpp
+     handle_xmlsequence.h
+     handle_xmlstruct.cpp
+     handle_xmlstruct.h
+     handle_xmlunion.cpp
+     handle_xmlunion.h
+     iXML_definition_handler.h
+     main.cpp
+     xml2cppcode_common_tools.cpp
+     xml2cppcode_common_tools.h)
 
 add_definitions(-DHAVE_CONFIG_H)
 
@@ -75,6 +76,10 @@ elseif (WIN32)
                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib)
 endif ()
+
+# add PCH
+target_precompile_headers (XML2CppCode
+                           PRIVATE stdafx.h)
 
 ########### install files ###############
 install(TARGETS XML2CppCode RUNTIME DESTINATION bin)

@@ -46,16 +46,16 @@
 #include "handle_xmlunion.h"
 #include "xml2cppcode.h"
 
-XML_Handler::XML_Handler(const std::string& emitClassQualifiers_in,
-                         const bool& emitStringConversionUtilities_in,
-                         const bool& emitTaggedUnions_in,
-                         const std::string& schemaFilename_in,
-                         const bool& generateIncludeHeader_in,
-                         const std::string& targetDirectory_in,
-                         const std::string& preamble_in,
-                         const bool& filePerDefinition_in,
-                         const std::string& typePrefix_in,
-                         const std::string& typePostfix_in)
+XML_Handler::XML_Handler (const std::string& emitClassQualifiers_in,
+                          bool emitStringConversionUtilities_in,
+                          bool emitTaggedUnions_in,
+                          const std::string& schemaFilename_in,
+                          bool generateIncludeHeader_in,
+                          const std::string& targetDirectory_in,
+                          const std::string& preamble_in,
+                          bool filePerDefinition_in,
+                          const std::string& typePrefix_in,
+                          const std::string& typePostfix_in)
  : inherited(),
 //    myIncludeHeaderFile(),
 //    myCurrentOutputFile(),
@@ -79,12 +79,6 @@ XML_Handler::XML_Handler(const std::string& emitClassQualifiers_in,
    myCurrentNestingLevel(0)
 {
   ACE_TRACE(ACE_TEXT("XML_Handler::XML_Handler"));
-
-}
-
-XML_Handler::~XML_Handler()
-{
-  ACE_TRACE(ACE_TEXT("XML_Handler::~XML_Handler"));
 
 }
 

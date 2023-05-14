@@ -20,19 +20,17 @@
 #ifndef IXML_DEFINITION_HANDLER_H
 #define IXML_DEFINITION_HANDLER_H
 
-#include "ace/Global_Macros.h"
-
 #include <string>
 
 class IXML_Definition_Handler
 {
  public:
   // make sure base class dtors are called !
-  inline virtual ~IXML_Definition_Handler() {};
+  inline virtual ~IXML_Definition_Handler () {}
 
-  virtual void startElement(const std::string&) = 0; // name
-  virtual void handleData(const std::string&) = 0; // value
-  virtual void endElement() = 0;
+  virtual void startElement (const std::string&) = 0; // name
+  virtual void handleData (const std::string&) = 0; // value
+  virtual void endElement () = 0;
 };
 
 #endif

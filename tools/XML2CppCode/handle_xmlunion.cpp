@@ -21,11 +21,6 @@
 
 #include "handle_xmlunion.h"
 
-#include "xml2cppcode.h"
-#include "xml2cppcode_common_tools.h"
-
-#include "ace/Log_Msg.h"
-
 #include <limits>
 #include <iomanip>
 #include <sstream>
@@ -33,52 +28,51 @@
 #include <locale>
 #include <functional>
 
-Handle_XMLUnion::Handle_XMLUnion(std::ofstream& targetFile_in,
-                                 const bool& emitTaggedUnion_in,
-                                 const std::string& emitClassQualifier_in,
-                                 const std::string& typePrefix_in,
-                                 const std::string& typePostfix_in)
- : myOutputFile(targetFile_in),
-   myEmitTaggedUnion(emitTaggedUnion_in),
-   myEmitClassQualifier(emitClassQualifier_in),
-   myTypePrefix(typePrefix_in),
-   myTypePostfix(typePostfix_in)
+#include "ace/Log_Msg.h"
+
+#include "xml2cppcode.h"
+#include "xml2cppcode_common_tools.h"
+
+Handle_XMLUnion::Handle_XMLUnion (std::ofstream& targetFile_in,
+                                  bool emitTaggedUnion_in,
+                                  const std::string& emitClassQualifier_in,
+                                  const std::string& typePrefix_in,
+                                  const std::string& typePostfix_in)
+ : myOutputFile (targetFile_in),
+   myEmitTaggedUnion (emitTaggedUnion_in),
+   myEmitClassQualifier (emitClassQualifier_in),
+   myTypePrefix (typePrefix_in),
+   myTypePostfix (typePostfix_in)
 //    myUnionName(),
 //    myTypeList()
 {
-  ACE_TRACE(ACE_TEXT("Handle_XMLUnion::Handle_XMLUnion"));
-
-}
-
-Handle_XMLUnion::~Handle_XMLUnion()
-{
-  ACE_TRACE(ACE_TEXT("Handle_XMLUnion::~Handle_XMLUnion"));
+  ACE_TRACE (ACE_TEXT ("Handle_XMLUnion::Handle_XMLUnion"));
 
 }
 
 void
 Handle_XMLUnion::startElement(const std::string& union_in)
 {
-  ACE_TRACE(ACE_TEXT("Handle_XMLUnion::startElement"));
+  ACE_TRACE (ACE_TEXT ("Handle_XMLUnion::startElement"));
 
   myUnionName = union_in;
 
-  if (!myEmitClassQualifier.empty())
+  if (!myEmitClassQualifier.empty ())
   {
-	std::string exports_filename = myTypePrefix;
-	exports_filename += ACE_TEXT_ALWAYS_CHAR("_");
-	exports_filename += ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_DLL_EXPORT_INCLUDE_SUFFIX);
-	exports_filename += ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_HEADER_EXTENSION);
-	// transform to lowercase
-	std::transform(exports_filename.begin(),
-                   exports_filename.end(),
-                   exports_filename.begin(),
-                   std::bind2nd(std::ptr_fun(&std::tolower<char>),
-                                std::locale("")));
+    std::string exports_filename = myTypePrefix;
+    exports_filename += ACE_TEXT_ALWAYS_CHAR ("_");
+    exports_filename += ACE_TEXT_ALWAYS_CHAR (XML2CPPCODE_DLL_EXPORT_INCLUDE_SUFFIX);
+    exports_filename += ACE_TEXT_ALWAYS_CHAR (XML2CPPCODE_HEADER_EXTENSION);
+    // transform to lowercase
+    std::transform (exports_filename.begin (),
+                    exports_filename.end (),
+                    exports_filename.begin (),
+                    std::bind2nd (std::ptr_fun (&std::tolower<char>),
+                                  std::locale("")));
 
-	myOutputFile << ACE_TEXT_ALWAYS_CHAR("#include \"");
-	myOutputFile << exports_filename.c_str();
-	myOutputFile << ACE_TEXT_ALWAYS_CHAR("\"") << std::endl << std::endl;
+    myOutputFile << ACE_TEXT_ALWAYS_CHAR("#include \"");
+    myOutputFile << exports_filename.c_str();
+    myOutputFile << ACE_TEXT_ALWAYS_CHAR("\"") << std::endl << std::endl;
   } // end IF
 
   if (myEmitTaggedUnion)
@@ -91,30 +85,29 @@ Handle_XMLUnion::startElement(const std::string& union_in)
     ACE_ASSERT(current_position != std::string::npos);
 //     taggedunion_typename.insert(current_position, ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_DEFAULTTAGGEDUNIONINFIX));
     myOutputFile << ACE_TEXT_ALWAYS_CHAR("struct ");
-	if (!myEmitClassQualifier.empty())
-	{
-	  myOutputFile << myEmitClassQualifier.c_str();
-	  myOutputFile << ACE_TEXT_ALWAYS_CHAR(" ");
-	} // end IF
-	myOutputFile << taggedunion_typename
-                 << std::endl
-                 << ACE_TEXT_ALWAYS_CHAR("{")
-                 << std::endl
-                 << std::setw(XML2CPPCODE_INDENT) << ACE_TEXT_ALWAYS_CHAR(" ")
-                 << ACE_TEXT_ALWAYS_CHAR("union")
-                 << std::endl;
+  if (!myEmitClassQualifier.empty())
+  {
+    myOutputFile << myEmitClassQualifier.c_str();
+    myOutputFile << ACE_TEXT_ALWAYS_CHAR(" ");
+  } // end IF
+  myOutputFile << taggedunion_typename
+               << std::endl
+               << ACE_TEXT_ALWAYS_CHAR ("{")
+               << std::endl
+               << std::setw (XML2CPPCODE_INDENT) << ACE_TEXT_ALWAYS_CHAR (" ")
+               << ACE_TEXT_ALWAYS_CHAR ("union")
+               << std::endl;
   } // end IF
   else
   {
-    myOutputFile << ACE_TEXT_ALWAYS_CHAR("union ")
+    myOutputFile << ACE_TEXT_ALWAYS_CHAR ("union ")
                  << myUnionName
                  << std::endl;
   } // end ELSE
 
   if (myEmitTaggedUnion)
-    myOutputFile << std::setw(XML2CPPCODE_INDENT) << ACE_TEXT_ALWAYS_CHAR(" ");
-  myOutputFile << ACE_TEXT_ALWAYS_CHAR("{")
-               << std::endl;
+    myOutputFile << std::setw (XML2CPPCODE_INDENT) << ACE_TEXT_ALWAYS_CHAR (" ");
+  myOutputFile << ACE_TEXT_ALWAYS_CHAR("{") << std::endl;
 }
 
 void
@@ -174,12 +167,12 @@ Handle_XMLUnion::handleData(const std::string& memberTypes_in)
       current_type.erase(type_position, std::string::npos);
   } // end IF
 
-  myTypeList.push_back(current_type);
+  myTypeList.push_back (current_type);
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("union \"%s\" has %d items\n"),
-             ACE_TEXT(myUnionName.c_str()),
-             myTypeList.size()));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("union \"%s\" has %d items\n"),
+              ACE_TEXT (myUnionName.c_str ()),
+              myTypeList.size ()));
 
   // step2: emit types (generate individual identifiers...)
   bool isBaseType = false;
@@ -190,8 +183,8 @@ Handle_XMLUnion::handleData(const std::string& memberTypes_in)
   {
     // convert basetypes XML --> C++
     isBaseType =
-        XML2CppCode_Common_Tools::XMLintegratedtypeToString(*iterator,
-                                                            current_type);
+        XML2CppCode_Common_Tools::XMLintegratedtypeToString (*iterator,
+                                                             current_type);
 
     // create identifier
     current_identifier = current_type;
@@ -227,16 +220,16 @@ Handle_XMLUnion::handleData(const std::string& memberTypes_in)
     } // end ELSE
 
     // step2: transform to lowercase
-    std::transform(current_identifier.begin(),
-                   current_identifier.end(),
-                   current_identifier.begin(),
-                   std::bind2nd(std::ptr_fun(&std::tolower<char>),
-                                std::locale("")));
+    std::transform (current_identifier.begin (),
+                    current_identifier.end (),
+                    current_identifier.begin (),
+                    std::bind2nd (std::ptr_fun (&std::tolower<char>),
+                                  std::locale ("")));
 
     // OK: emit the line of code
-    myOutputFile << std::setw(XML2CPPCODE_INDENT) << ACE_TEXT_ALWAYS_CHAR(" ");
+    myOutputFile << std::setw (XML2CPPCODE_INDENT) << ACE_TEXT_ALWAYS_CHAR (" ");
     if (myEmitTaggedUnion)
-      myOutputFile << std::setw(XML2CPPCODE_INDENT) << ACE_TEXT_ALWAYS_CHAR(" ");
+      myOutputFile << std::setw (XML2CPPCODE_INDENT) << ACE_TEXT_ALWAYS_CHAR (" ");
     myOutputFile << current_type
                  << ACE_TEXT_ALWAYS_CHAR(" ")
                  << current_identifier
@@ -346,7 +339,5 @@ Handle_XMLUnion::endElement()
                  << ACE_TEXT_ALWAYS_CHAR(" discriminator;") << std::endl;
   } // end IF
 
-  myOutputFile << ACE_TEXT_ALWAYS_CHAR("};")
-               << std::endl;
-  myOutputFile << std::endl;
+  myOutputFile << ACE_TEXT_ALWAYS_CHAR("};") << std::endl << std::endl;
 }

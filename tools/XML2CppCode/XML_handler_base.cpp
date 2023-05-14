@@ -21,21 +21,15 @@
 
 #include "XML_handler_base.h"
 
+#include "ace/Log_Msg.h"
+
 #include "xercesc/util/XMLUniDefs.hpp"
 #include "xercesc/sax2/Attributes.hpp"
 
-#include "ace/Log_Msg.h"
-
 XML_Handler_Base::XML_Handler_Base()
- : inherited()
+ : inherited ()
 {
   ACE_TRACE(ACE_TEXT("XML_Handler_Base::XML_Handler_Base"));
-
-}
-
-XML_Handler_Base::~XML_Handler_Base()
-{
-  ACE_TRACE(ACE_TEXT("XML_Handler_Base::~XML_Handler_Base"));
 
 }
 

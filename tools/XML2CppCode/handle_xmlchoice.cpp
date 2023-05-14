@@ -21,96 +21,86 @@
 
 #include "handle_xmlchoice.h"
 
-#include "xml2cppcode.h"
-#include "xml2cppcode_common_tools.h"
+#include <algorithm>
+#include <functional>
+#include <iomanip>
+#include <limits>
+#include <locale>
+#include <sstream>
 
 #include "ace/Log_Msg.h"
 
-#include <limits>
-#include <iomanip>
-#include <sstream>
-#include <algorithm>
-#include <locale>
-#include <functional>
+#include "xml2cppcode.h"
+#include "xml2cppcode_common_tools.h"
 
-Handle_XMLChoice::Handle_XMLChoice(std::ofstream& targetFile_in,
-                                   const unsigned int& nestingLevel_in,
-                                   const std::string& emitClassQualifier_in,
-                                   const std::string& typePrefix_in,
-                                   const std::string& typePostfix_in,
-                                   const bool& isVector_in,
-                                   const bool& emitIteratorTypes_in)
- : myOutputFile(targetFile_in),
-   myNestingLevel(nestingLevel_in),
-   myEmitClassQualifier(emitClassQualifier_in),
-   myTypePrefix(typePrefix_in),
-   myTypePostfix(typePostfix_in),
-   myIsVector(isVector_in),
-   myEmitIteratorTypes(emitIteratorTypes_in)
+Handle_XMLChoice::Handle_XMLChoice (std::ofstream& targetFile_in,
+                                    unsigned int nestingLevel_in,
+                                    const std::string& emitClassQualifier_in,
+                                    const std::string& typePrefix_in,
+                                    const std::string& typePostfix_in,
+                                    bool isVector_in,
+                                    bool emitIteratorTypes_in)
+ : myOutputFile (targetFile_in),
+   myNestingLevel (nestingLevel_in),
+   myEmitClassQualifier (emitClassQualifier_in),
+   myTypePrefix (typePrefix_in),
+   myTypePostfix (typePostfix_in),
+   myIsVector (isVector_in),
+   myEmitIteratorTypes (emitIteratorTypes_in)
 //   myTypeName()
 {
-  ACE_TRACE(ACE_TEXT("Handle_XMLChoice::Handle_XMLChoice"));
-
-}
-
-Handle_XMLChoice::~Handle_XMLChoice()
-{
-  ACE_TRACE(ACE_TEXT("Handle_XMLChoice::~Handle_XMLChoice"));
+  ACE_TRACE (ACE_TEXT ("Handle_XMLChoice::Handle_XMLChoice"));
 
 }
 
 void
-Handle_XMLChoice::startElement(const std::string& typeName_in)
+Handle_XMLChoice::startElement (const std::string& typeName_in)
 {
-  ACE_TRACE(ACE_TEXT("Handle_XMLChoice::startElement"));
+  ACE_TRACE (ACE_TEXT ("Handle_XMLChoice::startElement"));
 
   myTypeName = typeName_in;
 
   if ((myNestingLevel == 0) &&
-      !myEmitClassQualifier.empty())
+      !myEmitClassQualifier.empty ())
   {
     std::string exports_filename = myTypePrefix;
-    exports_filename += ACE_TEXT_ALWAYS_CHAR("_");
-    exports_filename += ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_DLL_EXPORT_INCLUDE_SUFFIX);
-    exports_filename += ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_HEADER_EXTENSION);
+    exports_filename += ACE_TEXT_ALWAYS_CHAR ("_");
+    exports_filename += ACE_TEXT_ALWAYS_CHAR (XML2CPPCODE_DLL_EXPORT_INCLUDE_SUFFIX);
+    exports_filename += ACE_TEXT_ALWAYS_CHAR (XML2CPPCODE_HEADER_EXTENSION);
     // transform to lowercase
-    std::transform(exports_filename.begin(),
-                   exports_filename.end(),
-                   exports_filename.begin(),
-                   std::bind2nd(std::ptr_fun(&std::tolower<char>),
-                                std::locale("")));
+    std::transform (exports_filename.begin (),
+                    exports_filename.end (),
+                    exports_filename.begin (),
+                    std::bind2nd (std::ptr_fun (&std::tolower<char>),
+                                  std::locale ("")));
 
-		myOutputFile << ACE_TEXT_ALWAYS_CHAR("#include \"");
-		myOutputFile << exports_filename.c_str();
-		myOutputFile << ACE_TEXT_ALWAYS_CHAR("\"") << std::endl << std::endl;
+    myOutputFile << ACE_TEXT_ALWAYS_CHAR ("#include \"");
+    myOutputFile << exports_filename.c_str ();
+    myOutputFile << ACE_TEXT_ALWAYS_CHAR ("\"") << std::endl << std::endl;
   } // end IF
 
   if (myNestingLevel)
-    myOutputFile << std::setw(XML2CPPCODE_INDENT * myNestingLevel)
-                 << ACE_TEXT_ALWAYS_CHAR(" ");
-  myOutputFile << ACE_TEXT_ALWAYS_CHAR("union ");
+    myOutputFile << std::setw (XML2CPPCODE_INDENT * myNestingLevel) << ACE_TEXT_ALWAYS_CHAR (" ");
+  myOutputFile << ACE_TEXT_ALWAYS_CHAR ("union ");
   if ((myNestingLevel == 0) &&
-      !myEmitClassQualifier.empty())
+      !myEmitClassQualifier.empty ())
   {
     myOutputFile << myEmitClassQualifier;
     myOutputFile << ACE_TEXT_ALWAYS_CHAR(" ");
   } // end IF
   std::string type_name = myTypeName;
   if (myIsVector)
-    type_name += ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_DEFAULTCHOICEPOSTFIX);
-  myOutputFile << type_name
-               << std::endl;
+    type_name += ACE_TEXT_ALWAYS_CHAR (XML2CPPCODE_DEFAULTCHOICEPOSTFIX);
+  myOutputFile << type_name << std::endl;
   if (myNestingLevel)
-    myOutputFile << std::setw(XML2CPPCODE_INDENT * myNestingLevel)
-                 << ACE_TEXT_ALWAYS_CHAR(" ");
-  myOutputFile << ACE_TEXT_ALWAYS_CHAR("{")
-               << std::endl;
+    myOutputFile << std::setw(XML2CPPCODE_INDENT * myNestingLevel) << ACE_TEXT_ALWAYS_CHAR(" ");
+  myOutputFile << ACE_TEXT_ALWAYS_CHAR("{") << std::endl;
 }
 
 void
 Handle_XMLChoice::handleData(const std::string& unionElement_in)
 {
-  ACE_TRACE(ACE_TEXT("Handle_XMLChoice::handleData"));
+  ACE_TRACE (ACE_TEXT ("Handle_XMLChoice::handleData"));
 
   std::string::size_type position =
       unionElement_in.find(ACE_TEXT_ALWAYS_CHAR(" "), 0);
@@ -198,16 +188,13 @@ Handle_XMLChoice::handleData(const std::string& unionElement_in)
 }
 
 void
-Handle_XMLChoice::endElement()
+Handle_XMLChoice::endElement ()
 {
-  ACE_TRACE(ACE_TEXT("Handle_XMLChoice::endElement"));
+  ACE_TRACE (ACE_TEXT ("Handle_XMLChoice::endElement"));
 
   if (myNestingLevel)
-    myOutputFile << std::setw(XML2CPPCODE_INDENT * myNestingLevel)
-                 << ACE_TEXT_ALWAYS_CHAR(" ");
-  myOutputFile << ACE_TEXT_ALWAYS_CHAR("};")
-               << std::endl
-               << std::endl;
+    myOutputFile << std::setw(XML2CPPCODE_INDENT * myNestingLevel) << ACE_TEXT_ALWAYS_CHAR(" ");
+  myOutputFile << ACE_TEXT_ALWAYS_CHAR("};") << std::endl << std::endl;
 
   if (myIsVector)
   {

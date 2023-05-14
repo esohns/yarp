@@ -21,11 +21,6 @@
 
 #include "handle_xmlsequence.h"
 
-#include "xml2cppcode.h"
-#include "xml2cppcode_common_tools.h"
-
-#include "ace/Log_Msg.h"
-
 #include <limits>
 #include <iomanip>
 #include <sstream>
@@ -33,85 +28,77 @@
 #include <locale>
 #include <functional>
 
-Handle_XMLSequence::Handle_XMLSequence(std::ofstream& targetFile_in,
-                                       const unsigned int& nestingLevel_in,
-                                       const std::string& typePrefix_in,
-                                       const std::string& typePostfix_in,
-                                       const std::string& emitClassQualifier_in,
-//                                        const bool& adjustForTaggedUnions_in)
-                                       const bool& isBaseClass_in)
- : myOutputFile(targetFile_in),
+#include "ace/Log_Msg.h"
+
+#include "xml2cppcode.h"
+#include "xml2cppcode_common_tools.h"
+
+Handle_XMLSequence::Handle_XMLSequence (std::ofstream& targetFile_in,
+                                        unsigned int nestingLevel_in,
+                                        const std::string& typePrefix_in,
+                                        const std::string& typePostfix_in,
+                                        const std::string& emitClassQualifier_in,
+//                                        bool adjustForTaggedUnions_in)
+                                        bool isBaseClass_in)
+ : myOutputFile (targetFile_in),
  //    myStructName(),
-   myTypePrefix(typePrefix_in),
-   myTypePostfix(typePostfix_in),
-   myEmitClassQualifier(emitClassQualifier_in),
+   myTypePrefix (typePrefix_in),
+   myTypePostfix (typePostfix_in),
+   myEmitClassQualifier (emitClassQualifier_in),
 //    myAdjustForTaggedUnions(adjustForTaggedUnions_in),
-   myNestingLevel(nestingLevel_in),
-   myIsBaseClass(isBaseClass_in)
+   myNestingLevel (nestingLevel_in),
+   myIsBaseClass (isBaseClass_in)
 {
-  ACE_TRACE(ACE_TEXT("Handle_XMLSequence::Handle_XMLSequence"));
-
-}
-
-Handle_XMLSequence::~Handle_XMLSequence()
-{
-  ACE_TRACE(ACE_TEXT("Handle_XMLSequence::~Handle_XMLSequence"));
+  ACE_TRACE (ACE_TEXT ("Handle_XMLSequence::Handle_XMLSequence"));
 
 }
 
 void
-Handle_XMLSequence::startElement(const std::string& struct_in)
+Handle_XMLSequence::startElement (const std::string& struct_in)
 {
-  ACE_TRACE(ACE_TEXT("Handle_XMLSequence::startElement"));
+  ACE_TRACE (ACE_TEXT ("Handle_XMLSequence::startElement"));
 
   myStructName = struct_in;
 
-	// sanity check
-	if (myIsBaseClass)
-		return; // done
+  // sanity check
+  if (myIsBaseClass)
+    return; // done
 
   if ((myNestingLevel == 0) &&
-      !myEmitClassQualifier.empty())
+      !myEmitClassQualifier.empty ())
   {
     std::string exports_filename = myTypePrefix;
-    exports_filename += ACE_TEXT_ALWAYS_CHAR("_");
-    exports_filename += ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_DLL_EXPORT_INCLUDE_SUFFIX);
-    exports_filename += ACE_TEXT_ALWAYS_CHAR(XML2CPPCODE_HEADER_EXTENSION);
+    exports_filename += ACE_TEXT_ALWAYS_CHAR ("_");
+    exports_filename += ACE_TEXT_ALWAYS_CHAR (XML2CPPCODE_DLL_EXPORT_INCLUDE_SUFFIX);
+    exports_filename += ACE_TEXT_ALWAYS_CHAR (XML2CPPCODE_HEADER_EXTENSION);
     // transform to lowercase
-    std::transform(exports_filename.begin(),
-                   exports_filename.end(),
-                   exports_filename.begin(),
-                   std::bind2nd(std::ptr_fun(&std::tolower<char>),
-                                std::locale("")));
+    std::transform (exports_filename.begin (),
+                    exports_filename.end (),
+                    exports_filename.begin (),
+                    std::bind2nd (std::ptr_fun (&std::tolower<char>),
+                                  std::locale ("")));
 
-    myOutputFile << ACE_TEXT_ALWAYS_CHAR("#include \"");
+    myOutputFile << ACE_TEXT_ALWAYS_CHAR ("#include \"");
     myOutputFile << exports_filename;
-    myOutputFile << ACE_TEXT_ALWAYS_CHAR("\"") << std::endl << std::endl;
+    myOutputFile << ACE_TEXT_ALWAYS_CHAR ("\"") << std::endl << std::endl;
   } // end IF
 
   if (myNestingLevel)
-    myOutputFile << std::setw(XML2CPPCODE_INDENT * myNestingLevel)
-                 << ACE_TEXT_ALWAYS_CHAR(" ");
-  myOutputFile << ACE_TEXT_ALWAYS_CHAR("struct ");
+    myOutputFile << std::setw (XML2CPPCODE_INDENT * myNestingLevel) << ACE_TEXT_ALWAYS_CHAR (" ");
+  myOutputFile << ACE_TEXT_ALWAYS_CHAR ("struct ");
   if ((myNestingLevel == 0) &&
       !myEmitClassQualifier.empty())
-  {
-    myOutputFile << myEmitClassQualifier;
-    myOutputFile << ACE_TEXT_ALWAYS_CHAR(" ");
-  } // end IF
-  myOutputFile << myStructName
-               << std::endl;
+    myOutputFile << myEmitClassQualifier << ACE_TEXT_ALWAYS_CHAR (" ");
+  myOutputFile << myStructName << std::endl;
   if (myNestingLevel)
-    myOutputFile << std::setw(XML2CPPCODE_INDENT * myNestingLevel)
-                 << ACE_TEXT_ALWAYS_CHAR(" ");
-  myOutputFile << ACE_TEXT_ALWAYS_CHAR("{")
-               << std::endl;
+    myOutputFile << std::setw (XML2CPPCODE_INDENT * myNestingLevel) << ACE_TEXT_ALWAYS_CHAR (" ");
+  myOutputFile << ACE_TEXT_ALWAYS_CHAR ("{") << std::endl;
 }
 
 void
-Handle_XMLSequence::handleData(const std::string& structElement_in)
+Handle_XMLSequence::handleData (const std::string& structElement_in)
 {
-  ACE_TRACE(ACE_TEXT("Handle_XMLSequence::handleData"));
+  ACE_TRACE (ACE_TEXT ("Handle_XMLSequence::handleData"));
 
   std::string::size_type position = structElement_in.find(' ', 0);
   std::string type = structElement_in.substr(0, position);
@@ -210,14 +197,11 @@ Handle_XMLSequence::handleData(const std::string& structElement_in)
 }
 
 void
-Handle_XMLSequence::endElement()
+Handle_XMLSequence::endElement ()
 {
-  ACE_TRACE(ACE_TEXT("Handle_XMLSequence::endElement"));
+  ACE_TRACE (ACE_TEXT ("Handle_XMLSequence::endElement"));
 
   if (myNestingLevel)
-    myOutputFile << std::setw(XML2CPPCODE_INDENT * myNestingLevel)
-                 << ACE_TEXT_ALWAYS_CHAR(" ");
-  myOutputFile << ACE_TEXT_ALWAYS_CHAR("};")
-               << std::endl
-               << std::endl;
+    myOutputFile << std::setw (XML2CPPCODE_INDENT * myNestingLevel) << ACE_TEXT_ALWAYS_CHAR (" ");
+  myOutputFile << ACE_TEXT_ALWAYS_CHAR ("};") << std::endl << std::endl;
 }

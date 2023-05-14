@@ -21,28 +21,27 @@
 #ifndef HANDLE_XMLSEQUENCE_H
 #define HANDLE_XMLSEQUENCE_H
 
-#include "iXML_definition_handler.h"
-
-#include "ace/Global_Macros.h"
-
 #include <string>
 #include <fstream>
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
+#include "ace/Global_Macros.h"
+
+#include "iXML_definition_handler.h"
+
 class Handle_XMLSequence
  : public IXML_Definition_Handler
 {
+  typedef IXML_Definition_Handler inherited;
+
  public:
- Handle_XMLSequence(std::ofstream&,       // target file stream
-										const unsigned int&,  // nesting level
-										const std::string&,   // type prefix
-										const std::string&,   // type postfix
-										const std::string&,   // emit class qualifier (DLL symbol import/export) ?
-										//                      const bool& = false); // adjust for "tagged" unions
-										const bool& = false); // base class ?
-  virtual ~Handle_XMLSequence();
+  Handle_XMLSequence (std::ofstream&,     // target file stream
+                      unsigned int,       // nesting level
+                      const std::string&, // type prefix
+                      const std::string&, // type postfix
+                      const std::string&, // emit class qualifier (DLL symbol import/export) ?
+//                       bool = false); // adjust for "tagged" unions
+                      bool = false);      // is base class ?
+  inline virtual ~Handle_XMLSequence () {}
 
   virtual void startElement(const std::string&); // name of sequence
   virtual void handleData(const std::string&); // sequence item
@@ -57,11 +56,9 @@ class Handle_XMLSequence
 	//   bool           myAdjustForTaggedUnions;
 
  private:
-  typedef IXML_Definition_Handler inherited;
-
-  ACE_UNIMPLEMENTED_FUNC(Handle_XMLSequence());
-  ACE_UNIMPLEMENTED_FUNC(Handle_XMLSequence(const Handle_XMLSequence&));
-  ACE_UNIMPLEMENTED_FUNC(Handle_XMLSequence& operator=(const Handle_XMLSequence&));
+  ACE_UNIMPLEMENTED_FUNC (Handle_XMLSequence ());
+  ACE_UNIMPLEMENTED_FUNC (Handle_XMLSequence (const Handle_XMLSequence&));
+  ACE_UNIMPLEMENTED_FUNC (Handle_XMLSequence& operator= (const Handle_XMLSequence&));
 
   unsigned int   myNestingLevel;
 	bool           myIsBaseClass;

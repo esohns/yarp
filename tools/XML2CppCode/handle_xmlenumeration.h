@@ -21,44 +21,41 @@
 #ifndef HANDLE_XMLENUMERATION_H
 #define HANDLE_XMLENUMERATION_H
 
-#include "iXML_definition_handler.h"
-
-#include "ace/Global_Macros.h"
-
 #include <string>
 #include <vector>
 #include <fstream>
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
+#include "ace/Global_Macros.h"
+
+#include "iXML_definition_handler.h"
+
 class Handle_XMLEnumeration
-  : public IXML_Definition_Handler
+ : public IXML_Definition_Handler
 {
- public:
-  Handle_XMLEnumeration(std::ofstream&,		 // existing file stream --> append
-	                    const std::string&,  // type prefix
-                        const bool&,		 // emit string conversion helper ?
-						const std::string&); // emit class qualifier (DLL import/export symbols) ?
-  virtual ~Handle_XMLEnumeration();
-
-  virtual void startElement(const std::string&); // name of enumeration
-  virtual void handleData(const std::string&);   // enumeration value
-  virtual void endElement();
-
- private:
   typedef IXML_Definition_Handler inherited;
 
+ public:
+  Handle_XMLEnumeration (std::ofstream&,      // existing file stream --> append
+	                       const std::string&,  // type prefix
+                         bool,                // emit string conversion helper ?
+                         const std::string&); // emit class qualifier (DLL import/export symbols) ?
+  inline virtual ~Handle_XMLEnumeration () {}
+
+  virtual void startElement (const std::string&); // name of enumeration
+  virtual void handleData (const std::string&);   // enumeration value
+  virtual void endElement ();
+
+ private:
   typedef std::vector<std::string> Elements_t;
   typedef Elements_t::const_iterator ElementsIterator_t;
 
   // safety measures
-  ACE_UNIMPLEMENTED_FUNC(Handle_XMLEnumeration());
-  ACE_UNIMPLEMENTED_FUNC(Handle_XMLEnumeration(const Handle_XMLEnumeration&));
-  ACE_UNIMPLEMENTED_FUNC(Handle_XMLEnumeration& operator=(const Handle_XMLEnumeration&));
+  ACE_UNIMPLEMENTED_FUNC (Handle_XMLEnumeration ());
+  ACE_UNIMPLEMENTED_FUNC (Handle_XMLEnumeration (const Handle_XMLEnumeration&));
+  ACE_UNIMPLEMENTED_FUNC (Handle_XMLEnumeration& operator= (const Handle_XMLEnumeration&));
 
   // helper methods
-  void emitStringConversionTable();
+  void emitStringConversionTable ();
 
   std::ofstream& myOutputFile;
   std::string    myTypePrefix;

@@ -21,38 +21,35 @@
 #ifndef HANDLE_XMLUNION_H
 #define HANDLE_XMLUNION_H
 
-#include "iXML_definition_handler.h"
-
-#include "ace/Global_Macros.h"
-
 #include <string>
 #include <fstream>
 #include <vector>
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
+#include "ace/Global_Macros.h"
+
+#include "iXML_definition_handler.h"
+
 class Handle_XMLUnion
  : public IXML_Definition_Handler
 {
- public:
-  Handle_XMLUnion(std::ofstream&,      // target file stream
-                  const bool&,         // emit "tagged" union
-                  const std::string&,  // emit class qualifier (DLL import/export symbols) ?
-                  const std::string&,  // type prefix
-                  const std::string&); // type postfix
-  virtual ~Handle_XMLUnion();
-
-  virtual void startElement(const std::string&); // name of union
-  virtual void handleData(const std::string&); // memberTypes value
-  virtual void endElement();
-
- private:
   typedef IXML_Definition_Handler inherited;
 
-  ACE_UNIMPLEMENTED_FUNC(Handle_XMLUnion());
-  ACE_UNIMPLEMENTED_FUNC(Handle_XMLUnion(const Handle_XMLUnion&));
-  ACE_UNIMPLEMENTED_FUNC(Handle_XMLUnion& operator=(const Handle_XMLUnion&));
+ public:
+  Handle_XMLUnion (std::ofstream&,      // target file stream
+                   bool,                // emit "tagged" union ?
+                   const std::string&,  // emit class qualifier (DLL import/export symbols) ?
+                   const std::string&,  // type prefix
+                   const std::string&); // type postfix
+  inline virtual ~Handle_XMLUnion () {}
+
+  virtual void startElement (const std::string&); // name of union
+  virtual void handleData (const std::string&); // memberTypes value
+  virtual void endElement ();
+
+ private:
+  ACE_UNIMPLEMENTED_FUNC (Handle_XMLUnion());
+  ACE_UNIMPLEMENTED_FUNC (Handle_XMLUnion (const Handle_XMLUnion&));
+  ACE_UNIMPLEMENTED_FUNC (Handle_XMLUnion& operator= (const Handle_XMLUnion&));
 
   std::ofstream&           myOutputFile;
   bool                     myEmitTaggedUnion;
