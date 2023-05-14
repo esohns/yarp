@@ -112,9 +112,9 @@ class XML_Handler
   // helper methods
   XMLElementType stringToXMLElementType(const std::string&) const; // element
   void insertPreamble(std::ofstream&); // file stream
-  void insertMultipleIncludeProtection(const bool&,        // use "#pragma once" directive ?
-                                       const std::string&, // (header) filename
-                                       std::ofstream&);    // file stream
+  void insertMultipleIncludeProtection (bool,               // use "#pragma once" directive ?
+                                        const std::string&, // (header) filename
+                                        std::ofstream&);    // file stream
   void insertPostscript(std::ofstream&); // file stream
   typedef std::vector<std::string> XML2CppCode_Headers_t;
   void insertIncludeHeaders(const XML2CppCode_Headers_t&, // headers

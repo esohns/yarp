@@ -24,46 +24,44 @@
 #include "ace/Log_Msg.h"
 
 std::string
-XML2CppCode_Common_Tools::strip(const std::string& string_in)
+XML2CppCode_Common_Tools::strip (const std::string& string_in)
 {
-  ACE_TRACE (ACE_TEXT("XML2CppCode_Common_Tools::strip"));
+  ACE_TRACE (ACE_TEXT ("XML2CppCode_Common_Tools::strip"));
 
-	std::string result = string_in;
+  std::string result = string_in;
 
-	// *TODO*: remove tabs & other non-printable characters
-	std::string::size_type current_space = std::string::npos;
-	while ((current_space = result.find(' ',
-																			0)) == 0)
-		result.erase(current_space, 1);
-	while ((current_space = result.rfind(' ',
-																			 std::string::npos)) == (result.size() - 1))
-		result.erase(current_space, 1);
+  // *TODO*: remove tabs & other non-printable characters
+  std::string::size_type current_space = std::string::npos;
+  while ((current_space = result.find (' ', 0)) == 0)
+    result.erase(current_space, 1);
+  while ((current_space = result.rfind (' ', std::string::npos)) == (result.size() - 1))
+    result.erase(current_space, 1);
 
 	return result;
 }
 
-bool XML2CppCode_Common_Tools::XMLintegratedtypeToString(const std::string& typeSpecifier_in,
-                                                               std::string& result_out)
+bool XML2CppCode_Common_Tools::XMLintegratedtypeToString (const std::string& typeSpecifier_in,
+                                                          std::string& result_out)
 {
-  ACE_TRACE(ACE_TEXT("XML2CppCode_Common_Tools::XMLintegratedtypeToString"));
+  ACE_TRACE (ACE_TEXT ("XML2CppCode_Common_Tools::XMLintegratedtypeToString"));
 
-  if (typeSpecifier_in == ACE_TEXT_ALWAYS_CHAR("boolean"))
-    result_out = ACE_TEXT_ALWAYS_CHAR("bool");
-  else if (typeSpecifier_in == ACE_TEXT_ALWAYS_CHAR("byte"))
-    result_out = ACE_TEXT_ALWAYS_CHAR("signed char");
-  else if (typeSpecifier_in == ACE_TEXT_ALWAYS_CHAR("unsignedByte"))
-    result_out = ACE_TEXT_ALWAYS_CHAR("unsigned char");
-  else if (typeSpecifier_in == ACE_TEXT_ALWAYS_CHAR("short"))
-    result_out = ACE_TEXT_ALWAYS_CHAR("short int");
-  else if (typeSpecifier_in == ACE_TEXT_ALWAYS_CHAR("unsignedShort"))
-    result_out = ACE_TEXT_ALWAYS_CHAR("unsigned short int");
-  else if ((typeSpecifier_in == ACE_TEXT_ALWAYS_CHAR("integer")) ||
-           (typeSpecifier_in == ACE_TEXT_ALWAYS_CHAR("int")))
-    result_out = ACE_TEXT_ALWAYS_CHAR("int");
-  else if (typeSpecifier_in == ACE_TEXT_ALWAYS_CHAR("unsignedInt"))
-    result_out = ACE_TEXT_ALWAYS_CHAR("unsigned int");
-  else if (typeSpecifier_in == ACE_TEXT_ALWAYS_CHAR("string"))
-    result_out = ACE_TEXT_ALWAYS_CHAR("std::string");
+  if (typeSpecifier_in == ACE_TEXT_ALWAYS_CHAR ("boolean"))
+    result_out = ACE_TEXT_ALWAYS_CHAR ("bool");
+  else if (typeSpecifier_in == ACE_TEXT_ALWAYS_CHAR ("byte"))
+    result_out = ACE_TEXT_ALWAYS_CHAR ("ACE_INT8");
+  else if (typeSpecifier_in == ACE_TEXT_ALWAYS_CHAR ("unsignedByte"))
+    result_out = ACE_TEXT_ALWAYS_CHAR ("ACE_UINT8");
+  else if (typeSpecifier_in == ACE_TEXT_ALWAYS_CHAR ("short"))
+    result_out = ACE_TEXT_ALWAYS_CHAR ("ACE_INT16");
+  else if (typeSpecifier_in == ACE_TEXT_ALWAYS_CHAR ("unsignedShort"))
+    result_out = ACE_TEXT_ALWAYS_CHAR ("ACE_UINT16");
+  else if ((typeSpecifier_in == ACE_TEXT_ALWAYS_CHAR ("integer")) ||
+           (typeSpecifier_in == ACE_TEXT_ALWAYS_CHAR ("int")))
+    result_out = ACE_TEXT_ALWAYS_CHAR ("ACE_INT32");
+  else if (typeSpecifier_in == ACE_TEXT_ALWAYS_CHAR ("unsignedInt"))
+    result_out = ACE_TEXT_ALWAYS_CHAR ("ACE_UINT32");
+  else if (typeSpecifier_in == ACE_TEXT_ALWAYS_CHAR ("string"))
+    result_out = ACE_TEXT_ALWAYS_CHAR ("std::string");
   else
   {
 //    ACE_DEBUG((LM_DEBUG,

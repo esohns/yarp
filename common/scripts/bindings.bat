@@ -35,8 +35,8 @@ if NOT exist "%XML2CppCodeEXE%" (
  echo invalid file ^(was: "%XML2CppCodeEXE%"^)^, exiting
  goto Failed
 )
-%XML2CppCodeEXE% -e -f %cd%\..\etc\rpg_common.xsd -i -o .\.. -s -u -x RPG_Common
-%XML2CppCodeEXE% -e -f %cd%\..\etc\rpg_common_environment.xsd -i -o .\.. -s -u -x RPG_Common
+%XML2CppCodeEXE% -e -f .\..\etc\rpg_common.xsd -i -o .\.. -s -u -x RPG_Common
+%XML2CppCodeEXE% -e -f .\..\etc\rpg_common_environment.xsd -i -o .\.. -s -u -x RPG_Common
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate C++ glue code^, exiting
  set RC=%ERRORLEVEL%

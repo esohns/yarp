@@ -234,17 +234,17 @@ do_work(const std::string& emitClassQualifier_in,
   }
 
   // step1: parse XML file
-  XML_PARSER_SINGLETON::instance()->parseFile(emitClassQualifier_in,
-                                              emitStringConversionUtilities_in,
-                                              emitTaggedUnions_in,
-                                              filename_in,
-                                              generateIncludeHeader_in,
-                                              directory_in,
-                                              preamble_in,
-                                              filePerDefinition_in,
-                                              typePrefix_in,
-                                              typePostfix_in,
-                                              true); // (try to) validate documents
+  XML_PARSER_SINGLETON::instance ()->parseFile (emitClassQualifier_in,
+                                                emitStringConversionUtilities_in,
+                                                emitTaggedUnions_in,
+                                                filename_in,
+                                                generateIncludeHeader_in,
+                                                directory_in,
+                                                preamble_in,
+                                                filePerDefinition_in,
+                                                typePrefix_in,
+                                                typePostfix_in,
+                                                true); // (try to) validate documents
 
   // And call the termination method
   XMLPlatformUtils::Terminate();
