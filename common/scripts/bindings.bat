@@ -30,13 +30,13 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 @rem C++ "glue code"
-set XML2CppCodeEXE=%cd%\..\..\tools\XML2CppCode\cmake\Debug\XML2CppCode.exe
+set XML2CppCodeEXE=%cd%\..\..\tools\XML2CppCode\build\msvc\Debug\XML2CppCode.exe
 if NOT exist "%XML2CppCodeEXE%" (
  echo invalid file ^(was: "%XML2CppCodeEXE%"^)^, exiting
  goto Failed
 )
-%XML2CppCodeEXE% -e -f .\..\rpg_common.xsd -i -o .\.. -s -u -x RPG_Common
-%XML2CppCodeEXE% -e -f .\..\rpg_common_environment.xsd -i -o .\.. -s -u -x RPG_Common
+%XML2CppCodeEXE% -e -f %cd%\..\etc\rpg_common.xsd -i -o .\.. -s -u -x RPG_Common
+%XML2CppCodeEXE% -e -f %cd%\..\etc\rpg_common_environment.xsd -i -o .\.. -s -u -x RPG_Common
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate C++ glue code^, exiting
  set RC=%ERRORLEVEL%
@@ -59,7 +59,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 @rem generate include/implementation (rpg_common.xsd)
 @rem "%XsdEXE%" cxx-parser --type-map .\..\rpg_common.map --output-dir .\.. --export-symbol "RPG_Common_Export" --hxx-prologue "#include \"rpg_common_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp --options-file .\..\..\scripts\xsdcxx_parser_options .\..\rpg_common.xsd
-"%XsdEXE%" cxx-parser --type-map .\..\rpg_common.map --output-dir .\.. --cxx-prologue-file .\..\stdafx.cpp --options-file .\..\..\scripts\xsdcxx_parser_options .\..\rpg_common.xsd
+"%XsdEXE%" cxx-parser --type-map .\..\etc\rpg_common.map --output-dir .\.. --cxx-prologue-file .\..\stdafx.cpp --options-file .\..\..\scripts\xsdcxx_parser_options .\..\etc\rpg_common.xsd
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate XML parser code^, exiting
  set RC=%ERRORLEVEL%
@@ -67,7 +67,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 @rem generate include/implementation (rpg_common_environment.xsd)
 @rem "%XsdEXE%" cxx-parser --type-map .\..\rpg_common_environment.map --output-dir .\.. --export-symbol "RPG_Common_Export" --hxx-prologue "#include \"rpg_common_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp --options-file .\..\..\scripts\xsdcxx_parser_options .\..\rpg_common_environment.xsd
-"%XsdEXE%" cxx-parser --type-map .\..\rpg_common_environment.map --output-dir .\.. --cxx-prologue-file .\..\stdafx.cpp --options-file .\..\..\scripts\xsdcxx_parser_options .\..\rpg_common_environment.xsd
+"%XsdEXE%" cxx-parser --type-map .\..\etc\rpg_common_environment.map --output-dir .\.. --cxx-prologue-file .\..\stdafx.cpp --options-file .\..\..\scripts\xsdcxx_parser_options .\..\etc\rpg_common_environment.xsd
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate XML parser code^, exiting
  set RC=%ERRORLEVEL%
@@ -84,7 +84,7 @@ if %ERRORLEVEL% NEQ 0 (
 @rem generate tree include/implementation (rpg_common.xsd)
 @rem "%XsdEXE%" cxx-tree --generate-serialization --generate-ostream --generate-comparison --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --type-regex "/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/" --char-type char --output-dir .\.. --namespace-map urn:rpg= --export-xml-schema --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc --export-symbol "RPG_Common_Export" --hxx-prologue "#include \"rpg_common_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp ..\rpg_common.xsd
 @rem "%XsdEXE%" cxx-tree --output-dir .\.. --export-symbol "RPG_Common_Export" --hxx-prologue "#include \"rpg_common_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp --options-file .\..\..\scripts\xsdcxx_tree_options ..\rpg_common.xsd
-"%XsdEXE%" cxx-tree --output-dir .\.. --cxx-prologue-file .\..\stdafx.cpp --options-file .\..\..\scripts\xsdcxx_tree_options ..\rpg_common.xsd
+"%XsdEXE%" cxx-tree --output-dir .\.. --cxx-prologue-file .\..\stdafx.cpp --options-file .\..\..\scripts\xsdcxx_tree_options .\..\etc\rpg_common.xsd
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate XML tree code^, exiting
  set RC=%ERRORLEVEL%
@@ -93,7 +93,7 @@ if %ERRORLEVEL% NEQ 0 (
 @rem generate tree include/implementation (rpg_common_environment.xsd)
 @rem "%XsdEXE%" cxx-tree --generate-serialization --generate-ostream --generate-comparison --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --type-regex "/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/" --char-type char --output-dir .\.. --namespace-map urn:rpg= --export-xml-schema --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc --export-symbol "RPG_Common_Export" --hxx-prologue "#include \"rpg_common_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp ..\rpg_common_environment.xsd
 @rem "%XsdEXE%" cxx-tree --output-dir .\.. --export-symbol "RPG_Common_Export" --hxx-prologue "#include \"rpg_common_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp --options-file .\..\..\scripts\xsdcxx_tree_options ..\rpg_common_environment.xsd
-"%XsdEXE%" cxx-tree --output-dir .\.. --cxx-prologue-file .\..\stdafx.cpp --options-file .\..\..\scripts\xsdcxx_tree_options ..\rpg_common_environment.xsd
+"%XsdEXE%" cxx-tree --output-dir .\.. --cxx-prologue-file .\..\stdafx.cpp --options-file .\..\..\scripts\xsdcxx_tree_options .\..\etc\rpg_common_environment.xsd
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate XML tree code^, exiting
  set RC=%ERRORLEVEL%

@@ -31,8 +31,6 @@
 #endif // ACE_WIN32 || ACE_WIN64
 #include "ace/Get_Opt.h"
 #include "ace/High_Res_Timer.h"
-#include "ace/POSIX_Proactor.h"
-#include "ace/Proactor.h"
 #include "ace/Profile_Timer.h"
 #include "ace/Sig_Handler.h"
 #include "ace/Signal.h"
@@ -91,7 +89,6 @@
 #include "net_client_signalhandler.h"
 #include "net_defines.h"
 #include "net_eventhandler.h"
-//#include "net_module_eventhandler.h"
 
 // ******* WORKAROUND *************
 #if defined (ACE_WIN32) || defined (ACE_WIN64)

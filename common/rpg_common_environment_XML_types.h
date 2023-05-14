@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX_____RPG_COMMON_ENVIRONMENT_XML_TYPES_H
-#define CXX_____RPG_COMMON_ENVIRONMENT_XML_TYPES_H
+#ifndef CXX_____ETC_RPG_COMMON_ENVIRONMENT_XML_TYPES_H
+#define CXX_____ETC_RPG_COMMON_ENVIRONMENT_XML_TYPES_H
 
 // Begin prologue.
 //
@@ -230,4 +230,4 @@ class RPG_Common_Environment_Type_pskel: public ::xml_schema::complex_content
 //
 // End epilogue.
 
-#endif // CXX_____RPG_COMMON_ENVIRONMENT_XML_TYPES_H
+#endif // CXX_____ETC_RPG_COMMON_ENVIRONMENT_XML_TYPES_H

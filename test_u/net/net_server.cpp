@@ -31,8 +31,6 @@
 #endif // ACE_WIN32 || ACE_WIN64
 #include "ace/Get_Opt.h"
 #include "ace/High_Res_Timer.h"
-#include "ace/POSIX_Proactor.h"
-#include "ace/Proactor.h"
 #include "ace/Profile_Timer.h"
 #include "ace/Sig_Handler.h"
 #include "ace/Signal.h"
@@ -56,7 +54,6 @@
 
 #include "common_ui_defines.h"
 
-//#include "common_ui_glade_definition.h"
 #include "common_ui_gtk_builder_definition.h"
 #include "common_ui_gtk_manager.h"
 #include "common_ui_gtk_manager_common.h"
@@ -65,7 +62,6 @@
 
 #include "net_common_tools.h"
 #include "net_configuration.h"
-//#include "net_connection_manager_common.h"
 
 #include "net_server_common_tools.h"
 #include "net_server_defines.h"

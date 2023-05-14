@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX___RPG_COMMON_XML_TREE_H
-#define CXX___RPG_COMMON_XML_TREE_H
+#ifndef CXX_____ETC_RPG_COMMON_XML_TREE_H
+#define CXX_____ETC_RPG_COMMON_XML_TREE_H
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -97,7 +97,7 @@ class RPG_Common_Camp_XMLTree_Type;
 
 #include <xsd/cxx/xml/dom/parsing-header.hxx>
 
-#include "../chance/dice/rpg_dice_XML_tree.h"
+#include "rpg_dice_XML_tree.h"
 
 class RPG_Common_CreatureMetaType_XMLTree_Type: public ::xml_schema::string
 {
@@ -2274,4 +2274,4 @@ operator<< (::xml_schema::list_stream&,
 //
 // End epilogue.
 
-#endif // CXX___RPG_COMMON_XML_TREE_H
+#endif // CXX_____ETC_RPG_COMMON_XML_TREE_H

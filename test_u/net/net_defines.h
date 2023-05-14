@@ -43,7 +43,13 @@
 #define NET_CLIENT_DEF_SERVER_PING_INTERVAL       0 // ms {0 --> OFF}
 #define NET_CLIENT_DEF_SERVER_STRESS_INTERVAL     50 // ms
 
+#if defined (GTK2_USE)
+#define NET_CLIENT_UI_FILE                        "net_client.gtk2"
+#elif defined (GTK3_USE)
+#define NET_CLIENT_UI_FILE                        "net_client.gtk3"
+#else
 #define NET_CLIENT_UI_FILE                        "net_client.glade"
+#endif // GTK2_USE || GTK3_USE
 #define NET_CLIENT_UI_GTK_BUTTON_CONNECT_NAME     "connect"
 #define NET_CLIENT_UI_GTK_BUTTON_CLOSE_NAME       "close"
 #define NET_CLIENT_UI_GTK_BUTTON_PING_NAME        "ping"
@@ -55,7 +61,13 @@
 
 // -----------------------------------------------------------------------------
 
+#if defined (GTK2_USE)
+#define NET_SERVER_UI_FILE                        "net_server.gtk2"
+#elif defined (GTK3_USE)
+#define NET_SERVER_UI_FILE                        "net_server.gtk3"
+#else
 #define NET_SERVER_UI_FILE                        "net_server.glade"
+#endif // GTK2_USE || GTK3_USE
 #define NET_SERVER_UI_GTK_BUTTON_START_NAME       "start"
 #define NET_SERVER_UI_GTK_BUTTON_STOP_NAME        "stop"
 #define NET_SERVER_UI_GTK_BUTTON_LISTEN_NAME      "listen"

@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX___RPG_COMMON_ENVIRONMENT_XML_TREE_H
-#define CXX___RPG_COMMON_ENVIRONMENT_XML_TREE_H
+#ifndef CXX_____ETC_RPG_COMMON_ENVIRONMENT_XML_TREE_H
+#define CXX_____ETC_RPG_COMMON_ENVIRONMENT_XML_TREE_H
 
 #ifndef XSD_USE_CHAR
 #define XSD_USE_CHAR
@@ -757,4 +757,4 @@ operator<< (::xercesc::DOMElement&, const RPG_Common_Environment_XMLTree_Type&);
 //
 // End epilogue.
 
-#endif // CXX___RPG_COMMON_ENVIRONMENT_XML_TREE_H
+#endif // CXX_____ETC_RPG_COMMON_ENVIRONMENT_XML_TREE_H

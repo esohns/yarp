@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX_____RPG_COMMON_XML_TYPES_H
-#define CXX_____RPG_COMMON_XML_TYPES_H
+#ifndef CXX_____ETC_RPG_COMMON_XML_TYPES_H
+#define CXX_____ETC_RPG_COMMON_XML_TYPES_H
 
 // Begin prologue.
 //
@@ -87,7 +87,7 @@ class RPG_Common_Camp_Type_pskel;
 #include "rpg_dice_incl.h"
 #include "rpg_common_incl.h"
 
-#include "../chance/dice/rpg_dice_XML_types.h"
+#include "rpg_dice_XML_types.h"
 
 class RPG_Common_CreatureMetaType_Type_pskel: public virtual ::xml_schema::string_pskel
 {
@@ -727,4 +727,4 @@ class RPG_Common_Camp_Type_pskel: public virtual ::xml_schema::string_pskel
 //
 // End epilogue.
 
-#endif // CXX_____RPG_COMMON_XML_TYPES_H
+#endif // CXX_____ETC_RPG_COMMON_XML_TYPES_H
