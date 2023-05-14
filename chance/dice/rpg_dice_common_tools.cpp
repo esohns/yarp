@@ -25,19 +25,17 @@
 
 #include "ace/Log_Msg.h"
 
-#include "rpg_dice_dietype.h"
-
 #include "rpg_common_macros.h"
 
 // initialize statics
-RPG_Dice_DieTypeToStringTable_t RPG_Dice_DieTypeHelper::RPG_Dice_DieTypeToStringTable;
+RPG_Dice_DieTypeToStringTable_t RPG_Dice_DieTypeHelper::myRPG_Dice_DieTypeToStringTable;
 
 void
 RPG_Dice_Common_Tools::initializeStringConversionTables ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Dice_Common_Tools::initializeStringConversionTables"));
 
-  RPG_Dice_DieTypeHelper::initialize ();
+  RPG_Dice_DieTypeHelper::init ();
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("RPG_Dice_Common_Tools: initialized string conversion table...\n")));

@@ -25,6 +25,7 @@
 
 #include "ace/Global_Macros.h"
 
+#include "rpg_dice_dietype.h"
 #include "rpg_dice_roll.h"
 #include "rpg_dice_valuerange.h"
 
