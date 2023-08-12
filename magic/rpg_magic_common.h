@@ -26,9 +26,16 @@
 #include <string>
 #include <vector>
 
+#include "ace/Basic_Types.h"
+
+#include "rpg_dice_dietype.h"
+#include "rpg_dice_roll.h"
 #include "rpg_common_incl.h"
 #include "rpg_common_environment_incl.h"
 
+#include "rpg_character_alignmentcivic.h"
+#include "rpg_character_alignmentethic.h"
+#include "rpg_character_alignment.h"
 #include "rpg_magic_incl.h"
 
 typedef std::set<enum RPG_Magic_SpellType> RPG_Magic_SpellTypes_t;

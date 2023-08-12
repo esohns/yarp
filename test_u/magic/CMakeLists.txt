@@ -13,7 +13,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
 ########### next target ###############
 set (EXECUTABLE magic_parser)
 set (${EXECUTABLE}_SRCS
-     magic_parser.cpp)
+     magic_parser.cpp
+     stdafx.h)
 
 set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG\"")
 

@@ -19,7 +19,16 @@
 #include "ace/OS.h"
 #include "ace/Log_Msg.h"
 
+// Library Header Files
+#include "Common_config.h"
+#include "ACEStream_config.h"
+#include "ACENetwork_config.h"
+
 // Local Header Files
+#if defined (HAVE_CONFIG_H)
+#include "rpg_config.h"
+#endif // HAVE_CONFIG_H
+
 #include "rpg_common_macros.h"
 
 #include "net_client_common.h"

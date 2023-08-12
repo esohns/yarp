@@ -31,6 +31,10 @@
 #endif // ACE_WIN32 || ACE_WIN64
 #include "ace/Get_Opt.h"
 #include "ace/High_Res_Timer.h"
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#else
+#include "ace/POSIX_Proactor.h"
+#endif // ACE_WIN32 || ACE_WIN64
 #include "ace/Profile_Timer.h"
 #include "ace/Sig_Handler.h"
 #include "ace/Signal.h"
@@ -42,6 +46,8 @@
 
 #include "common_file_tools.h"
 #include "common_os_tools.h"
+
+#include "common_event_tools.h"
 
 #include "common_logger_queue.h"
 #include "common_log_tools.h"

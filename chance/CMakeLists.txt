@@ -5,7 +5,8 @@ set (LIBRARY RPG_Chance)
 set (${LIBRARY}_SRCS
      rpg_chance_common_tools.cpp
      rpg_chance_common_tools.h
-     rpg_chance_defines.h)
+     rpg_chance_defines.h
+     stdafx.h)
 
 #set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_CHANCE_BUILD_DLL)
 

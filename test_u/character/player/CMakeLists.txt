@@ -77,7 +77,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../3rd_party/xsd
 ########### next target ###############
 set (EXECUTABLE character_parser)
 set (${EXECUTABLE}_SRCS
-     character_parser.cpp)
+     character_parser.cpp
+     stdafx.h)
 
 set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG\"")
 
@@ -129,7 +130,8 @@ install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 ########### next target ###############
 set (EXECUTABLE_2 character_generator)
 set (${EXECUTABLE_2}_SRCS
-     character_generator.cpp)
+     character_generator.cpp
+     stdafx.h)
 
 set_source_files_properties (${${EXECUTABLE_2}_SRCS} PROPERTIES COMPILE_DEFINITIONS BASEDIR="/usr/local/share/RPG/config")
 
@@ -174,7 +176,7 @@ set_property (TARGET ${EXECUTABLE_2} PROPERTY FOLDER "test_u")
 
 # add PCH
 target_precompile_headers (${EXECUTABLE_2}
-                           PRIVATE stdafx.h)
+                           REUSE_FROM ${EXECUTABLE})
 
 ########### install files ###############
 install (TARGETS ${EXECUTABLE_2} RUNTIME DESTINATION bin)
@@ -187,7 +189,8 @@ set (${EXECUTABLE_3}_SRCS
      character_generator_gui_callbacks.h
      character_generator_gui_common.h
      test_u_main.cpp
-     test_u_main.h)
+     test_u_main.h
+     stdafx.h)
 
 set_source_files_properties (${${EXECUTABLE_3}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"/usr/local/share/RPG\";CONFIGDIR=\".\"")
 
@@ -252,7 +255,7 @@ set_property (TARGET ${EXECUTABLE_3} PROPERTY FOLDER "test_u")
 
 # add PCH
 target_precompile_headers (${EXECUTABLE_3}
-                           PRIVATE stdafx.h)
+                           REUSE_FROM ${EXECUTABLE})
 
 ########### install files ###############
 install (TARGETS ${EXECUTABLE_3} RUNTIME DESTINATION bin)

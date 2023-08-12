@@ -42,7 +42,8 @@ set (${LIBRARY}_SRCS
      rpg_monster_XML_tree.cpp
      rpg_monster_XML_tree.h
      rpg_monster_XML_types.cpp
-     rpg_monster_XML_types.h)
+     rpg_monster_XML_types.h
+     stdafx.h)
 
 #set_source_files_properties(${RPG_Monster_LIB_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_MONSTER_BUILD_DLL)
 

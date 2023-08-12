@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "stdafx.h"
 
+#include <sstream>
+
 #include "rpg_map_level.h"
 
 #include "ace/FILE_Addr.h"

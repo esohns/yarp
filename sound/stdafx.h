@@ -22,15 +22,17 @@
 
 // System Library Header Files
 #include "ace/OS.h"
-#include "ace/ACE.h"
 #include "ace/Log_Msg.h"
-#include "ace/Assert.h"
 
 #include "xsd/cxx/pre.hxx"
 #include "xsd/cxx/config.hxx"
 #include "xsd/cxx/xml/error-handler.hxx"
 
 // Local Header Files
+#if defined (HAVE_CONFIG_H)
+#include "rpg_config.h"
+#endif // HAVE_CONFIG_H
+
 #include "rpg_common_macros.h"
 
 #include "rpg_sound_common.h"

@@ -24,7 +24,8 @@ set (${LIBRARY}_SRCS
      rpg_engine_messagequeue.cpp
      rpg_engine_messagequeue.h
      rpg_engine_XML_tree.cpp
-     rpg_engine_XML_tree.h)
+     rpg_engine_XML_tree.h
+     stdafx.h)
  #   rpg_XMLSchema_XML_tree.h
  #   rpg_XMLSchema_XML_types.h)
 

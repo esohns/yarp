@@ -2,7 +2,8 @@
 ########### next target ###############
 set (EXECUTABLE chance_dice)
 set (${EXECUTABLE}_SRCS
-     chance_dice.cpp)
+     chance_dice.cpp
+     stdafx.h)
 
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
@@ -35,7 +36,8 @@ install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 ########### next target ###############
 set (EXECUTABLE_2 chance_rangeToRoll)
 set (${EXECUTABLE_2}_SRCS
-     chance_rangeToRoll.cpp)
+     chance_rangeToRoll.cpp
+     stdafx.h)
 
 add_executable (${EXECUTABLE_2}
                 ${${EXECUTABLE_2}_SRCS})
@@ -63,7 +65,7 @@ endif ()
 
 # add PCH
 target_precompile_headers (${EXECUTABLE_2}
-                           PRIVATE stdafx.h)
+                           REUSE_FROM ${EXECUTABLE})
 
 install (TARGETS ${EXECUTABLE_2} RUNTIME DESTINATION bin)
 

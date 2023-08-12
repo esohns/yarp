@@ -23,7 +23,8 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../engine)
 ############## next target ###############
 set (EXECUTABLE map_parser)
 set (${EXECUTABLE}_SRCS
-     map_parser.cpp)
+     map_parser.cpp
+     stdafx.h)
 
 set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
 
@@ -75,7 +76,8 @@ install (TARGETS ${EXECUTABLE}
 ########### next target ###############
 set (EXECUTABLE_2 map_generator)
 set (${EXECUTABLE_2}_SRCS
-     map_generator.cpp)
+     map_generator.cpp
+     stdafx.h)
 
 set_source_files_properties (${${EXECUTABLE_2}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
 
@@ -137,7 +139,7 @@ set_property (TARGET ${EXECUTABLE_2} PROPERTY FOLDER "test_u")
 
 # add PCH
 target_precompile_headers (${EXECUTABLE_2}
-                           PRIVATE stdafx.h)
+                           REUSE_FROM ${EXECUTABLE})
 
 #----------- install files ---------------
 install (TARGETS ${EXECUTABLE_2}
@@ -146,7 +148,8 @@ install (TARGETS ${EXECUTABLE_2}
 ########### next target ###############
 set (EXECUTABLE_3 path_finder)
 set (${EXECUTABLE_3}_SRCS
-     path_finder.cpp)
+     path_finder.cpp
+     stdafx.h)
 
 set_source_files_properties (${${EXECUTABLE_3}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
 
@@ -176,7 +179,7 @@ set_property (TARGET ${EXECUTABLE_3} PROPERTY FOLDER "test_u")
 
 # add PCH
 target_precompile_headers (${EXECUTABLE_3}
-                           PRIVATE stdafx.h)
+                           REUSE_FROM ${EXECUTABLE})
 
 #----------- install files ---------------
 install (TARGETS ${EXECUTABLE_3}

@@ -12,26 +12,23 @@
 #endif // _MSC_VER
 
 // C RunTime Header Files
-#include <bitset>
-#include <functional>
 #include <iostream>
-#include <map>
-#include <set>
-#include <sstream>
 #include <string>
 #include <vector>
 
 // System Library Header Files
 #include "ace/OS.h"
-#include "ace/ACE.h"
 #include "ace/Log_Msg.h"
 #include "ace/Assert.h"
-//#include "ace/Synch.h"
 #include "ace/Task.h"
 #include "ace/Reactor.h"
-#include "ace/Malloc_Allocator.h"
-#include "ace/Lock_Adapter_T.h"
 #include "ace/Stream.h"
 
 // Local Header Files
+#if defined (HAVE_CONFIG_H)
+#include "rpg_config.h"
+#endif // HAVE_CONFIG_H
+
 #include "rpg_common_macros.h"
+
+#include "rpg_net_common.h"

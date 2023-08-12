@@ -95,7 +95,8 @@ set (EXECUTABLE client_gui)
 set (${EXECUTABLE}_SRCS
      rpg_client_gui.cpp
      rpg_client_gui_callbacks.cpp
-     rpg_client_gui_callbacks.h)
+     rpg_client_gui_callbacks.h
+     stdafx.h)
 
 if (UNIX)
  set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"/usr/local/share/RPG\";RPG_GRAPHICS_HAS_DLL=1")

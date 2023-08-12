@@ -28,4 +28,8 @@
 #include "ace/Log_Msg.h"
 
 // Local Header Files
+#if defined (HAVE_CONFIG_H)
+#include "rpg_config.h"
+#endif // HAVE_CONFIG_H
+
 #include "rpg_common_macros.h"

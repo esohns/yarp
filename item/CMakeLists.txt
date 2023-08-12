@@ -54,7 +54,8 @@ set (${LIBRARY}_SRCS
      rpg_item_weaponclass.h
      rpg_item_weaponpropertiesbase.h
      rpg_item_weaponpropertiesxml.h
-     rpg_item_weapontype.h)
+     rpg_item_weapontype.h
+     stdafx.h)
 
 #set_source_files_properties(${RPG_Item_LIB_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_ITEM_BUILD_DLL)
 

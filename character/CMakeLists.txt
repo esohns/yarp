@@ -46,7 +46,8 @@ set (${LIBRARY}_SRCS
      rpg_character_XML_tree.cpp
      rpg_character_XML_tree.h
      rpg_character_XML_types.cpp
-     rpg_character_XML_types.h)
+     rpg_character_XML_types.h
+     stdafx.h)
 
 #set_source_files_properties(${RPG_Character_LIB_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_CHARACTER_BUILD_DLL)
 

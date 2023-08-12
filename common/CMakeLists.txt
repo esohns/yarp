@@ -58,7 +58,8 @@ set (${LIBRARY}_SRCS
      rpg_common_XML_tree.cpp
      rpg_common_XML_tree.h
      rpg_common_XML_types.cpp
-     rpg_common_XML_types.h)
+     rpg_common_XML_types.h
+     stdafx.h)
 
 #set_source_files_properties(${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_COMMON_BUILD_DLL)
 

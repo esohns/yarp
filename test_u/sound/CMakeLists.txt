@@ -28,7 +28,8 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../engine)
 ########### next target ###############
 set (EXECUTABLE sound_parser)
 set (${EXECUTABLE}_SRCS
-     sound_parser.cpp)
+     sound_parser.cpp
+     stdafx.h)
 
 set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG\"")
 

@@ -20,7 +20,8 @@ set (${LIBRARY}_SRCS
      rpg_dice_XML_tree.cpp
      rpg_dice_XML_tree.h
      rpg_dice_XML_types.cpp
-     rpg_dice_XML_types.h)
+     rpg_dice_XML_types.h
+     stdafx.h)
 #     rpg_XMLSchema_XML_tree.h
 #     rpg_XMLSchema_XML_types.h)
 

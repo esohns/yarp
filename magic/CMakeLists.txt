@@ -48,7 +48,8 @@ set (${LIBRARY}_SRCS
      rpg_magic_spell_type.h
      rpg_magic_spelllikeproperties.h
      rpg_magic_spelltype.h
-     rpg_magic_subschool.h)
+     rpg_magic_subschool.h
+     stdafx.h)
 
 #set_source_files_properties (${${LIBRARY}_LIB_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_MAGIC_BUILD_DLL)
 

@@ -18,12 +18,18 @@
 #include <vector>
 
 // System Library Header Files
-#include "ace/Assert.h"
+#include "ace/OS.h"
 #include "ace/Log_Msg.h"
 
 // Local Library Header Files
+#include "xsd/cxx/pre.hxx"
+#include "xsd/cxx/config.hxx"
 
 // Local Header Files
+#if defined (HAVE_CONFIG_H)
+#include "rpg_config.h"
+#endif // HAVE_CONFIG_H
+
 #include "rpg_common_macros.h"
 
 #include "rpg_graphics_common.h"

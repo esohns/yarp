@@ -2,7 +2,8 @@
 ########### next target ###############
 set (EXECUTABLE monster_parser)
 set (${EXECUTABLE}_SRCS
-     monster_parser.cpp)
+     monster_parser.cpp
+     stdafx.h)
 
 set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG\"")
 

@@ -35,6 +35,7 @@
 #include "ace/Log_Msg.h"
 #include "ace/OS_main.h"
 
+#include "common_defines.h"
 #include "common_file_tools.h"
 
 #include "common_log_tools.h"

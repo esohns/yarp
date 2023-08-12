@@ -11,23 +11,23 @@
 #include "windows.h"
 #endif // _MSC_VER
 
-// System Library Header Files
-#include "ace/Assert.h"
-#include "ace/Log_Msg.h"
-
 // C RunTime Header Files
 #include <string>
+#include <vector>
+
+// System Library Header Files
+#include "ace/OS.h"
+#include "ace/Log_Msg.h"
 
 // Local Library Header Files
 #include "xsd/cxx/pre.hxx"
 #include "xsd/cxx/config.hxx"
 
 // Local Header Files
-#include "rpg_dice_incl.h"
+#if defined (HAVE_CONFIG_H)
+#include "rpg_config.h"
+#endif // HAVE_CONFIG_H
+
 #include "rpg_common_macros.h"
-#include "rpg_common_incl.h"
-#include "rpg_common_environment_incl.h"
-#include "rpg_character_incl.h"
-#include "rpg_magic_incl.h"
-#include "rpg_item_incl.h"
-#include "rpg_combat_incl.h"
+
+#include "rpg_engine_common.h"

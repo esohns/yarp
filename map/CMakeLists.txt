@@ -27,7 +27,8 @@ set (${LIBRARY}_SRCS
      rpg_map_scanner.h
  #    stack.hh
      rpg_map_XML_tree.h
-     rpg_map_XML_tree.cpp)
+     rpg_map_XML_tree.cpp
+     stdafx.h)
 #     rpg_XMLSchema_XML_tree.h
 
 set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS "YY_NO_UNISTD_H;BASEDIR=\"C:\\\\\"")

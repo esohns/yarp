@@ -63,7 +63,8 @@ set (${LIBRARY}_SRCS
      rpg_client_window_message.h
      rpg_client_window_message.cpp
      rpg_client_XML_tree.h
-     rpg_client_XML_tree.cpp)
+     rpg_client_XML_tree.cpp
+     stdafx.h)
 
 #set_source_files_properties(${RPG_Client_LIB_SRCS} PROPERTIES COMPILE_DEFINITIONS "RPG_CLIENT_BUILD_DLL;RPG_ENGINE_HAS_DLL=1;RPG_GRAPHICS_HAS_DLL=1;RPG_SOUND_HAS_DLL=1")
 

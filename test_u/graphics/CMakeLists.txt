@@ -49,7 +49,8 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
 ########### next target ###############
 set (EXECUTABLE graphics_parser)
 set (${EXECUTABLE}_SRCS
-     graphics_parser.cpp)
+     graphics_parser.cpp
+     stdafx.h)
 
 if (UNIX)
  set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
@@ -101,7 +102,8 @@ set (${EXECUTABLE_2}_SRCS
      SDL_gui_mainwindow.cpp
      SDL_gui_mainwindow.h
      SDL_gui_minimapwindow.cpp
-     SDL_gui_minimapwindow.h)
+     SDL_gui_minimapwindow.h
+     stdafx.h)
 
 if (UNIX)
  set_source_files_properties(${${EXECUTABLE_2}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
@@ -164,7 +166,7 @@ set_property (TARGET ${EXECUTABLE_2} PROPERTY FOLDER "test_u")
 
 # add PCH
 target_precompile_headers (${EXECUTABLE_2}
-                           PRIVATE stdafx.h)
+                           REUSE_FROM ${EXECUTABLE})
 
 ########### install files ###############
 install(TARGETS ${EXECUTABLE_2} RUNTIME DESTINATION bin)

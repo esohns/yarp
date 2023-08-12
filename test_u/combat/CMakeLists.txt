@@ -38,7 +38,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../3rd_party/xsd
 ########### next target ###############
 set (EXECUTABLE combat_simulator)
 set (${EXECUTABLE}_SRCS
-     combat_simulator.cpp)
+     combat_simulator.cpp
+     stdafx.h)
 
 set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG\"")
 
