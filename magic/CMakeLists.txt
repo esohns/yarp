@@ -55,15 +55,14 @@ set (${LIBRARY}_SRCS
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 
-if (UNIX)
-elseif (WIN32)
+if (WIN32)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/msvc/src>)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/src>)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
-endif ()
+endif (WIN32)
 
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${ACE_INCLUDE_DIR}>)
@@ -71,6 +70,10 @@ target_include_directories (${LIBRARY} PUBLIC
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src>)
 
+if (WIN32)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
+endif (WIN32)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../3rd_party/xsd>)
 target_include_directories (${LIBRARY} PUBLIC
@@ -95,7 +98,7 @@ target_include_directories (${LIBRARY} PUBLIC
 add_dependencies (${LIBRARY} RPG_Dice RPG_Common)
 #add_dependencies (${LIBRARY} RPG_Dice RPG_Common RPG_Character)
 
-set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
+#set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
 # add PCH
 target_precompile_headers (${LIBRARY}

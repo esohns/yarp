@@ -22,6 +22,7 @@
 #include "rpg_common_tools.h"
 
 #include <fstream>
+#include <functional>
 #include <sstream>
 #include <algorithm>
 #include <locale>
@@ -737,7 +738,7 @@ RPG_Common_Tools::enumToString (const std::string& enumString_in,
   // step1: chop off everything before (and including) the first underscore ('_')
   if (chopPrefix_in)
   {
-    std::string::size_type underscore = result.find('_', 0);
+    std::string::size_type underscore = result.find ('_', 0);
 // *TODO*: there is a linking problem using std::string::npos in MSVC 2010...
 #if defined (_MSC_VER) && (_MSC_VER >= 1600) /* VS2010 or newer */
     if (underscore != -1)
@@ -745,21 +746,21 @@ RPG_Common_Tools::enumToString (const std::string& enumString_in,
     if (underscore != std::string::npos)
 #endif // _MSC_VER >= 1600
     {
-      std::string::iterator last = result.begin();
-      std::advance(last, underscore + 1); // *NOTE*: move one past '_'
-      result.erase(result.begin(),
-                   last);
+      std::string::iterator last = result.begin ();
+      std::advance (last, underscore + 1); // *NOTE*: move one past '_'
+      result.erase (result.begin (),
+                    last);
     } // end IF
   } // end IF
 
   // step2: convert everything past the first character to lower-case
-  std::string::iterator first = result.begin();
-  ACE_ASSERT(result.size() >= 1);
-  std::advance(first, 1); // *NOTE*: skip first character
-  std::transform(first,
-                 result.end(),
-                 first,
-                 std::bind2nd(std::ptr_fun(&std::tolower<char>), std::locale("")));
+  std::string::iterator first = result.begin ();
+  ACE_ASSERT (result.size () >= 1);
+  std::advance (first, 1); // *NOTE*: skip first character
+  std::transform (first,
+                  result.end (),
+                  first,
+                  std::bind2nd (std::ptr_fun (&std::tolower<char>), std::locale ("")));
 
   return result;
 }

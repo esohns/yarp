@@ -29,19 +29,22 @@ set (${LIBRARY}_SRCS
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 
-if (UNIX)
-elseif (WIN32)
+if (WIN32)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/msvc/src>)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/src>)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
-endif ()
+endif (WIN32)
 
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${ACE_INCLUDE_DIR}>)
 
+if (WIN32)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../include>)
+endif (WIN32)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../3rd_party/xsd>)
 target_include_directories (${LIBRARY} PUBLIC
