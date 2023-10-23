@@ -760,7 +760,9 @@ RPG_Common_Tools::enumToString (const std::string& enumString_in,
   std::transform (first,
                   result.end (),
                   first,
-                  std::bind2nd (std::ptr_fun (&std::tolower<char>), std::locale ("")));
+                  std::bind (std::ptr_fun (&std::tolower<char>),
+                             std::placeholders::_1,
+                             std::locale ("")));
 
   return result;
 }
