@@ -255,13 +255,13 @@ RPG_Graphics_Surface::load (const std::string& filename_in,
     return NULL;
   } // end IF
 
-  FILE* file_ptr = NULL;
-  if ((file_ptr = ACE_OS::fopen (filename_in.c_str (),                  // filename
-	                               ACE_TEXT_ALWAYS_CHAR ("rb"))) == NULL) // mode
-
+  // *TODO*: there seems to be a bug in WIN32 ACE_OS::fopen()
+  FILE* file_ptr = ::fopen (filename_in.c_str (),         // filename
+                            ACE_TEXT_ALWAYS_CHAR ("rb")); // mode
+  if (file_ptr == NULL)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to ACE_OS::fopen(\"%s\"): \"%m\", aborting\n"),
+                ACE_TEXT ("failed to ::fopen(\"%s\"): \"%m\", aborting\n"),
                 ACE_TEXT (filename_in.c_str ())));
     return NULL;
   } // end IF
@@ -1212,52 +1212,50 @@ RPG_Graphics_Surface::loadPNG (const std::string& filename_in,
   // sanity check
   //--> file must have a PNG signature
   unsigned char sig_buffer[RPG_GRAPHICS_PNG_SIGNATURE_BYTES];
-  if (ACE_OS::fread(sig_buffer,
-                    RPG_GRAPHICS_PNG_SIGNATURE_BYTES,
-                    1,
-                    file_in) != 1)
+  if (ACE_OS::fread (sig_buffer,
+                     RPG_GRAPHICS_PNG_SIGNATURE_BYTES,
+                     1,
+                     file_in) != 1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to fread(%u): \"%m\", aborting\n"),
-               RPG_GRAPHICS_PNG_SIGNATURE_BYTES));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_OS::fread(%u): \"%m\", aborting\n"),
+                RPG_GRAPHICS_PNG_SIGNATURE_BYTES));
     return NULL;
   } // end IF
-  if (png_sig_cmp(sig_buffer,                        // buffer
-                  0,                                 // start at the beginning
-                  RPG_GRAPHICS_PNG_SIGNATURE_BYTES)) // #signature bytes to check
+  if (png_sig_cmp (sig_buffer,                        // buffer
+                   0,                                 // start at the beginning
+                   RPG_GRAPHICS_PNG_SIGNATURE_BYTES)) // #signature bytes to check
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to png_sig_cmp(): \"%m\", aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to png_sig_cmp(): \"%m\", aborting\n")));
     return NULL;
   } // end IF
 
   png_structp png_ptr = NULL;
   // create the PNG loading context structure
-  png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, // version
-                                   NULL,                  // error
-                                   NULL,                  // error handler
-                                   NULL);                 // warning handler
+  png_ptr = png_create_read_struct (PNG_LIBPNG_VER_STRING, // version
+                                    NULL,                  // error
+                                    NULL,                  // error handler
+                                    NULL);                 // warning handler
   if (!png_ptr)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to png_create_read_struct(): \"%m\", aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to png_create_read_struct(): \"%m\", aborting\n")));
     return NULL;
   } // end IF
-  png_set_sig_bytes(png_ptr, RPG_GRAPHICS_PNG_SIGNATURE_BYTES);
+  png_set_sig_bytes (png_ptr,
+                     RPG_GRAPHICS_PNG_SIGNATURE_BYTES);
 
   // *NOTE* beyond this point:
   // - cleanup "png_ptr"
 
   png_infop info_ptr = NULL;
   // allocate/initialize memory for any image information [REQUIRED]
-  info_ptr = png_create_info_struct(png_ptr);
+  info_ptr = png_create_info_struct (png_ptr);
   if (!info_ptr)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to png_create_info_struct(): \"%m\", aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to png_create_info_struct(): \"%m\", aborting\n")));
 
     // clean up
     png_destroy_read_struct(&png_ptr,
@@ -1272,10 +1270,10 @@ RPG_Graphics_Surface::loadPNG (const std::string& filename_in,
   // - cleanup "info_ptr"
 
   // save stack context, set up error handling
-  if (::setjmp(png_jmpbuf(png_ptr)))
+  if (::setjmp (png_jmpbuf (png_ptr)))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ::setjmp(): \"%m\", aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ::setjmp(): \"%m\", aborting\n")));
 
     // clean up
     png_destroy_read_struct(&png_ptr,
@@ -1286,15 +1284,15 @@ RPG_Graphics_Surface::loadPNG (const std::string& filename_in,
   } // end IF
 
   // set up data input callback
-  png_init_io(png_ptr, file_in);
+  png_init_io (png_ptr, file_in);
   //// *TODO*: use png_init_io() instead (load directly from the file...)
   //png_set_read_fn(png_ptr,
   //                const_cast<unsigned char*>(buffer_in),
   //                PNG_read_callback);
 
   // read PNG header info
-  png_read_info(png_ptr,
-                info_ptr);
+  png_read_info (png_ptr,
+                 info_ptr);
 
   png_uint_32 width = 0;
   png_uint_32 height = 0;
@@ -1303,15 +1301,15 @@ RPG_Graphics_Surface::loadPNG (const std::string& filename_in,
   int interlace = 0;
   int compression = 0;
   int filter = 0;
-  png_get_IHDR(png_ptr,
-               info_ptr,
-               &width,
-               &height,
-               &bit_depth,
-               &color_type,
-               &interlace,
-               &compression,
-               &filter);
+  png_get_IHDR (png_ptr,
+                info_ptr,
+                &width,
+                &height,
+                &bit_depth,
+                &color_type,
+                &interlace,
+                &compression,
+                &filter);
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("loading PNG \"%s\" [wxh,d,#c,t,i,c,f]: %ux%u,%d,%u,%d,%d,%d,%d...\n"),
@@ -1327,18 +1325,18 @@ RPG_Graphics_Surface::loadPNG (const std::string& filename_in,
 
   // reduce 16 bit per channel to 8 bit per channel
   // --> strip the second byte of information from a 16-bit depth file
-  png_set_strip_16(png_ptr);
+  png_set_strip_16 (png_ptr);
 
   // expand:
   // - 1,2,4 bit grayscale to 8 bit grayscale
   // - paletted images to RGB
   // - tRNS to true alpha channel
   // --> expand data to 24-bit RGB, or 8-bit grayscale, with alpha if available
-  png_set_expand(png_ptr);
+  png_set_expand (png_ptr);
 
   // expand grayscale to full RGB
   // --> expand the grayscale to 24-bit RGB if necessary
-  png_set_gray_to_rgb(png_ptr);
+  png_set_gray_to_rgb (png_ptr);
 
 //   // *NOTE*: we're using per-surface alpha only
 //   // --> strip any alpha channel
@@ -1348,33 +1346,33 @@ RPG_Graphics_Surface::loadPNG (const std::string& filename_in,
   {
     // add an (opaque) alpha channel to anything that doesn't have one yet
     // --> add a filler byte to 8-bit Gray or 24-bit RGB images
-    png_set_filler(png_ptr,
-                   0xFF,
-                   //                   alpha_in,
-                   PNG_FILLER_AFTER);
-    png_set_add_alpha(png_ptr,
-                      0xFF,
-                      //                      alpha_in,
-                      PNG_FILLER_AFTER);
-    png_read_update_info(png_ptr, info_ptr);
+    png_set_filler (png_ptr,
+                    0xFF,
+                    //                   alpha_in,
+                    PNG_FILLER_AFTER);
+    png_set_add_alpha (png_ptr,
+                       0xFF,
+                       //                      alpha_in,
+                       PNG_FILLER_AFTER);
+    png_read_update_info (png_ptr, info_ptr);
   } // end IF
 
   // allocate surface
   // *NOTE*:
   // - always TRY to (!) place the surface in VideoRAM; this may not work (check flags after loading !)
   // - conversion between PNG header info <--> SDL argument formats requires some casts
-  result = RPG_Graphics_Surface::create(width,
-                                        height);
+  result = RPG_Graphics_Surface::create (width,
+                                         height);
   if (!result)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Surface::create(%u,%u), aborting\n"),
-               width, height));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Surface::create(%u,%u), aborting\n"),
+                width, height));
 
     // clean up
-    png_destroy_read_struct(&png_ptr,
-                            &info_ptr,
-                            NULL);
+    png_destroy_read_struct (&png_ptr,
+                             &info_ptr,
+                             NULL);
 
     return NULL;
   } // end IF
@@ -1386,25 +1384,22 @@ RPG_Graphics_Surface::loadPNG (const std::string& filename_in,
 
   // create the array of row pointers to image data
   png_bytep* row_pointers = NULL;
-  try
-  {
+  try {
     row_pointers = new png_bytep[height];
-  }
-  catch (...)
-  {
+  } catch (...) {
     row_pointers = NULL;
   }
   if (!row_pointers)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to allocate memory(%u): \"%m\", aborting\n"),
-               (sizeof(png_bytep) * height)));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to allocate memory(%u): \"%m\", aborting\n"),
+                (sizeof(png_bytep) * height)));
 
     // clean up
-    png_destroy_read_struct(&png_ptr,
-                            &info_ptr,
-                            NULL);
-    SDL_FreeSurface(result);
+    png_destroy_read_struct (&png_ptr,
+                             &info_ptr,
+                             NULL);
+    SDL_FreeSurface (result);
 
     return NULL;
   } // end IF
@@ -1416,19 +1411,19 @@ RPG_Graphics_Surface::loadPNG (const std::string& filename_in,
   // - delete[] row_pointers
 
   // lock surface during pixel access
-  if (SDL_MUSTLOCK(result))
-    if (SDL_LockSurface(result))
+  if (SDL_MUSTLOCK (result))
+    if (SDL_LockSurface (result))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_LockSurface(): \"%s\", aborting\n"),
-                 ACE_TEXT(SDL_GetError())));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_LockSurface(): \"%s\", aborting\n"),
+                  ACE_TEXT (SDL_GetError ())));
 
       // clean up
-      png_destroy_read_struct(&png_ptr,
-                              &info_ptr,
-                              NULL);
-      SDL_FreeSurface(result);
-      delete[] row_pointers;
+      png_destroy_read_struct (&png_ptr,
+                               &info_ptr,
+                               NULL);
+      SDL_FreeSurface (result);
+      delete [] row_pointers;
 
       return NULL;
     } // end IF
@@ -1441,17 +1436,17 @@ RPG_Graphics_Surface::loadPNG (const std::string& filename_in,
 
   // read the image from the memory buffer onto the surface buffer
   // --> read the whole image into memory at once
-  png_read_image(png_ptr, row_pointers);
+  png_read_image (png_ptr, row_pointers);
 
   // unlock surface
-  if (SDL_MUSTLOCK(result))
-    SDL_UnlockSurface(result);
+  if (SDL_MUSTLOCK (result))
+    SDL_UnlockSurface (result);
 
   // clean up
-  png_destroy_read_struct(&png_ptr,
-                          &info_ptr,
-                          NULL);
-  delete[] row_pointers;
+  png_destroy_read_struct (&png_ptr,
+                           &info_ptr,
+                           NULL);
+  delete [] row_pointers;
 
   return result;
 }

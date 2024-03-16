@@ -928,10 +928,10 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   if (!RPG_Graphics_SDL_Tools::initializeVideo (configuration_in.video_configuration, // configuration
                                                 caption,                              // window/icon caption
                                                 GTKUserData_in.screen,                // window surface
-                                                true))                                // init window ?
+                                                true))                                // initialize window ?
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::initVideo(), returning\n")));
+                ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::initializeVideo(), returning\n")));
     RPG_Client_Common_Tools::finalize ();
     RPG_Engine_Common_Tools::finalize ();
     return;

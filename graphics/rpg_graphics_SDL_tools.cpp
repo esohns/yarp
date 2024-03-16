@@ -640,11 +640,11 @@ RPG_Graphics_SDL_Tools::initializeVideo (const struct RPG_Graphics_SDL_VideoConf
 
   // sanity check
   if (!myVideoPreInitialized)
-    if (!preInitializeVideo (configuration_in,
-                             caption_in))
+    if (!RPG_Graphics_SDL_Tools::preInitializeVideo (configuration_in,
+                                                     caption_in))
     {
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::preInitVideo(), aborting\n")));
+                  ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::preInitializeVideo(), aborting\n")));
       return false;
     } // end IF
   ACE_ASSERT (myVideoPreInitialized);
