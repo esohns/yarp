@@ -2048,7 +2048,7 @@ RPG_Magic_Common_Tools::hasArcaneCasterClass (const RPG_Character_Class& class_i
   return false;
 }
 
-unsigned short
+ACE_UINT16
 RPG_Magic_Common_Tools::getNumKnownSpells (enum RPG_Common_SubClass subClass_in,
                                            RPG_Character_Level_t classLevel_in,
                                            ACE_UINT8 spellLevel_in)
@@ -2079,7 +2079,7 @@ RPG_Magic_Common_Tools::getNumKnownSpells (enum RPG_Common_SubClass subClass_in,
     }
     case SUBCLASS_WIZARD:
     default:
-      return std::numeric_limits<unsigned short>::max (); // ALL
+      return std::numeric_limits<ACE_UINT16>::max (); // ALL
   } // end SWITCH
 
   return (RPG_MAGIC_DEF_NUM_NEW_SPELLS_PER_LEVEL * classLevel_in);
@@ -2099,7 +2099,7 @@ RPG_Magic_Common_Tools::getNumSpells (enum RPG_Common_SubClass subClass_in,
 
   unsigned int result = 0;
   RPG_Magic_NumSpellsTableIterator_t iterator;
-  if (spellLevel_in == std::numeric_limits<unsigned char>::max ())
+  if (spellLevel_in == std::numeric_limits<ACE_UINT8>::max ())
   {
     for (iterator = myNumSpellsTable.begin ();
          iterator != myNumSpellsTable.end ();

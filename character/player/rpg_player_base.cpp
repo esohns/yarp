@@ -49,12 +49,12 @@ RPG_Player_Base::RPG_Player_Base (// base attributes
                                   const RPG_Character_Skills_t& skills_in,
                                   const RPG_Character_Feats_t& feats_in,
                                   const RPG_Character_Abilities_t& abilities_in,
-                                  unsigned short maxHitPoints_in,
+                                  ACE_UINT16 maxHitPoints_in,
                                   const RPG_Magic_SpellTypes_t& knownSpells_in,
                                   // current status
                                   const RPG_Character_Conditions_t& condition_in,
-                                  short hitpoints_in,
-                                  unsigned int wealth_in,
+                                  ACE_INT16 hitpoints_in,
+                                  ACE_UINT64 wealth_in,
                                   const RPG_Magic_Spells_t& spells_in,
                                   const RPG_Item_List_t& inventory_in)
  : myWealth (wealth_in),
@@ -128,12 +128,12 @@ RPG_Player_Base::initialize (// base attributes
                              const RPG_Character_Skills_t& skills_in,
                              const RPG_Character_Feats_t& feats_in,
                              const RPG_Character_Abilities_t& abilities_in,
-                             unsigned short maxHitPoints_in,
+                             ACE_UINT16 maxHitPoints_in,
                              const RPG_Magic_SpellTypes_t& knownSpells_in,
                              // current status
                              const RPG_Character_Conditions_t& condition_in,
-                             short hitpoints_in,
-                             unsigned int wealth_in,
+                             ACE_INT16 hitpoints_in,
+                             ACE_UINT64 wealth_in,
                              const RPG_Magic_Spells_t& spells_in,
                              const RPG_Item_List_t& inventory_in)
 {

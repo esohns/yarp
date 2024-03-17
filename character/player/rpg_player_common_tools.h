@@ -26,6 +26,7 @@
 #include "ace/Global_Macros.h"
 
 #include "rpg_character_common.h"
+#include "rpg_character_race_common.h"
 #include "rpg_character_skills_common.h"
 
 #include "rpg_magic_common.h"
@@ -42,7 +43,7 @@ class RPG_Player_Common_Tools
   static RPG_Player* playerXMLToPlayer (const RPG_Player_PlayerXML_XMLTree_Type&, // player model
                                         // current status
                                         const RPG_Character_Conditions_t&,        // condition
-                                        short,                                    // HP
+                                        ACE_INT16,                                // HP
                                         const RPG_Magic_Spells_t&);               // list of prepared spells (if any)
   // *WARNING*: result needs to be delete()d !
   static RPG_Player_PlayerXML_XMLTree_Type* playerToPlayerXML (const RPG_Player&);
@@ -55,8 +56,7 @@ class RPG_Player_Common_Tools
   ACE_UNIMPLEMENTED_FUNC (RPG_Player_Common_Tools (const RPG_Player_Common_Tools&))
   ACE_UNIMPLEMENTED_FUNC (RPG_Player_Common_Tools& operator= (const RPG_Player_Common_Tools&))
 
-  // *WARNING*: MSVC refuses to compile RPG_Character_Race_t
-  static std::bitset<6> raceXMLTreeToRace (const RPG_Player_CharacterXML_XMLTree_Type::race_sequence&); // race (XML format)
+  static RPG_Character_Race_t raceXMLTreeToRace (const RPG_Player_CharacterXML_XMLTree_Type::race_sequence&); // race (XML format)
   static RPG_Character_Abilities_t abilitiesXMLTreeToAbilities (const RPG_Player_Abilities_XMLTree_Type&); // abilities (XML format)
 
   static RPG_Magic_SpellTypes_t spellsXMLTreeToSpellTypes (const RPG_Player_Spells_XMLTree_Type&); // spells (XML format)

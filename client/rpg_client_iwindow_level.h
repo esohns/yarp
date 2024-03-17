@@ -48,7 +48,7 @@ class RPG_Client_IWindowLevel
   virtual RPG_Graphics_Position_t getView () const = 0; // return value: view (map coordinates !)
 
   virtual void toggleDoor (const RPG_Map_Position_t&) = 0; // door position
-  virtual void setBlendRadius (unsigned char) = 0; // radius
+  virtual void setBlendRadius (ACE_UINT8) = 0; // radius
   virtual void updateMinimap () = 0;
   virtual void updateMessageWindow (const std::string&) = 0; // message
 };

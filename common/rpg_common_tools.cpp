@@ -469,7 +469,7 @@ RPG_Common_Tools::sizeToReach (const enum RPG_Common_Size& size_in,
   return 0;
 }
 
-unsigned short
+ACE_UINT8
 RPG_Common_Tools::environmentToRadius (const struct RPG_Common_Environment& environment_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::environmentToRadius"));
@@ -503,10 +503,10 @@ RPG_Common_Tools::environmentToRadius (const struct RPG_Common_Environment& envi
 }
 
 float
-RPG_Common_Tools::terrainToSpeedModifier (const enum RPG_Common_Terrain& terrain_in,
-                                          const enum RPG_Common_Track& track_in)
+RPG_Common_Tools::terrainToSpeedModifier (enum RPG_Common_Terrain terrain_in,
+                                          enum RPG_Common_Track track_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::terrain2SpeedModifier"));
+  RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::terrainToSpeedModifier"));
 
   // sanity check
   ACE_ASSERT ((track_in == TRACK_NONE)    ||

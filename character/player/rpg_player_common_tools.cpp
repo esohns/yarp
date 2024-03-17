@@ -61,7 +61,7 @@
 
 #include "rpg_engine_defines.h"
 
-std::bitset<6>
+RPG_Character_Race_t
 RPG_Player_Common_Tools::raceXMLTreeToRace (const RPG_Player_CharacterXML_XMLTree_Type::race_sequence& races_in)
 {
   RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::raceXMLTreeToRace"));
@@ -209,76 +209,74 @@ RPG_Player*
 RPG_Player_Common_Tools::playerXMLToPlayer (const RPG_Player_PlayerXML_XMLTree_Type& player_in,
                                             // current status
                                             const RPG_Character_Conditions_t& condition_in,
-                                            short HP_in,
+                                            ACE_INT16 HP_in,
                                             const RPG_Magic_Spells_t& spells_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::playerXMLToPlayer"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Common_Tools::playerXMLToPlayer"));
 
   RPG_Character_Alignment alignment;
   alignment.civic =
-      RPG_Character_AlignmentCivicHelper::stringToRPG_Character_AlignmentCivic(player_in.alignment().civic());
+      RPG_Character_AlignmentCivicHelper::stringToRPG_Character_AlignmentCivic (player_in.alignment ().civic ());
   alignment.ethic =
-      RPG_Character_AlignmentEthicHelper::stringToRPG_Character_AlignmentEthic(player_in.alignment().ethic());
+      RPG_Character_AlignmentEthicHelper::stringToRPG_Character_AlignmentEthic (player_in.alignment ().ethic ());
   RPG_Character_Attributes attributes;
-  attributes.strength = player_in.attributes().strength();
-  attributes.dexterity = player_in.attributes().dexterity();
-  attributes.constitution = player_in.attributes().constitution();
-  attributes.intelligence = player_in.attributes().intelligence();
-  attributes.wisdom = player_in.attributes().wisdom();
-  attributes.charisma = player_in.attributes().charisma();
+  attributes.strength = player_in.attributes ().strength ();
+  attributes.dexterity = player_in.attributes ().dexterity ();
+  attributes.constitution = player_in.attributes ().constitution ();
+  attributes.intelligence = player_in.attributes ().intelligence ();
+  attributes.wisdom = player_in.attributes ().wisdom ();
+  attributes.charisma = player_in.attributes ().charisma ();
   RPG_Character_Skills_t skills;
-  if (player_in.skills().present())
+  if (player_in.skills ().present ())
     skills =
-        RPG_Character_XML_Tools::skillsXMLTreeToSkills(player_in.skills().get());
+        RPG_Character_XML_Tools::skillsXMLTreeToSkills (player_in.skills ().get ());
   RPG_Character_Feats_t feats;
-  if (player_in.feats().present())
+  if (player_in.feats ().present ())
     feats =
-        RPG_Character_XML_Tools::featsXMLTreeToFeats(player_in.feats().get());
+        RPG_Character_XML_Tools::featsXMLTreeToFeats (player_in.feats ().get ());
   RPG_Character_Abilities_t abilities;
-  if (player_in.abilities().present())
+  if (player_in.abilities ().present ())
     abilities =
-        RPG_Player_Common_Tools::abilitiesXMLTreeToAbilities(player_in.abilities().get());
+        RPG_Player_Common_Tools::abilitiesXMLTreeToAbilities (player_in.abilities ().get ());
   RPG_Magic_SpellTypes_t known_spells;
-  if (player_in.knownSpells().present())
+  if (player_in.knownSpells ().present ())
     known_spells =
-        RPG_Player_Common_Tools::spellsXMLTreeToSpellTypes(player_in.knownSpells().get());
+        RPG_Player_Common_Tools::spellsXMLTreeToSpellTypes (player_in.knownSpells ().get ());
 
   RPG_Character_Conditions_t condition = condition_in;
-  if (condition.empty())
-    condition.insert(CONDITION_NORMAL);
+  if (condition.empty ())
+    condition.insert (CONDITION_NORMAL);
   RPG_Player* player_p = NULL;
-  ACE_NEW_NORETURN(player_p,
-                   RPG_Player(// base attributes
-                              player_in.name(),
-                              RPG_Character_GenderHelper::stringToRPG_Character_Gender(player_in.gender()),
-                              RPG_Player_Common_Tools::raceXMLTreeToRace(const_cast<RPG_Player_PlayerXML_XMLTree_Type&> (player_in).race()),
-                              RPG_Character_Class_Common_Tools::classXMLTreeToClass(player_in.classXML()),
-                              alignment,
-                              attributes,
-                              skills,
-                              feats,
-                              abilities,
-                              RPG_Character_OffHandHelper::stringToRPG_Character_OffHand(player_in.offhand()),
-                              player_in.maxHP(),
-                              known_spells,
-                              // extended data
-                              player_in.XP(),
-                              player_in.gold(),
-                              RPG_Item_Common_XML_Tools::instantiate(player_in.inventory()),
-                              // current status
-                              condition,
-                              ((HP_in == std::numeric_limits<short int>::max()) ? player_in.maxHP()
-                                                                                : HP_in),
-                              spells_in));
+  ACE_NEW_NORETURN (player_p,
+                    RPG_Player (// base attributes
+                                player_in.name(),
+                                RPG_Character_GenderHelper::stringToRPG_Character_Gender (player_in.gender ()),
+                                RPG_Player_Common_Tools::raceXMLTreeToRace (const_cast<RPG_Player_PlayerXML_XMLTree_Type&> (player_in).race ()),
+                                RPG_Character_Class_Common_Tools::classXMLTreeToClass (player_in.classXML ()),
+                                alignment,
+                                attributes,
+                                skills,
+                                feats,
+                                abilities,
+                                RPG_Character_OffHandHelper::stringToRPG_Character_OffHand (player_in.offhand ()),
+                                player_in.maxHP (),
+                                known_spells,
+                                // extended data
+                                player_in.XP (),
+                                player_in.gold (),
+                                RPG_Item_Common_XML_Tools::itemXMLTreeToItems (player_in.inventory ()),
+                                // current status
+                                condition,
+                                ((HP_in == std::numeric_limits<ACE_INT16>::max ()) ? player_in.maxHP ()
+                                                                                   : HP_in),
+                                spells_in));
   if (!player_p)
   {
-    ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate memory(%u), aborting\n"),
-               sizeof(RPG_Player)));
-
+    ACE_DEBUG ((LM_CRITICAL,
+                ACE_TEXT ("failed to allocate memory(%u), aborting\n"),
+                sizeof (RPG_Player)));
     return NULL;
   } // end IF
-  ACE_ASSERT(player_p);
 
   return player_p;
 }
@@ -286,125 +284,123 @@ RPG_Player_Common_Tools::playerXMLToPlayer (const RPG_Player_PlayerXML_XMLTree_T
 RPG_Player_PlayerXML_XMLTree_Type*
 RPG_Player_Common_Tools::playerToPlayerXML (const RPG_Player& player_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::playerToPlayerXML"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Common_Tools::playerToPlayerXML"));
 
-  RPG_Character_Alignment_XMLTree_Type alignment(RPG_Character_AlignmentCivicHelper::RPG_Character_AlignmentCivicToString(player_in.getAlignment().civic),
-  RPG_Character_AlignmentEthicHelper::RPG_Character_AlignmentEthicToString(player_in.getAlignment().ethic));
+  RPG_Character_Alignment_XMLTree_Type alignment (RPG_Character_AlignmentCivicHelper::RPG_Character_AlignmentCivicToString (player_in.getAlignment ().civic),
+  RPG_Character_AlignmentEthicHelper::RPG_Character_AlignmentEthicToString (player_in.getAlignment ().ethic));
 
-  RPG_Character_Attributes_XMLTree_Type attributes(player_in.getAttribute(ATTRIBUTE_STRENGTH),
-                                                   player_in.getAttribute(ATTRIBUTE_DEXTERITY),
-                                                   player_in.getAttribute(ATTRIBUTE_CONSTITUTION),
-                                                   player_in.getAttribute(ATTRIBUTE_INTELLIGENCE),
-                                                   player_in.getAttribute(ATTRIBUTE_WISDOM),
-                                                   player_in.getAttribute(ATTRIBUTE_CHARISMA));
+  RPG_Character_Attributes_XMLTree_Type attributes (player_in.getAttribute (ATTRIBUTE_STRENGTH),
+                                                    player_in.getAttribute (ATTRIBUTE_DEXTERITY),
+                                                    player_in.getAttribute (ATTRIBUTE_CONSTITUTION),
+                                                    player_in.getAttribute (ATTRIBUTE_INTELLIGENCE),
+                                                    player_in.getAttribute (ATTRIBUTE_WISDOM),
+                                                    player_in.getAttribute (ATTRIBUTE_CHARISMA));
 
   RPG_Player_Conditions_XMLTree_Type conditions;
-  RPG_Character_Conditions_t character_condition = player_in.getCondition();
-  for (RPG_Character_ConditionsIterator_t iterator = character_condition.begin();
-       iterator != character_condition.end();
+  RPG_Character_Conditions_t character_condition = player_in.getCondition ();
+  for (RPG_Character_ConditionsIterator_t iterator = character_condition.begin ();
+       iterator != character_condition.end ();
        iterator++)
-    conditions.condition().push_back(RPG_Common_ConditionHelper::RPG_Common_ConditionToString(*iterator));
+    conditions.condition ().push_back (RPG_Common_ConditionHelper::RPG_Common_ConditionToString (*iterator));
 
   RPG_Item_InventoryXML_XMLTree_Type inventory;
-  RPG_Player_Inventory character_inventory = player_in.getInventory();
+  RPG_Player_Inventory character_inventory = player_in.getInventory ();
   RPG_Item_Base* item_base = NULL;
-  for (RPG_Item_ListIterator_t iterator = character_inventory.myItems.begin();
-       iterator != character_inventory.myItems.end();
+  for (RPG_Item_ListIterator_t iterator = character_inventory.myItems.begin ();
+       iterator != character_inventory.myItems.end ();
        iterator++)
   {
     // retrieve item details
-    RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(*iterator,
-                                                         item_base);
-    ACE_ASSERT(item_base);
-    RPG_Item_BaseXML_XMLTree_Type item(RPG_Item_TypeHelper::RPG_Item_TypeToString(item_base->type()));
-    switch (item_base->type())
+    RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance ()->get (*iterator,
+                                                           item_base);
+    ACE_ASSERT (item_base);
+    RPG_Item_BaseXML_XMLTree_Type item (RPG_Item_TypeHelper::RPG_Item_TypeToString (item_base->type ()));
+    switch (item_base->type ())
     {
       case ITEM_ARMOR:
       {
-        RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(item_base);
-        ACE_ASSERT(armor);
+        RPG_Item_Armor* armor = static_cast<RPG_Item_Armor*> (item_base);
 
         RPG_Item_ArmorProperties armor_properties =
-            RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor->armorType());
+            RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getArmorProperties (armor->armorType ());
 
         RPG_Item_StorePrice_XMLTree_Type store_price;
         if (armor_properties.baseStorePrice.numGoldPieces)
-          store_price.numGoldPieces(armor_properties.baseStorePrice.numGoldPieces);
+          store_price.numGoldPieces (armor_properties.baseStorePrice.numGoldPieces);
         if (armor_properties.baseStorePrice.numSilverPieces)
-          store_price.numSilverPieces(armor_properties.baseStorePrice.numSilverPieces);
-        RPG_Item_ArmorPropertiesXML_XMLTree_Type armor_properties_xml(armor_properties.baseWeight,
-                                                                      store_price,
-                                                                      RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString(armor->armorType()),
-                                                                      RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString(armor_properties.category),
-                                                                      armor_properties.baseBonus,
-                                                                      armor_properties.maxDexterityBonus,
-                                                                      armor_properties.checkPenalty,
-                                                                      armor_properties.arcaneSpellFailure,
-                                                                      armor_properties.baseSpeed);
+          store_price.numSilverPieces (armor_properties.baseStorePrice.numSilverPieces);
+        RPG_Item_ArmorPropertiesXML_XMLTree_Type armor_properties_xml (armor_properties.baseWeight,
+                                                                       store_price,
+                                                                       RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString (armor->armorType ()),
+                                                                       RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString (armor_properties.category),
+                                                                       armor_properties.baseBonus,
+                                                                       armor_properties.maxDexterityBonus,
+                                                                       armor_properties.checkPenalty,
+                                                                       armor_properties.arcaneSpellFailure,
+                                                                       armor_properties.baseSpeed);
         if (armor_properties.defenseModifier)
-          armor_properties_xml.defenseModifier(armor_properties.defenseModifier);
+          armor_properties_xml.defenseModifier (armor_properties.defenseModifier);
         if (armor_properties.aura != RPG_MAGIC_SCHOOL_INVALID)
-          armor_properties_xml.aura(RPG_Magic_SchoolHelper::RPG_Magic_SchoolToString(armor_properties.aura));
+          armor_properties_xml.aura (RPG_Magic_SchoolHelper::RPG_Magic_SchoolToString (armor_properties.aura));
         if (armor_properties.prerequisites.minCasterLevel)
         {
           RPG_Item_MagicalPrerequisites_XMLTree_Type magical_prerequisites;
-          magical_prerequisites.minCasterLevel(armor_properties.prerequisites.minCasterLevel);
-          armor_properties_xml.prerequisites(magical_prerequisites);
+          magical_prerequisites.minCasterLevel (armor_properties.prerequisites.minCasterLevel);
+          armor_properties_xml.prerequisites (magical_prerequisites);
         } // end IF
         if (armor_properties.costToCreate.numGoldPieces ||
             armor_properties.costToCreate.numExperiencePoints)
         {
           RPG_Item_CreationCost_XMLTree_Type costs_to_create;
           if (armor_properties.costToCreate.numGoldPieces)
-            costs_to_create.numGoldPieces(armor_properties.costToCreate.numGoldPieces);
+            costs_to_create.numGoldPieces (armor_properties.costToCreate.numGoldPieces);
           if (armor_properties.costToCreate.numExperiencePoints)
-            costs_to_create.numExperiencePoints(armor_properties.costToCreate.numExperiencePoints);
-          armor_properties_xml.costToCreate(costs_to_create);
+            costs_to_create.numExperiencePoints (armor_properties.costToCreate.numExperiencePoints);
+          armor_properties_xml.costToCreate (costs_to_create);
         } // end IF
 
-        item.armor(armor_properties_xml);
-        inventory.item().push_back(item);
+        item.armor (armor_properties_xml);
+        inventory.item ().push_back (item);
 
         break;
       }
       case ITEM_COMMODITY:
       {
-        RPG_Item_Commodity* commodity = dynamic_cast<RPG_Item_Commodity*>(item_base);
-        ACE_ASSERT(commodity);
+        RPG_Item_Commodity* commodity = static_cast<RPG_Item_Commodity*>(item_base);
 
         RPG_Item_CommodityProperties commodity_properties =
-            RPG_ITEM_DICTIONARY_SINGLETON::instance()->getCommodityProperties(commodity->subtype());
+            RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getCommodityProperties (commodity->subtype ());
 
         RPG_Item_StorePrice_XMLTree_Type store_price;
         if (commodity_properties.baseStorePrice.numGoldPieces)
-          store_price.numGoldPieces(commodity_properties.baseStorePrice.numGoldPieces);
+          store_price.numGoldPieces (commodity_properties.baseStorePrice.numGoldPieces);
         if (commodity_properties.baseStorePrice.numSilverPieces)
-          store_price.numSilverPieces(commodity_properties.baseStorePrice.numSilverPieces);
-        RPG_Item_CommodityPropertiesBase_XMLTree_Type commodity_properties_xml(commodity_properties.baseWeight,
-                                                                               store_price,
-                                                                               RPG_Item_CommodityTypeHelper::RPG_Item_CommodityTypeToString(commodity->commodityType()),
-                                                                               RPG_Item_Common_Tools::commoditySubTypeToXMLString(commodity->subtype()));
+          store_price.numSilverPieces (commodity_properties.baseStorePrice.numSilverPieces);
+        RPG_Item_CommodityPropertiesBase_XMLTree_Type commodity_properties_xml (commodity_properties.baseWeight,
+                                                                                store_price,
+                                                                                RPG_Item_CommodityTypeHelper::RPG_Item_CommodityTypeToString (commodity->commodityType ()),
+                                                                                RPG_Item_Common_Tools::commoditySubTypeToXMLString (commodity->subtype ()));
         if (commodity_properties.aura != RPG_MAGIC_SCHOOL_INVALID)
-          commodity_properties_xml.aura(RPG_Magic_SchoolHelper::RPG_Magic_SchoolToString(commodity_properties.aura));
+          commodity_properties_xml.aura (RPG_Magic_SchoolHelper::RPG_Magic_SchoolToString (commodity_properties.aura));
         if (commodity_properties.prerequisites.minCasterLevel)
         {
           RPG_Item_MagicalPrerequisites_XMLTree_Type magical_prerequisites;
-          magical_prerequisites.minCasterLevel(commodity_properties.prerequisites.minCasterLevel);
-          commodity_properties_xml.prerequisites(magical_prerequisites);
+          magical_prerequisites.minCasterLevel (commodity_properties.prerequisites.minCasterLevel);
+          commodity_properties_xml.prerequisites (magical_prerequisites);
         } // end IF
         if (commodity_properties.costToCreate.numGoldPieces ||
             commodity_properties.costToCreate.numExperiencePoints)
         {
           RPG_Item_CreationCost_XMLTree_Type costs_to_create;
           if (commodity_properties.costToCreate.numGoldPieces)
-            costs_to_create.numGoldPieces(commodity_properties.costToCreate.numGoldPieces);
+            costs_to_create.numGoldPieces (commodity_properties.costToCreate.numGoldPieces);
           if (commodity_properties.costToCreate.numExperiencePoints)
-            costs_to_create.numExperiencePoints(commodity_properties.costToCreate.numExperiencePoints);
-          commodity_properties_xml.costToCreate(costs_to_create);
+            costs_to_create.numExperiencePoints (commodity_properties.costToCreate.numExperiencePoints);
+          commodity_properties_xml.costToCreate (costs_to_create);
         } // end IF
 
-        item.commodity(commodity_properties_xml);
-        inventory.item().push_back(item);
+        item.commodity (commodity_properties_xml);
+        inventory.item ().push_back (item);
 
         break;
       }
@@ -418,156 +414,153 @@ RPG_Player_Common_Tools::playerToPlayerXML (const RPG_Player& player_in)
       }
       case ITEM_WEAPON:
       {
-        RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*>(item_base);
-        ACE_ASSERT(weapon);
+        RPG_Item_Weapon* weapon = static_cast<RPG_Item_Weapon*>(item_base);
 
         RPG_Item_WeaponProperties weapon_properties =
-            RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon->weaponType_);
+            RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getWeaponProperties (weapon->weaponType_);
 
-        RPG_Item_BaseXML_XMLTree_Type item(RPG_Item_TypeHelper::RPG_Item_TypeToString(item_base->type()));
+        RPG_Item_BaseXML_XMLTree_Type item(RPG_Item_TypeHelper::RPG_Item_TypeToString (item_base->type ()));
         RPG_Item_StorePrice_XMLTree_Type store_price;
         if (weapon_properties.baseStorePrice.numGoldPieces)
-          store_price.numGoldPieces(weapon_properties.baseStorePrice.numGoldPieces);
+          store_price.numGoldPieces (weapon_properties.baseStorePrice.numGoldPieces);
         if (weapon_properties.baseStorePrice.numSilverPieces)
-          store_price.numSilverPieces(weapon_properties.baseStorePrice.numSilverPieces);
-        RPG_Dice_Roll_XMLTree_Type base_damage(RPG_Dice_DieTypeHelper::RPG_Dice_DieTypeToString(weapon_properties.baseDamage.typeDice));
+          store_price.numSilverPieces (weapon_properties.baseStorePrice.numSilverPieces);
+        RPG_Dice_Roll_XMLTree_Type base_damage (RPG_Dice_DieTypeHelper::RPG_Dice_DieTypeToString (weapon_properties.baseDamage.typeDice));
         if (weapon_properties.baseDamage.numDice)
-          base_damage.numDice(weapon_properties.baseDamage.numDice);
+          base_damage.numDice (weapon_properties.baseDamage.numDice);
         if (weapon_properties.baseDamage.modifier)
-          base_damage.modifier(weapon_properties.baseDamage.modifier);
-        RPG_Item_CriticalHitProperties_XMLTree_Type critical_hit_properties(weapon_properties.criticalHit.minToHitRoll,
-                                                                            weapon_properties.criticalHit.damageModifier);
-        RPG_Item_WeaponPropertiesXML_XMLTree_Type weapon_properties_xml(weapon_properties.baseWeight,
-                                                                        store_price,
-                                                                        RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon->weaponType_),
-                                                                        RPG_Item_WeaponCategoryHelper::RPG_Item_WeaponCategoryToString(weapon_properties.category),
-                                                                        RPG_Item_WeaponClassHelper::RPG_Item_WeaponClassToString(weapon_properties.weaponClass),
-                                                                        base_damage,
-                                                                        critical_hit_properties);
+          base_damage.modifier (weapon_properties.baseDamage.modifier);
+        RPG_Item_CriticalHitProperties_XMLTree_Type critical_hit_properties (weapon_properties.criticalHit.minToHitRoll,
+                                                                             weapon_properties.criticalHit.damageModifier);
+        RPG_Item_WeaponPropertiesXML_XMLTree_Type weapon_properties_xml (weapon_properties.baseWeight,
+                                                                         store_price,
+                                                                         RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString (weapon->weaponType_),
+                                                                         RPG_Item_WeaponCategoryHelper::RPG_Item_WeaponCategoryToString (weapon_properties.category),
+                                                                         RPG_Item_WeaponClassHelper::RPG_Item_WeaponClassToString (weapon_properties.weaponClass),
+                                                                         base_damage,
+                                                                         critical_hit_properties);
         if (weapon_properties.toHitModifier)
-          weapon_properties_xml.toHitModifier(weapon_properties.toHitModifier);
+          weapon_properties_xml.toHitModifier (weapon_properties.toHitModifier);
         if (weapon_properties.rangeIncrement)
-          weapon_properties_xml.rangeIncrement(weapon_properties.rangeIncrement);
+          weapon_properties_xml.rangeIncrement (weapon_properties.rangeIncrement);
         RPG_Item_WeaponPropertiesBase_XMLTree_Type::typeOfDamage_sequence type_of_damage;
         int index = PHYSICALDAMAGE_NONE; index++;
         for (unsigned int i = 0;
              i < weapon_properties.typeOfDamage.size();
              i++, index++)
-         if (weapon_properties.typeOfDamage.test(i))
-           type_of_damage.push_back(RPG_Common_PhysicalDamageTypeHelper::RPG_Common_PhysicalDamageTypeToString(static_cast<RPG_Common_PhysicalDamageType>(index)));
-        weapon_properties_xml.typeOfDamage(type_of_damage);
-        weapon_properties_xml.isNonLethal(weapon_properties.isNonLethal);
-        weapon_properties_xml.isReachWeapon(weapon_properties.isReachWeapon);
-        weapon_properties_xml.isDoubleWeapon(weapon_properties.isDoubleWeapon);
+         if (weapon_properties.typeOfDamage.test (i))
+           type_of_damage.push_back (RPG_Common_PhysicalDamageTypeHelper::RPG_Common_PhysicalDamageTypeToString (static_cast<RPG_Common_PhysicalDamageType> (index)));
+        weapon_properties_xml.typeOfDamage (type_of_damage);
+        weapon_properties_xml.isNonLethal (weapon_properties.isNonLethal);
+        weapon_properties_xml.isReachWeapon (weapon_properties.isReachWeapon);
+        weapon_properties_xml.isDoubleWeapon (weapon_properties.isDoubleWeapon);
         if (weapon_properties.aura != RPG_MAGIC_SCHOOL_INVALID)
-          weapon_properties_xml.aura(RPG_Magic_SchoolHelper::RPG_Magic_SchoolToString(weapon_properties.aura));
+          weapon_properties_xml.aura (RPG_Magic_SchoolHelper::RPG_Magic_SchoolToString (weapon_properties.aura));
         if (weapon_properties.prerequisites.minCasterLevel)
         {
           RPG_Item_MagicalPrerequisites_XMLTree_Type magical_prerequisites;
-          magical_prerequisites.minCasterLevel(weapon_properties.prerequisites.minCasterLevel);
-          weapon_properties_xml.prerequisites(magical_prerequisites);
+          magical_prerequisites.minCasterLevel (weapon_properties.prerequisites.minCasterLevel);
+          weapon_properties_xml.prerequisites (magical_prerequisites);
         } // end IF
         if (weapon_properties.costToCreate.numGoldPieces ||
             weapon_properties.costToCreate.numExperiencePoints)
         {
           RPG_Item_CreationCost_XMLTree_Type costs_to_create;
           if (weapon_properties.costToCreate.numGoldPieces)
-            costs_to_create.numGoldPieces(weapon_properties.costToCreate.numGoldPieces);
+            costs_to_create.numGoldPieces (weapon_properties.costToCreate.numGoldPieces);
           if (weapon_properties.costToCreate.numExperiencePoints)
-            costs_to_create.numExperiencePoints(weapon_properties.costToCreate.numExperiencePoints);
-          weapon_properties_xml.costToCreate(costs_to_create);
+            costs_to_create.numExperiencePoints (weapon_properties.costToCreate.numExperiencePoints);
+          weapon_properties_xml.costToCreate (costs_to_create);
         } // end IF
 
-        item.weapon(weapon_properties_xml);
-        inventory.item().push_back(item);
+        item.weapon (weapon_properties_xml);
+        inventory.item ().push_back (item);
 
         break;
       }
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid item type (was: \"%s\"), aborting\n"),
-                   ACE_TEXT(RPG_Item_TypeHelper::RPG_Item_TypeToString(item_base->type()).c_str())));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("invalid item type (was: \"%s\"), aborting\n"),
+                    ACE_TEXT (RPG_Item_TypeHelper::RPG_Item_TypeToString (item_base->type ()).c_str ())));
         return NULL;
       }
     } // end SWITCH
   } // end FOR
 
-  RPG_Character_Class character_class = player_in.getClass();
-  RPG_Character_ClassXML_XMLTree_Type classXML(RPG_Character_MetaClass_XMLTree_Type(static_cast<RPG_Character_MetaClass_XMLTree_Type::value>(character_class.metaClass)));
-  for (RPG_Character_SubClassesIterator_t iterator = character_class.subClasses.begin();
-       iterator != character_class.subClasses.end();
+  RPG_Character_Class character_class = player_in.getClass ();
+  RPG_Character_ClassXML_XMLTree_Type classXML (RPG_Character_MetaClass_XMLTree_Type (static_cast<RPG_Character_MetaClass_XMLTree_Type::value> (character_class.metaClass)));
+  for (RPG_Character_SubClassesIterator_t iterator = character_class.subClasses.begin ();
+       iterator != character_class.subClasses.end ();
        iterator++)
-    classXML.subClass().push_back(RPG_Common_SubClass_XMLTree_Type(static_cast<RPG_Common_SubClass_XMLTree_Type::value>(*iterator)));
+    classXML.subClass ().push_back (RPG_Common_SubClass_XMLTree_Type (static_cast<RPG_Common_SubClass_XMLTree_Type::value> (*iterator)));
 
   RPG_Player_PlayerXML_XMLTree_Type* player_p = NULL;
-  ACE_NEW_NORETURN(player_p,
-                   RPG_Player_PlayerXML_XMLTree_Type(player_in.getName(),
-                                                     alignment,
-                                                     attributes,
-                                                     RPG_Common_Size_XMLTree_Type(static_cast<RPG_Common_Size_XMLTree_Type::value>(player_in.getSize())),
-                                                     player_in.getNumTotalHitPoints(),
-                                                     classXML,
-                                                     RPG_Character_Gender_XMLTree_Type(static_cast<RPG_Character_Gender_XMLTree_Type::value>(player_in.getGender())),
-                                                     RPG_Character_OffHand_XMLTree_Type(static_cast<RPG_Character_OffHand_XMLTree_Type::value>(player_in.getOffHand())),
-                                                     player_in.getWealth(),
-                                                     inventory,
-                                                     player_in.getExperience()));
+  ACE_NEW_NORETURN (player_p,
+                    RPG_Player_PlayerXML_XMLTree_Type (player_in.getName (),
+                                                       alignment,
+                                                       attributes,
+                                                       RPG_Common_Size_XMLTree_Type (static_cast<RPG_Common_Size_XMLTree_Type::value> (player_in.getSize ())),
+                                                       player_in.getNumTotalHitPoints (),
+                                                       classXML,
+                                                       RPG_Character_Gender_XMLTree_Type (static_cast<RPG_Character_Gender_XMLTree_Type::value> (player_in.getGender ())),
+                                                       RPG_Character_OffHand_XMLTree_Type (static_cast<RPG_Character_OffHand_XMLTree_Type::value> (player_in.getOffHand ())),
+                                                       player_in.getWealth (),
+                                                       inventory,
+                                                       player_in.getExperience ()));
   if (!player_p)
   {
-    ACE_DEBUG((LM_CRITICAL,
-               ACE_TEXT("failed to allocate memory(%u), aborting\n"),
-               sizeof(RPG_Player_PlayerXML_XMLTree_Type)));
-
+    ACE_DEBUG ((LM_CRITICAL,
+                ACE_TEXT ("failed to allocate memory(%u), aborting\n"),
+                sizeof (RPG_Player_PlayerXML_XMLTree_Type)));
     return NULL;
   } // end IF
-  ACE_ASSERT(player_p);
+  ACE_ASSERT (player_p);
 
   // *NOTE*: add race, skills, feats, abilities, known spells, prepared spells sequences "manually"
-  RPG_Character_Race_t character_race = player_in.getRace();
+  RPG_Character_Race_t character_race = player_in.getRace ();
   int index = RACE_NONE; index++;
   for (unsigned int i = 0;
-       i < character_race.size();
+       i < character_race.size ();
        i++, index++)
-    if (character_race.test(i))
-      player_p->race().push_back(RPG_Character_RaceHelper::RPG_Character_RaceToString(static_cast<RPG_Character_Race>(index)));
+    if (character_race.test (i))
+      player_p->race ().push_back (RPG_Character_RaceHelper::RPG_Character_RaceToString (static_cast<RPG_Character_Race> (index)));
 
   RPG_Character_Skills_XMLTree_Type skills;
-  RPG_Character_Skills_t character_skills = player_in.getSkills();
-  for (RPG_Character_SkillsConstIterator_t iterator = character_skills.begin();
-       iterator != character_skills.end();
+  RPG_Character_Skills_t character_skills = player_in.getSkills ();
+  for (RPG_Character_SkillsConstIterator_t iterator = character_skills.begin ();
+       iterator != character_skills.end ();
        iterator++)
   {
-    RPG_Character_SkillValue_XMLTree_Type skill(RPG_Common_SkillHelper::RPG_Common_SkillToString((*iterator).first),
-                                                (*iterator).second);
-    skills.skill().push_back(skill);
+    RPG_Character_SkillValue_XMLTree_Type skill (RPG_Common_SkillHelper::RPG_Common_SkillToString ((*iterator).first),
+                                                 (*iterator).second);
+    skills.skill ().push_back (skill);
   } // end FOR
-  player_p->skills().set(skills);
+  player_p->skills ().set (skills);
 
   RPG_Character_Feats_XMLTree_Type feats;
-  RPG_Character_Feats_t character_feats = player_in.getFeats();
-  for (RPG_Character_FeatsConstIterator_t iterator = character_feats.begin();
-       iterator != character_feats.end();
+  RPG_Character_Feats_t character_feats = player_in.getFeats ();
+  for (RPG_Character_FeatsConstIterator_t iterator = character_feats.begin ();
+       iterator != character_feats.end ();
        iterator++)
-    feats.feat().push_back(RPG_Character_FeatHelper::RPG_Character_FeatToString(*iterator));
-  player_p->feats().set(feats);
+    feats.feat ().push_back (RPG_Character_FeatHelper::RPG_Character_FeatToString (*iterator));
+  player_p->feats ().set (feats);
 
   RPG_Player_Abilities_XMLTree_Type abilities;
-  RPG_Character_Abilities_t character_abilities = player_in.getAbilities();
-  for (RPG_Character_AbilitiesConstIterator_t iterator = character_abilities.begin();
-       iterator != character_abilities.end();
+  RPG_Character_Abilities_t character_abilities = player_in.getAbilities ();
+  for (RPG_Character_AbilitiesConstIterator_t iterator = character_abilities.begin ();
+       iterator != character_abilities.end ();
        iterator++)
-    abilities.ability().push_back(RPG_Character_AbilityHelper::RPG_Character_AbilityToString(*iterator));
-  player_p->abilities().set(abilities);
+    abilities.ability ().push_back (RPG_Character_AbilityHelper::RPG_Character_AbilityToString (*iterator));
+  player_p->abilities ().set (abilities);
 
   RPG_Player_Spells_XMLTree_Type spell_list;
-  RPG_Magic_SpellTypes_t character_known_spells = player_in.getKnownSpells();
-  for (RPG_Magic_SpellTypesIterator_t iterator = character_known_spells.begin();
-       iterator != character_known_spells.end();
+  RPG_Magic_SpellTypes_t character_known_spells = player_in.getKnownSpells ();
+  for (RPG_Magic_SpellTypesIterator_t iterator = character_known_spells.begin ();
+       iterator != character_known_spells.end ();
        iterator++)
-    spell_list.spell().push_back(RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString(*iterator));
-  player_p->knownSpells().set(spell_list);
+    spell_list.spell ().push_back (RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString (*iterator));
+  player_p->knownSpells ().set (spell_list);
 
   return player_p;
 }

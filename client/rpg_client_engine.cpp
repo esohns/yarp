@@ -970,7 +970,7 @@ next:
     }
     case COMMAND_TILE_HIGHLIGHT_DRAW:
     { ACE_ASSERT (client_action.window);
-      SDL_Rect window_area;
+      struct SDL_Rect window_area;
       client_action.window->getArea (window_area, true);
       RPG_Client_IWindowLevel* level_window = NULL;
       try {

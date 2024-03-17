@@ -35,15 +35,18 @@
 RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase (const RPG_Graphics_WindowType& type_in,
                                                         const RPG_Graphics_Size_t& size_in,
                                                         const std::string& title_in)
-//                                                        SDL_Surface* backGround_in)
- : screen_ (NULL)
+#if defined (SDL2_USE)
+  : renderer_ (NULL)
+  , screen_ (NULL)
+#elif defined (SDL_USE)
+  : screen_ (NULL)
+#endif // SDL2_USE || SDL_USE
  , screenLock_ (NULL)
  , borderTop_ (0)
  , borderBottom_ (0)
  , borderLeft_ (0)
  , borderRight_ (0)
  , title_ (title_in)
- //, backGround_ (backGround_in)
  , parent_ (NULL)
  , children_ ()
  , lastAbsolutePosition_ (std::make_pair (std::numeric_limits<unsigned int>::max (),
@@ -64,15 +67,18 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase (const RPG_Graphics_Windo
                                                         const RPG_Graphics_SDLWindowBase& parent_in,
                                                         const RPG_Graphics_Offset_t& offset_in,
                                                         const std::string& title_in)
-//                                                        SDL_Surface* backGround_in)
+#if defined (SDL2_USE)
+ : renderer_ (parent_in.renderer_)
+ , screen_ (parent_in.screen_)
+#elif defined (SDL_USE)
  : screen_ (parent_in.screen_)
+#endif // SDL2_USE || SDL_USE
  , screenLock_ (NULL)
  , borderTop_ (0)
  , borderBottom_ (0)
  , borderLeft_ (0)
  , borderRight_ (0)
  , title_ (title_in)
-//     backGround_ (backGround_in)
  , parent_ (&const_cast<RPG_Graphics_SDLWindowBase&> (parent_in))
  , children_ ()
  , lastAbsolutePosition_ (std::make_pair (std::numeric_limits<unsigned int>::max (),

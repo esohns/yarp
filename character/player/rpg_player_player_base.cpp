@@ -57,13 +57,13 @@ RPG_Player_Player_Base::RPG_Player_Player_Base (// base attributes
                                                 const RPG_Character_Feats_t& feats_in,
                                                 const RPG_Character_Abilities_t& abilities_in,
                                                 enum RPG_Character_OffHand offHand_in,
-                                                unsigned short maxHitPoints_in,
+                                                ACE_UINT16 maxHitPoints_in,
                                                 const RPG_Magic_SpellTypes_t& knownSpells_in,
                                                 // current status
                                                 const RPG_Character_Conditions_t& condition_in,
-                                                short hitpoints_in,
-                                                unsigned int experience_in,
-                                                unsigned int wealth_in,
+                                                ACE_INT16 hitpoints_in,
+                                                ACE_UINT64 experience_in,
+                                                ACE_UINT64 wealth_in,
                                                 const RPG_Magic_Spells_t& spells_in,
                                                 const RPG_Item_List_t& inventory_in)
  : inherited (name_in,
@@ -130,13 +130,13 @@ RPG_Player_Player_Base::initialize (// base attributes
                                     const RPG_Character_Feats_t& feats_in,
                                     const RPG_Character_Abilities_t& abilities_in,
                                     enum RPG_Character_OffHand offHand_in,
-                                    unsigned short maxHitPoints_in,
+                                    ACE_UINT16 maxHitPoints_in,
                                     const RPG_Magic_SpellTypes_t& knownSpells_in,
                                     // current status
                                     const RPG_Character_Conditions_t& condition_in,
-                                    short hitpoints_in,
-                                    unsigned int experience_in,
-                                    unsigned int wealth_in,
+                                    ACE_INT16 hitpoints_in,
+                                    ACE_UINT64 experience_in,
+                                    ACE_UINT64 wealth_in,
                                     const RPG_Magic_Spells_t& spells_in,
                                     const RPG_Item_List_t& inventory_in)
 {
@@ -272,18 +272,18 @@ RPG_Player_Player_Base::getArmorClass (enum RPG_Combat_DefenseSituation defenseS
   return result;
 }
 
-unsigned short
-RPG_Player_Player_Base::getReach(unsigned short& baseRange_out,
-                                 bool& reachIsAbsolute_out) const
+ACE_UINT16
+RPG_Player_Player_Base::getReach (unsigned short& baseRange_out,
+                                  bool& reachIsAbsolute_out) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getReach"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::getReach"));
 
   // init return value(s)
   baseRange_out = 0;
   reachIsAbsolute_out = false;
 
   // *TODO*: consider polymorphed states...
-  unsigned short result = RPG_Common_Tools::sizeToReach(mySize, true);
+  unsigned short result = RPG_Common_Tools::sizeToReach (mySize, true);
 
   RPG_Item_WeaponType weapon_type = myEquipment.getPrimaryWeapon(myOffHand);
   // sanity check: equipped any weapon ?
@@ -291,35 +291,34 @@ RPG_Player_Player_Base::getReach(unsigned short& baseRange_out,
     return result;
 
   const RPG_Item_WeaponProperties& properties =
-      RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_type);
-  if (RPG_Item_Common_Tools::isMeleeWeapon(weapon_type))
+      RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getWeaponProperties (weapon_type);
+  if (RPG_Item_Common_Tools::isMeleeWeapon (weapon_type))
   {
     if (properties.isReachWeapon)
     {
       result *= 2;
       reachIsAbsolute_out =
-          RPG_Item_Common_Tools::hasAbsoluteReach(weapon_type);
+          RPG_Item_Common_Tools::hasAbsoluteReach (weapon_type);
     } // end IF
   } // end IF
   else
   {
     // --> ranged weapon
-    ACE_ASSERT(RPG_Item_Common_Tools::isRangedWeapon(weapon_type));
+    ACE_ASSERT(RPG_Item_Common_Tools::isRangedWeapon (weapon_type));
 
     baseRange_out = properties.rangeIncrement;
 
     // compute max reach for ranged weapons
-    if (RPG_Item_Common_Tools::isThrownWeapon(weapon_type))
+    if (RPG_Item_Common_Tools::isThrownWeapon (weapon_type))
       result = baseRange_out * 5;
-    else if (RPG_Item_Common_Tools::isProjectileWeapon(weapon_type))
+    else if (RPG_Item_Common_Tools::isProjectileWeapon (weapon_type))
       result = baseRange_out * 10;
     else
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid weapon type (was \"%s\"), continuing\n"),
-                 ACE_TEXT(RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString(weapon_type).c_str())));
-
-      ACE_ASSERT(false);
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid weapon type (was \"%s\"), continuing\n"),
+                  ACE_TEXT (RPG_Item_WeaponTypeHelper::RPG_Item_WeaponTypeToString (weapon_type).c_str ())));
+      ACE_ASSERT (false);
     } // end IF
   } // end ELSE
 
@@ -327,15 +326,15 @@ RPG_Player_Player_Base::getReach(unsigned short& baseRange_out,
 }
 
 ACE_UINT8
-RPG_Player_Player_Base::getSpeed(bool isRunning_in,
-                                 enum RPG_Common_AmbientLighting lighting_in,
-                                 enum RPG_Common_Terrain terrain_in,
-                                 enum RPG_Common_Track track_in) const
+RPG_Player_Player_Base::getSpeed (bool isRunning_in,
+                                  enum RPG_Common_AmbientLighting lighting_in,
+                                  enum RPG_Common_Terrain terrain_in,
+                                  enum RPG_Common_Track track_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getSpeed"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::getSpeed"));
 
   // sanity check(s)
-  ACE_ASSERT(lighting_in != RPG_COMMON_AMBIENTLIGHTING_INVALID);
+  ACE_ASSERT (lighting_in != RPG_COMMON_AMBIENTLIGHTING_INVALID);
 
   // init return value
   unsigned char result = 0;
@@ -344,25 +343,25 @@ RPG_Player_Player_Base::getSpeed(bool isRunning_in,
   unsigned char base_speed = 0;
   unsigned int race_index = 1;
   for (unsigned int index = 0;
-       index < myRace.size();
+       index < myRace.size ();
        index++, race_index++)
-    if (myRace.test(index))
+    if (myRace.test (index))
     {
       base_speed =
-          RPG_Character_Race_Common_Tools::raceToSpeed(static_cast<RPG_Character_Race>(race_index));
+          RPG_Character_Race_Common_Tools::raceToSpeed (static_cast<RPG_Character_Race>(race_index));
       if (base_speed > result)
         result = base_speed;
     } // end IF
-  ACE_ASSERT(base_speed);
+  ACE_ASSERT (base_speed);
 
   // step2: consider encumbrance (armor / load)
   RPG_Character_Encumbrance encumbrance_by_armor = LOAD_LIGHT;
   RPG_Item_ArmorType armor_type =
-      const_cast<RPG_Player_Player_Base*>(this)->getEquipment().getBodyArmor();
+      const_cast<RPG_Player_Player_Base*> (this)->getEquipment ().getBodyArmor ();
   if (armor_type != ARMOR_NONE)
   {
     const RPG_Item_ArmorProperties& properties =
-        RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_type);
+        RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getArmorProperties (armor_type);
     switch (properties.category)
     {
       case ARMORCATEGORY_LIGHT:
@@ -382,15 +381,15 @@ RPG_Player_Player_Base::getSpeed(bool isRunning_in,
     } // end SWITCH
   } // end IF
   // *NOTE*: dwarves move at the base speed with any armor...
-  if (RPG_Character_Race_Common_Tools::hasRace(myRace, RACE_DWARF))
+  if (RPG_Character_Race_Common_Tools::hasRace (myRace, RACE_DWARF))
     encumbrance_by_armor = LOAD_LIGHT;
   // *TODO*: consider non-bipeds...
   RPG_Character_Encumbrance encumbrance_by_load =
-      RPG_Character_Common_Tools::getEncumbrance(getAttribute(ATTRIBUTE_STRENGTH),
-                                                 getSize(),
-                                                 getInventory().getTotalWeight(),
-                                                 true);
-  signed char maxDexModifierAC = std::numeric_limits<signed char>::max();
+      RPG_Character_Common_Tools::getEncumbrance (getAttribute (ATTRIBUTE_STRENGTH),
+                                                  getSize (),
+                                                  getInventory ().getTotalWeight (),
+                                                  true);
+  signed char maxDexModifierAC = std::numeric_limits<signed char>::max ();
   signed char armorCheckPenalty = 0;
   unsigned char runModifier = RPG_CHARACTER_RUN_MODIFIER_MEDIUM;
   RPG_Character_Common_Tools::getLoadModifiers (((encumbrance_by_armor > encumbrance_by_load) ? encumbrance_by_armor
@@ -403,13 +402,13 @@ RPG_Player_Player_Base::getSpeed(bool isRunning_in,
 
   float modifier = 1.0F;
   // step3: consider vision [equipment / ambient lighting]
-  if ((const_cast<RPG_Player_Player_Base*>(this)->getEquipment().getLightSource() ==
+  if ((const_cast<RPG_Player_Player_Base*> (this)->getEquipment ().getLightSource () ==
        RPG_ITEM_COMMODITYLIGHT_INVALID) &&
       (lighting_in == AMBIENCE_DARKNESS))
     modifier *= 0.5F;
 
   // step4: consider terrain [track type]
-  modifier *= RPG_Common_Tools::terrainToSpeedModifier(terrain_in, track_in);
+  modifier *= RPG_Common_Tools::terrainToSpeedModifier (terrain_in, track_in);
 
   // step5: consider movement mode
   if (isRunning_in)
@@ -419,14 +418,6 @@ RPG_Player_Player_Base::getSpeed(bool isRunning_in,
 
   // *TODO*: consider other (spell, ...) effects
   return result;
-}
-
-bool
-RPG_Player_Player_Base::isPlayerCharacter() const
-{
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::isPlayerCharacter"));
-
-  return true;
 }
 
 enum RPG_Common_SubClass

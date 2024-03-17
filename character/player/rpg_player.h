@@ -60,8 +60,8 @@ class RPG_Player
   virtual struct RPG_Dice_Roll getHitDicePerLevel (enum RPG_Common_SubClass) const;
   virtual ACE_UINT8 getFeatsPerLevel (enum RPG_Common_SubClass) const;
   virtual ACE_UINT8 getSkillsPerLevel (enum RPG_Common_SubClass) const;
-  virtual unsigned short getKnownSpellsPerLevel (enum RPG_Common_SubClass, // (spellcaster-) subclass
-                                                 ACE_UINT8) const;         // spell level
+  virtual ACE_UINT16 getKnownSpellsPerLevel (enum RPG_Common_SubClass, // (spellcaster-) subclass
+                                             ACE_UINT8) const;         // spell level
 
   // *WARNING*: result needs to be delete()d !
   static RPG_Player* random (); // return value: (random) player

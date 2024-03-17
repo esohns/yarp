@@ -256,6 +256,7 @@ RPG_Graphics_Surface::load (const std::string& filename_in,
   } // end IF
 
   // *TODO*: there seems to be a bug in WIN32 ACE_OS::fopen()
+  //FILE* file_ptr = ACE_OS::fopen (filename_in.c_str (),         // filename
   FILE* file_ptr = ::fopen (filename_in.c_str (),         // filename
                             ACE_TEXT_ALWAYS_CHAR ("rb")); // mode
   if (file_ptr == NULL)

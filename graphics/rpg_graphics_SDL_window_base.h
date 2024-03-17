@@ -97,7 +97,6 @@ class RPG_Graphics_SDLWindowBase
   RPG_Graphics_SDLWindowBase (const RPG_Graphics_WindowType&, // type
                               const RPG_Graphics_Size_t&,     // size
                               const std::string&);            // title
-//                              SDL_Surface* = NULL);             // background
   // embedded ("child") window(s)
   // *NOTE*: window assumes responsibility for its background surface
   RPG_Graphics_SDLWindowBase (const RPG_Graphics_WindowType&,    // type
@@ -105,7 +104,6 @@ class RPG_Graphics_SDLWindowBase
                               // *NOTE*: offset doesn't include any border(s) !
                               const RPG_Graphics_Offset_t&,      // offset
                               const std::string&);               // title
-//                              SDL_Surface* = NULL);              // background
 
   virtual SDL_Rect getDirty () const; // "dirty" area
   void clean ();

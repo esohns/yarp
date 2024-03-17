@@ -51,7 +51,7 @@ struct RPG_Sound_SoundCacheNode
   std::string     sound_file;
   Mix_Chunk*      chunk;
 
-  bool operator==(const struct RPG_Sound_SoundCacheNode& rhs_in) const
+  inline bool operator== (const struct RPG_Sound_SoundCacheNode& rhs_in) const
   { return (this->sound_event == rhs_in.sound_event); }
 };
 typedef std::vector<struct RPG_Sound_SoundCacheNode> RPG_Sound_SoundCache_t;

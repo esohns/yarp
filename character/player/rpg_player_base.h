@@ -86,11 +86,11 @@ class RPG_Player_Base
   bool hasAbility (enum RPG_Character_Ability) const; // ability
   bool hasCondition (enum RPG_Common_Condition) const; // condition
 
-  inline unsigned short getNumTotalHitPoints () const { return myNumTotalHitPoints; }
-  inline void setNumTotalHitPoints (unsigned short numberOfTotalHitPoints_in) { myNumTotalHitPoints = numberOfTotalHitPoints_in; }
-  inline short getNumHitPoints () const { return myNumHitPoints; }
+  inline ACE_UINT16 getNumTotalHitPoints () const { return myNumTotalHitPoints; }
+  inline void setNumTotalHitPoints (ACE_UINT16 numberOfTotalHitPoints_in) { myNumTotalHitPoints = numberOfTotalHitPoints_in; }
+  inline ACE_INT16 getNumHitPoints () const { return myNumHitPoints; }
 
-  inline unsigned int getWealth () const { return myWealth; }
+  inline ACE_UINT64 getWealth () const { return myWealth; }
 
   inline const RPG_Magic_SpellTypes_t& getKnownSpells () const { return myKnownSpells; }
   inline const RPG_Magic_Spells_t& getSpells () const { return mySpells; }
@@ -113,12 +113,12 @@ class RPG_Player_Base
                    const RPG_Character_Skills_t&,     // skills
                    const RPG_Character_Feats_t&,      // base feats
                    const RPG_Character_Abilities_t&,  // base abilities
-                   unsigned short,                    // max HP
+                   ACE_UINT16,                        // max HP
                    const RPG_Magic_SpellTypes_t&,     // set of known spells (bard / sorcerer)
                    // current status
                    const RPG_Character_Conditions_t&, // condition
-                   short,                             // HP
-                   unsigned int,                      // wealth (GP)
+                   ACE_INT16,                         // HP
+                   ACE_UINT64,                        // wealth (GP)
                    const RPG_Magic_Spells_t&,         // list of memorized/prepared spells (!bard)
                    const RPG_Item_List_t&);           // list of (carried) items
   RPG_Player_Base (const RPG_Player_Base&);
@@ -131,16 +131,16 @@ class RPG_Player_Base
                    const RPG_Character_Skills_t&,     // skills
                    const RPG_Character_Feats_t&,      // base feats
                    const RPG_Character_Abilities_t&,  // base abilities
-                   unsigned short,                    // max HP
+                   ACE_UINT16,                        // max HP
                    const RPG_Magic_SpellTypes_t&,     // set of known spells (bard / sorcerer)
                    // current status
                    const RPG_Character_Conditions_t&, // condition
-                   short,                             // HP
-                   unsigned int,                      // wealth (GP)
+                   ACE_INT16,                         // HP
+                   ACE_UINT64,                        // wealth (GP)
                    const RPG_Magic_Spells_t&,         // list of memorized/prepared spells (!bard)
                    const RPG_Item_List_t&);           // list of (carried) items
 
-  unsigned int                    myWealth;
+  ACE_UINT64                      myWealth;
 
   RPG_Magic_SpellTypes_t          myKnownSpells;
   RPG_Magic_Spells_t              mySpells;
@@ -148,7 +148,7 @@ class RPG_Player_Base
   RPG_Player_Inventory            myInventory;
   RPG_Player_Equipment            myEquipment;
 
-  short                           myNumHitPoints;
+  ACE_INT16                       myNumHitPoints;
   RPG_Character_Conditions_t      myCondition;
 
   struct RPG_Character_Attributes myAttributes;
@@ -162,7 +162,7 @@ class RPG_Player_Base
 
   std::string                     myName;
   struct RPG_Character_Alignment  myAlignment;
-  unsigned short                  myNumTotalHitPoints;
+  ACE_UINT16                      myNumTotalHitPoints;
 };
 
 #endif

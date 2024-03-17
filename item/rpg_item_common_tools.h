@@ -30,46 +30,42 @@
 #include "rpg_character_common.h"
 #include "rpg_character_offhand.h"
 
-//#include "rpg_item_exports.h"
 #include "rpg_item_common.h"
 #include "rpg_item_commoditybeverage.h"
 #include "rpg_item_commoditylight.h"
 #include "rpg_item_commodityunion.h"
 #include "rpg_item_instance_common.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Item_Common_Tools
 {
  public:
-  static void initializeStringConversionTables();
+  static void initializeStringConversionTables ();
 
-  static std::string toString(const RPG_Item_WeaponDamageType&); // weapon damage
-  static RPG_Common_PhysicalDamageList_t weaponDamageTypeToPhysicalDamageType(const RPG_Item_WeaponDamageType&); // weapon damage
-  static std::string toString(const RPG_Item_Damage&); // damage
+  static std::string toString (const RPG_Item_WeaponDamageType&); // weapon damage
+  static RPG_Common_PhysicalDamageList_t weaponDamageTypeToPhysicalDamageType (const RPG_Item_WeaponDamageType&); // weapon damage
+  static std::string toString (const RPG_Item_Damage&); // damage
 
   // XML-specifics
-  static std::string commoditySubTypeToXMLString(const RPG_Item_CommodityUnion&); // subtype
-  static RPG_Item_CommodityUnion XMLStringToCommoditySubType(const std::string&); // subtype (XML string)
+  static std::string commoditySubTypeToXMLString (const RPG_Item_CommodityUnion&); // subtype
+  static RPG_Item_CommodityUnion XMLStringToCommoditySubType (const std::string&); // subtype (XML string)
 
-  static bool isThrownWeapon(enum RPG_Item_WeaponType); // weapon type
-  static bool isProjectileWeapon(enum RPG_Item_WeaponType); // weapon type
-  static bool isRangedWeapon(enum RPG_Item_WeaponType); // weapon type
-  static bool isTwoHandedWeapon(enum RPG_Item_WeaponType); // weapon type
-  static bool isMeleeWeapon(enum RPG_Item_WeaponType); // weapon type
+  static bool isThrownWeapon (enum RPG_Item_WeaponType); // weapon type
+  static bool isProjectileWeapon (enum RPG_Item_WeaponType); // weapon type
+  static bool isRangedWeapon (enum RPG_Item_WeaponType); // weapon type
+  static bool isTwoHandedWeapon (enum RPG_Item_WeaponType); // weapon type
+  static bool isMeleeWeapon (enum RPG_Item_WeaponType); // weapon type
 
-  static bool isShield(enum RPG_Item_ArmorType); // armor type
+  static bool isShield (enum RPG_Item_ArmorType); // armor type
 
-  static bool hasAbsoluteReach(enum RPG_Item_WeaponType); // weapon type
+  static bool hasAbsoluteReach (enum RPG_Item_WeaponType); // weapon type
 
   // *TODO*: consider shape of the light
-  static unsigned short lightingItemToRadius(const RPG_Item_CommodityLight&, // lighting item type
-                                             const bool& = true);            // ambience is "bright" ?
+  static ACE_UINT8 lightingItemToRadius (enum RPG_Item_CommodityLight, // lighting item type
+                                         bool = true);                 // ambience is "bright" ?
 
-  static void itemToSlot(RPG_Item_ID_t,                  // item id
-                         enum RPG_Character_OffHand,     // off-hand
-                         RPG_Character_EquipmentSlots&); // return value: possible slot(s)
+  static void itemToSlot (RPG_Item_ID_t,                  // item id
+                          enum RPG_Character_OffHand,     // off-hand
+                          RPG_Character_EquipmentSlots&); // return value: possible slot(s)
 
  private:
   ACE_UNIMPLEMENTED_FUNC (RPG_Item_Common_Tools ())

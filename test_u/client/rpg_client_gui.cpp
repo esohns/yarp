@@ -284,11 +284,13 @@ do_printUsage (const std::string& programName_in)
             << path
             << ACE_TEXT ("\"]")
             << std::endl;
+#if defined (_DEBUG)
   std::cout << ACE_TEXT ("-d         : debug mode")
             << ACE_TEXT (" [")
             << RPG_CLIENT_DEF_DEBUG
             << ACE_TEXT ("]")
             << std::endl;
+#endif // _DEBUG
   configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                             ACE_TEXT_ALWAYS_CHAR (""),
@@ -460,7 +462,11 @@ do_processArguments(const int& argc_in,
   configurationFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   configurationFile_out += ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_CONFIGURATION_FILE);
 
+#if defined (_DEBUG)
   debug_out               = RPG_CLIENT_DEF_DEBUG;
+#else
+  debug_out               = false;
+#endif // _DEBUG
 
   configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -551,9 +557,14 @@ do_processArguments(const int& argc_in,
   videoDriver_out         =
       ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME);
 
+
+  std::string options_string (ACE_TEXT_ALWAYS_CHAR ("ac:e:f:g:i:lm:nr:s:tu:vx:z:"));
+#if defined (_DEBUG)
+  options_string += ACE_TEXT_ALWAYS_CHAR ("d");
+#endif // _DEBUG
   ACE_Get_Opt argumentParser (argc_in,
                               argv_in,
-                              ACE_TEXT ("ac:de:f:g:i:lm:nr:s:tu:vx:z:"),
+                              ACE_TEXT (options_string.c_str ()),
                               1,                         // skip command name
                               1,                         // report parsing errors
                               ACE_Get_Opt::PERMUTE_ARGS, // ordering
@@ -575,11 +586,13 @@ do_processArguments(const int& argc_in,
         configurationFile_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         break;
       }
+#if defined (_DEBUG)
       case 'd':
       {
         debug_out = true;
         break;
       }
+#endif // _DEBUG
       case 'e':
       {
         monsterDictionary_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
@@ -1842,11 +1855,11 @@ do_printVersion (const std::string& programName_in)
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
   // step1: print program name/version
-//   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
+//   std::cout << programName_in << ACE_TEXT_ALWAYS_CHAR (" : ") << VERSION << std::endl;
   std::cout << programName_in
 #if defined (HAVE_CONFIG_H)
-            << ACE_TEXT (" : ")
-            << yarp_PACKAGE_VERSION_FULL
+            << ACE_TEXT_ALWAYS_CHAR (" : ")
+            << ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_VERSION_FULL)
 #endif // HAVE_CONFIG_H
             << std::endl;
 
@@ -1857,50 +1870,50 @@ do_printVersion (const std::string& programName_in)
   // string
   std::ostringstream version_number;
   version_number << ACE::major_version ();
-  version_number << ACE_TEXT (".");
+  version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << ACE::minor_version ();
   if (ACE::beta_version ())
   {
-    version_number << ACE_TEXT (".");
+    version_number << ACE_TEXT_ALWAYS_CHAR (".");
     version_number << ACE::beta_version ();
   } // end IF
 
 //   std::cout << "ACE: " << ACE_VERSION << std::endl;
-  std::cout << ACE_TEXT ("ACE: ")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("ACE: ")
             << version_number.str ()
             << std::endl;
 
   // step3: print SDL version(s)
   SDL_version sdl_version_compiled;
   SDL_VERSION (&sdl_version_compiled);
-  version_number.str (ACE_TEXT_ALWAYS_CHAR(""));
+  version_number.str (ACE_TEXT_ALWAYS_CHAR (""));
   version_number << sdl_version_compiled.major;
-  version_number << ACE_TEXT (".");
+  version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << sdl_version_compiled.minor;
-  version_number << ACE_TEXT (".");
+  version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << sdl_version_compiled.patch;
-  std::cout << ACE_TEXT ("SDL (compiled against): ")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("SDL (compiled against): ")
             << version_number.str ()
             << std::endl;
 #if defined (SDL_USE)
   const SDL_version* sdl_version_linked = SDL_Linked_Version ();
   version_number.str ("");
   version_number << sdl_version_linked->major;
-  version_number << ACE_TEXT (".");
+  version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << sdl_version_linked->minor;
-  version_number << ACE_TEXT (".");
+  version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << sdl_version_linked->patch;
-  std::cout << ACE_TEXT ("SDL (linked against): ")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("SDL (linked against): ")
             << version_number.str ()
             << std::endl;
   const SDL_version* mix_version_linked = Mix_Linked_Version ();
   version_number.str(ACE_TEXT_ALWAYS_CHAR (""));
   version_number << mix_version_linked->major;
-  version_number << ACE_TEXT (".");
+  version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << mix_version_linked->minor;
-  version_number << ACE_TEXT (".");
+  version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << mix_version_linked->patch;
-  std::cout << ACE_TEXT ("SDL_mixer (linked against): ")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("SDL_mixer (linked against): ")
             << version_number.str ()
             << std::endl;
 #endif // SDL_USE
@@ -1908,16 +1921,16 @@ do_printVersion (const std::string& programName_in)
   // step3: print compiler name/version
   version_number.str (ACE_TEXT_ALWAYS_CHAR (""));
   version_number << ACE::compiler_name ();
-  version_number << ACE_TEXT (" ");
+  version_number << ACE_TEXT_ALWAYS_CHAR (" ");
   version_number << ACE::compiler_major_version ();
-  version_number << ACE_TEXT (".");
+  version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << ACE::compiler_minor_version ();
   if (ACE::compiler_beta_version ())
   {
-    version_number << ACE_TEXT (".");
+    version_number << ACE_TEXT_ALWAYS_CHAR (".");
     version_number << ACE::compiler_beta_version ();
   } // end IF
-  std::cout << ACE_TEXT ("compiled by: ")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("compiled by: ")
             << version_number.str ()
             << std::endl;
 }
@@ -1949,7 +1962,11 @@ ACE_TMAIN (int argc_in,
 
   // step1a: process commandline arguments
   bool mute_sound                   = false;
+#if defined (_DEBUG)
   bool debug                        = RPG_CLIENT_DEF_DEBUG;
+#else
+  bool debug                        = false;
+#endif // _DEBUG
   std::string configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                             ACE_TEXT_ALWAYS_CHAR (""),
@@ -2044,7 +2061,7 @@ ACE_TMAIN (int argc_in,
   bool skip_intro                   = false;
 #if GTK_CHECK_VERSION (3,0,0)
   std::string UI_CSS_file;
-#endif // GTK_CHECK_VERSION(3,0,0)
+#endif // GTK_CHECK_VERSION (3,0,0)
 
   if (!do_processArguments (argc_in,
                             argv_in,
@@ -2186,7 +2203,7 @@ ACE_TMAIN (int argc_in,
   //                      &GTK_user_data.logStackLock);
   std::string log_file;
   if (log_to_file)
-    log_file = Common_Log_Tools::getLogFilename (yarp_PACKAGE_NAME,
+    log_file = Common_Log_Tools::getLogFilename (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                  ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
   if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
                                             log_file,                  // logfile
@@ -2309,9 +2326,9 @@ ACE_TMAIN (int argc_in,
 //   configuration.statisticsReportingInterval = 0; // == off
 
   // step1dc: parse .ini file (if any)
-  if (!configuration_file.empty())
-    do_parseIniFile(configuration_file,
-                    configuration);
+  if (!configuration_file.empty ())
+    do_parseIniFile (configuration_file,
+                     configuration);
 
   // step2a: init SDL
   Uint32 SDL_init_flags = 0;
@@ -2337,10 +2354,10 @@ ACE_TMAIN (int argc_in,
 #endif // ACE_WIN32 || ACE_WIN64
   if (SDL_Init (SDL_init_flags) == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_Init(0x%x): \"%s\", aborting\n"),
-               SDL_init_flags,
-               ACE_TEXT(SDL_GetError())));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_Init(0x%x): \"%s\", aborting\n"),
+                SDL_init_flags,
+                ACE_TEXT (SDL_GetError ())));
 
     // clean up
   Common_Log_Tools::finalizeLogging ();
@@ -2393,7 +2410,7 @@ ACE_TMAIN (int argc_in,
 #if GTK_CHECK_VERSION (3,0,0)
   if (!UI_CSS_file.empty ())
     configuration.gtk_configuration.CSSProviders[UI_CSS_file] = NULL;
-#endif // GTK_CHECK_VERSION(3,0,0)
+#endif // GTK_CHECK_VERSION (3,0,0)
   //gtk_configuration_p = &configuration.GTKConfiguration;
 #endif // GTK_USE
   COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (configuration.gtk_configuration);

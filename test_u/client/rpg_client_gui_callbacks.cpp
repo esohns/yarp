@@ -271,7 +271,6 @@ update_levelup (const struct RPG_Client_GTK_CBData& data_in)
   ACE_ASSERT (data_in.entity.character);
   ACE_ASSERT (data_in.entity.character->isPlayerCharacter ());
   RPG_Player* player = static_cast<RPG_Player*> (data_in.entity.character);
-  ACE_ASSERT (player);
   Common_UI_GTK_BuildersConstIterator_t iterator =
       data_in.UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
   ACE_ASSERT (iterator != data_in.UIState->builders.end ());
@@ -321,7 +320,7 @@ update_levelup (const struct RPG_Client_GTK_CBData& data_in)
                                    (gpointer)spinbutton_attribute_value_changed_cb,
                                    (gpointer)&data_in);
   gtk_spin_button_set_value (spinbutton_p,
-                            static_cast<gdouble> (player->getAttribute (ATTRIBUTE_DEXTERITY)));
+                             static_cast<gdouble> (player->getAttribute (ATTRIBUTE_DEXTERITY)));
   g_signal_handlers_unblock_by_func (G_OBJECT (spinbutton_p),
                                      (gpointer)spinbutton_attribute_value_changed_cb,
                                      (gpointer)&data_in);
@@ -333,7 +332,7 @@ update_levelup (const struct RPG_Client_GTK_CBData& data_in)
                                    (gpointer)spinbutton_attribute_value_changed_cb,
                                    (gpointer)&data_in);
   gtk_spin_button_set_value (spinbutton_p,
-                            static_cast<gdouble> (player->getAttribute (ATTRIBUTE_CONSTITUTION)));
+                             static_cast<gdouble> (player->getAttribute (ATTRIBUTE_CONSTITUTION)));
   g_signal_handlers_unblock_by_func (G_OBJECT (spinbutton_p),
                                      (gpointer)spinbutton_attribute_value_changed_cb,
                                      (gpointer)&data_in);
@@ -357,7 +356,7 @@ update_levelup (const struct RPG_Client_GTK_CBData& data_in)
                                    (gpointer)spinbutton_attribute_value_changed_cb,
                                    (gpointer)&data_in);
   gtk_spin_button_set_value (spinbutton_p,
-                            static_cast<gdouble> (player->getAttribute (ATTRIBUTE_WISDOM)));
+                             static_cast<gdouble> (player->getAttribute (ATTRIBUTE_WISDOM)));
   g_signal_handlers_unblock_by_func (G_OBJECT (spinbutton_p),
                                      (gpointer)spinbutton_attribute_value_changed_cb,
                                      (gpointer)&data_in);
@@ -422,17 +421,17 @@ update_levelup (const struct RPG_Client_GTK_CBData& data_in)
   ACE_ASSERT (list_store_p);
   gtk_list_store_clear (list_store_p);
   const RPG_Character_Skills_t& skills_a = player->getSkills ();
+  RPG_Character_SkillsConstIterator_t iterator_2;
   for (int i = SKILL_APPRAISE;
        i < RPG_COMMON_SKILL_MAX;
        ++i)
   {
-    if (skills_a.find (static_cast<enum RPG_Common_Skill> (i)) != skills_a.end ())
-      continue;
+    iterator_2 = skills_a.find (static_cast<enum RPG_Common_Skill> (i));
     gtk_list_store_append (list_store_p, &tree_iter);
     gtk_list_store_set (list_store_p, &tree_iter,
                         0, ACE_TEXT (RPG_Common_Tools::enumToString (RPG_Common_SkillHelper::RPG_Common_SkillToString (static_cast<enum RPG_Common_Skill> (i))).c_str ()), // column 0
                         1, i,
-                        2, 0,
+                        2, (iterator_2 == skills_a.end () ? 0 : (*iterator_2).second),
                         -1);
   } // end FOR
 
@@ -477,12 +476,12 @@ update_levelup (const struct RPG_Client_GTK_CBData& data_in)
        i < RPG_COMMON_MAX_SPELL_LEVEL;
        ++i)
   {
-    unsigned short number_of_spells_per_level_i =
+    ACE_UINT16 number_of_spells_per_level_i =
         player->getKnownSpellsPerLevel (data_in.subClass,
                                         i);
     number_of_known_spells_i +=
-        (std::numeric_limits<unsigned short>::max () == number_of_spells_per_level_i ? 0
-                                                                                     : number_of_spells_per_level_i);
+        (std::numeric_limits<ACE_UINT16>::max () == number_of_spells_per_level_i ? 0
+                                                                                 : number_of_spells_per_level_i);
   } // end FOR
   converter << number_of_known_spells_i;
   gtk_label_set_text (label_p,
@@ -4225,19 +4224,8 @@ item_toggled_GTK_cb (GtkWidget* widget_in,
   ACE_ASSERT (data_p);
   ACE_ASSERT (data_p->entity.character);
   ACE_ASSERT (data_p->entity.character->isPlayerCharacter ());
-  RPG_Player* player = NULL;
-  try {
-    player = dynamic_cast<RPG_Player*> (data_p->entity.character);
-  } catch (...) {
-    player = NULL;
-  }
-  if (!player)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to dynamic_cast<RPG_Player*>(%@), aborting\n"),
-                data_p->entity.character));
-    return TRUE; // propagate
-  } // end IF
+  RPG_Player* player =
+    static_cast<RPG_Player*> (data_p->entity.character);
   ACE_ASSERT (data_p->levelEngine);
   ACE_ASSERT (data_p->clientEngine);
 
@@ -4255,7 +4243,7 @@ item_toggled_GTK_cb (GtkWidget* widget_in,
 
 //  data_p->levelEngine->lock ();
   RPG_Engine_EntityID_t active_entity = data_p->levelEngine->getActive (false);
-  unsigned char visible_radius_before = 0;
+  ACE_UINT8 visible_radius_before = 0;
   if (active_entity)
     visible_radius_before = data_p->levelEngine->getVisibleRadius (active_entity,
                                                                    false);
@@ -4343,10 +4331,25 @@ levelup_clicked_cb (GtkButton* button_in,
   ACE_ASSERT (dialog_p);
 
   ::update_levelup (*data_p);
+  ::hitdice_button_clicked_cb (NULL, userData_in); // roll once
 
-  // draw it
-  if (!gtk_widget_get_visible (GTK_WIDGET (dialog_p)))
-    gtk_widget_show_all (GTK_WIDGET (dialog_p));
+  gint response_i = gtk_dialog_run (dialog_p);
+  if (response_i != GTK_RESPONSE_CANCEL)
+  {
+    //ACE_ASSERT (data_p->entity.character);
+    //ACE_ASSERT (data_p->entity.character->isPlayerCharacter ());
+    //RPG_Player* player = static_cast<RPG_Player*> (data_p->entity.character);
+
+    //GtkLabel* label_p =
+    //    GTK_LABEL (gtk_builder_get_object ((*iterator).second.second,
+    //                                       ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_LABEL_HITPOINTS_NAME)));
+    //ACE_ASSERT (label_p);
+    //std::istringstream converter;
+    //converter.str (gtk_label_get_text (label_p));
+    //ACE_UINT16 value_i = 0;
+    //converter >> value_i;
+    //player->setNumTotalHitPoints (value_i);
+  } // end IF
 }
 
 void
@@ -4575,17 +4578,17 @@ treeview_spells_selection_changed_cb (GtkTreeSelection* selection_in,
                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_LABEL_SPELLSREMAINING_NAME)));
   ACE_ASSERT (label_p);
   std::ostringstream converter;
-  unsigned short number_of_known_spells_i = 0;
+  ACE_UINT16 number_of_known_spells_i = 0;
   for (ACE_UINT8 i = 0;
        i < RPG_COMMON_MAX_SPELL_LEVEL;
        ++i)
   {
-    unsigned short number_of_spells_per_level_i =
+    ACE_UINT16 number_of_spells_per_level_i =
         player->getKnownSpellsPerLevel (data_p->subClass,
                                         i);
     number_of_known_spells_i +=
-        (std::numeric_limits<unsigned short>::max () == number_of_spells_per_level_i ? 0
-                                                                                     : number_of_spells_per_level_i);
+        (std::numeric_limits<ACE_UINT16>::max () == number_of_spells_per_level_i ? 0
+                                                                                 : number_of_spells_per_level_i);
   } // end FOR
   converter << number_of_known_spells_i - selected_rows_i;
   gtk_label_set_text (label_p,
@@ -4607,7 +4610,6 @@ spinbutton_attribute_value_changed_cb (GtkSpinButton* spinButton_in,
   ACE_ASSERT (data_p->entity.character);
   ACE_ASSERT (data_p->entity.character->isPlayerCharacter ());
   RPG_Player* player = static_cast<RPG_Player*> (data_p->entity.character);
-  ACE_ASSERT (player);
   ACE_ASSERT (data_p->UIState);
   Common_UI_GTK_BuildersConstIterator_t iterator =
       data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
@@ -4673,7 +4675,7 @@ spinbutton_attribute_value_changed_cb (GtkSpinButton* spinButton_in,
   value_2 += player->getAttribute (ATTRIBUTE_INTELLIGENCE);
   value_2 += player->getAttribute (ATTRIBUTE_WISDOM);
   value_2 += player->getAttribute (ATTRIBUTE_CHARISMA);
-  unsigned int num_values_changed_i = ::abs (value_i - value_2);
+  unsigned int num_values_changed_i = std::abs (value_i - value_2);
 
   // test: value went up / down ?
   GtkLabel* label_p = NULL;
@@ -4726,7 +4728,6 @@ levelup_dialog_response_cb (GtkDialog* dialog_in,
   ACE_ASSERT (data_p->entity.character);
   ACE_ASSERT (data_p->entity.character->isPlayerCharacter ());
   RPG_Player* player = static_cast<RPG_Player*> (data_p->entity.character);
-  ACE_ASSERT (player);
 
   if (responseId_in == GTK_RESPONSE_OK)
   {
@@ -4737,7 +4738,7 @@ levelup_dialog_response_cb (GtkDialog* dialog_in,
     ACE_ASSERT (label_p);
     std::istringstream converter;
     converter.str (gtk_label_get_text (label_p));
-    unsigned short value_i = 0;
+    ACE_UINT16 value_i = 0;
     converter >> value_i;
     player->setNumTotalHitPoints (value_i);
 
@@ -4839,7 +4840,7 @@ continue_:
       if (iterator_2 == skills_a.end ())
         skills_a.insert (std::make_pair (skill_e, data_2));
       else
-        (*iterator_2).second += data_2;
+        (*iterator_2).second = data_2;
 next:
       valid_b = gtk_tree_model_iter_next (GTK_TREE_MODEL (list_store_p),
                                           &tree_iterator);
@@ -4960,8 +4961,8 @@ server_repository_combobox_changed_GTK_cb (GtkWidget* widget_in,
 }
 
 G_MODULE_EXPORT gint
-server_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
-                                        gpointer userData_in)
+server_repository_button_clicked_GTK_cb (GtkWidget* widget_in,
+                                         gpointer userData_in)
 {
   RPG_TRACE(ACE_TEXT("::server_repository_button_clicked_GTK_cb"));
 

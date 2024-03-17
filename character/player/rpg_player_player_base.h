@@ -64,7 +64,7 @@ class RPG_Player_Player_Base
   inline enum RPG_Character_OffHand getOffHand () const { return myOffHand; }
   inline enum RPG_Common_Size getSize () const { return mySize; }
 
-  inline unsigned int getExperience () const { return myExperience; }
+  inline ACE_UINT64 getExperience () const { return myExperience; }
   // compute dynamically from class/XP
   ACE_UINT8 getLevel (const RPG_Common_SubClass& = SUBCLASS_NONE) const; // subclass
 
@@ -77,14 +77,14 @@ class RPG_Player_Player_Base
   virtual ACE_INT8 getArmorClass (enum RPG_Combat_DefenseSituation) const;
 
   // *NOTE*: return value unit is feet
-  virtual unsigned short getReach (unsigned short&, // return value: base range (if any)
-                                   bool&) const;    // return value: reach is absolute ?
-  virtual unsigned char getSpeed (bool = false,                                 // running ?
-                                  enum RPG_Common_AmbientLighting = AMBIENCE_BRIGHT, // environment
-                                  enum RPG_Common_Terrain = TERRAIN_ANY,             // terrain
-                                  enum RPG_Common_Track = TRACK_NONE) const;         // track
+  virtual ACE_UINT16 getReach (unsigned short&, // return value: base range (if any)
+                               bool&) const;    // return value: reach is absolute ?
+  virtual ACE_UINT8 getSpeed (bool = false,                                 // running ?
+                              enum RPG_Common_AmbientLighting = AMBIENCE_BRIGHT, // environment
+                              enum RPG_Common_Terrain = TERRAIN_ANY,             // terrain
+                              enum RPG_Common_Track = TRACK_NONE) const;         // track
 
-  virtual bool isPlayerCharacter () const;
+  inline virtual bool isPlayerCharacter () const { return true; }
 
   virtual enum RPG_Common_SubClass gainExperience (unsigned int); // XP
 
@@ -108,13 +108,13 @@ class RPG_Player_Player_Base
                           const RPG_Character_Feats_t&,           // base feats
                           const RPG_Character_Abilities_t&,       // base abilities
                           enum RPG_Character_OffHand,             // off-hand
-                          unsigned short,                         // max HP
+                          ACE_UINT16    ,                         // max HP
                           const RPG_Magic_SpellTypes_t&,          // set of known spells (if any)
                           // current status
                           const RPG_Character_Conditions_t&,      // condition
-                          short,                                  // HP
-                          unsigned int,                           // XP
-                          unsigned int,                           // wealth (GP)
+                          ACE_INT16,                              // HP
+                          ACE_UINT64,                             // XP
+                          ACE_UINT64,                             // wealth (GP)
                           const RPG_Magic_Spells_t&,              // list of prepared spells (if any)
                           const RPG_Item_List_t&);                // list of (carried) items
   RPG_Player_Player_Base (const RPG_Player_Player_Base&);
@@ -131,13 +131,13 @@ class RPG_Player_Player_Base
                    const RPG_Character_Feats_t&,           // base feats
                    const RPG_Character_Abilities_t&,       // base abilities
                    enum RPG_Character_OffHand,             // off-hand
-                   unsigned short,                         // max HP
+                   ACE_UINT16,                             // max HP
                    const RPG_Magic_SpellTypes_t&,          // set of known spells (if any)
                    // current status
                    const RPG_Character_Conditions_t&,      // condition
-                   short,                                  // HP
-                   unsigned int,                           // XP
-                   unsigned int,                           // wealth (GP)
+                   ACE_INT16,                              // HP
+                   ACE_UINT64,                             // XP
+                   ACE_UINT64,                             // wealth (GP)
                    const RPG_Magic_Spells_t&,              // list of prepared spells (if any)
                    const RPG_Item_List_t&);                // list of (carried) items
 
@@ -153,7 +153,7 @@ class RPG_Player_Player_Base
   ACE_UNIMPLEMENTED_FUNC (RPG_Player_Player_Base ())
   ACE_UNIMPLEMENTED_FUNC (RPG_Player_Player_Base& operator= (const RPG_Player_Player_Base&))
 
-  unsigned int               myExperience;
+  ACE_UINT64                 myExperience;
   enum RPG_Common_Size       mySize;
 
 //  unsigned short int       myWeight; // kg

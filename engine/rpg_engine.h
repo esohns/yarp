@@ -71,7 +71,7 @@ class RPG_Engine
   // implement Common_IControl
   virtual void start ();
   virtual void stop (bool = true); // locked access ?
-  inline virtual bool isRunning () const { return (inherited::thr_count () > 0); }
+  inline virtual bool isRunning () const { return (inherited::thr_count_ > 0); }
 
   static void wait_all ();
 
@@ -89,9 +89,9 @@ class RPG_Engine
   // *WARNING*: fire&forget API, added NPC (!) entities are controlled by the engine
   RPG_Engine_EntityID_t add (struct RPG_Engine_Entity*, // entity handle
                              bool = true);         // locked access ?
-  void remove (const RPG_Engine_EntityID_t&); // id
-  bool exists (const RPG_Engine_EntityID_t&) const; // id
-  void action (const RPG_Engine_EntityID_t&, // id
+  void remove (RPG_Engine_EntityID_t); // id
+  bool exists (RPG_Engine_EntityID_t) const; // id
+  void action (RPG_Engine_EntityID_t,           // id
                const struct RPG_Engine_Action&, // action
                bool = true);                    // locked access ?
 
@@ -100,15 +100,15 @@ class RPG_Engine
              const std::string&); // schema repository
   bool save (const std::string&); // descriptor
 
-  void setActive (const RPG_Engine_EntityID_t&, // id
-                  bool = true);                 // locked access ?
+  void setActive (RPG_Engine_EntityID_t, // id
+                  bool = true);          // locked access ?
   RPG_Engine_EntityID_t getActive (bool = true) const; // locked access ?
   void mode (const RPG_Engine_EntityMode&); // add mode (to active entity)
   void clear (const RPG_Engine_EntityMode&); // clear mode (from active entity)
   bool hasMode (const RPG_Engine_EntityMode&) const; // mode
 
-  RPG_Map_Position_t getPosition (const RPG_Engine_EntityID_t&, // id
-                                  bool = true) const;           // locked access ?
+  RPG_Map_Position_t getPosition (RPG_Engine_EntityID_t, // id
+                                  bool = true) const;    // locked access ?
   RPG_Map_Position_t findValid (const RPG_Map_Position_t&, // center
                                 unsigned int = 0,          // max (square !) radius [0: whereever]
                                 bool = true) const;        // locked access ?
@@ -116,39 +116,39 @@ class RPG_Engine
                                    bool = true) const;        // locked access ?
   RPG_Engine_EntityList_t entities (const RPG_Map_Position_t&, // sort: position (closest first)
                                     bool = true) const;        // locked access ?
-  bool isMonster (const RPG_Engine_EntityID_t&, // id
-                  bool = true) const;           // locked access ?
-  std::string getName (const RPG_Engine_EntityID_t&, // id
-                       bool = true) const;           // locked access ?
-  RPG_Character_Class getClass (const RPG_Engine_EntityID_t&, // id
-                                bool = true) const;           // locked access ?
+  bool isMonster (RPG_Engine_EntityID_t, // id
+                  bool = true) const;    // locked access ?
+  std::string getName (RPG_Engine_EntityID_t, // id
+                       bool = true) const;    // locked access ?
+  RPG_Character_Class getClass (RPG_Engine_EntityID_t, // id
+                                bool = true) const;    // locked access ?
   unsigned int numSpawned (const std::string&, // type (empty: total)
                            bool = true) const; // locked access ?
 
   // vision
-  unsigned char getVisibleRadius (const RPG_Engine_EntityID_t&, // id
-                                  bool = true) const;           // locked access ?
-  void getVisiblePositions (const RPG_Engine_EntityID_t&, // id
-                            RPG_Map_Positions_t&,         // return value: (currently) visible positions
-                            bool = true) const;           // locked access ?
-  bool canSee (const RPG_Engine_EntityID_t&, // id
-               const RPG_Map_Position_t&,    // position
-               bool = true) const;           // locked access ?
-  bool canSee (const RPG_Engine_EntityID_t&, // id
-               const RPG_Engine_EntityID_t&, // target id
-               bool = true) const;           // locked access ?
-  bool hasSeen (const RPG_Engine_EntityID_t&, // entity
-                const RPG_Map_Position_t&,    // position
-                bool = true) const;           // locked access ?
+  ACE_UINT8 getVisibleRadius (RPG_Engine_EntityID_t, // id
+                              bool = true) const;    // locked access ?
+  void getVisiblePositions (RPG_Engine_EntityID_t, // id
+                            RPG_Map_Positions_t&,  // return value: (currently) visible positions
+                            bool = true) const;    // locked access ?
+  bool canSee (RPG_Engine_EntityID_t,     // id
+               const RPG_Map_Position_t&, // position
+               bool = true) const;        // locked access ?
+  bool canSee (RPG_Engine_EntityID_t, // id
+               RPG_Engine_EntityID_t, // target id
+               bool = true) const;    // locked access ?
+  bool hasSeen (RPG_Engine_EntityID_t,     // id
+                const RPG_Map_Position_t&, // position
+                bool = true) const;        // locked access ?
 
   bool findPath (const RPG_Map_Position_t&, // start position
                  const RPG_Map_Position_t&, // end position
                  RPG_Map_Path_t&,           // return value: (partial) path A --> B
                  bool = true) const;        // locked access ?
 
-  bool canReach (const RPG_Engine_EntityID_t&, // id
-                 const RPG_Map_Position_t&,    // target position
-                 bool = true) const;           // locked access ?
+  bool canReach (RPG_Engine_EntityID_t,     // id
+                 const RPG_Map_Position_t&, // target position
+                 bool = true) const;        // locked access ?
 
   // map
   struct RPG_Engine_LevelMetaData getMetaData (bool = true) const; // locked access ?
@@ -164,7 +164,7 @@ class RPG_Engine
                  bool = true) const;        // locked access ?
   RPG_Map_Element getElement (const RPG_Map_Position_t&, // position
                               bool = true) const;        // locked access ?
-  RPG_Map_Positions_t getObstacles (const bool&,        // include entities ?
+  RPG_Map_Positions_t getObstacles (bool,               // include entities ?
                                     bool = true) const; // locked access ?
   RPG_Map_Positions_t getWalls (bool = true) const; // locked access ?
   RPG_Map_Positions_t getDoors (bool = true) const; // locked access ?
@@ -199,8 +199,8 @@ class RPG_Engine
                      const RPG_Engine_EntityID_t&);
   };
 
-  void clearEntityActions (const RPG_Engine_EntityID_t& = 0, // entity ID (default: ALL)
-                           bool = true);                     // locked access ?
+  void clearEntityActions (RPG_Engine_EntityID_t = 0, // entity ID (default: ALL)
+                           bool = true);              // locked access ?
 
   // perform (one round of) actions
   void handleEntities ();

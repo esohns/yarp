@@ -313,7 +313,7 @@ RPG_Player::getSkillsPerLevel (enum RPG_Common_SubClass subClass_in) const
   return result;
 }
 
-unsigned short
+ACE_UINT16
 RPG_Player::getKnownSpellsPerLevel (enum RPG_Common_SubClass subClass_in,
                                     ACE_UINT8 spellLevel_in) const
 {
@@ -323,7 +323,7 @@ RPG_Player::getKnownSpellsPerLevel (enum RPG_Common_SubClass subClass_in,
   if (!RPG_Magic_Common_Tools::isCasterClass (subClass_in))
     return 0;
 
-  unsigned short result = 0;
+  ACE_UINT16 result = 0;
 
   ACE_UINT8 class_level_i = inherited::getLevel (subClass_in);
 
@@ -339,7 +339,7 @@ RPG_Player::getKnownSpellsPerLevel (enum RPG_Common_SubClass subClass_in,
     }
     case SUBCLASS_WIZARD:
     default:
-      return std::numeric_limits<unsigned short>::max (); // ALL
+      return std::numeric_limits<ACE_UINT16>::max (); // ALL
   } // end SWITCH
 
   return result;

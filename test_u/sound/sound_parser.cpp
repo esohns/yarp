@@ -470,11 +470,11 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
-  // step1: init
+  // step1: initialize
   // step1a set defaults
-  Common_File_Tools::initialize(argv_in[0]);
+  Common_File_Tools::initialize (ACE_TEXT_ALWAYS_CHAR (argv_in[0]));
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
@@ -527,7 +527,7 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -548,7 +548,7 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -570,7 +570,7 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -583,21 +583,18 @@ ACE_TMAIN (int argc_in,
     return EXIT_SUCCESS;
   } // end IF
 
-  // step2: init SDL
+  // step2: initialize SDL
+  Uint32 SDL_init_flags = SDL_INIT_TIMER |
+                          SDL_INIT_AUDIO |
+                          SDL_INIT_NOPARACHUTE; // "...Prevents SDL from catching fatal signals..."
 #if defined (SDL_USE)
-  Uint32 SDL_init_flags = SDL_INIT_TIMER |
-                          SDL_INIT_AUDIO |
-                          SDL_INIT_CDROM |
-                          SDL_INIT_NOPARACHUTE; // "...Prevents SDL from catching fatal signals..."
-#elif defined (SDL2_USE)
-  Uint32 SDL_init_flags = SDL_INIT_TIMER |
-                          SDL_INIT_AUDIO |
-                          SDL_INIT_NOPARACHUTE; // "...Prevents SDL from catching fatal signals..."
-#endif // SDL_USE || SDL2_USE
+  SDL_init_flags |= SDL_INIT_CDROM;
+#endif // SDL_USE
   if (SDL_Init (SDL_init_flags) == -1)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to SDL_Init(): \"%s\", aborting\n"),
+                ACE_TEXT ("failed to SDL_Init(0x%x): \"%s\", aborting\n"),
+                SDL_init_flags,
                 ACE_TEXT (SDL_GetError ())));
 
     // *PORTABILITY*: on Windows, we must fini ACE...
@@ -605,7 +602,7 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -645,7 +642,7 @@ ACE_TMAIN (int argc_in,
               ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
               ACE_TEXT (working_time_string.c_str ())));
 
-  // step4a: fini SDL
+  // step4a: finalize SDL
   SDL_Quit ();
 
   // *PORTABILITY*: on Windows, fini ACE...
@@ -656,7 +653,7 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
   return EXIT_SUCCESS;
 } // end main

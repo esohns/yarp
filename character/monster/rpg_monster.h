@@ -82,14 +82,14 @@ class RPG_Monster
   // implement (part of) RPG_IPlayer
   virtual ACE_INT8 getArmorClass (enum RPG_Combat_DefenseSituation) const;
 
-  virtual unsigned short getReach (unsigned short&, // return value: base range (if any)
-                                   bool&) const;    // return value: reach is absolute ?
+  virtual ACE_UINT16 getReach (ACE_UINT16&,  // return value: base range (if any)
+                               bool&) const; // return value: reach is absolute ?
   virtual ACE_UINT8 getSpeed (bool = false,                                      // running ?
                               enum RPG_Common_AmbientLighting = AMBIENCE_BRIGHT, // environment
                               enum RPG_Common_Terrain = TERRAIN_ANY,             // terrain
                               enum RPG_Common_Track = TRACK_NONE) const;         // track
 
-  virtual enum RPG_Common_SubClass gainExperience (unsigned int); // XP
+  virtual enum RPG_Common_SubClass gainExperience (ACE_UINT32); // XP
 
   inline virtual bool isPlayerCharacter () const { return false; }
 
@@ -106,8 +106,8 @@ class RPG_Monster
   virtual struct RPG_Dice_Roll getHitDicePerLevel (enum RPG_Common_SubClass) const;
   virtual ACE_UINT8 getFeatsPerLevel (enum RPG_Common_SubClass) const;
   virtual ACE_UINT8 getSkillsPerLevel (enum RPG_Common_SubClass) const;
-  virtual unsigned short getKnownSpellsPerLevel (enum RPG_Common_SubClass, // (spellcaster-) subclass
-                                                 ACE_UINT8) const;         // spell level
+  virtual ACE_UINT16 getKnownSpellsPerLevel (enum RPG_Common_SubClass, // (spellcaster-) subclass
+                                             ACE_UINT8) const;         // spell level
 
   struct RPG_Common_CreatureType myType;
   struct RPG_Monster_Size        mySize;

@@ -42,20 +42,20 @@ class RPG_IPlayer
   virtual struct RPG_Dice_Roll getHitDicePerLevel (enum RPG_Common_SubClass) const = 0;
   virtual ACE_UINT8 getFeatsPerLevel (enum RPG_Common_SubClass) const = 0;
   virtual ACE_UINT8 getSkillsPerLevel (enum RPG_Common_SubClass) const = 0;
-  virtual unsigned short getKnownSpellsPerLevel (enum RPG_Common_SubClass, // (spellcaster-) subclass
-                                                 ACE_UINT8) const = 0;     // spell level
+  virtual ACE_UINT16 getKnownSpellsPerLevel (enum RPG_Common_SubClass, // (spellcaster-) subclass
+                                             ACE_UINT8) const = 0;     // spell level
 
-  virtual unsigned short getReach (unsigned short&,  // return value: base range (if any)
-                                   bool&) const = 0; // return value: reach is absolute ?
-  virtual unsigned char getSpeed (bool = false,                                      // running ?
-                                  enum RPG_Common_AmbientLighting = AMBIENCE_BRIGHT, // environment
-                                  enum RPG_Common_Terrain = TERRAIN_ANY,             // terrain
-                                  enum RPG_Common_Track = TRACK_NONE) const = 0;     // track
+  virtual ACE_UINT16 getReach (ACE_UINT16&,      // return value: base range (if any)
+                               bool&) const = 0; // return value: reach is absolute ?
+  virtual ACE_UINT8 getSpeed (bool = false,                                      // running ?
+                              enum RPG_Common_AmbientLighting = AMBIENCE_BRIGHT, // environment
+                              enum RPG_Common_Terrain = TERRAIN_ANY,             // terrain
+                              enum RPG_Common_Track = TRACK_NONE) const = 0;     // track
 
   // get a hint if this is a PC/NPC
   virtual bool isPlayerCharacter () const = 0;
 
-  virtual enum RPG_Common_SubClass gainExperience (unsigned int) = 0; // XP
+  virtual enum RPG_Common_SubClass gainExperience (ACE_UINT32) = 0; // XP
 
   virtual void status () const = 0;
   virtual void dump () const = 0;

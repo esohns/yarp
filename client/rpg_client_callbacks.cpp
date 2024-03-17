@@ -3960,28 +3960,13 @@ item_toggled_GTK_cb (GtkWidget* widget_in,
   ACE_ASSERT (data_p);
   ACE_ASSERT (data_p->entity.character);
   ACE_ASSERT (data_p->entity.character->isPlayerCharacter ());
-  RPG_Player* player = NULL;
-  try
-  {
-    player = dynamic_cast<RPG_Player*> (data_p->entity.character);
-  }
-  catch (...)
-  {
-    player = NULL;
-  }
-  if (!player)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to dynamic_cast<RPG_Player*>(%@), aborting\n"),
-                data_p->entity.character));
-    return TRUE; // propagate
-  } // end IF
+  RPG_Player* player = static_cast<RPG_Player*> (data_p->entity.character);
   ACE_ASSERT (data_p->levelEngine);
   ACE_ASSERT (data_p->clientEngine);
 
   // retrieve item id
-  std::string widget_name = gtk_widget_get_name(widget_in);
-  std::istringstream input(widget_name);
+  std::string widget_name = gtk_widget_get_name (widget_in);
+  std::istringstream input (widget_name);
   RPG_Item_ID_t item_id = 0;
   if (!(input >> item_id))
   {
@@ -3993,18 +3978,18 @@ item_toggled_GTK_cb (GtkWidget* widget_in,
 
 //  data_p->levelEngine->lock ();
   RPG_Engine_EntityID_t active_entity = data_p->levelEngine->getActive (false);
-  unsigned char visible_radius_before = 0;
+  ACE_UINT8 visible_radius_before = 0;
   if (active_entity)
     visible_radius_before = data_p->levelEngine->getVisibleRadius (active_entity,
-                                                                 false);
+                                                                   false);
 
   // *TODO*: where ?
-  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget_in)))
-    player->getEquipment().equip(item_id,
-                                 player->getOffHand(),
-                                 EQUIPMENTSLOT_ANY);
+  if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget_in)))
+    player->getEquipment ().equip (item_id,
+                                   player->getOffHand (),
+                                   EQUIPMENTSLOT_ANY);
   else
-    player->getEquipment().unequip(item_id);
+    player->getEquipment().unequip (item_id);
 
   // equipped light source --> update vision ?
   if (active_entity)

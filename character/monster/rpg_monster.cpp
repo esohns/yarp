@@ -146,18 +146,19 @@ RPG_Monster::getArmorClass(enum RPG_Combat_DefenseSituation defenseSituation_in)
   return result;
 }
 
-unsigned short
-RPG_Monster::getReach(unsigned short& baseRange_out,
-                      bool& reachIsAbsolute_out) const
+ACE_UINT16
+RPG_Monster::getReach (ACE_UINT16& baseRange_out,
+                       bool& reachIsAbsolute_out) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Monster::getReach"));
+  RPG_TRACE (ACE_TEXT ("RPG_Monster::getReach"));
 
   // init return value(s)
   baseRange_out = 0;
   reachIsAbsolute_out = false;
 
   // step1: retrieve base speed (type)
-  const RPG_Monster_Properties& properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(getName());
+  const RPG_Monster_Properties& properties =
+    RPG_MONSTER_DICTIONARY_SINGLETON::instance ()->getProperties (getName ());
   unsigned short result = properties.reach;
 
   //// *TODO*: consider polymorphed states...
@@ -199,18 +200,18 @@ RPG_Monster::getReach(unsigned short& baseRange_out,
 }
 
 ACE_UINT8
-RPG_Monster::getSpeed(bool isRunning_in,
-                      enum RPG_Common_AmbientLighting lighting_in,
-                      enum RPG_Common_Terrain terrain_in,
-                      enum RPG_Common_Track track_in) const
+RPG_Monster::getSpeed (bool isRunning_in,
+                       enum RPG_Common_AmbientLighting lighting_in,
+                       enum RPG_Common_Terrain terrain_in,
+                       enum RPG_Common_Track track_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Monster::getSpeed"));
+  RPG_TRACE (ACE_TEXT ("RPG_Monster::getSpeed"));
 
   // sanity check(s)
   ACE_ASSERT(lighting_in != RPG_COMMON_AMBIENTLIGHTING_INVALID);
 
   // init return value
-  unsigned char result = 0;
+  ACE_UINT8 result = 0;
 
   // step1: retrieve base speed (type)
   const RPG_Monster_Properties& properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(getName());
@@ -268,20 +269,20 @@ RPG_Monster::getSpeed(bool isRunning_in,
     modifier *= 0.5F;
 
   // step4: consider terrain [track type]
-  modifier *= RPG_Common_Tools::terrainToSpeedModifier(terrain_in, track_in);
+  modifier *= RPG_Common_Tools::terrainToSpeedModifier (terrain_in, track_in);
 
   // step5: consider movement mode
   if (isRunning_in)
-    modifier *= static_cast<float>(runModifier);
+    modifier *= static_cast<float> (runModifier);
 
-  result = static_cast<unsigned char>(static_cast<float>(result) * modifier);
+  result = static_cast<ACE_UINT8> (result * modifier);
 
   // *TODO*: consider other (spell, ...) effects
   return result;
 }
 
 enum RPG_Common_SubClass
-RPG_Monster::gainExperience (unsigned int XP_in)
+RPG_Monster::gainExperience (ACE_UINT32 XP_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Monster::gainExperience"));
 
@@ -292,9 +293,9 @@ RPG_Monster::gainExperience (unsigned int XP_in)
 }
 
 void
-RPG_Monster::dump() const
+RPG_Monster::dump () const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Monster::dump"));
+  RPG_TRACE (ACE_TEXT ("RPG_Monster::dump"));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("Monster (type: \"%s\")\n"),
@@ -378,14 +379,14 @@ RPG_Monster::getSkillsPerLevel (enum RPG_Common_SubClass subClass_in) const
   return result;
 }
 
-unsigned short
+ACE_UINT16
 RPG_Monster::getKnownSpellsPerLevel (enum RPG_Common_SubClass subClass_in,
                                      ACE_UINT8 spellLevel_in) const
 {
   ACE_UNUSED_ARG (subClass_in);
   ACE_UNUSED_ARG (spellLevel_in);
 
-  ACE_UINT8 result = 0;
+  ACE_UINT16 result = 0;
 
   ACE_ASSERT (false); // *TODO*
   return result;

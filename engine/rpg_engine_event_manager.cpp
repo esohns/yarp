@@ -915,16 +915,16 @@ RPG_Engine_Event_Manager::handleEvent (const RPG_Engine_Event_t& event_in)
       RPG_Engine_SpawnsConstIterator_t iterator =
           level_metadata.spawns.begin ();
       for (;
-           iterator != level_metadata.spawns.end();
+           iterator != level_metadata.spawns.end ();
            iterator++)
         if (event_in.timer_id == (*iterator).timer_id)
           break;
-      if ((iterator == level_metadata.spawns.end())                          ||
-          (myEngine->numSpawned(std::string(),
-                                false) >= level_metadata.max_num_spawned)    ||
-          (myEngine->numSpawned((*iterator).spawn.type,
-                                false) >= (*iterator).spawn.max_num_spawned) ||
-          !RPG_Dice::probability((*iterator).spawn.probability))
+      if ((iterator == level_metadata.spawns.end ())                          ||
+          (myEngine->numSpawned (ACE_TEXT_ALWAYS_CHAR (""),
+                                 false) >= level_metadata.max_num_spawned)    ||
+          (myEngine->numSpawned ((*iterator).spawn.type,
+                                 false) >= (*iterator).spawn.max_num_spawned) ||
+          !RPG_Dice::probability ((*iterator).spawn.probability))
       {
         myEngine->unlock ();
         break; // not this time...
@@ -1003,28 +1003,26 @@ RPG_Engine_Event_Manager::handleEvent (const RPG_Engine_Event_t& event_in)
       } // end IF
 
       RPG_Engine_EntityID_t id = myEngine->add (entity, false);
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("spawned \"%s\" [id: %u] @ [%u,%u]...\n"),
-                 ACE_TEXT ((*iterator).spawn.type.c_str ()),
-                 id,
-                 entity->position.first, entity->position.second));
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT("spawned \"%s\" [id: %u] @ [%u,%u]...\n"),
+                  ACE_TEXT ((*iterator).spawn.type.c_str ()),
+                  id,
+                  entity->position.first, entity->position.second));
       myEngine->unlock ();
       break;
     }
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid event type (was: %d), aborting\n"),
-                 event_in.type));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid event type (was: %d), aborting\n"),
+                  event_in.type));
       break;
     }
   } // end SWITCH
 
   // clean up ?
-  if (RPG_Engine_Common_Tools::isOneShotEvent(event_in.type))
-  {
-    ACE_Guard<ACE_Thread_Mutex> aGuard (myLock);
-
+  if (RPG_Engine_Common_Tools::isOneShotEvent (event_in.type))
+  { ACE_GUARD (ACE_Thread_Mutex, aGuard, myLock);
     RPG_Engine_EventTimersConstIterator_t iterator =
         myTimers.find (event_in.timer_id);
     if (iterator == myTimers.end ())

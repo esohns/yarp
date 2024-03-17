@@ -77,11 +77,11 @@ typedef RPG_Map_Directions_t::const_iterator RPG_Map_DirectionsConstIterator_t;
 
 struct RPG_Map_Door
 {
-  inline bool operator==(const struct RPG_Map_Door& rhs_in) const
+  inline bool operator== (const struct RPG_Map_Door& rhs_in) const
   {
     return (position == rhs_in.position);
   }
-  inline bool operator!=(const struct RPG_Map_Door& rhs_in) const
+  inline bool operator!= (const struct RPG_Map_Door& rhs_in) const
   {
     return !(position == rhs_in.position);
   }
@@ -90,11 +90,12 @@ struct RPG_Map_Door
   enum RPG_Map_Direction         outside;
   mutable enum RPG_Map_DoorState state; // allow "external" updates (see below)
 };
+
 struct door_compare
  : public std::binary_function<struct RPG_Map_Door, struct RPG_Map_Door, bool>
 {
-  inline bool operator()(const struct RPG_Map_Door& __x,
-                         const struct RPG_Map_Door& __y) const
+  inline bool operator() (const struct RPG_Map_Door& __x,
+                          const struct RPG_Map_Door& __y) const
   {
     return (__x.position < __y.position);
   }

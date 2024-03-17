@@ -58,9 +58,9 @@ class RPG_Common_Tools
                                     bool = true); // is biped ?
   static unsigned short sizeToReach (const enum RPG_Common_Size&,
                                      bool = true); // is tall ? : long
-  static unsigned short environmentToRadius (const struct RPG_Common_Environment&);
-  static float terrainToSpeedModifier (const enum RPG_Common_Terrain& = TERRAIN_ANY, // terrain
-                                       const enum RPG_Common_Track& = TRACK_NONE);   // track type
+  static ACE_UINT8 environmentToRadius (const struct RPG_Common_Environment&);
+  static float terrainToSpeedModifier (enum RPG_Common_Terrain = TERRAIN_ANY, // terrain
+                                       enum RPG_Common_Track = TRACK_NONE);   // track type
 
   // use this to "pretty-print" enumerated (i.e. XML-) values
   // e.g. "SUBCLASS_MONK" --> "Monk"

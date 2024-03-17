@@ -117,7 +117,7 @@ struct RPG_Engine_LevelData
 struct RPG_Engine_CombatantSequenceElement
 {
   // needed for proper sorting...
-  bool operator<(const struct RPG_Engine_CombatantSequenceElement& rhs_in) const
+  bool operator< (const struct RPG_Engine_CombatantSequenceElement& rhs_in) const
   {
     if (initiative < rhs_in.initiative)
       return true;
@@ -152,11 +152,11 @@ struct RPG_Engine_CombatantSequenceElement
     // no conflict for monsters...
     return false;
   }
-  bool operator>(const struct RPG_Engine_CombatantSequenceElement& rhs_in) const
+  bool operator> (const struct RPG_Engine_CombatantSequenceElement& rhs_in) const
   {
     return (!(*this < rhs_in) && !(*this == rhs_in));
   }
-  bool operator==(const struct RPG_Engine_CombatantSequenceElement& rhs_in) const
+  bool operator== (const struct RPG_Engine_CombatantSequenceElement& rhs_in) const
   {
     if (initiative == rhs_in.initiative)
     {
@@ -185,13 +185,13 @@ struct RPG_Engine_CombatantSequenceElement
     // no conflict for monsters...
     return false;
   }
-  bool operator!=(const struct RPG_Engine_CombatantSequenceElement& rhs_in) const
+  bool operator!= (const struct RPG_Engine_CombatantSequenceElement& rhs_in) const
   {
     return !operator==(rhs_in);
   }
 
-  signed char            initiative;
-  short int              DEXModifier;
+  ACE_INT8               initiative;
+  ACE_INT16              DEXModifier;
   const RPG_Player_Base* handle;
 };
 
@@ -224,16 +224,16 @@ struct RPG_Engine_ClientNotificationParameters
   RPG_Map_Positions_t       positions;
   RPG_Map_Position_t        previous_position;
   enum RPG_Common_SubClass  subclass;
-  unsigned char             visible_radius;
+  ACE_UINT8                 visible_radius;
   std::string               message;
 };
 //typedef std::vector<void*> RPG_Engine_ClientParameters_t;
 //typedef RPG_Engine_ClientParameters_t::iterator RPG_Engine_ClientParametersIterator_t;
 //typedef RPG_Engine_ClientParameters_t::const_iterator RPG_Engine_ClientParametersConstIterator_t;
 
-typedef std::vector<unsigned int> RPG_Engine_LevelToExperienceList_t;
+typedef std::vector<ACE_UINT64> RPG_Engine_LevelToExperienceList_t;
 typedef RPG_Engine_LevelToExperienceList_t::const_iterator RPG_Engine_LevelToExperienceListConstIterator_t;
-typedef std::map<unsigned char, RPG_Engine_LevelToExperienceList_t> RPG_Engine_CRToExperienceMap_t;
+typedef std::map<ACE_UINT8, RPG_Engine_LevelToExperienceList_t> RPG_Engine_CRToExperienceMap_t;
 typedef RPG_Engine_CRToExperienceMap_t::const_iterator RPG_Engine_CRToExperienceMapConstIterator_t;
 
 typedef std::map<RPG_Engine_EntityID_t, RPG_Map_Positions_t> RPG_Engine_SeenPositions_t;

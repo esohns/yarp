@@ -65,9 +65,9 @@ class RPG_Client_Window_Level
   bool showMessages () const;
 
   // implement RPG_Client_IWindowLevel
-  virtual void drawBorder(SDL_Surface* = NULL, // target surface (default: screen)
-                          unsigned int = 0,    // offset x (top-left = [0,0])
-                          unsigned int = 0);   // offset y (top-left = [0,0])
+  virtual void drawBorder (SDL_Surface* = NULL, // target surface (default: screen)
+                           unsigned int = 0,    // offset x (top-left = [0,0])
+                           unsigned int = 0);   // offset y (top-left = [0,0])
   virtual void initialize (const RPG_Graphics_Style&); // style
   virtual void setView (int,
                         int,          // view (relative map coordinates)
@@ -76,7 +76,7 @@ class RPG_Client_Window_Level
   virtual RPG_Graphics_Position_t getView () const; // return value: view (map coordinates !)
   virtual void toggleDoor (const RPG_Map_Position_t&); // door position
   // (re)set lighting blend cache
-  virtual void setBlendRadius (unsigned char); // radius
+  virtual void setBlendRadius (ACE_UINT8); // radius
   virtual void updateMinimap ();
   virtual void updateMessageWindow (const std::string&); // message
 
@@ -114,7 +114,7 @@ class RPG_Client_Window_Level
 
   RPG_Engine*                     myEngine;
   RPG_Client_Engine*              myClient;
-  RPG_Client_Action               myClientAction;
+  struct RPG_Client_Action        myClientAction;
   bool                            myDrawMinimap;
 #if defined (_DEBUG)
   bool                            myShowCoordinates;

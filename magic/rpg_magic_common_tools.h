@@ -56,9 +56,9 @@ class RPG_Magic_Common_Tools
   static bool hasCasterClass (const RPG_Character_Class&); // class(es)
   static bool hasDivineCasterClass (const RPG_Character_Class&); // class(es)
   static bool hasArcaneCasterClass (const RPG_Character_Class&); // class(es)
-  static unsigned short getNumKnownSpells (enum RPG_Common_SubClass, // subclass
-                                           RPG_Character_Level_t,    // class level
-                                           ACE_UINT8);               // spell level (Bard/Sorcerer)
+  static ACE_UINT16 getNumKnownSpells (enum RPG_Common_SubClass, // subclass
+                                       RPG_Character_Level_t,    // class level
+                                       ACE_UINT8);               // spell level (Bard/Sorcerer)
   static unsigned int getNumSpells (enum RPG_Common_SubClass, // subclass
                                     RPG_Character_Level_t,    // class level
                                     ACE_UINT8);               // spell level (== 0xFF ? total # spell slots)

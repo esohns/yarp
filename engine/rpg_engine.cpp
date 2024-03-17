@@ -131,8 +131,7 @@ RPG_Engine::~RPG_Engine ()
 
   // clean up
   delete connector_;
-  {
-    ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
+  { ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
     for (RPG_Engine_EntitiesIterator_t iterator = entities_.begin ();
          iterator != entities_.end ();
          iterator++)
@@ -167,12 +166,9 @@ RPG_Engine::open (void* args_in)
     return -1;
   } // end IF
 
-  try
-  {
+  try {
     start ();
-  }
-  catch (...)
-  {
+  } catch (...) {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("caught exception in start() method, aborting\n")));
     return -1;
@@ -502,12 +498,9 @@ RPG_Engine::dump_state () const
        iterator != entities_.end ();
        iterator++)
   {
-    try
-    {
+    try {
       (*iterator).second->character->dump ();
-    }
-    catch (...)
-    {
+    } catch (...) {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("[%@] caught exception in RPG_Character_Base::dump(), continuing\n"),
                   (*iterator).second->character));
@@ -605,15 +598,16 @@ RPG_Engine::add (struct RPG_Engine_Entity* entity_in,
                                                         inherited2::myMetaData.environment.lighting,
                                                         inherited2::myMetaData.environment.terrain,
                                                         TRACK_NONE));
-  temp /= RPG_ENGINE_FEET_PER_SQUARE;
+  temp /= static_cast<float> (RPG_ENGINE_FEET_PER_SQUARE);
   temp *= RPG_ENGINE_ROUND_INTERVAL;
   float squares_per_round = temp;
-  squares_per_round = (1.0F / squares_per_round);
+  ACE_ASSERT (squares_per_round != 0.0f);
+  squares_per_round = (1.0f / squares_per_round);
   squares_per_round *= static_cast<float> (RPG_ENGINE_SPEED_MODIFIER);
   float fractional = std::modf (squares_per_round, &squares_per_round);
-  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance()->add (id,
-                                                       ACE_Time_Value (static_cast<time_t> (squares_per_round),
-                                                                       static_cast<suseconds_t> (fractional * 1000000.0F)));
+  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance ()->add (id,
+                                                        ACE_Time_Value (static_cast<time_t> (squares_per_round),
+                                                                        static_cast<suseconds_t> (fractional * 1000000.0f)));
 
   // notify client / window
   struct RPG_Engine_ClientNotificationParameters parameters;
@@ -651,7 +645,7 @@ RPG_Engine::add (struct RPG_Engine_Entity* entity_in,
 }
 
 void
-RPG_Engine::remove (const RPG_Engine_EntityID_t& id_in)
+RPG_Engine::remove (RPG_Engine_EntityID_t id_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::remove"));
 
@@ -708,7 +702,7 @@ RPG_Engine::remove (const RPG_Engine_EntityID_t& id_in)
 }
 
 bool
-RPG_Engine::exists (const RPG_Engine_EntityID_t& id_in) const
+RPG_Engine::exists (RPG_Engine_EntityID_t id_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::exists"));
 
@@ -721,7 +715,7 @@ RPG_Engine::exists (const RPG_Engine_EntityID_t& id_in) const
 }
 
 void
-RPG_Engine::action (const RPG_Engine_EntityID_t& id_in,
+RPG_Engine::action (RPG_Engine_EntityID_t id_in,
                     const struct RPG_Engine_Action& action_in,
                     bool lockedAccess_in)
 {
@@ -730,7 +724,8 @@ RPG_Engine::action (const RPG_Engine_EntityID_t& id_in,
   // sanity check
   ACE_ASSERT (id_in);
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   RPG_Engine_EntitiesIterator_t iterator = entities_.find (id_in);
   if (iterator == entities_.end ())
@@ -738,7 +733,8 @@ RPG_Engine::action (const RPG_Engine_EntityID_t& id_in,
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("invalid entity ID (was: %u), aborting\n"),
                 id_in));
-    if (lockedAccess_in) lock_.release ();
+    if (lockedAccess_in)
+      lock_.release ();
     return;
   } // end IF
 
@@ -771,7 +767,8 @@ RPG_Engine::action (const RPG_Engine_EntityID_t& id_in,
         (*iterator).second->actions.pop_front ();
         (*iterator).second->actions.push_front (action_in);
 
-        if (lockedAccess_in) lock_.release ();
+        if (lockedAccess_in)
+          lock_.release ();
 
         // done
         return;
@@ -783,7 +780,8 @@ RPG_Engine::action (const RPG_Engine_EntityID_t& id_in,
     {
       (*iterator).second->actions.clear ();
 
-      if (lockedAccess_in) lock_.release ();
+      if (lockedAccess_in)
+        lock_.release ();
 
       // done
       return;
@@ -800,7 +798,8 @@ RPG_Engine::action (const RPG_Engine_EntityID_t& id_in,
         (*iterator).second->actions.pop_front ();
         (*iterator).second->actions.push_front (action_in);
 
-        if (lockedAccess_in) lock_.release ();
+        if (lockedAccess_in)
+          lock_.release ();
 
         // done
         return;
@@ -814,10 +813,11 @@ RPG_Engine::action (const RPG_Engine_EntityID_t& id_in,
 
   (*iterator).second->actions.push_back (action_in);
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   // wake up the engine
-  inherited::msg_queue ()->pulse ();
+  inherited::msg_queue_->pulse ();
 }
 
 bool
@@ -874,18 +874,15 @@ RPG_Engine::load (const std::string& filename_in,
   //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
   ::xml_schema::flags flags = 0;
   ::xml_schema::properties props;
-  std::string path;
   ACE_ASSERT (!schemaRepository_in.empty ());
+  std::string path = schemaRepository_in;
   if (Common_Error_Tools::inDebugSession ())
   {
-    path = schemaRepository_in;
     path += ACE_DIRECTORY_SEPARATOR_STR;
     path += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
     path += ACE_DIRECTORY_SEPARATOR_STR;
     path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
   } // end IF
-  else
-   path = schemaRepository_in;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SCHEMA_FILE);
   // sanity check(s)
@@ -1018,15 +1015,13 @@ RPG_Engine::load (const std::string& filename_in,
 
   // initialize level
   struct RPG_Engine_LevelData level;
-  RPG_Engine_State_XMLTree_Type::entities_sequence& entities =
-    engine_state_p->entities ();
   path = RPG_Player_Common_Tools::getPlayerProfilesDirectory ();
   std::string filename;
   RPG_Magic_Spells_t spells;
   RPG_Character_Conditions_t condition;
   struct RPG_Engine_Entity* entity = NULL;
-  for (RPG_Engine_State_XMLTree_Type::entities_const_iterator iterator = entities.begin ();
-       iterator != entities.end ();
+  for (RPG_Engine_State_XMLTree_Type::entities_const_iterator iterator = engine_state_p->entities ().begin ();
+       iterator != engine_state_p->entities ().end ();
        iterator++)
   {
     entity = NULL;
@@ -1079,7 +1074,7 @@ RPG_Engine::load (const std::string& filename_in,
         (*iterator).monster ().get ();
       RPG_Item_List_t items;
       if (monster_state.inventory ().present ())
-        items = RPG_Item_Common_XML_Tools::instantiate (monster_state.inventory ().get ());
+        items = RPG_Item_Common_XML_Tools::itemXMLTreeToItems (monster_state.inventory ().get ());
       condition.clear ();
       const RPG_Player_Conditions_XMLTree_Type::condition_sequence& condition_xml =
         monster_state.conditions ().condition ();
@@ -1107,22 +1102,19 @@ RPG_Engine::load (const std::string& filename_in,
         return false;
       } // end IF
     } // end ELSE
-    const RPG_Engine_EntityState_XMLTree_Type::mode_sequence& modes =
-      (*iterator).mode ();
-    for (RPG_Engine_EntityState_XMLTree_Type::mode_const_iterator iterator2 = modes.begin ();
-         iterator2 != modes.end ();
+    for (RPG_Engine_EntityState_XMLTree_Type::mode_const_iterator iterator2 = (*iterator).mode ().begin ();
+         iterator2 != (*iterator).mode ().end ();
          iterator2++)
       entity->modes.insert (RPG_Engine_EntityModeHelper::stringToRPG_Engine_EntityMode (*iterator2));
-    const RPG_Map_Position_XMLTree_Type& position = (*iterator).position ();
-    entity->position = std::make_pair (position.x (),
-                                       position.y ());
+    entity->position = std::make_pair ((*iterator).position ().x (),
+                                       (*iterator).position ().y ());
 
     add (entity,
          false);
   } // end FOR
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("loaded %u entities...\n"),
-              ACE_TEXT (entities.size ())));
+              ACE_TEXT (engine_state_p->entities ().size ())));
 
 //  level.metadata.name.clear();
   level.metadata.environment.climate = RPG_COMMON_CLIMATE_INVALID;
@@ -1406,14 +1398,16 @@ RPG_Engine::save (const std::string& descriptor_in)
 }
 
 void
-RPG_Engine::setActive (const RPG_Engine_EntityID_t& id_in,
+RPG_Engine::setActive (RPG_Engine_EntityID_t id_in,
                        bool lockedAccess_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::setActive"));
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
   activePlayer_ = id_in;
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 }
 
 RPG_Engine_EntityID_t
@@ -1423,9 +1417,11 @@ RPG_Engine::getActive (bool lockedAcces_in) const
 
   RPG_Engine_EntityID_t result = 0;
 
-  if (lockedAcces_in) lock_.acquire ();
+  if (lockedAcces_in)
+    lock_.acquire ();
   result = activePlayer_;
-  if (lockedAcces_in) lock_.release ();
+  if (lockedAcces_in)
+    lock_.release ();
 
   return result;
 }
@@ -1489,7 +1485,7 @@ RPG_Engine::hasMode (const RPG_Engine_EntityMode& mode_in) const
 }
 
 RPG_Map_Position_t
-RPG_Engine::getPosition (const RPG_Engine_EntityID_t& id_in,
+RPG_Engine::getPosition (RPG_Engine_EntityID_t id_in,
                          bool lockedAccess_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::getPosition"));
@@ -1498,13 +1494,15 @@ RPG_Engine::getPosition (const RPG_Engine_EntityID_t& id_in,
       std::make_pair (std::numeric_limits<unsigned int>::max (),
                       std::numeric_limits<unsigned int>::max ());
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   RPG_Engine_EntitiesConstIterator_t iterator = entities_.find (id_in);
   ACE_ASSERT (iterator != entities_.end ());
   if (iterator == entities_.end ())
   {
-    if (lockedAccess_in) lock_.release ();
+    if (lockedAccess_in)
+      lock_.release ();
 
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("invalid entity ID (was: %u), aborting\n"),
@@ -1515,7 +1513,8 @@ RPG_Engine::getPosition (const RPG_Engine_EntityID_t& id_in,
 
   result = (*iterator).second->position;
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return result;
 }
@@ -1532,7 +1531,8 @@ RPG_Engine::findValid (const RPG_Map_Position_t& center_in,
       std::make_pair (std::numeric_limits<unsigned int>::max (),
                       std::numeric_limits<unsigned int>::max ());
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   RPG_Map_Positions_t valid, occupied, possible;
   for (RPG_Engine_EntitiesConstIterator_t iterator = entities_.begin ();
@@ -1567,7 +1567,8 @@ RPG_Engine::findValid (const RPG_Map_Position_t& center_in,
       break;
   } // end FOR
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   if (possible.empty ())
   {
@@ -1609,6 +1610,8 @@ RPG_Engine::isBlocked (const RPG_Map_Position_t& position_in) const
     if ((*iterator).second->position == position_in)
       return true;
 
+  // *TODO*: add more criteria
+
   return false;
 }
 
@@ -1620,7 +1623,8 @@ RPG_Engine::hasEntity (const RPG_Map_Position_t& position_in,
 
   RPG_Engine_EntityID_t result = 0;
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   for (RPG_Engine_EntitiesConstIterator_t iterator = entities_.begin ();
        iterator != entities_.end ();
@@ -1629,12 +1633,14 @@ RPG_Engine::hasEntity (const RPG_Map_Position_t& position_in,
     {
       result = (*iterator).first;
 
-      if (lockedAccess_in) lock_.release ();
+      if (lockedAccess_in)
+        lock_.release ();
 
       return result;
     } // end IF
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return result;
 }
@@ -1647,7 +1653,8 @@ RPG_Engine::entities (const RPG_Map_Position_t& position_in,
 
   RPG_Engine_EntityList_t result;
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   // step1: retrieve entities
   for (RPG_Engine_EntitiesConstIterator_t iterator = entities_.begin ();
@@ -1655,7 +1662,8 @@ RPG_Engine::entities (const RPG_Map_Position_t& position_in,
        iterator++)
     result.push_back ((*iterator).first);
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   // step2: sort entity list
   distance_sort_t distance_sort = {this, false, position_in};
@@ -1665,14 +1673,15 @@ RPG_Engine::entities (const RPG_Map_Position_t& position_in,
 }
 
 bool
-RPG_Engine::isMonster (const RPG_Engine_EntityID_t& id_in,
+RPG_Engine::isMonster (RPG_Engine_EntityID_t id_in,
                        bool lockedAccess_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::isMonster"));
 
   bool result = false;
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   RPG_Engine_EntitiesConstIterator_t iterator = entities_.find (id_in);
   ACE_ASSERT (iterator != entities_.end ());
@@ -1682,7 +1691,8 @@ RPG_Engine::isMonster (const RPG_Engine_EntityID_t& id_in,
                 ACE_TEXT ("invalid entity ID (was: %u), aborting\n"),
                 id_in));
 
-    if (lockedAccess_in) lock_.release ();
+    if (lockedAccess_in)
+      lock_.release ();
 
     // *CONSIDER*: --> false negative ?
     return result;
@@ -1690,20 +1700,22 @@ RPG_Engine::isMonster (const RPG_Engine_EntityID_t& id_in,
 
   result = !(*iterator).second->character->isPlayerCharacter ();
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return result;
 }
 
 std::string
-RPG_Engine::getName (const RPG_Engine_EntityID_t& id_in,
+RPG_Engine::getName (RPG_Engine_EntityID_t id_in,
                      bool lockedAccess_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::getName"));
 
   std::string result;
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   RPG_Engine_EntitiesConstIterator_t iterator = entities_.find (id_in);
   ACE_ASSERT(iterator != entities_.end ());
@@ -1713,7 +1725,8 @@ RPG_Engine::getName (const RPG_Engine_EntityID_t& id_in,
                 ACE_TEXT ("invalid entity ID (was: %u), aborting\n"),
                 id_in));
 
-    if (lockedAccess_in) lock_.release ();
+    if (lockedAccess_in)
+      lock_.release ();
 
     // *CONSIDER*: --> false negative ?
     return result;
@@ -1721,13 +1734,14 @@ RPG_Engine::getName (const RPG_Engine_EntityID_t& id_in,
 
   result = (*iterator).second->character->getName ();
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return result;
 }
 
 RPG_Character_Class
-RPG_Engine::getClass (const RPG_Engine_EntityID_t& id_in,
+RPG_Engine::getClass (RPG_Engine_EntityID_t id_in,
                       bool lockedAccess_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::getClass"));
@@ -1736,7 +1750,8 @@ RPG_Engine::getClass (const RPG_Engine_EntityID_t& id_in,
   result.metaClass = RPG_CHARACTER_METACLASS_INVALID;
 //  result.subClasses.clear();
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   RPG_Engine_EntitiesConstIterator_t iterator = entities_.find (id_in);
   ACE_ASSERT (iterator != entities_.end ());
@@ -1746,7 +1761,8 @@ RPG_Engine::getClass (const RPG_Engine_EntityID_t& id_in,
                 ACE_TEXT ("invalid entity ID (was: %u), aborting\n"),
                 id_in));
 
-    if (lockedAccess_in) lock_.release ();
+    if (lockedAccess_in)
+      lock_.release ();
 
     // *CONSIDER*: --> false negative ?
     return result;
@@ -1764,29 +1780,30 @@ RPG_Engine::getClass (const RPG_Engine_EntityID_t& id_in,
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to dynamic_cast<RPG_Player_Player_Base*>(%@), returning\n"),
                 (*iterator).second->character));
-    if (lockedAccess_in) lock_.release ();
+    if (lockedAccess_in)
+      lock_.release ();
     return result;
   } // end IF
 
   result = player_base->getClass ();
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return result;
 }
 
-unsigned char
-RPG_Engine::getVisibleRadius (const RPG_Engine_EntityID_t& id_in,
+ACE_UINT8
+RPG_Engine::getVisibleRadius (RPG_Engine_EntityID_t id_in,
                               bool lockedAccess_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::getVisibleRadius"));
 
   // init return value(s)
-  unsigned char result = 0;
+  ACE_UINT8 result = 0;
 
   // sanity check
-  if (id_in == 0)
-    return result;
+  ACE_ASSERT (id_in);
 
   // step1: retrieve:
   // - race (if any)
@@ -1796,7 +1813,8 @@ RPG_Engine::getVisibleRadius (const RPG_Engine_EntityID_t& id_in,
   RPG_Item_CommodityLight equipped_light_source =
       RPG_ITEM_COMMODITYLIGHT_INVALID;
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   RPG_Engine_EntitiesConstIterator_t iterator = entities_.find (id_in);
   ACE_ASSERT (iterator != entities_.end ());
@@ -1805,7 +1823,8 @@ RPG_Engine::getVisibleRadius (const RPG_Engine_EntityID_t& id_in,
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("invalid entity ID (was: %u), aborting\n"),
                 id_in));
-    if (lockedAccess_in) lock_.release ();
+    if (lockedAccess_in)
+      lock_.release ();
     return result;
   } // end IF
 
@@ -1823,7 +1842,8 @@ RPG_Engine::getVisibleRadius (const RPG_Engine_EntityID_t& id_in,
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("caught exception in dynamic_cast<RPG_Player_Player_Base*>(%@), aborting\n"),
                   (*iterator).second->character));
-      if (lockedAccess_in) lock_.release ();
+      if (lockedAccess_in)
+        lock_.release ();
       return result;
     } // end IF
 
@@ -1833,7 +1853,6 @@ RPG_Engine::getVisibleRadius (const RPG_Engine_EntityID_t& id_in,
   else
   {
     RPG_Monster* monster = NULL;
-    monster = dynamic_cast<RPG_Monster*> ((*iterator).second->character);
     try {
       monster =
           dynamic_cast<RPG_Monster*> ((*iterator).second->character);
@@ -1845,7 +1864,8 @@ RPG_Engine::getVisibleRadius (const RPG_Engine_EntityID_t& id_in,
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("caught exception in dynamic_cast<RPG_Monster*>(%@), aborting\n"),
                   (*iterator).second->character));
-      if (lockedAccess_in) lock_.release ();
+      if (lockedAccess_in)
+        lock_.release ();
       return result;
     } // end IF
 
@@ -1853,17 +1873,18 @@ RPG_Engine::getVisibleRadius (const RPG_Engine_EntityID_t& id_in,
   } // end ELSE
 
   // step2: consider environment / ambient lighting
-  unsigned short environment_radius =
+  ACE_UINT8 environment_radius =
     RPG_Common_Tools::environmentToRadius (inherited2::myMetaData.environment);
 
   // step3: consider equipment (ambient lighting conditions)
-  unsigned short lit_radius = 0;
+  ACE_UINT8 lit_radius = 0;
   if (equipped_light_source != RPG_ITEM_COMMODITYLIGHT_INVALID)
     lit_radius =
         RPG_Item_Common_Tools::lightingItemToRadius (equipped_light_source,
                                                      (inherited2::myMetaData.environment.lighting == AMBIENCE_BRIGHT));
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   // step4: consider low-light vision
   // *TODO*: consider monsters as well...
@@ -1871,9 +1892,7 @@ RPG_Engine::getVisibleRadius (const RPG_Engine_EntityID_t& id_in,
       RPG_Character_Race_Common_Tools::hasRace (race, RACE_GNOME))
     lit_radius *= 2;
 
-  result =
-    ((environment_radius > lit_radius) ? static_cast<unsigned char> (environment_radius)
-                                       : static_cast<unsigned char> (lit_radius));
+  result = std::max (environment_radius, lit_radius);
 
   // step5: consider darkvision
   // *TODO*: consider monsters as well...
@@ -1888,7 +1907,7 @@ RPG_Engine::getVisibleRadius (const RPG_Engine_EntityID_t& id_in,
 }
 
 void
-RPG_Engine::getVisiblePositions (const RPG_Engine_EntityID_t& id_in,
+RPG_Engine::getVisiblePositions (RPG_Engine_EntityID_t id_in,
                                  RPG_Map_Positions_t& positions_out,
                                  bool lockedAccess_in) const
 {
@@ -1900,7 +1919,8 @@ RPG_Engine::getVisiblePositions (const RPG_Engine_EntityID_t& id_in,
   // sanity check
   ACE_ASSERT (id_in != 0);
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   // step1: find "lit" positions
   RPG_Map_Position_t current_position = getPosition (id_in, false);
@@ -1914,7 +1934,8 @@ RPG_Engine::getVisiblePositions (const RPG_Engine_EntityID_t& id_in,
   // --> cannot see through walls / (closed) doors...
   RPG_Map_Positions_t obstacles = inherited2::getObstacles ();
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   // *WARNING*: this works for associative containers ONLY
   for (RPG_Map_PositionsConstIterator_t iterator = positions_out.begin ();
@@ -1930,7 +1951,7 @@ RPG_Engine::getVisiblePositions (const RPG_Engine_EntityID_t& id_in,
 }
 
 bool
-RPG_Engine::canSee (const RPG_Engine_EntityID_t& id_in,
+RPG_Engine::canSee (RPG_Engine_EntityID_t id_in,
                     const RPG_Map_Position_t& position_in,
                     bool lockedAccess_in) const
 {
@@ -1940,21 +1961,23 @@ RPG_Engine::canSee (const RPG_Engine_EntityID_t& id_in,
   if (id_in == 0)
     return false; // *CONSIDER*: false negative ?
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   RPG_Map_Positions_t visible_positions;
   getVisiblePositions (id_in,
                        visible_positions,
                        false);
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return (visible_positions.find (position_in) != visible_positions.end ());
 }
 
 bool
-RPG_Engine::canSee (const RPG_Engine_EntityID_t& id_in,
-                    const RPG_Engine_EntityID_t& target_in,
+RPG_Engine::canSee (RPG_Engine_EntityID_t id_in,
+                    RPG_Engine_EntityID_t target_in,
                     bool lockedAccess_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::canSee"));
@@ -1962,7 +1985,8 @@ RPG_Engine::canSee (const RPG_Engine_EntityID_t& id_in,
   // sanity check(s)
   ACE_ASSERT (id_in && target_in);
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   RPG_Engine_EntitiesConstIterator_t iterator = entities_.find (target_in);
   ACE_ASSERT (iterator != entities_.end ());
@@ -1989,7 +2013,8 @@ RPG_Engine::canSee (const RPG_Engine_EntityID_t& id_in,
   RPG_Map_Position_t target_position = (*iterator).second->position;
   if (!target_equipped_a_light)
   {
-    if (lockedAccess_in) lock_.release ();
+    if (lockedAccess_in)
+      lock_.release ();
 
     // can the source see the target position ?
     return canSee (id_in,
@@ -2000,7 +2025,8 @@ RPG_Engine::canSee (const RPG_Engine_EntityID_t& id_in,
   RPG_Map_Position_t source_position = getPosition (id_in, false);
   RPG_Map_Positions_t obstacles = inherited2::getObstacles ();
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return RPG_Map_Common_Tools::hasLineOfSight (source_position,
                                                target_position,
@@ -2009,7 +2035,7 @@ RPG_Engine::canSee (const RPG_Engine_EntityID_t& id_in,
 }
 
 bool
-RPG_Engine::hasSeen (const RPG_Engine_EntityID_t& id_in,
+RPG_Engine::hasSeen (RPG_Engine_EntityID_t id_in,
                      const RPG_Map_Position_t& position_in,
                      bool lockedAccess_in) const
 {
@@ -2018,7 +2044,8 @@ RPG_Engine::hasSeen (const RPG_Engine_EntityID_t& id_in,
   bool result = false;
   RPG_Map_PositionsConstIterator_t iterator2;
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   RPG_Engine_SeenPositionsConstIterator_t iterator =
     seenPositions_.find (id_in);
@@ -2028,7 +2055,8 @@ RPG_Engine::hasSeen (const RPG_Engine_EntityID_t& id_in,
   result = (iterator2 != (*iterator).second.end ());
 
 error:
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return result;
 }
@@ -2041,7 +2069,8 @@ RPG_Engine::numSpawned (const std::string& type_in,
 
   unsigned int result = 0;
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   for (RPG_Engine_EntitiesConstIterator_t iterator = entities_.begin ();
        iterator != entities_.end ();
@@ -2051,7 +2080,8 @@ RPG_Engine::numSpawned (const std::string& type_in,
          (type_in == (*iterator).second->character->getName ())))
       result++;
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return result;
 }
@@ -2064,7 +2094,8 @@ RPG_Engine::findPath (const RPG_Map_Position_t& start_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::findPath"));
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   // obstacles:
   // - walls
@@ -2079,7 +2110,8 @@ RPG_Engine::findPath (const RPG_Map_Position_t& start_in,
   obstacles.erase (start_in);
   obstacles.erase (end_in);
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return inherited2::findPath (start_in,
                                end_in,
@@ -2088,13 +2120,14 @@ RPG_Engine::findPath (const RPG_Map_Position_t& start_in,
 }
 
 bool
-RPG_Engine::canReach (const RPG_Engine_EntityID_t& id_in,
+RPG_Engine::canReach (RPG_Engine_EntityID_t id_in,
                       const RPG_Map_Position_t& position_in,
                       bool lockedAccess_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::canReach"));
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   RPG_Engine_EntitiesConstIterator_t iterator = entities_.find (id_in);
   ACE_ASSERT(iterator != entities_.end ());
@@ -2103,7 +2136,8 @@ RPG_Engine::canReach (const RPG_Engine_EntityID_t& id_in,
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("invalid entity ID (was: %u), aborting\n"),
                 id_in));
-    if (lockedAccess_in) lock_.release ();
+    if (lockedAccess_in)
+      lock_.release ();
     return false; // *TODO*: false negative ?
   } // end IF
 
@@ -2117,7 +2151,8 @@ RPG_Engine::canReach (const RPG_Engine_EntityID_t& id_in,
   unsigned int max_reach =
     (*iterator).second->character->getReach (base_reach, absolute_reach) / RPG_ENGINE_FEET_PER_SQUARE;
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return (absolute_reach ? (range == max_reach)
                          : (range <= max_reach));
@@ -2130,11 +2165,13 @@ RPG_Engine::getMetaData (bool lockedAccess_in) const
 
   struct RPG_Engine_LevelMetaData result;
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   result = inherited2::getMetaData ();
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return result;
 }
@@ -2146,11 +2183,13 @@ RPG_Engine::getStartPosition (bool lockedAccess_in) const
 
   RPG_Map_Position_t result;
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   result = inherited2::getStartPosition ();
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return result;
 }
@@ -2162,11 +2201,13 @@ RPG_Engine::getSeedPoints (bool lockedAccess_in) const
 
   RPG_Map_Positions_t result;
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   result = inherited2::getSeedPoints ();
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return result;
 }
@@ -2178,11 +2219,13 @@ RPG_Engine::getSize (bool lockedAccess_in) const
 
   RPG_Map_Size_t result;
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   result = inherited2::getSize ();
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return result;
 }
@@ -2195,11 +2238,13 @@ RPG_Engine::state (const RPG_Map_Position_t& position_in,
 
   RPG_Map_DoorState result = RPG_MAP_DOORSTATE_INVALID;
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   result = inherited2::state (position_in);
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return result;
 }
@@ -2212,11 +2257,13 @@ RPG_Engine::isValid (const RPG_Map_Position_t& position_in,
 
   bool result;
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   result = inherited2::isValid (position_in);
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return result;
 }
@@ -2229,11 +2276,13 @@ RPG_Engine::isCorner (const RPG_Map_Position_t& position_in,
 
   bool result;
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   result = inherited2::isCorner (position_in);
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return result;
 }
@@ -2246,24 +2295,27 @@ RPG_Engine::getElement (const RPG_Map_Position_t& position_in,
 
   RPG_Map_Element result;
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   result = inherited2::getElement (position_in);
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return result;
 }
 
 RPG_Map_Positions_t
-RPG_Engine::getObstacles (const bool& includeEntities_in,
+RPG_Engine::getObstacles (bool includeEntities_in,
                           bool lockedAccess_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::getObstacles"));
 
   RPG_Map_Positions_t result;
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   result = inherited2::getObstacles ();
 
@@ -2273,7 +2325,8 @@ RPG_Engine::getObstacles (const bool& includeEntities_in,
          iterator++)
       result.insert ((*iterator).second->position);
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return result;
 }
@@ -2285,11 +2338,13 @@ RPG_Engine::getWalls (bool lockedAccess_in) const
 
   RPG_Map_Positions_t result;
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   result = inherited2::myMap.plan.walls;
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return result;
 }
@@ -2301,25 +2356,28 @@ RPG_Engine::getDoors (bool lockedAccess_in) const
 
   RPG_Map_Positions_t result;
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   for (RPG_Map_DoorsConstIterator_t iterator = inherited2::myMap.plan.doors.begin ();
        iterator != inherited2::myMap.plan.doors.end ();
        iterator++)
     result.insert ((*iterator).position);
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 
   return result;
 }
 
 void
-RPG_Engine::clearEntityActions (const RPG_Engine_EntityID_t& id_in,
+RPG_Engine::clearEntityActions (RPG_Engine_EntityID_t id_in,
                                 bool lockedAccess_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::clearEntityActions"));
 
-  if (lockedAccess_in) lock_.acquire ();
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   RPG_Engine_EntitiesIterator_t iterator;
   if (id_in)
@@ -2334,7 +2392,8 @@ RPG_Engine::clearEntityActions (const RPG_Engine_EntityID_t& id_in,
          iterator++)
       (*iterator).second->actions.clear ();
 
-  if (lockedAccess_in) lock_.release ();
+  if (lockedAccess_in)
+    lock_.release ();
 }
 
 void

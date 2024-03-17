@@ -21,27 +21,21 @@
 #ifndef RPG_ITEM_COMMON_XML_TOOLS_H
 #define RPG_ITEM_COMMON_XML_TOOLS_H
 
-#include <string>
-
 #include "ace/Global_Macros.h"
 
-//#include "rpg_item_exports.h"
 #include "rpg_item_instance_common.h"
 #include "rpg_item_XML_tree.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Item_Common_XML_Tools
 {
  public:
-  static RPG_Item_List_t instantiate(const RPG_Item_InventoryXML_XMLTree_Type&);
+  static RPG_Item_List_t itemXMLTreeToItems (const RPG_Item_InventoryXML_XMLTree_Type&);
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Common_XML_Tools())
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Item_Common_XML_Tools())
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Common_XML_Tools(const RPG_Item_Common_XML_Tools&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Common_XML_Tools& operator=(const RPG_Item_Common_XML_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Common_XML_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (~RPG_Item_Common_XML_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Common_XML_Tools (const RPG_Item_Common_XML_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Common_XML_Tools& operator= (const RPG_Item_Common_XML_Tools&))
 };
 
 #endif
