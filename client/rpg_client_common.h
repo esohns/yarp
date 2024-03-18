@@ -116,6 +116,7 @@ struct RPG_Client_GTK_CBData
   struct RPG_Engine_LevelMetaData        levelMetadata;
   struct RPG_Map_FloorPlan_Configuration mapConfiguration;
   // runtime state
+  unsigned int                           assignedSkillPointsPreLevelUp;
   enum RPG_Common_SubClass               subClass;
 };
 

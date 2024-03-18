@@ -21,7 +21,6 @@
 #ifndef RPG_CLIENT_GUI_CALLBACKS_H
 #define RPG_CLIENT_GUI_CALLBACKS_H
 
-//#include "glade/glade.h"
 #include "gtk/gtk.h"
 
 #include "rpg_player.h"
@@ -50,6 +49,7 @@ gboolean idle_raise_UI_cb (gpointer);
 
 gboolean idle_leave_game_cb (gpointer);
 gboolean idle_level_up_cb (gpointer);
+gboolean idle_update_profile_cb (gpointer);
 
 // -----------------------------------------------------------------------------
 

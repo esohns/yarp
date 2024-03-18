@@ -657,6 +657,18 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
 
       break;
     }
+    case COMMAND_E2C_ENTITY_STATE:
+    {
+      // simply update the UI
+      SDL_Event sdl_event_u;
+      sdl_event_u.type = SDL_KEYDOWN;
+      sdl_event_u.key.keysym.sym = SDLK_z;
+      if (SDL_PushEvent (&sdl_event_u) < 0)
+        ACE_DEBUG ((LM_ERROR,
+                   ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),
+                   ACE_TEXT (SDL_GetError ())));
+      break;
+    }
     case COMMAND_E2C_INIT:
     {
       // sanity check(s)
@@ -1269,7 +1281,7 @@ next:
                     ACE_TEXT ("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), continuing\n"),
                     client_action.window));
         goto continue_;
-      }
+      } // end IF
 
       // step0: reset bg caches
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->invalidateBG ();

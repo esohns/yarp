@@ -814,7 +814,7 @@ RPG_Map_Level::getElement (const RPG_Map_Position_t& position_in) const
 }
 
 RPG_Map_DoorState
-RPG_Map_Level::state(const RPG_Map_Position_t& position_in) const
+RPG_Map_Level::state (const RPG_Map_Position_t& position_in) const
 {
   RPG_TRACE(ACE_TEXT("RPG_Map_Level::state"));
 

@@ -32,17 +32,14 @@
 //#include "rpg_engine_exports.h"
 #include "rpg_engine_XML_tree.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Engine_Level
  : public RPG_Map_Level
 {
  typedef RPG_Map_Level inherited;
 
  public:
-  RPG_Engine_Level();
-  virtual ~RPG_Engine_Level();
+  RPG_Engine_Level ();
+  inline virtual ~RPG_Engine_Level () {}
 
   // static functionality
   static void create (const struct RPG_Map_FloorPlan_Configuration&, // floor plan config
@@ -57,7 +54,7 @@ class RPG_Engine_Level
                       struct RPG_Engine_LevelData&);                 // return value: level
   static void print (const struct RPG_Engine_LevelData&); // level
 
-  void init (const struct RPG_Engine_LevelData&); // level
+  void initialize (const struct RPG_Engine_LevelData&); // level
   void save (const std::string&) const; // FQ filename
   // override RPG_IDumpState
   virtual void dump_state () const;

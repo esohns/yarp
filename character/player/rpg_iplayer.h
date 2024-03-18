@@ -55,7 +55,7 @@ class RPG_IPlayer
   // get a hint if this is a PC/NPC
   virtual bool isPlayerCharacter () const = 0;
 
-  virtual enum RPG_Common_SubClass gainExperience (ACE_UINT32) = 0; // XP
+  virtual enum RPG_Common_SubClass gainExperience (ACE_UINT64) = 0; // XP
 
   virtual void status () const = 0;
   virtual void dump () const = 0;

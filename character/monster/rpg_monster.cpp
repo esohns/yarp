@@ -45,15 +45,15 @@ RPG_Monster::RPG_Monster (// base attributes
                           const RPG_Character_Feats_t& feats_in,
                           const RPG_Character_Abilities_t& abilities_in,
                           const RPG_Monster_Size& defaultSize_in,
-                          unsigned short maxHitPoints_in,
+                          ACE_UINT16 maxHitPoints_in,
                           const RPG_Magic_SpellTypes_t& knownSpells_in,
                           // extended data
-                          unsigned int wealth_in,
+                          ACE_UINT64 wealth_in,
                           const RPG_Magic_Spells_t& spells_in,
                           const RPG_Item_List_t& inventory_in,
                           // current status
                           const RPG_Character_Conditions_t& condition_in,
-                          unsigned short hitpoints_in,
+                          ACE_INT16 hitpoints_in,
                           // ...more extended data
                           bool isSummoned_in)
  : inherited (// base attributes
@@ -254,8 +254,7 @@ RPG_Monster::getSpeed (bool isRunning_in,
   signed char maxDexModifierAC = std::numeric_limits<signed char>::max();
   signed char armorCheckPenalty = 0;
   unsigned char runModifier = RPG_CHARACTER_RUN_MODIFIER_MEDIUM;
-  RPG_Character_Common_Tools::getLoadModifiers (((encumbrance_by_armor > encumbrance_by_load) ? encumbrance_by_armor
-                                                                                              : encumbrance_by_load),
+  RPG_Character_Common_Tools::getLoadModifiers (std::max (encumbrance_by_armor, encumbrance_by_load),
                                                 properties.speed,
                                                 maxDexModifierAC,
                                                 armorCheckPenalty,
@@ -282,7 +281,7 @@ RPG_Monster::getSpeed (bool isRunning_in,
 }
 
 enum RPG_Common_SubClass
-RPG_Monster::gainExperience (ACE_UINT32 XP_in)
+RPG_Monster::gainExperience (ACE_UINT64 XP_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Monster::gainExperience"));
 

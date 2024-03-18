@@ -71,11 +71,11 @@ class RPG_Magic_Common_Tools
   ACE_UNIMPLEMENTED_FUNC (RPG_Magic_Common_Tools& operator= (const RPG_Magic_Common_Tools&))
 
   // helper methods
-  static std::string toString (const RPG_Magic_Spell_Type&); // type
+  static std::string toString (const struct RPG_Magic_Spell_Type&); // type
   static std::string toString (const RPG_Magic_SpellLevels_t&); // levels
-  static std::string toString (const RPG_Magic_Spell_RangeProperties&); // range
+  static std::string toString (const struct RPG_Magic_Spell_RangeProperties&); // range
   static std::string toString (const RPG_Magic_Spell_Targets_t&); // targets
-  static std::string toString (const RPG_Magic_Spell_DurationProperties&); // duration
+  static std::string toString (const struct RPG_Magic_Spell_DurationProperties&); // duration
   static std::string toString (const RPG_Magic_Spell_Preconditions_t&); // preconditions
   static std::string toString (const RPG_Magic_Spell_Effects_t&); // effects
   static std::string toString (const RPG_Magic_Spell_CounterMeasures_t&); // counterMeasures
@@ -84,7 +84,7 @@ class RPG_Magic_Common_Tools
   static void initializeStringConversionTables ();
   static void initializeSpellsTables ();
 
-  static void updateSpellRange (RPG_Magic_Spell_RangeProperties&); // range
+  static void updateSpellRange (struct RPG_Magic_Spell_RangeProperties&); // range
 
   typedef std::pair<RPG_Character_Level_t, ACE_UINT8> RPG_Magic_ClassLevelSpellLevelPair_t;
   typedef std::pair<RPG_Common_SubClass, RPG_Magic_ClassLevelSpellLevelPair_t> RPG_Magic_SubClassLevelPair_t;

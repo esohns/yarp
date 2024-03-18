@@ -51,46 +51,46 @@ typedef RPG_Monster_SubTypes_t::const_iterator RPG_Monster_SubTypesIterator_t;
 
 typedef RPG_Dice_Roll RPG_Monster_HitDice;
 
-typedef std::vector<RPG_Monster_AttackAction> RPG_Monster_AttackActions_t;
+typedef std::vector<struct RPG_Monster_AttackAction> RPG_Monster_AttackActions_t;
 typedef RPG_Monster_AttackActions_t::const_iterator RPG_Monster_AttackActionsIterator_t;
-typedef std::vector<RPG_Monster_SpecialAttackProperties> RPG_Monster_SpecialAttackActions_t;
+typedef std::vector<struct RPG_Monster_SpecialAttackProperties> RPG_Monster_SpecialAttackActions_t;
 typedef RPG_Monster_SpecialAttackActions_t::const_iterator RPG_Monster_SpecialAttackActionsIterator_t;
 
-typedef std::vector<RPG_Monster_OrganizationStep> RPG_Monster_Organizations_t;
+typedef std::vector<struct RPG_Monster_OrganizationStep> RPG_Monster_Organizations_t;
 typedef RPG_Monster_Organizations_t::const_iterator RPG_Monster_OrganizationsIterator_t;
-typedef std::set<RPG_Monster_Organization> RPG_Monster_OrganizationSet_t;
+typedef std::set<enum RPG_Monster_Organization> RPG_Monster_OrganizationSet_t;
 typedef RPG_Monster_OrganizationSet_t::const_iterator RPG_Monster_OrganizationSetIterator_t;
 
-typedef std::vector<RPG_Monster_AdvancementStep> RPG_Monster_Advancement_t;
+typedef std::vector<struct RPG_Monster_AdvancementStep> RPG_Monster_Advancement_t;
 typedef RPG_Monster_Advancement_t::const_iterator RPG_Monster_AdvancementIterator_t;
 
 struct RPG_Monster_Properties
 {
 //   std::string name;
-  RPG_Monster_Size size;
-  RPG_Common_CreatureType type;
+  struct RPG_Monster_Size size;
+  struct RPG_Common_CreatureType type;
   RPG_Monster_HitDice hitDice;
-  char initiative;
-  unsigned char speed;
-  RPG_Monster_NaturalArmorClass armorClass;
-  RPG_Monster_Attack attack;
+  ACE_INT8 initiative;
+  ACE_UINT8 speed;
+  struct RPG_Monster_NaturalArmorClass armorClass;
+  struct RPG_Monster_Attack attack;
   std::vector<RPG_Monster_SpecialAttackProperties> specialAttacks;
-  unsigned char space; // feet
-  unsigned short reach; // feet
-  RPG_Monster_SavingThrowModifiers saves;
-  RPG_Character_Attributes attributes;
+  ACE_UINT8 space; // feet
+  ACE_UINT16 reach; // feet
+  struct RPG_Monster_SavingThrowModifiers saves;
+  struct RPG_Character_Attributes attributes;
   RPG_Character_Skills_t skills;
   RPG_Character_Feats_t feats;
-  RPG_Common_Environment environment;
+  struct RPG_Common_Environment environment;
   RPG_Monster_Organizations_t organizations;
-  unsigned char challengeRating;
-  unsigned char treasureModifier; // standard times x
-  RPG_Character_Alignment alignment;
+  ACE_UINT8 challengeRating;
+  ACE_UINT8 treasureModifier; // standard times x
+  struct RPG_Character_Alignment alignment;
   RPG_Monster_Advancement_t advancements;
-  unsigned char levelAdjustment;
+  ACE_UINT8 levelAdjustment;
 };
 
-typedef std::vector<RPG_Monster_Spawn> RPG_Monster_Spawns_t;
+typedef std::vector<struct RPG_Monster_Spawn> RPG_Monster_Spawns_t;
 typedef RPG_Monster_Spawns_t::const_iterator RPG_Monster_SpawnsConstIterator_t;
 
 typedef std::vector<RPG_Monster*> RPG_Monster_Group_t;
@@ -99,12 +99,12 @@ typedef std::vector<RPG_Monster_Group_t> RPG_Monster_Groups_t;
 typedef RPG_Monster_Groups_t::const_iterator RPG_Monster_GroupsIterator_t;
 
 // some more useful types
-typedef std::map<std::string, RPG_Monster_Properties> RPG_Monster_Dictionary_t;
+typedef std::map<std::string, struct RPG_Monster_Properties> RPG_Monster_Dictionary_t;
 
 typedef std::vector<std::string> RPG_Monster_List_t;
 typedef RPG_Monster_List_t::const_iterator RPG_Monster_ListConstIterator_t;
 
-typedef std::map<std::string, unsigned short int> RPG_Monster_Encounter_t;
+typedef std::map<std::string, ACE_UINT16> RPG_Monster_Encounter_t;
 typedef RPG_Monster_Encounter_t::const_iterator RPG_Monster_EncounterConstIterator_t;
 typedef RPG_Monster_Encounter_t::iterator RPG_Monster_EncounterIterator_t;
 

@@ -86,10 +86,10 @@ class RPG_Player_Player_Base
 
   inline virtual bool isPlayerCharacter () const { return true; }
 
-  virtual enum RPG_Common_SubClass gainExperience (unsigned int); // XP
+  virtual enum RPG_Common_SubClass gainExperience (ACE_UINT64); // XP
 
-  unsigned int rest (const RPG_Common_Camp&, // type of rest
-                     unsigned int);          // hours
+  unsigned int rest (enum RPG_Common_Camp, // type of rest
+                     unsigned int);        // hours
   void defaultEquip ();
 
   virtual void status () const;

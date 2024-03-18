@@ -1106,7 +1106,7 @@ RPG_Player::load (const std::string& filename_in,
                   const std::string& schemaRepository_in,
                   // current status
                   const RPG_Character_Conditions_t& condition_in,
-                  short HP_in,
+                  ACE_INT16 HP_in,
                   const RPG_Magic_Spells_t& spells_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Player::load"));

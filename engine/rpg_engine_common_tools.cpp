@@ -257,13 +257,13 @@ RPG_Engine_Common_Tools::createEntity ()
 struct RPG_Engine_Entity
 RPG_Engine_Common_Tools::createEntity (// base attributes
                                        const std::string& type_in,                     // type
-                                       unsigned short maxHP_in,                        // max HP
+                                       ACE_UINT16 maxHP_in,                            // max HP
                                        // extended data
-                                       unsigned int wealth_in,                         // wealth (GP)
+                                       ACE_UINT64 wealth_in,                           // wealth (GP)
                                        const RPG_Item_List_t& items_in,                // list of (carried) items
                                        // current status
                                        const RPG_Character_Conditions_t& condition_in, // condition
-                                       short HP_in,                                    // HP
+                                       ACE_INT16 HP_in,                                    // HP
                                        const RPG_Magic_Spells_t& spells_in)            // set of memorized/prepared spells (if any)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::createEntity"));
@@ -279,7 +279,7 @@ RPG_Engine_Common_Tools::createEntity (// base attributes
   RPG_Monster_Properties properties =
       RPG_MONSTER_DICTIONARY_SINGLETON::instance ()->getProperties (type_in);
   // compute individual hitpoints ?
-  unsigned short max_HP = maxHP_in;
+  ACE_UINT16 max_HP = maxHP_in;
   if (max_HP == 0)
   {
     RPG_Dice_RollResult_t result_values;
@@ -313,7 +313,7 @@ RPG_Engine_Common_Tools::createEntity (// base attributes
                                  items_in,
                                  // current status
                                  condition,
-                                 ((HP_in == std::numeric_limits<short>::max()) ? max_HP : HP_in),
+                                 ((HP_in == std::numeric_limits<ACE_INT16>::max ()) ? max_HP : HP_in),
                                  // ...more extended data
                                  false));
   if (!result.character)
@@ -1649,13 +1649,13 @@ monster_perform_single_action:
       } // end IF
 
       ACE_DEBUG ((LM_INFO,
-                  ACE_TEXT("\"%s\" attacks \"%s\" (AC: %d) with %s and hits: %d%s...\n"),
-                  ACE_TEXT(monster->getName ().c_str ()),
-                  ACE_TEXT(player_base->getName ().c_str ()),
+                  ACE_TEXT ("\"%s\" attacks \"%s\" (AC: %d) with %s and hits: %d%s...\n"),
+                  ACE_TEXT (monster->getName ().c_str ()),
+                  ACE_TEXT (player_base->getName ().c_str ()),
                   targetArmorClass,
-                  ACE_TEXT(RPG_Monster_Common_Tools::toString (current_action->weapon).c_str ()),
+                  ACE_TEXT (RPG_Monster_Common_Tools::toString (current_action->weapon).c_str ()),
                   (attack_roll + currentAttackBonus),
-                  (is_critical_hit ? ACE_TEXT (" (critical)") : ACE_TEXT(""))));
+                  (is_critical_hit ? ACE_TEXT (" (critical)") : ACE_TEXT (""))));
 
       target_inout->sustainDamage (damage);
 
@@ -1725,11 +1725,11 @@ RPG_Engine_Common_Tools::partyToACL(const RPG_Player_Party_t& party_in)
   return (return_value == 0 ? 1 : return_value);
 }
 
-unsigned int
+ACE_UINT64
 RPG_Engine_Common_Tools::combatToXP (const std::string& type_in,
                                      unsigned int acl_in,
                                      unsigned int numFoes_in,
-                                     unsigned int numPartyMembers_in)
+                                     ACE_UINT8 numPartyMembers_in)
 {
    RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::combatToXP"));
 
@@ -1758,7 +1758,7 @@ RPG_Engine_Common_Tools::combatToXP (const std::string& type_in,
     // *TODO*: individual foe too easy, award standard amount...
     return 0;
   } // end IF
-  unsigned int result = (*iterator).second[acl_in];
+  ACE_UINT64 result = (*iterator).second[acl_in];
 
   // step3: adjust result according to the number of foes / party members
   result *= numFoes_in;

@@ -455,7 +455,7 @@ do_work (const struct RPG_Map_FloorPlan_Configuration& mapConfig_in,
 
   // step3: write output file (if any)
   RPG_Engine_Level engine_level;
-  engine_level.init(level);
+  engine_level.initialize (level);
   RPG_Map_Level map_level(level.map);
   if (!outputFile_in.empty())
   {

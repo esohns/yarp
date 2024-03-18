@@ -421,11 +421,11 @@ RPG_Player_Player_Base::getSpeed (bool isRunning_in,
 }
 
 enum RPG_Common_SubClass
-RPG_Player_Player_Base::gainExperience (unsigned int XP_in)
+RPG_Player_Player_Base::gainExperience (ACE_UINT64 XP_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::gainExperience"));
 
-  std::vector<unsigned char> levels;
+  std::vector<ACE_UINT8> levels;
   for (RPG_Character_SubClassesIterator_t iterator = myClass.subClasses.begin ();
        iterator != myClass.subClasses.end ();
        iterator++)
@@ -434,7 +434,7 @@ RPG_Player_Player_Base::gainExperience (unsigned int XP_in)
   myExperience += XP_in;
 
   ACE_DEBUG ((LM_DEBUG,
-              ACE_TEXT ("\"%s\" gained %u XP (total: %u)...\n"),
+              ACE_TEXT ("\"%s\" gained %Q XP (total: %Q)...\n"),
               ACE_TEXT (getName ().c_str ()),
               XP_in,
               myExperience));
@@ -447,7 +447,7 @@ RPG_Player_Player_Base::gainExperience (unsigned int XP_in)
     if (getLevel (*iterator) != levels[index])
     {
       ACE_DEBUG ((LM_DEBUG,
-                  ACE_TEXT ("player: \"%s\" (XP: %d) has reached level %u as %s...\n"),
+                  ACE_TEXT ("player: \"%s\" (XP: %Q) has reached level %u as %s...\n"),
                   ACE_TEXT (getName ().c_str ()),
                   myExperience,
                   static_cast<unsigned int> (getLevel (*iterator)),
@@ -459,10 +459,10 @@ RPG_Player_Player_Base::gainExperience (unsigned int XP_in)
 }
 
 unsigned int
-RPG_Player_Player_Base::rest (const RPG_Common_Camp& type_in,
+RPG_Player_Player_Base::rest (enum RPG_Common_Camp type_in,
                               unsigned int hours_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::rest"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::rest"));
 
   // *TODO*: consider dead/dying players !
   if (myNumHitPoints < 0)
@@ -473,9 +473,10 @@ RPG_Player_Player_Base::rest (const RPG_Common_Camp& type_in,
 
   // consider natural healing...
   unsigned int restedPeriod = 0;
-  int missingHPs = getNumTotalHitPoints() - myNumHitPoints;
-  unsigned int recoveryRate = getLevel();
-  if (type_in == REST_FULL) recoveryRate *= 2;
+  int missingHPs = getNumTotalHitPoints () - myNumHitPoints;
+  unsigned int recoveryRate = getLevel ();
+  if (type_in == REST_FULL)
+    recoveryRate *= 2;
   if ((missingHPs > 0) && (hours_in >= 24))
   {
     // OK: we've (naturally) recovered some HPs...
@@ -491,108 +492,99 @@ RPG_Player_Player_Base::rest (const RPG_Common_Camp& type_in,
 
     if (missingHPs < 0)
       missingHPs = 0;
-    myNumHitPoints = getNumTotalHitPoints() - missingHPs;
+    myNumHitPoints = getNumTotalHitPoints () - missingHPs;
   } // end IF
 
   // adjust condition
   if (myNumHitPoints > 0)
   {
-    myCondition.insert(CONDITION_NORMAL);
-    myCondition.erase(CONDITION_DISABLED);
+    myCondition.insert (CONDITION_NORMAL);
+    myCondition.erase (CONDITION_DISABLED);
   } // end IF
 
   return (restedPeriod * 24);
 }
 
 void
-RPG_Player_Player_Base::defaultEquip()
+RPG_Player_Player_Base::defaultEquip ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::defaultEquip"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::defaultEquip"));
 
   // remove everything
-  inherited::myEquipment.strip();
+  inherited::myEquipment.strip ();
 
   RPG_Character_EquipmentSlots slots;
   RPG_Item_Base* handle = NULL;
   RPG_Item_ID_t item_id = 0;
-  for (RPG_Item_ListIterator_t iterator = inherited::myInventory.myItems.begin();
-       iterator != inherited::myInventory.myItems.end();
+  for (RPG_Item_ListIterator_t iterator = inherited::myInventory.myItems.begin ();
+       iterator != inherited::myInventory.myItems.end ();
        iterator++)
   {
-    slots.slots.clear();
+    slots.slots.clear ();
     slots.is_inclusive = false;
     RPG_Item_Common_Tools::itemToSlot (*iterator,
                                        myOffHand,
                                        slots);
-    ACE_ASSERT(!slots.slots.empty());
+    ACE_ASSERT (!slots.slots.empty ());
 
     handle = NULL;
-    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get(*iterator,
-                                                              handle))
+    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get (*iterator,
+                                                               handle))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid item ID (was: %d), aborting\n"),
-                 *iterator));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid item ID (was: %d), aborting\n"),
+                  *iterator));
       return;
     } // end IF
-    ACE_ASSERT(handle);
+    ACE_ASSERT (handle);
 
-    switch (handle->type())
+    switch (handle->type ())
     {
       case ITEM_ARMOR:
       {
-        RPG_Item_Armor* armor = dynamic_cast<RPG_Item_Armor*>(handle);
-        ACE_ASSERT(armor);
+        RPG_Item_Armor* armor = static_cast<RPG_Item_Armor*> (handle);
 //         RPG_Item_ArmorProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_base->getArmorType());
 
-        if (myEquipment.isEquipped(slots.slots.front(),
-                                   item_id))
+        if (myEquipment.isEquipped (slots.slots.front (),
+                                    item_id))
           break; // cannot equip...
 
-        myEquipment.equip(*iterator,
-                          myOffHand,
-                          slots.slots.front());
-
+        myEquipment.equip (*iterator,
+                           myOffHand,
+                           slots.slots.front ());
         break;
       }
       case ITEM_COMMODITY:
       {
-        RPG_Item_Commodity* commodity =
-            dynamic_cast<RPG_Item_Commodity*>(handle);
-        ACE_ASSERT(commodity);
+        RPG_Item_Commodity* commodity = static_cast<RPG_Item_Commodity*> (handle);
         RPG_Item_CommodityUnion commodity_type = commodity->subtype_;
         //RPG_Item_CommodityProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getCommodityProperties(commodity->getCommoditySubType());
         // - by default, equip light sources only
-        if (commodity_type.discriminator !=
-            RPG_Item_CommodityUnion::COMMODITYLIGHT)
+        if (commodity_type.discriminator != RPG_Item_CommodityUnion::COMMODITYLIGHT)
           break;
         //if (myEquipment.isEquipped(slot, item_id))
         //  break; // cannot equip...
 
-        myEquipment.equip(*iterator,
-                          myOffHand,
-                          slots.slots.front());
-
+        myEquipment.equip (*iterator,
+                           myOffHand,
+                           slots.slots.front ());
         break;
       }
       case ITEM_WEAPON:
       {
-        RPG_Item_Weapon* weapon = dynamic_cast<RPG_Item_Weapon*>(handle);
-        ACE_ASSERT(weapon);
+        RPG_Item_Weapon* weapon = static_cast<RPG_Item_Weapon*> (handle);
 //         RPG_Item_WeaponProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getWeaponProperties(weapon_base->getWeaponType());
         // - by default, equip melee weapons only
         // *TODO*: what about other types of weapons ?
-        if (!RPG_Item_Common_Tools::isMeleeWeapon(weapon->weaponType_))
+        if (!RPG_Item_Common_Tools::isMeleeWeapon (weapon->weaponType_))
           break;
-        if (myEquipment.isEquipped(slots.slots.front(),
-                                   item_id))
+        if (myEquipment.isEquipped (slots.slots.front (),
+                                    item_id))
           break; // cannot equip...
 
-        myEquipment.equip(*iterator,
-                          myOffHand,
-                          slots.slots.front());
-
+        myEquipment.equip (*iterator,
+                           myOffHand,
+                           slots.slots.front ());
         break;
       }
       default:
@@ -601,7 +593,6 @@ RPG_Player_Player_Base::defaultEquip()
         //           ACE_TEXT("item ID %d: invalid type: \"%s\", continuing\n"),
         //           *iterator,
         //           ACE_TEXT(RPG_Item_TypeHelper::RPG_Item_TypeToString(handle->getType()).c_str())));
-
         break;
       }
     } // end SWITCH
@@ -609,56 +600,57 @@ RPG_Player_Player_Base::defaultEquip()
 }
 
 void
-RPG_Player_Player_Base::status() const
+RPG_Player_Player_Base::status () const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::status"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::status"));
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("name: \"%s\" (XP: %d (%u))\n"),
-             ACE_TEXT(getName().c_str()),
-             myExperience,
-             static_cast<unsigned int>(getLevel())));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT("name: \"%s\" (XP: %Q (%u))\n"),
+              ACE_TEXT (getName ().c_str ()),
+              myExperience,
+              static_cast<unsigned int> (getLevel ())));
 
-  inherited::status();
+  inherited::status ();
 }
 
 void
-RPG_Player_Player_Base::dump() const
+RPG_Player_Player_Base::dump () const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::dump"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::dump"));
 
   // *TODO*: add items
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("Player \"%s\": \nGender: %s\nRace: %s\nClass: %s\nAlignment: %s\nCondition: %s\nHP: %d/%u\nXP: %u\nGold: %u\nAttributes:\n===========\n%sFeats:\n======\n%sAbilities:\n==========\n%sSkills:\n=======\n%sSpells (known):\n=======\n%sSpells (prepared):\n=======\n%sItems:\n======\n"),
-             ACE_TEXT(getName().c_str()),
-             ACE_TEXT(RPG_Character_GenderHelper::RPG_Character_GenderToString(myGender).c_str()),
-             ACE_TEXT(RPG_Character_Common_Tools::toString(myRace).c_str()),
-             ACE_TEXT(RPG_Character_Common_Tools::toString(myClass).c_str()),
-             ACE_TEXT(RPG_Character_Common_Tools::toString(getAlignment()).c_str()),
-             ACE_TEXT(RPG_Character_Common_Tools::toString(myCondition).c_str()),
-             myNumHitPoints,
-             getNumTotalHitPoints(),
-             myExperience,
-             myWealth,
-             ACE_TEXT(RPG_Character_Common_Tools::toString(myAttributes).c_str()),
-             ACE_TEXT(RPG_Character_Skills_Common_Tools::toString(myFeats).c_str()),
-             ACE_TEXT(RPG_Character_Skills_Common_Tools::toString(myAbilities).c_str()),
-             ACE_TEXT(RPG_Character_Skills_Common_Tools::toString(mySkills).c_str()),
-             ACE_TEXT(RPG_Magic_Common_Tools::toString(myKnownSpells).c_str()),
-             ACE_TEXT(RPG_Magic_Common_Tools::toString(mySpells).c_str())));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("Player \"%s\": \nGender: %s\nRace: %s\nClass: %s\nAlignment: %s\nCondition: %s\nHP: %d/%u\nXP: %Q\nGold: %Q\nAttributes:\n===========\n%sFeats:\n======\n%sAbilities:\n==========\n%sSkills:\n=======\n%sSpells (known):\n=======\n%sSpells (prepared):\n=======\n%sItems:\n======\n"),
+              ACE_TEXT (getName ().c_str ()),
+              ACE_TEXT (RPG_Character_GenderHelper::RPG_Character_GenderToString (myGender).c_str ()),
+              ACE_TEXT (RPG_Character_Common_Tools::toString (myRace).c_str ()),
+              ACE_TEXT (RPG_Character_Common_Tools::toString (myClass).c_str ()),
+              ACE_TEXT (RPG_Character_Common_Tools::toString (getAlignment ()).c_str ()),
+              ACE_TEXT (RPG_Character_Common_Tools::toString (myCondition).c_str ()),
+              myNumHitPoints,
+              getNumTotalHitPoints (),
+              myExperience,
+              myWealth,
+              ACE_TEXT (RPG_Character_Common_Tools::toString (myAttributes).c_str ()),
+              ACE_TEXT (RPG_Character_Skills_Common_Tools::toString (myFeats).c_str ()),
+              ACE_TEXT (RPG_Character_Skills_Common_Tools::toString (myAbilities).c_str ()),
+              ACE_TEXT (RPG_Character_Skills_Common_Tools::toString (mySkills).c_str ()),
+              ACE_TEXT (RPG_Magic_Common_Tools::toString (myKnownSpells).c_str ()),
+              ACE_TEXT (RPG_Magic_Common_Tools::toString (mySpells).c_str ())));
 }
 
 ACE_INT8
-RPG_Player_Player_Base::getShieldBonus() const
+RPG_Player_Player_Base::getShieldBonus () const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Player_Base::getShieldBonus"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::getShieldBonus"));
 
   // retrieve equipped armor type
-  RPG_Item_ArmorType type = myEquipment.getShield(myOffHand);
+  RPG_Item_ArmorType type = myEquipment.getShield (myOffHand);
   if (type == ARMOR_NONE)
     return 0;
 
   const RPG_Item_ArmorProperties& properties =
-      RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(type);
+      RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getArmorProperties (type);
+
   return properties.baseBonus;
 }

@@ -72,7 +72,7 @@ class RPG_Player
                            const std::string&,                // schema repository (directory)
                            // current status
                            const RPG_Character_Conditions_t&, // condition
-                           short,                             // HP
+                           ACE_INT16,                         // HP
                            const RPG_Magic_Spells_t&);        // list of prepared spells (if any)
   bool save (const std::string&) const; // FQ filename
 

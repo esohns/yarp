@@ -76,13 +76,13 @@ class RPG_Engine_Common_Tools
   static struct RPG_Engine_Entity createEntity ();
   static struct RPG_Engine_Entity createEntity (// base attributes
                                                 const std::string&,                // creature type
-                                                unsigned short,                    // max HP
+                                                ACE_UINT16,                        // max HP
                                                 // extended data
-                                                unsigned int,                      // wealth (GP)
+                                                ACE_UINT64,                        // wealth (GP)
                                                 const RPG_Item_List_t&,            // list of (carried) items
                                                 // current status
                                                 const RPG_Character_Conditions_t&, // condition
-                                                short,                             // HP
+                                                ACE_INT16,                         // HP
                                                 const RPG_Magic_Spells_t&);        // set of memorized/prepared spells (if any)
 
   static std::string info (const struct RPG_Engine_Entity&); // entity
@@ -108,10 +108,10 @@ class RPG_Engine_Common_Tools
                       bool = true,                                  // full-round action ?
                       unsigned short = RPG_ENGINE_FEET_PER_SQUARE); // distance (feet)
 	static unsigned int partyToACL (const RPG_Player_Party_t&);
-  static unsigned int combatToXP (const std::string&, // type
-                                  unsigned int,       // ACL (average character level)
-                                  unsigned int = 1,   // number of foes
-                                  unsigned int = 1);  // number of party members
+  static ACE_UINT64 combatToXP (const std::string&, // type
+                                unsigned int,       // ACL (average character level)
+                                unsigned int = 1,   // number of foes
+                                ACE_UINT8 = 1);     // number of party members
 
  private:
   ACE_UNIMPLEMENTED_FUNC (RPG_Engine_Common_Tools ())

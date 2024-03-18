@@ -584,7 +584,8 @@ RPG_Client_Common_Tools::updateDoors (const struct RPG_Graphics_DoorTileSet& til
   struct RPG_Graphics_TileElement current_tile;
   RPG_Graphics_Orientation orientation;
   RPG_Map_DoorState door_state;
-//	engine_in.lock();
+
+	engine_in.lock ();
   for (RPG_Graphics_DoorTileMapIterator_t iterator = doorTiles_inout.begin ();
        iterator != doorTiles_inout.end ();
        iterator++)
@@ -632,7 +633,7 @@ RPG_Client_Common_Tools::updateDoors (const struct RPG_Graphics_DoorTileSet& til
 
     (*iterator).second = current_tile;
   } // end FOR
-//	engine_in.unlock();
+	engine_in.unlock ();
 }
 
 RPG_Graphics_Sprite

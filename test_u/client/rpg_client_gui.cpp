@@ -1290,6 +1290,12 @@ do_work (struct RPG_Client_Configuration& configuration_in,
                         &GTKUserData_in);
             break;
           }
+          case SDLK_z:
+          {
+            g_idle_add (idle_update_profile_cb,
+                        &GTKUserData_in);
+            break;
+          }
           default:
             break;
         } // end SWITCH
