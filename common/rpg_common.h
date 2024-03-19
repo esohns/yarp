@@ -26,9 +26,6 @@
 #include "rpg_common_physicaldamagetype.h"
 #include "rpg_common_terrain.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 typedef std::set<RPG_Common_PhysicalDamageType> RPG_Common_PhysicalDamageList_t;
 typedef RPG_Common_PhysicalDamageList_t::const_iterator RPG_Common_PhysicalDamageListIterator_t;
 

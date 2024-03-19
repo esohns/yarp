@@ -89,6 +89,7 @@ class RPG_Player_Base
   inline ACE_UINT16 getNumTotalHitPoints () const { return myNumTotalHitPoints; }
   inline void setNumTotalHitPoints (ACE_UINT16 numberOfTotalHitPoints_in) { myNumTotalHitPoints = numberOfTotalHitPoints_in; }
   inline ACE_INT16 getNumHitPoints () const { return myNumHitPoints; }
+  inline void setNumHitPoints (ACE_INT16 numberOfHitPoints_in) { myNumHitPoints = numberOfHitPoints_in; }
 
   inline ACE_UINT64 getWealth () const { return myWealth; }
 
@@ -98,8 +99,8 @@ class RPG_Player_Base
   inline const RPG_Player_Inventory& getInventory () const { return myInventory; }
 //   const RPG_Character_Equipment getEquipment() const;
 
-  // sustain some damage (melee, magic, ...)
-  void sustainDamage (const RPG_Combat_Damage&); // damage
+  // sustain some damage (melee, magic, ...); return (total) HP lost
+  ACE_UINT32 sustainDamage (const RPG_Combat_Damage&); // damage
 
   // implement (part of) RPG_IPlayer
   virtual void status () const;

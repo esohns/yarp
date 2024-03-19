@@ -2365,20 +2365,21 @@ RPG_Engine::handleEntities ()
             std::make_pair (std::numeric_limits<unsigned int>::max (),
                             std::numeric_limits<unsigned int>::max ());
           // *TODO*: implement combat situations, in-turn-movement, ...
-          bool hit =
-            RPG_Engine_Common_Tools::attack ((*iterator).second->character,
-                                             (*target).second->character,
-                                             ATTACK_NORMAL,
-                                             DEFENSE_NORMAL,
-                                             (current_action.command == COMMAND_ATTACK_FULL),
-                                             RPG_Engine_Common_Tools::range ((*iterator).second->position,
-                                                                             (*target).second->position) * RPG_ENGINE_FEET_PER_SQUARE);
-          notifications.push_back (std::make_pair ((hit ? COMMAND_E2C_ENTITY_HIT
-                                                        : COMMAND_E2C_ENTITY_MISS),
+          ACE_UINT32 damage_hp_i = 0;
+          RPG_Engine_Common_Tools::attack ((*iterator).second->character,
+                                            (*target).second->character,
+                                            damage_hp_i,
+                                            ATTACK_NORMAL,
+                                            DEFENSE_NORMAL,
+                                            (current_action.command == COMMAND_ATTACK_FULL),
+                                            RPG_Engine_Common_Tools::range ((*iterator).second->position,
+                                                                            (*target).second->position) * RPG_ENGINE_FEET_PER_SQUARE);
+          notifications.push_back (std::make_pair ((damage_hp_i ? COMMAND_E2C_ENTITY_HIT
+                                                                : COMMAND_E2C_ENTITY_MISS),
                                                    parameters));
           parameters.entity_id = 0;
 
-          if (hit && (*target).second->character->isPlayerCharacter ())
+          if (damage_hp_i && (*target).second->character->isPlayerCharacter ())
           { // player (potentially) lost some HPs --> update UI
             parameters.entity_id = (*target).first;
             notifications.push_back (std::make_pair (COMMAND_E2C_ENTITY_STATE, parameters));

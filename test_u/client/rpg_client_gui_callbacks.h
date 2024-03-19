@@ -87,6 +87,7 @@ G_MODULE_EXPORT gint item_toggled_GTK_cb (GtkWidget*, gpointer);
 G_MODULE_EXPORT gint rest_clicked_GTK_cb (GtkWidget*, gpointer);
 G_MODULE_EXPORT void levelup_clicked_cb (GtkButton*, gpointer);
 G_MODULE_EXPORT void hitdice_button_clicked_cb (GtkButton*, gpointer);
+G_MODULE_EXPORT void rest_button_rest_clicked_cb (GtkButton*, gpointer);
 //G_MODULE_EXPORT void spinbutton_attribute_change_value_cb (GtkSpinButton*, GtkScrollType, gpointer);
 G_MODULE_EXPORT void spinbutton_attribute_value_changed_cb (GtkSpinButton*, gpointer);
 G_MODULE_EXPORT void treeview_feats_selection_changed_cb (GtkTreeSelection*, gpointer);
@@ -96,6 +97,7 @@ G_MODULE_EXPORT void cellrenderer_skills_editing_started_cb (GtkCellRenderer*, G
 G_MODULE_EXPORT void celleditable_skills_editing_done_cb (GtkCellEditable*, gpointer);
 G_MODULE_EXPORT void treeview_spells_selection_changed_cb (GtkTreeSelection*, gpointer);
 G_MODULE_EXPORT void levelup_dialog_response_cb (GtkDialog*, gint, gpointer);
+G_MODULE_EXPORT void rest_dialog_response_cb (GtkDialog*, gint, gpointer);
 //
 G_MODULE_EXPORT gint about_clicked_GTK_cb (GtkWidget*, gpointer);
 G_MODULE_EXPORT gint quit_clicked_GTK_cb (GtkWidget*, gpointer);

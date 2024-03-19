@@ -21,21 +21,27 @@
 #ifndef RPG_COMBAT_COMMON_H
 #define RPG_COMBAT_COMMON_H
 
-#include <rpg_dice_incl.h>
-#include <rpg_common_incl.h>
-#include <rpg_character_alignmentcivic.h>
-#include <rpg_character_alignmentethic.h>
-#include <rpg_character_alignment.h>
-#include <rpg_magic_spelltype.h>
-#include "rpg_combat_incl.h"
-
 #include <vector>
 
+#include "rpg_dice_incl.h"
+
+#include "rpg_common_incl.h"
+
+#include "rpg_character_alignmentcivic.h"
+#include "rpg_character_alignmentethic.h"
+#include "rpg_character_alignment.h"
+
+#include "rpg_magic_spelltype.h"
+
+#include "rpg_combat_incl.h"
+
 // some useful types
-typedef std::vector<RPG_Combat_AttackForm> RPG_Combat_AttackForms_t;
+typedef std::vector<enum RPG_Combat_AttackForm> RPG_Combat_AttackForms_t;
 typedef RPG_Combat_AttackForms_t::const_iterator RPG_Combat_AttackFormsIterator_t;
 
-typedef std::vector<RPG_Combat_DamageElement> RPG_Combat_Damages_t;
+typedef std::vector<struct RPG_Combat_Damage> RPG_Combat_Damages_t;
 typedef RPG_Combat_Damages_t::const_iterator RPG_Combat_DamagesConstIterator_t;
+
+typedef std::vector<RPG_Combat_DamageElement>::const_iterator RPG_Combat_DamageElementsConstIterator_t;
 
 #endif

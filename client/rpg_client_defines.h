@@ -77,7 +77,9 @@
 #define RPG_CLIENT_GTK_DIALOG_FILECHOOSER_NAME            "filechooser_dialog"
 #define RPG_CLIENT_GTK_DIALOG_LEVELUP_NAME                "levelup_dialog"
 #define RPG_CLIENT_GTK_DIALOG_MAIN_NAME                   "main_dialog"
+#define RPG_CLIENT_GTK_DIALOG_REST_NAME                   "rest_dialog"
 //
+#define RPG_CLIENT_GTK_ENTRY_HOURS_NAME                   "hours_entry"
 #define RPG_CLIENT_GTK_ENTRY_NAME                         "name_entry"
 //
 #define RPG_CLIENT_GTK_HBOX_MAIN_NAME                     "main_hbox"

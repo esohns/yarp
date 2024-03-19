@@ -98,15 +98,16 @@ class RPG_Engine_Common_Tools
   static void getCombatantSequence (const RPG_Player_Party_t&,        // party
                                     const RPG_Monster_Groups_t&,      // monsters
                                     RPG_Engine_CombatantSequence_t&); // battle sequence
-  static void performCombatRound (const RPG_Combat_AttackSituation&,      // attack situation
-                                  const RPG_Combat_DefenseSituation&,     // defense situation
+  static void performCombatRound (enum RPG_Combat_AttackSituation,        // attack situation
+                                  enum RPG_Combat_DefenseSituation,       // defense situation
                                   const RPG_Engine_CombatantSequence_t&); // battle sequence
-  static bool attack (const RPG_Player_Base*,                              // attacker
-                      RPG_Player_Base*,                                    // defender
-                      const RPG_Combat_AttackSituation& = ATTACK_NORMAL,   // attack situation
-                      const RPG_Combat_DefenseSituation& = DEFENSE_NORMAL, // defense situation
-                      bool = true,                                  // full-round action ?
-                      unsigned short = RPG_ENGINE_FEET_PER_SQUARE); // distance (feet)
+  static void attack (const RPG_Player_Base*,                            // attacker
+                      RPG_Player_Base*,                                  // defender
+                      ACE_UINT32&,                                       // return value: damage HP
+                      enum RPG_Combat_AttackSituation = ATTACK_NORMAL,   // attack situation
+                      enum RPG_Combat_DefenseSituation = DEFENSE_NORMAL, // defense situation
+                      bool = true,                                       // full-round action ?
+                      ACE_UINT16 = RPG_ENGINE_FEET_PER_SQUARE);          // distance (feet)
 	static unsigned int partyToACL (const RPG_Player_Party_t&);
   static ACE_UINT64 combatToXP (const std::string&, // type
                                 unsigned int,       // ACL (average character level)

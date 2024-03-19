@@ -764,15 +764,15 @@ RPG_Engine_Event_Manager::handleEvent (const RPG_Engine_Event_t& event_in)
           do
           {
             direction = RPG_MAP_DIRECTION_INVALID;
-            roll_result.clear();
-            RPG_Dice::generateRandomNumbers(RPG_MAP_DIRECTION_MAX,
-                                            1,
-                                            roll_result);
-            direction = static_cast<RPG_Map_Direction>(roll_result.front() - 1);
-            ACE_ASSERT(direction < RPG_MAP_DIRECTION_MAX);
+            roll_result.clear ();
+            RPG_Dice::generateRandomNumbers (RPG_MAP_DIRECTION_MAX,
+                                             1,
+                                             roll_result);
+            direction = static_cast<RPG_Map_Direction> (roll_result.front () - 1);
+            ACE_ASSERT (direction < RPG_MAP_DIRECTION_MAX);
 
             next_action.position =
-                myEngine->getPosition((*iterator).first, false);
+                myEngine->getPosition ((*iterator).first, false);
             switch (direction)
             {
               case DIRECTION_UP:
@@ -785,10 +785,9 @@ RPG_Engine_Event_Manager::handleEvent (const RPG_Engine_Event_t& event_in)
                 next_action.position.first--; break;
               default:
               {
-                ACE_DEBUG((LM_ERROR,
-                           ACE_TEXT("invalid direction (was: \"%s\"), aborting\n"),
-                           ACE_TEXT(RPG_Map_DirectionHelper::RPG_Map_DirectionToString(direction).c_str())));
-
+                ACE_DEBUG ((LM_ERROR,
+                            ACE_TEXT ("invalid direction (was: \"%s\"), aborting\n"),
+                            ACE_TEXT (RPG_Map_DirectionHelper::RPG_Map_DirectionToString (direction).c_str())));
                 break;
               }
             } // end SWITCH
@@ -803,7 +802,7 @@ RPG_Engine_Event_Manager::handleEvent (const RPG_Engine_Event_t& event_in)
           // sanity check
           if (current_action.position == (*iterator).second->position)
           {
-            (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
+            (*iterator).second->modes.erase (ENTITYMODE_TRAVELLING);
             done_current_action = true;
             break; // nothing (more) to do...
           } // end IF
@@ -813,23 +812,23 @@ RPG_Engine_Event_Manager::handleEvent (const RPG_Engine_Event_t& event_in)
           {
             // determine target position
             RPG_Engine_EntitiesConstIterator_t target =
-                myEngine->entities_.end();
-            target = myEngine->entities_.find(current_action.target);
-            if (target == myEngine->entities_.end())
+                myEngine->entities_.end ();
+            target = myEngine->entities_.find (current_action.target);
+            if (target == myEngine->entities_.end ())
             {
               // *NOTE*: --> target has gone...
-              (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
+              (*iterator).second->modes.erase (ENTITYMODE_TRAVELLING);
               done_current_action = true;
               break; // nothing (more) to do...
             } // end IF
 
             current_action.position = (*target).second->position;
 
-            if (RPG_Map_Common_Tools::isAdjacent((*iterator).second->position,
+            if (RPG_Map_Common_Tools::isAdjacent ((*iterator).second->position,
                                                   current_action.position))
             {
               // *NOTE*: --> reached target...
-              (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
+              (*iterator).second->modes.erase (ENTITYMODE_TRAVELLING);
               done_current_action = true;
               break; // nothing (more) to do...
             } // end IF
@@ -858,18 +857,18 @@ RPG_Engine_Event_Manager::handleEvent (const RPG_Engine_Event_t& event_in)
                                      current_action.path))
             {
               // *NOTE*: --> no/invalid path, cannot proceed...
-              (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
+              (*iterator).second->modes.erase (ENTITYMODE_TRAVELLING);
               done_current_action = true;
               break; // stop & cancel path...
             } // end IF
             ACE_ASSERT(!current_action.path.empty ());
             ACE_ASSERT((current_action.path.front ().first == (*iterator).second->position) &&
                        (current_action.path.back ().first == current_action.position));
-            current_action.path.pop_front();
+            current_action.path.pop_front ();
 
-            (*iterator).second->modes.insert(ENTITYMODE_TRAVELLING);
+            (*iterator).second->modes.insert (ENTITYMODE_TRAVELLING);
           } // end IF
-          ACE_ASSERT(!current_action.path.empty());
+          ACE_ASSERT(!current_action.path.empty ());
 
           // step2: (try to) step to the next adjacent position
           next_action.command = COMMAND_STEP;
@@ -877,14 +876,14 @@ RPG_Engine_Event_Manager::handleEvent (const RPG_Engine_Event_t& event_in)
           do_next_action = true;
 
           // step3: check: done ?
-          current_action.path.pop_front();
+          current_action.path.pop_front ();
           done_current_action = current_action.path.empty ();
           if (done_current_action)
           {
             ACE_ASSERT(next_action.position == current_action.position);
 
             // *NOTE*: --> reached target...
-            (*iterator).second->modes.erase(ENTITYMODE_TRAVELLING);
+            (*iterator).second->modes.erase (ENTITYMODE_TRAVELLING);
           } // end IF
 
           break;

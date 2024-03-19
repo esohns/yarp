@@ -176,10 +176,9 @@ RPG_Player_Base::getAttribute (enum RPG_Common_Attribute attribute_in) const
       return myAttributes.charisma;
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid attribute: \"%s\", aborting\n"),
-                 ACE_TEXT(RPG_Common_AttributeHelper::RPG_Common_AttributeToString(attribute_in).c_str())));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid attribute: \"%s\", aborting\n"),
+                  ACE_TEXT (RPG_Common_AttributeHelper::RPG_Common_AttributeToString (attribute_in).c_str ())));
       break;
     }
   } // end SWITCH
@@ -188,16 +187,16 @@ RPG_Player_Base::getAttribute (enum RPG_Common_Attribute attribute_in) const
 }
 
 void
-RPG_Player_Base::getSkillRank(enum RPG_Common_Skill skill_in,
-                              ACE_UINT8& result_out) const
+RPG_Player_Base::getSkillRank (enum RPG_Common_Skill skill_in,
+                               ACE_UINT8& result_out) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Base::getSkillRank"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Base::getSkillRank"));
 
   // init return value
   result_out = 0;
 
-  RPG_Character_SkillsConstIterator_t iter = mySkills.find(skill_in);
-  if (iter != mySkills.end())
+  RPG_Character_SkillsConstIterator_t iter = mySkills.find (skill_in);
+  if (iter != mySkills.end ())
   {
     result_out = iter->second;
   } // end IF
@@ -235,26 +234,27 @@ RPG_Player_Base::hasCondition (enum RPG_Common_Condition condition_in) const
   return (myCondition.find (condition_in) != myCondition.end ());
 }
 
-void
+ACE_UINT32
 RPG_Player_Base::sustainDamage (const RPG_Combat_Damage& damage_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Player_Base::sustainDamage"));
 
-  signed short damage_value = 0;
-  signed short total_damage_value = 0;
-  RPG_Dice_RollResult_t result;
-  for (RPG_Combat_DamagesConstIterator_t iterator = damage_in.elements.begin();
-       iterator != damage_in.elements.end();
+  ACE_UINT32 result = 0;
+
+  ACE_INT16 damage_value = 0;
+  RPG_Dice_RollResult_t result_2;
+  for (RPG_Combat_DamageElementsConstIterator_t iterator = damage_in.elements.begin ();
+       iterator != damage_in.elements.end ();
        iterator++)
   {
     // compute damage
     damage_value = 0;
-    result.clear();
+    result_2.clear ();
 
-    RPG_Dice::simulateRoll((*iterator).amount,
-                           1,
-                           result);
-    damage_value = result.front();
+    RPG_Dice::simulateRoll ((*iterator).amount,
+                            1,
+                            result_2);
+    damage_value = result_2.front ();
 
     // *TODO*: consider defenses, resistances, (partial) immunities...
 
@@ -264,7 +264,7 @@ RPG_Player_Base::sustainDamage (const RPG_Combat_Damage& damage_in)
 
     myNumHitPoints -= damage_value;
 
-    total_damage_value += damage_value;
+    result += damage_value;
   } // end FOR
 
   if (myNumHitPoints < -10)
@@ -273,26 +273,28 @@ RPG_Player_Base::sustainDamage (const RPG_Combat_Damage& damage_in)
   // adjust condition
   if (myNumHitPoints <= 0)
   {
-    myCondition.erase(CONDITION_NORMAL);
+    myCondition.erase (CONDITION_NORMAL);
 
     if (myNumHitPoints == -10)
-      myCondition.insert(CONDITION_DEAD);
+      myCondition.insert (CONDITION_DEAD);
     else if (myNumHitPoints < 0)
-      myCondition.insert(CONDITION_DYING);
+      myCondition.insert (CONDITION_DYING);
     else
-      myCondition.insert(CONDITION_DISABLED);
+      myCondition.insert (CONDITION_DISABLED);
 
     if (myNumHitPoints < 0)
-      myCondition.insert(CONDITION_UNCONSCIOUS);
+      myCondition.insert (CONDITION_UNCONSCIOUS);
   } // end IF
 
   ACE_DEBUG ((LM_DEBUG,
-              ACE_TEXT ("\"%s\" (HP: %d/%d) suffers damage of %d HP%s...\n"),
-              ACE_TEXT (getName().c_str()),
-              (myNumHitPoints + total_damage_value),
+              ACE_TEXT ("\"%s\" (HP: %d/%u) suffers damage of %d HP%s...\n"),
+              ACE_TEXT (getName ().c_str ()),
+              (myNumHitPoints + result),
               myNumTotalHitPoints,
-              total_damage_value,
+              result,
               (!hasCondition (CONDITION_NORMAL) ? ACE_TEXT(" --> DOWN") : ACE_TEXT(""))));
+
+  return result;
 }
 
 void
@@ -301,8 +303,8 @@ RPG_Player_Base::status () const
   RPG_TRACE (ACE_TEXT ("RPG_Player_Base::status"));
 
   ACE_DEBUG ((LM_DEBUG,
-              ACE_TEXT ("condition: %s\nHP: %d/%d\nwealth: %d GP\n"),
-              ACE_TEXT (RPG_Character_Common_Tools::toString(myCondition).c_str()),
+              ACE_TEXT ("condition: %s\nHP: %d/%u\nwealth: %Q GP\n"),
+              ACE_TEXT (RPG_Character_Common_Tools::toString (myCondition).c_str ()),
               myNumHitPoints,
               myNumTotalHitPoints,
               myWealth));

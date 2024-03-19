@@ -171,20 +171,20 @@ RPG_Player_Common_Tools::restParty (RPG_Player_Party_t& party_in)
   unsigned int fraction = 0;
   unsigned int recoveryTime = 0;
   unsigned int maxRecoveryTime = 0;
-  for (iterator = party_in.begin();
-       iterator != party_in.end();
+  for (iterator = party_in.begin ();
+       iterator != party_in.end ();
        iterator++)
   {
     // *TODO*: consider dead/dying players !
-    if ((*iterator)->getNumHitPoints() < 0)
+    if ((*iterator)->getNumHitPoints () < 0)
       continue;
 
-    diff = ((*iterator)->getNumTotalHitPoints() -
-            (*iterator)->getNumHitPoints());
-    fraction = (diff % ((*iterator)->getLevel() * 2));
+    diff = ((*iterator)->getNumTotalHitPoints () -
+            (*iterator)->getNumHitPoints ());
+    fraction = (diff % ((*iterator)->getLevel () * 2));
     diff -= fraction;
-    recoveryTime = ((diff / ((*iterator)->getLevel() * 2)) + // days of complete bed-rest +
-                    (fraction / (*iterator)->getLevel()));   // days of good night's sleep
+    recoveryTime = ((diff / ((*iterator)->getLevel () * 2)) + // days of complete bed-rest +
+                    (fraction / (*iterator)->getLevel ()));   // days of good night's sleep
     if (recoveryTime > maxRecoveryTime)
       maxRecoveryTime = recoveryTime;
   } // end FOR

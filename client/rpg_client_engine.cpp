@@ -742,7 +742,7 @@ RPG_Client_Engine::action (const RPG_Client_Action& action_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::action"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
+  ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);
 
   actions_.push_back (action_in);
 
@@ -755,7 +755,7 @@ RPG_Client_Engine::centerOnActive (bool centerOnActive_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::centerOnActive"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
+  ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);
 
   centerOnActivePlayer_ = centerOnActive_in;
 }
@@ -767,7 +767,7 @@ RPG_Client_Engine::getCenterOnActive () const
 
   bool result;
 
-  { ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
+  { ACE_GUARD_RETURN (ACE_Thread_Mutex, aGuard, lock_, centerOnActivePlayer_);
     result = centerOnActivePlayer_;
   } // end lock scope
 
@@ -934,13 +934,13 @@ next:
       }
 
       // --> update whole window (*NOTE*: the draw() call above invalidates the whole window)
-      //try {
-      //  (*iterator).window->invalidate (dirty_region);
-      //} catch (...) {
-      //  ACE_DEBUG ((LM_ERROR,
-      //              ACE_TEXT ("caught exception in RPG_Graphics_IWindowBase::invalidate(), continuing\n")));
-      //  continue;
-      //}
+      try {
+        client_action.window->invalidate (dirty_region);
+      } catch (...) {
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("caught exception in RPG_Graphics_IWindowBase::invalidate(), continuing\n")));
+        goto continue_;
+      }
 
       break;
     }
@@ -1037,11 +1037,11 @@ next:
         } // end FOR
       } // end ELSE
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->putHighlights (positions,
-                                                                          screen_positions,
-                                                                          view,
-                                                                          dirty_region,
-                                                                          true,
-                                                                          debug_);
+                                                                         screen_positions,
+                                                                         view,
+                                                                         dirty_region,
+                                                                         true,
+                                                                         debug_);
 
       try {
         client_action.window->invalidate (dirty_region);
@@ -1334,7 +1334,7 @@ next:
 #else
 #if defined (SDL_USE)
       SDL_WM_SetCaption (caption_utf8,  // window caption
-                          caption_utf8); // icon caption
+                         caption_utf8); // icon caption
 #endif // SDL_USE
 #endif // ACE_WIN32 || ACE_WIN64
       // clean up

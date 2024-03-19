@@ -41,6 +41,7 @@
       <xsd:enumeration value="COMMAND_E2C_ENTITY_POSITION"/>
       <xsd:enumeration value="COMMAND_E2C_ENTITY_VISION"/>
       <xsd:enumeration value="COMMAND_E2C_ENTITY_LEVEL_UP"/>
+      <xsd:enumeration value="COMMAND_E2C_ENTITY_STATE"/>
       <xsd:enumeration value="COMMAND_E2C_INIT"/>
       <xsd:enumeration value="COMMAND_E2C_MESSAGE"/>
       <xsd:enumeration value="COMMAND_E2C_QUIT"/>

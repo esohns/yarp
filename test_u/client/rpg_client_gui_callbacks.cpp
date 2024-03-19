@@ -4089,6 +4089,13 @@ togglebutton_join_part_toggled_cb (GtkToggleButton* toggleButton_in,
     ACE_ASSERT (button);
     gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
+    // make rest button sensitive
+    button =
+      GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                          ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_REST_NAME)));
+    ACE_ASSERT (button);
+    gtk_widget_set_sensitive (GTK_WIDGET (button), TRUE);
+
     // minimize dialog window
     GdkWindow* toplevel =
       gtk_widget_get_parent_window (GTK_WIDGET (toggleButton_in));
@@ -4159,12 +4166,19 @@ togglebutton_join_part_toggled_cb (GtkToggleButton* toggleButton_in,
   ACE_ASSERT (combo_box);
   gtk_widget_set_sensitive (GTK_WIDGET (combo_box), TRUE);
 
-  // make quit button insensitive
+  // make quit button sensitive
   button =
     GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_QUIT_NAME)));
   ACE_ASSERT (button);
   gtk_widget_set_sensitive (GTK_WIDGET (button), TRUE);
+
+  // make rest button insensitive
+  button =
+    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_REST_NAME)));
+  ACE_ASSERT (button);
+  gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 }
 
 gint
@@ -4319,12 +4333,21 @@ rest_clicked_GTK_cb (GtkWidget* widget_in,
 
   ACE_UNUSED_ARG (widget_in);
 
-  struct RPG_Client_GTK_CBData* data =
+  struct RPG_Client_GTK_CBData* data_p =
       static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
-  ACE_ASSERT (data);
+  ACE_ASSERT (data_p);
+  ACE_ASSERT (data_p->UIState);
+  Common_UI_GTK_BuildersConstIterator_t iterator =
+      data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
+  ACE_ASSERT (iterator != data_p->UIState->builders.end ());
+  GtkDialog* dialog_p =
+      GTK_DIALOG (gtk_builder_get_object ((*iterator).second.second,
+                                          ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_REST_NAME)));
+  ACE_ASSERT (dialog_p);
 
-  // *TODO*
-  ACE_ASSERT (false);
+  // draw it
+  if (!gtk_widget_get_visible (GTK_WIDGET (dialog_p)))
+    gtk_widget_show_all (GTK_WIDGET (dialog_p));
 
   return FALSE;
 }
@@ -4365,9 +4388,10 @@ levelup_clicked_cb (GtkButton* button_in,
   ::update_levelup (*data_p);
   ::hitdice_button_clicked_cb (NULL, userData_in); // roll once
 
-  gint response_i = gtk_dialog_run (dialog_p);
-  if (response_i != GTK_RESPONSE_CANCEL)
-  {} // end IF
+  // draw it
+  if (!gtk_widget_get_visible (GTK_WIDGET (dialog_p)))
+    gtk_widget_show_all (GTK_WIDGET (dialog_p));
+  //gint response_i = gtk_dialog_run (dialog_p);
 }
 
 void
@@ -4402,6 +4426,41 @@ hitdice_button_clicked_cb (GtkButton* button_in,
   converter << player->getNumTotalHitPoints () + result.front ();
   gtk_label_set_text (label_p,
                       converter.str ().c_str ());
+}
+
+void
+rest_button_rest_clicked_cb (GtkButton* button_in,
+                             gpointer userData_in)
+{
+  RPG_TRACE (ACE_TEXT ("::rest_button_rest_clicked_cb"));
+
+  ACE_UNUSED_ARG (button_in);
+
+  // sanity check(s)
+  struct RPG_Client_GTK_CBData* data_p =
+      static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
+  ACE_ASSERT (data_p);
+  ACE_ASSERT (data_p->entity.character);
+  ACE_ASSERT (data_p->entity.character->isPlayerCharacter ());
+  RPG_Player* player = static_cast<RPG_Player*> (data_p->entity.character);
+  ACE_ASSERT (data_p->UIState);
+  Common_UI_GTK_BuildersConstIterator_t iterator =
+      data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
+  ACE_ASSERT (iterator != data_p->UIState->builders.end ());
+  GtkEntry* entry_p =
+      GTK_ENTRY (gtk_builder_get_object ((*iterator).second.second,
+                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_ENTRY_HOURS_NAME)));
+  ACE_ASSERT (entry_p);
+
+  std::istringstream converter;
+  converter.str (gtk_entry_buffer_get_text (gtk_entry_get_buffer (entry_p)));
+  unsigned int value_i = 0;
+  converter >> value_i;
+
+  player->rest (REST_FULL,
+                value_i);
+
+  ::update_character_profile (*player, (*iterator).second.second);
 }
 
 void
@@ -4931,6 +4990,19 @@ continue_2:
     ACE_ASSERT (button_p);
     gtk_widget_set_sensitive (GTK_WIDGET (button_p), FALSE);
   } // end IF
+
+  gtk_widget_hide (GTK_WIDGET (dialog_in));
+}
+
+void
+rest_dialog_response_cb (GtkDialog* dialog_in,
+                         gint responseId_in,
+                         gpointer userData_in)
+{
+  RPG_TRACE (ACE_TEXT ("::rest_dialog_response_cb"));
+
+  ACE_UNUSED_ARG (responseId_in);
+  ACE_UNUSED_ARG (userData_in);
 
   gtk_widget_hide (GTK_WIDGET (dialog_in));
 }

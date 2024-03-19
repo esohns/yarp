@@ -778,9 +778,9 @@ RPG_Engine_Common_Tools::getCombatantSequence (const RPG_Player_Party_t& party_i
 }
 
 void
-RPG_Engine_Common_Tools::performCombatRound(const RPG_Combat_AttackSituation& attackSituation_in,
-                                            const RPG_Combat_DefenseSituation& defenseSituation_in,
-                                            const RPG_Engine_CombatantSequence_t& battleSequence_in)
+RPG_Engine_Common_Tools::performCombatRound (enum RPG_Combat_AttackSituation attackSituation_in,
+                                             enum RPG_Combat_DefenseSituation defenseSituation_in,
+                                             const RPG_Engine_CombatantSequence_t& battleSequence_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::performCombatRound"));
 
@@ -788,6 +788,7 @@ RPG_Engine_Common_Tools::performCombatRound(const RPG_Combat_AttackSituation& at
   bool isPlayer = false;
   RPG_Engine_CombatantSequenceIterator_t foeFinder;
   RPG_Dice_RollResult_t result;
+  ACE_UINT32 damage_hp_i;
   for (RPG_Engine_CombatantSequenceIterator_t iterator = battleSequence_in.begin ();
        iterator != battleSequence_in.end ();
        iterator++)
@@ -835,6 +836,7 @@ RPG_Engine_Common_Tools::performCombatRound(const RPG_Combat_AttackSituation& at
     // *TODO*: for now, we ignore range and movement
     attack ((*iterator).handle,
             const_cast<RPG_Player_Base*>((*foeFinder).handle),
+            damage_hp_i,
             attackSituation_in,
             defenseSituation_in,
             true,
@@ -1026,15 +1028,18 @@ RPG_Engine_Common_Tools::isCompatibleMonsterAttackAction (enum RPG_Combat_Attack
                     attackForm_in) != action_in.attackForms.end ();
 }
 
-bool
+void
 RPG_Engine_Common_Tools::attack (const RPG_Player_Base* const attacker_in,
                                  RPG_Player_Base* const target_inout,
-                                 const RPG_Combat_AttackSituation& attackSituation_in,
-                                 const RPG_Combat_DefenseSituation& defenseSituation_in,
+                                 ACE_UINT32& damageHP_out,
+                                 enum RPG_Combat_AttackSituation attackSituation_in,
+                                 enum RPG_Combat_DefenseSituation defenseSituation_in,
                                  bool isFullRoundAction_in,
-                                 unsigned short distance_in)
+                                 ACE_UINT16 distance_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::attack"));
+
+  damageHP_out = 0;
 
   // sanity check
   ACE_ASSERT (attacker_in && target_inout);
@@ -1042,18 +1047,18 @@ RPG_Engine_Common_Tools::attack (const RPG_Player_Base* const attacker_in,
   bool has_hit = false;
 
   bool reach_is_absolute = false;
-  unsigned short base_range = 0;
-  unsigned short max_reach = attacker_in->getReach (base_range,
-                                                    reach_is_absolute);
+  ACE_UINT16 base_range = 0;
+  ACE_UINT16 max_reach = attacker_in->getReach (base_range,
+                                                reach_is_absolute);
   if (distance_in > max_reach)
-    return false; // --> done (out of reach)
+    return; // --> done (out of reach)
   RPG_Combat_AttackForm attackForm =
       (base_range ? ATTACKFORM_RANGED
                   : (reach_is_absolute &&
                      (distance_in < max_reach)) ? RPG_COMBAT_ATTACKFORM_INVALID
                                                 : ATTACKFORM_MELEE);
   if (attackForm == RPG_COMBAT_ATTACKFORM_INVALID)
-    return false; // --> done (cannot reach)
+    return; // --> done (cannot reach)
 
   RPG_Dice_Roll roll;
   roll.numDice = 1;
@@ -1071,7 +1076,7 @@ RPG_Engine_Common_Tools::attack (const RPG_Player_Base* const attacker_in,
       ((attackForm == ATTACKFORM_RANGED) ? ATTRIBUTE_DEXTERITY
                                          : ATTRIBUTE_STRENGTH);
   int targetArmorClass = 0;
-  float STR_factor = 1.0;
+  float STR_factor = 1.0f;
   RPG_Combat_Damage damage;
   RPG_Combat_DamageElement damage_element;
   RPG_Common_PhysicalDamageList_t physicalDamageTypeList;
@@ -1116,7 +1121,7 @@ RPG_Engine_Common_Tools::attack (const RPG_Player_Base* const attacker_in,
       weapon_type =
           const_cast<RPG_Player_Player_Base* const> (player_base)->getEquipment ().getSecondaryWeapon (player_base->getOffHand ());
       if (weapon_type == RPG_ITEM_WEAPONTYPE_INVALID)
-        return false; // done (no weapon equipped)
+        return; // done (no weapon equipped)
 
       //is_offhand = true; // *TODO* implement this rule
     } // end IF
@@ -1177,7 +1182,7 @@ RPG_Engine_Common_Tools::attack (const RPG_Player_Base* const attacker_in,
 //       maxReach = 50; // not really meant to be thrown...
 
       // nothing to do...
-      return false;
+      return;
     } // end IF
 
     // *TODO*: consider multi-weapon/offhand attacks...
@@ -1294,7 +1299,7 @@ RPG_Engine_Common_Tools::attack (const RPG_Player_Base* const attacker_in,
                   (attack_roll + currentAttackBonus),
                   (is_critical_hit ? ACE_TEXT (" (critical)") : ACE_TEXT (""))));
 
-      target_inout->sustainDamage (damage);
+      damageHP_out += target_inout->sustainDamage (damage);
 
       // if the target has been disabled, we're done...
       // *TODO*: consider remaining actions...
@@ -1473,9 +1478,9 @@ init_monster_special_attack:
     if (numberOfPossibleAttackActions == 0)
     {
       ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("found no suitable special attack for monster \"%s\", aborting\n"),
+                 ACE_TEXT("found no suitable special attack for monster \"%s\", returning\n"),
                  ACE_TEXT(monster->getName ().c_str ())));
-      return false;
+      return;
     } // end IF
 
     special_iterator = monster_properties.specialAttacks.begin ();
@@ -1657,12 +1662,12 @@ monster_perform_single_action:
                   (attack_roll + currentAttackBonus),
                   (is_critical_hit ? ACE_TEXT (" (critical)") : ACE_TEXT (""))));
 
-      target_inout->sustainDamage (damage);
+      damageHP_out += target_inout->sustainDamage (damage);
 
       // if the target has been disabled, we're done...
       // *TODO*: consider remaining actions...
       if (isCharacterHelpless (target_inout))
-        return true;
+        return;
 
       // if this was a Standard Action, we're done
       if (!isFullRoundAction_in)
@@ -1701,8 +1706,6 @@ monster_advance_attack_iterator:
       } // end IF
     } // end IF
   } // end ELSE
-
-  return has_hit;
 }
 
 unsigned int
