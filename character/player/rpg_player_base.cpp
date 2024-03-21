@@ -61,7 +61,7 @@ RPG_Player_Base::RPG_Player_Base (// base attributes
    myKnownSpells (knownSpells_in),
    mySpells (spells_in),
    myInventory (inventory_in),
-//    myEquipment(), // start naked
+   myEquipment (), // start naked
    myNumHitPoints (hitpoints_in),
    myCondition (condition_in),
    myAttributes (attributes_in),
@@ -97,9 +97,9 @@ RPG_Player_Base::RPG_Player_Base (const RPG_Player_Base& playerBase_in)
 }
 
 // RPG_Player_Base&
-// RPG_Player_Base::operator=(const RPG_Player_Base& playerBase_in)
+// RPG_Player_Base::operator= (const RPG_Player_Base& playerBase_in)
 // {
-//   RPG_TRACE(ACE_TEXT("RPG_Player_Base::operator="));
+//   RPG_TRACE (ACE_TEXT ("RPG_Player_Base::operator="));
 //
 //   myWealth = playerBase_in.myWealth;
 //   myKnownSpells = playerBase_in.myKnownSpells;
@@ -192,14 +192,12 @@ RPG_Player_Base::getSkillRank (enum RPG_Common_Skill skill_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Player_Base::getSkillRank"));
 
-  // init return value
+  // initialize return value
   result_out = 0;
 
   RPG_Character_SkillsConstIterator_t iter = mySkills.find (skill_in);
   if (iter != mySkills.end ())
-  {
     result_out = iter->second;
-  } // end IF
 }
 
 bool
@@ -219,9 +217,9 @@ RPG_Player_Base::hasAbility (enum RPG_Character_Ability ability_in) const
 }
 
 // const RPG_Player_Equipment
-// RPG_Player_Base::getEquipment() const
+// RPG_Player_Base::getEquipment () const
 // {
-//   RPG_TRACE(ACE_TEXT("RPG_Player_Base::getEquipment"));
+//   RPG_TRACE (ACE_TEXT ("RPG_Player_Base::getEquipment"));
 //
 //   return myEquipment;
 // }
@@ -287,12 +285,12 @@ RPG_Player_Base::sustainDamage (const RPG_Combat_Damage& damage_in)
   } // end IF
 
   ACE_DEBUG ((LM_DEBUG,
-              ACE_TEXT ("\"%s\" (HP: %d/%u) suffers damage of %d HP%s...\n"),
+              ACE_TEXT ("\"%s\" (HP: %d/%u) suffers damage of %u HP%s...\n"),
               ACE_TEXT (getName ().c_str ()),
               (myNumHitPoints + result),
               myNumTotalHitPoints,
               result,
-              (!hasCondition (CONDITION_NORMAL) ? ACE_TEXT(" --> DOWN") : ACE_TEXT(""))));
+              (!hasCondition (CONDITION_NORMAL) ? ACE_TEXT (" --> DOWN") : ACE_TEXT (""))));
 
   return result;
 }
@@ -328,7 +326,7 @@ RPG_Player_Base::dump () const
   } // end IF
 
   ACE_DEBUG ((LM_DEBUG,
-              ACE_TEXT("Name: \"%s\"\nAlignment: \"%s\"\nAttributes:\n===========\n%sSkills:\n=======\n%sFeats:\n======\n%sAbilities:\n==========\n%sSpells:\n==========\n%sItems:\n======\n"),
+              ACE_TEXT ("Name: \"%s\"\nAlignment: \"%s\"\nAttributes:\n===========\n%sSkills:\n=======\n%sFeats:\n======\n%sAbilities:\n==========\n%sSpells:\n==========\n%sItems:\n======\n"),
               ACE_TEXT (myName.c_str ()),
               ACE_TEXT (RPG_Character_Common_Tools::toString (myAlignment).c_str ()),
               ACE_TEXT (RPG_Character_Common_Tools::toString (myAttributes).c_str ()),

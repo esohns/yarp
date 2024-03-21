@@ -42,6 +42,6 @@ typedef RPG_Combat_AttackForms_t::const_iterator RPG_Combat_AttackFormsIterator_
 typedef std::vector<struct RPG_Combat_Damage> RPG_Combat_Damages_t;
 typedef RPG_Combat_Damages_t::const_iterator RPG_Combat_DamagesConstIterator_t;
 
-typedef std::vector<RPG_Combat_DamageElement>::const_iterator RPG_Combat_DamageElementsConstIterator_t;
+typedef std::vector<struct RPG_Combat_DamageElement>::const_iterator RPG_Combat_DamageElementsConstIterator_t;
 
 #endif

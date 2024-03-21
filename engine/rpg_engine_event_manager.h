@@ -48,14 +48,14 @@ class RPG_Engine;
  */
 class RPG_Engine_Event_Manager
  : public ACE_Task_Ex<ACE_MT_SYNCH,
-                      RPG_Engine_Event_t,
+                      struct RPG_Engine_Event,
                       Common_TimePolicy_t>,
    //public Common_IControl,
    public Common_Timer_Handler,
    public Common_IDumpState
 {
   typedef ACE_Task_Ex<ACE_MT_SYNCH,
-                      RPG_Engine_Event_t,
+                      struct RPG_Engine_Event,
                       Common_TimePolicy_t> inherited;
   typedef Common_Timer_Handler inherited2;
 
@@ -68,9 +68,9 @@ class RPG_Engine_Event_Manager
 
   // manage generic event sources
 	// *IMPORTANT*: fire-and-forget API (first argument)
-  long schedule (RPG_Engine_Event_t*,   // event handle
-                 const ACE_Time_Value&, // interval (or delay)
-                 bool = false);         // one-shot ?
+  long schedule (struct RPG_Engine_Event*&, // event handle
+                 const ACE_Time_Value&,     // interval (or delay)
+                 bool = false);             // one-shot ?
   void cancel (long); // timer (!) id
 
   // manage entities
@@ -104,12 +104,12 @@ class RPG_Engine_Event_Manager
 
 	// helper methods
 	void cancel_all ();
-	void handleEvent (const RPG_Engine_Event_t&);
+	void handleEvent (const struct RPG_Engine_Event&);
 
   RPG_Engine* myEngine;
 
   // helper types
-  typedef std::map<long, RPG_Engine_Event_t*> RPG_Engine_EventTimers_t;
+  typedef std::map<long, struct RPG_Engine_Event*> RPG_Engine_EventTimers_t;
   typedef RPG_Engine_EventTimers_t::const_iterator RPG_Engine_EventTimersConstIterator_t;
   typedef std::map<RPG_Engine_EntityID_t, long> RPG_Engine_EntityTimers_t;
   typedef RPG_Engine_EntityTimers_t::const_iterator RPG_Engine_EntityTimersConstIterator_t;

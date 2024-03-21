@@ -131,7 +131,7 @@ RPG_Engine::~RPG_Engine ()
 
   // clean up
   delete connector_;
-  { ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
+  { ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);
     for (RPG_Engine_EntitiesIterator_t iterator = entities_.begin ();
          iterator != entities_.end ();
          iterator++)
@@ -365,14 +365,14 @@ RPG_Engine::start ()
          iterator != inherited2::myMetaData.spawns.end ();
          iterator++)
     {
-      RPG_Engine_Event_t* spawn_event = NULL;
+      RPG_Engine_Event* spawn_event = NULL;
       ACE_NEW_NORETURN (spawn_event,
-                        RPG_Engine_Event_t ());
+                        RPG_Engine_Event ());
       if (!spawn_event)
       {
         ACE_DEBUG ((LM_CRITICAL,
                     ACE_TEXT ("failed to allocate memory(%u), aborting\n"),
-                    sizeof (RPG_Engine_Event_t)));
+                    sizeof (struct RPG_Engine_Event)));
 
         return;
       } // end IF
@@ -2367,27 +2367,45 @@ RPG_Engine::handleEntities ()
           // *TODO*: implement combat situations, in-turn-movement, ...
           ACE_UINT32 damage_hp_i = 0;
           RPG_Engine_Common_Tools::attack ((*iterator).second->character,
-                                            (*target).second->character,
-                                            damage_hp_i,
-                                            ATTACK_NORMAL,
-                                            DEFENSE_NORMAL,
-                                            (current_action.command == COMMAND_ATTACK_FULL),
-                                            RPG_Engine_Common_Tools::range ((*iterator).second->position,
-                                                                            (*target).second->position) * RPG_ENGINE_FEET_PER_SQUARE);
+                                           (*target).second->character,
+                                           damage_hp_i,
+                                           ATTACK_NORMAL,
+                                           DEFENSE_NORMAL,
+                                           (current_action.command == COMMAND_ATTACK_FULL),
+                                           RPG_Engine_Common_Tools::range ((*iterator).second->position,
+                                                                           (*target).second->position) * RPG_ENGINE_FEET_PER_SQUARE);
           notifications.push_back (std::make_pair ((damage_hp_i ? COMMAND_E2C_ENTITY_HIT
                                                                 : COMMAND_E2C_ENTITY_MISS),
                                                    parameters));
           parameters.entity_id = 0;
 
-          if (damage_hp_i && (*target).second->character->isPlayerCharacter ())
-          { // player (potentially) lost some HPs --> update UI
-            parameters.entity_id = (*target).first;
-            notifications.push_back (std::make_pair (COMMAND_E2C_ENTITY_STATE, parameters));
-            parameters.entity_id = 0;
+          // notify UI of any damage done
+          std::ostringstream converter;
+          if (damage_hp_i)
+          {
+            parameters.message = (*iterator).second->character->getName ();
+            parameters.message += ACE_TEXT_ALWAYS_CHAR (" hits ");
+            parameters.message += (*target).second->character->getName ();
+            parameters.message += ACE_TEXT_ALWAYS_CHAR (" dealing ");
+            //converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+            //converter.clear ();
+            converter << damage_hp_i;
+            parameters.message += converter.str ();
+            parameters.message += ACE_TEXT_ALWAYS_CHAR (" HP(s) of damage");
+            notifications.push_back (std::make_pair (COMMAND_E2C_MESSAGE,
+                                                     parameters));
+            parameters.message.clear ();
+
+            if ((*target).second->character->isPlayerCharacter ())
+            { // player lost some HPs --> update UI
+              parameters.entity_id = (*target).first;
+              notifications.push_back (std::make_pair (COMMAND_E2C_ENTITY_STATE,
+                                                       parameters));
+              parameters.entity_id = 0;
+            } // end IF
           } // end IF
 
           // target disabled ? --> remove entity (see below)
-          std::ostringstream converter;
           if (RPG_Engine_Common_Tools::isCharacterDisabled ((*target).second->character))
           {
             // notify client
@@ -2425,12 +2443,13 @@ RPG_Engine::handleEntities ()
               parameters.message += ACE_TEXT_ALWAYS_CHAR (", ");
               parameters.message += (*iterator).second->character->getName ();
               parameters.message += ACE_TEXT_ALWAYS_CHAR (" received ");
+              converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+              converter.clear ();
               converter << xp;
               parameters.message += converter.str ();
               parameters.message += ACE_TEXT_ALWAYS_CHAR (" XP");
               notifications.push_back (std::make_pair (COMMAND_E2C_MESSAGE,
                                                        parameters));
-              parameters.entity_id = 0;
               parameters.message.clear ();
 
               // level up ?

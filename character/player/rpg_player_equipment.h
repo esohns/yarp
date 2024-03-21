@@ -32,39 +32,38 @@
 #include "rpg_item_weapontype.h"
 
 #include "rpg_player_equipment_common.h"
-//#include "rpg_player_exports.h"
 
 class RPG_Player_Equipment
 {
  public:
-  RPG_Player_Equipment();
-  virtual ~RPG_Player_Equipment();
+  RPG_Player_Equipment ();
+  inline virtual ~RPG_Player_Equipment () {}
 
   // *NOTE*: equipped items SHALL be part of the inventory !
-  void equip(RPG_Item_ID_t,                                         // item id
-             enum RPG_Character_OffHand,                            // off-hand
-             enum RPG_Character_EquipmentSlot = EQUIPMENTSLOT_ANY); // hint: where ?
-  void unequip(RPG_Item_ID_t); // what ?
-  void unequip(enum RPG_Character_EquipmentSlot); // whence ?
-  void strip();
+  void equip (RPG_Item_ID_t,                                         // item id
+              enum RPG_Character_OffHand,                            // off-hand
+              enum RPG_Character_EquipmentSlot = EQUIPMENTSLOT_ANY); // hint: where ?
+  void unequip (RPG_Item_ID_t); // what ?
+  void unequip (enum RPG_Character_EquipmentSlot); // whence ?
+  void strip ();
 
   // weapon in EQUIPMENTSLOT_RIGHT_HAND/EQUIPMENTSLOT_LEFT_HAND
-  enum RPG_Item_WeaponType getPrimaryWeapon(enum RPG_Character_OffHand) const;
-  enum RPG_Item_WeaponType getSecondaryWeapon(enum RPG_Character_OffHand) const;
+  enum RPG_Item_WeaponType getPrimaryWeapon (enum RPG_Character_OffHand) const;
+  enum RPG_Item_WeaponType getSecondaryWeapon (enum RPG_Character_OffHand) const;
   // armor in EQUIPMENTSLOT_BODY/TORSO
-  enum RPG_Item_ArmorType getBodyArmor() const;
+  enum RPG_Item_ArmorType getBodyArmor () const;
   // armor in EQUIPMENTSLOT_LEFT/RIGHT_HAND, IF ARMOR (!)
-  enum RPG_Item_ArmorType getShield(enum RPG_Character_OffHand) const;
+  enum RPG_Item_ArmorType getShield (enum RPG_Character_OffHand) const;
   // light source in EQUIPMENTSLOT_LEFT/RIGHT_HAND, if any
-  enum RPG_Item_CommodityLight getLightSource() const;
+  enum RPG_Item_CommodityLight getLightSource () const;
 
-  bool isEquipped(enum RPG_Character_EquipmentSlot, // slot
-                  RPG_Item_ID_t&) const;            // return value: item id (if any)
-  bool isEquipped(RPG_Item_ID_t,                           // item id
-                  enum RPG_Character_EquipmentSlot) const; // return value: slot (if any)
+  bool isEquipped (enum RPG_Character_EquipmentSlot, // slot
+                   RPG_Item_ID_t&) const;            // return value: item id (if any)
+  bool isEquipped (RPG_Item_ID_t,                           // item id
+                   enum RPG_Character_EquipmentSlot) const; // return value: slot (if any)
 
   // dump equipment
-  void dump() const;
+  void dump () const;
 
   // *WARNING*: do NOT insert/remove elements directly (use the API instead)
   RPG_Player_Equipment_t myEquipment;

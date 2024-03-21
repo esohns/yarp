@@ -23,10 +23,6 @@
 
 #include "rpg_engine_common.h"
 
-#include <string>
-
-class RPG_Engine_IEvent;
-
 enum RPG_Engine_EventType
 {
   EVENT_ENTITY_ACTIVATE = 0,
@@ -38,17 +34,17 @@ enum RPG_Engine_EventType
   RPG_ENGINE_EVENT_INVALID
 };
 
-struct RPG_Engine_Event_t
+struct RPG_Engine_Event
 {
- inline RPG_Engine_Event_t()
-  : type(RPG_ENGINE_EVENT_INVALID),
-    entity_id(-1),
-    timer_id(0)
- { };
+ RPG_Engine_Event ()
+  : type (RPG_ENGINE_EVENT_INVALID),
+    entity_id (-1),
+    timer_id (0)
+ {}
 
-  RPG_Engine_EventType  type;
-  RPG_Engine_EntityID_t entity_id;
-	long                  timer_id;
+  enum RPG_Engine_EventType type;
+  RPG_Engine_EntityID_t     entity_id;
+	long                      timer_id;
 };
 
 #endif

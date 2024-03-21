@@ -49,7 +49,7 @@
 
 #include "rpg_engine_defines.h"
 
-RPG_Engine_Level::RPG_Engine_Level()
+RPG_Engine_Level::RPG_Engine_Level ()
  : inherited ()
  , myMetaData ()
 //   myStyle()
@@ -132,7 +132,7 @@ RPG_Engine_Level::load (const std::string& filename_in,
   level_out.metadata.environment.terrain = RPG_COMMON_TERRAIN_INVALID;
   level_out.metadata.environment.time = RPG_COMMON_TIMEOFDAY_INVALID;
 
-  level_out.metadata.spawns.clear();
+  level_out.metadata.spawns.clear ();
   level_out.metadata.max_num_spawned = 0;
 
   level_out.map.start =

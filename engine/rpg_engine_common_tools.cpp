@@ -874,10 +874,10 @@ RPG_Engine_Common_Tools::range (const RPG_Map_Position_t& position1_in,
 
   // diagonal ?
   int offset_x = 
-    ::abs (static_cast<int>(position1_in.first) -
-           static_cast<int>(position2_in.first));
-  if (offset_x == ::abs (static_cast<int>(position1_in.second) -
-                         static_cast<int>(position2_in.second)))
+    std::abs (static_cast<int> (position1_in.first) -
+              static_cast<int> (position2_in.first));
+  if (offset_x == std::abs (static_cast<int> (position1_in.second) -
+                            static_cast<int> (position2_in.second)))
     result = offset_x + (offset_x / 2);
 
   return result;

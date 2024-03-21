@@ -26,10 +26,10 @@
 #include "rpg_common_physicaldamagetype.h"
 #include "rpg_common_terrain.h"
 
-typedef std::set<RPG_Common_PhysicalDamageType> RPG_Common_PhysicalDamageList_t;
+typedef std::set<enum RPG_Common_PhysicalDamageType> RPG_Common_PhysicalDamageList_t;
 typedef RPG_Common_PhysicalDamageList_t::const_iterator RPG_Common_PhysicalDamageListIterator_t;
 
-typedef std::set<RPG_Common_Terrain> RPG_Common_Terrains_t;
+typedef std::set<enum RPG_Common_Terrain> RPG_Common_Terrains_t;
 typedef RPG_Common_Terrains_t::const_iterator RPG_Common_TerrainsIterator_t;
 
 #endif
