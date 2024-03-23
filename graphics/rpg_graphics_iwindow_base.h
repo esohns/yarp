@@ -33,8 +33,6 @@
 class RPG_Graphics_IWindowBase
 {
  public:
-  //inline virtual ~RPG_Graphics_IWindowBase () {}
-
   virtual void initialize (Common_ILock* = NULL, // screen lock interface handle
                            bool = false) = 0;    // double-buffered screen ?
 
@@ -47,7 +45,7 @@ class RPG_Graphics_IWindowBase
                      unsigned int = 0,      // offset x (top-left = [0,0])
                      unsigned int = 0) = 0; // offset y (top-left = [0,0])
 
-  virtual void invalidate (const SDL_Rect&) = 0; // "dirty" area
+  virtual void invalidate (const struct SDL_Rect&) = 0; // "dirty" area
   virtual SDL_Rect getDirty () const = 0; // return value: "dirty" area
   virtual void update (SDL_Surface* = NULL) = 0; // target surface (default: screen)
 
@@ -67,7 +65,7 @@ class RPG_Graphics_IWindowBase
   virtual void refresh (SDL_Surface* = NULL) = 0; // target surface (default: screen)
 
   virtual RPG_Graphics_WindowType getType () const = 0;
-  virtual void getArea (SDL_Rect&,               // return value: window area
+  virtual void getArea (struct SDL_Rect&,        // return value: window area
                         bool = false) const = 0; // toplevel ?
   virtual void getBorders (unsigned int&,          // return value: size (top)
                            unsigned int&,          // return value: size (bottom)
@@ -76,9 +74,9 @@ class RPG_Graphics_IWindowBase
                            bool = true) const = 0; // recursive ?
   virtual RPG_Graphics_IWindowBase* getWindow (const RPG_Graphics_Position_t&) const = 0; // position (e.g. mouse-)
 
-  virtual void handleEvent (const SDL_Event&,          // event
+  virtual void handleEvent (const union SDL_Event&,    // event
                             RPG_Graphics_IWindowBase*, // target window (NULL: this)
-                            SDL_Rect&) = 0;            // return value: "dirty" region
+                            struct SDL_Rect&) = 0;     // return value: "dirty" region
 };
 
 #endif

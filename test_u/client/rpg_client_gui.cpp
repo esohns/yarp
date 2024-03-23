@@ -145,10 +145,10 @@ event_timer_SDL_cb (Uint32 interval_in,
 {
   RPG_TRACE (ACE_TEXT ("::event_timer_SDL_cb"));
 
-  struct RPG_Client_GTK_CBData* data =
-      static_cast<struct RPG_Client_GTK_CBData*>(argument_in);
-  ACE_ASSERT (data);
-  ACE_ASSERT (data->UIState);
+  struct RPG_Client_GTK_CBData* data_p =
+      static_cast<struct RPG_Client_GTK_CBData*> (argument_in);
+  ACE_ASSERT (data_p);
+  ACE_ASSERT (data_p->UIState);
 
   SDL_Event sdl_event;
 #if defined (SDL_USE)
@@ -158,15 +158,15 @@ event_timer_SDL_cb (Uint32 interval_in,
 #endif // SDL_USE || SDL2_USE
 
   // synch access
-  { ACE_Guard<ACE_Thread_Mutex> aGuard (data->UIState->lock);
-    data->hoverTime += interval_in;
+  { ACE_GUARD_RETURN (ACE_Thread_Mutex, aGuard, data_p->UIState->lock, interval_in);
+    data_p->hoverTime += interval_in;
     //data->gtk_time += interval_in;
-    if (data->doHover &&
-        (data->hoverTime > RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_DELAY))
+    if (data_p->doHover &&
+        (data_p->hoverTime > RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_DELAY))
     {
       // mouse is hovering --> trigger an event
       sdl_event.type = RPG_GRAPHICS_SDL_HOVEREVENT;
-      sdl_event.user.code = static_cast<int>(data->hoverTime);
+      sdl_event.user.code = static_cast<Sint32> (data_p->hoverTime);
 
       if (SDL_PushEvent (&sdl_event) < 0)
         ACE_DEBUG ((LM_ERROR,
@@ -203,7 +203,7 @@ input_timer_SDL_cb (Uint32 interval_in,
 // wait for an input event; stop after timeout_in second(s) (0: wait forever)
 void
 do_SDL_waitForInput (unsigned int timeout_in,
-                     SDL_Event& event_out)
+                     union SDL_Event& event_out)
 {
   RPG_TRACE(ACE_TEXT("::do_SDL_waitForInput"));
 
@@ -216,7 +216,7 @@ do_SDL_waitForInput (unsigned int timeout_in,
     if (!timer)
     {
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to SDL_AddTimer(%u): \"%s\", returning\n"),
+                  ACE_TEXT ("failed to SDL_AddTimer(%u ms): \"%s\", returning\n"),
                   (timeout_in * 1000),
                   ACE_TEXT (SDL_GetError ())));
       return;
@@ -1039,8 +1039,8 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Client_Window_Main::initialize (), returning\n")));
-    RPG_Client_Common_Tools::finalize();
-    RPG_Engine_Common_Tools::finalize();
+    RPG_Client_Common_Tools::finalize ();
+    RPG_Engine_Common_Tools::finalize ();
     return;
   } // end IF
 

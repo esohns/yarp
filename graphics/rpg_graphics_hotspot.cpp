@@ -35,76 +35,65 @@ RPG_Graphics_HotSpot::RPG_Graphics_HotSpot (const RPG_Graphics_SDLWindowBase& pa
                                             const RPG_Graphics_Size_t& size_in,
                                             // *NOTE*: offset doesn't include any border(s) !
                                             const RPG_Graphics_Offset_t& offset_in,
-                                            const RPG_Graphics_Cursor& cursor_in,
+                                            enum RPG_Graphics_Cursor cursor_in,
                                             bool debug_in)
- : inherited (WINDOW_HOTSPOT, // type
-              parent_in,      // parent
-              offset_in,      // offset
-              std::string())  // title
-//              NULL)          // background
+ : inherited (WINDOW_HOTSPOT,            // type
+              parent_in,                 // parent
+              offset_in,                 // offset
+              ACE_TEXT_ALWAYS_CHAR ("")) // title
+ //              NULL)          // background
  , myCursorType (cursor_in)
  , myCursorHasBeenSet (false)
  , myDebug (debug_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_HotSpot::RPG_Graphics_HotSpot"));
 
-  // init clipping rectangle
+  // initialize clipping rectangle
   inherited::clipRectangle_.x = static_cast<int16_t> (offset_in.first);
   inherited::clipRectangle_.y = static_cast<int16_t> (offset_in.second);
   inherited::clipRectangle_.w = static_cast<uint16_t> (size_in.first);
   inherited::clipRectangle_.h = static_cast<uint16_t> (size_in.second);
 }
 
-RPG_Graphics_HotSpot::~RPG_Graphics_HotSpot()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::~RPG_Graphics_HotSpot"));
-
-}
-
 RPG_Graphics_Cursor
-RPG_Graphics_HotSpot::getCursorType() const
+RPG_Graphics_HotSpot::getCursorType () const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::getCursorType"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_HotSpot::getCursorType"));
 
   return myCursorType;
 }
 
 RPG_Graphics_Position_t
-RPG_Graphics_HotSpot::getView() const
+RPG_Graphics_HotSpot::getView () const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_HotSpot::getView"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_HotSpot::getView"));
 
-  ACE_ASSERT(false);
+  ACE_ASSERT (false);
 
-  return std::make_pair(0, 0);
+  return std::make_pair (0, 0);
 }
 
 void
-RPG_Graphics_HotSpot::handleEvent (const SDL_Event& event_in,
+RPG_Graphics_HotSpot::handleEvent (const union SDL_Event& event_in,
                                    RPG_Graphics_IWindowBase* window_in,
-                                   SDL_Rect& dirtyRegion_out)
+                                   struct SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_HotSpot::handleEvent"));
 
-  // init return value(s)
-  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
-
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("RPG_Graphics_HotSpot::handleEvent(%s)\n"),
-//              ACE_TEXT(RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(myType).c_str())));
+  // initialize return value(s)
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
   RPG_Graphics_IWindow* parent = NULL;
   try {
-    parent = dynamic_cast<RPG_Graphics_IWindow*>(getParent());
+    parent = dynamic_cast<RPG_Graphics_IWindow*> (getParent ());
   } catch (...) {
     parent = NULL;
   }
   if (!parent)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to dynamic_cast<RPG_Graphics_IWindow*>(%@), returning\n"),
-               getParent()));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to dynamic_cast<RPG_Graphics_IWindow*>(%@), returning\n"),
+                getParent ()));
     return;
   } // end IF
 
@@ -114,12 +103,9 @@ RPG_Graphics_HotSpot::handleEvent (const SDL_Event& event_in,
     case RPG_GRAPHICS_SDL_MOUSEMOVEOUT:
     {
       // reset cursor
-      try
-      {
-        parent->notify(CURSOR_NORMAL);
-      }
-      catch (...)
-      {
+      try {
+        parent->notify (CURSOR_NORMAL);
+      } catch (...) {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("caught exception in RPG_Graphics_IWindow::notify(), continuing\n")));
       }
@@ -133,12 +119,9 @@ RPG_Graphics_HotSpot::handleEvent (const SDL_Event& event_in,
       // upon entry, set appropriate cursor
       if (!myCursorHasBeenSet)
       {
-        try
-        {
-          parent->notify(myCursorType);
-        }
-        catch (...)
-        {
+        try {
+          parent->notify (myCursorType);
+        } catch (...) {
           ACE_DEBUG((LM_ERROR,
                      ACE_TEXT("caught exception in RPG_Graphics_IWindow::notify(), continuing\n")));
         }
@@ -173,28 +156,17 @@ RPG_Graphics_HotSpot::handleEvent (const SDL_Event& event_in,
     default:
     {
       // delegate these to the parent...
-      try
-      {
-        parent->handleEvent(event_in,
-                            window_in,
-                            dirtyRegion_out);
-      }
-      catch (...)
-      {
+      try {
+        parent->handleEvent (event_in,
+                             window_in,
+                             dirtyRegion_out);
+      } catch (...) {
         ACE_DEBUG((LM_ERROR,
                    ACE_TEXT("caught exception in RPG_Graphics_IWindowBase::handleEvent(), continuing\n")));
       }
 
       break;
     }
-//     default:
-//     {
-//       ACE_DEBUG((LM_ERROR,
-//                  ACE_TEXT("received unknown event (was: %u)...\n"),
-//                  static_cast<unsigned int>(event_in.type)));
-//
-//       break;
-//     }
   } // end SWITCH
 }
 
@@ -251,7 +223,7 @@ bool
 RPG_Graphics_HotSpot::initialize (const RPG_Graphics_SDLWindowBase& parent_in,
                                   const RPG_Graphics_Size_t& size_in,
                                   const RPG_Graphics_Offset_t& offset_in,
-                                  const RPG_Graphics_Cursor& cursor_in,
+                                  enum RPG_Graphics_Cursor cursor_in,
                                   bool debug_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_HotSpot::initialize"));

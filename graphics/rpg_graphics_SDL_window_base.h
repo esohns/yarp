@@ -94,12 +94,12 @@ class RPG_Graphics_SDLWindowBase
 
  protected:
   // *NOTE*: window assumes responsibility for its background surface
-  RPG_Graphics_SDLWindowBase (const RPG_Graphics_WindowType&, // type
-                              const RPG_Graphics_Size_t&,     // size
-                              const std::string&);            // title
+  RPG_Graphics_SDLWindowBase (enum RPG_Graphics_WindowType, // type
+                              const RPG_Graphics_Size_t&,   // size
+                              const std::string&);          // title
   // embedded ("child") window(s)
   // *NOTE*: window assumes responsibility for its background surface
-  RPG_Graphics_SDLWindowBase (const RPG_Graphics_WindowType&,    // type
+  RPG_Graphics_SDLWindowBase (enum RPG_Graphics_WindowType,      // type
                               const RPG_Graphics_SDLWindowBase&, // parent
                               // *NOTE*: offset doesn't include any border(s) !
                               const RPG_Graphics_Offset_t&,      // offset
@@ -126,7 +126,7 @@ class RPG_Graphics_SDLWindowBase
   unsigned int                  borderRight_;
 
   // helper types
-  typedef std::vector<SDL_Rect> RPG_Graphics_DirtyRegions_t;
+  typedef std::vector<struct SDL_Rect> RPG_Graphics_DirtyRegions_t;
   typedef RPG_Graphics_DirtyRegions_t::const_iterator RPG_Graphics_DirtyRegionsConstIterator_t;
   typedef std::vector<RPG_Graphics_IWindowBase*> RPG_Graphics_Windows_t;
   typedef RPG_Graphics_Windows_t::const_iterator RPG_Graphics_WindowsConstIterator_t;
@@ -142,11 +142,11 @@ class RPG_Graphics_SDLWindowBase
   RPG_Graphics_Windows_t        children_;
 
   RPG_Graphics_Position_t       lastAbsolutePosition_;
-  SDL_Rect                      clipRectangle_;
+  struct SDL_Rect               clipRectangle_;
 
  private:
   // helper types
-  typedef std::vector<SDL_Rect> RPG_Graphics_InvalidRegions_t;
+  typedef std::vector<struct SDL_Rect> RPG_Graphics_InvalidRegions_t;
   typedef RPG_Graphics_InvalidRegions_t::const_iterator RPG_Graphics_InvalidRegionsConstIterator_t;
 
   ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_SDLWindowBase ())

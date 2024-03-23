@@ -936,9 +936,9 @@ SDL_Color
 RPG_Graphics_SDL_Tools::colorToSDLColor (Uint32 SDLColor_in,
                                          const SDL_Surface& targetSurface_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::colorToSDLColor"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::colorToSDLColor"));
 
-  // init return value
+  // initialize return value
   SDL_Color result;
   ACE_OS::memset (&result, 0, sizeof (SDL_Color));
 
@@ -978,9 +978,9 @@ RPG_Graphics_SDL_Tools::getColor (const RPG_Graphics_ColorName& colorName_in,
 }
 
 void
-RPG_Graphics_SDL_Tools::initColors()
+RPG_Graphics_SDL_Tools::initColors ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::initColors"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::initColors"));
 
   myColors.clear ();
   RPG_Graphics_ColorRGBA color;
@@ -1138,7 +1138,7 @@ RPG_Graphics_SDL_Tools::initColors()
       }
     } // end SWITCH
 
-    myColors[static_cast<RPG_Graphics_ColorName>(i)] = color;
+    myColors[static_cast<enum RPG_Graphics_ColorName> (i)] = color;
   } // end FOR
 
   ACE_DEBUG ((LM_DEBUG,
@@ -1146,8 +1146,8 @@ RPG_Graphics_SDL_Tools::initColors()
 }
 
 SDL_Rect
-RPG_Graphics_SDL_Tools::boundingBox (const SDL_Rect& rect1_in,
-                                     const SDL_Rect& rect2_in)
+RPG_Graphics_SDL_Tools::boundingBox (const struct SDL_Rect& rect1_in,
+                                     const struct SDL_Rect& rect2_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::boundingBox"));
 
@@ -1162,73 +1162,74 @@ RPG_Graphics_SDL_Tools::boundingBox (const SDL_Rect& rect1_in,
   ACE_OS::memset(&result, 0, sizeof(SDL_Rect));
 
   result.x =
-		static_cast<int16_t>((rect1_in.x < rect2_in.x) ? rect1_in.x
-                                                   : rect2_in.x);
+    static_cast<int16_t> ((rect1_in.x < rect2_in.x) ? rect1_in.x
+                                                    : rect2_in.x);
   result.y =
-		static_cast<int16_t>((rect1_in.y < rect2_in.y) ? rect1_in.y
-                                                   : rect2_in.y);
+    static_cast<int16_t> ((rect1_in.y < rect2_in.y) ? rect1_in.y
+                                                    : rect2_in.y);
   result.w =
-		static_cast<uint16_t>((((rect1_in.x + rect1_in.w) >
-                            (rect2_in.x + rect2_in.w)) ? (rect1_in.x + rect1_in.w - 1)
-                                                       : (rect2_in.x + rect2_in.w - 1)) - result.x) + 1;
+    static_cast<uint16_t> ((((rect1_in.x + rect1_in.w) >
+                             (rect2_in.x + rect2_in.w)) ? (rect1_in.x + rect1_in.w - 1)
+                                                        : (rect2_in.x + rect2_in.w - 1)) - result.x) + 1;
   result.h =
-		static_cast<uint16_t>((((rect1_in.y + rect1_in.h) >
-                            (rect2_in.y + rect2_in.h)) ? (rect1_in.y + rect1_in.h - 1)
-                                                       : (rect2_in.y + rect2_in.h - 1)) - result.y) + 1;
+    static_cast<uint16_t> ((((rect1_in.y + rect1_in.h) >
+                             (rect2_in.y + rect2_in.h)) ? (rect1_in.y + rect1_in.h - 1)
+                                                        : (rect2_in.y + rect2_in.h - 1)) - result.y) + 1;
 
   return result;
 }
 
 SDL_Rect
-RPG_Graphics_SDL_Tools::intersect(const SDL_Rect& rect1_in,
-                                  const SDL_Rect& rect2_in)
+RPG_Graphics_SDL_Tools::intersect (const struct SDL_Rect& rect1_in,
+                                   const struct SDL_Rect& rect2_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::intersect"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::intersect"));
 
   // init result
-  SDL_Rect result;
-  ACE_OS::memset(&result, 0, sizeof(result));
+  struct SDL_Rect result;
+  ACE_OS::memset (&result, 0, sizeof (struct SDL_Rect));
 
-	// *NOTE*: adapted from SDL_surface.c (SDL 1.2.15)
-	int Amin, Amax, Bmin, Bmax;
+  // *NOTE*: adapted from SDL_surface.c (SDL 1.2.15)
+  int Amin, Amax, Bmin, Bmax;
 
-	// horizontal intersection
-	Amin = rect1_in.x;
-	Amax = Amin + rect1_in.w;
-	Bmin = rect2_in.x;
-	Bmax = Bmin + rect2_in.w;
-	if (Bmin > Amin)
-		Amin = Bmin;
-	result.x = Amin;
-	if (Bmax < Amax)
-		Amax = Bmax;
-	result.w = ((Amax - Amin > 0) ? (Amax - Amin) : 0);
+  // horizontal intersection
+  Amin = rect1_in.x;
+  Amax = Amin + rect1_in.w;
+  Bmin = rect2_in.x;
+  Bmax = Bmin + rect2_in.w;
+  if (Bmin > Amin)
+    Amin = Bmin;
+  result.x = Amin;
+  if (Bmax < Amax)
+    Amax = Bmax;
+  result.w = ((Amax - Amin > 0) ? (Amax - Amin) : 0);
 
-	// vertical intersection
-	Amin = rect1_in.y;
-	Amax = Amin + rect1_in.h;
-	Bmin = rect2_in.y;
-	Bmax = Bmin + rect2_in.h;
-	if (Bmin > Amin)
-		Amin = Bmin;
-	result.y = Amin;
-	if (Bmax < Amax)
-		Amax = Bmax;
-	result.h = ((Amax - Amin > 0) ? (Amax - Amin) : 0);
+  // vertical intersection
+  Amin = rect1_in.y;
+  Amax = Amin + rect1_in.h;
+  Bmin = rect2_in.y;
+  Bmax = Bmin + rect2_in.h;
+  if (Bmin > Amin)
+    Amin = Bmin;
+  result.y = Amin;
+  if (Bmax < Amax)
+    Amax = Bmax;
+  result.h = ((Amax - Amin > 0) ? (Amax - Amin) : 0);
 
-	// no intersection ? --> clean up
-	if (!result.w || !result.h)
-		ACE_OS::memset(&result, 0, sizeof(result));
+  // no intersection ? --> clean up
+  if (!result.w || !result.h)
+    ACE_OS::memset (&result, 0, sizeof(result));
 
   return result;
 }
 
 bool
-RPG_Graphics_SDL_Tools::equal(const SDL_Rect& rect1_in,
-                              const SDL_Rect& rect2_in)
+RPG_Graphics_SDL_Tools::equal (const struct SDL_Rect& rect1_in,
+                               const struct SDL_Rect& rect2_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::equal"));
-
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::equal"));
+  
+  // *TODO*: use memcmp ?
   return ((rect1_in.x == rect2_in.x) &&
           (rect1_in.y == rect2_in.y) &&
           (rect1_in.w == rect2_in.w) &&
@@ -1236,23 +1237,23 @@ RPG_Graphics_SDL_Tools::equal(const SDL_Rect& rect1_in,
 }
 
 SDL_Rect
-RPG_Graphics_SDL_Tools::difference(const SDL_Rect& rect1_in,
-                                   const SDL_Rect& rect2_in)
+RPG_Graphics_SDL_Tools::difference (const struct SDL_Rect& rect1_in,
+                                    const struct SDL_Rect& rect2_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::intersect"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::difference"));
 
-  // init result
-  SDL_Rect result;
-  ACE_OS::memset(&result, 0, sizeof(SDL_Rect));
+  // initialize result
+  struct SDL_Rect result;
+  ACE_OS::memset (&result, 0, sizeof (struct SDL_Rect));
 
   // sanity check(s)
-  SDL_Rect temp = intersect(rect1_in, rect2_in);
+  struct SDL_Rect temp = RPG_Graphics_SDL_Tools::intersect (rect1_in, rect2_in);
   if ((temp.x == 0) &&
       (temp.y == 0) &&
       (temp.w == 0) &&
       (temp.h == 0))
     return temp; // no overlap
-  else if (equal(temp, rect1_in))
+  else if (RPG_Graphics_SDL_Tools::equal (temp, rect1_in))
     return result; // full overlap
 
   // partial overlap --> there are exactly 4 valid cases:

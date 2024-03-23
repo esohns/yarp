@@ -38,9 +38,9 @@ class RPG_Client_IWindowLevel
  : public RPG_Client_IWindow
 {
  public:
-  virtual ~RPG_Client_IWindowLevel () {};
+  virtual ~RPG_Client_IWindowLevel () {}
 
-  virtual void initialize (const RPG_Graphics_Style&) = 0; // style
+  virtual void initialize (const struct RPG_Graphics_Style&) = 0; // style
   virtual void setView (int,              // offset x (map coordinates !)
                         int,              // offset y (map coordinates !)
                         bool = true) = 0; // locked access ?

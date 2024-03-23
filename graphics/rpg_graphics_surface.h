@@ -99,15 +99,15 @@ class RPG_Graphics_Surface
   static void put (const RPG_Graphics_Offset_t&, // offset (top left == 0,0)
                    const SDL_Surface&,           // source surface
                    SDL_Surface*,                 // target surface (e.g. screen)
-                   SDL_Rect&);                   // return value: "dirty" region
-  static bool putText (const RPG_Graphics_Font&,     // font
+                   struct SDL_Rect&);            // return value: "dirty" region
+  static bool putText (enum RPG_Graphics_Font,       // font
                        const std::string&,           // string
-                       const SDL_Color&,             // color
+                       const struct SDL_Color&,      // color
                        bool,                         // shade ?
-                       const SDL_Color&,             // shade color
+                       const struct SDL_Color&,      // shade color
                        const RPG_Graphics_Offset_t&, // offset (top left == 0,0)
                        SDL_Surface*,                 // target surface (e.g. screen)
-                       SDL_Rect&);                   // return value: "dirty" region
+                       struct SDL_Rect&);            // return value: "dirty" region
   static void putRectangle (const SDL_Rect&, // rectangle
                             Uint32,   // color
                             SDL_Surface*);   // target surface (e.g. screen)
@@ -118,19 +118,19 @@ class RPG_Graphics_Surface
   // *NOTE*: results need to be SDL_FreeSurface()d !
   static SDL_Surface* alpha (const SDL_Surface&,        // source surface
                              Uint8 = SDL_ALPHA_OPAQUE); // alpha (0: transparent --> 255: opaque)
-  static void clear (SDL_Surface*,            // target surface
-                     const SDL_Rect* = NULL); // clip area (if any)
-  static void fill (Uint32,           // color
-                    SDL_Surface*,            // target surface
-                    const SDL_Rect* = NULL); // clip area (if any)
+  static void clear (SDL_Surface*,                   // target surface
+                     const struct SDL_Rect* = NULL); // clip area (if any)
+  static void fill (Uint32,                         // color
+                    SDL_Surface*,                   // target surface
+                    const struct SDL_Rect* = NULL); // clip area (if any)
 
   // refresh (partial) screen surface
 #if defined (SDL_USE)
-  static void update (const SDL_Rect&, // "dirty" rectangle
+  static void update (const struct SDL_Rect&, // "dirty" rectangle
                       SDL_Surface*);   // target surface (e.g. screen)
 #elif defined (SDL2_USE)
-  static void update (const SDL_Rect&, // "dirty" rectangle
-                      SDL_Window*);    // target window (e.g. screen)
+  static void update (const struct SDL_Rect&, // "dirty" rectangle
+                      SDL_Window*);           // target window (e.g. screen)
 #endif // SDL_USE || SDL2_USE
 
  private:
@@ -138,11 +138,11 @@ class RPG_Graphics_Surface
   static SDL_Surface* loadPNG (const std::string&, // filename
                                FILE*);             // file handle
 
-  SDL_Surface*                  mySurface;
-  RPG_Graphics_GraphicTypeUnion myType;
-  bool                          myOwnSurface;
+  SDL_Surface*                         mySurface;
+  struct RPG_Graphics_GraphicTypeUnion myType;
+  bool                                 myOwnSurface;
 
-  static SDL_Rect               myClipRectangle;
+  static struct SDL_Rect               myClipRectangle;
 };
 
 #endif

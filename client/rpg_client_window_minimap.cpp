@@ -56,7 +56,7 @@ RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap (const RPG_Graphics_SDLWind
   RPG_TRACE (ACE_TEXT ("RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap"));
 
   // load interface image
-  RPG_Graphics_GraphicTypeUnion type;
+  struct RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = IMAGE_INTERFACE_MINIMAP;
   myBG = RPG_Graphics_Common_Tools::loadGraphic (type,
@@ -70,12 +70,13 @@ RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap (const RPG_Graphics_SDLWind
   // adjust position, size
   SDL_Rect parent_area;
   //parent_in.getArea (parent_area, false);
-  parent_in.getArea (parent_area, true);
+  parent_in.getArea (parent_area,
+                     true); // toplevel ?
   parent_in.getBorders (borderTop_,
                         borderBottom_,
                         borderLeft_,
                         borderRight_,
-                        true);
+                        true); // recursive ?
   inherited::clipRectangle_.x =
     ((offset_in.first == std::numeric_limits<int>::max ()) ? ((parent_area.w - 1)            -
                                                               borderRight_                   -
@@ -104,18 +105,14 @@ RPG_Client_Window_MiniMap::~RPG_Client_Window_MiniMap ()
 }
 
 void
-RPG_Client_Window_MiniMap::handleEvent (const SDL_Event& event_in,
+RPG_Client_Window_MiniMap::handleEvent (const union SDL_Event& event_in,
                                         RPG_Graphics_IWindowBase* window_in,
-                                        SDL_Rect& dirtyRegion_out)
+                                        struct SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Window_MiniMap::handleEvent"));
 
   // init return value(s)
-  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
-
-  //   ACE_DEBUG((LM_DEBUG,
-  //              ACE_TEXT("RPG_Client_Window_MiniMap::handleEvent(%s)\n"),
-  //              RPG_Graphics_TypeHelper::RPG_Graphics_TypeToString(myType).c_str()));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
   switch (event_in.type)
   {
@@ -161,14 +158,6 @@ RPG_Client_Window_MiniMap::handleEvent (const SDL_Event& event_in,
 
       break;
     }
-    //     default:
-    //     {
-      //       ACE_DEBUG((LM_ERROR,
-      //                  ACE_TEXT("received unknown event (was: %u)...\n"),
-      //                  static_cast<unsigned int> (event_in.type)));
-      //
-      //       break;
-      //     }
   } // end SWITCH
 }
 
@@ -216,10 +205,10 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
                              dirty_region);
 
   RPG_Map_Position_t map_position;
-  RPG_Client_MiniMapTile tile = RPG_CLIENT_MINIMAPTILE_INVALID;
+  enum RPG_Client_MiniMapTile tile = RPG_CLIENT_MINIMAPTILE_INVALID;
   enum RPG_Graphics_ColorName color_name;
   Uint32 color = 0;
-  SDL_Rect destrect = {0, 0, 3, 2};
+  struct SDL_Rect destrect = {0, 0, 3, 2};
   Uint32* pixels = NULL;
   myEngine->lock ();
   RPG_Engine_EntityID_t active_entity_id = myEngine->getActive (false);

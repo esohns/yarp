@@ -21,11 +21,11 @@
 #ifndef RPG_GRAPHICS_TOPLEVEL_H
 #define RPG_GRAPHICS_TOPLEVEL_H
 
-#include "ace/Global_Macros.h"
-
 #define _SDL_main_h
 #define SDL_main_h_
 #include "SDL.h"
+
+#include "ace/Global_Macros.h"
 
 #include "rpg_graphics_cursor.h"
 #include "rpg_graphics_font.h"
@@ -42,15 +42,15 @@ class RPG_Graphics_TopLevel
   typedef RPG_Graphics_SDLWindowBase inherited;
 
  public:
-  RPG_Graphics_TopLevel(const RPG_Graphics_Size_t&,           // size
-                        const RPG_Graphics_GraphicTypeUnion&, // (element) type
-                        const std::string&);                  // title
+  RPG_Graphics_TopLevel (const RPG_Graphics_Size_t&,                  // size
+                         const struct RPG_Graphics_GraphicTypeUnion&, // (element) type
+                         const std::string&);                         // title
 //                         SDL_Surface* = NULL);                 // background
-  virtual ~RPG_Graphics_TopLevel();
+  virtual ~RPG_Graphics_TopLevel ();
 
   // implement (part of) RPG_Graphics_IWindow
   // *IMPORTANT NOTE*: dummy stub --> DO NOT CALL
-  virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
+  virtual RPG_Graphics_Position_t getView () const; // return value: view (map coordinates !)
 
 //   // realize child window
 //   void child(const RPG_Graphics_WindowSize_t&, // size
@@ -61,16 +61,16 @@ class RPG_Graphics_TopLevel
 
  protected:
   // window element graphic(s)
-  RPG_Graphics_GraphicTypeUnion    myElementGraphicsType;
-  RPG_Graphics_InterfaceElements_t myElementGraphics;
+  struct RPG_Graphics_GraphicTypeUnion myElementGraphicsType;
+  RPG_Graphics_InterfaceElements_t     myElementGraphics;
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TopLevel())
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TopLevel(const RPG_Graphics_TopLevel&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_TopLevel& operator=(const RPG_Graphics_TopLevel&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_TopLevel ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_TopLevel (const RPG_Graphics_TopLevel&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_TopLevel& operator= (const RPG_Graphics_TopLevel&))
 
   // helper methods
-  bool loadGraphics(const RPG_Graphics_GraphicTypeUnion&); // (element) type
+  bool loadGraphics (const struct RPG_Graphics_GraphicTypeUnion&); // (element) type
 };
 
 #endif

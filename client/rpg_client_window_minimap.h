@@ -34,6 +34,8 @@ class RPG_Engine;
 class RPG_Client_Window_MiniMap
  : public RPG_Graphics_SDLWindowBase
 {
+  typedef RPG_Graphics_SDLWindowBase inherited;
+
  public:
   RPG_Client_Window_MiniMap (const RPG_Graphics_SDLWindowBase&, // parent
                              // *NOTE*: offset doesn't include any border(s) !
@@ -48,13 +50,11 @@ class RPG_Client_Window_MiniMap
   virtual void draw (SDL_Surface* = NULL, // target surface (default: screen)
                      unsigned int = 0,    // offset x (top-left = [0,0])
                      unsigned int = 0);   // offset y (top-left = [0,0])
-  virtual void handleEvent (const SDL_Event&,          // event
+  virtual void handleEvent (const union SDL_Event&,    // event
                             RPG_Graphics_IWindowBase*, // target window (NULL: this)
-                            SDL_Rect&);                // return value: "dirty" region
+                            struct SDL_Rect&);         // return value: "dirty" region
 
  private:
-  typedef RPG_Graphics_SDLWindowBase inherited;
-
   ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_MiniMap ());
   ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_MiniMap (const RPG_Client_Window_MiniMap&));
   ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_MiniMap& operator= (const RPG_Client_Window_MiniMap&));

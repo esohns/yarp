@@ -32,7 +32,7 @@
 #include "rpg_graphics_SDL_window_sub.h"
 #include "rpg_graphics_SDL_tools.h"
 
-RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase (const RPG_Graphics_WindowType& type_in,
+RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase (enum RPG_Graphics_WindowType type_in,
                                                         const RPG_Graphics_Size_t& size_in,
                                                         const std::string& title_in)
 #if defined (SDL2_USE)
@@ -63,7 +63,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase (const RPG_Graphics_Windo
   clipRectangle_.h = static_cast<Uint16>(size_in.second);
 }
 
-RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase (const RPG_Graphics_WindowType& type_in,
+RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase (enum RPG_Graphics_WindowType type_in,
                                                         const RPG_Graphics_SDLWindowBase& parent_in,
                                                         const RPG_Graphics_Offset_t& offset_in,
                                                         const std::string& title_in)
@@ -88,10 +88,10 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase (const RPG_Graphics_Windo
  , flip_ (false)
  , type_ (type_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase"));
 
   // register with parent
-  parent_->addChild(this);
+  parent_->addChild (this);
 
   // init clip rect
   parent_->getBorders (borderTop_,

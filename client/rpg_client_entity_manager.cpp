@@ -79,7 +79,7 @@ RPG_Client_Entity_Manager::initialize (Common_ILock* screenLock_in,
 }
 
 void
-RPG_Client_Entity_Manager::add (const RPG_Engine_EntityID_t& id_in,
+RPG_Client_Entity_Manager::add (RPG_Engine_EntityID_t id_in,
                                 SDL_Surface* surface_in,
                                 bool free_on_remove_in)
 {
@@ -126,8 +126,8 @@ RPG_Client_Entity_Manager::add (const RPG_Engine_EntityID_t& id_in,
 }
 
 void
-RPG_Client_Entity_Manager::remove (const RPG_Engine_EntityID_t& id_in,
-                                   SDL_Rect& dirtyRegion_out,
+RPG_Client_Entity_Manager::remove (RPG_Engine_EntityID_t id_in,
+                                   struct SDL_Rect& dirtyRegion_out,
                                    bool lockedAccess_in,
                                    bool debug_in)
 {
@@ -166,7 +166,7 @@ RPG_Client_Entity_Manager::remove (const RPG_Engine_EntityID_t& id_in,
 }
 
 bool
-RPG_Client_Entity_Manager::cached (const RPG_Engine_EntityID_t& id_in) const
+RPG_Client_Entity_Manager::cached (RPG_Engine_EntityID_t id_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Entity_Manager::cached"));
 
@@ -176,9 +176,9 @@ RPG_Client_Entity_Manager::cached (const RPG_Engine_EntityID_t& id_in) const
 }
 
 void
-RPG_Client_Entity_Manager::put (const RPG_Engine_EntityID_t& id_in,
+RPG_Client_Entity_Manager::put (RPG_Engine_EntityID_t id_in,
                                 const RPG_Graphics_Position_t& position_in,
-                                SDL_Rect& dirtyRegion_out,
+                                struct SDL_Rect& dirtyRegion_out,
                                 bool clipWindow_in,
                                 bool lockedAccess_in,
                                 bool debug_in)
@@ -186,7 +186,7 @@ RPG_Client_Entity_Manager::put (const RPG_Engine_EntityID_t& id_in,
   RPG_TRACE (ACE_TEXT ("RPG_Client_Entity_Manager::put"));
 
   // step0: init return value(s)
-  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
   // sanity check(s)
   ACE_ASSERT(myWindow);
@@ -331,8 +331,8 @@ RPG_Client_Entity_Manager::put (const RPG_Engine_EntityID_t& id_in,
 }
 
 void
-RPG_Client_Entity_Manager::restoreBG (const RPG_Engine_EntityID_t& id_in,
-                                      SDL_Rect& dirtyRegion_out,
+RPG_Client_Entity_Manager::restoreBG (RPG_Engine_EntityID_t id_in,
+                                      struct SDL_Rect& dirtyRegion_out,
                                       bool clipWindow_in,
                                       bool lockedAccess_in,
                                       bool debug_in)
@@ -429,7 +429,7 @@ RPG_Client_Entity_Manager::restoreBG (const RPG_Engine_EntityID_t& id_in,
 }
 
 void
-RPG_Client_Entity_Manager::invalidateBG (const RPG_Engine_EntityID_t& id_in)
+RPG_Client_Entity_Manager::invalidateBG (RPG_Engine_EntityID_t id_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Entity_Manager::invalidateBG"));
 

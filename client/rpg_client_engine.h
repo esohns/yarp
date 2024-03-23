@@ -22,14 +22,15 @@
 #define RPG_CLIENT_ENGINE_H
 
 #include "ace/Atomic_Op_T.h"
-//#include "ace/Condition_T.h"
 #include "ace/Global_Macros.h"
+#include "ace/Message_Queue_T.h"
 #include "ace/Synch_Traits.h"
-//#include "ace/Task.h"
+#include "ace/Task.h"
 
 #include "common_idumpstate.h"
 #include "common_ilock.h"
 #include "common_task_base.h"
+#include "common_time_common.h"
 
 #include "rpg_graphics_iwindow_base.h"
 #include "rpg_graphics_style.h"

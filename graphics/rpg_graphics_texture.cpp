@@ -37,7 +37,7 @@
 #include "rpg_graphics_SDL_tools.h"
 #include "rpg_graphics_surface.h"
 
-RPG_Graphics_Texture::RPG_Graphics_Texture()
+RPG_Graphics_Texture::RPG_Graphics_Texture ()
  : myTexture (NULL)
  , myOwnTexture (false)
 {
@@ -155,7 +155,7 @@ RPG_Graphics_Texture::load (SDL_Renderer* renderer_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Texture::load"));
 
-  // init return value(s)
+  // initialize return value(s)
   SDL_Texture* result = NULL;
 
   // sanity check(s)
@@ -167,9 +167,10 @@ RPG_Graphics_Texture::load (SDL_Renderer* renderer_in,
     return NULL;
   } // end IF
 
-  FILE* file_ptr =
-    ACE_OS::fopen (filename_in.c_str (),         // filename
-	                 ACE_TEXT_ALWAYS_CHAR ("rb")); // mode
+  // *TODO*: there seems to be a bug in WIN32 ACE_OS::fopen()
+  // FILE* file_ptr = ACE_OS::fopen (filename_in.c_str (),         // filename
+  FILE* file_ptr = ::fopen (filename_in.c_str (),         // filename
+                            ACE_TEXT_ALWAYS_CHAR ("rb")); // mode
   if (!file_ptr)
   {
     ACE_DEBUG ((LM_ERROR,
@@ -182,23 +183,23 @@ RPG_Graphics_Texture::load (SDL_Renderer* renderer_in,
   result =
     RPG_Graphics_Texture::loadPNG (renderer_in,
                                    ACE_TEXT_ALWAYS_CHAR (ACE::basename (filename_in.c_str (), ACE_DIRECTORY_SEPARATOR_CHAR)),
-	                                 file_ptr);
+                                   file_ptr);
   if (!result)
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Graphics_Texture::loadPNG(\"%s\"), aborting\n"),
                 ACE_TEXT (filename_in.c_str ())));
-	if (ACE_OS::fclose (file_ptr))
-	  ACE_DEBUG ((LM_ERROR,
-		            ACE_TEXT ("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
-			          ACE_TEXT (filename_in.c_str ())));
+  if (ACE_OS::fclose (file_ptr))
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
+                ACE_TEXT (filename_in.c_str ())));
     return NULL;
   } // end IF
 
   // clean up
   if (ACE_OS::fclose (file_ptr))
     ACE_DEBUG ((LM_ERROR,
-	              ACE_TEXT ("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
+                ACE_TEXT ("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
                 ACE_TEXT (filename_in.c_str ())));
 
   return result;
@@ -462,8 +463,10 @@ RPG_Graphics_Texture::get (SDL_Renderer* renderer_in,
   // sanity check(s)
   ACE_ASSERT (renderer_in);
 
-  SDL_Rect source_rect = { offset_in.first, offset_in.second, static_cast<int> (width_in), static_cast<int> (height_in) };
-  SDL_Rect dest_rect = { 0, 0, static_cast<int> (width_in), static_cast<int> (height_in) };
+  struct SDL_Rect source_rect =
+    {offset_in.first, offset_in.second, static_cast<int> (width_in), static_cast<int> (height_in)};
+  struct SDL_Rect dest_rect =
+    {0, 0, static_cast<int> (width_in), static_cast<int> (height_in)};
   if (SDL_RenderCopy (renderer_in,
                       &const_cast<SDL_Texture&> (source_in),
                       &source_rect,
@@ -634,7 +637,7 @@ RPG_Graphics_Texture::put (SDL_Renderer* renderer_in,
                            const RPG_Graphics_Offset_t& offset_in,
                            const SDL_Texture& source_in,
                            SDL_Texture* target_inout,
-                           SDL_Rect& dirtyRegion_out)
+                           struct SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Texture::put"));
 
@@ -671,7 +674,7 @@ RPG_Graphics_Texture::put (SDL_Renderer* renderer_in,
   ACE_ASSERT (height_2 >= height_i - offset_in.second);
 
   // initialize return value(s)
-  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
   if (SDL_SetRenderTarget (renderer_in,
                            target_inout) < 0)
@@ -707,7 +710,7 @@ void
 RPG_Graphics_Texture::put (const RPG_Graphics_Offset_t& offset_in,
                            const SDL_Surface& source_in,
                            SDL_Texture* target_inout,
-                           SDL_Rect& dirtyRegion_out)
+                           struct SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Texture::put"));
 
@@ -752,19 +755,19 @@ RPG_Graphics_Texture::put (const RPG_Graphics_Offset_t& offset_in,
 }
 
 bool
-RPG_Graphics_Texture::putText (const RPG_Graphics_Font& font_in,
+RPG_Graphics_Texture::putText (enum RPG_Graphics_Font font_in,
                                const std::string& textString_in,
-                               const SDL_Color& color_in,
+                               const struct SDL_Color& color_in,
                                bool shade_in,
-                               const SDL_Color& shadeColor_in,
+                               const struct SDL_Color& shadeColor_in,
                                const RPG_Graphics_Offset_t& offset_in,
                                SDL_Texture* target_in,
-                               SDL_Rect& dirtyRegion_out)
+                               struct SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Texture::putText"));
 
   // init return value(s)
-  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
   // sanity check(s)
   ACE_ASSERT (target_in);
@@ -827,7 +830,7 @@ RPG_Graphics_Texture::putText (const RPG_Graphics_Font& font_in,
 
 void
 RPG_Graphics_Texture::putRectangle (SDL_Renderer* renderer_in,
-                                    const SDL_Rect& rectangle_in,
+                                    const struct SDL_Rect& rectangle_in,
                                     Uint32 color_in,
                                     SDL_Texture* target_in)
 {
@@ -935,7 +938,7 @@ RPG_Graphics_Texture::alpha (SDL_Renderer* renderer_in,
 void
 RPG_Graphics_Texture::clear (SDL_Renderer* renderer_in,
                              SDL_Texture* target_in,
-                             const SDL_Rect* clipRectangle_in)
+                             const struct SDL_Rect* clipRectangle_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Texture::clear"));
 
@@ -961,7 +964,7 @@ RPG_Graphics_Texture::clear (SDL_Renderer* renderer_in,
   RPG_Graphics_Texture::fill (renderer_in,
                               RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK, // opaque
                                                                 *format_p,
-                                                                1.0F),
+                                                                1.0f),
                               target_in,
                               clipRectangle_in);
 
@@ -972,7 +975,7 @@ void
 RPG_Graphics_Texture::fill (SDL_Renderer* renderer_in,
                             Uint32 color_in,
                             SDL_Texture* target_in,
-                            const SDL_Rect* clipRectangle_in)
+                            const struct SDL_Rect* clipRectangle_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Texture::fill"));
 

@@ -65,18 +65,18 @@ class RPG_Graphics_SDL_Tools
                                     const SDL_Surface&); // target surface
   static Uint32 getColor (const RPG_Graphics_ColorName&, // color name
                           const SDL_PixelFormat&,        // pixel format
-                          float = 1.0F);                 // blend factor (--> opacity)
+                          float = 1.0f);                 // blend factor (--> opacity)
 
-  static SDL_Rect boundingBox (const SDL_Rect&,  // rect 1
-                               const SDL_Rect&); // rect 2
-  static SDL_Rect intersect (const SDL_Rect&,  // rect 1
-                             const SDL_Rect&); // rect 2
-  static bool equal (const SDL_Rect&,  // rect 1
-                     const SDL_Rect&); // rect 2
+  static SDL_Rect boundingBox (const struct SDL_Rect&,  // rect 1
+                               const struct SDL_Rect&); // rect 2
+  static SDL_Rect intersect (const struct SDL_Rect&,    // rect 1
+                             const struct SDL_Rect&);   // rect 2
+  static bool equal (const struct SDL_Rect&,            // rect 1
+                     const struct SDL_Rect&);           // rect 2
   // *NOTE*: this returns rect1 - rect2; off course, this works only if the
   // result is a rectangular area, otherwise the result will be {0, 0, 0, 0}
-  static SDL_Rect difference (const SDL_Rect&,  // rect 1
-                              const SDL_Rect&); // rect 2
+  static SDL_Rect difference (const struct SDL_Rect&, // rect 1
+                              const struct SDL_Rect&); // rect 2
 
  private:
   ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_SDL_Tools())

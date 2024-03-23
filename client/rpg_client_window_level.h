@@ -84,9 +84,9 @@ class RPG_Client_Window_Level
   virtual void draw (SDL_Surface* = NULL, // target surface (default: screen)
                      unsigned int = 0,    // offset x (top-left = [0,0])
                      unsigned int = 0);   // offset y (top-left = [0,0])
-  virtual void handleEvent (const SDL_Event&,          // event
+  virtual void handleEvent (const union SDL_Event&,    // event
                             RPG_Graphics_IWindowBase*, // target window (NULL: this)
-                            SDL_Rect&);                // return value: "dirty" region
+                            struct SDL_Rect&);         // return value: "dirty" region
 
   // debug
 #if defined (_DEBUG)
@@ -99,18 +99,18 @@ class RPG_Client_Window_Level
   ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Level& operator= (const RPG_Client_Window_Level&))
 
   // helper methods
-  bool setStyle (const RPG_Graphics_StyleUnion&); // style
+  bool setStyle (const struct RPG_Graphics_StyleUnion&); // style
 
   void initCeiling ();
   void initWallBlend (bool); // half-height walls ?
   bool initMiniMap (bool = false); // debug ?
   bool initMessageWindow ();
 
-  void drawChild (const RPG_Graphics_WindowType&, // (child) type
-                  SDL_Surface* = NULL,            // target surface (default: screen)
-                  unsigned int = 0,               // offset x (top-left = [0,0])
-                  unsigned int = 0,               // offset y (top-left = [0,0])
-                  bool = true);                   // refresh ?
+  void drawChild (enum RPG_Graphics_WindowType, // (child) type
+                  SDL_Surface* = NULL,          // target surface (default: screen)
+                  unsigned int = 0,             // offset x (top-left = [0,0])
+                  unsigned int = 0,             // offset y (top-left = [0,0])
+                  bool = true);                 // refresh ?
 
   RPG_Engine*                     myEngine;
   RPG_Client_Engine*              myClient;

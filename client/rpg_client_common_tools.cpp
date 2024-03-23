@@ -582,10 +582,10 @@ RPG_Client_Common_Tools::updateDoors (const struct RPG_Graphics_DoorTileSet& til
   RPG_TRACE (ACE_TEXT ("RPG_Client_Common_Tools::updateDoors"));
 
   struct RPG_Graphics_TileElement current_tile;
-  RPG_Graphics_Orientation orientation;
-  RPG_Map_DoorState door_state;
+  enum RPG_Graphics_Orientation orientation;
+  enum RPG_Map_DoorState door_state;
 
-	engine_in.lock ();
+  engine_in.lock ();
   for (RPG_Graphics_DoorTileMapIterator_t iterator = doorTiles_inout.begin ();
        iterator != doorTiles_inout.end ();
        iterator++)
@@ -594,7 +594,8 @@ RPG_Client_Common_Tools::updateDoors (const struct RPG_Graphics_DoorTileSet& til
     orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
     door_state = RPG_MAP_DOORSTATE_INVALID;
 
-    door_state = engine_in.state ((*iterator).first, false);
+    door_state = engine_in.state ((*iterator).first,
+                                  false); // locked access ?
     ACE_ASSERT (door_state != RPG_MAP_DOORSTATE_INVALID);
     if (door_state == DOORSTATE_BROKEN)
     {
@@ -604,7 +605,7 @@ RPG_Client_Common_Tools::updateDoors (const struct RPG_Graphics_DoorTileSet& til
 
     orientation = RPG_Client_Common_Tools::getDoorOrientation ((*iterator).first,
                                                                engine_in,
-                                                               false);
+                                                               false); // locked access ?
     switch (orientation)
     {
       case ORIENTATION_HORIZONTAL:
@@ -633,11 +634,11 @@ RPG_Client_Common_Tools::updateDoors (const struct RPG_Graphics_DoorTileSet& til
 
     (*iterator).second = current_tile;
   } // end FOR
-	engine_in.unlock ();
+  engine_in.unlock ();
 }
 
 RPG_Graphics_Sprite
-RPG_Client_Common_Tools::classToSprite (const RPG_Character_Class& class_in)
+RPG_Client_Common_Tools::classToSprite (const struct RPG_Character_Class& class_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Common_Tools::classToSprite"));
 
@@ -655,7 +656,7 @@ RPG_Client_Common_Tools::classToSprite (const RPG_Character_Class& class_in)
 RPG_Graphics_Sprite
 RPG_Client_Common_Tools::monsterToSprite (const std::string& type_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Client_Common_Tools::monsterToSprite"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Common_Tools::monsterToSprite"));
 
   // *TODO*: 
   return SPRITE_GOBLIN;
@@ -832,16 +833,13 @@ bool
 RPG_Client_Common_Tools::isVisible (const RPG_Graphics_Positions_t& positions_in,
                                     const RPG_Graphics_Size_t& windowSize_in,
                                     const RPG_Graphics_Position_t& viewport_in,
-                                    const SDL_Rect& windowArea_in,
+                                    const struct SDL_Rect& windowArea_in,
                                     bool anyAll_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Common_Tools::isVisible"));
 
-  // sanity check(s)
-//  ACE_ASSERT (!positions_in.empty ());
-
   RPG_Graphics_Offset_t screen_position;
-  SDL_Rect tile_area, overlap;
+  struct SDL_Rect tile_area, overlap;
   for (RPG_Graphics_PositionsConstIterator_t iterator = positions_in.begin ();
        iterator != positions_in.end ();
        iterator++)
@@ -912,7 +910,7 @@ enum RPG_Graphics_Cursor
 RPG_Client_Common_Tools::getCursor (const RPG_Map_Position_t& position_in,
                                     const RPG_Engine_EntityID_t& id_in,
                                     bool hasSeen_in,
-                                    const RPG_Client_SelectionMode& mode_in,
+                                    enum RPG_Client_SelectionMode mode_in,
                                     const RPG_Engine& engine_in,
                                     bool lockedAcces_in)
 {
@@ -924,7 +922,8 @@ RPG_Client_Common_Tools::getCursor (const RPG_Map_Position_t& position_in,
       std::make_pair (std::numeric_limits<unsigned int>::max (),
                       std::numeric_limits<unsigned int>::max ());
   if (id_in)
-    entity_position = engine_in.getPosition(id_in, lockedAcces_in);
+    entity_position = engine_in.getPosition (id_in,
+                                             lockedAcces_in);
 
   switch (mode_in)
   {
@@ -939,7 +938,8 @@ RPG_Client_Common_Tools::getCursor (const RPG_Map_Position_t& position_in,
         break;
 
       if ((entity_position != position_in) &&
-          (engine_in.isValid(position_in, lockedAcces_in) &&
+          (engine_in.isValid (position_in,
+                              lockedAcces_in) &&
           hasSeen_in))
         return CURSOR_TRAVEL;
 
@@ -957,14 +957,17 @@ RPG_Client_Common_Tools::getCursor (const RPG_Map_Position_t& position_in,
 
   // monster ?
   RPG_Engine_EntityID_t entity_id =
-      engine_in.hasEntity (position_in, lockedAcces_in);
+      engine_in.hasEntity (position_in,
+                           lockedAcces_in);
   if (id_in &&
       entity_id &&
-      engine_in.isMonster (entity_id, lockedAcces_in))
+      engine_in.isMonster (entity_id,
+                           lockedAcces_in))
     return CURSOR_TARGET;
 
   // (closed/locked) door ?
-  if (engine_in.getElement(position_in, lockedAcces_in) == MAPELEMENT_DOOR)
+  if (engine_in.getElement (position_in,
+                            lockedAcces_in) == MAPELEMENT_DOOR)
   {
     //RPG_Map_DoorState door_state = engine_in.state(position_in, lockedAcces_in);
     if (/*((door_state == DOORSTATE_CLOSED) ||
@@ -979,7 +982,7 @@ RPG_Client_Common_Tools::getCursor (const RPG_Map_Position_t& position_in,
 }
 
 RPG_Graphics_Style
-RPG_Client_Common_Tools::environmentToStyle(const RPG_Common_Environment& environment_in)
+RPG_Client_Common_Tools::environmentToStyle (const struct RPG_Common_Environment& environment_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Common_Tools::environmentToStyle"));
 

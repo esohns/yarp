@@ -40,9 +40,6 @@
 // forward declarations
 class Common_ILock;
 
-/**
-  @author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Graphics_Common_Tools
 {
  public:
@@ -53,45 +50,45 @@ class RPG_Graphics_Common_Tools
                           unsigned int,       // cache size
                           bool = true);       // initialize SDL ?
   static void finalize ();
-  static std::string getGraphicsDirectory();
-  static std::string toString(const RPG_Graphics_GraphicTypeUnion&);
-  static std::string toString(const RPG_Graphics_StyleUnion&);
-  static std::string toString(const RPG_Graphics_Tile&);
-  static std::string toString(const RPG_Graphics_TileSet&);
-  static std::string toString(const RPG_Graphics_ElementTypeUnion&);
-  static std::string toString(const RPG_Graphics_Elements_t&);
-  static std::string toString(const RPG_Graphics_t&);
+  static std::string getGraphicsDirectory ();
+  static std::string toString (const struct RPG_Graphics_GraphicTypeUnion&);
+  static std::string toString (const struct RPG_Graphics_StyleUnion&);
+  static std::string toString (const struct RPG_Graphics_Tile&);
+  static std::string toString (const struct RPG_Graphics_TileSet&);
+  static std::string toString (const struct RPG_Graphics_ElementTypeUnion&);
+  static std::string toString (const RPG_Graphics_Elements_t&);
+  static std::string toString (const RPG_Graphics_t&);
 
-  static void graphicToFile(const RPG_Graphics_t&, // graphic
-                            std::string&);         // return value: FQ filename
-  static RPG_Graphics_TextSize_t textSize(const RPG_Graphics_Font&, // font
-                                          const std::string&);      // string
+  static void graphicToFile (const RPG_Graphics_t&, // graphic
+                             std::string&);         // return value: FQ filename
+  static RPG_Graphics_TextSize_t textSize (enum RPG_Graphics_Font, // font
+                                           const std::string&);    // string
 
   // *NOTE*: tileset needs to be SDL_FreeSurface()ed by the user !
-  static void loadFloorEdgeTileSet(const RPG_Graphics_EdgeStyle&,     // style
-                                   struct RPG_Graphics_FloorEdgeTileSet&); // return value: tileset
-  static void loadFloorTileSet(const RPG_Graphics_FloorStyle&, // style
-                               struct RPG_Graphics_FloorTileSet&);  // return value: tileset
+  static void loadFloorEdgeTileSet (enum RPG_Graphics_EdgeStyle,            // style
+                                    struct RPG_Graphics_FloorEdgeTileSet&); // return value: tileset
+  static void loadFloorTileSet (enum RPG_Graphics_FloorStyle,       // style
+                                struct RPG_Graphics_FloorTileSet&); // return value: tileset
   // *NOTE*: tileset needs to be SDL_FreeSurface()ed by the user !
-  static void loadWallTileSet(const RPG_Graphics_WallStyle&,      // style
-                              bool,                               // half-height walls ?
-                              struct RPG_Graphics_WallTileSet&);  // return value: tileset
+  static void loadWallTileSet (enum RPG_Graphics_WallStyle,       // style
+                               bool,                              // half-height walls ?
+                               struct RPG_Graphics_WallTileSet&); // return value: tileset
     // *NOTE*: tileset needs to be SDL_FreeSurface()ed by the user !
-  static void loadDoorTileSet(const RPG_Graphics_DoorStyle&, // style
-                              struct RPG_Graphics_DoorTileSet&);  // return value: tileset
+  static void loadDoorTileSet (enum RPG_Graphics_DoorStyle,       // style
+                               struct RPG_Graphics_DoorTileSet&); // return value: tileset
   // *NOTE*: uncached (!) surfaces need to be SDL_FreeSurface()ed by the user !
-  static SDL_Surface* loadGraphic (const RPG_Graphics_GraphicTypeUnion&, // type
-                                   bool,                                 // convert to display format ?
-                                   bool);                                // cache graphic ?
+  static SDL_Surface* loadGraphic (const struct RPG_Graphics_GraphicTypeUnion&, // type
+                                   bool,                                        // convert to display format ?
+                                   bool);                                       // cache graphic ?
 #if defined (SDL2_USE)
-  static SDL_Texture* loadGraphic (SDL_Renderer*,                          // renderer handle
-                                   const RPG_Graphics_GraphicTypeUnion&/*, // type
-                                   bool*/);                                // cache graphic ?
+  static SDL_Texture* loadGraphic (SDL_Renderer*,                              // renderer handle
+                                   const struct RPG_Graphics_GraphicTypeUnion&/*, // type
+                                   bool*/);                                    // cache graphic ?
 #endif // SDL2_USE
 
-  static SDL_Surface* renderText(const RPG_Graphics_Font&, // font
-                                 const std::string&,       // string
-                                 const SDL_Color&);        // color
+  static SDL_Surface* renderText (enum RPG_Graphics_Font,   // font
+                                  const std::string&,       // string
+                                  const struct SDL_Color&); // color
 
   // *NOTE*: source/target image must already be loaded into the framebuffer !
 #if defined (SDL_USE)
@@ -131,8 +128,8 @@ class RPG_Graphics_Common_Tools
   static bool initializeFonts();
 
   // convert style (wall-, floor-, ...) to appropriate graphic (meta)type
-  static RPG_Graphics_GraphicTypeUnion styleToType(const RPG_Graphics_StyleUnion&, // style (generic)
-                                                   bool = false);                  // half-height (wallstyle only) ?
+  static RPG_Graphics_GraphicTypeUnion styleToType(const struct RPG_Graphics_StyleUnion&, // style (generic)
+                                                   bool = false);                         // half-height (wallstyle only) ?
 
 #if defined (SDL_USE)
   static void fade (float,         // interval (seconds)

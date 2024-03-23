@@ -74,7 +74,7 @@ class RPG_Client_Common_Tools
                            const RPG_Engine&,                 // state / engine
                            RPG_Graphics_DoorTileMap_t&);      // input/output value: door tiles / position
 
-  static RPG_Graphics_Sprite classToSprite (const RPG_Character_Class&);
+  static RPG_Graphics_Sprite classToSprite (const struct RPG_Character_Class&);
   static RPG_Graphics_Sprite monsterToSprite (const std::string&);
 
   static bool hasCeiling (const RPG_Map_Position_t&, // position
@@ -83,7 +83,7 @@ class RPG_Client_Common_Tools
   static bool isVisible (const RPG_Graphics_Positions_t&, // positions (map coordinates !)
                          const RPG_Graphics_Size_t&,      // window size
                          const RPG_Graphics_Position_t&,  // viewport (map coordinates !)
-                         const SDL_Rect&,                 // window area
+                         const struct SDL_Rect&,          // window area
                          bool = true);                    // any ? : all
   static bool hasHighlight (const RPG_Map_Position_t&, // position
                             const RPG_Engine&,         // state / engine
@@ -92,16 +92,16 @@ class RPG_Client_Common_Tools
                                                            const RPG_Engine&,         // state / engine
                                                            bool = true);              // locked access ?
 
-  static enum RPG_Graphics_Cursor getCursor (const RPG_Map_Position_t&,       // position
-                                             const RPG_Engine_EntityID_t&,    // active player
-                                             bool,                            // has player seen this position ?
-                                             const RPG_Client_SelectionMode&, // current selection mode
-                                             const RPG_Engine&,               // state / engine
-                                             bool = true);                    // locked access ?
+  static enum RPG_Graphics_Cursor getCursor (const RPG_Map_Position_t&,     // position
+                                             const RPG_Engine_EntityID_t&,  // active player
+                                             bool,                          // has player seen this position ?
+                                             enum RPG_Client_SelectionMode, // current selection mode
+                                             const RPG_Engine&,             // state / engine
+                                             bool = true);                  // locked access ?
 
   static RPG_Graphics_Positions_t mapToGraphicsPositions (const RPG_Map_Positions_t&);
 
-  static RPG_Graphics_Style environmentToStyle (const RPG_Common_Environment&); // environment
+  static RPG_Graphics_Style environmentToStyle (const struct RPG_Common_Environment&); // environment
 
  private:
   ACE_UNIMPLEMENTED_FUNC (RPG_Client_Common_Tools ())

@@ -447,7 +447,7 @@ RPG_Client_Window_Level::drawBorder (SDL_Surface* targetSurface_in,
 }
 
 void
-RPG_Client_Window_Level::drawChild (const RPG_Graphics_WindowType& child_in,
+RPG_Client_Window_Level::drawChild (enum RPG_Graphics_WindowType child_in,
                                     SDL_Surface* targetSurface_in,
                                     unsigned int offsetX_in,
                                     unsigned int offsetY_in,
@@ -776,8 +776,8 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
   //   1. blend (currently) visible tiles ("light-source")
   //   2. blend (previously) seen tiles ("memory")
 
-  SDL_Rect dirty_region = {0, 0, 0, 0};
-  SDL_Rect window_area;
+  struct SDL_Rect dirty_region = {0, 0, 0, 0};
+  struct SDL_Rect window_area;
   getArea (window_area, true);
 
   int i, j;
@@ -954,7 +954,7 @@ off_map:
 #if defined (_DEBUG)
         if (myShowCoordinates)
         {
-          SDL_Rect rect;
+          struct SDL_Rect rect;
           rect.x = screen_position.first;
           rect.y = screen_position.second;
           rect.w = (*floor_iterator).surface->w;
@@ -1234,6 +1234,8 @@ off_map:
         RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->put (entity_id,
                                                                screen_position,
                                                                dirty_region,
+                                                               false,
+                                                               true,
                                                                false);
       } // end IF
 
@@ -1314,14 +1316,14 @@ off_map:
 }
 
 void
-RPG_Client_Window_Level::handleEvent (const SDL_Event& event_in,
+RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
                                       RPG_Graphics_IWindowBase* window_in,
-                                      SDL_Rect& dirtyRegion_out)
+                                      struct SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::handleEvent"));
 
   // init return value(s)
-  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
   // sanity check(s)
   ACE_ASSERT (myClient);
@@ -2139,7 +2141,7 @@ RPG_Client_Window_Level::handleEvent (const SDL_Event& event_in,
 }
 
 bool
-RPG_Client_Window_Level::setStyle (const RPG_Graphics_StyleUnion& style_in)
+RPG_Client_Window_Level::setStyle (const struct RPG_Graphics_StyleUnion& style_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::setStyle"));
 

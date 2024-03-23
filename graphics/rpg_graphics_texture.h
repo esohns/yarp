@@ -87,23 +87,23 @@ class RPG_Graphics_Texture
                    const RPG_Graphics_Offset_t&, // offset (top left == 0,0)
                    const SDL_Texture&,           // source texture
                    SDL_Texture*,                 // target texture (e.g. screen)
-                   SDL_Rect&);                   // return value: "dirty" region
+                   struct SDL_Rect&);            // return value: "dirty" region
   static void put (const RPG_Graphics_Offset_t&, // offset (top left == 0,0)
                    const SDL_Surface&,           // source surface
                    SDL_Texture*,                 // target texture (e.g. screen)
-                   SDL_Rect&);                   // return value: "dirty" region
-  static bool putText (const RPG_Graphics_Font&,     // font
+                   struct SDL_Rect&);            // return value: "dirty" region
+  static bool putText (enum RPG_Graphics_Font,       // font
                        const std::string&,           // string
-                       const SDL_Color&,             // color
+                       const struct SDL_Color&,      // color
                        bool,                         // shade ?
-                       const SDL_Color&,             // shade color
+                       const struct SDL_Color&,      // shade color
                        const RPG_Graphics_Offset_t&, // offset (top left == 0,0)
                        SDL_Texture*,                 // target surface (e.g. screen)
                        SDL_Rect&);                   // return value: "dirty" region
-  static void putRectangle (SDL_Renderer*,   // renderer handle
-                            const SDL_Rect&, // rectangle
-                            Uint32,          // color
-                            SDL_Texture*);   // target texture (e.g. screen)
+  static void putRectangle (SDL_Renderer*,          // renderer handle
+                            const struct SDL_Rect&, // rectangle
+                            Uint32,                 // color
+                            SDL_Texture*);          // target texture (e.g. screen)
 
   static void alpha (Uint8,         // alpha (0: transparent --> 255: opaque)
                      SDL_Texture&); // target texture
@@ -111,13 +111,13 @@ class RPG_Graphics_Texture
   static SDL_Texture* alpha (SDL_Renderer*,             // renderer handle
                              const SDL_Texture&,        // source texture
                              Uint8 = SDL_ALPHA_OPAQUE); // alpha (0: transparent --> 255: opaque)
-  static void clear (SDL_Renderer*,           // renderer handle
-                     SDL_Texture*,            // target texture
-                     const SDL_Rect* = NULL); // clip area (if any)
-  static void fill (SDL_Renderer*,           // renderer handle
-                    Uint32,                  // color
-                    SDL_Texture*,            // target texture
-                    const SDL_Rect* = NULL); // clip area (if any)
+  static void clear (SDL_Renderer*,                  // renderer handle
+                     SDL_Texture*,                   // target texture
+                     const struct SDL_Rect* = NULL); // clip area (if any)
+  static void fill (SDL_Renderer*,                  // renderer handle
+                    Uint32,                         // color
+                    SDL_Texture*,                   // target texture
+                    const struct SDL_Rect* = NULL); // clip area (if any)
 
  private:
   // helper methods

@@ -207,7 +207,7 @@ RPG_Graphics_Surface::clip (SDL_Window* window_in)
     return; // nothing to do
 
   SDL_SetClipRect (surface_p,
-	                 &myClipRectangle);
+                   &myClipRectangle);
 }
 
 void
@@ -270,7 +270,7 @@ RPG_Graphics_Surface::load (const std::string& filename_in,
   // extract SDL surface from PNG
   result =
     RPG_Graphics_Surface::loadPNG (ACE_TEXT_ALWAYS_CHAR (ACE::basename (filename_in.c_str ())),
-	                                 file_ptr);
+                                   file_ptr);
   if (!result)
   {
     ACE_DEBUG ((LM_ERROR,
@@ -278,10 +278,10 @@ RPG_Graphics_Surface::load (const std::string& filename_in,
                 ACE_TEXT (filename_in.c_str ())));
 
     // clean up
-	if (ACE_OS::fclose (file_ptr))
-	  ACE_DEBUG ((LM_ERROR,
-		            ACE_TEXT ("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
-			          ACE_TEXT (filename_in.c_str ())));
+  if (ACE_OS::fclose (file_ptr))
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
+                ACE_TEXT (filename_in.c_str ())));
     //delete[] srcbuf;
 
     return NULL;
@@ -289,9 +289,9 @@ RPG_Graphics_Surface::load (const std::string& filename_in,
 
   // clean up
   if (ACE_OS::fclose (file_ptr))
-	ACE_DEBUG ((LM_ERROR,
-	            ACE_TEXT ("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
-			        ACE_TEXT (filename_in.c_str ())));
+  ACE_DEBUG ((LM_ERROR,
+              ACE_TEXT ("failed to ACE_OS::fclose(\"%s\"): \"%m\", continuing\n"),
+              ACE_TEXT (filename_in.c_str ())));
   //delete[] srcbuf;
 
   if (convertToDisplayFormat_in)
@@ -735,12 +735,12 @@ void
 RPG_Graphics_Surface::put (const RPG_Graphics_Offset_t& offset_in,
                            const SDL_Surface& image_in,
                            SDL_Surface* targetSurface_in,
-                           SDL_Rect& dirtyRegion_out)
+                           struct SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::put"));
 
-  // init return value(s)
-  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
+  // initialize return value(s)
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
   // sanity check(s)
   ACE_ASSERT (targetSurface_in);
@@ -767,19 +767,19 @@ RPG_Graphics_Surface::put (const RPG_Graphics_Offset_t& offset_in,
 }
 
 bool
-RPG_Graphics_Surface::putText (const RPG_Graphics_Font& font_in,
+RPG_Graphics_Surface::putText (enum RPG_Graphics_Font font_in,
                                const std::string& textString_in,
-                               const SDL_Color& color_in,
+                               const struct SDL_Color& color_in,
                                bool shade_in,
-                               const SDL_Color& shadeColor_in,
+                               const struct SDL_Color& shadeColor_in,
                                const RPG_Graphics_Offset_t& offset_in,
                                SDL_Surface* targetSurface_in,
-                               SDL_Rect& dirtyRegion_out)
+                               struct SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::putText"));
 
-  // init return value(s)
-  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
+  // initialize return value(s)
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
   // sanity check(s)
   ACE_ASSERT (targetSurface_in);
@@ -1004,7 +1004,7 @@ RPG_Graphics_Surface::alpha (const SDL_Surface& sourceImage_in,
 
 void
 RPG_Graphics_Surface::clear (SDL_Surface* targetSurface_in,
-                             const SDL_Rect* clipRectangle_in)
+                             const struct SDL_Rect* clipRectangle_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::clear"));
 
@@ -1012,7 +1012,7 @@ RPG_Graphics_Surface::clear (SDL_Surface* targetSurface_in,
 
   RPG_Graphics_Surface::fill (RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK_A0, // transparent
                                                                 *targetSurface_in->format,
-                                                                1.0F),
+                                                                1.0f),
                               targetSurface_in,
                               clipRectangle_in);
 }
@@ -1020,7 +1020,7 @@ RPG_Graphics_Surface::clear (SDL_Surface* targetSurface_in,
 void
 RPG_Graphics_Surface::fill (Uint32 color_in,
                             SDL_Surface* targetSurface_in,
-                            const SDL_Rect* clipRectangle_in)
+                            const struct SDL_Rect* clipRectangle_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::fill"));
 
@@ -1028,9 +1028,9 @@ RPG_Graphics_Surface::fill (Uint32 color_in,
   ACE_ASSERT (targetSurface_in);
 
   // fill with color
-  if (SDL_FillRect (targetSurface_in,                        // target
-                    const_cast<SDL_Rect*>(clipRectangle_in), // aspect
-                    color_in))                               // color
+  if (SDL_FillRect (targetSurface_in,                                // target
+                    const_cast<struct SDL_Rect*> (clipRectangle_in), // aspect
+                    color_in))                                       // color
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_FillRect(): \"%s\", continuing\n"),
                 ACE_TEXT (SDL_GetError ())));
@@ -1043,18 +1043,16 @@ RPG_Graphics_Surface::copy (const SDL_Surface& sourceImage_in,
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::copy"));
 
   // sanity check(s)
-  ACE_ASSERT((sourceImage_in.w == targetImage_in.w) &&
-             (sourceImage_in.h == targetImage_in.h));
-  if ((sourceImage_in.w != targetImage_in.w) ||
-      (sourceImage_in.h != targetImage_in.h))
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid image format: [%d,%d] != [%d,%d], aborting\n"),
-               sourceImage_in.w, sourceImage_in.h,
-               targetImage_in.w, targetImage_in.h));
-
-    return;
-  } // end IF
+  ACE_ASSERT ((sourceImage_in.w == targetImage_in.w) && (sourceImage_in.h == targetImage_in.h));
+  //if ((sourceImage_in.w != targetImage_in.w) ||
+  //    (sourceImage_in.h != targetImage_in.h))
+  //{
+  //  ACE_DEBUG ((LM_ERROR,
+  //              ACE_TEXT ("invalid image format: [%d,%d] != [%d,%d], aborting\n"),
+  //              sourceImage_in.w, sourceImage_in.h,
+  //              targetImage_in.w, targetImage_in.h));
+  //  return;
+  //} // end IF
 
   // *NOTE*: blitting does not preserve the alpha channel...
   // --> do it manually
@@ -1074,25 +1072,24 @@ RPG_Graphics_Surface::copy (const SDL_Surface& sourceImage_in,
 //   } // end IF
 
   // lock surface during pixel access
-  if (SDL_MUSTLOCK((&sourceImage_in)))
-    if (SDL_LockSurface(&const_cast<SDL_Surface&>(sourceImage_in)))
+  if (SDL_MUSTLOCK ((&sourceImage_in)))
+    if (SDL_LockSurface (&const_cast<SDL_Surface&> (sourceImage_in)))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_LockSurface(): \"%s\", aborting\n"),
-               ACE_TEXT(SDL_GetError())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_LockSurface(): \"%s\", aborting\n"),
+                ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
 
   for (unsigned int i = 0;
-       i < static_cast<unsigned int>(sourceImage_in.h);
+       i < static_cast<unsigned int> (sourceImage_in.h);
        i++)
-    ::memcpy((static_cast<unsigned char*>(targetImage_in.pixels) + (targetImage_in.pitch * i)),
-             (static_cast<unsigned char*>(sourceImage_in.pixels) + (sourceImage_in.pitch * i)),
-             (sourceImage_in.w * sourceImage_in.format->BytesPerPixel)); // RGBA --> 4 bytes (?!!!)
+    ::memcpy ((static_cast<ACE_UINT8*> (targetImage_in.pixels) + (targetImage_in.pitch * i)),
+              (static_cast<ACE_UINT8*> (sourceImage_in.pixels) + (sourceImage_in.pitch * i)),
+              (sourceImage_in.w * sourceImage_in.format->BytesPerPixel)); // RGBA --> 4 bytes (?!!!)
 
-  if (SDL_MUSTLOCK((&sourceImage_in)))
-    SDL_UnlockSurface(&const_cast<SDL_Surface&>(sourceImage_in));
+  if (SDL_MUSTLOCK ((&sourceImage_in)))
+    SDL_UnlockSurface (&const_cast<SDL_Surface&> (sourceImage_in));
 }
 
 SDL_Surface*
@@ -1135,42 +1132,42 @@ RPG_Graphics_Surface::copy (const SDL_Surface& sourceImage_in)
 //   } // end IF
 
   // lock surface during pixel access
-  if (SDL_MUSTLOCK((&sourceImage_in)))
-    if (SDL_LockSurface(&const_cast<SDL_Surface&>(sourceImage_in)))
+  if (SDL_MUSTLOCK ((&sourceImage_in)))
+    if (SDL_LockSurface (&const_cast<SDL_Surface&> (sourceImage_in)))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_LockSurface(): \"%s\", aborting\n"),
-               ACE_TEXT(SDL_GetError())));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_LockSurface(): \"%s\", aborting\n"),
+                ACE_TEXT (SDL_GetError ())));
 
     // clean up
-    SDL_FreeSurface(result);
+    SDL_FreeSurface (result);
 
     return NULL;
   } // end IF
 
   for (unsigned int i = 0;
-       i < static_cast<unsigned int>(sourceImage_in.h);
+       i < static_cast<unsigned int> (sourceImage_in.h);
        i++)
-    ::memcpy((static_cast<unsigned char*>(result->pixels) + (result->pitch * i)),
-             (static_cast<unsigned char*>(sourceImage_in.pixels) + (sourceImage_in.pitch * i)),
-             (sourceImage_in.w * sourceImage_in.format->BytesPerPixel)); // RGBA --> 4 bytes (?!!!)
+    ::memcpy ((static_cast<unsigned char*> (result->pixels) + (result->pitch * i)),
+              (static_cast<unsigned char*> (sourceImage_in.pixels) + (sourceImage_in.pitch * i)),
+              (sourceImage_in.w * sourceImage_in.format->BytesPerPixel)); // RGBA --> 4 bytes (?!!!)
 
-  if (SDL_MUSTLOCK((&sourceImage_in)))
-    SDL_UnlockSurface(&const_cast<SDL_Surface&>(sourceImage_in));
+  if (SDL_MUSTLOCK ((&sourceImage_in)))
+    SDL_UnlockSurface (&const_cast<SDL_Surface&> (sourceImage_in));
 
   return result;
 }
 
 void
 #if defined (SDL_USE)
-RPG_Graphics_Surface::update (const SDL_Rect& dirty_in,
+RPG_Graphics_Surface::update (const struct SDL_Rect& dirty_in,
                               SDL_Surface* targetSurface_in)
 #elif defined (SDL2_USE)
-RPG_Graphics_Surface::update (const SDL_Rect& dirty_in,
+RPG_Graphics_Surface::update (const struct SDL_Rect& dirty_in,
                               SDL_Window* targetWindow_in)
 #endif // SDL_USE || SDL2_USE
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::update"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::update"));
 
   // sanity check
 #if defined (SDL_USE)
@@ -1259,9 +1256,9 @@ RPG_Graphics_Surface::loadPNG (const std::string& filename_in,
                 ACE_TEXT ("failed to png_create_info_struct(): \"%m\", aborting\n")));
 
     // clean up
-    png_destroy_read_struct(&png_ptr,
-                            NULL,
-                            NULL);
+    png_destroy_read_struct (&png_ptr,
+                             NULL,
+                             NULL);
 
     return NULL;
   } // end IF
@@ -1277,9 +1274,9 @@ RPG_Graphics_Surface::loadPNG (const std::string& filename_in,
                 ACE_TEXT ("failed to ::setjmp(): \"%m\", aborting\n")));
 
     // clean up
-    png_destroy_read_struct(&png_ptr,
-                            &info_ptr,
-                            NULL);
+    png_destroy_read_struct (&png_ptr,
+                             &info_ptr,
+                             NULL);
 
     return NULL;
   } // end IF

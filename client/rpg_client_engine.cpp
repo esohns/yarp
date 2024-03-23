@@ -85,7 +85,8 @@ RPG_Client_Engine::~RPG_Client_Engine ()
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::~RPG_Client_Engine"));
 
   if (isRunning ())
-    stop (false, false);
+    stop (true,
+          false);
 }
 
 int
@@ -170,7 +171,7 @@ RPG_Client_Engine::dump_state () const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::dump_state"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
+  ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("current queue size: %d\n"),
@@ -516,7 +517,8 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       else
       {
         // update the minimap ?
-        if (lockedAccess_in) engine_->lock ();
+        if (lockedAccess_in)
+          engine_->lock ();
         if (active_entity_id &&
             engine_->hasSeen (active_entity_id,
                               client_action.position,
@@ -525,7 +527,8 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
           client_action.command = COMMAND_WINDOW_UPDATE_MINIMAP;
           action (client_action);
         } // end IF
-        if (lockedAccess_in) engine_->unlock ();
+        if (lockedAccess_in)
+          engine_->unlock ();
 
         // draw sprite ?
         SDL_Rect window_area, map_area;
@@ -609,8 +612,10 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       // *NOTE*: schedule a draw iff any of the new positions are currently
       //         visible on-screen
       SDL_Rect window_area, map_area;
-      window_->getArea (window_area, true);
-      window_->getArea (map_area, false);
+      window_->getArea (window_area,
+                        true); // toplevel ?
+      window_->getArea (map_area,
+                        false); // toplevel ?
       RPG_Client_IWindowLevel* window_p =
           dynamic_cast<RPG_Client_IWindowLevel*> (window_);
       ACE_ASSERT (window_p);
@@ -729,7 +734,7 @@ RPG_Client_Engine::initialize (RPG_Engine* engine_in,
   // sanity check(s)
   ACE_ASSERT (engine_in);
   ACE_ASSERT (window_in);
-  //ACE_ASSERT(widgetInterface_in);
+  //ACE_ASSERT (widgetInterface_in);
 
   engine_ = engine_in;
   window_ = window_in;
@@ -780,7 +785,7 @@ RPG_Client_Engine::handleActions ()
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::handleActions"));
 
   struct RPG_Client_Action client_action;
-  SDL_Rect dirty_region;
+  struct SDL_Rect dirty_region;
 
 next:
   { ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);
@@ -790,7 +795,7 @@ next:
     actions_.pop_front ();
   } // end lock scope
 
-  ACE_OS::memset (&dirty_region, 0, sizeof (SDL_Rect));
+  ACE_OS::memset (&dirty_region, 0, sizeof (struct SDL_Rect));
 
   switch (client_action.command)
   {
@@ -1345,7 +1350,8 @@ next:
     case COMMAND_WINDOW_REFRESH:
     { ACE_ASSERT (client_action.window);
       // --> update whole window
-      client_action.window->getArea (dirty_region);
+      client_action.window->getArea (dirty_region,
+                                     false); // toplevel- ?
       try {
         client_action.window->invalidate (dirty_region);
       } catch (...) {

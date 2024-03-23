@@ -31,7 +31,7 @@ class RPG_Client_IWindow
  : public virtual RPG_Graphics_IWindowBase
 {
  public:
-  virtual ~RPG_Client_IWindow () {};
+  virtual ~RPG_Client_IWindow () {}
 
   virtual void drawBorder (SDL_Surface* = NULL,   // target surface (default: screen)
                            unsigned int = 0,      // offset x (top-left = [0,0])

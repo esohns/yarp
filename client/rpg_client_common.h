@@ -271,6 +271,4 @@ enum RPG_Client_SelectionMode
 typedef std::vector<SDL_Surface*> RPG_Client_BlendingMaskCache_t;
 typedef RPG_Client_BlendingMaskCache_t::iterator RPG_Client_BlendingMaskCacheIterator_t;
 
-//typedef Common_UI_IGTK_t RPG_Client_IWidgetUI_t;
-
 #endif

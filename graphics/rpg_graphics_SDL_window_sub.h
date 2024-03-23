@@ -23,11 +23,11 @@
 
 #include <string>
 
-#include "ace/Global_Macros.h"
-
 #define _SDL_main_h
 #define SDL_main_h_
 #include "SDL.h"
+
+#include "ace/Global_Macros.h"
 
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_SDL_window_base.h"
@@ -38,7 +38,7 @@ class RPG_Graphics_SDLWindowSub
   typedef RPG_Graphics_SDLWindowBase inherited;
 
  public:
-  RPG_Graphics_SDLWindowSub (const RPG_Graphics_WindowType&,    // type
+  RPG_Graphics_SDLWindowSub (enum RPG_Graphics_WindowType,      // type
                              const RPG_Graphics_SDLWindowBase&, // parent
                              // *NOTE*: offset doesn't include any border(s) !
                              const RPG_Graphics_Offset_t&,      // offset
@@ -47,10 +47,10 @@ class RPG_Graphics_SDLWindowSub
   virtual ~RPG_Graphics_SDLWindowSub ();
 
   // implement (part of) RPG_Graphics_IWindow
-  virtual void show (SDL_Rect&); // return value: "dirty" region
-  virtual void hide (SDL_Rect&); // return value: "dirty" region
+  virtual void show (struct SDL_Rect&); // return value: "dirty" region
+  virtual void hide (struct SDL_Rect&); // return value: "dirty" region
   // overload RPG_Graphics_SDLWindowBase::visible
-  virtual bool visible () const;
+  inline virtual bool visible () const { return isVisible_; }
 
   // override (part of) RPG_Graphics_IWindowBase
   virtual void clip (SDL_Surface* = NULL, // target surface (default: screen)
@@ -69,9 +69,9 @@ class RPG_Graphics_SDLWindowSub
 
   // helper method(s)
   // *NOTE*: make sure setScreen has been invoked
-  void saveBG (const SDL_Rect&); // (sub-)area (default: use clip rectangle)
+  void saveBG (const struct SDL_Rect&); // (sub-)area (default: use clip rectangle)
   bool         BGHasBeenSaved_;
-  void restoreBG (SDL_Rect&); // return value: "dirty" region
+  void restoreBG (struct SDL_Rect&); // return value: "dirty" region
 
   bool         isVisible_;
 

@@ -21,15 +21,15 @@
 
 #include "rpg_graphics_SDL_window_sub.h"
 
-#include "rpg_graphics_surface.h"
-#include "rpg_graphics_SDL_tools.h"
-
-#include "rpg_common_macros.h"
-
 #include "ace/Log_Msg.h"
 #include "ace/OS.h"
 
-RPG_Graphics_SDLWindowSub::RPG_Graphics_SDLWindowSub (const RPG_Graphics_WindowType& type_in,
+#include "rpg_common_macros.h"
+
+#include "rpg_graphics_surface.h"
+#include "rpg_graphics_SDL_tools.h"
+
+RPG_Graphics_SDLWindowSub::RPG_Graphics_SDLWindowSub (enum RPG_Graphics_WindowType type_in,
                                                       const RPG_Graphics_SDLWindowBase& parent_in,
                                                       // *NOTE*: offset doesn't include any border(s) !
                                                       const RPG_Graphics_Offset_t& offset_in,
@@ -58,7 +58,7 @@ RPG_Graphics_SDLWindowSub::~RPG_Graphics_SDLWindowSub ()
 }
 
 void
-RPG_Graphics_SDLWindowSub::show (SDL_Rect& dirtyRegion_out)
+RPG_Graphics_SDLWindowSub::show (struct SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowSub::show"));
 
@@ -71,12 +71,12 @@ RPG_Graphics_SDLWindowSub::show (SDL_Rect& dirtyRegion_out)
 }
 
 void
-RPG_Graphics_SDLWindowSub::hide (SDL_Rect& dirtyRegion_out)
+RPG_Graphics_SDLWindowSub::hide (struct SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowSub::hide"));
 
   // step0: init return value(s)
-  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (dirtyRegion_out));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
   // restore saved background
   if (BG_)
@@ -86,14 +86,6 @@ RPG_Graphics_SDLWindowSub::hide (SDL_Rect& dirtyRegion_out)
   } // end IF
 
   isVisible_ = false;
-}
-
-bool
-RPG_Graphics_SDLWindowSub::visible () const
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowSub::visible"));
-
-  return isVisible_;
 }
 
 void
@@ -148,7 +140,7 @@ RPG_Graphics_SDLWindowSub::refresh (SDL_Surface* targetSurface_in)
 }
 
 void
-RPG_Graphics_SDLWindowSub::saveBG (const SDL_Rect& area_in)
+RPG_Graphics_SDLWindowSub::saveBG (const struct SDL_Rect& area_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowSub::saveBG"));
 
@@ -198,7 +190,7 @@ RPG_Graphics_SDLWindowSub::saveBG (const SDL_Rect& area_in)
 }
 
 void
-RPG_Graphics_SDLWindowSub::restoreBG (SDL_Rect& dirtyRegion_out)
+RPG_Graphics_SDLWindowSub::restoreBG (struct SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowSub::restoreBG"));
 
@@ -212,8 +204,8 @@ RPG_Graphics_SDLWindowSub::restoreBG (SDL_Rect& dirtyRegion_out)
   ACE_ASSERT (surface_p);
   ACE_ASSERT(BG_);
 
-  // step0: init return value(s)
-  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (dirtyRegion_out));
+  // step0: initialize return value(s)
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
   if (inherited::screenLock_)
     screenLock_->lock ();

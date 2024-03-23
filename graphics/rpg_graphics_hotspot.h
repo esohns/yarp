@@ -41,9 +41,9 @@ class RPG_Graphics_HotSpot
                         const RPG_Graphics_Size_t&,        // size
                         // *NOTE*: offset doesn't include any border(s) !
                         const RPG_Graphics_Offset_t&,      // offset
-                        const RPG_Graphics_Cursor&,        // (hover) cursor graphic
+                        enum RPG_Graphics_Cursor,          // (hover) cursor graphic
                         bool = false);                     // debug ?
-  virtual ~RPG_Graphics_HotSpot ();
+  inline virtual ~RPG_Graphics_HotSpot () {}
 
   RPG_Graphics_Cursor getCursorType () const;
 
@@ -54,15 +54,15 @@ class RPG_Graphics_HotSpot
   virtual void draw (SDL_Surface* = NULL, // target surface (default: screen)
                      unsigned int = 0,    // offset x (top-left = [0,0])
                      unsigned int = 0);   // offset y (top-left = [0,0])
-  virtual void handleEvent (const SDL_Event&,          // event
+  virtual void handleEvent (const union SDL_Event&,    // event
                             RPG_Graphics_IWindowBase*, // target window (NULL: this)
-                            SDL_Rect&);                // return value: "dirty" region
+                            struct SDL_Rect&);         // return value: "dirty" region
 
   static bool initialize (const RPG_Graphics_SDLWindowBase&, // parent
                           const RPG_Graphics_Size_t&,        // size
                           // *NOTE*: offset doesn't include any border(s) !
                           const RPG_Graphics_Offset_t&,      // offset
-                          const RPG_Graphics_Cursor&,        // (hover) cursor graphic
+                          enum RPG_Graphics_Cursor,          // (hover) cursor graphic
                           bool = false);                     // debug ?
 
  private:
@@ -70,9 +70,9 @@ class RPG_Graphics_HotSpot
   ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_HotSpot (const RPG_Graphics_HotSpot&))
   ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_HotSpot& operator= (const RPG_Graphics_HotSpot&))
 
-  RPG_Graphics_Cursor myCursorType;
-  bool                myCursorHasBeenSet;
-  bool                myDebug;
+  enum RPG_Graphics_Cursor myCursorType;
+  bool                     myCursorHasBeenSet;
+  bool                     myDebug;
 };
 
 #endif

@@ -28,11 +28,7 @@
 #include "ace/Synch_Traits.h"
 
 #include "rpg_graphics_common.h"
-//#include "rpg_graphics_exports.h"
 
-/**
-@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Graphics_Dictionary
 {
   // we use the singleton pattern, so we need to enable access to the ctor/dtors
@@ -43,7 +39,7 @@ class RPG_Graphics_Dictionary
   bool initialize (const std::string&, // (XML) dictionary file
                    bool = false);      // validate XML ?
 
-  const RPG_Graphics_t get(const RPG_Graphics_GraphicTypeUnion&) const; // type
+  const RPG_Graphics_t get (const struct RPG_Graphics_GraphicTypeUnion&) const; // type
   RPG_Graphics_Fonts_t getFonts() const;
 
   // debug info
@@ -52,8 +48,8 @@ class RPG_Graphics_Dictionary
  private:
   RPG_Graphics_Dictionary ();
   inline virtual ~RPG_Graphics_Dictionary () {}
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Dictionary(const RPG_Graphics_Dictionary&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Graphics_Dictionary& operator=(const RPG_Graphics_Dictionary&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_Dictionary (const RPG_Graphics_Dictionary&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_Dictionary& operator= (const RPG_Graphics_Dictionary&))
 
   RPG_Graphics_Dictionary_t myDictionary;
 };
