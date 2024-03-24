@@ -212,7 +212,7 @@ RPG_Graphics_Common_Tools::toString (const struct RPG_Graphics_StyleUnion& style
     }
   } // end SWITCH
 
-  return std::string(ACE_TEXT_ALWAYS_CHAR ("INVALID"));
+  return ACE_TEXT_ALWAYS_CHAR ("INVALID");
 }
 
 std::string
@@ -243,7 +243,7 @@ RPG_Graphics_Common_Tools::toString (const struct RPG_Graphics_GraphicTypeUnion&
     }
   } // end SWITCH
 
-  return std::string (ACE_TEXT_ALWAYS_CHAR ("INVALID"));
+  return ACE_TEXT_ALWAYS_CHAR ("INVALID");
 }
 
 std::string

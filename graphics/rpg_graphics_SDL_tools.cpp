@@ -754,7 +754,7 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
 
   // select a render driver
   // - use a render driver supporting software rendering
-  SDL_RendererInfo render_driver_info_s;
+  struct SDL_RendererInfo render_driver_info_s;
   uint32_t renderer_flags = SDL_RENDERER_SOFTWARE;
   int32_t number_of_render_drivers = SDL_GetNumRenderDrivers(), index = 0;
 
@@ -782,16 +782,9 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
 
   // open SDL window
   Uint32 flags_i = SDL_WINDOW_SHOWN;
-  //  if (configuration_in.use_OpenGL)
-  //    flags_i |= SDL_WINDOW_OPENGL;
-  //  result = SDL_CreateWindow (caption_in.c_str (),
-  //                             SDL_WINDOWPOS_UNDEFINED,
-  //                             SDL_WINDOWPOS_UNDEFINED,
-  //                             configuration_in.screen_width,
-  //                             configuration_in.screen_height,
-  //                             flags_i);
-  //  if (!result)
-  SDL_Renderer *renderer = NULL;
+  if (configuration_in.use_OpenGL)
+    flags_i |= SDL_WINDOW_OPENGL;
+  SDL_Renderer* renderer = NULL;
   result_2 = SDL_CreateWindowAndRenderer (configuration_in.screen_width,
                                           configuration_in.screen_height,
                                           flags_i,
@@ -800,7 +793,7 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
   if (result_2 < 0)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to SDL_CreateWindow(\"%s\", %d, %d, 0x%x): \"%s\", aborting\n"),
+                ACE_TEXT ("failed to SDL_CreateWindowAndRenderer(%d, %d, 0x%x): \"%s\", aborting\n"),
                 configuration_in.screen_width,
                 configuration_in.screen_height,
                 flags_i,
@@ -814,6 +807,7 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("using \"%s\" render driver\n"),
               ACE_TEXT (render_driver_info_s.name)));
+  SDL_DestroyRenderer (renderer); renderer = NULL;
 
   return result;
 }
