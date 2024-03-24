@@ -95,13 +95,13 @@ RPG_Character_Common_Tools::initializeStringConversionTables ()
 }
 
 void
-RPG_Character_Common_Tools::initializeEncumbranceTable()
+RPG_Character_Common_Tools::initializeEncumbranceTable ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Character_Common_Tools::initEncumbranceTable"));
 
   RPG_Character_Common_Tools::myEncumbranceTable.clear ();
 
-  RPG_Character_EncumbranceEntry_t entry;
+  struct RPG_Character_EncumbranceEntry entry;
   entry.light  = 3;
   entry.medium = 6;
   entry.heavy  = 10;
@@ -224,15 +224,17 @@ RPG_Character_Common_Tools::initializeEncumbranceTable()
 }
 
 std::string
-RPG_Character_Common_Tools::toString (const RPG_Character_Alignment& alignment_in)
+RPG_Character_Common_Tools::toString (const struct RPG_Character_Alignment& alignment_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Character_Common_Tools::toString"));
 
   std::string result;
 
-  result += RPG_Character_AlignmentCivicHelper::RPG_Character_AlignmentCivicToString(alignment_in.civic);
-  result += ACE_TEXT_ALWAYS_CHAR(" | ");
-  result += RPG_Character_AlignmentEthicHelper::RPG_Character_AlignmentEthicToString(alignment_in.ethic);
+  result +=
+    RPG_Character_AlignmentCivicHelper::RPG_Character_AlignmentCivicToString (alignment_in.civic);
+  result += ACE_TEXT_ALWAYS_CHAR (" | ");
+  result +=
+    RPG_Character_AlignmentEthicHelper::RPG_Character_AlignmentEthicToString (alignment_in.ethic);
 
   // "Neutral" "Neutral" --> "True Neutral"
   if ((alignment_in.civic == ALIGNMENTCIVIC_NEUTRAL) &&
@@ -245,7 +247,7 @@ RPG_Character_Common_Tools::toString (const RPG_Character_Alignment& alignment_i
 }
 
 std::string
-RPG_Character_Common_Tools::toString (const RPG_Character_Attributes& attributes_in)
+RPG_Character_Common_Tools::toString (const struct RPG_Character_Attributes& attributes_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Character_Common_Tools::toString"));
 
@@ -343,7 +345,7 @@ RPG_Character_Common_Tools::toString (const RPG_Character_Race_t& races_in)
 }
 
 std::string
-RPG_Character_Common_Tools::toString (const RPG_Character_Class& class_in)
+RPG_Character_Common_Tools::toString (const struct RPG_Character_Class& class_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Character_Common_Tools::toString"));
 
@@ -399,8 +401,8 @@ RPG_Character_Common_Tools::toString (const RPG_Character_Conditions_t& conditio
 }
 
 bool
-RPG_Character_Common_Tools::match (const RPG_Character_Alignment& alignmentA_in,
-                                   const RPG_Character_Alignment& alignmentB_in)
+RPG_Character_Common_Tools::match (const struct RPG_Character_Alignment& alignmentA_in,
+                                   const struct RPG_Character_Alignment& alignmentB_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Character_Common_Tools::match"));
 
@@ -465,12 +467,12 @@ RPG_Character_Common_Tools::match (const RPG_Character_Alignment& alignmentA_in,
   return true;
 }
 
-signed char
-RPG_Character_Common_Tools::getAttributeAbilityModifier (unsigned char attributeAbility_in)
+ACE_INT8
+RPG_Character_Common_Tools::getAttributeAbilityModifier (ACE_UINT8 attributeAbility_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Character_Common_Tools::getAttributeAbilityModifier"));
 
-  signed char baseValue = -5;
+  ACE_INT8 baseValue = -5;
   baseValue += ((attributeAbility_in & 0x1) == attributeAbility_in) ? ((attributeAbility_in - 1) >> 1)
                                                                     : (attributeAbility_in >> 1);
 
@@ -478,13 +480,13 @@ RPG_Character_Common_Tools::getAttributeAbilityModifier (unsigned char attribute
 }
 
 bool
-RPG_Character_Common_Tools::getAttributeCheck (unsigned char attributeAbilityScore_in)
+RPG_Character_Common_Tools::getAttributeCheck (ACE_UINT8 attributeAbilityScore_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Character_Common_Tools::getAttributeCheck"));
 
-  int result = RPG_Chance_Common_Tools::getCheck (0);
+  int result = RPG_Chance_Common_Tools::getCheck (0, D_20);
 
-  return (result >= attributeAbilityScore_in);
+  return (result >= static_cast<int> (attributeAbilityScore_in));
 }
 
 enum RPG_Dice_DieType
@@ -529,7 +531,7 @@ RPG_Character_Common_Tools::getHitDie (enum RPG_Common_SubClass subClass_in)
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("invalid subclass: \"%s\", aborting\n"),
-                  RPG_Common_SubClassHelper::RPG_Common_SubClassToString (subClass_in).c_str()));
+                  ACE_TEXT (RPG_Common_SubClassHelper::RPG_Common_SubClassToString (subClass_in).c_str())));
       break;
     }
   } // end SWITCH
@@ -539,7 +541,7 @@ RPG_Character_Common_Tools::getHitDie (enum RPG_Common_SubClass subClass_in)
 
 RPG_Character_BaseAttackBonus_t
 RPG_Character_Common_Tools::getBaseAttackBonus (enum RPG_Common_SubClass subClass_in,
-                                                unsigned char classLevel_in)
+                                                ACE_UINT8 classLevel_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Character_Common_Tools::getBaseAttackBonus"));
 
@@ -584,7 +586,7 @@ RPG_Character_Common_Tools::getBaseAttackBonus (enum RPG_Common_SubClass subClas
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("invalid subclass: \"%s\", aborting\n"),
-                  RPG_Common_SubClassHelper::RPG_Common_SubClassToString (subClass_in).c_str ()));
+                  ACE_TEXT (RPG_Common_SubClassHelper::RPG_Common_SubClassToString (subClass_in).c_str ())));
       break;
     }
   } // end SWITCH
@@ -593,7 +595,7 @@ RPG_Character_Common_Tools::getBaseAttackBonus (enum RPG_Common_SubClass subClas
 
   // also, all classes gain an extra (-5) attack (maximum of 6) for a baseAttackBonus of +6, +11, +16, +21 and +26
   while ((baseAttackBonus >= 6) &&
-         (result.size() < 6))
+         (result.size () < 6))
   {
     baseAttackBonus -= 5;
     result.push_back (baseAttackBonus);
@@ -602,10 +604,10 @@ RPG_Character_Common_Tools::getBaseAttackBonus (enum RPG_Common_SubClass subClas
   return result;
 }
 
-RPG_Character_Encumbrance
-RPG_Character_Common_Tools::getEncumbrance (unsigned char strength_in,
+enum RPG_Character_Encumbrance
+RPG_Character_Common_Tools::getEncumbrance (ACE_UINT8 strength_in,
                                             enum RPG_Common_Size size_in,
-                                            unsigned short weight_in,
+                                            ACE_UINT16 weight_in,
                                             bool isBiped_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Character_Common_Tools::getEncumbrance"));
@@ -617,7 +619,7 @@ RPG_Character_Common_Tools::getEncumbrance (unsigned char strength_in,
   {
     tremendous_strength = true;
     iterator = myEncumbranceTable.find (20);
-    ACE_ASSERT(iterator != myEncumbranceTable.end ());
+    ACE_ASSERT (iterator != myEncumbranceTable.end ());
     std::advance (iterator, static_cast<unsigned int> (strength_in) % 10);
   } // end IF
   else
@@ -630,7 +632,7 @@ RPG_Character_Common_Tools::getEncumbrance (unsigned char strength_in,
 
   // step3: consider tremendous strength
   if (tremendous_strength)
-    relative_weight /= (4.0F * static_cast<float>(static_cast<unsigned int>(strength_in) / 10));
+    relative_weight /= (4.0f * (static_cast<unsigned int> (strength_in) / 10.0f));
 
   // step4: determine load
   if (relative_weight <= (*iterator).second.light)
@@ -643,16 +645,16 @@ RPG_Character_Common_Tools::getEncumbrance (unsigned char strength_in,
 
 void
 RPG_Character_Common_Tools::getLoadModifiers (enum RPG_Character_Encumbrance encumbrance_in,
-                                              unsigned char baseSpeed_in,
-                                              signed char& maxDexModifierAC_out,
-                                              signed char& armorCheckPenalty_out,
-                                              unsigned char& speed_out,
-                                              unsigned char& runModifier_out)
+                                              ACE_UINT8 baseSpeed_in,
+                                              ACE_INT8& maxDexModifierAC_out,
+                                              ACE_INT8& armorCheckPenalty_out,
+                                              ACE_UINT8& speed_out,
+                                              ACE_UINT8& runModifier_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Character_Common_Tools::getLoadModifiers"));
 
   // initialize return value(s)
-  maxDexModifierAC_out = std::numeric_limits<signed char>::max();
+  maxDexModifierAC_out = std::numeric_limits<ACE_INT8>::max ();
   armorCheckPenalty_out = 0;
   speed_out = baseSpeed_in;
   runModifier_out = RPG_CHARACTER_RUN_MODIFIER_MEDIUM;
@@ -665,17 +667,15 @@ RPG_Character_Common_Tools::getLoadModifiers (enum RPG_Character_Encumbrance enc
     {
       maxDexModifierAC_out = 3;
       armorCheckPenalty_out = -3;
-      speed_out = getReducedSpeed(baseSpeed_in);
-
+      speed_out = getReducedSpeed (baseSpeed_in);
       break;
     }
     case LOAD_HEAVY:
     {
       maxDexModifierAC_out = 1;
       armorCheckPenalty_out = -6;
-      speed_out = getReducedSpeed(baseSpeed_in);
+      speed_out = getReducedSpeed (baseSpeed_in);
       runModifier_out = RPG_CHARACTER_RUN_MODIFIER_HEAVY;
-
       break;
     }
     default:
@@ -688,8 +688,8 @@ RPG_Character_Common_Tools::getLoadModifiers (enum RPG_Character_Encumbrance enc
   } // end SWITCH
 }
 
-unsigned char
-RPG_Character_Common_Tools::getReducedSpeed (unsigned char baseSpeed_in)
+ACE_UINT8
+RPG_Character_Common_Tools::getReducedSpeed (ACE_UINT8 baseSpeed_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Character_Common_Tools::getReducedSpeed"));
 

@@ -27,65 +27,61 @@
 
 #include "common_idumpstate.h"
 
-//#include "rpg_map_exports.h"
 #include "rpg_map_defines.h"
 #include "rpg_map_common.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Map_Level
  : public Common_IDumpState
 {
  public:
   RPG_Map_Level (const struct RPG_Map&); // map
-  virtual ~RPG_Map_Level ();
+  inline virtual ~RPG_Map_Level () {}
 
   // static functionality
-  static void create(const struct RPG_Map_FloorPlan_Configuration&, // floor plan config
-                     struct RPG_Map&);                              // return value: map
-  static bool load(const std::string&,                       // FQ filename
-                   struct RPG_Map&,                               // return value: map
-                   const bool& = RPG_MAP_DEF_TRACE_SCANNING, // trace scanning ?
-                   const bool& = RPG_MAP_DEF_TRACE_PARSING); // trace parsing ?
-  static void random(const struct RPG_Map_FloorPlan_Configuration&, // floor plan config
-                     struct RPG_Map&);                              // return value: map  
-  static void print(const struct RPG_Map&); // map
-  static std::string string(const struct RPG_Map&); // map
-  static std::string info(const struct RPG_Map&); // map
+  static void create (const struct RPG_Map_FloorPlan_Configuration&, // floor plan config
+                      struct RPG_Map&);                              // return value: map
+  static bool load (const std::string&,                // FQ filename
+                    struct RPG_Map&,                   // return value: map
+                    bool = RPG_MAP_DEF_TRACE_SCANNING, // trace scanning ?
+                    bool = RPG_MAP_DEF_TRACE_PARSING); // trace parsing ?
+  static void random (const struct RPG_Map_FloorPlan_Configuration&, // floor plan config
+                      struct RPG_Map&);                              // return value: map  
+  static void print (const struct RPG_Map&); // map
+  static std::string string (const struct RPG_Map&); // map
+  static std::string info (const struct RPG_Map&); // map
 
-  void init(const struct RPG_Map&); // map
-  void save(const std::string&) const; // FQ filename
+  void init (const struct RPG_Map&); // map
+  void save (const std::string&) const; // FQ filename
   // implement RPG_Common_IDumpState
   virtual void dump_state() const;
 
-  const RPG_Map_Position_t& getStartPosition() const;
-  const RPG_Map_Positions_t& getSeedPoints() const;
-  const struct RPG_Map_FloorPlan& getFloorPlan() const;
-  RPG_Map_Size_t getSize() const;
-  RPG_Map_DoorState state(const RPG_Map_Position_t&) const;
+  RPG_Map_Position_t getStartPosition () const;
+  RPG_Map_Positions_t getSeedPoints () const;
+  struct RPG_Map_FloorPlan getFloorPlan () const;
+  RPG_Map_Size_t getSize () const;
+  enum RPG_Map_DoorState state (const RPG_Map_Position_t&) const;
 
   // either floor or an open/broken (!) door ?
-  bool isValid(const RPG_Map_Position_t&) const;
-  bool isCorner(const RPG_Map_Position_t&) const;
-  RPG_Map_Element getElement(const RPG_Map_Position_t&) const;
-  RPG_Map_Positions_t getObstacles() const;
+  bool isValid (const RPG_Map_Position_t&) const;
+  bool isCorner (const RPG_Map_Position_t&) const;
+  enum RPG_Map_Element getElement (const RPG_Map_Position_t&) const;
+  RPG_Map_Positions_t getObstacles () const;
 
-  bool findPath(const RPG_Map_Position_t&, // start position
-                const RPG_Map_Position_t&, // end position
-                RPG_Map_Path_t&) const;    // return value: (partial) path A --> B
-  void findValid(const RPG_Map_Position_t&,   // center
-                 const unsigned int&,         // max (square !) radius
-                 RPG_Map_Positions_t&) const; // return value: area
+  bool findPath (const RPG_Map_Position_t&, // start position
+                 const RPG_Map_Position_t&, // end position
+                 RPG_Map_Path_t&) const;    // return value: (partial) path A --> B
+  void findValid (const RPG_Map_Position_t&,   // center
+                  unsigned int,                // max (square !) radius
+                  RPG_Map_Positions_t&) const; // return value: area
 
  protected:
-  RPG_Map_Level();
+  RPG_Map_Level ();
 
   struct RPG_Map myMap;
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Level(const RPG_Map_Level&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Level& operator=(const RPG_Map_Level&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Map_Level (const RPG_Map_Level&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Map_Level& operator= (const RPG_Map_Level&))
 };
 
 #endif

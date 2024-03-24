@@ -29,7 +29,6 @@
 
 #include "rpg_map_common.h"
 #include "rpg_map_defines.h"
-//#include "rpg_map_exports.h"
 
 class RPG_Map_Common_Tools
 {
@@ -48,8 +47,8 @@ class RPG_Map_Common_Tools
 
   // *TODO*: relies on the size of the room in relation to its' surrounding space
   // --> results may be wrong for small enclosures
-  static RPG_Map_Direction doorToExitDirection (const RPG_Map_Position_t&,     // door-
-                                                const struct RPG_Map_FloorPlan&);
+  static enum RPG_Map_Direction doorToExitDirection (const RPG_Map_Position_t&,     // door-
+                                                     const struct RPG_Map_FloorPlan&);
   static bool isFloor (const RPG_Map_Position_t&,
                        const struct RPG_Map_FloorPlan&);
 
@@ -183,7 +182,7 @@ class RPG_Map_Common_Tools
                     const ORIGIN&,             // origin
                     bool,                      // turn clockwise ?
                     bool&,                     // return value: is corner ? (else intersection)
-                    RPG_Map_Direction&);       // return value: next direction
+                    enum RPG_Map_Direction&);  // return value: next direction
   static void findDoorPositions (const RPG_Map_Area_t&,    // room (shell !)
                                  bool,                     // doors to fill positions ?
                                  RPG_Map_PositionList_t&); // suitable position(s)
@@ -197,8 +196,8 @@ class RPG_Map_Common_Tools
   static bool intersect (const RPG_Map_Area_t&,     // map
                          const RPG_Map_Position_t&, // position
                          const ORIGIN&,             // origin
-                         RPG_Map_Directions_t&,     // possible direction(s)
-                         RPG_Map_Direction&);       // next direction, if NOT an intersection
+                         RPG_Map_Directions_t&,     // return value: possible direction(s)
+                         enum RPG_Map_Direction&);  // return value: next direction, if NOT an intersection
   // *NOTE*: proceeds in clockwise direction
   static void crawlToPosition (const RPG_Map_Area_t&,     // map
                                const RPG_Map_Position_t&, // origin
@@ -211,8 +210,8 @@ class RPG_Map_Common_Tools
   typedef RPG_Map_AltPositions_t::const_iterator RPG_Map_AltPositionsConstIterator_t;
   static void crop(RPG_Map_Area_t&); // room
 //   static void cropSquareBoundary(RPG_Map_Zone_t&); // room
-  static RPG_Map_Direction door2exitDirection (const RPG_Map_Area_t&,      // room
-                                               const RPG_Map_Position_t&); // door
+  static enum RPG_Map_Direction door2exitDirection (const RPG_Map_Area_t&,      // room
+                                                    const RPG_Map_Position_t&); // door
   static void connectRooms (unsigned int,              // dimension x
                             unsigned int,              // dimension y
                             const RPG_Map_AreaList_t&, // boundary(s)

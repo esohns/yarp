@@ -26,24 +26,23 @@
 #include "rpg_common_subclass.h"
 
 #include "rpg_character_class_common.h"
-//#include "rpg_character_exports.h"
 #include "rpg_character_metaclass.h"
 #include "rpg_character_XML_tree.h"
 
 class RPG_Character_Class_Common_Tools
 {
  public:
-  static bool hasSubClass (const RPG_Character_Class&, // class(es)
+  static bool hasSubClass (const struct RPG_Character_Class&, // class(es)
                            enum RPG_Common_SubClass);  // subclass
   static enum RPG_Character_MetaClass subClassToMetaClass (enum RPG_Common_SubClass); // subclass
 
-  static RPG_Character_Class classXMLTreeToClass(const RPG_Character_ClassXML_XMLTree_Type&); // class (XML format)
+  static RPG_Character_Class classXMLTreeToClass (const RPG_Character_ClassXML_XMLTree_Type&); // class (XML format)
 
  private:
-  ACE_UNIMPLEMENTED_FUNC (RPG_Character_Class_Common_Tools())
-  ACE_UNIMPLEMENTED_FUNC (~RPG_Character_Class_Common_Tools())
-  ACE_UNIMPLEMENTED_FUNC (RPG_Character_Class_Common_Tools(const RPG_Character_Class_Common_Tools&))
-  ACE_UNIMPLEMENTED_FUNC (RPG_Character_Class_Common_Tools& operator=(const RPG_Character_Class_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Character_Class_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (~RPG_Character_Class_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Character_Class_Common_Tools (const RPG_Character_Class_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Character_Class_Common_Tools& operator= (const RPG_Character_Class_Common_Tools&))
 };
 
 #endif

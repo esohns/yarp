@@ -76,7 +76,7 @@ RPG_Character_Race_Common_Tools::raceToSpeed (enum RPG_Character_Race race_in)
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("invalid race (was: \"%s\"), aborting\n"),
-                  RPG_Character_RaceHelper::RPG_Character_RaceToString (race_in).c_str ()));
+                  ACE_TEXT (RPG_Character_RaceHelper::RPG_Character_RaceToString (race_in).c_str ())));
       break;
     }
   } // end SWITCH
@@ -208,7 +208,7 @@ RPG_Character_Race_Common_Tools::raceToSize (enum RPG_Character_Race race_in)
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("invalid race (was: \"%s\"), aborting\n"),
-                  RPG_Character_RaceHelper::RPG_Character_RaceToString (race_in).c_str ()));
+                  ACE_TEXT (RPG_Character_RaceHelper::RPG_Character_RaceToString (race_in).c_str ())));
       break;
     }
   } // end SWITCH

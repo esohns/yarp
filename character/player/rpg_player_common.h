@@ -21,8 +21,6 @@
 #ifndef RPG_PLAYER_COMMON_H
 #define RPG_PLAYER_COMMON_H
 
-//#include "rpg_player_base.h"
-
 #include <vector>
 
 // forward declarations

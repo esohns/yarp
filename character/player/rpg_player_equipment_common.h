@@ -21,14 +21,14 @@
 #ifndef RPG_PLAYER_EQUIPMENT_COMMON_H
 #define RPG_PLAYER_EQUIPMENT_COMMON_H
 
-#include "rpg_character_equipmentslot.h"
-
-#include <rpg_item_instance_common.h>
-
 #include <map>
 
+#include "rpg_character_equipmentslot.h"
+
+#include "rpg_item_instance_common.h"
+
 // useful types
-typedef std::map<RPG_Character_EquipmentSlot, RPG_Item_ID_t> RPG_Player_Equipment_t;
+typedef std::map<enum RPG_Character_EquipmentSlot, RPG_Item_ID_t> RPG_Player_Equipment_t;
 typedef RPG_Player_Equipment_t::const_iterator RPG_Player_EquipmentConstIterator_t;
 typedef RPG_Player_Equipment_t::iterator RPG_Player_EquipmentIterator_t;
 

@@ -245,13 +245,11 @@ RPG_Net_ProtocolHandler::handleSessionMessage (RPG_Net_Protocol_SessionMessage*&
                       ACE_TEXT ("failed to Common_Timer_Manager::schedule(), aborting\n")));
           return;
         } // end IF
-#if defined (_DEBUG)
         ACE_DEBUG ((LM_DEBUG,
                     ACE_TEXT ("session %u: scheduled \"ping\" timer (id: %d), interval: %#T...\n"),
                     sessionId_,
                     timerId_,
                     &interval));
-#endif // _DEBUG
       } // end IF
 
       break;
@@ -268,13 +266,11 @@ RPG_Net_ProtocolHandler::handleSessionMessage (RPG_Net_Protocol_SessionMessage*&
                       ACE_TEXT ("session %u: failed to cancel \"ping\" timer (ID: %d): \"%m\", continuing\n"),
                       sessionId_,
                       timerId_));
-#if defined (_DEBUG)
         else
          ACE_DEBUG ((LM_DEBUG,
                      ACE_TEXT("session %u: cancelled \"ping\" timer (ID: %d)\n"),
                      sessionId_,
                      timerId_));
-#endif // _DEBUG
         timerId_ = -1;
       } // end IF
 

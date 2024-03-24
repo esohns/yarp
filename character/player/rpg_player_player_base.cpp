@@ -21,30 +21,30 @@
 
 #include "rpg_player_player_base.h"
 
-#include "rpg_combat_common_tools.h"
+#include <algorithm>
 
-#include "rpg_item_common.h"
-#include "rpg_item_armor.h"
-#include "rpg_item_commodity.h"
-#include "rpg_item_weapon.h"
-#include "rpg_item_dictionary.h"
-#include "rpg_item_instance_manager.h"
-#include "rpg_item_common_tools.h"
+#include "ace/Log_Msg.h"
+#include "ace/OS.h"
 
-#include "rpg_character_defines.h"
+#include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
+
 #include "rpg_character_common_tools.h"
+#include "rpg_character_defines.h"
 #include "rpg_character_race_common_tools.h"
 #include "rpg_character_skills_common_tools.h"
 
 #include "rpg_magic_common_tools.h"
 
-#include "rpg_common_macros.h"
-#include "rpg_common_tools.h"
+#include "rpg_item_armor.h"
+#include "rpg_item_commodity.h"
+#include "rpg_item_common.h"
+#include "rpg_item_common_tools.h"
+#include "rpg_item_dictionary.h"
+#include "rpg_item_instance_manager.h"
+#include "rpg_item_weapon.h"
 
-#include <ace/OS.h>
-#include <ace/Log_Msg.h>
-
-#include <algorithm>
+#include "rpg_combat_common_tools.h"
 
 RPG_Player_Player_Base::RPG_Player_Player_Base (// base attributes
                                                 const std::string& name_in,
@@ -164,7 +164,7 @@ RPG_Player_Player_Base::initialize (// base attributes
   myClass      = class_in;
   myOffHand    = offHand_in;
   myExperience = experience_in;
-  mySize       = RPG_Character_Race_Common_Tools::raceToSize(race_in);
+  mySize       = RPG_Character_Race_Common_Tools::raceToSize (race_in);
 }
 
 ACE_UINT8
@@ -175,11 +175,11 @@ RPG_Player_Player_Base::getLevel (const RPG_Common_SubClass& subClass_in) const
   // *TODO*: implement class-specific tables
   ACE_UNUSED_ARG (subClass_in);
 
-  unsigned char result = 0;
+  ACE_UINT8 result = 0;
 
   result =
       static_cast<ACE_UINT8> (ACE_OS::floor ((1.0 +
-                                             ::sqrt (static_cast<double> (myExperience / 125) + 1.0)) / 2.0));
+                                             std::sqrt (static_cast<double> (myExperience / 125) + 1.0)) / 2.0));
 
   return result;
 }
@@ -273,7 +273,7 @@ RPG_Player_Player_Base::getArmorClass (enum RPG_Combat_DefenseSituation defenseS
 }
 
 ACE_UINT16
-RPG_Player_Player_Base::getReach (unsigned short& baseRange_out,
+RPG_Player_Player_Base::getReach (ACE_UINT16& baseRange_out,
                                   bool& reachIsAbsolute_out) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::getReach"));

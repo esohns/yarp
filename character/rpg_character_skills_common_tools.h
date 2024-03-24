@@ -46,22 +46,22 @@ class RPG_Character_Skills_Common_Tools
   static bool isClassSkill (enum RPG_Common_SubClass, // subclass
                             enum RPG_Common_Skill);   // skill
   static unsigned int getSkillPoints (enum RPG_Common_SubClass, // subclass
-                                      short,                    // INT modifier
+                                      ACE_INT8,                 // INT modifier
                                       unsigned int&);           // return value: initial points (level 1)
-  static unsigned int getNumFeatsAbilities (const RPG_Character_Race&,   // race
+  static unsigned int getNumFeatsAbilities (enum RPG_Character_Race,     // race
                                             enum RPG_Common_SubClass,    // subclass
                                             ACE_UINT8,                   // current level
                                             RPG_Character_Feats_t&,      // return value: base feats
                                             unsigned int&,               // return value: initial feats (level 1)
                                             RPG_Character_Abilities_t&); // return value: base abilities
 
-  static bool meetsFeatPrerequisites (enum RPG_Character_Feat,           // feat
-                                      enum RPG_Common_SubClass,          // subclass
-                                      ACE_UINT8,                         // current level
-                                      const RPG_Character_Attributes&,   // base attributes
-                                      const RPG_Character_Skills_t&,     // skills
-                                      const RPG_Character_Feats_t&,      // feats
-                                      const RPG_Character_Abilities_t&); // abilities
+  static bool meetsFeatPrerequisites (enum RPG_Character_Feat,                // feat
+                                      enum RPG_Common_SubClass,               // subclass
+                                      ACE_UINT8,                              // current level
+                                      const struct RPG_Character_Attributes&, // base attributes
+                                      const RPG_Character_Skills_t&,          // skills
+                                      const RPG_Character_Feats_t&,           // feats
+                                      const RPG_Character_Abilities_t&);      // abilities
 
   // debug info
   static std::string toString (const RPG_Character_Skills_t&); // skills

@@ -27,12 +27,8 @@
 
 #include "common_referencecounter.h"
 
-//#include "rpg_item_exports.h"
 #include "rpg_item_instance_common.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Item_Instance_Base
  : public Common_ReferenceCounter_T<ACE_MT_SYNCH>
 {

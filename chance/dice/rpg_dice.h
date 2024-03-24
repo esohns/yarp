@@ -45,15 +45,15 @@ class RPG_Dice
   static void generateRandomNumbers (unsigned int,            // range [1..max]
                                      unsigned int,            // number of rolls
                                      RPG_Dice_RollResult_t&); // result(s)
-  static void simulateRoll (const RPG_Dice_Roll&,    // specifics (number of dice, type, modifier)
-                            unsigned int,            // number of rolls
-                            RPG_Dice_RollResult_t&); // result(s)
-  static bool probability (float); // probability ([0.0F, 1.0F], percentage)
+  static void simulateRoll (const struct RPG_Dice_Roll&, // specifics (number of dice, type, modifier)
+                            unsigned int,                // number of rolls
+                            RPG_Dice_RollResult_t&);     // result(s)
+  static bool probability (float); // probability ([0.0f, 1.0f], percentage)
 
-  static void rollToRange (const RPG_Dice_Roll&,  // roll specifics
-                           RPG_Dice_ValueRange&); // result
-  static void rangeToRoll (const RPG_Dice_ValueRange&, // range
-                           RPG_Dice_Roll&);            // roll specifics
+  static void rollToRange (const struct RPG_Dice_Roll&, // roll specifics
+                           RPG_Dice_ValueRange&);       // result
+  static void rangeToRoll (const struct RPG_Dice_ValueRange&, // range
+                           struct RPG_Dice_Roll&);            // roll specifics
 
  private:
    ACE_UNIMPLEMENTED_FUNC (RPG_Dice ())
@@ -62,12 +62,12 @@ class RPG_Dice
    ACE_UNIMPLEMENTED_FUNC (RPG_Dice& operator= (const RPG_Dice&))
 
   // helper methods
-  inline static unsigned int distanceRangeToRange (const RPG_Dice_ValueRange& rangeA_in, const RPG_Dice_ValueRange& rangeB_in) { return (::abs (rangeA_in.begin - rangeB_in.begin) + ::abs (rangeA_in.end - rangeB_in.end)); }
+  inline static unsigned int distanceRangeToRange (const struct RPG_Dice_ValueRange& rangeA_in, const struct RPG_Dice_ValueRange& rangeB_in) { return std::abs (rangeA_in.begin - rangeB_in.begin) + std::abs (rangeA_in.end - rangeB_in.end); }
 
   // helper types
   struct rangeToRollElement
   { // needed for proper sorting
-    bool operator< (const rangeToRollElement& rhs_in) const
+    bool operator< (const struct rangeToRollElement& rhs_in) const
     { ACE_ASSERT ((range.begin == rhs_in.range.begin) && (range.end == rhs_in.range.end));
       // compute distance to other
       RPG_Dice_ValueRange possible_range;
@@ -82,7 +82,7 @@ class RPG_Dice
     RPG_Dice_ValueRange range;
     RPG_Dice_Roll roll;
   };
-  typedef std::set<rangeToRollElement> RPG_Dice_SortedRolls_t;
+  typedef std::set<struct rangeToRollElement> RPG_Dice_SortedRolls_t;
   typedef RPG_Dice_SortedRolls_t::const_iterator RPG_Dice_SortedRollsIterator_t;
 
   // helper methods

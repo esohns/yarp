@@ -46,7 +46,7 @@ class RPG_Item_Common_Tools
   static std::string toString (const RPG_Item_Damage&); // damage
 
   // XML-specifics
-  static std::string commoditySubTypeToXMLString (const RPG_Item_CommodityUnion&); // subtype
+  static std::string commoditySubTypeToXMLString (const struct RPG_Item_CommodityUnion&); // subtype
   static RPG_Item_CommodityUnion XMLStringToCommoditySubType (const std::string&); // subtype (XML string)
 
   static bool isThrownWeapon (enum RPG_Item_WeaponType); // weapon type
@@ -63,9 +63,9 @@ class RPG_Item_Common_Tools
   static ACE_UINT8 lightingItemToRadius (enum RPG_Item_CommodityLight, // lighting item type
                                          bool = true);                 // ambience is "bright" ?
 
-  static void itemToSlot (RPG_Item_ID_t,                  // item id
-                          enum RPG_Character_OffHand,     // off-hand
-                          RPG_Character_EquipmentSlots&); // return value: possible slot(s)
+  static void itemToSlot (RPG_Item_ID_t,                         // item id
+                          enum RPG_Character_OffHand,            // off-hand
+                          struct RPG_Character_EquipmentSlots&); // return value: possible slot(s)
 
  private:
   ACE_UNIMPLEMENTED_FUNC (RPG_Item_Common_Tools ())

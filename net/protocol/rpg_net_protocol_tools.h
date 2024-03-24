@@ -58,10 +58,10 @@ class RPG_Net_Protocol_Tools
   //static RPG_Net_Protocol_IConnection_Manager_t* getConnectionManager ();
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools ())
-  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Net_Protocol_Tools ())
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools (const RPG_Net_Protocol_Tools&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Tools& operator= (const RPG_Net_Protocol_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (virtual ~RPG_Net_Protocol_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Tools (const RPG_Net_Protocol_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Tools& operator= (const RPG_Net_Protocol_Tools&))
 
   // helper methods
   //static RPG_Net_Protocol_UserMode IRCUserModeChar2UserMode (char);

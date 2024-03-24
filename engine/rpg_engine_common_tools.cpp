@@ -122,11 +122,11 @@ RPG_Engine_Common_Tools::initialize (const std::vector<std::string>& schemaDirec
   if (!magicDictionaryFile_in.empty ())
   {
     if (!RPG_MAGIC_DICTIONARY_SINGLETON::instance ()->initialize (magicDictionaryFile_in
-#ifdef _DEBUG
+#if defined (_DEBUG)
                                                                   ,true
 #else
                                                                   ,false
-#endif
+#endif // _DEBUG
                                                                  ))
     {
       ACE_DEBUG ((LM_ERROR,

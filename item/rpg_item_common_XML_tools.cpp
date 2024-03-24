@@ -21,6 +21,10 @@
 
 #include "rpg_item_common_XML_tools.h"
 
+#include "ace/Log_Msg.h"
+
+#include "rpg_common_macros.h"
+
 #include "rpg_item_type.h"
 #include "rpg_item_instance_base.h"
 #include "rpg_item_armor.h"
@@ -29,10 +33,6 @@
 #include "rpg_item_instance_manager.h"
 #include "rpg_item_common_tools.h"
 
-#include "rpg_common_macros.h"
-
-#include "ace/Log_Msg.h"
-
 RPG_Item_List_t
 RPG_Item_Common_XML_Tools::itemXMLTreeToItems (const RPG_Item_InventoryXML_XMLTree_Type& inventory_in)
 {
@@ -40,7 +40,7 @@ RPG_Item_Common_XML_Tools::itemXMLTreeToItems (const RPG_Item_InventoryXML_XMLTr
 
   RPG_Item_List_t list;
 
-  RPG_Item_Type item_type = RPG_ITEM_TYPE_INVALID;
+  enum RPG_Item_Type item_type = RPG_ITEM_TYPE_INVALID;
   RPG_Item_Instance_Base* item_base = NULL;
   bool done = false;
   for (RPG_Item_InventoryXML_XMLTree_Type::item_const_iterator iterator = inventory_in.item().begin();
@@ -99,7 +99,7 @@ RPG_Item_Common_XML_Tools::itemXMLTreeToItems (const RPG_Item_InventoryXML_XMLTr
           default:
           {
             ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("invalid commodity type (was: \"%d\"), aborting\n"),
+                       ACE_TEXT("invalid commodity type (was: %d), aborting\n"),
                        union_type.discriminator));
 
             done = true;
@@ -144,7 +144,7 @@ RPG_Item_Common_XML_Tools::itemXMLTreeToItems (const RPG_Item_InventoryXML_XMLTr
       {
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("invalid item type (was \"%s\"), aborting\n"),
-                    (*iterator).type ().c_str ()));
+                    ACE_TEXT ((*iterator).type ().c_str ())));
         break;
       }
     } // end SWITCH

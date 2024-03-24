@@ -27,9 +27,6 @@
 #include "ace/Singleton.h"
 #include "ace/Synch_Traits.h"
 
-#include "rpg_monster_common.h"
-//#include "rpg_monster_exports.h"
-
 #include "rpg_dice_incl.h"
 
 #include "rpg_common_incl.h"
@@ -37,9 +34,8 @@
 
 #include "rpg_character_incl.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
+#include "rpg_monster_common.h"
+
 class RPG_Monster_Dictionary
 {
   // we use the singleton pattern, so we need to enable access to the ctor/dtors
@@ -48,26 +44,25 @@ class RPG_Monster_Dictionary
 
  public:
   // init dictionary
-  bool init(const std::string&,   // (XML) dictionary filename
-            const bool& = false); // validate XML ?
+  bool init (const std::string&, // (XML) dictionary filename
+             bool = false);      // validate XML ?
 
-  RPG_Monster_Properties getProperties(const std::string&) const; // name of monster
+  RPG_Monster_Properties getProperties (const std::string&) const; // name of monster
   inline unsigned int numEntries () const { return static_cast<unsigned int> (myMonsterDictionary.size ()); }
-  RPG_Monster_List_t getEntries() const;
-  void find(const RPG_Character_Alignment&,       // alignment
-            const RPG_Common_Environment&,        // environment
-            const RPG_Monster_OrganizationSet_t&, // organization(s)
-            const RPG_Monster_HitDice&,           // HD
-            RPG_Monster_List_t&) const;           // return value: compatible types
+  RPG_Monster_List_t getEntries () const;
+  void find (const struct RPG_Character_Alignment&, // alignment
+             const struct RPG_Common_Environment&,  // environment
+             const RPG_Monster_OrganizationSet_t&,  // organization(s)
+             const RPG_Monster_HitDice&,            // HD
+             RPG_Monster_List_t&) const;            // return value: compatible types
 
-  // debug info
-  void dump() const;
+  void dump () const;
 
  private:
-  RPG_Monster_Dictionary();
-  virtual ~RPG_Monster_Dictionary();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Dictionary(const RPG_Monster_Dictionary&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Dictionary& operator=(const RPG_Monster_Dictionary&))
+  RPG_Monster_Dictionary ();
+  inline virtual ~RPG_Monster_Dictionary () {}
+  ACE_UNIMPLEMENTED_FUNC (RPG_Monster_Dictionary (const RPG_Monster_Dictionary&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Monster_Dictionary& operator= (const RPG_Monster_Dictionary&))
 
   // helper types
   typedef RPG_Monster_Dictionary_t::const_iterator RPG_Monster_DictionaryConstIterator_t;

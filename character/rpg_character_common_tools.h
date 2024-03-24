@@ -42,47 +42,47 @@ class RPG_Character_Common_Tools
   static void initialize ();
 
   static std::string toString (const RPG_Character_Race_t&); // race(es)
-  static std::string toString (const RPG_Character_Class&); // class(es)
-  static std::string toString (const RPG_Character_Alignment&); // alignment
-  static std::string toString (const RPG_Character_Attributes&); // attributes
+  static std::string toString (const struct RPG_Character_Class&); // class(es)
+  static std::string toString (const struct RPG_Character_Alignment&); // alignment
+  static std::string toString (const struct RPG_Character_Attributes&); // attributes
   static std::string toString (const RPG_Character_Conditions_t&); // condition
 
-  static bool match (const RPG_Character_Alignment&,  // a
-                     const RPG_Character_Alignment&); // b
+  static bool match (const struct RPG_Character_Alignment&,  // a
+                     const struct RPG_Character_Alignment&); // b
 
-  static signed char getAttributeAbilityModifier (unsigned char); // attribute ability score
-  static bool getAttributeCheck (unsigned char); // attribute ability score
+  static ACE_INT8 getAttributeAbilityModifier (ACE_UINT8); // attribute ability score
+  static bool getAttributeCheck (ACE_UINT8); // attribute ability score
   static enum RPG_Dice_DieType getHitDie (enum RPG_Common_SubClass); // subclass
   static RPG_Character_BaseAttackBonus_t getBaseAttackBonus (enum RPG_Common_SubClass, // subClass
-                                                             unsigned char);           // class level
-  static RPG_Character_Encumbrance getEncumbrance (unsigned char,        // strength
-                                                   enum RPG_Common_Size, // size
-                                                   unsigned short,       // (carried) weight
-                                                   bool = true);         // is biped ?
+                                                             ACE_UINT8);               // class level
+  static enum RPG_Character_Encumbrance getEncumbrance (ACE_UINT8,            // strength
+                                                        enum RPG_Common_Size, // size
+                                                        ACE_UINT16,           // (carried) weight
+                                                        bool = true);         // is biped ?
   static void getLoadModifiers (enum RPG_Character_Encumbrance, // encumbrance
-                                unsigned char,                  // (base) speed
-                                signed char&,                   // return value: max Dex modifier (AC)
-                                signed char&,                   // return value: (armor) check penalty
-                                unsigned char&,                 // return value: (reduced) speed
-                                unsigned char&);                // return value: run modifier
-  static unsigned char getReducedSpeed (unsigned char); // (base) speed
+                                ACE_UINT8,                      // (base) speed
+                                ACE_INT8&,                      // return value: max Dex modifier (AC)
+                                ACE_INT8&,                      // return value: (armor) check penalty
+                                ACE_UINT8&,                     // return value: (reduced) speed
+                                ACE_UINT8&);                    // return value: run modifier
+  static ACE_UINT8 getReducedSpeed (ACE_UINT8); // (base) speed
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools ())
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Character_Common_Tools ())
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools (const RPG_Character_Common_Tools&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Character_Common_Tools& operator= (const RPG_Character_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Character_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (~RPG_Character_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Character_Common_Tools (const RPG_Character_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Character_Common_Tools& operator= (const RPG_Character_Common_Tools&))
 
   static void initializeStringConversionTables ();
   static void initializeEncumbranceTable ();
 
-  struct RPG_Character_EncumbranceEntry_t
+  struct RPG_Character_EncumbranceEntry
   {
     unsigned short light;
     unsigned short medium;
     unsigned short heavy;
   };
-  typedef std::map<unsigned char, RPG_Character_EncumbranceEntry_t> RPG_Character_EncumbranceTable_t;
+  typedef std::map<ACE_UINT8, struct RPG_Character_EncumbranceEntry> RPG_Character_EncumbranceTable_t;
   typedef RPG_Character_EncumbranceTable_t::const_iterator RPG_Character_EncumbranceTableConstIterator_t;
 
   static RPG_Character_EncumbranceTable_t myEncumbranceTable;

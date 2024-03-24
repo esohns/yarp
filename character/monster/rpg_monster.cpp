@@ -38,13 +38,13 @@
 
 RPG_Monster::RPG_Monster (// base attributes
                           const std::string& name_in,
-                          const RPG_Common_CreatureType& type_in,
-                          const RPG_Character_Alignment& alignment_in,
-                          const RPG_Character_Attributes& attributes_in,
+                          const struct RPG_Common_CreatureType& type_in,
+                          const struct RPG_Character_Alignment& alignment_in,
+                          const struct RPG_Character_Attributes& attributes_in,
                           const RPG_Character_Skills_t& skills_in,
                           const RPG_Character_Feats_t& feats_in,
                           const RPG_Character_Abilities_t& abilities_in,
-                          const RPG_Monster_Size& defaultSize_in,
+                          const struct RPG_Monster_Size& defaultSize_in,
                           ACE_UINT16 maxHitPoints_in,
                           const RPG_Magic_SpellTypes_t& knownSpells_in,
                           // extended data
@@ -103,43 +103,31 @@ RPG_Monster::RPG_Monster (const RPG_Monster& monster_in)
 // }
 
 ACE_INT8
-RPG_Monster::getArmorClass(enum RPG_Combat_DefenseSituation defenseSituation_in) const
+RPG_Monster::getArmorClass (enum RPG_Combat_DefenseSituation defenseSituation_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Monster::getArmorClass"));
+  RPG_TRACE (ACE_TEXT ("RPG_Monster::getArmorClass"));
 
   // AC = 10 + (natural) armor bonus (+ shield bonus) + DEX modifier + size modifier [+ other modifiers]
-  signed char result = 0;
+  ACE_INT8 result = 0;
 
   // *TODO*: consider any (additional, equipped) armor...
-  const RPG_Monster_Properties& properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(getName());
+  const RPG_Monster_Properties& properties =
+    RPG_MONSTER_DICTIONARY_SINGLETON::instance ()->getProperties (getName ());
   switch (defenseSituation_in)
   {
     default:
     {
-      // debug info
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid defense situation (\"%s\"): returning value for \"%s\"...\n"),
-                 RPG_Combat_DefenseSituationHelper::RPG_Combat_DefenseSituationToString(defenseSituation_in).c_str(),
-                 RPG_Combat_DefenseSituationHelper::RPG_Combat_DefenseSituationToString(DEFENSE_NORMAL).c_str()));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid defense situation (\"%s\"): returning value for \"%s\"...\n"),
+                  ACE_TEXT (RPG_Combat_DefenseSituationHelper::RPG_Combat_DefenseSituationToString (defenseSituation_in).c_str ()),
+                  ACE_TEXT (RPG_Combat_DefenseSituationHelper::RPG_Combat_DefenseSituationToString (DEFENSE_NORMAL).c_str ())));
     }
     case DEFENSE_NORMAL:
-    {
-      result = properties.armorClass.normal;
-
-      break;
-    }
+      result = properties.armorClass.normal; break;
     case DEFENSE_TOUCH:
-    {
-      result = properties.armorClass.touch;
-
-      break;
-    }
+      result = properties.armorClass.touch; break;
     case DEFENSE_FLATFOOTED:
-    {
-      result = properties.armorClass.flatFooted;
-
-      break;
-    }
+      result = properties.armorClass.flatFooted; break;
   } // end SWITCH
 //   result += getShieldBonus();
 
@@ -159,7 +147,7 @@ RPG_Monster::getReach (ACE_UINT16& baseRange_out,
   // step1: retrieve base speed (type)
   const RPG_Monster_Properties& properties =
     RPG_MONSTER_DICTIONARY_SINGLETON::instance ()->getProperties (getName ());
-  unsigned short result = properties.reach;
+  ACE_UINT16 result = properties.reach;
 
   //// *TODO*: consider polymorphed states...
   //unsigned short result = RPG_Common_Tools::sizeToReach(mySize, true);
@@ -208,21 +196,23 @@ RPG_Monster::getSpeed (bool isRunning_in,
   RPG_TRACE (ACE_TEXT ("RPG_Monster::getSpeed"));
 
   // sanity check(s)
-  ACE_ASSERT(lighting_in != RPG_COMMON_AMBIENTLIGHTING_INVALID);
+  ACE_ASSERT (lighting_in != RPG_COMMON_AMBIENTLIGHTING_INVALID);
 
   // init return value
   ACE_UINT8 result = 0;
 
   // step1: retrieve base speed (type)
-  const RPG_Monster_Properties& properties = RPG_MONSTER_DICTIONARY_SINGLETON::instance()->getProperties(getName());
+  const RPG_Monster_Properties& properties =
+    RPG_MONSTER_DICTIONARY_SINGLETON::instance ()->getProperties (getName ());
   result = properties.speed;
 
   // step2: consider encumbrance (armor / load)
   RPG_Character_Encumbrance encumbrance_by_armor = LOAD_LIGHT;
-  const RPG_Item_ArmorType& armor_type = inherited::myEquipment.getBodyArmor();
+  const RPG_Item_ArmorType& armor_type = inherited::myEquipment.getBodyArmor ();
   if (armor_type != ARMOR_NONE)
   {
-    const RPG_Item_ArmorProperties& properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_type);
+    const RPG_Item_ArmorProperties& properties =
+      RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getArmorProperties (armor_type);
     switch (properties.category)
     {
       case ARMORCATEGORY_LIGHT:
@@ -233,10 +223,9 @@ RPG_Monster::getSpeed (bool isRunning_in,
         encumbrance_by_armor = LOAD_HEAVY; break;
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid (body) armor category (was \"%s\"), aborting\n"),
-                   RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString(properties.category).c_str()));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("invalid (body) armor category (was \"%s\"), aborting\n"),
+                    ACE_TEXT (RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString (properties.category).c_str ())));
         return 0;
       }
     } // end SWITCH
@@ -247,11 +236,12 @@ RPG_Monster::getSpeed (bool isRunning_in,
   //  encumbrance_by_armor = LOAD_LIGHT;
 
   // *TODO*: consider non-bipeds...
-  RPG_Character_Encumbrance encumbrance_by_load = RPG_Character_Common_Tools::getEncumbrance(getAttribute(ATTRIBUTE_STRENGTH),
-                                                                                             getSize().size,
-                                                                                             getInventory().getTotalWeight(),
-                                                                                             true);
-  signed char maxDexModifierAC = std::numeric_limits<signed char>::max();
+  RPG_Character_Encumbrance encumbrance_by_load =
+    RPG_Character_Common_Tools::getEncumbrance (getAttribute (ATTRIBUTE_STRENGTH),
+                                                getSize ().size,
+                                                getInventory ().getTotalWeight (),
+                                                true);
+  signed char maxDexModifierAC = std::numeric_limits<signed char>::max ();
   signed char armorCheckPenalty = 0;
   unsigned char runModifier = RPG_CHARACTER_RUN_MODIFIER_MEDIUM;
   RPG_Character_Common_Tools::getLoadModifiers (std::max (encumbrance_by_armor, encumbrance_by_load),
@@ -261,14 +251,15 @@ RPG_Monster::getSpeed (bool isRunning_in,
                                                 result,
                                                 runModifier);
 
-  float modifier = 1.0F;
+  float modifier = 1.0f;
   // step3: consider vision [equipment / ambient lighting]
-  if ((inherited::myEquipment.getLightSource() == RPG_ITEM_COMMODITYLIGHT_INVALID) &&
+  if ((inherited::myEquipment.getLightSource () == RPG_ITEM_COMMODITYLIGHT_INVALID) &&
       (lighting_in == AMBIENCE_DARKNESS))
-    modifier *= 0.5F;
+    modifier *= 0.5f;
 
   // step4: consider terrain [track type]
-  modifier *= RPG_Common_Tools::terrainToSpeedModifier (terrain_in, track_in);
+  modifier *= RPG_Common_Tools::terrainToSpeedModifier (terrain_in,
+                                                        track_in);
 
   // step5: consider movement mode
   if (isRunning_in)
@@ -310,7 +301,7 @@ RPG_Monster::getAttackBonus (enum RPG_Common_Attribute modifier_in,
   RPG_TRACE (ACE_TEXT ("RPG_Monster::getAttackBonus"));
 
   // sanity check(s)
-  ACE_ASSERT((modifier_in == ATTRIBUTE_DEXTERITY) || (modifier_in == ATTRIBUTE_STRENGTH));
+  ACE_ASSERT ((modifier_in == ATTRIBUTE_DEXTERITY) || (modifier_in == ATTRIBUTE_STRENGTH));
 
   ACE_ASSERT (false); // *TODO*
 
@@ -329,7 +320,7 @@ RPG_Monster::getShieldBonus () const
 
   ACE_ASSERT (false); // *TODO*
 
-  signed char result = 0;
+  ACE_INT8 result = 0;
 #if defined (_MSC_VER)
   return result;
 #else

@@ -26,8 +26,7 @@
 #include "rpg_dice_dietype.h"
 #include "rpg_dice_roll.h"
 
-// some convenient types...
-typedef std::vector<RPG_Dice_Roll> RPG_Dice_Rolls_t;
+typedef std::vector<struct RPG_Dice_Roll> RPG_Dice_Rolls_t;
 typedef RPG_Dice_Rolls_t::const_iterator RPG_Dice_RollsIterator_t;
 
 typedef std::vector<unsigned int> RPG_Dice_RollResult_t;
@@ -55,13 +54,13 @@ typedef RPG_Dice_RollResult_t::const_iterator RPG_Dice_RollResultIterator_t;
 
 // enhance some (existing) definition(s)
 // prefix increment
-RPG_Dice_DieType& operator++ (RPG_Dice_DieType&);
+enum RPG_Dice_DieType& operator++ (enum RPG_Dice_DieType&);
 // postfix increment
-RPG_Dice_DieType operator++ (RPG_Dice_DieType&, int);
+enum RPG_Dice_DieType& operator++ (enum RPG_Dice_DieType&, int);
 // prefix decrement
-RPG_Dice_DieType& operator-- (RPG_Dice_DieType&);
+enum RPG_Dice_DieType& operator-- (enum RPG_Dice_DieType&);
 // postfix decrement
-enum RPG_Dice_DieType operator-- (enum RPG_Dice_DieType&, int);
+enum RPG_Dice_DieType& operator-- (enum RPG_Dice_DieType&, int);
 
 // ---------------------------------------
 

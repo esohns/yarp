@@ -93,7 +93,6 @@ RPG_Engine::RPG_Engine ()
 
   // initialize network connector
   allocatorConfiguration_.defaultBufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
-  ACE_OS::memset (&netConfiguration_, 0, sizeof (netConfiguration_));
   netConfiguration_.allocatorConfiguration = &allocatorConfiguration_;
   netConfiguration_.messageAllocator = &messageAllocator_;
   // ******************* socket configuration data ****************************
@@ -224,7 +223,7 @@ RPG_Engine::svc (void)
   RPG_TRACE (ACE_TEXT ("RPG_Engine::svc"));
 
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-#if COMMON_OS_WIN32_TARGET_PLATFORM(0x0A00) // _WIN32_WINNT_WIN10
+#if COMMON_OS_WIN32_TARGET_PLATFORM (0x0A00) // _WIN32_WINNT_WIN10
   Common_Error_Tools::setThreadName (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_TASK_THREAD_NAME),
                                      NULL);
 #else
@@ -1588,7 +1587,7 @@ RPG_Engine::entities (const RPG_Map_Position_t& position_in,
     lock_.release ();
 
   // step2: sort entity list
-  distance_sort_t distance_sort = {this, false, position_in};
+  struct distance_sort distance_sort = {this, false, position_in};
   result.sort (distance_sort);
 
   return result;
@@ -2152,7 +2151,7 @@ RPG_Engine::getSize (bool lockedAccess_in) const
   return result;
 }
 
-RPG_Map_DoorState
+enum RPG_Map_DoorState
 RPG_Engine::state (const RPG_Map_Position_t& position_in,
                    bool lockedAccess_in) const
 {
@@ -2749,10 +2748,10 @@ RPG_Engine::handleEntities ()
 //////////////////////////////////////////
 
 bool
-RPG_Engine::distance_sort_t::operator() (const RPG_Engine_EntityID_t& id1_in,
-                                         const RPG_Engine_EntityID_t& id2_in)
+RPG_Engine::distance_sort::operator() (const RPG_Engine_EntityID_t& id1_in,
+                                       const RPG_Engine_EntityID_t& id2_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Engine::distance_sort_t::operator()"));
+  RPG_TRACE (ACE_TEXT ("RPG_Engine::distance_sort::operator()"));
 
   // sanity check(s)
   ACE_ASSERT (engine);

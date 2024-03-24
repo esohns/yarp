@@ -77,8 +77,8 @@ class RPG_Player_Player_Base
   virtual ACE_INT8 getArmorClass (enum RPG_Combat_DefenseSituation) const;
 
   // *NOTE*: return value unit is feet
-  virtual ACE_UINT16 getReach (unsigned short&, // return value: base range (if any)
-                               bool&) const;    // return value: reach is absolute ?
+  virtual ACE_UINT16 getReach (ACE_UINT16&,  // return value: base range (if any)
+                               bool&) const; // return value: reach is absolute ?
   virtual ACE_UINT8 getSpeed (bool = false,                                 // running ?
                               enum RPG_Common_AmbientLighting = AMBIENCE_BRIGHT, // environment
                               enum RPG_Common_Terrain = TERRAIN_ANY,             // terrain

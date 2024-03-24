@@ -23,14 +23,16 @@
 
 #include "rpg_common_macros.h"
 
-// init statics
+#include "ace/Log_Msg.h"
+
+// initialize statics
 ACE_Atomic_Op<ACE_SYNCH_MUTEX, RPG_Item_ID_t> RPG_Item_Instance_Base::myCurrentId = 1;
 
-RPG_Item_Instance_Base::RPG_Item_Instance_Base()
- : inherited(1,     // initial reference count
-             true), // "delete this" on refcount == 0
+RPG_Item_Instance_Base::RPG_Item_Instance_Base ()
+ : inherited (1,     // initial reference count
+              true), // "delete this" on refcount == 0
    id_ (myCurrentId++) // *WARNING*: prefix increment leads to corruption !
 {
-  RPG_TRACE(ACE_TEXT("RPG_Item_Instance_Base::RPG_Item_Instance_Base"));
+  RPG_TRACE (ACE_TEXT ("RPG_Item_Instance_Base::RPG_Item_Instance_Base"));
 
 }

@@ -26,55 +26,53 @@
 
 #include "ace/Global_Macros.h"
 
-//#include "rpg_map_exports.h"
 #include "rpg_map_common.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Map_Pathfinding_Tools
 {
  public:
   // "classic" A* algorithm
-  static void findPath(const RPG_Map_Size_t&,      // dimension x/y
-                       const RPG_Map_Positions_t&, // obstacles
-                       const RPG_Map_Position_t&,  // start position
-                       const RPG_Map_Direction&,   // optional: starting direction
-                       const RPG_Map_Position_t&,  // end position
-                       RPG_Map_Path_t&);           // return value: path
+  static void findPath (const RPG_Map_Size_t&,      // dimension x/y
+                        const RPG_Map_Positions_t&, // obstacles
+                        const RPG_Map_Position_t&,  // start position
+                        const RPG_Map_Direction&,   // optional: starting direction
+                        const RPG_Map_Position_t&,  // end position
+                        RPG_Map_Path_t&);           // return value: path
 
   // "classic" raytrace algorithm (aka "line-of-sight" / "field-of-view")
-  static void findPath(const RPG_Map_Position_t&, // start position
-                       const RPG_Map_Position_t&, // end position
-                       RPG_Map_PositionList_t&);  // return value: path
+  static void findPath (const RPG_Map_Position_t&, // start position
+                        const RPG_Map_Position_t&, // end position
+                        RPG_Map_PositionList_t&);  // return value: path
 
   // *NOTE*: returns a ("best-guess") estimate of the relative direction from A to B
-  static RPG_Map_Direction getDirection(const RPG_Map_Position_t&,  // start position
-                                        const RPG_Map_Position_t&); // end position
+  static enum RPG_Map_Direction getDirection (const RPG_Map_Position_t&,  // start position
+                                              const RPG_Map_Position_t&); // end position
 
-  static void print(const RPG_Map_Path_t&,       // path
-                    const struct RPG_Map_FloorPlan&); // floor plan
+  static void print (const RPG_Map_Path_t&,       // path
+                     const struct RPG_Map_FloorPlan&); // floor plan
 
   // *NOTE*: these must be public (required by operator==, see below)
-  struct RPG_Map_AStar_Position_t
+  struct RPG_Map_AStar_Position
   {
     RPG_Map_Position_t position;
     RPG_Map_Position_t last_position;
 
-    inline RPG_Map_AStar_Position_t& operator=(const RPG_Map_AStar_Position_t& rhs_in)
-    { this->position = rhs_in.position;
-    this->last_position = rhs_in.last_position;
-    return *this; }
-    inline bool operator==(const RPG_Map_AStar_Position_t& rhs_in) const
+    inline RPG_Map_AStar_Position& operator= (const struct RPG_Map_AStar_Position& rhs_in)
+    {
+      this->position = rhs_in.position;
+      this->last_position = rhs_in.last_position;
+      return *this;
+    }
+    inline bool operator== (const struct RPG_Map_AStar_Position& rhs_in) const
     { return (this->position == rhs_in.position); }
   };
-  typedef std::pair<RPG_Map_AStar_Position_t, unsigned int> RPG_Map_AStar_Node_t;
+  typedef std::pair<struct RPG_Map_AStar_Position, unsigned int> RPG_Map_AStar_Node_t;
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Pathfinding_Tools())
-  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Map_Pathfinding_Tools())
-  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Pathfinding_Tools(const RPG_Map_Pathfinding_Tools&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Map_Pathfinding_Tools& operator=(const RPG_Map_Pathfinding_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Map_Pathfinding_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (virtual ~RPG_Map_Pathfinding_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Map_Pathfinding_Tools (const RPG_Map_Pathfinding_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Map_Pathfinding_Tools& operator= (const RPG_Map_Pathfinding_Tools&))
 
   typedef std::list<RPG_Map_AStar_Node_t> RPG_Map_AStar_NodeList_t;
   typedef RPG_Map_AStar_NodeList_t::const_iterator RPG_Map_AStar_NodeListConstIterator_t;
@@ -87,9 +85,8 @@ class RPG_Map_Pathfinding_Tools
                                  RPG_Map_AStar_Node_t,
                                  bool>
   {
-    inline bool
-    operator()(const RPG_Map_AStar_Node_t& __first,
-               const RPG_Map_AStar_Node_t& __second) const
+    inline bool operator() (const RPG_Map_AStar_Node_t& __first,
+                            const RPG_Map_AStar_Node_t& __second) const
     {
       return ((__first.second < __second.second) ||
               (!(__second.second < __first.second) && (__first.first.position < __second.first.position)));
@@ -101,9 +98,9 @@ class RPG_Map_Pathfinding_Tools
   typedef RPG_Map_AStar_Nodes_t RPG_Map_AStar_OpenPath_t;
 };
 
-inline static bool
-operator==(const RPG_Map_Pathfinding_Tools::RPG_Map_AStar_Node_t& __x,
-           const RPG_Map_Pathfinding_Tools::RPG_Map_AStar_Node_t& __y)
+static bool
+operator== (const RPG_Map_Pathfinding_Tools::RPG_Map_AStar_Node_t& __x,
+            const RPG_Map_Pathfinding_Tools::RPG_Map_AStar_Node_t& __y)
 { return (__x.first == __y.first); };
 
 #endif

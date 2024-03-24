@@ -21,12 +21,12 @@
 
 #include "rpg_item_commodity.h"
 
+#include "ace/Log_Msg.h"
+
+#include "rpg_common_macros.h"
+
 #include "rpg_item_common_tools.h"
 #include "rpg_item_dictionary.h"
-
-#include <rpg_common_macros.h>
-
-#include <ace/Log_Msg.h>
 
 RPG_Item_Commodity::RPG_Item_Commodity (enum RPG_Item_CommodityType type_in,
                                        const RPG_Item_CommodityUnion& subtype_in)
@@ -41,7 +41,7 @@ RPG_Item_Commodity::RPG_Item_Commodity (enum RPG_Item_CommodityType type_in,
 }
 
 void
-RPG_Item_Commodity::dump() const
+RPG_Item_Commodity::dump () const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Item_Commodity::dump"));
 
@@ -50,7 +50,7 @@ RPG_Item_Commodity::dump() const
     RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getCommodityProperties (subtype_);
 
   ACE_DEBUG ((LM_DEBUG,
-              ACE_TEXT ("Item: Commodity\nType: %s\nPrice: %d GP, %d SP\nWeight: %d\n"),
+              ACE_TEXT ("Item: Commodity\nType: %s\nPrice: %u GP, %u SP\nWeight: %u\n"),
               ACE_TEXT (RPG_Item_CommodityTypeHelper::RPG_Item_CommodityTypeToString (commodityType_).c_str ()),
               properties.baseStorePrice.numGoldPieces,
               properties.baseStorePrice.numSilverPieces,

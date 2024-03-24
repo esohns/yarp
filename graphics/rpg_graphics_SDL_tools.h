@@ -44,7 +44,7 @@ class RPG_Graphics_SDL_Tools
   static bool initializeVideo (const struct RPG_Graphics_SDL_VideoConfiguration&, // configuration
                                const std::string&,                                // window/icon caption
                                SDL_Surface*&,                                     // return value: window surface
-                               const bool& = true);                               // init window surface ?
+                               bool = true);                                      // initialize window surface ?
   static SDL_Surface* initializeScreen (const struct RPG_Graphics_SDL_VideoConfiguration&); // configuration
 #elif defined (SDL2_USE)
   static bool initializeVideo (const struct RPG_Graphics_SDL_VideoConfiguration&, // configuration
@@ -61,11 +61,11 @@ class RPG_Graphics_SDL_Tools
   static std::string keyToString (const SDL_Keysym&);
 #endif // SDL_USE || SDL2_USE
 
-  static SDL_Color colorToSDLColor (Uint32,              // RGBA value (SDL format)
-                                    const SDL_Surface&); // target surface
-  static Uint32 getColor (const RPG_Graphics_ColorName&, // color name
-                          const SDL_PixelFormat&,        // pixel format
-                          float = 1.0f);                 // blend factor (--> opacity)
+  static struct SDL_Color colorToSDLColor (Uint32,              // RGBA value (SDL format)
+                                           const SDL_Surface&); // target surface
+  static Uint32 getColor (enum RPG_Graphics_ColorName, // color name
+                          const SDL_PixelFormat&,      // pixel format
+                          float = 1.0f);               // blend factor (--> opacity)
 
   static SDL_Rect boundingBox (const struct SDL_Rect&,  // rect 1
                                const struct SDL_Rect&); // rect 2

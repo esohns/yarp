@@ -21,19 +21,19 @@
 
 #include "rpg_common_macros.h"
 
-RPG_Engine_MessageQueue::RPG_Engine_MessageQueue(const size_t& maxMessages_in)
-: inherited(maxMessages_in, // high water mark
-            maxMessages_in, // low water mark
-            NULL)           // notification strategy
+RPG_Engine_MessageQueue::RPG_Engine_MessageQueue (size_t maxMessages_in)
+ : inherited (maxMessages_in, // high water mark
+              maxMessages_in, // low water mark
+              NULL)           // notification strategy
 {
-  RPG_TRACE(ACE_TEXT("RPG_Engine_MessageQueue::RPG_Engine_MessageQueue"));
+  RPG_TRACE (ACE_TEXT ("RPG_Engine_MessageQueue::RPG_Engine_MessageQueue"));
 
 }
 
 bool
-RPG_Engine_MessageQueue::is_full_i(void)
+RPG_Engine_MessageQueue::is_full_i (void)
 {
-  ACE_TRACE("RPG_Engine_MessageQueue::is_full_i");
+  RPG_TRACE (ACE_TEXT ("RPG_Engine_MessageQueue::is_full_i"));
 
-  return (cur_count_ >= high_water_mark_);
+  return cur_count_ >= high_water_mark_;
 }

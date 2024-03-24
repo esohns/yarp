@@ -155,8 +155,8 @@ class RPG_Engine
   RPG_Map_Position_t getStartPosition (bool = true) const; // locked access ?
   RPG_Map_Positions_t getSeedPoints (bool = true) const; // locked access ?
   RPG_Map_Size_t getSize (bool = true) const; // locked access ?
-  RPG_Map_DoorState state (const RPG_Map_Position_t&, // position
-                           bool = true) const;        // locked access ?
+  enum RPG_Map_DoorState state (const RPG_Map_Position_t&, // position
+                                bool = true) const;        // locked access ?
 
   bool isValid (const RPG_Map_Position_t&, // position
                 bool = true) const;        // locked access ?
@@ -189,7 +189,7 @@ class RPG_Engine
   bool isBlocked (const RPG_Map_Position_t&) const;
 
   // helper classes
-  struct distance_sort_t
+  struct distance_sort
   {
     const RPG_Engine* const engine;
     bool                    locked_access;
@@ -206,7 +206,7 @@ class RPG_Engine
   void handleEntities ();
 
   // helper types
-  typedef std::vector<std::pair<RPG_Engine_Command,
+  typedef std::vector<std::pair<enum RPG_Engine_Command,
                                 struct RPG_Engine_ClientNotificationParameters> > RPG_Engine_ClientNotifications_t;
   typedef RPG_Engine_ClientNotifications_t::const_iterator RPG_Engine_ClientNotificationsConstIterator_t;
   typedef ACE_Message_Queue<ACE_MT_SYNCH,

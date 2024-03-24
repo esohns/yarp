@@ -40,24 +40,24 @@ class ACE_Event_Handler;
 class RPG_Common_Tools
 {
  public:
-  static void initializeStringConversionTables();
+  static void initializeStringConversionTables ();
 
-  static enum RPG_Common_Attribute savingThrowToAttribute (const enum RPG_Common_SavingThrow&); // save
+  static enum RPG_Common_Attribute savingThrowToAttribute (enum RPG_Common_SavingThrow); // save
   static std::string toString (const struct RPG_Common_CreatureType&); // type
   static std::string toString (const struct RPG_Common_SavingThrowCheck&); // save
   static std::string toString (const struct RPG_Common_Environment&); // environment
 
-  static enum RPG_Common_Plane terrainToPlane (const enum RPG_Common_Terrain&);
+  static enum RPG_Common_Plane terrainToPlane (enum RPG_Common_Terrain);
   static bool match (const struct RPG_Common_Environment&,  // a
                      const struct RPG_Common_Environment&); // b
 
   // *NOTE*: use for attack bonus / armor class
-  static signed char getSizeModifier (const enum RPG_Common_Size&);
+  static ACE_INT8 getSizeModifier (enum RPG_Common_Size);
   // *NOTE*: use for encumbrance
-  static float getSizeModifierLoad (const enum RPG_Common_Size&,
+  static float getSizeModifierLoad (enum RPG_Common_Size,
                                     bool = true); // is biped ?
-  static unsigned short sizeToReach (const enum RPG_Common_Size&,
-                                     bool = true); // is tall ? : long
+  static ACE_UINT16 sizeToReach (enum RPG_Common_Size,
+                                 bool = true); // is tall ? : long
   static ACE_UINT8 environmentToRadius (const struct RPG_Common_Environment&);
   static float terrainToSpeedModifier (enum RPG_Common_Terrain = TERRAIN_ANY, // terrain
                                        enum RPG_Common_Track = TRACK_NONE);   // track type

@@ -28,12 +28,8 @@
 #include "rpg_item_commoditybeverage.h"
 #include "rpg_item_commoditylight.h"
 #include "rpg_item_commodityunion.h"
-//#include "rpg_item_exports.h"
 #include "rpg_item_instance_base.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Item_Commodity
  : public RPG_Item_Instance_Base,
    public RPG_Item_Base

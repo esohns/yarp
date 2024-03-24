@@ -33,7 +33,7 @@
 
 #include "rpg_common_macros.h"
 
-RPG_Item_Instance_Manager::RPG_Item_Instance_Manager()
+RPG_Item_Instance_Manager::RPG_Item_Instance_Manager ()
  : myInstanceTable ()
  , myLock ()
 {
@@ -70,7 +70,7 @@ RPG_Item_Instance_Manager::create (enum RPG_Item_Type type_in,
       RPG_Item_CommodityUnion commodity_subtype_u;
       // half LSBs are subtype
       unsigned int mask =
-        (std::numeric_limits<unsigned int>::max() >> (sizeof (unsigned int) * 4));
+        (std::numeric_limits<unsigned int>::max () >> (sizeof (unsigned int) * 4));
       switch (commodity_type_e)
       {
         case COMMODITY_BEVERAGE:
@@ -83,29 +83,27 @@ RPG_Item_Instance_Manager::create (enum RPG_Item_Type type_in,
         case COMMODITY_FOOD:
         {
           // *TODO*: create these as well
-          ACE_ASSERT(false);
-
+          ACE_ASSERT (false);
           break;
         }
         case COMMODITY_LIGHT:
         {
           commodity_subtype_u.discriminator = RPG_Item_CommodityUnion::COMMODITYLIGHT;
           commodity_subtype_u.commoditylight =
-            static_cast<enum RPG_Item_CommodityLight>(subtype_in & mask);
+            static_cast<enum RPG_Item_CommodityLight> (subtype_in & mask);
           break;
         }
         case COMMODITY_OTHER:
         {
           // *TODO*: create these as well
-          ACE_ASSERT(false);
-
+          ACE_ASSERT (false);
           break;
         }
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid commodity type (was: \"%s\"), aborting\n"),
-                     RPG_Item_CommodityTypeHelper::RPG_Item_CommodityTypeToString(commodity_type_e).c_str()));
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid commodity type (was: \"%s\"), aborting\n"),
+                      ACE_TEXT (RPG_Item_CommodityTypeHelper::RPG_Item_CommodityTypeToString (commodity_type_e).c_str ())));
           break;
         }
       } // end SWITCH
@@ -121,8 +119,7 @@ RPG_Item_Instance_Manager::create (enum RPG_Item_Type type_in,
     case ITEM_VALUABLE:
     {
       // *TODO*: create these as well
-      ACE_ASSERT(false);
-
+      ACE_ASSERT (false);
       break;
     }
     case ITEM_WEAPON:
@@ -136,9 +133,9 @@ RPG_Item_Instance_Manager::create (enum RPG_Item_Type type_in,
     }
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid item type (was: \"%s\"), aborting\n"),
-                 RPG_Item_TypeHelper::RPG_Item_TypeToString (type_in).c_str()));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid item type (was: \"%s\"), aborting\n"),
+                  ACE_TEXT (RPG_Item_TypeHelper::RPG_Item_TypeToString (type_in).c_str ())));
       return NULL;
     }
   } // end SWITCH
@@ -158,7 +155,7 @@ RPG_Item_Instance_Manager::get (RPG_Item_ID_t id_in,
 
   RPG_Item_InstanceTableConstIterator_t iterator;
 
-  { ACE_Guard<ACE_SYNCH_MUTEX> aGuard (myLock);
+  { ACE_GUARD_RETURN (ACE_SYNCH_MUTEX, aGuard, myLock, false);
     iterator = myInstanceTable.find (id_in);
     //ACE_ASSERT(iterator != myInstanceTable.end());
     if (iterator == myInstanceTable.end())
@@ -184,7 +181,7 @@ RPG_Item_Instance_Manager::registerItem (RPG_Item_ID_t id_in,
   // sanity check(s)
   ACE_ASSERT (handle_in);
 
-  ACE_Guard<ACE_SYNCH_MUTEX> aGuard (myLock);
+  ACE_GUARD (ACE_SYNCH_MUTEX, aGuard, myLock);
 
   myInstanceTable.insert (std::make_pair (id_in, handle_in));
 }
@@ -196,11 +193,11 @@ RPG_Item_Instance_Manager::deregisterItem (RPG_Item_Base* handle_in)
 
   // sanity check(s)
   ACE_ASSERT (handle_in);
-  ACE_Guard<ACE_SYNCH_MUTEX> aGuard(myLock);
-  ACE_ASSERT (!myInstanceTable.empty());
+  ACE_GUARD (ACE_SYNCH_MUTEX, aGuard, myLock);
+  ACE_ASSERT (!myInstanceTable.empty ());
   
   // need to iterate
-  RPG_Item_InstanceTableIterator_t iterator = myInstanceTable.begin();
+  RPG_Item_InstanceTableIterator_t iterator = myInstanceTable.begin ();
   do
   {
     if ((*iterator).second == handle_in)
@@ -209,7 +206,7 @@ RPG_Item_Instance_Manager::deregisterItem (RPG_Item_Base* handle_in)
       return;
     } // end IF
     ++iterator;
-  } while (iterator != myInstanceTable.end());
+  } while (iterator != myInstanceTable.end ());
 
   // debug info
   RPG_Item_Instance_Base* instance_handle =

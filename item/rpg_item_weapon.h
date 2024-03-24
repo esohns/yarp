@@ -23,15 +23,11 @@
 
 #include "ace/Global_Macros.h"
 
-//#include "rpg_item_exports.h"
 #include "rpg_item_instance_base.h"
 #include "rpg_item_base.h"
 #include "rpg_item_instance_manager.h"
 #include "rpg_item_weapontype.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Item_Weapon
  : public RPG_Item_Instance_Base,
    public RPG_Item_Base

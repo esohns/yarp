@@ -35,7 +35,7 @@ RPG_Chance_Common_Tools::getCheck (ACE_INT16 modifier_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Chance_Common_Tools::getCheck"));
 
-  RPG_Dice_Roll roll;
+  struct RPG_Dice_Roll roll;
   roll.numDice = 1;
   roll.typeDice = dieType_in;
   roll.modifier = modifier_in;

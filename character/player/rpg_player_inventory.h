@@ -28,24 +28,24 @@
 class RPG_Player_Inventory
 {
  public:
-  RPG_Player_Inventory(const RPG_Item_List_t&); // list of (initial) items
-  RPG_Player_Inventory(const RPG_Player_Inventory&);
-  virtual ~RPG_Player_Inventory();
+  RPG_Player_Inventory (const RPG_Item_List_t&); // list of (initial) items
+  RPG_Player_Inventory (const RPG_Player_Inventory&);
+  virtual ~RPG_Player_Inventory ();
 
-  RPG_Player_Inventory& operator=(const RPG_Player_Inventory&);
+  RPG_Player_Inventory& operator= (const RPG_Player_Inventory&);
 
-  void pickUp(RPG_Item_ID_t); // item ID
-  void drop(RPG_Item_ID_t); // item ID
+  void pickUp (RPG_Item_ID_t); // item ID
+  void drop (RPG_Item_ID_t); // item ID
 
-  unsigned short getTotalWeight() const; 
+  ACE_UINT16 getTotalWeight () const; 
 
-  void dump() const;
+  void dump () const;
 
   // *WARNING*: do NOT insert/remove elements directly (use the API instead)
   RPG_Item_List_t myItems;
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Player_Inventory())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Player_Inventory ())
 };
 
 #endif

@@ -21,12 +21,10 @@
 
 #include "rpg_character_XML_tools.h"
 
-#include "rpg_character_feat.h"
-
 #include "rpg_common_macros.h"
 #include "rpg_common_skill.h"
 
-//#include "ace/Log_Msg.h"
+#include "rpg_character_feat.h"
 
 RPG_Character_Skills_t
 RPG_Character_XML_Tools::skillsXMLTreeToSkills (const RPG_Character_Skills_XMLTree_Type& skills_in)

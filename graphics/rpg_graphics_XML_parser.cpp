@@ -21,9 +21,9 @@
 
 #include "rpg_graphics_XML_parser.h"
 
-#include "rpg_common_macros.h"
+#include "ace/Log_Msg.h"
 
-#include <ace/Log_Msg.h>
+#include "rpg_common_macros.h"
 
 RPG_Graphics_Category RPG_Graphics_Category_Type::post_RPG_Graphics_Category_Type()
 {

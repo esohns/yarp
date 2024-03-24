@@ -34,7 +34,7 @@ class RPG_Engine_MessageQueue
                             Common_TimePolicy_t> inherited;
 
  public:
-  RPG_Engine_MessageQueue (const size_t&); // max number of queued items
+  RPG_Engine_MessageQueue (size_t); // max number of queued items
   inline virtual ~RPG_Engine_MessageQueue () {}
 
  protected:

@@ -38,45 +38,41 @@
 #include "rpg_combat_incl.h"
 
 #include "rpg_monster_common.h"
-//#include "rpg_monster_exports.h"
 #include "rpg_monster_incl.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Monster_Common_Tools
 {
  public:
-  static void initializeStringConversionTables();
+  static void initializeStringConversionTables ();
 
-  static std::string toString(const RPG_Monster_WeaponTypeUnion&); // weapon type
-  static std::string toString(const RPG_Monster_Attack&); // attack
-  static std::string toString(const RPG_Monster_Organizations_t&); // organizations
-  static std::string toString(const RPG_Monster_OrganizationSet_t&); // organizations
-  static std::string toString(const RPG_Monster_Advancement_t&); // advancement
-  static RPG_Common_PhysicalDamageList_t naturalWeaponToPhysicalDamageType(const RPG_Monster_NaturalWeapon&);
+  static std::string toString (const struct RPG_Monster_WeaponTypeUnion&); // weapon type
+  static std::string toString (const struct RPG_Monster_Attack&); // attack
+  static std::string toString (const RPG_Monster_Organizations_t&); // organizations
+  static std::string toString (const RPG_Monster_OrganizationSet_t&); // organizations
+  static std::string toString (const RPG_Monster_Advancement_t&); // advancement
+  static RPG_Common_PhysicalDamageList_t naturalWeaponToPhysicalDamageType (enum RPG_Monster_NaturalWeapon);
 
-  static bool match(const RPG_Monster_HitDice&,
-                    const RPG_Monster_HitDice&);
+  static bool match (const RPG_Monster_HitDice&,
+                     const RPG_Monster_HitDice&);
 
-  static void generateRandomEncounter(const unsigned int&,                  // # of different monster types
-                                      const unsigned int&,                  // total # of foes (0: random)
-                                      const RPG_Character_Alignment&,       // alignment
-                                      const RPG_Common_Environment&,        // environment
-                                      const RPG_Monster_OrganizationSet_t&, // organization(s)
-                                      const RPG_Monster_HitDice&,           // hit dice
-                                      RPG_Monster_Encounter_t&);            // return value: encounter
+  static void generateRandomEncounter (unsigned int,                          // # of different monster types
+                                       unsigned int,                          // total # of foes (0: random)
+                                       const struct RPG_Character_Alignment&, // alignment
+                                       const struct RPG_Common_Environment&,  // environment
+                                       const RPG_Monster_OrganizationSet_t&,  // organization(s)
+                                       const RPG_Monster_HitDice&,            // hit dice
+                                       RPG_Monster_Encounter_t&);             // return value: encounter
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Common_Tools())
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Monster_Common_Tools())
-  ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Common_Tools(const RPG_Monster_Common_Tools&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Common_Tools& operator=(const RPG_Monster_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Monster_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (~RPG_Monster_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Monster_Common_Tools (const RPG_Monster_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Monster_Common_Tools& operator= (const RPG_Monster_Common_Tools&))
 
   // helper methods
-  static std::string toString(const RPG_Monster_AttackAction&); // attack action
-  static void organizationStepToRoll(const RPG_Monster_OrganizationStep&, // organization step
-                                     RPG_Dice_Roll&);                     // return value: roll
+  static std::string toString (const struct RPG_Monster_AttackAction&); // attack action
+  static void organizationStepToRoll (const struct RPG_Monster_OrganizationStep&, // organization step
+                                      struct RPG_Dice_Roll&);                     // return value: roll
 };
 
 #endif

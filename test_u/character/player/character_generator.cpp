@@ -845,7 +845,7 @@ do_generatePlayer ()
 
   // step7: skills
   RPG_Character_Skills_t skills;
-  short int INT_modifier =
+  ACE_INT8 INT_modifier =
     RPG_Character_Common_Tools::getAttributeAbilityModifier (attributes.intelligence);
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("INT modifier (attribute value: %d) is: %d...\n"),

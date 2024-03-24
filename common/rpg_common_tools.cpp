@@ -102,7 +102,7 @@ RPG_Common_Tools::toString (const struct RPG_Common_CreatureType& type_in)
     RPG_Common_CreatureMetaTypeHelper::RPG_Common_CreatureMetaTypeToString (type_in.metaType);
   if (!type_in.subTypes.empty ())
   {
-    result += ACE_TEXT_ALWAYS_CHAR(" / (");
+    result += ACE_TEXT_ALWAYS_CHAR (" / (");
     for (std::vector<RPG_Common_CreatureSubType>::const_iterator iterator = type_in.subTypes.begin ();
          iterator != type_in.subTypes.end ();
          iterator++)
@@ -118,7 +118,7 @@ RPG_Common_Tools::toString (const struct RPG_Common_CreatureType& type_in)
 }
 
 enum RPG_Common_Attribute
-RPG_Common_Tools::savingThrowToAttribute (const enum RPG_Common_SavingThrow& save_in)
+RPG_Common_Tools::savingThrowToAttribute (enum RPG_Common_SavingThrow save_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::savingThrowToAttribute"));
 
@@ -190,7 +190,7 @@ RPG_Common_Tools::toString (const struct RPG_Common_Environment& environment_in)
 }
 
 enum RPG_Common_Plane
-RPG_Common_Tools::terrainToPlane (const enum RPG_Common_Terrain& terrain_in)
+RPG_Common_Tools::terrainToPlane (enum RPG_Common_Terrain terrain_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::terrainToPlane"));
 
@@ -267,8 +267,8 @@ RPG_Common_Tools::match (const struct RPG_Common_Environment& environmentA_in,
     return true;
 
   // different planes don't match: determine planes
-  RPG_Common_Plane planeA = RPG_Common_Tools::terrainToPlane(environmentA_in.terrain);
-  RPG_Common_Plane planeB = RPG_Common_Tools::terrainToPlane(environmentB_in.terrain);
+  RPG_Common_Plane planeA = RPG_Common_Tools::terrainToPlane (environmentA_in.terrain);
+  RPG_Common_Plane planeB = RPG_Common_Tools::terrainToPlane (environmentB_in.terrain);
   if (planeA != planeB)
     return false;
 
@@ -363,8 +363,8 @@ RPG_Common_Tools::match (const struct RPG_Common_Environment& environmentA_in,
   return false;
 }
 
-signed char
-RPG_Common_Tools::getSizeModifier(const enum RPG_Common_Size& size_in)
+ACE_INT8
+RPG_Common_Tools::getSizeModifier (enum RPG_Common_Size size_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::getSizeModifier"));
 
@@ -381,14 +381,14 @@ RPG_Common_Tools::getSizeModifier(const enum RPG_Common_Size& size_in)
   if (size_in == SIZE_MEDIUM)
     return 0;
 
-  signed char result = 1;
-  result <<= ::abs (SIZE_MEDIUM - size_in - 1);
+  ACE_INT8 result = 1;
+  result <<= std::abs (SIZE_MEDIUM - size_in - 1);
 
   return ((size_in > SIZE_MEDIUM) ? -result : result);
 }
 
 float
-RPG_Common_Tools::getSizeModifierLoad (const enum RPG_Common_Size& size_in,
+RPG_Common_Tools::getSizeModifierLoad (enum RPG_Common_Size size_in,
                                        bool isBiped_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::getSizeModifierLoad"));
@@ -434,8 +434,8 @@ RPG_Common_Tools::getSizeModifierLoad (const enum RPG_Common_Size& size_in,
   return 0.0F;
 }
 
-unsigned short
-RPG_Common_Tools::sizeToReach (const enum RPG_Common_Size& size_in,
+ACE_UINT16
+RPG_Common_Tools::sizeToReach (enum RPG_Common_Size size_in,
                                bool isTall_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Common_Tools::sizeToReach"));

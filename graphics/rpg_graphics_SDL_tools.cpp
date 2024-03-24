@@ -45,7 +45,7 @@ bool
 RPG_Graphics_SDL_Tools::preInitializeVideo (const struct RPG_Graphics_SDL_VideoConfiguration& configuration_in,
                                             const std::string& caption_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::preInitVideo"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::preInitializeVideo"));
 
   // sanity check
   if (myVideoPreInitialized)
@@ -73,19 +73,19 @@ RPG_Graphics_SDL_Tools::preInitializeVideo (const struct RPG_Graphics_SDL_VideoC
   if (video_driver.empty ())
   {
     char* environment =
-        ACE_OS::getenv(ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_SDL_VIDEO_DRIVER_ENV_VAR));
+        ACE_OS::getenv (ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SDL_VIDEO_DRIVER_ENV_VAR));
     if (environment)
       video_driver = environment;
   } // end IF
   // sanity check
-  if (video_driver.empty())
+  if (video_driver.empty ())
   {
     video_driver =
       ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME); // fallback
 
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("using video driver: \"%s\"\n"),
-               ACE_TEXT(video_driver.c_str())));
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("using video driver: \"%s\"\n"),
+                ACE_TEXT (video_driver.c_str ())));
   } // end IF
 
   // set flags passed to SDL_StartEventLoop
@@ -132,11 +132,11 @@ RPG_Graphics_SDL_Tools::preInitializeVideo (const struct RPG_Graphics_SDL_VideoC
   SDL_VERSION (&version_s);
 #endif // SDL_USE || SDL2_USE
   std::ostringstream version_number;
-  version_number << static_cast<unsigned int>(version_s.major);
-  version_number << ACE_TEXT_ALWAYS_CHAR(".");
-  version_number << static_cast<unsigned int>(version_s.minor);
-  version_number << ACE_TEXT_ALWAYS_CHAR(".");
-  version_number << static_cast<unsigned int>(version_s.patch);
+  version_number << static_cast<unsigned int> (version_s.major);
+  version_number << ACE_TEXT_ALWAYS_CHAR (".");
+  version_number << static_cast<unsigned int> (version_s.minor);
+  version_number << ACE_TEXT_ALWAYS_CHAR (".");
+  version_number << static_cast<unsigned int> (version_s.patch);
 #if defined (SDL_USE)
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   ACE_DEBUG ((LM_DEBUG,
@@ -177,9 +177,9 @@ bool
 RPG_Graphics_SDL_Tools::initializeVideo (const struct RPG_Graphics_SDL_VideoConfiguration& configuration_in,
                                          const std::string& caption_in,
                                          SDL_Surface*& windowSurface_out,
-                                         const bool& initWindow_in)
+                                         bool initWindow_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_SDL_Tools::initVideo"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::initializeVideo"));
 
   // init return value(s)
   windowSurface_out = NULL;
@@ -207,31 +207,29 @@ RPG_Graphics_SDL_Tools::initializeVideo (const struct RPG_Graphics_SDL_VideoConf
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += icon_graphic.file;
   SDL_Surface* icon_image = NULL;
-  icon_image = RPG_Graphics_Surface::load(path,   // graphics file
-                                          false); // don't convert to display format (no screen yet !)
+  icon_image = RPG_Graphics_Surface::load (path,   // graphics file
+                                           false); // don't convert to display format (no screen yet !)
   if (!icon_image)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadFile(\"%s\"), aborting\n"),
-               ACE_TEXT(path.c_str())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Common_Tools::loadFile(\"%s\"), aborting\n"),
+                ACE_TEXT (path.c_str ())));
     return false;
   } // end IF
-  SDL_WM_SetIcon(icon_image, // surface
-                 NULL);      // mask (--> everything)
+  SDL_WM_SetIcon (icon_image, // surface
+                  NULL);      // mask (--> everything)
 
-  // step3: init screen
+  // step3: initialize screen
   if (initWindow_in)
   {
-    windowSurface_out = RPG_Graphics_SDL_Tools::initializeScreen(configuration_in);
+    windowSurface_out = RPG_Graphics_SDL_Tools::initializeScreen (configuration_in);
     if (!windowSurface_out)
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to RPG_Graphics_SDL_Tools::initScreen(%d,%d,%d), aborting\n"),
-                 configuration_in.screen_width,
-                 configuration_in.screen_height,
-                 configuration_in.screen_colordepth));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::initScreen(%d,%d,%d), aborting\n"),
+                  configuration_in.screen_width,
+                  configuration_in.screen_height,
+                  configuration_in.screen_colordepth));
       return false;
     } // end IF
   } // end IF
@@ -281,7 +279,7 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
                 video_info_p->vfmt->Rshift, video_info_p->vfmt->Gshift, video_info_p->vfmt->Bshift, video_info_p->vfmt->Ashift,
                 video_info_p->vfmt->Rloss, video_info_p->vfmt->Gloss, video_info_p->vfmt->Bloss, video_info_p->vfmt->Aloss,
                 video_info_p->vfmt->colorkey,
-                static_cast<int>(video_info_p->vfmt->alpha)));
+                static_cast<int> (video_info_p->vfmt->alpha)));
 
   // set surface flags
   RPG_Graphics_Surface::SDL_surface_flags =
@@ -309,59 +307,58 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
   // --> any valid modes available ?
   if (modes == NULL)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("no available resolutions (flags: 0x%x) --> change settings, continuing\n"),
-               SDL_surface_flags));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("no available resolutions (flags: 0x%x) --> change settings, continuing\n"),
+                SDL_surface_flags));
     goto continue_;
   } // end IF
   else if (modes == reinterpret_cast<SDL_Rect**>(-1))
   {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("all resolutions available (flags: 0x%x)...\n"),
-               SDL_surface_flags));
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("all resolutions available (flags: 0x%x)...\n"),
+                SDL_surface_flags));
   }
   else
   {
     // print valid modes
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("*** available resolutions (flags: 0x%x) ***\n"),
-               SDL_surface_flags));
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("*** available resolutions (flags: 0x%x) ***\n"),
+                SDL_surface_flags));
     for (unsigned int i = 0;
          modes[i];
          i++)
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("[%d]: %d x %d\n"),
-                 i + 1,
-                 modes[i]->w,
-                 modes[i]->h));
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT ("[%d]: %d x %d\n"),
+                  i + 1,
+                  modes[i]->w,
+                  modes[i]->h));
   } // end ELSE
 
 continue_:
   // check to see whether the requested mode is possible
-  int suggested_bpp = SDL_VideoModeOK(configuration_in.screen_width,
-                                      configuration_in.screen_height,
-                                      configuration_in.screen_colordepth,
-                                      SDL_surface_flags);
+  int suggested_bpp = SDL_VideoModeOK (configuration_in.screen_width,
+                                       configuration_in.screen_height,
+                                       configuration_in.screen_colordepth,
+                                       SDL_surface_flags);
   switch (suggested_bpp)
   {
     case 0:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("requested mode (width: %d, height: %d, depth: %d, flags: 0x%x) not supported --> change settings, aborting\n"),
-                 configuration_in.screen_width,
-                 configuration_in.screen_height,
-                 configuration_in.screen_colordepth,
-                 SDL_surface_flags));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("requested mode (width: %d, height: %d, depth: %d, flags: 0x%x) not supported --> change settings, aborting\n"),
+                  configuration_in.screen_width,
+                  configuration_in.screen_height,
+                  configuration_in.screen_colordepth,
+                  SDL_surface_flags));
       return NULL;
     }
     default:
     {
       if (suggested_bpp != configuration_in.screen_colordepth)
       {
-        ACE_DEBUG((LM_WARNING,
-                   ACE_TEXT("using suggested color depth: %d...\n"),
-                   suggested_bpp));
+        ACE_DEBUG ((LM_WARNING,
+                    ACE_TEXT ("using suggested color depth: %d...\n"),
+                    suggested_bpp));
       } // end IF
 
       break;
@@ -372,55 +369,53 @@ continue_:
   if (configuration_in.use_OpenGL)
   {
     int failed = 0;
-    int return_value = SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
+    int return_value = SDL_GL_SetAttribute (SDL_GL_RED_SIZE, 5);
     failed |= return_value;
     if (return_value)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
-                 SDL_GL_RED_SIZE, 5,
-                 ACE_TEXT(SDL_GetError())));
-    return_value = SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
+                  SDL_GL_RED_SIZE, 5,
+                  ACE_TEXT (SDL_GetError ())));
+    return_value = SDL_GL_SetAttribute (SDL_GL_GREEN_SIZE, 5);
     failed |= return_value;
     if (return_value)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
-                 SDL_GL_GREEN_SIZE, 5,
-                 ACE_TEXT(SDL_GetError())));
-    return_value = SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
+                  SDL_GL_GREEN_SIZE, 5,
+                  ACE_TEXT (SDL_GetError ())));
+    return_value = SDL_GL_SetAttribute (SDL_GL_BLUE_SIZE, 5);
     failed |= return_value;
     if (return_value)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
-                 SDL_GL_BLUE_SIZE, 5,
-                 ACE_TEXT(SDL_GetError())));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
+                  SDL_GL_BLUE_SIZE, 5,
+                  ACE_TEXT (SDL_GetError ())));
 
-//    return_value = SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 0);
+//    return_value = SDL_GL_SetAttribute (SDL_GL_ALPHA_SIZE, 0);
 //    failed |= return_value;
 //    if (return_value)
-//      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
-//                 SDL_GL_ALPHA_SIZE, 0,
-//                 ACE_TEXT(SDL_GetError())));
+//      ACE_DEBUG ((LM_ERROR,
+//                  ACE_TEXT ("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
+//                  SDL_GL_ALPHA_SIZE, 0,
+//                  ACE_TEXT (SDL_GetError ())));
 
-//    return_value = SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 0);
+//    return_value = SDL_GL_SetAttribute (SDL_GL_BUFFER_SIZE, 0);
 //    failed |= return_value;
 //    if (return_value)
-//      ACE_DEBUG((LM_ERROR,
-//                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
-//                 SDL_GL_BUFFER_SIZE, 0,
-//                 ACE_TEXT(SDL_GetError())));
+//      ACE_DEBUG ((LM_ERROR,
+//                  ACE_TEXT ("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
+//                  SDL_GL_BUFFER_SIZE, 0,
+//                  ACE_TEXT (SDL_GetError ())));
 
-    return_value = SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,
-                                       (configuration_in.double_buffer ? 1
-                                                                       : 0));
+    return_value = SDL_GL_SetAttribute (SDL_GL_DOUBLEBUFFER,
+                                        (configuration_in.double_buffer ? 1 : 0));
     failed |= return_value;
     if (return_value)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
-                 SDL_GL_DOUBLEBUFFER,
-                 (configuration_in.double_buffer ? 1
-                                                 : 0),
-                 ACE_TEXT(SDL_GetError())));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
+                  SDL_GL_DOUBLEBUFFER,
+                  (configuration_in.double_buffer ? 1 : 0),
+                  ACE_TEXT (SDL_GetError ())));
 
 //    return_value = SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
 //    failed |= return_value;
@@ -492,17 +487,15 @@ continue_:
 //                 ACE_TEXT(SDL_GetError())));
 
     return_value =
-        SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL,
-                            (RPG_GRAPHICS_OPENGL_DEF_HW_ACCELERATION ? 1
-                                                                     : 0));
+        SDL_GL_SetAttribute (SDL_GL_ACCELERATED_VISUAL,
+                             (RPG_GRAPHICS_OPENGL_DEF_HW_ACCELERATION ? 1 : 0));
     failed |= return_value;
     if (return_value)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
-                 SDL_GL_ACCELERATED_VISUAL,
-                 (RPG_GRAPHICS_OPENGL_DEF_HW_ACCELERATION ? 1
-                                                          : 0),
-                 ACE_TEXT(SDL_GetError())));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_GL_SetAttribute(%d, %d): \"%s\", continuing\n"),
+                  SDL_GL_ACCELERATED_VISUAL,
+                  (RPG_GRAPHICS_OPENGL_DEF_HW_ACCELERATION ? 1 : 0),
+                  ACE_TEXT (SDL_GetError ())));
 
 //    return_value = SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
 //    failed |= return_value;
@@ -594,20 +587,19 @@ continue_:
 
   // open SDL window
   SDL_Surface* screen = NULL;
-  screen = SDL_SetVideoMode(configuration_in.screen_width,
-                            configuration_in.screen_height,
-                            suggested_bpp,
-                            SDL_surface_flags);
+  screen = SDL_SetVideoMode (configuration_in.screen_width,
+                             configuration_in.screen_height,
+                             suggested_bpp,
+                             SDL_surface_flags);
   if (!screen)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetVideoMode(%d, %d, %d, 0x%x): \"%s\", aborting\n"),
-               configuration_in.screen_width,
-               configuration_in.screen_height,
-               suggested_bpp,
-               SDL_surface_flags,
-               ACE_TEXT(SDL_GetError())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_SetVideoMode(%d, %d, %d, 0x%x): \"%s\", aborting\n"),
+                configuration_in.screen_width,
+                configuration_in.screen_height,
+                suggested_bpp,
+                SDL_surface_flags,
+                ACE_TEXT (SDL_GetError ())));
     return NULL;
   } // end IF
 
@@ -766,8 +758,9 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
   uint32_t renderer_flags = SDL_RENDERER_SOFTWARE;
   int32_t number_of_render_drivers = SDL_GetNumRenderDrivers(), index = 0;
 
-  while (index < number_of_render_drivers) {
-    if (SDL_GetRenderDriverInfo(index, &render_driver_info_s) < 0)
+  while (index < number_of_render_drivers)
+  {
+    if (SDL_GetRenderDriverInfo (index, &render_driver_info_s) < 0)
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_GetRenderDriverInfo(%d): \"%s\", aborting\n"),
@@ -835,48 +828,48 @@ RPG_Graphics_SDL_Tools::keyToString (const SDL_keysym& key_in)
   std::string result;
 
   char buffer[RPG_GRAPHICS_SDL_KEYSYM_BUFFER_SIZE];
-  result += ACE_TEXT("scancode: ");
+  result += ACE_TEXT_ALWAYS_CHAR ("scancode: ");
   ACE_OS::sprintf(buffer,
                   ACE_TEXT_ALWAYS_CHAR("0x%02X"),
                   key_in.scancode);
   result += buffer;
   result += ACE_TEXT_ALWAYS_CHAR("\n");
-  result += ACE_TEXT("name: \"");
+  result += ACE_TEXT_ALWAYS_CHAR ("name: \"");
   result += SDL_GetKeyName(key_in.sym);
-  result += ACE_TEXT_ALWAYS_CHAR("\"\n");
-  result += ACE_TEXT("unicode: ");
-  ACE_OS::sprintf(buffer,
-                  ACE_TEXT_ALWAYS_CHAR("0x%04X"),
-                  key_in.unicode);
+  result += ACE_TEXT_ALWAYS_CHAR ("\"\n");
+  result += ACE_TEXT_ALWAYS_CHAR ("unicode: ");
+  ACE_OS::sprintf (buffer,
+                   ACE_TEXT_ALWAYS_CHAR ("0x%04X"),
+                   key_in.unicode);
   result += buffer;
-  result += ACE_TEXT_ALWAYS_CHAR("\n");
-  result += ACE_TEXT("modifier(s): ");
+  result += ACE_TEXT_ALWAYS_CHAR ("\n");
+  result += ACE_TEXT_ALWAYS_CHAR ("modifier(s): ");
   if (key_in.mod == KMOD_NONE)
-    result += ACE_TEXT("N/A");
+    result += ACE_TEXT_ALWAYS_CHAR ("N/A");
   else
   {
     if (key_in.mod & KMOD_NUM)
-      result += ACE_TEXT("NUMLOCK ");
+      result += ACE_TEXT_ALWAYS_CHAR ("NUMLOCK ");
     if (key_in.mod & KMOD_CAPS)
-      result += ACE_TEXT("CAPSLOCK ");
+      result += ACE_TEXT_ALWAYS_CHAR ("CAPSLOCK ");
     if (key_in.mod & KMOD_LCTRL)
-      result += ACE_TEXT("LCTRL ");
+      result += ACE_TEXT_ALWAYS_CHAR ("LCTRL ");
     if (key_in.mod & KMOD_RCTRL)
-      result += ACE_TEXT("RCTRL ");
+      result += ACE_TEXT_ALWAYS_CHAR ("RCTRL ");
     if (key_in.mod & KMOD_LSHIFT)
-      result += ACE_TEXT("LSHIFT ");
+      result += ACE_TEXT_ALWAYS_CHAR ("LSHIFT ");
     if (key_in.mod & KMOD_RSHIFT)
-      result += ACE_TEXT("RSHIFT ");
+      result += ACE_TEXT_ALWAYS_CHAR ("RSHIFT ");
     if (key_in.mod & KMOD_LALT)
-      result += ACE_TEXT("LALT ");
+      result += ACE_TEXT_ALWAYS_CHAR ("LALT ");
     if (key_in.mod & KMOD_RALT)
-      result += ACE_TEXT("RALT ");
-//     if (key_in.mod & KMOD_CTRL)
-//       result += ACE_TEXT("CTRL ");
+      result += ACE_TEXT_ALWAYS_CHAR ("RALT ");
+    //     if (key_in.mod & KMOD_CTRL)
+//       result += ACE_TEXT_ALWAYS_CHAR ("CTRL ");
 //     if (key_in.mod & KMOD_SHIFT)
-//       result += ACE_TEXT("SHIFT ");
+//       result += ACE_TEXT_ALWAYS_CHAR ("SHIFT ");
 //     if (key_in.mod & KMOD_ALT)
-//       result += ACE_TEXT("ALT ");
+//       result += ACE_TEXT_ALWAYS_CHAR ("ALT ");
   } // end ELSE
 
   return result;
@@ -890,57 +883,57 @@ RPG_Graphics_SDL_Tools::keyToString (const SDL_Keysym& key_in)
   std::string result;
 
   char buffer[RPG_GRAPHICS_SDL_KEYSYM_BUFFER_SIZE];
-  result += ACE_TEXT("scancode: ");
+  result += ACE_TEXT_ALWAYS_CHAR ("scancode: ");
   ACE_OS::sprintf (buffer,
-                   ACE_TEXT_ALWAYS_CHAR("0x%02X"),
+                   ACE_TEXT_ALWAYS_CHAR ("0x%02X"),
                    key_in.scancode);
   result += buffer;
   result += ACE_TEXT_ALWAYS_CHAR ("\n");
-  result += ACE_TEXT ("name: \"");
+  result += ACE_TEXT_ALWAYS_CHAR ("name: \"");
   result += SDL_GetKeyName (key_in.sym);
   result += ACE_TEXT_ALWAYS_CHAR ("\"\n");
-  result += ACE_TEXT("modifier(s): ");
+  result += ACE_TEXT_ALWAYS_CHAR ("modifier(s): ");
   if (key_in.mod == KMOD_NONE)
-    result += ACE_TEXT("N/A");
+    result += ACE_TEXT_ALWAYS_CHAR ("N/A");
   else
   {
     if (key_in.mod & KMOD_NUM)
-      result += ACE_TEXT("NUMLOCK ");
+      result += ACE_TEXT_ALWAYS_CHAR ("NUMLOCK ");
     if (key_in.mod & KMOD_CAPS)
-      result += ACE_TEXT("CAPSLOCK ");
+      result += ACE_TEXT_ALWAYS_CHAR ("CAPSLOCK ");
     if (key_in.mod & KMOD_LCTRL)
-      result += ACE_TEXT("LCTRL ");
+      result += ACE_TEXT_ALWAYS_CHAR ("LCTRL ");
     if (key_in.mod & KMOD_RCTRL)
-      result += ACE_TEXT("RCTRL ");
+      result += ACE_TEXT_ALWAYS_CHAR ("RCTRL ");
     if (key_in.mod & KMOD_LSHIFT)
-      result += ACE_TEXT("LSHIFT ");
+      result += ACE_TEXT_ALWAYS_CHAR ("LSHIFT ");
     if (key_in.mod & KMOD_RSHIFT)
-      result += ACE_TEXT("RSHIFT ");
+      result += ACE_TEXT_ALWAYS_CHAR ("RSHIFT ");
     if (key_in.mod & KMOD_LALT)
-      result += ACE_TEXT("LALT ");
+      result += ACE_TEXT_ALWAYS_CHAR ("LALT ");
     if (key_in.mod & KMOD_RALT)
-      result += ACE_TEXT("RALT ");
-//     if (key_in.mod & KMOD_CTRL)
-//       result += ACE_TEXT("CTRL ");
+      result += ACE_TEXT_ALWAYS_CHAR ("RALT ");
+    //     if (key_in.mod & KMOD_CTRL)
+//       result += ACE_TEXT_ALWAYS_CHAR ("CTRL ");
 //     if (key_in.mod & KMOD_SHIFT)
-//       result += ACE_TEXT("SHIFT ");
+//       result += ACE_TEXT_ALWAYS_CHAR ("SHIFT ");
 //     if (key_in.mod & KMOD_ALT)
-//       result += ACE_TEXT("ALT ");
+//       result += ACE_TEXT_ALWAYS_CHAR ("ALT ");
   } // end ELSE
 
   return result;
 }
 #endif // SDL_USE || SDL2_USE
 
-SDL_Color
+struct SDL_Color
 RPG_Graphics_SDL_Tools::colorToSDLColor (Uint32 SDLColor_in,
                                          const SDL_Surface& targetSurface_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::colorToSDLColor"));
 
   // initialize return value
-  SDL_Color result;
-  ACE_OS::memset (&result, 0, sizeof (SDL_Color));
+  struct SDL_Color result;
+  ACE_OS::memset (&result, 0, sizeof (struct SDL_Color));
 
   // extract components from the 32-bit color value
   result.r =
@@ -955,7 +948,7 @@ RPG_Graphics_SDL_Tools::colorToSDLColor (Uint32 SDLColor_in,
 }
 
 Uint32
-RPG_Graphics_SDL_Tools::getColor (const RPG_Graphics_ColorName& colorName_in,
+RPG_Graphics_SDL_Tools::getColor (enum RPG_Graphics_ColorName colorName_in,
                                   const SDL_PixelFormat& pixelFormat_in,
                                   float blendFactor_in) // opacity
 {
@@ -964,9 +957,9 @@ RPG_Graphics_SDL_Tools::getColor (const RPG_Graphics_ColorName& colorName_in,
   RPG_Graphics_ColorMapConstIterator_t iterator = myColors.find (colorName_in);
   if (iterator == myColors.end ())
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("unknown/invalid color (was: \"%s\"), aborting\n"),
-               ACE_TEXT(RPG_Graphics_ColorNameHelper::RPG_Graphics_ColorNameToString (colorName_in).c_str ())));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("unknown/invalid color (was: \"%s\"), aborting\n"),
+                ACE_TEXT (RPG_Graphics_ColorNameHelper::RPG_Graphics_ColorNameToString (colorName_in).c_str ())));
     return 0;
   } // end IF
 
@@ -983,7 +976,7 @@ RPG_Graphics_SDL_Tools::initColors ()
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::initColors"));
 
   myColors.clear ();
-  RPG_Graphics_ColorRGBA color;
+  struct RPG_Graphics_ColorRGBA color;
   for (int i = 0;
        i < RPG_GRAPHICS_COLORNAME_MAX;
        i++)
@@ -1133,7 +1126,6 @@ RPG_Graphics_SDL_Tools::initColors ()
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("unknown/invalid color (was: %d), aborting\n"),
                     i));
-
         return;
       }
     } // end SWITCH

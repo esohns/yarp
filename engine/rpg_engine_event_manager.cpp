@@ -143,7 +143,7 @@ RPG_Engine_Event_Manager::svc (void)
   RPG_TRACE (ACE_TEXT ("RPG_Engine_Event_Manager::svc"));
 
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-#if COMMON_OS_WIN32_TARGET_PLATFORM(0x0A00) // _WIN32_WINNT_WIN10
+#if COMMON_OS_WIN32_TARGET_PLATFORM (0x0A00) // _WIN32_WINNT_WIN10
   Common_Error_Tools::setThreadName (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_AI_TASK_THREAD_NAME),
                                      NULL);
 #else
@@ -191,7 +191,7 @@ RPG_Engine_Event_Manager::svc (void)
 }
 
 void
-RPG_Engine_Event_Manager::add (const RPG_Engine_EntityID_t& id_in,
+RPG_Engine_Event_Manager::add (RPG_Engine_EntityID_t id_in,
                                const ACE_Time_Value& activationInterval_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine_Event_Manager::add"));
@@ -243,7 +243,7 @@ RPG_Engine_Event_Manager::add (const RPG_Engine_EntityID_t& id_in,
 }
 
 void
-RPG_Engine_Event_Manager::remove (const RPG_Engine_EntityID_t& id_in)
+RPG_Engine_Event_Manager::remove (RPG_Engine_EntityID_t id_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine_Event_Manager::remove"));
 
@@ -278,7 +278,7 @@ RPG_Engine_Event_Manager::remove (const RPG_Engine_EntityID_t& id_in)
 }
 
 void
-RPG_Engine_Event_Manager::reschedule (const RPG_Engine_EntityID_t& id_in,
+RPG_Engine_Event_Manager::reschedule (RPG_Engine_EntityID_t id_in,
                                       const ACE_Time_Value& activationInterval_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine_Event_Manager::reschedule"));

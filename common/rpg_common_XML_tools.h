@@ -24,10 +24,10 @@
 #include <string>
 #include <vector>
 
-#include "ace/Global_Macros.h"
-
 #include "xercesc/framework/XMLGrammarPool.hpp"
 #include "xercesc/sax2/SAX2XMLReader.hpp"
+
+#include "ace/Global_Macros.h"
 
 // forward declarations
 struct dirent;

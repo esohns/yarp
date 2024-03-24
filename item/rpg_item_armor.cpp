@@ -47,7 +47,7 @@ RPG_Item_Armor::dump () const
     RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getArmorProperties (armorType_);
 
   ACE_DEBUG ((LM_DEBUG,
-              ACE_TEXT ("Item: Armor\nType: %s\nCategory: %s\nPrice: %d GP, %d SP\nAC Bonus: %d\nmax Dex Bonus: %d\nPenalty: %d\nSpell Failure: %d%%\nSpeed: %d\nWeight: %d\n"),
+              ACE_TEXT ("Item: Armor\nType: %s\nCategory: %s\nPrice: %u GP, %u SP\nAC Bonus: %u\nmax Dex Bonus: %u\nPenalty: %d\nSpell Failure: %u%%\nSpeed: %u\nWeight: %u\n"),
               ACE_TEXT (RPG_Item_ArmorTypeHelper::RPG_Item_ArmorTypeToString (armorType_).c_str()),
               ACE_TEXT (RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString (properties.category).c_str()),
               properties.baseStorePrice.numGoldPieces,

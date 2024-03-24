@@ -21,23 +21,17 @@
 
 #include "rpg_monster_XML_parser.h"
 
+#include "ace/Log_Msg.h"
+
+#include "rpg_common_macros.h"
+
 #include "rpg_monster_naturalweapon.h"
 #include "rpg_monster_advancement.h"
 
-#include <rpg_common_macros.h>
-
-#include <ace/Log_Msg.h>
-
-RPG_Monster_Dictionary_Type::RPG_Monster_Dictionary_Type(RPG_Monster_Dictionary_t* monsterDictionary_in)
- : myMonsterDictionary(monsterDictionary_in)
+RPG_Monster_Dictionary_Type::RPG_Monster_Dictionary_Type (RPG_Monster_Dictionary_t* monsterDictionary_in)
+ : myMonsterDictionary (monsterDictionary_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Monster_Dictionary_Type::RPG_Monster_Dictionary_Type"));
-
-}
-
-RPG_Monster_Dictionary_Type::~RPG_Monster_Dictionary_Type()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Monster_Dictionary_Type::~RPG_Monster_Dictionary_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Monster_Dictionary_Type::RPG_Monster_Dictionary_Type"));
 
 }
 

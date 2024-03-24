@@ -22,7 +22,7 @@
 #define RPG_DICE_DEFINES_H
 
 // decimal --> fraction
-#define RPG_DICE_DEF_FAREY_EPSILON       0.001F
+#define RPG_DICE_DEF_FAREY_EPSILON       0.001f
 #define RPG_DICE_DEF_FAREY_MAX_NOMINATOR 1000
 
 #define RPG_DICE_SUB_DIRECTORY_STRING    "dice"

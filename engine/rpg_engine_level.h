@@ -29,7 +29,6 @@
 #include "rpg_map_level.h"
 
 #include "rpg_engine_common.h"
-//#include "rpg_engine_exports.h"
 #include "rpg_engine_XML_tree.h"
 
 class RPG_Engine_Level
@@ -80,10 +79,10 @@ class RPG_Engine_Level
   // *NOTE*: return value: toggled ?
   bool handleDoor (const RPG_Map_Position_t&, // position
                    bool);                     // open ? : close
-  bool findPath(const RPG_Map_Position_t&,  // start position
-                const RPG_Map_Position_t&,  // end position
-                const RPG_Map_Positions_t&, // obstacles
-                RPG_Map_Path_t&) const;     // return value: (partial) path A --> B
+  bool findPath (const RPG_Map_Position_t&,  // start position
+                 const RPG_Map_Position_t&,  // end position
+                 const RPG_Map_Positions_t&, // obstacles
+                 RPG_Map_Path_t&) const;     // return value: (partial) path A --> B
 
   struct RPG_Engine_LevelMetaData myMetaData;
 

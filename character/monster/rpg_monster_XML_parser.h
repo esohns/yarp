@@ -30,7 +30,7 @@
 #include "rpg_monster_XML_types.h"
 
 /**
-	@author Erik Sohns <erik.sohns@web.de>
+  @author Erik Sohns <erik.sohns@web.de>
 */
 
 class RPG_Monster_Size_Type
@@ -463,20 +463,20 @@ class RPG_Monster_PropertiesXML_Type
 class RPG_Monster_Dictionary_Type
   : public RPG_Monster_Dictionary_Type_pskel
 {
-  public:
-    RPG_Monster_Dictionary_Type(RPG_Monster_Dictionary_t*); // monster dictionary
-    virtual ~RPG_Monster_Dictionary_Type();
+ public:
+  RPG_Monster_Dictionary_Type (RPG_Monster_Dictionary_t*); // monster dictionary
+  inline virtual ~RPG_Monster_Dictionary_Type () {}
 
 //   virtual void pre();
-    virtual void monster(const RPG_Monster_PropertiesXML&);
-    virtual void post_RPG_Monster_Dictionary_Type();
+  virtual void monster (const RPG_Monster_PropertiesXML&);
+  virtual void post_RPG_Monster_Dictionary_Type ();
 
-  private:
-    ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Dictionary_Type())
-    ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Dictionary_Type(const RPG_Monster_Dictionary_Type&))
-    ACE_UNIMPLEMENTED_FUNC(RPG_Monster_Dictionary_Type& operator=(const RPG_Monster_Dictionary_Type&))
+ private:
+  ACE_UNIMPLEMENTED_FUNC (RPG_Monster_Dictionary_Type ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Monster_Dictionary_Type (const RPG_Monster_Dictionary_Type&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Monster_Dictionary_Type& operator= (const RPG_Monster_Dictionary_Type&))
 
-    RPG_Monster_Dictionary_t* myMonsterDictionary;
+  RPG_Monster_Dictionary_t* myMonsterDictionary;
 };
 
 #endif

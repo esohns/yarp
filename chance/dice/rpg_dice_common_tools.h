@@ -35,8 +35,8 @@ class RPG_Dice_Common_Tools
   // initialize string tables
   static void initializeStringConversionTables ();
 
-  static std::string toString (const RPG_Dice_Roll&); // roll
-  static std::string toString (const RPG_Dice_ValueRange&); // range
+  static std::string toString (const struct RPG_Dice_Roll&); // roll
+  static std::string toString (const struct RPG_Dice_ValueRange&); // range
 
  private:
   ACE_UNIMPLEMENTED_FUNC (RPG_Dice_Common_Tools ())

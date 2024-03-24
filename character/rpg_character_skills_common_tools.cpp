@@ -43,7 +43,7 @@ RPG_Character_Skills_Common_Tools::RPG_Character_FeatPrerequisitesTable_t RPG_Ch
 void
 RPG_Character_Skills_Common_Tools::initialize ()
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::init"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::initialize"));
 
   initializeClassSkillsTable ();
   initializeFeatPrerequisitesTable ();
@@ -53,7 +53,7 @@ RPG_Character_Skills_Common_Tools::initialize ()
 void
 RPG_Character_Skills_Common_Tools::initializeBonusFeatsTables ()
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::initBonusFeatsTables"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::initializeBonusFeatsTables"));
 
   // clean table
   myFighterBonusFeatsTable.clear ();
@@ -1446,7 +1446,7 @@ RPG_Character_Skills_Common_Tools::isClassSkill (enum RPG_Common_SubClass subCla
 
 unsigned int
 RPG_Character_Skills_Common_Tools::getSkillPoints (enum RPG_Common_SubClass subClass_in,
-                                                   short INTModifier_in,
+                                                   ACE_INT8 INTModifier_in,
                                                    unsigned int& initialPoints_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::getSkillPoints"));
@@ -1454,7 +1454,7 @@ RPG_Character_Skills_Common_Tools::getSkillPoints (enum RPG_Common_SubClass subC
   // init defaults
   initialPoints_out = 0;
 
-  short baseValue = INTModifier_in;
+  ACE_INT8 baseValue = INTModifier_in;
   switch (subClass_in)
   {
     case SUBCLASS_FIGHTER:
@@ -1505,7 +1505,7 @@ RPG_Character_Skills_Common_Tools::getSkillPoints (enum RPG_Common_SubClass subC
 }
 
 unsigned int
-RPG_Character_Skills_Common_Tools::getNumFeatsAbilities (const RPG_Character_Race& race_in,
+RPG_Character_Skills_Common_Tools::getNumFeatsAbilities (enum RPG_Character_Race race_in,
                                                          enum RPG_Common_SubClass subClass_in,
                                                          ACE_UINT8 currentLevel_in,
                                                          RPG_Character_Feats_t& baseFeats_out,
@@ -1830,7 +1830,7 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities (const RPG_Character_Rac
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("invalid subclass: \"%s\", aborting\n"),
-                  RPG_Common_SubClassHelper::RPG_Common_SubClassToString (subClass_in).c_str()));
+                  ACE_TEXT (RPG_Common_SubClassHelper::RPG_Common_SubClassToString (subClass_in).c_str ())));
       return 0;
     }
   } // end SWITCH
@@ -1906,25 +1906,12 @@ bool
 RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites (enum RPG_Character_Feat feat_in,
                                                            enum RPG_Common_SubClass subClass_in,
                                                            ACE_UINT8 currentLevel_in,
-                                                           const RPG_Character_Attributes& attributes_in,
+                                                           const struct RPG_Character_Attributes& attributes_in,
                                                            const RPG_Character_Skills_t& skills_in,
                                                            const RPG_Character_Feats_t& feats_in,
                                                            const RPG_Character_Abilities_t& abilities_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites"));
-
-  // debug info
-  if (RPG_Character_FeatHelper::RPG_Character_FeatToString (feat_in) == ACE_TEXT_ALWAYS_CHAR ("RPG_CHARACTER_FEAT_INVALID"))
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("invalid feat: %d, aborting\n"),
-                feat_in));
-    return false;
-  } // end IF
-
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("checking feat: \"%s\"...\n"),
-//              iterator->second.c_str()));
 
   // find feat prerequisites
   RPG_Character_FeatPrerequisitesTableIterator_t iterator2 = myFeatPrerequisitesTable.find (feat_in);
@@ -2025,7 +2012,7 @@ RPG_Character_Skills_Common_Tools::meetsFeatPrerequisites (enum RPG_Character_Fe
       }
       case FEAT_PREREQUISITETYPE_OTHERFEAT:
       {
-        if (feats_in.find((*iterator3).requiredOtherFeat) != feats_in.end())
+        if (feats_in.find ((*iterator3).requiredOtherFeat) != feats_in.end ())
         {
           // OK
           continue;

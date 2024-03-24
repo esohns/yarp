@@ -27,7 +27,7 @@
 #include "rpg_common_tools.h"
 
 bool
-RPG_Character_Class_Common_Tools::hasSubClass (const RPG_Character_Class& class_in,
+RPG_Character_Class_Common_Tools::hasSubClass (const struct RPG_Character_Class& class_in,
                                                enum RPG_Common_SubClass subClass_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Character_Class_Common_Tools::hasSubClass"));
@@ -71,8 +71,8 @@ RPG_Character_Class_Common_Tools::subClassToMetaClass (enum RPG_Common_SubClass 
     default:
     {
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("invalid subclass: %s, aborting\n"),
-                  RPG_Common_SubClassHelper::RPG_Common_SubClassToString (subClass_in).c_str ()));
+                  ACE_TEXT ("invalid subclass: \"%s\", aborting\n"),
+                  ACE_TEXT (RPG_Common_SubClassHelper::RPG_Common_SubClassToString (subClass_in).c_str ())));
     }
   } // end SWITCH
 
@@ -84,9 +84,10 @@ RPG_Character_Class_Common_Tools::classXMLTreeToClass (const RPG_Character_Class
 {
   RPG_TRACE (ACE_TEXT ("RPG_Character_Class_Common_Tools::classXMLTreeToClass"));
 
-  RPG_Character_Class result;
+  struct RPG_Character_Class result;
 
-  result.metaClass = RPG_Character_MetaClassHelper::stringToRPG_Character_MetaClass (class_in.metaClass ());
+  result.metaClass =
+    RPG_Character_MetaClassHelper::stringToRPG_Character_MetaClass (class_in.metaClass ());
   for (RPG_Character_ClassXML_XMLTree_Type::subClass_const_iterator iterator = class_in.subClass ().begin ();
        iterator != class_in.subClass ().end ();
        iterator++)

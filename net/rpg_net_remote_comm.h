@@ -73,10 +73,10 @@ class RPG_Net_Remote_Comm
 #endif
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Remote_Comm());
-  ACE_UNIMPLEMENTED_FUNC(virtual ~RPG_Net_Remote_Comm());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Remote_Comm(const RPG_Net_Remote_Comm&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Net_Remote_Comm& operator=(const RPG_Net_Remote_Comm&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Remote_Comm ());
+  ACE_UNIMPLEMENTED_FUNC (virtual ~RPG_Net_Remote_Comm ());
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Remote_Comm (const RPG_Net_Remote_Comm&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Remote_Comm& operator= (const RPG_Net_Remote_Comm&));
 };
 
 // convenient typedefs

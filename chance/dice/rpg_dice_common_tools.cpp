@@ -42,9 +42,9 @@ RPG_Dice_Common_Tools::initializeStringConversionTables ()
 }
 
 std::string
-RPG_Dice_Common_Tools::toString (const RPG_Dice_Roll& roll_in)
+RPG_Dice_Common_Tools::toString (const struct RPG_Dice_Roll& roll_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Dice_Common_Tools::rollToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Dice_Common_Tools::toString"));
 
   std::string result;
   std::stringstream converter;
@@ -66,9 +66,9 @@ RPG_Dice_Common_Tools::toString (const RPG_Dice_Roll& roll_in)
 }
 
 std::string
-RPG_Dice_Common_Tools::toString (const RPG_Dice_ValueRange& range_in)
+RPG_Dice_Common_Tools::toString (const struct RPG_Dice_ValueRange& range_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Dice_Common_Tools::rangeToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Dice_Common_Tools::toString"));
 
   std::string result;
   std::stringstream converter;
@@ -86,8 +86,8 @@ RPG_Dice_Common_Tools::toString (const RPG_Dice_ValueRange& range_in)
 
 //////////////////////////////////////////
 
-RPG_Dice_DieType&
-operator++ (RPG_Dice_DieType& dieType_inout)
+enum RPG_Dice_DieType&
+operator++ (enum RPG_Dice_DieType& dieType_inout)
 {
   switch (dieType_inout)
   {
@@ -102,22 +102,22 @@ operator++ (RPG_Dice_DieType& dieType_inout)
     case D_12: dieType_inout = D_20; break;
     case D_20: dieType_inout = D_100; break;
     case D_100: dieType_inout = D_0; break;
-    default: ACE_ASSERT(false); // changed enum but forgot to adjust the operator...
+    default: ACE_ASSERT (false); // changed enum but forgot to adjust the operator...
   } // end SWITCH
 
   return dieType_inout;
 };
 
-RPG_Dice_DieType
-operator++ (RPG_Dice_DieType& dieType_inout, int)
+enum RPG_Dice_DieType&
+operator++ (enum RPG_Dice_DieType& dieType_inout, int)
 {
-  RPG_Dice_DieType result = ++dieType_inout;
+  enum RPG_Dice_DieType& result = ++dieType_inout;
 
   return result;
 };
 
-RPG_Dice_DieType&
-operator-- (RPG_Dice_DieType& dieType_inout)
+enum RPG_Dice_DieType&
+operator-- (enum RPG_Dice_DieType& dieType_inout)
 {
   switch (dieType_inout)
   {
@@ -138,10 +138,10 @@ operator-- (RPG_Dice_DieType& dieType_inout)
   return dieType_inout;
 };
 
-enum RPG_Dice_DieType
+enum RPG_Dice_DieType&
 operator-- (enum RPG_Dice_DieType& dieType_inout, int)
 {
-  RPG_Dice_DieType result = --dieType_inout;
+  enum RPG_Dice_DieType& result = --dieType_inout;
 
   return result;
 };
@@ -154,5 +154,5 @@ RPG_Dice_Roll::operator*= (int multiplier_in)
   numDice *= multiplier_in;
   modifier *= multiplier_in;
 
-  return (*this);
+  return *this;
 };

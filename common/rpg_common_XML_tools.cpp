@@ -91,13 +91,10 @@ RPG_Common_XML_Tools::initialize (const std::vector<std::string>& schemaDirector
     // *TODO*
     //ACE_NEW_NORETURN (grammarPool_,
     //                  XMLGrammarPoolImpl (xercesc_3_1::XMLPlatformUtils::fgMemoryManager));
-    try
-    {
+    try {
       grammarPool_ =
         static_cast<XMLGrammarPool*> (new XMLGrammarPoolImpl (XMLPlatformUtils::fgMemoryManager));
-    }
-    catch (...)
-    {
+    } catch (...) {
       ACE_DEBUG ((LM_CRITICAL,
                   ACE_TEXT ("failed to allocate memory: \"%m\", aborting\n")));
       return false;

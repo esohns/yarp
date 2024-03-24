@@ -21,6 +21,16 @@
 
 #include "rpg_item_common_tools.h"
 
+#include <sstream>
+
+#include "ace/Log_Msg.h"
+
+#include "rpg_common_macros.h"
+
+#include "rpg_common_environment_incl.h"
+#include "rpg_character_incl.h"
+#include "rpg_magic_incl.h"
+
 #include "rpg_item_incl.h"
 #include "rpg_item_armor.h"
 #include "rpg_item_commodity.h"
@@ -28,16 +38,6 @@
 #include "rpg_item_dictionary.h"
 #include "rpg_item_instance_manager.h"
 #include "rpg_item_XML_parser.h"
-
-#include "rpg_common_environment_incl.h"
-#include "rpg_character_incl.h"
-#include "rpg_magic_incl.h"
-
-#include "rpg_common_macros.h"
-
-#include "ace/Log_Msg.h"
-
-#include <sstream>
 
 // initialize statics
 RPG_Item_TypeToStringTable_t RPG_Item_TypeHelper::myRPG_Item_TypeToStringTable;
@@ -67,7 +67,6 @@ RPG_Item_Common_Tools::initializeStringConversionTables ()
   RPG_Item_ArmorCategoryHelper::init ();
   RPG_Item_ArmorTypeHelper::init ();
 
-  // debug info
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("RPG_Item_Common_Tools: initialized string conversion tables...\n")));
 }
@@ -81,7 +80,7 @@ RPG_Item_Common_Tools::toString (const RPG_Item_WeaponDamageType& weaponDamageTy
 
   // sanity check
   if (weaponDamageType_in.none ())
-    return RPG_Common_PhysicalDamageTypeHelper::RPG_Common_PhysicalDamageTypeToString(PHYSICALDAMAGE_NONE);
+    return RPG_Common_PhysicalDamageTypeHelper::RPG_Common_PhysicalDamageTypeToString (PHYSICALDAMAGE_NONE);
 
   int damageType = PHYSICALDAMAGE_NONE + 1;
   for (unsigned int i = 0;
@@ -89,7 +88,8 @@ RPG_Item_Common_Tools::toString (const RPG_Item_WeaponDamageType& weaponDamageTy
        i++, damageType++)
     if (weaponDamageType_in.test (i))
     {
-      result += RPG_Common_PhysicalDamageTypeHelper::RPG_Common_PhysicalDamageTypeToString (static_cast<RPG_Common_PhysicalDamageType> (damageType));
+      result +=
+        RPG_Common_PhysicalDamageTypeHelper::RPG_Common_PhysicalDamageTypeToString (static_cast<RPG_Common_PhysicalDamageType> (damageType));
       result += ACE_TEXT_ALWAYS_CHAR ("|");
     } // end IF
 
@@ -154,7 +154,7 @@ RPG_Item_Common_Tools::toString (const RPG_Item_Damage& damage_in)
 }
 
 std::string
-RPG_Item_Common_Tools::commoditySubTypeToXMLString (const RPG_Item_CommodityUnion& commoditySubType_in)
+RPG_Item_Common_Tools::commoditySubTypeToXMLString (const struct RPG_Item_CommodityUnion& commoditySubType_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::commoditySubTypeToXMLString"));
 
@@ -163,17 +163,15 @@ RPG_Item_Common_Tools::commoditySubTypeToXMLString (const RPG_Item_CommodityUnio
   switch (commoditySubType_in.discriminator)
   {
     case RPG_Item_CommodityUnion::COMMODITYBEVERAGE:
-      result = RPG_Item_CommodityBeverageHelper::RPG_Item_CommodityBeverageToString(commoditySubType_in.commoditybeverage); break;
+      result = RPG_Item_CommodityBeverageHelper::RPG_Item_CommodityBeverageToString (commoditySubType_in.commoditybeverage); break;
     case RPG_Item_CommodityUnion::COMMODITYLIGHT:
-      result = RPG_Item_CommodityLightHelper::RPG_Item_CommodityLightToString(commoditySubType_in.commoditylight); break;
+      result = RPG_Item_CommodityLightHelper::RPG_Item_CommodityLightToString (commoditySubType_in.commoditylight); break;
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid commodity type (was: %d), aborting\n"),
-                 commoditySubType_in.discriminator));
-
-      ACE_ASSERT(false);
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid commodity type (was: %d), aborting\n"),
+                  commoditySubType_in.discriminator));
+      ACE_ASSERT (false);
       break;
     }
   } // end SWITCH
@@ -206,13 +204,9 @@ RPG_Item_Common_Tools::isShield (enum RPG_Item_ArmorType type_in)
     case ARMOR_SHIELD_HEAVY_WOODEN:
     case ARMOR_SHIELD_HEAVY_STEEL:
     case ARMOR_SHIELD_TOWER:
-    {
       return true;
-    }
     default:
-    {
       break;
-    }
   } // end SWITCH
 
   return false;
@@ -240,9 +234,9 @@ RPG_Item_Common_Tools::lightingItemToRadius (enum RPG_Item_CommodityLight type_i
       result = 20; break;
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid (lighting) item type (was: \"%s\"), aborting\n"),
-                 RPG_Item_CommodityLightHelper::RPG_Item_CommodityLightToString (type_in).c_str ()));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid (lighting) item type (was: \"%s\"), aborting\n"),
+                  ACE_TEXT (RPG_Item_CommodityLightHelper::RPG_Item_CommodityLightToString (type_in).c_str ())));
       return 0;
     }
   } // end SWITCH
@@ -255,12 +249,12 @@ RPG_Item_Common_Tools::lightingItemToRadius (enum RPG_Item_CommodityLight type_i
 void
 RPG_Item_Common_Tools::itemToSlot (RPG_Item_ID_t id_in,
                                    enum RPG_Character_OffHand offHand_in,
-                                   RPG_Character_EquipmentSlots& slots_out)
+                                   struct RPG_Character_EquipmentSlots& slots_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::itemToSlot"));
 
   // init return value(s)
-  slots_out.slots.clear();
+  slots_out.slots.clear ();
   slots_out.is_inclusive = false;
 
   // retrieve properties
@@ -268,9 +262,9 @@ RPG_Item_Common_Tools::itemToSlot (RPG_Item_ID_t id_in,
   if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance ()->get (id_in,
                                                               item_base))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid item ID (was: %u), returning\n"),
-               id_in));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("invalid item ID (was: %u), returning\n"),
+                id_in));
     return;
   } // end IF
   ACE_ASSERT (item_base);
@@ -318,10 +312,9 @@ RPG_Item_Common_Tools::itemToSlot (RPG_Item_ID_t id_in,
         }
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid armor category (was: \"%s\"), aborting\n"),
-                     RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString(properties.category).c_str()));
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid armor category (was: \"%s\"), aborting\n"),
+                      ACE_TEXT (RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString (properties.category).c_str ())));
           return;
         }
       } // end SWITCH
@@ -346,9 +339,9 @@ RPG_Item_Common_Tools::itemToSlot (RPG_Item_ID_t id_in,
         }
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid commodity type (was: %d), aborting\n"),
-                     commodity->subtype_.discriminator));
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid commodity type (was: %d), aborting\n"),
+                      commodity->subtype_.discriminator));
           return;
         }
       } // end SWITCH
@@ -383,7 +376,7 @@ RPG_Item_Common_Tools::itemToSlot (RPG_Item_ID_t id_in,
     {
       ACE_DEBUG ((LM_DEBUG,
                   ACE_TEXT ("invalid item type (was: \"%s\"), aborting\n"),
-                  RPG_Item_TypeHelper::RPG_Item_TypeToString (item_base->type ()).c_str ()));
+                  ACE_TEXT (RPG_Item_TypeHelper::RPG_Item_TypeToString (item_base->type ()).c_str ())));
       break;
     }
   } // end SWITCH
@@ -436,7 +429,7 @@ RPG_Item_Common_Tools::isRangedWeapon (enum RPG_Item_WeaponType type_in)
 }
 
 bool
-RPG_Item_Common_Tools::isTwoHandedWeapon(enum RPG_Item_WeaponType type_in)
+RPG_Item_Common_Tools::isTwoHandedWeapon (enum RPG_Item_WeaponType type_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::isTwoHandedWeapon"));
 

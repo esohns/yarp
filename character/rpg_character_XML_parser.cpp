@@ -27,67 +27,74 @@
 
 #include "rpg_character_incl.h"
 
-RPG_Character_Gender RPG_Character_Gender_Type::post_RPG_Character_Gender_Type()
+RPG_Character_Gender
+RPG_Character_Gender_Type::post_RPG_Character_Gender_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Gender_Type::post_RPG_Character_Gender_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Gender_Type::post_RPG_Character_Gender_Type"));
 
-  return RPG_Character_GenderHelper::stringToRPG_Character_Gender(post_string());
+  return RPG_Character_GenderHelper::stringToRPG_Character_Gender (post_string ());
 }
 
-RPG_Character_Race RPG_Character_Race_Type::post_RPG_Character_Race_Type()
+RPG_Character_Race
+RPG_Character_Race_Type::post_RPG_Character_Race_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Race_Type::post_RPG_Character_Race_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Race_Type::post_RPG_Character_Race_Type"));
 
-  return RPG_Character_RaceHelper::stringToRPG_Character_Race(post_string());
+  return RPG_Character_RaceHelper::stringToRPG_Character_Race (post_string ());
 }
 
-RPG_Character_MetaClass RPG_Character_MetaClass_Type::post_RPG_Character_MetaClass_Type()
+RPG_Character_MetaClass
+RPG_Character_MetaClass_Type::post_RPG_Character_MetaClass_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_MetaClass_Type::post_RPG_Character_MetaClass_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_MetaClass_Type::post_RPG_Character_MetaClass_Type"));
 
-  return RPG_Character_MetaClassHelper::stringToRPG_Character_MetaClass(post_string());
+  return RPG_Character_MetaClassHelper::stringToRPG_Character_MetaClass (post_string ());
 }
 
-RPG_Character_ClassXML_Type::RPG_Character_ClassXML_Type()
+RPG_Character_ClassXML_Type::RPG_Character_ClassXML_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_ClassXML_Type::RPG_Character_ClassXML_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_ClassXML_Type::RPG_Character_ClassXML_Type"));
 
   myCurrentClass.metaClass = RPG_CHARACTER_METACLASS_INVALID;
   myCurrentClass.subClasses.clear();
 }
 
-void RPG_Character_ClassXML_Type::metaClass(const RPG_Character_MetaClass& metaClass_in)
+void
+RPG_Character_ClassXML_Type::metaClass (const RPG_Character_MetaClass& metaClass_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_ClassXML_Type::metaClass"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_ClassXML_Type::metaClass"));
 
   myCurrentClass.metaClass = metaClass_in;
 }
 
-void RPG_Character_ClassXML_Type::subClass(const RPG_Common_SubClass& subClass_in)
+void
+RPG_Character_ClassXML_Type::subClass (const RPG_Common_SubClass& subClass_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_ClassXML_Type::subClass"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_ClassXML_Type::subClass"));
 
-  myCurrentClass.subClasses.push_back(subClass_in);
+  myCurrentClass.subClasses.push_back (subClass_in);
 }
 
-RPG_Character_ClassXML RPG_Character_ClassXML_Type::post_RPG_Character_ClassXML_Type()
+RPG_Character_ClassXML
+RPG_Character_ClassXML_Type::post_RPG_Character_ClassXML_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_ClassXML_Type::post_RPG_Character_ClassXML_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_ClassXML_Type::post_RPG_Character_ClassXML_Type"));
 
   RPG_Character_ClassXML result = myCurrentClass;
 
   // clear structure
   myCurrentClass.metaClass = RPG_CHARACTER_METACLASS_INVALID;
-  myCurrentClass.subClasses.clear();
+  myCurrentClass.subClasses.clear ();
 
   return result;
 }
 
-RPG_Character_Ability RPG_Character_Ability_Type::post_RPG_Character_Ability_Type()
+RPG_Character_Ability
+RPG_Character_Ability_Type::post_RPG_Character_Ability_Type()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Ability_Type::post_RPG_Character_Ability_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Ability_Type::post_RPG_Character_Ability_Type"));
 
-  return RPG_Character_AbilityHelper::stringToRPG_Character_Ability(post_string());
+  return RPG_Character_AbilityHelper::stringToRPG_Character_Ability (post_string ());
 }
 
 // RPG_Character_Abilities_Type::RPG_Character_Abilities_Type()
@@ -116,9 +123,9 @@ RPG_Character_Ability RPG_Character_Ability_Type::post_RPG_Character_Ability_Typ
 //   return result;
 // }
 
-RPG_Character_Attributes_Type::RPG_Character_Attributes_Type()
+RPG_Character_Attributes_Type::RPG_Character_Attributes_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::RPG_Character_Attributes_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Attributes_Type::RPG_Character_Attributes_Type"));
 
   myCurrentAttributes.strength = 0;
   myCurrentAttributes.dexterity = 0;
@@ -128,51 +135,58 @@ RPG_Character_Attributes_Type::RPG_Character_Attributes_Type()
   myCurrentAttributes.charisma = 0;
 }
 
-void RPG_Character_Attributes_Type::strength(unsigned char strength_in)
+void
+RPG_Character_Attributes_Type::strength (unsigned char strength_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::strength"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Attributes_Type::strength"));
 
   myCurrentAttributes.strength = strength_in;
 }
 
-void RPG_Character_Attributes_Type::dexterity(unsigned char dexterity_in)
+void
+RPG_Character_Attributes_Type::dexterity (unsigned char dexterity_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::dexterity"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Attributes_Type::dexterity"));
 
   myCurrentAttributes.dexterity = dexterity_in;
 }
 
-void RPG_Character_Attributes_Type::constitution(unsigned char constitution_in)
+void
+RPG_Character_Attributes_Type::constitution (unsigned char constitution_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::constitution"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Attributes_Type::constitution"));
 
   myCurrentAttributes.constitution = constitution_in;
 }
 
-void RPG_Character_Attributes_Type::intelligence(unsigned char intelligence_in)
+void
+RPG_Character_Attributes_Type::intelligence (unsigned char intelligence_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::intelligence"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Attributes_Type::intelligence"));
 
   myCurrentAttributes.intelligence = intelligence_in;
 }
 
-void RPG_Character_Attributes_Type::wisdom(unsigned char wisdom_in)
+void
+RPG_Character_Attributes_Type::wisdom (unsigned char wisdom_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::wisdom"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Attributes_Type::wisdom"));
 
   myCurrentAttributes.wisdom = wisdom_in;
 }
 
-void RPG_Character_Attributes_Type::charisma(unsigned char charisma_in)
+void
+RPG_Character_Attributes_Type::charisma (unsigned char charisma_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::charisma"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Attributes_Type::charisma"));
 
   myCurrentAttributes.charisma = charisma_in;
 }
 
-RPG_Character_Attributes RPG_Character_Attributes_Type::post_RPG_Character_Attributes_Type()
+RPG_Character_Attributes
+RPG_Character_Attributes_Type::post_RPG_Character_Attributes_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Attributes_Type::post_RPG_Character_Attributes_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Attributes_Type::post_RPG_Character_Attributes_Type"));
 
   RPG_Character_Attributes result = myCurrentAttributes;
 
@@ -187,31 +201,34 @@ RPG_Character_Attributes RPG_Character_Attributes_Type::post_RPG_Character_Attri
   return result;
 }
 
-RPG_Character_SkillValue_Type::RPG_Character_SkillValue_Type()
+RPG_Character_SkillValue_Type::RPG_Character_SkillValue_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_SkillValue_Type::RPG_Character_SkillValue_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_SkillValue_Type::RPG_Character_SkillValue_Type"));
 
   myCurrentSkill.skill = RPG_COMMON_SKILL_INVALID;
   myCurrentSkill.rank = 0;
 }
 
-void RPG_Character_SkillValue_Type::skill(const RPG_Common_Skill& skill_in)
+void
+RPG_Character_SkillValue_Type::skill (const RPG_Common_Skill& skill_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_SkillValue_Type::skill"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_SkillValue_Type::skill"));
 
   myCurrentSkill.skill = skill_in;
 }
 
-void RPG_Character_SkillValue_Type::rank(signed char rank_in)
+void
+RPG_Character_SkillValue_Type::rank (signed char rank_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_SkillValue_Type::rank"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_SkillValue_Type::rank"));
 
   myCurrentSkill.rank = rank_in;
 }
 
-RPG_Character_SkillValue RPG_Character_SkillValue_Type::post_RPG_Character_SkillValue_Type()
+RPG_Character_SkillValue
+RPG_Character_SkillValue_Type::post_RPG_Character_SkillValue_Type()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_SkillValue_Type::post_RPG_Character_SkillValue_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_SkillValue_Type::post_RPG_Character_SkillValue_Type"));
 
   RPG_Character_SkillValue result = myCurrentSkill;
 
@@ -222,63 +239,67 @@ RPG_Character_SkillValue RPG_Character_SkillValue_Type::post_RPG_Character_Skill
   return result;
 }
 
-RPG_Character_Skills_Type::RPG_Character_Skills_Type()
+RPG_Character_Skills_Type::RPG_Character_Skills_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Type::RPG_Character_Skills_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Type::RPG_Character_Skills_Type"));
 
-  myCurrentSkills.skills.clear();
+  myCurrentSkills.skills.clear ();
 }
 
-void RPG_Character_Skills_Type::skill(const RPG_Character_SkillValue& skill_in)
+void
+RPG_Character_Skills_Type::skill (const RPG_Character_SkillValue& skill_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Type::skill"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Type::skill"));
 
-  myCurrentSkills.skills.push_back(skill_in);
+  myCurrentSkills.skills.push_back (skill_in);
 }
 
-RPG_Character_Skills RPG_Character_Skills_Type::post_RPG_Character_Skills_Type()
+RPG_Character_Skills
+RPG_Character_Skills_Type::post_RPG_Character_Skills_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Skills_Type::post_RPG_Character_Skills_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Type::post_RPG_Character_Skills_Type"));
 
   RPG_Character_Skills result = myCurrentSkills;
 
   // clear structure
-  myCurrentSkills.skills.clear();
+  myCurrentSkills.skills.clear ();
 
   return result;
 }
 
-RPG_Character_CheckTypeUnion_Type::RPG_Character_CheckTypeUnion_Type()
+RPG_Character_CheckTypeUnion_Type::RPG_Character_CheckTypeUnion_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_CheckTypeUnion_Type::RPG_Character_CheckTypeUnion_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_CheckTypeUnion_Type::RPG_Character_CheckTypeUnion_Type"));
 
   myCurrentCheckType.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentCheckType.discriminator = RPG_Character_CheckTypeUnion::INVALID;
 }
 
-void RPG_Character_CheckTypeUnion_Type::_characters(const ::xml_schema::ro_string& checkType_in)
+void
+RPG_Character_CheckTypeUnion_Type::_characters (const ::xml_schema::ro_string& checkType_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_CheckTypeUnion_Type::_characters"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_CheckTypeUnion_Type::_characters"));
 
   // can be either:
   // - RPG_Common_Attribute_Type --> "ATTRIBUTE_xxx"
   // - RPG_Character_Skill_Type --> "SKILL_xxx"
   std::string type = checkType_in;
-  if (type.find(ACE_TEXT_ALWAYS_CHAR("ATTRIBUTE_")) == 0)
+  if (type.find (ACE_TEXT_ALWAYS_CHAR ("ATTRIBUTE_")) == 0)
   {
-    myCurrentCheckType.attribute = RPG_Common_AttributeHelper::stringToRPG_Common_Attribute(checkType_in);
+    myCurrentCheckType.attribute = RPG_Common_AttributeHelper::stringToRPG_Common_Attribute (checkType_in);
     myCurrentCheckType.discriminator = RPG_Character_CheckTypeUnion::ATTRIBUTE;
   } // end IF
   else
   {
-    myCurrentCheckType.skill = RPG_Common_SkillHelper::stringToRPG_Common_Skill(checkType_in);
+    myCurrentCheckType.skill = RPG_Common_SkillHelper::stringToRPG_Common_Skill (checkType_in);
     myCurrentCheckType.discriminator = RPG_Character_CheckTypeUnion::SKILL;
   } // end ELSE
 }
 
-RPG_Character_CheckTypeUnion RPG_Character_CheckTypeUnion_Type::post_RPG_Character_CheckTypeUnion_Type()
+RPG_Character_CheckTypeUnion
+RPG_Character_CheckTypeUnion_Type::post_RPG_Character_CheckTypeUnion_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_CheckTypeUnion_Type::post_RPG_Character_CheckTypeUnion_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_CheckTypeUnion_Type::post_RPG_Character_CheckTypeUnion_Type"));
 
   RPG_Character_CheckTypeUnion result = myCurrentCheckType;
 
@@ -289,32 +310,35 @@ RPG_Character_CheckTypeUnion RPG_Character_CheckTypeUnion_Type::post_RPG_Charact
   return result;
 }
 
-RPG_Character_Check_Type::RPG_Character_Check_Type()
+RPG_Character_Check_Type::RPG_Character_Check_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Check_Type::RPG_Character_Check_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Check_Type::RPG_Character_Check_Type"));
 
   myCurrentCheck.type.attribute = RPG_COMMON_ATTRIBUTE_INVALID;
   myCurrentCheck.type.discriminator = RPG_Character_CheckTypeUnion::INVALID;
   myCurrentCheck.difficultyClass = 0;
 }
 
-void RPG_Character_Check_Type::type(const RPG_Character_CheckTypeUnion& type_in)
+void
+RPG_Character_Check_Type::type (const RPG_Character_CheckTypeUnion& type_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Check_Type::type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Check_Type::type"));
 
   myCurrentCheck.type = type_in;
 }
 
-void RPG_Character_Check_Type::difficultyClass(unsigned char difficultyClass_in)
+void
+RPG_Character_Check_Type::difficultyClass (unsigned char difficultyClass_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Check_Type::difficultyClass"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Check_Type::difficultyClass"));
 
   myCurrentCheck.difficultyClass = difficultyClass_in;
 }
 
-RPG_Character_Check RPG_Character_Check_Type::post_RPG_Character_Check_Type()
+RPG_Character_Check
+RPG_Character_Check_Type::post_RPG_Character_Check_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Check_Type::post_RPG_Character_Check_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Check_Type::post_RPG_Character_Check_Type"));
 
   RPG_Character_Check result = myCurrentCheck;
 
@@ -326,78 +350,86 @@ RPG_Character_Check RPG_Character_Check_Type::post_RPG_Character_Check_Type()
   return result;
 }
 
-RPG_Character_Feat RPG_Character_Feat_Type::post_RPG_Character_Feat_Type()
+RPG_Character_Feat
+RPG_Character_Feat_Type::post_RPG_Character_Feat_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Feat_Type::post_RPG_Character_Feat_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Feat_Type::post_RPG_Character_Feat_Type"));
 
-  return RPG_Character_FeatHelper::stringToRPG_Character_Feat(post_string());
+  return RPG_Character_FeatHelper::stringToRPG_Character_Feat (post_string ());
 }
 
-RPG_Character_Feats_Type::RPG_Character_Feats_Type()
+RPG_Character_Feats_Type::RPG_Character_Feats_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Feats_Type::RPG_Character_Feats_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Feats_Type::RPG_Character_Feats_Type"));
 
-  myCurrentFeats.feats.clear();
+  myCurrentFeats.feats.clear ();
 }
 
-void RPG_Character_Feats_Type::feat(const RPG_Character_Feat& feat_in)
+void
+RPG_Character_Feats_Type::feat (const RPG_Character_Feat& feat_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Feats_Type::feat"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Feats_Type::feat"));
 
-  myCurrentFeats.feats.push_back(feat_in);
+  myCurrentFeats.feats.push_back (feat_in);
 }
 
-RPG_Character_Feats RPG_Character_Feats_Type::post_RPG_Character_Feats_Type()
+RPG_Character_Feats
+RPG_Character_Feats_Type::post_RPG_Character_Feats_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Feats_Type::post_RPG_Character_Feats_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Feats_Type::post_RPG_Character_Feats_Type"));
 
   RPG_Character_Feats result = myCurrentFeats;
 
   // clear structure
-  myCurrentFeats.feats.clear();
+  myCurrentFeats.feats.clear ();
 
   return result;
 }
 
-RPG_Character_AlignmentCivic RPG_Character_AlignmentCivic_Type::post_RPG_Character_AlignmentCivic_Type()
+RPG_Character_AlignmentCivic
+RPG_Character_AlignmentCivic_Type::post_RPG_Character_AlignmentCivic_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_AlignmentCivic_Type::post_RPG_Character_AlignmentCivic_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_AlignmentCivic_Type::post_RPG_Character_AlignmentCivic_Type"));
 
-  return RPG_Character_AlignmentCivicHelper::stringToRPG_Character_AlignmentCivic(post_string());
+  return RPG_Character_AlignmentCivicHelper::stringToRPG_Character_AlignmentCivic (post_string ());
 }
 
-RPG_Character_AlignmentEthic RPG_Character_AlignmentEthic_Type::post_RPG_Character_AlignmentEthic_Type()
+RPG_Character_AlignmentEthic
+RPG_Character_AlignmentEthic_Type::post_RPG_Character_AlignmentEthic_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_AlignmentEthic_Type::post_RPG_Character_AlignmentEthic_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_AlignmentEthic_Type::post_RPG_Character_AlignmentEthic_Type"));
 
-  return RPG_Character_AlignmentEthicHelper::stringToRPG_Character_AlignmentEthic(post_string());
+  return RPG_Character_AlignmentEthicHelper::stringToRPG_Character_AlignmentEthic (post_string ());
 }
 
-RPG_Character_Alignment_Type::RPG_Character_Alignment_Type()
+RPG_Character_Alignment_Type::RPG_Character_Alignment_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Alignment_Type::RPG_Character_Alignment_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Alignment_Type::RPG_Character_Alignment_Type"));
 
   myCurrentAlignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
   myCurrentAlignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
 }
 
-void RPG_Character_Alignment_Type::civic(const RPG_Character_AlignmentCivic& alignmentCivic_in)
+void
+RPG_Character_Alignment_Type::civic (const RPG_Character_AlignmentCivic& alignmentCivic_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Alignment_Type::civic"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Alignment_Type::civic"));
 
   myCurrentAlignment.civic = alignmentCivic_in;
 }
 
-void RPG_Character_Alignment_Type::ethic(const RPG_Character_AlignmentEthic& alignmentEthic_in)
+void
+RPG_Character_Alignment_Type::ethic (const RPG_Character_AlignmentEthic& alignmentEthic_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Alignment_Type::ethic"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Alignment_Type::ethic"));
 
   myCurrentAlignment.ethic = alignmentEthic_in;
 }
 
-RPG_Character_Alignment RPG_Character_Alignment_Type::post_RPG_Character_Alignment_Type()
+RPG_Character_Alignment
+RPG_Character_Alignment_Type::post_RPG_Character_Alignment_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Alignment_Type::post_RPG_Character_Alignment_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Alignment_Type::post_RPG_Character_Alignment_Type"));
 
   RPG_Character_Alignment result = myCurrentAlignment;
 
@@ -408,25 +440,28 @@ RPG_Character_Alignment RPG_Character_Alignment_Type::post_RPG_Character_Alignme
   return result;
 }
 
-RPG_Character_EquipmentSlot RPG_Character_EquipmentSlot_Type::post_RPG_Character_EquipmentSlot_Type()
+RPG_Character_EquipmentSlot
+RPG_Character_EquipmentSlot_Type::post_RPG_Character_EquipmentSlot_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_EquipmentSlot_Type::post_RPG_Character_EquipmentSlot_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_EquipmentSlot_Type::post_RPG_Character_EquipmentSlot_Type"));
 
-  return RPG_Character_EquipmentSlotHelper::stringToRPG_Character_EquipmentSlot(post_string());
+  return RPG_Character_EquipmentSlotHelper::stringToRPG_Character_EquipmentSlot (post_string ());
 }
 
-RPG_Character_OffHand RPG_Character_OffHand_Type::post_RPG_Character_OffHand_Type()
+RPG_Character_OffHand
+RPG_Character_OffHand_Type::post_RPG_Character_OffHand_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_OffHand_Type::post_RPG_Character_OffHand_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_OffHand_Type::post_RPG_Character_OffHand_Type"));
 
-  return RPG_Character_OffHandHelper::stringToRPG_Character_OffHand(post_string());
+  return RPG_Character_OffHandHelper::stringToRPG_Character_OffHand (post_string ());
 }
 
-RPG_Character_Encumbrance RPG_Character_Encumbrance_Type::post_RPG_Character_Encumbrance_Type()
+RPG_Character_Encumbrance
+RPG_Character_Encumbrance_Type::post_RPG_Character_Encumbrance_Type ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Encumbrance_Type::post_RPG_Character_Encumbrance_Type"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Encumbrance_Type::post_RPG_Character_Encumbrance_Type"));
 
-  return RPG_Character_EncumbranceHelper::stringToRPG_Character_Encumbrance(post_string());
+  return RPG_Character_EncumbranceHelper::stringToRPG_Character_Encumbrance (post_string ());
 }
 
 // RPG_Character_BaseXML_Type::RPG_Character_BaseXML_Type()

@@ -23,13 +23,9 @@
 
 #include "ace/Global_Macros.h"
 
-//#include "rpg_item_exports.h"
 #include "rpg_item_instance_common.h"
 #include "rpg_item_type.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Item_Base
 {
  public:

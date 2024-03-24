@@ -57,24 +57,24 @@ class RPG_Item_Dictionary
 
  public:
   // init item dictionary
-  void init(const std::string&,   // filename
-            const bool& = false); // validate XML ?
+  void init (const std::string&, // filename
+             bool = false);      // validate XML ?
 
   // *NOTE*: caller is responsible for return value's lifecycle
-  void getProperties(const RPG_Item_Base*,             // type
-                     RPG_Item_PropertiesBase*&) const; // return value: properties
-  struct RPG_Item_ArmorProperties getArmorProperties(enum RPG_Item_ArmorType) const;
-  struct RPG_Item_CommodityProperties getCommodityProperties(const struct RPG_Item_CommodityUnion&) const;
-  struct RPG_Item_WeaponProperties getWeaponProperties(enum RPG_Item_WeaponType) const;
+  void getProperties (const RPG_Item_Base*,             // type
+                      RPG_Item_PropertiesBase*&) const; // return value: properties
+  struct RPG_Item_ArmorProperties getArmorProperties (enum RPG_Item_ArmorType) const;
+  struct RPG_Item_CommodityProperties getCommodityProperties (const struct RPG_Item_CommodityUnion&) const;
+  struct RPG_Item_WeaponProperties getWeaponProperties (enum RPG_Item_WeaponType) const;
 
   // debug info
-  void dump() const;
+  void dump () const;
 
  private:
-  RPG_Item_Dictionary();
-  virtual ~RPG_Item_Dictionary();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary(const RPG_Item_Dictionary&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Dictionary& operator=(const RPG_Item_Dictionary&))
+  RPG_Item_Dictionary ();
+  inline virtual ~RPG_Item_Dictionary () {}
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Dictionary (const RPG_Item_Dictionary&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Dictionary& operator= (const RPG_Item_Dictionary&))
 
   RPG_Item_ArmorDictionary_t             myArmorDictionary;
   RPG_Item_CommodityBeverageDictionary_t myCommodityBeverageDictionary;

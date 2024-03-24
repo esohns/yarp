@@ -36,7 +36,7 @@
 
 RPG_Player_Equipment::RPG_Player_Equipment ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Equipment::RPG_Player_Equipment"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Equipment::RPG_Player_Equipment"));
 
 }
 

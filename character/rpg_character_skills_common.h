@@ -20,17 +20,16 @@
 #ifndef RPG_CHARACTER_SKILLS_COMMON_H
 #define RPG_CHARACTER_SKILLS_COMMON_H
 
+#include <map>
+#include <set>
+
+#include "rpg_common_attribute.h"
+#include "rpg_common_skill.h"
+
+#include "rpg_character_class_common.h"
 #include <rpg_dice_incl.h>
 #include <rpg_common_incl.h>
 #include "rpg_character_incl.h"
-
-#include "rpg_character_class_common.h"
-
-#include <rpg_common_attribute.h>
-#include <rpg_common_skill.h>
-
-#include <map>
-#include <set>
 
 enum RPG_Character_Feat_Prerequisite_Type
 {
@@ -61,8 +60,8 @@ struct RPG_Character_Feat_Prerequisite
 };
 
 // some useful types
-typedef std::pair<RPG_Common_Skill, ACE_INT8> RPG_Character_SkillsItem_t;
-typedef std::map<RPG_Common_Skill, ACE_INT8> RPG_Character_Skills_t;
+typedef std::pair<enum RPG_Common_Skill, ACE_INT8> RPG_Character_SkillsItem_t;
+typedef std::map<enum RPG_Common_Skill, ACE_INT8> RPG_Character_Skills_t;
 // typedef RPG_Character_Skills_t::value_type RPG_Character_SkillsItem_t;
 typedef RPG_Character_Skills_t::iterator RPG_Character_SkillsIterator_t;
 typedef RPG_Character_Skills_t::const_iterator RPG_Character_SkillsConstIterator_t;

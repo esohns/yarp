@@ -88,7 +88,7 @@ struct RPG_Map_Door
 
   RPG_Map_Position_t             position;
   enum RPG_Map_Direction         outside;
-  mutable enum RPG_Map_DoorState state; // allow "external" updates (see below)
+  mutable enum RPG_Map_DoorState state; // *TODO*: why 'mutable' ?
 };
 
 struct door_compare

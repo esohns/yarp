@@ -21,6 +21,9 @@
 #ifndef RPG_ITEM_COMMON_H
 #define RPG_ITEM_COMMON_H
 
+#include <bitset>
+#include <map>
+
 #include "rpg_dice_incl.h"
 #include "rpg_common_incl.h"
 #include "rpg_common_environment_incl.h"
@@ -28,9 +31,6 @@
 #include "rpg_magic_incl.h"
 
 #include "rpg_item_incl.h"
-
-#include <bitset>
-#include <map>
 
 // typedef std::bitset<(RPG_COMMON_PHYSICALDAMAGETYPE_MAX - 1)> RPG_Item_WeaponDamage;
 typedef std::bitset<5> RPG_Item_WeaponDamageType;
@@ -41,14 +41,14 @@ typedef RPG_Dice_Roll RPG_Item_Damage;
 struct RPG_Item_WeaponProperties
  : public RPG_Item_PropertiesBase
 {
-  signed char toHitModifier;
+  ACE_INT8 toHitModifier;
   // RPG_Item_WeaponPropertiesBase //
 //   RPG_Item_WeaponType type;
-  RPG_Item_WeaponCategory category;
-  RPG_Item_WeaponClass weaponClass;
-  RPG_Dice_Roll baseDamage;
-  RPG_Item_CriticalHitProperties criticalHit;
-  unsigned char rangeIncrement;
+  enum RPG_Item_WeaponCategory category;
+  enum RPG_Item_WeaponClass weaponClass;
+  struct RPG_Dice_Roll baseDamage;
+  struct RPG_Item_CriticalHitProperties criticalHit;
+  ACE_UINT8 rangeIncrement;
   RPG_Item_WeaponDamageType typeOfDamage;
   bool isNonLethal;
   bool isReachWeapon;
@@ -82,15 +82,15 @@ struct RPG_Item_CommodityProperties
 struct RPG_Item_ArmorProperties
  : public RPG_Item_PropertiesBase
 {
-  signed char defenseModifier;
+  ACE_INT8 defenseModifier;
   // RPG_Item_ArmorPropertiesBase //
 //   RPG_Item_ArmorType type;
-  RPG_Item_ArmorCategory category;
-  unsigned char baseBonus;
-  unsigned char maxDexterityBonus;
-  signed char checkPenalty;
-  unsigned char arcaneSpellFailure;
-  unsigned char baseSpeed;
+  enum RPG_Item_ArmorCategory category;
+  ACE_UINT8 baseBonus;
+  ACE_UINT8 maxDexterityBonus;
+  ACE_INT8 checkPenalty;
+  ACE_UINT8 arcaneSpellFailure;
+  ACE_UINT8 baseSpeed;
   //// RPG_Item_PropertiesBase //
   //RPG_Magic_School aura;
   //RPG_Item_MagicalPrerequisites prerequisites;
@@ -103,21 +103,21 @@ struct RPG_Item_ArmorProperties
 // useful types
 // typedef std::pair<RPG_Item_ArmorType,
 //                   RPG_Item_ArmorProperties> RPG_ITEM_ARMORDICTIONARY_ITEM_T;
-typedef std::map<RPG_Item_ArmorType,
-                 RPG_Item_ArmorProperties> RPG_Item_ArmorDictionary_t;
+typedef std::map<enum RPG_Item_ArmorType,
+                 struct RPG_Item_ArmorProperties> RPG_Item_ArmorDictionary_t;
 typedef RPG_Item_ArmorDictionary_t::const_iterator RPG_Item_ArmorDictionaryIterator_t;
 // typedef std::pair<RPG_Item_CommodityType,
 //                   RPG_Item_CommodityProperties> RPG_ITEM_COMMODITYDICTIONARY_ITEM_T;
-typedef std::map<RPG_Item_CommodityBeverage,
-                 RPG_Item_CommodityProperties> RPG_Item_CommodityBeverageDictionary_t;
+typedef std::map<enum RPG_Item_CommodityBeverage,
+                 struct RPG_Item_CommodityProperties> RPG_Item_CommodityBeverageDictionary_t;
 typedef RPG_Item_CommodityBeverageDictionary_t::const_iterator RPG_Item_CommodityBeverageDictionaryIterator_t;
-typedef std::map<RPG_Item_CommodityLight,
-                 RPG_Item_CommodityProperties> RPG_Item_CommodityLightDictionary_t;
+typedef std::map<enum RPG_Item_CommodityLight,
+                 struct RPG_Item_CommodityProperties> RPG_Item_CommodityLightDictionary_t;
 typedef RPG_Item_CommodityLightDictionary_t::const_iterator RPG_Item_CommodityLightDictionaryIterator_t;
 // typedef std::pair<RPG_Item_WeaponType,
 //                   RPG_Item_WeaponProperties> RPG_ITEM_WEAPONDICTIONARY_ITEM_T;
-typedef std::map<RPG_Item_WeaponType,
-                 RPG_Item_WeaponProperties> RPG_Item_WeaponDictionary_t;
+typedef std::map<enum RPG_Item_WeaponType,
+                 struct RPG_Item_WeaponProperties> RPG_Item_WeaponDictionary_t;
 typedef RPG_Item_WeaponDictionary_t::const_iterator RPG_Item_WeaponDictionaryIterator_t;
 
 #endif

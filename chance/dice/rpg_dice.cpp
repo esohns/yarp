@@ -42,21 +42,17 @@ RPG_Dice::initialize ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Dice::initialize"));
 
-#if defined (_DEBUG)
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("initializing random seed (RAND_MAX = %d)...\n"),
               RAND_MAX));
-#endif // _DEBUG
   // *PORTABILITY*: outside glibc, this is not very portable...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   ACE_OS::srand (static_cast<u_int> (COMMON_TIME_NOW.sec ()));
 #else
   ::srandom (COMMON_TIME_NOW.sec ());
 #endif // ACE_WIN32 || ACE_WIN64
-#if defined (_DEBUG)
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("initializing random seed...DONE\n")));
-#endif // _DEBUG
 }
 
 void
@@ -73,7 +69,7 @@ RPG_Dice::generateRandomNumbers (unsigned int range_in,
   results_out.clear ();
 
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-  unsigned int usecs = static_cast<unsigned int> (COMMON_TIME_NOW.usec());
+  unsigned int usecs = static_cast<unsigned int> (COMMON_TIME_NOW.usec ());
 #endif // ACE_WIN32 || ACE_WIN64
   for (unsigned int i = 0;
        i < numRolls_in;
@@ -91,7 +87,7 @@ RPG_Dice::generateRandomNumbers (unsigned int range_in,
 }
 
 void
-RPG_Dice::simulateRoll (const RPG_Dice_Roll& rollSpecs_in,
+RPG_Dice::simulateRoll (const struct RPG_Dice_Roll& rollSpecs_in,
                         unsigned int numRolls_in,
                         RPG_Dice_RollResult_t& results_out)
 {
@@ -138,7 +134,7 @@ RPG_Dice::probability (float probability_in)
   RPG_TRACE (ACE_TEXT ("RPG_Dice::probability"));
 
   // sanity checks
-  ACE_ASSERT ((probability_in >= 0.0F) && (probability_in <= 1.0F));
+  ACE_ASSERT ((probability_in >= 0.0f) && (probability_in <= 1.0f));
 
   // step0: fast path ?
   if (probability_in == 0.0F)
@@ -164,8 +160,8 @@ RPG_Dice::probability (float probability_in)
 }
 
 void
-RPG_Dice::rollToRange (const RPG_Dice_Roll& roll_in,
-                       RPG_Dice_ValueRange& valueRange_out)
+RPG_Dice::rollToRange (const struct RPG_Dice_Roll& roll_in,
+                       struct RPG_Dice_ValueRange& valueRange_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Dice::rollToRange"));
 
@@ -175,8 +171,8 @@ RPG_Dice::rollToRange (const RPG_Dice_Roll& roll_in,
 }
 
 void
-RPG_Dice::rangeToRoll (const RPG_Dice_ValueRange& valueRange_in,
-                       RPG_Dice_Roll& roll_out)
+RPG_Dice::rangeToRoll (const struct RPG_Dice_ValueRange& valueRange_in,
+                       struct RPG_Dice_Roll& roll_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Dice::rangeToRoll"));
 
@@ -189,7 +185,7 @@ RPG_Dice::rangeToRoll (const RPG_Dice_ValueRange& valueRange_in,
 
   RPG_Dice_SortedRolls_t sortedRolls;
   // step1b: find SMALLEST type of die LARGER than range.end to start with
-  RPG_Dice_DieType current_dieType = D_100;
+  enum RPG_Dice_DieType current_dieType = D_100;
   if (valueRange_in.end < D_100)
   {
     while (current_dieType > valueRange_in.end)
@@ -204,11 +200,11 @@ RPG_Dice::rangeToRoll (const RPG_Dice_ValueRange& valueRange_in,
 //                ACE_TEXT("current die type: \"%s\"\n"),
 //                RPG_Dice_Common_Tools::diceTypeToString(current_dieType).c_str()));
 
-    RPG_Dice_Roll result;
+    struct RPG_Dice_Roll result;
     result.numDice = 0;
     result.typeDice = current_dieType;
     result.modifier = 0;
-    RPG_Dice_ValueRange range = valueRange_in;
+    struct RPG_Dice_ValueRange range = valueRange_in;
     do
     {
       if ((current_dieType == D_0) ||
@@ -244,7 +240,7 @@ RPG_Dice::rangeToRoll (const RPG_Dice_ValueRange& valueRange_in,
     } // end ELSE
 
     // remember result
-    rangeToRollElement element;
+    struct rangeToRollElement element;
     element.range = valueRange_in;
     element.roll = result;
     sortedRolls.insert (element);
@@ -318,7 +314,7 @@ RPG_Dice::farey (float decimal_in,
   unsigned int b = 1;
   unsigned int c = 1;
   unsigned int d = 1;
-  float mediant = 0.0F;
+  float mediant = 0.0f;
 
   while ((b <= maxNominator_in) && (d <= maxNominator_in))
   {

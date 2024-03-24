@@ -74,11 +74,11 @@ class RPG_Engine_Event_Manager
   void cancel (long); // timer (!) id
 
   // manage entities
-  void add (const RPG_Engine_EntityID_t&, // id
-            const ACE_Time_Value&);       // activation interval
-  void remove (const RPG_Engine_EntityID_t&); // id
-  void reschedule (const RPG_Engine_EntityID_t&, // id
-                   const ACE_Time_Value&);       // activation interval
+  void add (RPG_Engine_EntityID_t,  // id
+            const ACE_Time_Value&); // activation interval
+  void remove (RPG_Engine_EntityID_t); // id
+  void reschedule (RPG_Engine_EntityID_t,  // id
+                   const ACE_Time_Value&); // activation interval
 
   // implement Common_IControl
   virtual void start ();
