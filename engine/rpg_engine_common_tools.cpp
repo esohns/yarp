@@ -263,7 +263,7 @@ RPG_Engine_Common_Tools::createEntity (// base attributes
                                        const RPG_Item_List_t& items_in,                // list of (carried) items
                                        // current status
                                        const RPG_Character_Conditions_t& condition_in, // condition
-                                       ACE_INT16 HP_in,                                    // HP
+                                       ACE_INT16 HP_in,                                // HP
                                        const RPG_Magic_Spells_t& spells_in)            // set of memorized/prepared spells (if any)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::createEntity"));

@@ -1447,7 +1447,7 @@ RPG_Engine::findValid (const RPG_Map_Position_t& center_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::findValid"));
 
-  // init return value(s)
+  // initialize return value(s)
   RPG_Map_Position_t result =
       std::make_pair (std::numeric_limits<unsigned int>::max (),
                       std::numeric_limits<unsigned int>::max ());
@@ -1493,11 +1493,10 @@ RPG_Engine::findValid (const RPG_Map_Position_t& center_in,
 
   if (possible.empty ())
   {
-    ACE_DEBUG ((LM_DEBUG,
+    ACE_DEBUG ((LM_WARNING,
                 ACE_TEXT ("could not find a valid position around [%u,%u] (radius: %u), aborting\n"),
                 center_in.first, center_in.second,
                 radius_in));
-
     return result; // failed
   } // end IF
   else if (possible.size () == 1)
@@ -1878,20 +1877,13 @@ RPG_Engine::canSee (RPG_Engine_EntityID_t id_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::canSee"));
 
-  // sanity check
-  if (id_in == 0)
-    return false; // *CONSIDER*: false negative ?
-
-  if (lockedAccess_in)
-    lock_.acquire ();
+  // sanity check(s)
+  ACE_ASSERT (id_in);
 
   RPG_Map_Positions_t visible_positions;
   getVisiblePositions (id_in,
                        visible_positions,
-                       false);
-
-  if (lockedAccess_in)
-    lock_.release ();
+                       lockedAccess_in);
 
   return (visible_positions.find (position_in) != visible_positions.end ());
 }
@@ -1918,16 +1910,14 @@ RPG_Engine::canSee (RPG_Engine_EntityID_t id_in,
   if ((*iterator).second->character->isPlayerCharacter ())
   {
     RPG_Player_Player_Base* player_base_p =
-          dynamic_cast<RPG_Player_Player_Base*> ((*iterator).second->character);
-    ACE_ASSERT (player_base_p);
+          static_cast<RPG_Player_Player_Base*> ((*iterator).second->character);
     target_equipped_a_light =
       (player_base_p->getEquipment ().getLightSource () != RPG_ITEM_COMMODITYLIGHT_INVALID);
   } // end IF
   else
   {
     RPG_Monster* monster_p =
-      dynamic_cast<RPG_Monster*> ((*iterator).second->character);
-    ACE_ASSERT (monster_p);
+      static_cast<RPG_Monster*> ((*iterator).second->character);
     target_equipped_a_light =
       (monster_p->getEquipment ().getLightSource () != RPG_ITEM_COMMODITYLIGHT_INVALID);
   } // end ELSE

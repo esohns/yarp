@@ -158,7 +158,8 @@ class RPG_Engine
   enum RPG_Map_DoorState state (const RPG_Map_Position_t&, // position
                                 bool = true) const;        // locked access ?
 
-  bool isValid (const RPG_Map_Position_t&, // position
+  // either floor or an open/broken (!) door ?
+  bool isValid (const RPG_Map_Position_t&,  // position
                 bool = true) const;        // locked access ?
   bool isCorner (const RPG_Map_Position_t&, // position
                  bool = true) const;        // locked access ?
