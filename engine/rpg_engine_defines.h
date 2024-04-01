@@ -46,9 +46,9 @@
 #define RPG_ENGINE_ENCOUNTER_DEF_TYPE               "Bugbear"
 #define RPG_ENGINE_ENCOUNTER_DEF_TIMER_INTERVAL     10 // second(s)
 #define RPG_ENGINE_ENCOUNTER_DEF_TIMER_INTERVAL_MAX 60 // second(s)
-#define RPG_ENGINE_ENCOUNTER_DEF_PROBABILITY        0.3F // --> 30 %
+#define RPG_ENGINE_ENCOUNTER_DEF_PROBABILITY        0.7f // --> 70%
 #define RPG_ENGINE_ENCOUNTER_DEF_NUM_SPAWNED_MAX    50 // [0 --> unlimited]
-#define RPG_ENGINE_ENCOUNTER_DEF_AMBLE_PROBABILITY  0.5F // --> 50 %
+#define RPG_ENGINE_ENCOUNTER_DEF_AMBLE_PROBABILITY  0.5F // --> 50%
 
 // XML-specific
 #define RPG_ENGINE_SCHEMA_FILE                      "rpg_engine.xsd"

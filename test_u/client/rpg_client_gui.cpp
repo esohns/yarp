@@ -428,25 +428,25 @@ do_printUsage (const std::string& programName_in)
 }
 
 bool
-do_processArguments(const int& argc_in,
-                    ACE_TCHAR** argv_in, // cannot be const...
-                    bool& mute_out,
-                    std::string& configurationFile_out,
-                    bool& debug_out,
-                    std::string& monsterDictionary_out,
-                    std::string& floorPlan_out,
-                    std::string& graphicsDictionary_out,
-                    std::string& itemDictionary_out,
-                    bool& logToFile_out,
-                    std::string& magicDictionary_out,
-                    bool& skipIntro_out,
-                    std::string& schemaRepository_out,
-                    std::string& soundDictionary_out,
-                    bool& traceInformation_out,
-                    std::string& UIfile_out,
-                    bool& printVersionAndExit_out,
-                    unsigned int& numDispatchThreads_out,
-                    std::string& videoDriver_out)
+do_processArguments (int argc_in,
+                     ACE_TCHAR** argv_in, // cannot be const...
+                     bool& mute_out,
+                     std::string& configurationFile_out,
+                     bool& debug_out,
+                     std::string& monsterDictionary_out,
+                     std::string& floorPlan_out,
+                     std::string& graphicsDictionary_out,
+                     std::string& itemDictionary_out,
+                     bool& logToFile_out,
+                     std::string& magicDictionary_out,
+                     bool& skipIntro_out,
+                     std::string& schemaRepository_out,
+                     std::string& soundDictionary_out,
+                     bool& traceInformation_out,
+                     std::string& UIfile_out,
+                     bool& printVersionAndExit_out,
+                     unsigned int& numDispatchThreads_out,
+                     std::string& videoDriver_out)
 {
   RPG_TRACE(ACE_TEXT("::do_processArguments"));
 
@@ -524,7 +524,7 @@ do_processArguments(const int& argc_in,
   {} // end IF
   else
   {
-    schemaRepository_out += ACE_DIRECTORY_SEPARATOR_STR;
+    schemaRepository_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schemaRepository_out += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_DATA_SUBDIRECTORY);
   } // end ELSE
 
@@ -732,10 +732,9 @@ do_runIntro (SDL_Window* targetWindow_in)
                                             false); // don't cache
   if (!logo)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::toString(type).c_str())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), aborting\n"),
+                ACE_TEXT (RPG_Graphics_Common_Tools::toString (type).c_str ())));
     return false;
   } // end IF
   // *TODO* stretch this image fullscreen
@@ -754,18 +753,18 @@ do_runIntro (SDL_Window* targetWindow_in)
 //   SDL_FreeSurface(logo);
 #if defined (SDL_USE)
   RPG_Graphics_Common_Tools::fade (true,                                          // fade in
-                                   5.0,                                           // interval
+                                   5.0f,                                          // interval
                                    RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK,
                                                                      *surface_p->format,
-                                                                     1.0F),       // fade from black
+                                                                     1.0f),       // fade from black
                                    NULL,                                          // screen lock interface handle
                                    targetSurface_in);                             // target surface (e.g. screen)
 #elif defined (SDL2_USE)
   RPG_Graphics_Common_Tools::fade (true,                                          // fade in
-                                   5.0,                                           // interval
+                                   5.0f,                                          // interval
                                    RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK,
                                                                      *surface_p->format,
-                                                                     1.0F),       // fade from black
+                                                                     1.0f),       // fade from black
                                    NULL,                                          // screen lock interface handle
                                    targetWindow_in);                              // target window (e.g. screen)
 #endif // SDL_USE || SDL2_USE
@@ -775,18 +774,18 @@ do_runIntro (SDL_Window* targetWindow_in)
 //   do_handleSDLEvent(event);
 #if defined (SDL_USE)
   RPG_Graphics_Common_Tools::fade (false,                                         // fade out
-                                   3.0,                                           // interval
+                                   3.0f,                                          // interval
                                    RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK,
                                                                      *surface_p->format,
-                                                                     1.0F),       // fade to black
+                                                                     1.0f),       // fade to black
                                    NULL,                                          // screen lock interface handle
                                    targetSurface_in);                             // target surface (e.g. screen)
 #elif defined (SDL2_USE)
   RPG_Graphics_Common_Tools::fade (false,                                         // fade out
-                                   3.0,                                           // interval
+                                   3.0f,                                          // interval
                                    RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK,
                                                                      *surface_p->format,
-                                                                     1.0F),       // fade to black
+                                                                     1.0f),       // fade to black
                                    NULL,                                          // screen lock interface handle
                                    targetWindow_in);                              // target window (e.g. screen)
 #endif // SDL_USE || SDL2_USE
@@ -818,74 +817,74 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   if (Common_Error_Tools::inDebugSession ())
   {
     std::string schema_path = schemaRepository_in;
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_CHANCE_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_DICE_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
     schema_directories_a.push_back (schema_path);
 
     schema_path = schemaRepository_in;
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
     schema_directories_a.push_back (schema_path);
 
     schema_path = schemaRepository_in;
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_CHARACTER_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
     schema_directories_a.push_back (schema_path);
 
     schema_path = schemaRepository_in;
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
     schema_directories_a.push_back (schema_path);
 
     schema_path = schemaRepository_in;
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
     schema_directories_a.push_back (schema_path);
 
     schema_path = schemaRepository_in;
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_COMBAT_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
     schema_directories_a.push_back (schema_path);
 
     schema_path = schemaRepository_in;
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
     schema_directories_a.push_back (schema_path);
 
     schema_path = schemaRepository_in;
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
     schema_directories_a.push_back (schema_path);
 
     schema_path = schemaRepository_in;
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
     schema_directories_a.push_back (schema_path);
 
     schema_path = schemaRepository_in;
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
     schema_directories_a.push_back (schema_path);
   } // end IF
@@ -1143,10 +1142,10 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to initialize network event dispatch, returning\n")));
-    if (!SDL_RemoveTimer(GTKUserData_in.eventTimer))
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
-                 ACE_TEXT(SDL_GetError())));
+    if (!SDL_RemoveTimer (GTKUserData_in.eventTimer))
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
+                  ACE_TEXT (SDL_GetError ())));
 //    level_engine.stop();
     client_engine.stop();
     RPG_Client_Common_Tools::finalize ();
@@ -1314,9 +1313,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 //           ACE_DEBUG ((LM_DEBUG,
 //                       ACE_TEXT ("gained mouse coverage...\n")));
 
-            // synch access
-            ACE_Guard<ACE_Thread_Mutex> aGuard (GTKUserData_in.UIState->lock);
-
+            ACE_GUARD (ACE_Thread_Mutex, aGuard, GTKUserData_in.UIState->lock);
             GTKUserData_in.doHover = true;
           } // end IF
           else
@@ -1324,9 +1321,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 //           ACE_DEBUG ((LM_DEBUG,
 //                       ACE_TEXT ("lost mouse coverage...\n")));
 
-            // synch access
-            ACE_Guard<ACE_Thread_Mutex> aGuard (GTKUserData_in.UIState->lock);
-
+            ACE_GUARD (ACE_Thread_Mutex, aGuard, GTKUserData_in.UIState->lock);
             GTKUserData_in.doHover = false;
           } // end ELSE
         } // end IF
@@ -1441,9 +1436,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 //           ACE_DEBUG ((LM_DEBUG,
 //                       ACE_TEXT ("gained mouse coverage...\n")));
 
-            // synch access
-            ACE_Guard<ACE_Thread_Mutex> aGuard (GTKUserData_in.UIState->lock);
-
+            ACE_GUARD (ACE_Thread_Mutex, aGuard, GTKUserData_in.UIState->lock);
             GTKUserData_in.doHover = true;
             break;
           }
@@ -1452,9 +1445,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 //           ACE_DEBUG ((LM_DEBUG,
 //                       ACE_TEXT ("lost mouse coverage...\n")));
 
-            // synch access
-            ACE_Guard<ACE_Thread_Mutex> aGuard (GTKUserData_in.UIState->lock);
-
+            ACE_GUARD (ACE_Thread_Mutex, aGuard, GTKUserData_in.UIState->lock);
             GTKUserData_in.doHover = false;
             break;
           }
@@ -1583,12 +1574,9 @@ continue_:;
 //     SDL_framerateDelay(&fps_manager);
 //     if (refresh_screen)
 //     {
-//       try
-//       {
+//       try {
 //         map_window.refresh(NULL);
-//       }
-//       catch (...)
-//       {
+//       } catch (...) {
 //         ACE_DEBUG((LM_ERROR,
 //                    ACE_TEXT("caught exception in RPG_Graphics_IWindow::refresh(), continuing\n")));
 //       }
@@ -1609,7 +1597,7 @@ continue_:;
   client_engine.stop ();
   RPG_CLIENT_ENTITY_MANAGER_SINGLETON::close ();
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::close ();
-  COMMON_TIMERMANAGER_SINGLETON::instance()->stop ();
+  COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
   RPG_Client_Common_Tools::finalize ();
   RPG_Engine_Common_Tools::finalize ();
   // done handling UI events
@@ -1650,13 +1638,14 @@ do_parseIniFile (const std::string& iniFilename_in,
   config_out.video_configuration.double_buffer     =
       RPG_CLIENT_VIDEO_DEF_DOUBLEBUFFER;
 
-  config_out.network_configuration.server   = RPG_ENGINE_NETWORK_DEF_SERVER;
+  config_out.network_configuration.server   = ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_SERVER);
   config_out.network_configuration.port     = RPG_ENGINE_NETWORK_DEF_PORT;
-  config_out.network_configuration.password = RPG_ENGINE_NETWORK_DEF_PASSWORD;
-  config_out.network_configuration.nick     = RPG_ENGINE_NETWORK_DEF_NICKNAME;
-  config_out.network_configuration.user     = RPG_ENGINE_NETWORK_DEF_USERNAME;
-  config_out.network_configuration.realname = RPG_ENGINE_NETWORK_DEF_REALNAME;
-  config_out.network_configuration.channel  = RPG_ENGINE_NETWORK_DEF_CHANNEL;
+  config_out.network_configuration.password = ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_PASSWORD);
+  config_out.network_configuration.nick =
+    ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_NICKNAME);
+  config_out.network_configuration.user     = ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_USERNAME);
+  config_out.network_configuration.realname = ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_REALNAME);
+  config_out.network_configuration.channel  = ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_CHANNEL);
 
   ACE_Configuration_Heap config_heap;
   if (config_heap.open ())
@@ -1668,7 +1657,7 @@ do_parseIniFile (const std::string& iniFilename_in,
   } // end IF
 
   ACE_Ini_ImpExp import (config_heap);
-  if (import.import_config (iniFilename_in.c_str()))
+  if (import.import_config (ACE_TEXT (iniFilename_in.c_str ())))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("ACE_Ini_ImpExp::import_config(\"%s\") failed, returning\n"),
@@ -1679,13 +1668,13 @@ do_parseIniFile (const std::string& iniFilename_in,
   // find/open "client" section...
   ACE_Configuration_Section_Key section_key;
   if (config_heap.open_section (config_heap.root_section (),
-                                ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_CONFIGURATION_SECTIONHEADER_CLIENT),
-                                0, // MUST exist !
+                                ACE_TEXT (RPG_CLIENT_CONFIGURATION_SECTIONHEADER_CLIENT),
+                                false, // MUST exist !
                                 section_key) != 0)
   {
     ACE_ERROR ((LM_ERROR,
                 ACE_TEXT ("failed to ACE_Configuration_Heap::open_section(%s), returning\n"),
-                ACE_TEXT (RPG_CLIENT_CONFIGURATION_SECTIONHEADER_CONNECTION)));
+                ACE_TEXT (RPG_CLIENT_CONFIGURATION_SECTIONHEADER_CLIENT)));
     return;
   } // end IF
 
@@ -1700,7 +1689,7 @@ do_parseIniFile (const std::string& iniFilename_in,
                                        val_type) == 0)
   {
     if (config_heap.get_string_value (section_key,
-                                      val_name.c_str (),
+                                      ACE_TEXT (val_name.c_str ()),
                                       val_value))
     {
       ACE_ERROR ((LM_ERROR,
@@ -1736,7 +1725,8 @@ do_parseIniFile (const std::string& iniFilename_in,
     }
     else if (val_name == ACE_TEXT("audio_cd"))
     {
-      converter.str(val_value.c_str ());
+      converter.clear ();
+      converter.str (val_value.c_str ());
       converter >> config_out.audio_configuration.use_CD;
       if (converter.fail ())
       {
@@ -1759,6 +1749,7 @@ do_parseIniFile (const std::string& iniFilename_in,
     }
     else if (val_name == ACE_TEXT ("screen_fullscreen"))
     {
+      converter.clear ();
       converter.str (val_value.c_str ());
       converter >> config_out.video_configuration.full_screen;
       if (converter.fail ())
@@ -1779,8 +1770,8 @@ do_parseIniFile (const std::string& iniFilename_in,
 
    // find/open "connection" section...
    if (config_heap.open_section (config_heap.root_section (),
-                                 ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_CONFIGURATION_SECTIONHEADER_CONNECTION),
-                                 0, // MUST exist !
+                                 ACE_TEXT (RPG_CLIENT_CONFIGURATION_SECTIONHEADER_CONNECTION),
+                                 false, // MUST exist !
                                  section_key) != 0)
    {
      ACE_ERROR ((LM_ERROR,
@@ -1797,7 +1788,7 @@ do_parseIniFile (const std::string& iniFilename_in,
                                         val_type) == 0)
    {
      if (config_heap.get_string_value (section_key,
-                                       val_name.c_str (),
+                                       ACE_TEXT (val_name.c_str ()),
                                        val_value))
      {
        ACE_ERROR ((LM_ERROR,
@@ -1858,7 +1849,7 @@ do_parseIniFile (const std::string& iniFilename_in,
 void
 do_printVersion (const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_printVersion"));
+  RPG_TRACE (ACE_TEXT ("::do_printVersion"));
 
   // step1: print program name/version
 //   std::cout << programName_in << ACE_TEXT_ALWAYS_CHAR (" : ") << VERSION << std::endl;
@@ -1964,7 +1955,7 @@ ACE_TMAIN (int argc_in,
   process_profile.start ();
 
   // step1 init/validate configuration
-  Common_File_Tools::initialize (argv_in[0]);
+  Common_File_Tools::initialize (ACE_TEXT_ALWAYS_CHAR (argv_in[0]));
 
   // step1a: process commandline arguments
   bool mute_sound                   = false;
@@ -1979,7 +1970,7 @@ ACE_TMAIN (int argc_in,
                                                             ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_SUB_DIRECTORY_STRING),
                                                             true); // configuration-
   std::string configuration_file    = configuration_path;
-  configuration_file += ACE_DIRECTORY_SEPARATOR_STR;
+  configuration_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   configuration_file += ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_CONFIGURATION_FILE);
 
   configuration_path =
@@ -1988,7 +1979,7 @@ ACE_TMAIN (int argc_in,
                                                             ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_SUB_DIRECTORY_STRING),
                                                             true); // configuration-
   std::string monster_dictionary    = configuration_path;
-  monster_dictionary += ACE_DIRECTORY_SEPARATOR_STR;
+  monster_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   monster_dictionary += ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_DICTIONARY_FILE);
 
   configuration_path =
@@ -1997,7 +1988,7 @@ ACE_TMAIN (int argc_in,
                                                             ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
                                                             true); // configuration-
   std::string graphics_dictionary   = configuration_path;
-  graphics_dictionary += ACE_DIRECTORY_SEPARATOR_STR;
+  graphics_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   graphics_dictionary += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
 
   configuration_path =
@@ -2006,7 +1997,7 @@ ACE_TMAIN (int argc_in,
                                                             ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_SUB_DIRECTORY_STRING),
                                                             true); // configuration-
   std::string item_dictionary       = configuration_path;
-  item_dictionary += ACE_DIRECTORY_SEPARATOR_STR;
+  item_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   item_dictionary += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
 
   configuration_path =
@@ -2015,7 +2006,7 @@ ACE_TMAIN (int argc_in,
                                                             ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_SUB_DIRECTORY_STRING),
                                                             true); // configuration-
   std::string magic_dictionary      = configuration_path;
-  magic_dictionary += ACE_DIRECTORY_SEPARATOR_STR;
+  magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   magic_dictionary += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
 
   configuration_path =
@@ -2024,7 +2015,7 @@ ACE_TMAIN (int argc_in,
                                                             ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_SUB_DIRECTORY_STRING),
                                                             true); // configuration-
   std::string sound_dictionary      = configuration_path;
-  sound_dictionary += ACE_DIRECTORY_SEPARATOR_STR;
+  sound_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   sound_dictionary += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DICTIONARY_FILE);
 
   configuration_path =
@@ -2033,7 +2024,7 @@ ACE_TMAIN (int argc_in,
                                                             ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_SUB_DIRECTORY_STRING),
                                                             true); // configuration-
   std::string UI_file               = configuration_path;
-  UI_file += ACE_DIRECTORY_SEPARATOR_STR;
+  UI_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   UI_file += ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_UI_FILE);
 
   std::string schema_repository     = Common_File_Tools::getWorkingDirectory ();
@@ -2041,7 +2032,7 @@ ACE_TMAIN (int argc_in,
   {} // end IF
   else
   {
-    schema_repository += ACE_DIRECTORY_SEPARATOR_STR;
+    schema_repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_repository += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_DATA_SUBDIRECTORY);
   } // end ELSE
 
@@ -2051,7 +2042,7 @@ ACE_TMAIN (int argc_in,
                                                             ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
                                                             false); // data-
   std::string floor_plan            = data_path;
-  floor_plan += ACE_DIRECTORY_SEPARATOR_STR;
+  floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   floor_plan +=
     RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
   floor_plan += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
@@ -2063,7 +2054,7 @@ ACE_TMAIN (int argc_in,
     ((COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR) ? NET_CLIENT_DEFAULT_NUMBER_OF_REACTOR_DISPATCH_THREADS
                                                                       : NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS);
   std::string video_driver          =
-      ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME);
+      ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME);
   bool skip_intro                   = false;
 #if GTK_CHECK_VERSION (3,0,0)
   std::string UI_CSS_file;
@@ -2089,7 +2080,7 @@ ACE_TMAIN (int argc_in,
                             num_dispatch_threads,
                             video_driver))
   {
-    do_printUsage (ACE::basename (argv_in[0]));
+    do_printUsage (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // clean up
     // *PORTABILITY*: on Windows, must fini ACE...
@@ -2126,7 +2117,7 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT (UI_file.c_str ())));
 
     // make 'em learn...
-    do_printUsage (ACE::basename (argv_in[0]));
+    do_printUsage (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // clean up
     // *PORTABILITY*: on Windows, must fini ACE...
@@ -2142,7 +2133,7 @@ ACE_TMAIN (int argc_in,
   // step1b: handle specific program modes
   if (print_version_and_exit)
   {
-    do_printVersion (ACE::basename (argv_in[0]));
+    do_printVersion (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // clean up
     // *PORTABILITY*: on Windows, must fini ACE...
@@ -2293,15 +2284,15 @@ ACE_TMAIN (int argc_in,
   configuration.graphics_dictionary  = graphics_dictionary;
 
   // *** network ***
-  configuration.network_configuration.server   = RPG_ENGINE_NETWORK_DEF_SERVER;
+  configuration.network_configuration.server   = ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_SERVER);
   configuration.network_configuration.port     = RPG_ENGINE_NETWORK_DEF_PORT;
   configuration.network_configuration.password =
-      RPG_ENGINE_NETWORK_DEF_PASSWORD;
-  configuration.network_configuration.nick     = RPG_ENGINE_NETWORK_DEF_NICKNAME;
-  configuration.network_configuration.user     = RPG_ENGINE_NETWORK_DEF_USERNAME;
+      ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_PASSWORD);
+  configuration.network_configuration.nick     = ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_NICKNAME);
+  configuration.network_configuration.user     = ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_USERNAME);
   configuration.network_configuration.realname =
-      RPG_ENGINE_NETWORK_DEF_REALNAME;
-  configuration.network_configuration.channel  = RPG_ENGINE_NETWORK_DEF_CHANNEL;
+      ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_REALNAME);
+  configuration.network_configuration.channel  = ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_CHANNEL);
 
   // *** magic ***
   configuration.magic_dictionary     = magic_dictionary;

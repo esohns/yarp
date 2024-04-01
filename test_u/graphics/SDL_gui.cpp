@@ -428,7 +428,7 @@ do_processArguments (int argc_in,
   entityFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   entityFile_out +=
    RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
-  entityFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+  entityFile_out += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT);
 
   openGLMode_out          = false;
   logToFile_out           = false;
@@ -442,7 +442,7 @@ do_processArguments (int argc_in,
   mapFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   mapFile_out +=
     RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
-  mapFile_out += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
+  mapFile_out += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
 
   slideShowMode_out       = (SDL_GUI_DEF_MODE == SDL_GUI_USERMODE_SLIDESHOW);
   traceInformation_out    = false;
