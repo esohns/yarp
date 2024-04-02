@@ -252,10 +252,10 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
       RPG_Graphics_Surface::putText (font_,
                                      *iterator,
                                      RPG_Graphics_SDL_Tools::colorToSDLColor (text_color_i,
-                                                                              *target_surface),
+                                                                              *target_surface->format),
                                      RPG_CLIENT_MESSAGE_SHADE_LINES,
                                      RPG_Graphics_SDL_Tools::colorToSDLColor (shade_color_i,
-                                                                              *target_surface),
+                                                                              *target_surface->format),
                                      std::make_pair (inherited::clipRectangle_.x,
                                                      inherited::clipRectangle_.y +
                                                      (inherited::clipRectangle_.h -

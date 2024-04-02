@@ -93,7 +93,7 @@ RPG_Graphics_Common_Tools::preInitialize ()
 bool
 RPG_Graphics_Common_Tools::initialize (const std::string& directory_in,
                                        unsigned int cacheSize_in,
-                                       bool initSDL_in)
+                                       bool initializeSDL_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::initialize"));
 
@@ -129,11 +129,11 @@ RPG_Graphics_Common_Tools::initialize (const std::string& directory_in,
   } // end IF
 
   // init colors
-  if (initSDL_in)
-    RPG_Graphics_SDL_Tools::initColors ();
+  if (initializeSDL_in)
+    RPG_Graphics_SDL_Tools::initializeColors ();
 
   // init fonts
-  if (initSDL_in)
+  if (initializeSDL_in)
     if (!RPG_Graphics_Common_Tools::initializeFonts ())
     {
       ACE_DEBUG ((LM_ERROR,

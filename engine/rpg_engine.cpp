@@ -418,7 +418,7 @@ RPG_Engine::stop (bool lockedAccess_in)
                   (*iterator).timer_id));
       (*iterator).timer_id = -1;
     } // end IF
-  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance ()->stop ();
+  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance ()->stop (true); // N/A
 
   // drop control message into the queue...
   ACE_Message_Block* stop_mb = NULL;
@@ -487,7 +487,7 @@ RPG_Engine::dump_state () const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::dump_state"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
+  ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("handling %u entities...\n"),

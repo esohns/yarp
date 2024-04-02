@@ -919,16 +919,16 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   RPG_Client_Engine client_engine;
   RPG_Engine level_engine;
   level_engine.initialize (&client_engine);
-  GTKUserData_in.clientEngine     = &client_engine;
-  GTKUserData_in.schemaRepository = schemaRepository_in;
-  GTKUserData_in.entity.position  =
+  GTKUserData_in.clientEngine      = &client_engine;
+  GTKUserData_in.schemaRepository  = schemaRepository_in;
+  GTKUserData_in.entity.position   =
     std::make_pair (std::numeric_limits<unsigned int>::max (),
                     std::numeric_limits<unsigned int>::max ());
 //   GTKUserData_in.entity.actions();
 //   GTKUserData_in.entity.modes();
 //  GTKUserData_in.entity.sprite();
   GTKUserData_in.entity.is_spawned = false;
-  GTKUserData_in.levelEngine      = &level_engine;
+  GTKUserData_in.levelEngine       = &level_engine;
 
   // ***** window setup *****
   std::string caption
@@ -948,7 +948,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
     RPG_Engine_Common_Tools::finalize ();
     return;
   } // end IF
-  ACE_ASSERT (GTKUserData_in.screen != NULL);
+  ACE_ASSERT (GTKUserData_in.screen);
 //#if defined(SDL2_USE)
 //  Uint32 flags_i = SDL_RENDERER_ACCELERATED;
 //  GTKUserData_in.renderer = SDL_CreateRenderer (GTKUserData_in.screen,
@@ -968,7 +968,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 
   if (!RPG_Graphics_Common_Tools::initialize (configuration_in.graphics_directory,
                                               RPG_CLIENT_GRAPHICS_DEF_CACHESIZE,
-                                              true))
+                                              true)) // initialize SDL ?
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Graphics_Common_Tools::initialize(): \"%m\", returning\n")));
@@ -977,10 +977,11 @@ do_work (struct RPG_Client_Configuration& configuration_in,
     return;
   } // end IF
 
-  SDL_Rect dirty_region;
-  ACE_OS::memset (&dirty_region, 0, sizeof (SDL_Rect));
+  struct SDL_Rect dirty_region;
+  ACE_OS::memset (&dirty_region, 0, sizeof (struct SDL_Rect));
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->setCursor (CURSOR_NORMAL,
-                                                                 dirty_region);
+                                                                 dirty_region,
+                                                                 true); // locked access ?
 
   // ***** mouse setup *****
 #if defined (SDL_USE)
@@ -1004,16 +1005,12 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = RPG_CLIENT_GRAPHICS_DEF_WINDOWSTYLE_TYPE;
-  std::string title
-    //= ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);
-    ;
-
+  std::string title = ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);
+  SDL_Surface* surface_p = NULL;
 #if defined (SDL_USE)
-  SDL_Surface* surface_p = GTKUserData_in.screen;
-  ACE_ASSERT (surface_p);
+  surface_p = GTKUserData_in.screen;
 #elif defined (SDL2_USE)
-  SDL_Surface* surface_p = SDL_GetWindowSurface (GTKUserData_in.screen);
-  ACE_ASSERT (surface_p);
+  surface_p = SDL_GetWindowSurface (GTKUserData_in.screen);
 //  GTKUserData_in.renderer = SDL_CreateSoftwareRenderer (surface_p);
 //  if (!GTKUserData_in.renderer)
 //  {
@@ -1025,6 +1022,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 //    return;
 //  } // end IF
 #endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
   RPG_Client_Window_Main main_window (RPG_Graphics_Size_t (surface_p->w,
                                                            surface_p->h), // size
                                       type,                               // interface elements
@@ -1084,14 +1082,13 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to start client engine, returning\n")));
-    level_engine.stop ();
+    level_engine.stop (true); // locked access ?
     RPG_Client_Common_Tools::finalize ();
     RPG_Engine_Common_Tools::finalize ();
     return;
   } // end IF
 
   // step4d: start timer (triggers hover events)
-  GTKUserData_in.eventTimer = 0;
   GTKUserData_in.eventTimer =
     SDL_AddTimer (RPG_CLIENT_SDL_EVENT_TIMEOUT, // interval (ms)
                   event_timer_SDL_cb,           // event timer callback
@@ -1103,7 +1100,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
                 RPG_CLIENT_SDL_EVENT_TIMEOUT,
                 ACE_TEXT (SDL_GetError ())));
 //    level_engine.stop();
-    client_engine.stop ();
+    client_engine.stop (true, false); // N/A
     RPG_Client_Common_Tools::finalize ();
     RPG_Engine_Common_Tools::finalize ();
     return;
@@ -1153,11 +1150,12 @@ do_work (struct RPG_Client_Configuration& configuration_in,
     return;
   } // end IF
 
-  // step5c: init connection manager
+  // step5c: initialize connection manager
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (std::numeric_limits<unsigned int>::max (),
                                                                          ACE_Time_Value (0, NET_STATISTIC_DEFAULT_VISIT_INTERVAL_MS * 1000));
+  struct Net_UserData user_data_s;
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->set (configuration_in.connection_configuration,
-                                                                  NULL);
+                                                                  &user_data_s);
 
   // step5d: start worker(s)
   int group_id = -1;
@@ -1209,7 +1207,8 @@ do_work (struct RPG_Client_Configuration& configuration_in,
     RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abort ();
     RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->wait ();
     Common_Event_Tools::finalizeEventDispatch (dispatch_state_s,
-                                               false);
+                                               false,
+                                               true);
     return;
   } // end IF
 
@@ -1587,9 +1586,9 @@ continue_:;
               ACE_TEXT ("left SDL event loop...\n")));
 
   // step7: clean up
-  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop (true,  // wait ?
-                                                      false);
-  if (!SDL_RemoveTimer(GTKUserData_in.eventTimer))
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop (true,   // wait ?
+                                                      false); // N/A
+  if (!SDL_RemoveTimer (GTKUserData_in.eventTimer))
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
                 ACE_TEXT (SDL_GetError ())));
@@ -1605,7 +1604,8 @@ continue_:;
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abort ();
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->wait ();
   Common_Event_Tools::finalizeEventDispatch (dispatch_state_s,
-                                             true); // wait for completion ?
+                                             true,  // wait for completion ?
+                                             true); // release event dispatch singleton(s) ?
   // no more data will arrive from here on...
 
   ACE_DEBUG ((LM_DEBUG,
@@ -2371,7 +2371,7 @@ ACE_TMAIN (int argc_in,
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to TTF_Init(): \"%s\", aborting\n"),
-                ACE_TEXT (SDL_GetError ())));
+                ACE_TEXT (TTF_GetError ())));
 
     // clean up
     Common_Log_Tools::finalizeLogging ();
@@ -2387,7 +2387,7 @@ ACE_TMAIN (int argc_in,
     return EXIT_FAILURE;
   } // end IF
 
-  // step2b: init GLIB / G(D|T)K[+] / GNOME
+  // step2b: initialize GLIB / G(D|T)K[+] / GNOME
   Common_UI_GtkBuilderDefinition_t gtk_ui_definition;
   Common_UI_GTK_Manager_t* gtk_manager_p =
     COMMON_UI_GTK_MANAGER_SINGLETON::instance ();
@@ -2422,16 +2422,11 @@ ACE_TMAIN (int argc_in,
            skip_intro,
            debug);
   timer.stop ();
-  // debug info
-  std::string working_time_string;
   ACE_Time_Value working_time;
   timer.elapsed_time (working_time);
-  working_time_string =
-    Common_Timer_Tools::periodToString (working_time);
-
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
-              ACE_TEXT (working_time_string.c_str ())));
+              ACE_TEXT (Common_Timer_Tools::periodToString (working_time).c_str ())));
 
   // step4: clean up
   TTF_Quit ();
@@ -2439,7 +2434,7 @@ ACE_TMAIN (int argc_in,
   SDL_Quit ();
 
   // stop profile timer...
-  process_profile.stop();
+  process_profile.stop ();
 
   // only process profile left to do...
   ACE_Profile_Timer::ACE_Elapsed_Time elapsed_time;

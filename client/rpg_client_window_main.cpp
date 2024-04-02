@@ -186,12 +186,12 @@ RPG_Client_Window_Main::draw (SDL_Surface* targetSurface_in,
                                    RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_Graphics_SDL_Tools::getColor (RPG_GRAPHICS_FONT_DEF_COLOR,
                                                                                                               *target_surface->format,
                                                                                                               1.0F),
-                                                                            *target_surface),
+                                                                            *target_surface->format),
                                    true, // add shade
                                    RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_Graphics_SDL_Tools::getColor (RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
                                                                                                               *target_surface->format,
                                                                                                               1.0F),
-                                                                            *target_surface),
+                                                                            *target_surface->format),
                                    std::make_pair (borderLeft_, // top left
                                                    ((borderTop_ -
                                                      title_size.second) / 2)), // center of top border

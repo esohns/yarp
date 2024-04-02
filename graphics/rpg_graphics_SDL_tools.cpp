@@ -942,7 +942,7 @@ RPG_Graphics_SDL_Tools::keyToString (const SDL_Keysym& key_in)
 
 struct SDL_Color
 RPG_Graphics_SDL_Tools::colorToSDLColor (Uint32 SDLColor_in,
-                                         const SDL_Surface& targetSurface_in)
+                                         const struct SDL_PixelFormat& pixelFormat_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::colorToSDLColor"));
 
@@ -952,19 +952,20 @@ RPG_Graphics_SDL_Tools::colorToSDLColor (Uint32 SDLColor_in,
 
   // extract components from the 32-bit color value
   result.r =
-          (SDLColor_in & targetSurface_in.format->Rmask) >> targetSurface_in.format->Rshift;
+          (SDLColor_in & pixelFormat_in.Rmask) >> pixelFormat_in.Rshift;
   result.g =
-          (SDLColor_in & targetSurface_in.format->Gmask) >> targetSurface_in.format->Gshift;
+          (SDLColor_in & pixelFormat_in.Gmask) >> pixelFormat_in.Gshift;
   result.b =
-          (SDLColor_in & targetSurface_in.format->Bmask) >> targetSurface_in.format->Bshift;
-  //result.unused = 0;
+          (SDLColor_in & pixelFormat_in.Bmask) >> pixelFormat_in.Bshift;
+  result.a =
+          (SDLColor_in & pixelFormat_in.Amask) >> pixelFormat_in.Ashift;
 
   return result;
 }
 
 Uint32
 RPG_Graphics_SDL_Tools::getColor (enum RPG_Graphics_ColorName colorName_in,
-                                  const SDL_PixelFormat& pixelFormat_in,
+                                  const struct SDL_PixelFormat& pixelFormat_in,
                                   float blendFactor_in) // opacity
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::getColor"));
@@ -986,9 +987,9 @@ RPG_Graphics_SDL_Tools::getColor (enum RPG_Graphics_ColorName colorName_in,
 }
 
 void
-RPG_Graphics_SDL_Tools::initColors ()
+RPG_Graphics_SDL_Tools::initializeColors ()
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::initColors"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::initializeColors"));
 
   myColors.clear ();
   struct RPG_Graphics_ColorRGBA color;

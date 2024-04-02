@@ -1138,13 +1138,13 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
 }
 
 void
-SDL_GUI_MainWindow::drawTitle(const RPG_Graphics_Font& font_in,
-                              const std::string& text_in,
-                              SDL_Surface* targetSurface_in)
+SDL_GUI_MainWindow::drawTitle (const RPG_Graphics_Font& font_in,
+                               const std::string& text_in,
+                               SDL_Surface* targetSurface_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::drawTitle"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_MainWindow::drawTitle"));
 
-  if (text_in.empty())
+  if (text_in.empty ())
     return;
 
   // sanity check(s)
@@ -1161,20 +1161,20 @@ SDL_GUI_MainWindow::drawTitle(const RPG_Graphics_Font& font_in,
   ACE_ASSERT (target_surface);
 
   RPG_Graphics_TextSize_t title_size =
-      RPG_Graphics_Common_Tools::textSize(font_in,
-                                          text_in);
+      RPG_Graphics_Common_Tools::textSize (font_in,
+                                           text_in);
 
   SDL_Rect clip_rect, dirty_region;
-  clip_rect.x = static_cast<Sint16>(borderLeft_);
-  clip_rect.y = static_cast<Sint16>((borderTop_ - title_size.second) / 2);
-  clip_rect.w = static_cast<Uint16>(title_size.first);
-  clip_rect.h = static_cast<Uint16>(title_size.second);
-  if (!SDL_SetClipRect(target_surface, &clip_rect))
+  clip_rect.x = static_cast<Sint16> (borderLeft_);
+  clip_rect.y = static_cast<Sint16> ((borderTop_ - title_size.second) / 2);
+  clip_rect.w = static_cast<Uint16> (title_size.first);
+  clip_rect.h = static_cast<Uint16> (title_size.second);
+  if (!SDL_SetClipRect (target_surface,
+                        &clip_rect))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               ACE_TEXT(SDL_GetError())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_SetClipRect(): %s, returning\n"),
+                ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
 
@@ -1183,23 +1183,23 @@ SDL_GUI_MainWindow::drawTitle(const RPG_Graphics_Font& font_in,
                                  RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_Graphics_SDL_Tools::getColor (RPG_GRAPHICS_FONT_DEF_COLOR,
                                                                                                             *target_surface->format,
                                                                                                             1.0F),
-                                                                          *target_surface),
+                                                                          *target_surface->format),
                                  true, // add shade
                                  RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_Graphics_SDL_Tools::getColor (RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
                                                                                                             *target_surface->format,
                                                                                                             1.0F),
-                                                                          *target_surface),
+                                                                          *target_surface->format),
                                  std::make_pair (borderLeft_,                             // top left
                                                  ((borderTop_ - title_size.second) / 2)), // center of top border
                                  target_surface,
                                  dirty_region);
-  invalidate(dirty_region);
-  if (!SDL_SetClipRect(target_surface, NULL))
+  invalidate (dirty_region);
+  if (!SDL_SetClipRect (target_surface,
+                        NULL))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_SetClipRect(): %s, aborting\n"),
-               ACE_TEXT(SDL_GetError())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_SetClipRect(): %s, returning\n"),
+                ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
 }

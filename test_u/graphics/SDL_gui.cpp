@@ -594,13 +594,13 @@ do_slideshow (const std::string& graphicsDirectory_in,
   RPG_Dice_RollResult_t result;
   SDL_Surface* image = NULL;
   bool release_image = false;
-  SDL_Rect dirty_region;
+  struct SDL_Rect dirty_region;
   do
   {
     window = NULL;
     image = NULL;
     release_image = false;
-    ACE_OS::memset (&dirty_region, 0, sizeof (SDL_Rect));
+    ACE_OS::memset (&dirty_region, 0, sizeof (struct SDL_Rect));
 
     // reset screen
     mainWindow_in->draw ();
@@ -612,7 +612,7 @@ do_slideshow (const std::string& graphicsDirectory_in,
                                      1,
                                      result);
     graphic.category =
-      static_cast<RPG_Graphics_Category>((result.front () - 1));
+      static_cast<RPG_Graphics_Category> ((result.front () - 1));
 
     // step2: choose (random) type within category
     result.clear();
@@ -623,7 +623,7 @@ do_slideshow (const std::string& graphicsDirectory_in,
         RPG_Dice::generateRandomNumbers (RPG_GRAPHICS_CURSOR_MAX,
                                          1,
                                          result);
-        type.cursor = static_cast<RPG_Graphics_Cursor>((result.front () - 1));
+        type.cursor = static_cast<RPG_Graphics_Cursor> ((result.front () - 1));
         type.discriminator = RPG_Graphics_GraphicTypeUnion::CURSOR;
 
         break;
@@ -633,7 +633,7 @@ do_slideshow (const std::string& graphicsDirectory_in,
         RPG_Dice::generateRandomNumbers (RPG_GRAPHICS_FONT_MAX,
                                          1,
                                          result);
-        type.font = static_cast<RPG_Graphics_Font>((result.front () - 1));
+        type.font = static_cast<RPG_Graphics_Font> ((result.front () - 1));
         type.discriminator = RPG_Graphics_GraphicTypeUnion::FONT;
 
         break;
@@ -644,7 +644,7 @@ do_slideshow (const std::string& graphicsDirectory_in,
         RPG_Dice::generateRandomNumbers (RPG_GRAPHICS_IMAGE_MAX,
                                          1,
                                          result);
-        type.image = static_cast<RPG_Graphics_Image>((result.front () - 1));
+        type.image = static_cast<RPG_Graphics_Image> ((result.front () - 1));
         type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
 
         break;
@@ -654,7 +654,7 @@ do_slideshow (const std::string& graphicsDirectory_in,
         RPG_Dice::generateRandomNumbers (RPG_GRAPHICS_SPRITE_MAX,
                                          1,
                                          result);
-        type.sprite = static_cast<RPG_Graphics_Sprite>((result.front () - 1));
+        type.sprite = static_cast<RPG_Graphics_Sprite> ((result.front () - 1));
         type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
 
         break;
@@ -665,7 +665,7 @@ do_slideshow (const std::string& graphicsDirectory_in,
                                          1,
                                          result);
         type.tilegraphic =
-            static_cast<RPG_Graphics_TileGraphic>((result.front () - 1));
+            static_cast<RPG_Graphics_TileGraphic> ((result.front () - 1));
         type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
 
         break;
@@ -676,7 +676,7 @@ do_slideshow (const std::string& graphicsDirectory_in,
                                          1,
                                          result);
         type.tilesetgraphic =
-            static_cast<RPG_Graphics_TileSetGraphic>((result.front () - 1));
+            static_cast<RPG_Graphics_TileSetGraphic> ((result.front () - 1));
         type.discriminator = RPG_Graphics_GraphicTypeUnion::TILESETGRAPHIC;
 
         break;
@@ -729,19 +729,19 @@ do_slideshow (const std::string& graphicsDirectory_in,
         } // end IF
         RPG_Graphics_Surface::fill (RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK,
                                                                       *image->format,
-                                                                      1.0F),
+                                                                      1.0f),
                                     image);
         if (!RPG_Graphics_Surface::putText (type.font,
                                             text,
                                             RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_Graphics_SDL_Tools::getColor (SDL_GUI_DEF_TILE_INDEX_COLOR,
                                                                                                                        *image->format,
-                                                                                                                       1.0F),
-                                                                                     *image),
+                                                                                                                       1.0f),
+                                                                                     *image->format),
                                             false, // add shade ?
                                             RPG_Graphics_SDL_Tools::colorToSDLColor (RPG_Graphics_SDL_Tools::getColor (RPG_GRAPHICS_FONT_DEF_SHADECOLOR,
                                                                                                                        *image->format,
-                                                                                                                       1.0F),
-                                                                                     *image),
+                                                                                                                       1.0f),
+                                                                                     *image->format),
                                             std::make_pair (0, 0),
                                             image,
                                             dirty_region))
@@ -762,8 +762,7 @@ do_slideshow (const std::string& graphicsDirectory_in,
         graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
         graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
         graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->get (type);
-        ACE_ASSERT ((graphic.type.discriminator == type.discriminator) &&
-                    (graphic.type.tilesetgraphic == type.tilesetgraphic));
+        ACE_ASSERT ((graphic.type.discriminator == type.discriminator) && (graphic.type.tilesetgraphic == type.tilesetgraphic));
         ACE_ASSERT (!graphic.tileset.tiles.empty ());
 
         // choose random tile
@@ -783,17 +782,17 @@ do_slideshow (const std::string& graphicsDirectory_in,
           case TILESETTYPE_DOOR:
           {
             filename +=
-                ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_DOORS_SUB);
+                ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_TILE_DOORS_SUB);
             break;
           }
           case TILESETTYPE_FLOOR:
           {
-            filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_FLOORS_SUB);
+            filename += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_TILE_FLOORS_SUB);
             break;
           }
           case TILESETTYPE_WALL:
           {
-            filename += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_WALLS_SUB);
+            filename += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_TILE_WALLS_SUB);
             break;
           }
           default:
