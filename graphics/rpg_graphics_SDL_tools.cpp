@@ -756,8 +756,8 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
   // - use a render driver supporting software rendering
   struct SDL_RendererInfo render_driver_info_s;
   uint32_t renderer_flags = SDL_RENDERER_SOFTWARE;
-  int32_t number_of_render_drivers = SDL_GetNumRenderDrivers(), index = 0;
-
+  int32_t number_of_render_drivers = SDL_GetNumRenderDrivers();
+  int32_t index = 0;
   while (index < number_of_render_drivers)
   {
     if (SDL_GetRenderDriverInfo (index, &render_driver_info_s) < 0)
@@ -808,6 +808,27 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
               ACE_TEXT ("using \"%s\" render driver\n"),
               ACE_TEXT (render_driver_info_s.name)));
   SDL_DestroyRenderer (renderer); renderer = NULL;
+
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#else
+  SDL_GLContext context_p = SDL_GL_CreateContext (result);
+  if (context_p == NULL)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_GL_CreateContext(): \"%s\", aborting\n"),
+                ACE_TEXT (SDL_GetError ())));
+    SDL_DestroyWindow (result); result = NULL;
+    return NULL;
+  } // end IF
+  if (SDL_GL_MakeCurrent (result, context_p) != 0)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_GL_MakeCurrent(): \"%s\", aborting\n"),
+                ACE_TEXT (SDL_GetError ())));
+    SDL_DestroyWindow (result); result = NULL;
+    return NULL;
+  } // end IF
+#endif // ACE_WIN32 || ACE_WIN64
 
   return result;
 }
