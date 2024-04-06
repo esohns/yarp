@@ -345,13 +345,16 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       SDL_Surface* sprite_graphic = NULL;
       RPG_Graphics_GraphicTypeUnion type;
       type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
-      if (lockedAccess_in) engine_->lock ();
+      if (lockedAccess_in)
+        engine_->lock ();
       type.sprite =
-          (engine_->isMonster (parameters_in.entity_id, false) ? RPG_Client_Common_Tools::monsterToSprite (engine_->getName (parameters_in.entity_id,
-                                                                                                                             false))
-                                                               : RPG_Client_Common_Tools::classToSprite (engine_->getClass (parameters_in.entity_id,
-                                                                                                                            false)));
-      if (lockedAccess_in) engine_->unlock ();
+          (engine_->isMonster (parameters_in.entity_id,
+                               false) ? RPG_Client_Common_Tools::monsterToSprite (engine_->getName (parameters_in.entity_id,
+                                                                                                    false))
+                                      : RPG_Client_Common_Tools::classToSprite (engine_->getClass (parameters_in.entity_id,
+                                                                                                   false)));
+      if (lockedAccess_in)
+        engine_->unlock ();
       sprite_graphic = RPG_Graphics_Common_Tools::loadGraphic (type,   // sprite
                                                                true,   // convert to display format
                                                                false); // don't cache
@@ -364,25 +367,24 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       } // end IF
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->add (parameters_in.entity_id,
                                                              sprite_graphic,
-                                                             false);
+                                                             false); // free on remove ?
 
       // step3: draw the sprite --> delegate to the engine
 
       break;
     }
     case COMMAND_E2C_ENTITY_REMOVE:
-    {
-      // sanity check(s)
-      // step1: erase the sprite --> delegate to the engine
+    { // sanity check(s)
       client_action.command = COMMAND_ENTITY_REMOVE;
       ACE_ASSERT (window_);
       client_action.window = window_;
       ACE_ASSERT (parameters_in.entity_id);
       client_action.entity_id = parameters_in.entity_id;
+      // step1: erase the sprite --> delegate to the engine
       action (client_action);
 
       // step3: play a sound ? --> delegate to the engine
-      if (parameters_in.entity_id == engine_->getActive (true))
+      if (parameters_in.entity_id == engine_->getActive (true)) // locked access ?
         do_action = false; // don't play a sound...
 
       client_action.command = COMMAND_PLAY_SOUND;

@@ -79,8 +79,8 @@ class RPG_Engine
   virtual void dump_state () const;
 
   // *WARNING*: handle with care !
-  inline void lock () const { lock_.acquire (); }
-  inline void unlock () const { lock_.release (); }
+  inline void lock () const { int result = lock_.acquire (); ACE_ASSERT (result == 0); }
+  inline void unlock () const { int result = lock_.release (); ACE_ASSERT (result == 0); }
 
   void initialize (RPG_Engine_IClient*); // client interface handle
   // *WARNING*: DO NOT USE while the engine isRunning() !
@@ -103,9 +103,9 @@ class RPG_Engine
   void setActive (RPG_Engine_EntityID_t, // id
                   bool = true);          // locked access ?
   RPG_Engine_EntityID_t getActive (bool = true) const; // locked access ?
-  void mode (const RPG_Engine_EntityMode&); // add mode (to active entity)
-  void clear (const RPG_Engine_EntityMode&); // clear mode (from active entity)
-  bool hasMode (const RPG_Engine_EntityMode&) const; // mode
+  void mode (enum RPG_Engine_EntityMode); // add mode (to active entity)
+  void clear (enum RPG_Engine_EntityMode); // clear mode (from active entity)
+  bool hasMode (enum RPG_Engine_EntityMode) const; // mode
 
   RPG_Map_Position_t getPosition (RPG_Engine_EntityID_t, // id
                                   bool = true) const;    // locked access ?
@@ -159,7 +159,7 @@ class RPG_Engine
                                 bool = true) const;        // locked access ?
 
   // either floor or an open/broken (!) door ?
-  bool isValid (const RPG_Map_Position_t&,  // position
+  bool isValid (const RPG_Map_Position_t&, // position
                 bool = true) const;        // locked access ?
   bool isCorner (const RPG_Map_Position_t&, // position
                  bool = true) const;        // locked access ?

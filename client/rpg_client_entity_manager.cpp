@@ -114,7 +114,7 @@ RPG_Client_Entity_Manager::add (RPG_Engine_EntityID_t id_in,
 
     // clean up
     if (free_on_remove_in)
-      SDL_FreeSurface(surface_in);
+      SDL_FreeSurface (surface_in);
 
     return;
   } // end IF
