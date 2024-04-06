@@ -81,7 +81,11 @@
 // buffer for printing keyboard events (debug info)
 #define RPG_GRAPHICS_SDL_KEYSYM_BUFFER_SIZE                 32
 
+#if defined (SDL_USE)
 #define RPG_GRAPHICS_SDL_VIDEO_DRIVER_ENV_VAR               "SDL_VIDEODRIVER"
+#elif defined (SDL2_USE)
+#define RPG_GRAPHICS_SDL_VIDEO_DRIVER_ENV_VAR               "SDL_VIDEO_DRIVER"
+#endif // SDL_USE || SDL2_USE
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
 #if defined (SDL_USE)
 #define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "windib"

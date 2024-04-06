@@ -65,9 +65,9 @@ class RPG_Client_Window_Level
   bool showMessages () const;
 
   // implement RPG_Client_IWindowLevel
-  virtual void drawBorder (SDL_Surface* = NULL, // target surface (default: screen)
-                           unsigned int = 0,    // offset x (top-left = [0,0])
-                           unsigned int = 0);   // offset y (top-left = [0,0])
+  inline virtual void drawBorder (SDL_Surface* = NULL,                      // target surface (default: screen)
+                                  unsigned int = 0,                         // offset x (top-left = [0,0])
+                                  unsigned int = 0) { ACE_ASSERT (false); } // offset y (top-left = [0,0])
   virtual void initialize (const RPG_Graphics_Style&); // style
   virtual void setView (int,
                         int,          // view (relative map coordinates)

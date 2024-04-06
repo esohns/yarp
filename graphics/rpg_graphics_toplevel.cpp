@@ -77,16 +77,6 @@ RPG_Graphics_TopLevel::~RPG_Graphics_TopLevel()
     SDL_FreeSurface ((*iterator).second);
 }
 
-RPG_Graphics_Position_t
-RPG_Graphics_TopLevel::getView () const
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Graphics_TopLevel::getView"));
-
-  ACE_ASSERT (false);
-
-  return std::make_pair (0, 0);
-}
-
 // void
 // RPG_Graphics_TopLevel::child(const RPG_Graphics_WindowSize_t& size_in,
 //                              const RPG_Graphics_WindowType& type_in,
@@ -103,11 +93,9 @@ RPG_Graphics_TopLevel::loadGraphics (const struct RPG_Graphics_GraphicTypeUnion&
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_TopLevel::loadGraphics"));
 
   // step1: load interface image
-  RPG_Graphics_t graphic;
-  graphic.category = RPG_GRAPHICS_CATEGORY_INVALID;
-  graphic.type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
   // retrieve properties from the dictionary
-  graphic = RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->get (type_in);
+  RPG_Graphics_t graphic =
+    RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->get (type_in);
   if ((graphic.category != CATEGORY_INTERFACE) ||
       (graphic.type.discriminator != type_in.discriminator)) // too weak
   {

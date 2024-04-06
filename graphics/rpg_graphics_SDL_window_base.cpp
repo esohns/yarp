@@ -99,10 +99,10 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase (enum RPG_Graphics_Window
                        borderLeft_,
                        borderRight_,
                        false);
-  SDL_Rect clip_rectangle;
+  struct SDL_Rect clip_rectangle;
   // get parent window clip area (if any)
   parent_->getArea (clip_rectangle,
-                    false);
+                    false); // toplevel- ?
   clipRectangle_ = clip_rectangle;
   if (offset_in.first)
     clipRectangle_.x = static_cast<int16_t> (offset_in.first +
@@ -137,12 +137,9 @@ RPG_Graphics_SDLWindowBase::~RPG_Graphics_SDLWindowBase ()
   RPG_Graphics_SDLWindowBase* window_p = NULL;
   while (!children_.empty ())
   {
-    try
-    {
+    try {
       window_p = dynamic_cast<RPG_Graphics_SDLWindowBase*> (children_.back ());
-    }
-    catch (...)
-    {
+    } catch (...) {
       window_p = NULL;
     }
     if (!window_p)
@@ -166,7 +163,7 @@ RPG_Graphics_SDLWindowBase::getDirty () const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::getDirty"));
 
-  SDL_Rect result = {0, 0, 0, 0};
+  struct SDL_Rect result = {0, 0, 0, 0};
   for (RPG_Graphics_InvalidRegionsConstIterator_t iterator = invalidRegions_.begin ();
        iterator != invalidRegions_.end ();
        iterator++)
@@ -190,12 +187,9 @@ RPG_Graphics_SDLWindowBase::clean ()
        iterator++)
   {
     window_p = NULL;
-    try
-    {
+    try {
       window_p = dynamic_cast<RPG_Graphics_SDLWindowBase*> (*iterator);
-    }
-    catch (...)
-    {
+    } catch (...) {
       window_p = NULL;
     }
     if (!window_p)
@@ -219,12 +213,9 @@ RPG_Graphics_SDLWindowBase::refresh (SDL_Surface* targetSurface_in)
        iterator != children_.end ();
        iterator++)
   {
-    try
-    {
+    try {
       (*iterator)->refresh (targetSurface_in);
-    }
-    catch (...)
-    {
+    } catch (...) {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("%@: caught exception in RPG_Graphics_IWindowBase::refresh(), continuing\n"),
                   *iterator));
@@ -288,28 +279,10 @@ RPG_Graphics_SDLWindowBase::getBorders (unsigned int& borderTop_out,
   } // end IF
 }
 
-RPG_Graphics_IWindowBase*
-RPG_Graphics_SDLWindowBase::getParent () const
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::getParent"));
-
-  return parent_;
-}
-
 void
-RPG_Graphics_SDLWindowBase::invalidate (const SDL_Rect& rect_in)
+RPG_Graphics_SDLWindowBase::invalidate (const struct SDL_Rect& rect_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::invalidate"));
-
-//  // sanity check(s)
-//  ACE_ASSERT((rect_in.x >= 0) &&
-//             (rect_in.x < screen_->w) &&
-//             (rect_in.y >= 0) &&
-//             (rect_in.y < screen_->h) &&
-//             (rect_in.w >= 0) &&
-////              ((rect_in.x + rect_in.w) <= screen_->w) &&
-//             (rect_in.h >= 0)/* &&
-//             ((rect_in.y + rect_in.h) <= screen_->h)*/);
 
   if ((rect_in.x == 0) &&
       (rect_in.y == 0) &&
@@ -348,7 +321,7 @@ RPG_Graphics_SDLWindowBase::removeChild (RPG_Graphics_IWindowBase* child_in)
 }
 
 void
-RPG_Graphics_SDLWindowBase::show (SDL_Rect& dirtyRegion_out)
+RPG_Graphics_SDLWindowBase::show (struct SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::show"));
 
@@ -358,7 +331,7 @@ RPG_Graphics_SDLWindowBase::show (SDL_Rect& dirtyRegion_out)
 }
 
 void
-RPG_Graphics_SDLWindowBase::hide (SDL_Rect& dirtyRegion_out)
+RPG_Graphics_SDLWindowBase::hide (struct SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::hide"));
 
@@ -367,16 +340,8 @@ RPG_Graphics_SDLWindowBase::hide (SDL_Rect& dirtyRegion_out)
   dirtyRegion_out = clipRectangle_;
 }
 
-bool
-RPG_Graphics_SDLWindowBase::visible () const
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::visible"));
-
-  return true;
-}
-
 void
-RPG_Graphics_SDLWindowBase::clear (const RPG_Graphics_ColorName& color_in,
+RPG_Graphics_SDLWindowBase::clear (enum RPG_Graphics_ColorName color_in,
                                    bool clip_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::clear"));
@@ -393,7 +358,8 @@ RPG_Graphics_SDLWindowBase::clear (const RPG_Graphics_ColorName& color_in,
   // *NOTE*: SDL_FillRect may modify the dstrect argument --> save it first
   SDL_Rect dstrect = clipRectangle_;
 
-  if (clip_in) clip ();
+  if (clip_in)
+    clip ();
 
   if (screenLock_)
     screenLock_->lock ();
@@ -401,7 +367,7 @@ RPG_Graphics_SDLWindowBase::clear (const RPG_Graphics_ColorName& color_in,
                     &dstrect,                                     // fill area
                     RPG_Graphics_SDL_Tools::getColor (color_in,
                                                       *surface_p->format,
-                                                      1.0F)))     // color
+                                                      1.0f)))     // color
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_FillRect(): \"%s\", returning\n"),
@@ -413,7 +379,8 @@ RPG_Graphics_SDLWindowBase::clear (const RPG_Graphics_ColorName& color_in,
   if (screenLock_)
     screenLock_->unlock ();
 
-  if (clip_in) unclip ();
+  if (clip_in)
+    unclip ();
 
   invalidate (dstrect);
 }
@@ -440,14 +407,11 @@ RPG_Graphics_SDLWindowBase::clear (const RPG_Graphics_ColorName& color_in,
 //    if ((*iterator)->getType() != child_in)
 //      continue;
 //
-//    try
-//    {
+//    try {
 //      (*iterator)->draw(target_surface,
 //                        offsetX_in,
 //                        offsetY_in);
-//    }
-//    catch (...)
-//    {
+//    } catch (...) {
 //      ACE_DEBUG((LM_ERROR,
 //                 ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw(), continuing\n")));
 //    }
@@ -534,14 +498,14 @@ RPG_Graphics_SDLWindowBase::update (SDL_Surface* targetSurface_in)
 void
 RPG_Graphics_SDLWindowBase::handleEvent (const SDL_Event& event_in,
                                          RPG_Graphics_IWindowBase* window_in,
-                                         SDL_Rect& dirtyRegion_out)
+                                         struct SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::handleEvent"));
 
   ACE_UNUSED_ARG (window_in);
 
   // init return value(s)
-  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (dirtyRegion_out));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
 //  switch (event_in.type)
 //  {
@@ -707,10 +671,10 @@ RPG_Graphics_SDLWindowBase::handleEvent (const SDL_Event& event_in,
 
   // recurse into any children
   RPG_Graphics_SDLWindowSub* sub_window_p = NULL;
-  SDL_Rect window_area;
-  ACE_OS::memset (&window_area, 0, sizeof (window_area));
-  SDL_Rect dirty_region;
-  ACE_OS::memset (&dirty_region, 0, sizeof (dirty_region));
+  struct SDL_Rect window_area;
+  ACE_OS::memset (&window_area, 0, sizeof (struct SDL_Rect));
+  struct SDL_Rect dirty_region;
+  ACE_OS::memset (&dirty_region, 0, sizeof (struct SDL_Rect));
   // *NOTE*: check in reverse order, because "newer", overlapping children are
   // considered to be "on-top"
   for (RPG_Graphics_WindowsRIterator_t iterator = children_.rbegin ();
@@ -719,12 +683,9 @@ RPG_Graphics_SDLWindowBase::handleEvent (const SDL_Event& event_in,
   {
     // visible ?
     sub_window_p = NULL;
-    try
-    {
+    try {
       sub_window_p = dynamic_cast<RPG_Graphics_SDLWindowSub*> (*iterator);
-    }
-    catch (...)
-    {
+    } catch (...) {
 //      ACE_DEBUG((LM_ERROR,
 //                 ACE_TEXT("failed to dynamic_cast<RPG_Graphics_SDLWindowSub*>(%@), continuing\n"),
 //                 *iterator));
@@ -733,12 +694,9 @@ RPG_Graphics_SDLWindowBase::handleEvent (const SDL_Event& event_in,
       continue;
 
     // covered ?
-    try
-    {
+    try {
       (*iterator)->getArea (window_area);
-    }
-    catch (...)
-    {
+    } catch (...) {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("caught exception in RPG_Graphics_IWindow::getArea(), continuing\n")));
     }
@@ -750,40 +708,18 @@ RPG_Graphics_SDLWindowBase::handleEvent (const SDL_Event& event_in,
                                     static_cast<unsigned int> (window_area.h))))
       continue;
 
-    ACE_OS::memset (&dirty_region, 0, sizeof (dirty_region));
-    try
-    {
+    ACE_OS::memset (&dirty_region, 0, sizeof (struct SDL_Rect));
+    try {
       (*iterator)->handleEvent (event_in,
                                 window_in,
                                 dirty_region);
-    }
-    catch (...)
-    {
+    } catch (...) {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
     }
     dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
                                                            dirtyRegion_out);
   } // end FOR
-}
-
-void
-RPG_Graphics_SDLWindowBase::notify (const RPG_Graphics_Cursor& cursor_in) const
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::notify"));
-
-  ACE_UNUSED_ARG (cursor_in);
-
-  ACE_ASSERT (false);
-  ACE_NOTREACHED (return;)
-}
-
-RPG_Graphics_WindowType
-RPG_Graphics_SDLWindowBase::getType () const
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::getType"));
-
-  return type_;
 }
 
 //RPG_Graphics_Size_t
@@ -830,7 +766,7 @@ RPG_Graphics_SDLWindowBase::getWindow (const RPG_Graphics_Position_t& position_i
 }
 
 RPG_Graphics_IWindowBase*
-RPG_Graphics_SDLWindowBase::child (const RPG_Graphics_WindowType& type_in)
+RPG_Graphics_SDLWindowBase::child (enum RPG_Graphics_WindowType type_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::child"));
 

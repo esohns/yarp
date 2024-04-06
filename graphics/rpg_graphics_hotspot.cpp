@@ -55,24 +55,6 @@ RPG_Graphics_HotSpot::RPG_Graphics_HotSpot (const RPG_Graphics_SDLWindowBase& pa
   inherited::clipRectangle_.h = static_cast<uint16_t> (size_in.second);
 }
 
-RPG_Graphics_Cursor
-RPG_Graphics_HotSpot::getCursorType () const
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Graphics_HotSpot::getCursorType"));
-
-  return myCursorType;
-}
-
-RPG_Graphics_Position_t
-RPG_Graphics_HotSpot::getView () const
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Graphics_HotSpot::getView"));
-
-  ACE_ASSERT (false);
-
-  return std::make_pair (0, 0);
-}
-
 void
 RPG_Graphics_HotSpot::handleEvent (const union SDL_Event& event_in,
                                    RPG_Graphics_IWindowBase* window_in,

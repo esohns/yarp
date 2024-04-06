@@ -50,7 +50,7 @@ class RPG_Graphics_TopLevel
 
   // implement (part of) RPG_Graphics_IWindow
   // *IMPORTANT NOTE*: dummy stub --> DO NOT CALL
-  virtual RPG_Graphics_Position_t getView () const; // return value: view (map coordinates !)
+  inline virtual RPG_Graphics_Position_t getView () const { ACE_ASSERT (false); return std::make_pair (0, 0); }
 
 //   // realize child window
 //   void child(const RPG_Graphics_WindowSize_t&, // size

@@ -68,7 +68,7 @@ RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap (const RPG_Graphics_SDLWind
   ACE_ASSERT (mySurface);
 
   // adjust position, size
-  SDL_Rect parent_area;
+  struct SDL_Rect parent_area;
   //parent_in.getArea (parent_area, false);
   parent_in.getArea (parent_area,
                      true); // toplevel ?
@@ -118,10 +118,7 @@ RPG_Client_Window_MiniMap::handleEvent (const union SDL_Event& event_in,
   {
     // *** mouse ***
     case RPG_GRAPHICS_SDL_MOUSEMOVEOUT:
-    {
-
       break;
-    }
     case SDL_MOUSEMOTION:
     {
 
@@ -179,17 +176,17 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
   ACE_ASSERT (myClient);
   ACE_ASSERT (myEngine);
   ACE_ASSERT (mySurface);
-  SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : surface_p);
+  SDL_Surface* target_surface =
+    (targetSurface_in ? targetSurface_in : surface_p);
   ACE_ASSERT (target_surface);
   ACE_UNUSED_ARG (offsetX_in);
   ACE_UNUSED_ARG (offsetY_in);
 
-  // init clipping
+  // initialize clipping
   clip ();
 
   // initialize surface
-  SDL_Rect dirty_region;
+  struct SDL_Rect dirty_region = {0, 0, 0, 0};
   // lock surface during pixel access
   if (SDL_MUSTLOCK ((mySurface)))
     if (SDL_LockSurface (mySurface))
@@ -201,19 +198,22 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
     } // end IF
   RPG_Graphics_Surface::put (std::make_pair (0, 0),
                              *myBG,
-                             mySurface,
+                             target_surface,
                              dirty_region);
 
+  // invalidate dirty region
+  invalidate (dirty_region);
+
   RPG_Map_Position_t map_position;
-  enum RPG_Client_MiniMapTile tile = RPG_CLIENT_MINIMAPTILE_INVALID;
+  enum RPG_Client_MiniMapTile tile;
   enum RPG_Graphics_ColorName color_name;
-  Uint32 color = 0;
+  Uint32 color;
   struct SDL_Rect destrect = {0, 0, 3, 2};
-  Uint32* pixels = NULL;
+  Uint32* pixels;
+  RPG_Engine_EntityID_t entity_id;
   myEngine->lock ();
-  RPG_Engine_EntityID_t active_entity_id = myEngine->getActive (false);
-  RPG_Engine_EntityID_t entity_id = 0;
-  RPG_Map_Size_t map_size = myEngine->getSize (false);
+  RPG_Engine_EntityID_t active_entity_id = myEngine->getActive (false); // locked access ?
+  RPG_Map_Size_t map_size = myEngine->getSize (false); // locked access ?
   for (unsigned int y = 0;
        y < map_size.second;
        y++)
@@ -223,32 +223,39 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
     {
       // step1: retrieve appropriate symbol
       map_position = std::make_pair (x, y);
+
       tile = RPG_CLIENT_MINIMAPTILE_INVALID;
+ 
+      if (!active_entity_id)
+      {
+        tile = MINIMAPTILE_NONE;
+        goto continue_;
+      } // end IF
+
       entity_id = myEngine->hasEntity (map_position,
-                                       false);
+                                       false); // locked access ?
       if (entity_id)
       {
         if (entity_id == active_entity_id)
           tile = MINIMAPTILE_PLAYER_ACTIVE;
-        else
-        {
-          if (myEngine->canSee (active_entity_id,
-                                map_position,
-                                false))
-            tile = (myEngine->isMonster (entity_id,
-                                         false) ? MINIMAPTILE_MONSTER
-                                                : MINIMAPTILE_PLAYER);
-        } // end ELSE
+        else if (myEngine->canSee (active_entity_id,
+                                   map_position,
+                                   false)) // locked access ?
+          tile = (myEngine->isMonster (entity_id,
+                                       false) ? MINIMAPTILE_MONSTER // locked access ?
+                                              : MINIMAPTILE_PLAYER);
       } // end IF
 
       if (tile == RPG_CLIENT_MINIMAPTILE_INVALID)
       {
         if (myEngine->hasSeen (active_entity_id,
                                map_position,
-                               false))
+                               false)) // locked access ?
         {
-          switch (myEngine->getElement (map_position,
-                                        false))
+          enum RPG_Map_Element map_element =
+            myEngine->getElement (map_position,
+                                  false); // locked access ?
+          switch (map_element)
           {
             case MAPELEMENT_UNMAPPED:
               tile = MINIMAPTILE_NONE; break;
@@ -263,20 +270,22 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
             default:
             {
               ACE_DEBUG ((LM_ERROR,
-                          ACE_TEXT ("invalid map element ([%u,%u] was: %d), continuing\n"),
+                          ACE_TEXT ("invalid/unknown map element ([%u,%u] was: %d), continuing\n"),
                           x, y,
-                          myEngine->getElement (map_position, false)));
-              continue;
+                          map_element));
+              tile = MINIMAPTILE_NONE;
+              break;
             }
           } // end SWITCH
         } // end IF
         else
           tile = MINIMAPTILE_NONE;
       } // end IF
+continue_:
       ACE_ASSERT (tile != RPG_CLIENT_MINIMAPTILE_INVALID);
 
-      // step2: map symbol to color
-      color = 0;
+      // step2a: map symbol to color
+      color_name = RPG_GRAPHICS_COLORNAME_INVALID;
       switch (tile)
       {
         case MINIMAPTILE_NONE:
@@ -298,17 +307,19 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
         default:
         {
           ACE_DEBUG ((LM_ERROR,
-                      ACE_TEXT ("invalid minimap tile type (was: %d), continuing\n"),
+                      ACE_TEXT ("invalid/unknown minimap tile type (was: %d), continuing\n"),
                       tile));
-          continue;
+          color_name = RPG_CLIENT_MINIMAPCOLOR_UNMAPPED;
+          break;
         }
       } // end SWITCH
+      ACE_ASSERT (color_name != RPG_GRAPHICS_COLORNAME_INVALID);
 
-      // step2: convert color
+      // step2b: convert color
       color =
         RPG_Graphics_SDL_Tools::getColor (color_name,
                                           *mySurface->format,
-                                          1.0F);
+                                          1.0f);
 
       // step3: draw tile onto surface
       // *NOTE*: a minimap symbol has this shape: _ C _
@@ -333,14 +344,13 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
       pixels[1] = color;
       pixels[2] = color;
     } // end FOR
-
   myEngine->unlock ();
 
   if (SDL_MUSTLOCK (mySurface))
     SDL_UnlockSurface (mySurface);
 
   // step4: paint surface
-  ACE_OS::memset (&dirty_region, 0, sizeof (SDL_Rect));
+  ACE_OS::memset (&dirty_region, 0, sizeof (struct SDL_Rect));
   if (inherited::screenLock_)
     inherited::screenLock_->lock ();
   RPG_Graphics_Surface::put (std::make_pair (target_surface->clip_rect.x,
@@ -361,6 +371,7 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
   lastAbsolutePosition_ = std::make_pair (target_surface->clip_rect.x,
                                           target_surface->clip_rect.y);
 
+#if defined (_DEBUG)
   if (myDebug)
   {
     std::string path = Common_File_Tools::getTempDirectory ();
@@ -370,6 +381,7 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
                                    path,
                                    true);
   } // end IF
+#endif // _DEBUG
 }
 
 void

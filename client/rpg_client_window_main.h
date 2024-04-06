@@ -75,7 +75,7 @@ class RPG_Client_Window_Main
   virtual void handleEvent (const SDL_Event&,          // event
                             RPG_Graphics_IWindowBase*, // target window (NULL: this)
                             SDL_Rect&);                // return value: "dirty" region
-  virtual void notify (const RPG_Graphics_Cursor&) const;
+  virtual void notify (enum RPG_Graphics_Cursor) const;
 
  private:
   ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Main ())

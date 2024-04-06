@@ -42,16 +42,16 @@ class RPG_Graphics_SDLWindowBase
   virtual ~RPG_Graphics_SDLWindowBase ();
 
   // implement (part of) RPG_Graphics_IWindow
-  virtual void show (SDL_Rect&); // return value: "dirty" region
-  virtual void hide (SDL_Rect&); // return value: "dirty" region
-  virtual bool visible () const;
+  virtual void show (struct SDL_Rect&); // return value: "dirty" region
+  virtual void hide (struct SDL_Rect&); // return value: "dirty" region
+  inline virtual bool visible () const { return true; }
 
-  virtual void clear (const RPG_Graphics_ColorName& = COLOR_BLACK, // color
-                      bool = true);                                // clip ?
+  virtual void clear (enum RPG_Graphics_ColorName = COLOR_BLACK, // color
+                      bool = true);                              // clip ?
 
-  virtual RPG_Graphics_IWindowBase* child (const RPG_Graphics_WindowType&); // type
+  virtual RPG_Graphics_IWindowBase* child (enum RPG_Graphics_WindowType); // type
 
-  virtual void notify (const RPG_Graphics_Cursor&) const;
+  inline virtual void notify (enum RPG_Graphics_Cursor) const {ACE_ASSERT (false); ACE_NOTREACHED (return;) }
 
   // implement (part of) RPG_Graphics_IWindowBase
   virtual void initialize (Common_ILock* = NULL, // screen lock interface handle
@@ -63,7 +63,7 @@ class RPG_Graphics_SDLWindowBase
   virtual void unclip (SDL_Surface* = NULL); // target surface (default: screen)
 
   virtual void update (SDL_Surface* = NULL); // target surface (default: screen)
-  virtual void invalidate (const SDL_Rect&); // "dirty" area
+  virtual void invalidate (const struct SDL_Rect&); // "dirty" area
 
 #if defined (SDL_USE)
   inline virtual void setScreen (SDL_Surface* screen_in) { ACE_ASSERT (screen_in); screen_ = screen_in; }
@@ -75,14 +75,14 @@ class RPG_Graphics_SDLWindowBase
   inline virtual SDL_Window* getScreen () const { return screen_; }
 #endif // SDL_USE || SDL2_USE
 
-  virtual RPG_Graphics_WindowType getType () const;
+  inline virtual enum RPG_Graphics_WindowType getType () const { return type_; }
 
-  virtual void getArea (SDL_Rect&,           // return value: window area
+  virtual void getArea (struct SDL_Rect&,    // return value: window area
                         bool = false) const; // toplevel ?
 
   virtual void handleEvent (const SDL_Event&,          // event
                             RPG_Graphics_IWindowBase*, // target window (NULL: this)
-                            SDL_Rect&);                // return value: "dirty" region
+                            struct SDL_Rect&);         // return value: "dirty" region
 
   virtual RPG_Graphics_IWindowBase* getWindow (const RPG_Graphics_Position_t&) const; // position (e.g. mouse-)
 
@@ -134,7 +134,7 @@ class RPG_Graphics_SDLWindowBase
   typedef RPG_Graphics_Windows_t::const_reverse_iterator RPG_Graphics_WindowsRIterator_t;
 
   // helper methods
-  virtual RPG_Graphics_IWindowBase* getParent () const;
+  inline virtual RPG_Graphics_IWindowBase* getParent () const { return parent_; }
 
   std::string                   title_;
 

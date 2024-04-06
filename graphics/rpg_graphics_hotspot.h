@@ -45,11 +45,11 @@ class RPG_Graphics_HotSpot
                         bool = false);                     // debug ?
   inline virtual ~RPG_Graphics_HotSpot () {}
 
-  RPG_Graphics_Cursor getCursorType () const;
+  inline enum RPG_Graphics_Cursor getCursorType () const { return myCursorType; }
 
   // implement (part of) RPG_Graphics_IWindowBase
   // *IMPORTANT NOTE*: dummy stub --> DO NOT CALL
-  virtual RPG_Graphics_Position_t getView () const; // return value: view (map coordinates !)
+  inline virtual RPG_Graphics_Position_t getView () const { ACE_ASSERT (false); return std::make_pair (0, 0); }
 
   virtual void draw (SDL_Surface* = NULL, // target surface (default: screen)
                      unsigned int = 0,    // offset x (top-left = [0,0])

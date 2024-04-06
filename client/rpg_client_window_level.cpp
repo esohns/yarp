@@ -365,7 +365,7 @@ RPG_Client_Window_Level::toggleDoor (const RPG_Map_Position_t& position_in)
   ACE_ASSERT (myEngine);
 
   myEngine->lock ();
-  RPG_Graphics_Orientation orientation =
+  enum RPG_Graphics_Orientation orientation =
     RPG_Client_Common_Tools::getDoorOrientation (position_in,
                                                  *myEngine,
                                                  false);
@@ -393,7 +393,7 @@ RPG_Client_Window_Level::toggleDoor (const RPG_Map_Position_t& position_in)
     default:
     {
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("invalid door orientation \"%s\", aborting\n"),
+                  ACE_TEXT ("invalid door orientation \"%s\", returning\n"),
                   ACE_TEXT (RPG_Graphics_OrientationHelper::RPG_Graphics_OrientationToString (orientation).c_str ())));
       return;
     }
@@ -414,7 +414,7 @@ RPG_Client_Window_Level::initialize (RPG_Client_Engine* clientEngine_in,
   myClient = clientEngine_in;
   myEngine = engine_in;
 
-  // init edge, wall, door tiles
+  // initialize edge, wall, door tiles
   initialize (myClient->getStyle ());
 
   // initialize minimap/message windows
@@ -430,23 +430,6 @@ RPG_Client_Window_Level::initialize (RPG_Client_Engine* clientEngine_in,
 }
 
 void
-RPG_Client_Window_Level::drawBorder (SDL_Surface* targetSurface_in,
-                                     unsigned int offsetX_in,
-                                     unsigned int offsetY_in)
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::drawBorder"));
-
-  // *NOTE*: should NEVER be reached !
-  ACE_ASSERT (false);
-
-#if defined (_MSC_VER)
-  return;
-#else
-  ACE_NOTREACHED (return;)
-#endif // _MSC_VER
-}
-
-void
 RPG_Client_Window_Level::drawChild (enum RPG_Graphics_WindowType child_in,
                                     SDL_Surface* targetSurface_in,
                                     unsigned int offsetX_in,
@@ -454,9 +437,6 @@ RPG_Client_Window_Level::drawChild (enum RPG_Graphics_WindowType child_in,
                                     bool refresh_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::drawChild"));
-
-  ACE_Reverse_Lock<ACE_Thread_Mutex> reverse_lock (myLock);
-  ACE_GUARD (ACE_Thread_Mutex, aGuard, myLock);
 
   // sanity check(s)
   ACE_ASSERT (inherited::screen_);
@@ -467,10 +447,12 @@ RPG_Client_Window_Level::drawChild (enum RPG_Graphics_WindowType child_in,
 #endif // SDL_USE || SDL2_USE
   ACE_ASSERT (surface_p);
   // sanity check(s)
-  SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : surface_p);
+  SDL_Surface* target_surface =
+    (targetSurface_in ? targetSurface_in : surface_p);
   ACE_ASSERT (target_surface);
   ACE_ASSERT (child_in != RPG_GRAPHICS_WINDOWTYPE_INVALID);
+
+  ACE_GUARD (ACE_Thread_Mutex, aGuard, myLock);
 
   // draw any child(ren) of a specific type
   for (RPG_Graphics_WindowsIterator_t iterator = inherited::children_.begin ();
@@ -618,7 +600,7 @@ RPG_Client_Window_Level::updateMinimap ()
   drawChild (WINDOW_MINIMAP,
              NULL,
              0, 0,
-             true);
+             true); // refresh ?
 }
 
 void
@@ -651,7 +633,7 @@ RPG_Client_Window_Level::updateMessageWindow (const std::string& message_in)
   drawChild (WINDOW_MESSAGE,
              NULL,
              0, 0,
-             true);
+             true); // refresh ?
 }
 
 void
@@ -670,8 +652,8 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
 #endif // SDL_USE || SDL2_USE
   ACE_ASSERT (surface_p);
   // sanity check(s)
-  SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : surface_p);
+  SDL_Surface* target_surface =
+    (targetSurface_in ? targetSurface_in : surface_p);
   ACE_ASSERT (target_surface);
   ACE_ASSERT (myEngine);
   ACE_ASSERT (myCeilingTile);
@@ -778,7 +760,8 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
 
   struct SDL_Rect dirty_region = {0, 0, 0, 0};
   struct SDL_Rect window_area;
-  getArea (window_area, true);
+  getArea (window_area,
+           true); // toplevel- ?
 
   int i, j;
   RPG_Client_SignedPosition_t current_map_position =
@@ -799,9 +782,11 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
   RPG_Graphics_FloorEdgeTileMapIterator_t floor_edge_iterator =
       myFloorEdgeTiles.end ();
 
+#if defined (_DEBUG)
   std::ostringstream converter;
   std::string tile_text;
   RPG_Graphics_TextSize_t tile_text_size;
+#endif // _DEBUG
 
   // pass 1
   for (i = -static_cast<int> (top_right.second);
@@ -1140,6 +1125,7 @@ off_map:
   RPG_Graphics_WallTileMapIterator_t wall_iterator = myWallTiles.end ();
   RPG_Graphics_DoorTileMapIterator_t door_iterator = myDoorTiles.end ();
   RPG_Engine_EntityID_t entity_id = 0;
+  struct RPG_Graphics_Style style_s = myClient->getStyle ();
   for (i = -static_cast<int> (top_right.second);
        i <= static_cast<int> (top_right.second);
        i++)
@@ -1234,9 +1220,9 @@ off_map:
         RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->put (entity_id,
                                                                screen_position,
                                                                dirty_region,
-                                                               false,
-                                                               true,
-                                                               false);
+                                                               false,  // clip window ?
+                                                               true,   // locked access ?
+                                                               false); // debug ?
       } // end IF
 
       // step6: effects
@@ -1264,22 +1250,21 @@ off_map:
                                      dirty_region);
       } // end IF
 
-      //// step8: ceiling
-      //// *TODO*: this is static information: compute once / level and use a lookup-table here...
-      //if (RPG_Client_Common_Tools::hasCeiling (current_map_position,
-      //                                         *myEngine,
-      //                                         false) &&
-      //    is_visible)
-      //{
-      //  RPG_Graphics_Surface::put (std::make_pair (screen_position.first,
-      //                                             (screen_position.second -
-      //                                              (myClient->getStyle ().half_height_walls ? (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2)
-      //                                                                                       : RPG_GRAPHICS_TILE_WALL_HEIGHT) +
-      //                                              (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / (myClient->getStyle ().half_height_walls ? 8 : 2)))),
-      //                             *myCeilingTile,
-      //                             target_surface,
-      //                             dirty_region);
-      //} // end IF
+      // step8: ceiling
+      // *TODO*: this is static information: compute once / level and use a lookup-table here...
+      // *TODO*: does not work quite right yet
+      if (RPG_Client_Common_Tools::hasCeiling (current_map_position,
+                                               *myEngine,
+                                               false) && // locked access ?
+          is_visible)
+        RPG_Graphics_Surface::put (std::make_pair (screen_position.first,
+                                                   (screen_position.second -
+                                                    (style_s.half_height_walls ? (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2)
+                                                                               : RPG_GRAPHICS_TILE_WALL_HEIGHT) +
+                                                    (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / (style_s.half_height_walls ? 8 : 2)))),
+                                   *myCeilingTile,
+                                   target_surface,
+                                   dirty_region);
     } // end FOR
   } // end FOR
 
@@ -1469,10 +1454,10 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
 
           // find pointed-to map square
           RPG_Graphics_Position_t cursor_position =
-              RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position();
-          RPG_Graphics_Position_t curent_view = getView();
-          SDL_Rect window_area;
-          getArea(window_area, true);
+              RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->position (false);
+          RPG_Graphics_Position_t curent_view = getView ();
+          struct SDL_Rect window_area;
+          getArea (window_area, true);
           myEngine->lock ();
           myClientAction.position =
             RPG_Graphics_Common_Tools::screenToMap (cursor_position,
@@ -1485,7 +1470,7 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
 
           myClientAction.entity_id = myEngine->getActive (false);
           // toggle path selection mode
-          switch (myClient->mode())
+          switch (myClient->mode ())
           {
             case SELECTIONMODE_AIM_CIRCLE:
             case SELECTIONMODE_AIM_SQUARE:
@@ -1558,34 +1543,8 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
                           ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),
                           ACE_TEXT (SDL_GetError ())));
 
-//            // step2: draw tile highlight
-//            myClientAction.command = COMMAND_TILE_HIGHLIGHT_DRAW;
-//            myClient->action(myClientAction);
-//            // *NOTE*: this MAY also invalidate the current cursor bg...
-//            myClientAction.command = COMMAND_CURSOR_INVALIDATE_BG;
-//            myClient->action(myClientAction);
           } // end IF
-//          // step3: set/draw an appropriate cursor
-//          RPG_Graphics_Cursor cursor_type =
-//              RPG_Client_Common_Tools::getCursor(myClientAction.position,
-//                                                 myClientAction.entity_id,
-//                                                 myClient->hasSeen(myClientAction.entity_id,
-//                                                                   myClientAction.position,
-//                                                                   true),
-//                                                 myClient->mode(),
-//                                                 *myEngine,
-//                                                 false);
           myEngine->unlock ();
-//          if (cursor_type !=
-//              RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
-//          {
-//            myClientAction.command = COMMAND_CURSOR_SET;
-//            myClientAction.cursor = cursor_type;
-//            myClient->action(myClientAction);
-//          } // end IF
-//          myClientAction.command = COMMAND_CURSOR_DRAW;
-//          myClientAction.position = cursor_position;
-//          myClient->action(myClientAction);
 
           break;
         }
@@ -1595,7 +1554,7 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
         case SDLK_LEFT:
         case SDLK_RIGHT:
         {
-          RPG_Map_Direction direction = RPG_MAP_DIRECTION_INVALID;
+          enum RPG_Map_Direction direction = RPG_MAP_DIRECTION_INVALID;
           myClientAction.position = getView ();
           switch (event_in.key.keysym.sym)
           {

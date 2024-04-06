@@ -134,7 +134,7 @@ RPG_Client_Entity_Manager::remove (RPG_Engine_EntityID_t id_in,
   RPG_TRACE (ACE_TEXT ("RPG_Client_Entity_Manager::remove"));
 
   // init return value(s)
-  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
   // sanity check(s)
   RPG_Client_EntityCacheConstIterator_t iterator = myCache.find (id_in);
@@ -206,8 +206,8 @@ RPG_Client_Entity_Manager::put (RPG_Engine_EntityID_t id_in,
   } // end IF
 
   // step1: restore old background
-//	if (myScreenLock && lockedAccess_in)
-//		myScreenLock->lock();
+	if (myScreenLock && lockedAccess_in)
+		myScreenLock->lock();
   restoreBG (id_in,
              dirtyRegion_out,
              clipWindow_in,
@@ -216,7 +216,7 @@ RPG_Client_Entity_Manager::put (RPG_Engine_EntityID_t id_in,
 
   // step2: get new background
 	// step2a: restore cursor / highlight bg first
-	SDL_Rect clip_rectangle, dirty_region;
+	struct SDL_Rect clip_rectangle, dirty_region;
 	// *NOTE*: entities are drawn "centered" on the floor tile
 	clip_rectangle.x = (position_in.first +
                       ((RPG_GRAPHICS_TILE_FLOOR_WIDTH -
@@ -226,11 +226,6 @@ RPG_Client_Entity_Manager::put (RPG_Engine_EntityID_t id_in,
                       (*iterator).second.graphic->h);
   clip_rectangle.w = (*iterator).second.graphic->w;
   clip_rectangle.h = (*iterator).second.graphic->h;
-  //RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreBG(dirty_region,
-  //                                                             &clip_rectangle,
-  //                                                             false);
-  //dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-  //                                                      dirtyRegion_out);
   RPG_Client_IWindowLevel* window = NULL;
   try {
     window = dynamic_cast<RPG_Client_IWindowLevel*> (myWindow);
@@ -243,16 +238,9 @@ RPG_Client_Entity_Manager::put (RPG_Engine_EntityID_t id_in,
                 ACE_TEXT ("failed to dynamic_cast<RPG_Client_IWindowLevel*>(%@), returning\n"),
                 myWindow));
     if (myScreenLock && lockedAccess_in)
-      myScreenLock->unlock();
+      myScreenLock->unlock ();
     return;
   } // end IF
-  //RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->restoreHighlightBG (window->getView(),
-  //                                                                        dirty_region,
-  //                                                                        &clip_rectangle,
-  //                                                                        false,
-  //                                                                        debug_in);
-  //dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
-  //                                                       dirtyRegion_out);
 
   // step2b: load bg image
   RPG_Graphics_Position_t screen_coordinates = std::make_pair (clip_rectangle.x,

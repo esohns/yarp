@@ -34,18 +34,16 @@ class RPG_Graphics_IWindow
  : public virtual RPG_Graphics_IWindowBase
 {
  public:
-  //inline virtual ~RPG_Graphics_IWindow () {}
-
-  virtual void show (SDL_Rect&) = 0; // return value: "dirty" region
-  virtual void hide (SDL_Rect&) = 0; // return value: "dirty" region
+  virtual void show (struct SDL_Rect&) = 0; // return value: "dirty" region
+  virtual void hide (struct SDL_Rect&) = 0; // return value: "dirty" region
   virtual bool visible () const = 0;
 
-  virtual void clear (const RPG_Graphics_ColorName& = COLOR_BLACK, // color
-                      bool = true) = 0;                            // clip ?
+  virtual void clear (enum RPG_Graphics_ColorName = COLOR_BLACK, // color
+                      bool = true) = 0;                          // clip ?
 
-  virtual RPG_Graphics_IWindowBase* child (const RPG_Graphics_WindowType&) = 0; // type
+  virtual RPG_Graphics_IWindowBase* child (enum RPG_Graphics_WindowType) = 0; // type
 
-  virtual void notify (const RPG_Graphics_Cursor&) const = 0;
+  virtual void notify (enum RPG_Graphics_Cursor) const = 0;
 };
 
 #endif

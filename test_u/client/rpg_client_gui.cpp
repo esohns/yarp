@@ -904,10 +904,10 @@ do_work (struct RPG_Client_Configuration& configuration_in,
                                             configuration_in.graphics_directory,
                                             RPG_GRAPHICS_DEF_CACHESIZE,
                                             configuration_in.graphics_dictionary,
-                                            false)) // init SDL ?
+                                            false)) // initialize SDL ?
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Client_Common_Tools::init(), returning\n")));
+                ACE_TEXT ("failed to RPG_Client_Common_Tools::initialize(), returning\n")));
 
     // clean up
     RPG_Engine_Common_Tools::finalize ();
@@ -915,7 +915,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
     return;
   } // end IF
 
-  // step2: init UI
+  // step2: initialize UI
   RPG_Client_Engine client_engine;
   RPG_Engine level_engine;
   level_engine.initialize (&client_engine);

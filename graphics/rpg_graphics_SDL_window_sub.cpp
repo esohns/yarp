@@ -75,7 +75,7 @@ RPG_Graphics_SDLWindowSub::hide (struct SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowSub::hide"));
 
-  // step0: init return value(s)
+  // step0: initialize return value(s)
   ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
   // restore saved background
@@ -174,19 +174,12 @@ RPG_Graphics_SDLWindowSub::saveBG (const struct SDL_Rect& area_in)
   } // end IF
   ACE_ASSERT (BG_);
 
-  SDL_Rect area = inherited::clipRectangle_;
+  struct SDL_Rect area = inherited::clipRectangle_;
   area = RPG_Graphics_SDL_Tools::intersect (area, area_in);
-#if defined (SDL_USE)
-  RPG_Graphics_Surface::get (std::make_pair (area.x, area.y),
-                             true,
-                             *inherited::screen_,
-                             *BG_);
-#elif defined (SDL2_USE)
   RPG_Graphics_Surface::get (std::make_pair (area.x, area.y),
                              true,
                              *surface_p,
                              *BG_);
-#endif // SDL_USE || SDL2_USE
 }
 
 void
@@ -202,7 +195,7 @@ RPG_Graphics_SDLWindowSub::restoreBG (struct SDL_Rect& dirtyRegion_out)
   SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
 #endif // SDL_USE || SDL2_USE
   ACE_ASSERT (surface_p);
-  ACE_ASSERT(BG_);
+  ACE_ASSERT (BG_);
 
   // step0: initialize return value(s)
   ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));

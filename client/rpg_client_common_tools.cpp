@@ -669,8 +669,9 @@ RPG_Client_Common_Tools::hasCeiling (const RPG_Map_Position_t& position_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Common_Tools::hasCeiling"));
 
-  RPG_Map_Element current_element = engine_in.getElement (position_in,
-                                                          lockedAccess_in);
+  enum RPG_Map_Element current_element =
+    engine_in.getElement (position_in,
+                          lockedAccess_in);
 
   // shortcut: floors, doors never get a ceiling
   if ((current_element == MAPELEMENT_FLOOR) ||
@@ -686,19 +687,19 @@ RPG_Client_Common_Tools::hasCeiling (const RPG_Map_Position_t& position_in,
   north.second--;
   south = position_in;
   south.second++;
-  RPG_Map_Element element_east, element_west, element_north, element_south;
-//  if (lockedAccess_in)
-//    engine_in.lock();
+  enum RPG_Map_Element element_east, element_west, element_north, element_south;
+  if (lockedAccess_in)
+    engine_in.lock ();
   element_east  = engine_in.getElement (east,
-                                        lockedAccess_in);
+                                        false); // locked access ?
   element_west  = engine_in.getElement (west,
-                                        lockedAccess_in);
+                                        false); // locked access ?
   element_north = engine_in.getElement (north,
-                                        lockedAccess_in);
+                                        false); // locked access ?
   element_south = engine_in.getElement (south,
-                                        lockedAccess_in);
-//  if (lockedAccess_in)
-//    engine_in.unlock();
+                                        false); // locked access ?
+  if (lockedAccess_in)
+    engine_in.unlock ();
 
   // *NOTE*: walls should get a ceiling if they're either:
   // - "internal" (e.g. (single) strength room/corridor walls)
@@ -721,8 +722,8 @@ RPG_Client_Common_Tools::hasCeiling (const RPG_Map_Position_t& position_in,
   // (internal) "corners"
   bool is_corner_east, is_corner_west, is_corner_north, is_corner_south;
   bool has_ceiling_east, has_ceiling_west, has_ceiling_north, has_ceiling_south;
-//  if (lockedAccess_in)
-//    engine_in.lock();
+  if (lockedAccess_in)
+    engine_in.lock ();
   // SW
   if (((element_west == MAPELEMENT_FLOOR) ||
        (element_west == MAPELEMENT_DOOR)) &&
@@ -733,16 +734,18 @@ RPG_Client_Common_Tools::hasCeiling (const RPG_Map_Position_t& position_in,
       ((element_east == MAPELEMENT_UNMAPPED) ||
        (element_east == MAPELEMENT_WALL)))
   {
-    is_corner_north = engine_in.isCorner(north, lockedAccess_in);
-    is_corner_east  = engine_in.isCorner(east, lockedAccess_in);
+    is_corner_north = engine_in.isCorner (north,
+                                          false); // locked access ?
+    is_corner_east  = engine_in.isCorner (east,
+                                          false); // locked access ?
     has_ceiling_north = RPG_Client_Common_Tools::hasCeiling (north,
                                                              engine_in,
-                                                             lockedAccess_in);
+                                                             false); // locked access ?
     has_ceiling_east  = RPG_Client_Common_Tools::hasCeiling (east,
                                                              engine_in,
-                                                             lockedAccess_in);
-//    if (lockedAccess_in)
-//      engine_in.unlock();
+                                                             false); // locked access ?
+    if (lockedAccess_in)
+      engine_in.unlock ();
     return (is_corner_north   ||
             is_corner_east    ||
             has_ceiling_north ||
@@ -758,16 +761,18 @@ RPG_Client_Common_Tools::hasCeiling (const RPG_Map_Position_t& position_in,
       ((element_west == MAPELEMENT_UNMAPPED) ||
        (element_west == MAPELEMENT_WALL)))
   {
-    is_corner_north = engine_in.isCorner (north, lockedAccess_in);
-    is_corner_west  = engine_in.isCorner (west, lockedAccess_in);
+    is_corner_north = engine_in.isCorner (north,
+                                          false); // locked access ?
+    is_corner_west  = engine_in.isCorner (west,
+                                          false); // locked access ?
     has_ceiling_north = RPG_Client_Common_Tools::hasCeiling (north,
                                                              engine_in,
-                                                             lockedAccess_in);
+                                                             false); // locked access ?
     has_ceiling_west  = RPG_Client_Common_Tools::hasCeiling (west,
                                                              engine_in,
-                                                             lockedAccess_in);
-//    if (lockedAccess_in)
-//      engine_in.unlock();
+                                                             false); // locked access ?
+    if (lockedAccess_in)
+      engine_in.unlock ();
     return (is_corner_north   ||
             is_corner_west    ||
             has_ceiling_north ||
@@ -783,16 +788,18 @@ RPG_Client_Common_Tools::hasCeiling (const RPG_Map_Position_t& position_in,
       ((element_east == MAPELEMENT_UNMAPPED) ||
        (element_east == MAPELEMENT_WALL)))
   {
-    is_corner_south = engine_in.isCorner (south, lockedAccess_in);
-    is_corner_east  = engine_in.isCorner (east, lockedAccess_in);
+    is_corner_south = engine_in.isCorner (south,
+                                          false); // locked access ?
+    is_corner_east  = engine_in.isCorner (east,
+                                          false); // locked access ?
     has_ceiling_south = RPG_Client_Common_Tools::hasCeiling (south,
                                                              engine_in,
-                                                             lockedAccess_in);
+                                                             false); // locked access ?
     has_ceiling_east  = RPG_Client_Common_Tools::hasCeiling (east,
                                                              engine_in,
-                                                             lockedAccess_in);
-//    if (lockedAccess_in)
-//      engine_in.unlock();
+                                                             false); // locked access ?
+    if (lockedAccess_in)
+      engine_in.unlock ();
     return (is_corner_south   ||
             is_corner_east    ||
             has_ceiling_south ||
@@ -808,23 +815,25 @@ RPG_Client_Common_Tools::hasCeiling (const RPG_Map_Position_t& position_in,
       ((element_west == MAPELEMENT_UNMAPPED) ||
        (element_west == MAPELEMENT_WALL)))
   {
-    is_corner_south = engine_in.isCorner (south, lockedAccess_in);
-    is_corner_west  = engine_in.isCorner (west, lockedAccess_in);
+    is_corner_south = engine_in.isCorner (south,
+                                          false); // locked access ?
+    is_corner_west  = engine_in.isCorner (west,
+                                          false); // locked access ?
     has_ceiling_south = RPG_Client_Common_Tools::hasCeiling (south,
                                                              engine_in,
-                                                             lockedAccess_in);
+                                                             false); // locked access ?
     has_ceiling_west  = RPG_Client_Common_Tools::hasCeiling (west,
                                                              engine_in,
-                                                             lockedAccess_in);
-//    if (lockedAccess_in)
-//      engine_in.unlock();
+                                                             false); // locked access ?
+    if (lockedAccess_in)
+      engine_in.unlock ();
     return (is_corner_south   ||
             is_corner_west    ||
             has_ceiling_south ||
             has_ceiling_west);
   } // end IF
-//  if (lockedAccess_in)
-//    engine_in.unlock();
+  if (lockedAccess_in)
+    engine_in.unlock ();
 
   return false;
 }
@@ -872,8 +881,9 @@ RPG_Client_Common_Tools::hasHighlight (const RPG_Map_Position_t& position_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Common_Tools::hasHighlight"));
 
-  RPG_Map_Element current_element = engine_in.getElement (position_in,
-                                                          lockedAccess_in);
+  enum RPG_Map_Element current_element =
+    engine_in.getElement (position_in,
+                          lockedAccess_in);
 
   // highlight visible floors and doors
   return (((current_element == MAPELEMENT_FLOOR) ||

@@ -37,7 +37,7 @@
 #include "rpg_graphics_surface.h"
 #include "rpg_graphics_common_tools.h"
 
-// init statics
+// initialize statics
 bool                    RPG_Graphics_SDL_Tools::myVideoPreInitialized = false;
 RPG_Graphics_ColorMap_t RPG_Graphics_SDL_Tools::myColors;
 
@@ -102,7 +102,7 @@ RPG_Graphics_SDL_Tools::preInitializeVideo (const struct RPG_Graphics_SDL_VideoC
 #if defined (SDL_USE)
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_VideoInit(\"%s\", %x): \"%s\", aborting\n"),
-                ACE_TEXT (video_driver.c_str()),
+                ACE_TEXT (video_driver.c_str ()),
                 flags,
                 ACE_TEXT (SDL_GetError ())));
     char driver_name[BUFSIZ];
@@ -118,19 +118,16 @@ RPG_Graphics_SDL_Tools::preInitializeVideo (const struct RPG_Graphics_SDL_VideoC
   } // end IF
 
   // debug info
-  SDL_version version_s;
+  struct SDL_version version_s;
 #if defined (SDL_USE)
-  SDL_SysWMinfo wm_info;
-  ACE_OS::memset (&wm_info, 0, sizeof (SDL_SysWMinfo));
-  SDL_VERSION (&wm_info.version);
-  if (SDL_GetWMInfo (&wm_info) <= 0)
+  SDL_SysWMinfo wm_info_s;
+  ACE_OS::memset (&wm_info_s, 0, sizeof (SDL_SysWMinfo));
+  if (SDL_GetWMInfo (&wm_info_s) <= 0)
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_GetWMInfo(): \"%s\", continuing"),
                 ACE_TEXT (SDL_GetError ())));
-  version_s = wm_info.version;
-#elif defined (SDL2_USE)
+#endif // SDL_USE
   SDL_VERSION (&version_s);
-#endif // SDL_USE || SDL2_USE
   std::ostringstream version_number;
   version_number << static_cast<unsigned int> (version_s.major);
   version_number << ACE_TEXT_ALWAYS_CHAR (".");
@@ -142,18 +139,18 @@ RPG_Graphics_SDL_Tools::preInitializeVideo (const struct RPG_Graphics_SDL_VideoC
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("*** wm info (SDL version: %s) ***\nwindow: \t\t%@\nOpenGL context: \t\t%@\n"),
               ACE_TEXT (version_number.str ().c_str ()),
-              wm_info.window,
-              wm_info.hglrc));
+              wm_info_s.window,
+              wm_info_s.hglrc));
 #else
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("*** wm info (SDL version: %s) ***\nsubsystem:\t\t\t\t%d\ndisplay:\t\t\t\t%@\nwindow:\t\t\t\t\t%u\nfull-screen window:\t\t\t%u\nmanaged input window:\t\t\t%u\nrender display:\t\t\t\t%@\n"),
               ACE_TEXT (version_number.str ().c_str ()),
-              wm_info.subsystem,
-              wm_info.info.x11.display,
-              wm_info.info.x11.window,
-              wm_info.info.x11.fswindow,
-              wm_info.info.x11.wmwindow,
-              wm_info.info.x11.gfxdisplay));
+              wm_info_s.subsystem,
+              wm_info_s.info.x11.display,
+              wm_info_s.info.x11.window,
+              wm_info_s.info.x11.fswindow,
+              wm_info_s.info.x11.wmwindow,
+              wm_info_s.info.x11.gfxdisplay));
 #endif // ACE_WIN32 || ACE_WIN64
 #elif defined (SDL2_USE)
   ACE_DEBUG ((LM_DEBUG,
@@ -193,7 +190,7 @@ RPG_Graphics_SDL_Tools::initializeVideo (const struct RPG_Graphics_SDL_VideoConf
                   ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::preInitVideo(), aborting\n")));
       return false;
     } // end IF
-  ACE_ASSERT(myVideoPreInitialized);
+  ACE_ASSERT (myVideoPreInitialized);
 
   // set window icon
   RPG_Graphics_GraphicTypeUnion type;
@@ -242,7 +239,7 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::initScreen"));
 
-  // init return value
+  // initialize return value
   SDL_Surface* result = NULL;
 
   // sanity check
@@ -261,7 +258,7 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
   if (video_info_p)
     ACE_DEBUG ((LM_DEBUG,
                 ACE_TEXT ("*** video capabilities (driver: \"%s\") ***\nHW surfaces:\t\t\t\t\"%s\"\nwindow manager:\t\t\t\t\"%s\"\naccelerated HW --> HW [blits/colorkey/alpha]:\t\"%s\"/\"%s\"/\"%s\"\naccelerated SW --> HW [blits/colorkey/alpha]:\t\"%s\"/\"%s\"/\"%s\"\ncolor fills accelerated:\t\t\"%s\"\nvideo memory:\t\t\t\t%d kBytes\n*** (suggested) video mode ***\npalette:\t\t\t\t%@\nbits[bytes]/pixel:\t\t\t%d[%d]\nmask[RGBA]:\t\t\t\t%x %x %x %x\nshift[RGBA]:\t\t\t\t%d %d %d %d\nloss[RGBA]:\t\t\t\t%d %d %d %d\ntransparent colorkey:\t\t\t%d\noverall surface alpha:\t\t\t%d\n"),
-                driver,
+                ACE_TEXT (driver),
                 (video_info_p->hw_available ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
                 (video_info_p->wm_available ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
                 (video_info_p->blit_hw ? ACE_TEXT ("yes") : ACE_TEXT ("no")),
@@ -302,8 +299,8 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
        // *TODO*: implement SDL_RESIZABLE ?
        (configuration_in.full_screen   ? (SDL_FULLSCREEN | SDL_NOFRAME) : 0));
   // get available fullscreen/hardware/... modes
-  SDL_Rect** modes = SDL_ListModes (NULL,               // use same as videoInfo
-                                    SDL_surface_flags); // surface flags
+  struct SDL_Rect** modes = SDL_ListModes (NULL,               // use same as videoInfo
+                                           SDL_surface_flags); // surface flags
   // --> any valid modes available ?
   if (modes == NULL)
   {
@@ -312,7 +309,7 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
                 SDL_surface_flags));
     goto continue_;
   } // end IF
-  else if (modes == reinterpret_cast<SDL_Rect**>(-1))
+  else if (modes == reinterpret_cast<struct SDL_Rect**> (-1))
   {
     ACE_DEBUG ((LM_DEBUG,
                 ACE_TEXT ("all resolutions available (flags: 0x%x)...\n"),
@@ -970,6 +967,9 @@ RPG_Graphics_SDL_Tools::getColor (enum RPG_Graphics_ColorName colorName_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::getColor"));
 
+  // sanity check(s)
+  ACE_ASSERT (blendFactor_in >= 0.0f && blendFactor_in <= 1.0f);
+
   RPG_Graphics_ColorMapConstIterator_t iterator = myColors.find (colorName_in);
   if (iterator == myColors.end ())
   {
@@ -1140,7 +1140,7 @@ RPG_Graphics_SDL_Tools::initializeColors ()
       default:
       {
         ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("unknown/invalid color (was: %d), aborting\n"),
+                    ACE_TEXT ("unknown/invalid color (was: %d), returning\n"),
                     i));
         return;
       }
@@ -1165,9 +1165,9 @@ RPG_Graphics_SDL_Tools::boundingBox (const struct SDL_Rect& rect1_in,
   else if ((rect2_in.w == 0) || (rect2_in.h == 0))
     return rect1_in;
 
-  // init result
-  SDL_Rect result;
-  ACE_OS::memset(&result, 0, sizeof(SDL_Rect));
+  // initialize result
+  struct SDL_Rect result;
+  ACE_OS::memset (&result, 0, sizeof (struct SDL_Rect));
 
   result.x =
     static_cast<int16_t> ((rect1_in.x < rect2_in.x) ? rect1_in.x
@@ -1193,7 +1193,7 @@ RPG_Graphics_SDL_Tools::intersect (const struct SDL_Rect& rect1_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::intersect"));
 
-  // init result
+  // initialize result
   struct SDL_Rect result;
   ACE_OS::memset (&result, 0, sizeof (struct SDL_Rect));
 

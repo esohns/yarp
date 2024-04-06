@@ -2198,13 +2198,13 @@ RPG_Engine::isCorner (const RPG_Map_Position_t& position_in,
   return result;
 }
 
-RPG_Map_Element
+enum RPG_Map_Element
 RPG_Engine::getElement (const RPG_Map_Position_t& position_in,
                         bool lockedAccess_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::getElement"));
 
-  RPG_Map_Element result;
+  enum RPG_Map_Element result;
 
   if (lockedAccess_in)
     lock_.acquire ();

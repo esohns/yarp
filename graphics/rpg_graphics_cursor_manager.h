@@ -55,51 +55,51 @@ class RPG_Graphics_Cursor_Manager
               bool = false); // debug ?
 
   inline enum RPG_Graphics_Cursor type () const { return myCurrentType; }
-  SDL_Rect area (const RPG_Graphics_Position_t&) const; // viewport (map coords !)
+  struct SDL_Rect area (const RPG_Graphics_Position_t&) const; // viewport (map coords !)
   RPG_Graphics_Position_t position (bool = false) const; // highlight ?
 
   // draw cursor (and highlight)
   void put (const RPG_Graphics_Position_t&, // cursor position
             const RPG_Graphics_Position_t&, // viewport (map coords !)
             const RPG_Map_Size_t&,          // (current) map size
-            SDL_Rect&,                      // return value: "dirty" region
+            struct SDL_Rect&,               // return value: "dirty" region
             bool = true,                    // draw highlight ?
             bool = true,                    // locked access ?
             bool = false);                  // debug ?
 
-  void setCursor (const RPG_Graphics_Cursor&, // cursor type
-                  SDL_Rect&,                  // return value: "dirty" region
-                  bool = true);               // locked access ?
+  void setCursor (enum RPG_Graphics_Cursor, // cursor type
+                  struct SDL_Rect&,         // return value: "dirty" region
+                  bool = true);             // locked access ?
   // draw the cursor
   void putCursor (const RPG_Graphics_Offset_t&, // offset (top left == 0,0)
-                  SDL_Rect&,                    // return value: "dirty" region
+                  struct SDL_Rect&,             // return value: "dirty" region
                   bool = true,                  // locked access ?
                   bool = false);                // debug ?
   // restore/update/clear the BG
-  void restoreBG (SDL_Rect&,              // return value: "dirty" region
-                  const SDL_Rect* = NULL, // clip area (default: don't clip)
-                  bool = true);           // locked access ?
-  void updateBG (SDL_Rect&,              // return value: "dirty" region (debug only)
-                 const SDL_Rect* = NULL, // clip area (default: clip to map window)
-                 bool = true,            // locked access ?
-                 bool = false);          // debug ?
-  void invalidateBG (const SDL_Rect* = NULL); // clip area (default: don't clip)
+  void restoreBG (struct SDL_Rect&,              // return value: "dirty" region
+                  const struct SDL_Rect* = NULL, // clip area (default: don't clip)
+                  bool = true);                  // locked access ?
+  void updateBG (struct SDL_Rect&,              // return value: "dirty" region (debug only)
+                 const struct SDL_Rect* = NULL, // clip area (default: clip to map window)
+                 bool = true,                   // locked access ?
+                 bool = false);                 // debug ?
+  void invalidateBG (const struct SDL_Rect* = NULL); // clip area (default: don't clip)
 
-  RPG_Graphics_Position_t getHighlightBGPosition(const unsigned int& = std::numeric_limits<unsigned int>::max()) const;
-  void putHighlights(const RPG_Map_PositionList_t&,   // positions (map coords !)
-                     const RPG_Graphics_Offsets_t&,   // position(s) (screen coords !)
-                     const RPG_Graphics_Position_t&,  // viewport (map coords !)
-                     SDL_Rect&,                       // return value: "dirty" region
-                     bool = true,                     // locked access ?
-                     bool = false);                   // debug ?
+  RPG_Graphics_Position_t getHighlightBGPosition (unsigned int = std::numeric_limits<unsigned int>::max ()) const;
+  void putHighlights (const RPG_Map_PositionList_t&,   // positions (map coords !)
+                      const RPG_Graphics_Offsets_t&,   // position(s) (screen coords !)
+                      const RPG_Graphics_Position_t&,  // viewport (map coords !)
+                      struct SDL_Rect&,                // return value: "dirty" region
+                      bool = true,                     // locked access ?
+                      bool = false);                   // debug ?
   void restoreHighlightBG (const RPG_Graphics_Position_t&, // viewport (map coords !)
-                           SDL_Rect&,                      // return value: "dirty" region
-                           const SDL_Rect* = NULL,         // clip area (default: don't clip)
+                           struct SDL_Rect&,               // return value: "dirty" region
+                           const struct SDL_Rect* = NULL,  // clip area (default: don't clip)
                            bool = true,                    // locked access ?
                            bool = false);                  // debug ?
   void updateHighlightBG (const RPG_Graphics_Position_t&, // viewport (map coords !)
-                          SDL_Rect&,                      // return value: "dirty" region (debug only)
-                          const SDL_Rect* = NULL,         // clip area (default: clip to map window)
+                          struct SDL_Rect&,               // return value: "dirty" region (debug only)
+                          const struct SDL_Rect* = NULL,  // clip area (default: clip to map window)
                           bool = true,                    // locked access ?
                           bool = false);                  // debug ?
   void resetHighlightBG (const RPG_Graphics_Position_t&); // reset to (single) initial position (map coords !)
@@ -111,7 +111,7 @@ class RPG_Graphics_Cursor_Manager
   ACE_UNIMPLEMENTED_FUNC (RPG_Graphics_Cursor_Manager& operator= (const RPG_Graphics_Cursor_Manager&))
 
   // helper types
-  typedef std::map<RPG_Graphics_Cursor, SDL_Surface*> RPG_Graphics_Cursor_Cache_t;
+  typedef std::map<enum RPG_Graphics_Cursor, SDL_Surface*> RPG_Graphics_Cursor_Cache_t;
   typedef RPG_Graphics_Cursor_Cache_t::const_iterator RPG_Graphics_Cursor_CacheConstIterator_t;
 
   // helper methods
@@ -121,10 +121,10 @@ class RPG_Graphics_Cursor_Manager
   //                      const bool& = true);          // locked access ?
   void storeHighlightBG (const RPG_Map_PositionList_t&, // positions (map coords !)
                          const RPG_Graphics_Offsets_t&, // positions (screen coords !)
-                         SDL_Rect&,                     // return value: "dirty" region
+                         struct SDL_Rect&,              // return value: "dirty" region
                          bool = true);                  // locked access ?
 
-  RPG_Graphics_Cursor         myCurrentType;
+  enum RPG_Graphics_Cursor    myCurrentType;
   SDL_Surface*                myCurrentGraphic;
   RPG_Graphics_Cursor_Cache_t myCache;
   // fast(er) updates

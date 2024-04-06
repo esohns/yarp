@@ -64,7 +64,7 @@ class RPG_Graphics_IWindowBase
   virtual void removeChild (RPG_Graphics_IWindowBase*) = 0; // window handle
   virtual void refresh (SDL_Surface* = NULL) = 0; // target surface (default: screen)
 
-  virtual RPG_Graphics_WindowType getType () const = 0;
+  virtual enum RPG_Graphics_WindowType getType () const = 0;
   virtual void getArea (struct SDL_Rect&,        // return value: window area
                         bool = false) const = 0; // toplevel ?
   virtual void getBorders (unsigned int&,          // return value: size (top)
