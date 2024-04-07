@@ -1460,7 +1460,7 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
                                                     myEngine->getSize (false), // locked access ?
                                                     std::make_pair (window_area.w,
                                                                     window_area.h),
-                                                    getView ());
+                                                    myView);
           bool push_mousemove_event = myEngine->isValid (myClientAction.position,
                                                          false); // locked access ?
 
@@ -1566,7 +1566,7 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
         case SDLK_RIGHT:
         {
           enum RPG_Map_Direction direction = RPG_MAP_DIRECTION_INVALID;
-          myClientAction.position = getView ();
+          myClientAction.position = myView;
           switch (event_in.key.keysym.sym)
           {
             case SDLK_UP:
@@ -1706,7 +1706,7 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
                                                 myEngine->getSize (false), // locked access ?
                                                 std::make_pair (window_area.w,
                                                                 window_area.h),
-                                                getView ());
+                                                myView);
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse position [%u,%u] --> [%u,%u]\n"),
 //                  event_in.button.x,
@@ -1878,7 +1878,7 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
                                                     myEngine->getSize (false), // locked access ?
                                                     std::make_pair (window_area.w,
                                                                     window_area.h),
-                                                    getView ());
+                                                    myView);
         //ACE_DEBUG((LM_DEBUG,
         //           ACE_TEXT("mouse position [%u,%u] --> map position [%u,%u]\n"),
         //           event_in.button.x,

@@ -32,7 +32,7 @@
     <interval>
       <seconds>10</seconds>
     </interval>
-    <probability>0.3</probability>
+    <probability>0.7</probability>
     <max_num_spawned>50</max_num_spawned>
     <amble_probability>0.5</amble_probability>
   </spawn>

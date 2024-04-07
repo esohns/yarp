@@ -333,13 +333,6 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
     {
       // sanity check(s)
       ACE_ASSERT (engine_);
-      client_action.command = COMMAND_ENTITY_DRAW;
-      ACE_ASSERT (!parameters_in.positions.empty ());
-      client_action.position = *parameters_in.positions.begin();
-      ACE_ASSERT (window_);
-      client_action.window = window_;
-      ACE_ASSERT (parameters_in.entity_id);
-      client_action.entity_id = parameters_in.entity_id;
 
       // step1: load sprite graphics
       SDL_Surface* sprite_graphic = NULL;
@@ -370,6 +363,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
                                                              false); // free on remove ?
 
       // step3: draw the sprite --> delegate to the engine
+      do_action = false;
 
       break;
     }
@@ -380,15 +374,31 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       client_action.window = window_;
       ACE_ASSERT (parameters_in.entity_id);
       client_action.entity_id = parameters_in.entity_id;
+      ACE_ASSERT (!parameters_in.positions.empty ());
+
       // step1: erase the sprite --> delegate to the engine
       action (client_action);
 
       // step3: play a sound ? --> delegate to the engine
-      if (parameters_in.entity_id == engine_->getActive (true)) // locked access ?
-        do_action = false; // don't play a sound...
+      RPG_Engine_EntityID_t active_entity_id =
+        engine_->getActive (true); // locked access ?
+      if (parameters_in.entity_id != active_entity_id)
+      {
+        client_action.command = COMMAND_PLAY_SOUND;
+        client_action.sound = EVENT_CONDITION_WEAK;
+        action (client_action);
 
-      client_action.command = COMMAND_PLAY_SOUND;
-      client_action.sound = EVENT_CONDITION_WEAK;
+        // update the minimap ? --> delegate to the engine
+        if (active_entity_id &&
+            engine_->canSee (active_entity_id,
+                             *parameters_in.positions.begin (),
+                             true))
+          client_action.command = COMMAND_WINDOW_UPDATE_MINIMAP;
+        else
+          do_action = false;
+      } // end ELSE
+      else
+        do_action = false;
 
       break;
     }

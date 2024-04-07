@@ -663,25 +663,22 @@ RPG_Engine::remove (RPG_Engine_EntityID_t id_in)
                   id_in));
       return;
     } // end IF
+    parameters.positions.insert ((*iterator).second->position);
+    parameters.previous_position = (*iterator).second->position;
     if (!(*iterator).second->character->isPlayerCharacter ())
     {
       // clean up NPC entities...
       delete (*iterator).second->character;
       delete (*iterator).second;
     } // end IF
-    parameters.positions.insert ((*iterator).second->position);
     entities_.erase (iterator);
 
     // step2: update vision cache
     ACE_ASSERT (seenPositions_.find (id_in) != seenPositions_.end ());
     seenPositions_.erase (id_in);
 
-    // notify client / window
+    // step3: notify client / window
     parameters.entity_id = id_in;
-    parameters.condition = RPG_COMMON_CONDITION_INVALID;
-    parameters.previous_position =
-      std::make_pair (std::numeric_limits<unsigned int>::max (),
-                      std::numeric_limits<unsigned int>::max ());
     try {
       client_->notify (COMMAND_E2C_ENTITY_REMOVE,
                        parameters,

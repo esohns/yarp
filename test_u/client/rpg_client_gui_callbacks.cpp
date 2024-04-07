@@ -3986,13 +3986,12 @@ togglebutton_join_part_toggled_cb (GtkToggleButton* toggleButton_in,
   if (gtk_toggle_button_get_active (toggleButton_in))
   {
     if (data_p->levelEngine->isRunning ())
-      data_p->levelEngine->stop ();
+      data_p->levelEngine->stop (true); // locked access ?
 
     // set start position, if necessary
-    if (data_p->entity.position ==
-        std::make_pair (std::numeric_limits<unsigned int>::max (),
-                        std::numeric_limits<unsigned int>::max ()))
-      data_p->entity.position = data_p->levelEngine->getStartPosition (true);
+    if (data_p->entity.position == std::make_pair (std::numeric_limits<unsigned int>::max (),
+                                                   std::numeric_limits<unsigned int>::max ()))
+      data_p->entity.position = data_p->levelEngine->getStartPosition (true); // locked access ?
 
     // update the level state
 
@@ -4106,16 +4105,16 @@ togglebutton_join_part_toggled_cb (GtkToggleButton* toggleButton_in,
   } // end IF
 
   // deactivate the current character
-  RPG_Engine_EntityID_t id = data_p->levelEngine->getActive ();
-  if (id)
-    data_p->levelEngine->remove (id);
+  RPG_Engine_EntityID_t id = data_p->levelEngine->getActive (true); // locked access ?
+  ACE_ASSERT (id);
+  data_p->levelEngine->remove (id);
 
   // stop ambient sound
   RPG_SOUND_EVENT_MANAGER_SINGLETON::instance ()->stop ();
 
   // update entity profile widgets
-  ::update_entity_profile (data_p->entity,
-                           (*iterator).second.second);
+  //::update_entity_profile (data_p->entity,
+  //                         (*iterator).second.second);
 
   // make join button sensitive IFF player is not disabled
   //if (!RPG_Engine_Common_Tools::isCharacterDisabled (data_p->entity.character))
