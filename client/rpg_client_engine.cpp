@@ -825,9 +825,24 @@ next:
 
       break;
     }
+    case COMMAND_CURSOR_RESTORE_BG:
+    { ACE_ASSERT (client_action.window);
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->restoreBG (dirty_region,
+                                                                     NULL,
+                                                                     true);
+      try {
+        client_action.window->invalidate (dirty_region);
+      } catch (...) {
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("caught exception in RPG_Graphics_IWindowBase::invalidate(), continuing\n")));
+        goto continue_;
+      }
+
+      break;
+    }
     case COMMAND_CURSOR_INVALIDATE_BG:
     {
-      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->invalidateBG ();
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->invalidateBG (NULL);
       break;
     }
     case COMMAND_CURSOR_SET:

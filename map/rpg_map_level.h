@@ -53,12 +53,12 @@ class RPG_Map_Level
   void init (const struct RPG_Map&); // map
   void save (const std::string&) const; // FQ filename
   // implement RPG_Common_IDumpState
-  virtual void dump_state() const;
+  virtual void dump_state () const;
 
-  RPG_Map_Position_t getStartPosition () const;
-  RPG_Map_Positions_t getSeedPoints () const;
-  struct RPG_Map_FloorPlan getFloorPlan () const;
-  RPG_Map_Size_t getSize () const;
+  inline RPG_Map_Position_t getStartPosition () const { return myMap.start; }
+  inline RPG_Map_Positions_t getSeedPoints () const { return myMap.seeds; }
+  inline struct RPG_Map_FloorPlan getFloorPlan () const { return myMap.plan; }
+  inline RPG_Map_Size_t getSize () const { return std::make_pair (myMap.plan.size_x, myMap.plan.size_y); }
   enum RPG_Map_DoorState state (const RPG_Map_Position_t&) const;
 
   // either floor or an open/broken (!) door ?

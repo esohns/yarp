@@ -554,7 +554,7 @@ RPG_Engine_Level::random (const struct RPG_Engine_LevelMetaData& metaData_in,
       RPG_Dice::generateRandomNumbers (100,
                                        1,
                                        result);
-      spawn.spawn.probability = (static_cast<float> (result.front ()) / 100.0F);
+      spawn.spawn.probability = (static_cast<float> (result.front ()) / 100.0f);
 
       result.clear ();
       RPG_Dice::generateRandomNumbers (RPG_ENGINE_ENCOUNTER_DEF_NUM_SPAWNED_MAX,
@@ -567,7 +567,7 @@ RPG_Engine_Level::random (const struct RPG_Engine_LevelMetaData& metaData_in,
                                        1,
                                        result);
       spawn.spawn.amble_probability =
-          (static_cast<float>(result.front () - 1) / 100.0F);
+          (static_cast<float> (result.front () - 1) / 100.0f);
 
       spawn.timer_id = -1;
 
@@ -610,21 +610,20 @@ RPG_Engine_Level::print (const struct RPG_Engine_LevelData& level_in)
               ACE_TEXT ("monsters:\nspawns\t[interval(sec,usec), probability(%%), max #, amble probability(%%), timer ID]:\n")));
   unsigned int i = 1;
   ACE_Time_Value time_value;
-  for (RPG_Engine_SpawnsConstIterator_t iterator =
-       level_in.metadata.spawns.begin ();
+  for (RPG_Engine_SpawnsConstIterator_t iterator = level_in.metadata.spawns.begin ();
        iterator != level_in.metadata.spawns.end ();
        iterator++, i++)
   {
     time_value.set ((*iterator).spawn.interval.seconds,
                     (*iterator).spawn.interval.u_seconds);
-     ACE_DEBUG ((LM_INFO,
-                 ACE_TEXT("\t#%u %s: %#T\t%.0f\t%u\t%.0f\t%d\n"),
-                 i, ACE_TEXT ((*iterator).spawn.type.c_str ()),
-                 &time_value,
-                 ((*iterator).spawn.probability * 100.0F),
-                 (*iterator).spawn.max_num_spawned,
-                 ((*iterator).spawn.amble_probability * 100.0F),
-                 (*iterator).timer_id));
+    ACE_DEBUG ((LM_INFO,
+                ACE_TEXT ("\t#%u %s: %#T\t%.0f\t%u\t%.0f\t%d\n"),
+                i, ACE_TEXT ((*iterator).spawn.type.c_str ()),
+                &time_value,
+                ((*iterator).spawn.probability * 100.0F),
+                (*iterator).spawn.max_num_spawned,
+                ((*iterator).spawn.amble_probability * 100.0F),
+                (*iterator).timer_id));
   } // end FOR
   ACE_DEBUG ((LM_INFO,
               ACE_TEXT ("max # (total): %u\n"),

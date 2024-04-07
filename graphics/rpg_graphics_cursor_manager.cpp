@@ -541,7 +541,7 @@ RPG_Graphics_Cursor_Manager::restoreBG (struct SDL_Rect& dirtyRegion_out,
 #endif // SDL_USE || SDL2_USE
   ACE_ASSERT (target_surface);
 
-  // init dirty region
+  // initialize dirty region
   dirtyRegion_out.x = static_cast<int16_t> (myBGPosition.first);
   dirtyRegion_out.y = static_cast<int16_t> (myBGPosition.second);
   dirtyRegion_out.w = static_cast<uint16_t> (myBG->w);
@@ -567,7 +567,7 @@ RPG_Graphics_Cursor_Manager::restoreBG (struct SDL_Rect& dirtyRegion_out,
     return; // nothing to do...
 
   if (lockedAccess_in && myScreenLock)
-    myScreenLock->lock();
+    myScreenLock->lock ();
   // restore / clear background
   if (SDL_BlitSurface (myBG,                   // source
                        &source_clip_rectangle, // aspect
@@ -589,8 +589,8 @@ RPG_Graphics_Cursor_Manager::updateBG (struct SDL_Rect& dirtyRegion_out,
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Cursor_Manager::updateBG"));
 
   // sanity check(s)
-  ACE_ASSERT(myBG);
-  ACE_ASSERT(myHighlightWindow);
+  ACE_ASSERT (myBG);
+  ACE_ASSERT (myHighlightWindow);
 #if defined (SDL_USE)
   SDL_Surface* target_surface = myHighlightWindow->getScreen ();
 #elif defined (SDL2_USE)
@@ -599,7 +599,7 @@ RPG_Graphics_Cursor_Manager::updateBG (struct SDL_Rect& dirtyRegion_out,
 #endif // SDL_USE || SDL2_USE
   ACE_ASSERT (target_surface);
 
-  // init return value(s)
+  // initialize return value(s)
   ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
   // *NOTE*: this function handles two distinct use-cases:

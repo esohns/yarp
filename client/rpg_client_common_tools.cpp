@@ -114,8 +114,15 @@ RPG_Client_Common_Tools::initializeSDLInput (const struct RPG_Client_SDL_InputCo
   //   SDL_SetEventFilter(event_filter_SDL_cb);
 
   // ***** mouse setup *****
-  int show_cursor_status_before = SDL_ShowCursor (-1);
-  if (show_cursor_status_before == 1)
+  int show_cursor_status_before = SDL_ShowCursor (SDL_QUERY);
+  if (show_cursor_status_before < 0)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_ShowCursor(): \"%s\", aborting\n"),
+                ACE_TEXT (SDL_GetError ())));
+    return false;
+  } // end IF
+  if (show_cursor_status_before == SDL_ENABLE)
     SDL_ShowCursor (SDL_DISABLE); // disable OS mouse cursor over SDL window
 
   return true;
@@ -163,7 +170,7 @@ RPG_Client_Common_Tools::initialize (const struct RPG_Client_SDL_InputConfigurat
   RPG_TRACE (ACE_TEXT ("RPG_Client_Common_Tools::initialize"));
 
   // step0: initialize string conversion facilities
-  RPG_Client_GraphicsModeHelper::init();
+  RPG_Client_GraphicsModeHelper::init ();
 
   // step1: initialize input
   if (!RPG_Client_Common_Tools::initializeSDLInput (inputConfiguration_in))
@@ -177,14 +184,14 @@ RPG_Client_Common_Tools::initialize (const struct RPG_Client_SDL_InputConfigurat
   RPG_Sound_Common_Tools::initializeStringConversionTables ();
 
   // step2a: initialize sound dictionary
+  bool validate_schema_b =
+#if defined (_DEBUG)
+    true;
+#else
+    false;
+#endif // _DEBUG
   if (!soundDictionaryFile_in.empty ())
   {
-    bool validate_schema_b =
-#if defined (_DEBUG)
-      true;
-#else
-      false;
-#endif // _DEBUG
     if (!RPG_SOUND_DICTIONARY_SINGLETON::instance ()->initialize (soundDictionaryFile_in,
                                                                   validate_schema_b))
     {
@@ -213,13 +220,8 @@ RPG_Client_Common_Tools::initialize (const struct RPG_Client_SDL_InputConfigurat
   // step3a: initialize graphics dictionary
   if (!graphicsDictionaryFile_in.empty ())
   {
-    if (!RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->initialize (graphicsDictionaryFile_in
-#if defined (_DEBUG)
-                                                                     , true
-#else
-                                                                     , false
-#endif // _DEBUG
-                                                                    ))
+    if (!RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->initialize (graphicsDictionaryFile_in,
+                                                                     validate_schema_b))
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to RPG_Graphics_Dictionary::initialize, aborting\n")));
@@ -239,8 +241,8 @@ RPG_Client_Common_Tools::initialize (const struct RPG_Client_SDL_InputConfigurat
   // step4: initialize cursor manager singleton
   if (initSDL_in)
   {
-    SDL_Rect dirty_region;
-    ACE_OS::memset (&dirty_region, 0, sizeof (SDL_Rect));
+    struct SDL_Rect dirty_region;
+    ACE_OS::memset (&dirty_region, 0, sizeof (struct SDL_Rect));
     RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->setCursor (CURSOR_NORMAL,
                                                                    dirty_region);
   } // end IF
@@ -289,8 +291,7 @@ RPG_Client_Common_Tools::initFloorEdges (const RPG_Engine& engine_in,
 
     // floor or door ? --> compute floor edges
     current_element = engine_in.getElement (current_position);
-    if ((current_element != MAPELEMENT_FLOOR) &&
-        (current_element != MAPELEMENT_DOOR))
+    if ((current_element != MAPELEMENT_FLOOR) && (current_element != MAPELEMENT_DOOR))
       continue;
 
     // find neighboring map elements
@@ -429,8 +430,8 @@ RPG_Client_Common_Tools::initWalls (const RPG_Engine& engine_in,
   struct RPG_Graphics_WallTileSet current_walls;
   bool has_walls = false;
   RPG_Map_Element current_element;
-  RPG_Map_Size_t map_size = engine_in.getSize ();
-  RPG_Map_Positions_t walls = engine_in.getWalls ();
+  RPG_Map_Size_t map_size = engine_in.getSize (true); // locked access ?
+  RPG_Map_Positions_t walls = engine_in.getWalls (true); // locked access ?
   for (unsigned int y = 0;
        y < map_size.second;
        y++)
@@ -444,8 +445,7 @@ RPG_Client_Common_Tools::initWalls (const RPG_Engine& engine_in,
 
       // floor or door ? --> compute walls
       current_element = engine_in.getElement (current_position);
-      if ((current_element != MAPELEMENT_FLOOR) &&
-          (current_element != MAPELEMENT_DOOR))
+      if ((current_element != MAPELEMENT_FLOOR) && (current_element != MAPELEMENT_DOOR))
         continue;
 
       // find neighboring walls
@@ -519,21 +519,20 @@ RPG_Client_Common_Tools::initDoors (const RPG_Engine& engine_in,
   // init return value(s)
   doorTiles_out.clear ();
 
+  enum RPG_Map_DoorState door_state;
+  enum RPG_Graphics_Orientation orientation;
   struct RPG_Graphics_TileElement current_tile;
-  RPG_Graphics_Orientation orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-//	engine_in.lock();
-  RPG_Map_Positions_t doors = engine_in.getDoors (false);
-  RPG_Map_DoorState door_state = RPG_MAP_DOORSTATE_INVALID;
+
+  engine_in.lock ();
+  RPG_Map_Positions_t doors = engine_in.getDoors (false); // locked access ?
+
   for (RPG_Map_PositionsConstIterator_t iterator = doors.begin ();
        iterator != doors.end ();
        iterator++)
   {
-    ACE_OS::memset (&current_tile, 0, sizeof (struct RPG_Graphics_TileElement));
-    orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-    door_state = RPG_MAP_DOORSTATE_INVALID;
-
-    door_state = engine_in.state (*iterator, false);
-    ACE_ASSERT(door_state != RPG_MAP_DOORSTATE_INVALID);
+    door_state = engine_in.state (*iterator,
+                                  false); // locked access ?
+    ACE_ASSERT (door_state != RPG_MAP_DOORSTATE_INVALID);
     if (door_state == DOORSTATE_BROKEN)
     {
       doorTiles_out.insert (std::make_pair (*iterator, tileSet_in.broken));
@@ -542,7 +541,8 @@ RPG_Client_Common_Tools::initDoors (const RPG_Engine& engine_in,
 
     orientation = RPG_Client_Common_Tools::getDoorOrientation (*iterator,
                                                                engine_in,
-                                                               false);
+                                                               false); // locked access ?
+    ACE_ASSERT (orientation != RPG_GRAPHICS_ORIENTATION_INVALID);
     switch (orientation)
     {
       case ORIENTATION_HORIZONTAL:
@@ -571,7 +571,7 @@ RPG_Client_Common_Tools::initDoors (const RPG_Engine& engine_in,
 
     doorTiles_out.insert (std::make_pair (*iterator, current_tile));
   } // end FOR
-//	engine_in.unlock();
+	engine_in.unlock ();
 }
 
 void
@@ -581,19 +581,15 @@ RPG_Client_Common_Tools::updateDoors (const struct RPG_Graphics_DoorTileSet& til
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Common_Tools::updateDoors"));
 
-  struct RPG_Graphics_TileElement current_tile;
-  enum RPG_Graphics_Orientation orientation;
   enum RPG_Map_DoorState door_state;
+  enum RPG_Graphics_Orientation orientation;
+  struct RPG_Graphics_TileElement current_tile;
 
   engine_in.lock ();
   for (RPG_Graphics_DoorTileMapIterator_t iterator = doorTiles_inout.begin ();
        iterator != doorTiles_inout.end ();
        iterator++)
   {
-    ACE_OS::memset (&current_tile, 0, sizeof (struct RPG_Graphics_TileElement));
-    orientation = RPG_GRAPHICS_ORIENTATION_INVALID;
-    door_state = RPG_MAP_DOORSTATE_INVALID;
-
     door_state = engine_in.state ((*iterator).first,
                                   false); // locked access ?
     ACE_ASSERT (door_state != RPG_MAP_DOORSTATE_INVALID);
@@ -606,6 +602,7 @@ RPG_Client_Common_Tools::updateDoors (const struct RPG_Graphics_DoorTileSet& til
     orientation = RPG_Client_Common_Tools::getDoorOrientation ((*iterator).first,
                                                                engine_in,
                                                                false); // locked access ?
+    ACE_ASSERT (orientation != RPG_GRAPHICS_ORIENTATION_INVALID);
     switch (orientation)
     {
       case ORIENTATION_HORIZONTAL:
@@ -646,7 +643,7 @@ RPG_Client_Common_Tools::classToSprite (const struct RPG_Character_Class& class_
   {
     case METACLASS_PRIEST:
       return SPRITE_PRIEST;
-    default:
+    default: // *TODO*:
       break;
   } // end SWITCH
 
@@ -674,8 +671,7 @@ RPG_Client_Common_Tools::hasCeiling (const RPG_Map_Position_t& position_in,
                           lockedAccess_in);
 
   // shortcut: floors, doors never get a ceiling
-  if ((current_element == MAPELEMENT_FLOOR) ||
-      (current_element == MAPELEMENT_DOOR))
+  if ((current_element == MAPELEMENT_FLOOR) || (current_element == MAPELEMENT_DOOR))
     return false;
 
   RPG_Map_Position_t east, west, south, north;
@@ -707,16 +703,12 @@ RPG_Client_Common_Tools::hasCeiling (const RPG_Map_Position_t& position_in,
 
   // "corridors"
   // vertical
-  if (((element_east == MAPELEMENT_FLOOR) ||
-       (element_east == MAPELEMENT_DOOR)) &&
-      ((element_west == MAPELEMENT_FLOOR) ||
-       (element_west == MAPELEMENT_DOOR)))
+  if (((element_east == MAPELEMENT_FLOOR) || (element_east == MAPELEMENT_DOOR)) &&
+      ((element_west == MAPELEMENT_FLOOR) || (element_west == MAPELEMENT_DOOR)))
     return true;
   // horizontal
-  if (((element_north == MAPELEMENT_FLOOR) ||
-       (element_north == MAPELEMENT_DOOR)) &&
-      ((element_south == MAPELEMENT_FLOOR) ||
-       (element_south == MAPELEMENT_DOOR)))
+  if (((element_north == MAPELEMENT_FLOOR) || (element_north == MAPELEMENT_DOOR)) &&
+      ((element_south == MAPELEMENT_FLOOR) || (element_south == MAPELEMENT_DOOR)))
     return true;
 
   // (internal) "corners"
@@ -725,14 +717,10 @@ RPG_Client_Common_Tools::hasCeiling (const RPG_Map_Position_t& position_in,
   if (lockedAccess_in)
     engine_in.lock ();
   // SW
-  if (((element_west == MAPELEMENT_FLOOR) ||
-       (element_west == MAPELEMENT_DOOR)) &&
-      ((element_south == MAPELEMENT_FLOOR) ||
-       (element_south == MAPELEMENT_DOOR)) &&
-      ((element_north == MAPELEMENT_UNMAPPED) ||
-       (element_north == MAPELEMENT_WALL)) &&
-      ((element_east == MAPELEMENT_UNMAPPED) ||
-       (element_east == MAPELEMENT_WALL)))
+  if (((element_west == MAPELEMENT_FLOOR) || (element_west == MAPELEMENT_DOOR)) &&
+      ((element_south == MAPELEMENT_FLOOR) || (element_south == MAPELEMENT_DOOR)) &&
+      ((element_north == MAPELEMENT_UNMAPPED) || (element_north == MAPELEMENT_WALL)) &&
+      ((element_east == MAPELEMENT_UNMAPPED) || (element_east == MAPELEMENT_WALL)))
   {
     is_corner_north = engine_in.isCorner (north,
                                           false); // locked access ?
@@ -752,14 +740,10 @@ RPG_Client_Common_Tools::hasCeiling (const RPG_Map_Position_t& position_in,
             has_ceiling_east);
   } // end IF
   // SE
-  if (((element_east == MAPELEMENT_FLOOR) ||
-       (element_east == MAPELEMENT_DOOR)) &&
-      ((element_south == MAPELEMENT_FLOOR) ||
-       (element_south == MAPELEMENT_DOOR)) &&
-      ((element_north == MAPELEMENT_UNMAPPED) ||
-       (element_north == MAPELEMENT_WALL)) &&
-      ((element_west == MAPELEMENT_UNMAPPED) ||
-       (element_west == MAPELEMENT_WALL)))
+  if (((element_east == MAPELEMENT_FLOOR) || (element_east == MAPELEMENT_DOOR)) &&
+      ((element_south == MAPELEMENT_FLOOR) || (element_south == MAPELEMENT_DOOR)) &&
+      ((element_north == MAPELEMENT_UNMAPPED) || (element_north == MAPELEMENT_WALL)) &&
+      ((element_west == MAPELEMENT_UNMAPPED) || (element_west == MAPELEMENT_WALL)))
   {
     is_corner_north = engine_in.isCorner (north,
                                           false); // locked access ?
@@ -779,14 +763,10 @@ RPG_Client_Common_Tools::hasCeiling (const RPG_Map_Position_t& position_in,
             has_ceiling_west);
   } // end IF
   // NW
-  if (((element_west == MAPELEMENT_FLOOR) ||
-       (element_west == MAPELEMENT_DOOR)) &&
-      ((element_north == MAPELEMENT_FLOOR) ||
-       (element_north == MAPELEMENT_DOOR)) &&
-      ((element_south == MAPELEMENT_UNMAPPED) ||
-       (element_south == MAPELEMENT_WALL)) &&
-      ((element_east == MAPELEMENT_UNMAPPED) ||
-       (element_east == MAPELEMENT_WALL)))
+  if (((element_west == MAPELEMENT_FLOOR) || (element_west == MAPELEMENT_DOOR)) &&
+      ((element_north == MAPELEMENT_FLOOR) || (element_north == MAPELEMENT_DOOR)) &&
+      ((element_south == MAPELEMENT_UNMAPPED) || (element_south == MAPELEMENT_WALL)) &&
+      ((element_east == MAPELEMENT_UNMAPPED) || (element_east == MAPELEMENT_WALL)))
   {
     is_corner_south = engine_in.isCorner (south,
                                           false); // locked access ?
@@ -806,14 +786,10 @@ RPG_Client_Common_Tools::hasCeiling (const RPG_Map_Position_t& position_in,
             has_ceiling_east);
   } // end IF
   // NE
-  if (((element_east == MAPELEMENT_FLOOR) ||
-       (element_east == MAPELEMENT_DOOR)) &&
-      ((element_north == MAPELEMENT_FLOOR) ||
-       (element_north == MAPELEMENT_DOOR)) &&
-      ((element_south == MAPELEMENT_UNMAPPED) ||
-       (element_south == MAPELEMENT_WALL)) &&
-      ((element_west == MAPELEMENT_UNMAPPED) ||
-       (element_west == MAPELEMENT_WALL)))
+  if (((element_east == MAPELEMENT_FLOOR) || (element_east == MAPELEMENT_DOOR)) &&
+      ((element_north == MAPELEMENT_FLOOR) || (element_north == MAPELEMENT_DOOR)) &&
+      ((element_south == MAPELEMENT_UNMAPPED) || (element_south == MAPELEMENT_WALL)) &&
+      ((element_west == MAPELEMENT_UNMAPPED) || (element_west == MAPELEMENT_WALL)))
   {
     is_corner_south = engine_in.isCorner (south,
                                           false); // locked access ?
@@ -928,18 +904,26 @@ RPG_Client_Common_Tools::getCursor (const RPG_Map_Position_t& position_in,
 
   enum RPG_Graphics_Cursor result = CURSOR_NORMAL;
 
+  if (lockedAcces_in)
+    engine_in.lock ();
+
   RPG_Map_Position_t entity_position =
       std::make_pair (std::numeric_limits<unsigned int>::max (),
-                      std::numeric_limits<unsigned int>::max ());
+                      std::numeric_limits<unsigned int>::max ());  
   if (id_in)
     entity_position = engine_in.getPosition (id_in,
-                                             lockedAcces_in);
+                                             false); // locked access ?
 
   switch (mode_in)
   {
     case SELECTIONMODE_AIM_CIRCLE:
     case SELECTIONMODE_AIM_SQUARE:
+    {
+      if (lockedAcces_in)
+        engine_in.unlock ();
+
       return CURSOR_TARGET;
+    }
     case SELECTIONMODE_NORMAL:
       break;
     case SELECTIONMODE_PATH:
@@ -949,17 +933,28 @@ RPG_Client_Common_Tools::getCursor (const RPG_Map_Position_t& position_in,
 
       if ((entity_position != position_in) &&
           (engine_in.isValid (position_in,
-                              lockedAcces_in) &&
-          hasSeen_in))
+                              false) && // locked access ?
+           hasSeen_in))
+      {
+        if (lockedAcces_in)
+          engine_in.unlock ();
+
         return CURSOR_TRAVEL;
+      } // end IF
+
+      if (lockedAcces_in)
+        engine_in.unlock ();
 
       return CURSOR_TARGET_INVALID;
     }
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("invalid selection mode (was: %d), aborting\n"),
-                 mode_in));
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid selection mode (was: %d), aborting\n"),
+                  mode_in));
+
+      if (lockedAcces_in)
+        engine_in.unlock ();
 
       return result;
     }
@@ -968,12 +963,17 @@ RPG_Client_Common_Tools::getCursor (const RPG_Map_Position_t& position_in,
   // monster ?
   RPG_Engine_EntityID_t entity_id =
       engine_in.hasEntity (position_in,
-                           lockedAcces_in);
+                           false); // locked access ?
   if (id_in &&
       entity_id &&
       engine_in.isMonster (entity_id,
-                           lockedAcces_in))
+                           false)) // locked access ?
+  {
+    if (lockedAcces_in)
+      engine_in.unlock ();
+
     return CURSOR_TARGET;
+  } // end IF
 
   // (closed/locked) door ?
   if (engine_in.getElement (position_in,
@@ -985,13 +985,21 @@ RPG_Client_Common_Tools::getCursor (const RPG_Map_Position_t& position_in,
         id_in                                            &&
         RPG_Map_Common_Tools::isAdjacent (entity_position,
                                           position_in))
+    {
+      if (lockedAcces_in)
+        engine_in.unlock ();
+
       return CURSOR_DOOR_OPEN;
+    } // end IF
   } // end IF
+
+  if (lockedAcces_in)
+    engine_in.unlock ();
 
   return result;
 }
 
-RPG_Graphics_Style
+struct RPG_Graphics_Style
 RPG_Client_Common_Tools::environmentToStyle (const struct RPG_Common_Environment& environment_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Common_Tools::environmentToStyle"));
@@ -999,7 +1007,7 @@ RPG_Client_Common_Tools::environmentToStyle (const struct RPG_Common_Environment
   // *TODO*
   ACE_UNUSED_ARG (environment_in);
 
-  RPG_Graphics_Style result;
+  struct RPG_Graphics_Style result;
   result.door = RPG_CLIENT_GRAPHICS_DEF_DOORSTYLE;
   result.edge = RPG_CLIENT_GRAPHICS_DEF_EDGESTYLE;
   result.floor = RPG_CLIENT_GRAPHICS_DEF_FLOORSTYLE;

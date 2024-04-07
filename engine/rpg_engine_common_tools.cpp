@@ -119,15 +119,16 @@ RPG_Engine_Common_Tools::initialize (const std::vector<std::string>& schemaDirec
   } // end IF
 
   // step1ca: initialize magic dictionary
+  bool validate_xml_b =
+#if defined (_DEBUG)
+    true;
+#else
+    false;
+#endif // _DEBUG
   if (!magicDictionaryFile_in.empty ())
   {
-    if (!RPG_MAGIC_DICTIONARY_SINGLETON::instance ()->initialize (magicDictionaryFile_in
-#if defined (_DEBUG)
-                                                                  ,true
-#else
-                                                                  ,false
-#endif // _DEBUG
-                                                                 ))
+    if (!RPG_MAGIC_DICTIONARY_SINGLETON::instance ()->initialize (magicDictionaryFile_in,
+                                                                  validate_xml_b))
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to RPG_Magic_Dictionary::initialize, returning\n")));
@@ -139,13 +140,8 @@ RPG_Engine_Common_Tools::initialize (const std::vector<std::string>& schemaDirec
   if (!itemDictionaryFile_in.empty ())
   {
     try {
-      RPG_ITEM_DICTIONARY_SINGLETON::instance ()->init (itemDictionaryFile_in
-#ifdef _DEBUG
-                                                        ,true
-#else
-                                                        ,false
-#endif
-                                                        );
+      RPG_ITEM_DICTIONARY_SINGLETON::instance ()->init (itemDictionaryFile_in,
+                                                        validate_xml_b);
     } catch (...) {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("caught exception in RPG_Item_Dictionary::init, returning\n")));
@@ -157,13 +153,8 @@ RPG_Engine_Common_Tools::initialize (const std::vector<std::string>& schemaDirec
   if (!monsterDictionaryFile_in.empty ())
   {
     try {
-      RPG_MONSTER_DICTIONARY_SINGLETON::instance ()->init (monsterDictionaryFile_in
-#ifdef _DEBUG
-                                                           ,true
-#else
-                                                           ,false
-#endif
-                                                           );
+      RPG_MONSTER_DICTIONARY_SINGLETON::instance ()->init (monsterDictionaryFile_in,
+                                                           validate_xml_b);
     } catch (...) {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("caught exception in RPG_Monster_Dictionary::init, returning\n")));
@@ -395,7 +386,8 @@ RPG_Engine_Common_Tools::info (const struct RPG_Engine_Entity& entity_in)
   result += ACE_TEXT_ALWAYS_CHAR ("\\end action(s)\n");
 
   result += ACE_TEXT_ALWAYS_CHAR ("spawned: ");
-  result += (entity_in.is_spawned ? ACE_TEXT_ALWAYS_CHAR ("yes") : ACE_TEXT_ALWAYS_CHAR ("no"));
+  result +=
+    (entity_in.is_spawned ? ACE_TEXT_ALWAYS_CHAR ("yes") : ACE_TEXT_ALWAYS_CHAR ("no"));
   result += ACE_TEXT_ALWAYS_CHAR ("\n");
   result += ACE_TEXT_ALWAYS_CHAR ("\\end entity\n");
 
@@ -795,14 +787,14 @@ RPG_Engine_Common_Tools::performCombatRound (enum RPG_Combat_AttackSituation att
   {
     // sanity checks
     // step0a: determine whether this combatant is fit enough to fight
-    if (isCharacterHelpless ((*iterator).handle))
+    if (RPG_Engine_Common_Tools::isCharacterHelpless ((*iterator).handle))
     {
       // not fit enough...
       continue;
     } // end IF
     // step0b: determine whether any foes are still standing...
-    if (!isValidFoeAvailable ((*iterator).handle->isPlayerCharacter (),
-                              battleSequence_in))
+    if (!RPG_Engine_Common_Tools::isValidFoeAvailable ((*iterator).handle->isPlayerCharacter (),
+                                                       battleSequence_in))
     {
       // nothing to do...
       break;
@@ -819,9 +811,9 @@ RPG_Engine_Common_Tools::performCombatRound (enum RPG_Combat_AttackSituation att
                                        1,
                                        result);
       std::advance (foeFinder, result.front () - 1);
-    } while ((iterator == foeFinder)                                 || // dont't attack ourselves !
-             ((*foeFinder).handle->isPlayerCharacter () == isPlayer) || // don't attack friends
-             isCharacterDisabled ((*foeFinder).handle));                // leave the disabled alone (...for now)
+    } while ((iterator == foeFinder)                                           || // dont't attack ourselves !
+             ((*foeFinder).handle->isPlayerCharacter () == isPlayer)           || // don't attack friends
+             RPG_Engine_Common_Tools::isCharacterDisabled ((*foeFinder).handle)); // leave the disabled alone (...for now)
 
     // step2: attack foe !
 //     ACE_DEBUG((LM_DEBUG,
@@ -833,14 +825,14 @@ RPG_Engine_Common_Tools::performCombatRound (enum RPG_Combat_AttackSituation att
 //                (*foeFinder).handle->getNumCurrentHitPoints(),
 //                (*foeFinder).handle->getNumTotalHitPoints()));
 
-    // *TODO*: for now, we ignore range and movement
-    attack ((*iterator).handle,
-            const_cast<RPG_Player_Base*>((*foeFinder).handle),
-            damage_hp_i,
-            attackSituation_in,
-            defenseSituation_in,
-            true,
-            RPG_ENGINE_FEET_PER_SQUARE);
+    // *TODO*: for now, ignore range and movement
+    RPG_Engine_Common_Tools::attack ((*iterator).handle,
+                                     const_cast<RPG_Player_Base*>((*foeFinder).handle),
+                                     damage_hp_i,
+                                     attackSituation_in,
+                                     defenseSituation_in,
+                                     true, // full-round action ?
+                                     RPG_ENGINE_FEET_PER_SQUARE);
   } // end FOR
 }
 
@@ -895,7 +887,7 @@ RPG_Engine_Common_Tools::isCharacterHelpless (const RPG_Player_Base* const chara
       (character_in->hasCondition (CONDITION_BOUND))     || // bound as per rope, ...
       (character_in->hasCondition (CONDITION_SLEEPING))  || // natural, spell, ...
       (character_in->hasCondition (CONDITION_PETRIFIED)) || // turned to stone
-      isCharacterDisabled (character_in))                   // disabled
+      RPG_Engine_Common_Tools::isCharacterDisabled (character_in)) // disabled
     return true;
 
   return false;
@@ -911,7 +903,7 @@ RPG_Engine_Common_Tools::isValidFoeAvailable (bool isMonsterAvailable_in,
        iterator != battleSequence_in.end ();
        iterator++)
   {
-    if (isCharacterHelpless ((*iterator).handle))
+    if (RPG_Engine_Common_Tools::isCharacterHelpless ((*iterator).handle))
       continue;
 
     if (isMonsterAvailable_in && !((*iterator).handle->isPlayerCharacter ()))
@@ -1303,7 +1295,7 @@ RPG_Engine_Common_Tools::attack (const RPG_Player_Base* const attacker_in,
 
       // if the target has been disabled, we're done...
       // *TODO*: consider remaining actions...
-      if (isCharacterHelpless (target_inout))
+      if (RPG_Engine_Common_Tools::isCharacterHelpless (target_inout))
         break;
 
       // if this was a Standard Action, we're done
@@ -1364,8 +1356,8 @@ is_player_miss:
     {
       // sanity check
       numberOfPossibleAttackActions =
-          numCompatibleMonsterAttackActions (attackForm,
-                                             monster_properties.attack.fullAttackActions);
+          RPG_Engine_Common_Tools::numCompatibleMonsterAttackActions (attackForm,
+                                                                      monster_properties.attack.fullAttackActions);
       if (monster_properties.attack.fullAttackActions.empty () ||
           (numberOfPossibleAttackActions == 0))
         goto init_monster_standard_actions;
@@ -1380,8 +1372,8 @@ is_player_miss:
             monster_properties.attack.fullAttackActions.begin ();
         do
         {
-          if (isCompatibleMonsterAttackAction (attackForm,
-                                               *iterator2))
+          if (RPG_Engine_Common_Tools::isCompatibleMonsterAttackAction (attackForm,
+                                                                        *iterator2))
             numberOfPossibleSets++;
 
           // skip over other attacks in this set...
@@ -1402,8 +1394,8 @@ is_player_miss:
         do
         {
           // is this a possible set ?
-          if (isCompatibleMonsterAttackAction (attackForm,
-                                               *attack_iterator))
+          if (RPG_Engine_Common_Tools::isCompatibleMonsterAttackAction (attackForm,
+                                                                        *attack_iterator))
           {
             // maybe we have found our set...
             if (possibleIndex == randomPossibleIndex)
@@ -1425,8 +1417,8 @@ is_player_miss:
 init_monster_standard_actions:
     // sanity check
     numberOfPossibleAttackActions =
-        numCompatibleMonsterAttackActions (attackForm,
-                                           monster_properties.attack.standardAttackActions);
+        RPG_Engine_Common_Tools::numCompatibleMonsterAttackActions (attackForm,
+                                                                    monster_properties.attack.standardAttackActions);
     if (monster_properties.attack.standardAttackActions.empty () ||
         (numberOfPossibleAttackActions == 0))
       goto init_monster_special_attack;
@@ -1445,9 +1437,9 @@ init_monster_standard_actions:
       possibleIndex = 0;
       do
       {
-          // is this a possible set ?
-        if (isCompatibleMonsterAttackAction (attackForm,
-                                             *attack_iterator))
+        // is this a possible set ?
+        if (RPG_Engine_Common_Tools::isCompatibleMonsterAttackAction (attackForm,
+                                                                      *attack_iterator))
         {
             // maybe we have found our action...
           if (possibleIndex == randomPossibleIndex)
@@ -1471,8 +1463,8 @@ init_monster_special_attack:
          iterator2 != monster_properties.specialAttacks.end ();
          iterator2++)
     {
-      if (isCompatibleMonsterAttackAction (attackForm,
-                                           (*iterator2).action))
+      if (RPG_Engine_Common_Tools::isCompatibleMonsterAttackAction (attackForm,
+                                                                    (*iterator2).action))
         numberOfPossibleAttackActions++;
     } // end FOR
     if (numberOfPossibleAttackActions == 0)
@@ -1494,8 +1486,8 @@ init_monster_special_attack:
     do
     {
       // is this a possible set ?
-      if (isCompatibleMonsterAttackAction (attackForm,
-                                           (*special_iterator).action))
+      if (RPG_Engine_Common_Tools::isCompatibleMonsterAttackAction (attackForm,
+                                                                    (*special_iterator).action))
       {
         // found action ?
         if (possibleIndex == randomPossibleIndex)
@@ -1709,11 +1701,11 @@ monster_advance_attack_iterator:
 }
 
 unsigned int
-RPG_Engine_Common_Tools::partyToACL(const RPG_Player_Party_t& party_in)
+RPG_Engine_Common_Tools::partyToACL (const RPG_Player_Party_t& party_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Engine_Common_Tools::party2ACL"));
+  RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::partyToACL"));
 
-  // init return value(s)
+  // initialize return value(s)
   unsigned int return_value = 0;
 
   for (RPG_Player_PartyConstIterator_t iterator = party_in.begin ();
@@ -1773,7 +1765,7 @@ RPG_Engine_Common_Tools::combatToXP (const std::string& type_in,
 void
 RPG_Engine_Common_Tools::initializeCRToExperienceMap ()
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::initCR2ExperienceMap"));
+  RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::initializeCRToExperienceMap"));
 
   myCRToExperienceMap.clear ();
 

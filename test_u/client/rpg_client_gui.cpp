@@ -1226,16 +1226,19 @@ do_work (struct RPG_Client_Configuration& configuration_in,
     sdl_event.type = SDL_FIRSTEVENT;
 #endif // SDL_USE || SDL2_USE
     window = NULL;
+
     client_action.command = RPG_CLIENT_COMMAND_INVALID;
-    client_action.position = std::make_pair (std::numeric_limits<int>::max (),
-                                             std::numeric_limits<int>::max ());
+    client_action.position = std::make_pair (std::numeric_limits<unsigned int>::max (),
+                                             std::numeric_limits<unsigned int>::max ());
     client_action.window = NULL;
     client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
     client_action.entity_id = 0;
     client_action.path.clear ();
+
     mouse_position = std::make_pair (std::numeric_limits<unsigned int>::max (),
                                      std::numeric_limits<unsigned int>::max ());
-    ACE_OS::memset (&dirty_region, 0, sizeof (SDL_Rect));
+
+    ACE_OS::memset (&dirty_region, 0, sizeof (struct SDL_Rect));
 
     // step6a: get next pending event
 //     if (SDL_PollEvent(&event) == -1)
@@ -1243,7 +1246,6 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 //       ACE_DEBUG((LM_ERROR,
 //                  ACE_TEXT("failed to SDL_PollEvent(): \"%s\", aborting\n"),
 //                  SDL_GetError()));
-//
 //       break;
 //     } // end IF
     if (SDL_WaitEvent (&sdl_event) == 0)
@@ -1521,16 +1523,15 @@ continue_:;
       default:
       {
         ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("unknown/invalid SDL event type (was: %d: 0x%x), continuing\n"),
+                    ACE_TEXT ("unknown/invalid SDL event type (was: %u: 0x%x), continuing\n"),
                     sdl_event.type, sdl_event.type));
         break;
       }
     } // end SWITCH
 
     // update screen ?
-    if ((dirty_region.w != 0) ||
-        (dirty_region.h != 0))
-    {
+    if ((dirty_region.w != 0) || (dirty_region.h != 0))
+    { ACE_ASSERT (window);
       client_action.command = COMMAND_WINDOW_REFRESH;
       client_action.window = window;
       client_engine.action (client_action);
@@ -1543,8 +1544,7 @@ continue_:;
       case SDL_MOUSEBUTTONDOWN:
       {
         // map hasn't changed --> no need to redraw
-        if ((dirty_region.w == 0) &&
-            (dirty_region.h == 0))
+        if ((dirty_region.w == 0) && (dirty_region.h == 0))
           break;
 
         // *WARNING*: falls through !
@@ -1557,29 +1557,21 @@ continue_:;
           break; // nothing to do...
 
         // map has changed, cursor MAY have been drawn over...
-        // --> redraw cursor
-        client_action.command = COMMAND_CURSOR_DRAW;
-        client_action.position = mouse_position;
-        client_action.window = window;
-        client_engine.action (client_action);
+        // --> redraw cursor ?
+        if ((sdl_event.type == SDL_MOUSEMOTION) ||
+            (dirty_region.w != 0) || (dirty_region.h != 0))
+        {
+          client_action.command = COMMAND_CURSOR_DRAW;
+          client_action.position = mouse_position;
+          client_action.window = window;
+          client_engine.action (client_action);
+        } // end IF
 
         break;
       }
       default:
         break;
     } // end SWITCH
-
-//     // enforce fixed FPS
-//     SDL_framerateDelay(&fps_manager);
-//     if (refresh_screen)
-//     {
-//       try {
-//         map_window.refresh(NULL);
-//       } catch (...) {
-//         ACE_DEBUG((LM_ERROR,
-//                    ACE_TEXT("caught exception in RPG_Graphics_IWindow::refresh(), continuing\n")));
-//       }
-//     } // end IF
   } while (!done);
 
   ACE_DEBUG ((LM_DEBUG,

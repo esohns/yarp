@@ -102,7 +102,7 @@ class RPG_Client_Engine
                    bool = false);             // debug ?
   void action (const RPG_Client_Action&); // action
 
-  inline void mode (const enum RPG_Client_SelectionMode mode_in) { selectionMode_ = mode_in; }
+  inline void mode (enum RPG_Client_SelectionMode mode_in) { selectionMode_ = mode_in; }
   inline void clear () { selectionMode_ = SELECTIONMODE_NORMAL; }
   inline enum RPG_Client_SelectionMode mode () const { return selectionMode_; }
 

@@ -2692,7 +2692,7 @@ RPG_Engine::handleEntities ()
     try {
       client_->notify ((*iterator).first,
                        (*iterator).second,
-                       true);
+                       true); // locked access ?
     } catch (...) {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
@@ -2703,9 +2703,9 @@ RPG_Engine::handleEntities ()
   // remove entity ?
   if (remove_id)
   {
-    RPG_Engine_EntityID_t active_entity_id = RPG_Engine::getActive (true); // locked access ?
+    RPG_Engine_EntityID_t active_entity_id = getActive (true); // locked access ?
 
-    RPG_Engine::remove (remove_id);
+    remove (remove_id);
 
     // has active entity left the game ?
     if (remove_id == active_entity_id)

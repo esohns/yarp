@@ -168,8 +168,8 @@ RPG_Graphics_HotSpot::draw (SDL_Surface* targetSurface_in,
 #endif // SDL_USE || SDL2_USE
   ACE_ASSERT (surface_p);
   // sanity check(s)
-  SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : surface_p);
+  SDL_Surface* target_surface =
+    (targetSurface_in ? targetSurface_in : surface_p);
   ACE_ASSERT (target_surface);
   ACE_UNUSED_ARG (offsetX_in);
   ACE_UNUSED_ARG (offsetY_in);

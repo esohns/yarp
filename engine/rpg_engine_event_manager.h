@@ -30,7 +30,6 @@
 #include "ace/Synch_Traits.h"
 
 #include "common.h"
-//#include "common_icontrol.h"
 #include "common_idumpstate.h"
 
 #include "common_time_common.h"
@@ -38,14 +37,10 @@
 
 #include "rpg_engine_common.h"
 #include "rpg_engine_event_common.h"
-#include "rpg_engine_exports.h"
 
 // forward declaration(s)
 class RPG_Engine;
 
-/**
-  @author Erik Sohns <erik.sohns@web.de>
- */
 class RPG_Engine_Event_Manager
  : public ACE_Task_Ex<ACE_MT_SYNCH,
                       struct RPG_Engine_Event,

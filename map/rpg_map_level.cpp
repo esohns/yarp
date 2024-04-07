@@ -309,9 +309,15 @@ RPG_Map_Level::print (const struct RPG_Map& map_in)
   RPG_TRACE (ACE_TEXT ("RPG_Map_Level::print"));
 
   std::string map_string = RPG_Map_Level::info (map_in);
-  std::cout << map_string;
+  ACE_DEBUG ((LM_INFO,
+              ACE_TEXT ("%s\n"),
+              ACE_TEXT (map_string.c_str ())));
+  //std::cout << map_string;
   map_string = RPG_Map_Level::string (map_in);
-  std::cout << map_string << std::endl;
+  ACE_DEBUG ((LM_INFO,
+              ACE_TEXT ("%s\n"),
+              ACE_TEXT (map_string.c_str ())));
+  //std::cout << map_string << std::endl;
 }
 
 std::string
@@ -648,38 +654,6 @@ RPG_Map_Level::dump_state () const
   RPG_Map_Level::print (myMap);
 }
 
-RPG_Map_Position_t
-RPG_Map_Level::getStartPosition () const
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Map_Level::getStartPosition"));
-
-  return myMap.start;
-}
-
-RPG_Map_Positions_t
-RPG_Map_Level::getSeedPoints () const
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Map_Level::getSeedPoints"));
-
-  return myMap.seeds;
-}
-
-struct RPG_Map_FloorPlan
-RPG_Map_Level::getFloorPlan () const
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Map_Level::getFloorPlan"));
-
-  return myMap.plan;
-}
-
-RPG_Map_Size_t
-RPG_Map_Level::getSize() const
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Map_Level::getSize"));
-
-  return std::make_pair (myMap.plan.size_x, myMap.plan.size_y);
-}
-
 bool
 RPG_Map_Level::isValid (const RPG_Map_Position_t& position_in) const
 {
@@ -693,7 +667,7 @@ RPG_Map_Level::isValid (const RPG_Map_Position_t& position_in) const
       return true;
     case MAPELEMENT_DOOR:
     {
-      door_state = state (position_in);
+      door_state = RPG_Map_Level::state (position_in);
 
       return ((door_state == DOORSTATE_OPEN) ||
               (door_state == DOORSTATE_BROKEN));
@@ -720,38 +694,27 @@ RPG_Map_Level::isCorner (const RPG_Map_Position_t& position_in) const
   south = position_in;
   south.second++;
 
-  return ((((getElement (west) == MAPELEMENT_FLOOR) ||
-            (getElement (west) == MAPELEMENT_DOOR)) &&
-           ((getElement (south) == MAPELEMENT_FLOOR) ||
-            (getElement (south) == MAPELEMENT_DOOR)) &&
-           ((getElement (north) == MAPELEMENT_UNMAPPED) ||
-            (getElement (north) == MAPELEMENT_WALL)) &&
-           ((getElement (east) == MAPELEMENT_UNMAPPED) ||
-            (getElement (east) == MAPELEMENT_WALL))) || // SW
-          (((getElement (east) == MAPELEMENT_FLOOR) ||
-            (getElement (east) == MAPELEMENT_DOOR)) &&
-           ((getElement (south) == MAPELEMENT_FLOOR) ||
-            (getElement (south) == MAPELEMENT_DOOR)) &&
-           ((getElement (north) == MAPELEMENT_UNMAPPED) ||
-            (getElement (north) == MAPELEMENT_WALL)) &&
-           ((getElement (west) == MAPELEMENT_UNMAPPED) ||
-            (getElement (west) == MAPELEMENT_WALL))) || // SE
-          (((getElement (west) == MAPELEMENT_FLOOR) ||
-            (getElement (west) == MAPELEMENT_DOOR)) &&
-           ((getElement (north) == MAPELEMENT_FLOOR) ||
-            (getElement (north) == MAPELEMENT_DOOR)) &&
-           ((getElement (south) == MAPELEMENT_UNMAPPED) ||
-            (getElement (south) == MAPELEMENT_WALL)) &&
-           ((getElement (east) == MAPELEMENT_UNMAPPED) ||
-            (getElement (east) == MAPELEMENT_WALL))) || // NW
-          (((getElement (east) == MAPELEMENT_FLOOR) ||
-            (getElement (east) == MAPELEMENT_DOOR)) &&
-           ((getElement (north) == MAPELEMENT_FLOOR) ||
-            (getElement (north) == MAPELEMENT_DOOR)) &&
-           ((getElement (south) == MAPELEMENT_UNMAPPED) ||
-            (getElement (south) == MAPELEMENT_WALL)) &&
-           ((getElement (west) == MAPELEMENT_UNMAPPED) ||
-            (getElement (west) == MAPELEMENT_WALL)))); // NE
+  enum RPG_Map_Element west_element = RPG_Map_Level::getElement (west);
+  enum RPG_Map_Element south_element = RPG_Map_Level::getElement (south);
+  enum RPG_Map_Element north_element = RPG_Map_Level::getElement (north);
+  enum RPG_Map_Element east_element = RPG_Map_Level::getElement (east);
+
+  return ((((west_element == MAPELEMENT_FLOOR)  || (west_element == MAPELEMENT_DOOR)) &&
+           ((south_element == MAPELEMENT_FLOOR) || (south_element == MAPELEMENT_DOOR)) &&
+           ((north_element == MAPELEMENT_UNMAPPED) || (north_element == MAPELEMENT_WALL)) &&
+           ((east_element == MAPELEMENT_UNMAPPED) || (east_element == MAPELEMENT_WALL))) || // SW
+          (((east_element == MAPELEMENT_FLOOR) || (east_element == MAPELEMENT_DOOR)) &&
+           ((south_element == MAPELEMENT_FLOOR) || (south_element == MAPELEMENT_DOOR)) &&
+           ((north_element == MAPELEMENT_UNMAPPED) || (north_element == MAPELEMENT_WALL)) &&
+           ((west_element == MAPELEMENT_UNMAPPED) || (west_element == MAPELEMENT_WALL))) || // SE
+          (((west_element == MAPELEMENT_FLOOR) || (west_element == MAPELEMENT_DOOR)) &&
+           ((north_element == MAPELEMENT_FLOOR) || (north_element == MAPELEMENT_DOOR)) &&
+           ((south_element == MAPELEMENT_UNMAPPED) || (south_element == MAPELEMENT_WALL)) &&
+           ((east_element == MAPELEMENT_UNMAPPED) || (east_element == MAPELEMENT_WALL))) || // NW
+          (((east_element == MAPELEMENT_FLOOR) || (east_element == MAPELEMENT_DOOR)) &&
+           ((north_element == MAPELEMENT_FLOOR) || (north_element == MAPELEMENT_DOOR)) &&
+           ((south_element == MAPELEMENT_UNMAPPED) || (south_element == MAPELEMENT_WALL)) &&
+           ((west_element == MAPELEMENT_UNMAPPED) || (west_element == MAPELEMENT_WALL)))); // NE
 }
 
 enum RPG_Map_Element
@@ -760,6 +723,7 @@ RPG_Map_Level::getElement (const RPG_Map_Position_t& position_in) const
   RPG_TRACE (ACE_TEXT ("RPG_Map_Level::getElement"));
 
   // sanity check(s)
+  //ACE_ASSERT ((position_in.first != std::numeric_limits<unsigned int>::max ()) && (position_in.second != std::numeric_limits<unsigned int>::max ()));
   if ((position_in.first  == std::numeric_limits<unsigned int>::max ()) ||
       (position_in.second == std::numeric_limits<unsigned int>::max ()))
     return MAPELEMENT_INVALID;
@@ -837,8 +801,8 @@ RPG_Map_Level::findPath (const RPG_Map_Position_t& start_in,
   if (start_in == end_in)
     return true;
 
-  RPG_Map_Pathfinding_Tools::findPath (getSize (),
-                                       getObstacles (), // walls & closed doors
+  RPG_Map_Pathfinding_Tools::findPath (RPG_Map_Level::getSize (),
+                                       RPG_Map_Level::getObstacles (), // walls & closed doors
                                        start_in,
                                        RPG_MAP_DIRECTION_INVALID,
                                        end_in,
@@ -862,9 +826,9 @@ RPG_Map_Level::findValid (const RPG_Map_Position_t& center_in,
   // step1: compute square perimeter
   //RPG_Map_Positions_t square;
   RPG_Map_Common_Tools::buildSquare (center_in,
-                                     getSize (),
+                                     RPG_Map_Level::getSize (),
                                      radius_in,
-                                     true,
+                                     true, // fill area ?
                                      area_out);
 
   // step2: remove invalid (== blocked) positions
@@ -884,7 +848,7 @@ RPG_Map_Level::findValid (const RPG_Map_Position_t& center_in,
   for (RPG_Map_PositionsIterator_t iterator = area_out.begin ();
        iterator != area_out.end ();
        )
-    if (isValid (*iterator))
+    if (RPG_Map_Level::isValid (*iterator))
       iterator++;
     else
       area_out.erase (iterator++);
