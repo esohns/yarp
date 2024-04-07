@@ -869,8 +869,7 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
   // step1: draw borders
   clip_rect.x = static_cast<int16_t> (offsetX_in + borderLeft_);
   clip_rect.y = static_cast<int16_t> (offsetY_in);
-  clip_rect.w = static_cast<uint16_t> (target_surface->w -
-                                       (borderLeft_ + borderRight_));
+  clip_rect.w = static_cast<uint16_t> (target_surface->w - (borderLeft_ + borderRight_));
   clip_rect.h = static_cast<uint16_t> (borderTop_);
   if (!SDL_SetClipRect (target_surface, &clip_rect))
   {
@@ -894,8 +893,7 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
   clip_rect.x = static_cast<int16_t> (offsetX_in);
   clip_rect.y = static_cast<int16_t> (offsetY_in + borderTop_);
   clip_rect.w = static_cast<uint16_t> (borderLeft_);
-  clip_rect.h = static_cast<uint16_t> (target_surface->h -
-                                       (borderTop_ + borderBottom_));
+  clip_rect.h = static_cast<uint16_t> (target_surface->h - (borderTop_ + borderBottom_));
   if (!SDL_SetClipRect (target_surface, &clip_rect))
   {
     ACE_DEBUG ((LM_ERROR,

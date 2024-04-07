@@ -42,11 +42,10 @@ RPG_Client_Window_MiniMap::RPG_Client_Window_MiniMap (const RPG_Graphics_SDLWind
                                                       // *NOTE*: offset doesn't include any border(s) !
                                                       const RPG_Graphics_Offset_t& offset_in,
                                                       bool debug_in)
- : inherited (WINDOW_MINIMAP, // type
-              parent_in,      // parent
-              offset_in,      // offset
-              std::string())  // title
-//              NULL),          // background
+ : inherited (WINDOW_MINIMAP,            // type
+              parent_in,                 // parent
+              offset_in,                 // offset
+              ACE_TEXT_ALWAYS_CHAR ("")) // title
  , myClient (NULL)
  , myEngine (NULL)
  , myDebug (debug_in)
@@ -196,13 +195,10 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
                   ACE_TEXT (SDL_GetError ())));
       return;
     } // end IF
-  RPG_Graphics_Surface::put (std::make_pair (0, 0),
-                             *myBG,
-                             target_surface,
-                             dirty_region);
-
-  // invalidate dirty region
-  invalidate (dirty_region);
+  //RPG_Graphics_Surface::put (std::make_pair (0, 0),
+  //                           *myBG,
+  //                           mySurface,
+  //                           dirty_region);
 
   RPG_Map_Position_t map_position;
   enum RPG_Client_MiniMapTile tile;

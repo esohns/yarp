@@ -475,8 +475,11 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
           dynamic_cast<RPG_Client_IWindowLevel*> (window_);
       ACE_ASSERT (window_p);
 
+      if (lockedAccess_in)
+        engine_->lock ();
+
       RPG_Engine_EntityID_t active_entity_id =
-        engine_->getActive (lockedAccess_in);
+        engine_->getActive (false); // locked access ?
       if (parameters_in.entity_id == active_entity_id)
       {
         if (centerOnActivePlayer_)
@@ -531,7 +534,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
           (active_entity_id &&
            engine_->canSee (active_entity_id,
                             client_action.position,
-                            lockedAccess_in)); // locked access ?
+                            false)); // locked access ?
         if (active_entity_can_see_position)
         {
           client_action.command = COMMAND_WINDOW_UPDATE_MINIMAP;
@@ -556,7 +559,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
           if ((active_entity_id &&
                engine_->canSee (active_entity_id,
                                 parameters_in.entity_id,
-                                lockedAccess_in)) ||
+                                false)) || // locked access ?
               debug_)
             client_action.command = COMMAND_ENTITY_DRAW;
           else
@@ -577,7 +580,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
             if (active_entity_id &&
                 engine_->canSee (active_entity_id,
                                  parameters_in.previous_position,
-                                 lockedAccess_in))
+                                 false)) // locked access ?
               client_action.command = COMMAND_ENTITY_REMOVE;
             else
               do_action = false;
@@ -586,6 +589,9 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
             do_action = false;
         } // end ELSE
       } // end ELSE
+
+      if (lockedAccess_in)
+        engine_->unlock ();
 
       break;
     }
@@ -1247,8 +1253,8 @@ next:
 
       // step1: init/(re)draw window
       engine_->lock ();
-      RPG_Map_Position_t center = engine_->getSize (false);
-      setStyle (RPG_Client_Common_Tools::environmentToStyle (engine_->getMetaData (false).environment));
+      RPG_Map_Position_t center = engine_->getSize (false); // locked access ?
+      setStyle (RPG_Client_Common_Tools::environmentToStyle (engine_->getMetaData (false).environment)); // locked access ?
       engine_->unlock ();
       center.first >>= 1; center.second >>= 1;
       try {

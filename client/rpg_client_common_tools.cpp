@@ -86,10 +86,12 @@ RPG_Client_Common_Tools::initializeSDLInput (const struct RPG_Client_SDL_InputCo
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Common_Tools::initializeSDLInput"));
 
+  int previous_state;
+
   // ***** keyboard setup *****
   // Unicode translation
 #if defined (SDL_USE)
-  int previous_state =
+  previous_state =
     SDL_EnableUNICODE (SDLInputConfiguration_in.use_UNICODE ? 1 : 0);
   ACE_UNUSED_ARG (previous_state);
 #endif // SDL_USE
@@ -114,16 +116,22 @@ RPG_Client_Common_Tools::initializeSDLInput (const struct RPG_Client_SDL_InputCo
   //   SDL_SetEventFilter(event_filter_SDL_cb);
 
   // ***** mouse setup *****
-  int show_cursor_status_before = SDL_ShowCursor (SDL_QUERY);
-  if (show_cursor_status_before < 0)
+  previous_state = SDL_ShowCursor (SDL_QUERY);
+  if (previous_state < 0)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to SDL_ShowCursor(): \"%s\", aborting\n"),
+                ACE_TEXT ("failed to SDL_ShowCursor(SDL_QUERY): \"%s\", aborting\n"),
                 ACE_TEXT (SDL_GetError ())));
     return false;
   } // end IF
-  if (show_cursor_status_before == SDL_ENABLE)
-    SDL_ShowCursor (SDL_DISABLE); // disable OS mouse cursor over SDL window
+  if (previous_state == SDL_ENABLE)
+  {
+    int result = SDL_ShowCursor (SDL_DISABLE); // disable OS mouse cursor over SDL window
+    if (result < 0)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_ShowCursor(SDL_DISABLE): \"%s\", continuing\n"),
+                  ACE_TEXT (SDL_GetError ())));
+  } // end IF
 
   return true;
 }
@@ -1024,10 +1032,9 @@ RPG_Client_Common_Tools::mapToGraphicsPositions (const RPG_Map_Positions_t& posi
 
   RPG_Graphics_Positions_t result;
 
-  for (RPG_Map_PositionsConstIterator_t iterator = positions_in.begin ();
-       iterator != positions_in.end ();
-       ++iterator)
-    result.push_back (*iterator);
+  result.insert (result.begin (),
+                 positions_in.begin (),
+                 positions_in.end ());
 
   return result;
 }
