@@ -326,7 +326,7 @@ RPG_Client_Window_Level::showMiniMap () const
 
   bool result = false;
 
-  { ACE_GUARD_RETURN (ACE_Thread_Mutex, aGuard, myLock, myDrawMinimap);
+  { ACE_GUARD_RETURN (ACE_Thread_Mutex, aGuard, myLock, false); // *TODO*: avoid false negative
     result = myDrawMinimap;
   } // end lock scope
 

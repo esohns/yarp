@@ -89,7 +89,8 @@ class RPG_Engine
   // *WARNING*: fire&forget API, added NPC (!) entities are controlled by the engine
   RPG_Engine_EntityID_t add (struct RPG_Engine_Entity*, // entity handle
                              bool = true);         // locked access ?
-  void remove (RPG_Engine_EntityID_t); // id
+  void remove (RPG_Engine_EntityID_t, // id
+               bool = true);          // locked access ?
   bool exists (RPG_Engine_EntityID_t) const; // id
   void action (RPG_Engine_EntityID_t,           // id
                const struct RPG_Engine_Action&, // action
@@ -186,8 +187,8 @@ class RPG_Engine
   virtual int svc (void);
 
   // helper methods
-  // *NOTE*: requires myLock to be held !
-  bool isBlocked (const RPG_Map_Position_t&) const;
+  bool isBlocked (const RPG_Map_Position_t&, // position
+                  bool = true) const;        // locked access ?
 
   // helper classes
   struct distance_sort

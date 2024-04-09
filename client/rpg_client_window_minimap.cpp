@@ -195,10 +195,10 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
                   ACE_TEXT (SDL_GetError ())));
       return;
     } // end IF
-  //RPG_Graphics_Surface::put (std::make_pair (0, 0),
-  //                           *myBG,
-  //                           mySurface,
-  //                           dirty_region);
+  RPG_Graphics_Surface::put (std::make_pair (0, 0),
+                             *myBG,
+                             target_surface,
+                             dirty_region);
 
   RPG_Map_Position_t map_position;
   enum RPG_Client_MiniMapTile tile;

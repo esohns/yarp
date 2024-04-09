@@ -252,20 +252,12 @@ RPG_Engine_Event_Manager::remove (RPG_Engine_EntityID_t id_in)
   { ACE_GUARD (ACE_Thread_Mutex, aGuard, myLock);
     RPG_Engine_EntityTimersConstIterator_t iterator = myEntityTimers.find (id_in);
     ACE_ASSERT (iterator != myEntityTimers.end ());
-    //if (iterator == myEntityTimers.end ())
-    //{
-    //  ACE_DEBUG ((LM_ERROR,
-    //              ACE_TEXT ("invalid entity ID (was: %u), returning\n"),
-    //              id_in));
-    //  return;
-    //} // end IF
     timer_id = (*iterator).second;
-
-    myEntityTimers.erase (id_in);
+    myEntityTimers.erase (iterator);
   } // end lock scope
 
   // cancel corresponding activation timer
-  ACE_ASSERT (timer_id != -1);
+  ACE_ASSERT (timer_id > 0);
   cancel (timer_id);
 
   ACE_DEBUG ((LM_DEBUG,
@@ -317,7 +309,7 @@ RPG_Engine_Event_Manager::start ()
   if (isRunning ())
     return;
 
-  // init game clock
+  // initialize game clock
   myGameClockStart = COMMON_TIME_POLICY ();
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("started game clock: \"%#D\"\n"),
@@ -473,6 +465,17 @@ RPG_Engine_Event_Manager::stop (bool lockedAccess_in)
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("(%s) worker thread(s) has/have joined...\n"),
               ACE_TEXT (RPG_ENGINE_AI_TASK_THREAD_NAME)));
+
+  // clean up
+  { ACE_GUARD (ACE_Thread_Mutex, aGuard, myLock);
+    myEntityTimers.clear ();
+
+    for (RPG_Engine_EventTimersConstIterator_t iterator = myTimers.begin ();
+         iterator != myTimers.end ();
+         iterator++)
+      delete (*iterator).second;
+    myTimers.clear ();
+  } // end lock scope
 }
 
 void
@@ -506,24 +509,26 @@ RPG_Engine_Event_Manager::schedule (struct RPG_Engine_Event*& event_inout,
   ACE_ASSERT (event_inout);
   ACE_ASSERT (interval_in != ACE_Time_Value::zero);
 
-  ACE_GUARD_RETURN (ACE_Thread_Mutex, aGuard, myLock, -1); // *TODO*: failure case leaks event_inout
+  long timer_id = -1;
+  // *IMPORTANT NOTE*: grab the lock BEFORE the event can fire
+  { ACE_GUARD_RETURN (ACE_Thread_Mutex, aGuard, myLock, -1); // *TODO*: failure case leaks event_inout
+    timer_id =
+      COMMON_TIMERMANAGER_SINGLETON::instance ()->schedule_timer (this,                                                 // event handler handle
+                                                                  event_inout,                                          // ACT
+                                                                  COMMON_TIME_POLICY () + interval_in,                  // first wakeup time
+                                                                  (isOneShot_in ? ACE_Time_Value::zero : interval_in)); // interval
+    if (timer_id == -1)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to schedule timer, aborting\n")));
+      delete event_inout; event_inout = NULL;
+      return -1;
+    } // end IF
+    event_inout->timer_id = timer_id;
 
-  long timer_id =
-    COMMON_TIMERMANAGER_SINGLETON::instance ()->schedule_timer (this,                                                 // event handler handle
-                                                                event_inout,                                          // ACT
-                                                                COMMON_TIME_POLICY () + interval_in,                  // first wakeup time
-                                                                (isOneShot_in ? ACE_Time_Value::zero : interval_in)); // interval
-  if (timer_id == -1)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to schedule timer, aborting\n")));
-    delete event_inout; event_inout = NULL;
-    return -1;
-  } // end IF
-  event_inout->timer_id = timer_id;
-
-  ACE_ASSERT (myTimers.find (timer_id) == myTimers.end ());
-  myTimers[timer_id] = event_inout;
+    ACE_ASSERT (myTimers.find (timer_id) == myTimers.end ());
+    myTimers[timer_id] = event_inout;
+  } // end lock scope
   event_inout = NULL;
 
   return timer_id;
@@ -535,9 +540,9 @@ RPG_Engine_Event_Manager::cancel (long id_in)
   RPG_TRACE (ACE_TEXT ("RPG_Engine_Event_Manager::cancel"));
 
   const void* act_p = NULL;
-  if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel_timer (id_in,
-                                                                &act_p) <= 0)
-    ACE_DEBUG ((LM_DEBUG,
+  if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (id_in,
+                                                          &act_p) <= 0)
+    ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                 id_in));
   else
@@ -551,20 +556,9 @@ RPG_Engine_Event_Manager::cancel (long id_in)
   { ACE_GUARD (ACE_Thread_Mutex, aGuard, myLock);
     RPG_Engine_EventTimersConstIterator_t iterator = myTimers.find (id_in);
     ACE_ASSERT (iterator != myTimers.end ());
-    //if (iterator == myTimers.end ()) // <-- *TODO*
-    //{
-    //  ACE_DEBUG ((LM_ERROR,
-    //              ACE_TEXT ("invalid timer id (was: %d), returning\n"),
-    //              id_in));
-    //  return;
-    //} // end IF
-
-    if (act_p)
-    {
-      ACE_ASSERT (act_p == (*iterator).second);
-    } // end IF
-    delete (*iterator).second;
-    myTimers.erase (id_in);
+    ACE_ASSERT (act_p == (*iterator).second);
+    // *WARNING*: cannot free event here (it may be in use)
+    (*iterator).second->free = true;
   } // end lock scope
 }
 
@@ -575,26 +569,29 @@ RPG_Engine_Event_Manager::cancel_all ()
 
   const void* act_p = NULL;
 
-  ACE_GUARD (ACE_Thread_Mutex, aGuard, myLock);
-  for (RPG_Engine_EventTimersConstIterator_t iterator = myTimers.begin ();
-       iterator != myTimers.end ();
-       iterator++)
-  {
-    act_p = NULL;
-    if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel ((*iterator).first,
-                                                            &act_p) <= 0)
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
-                  (*iterator).first));
-    else
-      ACE_DEBUG ((LM_DEBUG,
-                  ACE_TEXT ("cancelled timer (ID: %d)...\n"),
-                  (*iterator).first));
-    ACE_ASSERT (act_p == (*iterator).second);
-    delete (*iterator).second;
-  } // end IF
+  { ACE_GUARD (ACE_Thread_Mutex, aGuard, myLock);
+    for (RPG_Engine_EventTimersConstIterator_t iterator = myTimers.begin ();
+         iterator != myTimers.end ();
+         iterator++)
+    { // sanity check(s)
+      if ((*iterator).second->free) // already cancelled ?
+        continue;
 
-  myTimers.clear ();
+      act_p = NULL;
+      if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel ((*iterator).first,
+                                                              &act_p) <= 0)
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
+                    (*iterator).first));
+      else
+        ACE_DEBUG ((LM_DEBUG,
+                    ACE_TEXT ("cancelled timer (ID: %d)...\n"),
+                    (*iterator).first));
+      ACE_ASSERT (act_p == (*iterator).second);
+      // *WARNING*: cannot free event here (it may be in use)
+      (*iterator).second->free = true;
+    } // end IF
+  } // end lock scope
 }
 
 void
@@ -617,7 +614,7 @@ RPG_Engine_Event_Manager::handleEvent (const struct RPG_Engine_Event& event_in)
       myEngine->lock ();
       // step1: check pending action (if any)
       RPG_Engine_EntitiesIterator_t iterator =
-          myEngine->entities_.find (event_in.entity_id);
+        myEngine->entities_.find (event_in.entity_id);
       if (iterator == myEngine->entities_.end ())
       {
         ACE_DEBUG ((LM_ERROR,
@@ -630,8 +627,9 @@ RPG_Engine_Event_Manager::handleEvent (const struct RPG_Engine_Event& event_in)
       // idle monster ? --> choose strategy
       if (!(*iterator).second->character->isPlayerCharacter ())
       {
-        bool is_idle = ((*iterator).second->actions.empty () ||
-                        ((*iterator).second->actions.front ().command == COMMAND_IDLE));
+        bool is_idle =
+          ((*iterator).second->actions.empty () ||
+           ((*iterator).second->actions.front ().command == COMMAND_IDLE));
         if (is_idle)
         {
           // step1: sort targets by distance
@@ -1016,15 +1014,7 @@ RPG_Engine_Event_Manager::handleEvent (const struct RPG_Engine_Event& event_in)
   { ACE_GUARD (ACE_Thread_Mutex, aGuard, myLock);
     RPG_Engine_EventTimersConstIterator_t iterator = myTimers.find (event_in.timer_id);
     ACE_ASSERT (iterator != myTimers.end ());
-    //if (iterator == myTimers.end ())
-    //{
-    //  ACE_DEBUG ((LM_ERROR,
-    //              ACE_TEXT ("invalid timer id (was: %d), returning\n"),
-    //              event_in.timer_id));
-    //  return;
-    //} // end IF
-
-    delete (*iterator).second;
+    delete (*iterator).second; // free one-shot events here
     myTimers.erase ((*iterator).first);
   } // end IF | lock scope
 }

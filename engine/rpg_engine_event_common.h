@@ -37,14 +37,16 @@ enum RPG_Engine_EventType
 struct RPG_Engine_Event
 {
  RPG_Engine_Event ()
-  : type (RPG_ENGINE_EVENT_INVALID),
-    entity_id (-1),
-    timer_id (0)
+  : type (RPG_ENGINE_EVENT_INVALID)
+  , entity_id (0)
+  , timer_id (-1)
+  , free (false)
  {}
 
   enum RPG_Engine_EventType type;
   RPG_Engine_EntityID_t     entity_id;
-	long                      timer_id;
+  long                      timer_id;
+  bool                      free; // clean up ASAP ?
 };
 
 #endif

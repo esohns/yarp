@@ -325,7 +325,8 @@ RPG_Graphics_SDLWindowBase::show (struct SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::show"));
 
-  draw ();
+  draw (NULL,
+        0, 0);
 
   dirtyRegion_out = clipRectangle_;
 }
@@ -335,7 +336,8 @@ RPG_Graphics_SDLWindowBase::hide (struct SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::hide"));
 
-  clear ();
+  clear (COLOR_BLACK,
+         true); // clip ?
 
   dirtyRegion_out = clipRectangle_;
 }
@@ -359,7 +361,8 @@ RPG_Graphics_SDLWindowBase::clear (enum RPG_Graphics_ColorName color_in,
   SDL_Rect dstrect = clipRectangle_;
 
   if (clip_in)
-    clip ();
+    clip (NULL,
+          0, 0);
 
   if (screenLock_)
     screenLock_->lock ();
@@ -802,7 +805,7 @@ RPG_Graphics_SDLWindowBase::clip (SDL_Surface* targetSurface_in,
                                                     : surface_p);
   ACE_ASSERT (target_surface_p);
 
-	SDL_Rect clip_rectangle = clipRectangle_;
+	struct SDL_Rect clip_rectangle = clipRectangle_;
 
   // retain previous clip rectangle
   SDL_GetClipRect (target_surface_p, &clipRectangle_);

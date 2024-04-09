@@ -362,7 +362,7 @@ RPG_Engine::start ()
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance ()->start ();
   // ...auto-spawn (roaming) monsters ?
   if ((inherited2::myMetaData.max_num_spawned > 0) &&
-      !inherited2::myMetaData.spawns.empty())
+      !inherited2::myMetaData.spawns.empty ())
     for (RPG_Engine_SpawnsIterator_t iterator = inherited2::myMetaData.spawns.begin ();
          iterator != inherited2::myMetaData.spawns.end ();
          iterator++)
@@ -409,7 +409,7 @@ RPG_Engine::stop (bool lockedAccess_in)
   if (!isRunning ())
     return;
 
-  // stop AI (&& monster spawning)
+  // stop monster spawning
   for (RPG_Engine_SpawnsIterator_t iterator = inherited2::myMetaData.spawns.begin ();
        iterator != inherited2::myMetaData.spawns.end ();
        iterator++)
@@ -421,7 +421,6 @@ RPG_Engine::stop (bool lockedAccess_in)
                   (*iterator).timer_id));
       (*iterator).timer_id = -1;
     } // end IF
-  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance ()->stop (true); // N/A
 
   // drop control message into the queue...
   ACE_Message_Block* stop_mb = NULL;
@@ -468,8 +467,23 @@ RPG_Engine::stop (bool lockedAccess_in)
               ACE_TEXT ("(%s) worker thread(s) have joined...\n"),
               ACE_TEXT (RPG_ENGINE_TASK_THREAD_NAME)));
 
-  clearEntityActions (0,
+  clearEntityActions (0, // all
                       lockedAccess_in);
+
+  // remove all entities
+  { ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);
+    RPG_Engine_EntitiesConstIterator_t iterator;
+    while (!entities_.empty ())
+    {
+      iterator = entities_.begin ();
+      remove ((*iterator).first,
+              false);
+    } // end WHILE
+    ACE_ASSERT (entities_.empty ());
+  } // end lock scope
+
+  // stop AI
+  RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance ()->stop (true); // N/A
 }
 
 void
@@ -643,56 +657,63 @@ RPG_Engine::add (struct RPG_Engine_Entity* entity_in,
 }
 
 void
-RPG_Engine::remove (RPG_Engine_EntityID_t id_in)
+RPG_Engine::remove (RPG_Engine_EntityID_t id_in,
+                    bool lockedAccess_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::remove"));
 
   // sanity check
   ACE_ASSERT (id_in);
 
-  // notify AI
+  // step1: notify AI
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance ()->remove (id_in);
 
   struct RPG_Engine_ClientNotificationParameters parameters;
-  { ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);
-    RPG_Engine_EntitiesIterator_t iterator = entities_.find (id_in);
-    if (iterator == entities_.end ())
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("invalid entity ID (was: %u), returning\n"),
-                  id_in));
-      return;
-    } // end IF
-    parameters.positions.insert ((*iterator).second->position);
-    parameters.previous_position = (*iterator).second->position;
-    if (!(*iterator).second->character->isPlayerCharacter ())
-    {
-      // clean up NPC entities...
-      delete (*iterator).second->character;
-      delete (*iterator).second;
-    } // end IF
-    entities_.erase (iterator);
 
-    // step2: update vision cache
-    ACE_ASSERT (seenPositions_.find (id_in) != seenPositions_.end ());
-    seenPositions_.erase (id_in);
+  if (lockedAccess_in)
+    lock_.acquire ();
 
-    // step3: notify client / window
-    parameters.entity_id = id_in;
-    try {
-      client_->notify (COMMAND_E2C_ENTITY_REMOVE,
-                       parameters,
-                       false); // locked access ?
-    } catch (...) {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
-                  ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString (COMMAND_E2C_ENTITY_REMOVE).c_str ())));
-    }
+  RPG_Engine_EntitiesIterator_t iterator = entities_.find (id_in);
+  if (iterator == entities_.end ())
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("invalid entity ID (was: %u), returning\n"),
+                id_in));
+    if (lockedAccess_in)
+      lock_.release ();
+    return;
+  } // end IF
+  parameters.positions.insert ((*iterator).second->position);
+  if (!(*iterator).second->character->isPlayerCharacter ())
+  {
+    // clean up NPC entities
+    delete (*iterator).second->character;
+    delete (*iterator).second;
+  } // end IF
+  entities_.erase (iterator);
 
-    if (id_in == activePlayer_)
-      setActive (0,
-                 false); // locked access ?
-  } // end lock scope
+  // step2: update vision cache
+  ACE_ASSERT (seenPositions_.find (id_in) != seenPositions_.end ());
+  seenPositions_.erase (id_in);
+
+  // step3: notify client
+  parameters.entity_id = id_in;
+  try {
+    client_->notify (COMMAND_E2C_ENTITY_REMOVE,
+                     parameters,
+                     false); // locked access ?
+  } catch (...) {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
+                ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString (COMMAND_E2C_ENTITY_REMOVE).c_str ())));
+  }
+
+  if (id_in == activePlayer_)
+    setActive (0,
+               false); // locked access ?
+
+  if (lockedAccess_in)
+    lock_.release ();
 }
 
 bool
@@ -703,7 +724,7 @@ RPG_Engine::exists (RPG_Engine_EntityID_t id_in) const
   // sanity check
   ACE_ASSERT (id_in);
 
-  ACE_GUARD_RETURN (ACE_Thread_Mutex, aGuard, lock_, false);
+  ACE_GUARD_RETURN (ACE_Thread_Mutex, aGuard, lock_, false); // *TODO*: remove false negative
 
   return (entities_.find (id_in) != entities_.end ());
 }
@@ -1324,7 +1345,9 @@ RPG_Engine::setActive (RPG_Engine_EntityID_t id_in,
 
   if (lockedAccess_in)
     lock_.acquire ();
+
   activePlayer_ = id_in;
+
   if (lockedAccess_in)
     lock_.release ();
 }
@@ -1338,7 +1361,9 @@ RPG_Engine::getActive (bool lockedAcces_in) const
 
   if (lockedAcces_in)
     lock_.acquire ();
+
   result = activePlayer_;
+
   if (lockedAcces_in)
     lock_.release ();
 
@@ -1503,11 +1528,13 @@ RPG_Engine::findValid (const RPG_Map_Position_t& center_in,
 }
 
 bool
-RPG_Engine::isBlocked (const RPG_Map_Position_t& position_in) const
+RPG_Engine::isBlocked (const RPG_Map_Position_t& position_in,
+                       bool lockedAccess_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::isBlocked"));
 
-  //ACE_GUARD_RETURN (ACE_Thread_Mutex, aGuard, lock_, false); // *TODO*: avoid false negatives
+  if (lockedAccess_in)
+    lock_.acquire ();
 
   // blocked by walls, closed doors ... ?
   if (!inherited2::isValid (position_in))
@@ -1518,9 +1545,17 @@ RPG_Engine::isBlocked (const RPG_Map_Position_t& position_in) const
        iterator != entities_.end ();
        iterator++)
     if ((*iterator).second->position == position_in)
+    {
+      if (lockedAccess_in)
+        lock_.release ();
+
       return true;
+    } // end IF
 
   // *TODO*: add more criteria
+
+  if (lockedAccess_in)
+    lock_.release ();
 
   return false;
 }
@@ -2312,8 +2347,8 @@ RPG_Engine::handleEntities ()
   RPG_Engine_ClientNotifications_t notifications;
 
   { ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);
-    for (RPG_Engine_EntitiesIterator_t iterator = entities_.begin();
-         iterator != entities_.end();
+    for (RPG_Engine_EntitiesIterator_t iterator = entities_.begin ();
+         iterator != entities_.end ();
          iterator++)
     {
       // *TODO*: check for actions/round limit
@@ -2603,7 +2638,8 @@ RPG_Engine::handleEntities ()
         case COMMAND_STEP:
         {
           // position blocked ?
-          if (RPG_Engine::isBlocked (current_action.position))
+          if (RPG_Engine::isBlocked (current_action.position,
+                                     false)) // locked access ?
           {
             if ((*iterator).second->modes.find (ENTITYMODE_TRAVELLING) !=
                 (*iterator).second->modes.end ())
@@ -2702,7 +2738,8 @@ RPG_Engine::handleEntities ()
   {
     RPG_Engine_EntityID_t active_entity_id = getActive (true); // locked access ?
 
-    remove (remove_id);
+    remove (remove_id,
+            true); // locked access ?
 
     // has active entity left the game ?
     if (remove_id == active_entity_id)

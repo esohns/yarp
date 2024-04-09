@@ -3996,7 +3996,8 @@ togglebutton_join_part_toggled_cb (GtkToggleButton* toggleButton_in,
     // update the level state
 
     // activate the current character
-    RPG_Engine_EntityID_t id = data_p->levelEngine->add (&(data_p->entity));
+    RPG_Engine_EntityID_t id = data_p->levelEngine->add (&(data_p->entity),
+                                                         true); // locked access ?
     data_p->levelEngine->setActive (id);
 
     // center on character
@@ -4104,10 +4105,12 @@ togglebutton_join_part_toggled_cb (GtkToggleButton* toggleButton_in,
     return;
   } // end IF
 
-  // deactivate the current character
+  // deactivate the current character (if any)
+  // *NOTE*: iff the active player died, do nothing
   RPG_Engine_EntityID_t id = data_p->levelEngine->getActive (true); // locked access ?
-  ACE_ASSERT (id);
-  data_p->levelEngine->remove (id);
+  if (id)
+    data_p->levelEngine->remove (id,
+                                 true); // locked access ?
 
   // stop ambient sound
   RPG_SOUND_EVENT_MANAGER_SINGLETON::instance ()->stop ();
