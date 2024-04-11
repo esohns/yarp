@@ -99,7 +99,7 @@ The current client UI can load/display an area map using tiles in an isometric
  [http://www.cs.wustl.edu/~schmidt/ACE.html])
 * Xerces/XSD/XML is used as schema, entity model and bindings (see
  [http://www.codesynthesis.com/products/xsd])
-* SDL (currently 1.2) is used to implement low-level graphics representation
+* SDL (currently 1.2/2.0) is used to implement low-level graphics representation
  (see [http://www.libsdl.org])
 * GLib/GTK+/libGlade is used to implement the current client prototype (see
  [http://library.gnome.org/devel/references])
@@ -111,11 +111,12 @@ The current client UI can load/display an area map using tiles in an isometric
  KDevelop4/Anjuta/QtCreator project files are available but may not be
  consistent
 * version management through git (see [http://www.git.org])
-* online project hosting on github (see [http://www.github.org/esohns/Yarp])
+* online project hosting on github (see [http://www.github.org/esohns/yarp])
 
 ** Some TODOs (to be specified)**
 * support networked (client/server ?) multi-user functionality with protocols
-* support SDL 2.0 (see [http://www.libsdl.org])
+* support SDL 3.0 (see [http://www.libsdl.org])
 * support OpenGL in client UI (see [http://www.darkarts.co.za/noegnud])
 * support 3D graphical client UI
 
+![screenshot1](https://github.com/esohns/yarp/assets/510572/460a1752-ed16-4b06-a0b5-0286f45685fa)
