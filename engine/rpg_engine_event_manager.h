@@ -94,7 +94,7 @@ class RPG_Engine_Event_Manager
   virtual int close (u_long = 0);
   virtual int svc (void);
 
-  // implement RPG_Common_ITimer interface
+  // implement Common_ITimerHandler interface
   virtual void handle (const void*); // ACT (if any)
 
 	// helper methods

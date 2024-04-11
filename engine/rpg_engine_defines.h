@@ -24,10 +24,11 @@
 // task-specific
 #define RPG_ENGINE_TASK_GROUP_ID                    102
 #define RPG_ENGINE_TASK_THREAD_NAME                 "RPG engine"
+#define RPG_ENGINE_TASK_DEF_NUM_THREADS             3
 #define RPG_ENGINE_AI_TASK_GROUP_ID                 103
 #define RPG_ENGINE_AI_TASK_THREAD_NAME              "RPG AI"
 #define RPG_ENGINE_AI_DEF_NUM_THREADS               3
-#define RPG_ENGINE_MAX_QUEUE_SLOTS                  100
+#define RPG_ENGINE_MAX_QUEUE_SLOTS                  10000
 //#define RPG_ENGINE_EVENT_PEEK_INTERVAL      50 // ms
 
 #define RPG_ENGINE_SPEED_MODIFIER                   10 // --> 1/10 speed <==> normal

@@ -116,20 +116,20 @@ struct RPG_Graphics_GraphicsCacheNode
 typedef std::vector<struct RPG_Graphics_GraphicsCacheNode> RPG_Graphics_GraphicsCache_t;
 typedef RPG_Graphics_GraphicsCache_t::iterator RPG_Graphics_GraphicsCacheIterator_t;
 
-typedef std::map<RPG_Graphics_Font, TTF_Font*> RPG_Graphics_FontCache_t;
+typedef std::map<enum RPG_Graphics_Font, TTF_Font*> RPG_Graphics_FontCache_t;
 typedef RPG_Graphics_FontCache_t::iterator RPG_Graphics_FontCacheIterator_t;
 
-typedef std::map<RPG_Graphics_InterfaceElementType, SDL_Surface*> RPG_Graphics_InterfaceElements_t;
+typedef std::map<enum RPG_Graphics_InterfaceElementType, SDL_Surface*> RPG_Graphics_InterfaceElements_t;
 typedef RPG_Graphics_InterfaceElements_t::const_iterator RPG_Graphics_InterfaceElementsConstIterator_t;
 
-typedef std::vector<RPG_Graphics_Element> RPG_Graphics_Elements_t;
+typedef std::vector<struct RPG_Graphics_Element> RPG_Graphics_Elements_t;
 typedef RPG_Graphics_Elements_t::const_iterator RPG_Graphics_ElementsConstIterator_t;
 
 struct RPG_Graphics_Font_t
 {
-  RPG_Graphics_Font type;
-  unsigned int      size;
-  std::string       file;
+  enum RPG_Graphics_Font type;
+  unsigned int           size;
+  std::string            file;
 };
 typedef std::vector<RPG_Graphics_Font_t> RPG_Graphics_Fonts_t;
 typedef RPG_Graphics_Fonts_t::const_iterator RPG_Graphics_FontsConstIterator_t;
@@ -209,14 +209,14 @@ struct RPG_Graphics_DoorTileSet
 typedef std::map<RPG_Graphics_Position_t, struct RPG_Graphics_TileElement> RPG_Graphics_DoorTileMap_t;
 typedef RPG_Graphics_DoorTileMap_t::iterator RPG_Graphics_DoorTileMapIterator_t;
 
-typedef std::vector<RPG_Graphics_Tile>::const_iterator RPG_Graphics_TileSetConstIterator_t;
+typedef std::vector<struct RPG_Graphics_Tile>::const_iterator RPG_Graphics_TileSetConstIterator_t;
 
 // *NOTE*: map coordinates !
 typedef std::vector<std::pair<RPG_Graphics_Position_t, SDL_Surface*> > RPG_Graphics_TileCache_t;
 typedef RPG_Graphics_TileCache_t::const_iterator RPG_Graphics_TileCacheConstIterator_t;
 typedef RPG_Graphics_TileCache_t::iterator RPG_Graphics_TileCacheIterator_t;
 
-typedef std::map<RPG_Graphics_ColorName, struct RPG_Graphics_ColorRGBA> RPG_Graphics_ColorMap_t;
+typedef std::map<enum RPG_Graphics_ColorName, struct RPG_Graphics_ColorRGBA> RPG_Graphics_ColorMap_t;
 typedef RPG_Graphics_ColorMap_t::const_iterator RPG_Graphics_ColorMapConstIterator_t;
 typedef RPG_Graphics_ColorMap_t::iterator RPG_Graphics_ColorMapIterator_t;
 

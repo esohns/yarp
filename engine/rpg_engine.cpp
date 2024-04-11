@@ -317,10 +317,10 @@ RPG_Engine::start ()
     return;
 
   // OK: start worker thread
-  ACE_hthread_t thread_handles[1];
-  thread_handles[0] = 0;
-  ACE_thread_t thread_ids[1];
-  thread_ids[0] = 0;
+  ACE_hthread_t thread_handles[RPG_ENGINE_TASK_DEF_NUM_THREADS];
+  ACE_OS::memset (thread_handles, 0, sizeof (ACE_hthread_t[RPG_ENGINE_TASK_DEF_NUM_THREADS]));
+  ACE_thread_t thread_ids[RPG_ENGINE_TASK_DEF_NUM_THREADS];
+  ACE_OS::memset (thread_handles, 0, sizeof (ACE_thread_t[RPG_ENGINE_TASK_DEF_NUM_THREADS]));
   char thread_name[BUFSIZ];
   ACE_OS::memset (thread_name, 0, sizeof (char[BUFSIZ]));
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -333,21 +333,22 @@ RPG_Engine::start ()
                    ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_TASK_THREAD_NAME),
                    std::min (static_cast<size_t> (COMMON_THREAD_PTHREAD_NAME_MAX_LENGTH - 1), static_cast<size_t> (ACE_OS::strlen (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_TASK_THREAD_NAME)))));
 #endif // ACE_WIN32 || ACE_WIN64
-  const char* thread_names[1];
-  thread_names[0] = thread_name;
+  const char* thread_names[RPG_ENGINE_TASK_DEF_NUM_THREADS];
+  for (int i = 0; i < RPG_ENGINE_TASK_DEF_NUM_THREADS; i++)
+    thread_names[i] = thread_name;
   int result = inherited::activate ((THR_NEW_LWP |
                                      THR_JOINABLE |
-                                     THR_INHERIT_SCHED),         // flags
-                                    1,                           // number of threads
-                                    0,                           // force spawning
-                                    ACE_DEFAULT_THREAD_PRIORITY, // priority
-                                    inherited::grp_id (),         // group id --> has been set (see above)
-                                    NULL,                        // corresp. task --> use 'this'
-                                    thread_handles,              // thread handle(s)
-                                    NULL,                        // thread stack(s)
-                                    NULL,                        // thread stack size(s)
-                                    thread_ids,                  // thread id(s)
-                                    thread_names);               // thread names(s)
+                                     THR_INHERIT_SCHED),             // flags
+                                    RPG_ENGINE_TASK_DEF_NUM_THREADS, // number of threads
+                                    0,                               // force spawning
+                                    ACE_DEFAULT_THREAD_PRIORITY,     // priority
+                                    inherited::grp_id (),            // group id --> has been set (see above)
+                                    NULL,                            // corresp. task --> use 'this'
+                                    thread_handles,                  // thread handle(s)
+                                    NULL,                            // thread stack(s)
+                                    NULL,                            // thread stack size(s)
+                                    thread_ids,                      // thread id(s)
+                                    thread_names);                   // thread names(s)
   if (result == -1)
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to ACE_Task_Base::activate(): \"%m\", continuing\n")));
@@ -422,40 +423,45 @@ RPG_Engine::stop (bool lockedAccess_in)
       (*iterator).timer_id = -1;
     } // end IF
 
-  // drop control message into the queue...
+  // drop control message(s) into the queue...
   ACE_Message_Block* stop_mb = NULL;
-  ACE_NEW_NORETURN (stop_mb,
-                    ACE_Message_Block (0,                                  // size
-                                       ACE_Message_Block::MB_STOP,         // type
-                                       NULL,                               // continuation
-                                       NULL,                               // data
-                                       NULL,                               // buffer allocator
-                                       NULL,                               // locking strategy
-                                       ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, // priority
-                                       ACE_Time_Value::zero,               // execution time
-                                       ACE_Time_Value::max_time,           // deadline time
-                                       NULL,                               // data block allocator
-                                       NULL));                             // message allocator
-  if (!stop_mb)
+  for (int i = 0;
+       i < RPG_ENGINE_TASK_DEF_NUM_THREADS;
+       i++)
   {
-    ACE_DEBUG ((LM_CRITICAL,
-                ACE_TEXT ("unable to allocate memory, returning\n")));
-    return;
-  } // end IF
+    ACE_NEW_NORETURN (stop_mb,
+                      ACE_Message_Block (0,                                  // size
+                                         ACE_Message_Block::MB_STOP,         // type
+                                         NULL,                               // continuation
+                                         NULL,                               // data
+                                         NULL,                               // buffer allocator
+                                         NULL,                               // locking strategy
+                                         ACE_DEFAULT_MESSAGE_BLOCK_PRIORITY, // priority
+                                         ACE_Time_Value::zero,               // execution time
+                                         ACE_Time_Value::max_time,           // deadline time
+                                         NULL,                               // data block allocator
+                                         NULL));                             // message allocator
+    if (!stop_mb)
+    {
+      ACE_DEBUG ((LM_CRITICAL,
+                  ACE_TEXT ("unable to allocate memory, returning\n")));
+      return;
+    } // end IF
 
-  // block, if necessary
-  if (inherited::putq (stop_mb, NULL) == -1)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to ACE_Task::putq(): \"%m\", returning\n")));
+    // block, if necessary
+    if (inherited::putq (stop_mb, NULL) == -1)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE_Task::putq(): \"%m\", returning\n")));
 
-    // clean up
-    stop_mb->release ();
+      // clean up
+      stop_mb->release ();
 
-    return;
-  } // end IF
+      return;
+    } // end IF
+  } // end FOR
 
-  // ... and wait for the worker thread to join
+  // ... and wait for the worker thread(s) to join
   if (inherited::wait () == -1)
   {
     ACE_DEBUG ((LM_ERROR,
@@ -2345,6 +2351,7 @@ RPG_Engine::handleEntities ()
   bool action_complete = true;
   RPG_Engine_EntityID_t remove_id = 0;
   RPG_Engine_ClientNotifications_t notifications;
+  struct RPG_Engine_ClientNotificationParameters parameters;
 
   { ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);
     for (RPG_Engine_EntitiesIterator_t iterator = entities_.begin ();
@@ -2376,7 +2383,6 @@ RPG_Engine::handleEntities ()
             break; // nothing to do...
 
           // notify client
-          struct RPG_Engine_ClientNotificationParameters parameters;
           parameters.entity_id = (*iterator).first;
           parameters.positions.insert (std::make_pair (std::numeric_limits<unsigned int>::max (),
                                                        std::numeric_limits<unsigned int>::max ()));
@@ -2509,7 +2515,6 @@ RPG_Engine::handleEntities ()
           if (handleDoor (current_action.position,
                           (current_action.command == COMMAND_DOOR_OPEN)))
           {
-            struct RPG_Engine_ClientNotificationParameters parameters;
             parameters.entity_id = (*iterator).first;
             parameters.condition = RPG_COMMON_CONDITION_INVALID;
             parameters.positions.insert(current_action.position);
@@ -2544,7 +2549,6 @@ RPG_Engine::handleEntities ()
         }
         case COMMAND_RUN:
         {
-          struct RPG_Engine_ClientNotificationParameters parameters;
           parameters.entity_id = (*iterator).first;
 
           // toggle mode
@@ -2673,7 +2677,6 @@ RPG_Engine::handleEntities ()
                                         positions.end ());
 
           // notify client window
-          struct RPG_Engine_ClientNotificationParameters parameters;
           parameters.entity_id = (*iterator).first;
           parameters.condition = RPG_COMMON_CONDITION_INVALID;
           parameters.positions.insert (current_action.position);
@@ -2715,6 +2718,30 @@ RPG_Engine::handleEntities ()
       if (action_complete)
         (*iterator).second->actions.pop_front ();
     } // end FOR
+
+    // remove entity ?
+    if (remove_id)
+    {
+      RPG_Engine_EntityID_t active_entity_id = getActive (false); // locked access ?
+
+      remove (remove_id,
+              false); // locked access ?
+
+      // has active entity left the game ?
+      if (remove_id == active_entity_id)
+      {
+        // notify client
+        parameters.entity_id = 0;
+        parameters.condition = RPG_COMMON_CONDITION_INVALID;
+        parameters.positions.insert (std::make_pair (std::numeric_limits<unsigned int>::max (),
+                                                     std::numeric_limits<unsigned int>::max ()));
+        parameters.previous_position =
+            std::make_pair (std::numeric_limits<unsigned int>::max (),
+                            std::numeric_limits<unsigned int>::max ());
+        notifications.push_back (std::make_pair (COMMAND_E2C_QUIT,
+                                                 parameters));
+      } // end IF
+    } // end IF
   } // end lock scope
 
   // notify client / window
@@ -2732,38 +2759,6 @@ RPG_Engine::handleEntities ()
                   ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString ((*iterator).first).c_str ())));
     }
   } // end FOR
-
-  // remove entity ?
-  if (remove_id)
-  {
-    RPG_Engine_EntityID_t active_entity_id = getActive (true); // locked access ?
-
-    remove (remove_id,
-            true); // locked access ?
-
-    // has active entity left the game ?
-    if (remove_id == active_entity_id)
-    {
-      // notify client
-      struct RPG_Engine_ClientNotificationParameters parameters;
-      parameters.entity_id = 0;
-      parameters.condition = RPG_COMMON_CONDITION_INVALID;
-      parameters.positions.insert (std::make_pair (std::numeric_limits<unsigned int>::max (),
-                                                   std::numeric_limits<unsigned int>::max ()));
-      parameters.previous_position =
-          std::make_pair (std::numeric_limits<unsigned int>::max (),
-                          std::numeric_limits<unsigned int>::max ());
-      try {
-        client_->notify (COMMAND_E2C_QUIT,
-                         parameters,
-                         true); // locked access ?
-      } catch (...) {
-        ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
-                    ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString (COMMAND_E2C_QUIT).c_str ())));
-      }
-    } // end IF
-  } // end IF
 }
 
 //////////////////////////////////////////

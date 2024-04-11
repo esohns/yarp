@@ -339,18 +339,18 @@ RPG_Graphics_Surface::savePNG (const SDL_Surface& surface_in,
                                const std::string& targetFile_in,
                                bool alpha_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Graphics_Surface::savePNG"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::savePNG"));
 
-  // preliminary check(s)
+  // sanity check(s)
   if (Common_File_Tools::isReadable (targetFile_in))
     if (!Common_File_Tools::deleteFile (targetFile_in))
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to RPG_Common_File_Tools::deleteFile(\"%s\"), returning\n"),
                   ACE_TEXT (targetFile_in.c_str ())));
-
       return;
     } // end IF
+  ACE_ASSERT (surface_in.format->BytesPerPixel == 4);
 
   unsigned char* output = NULL;
   try {
@@ -387,7 +387,7 @@ RPG_Graphics_Surface::savePNG (const SDL_Surface& surface_in,
 
   // lock surface during pixel access
   if (SDL_MUSTLOCK ((&surface_in)))
-    if (SDL_LockSurface (&const_cast<SDL_Surface&>(surface_in)))
+    if (SDL_LockSurface (&const_cast<SDL_Surface&> (surface_in)))
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_LockSurface(): \"%s\", returning\n"),
@@ -397,7 +397,7 @@ RPG_Graphics_Surface::savePNG (const SDL_Surface& surface_in,
     } // end IF
 
   // (if neccessary,) strip out alpha bytes and reorder the image bytes to RGB
-  Uint32* pixels = static_cast<Uint32*>(surface_in.pixels);
+  Uint32* pixels = static_cast<Uint32*> (surface_in.pixels);
   for (unsigned int j = 0;
        j < static_cast<unsigned int> (surface_in.h);
        j++)
@@ -405,7 +405,7 @@ RPG_Graphics_Surface::savePNG (const SDL_Surface& surface_in,
     image[j] = output;
 
     for (unsigned int i = 0;
-         i < static_cast<unsigned int>(surface_in.w);
+         i < static_cast<unsigned int> (surface_in.w);
          i++)
     {
       *output++ =
@@ -426,8 +426,7 @@ RPG_Graphics_Surface::savePNG (const SDL_Surface& surface_in,
     SDL_UnlockSurface (&const_cast<SDL_Surface&> (surface_in));
 
   // open the file
-  FILE* fp = NULL;
-  fp = ACE_OS::fopen (ACE_TEXT (targetFile_in.c_str ()),
+  FILE* fp = ::fopen (ACE_TEXT_ALWAYS_CHAR (targetFile_in.c_str ()),
                       ACE_TEXT_ALWAYS_CHAR ("wb"));
   if (!fp)
   {

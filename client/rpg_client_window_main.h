@@ -51,9 +51,9 @@ class RPG_Client_Window_Main
 
  public:
   RPG_Client_Window_Main (const RPG_Graphics_Size_t&,                  // size
-                          const RPG_Graphics_GraphicTypeUnion&,        // (element) type
+                          const struct RPG_Graphics_GraphicTypeUnion&, // (element) type
                           const std::string&,                          // title
-                          const RPG_Graphics_Font& = FONT_MAIN_LARGE); // title font
+                          enum RPG_Graphics_Font = FONT_MAIN_LARGE);   // title font
   inline virtual ~RPG_Client_Window_Main () {}
 
   // initialize different hotspots
@@ -74,7 +74,7 @@ class RPG_Client_Window_Main
                      unsigned int = 0);   // offset y (top-left = [0,0])
   virtual void handleEvent (const SDL_Event&,          // event
                             RPG_Graphics_IWindowBase*, // target window (NULL: this)
-                            SDL_Rect&);                // return value: "dirty" region
+                            struct SDL_Rect&);         // return value: "dirty" region
   virtual void notify (enum RPG_Graphics_Cursor) const;
 
  private:
