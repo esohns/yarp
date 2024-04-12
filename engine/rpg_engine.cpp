@@ -702,6 +702,10 @@ RPG_Engine::remove (RPG_Engine_EntityID_t id_in,
   ACE_ASSERT (seenPositions_.find (id_in) != seenPositions_.end ());
   seenPositions_.erase (id_in);
 
+  if (id_in == activePlayer_)
+    setActive (0,
+               false); // locked access ?
+
   // step3: notify client
   parameters.entity_id = id_in;
   try {
@@ -713,10 +717,6 @@ RPG_Engine::remove (RPG_Engine_EntityID_t id_in,
                 ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
                 ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString (COMMAND_E2C_ENTITY_REMOVE).c_str ())));
   }
-
-  if (id_in == activePlayer_)
-    setActive (0,
-               false); // locked access ?
 
   if (lockedAccess_in)
     lock_.release ();
@@ -1430,9 +1430,14 @@ RPG_Engine::getPosition (RPG_Engine_EntityID_t id_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::getPosition"));
 
+  // initialize result
   RPG_Map_Position_t result =
       std::make_pair (std::numeric_limits<unsigned int>::max (),
                       std::numeric_limits<unsigned int>::max ());
+
+  // sanity check(s)
+  if (!id_in)
+    return result;
 
   if (lockedAccess_in)
     lock_.acquire ();
@@ -1450,7 +1455,6 @@ RPG_Engine::getPosition (RPG_Engine_EntityID_t id_in,
 
     return result;
   } // end IF
-
   result = (*iterator).second->position;
 
   if (lockedAccess_in)
@@ -1869,9 +1873,6 @@ RPG_Engine::getVisiblePositions (RPG_Engine_EntityID_t id_in,
   // initialize return value(s)
   positions_out.clear ();
 
-  // sanity check
-  ACE_ASSERT (id_in != 0);
-
   if (lockedAccess_in)
     lock_.acquire ();
 
@@ -1911,9 +1912,6 @@ RPG_Engine::canSee (RPG_Engine_EntityID_t id_in,
                     bool lockedAccess_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::canSee"));
-
-  // sanity check(s)
-  ACE_ASSERT (id_in);
 
   RPG_Map_Positions_t visible_positions;
   RPG_Engine::getVisiblePositions (id_in,
@@ -1989,7 +1987,12 @@ RPG_Engine::hasSeen (RPG_Engine_EntityID_t id_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::hasSeen"));
 
+  // initialize result
   bool result = false;
+
+  // sanity check(s)
+  if (!id_in)
+    return false;
 
   if (lockedAccess_in)
     lock_.acquire ();

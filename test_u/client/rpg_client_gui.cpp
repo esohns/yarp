@@ -2341,7 +2341,7 @@ ACE_TMAIN (int argc_in,
   SDL_init_flags |= SDL_INIT_EVENTS;
 #endif // SDL_USE || SL2_USE
 #endif // ACE_WIN32 || ACE_WIN64
-  if (SDL_Init (SDL_init_flags) == -1)
+  if (SDL_Init (SDL_init_flags) < 0)
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_Init(0x%x): \"%s\", aborting\n"),
@@ -2367,7 +2367,6 @@ ACE_TMAIN (int argc_in,
 
     // clean up
     Common_Log_Tools::finalizeLogging ();
-    SDL_VideoQuit ();
     SDL_Quit ();
     // *PORTABILITY*: on Windows, must fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -2422,7 +2421,6 @@ ACE_TMAIN (int argc_in,
 
   // step4: clean up
   TTF_Quit ();
-  SDL_VideoQuit ();
   SDL_Quit ();
 
   // stop profile timer...

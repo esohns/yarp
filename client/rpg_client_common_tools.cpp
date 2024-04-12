@@ -872,9 +872,9 @@ RPG_Client_Common_Tools::hasHighlight (const RPG_Map_Position_t& position_in,
   // highlight visible floors and doors
   return (((current_element == MAPELEMENT_FLOOR) ||
            (current_element == MAPELEMENT_DOOR)) &&
-          engine_in.canSee (engine_in.getActive (lockedAccess_in),
-                            position_in,
-                            lockedAccess_in));
+          engine_in.hasSeen (engine_in.getActive (lockedAccess_in),
+                             position_in,
+                             lockedAccess_in));
 }
 
 enum RPG_Graphics_Orientation

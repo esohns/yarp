@@ -28,6 +28,7 @@
 #include "SDL.h"
 
 #include "ace/Global_Macros.h"
+#include "ace/Thread_Mutex.h"
 
 #include "common_ilock.h"
 
@@ -57,51 +58,48 @@ class SDL_GUI_MainWindow
   typedef RPG_Graphics_TopLevel inherited;
 
  public:
-  SDL_GUI_MainWindow(const RPG_Graphics_Size_t&,                  // size
-                     const RPG_Graphics_GraphicTypeUnion&,        // (element) type
-                     const std::string&,                          // title
-                     const RPG_Graphics_Font& = FONT_MAIN_LARGE); // title font
-  virtual ~SDL_GUI_MainWindow();
+  SDL_GUI_MainWindow (const RPG_Graphics_Size_t&,                  // size
+                      const struct RPG_Graphics_GraphicTypeUnion&, // (element) type
+                      const std::string&,                          // title
+                      enum RPG_Graphics_Font = FONT_MAIN_LARGE);   // title font
+  inline virtual ~SDL_GUI_MainWindow () {}
 
   // initialize different hotspots/sub-windows
   // *WARNING*: call this AFTER setScreen() !
-  void init(state_t*,                                                    // state
-//            RPG_Client_Engine*,                                          // (graphics) engine handle
-            RPG_Engine*,                                                 // (level) state handle
-            const RPG_Client_GraphicsMode& = SDL_GUI_DEF_GRAPHICS_MODE); // graphics mode
+  void init (state_t*,                                                  // state
+             RPG_Engine*,                                               // (level) state handle
+             enum RPG_Client_GraphicsMode = SDL_GUI_DEF_GRAPHICS_MODE); // graphics mode
 
   // implement (part of) RPG_Graphics_IWindowBase
-  virtual void draw(SDL_Surface* = NULL, // target surface (default: screen)
-                    unsigned int = 0,    // offset x (top-left = [0,0])
-                    unsigned int = 0);   // offset y (top-left = [0,0])
-  virtual void handleEvent(const SDL_Event&,      // event
-                           RPG_Graphics_IWindowBase*, // target window (NULL: this)
-                           SDL_Rect&);            // return value: "dirty" region
+  virtual void draw (SDL_Surface* = NULL, // target surface (default: screen)
+                     unsigned int = 0,    // offset x (top-left = [0,0])
+                     unsigned int = 0);   // offset y (top-left = [0,0])
+  virtual void handleEvent (const SDL_Event&,          // event
+                            RPG_Graphics_IWindowBase*, // target window (NULL: this)
+                            struct SDL_Rect&);         // return value: "dirty" region
   // implement (part of) RPG_Graphics_IWindow
-  virtual void notify(const RPG_Graphics_Cursor&) const;
+  virtual void notify (enum RPG_Graphics_Cursor) const;
 
   // implement RPG_Common_ILock
   virtual bool lock (bool = true); // block ?
   virtual int unlock (bool = false); // unlock completely ?
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow())
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow(const SDL_GUI_MainWindow&))
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MainWindow& operator=(const SDL_GUI_MainWindow&))
+  ACE_UNIMPLEMENTED_FUNC (SDL_GUI_MainWindow ())
+  ACE_UNIMPLEMENTED_FUNC (SDL_GUI_MainWindow (const SDL_GUI_MainWindow&))
+  ACE_UNIMPLEMENTED_FUNC (SDL_GUI_MainWindow& operator= (const SDL_GUI_MainWindow&))
 
   // helper methods
-  void initScrollSpots();
-  bool initMap(state_t*,                                                    // state
-               RPG_Engine*,                                                 // level engine handle
-               const RPG_Client_GraphicsMode& = SDL_GUI_DEF_GRAPHICS_MODE); // graphics mode
-  void drawBorder(SDL_Surface* = NULL,      // target surface (default: screen)
-                  const unsigned int& = 0,  // offset x (top-left = [0,0])
-                  const unsigned int& = 0); // offset y (top-left = [0,0])
-  void drawTitle(const RPG_Graphics_Font&,  // font
-                 const std::string&,        // text
-                 SDL_Surface* = NULL);      // target surface (default: screen)
-
-//  RPG_Client_Engine* myEngine;
+  void initScrollSpots ();
+  bool initMap (state_t*,                                                  // state
+                RPG_Engine*,                                               // level engine handle
+                enum RPG_Client_GraphicsMode = SDL_GUI_DEF_GRAPHICS_MODE); // graphics mode
+  void drawBorder (SDL_Surface* = NULL, // target surface (default: screen)
+                   unsigned int = 0,    // offset x (top-left = [0,0])
+                   unsigned int = 0);   // offset y (top-left = [0,0])
+  void drawTitle (enum RPG_Graphics_Font,  // font
+                  const std::string&,      // text
+                  SDL_Surface* = NULL);    // target surface (default: screen)
 
   // counter
   unsigned int       myScreenshotIndex;

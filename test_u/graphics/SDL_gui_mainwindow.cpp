@@ -28,7 +28,6 @@
 #include "common_file_tools.h"
 
 #include "rpg_common_defines.h"
-//#include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
 
 #include "rpg_engine.h"
@@ -47,43 +46,35 @@
 #include "SDL_gui_levelwindow_isometric.h"
 
 SDL_GUI_MainWindow::SDL_GUI_MainWindow (const RPG_Graphics_Size_t& size_in,
-                                        const RPG_Graphics_GraphicTypeUnion& elementType_in,
+                                        const struct RPG_Graphics_GraphicTypeUnion& elementType_in,
                                         const std::string& title_in,
-                                        const RPG_Graphics_Font& fontType_in)
+                                        enum RPG_Graphics_Font fontType_in)
  : inherited (size_in,        // size
               elementType_in, // element type
-              title_in)      // title
-//              NULL)          // background
+              title_in)       // title
  , myScreenshotIndex (1)
  , myLastHoverTime (0)
- , myHaveMouseFocus (true)   // *NOTE*: enforced with SDL_WarpMouse()
- , myTitleFont (fontType_in)//
- //, inherited::screenLock_ ()
+ , myHaveMouseFocus (true) // *NOTE*: enforced with SDL_WarpMouse()
+ , myTitleFont (fontType_in)
 {
   RPG_TRACE (ACE_TEXT ("SDL_GUI_MainWindow::SDL_GUI_MainWindow"));
 
 }
 
-SDL_GUI_MainWindow::~SDL_GUI_MainWindow ()
-{
-  RPG_TRACE (ACE_TEXT ("SDL_GUI_MainWindow::~SDL_GUI_MainWindow"));
-
-}
-
 void
-SDL_GUI_MainWindow::init(state_t* state_in,
-                         RPG_Engine* engine_in,
-                         const RPG_Client_GraphicsMode& mode_in)
+SDL_GUI_MainWindow::init (state_t* state_in,
+                          RPG_Engine* engine_in,
+                          enum RPG_Client_GraphicsMode mode_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::init"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_MainWindow::init"));
 
   // init scroll margins
-  initScrollSpots();
+  initScrollSpots ();
 
   // init map
-  initMap(state_in,
-          engine_in,
-          mode_in);
+  initMap (state_in,
+           engine_in,
+           mode_in);
 }
 
 void
@@ -206,12 +197,12 @@ SDL_GUI_MainWindow::draw (SDL_Surface* targetSurface_in,
 void
 SDL_GUI_MainWindow::handleEvent (const SDL_Event& event_in,
                                  RPG_Graphics_IWindowBase* window_in,
-                                 SDL_Rect& dirtyRegion_out)
+                                 struct SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE (ACE_TEXT ("SDL_GUI_MainWindow::handleEvent"));
 
   // init return value(s)
-  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("SDL_GUI_MainWindow::handleEvent\n")));
@@ -766,7 +757,7 @@ SDL_GUI_MainWindow::handleEvent (const SDL_Event& event_in,
 }
 
 void
-SDL_GUI_MainWindow::notify(const RPG_Graphics_Cursor& cursor_in) const
+SDL_GUI_MainWindow::notify (enum RPG_Graphics_Cursor cursor_in) const
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::notify"));
 
@@ -822,17 +813,17 @@ SDL_GUI_MainWindow::unlock(bool unlock_in)
 }
 
 void
-SDL_GUI_MainWindow::initScrollSpots()
+SDL_GUI_MainWindow::initScrollSpots ()
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::initScrollSpots"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_MainWindow::initScrollSpots"));
 
   // upper left
   RPG_Graphics_HotSpot::initialize(*this,             // parent
-                             std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
-                                            RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
-                             std::make_pair(0,
-                                            0), // offset
-                             CURSOR_SCROLL_UL); // (hover) cursor graphic
+                                   std::make_pair(RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN,
+                                                  RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN), // size
+                                   std::make_pair(0,
+                                                  0), // offset
+                                   CURSOR_SCROLL_UL); // (hover) cursor graphic
   // up
   RPG_Graphics_HotSpot::initialize(*this,             // parent
                              std::make_pair((clipRectangle_.w -
@@ -895,11 +886,11 @@ SDL_GUI_MainWindow::initScrollSpots()
 }
 
 bool
-SDL_GUI_MainWindow::initMap(state_t* state_in,
-                            RPG_Engine* engine_in,
-                            const RPG_Client_GraphicsMode& mode_in)
+SDL_GUI_MainWindow::initMap (state_t* state_in,
+                             RPG_Engine* engine_in,
+                             enum RPG_Client_GraphicsMode mode_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::initMap"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_MainWindow::initMap"));
 
   RPG_Graphics_IWindowBase* window_base = NULL;
   switch (mode_in)
@@ -959,11 +950,11 @@ SDL_GUI_MainWindow::initMap(state_t* state_in,
 }
 
 void
-SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
-                               const unsigned int& offsetX_in,
-                               const unsigned int& offsetY_in)
+SDL_GUI_MainWindow::drawBorder (SDL_Surface* targetSurface_in,
+                                unsigned int offsetX_in,
+                                unsigned int offsetY_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_MainWindow::drawBorder"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_MainWindow::drawBorder"));
 
   // sanity check(s)
   ACE_ASSERT (inherited::screen_);
@@ -974,20 +965,20 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
 #endif // SDL_USE || SDL2_USE
   ACE_ASSERT (surface_p);
   // sanity check(s)
-  SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : surface_p);
+  SDL_Surface* target_surface =
+    (targetSurface_in ? targetSurface_in : surface_p);
   ACE_ASSERT (target_surface);
   ACE_ASSERT (static_cast<int> (offsetX_in) <= target_surface->w);
   ACE_ASSERT (static_cast<int> (offsetY_in) <= target_surface->h);
 
-  lock();
+  lock ();
 
   RPG_Graphics_InterfaceElementsConstIterator_t iterator;
   SDL_Rect dirty_region, prev_clip_rect, clip_rect;
   unsigned int i = 0;
 
   // step0: retain previous clip rect
-  SDL_GetClipRect(target_surface, &prev_clip_rect);
+  SDL_GetClipRect (target_surface, &prev_clip_rect);
 
   // step1: draw border elements
   clip_rect.x = static_cast<Sint16>(offsetX_in + borderLeft_);
@@ -1138,7 +1129,7 @@ SDL_GUI_MainWindow::drawBorder(SDL_Surface* targetSurface_in,
 }
 
 void
-SDL_GUI_MainWindow::drawTitle (const RPG_Graphics_Font& font_in,
+SDL_GUI_MainWindow::drawTitle (enum RPG_Graphics_Font font_in,
                                const std::string& text_in,
                                SDL_Surface* targetSurface_in)
 {

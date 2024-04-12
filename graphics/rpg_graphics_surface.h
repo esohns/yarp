@@ -57,9 +57,9 @@ class RPG_Graphics_Surface
              bool);                                // assume ownership ?
   void init (SDL_Surface*, // SDL surface
              bool);        // assume ownership ?
-  RPG_Graphics_GraphicTypeUnion type () const;
+  inline RPG_Graphics_GraphicTypeUnion type () const { return myType; }
   // *WARNING*: NEVER SDL_FreeSurface() the return argument !
-  SDL_Surface* surface () const;
+  inline SDL_Surface* surface () const { return mySurface; }
 
   // clip/unclip the SDL window ("screen");
 #if defined (SDL_USE)

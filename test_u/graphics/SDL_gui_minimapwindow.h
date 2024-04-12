@@ -40,28 +40,28 @@ class SDL_GUI_MinimapWindow
   typedef RPG_Graphics_SDLWindowSub inherited;
 
  public:
-  SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase&, // parent
-                        // *NOTE*: offset doesn't include any border(s) !
-                        const RPG_Graphics_Offset_t&,      // offset
-                        RPG_Engine*);                      // (level) state handle
-  virtual ~SDL_GUI_MinimapWindow();
+  SDL_GUI_MinimapWindow (const RPG_Graphics_SDLWindowBase&, // parent
+                         // *NOTE*: offset doesn't include any border(s) !
+                         const RPG_Graphics_Offset_t&,      // offset
+                         RPG_Engine*);                      // (level) state handle
+  virtual ~SDL_GUI_MinimapWindow ();
 
   // implement (part of) RPG_Graphics_IWindow
-  virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
-  virtual void draw(SDL_Surface* = NULL, // target surface (default: screen)
-                    unsigned int = 0,    // offset x (top-left = [0,0])
-                    unsigned int = 0);   // offset y (top-left = [0,0])
-  virtual void handleEvent(const SDL_Event&,          // event
-                           RPG_Graphics_IWindowBase*, // target window (NULL: this)
-                           SDL_Rect&);                // return value: "dirty" region
+  virtual RPG_Graphics_Position_t getView () const; // return value: view (map coordinates !)
+  virtual void draw (SDL_Surface* = NULL, // target surface (default: screen)
+                     unsigned int = 0,    // offset x (top-left = [0,0])
+                     unsigned int = 0);   // offset y (top-left = [0,0])
+  virtual void handleEvent (const SDL_Event&,          // event
+                            RPG_Graphics_IWindowBase*, // target window (NULL: this)
+                            SDL_Rect&);                // return value: "dirty" region
 
   void initialize (state_t*,           // state handle
                    Common_ILock*); // screen lock interface handle
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MinimapWindow())
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MinimapWindow(const SDL_GUI_MinimapWindow&))
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_MinimapWindow& operator=(const SDL_GUI_MinimapWindow&))
+  ACE_UNIMPLEMENTED_FUNC (SDL_GUI_MinimapWindow ())
+  ACE_UNIMPLEMENTED_FUNC (SDL_GUI_MinimapWindow (const SDL_GUI_MinimapWindow&))
+  ACE_UNIMPLEMENTED_FUNC (SDL_GUI_MinimapWindow& operator= (const SDL_GUI_MinimapWindow&))
 
   RPG_Engine*  myEngine;
   state_t*     myState;
@@ -70,4 +70,4 @@ class SDL_GUI_MinimapWindow
   SDL_Surface* mySurface;
 };
 
-#endif // RPG_GRAPHICS_MINIMAP_H
+#endif // SDL_GUI_MINIMAPWINDOW_H

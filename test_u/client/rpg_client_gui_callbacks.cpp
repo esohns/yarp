@@ -4115,11 +4115,7 @@ togglebutton_join_part_toggled_cb (GtkToggleButton* toggleButton_in,
   // stop ambient sound
   RPG_SOUND_EVENT_MANAGER_SINGLETON::instance ()->stop ();
 
-  // update entity profile widgets
-  //::update_entity_profile (data_p->entity,
-  //                         (*iterator).second.second);
-
-  // make join button sensitive IFF player is not disabled
+  //// make join button sensitive IFF player is not disabled
   //if (!RPG_Engine_Common_Tools::isCharacterDisabled (data_p->entity.character))
   //  gtk_widget_set_sensitive (GTK_WIDGET (toggleButton_in), TRUE);
 
