@@ -65,16 +65,16 @@ class SDL_GUI_LevelWindow_Isometric
                    Common_ILock*); // screen lock interface handle
 
   // implement (part of) RPG_Client_IWindowLevel
-  virtual void initialize(const RPG_Graphics_Style&); // style
+  virtual void initialize (const struct RPG_Graphics_Style&); // style
 
   // adjust viewport
   // implement (part of) RPG_Client_IWindowLevel
-  virtual void setView(int,          // offset x (map coordinates !)
-                       int,          // offset y (map coordinates !)
-                       bool = true); // locked access ?
-  virtual void setView(const RPG_Map_Position_t&); // offset
-  virtual RPG_Graphics_Position_t getView() const; // return value: view (map coordinates !)
-  void center();
+  virtual void setView (int,          // offset x (map coordinates !)
+                        int,          // offset y (map coordinates !)
+                        bool = true); // locked access ?
+  virtual void setView (const RPG_Map_Position_t&); // offset
+  virtual RPG_Graphics_Position_t getView () const; // return value: view (map coordinates !)
+  void center ();
 
   // (re-)init / set level properties
   // implement (part of) RPG_Client_IWindowLevel

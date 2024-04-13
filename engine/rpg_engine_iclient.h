@@ -19,24 +19,13 @@
 #ifndef RPG_ENGINE_ICLIENT_H
 #define RPG_ENGINE_ICLIENT_H
 
-//#include "SDL/SDL.h"
-
-//#include "rpg_map_common.h"
-
 #include "rpg_engine_common.h"
 
+// engine --> UI client interface
 class RPG_Engine_IClient
 {
  public:
   // exposed interface
-  //virtual void init() = 0;
-  //virtual void redraw() = 0;
-  //virtual void setView(const RPG_Map_Position_t&) = 0;
-  //virtual void toggleDoor(const RPG_Map_Position_t&) = 0;
-  //virtual void addEntity(const RPG_Engine_EntityID_t&,
-  //                       const SDL_Surface*) = 0;
-  //virtual void removeEntity(const RPG_Engine_EntityID_t&) = 0;
-  //virtual void updateEntity(const RPG_Engine_EntityID_t&) = 0;
   virtual void notify (enum RPG_Engine_Command,
                        const struct RPG_Engine_ClientNotificationParameters&,
                        bool = true) = 0; // lock (engine) ?

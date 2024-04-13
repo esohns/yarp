@@ -58,7 +58,7 @@ class RPG_Client_Engine
                             ACE_Task<ACE_MT_SYNCH> > inherited;
 
  public:
-  RPG_Client_Engine();
+  RPG_Client_Engine ();
   virtual ~RPG_Client_Engine ();
 
 //  // implement Common_IControl
@@ -81,16 +81,7 @@ class RPG_Client_Engine
   // *NOTE*: this triggers a complete redraw !
   void setView (const RPG_Map_Position_t&);
 
-  // implement RPG_Engine_IWindow
-  // *NOTE*: these are to be called by the level engine ONLY
-  //virtual void redraw();
-  //// *NOTE*: this triggers a complete redraw !
-  //virtual void setView(const RPG_Map_Position_t&);
-  //virtual void toggleDoor(const RPG_Map_Position_t&);
-  //virtual void addEntity(const RPG_Engine_EntityID_t&,
-  //                       const SDL_Surface*);
-  //virtual void removeEntity(const RPG_Engine_EntityID_t&);
-  //virtual void updateEntity(const RPG_Engine_EntityID_t&);
+  // implement RPG_Engine_IClient
   virtual void notify (enum RPG_Engine_Command,
                        const struct RPG_Engine_ClientNotificationParameters&,
                        bool = true); // lock (engine) ?

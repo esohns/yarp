@@ -645,19 +645,22 @@ RPG_Engine::add (struct RPG_Engine_Entity* entity_in,
     return id;
   }
 
-  parameters.positions = visible_positions;
-  parameters.visible_radius = getVisibleRadius (id,
-                                                lockedAccess_in);
-  try {
-    client_->notify (COMMAND_E2C_ENTITY_VISION,
-                     parameters,
-                     lockedAccess_in);
-  } catch (...) {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), returning\n"),
-                ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString (COMMAND_E2C_ENTITY_VISION).c_str ())));
-    return id;
-  }
+  if (entity_in->character->isPlayerCharacter ())
+  {
+    parameters.positions = visible_positions;
+    parameters.visible_radius = getVisibleRadius (id,
+                                                  lockedAccess_in);
+    try {
+      client_->notify (COMMAND_E2C_ENTITY_VISION,
+                       parameters,
+                       lockedAccess_in);
+    } catch (...) {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), returning\n"),
+                  ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString (COMMAND_E2C_ENTITY_VISION).c_str ())));
+      return id;
+    }
+  } // end IF
 
   return id;
 }

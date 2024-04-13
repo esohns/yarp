@@ -663,6 +663,9 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
   ACE_ASSERT (static_cast<int> (offsetX_in) <= target_surface->w);
   ACE_ASSERT (static_cast<int> (offsetY_in) <= target_surface->h);
 
+  inherited::clear (COLOR_BLACK, // color
+                    false);      // don't clip
+
   // init clipping
   inherited::clip (target_surface,
                    offsetX_in,

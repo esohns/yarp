@@ -844,8 +844,8 @@ next:
     case COMMAND_CURSOR_RESTORE_BG:
     { ACE_ASSERT (client_action.window);
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->restoreBG (dirty_region,
-                                                                     NULL,
-                                                                     true);
+                                                                     NULL,  // clip rectangle
+                                                                     true); // locked access ?
       try {
         client_action.window->invalidate (dirty_region);
       } catch (...) {
@@ -858,7 +858,7 @@ next:
     }
     case COMMAND_CURSOR_INVALIDATE_BG:
     {
-      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->invalidateBG (NULL);
+      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->invalidateBG (NULL); // clip rectangle
       break;
     }
     case COMMAND_CURSOR_SET:
@@ -904,6 +904,7 @@ next:
                     client_action.window));
         goto continue_;
       }
+
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->put (client_action.entity_id, // entity ID
                                                              RPG_Graphics_Common_Tools::mapToScreen (client_action.position,
                                                                                                      std::make_pair (window_area.w,
@@ -926,6 +927,7 @@ next:
     case COMMAND_ENTITY_REMOVE:
     { ACE_ASSERT (client_action.entity_id);
       ACE_ASSERT (client_action.window);
+
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->remove (client_action.entity_id, // entity ID
                                                                 dirty_region,            // return value: "dirty" region
                                                                 true,                    // locked access ? (screen-lock)
@@ -942,9 +944,8 @@ next:
     }
     case COMMAND_PLAY_SOUND:
     { ACE_ASSERT (client_action.sound != RPG_SOUND_EVENT_INVALID);
-      int channel = -1;
       ACE_Time_Value length = ACE_Time_Value::zero;
-      channel = RPG_Sound_Common_Tools::play (client_action.sound, length);
+      int channel = RPG_Sound_Common_Tools::play (client_action.sound, length);
       if (channel == -1)
       {
         ACE_DEBUG ((LM_ERROR,
@@ -971,6 +972,7 @@ next:
                     client_action.window));
         goto continue_;
       }
+
       try {
         level_window->setView (client_action.position);
         level_window->draw ();
@@ -986,14 +988,7 @@ next:
       break;
     }
     case COMMAND_SET_VISION_RADIUS:
-    { ACE_ASSERT (engine_);
-      ACE_ASSERT(client_action.entity_id);
-      RPG_Engine_EntityID_t active_entity_id = engine_->getActive (true);
-      if (!active_entity_id ||
-          (active_entity_id != client_action.entity_id))
-        break; // nothing to do (yet)
-
-      ACE_ASSERT (client_action.window);
+    { ACE_ASSERT (client_action.window);
       RPG_Client_IWindowLevel* level_window = NULL;
       try {
         level_window =
@@ -1008,6 +1003,7 @@ next:
                     client_action.window));
         goto continue_;
       }
+
       try {
         level_window->setBlendRadius (client_action.radius);
         level_window->draw ();
@@ -1040,6 +1036,7 @@ next:
                     client_action.window));
         goto continue_;
       }
+
       RPG_Graphics_Position_t view = level_window->getView ();
       RPG_Map_PositionList_t positions;
       RPG_Graphics_Offsets_t screen_positions;
@@ -1116,6 +1113,7 @@ next:
                     client_action.window));
         goto continue_;
       }
+
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->restoreHighlightBG (level_window->getView (),
                                                                               dirty_region,
                                                                               NULL,
@@ -1148,6 +1146,14 @@ next:
                     client_action.window));
         goto continue_;
       }
+
+      // step0: reset bg caches
+      RPG_Graphics_Cursor_Manager* cursor_manager_p =
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ();
+      ACE_ASSERT (cursor_manager_p);
+      cursor_manager_p->invalidateBG ();
+      cursor_manager_p->resetHighlightBG (client_action.position);
+
       try {
         level_window->toggleDoor (client_action.position);
         level_window->draw ();
@@ -1183,6 +1189,7 @@ next:
       SDL_Surface* surface_p =
         SDL_GetWindowSurface (client_action.window->getScreen ());
 #endif // SDL_USE || SDL2_USE
+
       try {
         client_window->drawBorder (surface_p,
                                    0,
@@ -1226,7 +1233,7 @@ next:
                     client_action.window));
         goto continue_;
       }
-      struct SDL_Rect dirty_region;
+
       try {
         window->hide (dirty_region);
       } catch (...) {
@@ -1257,11 +1264,14 @@ next:
       } // end IF
 
       // step0: reset bg caches
-      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->invalidateBG ();
-      RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->resetHighlightBG (std::make_pair (std::numeric_limits<unsigned int>::max (),
-                                                                                            std::numeric_limits<unsigned int>::max ()));
+      RPG_Graphics_Cursor_Manager* cursor_manager_p =
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ();
+      ACE_ASSERT (cursor_manager_p);
+      cursor_manager_p->invalidateBG ();
+      cursor_manager_p->resetHighlightBG (std::make_pair (std::numeric_limits<unsigned int>::max (),
+                                                          std::numeric_limits<unsigned int>::max ()));
 
-      // step1: init/(re)draw window
+      // step1: initialize/(re)draw window
       engine_->lock ();
       RPG_Map_Position_t center = engine_->getSize (false); // locked access ?
       setStyle (RPG_Client_Common_Tools::environmentToStyle (engine_->getMetaData (false).environment)); // locked access ?
@@ -1345,6 +1355,7 @@ next:
                     client_action.window));
         goto continue_;
       }
+
       try {
         level_window->updateMessageWindow (client_action.message);
       } catch (...) {
@@ -1373,6 +1384,7 @@ next:
                     client_action.window));
         goto continue_;
       }
+
       try {
         level_window->updateMinimap ();
       } catch (...) {

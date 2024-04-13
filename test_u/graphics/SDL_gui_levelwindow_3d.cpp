@@ -61,32 +61,21 @@
 #include "SDL_gui_defines.h"
 #include "SDL_gui_minimapwindow.h"
 
-SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D(const RPG_Graphics_SDLWindowBase& parent_in,
-                                               RPG_Engine* engine_in)
- : inherited(WINDOW_MAP,           // type
-             parent_in,            // parent
-             std::make_pair(0, 0), // offset
-             std::string()),       // title
-//              NULL),                // background
-   myState(NULL),
-   myEngine(engine_in),
-//   myState->style(),
-//    myCurrentFloorSet(),
-//    myCurrentWallSet(),
-   myCurrentCeilingTile(NULL),
-//    myCurrentDoorSet(),
-   myCurrentOffMapTile(NULL),
-//    myFloorEdgeTiles(),
-//    myWallTiles(),
-   myHideFloor(false),
-   myHideWalls(false),
-   myWallBlend(NULL),
-   myView(std::make_pair(std::numeric_limits<unsigned int>::max(),
-                         std::numeric_limits<unsigned int>::max())),
-//   myHighlightBGPosition(std::make_pair(myEngine->getSize().first / 2,
-//                                        myEngine->getSize().second / 2)),
-//   myHighlightBG(NULL),
-//   myHighlightTile(NULL),
+SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D (const RPG_Graphics_SDLWindowBase& parent_in,
+                                                RPG_Engine* engine_in)
+ : inherited (WINDOW_MAP,                 // type
+              parent_in,                  // parent
+              std::make_pair (0, 0),      // offset
+              ACE_TEXT_ALWAYS_CHAR ("")), // title
+   myState (NULL),
+   myEngine (engine_in),
+   myCurrentCeilingTile (NULL),
+   myCurrentOffMapTile (NULL),
+   myHideFloor (false),
+   myHideWalls (false),
+   myWallBlend (NULL),
+   myView (std::make_pair (std::numeric_limits<unsigned int>::max (),
+                           std::numeric_limits<unsigned int>::max ())),
    myMinimapIsOn (RPG_CLIENT_MINIMAP_DEF_ISON)
 {
   RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D"));
@@ -102,38 +91,32 @@ SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D(const RPG_Graphics_SDLWindowBase&
 //   initWallBlend(false);
 
   // init ceiling tile
-  initCeiling();
+  initCeiling ();
 
   // load tile for unmapped areas
-  RPG_Graphics_GraphicTypeUnion type;
+  struct RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
   type.tilegraphic = TILE_OFF_MAP;
-  myCurrentOffMapTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
-                                                               true,   // convert to display format
-                                                               false); // don't cache
+  myCurrentOffMapTile = RPG_Graphics_Common_Tools::loadGraphic (type,   // tile
+                                                                true,   // convert to display format
+                                                                false); // don't cache
   if (!myCurrentOffMapTile)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
-               RPG_Graphics_Common_Tools::toString(type).c_str()));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
+                ACE_TEXT (RPG_Graphics_Common_Tools::toString (type).c_str ())));
 
   // init tiles / position
-  ACE_OS::memset(&myCurrentFloorEdgeSet,
-                 0,
-                 sizeof(myCurrentFloorEdgeSet));
-  ACE_OS::memset(&myCurrentWallSet,
-                 0,
-                 sizeof(myCurrentWallSet));
-  ACE_OS::memset(&myCurrentDoorSet,
-                 0,
-                 sizeof(myCurrentDoorSet));
+  ACE_OS::memset (&myCurrentFloorEdgeSet, 0, sizeof (myCurrentFloorEdgeSet));
+  ACE_OS::memset (&myCurrentWallSet, 0, sizeof (myCurrentWallSet));
+  ACE_OS::memset (&myCurrentDoorSet, 0, sizeof (myCurrentDoorSet));
 
   // init minimap
-  initMiniMap(myEngine);
+  initMiniMap (myEngine);
 }
 
-SDL_GUI_LevelWindow_3D::~SDL_GUI_LevelWindow_3D()
+SDL_GUI_LevelWindow_3D::~SDL_GUI_LevelWindow_3D ()
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::~SDL_GUI_LevelWindow_3D"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_3D::~SDL_GUI_LevelWindow_3D"));
 
   // clean up
   for (RPG_Graphics_FloorTilesConstIterator_t iterator = myCurrentFloorSet.tiles.begin();
@@ -202,26 +185,26 @@ SDL_GUI_LevelWindow_3D::~SDL_GUI_LevelWindow_3D()
 }
 
 void
-SDL_GUI_LevelWindow_3D::setView(int offsetX_in,
-                                int offsetY_in,
-                                bool lockedAccess_in)
+SDL_GUI_LevelWindow_3D::setView (int offsetX_in,
+                                 int offsetY_in,
+                                 bool lockedAccess_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::setView"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_3D::setView"));
 
   // handle over-/underruns
   if ((offsetX_in < 0) &&
-      (static_cast<unsigned int>(-offsetX_in) > myView.first))
+      (static_cast<unsigned int> (-offsetX_in) > myView.first))
     myView.first = 0;
   else
     myView.first += offsetX_in;
 
   if ((offsetY_in < 0) &&
-      (static_cast<unsigned int>(-offsetY_in) > myView.second))
+      (static_cast<unsigned int> (-offsetY_in) > myView.second))
     myView.second = 0;
   else
     myView.second += offsetY_in;
 
-  RPG_Map_Size_t map_size = myEngine->getSize(lockedAccess_in);
+  RPG_Map_Size_t map_size = myEngine->getSize (lockedAccess_in);
   if (myView.first >= map_size.first)
     myView.first = (map_size.first - 1);
   if (myView.second >= map_size.second)
@@ -229,9 +212,9 @@ SDL_GUI_LevelWindow_3D::setView(int offsetX_in,
 }
 
 RPG_Graphics_Position_t
-SDL_GUI_LevelWindow_3D::getView() const
+SDL_GUI_LevelWindow_3D::getView () const
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::getView"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_3D::getView"));
 
   return myView;
 }
@@ -341,45 +324,45 @@ SDL_GUI_LevelWindow_3D::initialize (state_t* state_in,
   GLdouble zNear = 1.0F;
   GLdouble zFar = 1024.0F;
   //  gluPerspective(fovY, ratio, zNear, zFar);
-  GLdouble fH = ::tan(fovY / 360.0F * M_PI) * zNear;
+  GLdouble fH = ::tan (fovY / 360.0F * M_PI) * zNear;
   GLdouble fW = fH * ratio;
-  glFrustum(-fW, fW, -fH, fH, zNear, zFar);
-  gl_error = glGetError();
+  glFrustum (-fW, fW, -fH, fH, zNear, zFar);
+  gl_error = glGetError ();
   if (gl_error != GL_NO_ERROR)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to glFrustum: \"%s\", continuing\n"),
-               ACE_TEXT(gluErrorString(gl_error))));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to glFrustum: \"%s\", continuing\n"),
+                ACE_TEXT (gluErrorString (gl_error))));
 
   // init style
-  RPG_Graphics_StyleUnion style;
+  struct RPG_Graphics_StyleUnion style;
   style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
   style.floorstyle = myState->style.floor;
-  setStyle(style);
+  setStyle (style);
   style.discriminator = RPG_Graphics_StyleUnion::EDGESTYLE;
   style.edgestyle = myState->style.edge;
-  setStyle(style);
+  setStyle (style);
   style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
   style.wallstyle = myState->style.wall;
-  setStyle(style);
+  setStyle (style);
   style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
   style.doorstyle = myState->style.door;
-  setStyle(style);
+  setStyle (style);
 }
 
 void
-SDL_GUI_LevelWindow_3D::drawBorder(SDL_Surface* targetSurface_in,
-                                   unsigned int offsetX_in,
-                                   unsigned int offsetY_in)
+SDL_GUI_LevelWindow_3D::drawBorder (SDL_Surface* targetSurface_in,
+                                    unsigned int offsetX_in,
+                                    unsigned int offsetY_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::drawBorder"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_3D::drawBorder"));
 
   // *NOTE*: should NEVER be reached !
-  ACE_ASSERT(false);
+  ACE_ASSERT (false);
 
 #if defined (_MSC_VER)
   return;
 #else
-  ACE_NOTREACHED(return;)
+  ACE_NOTREACHED (return;)
 #endif
 }
 
@@ -598,36 +581,33 @@ SDL_GUI_LevelWindow_3D::draw (SDL_Surface* targetSurface_in,
    */
 
   if (inherited::screenLock_)
-    inherited::screenLock_->unlock();
+    inherited::screenLock_->unlock ();
 
   // realize any sub-windows
-  for (RPG_Graphics_WindowsIterator_t iterator = inherited::children_.begin();
-       iterator != inherited::children_.end();
+  for (RPG_Graphics_WindowsIterator_t iterator = inherited::children_.begin ();
+       iterator != inherited::children_.end ();
        iterator++)
   {
     // draw minimap ?
-    if (((*iterator)->getType() == WINDOW_MINIMAP) && !myMinimapIsOn)
+    if (((*iterator)->getType () == WINDOW_MINIMAP) && !myMinimapIsOn)
       continue;
 
-    try
-    {
-      (*iterator)->draw(target_surface,
-                        offsetX_in,
-                        offsetY_in);
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw(), continuing\n")));
+    try {
+      (*iterator)->draw (target_surface,
+                         offsetX_in,
+                         offsetY_in);
+    } catch (...) {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("caught exception in RPG_Graphics_IWindow::draw(), continuing\n")));
     }
   } // end FOR
 
   // reset clipping area
-  unclip(target_surface);
+  unclip (target_surface);
 
   // remember position of last realization
-  lastAbsolutePosition_ = std::make_pair(clipRectangle_.x,
-                                         clipRectangle_.y);
+  lastAbsolutePosition_ = std::make_pair (clipRectangle_.x,
+                                          clipRectangle_.y);
 }
 
 void
@@ -655,17 +635,17 @@ SDL_GUI_LevelWindow_3D::update (SDL_Surface* targetSurface_in)
 }
 
 void
-SDL_GUI_LevelWindow_3D::handleEvent(const SDL_Event& event_in,
-                                    RPG_Graphics_IWindowBase* window_in,
-                                    SDL_Rect& dirtyRegion_out)
+SDL_GUI_LevelWindow_3D::handleEvent (const SDL_Event& event_in,
+                                     RPG_Graphics_IWindowBase* window_in,
+                                     struct SDL_Rect& dirtyRegion_out)
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::handleEvent"));
 
-  // init return value(s)
-  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
+  // initialize return value(s)
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
   RPG_Engine_EntityID_t entity_id = 0;
-  SDL_Rect dirty_region;
+  struct SDL_Rect dirty_region;
   switch (event_in.type)
   {
     // *** keyboard ***
@@ -1622,9 +1602,9 @@ SDL_GUI_LevelWindow_3D::clear()
 }
 
 bool
-SDL_GUI_LevelWindow_3D::setStyle(const RPG_Graphics_StyleUnion& style_in)
+SDL_GUI_LevelWindow_3D::setStyle (const struct RPG_Graphics_StyleUnion& style_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::setStyle"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_3D::setStyle"));
 
   switch (style_in.discriminator)
   {
@@ -1980,9 +1960,9 @@ SDL_GUI_LevelWindow_3D::initCeiling()
 }
 
 void
-SDL_GUI_LevelWindow_3D::initWallBlend(const bool& halfHeightWalls_in)
+SDL_GUI_LevelWindow_3D::initWallBlend (bool halfHeightWalls_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_3D::initWallBlend"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_3D::initWallBlend"));
 
   // sanity check
   if (myWallBlend)

@@ -56,26 +56,17 @@ SDL_GUI_LevelWindow_Isometric::SDL_GUI_LevelWindow_Isometric(const RPG_Graphics_
               std::string ())        // title
  , myState (NULL)
  , myEngine (engine_in)
-//    myCurrentFloorSet(),
-//    myCurrentWallSet(),
  , myCurrentCeilingTile (NULL)
-//    myCurrentDoorSet(),
  , myCurrentOffMapTile (NULL)
-//    myFloorEdgeTiles(),
-//    myWallTiles(),
  , myHideFloor (false)
  , myFloorBlend (false)
  , myHideWalls (false)
  , myWallBlend (NULL)
  , myView (std::make_pair (std::numeric_limits<unsigned int>::max (),
                            std::numeric_limits<unsigned int>::max ()))
-//   myHighlightBGPosition(std::make_pair(myEngine->getSize().first / 2,
-//                                        myEngine->getSize().second / 2)),
-//   myHighlightBG(NULL),
-//   myHighlightTile(NULL),
  , myMinimapIsOn (RPG_CLIENT_MINIMAP_DEF_ISON)
 {
-  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_Isometric::SDL_GUI_LevelWindow"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_Isometric::SDL_GUI_LevelWindow_Isometric"));
 
   myEngine->initialize (this);
 
@@ -92,120 +83,109 @@ SDL_GUI_LevelWindow_Isometric::SDL_GUI_LevelWindow_Isometric(const RPG_Graphics_
   RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
   type.tilegraphic = TILE_OFF_MAP;
-  myCurrentOffMapTile = RPG_Graphics_Common_Tools::loadGraphic(type,   // tile
-                                                               true,   // convert to display format
-                                                               false); // don't cache
+  myCurrentOffMapTile = RPG_Graphics_Common_Tools::loadGraphic (type,   // tile
+                                                                true,   // convert to display format
+                                                                false); // don't cache
   if (!myCurrentOffMapTile)
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
-               ACE_TEXT(RPG_Graphics_Common_Tools::toString(type).c_str())));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
+                ACE_TEXT (RPG_Graphics_Common_Tools::toString (type).c_str ())));
 
   // init tiles / position
-  ACE_OS::memset(&myCurrentFloorEdgeSet,
-                 0,
-                 sizeof(myCurrentFloorEdgeSet));
-  ACE_OS::memset(&myCurrentWallSet,
-                 0,
-                 sizeof(myCurrentWallSet));
-  ACE_OS::memset(&myCurrentDoorSet,
-                 0,
-                 sizeof(myCurrentDoorSet));
+  ACE_OS::memset (&myCurrentFloorEdgeSet, 0, sizeof (myCurrentFloorEdgeSet));
+  ACE_OS::memset (&myCurrentWallSet, 0, sizeof (myCurrentWallSet));
+  ACE_OS::memset (&myCurrentDoorSet, 0, sizeof (myCurrentDoorSet));
 
   // init minimap
-  initMiniMap(myEngine);
+  initMiniMap (myEngine);
 }
 
-SDL_GUI_LevelWindow_Isometric::~SDL_GUI_LevelWindow_Isometric()
+SDL_GUI_LevelWindow_Isometric::~SDL_GUI_LevelWindow_Isometric ()
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::~SDL_GUI_LevelWindow"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_Isometric::~SDL_GUI_LevelWindow_Isometric"));
 
   // clean up
-  for (RPG_Graphics_FloorTilesConstIterator_t iterator = myCurrentFloorSet.tiles.begin();
-       iterator != myCurrentFloorSet.tiles.end();
+  for (RPG_Graphics_FloorTilesConstIterator_t iterator = myCurrentFloorSet.tiles.begin ();
+       iterator != myCurrentFloorSet.tiles.end ();
        iterator++)
-    SDL_FreeSurface((*iterator).surface);
+    SDL_FreeSurface ((*iterator).surface);
 
   if (myCurrentFloorEdgeSet.east.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.east.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.east.surface);
   if (myCurrentFloorEdgeSet.west.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.west.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.west.surface);
   if (myCurrentFloorEdgeSet.north.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.north.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.north.surface);
   if (myCurrentFloorEdgeSet.south.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.south.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.south.surface);
   if (myCurrentFloorEdgeSet.south_east.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.south_east.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.south_east.surface);
   if (myCurrentFloorEdgeSet.south_west.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.south_west.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.south_west.surface);
   if (myCurrentFloorEdgeSet.north_east.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.north_east.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.north_east.surface);
   if (myCurrentFloorEdgeSet.north_west.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.north_west.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.north_west.surface);
   if (myCurrentFloorEdgeSet.top.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.top.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.top.surface);
   if (myCurrentFloorEdgeSet.right.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.right.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.right.surface);
   if (myCurrentFloorEdgeSet.left.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.left.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.left.surface);
   if (myCurrentFloorEdgeSet.bottom.surface)
-    SDL_FreeSurface(myCurrentFloorEdgeSet.bottom.surface);
+    SDL_FreeSurface (myCurrentFloorEdgeSet.bottom.surface);
 
   if (myCurrentWallSet.east.surface)
-    SDL_FreeSurface(myCurrentWallSet.east.surface);
+    SDL_FreeSurface (myCurrentWallSet.east.surface);
   if (myCurrentWallSet.west.surface)
-    SDL_FreeSurface(myCurrentWallSet.west.surface);
+    SDL_FreeSurface (myCurrentWallSet.west.surface);
   if (myCurrentWallSet.north.surface)
-    SDL_FreeSurface(myCurrentWallSet.north.surface);
+    SDL_FreeSurface (myCurrentWallSet.north.surface);
   if (myCurrentWallSet.south.surface)
-    SDL_FreeSurface(myCurrentWallSet.south.surface);
+    SDL_FreeSurface (myCurrentWallSet.south.surface);
 
   if (myWallBlend)
-    SDL_FreeSurface(myWallBlend);
+    SDL_FreeSurface (myWallBlend);
 
   if (myCurrentDoorSet.horizontal_open.surface)
-    SDL_FreeSurface(myCurrentDoorSet.horizontal_open.surface);
+    SDL_FreeSurface (myCurrentDoorSet.horizontal_open.surface);
   if (myCurrentDoorSet.vertical_open.surface)
-    SDL_FreeSurface(myCurrentDoorSet.vertical_open.surface);
+    SDL_FreeSurface (myCurrentDoorSet.vertical_open.surface);
   if (myCurrentDoorSet.horizontal_closed.surface)
-    SDL_FreeSurface(myCurrentDoorSet.horizontal_closed.surface);
+    SDL_FreeSurface (myCurrentDoorSet.horizontal_closed.surface);
   if (myCurrentDoorSet.vertical_closed.surface)
-    SDL_FreeSurface(myCurrentDoorSet.vertical_closed.surface);
+    SDL_FreeSurface (myCurrentDoorSet.vertical_closed.surface);
   if (myCurrentDoorSet.broken.surface)
-    SDL_FreeSurface(myCurrentDoorSet.broken.surface);
+    SDL_FreeSurface (myCurrentDoorSet.broken.surface);
 
   if (myCurrentCeilingTile)
-    SDL_FreeSurface(myCurrentCeilingTile);
+    SDL_FreeSurface (myCurrentCeilingTile);
 
   if (myCurrentOffMapTile)
-    SDL_FreeSurface(myCurrentOffMapTile);
-
-//  if (myHighlightBG)
-//    SDL_FreeSurface(myHighlightBG);
-//  if (myHighlightTile)
-//    SDL_FreeSurface(myHighlightTile);
+    SDL_FreeSurface (myCurrentOffMapTile);
 }
 
 void
-SDL_GUI_LevelWindow_Isometric::setView(int offsetX_in,
-                                       int offsetY_in,
-                                       bool lockedAccess_in)
+SDL_GUI_LevelWindow_Isometric::setView (int offsetX_in,
+                                        int offsetY_in,
+                                        bool lockedAccess_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::setView"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_Isometric::setView"));
 
   // handle over-/underruns
   if ((offsetX_in < 0) &&
-      (static_cast<unsigned int>(-offsetX_in) > myView.first))
+      (static_cast<unsigned int> (-offsetX_in) > myView.first))
     myView.first = 0;
   else
     myView.first += offsetX_in;
 
   if ((offsetY_in < 0) &&
-      (static_cast<unsigned int>(-offsetY_in) > myView.second))
+      (static_cast<unsigned int> (-offsetY_in) > myView.second))
     myView.second = 0;
   else
     myView.second += offsetY_in;
 
-  RPG_Map_Size_t map_size = myEngine->getSize(lockedAccess_in);
+  RPG_Map_Size_t map_size = myEngine->getSize (lockedAccess_in);
   if (myView.first >= map_size.first)
     myView.first = (map_size.first - 1);
   if (myView.second >= map_size.second)
@@ -213,9 +193,9 @@ SDL_GUI_LevelWindow_Isometric::setView(int offsetX_in,
 }
 
 RPG_Graphics_Position_t
-SDL_GUI_LevelWindow_Isometric::getView() const
+SDL_GUI_LevelWindow_Isometric::getView () const
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::getView"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_Isometric::getView"));
 
   return myView;
 }
@@ -224,7 +204,7 @@ void
 SDL_GUI_LevelWindow_Isometric::initialize (state_t* state_in,
                                            Common_ILock* screenLock_in)
 {
-  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_Isometric::init"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_Isometric::initialize"));
 
   // sanity check(s)
   ACE_ASSERT (state_in);
@@ -242,60 +222,57 @@ SDL_GUI_LevelWindow_Isometric::initialize (state_t* state_in,
   RPG_Graphics_StyleUnion style;
   style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
   style.floorstyle = myState->style.floor;
-  if (!setStyle(style))
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_GUI_LevelWindow_Isometric::setStyle(FLOORSTYLE), continuing\n")));
+  if (!setStyle (style))
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_GUI_LevelWindow_Isometric::setStyle(FLOORSTYLE), continuing\n")));
   style.discriminator = RPG_Graphics_StyleUnion::EDGESTYLE;
   style.edgestyle = myState->style.edge;
-  if (!setStyle(style))
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_GUI_LevelWindow_Isometric::setStyle(EDGESTYLE), continuing\n")));
+  if (!setStyle (style))
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_GUI_LevelWindow_Isometric::setStyle(EDGESTYLE), continuing\n")));
   style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
   style.wallstyle = myState->style.wall;
-  if (!setStyle(style))
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_GUI_LevelWindow_Isometric::setStyle(WALLSTYLE), continuing\n")));
+  if (!setStyle (style))
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_GUI_LevelWindow_Isometric::setStyle(WALLSTYLE), continuing\n")));
   style.discriminator = RPG_Graphics_StyleUnion::DOORSTYLE;
   style.doorstyle = myState->style.door;
-  if (!setStyle(style))
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_GUI_LevelWindow_Isometric::setStyle(DOORSTYLE), continuing\n")));
+  if (!setStyle (style))
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_GUI_LevelWindow_Isometric::setStyle(DOORSTYLE), continuing\n")));
 
   SDL_GUI_MinimapWindow* minimap_window = NULL;
-  try
-  {
+  try {
     minimap_window =
-        dynamic_cast<SDL_GUI_MinimapWindow*>(child(WINDOW_MINIMAP));
-  }
-  catch (...)
-  {
+        dynamic_cast<SDL_GUI_MinimapWindow*> (child (WINDOW_MINIMAP));
+  } catch (...) {
     minimap_window = NULL;
   }
   if (!minimap_window)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to dynamic_cast<SDL_GUI_MinimapWindow*>(%@), aborting\n"),
-               child(WINDOW_MINIMAP)));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to dynamic_cast<SDL_GUI_MinimapWindow*>(%@), returning\n"),
+                child (WINDOW_MINIMAP)));
     return;
   } // end IF
-  minimap_window->initialize(state_in, screenLock_in);
+  minimap_window->initialize (state_in,
+                              screenLock_in);
 }
 
 void
-SDL_GUI_LevelWindow_Isometric::drawBorder(SDL_Surface* targetSurface_in,
-                                          unsigned int offsetX_in,
-                                          unsigned int offsetY_in)
+SDL_GUI_LevelWindow_Isometric::drawBorder (SDL_Surface* targetSurface_in,
+                                           unsigned int offsetX_in,
+                                           unsigned int offsetY_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::drawBorder"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_Isometric::drawBorder"));
 
   // *NOTE*: should NEVER be reached !
-  ACE_ASSERT(false);
+  ACE_ASSERT (false);
 
 #if defined (_MSC_VER)
   return;
 #else
-  ACE_NOTREACHED(return;)
+  ACE_NOTREACHED (return;)
 #endif
 }
 
@@ -314,8 +291,8 @@ SDL_GUI_LevelWindow_Isometric::draw (SDL_Surface* targetSurface_in,
   SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
 #endif // SDL_USE || SDL2_USE
   ACE_ASSERT (surface_p);
-  SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
-                                                  : surface_p);
+  SDL_Surface* target_surface =
+    (targetSurface_in ? targetSurface_in : surface_p);
   ACE_ASSERT (target_surface);
   ACE_ASSERT (static_cast<int> (offsetX_in) <= target_surface->w);
   ACE_ASSERT (static_cast<int> (offsetY_in) <= target_surface->h);
@@ -327,7 +304,7 @@ SDL_GUI_LevelWindow_Isometric::draw (SDL_Surface* targetSurface_in,
         offsetY_in);
 
   // position of the top right corner
-  RPG_Graphics_Position_t top_right = std::make_pair(0, 0);
+  RPG_Graphics_Position_t top_right = std::make_pair (0, 0);
 //   top_right.first = (((-RPG_GRAPHICS_TILE_HEIGHT_MOD * ((targetSurface->w / 2) + 50)) +
 //                       (RPG_GRAPHICS_TILE_WIDTH_MOD * ((targetSurface->h / 2) + 50)) +
 //                       (RPG_GRAPHICS_TILE_WIDTH_MOD * RPG_GRAPHICS_TILE_HEIGHT_MOD)) /
@@ -351,8 +328,8 @@ SDL_GUI_LevelWindow_Isometric::draw (SDL_Surface* targetSurface_in,
   int diff = top_right.first - top_right.second - 1;
   int sum  = top_right.first + top_right.second + 1;
 
-  inherited::clear(COLOR_BLACK, // color
-                   false);      // don't clip
+  inherited::clear (COLOR_BLACK, // color
+                    false);      // don't clip
 
   // draw tiles
   // pass 1:
@@ -882,35 +859,34 @@ SDL_GUI_LevelWindow_Isometric::draw (SDL_Surface* targetSurface_in,
       } // end IF
 
       // step8: ceiling
-      if (RPG_Client_Common_Tools::hasCeiling(current_map_position,
-                                              *myEngine,
-                                              false) &&
+      if (RPG_Client_Common_Tools::hasCeiling (current_map_position,
+                                               *myEngine,
+                                               false) &&
           !myHideWalls)
-        RPG_Graphics_Surface::put(std::make_pair(screen_position.first,
-                                                 (screen_position.second -
-                                                  (myState->style.half_height_walls ? (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2)
-                                                                                    : RPG_GRAPHICS_TILE_WALL_HEIGHT) +
-                                                  (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / (myState->style.half_height_walls ? 8
-                                                                                                                      : 2)))),
-                                  *myCurrentCeilingTile,
-                                  target_surface,
-                                  dirty_region);
+        RPG_Graphics_Surface::put (std::make_pair (screen_position.first,
+                                                   (screen_position.second -
+                                                    (myState->style.half_height_walls ? (RPG_GRAPHICS_TILE_WALL_HEIGHT / 2)
+                                                                                      : RPG_GRAPHICS_TILE_WALL_HEIGHT) +
+                                                    (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / (myState->style.half_height_walls ? 8
+                                                                                                                        : 2)))),
+                                   *myCurrentCeilingTile,
+                                   target_surface,
+                                   dirty_region);
     } // end FOR
   } // end FOR
   myState->lock.release();
-//  myEngine->unlock();
   if (inherited::screenLock_)
-    inherited::screenLock_->unlock();
+    inherited::screenLock_->unlock ();
 
   // refresh (i.e. update bg cache) any sub-windows
-  inherited::refresh();
+  inherited::refresh ();
 
   // realize any sub-windows
-  for (RPG_Graphics_WindowsIterator_t iterator = inherited::children_.begin();
-       iterator != inherited::children_.end();
+  for (RPG_Graphics_WindowsIterator_t iterator = inherited::children_.begin ();
+       iterator != inherited::children_.end ();
        iterator++)
   {
-    switch ((*iterator)->getType())
+    switch ((*iterator)->getType ())
     {
       case WINDOW_MINIMAP:
       {
@@ -922,36 +898,32 @@ SDL_GUI_LevelWindow_Isometric::draw (SDL_Surface* targetSurface_in,
       }
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unknown/invalid window type (was: %d), continuing\n"),
-                   (*iterator)->getType()));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("unknown/invalid window type (was: %d), continuing\n"),
+                    (*iterator)->getType ()));
         break;
       }
     } // end SWITCH
 
-    try
-    {
-      (*iterator)->draw(target_surface,
-                        offsetX_in,
-                        offsetY_in);
-    }
-    catch (...)
-    {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("caught exception in RPG_Graphics_IWindow::draw(), continuing\n")));
+    try {
+      (*iterator)->draw (target_surface,
+                         offsetX_in,
+                         offsetY_in);
+    } catch (...) {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("caught exception in RPG_Graphics_IWindow::draw(), continuing\n")));
     }
   } // end FOR
 
   // reset clipping area
-  unclip(target_surface);
+  unclip (target_surface);
 
   // whole viewport needs a refresh...
-  invalidate(clipRectangle_);
+  invalidate (clipRectangle_);
 
   // remember position of last realization
-  lastAbsolutePosition_ = std::make_pair(clipRectangle_.x,
-                                         clipRectangle_.y);
+  lastAbsolutePosition_ = std::make_pair (clipRectangle_.x,
+                                          clipRectangle_.y);
 }
 
 void
@@ -965,7 +937,7 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
   ACE_OS::memset (&dirtyRegion_out, 0, sizeof (SDL_Rect));
 
   RPG_Engine_EntityID_t entity_id = 0;
-  SDL_Rect dirty_region = {0, 0, 0, 0};
+  struct SDL_Rect dirty_region = {0, 0, 0, 0};
   bool redraw_cursor = false;
   switch (event_in.type)
   {
@@ -982,23 +954,22 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
         case SDLK_RIGHT:
         {
           bool redraw = false;
-          RPG_Map_Direction direction = RPG_MAP_DIRECTION_INVALID;
-          entity_id = myEngine->getActive(true);
+          enum RPG_Map_Direction direction = RPG_MAP_DIRECTION_INVALID;
+          entity_id = myEngine->getActive (true);
           switch (event_in.key.keysym.sym)
           {
             case SDLK_c:
             {
-//              myEngine->lock();
               if (entity_id)
-                setView(myEngine->getPosition(entity_id, false));
+                setView (myEngine->getPosition (entity_id,
+                                                false));
               else
               {
-                RPG_Map_Size_t size = myEngine->getSize(false);
-                setView((size.first  / 2),
-                        (size.second / 2),
-                        false);
+                RPG_Map_Size_t size = myEngine->getSize (false);
+                setView ((size.first  / 2),
+                         (size.second / 2),
+                         false);
               } // end ELSE
-//              myEngine->unlock();
               redraw = true;
 
               break;
@@ -1006,8 +977,8 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
             case SDLK_UP:
             {
               if (event_in.key.keysym.mod & KMOD_SHIFT)
-                setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                        -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+                setView (-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                         -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
               else
                 direction = DIRECTION_UP;
 
@@ -1016,8 +987,8 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
             case SDLK_DOWN:
             {
               if (event_in.key.keysym.mod & KMOD_SHIFT)
-                setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                        RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+                setView (RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                         RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
               else
                 direction = DIRECTION_DOWN;
 
@@ -1026,8 +997,8 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
             case SDLK_LEFT:
             {
               if (event_in.key.keysym.mod & KMOD_SHIFT)
-                setView(-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                        RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+                setView (-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                         RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
               else
                 direction = DIRECTION_LEFT;
 
@@ -1036,8 +1007,8 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
             case SDLK_RIGHT:
             {
               if (event_in.key.keysym.mod & KMOD_SHIFT)
-                setView(RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
-                        -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
+                setView (RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
+                         -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET);
               else
                 direction = DIRECTION_RIGHT;
 
@@ -1055,7 +1026,8 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
             struct RPG_Engine_Action player_action;
             player_action.command = COMMAND_TRAVEL;
             // compute target position
-            player_action.position = myEngine->getPosition(entity_id, true);
+            player_action.position = myEngine->getPosition (entity_id,
+                                                            true);
             switch (direction)
             {
               case DIRECTION_UP:
@@ -1070,31 +1042,32 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
                 break;
               default:
               {
-                ACE_DEBUG((LM_ERROR,
-                           ACE_TEXT("invalid direction (was: \"%s\"), aborting\n"),
-                           ACE_TEXT(RPG_Map_DirectionHelper::RPG_Map_DirectionToString(direction).c_str())));
-
+                ACE_DEBUG ((LM_ERROR,
+                            ACE_TEXT ("invalid direction (was: \"%s\"), aborting\n"),
+                            ACE_TEXT (RPG_Map_DirectionHelper::RPG_Map_DirectionToString (direction).c_str ())));
                 break;
               }
             } // end SWITCH
             // position valid ?
-            RPG_Map_Element element =
-                myEngine->getElement(player_action.position, true);
+            enum RPG_Map_Element element =
+                myEngine->getElement (player_action.position,
+                                      true);
             if ((element == MAPELEMENT_FLOOR) ||
                 (element == MAPELEMENT_DOOR))
             {
               if (element == MAPELEMENT_DOOR)
               {
-                RPG_Map_DoorState door_state =
-                    myEngine->state(player_action.position, true);
+                enum RPG_Map_DoorState door_state =
+                    myEngine->state (player_action.position,
+                                     true);
                 if ((door_state == DOORSTATE_CLOSED) ||
                     (door_state == DOORSTATE_LOCKED))
                   break;
               } // end IF
 
-              myEngine->action(entity_id,
-                               player_action,
-                               true);
+              myEngine->action (entity_id,
+                                player_action,
+                                true);
 
 //              setView(myEngine->getPosition(entity_id));
             } // end IF
@@ -1104,8 +1077,9 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
 
           if (redraw)
           {
-            draw();
-            getArea(dirtyRegion_out);
+            draw ();
+            getArea (dirtyRegion_out,
+                     false); // toplevel- ?
             redraw_cursor = true;
           } // end IF
 
@@ -1116,8 +1090,9 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
           myState->debug = !myState->debug;
 
           // redraw
-          draw();
-          getArea(dirtyRegion_out);
+          draw ();
+          getArea (dirtyRegion_out,
+                   false); // toplevel- ?
           redraw_cursor = true;
 
           break;
@@ -1130,8 +1105,9 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
             myHideFloor = !myHideFloor;
 
             // redraw
-            draw();
-            getArea (dirtyRegion_out);
+            draw ();
+            getArea (dirtyRegion_out,
+                     false); // toplevel- ?
             redraw_cursor = true;
 
             break;
@@ -1141,25 +1117,27 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
             toggleFloorBlend ();
 
             // redraw
-            draw();
-            getArea (dirtyRegion_out);
+            draw ();
+            getArea (dirtyRegion_out,
+                     false); // toplevel- ?
             redraw_cursor = true;
 
             break;
           } // end ELSE IF
 
           myState->style.floor =
-              static_cast<RPG_Graphics_FloorStyle>(myState->style.floor + 1);
+              static_cast<RPG_Graphics_FloorStyle> (myState->style.floor + 1);
           if (myState->style.floor == RPG_GRAPHICS_FLOORSTYLE_MAX)
-            myState->style.floor = static_cast<RPG_Graphics_FloorStyle>(0);
-          RPG_Graphics_StyleUnion style;
+            myState->style.floor = static_cast<RPG_Graphics_FloorStyle> (0);
+          struct RPG_Graphics_StyleUnion style;
           style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
           style.floorstyle = myState->style.floor;
-          setStyle(style);
+          setStyle (style);
 
           // redraw
-          draw();
-          getArea(dirtyRegion_out);
+          draw ();
+          getArea (dirtyRegion_out,
+                   false); // toplevel- ?
           redraw_cursor = true;
 
           break;
@@ -1167,17 +1145,17 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
         case SDLK_h:
         {
           // toggle setting
-          myState->style.half_height_walls =
-              !myState->style.half_height_walls;
+          myState->style.half_height_walls = !myState->style.half_height_walls;
 
-          RPG_Graphics_StyleUnion new_style;
+          struct RPG_Graphics_StyleUnion new_style;
           new_style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
           new_style.wallstyle = myState->style.wall;
-          setStyle(new_style);
+          setStyle (new_style);
 
           // redraw
-          draw();
-          getArea(dirtyRegion_out);
+          draw ();
+          getArea (dirtyRegion_out,
+                   false); // toplevel- ?
           redraw_cursor = true;
 
           break;
@@ -1186,54 +1164,45 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
         {
           myMinimapIsOn = !myMinimapIsOn;
 
-          RPG_Graphics_IWindowBase* window_base = child(WINDOW_MINIMAP);
+          RPG_Graphics_IWindowBase* window_base = child (WINDOW_MINIMAP);
           if (!window_base)
           {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("%@: failed to RPG_Graphics_IWindow::child(WINDOW_MINIMAP), aborting\n"),
-                       this));
-
+            ACE_DEBUG ((LM_ERROR,
+                        ACE_TEXT ("%@: failed to RPG_Graphics_IWindow::child(WINDOW_MINIMAP), aborting\n"),
+                        this));
             break;
           } // end IF
           RPG_Graphics_IWindow* window = NULL;
-          try
-          {
-            window = dynamic_cast<RPG_Graphics_IWindow*>(window_base);
-          }
-          catch (...)
-          {
+          try {
+            window = dynamic_cast<RPG_Graphics_IWindow*> (window_base);
+          } catch (...) {
             window = NULL;
           }
           if (!window)
           {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("failed to dynamic_cast<RPG_Graphics_IWindow*>(%@), aborting\n"),
-                       window_base));
-
+            ACE_DEBUG ((LM_ERROR,
+                        ACE_TEXT ("failed to dynamic_cast<RPG_Graphics_IWindow*>(%@), aborting\n"),
+                        window_base));
             break;
           } // end IF
 
           // draw
-          try
-          {
+          try {
             if (myMinimapIsOn)
-              window->show(dirtyRegion_out);
+              window->show (dirtyRegion_out);
             else
-              window->hide(dirtyRegion_out);
-          }
-          catch (...)
-          {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("%@ caught exception in RPG_Graphics_IWindow::show/hide, aborting\n"),
-                       window));
-
+              window->hide (dirtyRegion_out);
+          } catch (...) {
+            ACE_DEBUG ((LM_ERROR,
+                        ACE_TEXT ("%@ caught exception in RPG_Graphics_IWindow::show/hide, aborting\n"),
+                        window));
             break;
           }
 
-          SDL_Rect cursor_area =
-              RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->area(myView);
-          SDL_Rect intersection = RPG_Graphics_SDL_Tools::intersect(cursor_area,
-                                                                    dirtyRegion_out);
+          struct SDL_Rect cursor_area =
+              RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->area (myView);
+          struct SDL_Rect intersection = RPG_Graphics_SDL_Tools::intersect (cursor_area,
+                                                                            dirtyRegion_out);
           redraw_cursor = (intersection.w && intersection.h);
 
           break;
@@ -1244,17 +1213,18 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
           // find pointed-to map square
           RPG_Graphics_Position_t cursor_position =
             RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position (false);
-          SDL_Rect window_area;
-          getArea(window_area, true);
-//          myEngine->lock();
+          struct SDL_Rect window_area;
+          getArea (window_area,
+                   true); // toplevel- ?
           RPG_Map_Position_t map_position =
             RPG_Graphics_Common_Tools::screenToMap (cursor_position,
                                                     myEngine->getSize (false),
                                                     std::make_pair (window_area.w,
                                                                     window_area.h),
                                                     myView);
-          RPG_Engine_EntityID_t entity_id = myEngine->getActive(false);
-          bool is_valid = myEngine->isValid(map_position, false);
+          RPG_Engine_EntityID_t entity_id = myEngine->getActive (false);
+          bool is_valid = myEngine->isValid (map_position,
+                                             false);
           bool switch_on = (is_valid &&
                             (entity_id > 0));
 
@@ -1271,10 +1241,10 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
 
               // clear cached positions
               myState->source =
-                std::make_pair(std::numeric_limits<unsigned int>::max(),
-                               std::numeric_limits<unsigned int>::max());
-              myState->positions.clear();
-              myState->positions.push_back(map_position);
+                std::make_pair (std::numeric_limits<unsigned int>::max (),
+                                std::numeric_limits<unsigned int>::max ());
+              myState->positions.clear ();
+              myState->positions.push_back (map_position);
 
               if (event_in.key.keysym.sym != SDLK_t)
                 break;
@@ -1293,12 +1263,12 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
                 switch_on = false;
 
                 // clear cached positions
-                myState->positions.clear();
-                myState->positions.push_back(map_position);
+                myState->positions.clear ();
+                myState->positions.push_back (map_position);
               } // end IF
 
               // clear any cached positions
-              myState->path.clear();
+              myState->path.clear ();
 
               // *WARNING*: falls through !
             }
@@ -1325,24 +1295,24 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
                 // retain source position
                 myState->source = map_position;
                 myState->radius = 0;
-                myState->positions.push_back(map_position);
+                myState->positions.push_back (map_position);
               } // end IF
 
               break;
             }
             default:
             {
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("invalid selection mode (was: %u), continuing\n"),
-                         myState->selection_mode));
-
+              ACE_DEBUG ((LM_ERROR,
+                          ACE_TEXT ("invalid selection mode (was: %u), continuing\n"),
+                          myState->selection_mode));
               break;
             }
           } // end SWITCH
 
           // toggle
           bool set_cursor = true;
-          bool has_seen = hasSeen(entity_id, map_position);
+          bool has_seen = hasSeen (entity_id,
+                                   map_position);
           if (switch_on)
           {
             // draw path ?
@@ -1351,13 +1321,13 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
               // --> push fake mouse - move event
               SDL_Event sdl_event;
               sdl_event.type = SDL_MOUSEMOTION;
-              sdl_event.motion.which = std::numeric_limits<unsigned char>::max(); // flag as fake
+              sdl_event.motion.which = std::numeric_limits<unsigned char>::max (); // flag as fake
               sdl_event.motion.x = cursor_position.first;
               sdl_event.motion.y = cursor_position.second;
               if (SDL_PushEvent (&sdl_event) < 0)
-                ACE_DEBUG((LM_ERROR,
-                           ACE_TEXT("failed to SDL_PushEvent(): \"%s\", continuing\n"),
-                           ACE_TEXT(SDL_GetError())));
+                ACE_DEBUG ((LM_ERROR,
+                            ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),
+                            ACE_TEXT (SDL_GetError ())));
 
               set_cursor = false; // done during the mouse-move
             } // end IF
@@ -1365,26 +1335,26 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
           else
           {
             // switching off --> reset path/area highlighting
-            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->restoreHighlightBG (myView,
-                                                                                   dirtyRegion_out,
-                                                                                   NULL,
-                                                                                   true,
-                                                                                   myState->debug);
+            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->restoreHighlightBG (myView,
+                                                                                    dirtyRegion_out,
+                                                                                    NULL,
+                                                                                    true,
+                                                                                    myState->debug);
             //RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG(map_position);
             if (is_valid &&
                 has_seen)
             {
               RPG_Graphics_Offsets_t screen_positions;
-              screen_positions.push_back(RPG_Graphics_Common_Tools::mapToScreen (map_position,
-                                                                                 std::make_pair (window_area.w,
-                                                                                                 window_area.h),
-                                                                                 myView));
-              RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putHighlights (myState->positions,
-                                                                                screen_positions,
-                                                                                myView,
-                                                                                dirty_region,
-                                                                                true,
-                                                                                myState->debug);
+              screen_positions.push_back (RPG_Graphics_Common_Tools::mapToScreen (map_position,
+                                                                                  std::make_pair (window_area.w,
+                                                                                                  window_area.h),
+                                                                                  myView));
+              RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->putHighlights (myState->positions,
+                                                                                 screen_positions,
+                                                                                 myView,
+                                                                                 dirty_region,
+                                                                                 true,
+                                                                                 myState->debug);
               dirtyRegion_out =
                 RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
                                                      dirtyRegion_out);
@@ -1394,28 +1364,27 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
           if (set_cursor)
           {
             // set an appropriate cursor
-            RPG_Graphics_Cursor cursor_type =
-              RPG_Client_Common_Tools::getCursor(map_position,
-                                                 entity_id,
-                                                 has_seen,
-                                                 myState->selection_mode,
-                                                 *myEngine,
-                                                 false);
-            if (cursor_type !=
-                RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
+            enum RPG_Graphics_Cursor cursor_type =
+              RPG_Client_Common_Tools::getCursor (map_position,
+                                                  entity_id,
+                                                  has_seen,
+                                                  myState->selection_mode,
+                                                  *myEngine,
+                                                  false);
+            if (cursor_type != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->type ())
             {
               //ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
-              RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->setCursor(cursor_type,
-                                                                           dirty_region,
-                                                                           true);
+              RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->setCursor (cursor_type,
+                                                                             dirty_region,
+                                                                             true);
               dirtyRegion_out =
-                RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-                                                    dirtyRegion_out);
+                RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
+                                                     dirtyRegion_out);
             } // end IF
           } // end IF
 //          myEngine->unlock();
 
-          invalidate(dirtyRegion_out);
+          invalidate (dirtyRegion_out);
 
           break;
         }
@@ -1427,25 +1396,27 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
             myHideWalls = !myHideWalls;
 
             // redraw
-            draw();
-            getArea(dirtyRegion_out);
+            draw ();
+            getArea (dirtyRegion_out,
+                     false); // toplevel- ?
             redraw_cursor = true;
 
             break;
           } // end IF
 
           myState->style.wall =
-              static_cast<RPG_Graphics_WallStyle>(myState->style.wall + 1);
+              static_cast<RPG_Graphics_WallStyle> (myState->style.wall + 1);
           if (myState->style.wall == RPG_GRAPHICS_WALLSTYLE_MAX)
-            myState->style.wall = static_cast<RPG_Graphics_WallStyle>(0);
+            myState->style.wall = static_cast<RPG_Graphics_WallStyle> (0);
           RPG_Graphics_StyleUnion style;
           style.discriminator = RPG_Graphics_StyleUnion::WALLSTYLE;
           style.wallstyle = myState->style.wall;
-          setStyle(style);
+          setStyle (style);
 
           // redraw
-          draw();
-          getArea(dirtyRegion_out);
+          draw ();
+          getArea (dirtyRegion_out,
+                   false); // toplevel- ?
           redraw_cursor = true;
 
           break;
@@ -1466,13 +1437,14 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
       bool done = false;
 
       // step0: find map square
-      SDL_Rect window_area;
-      getArea(window_area, true);
+      struct SDL_Rect window_area;
+      getArea (window_area,
+               true); // toplevel- ?
 //      myEngine->lock();
       RPG_Graphics_Position_t map_position =
           RPG_Graphics_Common_Tools::screenToMap (std::make_pair (event_in.motion.x,
                                                                   event_in.motion.y),
-                                                  myEngine->getSize(false),
+                                                  myEngine->getSize (false),
                                                   std::make_pair (window_area.w,
                                                                   window_area.h),
                                                   myView);
@@ -1482,8 +1454,9 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
       //                  map_position.first, map_position.second));
 
       // step0a: bail-out-fast tests
-      entity_id = myEngine->getActive(false);
-      has_seen = hasSeen(entity_id, map_position);
+      entity_id = myEngine->getActive (false);
+      has_seen = hasSeen (entity_id,
+                          map_position);
       // inside map ?
       //if (map_position ==
       //    std::make_pair(std::numeric_limits<unsigned int>::max(),
@@ -1491,8 +1464,8 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
       //  goto set_cursor; // off-map
       // (re-)draw "active" tile highlight(s) ?
       if ((map_position ==
-           RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->getHighlightBGPosition()) &&
-          (event_in.motion.which != std::numeric_limits<unsigned char>::max())) // fake event ?
+           RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->getHighlightBGPosition ()) &&
+          (event_in.motion.which != std::numeric_limits<unsigned char>::max ())) // fake event ?
         goto set_cursor; // same map square/not initiating pathing --> nothing to do...
       //if (!has_seen)
       //  goto set_cursor; // player hasn't yet seen this position
@@ -1517,8 +1490,8 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
           {
             // step1: build circle
             unsigned int selection_radius =
-              RPG_Map_Common_Tools::distanceMax(myState->source,
-                                                map_position);
+              RPG_Map_Common_Tools::distanceMax (myState->source,
+                                                 map_position);
             if (selection_radius > RPG_MAP_CIRCLE_MAX_RADIUS)
               selection_radius = RPG_MAP_CIRCLE_MAX_RADIUS;
 
@@ -1532,11 +1505,11 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
             else
               myState->radius = selection_radius;
 
-            RPG_Map_Common_Tools::buildCircle(myState->source,
-                                              myEngine->getSize(false),
-                                              myState->radius,
-                                              false, // don't fill
-                                              positions);
+            RPG_Map_Common_Tools::buildCircle (myState->source,
+                                               myEngine->getSize (false),
+                                               myState->radius,
+                                               false, // don't fill
+                                               positions);
 
             // *WARNING*: falls through !
           }
@@ -1546,8 +1519,8 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
             {
               // step1: build square
               unsigned int selection_radius =
-                RPG_Map_Common_Tools::distanceMax(myState->source,
-                                                  map_position);
+                RPG_Map_Common_Tools::distanceMax (myState->source,
+                                                   map_position);
 
               // bail out ?
               if (selection_radius == myState->radius)
@@ -1559,31 +1532,31 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
               else
                 myState->radius = selection_radius;
 
-              RPG_Map_Common_Tools::buildSquare(myState->source,
-                                                myEngine->getSize(false),
-                                                myState->radius,
-                                                false, // don't fill
-                                                positions);
+              RPG_Map_Common_Tools::buildSquare (myState->source,
+                                                 myEngine->getSize (false),
+                                                 myState->radius,
+                                                 false, // don't fill
+                                                 positions);
             } // end IF
 
             // step2: remove invalid positions
-            RPG_Map_Positions_t obstacles = myEngine->getObstacles(false,
-                                                                   false);
+            RPG_Map_Positions_t obstacles = myEngine->getObstacles (false,
+                                                                    false);
             // *WARNING*: this works for associative containers ONLY
-            for (RPG_Map_PositionsIterator_t iterator = positions.begin();
-                 iterator != positions.end();
+            for (RPG_Map_PositionsIterator_t iterator = positions.begin ();
+                 iterator != positions.end ();
                 )
-              if (RPG_Map_Common_Tools::hasLineOfSight(myState->source,
-                                                       *iterator,
-                                                       obstacles,
-                                                       false))
+              if (RPG_Map_Common_Tools::hasLineOfSight (myState->source,
+                                                        *iterator,
+                                                        obstacles,
+                                                        false))
                 iterator++;
               else
-                positions.erase(iterator++);
-            myState->positions.clear();
-            myState->positions.insert(myState->positions.begin(),
-                                      positions.begin(),
-                                      positions.end());
+                positions.erase (iterator++);
+            myState->positions.clear ();
+            myState->positions.insert (myState->positions.begin (),
+                                       positions.begin (),
+                                       positions.end ());
 
             // *WARNING*: falls through !
           }
@@ -1592,10 +1565,10 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
             if (myState->selection_mode == SELECTIONMODE_PATH)
             {
               // step1: build path ?
-              RPG_Engine_EntityID_t entity_id = myEngine->getActive(false);
+              RPG_Engine_EntityID_t entity_id = myEngine->getActive (false);
               if (!entity_id            ||
-                  !hasSeen(entity_id,
-                           map_position))
+                  !hasSeen (entity_id,
+                            map_position))
               {
                 toggle_on = false; // --> remove highlights
 
@@ -1603,18 +1576,19 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
               } // end IF
 
               RPG_Map_Position_t current_position =
-                myEngine->getPosition(entity_id, false);
+                myEngine->getPosition (entity_id,
+                                       false);
               if (current_position != map_position)
               {
-                if (!myEngine->findPath(current_position,
-                                        map_position,
-                                        myState->path,
-                                        false))
+                if (!myEngine->findPath (current_position,
+                                         map_position,
+                                         myState->path,
+                                         false))
                 {
-                  ACE_DEBUG((LM_DEBUG,
-                             ACE_TEXT("could not find a path [%u,%u] --> [%u,%u], continuing\n"),
-                             current_position.first, current_position.second,
-                             map_position.first, map_position.second));
+                  ACE_DEBUG ((LM_DEBUG,
+                              ACE_TEXT ("could not find a path [%u,%u] --> [%u,%u], continuing\n"),
+                              current_position.first, current_position.second,
+                              map_position.first, map_position.second));
 
                   // pointing at an invalid (i.e. unreachable) position (still on the map though)
                   // --> erase cached path (and tile highlights)
@@ -1631,28 +1605,28 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
               } // end ELSE
 
               // step2: compute (screen) positions
-              myState->positions.clear();
-              for (RPG_Map_PathConstIterator_t iterator = myState->path.begin();
-                   iterator != myState->path.end();
+              myState->positions.clear ();
+              for (RPG_Map_PathConstIterator_t iterator = myState->path.begin ();
+                   iterator != myState->path.end ();
                    iterator++)
               {
-                myState->positions.push_back((*iterator).first);
-                screen_positions.push_back(RPG_Graphics_Common_Tools::mapToScreen ((*iterator).first,
-                                                                                   std::make_pair (window_area.w,
-                                                                                                   window_area.h),
-                                                                                   myView));
+                myState->positions.push_back ((*iterator).first);
+                screen_positions.push_back (RPG_Graphics_Common_Tools::mapToScreen ((*iterator).first,
+                                                                                    std::make_pair (window_area.w,
+                                                                                                    window_area.h),
+                                                                                    myView));
               } // end FOR
             } // end IF
             else
             {
               // step3: compute screen positions
-              for (RPG_Map_PositionListIterator_t iterator = myState->positions.begin();
-                   iterator != myState->positions.end();
+              for (RPG_Map_PositionListIterator_t iterator = myState->positions.begin ();
+                   iterator != myState->positions.end ();
                    iterator++)
-                screen_positions.push_back(RPG_Graphics_Common_Tools::mapToScreen (*iterator,
-                                                                                   std::make_pair (window_area.w,
-                                                                                                   window_area.h),
-                                                                                   myView));
+                screen_positions.push_back (RPG_Graphics_Common_Tools::mapToScreen (*iterator,
+                                                                                    std::make_pair (window_area.w,
+                                                                                                    window_area.h),
+                                                                                    myView));
             } // end ELSE
 
             break;
@@ -1660,19 +1634,19 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
           case SELECTIONMODE_NORMAL:
           {
             // step2: compute screen position
-            myState->positions.clear();
-            myState->positions.push_back(map_position);
-            screen_positions.push_back(RPG_Graphics_Common_Tools::mapToScreen (map_position,
-                                                                               std::make_pair (window_area.w,
-                                                                                               window_area.h),
-                                                                               myView));
+            myState->positions.clear ();
+            myState->positions.push_back (map_position);
+            screen_positions.push_back (RPG_Graphics_Common_Tools::mapToScreen (map_position,
+                                                                                std::make_pair (window_area.w,
+                                                                                                window_area.h),
+                                                                                myView));
             break;
           }
           default:
           {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("invalid selection mode (was: %d), continuing\n"),
-                       myState->selection_mode));
+            ACE_DEBUG ((LM_ERROR,
+                        ACE_TEXT ("invalid selection mode (was: %d), continuing\n"),
+                        myState->selection_mode));
 
             break;
           }
@@ -1687,7 +1661,7 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
       } // end IF
 
       // step2: draw/remove highlight(s)
-      screenLock_->lock();
+      screenLock_->lock ();
       if (toggle_on)
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->putHighlights (myState->positions,
                                                                            screen_positions,
@@ -1706,24 +1680,23 @@ SDL_GUI_LevelWindow_Isometric::handleEvent(const SDL_Event& event_in,
 set_cursor:
       // step3: set an appropriate cursor
       //entity_id = myEngine->getActive(false);
-      RPG_Graphics_Cursor cursor_type =
-        RPG_Client_Common_Tools::getCursor(map_position,
-                                           entity_id,
-                                           has_seen,
-                                           myState->selection_mode,
-                                           *myEngine,
-                                           false);
+      enum RPG_Graphics_Cursor cursor_type =
+        RPG_Client_Common_Tools::getCursor (map_position,
+                                            entity_id,
+                                            has_seen,
+                                            myState->selection_mode,
+                                            *myEngine,
+                                            false);
 //      myEngine->unlock();
-      if (cursor_type !=
-          RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->type())
+      if (cursor_type != RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->type ())
       {
-        ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->setCursor(cursor_type,
-                                                                     dirty_region,
-                                                                     true);
+        ACE_OS::memset (&dirty_region, 0, sizeof (struct SDL_Rect));
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->setCursor (cursor_type,
+                                                                       dirty_region,
+                                                                       true);
         dirtyRegion_out =
-          RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-                                              dirtyRegion_out);
+          RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
+                                               dirtyRegion_out);
       } // end IF
       if (dirtyRegion_out.w || dirtyRegion_out.h)
         invalidate(dirtyRegion_out);
@@ -1756,10 +1729,10 @@ set_cursor:
       {
         case 1: // left-click
         {
-          RPG_Engine_EntityID_t entity_id = myEngine->getActive(false);
+          RPG_Engine_EntityID_t entity_id = myEngine->getActive (false);
           if ((entity_id == 0) ||
-              !hasSeen(entity_id,
-                       map_position))
+              !hasSeen (entity_id,
+                        map_position))
             break; // --> no player/vision, no action...
 
           struct RPG_Engine_Action player_action;
@@ -1768,40 +1741,42 @@ set_cursor:
           //player_action.path.clear();
 
           // clicked on entity ?
-          player_action.target = myEngine->hasEntity(map_position, false);
+          player_action.target = myEngine->hasEntity (map_position,
+                                                      false);
           if (player_action.target)
           {
             if (player_action.target == entity_id)
               break; // clicked on self...
 
             // clicked on monster ?
-            if (myEngine->isMonster(player_action.target, false) &&
-                myEngine->canSee(entity_id,
-                                 player_action.target,
-                                 false))
+            if (myEngine->isMonster (player_action.target,
+                                     false) &&
+                myEngine->canSee (entity_id,
+                                  player_action.target,
+                                  false))
             {
               // attack/pursue selected monster
               player_action.command = COMMAND_ATTACK;
 
               // reuse existing path ?
-              if (!myEngine->canReach(entity_id,
-                                      map_position,
-                                      false)                      &&
+              if (!myEngine->canReach (entity_id,
+                                       map_position,
+                                       false)                     &&
                   (myState->selection_mode == SELECTIONMODE_PATH) &&
-                  !myState->path.empty())
+                  !myState->path.empty ())
               {
                 // sanity checks
-                ACE_ASSERT(myState->path.front().first == map_position);
-                ACE_ASSERT(myState->path.back().first == player_action.position);
+                ACE_ASSERT (myState->path.front ().first == map_position);
+                ACE_ASSERT (myState->path.back ().first == player_action.position);
 
                 // path exists --> reuse it
                 player_action.path = myState->path;
                 player_action.path.pop_front();
                 //player_action.path.pop_back();
               } // end IF
-              myEngine->action(entity_id,
-                               player_action,
-                               false);
+              myEngine->action (entity_id,
+                                player_action,
+                                false);
 
               break;
             } // end IF
@@ -1810,17 +1785,20 @@ set_cursor:
 
           // --> travel / handle door
           RPG_Map_Position_t current_position =
-            myEngine->getPosition(entity_id, false);
-          RPG_Map_Element map_element = myEngine->getElement(map_position, false);
+            myEngine->getPosition (entity_id,
+                                   false);
+          enum RPG_Map_Element map_element = myEngine->getElement (map_position,
+                                                                   false);
           switch (map_element)
           {
             case MAPELEMENT_DOOR:
             {
-              RPG_Map_DoorState door_state = myEngine->state(map_position, false);
+              RPG_Map_DoorState door_state = myEngine->state (map_position,
+                                                              false);
 
               // (try to) handle door ?
-              if (RPG_Map_Common_Tools::isAdjacent(current_position,
-                                                   map_position))
+              if (RPG_Map_Common_Tools::isAdjacent (current_position,
+                                                    map_position))
               {
                 bool ignore_door = false;
                 switch (door_state)
@@ -1834,10 +1812,10 @@ set_cursor:
                     ignore_door = true; break;
                   default:
                   {
-                    ACE_DEBUG((LM_ERROR,
-                               ACE_TEXT("[%u,%u]: invalid door state (was: \"%s\"), continuing\n"),
-                               map_position.first, map_position.second,
-                               ACE_TEXT(RPG_Map_DoorStateHelper::RPG_Map_DoorStateToString(door_state).c_str())));
+                    ACE_DEBUG ((LM_ERROR,
+                                ACE_TEXT ("[%u,%u]: invalid door state (was: \"%s\"), continuing\n"),
+                                map_position.first, map_position.second,
+                                ACE_TEXT (RPG_Map_DoorStateHelper::RPG_Map_DoorStateToString (door_state).c_str ())));
 
                     ignore_door = true;
 
@@ -1847,9 +1825,9 @@ set_cursor:
                 player_action.position = map_position;
 
                 if (!ignore_door)
-                  myEngine->action(entity_id,
-                                   player_action,
-                                   false);
+                  myEngine->action (entity_id,
+                                    player_action,
+                                    false);
               } // end IF
               else if ((door_state == DOORSTATE_CLOSED) ||
                        (door_state == DOORSTATE_LOCKED))
@@ -1872,19 +1850,19 @@ set_cursor:
 
               // reuse existing path ?
               if ((myState->selection_mode == SELECTIONMODE_PATH) &&
-                  !myState->path.empty())
+                  !myState->path.empty ())
               {
                 // sanity checks
-                ACE_ASSERT(myState->path.back().first == map_position);
-                ACE_ASSERT(myState->path.front().first == current_position);
+                ACE_ASSERT (myState->path.back ().first == map_position);
+                ACE_ASSERT (myState->path.front ().first == current_position);
 
                 // path exists --> reuse it
                 player_action.path = myState->path;
-                player_action.path.pop_front();
+                player_action.path.pop_front ();
               } // end IF
-              myEngine->action(entity_id,
-                               player_action,
-                               false);
+              myEngine->action (entity_id,
+                                player_action,
+                                false);
 
               break;
             }
@@ -1950,61 +1928,61 @@ set_cursor:
 
   if (redraw_cursor)
   {
-    redrawCursor(RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->position(false),
-                 true);
-    dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-                                                          dirtyRegion_out);
+    redrawCursor (RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->position (false),
+                  true);
+    dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
+                                                           dirtyRegion_out);
   } // end IF
 
   // pass events to any children ?
   // --> not if this was already an upcall...
   if (window_in == this)
   {
-    ACE_OS::memset(&dirty_region, 0, sizeof(dirty_region));
-    inherited::handleEvent(event_in,
-                           window_in,
-                           dirty_region);
-    dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox(dirty_region,
-                                                          dirtyRegion_out);
+    ACE_OS::memset (&dirty_region, 0, sizeof(struct SDL_Rect));
+    inherited::handleEvent (event_in,
+                            window_in,
+                            dirty_region);
+    dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
+                                                           dirtyRegion_out);
   } // end IF
 }
 
 void
-SDL_GUI_LevelWindow_Isometric::initTiles()
+SDL_GUI_LevelWindow_Isometric::initTiles ()
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::initTiles"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_Isometric::initTiles"));
 
-  ACE_ASSERT(myEngine);
+  ACE_ASSERT (myEngine);
 
   // clean up
-  myFloorEdgeTiles.clear();
-  myWallTiles.clear();
-  myDoorTiles.clear();
+  myFloorEdgeTiles.clear ();
+  myWallTiles.clear ();
+  myDoorTiles.clear ();
 
   // init tiles / position
-  RPG_Client_Common_Tools::initFloorEdges(*myEngine,
-                                          myCurrentFloorEdgeSet,
-                                          myFloorEdgeTiles);
-  RPG_Client_Common_Tools::initWalls(*myEngine,
-                                     myCurrentWallSet,
-                                     myWallTiles);
-  RPG_Client_Common_Tools::initDoors(*myEngine,
-                                     myCurrentDoorSet,
-                                     myDoorTiles);
+  RPG_Client_Common_Tools::initFloorEdges (*myEngine,
+                                           myCurrentFloorEdgeSet,
+                                           myFloorEdgeTiles);
+  RPG_Client_Common_Tools::initWalls (*myEngine,
+                                      myCurrentWallSet,
+                                      myWallTiles);
+  RPG_Client_Common_Tools::initDoors (*myEngine,
+                                      myCurrentDoorSet,
+                                      myDoorTiles);
 }
 
 void
-SDL_GUI_LevelWindow_Isometric::setView(const RPG_Map_Position_t& position_in)
+SDL_GUI_LevelWindow_Isometric::setView (const RPG_Map_Position_t& position_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::setView"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_Isometric::setView"));
 
   myView = position_in;
 }
 
 void
-SDL_GUI_LevelWindow_Isometric::center()
+SDL_GUI_LevelWindow_Isometric::center ()
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::center"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_Isometric::center"));
 
   ACE_ASSERT (myEngine);
 
@@ -2015,9 +1993,9 @@ SDL_GUI_LevelWindow_Isometric::center()
 }
 
 void
-SDL_GUI_LevelWindow_Isometric::initialize(const RPG_Graphics_Style& style_in)
+SDL_GUI_LevelWindow_Isometric::initialize (const struct RPG_Graphics_Style& style_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_LevelWindow_Isometric::initialize"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_Isometric::initialize"));
 
   // initialize style
   RPG_Graphics_StyleUnion style;
