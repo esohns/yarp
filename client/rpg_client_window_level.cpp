@@ -1340,6 +1340,13 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
           if (entity_id &&
               myClient->getCenterOnActive ())
           {
+            // *NOTE*: re-drawing the window will invalidate cursor/hightlight
+            // BG...
+            myClientAction.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
+            myClient->action (myClientAction);
+            myClientAction.command = COMMAND_CURSOR_INVALIDATE_BG;
+            myClient->action (myClientAction);
+
             myClientAction.command = COMMAND_SET_VIEW;
             myClientAction.position = myEngine->getPosition (entity_id,
                                                              false); // locked access ?
@@ -1353,6 +1360,13 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
         case SDLK_c:
         {
           // step1: set view
+          // *NOTE*: re-drawing the window will invalidate cursor/hightlight
+          // BG...
+          myClientAction.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
+          myClient->action (myClientAction);
+          myClientAction.command = COMMAND_CURSOR_INVALIDATE_BG;
+          myClient->action (myClientAction);
+
           myClientAction.command = COMMAND_SET_VIEW;
 
           myEngine->lock ();
@@ -1370,7 +1384,7 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
             myClientAction.position =
                 myEngine->getPosition (myClientAction.entity_id,
                                        false); // locked access ?
-          }
+          } // end ELSE
           myEngine->unlock ();
 
           myClient->action (myClientAction);
@@ -1678,6 +1692,13 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
           } // end IF
           else
           {
+            // *NOTE*: re-drawing the window will invalidate cursor/hightlight
+            // BG...
+            myClientAction.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
+            myClient->action (myClientAction);
+            myClientAction.command = COMMAND_CURSOR_INVALIDATE_BG;
+            myClient->action (myClientAction);
+
             myClientAction.command = COMMAND_SET_VIEW;
             myClient->action (myClientAction);
           } // end ELSE
