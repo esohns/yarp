@@ -4263,7 +4263,7 @@ item_toggled_GTK_cb (GtkWidget* widget_in,
 
   // retrieve item id
   std::string widget_name = gtk_widget_get_name (widget_in);
-  std::istringstream input(widget_name);
+  std::istringstream input (widget_name);
   RPG_Item_ID_t item_id = 0;
   if (!(input >> item_id))
   {
@@ -4273,27 +4273,29 @@ item_toggled_GTK_cb (GtkWidget* widget_in,
     return TRUE; // propagate
   } // end IF
 
-//  data_p->levelEngine->lock ();
-  RPG_Engine_EntityID_t active_entity = data_p->levelEngine->getActive (false);
+  data_p->levelEngine->lock ();
+  RPG_Engine_EntityID_t active_entity = data_p->levelEngine->getActive (false); // locked access ?
   ACE_UINT8 visible_radius_before = 0;
   if (active_entity)
     visible_radius_before = data_p->levelEngine->getVisibleRadius (active_entity,
-                                                                   false);
+                                                                   false); // locked access ?
 
   // *TODO*: where ?
+  RPG_Player_Equipment& equipment_r = player->getEquipment ();
   if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget_in)))
-    player->getEquipment ().equip (item_id,
-                                   player->getOffHand (),
-                                   EQUIPMENTSLOT_ANY);
+    equipment_r.equip (item_id,
+                       player->getOffHand (),
+                       EQUIPMENTSLOT_ANY);
   else
-    player->getEquipment ().unequip (item_id);
+    equipment_r.unequip (item_id);
 
   // equipped light source --> update vision ?
   if (active_entity)
   {
     struct RPG_Engine_ClientNotificationParameters parameters;
     parameters.visible_radius =
-      data_p->levelEngine->getVisibleRadius (active_entity, false);
+      data_p->levelEngine->getVisibleRadius (active_entity,
+                                             false); // locked access ?
     if (visible_radius_before != parameters.visible_radius)
     {
       // notify client window
@@ -4301,22 +4303,22 @@ item_toggled_GTK_cb (GtkWidget* widget_in,
       parameters.condition = RPG_COMMON_CONDITION_INVALID;
       data_p->levelEngine->getVisiblePositions (active_entity,
                                                 parameters.positions,
-                                                false);
+                                                false); // locked access ?
       parameters.previous_position =
         std::make_pair (std::numeric_limits<unsigned int>::max (),
                         std::numeric_limits<unsigned int>::max ());
-//      data_p->levelEngine->unlock ();
       try {
-        data_p->clientEngine->notify (COMMAND_E2C_ENTITY_VISION, parameters);
+        data_p->clientEngine->notify (COMMAND_E2C_ENTITY_VISION,
+                                      parameters,
+                                      false); // locked access ?
       } catch (...) {
         ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
+                    ACE_TEXT ("caught exception in RPG_Engine_IClient::notify(\"%s\"), continuing\n"),
                     ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString (COMMAND_E2C_ENTITY_VISION).c_str ())));
       }
-//      data_p->levelEngine->lock ();
     } // end IF
   } // end IF
-//  data_p->levelEngine->unlock ();
+  data_p->levelEngine->unlock ();
 
   ::update_equipment (*data_p);
 

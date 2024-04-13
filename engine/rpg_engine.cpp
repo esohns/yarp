@@ -2523,10 +2523,10 @@ RPG_Engine::handleEntities ()
           {
             parameters.entity_id = (*iterator).first;
             parameters.condition = RPG_COMMON_CONDITION_INVALID;
-            parameters.positions.insert(current_action.position);
+            parameters.positions.insert (current_action.position);
             parameters.previous_position =
-              std::make_pair (std::numeric_limits<unsigned int>::max(),
-                              std::numeric_limits<unsigned int>::max());
+              std::make_pair (std::numeric_limits<unsigned int>::max (),
+                              std::numeric_limits<unsigned int>::max ());
             notifications.push_back (std::make_pair (current_action.command,
                                                      parameters));
           } // end IF
@@ -2651,8 +2651,7 @@ RPG_Engine::handleEntities ()
           if (RPG_Engine::isBlocked (current_action.position,
                                      false)) // locked access ?
           {
-            if ((*iterator).second->modes.find (ENTITYMODE_TRAVELLING) !=
-                (*iterator).second->modes.end ())
+            if ((*iterator).second->modes.find (ENTITYMODE_TRAVELLING) != (*iterator).second->modes.end ())
             {
               // *NOTE*: --> no/invalid path, cannot proceed...
               (*iterator).second->modes.erase (ENTITYMODE_TRAVELLING);
@@ -2680,7 +2679,7 @@ RPG_Engine::handleEntities ()
             seenPositions_.find ((*iterator).first);
           ACE_ASSERT (iterator_2 != seenPositions_.end ());
           (*iterator_2).second.insert (positions.begin (),
-                                        positions.end ());
+                                       positions.end ());
 
           // notify client window
           parameters.entity_id = (*iterator).first;

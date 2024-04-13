@@ -268,7 +268,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::notify"));
 
   bool do_action = true;
-  RPG_Client_Action client_action;
+  struct RPG_Client_Action client_action;
   client_action.command = RPG_CLIENT_COMMAND_INVALID;
   client_action.previous =
       std::make_pair (std::numeric_limits<unsigned int>::max (),
@@ -292,6 +292,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
     case COMMAND_ATTACK_STANDARD:
     {
       do_action = false;
+
       break;
     }
     case COMMAND_DOOR_CLOSE:
@@ -300,17 +301,14 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       // *WARNING*: falls through !
     }
     case COMMAND_DOOR_OPEN:
-    {
-      // sanity check(s)
-      ACE_ASSERT (!parameters_in.positions.empty ());
-      client_action.position = *parameters_in.positions.begin ();
-      ACE_ASSERT (client_action.position != std::make_pair (std::numeric_limits<unsigned int>::max (),
-                                                            std::numeric_limits<unsigned int>::max ()));
-      client_action.command = COMMAND_TOGGLE_DOOR;
-      ACE_ASSERT (window_);
-      client_action.window = window_;
+    { ACE_ASSERT (window_);
       ACE_ASSERT (parameters_in.entity_id);
+      ACE_ASSERT (!parameters_in.positions.empty ());
+
+      client_action.command = COMMAND_TOGGLE_DOOR;
       client_action.entity_id = parameters_in.entity_id;
+      client_action.position = *parameters_in.positions.begin ();
+      client_action.window = window_;
       action (client_action);
 
       client_action.command = COMMAND_PLAY_SOUND;
@@ -330,27 +328,26 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       break;
     }
     case COMMAND_E2C_ENTITY_ADD:
-    {
-      // sanity check(s)
-      ACE_ASSERT (engine_);
+    { ACE_ASSERT (engine_);
+      ACE_ASSERT (parameters_in.entity_id);
 
       // step1: load sprite graphics
-      SDL_Surface* sprite_graphic = NULL;
-      RPG_Graphics_GraphicTypeUnion type;
+      struct RPG_Graphics_GraphicTypeUnion type;
       type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
       if (lockedAccess_in)
         engine_->lock ();
       type.sprite =
           (engine_->isMonster (parameters_in.entity_id,
                                false) ? RPG_Client_Common_Tools::monsterToSprite (engine_->getName (parameters_in.entity_id,
-                                                                                                    false))
+                                                                                                    false)) // locked access ?
                                       : RPG_Client_Common_Tools::classToSprite (engine_->getClass (parameters_in.entity_id,
-                                                                                                   false)));
+                                                                                                   false))); // locked access ?
       if (lockedAccess_in)
         engine_->unlock ();
-      sprite_graphic = RPG_Graphics_Common_Tools::loadGraphic (type,   // sprite
-                                                               true,   // convert to display format
-                                                               false); // don't cache
+      SDL_Surface* sprite_graphic =
+        RPG_Graphics_Common_Tools::loadGraphic (type,   // sprite
+                                                true,   // convert to display format
+                                                false); // don't cache
       if (!sprite_graphic)
       {
         ACE_DEBUG ((LM_ERROR,
@@ -358,54 +355,52 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
                     ACE_TEXT (RPG_Graphics_SpriteHelper::RPG_Graphics_SpriteToString (type.sprite).c_str ())));
         return;
       } // end IF
+
+      // step2: draw the sprite --> delegate to the engine
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->add (parameters_in.entity_id,
                                                              sprite_graphic,
                                                              false); // free on remove ?
 
-      // step3: draw the sprite --> delegate to the engine
       do_action = false;
 
       break;
     }
     case COMMAND_E2C_ENTITY_REMOVE:
-    { // sanity check(s)
-      client_action.command = COMMAND_ENTITY_REMOVE;
-      ACE_ASSERT (window_);
-      client_action.window = window_;
+    { ACE_ASSERT (window_);
       ACE_ASSERT (parameters_in.entity_id);
-      client_action.entity_id = parameters_in.entity_id;
       ACE_ASSERT (!parameters_in.positions.empty ());
+
+      client_action.command = COMMAND_ENTITY_REMOVE;
+      client_action.entity_id = parameters_in.entity_id;
+      client_action.window = window_;
 
       // step1: erase the sprite --> delegate to the engine
       action (client_action);
 
-      // step3: play a sound ? --> delegate to the engine
+      // step2: update the minimap ? --> delegate to the engine
+      engine_->lock ();
       RPG_Engine_EntityID_t active_entity_id =
-        engine_->getActive (true); // locked access ?
+        engine_->getActive (false); // locked access ?
       if (parameters_in.entity_id != active_entity_id)
       {
-        client_action.command = COMMAND_PLAY_SOUND;
-        client_action.sound = EVENT_CONDITION_WEAK;
-        action (client_action);
-
-        // update the minimap ? --> delegate to the engine
         if (active_entity_id &&
             engine_->canSee (active_entity_id,
                              *parameters_in.positions.begin (),
-                             true))
+                             false)) // locked access ?
           client_action.command = COMMAND_WINDOW_UPDATE_MINIMAP;
         else
           do_action = false;
       } // end ELSE
       else
         do_action = false;
+      engine_->unlock ();
 
       break;
     }
     case COMMAND_E2C_ENTITY_HIT:
     case COMMAND_E2C_ENTITY_MISS:
-    { // sanity check(s)
-      ACE_ASSERT (parameters_in.entity_id);
+    { ACE_ASSERT (parameters_in.entity_id);
+
       client_action.entity_id = parameters_in.entity_id;
       client_action.command = COMMAND_PLAY_SOUND;
       client_action.sound =
@@ -447,7 +442,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
           parameters_in.entity_id == engine_->getActive (true))
       {
         // raise the UI
-        SDL_Event sdl_event_u;
+        union SDL_Event sdl_event_u;
         sdl_event_u.type = SDL_KEYDOWN;
         sdl_event_u.key.keysym.sym = SDLK_u;
         if (SDL_PushEvent (&sdl_event_u) < 0)
@@ -466,24 +461,20 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       break;
     }
     case COMMAND_E2C_ENTITY_POSITION:
-    {
-      // sanity check(s)
-      ACE_ASSERT (engine_);
-
+    { ACE_ASSERT (engine_);
+      ACE_ASSERT (window_);
       ACE_ASSERT (parameters_in.entity_id);
-      client_action.entity_id = parameters_in.entity_id;
       ACE_ASSERT (!parameters_in.positions.empty ());
-      client_action.position  = *parameters_in.positions.begin();
       ACE_ASSERT (parameters_in.previous_position != std::make_pair (std::numeric_limits<unsigned int>::max (),
                                                                      std::numeric_limits<unsigned int>::max ()));
-      client_action.previous  = parameters_in.previous_position;
-      ACE_ASSERT (window_);
-      client_action.window    = window_;
-
-      // *NOTE*: when using (dynamic) lighting, redraw the whole window...
       RPG_Client_IWindowLevel* window_p =
-          dynamic_cast<RPG_Client_IWindowLevel*> (window_);
+        dynamic_cast<RPG_Client_IWindowLevel*> (window_);
       ACE_ASSERT (window_p);
+
+      client_action.entity_id = parameters_in.entity_id;
+      client_action.position  = *parameters_in.positions.begin ();
+      client_action.previous  = parameters_in.previous_position;
+      client_action.window    = window_;
 
       if (lockedAccess_in)
         engine_->lock ();
@@ -577,7 +568,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
         } // end IF
         else
         {
-          // entity has moved offscreen; remove any dangling sprite
+          // --> entity has moved offscreen; remove any dangling sprite ?
           positions.clear ();
           positions.push_back (parameters_in.previous_position);
           if (RPG_Client_Common_Tools::isVisible (positions,
@@ -606,11 +597,10 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       break;
     }
     case COMMAND_E2C_ENTITY_VISION:
-    {
-      // sanity check(s)
-      ACE_ASSERT (window_);
-      client_action.window    = window_;
+    { ACE_ASSERT (window_);
       ACE_ASSERT (parameters_in.entity_id);
+      
+      client_action.window = window_;
       client_action.entity_id = parameters_in.entity_id;
       client_action.radius = parameters_in.visible_radius;
 
@@ -623,23 +613,9 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       client_action.command = COMMAND_SET_VISION_RADIUS;
       action (client_action);
 
-      // update vision cache
-      //{ ACE_Guard<ACE_Thread_Mutex> aGuard (lock_);
-//        RPG_Engine_SeenPositionsIterator_t iterator =
-//          mySeenPositions.find (parameters_in.entity_id);
-//        ACE_ASSERT (iterator != mySeenPositions.end ());
-//        std::set_difference (client_action.positions.begin (),
-//                             client_action.positions.end (),
-//                             (*iterator).second.begin (),
-//                             (*iterator).second.end (),
-//                             new_positions.begin ());
-//        (*iterator).second.insert (client_action.positions.begin (),
-//                                   client_action.positions.end ());
-      //} // end lock scope
-
       // *NOTE*: schedule a draw iff any of the new positions are currently
       //         visible on-screen
-      SDL_Rect window_area, map_area;
+      struct SDL_Rect window_area, map_area;
       window_->getArea (window_area,
                         true); // toplevel ?
       window_->getArea (map_area,
@@ -656,22 +632,24 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       {
         client_action.command = COMMAND_WINDOW_DRAW;
         action (client_action);
-      } // end IF
 
-      client_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
-      action (client_action);
-      client_action.command = COMMAND_CURSOR_DRAW;
-      action (client_action);
+        client_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
+        action (client_action);
+        client_action.command = COMMAND_CURSOR_DRAW;
+      } // end IF
+      else
+        do_action = false;
 
       break;
     }
     case COMMAND_E2C_ENTITY_LEVEL_UP:
-    {
+    { ACE_ASSERT (parameters_in.subclass != RPG_COMMON_SUBCLASS_INVALID);
+
       client_action.command = COMMAND_PLAY_SOUND;
       client_action.sound = EVENT_XP_LEVELUP;
 
       // raise the UI
-      SDL_Event sdl_event_u;
+      union SDL_Event sdl_event_u;
       sdl_event_u.type = SDL_KEYDOWN;
       sdl_event_u.key.keysym.sym = SDLK_u;
       if (SDL_PushEvent (&sdl_event_u) < 0)
@@ -680,7 +658,6 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
                    ACE_TEXT (SDL_GetError ())));
 
       // notify level up
-      ACE_ASSERT (parameters_in.subclass != RPG_COMMON_SUBCLASS_INVALID);
       sdl_event_u.key.padding2 = parameters_in.subclass;
       sdl_event_u.key.keysym.sym = SDLK_y;
       if (SDL_PushEvent (&sdl_event_u) < 0)
@@ -693,7 +670,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
     case COMMAND_E2C_ENTITY_STATE:
     {
       // simply update the UI
-      SDL_Event sdl_event_u;
+      union SDL_Event sdl_event_u;
       sdl_event_u.type = SDL_KEYDOWN;
       sdl_event_u.key.keysym.sym = SDLK_z;
       if (SDL_PushEvent (&sdl_event_u) < 0)
@@ -703,19 +680,17 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       break;
     }
     case COMMAND_E2C_INIT:
-    {
-      // sanity check(s)
+    { ACE_ASSERT (window_);
+ 
       client_action.command = COMMAND_WINDOW_INIT;
-      ACE_ASSERT (window_);
       client_action.window = window_;
 
       break;
     }
     case COMMAND_E2C_MESSAGE:
-    {
-      // sanity check(s)
+    { ACE_ASSERT (window_);
+      
       client_action.command = COMMAND_WINDOW_UPDATE_MESSAGEWINDOW;
-      ACE_ASSERT (window_);
       client_action.window = window_;
       client_action.message = parameters_in.message;
 
@@ -740,9 +715,8 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
     default:
     {
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("invalid command (was: \"%s\", returning\n"),
+                  ACE_TEXT ("invalid/unknown command (was: \"%s\", returning\n"),
                   ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString (command_in).c_str ())));
-
       return;
     }
   } // end SWITCH
@@ -958,6 +932,7 @@ next:
     }
     case COMMAND_SET_VIEW:
     { ACE_ASSERT (client_action.window);
+
       RPG_Client_IWindowLevel* level_window = NULL;
       try {
         level_window =
@@ -989,6 +964,7 @@ next:
     }
     case COMMAND_SET_VISION_RADIUS:
     { ACE_ASSERT (client_action.window);
+
       RPG_Client_IWindowLevel* level_window = NULL;
       try {
         level_window =
@@ -1006,10 +982,9 @@ next:
 
       try {
         level_window->setBlendRadius (client_action.radius);
-        level_window->draw ();
       } catch (...) {
         ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("caught exception in [%@]: RPG_Client_IWindowLevel::setBlendRadius(%u)/draw(), continuing\n"),
+                    ACE_TEXT ("caught exception in [%@]: RPG_Client_IWindowLevel::setBlendRadius(%u), continuing\n"),
                     level_window,
                     client_action.radius));
         goto continue_;
@@ -1019,6 +994,7 @@ next:
     }
     case COMMAND_TILE_HIGHLIGHT_DRAW:
     { ACE_ASSERT (client_action.window);
+
       struct SDL_Rect window_area;
       client_action.window->getArea (window_area,
                                      true); // toplevel- ?
@@ -1095,10 +1071,12 @@ next:
     case COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG:
     {
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->resetHighlightBG (client_action.position);
+
       break;
     }
     case COMMAND_TILE_HIGHLIGHT_RESTORE_BG:
     { ACE_ASSERT (client_action.window);
+
       RPG_Client_IWindowLevel* level_window = NULL;
       try {
         level_window =
@@ -1132,6 +1110,7 @@ next:
     }
     case COMMAND_TOGGLE_DOOR:
     { ACE_ASSERT (client_action.window);
+
       RPG_Client_IWindowLevel* level_window = NULL;
       try {
         level_window =
@@ -1169,6 +1148,7 @@ next:
     }
     case COMMAND_WINDOW_BORDER_DRAW:
     { ACE_ASSERT (client_action.window);
+
       RPG_Client_IWindow* client_window = NULL;
       try {
         client_window =
@@ -1206,6 +1186,7 @@ next:
     }
     case COMMAND_WINDOW_DRAW:
     { ACE_ASSERT (client_action.window);
+
       try {
         client_action.window->draw ();
       } catch (...) {
@@ -1220,6 +1201,7 @@ next:
     }
     case COMMAND_WINDOW_HIDE:
     { ACE_ASSERT (client_action.window);
+
       RPG_Graphics_IWindow* window = NULL;
       try {
         window = dynamic_cast<RPG_Graphics_IWindow*> (client_action.window);
@@ -1248,6 +1230,7 @@ next:
     }
     case COMMAND_WINDOW_INIT:
     { ACE_ASSERT (client_action.window);
+
       RPG_Client_IWindowLevel* level_window_p = NULL;
       try {
         level_window_p =
@@ -1325,6 +1308,7 @@ next:
     }
     case COMMAND_WINDOW_REFRESH:
     { ACE_ASSERT (client_action.window);
+
       // --> update whole window
       client_action.window->getArea (dirty_region,
                                      false); // toplevel- ?
@@ -1341,6 +1325,7 @@ next:
     case COMMAND_WINDOW_UPDATE_MESSAGEWINDOW:
     { ACE_ASSERT (client_action.window);
       ACE_ASSERT (!client_action.message.empty ());
+
       RPG_Client_IWindowLevel* level_window = NULL;
       try {
         level_window =
@@ -1370,6 +1355,7 @@ next:
     }
     case COMMAND_WINDOW_UPDATE_MINIMAP:
     { ACE_ASSERT (client_action.window);
+
       RPG_Client_IWindowLevel* level_window = NULL;
       try {
         level_window =
