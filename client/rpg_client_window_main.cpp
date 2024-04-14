@@ -413,7 +413,6 @@ RPG_Client_Window_Main::handleEvent (const SDL_Event& event_in,
         ACE_ASSERT (hotspot);
 
         // retrieve map window handle
-        client_action.command = COMMAND_SET_VIEW;
         client_action.window = child (WINDOW_MAP);
         RPG_Client_IWindowLevel* level_window =
             dynamic_cast<RPG_Client_IWindowLevel*> (client_action.window);
@@ -485,8 +484,8 @@ RPG_Client_Window_Main::handleEvent (const SDL_Event& event_in,
             return;
           }
         } // end SWITCH
-
-        myEngine->action (client_action);
+        myEngine->setView (client_action.position,
+                           true); // refresh ?
       } // end IF
 
       break;
@@ -576,8 +575,6 @@ RPG_Client_Window_Main::handleEvent (const SDL_Event& event_in,
       } // end ELSE
       myLastHoverTime = event_in.user.code;
 
-      client_action.command = COMMAND_SET_VIEW;
-
       // retrieve map window handle
       client_action.window = child (WINDOW_MAP);
       RPG_Client_IWindowLevel* level_window =
@@ -656,7 +653,8 @@ RPG_Client_Window_Main::handleEvent (const SDL_Event& event_in,
           return;
         }
       } // end SWITCH
-      myEngine->action (client_action);
+      myEngine->setView (client_action.position,
+                         true); // refresh ?
 
       break;
     }

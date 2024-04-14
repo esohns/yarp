@@ -56,6 +56,9 @@ RPG_Client_Window_Level::RPG_Client_Window_Level (const RPG_Graphics_SDLWindowBa
               parent_in,                  // parent
               std::make_pair (0, 0),      // offset
               ACE_TEXT_ALWAYS_CHAR ("")), // title
+#if defined (_DEBUG)
+   myDebug (false),
+#endif // _DEBUG
    myEngine (NULL),
    myClient (NULL),
    myClientAction (),
@@ -411,6 +414,9 @@ RPG_Client_Window_Level::initialize (RPG_Client_Engine* clientEngine_in,
   ACE_ASSERT (clientEngine_in);
   ACE_ASSERT (engine_in);
 
+#if defined (_DEBUG)
+  myDebug = debug_in;
+#endif // _DEBUG
   myClient = clientEngine_in;
   myEngine = engine_in;
 
@@ -473,10 +479,10 @@ RPG_Client_Window_Level::drawChild (enum RPG_Graphics_WindowType child_in,
       myClientAction.command = COMMAND_WINDOW_REFRESH;
       myClient->action (myClientAction);
     } // end IF
-
-    // reset window
-    myClientAction.window = this;
   } // end FOR
+
+  // reset window
+  myClientAction.window = this;
 }
 
 void
@@ -574,17 +580,22 @@ RPG_Client_Window_Level::setBlendRadius (ACE_UINT8 radius_in)
     RPG_Graphics_Surface::alpha ((i * quantum), // opacity
                                  **iterator);
 
-    //std::ostringstream converter;
-    //std::string dump_path = Common_File_Tools::getTempDirectory ();
-    //dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    //dump_path += ACE_TEXT_ALWAYS_CHAR ("floor_blend_");
-    //converter.str (""); converter.clear ();
-    //converter << i;
-    //dump_path += converter.str ();
-    //dump_path += ACE_TEXT_ALWAYS_CHAR (".png");
-    //RPG_Graphics_Surface::savePNG (**iterator, // image
-    //                               dump_path,  // file
-    //                               true);      // WITH alpha
+#if defined (_DEBUG)
+    if (myDebug)
+    {
+      std::ostringstream converter;
+      std::string dump_path = Common_File_Tools::getTempDirectory ();
+      dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+      dump_path += ACE_TEXT_ALWAYS_CHAR ("floor_blend_");
+      converter.str (""); converter.clear ();
+      converter << i;
+      dump_path += converter.str ();
+      dump_path += ACE_TEXT_ALWAYS_CHAR (".png");
+      RPG_Graphics_Surface::savePNG (**iterator, // image
+                                     dump_path,  // file
+                                     true);      // WITH alpha
+    } // end IF
+#endif // _DEBUG
   } // end FOR
 }
 
@@ -666,7 +677,7 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
   inherited::clear (COLOR_BLACK, // color
                     false);      // don't clip
 
-  // init clipping
+  // initialize clipping
   inherited::clip (target_surface,
                    offsetX_in,
                    offsetY_in);
@@ -724,21 +735,21 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
   // lock engine
   myEngine->lock ();
 
-  RPG_Engine_EntityID_t active_entity_id = myEngine->getActive (false);
+  RPG_Engine_EntityID_t active_entity_id = myEngine->getActive (false); // locked access ?
   RPG_Map_Position_t active_position =
       std::make_pair (std::numeric_limits<unsigned int>::max (),
                       std::numeric_limits<unsigned int>::max ());
   RPG_Map_Positions_t visible_positions;
-  unsigned char visible_radius_i = 0;
+  ACE_UINT8 visible_radius_i = 0;
   if (active_entity_id)
   {
     active_position = myEngine->getPosition (active_entity_id,
-                                             false);
+                                             false); // locked access ?
     myEngine->getVisiblePositions (active_entity_id,
                                    visible_positions,
-                                   false);
+                                   false); // locked access ?
     visible_radius_i = myEngine->getVisibleRadius (active_entity_id,
-                                                   false);
+                                                   false); // locked access ?
   } // end IF
 
   // pass 1:
@@ -777,7 +788,7 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
   RPG_Graphics_Position_t screen_position =
       std::make_pair (std::numeric_limits<unsigned int>::max (),
                       std::numeric_limits<unsigned int>::max ());
-  RPG_Map_Size_t map_size = myEngine->getSize (false);
+  RPG_Map_Size_t map_size = myEngine->getSize (false); // locked access ?
   RPG_Map_Element current_element = MAPELEMENT_INVALID;
   bool is_visible, has_been_seen, is_active_position;
   RPG_Client_BlendingMaskCacheIterator_t blendmask_iterator =
@@ -824,13 +835,13 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
       has_been_seen =
         (active_entity_id ? myEngine->hasSeen (active_entity_id,
                                                current_map_position,
-                                               false)
+                                               false) // locked access ?
                           : false);
       is_active_position =
         (static_cast<unsigned int> (current_map_position.first)  == active_position.first) &&
         (static_cast<unsigned int> (current_map_position.second) == active_position.second);
       current_element = myEngine->getElement (current_map_position,
-                                              false);
+                                              false); // locked access ?
       ACE_ASSERT (current_element != MAPELEMENT_INVALID);
 
       // map --> screen coordinates
@@ -875,15 +886,11 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
               RPG_Map_Common_Tools::distanceMax (active_position,
                                                  current_map_position);
             if (distance_i <= visible_radius_i)
-            { 
-              // sanity check(s)
-              if (myLightingCache.empty ()) // *TODO*: should not happen
-                goto off_map;
+            { ACE_ASSERT (!myLightingCache.empty ());
 
               // step0: find blend mask
               blendmask_iterator = myLightingCache.begin ();
-              std::advance (blendmask_iterator,
-                            distance_i - 1);
+              std::advance (blendmask_iterator, distance_i - 1);
 
               // step1: get background
               RPG_Graphics_Surface::copy (*(*floor_iterator).surface,
@@ -900,7 +907,6 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
             } // end IF
             else
             {
-off_map:
               // step1: get background
               RPG_Graphics_Surface::copy (*(*floor_iterator).surface,
                                           *myVisionTempTile);
@@ -1213,19 +1219,23 @@ off_map:
 
       // step5: creatures
       entity_id = myEngine->hasEntity (current_map_position,
-                                       false);
+                                       false); // locked access ?
       if (entity_id && is_visible)
       {
-        // invalidate bg
+        // put() restore()s the current bg --> invalidate current bg
         RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->invalidateBG (entity_id);
 
         // draw creature
         RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->put (entity_id,
                                                                screen_position,
                                                                dirty_region,
-                                                               false,  // clip window ?
-                                                               true,   // locked access ?
-                                                               false); // debug ?
+                                                               false,    // clip window ? --> already clipped (see above)
+                                                               true,     // locked access ?
+#if defined (_DEBUG)
+                                                               myDebug); // debug ?
+#else
+                                                               false);   // debug ?
+#endif // _DEBUG
       } // end IF
 
       // step6: effects
@@ -1296,7 +1306,7 @@ off_map:
   invalidate (dirty_region);
 
   // reset clipping area
-  unclip (target_surface);
+  inherited::unclip (target_surface);
 
   // remember position of last realization
   lastAbsolutePosition_ = std::make_pair (inherited::clipRectangle_.x,
@@ -1340,17 +1350,10 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
           if (entity_id &&
               myClient->getCenterOnActive ())
           {
-            // *NOTE*: re-drawing the window will invalidate cursor/hightlight
-            // BG...
-            myClientAction.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
-            myClient->action (myClientAction);
-            myClientAction.command = COMMAND_CURSOR_INVALIDATE_BG;
-            myClient->action (myClientAction);
-
-            myClientAction.command = COMMAND_SET_VIEW;
             myClientAction.position = myEngine->getPosition (entity_id,
                                                              false); // locked access ?
-            myClient->action (myClientAction);
+            myClient->setView (myClientAction.position,
+                               true); // refresh ?
           } // end IF
           myEngine->unlock ();
 
@@ -1359,16 +1362,6 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
         // implement keypad navigation
         case SDLK_c:
         {
-          // step1: set view
-          // *NOTE*: re-drawing the window will invalidate cursor/hightlight
-          // BG...
-          myClientAction.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
-          myClient->action (myClientAction);
-          myClientAction.command = COMMAND_CURSOR_INVALIDATE_BG;
-          myClient->action (myClientAction);
-
-          myClientAction.command = COMMAND_SET_VIEW;
-
           myEngine->lock ();
           myClientAction.entity_id = myEngine->getActive (false); // locked access ?
           if ((myClientAction.entity_id == 0)        ||
@@ -1380,14 +1373,12 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
             myClientAction.position.second >>= 1;
           } // end IF
           else
-          {
             myClientAction.position =
                 myEngine->getPosition (myClientAction.entity_id,
                                        false); // locked access ?
-          } // end ELSE
           myEngine->unlock ();
-
-          myClient->action (myClientAction);
+          myClient->setView (myClientAction.position,
+                             true); // refresh ?
 
           break;
         }
@@ -1436,9 +1427,7 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
             toggleShowCoordinates ();
 
             // --> need a redraw
-            myClientAction.command = COMMAND_WINDOW_DRAW;
-            myClientAction.window = this;
-            myClient->action (myClientAction);
+            myClient->redraw (true); // refresh ?
 #endif // _DEBUG
           } // end IF
           else
@@ -1691,17 +1680,8 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
             myEngine->unlock ();
           } // end IF
           else
-          {
-            // *NOTE*: re-drawing the window will invalidate cursor/hightlight
-            // BG...
-            myClientAction.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
-            myClient->action (myClientAction);
-            myClientAction.command = COMMAND_CURSOR_INVALIDATE_BG;
-            myClient->action (myClientAction);
-
-            myClientAction.command = COMMAND_SET_VIEW;
-            myClient->action (myClientAction);
-          } // end ELSE
+            myClient->setView (myClientAction.position,
+                               true); // refresh ?
 
           break;
         }

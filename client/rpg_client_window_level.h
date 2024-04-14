@@ -112,36 +112,39 @@ class RPG_Client_Window_Level
                   unsigned int = 0,             // offset y (top-left = [0,0])
                   bool = true);                 // refresh ?
 
-  RPG_Engine*                     myEngine;
-  RPG_Client_Engine*              myClient;
-  struct RPG_Client_Action        myClientAction;
-  bool                            myDrawMinimap;
 #if defined (_DEBUG)
-  bool                            myShowCoordinates;
+  bool                                 myDebug;
 #endif // _DEBUG
-  bool                            myShowMessages;
+  RPG_Engine*                          myEngine;
+  RPG_Client_Engine*                   myClient;
+  struct RPG_Client_Action             myClientAction;
+  bool                                 myDrawMinimap;
+#if defined (_DEBUG)
+  bool                                 myShowCoordinates;
+#endif // _DEBUG
+  bool                                 myShowMessages;
 
   struct RPG_Graphics_FloorTileSet     myCurrentFloorSet;
   struct RPG_Graphics_FloorEdgeTileSet myCurrentFloorEdgeSet;
   struct RPG_Graphics_WallTileSet      myCurrentWallSet;
   SDL_Surface*                         myCeilingTile;
   struct RPG_Graphics_DoorTileSet      myCurrentDoorSet;
-  SDL_Surface*                    myOffMapTile;
-  SDL_Surface*                    myInvisibleTile;
-  SDL_Surface*                    myVisionBlendTile;
-  SDL_Surface*                    myVisionTempTile;
+  SDL_Surface*                         myOffMapTile;
+  SDL_Surface*                         myInvisibleTile;
+  SDL_Surface*                         myVisionBlendTile;
+  SDL_Surface*                         myVisionTempTile;
 
   // tiles / position
-  RPG_Graphics_FloorEdgeTileMap_t myFloorEdgeTiles;
-  RPG_Graphics_WallTileMap_t      myWallTiles;
-  RPG_Graphics_DoorTileMap_t      myDoorTiles;
+  RPG_Graphics_FloorEdgeTileMap_t      myFloorEdgeTiles;
+  RPG_Graphics_WallTileMap_t           myWallTiles;
+  RPG_Graphics_DoorTileMap_t           myDoorTiles;
 
-  SDL_Surface*                    myWallBlend;
-  RPG_Client_BlendingMaskCache_t  myLightingCache;
+  SDL_Surface*                         myWallBlend;
+  RPG_Client_BlendingMaskCache_t       myLightingCache;
 
-  mutable ACE_Thread_Mutex        myLock;
+  mutable ACE_Thread_Mutex             myLock;
   // center of displayed area
-  RPG_Map_Position_t              myView;
+  RPG_Map_Position_t                   myView;
 };
 
 #endif

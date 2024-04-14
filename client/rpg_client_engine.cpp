@@ -215,7 +215,7 @@ RPG_Client_Engine::redraw (bool refresh_in)
   ACE_ASSERT (window_);
 
   // step1: draw map window
-  RPG_Client_Action new_action;
+  struct RPG_Client_Action new_action;
   new_action.command = COMMAND_WINDOW_DRAW;
   new_action.position =
       std::make_pair (std::numeric_limits<unsigned int>::max (),
@@ -236,7 +236,8 @@ RPG_Client_Engine::redraw (bool refresh_in)
 }
 
 void
-RPG_Client_Engine::setView (const RPG_Map_Position_t& position_in)
+RPG_Client_Engine::setView (const RPG_Map_Position_t& position_in,
+                            bool refresh_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::setView"));
 
@@ -249,15 +250,29 @@ RPG_Client_Engine::setView (const RPG_Map_Position_t& position_in)
   new_action.radius = 0;
   new_action.window = window_;
 
-  // *NOTE*: re-drawing the window will invalidate cursor/hightlight BG...
-  new_action.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
-  action (new_action);
-  new_action.command = COMMAND_CURSOR_INVALIDATE_BG;
-  action (new_action);
+  if (refresh_in)
+  {
+    // *NOTE*: re-drawing the window will invalidate cursor/hightlight BG...
+    new_action.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
+    action (new_action);
+    new_action.command = COMMAND_CURSOR_INVALIDATE_BG;
+    action (new_action);
+  } // end IF
 
   new_action.command = COMMAND_SET_VIEW;
   new_action.position = position_in;
   action (new_action);
+
+  if (refresh_in)
+  {
+    new_action.command = COMMAND_WINDOW_DRAW;
+    action (new_action);
+
+    new_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
+    action (new_action);
+    new_action.command = COMMAND_CURSOR_DRAW;
+    action (new_action);
+  } // end IF
 }
 
 void
@@ -329,6 +344,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
     }
     case COMMAND_E2C_ENTITY_ADD:
     { ACE_ASSERT (engine_);
+      ACE_ASSERT (window_);
       ACE_ASSERT (parameters_in.entity_id);
 
       // step1: load sprite graphics
@@ -356,12 +372,60 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
         return;
       } // end IF
 
-      // step2: draw the sprite --> delegate to the engine
+      // step2: manage the sprite
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->add (parameters_in.entity_id,
                                                              sprite_graphic,
                                                              false); // free on remove ?
 
-      do_action = false;
+      // step3: draw the entity/redraw the minimap ? --> delegate to the engine
+      client_action.window = window_;
+      engine_->lock ();
+      client_action.position =
+        engine_->getPosition (parameters_in.entity_id,
+                              false); // locked access ?
+
+      RPG_Graphics_Positions_t positions;
+      positions.push_back (client_action.position);
+      struct SDL_Rect window_area, map_area;
+      window_->getArea (window_area,
+                        true); // toplevel- ?
+      window_->getArea (map_area,
+                        false); // toplevel- ?
+      RPG_Client_IWindowLevel* window_p =
+        dynamic_cast<RPG_Client_IWindowLevel*> (window_);
+      ACE_ASSERT (window_p);
+      bool is_visible_b =
+        RPG_Client_Common_Tools::isVisible (positions,
+                                            std::make_pair (window_area.w,
+                                                            window_area.h),
+                                            window_p->getView (),
+                                            map_area,
+                                            false); // all
+      RPG_Engine_EntityID_t active_entity_id =
+        engine_->getActive (false); // locked access ?
+      bool active_entity_can_see_entity_b =
+        (active_entity_id &&
+          engine_->canSee (active_entity_id,
+                           parameters_in.entity_id,
+                           false)); // locked access ?
+      engine_->unlock ();
+
+      if (parameters_in.entity_id != active_entity_id &&
+          active_entity_can_see_entity_b)
+      {
+        // step3a: draw the sprite ? --> delegate to the engine
+        if (is_visible_b)
+        {
+          client_action.command = COMMAND_ENTITY_DRAW;
+          client_action.entity_id = parameters_in.entity_id;
+          action (client_action);
+        } // end IF
+
+        // step3b: update the minimap ? --> delegate to the engine
+        client_action.command = COMMAND_WINDOW_UPDATE_MINIMAP;
+      } // end IF
+      else
+        do_action = false;
 
       break;
     }
@@ -370,12 +434,34 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       ACE_ASSERT (parameters_in.entity_id);
       ACE_ASSERT (!parameters_in.positions.empty ());
 
-      client_action.command = COMMAND_ENTITY_REMOVE;
-      client_action.entity_id = parameters_in.entity_id;
-      client_action.window = window_;
+      client_action.position = *parameters_in.positions.begin ();
+      RPG_Graphics_Positions_t positions;
+      positions.push_back (client_action.position);
+      struct SDL_Rect window_area, map_area;
+      window_->getArea (window_area,
+                        true); // toplevel- ?
+      window_->getArea (map_area,
+                        false); // toplevel- ?
+      RPG_Client_IWindowLevel* window_p =
+        dynamic_cast<RPG_Client_IWindowLevel*> (window_);
+      ACE_ASSERT (window_p);
+      bool is_visible_b =
+        RPG_Client_Common_Tools::isVisible (positions,
+                                            std::make_pair (window_area.w,
+                                                            window_area.h),
+                                            window_p->getView (),
+                                            map_area,
+                                            false); // all
 
-      // step1: erase the sprite --> delegate to the engine
-      action (client_action);
+      // step1: erase the sprite ? --> delegate to the engine
+      client_action.window = window_;
+      if (is_visible_b)
+      {
+        client_action.command = COMMAND_ENTITY_REMOVE;
+        client_action.entity_id = parameters_in.entity_id;
+
+        action (client_action);
+      } // end IF
 
       // step2: update the minimap ? --> delegate to the engine
       engine_->lock ();
@@ -485,14 +571,8 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       {
         if (centerOnActivePlayer_)
         {
-          // *NOTE*: re-drawing the window will invalidate cursor/hightlight BG...
-          client_action.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
-          action (client_action);
-          client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
-          action (client_action);
-
-          client_action.command = COMMAND_SET_VIEW;
-          action (client_action);
+          RPG_Client_Engine::setView (client_action.position,
+                                      true); // refresh ?
         } // end IF
         else
         {
@@ -516,16 +596,21 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
             client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
             action (client_action);
 
+            // *IMPORTANT NOTE*: if only the entity is redrawn (faster), vision
+            //                   will not update
             client_action.command = COMMAND_WINDOW_DRAW;
+            //client_action.command = COMMAND_ENTITY_DRAW;
+            action (client_action);
+
+            client_action.command = COMMAND_TILE_HIGHLIGHT_DRAW;
+            action (client_action);
+            client_action.command = COMMAND_CURSOR_DRAW;
             action (client_action);
           } // end IF
         } // end ELSE
 
         client_action.command = COMMAND_PLAY_SOUND;
         client_action.sound = EVENT_WALK;
-        action (client_action);
-
-        do_action = false;
       } // end IF
       else
       { // --> entity is NOT the active player
@@ -557,18 +642,17 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
                                                 map_area,
                                                 false)) // all
         {
-          if ((active_entity_id &&
-               engine_->canSee (active_entity_id,
-                                parameters_in.entity_id,
-                                false)) || // locked access ?
-              debug_)
+          if (active_entity_id &&
+              engine_->canSee (active_entity_id,
+                               parameters_in.entity_id,
+                               false)) // locked access ?
             client_action.command = COMMAND_ENTITY_DRAW;
           else
             do_action = false;
         } // end IF
         else
         {
-          // --> entity has moved offscreen; remove any dangling sprite ?
+          // --> entity has moved offscreen ? remove any dangling sprite
           positions.clear ();
           positions.push_back (parameters_in.previous_position);
           if (RPG_Client_Common_Tools::isVisible (positions,
@@ -597,18 +681,16 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       break;
     }
     case COMMAND_E2C_ENTITY_VISION:
-    { ACE_ASSERT (window_);
+    { ACE_ASSERT (engine_);
+      ACE_ASSERT (window_);
       ACE_ASSERT (parameters_in.entity_id);
       
       client_action.window = window_;
       client_action.entity_id = parameters_in.entity_id;
       client_action.radius = parameters_in.visible_radius;
-
-      // *NOTE*: re-drawing the window invalidates cursor/hightlight BG...
-      client_action.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
-      action (client_action);
-      client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
-      action (client_action);
+      engine_->getVisiblePositions (client_action.entity_id,
+                                    client_action.positions,
+                                    true);
 
       client_action.command = COMMAND_SET_VISION_RADIUS;
       action (client_action);
@@ -630,6 +712,12 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
                                               map_area,
                                               true)) // any
       {
+        // *NOTE*: re-drawing the window invalidates cursor/hightlight BG...
+        client_action.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
+        action (client_action);
+        client_action.command = COMMAND_CURSOR_INVALIDATE_BG;
+        action (client_action);
+
         client_action.command = COMMAND_WINDOW_DRAW;
         action (client_action);
 
@@ -950,15 +1038,13 @@ next:
 
       try {
         level_window->setView (client_action.position);
-        level_window->draw ();
       } catch (...) {
         ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("caught exception in [%@]: RPG_Client_IWindowLevel::setView([%u,%u])/draw(), continuing\n"),
+                    ACE_TEXT ("caught exception in [%@]: RPG_Client_IWindowLevel::setView([%u,%u]), continuing\n"),
                     level_window,
                     client_action.position.first, client_action.position.second));
         goto continue_;
       }
-      // --> update whole window (*NOTE*: the draw() call above invalidates the whole window)
 
       break;
     }
@@ -1262,14 +1348,14 @@ next:
       center.first >>= 1; center.second >>= 1;
       try {
         level_window_p->initialize (state_.style);
-        level_window_p->setView (center);
-        level_window_p->draw ();
       } catch (...) {
         ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("caught exception in [%@]: RPG_Client_IWindowLevel::initialize/setView/draw(), continuing\n"),
+                    ACE_TEXT ("caught exception in [%@]: RPG_Client_IWindowLevel::initialize, continuing\n"),
                     level_window_p));
         goto continue_;
       }
+      setView (center,
+               true); // refresh ?
 
       // step2: (re)set window title caption/iconify
       std::string caption = ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);

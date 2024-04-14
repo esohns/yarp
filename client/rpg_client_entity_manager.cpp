@@ -265,7 +265,7 @@ RPG_Client_Entity_Manager::put (RPG_Engine_EntityID_t id_in,
 
   // place graphic
   if (clipWindow_in)
-    myWindow->clip ();
+    myWindow->clip (target_surface, 0, 0);
   RPG_Graphics_Surface::put (screen_coordinates,
                              *(*iterator).second.graphic,
                              target_surface,
@@ -275,7 +275,7 @@ RPG_Client_Entity_Manager::put (RPG_Engine_EntityID_t id_in,
   if (lockedAccess_in && myScreenLock)
     myScreenLock->unlock ();
   if (clipWindow_in)
-    myWindow->unclip ();
+    myWindow->unclip (target_surface);
 
   // update cursor / highlight(s)
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->updateBG (dirty_region,

@@ -59,8 +59,8 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase (enum RPG_Graphics_Window
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase"));
 
   ACE_OS::memset (&clipRectangle_, 0, sizeof (clipRectangle_));
-  clipRectangle_.w = static_cast<Uint16>(size_in.first);
-  clipRectangle_.h = static_cast<Uint16>(size_in.second);
+  clipRectangle_.w = static_cast<Uint16> (size_in.first);
+  clipRectangle_.h = static_cast<Uint16> (size_in.second);
 }
 
 RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase (enum RPG_Graphics_WindowType type_in,
@@ -93,7 +93,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase (enum RPG_Graphics_Window
   // register with parent
   parent_->addChild (this);
 
-  // init clip rect
+  // initialize clip rect
   parent_->getBorders (borderTop_,
                        borderBottom_,
                        borderLeft_,
@@ -831,14 +831,14 @@ RPG_Graphics_SDLWindowBase::unclip (SDL_Surface* targetSurface_in)
   ACE_ASSERT (target_surface_p);
 
   // restore previous clip rectangle
-	SDL_Rect clip_rectangle = clipRectangle_;
+	struct SDL_Rect clip_rectangle = clipRectangle_;
   SDL_GetClipRect (target_surface_p, &clipRectangle_);
 
   SDL_SetClipRect (target_surface_p, &clip_rectangle);
 }
 
 void
-RPG_Graphics_SDLWindowBase::getArea (SDL_Rect& area_out,
+RPG_Graphics_SDLWindowBase::getArea (struct SDL_Rect& area_out,
                                      bool topLevel_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::getArea"));

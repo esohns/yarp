@@ -2185,10 +2185,10 @@ RPG_Map_Common_Tools::distanceMax (const RPG_Map_Position_t& position1_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::distanceMax"));
 
-  unsigned int distance_1 = std::abs (static_cast<int> (position1_in.first)  -
-                                      static_cast<int> (position2_in.first));
-  unsigned int distance_2 = std::abs (static_cast<int> (position1_in.second) -
-                                      static_cast<int> (position2_in.second));
+  unsigned int distance_1 =
+    std::abs (static_cast<int> (position1_in.first) - static_cast<int> (position2_in.first));
+  unsigned int distance_2 =
+    std::abs (static_cast<int> (position1_in.second) - static_cast<int> (position2_in.second));
 
   return ((distance_1 > distance_2) ? distance_1 : distance_2);
 }

@@ -78,8 +78,8 @@ class RPG_Client_Engine
   // *TODO* these need consideration/redesign
   inline void setStyle (const RPG_Graphics_Style& style_in) { state_.style = style_in; }
   inline RPG_Graphics_Style getStyle () const { return state_.style; }
-  // *NOTE*: this triggers a complete redraw !
-  void setView (const RPG_Map_Position_t&);
+  void setView (const RPG_Map_Position_t&,
+                bool = true); // refresh ?
 
   // implement RPG_Engine_IClient
   virtual void notify (enum RPG_Engine_Command,

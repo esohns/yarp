@@ -4001,7 +4001,8 @@ togglebutton_join_part_toggled_cb (GtkToggleButton* toggleButton_in,
     data_p->levelEngine->setActive (id);
 
     // center on character
-    data_p->clientEngine->setView (data_p->entity.position);
+    data_p->clientEngine->setView (data_p->entity.position,
+                                   true); // refresh ?
 
     // play ambient sound
     RPG_SOUND_EVENT_MANAGER_SINGLETON::instance ()->start ();
