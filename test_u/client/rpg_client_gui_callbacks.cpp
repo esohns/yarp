@@ -21,6 +21,7 @@
 
 #include "rpg_client_gui_callbacks.h"
 
+#include <algorithm>
 #include <sstream>
 
 #include "gmodule.h"
@@ -451,39 +452,66 @@ update_levelup (const struct RPG_Client_GTK_CBData& data_in)
                                               ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_LISTSTORE_SPELLS_NAME)));
   ACE_ASSERT (list_store_p);
   gtk_list_store_clear (list_store_p);
-  const RPG_Magic_SpellTypes_t& spells_a = player->getKnownSpells ();
-  for (int i = SPELL_ACID_ARROW;
-       i < RPG_MAGIC_SPELLTYPE_MAX;
-       ++i)
+  RPG_Magic_SpellTypes_t known_spells_a = player->getKnownSpells ();
+  RPG_Magic_SpellTypes_t available;
+  struct RPG_Magic_CasterClassUnion caster_class_s;
+  caster_class_s.discriminator = RPG_Magic_CasterClassUnion::SUBCLASS;
+  ACE_UINT16 num_new_known_spells_i = 0;
+  RPG_Magic_SpellTypes_t possible_new_spells_a;
+  if (!RPG_Magic_Common_Tools::isCasterClass (data_in.subClass))
+    goto continue_;
+  caster_class_s.subclass = data_in.subClass;
+  for (ACE_UINT8 i = 0;
+       i <= RPG_COMMON_MAX_SPELL_LEVEL;
+       i++)
   {
-    if (spells_a.find (static_cast<enum RPG_Magic_SpellType> (i)) != spells_a.end ())
-      continue;
+    // step5a: get list of available spells
+    RPG_Magic_SpellTypes_t available_per_level_a =
+        RPG_MAGIC_DICTIONARY_SINGLETON::instance ()->getSpells (caster_class_s,
+                                                                i);
+
+    // step5b: compute # known spells
+    ACE_UINT16 num_known_spells_per_level_i =
+      player->getKnownSpellsPerLevel (data_in.subClass,
+                                      i);
+    if (num_known_spells_per_level_i == 0)
+      break; // done
+    else if (num_known_spells_per_level_i == std::numeric_limits<ACE_UINT16>::max ())
+      num_new_known_spells_i = std::numeric_limits<ACE_UINT16>::max ();
+    else
+      num_new_known_spells_i += num_known_spells_per_level_i;
+
+    available.insert (available_per_level_a.begin (),
+                      available_per_level_a.end ());
+  } // end FOR
+  if (num_new_known_spells_i != std::numeric_limits<ACE_UINT16>::max ())
+    num_new_known_spells_i -= known_spells_a.size ();
+  std::set_difference (available.begin (), available.end (),
+                       known_spells_a.begin (), known_spells_a.end (),
+                       std::inserter (possible_new_spells_a, possible_new_spells_a.end ()));
+  gchar* utf8_string_p = NULL;
+  for (RPG_Magic_SpellTypesIterator_t iterator_3 = possible_new_spells_a.begin ();
+       iterator_3 != possible_new_spells_a.end ();
+       ++iterator_3)
+  {
     gtk_list_store_append (list_store_p, &tree_iter);
+    utf8_string_p =
+      Common_UI_GTK_Tools::localeToUTF8 (RPG_Common_Tools::enumToString (RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString (*iterator_3), true));
     gtk_list_store_set (list_store_p, &tree_iter,
-                        0, ACE_TEXT (RPG_Common_Tools::enumToString (RPG_Magic_SpellTypeHelper::RPG_Magic_SpellTypeToString (static_cast<enum RPG_Magic_SpellType> (i))).c_str ()), // column 0
-                        1, i,
+                        0, utf8_string_p, // column 0
+                        1, *iterator_3,
                         -1);
+    g_free (utf8_string_p); utf8_string_p = NULL;
   } // end FOR
 
+continue_:
   label_p =
       GTK_LABEL (gtk_builder_get_object ((*iterator).second.second,
                                          ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_LABEL_SPELLSREMAINING_NAME)));
   ACE_ASSERT (label_p);
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
-  unsigned short number_of_known_spells_i = 0;
-  for (ACE_UINT8 i = 0;
-       i < RPG_COMMON_MAX_SPELL_LEVEL;
-       ++i)
-  {
-    ACE_UINT16 number_of_spells_per_level_i =
-        player->getKnownSpellsPerLevel (data_in.subClass,
-                                        i);
-    number_of_known_spells_i +=
-        (std::numeric_limits<ACE_UINT16>::max () == number_of_spells_per_level_i ? 0
-                                                                                 : number_of_spells_per_level_i);
-  } // end FOR
-  converter << number_of_known_spells_i;
+  converter << (num_new_known_spells_i == std::numeric_limits<ACE_UINT16>::max () ? 0 : num_new_known_spells_i);
   gtk_label_set_text (label_p,
                       converter.str ().c_str ());
 }
@@ -2135,7 +2163,7 @@ idle_initialize_UI_cb (gpointer userData_in)
   ACE_ASSERT (entry);
   GtkEntryBuffer* entry_buffer =
       gtk_entry_buffer_new (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME), // text
-                           -1);                                              // length in bytes (-1: \0-terminated)
+                           -1);                                               // length in bytes (-1: \0-terminated)
   ACE_ASSERT (entry_buffer);
   if (!entry_buffer)
   {
@@ -4682,6 +4710,7 @@ treeview_spells_selection_changed_cb (GtkTreeSelection* selection_in,
   ACE_ASSERT (label_p);
   std::ostringstream converter;
   ACE_UINT16 number_of_known_spells_i = 0;
+  const RPG_Magic_SpellTypes_t& known_spells_a = player->getKnownSpells ();
   for (ACE_UINT8 i = 0;
        i < RPG_COMMON_MAX_SPELL_LEVEL;
        ++i)
@@ -4693,7 +4722,15 @@ treeview_spells_selection_changed_cb (GtkTreeSelection* selection_in,
         (std::numeric_limits<ACE_UINT16>::max () == number_of_spells_per_level_i ? 0
                                                                                  : number_of_spells_per_level_i);
   } // end FOR
-  converter << number_of_known_spells_i - selected_rows_i;
+  if (number_of_known_spells_i)
+    number_of_known_spells_i -= known_spells_a.size ();
+  int value_i = number_of_known_spells_i - selected_rows_i;
+  if (value_i < 0)
+  {
+    gtk_tree_selection_unselect_all (selection_in);
+    value_i = 0;
+  } // end IF
+  converter << value_i;
   gtk_label_set_text (label_p,
                       converter.str ().c_str ());
 }

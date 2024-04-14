@@ -745,9 +745,6 @@ RPG_Engine::action (RPG_Engine_EntityID_t id_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::action"));
 
-  // sanity check
-  ACE_ASSERT (id_in);
-
   if (lockedAccess_in)
     lock_.acquire ();
 
@@ -757,8 +754,10 @@ RPG_Engine::action (RPG_Engine_EntityID_t id_in,
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("invalid entity ID (was: %u), returning\n"),
                 id_in));
+
     if (lockedAccess_in)
       lock_.release ();
+
     return;
   } // end IF
 
@@ -794,6 +793,9 @@ RPG_Engine::action (RPG_Engine_EntityID_t id_in,
         if (lockedAccess_in)
           lock_.release ();
 
+        // wake up the engine
+        inherited::msg_queue_->pulse ();
+
         // done
         return;
       } // end IF
@@ -802,6 +804,9 @@ RPG_Engine::action (RPG_Engine_EntityID_t id_in,
     }
     case COMMAND_STOP:
     {
+      (*iterator).second->modes.erase (ENTITYMODE_FIGHTING);
+      (*iterator).second->modes.erase (ENTITYMODE_TRAVELLING);
+
       (*iterator).second->actions.clear ();
 
       if (lockedAccess_in)
@@ -825,6 +830,9 @@ RPG_Engine::action (RPG_Engine_EntityID_t id_in,
         if (lockedAccess_in)
           lock_.release ();
 
+        // wake up the engine
+        inherited::msg_queue_->pulse ();
+ 
         // done
         return;
       } // end IF
@@ -861,8 +869,8 @@ RPG_Engine::load (const std::string& filename_in,
 
   ACE_GUARD_RETURN (ACE_Thread_Mutex, aGuard, lock_, false);
 
-  bool restart = RPG_Engine::isRunning ();
-  RPG_Engine::stop (false); // locked access ?
+  bool restart = isRunning ();
+  stop (false); // locked access ?
 
   // step0: clean up
   for (RPG_Engine_EntitiesIterator_t iterator = entities_.begin ();
@@ -1065,8 +1073,8 @@ RPG_Engine::load (const std::string& filename_in,
     entity->position = std::make_pair ((*iterator).position ().x (),
                                        (*iterator).position ().y ());
 
-    RPG_Engine::add (entity,
-                     false); // locked access ?
+    add (entity,
+         false); // locked access ?
   } // end FOR
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("loaded %u entities...\n"),
@@ -1103,18 +1111,17 @@ RPG_Engine::load (const std::string& filename_in,
     return false;
   } // end IF
 
-  RPG_Engine::set (level);
+  set (level);
 
   if (restart)
-    RPG_Engine::start ();
+    start ();
 
   return true;
 
 error:
   try {
     ifs.close ();
-  } catch (std::ios_base::failure exception)
-  {
+  } catch (std::ios_base::failure exception) {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to std::ifstream::close(\"%s\"): caught exception: \"%s\", aborting\n"),
                 ACE_TEXT (filename_in.c_str ()),

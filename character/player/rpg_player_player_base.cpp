@@ -175,11 +175,9 @@ RPG_Player_Player_Base::getLevel (const RPG_Common_SubClass& subClass_in) const
   // *TODO*: implement class-specific tables
   ACE_UNUSED_ARG (subClass_in);
 
-  ACE_UINT8 result = 0;
-
-  result =
-      static_cast<ACE_UINT8> (ACE_OS::floor ((1.0 +
-                                             std::sqrt (static_cast<double> (myExperience / 125) + 1.0)) / 2.0));
+  ACE_UINT8 result =
+    static_cast<ACE_UINT8> (ACE_OS::floor ((1.0 +
+                                            std::sqrt (static_cast<double> (myExperience / 125.0) + 1.0)) / 2.0));
 
   return result;
 }

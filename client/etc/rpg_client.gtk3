@@ -800,7 +800,7 @@
                       <object class="GtkLabel" id="label_pointsremaining">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Attribute points remaining:</property>
+                        <property name="label" translatable="yes">remaining:</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -855,13 +855,14 @@
                             <property name="shadow_type">etched-out</property>
                             <child>
                               <object class="GtkTreeView" id="treeview_feats">
-                                <property name="width_request">300</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="model">liststore_feats</property>
                                 <property name="headers_visible">False</property>
+                                <property name="headers_clickable">False</property>
                                 <property name="search_column">0</property>
-                                <property name="fixed_height_mode">True</property>
+                                <property name="show_expanders">False</property>
+                                <property name="rubber_banding">True</property>
                                 <child internal-child="selection">
                                   <object class="GtkTreeSelection" id="treeview-selection5"/>
                                 </child>
@@ -882,7 +883,7 @@
                               <object class="GtkLabel" id="label_pointsremaining1">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Feats  remaining:</property>
+                                <property name="label" translatable="yes">remaining:</property>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
@@ -948,13 +949,14 @@
                             <property name="can_focus">True</property>
                             <child>
                               <object class="GtkTreeView" id="treeview_skills">
-                                <property name="width_request">300</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="model">liststore_skills</property>
                                 <property name="headers_visible">False</property>
+                                <property name="headers_clickable">False</property>
                                 <property name="search_column">0</property>
                                 <property name="show_expanders">False</property>
+                                <property name="tooltip_column">0</property>
                                 <child internal-child="selection">
                                   <object class="GtkTreeSelection" id="treeview-selection7"/>
                                 </child>
@@ -975,7 +977,7 @@
                               <object class="GtkLabel" id="label_pointsremaining2">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Skill points  remaining:</property>
+                                <property name="label" translatable="yes">remaining:</property>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
@@ -1042,11 +1044,14 @@
                             <property name="shadow_type">etched-out</property>
                             <child>
                               <object class="GtkTreeView" id="treeview_spells">
-                                <property name="width_request">250</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="model">liststore_spells</property>
+                                <property name="headers_visible">False</property>
+                                <property name="headers_clickable">False</property>
                                 <property name="search_column">0</property>
+                                <property name="show_expanders">False</property>
+                                <property name="rubber_banding">True</property>
                                 <child internal-child="selection">
                                   <object class="GtkTreeSelection" id="treeview-selection9"/>
                                 </child>
@@ -1067,7 +1072,7 @@
                               <object class="GtkLabel" id="label_pointsremaining3">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Spells  remaining:</property>
+                                <property name="label" translatable="yes">remaining:</property>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
@@ -2725,36 +2730,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="n_columns">2</property>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
                               </object>
                             </child>
                           </object>
@@ -2851,36 +2826,6 @@
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
                                             <property name="n_columns">2</property>
-                                            <child>
-                                              <placeholder/>
-                                            </child>
-                                            <child>
-                                              <placeholder/>
-                                            </child>
-                                            <child>
-                                              <placeholder/>
-                                            </child>
-                                            <child>
-                                              <placeholder/>
-                                            </child>
-                                            <child>
-                                              <placeholder/>
-                                            </child>
-                                            <child>
-                                              <placeholder/>
-                                            </child>
-                                            <child>
-                                              <placeholder/>
-                                            </child>
-                                            <child>
-                                              <placeholder/>
-                                            </child>
-                                            <child>
-                                              <placeholder/>
-                                            </child>
-                                            <child>
-                                              <placeholder/>
-                                            </child>
                                           </object>
                                         </child>
                                       </object>
