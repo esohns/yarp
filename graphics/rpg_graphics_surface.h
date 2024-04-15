@@ -108,9 +108,9 @@ class RPG_Graphics_Surface
                        const RPG_Graphics_Offset_t&, // offset (top left == 0,0)
                        SDL_Surface*,                 // target surface (e.g. screen)
                        struct SDL_Rect&);            // return value: "dirty" region
-  static void putRectangle (const SDL_Rect&, // rectangle
-                            Uint32,   // color
-                            SDL_Surface*);   // target surface (e.g. screen)
+  static void putRectangle (const struct SDL_Rect&, // rectangle
+                            Uint32,                 // color
+                            SDL_Surface*);          // target surface (e.g. screen)
 
   // *IMPORTANT NOTE*: transparent pixels will remain that way
   static void alpha (Uint8,  // alpha (0: transparent --> 255: opaque)

@@ -817,7 +817,7 @@ RPG_Graphics_Surface::putText (enum RPG_Graphics_Font font_in,
 }
 
 void
-RPG_Graphics_Surface::putRectangle (const SDL_Rect& rectangle_in,
+RPG_Graphics_Surface::putRectangle (const struct SDL_Rect& rectangle_in,
                                     Uint32 color_in,
                                     SDL_Surface* targetSurface_in)
 {
@@ -993,17 +993,34 @@ RPG_Graphics_Surface::copy (const SDL_Surface& sourceImage_in,
   // sanity check(s)
   ACE_ASSERT ((sourceImage_in.w == targetImage_in.w) && (sourceImage_in.h == targetImage_in.h));
 
-   if (SDL_BlitSurface (&const_cast<SDL_Surface&> (sourceImage_in),
-                        NULL,
-                        &targetImage_in,
-                        NULL))
-   {
-     ACE_DEBUG ((LM_ERROR,
-                 ACE_TEXT ("failed to SDL_BlitSurface(): %s, returning\n"),
-                 ACE_TEXT (SDL_GetError ())));
-     return;
-   } // end IF
-   return;
+  // *NOTE*: "...To copy a surface to another surface (or texture) without
+  //          blending with the existing data, the blendmode of the SOURCE
+  //          surface should be set to SDL_BLENDMODE_NONE. ..."
+  SDL_BlendMode previous_mode_e;
+  SDL_GetSurfaceBlendMode (&const_cast<SDL_Surface&> (sourceImage_in),
+                           &previous_mode_e);
+  SDL_SetSurfaceBlendMode (&const_cast<SDL_Surface&> (sourceImage_in),
+                           SDL_BLENDMODE_NONE);
+
+  if (SDL_BlitSurface (&const_cast<SDL_Surface&> (sourceImage_in),
+                       NULL,
+                       &targetImage_in,
+                       NULL))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_BlitSurface(): %s, returning\n"),
+                ACE_TEXT (SDL_GetError ())));
+
+    SDL_SetSurfaceBlendMode (&const_cast<SDL_Surface&> (sourceImage_in),
+                             previous_mode_e);
+
+    return;
+  } // end IF
+
+  SDL_SetSurfaceBlendMode (&const_cast<SDL_Surface&> (sourceImage_in),
+                           previous_mode_e);
+
+  return;
 
   // *NOTE*: blitting does not preserve the alpha channel...
   // --> do it manually
@@ -1049,7 +1066,18 @@ RPG_Graphics_Surface::copy (const SDL_Surface& sourceImage_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::copy"));
 
-  SDL_Surface* result = NULL;
+  SDL_Surface* result =
+    SDL_DuplicateSurface (&const_cast<SDL_Surface&> (sourceImage_in));
+  if (!result)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_DuplicateSurface(): \"%s\", aborting\n"),
+                ACE_TEXT (SDL_GetError ())));
+    return NULL;
+  } // end IF
+
+  return result;
+
   result = SDL_CreateRGBSurface (RPG_Graphics_Surface::SDL_surface_flags,
                                  sourceImage_in.w,
                                  sourceImage_in.h,
@@ -1066,46 +1094,8 @@ RPG_Graphics_Surface::copy (const SDL_Surface& sourceImage_in)
     return NULL;
   } // end IF
 
-  // *NOTE*: blitting does not preserve the alpha channel...
-  // --> do it manually
-//   if (SDL_BlitSurface(&const_cast<SDL_Surface&> (sourceImage_in),
-//                       NULL,
-//                       result,
-//                       NULL))
-//   {
-//     ACE_DEBUG((LM_ERROR,
-//                ACE_TEXT("failed to SDL_BlitSurface(): %s, aborting\n"),
-//                ACE_TEXT(SDL_GetError())));
-  //
-//     // clean up
-//     SDL_FreeSurface(result);
-  //
-//     return NULL;
-//   } // end IF
-
-  // lock surface during pixel access
-  if (SDL_MUSTLOCK ((&sourceImage_in)))
-    if (SDL_LockSurface (&const_cast<SDL_Surface&> (sourceImage_in)))
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to SDL_LockSurface(): \"%s\", aborting\n"),
-                ACE_TEXT (SDL_GetError ())));
-
-    // clean up
-    SDL_FreeSurface (result);
-
-    return NULL;
-  } // end IF
-
-  for (unsigned int i = 0;
-       i < static_cast<unsigned int> (sourceImage_in.h);
-       i++)
-    ::memcpy ((static_cast<unsigned char*> (result->pixels) + (result->pitch * i)),
-              (static_cast<unsigned char*> (sourceImage_in.pixels) + (sourceImage_in.pitch * i)),
-              (sourceImage_in.w * sourceImage_in.format->BytesPerPixel)); // RGBA --> 4 bytes (?!!!)
-
-  if (SDL_MUSTLOCK ((&sourceImage_in)))
-    SDL_UnlockSurface (&const_cast<SDL_Surface&> (sourceImage_in));
+  RPG_Graphics_Surface::copy (sourceImage_in,
+                              *result);
 
   return result;
 }
