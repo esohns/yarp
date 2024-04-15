@@ -127,7 +127,7 @@ class RPG_Graphics_Surface
   // refresh (partial) screen surface
 #if defined (SDL_USE)
   static void update (const struct SDL_Rect&, // "dirty" rectangle
-                      SDL_Surface*);   // target surface (e.g. screen)
+                      SDL_Surface*);          // target surface (e.g. screen)
 #elif defined (SDL2_USE)
   static void update (const struct SDL_Rect&, // "dirty" rectangle
                       SDL_Window*);           // target window (e.g. screen)

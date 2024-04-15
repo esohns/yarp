@@ -167,17 +167,17 @@ RPG_Player_Player_Base::initialize (// base attributes
   mySize       = RPG_Character_Race_Common_Tools::raceToSize (race_in);
 }
 
-ACE_UINT8
-RPG_Player_Player_Base::getLevel (const RPG_Common_SubClass& subClass_in) const
+RPG_Character_Level_t
+RPG_Player_Player_Base::getLevel (enum RPG_Common_SubClass subClass_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::getLevel"));
 
   // *TODO*: implement class-specific tables
   ACE_UNUSED_ARG (subClass_in);
 
-  ACE_UINT8 result =
-    static_cast<ACE_UINT8> (ACE_OS::floor ((1.0 +
-                                            std::sqrt (static_cast<double> (myExperience / 125.0) + 1.0)) / 2.0));
+  RPG_Character_Level_t result =
+    static_cast<RPG_Character_Level_t> (ACE_OS::floor ((1.0 +
+                                                        std::sqrt ((myExperience / 125.0) + 1.0)) / 2.0));
 
   return result;
 }

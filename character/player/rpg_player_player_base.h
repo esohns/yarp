@@ -66,7 +66,7 @@ class RPG_Player_Player_Base
 
   inline ACE_UINT64 getExperience () const { return myExperience; }
   // compute dynamically from class/XP
-  ACE_UINT8 getLevel (const RPG_Common_SubClass& = SUBCLASS_NONE) const; // subclass
+  RPG_Character_Level_t getLevel (enum RPG_Common_SubClass = SUBCLASS_NONE) const; // subclass
 
   // access current equipment
   inline RPG_Player_Equipment& getEquipment () { return inherited::myEquipment; }

@@ -115,7 +115,8 @@ class RPG_Engine
                                 bool = true) const;        // locked access ?
   RPG_Engine_EntityID_t hasEntity (const RPG_Map_Position_t&, // position
                                    bool = true) const;        // locked access ?
-  RPG_Engine_EntityList_t entities (const RPG_Map_Position_t&, // sort: position (closest first)
+  // *NOTE*: returns sorted list (closest first)
+  RPG_Engine_EntityList_t entities (const RPG_Map_Position_t&, // position
                                     bool = true) const;        // locked access ?
   bool isMonster (RPG_Engine_EntityID_t, // id
                   bool = true) const;    // locked access ?

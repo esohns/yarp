@@ -343,8 +343,7 @@ RPG_Graphics_Cursor_Manager::setCursor (enum RPG_Graphics_Cursor type_in,
   // step2: create background surface
   if (myBG)
   {
-    SDL_FreeSurface (myBG);
-    myBG = NULL;
+    SDL_FreeSurface (myBG); myBG = NULL;
   } // end IF
   myBG = RPG_Graphics_Surface::create ((*iterator).second->w,
                                        (*iterator).second->h);
@@ -377,7 +376,7 @@ RPG_Graphics_Cursor_Manager::putCursor (const RPG_Graphics_Offset_t& offset_in,
   ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
   // sanity check(s)
-  ACE_ASSERT(myHighlightWindow);
+  ACE_ASSERT (myHighlightWindow);
 #if defined (SDL_USE)
   SDL_Surface* target_surface = myHighlightWindow->getScreen ();
 #elif defined (SDL2_USE)
