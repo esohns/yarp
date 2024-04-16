@@ -93,7 +93,6 @@ class RPG_Graphics_Surface
                            unsigned int,                 // height
                            const SDL_Surface&);          // source surface
   static void get (const RPG_Graphics_Offset_t&, // offset (top left == 0,0)
-                   bool,                  // blit to target surface ?
                    const SDL_Surface&,           // source surface
                    SDL_Surface&);                // target surface
   static void put (const RPG_Graphics_Offset_t&, // offset (top left == 0,0)

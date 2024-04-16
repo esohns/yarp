@@ -399,7 +399,6 @@ RPG_Graphics_Cursor_Manager::putCursor (const RPG_Graphics_Offset_t& offset_in,
 
   // step2: get new background
   RPG_Graphics_Surface::get (offset_in,
-                             true, // use (fast) blitting method
                              *target_surface,
                              *myBG);
 
@@ -439,10 +438,8 @@ RPG_Graphics_Cursor_Manager::putCursor (const RPG_Graphics_Offset_t& offset_in,
                                                ACE_TEXT_ALWAYS_CHAR ("[0000,0000]"));
       coordinates_bg = RPG_Graphics_Surface::create (text_size_bg.first,
                                                      text_size_bg.second);
-      RPG_Graphics_Surface::get (std::make_pair ((((window_area.w / 2) -
-                                                   text_size_bg.first) / 2),
+      RPG_Graphics_Surface::get (std::make_pair ((((window_area.w / 2) - text_size_bg.first) / 2),
                                                  ((border_top - text_size_bg.second) / 2)),
-                                 true,
                                  *target_surface,
                                  *coordinates_bg);
     } // end IF
@@ -633,7 +630,6 @@ RPG_Graphics_Cursor_Manager::updateBG (struct SDL_Rect& dirtyRegion_out,
     // cached cursor bg fully inside of map
     // --> just get a fresh copy
     RPG_Graphics_Surface::get (myBGPosition,
-                               true, // use (fast) blitting method
                                *target_surface,
                                *myBG);
 
@@ -670,7 +666,6 @@ RPG_Graphics_Cursor_Manager::updateBG (struct SDL_Rect& dirtyRegion_out,
                                   static_cast<unsigned int> (myBG->h));
   ACE_ASSERT (new_bg);
   RPG_Graphics_Surface::get (myBGPosition,
-                             true, // use (fast) blitting method
                              *target_surface,
                              *new_bg);
 
@@ -861,10 +856,8 @@ RPG_Graphics_Cursor_Manager::putHighlights (const RPG_Map_PositionList_t& mapPos
       highlight_coordinates_bg =
           RPG_Graphics_Surface::create (highlight_text_size_bg.first,
                                         highlight_text_size_bg.second);
-      RPG_Graphics_Surface::get (std::make_pair ((((window_area.w * 3) / 4) -
-                                                  (highlight_text_size_bg.first / 2)),
+      RPG_Graphics_Surface::get (std::make_pair ((((window_area.w * 3) / 4) - (highlight_text_size_bg.first / 2)),
                                                  ((border_top - highlight_text_size_bg.second) / 2)),
-                                 true,
                                  *target_surface,
                                  *highlight_coordinates_bg);
     } // end IF
@@ -1038,7 +1031,6 @@ RPG_Graphics_Cursor_Manager::storeHighlightBG (const RPG_Map_PositionList_t& map
   {
     RPG_Graphics_Surface::clear ((*cache_iterator).second);
     RPG_Graphics_Surface::get (*graphics_position_iterator,
-                               true, // use (fast) blitting method
                                *target_surface,
                                *(*cache_iterator).second);
     (*cache_iterator).first = *map_position_iterator;
@@ -1206,7 +1198,6 @@ RPG_Graphics_Cursor_Manager::updateHighlightBG (const RPG_Graphics_Position_t& v
       // cached highlight bg completely "dirty"
       // --> just get a fresh copy
       RPG_Graphics_Surface::get (screen_position,
-                                 true, // use (fast) blitting method
                                  *target_surface,
                                  *(*iterator).second);
 
@@ -1248,7 +1239,6 @@ RPG_Graphics_Cursor_Manager::updateHighlightBG (const RPG_Graphics_Position_t& v
       continue;
     } // end IF
     RPG_Graphics_Surface::get (screen_position,
-                               true, // use (fast) blitting method
                                *target_surface,
                                *new_background);
 

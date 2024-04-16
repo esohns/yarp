@@ -247,7 +247,6 @@ RPG_Client_Entity_Manager::put (RPG_Engine_EntityID_t id_in,
                                                                clip_rectangle.y);
 
   RPG_Graphics_Surface::get (screen_coordinates,
-                             true, // use (fast) blitting method
                              *target_surface,
                              *(*iterator).second.bg);
   (*iterator).second.bg_position = screen_coordinates;

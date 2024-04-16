@@ -177,7 +177,6 @@ RPG_Graphics_SDLWindowSub::saveBG (const struct SDL_Rect& area_in)
   struct SDL_Rect area = inherited::clipRectangle_;
   area = RPG_Graphics_SDL_Tools::intersect (area, area_in);
   RPG_Graphics_Surface::get (std::make_pair (area.x, area.y),
-                             true,
                              *surface_p,
                              *BG_);
 }

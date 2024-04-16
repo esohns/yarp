@@ -625,7 +625,6 @@ RPG_Graphics_Surface::get (const RPG_Graphics_Offset_t& offset_in,
 
 void
 RPG_Graphics_Surface::get (const RPG_Graphics_Offset_t& offset_in,
-                           bool blit_in,
                            const SDL_Surface& source_in,
                            SDL_Surface& target_inout)
 {
@@ -646,32 +645,31 @@ RPG_Graphics_Surface::get (const RPG_Graphics_Offset_t& offset_in,
       ((clipped_height > static_cast<unsigned int>(target_inout.h)) ? target_inout.h
                                                                     : clipped_height);
 
-  // *WARNING*: blitting does not preserve the alpha channel...
-  if (blit_in)
+  // *WARNING*: blitting does not necessarily preserve the alpha channel...
+  struct SDL_Rect clip_rectangle;
+  clip_rectangle.x = static_cast<int16_t> (offset_in.first);
+  clip_rectangle.y = static_cast<int16_t> (offset_in.second);
+  clip_rectangle.w = static_cast<uint16_t> (clipped_width);
+  clip_rectangle.h = static_cast<uint16_t> (clipped_height);
+  if (SDL_BlitSurface (const_cast<SDL_Surface*> (&source_in), // source
+                        &clip_rectangle,                       // aspect
+                        &target_inout,                         // target
+                        NULL))                                 // aspect (--> everything)
   {
-    // bounding box
-    struct SDL_Rect clip_rectangle;
-    clip_rectangle.x = static_cast<int16_t> (offset_in.first);
-    clip_rectangle.y = static_cast<int16_t> (offset_in.second);
-    clip_rectangle.w = static_cast<uint16_t> (clipped_width);
-    clip_rectangle.h = static_cast<uint16_t> (clipped_height);
-    if (SDL_BlitSurface (const_cast<SDL_Surface*> (&source_in), // source
-                         &clip_rectangle,                       // aspect
-                         &target_inout,                         // target
-                         NULL))                                 // aspect (--> everything)
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to SDL_BlitSurface(): \"%s\", returning\n"),
-                  ACE_TEXT (SDL_GetError ())));
-      return;
-    } // end IF
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_BlitSurface(): \"%s\", returning\n"),
+                ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
 
+  return;
+
+  // sanity check(s)
+  ACE_ASSERT (source_in.format->format == target_inout.format->format);
+
   // lock surfaces during pixel access
   if (SDL_MUSTLOCK ((&source_in)))
-    if (SDL_LockSurface (&const_cast<SDL_Surface&>(source_in)))
+    if (SDL_LockSurface (&const_cast<SDL_Surface&> (source_in)))
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_LockSurface(): \"%s\", returning\n"),
@@ -679,7 +677,7 @@ RPG_Graphics_Surface::get (const RPG_Graphics_Offset_t& offset_in,
       return;
     } // end IF
   if (SDL_MUSTLOCK ((&target_inout)))
-    if (SDL_LockSurface (&const_cast<SDL_Surface&>(target_inout)))
+    if (SDL_LockSurface (&const_cast<SDL_Surface&> (target_inout)))
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_LockSurface(): \"%s\", aborting\n"),
@@ -687,7 +685,7 @@ RPG_Graphics_Surface::get (const RPG_Graphics_Offset_t& offset_in,
 
       // clean up
       if (SDL_MUSTLOCK ((&source_in)))
-        SDL_UnlockSurface (&const_cast<SDL_Surface&>(source_in));
+        SDL_UnlockSurface (&const_cast<SDL_Surface&> (source_in));
 
       return;
     } // end IF
@@ -695,11 +693,9 @@ RPG_Graphics_Surface::get (const RPG_Graphics_Offset_t& offset_in,
   for (unsigned int i = 0;
        i < clipped_height;
        i++)
-    ::memcpy ((static_cast<unsigned char*> (target_inout.pixels) +
-               (target_inout.pitch * i)),
-              (static_cast<unsigned char*> (source_in.pixels) +
-               ((offset_in.second + i) * source_in.pitch) + (offset_in.first * 4)),
-              (clipped_width * target_inout.format->BytesPerPixel)); // RGBA --> 4 bytes
+    ::memcpy ((static_cast<unsigned char*> (target_inout.pixels) + (target_inout.pitch * i)),
+              (static_cast<unsigned char*> (source_in.pixels) + ((offset_in.second + i) * source_in.pitch) + (offset_in.first * source_in.format->BytesPerPixel)),
+              (clipped_width * target_inout.format->BytesPerPixel));
 
   if (SDL_MUSTLOCK ((&source_in)))
     SDL_UnlockSurface (&const_cast<SDL_Surface&> (source_in));
@@ -761,7 +757,7 @@ RPG_Graphics_Surface::putText (enum RPG_Graphics_Font font_in,
   ACE_ASSERT (targetSurface_in);
 
   SDL_Surface* rendered_text = NULL;
-  SDL_Rect dirty_region;
+  struct SDL_Rect dirty_region;
   // step1: render shade ?
   if (shade_in)
   {
@@ -783,8 +779,7 @@ RPG_Graphics_Surface::putText (enum RPG_Graphics_Font font_in,
     RPG_Graphics_Surface::put (offset,
                                *rendered_text,
                                targetSurface_in,
-                               dirty_region);
-    dirtyRegion_out = dirty_region;
+                               dirtyRegion_out);
 
     // clean up
     SDL_FreeSurface (rendered_text);
@@ -1022,9 +1017,6 @@ RPG_Graphics_Surface::copy (const SDL_Surface& sourceImage_in,
 
   return;
 
-  // *NOTE*: blitting does not preserve the alpha channel...
-  // --> do it manually
-
   // sanity check(s)
   ACE_ASSERT (sourceImage_in.format->format == targetImage_in.format->format);
 
@@ -1172,12 +1164,11 @@ RPG_Graphics_Surface::loadPNG (const std::string& filename_in,
     return NULL;
   } // end IF
 
-  png_structp png_ptr = NULL;
   // create the PNG loading context structure
-  png_ptr = png_create_read_struct (PNG_LIBPNG_VER_STRING, // version
-                                    NULL,                  // error
-                                    NULL,                  // error handler
-                                    NULL);                 // warning handler
+  png_structp png_ptr = png_create_read_struct (PNG_LIBPNG_VER_STRING, // version
+                                                NULL,                  // error
+                                                NULL,                  // error handler
+                                                NULL);                 // warning handler
   if (!png_ptr)
   {
     ACE_DEBUG ((LM_ERROR,
@@ -1190,9 +1181,8 @@ RPG_Graphics_Surface::loadPNG (const std::string& filename_in,
   // *NOTE* beyond this point:
   // - cleanup "png_ptr"
 
-  png_infop info_ptr = NULL;
   // allocate/initialize memory for any image information [REQUIRED]
-  info_ptr = png_create_info_struct (png_ptr);
+  png_infop info_ptr = png_create_info_struct (png_ptr);
   if (!info_ptr)
   {
     ACE_DEBUG ((LM_ERROR,
