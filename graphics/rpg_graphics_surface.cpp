@@ -736,6 +736,8 @@ RPG_Graphics_Surface::put (const RPG_Graphics_Offset_t& offset_in,
 
   // compute dirty region
   dirtyRegion_out = target_rectangle;
+  dirtyRegion_out.w = image_in.w;
+  dirtyRegion_out.h = image_in.h;
 }
 
 bool

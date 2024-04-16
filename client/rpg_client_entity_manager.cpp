@@ -87,8 +87,8 @@ RPG_Client_Entity_Manager::add (RPG_Engine_EntityID_t id_in,
 
   // sanity checks
   ACE_ASSERT (surface_in);
-	RPG_Client_EntityCacheConstIterator_t iterator = myCache.find (id_in);
-	if (iterator != myCache.end ())
+  RPG_Client_EntityCacheConstIterator_t iterator = myCache.find (id_in);
+  if (iterator != myCache.end ())
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("entity ID %u already cached, returning\n"),
@@ -185,11 +185,11 @@ RPG_Client_Entity_Manager::put (RPG_Engine_EntityID_t id_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Entity_Manager::put"));
 
-  // step0: init return value(s)
+  // step0: initialize return value(s)
   ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
   // sanity check(s)
-  ACE_ASSERT(myWindow);
+  ACE_ASSERT (myWindow);
 #if defined (SDL_USE)
   SDL_Surface* target_surface = myWindow->getScreen ();
 #elif defined (SDL2_USE)
@@ -206,22 +206,22 @@ RPG_Client_Entity_Manager::put (RPG_Engine_EntityID_t id_in,
   } // end IF
 
   // step1: restore old background
-	if (myScreenLock && lockedAccess_in)
-		myScreenLock->lock();
+  if (myScreenLock && lockedAccess_in)
+    myScreenLock->lock ();
   restoreBG (id_in,
              dirtyRegion_out,
              clipWindow_in,
-             false,
+             false, // locked access ?
              debug_in);
 
   // step2: get new background
-	// step2a: restore cursor / highlight bg first
-	struct SDL_Rect clip_rectangle, dirty_region;
-	// *NOTE*: entities are drawn "centered" on the floor tile
-	clip_rectangle.x = (position_in.first +
+  // step2a: restore cursor / highlight bg first
+  struct SDL_Rect clip_rectangle, dirty_region;
+  // *NOTE*: entities are drawn "centered" on the floor tile
+  clip_rectangle.x = (position_in.first +
                       ((RPG_GRAPHICS_TILE_FLOOR_WIDTH -
                       (*iterator).second.graphic->w) / 2));
-	clip_rectangle.y = (position_in.second +
+  clip_rectangle.y = (position_in.second +
                       (RPG_GRAPHICS_TILE_FLOOR_HEIGHT / 2) -
                       (*iterator).second.graphic->h);
   clip_rectangle.w = (*iterator).second.graphic->w;
@@ -283,7 +283,7 @@ RPG_Client_Entity_Manager::put (RPG_Engine_EntityID_t id_in,
                                                                 debug_in);
   dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
                                                          dirtyRegion_out);
-  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->updateHighlightBG (window->getView(),
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->updateHighlightBG (window->getView (),
                                                                          dirty_region,
                                                                          &dirtyRegion_out,
                                                                          lockedAccess_in,
@@ -294,8 +294,8 @@ RPG_Client_Entity_Manager::put (RPG_Engine_EntityID_t id_in,
   if (debug_in)
   {
     // show entity bg in bottom right corner
-    ACE_ASSERT(target_surface->w >= (*iterator).second.bg->w);
-    ACE_ASSERT(target_surface->h >= (*iterator).second.bg->h);
+    ACE_ASSERT (target_surface->w >= (*iterator).second.bg->w);
+    ACE_ASSERT (target_surface->h >= (*iterator).second.bg->h);
 
 #if defined (SDL_USE)
     RPG_Graphics_Surface::unclip ();
@@ -385,9 +385,9 @@ RPG_Client_Entity_Manager::restoreBG (RPG_Engine_EntityID_t id_in,
   if (clipWindow_in)
     myWindow->unclip();
 
-	//// update cursor / highlight(s) ?
-	//SDL_Rect dirty_region;
-	//RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG(dirty_region,
+  //// update cursor / highlight(s) ?
+  //SDL_Rect dirty_region;
+  //RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->updateBG(dirty_region,
  //                                                               &dirtyRegion_out,
  //                                                               lockedAccess_in,
  //                                                               debug_in);

@@ -34,12 +34,10 @@ RPG_Graphics_SDLWindowSub::RPG_Graphics_SDLWindowSub (enum RPG_Graphics_WindowTy
                                                       // *NOTE*: offset doesn't include any border(s) !
                                                       const RPG_Graphics_Offset_t& offset_in,
                                                       const std::string& title_in)
-//                                                      SDL_Surface* backGround_in)
  : inherited (type_in,       // type
               parent_in,     // parent
               offset_in,     // offset
               title_in)      // title
-              //backGround_in) // background
  , BGHasBeenSaved_ (false)
  , isVisible_ (false)
  , BG_ (NULL)
@@ -169,14 +167,17 @@ RPG_Graphics_SDLWindowSub::saveBG (const struct SDL_Rect& area_in)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to RPG_Graphics_Surface::create(%u,%u), returning\n"),
                   area_in.w, area_in.w));
+      BGHasBeenSaved_ = false;
       return;
     } // end IF
   } // end IF
   ACE_ASSERT (BG_);
 
   struct SDL_Rect area = inherited::clipRectangle_;
-  area = RPG_Graphics_SDL_Tools::intersect (area, area_in);
-  RPG_Graphics_Surface::get (std::make_pair (area.x, area.y),
+  area = RPG_Graphics_SDL_Tools::intersect (area,
+                                            area_in);
+  RPG_Graphics_Surface::get (std::make_pair (area.x,
+                                             area.y),
                              *surface_p,
                              *BG_);
 }
@@ -201,8 +202,8 @@ RPG_Graphics_SDLWindowSub::restoreBG (struct SDL_Rect& dirtyRegion_out)
 
   if (inherited::screenLock_)
     screenLock_->lock ();
-  RPG_Graphics_Surface::put (std::make_pair (clipRectangle_.x,
-                                             clipRectangle_.y),
+  RPG_Graphics_Surface::put (std::make_pair (inherited::clipRectangle_.x,
+                                             inherited::clipRectangle_.y),
                              *BG_,
                              surface_p,
                              dirtyRegion_out);
