@@ -429,8 +429,13 @@ RPG_Graphics_Cursor_Manager::putCursor (const RPG_Graphics_Offset_t& offset_in,
     struct SDL_Rect window_area;
     myHighlightWindow->getArea (window_area,
                                 true); // toplevel- ?
-    static RPG_Graphics_TextSize_t text_size_bg = std::make_pair (0, 0);
+    static RPG_Graphics_TextSize_t text_size_bg;
     static SDL_Surface* coordinates_bg = NULL;
+#if defined (SDL_USE)
+    RPG_Graphics_Surface::unclip ();
+#elif defined (SDL2_USE)
+    RPG_Graphics_Surface::unclip (myHighlightWindow->getScreen ());
+#endif // SDL_USE || SDL2_USE
     if (!coordinates_bg)
     {
       text_size_bg =
@@ -438,6 +443,7 @@ RPG_Graphics_Cursor_Manager::putCursor (const RPG_Graphics_Offset_t& offset_in,
                                                ACE_TEXT_ALWAYS_CHAR ("[0000,0000]"));
       coordinates_bg = RPG_Graphics_Surface::create (text_size_bg.first,
                                                      text_size_bg.second);
+      ACE_ASSERT (coordinates_bg);
       RPG_Graphics_Surface::get (std::make_pair ((((window_area.w / 2) - text_size_bg.first) / 2),
                                                  ((border_top - text_size_bg.second) / 2)),
                                  *target_surface,
@@ -445,16 +451,14 @@ RPG_Graphics_Cursor_Manager::putCursor (const RPG_Graphics_Offset_t& offset_in,
     } // end IF
     else
     {
-      RPG_Graphics_Surface::put (std::make_pair((((window_area.w / 2) -
-                                                  text_size_bg.first) / 2),
-                                                ((border_top - text_size_bg.second) / 2)),
+      RPG_Graphics_Surface::put (std::make_pair ((((window_area.w / 2) - text_size_bg.first) / 2),
+                                                 ((border_top - text_size_bg.second) / 2)),
                                  *coordinates_bg,
                                  target_surface,
                                  dirty_region);
       dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
                                                              dirtyRegion_out);
     } // end ELSE
-//    RPG_Graphics_Surface::unclip();
     if (myScreenLock && lockedAccess_in)
       myScreenLock->lock ();
     RPG_Graphics_Surface::putText (FONT_MAIN_SMALL,
@@ -490,7 +494,11 @@ RPG_Graphics_Cursor_Manager::putCursor (const RPG_Graphics_Offset_t& offset_in,
                                dirty_region);
     if (myScreenLock && lockedAccess_in)
       myScreenLock->unlock ();
-//    RPG_Graphics_Surface::clip();
+#if defined (SDL_USE)
+    RPG_Graphics_Surface::clip ();
+#elif defined (SDL2_USE)
+    RPG_Graphics_Surface::clip (myHighlightWindow->getScreen ());
+#endif // SDL_USE || SDL2_USE
 
     dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirtyRegion_out,
                                                            dirty_region);
@@ -549,7 +557,8 @@ RPG_Graphics_Cursor_Manager::restoreBG (struct SDL_Rect& dirtyRegion_out,
   dirtyRegion_out = RPG_Graphics_SDL_Tools::intersect (dirtyRegion_out,
                                                        clip_rectangle);
   clip_rectangle = dirtyRegion_out;
-  struct SDL_Rect source_clip_rectangle = {0, 0, dirtyRegion_out.w, dirtyRegion_out.h};
+  struct SDL_Rect source_clip_rectangle =
+    {0, 0, dirtyRegion_out.w, dirtyRegion_out.h};
   if (clipRectangle_in)
   {
     clip_rectangle = RPG_Graphics_SDL_Tools::intersect (*clipRectangle_in,
@@ -605,7 +614,7 @@ RPG_Graphics_Cursor_Manager::updateBG (struct SDL_Rect& dirtyRegion_out,
   // --> update that bit (if any) of the cached bg
 
   // step1: set clip area
-  struct SDL_Rect clip_area = {0, 0, 0, 0};
+  struct SDL_Rect clip_area;
   if (clipRect_in == NULL)
     myHighlightWindow->getArea (clip_area,
                                 false); // toplevel- ?

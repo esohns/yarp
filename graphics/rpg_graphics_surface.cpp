@@ -182,11 +182,11 @@ RPG_Graphics_Surface::clip (SDL_Window* window_in)
 #if defined (SDL_USE)
   SDL_Surface* surface_p = SDL_GetVideoSurface ();
 #elif defined (SDL2_USE)
+  ACE_ASSERT (window_in);
   SDL_Surface* surface_p = SDL_GetWindowSurface (window_in);
 #endif // SDL_USE || SDL2_USE
   ACE_ASSERT (surface_p);
-  if (((myClipRectangle.w == 0) ||
-       (myClipRectangle.h == 0)) ||
+  if (((myClipRectangle.w == 0)  || (myClipRectangle.h == 0)) ||
       !surface_p)
     return; // nothing to do
 
@@ -207,6 +207,7 @@ RPG_Graphics_Surface::unclip (SDL_Window* window_in)
 #if defined (SDL_USE)
   SDL_Surface* surface_p = SDL_GetVideoSurface ();
 #elif defined (SDL2_USE)
+  ACE_ASSERT (window_in);
   SDL_Surface* surface_p = SDL_GetWindowSurface (window_in);
 #endif // SDL_USE || SDL2_USE
   ACE_ASSERT (surface_p);

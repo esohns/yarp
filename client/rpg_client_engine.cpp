@@ -891,8 +891,11 @@ next:
   {
     case COMMAND_CURSOR_DRAW:
     { ACE_ASSERT (client_action.window);
+
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->putCursor (client_action.position,
-                                                                     dirty_region);
+                                                                     dirty_region,
+                                                                     true, // locked access ? (screen-lock)
+                                                                     debug_); // debug ?
       try {
         client_action.window->invalidate (dirty_region);
       } catch (...) {
@@ -905,9 +908,10 @@ next:
     }
     case COMMAND_CURSOR_RESTORE_BG:
     { ACE_ASSERT (client_action.window);
+
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->restoreBG (dirty_region,
                                                                      NULL,  // clip rectangle
-                                                                     true); // locked access ?
+                                                                     true); // locked access ? (screen-lock)
       try {
         client_action.window->invalidate (dirty_region);
       } catch (...) {
@@ -921,6 +925,7 @@ next:
     case COMMAND_CURSOR_INVALIDATE_BG:
     {
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->invalidateBG (NULL); // clip rectangle
+
       break;
     }
     case COMMAND_CURSOR_SET:
@@ -1006,8 +1011,10 @@ next:
     }
     case COMMAND_PLAY_SOUND:
     { ACE_ASSERT (client_action.sound != RPG_SOUND_EVENT_INVALID);
+
       ACE_Time_Value length = ACE_Time_Value::zero;
-      int channel = RPG_Sound_Common_Tools::play (client_action.sound, length);
+      int channel = RPG_Sound_Common_Tools::play (client_action.sound,
+                                                  length);
       if (channel == -1)
       {
         ACE_DEBUG ((LM_ERROR,
@@ -1141,8 +1148,8 @@ next:
                                                                          screen_positions,
                                                                          view,
                                                                          dirty_region,
-                                                                         true,
-                                                                         debug_);
+                                                                         true, // locked access ? (screen-lock)
+                                                                         debug_); // debug ?
 
       try {
         client_action.window->invalidate (dirty_region);
