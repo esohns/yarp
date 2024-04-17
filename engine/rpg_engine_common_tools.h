@@ -23,6 +23,7 @@
 
 #include <deque>
 #include <string>
+#include <vector>
 
 #include "ace/Global_Macros.h"
 

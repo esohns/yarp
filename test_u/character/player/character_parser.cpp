@@ -283,15 +283,12 @@ do_work (const std::string& magicDictionaryFilename_in,
   } // end IF
 
   // step1c: initialize dictionaries
-  try
-  {
+  try {
     RPG_MAGIC_DICTIONARY_SINGLETON::instance ()->initialize (magicDictionaryFilename_in);
-    RPG_ITEM_DICTIONARY_SINGLETON::instance ()->init (itemDictionaryFilename_in);
-  }
-  catch (...)
-  {
+    RPG_ITEM_DICTIONARY_SINGLETON::instance ()->initialize (itemDictionaryFilename_in);
+  } catch (...) {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("caught exception in RPG_[Magic|Item]_Dictionary::init, returning\n")));
+                ACE_TEXT ("caught exception in RPG_[Magic|Item]_Dictionary::initialize(), returning\n")));
     return;
   }
 

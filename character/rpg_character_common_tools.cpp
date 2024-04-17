@@ -77,7 +77,7 @@ RPG_Character_Common_Tools::initialize ()
 void
 RPG_Character_Common_Tools::initializeStringConversionTables ()
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Character_Common_Tools::initStringConversionTables"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Common_Tools::initializeStringConversionTables"));
 
   RPG_Character_GenderHelper::init ();
   RPG_Character_RaceHelper::init ();
@@ -97,7 +97,7 @@ RPG_Character_Common_Tools::initializeStringConversionTables ()
 void
 RPG_Character_Common_Tools::initializeEncumbranceTable ()
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Character_Common_Tools::initEncumbranceTable"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Common_Tools::initializeEncumbranceTable"));
 
   RPG_Character_Common_Tools::myEncumbranceTable.clear ();
 
@@ -473,8 +473,9 @@ RPG_Character_Common_Tools::getAttributeAbilityModifier (ACE_UINT8 attributeAbil
   RPG_TRACE (ACE_TEXT ("RPG_Character_Common_Tools::getAttributeAbilityModifier"));
 
   ACE_INT8 baseValue = -5;
-  baseValue += ((attributeAbility_in & 0x1) == attributeAbility_in) ? ((attributeAbility_in - 1) >> 1)
-                                                                    : (attributeAbility_in >> 1);
+  baseValue +=
+    ((attributeAbility_in & 0x1) == attributeAbility_in) ? ((attributeAbility_in - 1) >> 1)
+                                                         : (attributeAbility_in >> 1);
 
   return baseValue;
 }
@@ -681,7 +682,7 @@ RPG_Character_Common_Tools::getLoadModifiers (enum RPG_Character_Encumbrance enc
     default:
     {
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("invalid load (was: %u), aborting\n"),
+                  ACE_TEXT ("invalid load (was: %s), aborting\n"),
                   ACE_TEXT (RPG_Character_EncumbranceHelper::RPG_Character_EncumbranceToString (encumbrance_in).c_str ())));
       break;
     }

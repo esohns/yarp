@@ -153,8 +153,8 @@ class RPG_Map_Common_Tools
   };
   typedef std::list<RPG_Map_Square_t> RPG_Map_SquareList_t;
   typedef RPG_Map_SquareList_t::const_iterator RPG_Map_SquareListConstIterator_t;
-  static unsigned int area2Positions (const RPG_Map_Position_t&,  // position 1
-                                      const RPG_Map_Position_t&); // position 2
+  static unsigned int areaToPositions (const RPG_Map_Position_t&,  // position 1
+                                       const RPG_Map_Position_t&); // position 2
   static bool positionInSquare (const RPG_Map_Position_t&, // position
                                 const RPG_Map_Square_t&);  // square
   static void findMaxSquare (const RPG_Map_Area_t&, // room
@@ -210,8 +210,8 @@ class RPG_Map_Common_Tools
   typedef RPG_Map_AltPositions_t::const_iterator RPG_Map_AltPositionsConstIterator_t;
   static void crop(RPG_Map_Area_t&); // room
 //   static void cropSquareBoundary(RPG_Map_Zone_t&); // room
-  static enum RPG_Map_Direction door2exitDirection (const RPG_Map_Area_t&,      // room
-                                                    const RPG_Map_Position_t&); // door
+  static enum RPG_Map_Direction doorToExitDirection (const RPG_Map_Area_t&,      // room
+                                                     const RPG_Map_Position_t&); // door
   static void connectRooms (unsigned int,              // dimension x
                             unsigned int,              // dimension y
                             const RPG_Map_AreaList_t&, // boundary(s)

@@ -42,7 +42,7 @@ RPG_Combat_DamageReductionTypeToStringTable_t RPG_Combat_DamageReductionTypeHelp
 void
 RPG_Combat_Common_Tools::initializeStringConversionTables ()
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Combat_Common_Tools::initStringConversionTables"));
+  RPG_TRACE (ACE_TEXT ("RPG_Combat_Common_Tools::initializeStringConversionTables"));
 
   RPG_Combat_AttackFormHelper::init ();
   RPG_Combat_AttackSituationHelper::init ();
@@ -59,7 +59,7 @@ RPG_Combat_Common_Tools::initializeStringConversionTables ()
 std::string
 RPG_Combat_Common_Tools::toString (const RPG_Combat_AttackForms_t& attackForms_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Combat_Common_Tools::attackFormsToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Combat_Common_Tools::toString"));
 
   std::string result;
 
@@ -80,12 +80,12 @@ RPG_Combat_Common_Tools::toString (const RPG_Combat_AttackForms_t& attackForms_i
 std::string
 RPG_Combat_Common_Tools::toString (const struct RPG_Combat_Damage& damage_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Combat_Common_Tools::damageToString"));
+  RPG_TRACE (ACE_TEXT ("RPG_Combat_Common_Tools::toString"));
 
   std::string result;
 
   std::ostringstream converter;
-  for (std::vector<RPG_Combat_DamageElement>::const_iterator iterator = damage_in.elements.begin ();
+  for (std::vector<struct RPG_Combat_DamageElement>::const_iterator iterator = damage_in.elements.begin ();
        iterator != damage_in.elements.end ();
        iterator++)
   {

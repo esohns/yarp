@@ -131,7 +131,7 @@ RPG_Engine_Common_Tools::initialize (const std::vector<std::string>& schemaDirec
                                                                   validate_xml_b))
     {
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to RPG_Magic_Dictionary::initialize, returning\n")));
+                  ACE_TEXT ("failed to RPG_Magic_Dictionary::initialize(), returning\n")));
       return;
     }
   } // end IF
@@ -140,11 +140,11 @@ RPG_Engine_Common_Tools::initialize (const std::vector<std::string>& schemaDirec
   if (!itemDictionaryFile_in.empty ())
   {
     try {
-      RPG_ITEM_DICTIONARY_SINGLETON::instance ()->init (itemDictionaryFile_in,
-                                                        validate_xml_b);
+      RPG_ITEM_DICTIONARY_SINGLETON::instance ()->initialize (itemDictionaryFile_in,
+                                                              validate_xml_b);
     } catch (...) {
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("caught exception in RPG_Item_Dictionary::init, returning\n")));
+                  ACE_TEXT ("caught exception in RPG_Item_Dictionary::initialize(), returning\n")));
       return;
     }
   } // end IF
@@ -153,11 +153,11 @@ RPG_Engine_Common_Tools::initialize (const std::vector<std::string>& schemaDirec
   if (!monsterDictionaryFile_in.empty ())
   {
     try {
-      RPG_MONSTER_DICTIONARY_SINGLETON::instance ()->init (monsterDictionaryFile_in,
-                                                           validate_xml_b);
+      RPG_MONSTER_DICTIONARY_SINGLETON::instance ()->initialize (monsterDictionaryFile_in,
+                                                                 validate_xml_b);
     } catch (...) {
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("caught exception in RPG_Monster_Dictionary::init, returning\n")));
+                  ACE_TEXT ("caught exception in RPG_Monster_Dictionary::initialize(), returning\n")));
       return;
     }
   } // end IF
@@ -554,7 +554,7 @@ RPG_Engine_Common_Tools::generateStandardItems (enum RPG_Common_SubClass subClas
     } // end SWITCH
   } catch (const std::bad_alloc& exception) {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("generate_standard_items(): caught exception: \"%s\", aborting\n"),
+                ACE_TEXT ("RPG_Engine_Common_Tools::generate_standard_items(): caught exception: \"%s\", aborting\n"),
                 ACE_TEXT (exception.what ())));
   }
 
@@ -598,7 +598,7 @@ RPG_Engine_Common_Tools::getCombatantSequence (const RPG_Player_Party_t& party_i
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::getCombatantSequence"));
 
-  // init result
+  // initialize result
   battleSequence_out.clear ();
 
   // step0: throw everybody into a list
@@ -845,7 +845,7 @@ RPG_Engine_Common_Tools::isMonsterGroupHelpless (const RPG_Monster_Group_t& grou
   for (RPG_Monster_GroupIterator_t iterator = groupInstance_in.begin ();
        iterator != groupInstance_in.end ();
        iterator++)
-    if (isCharacterHelpless (*iterator))
+    if (RPG_Engine_Common_Tools::isCharacterHelpless (*iterator))
       numHelplessMonsters++;
 
   return (numHelplessMonsters == groupInstance_in.size ());
@@ -968,8 +968,8 @@ RPG_Engine_Common_Tools::numCompatibleMonsterAttackActions (enum RPG_Combat_Atta
     default:
     {
       for (RPG_Monster_AttackActionsIterator_t iterator = actions_in.begin ();
-            iterator != actions_in.end ();
-            iterator++)
+           iterator != actions_in.end ();
+           iterator++)
       {
         if (std::find ((*iterator).attackForms.begin (),
                        (*iterator).attackForms.end (),
@@ -1033,7 +1033,7 @@ RPG_Engine_Common_Tools::attack (const RPG_Player_Base* const attacker_in,
 
   damageHP_out = 0;
 
-  // sanity check
+  // sanity check(s)
   ACE_ASSERT (attacker_in && target_inout);
 
   bool has_hit = false;

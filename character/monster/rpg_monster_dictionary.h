@@ -44,8 +44,8 @@ class RPG_Monster_Dictionary
 
  public:
   // init dictionary
-  bool init (const std::string&, // (XML) dictionary filename
-             bool = false);      // validate XML ?
+  bool initialize (const std::string&, // (XML) dictionary filename
+                   bool = false);      // validate XML ?
 
   RPG_Monster_Properties getProperties (const std::string&) const; // name of monster
   inline unsigned int numEntries () const { return static_cast<unsigned int> (myMonsterDictionary.size ()); }

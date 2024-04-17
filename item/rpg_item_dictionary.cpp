@@ -51,10 +51,10 @@ RPG_Item_Dictionary::RPG_Item_Dictionary ()
 }
 
 void
-RPG_Item_Dictionary::init (const std::string& filename_in,
-                           bool validateXML_in)
+RPG_Item_Dictionary::initialize (const std::string& filename_in,
+                                 bool validateXML_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Item_Dictionary::init"));
+  RPG_TRACE (ACE_TEXT ("RPG_Item_Dictionary::initialize"));
 
   // Construct the parser.
   //

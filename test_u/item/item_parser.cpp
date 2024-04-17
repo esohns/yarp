@@ -199,18 +199,18 @@ do_work (const std::string& schemaRepository_in,
     return;
   } // end IF
   try {
-    RPG_ITEM_DICTIONARY_SINGLETON::instance ()->init (fileName_in);
+    RPG_ITEM_DICTIONARY_SINGLETON::instance ()->initialize (fileName_in);
   } catch (...) {
     ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("caught exception in RPG_Item_Dictionary::init, returning\n")));
+               ACE_TEXT("caught exception in RPG_Item_Dictionary::initialize(), returning\n")));
     return;
   }
 
   if (dumpItemDictionary_in)
-    RPG_ITEM_DICTIONARY_SINGLETON::instance()->dump();
+    RPG_ITEM_DICTIONARY_SINGLETON::instance ()->dump ();
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished working...\n")));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("finished working...\n")));
 } // end do_work
 
 void

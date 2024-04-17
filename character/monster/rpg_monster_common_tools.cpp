@@ -328,7 +328,7 @@ RPG_Monster_Common_Tools::generateRandomEncounter (unsigned int numDifferentMons
   if (list.empty ())
   {
     // nothing found in database...
-    ACE_DEBUG ((LM_DEBUG,
+    ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("found no appropriate monster types (alignment: \"%s\", environment \"%s\", organizations: \"%s\", HD: \"%s\" in dictionary (%u entries), returning\n"),
                 ACE_TEXT (RPG_Character_Common_Tools::toString (alignment_in).c_str ()),
                 ACE_TEXT (RPG_Common_Tools::toString (environment_in).c_str ()),

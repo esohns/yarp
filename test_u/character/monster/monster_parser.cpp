@@ -228,16 +228,13 @@ do_work (const std::string& schemaRepository_in,
   RPG_Combat_Common_Tools::initializeStringConversionTables ();
   RPG_Monster_Common_Tools::initializeStringConversionTables ();
 
-  // step2: init monster dictionary
-  try
-  {
-    RPG_MONSTER_DICTIONARY_SINGLETON::instance ()->init (filename_in,
-                                                         validateXML_in);
-  }
-  catch (...)
-  {
+  // step2: initialize monster dictionary
+  try {
+    RPG_MONSTER_DICTIONARY_SINGLETON::instance ()->initialize (filename_in,
+                                                               validateXML_in);
+  } catch (...) {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("caught exception in RPG_Character_Monster_Dictionary::init(), returning\n")));
+                ACE_TEXT ("caught exception in RPG_Monster_Dictionary::initialize(), returning\n")));
     return;
   }
 

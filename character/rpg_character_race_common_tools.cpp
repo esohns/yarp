@@ -179,9 +179,9 @@ bool
 RPG_Character_Race_Common_Tools::hasRace (const RPG_Character_Race_t& races_in,
                                           enum RPG_Character_Race race_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Character_Race_Common_Tools::raceToSpeed"));
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Race_Common_Tools::hasRace"));
 
-  // sanity checks
+  // sanity check(s)
   ACE_ASSERT (race_in < RPG_CHARACTER_RACE_MAX);
   if (race_in == RACE_NONE)
     return races_in.none ();

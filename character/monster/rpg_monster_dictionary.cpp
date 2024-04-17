@@ -53,10 +53,10 @@ RPG_Monster_Dictionary::RPG_Monster_Dictionary ()
 }
 
 bool
-RPG_Monster_Dictionary::init (const std::string& filename_in,
-                              bool validateXML_in)
+RPG_Monster_Dictionary::initialize (const std::string& filename_in,
+                                    bool validateXML_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Monster_Dictionary::init"));
+  RPG_TRACE (ACE_TEXT ("RPG_Monster_Dictionary::initialize"));
 
   // Construct the parser.
   //

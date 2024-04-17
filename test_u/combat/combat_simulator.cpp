@@ -469,14 +469,11 @@ do_work (const std::string& schemaRepository_in,
   RPG_Combat_Common_Tools::initializeStringConversionTables ();
 
   // step2a: initialize dictionaries
-  try
-  {
+  try {
     RPG_MAGIC_DICTIONARY_SINGLETON::instance ()->initialize (magicDictionaryFilename_in);
-    RPG_ITEM_DICTIONARY_SINGLETON::instance ()->init (itemDictionaryFilename_in);
-    RPG_MONSTER_DICTIONARY_SINGLETON::instance ()->init (monsterDictionaryFilename_in);
-  }
-  catch (...)
-  {
+    RPG_ITEM_DICTIONARY_SINGLETON::instance ()->initialize (itemDictionaryFilename_in);
+    RPG_MONSTER_DICTIONARY_SINGLETON::instance ()->initialize (monsterDictionaryFilename_in);
+  } catch (...) {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to initialize [magic|item|monster] dictionary, returning\n")));
     return;

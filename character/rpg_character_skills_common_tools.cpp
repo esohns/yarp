@@ -34,7 +34,7 @@
 #include "rpg_character_common_tools.h"
 #include "rpg_character_defines.h"
 
-// init statics
+// initialize statics
 RPG_Character_Feats_t RPG_Character_Skills_Common_Tools::myFighterBonusFeatsTable;
 RPG_Character_Feats_t RPG_Character_Skills_Common_Tools::myWizardBonusFeatsTable;
 RPG_Character_Skills_Common_Tools::RPG_Character_ClassSkillsTable_t RPG_Character_Skills_Common_Tools::myClassSkillsTable;
@@ -1794,7 +1794,7 @@ RPG_Character_Skills_Common_Tools::getNumFeatsAbilities (enum RPG_Character_Race
         if (options < numChoices)
         {
           ACE_DEBUG ((LM_WARNING,
-                      ACE_TEXT ("%d/%d abilities already acquired --> cannot choose %d among them\n"),
+                      ACE_TEXT ("%u/%u abilities already acquired --> cannot choose %u among them\n"),
                       choiceList.size () - options,
                       choiceList.size (),
                       numChoices));

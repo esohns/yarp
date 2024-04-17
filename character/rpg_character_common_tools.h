@@ -21,6 +21,7 @@
 #ifndef RPG_CHARACTER_COMMON_TOOLS_H
 #define RPG_CHARACTER_COMMON_TOOLS_H
 
+#include <map>
 #include <string>
 
 #include "ace/Global_Macros.h"
@@ -38,7 +39,7 @@
 class RPG_Character_Common_Tools
 {
  public:
-  // init string conversion (and other) tables
+  // initialize string conversion- (and other) tables
   static void initialize ();
 
   static std::string toString (const RPG_Character_Race_t&); // race(es)

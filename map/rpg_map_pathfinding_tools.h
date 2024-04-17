@@ -35,7 +35,7 @@ class RPG_Map_Pathfinding_Tools
   static void findPath (const RPG_Map_Size_t&,      // dimension x/y
                         const RPG_Map_Positions_t&, // obstacles
                         const RPG_Map_Position_t&,  // start position
-                        const RPG_Map_Direction&,   // optional: starting direction
+                        enum RPG_Map_Direction,     // optional: starting direction
                         const RPG_Map_Position_t&,  // end position
                         RPG_Map_Path_t&);           // return value: path
 
@@ -48,7 +48,7 @@ class RPG_Map_Pathfinding_Tools
   static enum RPG_Map_Direction getDirection (const RPG_Map_Position_t&,  // start position
                                               const RPG_Map_Position_t&); // end position
 
-  static void print (const RPG_Map_Path_t&,       // path
+  static void print (const RPG_Map_Path_t&,            // path
                      const struct RPG_Map_FloorPlan&); // floor plan
 
   // *NOTE*: these must be public (required by operator==, see below)

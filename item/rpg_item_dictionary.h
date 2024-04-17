@@ -38,16 +38,12 @@
 
 #include "rpg_common_xsderrorhandler.h"
 
-//#include "rpg_item_exports.h"
 #include "rpg_item_common.h"
 #include "rpg_item_incl.h"
 
 // forward declarations
 class RPG_Item_Base;
 
-/**
-  @author Erik Sohns <erik.sohns@web.de>
- */
 class RPG_Item_Dictionary
  : public RPG_Common_XSDErrorHandler
 {
@@ -56,9 +52,9 @@ class RPG_Item_Dictionary
                             ACE_SYNCH_MUTEX>;
 
  public:
-  // init item dictionary
-  void init (const std::string&, // filename
-             bool = false);      // validate XML ?
+  // initialize item dictionary
+  void initialize (const std::string&, // filename
+                   bool = false);      // validate XML ?
 
   // *NOTE*: caller is responsible for return value's lifecycle
   void getProperties (const RPG_Item_Base*,             // type

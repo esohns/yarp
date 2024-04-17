@@ -31,10 +31,10 @@
 
 void
 RPG_Map_Pathfinding_Tools::findPath (const RPG_Map_Size_t& size_in,
-                                     const RPG_Map_Positions_t& obstacles_in,    // walls / closed doors
-                                     const RPG_Map_Position_t& start_in,         // start position
-                                     const RPG_Map_Direction& startDirection_in, // initial direction
-                                     const RPG_Map_Position_t& end_in,           // end position
+                                     const RPG_Map_Positions_t& obstacles_in,  // walls / closed doors
+                                     const RPG_Map_Position_t& start_in,       // start position
+                                     enum RPG_Map_Direction startDirection_in, // initial direction
+                                     const RPG_Map_Position_t& end_in,         // end position
                                      RPG_Map_Path_t& path_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Map_Pathfinding_Tools::findPath"));

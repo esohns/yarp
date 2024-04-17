@@ -52,7 +52,7 @@
 
 #include "rpg_engine_defines.h"
 
-// init statics
+// initialize statics
 RPG_Map_DirectionToStringTable_t
 RPG_Map_DirectionHelper::myRPG_Map_DirectionToStringTable;
 RPG_Map_DoorStateToStringTable_t
@@ -61,7 +61,7 @@ RPG_Map_DoorStateHelper::myRPG_Map_DoorStateToStringTable;
 void
 RPG_Map_Common_Tools::initializeStringConversionTables ()
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::initStringConversionTables"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::initializeStringConversionTables"));
 
   RPG_Map_DirectionHelper::init ();
   RPG_Map_DoorStateHelper::init ();
@@ -768,7 +768,8 @@ RPG_Map_Common_Tools::findMaxSquare (const RPG_Map_Area_t& room_in,
         running_x++; // adjacent cell must have this x-coordinate
 
         // --> compute enclosed area and continue
-        current_area = area2Positions (*iterator, *iterator2);
+        current_area =
+          RPG_Map_Common_Tools::areaToPositions (*iterator, *iterator2);
         if (maxArea < current_area)
         {
           maxArea = current_area;
@@ -846,7 +847,8 @@ RPG_Map_Common_Tools::findMaxSquare (const RPG_Map_Area_t& room_in,
         break; // start next position
 
       // --> compute enclosed area
-      current_area = area2Positions (*iterator, *iterator2);
+      current_area =
+        RPG_Map_Common_Tools::areaToPositions (*iterator, *iterator2);
       if (maxArea < current_area)
       {
         maxArea = current_area;
@@ -993,9 +995,9 @@ RPG_Map_Common_Tools::makeRooms (unsigned int dimensionX_in,
         } // end FOR
 
         // sanity check
-        ACE_ASSERT ((current_area.empty () ? true // that's OK (but area2Positions yields 1)...
-                                           : (current_area.size() == area2Positions ((*squares_iter).ul,
-                                                                                     (*squares_iter).lr))));
+        ACE_ASSERT ((current_area.empty () ? true // that's OK (but areaToPositions yields 1)...
+                                           : (current_area.size () == RPG_Map_Common_Tools::areaToPositions ((*squares_iter).ul,
+                                                                                                             (*squares_iter).lr))));
         *arealist_iter = current_area; // do in-place editing...
 
 //         ACE_DEBUG((LM_DEBUG,
@@ -1233,7 +1235,7 @@ RPG_Map_Common_Tools::makeRooms (unsigned int dimensionX_in,
 
         // (re-)crop the entire room...
 //         cropSquareBoundary(*zones_iter);
-        crop (*arealist_iter);
+        RPG_Map_Common_Tools::crop (*arealist_iter);
 
 //         if ((*zones_iter).empty())
 //         {
@@ -1393,9 +1395,9 @@ RPG_Map_Common_Tools::makeDoors (unsigned int dimensionX_in,
 
       // step1: find suitable positions
       doorPositions.clear ();
-      findDoorPositions (*zonelist_iter,
-                         doorFillsPosition_in,
-                         doorPositions);
+      RPG_Map_Common_Tools::findDoorPositions (*zonelist_iter,
+                                               doorFillsPosition_in,
+                                               doorPositions);
       // check: to be useful, doors must face "inwards"
       // --> remove all positions on the perimeter of the level
       doorPosition_iterator = doorPositions.begin ();
@@ -1415,7 +1417,7 @@ RPG_Map_Common_Tools::makeDoors (unsigned int dimensionX_in,
                     ACE_TEXT ("room[%u] cannot have doors, continuing\n"),
                     index));
         // debug info
-        dump (*zonelist_iter);
+        RPG_Map_Common_Tools::dump (*zonelist_iter);
 
         // still, insert an (empty) set of doors...
         doors_out.push_back (current_doors);
@@ -1515,8 +1517,8 @@ RPG_Map_Common_Tools::connectRooms (unsigned int dimensionX_in,
     {
       door.position = *doors_iterator;
       door.outside =
-        RPG_Map_Common_Tools::door2exitDirection (*rooms_iter,
-                                                  door.position);
+        RPG_Map_Common_Tools::doorToExitDirection (*rooms_iter,
+                                                   door.position);
       level_out.doors.insert (door);
 
 //       ACE_DEBUG((LM_DEBUG,
@@ -1615,18 +1617,16 @@ RPG_Map_Common_Tools::connectRooms (unsigned int dimensionX_in,
                                                            dimensionY_in),
                                            level_out.walls,
                                            *doors_iter,
-                                           RPG_Map_Common_Tools::door2exitDirection (*rooms_iter,
-                                                                                     *doors_iter),
+                                           RPG_Map_Common_Tools::doorToExitDirection (*rooms_iter,
+                                                                                      *doors_iter),
                                            *target_door,
                                            current_path);
       if (current_path.size () < 2)
       {
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("cannot find path [%u,%u] --> [%u,%u], continuing\n"),
-                    (*doors_iter).first,
-                    (*doors_iter).second,
-                    (*target_door).first,
-                    (*target_door).second));
+                    (*doors_iter).first, (*doors_iter).second,
+                    (*target_door).first, (*target_door).second));
         continue;
       } // end IF
 //       ACE_DEBUG((LM_DEBUG,
@@ -1669,10 +1669,10 @@ RPG_Map_Common_Tools::connectRooms (unsigned int dimensionX_in,
   for (corridors_iter = corridors_bounds.begin ();
        corridors_iter != corridors_bounds.end ();
        corridors_iter++)
-       for (RPG_Map_PositionsConstIterator_t positions_iter = (*corridors_iter).begin ();
-            positions_iter != (*corridors_iter).end ();
-            positions_iter++)
-        level_out.walls.insert (*positions_iter);
+    for (RPG_Map_PositionsConstIterator_t positions_iter = (*corridors_iter).begin ();
+        positions_iter != (*corridors_iter).end ();
+        positions_iter++)
+      level_out.walls.insert (*positions_iter);
 
   // step4
   // - clear any rubble that may now block some corridors
@@ -2199,7 +2199,7 @@ RPG_Map_Common_Tools::isAdjacent (const RPG_Map_Position_t& position1_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::isAdjacent"));
 
-  return distanceMax (position1_in, position2_in) == 1;
+  return RPG_Map_Common_Tools::distanceMax (position1_in, position2_in) == 1;
 }
 
 std::string
@@ -2311,6 +2311,8 @@ enum RPG_Map_Direction
 RPG_Map_Common_Tools::doorToExitDirection (const RPG_Map_Position_t& position_in, // door
                                            const struct RPG_Map_FloorPlan& floorPlan_in)
 {
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::doorToExitDirection"));
+
   // *NOTE*: algorithm is as follows:
   // - perform two "flood-fill"s just beyond the given position - one INSIDE
   //   and one OUTSIDE
@@ -2698,7 +2700,7 @@ RPG_Map_Common_Tools::isInsideRoom (const RPG_Map_Position_t& position_in,
 bool
 RPG_Map_Common_Tools::roomsAreSquare (const struct RPG_Map& map_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::hasLineOfSight"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::roomsAreSquare"));
 
   RPG_Map_Positions_t area;
   for (RPG_Map_PositionsConstIterator_t iterator = map_in.seeds.begin ();
@@ -2746,10 +2748,10 @@ RPG_Map_Common_Tools::hasLineOfSight (const RPG_Map_Position_t& source_in,
 }
 
 unsigned int
-RPG_Map_Common_Tools::area2Positions (const RPG_Map_Position_t& position1_in,
-                                      const RPG_Map_Position_t& position2_in)
+RPG_Map_Common_Tools::areaToPositions (const RPG_Map_Position_t& position1_in,
+                                       const RPG_Map_Position_t& position2_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::area2Positions"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::areaToPositions"));
 
   return ((std::abs (static_cast<int> (position1_in.first)  -
                      static_cast<int> (position2_in.first)) + 1) *
@@ -3661,10 +3663,10 @@ RPG_Map_Common_Tools::findDoorPositions (const RPG_Map_Area_t& room_in,
 }
 
 enum RPG_Map_Direction
-RPG_Map_Common_Tools::door2exitDirection (const RPG_Map_Area_t& room_in,
-                                          const RPG_Map_Position_t& door_in)
+RPG_Map_Common_Tools::doorToExitDirection (const RPG_Map_Area_t& room_in,
+                                           const RPG_Map_Position_t& door_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::door2exitDirection"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::doorToExitDirection"));
 
   // step1: compute 4 neighbours
   RPG_Map_Position_t up, right, down, left;
