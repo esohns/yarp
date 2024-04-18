@@ -21,6 +21,8 @@
 #ifndef RPG_NET_PROTOCOL_CONFIGURATION_H
 #define RPG_NET_PROTOCOL_CONFIGURATION_H
 
+#include <list>
+
 #include "common_configuration.h"
 
 #include "stream_common.h"

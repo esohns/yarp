@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef RPG_Net_EventHandler_H
-#define RPG_Net_EventHandler_H
+#ifndef RPG_Net_MessageHandler_H
+#define RPG_Net_MessageHandler_H
 
 #include "ace/Global_Macros.h"
 
@@ -38,7 +38,7 @@
 #include "rpg_net_protocol_configuration.h"
 #include "rpg_net_protocol_message.h"
 
-class RPG_Net_EventHandler
+class RPG_Net_MessageHandler
  : public Stream_Module_MessageHandler_T<ACE_MT_SYNCH,
                                          Common_TimePolicy_t,
                                          struct RPG_Net_Protocol_ModuleHandlerConfiguration,
@@ -58,25 +58,25 @@ class RPG_Net_EventHandler
                                          struct Stream_UserData> inherited;
 
  public:
-  RPG_Net_EventHandler (ISTREAM_T*); // stream handle
-  inline virtual ~RPG_Net_EventHandler () {}
+  RPG_Net_MessageHandler (ISTREAM_T*); // stream handle
+  inline virtual ~RPG_Net_MessageHandler () {}
 
   // implement Common_IClone_T
   inline virtual ACE_Task<ACE_MT_SYNCH, Common_TimePolicy_t>* clone () { ACE_ASSERT (false); ACE_NOTSUP_RETURN (NULL); ACE_NOTREACHED (return NULL;) }
   //virtual Stream_Module_t* clone ();
 
  private:
-  ACE_UNIMPLEMENTED_FUNC (RPG_Net_EventHandler ())
-  ACE_UNIMPLEMENTED_FUNC (RPG_Net_EventHandler (const RPG_Net_EventHandler&))
-  ACE_UNIMPLEMENTED_FUNC (RPG_Net_EventHandler& operator= (const RPG_Net_EventHandler&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_MessageHandler ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_MessageHandler (const RPG_Net_MessageHandler&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_MessageHandler& operator= (const RPG_Net_MessageHandler&))
 };
 
 // declare module
-DATASTREAM_MODULE_INPUT_ONLY (struct RPG_Net_Protocol_SessionData,       // session data type
-                              enum Stream_SessionMessageType,            // session event type
+DATASTREAM_MODULE_INPUT_ONLY (struct RPG_Net_Protocol_SessionData,                // session data type
+                              enum Stream_SessionMessageType,                     // session event type
                               struct RPG_Net_Protocol_ModuleHandlerConfiguration, // module handler configuration type
                               libacestream_default_misc_messagehandler_module_name_string,
-                              Stream_INotify_t,                          // stream notification interface type
-                              RPG_Net_EventHandler);                     // writer type
+                              Stream_INotify_t,                                   // stream notification interface type
+                              RPG_Net_MessageHandler);                            // writer type
 
 #endif

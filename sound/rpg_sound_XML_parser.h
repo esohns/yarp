@@ -26,19 +26,15 @@
 #include "rpg_XMLSchema_XML_types.h"
 
 #include "rpg_sound_common.h"
-//#include "rpg_sound_exports.h"
 #include "rpg_sound_XML_types.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Sound_Category_Type
  : public RPG_Sound_Category_Type_pskel,
    public ::xml_schema::string_pimpl
 {
  public:
 //   virtual void pre();
-  virtual RPG_Sound_Category post_RPG_Sound_Category_Type();
+  virtual enum RPG_Sound_Category post_RPG_Sound_Category_Type ();
 };
 
 class RPG_Sound_Event_Type
@@ -47,43 +43,42 @@ class RPG_Sound_Event_Type
 {
  public:
 //   virtual void pre();
-  virtual RPG_Sound_Event post_RPG_Sound_Event_Type();
+  virtual enum RPG_Sound_Event post_RPG_Sound_Event_Type ();
 };
 
 class RPG_Sound_Type
  : public RPG_Sound_Type_pskel
 {
  public:
-  RPG_Sound_Type();
+  RPG_Sound_Type ();
 
 //     virtual void pre();
-  virtual void category(const RPG_Sound_Category&);
-  virtual void sound_event(const RPG_Sound_Event&);
-  virtual void volume(unsigned char);
-  virtual void file(const ::std::string&);
-  virtual void interval(unsigned char);
-  virtual RPG_Sound post_RPG_Sound_Type();
+  virtual void category (const RPG_Sound_Category&);
+  virtual void sound_event (const RPG_Sound_Event&);
+  virtual void volume (unsigned char);
+  virtual void file (const ::std::string&);
+  virtual void interval (unsigned char);
+  virtual struct RPG_Sound post_RPG_Sound_Type ();
 
  private:
-  RPG_Sound myCurrentSound;
+  struct RPG_Sound myCurrentSound;
 };
 
 class RPG_Sound_Dictionary_Type
  : public RPG_Sound_Dictionary_Type_pskel
 {
  public:
-   RPG_Sound_Dictionary_Type(RPG_Sound_Dictionary_t*); // sound dictionary
-   virtual ~RPG_Sound_Dictionary_Type();
+  RPG_Sound_Dictionary_Type (RPG_Sound_Dictionary_t*); // sound dictionary
+  inline virtual ~RPG_Sound_Dictionary_Type () {}
 
 //   virtual void pre();
-  virtual void sound(const RPG_Sound&);
-  virtual void post_RPG_Sound_Dictionary_Type();
+  virtual void sound (const struct RPG_Sound&);
+  virtual void post_RPG_Sound_Dictionary_Type ();
 
  private:
-  // safety measures
-  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Dictionary_Type());
-  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Dictionary_Type(const RPG_Sound_Dictionary_Type&));
-  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Dictionary_Type& operator=(const RPG_Sound_Dictionary_Type&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Sound_Dictionary_Type ());
+  ACE_UNIMPLEMENTED_FUNC (RPG_Sound_Dictionary_Type (const RPG_Sound_Dictionary_Type&));
+  ACE_UNIMPLEMENTED_FUNC (RPG_Sound_Dictionary_Type& operator= (const RPG_Sound_Dictionary_Type&));
 
   RPG_Sound_Dictionary_t* myDictionary;
 };

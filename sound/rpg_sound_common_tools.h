@@ -39,22 +39,22 @@ class RPG_Sound_Common_Tools
  public:
   // init string conversion facilities
   static void initializeStringConversionTables ();
-  static bool initialize (const struct RPG_Sound_SDLConfiguration&,           // SDL config parameters
-                          const std::string&,                            // sound directory
-                          const bool& = RPG_SOUND_AMBIENT_DEF_USE_CD,    // use CD ?
-                          const unsigned int& = RPG_SOUND_DEF_CACHESIZE, // cache size
-                          const bool& = false);                          // mute ?
+  static bool initialize (const struct RPG_Sound_SDLConfiguration&, // SDL config parameters
+                          const std::string&,                       // sound directory
+                          bool = RPG_SOUND_AMBIENT_DEF_USE_CD,      // use CD ?
+                          unsigned int = RPG_SOUND_DEF_CACHESIZE,   // cache size
+                          bool = false);                            // mute ?
   static void finalize ();
 
   static void soundToFile (const RPG_Sound_t&, // sound
                            std::string&);      // return value: FQ filename
 
   // *NOTE*: returns the channel# that is playing the sound/music/...
-  static int play (const RPG_Sound_Event&, // event
-                   ACE_Time_Value&);       // return value: length
-  static int play (const std::string&,   // sound file
-                   const unsigned char&, // volume (0-128)
+  static int play (enum RPG_Sound_Event, // event
                    ACE_Time_Value&);     // return value: length
+  static int play (const std::string&, // sound file
+                   ACE_UINT8,          // volume (0-128)
+                   ACE_Time_Value&);   // return value: length
   static bool isPlaying (int = -1); // channel (-1: ALL channels)
   static void stop (int = -1); // channel (-1: ALL channels)
 
@@ -65,21 +65,21 @@ class RPG_Sound_Common_Tools
 #endif // SDL_USE
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Common_Tools())
-  ACE_UNIMPLEMENTED_FUNC(~RPG_Sound_Common_Tools())
-  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Common_Tools(const RPG_Sound_Common_Tools&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Common_Tools& operator=(const RPG_Sound_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Sound_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (~RPG_Sound_Common_Tools ())
+  ACE_UNIMPLEMENTED_FUNC (RPG_Sound_Common_Tools (const RPG_Sound_Common_Tools&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Sound_Common_Tools& operator= (const RPG_Sound_Common_Tools&))
 
-  static bool                         myIsMuted;
-  static std::string                  mySoundDirectory;
+  static bool                              myIsMuted;
+  static std::string                       mySoundDirectory;
   static struct RPG_Sound_SDLConfiguration myConfig;
 
-  static ACE_Thread_Mutex             myCacheLock;
-  static unsigned int                 myOldestCacheEntry;
-  static unsigned int                 myCacheSize;
-  static RPG_Sound_SoundCache_t       mySoundCache;
+  static ACE_Thread_Mutex                  myCacheLock;
+  static unsigned int                      myOldestCacheEntry;
+  static unsigned int                      myCacheSize;
+  static RPG_Sound_SoundCache_t            mySoundCache;
 
-  static bool                         myInitialized;
+  static bool                              myInitialized;
 };
 
 #endif

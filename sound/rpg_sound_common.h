@@ -21,16 +21,16 @@
 #ifndef RPG_SOUND_COMMON_H
 #define RPG_SOUND_COMMON_H
 
-#include "rpg_sound_incl.h"
+#include <map>
+#include <string>
+#include <vector>
 
 #define _SDL_main_h
 #define SDL_main_h_
 #include "SDL.h"
 #include "SDL_mixer.h"
 
-#include <map>
-#include <string>
-#include <vector>
+#include "rpg_sound_incl.h"
 
 // *NOTE* types as used by SDL
 struct RPG_Sound_SDLConfiguration
@@ -42,14 +42,14 @@ struct RPG_Sound_SDLConfiguration
 };
 
 typedef RPG_Sound RPG_Sound_t;
-typedef std::map<RPG_Sound_Event, RPG_Sound_t> RPG_Sound_Dictionary_t;
+typedef std::map<enum RPG_Sound_Event, RPG_Sound_t> RPG_Sound_Dictionary_t;
 typedef RPG_Sound_Dictionary_t::const_iterator RPG_Sound_DictionaryIterator_t;
 
 struct RPG_Sound_SoundCacheNode
 {
-  RPG_Sound_Event sound_event;
-  std::string     sound_file;
-  Mix_Chunk*      chunk;
+  enum RPG_Sound_Event sound_event;
+  std::string          sound_file;
+  Mix_Chunk*           chunk;
 
   inline bool operator== (const struct RPG_Sound_SoundCacheNode& rhs_in) const
   { return (this->sound_event == rhs_in.sound_event); }

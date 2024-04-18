@@ -54,7 +54,7 @@ RPG_Item_ArmorTypeToStringTable_t RPG_Item_ArmorTypeHelper::myRPG_Item_ArmorType
 void
 RPG_Item_Common_Tools::initializeStringConversionTables ()
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::initStringConversionTables"));
+  RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::initializeStringConversionTables"));
 
   RPG_Item_TypeHelper::init ();
   RPG_Item_CommodityTypeHelper::init ();
@@ -313,7 +313,7 @@ RPG_Item_Common_Tools::itemToSlot (RPG_Item_ID_t id_in,
         default:
         {
           ACE_DEBUG ((LM_ERROR,
-                      ACE_TEXT ("invalid armor category (was: \"%s\"), aborting\n"),
+                      ACE_TEXT ("invalid armor category (was: \"%s\"), returning\n"),
                       ACE_TEXT (RPG_Item_ArmorCategoryHelper::RPG_Item_ArmorCategoryToString (properties.category).c_str ())));
           return;
         }
@@ -340,7 +340,7 @@ RPG_Item_Common_Tools::itemToSlot (RPG_Item_ID_t id_in,
         default:
         {
           ACE_DEBUG ((LM_ERROR,
-                      ACE_TEXT ("invalid commodity type (was: %d), aborting\n"),
+                      ACE_TEXT ("invalid commodity type (was: %d), returning\n"),
                       commodity->subtype_.discriminator));
           return;
         }
@@ -375,7 +375,7 @@ RPG_Item_Common_Tools::itemToSlot (RPG_Item_ID_t id_in,
     default:
     {
       ACE_DEBUG ((LM_DEBUG,
-                  ACE_TEXT ("invalid item type (was: \"%s\"), aborting\n"),
+                  ACE_TEXT ("invalid item type (was: \"%s\"), returning\n"),
                   ACE_TEXT (RPG_Item_TypeHelper::RPG_Item_TypeToString (item_base->type ()).c_str ())));
       break;
     }
@@ -505,7 +505,7 @@ RPG_Item_Common_Tools::hasAbsoluteReach (enum RPG_Item_WeaponType type_in)
   RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::hasAbsoluteReach"));
  
   // sanity check
-  const RPG_Item_WeaponProperties& properties =
+  RPG_Item_WeaponProperties properties =
     RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getWeaponProperties (type_in);
   if (!properties.isReachWeapon)
     return false;

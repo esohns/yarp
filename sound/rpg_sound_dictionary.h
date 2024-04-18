@@ -28,11 +28,7 @@
 #include "ace/Synch_Traits.h"
 
 #include "rpg_sound_common.h"
-//#include "rpg_sound_exports.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Sound_Dictionary
 {
   // we use the singleton pattern, so we need to enable access to the ctor/dtors
@@ -40,21 +36,20 @@ class RPG_Sound_Dictionary
                              ACE_SYNCH_MUTEX>;
 
  public:
-  // init sound dictionary
-  bool initialize(const std::string&,   // filename
-                  const bool& = false); // validate XML ?
+  // initialize sound dictionary
+  bool initialize (const std::string&, // filename
+                   bool = false);      // validate XML ?
 
-  const RPG_Sound_t& get(const RPG_Sound_Event&) const; // event
+  RPG_Sound_t get (enum RPG_Sound_Event) const; // event
 
   // debug info
-  void dump() const;
+  void dump () const;
 
  private:
-  // safety measures
-  RPG_Sound_Dictionary();
-  virtual ~RPG_Sound_Dictionary();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Dictionary(const RPG_Sound_Dictionary&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Dictionary& operator=(const RPG_Sound_Dictionary&))
+  RPG_Sound_Dictionary ();
+  inline virtual ~RPG_Sound_Dictionary () {}
+  ACE_UNIMPLEMENTED_FUNC (RPG_Sound_Dictionary (const RPG_Sound_Dictionary&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Sound_Dictionary& operator= (const RPG_Sound_Dictionary&))
 
   RPG_Sound_Dictionary_t myDictionary;
 };

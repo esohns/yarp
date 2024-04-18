@@ -27,12 +27,8 @@
 #include "ace/Synch_Traits.h"
 
 #include "rpg_item_base.h"
-//#include "rpg_item_exports.h"
 #include "rpg_item_instance_base.h"
 
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Item_Instance_Manager
 {
   // we use the singleton pattern, so we need to enable access to the ctor/dtors
@@ -43,16 +39,16 @@ class RPG_Item_Instance_Manager
   friend class RPG_Item_Base;
 
  public:
-  RPG_Item_Instance_Base* create (enum RPG_Item_Type,   // type of item
-                                  const unsigned int&); // specific (sub)type
-  bool get (RPG_Item_ID_t,   // id
+  RPG_Item_Instance_Base* create (enum RPG_Item_Type, // type of item
+                                  unsigned int);      // specific (sub)type
+  bool get (RPG_Item_ID_t,          // id
             RPG_Item_Base*&) const; // return value: handle
 
  private:
   RPG_Item_Instance_Manager ();
   inline virtual ~RPG_Item_Instance_Manager () {}
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Instance_Manager(const RPG_Item_Instance_Manager&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Item_Instance_Manager& operator=(const RPG_Item_Instance_Manager&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Instance_Manager (const RPG_Item_Instance_Manager&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Item_Instance_Manager& operator= (const RPG_Item_Instance_Manager&))
 
   // *NOTE*: these are called from RPG_Item_Base ctors/dtors...
   virtual void registerItem (RPG_Item_ID_t,   // id

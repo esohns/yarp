@@ -21,6 +21,12 @@
 
 #include "rpg_item_instance_manager.h"
 
+#include <limits>
+
+#include "ace/Log_Msg.h"
+
+#include "rpg_common_macros.h"
+
 #include "rpg_item_armor.h"
 #include "rpg_item_armortype.h"
 #include "rpg_item_commodity.h"
@@ -30,8 +36,6 @@
 #include "rpg_item_common_tools.h"
 #include "rpg_item_weapon.h"
 #include "rpg_item_weapontype.h"
-
-#include "rpg_common_macros.h"
 
 RPG_Item_Instance_Manager::RPG_Item_Instance_Manager ()
  : myInstanceTable ()
@@ -43,11 +47,11 @@ RPG_Item_Instance_Manager::RPG_Item_Instance_Manager ()
 
 RPG_Item_Instance_Base*
 RPG_Item_Instance_Manager::create (enum RPG_Item_Type type_in,
-                                   const unsigned int& subtype_in)
+                                   unsigned int subtype_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Item_Instance_Manager::create"));
 
-  // init return value(s)
+  // initialize return value(s)
   RPG_Item_Instance_Base* handle = NULL;
 
   switch (type_in)
@@ -67,7 +71,7 @@ RPG_Item_Instance_Manager::create (enum RPG_Item_Type type_in,
       // half MSBs are subtype
       enum RPG_Item_CommodityType commodity_type_e =
         static_cast<RPG_Item_CommodityType> (subtype_in >> (sizeof (unsigned int) * 4));
-      RPG_Item_CommodityUnion commodity_subtype_u;
+      struct RPG_Item_CommodityUnion commodity_subtype_u;
       // half LSBs are subtype
       unsigned int mask =
         (std::numeric_limits<unsigned int>::max () >> (sizeof (unsigned int) * 4));
@@ -77,7 +81,7 @@ RPG_Item_Instance_Manager::create (enum RPG_Item_Type type_in,
         {
           commodity_subtype_u.discriminator = RPG_Item_CommodityUnion::COMMODITYBEVERAGE;
           commodity_subtype_u.commoditybeverage =
-            static_cast<enum RPG_Item_CommodityBeverage>(subtype_in & mask);
+            static_cast<enum RPG_Item_CommodityBeverage> (subtype_in & mask);
           break;
         }
         case COMMODITY_FOOD:
@@ -150,7 +154,7 @@ RPG_Item_Instance_Manager::get (RPG_Item_ID_t id_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Item_Instance_Manager::get"));
 
-  // init return value(s)
+  // initialize return value(s)
   handle_out = NULL;
 
   RPG_Item_InstanceTableConstIterator_t iterator;

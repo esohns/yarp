@@ -23,9 +23,7 @@
 
 #include "ace/Global_Macros.h"
 
-#include "rpg_net_exports.h"
-
-class RPG_Net_Export RPG_Net_Common_Tools
+class RPG_Net_Common_Tools
 {
  public:
 

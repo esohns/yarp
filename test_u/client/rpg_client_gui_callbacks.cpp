@@ -485,7 +485,7 @@ update_levelup (const struct RPG_Client_GTK_CBData& data_in)
                       available_per_level_a.end ());
   } // end FOR
   if (num_new_known_spells_i != std::numeric_limits<ACE_UINT16>::max ())
-    num_new_known_spells_i -= known_spells_a.size ();
+    num_new_known_spells_i -= static_cast<ACE_UINT16> (known_spells_a.size ());
   std::set_difference (available.begin (), available.end (),
                        known_spells_a.begin (), known_spells_a.end (),
                        std::inserter (possible_new_spells_a, possible_new_spells_a.end ()));
@@ -4723,7 +4723,7 @@ treeview_spells_selection_changed_cb (GtkTreeSelection* selection_in,
                                                                                  : number_of_spells_per_level_i);
   } // end FOR
   if (number_of_known_spells_i)
-    number_of_known_spells_i -= known_spells_a.size ();
+    number_of_known_spells_i -= static_cast<ACE_UINT16> (known_spells_a.size ());
   int value_i = number_of_known_spells_i - selected_rows_i;
   if (value_i < 0)
   {

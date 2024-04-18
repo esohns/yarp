@@ -21,6 +21,11 @@
 
 #include "rpg_sound_dictionary.h"
 
+#include <sstream>
+#include <string>
+
+#include "ace/Log_Msg.h"
+
 #include "rpg_sound_defines.h"
 #include "rpg_sound_XML_parser.h"
 #include "rpg_sound_common_tools.h"
@@ -30,28 +35,17 @@
 //#include "rpg_common_xsderrorhandler.h"
 #include "rpg_common_XML_tools.h"
 
-#include <ace/Log_Msg.h>
-
-#include <string>
-#include <sstream>
-
-RPG_Sound_Dictionary::RPG_Sound_Dictionary()
+RPG_Sound_Dictionary::RPG_Sound_Dictionary ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Sound_Dictionary::RPG_Sound_Dictionary"));
-
-}
-
-RPG_Sound_Dictionary::~RPG_Sound_Dictionary()
-{
-  RPG_TRACE(ACE_TEXT("RPG_Sound_Dictionary::~RPG_Sound_Dictionary"));
+  RPG_TRACE (ACE_TEXT ("RPG_Sound_Dictionary::RPG_Sound_Dictionary"));
 
 }
 
 bool
-RPG_Sound_Dictionary::initialize(const std::string& filename_in,
-                                 const bool& validateXML_in)
+RPG_Sound_Dictionary::initialize (const std::string& filename_in,
+                                  bool validateXML_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Sound_Dictionary::init"));
+  RPG_TRACE (ACE_TEXT ("RPG_Sound_Dictionary::initialize"));
 
   // Construct the parser.
   //
@@ -60,104 +54,92 @@ RPG_Sound_Dictionary::initialize(const std::string& filename_in,
   ::xml_schema::string_pimpl                  string_p;
   ::xml_schema::unsigned_byte_pimpl           unsigned_byte_p;
   RPG_Sound_Type                              sound_p;
-  sound_p.parsers(category_p,
-                  event_p,
-                  unsigned_byte_p,
-                  string_p,
-                  unsigned_byte_p);
+  sound_p.parsers (category_p,
+                   event_p,
+                   unsigned_byte_p,
+                   string_p,
+                   unsigned_byte_p);
 
-  RPG_Sound_Dictionary_Type                   dictionary_p(&myDictionary);
-  dictionary_p.parsers(sound_p);
+  RPG_Sound_Dictionary_Type                   dictionary_p (&myDictionary);
+  dictionary_p.parsers (sound_p);
 
   // Parse the document to obtain the object model.
   //
-  ::xml_schema::document doc_p(dictionary_p,                                          // parser
-                               ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_XML_TARGET_NAMESPACE), // namespace
-                               ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DICTIONARY_INSTANCE),   // root element name
-                               false);                                                // polymorphic ?
+  ::xml_schema::document doc_p (dictionary_p,                                           // parser
+                                ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_XML_TARGET_NAMESPACE), // namespace
+                                ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DICTIONARY_INSTANCE),   // root element name
+                                false);                                                 // polymorphic ?
 
-  dictionary_p.pre();
+  dictionary_p.pre ();
 
   // OK: parse the file...
   ::xml_schema::flags flags;
   if (!validateXML_in)
     flags = flags | ::xml_schema::flags::dont_validate;
   ::xml_schema::properties properties;
-  try
-  {
-    //doc_p.parse(filename_in,
-    //            RPG_XSDErrorHandler,
-    //            flags);
-    doc_p.parse(filename_in,
-                *RPG_Common_XML_Tools::parser(),
-                flags,
-                properties);
-  }
-  catch (const ::xml_schema::parsing& exception)
-  {
+  try {
+    doc_p.parse (filename_in,
+                 *RPG_Common_XML_Tools::parser (),
+                 flags,
+                 properties);
+  } catch (const ::xml_schema::parsing& exception) {
     std::ostringstream converter;
     converter << exception;
-    std::string text = converter.str();
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Sound_Dictionary::init(): exception occurred: \"%s\", aborting\n"),
-               text.c_str()));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("RPG_Sound_Dictionary::initialize(): exception occurred: \"%s\", aborting\n"),
+                ACE_TEXT (converter.str ().c_str ())));
     return false;
-  }
-  catch (...)
-  {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("RPG_Sound_Dictionary::init(): exception occurred, aborting\n")));
+  } catch (...) {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("RPG_Sound_Dictionary::initialize(): exception occurred, aborting\n")));
     return false;
   }
 
-  dictionary_p.post_RPG_Sound_Dictionary_Type();
+  dictionary_p.post_RPG_Sound_Dictionary_Type ();
 
-#if defined (_DEBUG)
-  ACE_DEBUG((LM_DEBUG,
-            ACE_TEXT("finished parsing sound dictionary file \"%s\"...\n"),
-            filename_in.c_str()));
-#endif // _DEBUG
+  ACE_DEBUG ((LM_DEBUG,
+             ACE_TEXT ("finished parsing sound dictionary file \"%s\"...\n"),
+             ACE_TEXT (filename_in.c_str ())));
 
   return true;
 }
 
-const RPG_Sound_t&
-RPG_Sound_Dictionary::get(const RPG_Sound_Event& event_in) const
+RPG_Sound_t
+RPG_Sound_Dictionary::get (enum RPG_Sound_Event event_in) const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Sound_Dictionary::get"));
+  RPG_TRACE (ACE_TEXT ("RPG_Sound_Dictionary::get"));
 
-  RPG_Sound_DictionaryIterator_t iterator = myDictionary.find(event_in);
-  if (iterator == myDictionary.end())
+  RPG_Sound_DictionaryIterator_t iterator = myDictionary.find (event_in);
+  if (iterator == myDictionary.end ())
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid sound event \"%s\", continuing\n"),
-               RPG_Sound_EventHelper::RPG_Sound_EventToString(event_in).c_str()));
-
-    // *TODO*: what else can we do ?
-    ACE_ASSERT(false);
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("invalid sound event \"%s\", continuing\n"),
+                ACE_TEXT (RPG_Sound_EventHelper::RPG_Sound_EventToString (event_in).c_str ())));
+    ACE_ASSERT (false);
   } // end IF
 
   return iterator->second;
 }
 
-void RPG_Sound_Dictionary::dump() const
+void
+RPG_Sound_Dictionary::dump () const
 {
-  RPG_TRACE(ACE_TEXT("RPG_Sound_Dictionary::dump"));
+  RPG_TRACE (ACE_TEXT ("RPG_Sound_Dictionary::dump"));
 
   std::ostringstream converter;
   unsigned int index = 0;
-  for (RPG_Sound_DictionaryIterator_t iterator = myDictionary.begin();
-       iterator != myDictionary.end();
+  for (RPG_Sound_DictionaryIterator_t iterator = myDictionary.begin ();
+       iterator != myDictionary.end ();
        iterator++, index++)
   {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("Sound[#%u]:\nCategory: %s\nEvent: %s\nFile: %s\nInterval: %u\n"),
-               index,
-               RPG_Sound_CategoryHelper::RPG_Sound_CategoryToString((iterator->second).category).c_str(),
-               RPG_Sound_EventHelper::RPG_Sound_EventToString((iterator->second).sound_event).c_str(),
-               ((iterator->second).file).c_str(),
-               (iterator->second).interval));
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("===========================\n")));
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("Sound[#%u]:\nCategory: %s\nEvent: %s\nFile: %s\nInterval: %u\n"),
+                index,
+                ACE_TEXT (RPG_Sound_CategoryHelper::RPG_Sound_CategoryToString ((iterator->second).category).c_str ()),
+                ACE_TEXT (RPG_Sound_EventHelper::RPG_Sound_EventToString ((iterator->second).sound_event).c_str ()),
+                ACE_TEXT (((iterator->second).file).c_str ()),
+                (iterator->second).interval));
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("===========================\n")));
   } // end FOR
 }

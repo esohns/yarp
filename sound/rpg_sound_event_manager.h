@@ -72,7 +72,7 @@ class RPG_Sound_Event_Manager
   static int dirent_comparator(const dirent**,
                                const dirent**);
 #if defined (SDL_USE)
-  void initializeCD (const int& = 0); // drive (0: default)
+  void initializeCD (int = 0); // drive (0: default)
 #endif // SDL_USE
   void cancel (bool = true); // locked access ?
 

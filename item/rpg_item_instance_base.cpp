@@ -21,9 +21,9 @@
 
 #include "rpg_item_instance_base.h"
 
-#include "rpg_common_macros.h"
-
 #include "ace/Log_Msg.h"
+
+#include "rpg_common_macros.h"
 
 // initialize statics
 ACE_Atomic_Op<ACE_SYNCH_MUTEX, RPG_Item_ID_t> RPG_Item_Instance_Base::myCurrentId = 1;

@@ -110,11 +110,11 @@ class RPG_Net_ProtocolHandler
 };
 
 // declare module
-DATASTREAM_MODULE_INPUT_ONLY (struct RPG_Net_Protocol_SessionData,        // session data type
-                              enum Stream_SessionMessageType,             // session event type
-                              struct RPG_Net_Protocol_ModuleHandlerConfiguration,  // module handler configuration type
+DATASTREAM_MODULE_INPUT_ONLY (struct RPG_Net_Protocol_SessionData,                // session data type
+                              enum Stream_SessionMessageType,                     // session event type
+                              struct RPG_Net_Protocol_ModuleHandlerConfiguration, // module handler configuration type
                               rpg_net_protocolhandler_module_name_string,
-                              Stream_INotify_t,                           // stream notification interface type
-                              RPG_Net_ProtocolHandler);                   // writer type
+                              Stream_INotify_t,                                   // stream notification interface type
+                              RPG_Net_ProtocolHandler);                           // writer type
 
 #endif

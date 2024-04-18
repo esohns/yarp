@@ -27,7 +27,7 @@ class RPG_Net_Remote_Comm
 {
  public:
   // define different types of messages
-  enum MessageType
+  enum MessageType : ACE_UINT32
   {
     RPG_NET_PING = 0,
     RPG_NET_PONG = 1,
@@ -41,8 +41,8 @@ class RPG_Net_Remote_Comm
   {
     // *NOTE*: messageLength is (currently) defined as:
     // *PORTABILITY*: total message length - sizeof(unsigned int) !
-    unsigned int messageLength;
-    MessageType  messageType;
+    ACE_UINT32  messageLength;
+    MessageType messageType;
 #ifdef __GNUC__
   } __attribute__ ((__packed__));
 #else
@@ -53,7 +53,7 @@ class RPG_Net_Remote_Comm
   struct PingMessage
   {
     MessageHeader messageHeader;
-    unsigned int counter;
+    ACE_UINT32    counter;
 #ifdef __GNUC__
   } __attribute__ ((__packed__));
 #else

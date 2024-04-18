@@ -476,22 +476,22 @@ do_work (unsigned int maxNumConnections_in,
   struct RPG_Net_Protocol_StreamConfiguration stream_configuration;
   RPG_Net_Protocol_StreamConfiguration_t stream_configuration_2;
 
-  Net_EventHandler ui_event_handler (&CBData_in);
-  RPG_Net_EventHandler_Module event_handler (NULL,
-                                             ACE_TEXT_ALWAYS_CHAR ("EventHandler"));
-  RPG_Net_EventHandler* eventHandler_impl = NULL;
-  eventHandler_impl =
-    dynamic_cast<RPG_Net_EventHandler*> (event_handler.writer ());
-  if (!eventHandler_impl)
+  Net_EventHandler ui_message_handler (&CBData_in);
+  RPG_Net_MessageHandler_Module message_handler (NULL,
+                                               ACE_TEXT_ALWAYS_CHAR ("MessageHandler"));
+  RPG_Net_MessageHandler* messageHandler_impl = NULL;
+  messageHandler_impl =
+    dynamic_cast<RPG_Net_MessageHandler*> (message_handler.writer ());
+  if (!messageHandler_impl)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("dynamic_cast<RPG_Net_Module_EventHandler> failed, returning\n")));
+                ACE_TEXT ("dynamic_cast<RPG_Net_MessageHandler*> failed, returning\n")));
     return;
   } // end IF
   ACE_ASSERT (CBData_in.UIState);
-  //eventHandler_impl->initialize (&CBData_in.subscribers,
+  //messageHandler_impl->initialize (&CBData_in.subscribers,
   //                               &CBData_in.UIState->subscribersLock);
-  eventHandler_impl->subscribe (&ui_event_handler);
+  messageHandler_impl->subscribe (&ui_message_handler);
 
   Stream_AllocatorHeap_T<ACE_MT_SYNCH,
                          struct Stream_AllocatorConfiguration> heap_allocator;
@@ -517,7 +517,7 @@ do_work (unsigned int maxNumConnections_in,
   //stream_configuration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
   stream_configuration.messageAllocator = &message_allocator;
   stream_configuration.module =
-    (!UIDefinitionFile_in.empty () ? &event_handler
+    (!UIDefinitionFile_in.empty () ? &message_handler
                                    : NULL);
   stream_configuration_2.initialize (module_configuration,
                                      modulehandler_configuration,
@@ -542,7 +542,7 @@ do_work (unsigned int maxNumConnections_in,
     return;
   } // end IF
 
-  // step1: init regular (global) stats reporting
+  // step1: initialize regular (global) statistics reporting
   Net_StreamStatisticHandler_t statistics_handler (COMMON_STATISTIC_ACTION_REPORT,
                                                    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance (),
                                                    false);

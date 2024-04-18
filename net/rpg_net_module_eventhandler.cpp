@@ -25,38 +25,38 @@
 
 #include "rpg_common_macros.h"
 
-RPG_Net_EventHandler::RPG_Net_EventHandler (ISTREAM_T* stream_in)
+RPG_Net_MessageHandler::RPG_Net_MessageHandler (ISTREAM_T* stream_in)
  : inherited (stream_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Net_EventHandler::RPG_Net_EventHandler"));
+  RPG_TRACE (ACE_TEXT ("RPG_Net_MessageHandler::RPG_Net_MessageHandler"));
 
 }
 
 //Stream_Module_t*
-//RPG_Net_EventHandler::clone ()
+//RPG_Net_MessageHandler::clone ()
 //{
-//  RPG_TRACE (ACE_TEXT ("RPG_Net_EventHandler::clone"));
+//  RPG_TRACE (ACE_TEXT ("RPG_Net_MessageHandler::clone"));
 //
 //  // initialize return value(s)
 //  Stream_Module_t* module_p = NULL;
 //
 //  ACE_NEW_NORETURN (module_p,
-//                    RPG_Net_EventHandler_Module (NULL, // *TODO*: pass stream handle
+//                    RPG_Net_MessageHandler_Module (NULL, // *TODO*: pass stream handle
 //                                                 ACE_TEXT_ALWAYS_CHAR (inherited::name ()),
 //                    NULL));
 //  if (unlikely (!module_p))
 //    ACE_DEBUG ((LM_CRITICAL,
 //                ACE_TEXT ("failed to allocate memory(%u): %m, aborting\n"),
-//                sizeof (RPG_Net_EventHandler_Module)));
+//                sizeof (RPG_Net_MessageHandler_Module)));
 //  else
 //  {
-//    RPG_Net_EventHandler* eventHandler_impl = NULL;
+//    RPG_Net_MessageHandler* eventHandler_impl = NULL;
 //    eventHandler_impl =
-//      dynamic_cast<RPG_Net_EventHandler*> (module_p->writer ());
+//      dynamic_cast<RPG_Net_MessageHandler*> (module_p->writer ());
 //    if (unlikely (!eventHandler_impl))
 //    {
 //      ACE_DEBUG ((LM_ERROR,
-//                  ACE_TEXT ("dynamic_cast<RPG_Net_EventHandler> failed, aborting\n")));
+//                  ACE_TEXT ("dynamic_cast<RPG_Net_MessageHandler> failed, aborting\n")));
 //      delete module_p; module_p = NULL;
 //      return NULL;
 //    } // end IF

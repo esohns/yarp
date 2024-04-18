@@ -37,16 +37,15 @@
 #include "rpg_sound_common_tools.h"
 
 int
-RPG_Sound_Event_Manager::dirent_selector(const dirent* entry_in)
+RPG_Sound_Event_Manager::dirent_selector (const dirent* entry_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Sound_Event_Manager::dirent_selector"));
+  RPG_TRACE (ACE_TEXT ("RPG_Sound_Event_Manager::dirent_selector"));
 
   // *NOTE*: select samples
-  std::string filename(entry_in->d_name);
-  std::string extension(ACE_TEXT_ALWAYS_CHAR(RPG_SOUND_DEF_FILE_EXT));
-  if (filename.rfind(extension,
-                     std::string::npos) != (filename.size() - extension.size()))
-//                     -1) != (filename.size() - extension.size()))
+  std::string filename (entry_in->d_name);
+  std::string extension (ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DEF_FILE_EXT));
+  if (filename.rfind (extension,
+                      std::string::npos) != (filename.size () - extension.size ()))
   {
 //     ACE_DEBUG((LM_DEBUG,
 //                ACE_TEXT("ignoring \"%s\"...\n"),
@@ -59,13 +58,13 @@ RPG_Sound_Event_Manager::dirent_selector(const dirent* entry_in)
 }
 
 int
-RPG_Sound_Event_Manager::dirent_comparator(const dirent** entry1_in,
-                                           const dirent** entry2_in)
+RPG_Sound_Event_Manager::dirent_comparator (const dirent** entry1_in,
+                                            const dirent** entry2_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Sound_Event_Manager::dirent_comparator"));
+  RPG_TRACE (ACE_TEXT ("RPG_Sound_Event_Manager::dirent_comparator"));
 
-  return ACE_OS::strcmp((*entry1_in)->d_name,
-                        (*entry2_in)->d_name);
+  return ACE_OS::strcmp ((*entry1_in)->d_name,
+                         (*entry2_in)->d_name);
 }
 
 RPG_Sound_Event_Manager::RPG_Sound_Event_Manager()
@@ -88,18 +87,18 @@ RPG_Sound_Event_Manager::~RPG_Sound_Event_Manager()
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Event_Manager::~RPG_Sound_Event_Manager"));
 
-  stop();
+  stop ();
   if (myInitialized)
-    finalize();
+    finalize ();
 }
 
 void
 RPG_Sound_Event_Manager::initialize (const std::string& repository_in,
                                      bool useCD_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Sound_Event_Manager::init"));
+  RPG_TRACE (ACE_TEXT ("RPG_Sound_Event_Manager::initialize"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard (myLock);
+  ACE_GUARD (ACE_Thread_Mutex, aGuard, myLock);
 
   // sanity check(s)
   std::string path = repository_in;
@@ -133,9 +132,9 @@ RPG_Sound_Event_Manager::initialize (const std::string& repository_in,
 void
 RPG_Sound_Event_Manager::finalize ()
 {
-  RPG_TRACE(ACE_TEXT("RPG_Sound_Event_Manager::fini"));
+  RPG_TRACE(ACE_TEXT("RPG_Sound_Event_Manager::finalize"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  ACE_GUARD (ACE_Thread_Mutex, aGuard, myLock);
 
   if (myInitialized)
   { 
@@ -182,11 +181,11 @@ RPG_Sound_Event_Manager::start ()
 }
 
 void
-RPG_Sound_Event_Manager::stop()
+RPG_Sound_Event_Manager::stop ()
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Event_Manager::stop"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  ACE_GUARD (ACE_Thread_Mutex, aGuard, myLock);
 
   if (myTrackOrChannel == -1)
     return; // nothing to do...
@@ -215,7 +214,7 @@ RPG_Sound_Event_Manager::isPlaying () const
 {
   RPG_TRACE(ACE_TEXT("RPG_Sound_Event_Manager::isPlaying"));
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard(myLock);
+  ACE_GUARD_RETURN (ACE_Thread_Mutex, aGuard, myLock, false); // *TODO*: remove false negative
 
   if (myTrackOrChannel == -1)
     return false;
@@ -238,7 +237,7 @@ RPG_Sound_Event_Manager::handle (const void* act_in)
 
   ACE_UNUSED_ARG (act_in);
 
-  ACE_Guard<ACE_Thread_Mutex> aGuard (myLock);
+  ACE_GUARD (ACE_Thread_Mutex, aGuard, myLock);
 
   // sanity check: initialized ?
 #if defined (SDL_USE)
@@ -276,7 +275,7 @@ RPG_Sound_Event_Manager::handle (const void* act_in)
   {
     // retrieve all sample files...
     ACE_Dirent_Selector entries;
-    if (entries.open (ACE_TEXT(myRepository.c_str()),
+    if (entries.open (ACE_TEXT (myRepository.c_str ()),
                       &RPG_Sound_Event_Manager::dirent_selector,
                       &RPG_Sound_Event_Manager::dirent_comparator) == -1)
     {
@@ -288,31 +287,30 @@ RPG_Sound_Event_Manager::handle (const void* act_in)
     RPG_Sound_SampleRepository_t sample_repository;
     std::string path;
     for (unsigned int i = 0;
-         i < static_cast<unsigned int>(entries.length());
+         i < static_cast<unsigned int> (entries.length ());
          i++)
     {
       path = myRepository;
       path += ACE_DIRECTORY_SEPARATOR_STR_A;
-      path += ACE_TEXT_ALWAYS_CHAR(entries[i]->d_name);
-      sample_repository.push_back(path);
+      path += ACE_TEXT_ALWAYS_CHAR (entries[i]->d_name);
+      sample_repository.push_back (path);
     } // end FOR
-    entries.close();
-    if (sample_repository.empty())
+    entries.close ();
+    if (sample_repository.empty ())
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("no ambient sounds, returning")));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("no ambient sounds, returning")));
       return;
     } // end IF
 
     // choose a random file...
     RPG_Sound_SampleRepositoryConstIterator_t iterator =
-        sample_repository.begin();
+        sample_repository.begin ();
     RPG_Dice_RollResult_t roll_result;
-    RPG_Dice::generateRandomNumbers(static_cast<unsigned int> (sample_repository.size ()),
-                                    1,
-                                    roll_result);
-    std::advance(iterator, roll_result.front() - 1);
+    RPG_Dice::generateRandomNumbers (static_cast<unsigned int> (sample_repository.size ()),
+                                     1,
+                                     roll_result);
+    std::advance (iterator, roll_result.front () - 1);
 
     myTrackOrChannel =
       RPG_Sound_Common_Tools::play (*iterator,
@@ -344,7 +342,7 @@ RPG_Sound_Event_Manager::handle (const void* act_in)
 
 #if defined (SDL_USE)
 void
-RPG_Sound_Event_Manager::initializeCD (const int& drive_in)
+RPG_Sound_Event_Manager::initializeCD (int drive_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Sound_Event_Manager::initializeCD"));
 
@@ -353,36 +351,33 @@ RPG_Sound_Event_Manager::initializeCD (const int& drive_in)
 
   if (myCDROM)
   {
-    if (SDL_CDStop(myCDROM))
+    if (SDL_CDStop (myCDROM))
     {
-      ACE_DEBUG((LM_ERROR,
-                  ACE_TEXT("failed to SDL_CDStop(%@): \"%s\", aborting\n"),
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_CDStop(%@): \"%s\", returning\n"),
                   myCDROM,
-                  ACE_TEXT(SDL_GetError())));
-
+                  ACE_TEXT (SDL_GetError ())));
       return;
     } // end IF
-    SDL_CDClose(myCDROM);
+    SDL_CDClose (myCDROM);
     myCDROM = NULL;
   } // end IF
 
-  if (SDL_CDNumDrives() <= 0)
+  if (SDL_CDNumDrives () <= 0)
   {
-    ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("failed to SDL_CDNumDrives(): \"%s\" (no drive(s) ?), aborting\n"),
-                ACE_TEXT(SDL_GetError())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_CDNumDrives(): \"%s\" (no drive(s) ?), returning\n"),
+                ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
 
-  myCDROM = SDL_CDOpen(drive_in);
+  myCDROM = SDL_CDOpen (drive_in);
   if (!myCDROM)
   {
-    ACE_DEBUG((LM_ERROR,
-                ACE_TEXT("failed to SDL_CDOpen(\"%s\"): \"%s\", aborting\n"),
-                ACE_TEXT(SDL_CDName(drive_in)),
-                ACE_TEXT(SDL_GetError())));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_CDOpen(\"%s\"): \"%s\", returning\n"),
+                ACE_TEXT (SDL_CDName (drive_in)),
+                ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
 
@@ -390,16 +385,16 @@ RPG_Sound_Event_Manager::initializeCD (const int& drive_in)
   bool cd_done = false;
   do
   {
-    cd_status = SDL_CDStatus(myCDROM);
+    cd_status = SDL_CDStatus (myCDROM);
     switch (cd_status)
     {
       case CD_TRAYEMPTY:
       {
-        ACE_DEBUG((LM_DEBUG,
-                    ACE_TEXT("tray is empty, insert an AudioCD to continue...\n")));
+        ACE_DEBUG ((LM_DEBUG,
+                    ACE_TEXT ("tray is empty, insert an AudioCD to continue...\n")));
 
-        SDL_CDEject(myCDROM);
-        SDL_Delay(10000); // wait 10s
+        SDL_CDEject (myCDROM);
+        SDL_Delay (10000); // wait 10s
 
         break;
       }
@@ -408,18 +403,18 @@ RPG_Sound_Event_Manager::initializeCD (const int& drive_in)
         // check that there are Audio Tracks on the CD
         unsigned int num_audio_tracks = 0;
         for (int i = 0;
-              i < myCDROM->numtracks;
-              i++)
+             i < myCDROM->numtracks;
+             i++)
           if (myCDROM->track[i].type == SDL_AUDIO_TRACK)
             num_audio_tracks++;
 
         if (num_audio_tracks == 0)
         {
-          ACE_DEBUG((LM_DEBUG,
-                      ACE_TEXT("no audio tracks, insert an AudioCD to continue...\n")));
+          ACE_DEBUG ((LM_DEBUG,
+                      ACE_TEXT ("no audio tracks, insert an AudioCD to continue...\n")));
 
-          SDL_CDEject(myCDROM);
-          SDL_Delay(10000); // wait 10s
+          SDL_CDEject (myCDROM);
+          SDL_Delay (10000); // wait 10s
         } // end IF
         else
           cd_done = true;
@@ -429,13 +424,12 @@ RPG_Sound_Event_Manager::initializeCD (const int& drive_in)
       case CD_PLAYING:
       case CD_PAUSED:
       {
-        if (SDL_CDStop(myCDROM))
+        if (SDL_CDStop (myCDROM))
         {
-          ACE_DEBUG((LM_ERROR,
-                      ACE_TEXT("failed to SDL_CDStop(\"%s\"): \"%s\", aborting\n"),
-                      ACE_TEXT(SDL_CDName(myCDROM->id)),
-                      ACE_TEXT(SDL_GetError())));
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("failed to SDL_CDStop(\"%s\"): \"%s\", returning\n"),
+                      ACE_TEXT (SDL_CDName (myCDROM->id)),
+                      ACE_TEXT (SDL_GetError ())));
           return;
         } // end IF
 
@@ -443,18 +437,19 @@ RPG_Sound_Event_Manager::initializeCD (const int& drive_in)
       }
       case CD_ERROR:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("error, insert an AudioCD to continue...\n")));
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("error, insert an AudioCD to continue...\n")));
 
-        SDL_CDEject(myCDROM);
-        SDL_Delay(10000); // wait 10s
+        SDL_CDEject (myCDROM);
+        SDL_Delay (10000); // wait 10s
+
+        break;
       }
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("invalid CD status (was: %d), aborting\n"),
-                   cd_status));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("invalid CD status (was: %d), returning\n"),
+                    cd_status));
         return;
       }
     } // end SWITCH
