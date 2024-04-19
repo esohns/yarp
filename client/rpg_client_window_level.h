@@ -23,12 +23,12 @@
 
 #include <vector>
 
-#include "ace/Global_Macros.h"
-#include "ace/Synch_Traits.h"
-
 #define _SDL_main_h
 #define SDL_main_h_
 #include "SDL.h"
+
+#include "ace/Global_Macros.h"
+#include "ace/Synch_Traits.h"
 
 #include "rpg_map_common.h"
 
@@ -54,7 +54,6 @@ class RPG_Client_Window_Level
                            const RPG_Graphics_SDLWindowBase&); // parent
   virtual ~RPG_Client_Window_Level ();
 
-  // initialize  level properties
   bool initialize (RPG_Client_Engine*, // engine handle
                    RPG_Engine*,        // (level) state handle
                    bool = false);      // debug ?

@@ -76,7 +76,7 @@ RPG_Dice_Common_Tools::toString (const struct RPG_Dice_ValueRange& range_in)
   converter << range_in.begin;
   if (range_in.begin != range_in.end)
   {
-    converter << ACE_TEXT_ALWAYS_CHAR("-");
+    converter << ACE_TEXT_ALWAYS_CHAR ("-");
     converter << range_in.end;
   } // end IF
   result = converter.str ();

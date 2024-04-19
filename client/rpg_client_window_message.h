@@ -21,12 +21,12 @@
 
 #include <string>
 
-#include "ace/Global_Macros.h"
-#include "ace/Synch_Traits.h"
-
 #define _SDL_main_h
 #define SDL_main_h_
 #include "SDL.h"
+
+#include "ace/Global_Macros.h"
+#include "ace/Synch_Traits.h"
 
 #include "common_ilock.h"
 
@@ -44,9 +44,9 @@ class RPG_Client_Window_Message
   RPG_Client_Window_Message (const RPG_Graphics_SDLWindowBase&); // parent
   virtual ~RPG_Client_Window_Message ();
 
-  void initialize (Common_ILock*,            // screen lock interface handle
-                   const RPG_Graphics_Font&, // font
-                   unsigned int);            // #lines
+  void initialize (Common_ILock*,          // screen lock interface handle
+                   enum RPG_Graphics_Font, // font
+                   unsigned int);          // #lines
   void push (const std::string&); // message
 
   // implement (part of) RPG_Graphics_IWindowBase
@@ -55,7 +55,7 @@ class RPG_Client_Window_Message
                      unsigned int = 0);   // offset y (top-left = [0,0])
   virtual void handleEvent (const SDL_Event&,          // event
                             RPG_Graphics_IWindowBase*, // target window (NULL: this)
-                            SDL_Rect&);                // return value: "dirty" region
+                            struct SDL_Rect&);         // return value: "dirty" region
 
  private:
   ACE_UNIMPLEMENTED_FUNC (RPG_Client_Window_Message ())
@@ -67,7 +67,7 @@ class RPG_Client_Window_Message
 
   SDL_Surface*              BG_;
   RPG_Client_Engine*        client_;
-  RPG_Graphics_Font         font_;
+  enum RPG_Graphics_Font    font_;
   ACE_Thread_Mutex          lock_;
   Common_Log_MessageQueue_t messages_;
   unsigned int              numLines_;

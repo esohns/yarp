@@ -71,6 +71,7 @@ RPG_Client_Window_Main::initialize (RPG_Client_Engine* clientEngine_in,
 
   // sanity checks
   ACE_ASSERT (clientEngine_in);
+  ACE_ASSERT (engine_in);
 
   myEngine = clientEngine_in;
   myAutoEdgeScroll = doAutoEdgeScroll_in;
@@ -155,9 +156,8 @@ RPG_Client_Window_Main::draw (SDL_Surface* targetSurface_in,
   {
     clip_rect.x = static_cast<int16_t> (borderLeft_);
     clip_rect.y = 0;
-    clip_rect.w = static_cast<uint16_t> (target_surface->w -
-                                         offsetX_in -
-                                         (borderLeft_ + borderRight_));
+    clip_rect.w =
+      static_cast<uint16_t> (target_surface->w - offsetX_in - (borderLeft_ + borderRight_));
     clip_rect.h = static_cast<uint16_t> (borderTop_);
     if (!SDL_SetClipRect (target_surface, &clip_rect))
     {
@@ -181,9 +181,8 @@ RPG_Client_Window_Main::draw (SDL_Surface* targetSurface_in,
                                                                                                               *target_surface->format,
                                                                                                               1.0f),
                                                                             *target_surface->format),
-                                   std::make_pair (borderLeft_, // top left
-                                                   ((borderTop_ -
-                                                     title_size.second) / 2)), // center of top border
+                                   std::make_pair (borderLeft_,                             // top left
+                                                   ((borderTop_ - title_size.second) / 2)), // center of top border
                                    target_surface,
                                    dirty_region);
 
@@ -212,9 +211,8 @@ RPG_Client_Window_Main::draw (SDL_Surface* targetSurface_in,
   } // end FOR
 
   // whole window needs a refresh...
-  struct SDL_Rect dirtyRegion;
-  SDL_GetClipRect (target_surface, &dirtyRegion);
-  invalidate (dirtyRegion);
+  SDL_GetClipRect (target_surface, &dirty_region);
+  inherited::invalidate (dirty_region);
 
   // remember position of last realization
   lastAbsolutePosition_ = std::make_pair (offsetX_in,
@@ -803,7 +801,7 @@ RPG_Client_Window_Main::initMap (RPG_Client_Engine* clientEngine_in,
     return false;
   } // end IF
 
-  // init window
+  // initialize window
   if (!map_window_p->initialize (clientEngine_in,
                                  engine_in,
                                  debug_in))
@@ -812,7 +810,6 @@ RPG_Client_Window_Main::initMap (RPG_Client_Engine* clientEngine_in,
                 ACE_TEXT ("failed to RPG_Client_Window_Level::initialize(): \"%m\", aborting\n")));
     return false;
   } // end IF
-
   map_window_p->setScreen (inherited::screen_);
 
   return true;
@@ -844,7 +841,7 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
   struct SDL_Rect prev_clip_rect, clip_rect, dirty_region;
   unsigned int i = 0;
 
-  // step0: save previous clip rect
+  // step0: save previous clip rectangle
   SDL_GetClipRect (target_surface, &prev_clip_rect);
 
   // step1: draw borders
@@ -864,12 +861,14 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
   for (i = offsetX_in + borderLeft_;
        i < (static_cast<unsigned int> (target_surface->w) - borderRight_);
        i += (*iterator).second->w)
+  {
     RPG_Graphics_Surface::put (std::make_pair (i,
                                                offsetY_in),
                                *(*iterator).second,
                                target_surface,
                                dirty_region);
-  invalidate (dirty_region);
+    inherited::invalidate (dirty_region);
+  } // end FOR
 
   clip_rect.x = static_cast<int16_t> (offsetX_in);
   clip_rect.y = static_cast<int16_t> (offsetY_in + borderTop_);
@@ -887,12 +886,14 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
   for (i = (offsetY_in + borderTop_);
        i < (static_cast<unsigned int> (target_surface->h) - borderBottom_);
        i += (*iterator).second->h)
+  {
     RPG_Graphics_Surface::put (std::make_pair (offsetX_in,
                                                i),
                                *(*iterator).second,
                                target_surface,
                                dirty_region);
-  invalidate (dirty_region);
+    inherited::invalidate (dirty_region);
+  } // end FOR
 
   clip_rect.x = static_cast<int16_t> (target_surface->w - borderRight_);
   clip_rect.y = static_cast<int16_t> (offsetY_in + borderTop_);
@@ -910,12 +911,14 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
   for (i = (offsetY_in + borderTop_);
        i < (static_cast<unsigned int> (target_surface->h) - borderBottom_);
        i += (*iterator).second->h)
+  {
     RPG_Graphics_Surface::put (std::make_pair ((target_surface->w - borderRight_),
                                                i),
                                *(*iterator).second,
                                target_surface,
                                dirty_region);
-  invalidate (dirty_region);
+    inherited::invalidate (dirty_region);
+  } // end FOR
 
   clip_rect.x = static_cast<int16_t> (offsetX_in + borderLeft_);
   clip_rect.y = static_cast<int16_t> (target_surface->h - borderBottom_);
@@ -933,12 +936,14 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
   for (i = (offsetX_in + borderLeft_);
        i < (target_surface->w - borderRight_);
        i += (*iterator).second->w)
+  {
     RPG_Graphics_Surface::put (std::make_pair (i,
                                                (target_surface->h - borderBottom_)),
                                *(*iterator).second,
                                target_surface,
                                dirty_region);
-  invalidate (dirty_region);
+    inherited::invalidate (dirty_region);
+  } // end FOR
 
   // step2: draw corners
 
@@ -961,7 +966,7 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
                              *(*iterator).second,
                              target_surface,
                              dirty_region);
-  invalidate (dirty_region);
+  inherited::invalidate (dirty_region);
 
   // NE
   clip_rect.y = static_cast<int16_t> (offsetY_in);
@@ -982,7 +987,7 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
                              *(*iterator).second,
                              target_surface,
                              dirty_region);
-  invalidate (dirty_region);
+  inherited::invalidate (dirty_region);
 
   // SW
   clip_rect.x = static_cast<int16_t> (offsetX_in);
@@ -1003,7 +1008,7 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
                              *(*iterator).second,
                              target_surface,
                              dirty_region);
-  invalidate (dirty_region);
+  inherited::invalidate (dirty_region);
 
   // SE
   iterator = myElementGraphics.find (INTERFACEELEMENT_BORDER_BOTTOM_RIGHT);
@@ -1024,7 +1029,7 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
                              *(*iterator).second,
                              target_surface,
                              dirty_region);
-  invalidate (dirty_region);
+  inherited::invalidate (dirty_region);
 
   if (!SDL_SetClipRect (target_surface, &prev_clip_rect))
   {

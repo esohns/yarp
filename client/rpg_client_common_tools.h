@@ -45,16 +45,16 @@ class RPG_Client_Common_Tools
                           const struct RPG_Client_SDL_InputConfiguration&, // SDL input configuration
                           // *** audio ***
                           const struct RPG_Sound_SDLConfiguration&,        // SDL sound configuration
-                          const std::string&,                         // sound directory
-                          bool,                                       // use CD ?
-                          unsigned int,                               // cache size
-                          bool,                                       // mute ?
-                          const std::string&,                         // sound dictionary
+                          const std::string&,                              // sound directory
+                          bool,                                            // use CD ?
+                          unsigned int,                                    // cache size
+                          bool,                                            // mute ?
+                          const std::string&,                              // sound dictionary
                           // *** video ***
-                          const std::string&,                         // graphics directory
-                          unsigned int,                               // cache size
-                          const std::string&,                         // graphics dictionary
-                          bool = true);                               // init SDL ?
+                          const std::string&,                              // graphics directory
+                          unsigned int,                                    // cache size
+                          const std::string&,                              // graphics dictionary
+                          bool = true);                                    // initialize SDL ?
   static void finalize ();
 
   static void initFloorEdges (const RPG_Engine&,                      // state / engine

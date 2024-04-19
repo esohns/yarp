@@ -45,7 +45,6 @@ class RPG_Client_Entity_Manager
                              ACE_SYNCH_MUTEX>;
 
  public:
-  // init (clipping)
   void initialize (Common_ILock*,              // screen lock interface handle
                    RPG_Graphics_IWindowBase*); // (target) window handle
 

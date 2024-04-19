@@ -21,11 +21,11 @@
 #ifndef RPG_GRAPHICS_HOTSPOT_H
 #define RPG_GRAPHICS_HOTSPOT_H
 
-#include "ace/Global_Macros.h"
-
 #define _SDL_main_h
 #define SDL_main_h_
 #include "SDL.h"
+
+#include "ace/Global_Macros.h"
 
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_cursor.h"

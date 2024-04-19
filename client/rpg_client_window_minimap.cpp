@@ -19,6 +19,8 @@
 
 #include "rpg_client_window_minimap.h"
 
+#include "ace/Log_Msg.h"
+
 #include "common_file_tools.h"
 
 #include "rpg_common_defines.h"
@@ -110,7 +112,7 @@ RPG_Client_Window_MiniMap::handleEvent (const union SDL_Event& event_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Window_MiniMap::handleEvent"));
 
-  // init return value(s)
+  // initialize return value(s)
   ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
   switch (event_in.type)
@@ -182,7 +184,7 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
   ACE_UNUSED_ARG (offsetY_in);
 
   // initialize clipping
-  clip ();
+  inherited::clip (NULL, 0, 0);
 
   // initialize surface
   struct SDL_Rect dirty_region = {0, 0, 0, 0};
@@ -358,10 +360,10 @@ continue_:
     inherited::screenLock_->unlock ();
 
   // reset clipping
-  unclip ();
+  inherited::unclip (NULL);
 
   // invalidate dirty region
-  invalidate (dirty_region);
+  inherited::invalidate (dirty_region);
 
   // remember position of last realization
   lastAbsolutePosition_ = std::make_pair (target_surface->clip_rect.x,
