@@ -68,6 +68,12 @@ class RPG_Client_Entity_Manager
 
   // clear the stored BG
   void invalidateBG (RPG_Engine_EntityID_t); // id
+  // restore the BG
+  void restoreBG (RPG_Engine_EntityID_t, // id
+                  struct SDL_Rect&,      // return value: "dirty" region
+                  bool,                  // clip window ?
+                  bool = true,           // locked access ?
+                  bool = false);         // debug ?
 
  private:
   virtual ~RPG_Client_Entity_Manager ();
@@ -86,14 +92,6 @@ class RPG_Client_Entity_Manager
   typedef std::map<RPG_Engine_EntityID_t, struct RPG_Client_EntityCacheEntry> RPG_Client_EntityCache_t;
   typedef RPG_Client_EntityCache_t::iterator RPG_Client_EntityCacheIterator_t;
   typedef RPG_Client_EntityCache_t::const_iterator RPG_Client_EntityCacheConstIterator_t;
-
-  // helper methods
-  // restore the BG
-  void restoreBG (RPG_Engine_EntityID_t, // id
-                  struct SDL_Rect&,      // return value: "dirty" region
-                  bool,                  // clip window ?
-                  bool = true,           // locked access ?
-                  bool = false);         // debug ?
 
   Common_ILock*             myScreenLock;
   RPG_Graphics_IWindowBase* myWindow;

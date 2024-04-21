@@ -43,8 +43,8 @@ class RPG_Engine_Level
   // static functionality
   static void create (const struct RPG_Map_FloorPlan_Configuration&, // floor plan config
                       struct RPG_Engine_LevelData&);                 // return value: level data
-  static bool load (const std::string&,   // FQ filename
-                    const std::string&,   // schema repository (directory)
+  static bool load (const std::string&,            // FQ filename
+                    const std::string&,            // schema repository (directory)
                     struct RPG_Engine_LevelData&); // return value: level
   static bool save (const std::string&,                  // FQ filename
                     const struct RPG_Engine_LevelData&); // level

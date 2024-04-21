@@ -19,6 +19,8 @@
 
 #include "rpg_engine_messagequeue.h"
 
+#include "ace/Log_Msg.h"
+
 #include "rpg_common_macros.h"
 
 RPG_Engine_MessageQueue::RPG_Engine_MessageQueue (size_t maxMessages_in)
@@ -35,5 +37,5 @@ RPG_Engine_MessageQueue::is_full_i (void)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine_MessageQueue::is_full_i"));
 
-  return cur_count_ >= high_water_mark_;
+  return inherited::cur_count_ >= inherited::high_water_mark_;
 }

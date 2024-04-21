@@ -386,13 +386,6 @@ RPG_Client_Entity_Manager::restoreBG (RPG_Engine_EntityID_t id_in,
   // update cursor / highlight(s) ?
   // *TODO*: is this really necessary ?
   struct SDL_Rect dirty_region;
-  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->updateBG (dirty_region,
-                                                                &dirtyRegion_out,
-                                                                lockedAccess_in,
-                                                                debug_in);
-  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
-                                                         dirtyRegion_out);
-
   RPG_Client_IWindowLevel* window;
   try {
     window = dynamic_cast<RPG_Client_IWindowLevel*> (myWindow);
@@ -411,6 +404,13 @@ RPG_Client_Entity_Manager::restoreBG (RPG_Engine_EntityID_t id_in,
                                                                          &dirtyRegion_out,
                                                                          lockedAccess_in,
                                                                          debug_in);
+  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
+                                                         dirtyRegion_out);
+
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->updateBG (dirty_region,
+                                                                &dirtyRegion_out,
+                                                                lockedAccess_in,
+                                                                debug_in);
   dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
                                                          dirtyRegion_out);
 }

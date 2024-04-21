@@ -179,7 +179,7 @@ RPG_Item_Common_Tools::commoditySubTypeToXMLString (const struct RPG_Item_Commod
   return result;
 }
 
-RPG_Item_CommodityUnion
+struct RPG_Item_CommodityUnion
 RPG_Item_Common_Tools::XMLStringToCommoditySubType (const std::string& string_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Item_Common_Tools::XMLStringToCommoditySubType"));

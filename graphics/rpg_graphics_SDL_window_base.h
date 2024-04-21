@@ -105,7 +105,7 @@ class RPG_Graphics_SDLWindowBase
                               const RPG_Graphics_Offset_t&,      // offset
                               const std::string&);               // title
 
-  virtual SDL_Rect getDirty () const; // "dirty" area
+  virtual struct SDL_Rect getDirty () const; // "dirty" area
   void clean ();
   // implement (part of) RPG_Graphics_IWindowBase
   virtual void refresh (SDL_Surface* = NULL); // target surface (default: screen)
@@ -159,8 +159,8 @@ class RPG_Graphics_SDLWindowBase
 
   // "dirty" region(s)
   RPG_Graphics_InvalidRegions_t invalidRegions_;
-  bool                          flip_;
 
+  bool                          flip_; // ? : update dirty region(s)
   enum RPG_Graphics_WindowType  type_;
 };
 

@@ -66,9 +66,9 @@ class SDL_GUI_MainWindow
 
   // initialize different hotspots/sub-windows
   // *WARNING*: call this AFTER setScreen() !
-  void init (state_t*,                                                  // state
-             RPG_Engine*,                                               // (level) state handle
-             enum RPG_Client_GraphicsMode = SDL_GUI_DEF_GRAPHICS_MODE); // graphics mode
+  void initialize (state_t*,                                                  // state
+                   RPG_Engine*,                                               // (level) state handle
+                   enum RPG_Client_GraphicsMode = SDL_GUI_DEF_GRAPHICS_MODE); // graphics mode
 
   // implement (part of) RPG_Graphics_IWindowBase
   virtual void draw (SDL_Surface* = NULL, // target surface (default: screen)

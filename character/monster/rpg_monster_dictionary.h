@@ -47,7 +47,7 @@ class RPG_Monster_Dictionary
   bool initialize (const std::string&, // (XML) dictionary filename
                    bool = false);      // validate XML ?
 
-  RPG_Monster_Properties getProperties (const std::string&) const; // name of monster
+  struct RPG_Monster_Properties getProperties (const std::string&) const; // name of monster
   inline unsigned int numEntries () const { return static_cast<unsigned int> (myMonsterDictionary.size ()); }
   RPG_Monster_List_t getEntries () const;
   void find (const struct RPG_Character_Alignment&, // alignment

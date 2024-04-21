@@ -73,7 +73,7 @@ class SDL_GUI_LevelWindow_Isometric
                         int,          // offset y (map coordinates !)
                         bool = true); // locked access ?
   virtual void setView (const RPG_Map_Position_t&); // offset
-  virtual RPG_Graphics_Position_t getView () const; // return value: view (map coordinates !)
+  inline virtual RPG_Graphics_Position_t getView () const { return myView; } // return value: view (map coordinates !)
   void center ();
 
   // (re-)init / set level properties

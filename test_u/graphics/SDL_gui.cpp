@@ -412,7 +412,6 @@ do_processArguments (int argc_in,
                                                           ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
                                                           false); // data-
   directory_out           = data_path;
-  directory_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 
   configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -1607,16 +1606,17 @@ do_work (mode_t mode_in,
       // step4: init sub-windows (level window, hotspots, minimap, ...)
 //      RPG_Client_Engine client_engine;
       RPG_Engine level_engine;
-      main_window.init (&state,
-                        //&client_engine,
-                        &level_engine,
-                        (videoConfiguration_in.use_OpenGL ? GRAPHICSMODE_2D_OPENGL
-                                                          : GRAPHICSMODE_2D_ISOMETRIC));
+      main_window.initialize (&state,
+                              //&client_engine,
+                              &level_engine,
+                              (videoConfiguration_in.use_OpenGL ? GRAPHICSMODE_2D_OPENGL
+                                                                : GRAPHICSMODE_2D_ISOMETRIC));
 
       // step4a: draw main window borders...
       try {
-        main_window.draw ();
-        main_window.update ();
+        main_window.draw (NULL,
+                          0, 0);
+        main_window.update (NULL);
       } catch (...) {
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("caught exception in RPG_Graphics_IWindow::draw()/update(), continuing\n")));

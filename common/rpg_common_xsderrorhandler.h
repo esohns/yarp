@@ -26,21 +26,16 @@
 
 #include "xsd/cxx/xml/error-handler.hxx"
 
-//#include "rpg_common_exports.h"
-
-/**
-	@author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Common_XSDErrorHandler
  : public ::xsd::cxx::xml::error_handler<char>
 {
   typedef ::xsd::cxx::xml::error_handler<char> inherited;
 
  public:
-  RPG_Common_XSDErrorHandler();
+  RPG_Common_XSDErrorHandler ();
   inline virtual ~RPG_Common_XSDErrorHandler () {}
 
-  inline void reset() { myFailed = false; }
+  inline void reset () { myFailed = false; }
   inline bool failed () { return myFailed; }
 
   virtual bool handle (const std::string&,                             // id
@@ -63,15 +58,15 @@ class RPG_Common_XercesErrorHandler
   typedef ::xercesc::ErrorHandler inherited;
 
  public:
-  RPG_Common_XercesErrorHandler();
+  RPG_Common_XercesErrorHandler ();
   inline virtual ~RPG_Common_XercesErrorHandler() {}
 
   inline bool failed () { return myFailed; }
 
-  virtual void warning(const ::xercesc::SAXParseException&);
-  virtual void error(const ::xercesc::SAXParseException&);
-  virtual void fatalError(const ::xercesc::SAXParseException&);
-  inline virtual void resetErrors() { myFailed = false; }
+  virtual void warning (const ::xercesc::SAXParseException&);
+  virtual void error (const ::xercesc::SAXParseException&);
+  virtual void fatalError (const ::xercesc::SAXParseException&);
+  inline virtual void resetErrors () { myFailed = false; }
 
  private:
   bool myFailed;

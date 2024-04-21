@@ -206,23 +206,23 @@ RPG_Common_File_Tools::getUserConfigurationDirectory ()
   std::string result;
 
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-  TCHAR buffer[PATH_MAX];
-  ACE_OS::memset (buffer, 0, sizeof (buffer));
+  TCHAR buffer_a[PATH_MAX];
+  ACE_OS::memset (buffer_a, 0, sizeof (TCHAR[PATH_MAX]));
 
   HRESULT win_result =
     SHGetFolderPath (NULL,                                   // hwndOwner
                      CSIDL_APPDATA | CSIDL_FLAG_DONT_VERIFY, // nFolder
                      NULL,                                   // hToken
                      SHGFP_TYPE_CURRENT,                     // dwFlags
-                     buffer);                                // pszPath
+                     buffer_a);                              // pszPath
   if (FAILED (win_result))
   {
-    ACE_OS::memset (buffer, 0, sizeof (buffer));
+    ACE_OS::memset (buffer_a, 0, sizeof (TCHAR[PATH_MAX]));
     if (FormatMessage (FORMAT_MESSAGE_FROM_SYSTEM,                 // dwFlags
                        NULL,                                       // lpSource
                        win_result,                                 // dwMessageId
                        MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT), // dwLanguageId
-                       buffer,                                     // lpBuffer
+                       buffer_a,                                   // lpBuffer
                        PATH_MAX,                                   // nSize
                        NULL) == 0)                                 // Arguments
       ACE_DEBUG ((LM_ERROR,
@@ -230,7 +230,7 @@ RPG_Common_File_Tools::getUserConfigurationDirectory ()
                   win_result));
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SHGetFolderPath(CSIDL_APPDATA): \"%s\", falling back\n"),
-                buffer));
+                ACE_TEXT (buffer_a)));
 
     // fallback
     result =
@@ -238,7 +238,7 @@ RPG_Common_File_Tools::getUserConfigurationDirectory ()
     return result;
   } // end IF
 
-  result = ACE_TEXT_ALWAYS_CHAR (buffer);
+  result = ACE_TEXT_ALWAYS_CHAR (buffer_a);
   result += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
   std::string user_name = Common_OS_Tools::getUserName ();
@@ -314,7 +314,7 @@ RPG_Common_File_Tools::getLogDirectory ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Common_File_Tools::getLogDirectory"));
 
-  // init return value(s)
+  // initialize return value(s)
   std::string result;
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   result = ACE_OS::getenv (ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEMPORARY_STORAGE_VARIABLE));

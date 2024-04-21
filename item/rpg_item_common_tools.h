@@ -47,7 +47,7 @@ class RPG_Item_Common_Tools
 
   // XML-specifics
   static std::string commoditySubTypeToXMLString (const struct RPG_Item_CommodityUnion&); // subtype
-  static RPG_Item_CommodityUnion XMLStringToCommoditySubType (const std::string&); // subtype (XML string)
+  static struct RPG_Item_CommodityUnion XMLStringToCommoditySubType (const std::string&); // subtype (XML string)
 
   static bool isThrownWeapon (enum RPG_Item_WeaponType); // weapon type
   static bool isProjectileWeapon (enum RPG_Item_WeaponType); // weapon type

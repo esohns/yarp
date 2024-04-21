@@ -403,7 +403,7 @@ RPG_Monster_Dictionary::initialize (const std::string& filename_in,
   return true;
 }
 
-RPG_Monster_Properties
+struct RPG_Monster_Properties
 RPG_Monster_Dictionary::getProperties (const std::string& name_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Monster_Dictionary::getProperties"));

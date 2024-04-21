@@ -102,8 +102,8 @@ class RPG_Engine_Common_Tools
   static void performCombatRound (enum RPG_Combat_AttackSituation,        // attack situation
                                   enum RPG_Combat_DefenseSituation,       // defense situation
                                   const RPG_Engine_CombatantSequence_t&); // battle sequence
-  static void attack (const RPG_Player_Base*,                            // attacker
-                      RPG_Player_Base*,                                  // defender
+  static void attack (const RPG_Player_Base* const,                      // attacker
+                      RPG_Player_Base* const,                            // defender
                       ACE_UINT32&,                                       // return value: damage HP
                       enum RPG_Combat_AttackSituation = ATTACK_NORMAL,   // attack situation
                       enum RPG_Combat_DefenseSituation = DEFENSE_NORMAL, // defense situation

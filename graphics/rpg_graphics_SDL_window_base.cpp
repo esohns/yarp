@@ -58,7 +58,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase (enum RPG_Graphics_Window
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase"));
 
-  ACE_OS::memset (&clipRectangle_, 0, sizeof (clipRectangle_));
+  ACE_OS::memset (&clipRectangle_, 0, sizeof (struct SDL_Rect));
   clipRectangle_.w = static_cast<Uint16> (size_in.first);
   clipRectangle_.h = static_cast<Uint16> (size_in.second);
 }
@@ -158,7 +158,7 @@ RPG_Graphics_SDLWindowBase::~RPG_Graphics_SDLWindowBase ()
 //     SDL_FreeSurface(myBackGround);
 }
 
-SDL_Rect
+struct SDL_Rect
 RPG_Graphics_SDLWindowBase::getDirty () const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::getDirty"));
@@ -290,9 +290,7 @@ RPG_Graphics_SDLWindowBase::invalidate (const struct SDL_Rect& rect_in)
       (rect_in.h == 0))
     invalidRegions_.push_back (clipRectangle_);
   else
-  { //ACE_ASSERT (rect_in.x >= 0);
     invalidRegions_.push_back (rect_in);
-  } // end ELSE
 }
 
 void
@@ -438,24 +436,6 @@ RPG_Graphics_SDLWindowBase::update (SDL_Surface* targetSurface_in)
                                                     : surface_p);
   ACE_ASSERT (target_surface_p);
 
-  // compute bounding box of dirty areas
-  SDL_Rect dirty_region = getDirty ();
-  // recurse into any children
-  for (RPG_Graphics_WindowsIterator_t iterator = children_.begin ();
-       iterator != children_.end ();
-       iterator++)
-    dirty_region = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
-                                                        (*iterator)->getDirty ());
-  if (!dirty_region.w || !dirty_region.h)
-    return; // nothing to do...
-
-  //ACE_DEBUG((LM_DEBUG,
-  //           ACE_TEXT("refreshing bbox [[%d,%d][%d,%d]]...\n"),
-  //           dirty_region.x,
-  //           dirty_region.y,
-  //           dirty_region.w,
-  //           dirty_region.h));
-
   if (screenLock_)
     screenLock_->lock ();
   if (flip_)
@@ -476,6 +456,29 @@ RPG_Graphics_SDLWindowBase::update (SDL_Surface* targetSurface_in)
   } // end IF
   else
   {
+    // compute bounding box of dirty areas
+    struct SDL_Rect dirty_region = getDirty ();
+    // recurse into any children
+    for (RPG_Graphics_WindowsIterator_t iterator = children_.begin ();
+         iterator != children_.end ();
+         iterator++)
+      dirty_region = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
+                                                          (*iterator)->getDirty ());
+    if (!dirty_region.w || !dirty_region.h)
+    {
+      if (screenLock_)
+        screenLock_->unlock ();
+      clean ();
+      return; // nothing to do...
+    } // end IF
+
+    //ACE_DEBUG ((LM_DEBUG,
+    //            ACE_TEXT ("refreshing bbox [[%d,%d][%d,%d]]...\n"),
+    //            dirty_region.x,
+    //            dirty_region.y,
+    //            dirty_region.w,
+    //            dirty_region.h));
+
 #if defined (SDL_USE)
     SDL_UpdateRect (target_surface_p,
                     dirty_region.x,
