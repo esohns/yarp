@@ -71,44 +71,47 @@ do_printUsage (const std::string& programName_in)
                                                           ACE_TEXT_ALWAYS_CHAR (""),
                                                           false);
 
-  std::cout << ACE_TEXT("usage: ")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("usage: ")
             << programName_in
-            << ACE_TEXT(" [OPTIONS]")
+            << ACE_TEXT_ALWAYS_CHAR (" [OPTIONS]")
             << std::endl
             << std::endl;
-  std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-b       : build corridors")
-            << ACE_TEXT(" [")
-            << PATH_FINDER_DEF_CORRIDORS
-            << ACE_TEXT("]")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("currently available options:")
             << std::endl;
-  std::cout << ACE_TEXT("-d       : debug parser")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-b       : build corridors")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
+            << PATH_FINDER_DEF_CORRIDORS
+            << ACE_TEXT_ALWAYS_CHAR ("]")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-d       : debug parser")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << PATH_FINDER_DEF_DEBUG_PARSER
-            << ACE_TEXT("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
   std::string path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR("map");
+  path += ACE_TEXT_ALWAYS_CHAR ("map");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR("data");
+  path += ACE_TEXT_ALWAYS_CHAR ("data");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_MAP_MAPS_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path +=
-      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME));
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
-  std::cout << ACE_TEXT("-p [FILE]: level plan (*")
-            << ACE_TEXT(RPG_ENGINE_LEVEL_FILE_EXT)
-            << ACE_TEXT(" [\"")
+      RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-p [FILE]: level plan (*")
+            << ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT)
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT("-t       : trace information") << std::endl;
-  std::cout << ACE_TEXT("-v       : print version information and exit") << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-t       : trace information")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR("-v        : print version information and exit")
+            << std::endl;
 } // end print_usage
 
 bool
@@ -141,9 +144,9 @@ do_processArguments (const int argc_in,
   traceInformation_out    = false;
   printVersionAndExit_out = false;
 
-  ACE_Get_Opt argumentParser(argc_in,
-                             argv_in,
-                             ACE_TEXT("bdp:tv"));
+  ACE_Get_Opt argumentParser (argc_in,
+                              argv_in,
+                              ACE_TEXT ("bdp:tv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -164,7 +167,7 @@ do_processArguments (const int argc_in,
       }
       case 'p':
       {
-        floorPlan_out = argumentParser.opt_arg();
+        floorPlan_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
 
         break;
       }
@@ -183,18 +186,16 @@ do_processArguments (const int argc_in,
       // error handling
       case '?':
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unrecognized option \"%s\", aborting\n"),
-                   ACE_TEXT(argumentParser.last_option())));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("unrecognized option \"%s\", aborting\n"),
+                    argumentParser.last_option ()));
         return false;
       }
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unrecognized option \"%c\", aborting\n"),
-                   option));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("unrecognized option \"%c\", aborting\n"),
+                    option));
         return false;
       }
     } // end SWITCH
@@ -240,7 +241,7 @@ do_work (bool buildCorridors_in,
   {
     // *WARNING*: set iterators are CONST for a good reason !
     // --> (but we know what we're doing)...
-    const_cast<struct RPG_Map_Door&>(*iterator).outside =
+    const_cast<struct RPG_Map_Door&> (*iterator).outside =
       RPG_Map_Common_Tools::doorToExitDirection ((*iterator).position,
                                                  map.plan);
 
@@ -268,9 +269,9 @@ do_work (bool buildCorridors_in,
       RPG_Dice::generateRandomNumbers (static_cast<unsigned int> (map.plan.doors.size ()),
                                        1,
                                        result);
-      std::advance(target_door, result.front () - 1);
+      std::advance (target_door, result.front () - 1);
     } while ((target_door == iterator) ||
-             (used_positions.find ((*target_door).position) != used_positions.end()));
+             (used_positions.find ((*target_door).position) != used_positions.end ()));
 
     RPG_Map_Pathfinding_Tools::findPath (std::make_pair (map.plan.size_x,
                                                          map.plan.size_y),
@@ -287,34 +288,33 @@ do_work (bool buildCorridors_in,
                   (*iterator).position.second,
                   (*target_door).position.first,
                   (*target_door).position.second));
-
       continue;
     } // end IF
-    ACE_ASSERT((current_path.front().first == (*iterator).position) &&
-               (current_path.back().first  == (*target_door).position));
+    ACE_ASSERT ((current_path.front().first == (*iterator).position) &&
+                (current_path.back().first  == (*target_door).position));
 
     // print path
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("path [%u, %u step(s)]: [%u,%u] --> [%u,%u]: "),
-               index++,
-               current_path.size(),
-               (*iterator).position.first, (*iterator).position.second,
-               (*target_door).position.first, (*target_door).position.second));
-    for (RPG_Map_PathConstIterator_t path_iterator = current_path.begin();
-         path_iterator != current_path.end();
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT("path [%u, %u step(s)]: [%u,%u] --> [%u,%u]: "),
+                index++,
+                current_path.size(),
+                (*iterator).position.first, (*iterator).position.second,
+                (*target_door).position.first, (*target_door).position.second));
+    for (RPG_Map_PathConstIterator_t path_iterator = current_path.begin ();
+         path_iterator != current_path.end ();
          path_iterator++)
-      ACE_DEBUG((LM_DEBUG,
-                 ACE_TEXT("[%u,%u] "),
-                 (*path_iterator).first.first,
-                 (*path_iterator).first.second));
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("\n")));
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT ("[%u,%u] "),
+                  (*path_iterator).first.first,
+                  (*path_iterator).first.second));
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("\n")));
 
     // remember connected positions
-    used_positions.insert((*iterator).position);
-    used_positions.insert((*target_door).position);
+    used_positions.insert ((*iterator).position);
+    used_positions.insert ((*target_door).position);
 
-    paths.push_back(current_path);
+    paths.push_back (current_path);
 
     // minimum connectivity reached ?
     if (used_positions == door_positions)
@@ -324,15 +324,16 @@ do_work (bool buildCorridors_in,
   // step4: build corridors ?
   if (buildCorridors_in)
   {
-    for (RPG_Map_PathListConstIterator_t iterator = paths.begin();
-         iterator != paths.end();
+    for (RPG_Map_PathListConstIterator_t iterator = paths.begin ();
+         iterator != paths.end ();
          iterator++)
     {
-      used_positions.clear();
-      RPG_Map_Common_Tools::buildCorridor(*iterator,
+      used_positions.clear ();
+      RPG_Map_Common_Tools::buildCorridor (*iterator,
                                            used_positions);
-      if (!used_positions.empty())
-        map.plan.walls.insert(used_positions.begin(), used_positions.end());
+      if (!used_positions.empty ())
+        map.plan.walls.insert (used_positions.begin (),
+                               used_positions.end ());
     } // end FOR
   } // end IF
 
@@ -349,31 +350,30 @@ do_work (bool buildCorridors_in,
          x < map.plan.size_x;
          x++)
     {
-      current_position = std::make_pair(x, y);
+      current_position = std::make_pair (x, y);
       current_position_door.position = current_position;
 
       // unmapped, floor, wall, or door ?
-      if (map.plan.unmapped.find(current_position) != map.plan.unmapped.end())
-        converter << ACE_TEXT(" "); // unmapped
-      else if (map.plan.walls.find(current_position) != map.plan.walls.end())
-        converter << ACE_TEXT("#"); // wall
-      else if (map.plan.doors.find(current_position_door) !=
-               map.plan.doors.end())
-        converter << ACE_TEXT("="); // door
+      if (map.plan.unmapped.find (current_position) != map.plan.unmapped.end ())
+        converter << ACE_TEXT_ALWAYS_CHAR (" "); // unmapped
+      else if (map.plan.walls.find (current_position) != map.plan.walls.end ())
+        converter << ACE_TEXT_ALWAYS_CHAR ("#"); // wall
+      else if (map.plan.doors.find (current_position_door) != map.plan.doors.end ())
+        converter << ACE_TEXT_ALWAYS_CHAR ("="); // door
       else
       {
         // floor or path ?
         done = false;
-        for (RPG_Map_PathListConstIterator_t iterator2 = paths.begin();
-             iterator2 != paths.end();
+        for (RPG_Map_PathListConstIterator_t iterator2 = paths.begin ();
+             iterator2 != paths.end ();
              iterator2++)
         {
-          for (RPG_Map_PathConstIterator_t iterator3 = (*iterator2).begin();
-               iterator3 != (*iterator2).end();
+          for (RPG_Map_PathConstIterator_t iterator3 = (*iterator2).begin ();
+               iterator3 != (*iterator2).end ();
                iterator3++)
             if ((*iterator3).first == current_position)
             {
-              converter << ACE_TEXT("x"); // path
+              converter << ACE_TEXT_ALWAYS_CHAR ("x"); // path
               done = true;
 
               break;
@@ -384,17 +384,17 @@ do_work (bool buildCorridors_in,
         } // end FOR
 
         if (!done)
-          converter << ACE_TEXT("."); // floor
+          converter << ACE_TEXT_ALWAYS_CHAR ("."); // floor
       } // end ELSE
     } // end FOR
     converter << std::endl;
   } // end FOR
 
   // --> dump to stdout...
-  std::cout << converter.str();
+  std::cout << converter.str ();
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished working...\n")));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("finished working...\n")));
 } // end do_work
 
 void
@@ -403,8 +403,8 @@ do_printVersion (const std::string& programName_in)
   RPG_TRACE (ACE_TEXT ("::do_printVersion"));
 
   std::cout << programName_in
-            << ACE_TEXT(" : ")
-            //<< YARP_PACKAGE_VERSION
+            << ACE_TEXT_ALWAYS_CHAR (" : ")
+            << ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_VERSION)
             << std::endl;
 
   // create version string...
@@ -414,38 +414,37 @@ do_printVersion (const std::string& programName_in)
   std::ostringstream version_number;
   if (version_number << ACE::major_version())
   {
-    version_number << ACE_TEXT(".");
+    version_number << ACE_TEXT_ALWAYS_CHAR (".");
   } // end IF
   else
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%m\", aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to convert: \"%m\", returning\n")));
     return;
   } // end ELSE
-  if (version_number << ACE::minor_version())
+  if (version_number << ACE::minor_version ())
   {
-    version_number << ACE_TEXT(".");
-    if (version_number << ACE::beta_version())
+    version_number << ACE_TEXT_ALWAYS_CHAR (".");
+    if (version_number << ACE::beta_version ())
     {
 
     } // end IF
     else
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to convert: \"%m\", aborting\n")));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to convert: \"%m\", returning\n")));
       return;
     } // end ELSE
   } // end IF
   else
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%m\", aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to convert: \"%m\", returning\n")));
     return;
   } // end ELSE
-  std::cout << ACE_TEXT("ACE: ") << version_number.str() << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("ACE: ")
+            << version_number.str ()
+            << std::endl;
 //   std::cout << "ACE: "
 //             << ACE_VERSION
 //             << std::endl;
@@ -457,7 +456,7 @@ ACE_TMAIN (int argc_in,
 {
   RPG_TRACE (ACE_TEXT ("::main"));
 
-  // step1: init ACE
+  // step1: initialize ACE
 // *PORTABILITY*: on Windows, need to init ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::init () == -1)
@@ -466,9 +465,9 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
-  Common_File_Tools::initialize (argv_in[0]);
+  Common_File_Tools::initialize (ACE_TEXT_ALWAYS_CHAR (argv_in[0]));
   std::string data_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
@@ -499,14 +498,14 @@ ACE_TMAIN (int argc_in,
                             print_version_and_exit))
   {
     // make 'em learn...
-    do_printUsage (std::string (ACE::basename (argv_in[0])));
+    do_printUsage (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, must fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -518,21 +517,21 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT ("invalid argument(s), aborting\n")));
 
     // make 'em learn...
-    do_printUsage (std::string (ACE::basename (argv_in[0])));
+    do_printUsage (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, must fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
-  if (!Common_Log_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
+  if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
                                             log_file,                  // logfile
                                             false,                     // log to syslog ?
                                             false,                     // trace messages ?
@@ -547,7 +546,7 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -555,14 +554,14 @@ ACE_TMAIN (int argc_in,
   // step1d: handle specific program modes
   if (print_version_and_exit)
   {
-    do_printVersion (std::string (ACE::basename (argv_in[0])));
+    do_printVersion (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, must fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_SUCCESS;
   } // end IF
@@ -590,7 +589,7 @@ ACE_TMAIN (int argc_in,
   if (ACE::fini () == -1)
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
   return EXIT_SUCCESS;
 } // end main

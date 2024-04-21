@@ -21,7 +21,7 @@
 
 #include "rpg_chance_common_tools.h"
 
-//#include "ace/Log_Msg.h"
+#include "ace/Log_Msg.h"
 
 #include "rpg_dice_common.h"
 #include "rpg_dice_roll.h"
@@ -40,9 +40,9 @@ RPG_Chance_Common_Tools::getCheck (ACE_INT16 modifier_in,
   roll.typeDice = dieType_in;
   roll.modifier = modifier_in;
   RPG_Dice_RollResult_t result;
-  RPG_Dice::simulateRoll  (roll,
-                           1,
-                           result);
+  RPG_Dice::simulateRoll (roll,
+                          1,
+                          result);
 
   return result.front ();
 }
