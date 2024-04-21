@@ -21,7 +21,6 @@
 #ifndef SDL_GUI_COMMON_H
 #define SDL_GUI_COMMON_H
 
-#include "ace/config-lite.h"
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
 #include "gl/GL.h"
 #else
@@ -31,6 +30,9 @@
 #define _SDL_main_h
 #define SDL_main_h_
 #include "SDL.h"
+
+#include "ace/Basic_Types.h"
+#include "ace/Thread_Mutex.h"
 
 #include "rpg_map_common.h"
 
@@ -45,24 +47,24 @@
 struct state_t
 {
 #if defined (SDL_USE)
-  SDL_Surface*               screen;
+  SDL_Surface*                  screen;
 #elif defined (SDL2_USE)
-  SDL_Window*                screen;
+  SDL_Window*                   screen;
 #endif // SDL_USE || SDL2_USE
-  ACE_Thread_Mutex           hover_lock;
-  unsigned int               hover_time;
-  bool                       debug;
-  RPG_Graphics_Style         style;
-	RPG_Client_SelectionMode   selection_mode;
-	ACE_Thread_Mutex           lock;
-  RPG_Engine_SeenPositions_t seen_positions;
+  ACE_Thread_Mutex              hover_lock;
+  unsigned int                  hover_time;
+  bool                          debug;
+  struct RPG_Graphics_Style     style;
+	enum RPG_Client_SelectionMode selection_mode;
+	ACE_Thread_Mutex              lock;
+  RPG_Engine_SeenPositions_t    seen_positions;
 	//
-	RPG_Map_Path_t             path;
-	RPG_Map_Position_t         source;
-	RPG_Map_PositionList_t     positions;
-	unsigned char              radius; // map squares
+	RPG_Map_Path_t                path;
+	RPG_Map_Position_t            source;
+	RPG_Map_PositionList_t        positions;
+	ACE_UINT8                     radius; // map squares
   //
-  GLfloat                    angle;
+  GLfloat                       angle;
 };
 
 enum userMode_t

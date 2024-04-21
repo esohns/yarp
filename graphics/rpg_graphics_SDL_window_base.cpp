@@ -53,7 +53,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase (enum RPG_Graphics_Window
                                           std::numeric_limits<unsigned int>::max()))
  , clipRectangle_ ()
  , invalidRegions_ ()
- , flip_ (false)
+ , flip_ (RPG_GRAPHICS_DEF_FLIP)
  , type_ (type_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase"));
@@ -85,7 +85,7 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase (enum RPG_Graphics_Window
                                           std::numeric_limits<unsigned int>::max ()))
  , clipRectangle_ ()
  , invalidRegions_ ()
- , flip_ (false)
+ , flip_ (RPG_GRAPHICS_DEF_FLIP)
  , type_ (type_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase"));
@@ -228,7 +228,7 @@ void
 RPG_Graphics_SDLWindowBase::initialize (Common_ILock* screenLock_in,
                                         bool flip_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::init"));
+  RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::initialize"));
 
   screenLock_ = screenLock_in;
   flip_ = flip_in;
@@ -250,7 +250,7 @@ RPG_Graphics_SDLWindowBase::getBorders (unsigned int& borderTop_out,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::getBorders"));
 
-  // init return value(s)
+  // initialize return value(s)
   borderTop_out = borderTop_;
   borderBottom_out = borderBottom_;
   borderLeft_out = borderLeft_;
@@ -284,10 +284,8 @@ RPG_Graphics_SDLWindowBase::invalidate (const struct SDL_Rect& rect_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::invalidate"));
 
-  if ((rect_in.x == 0) &&
-      (rect_in.y == 0) &&
-      (rect_in.w == 0) &&
-      (rect_in.h == 0))
+  if ((rect_in.x == 0) && (rect_in.y == 0) &&
+      (rect_in.w == 0) && (rect_in.h == 0))
     invalidRegions_.push_back (clipRectangle_);
   else
     invalidRegions_.push_back (rect_in);
@@ -356,7 +354,7 @@ RPG_Graphics_SDLWindowBase::clear (enum RPG_Graphics_ColorName color_in,
   ACE_ASSERT (surface_p);
 
   // *NOTE*: SDL_FillRect may modify the dstrect argument --> save it first
-  SDL_Rect dstrect = clipRectangle_;
+  struct SDL_Rect dstrect = clipRectangle_;
 
   if (clip_in)
     clip (NULL,
@@ -375,13 +373,15 @@ RPG_Graphics_SDLWindowBase::clear (enum RPG_Graphics_ColorName color_in,
                 ACE_TEXT (SDL_GetError ())));
     if (screenLock_)
       screenLock_->unlock ();
+    if (clip_in)
+      unclip (NULL);
     return;
   } // end IF
   if (screenLock_)
     screenLock_->unlock ();
 
   if (clip_in)
-    unclip ();
+    unclip (NULL);
 
   invalidate (dstrect);
 }
@@ -701,7 +701,8 @@ RPG_Graphics_SDLWindowBase::handleEvent (const SDL_Event& event_in,
 
     // covered ?
     try {
-      (*iterator)->getArea (window_area);
+      (*iterator)->getArea (window_area,
+                            false); // toplevel- ?
     } catch (...) {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("caught exception in RPG_Graphics_IWindow::getArea(), continuing\n")));

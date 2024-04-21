@@ -59,9 +59,9 @@
 
 // *NOTE*: 0.0: transparent --> 1.0: opaque (black)
 // used for tile shading (to black)
-#define RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY               0.6F
-#define RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY               0.8F
-#define RPG_GRAPHICS_TILE_PREVSEEN_DEF_OPACITY              0.9F
+#define RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY               0.6f
+#define RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY               0.8f
+#define RPG_GRAPHICS_TILE_PREVSEEN_DEF_OPACITY              0.9f
 
 #define RPG_GRAPHICS_WINDOW_HOTSPOT_DEF_COLOR               COLOR_YELLOW
 #define RPG_GRAPHICS_WINDOW_HOTSPOT_SCROLL_MARGIN           20 // pixels
@@ -110,6 +110,9 @@
 #define RPG_GRAPHICS_OPENGL_CONTEXT_RESET_ISOLATION_FLAG    false
 
 #define RPG_GRAPHICS_OPENGL_DEF_CONTEXT_PROFILE_ES          false
+
+// *NOTE*: requires double-buffered screen ?
+#define RPG_GRAPHICS_DEF_FLIP                               true // ? : update dirty region(s)
 
 // SDL event types
 // *WARNING*: make sure that these are used consistently !

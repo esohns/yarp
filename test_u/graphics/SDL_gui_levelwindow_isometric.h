@@ -27,11 +27,13 @@
 #define SDL_main_h_
 #include "SDL.h"
 
+#include "ace/Basic_Types.h"
 #include "ace/Global_Macros.h"
 
 #include "common_ilock.h"
 
 #include "rpg_graphics_common.h"
+#include "rpg_graphics_defines.h"
 #include "rpg_graphics_style.h"
 #include "rpg_graphics_styleunion.h"
 #include "rpg_graphics_SDL_window_base.h"
@@ -55,14 +57,15 @@ class SDL_GUI_LevelWindow_Isometric
   typedef RPG_Graphics_SDLWindowBase inherited;
 
  public:
-  SDL_GUI_LevelWindow_Isometric(// *** SDL window ***
-                                const RPG_Graphics_SDLWindowBase&, // parent
-                                // *** level properties ***
-                                RPG_Engine*);                      // (level) state handle
-  virtual ~SDL_GUI_LevelWindow_Isometric();
+  SDL_GUI_LevelWindow_Isometric (// *** SDL window ***
+                                 const RPG_Graphics_SDLWindowBase&, // parent
+                                 // *** level properties ***
+                                 RPG_Engine*);                      // (level) state handle
+  virtual ~SDL_GUI_LevelWindow_Isometric ();
 
-  void initialize (state_t*,           // state handle
-                   Common_ILock*); // screen lock interface handle
+  void initialize (state_t*,                      // state handle
+                   Common_ILock*,                 // screen lock interface handle
+                   bool = RPG_GRAPHICS_DEF_FLIP); // flip windows ? : update dirty region(s)
 
   // implement (part of) RPG_Client_IWindowLevel
   virtual void initialize (const struct RPG_Graphics_Style&); // style
@@ -72,14 +75,14 @@ class SDL_GUI_LevelWindow_Isometric
   virtual void setView (int,          // offset x (map coordinates !)
                         int,          // offset y (map coordinates !)
                         bool = true); // locked access ?
-  virtual void setView (const RPG_Map_Position_t&); // offset
+  inline virtual void setView (const RPG_Map_Position_t& view_in) { myView = view_in; }
   inline virtual RPG_Graphics_Position_t getView () const { return myView; } // return value: view (map coordinates !)
   void center ();
 
   // (re-)init / set level properties
   // implement (part of) RPG_Client_IWindowLevel
   virtual void toggleDoor (const RPG_Map_Position_t&); // door position
-  virtual void setBlendRadius (unsigned char); // radius
+  virtual void setBlendRadius (ACE_UINT8); // radius
   virtual void updateMinimap ();
   virtual void updateMessageWindow (const std::string&); // message
 
@@ -97,7 +100,7 @@ class SDL_GUI_LevelWindow_Isometric
                      unsigned int = 0);   // offset y (top-left = [0,0])
   virtual void handleEvent (const SDL_Event&,          // event
                             RPG_Graphics_IWindowBase*, // target window (NULL: this)
-                            SDL_Rect&);                // return value: "dirty" region
+                            struct SDL_Rect&);         // return value: "dirty" region
 
   // implement RPG_Engine_IClient
   //virtual void redraw();
@@ -105,7 +108,7 @@ class SDL_GUI_LevelWindow_Isometric
   //virtual void updateEntity(const RPG_Engine_EntityID_t&);
   virtual void notify (enum RPG_Engine_Command,
                        const struct RPG_Engine_ClientNotificationParameters&,
-                       bool = true);
+                       bool = true); // lock (engine) ?
 
  private:
   ACE_UNIMPLEMENTED_FUNC (SDL_GUI_LevelWindow_Isometric ())
@@ -119,8 +122,8 @@ class SDL_GUI_LevelWindow_Isometric
   bool hasSeen (const RPG_Engine_EntityID_t&,
                 const RPG_Map_Position_t&) const;
   void redrawCursor (const RPG_Graphics_Position_t& = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->position (false), // screen position
-                     bool = true,                                                        // update bg cache first ?
-                     bool = true);                                                       // locked access (engine) ?
+                     bool = true,                   // update bg cache first ?
+                     bool = true);                  // locked access (engine) ?
 
   void initCeiling ();
   void initWallBlend (bool); // half-height walls ?

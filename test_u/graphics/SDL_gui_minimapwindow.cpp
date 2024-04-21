@@ -19,6 +19,11 @@
 
 #include "SDL_gui_minimapwindow.h"
 
+#include "ace/Log_Msg.h"
+#include "ace/OS.h"
+
+#include "common_file_tools.h"
+
 #include "rpg_client_common.h"
 #include "rpg_client_defines.h"
 #include "rpg_client_engine.h"
@@ -41,75 +46,75 @@ SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow(const RPG_Graphics_SDLWindowBase& p
                                              // *NOTE*: offset doesn't include any border(s) !
                                              const RPG_Graphics_Offset_t& offset_in,
                                              RPG_Engine* engine_in)
- : inherited(WINDOW_MINIMAP, // type
-             parent_in,      // parent
-             offset_in,      // offset
-             std::string()), // title
-//              NULL),          // background
-   myEngine(engine_in),
-   myState(NULL),
-   myBG(NULL),
-   mySurface(NULL)
+ : inherited (WINDOW_MINIMAP,             // type
+              parent_in,                  // parent
+              offset_in,                  // offset
+              ACE_TEXT_ALWAYS_CHAR ("")), // title
+   myEngine (engine_in),
+   myState (NULL),
+   myBG (NULL),
+   mySurface (NULL)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_MinimapWindow::SDL_GUI_MinimapWindow"));
 
   // load interface image
-  RPG_Graphics_GraphicTypeUnion type;
+  struct RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = IMAGE_INTERFACE_MINIMAP;
-  myBG = RPG_Graphics_Common_Tools::loadGraphic(type,
-                                                true,   // convert to display format
-                                                false); // don't cache this one
-  ACE_ASSERT(myBG);
+  myBG = RPG_Graphics_Common_Tools::loadGraphic (type,
+                                                 true,   // convert to display format
+                                                 false); // don't cache this one
+  ACE_ASSERT (myBG);
 
   mySurface = RPG_Graphics_Surface::copy (*myBG);
   ACE_ASSERT (mySurface);
 
   // adjust position, size
-  SDL_Rect parent_area;
+  struct SDL_Rect parent_area;
   ACE_ASSERT (inherited::parent_);
-  inherited::parent_->getArea (parent_area, false);
+  inherited::parent_->getArea (parent_area,
+                               false); // toplevel- ?
   clipRectangle_.x =
-      ((offset_in.first == std::numeric_limits<int>::max()) ? ((parent_area.x + parent_area.w) -
-                                                               myBG->w                         -
-                                                               RPG_CLIENT_MINIMAP_DEF_OFFSET_X)
-                                                            : offset_in.first);
+      ((offset_in.first == std::numeric_limits<int>::max ()) ? ((parent_area.x + parent_area.w) -
+                                                                myBG->w                         -
+                                                                RPG_CLIENT_MINIMAP_DEF_OFFSET_X)
+                                                             : offset_in.first);
   clipRectangle_.y =
-      ((offset_in.second == std::numeric_limits<int>::max()) ? (parent_area.y                   +
-                                                                RPG_CLIENT_MINIMAP_DEF_OFFSET_Y)
-                                                             : offset_in.second);
+      ((offset_in.second == std::numeric_limits<int>::max ()) ? (parent_area.y                   +
+                                                                 RPG_CLIENT_MINIMAP_DEF_OFFSET_Y)
+                                                              : offset_in.second);
   clipRectangle_.w = mySurface->w;
   clipRectangle_.h = mySurface->h;
 }
 
-SDL_GUI_MinimapWindow::~SDL_GUI_MinimapWindow()
+SDL_GUI_MinimapWindow::~SDL_GUI_MinimapWindow ()
 {
   RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::~SDL_GUI_MinimapWindow"));
 
   // clean up
-  SDL_FreeSurface(myBG);
-  SDL_FreeSurface(mySurface);
+  SDL_FreeSurface (myBG);
+  SDL_FreeSurface (mySurface);
 }
 
 RPG_Graphics_Position_t
 SDL_GUI_MinimapWindow::getView() const
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::getView"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_MinimapWindow::getView"));
 
-  ACE_ASSERT(false);
+  ACE_ASSERT (false);
 
-  return std::make_pair(0, 0);
+  return std::make_pair (0, 0);
 }
 
 void
-SDL_GUI_MinimapWindow::handleEvent(const SDL_Event& event_in,
-                                   RPG_Graphics_IWindowBase* window_in,
-                                   SDL_Rect& dirtyRegion_out)
+SDL_GUI_MinimapWindow::handleEvent (const SDL_Event& event_in,
+                                    RPG_Graphics_IWindowBase* window_in,
+                                    struct SDL_Rect& dirtyRegion_out)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::handleEvent"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_MinimapWindow::handleEvent"));
 
-  // init return value(s)
-  ACE_OS::memset(&dirtyRegion_out, 0, sizeof(dirtyRegion_out));
+  // initialize return value(s)
+  ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
   switch (event_in.type)
   {
@@ -155,32 +160,29 @@ SDL_GUI_MinimapWindow::handleEvent(const SDL_Event& event_in,
     }
     default:
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("received unknown event (was: %u)...\n"),
-                 static_cast<unsigned int>(event_in.type)));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("received unknown event (was: %u)...\n"),
+                  static_cast<unsigned int> (event_in.type)));
       break;
     }
   } // end SWITCH
 }
 
 void
-SDL_GUI_MinimapWindow::initialize(state_t* state_in,
-                                  Common_ILock* screenLock_in)
+SDL_GUI_MinimapWindow::initialize (state_t* state_in,
+                                   Common_ILock* screenLock_in,
+                                   bool flip_in)
 {
-  RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::init"));
+  RPG_TRACE (ACE_TEXT ("SDL_GUI_MinimapWindow::initialize"));
 
   // sanity check(s)
   ACE_ASSERT (state_in);
   ACE_ASSERT (state_in->screen);
 
   myState = state_in;
+
   inherited::initialize (screenLock_in,
-#if defined (SDL_USE)
-                         (state_in->screen->flags & SDL_DOUBLEBUF));
-#elif defined (SDL2_USE)
-                         true);
-#endif // SDL_USE || SDL2_USE
+                         flip_in);
 }
 
 void
@@ -206,34 +208,33 @@ SDL_GUI_MinimapWindow::draw (SDL_Surface* targetSurface_in,
   ACE_ASSERT (myEngine);
   ACE_ASSERT (mySurface);
 
-  // init surface
-  SDL_Rect dirty_region;
-  RPG_Graphics_Surface::put (std::make_pair(0, 0),
+  // initialize surface
+  struct SDL_Rect dirty_region;
+  RPG_Graphics_Surface::put (std::make_pair (0, 0),
                              *myBG,
                              mySurface,
                              dirty_region);
 
   // lock surface during pixel access
-  if (SDL_MUSTLOCK((mySurface)))
-    if (SDL_LockSurface(mySurface))
+  if (SDL_MUSTLOCK ((mySurface)))
+    if (SDL_LockSurface (mySurface))
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to SDL_LockSurface(): \"%s\", returning"),
-                 ACE_TEXT(SDL_GetError())));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_LockSurface(): \"%s\", returning"),
+                  ACE_TEXT (SDL_GetError ())));
       return;
     } // end IF
-  RPG_Map_Position_t map_position = std::make_pair(0, 0);
+  RPG_Map_Position_t map_position = std::make_pair (0, 0);
   RPG_Client_MiniMapTile tile = RPG_CLIENT_MINIMAPTILE_INVALID;
   RPG_Graphics_ColorName color_name = RPG_GRAPHICS_COLORNAME_INVALID;
   Uint32 color = 0;
   SDL_Rect destination_rectangle = {0, 0, 3, 2};
   Uint32* pixels = NULL;
   RPG_Engine_EntityID_t entity_id = 0, active_entity_id;
-  float blend_factor = 1.0F;
-//  myEngine->lock();
-  RPG_Map_Size_t size = myEngine->getSize(false);
-  active_entity_id = myEngine->getActive(false);
+  float blend_factor = 1.0f;
+  myEngine->lock ();
+  RPG_Map_Size_t size = myEngine->getSize (false); // locked access ?
+  active_entity_id = myEngine->getActive (false);  // locked access ?
   RPG_Map_Positions_t visible_positions;
   RPG_Map_PositionsConstIterator_t visible_iterator;
   RPG_Engine_SeenPositionsConstIterator_t has_seen_iterator =
@@ -244,10 +245,10 @@ SDL_GUI_MinimapWindow::draw (SDL_Surface* targetSurface_in,
   {
     myEngine->getVisiblePositions (active_entity_id,
                                    visible_positions,
-                                   false);
+                                   false); // locked access ?
     has_seen_iterator = myState->seen_positions.find (active_entity_id);
   } // end IF
-  RPG_Map_Element map_element;
+  enum RPG_Map_Element map_element;
   for (unsigned int y = 0;
        y < size.second;
        y++)
@@ -256,21 +257,24 @@ SDL_GUI_MinimapWindow::draw (SDL_Surface* targetSurface_in,
          x++)
     {
       // step1: retrieve appropriate symbol
-      map_position = std::make_pair(x, y);
+      map_position = std::make_pair (x, y);
       tile = RPG_CLIENT_MINIMAPTILE_INVALID;
-      entity_id = myEngine->hasEntity(map_position, false);
+      entity_id = myEngine->hasEntity (map_position,
+                                       false); // locked access ?
       if (entity_id)
       {
         if (entity_id == active_entity_id)
           tile = MINIMAPTILE_PLAYER_ACTIVE;
-        else if (!myEngine->isMonster(entity_id, false))
+        else if (!myEngine->isMonster (entity_id,
+                                       false)) // locked access ?
           tile = MINIMAPTILE_PLAYER;
         else
           tile = MINIMAPTILE_MONSTER;
       } // end IF
       else
       {
-        map_element = myEngine->getElement(map_position, false);
+        map_element = myEngine->getElement (map_position,
+                                            false); // locked access ?
         switch (map_element)
         {
           case MAPELEMENT_DOOR:
@@ -285,11 +289,10 @@ SDL_GUI_MinimapWindow::draw (SDL_Surface* targetSurface_in,
             tile = MINIMAPTILE_WALL; break;
           default:
           {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("invalid map element ([%u,%u] was: %d), continuing\n"),
-                       x, y,
-                       map_element));
-
+            ACE_DEBUG ((LM_ERROR,
+                        ACE_TEXT ("invalid map element ([%u,%u] was: %d), continuing\n"),
+                        x, y,
+                        map_element));
             continue;
           }
         } // end SWITCH
@@ -317,14 +320,13 @@ SDL_GUI_MinimapWindow::draw (SDL_Surface* targetSurface_in,
           color_name = RPG_CLIENT_MINIMAPCOLOR_WALL; break;
         default:
         {
-          ACE_DEBUG((LM_ERROR,
-                     ACE_TEXT("invalid minimap tile type (was: %d), continuing\n"),
-                     tile));
-
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid minimap tile type (was: %d), continuing\n"),
+                      tile));
           continue;
         }
       } // end SWITCH
-      blend_factor = 1.0F; // --> opaque
+      blend_factor = 1.0f; // --> opaque
       if (color_name != RPG_CLIENT_MINIMAPCOLOR_UNMAPPED)
       {
         // handle vision
@@ -354,24 +356,24 @@ SDL_GUI_MinimapWindow::draw (SDL_Surface* targetSurface_in,
       // step3a: row 1
       destination_rectangle.x = 40 + (2 * x) - (2 * y);
       destination_rectangle.y = x + y;
-      pixels = reinterpret_cast<Uint32*>(static_cast<char*>(mySurface->pixels) +
-                                         (mySurface->pitch * (destination_rectangle.y + 6)) +
-                                         ((destination_rectangle.x + 6) * 4));
+      pixels = reinterpret_cast<Uint32*> (static_cast<char*>(mySurface->pixels) +
+                                          (mySurface->pitch * (destination_rectangle.y + 6)) +
+                                          ((destination_rectangle.x + 6) * 4));
 //       pixels[0] = transparent -> dont write
       pixels[1] = color;
 //       pixels[2] = transparent -> dont write
       // step3b: row 2
-      pixels = reinterpret_cast<Uint32*>(static_cast<char*>(mySurface->pixels) +
-                                         (mySurface->pitch * (destination_rectangle.y + 7)) +
-                                         ((destination_rectangle.x + 6) * 4));
+      pixels = reinterpret_cast<Uint32*> (static_cast<char*>(mySurface->pixels) +
+                                          (mySurface->pitch * (destination_rectangle.y + 7)) +
+                                          ((destination_rectangle.x + 6) * 4));
       pixels[0] = color;
       pixels[1] = color;
       pixels[2] = color;
     } // end FOR
   myState->lock.release();
-//  myEngine->unlock();
-  if (SDL_MUSTLOCK(mySurface))
-    SDL_UnlockSurface(mySurface);
+  myEngine->unlock ();
+  if (SDL_MUSTLOCK (mySurface))
+    SDL_UnlockSurface (mySurface);
 
   // step4: save BG ?
   if (!inherited::BGHasBeenSaved_)
@@ -391,7 +393,7 @@ SDL_GUI_MinimapWindow::draw (SDL_Surface* targetSurface_in,
   inherited::unclip ();
 
   // invalidate dirty region
-  invalidate(dirty_region);
+  inherited::invalidate (dirty_region);
 
   // remember position of last realization
   lastAbsolutePosition_ = std::make_pair (inherited::clipRectangle_.x,
@@ -399,14 +401,14 @@ SDL_GUI_MinimapWindow::draw (SDL_Surface* targetSurface_in,
 
   inherited::isVisible_ = true;
 
-  //// debug info
-  //if (myState->debug)
-  //{
-  //std::string path = RPG_Common_File_Tools::getDumpDirectory();
-  //  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  //  path += ACE_TEXT_ALWAYS_CHAR("minimap.png");
-  //  RPG_Graphics_Surface::savePNG(*mySurface,
-  //                                path,
-  //                                true);
-  //} // end IF
+  // debug info
+  if (myState->debug)
+  {
+    std::string path = Common_File_Tools::getTempDirectory ();
+    path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    path += ACE_TEXT_ALWAYS_CHAR ("minimap.png");
+    RPG_Graphics_Surface::savePNG (*mySurface,
+                                   path,
+                                   true); // save alpha ?
+  } // end IF
 }

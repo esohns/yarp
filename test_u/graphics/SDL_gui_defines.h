@@ -22,9 +22,12 @@
 #define SDL_GUI_DEFINES_H
 
 #include "rpg_graphics_colorname.h"
+#include "rpg_graphics_image.h"
 
 #include "rpg_client_defines.h"
 #include "rpg_client_graphicsmode.h"
+
+#include "SDL_gui_common.h"
 
 #define SDL_GUI_DEF_CAPTION                    "SDL_gui"
 

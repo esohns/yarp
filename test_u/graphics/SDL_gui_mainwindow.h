@@ -35,6 +35,7 @@
 #include "rpg_map_common.h"
 
 #include "rpg_graphics_cursor.h"
+#include "rpg_graphics_defines.h"
 #include "rpg_graphics_font.h"
 #include "rpg_graphics_image.h"
 #include "rpg_graphics_sprite.h"
@@ -66,9 +67,10 @@ class SDL_GUI_MainWindow
 
   // initialize different hotspots/sub-windows
   // *WARNING*: call this AFTER setScreen() !
-  void initialize (state_t*,                                                  // state
-                   RPG_Engine*,                                               // (level) state handle
-                   enum RPG_Client_GraphicsMode = SDL_GUI_DEF_GRAPHICS_MODE); // graphics mode
+  void initialize (state_t*,                                                 // state
+                   RPG_Engine*,                                              // (level) state handle
+                   enum RPG_Client_GraphicsMode = SDL_GUI_DEF_GRAPHICS_MODE, // graphics mode
+                   bool = RPG_GRAPHICS_DEF_FLIP);                            // flip ? : update dirty region(s)
 
   // implement (part of) RPG_Graphics_IWindowBase
   virtual void draw (SDL_Surface* = NULL, // target surface (default: screen)
@@ -91,9 +93,10 @@ class SDL_GUI_MainWindow
 
   // helper methods
   void initScrollSpots ();
-  bool initMap (state_t*,                                                  // state
-                RPG_Engine*,                                               // level engine handle
-                enum RPG_Client_GraphicsMode = SDL_GUI_DEF_GRAPHICS_MODE); // graphics mode
+  bool initMap (state_t*,                                                 // state
+                RPG_Engine*,                                              // level engine handle
+                enum RPG_Client_GraphicsMode = SDL_GUI_DEF_GRAPHICS_MODE, // graphics mode
+                bool = RPG_GRAPHICS_DEF_FLIP);                            // flip ? : update dirty region(s)
   void drawBorder (SDL_Surface* = NULL, // target surface (default: screen)
                    unsigned int = 0,    // offset x (top-left = [0,0])
                    unsigned int = 0);   // offset y (top-left = [0,0])

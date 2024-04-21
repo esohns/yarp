@@ -27,6 +27,7 @@
 
 #include "common_ilock.h"
 
+#include "rpg_graphics_defines.h"
 #include "rpg_graphics_SDL_window_sub.h"
 
 #include "SDL_gui_common.h"
@@ -53,10 +54,11 @@ class SDL_GUI_MinimapWindow
                      unsigned int = 0);   // offset y (top-left = [0,0])
   virtual void handleEvent (const SDL_Event&,          // event
                             RPG_Graphics_IWindowBase*, // target window (NULL: this)
-                            SDL_Rect&);                // return value: "dirty" region
+                            struct SDL_Rect&);         // return value: "dirty" region
 
-  void initialize (state_t*,           // state handle
-                   Common_ILock*); // screen lock interface handle
+  void initialize (state_t*,                      // state handle
+                   Common_ILock*,                 // screen lock interface handle
+                   bool = RPG_GRAPHICS_DEF_FLIP); // flip ? : update dirty region(s)
 
  private:
   ACE_UNIMPLEMENTED_FUNC (SDL_GUI_MinimapWindow ())

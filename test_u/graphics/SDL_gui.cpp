@@ -24,6 +24,12 @@
 #include <sstream>
 #include <string>
 
+#define _SDL_main_h
+#define SDL_main_h_
+#include "SDL.h"
+//#include "SDL_syswm.h"
+#include "SDL_ttf.h"
+
 #include "ace/Get_Opt.h"
 #include "ace/High_Res_Timer.h"
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -31,12 +37,6 @@
 #endif // ACE_WIN32 || ACE_WIN64
 #include "ace/Log_Msg.h"
 #include "ace/OS_main.h"
-
-#define _SDL_main_h
-#define SDL_main_h_
-#include "SDL.h"
-#include "SDL_syswm.h"
-#include "SDL_ttf.h"
 
 #include "common_file_tools.h"
 
@@ -119,15 +119,15 @@ event_timer_SDL_cb (Uint32 interval_in,
   RPG_TRACE (ACE_TEXT ("::event_timer_SDL_cb"));
 
   state_t* state_p = static_cast<state_t*> (argument_in);
-  ACE_ASSERT(state_p);
+  ACE_ASSERT (state_p);
 
   // synch access
-  { ACE_Guard<ACE_Thread_Mutex> aGuard (state_p->hover_lock);
+  { ACE_GUARD_RETURN (ACE_Thread_Mutex, aGuard, state_p->hover_lock, interval_in);
     state_p->hover_time += interval_in;
     if (state_p->hover_time > RPG_GRAPHICS_WINDOW_HOTSPOT_HOVER_DELAY)
     {
       // mouse is hovering --> trigger an event
-      SDL_Event sdl_event;
+      union SDL_Event sdl_event;
       sdl_event.type = RPG_GRAPHICS_SDL_HOVEREVENT;
       sdl_event.user.code = state_p->hover_time;
 
@@ -137,9 +137,9 @@ event_timer_SDL_cb (Uint32 interval_in,
                     ACE_TEXT (SDL_GetError ())));
     } // end IF
 
-    state_p->angle++;
-    if (state_p->angle > 360.0F)
-      state_p->angle = 0.0F;
+    state_p->angle += 1.0f;
+    if (state_p->angle > 360.0f)
+      state_p->angle = 0.0f;
   } // end lock scope
 
   // re-schedule
@@ -170,7 +170,7 @@ input_timer_SDL_cb (Uint32 interval_in,
 // wait for an input event; stop after timeout_in second(s) (0: wait forever)
 void
 do_SDL_waitForInput (unsigned int timeout_in,
-                     SDL_Event& event_out)
+                     union SDL_Event& event_out)
 {
   RPG_TRACE (ACE_TEXT ("::do_SDL_waitForInput"));
 
@@ -229,16 +229,16 @@ do_printUsage (const std::string& programName_in)
             << ACE_TEXT (" [OPTIONS]")
             << std::endl
             << std::endl;
-  std::cout << ACE_TEXT("currently available options:") << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("currently available options:") << std::endl;
   std::string path = RPG_Player_Common_Tools::getPlayerProfilesDirectory ();
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
   path += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT);
-  std::cout << ACE_TEXT ("-c ([FILE]): player profile (*")
-            << ACE_TEXT (RPG_PLAYER_PROFILE_EXT)
-            << ACE_TEXT (") [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-c ([FILE]): player profile (*")
+            << ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT)
+            << ACE_TEXT_ALWAYS_CHAR (") [")
             << path
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
   std::string data_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -246,15 +246,15 @@ do_printUsage (const std::string& programName_in)
                                                           ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
                                                           false); // data-
   path = data_path;
-  std::cout << ACE_TEXT ("-d [DIR]   : graphics directory")
-            << ACE_TEXT (" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-d [DIR]   : graphics directory")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT ("-f         : debug")
-            << ACE_TEXT (" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-f         : debug")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << RPG_CLIENT_DEF_DEBUG
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -264,14 +264,14 @@ do_printUsage (const std::string& programName_in)
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
-  std::cout << ACE_TEXT ("-g [FILE]  : graphics dictionary (*.xml)")
-            << ACE_TEXT (" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-g [FILE]  : graphics dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT ("-h [HEIGHT]: height [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-h [HEIGHT]: height [")
             << SDL_GUI_DEF_VIDEO_H
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
   configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -281,10 +281,10 @@ do_printUsage (const std::string& programName_in)
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
-  std::cout << ACE_TEXT ("-i [FILE]  : items dictionary (*.xml)")
-            << ACE_TEXT (" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-i [FILE]  : items dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
   configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -294,10 +294,10 @@ do_printUsage (const std::string& programName_in)
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-m [FILE]  : magic dictionary (*.xml)")
-            << ACE_TEXT(" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-m [FILE]  : magic dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
   configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -307,15 +307,15 @@ do_printUsage (const std::string& programName_in)
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_DICTIONARY_FILE);
-  std::cout << ACE_TEXT ("-n [FILE]  : monster dictionary (*.xml)")
-            << ACE_TEXT (" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-n [FILE]  : monster dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT ("-o         : OpenGL mode")
-            << ACE_TEXT (" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-o         : OpenGL mode")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << false
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
   data_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -327,28 +327,29 @@ do_printUsage (const std::string& programName_in)
   path +=
     RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
   path += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
-  std::cout << ACE_TEXT ("-p ([FILE]): map (*")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-p ([FILE]): map (*")
             << ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT)
-            << ACE_TEXT (") [")
+            << ACE_TEXT_ALWAYS_CHAR (") [")
             << path
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
-  std::cout << ACE_TEXT ("-s         : slideshow mode")
-            << ACE_TEXT (" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-s         : slideshow mode")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << (SDL_GUI_DEF_MODE == SDL_GUI_USERMODE_SLIDESHOW)
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
-  std::cout << ACE_TEXT ("-t         : trace information") << std::endl;
-  std::cout << ACE_TEXT ("-v         : print version information and exit")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-t         : trace information")
             << std::endl;
-  std::cout << ACE_TEXT ("-w [WIDTH] : width [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-v         : print version information and exit")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-w [WIDTH] : width [")
             << SDL_GUI_DEF_VIDEO_W
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
-  std::cout << ACE_TEXT ("-x         : do NOT validate XML")
-            << ACE_TEXT (" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-x         : do NOT validate XML")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << !SDL_GUI_DEF_VALIDATE_XML
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
 }
 
@@ -463,14 +464,14 @@ do_processArguments (int argc_in,
       case 'c':
       {
         if (argumentParser.opt_arg ())
-          entityFile_out = argumentParser.opt_arg ();
+          entityFile_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         else
           entityFile_out.clear ();
         break;
       }
       case 'd':
       {
-        directory_out = argumentParser.opt_arg ();
+        directory_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         break;
       }
       case 'f':
@@ -480,20 +481,20 @@ do_processArguments (int argc_in,
       }
       case 'g':
       {
-        graphicsDictionary_out = argumentParser.opt_arg ();
+        graphicsDictionary_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         break;
       }
       case 'h':
       {
         converter.clear ();
         converter.str (ACE_TEXT_ALWAYS_CHAR (""));
-        converter << argumentParser.opt_arg ();
+        converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         converter >> height_out;
         break;
       }
       case 'i':
       {
-        itemsDictionary_out = argumentParser.opt_arg ();
+        itemsDictionary_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         break;
       }
       case 'l':
@@ -503,12 +504,12 @@ do_processArguments (int argc_in,
       }
       case 'm':
       {
-        magicDictionary_out = argumentParser.opt_arg ();
+        magicDictionary_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         break;
       }
       case 'n':
       {
-        monsterDictionary_out = argumentParser.opt_arg ();
+        monsterDictionary_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         break;
       }
       case 'o':
@@ -519,7 +520,7 @@ do_processArguments (int argc_in,
       case 'p':
       {
         if (argumentParser.opt_arg ())
-          mapFile_out = argumentParser.opt_arg ();
+          mapFile_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         else
           mapFile_out.clear ();
         break;
@@ -543,7 +544,7 @@ do_processArguments (int argc_in,
       {
         converter.clear ();
         converter.str (ACE_TEXT_ALWAYS_CHAR (""));
-        converter << argumentParser.opt_arg ();
+        converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         converter >> width_out;
         break;
       }
@@ -557,7 +558,7 @@ do_processArguments (int argc_in,
       {
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("unrecognized option \"%s\", aborting\n"),
-                    ACE_TEXT (argumentParser.last_option ())));
+                    argumentParser.last_option ()));
         return false;
       }
       default:
@@ -581,10 +582,10 @@ do_slideshow (const std::string& graphicsDirectory_in,
 
   // this simply draws (random) images inside the main "window"
 
-  SDL_Event sdl_event;
+  union SDL_Event sdl_event;
   bool done = false;
   RPG_Graphics_IWindowBase* window = NULL;
-  RPG_Graphics_GraphicTypeUnion type;
+  struct RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::INVALID;
   type.image = RPG_GRAPHICS_IMAGE_INVALID;
   RPG_Graphics_t graphic;
@@ -653,7 +654,7 @@ do_slideshow (const std::string& graphicsDirectory_in,
         RPG_Dice::generateRandomNumbers (RPG_GRAPHICS_SPRITE_MAX,
                                          1,
                                          result);
-        type.sprite = static_cast<RPG_Graphics_Sprite> ((result.front () - 1));
+        type.sprite = static_cast<enum RPG_Graphics_Sprite> ((result.front () - 1));
         type.discriminator = RPG_Graphics_GraphicTypeUnion::SPRITE;
 
         break;
@@ -664,7 +665,7 @@ do_slideshow (const std::string& graphicsDirectory_in,
                                          1,
                                          result);
         type.tilegraphic =
-            static_cast<RPG_Graphics_TileGraphic> ((result.front () - 1));
+            static_cast<enum RPG_Graphics_TileGraphic> ((result.front () - 1));
         type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
 
         break;
@@ -675,7 +676,7 @@ do_slideshow (const std::string& graphicsDirectory_in,
                                          1,
                                          result);
         type.tilesetgraphic =
-            static_cast<RPG_Graphics_TileSetGraphic> ((result.front () - 1));
+            static_cast<enum RPG_Graphics_TileSetGraphic> ((result.front () - 1));
         type.discriminator = RPG_Graphics_GraphicTypeUnion::TILESETGRAPHIC;
 
         break;
@@ -765,7 +766,7 @@ do_slideshow (const std::string& graphicsDirectory_in,
         ACE_ASSERT (!graphic.tileset.tiles.empty ());
 
         // choose random tile
-        std::vector<RPG_Graphics_Tile>::const_iterator iterator =
+        std::vector<struct RPG_Graphics_Tile>::const_iterator iterator =
             graphic.tileset.tiles.begin ();
         result.clear ();
         RPG_Dice::generateRandomNumbers (static_cast<unsigned int> (graphic.tileset.tiles.size ()),
@@ -949,19 +950,19 @@ do_UI (struct RPG_Engine_Entity& entity_in,
 {
   RPG_TRACE(ACE_TEXT("::do_UI"));
 
-  SDL_Event sdl_event;
+  union SDL_Event sdl_event;
   bool event_handled = false;
   bool done = false;
   RPG_Client_IWindowLevel* map_window =
       dynamic_cast<RPG_Client_IWindowLevel*> (mainWindow_in->child (WINDOW_MAP));
-  ACE_ASSERT(map_window);
+  ACE_ASSERT (map_window);
   RPG_Graphics_IWindowBase* window = NULL;
   RPG_Graphics_IWindowBase* previous_window = NULL;
   RPG_Graphics_Position_t mouse_position;
   unsigned int map_index = 1;
   std::ostringstream converter;
   struct RPG_Engine_LevelData current_level;
-  SDL_Rect dirty_region;
+  struct SDL_Rect dirty_region;
   bool has_hovered = false;
   do
   {
@@ -969,7 +970,7 @@ do_UI (struct RPG_Engine_Entity& entity_in,
     window = NULL;
     mouse_position = std::make_pair (std::numeric_limits<unsigned int>::max (),
                                      std::numeric_limits<unsigned int>::max ());
-    ACE_OS::memset (&dirty_region, 0, sizeof (SDL_Rect));
+    ACE_OS::memset (&dirty_region, 0, sizeof (struct SDL_Rect));
     has_hovered = false;
 
     // step1: retrieve next event
@@ -983,10 +984,7 @@ do_UI (struct RPG_Engine_Entity& entity_in,
 
     // if necessary, reset hover_time
     if (sdl_event.type != RPG_GRAPHICS_SDL_HOVEREVENT)
-    {
-      // synch access
-      ACE_Guard<ACE_Thread_Mutex> aGuard(state.hover_lock);
-
+    { ACE_GUARD (ACE_Thread_Mutex, aGuard, state.hover_lock);
       state.hover_time = 0;
     } // end IF
 
@@ -1000,13 +998,13 @@ do_UI (struct RPG_Engine_Entity& entity_in,
           case SDLK_e:
           {
             std::string dump_path =
-                RPG_Player_Common_Tools::getPlayerProfilesDirectory();
+                RPG_Player_Common_Tools::getPlayerProfilesDirectory ();
             dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-            dump_path += entity_in.character->getName();
-            dump_path += ACE_TEXT_ALWAYS_CHAR(RPG_PLAYER_PROFILE_EXT);
+            dump_path += entity_in.character->getName ();
+            dump_path += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT);
             RPG_Player* player_p = NULL;
             try {
-              player_p = dynamic_cast<RPG_Player*>(entity_in.character);
+              player_p = dynamic_cast<RPG_Player*> (entity_in.character);
             } catch (...) {
               ACE_DEBUG ((LM_ERROR,
                           ACE_TEXT ("caught exception in dynamic_cast<RPG_Player*>(%@), aborting\n"),
@@ -1020,7 +1018,7 @@ do_UI (struct RPG_Engine_Entity& entity_in,
                           entity_in.character));
               return;
             } // end IF
-            if (!player_p->save(dump_path))
+            if (!player_p->save (dump_path))
             {
               ACE_DEBUG ((LM_ERROR,
                           ACE_TEXT ("failed to RPG_Player::save(\"%s\"), aborting\n"),
@@ -1059,10 +1057,11 @@ do_UI (struct RPG_Engine_Entity& entity_in,
             try {
               map_window->setView (entity_in.position);
               map_window->draw ();
-              map_window->getArea (dirty_region, false);
+              map_window->getArea (dirty_region,
+                                   false); // toplevel- ?
             } catch (...) {
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("caught exception in RPG_Graphics_IWindow, continuing\n")));
+              ACE_DEBUG ((LM_ERROR,
+                          ACE_TEXT ("caught exception in RPG_Graphics_IWindow, continuing\n")));
             }
             event_handled = true;
 
@@ -1079,37 +1078,40 @@ do_UI (struct RPG_Engine_Entity& entity_in,
           { ACE_ASSERT (map_window);
             try {
               map_window->draw ();
-              map_window->getArea (dirty_region, false);
+              map_window->getArea (dirty_region,
+                                   false); // toplevel- ?
             } catch (...) {
               ACE_DEBUG ((LM_ERROR,
                           ACE_TEXT ("caught exception in RPG_Graphics_IWindow, continuing\n")));
             }
-            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->reset ();
+            RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->reset (false,     // update ?
+                                                                       true,      // locked access ?
+                                                                       debug_in); // debug ?
 
             // draw "active" tile highlight
             int x, y;
             SDL_GetMouseState (&x, &y);
             mouse_position = std::make_pair (x, y);
-            SDL_Rect window_area;
-            map_window->getArea (window_area, true);
+            struct SDL_Rect window_area;
+            map_window->getArea (window_area,
+                                 true); // toplevel- ?
             engine_in->lock ();
             RPG_Graphics_Position_t map_position =
                 RPG_Graphics_Common_Tools::screenToMap (mouse_position,
-                                                        engine_in->getSize (false),
+                                                        engine_in->getSize (false), // locked access ?
                                                         std::make_pair (window_area.w,
                                                                         window_area.h),
                                                         map_window->getView ());
             // inside map ?
-            if (map_position ==
-                std::make_pair (std::numeric_limits<unsigned int>::max (),
-                                std::numeric_limits<unsigned int>::max ()))
+            if (map_position == std::make_pair (std::numeric_limits<unsigned int>::max (),
+                                                std::numeric_limits<unsigned int>::max ()))
             {
               engine_in->unlock ();
               event_handled = true;
               break; // off the map
             } // end IF
-            SDL_Rect dirty_region_2;
-            ACE_OS::memset (&dirty_region_2, 0, sizeof (SDL_Rect));
+            struct SDL_Rect dirty_region_2;
+            ACE_OS::memset (&dirty_region_2, 0, sizeof (struct SDL_Rect));
             if (engine_in->isValid (map_position, false))
             {
               RPG_Map_PositionList_t positions;
@@ -1128,6 +1130,7 @@ do_UI (struct RPG_Engine_Entity& entity_in,
                                                                                  screen_positions,
                                                                                  map_window->getView (),
                                                                                  dirty_region_2,
+                                                                                 true, // locked access ? (screen lock)
                                                                                  debug_in);
               dirty_region =
                 RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
@@ -1146,7 +1149,7 @@ do_UI (struct RPG_Engine_Entity& entity_in,
                 ACE_OS::getenv (ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEMPORARY_STORAGE_VARIABLE));
 #else
             dump_path =
-                ACE_TEXT_ALWAYS_CHAR(COMMON_LOCATION_TEMPORARY_STORAGE_DIRECTORY);
+                ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEMPORARY_STORAGE_DIRECTORY);
 #endif // ACE_WIN32 || ACE_WIN64
             dump_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
             dump_path += current_level.metadata.name;
@@ -1192,22 +1195,22 @@ do_UI (struct RPG_Engine_Entity& entity_in,
         switch (sdl_event.type)
         {
           case SDL_MOUSEMOTION:
-            mouse_position = std::make_pair(sdl_event.motion.x,
-                                            sdl_event.motion.y); break;
+            mouse_position = std::make_pair (sdl_event.motion.x,
+                                             sdl_event.motion.y); break;
           case SDL_MOUSEBUTTONDOWN:
-            mouse_position = std::make_pair(sdl_event.button.x,
-                                            sdl_event.button.y); break;
+            mouse_position = std::make_pair (sdl_event.button.x,
+                                             sdl_event.button.y); break;
           default:
           {
             int x, y;
-            SDL_GetMouseState(&x, &y);
-            mouse_position = std::make_pair(x, y);
+            SDL_GetMouseState (&x, &y);
+            mouse_position = std::make_pair (x, y);
 
             break;
           }
         } // end SWITCH
-        window = mainWindow_in->getWindow(mouse_position);
-        ACE_ASSERT(window);
+        window = mainWindow_in->getWindow (mouse_position);
+        ACE_ASSERT (window);
 
         if (sdl_event.type == SDL_MOUSEMOTION)
         {
@@ -1218,12 +1221,12 @@ do_UI (struct RPG_Engine_Entity& entity_in,
           {
             sdl_event.type = RPG_GRAPHICS_SDL_MOUSEMOVEOUT;
             try {
-              previous_window->handleEvent(sdl_event,
-                                           previous_window,
-                                           dirty_region);
+              previous_window->handleEvent (sdl_event,
+                                            previous_window,
+                                            dirty_region);
             } catch (...) {
-              ACE_DEBUG((LM_ERROR,
-                         ACE_TEXT("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
+              ACE_DEBUG ((LM_ERROR,
+                          ACE_TEXT ("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
             }
             sdl_event.type = SDL_MOUSEMOTION;
           } // end IF
@@ -1234,24 +1237,23 @@ do_UI (struct RPG_Engine_Entity& entity_in,
         // notify "active" window
         if (!event_handled)
         {
-          SDL_Rect dirty_region_2;
-          ACE_OS::memset(&dirty_region_2, 0, sizeof(dirty_region_2));
+          struct SDL_Rect dirty_region_2;
+          ACE_OS::memset (&dirty_region_2, 0, sizeof (struct SDL_Rect));
           RPG_Graphics_IWindow* window_2 = NULL;
           try {
-            window_2 = dynamic_cast<RPG_Graphics_IWindow*>(window);
+            window_2 = dynamic_cast<RPG_Graphics_IWindow*> (window);
           } catch (...) {
             window_2 = NULL;
           }
           if (!window_2)
           {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("failed to dynamic_cast<RPG_Graphics_IWindow*>(%@), continuing\n"),
-                       window));
-
+            ACE_DEBUG ((LM_ERROR,
+                        ACE_TEXT ("failed to dynamic_cast<RPG_Graphics_IWindow*>(%@), returning\n"),
+                        window));
             break;
           } // end IF
-          if (!window_2->visible())
-            window = window->getParent();
+          if (!window_2->visible ())
+            window = window->getParent ();
           ACE_ASSERT (window);
           try {
             window->handleEvent (sdl_event,
@@ -1345,12 +1347,12 @@ do_UI (struct RPG_Engine_Entity& entity_in,
 
         // map has changed, cursor MAY have been drawn over...
         // --> redraw cursor
-        SDL_Rect dirty_region_2;
-        ACE_OS::memset (&dirty_region_2, 0, sizeof (SDL_Rect));
+        struct SDL_Rect dirty_region_2;
+        ACE_OS::memset (&dirty_region_2, 0, sizeof (struct SDL_Rect));
         RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->putCursor (std::make_pair (mouse_position.first,
                                                                                       mouse_position.second),
                                                                       dirty_region_2,
-                                                                      true,
+                                                                      true, // locked access ?
                                                                       debug_in);
         dirty_region = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
                                                             dirty_region_2);
@@ -1418,8 +1420,8 @@ do_work (mode_t mode_in,
 
   // step1: init video
   // step1a: init video system
-   if (!RPG_Graphics_SDL_Tools::preInitializeVideo (videoConfiguration_in,                      // configuration
-                                                    ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION))) // window/icon caption
+   if (!RPG_Graphics_SDL_Tools::preInitializeVideo (videoConfiguration_in,                       // configuration
+                                                    ACE_TEXT_ALWAYS_CHAR (SDL_GUI_DEF_CAPTION))) // window/icon caption
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::preInitVideo, aborting\n")));
@@ -1440,27 +1442,27 @@ do_work (mode_t mode_in,
     return;
   } // end IF
 
-  // step1b: init graphics
+  // step1b: initialize graphics
   if (!RPG_Graphics_Common_Tools::initialize (graphicsDirectory_in,
                                               cacheSize_in,
-                                              true))
+                                              true)) // initialize SDL ?
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Graphics_Common_Tools::initialize(): \"%m\", returning\n")));
     return;
   } // end IF
 
-  // step1d: init video window
+  // step1d: initialize video window
   if (!RPG_Graphics_SDL_Tools::initializeVideo (videoConfiguration_in,                     // configuration
                                                 ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION), // window/icon caption
                                                 state.screen,                              // return value: window surface
-                                                true))                                     // init window surface ?
+                                                true))                                     // initialize window surface ?
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::initVideo, returning\n")));
     return;
   } // end IF
-  ACE_ASSERT(state.screen);
+  ACE_ASSERT (state.screen);
 
   // step2: init input
   struct RPG_Client_SDL_InputConfiguration input_configuration;
@@ -1471,18 +1473,17 @@ do_work (mode_t mode_in,
   input_configuration.use_UNICODE = true;
   if (!RPG_Client_Common_Tools::initializeSDLInput (input_configuration))
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to RPG_Client_Common_Tools::initSDLInput, returning\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Client_Common_Tools::initSDLInput, returning\n")));
     return;
   } // end IF
 
   // step3: setup main "window"
-  RPG_Graphics_GraphicTypeUnion type;
+  struct RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = SDL_GUI_DEF_GRAPHICS_WINDOWSTYLE_TYPE;
-  std::string title
-    //= ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE)
-    ;
+  std::string title =
+    ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);
 
 #if defined (SDL_USE)
   SDL_Surface* surface_p = state.screen;
@@ -1543,10 +1544,11 @@ do_work (mode_t mode_in,
         RPG_Engine_Level::print (level);
 
       // step2: set default cursor
-      SDL_Rect dirty_region;
-      ACE_OS::memset (&dirty_region, 0, sizeof (SDL_Rect));
+      struct SDL_Rect dirty_region;
+      ACE_OS::memset (&dirty_region, 0, sizeof (struct SDL_Rect));
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->setCursor (CURSOR_NORMAL,
-                                                                     dirty_region);
+                                                                     dirty_region,
+                                                                     true); // locked access ? (screen lock)
 
       // step3: create/load initial entity
       //std::string configuration_path =
@@ -1557,10 +1559,8 @@ do_work (mode_t mode_in,
       //std::string schema_repository = configuration_path;
 
       struct RPG_Engine_Entity entity;
-//      entity.actions.clear();
       entity.character = NULL;
       entity.is_spawned = false;
-//      entity.modes.clear();
       entity.position =
           std::make_pair (std::numeric_limits<unsigned int>::max (),
                           std::numeric_limits<unsigned int>::max ());
@@ -1610,7 +1610,12 @@ do_work (mode_t mode_in,
                               //&client_engine,
                               &level_engine,
                               (videoConfiguration_in.use_OpenGL ? GRAPHICSMODE_2D_OPENGL
-                                                                : GRAPHICSMODE_2D_ISOMETRIC));
+                                                                : GRAPHICSMODE_2D_ISOMETRIC),
+#if defined (SDL_USE)
+                              (state.screen->flags & SDL_DOUBLEBUF));
+#elif defined (SDL2_USE)
+                              RPG_GRAPHICS_DEF_FLIP);
+#endif // SDL_USE || SDL2_USE
 
       // step4a: draw main window borders...
       try {
@@ -1676,17 +1681,20 @@ do_work (mode_t mode_in,
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->initialize (&main_window,
                                                                     map_window);
 
-      level_engine.set(level);
-      level_engine.start();
+      level_engine.set (level);
+      level_engine.start ();
       level_engine.lock ();
-      RPG_Engine_EntityID_t entity_ID = level_engine.add (&entity, false);
-      level_engine.setActive (entity_ID, false);
+      RPG_Engine_EntityID_t entity_ID = level_engine.add (&entity,
+                                                          false); // locked access ?
+      level_engine.setActive (entity_ID,
+                              false); // locked access ?
 
       // step5a: draw map window...
       try {
-        map_window->setView (level_engine.getPosition (entity_ID, false));
-        map_window->draw();
-        map_window->update();
+        map_window->setView (level_engine.getPosition (entity_ID,
+                                                       false)); // locked access ?
+        map_window->draw ();
+        map_window->update ();
       } catch (...) {
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("caught exception in RPG_Graphics_IWindow::setView/draw/update, continuing\n")));
@@ -1701,7 +1709,7 @@ do_work (mode_t mode_in,
       if (!timer)
       {
         ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("failed to SDL_AddTimer(%u): \"%s\", aborting\n"),
+                    ACE_TEXT ("failed to SDL_AddTimer(%u): \"%s\", returning\n"),
                     SDL_GUI_SDL_EVENT_TIMEOUT,
                     ACE_TEXT (SDL_GetError ())));
         return;
@@ -1746,14 +1754,14 @@ do_printVersion (const std::string& programName_in)
   // step1: program version
 //   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
   std::cout << programName_in
-            << ACE_TEXT(": ")
+            << ACE_TEXT_ALWAYS_CHAR (": ")
             //<< YARP_PACKAGE_VERSION
-            << ACE_TEXT("N/A")
+            << ACE_TEXT_ALWAYS_CHAR ("N/A")
             << std::endl;
 
   // step2: SDL version
-  SDL_version sdl_version;
-  ACE_OS::memset (&sdl_version, 0, sizeof (SDL_version));
+  struct SDL_version sdl_version;
+  ACE_OS::memset (&sdl_version, 0, sizeof (struct SDL_version));
   SDL_VERSION (&sdl_version);
   std::ostringstream version_number;
   version_number << sdl_version.major;
@@ -1761,8 +1769,8 @@ do_printVersion (const std::string& programName_in)
   version_number << sdl_version.minor;
   version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << sdl_version.patch;
-  std::cout << ACE_TEXT ("SDL (compiled): ")
-            << version_number.str()
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("SDL (compiled): ")
+            << version_number.str ()
             << std::endl;
 #if defined (SDL_USE)
   const SDL_version* sdl_version_p = SDL_Linked_Version ();
@@ -1779,7 +1787,7 @@ do_printVersion (const std::string& programName_in)
   version_number << sdl_version_p->minor;
   version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << sdl_version_p->patch;
-  std::cout << ACE_TEXT ("SDL (linked): ")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("SDL (linked): ")
             << version_number.str ()
             << std::endl;
 #endif // SDL_USE
@@ -1794,7 +1802,7 @@ do_printVersion (const std::string& programName_in)
   version_number << ACE::minor_version ();
   version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << ACE::beta_version ();
-  std::cout << ACE_TEXT ("ACE: ")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("ACE: ")
 //             << ACE_VERSION
             << version_number.str ()
             << std::endl;
@@ -1804,21 +1812,20 @@ int
 ACE_TMAIN (int argc_in,
            ACE_TCHAR* argv_in[])
 {
-  RPG_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE (ACE_TEXT ("::main"));
 
-  // step0: init ACE
+  // step0: initialize ACE
   // *PORTABILITY*: on Windows, ACE needs initialization...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::init () == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to ACE::init(): \"%m\", aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
-  // step1: init
+  // step1: initialize
   state.screen = NULL;
 //  state.hover_lock();
   state.hover_time = 0;
@@ -1837,10 +1844,10 @@ ACE_TMAIN (int argc_in,
   state.source = std::make_pair (std::numeric_limits<unsigned int>::max (),
                                  std::numeric_limits<unsigned int>::max ());
   //
-  state.angle = 0.0F;
+  state.angle = 0.0f;
 
   // step1a set defaults
-  Common_File_Tools::initialize (argv_in[0]);
+  Common_File_Tools::initialize (ACE_TEXT_ALWAYS_CHAR (argv_in[0]));
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
@@ -1908,8 +1915,7 @@ ACE_TMAIN (int argc_in,
   map_filename += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
 
   bool log_to_file_b              = false;
-  bool slideshow_mode             = (SDL_GUI_DEF_MODE ==
-                                     SDL_GUI_USERMODE_SLIDESHOW);
+  bool slideshow_mode             = (SDL_GUI_DEF_MODE == SDL_GUI_USERMODE_SLIDESHOW);
   bool trace_information          = false;
   bool print_version_and_exit     = false;
   bool validate_XML = false;// SDL_GUI_DEF_VALIDATE_XML;
@@ -1933,8 +1939,7 @@ ACE_TMAIN (int argc_in,
   video_configuration.screen_colordepth = SDL_GUI_DEF_VIDEO_BPP;
 //   video_configuration.screen_flags      = ;
   video_configuration.double_buffer     = SDL_GUI_DEF_VIDEO_DOUBLEBUFFER;
-  video_configuration.use_OpenGL        = (SDL_GUI_DEF_GRAPHICS_MODE ==
-                                           GRAPHICSMODE_2D_OPENGL);
+  video_configuration.use_OpenGL        = (SDL_GUI_DEF_GRAPHICS_MODE == GRAPHICSMODE_2D_OPENGL);
   video_configuration.full_screen       = SDL_GUI_DEF_VIDEO_FULLSCREEN;
 
   // step1b: parse/process/validate configuration
@@ -1962,10 +1967,10 @@ ACE_TMAIN (int argc_in,
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini() == -1)
+    if (ACE::fini () == -1)
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -1981,18 +1986,19 @@ ACE_TMAIN (int argc_in,
        !Common_File_Tools::isReadable (map_filename))      ||
       (slideshow_mode && video_configuration.use_OpenGL))
   {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("invalid argument, aborting\n")));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("invalid argument, aborting\n")));
 
     // make 'em learn...
-    do_printUsage(std::string(ACE::basename(argv_in[0])));
+    do_printUsage (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif // ACE_WIN32 || ACE_WIN64
+ 
     return EXIT_FAILURE;
   } // end IF
   mode = (slideshow_mode ? SDL_GUI_USERMODE_SLIDESHOW : mode);
@@ -2002,14 +2008,14 @@ ACE_TMAIN (int argc_in,
   // step1c: handle specific program modes
   if (print_version_and_exit)
   {
-    do_printVersion(std::string(ACE::basename(argv_in[0])));
+    do_printVersion (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-    if (ACE::fini() == -1)
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_SUCCESS;
   } // end IF
@@ -2034,43 +2040,43 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
 
   // step2: init SDL
-  if (SDL_Init(SDL_INIT_TIMER |
-               SDL_INIT_VIDEO |
-               SDL_INIT_NOPARACHUTE) == -1) // "...Prevents SDL from catching fatal signals..."
+  if (SDL_Init (SDL_INIT_TIMER |
+                SDL_INIT_VIDEO |
+                SDL_INIT_NOPARACHUTE) == -1) // "...Prevents SDL from catching fatal signals..."
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to SDL_Init(): \"%s\", aborting\n"),
-               ACE_TEXT(SDL_GetError())));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_Init(): \"%s\", aborting\n"),
+                ACE_TEXT (SDL_GetError ())));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
   // setup font engine
-  if (TTF_Init() == -1)
+  if (TTF_Init () == -1)
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to TTF_Init(): \"%s\", aborting\n"),
-               SDL_GetError()));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to TTF_Init(): \"%s\", aborting\n"),
+                ACE_TEXT (SDL_GetError ())));
 
-    SDL_Quit();
+    SDL_Quit ();
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -2099,35 +2105,34 @@ ACE_TMAIN (int argc_in,
 
   // step3: do actual work
   ACE_High_Res_Timer timer;
-  timer.start();
-  do_work(mode,
-          entity_filename,
-          map_filename,
-          map_configuration,
-          video_configuration,
-          magic_dictionary,
-          items_dictionary,
-          monster_dictionary,
-          graphics_dictionary,
-          state.debug,
-          graphics_directory,
-          schema_repository,
-          cache_size,
-          validate_XML);
-  timer.stop();
+  timer.start ();
+  do_work (mode,
+           entity_filename,
+           map_filename,
+           map_configuration,
+           video_configuration,
+           magic_dictionary,
+           items_dictionary,
+           monster_dictionary,
+           graphics_dictionary,
+           state.debug,
+           graphics_directory,
+           schema_repository,
+           cache_size,
+           validate_XML);
+  timer.stop ();
   // debug info
   std::string working_time_string;
   ACE_Time_Value working_time;
-  timer.elapsed_time(working_time);
-  working_time_string =
-    Common_Timer_Tools::periodToString(working_time);
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
-             ACE_TEXT(working_time_string.c_str())));
+  timer.elapsed_time (working_time);
+  working_time_string = Common_Timer_Tools::periodToString (working_time);
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
+              ACE_TEXT (working_time_string.c_str ())));
 
   // step4: clean up
-  TTF_Quit();
-  SDL_Quit();
+  TTF_Quit ();
+  SDL_Quit ();
   // *PORTABILITY*: on Windows, fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::fini () == -1)
@@ -2136,7 +2141,7 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
   return EXIT_SUCCESS;
 } // end main

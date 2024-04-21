@@ -291,7 +291,7 @@ RPG_Graphics_Cursor_Manager::setCursor (enum RPG_Graphics_Cursor type_in,
   else
   {
     // not in cache --> (try to) load graphic
-    RPG_Graphics_GraphicTypeUnion type;
+    struct RPG_Graphics_GraphicTypeUnion type;
     type.discriminator = RPG_Graphics_GraphicTypeUnion::CURSOR;
     type.cursor = type_in;
     // retrieve properties from the dictionary

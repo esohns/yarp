@@ -24,6 +24,7 @@
 #include <sstream>
 
 #include "ace/Log_Msg.h"
+#include "ace/OS.h"
 
 #include "common_file_tools.h"
 
@@ -64,17 +65,22 @@ SDL_GUI_MainWindow::SDL_GUI_MainWindow (const RPG_Graphics_Size_t& size_in,
 void
 SDL_GUI_MainWindow::initialize (state_t* state_in,
                                 RPG_Engine* engine_in,
-                                enum RPG_Client_GraphicsMode mode_in)
+                                enum RPG_Client_GraphicsMode mode_in,
+                                bool flip_in)
 {
   RPG_TRACE (ACE_TEXT ("SDL_GUI_MainWindow::initialize"));
 
-  // init scroll margins
+  inherited::initialize (this,
+                         flip_in);
+
+  // initialize scroll margins
   initScrollSpots ();
 
-  // init map
+  // initialize level map
   initMap (state_in,
            engine_in,
-           mode_in);
+           mode_in,
+           flip_in);
 }
 
 void
@@ -143,7 +149,7 @@ SDL_GUI_MainWindow::draw (SDL_Surface* targetSurface_in,
          j < (target_surface->w - borderRight_);
          j += (*iterator).second->w)
     {
-      RPG_Graphics_Surface::put (std::make_pair(j, i),
+      RPG_Graphics_Surface::put (std::make_pair (j, i),
                                  *(*iterator).second,
                                  target_surface,
                                  dirty_region);
@@ -173,9 +179,9 @@ SDL_GUI_MainWindow::draw (SDL_Surface* targetSurface_in,
        iterator++)
   {
     try {
-      (*iterator)->draw(target_surface,
-                        offsetX_in,
-                        offsetY_in);
+      (*iterator)->draw (target_surface,
+                         offsetX_in,
+                         offsetY_in);
     } catch (...) {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("caught exception in RPG_Graphics_IWindow::draw(), continuing\n")));
@@ -865,7 +871,8 @@ SDL_GUI_MainWindow::initScrollSpots ()
 bool
 SDL_GUI_MainWindow::initMap (state_t* state_in,
                              RPG_Engine* engine_in,
-                             enum RPG_Client_GraphicsMode mode_in)
+                             enum RPG_Client_GraphicsMode mode_in,
+                             bool flip_in)
 {
   RPG_TRACE (ACE_TEXT ("SDL_GUI_MainWindow::initMap"));
 
@@ -883,7 +890,8 @@ SDL_GUI_MainWindow::initMap (state_t* state_in,
           dynamic_cast<SDL_GUI_LevelWindow_Isometric*> (window_base);
       ACE_ASSERT (map_window);
       map_window->initialize (state_in,
-                              this);
+                              this,
+                              flip_in);
 
       break;
     }
@@ -898,7 +906,8 @@ SDL_GUI_MainWindow::initMap (state_t* state_in,
           dynamic_cast<SDL_GUI_LevelWindow_3D*> (window_base);
       ACE_ASSERT (map_window);
       map_window->initialize (state_in,
-                              this);
+                              this,
+                              flip_in);
 
       break;
     }

@@ -33,6 +33,7 @@
 
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_colorname.h"
+#include "rpg_graphics_defines.h"
 #include "rpg_graphics_iwindow.h"
 
 class RPG_Graphics_SDLWindowBase
@@ -54,8 +55,8 @@ class RPG_Graphics_SDLWindowBase
   inline virtual void notify (enum RPG_Graphics_Cursor) const {ACE_ASSERT (false); ACE_NOTREACHED (return;) }
 
   // implement (part of) RPG_Graphics_IWindowBase
-  virtual void initialize (Common_ILock* = NULL, // screen lock interface handle
-                           bool = false);        // double-buffered screen ?
+  virtual void initialize (Common_ILock* = NULL,          // screen lock interface handle
+                           bool = RPG_GRAPHICS_DEF_FLIP); // flip ? : update dirty region(s)
 
   virtual void clip (SDL_Surface* = NULL, // target surface (default: screen)
                      unsigned int = 0,    // offset x (top-left = [0,0])

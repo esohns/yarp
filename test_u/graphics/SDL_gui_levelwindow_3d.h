@@ -23,15 +23,16 @@
 
 #include <string>
 
-#include "ace/Global_Macros.h"
-
 #define _SDL_main_h
 #define SDL_main_h_
 #include "SDL.h"
 
+#include "ace/Global_Macros.h"
+
 #include "common_ilock.h"
 
 #include "rpg_graphics_common.h"
+#include "rpg_graphics_defines.h"
 #include "rpg_graphics_style.h"
 #include "rpg_graphics_styleunion.h"
 #include "rpg_graphics_SDL_window_base.h"
@@ -60,23 +61,24 @@ class SDL_GUI_LevelWindow_3D
                           RPG_Engine*);                      // (level) state handle
   virtual ~SDL_GUI_LevelWindow_3D ();
 
-  void initialize (state_t*,           // state handle
-                   Common_ILock*); // screen lock interface handle
+  void initialize (state_t*,                      // state handle
+                   Common_ILock*,                 // screen lock interface handle
+                   bool = RPG_GRAPHICS_DEF_FLIP); // flip ? : update dirty region(s)
 
   // implement (part of) RPG_Client_IWindowLevel
   virtual void initialize (const RPG_Graphics_Style&); // style
   virtual void setView (int,          // offset x (map coordinates !)
                         int,          // offset x (map coordinates !)
                         bool = true); // locked access ?
-  virtual void setView (const RPG_Map_Position_t&); // position
-  virtual RPG_Graphics_Position_t getView () const; // return value: view (map coordinates !)
+  inline virtual void setView (const RPG_Map_Position_t& view_in) { myView = view_in; } // position
+  inline virtual RPG_Graphics_Position_t getView () const { return myView; } // return value: view (map coordinates !)
 
   void center ();
 
   // (re-)init / set level properties
   // implement (part of) RPG_Client_IWindowLevel
   virtual void toggleDoor (const RPG_Map_Position_t&); // door position
-  virtual void setBlendRadius (unsigned char); // radius
+  virtual void setBlendRadius (ACE_UINT8); // radius
   virtual void updateMinimap ();
   virtual void updateMessageWindow (const std::string&); // message
 
