@@ -284,7 +284,16 @@ RPG_Graphics_Cursor_Manager::setCursor (enum RPG_Graphics_Cursor type_in,
   // step0: initialize return value(s)
   ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
-  // step1: load graphic (check cache first)
+  // step1: restore old background
+  if (myScreenLock && lockedAccess_in)
+    myScreenLock->lock ();
+  restoreBG (dirtyRegion_out,
+             NULL,
+             false); // locked access ?
+  if (myScreenLock && lockedAccess_in)
+    myScreenLock->unlock ();
+
+  // step2: load graphic (check cache first)
   RPG_Graphics_Cursor_CacheConstIterator_t iterator = myCache.find (type_in);
   if (iterator != myCache.end ())
     myCurrentGraphic = (*iterator).second;
@@ -329,19 +338,10 @@ RPG_Graphics_Cursor_Manager::setCursor (enum RPG_Graphics_Cursor type_in,
     myCache.insert (std::make_pair (type_in, myCurrentGraphic));
 
     iterator = myCache.find (type_in);
-    ACE_ASSERT(iterator != myCache.end ());
   } // end ELSE
+  ACE_ASSERT (myCurrentGraphic && (iterator != myCache.end ()));
 
-  // step1: restore old background
-  if (myScreenLock && lockedAccess_in)
-    myScreenLock->lock ();
-  restoreBG (dirtyRegion_out,
-             NULL,
-             false);
-  if (myScreenLock && lockedAccess_in)
-    myScreenLock->unlock ();
-
-  // step2: create background surface
+  // step3: create background surface
   if (myBG)
   {
     SDL_FreeSurface (myBG); myBG = NULL;
@@ -351,8 +351,8 @@ RPG_Graphics_Cursor_Manager::setCursor (enum RPG_Graphics_Cursor type_in,
   if (!myBG)
   {
     ACE_DEBUG ((LM_ERROR,
-                 ACE_TEXT ("failed to RPG_Graphics_Surface::create(%u,%u), returning\n"),
-                 (*iterator).second->w, (*iterator).second->h));
+                ACE_TEXT ("failed to RPG_Graphics_Surface::create(%d,%d), returning\n"),
+                (*iterator).second->w, (*iterator).second->h));
     return;
   } // end IF
   myBGPosition = std::make_pair (std::numeric_limits<unsigned int>::max (),

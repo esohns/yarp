@@ -189,8 +189,6 @@ RPG_Client_Common_Tools::initialize (const struct RPG_Client_SDL_InputConfigurat
   } // end IF
 
   // step2: initialize sound
-  RPG_Sound_Common_Tools::initializeStringConversionTables ();
-
   // step2a: initialize sound dictionary
   bool validate_schema_b =
 #if defined (_DEBUG)
@@ -218,7 +216,7 @@ RPG_Client_Common_Tools::initialize (const struct RPG_Client_SDL_InputConfigurat
                                            muted_in))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Sound_Common_Tools::init, aborting\n")));
+                ACE_TEXT ("failed to RPG_Sound_Common_Tools::initialize, aborting\n")));
     return false;
   } // end IF
 
@@ -252,7 +250,8 @@ RPG_Client_Common_Tools::initialize (const struct RPG_Client_SDL_InputConfigurat
     struct SDL_Rect dirty_region;
     ACE_OS::memset (&dirty_region, 0, sizeof (struct SDL_Rect));
     RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->setCursor (CURSOR_NORMAL,
-                                                                   dirty_region);
+                                                                   dirty_region,
+                                                                   true); // locked access ?
   } // end IF
 
   // step5: initialize user profiles

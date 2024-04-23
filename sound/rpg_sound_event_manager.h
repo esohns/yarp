@@ -29,6 +29,7 @@
 #include "SDL.h"
 
 #include "ace/Global_Macros.h"
+#include "ace/OS.h"
 #include "ace/Singleton.h"
 #include "ace/Synch_Traits.h"
 
@@ -53,24 +54,24 @@ class RPG_Sound_Event_Manager
   void finalize ();
 
   // handle ambient music
-  virtual void start();
-  virtual void stop();
-  virtual bool isPlaying() const;
+  virtual void start ();
+  virtual void stop ();
+  virtual bool isPlaying () const;
 
   // implement RPG_Common_ITimer interface
   // *WARNING*: NOT to be called by the user
   virtual void handle (const void*); // ACT (if any)
 
  private:
-  virtual ~RPG_Sound_Event_Manager();
-  RPG_Sound_Event_Manager();
-  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Event_Manager(const RPG_Sound_Event_Manager&))
-  ACE_UNIMPLEMENTED_FUNC(RPG_Sound_Event_Manager& operator=(const RPG_Sound_Event_Manager&))
+  virtual ~RPG_Sound_Event_Manager ();
+  RPG_Sound_Event_Manager ();
+  ACE_UNIMPLEMENTED_FUNC (RPG_Sound_Event_Manager (const RPG_Sound_Event_Manager&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Sound_Event_Manager& operator= (const RPG_Sound_Event_Manager&))
 
   // helper methods
-  static int dirent_selector(const dirent*);
-  static int dirent_comparator(const dirent**,
-                               const dirent**);
+  static int dirent_selector (const dirent*);
+  static int dirent_comparator (const dirent**,
+                                const dirent**);
 #if defined (SDL_USE)
   void initializeCD (int = 0); // drive (0: default)
 #endif // SDL_USE

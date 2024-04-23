@@ -23,22 +23,24 @@
 
 #include <string>
 
+#if defined (SDL_USE)
 #define _SDL_main_h
 #define SDL_main_h_
 #include "SDL.h"
+#endif // SDL_USE
 
 #include "ace/Global_Macros.h"
+#include "ace/Thread_Mutex.h"
 #include "ace/Time_Value.h"
 
 #include "rpg_sound_defines.h"
+#include "rpg_sound_event.h"
 #include "rpg_sound_common.h"
-#include "rpg_sound_incl.h"
+//#include "rpg_sound_incl.h"
 
 class RPG_Sound_Common_Tools
 {
  public:
-  // init string conversion facilities
-  static void initializeStringConversionTables ();
   static bool initialize (const struct RPG_Sound_SDLConfiguration&, // SDL config parameters
                           const std::string&,                       // sound directory
                           bool = RPG_SOUND_AMBIENT_DEF_USE_CD,      // use CD ?
@@ -69,6 +71,8 @@ class RPG_Sound_Common_Tools
   ACE_UNIMPLEMENTED_FUNC (~RPG_Sound_Common_Tools ())
   ACE_UNIMPLEMENTED_FUNC (RPG_Sound_Common_Tools (const RPG_Sound_Common_Tools&))
   ACE_UNIMPLEMENTED_FUNC (RPG_Sound_Common_Tools& operator= (const RPG_Sound_Common_Tools&))
+
+  static void initializeStringConversionTables ();
 
   static bool                              myIsMuted;
   static std::string                       mySoundDirectory;

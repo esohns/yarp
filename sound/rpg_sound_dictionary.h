@@ -28,6 +28,7 @@
 #include "ace/Synch_Traits.h"
 
 #include "rpg_sound_common.h"
+#include "rpg_sound_event.h"
 
 class RPG_Sound_Dictionary
 {

@@ -21,9 +21,9 @@
 
 #include "rpg_sound_common_tools.h"
 
-#include "ace/Log_Msg.h"
-
 #include "SDL_mixer.h"
+
+#include "ace/Log_Msg.h"
 
 #include "common_file_tools.h"
 

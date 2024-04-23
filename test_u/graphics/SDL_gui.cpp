@@ -79,6 +79,7 @@
 #include "rpg_engine.h"
 #include "rpg_engine_common_tools.h"
 #include "rpg_engine_defines.h"
+#include "rpg_engine_iclient.h"
 
 #include "rpg_graphics_common.h"
 #include "rpg_graphics_common_tools.h"
@@ -1671,11 +1672,15 @@ do_work (mode_t mode_in,
 //        return;
 //      } // end IF
 
-      // step5: init level state engine
+      // step5: initialize level state engine
+      RPG_Engine_IClient* iclient_p =
+        dynamic_cast<RPG_Engine_IClient*> (main_window.child (WINDOW_MAP));
+      ACE_ASSERT (iclient_p);
+      level_engine.initialize (iclient_p);
+      // initialize/add entity to the graphics cache
       RPG_Client_IWindowLevel* map_window =
         dynamic_cast<RPG_Client_IWindowLevel*> (main_window.child (WINDOW_MAP));
       ACE_ASSERT (map_window);
-      // init/add entity to the graphics cache
       RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->initialize (&main_window,
                                                                       map_window);
       RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->initialize (&main_window,
@@ -1688,18 +1693,21 @@ do_work (mode_t mode_in,
                                                           false); // locked access ?
       level_engine.setActive (entity_ID,
                               false); // locked access ?
+      RPG_Map_Position_t entity_position =
+        level_engine.getPosition (entity_ID,
+                                  false); // locked access ?
+      level_engine.unlock ();
 
       // step5a: draw map window...
       try {
-        map_window->setView (level_engine.getPosition (entity_ID,
-                                                       false)); // locked access ?
-        map_window->draw ();
-        map_window->update ();
+        map_window->setView (entity_position);
+        map_window->draw (NULL,
+                          0, 0);
+        map_window->update (NULL);
       } catch (...) {
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("caught exception in RPG_Graphics_IWindow::setView/draw/update, continuing\n")));
       }
-      level_engine.unlock ();
 
       // step6: start timer (triggers hover events)
       SDL_TimerID timer = 0;
@@ -2054,6 +2062,7 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT ("failed to SDL_Init(): \"%s\", aborting\n"),
                 ACE_TEXT (SDL_GetError ())));
 
+    Common_Log_Tools::finalizeLogging ();
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
@@ -2071,6 +2080,7 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT (SDL_GetError ())));
 
     SDL_Quit ();
+    Common_Log_Tools::finalizeLogging ();
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
@@ -2133,6 +2143,7 @@ ACE_TMAIN (int argc_in,
   // step4: clean up
   TTF_Quit ();
   SDL_Quit ();
+  Common_Log_Tools::finalizeLogging ();
   // *PORTABILITY*: on Windows, fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::fini () == -1)
