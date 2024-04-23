@@ -112,7 +112,7 @@
 #define RPG_GRAPHICS_OPENGL_DEF_CONTEXT_PROFILE_ES          false
 
 // *NOTE*: requires double-buffered screen ?
-#define RPG_GRAPHICS_DEF_FLIP                               true // ? : update dirty region(s)
+#define RPG_GRAPHICS_DEF_FLIP                               false // ? : update dirty region(s)
 
 // SDL event types
 // *WARNING*: make sure that these are used consistently !

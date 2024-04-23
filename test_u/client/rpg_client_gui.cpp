@@ -1160,9 +1160,27 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   // step5d: start worker(s)
   int group_id = -1;
   struct Common_EventDispatchConfiguration dispatch_configuration;
+  dispatch_configuration.dispatch =
+    RPG_ENGINE_USES_REACTOR ? COMMON_EVENT_DISPATCH_REACTOR
+                            : COMMON_EVENT_DISPATCH_PROACTOR;
   dispatch_configuration.numberOfProactorThreads =
-    ((COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR) ? NET_CLIENT_DEFAULT_NUMBER_OF_REACTOR_DISPATCH_THREADS
-                                                                      : NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS);
+    NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS;
+  dispatch_configuration.numberOfReactorThreads =
+    NET_CLIENT_DEFAULT_NUMBER_OF_REACTOR_DISPATCH_THREADS;
+  if (!Common_Event_Tools::initializeEventDispatch (dispatch_configuration))
+  {
+    ACE_DEBUG((LM_ERROR,
+               ACE_TEXT("failed to initialize network event dispatch, returning\n")));
+    if (!SDL_RemoveTimer (GTKUserData_in.eventTimer))
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
+                  ACE_TEXT (SDL_GetError ())));
+//    level_engine.stop();
+    client_engine.stop ();
+    RPG_Client_Common_Tools::finalize ();
+    RPG_Engine_Common_Tools::finalize ();
+    return;
+  } // end IF
   struct Common_EventDispatchState dispatch_state_s;
   dispatch_state_s.configuration = &dispatch_configuration;
   if (!Common_Event_Tools::startEventDispatch (dispatch_state_s))

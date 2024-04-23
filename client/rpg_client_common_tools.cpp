@@ -189,7 +189,19 @@ RPG_Client_Common_Tools::initialize (const struct RPG_Client_SDL_InputConfigurat
   } // end IF
 
   // step2: initialize sound
-  // step2a: initialize sound dictionary
+  // step2a: initialize audio/video, string conversion facilities and other
+  //         (static) data
+  if (!RPG_Sound_Common_Tools::initialize (audioConfiguration_in,
+                                           soundDirectory_in,
+                                           useCD_in,
+                                           soundCacheSize_in,
+                                           muted_in))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Sound_Common_Tools::initialize, aborting\n")));
+    return false;
+  } // end IF
+  // step2b: initialize sound dictionary
   bool validate_schema_b =
 #if defined (_DEBUG)
     true;
@@ -205,19 +217,6 @@ RPG_Client_Common_Tools::initialize (const struct RPG_Client_SDL_InputConfigurat
                   ACE_TEXT ("failed to RPG_Sound_Dictionary::initialize, aborting\n")));
       return false;
     }
-  } // end IF
-
-  // step2b: initialize audio/video, string conversion facilities and other
-  //         (static) data
-  if (!RPG_Sound_Common_Tools::initialize (audioConfiguration_in,
-                                           soundDirectory_in,
-                                           useCD_in,
-                                           soundCacheSize_in,
-                                           muted_in))
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Sound_Common_Tools::initialize, aborting\n")));
-    return false;
   } // end IF
 
   // step3: initialize graphics
