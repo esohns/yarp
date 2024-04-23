@@ -131,7 +131,7 @@ if (UNIX)
                         GLU
                         xerces-c
                         ${ACE_LIBRARY}
-                        Common CommonLog CommonTimer CommonUI CommonUI_GTK
+                        Common CommonEvent CommonLog CommonTimer CommonUI CommonUI_GTK
                         ACEStream ACEStream_Network
                         ACENetwork
                         RPG_Dice RPG_Chance RPG_Common
@@ -152,7 +152,7 @@ elseif (WIN32)
                         $ENV{LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL_mixer.lib
                         $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
                         $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                        Common CommonError CommonLog CommonTimer CommonUI CommonUI_GTK
+                        Common CommonEvent CommonError CommonLog CommonTimer CommonUI CommonUI_GTK
                         ACEStream ACEStream_Network
                         ACENetwork
                         RPG_Dice RPG_Chance RPG_Common

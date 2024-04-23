@@ -38,6 +38,7 @@
 #include "ace/Log_Msg.h"
 #include "ace/OS_main.h"
 
+#include "common_event_tools.h"
 #include "common_file_tools.h"
 
 #include "common_log_tools.h"
@@ -1402,7 +1403,7 @@ do_work (mode_t mode_in,
 {
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
-  // step0: init: random seed, string conversion facilities, ...
+  // step0: initialize: random seed, string conversion facilities, ...
   std::string schema_repository_string = schemaRepository_in;
   schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   schema_repository_string += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
@@ -1514,6 +1515,19 @@ do_work (mode_t mode_in,
     }
     case SDL_GUI_USERMODE_FLOOR_PLAN:
     {
+      struct Common_EventDispatchConfiguration dispatch_configuration_s;
+      dispatch_configuration_s.dispatch =
+        RPG_ENGINE_USES_REACTOR ? COMMON_EVENT_DISPATCH_REACTOR
+                                : COMMON_EVENT_DISPATCH_PROACTOR;
+      dispatch_configuration_s.numberOfProactorThreads =
+        NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS;
+      dispatch_configuration_s.numberOfReactorThreads =
+        NET_CLIENT_DEFAULT_NUMBER_OF_REACTOR_DISPATCH_THREADS;
+      Common_Event_Tools::initializeEventDispatch (dispatch_configuration_s);
+      struct Common_EventDispatchState dispatch_state_s;
+      dispatch_state_s.configuration = &dispatch_configuration_s;
+      Common_Event_Tools::startEventDispatch (dispatch_state_s);
+
       // step1: create/load initial level map
       struct RPG_Engine_LevelData level;
       if (map_in.empty ())
@@ -1533,6 +1547,9 @@ do_work (mode_t mode_in,
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("failed to RPG_Engine_Level::load(\"%s\"), aborting\n"),
                       ACE_TEXT (map_in.c_str ())));
+          Common_Event_Tools::finalizeEventDispatch (dispatch_state_s,
+                                                     true,  // wait for completion ?
+                                                     true); // close singletons ?
           break;
         } // end IF
 
@@ -1572,6 +1589,9 @@ do_work (mode_t mode_in,
         {
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("failed to RPG_Engine_Common_Tools::createEntity(), aborting\n")));
+          Common_Event_Tools::finalizeEventDispatch (dispatch_state_s,
+                                                     true,  // wait for completion ?
+                                                     true); // close singletons ?
           break;
         } // end IF
 
@@ -1594,6 +1614,9 @@ do_work (mode_t mode_in,
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("failed to RPG_Player::load(\"%s\"), returning\n"),
                       ACE_TEXT (entity_in.c_str ())));
+          Common_Event_Tools::finalizeEventDispatch (dispatch_state_s,
+                                                     true,  // wait for completion ?
+                                                     true); // close singletons ?
           return;
         } // end IF
 
@@ -1627,50 +1650,6 @@ do_work (mode_t mode_in,
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("caught exception in RPG_Graphics_IWindow::draw()/update(), continuing\n")));
       }
-
-//      // step4b: client engine
-//      RPG_Client_GTKUIDefinition ui_definition(&GTKUserData_in);
-//      client_engine.init(&level_engine,
-//                         main_window.child(WINDOW_MAP),
-//                         &ui_definition,
-//                         debug_in);
-
-//      // step4c: queue initial drawing
-//      RPG_Client_Action client_action;
-//      client_action.command = COMMAND_WINDOW_DRAW;
-//      client_action.previous =
-//          std::make_pair(std::numeric_limits<unsigned int>::max(),
-//                         std::numeric_limits<unsigned int>::max());
-//      client_action.position =
-//          std::make_pair(std::numeric_limits<unsigned int>::max(),
-//                         std::numeric_limits<unsigned int>::max());
-//      client_action.window = &main_window;
-//      client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
-//      client_action.entity_id = 0;
-//      client_action.sound = RPG_SOUND_EVENT_INVALID;
-//      client_action.source =
-//          std::make_pair(std::numeric_limits<unsigned int>::max(),
-//                         std::numeric_limits<unsigned int>::max());
-//      client_action.radius = 0;
-//      client_engine.action(client_action);
-//      client_action.command = COMMAND_WINDOW_REFRESH;
-//      client_engine.action(client_action);
-
-//      // ...start painting
-//      client_engine.start();
-//      if (!client_engine.isRunning())
-//      {
-//        ACE_DEBUG((LM_ERROR,
-//                   ACE_TEXT("failed to start client engine, aborting\n")));
-
-//        // clean up
-////        level_engine.stop();
-//        delete entity.character;
-//        RPG_Client_Common_Tools::fini();
-//        RPG_Engine_Common_Tools::fini();
-
-//        return;
-//      } // end IF
 
       // step5: initialize level state engine
       RPG_Engine_IClient* iclient_p =
@@ -1733,11 +1712,16 @@ do_work (mode_t mode_in,
              debugMode_in);
 
       // clean up
-      level_engine.stop ();
       if (!SDL_RemoveTimer (timer))
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
                     ACE_TEXT (SDL_GetError ())));
+      level_engine.stop (true); // locked access ?
+      COMMON_TIMERMANAGER_SINGLETON::instance ()->stop (true,   // wait for completion ?
+                                                        false); // high priority ?
+      Common_Event_Tools::finalizeEventDispatch (dispatch_state_s,
+                                                 true,  // wait for completion ?
+                                                 true); // close singletons ?
 
       break;
     }

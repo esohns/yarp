@@ -42,10 +42,8 @@ option (BUILD_TEST_U "build test_u" OFF)
  endif ()
 #endif (GUI_SUPPORT)
 
-#message (STATUS "CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
 string (REPLACE ${CMAKE_SOURCE_DIR} "" BUILD_PATH_SUFFIX ${CMAKE_BINARY_DIR})
 string (SUBSTRING ${BUILD_PATH_SUFFIX} 1 -1 BUILD_PATH_SUFFIX)
-#message (STATUS "BUILD_PATH_SUFFIX: ${BUILD_PATH_SUFFIX}")
 find_package (Common
               REQUIRED
               CONFIG
