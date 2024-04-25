@@ -1,12 +1,13 @@
 #include "stdafx.h"
+
 #include "test_u_main.h"
 
 #include <string>
 
 #include "ace/ACE.h"
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
 #include "ace/Init_ACE.h"
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 #include "ace/Get_Opt.h"
 #include "ace/Global_Macros.h"
 #include "ace/High_Res_Timer.h"
@@ -25,9 +26,9 @@
 #include "common_ui_gtk_manager.h"
 #include "common_ui_gtk_manager_common.h"
 
-#ifdef HAVE_CONFIG_H
+#if defined (HAVE_CONFIG_H)
 #include "rpg_config.h"
-#endif
+#endif // HAVE_CONFIG_H
 
 #include "rpg_common_defines.h"
 #include "rpg_common_file_tools.h"
@@ -68,12 +69,12 @@ test_u_main::~test_u_main (void)
 }
 
 void
-test_u_main::print_usage(const std::string& programName_in)
+test_u_main::print_usage (const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("test_u_main::print_usage"));
+  RPG_TRACE (ACE_TEXT ("test_u_main::print_usage"));
 
   // enable verbatim boolean output
-  std::cout.setf(ios::boolalpha);
+  std::cout.setf (ios::boolalpha);
 
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -86,12 +87,13 @@ test_u_main::print_usage(const std::string& programName_in)
                                                           ACE_TEXT_ALWAYS_CHAR (""),
                                                           false);
 
-  std::cout << ACE_TEXT("usage: ")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("usage: ")
             << programName_in
-            << ACE_TEXT(" [OPTIONS]")
+            << ACE_TEXT_ALWAYS_CHAR (" [OPTIONS]")
             << std::endl
             << std::endl;
-  std::cout << ACE_TEXT("currently available options:") << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("currently available options:")
+            << std::endl;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
@@ -99,96 +101,96 @@ test_u_main::print_usage(const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_UI_FILE);
-  std::cout << ACE_TEXT ("-c [FILE]   : client UI file")
-    << ACE_TEXT (" [\"")
-    << path
-    << ACE_TEXT ("\"]")
-    << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-c [FILE]   : client UI file")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
+            << path
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
+            << std::endl;
   path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR("graphics");
+  path += ACE_TEXT_ALWAYS_CHAR ("graphics");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_COMMON_DATA_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_DATA_SUB);
 #else
   path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DATA_SUB);
 #endif
-  std::cout << ACE_TEXT("-d [DIR]    : graphics directory")
-            << ACE_TEXT(" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-d [DIR]    : graphics directory")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR("graphics");
+  path += ACE_TEXT_ALWAYS_CHAR ("graphics");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-g [FILE]   : graphics dictionary (*.xml)")
-            << ACE_TEXT(" [\"")
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-g [FILE]   : graphics dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR("item");
+  path += ACE_TEXT_ALWAYS_CHAR ("item");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_ITEM_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-i [FILE]   : item dictionary (*.xml)")
-            << ACE_TEXT(" [\"")
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-i [FILE]   : item dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT("-l          : log to a file")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-l          : log to a file")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << false
-            << ACE_TEXT("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DIRECTORY_STRING);
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DIRECTORY_STRING);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAGIC_DICTIONARY_FILE);
-  std::cout << ACE_TEXT("-m [FILE]   : magic dictionary (*.xml)")
-            << ACE_TEXT(" [\"")
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-m [FILE]   : magic dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT("-t          : trace information")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-t          : trace information")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << false
-            << ACE_TEXT("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR("test_u");
+  path += ACE_TEXT_ALWAYS_CHAR ("test_u");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR("character");
+  path += ACE_TEXT_ALWAYS_CHAR ("character");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR("player");
+  path += ACE_TEXT_ALWAYS_CHAR ("player");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
-  path += ACE_TEXT_ALWAYS_CHAR(CHARACTER_GENERATOR_GTK_GLADE_FILE);
-  std::cout << ACE_TEXT("-u [FILE]   : UI file")
-            << ACE_TEXT(" [\"")
+  path += ACE_TEXT_ALWAYS_CHAR (CHARACTER_GENERATOR_GTK_GLADE_FILE);
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-u [FILE]   : UI file")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT("-v          : print version information and exit")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-v          : print version information and exit")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << false
-            << ACE_TEXT("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
 } // end print_usage
 
 bool
-test_u_main::process_arguments (const int& argc_in,
+test_u_main::process_arguments (int argc_in,
                                 ACE_TCHAR** argv_in, // cannot be const...
                                 std::string& clientUIFile_out,
                                 std::string& graphicsDictionary_out,
@@ -202,7 +204,7 @@ test_u_main::process_arguments (const int& argc_in,
 {
   RPG_TRACE (ACE_TEXT ("test_u_main::process_arguments"));
 
-  // init configuration
+  // initialize configuration
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
@@ -267,14 +269,14 @@ test_u_main::process_arguments (const int& argc_in,
 
   ACE_Get_Opt argumentParser (argc_in,
                               argv_in,
-                              ACE_TEXT("c:d:g:i:lm:tu:v"),
+                              ACE_TEXT ("c:d:g:i:lm:tu:v"),
                               1,                         // skip command name
                               1,                         // report parsing errors
                               ACE_Get_Opt::PERMUTE_ARGS, // ordering
                               0);                        // don't use long options
 
   int option = 0;
-  while ((option = argumentParser()) != EOF)
+  while ((option = argumentParser ()) != EOF)
   {
     switch (option)
     {
@@ -335,33 +337,29 @@ test_u_main::process_arguments (const int& argc_in,
       // error handling
       case ':':
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("option \"%c\" requires an argument, aborting\n"),
-                   argumentParser.opt_opt()));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("option \"%c\" requires an argument, aborting\n"),
+                    static_cast<char> (argumentParser.opt_opt ())));
         return false;
       }
       case '?':
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unrecognized option \"%s\", aborting\n"),
-                   ACE_TEXT(argumentParser.last_option())));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("unrecognized option \"%s\", aborting\n"),
+                    argumentParser.last_option ()));
         return false;
       }
       case 0:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("found long option \"%s\", aborting\n"),
-                   ACE_TEXT(argumentParser.long_option())));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("found long option \"%s\", aborting\n"),
+                    argumentParser.long_option ()));
         return false;
       }
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("parse error, aborting\n")));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("parse error, aborting\n")));
         return false;
       }
     } // end SWITCH
@@ -382,7 +380,7 @@ test_u_main::do_work (struct GTK_CBData& userData_in,
 {
   RPG_TRACE (ACE_TEXT ("test_u_main::do_work"));
 
-  //// step0a: init XML parsing
+  //// step0a: initialize XML parsing
   //RPG_Common_XML_Tools::init(schemaDirectory_in);
   // step0b: init RPG engine
   std::string schema_repository_string = schemaRepository_in;
@@ -474,10 +472,10 @@ test_u_main::print_version (const std::string& programName_in)
   RPG_TRACE (ACE_TEXT ("test_u_main::print_version"));
 
   std::cout << programName_in
-#ifdef HAVE_CONFIG_H
-            << ACE_TEXT(" : ")
-            //<< RPG_VERSION
-#endif
+#if defined (HAVE_CONFIG_H)
+            << ACE_TEXT_ALWAYS_CHAR (" : ")
+            << yarp_PACKAGE_VERSION
+#endif // HAVE_CONFIG_H
             << std::endl;
 
   // create version string...
@@ -485,17 +483,19 @@ test_u_main::print_version (const std::string& programName_in)
   // version number... We need this, as the library soname is compared to this
   // string
   std::ostringstream version_number;
-  version_number << ACE::major_version();
-  version_number << ACE_TEXT(".");
-  version_number << ACE::minor_version();
-  if (ACE::beta_version())
+  version_number << ACE::major_version ();
+  version_number << ACE_TEXT_ALWAYS_CHAR (".");
+  version_number << ACE::minor_version ();
+  if (ACE::beta_version ())
   {
-    version_number << ACE_TEXT(".");
-    version_number << ACE::beta_version();
+    version_number << ACE_TEXT_ALWAYS_CHAR (".");
+    version_number << ACE::beta_version ();
   } // end IF
 
-  std::cout << ACE_TEXT("ACE: ") << version_number.str() << std::endl;
-//   std::cout << "ACE: "
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("ACE: ")
+            << version_number.str ()
+            << std::endl;
+  //   std::cout << "ACE: "
 //             << ACE_VERSION
 //             << std::endl;
 }
@@ -514,7 +514,7 @@ test_u_main::run_i (int argc_in,
                 ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
   // step1 init/validate configuration
   Common_File_Tools::initialize (argv_in[0]);
@@ -585,7 +585,7 @@ test_u_main::run_i (int argc_in,
                 ACE_TEXT (schema_repository.c_str ())));
 
     // try fallback
-    schema_repository.clear();
+    schema_repository.clear ();
   } // end IF
 
   bool log_to_file = false;
@@ -604,14 +604,14 @@ test_u_main::run_i (int argc_in,
                           print_version_and_exit))
   {
     // make 'em learn...
-    print_usage (ACE::basename (argv_in[0]));
+    print_usage (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -625,14 +625,14 @@ test_u_main::run_i (int argc_in,
       !Common_File_Tools::isDirectory (graphics_directory))
   {
     // make 'em learn...
-    print_usage(ACE::basename(argv_in[0]));
+    print_usage (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -640,21 +640,21 @@ test_u_main::run_i (int argc_in,
   // step1b: handle specific program modes
   if (print_version_and_exit)
   {
-    print_version(ACE::basename(argv_in[0]));
+    print_version (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_SUCCESS;
   } // end IF
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
-  if (!Common_Log_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
+  if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
                                             log_file,                   // logfile
                                             false,                      // log to syslog ?
                                             false,                      // trace messages ?
@@ -669,7 +669,7 @@ test_u_main::run_i (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -713,7 +713,7 @@ test_u_main::run_i (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -730,12 +730,11 @@ test_u_main::run_i (int argc_in,
            graphics_directory,
            ui_file);
   timer.stop ();
-  // debug info
-  std::string working_time_string;
+
   ACE_Time_Value working_time;
   timer.elapsed_time (working_time);
-  working_time_string = Common_Timer_Tools::periodToString (working_time);
-
+  std::string working_time_string =
+    Common_Timer_Tools::periodToString (working_time);
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
               ACE_TEXT (working_time_string.c_str ())));
@@ -748,7 +747,7 @@ test_u_main::run_i (int argc_in,
                 ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
   return EXIT_SUCCESS;
 }

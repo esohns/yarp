@@ -30,12 +30,14 @@
 #include "ace/High_Res_Timer.h"
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
 #include "ace/Init_ACE.h"
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 #include "ace/Log_Msg.h"
 
-#ifdef HAVE_CONFIG_H
+#include "common_timer_tools.h"
+
+#if defined (HAVE_CONFIG_H)
 #include "rpg_config.h"
-#endif
+#endif // HAVE_CONFIG_H
 
 #include "rpg_dice_dietype.h"
 #include "rpg_dice_roll.h"
@@ -44,34 +46,44 @@
 #include "rpg_common_macros.h"
 
 void
-print_usage(const std::string& programName_in)
+print_usage (const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::print_usage"));
+  RPG_TRACE (ACE_TEXT ("::print_usage"));
 
-  std::cout << ACE_TEXT("usage: ") << programName_in << ACE_TEXT(" [OPTIONS]") << std::endl << std::endl;
-  std::cout << ACE_TEXT("currently available options:") << std::endl;
-//   std::cout << ACE_TEXT("-d [VALUE]: type of dice (# sides: 0, 2, 3, 4, 6, 8, 10, 12, 20 or 100); default: 6") << std::endl;
-  std::cout << ACE_TEXT("-d [VALUE]: type of dice (# sides: 4, 6, 8, 10, 12, 20 or 100); default: 6") << std::endl;
-  std::cout << ACE_TEXT("-m [VALUE]: modifier (e.g. +/-1, as in a roll of e.g. 2d4+1); default: 0") << std::endl;
-  std::cout << ACE_TEXT("-n [VALUE]: number of dice (e.g. as in a roll of 3d4); default: 1") << std::endl;
-  std::cout << ACE_TEXT("-r [VALUE]: number of such rolls; default: 1") << std::endl;
-  std::cout << ACE_TEXT("-s        : include sorted result") << std::endl;
-  std::cout << ACE_TEXT("-t        : trace information") << std::endl;
-  std::cout << ACE_TEXT("-v        : print version information and exit") << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("usage: ")
+            << programName_in
+            << ACE_TEXT_ALWAYS_CHAR (" [OPTIONS]")
+            << std::endl << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("currently available options:")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-d [VALUE]: type of dice (# sides: 4, 6, 8, 10, 12, 20 or 100); default: 6")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-m [VALUE]: modifier (e.g. +/-1, as in a roll of e.g. 2d4+1); default: 0")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-n [VALUE]: number of dice (e.g. as in a roll of 3d4); default: 1")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-r [VALUE]: number of such rolls; default: 1")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-s        : include sorted result")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-t        : trace information")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-v        : print version information and exit")
+            << std::endl;
 } // end print_usage
 
-const bool
-process_arguments(const int argc_in,
-                  ACE_TCHAR* argv_in[], // cannot be const...
-                  RPG_Dice_Roll& rollSpecs_out,
-                  unsigned int& numRolls_out,
-                  bool& includeSortedResult_out,
-                  bool& traceInformation_out,
-                  bool& printVersionAndExit_out)
+bool
+process_arguments (int argc_in,
+                   ACE_TCHAR* argv_in[], // cannot be const...
+                   struct RPG_Dice_Roll& rollSpecs_out,
+                   unsigned int& numRolls_out,
+                   bool& includeSortedResult_out,
+                   bool& traceInformation_out,
+                   bool& printVersionAndExit_out)
 {
-  RPG_TRACE(ACE_TEXT("::process_arguments"));
+  RPG_TRACE (ACE_TEXT ("::process_arguments"));
 
-  // init results
+  // initialize results
   rollSpecs_out.numDice = 1;
   rollSpecs_out.typeDice = D_6;
   rollSpecs_out.modifier = 0;
@@ -80,9 +92,9 @@ process_arguments(const int argc_in,
   traceInformation_out = false;
   printVersionAndExit_out = false;
 
-  ACE_Get_Opt argumentParser(argc_in,
-                             argv_in,
-                             ACE_TEXT("d:m:n:r:stv"));
+  ACE_Get_Opt argumentParser (argc_in,
+                              argv_in,
+                              ACE_TEXT ("d:m:n:r:stv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -92,12 +104,13 @@ process_arguments(const int argc_in,
       case 'd':
       {
         // make sure this is a valid number...
-        unsigned int temp = ::atol(argumentParser.opt_arg());
+        unsigned int temp =
+          ::atol (ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ()));
         switch (temp)
         {
           case D_0:
-//           case D_2:
-//           case D_3:
+          case D_2:
+          case D_3:
           case D_4:
           case D_6:
           case D_8:
@@ -106,16 +119,14 @@ process_arguments(const int argc_in,
           case D_20:
           case D_100:
           {
-            rollSpecs_out.typeDice = static_cast<RPG_Dice_DieType> (temp);
-
+            rollSpecs_out.typeDice = static_cast<enum RPG_Dice_DieType> (temp);
             break;
           }
           default:
           {
-            ACE_DEBUG((LM_ERROR,
-                       ACE_TEXT("invalid input \"%s\", aborting\n"),
-                       argumentParser.last_option()));
-
+            ACE_DEBUG ((LM_ERROR,
+                        ACE_TEXT ("invalid/unknown die type (was: %u), aborting\n"),
+                        temp));
             return false;
           }
         } // end SWITCH
@@ -124,19 +135,22 @@ process_arguments(const int argc_in,
       }
       case 'm':
       {
-        rollSpecs_out.modifier = ::atol(argumentParser.opt_arg());
+        rollSpecs_out.modifier =
+          ::atol (ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ()));
 
         break;
       }
       case 'n':
       {
-        rollSpecs_out.numDice = ::atol(argumentParser.opt_arg());
+        rollSpecs_out.numDice =
+          ::atol (ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ()));
 
         break;
       }
       case 'r':
       {
-        numRolls_out = ::atol(argumentParser.opt_arg());
+        numRolls_out =
+          ::atol (ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ()));
 
         break;
       }
@@ -161,18 +175,16 @@ process_arguments(const int argc_in,
       // error handling
       case '?':
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unrecognized option \"%s\", aborting\n"),
-                   argumentParser.last_option()));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("unrecognized option \"%s\", aborting\n"),
+                    argumentParser.last_option ()));
         return false;
       }
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unrecognized option \"%c\", aborting\n"),
-                   option));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("unrecognized option \"%c\", aborting\n"),
+                    option));
         return false;
       }
     } // end SWITCH
@@ -182,7 +194,7 @@ process_arguments(const int argc_in,
 }
 
 void
-do_work (const RPG_Dice_Roll& rollSpecs_in,
+do_work (const struct RPG_Dice_Roll& rollSpecs_in,
          unsigned int numRolls_in,
          bool includeSortedResult_in)
 {
@@ -282,11 +294,11 @@ do_work (const RPG_Dice_Roll& rollSpecs_in,
   if (includeSortedResult_in)
   {
     // header line
-    std::cout << ACE_TEXT ("dice rolls (sorted): ") << std::endl;
+    std::cout << ACE_TEXT_ALWAYS_CHAR ("dice rolls (sorted): ") << std::endl;
     std::cout << std::setw (80)
-              << std::setfill (ACE_TEXT_ALWAYS_CHAR ('-'))
-              << ACE_TEXT ("")
-              << std::setfill (ACE_TEXT_ALWAYS_CHAR (' '))
+              << std::setfill ('-')
+              << ACE_TEXT_ALWAYS_CHAR ("")
+              << std::setfill (' ')
               << std::endl;
 
     // sort array
@@ -299,8 +311,9 @@ do_work (const RPG_Dice_Roll& rollSpecs_in,
          iter++)
     {
       converter << *iter;
-      std::cout << converter.str () << ACE_TEXT (" ");
+      std::cout << converter.str () << ACE_TEXT_ALWAYS_CHAR (" ");
       converter.str (ACE_TEXT_ALWAYS_CHAR ("")); // "reset" it...
+      converter.clear ();
     } // end FOR
     std::cout << std::endl;
   } // end IF
@@ -315,52 +328,49 @@ do_printVersion(const std::string& programName_in)
   RPG_TRACE(ACE_TEXT("::do_printVersion"));
 
   std::cout << programName_in
-#ifdef HAVE_CONFIG_H
-            << ACE_TEXT(" : ")
-            //<< YARP_PACKAGE_VERSION
-#endif
+#if defined (HAVE_CONFIG_H)
+            << ACE_TEXT_ALWAYS_CHAR (" : ")
+            << yarp_PACKAGE_VERSION
+#endif // HAVE_CONFIG_H
             << std::endl;
 
   // create version string...
   // *NOTE*: cannot use ACE_VERSION, as it doesn't contain the (potential) beta version
   // number... We need this, as the library soname is compared to this string.
   std::ostringstream version_number;
-  if (version_number << ACE::major_version())
+  if (version_number << ACE::major_version ())
   {
-    version_number << ACE_TEXT(".");
+    version_number << ACE_TEXT_ALWAYS_CHAR (".");
   } // end IF
   else
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%m\", returning\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to convert: \"%m\", returning\n")));
     return;
   } // end ELSE
-  if (version_number << ACE::minor_version())
+  if (version_number << ACE::minor_version ())
   {
-    version_number << ".";
+    version_number << ACE_TEXT_ALWAYS_CHAR (".");
 
-    if (version_number << ACE::beta_version())
+    if (version_number << ACE::beta_version ())
     {
 
     } // end IF
     else
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to convert: \"%m\", returning\n")));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to convert: \"%m\", returning\n")));
       return;
     } // end ELSE
   } // end IF
   else
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%m\", returning\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to convert: \"%m\", returning\n")));
     return;
   } // end ELSE
-  std::cout << ACE_TEXT("ACE: ")
-            << version_number.str()
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("ACE: ")
+            << version_number.str ()
             << std::endl;
 //   std::cout << "ACE: "
 //             << ACE_VERSION
@@ -368,14 +378,14 @@ do_printVersion(const std::string& programName_in)
 }
 
 int
-ACE_TMAIN(int argc,
-          ACE_TCHAR* argv[])
+ACE_TMAIN (int argc,
+           ACE_TCHAR* argv[])
 {
-  RPG_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE (ACE_TEXT ("::main"));
 
-  // step1: init
+  // step1: initialize
   // step1a set defaults
-  RPG_Dice_Roll rollSpecs;
+  struct RPG_Dice_Roll rollSpecs;
   rollSpecs.typeDice       = D_6;
   rollSpecs.numDice        = 1;
   rollSpecs.modifier       = 0;
@@ -394,7 +404,7 @@ ACE_TMAIN(int argc,
                           printVersionAndExit))
   {
     // make 'em learn...
-    print_usage(std::string(ACE::basename(argv[0])));
+    print_usage (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv[0])));
 
     return EXIT_FAILURE;
   } // end IF
@@ -416,8 +426,8 @@ ACE_TMAIN(int argc,
                                     LM_EMERGENCY);
 
     // set new mask...
-    ACE_LOG_MSG->priority_mask(process_priority_mask,
-                               ACE_Log_Msg::PROCESS);
+    ACE_LOG_MSG->priority_mask (process_priority_mask,
+                                ACE_Log_Msg::PROCESS);
 
     //ACE_LOG_MSG->stop_tracing();
 
@@ -428,31 +438,27 @@ ACE_TMAIN(int argc,
   // step1d: handle specific program modes
   if (printVersionAndExit)
   {
-    do_printVersion(std::string(ACE::basename(argv[0])));
+    do_printVersion (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv[0])));
 
     return EXIT_SUCCESS;
   } // end IF
 
   ACE_High_Res_Timer timer;
-  timer.start();
-
+  timer.start ();
   // step2: do actual work
-  do_work(rollSpecs,
-          numRolls,
-          includeSortedResult);
+  do_work (rollSpecs,
+           numRolls,
+           includeSortedResult);
+  timer.stop ();
 
-  timer.stop();
-
-//   // debug info
-//   std::string working_time_string;
-//   ACE_Time_Value working_time;
-//   timer.elapsed_time(working_time);
-//   RPS_FLB_Common_Tools::Period2String(working_time,
-//                                       working_time_string);
-//
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
-//              working_time_string.c_str()));
+   // debug info
+   ACE_Time_Value working_time;
+   timer.elapsed_time (working_time);
+   std::string working_time_string =
+     Common_Timer_Tools::periodToString (working_time);
+   ACE_DEBUG ((LM_DEBUG,
+               ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
+               ACE_TEXT (working_time_string.c_str ())));
 
   return EXIT_SUCCESS;
 } // end main

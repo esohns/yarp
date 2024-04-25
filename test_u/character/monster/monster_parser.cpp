@@ -38,6 +38,8 @@
 
 #include "common_log_tools.h"
 
+#include "common_timer_tools.h"
+
 #include "rpg_common_XML_tools.h"
 
 #if defined (HAVE_CONFIG_H)
@@ -79,13 +81,15 @@ do_printUsage (const std::string& programName_in)
                                                           ACE_TEXT_ALWAYS_CHAR (""),
                                                           true);
 
-  std::cout << ACE_TEXT ("usage: ")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("usage: ")
             << programName_in
-            << ACE_TEXT (" [OPTIONS]")
+            << ACE_TEXT_ALWAYS_CHAR (" [OPTIONS]")
             << std::endl
             << std::endl;
-  std::cout << ACE_TEXT ("currently available options:") << std::endl;
-  std::cout << ACE_TEXT ("-d       : dump dictionary") << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("currently available options:")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-d       : dump dictionary")
+            << std::endl;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
@@ -95,19 +99,21 @@ do_printUsage (const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_DICTIONARY_FILE);
-  std::cout << ACE_TEXT ("-m [FILE]: monster dictionary (*.xml)")
-            << ACE_TEXT (" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-m [FILE]: monster dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT ("-t       : trace information") << std::endl;
-  std::cout << ACE_TEXT ("-v       : print version information and exit")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-t       : trace information")
             << std::endl;
-  std::cout << ACE_TEXT ("-x       : do NOT validate XML") << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-v       : print version information and exit")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-x       : do NOT validate XML")
+            << std::endl;
 }
 
 bool
-do_processArguments (const int& argc_in,
+do_processArguments (int argc_in,
                      ACE_TCHAR** argv_in, // cannot be const...
                      bool& dumpDictionary_out,
                      std::string& monsterDictionaryFilename_out,
@@ -135,12 +141,12 @@ do_processArguments (const int& argc_in,
   printVersionAndExit_out       = false;
   validateXML_out               = true;
 
-  ACE_Get_Opt argumentParser(argc_in,
-                             argv_in,
-                             ACE_TEXT("dm:tvx"));
+  ACE_Get_Opt argumentParser (argc_in,
+                              argv_in,
+                              ACE_TEXT ("dm:tvx"));
 
   int option = 0;
-  while ((option = argumentParser()) != EOF)
+  while ((option = argumentParser ()) != EOF)
   {
     switch (option)
     {
@@ -152,7 +158,8 @@ do_processArguments (const int& argc_in,
       }
       case 'm':
       {
-        monsterDictionaryFilename_out = argumentParser.opt_arg();
+        monsterDictionaryFilename_out =
+          ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
 
         break;
       }
@@ -177,18 +184,16 @@ do_processArguments (const int& argc_in,
       // error handling
       case '?':
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unrecognized option \"%s\", aborting\n"),
-                   ACE_TEXT(argumentParser.last_option())));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("unrecognized option \"%s\", aborting\n"),
+                    argumentParser.last_option ()));
         return false;
       }
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unrecognized option \"%c\", aborting\n"),
-                   option));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("unrecognized option \"%c\", aborting\n"),
+                    option));
         return false;
       }
     } // end SWITCH
@@ -252,10 +257,10 @@ do_printVersion (const std::string& programName_in)
   RPG_TRACE (ACE_TEXT ("::do_printVersion"));
 
   std::cout << programName_in
-#ifdef HAVE_CONFIG_H
-            << ACE_TEXT(" : ")
-            //<< RPG_VERSION
-#endif
+#if defined (HAVE_CONFIG_H)
+            << ACE_TEXT_ALWAYS_CHAR (" : ")
+            << yarp_PACKAGE_VERSION
+#endif // HAVE_CONFIG_H
             << std::endl;
 
   // create version string...
@@ -265,7 +270,7 @@ do_printVersion (const std::string& programName_in)
   std::ostringstream version_number;
   if (version_number << ACE::major_version ())
   {
-    version_number << ACE_TEXT (".");
+    version_number << ACE_TEXT_ALWAYS_CHAR (".");
   } // end IF
   else
   {
@@ -273,11 +278,11 @@ do_printVersion (const std::string& programName_in)
                 ACE_TEXT ("failed to convert: \"%m\", returning\n")));
     return;
   } // end ELSE
-  if (version_number << ACE::minor_version())
+  if (version_number << ACE::minor_version ())
   {
-    version_number << ACE_TEXT(".");
+    version_number << ACE_TEXT_ALWAYS_CHAR (".");
 
-    if (version_number << ACE::beta_version())
+    if (version_number << ACE::beta_version ())
     {
 
     } // end IF
@@ -294,8 +299,10 @@ do_printVersion (const std::string& programName_in)
                 ACE_TEXT ("failed to convert: \"%m\", returning\n")));
     return;
   } // end ELSE
-  std::cout << ACE_TEXT ("ACE: ") << version_number.str () << std::endl;
-//   std::cout << "ACE: "
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("ACE: ")
+            << version_number.str ()
+            << std::endl;
+  //   std::cout << "ACE: "
 //             << ACE_VERSION
 //             << std::endl;
 }
@@ -314,10 +321,10 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
   // step1: initialize configuration
-  Common_File_Tools::initialize (argv_in[0]);
+  Common_File_Tools::initialize (ACE_TEXT_ALWAYS_CHAR (argv_in[0]));
   // step1a: set defaults
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -348,14 +355,14 @@ ACE_TMAIN (int argc_in,
                             validate_XML))
   {
     // make 'em learn...
-    do_printUsage (ACE::basename (argv_in[0]));
+    do_printUsage (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -365,21 +372,21 @@ ACE_TMAIN (int argc_in,
       !Common_File_Tools::isDirectory (schema_repository))
   {
     // make 'em learn...
-    do_printUsage (ACE::basename (argv_in[0]));
+    do_printUsage (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
-  if (!Common_Log_Tools::initializeLogging (ACE::basename (argv_in[0]),   // program name
+  if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
                                             log_file,                    // logfile
                                             false,                       // log to syslog ?
                                             false,                       // trace messages ?
@@ -387,14 +394,14 @@ ACE_TMAIN (int argc_in,
                                             NULL))                       // logger
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Common_Tools::initLogging(), aborting\n")));
+                ACE_TEXT ("failed to Common_Log_Tools::initializeLogging(), aborting\n")));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -402,39 +409,34 @@ ACE_TMAIN (int argc_in,
   // step1d: handle specific program modes
   if (print_version_and_exit)
   {
-    do_printVersion (ACE::basename (argv_in[0]));
+    do_printVersion (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_SUCCESS;
   } // end IF
 
   ACE_High_Res_Timer timer;
   timer.start ();
-
   // step2: do actual work
   do_work (schema_repository,
            monster_dictionary_filename,
            validate_XML,
            dump_dictionary);
-
   timer.stop ();
-
-//   // debug info
-//   std::string working_time_string;
-//   ACE_Time_Value working_time;
-//   timer.elapsed_time(working_time);
-//   RPG_Common_Tools::Period2String(working_time,
-//                                   working_time_string);
-  //
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
-//              ACE_TEXT(working_time_string.c_str())));
+  // debug info
+  ACE_Time_Value working_time;
+  timer.elapsed_time(working_time);
+  std::string working_time_string =
+    Common_Timer_Tools::periodToString (working_time);
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
+              ACE_TEXT (working_time_string.c_str ())));
 
   // *PORTABILITY*: on Windows, fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -444,7 +446,7 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
   return EXIT_SUCCESS;
 } // end main

@@ -186,7 +186,7 @@ input_timer_SDL_cb (Uint32 interval_in,
   RPG_TRACE (ACE_TEXT ("::input_timer_SDL_cb"));
 
   // create a timer event
-  SDL_Event sdl_event;
+  union SDL_Event sdl_event;
   sdl_event.type = RPG_CLIENT_SDL_TIMEREVENT;
   sdl_event.user.data1 = argument_in;
 
@@ -260,16 +260,17 @@ do_printUsage (const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf (ios::boolalpha);
 
-  std::cout << ACE_TEXT ("usage: ")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("usage: ")
             << programName_in
-            << ACE_TEXT (" [OPTIONS]")
+            << ACE_TEXT_ALWAYS_CHAR (" [OPTIONS]")
             << std::endl
             << std::endl;
-  std::cout << ACE_TEXT ("currently available options:") << std::endl;
-  std::cout << ACE_TEXT ("-a         : no audio")
-            << ACE_TEXT (" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("currently available options:")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-a         : no audio")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << false
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -279,16 +280,16 @@ do_printUsage (const std::string& programName_in)
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_CONFIGURATION_FILE);
-  std::cout << ACE_TEXT ("-c [FILE]  : configuration file")
-            << ACE_TEXT (" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-c [FILE]  : configuration file")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
 #if defined (_DEBUG)
-  std::cout << ACE_TEXT ("-d         : debug mode")
-            << ACE_TEXT (" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-d         : debug mode")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << RPG_CLIENT_DEF_DEBUG
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
 #endif // _DEBUG
   configuration_path =
@@ -299,10 +300,10 @@ do_printUsage (const std::string& programName_in)
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_DICTIONARY_FILE);
-  std::cout << ACE_TEXT ("-e [FILE]  : monster dictionary (*.xml)")
-            << ACE_TEXT (" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-e [FILE]  : monster dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
   std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -314,11 +315,11 @@ do_printUsage (const std::string& programName_in)
   path +=
       RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
   path += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
-  std::cout << ACE_TEXT ("-f [FILE]  : level plan (*")
-            << ACE_TEXT (RPG_ENGINE_LEVEL_FILE_EXT)
-            << ACE_TEXT (") [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-f [FILE]  : level plan (*")
+            << ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT)
+            << ACE_TEXT_ALWAYS_CHAR (") [\"")
             << path
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
   configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -328,10 +329,10 @@ do_printUsage (const std::string& programName_in)
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
-  std::cout << ACE_TEXT ("-g [FILE]  : graphics dictionary (*.xml)")
-            << ACE_TEXT (" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-g [FILE]  : graphics dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
   configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -341,15 +342,15 @@ do_printUsage (const std::string& programName_in)
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
-  std::cout << ACE_TEXT ("-i [FILE]  : item dictionary (*.xml)")
-            << ACE_TEXT (" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-i [FILE]  : item dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT ("-l         : log to a file")
-            << ACE_TEXT (" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-l         : log to a file")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << false
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
   configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -359,15 +360,15 @@ do_printUsage (const std::string& programName_in)
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
-  std::cout << ACE_TEXT ("-m [FILE]  : magic dictionary (*.xml)")
-            << ACE_TEXT (" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-m [FILE]  : magic dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT ("-n         : skip intro")
-            << ACE_TEXT (" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-n         : skip intro")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << false
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
   configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -375,10 +376,10 @@ do_printUsage (const std::string& programName_in)
                                                             ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
                                                             true);
   path = configuration_path;
-  std::cout << ACE_TEXT ("-r [DIR]   : schema repository")
-            << ACE_TEXT (" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-r [DIR]   : schema repository")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
   configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -388,15 +389,15 @@ do_printUsage (const std::string& programName_in)
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DICTIONARY_FILE);
-  std::cout << ACE_TEXT ("-s [FILE]  : sound dictionary (*.xml)")
-            << ACE_TEXT (" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-s [FILE]  : sound dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT ("-t         : trace information")
-            << ACE_TEXT (" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-t         : trace information")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << false
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
   configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -406,24 +407,24 @@ do_printUsage (const std::string& programName_in)
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_UI_FILE);
-  std::cout << ACE_TEXT ("-u [FILE]  : UI file")
-            << ACE_TEXT (" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-u [FILE]  : UI file")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT ("-v         : print version information and exit")
-            << ACE_TEXT (" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-v         : print version information and exit")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << false
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
-  std::cout << ACE_TEXT ("-x [VALUE] : #dispatch threads [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-x [VALUE] : #dispatch threads [")
             << ((COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR) ? NET_CLIENT_DEFAULT_NUMBER_OF_REACTOR_DISPATCH_THREADS
                                                                                  : NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS)
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
-  std::cout << ACE_TEXT ("-z [STRING]: SDL video driver [\"")
-            << ACE_TEXT (RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME)
-            << ACE_TEXT ("\"]")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-z [STRING]: SDL video driver [\"")
+            << ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME)
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
 }
 
@@ -450,7 +451,7 @@ do_processArguments (int argc_in,
 {
   RPG_TRACE(ACE_TEXT("::do_processArguments"));
 
-  // init results
+  // initialize results
   mute_out                = false;
 
   std::string configuration_path =
@@ -671,21 +672,21 @@ do_processArguments (int argc_in,
       {
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("option \"%c\" requires an argument, aborting\n"),
-                    argumentParser.opt_opt ()));
+                    static_cast<char> (argumentParser.opt_opt ())));
         return false;
       }
       case '?':
       {
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("unrecognized option \"%s\", aborting\n"),
-                    ACE_TEXT (argumentParser.last_option ())));
+                    argumentParser.last_option ()));
         return false;
       }
       case 0:
       {
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("found long option \"%s\", aborting\n"),
-                    ACE_TEXT (argumentParser.long_option ())));
+                    argumentParser.long_option ()));
         return false;
       }
       default:
@@ -812,7 +813,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   COMMON_TIMERMANAGER_SINGLETON::instance ()->initialize (configuration_in.timer_configuration);
   COMMON_TIMERMANAGER_SINGLETON::instance ()->start (NULL);
 
-  // step1: init RPG engine
+  // step1: initialize RPG engine
   std::vector<std::string> schema_directories_a;
   if (Common_Error_Tools::inDebugSession ())
   {
@@ -1048,7 +1049,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
                             debug_in);
 
   // step4c: queue initial drawing
-  RPG_Client_Action client_action;
+  struct RPG_Client_Action client_action;
   client_action.command = COMMAND_WINDOW_DRAW;
   client_action.previous =
     std::make_pair (std::numeric_limits<unsigned int>::max (),
@@ -1106,8 +1107,8 @@ do_work (struct RPG_Client_Configuration& configuration_in,
     return;
   } // end IF
 
-  // step5: init networking
-  // step5a: init stream configuration object
+  // step5: initialize networking
+  // step5a: initialize stream configuration object
   Stream_AllocatorHeap_T<ACE_MT_SYNCH,
                          struct Stream_AllocatorConfiguration> heap_allocator;
   RPG_Net_MessageAllocator_t message_allocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
@@ -1606,7 +1607,8 @@ continue_:;
   client_engine.stop ();
   RPG_CLIENT_ENTITY_MANAGER_SINGLETON::close ();
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::close ();
-  COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
+  COMMON_TIMERMANAGER_SINGLETON::instance ()->stop (true,   // wait for completion ?
+                                                    false); // high priority ?
   RPG_Client_Common_Tools::finalize ();
   RPG_Engine_Common_Tools::finalize ();
   // done handling UI events
@@ -1628,7 +1630,7 @@ do_parseIniFile (const std::string& iniFilename_in,
 {
   RPG_TRACE (ACE_TEXT ("::do_parseIniFile"));
 
-  // init return value(s)
+  // initialize return value(s)
   //config_out.audio_configuration.mute = false;
   config_out.audio_configuration.SDL_configuration.frequency =
       RPG_SOUND_AUDIO_DEF_FREQUENCY;
@@ -1894,6 +1896,7 @@ do_printVersion (const std::string& programName_in)
   SDL_version sdl_version_compiled;
   SDL_VERSION (&sdl_version_compiled);
   version_number.str (ACE_TEXT_ALWAYS_CHAR (""));
+  version_number.clear ();
   version_number << sdl_version_compiled.major;
   version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << sdl_version_compiled.minor;
@@ -1904,7 +1907,8 @@ do_printVersion (const std::string& programName_in)
             << std::endl;
 #if defined (SDL_USE)
   const SDL_version* sdl_version_linked = SDL_Linked_Version ();
-  version_number.str ("");
+  version_number.str (ACE_TEXT_ALWAYS_CHAR (""));
+  version_number.clear ();
   version_number << sdl_version_linked->major;
   version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << sdl_version_linked->minor;
@@ -1914,7 +1918,8 @@ do_printVersion (const std::string& programName_in)
             << version_number.str ()
             << std::endl;
   const SDL_version* mix_version_linked = Mix_Linked_Version ();
-  version_number.str(ACE_TEXT_ALWAYS_CHAR (""));
+  version_number.str (ACE_TEXT_ALWAYS_CHAR (""));
+  version_number.clear ();
   version_number << mix_version_linked->major;
   version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << mix_version_linked->minor;
@@ -1927,6 +1932,7 @@ do_printVersion (const std::string& programName_in)
 
   // step3: print compiler name/version
   version_number.str (ACE_TEXT_ALWAYS_CHAR (""));
+  version_number.clear ();
   version_number << ACE::compiler_name ();
   version_number << ACE_TEXT_ALWAYS_CHAR (" ");
   version_number << ACE::compiler_major_version ();

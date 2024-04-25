@@ -41,6 +41,8 @@
 
 #include "common_log_tools.h"
 
+#include "common_timer_tools.h"
+
 #if defined (HAVE_CONFIG_H)
 #include "rpg_config.h"
 #endif // HAVE_CONFIG_H
@@ -95,21 +97,22 @@ do_printUsage (const std::string& programName_in)
                                                           ACE_TEXT_ALWAYS_CHAR (""),
                                                           true);
 
-  std::cout << ACE_TEXT ("usage: ")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("usage: ")
             << programName_in
-            << ACE_TEXT (" [OPTIONS]")
+            << ACE_TEXT_ALWAYS_CHAR (" [OPTIONS]")
             << std::endl
             << std::endl;
-  std::cout << ACE_TEXT ("currently available options:") << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("currently available options:")
+            << std::endl;
   std::string path = RPG_Player_Common_Tools::getPlayerProfilesDirectory ();
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
   path += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT);
-  std::cout << ACE_TEXT ("-f [FILE]: player profile (*")
-            << ACE_TEXT (RPG_PLAYER_PROFILE_EXT)
-            << ACE_TEXT (") [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-f [FILE]: player profile (*")
+            << ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT)
+            << ACE_TEXT_ALWAYS_CHAR (") [\"")
             << path
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -118,10 +121,10 @@ do_printUsage (const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
-  std::cout << ACE_TEXT ("-i [FILE]: item dictionary (*.xml)")
-            << ACE_TEXT (" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-i [FILE]: item dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -130,13 +133,14 @@ do_printUsage (const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
-  std::cout << ACE_TEXT ("-m [FILE]: magic dictionary (*.xml)")
-            << ACE_TEXT (" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-m [FILE]: magic dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT ("-t       : trace information") << std::endl;
-  std::cout << ACE_TEXT ("-v       : print version information and exit")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-t       : trace information")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-v       : print version information and exit")
             << std::endl;
 } // end print_usage
 
@@ -151,7 +155,7 @@ do_processArguments (int argc_in,
 {
   RPG_TRACE (ACE_TEXT ("::do_processArguments"));
 
-  // init configuration
+  // initialize configuration
   player_filename_out =
     RPG_Player_Common_Tools::getPlayerProfilesDirectory ();
   player_filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -193,19 +197,19 @@ do_processArguments (int argc_in,
     {
       case 'i':
       {
-        item_dictionary_filename_out = argumentParser.opt_arg ();
+        item_dictionary_filename_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
 
         break;
       }
       case 'm':
       {
-        magic_dictionary_filename_out = argumentParser.opt_arg ();
+        magic_dictionary_filename_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
 
         break;
       }
       case 'f':
       {
-        player_filename_out = argumentParser.opt_arg ();
+        player_filename_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
 
         break;
       }
@@ -226,7 +230,7 @@ do_processArguments (int argc_in,
       {
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("unrecognized option \"%s\", aborting\n"),
-                    ACE_TEXT (argumentParser.last_option ())));
+                    argumentParser.last_option ()));
         return false;
       }
       default:
@@ -325,10 +329,10 @@ do_printVersion (const std::string& programName_in)
   RPG_TRACE (ACE_TEXT ("::do_printVersion"));
 
   std::cout << programName_in
-#ifdef HAVE_CONFIG_H
-            << ACE_TEXT(" : ")
-            //<< RPG_VERSION
-#endif
+#if defined (HAVE_CONFIG_H)
+            << ACE_TEXT_ALWAYS_CHAR (" : ")
+            << yarp_PACKAGE_VERSION
+#endif // HAVE_CONFIG_H
             << std::endl;
 
   // create version string...
@@ -338,18 +342,17 @@ do_printVersion (const std::string& programName_in)
   std::ostringstream version_number;
   if (version_number << ACE::major_version ())
   {
-    version_number << ACE_TEXT (".");
+    version_number << ACE_TEXT_ALWAYS_CHAR (".");
   } // end IF
   else
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%m\", returning\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to convert: \"%m\", returning\n")));
     return;
   } // end ELSE
   if (version_number << ACE::minor_version ())
   {
-    version_number << ".";
+    version_number << ACE_TEXT_ALWAYS_CHAR (".");
 
     if (version_number << ACE::beta_version ())
     {
@@ -368,7 +371,7 @@ do_printVersion (const std::string& programName_in)
                 ACE_TEXT ("failed to convert: \"%m\", returning\n")));
     return;
   } // end ELSE
-  std::cout << ACE_TEXT ("ACE: ")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("ACE: ")
             << version_number.str ()
             << std::endl;
 //   std::cout << "ACE: "
@@ -382,7 +385,7 @@ ACE_TMAIN (int argc_in,
 {
   RPG_TRACE (ACE_TEXT ("::main"));
 
-  // *PORTABILITY*: on Windows, need to init ACE...
+  // *PORTABILITY*: on Windows, need to initialize ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::init () == -1)
   {
@@ -390,7 +393,7 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
   // step1: initialize configuration
   Common_File_Tools::initialize (argv_in[0]);
@@ -448,14 +451,14 @@ ACE_TMAIN (int argc_in,
                             print_version_and_exit))
   {
     // make 'em learn...
-    do_printUsage (ACE::basename (argv_in[0]));
+    do_printUsage (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -469,21 +472,21 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT ("missing/invalid (XML) filename, aborting\n")));
 
     // make 'em learn...
-    do_printUsage (ACE::basename (argv_in[0]));
+    do_printUsage (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
-  if (!Common_Log_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
+  if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
                                             log_file,                  // logfile
                                             false,                     // log to syslog ?
                                             false,                     // trace messages ?
@@ -498,7 +501,7 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -506,14 +509,14 @@ ACE_TMAIN (int argc_in,
   // step1d: handle specific program modes
   if (print_version_and_exit)
   {
-    do_printVersion (ACE::basename (argv_in[0]));
+    do_printVersion (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_SUCCESS;
   } // end IF
@@ -529,23 +532,20 @@ ACE_TMAIN (int argc_in,
 
   timer.stop ();
 
-//   // debug info
-//   std::string working_time_string;
-//   ACE_Time_Value working_time;
-//   timer.elapsed_time(working_time);
-//   RPG_Common_Tools::Period2String(working_time,
-//                                   working_time_string);
-//
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
-//              ACE_TEXT(working_time_string.c_str())));
+  ACE_Time_Value working_time;
+  timer.elapsed_time (working_time);
+  std::string working_time_string =
+    Common_Timer_Tools::periodToString (working_time);
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
+              ACE_TEXT (working_time_string.c_str ())));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::fini () == -1)
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
   return EXIT_SUCCESS;
 } // end main

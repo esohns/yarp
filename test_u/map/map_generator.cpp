@@ -88,47 +88,48 @@ do_printUsage (const std::string& programName_in)
                                                           ACE_TEXT_ALWAYS_CHAR (""),
                                                           false);
 
-  std::cout << ACE_TEXT("usage: ")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("usage: ")
             << programName_in
-            << ACE_TEXT(" [OPTIONS]")
+            << ACE_TEXT_ALWAYS_CHAR (" [OPTIONS]")
             << std::endl
             << std::endl;
-  std::cout << ACE_TEXT("currently available options:") << std::endl;
-  std::cout << ACE_TEXT("-a<[VALUE]> : enforce (minimum) room-size")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("currently available options:")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-a<[VALUE]> : enforce (minimum) room-size")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << (MAP_GENERATOR_DEF_MIN_ROOMSIZE != 0)
-            << ACE_TEXT("] (0:off)")
+            << ACE_TEXT_ALWAYS_CHAR ("] (0:off)")
             << std::endl;
-  std::cout << ACE_TEXT("-c          : generate corridor(s)")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-c          : generate corridor(s)")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << MAP_GENERATOR_DEF_CORRIDORS
-            << ACE_TEXT("]") << std::endl;
-  std::cout << ACE_TEXT("-d<[VALUE]> : enforce maximum #doors/room")
-            << ACE_TEXT(" [")
+            << ACE_TEXT_ALWAYS_CHAR ("]") << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-d<[VALUE]> : enforce maximum #doors/room")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << (MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM != 0)
-            << ACE_TEXT(":")
+            << ACE_TEXT_ALWAYS_CHAR (":")
             << MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM
-            << ACE_TEXT("] (0:off)")
+            << ACE_TEXT_ALWAYS_CHAR ("] (0:off)")
             << std::endl;
-  std::cout << ACE_TEXT("-l          : generate level")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-l          : generate level")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << MAP_GENERATOR_DEF_LEVEL
-            << ACE_TEXT("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
-  std::cout << ACE_TEXT("-m          : maximize room-size(s)")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-m          : maximize room-size(s)")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE
-            << ACE_TEXT("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
   std::string path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined(DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR("map");
+  path += ACE_TEXT_ALWAYS_CHAR ("map");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR("data");
+  path += ACE_TEXT_ALWAYS_CHAR ("data");
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #else
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_MAPS_SUB);
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_MAP_MAPS_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path +=
@@ -137,66 +138,67 @@ do_printUsage (const std::string& programName_in)
   path +=
       (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
                                : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT));
-  std::cout << ACE_TEXT("-o [FILE]   : output file")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-o [FILE]   : output file")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << path
-            << ACE_TEXT("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
-  std::cout << ACE_TEXT("-p          : print (==dump) result")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-p          : print (==dump) result")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << MAP_GENERATOR_DEF_DUMP
-            << ACE_TEXT("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
-  std::cout << ACE_TEXT("-r [VALUE]  : #areas")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-r [VALUE]  : #areas")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << MAP_GENERATOR_DEF_NUM_AREAS
-            << ACE_TEXT("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
-  std::cout << ACE_TEXT("-s          : square room(s)")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-s          : square room(s)")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << MAP_GENERATOR_DEF_SQUARE_ROOMS
-            << ACE_TEXT("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
-  std::cout << ACE_TEXT("-t          : trace information") << std::endl;
-  std::cout << ACE_TEXT("-v          : print version information and exit")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-t          : trace information")
             << std::endl;
-  std::cout << ACE_TEXT("-x [VALUE]  : #columns")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-v          : print version information and exit")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-x [VALUE]  : #columns")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << MAP_GENERATOR_DEF_DIMENSION_X
-            << ACE_TEXT("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
-  std::cout << ACE_TEXT("-y [VALUE]  : #rows")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-y [VALUE]  : #rows")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << MAP_GENERATOR_DEF_DIMENSION_Y
-            << ACE_TEXT("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
-  std::cout << ACE_TEXT("-z          : random")
-            << ACE_TEXT(" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-z          : random")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << false
-            << ACE_TEXT("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
 }
 
 bool
-do_processArguments(const int argc_in,
-                    ACE_TCHAR* argv_in[], // cannot be const...
-                    unsigned int& minRoomSize_out,
-                    bool& corridors_out,
-                    unsigned int& maxNumDoorsPerRoom_out,
-                    bool& level_out,
-                    bool& maximizeRoomSize_out,
-                    std::string& outputFile_out,
-                    bool& dump_out,
-                    unsigned int& numAreas_out,
-                    bool& squareRooms_out,
-                    bool& traceInformation_out,
-                    bool& printVersionAndExit_out,
-                    unsigned int& dimensionX_out,
-                    unsigned int& dimensionY_out,
-                    bool& random_out,
-                    Map_Generator_Options_t& options_out)
+do_processArguments (int argc_in,
+                     ACE_TCHAR* argv_in[], // cannot be const...
+                     unsigned int& minRoomSize_out,
+                     bool& corridors_out,
+                     unsigned int& maxNumDoorsPerRoom_out,
+                     bool& level_out,
+                     bool& maximizeRoomSize_out,
+                     std::string& outputFile_out,
+                     bool& dump_out,
+                     unsigned int& numAreas_out,
+                     bool& squareRooms_out,
+                     bool& traceInformation_out,
+                     bool& printVersionAndExit_out,
+                     unsigned int& dimensionX_out,
+                     unsigned int& dimensionY_out,
+                     bool& random_out,
+                     Map_Generator_Options_t& options_out)
 {
-  RPG_TRACE(ACE_TEXT("::do_processArguments"));
+  RPG_TRACE (ACE_TEXT ("::do_processArguments"));
 
   std::string data_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -204,7 +206,7 @@ do_processArguments(const int argc_in,
                                                           ACE_TEXT_ALWAYS_CHAR (RPG_MAP_SUB_DIRECTORY_STRING),
                                                           false);
 
-  // init results
+  // initialize results
   minRoomSize_out         = MAP_GENERATOR_DEF_MIN_ROOMSIZE;
   corridors_out           = MAP_GENERATOR_DEF_CORRIDORS;
   level_out               = MAP_GENERATOR_DEF_LEVEL;
@@ -236,20 +238,20 @@ do_processArguments(const int argc_in,
 
   ACE_Get_Opt argumentParser(argc_in,
                              argv_in,
-                             ACE_TEXT("a::cd::lmo:pr:stvx:y:z"));
+                             ACE_TEXT ("a::cd::lmo:pr:stvx:y:z"));
 
   int option = 0;
   std::stringstream converter;
   while ((option = argumentParser()) != EOF)
   {
-    options_out.insert(static_cast<char>(option));
+    options_out.insert (static_cast<char> (option));
     switch (option)
     {
       case 'a':
       {
-        converter.clear();
-        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-        converter << argumentParser.opt_arg();
+        converter.clear ();
+        converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+        converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         converter >> minRoomSize_out;
 
         break;
@@ -263,12 +265,12 @@ do_processArguments(const int argc_in,
       case 'd':
       {
         int temp = 0;
-        converter.clear();
-        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-        converter << argumentParser.opt_arg();
+        converter.clear ();
+        converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+        converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         converter >> temp;
         if (temp == -1)
-          maxNumDoorsPerRoom_out = std::numeric_limits<unsigned int>::max();
+          maxNumDoorsPerRoom_out = std::numeric_limits<unsigned int>::max ();
 
         break;
       }
@@ -286,7 +288,7 @@ do_processArguments(const int argc_in,
       }
       case 'o':
       {
-        outputFile_out = argumentParser.opt_arg();
+        outputFile_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
 
         break;
       }
@@ -298,9 +300,9 @@ do_processArguments(const int argc_in,
       }
       case 'r':
       {
-        converter.clear();
-        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-        converter << argumentParser.opt_arg();
+        converter.clear ();
+        converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+        converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         converter >> numAreas_out;
 
         break;
@@ -325,18 +327,18 @@ do_processArguments(const int argc_in,
       }
       case 'x':
       {
-        converter.clear();
-        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-        converter << argumentParser.opt_arg();
+        converter.clear ();
+        converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+        converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         converter >> dimensionX_out;
 
         break;
       }
       case 'y':
       {
-        converter.clear();
-        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-        converter << argumentParser.opt_arg();
+        converter.clear ();
+        converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+        converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         converter >> dimensionY_out;
 
         break;
@@ -351,19 +353,17 @@ do_processArguments(const int argc_in,
       case ':':
       case '?':
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unrecognized option \"%s\", aborting\n"),
-                   ACE_TEXT(argumentParser.last_option())));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("unrecognized option \"%s\", aborting\n"),
+                    argumentParser.last_option ()));
         return false;
       }
       case 0: // long option
       default:
       {
-        ACE_DEBUG((LM_ERROR,
-                   ACE_TEXT("unrecognized option \"%c\", aborting\n"),
-                   option));
-
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("unrecognized option \"%c\", aborting\n"),
+                    option));
         return false;
       }
     } // end SWITCH
@@ -401,12 +401,12 @@ do_work (const struct RPG_Map_FloorPlan_Configuration& mapConfig_in,
       level.metadata.environment.outdoors = false;
 
       level.metadata.max_num_spawned      = 0;
-      level.metadata.name.clear();
-      level.metadata.spawns.clear();
+      level.metadata.name.clear ();
+      level.metadata.spawns.clear ();
 
-      RPG_Engine_Level::random(level.metadata,
-                               mapConfig_in,
-                               level);
+      RPG_Engine_Level::random (level.metadata,
+                                mapConfig_in,
+                                level);
     } // end IF
     else
     {
@@ -439,43 +439,43 @@ do_work (const struct RPG_Map_FloorPlan_Configuration& mapConfig_in,
       level.metadata.spawns.push_back(spawn);
       level.metadata.max_num_spawned = RPG_ENGINE_ENCOUNTER_DEF_NUM_SPAWNED_MAX;
 
-      RPG_Engine_Level::create(mapConfig_in,
-                               level);
+      RPG_Engine_Level::create (mapConfig_in,
+                                level);
     } // end ELSE
   } // end IF
   else
   {
     if (random_in)
-      RPG_Map_Level::random(mapConfig_in,
-                            level.map);
+      RPG_Map_Level::random (mapConfig_in,
+                             level.map);
     else
-      RPG_Map_Level::create(mapConfig_in,
-                            level.map);
+      RPG_Map_Level::create (mapConfig_in,
+                             level.map);
   } // end ELSE
 
   // step3: write output file (if any)
   RPG_Engine_Level engine_level;
   engine_level.initialize (level);
   RPG_Map_Level map_level(level.map);
-  if (!outputFile_in.empty())
+  if (!outputFile_in.empty ())
   {
     if (generateLevel_in)
-      engine_level.save(outputFile_in);
+      engine_level.save (outputFile_in);
     else
-      map_level.save(outputFile_in);
+      map_level.save (outputFile_in);
   } // end IF
 
   // step4: display the result
   if (dump_in)
   {
     if (generateLevel_in)
-      engine_level.print(level);
+      engine_level.print (level);
     else
-      map_level.print(level.map);
+      map_level.print (level.map);
   } // end IF
 
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("finished working...\n")));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("finished working...\n")));
 } // end do_work
 
 void
@@ -484,8 +484,8 @@ do_printVersion (const std::string& programName_in)
   RPG_TRACE (ACE_TEXT ("::do_printVersion"));
 
   std::cout << programName_in
-            << ACE_TEXT(" : ")
-            //<< YARP_VERSION
+            << ACE_TEXT_ALWAYS_CHAR (" : ")
+            << yarp_PACKAGE_VERSION
             << std::endl;
 
   // create version string...
@@ -493,41 +493,40 @@ do_printVersion (const std::string& programName_in)
   // version number... this is needed, as the library soname is compared to this
   // string
   std::ostringstream version_number;
-  if (version_number << ACE::major_version())
+  if (version_number << ACE::major_version ())
   {
-    version_number << ACE_TEXT(".");
+    version_number << ACE_TEXT_ALWAYS_CHAR (".");
   } // end IF
   else
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%m\", aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to convert: \"%m\", returning\n")));
     return;
   } // end ELSE
-  if (version_number << ACE::minor_version())
+  if (version_number << ACE::minor_version ())
   {
-    version_number << ACE_TEXT(".");
-    if (version_number << ACE::beta_version())
+    version_number << ACE_TEXT_ALWAYS_CHAR (".");
+    if (version_number << ACE::beta_version ())
     {
 
     } // end IF
     else
     {
-      ACE_DEBUG((LM_ERROR,
-                 ACE_TEXT("failed to convert: \"%m\", aborting\n")));
-
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to convert: \"%m\", returning\n")));
       return;
     } // end ELSE
   } // end IF
   else
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("failed to convert: \"%m\", aborting\n")));
-
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to convert: \"%m\", returning\n")));
     return;
   } // end ELSE
-  std::cout << ACE_TEXT("ACE: ") << version_number.str() << std::endl;
-//   std::cout << "ACE: "
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("ACE: ")
+            << version_number.str ()
+            << std::endl;
+  //   std::cout << "ACE: "
 //             << ACE_VERSION
 //             << std::endl;
 }
@@ -546,10 +545,10 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
   // step1: initialize configuration
-  Common_File_Tools::initialize (argv_in[0]);
+  Common_File_Tools::initialize (ACE_TEXT_ALWAYS_CHAR (argv_in[0]));
 
   std::string data_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -590,61 +589,61 @@ ACE_TMAIN (int argc_in,
 
   // step1ba: parse/process/validate configuration
   Map_Generator_Options_t set_options;
-  if (!do_processArguments(argc_in,
-                           argv_in,
-                           configuration.min_room_size,
-                           configuration.corridors,
-                           configuration.max_num_doors_per_room,
-                           generate_level,
-                           configuration.maximize_rooms,
-                           output_file,
-                           dump_result,
-                           configuration.num_areas,
-                           configuration.square_rooms,
-                           trace_information,
-                           print_version_and_exit,
-                           configuration.map_size_x,
-                           configuration.map_size_y,
-                           random,
-                           set_options))
+  if (!do_processArguments (argc_in,
+                            argv_in,
+                            configuration.min_room_size,
+                            configuration.corridors,
+                            configuration.max_num_doors_per_room,
+                            generate_level,
+                            configuration.maximize_rooms,
+                            output_file,
+                            dump_result,
+                            configuration.num_areas,
+                            configuration.square_rooms,
+                            trace_information,
+                            print_version_and_exit,
+                            configuration.map_size_x,
+                            configuration.map_size_y,
+                            random,
+                            set_options))
   {
     // make 'em learn...
-    do_printUsage(std::string(ACE::basename(argv_in[0])));
+    do_printUsage (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
   if (random)
   {
-    Map_Generator_OptionsIterator_t iterator = set_options.find('a');
-    if (iterator == set_options.end())
+    Map_Generator_OptionsIterator_t iterator = set_options.find ('a');
+    if (iterator == set_options.end ())
       configuration.min_room_size = 0;
 //    iterator = set_options.find('c');
 //    if (iterator == set_options.end())
 //      configuration.corridors = false;
-    iterator = set_options.find('d');
-    if (iterator == set_options.end())
+    iterator = set_options.find ('d');
+    if (iterator == set_options.end ())
       configuration.max_num_doors_per_room = 0;
 //    iterator = set_options.find('m');
 //    if (iterator == set_options.end())
 //      configuration.maximize_rooms = false;
-    iterator = set_options.find('r');
-    if (iterator == set_options.end())
+    iterator = set_options.find ('r');
+    if (iterator == set_options.end ())
       configuration.num_areas = 0;
 //    iterator = set_options.find('s');
 //    if (iterator == set_options.end())
 //      configuration.square_rooms = false;
-    iterator = set_options.find('x');
-    if (iterator == set_options.end())
+    iterator = set_options.find ('x');
+    if (iterator == set_options.end ())
       configuration.map_size_x = 0;
-    iterator = set_options.find('y');
-    if (iterator == set_options.end())
+    iterator = set_options.find ('y');
+    if (iterator == set_options.end ())
       configuration.map_size_y = 0;
   } // end IF
 
@@ -657,25 +656,25 @@ ACE_TMAIN (int argc_in,
       (configuration.corridors &&
        !configuration.doors))                        // cannot have corridors without doors...
   {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("invalid argument(s), aborting\n")));
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("invalid argument(s), aborting\n")));
 
     // make 'em learn...
-    do_printUsage(std::string(ACE::basename(argv_in[0])));
+    do_printUsage (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
-  if (!Common_Log_Tools::initializeLogging (ACE::basename (argv_in[0]),   // program name
+  if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
                                             log_file,                    // logfile
                                             false,                       // log to syslog ?
                                             false,                       // trace messages ?
@@ -690,7 +689,7 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -698,39 +697,36 @@ ACE_TMAIN (int argc_in,
   // step1d: handle specific program modes
   if (print_version_and_exit)
   {
-    do_printVersion(std::string(ACE::basename(argv_in[0])));
+    do_printVersion (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_SUCCESS;
   } // end IF
 
   ACE_High_Res_Timer timer;
-  timer.start();
-
+  timer.start ();
   // step2: do actual work
-  do_work(configuration,
-          generate_level,
-          output_file,
-          dump_result,
-          random);
-
-  timer.stop();
+  do_work (configuration,
+           generate_level,
+           output_file,
+           dump_result,
+           random);
+  timer.stop ();
 
   // debug info
-  std::string working_time_string;
   ACE_Time_Value working_time;
-  timer.elapsed_time(working_time);
-  working_time_string =
-    Common_Timer_Tools::periodToString(working_time);
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
-             ACE_TEXT(working_time_string.c_str())));
+  timer.elapsed_time (working_time);
+  std::string working_time_string =
+    Common_Timer_Tools::periodToString (working_time);
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
+              ACE_TEXT (working_time_string.c_str ())));
 
   // *PORTABILITY*: on Windows, fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -740,7 +736,7 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
   return EXIT_SUCCESS;
 } // end main

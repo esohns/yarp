@@ -226,9 +226,9 @@ do_printUsage (const std::string& programName_in)
   // enable verbatim boolean output
   std::cout.setf (ios::boolalpha);
 
-  std::cout << ACE_TEXT ("usage: ")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("usage: ")
             << programName_in
-            << ACE_TEXT (" [OPTIONS]")
+            << ACE_TEXT_ALWAYS_CHAR (" [OPTIONS]")
             << std::endl
             << std::endl;
   std::cout << ACE_TEXT_ALWAYS_CHAR ("currently available options:") << std::endl;
@@ -950,7 +950,7 @@ do_UI (struct RPG_Engine_Entity& entity_in,
        bool openGL_in,
        bool debug_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_UI"));
+  RPG_TRACE (ACE_TEXT ("::do_UI"));
 
   union SDL_Event sdl_event;
   bool event_handled = false;
@@ -1420,8 +1420,8 @@ do_work (mode_t mode_in,
   COMMON_TIMERMANAGER_SINGLETON::instance ()->initialize (timer_configuration);
   COMMON_TIMERMANAGER_SINGLETON::instance ()->start (NULL);
 
-  // step1: init video
-  // step1a: init video system
+  // step1: initialize video
+  // step1a: initialize video system
    if (!RPG_Graphics_SDL_Tools::preInitializeVideo (videoConfiguration_in,                       // configuration
                                                     ACE_TEXT_ALWAYS_CHAR (SDL_GUI_DEF_CAPTION))) // window/icon caption
   {
@@ -1429,13 +1429,13 @@ do_work (mode_t mode_in,
                 ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::preInitVideo, aborting\n")));
     return;
   } // end IF
-  // step1b: pre-init graphics
+  // step1b: pre-initialize graphics
   RPG_Graphics_Common_Tools::preInitialize ();
 
 #if defined (DEBUG_DEBUGGER)
   RPG_Client_Common_Tools::initializeClientDictionaries ();
 #endif // DEBUG_DEBUGGER
-  // step1c: init graphics dictionary
+  // step1c: initialize graphics dictionary
   if (!RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->initialize (graphicsDictionary_in,
                                                                    validateXML_in))
   {
@@ -1627,7 +1627,7 @@ do_work (mode_t mode_in,
       } // end ELSE
       entity.position = level.map.start;
 
-      // step4: init sub-windows (level window, hotspots, minimap, ...)
+      // step4: initialize sub-windows (level window, hotspots, minimap, ...)
 //      RPG_Client_Engine client_engine;
       RPG_Engine level_engine;
       main_window.initialize (&state,
@@ -1747,8 +1747,7 @@ do_printVersion (const std::string& programName_in)
 //   std::cout << programName_in << ACE_TEXT(" : ") << VERSION << std::endl;
   std::cout << programName_in
             << ACE_TEXT_ALWAYS_CHAR (": ")
-            //<< YARP_PACKAGE_VERSION
-            << ACE_TEXT_ALWAYS_CHAR ("N/A")
+            << yarp_PACKAGE_VERSION
             << std::endl;
 
   // step2: SDL version
@@ -2014,7 +2013,7 @@ ACE_TMAIN (int argc_in,
 
   // step1d: initialize logging and/or tracing
   std::string log_file =
-    (log_to_file_b ? Common_Log_Tools::getLogFilename (yarp_PACKAGE_NAME,
+    (log_to_file_b ? Common_Log_Tools::getLogFilename (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                        ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])))
                    : ACE_TEXT_ALWAYS_CHAR (""));
   if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
@@ -2116,10 +2115,10 @@ ACE_TMAIN (int argc_in,
            validate_XML);
   timer.stop ();
   // debug info
-  std::string working_time_string;
   ACE_Time_Value working_time;
   timer.elapsed_time (working_time);
-  working_time_string = Common_Timer_Tools::periodToString (working_time);
+  std::string working_time_string =
+    Common_Timer_Tools::periodToString (working_time);
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
               ACE_TEXT (working_time_string.c_str ())));

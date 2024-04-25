@@ -203,7 +203,7 @@ do_printUsage (const std::string& programName_in)
 } // end print_usage
 
 bool
-do_processArguments (const int argc_in,
+do_processArguments (int argc_in,
                      ACE_TCHAR* argv_in[], // cannot be const...
                      bool& dumpDictionary_out,
                      std::string& directory_out,
@@ -327,7 +327,7 @@ do_work (bool dumpDictionary_in,
   RPG_Dice::initialize ();
   RPG_Dice_Common_Tools::initializeStringConversionTables ();
 
-  // step1: init: sound directory, cache, ...
+  // step1: initialize: sound directory, cache, ...
   struct RPG_Sound_SDLConfiguration sound_configuration;
   sound_configuration.frequency = RPG_SOUND_AUDIO_DEF_FREQUENCY;
   sound_configuration.format = RPG_SOUND_AUDIO_DEF_FORMAT;
@@ -653,10 +653,9 @@ ACE_TMAIN (int argc_in,
            validate_XML);
   timer.stop ();
   // debug info
-  std::string working_time_string;
   ACE_Time_Value working_time;
   timer.elapsed_time (working_time);
-  working_time_string =
+  std::string working_time_string =
     Common_Timer_Tools::periodToString (working_time);
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),

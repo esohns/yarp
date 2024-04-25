@@ -40,7 +40,9 @@
 
 #include "common_log_tools.h"
 
-#ifdef HAVE_CONFIG_H
+#include "common_timer_tools.h"
+
+#if defined (HAVE_CONFIG_H)
 #include "rpg_config.h"
 #endif // HAVE_CONFIG_H
 
@@ -101,20 +103,20 @@ do_printUsage (const std::string& programName_in)
                                                           ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
                                                           true);
 
-  std::cout << ACE_TEXT ("usage: ")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("usage: ")
             << programName_in
-            << ACE_TEXT (" [OPTIONS]")
+            << ACE_TEXT_ALWAYS_CHAR (" [OPTIONS]")
             << std::endl
             << std::endl;
-  std::cout << ACE_TEXT ("currently available options:")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("currently available options:")
             << std::endl;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
-  std::cout << ACE_TEXT ("-g [FILE]  : graphics dictionary (*.xml)")
-            << ACE_TEXT (" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-g [FILE]  : graphics dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -123,10 +125,10 @@ do_printUsage (const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
-  std::cout << ACE_TEXT ("-i [FILE]  : item dictionary (*.xml)")
-            << ACE_TEXT (" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-i [FILE]  : item dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -135,33 +137,33 @@ do_printUsage (const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
-  std::cout << ACE_TEXT ("-m [FILE]  : magic dictionary (*.xml)")
-            << ACE_TEXT (" [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-m [FILE]  : magic dictionary (*.xml)")
+            << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
-            << ACE_TEXT ("\"]")
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
-  std::cout << ACE_TEXT ("-n [VALUE] : (auto-)generate #players")
-            << ACE_TEXT (" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-n [VALUE] : (auto-)generate #players")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << CHARACTER_GENERATOR_DEF_NUM_PLAYERS
-            << ACE_TEXT ("; 0:off]")
+            << ACE_TEXT_ALWAYS_CHAR ("; 0:off]")
             << std::endl;
   path = RPG_Player_Common_Tools::getPlayerProfilesDirectory ();
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
   path += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT);
-  std::cout << ACE_TEXT ("-o <[FILE]>: output file")
-            << ACE_TEXT (" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-o <[FILE]>: output file")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << path
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
-  std::cout << ACE_TEXT ("-r         : random (non-interactive)")
-            << ACE_TEXT (" [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-r         : random (non-interactive)")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
             << CHARACTER_GENERATOR_DEF_RANDOM
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
-  std::cout << ACE_TEXT ("-t         : trace information")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-t         : trace information")
             << std::endl;
-  std::cout << ACE_TEXT ("-v         : print version information and exit")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-v         : print version information and exit")
             << std::endl;
 }
 
@@ -179,7 +181,7 @@ do_processArguments (int argc_in,
 {
   RPG_TRACE (ACE_TEXT ("::do_processArguments"));
 
-  // init results
+  // initialize results
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
@@ -287,7 +289,7 @@ do_processArguments (int argc_in,
       {
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("unrecognized option \"%s\", aborting\n"),
-                    ACE_TEXT (argumentParser.last_option ())));
+                    argumentParser.last_option ()));
         return false;
       }
       default:
@@ -336,25 +338,25 @@ do_printSkillsTable (RPG_Character_Skills_t& skills_in)
       skills_iterator = skills_in.find (iterator->first);
 
 //       std::cout.setf(ios::right);
-      std::cout << ACE_TEXT ("[")
+      std::cout << ACE_TEXT_ALWAYS_CHAR ("[")
                 << std::setw (2)
                 << std::right
                 << index
-                << ACE_TEXT ("]: ")
+                << ACE_TEXT_ALWAYS_CHAR ("]: ")
                 << std::setw (20)
                 << std::left
                 << iterator->second
-                << ACE_TEXT (": ");
+                << ACE_TEXT_ALWAYS_CHAR (": ");
       if (skills_iterator != skills_in.end ())
       {
         std::cout << std::setw (3)
                   << std::right
                   << static_cast<unsigned int> (skills_iterator->second)
-                  << ACE_TEXT (" ");
+                  << ACE_TEXT_ALWAYS_CHAR (" ");
       } // end IF
       else
-        std::cout << ACE_TEXT ("nil ");
-//       std::cout.unsetf(ios::right);
+        std::cout << ACE_TEXT_ALWAYS_CHAR ("nil ");
+      //       std::cout.unsetf(ios::right);
     } // end FOR
 
     std::cout << std::endl;
@@ -363,7 +365,7 @@ do_printSkillsTable (RPG_Character_Skills_t& skills_in)
 
   index--;
 
-  std::cout << ACE_TEXT ("enter index: ");
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("enter index: ");
   std::cin >> choice;
   // sanity check
   if ((choice > index) || (choice < 1))
@@ -387,8 +389,7 @@ do_printSkillsTable (RPG_Character_Skills_t& skills_in)
   // increase skill rank
   choice -= 1;
   iterator = RPG_Common_SkillHelper::myRPG_Common_SkillToStringTable.begin ();
-  ACE_ASSERT (RPG_Common_SkillHelper::myRPG_Common_SkillToStringTable.size () >=
-              choice);
+  ACE_ASSERT (RPG_Common_SkillHelper::myRPG_Common_SkillToStringTable.size () >= choice);
   std::advance (iterator, choice);
   skills_iterator = skills_in.find (iterator->first);
   if (skills_iterator != skills_in.end ())
@@ -401,8 +402,8 @@ do_printSkillsTable (RPG_Character_Skills_t& skills_in)
 }
 
 bool
-do_printFeatsTable (const RPG_Common_SubClass& subClass_in,
-                    const RPG_Character_Attributes& attributes_in,
+do_printFeatsTable (enum RPG_Common_SubClass subClass_in,
+                    const struct RPG_Character_Attributes& attributes_in,
                     const RPG_Character_Skills_t& skills_in,
                     const RPG_Character_Abilities_t& abilities_in,
                     RPG_Character_Feats_t& feats_inout)
@@ -438,15 +439,15 @@ do_printFeatsTable (const RPG_Common_SubClass& subClass_in,
                                                                       abilities_in)))
       {
 //         std::cout.setf(ios::right);
-        std::cout << ACE_TEXT ("[")
+        std::cout << ACE_TEXT_ALWAYS_CHAR ("[")
                   << std::setw (2)
                   << std::right
                   << index
-                  << ACE_TEXT ("]: ")
+                  << ACE_TEXT_ALWAYS_CHAR ("]: ")
                   << std::setw (20)
                   << std::left
-                  << ACE_TEXT (iterator->second.c_str ())
-                  << ACE_TEXT (" ");
+                  << iterator->second
+                  << ACE_TEXT_ALWAYS_CHAR (" ");
 //         std::cout.unsetf(ios::right);
       } // end IF
     } // end FOR
@@ -457,7 +458,7 @@ do_printFeatsTable (const RPG_Common_SubClass& subClass_in,
 
   index--;
 
-  std::cout << ACE_TEXT ("enter index: ");
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("enter index: ");
   std::cin >> choice;
   // sanity check
   if ((choice > index) || (choice < 1))
@@ -482,8 +483,7 @@ do_printFeatsTable (const RPG_Common_SubClass& subClass_in,
   choice -= 1;
   iterator =
     RPG_Character_FeatHelper::myRPG_Character_FeatToStringTable.begin ();
-  ACE_ASSERT (RPG_Character_FeatHelper::myRPG_Character_FeatToStringTable.size () >=
-              choice);
+  ACE_ASSERT (RPG_Character_FeatHelper::myRPG_Character_FeatToStringTable.size () >= choice);
   std::advance (iterator, choice);
 
   feats_iterator = feats_inout.find (iterator->first);
@@ -509,11 +509,11 @@ do_printFeatsTable (const RPG_Common_SubClass& subClass_in,
 
 bool
 do_printSpellsTable (const RPG_Magic_SpellTypes_t& spells_in,
-                     RPG_Magic_SpellType& spell_inout)
+                     enum RPG_Magic_SpellType& spell_inout)
 {
   RPG_TRACE (ACE_TEXT ("::do_printSpellsTable"));
 
-  // init return value
+  // initialize return value
   spell_inout = RPG_MAGIC_SPELLTYPE_INVALID;
 
   RPG_Magic_SpellTypesIterator_t iterator = spells_in.begin ();
@@ -531,14 +531,14 @@ do_printSpellsTable (const RPG_Magic_SpellTypes_t& spells_in,
         break;
 
 //         std::cout.setf(ios::right);
-      std::cout << ACE_TEXT ("[")
+      std::cout << ACE_TEXT_ALWAYS_CHAR ("[")
                 << std::setw (2)
                 << std::right
                 << index
-                << ACE_TEXT ("]: ")
+                << ACE_TEXT_ALWAYS_CHAR ("]: ")
                 << std::setw (20)
                 << std::left
-                << ACE_TEXT (RPG_Magic_Common_Tools::spellToName (*iterator).c_str ());
+                << RPG_Magic_Common_Tools::spellToName (*iterator);
 //         std::cout.unsetf(ios::right);
     } // end FOR
 
@@ -547,7 +547,7 @@ do_printSpellsTable (const RPG_Magic_SpellTypes_t& spells_in,
 
   index--;
 
-  std::cout << ACE_TEXT ("enter index: ");
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("enter index: ");
   std::cin >> choice;
   // sanity check
   if ((choice > index) || (choice < 1))
@@ -587,7 +587,7 @@ do_generatePlayer ()
 
   // step1: name
   std::string name;
-  std::cout << ACE_TEXT ("name: ");
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("name: ");
   std::cin >> name;
 
   // step2: gender
@@ -595,7 +595,7 @@ do_generatePlayer ()
   char c = ' ';
   do
   {
-    std::cout << ACE_TEXT ("gender (m/f): ");
+    std::cout << ACE_TEXT_ALWAYS_CHAR ("gender (m/f): ");
     std::cin >> c;
     switch (c)
     {
@@ -620,11 +620,11 @@ do_generatePlayer ()
   } while (gender == GENDER_NONE);
 
   // step3: race
-  RPG_Character_Race race = RACE_NONE;
+  enum RPG_Character_Race race = RACE_NONE;
   c = ' ';
   do
   {
-    std::cout << ACE_TEXT ("race (h/d/e/f/g/o): ");
+    std::cout << ACE_TEXT_ALWAYS_CHAR ("race (h/d/e/f/g/o): ");
     std::cin >> c;
     switch (c)
     {
@@ -671,13 +671,13 @@ do_generatePlayer ()
   player_race.flip (race - 1);
 
   // step4: class(es)
-  RPG_Character_Class player_class;
+  struct RPG_Character_Class player_class;
   player_class.metaClass = RPG_CHARACTER_METACLASS_INVALID;
-  RPG_Common_SubClass player_subclass = RPG_COMMON_SUBCLASS_INVALID;
+  enum RPG_Common_SubClass player_subclass = RPG_COMMON_SUBCLASS_INVALID;
   c = ' ';
   do
   {
-    std::cout << ACE_TEXT ("class (f/m/c/t): ");
+    std::cout << ACE_TEXT_ALWAYS_CHAR ("class (f/m/c/t): ");
     std::cin >> c;
     switch (c)
     {
@@ -715,13 +715,13 @@ do_generatePlayer ()
     RPG_Character_Class_Common_Tools::subClassToMetaClass (player_subclass);
 
   // step5: alignment
-  RPG_Character_Alignment alignment;
+  struct RPG_Character_Alignment alignment;
   alignment.civic = RPG_CHARACTER_ALIGNMENTCIVIC_INVALID;
   alignment.ethic = RPG_CHARACTER_ALIGNMENTETHIC_INVALID;
   c = ' ';
   do
   {
-    std::cout << ACE_TEXT ("alignment - civic (l/n/c): ");
+    std::cout << ACE_TEXT_ALWAYS_CHAR ("alignment - civic (l/n/c): ");
     std::cin >> c;
     switch (c)
     {
@@ -749,7 +749,7 @@ do_generatePlayer ()
       }
     } // end SWITCH
 
-    std::cout << ACE_TEXT ("alignment - ethic (g/n/e): ");
+    std::cout << ACE_TEXT_ALWAYS_CHAR ("alignment - ethic (g/n/e): ");
     std::cin >> c;
     switch (c)
     {
@@ -780,9 +780,9 @@ do_generatePlayer ()
            (alignment.ethic == RPG_CHARACTER_ALIGNMENTETHIC_INVALID));
 
   // step6: attributes
-  RPG_Character_Attributes attributes;
+  struct RPG_Character_Attributes attributes;
   unsigned char* p = NULL;
-  RPG_Dice_Roll roll;
+  struct RPG_Dice_Roll roll;
   roll.numDice = 2;
   roll.typeDice = D_10;
   roll.modifier = -2; // interval: 0-18
@@ -817,29 +817,29 @@ do_generatePlayer ()
       *p = (result[i] == 0 ? 1 : result[i]);
     } // end FOR
 
-    std::cout << ACE_TEXT ("base attributes: ")
+    std::cout << ACE_TEXT_ALWAYS_CHAR ("base attributes: ")
               << std::endl;
-    std::cout << ACE_TEXT ("strength: ")
+    std::cout << ACE_TEXT_ALWAYS_CHAR ("strength: ")
               << static_cast<int> (attributes.strength)
               << std::endl;
-    std::cout << ACE_TEXT ("dexterity: ")
+    std::cout << ACE_TEXT_ALWAYS_CHAR ("dexterity: ")
               << static_cast<int> (attributes.dexterity)
               << std::endl;
-    std::cout << ACE_TEXT ("constitution: ")
+    std::cout << ACE_TEXT_ALWAYS_CHAR ("constitution: ")
               << static_cast<int> (attributes.constitution)
               << std::endl;
-    std::cout << ACE_TEXT ("intelligence: ")
+    std::cout << ACE_TEXT_ALWAYS_CHAR ("intelligence: ")
               << static_cast<int> (attributes.intelligence)
               << std::endl;
-    std::cout << ACE_TEXT ("wisdom: ")
+    std::cout << ACE_TEXT_ALWAYS_CHAR ("wisdom: ")
               << static_cast<int> (attributes.wisdom)
               << std::endl;
-    std::cout << ACE_TEXT ("charisma: ")
+    std::cout << ACE_TEXT_ALWAYS_CHAR ("charisma: ")
               << static_cast<int> (attributes.charisma)
               << std::endl;
-    std::cout << ACE_TEXT ("[sum: ")
+    std::cout << ACE_TEXT_ALWAYS_CHAR ("[sum: ")
               << sum
-              << ACE_TEXT ("] --> OK ? (y/n): ");
+              << ACE_TEXT_ALWAYS_CHAR ("] --> OK ? (y/n): ");
     std::cin >> c;
   } while (c == 'n');
 
@@ -865,13 +865,13 @@ do_generatePlayer ()
   do
   {
     // header line
-    std::cout << ACE_TEXT ("remaining skill points: ")
+    std::cout << ACE_TEXT_ALWAYS_CHAR ("remaining skill points: ")
               << initial_skill_points
               << std::endl;
     std::cout << std::setw (80)
-              << std::setfill (ACE_TEXT_ALWAYS_CHAR ('-'))
-              << ACE_TEXT ("")
-              << std::setfill (ACE_TEXT_ALWAYS_CHAR (' '))
+              << std::setfill ('-')
+              << ACE_TEXT_ALWAYS_CHAR ("")
+              << std::setfill (' ')
               << std::endl;
 
     if (do_printSkillsTable (skills))
@@ -894,13 +894,13 @@ do_generatePlayer ()
   do
   {
     // header line
-    std::cout << ACE_TEXT ("remaining feat(s): ")
+    std::cout << ACE_TEXT_ALWAYS_CHAR ("remaining feat(s): ")
               << initial_feats
               << std::endl;
     std::cout << std::setw (80)
-              << std::setfill (ACE_TEXT_ALWAYS_CHAR ('-'))
-              << ACE_TEXT ("")
-              << std::setfill (ACE_TEXT_ALWAYS_CHAR (' '))
+              << std::setfill ('-')
+              << ACE_TEXT_ALWAYS_CHAR ("")
+              << std::setfill (' ')
               << std::endl;
 
     if (do_printFeatsTable (player_subclass,
@@ -912,7 +912,7 @@ do_generatePlayer ()
   } while (initial_feats);
 
   // step9: off-hand
-  RPG_Character_OffHand off_hand = OFFHAND_LEFT;
+  enum RPG_Character_OffHand off_hand = OFFHAND_LEFT;
   roll.numDice = 1;
   roll.typeDice = D_100;
   roll.modifier = 0;
@@ -925,7 +925,7 @@ do_generatePlayer ()
     off_hand = OFFHAND_RIGHT;
 
   // step10: HP
-  unsigned short int hit_points = 0;
+  ACE_UINT16 hit_points = 0;
   roll.numDice = 1;
   roll.typeDice = RPG_Character_Common_Tools::getHitDie (player_subclass);
   roll.modifier = 0;
@@ -948,7 +948,7 @@ do_generatePlayer ()
   RPG_Magic_SpellTypes_t known_spells;
   RPG_Magic_Spells_t spells;
   RPG_Magic_SpellTypes_t available;
-  RPG_Magic_SpellType chosen_spell = RPG_MAGIC_SPELLTYPE_INVALID;
+  enum RPG_Magic_SpellType chosen_spell = RPG_MAGIC_SPELLTYPE_INVALID;
   int num_chosen = 0;
   RPG_Magic_SpellsIterator_t available_iterator;
   RPG_Magic_CasterClassUnion caster_class;
@@ -994,13 +994,13 @@ do_generatePlayer ()
         {
           chosen_spell = RPG_MAGIC_SPELLTYPE_INVALID;
           // header line
-          std::cout << ACE_TEXT ("remaining spell(s): ")
+          std::cout << ACE_TEXT_ALWAYS_CHAR ("remaining spell(s): ")
                     << (num_known_spells - num_chosen)
                     << std::endl;
           std::cout << std::setw (80)
-                    << std::setfill (ACE_TEXT_ALWAYS_CHAR ('-'))
-                    << ACE_TEXT ("")
-                    << std::setfill (ACE_TEXT_ALWAYS_CHAR (' '))
+                    << std::setfill ('-')
+                    << ACE_TEXT_ALWAYS_CHAR ("")
+                    << std::setfill (' ')
                     << std::endl;
 
           if (do_printSpellsTable (available,
@@ -1030,13 +1030,13 @@ do_generatePlayer ()
       {
         chosen_spell = RPG_MAGIC_SPELLTYPE_INVALID;
         // header line
-        std::cout << ACE_TEXT ("remaining spell(s): ")
+        std::cout << ACE_TEXT_ALWAYS_CHAR ("remaining spell(s): ")
                   << (num_spells - num_chosen)
                   << std::endl;
         std::cout << std::setw (80)
-                  << std::setfill (ACE_TEXT_ALWAYS_CHAR ('-'))
-                  << ACE_TEXT ("")
-                  << std::setfill (ACE_TEXT_ALWAYS_CHAR (' '))
+                  << std::setfill ('-')
+                  << ACE_TEXT_ALWAYS_CHAR ("")
+                  << std::setfill (' ')
                   << std::endl;
 
         if (do_printSpellsTable ((RPG_Magic_Common_Tools::isDivineCasterClass (*iterator) ? available
@@ -1106,7 +1106,7 @@ do_work (const std::string& schemaRepository_in,
 {
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
-  // step1: init engine (randomization, string conversion facilities, ...)
+  // step1: initialize engine (randomization, string conversion facilities, ...)
   std::string schema_repository_string = schemaRepository_in;
   schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   schema_repository_string += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
@@ -1159,7 +1159,7 @@ do_work (const std::string& schemaRepository_in,
       c = ' ';
       do
       {
-        std::cout << ACE_TEXT ("menu options (rETRY/sAVE/qUIT): ");
+        std::cout << ACE_TEXT_ALWAYS_CHAR ("menu options (rETRY/sAVE/qUIT): ");
         std::cin >> c;
         switch (c)
         {
@@ -1183,9 +1183,9 @@ do_work (const std::string& schemaRepository_in,
               c = ' ';
               do
               {
-                std::cout << ACE_TEXT ("file \"")
+                std::cout << ACE_TEXT_ALWAYS_CHAR ("file \"")
                           << path
-                          << ACE_TEXT ("\" exists, overwrite ? (y/n): ");
+                          << ACE_TEXT_ALWAYS_CHAR ("\" exists, overwrite ? (y/n): ");
                 std::cin >> c;
                 switch (c)
                 {
@@ -1233,8 +1233,7 @@ do_work (const std::string& schemaRepository_in,
             break;
           }
         } // end SWITCH
-      } while ((c != 'r') &&
-               (c != 'q'));
+      } while ((c != 'r') && (c != 'q'));
     } // end IF
     else
     {
@@ -1288,11 +1287,11 @@ do_work (const std::string& schemaRepository_in,
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("failed to RPG_Character_Player::save(\"%s\"), continuing\n"),
                     ACE_TEXT (path.c_str ())));
-//      else
-//        ACE_DEBUG((LM_DEBUG,
-//                   ACE_TEXT("saved player \"%s\" to file: \"%s\"\n"),
-//                   ACE_TEXT(player_p->getName().c_str()),
-//                   ACE_TEXT(path.c_str())));
+      else
+        ACE_DEBUG ((LM_DEBUG,
+                    ACE_TEXT ("saved player \"%s\" to file: \"%s\"\n"),
+                    ACE_TEXT (player_p->getName ().c_str ()),
+                    ACE_TEXT (path.c_str ())));
 
       num_players++;
       if (num_players == numPlayers_in)
@@ -1313,10 +1312,10 @@ do_printVersion (const std::string& programName_in)
   RPG_TRACE (ACE_TEXT ("::do_printVersion"));
 
   std::cout << programName_in
-#ifdef HAVE_CONFIG_H
-            << ACE_TEXT(" : ")
-            //<< RPG_VERSION
-#endif
+#if defined (HAVE_CONFIG_H)
+            << ACE_TEXT_ALWAYS_CHAR (" : ")
+            << yarp_PACKAGE_VERSION
+#endif // HAVE_CONFIG_H
             << std::endl;
 
   // create version string...
@@ -1326,7 +1325,7 @@ do_printVersion (const std::string& programName_in)
   std::ostringstream version_number;
   if (version_number << ACE::major_version ())
   {
-    version_number << ACE_TEXT (".");
+    version_number << ACE_TEXT_ALWAYS_CHAR (".");
   } // end IF
   else
   {
@@ -1336,7 +1335,7 @@ do_printVersion (const std::string& programName_in)
   } // end ELSE
   if (version_number << ACE::minor_version ())
   {
-    version_number << ".";
+    version_number << ACE_TEXT_ALWAYS_CHAR (".");
 
     if (version_number << ACE::beta_version ())
     {
@@ -1355,7 +1354,7 @@ do_printVersion (const std::string& programName_in)
                 ACE_TEXT ("failed to convert: \"%m\", returning\n")));
     return;
   } // end ELSE
-  std::cout << ACE_TEXT ("ACE: ")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("ACE: ")
             << version_number.str ()
             << std::endl;
 //   std::cout << "ACE: "
@@ -1377,13 +1376,13 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT ("failed to ACE::init(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
   // step1: initialize configuration
   Common_File_Tools::initialize (argv_in[0]);
 
   // step1a: set defaults
-  // init configuration
+  // initialize configuration
   std::string schema_repository = Common_File_Tools::getWorkingDirectory ();
 
   std::string configuration_path =
@@ -1448,14 +1447,14 @@ ACE_TMAIN (int argc_in,
                             print_version_and_exit))
   {
     // make 'em learn...
-    do_printUsage (ACE::basename (argv_in[0]));
+    do_printUsage (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -1467,21 +1466,21 @@ ACE_TMAIN (int argc_in,
       !Common_File_Tools::isDirectory (graphics_directory))
   {
     // make 'em learn...
-    do_printUsage (std::string (ACE::basename (argv_in[0])));
+    do_printUsage (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
 
   // step2: initialize logging and/or tracing
   std::string log_file;
-  if (!Common_Log_Tools::initializeLogging (ACE::basename (argv_in[0]), // program name
+  if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
                                             log_file,                   // logfile
                                             false,                      // log to syslog ?
                                             false,                      // trace messages ?
@@ -1496,7 +1495,7 @@ ACE_TMAIN (int argc_in,
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_FAILURE;
   } // end IF
@@ -1504,14 +1503,14 @@ ACE_TMAIN (int argc_in,
   // step3: handle specific program modes
   if (print_version_and_exit)
   {
-    do_printVersion (ACE::basename (argv_in[0]));
+    do_printVersion (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to ACE::fini(): \"%m\", continuing\n")));
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
     return EXIT_SUCCESS;
   } // end IF
@@ -1530,16 +1529,14 @@ ACE_TMAIN (int argc_in,
            random);
   timer.stop ();
 
-//   // debug info
-//   std::string working_time_string;
-//   ACE_Time_Value working_time;
-//   timer.elapsed_time(working_time);
-//   RPG_Common_Tools::Period2String(working_time,
-//                                   working_time_string);
-//
-//   ACE_DEBUG((LM_DEBUG,
-//              ACE_TEXT("total working time (h:m:s.us): \"%s\"...\n"),
-//              ACE_TEXT(working_time_string.c_str())));
+   // debug info
+   ACE_Time_Value working_time;
+   timer.elapsed_time (working_time);
+   std::string working_time_string =
+     Common_Timer_Tools::periodToString (working_time);
+   ACE_DEBUG ((LM_DEBUG,
+               ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
+               ACE_TEXT (working_time_string.c_str ())));
 
   // *PORTABILITY*: on Windows, fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -1549,7 +1546,7 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
     return EXIT_FAILURE;
   } // end IF
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 
   return EXIT_SUCCESS;
 }

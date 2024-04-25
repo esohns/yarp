@@ -115,7 +115,7 @@ do_printUsage (const std::string& programName_in)
 } // end print_usage
 
 bool
-do_processArguments (const int argc_in,
+do_processArguments (int argc_in,
                      ACE_TCHAR** argv_in, // cannot be const...
                      bool& buildCorridors_out,
                      bool& debugParser_out,
@@ -290,8 +290,8 @@ do_work (bool buildCorridors_in,
                   (*target_door).position.second));
       continue;
     } // end IF
-    ACE_ASSERT ((current_path.front().first == (*iterator).position) &&
-                (current_path.back().first  == (*target_door).position));
+    ACE_ASSERT ((current_path.front ().first == (*iterator).position) &&
+                (current_path.back ().first  == (*target_door).position));
 
     // print path
     ACE_DEBUG ((LM_DEBUG,
@@ -412,7 +412,7 @@ do_printVersion (const std::string& programName_in)
   // version number... Need this, as the library soname is compared to this
   // string
   std::ostringstream version_number;
-  if (version_number << ACE::major_version())
+  if (version_number << ACE::major_version ())
   {
     version_number << ACE_TEXT_ALWAYS_CHAR (".");
   } // end IF
@@ -575,10 +575,9 @@ ACE_TMAIN (int argc_in,
   timer.stop ();
 
   // debug info
-  std::string working_time_string;
   ACE_Time_Value working_time;
   timer.elapsed_time (working_time);
-  working_time_string =
+  std::string working_time_string =
     Common_Timer_Tools::periodToString (working_time);
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),

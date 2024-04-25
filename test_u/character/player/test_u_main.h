@@ -43,11 +43,11 @@ class test_u_main
  private:
  #if defined (ACE_WIN32) || defined (ACE_WIN64)
   typedef ACE_Main_Base inherited;
- #endif
+ #endif // ACE_WIN32 || ACE_WIN64
 
   // helper methods
   void print_usage (const std::string&);
-  bool process_arguments (const int&,    // argc
+  bool process_arguments (int,           // argc
                           ACE_TCHAR**,   // argv (*NOTE*: cannot be const)...
                           std::string&,  // client UI file
                           std::string&,  // graphics dictionary

@@ -118,15 +118,15 @@ do_printUsage (const std::string& programName_in)
                                                           ACE_TEXT_ALWAYS_CHAR (""),
                                                           true);
 
-  std::cout << ACE_TEXT ("usage: ")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("usage: ")
             << programName_in
-            << ACE_TEXT (" [OPTIONS]")
+            << ACE_TEXT_ALWAYS_CHAR (" [OPTIONS]")
             << std::endl
             << std::endl;
-  std::cout << ACE_TEXT ("currently available options:") << std::endl;
-  std::cout << ACE_TEXT ("-c [VALUE]   : max #connections ([")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("currently available options:") << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-c [VALUE]   : max #connections ([")
             << RPG_NET_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS
-            << ACE_TEXT ("])")
+            << ACE_TEXT_ALWAYS_CHAR ("])")
             << std::endl;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -135,59 +135,60 @@ do_printUsage (const std::string& programName_in)
 //  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 //#endif
   path += ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_FILE);
-  std::cout << ACE_TEXT ("-g[[STRING]] : UI file [\"")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-g[[STRING]] : UI file [\"")
             << path
-            << ACE_TEXT ("\"] {\"\" --> no GUI}")
+            << ACE_TEXT_ALWAYS_CHAR ("\"] {\"\" --> no GUI}")
             << std::endl;
-  std::cout << ACE_TEXT ("-i [VALUE]   : client ping interval (ms) [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-i [VALUE]   : client ping interval (ms) [")
             << NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL
-            << ACE_TEXT ("] {0 --> OFF})")
+            << ACE_TEXT_ALWAYS_CHAR ("] {0 --> OFF})")
             << std::endl;
-//  std::cout << ACE_TEXT("-k [VALUE]  : client keep-alive timeout ([")
+//  std::cout << ACE_TEXT_ALWAYS_CHAR("-k [VALUE]  : client keep-alive timeout ([")
 //            << RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE
-//            << ACE_TEXT("] second(s) {0 --> no timeout})")
+//            << ACE_TEXT_ALWAYS_CHAR("] second(s) {0 --> no timeout})")
 //            << std::endl;
-  std::cout << ACE_TEXT ("-l           : log to a file [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-l           : log to a file [")
             << false
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
-  std::cout << ACE_TEXT ("-m           : receive uni/multi/broadcast UDP [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-m           : receive uni/multi/broadcast UDP [")
             << false
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
-  std::cout << ACE_TEXT ("-n [STRING]  : network interface [\"")
-            << ACE_TEXT (RPG_NET_DEFAULT_NETWORK_INTERFACE)
-            << ACE_TEXT ("\"]")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-n [STRING]  : network interface [\"")
+            << ACE_TEXT_ALWAYS_CHAR (RPG_NET_DEFAULT_NETWORK_INTERFACE)
+            << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
   // *TODO*: this doesn't really make sense (yet)
-  std::cout << ACE_TEXT ("-o           : use loopback [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-o           : use loopback [")
             << false
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
-  std::cout << ACE_TEXT ("-p [VALUE]   : listening port [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-p [VALUE]   : listening port [")
             << RPG_NET_DEFAULT_PORT
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
-  std::cout << ACE_TEXT ("-r           : use reactor [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-r           : use reactor [")
             << (COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR)
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
-  std::cout << ACE_TEXT ("-s [VALUE]   : statistics reporting interval (second(s)) [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-s [VALUE]   : statistics reporting interval (second(s)) [")
             << RPG_NET_DEFAULT_STATISTICS_REPORTING_INTERVAL
-            << ACE_TEXT ("] {0 --> OFF})")
+            << ACE_TEXT_ALWAYS_CHAR ("] {0 --> OFF})")
             << std::endl;
-  std::cout << ACE_TEXT ("-t           : trace information") << std::endl;
-  std::cout << ACE_TEXT ("-v           : print version information and exit")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-t           : trace information")
             << std::endl;
-  std::cout << ACE_TEXT ("-x [VALUE]   : #dispatch threads [")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-v           : print version information and exit")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-x [VALUE]   : #dispatch threads [")
             << ((COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR) ? NET_CLIENT_DEFAULT_NUMBER_OF_REACTOR_DISPATCH_THREADS
                                                                                  : NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS)
-            << ACE_TEXT ("]")
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
 }
 
 bool
-do_processArguments (const int& argc_in,
+do_processArguments (int argc_in,
                      ACE_TCHAR** argv_in, // cannot be const...
                      unsigned int& maxNumConnections_out,
                      unsigned int& clientPingInterval_out,
@@ -254,7 +255,7 @@ do_processArguments (const int& argc_in,
       {
         converter.clear ();
         converter.str (ACE_TEXT_ALWAYS_CHAR (""));
-        converter << argumentParser.opt_arg ();
+        converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         converter >> maxNumConnections_out;
         break;
       }
@@ -271,7 +272,7 @@ do_processArguments (const int& argc_in,
       {
         converter.clear ();
         converter.str (ACE_TEXT_ALWAYS_CHAR (""));
-        converter << argumentParser.opt_arg ();
+        converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         converter >> clientPingInterval_out;
         break;
       }
@@ -279,7 +280,7 @@ do_processArguments (const int& argc_in,
 //      {
 //        converter.clear();
 //        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-//        converter << argumentParser.opt_arg();
+//        converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg());
 //        converter >> keepAliveTimeout_out;
 //        break;
 //      }
@@ -308,7 +309,7 @@ do_processArguments (const int& argc_in,
       {
         converter.clear ();
         converter.str (ACE_TEXT_ALWAYS_CHAR (""));
-        converter << argumentParser.opt_arg ();
+        converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         converter >> listeningPortNumber_out;
         break;
       }
@@ -321,7 +322,7 @@ do_processArguments (const int& argc_in,
       {
         converter.clear ();
         converter.str (ACE_TEXT_ALWAYS_CHAR (""));
-        converter << argumentParser.opt_arg ();
+        converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         converter >> statisticsReportingInterval_out;
         break;
       }
@@ -339,7 +340,7 @@ do_processArguments (const int& argc_in,
       {
         converter.clear ();
         converter.str (ACE_TEXT_ALWAYS_CHAR (""));
-        converter << argumentParser.opt_arg ();
+        converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         converter >> numDispatchThreads_out;
         break;
       }
@@ -348,7 +349,7 @@ do_processArguments (const int& argc_in,
       {
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("unrecognized option \"%s\", aborting\n"),
-                    ACE_TEXT (argumentParser.last_option ())));
+                    argumentParser.last_option ()));
         return false;
       }
       default:
@@ -445,7 +446,7 @@ do_initializeSignals (bool useReactor_in,
     if (proactor_impl->get_impl_type () == ACE_POSIX_Proactor::PROACTOR_SIG)
       signals_out.sig_del (COMMON_EVENT_PROACTOR_SIG_RT_SIGNAL);
   } // end IF
-#endif
+#endif // ACE_WIN32 || ACE_WIN64
 }
 
 void
@@ -758,10 +759,10 @@ do_printVersion (const std::string& programName_in)
   RPG_TRACE (ACE_TEXT ("::do_printVersion"));
 
   std::cout << programName_in
-#ifdef HAVE_CONFIG_H
-            << ACE_TEXT(" : ")
-            //<< RPG_VERSION
-#endif
+#if defined (HAVE_CONFIG_H)
+            << ACE_TEXT_ALWAYS_CHAR (" : ")
+            << yarp_PACKAGE_VERSION
+#endif // HAVE_CONFIG_H
             << std::endl;
 
   // create version string...
@@ -770,12 +771,17 @@ do_printVersion (const std::string& programName_in)
   // string
   std::ostringstream version_number;
   version_number << ACE::major_version ();
-  version_number << ACE_TEXT (".");
+  version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << ACE::minor_version ();
-  version_number << ACE_TEXT (".");
-
-  std::cout << ACE_TEXT ("ACE: ") << version_number.str () << std::endl;
-//   std::cout << "ACE: "
+  if (ACE::beta_version ())
+  {
+    version_number << ACE_TEXT_ALWAYS_CHAR (".");
+    version_number << ACE::beta_version ();
+  } // end IF
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("ACE: ")
+            << version_number.str ()
+            << std::endl;
+  //   std::cout << "ACE: "
 //             << ACE_VERSION
 //             << std::endl;
 }
@@ -786,7 +792,7 @@ ACE_TMAIN (int argc_in,
 {
   RPG_TRACE (ACE_TEXT ("::main"));
 
-  // step0: init
+  // step0: initialize
 // *PORTABILITY*: on Windows, init ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::init () == -1)
@@ -802,7 +808,7 @@ ACE_TMAIN (int argc_in,
   // start profile timer...
   process_profile.start();
 
-  Common_File_Tools::initialize (argv_in[0]);
+  Common_File_Tools::initialize (ACE_TEXT_ALWAYS_CHAR (argv_in[0]));
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                           ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
@@ -858,7 +864,7 @@ ACE_TMAIN (int argc_in,
                             num_dispatch_threads))
   {
     // make 'em learn...
-    do_printUsage (ACE::basename (argv_in[0]));
+    do_printUsage (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -892,7 +898,7 @@ ACE_TMAIN (int argc_in,
                 ACE_TEXT (UI_file.c_str ())));
 
     // make 'em learn...
-    do_printUsage (ACE::basename (argv_in[0]));
+    do_printUsage (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -949,8 +955,8 @@ ACE_TMAIN (int argc_in,
   //                      &gtk_cb_user_data.stackLock);
   std::string log_file =
     Common_Log_Tools::getLogFilename (ACE_TEXT_ALWAYS_CHAR (""),
-                                      ACE::basename(argv_in[0]));
-  if (!Common_Log_Tools::initializeLogging (ACE::basename(argv_in[0]),     // program name
+                                      ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
+  if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
                                             log_file,                      // logfile
                                             true,                          // log to syslog ?
                                             false,                         // trace messages ?
@@ -975,7 +981,7 @@ ACE_TMAIN (int argc_in,
   // step1f: handle specific program modes
   if (print_version_and_exit)
   {
-    do_printVersion (ACE::basename (argv_in[0]));
+    do_printVersion (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -1039,10 +1045,9 @@ ACE_TMAIN (int argc_in,
   highres_timer.stop ();
 
   // debug info
-  std::string working_time_string;
   ACE_Time_Value working_time;
   highres_timer.elapsed_time (working_time);
-  working_time_string =
+  std::string working_time_string =
     Common_Timer_Tools::periodToString (working_time);
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
