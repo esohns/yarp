@@ -21,7 +21,7 @@
 
 #include "rpg_map_pathfinding_tools.h"
 
-#include <iostream>
+#include <sstream>
 
 #include "ace/Log_Msg.h"
 
@@ -153,7 +153,7 @@ RPG_Map_Pathfinding_Tools::findPath (const RPG_Map_Size_t& size_in,
       {
         if ((*iterator).second < (*position).second)
         {
-          // *TODO*: can this be done without a cast ?
+          // *TODO*: how can this be done without a cast ?
           const_cast<unsigned int&> ((*position).second) = (*iterator).second;
         } // end IF
       } // end IF
@@ -210,7 +210,7 @@ RPG_Map_Pathfinding_Tools::findPath (const RPG_Map_Size_t& size_in,
 
     // --> must be locked in by obstacles, no trail
 
-    ACE_DEBUG ((LM_DEBUG,
+    ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("could not find a path [%u,%u] --> [%u,%u], returning\n"),
                 start_in.first,
                 start_in.second,
@@ -219,11 +219,11 @@ RPG_Map_Pathfinding_Tools::findPath (const RPG_Map_Size_t& size_in,
     return;
   } // end IF
 
-  unsigned int index = 0;
-  RPG_Map_Direction direction = RPG_MAP_DIRECTION_INVALID;
+  //unsigned int index = 0;
+  enum RPG_Map_Direction direction = RPG_MAP_DIRECTION_INVALID;
   // start at the end
   RPG_Map_AStar_NodeListConstIterator_t current_node = closedPath.end ();
-  current_node--;
+  --current_node;
 
 //   ACE_DEBUG((LM_DEBUG,
 //              ACE_TEXT("step[#%u]: (%u,%u - @%u)\n"),
@@ -236,28 +236,24 @@ RPG_Map_Pathfinding_Tools::findPath (const RPG_Map_Size_t& size_in,
                                        RPG_MAP_DIRECTION_INVALID));
   for (;
        (*current_node).first.position != start_in;
-       index++)
+       /*++index*/)
   {
     // find previous node
     for (previous_node = closedPath.begin ();
          previous_node != closedPath.end ();
          previous_node++)
-      if ((*previous_node).first.position ==
-          (*current_node).first.last_position)
+      if ((*previous_node).first.position == (*current_node).first.last_position)
         break;
     ACE_ASSERT (previous_node != closedPath.end ());
 
     // compute direction
-    if ((*current_node).first.position.second ==
-        (*previous_node).first.position.second)
-      if ((*current_node).first.position.first ==
-          ((*previous_node).first.position.first + 1))
+    if ((*current_node).first.position.second == (*previous_node).first.position.second)
+      if ((*current_node).first.position.first == ((*previous_node).first.position.first + 1))
         direction = DIRECTION_RIGHT;
       else
         direction = DIRECTION_LEFT;
     else
-      if ((*current_node).first.position.second ==
-          ((*previous_node).first.position.second + 1))
+      if ((*current_node).first.position.second == ((*previous_node).first.position.second + 1))
         direction = DIRECTION_DOWN;
       else
         direction = DIRECTION_UP;
@@ -268,7 +264,7 @@ RPG_Map_Pathfinding_Tools::findPath (const RPG_Map_Size_t& size_in,
 //                (*previous_node).first.position.first,
 //                (*previous_node).first.position.second,
 //                (*previous_node).second,
-//                RPG_Map_Common_Tools::direction2String(direction).c_str()));
+//                ACE_TEXT (RPG_Map_Common_Tools::directionToString (direction).c_str ())));
 
     path_out.push_front (std::make_pair ((*previous_node).first.position,
                                          direction));
@@ -276,15 +272,6 @@ RPG_Map_Pathfinding_Tools::findPath (const RPG_Map_Size_t& size_in,
     current_node = previous_node;
   } // end FOR
 //   path_out.push_front(std::make_pair((*current_node).first.position, direction));
-
-  //// debug info
-  //if (closedPath.back().first.position != end_in)
-  //  ACE_DEBUG((LM_DEBUG,
-  //             ACE_TEXT("could not find a path [%u,%u] --> [%u,%u], continuing\n"),
-  //             start_in.first,
-  //             start_in.second,
-  //             end_in.first,
-  //             end_in.second));
 }
 
 void
@@ -384,6 +371,7 @@ RPG_Map_Pathfinding_Tools::print (const RPG_Map_Path_t& path_in,
   RPG_Map_Position_t current_position;
   struct RPG_Map_Door current_position_door;
   bool done = false;
+  std::ostringstream converter;
   for (unsigned int y = 0;
        y < plan_in.size_y;
        y++)
@@ -394,23 +382,21 @@ RPG_Map_Pathfinding_Tools::print (const RPG_Map_Path_t& path_in,
     {
       current_position = std::make_pair (x, y);
       current_position_door.position = current_position;
-      done = false;
 
       // part of the path ?
+      done = false;
       for (path_iterator = path_in.begin ();
            path_iterator != path_in.end ();
            path_iterator++)
         if ((*path_iterator).first == current_position)
         {
           if ((*path_iterator).first == path_in.front ().first)
-            std::clog << 'A'; // start position
+            converter << 'A'; // start position
           else if ((*path_iterator).first == path_in.back ().first)
-            std::clog << 'B'; // end position
+            converter << 'B'; // end position
           else
-            std::clog << 'x'; // path step
-
+            converter << 'x'; // path step
           done = true;
-
           break;
         } // end IF
       if (done)
@@ -418,14 +404,17 @@ RPG_Map_Pathfinding_Tools::print (const RPG_Map_Path_t& path_in,
 
       // unmapped, floor, wall, or door ?
       if (plan_in.unmapped.find (current_position) != plan_in.unmapped.end ())
-        std::clog << ' '; // unmapped
+        converter << ' '; // unmapped
       else if (plan_in.walls.find (current_position) != plan_in.walls.end ())
-        std::clog << '#'; // wall
+        converter << '#'; // wall
       else if (plan_in.doors.find (current_position_door) != plan_in.doors.end ())
-        std::clog << '='; // door
+        converter << '='; // door
       else
-        std::clog << '.'; // floor
+        converter << '.'; // floor
     } // end FOR
-    std::clog << std::endl;
+    converter << std::endl;
   } // end FOR
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("%s\n"),
+              ACE_TEXT (converter.str ().c_str ())));
 }

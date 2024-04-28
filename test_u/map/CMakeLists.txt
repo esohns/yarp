@@ -230,7 +230,7 @@ elseif (WIN32)
 endif ()
 create_target_launcher (${EXECUTABLE_3}
                         COMMAND ${COMMAND}
-                        ARGS "-t"
+                        ARGS "-l -t"
                         FORWARD_ARGS
                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
                                              ${LIB_ROOT}/xerces-c/build/msvc/src/Debug

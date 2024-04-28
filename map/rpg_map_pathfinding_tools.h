@@ -39,12 +39,12 @@ class RPG_Map_Pathfinding_Tools
                         const RPG_Map_Position_t&,  // end position
                         RPG_Map_Path_t&);           // return value: path
 
-  // "classic" raytrace algorithm (aka "line-of-sight" / "field-of-view")
+  // "classic" raytrace algorithm (works if start/end have "line-of-sight")
   static void findPath (const RPG_Map_Position_t&, // start position
                         const RPG_Map_Position_t&, // end position
                         RPG_Map_PositionList_t&);  // return value: path
 
-  // *NOTE*: returns a ("best-guess") estimate of the relative direction from A to B
+  // *NOTE*: returns a "best-guess" of the relative direction from A to B
   static enum RPG_Map_Direction getDirection (const RPG_Map_Position_t&,  // start position
                                               const RPG_Map_Position_t&); // end position
 
@@ -57,12 +57,8 @@ class RPG_Map_Pathfinding_Tools
     RPG_Map_Position_t position;
     RPG_Map_Position_t last_position;
 
-    inline RPG_Map_AStar_Position& operator= (const struct RPG_Map_AStar_Position& rhs_in)
-    {
-      this->position = rhs_in.position;
-      this->last_position = rhs_in.last_position;
-      return *this;
-    }
+    //inline RPG_Map_AStar_Position& operator= (const struct RPG_Map_AStar_Position& rhs_in)
+    //{ this->position = rhs_in.position; this->last_position = rhs_in.last_position; return *this; }
     inline bool operator== (const struct RPG_Map_AStar_Position& rhs_in) const
     { return (this->position == rhs_in.position); }
   };
@@ -85,22 +81,22 @@ class RPG_Map_Pathfinding_Tools
                                  RPG_Map_AStar_Node_t,
                                  bool>
   {
-    inline bool operator() (const RPG_Map_AStar_Node_t& __first,
-                            const RPG_Map_AStar_Node_t& __second) const
+    inline bool operator() (const RPG_Map_AStar_Node_t& node1,
+                            const RPG_Map_AStar_Node_t& node2) const
     {
-      return ((__first.second < __second.second) ||
-              (!(__second.second < __first.second) && (__first.first.position < __second.first.position)));
+      return ((node1.second < node2.second) || // sort by cost, then position
+              (!(node1.second > node2.second) && (node1.first.position < node2.first.position)));
     }
   };
-  typedef std::set<RPG_Map_AStar_Node_t, node_compare> RPG_Map_AStar_Nodes_t;
+  typedef std::set<RPG_Map_AStar_Node_t, struct node_compare> RPG_Map_AStar_Nodes_t;
   typedef RPG_Map_AStar_Nodes_t::const_iterator RPG_Map_AStar_NodesConstIterator_t;
   typedef RPG_Map_AStar_Nodes_t::iterator RPG_Map_AStar_NodesIterator_t;
   typedef RPG_Map_AStar_Nodes_t RPG_Map_AStar_OpenPath_t;
 };
 
-static bool
-operator== (const RPG_Map_Pathfinding_Tools::RPG_Map_AStar_Node_t& __x,
-            const RPG_Map_Pathfinding_Tools::RPG_Map_AStar_Node_t& __y)
-{ return (__x.first == __y.first); };
+static inline bool
+operator== (const RPG_Map_Pathfinding_Tools::RPG_Map_AStar_Node_t& node1,
+            const RPG_Map_Pathfinding_Tools::RPG_Map_AStar_Node_t& node2)
+{ return (node1.first == node2.first); };
 
 #endif

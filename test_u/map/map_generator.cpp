@@ -138,11 +138,11 @@ do_printUsage (const std::string& programName_in)
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #endif
   path +=
-      (MAP_GENERATOR_DEF_LEVEL ? RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME))
-                               : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP_FILE));
+      (MAP_GENERATOR_DEF_LEVEL ? RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME))
+                               : ACE_TEXT_ALWAYS_CHAR (RPG_MAP_DEF_MAP_FILE));
   path +=
-      (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
-                               : ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT));
+      (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT)
+                               : ACE_TEXT_ALWAYS_CHAR (RPG_MAP_FILE_EXT));
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-o [FILE]   : output file")
             << ACE_TEXT_ALWAYS_CHAR (" [")
             << path

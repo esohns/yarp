@@ -573,8 +573,7 @@ RPG_Map_Common_Tools::makePartition (unsigned int dimensionX_in,
 
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("(%u,%u) is an island...\n"),
-//                  current.first,
-//                  current.second));
+//                  current.first, current.second));
 
       // step3: (try to) dissolve this island
       // --> simply assign it to one of the neighbours ? NO !

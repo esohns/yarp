@@ -88,6 +88,11 @@ do_printUsage (const std::string& programName_in)
             << PATH_FINDER_DEF_DEBUG_PARSER
             << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-l       : log to a file")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
+            << false
+            << ACE_TEXT_ALWAYS_CHAR ("]")
+            << std::endl;
   std::string path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
@@ -119,6 +124,7 @@ do_processArguments (int argc_in,
                      ACE_TCHAR** argv_in, // cannot be const...
                      bool& buildCorridors_out,
                      bool& debugParser_out,
+                     bool& logToFile_out,
                      std::string& floorPlan_out,
                      bool& traceInformation_out,
                      bool& printVersionAndExit_out)
@@ -131,22 +137,21 @@ do_processArguments (int argc_in,
                                                           ACE_TEXT_ALWAYS_CHAR (RPG_MAP_SUB_DIRECTORY_STRING),
                                                           false);
 
-  // init results
+  // initialize results
   buildCorridors_out      = PATH_FINDER_DEF_CORRIDORS;
   debugParser_out         = PATH_FINDER_DEF_DEBUG_PARSER;
-
+  logToFile_out           = false;
   floorPlan_out           = data_path;
   floorPlan_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   floorPlan_out +=
-      RPG_Common_Tools::sanitize(ACE_TEXT_ALWAYS_CHAR(RPG_MAP_DEF_MAP_FILE));
-  floorPlan_out += ACE_TEXT_ALWAYS_CHAR(RPG_MAP_FILE_EXT);
-
+      RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_MAP_DEF_MAP_FILE));
+  floorPlan_out += ACE_TEXT_ALWAYS_CHAR (RPG_MAP_FILE_EXT);
   traceInformation_out    = false;
   printVersionAndExit_out = false;
 
   ACE_Get_Opt argumentParser (argc_in,
                               argv_in,
-                              ACE_TEXT ("bdp:tv"));
+                              ACE_TEXT ("bdlp:tv"));
 
   int option = 0;
   while ((option = argumentParser()) != EOF)
@@ -156,31 +161,31 @@ do_processArguments (int argc_in,
       case 'b':
       {
         buildCorridors_out = true;
-
         break;
       }
       case 'd':
       {
         debugParser_out = true;
-
+        break;
+      }
+      case 'l':
+      {
+        logToFile_out = true;
         break;
       }
       case 'p':
       {
         floorPlan_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
-
         break;
       }
       case 't':
       {
         traceInformation_out = true;
-
         break;
       }
       case 'v':
       {
         printVersionAndExit_out = true;
-
         break;
       }
       // error handling
@@ -229,8 +234,8 @@ do_work (bool buildCorridors_in,
     return;
   } // end IF
   ACE_DEBUG ((LM_DEBUG,
-              ACE_TEXT ("loaded floor plan %s\n"),
-              ACE_TEXT (filename_in.c_str ()),
+              ACE_TEXT ("loaded floor plan \"%s\":\n%s\n"),
+              ACE::basename (ACE_TEXT (filename_in.c_str ())),
               ACE_TEXT (RPG_Map_Level::info (map).c_str ())));
 
   // step2: process doors
@@ -253,12 +258,17 @@ do_work (bool buildCorridors_in,
   RPG_Map_Path_t current_path;
   RPG_Map_Positions_t used_positions;
   RPG_Dice_RollResult_t result;
-  RPG_Map_DoorsConstIterator_t target_door = map.plan.doors.end ();
+  RPG_Map_DoorsConstIterator_t target_door;
   unsigned int index = 1;
   for (RPG_Map_DoorsConstIterator_t iterator = map.plan.doors.begin ();
        iterator != map.plan.doors.end ();
        iterator++)
   {
+    if (used_positions.size () >= door_positions.size () - 1)
+      break; // the final door has no match
+    if (used_positions.find ((*iterator).position) != used_positions.end ()) // already used ?
+      continue;
+
     // find target door:
     // - ignore source door
     // - ignore doors that are already connected
@@ -270,9 +280,10 @@ do_work (bool buildCorridors_in,
                                        1,
                                        result);
       std::advance (target_door, result.front () - 1);
-    } while ((target_door == iterator) ||
-             (used_positions.find ((*target_door).position) != used_positions.end ()));
+    } while ((iterator == target_door) || // origin == destination
+             (used_positions.find ((*target_door).position) != used_positions.end ())); // already used
 
+    current_path.clear ();
     RPG_Map_Pathfinding_Tools::findPath (std::make_pair (map.plan.size_x,
                                                          map.plan.size_y),
                                          map.plan.walls,
@@ -280,7 +291,7 @@ do_work (bool buildCorridors_in,
                                          (*iterator).outside,
                                          (*target_door).position,
                                          current_path);
-    if (current_path.empty ())
+    if (unlikely (current_path.empty ()))
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("could not find a path [%u,%u] --> [%u,%u], continuing\n"),
@@ -290,14 +301,13 @@ do_work (bool buildCorridors_in,
                   (*target_door).position.second));
       continue;
     } // end IF
-    ACE_ASSERT ((current_path.front ().first == (*iterator).position) &&
-                (current_path.back ().first  == (*target_door).position));
+    ACE_ASSERT ((current_path.front ().first == (*iterator).position) && (current_path.back ().first  == (*target_door).position));
 
     // print path
     ACE_DEBUG ((LM_DEBUG,
-                ACE_TEXT("path [%u, %u step(s)]: [%u,%u] --> [%u,%u]: "),
+                ACE_TEXT ("path [%u, %u step(s)]: [%u,%u] --> [%u,%u]: "),
                 index++,
-                current_path.size(),
+                current_path.size (),
                 (*iterator).position.first, (*iterator).position.second,
                 (*target_door).position.first, (*target_door).position.second));
     for (RPG_Map_PathConstIterator_t path_iterator = current_path.begin ();
@@ -315,10 +325,6 @@ do_work (bool buildCorridors_in,
     used_positions.insert ((*target_door).position);
 
     paths.push_back (current_path);
-
-    // minimum connectivity reached ?
-    if (used_positions == door_positions)
-      break; // done
   } // end FOR
 
   // step4: build corridors ?
@@ -364,34 +370,43 @@ do_work (bool buildCorridors_in,
       {
         // floor or path ?
         done = false;
+        index = 1;
         for (RPG_Map_PathListConstIterator_t iterator2 = paths.begin ();
              iterator2 != paths.end ();
-             iterator2++)
+             iterator2++, index++)
         {
           for (RPG_Map_PathConstIterator_t iterator3 = (*iterator2).begin ();
                iterator3 != (*iterator2).end ();
                iterator3++)
             if ((*iterator3).first == current_position)
             {
-              converter << ACE_TEXT_ALWAYS_CHAR ("x"); // path
+              //converter << ACE_TEXT_ALWAYS_CHAR ("x"); // path
+              converter << index; // --> path
               done = true;
-
               break;
             } // end IF
-
           if (done)
             break;
         } // end FOR
-
         if (!done)
-          converter << ACE_TEXT_ALWAYS_CHAR ("."); // floor
+        {
+          if (map.start == current_position)
+            converter << ACE_TEXT_ALWAYS_CHAR ("X"); // --> start position
+          else if (map.seeds.find (current_position) != map.seeds.end ())
+            converter << ACE_TEXT_ALWAYS_CHAR ("@"); // --> seed position
+          else
+            converter << ACE_TEXT_ALWAYS_CHAR ("."); // --> floor
+        } // end IF
       } // end ELSE
     } // end FOR
     converter << std::endl;
   } // end FOR
 
   // --> dump to stdout...
-  std::cout << converter.str ();
+  //std::cout << converter.str ();
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("\n%s\n"),
+              ACE_TEXT (converter.str ().c_str ())));
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("finished working...\n")));
@@ -478,13 +493,12 @@ ACE_TMAIN (int argc_in,
   // step1a set defaults
   bool build_corridors        = PATH_FINDER_DEF_CORRIDORS;
   bool debug_parser           = PATH_FINDER_DEF_DEBUG_PARSER;
-
+  bool log_to_file            = false;
   std::string floor_plan      = data_path;
   floor_plan += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   floor_plan +=
     RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_MAP_DEF_MAP_FILE));
   floor_plan += ACE_TEXT_ALWAYS_CHAR (RPG_MAP_FILE_EXT);
-
   bool trace_information      = false;
   bool print_version_and_exit = false;
 
@@ -493,6 +507,7 @@ ACE_TMAIN (int argc_in,
                             argv_in,
                             build_corridors,
                             debug_parser,
+                            log_to_file,
                             floor_plan,
                             trace_information,
                             print_version_and_exit))
@@ -531,6 +546,9 @@ ACE_TMAIN (int argc_in,
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
+  if (log_to_file)
+    log_file = Common_Log_Tools::getLogFilename (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                 Common_File_Tools::basename (ACE_TEXT_ALWAYS_CHAR (argv_in[0]), true));
   if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
                                             log_file,                  // logfile
                                             false,                     // log to syslog ?
