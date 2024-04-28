@@ -458,6 +458,7 @@ update_levelup (const struct RPG_Client_GTK_CBData& data_in)
   caster_class_s.discriminator = RPG_Magic_CasterClassUnion::SUBCLASS;
   ACE_UINT16 num_new_known_spells_i = 0;
   RPG_Magic_SpellTypes_t possible_new_spells_a;
+  gchar* utf8_string_p = NULL;
   if (!RPG_Magic_Common_Tools::isCasterClass (data_in.subClass))
     goto continue_;
   caster_class_s.subclass = data_in.subClass;
@@ -489,7 +490,6 @@ update_levelup (const struct RPG_Client_GTK_CBData& data_in)
   std::set_difference (available.begin (), available.end (),
                        known_spells_a.begin (), known_spells_a.end (),
                        std::inserter (possible_new_spells_a, possible_new_spells_a.end ()));
-  gchar* utf8_string_p = NULL;
   for (RPG_Magic_SpellTypesIterator_t iterator_3 = possible_new_spells_a.begin ();
        iterator_3 != possible_new_spells_a.end ();
        ++iterator_3)
@@ -2660,7 +2660,7 @@ quit_clicked_GTK_cb (GtkWidget* widget_in,
   ACE_UNUSED_ARG (userData_in);
 
   // trigger SDL event loop
-  SDL_Event sdl_event;
+  union SDL_Event sdl_event;
   sdl_event.type = SDL_QUIT;
   if (SDL_PushEvent (&sdl_event))
     ACE_DEBUG ((LM_ERROR,

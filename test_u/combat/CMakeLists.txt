@@ -52,7 +52,7 @@ if (UNIX)
                                      ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
                                      xerces-c
                                      ${ACE_LIBRARY}
-                                     Common CommonLog
+                                     Common CommonLog CommonTimer
                                      RPG_Dice RPG_Chance RPG_Common
                                      RPG_Character RPG_Magic RPG_Item
                                      RPG_Player RPG_Monster

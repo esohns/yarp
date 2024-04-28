@@ -379,7 +379,8 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
 
       // step3: draw the entity/redraw the minimap ? --> delegate to the engine
       client_action.window = window_;
-      engine_->lock ();
+      if (lockedAccess_in)
+        engine_->lock ();
       client_action.position =
         engine_->getPosition (parameters_in.entity_id,
                               false); // locked access ?
@@ -408,7 +409,8 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
           engine_->canSee (active_entity_id,
                            parameters_in.entity_id,
                            false)); // locked access ?
-      engine_->unlock ();
+      if (lockedAccess_in)
+        engine_->unlock ();
 
       if (parameters_in.entity_id != active_entity_id &&
           active_entity_can_see_entity_b)
@@ -464,7 +466,8 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       } // end IF
 
       // step2: update the minimap ? --> delegate to the engine
-      engine_->lock ();
+      if (lockedAccess_in)
+        engine_->lock ();
       RPG_Engine_EntityID_t active_entity_id =
         engine_->getActive (false); // locked access ?
       if (parameters_in.entity_id != active_entity_id)
@@ -479,7 +482,8 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       } // end ELSE
       else
         do_action = false;
-      engine_->unlock ();
+      if (lockedAccess_in)
+        engine_->unlock ();
 
       break;
     }

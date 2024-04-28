@@ -118,7 +118,7 @@ RPG_Map_Common_Tools::createFloorPlan (unsigned int dimensionX_in,
     makePartition (dimensionX_in,
                    dimensionY_in,
                    numAreas_in,
-                   (wantCorridors_in ? true : false), // resolve conflicts !
+                   wantCorridors_in, // resolve conflicts !
                    conflicts,
                    partition);
 
@@ -467,12 +467,11 @@ RPG_Map_Common_Tools::makePartition (unsigned int dimensionX_in,
   if (resolveConflicts_in)
     while (!conflicts_out.empty ())
     {
-  //     // debug info
-  //     displayPartition(dimensionX_in,
-  //                      dimensionY_in,
-  //                      conflicts_out,
-  //                      seed_points,
-  //                      partition_out);
+      // displayPartition (dimensionX_in,
+      //                   dimensionY_in,
+      //                   conflicts_out,
+      //                   seed_positions,
+      //                   partition_out);
 
       current_position = *conflicts_out.begin ();
 
@@ -628,11 +627,11 @@ RPG_Map_Common_Tools::makePartition (unsigned int dimensionX_in,
       (*partition_iter).area.insert (current_position);
     } // end WHILE
 
-//   displayPartition(dimensionX_in,
-//                    dimensionY_in,
-//                    conflicts_out,
-//                    seedPoints_out,
-//                    partition_out);
+   // displayPartition (dimensionX_in,
+   //                   dimensionY_in,
+   //                   conflicts_out,
+   //                   seed_positions,
+   //                   partition_out);
 }
 
 void
@@ -642,7 +641,7 @@ RPG_Map_Common_Tools::displayPartition (unsigned int dimensionX_in,
                                         const RPG_Map_Positions_t& seedPositions_in,
                                         const RPG_Map_Partition_t& partition_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Map_Common_Tools::displayPartition"));
+  RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::displayPartition"));
 
   RPG_Map_Position_t current_position;
 
@@ -1613,8 +1612,7 @@ RPG_Map_Common_Tools::connectRooms (unsigned int dimensionX_in,
 
       // *NOTE*: determine the starting direction in order
       // to "leave" the room immediately...
-      RPG_Map_Pathfinding_Tools::findPath (std::make_pair (dimensionX_in,
-                                                           dimensionY_in),
+      RPG_Map_Pathfinding_Tools::findPath (std::make_pair (dimensionX_in, dimensionY_in),
                                            level_out.walls,
                                            *doors_iter,
                                            RPG_Map_Common_Tools::doorToExitDirection (*rooms_iter,
@@ -1700,11 +1698,11 @@ RPG_Map_Common_Tools::connectRooms (unsigned int dimensionX_in,
       (*corridors_iter).insert ((*path_iter).first);
     } // end FOR
 
-//   displayCorridors(dimensionX_in,
-//                    dimensionY_in,
-//                    rooms_in,
-//                    doors_in,
-//                    corridors);
+  // displayCorridors (dimensionX_in,
+  //                   dimensionY_in,
+  //                   rooms_in,
+  //                   doors_in,
+  //                   corridors);
 
   // step5: remove the walls corresponding to doors
   for (zonelist_iter = doors_in.begin ();
@@ -1769,7 +1767,7 @@ RPG_Map_Common_Tools::buildCorridor (const RPG_Map_Path_t& path_in,
   RPG_Map_Position_t wall_position_1, wall_position_2, wall_position_3;
 
   // *NOTE*: paths extend from door to door...
-  RPG_Map_Direction  last_direction = (*path_in.begin ()).second;
+  enum RPG_Map_Direction  last_direction = (*path_in.begin ()).second;
   RPG_Map_PathConstIterator_t path_iter, last;
   path_iter = path_in.begin (); path_iter++;
   last = path_in.end (); last--;
@@ -3693,7 +3691,7 @@ RPG_Map_Common_Tools::displayCorridors (unsigned int dimensionX_in,
                                         unsigned int dimensionY_in,
                                         const RPG_Map_AreaList_t& rooms_in,
                                         const RPG_Map_AreaList_t& doors_in,
-                                        const RPG_Map_AreaList_t& corridors_in)
+                                        const RPG_Map_PositionsList_t& corridors_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Map_Common_Tools::displayCorridors"));
 
@@ -3702,6 +3700,7 @@ RPG_Map_Common_Tools::displayCorridors (unsigned int dimensionX_in,
   bool shared_path = false;
   unsigned int first_index = 0;
   RPG_Map_AreaListConstIterator_t iterator;
+  RPG_Map_PositionsListConstIterator_t iterator_2;
   bool done = false;
   std::ostringstream converter;
   std::string corridor_glyphs (ACE_TEXT_ALWAYS_CHAR ("0123456789^°!\"§$%&/()ß?'`+*~-_:,;{}[]<>|"));
@@ -3753,11 +3752,11 @@ RPG_Map_Common_Tools::displayCorridors (unsigned int dimensionX_in,
       index = 0;
       shared_path = false;
       first_index = 0;
-      for (iterator = corridors_in.begin ();
-           iterator != corridors_in.end ();
+      for (iterator_2 = corridors_in.begin ();
+           iterator_2 != corridors_in.end ();
            iterator++, index++)
       {
-        if ((*iterator).find (current_position) != (*iterator).end ())
+        if ((*iterator_2).find (current_position) != (*iterator_2).end ())
         {
           if (!done)
           {

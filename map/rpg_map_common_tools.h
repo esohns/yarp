@@ -110,11 +110,11 @@ class RPG_Map_Common_Tools
                                  RPG_Map_Position_t,
                                  bool>
   {
-    inline bool operator() (const RPG_Map_Position_t& __x,
-                            const RPG_Map_Position_t& __y) const
+    inline bool operator() (const RPG_Map_Position_t& position1,
+                            const RPG_Map_Position_t& position2) const
     {
-      return ((__x.second < __y.second) ||
-      (!(__y.second < __x.second) && (__x.first < __y.first)));
+      return (  (position1.second < position2.second) ||
+              (!(position2.second < position1.second) && (position1.first < position2.first)));
     }
   };
   typedef std::set<RPG_Map_Position_t, position_compare> RPG_Map_Area_t;
@@ -146,6 +146,7 @@ class RPG_Map_Common_Tools
   typedef RPG_Map_AreaList_t::iterator RPG_Map_AreaListIterator_t;
   typedef std::list<RPG_Map_Positions_t> RPG_Map_PositionsList_t;
   typedef RPG_Map_PositionsList_t::iterator RPG_Map_PositionsListIterator_t;
+  typedef RPG_Map_PositionsList_t::const_iterator RPG_Map_PositionsListConstIterator_t;
   struct RPG_Map_Square_t
   {
     RPG_Map_Position_t ul;
@@ -218,11 +219,11 @@ class RPG_Map_Common_Tools
                             const RPG_Map_AreaList_t&, // doors
                             const RPG_Map_AreaList_t&, // room(s) // *TODO*: faster in/out tests ?
                             struct RPG_Map_FloorPlan&);     // return value: doors & walls
-  static void displayCorridors (unsigned int,               // dimension x
-                                unsigned int,               // dimension y
-                                const RPG_Map_AreaList_t&,  // rooms
-                                const RPG_Map_AreaList_t&,  // doors
-                                const RPG_Map_AreaList_t&); // corridors
+  static void displayCorridors (unsigned int,                    // dimension x
+                                unsigned int,                    // dimension y
+                                const RPG_Map_AreaList_t&,       // rooms
+                                const RPG_Map_AreaList_t&,       // doors
+                                const RPG_Map_PositionsList_t&); // corridors
 
   static void floodFill (const RPG_Map_Position_t&,  // position
                          const struct RPG_Map_FloorPlan&, // floor plan

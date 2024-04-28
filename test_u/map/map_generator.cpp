@@ -111,9 +111,14 @@ do_printUsage (const std::string& programName_in)
             << MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM
             << ACE_TEXT_ALWAYS_CHAR ("] (0:off)")
             << std::endl;
-  std::cout << ACE_TEXT_ALWAYS_CHAR ("-l          : generate level")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-g          : generate level")
             << ACE_TEXT_ALWAYS_CHAR (" [")
             << MAP_GENERATOR_DEF_LEVEL
+            << ACE_TEXT_ALWAYS_CHAR ("]")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-l          : log to a file")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
+            << false
             << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-m          : maximize room-size(s)")
@@ -185,7 +190,8 @@ do_processArguments (int argc_in,
                      unsigned int& minRoomSize_out,
                      bool& corridors_out,
                      unsigned int& maxNumDoorsPerRoom_out,
-                     bool& level_out,
+                     bool& generateLevel_out,
+                     bool& logToFile_out,
                      bool& maximizeRoomSize_out,
                      std::string& outputFile_out,
                      bool& dump_out,
@@ -209,7 +215,8 @@ do_processArguments (int argc_in,
   // initialize results
   minRoomSize_out         = MAP_GENERATOR_DEF_MIN_ROOMSIZE;
   corridors_out           = MAP_GENERATOR_DEF_CORRIDORS;
-  level_out               = MAP_GENERATOR_DEF_LEVEL;
+  generateLevel_out       = MAP_GENERATOR_DEF_LEVEL;
+  logToFile_out           = false;
   maxNumDoorsPerRoom_out  = MAP_GENERATOR_DEF_MAX_NUMDOORS_PER_ROOM;
   maximizeRoomSize_out    = MAP_GENERATOR_DEF_MAXIMIZE_ROOMSIZE;
 
@@ -217,11 +224,11 @@ do_processArguments (int argc_in,
   outputFile_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   std::string default_output_file = outputFile_out;
   default_output_file +=
-      (level_out ? RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME))
-                 : ACE_TEXT_ALWAYS_CHAR (RPG_MAP_DEF_MAP_FILE));
+      (generateLevel_out ? RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME))
+                         : ACE_TEXT_ALWAYS_CHAR (RPG_MAP_DEF_MAP_FILE));
   default_output_file +=
-      (level_out ? ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT)
-                 : ACE_TEXT_ALWAYS_CHAR (RPG_MAP_FILE_EXT));
+    (generateLevel_out ? ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT)
+                       : ACE_TEXT_ALWAYS_CHAR (RPG_MAP_FILE_EXT));
   outputFile_out = default_output_file;
 
   dump_out                = MAP_GENERATOR_DEF_DUMP;
@@ -236,9 +243,9 @@ do_processArguments (int argc_in,
   random_out              = false;
   options_out.clear();
 
-  ACE_Get_Opt argumentParser(argc_in,
-                             argv_in,
-                             ACE_TEXT ("a::cd::lmo:pr:stvx:y:z"));
+  ACE_Get_Opt argumentParser (argc_in,
+                              argv_in,
+                              ACE_TEXT ("a::cd::glmo:pr:stvx:y:z"));
 
   int option = 0;
   std::stringstream converter;
@@ -253,13 +260,11 @@ do_processArguments (int argc_in,
         converter.str (ACE_TEXT_ALWAYS_CHAR (""));
         converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         converter >> minRoomSize_out;
-
         break;
       }
       case 'c':
       {
         corridors_out = true;
-
         break;
       }
       case 'd':
@@ -271,31 +276,31 @@ do_processArguments (int argc_in,
         converter >> temp;
         if (temp == -1)
           maxNumDoorsPerRoom_out = std::numeric_limits<unsigned int>::max ();
-
+        break;
+      }
+      case 'g':
+      {
+        generateLevel_out = true;
         break;
       }
       case 'l':
       {
-        level_out = true;
-
+        logToFile_out = true;
         break;
       }
       case 'm':
       {
         maximizeRoomSize_out = true;
-
         break;
       }
       case 'o':
       {
         outputFile_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
-
         break;
       }
       case 'p':
       {
         dump_out = true;
-
         break;
       }
       case 'r':
@@ -304,25 +309,21 @@ do_processArguments (int argc_in,
         converter.str (ACE_TEXT_ALWAYS_CHAR (""));
         converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         converter >> numAreas_out;
-
         break;
       }
       case 's':
       {
         squareRooms_out = true;
-
         break;
       }
       case 't':
       {
         traceInformation_out = true;
-
         break;
       }
       case 'v':
       {
         printVersionAndExit_out = true;
-
         break;
       }
       case 'x':
@@ -331,7 +332,6 @@ do_processArguments (int argc_in,
         converter.str (ACE_TEXT_ALWAYS_CHAR (""));
         converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         converter >> dimensionX_out;
-
         break;
       }
       case 'y':
@@ -340,13 +340,11 @@ do_processArguments (int argc_in,
         converter.str (ACE_TEXT_ALWAYS_CHAR (""));
         converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         converter >> dimensionY_out;
-
         break;
       }
       case 'z':
       {
         random_out = true;
-
         break;
       }
       // error handling
@@ -411,7 +409,7 @@ do_work (const struct RPG_Map_FloorPlan_Configuration& mapConfig_in,
     else
     {
       level.metadata.name                 =
-          ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME);
+          ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME);
 
       level.metadata.environment.plane    =
           RPG_ENGINE_ENVIRONMENT_DEF_PLANE;
@@ -569,7 +567,8 @@ ACE_TMAIN (int argc_in,
   configuration.num_areas              = MAP_GENERATOR_DEF_NUM_AREAS;
   configuration.square_rooms           = MAP_GENERATOR_DEF_SQUARE_ROOMS;
 
-  bool generate_level             = MAP_GENERATOR_DEF_LEVEL;
+  bool generate_level                  = MAP_GENERATOR_DEF_LEVEL;
+  bool log_to_file                     = false;
 
   std::string output_file         = data_path;
   output_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -595,6 +594,7 @@ ACE_TMAIN (int argc_in,
                             configuration.corridors,
                             configuration.max_num_doors_per_room,
                             generate_level,
+                            log_to_file,
                             configuration.maximize_rooms,
                             output_file,
                             dump_result,
@@ -674,6 +674,9 @@ ACE_TMAIN (int argc_in,
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
+  if (log_to_file)
+    log_file = Common_Log_Tools::getLogFilename (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                 Common_File_Tools::basename (ACE_TEXT_ALWAYS_CHAR (argv_in[0]), true));
   if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
                                             log_file,                    // logfile
                                             false,                       // log to syslog ?
