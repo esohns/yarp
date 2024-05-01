@@ -1044,7 +1044,7 @@ RPG_Engine_Common_Tools::attack (const RPG_Player_Base* const attacker_in,
                                                 reach_is_absolute);
   if (distance_in > max_reach)
     return; // --> done (out of reach)
-  RPG_Combat_AttackForm attackForm =
+  enum RPG_Combat_AttackForm attackForm =
       (base_range ? ATTACKFORM_RANGED
                   : (reach_is_absolute &&
                      (distance_in < max_reach)) ? RPG_COMBAT_ATTACKFORM_INVALID
@@ -1052,7 +1052,7 @@ RPG_Engine_Common_Tools::attack (const RPG_Player_Base* const attacker_in,
   if (attackForm == RPG_COMBAT_ATTACKFORM_INVALID)
     return; // --> done (cannot reach)
 
-  RPG_Dice_Roll roll;
+  struct RPG_Dice_Roll roll;
   roll.numDice = 1;
   roll.typeDice = D_20;
   roll.modifier = 0;
@@ -1067,7 +1067,7 @@ RPG_Engine_Common_Tools::attack (const RPG_Player_Base* const attacker_in,
   RPG_Common_Attribute attribute =
       ((attackForm == ATTACKFORM_RANGED) ? ATTRIBUTE_DEXTERITY
                                          : ATTRIBUTE_STRENGTH);
-  int targetArmorClass = 0;
+  ACE_INT8 targetArmorClass = 0;
   float STR_factor = 1.0f;
   RPG_Combat_Damage damage;
   RPG_Combat_DamageElement damage_element;

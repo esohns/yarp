@@ -153,7 +153,7 @@ RPG_Map_Pathfinding_Tools::findPath (const RPG_Map_Size_t& size_in,
       {
         if ((*iterator).second < (*position).second)
         {
-          // *TODO*: how can this be done without a cast ?
+          // *TODO*: why does this require a cast ?
           const_cast<unsigned int&> ((*position).second) = (*iterator).second;
         } // end IF
       } // end IF

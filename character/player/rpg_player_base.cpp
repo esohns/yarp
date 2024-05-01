@@ -187,17 +187,67 @@ RPG_Player_Base::getAttribute (enum RPG_Common_Attribute attribute_in) const
 }
 
 void
-RPG_Player_Base::getSkillRank (enum RPG_Common_Skill skill_in,
-                               ACE_UINT8& result_out) const
+RPG_Player_Base::setAttribute (enum RPG_Common_Attribute attribute_in,
+                               ACE_UINT8 value_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Base::getAttribute"));
+
+  switch (attribute_in)
+  {
+    case ATTRIBUTE_STRENGTH:
+      myAttributes.strength = value_in;
+      break;
+    case ATTRIBUTE_DEXTERITY:
+      myAttributes.dexterity = value_in;
+      break;
+    case ATTRIBUTE_CONSTITUTION:
+      myAttributes.constitution = value_in;
+      break;
+    case ATTRIBUTE_INTELLIGENCE:
+      myAttributes.intelligence = value_in;
+      break;
+    case ATTRIBUTE_WISDOM:
+      myAttributes.wisdom = value_in;
+      break;
+    case ATTRIBUTE_CHARISMA:
+      myAttributes.charisma = value_in;
+      break;
+    default:
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid attribute: \"%s\", returning\n"),
+                  ACE_TEXT (RPG_Common_AttributeHelper::RPG_Common_AttributeToString (attribute_in).c_str ())));
+      break;
+    }
+  } // end SWITCH
+}
+
+ACE_UINT8
+RPG_Player_Base::getSkillRank (enum RPG_Common_Skill skill_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Player_Base::getSkillRank"));
 
-  // initialize return value
-  result_out = 0;
-
   RPG_Character_SkillsConstIterator_t iter = mySkills.find (skill_in);
   if (iter != mySkills.end ())
-    result_out = iter->second;
+    return iter->second;
+
+  return 0;
+}
+
+void
+RPG_Player_Base::setSkillRank (enum RPG_Common_Skill skill_in,
+                               ACE_UINT8 value_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Base::setSkillRank"));
+
+  RPG_Character_SkillsIterator_t iter = mySkills.find (skill_in);
+  if (iter != mySkills.end ())
+  {
+    iter->second = value_in;
+    return;
+  } // end IF
+
+  mySkills.insert (std::make_pair (skill_in, value_in));
 }
 
 bool
@@ -239,16 +289,15 @@ RPG_Player_Base::sustainDamage (const RPG_Combat_Damage& damage_in)
 
   ACE_UINT32 result = 0;
 
-  ACE_INT16 damage_value = 0;
+  ACE_INT16 num_hit_points_initial_i = myNumHitPoints;
+  ACE_INT16 damage_value;
   RPG_Dice_RollResult_t result_2;
   for (RPG_Combat_DamageElementsConstIterator_t iterator = damage_in.elements.begin ();
        iterator != damage_in.elements.end ();
        iterator++)
   {
     // compute damage
-    damage_value = 0;
     result_2.clear ();
-
     RPG_Dice::simulateRoll ((*iterator).amount,
                             1,
                             result_2);
@@ -287,7 +336,7 @@ RPG_Player_Base::sustainDamage (const RPG_Combat_Damage& damage_in)
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("\"%s\" (HP: %d/%u) suffers damage of %u HP%s...\n"),
               ACE_TEXT (getName ().c_str ()),
-              (myNumHitPoints + result),
+              num_hit_points_initial_i,
               myNumTotalHitPoints,
               result,
               (!hasCondition (CONDITION_NORMAL) ? ACE_TEXT (" --> DOWN") : ACE_TEXT (""))));

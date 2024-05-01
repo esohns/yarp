@@ -23,6 +23,7 @@
 
 #include <string>
 
+#include "ace/Basic_Types.h"
 #include "ace/Global_Macros.h"
 
 #include "rpg_dice_incl.h"
@@ -65,26 +66,30 @@ class RPG_Player_Base
   inline virtual ~RPG_Player_Base () {}
 
   // retrieve basic character data
-  inline const std::string& getName () const { return myName; }
-  inline const RPG_Character_Alignment& getAlignment () const { return myAlignment; }
+  inline std::string getName () const { return myName; }
 
-  inline const RPG_Character_Conditions_t& getCondition () const { return myCondition; }
+  inline struct RPG_Character_Alignment getAlignment () const { return myAlignment; }
 
-  // retrieve base attributes
+  bool hasCondition (enum RPG_Common_Condition) const; // condition
+  inline RPG_Character_Conditions_t getCondition () const { return myCondition; }
+
   ACE_UINT8 getAttribute (enum RPG_Common_Attribute) const;
-  inline const struct RPG_Character_Attributes& getAttributes () const { return myAttributes; }
-
-  inline const RPG_Character_Feats_t& getFeats () const { return myFeats; }
-  inline const RPG_Character_Abilities_t& getAbilities () const { return myAbilities; }
-  inline const RPG_Character_Skills_t& getSkills () const { return mySkills; }
-
-  // retrieve skill value (if any)
-  void getSkillRank (enum RPG_Common_Skill, // skill
-                     ACE_UINT8&) const;     // result: value (0: doesn't exist)
+  inline struct RPG_Character_Attributes getAttributes () const { return myAttributes; }
+  void setAttribute (enum RPG_Common_Attribute,
+                     ACE_UINT8);
 
   bool hasFeat (enum RPG_Character_Feat) const; // feat
+  inline void addFeat (enum RPG_Character_Feat feat_in) { myFeats.insert (feat_in); }
+  inline RPG_Character_Feats_t getFeats () const { return myFeats; }
+  
   bool hasAbility (enum RPG_Character_Ability) const; // ability
-  bool hasCondition (enum RPG_Common_Condition) const; // condition
+  inline void addAbility (enum RPG_Character_Ability ability_in) { myAbilities.insert (ability_in); }
+  inline RPG_Character_Abilities_t getAbilities () const { return myAbilities; }
+
+  ACE_UINT8 getSkillRank (enum RPG_Common_Skill) const; // skill
+  inline RPG_Character_Skills_t getSkills () const { return mySkills; }
+  void setSkillRank (enum RPG_Common_Skill,
+                     ACE_UINT8);
 
   inline ACE_UINT16 getNumTotalHitPoints () const { return myNumTotalHitPoints; }
   inline void setNumTotalHitPoints (ACE_UINT16 numberOfTotalHitPoints_in) { myNumTotalHitPoints = numberOfTotalHitPoints_in; }
@@ -93,8 +98,11 @@ class RPG_Player_Base
 
   inline ACE_UINT64 getWealth () const { return myWealth; }
 
-  inline const RPG_Magic_SpellTypes_t& getKnownSpells () const { return myKnownSpells; }
-  inline const RPG_Magic_Spells_t& getSpells () const { return mySpells; }
+  inline void addKnownSpell (enum RPG_Magic_SpellType spellType_in) { myKnownSpells.insert (spellType_in); }
+  inline RPG_Magic_SpellTypes_t getKnownSpells () const { return myKnownSpells; }
+
+  inline void addSpell (enum RPG_Magic_SpellType spellType_in) { mySpells.push_back (spellType_in); }
+  inline RPG_Magic_Spells_t getSpells () const { return mySpells; }
 
   inline const RPG_Player_Inventory& getInventory () const { return myInventory; }
 //   const RPG_Character_Equipment getEquipment() const;

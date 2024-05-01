@@ -127,6 +127,11 @@ do_printUsage (const std::string& programName_in)
             << path
             << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-l        : log to a file")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
+            << false
+            << ACE_TEXT_ALWAYS_CHAR ("]")
+            << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
 #if defined (DEBUG_DEBUGGER)
@@ -181,6 +186,7 @@ do_processArguments (int argc_in,
                      unsigned int& numFoes_out,
                      std::string& magicDictionaryFilename_out,
                      std::string& itemDictionaryFilename_out,
+                     bool& logToFile_out,
                      std::string& monsterDictionaryFilename_out,
                      unsigned int& numMonsterTypes_out,
                      unsigned int& numPlayers_out,
@@ -212,6 +218,7 @@ do_processArguments (int argc_in,
   itemDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   itemDictionaryFilename_out += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
 
+  logToFile_out                 = false;
   configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
@@ -229,7 +236,7 @@ do_processArguments (int argc_in,
 
   ACE_Get_Opt argumentParser (argc_in,
                               argv_in,
-                              ACE_TEXT ("b:f:i:m:n:p:s:tvx"));
+                              ACE_TEXT ("b:f:i:lm:n:p:s:tvx"));
   int option = 0;
   while ((option = argumentParser ()) != EOF)
   {
@@ -240,7 +247,6 @@ do_processArguments (int argc_in,
         std::stringstream str;
         str << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         str >> numBattles_out;
-
         break;
       }
       case 'f':
@@ -248,19 +254,21 @@ do_processArguments (int argc_in,
         std::stringstream str;
         str << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         str >> numFoes_out;
-
         break;
       }
       case 'i':
       {
         itemDictionaryFilename_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
-
+        break;
+      }
+      case 'l':
+      {
+        logToFile_out = true;
         break;
       }
       case 'm':
       {
         monsterDictionaryFilename_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
-
         break;
       }
       case 'n':
@@ -268,7 +276,6 @@ do_processArguments (int argc_in,
         std::stringstream str;
         str << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         str >> numMonsterTypes_out;
-
         break;
       }
       case 'p':
@@ -276,31 +283,26 @@ do_processArguments (int argc_in,
         std::stringstream str;
         str << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         str >> numPlayers_out;
-
         break;
       }
       case 's':
       {
         magicDictionaryFilename_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
-
         break;
       }
       case 't':
       {
         traceInformation_out = true;
-
         break;
       }
       case 'v':
       {
         printVersionAndExit_out = true;
-
         break;
       }
       case 'x':
       {
         stressTest_out = true;
-
         break;
       }
       // error handling
@@ -671,6 +673,7 @@ ACE_TMAIN (int argc_in,
   unsigned int num_monster_types          = COMBAT_SIMULATOR_DEF_NUM_FOE_TYPES;
   unsigned int num_players                = COMBAT_SIMULATOR_DEF_NUM_PLAYERS;
   unsigned int num_battles                = COMBAT_SIMULATOR_DEF_NUM_BATTLES;
+  bool log_to_file                        = false;
   bool trace_information                  = false;
   bool print_version_and_exit             = false;
   bool stress_test                        = COMBAT_SIMULATOR_DEF_STRESS_TEST;
@@ -682,6 +685,7 @@ ACE_TMAIN (int argc_in,
                             num_foes,
                             magic_dictionary_filename,
                             item_dictionary_filename,
+                            log_to_file,
                             monster_dictionary_filename,
                             num_monster_types,
                             num_players,
@@ -723,7 +727,10 @@ ACE_TMAIN (int argc_in,
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
-  if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])),   // program name
+  if (log_to_file)
+    log_file = Common_Log_Tools::getLogFilename (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                 Common_File_Tools::basename (ACE_TEXT_ALWAYS_CHAR (argv_in[0]), true));
+  if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
                                             log_file,                    // logfile
                                             false,                       // log to syslog ?
                                             false,                       // trace messages ?

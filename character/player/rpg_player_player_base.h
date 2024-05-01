@@ -59,8 +59,8 @@ class RPG_Player_Player_Base
 
   // retrieve basic player character data
   inline enum RPG_Character_Gender getGender () const { return myGender; }
-  inline const RPG_Character_Race_t& getRace () const { return myRace; }
-  inline const struct RPG_Character_Class& getClass () const { return myClass; }
+  inline RPG_Character_Race_t getRace () const { return myRace; }
+  inline struct RPG_Character_Class getClass () const { return myClass; }
   inline enum RPG_Character_OffHand getOffHand () const { return myOffHand; }
   inline enum RPG_Common_Size getSize () const { return mySize; }
 
