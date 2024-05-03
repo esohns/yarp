@@ -117,10 +117,6 @@ do_printUsage (const std::string& programName_in)
             << std::endl;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR ("item");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   path += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-i [FILE] : item dictionary (*.xml)")
             << ACE_TEXT_ALWAYS_CHAR (" [\"")
@@ -134,12 +130,6 @@ do_printUsage (const std::string& programName_in)
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR ("character");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR ("monster");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   path += ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_DICTIONARY_FILE);
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-m [FILE] : monster dictionary (*.xml)")
             << ACE_TEXT_ALWAYS_CHAR (" [\"")
@@ -158,10 +148,6 @@ do_printUsage (const std::string& programName_in)
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DIRECTORY_STRING);
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-s [FILE] : magic dictionary (*.xml)")
             << ACE_TEXT_ALWAYS_CHAR (" [\"")
@@ -738,7 +724,7 @@ ACE_TMAIN (int argc_in,
                                             NULL))                       // logger
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));
+                ACE_TEXT ("failed to Common_Log_Tools::initializeLogging(), aborting\n")));
 
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)

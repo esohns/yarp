@@ -70,7 +70,6 @@ RPG_Combat_Common_Tools::toString (const RPG_Combat_AttackForms_t& attackForms_i
     result += RPG_Combat_AttackFormHelper::RPG_Combat_AttackFormToString (*iterator);
     result += ACE_TEXT_ALWAYS_CHAR ("|");
   } // end FOR
-
   if (!result.empty ())
     result.erase (--(result.end ()));
 
@@ -146,8 +145,8 @@ RPG_Combat_Common_Tools::toString (const struct RPG_Combat_Damage& damage_in)
           RPG_Combat_DamageReductionTypeHelper::RPG_Combat_DamageReductionTypeToString ((*iterator2).reduction);
         result += ACE_TEXT_ALWAYS_CHAR (" ");
       } // end IF
-//       result += RPG_Combat_DamageCounterMeasureTypeHelper::RPG_Combat_DamageCounterMeasureTypeToString((*iterator).type);
-//       result += ACE_TEXT_ALWAYS_CHAR(" ");
+      result += RPG_Common_CounterMeasureHelper::RPG_Common_CounterMeasureToString ((*iterator2).type);
+      result += ACE_TEXT_ALWAYS_CHAR (" ");
       switch ((*iterator2).type)
       {
         case COUNTERMEASURE_CHECK:
@@ -250,7 +249,10 @@ RPG_Combat_Common_Tools::toString (const struct RPG_Combat_Damage& damage_in)
       result += RPG_Common_EffectTypeHelper::RPG_Common_EffectTypeToString ((*iterator).effect);
       result += ACE_TEXT_ALWAYS_CHAR ("\n");
     } // end IF
+    result += ACE_TEXT_ALWAYS_CHAR ("\n");
   } // end FOR
+  if (!damage_in.elements.empty ())
+    result.erase (--(result.end ()));
 
   return result;
 }

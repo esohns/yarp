@@ -166,7 +166,7 @@ RPG_Graphics_SDLWindowBase::getDirty () const
   struct SDL_Rect result = {0, 0, 0, 0};
   for (RPG_Graphics_InvalidRegionsConstIterator_t iterator = invalidRegions_.begin ();
        iterator != invalidRegions_.end ();
-       iterator++)
+       ++iterator)
     result = RPG_Graphics_SDL_Tools::boundingBox (result,
                                                   *iterator);
 
