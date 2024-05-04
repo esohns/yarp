@@ -1,12 +1,13 @@
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/xerces-c.cmake)
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../common
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../character
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../magic
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../engine)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../common
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../character
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../magic
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../engine)
 
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
@@ -34,8 +35,8 @@ elseif (WIN32)
 # set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
-                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
-                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        ${XERCESC_LIBRARIES}
+                        ${ACE_LIBRARY}
                         Common CommonLog CommonTimer
                         RPG_Dice RPG_Chance RPG_Common RPG_Item RPG_Character RPG_Magic)
 endif ()
@@ -62,9 +63,9 @@ create_target_launcher (${EXECUTABLE}
                         ARGS "-d -t"
                         FORWARD_ARGS
                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
-                                             ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
-                                             ${LIB_ROOT}/libpng/build/Debug
+#                                             ${LIB_ROOT}/libpng/build/Debug
+                                             ${XERCESC_LIB_DIR}
                                              ${LIB_ROOT}/ACE_TAO/ACE/lib
-                                             ${SDL_LIB_PATH}
+#                                             ${SDL_LIB_PATH}
                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                         ENVIRONMENT foo=bar)

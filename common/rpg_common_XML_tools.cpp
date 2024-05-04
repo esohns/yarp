@@ -21,6 +21,9 @@
 
 #include "rpg_common_XML_tools.h"
 
+#include <algorithm>
+#include <vector>
+
 #include "xercesc/framework/XMLGrammarPoolImpl.hpp"
 #include "xercesc/sax2/XMLReaderFactory.hpp"
 #include "xercesc/util/XMemory.hpp"
@@ -72,8 +75,36 @@ RPG_Common_XML_Tools::dirent_comparator (const dirent** entry1_in,
 {
   //RPG_TRACE (ACE_TEXT ("RPG_Common_XML_Tools::dirent_comparator"));
 
-  return ACE_OS::strcmp ((*entry1_in)->d_name,
-                         (*entry2_in)->d_name);
+  static std::vector<std::string> rpg_common_xml_list_of_files_a = {
+    ACE_TEXT_ALWAYS_CHAR ("rpg_dice.xsd"),
+    ACE_TEXT_ALWAYS_CHAR ("rpg_common.xsd"),
+    ACE_TEXT_ALWAYS_CHAR ("rpg_common_environment.xsd"),
+    ACE_TEXT_ALWAYS_CHAR ("rpg_magic.xsd"),
+    ACE_TEXT_ALWAYS_CHAR ("rpg_item.xsd"),
+    ACE_TEXT_ALWAYS_CHAR ("rpg_character.xsd"),
+    ACE_TEXT_ALWAYS_CHAR ("rpg_combat.xsd"),
+    ACE_TEXT_ALWAYS_CHAR ("rpg_player.xsd"),
+    ACE_TEXT_ALWAYS_CHAR ("rpg_monster.xsd"),
+    ACE_TEXT_ALWAYS_CHAR ("rpg_map.xsd"),
+    ACE_TEXT_ALWAYS_CHAR ("rpg_graphics.xsd"),
+    ACE_TEXT_ALWAYS_CHAR ("rpg_sound.xsd"),
+    ACE_TEXT_ALWAYS_CHAR ("rpg_engine.xsd")
+  };
+
+  std::vector<std::string>::const_iterator iterator_1 =
+    std::find (rpg_common_xml_list_of_files_a.begin (), rpg_common_xml_list_of_files_a.end (),
+               ACE_TEXT_ALWAYS_CHAR ((*entry1_in)->d_name));
+  std::vector<std::string>::const_iterator iterator_2 =
+    std::find (rpg_common_xml_list_of_files_a.begin (), rpg_common_xml_list_of_files_a.end (),
+               ACE_TEXT_ALWAYS_CHAR ((*entry2_in)->d_name));
+  if ((iterator_1 == rpg_common_xml_list_of_files_a.end ()) || (iterator_2 == rpg_common_xml_list_of_files_a.end ()))
+    goto fallback;
+
+  return ((iterator_1 < iterator_2) ? -1 : 1);
+
+fallback:
+  return ACE_OS::strcmp (ACE_TEXT_ALWAYS_CHAR ((*entry1_in)->d_name),
+                         ACE_TEXT_ALWAYS_CHAR ((*entry2_in)->d_name));
 }
 
 bool
@@ -128,6 +159,7 @@ RPG_Common_XML_Tools::initialize (const std::vector<std::string>& schemaDirector
     // Enable validation.
     RPG_Common_XML_Tools::parser_->setFeature (XMLUni::fgXercesSchema, true);
     RPG_Common_XML_Tools::parser_->setFeature (XMLUni::fgXercesSchemaFullChecking, true);
+    RPG_Common_XML_Tools::parser_->setFeature (XMLUni::fgXercesContinueAfterFatalError, true);
     RPG_Common_XML_Tools::parser_->setFeature (XMLUni::fgXercesValidationErrorAsFatal, true);
     // Use the loaded grammar during parsing.
     RPG_Common_XML_Tools::parser_->setFeature (XMLUni::fgXercesUseCachedGrammarInParse, true);

@@ -1,3 +1,7 @@
+#include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/Threads.cmake)
+
+#include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/ACE.cmake)
+
 ########### next target ###############
 set (LIBRARY RPG_Monster)
 set (${LIBRARY}_SRCS
@@ -49,11 +53,12 @@ set (${LIBRARY}_SRCS
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 
+if (XERCESC_SUPPORT)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:${XERCESC_INCLUDE_DIRS}>)
+endif (XERCESC_SUPPORT)
 if (WIN32)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/msvc/src>)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/src>)
+ add_compile_definitions (XSD_CXX11)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
 endif (WIN32)

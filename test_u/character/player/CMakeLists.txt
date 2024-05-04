@@ -31,12 +31,14 @@ elseif (WXWIDGETS_USE)
  endif (CMAKE_BUILD_TYPE STREQUAL Debug)
 endif ()
 
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../../scripts/xerces-c.cmake)
+
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../../scripts/sdl.cmake)
 
 if (UNIX)
- include(FindPkgConfig)
- pkg_check_modules(PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
- pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
+ include (FindPkgConfig)
+ pkg_check_modules (PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
+ pkg_check_modules (PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
 endif (UNIX)
 
 if (SDL_SUPPORT)
@@ -44,10 +46,11 @@ if (SDL_SUPPORT)
 endif (SDL_SUPPORT)
 include_directories (${GTK_INCLUDE_DIRS})
 if (UNIX)
- include_directories(${PKG_CONFIG_MODULE_SDL_MIXER_INCLUDE_DIRS}
-                     ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
+ include_directories (${PKG_CONFIG_MODULE_SDL_MIXER_INCLUDE_DIRS}
+                      ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
 elseif (WIN32)
- include_directories ($ENV{LIB_ROOT}/SDL_mixer/include)
+ include_directories ($ENV{LIB_ROOT}/SDL_mixer/include
+                      $ENV{LIB_ROOT}/libpng/include)
 endif ()
 
 if (WIN32)
@@ -110,8 +113,8 @@ elseif (WIN32)
 # set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
-                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
-                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        ${XERCESC_LIBRARIES}
+                        ${ACE_LIBRARY}
                         Common CommonLog CommonTimer
                         RPG_Dice RPG_Chance RPG_Common RPG_Magic RPG_Item
                         RPG_Character RPG_Monster RPG_Player RPG_Combat
@@ -133,7 +136,7 @@ set (${EXECUTABLE_2}_SRCS
      character_generator.cpp
      stdafx.h)
 
-set_source_files_properties (${${EXECUTABLE_2}_SRCS} PROPERTIES COMPILE_DEFINITIONS BASEDIR="/usr/local/share/RPG/config")
+#set_source_files_properties (${${EXECUTABLE_2}_SRCS} PROPERTIES COMPILE_DEFINITIONS BASEDIR="/usr/local/share/RPG/config")
 
 add_executable (${EXECUTABLE_2}
                 ${${EXECUTABLE_2}_SRCS})
@@ -162,8 +165,8 @@ elseif (WIN32)
 # set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE_2}
-                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
-                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        ${XERCESC_LIBRARIES}
+                        ${ACE_LIBRARY}
                         Common CommonLog CommonTimer
                         ACEStream ACEStream_Network
                         ACENetwork
@@ -192,7 +195,7 @@ set (${EXECUTABLE_3}_SRCS
      test_u_main.h
      stdafx.h)
 
-set_source_files_properties (${${EXECUTABLE_3}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"/usr/local/share/RPG\";CONFIGDIR=\".\"")
+#set_source_files_properties (${${EXECUTABLE_3}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"/usr/local/share/RPG\";CONFIGDIR=\".\"")
 
 add_executable (${EXECUTABLE_3}
                 ${${EXECUTABLE_3}_SRCS})
@@ -240,8 +243,8 @@ elseif (WIN32)
                         Opengl32.lib Ntdll.lib
                         $ENV{LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL_mixer.lib
                         ${GTK_LIBRARIES}
-                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
-                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        ${XERCESC_LIBRARIES}
+                        ${ACE_LIBRARY}
                         Common CommonError CommonLog CommonTimer CommonUI_GTK
                         ACEStream ACEStream_Miscellaneous ACEStream_Network
                         ACENetwork ACENetwork_Client
@@ -301,7 +304,7 @@ elseif (WIN32)
                          RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
                                               ${LIB_ROOT}/libpng/build/Debug
                                               ${SDL_LIB_PATH}
-                                              ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
+                                              ${XERCESC_LIB_DIR}
                                               ${LIB_ROOT}/ACE_TAO/ACE/lib
                          WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                          ENVIRONMENT foo=bar)
@@ -314,7 +317,7 @@ elseif (WIN32)
                          RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
                                               ${LIB_ROOT}/libpng/build/Debug
                                               ${SDL_LIB_PATH}
-                                              ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
+                                              ${XERCESC_LIB_DIR}
                                               ${LIB_ROOT}/ACE_TAO/ACE/lib
                          WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                          ENVIRONMENT foo=bar)
@@ -329,7 +332,7 @@ elseif (WIN32)
                                               ${LIB_ROOT}/libepoxy/bin
                                               ${LIB_ROOT}/openssl
                                               ${SDL_LIB_PATH}
-                                              ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
+                                              ${XERCESC_LIB_DIR}
                                               ${LIB_ROOT}/ACE_TAO/ACE/lib
                                               ${GTK_LIB_PATH}
                          WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}

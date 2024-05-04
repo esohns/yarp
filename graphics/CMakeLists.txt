@@ -4,6 +4,8 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/ACE.cmake)
 
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/src/image/scripts/png.cmake)
 
+include (${CMAKE_CURRENT_SOURCE_DIR}/../scripts/xerces-c.cmake)
+
 include (${CMAKE_CURRENT_SOURCE_DIR}/../scripts/sdl.cmake)
 
 ########### next target ###############
@@ -78,19 +80,19 @@ if (LIBPNG_SUPPORT)
  target_include_directories (${LIBRARY} PUBLIC
                              "$<BUILD_INTERFACE:${PNG_INCLUDE_DIRS}>")
 endif (LIBPNG_SUPPORT)
+if (XERCESC_SUPPORT)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:${XERCESC_INCLUDE_DIRS}>)
+endif (XERCESC_SUPPORT)
 if (SDL_SUPPORT)
  target_include_directories (${LIBRARY} PUBLIC
                              "$<BUILD_INTERFACE:${SDL_INCLUDE_DIRS}>")
 endif (SDL_SUPPORT)
-if (UNIX)
-elseif (WIN32)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/msvc/src>)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/src>)
+if (WIN32)
+ add_compile_definitions (XSD_CXX11)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
-endif ()
+endif (WIN32)
 
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${ACE_INCLUDE_DIR}>)

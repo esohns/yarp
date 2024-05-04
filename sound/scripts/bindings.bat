@@ -22,7 +22,7 @@ if NOT exist "%PerlScript%" (
  echo invalid file ^(was: "%PerlScript%"^)^, exiting
  goto Failed
 )
-%PerlEXE% %PerlScript% -n RPG_Sound > .\..\rpg_sound_exports.h
+%PerlEXE% %PerlScript% -n RPG_Sound > .\sound\rpg_sound_exports.h
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate exports header^, exiting
  set RC=%ERRORLEVEL%
@@ -30,12 +30,12 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 @rem C++ "glue code"
-set XML2CppCodeEXE=%cd%\..\..\tools\XML2CppCode\cmake\Debug\XML2CppCode.exe
+set XML2CppCodeEXE=%cd%\tools\XML2CppCode\build\msvc\Debug\XML2CppCode.exe
 if NOT exist "%XML2CppCodeEXE%" (
  echo invalid file ^(was: "%XML2CppCodeEXE%"^)^, exiting
  goto Failed
 )
-%XML2CppCodeEXE% -e -f .\..\rpg_sound.xsd -i -o .\.. -s -u -x RPG_Sound
+%XML2CppCodeEXE% -e -f .\sound\etc\rpg_sound.xsd -i -o .\sound -s -u -x RPG_Sound
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate C++ glue code^, exiting
  set RC=%ERRORLEVEL%
@@ -53,7 +53,7 @@ if NOT exist "%XsdEXE%" (
 
 @rem generate parser include/implementation (rpg_sound.xsd)
 @rem "%XsdEXE%" cxx-parser --type-map ..\rpg_sound.map --char-type char --output-dir .\.. --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc --export-symbol "RPG_Sound_Export" --hxx-prologue "#include \"rpg_sound_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp ..\rpg_sound.xsd
-"%XsdEXE%" cxx-parser --type-map ..\rpg_sound.map --char-type char --output-dir .\.. --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc  --cxx-prologue-file .\..\stdafx.cpp ..\rpg_sound.xsd
+"%XsdEXE%" cxx-parser --type-map .\sound\etc\rpg_sound.map --char-type char --output-dir .\sound --namespace-map urn:rpg= --xml-parser xerces --force-overwrite --extern-xml-schema rpg_XMLSchema.h --skel-file-suffix _XML_types --hxx-suffix .h --cxx-suffix .cpp --show-anonymous --show-sloc  --cxx-prologue-file .\sound\stdafx.cpp .\sound\etc\rpg_sound.xsd
 
 @rem generate "XMLSchema" namespace include file (tree)
 @rem "%XsdEXE%" cxx-tree --char-type char --output-dir .\.. --generate-serialization --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --generate-xml-schema --hxx-suffix .h --show-anonymous --show-sloc ..\rpg_XMLSchema_XML_tree.xsd

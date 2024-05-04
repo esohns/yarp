@@ -1,37 +1,37 @@
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/xerces-c.cmake)
 
 if (UNIX)
- include(FindPkgConfig)
- pkg_check_modules(PKG_CONFIG_MODULE_SDL REQUIRED sdl)
- pkg_check_modules(PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
- pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
-elseif (WIN32)
+ include (FindPkgConfig)
+ pkg_check_modules (PKG_CONFIG_MODULE_SDL REQUIRED sdl)
+ pkg_check_modules (PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
+ pkg_check_modules (PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
 endif ()
 
 if (UNIX)
- include_directories(${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
-                     ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}
-                     ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
+ include_directories (${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
+                      ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}
+                      ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
 elseif (WIN32)
- include_directories($ENV{LIB_ROOT}/SDL/include
-                     $ENV{LIB_ROOT}/SDL_ttf/include
-                     $ENV{LIB_ROOT}/gtk2/include)
+ include_directories ($ENV{LIB_ROOT}/SDL/include
+                      $ENV{LIB_ROOT}/SDL_ttf/include
+                      $ENV{LIB_ROOT}/libpng/include)
 endif ()
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../3rd_party/xsd
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../common
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../item
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../character
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../magic
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../combat
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../character/player
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../character/monster
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../map
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../engine
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../graphics)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../3rd_party/xsd
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../common
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../item
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../character
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../magic
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../combat
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../character/player
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../character/monster
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../map
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../engine
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../graphics)
 
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
@@ -47,27 +47,27 @@ add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 
 if (UNIX)
- target_link_libraries(${EXECUTABLE} ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
-                                     ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
-                                     ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
-                                     xerces-c
-                                     ${ACE_LIBRARY}
-                                     Common CommonLog CommonTimer
-                                     RPG_Dice RPG_Chance RPG_Common
-                                     RPG_Character RPG_Magic RPG_Item
-                                     RPG_Player RPG_Monster
-                                     RPG_Combat RPG_Engine
-                                     RPG_Chance RPG_Dice RPG_Common
-                                     RPG_Character RPG_Magic RPG_Item
-                                     RPG_Player RPG_Map
-                                     RPG_Common
-                                     Common)
+ target_link_libraries (${EXECUTABLE} ${PKG_CONFIG_MODULE_SDL_LIBRARIES}
+                                      ${PKG_CONFIG_MODULE_SDL_TTF_LIBRARIES}
+                                      ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
+                                      xerces-c
+                                      ${ACE_LIBRARY}
+                                      Common CommonLog CommonTimer
+                                      RPG_Dice RPG_Chance RPG_Common
+                                      RPG_Character RPG_Magic RPG_Item
+                                      RPG_Player RPG_Monster
+                                      RPG_Combat RPG_Engine
+                                      RPG_Chance RPG_Dice RPG_Common
+                                      RPG_Character RPG_Magic RPG_Item
+                                      RPG_Player RPG_Map
+                                      RPG_Common
+                                      Common)
 elseif (WIN32)
 # set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
-                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
-                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        ${XERCESC_LIBRARIES}
+                        ${ACE_LIBRARY}
                         Common CommonLog CommonTimer
                         ACEStream ACEStream_Network
                         ACENetwork
@@ -103,7 +103,7 @@ elseif (WIN32)
                          COMMAND ${COMMAND}
                          ARGS "-l -t"
                          FORWARD_ARGS
-                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
+                         RUNTIME_LIBRARY_DIRS ${XERCESC_LIB_DIR}
                                               ${LIB_ROOT}/ACE_TAO/ACE/lib
                          WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                          ENVIRONMENT foo=bar)

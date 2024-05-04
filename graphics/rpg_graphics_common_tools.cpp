@@ -128,11 +128,11 @@ RPG_Graphics_Common_Tools::initialize (const std::string& directory_in,
     myInitialized = false;
   } // end IF
 
-  // init colors
+  // initialize colors ?
   if (initializeSDL_in)
     RPG_Graphics_SDL_Tools::initializeColors ();
 
-  // init fonts
+  // initialize fonts ?
   if (initializeSDL_in)
     if (!RPG_Graphics_Common_Tools::initializeFonts ())
     {

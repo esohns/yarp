@@ -1,8 +1,10 @@
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/xerces-c.cmake)
+
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/sdl.cmake)
 
 if (UNIX)
- include(FindPkgConfig)
- pkg_check_modules(PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
+ include (FindPkgConfig)
+ pkg_check_modules (PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
 elseif (WIN32)
 # add_definitions (-D__IDataObject_INTERFACE_DEFINED__)
  add_definitions (-D_USE_MATH_DEFINES)
@@ -53,12 +55,13 @@ set (${EXECUTABLE}_SRCS
      stdafx.h)
 
 if (UNIX)
- set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
+# set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
 elseif (WIN32)
- set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
+# set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
 endif ()
 
-add_executable(${EXECUTABLE} ${${EXECUTABLE}_SRCS})
+add_executable (${EXECUTABLE}
+                ${${EXECUTABLE}_SRCS})
 
 if (SDL_SUPPORT)
  target_link_libraries (${EXECUTABLE}
@@ -75,8 +78,8 @@ elseif (WIN32)
 # set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
-                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
-                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        ${XERCESC_LIBRARIES}
+                        ${ACE_LIBRARY}
                         Common CommonLog CommonTimer
                         RPG_Dice RPG_Common RPG_Graphics)
 endif ()
@@ -150,8 +153,8 @@ elseif (WIN32)
  target_link_libraries (${EXECUTABLE_2}
                         Opengl32.lib Glu32.lib Secur32.lib Userenv.lib
                         $ENV{LIB_ROOT}/SDL_mixer/lib/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/SDL_mixer.lib
-                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
-                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        ${XERCESC_LIBRARIES}
+                        ${ACE_LIBRARY}
                         Common CommonEvent CommonError CommonLog CommonTimer CommonUI CommonUI_GTK
                         ACEStream ACEStream_Network
                         ACENetwork
@@ -185,10 +188,10 @@ create_target_launcher (${EXECUTABLE}
                         ARGS "-d -t"
                         FORWARD_ARGS
                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
-                                             ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
                                              ${LIB_ROOT}/libpng/build/Debug
-                                             ${LIB_ROOT}/ACE_TAO/ACE/lib
                                              ${SDL_LIB_PATH}
+                                             ${XERCESC_LIB_DIR}
+                                             ${LIB_ROOT}/ACE_TAO/ACE/lib
                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                         ENVIRONMENT foo=bar)
 
@@ -205,10 +208,10 @@ create_target_launcher (${EXECUTABLE_2}
                         FORWARD_ARGS
                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
                                              ${LIB_ROOT}/libpng/build/Debug
-                                             ${LIB_ROOT}/openssl
+#                                             ${LIB_ROOT}/openssl
                                              ${SDL_LIB_PATH}
-                                             ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
+#                                             ${GTK_LIB_PATH}
+                                             ${XERCESC_LIB_DIR}
                                              ${LIB_ROOT}/ACE_TAO/ACE/lib
-                                             ${GTK_LIB_PATH}
                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                         ENVIRONMENT foo=bar)

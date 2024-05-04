@@ -21,8 +21,7 @@
 #ifndef RPG_PLAYER_COMMON_TOOLS_H
 #define RPG_PLAYER_COMMON_TOOLS_H
 
-#include <bitset>
-
+#include "ace/Basic_Types.h"
 #include "ace/Global_Macros.h"
 
 #include "rpg_character_common.h"
@@ -58,10 +57,9 @@ class RPG_Player_Common_Tools
 
   static RPG_Character_Race_t raceXMLTreeToRace (const RPG_Player_CharacterXML_XMLTree_Type::race_sequence&); // race (XML format)
   static RPG_Character_Abilities_t abilitiesXMLTreeToAbilities (const RPG_Player_Abilities_XMLTree_Type&); // abilities (XML format)
-
-  static RPG_Magic_SpellTypes_t spellsXMLTreeToSpellTypes (const RPG_Player_Spells_XMLTree_Type&); // spells (XML format)
   static RPG_Character_Conditions_t conditionsXMLTreeToConditions (const RPG_Player_Conditions_XMLTree_Type&); // condition (XML format)
   static RPG_Magic_Spells_t spellsXMLTreeToSpells (const RPG_Player_Spells_XMLTree_Type&); // spells (XML format)
+  static RPG_Magic_SpellTypes_t spellsXMLTreeToSpellTypes (const RPG_Player_Spells_XMLTree_Type&); // spells (XML format)
 };
 
 #endif

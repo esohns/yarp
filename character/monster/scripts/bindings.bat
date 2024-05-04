@@ -22,7 +22,7 @@ if NOT exist "%PerlScript%" (
  echo invalid file ^(was: "%PerlScript%"^)^, exiting
  goto Failed
 )
-%PerlEXE% %PerlScript% -n RPG_Monster > .\..\rpg_monster_exports.h
+%PerlEXE% %PerlScript% -n RPG_Monster > .\character\monster\rpg_monster_exports.h
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate exports header^, exiting
  set RC=%ERRORLEVEL%
@@ -30,12 +30,12 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 @rem C++ "glue code"
-set XML2CppCodeEXE=%cd%\..\..\..\tools\XML2CppCode\cmake\Debug\XML2CppCode.exe
+set XML2CppCodeEXE=%cd%\tools\XML2CppCode\build\msvc\Debug\XML2CppCode.exe
 if NOT exist "%XML2CppCodeEXE%" (
  echo invalid file ^(was: "%XML2CppCodeEXE%"^)^, exiting
  goto Failed
 )
-%XML2CppCodeEXE% -e -f .\..\rpg_monster.xsd -i -o .\.. -s -u -x RPG_Monster
+%XML2CppCodeEXE% -e -f .\character\monster\etc\rpg_monster.xsd -i -o .\character\monster -s -u -x RPG_Monster
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate C++ glue code^, exiting
  set RC=%ERRORLEVEL%
@@ -53,7 +53,7 @@ if NOT exist "%XsdEXE%" (
 @rem "%XsdEXE%" cxx-parser --char-type char --output-dir .\.. --xml-parser xerces --force-overwrite --generate-xml-schema --skel-file-suffix "" --hxx-suffix .h --show-anonymous --show-sloc ..\rpg_XMLSchema_XML_types.xsd
 @rem generate include/implementation (rpg_monster.xsd)
 @rem "%XsdEXE%" cxx-parser --export-symbol "RPG_Monster_Export" --hxx-prologue "#include \"rpg_monster_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp --type-map .\..\rpg_monster.map --options-file .\..\..\..\scripts\xsdcxx_parser_options --output-dir .\.. .\..\rpg_monster.xsd
-"%XsdEXE%" cxx-parser --cxx-prologue-file .\..\stdafx.cpp --type-map .\..\rpg_monster.map --options-file .\..\..\..\scripts\xsdcxx_parser_options --output-dir .\.. .\..\rpg_monster.xsd
+"%XsdEXE%" cxx-parser --cxx-prologue-file .\character\monster\stdafx.cpp --type-map .\character\monster\etc\rpg_monster.map --options-file .\scripts\xsdcxx_parser_options --output-dir .\character\monster .\character\monster\etc\rpg_monster.xsd
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate XML parser code^, exiting
  set RC=%ERRORLEVEL%
@@ -74,7 +74,7 @@ if %ERRORLEVEL% NEQ 0 (
 @rem generate tree include/implementation (rpg_monster.xsd)
 @rem "%XsdEXE%" cxx-tree --generate-serialization --generate-ostream --generate-comparison --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --type-regex "/(.+) RPG_(.+)_Type/RPG_\u$2_XMLTree_Type/" --char-type char --output-dir .\.. --namespace-map urn:rpg= --extern-xml-schema rpg_XMLSchema.h --hxx-suffix _XML_tree.h --cxx-suffix _XML_tree.cpp --show-anonymous --show-sloc --export-symbol "RPG_Graphics_Export" --hxx-prologue "#include \"rpg_graphics_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp ..\rpg_graphics.xsd
 @rem "%XsdEXE%" cxx-tree --output-dir .\.. --export-symbol "RPG_Monster_Export" --hxx-prologue "#include \"rpg_monster_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp --options-file .\..\..\..\scripts\xsdcxx_tree_options ..\rpg_monster.xsd
-"%XsdEXE%" cxx-tree --output-dir .\.. --cxx-prologue-file .\..\stdafx.cpp --options-file .\..\..\..\scripts\xsdcxx_tree_options ..\rpg_monster.xsd
+"%XsdEXE%" cxx-tree --output-dir .\character\monster --cxx-prologue-file .\character\monster\stdafx.cpp --options-file .\scripts\xsdcxx_tree_options .\character\monster\etc\rpg_monster.xsd
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate XML tree code^, exiting
  set RC=%ERRORLEVEL%

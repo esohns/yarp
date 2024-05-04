@@ -35,6 +35,8 @@ elseif (WXWIDGETS_USE)
  endif (CMAKE_BUILD_TYPE STREQUAL Debug)
 endif ()
 
+include (${CMAKE_CURRENT_SOURCE_DIR}/../scripts/xerces-c.cmake)
+
 include (${CMAKE_CURRENT_SOURCE_DIR}/../scripts/sdl.cmake)
 
 ########### next target ###############
@@ -76,6 +78,10 @@ add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 # set_source_files_properties(${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
 #endif ()
 
+if (XERCESC_SUPPORT)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:${XERCESC_INCLUDE_DIRS}>)
+endif (XERCESC_SUPPORT)
 if (SDL_SUPPORT)
  target_include_directories (${LIBRARY} PUBLIC
                              "$<BUILD_INTERFACE:${SDL_INCLUDE_DIRS}>")
@@ -86,10 +92,7 @@ if (UNIX)
 # target_include_directories (${LIBRARY} PUBLIC
 #                             $<BUILD_INTERFACE:${PKG_CONFIG_MODULE_LIBGLADE_INCLUDE_DIRS}>)
 elseif (WIN32)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/msvc/src>)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/src>)
+ add_compile_definitions (XSD_CXX11)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
 endif ()

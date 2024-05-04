@@ -2,6 +2,8 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/Threads.cmake)
 
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../Common/scripts/ACE.cmake)
 
+include (${CMAKE_CURRENT_SOURCE_DIR}/../scripts/xerces-c.cmake)
+
 include (${CMAKE_CURRENT_SOURCE_DIR}/../scripts/sdl.cmake)
 
 ########### next target ###############
@@ -30,15 +32,16 @@ set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS B
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
 
+if (XERCESC_SUPPORT)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:${XERCESC_INCLUDE_DIRS}>)
+endif (XERCESC_SUPPORT)
 if (SDL_SUPPORT)
  target_include_directories (${LIBRARY} PUBLIC
                              "$<BUILD_INTERFACE:${SDL_INCLUDE_DIRS}>")
 endif (SDL_SUPPORT)
 if (WIN32)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/build/msvc/src>)
- target_include_directories (${LIBRARY} PUBLIC
-                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xerces-c/src>)
+ add_compile_definitions (XSD_CXX11)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:$ENV{LIB_ROOT}/xsd/include>)
 endif (WIN32)

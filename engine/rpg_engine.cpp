@@ -903,7 +903,7 @@ RPG_Engine::load (const std::string& filename_in,
     return false;
   }
 
-  std::auto_ptr<RPG_Engine_State_XMLTree_Type> engine_state_p;
+  std::unique_ptr<RPG_Engine_State_XMLTree_Type> engine_state_p;
   struct RPG_Engine_LevelData level;
   std::string filename;
   RPG_Magic_Spells_t spells;

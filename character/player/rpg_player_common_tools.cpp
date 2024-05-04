@@ -64,18 +64,18 @@
 RPG_Character_Race_t
 RPG_Player_Common_Tools::raceXMLTreeToRace (const RPG_Player_CharacterXML_XMLTree_Type::race_sequence& races_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::raceXMLTreeToRace"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Common_Tools::raceXMLTreeToRace"));
 
   RPG_Character_Race_t result;
 
-  RPG_Character_Race current;
-  for (RPG_Player_PlayerXML_XMLTree_Type::race_const_iterator iterator = races_in.begin();
-       iterator != races_in.end();
+  enum RPG_Character_Race current;
+  for (RPG_Player_PlayerXML_XMLTree_Type::race_const_iterator iterator = races_in.begin ();
+       iterator != races_in.end ();
        iterator++)
   {
-    current = RPG_Character_RaceHelper::stringToRPG_Character_Race(*iterator);
+    current = RPG_Character_RaceHelper::stringToRPG_Character_Race (*iterator);
     if (current > RACE_NONE)
-      result.set(current - 1); // *NOTE*: -1 !
+      result.set (current - 1); // *NOTE*: -1 !
   } // end FOR
 
   return result;
@@ -84,15 +84,14 @@ RPG_Player_Common_Tools::raceXMLTreeToRace (const RPG_Player_CharacterXML_XMLTre
 RPG_Character_Abilities_t
 RPG_Player_Common_Tools::abilitiesXMLTreeToAbilities (const RPG_Player_Abilities_XMLTree_Type& abilities_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::abilitiesXMLTreeToAbilities"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Common_Tools::abilitiesXMLTreeToAbilities"));
 
-  // init result
   RPG_Character_Abilities_t result;
 
-  for (RPG_Player_Abilities_XMLTree_Type::ability_const_iterator iterator = abilities_in.ability().begin();
-       iterator != abilities_in.ability().end();
+  for (RPG_Player_Abilities_XMLTree_Type::ability_const_iterator iterator = abilities_in.ability ().begin ();
+       iterator != abilities_in.ability ().end ();
        iterator++)
-    result.insert(RPG_Character_AbilityHelper::stringToRPG_Character_Ability(*iterator));
+    result.insert (RPG_Character_AbilityHelper::stringToRPG_Character_Ability (*iterator));
 
   return result;
 }
@@ -100,14 +99,14 @@ RPG_Player_Common_Tools::abilitiesXMLTreeToAbilities (const RPG_Player_Abilities
 RPG_Magic_SpellTypes_t
 RPG_Player_Common_Tools::spellsXMLTreeToSpellTypes (const RPG_Player_Spells_XMLTree_Type& spells_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::spellsXMLTreeToSpellTypes"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Common_Tools::spellsXMLTreeToSpellTypes"));
 
   RPG_Magic_SpellTypes_t result;
 
-  for (RPG_Player_Spells_XMLTree_Type::spell_const_iterator iterator = spells_in.spell().begin();
-       iterator != spells_in.spell().end();
+  for (RPG_Player_Spells_XMLTree_Type::spell_const_iterator iterator = spells_in.spell ().begin ();
+       iterator != spells_in.spell ().end ();
        iterator++)
-    result.insert(RPG_Magic_SpellTypeHelper::stringToRPG_Magic_SpellType(*iterator));
+    result.insert (RPG_Magic_SpellTypeHelper::stringToRPG_Magic_SpellType (*iterator));
 
   return result;
 }
@@ -115,14 +114,14 @@ RPG_Player_Common_Tools::spellsXMLTreeToSpellTypes (const RPG_Player_Spells_XMLT
 RPG_Character_Conditions_t
 RPG_Player_Common_Tools::conditionsXMLTreeToConditions (const RPG_Player_Conditions_XMLTree_Type& conditions_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::conditionsXMLTreeToConditions"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Common_Tools::conditionsXMLTreeToConditions"));
 
   RPG_Character_Conditions_t result;
 
-  for (RPG_Player_Conditions_XMLTree_Type::condition_const_iterator iterator = conditions_in.condition().begin();
-       iterator != conditions_in.condition().end();
+  for (RPG_Player_Conditions_XMLTree_Type::condition_const_iterator iterator = conditions_in.condition ().begin ();
+       iterator != conditions_in.condition ().end ();
        iterator++)
-    result.insert(RPG_Common_ConditionHelper::stringToRPG_Common_Condition(*iterator));
+    result.insert (RPG_Common_ConditionHelper::stringToRPG_Common_Condition (*iterator));
 
   return result;
 }
@@ -130,14 +129,14 @@ RPG_Player_Common_Tools::conditionsXMLTreeToConditions (const RPG_Player_Conditi
 RPG_Magic_Spells_t
 RPG_Player_Common_Tools::spellsXMLTreeToSpells (const RPG_Player_Spells_XMLTree_Type& spells_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::spellsXMLTreeToSpells"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Common_Tools::spellsXMLTreeToSpells"));
 
   RPG_Magic_Spells_t result;
 
-  for (RPG_Player_Spells_XMLTree_Type::spell_const_iterator iterator = spells_in.spell().begin();
-       iterator != spells_in.spell().end();
+  for (RPG_Player_Spells_XMLTree_Type::spell_const_iterator iterator = spells_in.spell ().begin ();
+       iterator != spells_in.spell ().end ();
        iterator++)
-    result.push_back(RPG_Magic_SpellTypeHelper::stringToRPG_Magic_SpellType(*iterator));
+    result.push_back (RPG_Magic_SpellTypeHelper::stringToRPG_Magic_SpellType (*iterator));
 
   return result;
 }
@@ -145,25 +144,25 @@ RPG_Player_Common_Tools::spellsXMLTreeToSpells (const RPG_Player_Spells_XMLTree_
 unsigned int
 RPG_Player_Common_Tools::restParty (RPG_Player_Party_t& party_in)
 {
-  RPG_TRACE(ACE_TEXT("RPG_Player_Common_Tools::restParty"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Common_Tools::restParty"));
 
   // debug info
-  ACE_DEBUG((LM_DEBUG,
-             ACE_TEXT("party status:\n-------------\n")));
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("party status:\n-------------\n")));
   int index = 1;
   RPG_Player_PartyIterator_t iterator;
-  for (iterator = party_in.begin();
-       iterator != party_in.end();
+  for (iterator = party_in.begin ();
+       iterator != party_in.end ();
        iterator++, index++)
   {
-    ACE_DEBUG((LM_DEBUG,
-               ACE_TEXT("#%d] \"%s\" (lvl: %d), HP: %d/%d --> %s\n"),
-               index,
-               ACE_TEXT((*iterator)->getName().c_str()),
-               (*iterator)->getLevel(),
-               (*iterator)->getNumHitPoints(),
-               (*iterator)->getNumTotalHitPoints(),
-               ((*iterator)->hasCondition(CONDITION_NORMAL) ? ACE_TEXT_ALWAYS_CHAR("OK") : ACE_TEXT_ALWAYS_CHAR("DOWN"))));
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT("#%d] \"%s\" (lvl: %d), HP: %d/%d --> %s\n"),
+                index,
+                ACE_TEXT ((*iterator)->getName ().c_str ()),
+                (*iterator)->getLevel (),
+                (*iterator)->getNumHitPoints (),
+                (*iterator)->getNumTotalHitPoints (),
+                ((*iterator)->hasCondition (CONDITION_NORMAL) ? ACE_TEXT_ALWAYS_CHAR ("OK") : ACE_TEXT_ALWAYS_CHAR ("DOWN"))));
   } // end FOR
 
   // check party status

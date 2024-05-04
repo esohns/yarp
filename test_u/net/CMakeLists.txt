@@ -31,6 +31,8 @@ elseif (WXWIDGETS_USE)
  endif (CMAKE_BUILD_TYPE STREQUAL Debug)
 endif ()
 
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/xerces-c.cmake)
+
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/sdl.cmake)
 
 if (UNIX)
@@ -68,9 +70,6 @@ if (UNIX)
 elseif (WIN32)
  include_directories ($ENV{LIB_ROOT}/SDL_mixer/include)
 endif ()
-#if (GTKGLAREA_SUPPORT)
-# include_directories ($ENV{LIB_ROOT}/gtkglarea)
-#endif (GTKGLAREA_SUPPORT)
 
 if (WIN32)
  include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/include)
@@ -124,8 +123,8 @@ elseif (WIN32)
  target_link_libraries (${EXECUTABLE}
                         Opengl32.lib legacy_stdio_definitions.lib
                         ${GTK_LIBRARIES}
-                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
-                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        ${XERCESC_LIBRARIES}
+                        ${ACE_LIBRARY}
                         Common CommonEvent CommonLog CommonSignal CommonTimer CommonUI_GTK
                         ACEStream ACEStream_Miscellaneous ACEStream_Network
                         ACENetwork ACENetwork_Client
@@ -179,8 +178,8 @@ elseif (WIN32)
  target_link_libraries (${EXECUTABLE_2}
                         Opengl32.lib legacy_stdio_definitions.lib
                         ${GTK_LIBRARIES}
-                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
-                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        ${XERCESC_LIBRARIES}
+                        ${ACE_LIBRARY}
                         Common CommonEvent CommonLog CommonSignal CommonTimer CommonUI_GTK
                         ACEStream ACEStream_Miscellaneous ACEStream_Network
                         ACENetwork ACENetwork_Server
@@ -209,7 +208,7 @@ create_target_launcher (${EXECUTABLE}
                         ARGS "-t"
                         FORWARD_ARGS
                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
-                                             ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
+                                             ${XERCESC_LIB_DIR}
                                              ${LIB_ROOT}/libpng/build/Debug
                                              ${LIB_ROOT}/ACE_TAO/ACE/lib
                                              ${SDL_LIB_PATH}
@@ -226,7 +225,7 @@ create_target_launcher (${EXECUTABLE_2}
                         ARGS "-t"
                         FORWARD_ARGS
                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
-                                             ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
+                                             ${XERCESC_LIB_DIR}
                                              ${LIB_ROOT}/libpng/build/Debug
                                              ${LIB_ROOT}/ACE_TAO/ACE/lib
                                              ${SDL_LIB_PATH}

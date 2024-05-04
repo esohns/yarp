@@ -1178,7 +1178,7 @@ RPG_Player::load (const std::string& filename_in,
                          path);
 //   props.no_namespace_schema_location(RPG_PLAYER_SCHEMA_FILE);
 //   props.schema_location("http://www.w3.org/XML/1998/namespace", "xml.xsd");
-  std::auto_ptr<RPG_Player_PlayerXML_XMLTree_Type> player_p;
+  std::unique_ptr<RPG_Player_PlayerXML_XMLTree_Type> player_p;
   try {
     player_p = ::player_t (ifs,
                            RPG_XSDErrorHandler,

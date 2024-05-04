@@ -173,7 +173,7 @@ RPG_Client_Common_Tools::initialize (const struct RPG_Client_SDL_InputConfigurat
                                      const std::string& graphicsDirectory_in,
                                      unsigned int graphicsCacheSize_in,
                                      const std::string& graphicsDictionaryFile_in,
-                                     bool initSDL_in)
+                                     bool initializeSDL_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Common_Tools::initialize"));
 
@@ -184,7 +184,7 @@ RPG_Client_Common_Tools::initialize (const struct RPG_Client_SDL_InputConfigurat
   if (!RPG_Client_Common_Tools::initializeSDLInput (inputConfiguration_in))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Client_Common_Tools::initSDLInput, aborting\n")));
+                ACE_TEXT ("failed to RPG_Client_Common_Tools::initializeSDLInput(), aborting\n")));
     return false;
   } // end IF
 
@@ -198,7 +198,7 @@ RPG_Client_Common_Tools::initialize (const struct RPG_Client_SDL_InputConfigurat
                                            muted_in))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Sound_Common_Tools::initialize, aborting\n")));
+                ACE_TEXT ("failed to RPG_Sound_Common_Tools::initialize(), aborting\n")));
     return false;
   } // end IF
   // step2b: initialize sound dictionary
@@ -214,7 +214,7 @@ RPG_Client_Common_Tools::initialize (const struct RPG_Client_SDL_InputConfigurat
                                                                   validate_schema_b))
     {
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to RPG_Sound_Dictionary::initialize, aborting\n")));
+                  ACE_TEXT ("failed to RPG_Sound_Dictionary::initialize(), aborting\n")));
       return false;
     }
   } // end IF
@@ -229,25 +229,24 @@ RPG_Client_Common_Tools::initialize (const struct RPG_Client_SDL_InputConfigurat
                                                                      validate_schema_b))
     {
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to RPG_Graphics_Dictionary::initialize, aborting\n")));
+                  ACE_TEXT ("failed to RPG_Graphics_Dictionary::initialize(), aborting\n")));
       return false;
     }
   } // end IF
 
   if (!RPG_Graphics_Common_Tools::initialize (graphicsDirectory_in,
                                               graphicsCacheSize_in,
-                                              initSDL_in))
+                                              initializeSDL_in))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Graphics_Common_Tools::initialize, aborting\n")));
+                ACE_TEXT ("failed to RPG_Graphics_Common_Tools::initialize(), aborting\n")));
     return false;
   } // end IF
 
   // step4: initialize cursor manager singleton
-  if (initSDL_in)
+  if (initializeSDL_in)
   {
-    struct SDL_Rect dirty_region;
-    ACE_OS::memset (&dirty_region, 0, sizeof (struct SDL_Rect));
+    struct SDL_Rect dirty_region = {0, 0, 0, 0};
     RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->setCursor (CURSOR_NORMAL,
                                                                    dirty_region,
                                                                    true); // locked access ?
@@ -640,7 +639,7 @@ RPG_Client_Common_Tools::updateDoors (const struct RPG_Graphics_DoorTileSet& til
   engine_in.unlock ();
 }
 
-RPG_Graphics_Sprite
+enum RPG_Graphics_Sprite
 RPG_Client_Common_Tools::classToSprite (const struct RPG_Character_Class& class_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Common_Tools::classToSprite"));
@@ -656,7 +655,7 @@ RPG_Client_Common_Tools::classToSprite (const struct RPG_Character_Class& class_
   return SPRITE_HUMAN;
 }
 
-RPG_Graphics_Sprite
+enum RPG_Graphics_Sprite
 RPG_Client_Common_Tools::monsterToSprite (const std::string& type_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Common_Tools::monsterToSprite"));

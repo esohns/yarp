@@ -191,7 +191,7 @@ RPG_Engine_Level::load (const std::string& filename_in,
 //   props.no_namespace_schema_location(RPG_CHARACTER_PLAYER_SCHEMA_FILE);
 //   props.schema_location("http://www.w3.org/XML/1998/namespace", "xml.xsd");
 
-  std::auto_ptr<RPG_Engine_Level_XMLTree_Type> engine_level_p;
+  std::unique_ptr<RPG_Engine_Level_XMLTree_Type> engine_level_p;
   bool is_level = true;
   try {
     ifs.open (filename_in.c_str (),

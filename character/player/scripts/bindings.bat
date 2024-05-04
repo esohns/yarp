@@ -22,7 +22,7 @@ if NOT exist "%PerlScript%" (
  echo invalid file ^(was: "%PerlScript%"^)^, exiting
  goto Failed
 )
-%PerlEXE% %PerlScript% -n RPG_Player > .\..\rpg_player_exports.h
+%PerlEXE% %PerlScript% -n RPG_Player > .\character\player\rpg_player_exports.h
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate exports header^, exiting
  set RC=%ERRORLEVEL%
@@ -30,12 +30,12 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 @rem C++ "glue code"
-set XML2CppCodeEXE=%cd%\..\..\..\tools\XML2CppCode\cmake\Debug\XML2CppCode.exe
+set XML2CppCodeEXE=%cd%\tools\XML2CppCode\build\msvc\Debug\XML2CppCode.exe
 if NOT exist "%XML2CppCodeEXE%" (
  echo invalid file ^(was: "%XML2CppCodeEXE%"^)^, exiting
  goto Failed
 )
-%XML2CppCodeEXE% -e -f .\..\rpg_player.xsd -i -o .\.. -s -u -x RPG_Player
+%XML2CppCodeEXE% -e -f .\character\player\etc\rpg_player.xsd -i -o .\character\player -s -u -x RPG_Player
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate C++ glue code^, exiting
  set RC=%ERRORLEVEL%
@@ -52,7 +52,7 @@ if NOT exist "%XsdEXE%" (
 
 @rem XML Parser/Map
 @rem "%XsdEXE%" cxx-parser --export-symbol "RPG_Player_Export" --hxx-prologue "#include \"rpg_player_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp --type-map .\..\rpg_player.map --options-file .\..\..\..\scripts\xsdcxx_parser_options --output-dir .\.. --export-symbol "RPG_Player_Export" --hxx-prologue "#include \"rpg_player_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp .\..\rpg_player.xsd
-"%XsdEXE%" cxx-parser --cxx-prologue-file .\..\stdafx.cpp --type-map .\..\rpg_player.map --options-file .\..\..\..\scripts\xsdcxx_parser_options --output-dir .\.. .\..\rpg_player.xsd
+"%XsdEXE%" cxx-parser --cxx-prologue-file .\character\player\stdafx.cpp --type-map .\character\player\etc\rpg_player.map --options-file .\scripts\xsdcxx_parser_options --output-dir .\character\player .\character\player\etc\rpg_player.xsd
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate XML parser code^, exiting
  set RC=%ERRORLEVEL%
@@ -75,7 +75,7 @@ if %ERRORLEVEL% NEQ 0 (
 @rem "%XsdEXE%" cxx-tree --char-type char --output-dir .\.. --generate-serialization --generate-insertion ACE_OutputCDR --generate-extraction ACE_InputCDR --generate-xml-schema --hxx-suffix .h --show-anonymous --show-sloc ..\rpg_XMLSchema_XML_tree.xsd
 @rem generate tree include/implementation
 @rem "%XsdEXE%" cxx-tree --export-symbol "RPG_Player_Export" --hxx-prologue "#include \"rpg_player_exports.h\"" --cxx-prologue-file .\..\stdafx.cpp --options-file .\..\..\..\scripts\xsdcxx_tree_options --output-dir .\.. .\..\rpg_player.xsd
-"%XsdEXE%" cxx-tree --cxx-prologue-file .\..\stdafx.cpp --options-file .\..\..\..\scripts\xsdcxx_tree_options --output-dir .\.. .\..\rpg_player.xsd
+"%XsdEXE%" cxx-tree --cxx-prologue-file .\character\player\stdafx.cpp --options-file .\scripts\xsdcxx_tree_options --output-dir .\character\player .\character\player\etc\rpg_player.xsd
 if %ERRORLEVEL% NEQ 0 (
  echo failed to generate XML tree code^, exiting
  set RC=%ERRORLEVEL%

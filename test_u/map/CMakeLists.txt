@@ -1,9 +1,11 @@
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/xerces-c.cmake)
+
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/sdl.cmake)
+
 if (UNIX)
  include (FindPkgConfig)
  pkg_check_modules (PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
 endif (UNIX)
-
-include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/sdl.cmake)
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/log)
@@ -26,7 +28,7 @@ set (${EXECUTABLE}_SRCS
      map_parser.cpp
      stdafx.h)
 
-set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
+#set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
 
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
@@ -52,8 +54,8 @@ elseif (WIN32)
 # set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
-                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
-                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        ${XERCESC_LIBRARIES}
+                        ${ACE_LIBRARY}
                         Common CommonError CommonLog CommonTimer
                         ACEStream ACEStream_Network
                         ACENetwork
@@ -79,7 +81,7 @@ set (${EXECUTABLE_2}_SRCS
      map_generator.cpp
      stdafx.h)
 
-set_source_files_properties (${${EXECUTABLE_2}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
+#set_source_files_properties (${${EXECUTABLE_2}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
 
 if (UNIX)
  include_directories (${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
@@ -124,8 +126,8 @@ elseif (WIN32)
 # set_target_properties (${EXECUTABLE_2} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE_2}
-                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
-                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        ${XERCESC_LIBRARIES}
+                        ${ACE_LIBRARY}
                         Common CommonError CommonLog CommonTimer
                         ACEStream ACEStream_Network
                         ACENetwork
@@ -151,7 +153,7 @@ set (${EXECUTABLE_3}_SRCS
      path_finder.cpp
      stdafx.h)
 
-set_source_files_properties (${${EXECUTABLE_3}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
+#set_source_files_properties (${${EXECUTABLE_3}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
 
 add_executable (${EXECUTABLE_3}
                 ${${EXECUTABLE_3}_SRCS})
@@ -169,8 +171,8 @@ elseif (WIN32)
 
  target_link_libraries (${EXECUTABLE_3}
                         Userenv.lib
-                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
-                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        ${XERCESC_LIBRARIES}
+                        ${ACE_LIBRARY}
                         Common CommonError CommonLog CommonTimer
                         RPG_Dice RPG_Common RPG_Map)
 endif ()
@@ -199,8 +201,8 @@ create_target_launcher (${EXECUTABLE}
                         ARGS "-t"
                         FORWARD_ARGS
                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
-                                             ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
                                              ${LIB_ROOT}/libpng/build/Debug
+                                             ${XERCESC_LIB_DIR}
                                              ${LIB_ROOT}/ACE_TAO/ACE/lib
                                              ${SDL_LIB_PATH}
                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -216,8 +218,8 @@ create_target_launcher (${EXECUTABLE_2}
                         ARGS "-l -t"
                         FORWARD_ARGS
                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
-                                             ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
                                              ${LIB_ROOT}/libpng/build/Debug
+                                             ${XERCESC_LIB_DIR}
                                              ${LIB_ROOT}/ACE_TAO/ACE/lib
                                              ${SDL_LIB_PATH}
                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -233,8 +235,8 @@ create_target_launcher (${EXECUTABLE_3}
                         ARGS "-l -t"
                         FORWARD_ARGS
                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
-                                             ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
                                              ${LIB_ROOT}/libpng/build/Debug
+                                             ${XERCESC_LIB_DIR}
                                              ${LIB_ROOT}/ACE_TAO/ACE/lib
                                              ${SDL_LIB_PATH}
                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}

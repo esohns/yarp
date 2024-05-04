@@ -1,3 +1,5 @@
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/xerces-c.cmake)
+
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/sdl.cmake)
 
 if (UNIX)
@@ -5,11 +7,9 @@ if (UNIX)
  pkg_check_modules (PKG_CONFIG_MODULE_XERCES REQUIRED xerces-c)
 endif (UNIX)
 
-if (UNIX)
- include_directories (${PKG_CONFIG_MODULE_XERCES_INCLUDE_DIRS})
-elseif (WIN32)
- include_directories ($ENV{LIB_ROOT}/xerces-c/src)
-endif ()
+if (XERCESC_SUPPORT)
+ include_directories (${XERCESC_INCLUDE_DIRS})
+endif (XERCESC_SUPPORT)
 if (SDL_SUPPORT)
  include_directories (${SDL_INCLUDE_DIRS})
 endif (SDL_SUPPORT)
@@ -52,8 +52,8 @@ elseif (WIN32)
 
  target_link_libraries (${EXECUTABLE}
                        legacy_stdio_definitions.lib
-                       $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
-                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                       ${XERCESC_LIBRARIES}
+                       ${ACE_LIBRARY}
                        Common CommonError CommonLog CommonTimer
                        RPG_Dice RPG_Common RPG_Sound)
 endif ()
@@ -85,8 +85,8 @@ elseif (WIN32)
                          ARGS "-d -r -t"
                          FORWARD_ARGS
                          RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
-                                              ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
-                                              ${LIB_ROOT}/libpng/build/Debug
+#                                              ${LIB_ROOT}/libpng/build/Debug
+                                              ${XERCESC_LIB_DIR}
                                               ${LIB_ROOT}/ACE_TAO/ACE/lib
                                               ${SDL_LIB_PATH}
                          WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}

@@ -1,3 +1,4 @@
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/xerces-c.cmake)
 
 ########### next target ###############
 set (EXECUTABLE chance_dice)
@@ -22,7 +23,7 @@ if (UNIX)
                         RPG_Dice)
 elseif (WIN32)
  target_link_libraries (${EXECUTABLE}
-                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
+                        ${XERCESC_LIBRARIES}
                         ${ACE_LIBRARY}
                         Common CommonLog CommonTimer
                         RPG_Dice)
@@ -58,7 +59,7 @@ if (UNIX)
 elseif (WIN32)
  target_link_libraries (${EXECUTABLE_2}
                         Userenv.lib
-                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
+                        ${XERCESC_LIBRARIES}
                         ${ACE_LIBRARY}
                         Common CommonError CommonLog CommonTimer
                         RPG_Dice)
@@ -97,7 +98,7 @@ elseif (WIN32)
                          COMMAND ${COMMAND}
                          ARGS "-p -r 5-12 -t"
                          FORWARD_ARGS
-                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
+                         RUNTIME_LIBRARY_DIRS ${XERCESC_LIB_DIR}
                                               ${LIB_ROOT}/ACE_TAO/ACE/lib
                          WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                          ENVIRONMENT foo=bar)
@@ -107,7 +108,7 @@ elseif (WIN32)
                          COMMAND ${COMMAND}
                          ARGS "-p -r 5-12 -t"
                          FORWARD_ARGS
-                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
+                         RUNTIME_LIBRARY_DIRS ${XERCESC_LIB_DIR}
                                               ${LIB_ROOT}/ACE_TAO/ACE/lib
                          WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                          ENVIRONMENT foo=bar)

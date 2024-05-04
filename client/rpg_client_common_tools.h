@@ -57,25 +57,25 @@ class RPG_Client_Common_Tools
                           bool = true);                                    // initialize SDL ?
   static void finalize ();
 
-  static void initFloorEdges (const RPG_Engine&,                      // state / engine
+  static void initFloorEdges (const RPG_Engine&,                           // state / engine
                               const struct RPG_Graphics_FloorEdgeTileSet&, // appropriate (style) tileset
-                              RPG_Graphics_FloorEdgeTileMap_t&);      // return value: floor edge tiles / position
+                              RPG_Graphics_FloorEdgeTileMap_t&);           // return value: floor edge tiles / position
   static void updateFloorEdges (const struct RPG_Graphics_FloorEdgeTileSet&, // appropriate (style) tileset
-                                RPG_Graphics_FloorEdgeTileMap_t&);      // input/output value: floor edge tiles / position
-  static void initWalls (const RPG_Engine&,                 // state / engine
+                                RPG_Graphics_FloorEdgeTileMap_t&);           // input/output value: floor edge tiles / position
+  static void initWalls (const RPG_Engine&,                      // state / engine
                          const struct RPG_Graphics_WallTileSet&, // appropriate (style) tileset
-                         RPG_Graphics_WallTileMap_t&);      // return value: wall tiles / position
+                         RPG_Graphics_WallTileMap_t&);           // return value: wall tiles / position
   static void updateWalls (const struct RPG_Graphics_WallTileSet&, // appropriate (style) tileset
-                           RPG_Graphics_WallTileMap_t&);      // input/output value: wall tiles / position
-  static void initDoors (const RPG_Engine&,                 // state / engine
+                           RPG_Graphics_WallTileMap_t&);           // input/output value: wall tiles / position
+  static void initDoors (const RPG_Engine&,                      // state / engine
                          const struct RPG_Graphics_DoorTileSet&, // appropriate (style) tileset
-                         RPG_Graphics_DoorTileMap_t&);      // return value: door tiles / position
+                         RPG_Graphics_DoorTileMap_t&);           // return value: door tiles / position
   static void updateDoors (const struct RPG_Graphics_DoorTileSet&, // appropriate (style) tileset
-                           const RPG_Engine&,                 // state / engine
-                           RPG_Graphics_DoorTileMap_t&);      // input/output value: door tiles / position
+                           const RPG_Engine&,                      // state / engine
+                           RPG_Graphics_DoorTileMap_t&);           // input/output value: door tiles / position
 
-  static RPG_Graphics_Sprite classToSprite (const struct RPG_Character_Class&);
-  static RPG_Graphics_Sprite monsterToSprite (const std::string&);
+  static enum RPG_Graphics_Sprite classToSprite (const struct RPG_Character_Class&);
+  static enum RPG_Graphics_Sprite monsterToSprite (const std::string&);
 
   static bool hasCeiling (const RPG_Map_Position_t&, // position
                           const RPG_Engine&,         // state / engine

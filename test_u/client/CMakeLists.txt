@@ -31,21 +31,22 @@ elseif (WXWIDGETS_USE)
  endif (CMAKE_BUILD_TYPE STREQUAL Debug)
 endif ()
 
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/xerces-c.cmake)
+
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/sdl.cmake)
 
 if (UNIX)
- include(FindPkgConfig)
- pkg_check_modules(PKG_CONFIG_MODULE_XERCES_C REQUIRED xerces-c)
- pkg_check_modules(PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
+ include (FindPkgConfig)
+ pkg_check_modules (PKG_CONFIG_MODULE_XERCES_C REQUIRED xerces-c)
+ pkg_check_modules (PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
 endif (UNIX)
 
 include_directories (${GTK_INCLUDE_DIRS}
                      $ENV{LIB_ROOT}/gtkglarea)
 if (UNIX)
- include_directories(${PKG_CONFIG_MODULE_XERCES_C_INCLUDE_DIRS}
-                     ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
+ include_directories (${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
 elseif (WIN32)
- include_directories ($ENV{LIB_ROOT}/xerces-c/src)
+ include_directories ($ENV{LIB_ROOT}/libpng/include)
 endif ()
 if (SDL_SUPPORT)
  include_directories (${SDL_INCLUDE_DIRS})
@@ -99,9 +100,9 @@ set (${EXECUTABLE}_SRCS
      stdafx.h)
 
 if (UNIX)
- set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"/usr/local/share/RPG\";RPG_GRAPHICS_HAS_DLL=1")
+# set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"/usr/local/share/RPG\";RPG_GRAPHICS_HAS_DLL=1")
 elseif (WIN32)
- set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"\"")
+# set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"\"")
 endif ()
 
 if (UNIX)
@@ -115,16 +116,12 @@ endif (UNIX)
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
 
-add_dependencies(${EXECUTABLE} RPG_Chance RPG_Dice RPG_Common
-                               RPG_Magic RPG_Item RPG_Character RPG_Combat 
-                               RPG_Player RPG_Monster
-                               RPG_Map RPG_Graphics RPG_Sound RPG_Engine
-                               RPG_Client)
+add_dependencies (${EXECUTABLE} RPG_Chance RPG_Dice RPG_Common
+                                RPG_Magic RPG_Item RPG_Character RPG_Combat 
+                                RPG_Player RPG_Monster
+                                RPG_Map RPG_Graphics RPG_Sound RPG_Engine
+                                RPG_Client)
 
-if (SDL_SUPPORT)
- target_link_libraries (${EXECUTABLE}
-                        ${SDL_LIBRARIES})
-endif (SDL_SUPPORT)
 if (UNIX)
  target_link_libraries (${EXECUTABLE}
                         ${PKG_CONFIG_MODULE_XERCES_C_LIBRARIES}
@@ -133,6 +130,7 @@ if (UNIX)
 #                        ${PKG_CONFIG_MODULE_GTHREAD_LIBRARIES}
 #                        ${PKG_CONFIG_MODULE_LIBGLADE_LIBRARIES}
                         X11
+                        ${SDL_LIBRARIES}
                         ${ACE_LIBRARY}
                         Common CommonError CommonEvent CommonLog CommonTimer CommonUI CommonUI_GTK
                         ACEStream ACEStream_Network
@@ -149,9 +147,10 @@ elseif (WIN32)
 
  target_link_libraries (${EXECUTABLE}
                         Opengl32.lib
+                        ${SDL_LIBRARIES}
                         ${GTK_LIBRARIES}
-                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib
-                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        ${XERCESC_LIBRARIES}
+                        ${ACE_LIBRARY}
                         Common CommonError CommonEvent CommonLog CommonSignal CommonTimer CommonUI_GTK
                         ACEStream ACEStream_Network
                         ACENetwork
@@ -251,7 +250,7 @@ elseif (WIN32)
                                               ${LIB_ROOT}/libepoxy/bin
                                               ${LIB_ROOT}/openssl
                                               ${SDL_LIB_PATH}
-                                              ${LIB_ROOT}/xerces-c/build/msvc/src/Debug
+                                              ${XERCESC_LIB_DIR}
                                               ${LIB_ROOT}/ACE_TAO/ACE/lib
                                               ${GTK_LIB_PATH}
 #                                              ${PROJECT_SOURCE_DIR}/../Common/cmake/src/Debug
