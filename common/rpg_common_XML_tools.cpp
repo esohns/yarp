@@ -88,7 +88,8 @@ RPG_Common_XML_Tools::dirent_comparator (const dirent** entry1_in,
     ACE_TEXT_ALWAYS_CHAR ("rpg_map.xsd"),
     ACE_TEXT_ALWAYS_CHAR ("rpg_graphics.xsd"),
     ACE_TEXT_ALWAYS_CHAR ("rpg_sound.xsd"),
-    ACE_TEXT_ALWAYS_CHAR ("rpg_engine.xsd")
+    ACE_TEXT_ALWAYS_CHAR ("rpg_engine.xsd"),
+    ACE_TEXT_ALWAYS_CHAR ("rpg_graphics.xsd")
   };
 
   std::vector<std::string>::const_iterator iterator_1 =

@@ -1409,8 +1409,14 @@ do_work (mode_t mode_in,
   schema_repository_string += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
   schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   schema_repository_string += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+  std::string schema_repository_string_2 = schemaRepository_in;
+  schema_repository_string_2 += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository_string_2 += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING);
+  schema_repository_string_2 += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository_string_2 += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
   std::vector<std::string> schema_directories_a;
   schema_directories_a.push_back (schema_repository_string);
+  schema_directories_a.push_back (schema_repository_string_2);
   RPG_Engine_Common_Tools::initialize (schema_directories_a,
                                        magicDictionary_in,
                                        itemsDictionary_in,

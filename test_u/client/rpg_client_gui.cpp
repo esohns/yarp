@@ -817,60 +817,68 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   std::vector<std::string> schema_directories_a;
   if (Common_Error_Tools::inDebugSession ())
   {
+    //std::string schema_path = schemaRepository_in;
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_CHANCE_SUB_DIRECTORY_STRING);
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_DICE_SUB_DIRECTORY_STRING);
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    //schema_directories_a.push_back (schema_path);
+
+    //schema_path = schemaRepository_in;
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_SUB_DIRECTORY_STRING);
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    //schema_directories_a.push_back (schema_path);
+
+    //schema_path = schemaRepository_in;
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_CHARACTER_SUB_DIRECTORY_STRING);
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    //schema_directories_a.push_back (schema_path);
+
+    //schema_path = schemaRepository_in;
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_SUB_DIRECTORY_STRING);
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    //schema_directories_a.push_back (schema_path);
+
+    //schema_path = schemaRepository_in;
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_SUB_DIRECTORY_STRING);
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    //schema_directories_a.push_back (schema_path);
+
+    //schema_path = schemaRepository_in;
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_COMBAT_SUB_DIRECTORY_STRING);
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    //schema_directories_a.push_back (schema_path);
+
+    //schema_path = schemaRepository_in;
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_SUB_DIRECTORY_STRING);
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    //schema_directories_a.push_back (schema_path);
+
+    //schema_path = schemaRepository_in;
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_SUB_DIRECTORY_STRING);
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    //schema_directories_a.push_back (schema_path);
+
+    // *NOTE*: this one contains symlinks to all of the above
     std::string schema_path = schemaRepository_in;
     schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_CHANCE_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_DICE_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
-    schema_directories_a.push_back (schema_path);
-
-    schema_path = schemaRepository_in;
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
-    schema_directories_a.push_back (schema_path);
-
-    schema_path = schemaRepository_in;
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_CHARACTER_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
-    schema_directories_a.push_back (schema_path);
-
-    schema_path = schemaRepository_in;
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
-    schema_directories_a.push_back (schema_path);
-
-    schema_path = schemaRepository_in;
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
-    schema_directories_a.push_back (schema_path);
-
-    schema_path = schemaRepository_in;
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_COMBAT_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
-    schema_directories_a.push_back (schema_path);
-
-    schema_path = schemaRepository_in;
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
-    schema_directories_a.push_back (schema_path);
-
-    schema_path = schemaRepository_in;
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_SUB_DIRECTORY_STRING);
+    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
     schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
     schema_directories_a.push_back (schema_path);

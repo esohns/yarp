@@ -208,7 +208,7 @@ create_target_launcher (${EXECUTABLE_2}
                         FORWARD_ARGS
                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
                                              ${LIB_ROOT}/libpng/build/Debug
-#                                             ${LIB_ROOT}/openssl
+                                             ${LIB_ROOT}/openssl
                                              ${SDL_LIB_PATH}
 #                                             ${GTK_LIB_PATH}
                                              ${XERCESC_LIB_DIR}
