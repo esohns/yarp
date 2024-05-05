@@ -34,8 +34,8 @@ void update_equipment (const struct RPG_Client_GTK_CBData&);
 void update_character_profile (const RPG_Player&, GtkBuilder*);
 void update_entity_profile (const struct RPG_Engine_Entity&, GtkBuilder*);
 void reset_character_profile (GtkBuilder*);
-unsigned int load_files (const RPG_Client_Repository&, // repository
-                         GtkListStore*);               // target liststore
+unsigned int load_files (enum RPG_Client_Repository, // repository
+                         GtkListStore*);             // target liststore
 gint combobox_sort_function (GtkTreeModel*, // model
                              GtkTreeIter*,  // row 1
                              GtkTreeIter*,  // row 2

@@ -916,7 +916,7 @@ update_character_profile (const RPG_Player& player_in,
                       text_p);
   g_free (text_p);
 
-  // step8: XP
+  // step7: XP
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
   converter << player_in.getExperience ();
@@ -930,7 +930,7 @@ update_character_profile (const RPG_Player& player_in,
                       text_p);
   g_free (text_p);
 
-  // step9: level(s)
+  // step8: level(s)
   text.clear ();
   unsigned char level = 0;
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
@@ -964,7 +964,7 @@ update_character_profile (const RPG_Player& player_in,
                       text_p);
   g_free (text_p);
 
-  // step10: gold
+  // step9: gold
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
   converter << player_in.getWealth ();
@@ -977,7 +977,7 @@ update_character_profile (const RPG_Player& player_in,
                       text_p);
   g_free (text_p);
 
-  // step11: condition
+  // step10: condition
   widget_p =
     GTK_WIDGET (gtk_builder_get_object (xml_in,
                                         ACE_TEXT_ALWAYS_CHAR ("condition_vbox")));
@@ -1018,7 +1018,7 @@ update_character_profile (const RPG_Player& player_in,
   } // end FOR
   gtk_widget_show_all (widget_p);
 
-  // step12: attributes
+  // step11: attributes
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
   converter << static_cast<unsigned int> (player_in.getAttribute (ATTRIBUTE_STRENGTH));
@@ -1096,7 +1096,7 @@ update_character_profile (const RPG_Player& player_in,
                       text_p);
   g_free (text_p);
 
-  // step7: Attack
+  // step12: Attack
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
   enum RPG_Common_Attribute attribute_e =
@@ -1124,7 +1124,7 @@ update_character_profile (const RPG_Player& player_in,
                       text_p);
   g_free (text_p);
 
-  // step8: Damage
+  // step13: Damage
   enum RPG_Item_WeaponType weapon_type =
       const_cast<RPG_Player&> (player_in).getEquipment ().getPrimaryWeapon (player_in.getOffHand ());
   if (weapon_type == RPG_ITEM_WEAPONTYPE_INVALID)
@@ -1142,7 +1142,7 @@ update_character_profile (const RPG_Player& player_in,
                       text_p);
   g_free (text_p);
 
-  // step9: AC
+  // step14: AC
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
   converter << static_cast<int> (player_in.getArmorClass (DEFENSE_NORMAL));
@@ -1160,7 +1160,7 @@ update_character_profile (const RPG_Player& player_in,
                       text_p);
   g_free (text_p);
 
-  // step13: feats
+  // step15: feats
   widget_p =
     GTK_WIDGET (gtk_builder_get_object (xml_in,
                                         ACE_TEXT_ALWAYS_CHAR ("feats_vbox")));
@@ -1200,7 +1200,7 @@ update_character_profile (const RPG_Player& player_in,
   } // end FOR
   gtk_widget_show_all (widget_p);
 
-  // step14: abilities
+  // step16: abilities
   widget_p =
     GTK_WIDGET (gtk_builder_get_object (xml_in,
                                         ACE_TEXT_ALWAYS_CHAR ("abilities_vbox")));
@@ -1240,7 +1240,7 @@ update_character_profile (const RPG_Player& player_in,
   } // end FOR
   gtk_widget_show_all (widget_p);
 
-  // step15: skills
+  // step17: skills
   widget_p =
     GTK_WIDGET (gtk_builder_get_object (xml_in,
                                         ACE_TEXT_ALWAYS_CHAR ("skills_table")));
@@ -1313,7 +1313,7 @@ update_character_profile (const RPG_Player& player_in,
   } // end FOR
   gtk_widget_show_all (widget_p);
 
-  // step16: spells
+  // step18: spells
   GtkNotebook* notebook_p =
     GTK_NOTEBOOK (gtk_builder_get_object (xml_in,
                                           ACE_TEXT_ALWAYS_CHAR ("notebook")));
@@ -1891,7 +1891,7 @@ dirent_comparator (const dirent** entry1_in,
 }
 
 unsigned int
-load_files (const RPG_Client_Repository& repository_in,
+load_files (enum RPG_Client_Repository repository_in,
             GtkListStore* listStore_in)
 {
   RPG_TRACE (ACE_TEXT ("::load_files"));
@@ -2265,7 +2265,8 @@ idle_initialize_UI_cb (gpointer userData_in)
   } // end IF
   gtk_combo_box_set_model (combobox, GTK_TREE_MODEL (list));
   g_object_unref (G_OBJECT (list));
-  if (::load_files (REPOSITORY_PROFILES, list))
+  if (::load_files (REPOSITORY_PROFILES,
+                    list))
     gtk_widget_set_sensitive (GTK_WIDGET (combobox), TRUE);
 
   // step3b: maps repository

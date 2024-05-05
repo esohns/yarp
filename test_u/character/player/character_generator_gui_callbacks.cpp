@@ -414,10 +414,10 @@ about_clicked_GTK_cb (GtkWidget* widget_in,
                                       ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_ABOUT_NAME)));
   ACE_ASSERT (about_dialog);
 
-  gtk_dialog_run(GTK_DIALOG(about_dialog));
-  gtk_widget_hide(about_dialog);
-  //if (!GTK_WIDGET_VISIBLE(about_dialog))
-  //  gtk_widget_show(about_dialog);
+  gtk_dialog_run (GTK_DIALOG (about_dialog));
+  gtk_widget_hide (about_dialog);
+  //if (!GTK_WIDGET_VISIBLE (about_dialog))
+  //  gtk_widget_show (about_dialog);
 
   return FALSE;
 }
@@ -760,13 +760,10 @@ character_file_activated_GTK_cb (GtkWidget* widget_in,
     return FALSE;
   } // end IF
   RPG_Player_Player_Base* player_base = NULL;
-  try
-  {
+  try {
     player_base =
       dynamic_cast<RPG_Player_Player_Base*> (data_p->entity.character);
-  }
-  catch (...)
-  {
+  } catch (...) {
     player_base = NULL;
   }
   if (!player_base)

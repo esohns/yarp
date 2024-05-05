@@ -33,6 +33,8 @@
 
 #include "common_ui_gtk_tools.h"
 
+#include "rpg_dice_common_tools.h"
+
 #include "rpg_common_defines.h"
 #include "rpg_common_macros.h"
 #include "rpg_common_tools.h"
@@ -41,6 +43,7 @@
 
 #include "rpg_item_armor.h"
 #include "rpg_item_commodity.h"
+#include "rpg_item_dictionary.h"
 #include "rpg_item_instance_manager.h"
 #include "rpg_item_weapon.h"
 
@@ -463,27 +466,12 @@ update_character_profile (const RPG_Player& player_in,
   converter << ACE_TEXT_ALWAYS_CHAR (" / ");
   converter << player_in.getNumTotalHitPoints ();
   widget_p = GTK_WIDGET (gtk_builder_get_object (xml_in,
-                                               ACE_TEXT_ALWAYS_CHAR ("hitpoints")));
+                                                 ACE_TEXT_ALWAYS_CHAR ("hitpoints")));
   ACE_ASSERT (widget_p);
   gtk_label_set_text (GTK_LABEL (widget_p),
                       converter.str ().c_str ());
 
-  // step7: AC
-  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
-  converter.clear ();
-  converter << static_cast<int> (player_in.getArmorClass (DEFENSE_NORMAL));
-  converter << ACE_TEXT_ALWAYS_CHAR(" / ");
-  converter << static_cast<int> (player_in.getArmorClass (DEFENSE_TOUCH));
-  converter << ACE_TEXT_ALWAYS_CHAR(" / ");
-  converter << static_cast<int> (player_in.getArmorClass (DEFENSE_FLATFOOTED));
-  widget_p =
-    GTK_WIDGET (gtk_builder_get_object (xml_in,
-                                      ACE_TEXT_ALWAYS_CHAR ("armorclass")));
-  ACE_ASSERT (widget_p);
-  gtk_label_set_text (GTK_LABEL (widget_p),
-                      converter.str ().c_str ());
-
-  // step8: XP
+  // step7: XP
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
   converter << player_in.getExperience ();
@@ -494,7 +482,7 @@ update_character_profile (const RPG_Player& player_in,
   gtk_label_set_text (GTK_LABEL (widget_p),
                       converter.str ().c_str ());
 
-  // step9: level(s)
+  // step8: level(s)
   text.clear ();
   unsigned char level = 0;
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
@@ -526,7 +514,7 @@ update_character_profile (const RPG_Player& player_in,
   gtk_label_set_text (GTK_LABEL (widget_p),
                       text.c_str ());
 
-  // step10: gold
+  // step9: gold
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
   converter << player_in.getWealth ();
@@ -536,7 +524,7 @@ update_character_profile (const RPG_Player& player_in,
   gtk_label_set_text (GTK_LABEL (widget_p),
                       converter.str ().c_str ());
 
-  // step11: condition
+  // step10: condition
   widget_p =
     GTK_WIDGET (gtk_builder_get_object (xml_in,
                                       ACE_TEXT_ALWAYS_CHAR ("condition_vbox")));
@@ -576,7 +564,7 @@ update_character_profile (const RPG_Player& player_in,
   } // end FOR
   gtk_widget_show_all (widget_p);
 
-  // step12: attributes
+  // step11: attributes
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
   converter << static_cast<unsigned int> (player_in.getAttribute (ATTRIBUTE_STRENGTH));
@@ -631,7 +619,68 @@ update_character_profile (const RPG_Player& player_in,
   gtk_label_set_text (GTK_LABEL (widget_p),
                       converter.str ().c_str ());
 
-  // step13: feats
+  // step12: Attack
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
+  enum RPG_Common_Attribute attribute_e =
+      (player_in.getAttribute (ATTRIBUTE_STRENGTH) > player_in.getAttribute (ATTRIBUTE_DEXTERITY) ? ATTRIBUTE_STRENGTH
+                                                                                                  : ATTRIBUTE_DEXTERITY);
+  RPG_Character_BaseAttackBonus_t attack_bonusses =
+      player_in.getAttackBonus (attribute_e,
+                                ATTACK_NORMAL);
+  converter << static_cast<int> (attack_bonusses.front ());
+  converter << ACE_TEXT_ALWAYS_CHAR (" / ");
+  attack_bonusses = player_in.getAttackBonus (attribute_e,
+                                              ATTACK_BACKSTAB);
+  converter << static_cast<int> (attack_bonusses.front ());
+  converter << ACE_TEXT_ALWAYS_CHAR (" / ");
+  attack_bonusses = player_in.getAttackBonus (attribute_e,
+                                              ATTACK_SURPRISE);
+  converter << static_cast<int> (attack_bonusses.front ());
+  text = converter.str ();
+  widget_p =
+      GTK_WIDGET (gtk_builder_get_object (xml_in,
+                                          ACE_TEXT_ALWAYS_CHAR ("attack")));
+  ACE_ASSERT (widget_p);
+  text_p = Common_UI_GTK_Tools::localeToUTF8 (text);
+  gtk_label_set_text (GTK_LABEL (widget_p),
+                      text_p);
+  g_free (text_p);
+
+  // step13: Damage
+  enum RPG_Item_WeaponType weapon_type =
+      const_cast<RPG_Player&> (player_in).getEquipment ().getPrimaryWeapon (player_in.getOffHand ());
+  if (weapon_type == RPG_ITEM_WEAPONTYPE_INVALID)
+    weapon_type =
+        const_cast<RPG_Player&> (player_in).getEquipment().getSecondaryWeapon (player_in.getOffHand ());
+  struct RPG_Item_WeaponProperties weapon_properties =
+      RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getWeaponProperties (weapon_type);
+  text = RPG_Dice_Common_Tools::toString (weapon_properties.baseDamage);
+  widget_p =
+      GTK_WIDGET (gtk_builder_get_object (xml_in,
+                                          ACE_TEXT_ALWAYS_CHAR ("damage")));
+  ACE_ASSERT (widget_p);
+  text_p = Common_UI_GTK_Tools::localeToUTF8 (text);
+  gtk_label_set_text (GTK_LABEL (widget_p),
+                      text_p);
+  g_free (text_p);
+
+  // step14: AC
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
+  converter << static_cast<int> (player_in.getArmorClass (DEFENSE_NORMAL));
+  converter << ACE_TEXT_ALWAYS_CHAR(" / ");
+  converter << static_cast<int> (player_in.getArmorClass (DEFENSE_TOUCH));
+  converter << ACE_TEXT_ALWAYS_CHAR(" / ");
+  converter << static_cast<int> (player_in.getArmorClass (DEFENSE_FLATFOOTED));
+  widget_p =
+    GTK_WIDGET (gtk_builder_get_object (xml_in,
+                                        ACE_TEXT_ALWAYS_CHAR ("armorclass")));
+  ACE_ASSERT (widget_p);
+  gtk_label_set_text (GTK_LABEL (widget_p),
+                      converter.str ().c_str ());
+
+  // step15: feats
   widget_p =
     GTK_WIDGET (gtk_builder_get_object (xml_in,
                                       ACE_TEXT_ALWAYS_CHAR ("feats_vbox")));
@@ -670,7 +719,7 @@ update_character_profile (const RPG_Player& player_in,
   } // end FOR
   gtk_widget_show_all (widget_p);
 
-  // step14: abilities
+  // step16: abilities
   widget_p =
     GTK_WIDGET (gtk_builder_get_object (xml_in,
                                       ACE_TEXT_ALWAYS_CHAR ("abilities_vbox")));
@@ -709,7 +758,7 @@ update_character_profile (const RPG_Player& player_in,
   } // end FOR
   gtk_widget_show_all (widget_p);
 
-  // step15: skills
+  // step17: skills
   widget_p =
     GTK_WIDGET (gtk_builder_get_object (xml_in,
                                       ACE_TEXT_ALWAYS_CHAR ("skills_table")));
@@ -1523,7 +1572,7 @@ dirent_comparator (const dirent** entry1_in,
 }
 
 unsigned int
-load_files (const RPG_Client_Repository& repository_in,
+load_files (enum RPG_Client_Repository repository_in,
             GtkListStore* listStore_in)
 {
   RPG_TRACE (ACE_TEXT ("::load_files"));

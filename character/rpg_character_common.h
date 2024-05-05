@@ -32,14 +32,14 @@
 
 typedef ACE_UINT8 RPG_Character_Level_t;
 
-typedef std::set<RPG_Common_Condition> RPG_Character_Conditions_t;
+typedef std::set<enum RPG_Common_Condition> RPG_Character_Conditions_t;
 typedef RPG_Character_Conditions_t::const_iterator RPG_Character_ConditionsIterator_t;
 
-typedef std::vector<signed char> RPG_Character_BaseAttackBonus_t;
+typedef std::vector<ACE_INT8> RPG_Character_BaseAttackBonus_t;
 typedef RPG_Character_BaseAttackBonus_t::iterator RPG_Character_BaseAttackBonusIterator_t;
 typedef RPG_Character_BaseAttackBonus_t::const_iterator RPG_Character_BaseAttackBonusConstIterator_t;
 
-typedef std::vector<RPG_Character_EquipmentSlot> RPG_Character_EquipmentSlots_t;
+typedef std::vector<enum RPG_Character_EquipmentSlot> RPG_Character_EquipmentSlots_t;
 typedef RPG_Character_EquipmentSlots_t::const_iterator RPG_Character_EquipmentSlotsIterator_t;
 struct RPG_Character_EquipmentSlots
 {

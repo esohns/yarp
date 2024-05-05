@@ -176,8 +176,8 @@ RPG_Player_Player_Base::getLevel (enum RPG_Common_SubClass subClass_in) const
   ACE_UNUSED_ARG (subClass_in);
 
   RPG_Character_Level_t result =
-    static_cast<RPG_Character_Level_t> (ACE_OS::floor ((1.0 +
-                                                        std::sqrt ((myExperience / 125.0) + 1.0)) / 2.0));
+    static_cast<RPG_Character_Level_t> (ACE_OS::floor ((1.0f +
+                                                        std::sqrt ((myExperience / 125.0f) + 1.0f)) / 2.0f));
 
   return result;
 }
@@ -215,9 +215,9 @@ RPG_Player_Player_Base::getAttackBonus (enum RPG_Common_Attribute modifier_in,
       result[index] += *iterator2;
   } // end FOR
 
-  int abilityModifier =
+  ACE_INT8 abilityModifier =
       RPG_Character_Common_Tools::getAttributeAbilityModifier (getAttribute (modifier_in));
-  int sizeModifier = RPG_Common_Tools::getSizeModifier (getSize ());
+  ACE_INT8 sizeModifier = RPG_Common_Tools::getSizeModifier (getSize ());
   for (RPG_Character_BaseAttackBonusIterator_t iterator = result.begin ();
        iterator != result.end ();
        iterator++)
@@ -236,30 +236,30 @@ RPG_Player_Player_Base::getArmorClass (enum RPG_Combat_DefenseSituation defenseS
 
   // *NOTE*: AC = 10 + armor bonus + shield bonus + DEX modifier + size modifier
   //         [+ other modifiers]
-  signed char result = 10;
+  ACE_INT8 result = 10;
+
+  struct RPG_Item_ArmorProperties properties_s;
+  ACE_OS::memset (&properties_s, 0, sizeof (struct RPG_Item_ArmorProperties));
 
   // retrieve equipped armor type
-  RPG_Item_ArmorProperties properties_s;
-  ACE_OS::memset (&properties_s, 0, sizeof (RPG_Item_ArmorProperties));
-  RPG_Item_ArmorType type = myEquipment.getBodyArmor();
+  enum RPG_Item_ArmorType type = myEquipment.getBodyArmor ();
   if (type != ARMOR_NONE)
   {
     properties_s =
-        RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getArmorProperties (type);
+      RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getArmorProperties (type);
     result += properties_s.baseBonus;
   } // end IF
   result += getShieldBonus ();
 
   // consider defense situation
-  int DEX_modifier = 0;
+  ACE_INT8 DEX_modifier = 0;
   if (defenseSituation_in != DEFENSE_FLATFOOTED)
   {
     DEX_modifier =
-        RPG_Character_Common_Tools::getAttributeAbilityModifier (getAttribute (ATTRIBUTE_DEXTERITY));
+      RPG_Character_Common_Tools::getAttributeAbilityModifier (getAttribute (ATTRIBUTE_DEXTERITY));
     if (type != ARMOR_NONE)
-      DEX_modifier =
-          std::min<int> (static_cast<int> (properties_s.maxDexterityBonus),
-                         DEX_modifier);
+      DEX_modifier = std::min (static_cast<ACE_INT8> (properties_s.maxDexterityBonus),
+                               DEX_modifier);
   } // end IF
   result += DEX_modifier;
 
