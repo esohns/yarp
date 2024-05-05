@@ -33,18 +33,18 @@ class test_u_main
  : public ACE_Main_Base
 #endif
 {
+#if defined(ACE_WIN32) || defined(ACE_WIN64)
+  typedef ACE_Main_Base inherited;
+#endif // ACE_WIN32 || ACE_WIN64
+
  public:
-  test_u_main (void);
-  virtual ~test_u_main (void);
+  test_u_main ();
+  inline virtual ~test_u_main () {}
 
   virtual int run_i (int,      // argc
                      char*[]); // argv
 
  private:
- #if defined (ACE_WIN32) || defined (ACE_WIN64)
-  typedef ACE_Main_Base inherited;
- #endif // ACE_WIN32 || ACE_WIN64
-
   // helper methods
   void print_usage (const std::string&);
   bool process_arguments (int,           // argc

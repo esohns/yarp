@@ -79,14 +79,15 @@ do_printUsage (const std::string& programName_in)
             << std::endl;
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-d       : dump spell dictionary")
             << std::endl;
-  std::cout << ACE_TEXT_ALWAYS_CHAR ("-l       : group levels")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-g       : group spell levels")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-l       : log to a file")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
+            << false
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DIRECTORY_STRING);
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-m [FILE]: spell dictionary (*.xml)")
             << ACE_TEXT_ALWAYS_CHAR (" [\"")
@@ -104,6 +105,7 @@ do_processArguments (int argc_in,
                      ACE_TCHAR** argv_in, // cannot be const...
                      bool& dumpDictionary_out,
                      bool& groupLevels_out,
+                     bool& logToFile_out,
                      std::string& magicDictionaryFilename_out,
                      bool& traceInformation_out,
                      bool& printVersionAndExit_out)
@@ -119,18 +121,17 @@ do_processArguments (int argc_in,
 
   dumpDictionary_out          = false;
   groupLevels_out             = false;
-
+  logToFile_out               = false;
   magicDictionaryFilename_out = configuration_path;
   magicDictionaryFilename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   magicDictionaryFilename_out +=
     ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
-
   traceInformation_out        = false;
   printVersionAndExit_out     = false;
 
   ACE_Get_Opt argumentParser (argc_in,
                               argv_in,
-                              ACE_TEXT ("dlm:tv"));
+                              ACE_TEXT ("dglm:tv"));
 
   int option = 0;
   while ((option = argumentParser ()) != EOF)
@@ -140,32 +141,31 @@ do_processArguments (int argc_in,
       case 'd':
       {
         dumpDictionary_out = true;
-
+        break;
+      }
+      case 'g':
+      {
+        groupLevels_out = true;
         break;
       }
       case 'l':
       {
-        groupLevels_out = true;
-
+        logToFile_out = true;
         break;
       }
       case 'm':
       {
-        magicDictionaryFilename_out =
-          ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
-
+        magicDictionaryFilename_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         break;
       }
       case 't':
       {
         traceInformation_out = true;
-
         break;
       }
       case 'v':
       {
         printVersionAndExit_out = true;
-
         break;
       }
       // error handling
@@ -317,13 +317,11 @@ ACE_TMAIN (int argc_in,
 
   bool dump_dictionary                  = false;
   bool group_levels                     = false;
-
+  bool log_to_file                      = false;
   std::string magic_dictionary_filename = configuration_path;
   magic_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   magic_dictionary_filename += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
-
   std::string schema_repository = Common_File_Tools::getWorkingDirectory ();
-
   bool trace_information                = false;
   bool print_version_and_exit           = false;
 
@@ -332,6 +330,7 @@ ACE_TMAIN (int argc_in,
                             argv_in,
                             dump_dictionary,
                             group_levels,
+                            log_to_file,
                             magic_dictionary_filename,
                             trace_information,
                             print_version_and_exit))
@@ -368,6 +367,9 @@ ACE_TMAIN (int argc_in,
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
+  if (log_to_file)
+    log_file = Common_Log_Tools::getLogFilename (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                 ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
   if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
                                             log_file,                  // logfile
                                             false,                     // log to syslog ?

@@ -120,22 +120,19 @@ do_printUsage (const std::string& programName_in)
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR ("item"); // directory
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   path += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-i [FILE]  : item dictionary (*.xml)")
             << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
             << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-l         : log to a file")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
+            << false
+            << ACE_TEXT_ALWAYS_CHAR ("]")
+            << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DIRECTORY_STRING); // directory
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-m [FILE]  : magic dictionary (*.xml)")
             << ACE_TEXT_ALWAYS_CHAR (" [\"")
@@ -171,6 +168,7 @@ bool
 do_processArguments (int argc_in,
                      ACE_TCHAR** argv_in, // cannot be const...
                      std::string& itemDictionary_out,
+                     bool& logToFile_out,
                      std::string& magicDictionary_out,
                      std::string& graphicsDictionary_out,
                      unsigned int& numPlayers_out,
@@ -190,6 +188,8 @@ do_processArguments (int argc_in,
   itemDictionary_out      = configuration_path;
   itemDictionary_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   itemDictionary_out += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
+
+  logToFile_out           = false;
 
   configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -222,7 +222,7 @@ do_processArguments (int argc_in,
 
   ACE_Get_Opt argumentParser (argc_in,
                               argv_in,
-                              ACE_TEXT ("g:i:m:n:o::rtv"));
+                              ACE_TEXT ("g:i:lm:n:o::rtv"));
 
   int option = 0;
   std::stringstream converter;
@@ -232,21 +232,22 @@ do_processArguments (int argc_in,
     {
       case 'g':
       {
-        graphicsDictionary_out =
-          ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
-
+        graphicsDictionary_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         break;
       }
       case 'i':
       {
         itemDictionary_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
-
+        break;
+      }
+      case 'l':
+      {
+        logToFile_out = true;
         break;
       }
       case 'm':
       {
         magicDictionary_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
-
         break;
       }
       case 'n':
@@ -255,7 +256,6 @@ do_processArguments (int argc_in,
         converter.str (ACE_TEXT_ALWAYS_CHAR (""));
         converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
         converter >> numPlayers_out;
-
         break;
       }
       case 'o':
@@ -263,25 +263,21 @@ do_processArguments (int argc_in,
         ACE_TCHAR* output_file = argumentParser.opt_arg ();
         if (output_file)
           outputFile_out = ACE_TEXT_ALWAYS_CHAR (output_file);
-
         break;
       }
       case 'r':
       {
         random_out = true;
-
         break;
       }
       case 't':
       {
         traceInformation_out = true;
-
         break;
       }
       case 'v':
       {
         printVersionAndExit_out = true;
-
         break;
       }
       // error handling
@@ -1394,6 +1390,8 @@ ACE_TMAIN (int argc_in,
   item_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   item_dictionary_filename += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
 
+  bool log_to_file = false;
+
   configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
@@ -1438,6 +1436,7 @@ ACE_TMAIN (int argc_in,
   if (!do_processArguments (argc_in,
                             argv_in,
                             item_dictionary_filename,
+                            log_to_file,
                             magic_dictionary_filename,
                             graphics_dictionary_filename,
                             num_players,
@@ -1480,6 +1479,9 @@ ACE_TMAIN (int argc_in,
 
   // step2: initialize logging and/or tracing
   std::string log_file;
+  if (log_to_file)
+    log_file = Common_Log_Tools::getLogFilename (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                 ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
   if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
                                             log_file,                   // logfile
                                             false,                      // log to syslog ?

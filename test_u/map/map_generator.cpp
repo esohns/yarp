@@ -128,15 +128,8 @@ do_printUsage (const std::string& programName_in)
             << std::endl;
   std::string path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined(DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR ("map");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR ("data");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#else
   path += ACE_TEXT_ALWAYS_CHAR (RPG_MAP_MAPS_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   path +=
       (MAP_GENERATOR_DEF_LEVEL ? RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME))
                                : ACE_TEXT_ALWAYS_CHAR (RPG_MAP_DEF_MAP_FILE));

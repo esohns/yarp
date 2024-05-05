@@ -78,15 +78,16 @@ do_printUsage (const std::string& programName_in)
             << std::endl;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR("graphics");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
-  path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_DICTIONARY_FILE);
+  path += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-g [FILE]: graphics dictionary (*.xml)")
             << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
             << ACE_TEXT_ALWAYS_CHAR ("\"]")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-l       : log to a file")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
+            << false
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-t       : trace information")
             << std::endl;
@@ -101,6 +102,7 @@ do_processArguments (int argc_in,
                      ACE_TCHAR* argv_in[], // cannot be const...
                      bool& dumpDictionary_out,
                      std::string& filename_out,
+                     bool& logToFile_out,
                      bool& traceInformation_out,
                      bool& printVersionAndExit_out,
                      bool& validateXML_out)
@@ -109,7 +111,6 @@ do_processArguments (int argc_in,
 
   // initialize configuration
   dumpDictionary_out      = false;
-
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
@@ -118,48 +119,48 @@ do_processArguments (int argc_in,
   filename_out            = configuration_path;
   filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename_out += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
-
+  logToFile_out           = false;
   traceInformation_out    = false;
   printVersionAndExit_out = false;
   validateXML_out         = true;
 
   ACE_Get_Opt argumentParser (argc_in,
                               argv_in,
-                              ACE_TEXT ("dg:tvx"));
+                              ACE_TEXT ("dg:ltvx"));
 
   int option = 0;
-  while ((option = argumentParser()) != EOF)
+  while ((option = argumentParser ()) != EOF)
   {
     switch (option)
     {
       case 'd':
       {
         dumpDictionary_out = true;
-
         break;
       }
       case 'g':
       {
         filename_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
-
+        break;
+      }
+      case 'l':
+      {
+        logToFile_out = true;
         break;
       }
       case 't':
       {
         traceInformation_out = true;
-
         break;
       }
       case 'v':
       {
         printVersionAndExit_out = true;
-
         break;
       }
       case 'x':
       {
         validateXML_out = false;
-
         break;
       }
       // error handling
@@ -199,8 +200,14 @@ do_work (const std::string& schemaRepository_in,
   schema_repository_string += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
   schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   schema_repository_string += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+  std::string schema_repository_string_2 = schemaRepository_in;
+  schema_repository_string_2 += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository_string_2 += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING);
+  schema_repository_string_2 += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository_string_2 += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
   std::vector<std::string> schema_directories_a;
   schema_directories_a.push_back (schema_repository_string);
+  schema_directories_a.push_back (schema_repository_string_2);
   if (!RPG_Common_XML_Tools::initialize (schema_directories_a))
   {
     ACE_DEBUG ((LM_ERROR,
@@ -325,6 +332,8 @@ ACE_TMAIN (int argc_in,
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
 
+  bool log_to_file               = false;
+
   std::string schema_repository = Common_File_Tools::getWorkingDirectory ();
 
   bool trace_information         = false;
@@ -336,6 +345,7 @@ ACE_TMAIN (int argc_in,
                             argv_in,
                             dump_dictionary,
                             filename,
+                            log_to_file,
                             trace_information,
                             print_version_and_exit,
                             validate_XML))
@@ -372,6 +382,9 @@ ACE_TMAIN (int argc_in,
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
+  if (log_to_file)
+    log_file = Common_Log_Tools::getLogFilename (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                 ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
   if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
                                             log_file,                  // logfile
                                             false,                     // log to syslog ?

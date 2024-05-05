@@ -269,14 +269,14 @@ if (UNIX)
  file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}" COMMAND)
  create_target_launcher (${EXECUTABLE}
                          COMMAND ${COMMAND}
-                         ARGS "-t"
+                         ARGS "-l -t"
                          FORWARD_ARGS
                          WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                          ENVIRONMENT foo=bar)
  file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE_2}" COMMAND)
  create_target_launcher (${EXECUTABLE_2}
                          COMMAND ${COMMAND}
-                         ARGS "-t"
+                         ARGS "-l -t"
                          FORWARD_ARGS
                          WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                          ENVIRONMENT foo=bar)
@@ -299,7 +299,7 @@ elseif (WIN32)
  string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
  create_target_launcher (${EXECUTABLE}
                          COMMAND ${COMMAND}
-                         ARGS "-t"
+                         ARGS "-l -t"
                          FORWARD_ARGS
                          RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
                                               ${LIB_ROOT}/libpng/build/Debug
@@ -312,7 +312,7 @@ elseif (WIN32)
  string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
  create_target_launcher (${EXECUTABLE_2}
                          COMMAND ${COMMAND}
-                         ARGS "-t"
+                         ARGS "-l -t"
                          FORWARD_ARGS
                          RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
                                               ${LIB_ROOT}/libpng/build/Debug

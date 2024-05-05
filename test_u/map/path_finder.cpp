@@ -95,15 +95,8 @@ do_printUsage (const std::string& programName_in)
             << std::endl;
   std::string path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR ("map");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR ("data");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#else
   path += ACE_TEXT_ALWAYS_CHAR (RPG_MAP_MAPS_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   path +=
       RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
   path += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
@@ -115,7 +108,7 @@ do_printUsage (const std::string& programName_in)
             << std::endl;
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-t       : trace information")
             << std::endl;
-  std::cout << ACE_TEXT_ALWAYS_CHAR("-v        : print version information and exit")
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-v       : print version information and exit")
             << std::endl;
 } // end print_usage
 

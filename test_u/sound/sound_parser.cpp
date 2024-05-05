@@ -165,17 +165,16 @@ do_printUsage (const std::string& programName_in)
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-d       : dump dictionary") << std::endl;
   std::string path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR ("sound");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_DATA_SUB);
-#else
   path += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DATA_SUB);
-#endif // DEBUG_DEBUGGER
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-f [DIR] : data directory")
             << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path.c_str ()
             << ACE_TEXT_ALWAYS_CHAR ("\"]")
+            << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-l       : log to a file")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
+            << false
+            << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-r       : play random sounds")
             << ACE_TEXT_ALWAYS_CHAR (" [")
@@ -184,10 +183,6 @@ do_printUsage (const std::string& programName_in)
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR ("sound");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif // DEBUG_DEBUGGER
   path += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DICTIONARY_FILE);
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-s [FILE]: sound dictionary (*.xml)")
             << ACE_TEXT_ALWAYS_CHAR (" [\"")
@@ -207,6 +202,7 @@ do_processArguments (int argc_in,
                      ACE_TCHAR* argv_in[], // cannot be const...
                      bool& dumpDictionary_out,
                      std::string& directory_out,
+                     bool& logToFile_out,
                      bool& playRandomSounds_out,
                      std::string& filename_out,
                      bool& traceInformation_out,
@@ -228,22 +224,19 @@ do_processArguments (int argc_in,
                                                           false);
 
   dumpDictionary_out = false;
-
   directory_out = data_path;
-
+  logToFile_out = false;
   playRandomSounds_out = SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS;
-
   filename_out = configuration_path;
   filename_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename_out += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DICTIONARY_FILE);
-
   traceInformation_out = false;
   printVersionAndExit_out = false;
   validateXML_out = true;
 
   ACE_Get_Opt argumentParser (argc_in,
                               argv_in,
-                              ACE_TEXT ("df:rs:tvx"));
+                              ACE_TEXT ("df:lrs:tvx"));
 
   int option = 0;
   while ((option = argumentParser ()) != EOF)
@@ -253,43 +246,41 @@ do_processArguments (int argc_in,
       case 'd':
       {
         dumpDictionary_out = true;
-
         break;
       }
       case 'f':
       {
         directory_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
-
+        break;
+      }
+      case 'l':
+      {
+        logToFile_out = true;
         break;
       }
       case 'r':
       {
         playRandomSounds_out = true;
-
         break;
       }
       case 's':
       {
         filename_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
-
         break;
       }
       case 't':
       {
         traceInformation_out = true;
-
         break;
       }
       case 'v':
       {
         printVersionAndExit_out = true;
-
         break;
       }
       case 'x':
       {
         validateXML_out = false;
-
         break;
       }
       // error handling
@@ -350,8 +341,14 @@ do_work (bool dumpDictionary_in,
   schema_repository_string += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
   schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   schema_repository_string += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+  std::string schema_repository_string_2 = schemaRepository_in;
+  schema_repository_string_2 += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository_string_2 += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_SUB_DIRECTORY_STRING);
+  schema_repository_string_2 += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_repository_string_2 += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
   std::vector<std::string> schema_directories_a;
   schema_directories_a.push_back (schema_repository_string);
+  schema_directories_a.push_back (schema_repository_string_2);
   if (!RPG_Common_XML_Tools::initialize (schema_directories_a))
   {
     ACE_DEBUG ((LM_ERROR,
@@ -510,6 +507,7 @@ ACE_TMAIN (int argc_in,
 
   std::string sound_directory = data_path;
 
+  bool log_to_file = false;
   bool play_random_sounds = SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS;
 
   std::string schema_repository = Common_File_Tools::getWorkingDirectory ();
@@ -533,6 +531,7 @@ ACE_TMAIN (int argc_in,
                             argv_in,
                             dump_dictionary,
                             sound_directory,
+                            log_to_file,
                             play_random_sounds,
                             filename,
                             trace_information,
@@ -575,6 +574,9 @@ ACE_TMAIN (int argc_in,
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
+  if (log_to_file)
+    log_file = Common_Log_Tools::getLogFilename (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                 Common_File_Tools::basename (ACE_TEXT_ALWAYS_CHAR (argv_in[0]), true));
   if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
                                             log_file,                  // logfile
                                             false,                     // log to syslog ?

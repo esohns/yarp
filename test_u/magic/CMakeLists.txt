@@ -60,7 +60,7 @@ elseif (WIN32)
 endif ()
 create_target_launcher (${EXECUTABLE}
                         COMMAND ${COMMAND}
-                        ARGS "-d -t"
+                        ARGS "-d -l -t"
                         FORWARD_ARGS
                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
 #                                             ${LIB_ROOT}/libpng/build/Debug

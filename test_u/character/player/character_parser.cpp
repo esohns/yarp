@@ -116,22 +116,19 @@ do_printUsage (const std::string& programName_in)
             << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR ("item");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   path += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-i [FILE]: item dictionary (*.xml)")
             << ACE_TEXT_ALWAYS_CHAR (" [\"")
             << path
             << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-l         : log to a file")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
+            << false
+            << ACE_TEXT_ALWAYS_CHAR ("]")
+            << std::endl;
   path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DIRECTORY_STRING);
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-m [FILE]: magic dictionary (*.xml)")
             << ACE_TEXT_ALWAYS_CHAR (" [\"")
@@ -149,6 +146,7 @@ do_processArguments (int argc_in,
                      ACE_TCHAR** argv_in, // cannot be const...
                      std::string& player_filename_out,
                      std::string& item_dictionary_filename_out,
+                     bool& logToFile_out,
                      std::string& magic_dictionary_filename_out,
                      bool& traceInformation_out,
                      bool& printVersionAndExit_out)
@@ -173,6 +171,8 @@ do_processArguments (int argc_in,
   item_dictionary_filename_out +=
     ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
 
+  logToFile_out                 = false;
+
   configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
@@ -188,41 +188,41 @@ do_processArguments (int argc_in,
 
   ACE_Get_Opt argumentParser (argc_in,
                               argv_in,
-                              ACE_TEXT ("i:m:f:tv"));
+                              ACE_TEXT ("f:i:lm:tv"));
 
   int option = 0;
   while ((option = argumentParser ()) != EOF)
   {
     switch (option)
     {
+      case 'f':
+      {
+        player_filename_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
+        break;
+      }
       case 'i':
       {
         item_dictionary_filename_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
-
+        break;
+      }
+      case 'l':
+      {
+        logToFile_out = true;
         break;
       }
       case 'm':
       {
         magic_dictionary_filename_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
-
-        break;
-      }
-      case 'f':
-      {
-        player_filename_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
-
         break;
       }
       case 't':
       {
         traceInformation_out = true;
-
         break;
       }
       case 'v':
       {
         printVersionAndExit_out = true;
-
         break;
       }
       // error handling
@@ -416,6 +416,8 @@ ACE_TMAIN (int argc_in,
   item_dictionary_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   item_dictionary_filename += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
 
+  bool log_to_file                      = false;
+
   configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
@@ -446,6 +448,7 @@ ACE_TMAIN (int argc_in,
                             argv_in,
                             player_filename,
                             item_dictionary_filename,
+                            log_to_file,
                             magic_dictionary_filename,
                             trace_information,
                             print_version_and_exit))
@@ -486,6 +489,9 @@ ACE_TMAIN (int argc_in,
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
+  if (log_to_file)
+    log_file = Common_Log_Tools::getLogFilename (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                 ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
   if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
                                             log_file,                  // logfile
                                             false,                     // log to syslog ?

@@ -172,7 +172,7 @@ target_precompile_headers (${EXECUTABLE_2}
                            REUSE_FROM ${EXECUTABLE})
 
 ########### install files ###############
-install(TARGETS ${EXECUTABLE_2} RUNTIME DESTINATION bin)
+install (TARGETS ${EXECUTABLE_2} RUNTIME DESTINATION bin)
 
 ########### launcher ###############
 file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
@@ -185,7 +185,7 @@ elseif (WIN32)
 endif ()
 create_target_launcher (${EXECUTABLE}
                         COMMAND ${COMMAND}
-                        ARGS "-d -t"
+                        ARGS "-d -l -t"
                         FORWARD_ARGS
                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
                                              ${LIB_ROOT}/libpng/build/Debug

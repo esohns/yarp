@@ -31,7 +31,7 @@ set (${EXECUTABLE}_SRCS
      sound_parser.cpp
      stdafx.h)
 
-set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG\"")
+#set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG\"")
 
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
@@ -72,7 +72,7 @@ file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
 file (TO_CMAKE_PATH "${SDL_LIB_DIR}" SDL_LIB_PATH)
 if (UNIX)
  create_target_launcher (${EXECUTABLE}
-                         ARGS "-d -t"
+                         ARGS "-d -l -t"
                          FORWARD_ARGS
 #                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/ACE_TAO/ACE/lib
                          WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -82,7 +82,7 @@ elseif (WIN32)
  string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
  create_target_launcher (${EXECUTABLE}
                          COMMAND ${COMMAND}
-                         ARGS "-d -r -t"
+                         ARGS "-d -l -r -t"
                          FORWARD_ARGS
                          RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
 #                                              ${LIB_ROOT}/libpng/build/Debug

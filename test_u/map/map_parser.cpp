@@ -81,18 +81,15 @@ do_printUsage(const std::string& programName_in)
             << std::endl;
   std::cout << ACE_TEXT_ALWAYS_CHAR ("currently available options:")
             << std::endl;
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-l        : log to a file")
+            << ACE_TEXT_ALWAYS_CHAR (" [")
+            << false
+            << ACE_TEXT_ALWAYS_CHAR ("]")
+            << std::endl;
   std::string path = data_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#if defined (DEBUG_DEBUGGER)
-  path += (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR ("engine")
-                                   : ACE_TEXT_ALWAYS_CHAR ("map"));
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  path += ACE_TEXT_ALWAYS_CHAR("data");
-  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#else
   path += ACE_TEXT_ALWAYS_CHAR (RPG_MAP_MAPS_SUB);
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-#endif
   path += (MAP_GENERATOR_DEF_LEVEL ? RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME))
                                    : ACE_TEXT_ALWAYS_CHAR (RPG_MAP_DEF_MAP_FILE));
   path += (MAP_GENERATOR_DEF_LEVEL ? ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT)
@@ -124,6 +121,7 @@ do_printUsage(const std::string& programName_in)
 bool
 do_processArguments (int argc_in,
                      ACE_TCHAR** argv_in, // cannot be const...
+                     bool& logToFile_out,
                      bool& debugScanner_out,
                      bool& debugParser_out,
                      std::string& mapFile_out,
@@ -138,7 +136,8 @@ do_processArguments (int argc_in,
                                                           ACE_TEXT_ALWAYS_CHAR (RPG_MAP_SUB_DIRECTORY_STRING),
                                                           false);
 
-  // init results
+  // initialize results
+  logToFile_out = false;
   debugScanner_out = MAP_PARSER_DEF_DEBUG_SCANNER;
   debugParser_out = MAP_PARSER_DEF_DEBUG_PARSER;
 
@@ -154,41 +153,41 @@ do_processArguments (int argc_in,
 
   ACE_Get_Opt argumentParser (argc_in,
                               argv_in,
-                              ACE_TEXT ("m:pstv"));
+                              ACE_TEXT ("lm:pstv"));
 
   int option = 0;
   while ((option = argumentParser ()) != EOF)
   {
     switch (option)
     {
+      case 'l':
+      {
+        logToFile_out = true;
+        break;
+      }
       case 'm':
       {
         mapFile_out = ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
-
         break;
       }
       case 'p':
       {
         debugParser_out = true;
-
         break;
       }
       case 's':
       {
         debugScanner_out = true;
-
         break;
       }
       case 't':
       {
         traceInformation_out = true;
-
         break;
       }
       case 'v':
       {
         printVersionAndExit_out = true;
-
         break;
       }
       // error handling
@@ -326,8 +325,9 @@ ACE_TMAIN (int argc_in,
                                                           ACE_TEXT_ALWAYS_CHAR (RPG_MAP_SUB_DIRECTORY_STRING),
                                                           false);
 
-  // step1: init
+  // step1: initialize
   // step1a set defaults
+  bool log_to_file            = false;
   bool debug_scanner          = MAP_PARSER_DEF_DEBUG_SCANNER;
   bool debug_parser           = MAP_PARSER_DEF_DEBUG_PARSER;
   std::string map_file        = data_path;
@@ -345,6 +345,7 @@ ACE_TMAIN (int argc_in,
   // step1ba: parse/process/validate configuration
   if (!do_processArguments (argc_in,
                             argv_in,
+                            log_to_file,
                             debug_scanner,
                             debug_parser,
                             map_file,
@@ -385,6 +386,9 @@ ACE_TMAIN (int argc_in,
 
   // step1c: initialize logging and/or tracing
   std::string log_file;
+  if (log_to_file)
+    log_file = Common_Log_Tools::getLogFilename (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                 Common_File_Tools::basename (ACE_TEXT_ALWAYS_CHAR (argv_in[0]), true));
   if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
                                             log_file,                    // logfile
                                             false,                       // log to syslog ?
