@@ -1461,13 +1461,15 @@ do_work (mode_t mode_in,
   } // end IF
 
   // step1d: initialize video window
-  if (!RPG_Graphics_SDL_Tools::initializeVideo (videoConfiguration_in,                     // configuration
-                                                ACE_TEXT_ALWAYS_CHAR(SDL_GUI_DEF_CAPTION), // window/icon caption
-                                                state.screen,                              // return value: window surface
-                                                true))                                     // initialize window surface ?
+  if (!RPG_Graphics_SDL_Tools::initializeVideo (videoConfiguration_in,                      // configuration
+                                                ACE_TEXT_ALWAYS_CHAR (SDL_GUI_DEF_CAPTION), // window/icon caption
+                                                state.screen,                               // return value: window surface
+                                                state.renderer,                             // return value: renderer
+                                                state.GLContext,                            // return value: OpenGL context
+                                                true))                                      // initialize window surface ?
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::initVideo, returning\n")));
+                ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::initializeVideo(), returning\n")));
     return;
   } // end IF
   ACE_ASSERT (state.screen);
@@ -1482,7 +1484,7 @@ do_work (mode_t mode_in,
   if (!RPG_Client_Common_Tools::initializeSDLInput (input_configuration))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Client_Common_Tools::initSDLInput, returning\n")));
+                ACE_TEXT ("failed to RPG_Client_Common_Tools::initializeSDLInput(), returning\n")));
     return;
   } // end IF
 
@@ -1504,7 +1506,9 @@ do_work (mode_t mode_in,
                                  type,                           // interface elements
                                  title,                          // title (== caption)
                                  FONT_MAIN_LARGE);               // title font
-  main_window.setScreen (state.screen);
+  main_window.initializeSDL (NULL,
+                             state.screen,
+                             state.GLContext);
 
   // ***** mouse setup *****
 #if defined (SDL_USE)

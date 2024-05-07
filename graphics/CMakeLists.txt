@@ -50,6 +50,7 @@ set (${LIBRARY}_SRCS
      rpg_graphics_windowtype.h
      rpg_graphics_interfaceelementtype.h
      rpg_graphics_iwindow.h
+     rpg_graphics_iwindow_base.h
      rpg_graphics_orientation.h
      rpg_graphics_sprite.h
      rpg_graphics_stairsstyle.h
@@ -175,6 +176,7 @@ install (FILES
          rpg_graphics_windowtype.h
          rpg_graphics_interfaceelementtype.h
          rpg_graphics_iwindow.h
+         rpg_graphics_iwindow_base.h
          rpg_graphics_orientation.h
          rpg_graphics_sprite.h
          rpg_graphics_stairsstyle.h

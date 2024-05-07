@@ -42,7 +42,10 @@ set (XML2CppCode_SRCS
      xml2cppcode_common_tools.cpp
      xml2cppcode_common_tools.h)
 
-add_definitions(-DHAVE_CONFIG_H)
+add_definitions (-DHAVE_CONFIG_H)
+
+# *TODO*: find package Common and derive the path from its' project directory
+include (../../../Common/scripts/ACE.cmake)
 
 if (UNIX)
 elseif (WIN32)
@@ -51,10 +54,7 @@ elseif (WIN32)
 endif ()
 
 if (UNIX)
- include_directories (
-#                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules/ACE>)
-#                             $<BUILD_INTERFACE:$ENV{LIB_ROOT}/ACE_TAO/ACE>)
-                      /usr/local/src/ACE_wrappers)
+ include_directories ($<BUILD_INTERFACE:${ACE_INCLUDE_DIR}>)
 elseif (WIN32)
  if (DEFINED ENV{ACE_ROOT})
   include_directories ($ENV{ACE_ROOT})
@@ -63,18 +63,19 @@ elseif (WIN32)
  endif (DEFINED ENV{ACE_ROOT})
 endif ()
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
-add_executable(XML2CppCode ${XML2CppCode_SRCS})
+add_executable (XML2CppCode
+                ${XML2CppCode_SRCS})
 
 if (UNIX)
- target_link_libraries(XML2CppCode
-                       ACE
-                       xerces-c)
+ target_link_libraries (XML2CppCode
+                        xerces-c
+                        ${ACE_LIBRARY})
 elseif (WIN32)
- target_link_libraries(XML2CppCode
-                       $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
-                       $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib)
+ target_link_libraries (XML2CppCode
+                        $ENV{LIB_ROOT}/ACE_TAO/ACE/lib/ACEd.lib
+                        $ENV{LIB_ROOT}/xerces-c/build/msvc/src/Debug/xerces-c_3D.lib)
 endif ()
 
 # add PCH
@@ -83,4 +84,3 @@ target_precompile_headers (XML2CppCode
 
 ########### install files ###############
 install(TARGETS XML2CppCode RUNTIME DESTINATION bin)
-

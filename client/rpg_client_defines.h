@@ -143,8 +143,12 @@
 #define RPG_CLIENT_VIDEO_DEF_WIDTH                        800
 #define RPG_CLIENT_VIDEO_DEF_HEIGHT                       600
 #define RPG_CLIENT_VIDEO_DEF_BPP                          32
-#define RPG_CLIENT_VIDEO_DEF_DOUBLEBUFFER                 false
+#define RPG_CLIENT_VIDEO_DEF_DOUBLEBUFFER                 true
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
 #define RPG_CLIENT_VIDEO_DEF_OPENGL                       false
+#else
+#define RPG_CLIENT_VIDEO_DEF_OPENGL                       false
+#endif // ACE_WIN32 || ACE_WIN64
 #define RPG_CLIENT_VIDEO_DEF_FULLSCREEN                   false
 #define RPG_CLIENT_VIDEO_DEF_INIT                         false
 //#define RPG_CLIENT_VIDEO_DEF_FRAMERATE                    30

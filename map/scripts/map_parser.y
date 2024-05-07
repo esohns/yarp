@@ -2,7 +2,8 @@
 %debug
 %language         "c++"
 %locations
-%name-prefix      "RPG_Map_Scanner_"
+/*%name-prefix      "RPG_Map_Scanner_"*/
+%define api.prefix {RPG_Map_Scanner_}
 %no-lines
 %skeleton         "lalr1.cc"
 /* %skeleton         "glr.c" */
@@ -15,9 +16,12 @@
 /* %define           api.pure */
 /* %define           api.push_pull */
 /* %define           parse.lac full */
-%define namespace "yy"
-%error-verbose
-%define parser_class_name "RPG_Map_Parser"
+/*%define namespace "yy"*/
+%define api.namespace {yy}
+/*%error-verbose*/
+%define parse.error verbose
+/*%define parser_class_name "RPG_Map_Parser"*/
+%define api.parser.class {RPG_Map_Parser}
 
 %code requires {
 class RPG_Map_ParserDriver;
@@ -72,46 +76,40 @@ typedef void* yyscan_t;
 %left GLYPH;
 
 map:    glyphs "end_of_file"      /* default */
-glyphs:                           /* empty */
+glyphs: %empty                    /* empty */
         | glyphs "glyph"          { switch ($2)
                                     {
                                       case ' ':
                                       {
-                                        driver->myCurrentPlan->unmapped.insert(driver->myCurrentPosition);
-                                        driver->myCurrentPosition.first++;
+                                        driver->myCurrentPlan->unmapped.insert (driver->myCurrentPosition);
                                         break;
                                       }
                                       case '.':
                                       {
-                                        driver->myCurrentPosition.first++;
                                         break;
                                       }
                                       case '#':
                                       {
-                                        driver->myCurrentPlan->walls.insert(driver->myCurrentPosition);
-                                        driver->myCurrentPosition.first++;
+                                        driver->myCurrentPlan->walls.insert (driver->myCurrentPosition);
                                         break;
                                       }
                                       case '=':
                                       {
-                                        RPG_Map_Door_t door;
+                                        struct RPG_Map_Door door;
                                         door.position = driver->myCurrentPosition;
                                         door.outside = RPG_MAP_DIRECTION_INVALID;
                                         door.state = RPG_MAP_DOORSTATE_INVALID;
-                                        driver->myCurrentPlan->doors.insert(door);
-                                        driver->myCurrentPosition.first++;
+                                        driver->myCurrentPlan->doors.insert (door);
                                         break;
                                       }
                                       case '@':
                                       {
-                                        driver->myCurrentSeedPoints->insert(driver->myCurrentPosition);
-                                        driver->myCurrentPosition.first++;
+                                        driver->myCurrentSeedPoints->insert (driver->myCurrentPosition);
                                         break;
                                       }
                                       case 'X':
                                       {
                                         *(driver->myCurrentStartPosition) = driver->myCurrentPosition;
-                                        driver->myCurrentPosition.first++;
                                         break;
                                       }
                                       default:
@@ -119,13 +117,13 @@ glyphs:                           /* empty */
                                         ACE_DEBUG((LM_ERROR,
                                                    ACE_TEXT("invalid/unknown glyph: \"%c\", continuing\n"),
                                                    $2));
-
-                                        driver->myCurrentPosition.first++;
                                         break;
                                       }
                                     } // end SWITCH
+                                    driver->myCurrentPosition.first++;
                                   };
-        | glyphs "end_of_row"     { if (driver->myCurrentSizeX == 0)
+        | glyphs "end_of_row"     { ACE_UNUSED_ARG ($2);
+                                    if (driver->myCurrentSizeX == 0)
                                       driver->myCurrentSizeX = driver->myCurrentPosition.first;
                                     driver->myCurrentPosition.first = 0;
                                     driver->myCurrentPosition.second++;

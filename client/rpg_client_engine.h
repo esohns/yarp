@@ -63,7 +63,7 @@ class RPG_Client_Engine
 
 //  // implement Common_IControl
 //  virtual void start (ACE_thread_t&) = 0; // return value: thread handle (if any)
-  inline virtual void stop (bool = true, bool = false) { shutDown_ = true; condition_.broadcast (); }
+  inline virtual void stop (bool waitForCompletion_in = true, bool = false) { shutDown_ = true; condition_.broadcast (); if (waitForCompletion_in) inherited::wait (false); }
 //  inline virtual bool isRunning () const { return (inherited::thr_count () > 0); }
   inline virtual bool isShuttingDown () const { return shutDown_; }
 

@@ -2434,9 +2434,11 @@ RPG_Client_Window_Level::initMiniMap (bool debug_in)
                 sizeof (RPG_Client_Window_MiniMap)));
     return false;
   } // end IF
-
-  minimap_window->initialize (myClient, myEngine);
-  minimap_window->setScreen (inherited::screen_);
+  minimap_window->initialize (myClient,
+                              myEngine);
+  minimap_window->initializeSDL (NULL,
+                                 inherited::screen_,
+                                 inherited::GLContext_);
 
   return true;
 }
@@ -2460,11 +2462,12 @@ RPG_Client_Window_Level::initMessageWindow ()
                 sizeof (RPG_Client_Window_Message)));
     return false;
   } // end IF
-
   message_window->initialize (NULL, // screen lock handle
                               RPG_CLIENT_MESSAGE_FONT,
                               RPG_CLIENT_MESSAGE_DEF_NUM_LINES);
-  message_window->setScreen (inherited::screen_);
+  message_window->initializeSDL (NULL,
+                                 inherited::screen_,
+                                 inherited::GLContext_);
 
   return true;
 }

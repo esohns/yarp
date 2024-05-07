@@ -16,10 +16,11 @@
 #define yyterminate() return yy::RPG_Map_Parser::token::END
 %}
 
-%option pointer 8bit reentrant never-interactive nounistd nodefault
+%option pointer 8bit reentrant never-interactive nounistd nodefault noline
 /* %option c++ yyclass="RPG_Map_Scanner" stack noline bison-bridge bison-locations */
 %option warn batch nomain noyywrap nounput extra-type="RPG_Map_ParserDriver*"
-%option debug perf-report verbose yylineno ansi-definitions ansi-prototypes
+/*%option debug perf-report verbose yylineno ansi-definitions ansi-prototypes*/
+%option debug perf-report verbose yylineno
 %option full backup perf-report verbose
 %option outfile="rpg_map_scanner.cpp" header-file="rpg_map_scanner.h" prefix="RPG_Map_Scanner_"
 
@@ -57,34 +58,34 @@ GLYPH          {UNMAPPED}|{FLOOR}|{WALL}|{DOOR}|{SEED}|{START}
                              yyless(0); }
 {GLYPH}*                   { BEGIN(last_row);
                              yyless(0); }
-\n                         { yylloc->step();
+\n                         { yylloc->step ();
                              (*line_count)++; }
 } // end <INITIAL>
 <row>{
-{GLYPH}                    { yylloc->step();
+{GLYPH}                    { yylloc->step ();
                              yylval->cval = yytext[0];
                              return yy::RPG_Map_Parser::token::GLYPH; }
-\n                         { yylloc->step();
+\n                         { yylloc->step ();
                              BEGIN(INITIAL);
                              (*line_count)++;
                              return yy::RPG_Map_Parser::token::END_OF_ROW; }
 } // end <row>
 <last_row>{
-{GLYPH}                    { yylloc->step();
+{GLYPH}                    { yylloc->step ();
                              yylval->cval = yytext[0];
                              return yy::RPG_Map_Parser::token::GLYPH; }
 } // end <last_row>
 <<EOF>>                    { BEGIN(INITIAL);
-                             yyterminate(); }
-<*>(?s:.)                  { yylloc->step();
+                             yyterminate (); }
+<*>(?s:.)                  { yylloc->step ();
                              yylval->cval = yytext[0];
 
                              // debug info
-                             std::string error_message = ACE_TEXT("invalid character: \"");
+                             std::string error_message = ACE_TEXT ("invalid character: \"");
                              error_message += yytext[0];
-                             error_message += ACE_TEXT("\", aborting");
-                             driver->error(*yylloc, error_message);
+                             error_message += ACE_TEXT ("\", aborting");
+                             driver->error (*yylloc, error_message);
 
-                             yyterminate();
+                             yyterminate ();
                            }
 %%

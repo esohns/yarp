@@ -205,7 +205,7 @@ void
 do_SDL_waitForInput (unsigned int timeout_in,
                      union SDL_Event& event_out)
 {
-  RPG_TRACE(ACE_TEXT("::do_SDL_waitForInput"));
+  RPG_TRACE (ACE_TEXT ("::do_SDL_waitForInput"));
 
   SDL_TimerID timer = 0;
   if (timeout_in)
@@ -255,7 +255,7 @@ do_SDL_waitForInput (unsigned int timeout_in,
 void
 do_printUsage (const std::string& programName_in)
 {
-  RPG_TRACE(ACE_TEXT("::do_printUsage"));
+  RPG_TRACE (ACE_TEXT ("::do_printUsage"));
 
   // enable verbatim boolean output
   std::cout.setf (ios::boolalpha);
@@ -449,7 +449,7 @@ do_processArguments (int argc_in,
                      unsigned int& numDispatchThreads_out,
                      std::string& videoDriver_out)
 {
-  RPG_TRACE(ACE_TEXT("::do_processArguments"));
+  RPG_TRACE (ACE_TEXT ("::do_processArguments"));
 
   // initialize results
   mute_out                = false;
@@ -949,6 +949,8 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   if (!RPG_Graphics_SDL_Tools::initializeVideo (configuration_in.video_configuration, // configuration
                                                 caption,                              // window/icon caption
                                                 GTKUserData_in.screen,                // window surface
+                                                GTKUserData_in.renderer,              // renderer
+                                                GTKUserData_in.GLContext,             // OpenGL context
                                                 true))                                // initialize window ?
   {
     ACE_DEBUG ((LM_ERROR,
@@ -1037,7 +1039,9 @@ do_work (struct RPG_Client_Configuration& configuration_in,
                                       type,                               // interface elements
                                       title,                              // title (== caption)
                                       FONT_MAIN_LARGE);                   // title font
-  main_window.setScreen (GTKUserData_in.screen);
+  main_window.initializeSDL (NULL,
+                             GTKUserData_in.screen,
+                             GTKUserData_in.GLContext);
   if (!main_window.initialize (&client_engine,
                                RPG_CLIENT_WINDOW_DEF_EDGE_AUTOSCROLL,
                                &level_engine,
@@ -1743,7 +1747,7 @@ do_parseIniFile (const std::string& iniFilename_in,
       config_out.audio_configuration.SDL_configuration.chunksize =
           ::atoi (val_value.c_str ());
     }
-    else if (val_name == ACE_TEXT("audio_cd"))
+    else if (val_name == ACE_TEXT ("audio_cd"))
     {
       converter.clear ();
       converter.str (val_value.c_str ());

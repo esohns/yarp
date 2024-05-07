@@ -2703,7 +2703,7 @@ quit_clicked_GTK_cb (GtkWidget* widget_in,
   // trigger SDL event loop
   union SDL_Event sdl_event;
   sdl_event.type = SDL_QUIT;
-  if (SDL_PushEvent (&sdl_event))
+  if (SDL_PushEvent (&sdl_event) < 0)
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),
                 ACE_TEXT (SDL_GetError ())));

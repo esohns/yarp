@@ -19,11 +19,11 @@ bison --verbose --graph=parser_graph.txt --xml=parser_graph.xml ./${SUBDIR}/scri
 [ $? -ne 0 ] && echo "ERROR: failed to bison, aborting" && exit 1
 
 # move the files into the project directory
-mv -f position.hh ./..
-mv -f stack.hh ./..
-mv -f location.hh ./..
-mv -f rpg_map_parser.h ./..
-mv -f rpg_map_parser.cpp ./..
+mv -f position.hh ./3rd_party/bison
+mv -f stack.hh ./3rd_party/bison
+mv -f location.hh ./3rd_party/bison
+mv -f rpg_map_parser.h ./${SUBDIR}
+mv -f rpg_map_parser.cpp ./${SUBDIR}
 if [ $? -ne 0 ]; then
  echo "ERROR: failed to mv, aborting"
  exit 1

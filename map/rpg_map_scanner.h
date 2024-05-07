@@ -10,8 +10,8 @@
 
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
-#define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 35
+#define YY_FLEX_MINOR_VERSION 6
+#define YY_FLEX_SUBMINOR_VERSION 4
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -20,8 +20,217 @@
 /* %endif */
 
 /* %if-c-only */
-    
+#ifdef yy_create_buffer
+#define RPG_Map_Scanner__create_buffer_ALREADY_DEFINED
+#else
+#define yy_create_buffer RPG_Map_Scanner__create_buffer
+#endif
+
+#ifdef yy_delete_buffer
+#define RPG_Map_Scanner__delete_buffer_ALREADY_DEFINED
+#else
+#define yy_delete_buffer RPG_Map_Scanner__delete_buffer
+#endif
+
+#ifdef yy_scan_buffer
+#define RPG_Map_Scanner__scan_buffer_ALREADY_DEFINED
+#else
+#define yy_scan_buffer RPG_Map_Scanner__scan_buffer
+#endif
+
+#ifdef yy_scan_string
+#define RPG_Map_Scanner__scan_string_ALREADY_DEFINED
+#else
+#define yy_scan_string RPG_Map_Scanner__scan_string
+#endif
+
+#ifdef yy_scan_bytes
+#define RPG_Map_Scanner__scan_bytes_ALREADY_DEFINED
+#else
+#define yy_scan_bytes RPG_Map_Scanner__scan_bytes
+#endif
+
+#ifdef yy_init_buffer
+#define RPG_Map_Scanner__init_buffer_ALREADY_DEFINED
+#else
+#define yy_init_buffer RPG_Map_Scanner__init_buffer
+#endif
+
+#ifdef yy_flush_buffer
+#define RPG_Map_Scanner__flush_buffer_ALREADY_DEFINED
+#else
+#define yy_flush_buffer RPG_Map_Scanner__flush_buffer
+#endif
+
+#ifdef yy_load_buffer_state
+#define RPG_Map_Scanner__load_buffer_state_ALREADY_DEFINED
+#else
+#define yy_load_buffer_state RPG_Map_Scanner__load_buffer_state
+#endif
+
+#ifdef yy_switch_to_buffer
+#define RPG_Map_Scanner__switch_to_buffer_ALREADY_DEFINED
+#else
+#define yy_switch_to_buffer RPG_Map_Scanner__switch_to_buffer
+#endif
+
+#ifdef yypush_buffer_state
+#define RPG_Map_Scanner_push_buffer_state_ALREADY_DEFINED
+#else
+#define yypush_buffer_state RPG_Map_Scanner_push_buffer_state
+#endif
+
+#ifdef yypop_buffer_state
+#define RPG_Map_Scanner_pop_buffer_state_ALREADY_DEFINED
+#else
+#define yypop_buffer_state RPG_Map_Scanner_pop_buffer_state
+#endif
+
+#ifdef yyensure_buffer_stack
+#define RPG_Map_Scanner_ensure_buffer_stack_ALREADY_DEFINED
+#else
+#define yyensure_buffer_stack RPG_Map_Scanner_ensure_buffer_stack
+#endif
+
+#ifdef yylex
+#define RPG_Map_Scanner_lex_ALREADY_DEFINED
+#else
+#define yylex RPG_Map_Scanner_lex
+#endif
+
+#ifdef yyrestart
+#define RPG_Map_Scanner_restart_ALREADY_DEFINED
+#else
+#define yyrestart RPG_Map_Scanner_restart
+#endif
+
+#ifdef yylex_init
+#define RPG_Map_Scanner_lex_init_ALREADY_DEFINED
+#else
+#define yylex_init RPG_Map_Scanner_lex_init
+#endif
+
+#ifdef yylex_init_extra
+#define RPG_Map_Scanner_lex_init_extra_ALREADY_DEFINED
+#else
+#define yylex_init_extra RPG_Map_Scanner_lex_init_extra
+#endif
+
+#ifdef yylex_destroy
+#define RPG_Map_Scanner_lex_destroy_ALREADY_DEFINED
+#else
+#define yylex_destroy RPG_Map_Scanner_lex_destroy
+#endif
+
+#ifdef yyget_debug
+#define RPG_Map_Scanner_get_debug_ALREADY_DEFINED
+#else
+#define yyget_debug RPG_Map_Scanner_get_debug
+#endif
+
+#ifdef yyset_debug
+#define RPG_Map_Scanner_set_debug_ALREADY_DEFINED
+#else
+#define yyset_debug RPG_Map_Scanner_set_debug
+#endif
+
+#ifdef yyget_extra
+#define RPG_Map_Scanner_get_extra_ALREADY_DEFINED
+#else
+#define yyget_extra RPG_Map_Scanner_get_extra
+#endif
+
+#ifdef yyset_extra
+#define RPG_Map_Scanner_set_extra_ALREADY_DEFINED
+#else
+#define yyset_extra RPG_Map_Scanner_set_extra
+#endif
+
+#ifdef yyget_in
+#define RPG_Map_Scanner_get_in_ALREADY_DEFINED
+#else
+#define yyget_in RPG_Map_Scanner_get_in
+#endif
+
+#ifdef yyset_in
+#define RPG_Map_Scanner_set_in_ALREADY_DEFINED
+#else
+#define yyset_in RPG_Map_Scanner_set_in
+#endif
+
+#ifdef yyget_out
+#define RPG_Map_Scanner_get_out_ALREADY_DEFINED
+#else
+#define yyget_out RPG_Map_Scanner_get_out
+#endif
+
+#ifdef yyset_out
+#define RPG_Map_Scanner_set_out_ALREADY_DEFINED
+#else
+#define yyset_out RPG_Map_Scanner_set_out
+#endif
+
+#ifdef yyget_leng
+#define RPG_Map_Scanner_get_leng_ALREADY_DEFINED
+#else
+#define yyget_leng RPG_Map_Scanner_get_leng
+#endif
+
+#ifdef yyget_text
+#define RPG_Map_Scanner_get_text_ALREADY_DEFINED
+#else
+#define yyget_text RPG_Map_Scanner_get_text
+#endif
+
+#ifdef yyget_lineno
+#define RPG_Map_Scanner_get_lineno_ALREADY_DEFINED
+#else
+#define yyget_lineno RPG_Map_Scanner_get_lineno
+#endif
+
+#ifdef yyset_lineno
+#define RPG_Map_Scanner_set_lineno_ALREADY_DEFINED
+#else
+#define yyset_lineno RPG_Map_Scanner_set_lineno
+#endif
+
+#ifdef yyget_column
+#define RPG_Map_Scanner_get_column_ALREADY_DEFINED
+#else
+#define yyget_column RPG_Map_Scanner_get_column
+#endif
+
+#ifdef yyset_column
+#define RPG_Map_Scanner_set_column_ALREADY_DEFINED
+#else
+#define yyset_column RPG_Map_Scanner_set_column
+#endif
+
+#ifdef yywrap
+#define RPG_Map_Scanner_wrap_ALREADY_DEFINED
+#else
+#define yywrap RPG_Map_Scanner_wrap
+#endif
+
 /* %endif */
+
+#ifdef yyalloc
+#define RPG_Map_Scanner_alloc_ALREADY_DEFINED
+#else
+#define yyalloc RPG_Map_Scanner_alloc
+#endif
+
+#ifdef yyrealloc
+#define RPG_Map_Scanner_realloc_ALREADY_DEFINED
+#else
+#define yyrealloc RPG_Map_Scanner_realloc
+#endif
+
+#ifdef yyfree
+#define RPG_Map_Scanner_free_ALREADY_DEFINED
+#else
+#define yyfree RPG_Map_Scanner_free
+#endif
 
 /* %if-c-only */
 
@@ -72,7 +281,6 @@ typedef int flex_int32_t;
 typedef unsigned char flex_uint8_t; 
 typedef unsigned short int flex_uint16_t;
 typedef unsigned int flex_uint32_t;
-#endif /* ! C99 */
 
 /* Limits of integral types. */
 #ifndef INT8_MIN
@@ -103,32 +311,27 @@ typedef unsigned int flex_uint32_t;
 #define UINT32_MAX             (4294967295U)
 #endif
 
+#ifndef SIZE_MAX
+#define SIZE_MAX               (~(size_t)0)
+#endif
+
+#endif /* ! C99 */
+
 #endif /* ! FLEXINT_H */
 
 /* %endif */
 
+/* begin standard C++ headers. */
 /* %if-c++-only */
 /* %endif */
 
-#ifdef __cplusplus
-
-/* The "const" storage-class-modifier is valid. */
-#define YY_USE_CONST
-
-#else	/* ! __cplusplus */
-
-/* C99 requires __STDC__ to be defined as 1. */
-#if defined (__STDC__)
-
-#define YY_USE_CONST
-
-#endif	/* defined (__STDC__) */
-#endif	/* ! __cplusplus */
-
-#ifdef YY_USE_CONST
+/* TODO: this is always defined, so inline it */
 #define yyconst const
+
+#if defined(__GNUC__) && __GNUC__ >= 3
+#define yynoreturn __attribute__((__noreturn__))
 #else
-#define yyconst
+#define yynoreturn
 #endif
 
 /* %not-for-header */
@@ -161,12 +364,25 @@ typedef void* yyscan_t;
 
 /* Size of default input buffer. */
 #ifndef YY_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k.
+ * Moreover, YY_BUF_SIZE is 2*YY_READ_BUF_SIZE in the general case.
+ * Ditto for the __ia64__ case accordingly.
+ */
+#define YY_BUF_SIZE 32768
+#else
 #define YY_BUF_SIZE 16384
+#endif /* __ia64__ */
 #endif
 
 #ifndef YY_TYPEDEF_YY_BUFFER_STATE
 #define YY_TYPEDEF_YY_BUFFER_STATE
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
+#endif
+
+#ifndef YY_TYPEDEF_YY_SIZE_T
+#define YY_TYPEDEF_YY_SIZE_T
+typedef size_t yy_size_t;
 #endif
 
 /* %if-not-reentrant */
@@ -176,11 +392,6 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 /* %if-not-reentrant */
 /* %endif */
 /* %endif */
-
-#ifndef YY_TYPEDEF_YY_SIZE_T
-#define YY_TYPEDEF_YY_SIZE_T
-typedef size_t yy_size_t;
-#endif
 
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
@@ -199,7 +410,7 @@ struct yy_buffer_state
 	/* Size of input buffer in bytes, not including room for EOB
 	 * characters.
 	 */
-	yy_size_t yy_buf_size;
+	int yy_buf_size;
 
 	/* Number of characters read into yy_ch_buf, not including EOB
 	 * characters.
@@ -227,7 +438,7 @@ struct yy_buffer_state
 
     int yy_bs_lineno; /**< The line count. */
     int yy_bs_column; /**< The column count. */
-    
+
 	/* Whether to try to fill the input buffer when we reach the
 	 * end of it.
 	 */
@@ -250,541 +461,33 @@ struct yy_buffer_state
 
 /* %endif */
 
-void RPG_Map_Scanner_restart (FILE *input_file ,yyscan_t yyscanner );
-void RPG_Map_Scanner__switch_to_buffer (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
-YY_BUFFER_STATE RPG_Map_Scanner__create_buffer (FILE *file,int size ,yyscan_t yyscanner );
-void RPG_Map_Scanner__delete_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
-void RPG_Map_Scanner__flush_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
-void RPG_Map_Scanner_push_buffer_state (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
-void RPG_Map_Scanner_pop_buffer_state (yyscan_t yyscanner );
+void yyrestart ( FILE *input_file , yyscan_t yyscanner );
+void yy_switch_to_buffer ( YY_BUFFER_STATE new_buffer , yyscan_t yyscanner );
+YY_BUFFER_STATE yy_create_buffer ( FILE *file, int size , yyscan_t yyscanner );
+void yy_delete_buffer ( YY_BUFFER_STATE b , yyscan_t yyscanner );
+void yy_flush_buffer ( YY_BUFFER_STATE b , yyscan_t yyscanner );
+void yypush_buffer_state ( YY_BUFFER_STATE new_buffer , yyscan_t yyscanner );
+void yypop_buffer_state ( yyscan_t yyscanner );
 
-YY_BUFFER_STATE RPG_Map_Scanner__scan_buffer (char *base,yy_size_t size ,yyscan_t yyscanner );
-YY_BUFFER_STATE RPG_Map_Scanner__scan_string (yyconst char *yy_str ,yyscan_t yyscanner );
-YY_BUFFER_STATE RPG_Map_Scanner__scan_bytes (yyconst char *bytes,int len ,yyscan_t yyscanner );
+YY_BUFFER_STATE yy_scan_buffer ( char *base, yy_size_t size , yyscan_t yyscanner );
+YY_BUFFER_STATE yy_scan_string ( const char *yy_str , yyscan_t yyscanner );
+YY_BUFFER_STATE yy_scan_bytes ( const char *bytes, int len , yyscan_t yyscanner );
 
 /* %endif */
 
-void *RPG_Map_Scanner_alloc (yy_size_t ,yyscan_t yyscanner );
-void *RPG_Map_Scanner_realloc (void *,yy_size_t ,yyscan_t yyscanner );
-void RPG_Map_Scanner_free (void * ,yyscan_t yyscanner );
+void *yyalloc ( yy_size_t , yyscan_t yyscanner );
+void *yyrealloc ( void *, yy_size_t , yyscan_t yyscanner );
+void yyfree ( void * , yyscan_t yyscanner );
 
 /* %% [1.0] yytext/yyin/yyout/yy_state_type/yylineno etc. def's & init go here */
 /* Begin user sect3 */
 
-#define RPG_Map_Scanner_wrap(n) 1
+#define RPG_Map_Scanner_wrap(yyscanner) (/*CONSTCOND*/1)
 #define YY_SKIP_YYWRAP
 
 #define FLEX_DEBUG
 
 #define yytext_ptr yytext_r
-static yyconst flex_int16_t yy_nxt[][256] =
-    {
-    {
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0
-    },
-
-    {
-        7,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        9,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,   10,    8,    8,   10,    8,    8,    8,    8,
-
-        8,    8,    8,    8,    8,    8,   10,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,   10,    8,    8,   10,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,   10,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8
-    },
-
-    {
-        7,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        9,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,   10,    8,    8,   10,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,   10,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,   10,    8,    8,   10,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-
-        8,    8,    8,    8,    8,    8,    8,    8,   10,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8
-    },
-
-    {
-        7,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-       11,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,   12,    8,    8,   12,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,   12,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,   12,    8,    8,   12,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,   12,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8
-    },
-
-    {
-        7,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-       11,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,   12,    8,    8,   12,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,   12,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-
-        8,   12,    8,    8,   12,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,   12,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8
-
-    },
-
-    {
-        7,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,   13,    8,    8,   13,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,   13,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,   13,    8,    8,   13,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,   13,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8
-    },
-
-    {
-        7,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,   13,    8,    8,   13,    8,    8,    8,    8,
-
-        8,    8,    8,    8,    8,    8,   13,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,   13,    8,    8,   13,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,   13,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8
-    },
-
-    {
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-       -7,   -7,   -7,   -7,   -7,   -7
-    },
-
-    {
-        7,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-       -8,   -8,   -8,   -8,   -8,   -8
-    },
-
-    {
-        7,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-       -9,   -9,   -9,   -9,   -9,   -9
-
-    },
-
-    {
-        7,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-       14,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-      -10,  -10,   15,  -10,  -10,   15,  -10,  -10,  -10,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10,   15,  -10,  -10,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-      -10,   15,  -10,  -10,   15,  -10,  -10,  -10,  -10,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,   15,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-      -10,  -10,  -10,  -10,  -10,  -10
-    },
-
-    {
-        7,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-
-      -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,  -11,
-      -11,  -11,  -11,  -11,  -11,  -11
-    },
-
-    {
-        7,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,  -12,
-      -12,  -12,  -12,  -12,  -12,  -12
-    },
-
-    {
-        7,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -13,
-      -13,  -13,  -13,  -13,  -13,  -13
-    },
-
-    {
-        7,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
-      -14,  -14,  -14,  -14,  -14,  -14
-
-    },
-
-    {
-        7,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-       14,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,   15,  -15,  -15,   15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,   15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,   15,  -15,  -15,   15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,   15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,  -15,
-      -15,  -15,  -15,  -15,  -15,  -15
-    },
-
-    } ;
 
 /* %if-c-only Standard (non-C++) definition */
 
@@ -820,9 +523,9 @@ static yyconst flex_int16_t yy_nxt[][256] =
 
 /* %if-reentrant */
 
-int RPG_Map_Scanner_lex_init (yyscan_t* scanner);
+int yylex_init (yyscan_t* scanner);
 
-int RPG_Map_Scanner_lex_init_extra (YY_EXTRA_TYPE user_defined,yyscan_t* scanner);
+int yylex_init_extra ( YY_EXTRA_TYPE user_defined, yyscan_t* scanner);
 
 /* %endif */
 
@@ -831,31 +534,35 @@ int RPG_Map_Scanner_lex_init_extra (YY_EXTRA_TYPE user_defined,yyscan_t* scanner
 /* Accessor methods to globals.
    These are made visible to non-reentrant scanners for convenience. */
 
-int RPG_Map_Scanner_lex_destroy (yyscan_t yyscanner );
+int yylex_destroy ( yyscan_t yyscanner );
 
-int RPG_Map_Scanner_get_debug (yyscan_t yyscanner );
+int yyget_debug ( yyscan_t yyscanner );
 
-void RPG_Map_Scanner_set_debug (int debug_flag ,yyscan_t yyscanner );
+void yyset_debug ( int debug_flag , yyscan_t yyscanner );
 
-YY_EXTRA_TYPE RPG_Map_Scanner_get_extra (yyscan_t yyscanner );
+YY_EXTRA_TYPE yyget_extra ( yyscan_t yyscanner );
 
-void RPG_Map_Scanner_set_extra (YY_EXTRA_TYPE user_defined ,yyscan_t yyscanner );
+void yyset_extra ( YY_EXTRA_TYPE user_defined , yyscan_t yyscanner );
 
-FILE *RPG_Map_Scanner_get_in (yyscan_t yyscanner );
+FILE *yyget_in ( yyscan_t yyscanner );
 
-void RPG_Map_Scanner_set_in  (FILE * in_str ,yyscan_t yyscanner );
+void yyset_in  ( FILE * _in_str , yyscan_t yyscanner );
 
-FILE *RPG_Map_Scanner_get_out (yyscan_t yyscanner );
+FILE *yyget_out ( yyscan_t yyscanner );
 
-void RPG_Map_Scanner_set_out  (FILE * out_str ,yyscan_t yyscanner );
+void yyset_out  ( FILE * _out_str , yyscan_t yyscanner );
 
-int RPG_Map_Scanner_get_leng (yyscan_t yyscanner );
+			int yyget_leng ( yyscan_t yyscanner );
 
-char *RPG_Map_Scanner_get_text (yyscan_t yyscanner );
+char *yyget_text ( yyscan_t yyscanner );
 
-int RPG_Map_Scanner_get_lineno (yyscan_t yyscanner );
+int yyget_lineno ( yyscan_t yyscanner );
 
-void RPG_Map_Scanner_set_lineno (int line_number ,yyscan_t yyscanner );
+void yyset_lineno ( int _line_number , yyscan_t yyscanner );
+
+int yyget_column  ( yyscan_t yyscanner );
+
+void yyset_column ( int _column_no , yyscan_t yyscanner );
 
 /* %if-bison-bridge */
 /* %endif */
@@ -866,9 +573,9 @@ void RPG_Map_Scanner_set_lineno (int line_number ,yyscan_t yyscanner );
 
 #ifndef YY_SKIP_YYWRAP
 #ifdef __cplusplus
-extern "C" int RPG_Map_Scanner_wrap (yyscan_t yyscanner );
+extern "C" int yywrap ( yyscan_t yyscanner );
 #else
-extern int RPG_Map_Scanner_wrap (yyscan_t yyscanner );
+extern int yywrap ( yyscan_t yyscanner );
 #endif
 #endif
 
@@ -877,11 +584,11 @@ extern int RPG_Map_Scanner_wrap (yyscan_t yyscanner );
 /* %endif */
 
 #ifndef yytext_ptr
-static void yy_flex_strncpy (char *,yyconst char *,int ,yyscan_t yyscanner);
+static void yy_flex_strncpy ( char *, const char *, int , yyscan_t yyscanner);
 #endif
 
 #ifdef YY_NEED_STRLEN
-static int yy_flex_strlen (yyconst char * ,yyscan_t yyscanner);
+static int yy_flex_strlen ( const char * , yyscan_t yyscanner);
 #endif
 
 #ifndef YY_NO_INPUT
@@ -897,7 +604,12 @@ static int yy_flex_strlen (yyconst char * ,yyscan_t yyscanner);
 
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k */
+#define YY_READ_BUF_SIZE 16384
+#else
 #define YY_READ_BUF_SIZE 8192
+#endif /* __ia64__ */
 #endif
 
 /* Number of entries by which start-condition stack grows. */
@@ -917,9 +629,9 @@ static int yy_flex_strlen (yyconst char * ,yyscan_t yyscanner);
 #define YY_DECL_IS_OURS 1
 /* %if-c-only Standard (non-C++) definition */
 
-extern int RPG_Map_Scanner_lex (yyscan_t yyscanner);
+extern int yylex (yyscan_t yyscanner);
 
-#define YY_DECL int RPG_Map_Scanner_lex (yyscan_t yyscanner)
+#define YY_DECL int yylex (yyscan_t yyscanner)
 /* %endif */
 /* %if-c++-only C++ definition */
 /* %endif */
@@ -949,9 +661,150 @@ extern int RPG_Map_Scanner_lex (yyscan_t yyscanner);
 #undef YY_DECL
 #endif
 
-#line 89 "./map_scanner.l"
+#ifndef RPG_Map_Scanner__create_buffer_ALREADY_DEFINED
+#undef yy_create_buffer
+#endif
+#ifndef RPG_Map_Scanner__delete_buffer_ALREADY_DEFINED
+#undef yy_delete_buffer
+#endif
+#ifndef RPG_Map_Scanner__scan_buffer_ALREADY_DEFINED
+#undef yy_scan_buffer
+#endif
+#ifndef RPG_Map_Scanner__scan_string_ALREADY_DEFINED
+#undef yy_scan_string
+#endif
+#ifndef RPG_Map_Scanner__scan_bytes_ALREADY_DEFINED
+#undef yy_scan_bytes
+#endif
+#ifndef RPG_Map_Scanner__init_buffer_ALREADY_DEFINED
+#undef yy_init_buffer
+#endif
+#ifndef RPG_Map_Scanner__flush_buffer_ALREADY_DEFINED
+#undef yy_flush_buffer
+#endif
+#ifndef RPG_Map_Scanner__load_buffer_state_ALREADY_DEFINED
+#undef yy_load_buffer_state
+#endif
+#ifndef RPG_Map_Scanner__switch_to_buffer_ALREADY_DEFINED
+#undef yy_switch_to_buffer
+#endif
+#ifndef RPG_Map_Scanner_push_buffer_state_ALREADY_DEFINED
+#undef yypush_buffer_state
+#endif
+#ifndef RPG_Map_Scanner_pop_buffer_state_ALREADY_DEFINED
+#undef yypop_buffer_state
+#endif
+#ifndef RPG_Map_Scanner_ensure_buffer_stack_ALREADY_DEFINED
+#undef yyensure_buffer_stack
+#endif
+#ifndef RPG_Map_Scanner_lex_ALREADY_DEFINED
+#undef yylex
+#endif
+#ifndef RPG_Map_Scanner_restart_ALREADY_DEFINED
+#undef yyrestart
+#endif
+#ifndef RPG_Map_Scanner_lex_init_ALREADY_DEFINED
+#undef yylex_init
+#endif
+#ifndef RPG_Map_Scanner_lex_init_extra_ALREADY_DEFINED
+#undef yylex_init_extra
+#endif
+#ifndef RPG_Map_Scanner_lex_destroy_ALREADY_DEFINED
+#undef yylex_destroy
+#endif
+#ifndef RPG_Map_Scanner_get_debug_ALREADY_DEFINED
+#undef yyget_debug
+#endif
+#ifndef RPG_Map_Scanner_set_debug_ALREADY_DEFINED
+#undef yyset_debug
+#endif
+#ifndef RPG_Map_Scanner_get_extra_ALREADY_DEFINED
+#undef yyget_extra
+#endif
+#ifndef RPG_Map_Scanner_set_extra_ALREADY_DEFINED
+#undef yyset_extra
+#endif
+#ifndef RPG_Map_Scanner_get_in_ALREADY_DEFINED
+#undef yyget_in
+#endif
+#ifndef RPG_Map_Scanner_set_in_ALREADY_DEFINED
+#undef yyset_in
+#endif
+#ifndef RPG_Map_Scanner_get_out_ALREADY_DEFINED
+#undef yyget_out
+#endif
+#ifndef RPG_Map_Scanner_set_out_ALREADY_DEFINED
+#undef yyset_out
+#endif
+#ifndef RPG_Map_Scanner_get_leng_ALREADY_DEFINED
+#undef yyget_leng
+#endif
+#ifndef RPG_Map_Scanner_get_text_ALREADY_DEFINED
+#undef yyget_text
+#endif
+#ifndef RPG_Map_Scanner_get_lineno_ALREADY_DEFINED
+#undef yyget_lineno
+#endif
+#ifndef RPG_Map_Scanner_set_lineno_ALREADY_DEFINED
+#undef yyset_lineno
+#endif
+#ifndef RPG_Map_Scanner_get_column_ALREADY_DEFINED
+#undef yyget_column
+#endif
+#ifndef RPG_Map_Scanner_set_column_ALREADY_DEFINED
+#undef yyset_column
+#endif
+#ifndef RPG_Map_Scanner_wrap_ALREADY_DEFINED
+#undef yywrap
+#endif
+#ifndef RPG_Map_Scanner_get_lval_ALREADY_DEFINED
+#undef yyget_lval
+#endif
+#ifndef RPG_Map_Scanner_set_lval_ALREADY_DEFINED
+#undef yyset_lval
+#endif
+#ifndef RPG_Map_Scanner_get_lloc_ALREADY_DEFINED
+#undef yyget_lloc
+#endif
+#ifndef RPG_Map_Scanner_set_lloc_ALREADY_DEFINED
+#undef yyset_lloc
+#endif
+#ifndef RPG_Map_Scanner_alloc_ALREADY_DEFINED
+#undef yyalloc
+#endif
+#ifndef RPG_Map_Scanner_realloc_ALREADY_DEFINED
+#undef yyrealloc
+#endif
+#ifndef RPG_Map_Scanner_free_ALREADY_DEFINED
+#undef yyfree
+#endif
+#ifndef RPG_Map_Scanner_text_ALREADY_DEFINED
+#undef yytext
+#endif
+#ifndef RPG_Map_Scanner_leng_ALREADY_DEFINED
+#undef yyleng
+#endif
+#ifndef RPG_Map_Scanner_in_ALREADY_DEFINED
+#undef yyin
+#endif
+#ifndef RPG_Map_Scanner_out_ALREADY_DEFINED
+#undef yyout
+#endif
+#ifndef RPG_Map_Scanner__flex_debug_ALREADY_DEFINED
+#undef yy_flex_debug
+#endif
+#ifndef RPG_Map_Scanner_lineno_ALREADY_DEFINED
+#undef yylineno
+#endif
+#ifndef RPG_Map_Scanner_tables_fload_ALREADY_DEFINED
+#undef yytables_fload
+#endif
+#ifndef RPG_Map_Scanner_tables_destroy_ALREADY_DEFINED
+#undef yytables_destroy
+#endif
+#ifndef RPG_Map_Scanner_TABLES_NAME_ALREADY_DEFINED
+#undef yyTABLES_NAME
+#endif
 
-
-#line 960 "rpg_map_scanner.h"
 #undef RPG_Map_Scanner_IN_HEADER
 #endif /* RPG_Map_Scanner_HEADER_H */

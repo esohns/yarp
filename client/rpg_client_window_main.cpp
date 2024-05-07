@@ -810,7 +810,9 @@ RPG_Client_Window_Main::initMap (RPG_Client_Engine* clientEngine_in,
                 ACE_TEXT ("failed to RPG_Client_Window_Level::initialize(): \"%m\", aborting\n")));
     return false;
   } // end IF
-  map_window_p->setScreen (inherited::screen_);
+  map_window_p->initializeSDL (NULL,
+                               inherited::screen_,
+                               inherited::GLContext_);
 
   return true;
 }

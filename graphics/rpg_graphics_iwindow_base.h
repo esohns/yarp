@@ -53,10 +53,12 @@ class RPG_Graphics_IWindowBase
   virtual void setScreen (SDL_Surface*) = 0; // (default) screen
   virtual SDL_Surface* getScreen () const = 0; // (default) screen
 #elif defined (SDL2_USE)
-  virtual void setRenderer (SDL_Renderer*) = 0; // (default) renderer
-  virtual void setScreen (SDL_Window*) = 0; // (default) screen
+  virtual void initializeSDL (SDL_Renderer*,
+                              SDL_Window*,
+                              SDL_GLContext) = 0;
   virtual SDL_Renderer* getRenderer () const = 0; // (default) renderer
   virtual SDL_Window* getScreen() const = 0; // (default) screen
+  virtual SDL_GLContext getGLContext () const = 0; // (default) OpenGL context
 #endif // SDL_USE || SDL2_USE
   virtual RPG_Graphics_IWindowBase* getParent () const = 0; // return value: parent window handle (if any)
 

@@ -203,7 +203,7 @@ SDL_GUI_LevelWindow_Isometric::initialize (state_t* state_in,
 
   // sanity check(s)
   ACE_ASSERT (state_in);
-  ACE_ASSERT (state_in->screen);
+  // ACE_ASSERT (state_in->screen);
 
   myState = state_in;
   inherited::initialize (screenLock_in,

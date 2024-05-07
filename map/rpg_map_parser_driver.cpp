@@ -52,7 +52,7 @@ RPG_Map_ParserDriver::RPG_Map_ParserDriver (bool traceScanning_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Map_ParserDriver::RPG_Map_ParserDriver"));
 
-  // init lex scanner
+  // initialize lex scanner
   if (RPG_Map_Scanner_lex_init_extra (this,
                                       &myCurrentScannerState))
     ACE_DEBUG ((LM_ERROR,

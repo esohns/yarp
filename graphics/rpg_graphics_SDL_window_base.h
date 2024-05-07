@@ -70,10 +70,12 @@ class RPG_Graphics_SDLWindowBase
   inline virtual void setScreen (SDL_Surface* screen_in) { ACE_ASSERT (screen_in); screen_ = screen_in; }
   inline virtual SDL_Surface* getScreen () const { return (screen_ ? screen_ : SDL_GetVideoSurface ()); }
 #elif defined (SDL2_USE)
-  inline virtual void setRenderer (SDL_Renderer* renderer_in) { ACE_ASSERT (renderer_in); renderer_ = renderer_in; }
-  inline virtual void setScreen (SDL_Window* window_in) { ACE_ASSERT (window_in); screen_ = window_in; }
+  inline virtual void initializeSDL (SDL_Renderer* renderer_in,
+                                     SDL_Window* window_in,
+                                     SDL_GLContext GLContext_in) { renderer_ = renderer_in; screen_ = window_in; GLContext_ = GLContext_in; }
   inline virtual SDL_Renderer* getRenderer () const { return renderer_; }
   inline virtual SDL_Window* getScreen () const { return screen_; }
+  inline virtual SDL_GLContext getGLContext () const { return GLContext_; }
 #endif // SDL_USE || SDL2_USE
 
   inline virtual enum RPG_Graphics_WindowType getType () const { return type_; }
@@ -117,6 +119,7 @@ class RPG_Graphics_SDLWindowBase
 #elif defined (SDL2_USE)
   SDL_Renderer*                 renderer_;
   SDL_Window*                   screen_;
+  SDL_GLContext                 GLContext_;
 #endif // SDL_USE || SDL2_USE
   Common_ILock*                 screenLock_;
 

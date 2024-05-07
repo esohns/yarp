@@ -45,7 +45,7 @@ struct RPG_Graphics_SDL_VideoConfiguration
   bool        double_buffer;
   bool        use_OpenGL;
   bool        full_screen;
-  std::string video_driver; // [x11|directx|windib|...]
+  std::string video_driver; // [wayland|x11|directx|windib|...]
   bool        debug;
 };
 

@@ -926,9 +926,9 @@ SDL_GUI_MainWindow::initMap (state_t* state_in,
                 ACE_TEXT ("failed to allocate memory: %m, aborting\n")));
     return false;
   } // end IF
-
-  // initialize window
-  window_base->setScreen (inherited::screen_);
+  window_base->initializeSDL (NULL,
+                              inherited::screen_,
+                              inherited::GLContext_);
 
   return true;
 }

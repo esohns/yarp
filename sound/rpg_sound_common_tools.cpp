@@ -233,7 +233,7 @@ RPG_Sound_Common_Tools::finalize ()
 
   RPG_SOUND_EVENT_MANAGER_SINGLETON::instance ()->finalize ();
 
-	Mix_CloseAudio ();
+  Mix_CloseAudio ();
 
   myInitialized = false;
 }

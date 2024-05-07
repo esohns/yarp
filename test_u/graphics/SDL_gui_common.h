@@ -50,19 +50,21 @@ struct state_t
   SDL_Surface*                  screen;
 #elif defined (SDL2_USE)
   SDL_Window*                   screen;
+  SDL_Renderer*                 renderer;
+  SDL_GLContext                 GLContext;
 #endif // SDL_USE || SDL2_USE
   ACE_Thread_Mutex              hover_lock;
   unsigned int                  hover_time;
   bool                          debug;
   struct RPG_Graphics_Style     style;
-	enum RPG_Client_SelectionMode selection_mode;
-	ACE_Thread_Mutex              lock;
+  enum RPG_Client_SelectionMode selection_mode;
+  ACE_Thread_Mutex              lock;
   RPG_Engine_SeenPositions_t    seen_positions;
-	//
-	RPG_Map_Path_t                path;
-	RPG_Map_Position_t            source;
-	RPG_Map_PositionList_t        positions;
-	ACE_UINT8                     radius; // map squares
+  //
+  RPG_Map_Path_t                path;
+  RPG_Map_Position_t            source;
+  RPG_Map_PositionList_t        positions;
+  ACE_UINT8                     radius; // map squares
   //
   GLfloat                       angle;
 };

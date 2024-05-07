@@ -85,8 +85,8 @@ RPG_Client_Engine::~RPG_Client_Engine ()
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::~RPG_Client_Engine"));
 
   if (isRunning ())
-    stop (true,
-          false);
+    stop (true,   // wait for completion ?
+          false); // N/A
 }
 
 int
@@ -144,6 +144,34 @@ RPG_Client_Engine::svc (void)
                                      0);
 #endif // _WIN32_WINNT_WIN10
 #endif // ACE_WIN32 || ACE_WIN64
+
+// #if defined (ACE_WIN32) || defined (ACE_WIN64)
+// #else
+//   ACE_ASSERT (window_);
+
+//   SDL_GLContext context_p = window_->getGLContext ();
+//   ACE_ASSERT (context_p);
+//   SDL_Window* window_p = window_->getScreen ();
+//   ACE_ASSERT (window_p);
+
+  // SDL_GL_SetAttribute (SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
+
+  // SDL_GLContext context_p = SDL_GL_CreateContext (window_p);
+  // if (context_p == NULL)
+  // {
+  //   ACE_DEBUG ((LM_ERROR,
+  //               ACE_TEXT ("failed to SDL_GL_CreateContext(): \"%s\", aborting\n"),
+  //               ACE_TEXT (SDL_GetError ())));
+  //   // return -1;
+  // } // end IF
+  // if (SDL_GL_MakeCurrent (window_p, context_p) < 0)
+  // {
+  //   ACE_DEBUG ((LM_ERROR,
+  //               ACE_TEXT ("failed to SDL_GL_MakeCurrent(): \"%s\", aborting\n"),
+  //               ACE_TEXT (SDL_GetError ())));
+  //   return -1;
+  // } // end IF
+// #endif // ACE_WIN32 || ACE_WIN64
 
   while (true)
   {

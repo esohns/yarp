@@ -83,6 +83,7 @@ struct RPG_Client_GTK_CBData
 #elif defined (SDL2_USE)
    , renderer (NULL)
    , screen (NULL)
+   , GLContext (NULL)
 #endif // SDL_USE || SDL2_USE
    , screenLock (NULL,
                  NULL)
@@ -106,6 +107,7 @@ struct RPG_Client_GTK_CBData
 #elif defined (SDL2_USE)
   SDL_Renderer*                          renderer;
   SDL_Window*                            screen;
+  SDL_GLContext                          GLContext;
 #endif // SDL_USE || SDL2_USE
   ACE_Thread_Mutex                       screenLock; // video access
   SDL_TimerID                            eventTimer;

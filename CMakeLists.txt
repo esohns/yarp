@@ -145,6 +145,7 @@ add_subdirectory (engine)
 add_subdirectory (net)
 add_subdirectory (client)
 add_subdirectory (test_u)
+#add_subdirectory (tools)
 
 set (DOC_FILES COPYING INSTALL AUTHORS NEWS README TODO)
 set (DOC_PATH "share/doc/${CPACK_PACKAGE_NAME}")

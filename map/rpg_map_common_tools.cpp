@@ -2049,7 +2049,7 @@ RPG_Map_Common_Tools::buildCircle (const RPG_Map_Position_t& center_in,
   // *CONSIDER*: calculating the positions by mirroring the positions of
   // just one quadrant...
 
-  unsigned char* circle_radius_p =
+  ACE_UINT8* circle_radius_p =
       RPG_Map_CircleData + RPG_Map_CircleStart[radius_in];
   unsigned int i, j, current_y = center_in.second;
   // *WARNING*: no bounds are checked right-/downwards...

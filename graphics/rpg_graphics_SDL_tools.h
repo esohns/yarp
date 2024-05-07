@@ -50,9 +50,14 @@ class RPG_Graphics_SDL_Tools
   static bool initializeVideo (const struct RPG_Graphics_SDL_VideoConfiguration&, // configuration
                                const std::string&,                                // window/icon caption
                                SDL_Window*&,                                      // return value: window handle
+                               SDL_Renderer*&,                                    // return value: renderer handle
+                               SDL_GLContext&,                                    // return value: main GL context handle
                                bool = true);                                      // initialize window surface ?
-  static SDL_Window* initializeScreen (const struct RPG_Graphics_SDL_VideoConfiguration&, // configuration
-                                       const std::string&);                               // window/icon caption
+  static bool initializeScreen (const struct RPG_Graphics_SDL_VideoConfiguration&, // configuration
+                                const std::string&,                                // window/icon caption
+                                SDL_Window*&,                                      // return value: main window handle
+                                SDL_Renderer*&,                                    // return value: renderer handle
+                                SDL_GLContext&);                                   // return value: main GL context handle
 #endif // SDL_USE || SDL2_USE
 
 #if defined (SDL_USE)

@@ -36,10 +36,11 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase (enum RPG_Graphics_Window
                                                         const RPG_Graphics_Size_t& size_in,
                                                         const std::string& title_in)
 #if defined (SDL2_USE)
-  : renderer_ (NULL)
-  , screen_ (NULL)
+ : renderer_ (NULL)
+ , screen_ (NULL)
+ , GLContext_ (NULL)
 #elif defined (SDL_USE)
-  : screen_ (NULL)
+ : screen_ (NULL)
 #endif // SDL2_USE || SDL_USE
  , screenLock_ (NULL)
  , borderTop_ (0)
@@ -486,6 +487,7 @@ RPG_Graphics_SDLWindowBase::update (SDL_Surface* targetSurface_in)
                     dirty_region.w,
                     dirty_region.h);
 #elif defined (SDL2_USE)
+    // int result = SDL_GL_MakeCurrent (screen_, GLContext_);
     if (SDL_UpdateWindowSurfaceRects (screen_,
                                       &dirty_region,
                                       1) < 0)

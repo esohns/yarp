@@ -140,7 +140,7 @@ RPG_Client_Entity_Manager::remove (RPG_Engine_EntityID_t id_in,
   // sanity check(s)
   RPG_Client_EntityCacheConstIterator_t iterator = myCache.find (id_in);
   ACE_ASSERT (iterator != myCache.end ());
-  //if (iterator != myCache.end ())
+  //if (iterator == myCache.end ())
   //{
   //  ACE_DEBUG ((LM_ERROR,
   //              ACE_TEXT ("invalid entity ID (was: %u), returning\n"),

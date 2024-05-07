@@ -17,6 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "SDL_render.h"
+#include "SDL_video.h"
 #include "stdafx.h"
 
 #include "rpg_graphics_SDL_tools.h"
@@ -79,14 +81,11 @@ RPG_Graphics_SDL_Tools::preInitializeVideo (const struct RPG_Graphics_SDL_VideoC
   } // end IF
   // sanity check
   if (video_driver.empty ())
-  {
     video_driver =
       ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME); // fallback
-
-    ACE_DEBUG ((LM_DEBUG,
-                ACE_TEXT ("using video driver: \"%s\"\n"),
-                ACE_TEXT (video_driver.c_str ())));
-  } // end IF
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("using video driver: \"%s\"\n"),
+              ACE_TEXT (video_driver.c_str ())));
 
   // set flags passed to SDL_StartEventLoop
   int result = -1;
@@ -620,12 +619,16 @@ bool
 RPG_Graphics_SDL_Tools::initializeVideo (const struct RPG_Graphics_SDL_VideoConfiguration& configuration_in,
                                          const std::string& caption_in,
                                          SDL_Window*& windowHandle_out,
+                                         SDL_Renderer*& rendererHandle_out,
+                                         SDL_GLContext& GLContextHandle_out,
                                          bool initializeWindow_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::initializeVideo"));
 
   // initialize return value(s)
   windowHandle_out = NULL;
+  rendererHandle_out = NULL;
+  GLContextHandle_out = NULL;
 
   // sanity check
   if (!myVideoPreInitialized)
@@ -638,13 +641,14 @@ RPG_Graphics_SDL_Tools::initializeVideo (const struct RPG_Graphics_SDL_VideoConf
     } // end IF
   ACE_ASSERT (myVideoPreInitialized);
 
-  // step3: init screen
+  // step3: initialize screen
   if (initializeWindow_in)
   {
-    windowHandle_out =
-      RPG_Graphics_SDL_Tools::initializeScreen (configuration_in,
-                                                caption_in);
-    if (!windowHandle_out)
+    if (!RPG_Graphics_SDL_Tools::initializeScreen (configuration_in,
+                                                   caption_in,
+                                                   windowHandle_out,
+                                                   rendererHandle_out,
+                                                   GLContextHandle_out))
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::initializeScreen(%d,%d,%d), aborting\n"),
@@ -660,20 +664,22 @@ RPG_Graphics_SDL_Tools::initializeVideo (const struct RPG_Graphics_SDL_VideoConf
     type.image = IMAGE_WM_ICON;
     RPG_Graphics_t icon_graphic =
       RPG_GRAPHICS_DICTIONARY_SINGLETON::instance ()->get (type);
-    ACE_ASSERT(icon_graphic.type.image == IMAGE_WM_ICON);
+    ACE_ASSERT (icon_graphic.type.image == IMAGE_WM_ICON);
     std::string path = RPG_Graphics_Common_Tools::getGraphicsDirectory ();
     path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     path += ACE_TEXT_ALWAYS_CHAR(RPG_GRAPHICS_TILE_IMAGES_SUB);
     path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     path += icon_graphic.file;
-    SDL_Surface* icon_image = NULL;
-    icon_image = RPG_Graphics_Surface::load (path,   // graphics file
-                                             false); // don't convert to display format (no screen yet !)
+    SDL_Surface* icon_image =
+      RPG_Graphics_Surface::load (path,  // graphics file
+                                  true); // convert to display format
     if (!icon_image)
     {
       ACE_DEBUG((LM_ERROR,
                  ACE_TEXT("failed to RPG_Graphics_Common_Tools::loadFile(\"%s\"), aborting\n"),
                  ACE_TEXT(path.c_str())));
+      SDL_GL_DeleteContext (GLContextHandle_out); GLContextHandle_out = NULL;
+      SDL_DestroyRenderer (rendererHandle_out); rendererHandle_out = NULL;
       SDL_DestroyWindow (windowHandle_out); windowHandle_out = NULL;
       return false;
     } // end IF
@@ -684,14 +690,28 @@ RPG_Graphics_SDL_Tools::initializeVideo (const struct RPG_Graphics_SDL_VideoConf
   return true;
 }
 
-SDL_Window*
+bool
 RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoConfiguration& configuration_in,
-                                          const std::string& caption_in)
+                                          const std::string& caption_in,
+                                          SDL_Window*& window_out,
+                                          SDL_Renderer*& renderer_out,
+                                          SDL_GLContext& GLContext_out)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDL_Tools::initializeScreen"));
 
-  // initialize return value
-  SDL_Window* result = NULL;
+  // initialize return value(s)
+  if (GLContext_out)
+  {
+    SDL_GL_DeleteContext (GLContext_out); GLContext_out = NULL;
+  } // end IF
+  if (renderer_out)
+  {
+    SDL_DestroyRenderer (renderer_out); renderer_out = NULL;
+  } // end IF
+  if (window_out)
+  {
+    SDL_DestroyWindow (window_out); window_out = NULL;
+  } // end IF
 
   int result_2 = -1;
 
@@ -702,7 +722,7 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_GetNumVideoDisplays(): \"%s\", aborting\n"),
                 ACE_TEXT (SDL_GetError ())));
-    return NULL;
+    return false;
   } // end IF
   for (int i = 0;
        i < number_of_video_displays_i;
@@ -715,7 +735,7 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
                   ACE_TEXT ("failed to SDL_GetNumDisplayModes(%d): \"%s\", aborting\n"),
                   i,
                   ACE_TEXT (SDL_GetError ())));
-      return NULL;
+      return false;
     } // end IF
 
     // print valid modes
@@ -736,7 +756,7 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
                     ACE_TEXT ("failed to SDL_GetDisplayMode(%u,%u): \"%s\", aborting\n"),
                     i, j,
                     ACE_TEXT (SDL_GetError ())));
-        return NULL;
+        return false;
       } // end IF
 
       ACE_DEBUG ((LM_DEBUG,
@@ -752,23 +772,25 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
   // select a render driver
   // - use a render driver supporting software rendering
   struct SDL_RendererInfo render_driver_info_s;
-  uint32_t renderer_flags = SDL_RENDERER_SOFTWARE;
-  int32_t number_of_render_drivers = SDL_GetNumRenderDrivers();
-  int32_t index = 0;
+  Uint32 renderer_flags = SDL_RENDERER_SOFTWARE;
+  int number_of_render_drivers = SDL_GetNumRenderDrivers ();
+  int index = 0;
   while (index < number_of_render_drivers)
   {
-    if (SDL_GetRenderDriverInfo (index, &render_driver_info_s) < 0)
+    if (SDL_GetRenderDriverInfo (index,
+                                 &render_driver_info_s) < 0)
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_GetRenderDriverInfo(%d): \"%s\", aborting\n"),
                   index,
                   ACE_TEXT (SDL_GetError ())));
-      return NULL;
+      return false;
     } // end IF
     if (((render_driver_info_s.flags & renderer_flags) == renderer_flags) &&
         ((render_driver_info_s.flags & SDL_RENDERER_SOFTWARE) == SDL_RENDERER_SOFTWARE))
     {
-      SDL_SetHint (SDL_HINT_RENDER_DRIVER, render_driver_info_s.name);
+      SDL_SetHint (ACE_TEXT_ALWAYS_CHAR (SDL_HINT_RENDER_DRIVER),
+                   render_driver_info_s.name);
       ACE_DEBUG ((LM_DEBUG,
                   ACE_TEXT ("pre-selecting \"%s\" render driver\n"),
                   ACE_TEXT (render_driver_info_s.name)));
@@ -778,56 +800,74 @@ RPG_Graphics_SDL_Tools::initializeScreen (const struct RPG_Graphics_SDL_VideoCon
   } // end WHILE
 
   // open SDL window
-  Uint32 flags_i = SDL_WINDOW_SHOWN;
+  Uint32 flags_i = 0;//SDL_WINDOW_SHOWN;
   if (configuration_in.use_OpenGL)
     flags_i |= SDL_WINDOW_OPENGL;
-  SDL_Renderer* renderer = NULL;
-  result_2 = SDL_CreateWindowAndRenderer (configuration_in.screen_width,
-                                          configuration_in.screen_height,
-                                          flags_i,
-                                          &result,
-                                          &renderer);
-  if (result_2 < 0)
+
+// #if defined (ACE_WIN32) || defined (ACE_WIN64)
+// #else
+//   SDL_GL_LoadLibrary (NULL);
+
+//   SDL_GL_SetAttribute (SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
+//   SDL_GL_SetAttribute (SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
+// #endif // ACE_WIN32 || ACE_WIN64
+
+  // result_2 = SDL_CreateWindowAndRenderer (configuration_in.screen_width,
+  //                                         configuration_in.screen_height,
+  //                                         flags_i,
+  //                                         &window_out,
+  //                                         &renderer_out);
+  window_out = SDL_CreateWindow (caption_in.c_str (),
+                                 SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                                 configuration_in.screen_width,
+                                 configuration_in.screen_height,
+                                 flags_i);
+  if (!window_out)
+  // if (result_2 < 0)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to SDL_CreateWindowAndRenderer(%d, %d, 0x%x): \"%s\", aborting\n"),
+                //ACE_TEXT ("failed to SDL_CreateWindowAndRenderer(%d, %d, 0x%x): \"%s\", aborting\n"),
+                ACE_TEXT ("failed to SDL_CreateWindow(%d, %d, 0x%x): \"%s\", aborting\n"),
                 configuration_in.screen_width,
                 configuration_in.screen_height,
                 flags_i,
                 ACE_TEXT (SDL_GetError ())));
-    return NULL;
+    return false;
   } // end IF
-  ACE_ASSERT (result && renderer);
+  ACE_ASSERT (window_out);
+  // ACE_ASSERT (window_out && renderer_out);
 
-  SDL_GetRendererInfo (renderer,
-                       &render_driver_info_s);
-  ACE_DEBUG ((LM_DEBUG,
-              ACE_TEXT ("using \"%s\" render driver\n"),
-              ACE_TEXT (render_driver_info_s.name)));
-  SDL_DestroyRenderer (renderer); renderer = NULL;
+  // SDL_GetRendererInfo (renderer_out,
+  //                      &render_driver_info_s);
+  // ACE_DEBUG ((LM_DEBUG,
+  //             ACE_TEXT ("using \"%s\" render driver\n"),
+  //             ACE_TEXT (render_driver_info_s.name)));
 
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-#else
-  SDL_GLContext context_p = SDL_GL_CreateContext (result);
-  if (context_p == NULL)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to SDL_GL_CreateContext(): \"%s\", aborting\n"),
-                ACE_TEXT (SDL_GetError ())));
-    SDL_DestroyWindow (result); result = NULL;
-    return NULL;
-  } // end IF
-  if (SDL_GL_MakeCurrent (result, context_p) != 0)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to SDL_GL_MakeCurrent(): \"%s\", aborting\n"),
-                ACE_TEXT (SDL_GetError ())));
-    SDL_DestroyWindow (result); result = NULL;
-    return NULL;
-  } // end IF
-#endif // ACE_WIN32 || ACE_WIN64
+// #if defined (ACE_WIN32) || defined (ACE_WIN64)
+// #else
+//   GLContext_out = SDL_GL_CreateContext (window_out);
+//   if (GLContext_out == NULL)
+//   {
+//     ACE_DEBUG ((LM_ERROR,
+//                 ACE_TEXT ("failed to SDL_GL_CreateContext(): \"%s\", aborting\n"),
+//                 ACE_TEXT (SDL_GetError ())));
+//     SDL_DestroyRenderer (renderer_out); renderer_out = NULL;
+//     SDL_DestroyWindow (window_out); window_out = NULL;
+//     return false;
+//   } // end IF
+//   if (SDL_GL_MakeCurrent (window_out, GLContext_out) != 0)
+//   {
+//     ACE_DEBUG ((LM_ERROR,
+//                 ACE_TEXT ("failed to SDL_GL_MakeCurrent(): \"%s\", aborting\n"),
+//                 ACE_TEXT (SDL_GetError ())));
+//     SDL_DestroyRenderer (renderer_out); renderer_out = NULL;
+//     SDL_GL_DeleteContext (GLContext_out); GLContext_out = NULL;
+//     SDL_DestroyWindow (window_out); window_out = NULL;
+//     return false;
+//   } // end IF
+// #endif // ACE_WIN32 || ACE_WIN64
 
-  return result;
+  return true;
 }
 #endif // SDL_USE || SDL2_USE
 
