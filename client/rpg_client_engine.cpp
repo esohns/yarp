@@ -464,34 +464,11 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       ACE_ASSERT (parameters_in.entity_id);
       ACE_ASSERT (!parameters_in.positions.empty ());
 
-      client_action.position = *parameters_in.positions.begin ();
-      RPG_Graphics_Positions_t positions;
-      positions.push_back (client_action.position);
-      struct SDL_Rect window_area, map_area;
-      window_->getArea (window_area,
-                        true); // toplevel- ?
-      window_->getArea (map_area,
-                        false); // toplevel- ?
-      RPG_Client_IWindowLevel* window_p =
-        dynamic_cast<RPG_Client_IWindowLevel*> (window_);
-      ACE_ASSERT (window_p);
-      bool is_visible_b =
-        RPG_Client_Common_Tools::isVisible (positions,
-                                            std::make_pair (window_area.w,
-                                                            window_area.h),
-                                            window_p->getView (),
-                                            map_area,
-                                            false); // all
-
-      // step1: erase the sprite ? --> delegate to the engine
+      // step1: erase the sprite --> delegate to the engine
+      client_action.command = COMMAND_ENTITY_REMOVE;
+      client_action.entity_id = parameters_in.entity_id;
       client_action.window = window_;
-      if (is_visible_b)
-      {
-        client_action.command = COMMAND_ENTITY_REMOVE;
-        client_action.entity_id = parameters_in.entity_id;
-
-        action (client_action);
-      } // end IF
+      action (client_action);
 
       // step2: update the minimap ? --> delegate to the engine
       if (lockedAccess_in)
@@ -519,6 +496,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
     case COMMAND_E2C_ENTITY_MISS:
     { ACE_ASSERT (parameters_in.entity_id);
 
+      // step1: play a sound
       client_action.entity_id = parameters_in.entity_id;
       client_action.command = COMMAND_PLAY_SOUND;
       client_action.sound =
@@ -529,6 +507,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
     }
     case COMMAND_E2C_ENTITY_CONDITION:
     {
+      // step1: play a sound
       client_action.command = COMMAND_PLAY_SOUND;
       bool entity_is_down_b = false;
       switch (parameters_in.condition)
@@ -556,6 +535,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
         }
       } // end SWITCH
 
+      // step2: active player down ? --> raise UI and leave game
       if (entity_is_down_b && 
           parameters_in.entity_id == engine_->getActive (true))
       {
@@ -698,7 +678,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
                 engine_->canSee (active_entity_id,
                                  parameters_in.previous_position,
                                  false)) // locked access ?
-              client_action.command = COMMAND_ENTITY_REMOVE;
+              client_action.command = COMMAND_ENTITY_RESTORE_BG;
             else
               do_action = false;
           } // end IF
@@ -765,10 +745,12 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
     case COMMAND_E2C_ENTITY_LEVEL_UP:
     { ACE_ASSERT (parameters_in.subclass != RPG_COMMON_SUBCLASS_INVALID);
 
+      // step1: play a sound
       client_action.command = COMMAND_PLAY_SOUND;
       client_action.sound = EVENT_XP_LEVELUP;
 
-      // raise the UI
+      // step2: raise the UI and notify level-up
+      // step2a: raise the UI
       union SDL_Event sdl_event_u;
       sdl_event_u.type = SDL_KEYDOWN;
       sdl_event_u.key.keysym.sym = SDLK_u;
@@ -777,7 +759,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
                    ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),
                    ACE_TEXT (SDL_GetError ())));
 
-      // notify level up
+      // step2b: notify level up
       sdl_event_u.key.padding2 = parameters_in.subclass;
       sdl_event_u.key.keysym.sym = SDLK_y;
       if (SDL_PushEvent (&sdl_event_u) < 0)
@@ -789,7 +771,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
     }
     case COMMAND_E2C_ENTITY_STATE:
     {
-      // simply update the UI
+      // step1: update the UI
       union SDL_Event sdl_event_u;
       sdl_event_u.type = SDL_KEYDOWN;
       sdl_event_u.key.keysym.sym = SDLK_z;
@@ -797,6 +779,9 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
         ACE_DEBUG ((LM_ERROR,
                    ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),
                    ACE_TEXT (SDL_GetError ())));
+
+      do_action = false;
+
       break;
     }
     case COMMAND_E2C_INIT:
@@ -1031,6 +1016,25 @@ next:
                                                                 dirty_region,            // return value: "dirty" region
                                                                 true,                    // locked access ? (screen-lock)
                                                                 debug_);                 // debug ?
+      try {
+        client_action.window->invalidate (dirty_region);
+      } catch (...) {
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("caught exception in RPG_Graphics_IWindowBase::invalidate(), continuing\n")));
+        goto continue_;
+      }
+
+      break;
+    }
+    case COMMAND_ENTITY_RESTORE_BG:
+    { ACE_ASSERT (client_action.entity_id);
+      ACE_ASSERT (client_action.window);
+
+      RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->restoreBG (client_action.entity_id, // entity ID
+                                                                   dirty_region,            // return value: "dirty" region
+                                                                   true,                    // clip window ?
+                                                                   true,                    // locked access ? (screen-lock)
+                                                                   debug_);                 // debug ?
       try {
         client_action.window->invalidate (dirty_region);
       } catch (...) {
