@@ -612,22 +612,24 @@ RPG_Engine::add (struct RPG_Engine_Entity* entity_in,
 
   // notify AI
   float temp =
-    static_cast<float> (entity_in->character->getSpeed (false,
+    static_cast<float> (entity_in->character->getSpeed (false, // running ?
                                                         inherited2::myMetaData.environment.lighting,
                                                         inherited2::myMetaData.environment.terrain,
                                                         TRACK_NONE));
   temp /= static_cast<float> (RPG_ENGINE_FEET_PER_SQUARE);
-  temp *= RPG_ENGINE_ROUND_INTERVAL;
+  temp *= static_cast<float> (RPG_ENGINE_ROUND_INTERVAL);
   float squares_per_round = temp;
   ACE_ASSERT (squares_per_round != 0.0f);
   squares_per_round = (1.0f / squares_per_round);
   squares_per_round *= static_cast<float> (RPG_ENGINE_SPEED_MODIFIER);
-  float fractional = std::modf (squares_per_round, &squares_per_round);
+  float fractional = std::modf (squares_per_round,
+                                &squares_per_round);
+  ACE_Time_Value schedule_interval (static_cast<time_t> (squares_per_round),
+                                    static_cast<suseconds_t> (fractional * 1000000.0f));
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance ()->add (id,
-                                                        ACE_Time_Value (static_cast<time_t> (squares_per_round),
-                                                                        static_cast<suseconds_t> (fractional * 1000000.0f)));
+                                                        schedule_interval);
 
-  // notify client / window
+  // notify client
   struct RPG_Engine_ClientNotificationParameters parameters;
   parameters.entity_id = id;
   parameters.condition = RPG_COMMON_CONDITION_INVALID;
@@ -2557,24 +2559,29 @@ RPG_Engine::handleEntities ()
           // toggle mode
           bool is_running =
               ((*iterator).second->modes.find (ENTITYMODE_RUNNING) != (*iterator).second->modes.end ());
+          float temp, squares_per_round, fractional;
+          ACE_Time_Value schedule_interval;
           if (is_running)
           {
             // stop running
 
             // notify AI
-            unsigned char temp =
-                (*iterator).second->character->getSpeed (false,
-                                                         inherited2::myMetaData.environment.lighting);
-            temp /= RPG_ENGINE_FEET_PER_SQUARE;
-            temp *= RPG_ENGINE_ROUND_INTERVAL;
-            float squares_per_round = temp;
-            squares_per_round = (1.0F / squares_per_round);
+            temp =
+              static_cast<float> ((*iterator).second->character->getSpeed (false, // running ?
+                                                                           inherited2::myMetaData.environment.lighting,
+                                                                           inherited2::myMetaData.environment.terrain,
+                                                                           TRACK_NONE));
+            temp /= static_cast<float> (RPG_ENGINE_FEET_PER_SQUARE);
+            temp *= static_cast<float> (RPG_ENGINE_ROUND_INTERVAL);
+            squares_per_round = temp;
+            squares_per_round = (1.0f / squares_per_round);
             squares_per_round *= static_cast<float> (RPG_ENGINE_SPEED_MODIFIER);
-            float fractional = std::modf (squares_per_round,
-                                          &squares_per_round);
+            fractional = std::modf (squares_per_round,
+                                    &squares_per_round);
+            schedule_interval.set (static_cast<time_t> (squares_per_round),
+                                   static_cast<suseconds_t> (fractional * 1000000.0f));
             RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance ()->reschedule ((*iterator).first,
-                                                                         ACE_Time_Value (static_cast<time_t> (squares_per_round),
-                                                                                         static_cast<suseconds_t> (fractional * 1000000.0F)));
+                                                                         schedule_interval);
 
             (*iterator).second->modes.erase (ENTITYMODE_RUNNING);
 
@@ -2587,19 +2594,22 @@ RPG_Engine::handleEntities ()
             // start running
 
             // notify AI
-            unsigned char temp =
-              (*iterator).second->character->getSpeed (true,
-                                                       inherited2::myMetaData.environment.lighting);
-            temp /= RPG_ENGINE_FEET_PER_SQUARE;
-            temp *= RPG_ENGINE_ROUND_INTERVAL;
-            float squares_per_round = temp;
-            squares_per_round = 1.0F / squares_per_round;
-            squares_per_round /= static_cast<float> (RPG_ENGINE_SPEED_MODIFIER);
-            float fractional = std::modf (squares_per_round,
-                                          &squares_per_round);
+            temp =
+              static_cast<float> ((*iterator).second->character->getSpeed (true, // running ?
+                                                                           inherited2::myMetaData.environment.lighting,
+                                                                           inherited2::myMetaData.environment.terrain,
+                                                                           TRACK_NONE));
+            temp /= static_cast<float> (RPG_ENGINE_FEET_PER_SQUARE);
+            temp *= static_cast<float> (RPG_ENGINE_ROUND_INTERVAL);
+            squares_per_round = temp;
+            squares_per_round = 1.0f / squares_per_round;
+            squares_per_round *= static_cast<float> (RPG_ENGINE_SPEED_MODIFIER_RUNNING);
+            fractional = std::modf (squares_per_round,
+                                    &squares_per_round);
+            schedule_interval.set (static_cast<time_t> (squares_per_round),
+                                   static_cast<suseconds_t> (fractional * 1000000.0f));
             RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance ()->reschedule ((*iterator).first,
-                                                                         ACE_Time_Value (static_cast<time_t> (squares_per_round),
-                                                                                         static_cast<suseconds_t> (fractional * 1000000.0F)));
+                                                                         schedule_interval);
 
             (*iterator).second->modes.insert (ENTITYMODE_RUNNING);
 
@@ -2613,14 +2623,18 @@ RPG_Engine::handleEntities ()
           parameters.message.clear ();
 
           ACE_DEBUG ((LM_DEBUG,
-                      ACE_TEXT ("\"%s\" %s running...\n"),
+                      ACE_TEXT ("\"%s\" %s running (schedule interval: %#T)...\n"),
                       ACE_TEXT ((*iterator).second->character->getName ().c_str ()),
-                      (is_running ? ACE_TEXT ("stopped") : ACE_TEXT ("started"))));
+                      (is_running ? ACE_TEXT ("stopped") : ACE_TEXT ("started")),
+                      &schedule_interval));
 
           break;
         }
         case COMMAND_SEARCH:
         {
+          parameters.entity_id = (*iterator).first;
+          parameters.message += (*iterator).second->character->getName ();
+
           // toggle mode
           bool is_searching =
               ((*iterator).second->modes.find (ENTITYMODE_SEARCHING) != (*iterator).second->modes.end ());
@@ -2628,12 +2642,22 @@ RPG_Engine::handleEntities ()
           {
             // stop searching
             (*iterator).second->modes.erase (ENTITYMODE_SEARCHING);
+
+            // notify client
+            parameters.message += ACE_TEXT_ALWAYS_CHAR (" stopped searching");
           } // end IF
           else
           {
             // start searching
             (*iterator).second->modes.insert (ENTITYMODE_SEARCHING);
+
+            // notify client
+            parameters.message += ACE_TEXT_ALWAYS_CHAR (" started searching");
           } // end ELSE
+          notifications.push_back (std::make_pair (COMMAND_E2C_MESSAGE,
+                                                   parameters));
+          parameters.entity_id = 0;
+          parameters.message.clear ();
 
           ACE_DEBUG ((LM_DEBUG,
                       ACE_TEXT ("\"%s\" %s searching...\n"),
@@ -2659,12 +2683,11 @@ RPG_Engine::handleEntities ()
               ACE_ASSERT ((*iterator).second->actions.front ().command == COMMAND_TRAVEL);
             } // end IF
 
-            action_complete = true;
-
             break;
           } // end IF
 
           // OK: take a step...
+          parameters.previous_position = (*iterator).second->position;
           (*iterator).second->position = current_action.position;
 
           // step1: entity has moved, update seen positions
@@ -2678,11 +2701,10 @@ RPG_Engine::handleEntities ()
           (*iterator_2).second.insert (positions.begin (),
                                        positions.end ());
 
-          // notify client window
+          // step2: notify client window
           parameters.entity_id = (*iterator).first;
           parameters.condition = RPG_COMMON_CONDITION_INVALID;
           parameters.positions.insert (current_action.position);
-          parameters.previous_position = (*iterator).second->position;
           notifications.push_back (std::make_pair (COMMAND_E2C_ENTITY_POSITION,
                                                    parameters));
 
@@ -2757,7 +2779,7 @@ RPG_Engine::handleEntities ()
                        true); // locked access ?
     } catch (...) {
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("caught exception in RPG_Engine_IWindow::notify(\"%s\"), continuing\n"),
+                  ACE_TEXT ("caught exception in RPG_Engine_IClient::notify(\"%s\"), continuing\n"),
                   ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString ((*iterator).first).c_str ())));
     }
   } // end FOR

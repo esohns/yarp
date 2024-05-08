@@ -78,7 +78,7 @@ class RPG_Engine_Event_Manager
   // implement Common_IControl
   virtual void start ();
   virtual void stop (bool = true); // locked access ?
-  inline virtual bool isRunning () const { return (inherited::thr_count () > 0); }
+  inline virtual bool isRunning () const { return (inherited::thr_count_ > 0); }
 
   // implement RPG_Common_IDumpState
   virtual void dump_state () const;
@@ -110,11 +110,11 @@ class RPG_Engine_Event_Manager
   typedef RPG_Engine_EntityTimers_t::const_iterator RPG_Engine_EntityTimersConstIterator_t;
 
   // helper classes
-  struct monster_remove
+  struct entity_remove
   {
     RPG_Engine* engine;
     bool        locked_access;
-    bool        remove_monsters;
+    bool        remove_monsters; // ? : remove players
 
     bool operator() (const RPG_Engine_EntityID_t&);
   };

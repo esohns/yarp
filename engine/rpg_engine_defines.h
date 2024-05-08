@@ -31,7 +31,9 @@
 #define RPG_ENGINE_MAX_QUEUE_SLOTS                  10000
 //#define RPG_ENGINE_EVENT_PEEK_INTERVAL      50 // ms
 
-#define RPG_ENGINE_SPEED_MODIFIER                   10 // --> 1/10 speed <==> normal
+// *IMPORTANT NOTE*: lower speed modifier --> less delay --> higher speed
+#define RPG_ENGINE_SPEED_MODIFIER                   10 // --> 1/10 speed <=> normal speed
+#define RPG_ENGINE_SPEED_MODIFIER_RUNNING           3
 #define RPG_ENGINE_ROUND_INTERVAL                   6 // s
 #define RPG_ENGINE_FEET_PER_SQUARE                  5
 
