@@ -126,6 +126,13 @@ class RPG_Engine_Event_Manager
 
     bool operator() (const RPG_Engine_EntityID_t&);
   };
+  struct disabled_remove
+  {
+    RPG_Engine* engine;
+    bool        locked_access;
+
+    bool operator() (const RPG_Engine_EntityID_t&);
+  };
 
   ACE_SYNCH_MUTEX           myLock;
   ACE_Time_Value            myGameClockStart;

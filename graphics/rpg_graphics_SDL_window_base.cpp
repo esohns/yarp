@@ -35,12 +35,13 @@
 RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase (enum RPG_Graphics_WindowType type_in,
                                                         const RPG_Graphics_Size_t& size_in,
                                                         const std::string& title_in)
+ : lock_ (NULL, NULL)
 #if defined (SDL2_USE)
- : renderer_ (NULL)
+ , renderer_ (NULL)
  , screen_ (NULL)
  , GLContext_ (NULL)
 #elif defined (SDL_USE)
- : screen_ (NULL)
+ , screen_ (NULL)
 #endif // SDL2_USE || SDL_USE
  , screenLock_ (NULL)
  , borderTop_ (0)
@@ -165,6 +166,9 @@ RPG_Graphics_SDLWindowBase::getDirty () const
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::getDirty"));
 
   struct SDL_Rect result = {0, 0, 0, 0};
+
+  ACE_GUARD_RETURN (ACE_Thread_Mutex, aGuard, lock_ , result);
+
   for (RPG_Graphics_InvalidRegionsConstIterator_t iterator = invalidRegions_.begin ();
        iterator != invalidRegions_.end ();
        ++iterator)
@@ -179,7 +183,9 @@ RPG_Graphics_SDLWindowBase::clean ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::clean"));
 
-  invalidRegions_.clear ();
+  { ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);
+    invalidRegions_.clear ();
+  } // end lock scope
 
   // recurse into any children
   RPG_Graphics_SDLWindowBase* window_p = NULL;
@@ -284,6 +290,8 @@ void
 RPG_Graphics_SDLWindowBase::invalidate (const struct SDL_Rect& rect_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_SDLWindowBase::invalidate"));
+
+  ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);
 
   if ((rect_in.x == 0) && (rect_in.y == 0) &&
       (rect_in.w == 0) && (rect_in.h == 0))

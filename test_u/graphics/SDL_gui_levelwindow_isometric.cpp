@@ -21,6 +21,7 @@
 
 #include "SDL_gui_levelwindow_isometric.h"
 
+#include <algorithm>
 #include <sstream>
 
 #include "ace/Log_Msg.h"
@@ -367,17 +368,18 @@ SDL_GUI_LevelWindow_Isometric::draw (SDL_Surface* targetSurface_in,
   RPG_Map_Positions_t visible_positions;
   RPG_Map_PositionsConstIterator_t visible_iterator =
       visible_positions.end ();
-  RPG_Engine_SeenPositionsConstIterator_t has_seen_iterator =
-      myState->seen_positions.end ();
-  RPG_Map_PositionsConstIterator_t has_seen_iterator_2;
+  //RPG_Engine_SeenPositionsConstIterator_t has_seen_iterator =
+  //    myState->seen_positions.end ();
+  //RPG_Map_PositionsConstIterator_t has_seen_iterator_2;
   myState->lock.acquire ();
+  bool has_seen_current_position_b = false;
   if (active_entity_id)
   {
     myEngine->getVisiblePositions (active_entity_id,
                                    visible_positions,
                                    false); // locked access ?
-    has_seen_iterator = myState->seen_positions.find (active_entity_id);
-    ACE_ASSERT (has_seen_iterator != myState->seen_positions.end ());
+    //has_seen_iterator = myState->seen_positions.find (active_entity_id);
+    //ACE_ASSERT (has_seen_iterator != myState->seen_positions.end ());
   } // end IF
 //  float blend_factor = 1.0F;
 
@@ -454,12 +456,17 @@ SDL_GUI_LevelWindow_Isometric::draw (SDL_Surface* targetSurface_in,
       if (active_entity_id &&
           !myState->debug)
       {
+        has_seen_current_position_b = myEngine->hasSeen (active_entity_id,
+                                                         current_map_position,
+                                                         false);
+
         visible_iterator = visible_positions.find (current_map_position);
         if (visible_iterator == visible_positions.end ())
         {
-          ACE_ASSERT (has_seen_iterator != myState->seen_positions.end ());
-          has_seen_iterator_2 = (*has_seen_iterator).second.find (current_map_position);
-          if (has_seen_iterator_2 == (*has_seen_iterator).second.end ())
+          //ACE_ASSERT (has_seen_iterator != myState->seen_positions.end ());
+          //has_seen_iterator_2 = (*has_seen_iterator).second.find (current_map_position);
+          //if (has_seen_iterator_2 == (*has_seen_iterator).second.end ())
+          if (!has_seen_current_position_b)
             continue; // --> player cannot see (and hasn't yet seen) this tile
 //          else
 //            blend_factor = RPG_GRAPHICS_TILE_PREVSEEN_DEF_OPACITY;
@@ -737,12 +744,17 @@ SDL_GUI_LevelWindow_Isometric::draw (SDL_Surface* targetSurface_in,
       if (active_entity_id &&
           !myState->debug)
       {
+        has_seen_current_position_b = myEngine->hasSeen (active_entity_id,
+                                                         current_map_position,
+                                                         false);
+
         visible_iterator = visible_positions.find (current_map_position);
         if (visible_iterator == visible_positions.end ())
         {
-          ACE_ASSERT (has_seen_iterator != myState->seen_positions.end ());
-          has_seen_iterator_2 = (*has_seen_iterator).second.find (current_map_position);
-          if (has_seen_iterator_2 == (*has_seen_iterator).second.end ())
+          //ACE_ASSERT (has_seen_iterator != myState->seen_positions.end ());
+          //has_seen_iterator_2 = (*has_seen_iterator).second.find (current_map_position);
+          //if (has_seen_iterator_2 == (*has_seen_iterator).second.end ())
+          if (!has_seen_current_position_b)
             continue; // --> player cannot see (and hasn't yet seen) this tile
 //          else
 //            blend_factor = RPG_GRAPHICS_TILE_PREVSEEN_DEF_OPACITY;
@@ -1321,16 +1333,17 @@ SDL_GUI_LevelWindow_Isometric::handleEvent (const SDL_Event& event_in,
           } // end SWITCH
 
           // toggle
-          bool set_cursor = true;
-          bool has_seen = hasSeen (entity_id,
-                                   map_position);
+          bool set_cursor_b = true;
+          bool has_seen_b = myEngine->hasSeen (entity_id,
+                                               map_position,
+                                               true); // locked access ?
           if (switch_on)
           {
             // draw path ?
             if (myState->selection_mode == SELECTIONMODE_PATH)
             {
               // --> push fake mouse - move event
-              SDL_Event sdl_event;
+              union SDL_Event sdl_event;
               sdl_event.type = SDL_MOUSEMOTION;
               sdl_event.motion.which = std::numeric_limits<unsigned char>::max (); // flag as fake
               sdl_event.motion.x = cursor_position.first;
@@ -1340,7 +1353,7 @@ SDL_GUI_LevelWindow_Isometric::handleEvent (const SDL_Event& event_in,
                             ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),
                             ACE_TEXT (SDL_GetError ())));
 
-              set_cursor = false; // done during the mouse-move
+              set_cursor_b = false; // done during the mouse-move
             } // end IF
           } // end IF
           else
@@ -1353,7 +1366,7 @@ SDL_GUI_LevelWindow_Isometric::handleEvent (const SDL_Event& event_in,
                                                                                     myState->debug);
             //RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance()->resetHighlightBG(map_position);
             if (is_valid &&
-                has_seen)
+                has_seen_b)
             {
               RPG_Graphics_Offsets_t screen_positions;
               screen_positions.push_back (RPG_Graphics_Common_Tools::mapToScreen (map_position,
@@ -1372,13 +1385,13 @@ SDL_GUI_LevelWindow_Isometric::handleEvent (const SDL_Event& event_in,
             } // end IF
           } // end ELSE
 
-          if (set_cursor)
+          if (set_cursor_b)
           {
             // set an appropriate cursor
             enum RPG_Graphics_Cursor cursor_type =
               RPG_Client_Common_Tools::getCursor (map_position,
                                                   entity_id,
-                                                  has_seen,
+                                                  has_seen_b,
                                                   myState->selection_mode,
                                                   *myEngine,
                                                   false);
@@ -1446,7 +1459,7 @@ SDL_GUI_LevelWindow_Isometric::handleEvent (const SDL_Event& event_in,
       RPG_Map_Positions_t positions;
       RPG_Graphics_Offsets_t screen_positions;
       bool toggle_on = false;
-      bool has_seen = false;
+      bool has_seen_b;
       bool done = false;
 
       // step0: find map square
@@ -1468,8 +1481,9 @@ SDL_GUI_LevelWindow_Isometric::handleEvent (const SDL_Event& event_in,
 
       // step0a: bail-out-fast tests
       entity_id = myEngine->getActive (false); // locked access ?
-      has_seen = hasSeen (entity_id,
-                          map_position);
+      has_seen_b = myEngine->hasSeen (entity_id,
+                                      map_position,
+                                      false); // locked access ?
       // inside map ?
       //if (map_position ==
       //    std::make_pair(std::numeric_limits<unsigned int>::max(),
@@ -1579,9 +1593,10 @@ SDL_GUI_LevelWindow_Isometric::handleEvent (const SDL_Event& event_in,
             {
               // step1: build path ?
               RPG_Engine_EntityID_t entity_id = myEngine->getActive (false); // locked access ?
-              if (!entity_id            ||
-                  !hasSeen (entity_id,
-                            map_position))
+              if (!entity_id ||
+                  !myEngine->hasSeen (entity_id,
+                                      map_position,
+                                      false)) // locked access ?
               {
                 toggle_on = false; // --> remove highlights
 
@@ -1695,7 +1710,7 @@ set_cursor:
       enum RPG_Graphics_Cursor cursor_type =
         RPG_Client_Common_Tools::getCursor (map_position,
                                             entity_id,
-                                            has_seen,
+                                            has_seen_b,
                                             myState->selection_mode,
                                             *myEngine,
                                             false); // locked access ?
@@ -1744,9 +1759,10 @@ set_cursor:
         {
           RPG_Engine_EntityID_t entity_id =
             myEngine->getActive (false); // locked access ?
-          if ((entity_id == 0) ||
-              !hasSeen (entity_id,
-                        map_position))
+          if (!entity_id ||
+              !myEngine->hasSeen (entity_id,
+                                  map_position,
+                                  false)) // locked access ?
             break; // --> no player/vision, no action...
 
           struct RPG_Engine_Action player_action;
@@ -2186,16 +2202,16 @@ SDL_GUI_LevelWindow_Isometric::notify (enum RPG_Engine_Command command_in,
       } // end IF
 
       // initialize vision cache
-      RPG_Map_Positions_t seen_positions;
-      myEngine->getVisiblePositions (parameters_in.entity_id,
-                                     seen_positions,
-                                     false); // locked access ?
+      //RPG_Map_Positions_t seen_positions;
+      //myEngine->getVisiblePositions (parameters_in.entity_id,
+      //                               seen_positions,
+      //                               false); // locked access ?
       if (lockedAccess_in)
         myEngine->unlock ();
-      { ACE_GUARD (ACE_Thread_Mutex, aGuard, myState->lock);
-        ACE_ASSERT (myState->seen_positions.find (parameters_in.entity_id) == myState->seen_positions.end ());
-        myState->seen_positions[parameters_in.entity_id] = seen_positions;
-      } // end lock scope
+      //{ ACE_GUARD (ACE_Thread_Mutex, aGuard, myState->lock);
+      //  ACE_ASSERT (myState->seen_positions.find (parameters_in.entity_id) == myState->seen_positions.end ());
+      //  myState->seen_positions[parameters_in.entity_id] = seen_positions;
+      //} // end lock scope
 
       update_minimap = true;
 
@@ -2207,27 +2223,15 @@ SDL_GUI_LevelWindow_Isometric::notify (enum RPG_Engine_Command command_in,
       return;
     case COMMAND_E2C_ENTITY_POSITION:
     {
-      // step1: entity has moved, update seen positions
-      RPG_Map_Positions_t seen_positions;
-      myEngine->getVisiblePositions (parameters_in.entity_id,
-                                     seen_positions,
-                                     true); // locked access ?
-      { ACE_GUARD (ACE_Thread_Mutex, aGuard, myState->lock);
-        RPG_Engine_SeenPositionsIterator_t iterator =
-          myState->seen_positions.find (parameters_in.entity_id);
-        ACE_ASSERT (iterator != myState->seen_positions.end ()); // *BUG* here
-        (*iterator).second.insert (seen_positions.begin (),
-                                   seen_positions.end ());
-      } // end lock scope
-
-      // draw sprite ?
       struct SDL_Rect window_area, map_area;
       inherited::getArea (window_area,
                           true); // toplevel- ?
       inherited::getArea (map_area,
                           false); // toplevel- ?
-      bool remove = false;
       RPG_Graphics_Positions_t positions;
+      bool redraw_cursor_b = false;
+ 
+      // draw sprite ?
       positions.push_back (*parameters_in.positions.begin ());
       if (RPG_Client_Common_Tools::isVisible (positions,
                                               std::make_pair (window_area.w,
@@ -2239,8 +2243,9 @@ SDL_GUI_LevelWindow_Isometric::notify (enum RPG_Engine_Command command_in,
         if (lockedAccess_in)
           myEngine->lock ();
         RPG_Engine_EntityID_t active_entity_id = myEngine->getActive (false); // locked access ?
-        if ((active_entity_id == parameters_in.entity_id) ||
-            (active_entity_id &&
+        if ((active_entity_id == parameters_in.entity_id) || // --> redraw player ?
+            (active_entity_id &&                             // --> redraw monster ?
+             //(active_entity_id != parameters_in.entity_id) &&
              myEngine->canSee (active_entity_id,
                                parameters_in.entity_id,
                                false))                    || // locked access ?
@@ -2256,26 +2261,21 @@ SDL_GUI_LevelWindow_Isometric::notify (enum RPG_Engine_Command command_in,
                                                                  false, // locked access ?
                                                                  myState->debug);
           inherited::invalidate (dirty_region);
-          redrawCursor (RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->position (false), // highlight- ?
-                        false,
-                        true);
-          update_parent = true;
+          redraw_cursor_b = true;
         } // end IF
         if (lockedAccess_in)
           myEngine->unlock ();
       } // end IF
       else
-      { // iff the previous position was visible, remove sprite
+      { // iff the previous position is visible, remove sprite
         positions.clear ();
         positions.push_back (parameters_in.previous_position);
-        remove =
-            RPG_Client_Common_Tools::isVisible (positions,
+        if (RPG_Client_Common_Tools::isVisible (positions,
                                                 std::make_pair (window_area.w,
                                                                 window_area.h),
                                                 myView,
                                                 map_area,
-                                                false); // all
-        if (remove)
+                                                false)) // all
         {
           RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->restoreBG (parameters_in.entity_id,
                                                                        dirty_region,
@@ -2283,26 +2283,31 @@ SDL_GUI_LevelWindow_Isometric::notify (enum RPG_Engine_Command command_in,
                                                                        true, // locked access ?
                                                                        myState->debug);
           inherited::invalidate (dirty_region);
-          redrawCursor (RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->position (false), // highlight- ?
-                        true,
-                        true); // locked access ?
-
-          update_parent = true;
+          redraw_cursor_b = true;
         } // end IF
       } // end ELSE
 
       update_minimap = true;
 
+      if (redraw_cursor_b)
+      {
+        redrawCursor (RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->position (false), // highlight- ?
+                      false,                                                                // update BG cache first ?
+                      true);                                                                // locked access ?
+        update_parent = true;
+      } // end IF
+
       break;
     }
     case COMMAND_E2C_ENTITY_REMOVE:
     {
-      // remove sprite ?
       struct SDL_Rect window_area, map_area;
       inherited::getArea (window_area,
                           true); // toplevel- ?
       inherited::getArea (map_area,
                           false); // toplevel- ?
+
+      // remove sprite ?
       RPG_Graphics_Positions_t positions;
       positions.push_back (*parameters_in.positions.begin ());
       if (RPG_Client_Common_Tools::isVisible (positions,
@@ -2323,45 +2328,30 @@ SDL_GUI_LevelWindow_Isometric::notify (enum RPG_Engine_Command command_in,
         update_parent = true;
       } // end IF
 
-      // update vision cache
-      RPG_Engine_SeenPositionsIterator_t iterator;
-      { ACE_GUARD (ACE_Thread_Mutex, aGuard, myState->lock);
-        iterator = myState->seen_positions.find (parameters_in.entity_id);
-        ACE_ASSERT (iterator != myState->seen_positions.end ());
-        myState->seen_positions.erase (iterator);
-      } // end lock scope
+      //// update vision cache
+      //RPG_Engine_SeenPositionsIterator_t iterator;
+      //{ ACE_GUARD (ACE_Thread_Mutex, aGuard, myState->lock);
+      //  iterator = myState->seen_positions.find (parameters_in.entity_id);
+      //  ACE_ASSERT (iterator != myState->seen_positions.end ());
+      //  myState->seen_positions.erase (iterator);
+      //} // end lock scope
 
       update_minimap = true;
 
       break;
     }
     case COMMAND_E2C_ENTITY_VISION:
-    {
-      // update vision cache
-      RPG_Graphics_Positions_t new_positions (parameters_in.positions.size());
-      RPG_Graphics_PositionsIterator_t difference_end;
-      RPG_Engine_SeenPositionsIterator_t iterator;
-      { ACE_GUARD (ACE_Thread_Mutex, aGuard, myState->lock);
-        iterator = myState->seen_positions.find (parameters_in.entity_id);
-        ACE_ASSERT (iterator != myState->seen_positions.end ());
-        difference_end = std::set_difference (parameters_in.positions.begin (),
-                                              parameters_in.positions.end (),
-                                              (*iterator).second.begin (),
-                                              (*iterator).second.end (),
-                                              new_positions.begin ());
-        new_positions.erase (difference_end, new_positions.end ());
-        (*iterator).second.insert (parameters_in.positions.begin (),
-                                   parameters_in.positions.end ());
-      } // end lock scope
+    { ACE_ASSERT (!parameters_in.positions.empty ());
 
       struct SDL_Rect window_area, map_area;
       inherited::getArea (window_area,
                           true); // toplevel- ?
       inherited::getArea (map_area,
                           false); // toplevel- ?
-      if (RPG_Client_Common_Tools::isVisible (new_positions,
-                                              std::make_pair(window_area.w,
-                                                             window_area.h),
+
+      if (RPG_Client_Common_Tools::isVisible (RPG_Client_Common_Tools::mapToGraphicsPositions (parameters_in.positions),
+                                              std::make_pair (window_area.w,
+                                                              window_area.h),
                                               myView,
                                               map_area,
                                               true) && // any
@@ -2369,9 +2359,9 @@ SDL_GUI_LevelWindow_Isometric::notify (enum RPG_Engine_Command command_in,
       {
         draw (NULL,
               0, 0);
-        redrawCursor (RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->position (false),
-                      true,
-                      true); // locked access ?
+        redrawCursor (RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->position (false), // highlight position ?
+                      false,                                                                // update BG cache first ?
+                      true);                                                                // locked access ?
         update_parent = true;
       } // end IF
 
@@ -2525,6 +2515,7 @@ SDL_GUI_LevelWindow_Isometric::redrawCursor (const RPG_Graphics_Position_t& posi
   struct SDL_Rect window_area, dirty_region = {0, 0, 0, 0}, dirty_region_2 = {0, 0, 0, 0};
   inherited::getArea (window_area,
                       true); // toplevel- ?
+
   if (lockedAccess_in)
     myEngine->lock ();
   RPG_Map_Size_t map_size = myEngine->getSize (false); // locked access ?
@@ -2540,6 +2531,7 @@ SDL_GUI_LevelWindow_Isometric::redrawCursor (const RPG_Graphics_Position_t& posi
                          (myState->selection_mode == SELECTIONMODE_NORMAL));
   if (lockedAccess_in)
     myEngine->unlock ();
+
   if (updateBGCacheFirst_in)
   {
     RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->updateHighlightBG (position_in,
@@ -2554,6 +2546,7 @@ SDL_GUI_LevelWindow_Isometric::redrawCursor (const RPG_Graphics_Position_t& posi
     dirty_region_2 = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
                                                           dirty_region_2);
   } // end IF
+
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->put (position_in,
                                                            myView,
                                                            map_size,
@@ -2561,18 +2554,19 @@ SDL_GUI_LevelWindow_Isometric::redrawCursor (const RPG_Graphics_Position_t& posi
                                                            draw_highlight,
                                                            true, // locked access ?
                                                            myState->debug);
+
   dirty_region = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
                                                       dirty_region_2);
   RPG_Graphics_IWindowBase* parent = inherited::getParent ();
-  if (!parent)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Graphics_SDLWindowBase::getParent(), returning\n")));
-    return;
-  } // end IF
+  ACE_ASSERT (parent);
+  //if (!parent)
+  //{
+  //  ACE_DEBUG ((LM_ERROR,
+  //              ACE_TEXT ("failed to RPG_Graphics_SDLWindowBase::getParent(), returning\n")));
+  //  return;
+  //} // end IF
   try {
     parent->invalidate (dirty_region);
-    //parent->update(NULL);
   } catch (...) {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("caught exception in RPG_Graphics_IWindowBase::invalidate(), continuing\n")));
@@ -2979,18 +2973,18 @@ SDL_GUI_LevelWindow_Isometric::initMiniMap (RPG_Engine* engine_in)
 //  minimap_window->init(inherited::screenLock_);
 }
 
-bool
-SDL_GUI_LevelWindow_Isometric::hasSeen (const RPG_Engine_EntityID_t& id_in,
-                                        const RPG_Map_Position_t& position_in) const
-{
-  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_Isometric::hasSeen"));
-
-  RPG_Engine_SeenPositionsConstIterator_t iterator =
-    myState->seen_positions.find (id_in);
-  if (iterator == myState->seen_positions.end ())
-    return false;
-
-  RPG_Map_PositionsConstIterator_t iterator2 =
-    (*iterator).second.find (position_in);
-  return (iterator2 != (*iterator).second.end ());
-}
+//bool
+//SDL_GUI_LevelWindow_Isometric::hasSeen (const RPG_Engine_EntityID_t& id_in,
+//                                        const RPG_Map_Position_t& position_in) const
+//{
+//  RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_Isometric::hasSeen"));
+//
+//  RPG_Engine_SeenPositionsConstIterator_t iterator =
+//    myState->seen_positions.find (id_in);
+//  if (iterator == myState->seen_positions.end ())
+//    return false;
+//
+//  RPG_Map_PositionsConstIterator_t iterator2 =
+//    (*iterator).second.find (position_in);
+//  return (iterator2 != (*iterator).second.end ());
+//}

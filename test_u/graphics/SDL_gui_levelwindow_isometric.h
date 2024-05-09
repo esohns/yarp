@@ -119,8 +119,8 @@ class SDL_GUI_LevelWindow_Isometric
   typedef std::pair<int, int> RPG_Position_t;
 
   // helper methods
-  bool hasSeen (const RPG_Engine_EntityID_t&,
-                const RPG_Map_Position_t&) const;
+  //bool hasSeen (const RPG_Engine_EntityID_t&,
+  //              const RPG_Map_Position_t&) const;
   void redrawCursor (const RPG_Graphics_Position_t& = RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->position (false), // screen position
                      bool = true,                   // update bg cache first ?
                      bool = true);                  // locked access (engine) ?

@@ -28,6 +28,7 @@
 #include "SDL.h"
 
 #include "ace/Global_Macros.h"
+#include "ace/Thread_Mutex.h"
 
 #include "common_ilock.h"
 
@@ -113,7 +114,9 @@ class RPG_Graphics_SDLWindowBase
   // implement (part of) RPG_Graphics_IWindowBase
   virtual void refresh (SDL_Surface* = NULL); // target surface (default: screen)
 
-  // default screen
+  // *IMPORTANT NOTE*: mostly protects invalidRegions_ from concurrent access
+  mutable ACE_Thread_Mutex      lock_;
+
 #if defined (SDL_USE)
   SDL_Surface*                  screen_;
 #elif defined (SDL2_USE)

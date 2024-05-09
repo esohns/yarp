@@ -656,10 +656,15 @@ RPG_Engine_Event_Manager::handleEvent (const struct RPG_Engine_Event& event_in)
              event_in.entity_id}; // entity id
           possible_targets.remove_if (invisible_remove_s);
 
+          // step5: remove disabled characters
+          struct disabled_remove disabled_remove_s = {myEngine, // engine handle
+                                                      false};   // locked access ?
+          possible_targets.remove_if (disabled_remove_s);
+
           if (possible_targets.empty ())
           {
-            //ACE_DEBUG((LM_DEBUG,
-            //           ACE_TEXT("no target, continuing\n")));
+            //ACE_DEBUG ((LM_DEBUG,
+            //            ACE_TEXT ("no target, continuing\n")));
 
             // --> no active player(s), amble about...
             next_action.command = COMMAND_IDLE;
@@ -887,7 +892,9 @@ RPG_Engine_Event_Manager::handleEvent (const struct RPG_Engine_Event& event_in)
         default:
         {
           // the engine executes these...
-          myEngine->msg_queue ()->pulse ();
+          ACE_DEFAULT_MESSAGE_QUEUE_TYPE* msg_queue_p = myEngine->msg_queue ();
+          ACE_ASSERT (msg_queue_p);
+          msg_queue_p->pulse ();
 
           break;
         }
@@ -1085,5 +1092,17 @@ RPG_Engine_Event_Manager::invisible_remove::operator() (const RPG_Engine_EntityI
 
   return !engine->canSee (entity_id,
                           id_in,
+                          locked_access);
+}
+
+bool
+RPG_Engine_Event_Manager::disabled_remove::operator() (const RPG_Engine_EntityID_t& id_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Engine_Event_Manager::disabled_remove::operator()"));
+
+  // sanity check(s)
+  ACE_ASSERT (engine);
+
+  return !engine->isAble (id_in,
                           locked_access);
 }

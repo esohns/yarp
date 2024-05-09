@@ -237,16 +237,17 @@ SDL_GUI_MinimapWindow::draw (SDL_Surface* targetSurface_in,
   active_entity_id = myEngine->getActive (false);  // locked access ?
   RPG_Map_Positions_t visible_positions;
   RPG_Map_PositionsConstIterator_t visible_iterator;
-  RPG_Engine_SeenPositionsConstIterator_t has_seen_iterator =
-    myState->seen_positions.end ();
-  RPG_Map_PositionsConstIterator_t has_seen_iterator_2;
-  myState->lock.acquire ();
+  //RPG_Engine_SeenPositionsConstIterator_t has_seen_iterator =
+  //  myState->seen_positions.end ();
+  //RPG_Map_PositionsConstIterator_t has_seen_iterator_2;
+  //myState->lock.acquire ();
+  bool has_active_entity_seen_b = false;
   if (active_entity_id)
   {
     myEngine->getVisiblePositions (active_entity_id,
                                    visible_positions,
                                    false); // locked access ?
-    has_seen_iterator = myState->seen_positions.find (active_entity_id);
+    //has_seen_iterator = myState->seen_positions.find (active_entity_id);
   } // end IF
   enum RPG_Map_Element map_element;
   for (unsigned int y = 0;
@@ -256,8 +257,14 @@ SDL_GUI_MinimapWindow::draw (SDL_Surface* targetSurface_in,
          x < size.first;
          x++)
     {
-      // step1: retrieve appropriate symbol
       map_position = std::make_pair (x, y);
+
+      if (active_entity_id)
+        has_active_entity_seen_b = myEngine->hasSeen (active_entity_id,
+                                                      map_position,
+                                                      false); // locked access ?
+
+      // step1: retrieve appropriate symbol
       tile = RPG_CLIENT_MINIMAPTILE_INVALID;
       entity_id = myEngine->hasEntity (map_position,
                                        false); // locked access ?
@@ -331,13 +338,14 @@ SDL_GUI_MinimapWindow::draw (SDL_Surface* targetSurface_in,
       {
         // handle vision
         visible_iterator = visible_positions.find (map_position);
-        if ((visible_iterator == visible_positions.end ()) &&
-            (has_seen_iterator != myState->seen_positions.end ()) &&
+        if ((visible_iterator == visible_positions.end ()) && // --> position not currently visible
+            //(has_seen_iterator != myState->seen_positions.end ()) &&
             !myState->debug)
         {
           // seen previously ?
-          has_seen_iterator_2 = (*has_seen_iterator).second.find (map_position);
-          if (has_seen_iterator_2 == (*has_seen_iterator).second.end ())
+          //has_seen_iterator_2 = (*has_seen_iterator).second.find (map_position);
+          //if (has_seen_iterator_2 == (*has_seen_iterator).second.end ())
+          if (!has_active_entity_seen_b)
             color_name = RPG_CLIENT_MINIMAPCOLOR_UNMAPPED;
           else
             blend_factor = RPG_GRAPHICS_TILE_PREVSEEN_DEF_OPACITY;
@@ -370,7 +378,7 @@ SDL_GUI_MinimapWindow::draw (SDL_Surface* targetSurface_in,
       pixels[1] = color;
       pixels[2] = color;
     } // end FOR
-  myState->lock.release();
+  //myState->lock.release();
   myEngine->unlock ();
   if (SDL_MUSTLOCK (mySurface))
     SDL_UnlockSurface (mySurface);

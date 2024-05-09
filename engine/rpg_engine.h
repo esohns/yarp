@@ -122,8 +122,11 @@ class RPG_Engine
                   bool = true) const;    // locked access ?
   std::string getName (RPG_Engine_EntityID_t, // id
                        bool = true) const;    // locked access ?
-  RPG_Character_Class getClass (RPG_Engine_EntityID_t, // id
-                                bool = true) const;    // locked access ?
+  struct RPG_Character_Class getClass (RPG_Engine_EntityID_t, // id
+                                       bool = true) const;    // locked access ?
+  // *NOTE*: maps to RPG_Player_Base::hasCondition (CONDITION_NORMAL), i.e. HP > 0
+  bool isAble (RPG_Engine_EntityID_t,                         // id
+               bool = true) const;                            // locked access ?
   unsigned int numSpawned (const std::string&, // type (empty: total)
                            bool = true) const; // locked access ?
 
@@ -139,6 +142,7 @@ class RPG_Engine
   bool canSee (RPG_Engine_EntityID_t, // id
                RPG_Engine_EntityID_t, // target id
                bool = true) const;    // locked access ?
+  const RPG_Map_Positions_t& getSeen (RPG_Engine_EntityID_t);
   bool hasSeen (RPG_Engine_EntityID_t,     // id
                 const RPG_Map_Position_t&, // position
                 bool = true) const;        // locked access ?

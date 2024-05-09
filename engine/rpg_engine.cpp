@@ -650,6 +650,9 @@ RPG_Engine::add (struct RPG_Engine_Entity* entity_in,
 
   if (entity_in->character->isPlayerCharacter ())
   {
+    setActive (id,
+               true); // locked access ?
+
     parameters.positions = visible_positions;
     parameters.visible_radius = getVisibleRadius (id,
                                                   lockedAccess_in);
@@ -686,34 +689,20 @@ RPG_Engine::remove (RPG_Engine_EntityID_t id_in,
     lock_.acquire ();
 
   RPG_Engine_EntitiesIterator_t iterator = entities_.find (id_in);
-  if (iterator == entities_.end ())
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("invalid entity ID (was: %u), returning\n"),
-                id_in));
-    if (lockedAccess_in)
-      lock_.release ();
-    return;
-  } // end IF
-  parameters.positions.insert ((*iterator).second->position);
-  if (!(*iterator).second->character->isPlayerCharacter ())
-  {
-    // clean up NPC entities
-    delete (*iterator).second->character;
-    delete (*iterator).second;
-  } // end IF
-  entities_.erase (iterator);
+  ACE_ASSERT (iterator != entities_.end ());
+  //if (iterator == entities_.end ())
+  //{
+  //  ACE_DEBUG ((LM_ERROR,
+  //              ACE_TEXT ("invalid entity ID (was: %u), returning\n"),
+  //              id_in));
+  //  if (lockedAccess_in)
+  //    lock_.release ();
+  //  return;
+  //} // end IF
 
-  // step2: update vision cache
-  ACE_ASSERT (seenPositions_.find (id_in) != seenPositions_.end ());
-  seenPositions_.erase (id_in);
-
-  if (id_in == activePlayer_)
-    setActive (0,
-               false); // locked access ?
-
-  // step3: notify client
+  // step1: notify client
   parameters.entity_id = id_in;
+  parameters.positions.insert ((*iterator).second->position);
   try {
     client_->notify (COMMAND_E2C_ENTITY_REMOVE,
                      parameters,
@@ -723,6 +712,24 @@ RPG_Engine::remove (RPG_Engine_EntityID_t id_in,
                 ACE_TEXT ("caught exception in RPG_Engine_IClient::notify(\"%s\"), continuing\n"),
                 ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString (COMMAND_E2C_ENTITY_REMOVE).c_str ())));
   }
+
+  // step2a: udpate entities
+  if (!(*iterator).second->character->isPlayerCharacter ())
+  {
+    // clean up NPC entities
+    delete (*iterator).second->character;
+    delete (*iterator).second;
+  } // end IF
+  entities_.erase (iterator);
+
+  // step2b: update vision cache
+  ACE_ASSERT (seenPositions_.find (id_in) != seenPositions_.end ());
+  seenPositions_.erase (id_in);
+
+  // step3: reset active player ?
+  if (id_in == activePlayer_)
+    setActive (0,
+               false); // locked access ?
 
   if (lockedAccess_in)
     lock_.release ();
@@ -1700,13 +1707,13 @@ RPG_Engine::getName (RPG_Engine_EntityID_t id_in,
   return result;
 }
 
-RPG_Character_Class
+struct RPG_Character_Class
 RPG_Engine::getClass (RPG_Engine_EntityID_t id_in,
                       bool lockedAccess_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::getClass"));
 
-  RPG_Character_Class result;
+  struct RPG_Character_Class result;
   result.metaClass = RPG_CHARACTER_METACLASS_INVALID;
 
   if (lockedAccess_in)
@@ -1753,13 +1760,48 @@ RPG_Engine::getClass (RPG_Engine_EntityID_t id_in,
   return result;
 }
 
+bool
+RPG_Engine::isAble (RPG_Engine_EntityID_t id_in,
+                    bool lockedAccess_in) const
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Engine::isAble"));
+
+  bool result = true;
+
+  if (lockedAccess_in)
+    lock_.acquire ();
+
+  RPG_Engine_EntitiesConstIterator_t iterator = entities_.find (id_in);
+  ACE_ASSERT (iterator != entities_.end ());
+  //if (iterator == entities_.end ())
+  //{
+  //  ACE_DEBUG ((LM_ERROR,
+  //              ACE_TEXT ("invalid entity ID (was: %u), aborting\n"),
+  //              id_in));
+
+  //  if (lockedAccess_in)
+  //    lock_.release ();
+
+  //  // *CONSIDER*: --> false negative ?
+  //  return result;
+  //} // end IF
+  ACE_ASSERT ((*iterator).second->character);
+
+  result = (*iterator).second->character->hasCondition (CONDITION_NORMAL);
+
+  if (lockedAccess_in)
+    lock_.release ();
+
+  return result;
+}
+
 ACE_UINT8
 RPG_Engine::getVisibleRadius (RPG_Engine_EntityID_t id_in,
                               bool lockedAccess_in) const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::getVisibleRadius"));
 
-  // init return value(s)
+  // initialize return value(s)
   ACE_UINT8 result = 0;
 
   // sanity check
@@ -1984,6 +2026,18 @@ RPG_Engine::canSee (RPG_Engine_EntityID_t id_in,
                                                target_position,
                                                obstacles,
                                                false); // allow target is obstacle ?
+}
+
+const RPG_Map_Positions_t&
+RPG_Engine::getSeen (RPG_Engine_EntityID_t id_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Engine::getSeen"));
+
+  RPG_Engine_SeenPositionsConstIterator_t iterator =
+    seenPositions_.find (id_in);
+  ACE_ASSERT (iterator != seenPositions_.end ());
+
+  return (*iterator).second;
 }
 
 bool
@@ -2698,15 +2752,39 @@ RPG_Engine::handleEntities ()
           RPG_Engine_SeenPositionsIterator_t iterator_2 =
             seenPositions_.find ((*iterator).first);
           ACE_ASSERT (iterator_2 != seenPositions_.end ());
+          bool new_positions_b = !std::includes ((*iterator_2).second.begin (),
+                                                 (*iterator_2).second.end (),
+                                                 positions.begin (),
+                                                 positions.end ());
+          RPG_Map_Positions_t new_positions;
+          if (new_positions_b)
+          { // --> compute new positions
+            std::set_difference (positions.begin (),
+                                  positions.end (),
+                                  (*iterator_2).second.begin (),
+                                  (*iterator_2).second.end (),
+                                  std::inserter (new_positions, new_positions.end ()));
+          } // end IF
           (*iterator_2).second.insert (positions.begin (),
                                        positions.end ());
 
-          // step2: notify client window
+          // step2a: notify client window
           parameters.entity_id = (*iterator).first;
-          parameters.condition = RPG_COMMON_CONDITION_INVALID;
           parameters.positions.insert (current_action.position);
           notifications.push_back (std::make_pair (COMMAND_E2C_ENTITY_POSITION,
                                                    parameters));
+          parameters.positions.clear ();
+
+          // step2b: notify client window ?
+          if (new_positions_b)
+          {
+            parameters.positions = new_positions;
+            parameters.visible_radius = getVisibleRadius ((*iterator).first,
+                                                          false); // locked access ?
+            notifications.push_back (std::make_pair (COMMAND_E2C_ENTITY_VISION,
+                                                     parameters));
+            parameters.positions.clear ();
+          } // end IF
 
           break;
         }

@@ -1837,7 +1837,7 @@ ACE_TMAIN (int argc_in,
   state.style.half_height_walls = RPG_CLIENT_GRAPHICS_DEF_WALLSTYLE_HALF;
   state.style.door = RPG_CLIENT_GRAPHICS_DEF_DOORSTYLE;
   state.selection_mode = SELECTIONMODE_NORMAL;
-  state.seen_positions.clear ();
+  //state.seen_positions.clear ();
   //
   state.path.clear ();
   state.positions.clear ();

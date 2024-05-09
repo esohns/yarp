@@ -582,10 +582,8 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       if (parameters_in.entity_id == active_entity_id)
       {
         if (centerOnActivePlayer_)
-        {
           RPG_Client_Engine::setView (client_action.position,
                                       true); // refresh ?
-        } // end IF
         else
         {
           struct SDL_Rect window_area, map_area;
@@ -628,12 +626,12 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       { // --> entity is NOT the active player
 
         // update the minimap ?
-        bool active_entity_can_see_position =
+        bool active_entity_can_see_position_b =
           (active_entity_id &&
            engine_->canSee (active_entity_id,
                             client_action.position,
                             false)); // locked access ?
-        if (active_entity_can_see_position)
+        if (active_entity_can_see_position_b)
         {
           client_action.command = COMMAND_WINDOW_UPDATE_MINIMAP;
           action (client_action);
@@ -654,13 +652,10 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
                                                 map_area,
                                                 false)) // all
         {
-          if (active_entity_id &&
-              engine_->canSee (active_entity_id,
-                               parameters_in.entity_id,
-                               false)) // locked access ?
+          //if (active_entity_can_see_position_b)
             client_action.command = COMMAND_ENTITY_DRAW;
-          else
-            do_action = false;
+          //else
+          //  do_action = false;
         } // end IF
         else
         {
@@ -674,13 +669,13 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
                                                   map_area,
                                                   false)) // all
           {
-            if (active_entity_id &&
-                engine_->canSee (active_entity_id,
-                                 parameters_in.previous_position,
-                                 false)) // locked access ?
+            //if (active_entity_id &&
+            //    engine_->canSee (active_entity_id,
+            //                     parameters_in.previous_position,
+            //                     false)) // locked access ?
               client_action.command = COMMAND_ENTITY_RESTORE_BG;
-            else
-              do_action = false;
+            //else
+            //  do_action = false;
           } // end IF
           else
             do_action = false;
@@ -696,28 +691,36 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
     { ACE_ASSERT (engine_);
       ACE_ASSERT (window_);
       ACE_ASSERT (parameters_in.entity_id);
-      
+      ACE_ASSERT (!parameters_in.positions.empty ());
+      //ACE_ASSERT (parameters_in.visible_radius);
+
       client_action.window = window_;
       client_action.entity_id = parameters_in.entity_id;
       client_action.radius = parameters_in.visible_radius;
-      engine_->getVisiblePositions (client_action.entity_id,
-                                    client_action.positions,
-                                    true);
 
-      client_action.command = COMMAND_SET_VISION_RADIUS;
-      action (client_action);
+      // update blend radius ?
+      RPG_Engine_EntityID_t active_entity_id =
+        engine_->getActive (true); // locked access ?
+      bool is_active_entity_b = (active_entity_id &&
+                                 (active_entity_id == parameters_in.entity_id));
+      if (is_active_entity_b)
+      {
+        client_action.command = COMMAND_SET_VISION_RADIUS;
+        action (client_action);
+      } // end IF
 
       // *NOTE*: schedule a draw iff any of the new positions are currently
-      //         visible on-screen
+      //         visible
       struct SDL_Rect window_area, map_area;
       window_->getArea (window_area,
                         true); // toplevel ?
       window_->getArea (map_area,
                         false); // toplevel ?
       RPG_Client_IWindowLevel* window_p =
-          dynamic_cast<RPG_Client_IWindowLevel*> (window_);
+        dynamic_cast<RPG_Client_IWindowLevel*> (window_);
       ACE_ASSERT (window_p);
-      if (RPG_Client_Common_Tools::isVisible (RPG_Client_Common_Tools::mapToGraphicsPositions (client_action.positions),
+      if (is_active_entity_b &&
+          RPG_Client_Common_Tools::isVisible (RPG_Client_Common_Tools::mapToGraphicsPositions (parameters_in.positions),
                                               std::make_pair (window_area.w,
                                                               window_area.h),
                                               window_p->getView (),

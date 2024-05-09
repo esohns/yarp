@@ -73,10 +73,10 @@ class RPG_Player_Base
   bool hasCondition (enum RPG_Common_Condition) const; // condition
   inline RPG_Character_Conditions_t getCondition () const { return myCondition; }
 
-  ACE_UINT8 getAttribute (enum RPG_Common_Attribute) const;
+  ACE_UINT8 getAttribute (enum RPG_Common_Attribute) const; // attribute
   inline struct RPG_Character_Attributes getAttributes () const { return myAttributes; }
-  void setAttribute (enum RPG_Common_Attribute,
-                     ACE_UINT8);
+  void setAttribute (enum RPG_Common_Attribute, // attribute
+                     ACE_UINT8);                // value
 
   bool hasFeat (enum RPG_Character_Feat) const; // feat
   inline void addFeat (enum RPG_Character_Feat feat_in) { myFeats.insert (feat_in); }
@@ -88,8 +88,8 @@ class RPG_Player_Base
 
   ACE_UINT8 getSkillRank (enum RPG_Common_Skill) const; // skill
   inline RPG_Character_Skills_t getSkills () const { return mySkills; }
-  void setSkillRank (enum RPG_Common_Skill,
-                     ACE_UINT8);
+  void setSkillRank (enum RPG_Common_Skill, // skill
+                     ACE_UINT8);            // value
 
   inline ACE_UINT16 getNumTotalHitPoints () const { return myNumTotalHitPoints; }
   inline void setNumTotalHitPoints (ACE_UINT16 numberOfTotalHitPoints_in) { myNumTotalHitPoints = numberOfTotalHitPoints_in; }

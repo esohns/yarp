@@ -4067,7 +4067,6 @@ togglebutton_join_part_toggled_cb (GtkToggleButton* toggleButton_in,
     // activate the current character
     RPG_Engine_EntityID_t id = data_p->levelEngine->add (&(data_p->entity),
                                                          true); // locked access ?
-    data_p->levelEngine->setActive (id);
 
     // center on character
     data_p->clientEngine->setView (data_p->entity.position,
