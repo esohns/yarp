@@ -393,7 +393,7 @@ do_battle (RPG_Player_Party_t& party_in,
                                                                   : DEFENSE_NORMAL),
                                                  battleSequence);
 
-    if (RPG_Engine_Common_Tools::isPartyHelpless (party_in) ||
+    if (RPG_Player_Common_Tools::isPartyHelpless (party_in) ||
         RPG_Engine_Common_Tools::areMonstersHelpless (monsters))
       break;
 
@@ -401,14 +401,14 @@ do_battle (RPG_Player_Party_t& party_in,
   } while (true);
 
   // sanity check
-  if (RPG_Engine_Common_Tools::isPartyHelpless (party_in) &&
+  if (RPG_Player_Common_Tools::isPartyHelpless (party_in) &&
       RPG_Engine_Common_Tools::areMonstersHelpless (monsters))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("everybody is HELPLESS --> check implementation !\n")));
   } // end IF
 
-  if (!RPG_Engine_Common_Tools::isPartyHelpless (party_in))
+  if (!RPG_Player_Common_Tools::isPartyHelpless (party_in))
   {
     ACE_DEBUG ((LM_INFO,
                 ACE_TEXT ("party has WON !\n")));
@@ -531,7 +531,7 @@ do_work (const std::string& schemaRepository_in,
       gameTime += do_battle (party,
                              encounter);
 
-      if (RPG_Engine_Common_Tools::isPartyHelpless (party))
+      if (RPG_Player_Common_Tools::isPartyHelpless (party))
         break;
 
       // party has survived --> rest/recover...

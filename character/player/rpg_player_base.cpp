@@ -41,6 +41,9 @@
 
 #include "rpg_combat_incl.h"
 #include "rpg_combat_common.h"
+#include "rpg_combat_common_tools.h"
+
+#include "rpg_player_common_tools.h"
 
 RPG_Player_Base::RPG_Player_Base (// base attributes
                                   const std::string& name_in,
@@ -223,9 +226,9 @@ RPG_Player_Base::setAttribute (enum RPG_Common_Attribute attribute_in,
 }
 
 ACE_UINT8
-RPG_Player_Base::getSkillRank (enum RPG_Common_Skill skill_in) const
+RPG_Player_Base::getSkillPoints (enum RPG_Common_Skill skill_in) const
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Player_Base::getSkillRank"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Base::getSkillPoints"));
 
   RPG_Character_SkillsConstIterator_t iter = mySkills.find (skill_in);
   if (iter != mySkills.end ())
@@ -235,10 +238,10 @@ RPG_Player_Base::getSkillRank (enum RPG_Common_Skill skill_in) const
 }
 
 void
-RPG_Player_Base::setSkillRank (enum RPG_Common_Skill skill_in,
-                               ACE_UINT8 value_in)
+RPG_Player_Base::setSkillPoints (enum RPG_Common_Skill skill_in,
+                                 ACE_UINT8 value_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Player_Base::setSkillRank"));
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Base::setSkillPoints"));
 
   RPG_Character_SkillsIterator_t iter = mySkills.find (skill_in);
   if (iter != mySkills.end ())
@@ -292,6 +295,7 @@ RPG_Player_Base::sustainDamage (const RPG_Combat_Damage& damage_in)
   ACE_INT16 num_hit_points_initial_i = myNumHitPoints;
   ACE_INT16 damage_value;
   RPG_Dice_RollResult_t result_2;
+  bool is_nonlethal_damage_b = true;
   for (RPG_Combat_DamageElementsConstIterator_t iterator = damage_in.elements.begin ();
        iterator != damage_in.elements.end ();
        iterator++)
@@ -302,6 +306,10 @@ RPG_Player_Base::sustainDamage (const RPG_Combat_Damage& damage_in)
                             1,
                             result_2);
     damage_value = result_2.front ();
+
+    is_nonlethal_damage_b =
+      (is_nonlethal_damage_b &&
+       RPG_Combat_Common_Tools::isNonLethalDamage (*iterator));
 
     // *TODO*: consider defenses, resistances, (partial) immunities...
 
@@ -323,14 +331,23 @@ RPG_Player_Base::sustainDamage (const RPG_Combat_Damage& damage_in)
     myCondition.erase (CONDITION_NORMAL);
 
     if (myNumHitPoints == -10)
+    {
       myCondition.insert (CONDITION_DEAD);
-    else if (myNumHitPoints < 0)
-      myCondition.insert (CONDITION_DYING);
-    else
-      myCondition.insert (CONDITION_DISABLED);
-
-    if (myNumHitPoints < 0)
       myCondition.insert (CONDITION_UNCONSCIOUS);
+      myCondition.insert (CONDITION_PRONE); // falls down
+    } // end IF
+    else if (myNumHitPoints < 0)
+    {
+      myCondition.insert (CONDITION_DYING);
+      myCondition.insert (CONDITION_UNCONSCIOUS);
+      myCondition.insert (CONDITION_PRONE); // falls down
+    } // end ELSE IF
+    else
+    { // HP == 0
+      myCondition.insert (CONDITION_DISABLED);
+      if (is_nonlethal_damage_b)
+        myCondition.insert (CONDITION_STAGGERED); // TKO
+    } // end ELSE
   } // end IF
 
   ACE_DEBUG ((LM_DEBUG,
@@ -339,7 +356,7 @@ RPG_Player_Base::sustainDamage (const RPG_Combat_Damage& damage_in)
               num_hit_points_initial_i,
               myNumTotalHitPoints,
               result,
-              (!hasCondition (CONDITION_NORMAL) ? ACE_TEXT (" --> DOWN") : ACE_TEXT (""))));
+              (RPG_Player_Common_Tools::isCharacterHelpless (this) ? ACE_TEXT (" --> DOWN") : ACE_TEXT (""))));
 
   return result;
 }

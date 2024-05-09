@@ -53,6 +53,10 @@ class RPG_Character_Common_Tools
 
   static ACE_INT8 getAttributeAbilityModifier (ACE_UINT8); // attribute ability score
   static bool getAttributeCheck (ACE_UINT8); // attribute ability score
+  static bool getSkillCheck (ACE_UINT8,      // skill rank
+                             ACE_INT8,       // ability modifier,
+                             ACE_INT8,       // miscellaneous modifiers
+                             ACE_INT8);      // difficulty class (DC)
   static enum RPG_Dice_DieType getHitDie (enum RPG_Common_SubClass); // subclass
   static RPG_Character_BaseAttackBonus_t getBaseAttackBonus (enum RPG_Common_SubClass, // subClass
                                                              ACE_UINT8);               // class level

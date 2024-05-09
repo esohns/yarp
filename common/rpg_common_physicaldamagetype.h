@@ -9,6 +9,7 @@
 enum RPG_Common_PhysicalDamageType
 {
   PHYSICALDAMAGE_NONE = 0,
+  PHYSICALDAMAGE_NON_LETHAL,
   PHYSICALDAMAGE_BLUDGEONING,
   PHYSICALDAMAGE_PIERCING,
   PHYSICALDAMAGE_SLASHING,
@@ -34,6 +35,7 @@ class RPG_Common_PhysicalDamageTypeHelper
   {
     myRPG_Common_PhysicalDamageTypeToStringTable.clear();
     myRPG_Common_PhysicalDamageTypeToStringTable.insert(std::make_pair(PHYSICALDAMAGE_NONE, ACE_TEXT_ALWAYS_CHAR("PHYSICALDAMAGE_NONE")));
+    myRPG_Common_PhysicalDamageTypeToStringTable.insert(std::make_pair(PHYSICALDAMAGE_NON_LETHAL, ACE_TEXT_ALWAYS_CHAR("PHYSICALDAMAGE_NON_LETHAL")));
     myRPG_Common_PhysicalDamageTypeToStringTable.insert(std::make_pair(PHYSICALDAMAGE_BLUDGEONING, ACE_TEXT_ALWAYS_CHAR("PHYSICALDAMAGE_BLUDGEONING")));
     myRPG_Common_PhysicalDamageTypeToStringTable.insert(std::make_pair(PHYSICALDAMAGE_PIERCING, ACE_TEXT_ALWAYS_CHAR("PHYSICALDAMAGE_PIERCING")));
     myRPG_Common_PhysicalDamageTypeToStringTable.insert(std::make_pair(PHYSICALDAMAGE_SLASHING, ACE_TEXT_ALWAYS_CHAR("PHYSICALDAMAGE_SLASHING")));

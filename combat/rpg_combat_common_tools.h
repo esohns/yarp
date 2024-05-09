@@ -45,6 +45,8 @@ class RPG_Combat_Common_Tools
  public:
   static void initializeStringConversionTables ();
 
+  static bool isNonLethalDamage (const struct RPG_Combat_DamageElement&);
+
   static std::string toString (const RPG_Combat_AttackForms_t&); // attack forms
   static std::string toString (const struct RPG_Combat_Damage&); // damage
 

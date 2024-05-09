@@ -1985,11 +1985,11 @@ _xsd_RPG_Combat_DamageTypeUnion_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Combat_DamageTypeUnion_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Combat_DamageTypeUnion_XMLTree_Type_indexes_,
-                    _xsd_RPG_Combat_DamageTypeUnion_XMLTree_Type_indexes_ + 22,
+                    _xsd_RPG_Combat_DamageTypeUnion_XMLTree_Type_indexes_ + 23,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Combat_DamageTypeUnion_XMLTree_Type_indexes_ + 22 || _xsd_RPG_Combat_DamageTypeUnion_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Combat_DamageTypeUnion_XMLTree_Type_indexes_ + 23 || _xsd_RPG_Combat_DamageTypeUnion_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -1998,9 +1998,10 @@ _xsd_RPG_Combat_DamageTypeUnion_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Combat_DamageTypeUnion_XMLTree_Type::
-_xsd_RPG_Combat_DamageTypeUnion_XMLTree_Type_literals_[22] =
+_xsd_RPG_Combat_DamageTypeUnion_XMLTree_Type_literals_[23] =
 {
   "PHYSICALDAMAGE_NONE",
+  "PHYSICALDAMAGE_NON_LETHAL",
   "PHYSICALDAMAGE_BLUDGEONING",
   "PHYSICALDAMAGE_PIERCING",
   "PHYSICALDAMAGE_SLASHING",
@@ -2025,7 +2026,7 @@ _xsd_RPG_Combat_DamageTypeUnion_XMLTree_Type_literals_[22] =
 };
 
 const RPG_Combat_DamageTypeUnion_XMLTree_Type::value RPG_Combat_DamageTypeUnion_XMLTree_Type::
-_xsd_RPG_Combat_DamageTypeUnion_XMLTree_Type_indexes_[22] =
+_xsd_RPG_Combat_DamageTypeUnion_XMLTree_Type_indexes_[23] =
 {
   ::RPG_Combat_DamageTypeUnion_XMLTree_Type::DAMAGE_ABILITY_DRAIN,
   ::RPG_Combat_DamageTypeUnion_XMLTree_Type::DAMAGE_ABILITY_LOSS,
@@ -2046,6 +2047,7 @@ _xsd_RPG_Combat_DamageTypeUnion_XMLTree_Type_indexes_[22] =
   ::RPG_Combat_DamageTypeUnion_XMLTree_Type::PHYSICALDAMAGE_BLUDGEONING,
   ::RPG_Combat_DamageTypeUnion_XMLTree_Type::PHYSICALDAMAGE_CRUSHING,
   ::RPG_Combat_DamageTypeUnion_XMLTree_Type::PHYSICALDAMAGE_NONE,
+  ::RPG_Combat_DamageTypeUnion_XMLTree_Type::PHYSICALDAMAGE_NON_LETHAL,
   ::RPG_Combat_DamageTypeUnion_XMLTree_Type::PHYSICALDAMAGE_PIERCING,
   ::RPG_Combat_DamageTypeUnion_XMLTree_Type::PHYSICALDAMAGE_SLASHING,
   ::RPG_Combat_DamageTypeUnion_XMLTree_Type::PHYSICALDAMAGE_WITHERING

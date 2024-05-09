@@ -617,7 +617,7 @@ RPG_Engine::add (struct RPG_Engine_Entity* entity_in,
                                                         inherited2::myMetaData.environment.terrain,
                                                         TRACK_NONE));
   temp /= static_cast<float> (RPG_ENGINE_FEET_PER_SQUARE);
-  temp *= static_cast<float> (RPG_ENGINE_ROUND_INTERVAL);
+  temp *= static_cast<float> (RPG_COMMON_COMBAT_ROUND_INTERVAL_S);
   float squares_per_round = temp;
   ACE_ASSERT (squares_per_round != 0.0f);
   squares_per_round = (1.0f / squares_per_round);
@@ -1787,7 +1787,8 @@ RPG_Engine::isAble (RPG_Engine_EntityID_t id_in,
   //} // end IF
   ACE_ASSERT ((*iterator).second->character);
 
-  result = (*iterator).second->character->hasCondition (CONDITION_NORMAL);
+  result =
+    !RPG_Player_Common_Tools::isCharacterHelpless ((*iterator).second->character);
 
   if (lockedAccess_in)
     lock_.release ();
@@ -2443,11 +2444,6 @@ RPG_Engine::handleEntities ()
 
           // notify client
           parameters.entity_id = (*iterator).first;
-          parameters.positions.insert (std::make_pair (std::numeric_limits<unsigned int>::max (),
-                                                       std::numeric_limits<unsigned int>::max ()));
-          parameters.previous_position =
-            std::make_pair (std::numeric_limits<unsigned int>::max (),
-                            std::numeric_limits<unsigned int>::max ());
           // *TODO*: implement combat situations, in-turn-movement, ...
           ACE_UINT32 damage_hp_i = 0;
           RPG_Engine_Common_Tools::attack ((*iterator).second->character,
@@ -2489,8 +2485,8 @@ RPG_Engine::handleEntities ()
             } // end IF
           } // end IF
 
-          // target disabled ? --> remove entity (see below)
-          if (RPG_Engine_Common_Tools::isCharacterDisabled ((*target).second->character))
+          // target helpless ? --> remove entity (see below)
+          if (RPG_Player_Common_Tools::isCharacterHelpless ((*target).second->character))
           {
             // notify client
             parameters.condition = CONDITION_DISABLED;
@@ -2626,7 +2622,7 @@ RPG_Engine::handleEntities ()
                                                                            inherited2::myMetaData.environment.terrain,
                                                                            TRACK_NONE));
             temp /= static_cast<float> (RPG_ENGINE_FEET_PER_SQUARE);
-            temp *= static_cast<float> (RPG_ENGINE_ROUND_INTERVAL);
+            temp *= static_cast<float> (RPG_COMMON_COMBAT_ROUND_INTERVAL_S);
             squares_per_round = temp;
             squares_per_round = (1.0f / squares_per_round);
             squares_per_round *= static_cast<float> (RPG_ENGINE_SPEED_MODIFIER);
@@ -2654,7 +2650,7 @@ RPG_Engine::handleEntities ()
                                                                            inherited2::myMetaData.environment.terrain,
                                                                            TRACK_NONE));
             temp /= static_cast<float> (RPG_ENGINE_FEET_PER_SQUARE);
-            temp *= static_cast<float> (RPG_ENGINE_ROUND_INTERVAL);
+            temp *= static_cast<float> (RPG_COMMON_COMBAT_ROUND_INTERVAL_S);
             squares_per_round = temp;
             squares_per_round = 1.0f / squares_per_round;
             squares_per_round *= static_cast<float> (RPG_ENGINE_SPEED_MODIFIER_RUNNING);

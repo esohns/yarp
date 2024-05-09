@@ -26,6 +26,7 @@
 #include "ace/Log_Msg.h"
 #include "ace/OS.h"
 
+#include "common_tools.h"
 #include "common_file_tools.h"
 
 #if defined (HAVE_CONFIG_H)
@@ -60,6 +61,58 @@
 #include "rpg_player_defines.h"
 
 #include "rpg_engine_defines.h"
+
+bool
+RPG_Player_Common_Tools::isCharacterDisabled (const RPG_Player_Base* const character_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Common_Tools::isCharacterDisabled"));
+
+  // sanity check(s)
+  ACE_ASSERT (character_in);
+
+  if ((character_in->hasCondition (CONDITION_DEAD))        || // HP==-10
+      (character_in->hasCondition (CONDITION_DYING))       || // -10<HP<0
+      (character_in->hasCondition (CONDITION_STABLE))      || // -10<HP<0 && !DYING
+      (character_in->hasCondition (CONDITION_UNCONSCIOUS)) || // -10<HP<0 && (DYING || STABLE)
+      (character_in->hasCondition (CONDITION_DISABLED)))      // (HP==0) || (STABLE && !UNCONSCIOUS)
+    return true;
+
+  return false;
+}
+
+bool
+RPG_Player_Common_Tools::isCharacterHelpless (const RPG_Player_Base* const character_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Common_Tools::isCharacterHelpless"));
+
+  // sanity check(s)
+  ACE_ASSERT (character_in);
+
+  if ((character_in->hasCondition (CONDITION_PARALYZED)) || // spell, ...
+      (character_in->hasCondition (CONDITION_HELD))      || // bound as per spell, ...
+      (character_in->hasCondition (CONDITION_BOUND))     || // bound as per rope, ...
+      (character_in->hasCondition (CONDITION_SLEEPING))  || // natural, spell, ...
+      (character_in->hasCondition (CONDITION_PETRIFIED)) || // turned to stone
+      RPG_Player_Common_Tools::isCharacterDisabled (character_in)) // disabled
+    return true;
+
+  return false;
+}
+
+bool
+RPG_Player_Common_Tools::isPartyHelpless (const RPG_Player_Party_t& party_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Common_Tools::isPartyHelpless"));
+
+  unsigned int numDeadOrHelpless = 0;
+  for (RPG_Player_PartyConstIterator_t iterator = party_in.begin ();
+       iterator != party_in.end ();
+       iterator++)
+    if (RPG_Player_Common_Tools::isCharacterHelpless (*iterator))
+      numDeadOrHelpless++;
+
+  return (numDeadOrHelpless == party_in.size ());
+}
 
 RPG_Character_Race_t
 RPG_Player_Common_Tools::raceXMLTreeToRace (const RPG_Player_CharacterXML_XMLTree_Type::race_sequence& races_in)
@@ -146,62 +199,137 @@ RPG_Player_Common_Tools::restParty (RPG_Player_Party_t& party_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Player_Common_Tools::restParty"));
 
-  // debug info
+  int index = 1;
+
+  // check party status
+  unsigned int diff, fraction, recovery_time, total_recovery_time = 0;
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("party status:\n-------------\n")));
-  int index = 1;
-  RPG_Player_PartyIterator_t iterator;
-  for (iterator = party_in.begin ();
+  for (RPG_Player_PartyConstIterator_t iterator = party_in.begin ();
        iterator != party_in.end ();
        iterator++, index++)
   {
     ACE_DEBUG ((LM_DEBUG,
-                ACE_TEXT("#%d] \"%s\" (lvl: %d), HP: %d/%d --> %s\n"),
+                ACE_TEXT ("#%d] \"%s\" (lvl: %u), HP: %d/%u, Condition: %s --> %s\n"),
                 index,
                 ACE_TEXT ((*iterator)->getName ().c_str ()),
-                (*iterator)->getLevel (),
-                (*iterator)->getNumHitPoints (),
-                (*iterator)->getNumTotalHitPoints (),
-                ((*iterator)->hasCondition (CONDITION_NORMAL) ? ACE_TEXT_ALWAYS_CHAR ("OK") : ACE_TEXT_ALWAYS_CHAR ("DOWN"))));
-  } // end FOR
+                static_cast<unsigned int> ((*iterator)->getLevel (SUBCLASS_NONE)),
+                (*iterator)->getNumHitPoints (), (*iterator)->getNumTotalHitPoints (),
+                ACE_TEXT (RPG_Character_Common_Tools::toString ((*iterator)->getCondition ()).c_str ()),
+                (RPG_Player_Common_Tools::isCharacterHelpless (*iterator) ? ACE_TEXT_ALWAYS_CHAR ("OK") : ACE_TEXT_ALWAYS_CHAR ("DOWN"))));
 
-  // check party status
-  unsigned int diff = 0;
-  unsigned int fraction = 0;
-  unsigned int recoveryTime = 0;
-  unsigned int maxRecoveryTime = 0;
-  for (iterator = party_in.begin ();
-       iterator != party_in.end ();
-       iterator++)
-  {
-    // *TODO*: consider dead/dying players !
-    if ((*iterator)->getNumHitPoints () < 0)
+    recovery_time = 0;
+
+    if ((*iterator)->hasCondition (CONDITION_DEAD) ||
+        (*iterator)->hasCondition (CONDITION_DYING))
+    {
+      if ((*iterator)->hasCondition (CONDITION_DYING))
+      {
+        const RPG_Player* const player_p =
+          RPG_Player_Common_Tools::getBestHealer (party_in);
+        recovery_time = (*iterator)->stabilize (player_p);
+        recovery_time *= RPG_COMMON_COMBAT_ROUND_INTERVAL_S;
+        recovery_time /= 3600; // s --> h
+
+        if ((*iterator)->hasCondition (CONDITION_STABLE))
+          goto continue_;
+      } // end IF
+
+      // --> character was already dead || has just died...
       continue;
+    } // end IF
 
-    diff = ((*iterator)->getNumTotalHitPoints () -
-            (*iterator)->getNumHitPoints ());
-    fraction = (diff % ((*iterator)->getLevel () * 2));
+continue_:
+    // consider natural healing here
+    diff =
+      ((*iterator)->getNumTotalHitPoints () - (*iterator)->getNumHitPoints ());
+    fraction = diff % ((*iterator)->getLevel (SUBCLASS_NONE) * 2);
     diff -= fraction;
-    recoveryTime = ((diff / ((*iterator)->getLevel () * 2)) + // days of complete bed-rest +
-                    (fraction / (*iterator)->getLevel ()));   // days of good night's sleep
-    if (recoveryTime > maxRecoveryTime)
-      maxRecoveryTime = recoveryTime;
+    recovery_time +=
+      ((diff / ((*iterator)->getLevel (SUBCLASS_NONE) * 2)) + // days of complete bed-rest +
+       (fraction / (*iterator)->getLevel (SUBCLASS_NONE)));   // days of good night's sleep
+
+    if (recovery_time > total_recovery_time)
+      total_recovery_time = recovery_time;
   } // end FOR
-
-  // debug info
   ACE_DEBUG ((LM_DEBUG,
-              ACE_TEXT ("max. recovery time: %d days\n"),
-              maxRecoveryTime));
+              ACE_TEXT ("total recovery time: %u day(s)\n"),
+              total_recovery_time));
 
-  for (iterator = party_in.begin ();
+  // rest party
+  for (RPG_Player_PartyIterator_t iterator = party_in.begin ();
+       iterator != party_in.end ();
+       iterator++)
+    (*iterator)->rest (REST_FULL,
+                       (total_recovery_time * 24));
+
+  return (total_recovery_time * 24 * 3600);
+}
+
+bool
+RPG_Player_Common_Tools::hasSubClass (enum RPG_Common_SubClass subClass_in,
+                                      const RPG_Player_Party_t& party_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Common_Tools::hasSubClass"));
+
+  for (RPG_Player_PartyConstIterator_t iterator = party_in.begin ();
        iterator != party_in.end ();
        iterator++)
   {
-    (*iterator)->rest (REST_FULL,
-                       (maxRecoveryTime * 24));
+    struct RPG_Character_Class class_s = (*iterator)->getClass ();
+    if (class_s.subClasses.find (subClass_in) != class_s.subClasses.end ())
+      return true;
   } // end FOR
 
-  return (maxRecoveryTime * 24 * 3600);
+  return false;
+}
+
+const RPG_Player* const
+RPG_Player_Common_Tools::getBestHealer (const RPG_Player_Party_t& party_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Common_Tools::getBestHealer"));
+
+  // sanity check(s)
+  if (RPG_Player_Common_Tools::isPartyHelpless (party_in))
+    return NULL; // cannot aid --> rely on natural healing
+
+  const RPG_Player* result_p = NULL;
+
+  ACE_UINT8 max_rank_i = 0, rank_i;
+  for (RPG_Player_PartyConstIterator_t iterator = party_in.begin ();
+       iterator != party_in.end ();
+       iterator++)
+  {
+    if (RPG_Player_Common_Tools::isCharacterHelpless (*iterator))
+      continue; // cannot aid
+
+    rank_i =
+      RPG_Character_Skills_Common_Tools::getSkillRank (SKILL_HEAL,
+                                                       (*iterator)->getSkillPoints (SKILL_HEAL),
+                                                       (*iterator)->getClass (),
+                                                       (*iterator)->getLevel (SUBCLASS_NONE));
+    if (rank_i > max_rank_i)
+    {
+      result_p = *iterator;
+      max_rank_i = rank_i;
+    } // end IF
+  } // end FOR
+
+  // fallback ?
+  if (!result_p)
+  {
+    RPG_Player_PartyConstIterator_t iterator;
+    do
+    {
+      iterator = party_in.begin ();
+      std::advance (iterator,
+                    Common_Tools::getRandomNumber (0,
+                                                   static_cast<int> (party_in.size () - 1)));
+      result_p = *iterator;
+    } while (RPG_Player_Common_Tools::isCharacterHelpless (result_p));
+  } // end IF
+
+  return result_p;
 }
 
 RPG_Player*
@@ -213,7 +341,7 @@ RPG_Player_Common_Tools::playerXMLToPlayer (const RPG_Player_PlayerXML_XMLTree_T
 {
   RPG_TRACE (ACE_TEXT ("RPG_Player_Common_Tools::playerXMLToPlayer"));
 
-  RPG_Character_Alignment alignment;
+  struct RPG_Character_Alignment alignment;
   alignment.civic =
       RPG_Character_AlignmentCivicHelper::stringToRPG_Character_AlignmentCivic (player_in.alignment ().civic ());
   alignment.ethic =
@@ -445,7 +573,7 @@ RPG_Player_Common_Tools::playerToPlayerXML (const RPG_Player& player_in)
         RPG_Item_WeaponPropertiesBase_XMLTree_Type::typeOfDamage_sequence type_of_damage;
         int index = PHYSICALDAMAGE_NONE; index++;
         for (unsigned int i = 0;
-             i < weapon_properties.typeOfDamage.size();
+             i < weapon_properties.typeOfDamage.size ();
              i++, index++)
          if (weapon_properties.typeOfDamage.test (i))
            type_of_damage.push_back (RPG_Common_PhysicalDamageTypeHelper::RPG_Common_PhysicalDamageTypeToString (static_cast<RPG_Common_PhysicalDamageType> (index)));

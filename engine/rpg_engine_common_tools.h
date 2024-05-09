@@ -92,9 +92,6 @@ class RPG_Engine_Common_Tools
   // ***** combat-related *****
   static unsigned int range (const RPG_Map_Position_t&,  // A
                              const RPG_Map_Position_t&); // B
-  static bool isCharacterHelpless (const RPG_Player_Base* const); // character handle
-  static bool isCharacterDisabled (const RPG_Player_Base* const); // character handle
-  static bool isPartyHelpless (const RPG_Player_Party_t&); // party
   static bool areMonstersHelpless (const RPG_Monster_Groups_t&); // monsters
   static void getCombatantSequence (const RPG_Player_Party_t&,        // party
                                     const RPG_Monster_Groups_t&,      // monsters

@@ -88,8 +88,13 @@ class RPG_Player_Player_Base
 
   virtual enum RPG_Common_SubClass gainExperience (ACE_UINT64); // XP
 
+
+  // returns the total number of seconds rested
   unsigned int rest (enum RPG_Common_Camp, // type of rest
                      unsigned int);        // hours
+  // *NOTE*: returns the #(combat) rounds it took to stabilize player
+  unsigned int stabilize (const RPG_Player_Player_Base* const); // aiding player
+
   void defaultEquip ();
 
   virtual void status () const;

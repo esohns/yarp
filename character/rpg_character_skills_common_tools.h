@@ -45,6 +45,13 @@ class RPG_Character_Skills_Common_Tools
  public:
   static bool isClassSkill (enum RPG_Common_SubClass, // subclass
                             enum RPG_Common_Skill);   // skill
+  static enum RPG_Common_Attribute skillToAttribute (enum RPG_Common_Skill); // skill
+  static ACE_UINT8 getSkillRank (enum RPG_Common_Skill,             // skill
+                                 ACE_UINT8,                         // #allotted skill points
+                                 const struct RPG_Character_Class&, // character class
+                                 ACE_UINT8);                        // character level
+
+  // levelling-up
   static unsigned int getSkillPoints (enum RPG_Common_SubClass, // subclass
                                       ACE_INT8,                 // INT modifier
                                       unsigned int&);           // return value: initial points (level 1)
@@ -68,8 +75,8 @@ class RPG_Character_Skills_Common_Tools
   static std::string toString (const RPG_Character_Feats_t&); // feats
   static std::string toString (const RPG_Character_Abilities_t&); // abilities
 
-  static RPG_Character_Feats_t                myFighterBonusFeatsTable;
-  static RPG_Character_Feats_t                myWizardBonusFeatsTable;
+  static RPG_Character_Feats_t                  myFighterBonusFeatsTable;
+  static RPG_Character_Feats_t                  myWizardBonusFeatsTable;
 
  private:
   ACE_UNIMPLEMENTED_FUNC (RPG_Character_Skills_Common_Tools ())
@@ -77,17 +84,19 @@ class RPG_Character_Skills_Common_Tools
   ACE_UNIMPLEMENTED_FUNC (RPG_Character_Skills_Common_Tools (const RPG_Character_Skills_Common_Tools&))
   ACE_UNIMPLEMENTED_FUNC (RPG_Character_Skills_Common_Tools& operator= (const RPG_Character_Skills_Common_Tools&))
 
-  // some useful types
-  typedef std::set<RPG_Common_Skill> RPG_Character_ClassSkillsSet_t;
+  // helper types
+  typedef std::set<enum RPG_Common_Skill> RPG_Character_ClassSkillsSet_t;
   typedef RPG_Character_ClassSkillsSet_t::const_iterator RPG_Character_ClassSkillsSetIterator_t;
-  typedef std::map<RPG_Common_SubClass, RPG_Character_ClassSkillsSet_t> RPG_Character_ClassSkillsTable_t;
+  typedef std::map<enum RPG_Common_SubClass, RPG_Character_ClassSkillsSet_t> RPG_Character_ClassSkillsTable_t;
   typedef RPG_Character_ClassSkillsTable_t::const_iterator RPG_Character_ClassSkillsTableIterator_t;
-  typedef std::vector<RPG_Character_Feat_Prerequisite> RPG_Character_Feat_Prerequisites_t;
+  typedef std::vector<struct RPG_Character_Feat_Prerequisite> RPG_Character_Feat_Prerequisites_t;
   typedef RPG_Character_Feat_Prerequisites_t::const_iterator RPG_Character_Feat_PrerequisitesIterator_t;
-  typedef std::map<RPG_Character_Feat, RPG_Character_Feat_Prerequisites_t> RPG_Character_FeatPrerequisitesTable_t;
+  typedef std::map<enum RPG_Character_Feat, RPG_Character_Feat_Prerequisites_t> RPG_Character_FeatPrerequisitesTable_t;
   typedef RPG_Character_FeatPrerequisitesTable_t::const_iterator RPG_Character_FeatPrerequisitesTableIterator_t;
+  typedef std::map<enum RPG_Common_Skill, enum RPG_Common_Attribute> RPG_Character_SkillsToAttributeTable_t;
+  typedef RPG_Character_SkillsToAttributeTable_t::const_iterator RPG_Character_SkillsToAttributeTableIterator_t;
 
-  // init static data
+  // initialize static data
   static void initialize ();
 
   // helper methods
@@ -95,9 +104,11 @@ class RPG_Character_Skills_Common_Tools
   static void initializeClassSkillsTable ();
   static void initializeFeatPrerequisitesTable ();
   static void initializeBonusFeatsTables ();
+  static void initializeSkillsToAttributeTable ();
 
   static RPG_Character_ClassSkillsTable_t       myClassSkillsTable;
   static RPG_Character_FeatPrerequisitesTable_t myFeatPrerequisitesTable;
+  static RPG_Character_SkillsToAttributeTable_t mySkillsToAttributeTable;
 };
 
 #endif

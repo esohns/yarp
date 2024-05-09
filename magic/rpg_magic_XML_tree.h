@@ -2449,6 +2449,7 @@ class RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type: public ::xml_schema::string
   enum value
   {
     PHYSICALDAMAGE_NONE,
+    PHYSICALDAMAGE_NON_LETHAL,
     PHYSICALDAMAGE_BLUDGEONING,
     PHYSICALDAMAGE_PIERCING,
     PHYSICALDAMAGE_SLASHING,
@@ -2523,8 +2524,8 @@ class RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type_literals_[25];
-  static const value _xsd_RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type_indexes_[25];
+  static const char* const _xsd_RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type_literals_[26];
+  static const value _xsd_RPG_Magic_Spell_DamageTypeUnion_XMLTree_Type_indexes_[26];
 };
 
 class RPG_Magic_CheckTypeUnion_XMLTree_Type: public ::xml_schema::string

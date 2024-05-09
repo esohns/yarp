@@ -39,15 +39,17 @@ RPG_Character_Feats_t RPG_Character_Skills_Common_Tools::myFighterBonusFeatsTabl
 RPG_Character_Feats_t RPG_Character_Skills_Common_Tools::myWizardBonusFeatsTable;
 RPG_Character_Skills_Common_Tools::RPG_Character_ClassSkillsTable_t RPG_Character_Skills_Common_Tools::myClassSkillsTable;
 RPG_Character_Skills_Common_Tools::RPG_Character_FeatPrerequisitesTable_t RPG_Character_Skills_Common_Tools::myFeatPrerequisitesTable;
+RPG_Character_Skills_Common_Tools::RPG_Character_SkillsToAttributeTable_t RPG_Character_Skills_Common_Tools::mySkillsToAttributeTable;
 
 void
 RPG_Character_Skills_Common_Tools::initialize ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::initialize"));
 
-  initializeClassSkillsTable ();
-  initializeFeatPrerequisitesTable ();
-  initializeBonusFeatsTables ();
+  RPG_Character_Skills_Common_Tools::initializeClassSkillsTable ();
+  RPG_Character_Skills_Common_Tools::initializeFeatPrerequisitesTable ();
+  RPG_Character_Skills_Common_Tools::initializeBonusFeatsTables ();
+  RPG_Character_Skills_Common_Tools::initializeSkillsToAttributeTable ();
 }
 
 void
@@ -1424,6 +1426,19 @@ RPG_Character_Skills_Common_Tools::initializeClassSkillsTable ()
               ACE_TEXT ("RPG_Character_Skills_Common_Tools: initialized class skill table...\n")));
 }
 
+void
+RPG_Character_Skills_Common_Tools::initializeSkillsToAttributeTable ()
+{
+  // clean table
+  mySkillsToAttributeTable.clear ();
+
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_HEAL, ATTRIBUTE_WISDOM));
+  // *TODO*: add complete mapping here
+
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("RPG_Character_Skills_Common_Tools: initialized skill to attribute table...\n")));
+}
+
 bool
 RPG_Character_Skills_Common_Tools::isClassSkill (enum RPG_Common_SubClass subClass_in,
                                                  enum RPG_Common_Skill skill_in)
@@ -1444,6 +1459,50 @@ RPG_Character_Skills_Common_Tools::isClassSkill (enum RPG_Common_SubClass subCla
   return (iterator->second.find (skill_in) != iterator->second.end ());
 }
 
+enum RPG_Common_Attribute
+RPG_Character_Skills_Common_Tools::skillToAttribute (enum RPG_Common_Skill skill_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::skillToAttribute"));
+
+  RPG_Character_SkillsToAttributeTableIterator_t iterator =
+    mySkillsToAttributeTable.find (skill_in);
+  ACE_ASSERT (iterator != mySkillsToAttributeTable.end ());
+
+  return (*iterator).second;
+}
+
+ACE_UINT8
+RPG_Character_Skills_Common_Tools::getSkillRank (enum RPG_Common_Skill skill_in,
+                                                 ACE_UINT8 allottedSkillPoints_in,
+                                                 const struct RPG_Character_Class& class_in,
+                                                 ACE_UINT8 level_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::getSkillRank"));
+
+  float result = static_cast<float> (allottedSkillPoints_in);
+
+  bool is_class_skill_b = false;
+  for (RPG_Character_SubClassesIterator_t iterator = class_in.subClasses.begin ();
+       iterator != class_in.subClasses.end ();
+       ++iterator)
+    if (RPG_Character_Skills_Common_Tools::isClassSkill (*iterator,
+                                                         skill_in))
+    {
+      is_class_skill_b = true;
+      break;
+    } // end IF
+  if (!is_class_skill_b)
+    result /= 2.0f;
+
+  // cap at #level + 3 for class skills, half that for cross-class skills
+  float max_rank_f = static_cast<float> (level_in + 3);
+  if (!is_class_skill_b)
+    max_rank_f /= 2.0f;
+  result = std::min (result, max_rank_f);
+
+  return static_cast<ACE_UINT8> (ACE_OS::floor (result));
+}
+
 unsigned int
 RPG_Character_Skills_Common_Tools::getSkillPoints (enum RPG_Common_SubClass subClass_in,
                                                    ACE_INT8 INTModifier_in,
@@ -1451,7 +1510,7 @@ RPG_Character_Skills_Common_Tools::getSkillPoints (enum RPG_Common_SubClass subC
 {
   RPG_TRACE (ACE_TEXT ("RPG_Character_Skills_Common_Tools::getSkillPoints"));
 
-  // init defaults
+  // initialize defaults
   initialPoints_out = 0;
 
   ACE_INT8 baseValue = INTModifier_in;

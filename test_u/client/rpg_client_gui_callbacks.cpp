@@ -3220,7 +3220,7 @@ character_repository_combobox_changed_GTK_cb (GtkWidget* widget_in,
       GTK_TOGGLE_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                                  ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_TOGGLEBUTTON_SERVER_JOIN_PART_NAME)));
   ACE_ASSERT(button_2);
-  if (!RPG_Engine_Common_Tools::isCharacterDisabled (data_p->entity.character))
+  if (!RPG_Player_Common_Tools::isCharacterHelpless (data_p->entity.character))
     gtk_widget_set_sensitive (GTK_WIDGET(button_2), TRUE);
 
   // make drop button sensitive (if it's not already)
@@ -5012,8 +5012,8 @@ continue_:
                           -1);
       if (!data_2) // value is zero ? continue : proceed
         goto next;
-      player->setSkillRank (static_cast<enum RPG_Common_Skill> (data_i),
-                            data_2);
+      player->setSkillPoints (static_cast<enum RPG_Common_Skill> (data_i),
+                              data_2);
 next:
       valid_b = gtk_tree_model_iter_next (GTK_TREE_MODEL (list_store_p),
                                           &tree_iterator);

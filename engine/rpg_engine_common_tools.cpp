@@ -562,21 +562,6 @@ RPG_Engine_Common_Tools::generateStandardItems (enum RPG_Common_SubClass subClas
 }
 
 bool
-RPG_Engine_Common_Tools::isPartyHelpless (const RPG_Player_Party_t& party_in)
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::isPartyHelpless"));
-
-  unsigned int numDeadOrHelpless = 0;
-  for (RPG_Player_PartyConstIterator_t iterator = party_in.begin ();
-       iterator != party_in.end ();
-       iterator++)
-    if (isCharacterHelpless (*iterator))
-      numDeadOrHelpless++;
-
-  return (numDeadOrHelpless == party_in.size ());
-}
-
-bool
 RPG_Engine_Common_Tools::areMonstersHelpless (const RPG_Monster_Groups_t& monsters_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::areMonstersHelpless"));
@@ -623,7 +608,6 @@ RPG_Engine_Common_Tools::getCombatantSequence (const RPG_Player_Party_t& party_i
   RPG_Engine_CombatSequenceList_t preliminarySequence;
   // make sure there are enough SLOTS for large armies !
   // ruleset says it should be a D_20, but if there are more than 20 combatants
-  // ...
   // --> just as in RL - the conflict resolution algorithm could potentially run
   // forever...
   RPG_Dice_DieType checkDie = D_20;
@@ -649,8 +633,8 @@ RPG_Engine_Common_Tools::getCombatantSequence (const RPG_Player_Party_t& party_i
     if (!num_slots_too_small)
     {
       element.initiative =
-          RPG_Chance_Common_Tools::getCheck (element.DEXModifier,
-                                             checkDie);
+       static_cast<ACE_INT8> (RPG_Chance_Common_Tools::getCheck (element.DEXModifier,
+                                                                 checkDie));
     } // end IF
     else
     {
@@ -777,7 +761,7 @@ RPG_Engine_Common_Tools::performCombatRound (enum RPG_Combat_AttackSituation att
   RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::performCombatRound"));
 
   // everybody gets their turn
-  bool isPlayer = false;
+  bool is_player_b = false;
   RPG_Engine_CombatantSequenceIterator_t foeFinder;
   RPG_Dice_RollResult_t result;
   ACE_UINT32 damage_hp_i;
@@ -787,7 +771,7 @@ RPG_Engine_Common_Tools::performCombatRound (enum RPG_Combat_AttackSituation att
   {
     // sanity checks
     // step0a: determine whether this combatant is fit enough to fight
-    if (RPG_Engine_Common_Tools::isCharacterHelpless ((*iterator).handle))
+    if (RPG_Player_Common_Tools::isCharacterHelpless ((*iterator).handle))
     {
       // not fit enough...
       continue;
@@ -802,7 +786,7 @@ RPG_Engine_Common_Tools::performCombatRound (enum RPG_Combat_AttackSituation att
 
     // step1: find (random) opponent
     // step1a: determine friend or foe
-    isPlayer = (*iterator).handle->isPlayerCharacter ();
+    is_player_b = (*iterator).handle->isPlayerCharacter ();
     do
     {
       foeFinder = battleSequence_in.begin ();
@@ -812,8 +796,8 @@ RPG_Engine_Common_Tools::performCombatRound (enum RPG_Combat_AttackSituation att
                                        result);
       std::advance (foeFinder, result.front () - 1);
     } while ((iterator == foeFinder)                                           || // dont't attack ourselves !
-             ((*foeFinder).handle->isPlayerCharacter () == isPlayer)           || // don't attack friends
-             RPG_Engine_Common_Tools::isCharacterDisabled ((*foeFinder).handle)); // leave the disabled alone (...for now)
+             ((*foeFinder).handle->isPlayerCharacter () == is_player_b)        || // don't attack friends
+             RPG_Player_Common_Tools::isCharacterHelpless ((*foeFinder).handle)); // leave the helpless alone (...for now)
 
     // step2: attack foe !
 //     ACE_DEBUG((LM_DEBUG,
@@ -845,7 +829,7 @@ RPG_Engine_Common_Tools::isMonsterGroupHelpless (const RPG_Monster_Group_t& grou
   for (RPG_Monster_GroupIterator_t iterator = groupInstance_in.begin ();
        iterator != groupInstance_in.end ();
        iterator++)
-    if (RPG_Engine_Common_Tools::isCharacterHelpless (*iterator))
+    if (RPG_Player_Common_Tools::isCharacterHelpless (*iterator))
       numHelplessMonsters++;
 
   return (numHelplessMonsters == groupInstance_in.size ());
@@ -876,24 +860,6 @@ RPG_Engine_Common_Tools::range (const RPG_Map_Position_t& position1_in,
 }
 
 bool
-RPG_Engine_Common_Tools::isCharacterHelpless (const RPG_Player_Base* const character_in)
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::isCharacterHelpless"));
-
-  ACE_ASSERT (character_in);
-
-  if ((character_in->hasCondition (CONDITION_PARALYZED)) || // spell, ...
-      (character_in->hasCondition (CONDITION_HELD))      || // bound as per spell, ...
-      (character_in->hasCondition (CONDITION_BOUND))     || // bound as per rope, ...
-      (character_in->hasCondition (CONDITION_SLEEPING))  || // natural, spell, ...
-      (character_in->hasCondition (CONDITION_PETRIFIED)) || // turned to stone
-      RPG_Engine_Common_Tools::isCharacterDisabled (character_in)) // disabled
-    return true;
-
-  return false;
-}
-
-bool
 RPG_Engine_Common_Tools::isValidFoeAvailable (bool isMonsterAvailable_in,
                                               const RPG_Engine_CombatantSequence_t& battleSequence_in)
 {
@@ -903,7 +869,7 @@ RPG_Engine_Common_Tools::isValidFoeAvailable (bool isMonsterAvailable_in,
        iterator != battleSequence_in.end ();
        iterator++)
   {
-    if (RPG_Engine_Common_Tools::isCharacterHelpless ((*iterator).handle))
+    if (RPG_Player_Common_Tools::isCharacterHelpless ((*iterator).handle))
       continue;
 
     if (isMonsterAvailable_in && !((*iterator).handle->isPlayerCharacter ()))
@@ -915,29 +881,13 @@ RPG_Engine_Common_Tools::isValidFoeAvailable (bool isMonsterAvailable_in,
   return false;
 }
 
-bool
-RPG_Engine_Common_Tools::isCharacterDisabled (const RPG_Player_Base* const character_in)
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::isCharacterDisabled"));
-
-  ACE_ASSERT(character_in);
-
-  if ((character_in->hasCondition (CONDITION_DEAD))        || // HP<-10
-      (character_in->hasCondition (CONDITION_DYING))       || // -10<HP<0
-      (character_in->hasCondition (CONDITION_STABLE))      || // -10<HP<0 && !DYING
-      (character_in->hasCondition (CONDITION_UNCONSCIOUS)) || // -10<HP<0 && (DYING || STABLE)
-      (character_in->hasCondition (CONDITION_DISABLED)))      // (HP==0) || (STABLE && !UNCONSCIOUS)
-    return true;
-
-  return false;
-}
-
 unsigned int
 RPG_Engine_Common_Tools::numCompatibleMonsterAttackActions (enum RPG_Combat_AttackForm attackForm_in,
                                                             const RPG_Monster_AttackActions_t& actions_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine_Common_Tools::numCompatibleMonsterAttackActions"));
 
+  // initialize return value(s)
   unsigned int result = 0;
 
   switch (attackForm_in)
@@ -1295,7 +1245,7 @@ RPG_Engine_Common_Tools::attack (const RPG_Player_Base* const attacker_in,
 
       // if the target has been disabled, we're done...
       // *TODO*: consider remaining actions...
-      if (RPG_Engine_Common_Tools::isCharacterHelpless (target_inout))
+      if (RPG_Player_Common_Tools::isCharacterHelpless (target_inout))
         break;
 
       // if this was a Standard Action, we're done
@@ -1658,7 +1608,7 @@ monster_perform_single_action:
 
       // if the target has been disabled, we're done...
       // *TODO*: consider remaining actions...
-      if (isCharacterHelpless (target_inout))
+      if (RPG_Player_Common_Tools::isCharacterHelpless (target_inout))
         return;
 
       // if this was a Standard Action, we're done

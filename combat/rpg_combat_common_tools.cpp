@@ -56,6 +56,22 @@ RPG_Combat_Common_Tools::initializeStringConversionTables ()
               ACE_TEXT ("RPG_Combat_Common_Tools: initialized string conversion tables...\n")));
 }
 
+bool
+RPG_Combat_Common_Tools::isNonLethalDamage (const struct RPG_Combat_DamageElement& damageElement_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Combat_Common_Tools::isNonLethalDamage"));
+
+  for (std::vector<struct RPG_Combat_DamageTypeUnion>::const_iterator iterator = damageElement_in.types.begin ();
+       iterator != damageElement_in.types.end ();
+       iterator++)
+    if (((*iterator).discriminator != RPG_Combat_DamageTypeUnion::PHYSICALDAMAGETYPE) ||
+        (((*iterator).physicaldamagetype != PHYSICALDAMAGE_NONE) &&
+         ((*iterator).physicaldamagetype != PHYSICALDAMAGE_NON_LETHAL)))
+      return false;
+
+  return true;
+}
+
 std::string
 RPG_Combat_Common_Tools::toString (const RPG_Combat_AttackForms_t& attackForms_in)
 {
@@ -89,7 +105,7 @@ RPG_Combat_Common_Tools::toString (const struct RPG_Combat_Damage& damage_in)
        iterator++)
   {
     result += ACE_TEXT_ALWAYS_CHAR ("damage type: ");
-    for (std::vector<RPG_Combat_DamageTypeUnion>::const_iterator iterator2 = (*iterator).types.begin ();
+    for (std::vector<struct RPG_Combat_DamageTypeUnion>::const_iterator iterator2 = (*iterator).types.begin ();
          iterator2 != (*iterator).types.end ();
          iterator2++)
     {

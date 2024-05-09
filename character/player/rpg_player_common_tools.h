@@ -21,6 +21,8 @@
 #ifndef RPG_PLAYER_COMMON_TOOLS_H
 #define RPG_PLAYER_COMMON_TOOLS_H
 
+#include <string>
+
 #include "ace/Basic_Types.h"
 #include "ace/Global_Macros.h"
 
@@ -33,10 +35,25 @@
 #include "rpg_player_common.h"
 #include "rpg_player_XML_tree.h"
 
+// forward declarations
+class RPG_Player_Base;
+class RPG_Player;
+
 class RPG_Player_Common_Tools
 {
  public:
+  static bool isCharacterDisabled (const RPG_Player_Base* const); // character handle
+  static bool isCharacterHelpless (const RPG_Player_Base* const); // character handle
+  static bool isPartyHelpless (const RPG_Player_Party_t&); // party
+
+  // returns the total number of seconds rested
   static unsigned int restParty (RPG_Player_Party_t&); // party of players
+
+  static bool hasSubClass (enum RPG_Common_SubClass,   // sub-class
+                           const RPG_Player_Party_t&); // party of players
+  // *NOTE*: returns the player with the highest HEAL skill rank (if any), some
+  //         random player otherwise
+  static const RPG_Player* const getBestHealer (const RPG_Player_Party_t&); // party of players
 
   // *WARNING*: result needs to be delete()d !
   static RPG_Player* playerXMLToPlayer (const RPG_Player_PlayerXML_XMLTree_Type&, // player model

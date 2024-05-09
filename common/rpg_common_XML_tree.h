@@ -763,6 +763,7 @@ class RPG_Common_PhysicalDamageType_XMLTree_Type: public ::xml_schema::string
   enum value
   {
     PHYSICALDAMAGE_NONE,
+    PHYSICALDAMAGE_NON_LETHAL,
     PHYSICALDAMAGE_BLUDGEONING,
     PHYSICALDAMAGE_PIERCING,
     PHYSICALDAMAGE_SLASHING,
@@ -818,8 +819,8 @@ class RPG_Common_PhysicalDamageType_XMLTree_Type: public ::xml_schema::string
   _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_convert () const;
 
   public:
-  static const char* const _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_literals_[6];
-  static const value _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_indexes_[6];
+  static const char* const _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_literals_[7];
+  static const value _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_indexes_[7];
 };
 
 class RPG_Common_ActionType_XMLTree_Type: public ::xml_schema::string

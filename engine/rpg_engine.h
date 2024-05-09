@@ -124,7 +124,7 @@ class RPG_Engine
                        bool = true) const;    // locked access ?
   struct RPG_Character_Class getClass (RPG_Engine_EntityID_t, // id
                                        bool = true) const;    // locked access ?
-  // *NOTE*: maps to RPG_Player_Base::hasCondition (CONDITION_NORMAL), i.e. HP > 0
+  // *NOTE*: maps to RPG_Engine_Common_Tools::isCharacterDisabled(), i.e. HP > 0
   bool isAble (RPG_Engine_EntityID_t,                         // id
                bool = true) const;                            // locked access ?
   unsigned int numSpawned (const std::string&, // type (empty: total)

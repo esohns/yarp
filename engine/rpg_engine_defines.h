@@ -34,7 +34,6 @@
 // *IMPORTANT NOTE*: lower speed modifier --> less delay --> higher speed
 #define RPG_ENGINE_SPEED_MODIFIER                   10 // --> 1/10 speed <=> normal speed
 #define RPG_ENGINE_SPEED_MODIFIER_RUNNING           3
-#define RPG_ENGINE_ROUND_INTERVAL                   6 // s
 #define RPG_ENGINE_FEET_PER_SQUARE                  5
 
 // *TODO*: remove these...

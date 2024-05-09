@@ -86,10 +86,11 @@ class RPG_Player_Base
   inline void addAbility (enum RPG_Character_Ability ability_in) { myAbilities.insert (ability_in); }
   inline RPG_Character_Abilities_t getAbilities () const { return myAbilities; }
 
-  ACE_UINT8 getSkillRank (enum RPG_Common_Skill) const; // skill
+  // *IMPORTANT NOTE*: #points == rank only for 'class' skills
+  ACE_UINT8 getSkillPoints (enum RPG_Common_Skill) const; // skill
   inline RPG_Character_Skills_t getSkills () const { return mySkills; }
-  void setSkillRank (enum RPG_Common_Skill, // skill
-                     ACE_UINT8);            // value
+  void setSkillPoints (enum RPG_Common_Skill, // skill
+                       ACE_UINT8);            // value
 
   inline ACE_UINT16 getNumTotalHitPoints () const { return myNumTotalHitPoints; }
   inline void setNumTotalHitPoints (ACE_UINT16 numberOfTotalHitPoints_in) { myNumTotalHitPoints = numberOfTotalHitPoints_in; }

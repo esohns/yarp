@@ -487,7 +487,26 @@ RPG_Character_Common_Tools::getAttributeCheck (ACE_UINT8 attributeAbilityScore_i
 
   int result = RPG_Chance_Common_Tools::getCheck (0, D_20);
 
-  return (result >= static_cast<int> (attributeAbilityScore_in));
+  return (result <= static_cast<int> (attributeAbilityScore_in));
+}
+
+bool
+RPG_Character_Common_Tools::getSkillCheck (ACE_UINT8 skillRank_in,
+                                           ACE_INT8 abilityModifier_in,
+                                           ACE_INT8 miscellaneousModifiers_in,
+                                           ACE_INT8 difficultyClass_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Character_Common_Tools::getSkillCheck"));
+
+  int result = RPG_Chance_Common_Tools::getCheck (0, D_20);
+
+  ACE_INT8 skill_rank_i = skillRank_in;
+  skill_rank_i += abilityModifier_in;
+  skill_rank_i += miscellaneousModifiers_in;
+
+  result += skill_rank_i;
+
+  return (result >= static_cast<int> (difficultyClass_in));
 }
 
 enum RPG_Dice_DieType

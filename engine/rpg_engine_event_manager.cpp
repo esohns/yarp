@@ -30,6 +30,8 @@
 
 #include "rpg_dice.h"
 
+#include "rpg_player_common_tools.h"
+
 #include "rpg_map_common_tools.h"
 
 #include "rpg_monster_common.h"
@@ -707,7 +709,7 @@ RPG_Engine_Event_Manager::handleEvent (const struct RPG_Engine_Event& event_in)
           RPG_Engine_EntitiesConstIterator_t target =
               myEngine->entities_.find (current_action.target);
           if ((target == myEngine->entities_.end ()) ||
-              RPG_Engine_Common_Tools::isCharacterDisabled ((*target).second->character)) // target disabled ?
+              RPG_Player_Common_Tools::isCharacterHelpless ((*target).second->character)) // target helpless ?
           {
             (*iterator).second->modes.erase (ENTITYMODE_FIGHTING);
             done_current_action = true;

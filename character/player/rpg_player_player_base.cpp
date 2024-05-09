@@ -26,6 +26,9 @@
 #include "ace/Log_Msg.h"
 #include "ace/OS.h"
 
+#include "common_tools.h"
+
+#include "rpg_common_defines.h"
 #include "rpg_common_macros.h"
 #include "rpg_common_tools.h"
 
@@ -457,35 +460,179 @@ RPG_Player_Player_Base::gainExperience (ACE_UINT64 XP_in)
 }
 
 unsigned int
+RPG_Player_Player_Base::stabilize (const RPG_Player_Player_Base* const player_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::stabilize"));
+
+  unsigned int result = 0;
+
+  // sanity check(s)
+  if (!hasCondition (CONDITION_DYING))
+    return 0; // nothing to do...
+  if (!player_in)
+    goto natural_healing_;
+  ACE_ASSERT (player_in->isPlayerCharacter ());
+
+  // step1: *TODO*: cast any healing spells
+  //goto continue_;
+
+//first_aid:
+  // step2: (try to) apply 'First Aid' skill to the player
+  while (!RPG_Character_Common_Tools::getSkillCheck (RPG_Character_Skills_Common_Tools::getSkillRank (SKILL_HEAL,
+                                                                                                      player_in->getSkillPoints (SKILL_HEAL),
+                                                                                                      player_in->getClass (),
+                                                                                                      player_in->getLevel (SUBCLASS_NONE)),
+                                                     RPG_Character_Common_Tools::getAttributeAbilityModifier (player_in->getAttribute (RPG_Character_Skills_Common_Tools::skillToAttribute (SKILL_HEAL))),
+                                                     0, // miscellaneous modifiers *TODO*: support healers' kits, feat bonusses, etc...
+                                                     RPG_COMMON_SKILL_DC_HEAL_FIRST_AID))
+    result += 1; // a HEAL skill check takes a standard action
+  ACE_DEBUG ((LM_DEBUG,
+              ACE_TEXT ("\"%s\" stabilized \"%s\" in %u round(s), continuing\n"),
+              ACE_TEXT (player_in->getName ().c_str ()),
+              ACE_TEXT (getName ().c_str ()),
+              result));
+
+  while (hasCondition (CONDITION_UNCONSCIOUS))
+  {
+    if (Common_Tools::testRandomProbability (RPG_COMMON_UNAIDED_STABILIZE_P))
+    {
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT ("stabilized \"%s\" regained consciousness in %u round(s), continuing\n"),
+                  ACE_TEXT (getName ().c_str ()),
+                  result));
+      myCondition.erase (CONDITION_UNCONSCIOUS);
+      myCondition.insert (CONDITION_DISABLED);
+      goto continue_; // success !
+    } // end IF
+    result += 600; // one hour has passed...
+  } // end WHILE
+
+  goto continue_;
+
+natural_healing_:
+  while (myNumHitPoints > -10)
+  {
+    if (Common_Tools::testRandomProbability (RPG_COMMON_UNAIDED_STABILIZE_P))
+    {
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT ("\"%s\" stabilized naturally in %u round(s), continuing\n"),
+                  ACE_TEXT (getName ().c_str ()),
+                  result));
+      break; // success !
+    } // end IF
+    --myNumHitPoints; // just lost one HP
+    result += 1; // one round has passed...
+  } // end WHILE
+  if (myNumHitPoints == -10)
+    goto continue_; // character bled to death !
+
+  while ((myNumHitPoints > -10) &&
+         hasCondition (CONDITION_UNCONSCIOUS))
+  {
+    if (Common_Tools::testRandomProbability (RPG_COMMON_UNAIDED_STABILIZE_P))
+    {
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT ("naturally stabilized \"%s\" regained consciousness in %u round(s), continuing\n"),
+                  ACE_TEXT (getName ().c_str ()),
+                  result));
+      myCondition.erase (CONDITION_UNCONSCIOUS);
+      myCondition.insert (CONDITION_DISABLED);
+      break; // success !
+    } // end IF
+    --myNumHitPoints; // just lost one HP
+    result += 600;    // one hour has passed...
+  } // end WHILE
+  if (myNumHitPoints == -10)
+    goto continue_; // character bled to death !
+
+  while (myNumHitPoints > -10)
+  {
+    if (Common_Tools::testRandomProbability (RPG_COMMON_UNAIDED_STABILIZE_P))
+    {
+      ACE_DEBUG ((LM_DEBUG,
+                  ACE_TEXT ("naturally stabilized \"%s\" started recovery in %u round(s), continuing\n"),
+                  ACE_TEXT (getName ().c_str ()),
+                  result));
+      break; // success !
+    } // end IF
+    --myNumHitPoints; // just lost one HP
+    result += (24 * 600); // one day has passed...
+  } // end WHILE
+
+continue_:
+  myCondition.erase (CONDITION_DYING);
+  if (myNumHitPoints == -10)
+    myCondition.insert (CONDITION_DEAD);
+  else
+    myCondition.insert (CONDITION_STABLE);
+
+  return result;
+}
+
+unsigned int
 RPG_Player_Player_Base::rest (enum RPG_Common_Camp type_in,
                               unsigned int hours_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::rest"));
 
-  // *TODO*: consider dead/dying players !
-  if (myNumHitPoints < 0)
+  // sanity check(s)
+  ACE_ASSERT (myNumHitPoints >= -10);
+
+  if (hasCondition (CONDITION_DEAD))
+  { // resting does not do anything for this player in this condition
+    ACE_DEBUG ((LM_WARNING,
+                ACE_TEXT ("\"%s\" resting is futile (HP: %d), continuing\n"),
+                ACE_TEXT (getName ().c_str ()),
+                myNumHitPoints));
+    return hours_in * 3600;
+  } // end IF
+  else if (myNumHitPoints < 0)
   {
-    // cannot rest --> will die
-    return 0;
+    if (hasCondition (CONDITION_DYING))
+    {
+      // cannot rest --> will die
+      ACE_DEBUG ((LM_WARNING,
+                  ACE_TEXT ("\"%s\" cannot rest (HP: %d): will die, continuing\n"),
+                  ACE_TEXT (getName ().c_str ()),
+                  myNumHitPoints));
+      // *TODO*: support (slowly) bleeding to death...
+      return hours_in * 3600;
+    } // end IF
+    ACE_ASSERT (hasCondition (CONDITION_STABLE));
   } // end IF
 
-  // consider natural healing...
-  unsigned int restedPeriod = 0;
-  int missingHPs = getNumTotalHitPoints () - myNumHitPoints;
-  unsigned int recoveryRate = getLevel ();
+  // consider natural healing
+  unsigned int rested_period = 0;
+  ACE_UINT16 missingHPs = getNumTotalHitPoints () - myNumHitPoints;
+  RPG_Character_Level_t level_i = getLevel (SUBCLASS_NONE);
+  unsigned int recovery_rate = level_i;
   if (type_in == REST_FULL)
-    recoveryRate *= 2;
-  if ((missingHPs > 0) && (hours_in >= 24))
+    recovery_rate *= 2;
+  if (missingHPs > 0)
   {
-    // OK: we've (naturally) recovered some HPs...
-    while ((missingHPs > 0) && (restedPeriod < hours_in))
-    {
-      // just a fraction left...
-      if ((hours_in - restedPeriod) < 24)
-        break;
+    // OK: (naturally) recovered some HPs
+    unsigned int fraction = 0;
+    if (type_in == REST_FULL)
+      while ((missingHPs > 0) && (rested_period < hours_in))
+      {
+        // just a fraction left...
+        if ((hours_in - rested_period) < 24)
+        {
+          fraction = hours_in - rested_period;
+          break;
+        } // end IF
 
-      missingHPs -= recoveryRate;
-      restedPeriod += 24;
+        missingHPs -= recovery_rate;
+        rested_period += 24;
+      } // end WHILE
+
+    recovery_rate = level_i;
+    while ((missingHPs > 0) && (fraction >= 8))
+    {
+      missingHPs -= recovery_rate;
+      rested_period += 8;
+      
+      fraction -= 8;
     } // end WHILE
 
     if (missingHPs < 0)
@@ -497,10 +644,18 @@ RPG_Player_Player_Base::rest (enum RPG_Common_Camp type_in,
   if (myNumHitPoints > 0)
   {
     myCondition.insert (CONDITION_NORMAL);
+    myCondition.erase (CONDITION_STABLE);
     myCondition.erase (CONDITION_DISABLED);
+    myCondition.erase (CONDITION_UNCONSCIOUS);
   } // end IF
+  else if (myNumHitPoints == 0)
+  {
+    myCondition.insert (CONDITION_DISABLED);
+    myCondition.erase (CONDITION_STABLE);
+    myCondition.erase (CONDITION_UNCONSCIOUS);
+  } // end ELSE IF
 
-  return (restedPeriod * 24);
+  return (rested_period * 24 * 3600);
 }
 
 void

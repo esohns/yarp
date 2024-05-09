@@ -2325,11 +2325,11 @@ _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_convert () const
   ::xsd::cxx::tree::enum_comparator< char > c (_xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_literals_);
   const value* i (::std::lower_bound (
                     _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_indexes_,
-                    _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_indexes_ + 6,
+                    _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_indexes_ + 7,
                     *this,
                     c));
 
-  if (i == _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_indexes_ + 6 || _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_literals_[*i] != *this)
+  if (i == _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_indexes_ + 7 || _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_literals_[*i] != *this)
   {
     throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
   }
@@ -2338,9 +2338,10 @@ _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_convert () const
 }
 
 const char* const RPG_Common_PhysicalDamageType_XMLTree_Type::
-_xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_literals_[6] =
+_xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_literals_[7] =
 {
   "PHYSICALDAMAGE_NONE",
+  "PHYSICALDAMAGE_NON_LETHAL",
   "PHYSICALDAMAGE_BLUDGEONING",
   "PHYSICALDAMAGE_PIERCING",
   "PHYSICALDAMAGE_SLASHING",
@@ -2349,11 +2350,12 @@ _xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_literals_[6] =
 };
 
 const RPG_Common_PhysicalDamageType_XMLTree_Type::value RPG_Common_PhysicalDamageType_XMLTree_Type::
-_xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_indexes_[6] =
+_xsd_RPG_Common_PhysicalDamageType_XMLTree_Type_indexes_[7] =
 {
   ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_BLUDGEONING,
   ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_CRUSHING,
   ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_NONE,
+  ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_NON_LETHAL,
   ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_PIERCING,
   ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_SLASHING,
   ::RPG_Common_PhysicalDamageType_XMLTree_Type::PHYSICALDAMAGE_WITHERING

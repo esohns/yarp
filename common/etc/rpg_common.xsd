@@ -237,7 +237,11 @@
 
   <xsd:simpleType name="RPG_Common_PhysicalDamageType_Type">
     <xsd:restriction base="xsd:string">
+      <!-- i.e. from natural weapons (e.g. web, spit, ...) -->
       <xsd:enumeration value="PHYSICALDAMAGE_NONE"/>
+      <!-- i.e. from brawling, ... -->
+      <xsd:enumeration value="PHYSICALDAMAGE_NON_LETHAL"/>
+      <!--                                            -->
       <xsd:enumeration value="PHYSICALDAMAGE_BLUDGEONING"/>
       <xsd:enumeration value="PHYSICALDAMAGE_PIERCING"/>
       <xsd:enumeration value="PHYSICALDAMAGE_SLASHING"/>
