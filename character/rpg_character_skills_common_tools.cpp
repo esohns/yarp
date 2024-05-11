@@ -1432,8 +1432,62 @@ RPG_Character_Skills_Common_Tools::initializeSkillsToAttributeTable ()
   // clean table
   mySkillsToAttributeTable.clear ();
 
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_APPRAISE, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_BALANCE, ATTRIBUTE_DEXTERITY));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_BLUFF, ATTRIBUTE_CHARISMA));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_CLIMB, ATTRIBUTE_STRENGTH));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_CONCENTRATION, ATTRIBUTE_CONSTITUTION));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_CRAFT_ANY, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_CRAFT_ALL, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_CRAFT_ALCHEMY, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_CRAFT_FLETCHER, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_CRAFT_BOWYER, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_CRAFT_SMITH_ARMOR, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_CRAFT_SMITH_BLACK, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_CRAFT_SMITH_WEAPON, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_CRAFT_TRAP, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_CRAFT_OTHER, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_DECIPHER_SCRIPT, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_DIPLOMACY, ATTRIBUTE_CHARISMA));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_DISABLE_DEVICE, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_DISGUISE, ATTRIBUTE_CHARISMA));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_ESCAPE_ARTIST, ATTRIBUTE_DEXTERITY));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_FORGERY, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_GATHER_INFORMATION, ATTRIBUTE_CHARISMA));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_HANDLE_ANIMAL, ATTRIBUTE_CHARISMA));
   mySkillsToAttributeTable.insert (std::make_pair (SKILL_HEAL, ATTRIBUTE_WISDOM));
-  // *TODO*: add complete mapping here
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_HIDE, ATTRIBUTE_DEXTERITY));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_INTIMIDATE, ATTRIBUTE_CHARISMA));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_JUMP, ATTRIBUTE_STRENGTH));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_KNOWLEDGE_ANY, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_KNOWLEDGE_ALL, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_KNOWLEDGE_ARCANA, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_KNOWLEDGE_ARCHITECTURE_ENGINEERING, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_KNOWLEDGE_DUNGEONS, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_KNOWLEDGE_GEOGRAPHY, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_KNOWLEDGE_HISTORY, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_KNOWLEDGE_LOCAL, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_KNOWLEDGE_NATURE, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_KNOWLEDGE_NOBILITY_ROYALTY, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_KNOWLEDGE_RELIGION, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_KNOWLEDGE_PLANES, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_LISTEN, ATTRIBUTE_WISDOM));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_MOVE_SILENTLY, ATTRIBUTE_DEXTERITY));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_OPEN_LOCK, ATTRIBUTE_DEXTERITY));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_PERFORM, ATTRIBUTE_CHARISMA));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_PROFESSION, ATTRIBUTE_WISDOM));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_RIDE, ATTRIBUTE_DEXTERITY));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_SEARCH, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_SENSE_MOTIVE, ATTRIBUTE_WISDOM));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_SLEIGHT_OF_HAND, ATTRIBUTE_DEXTERITY));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_SPEAK_LANGUAGE, RPG_COMMON_ATTRIBUTE_INVALID));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_SPELLCRAFT, ATTRIBUTE_INTELLIGENCE));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_SPOT, ATTRIBUTE_WISDOM));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_SURVIVAL, ATTRIBUTE_WISDOM));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_SWIM, ATTRIBUTE_STRENGTH));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_TUMBLE, ATTRIBUTE_DEXTERITY));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_USE_MAGIC_DEVICE, ATTRIBUTE_CHARISMA));
+  mySkillsToAttributeTable.insert (std::make_pair (SKILL_USE_ROPE, ATTRIBUTE_DEXTERITY));
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("RPG_Character_Skills_Common_Tools: initialized skill to attribute table...\n")));

@@ -203,6 +203,7 @@ RPG_Player_Common_Tools::restParty (RPG_Player_Party_t& party_in)
 
   // check party status
   unsigned int diff, fraction, recovery_time, total_recovery_time = 0;
+  unsigned int stabilization_time = 0;
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("party status:\n-------------\n")));
   for (RPG_Player_PartyConstIterator_t iterator = party_in.begin ();
@@ -216,7 +217,7 @@ RPG_Player_Common_Tools::restParty (RPG_Player_Party_t& party_in)
                 static_cast<unsigned int> ((*iterator)->getLevel (SUBCLASS_NONE)),
                 (*iterator)->getNumHitPoints (), (*iterator)->getNumTotalHitPoints (),
                 ACE_TEXT (RPG_Character_Common_Tools::toString ((*iterator)->getCondition ()).c_str ()),
-                (RPG_Player_Common_Tools::isCharacterHelpless (*iterator) ? ACE_TEXT_ALWAYS_CHAR ("OK") : ACE_TEXT_ALWAYS_CHAR ("DOWN"))));
+                (!RPG_Player_Common_Tools::isCharacterHelpless (*iterator) ? ACE_TEXT_ALWAYS_CHAR ("OK") : ACE_TEXT_ALWAYS_CHAR ("DOWN"))));
 
     recovery_time = 0;
 
@@ -227,9 +228,9 @@ RPG_Player_Common_Tools::restParty (RPG_Player_Party_t& party_in)
       {
         const RPG_Player* const player_p =
           RPG_Player_Common_Tools::getBestHealer (party_in);
-        recovery_time = (*iterator)->stabilize (player_p);
-        recovery_time *= RPG_COMMON_COMBAT_ROUND_INTERVAL_S;
-        recovery_time /= 3600; // s --> h
+        stabilization_time = (*iterator)->stabilize (player_p);
+        stabilization_time *= RPG_COMMON_COMBAT_ROUND_INTERVAL_S;
+        stabilization_time /= (3600 * 24); // s --> d
 
         if ((*iterator)->hasCondition (CONDITION_STABLE))
           goto continue_;
@@ -240,18 +241,22 @@ RPG_Player_Common_Tools::restParty (RPG_Player_Party_t& party_in)
     } // end IF
 
 continue_:
+    // *TODO*: make healers heal the party with spells to speed things up
+
     // consider natural healing here
     diff =
       ((*iterator)->getNumTotalHitPoints () - (*iterator)->getNumHitPoints ());
-    fraction = diff % ((*iterator)->getLevel (SUBCLASS_NONE) * 2);
+    unsigned int level_i = (*iterator)->getLevel (SUBCLASS_NONE);
+    fraction = diff % (level_i * 2);
     diff -= fraction;
-    recovery_time +=
-      ((diff / ((*iterator)->getLevel (SUBCLASS_NONE) * 2)) + // days of complete bed-rest +
-       (fraction / (*iterator)->getLevel (SUBCLASS_NONE)));   // days of good night's sleep
+    recovery_time += ((diff / (level_i * 2)) + // days of complete bed-rest +
+                      (fraction / level_i));   // days of good night's sleep
 
     if (recovery_time > total_recovery_time)
       total_recovery_time = recovery_time;
   } // end FOR
+  if (!total_recovery_time)
+    goto continue_2;
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("total recovery time: %u day(s)\n"),
               total_recovery_time));
@@ -263,7 +268,8 @@ continue_:
     (*iterator)->rest (REST_FULL,
                        (total_recovery_time * 24));
 
-  return (total_recovery_time * 24 * 3600);
+continue_2:
+  return ((total_recovery_time + stabilization_time) * 24 * 3600);
 }
 
 bool

@@ -469,8 +469,8 @@ RPG_Player_Player_Base::stabilize (const RPG_Player_Player_Base* const player_in
   // sanity check(s)
   if (!hasCondition (CONDITION_DYING))
     return 0; // nothing to do...
-  if (!player_in)
-    goto natural_healing_;
+  if (!player_in) // there is no one (left) to help us out...
+    goto natural_healing_; // *TODO*: (if conscious,) cast any healing spells on self first
   ACE_ASSERT (player_in->isPlayerCharacter ());
 
   // step1: *TODO*: cast any healing spells
@@ -504,6 +504,9 @@ RPG_Player_Player_Base::stabilize (const RPG_Player_Player_Base* const player_in
       myCondition.insert (CONDITION_DISABLED);
       goto continue_; // success !
     } // end IF
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("\"%s\" failed to regain consciousness, continuing\n"),
+                ACE_TEXT (getName ().c_str ())));
     result += 600; // one hour has passed...
   } // end WHILE
 
@@ -521,6 +524,10 @@ natural_healing_:
       break; // success !
     } // end IF
     --myNumHitPoints; // just lost one HP
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("\"%s\" failed to stabilize (HP: %d/%u), continuing\n"),
+                ACE_TEXT (getName ().c_str ()),
+                myNumHitPoints, getNumTotalHitPoints ()));
     result += 1; // one round has passed...
   } // end WHILE
   if (myNumHitPoints == -10)
@@ -540,6 +547,10 @@ natural_healing_:
       break; // success !
     } // end IF
     --myNumHitPoints; // just lost one HP
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("\"%s\" failed to regain consciousness (HP: %d/%u), continuing\n"),
+                ACE_TEXT (getName ().c_str ()),
+                myNumHitPoints, getNumTotalHitPoints ()));
     result += 600;    // one hour has passed...
   } // end WHILE
   if (myNumHitPoints == -10)
@@ -556,6 +567,10 @@ natural_healing_:
       break; // success !
     } // end IF
     --myNumHitPoints; // just lost one HP
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("\"%s\" failed to start natural recovery (HP: %d/%u), continuing\n"),
+                ACE_TEXT (getName ().c_str ()),
+                myNumHitPoints, getNumTotalHitPoints ()));
     result += (24 * 600); // one day has passed...
   } // end WHILE
 
@@ -575,71 +590,84 @@ RPG_Player_Player_Base::rest (enum RPG_Common_Camp type_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Player_Player_Base::rest"));
 
-  // sanity check(s)
-  ACE_ASSERT (myNumHitPoints >= -10);
+  unsigned int rested_hours_i = 0;
 
+  // sanity check(s)
+start:
+  ACE_ASSERT (myNumHitPoints >= -10);
   if (hasCondition (CONDITION_DEAD))
   { // resting does not do anything for this player in this condition
     ACE_DEBUG ((LM_WARNING,
-                ACE_TEXT ("\"%s\" resting is futile (HP: %d), continuing\n"),
-                ACE_TEXT (getName ().c_str ()),
-                myNumHitPoints));
-    return hours_in * 3600;
+                ACE_TEXT ("(further) resting \"%s\" is futile; player is dead, returning\n"),
+                ACE_TEXT (getName ().c_str ())));
+    return rested_hours_i * 3600;
   } // end IF
-  else if (myNumHitPoints < 0)
+
+  if (myNumHitPoints < 0)
   {
     if (hasCondition (CONDITION_DYING))
     {
-      // cannot rest --> will die
-      ACE_DEBUG ((LM_WARNING,
-                  ACE_TEXT ("\"%s\" cannot rest (HP: %d): will die, continuing\n"),
-                  ACE_TEXT (getName ().c_str ()),
-                  myNumHitPoints));
-      // *TODO*: support (slowly) bleeding to death...
-      return hours_in * 3600;
+      // (try to) stabilize self
+      unsigned int recovery_time_in_rounds_i =
+        stabilize (hasCondition (CONDITION_UNCONSCIOUS) ? NULL : this);
+      recovery_time_in_rounds_i *= RPG_COMMON_COMBAT_ROUND_INTERVAL_S;
+      recovery_time_in_rounds_i /= 3600; // s --> h
+      rested_hours_i += recovery_time_in_rounds_i;
+      goto start;
     } // end IF
-    ACE_ASSERT (hasCondition (CONDITION_STABLE));
   } // end IF
+  ACE_ASSERT (!hasCondition (CONDITION_DYING));
+
+  // *TODO*: cast any healing spells on self first to speed things up
 
   // consider natural healing
-  unsigned int rested_period = 0;
-  ACE_UINT16 missingHPs = getNumTotalHitPoints () - myNumHitPoints;
+  ACE_INT16 missingHPs = getNumTotalHitPoints () - myNumHitPoints;
   RPG_Character_Level_t level_i = getLevel (SUBCLASS_NONE);
   unsigned int recovery_rate = level_i;
   if (type_in == REST_FULL)
     recovery_rate *= 2;
-  if (missingHPs > 0)
-  {
-    // OK: (naturally) recovered some HPs
-    unsigned int fraction = 0;
-    if (type_in == REST_FULL)
-      while ((missingHPs > 0) && (rested_period < hours_in))
-      {
-        // just a fraction left...
-        if ((hours_in - rested_period) < 24)
-        {
-          fraction = hours_in - rested_period;
-          break;
-        } // end IF
+  if (missingHPs == 0)
+    goto continue_;
 
-        missingHPs -= recovery_rate;
-        rested_period += 24;
-      } // end WHILE
+  // OK: (naturally) recovered some HPs
+  if (type_in == REST_FULL)
+  {
+    unsigned int fraction = 0;
+    while ((missingHPs > 0) && (rested_hours_i < hours_in))
+    {
+      // just a fraction left...
+      if ((hours_in - rested_hours_i) < 24)
+      {
+        fraction = hours_in - rested_hours_i;
+        break;
+      } // end IF
+
+      missingHPs -= recovery_rate;
+      rested_hours_i += 24;
+    } // end WHILE
 
     recovery_rate = level_i;
     while ((missingHPs > 0) && (fraction >= 8))
     {
       missingHPs -= recovery_rate;
-      rested_period += 8;
-      
+      rested_hours_i += 8;
+
       fraction -= 8;
     } // end WHILE
-
-    if (missingHPs < 0)
-      missingHPs = 0;
-    myNumHitPoints = getNumTotalHitPoints () - missingHPs;
   } // end IF
+  else // *TODO* use a switch statement
+  {
+    while ((missingHPs > 0) && (rested_hours_i < hours_in))
+    {
+      missingHPs -= recovery_rate;
+      rested_hours_i += 8;
+    } // end WHILE
+  } // end ELSE
+  if (missingHPs < 0)
+    missingHPs = 0;
+  myNumHitPoints = getNumTotalHitPoints () - missingHPs;
 
+continue_:
   // adjust condition
   if (myNumHitPoints > 0)
   {
@@ -655,7 +683,7 @@ RPG_Player_Player_Base::rest (enum RPG_Common_Camp type_in,
     myCondition.erase (CONDITION_UNCONSCIOUS);
   } // end ELSE IF
 
-  return (rested_period * 24 * 3600);
+  return (rested_hours_i * 3600);
 }
 
 void

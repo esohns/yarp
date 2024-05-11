@@ -2660,22 +2660,20 @@ about_clicked_GTK_cb (GtkWidget* widget_in,
   RPG_TRACE (ACE_TEXT ("::about_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG (widget_in);
+
+  // sanity check(s)
   struct RPG_Client_GTK_CBData* data_p =
     static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
-
-  // sanity check(s)
   ACE_ASSERT (data_p);
-
   Common_UI_GTK_BuildersConstIterator_t iterator =
     data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
-  // sanity check(s)
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
 
   // retrieve about dialog handle
   GtkWidget* about_dialog =
       GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
                                           ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_ABOUT_NAME)));
-  ACE_ASSERT(about_dialog);
+  ACE_ASSERT (about_dialog);
   if (!about_dialog)
   {
     ACE_DEBUG ((LM_ERROR,
@@ -2686,7 +2684,7 @@ about_clicked_GTK_cb (GtkWidget* widget_in,
 
   // draw it
   if (!gtk_widget_get_visible (about_dialog))
-    gtk_widget_show_all (about_dialog);
+    gtk_widget_show (about_dialog);
 
   return FALSE;
 }
@@ -4240,12 +4238,12 @@ togglebutton_join_part_toggled_cb (GtkToggleButton* toggleButton_in,
   ACE_ASSERT (button);
   gtk_widget_set_sensitive (GTK_WIDGET (button), TRUE);
 
-  // make rest button insensitive
-  button =
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_REST_NAME)));
-  ACE_ASSERT (button);
-  gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
+  //// make rest button insensitive
+  //button =
+  //  GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+  //                                      ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_BUTTON_REST_NAME)));
+  //ACE_ASSERT (button);
+  //gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 }
 
 gint
@@ -4521,13 +4519,19 @@ rest_button_rest_clicked_cb (GtkButton* button_in,
                                          ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_ENTRY_HOURS_NAME)));
   ACE_ASSERT (entry_p);
 
+  // retrieve #hours
   std::istringstream converter;
   converter.str (gtk_entry_buffer_get_text (gtk_entry_get_buffer (entry_p)));
   unsigned int value_i = 0;
   converter >> value_i;
+  ACE_UNUSED_ARG (value_i);
 
-  player->rest (REST_FULL,
-                value_i);
+  RPG_Player_Party_t party_a;
+  party_a.push_back (player);
+  unsigned int seconds_rested_i = RPG_Player_Common_Tools::restParty (party_a);
+  //unsigned int seconds_rested_i = player->rest (REST_FULL,
+  //                                              value_i);
+  ACE_UNUSED_ARG (seconds_rested_i);
 
   ::update_character_profile (*player, (*iterator).second.second);
 }

@@ -52,7 +52,7 @@ class RPG_Player_Common_Tools
   static bool hasSubClass (enum RPG_Common_SubClass,   // sub-class
                            const RPG_Player_Party_t&); // party of players
   // *NOTE*: returns the player with the highest HEAL skill rank (if any), some
-  //         random player otherwise
+  //         (random) able player otherwise, else NULL
   static const RPG_Player* const getBestHealer (const RPG_Player_Party_t&); // party of players
 
   // *WARNING*: result needs to be delete()d !
