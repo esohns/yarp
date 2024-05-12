@@ -21,12 +21,9 @@
 #ifndef TEST_U_NET_CLIENT_COMMON_H
 #define TEST_U_NET_CLIENT_COMMON_H
 
-#include <deque>
-#include <vector>
+#include <list>
 
-#include "common.h"
-
-#include "common_ui_common.h"
+#include "ace/Thread_Mutex.h"
 
 #include "common_ui_gtk_common.h"
 
@@ -35,10 +32,10 @@
 
 #include "rpg_net_protocol_message.h"
 #include "rpg_net_protocol_session_message.h"
+#include "rpg_net_protocol_stream_common.h"
 
 // forward declaration(s)
 struct RPG_Client_Configuration;
-class Net_Client_TimeoutHandler;
 typedef Stream_ISessionDataNotify_T<struct RPG_Net_Protocol_SessionData,
                                     enum Stream_SessionMessageType,
                                     RPG_Net_Protocol_Message,
@@ -55,16 +52,12 @@ struct Net_Client_GTK_CBData
    , configuration (NULL)
    , subscribers ()
    //, subscribersLock ()
-   , timerId (-1)
-   , timeoutHandler (NULL)
   {}
 
   bool                             allowUserRuntimeStatistic;
   struct RPG_Client_Configuration* configuration;
   RPG_Net_Protocol_Subscribers_t   subscribers;
   //ACE_Recursive_Thread_Mutex     subscribersLock;
-  long                             timerId;        // *NOTE*: client only !
-  Net_Client_TimeoutHandler*       timeoutHandler; // *NOTE*: client only !
 };
 
 #endif

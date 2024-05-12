@@ -518,7 +518,7 @@ do_work (unsigned int maxNumConnections_in,
   stream_configuration_2.initialize (module_configuration,
                                      modulehandler_configuration,
                                      stream_configuration);
-  CBData_in.configuration->connection_configuration.streamConfiguration =
+  CBData_in.configuration->protocol_configuration.connectionConfiguration.streamConfiguration =
     &stream_configuration_2;
 
   //  config.delete_module = false;
@@ -605,7 +605,7 @@ do_work (unsigned int maxNumConnections_in,
   // step3: initialize connection manager
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (maxNumConnections_in,
                                                                          ACE_Time_Value (0, NET_STATISTIC_DEFAULT_VISIT_INTERVAL_MS * 1000));
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->set (CBData_in.configuration->connection_configuration,
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->set (CBData_in.configuration->protocol_configuration.connectionConfiguration,
                                                                   NULL);
 
   // step4: handle events (signals, incoming connections/data, timers, ...)
@@ -621,7 +621,7 @@ do_work (unsigned int maxNumConnections_in,
   if (!UIDefinitionFile_in.empty ())
   {
     CBData_in.configuration->gtk_configuration.eventHooks.finiHook = idle_finalize_UI_cb;
-    CBData_in.configuration->gtk_configuration.eventHooks.initHook = idle_initialize_UI_cb;
+    CBData_in.configuration->gtk_configuration.eventHooks.initHook = idle_initialize_server_UI_cb;
     //CBData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
     //  std::make_pair (UIDefinitionFile_in, static_cast<GladeXML*> (NULL));
     CBData_in.UIState->builders[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN)] =
@@ -711,7 +711,7 @@ do_work (unsigned int maxNumConnections_in,
   //listener_configuration.statisticCollectionInterval =
   //  statisticsReportingInterval_in;
   //listener_configuration.useLoopbackDevice = useLoopback_in;
-  if (!CBData_in.listenerHandle->initialize (CBData_in.configuration->connection_configuration))
+  if (!CBData_in.listenerHandle->initialize (CBData_in.configuration->protocol_configuration.connectionConfiguration))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to initialize listener, returning\n")));
@@ -1037,7 +1037,7 @@ ACE_TMAIN (int argc_in,
   std::string log_file;
   if (log_to_file)
     log_file =
-      Net_Server_Common_Tools::getNextLogFileName (ACE_TEXT_ALWAYS_CHAR (""),
+      Net_Server_Common_Tools::getNextLogFileName (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                    ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
   if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
                                             log_file,                      // logfile
@@ -1099,12 +1099,18 @@ ACE_TMAIN (int argc_in,
     return EXIT_FAILURE;
   } // end IF
 
-  // step1h: init GLIB / G(D|T)K[+] / GNOME ?
+  // step1h: initialize GLIB / G(D|T)K[+] / GNOME ?
   //Common_UI_GladeDefinition ui_definition (argc_in,
   //                                         argv_in);
   Common_UI_GtkBuilderDefinition_t ui_definition;
   if (!UI_file.empty ())
-    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (configuration.gtk_configuration);
+  {
+    configuration.gtk_configuration.definition = &ui_definition;
+    configuration.gtk_configuration.CBData = &gtk_cb_user_data;
+    bool result_2 =
+      COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (configuration.gtk_configuration);
+    ACE_ASSERT (result_2);
+  } // end IF
 
   ACE_High_Res_Timer timer;
   timer.start ();

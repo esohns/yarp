@@ -4533,7 +4533,8 @@ rest_button_rest_clicked_cb (GtkButton* button_in,
   //                                              value_i);
   ACE_UNUSED_ARG (seconds_rested_i);
 
-  ::update_character_profile (*player, (*iterator).second.second);
+  ::update_character_profile (*player,
+                              (*iterator).second.second);
 }
 
 void

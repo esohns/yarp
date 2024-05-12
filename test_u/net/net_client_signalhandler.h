@@ -30,6 +30,7 @@
 #include "common_signal_handler.h"
 
 #include "rpg_net_protocol_configuration.h"
+#include "rpg_net_protocol_network.h"
 
 // forward declarations
 class Common_IControl;
@@ -40,11 +41,8 @@ class Net_Client_SignalHandler
   typedef Common_SignalHandler_T<struct Common_SignalHandlerConfiguration> inherited;
 
  public:
-  Net_Client_SignalHandler (long);                                                    // timer ID
-                            //Common_IControl*,                                        // controller handle
-                            //Common_IStatistic_T<RPG_Net_Protocol_RuntimeStatistic>*, // reporter handle
-                            //// ---------------------------------------------------------------
-                            //bool = true);                                            // use reactor ?
+  Net_Client_SignalHandler (struct Common_EventDispatchConfiguration&,
+                            RPG_Net_Protocol_ConnectionConfiguration&);
   inline virtual ~Net_Client_SignalHandler () {}
 
   // implement Common_ISignal
@@ -55,10 +53,11 @@ class Net_Client_SignalHandler
   ACE_UNIMPLEMENTED_FUNC (Net_Client_SignalHandler (const Net_Client_SignalHandler&))
   ACE_UNIMPLEMENTED_FUNC (Net_Client_SignalHandler& operator= (const Net_Client_SignalHandler&))
 
-  //Common_IControl*                                        control_;
-  //Common_IStatistic_T<RPG_Net_Protocol_RuntimeStatistic>* report_;
-  long                                                    timerId_;
-  //bool                                                    useReactor_;
+  struct Common_EventDispatchConfiguration* dispatchConfiguration_;
+  RPG_Net_Protocol_ConnectionConfiguration* connectionConfiguration_;
+  RPG_Net_Protocol_AsynchConnector_t        asynchConnector_;
+  RPG_Net_Protocol_Connector_t              connector_;
+  ACE_HANDLE                                handle_;
 };
 
 #endif

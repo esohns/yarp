@@ -364,7 +364,7 @@ do_processArguments (int argc_in,
 }
 
 void
-do_work (const struct RPG_Map_FloorPlan_Configuration& mapConfig_in,
+do_work (const struct RPG_Map_FloorPlan_Configuration& mapConfiguration_in,
          bool generateLevel_in,
          const std::string& outputFile_in,
          bool dump_in,
@@ -396,7 +396,7 @@ do_work (const struct RPG_Map_FloorPlan_Configuration& mapConfig_in,
       level.metadata.spawns.clear ();
 
       RPG_Engine_Level::random (level.metadata,
-                                mapConfig_in,
+                                mapConfiguration_in,
                                 level);
     } // end IF
     else
@@ -430,17 +430,17 @@ do_work (const struct RPG_Map_FloorPlan_Configuration& mapConfig_in,
       level.metadata.spawns.push_back(spawn);
       level.metadata.max_num_spawned = RPG_ENGINE_ENCOUNTER_DEF_NUM_SPAWNED_MAX;
 
-      RPG_Engine_Level::create (mapConfig_in,
+      RPG_Engine_Level::create (mapConfiguration_in,
                                 level);
     } // end ELSE
   } // end IF
   else
   {
     if (random_in)
-      RPG_Map_Level::random (mapConfig_in,
+      RPG_Map_Level::random (mapConfiguration_in,
                              level.map);
     else
-      RPG_Map_Level::create (mapConfig_in,
+      RPG_Map_Level::create (mapConfiguration_in,
                              level.map);
   } // end ELSE
 

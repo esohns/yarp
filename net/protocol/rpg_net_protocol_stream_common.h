@@ -44,10 +44,12 @@ struct RPG_Net_Protocol_SessionData
    : Stream_SessionData ()
    , connection (NULL)
    , connectionStates ()
+   , statistic ()
   {}
 
   RPG_Net_Protocol_IConnection_t* connection;
-  Stream_Net_ConnectionStates_t   connectionStates;
+  Stream_Net_ConnectionStates_t   connectionStates; // i/o module
+  Net_StreamStatistic_t           statistic;
 };
 typedef Stream_SessionData_T<struct RPG_Net_Protocol_SessionData> RPG_Net_Protocol_SessionData_t;
 

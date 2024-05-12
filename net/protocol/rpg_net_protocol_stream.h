@@ -49,7 +49,6 @@ typedef Net_Connection_Manager_T<ACE_MT_SYNCH,
                                  Net_StreamStatistic_t,
                                  struct Net_UserData> RPG_Net_Protocol_Connection_Manager_t;
 
-
 extern const char protocol_stream_name_string_[];
 
 class RPG_Net_Protocol_Stream
@@ -61,7 +60,7 @@ class RPG_Net_Protocol_Stream
                                          enum Stream_StateMachine_ControlState,
                                          struct RPG_Net_Protocol_StreamState,
                                          struct RPG_Net_Protocol_StreamConfiguration,
-                                         struct Stream_Statistic,
+                                         Net_StreamStatistic_t,
                                          Common_Timer_Manager_t,
                                          struct RPG_Net_Protocol_ModuleHandlerConfiguration,
                                          struct RPG_Net_Protocol_SessionData,
@@ -81,7 +80,7 @@ class RPG_Net_Protocol_Stream
                                          enum Stream_StateMachine_ControlState,
                                          struct RPG_Net_Protocol_StreamState,
                                          struct RPG_Net_Protocol_StreamConfiguration,
-                                         struct Stream_Statistic,
+                                         Net_StreamStatistic_t,
                                          Common_Timer_Manager_t,
                                          struct RPG_Net_Protocol_ModuleHandlerConfiguration,
                                          struct RPG_Net_Protocol_SessionData,
@@ -117,7 +116,7 @@ class RPG_Net_Protocol_Stream
  private:
 //   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Stream())
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Stream (const RPG_Net_Protocol_Stream&))
-  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Stream& operator=(const RPG_Net_Protocol_Stream&))
+  ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Stream& operator= (const RPG_Net_Protocol_Stream&))
 
   // modules
   //RPG_Net_HeaderParser_Module    headerParser_;

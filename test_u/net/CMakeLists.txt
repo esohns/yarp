@@ -197,6 +197,7 @@ install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 ########### launcher #####################
 file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
 file (TO_CMAKE_PATH "${SDL_LIB_DIR}" SDL_LIB_PATH)
+file (TO_CMAKE_PATH "${GTK_LIB_DIRS}" GTK_LIB_PATH)
 if (UNIX)
  file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}" COMMAND)
 elseif (WIN32)
@@ -205,13 +206,15 @@ elseif (WIN32)
 endif ()
 create_target_launcher (${EXECUTABLE}
                         COMMAND ${COMMAND}
-                        ARGS "-t"
+                        ARGS "-l -t"
                         FORWARD_ARGS
                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
                                              ${XERCESC_LIB_DIR}
                                              ${LIB_ROOT}/libpng/build/Debug
                                              ${LIB_ROOT}/ACE_TAO/ACE/lib
+                                             ${LIB_ROOT}/openssl
                                              ${SDL_LIB_PATH}
+                                             ${GTK_LIB_PATH}
                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                         ENVIRONMENT foo=bar)
 if (UNIX)
@@ -222,12 +225,14 @@ elseif (WIN32)
 endif ()
 create_target_launcher (${EXECUTABLE_2}
                         COMMAND ${COMMAND}
-                        ARGS "-t"
+                        ARGS "-l -t"
                         FORWARD_ARGS
                         RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
                                              ${XERCESC_LIB_DIR}
                                              ${LIB_ROOT}/libpng/build/Debug
                                              ${LIB_ROOT}/ACE_TAO/ACE/lib
+                                             ${LIB_ROOT}/openssl
                                              ${SDL_LIB_PATH}
+                                             ${GTK_LIB_PATH}
                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                         ENVIRONMENT foo=bar)

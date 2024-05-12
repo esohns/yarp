@@ -23,6 +23,8 @@
 
 #include <list>
 
+#include "ace/Time_Value.h"
+
 #include "common_configuration.h"
 
 #include "stream_common.h"
@@ -87,14 +89,29 @@ class RPG_Net_Protocol_ConnectionConfiguration
   {}
 };
 
+struct RPG_Net_Protocol_LoginOptions
+{
+  std::string server;
+  unsigned short port;
+  std::string password;
+  std::string nick;
+  std::string user;
+  std::string realname;
+  std::string channel;
+};
+
 struct RPG_Net_Protocol_Configuration
 {
   RPG_Net_Protocol_Configuration ()
-   : connectionConfiguration ()
+   : dispatchConfiguration ()
+   , connectionConfiguration ()
    , streamConfiguration ()
-   , clientPingInterval (0)
-   //, loginOptions ()
+   , clientPingInterval (ACE_Time_Value::zero)
+   , loginOptions ()
   {}
+  
+  // **************************** dispatch data ********************************
+  struct Common_EventDispatchConfiguration dispatchConfiguration;
 
   // **************************** socket data **********************************
   RPG_Net_Protocol_ConnectionConfiguration connectionConfiguration;
@@ -103,8 +120,8 @@ struct RPG_Net_Protocol_Configuration
   RPG_Net_Protocol_StreamConfiguration_t   streamConfiguration;
 
   // *************************** protocol data *********************************
-  unsigned int                             clientPingInterval; // server only
-  //RPG_Net_Protocol_IRCLoginOptions         loginOptions;
+  ACE_Time_Value                           clientPingInterval; // server only
+  struct RPG_Net_Protocol_LoginOptions     loginOptions;
 };
 
 #endif

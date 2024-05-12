@@ -50,6 +50,14 @@ typedef Net_IConnection_T<ACE_INET_Addr,
                           struct Net_StreamConnectionState,
                           Net_StreamStatistic_t> RPG_Net_Protocol_IConnection_t;
 
+typedef Net_IStreamConnection_T<ACE_INET_Addr,
+                                RPG_Net_Protocol_ConnectionConfiguration,
+                                struct Net_StreamConnectionState,
+                                Net_StreamStatistic_t,
+                                Net_TCPSocketConfiguration_t,
+                                RPG_Net_Protocol_Stream,
+                                enum Stream_StateMachine_ControlState> RPG_Net_Protocol_IStreamConnection_t;
+
 typedef Net_TCPConnectionBase_T<ACE_MT_SYNCH,
                                 Net_TCPSocketHandler_t,
                                 RPG_Net_Protocol_ConnectionConfiguration,

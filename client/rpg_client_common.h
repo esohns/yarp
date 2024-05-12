@@ -37,6 +37,8 @@
 
 #include "common.h"
 
+#include "common_signal_common.h"
+
 #include "common_ui_common.h"
 
 #include "common_ui_gtk_common.h"
@@ -138,26 +140,16 @@ struct RPG_Client_AudioConfiguration
   bool                              mute;
 };
 
-struct RPG_Client_NetworkConfiguration
-{
-  std::string    server;
-  unsigned short port;
-  std::string    password;
-  std::string    nick;
-  std::string    user;
-  std::string    realname;
-  std::string    channel;
-};
-
 struct RPG_Client_Configuration
 {
+  // *** signals ***
+  struct Common_SignalHandlerConfiguration   signal_configuration;
+  // *** UI ***
   Common_UI_GTK_Configuration_t              gtk_configuration;
-
   // *** timers ***
   struct Common_TimerConfiguration           timer_configuration;
-  // *** reactor ***
+  // *** event ***
   struct Common_EventDispatchConfiguration   dispatch_configuration;
-  unsigned int                               num_dispatch_threads; // 1: don't use a threadpool
   // *** UI ***
   //std::string                           glade_file;
   // *** input ***
@@ -169,9 +161,7 @@ struct RPG_Client_Configuration
   std::string                                graphics_directory;
   std::string                                graphics_dictionary;
   // *** network ***
-  RPG_Net_Protocol_StreamConfiguration_t     stream_configuration;
-  RPG_Net_Protocol_ConnectionConfiguration   connection_configuration;
-  struct RPG_Client_NetworkConfiguration     network_configuration;
+  struct RPG_Net_Protocol_Configuration      protocol_configuration;
   // *** magic ***
   std::string                                magic_dictionary;
   // *** item ***

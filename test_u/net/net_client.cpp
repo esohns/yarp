@@ -86,6 +86,8 @@
 
 #include "rpg_net_protocol_network.h"
 
+#include "rpg_engine_defines.h"
+
 #include "rpg_client_common.h"
 
 #include "net_callbacks.h"
@@ -115,7 +117,7 @@ do_printUsage (const std::string& programName_in)
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                           ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
-                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_NET_CONFIGURATION_SUBDIRECTORY),
                                                           true);
 
   std::cout << ACE_TEXT_ALWAYS_CHAR ("usage: ")
@@ -130,10 +132,6 @@ do_printUsage (const std::string& programName_in)
             << std::endl;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-//  path += ACE_TEXT_ALWAYS_CHAR("net");
-//  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//#endif
   path += ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_FILE);
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-g[[STRING]] : UI file [\"")
             << path
@@ -169,7 +167,7 @@ do_printUsage (const std::string& programName_in)
             << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-r           : use reactor [")
-            << (COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR)
+            << RPG_ENGINE_USES_REACTOR
             << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-s [VALUE]   : statistics reporting interval (second(s)) [")
@@ -181,8 +179,8 @@ do_printUsage (const std::string& programName_in)
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-v           : print version information and exit")
             << std::endl;
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-x [VALUE]   : #dispatch threads [")
-            << ((COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR) ? NET_CLIENT_DEFAULT_NUMBER_OF_REACTOR_DISPATCH_THREADS
-                                                                                 : NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS)
+            << (RPG_ENGINE_USES_REACTOR ? NET_CLIENT_DEFAULT_NUMBER_OF_REACTOR_DISPATCH_THREADS
+                                        : NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS)
             << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
 }
@@ -210,7 +208,7 @@ do_processArguments (int argc_in,
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                           ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
-                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_NET_CONFIGURATION_SUBDIRECTORY),
                                                           true);
 
   // init results
@@ -224,7 +222,7 @@ do_processArguments (int argc_in,
     ACE_TEXT_ALWAYS_CHAR (RPG_NET_DEFAULT_NETWORK_INTERFACE);
   useLoopback_out                 = false;
   listeningPortNumber_out         = RPG_NET_DEFAULT_PORT;
-  useReactor_out                  = (COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR);
+  useReactor_out                  = RPG_ENGINE_USES_REACTOR;
   statisticsReportingInterval_out =
     RPG_NET_DEFAULT_STATISTICS_REPORTING_INTERVAL;
   traceInformation_out            = false;
@@ -238,8 +236,8 @@ do_processArguments (int argc_in,
   UIFile_out                      = path;
   printVersionAndExit_out         = false;
   numDispatchThreads_out          =
-    ((COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR) ? NET_CLIENT_DEFAULT_NUMBER_OF_REACTOR_DISPATCH_THREADS
-                                                                      : NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS);
+    (RPG_ENGINE_USES_REACTOR ? NET_CLIENT_DEFAULT_NUMBER_OF_REACTOR_DISPATCH_THREADS
+                             : NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS);
 
   ACE_Get_Opt argumentParser (argc_in,
                               argv_in,
@@ -400,11 +398,7 @@ do_initializeSignals (bool useReactor_in,
   signals_out.sig_add (SIGFPE);            // 8       /* floating point exception */
   //  signals_out.sig_add(SIGSEGV);          // 11      /* segment violation */
   signals_out.sig_add (SIGTERM);           // 15      /* Software termination signal from kill */
-  if (allowUserRuntimeStats_in)
-  {
-    signals_out.sig_add (SIGBREAK);        // 21      /* Ctrl-Break sequence */
-    ignoredSignals_out.sig_add (SIGBREAK); // 21      /* Ctrl-Break sequence */
-  } // end IF
+  signals_out.sig_add (SIGBREAK);          // 21      /* Ctrl-Break sequence */
   signals_out.sig_add (SIGABRT);           // 22      /* abnormal termination triggered by abort call */
   signals_out.sig_add (SIGABRT_COMPAT);    // 6       /* SIGABRT compatible with other platforms, same as SIGABRT */
 #else
@@ -477,9 +471,19 @@ do_work (unsigned int maxNumConnections_in,
   struct RPG_Net_Protocol_StreamConfiguration stream_configuration;
   RPG_Net_Protocol_StreamConfiguration_t stream_configuration_2;
 
+  CBData_in.configuration->dispatch_configuration.dispatch =
+    (useReactor_in ? COMMON_EVENT_DISPATCH_REACTOR
+                   : COMMON_EVENT_DISPATCH_PROACTOR);
+  if (useReactor_in)
+    CBData_in.configuration->dispatch_configuration.numberOfReactorThreads =
+      numDispatchThreads_in;
+  else
+    CBData_in.configuration->dispatch_configuration.numberOfProactorThreads =
+      numDispatchThreads_in;
+
   Net_EventHandler ui_message_handler (&CBData_in);
   RPG_Net_MessageHandler_Module message_handler (NULL,
-                                               ACE_TEXT_ALWAYS_CHAR ("MessageHandler"));
+                                                 ACE_TEXT_ALWAYS_CHAR ("MessageHandler"));
   RPG_Net_MessageHandler* messageHandler_impl = NULL;
   messageHandler_impl =
     dynamic_cast<RPG_Net_MessageHandler*> (message_handler.writer ());
@@ -489,7 +493,7 @@ do_work (unsigned int maxNumConnections_in,
                 ACE_TEXT ("dynamic_cast<RPG_Net_MessageHandler*> failed, returning\n")));
     return;
   } // end IF
-  ACE_ASSERT (CBData_in.UIState);
+  //ACE_ASSERT (CBData_in.UIState);
   //messageHandler_impl->initialize (&CBData_in.subscribers,
   //                               &CBData_in.UIState->subscribersLock);
   messageHandler_impl->subscribe (&ui_message_handler);
@@ -523,7 +527,7 @@ do_work (unsigned int maxNumConnections_in,
   stream_configuration_2.initialize (module_configuration,
                                      modulehandler_configuration,
                                      stream_configuration);
-  CBData_in.configuration->connection_configuration.streamConfiguration =
+  CBData_in.configuration->protocol_configuration.connectionConfiguration.streamConfiguration =
     &stream_configuration_2;
 
   //  config.delete_module = false;
@@ -571,15 +575,16 @@ do_work (unsigned int maxNumConnections_in,
   } // end IF
 
   // step2: signal handling
-  //if (useReactor_in)
-  //  CBData_in.listenerHandle = RPG_NET_SERVER_LISTENER_SINGLETON::instance ();
-  //else
-  //  CBData_in.listenerHandle =
-  //    RPG_NET_SERVER_ASYNCHLISTENER_SINGLETON::instance ();
-  // event handler for signals
-  Net_Client_SignalHandler signal_handler (timer_id/*,
-                                           RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance (),
-                                           useReactor_in*/);
+  struct Common_EventDispatchState dispatch_state_s;
+  CBData_in.configuration->signal_configuration.dispatchState =
+    &dispatch_state_s;
+  CBData_in.configuration->signal_configuration.mode =
+    COMMON_SIGNAL_DISPATCH_SIGNAL;
+  CBData_in.configuration->signal_configuration.stopEventDispatchOnShutdown =
+    true;
+  Net_Client_SignalHandler signal_handler (CBData_in.configuration->dispatch_configuration,
+                                           CBData_in.configuration->protocol_configuration.connectionConfiguration);
+  signal_handler.initialize (CBData_in.configuration->signal_configuration);
   int result = -1;
   const void* act_p = NULL;
   if (!Common_Signal_Tools::initialize (COMMON_SIGNAL_DISPATCH_SIGNAL,
@@ -609,7 +614,7 @@ do_work (unsigned int maxNumConnections_in,
   // step3: initialize connection manager
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (maxNumConnections_in,
                                                                          ACE_Time_Value (0, NET_STATISTIC_DEFAULT_VISIT_INTERVAL_MS * 1000));
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->set (CBData_in.configuration->connection_configuration,
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->set (CBData_in.configuration->protocol_configuration.connectionConfiguration,
                                                                   NULL);
 
   // step4: handle events (signals, incoming connections/data, timers, ...)
@@ -624,16 +629,21 @@ do_work (unsigned int maxNumConnections_in,
   // step4a: start GTK event loop ?
   if (!UIDefinitionFile_in.empty ())
   {
+    Common_UI_GTK_Manager_t* gtk_manager_p =
+      COMMON_UI_GTK_MANAGER_SINGLETON::instance ();
+    ACE_ASSERT (gtk_manager_p);
+    Common_UI_GTK_State_t& state_r =
+      const_cast<Common_UI_GTK_State_t&> (gtk_manager_p->getR ());
     CBData_in.configuration->gtk_configuration.eventHooks.finiHook = idle_finalize_UI_cb;
-    CBData_in.configuration->gtk_configuration.eventHooks.initHook = idle_initialize_UI_cb;
+    CBData_in.configuration->gtk_configuration.eventHooks.initHook = idle_initialize_client_UI_cb;
     //CBData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
     //  std::make_pair (UIDefinitionFile_in, static_cast<GladeXML*> (NULL));
+    CBData_in.UIState = &state_r;
     CBData_in.UIState->builders[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN)] =
       std::make_pair (UIDefinitionFile_in, static_cast<GtkBuilder*> (NULL));
-    //CBData_in.GTKState.userData = &CBData_in;
 
-    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->start (NULL);
-    if (!COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->isRunning ())
+    gtk_manager_p->start (NULL);
+    if (!gtk_manager_p->isRunning ())
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to start GTK event dispatch, returning\n")));
@@ -641,14 +651,16 @@ do_work (unsigned int maxNumConnections_in,
       // clean up
       if (timer_id != -1)
       {
-        result = COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timer_id,
-                                                                     &act_p);
+        result =
+          COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timer_id,
+                                                              &act_p);
         if (result <= 0)
           ACE_DEBUG ((LM_DEBUG,
                       ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                       timer_id));
       } // end IF
-      COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
+      gtk_manager_p->stop (true,
+                           false);
       Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
                                      previousSignalActions_inout,
                                      previousSignalMask_inout);
@@ -659,7 +671,8 @@ do_work (unsigned int maxNumConnections_in,
 
   // step4b: initialize worker(s)
   int group_id = -1;
-  struct Common_EventDispatchState dispatch_state_s;
+  dispatch_state_s.configuration =
+    &CBData_in.configuration->dispatch_configuration;
   if (!Common_Event_Tools::startEventDispatch (dispatch_state_s))
   {
     ACE_DEBUG ((LM_ERROR,
@@ -684,50 +697,22 @@ do_work (unsigned int maxNumConnections_in,
     //				g_source_remove(*iterator);
     //		} // end lock scope
     if (!UIDefinitionFile_in.empty ())
-      COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
-    COMMON_TIMERMANAGER_SINGLETON::instance()->stop();
+      COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop (true,
+                                                          false);
+    COMMON_TIMERMANAGER_SINGLETON::instance ()->stop (true,
+                                                      false);
     Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
                                    previousSignalActions_inout,
                                    previousSignalMask_inout);
 
     return;
   } // end IF
-
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("started event dispatch...\n")));
 
   // *NOTE*: from this point on, clean up any remote connections !
 
-  // *NOTE*: when using a thread pool, handle things differently...
-  if (numDispatchThreads_in > 1)
-  {
-    result = ACE_Thread_Manager::instance ()->wait_grp (group_id);
-    if (result == -1)
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to ACE_Thread_Manager::wait_grp(%d): \"%m\", continuing\n"),
-                  group_id));
-  } // end IF
-  else
-  {
-    if (useReactor_in)
-    {
-/*      // *WARNING*: restart system calls (after e.g. SIGINT) for the reactor
-      ACE_Reactor::instance()->restart(1);
-*/
-      result = ACE_Reactor::instance ()->run_reactor_event_loop (0);
-      if (result == -1)
-        ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("failed to handle events: \"%m\", aborting\n")));
-    } // end IF
-    else
-    {
-      result = ACE_Proactor::instance ()->proactor_run_event_loop (0);
-      if (result == -1)
-        ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("failed to handle events: \"%m\", aborting\n")));
-    } // end ELSE
-  } // end ELSE
-
+  Common_Event_Tools::dispatchEvents (dispatch_state_s);
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("finished event dispatch...\n")));
 
@@ -743,8 +728,10 @@ do_work (unsigned int maxNumConnections_in,
   //				g_source_remove(*iterator);
   //		} // end lock scope
   if (!UIDefinitionFile_in.empty ())
-    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
-  COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
+    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop (true,
+                                                        false);
+  COMMON_TIMERMANAGER_SINGLETON::instance ()->stop (true,
+                                                    false);
   Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
                                  previousSignalActions_inout,
                                  previousSignalMask_inout);
@@ -812,7 +799,7 @@ ACE_TMAIN (int argc_in,
   std::string configuration_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                           ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_TEST_U_SUBDIRECTORY),
-                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_NET_CONFIGURATION_SUBDIRECTORY),
                                                           true);
 
   // step1a set defaults
@@ -826,23 +813,18 @@ ACE_TMAIN (int argc_in,
     ACE_TEXT_ALWAYS_CHAR (RPG_NET_DEFAULT_NETWORK_INTERFACE);
   bool use_loopback = false;
   unsigned short listening_port_number = RPG_NET_DEFAULT_PORT;
-  bool use_reactor =
-    (COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR);
+  bool use_reactor = RPG_ENGINE_USES_REACTOR;
   unsigned int statistics_reporting_interval =
     RPG_NET_DEFAULT_STATISTICS_REPORTING_INTERVAL;
   bool trace_information = false;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//#if defined (DEBUG_DEBUGGER)
-//  path += ACE_TEXT_ALWAYS_CHAR ("net");
-//  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//#endif // #ifdef DEBUG_DEBUGGER
   path += ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_FILE);
   std::string UI_file = path;
   bool print_version_and_exit = false;
   unsigned int num_dispatch_threads =
-    ((COMMON_EVENT_DEFAULT_DISPATCH == COMMON_EVENT_DISPATCH_REACTOR) ? NET_CLIENT_DEFAULT_NUMBER_OF_REACTOR_DISPATCH_THREADS
-                                                                      : NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS);
+    (RPG_ENGINE_USES_REACTOR ? NET_CLIENT_DEFAULT_NUMBER_OF_REACTOR_DISPATCH_THREADS
+                             : NET_CLIENT_DEFAULT_NUMBER_OF_PROACTOR_DISPATCH_THREADS);
   struct RPG_Client_Configuration configuration;
 
   // step1b: parse/process/validate configuration
@@ -890,7 +872,7 @@ ACE_TMAIN (int argc_in,
       std::numeric_limits<unsigned int>::max ())
     ACE_DEBUG ((LM_WARNING,
                 ACE_TEXT ("limiting the number of message buffers could lead to deadlocks...\n")));
-  if (!UI_file.empty() &&
+  if (!UI_file.empty () &&
       !Common_File_Tools::isReadable (UI_file))
   {
     ACE_DEBUG ((LM_ERROR,
@@ -925,8 +907,8 @@ ACE_TMAIN (int argc_in,
   ACE_Sig_Set previous_signal_mask (false); // fill ?
   if (!Common_Signal_Tools::preInitialize (signal_set,
                                            COMMON_SIGNAL_DISPATCH_SIGNAL,
-                                           true,
-                                           true,
+                                           true,  // use networking ?
+                                           false, // use asynch timers ?
                                            previous_signal_actions,
                                            previous_signal_mask))
   {
@@ -953,9 +935,11 @@ ACE_TMAIN (int argc_in,
   // step1e: initialize logging and/or tracing
   //Common_Logger logger (&gtk_cb_user_data.logStack,
   //                      &gtk_cb_user_data.stackLock);
-  std::string log_file =
-    Common_Log_Tools::getLogFilename (ACE_TEXT_ALWAYS_CHAR (""),
-                                      ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
+
+  std::string log_file;
+  if (log_to_file)
+    log_file = Common_Log_Tools::getLogFilename (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                 ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
   if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
                                             log_file,                      // logfile
                                             true,                          // log to syslog ?
@@ -1021,7 +1005,13 @@ ACE_TMAIN (int argc_in,
   //                                         argv_in);
   Common_UI_GtkBuilderDefinition_t ui_definition;
   if (!UI_file.empty ())
-    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (gtk_cb_user_data.configuration->gtk_configuration);
+  {
+    configuration.gtk_configuration.definition = &ui_definition;
+    configuration.gtk_configuration.CBData = &gtk_cb_user_data;
+    bool result_2 =
+      COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->initialize (configuration.gtk_configuration);
+    ACE_ASSERT (result_2);
+  } // end IF
 
   ACE_High_Res_Timer highres_timer;
   highres_timer.start ();
