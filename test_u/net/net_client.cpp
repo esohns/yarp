@@ -126,10 +126,6 @@ do_printUsage (const std::string& programName_in)
             << std::endl
             << std::endl;
   std::cout << ACE_TEXT_ALWAYS_CHAR ("currently available options:") << std::endl;
-  std::cout << ACE_TEXT_ALWAYS_CHAR ("-c [VALUE]   : max #connections ([")
-            << RPG_NET_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS
-            << ACE_TEXT_ALWAYS_CHAR ("])")
-            << std::endl;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   path += ACE_TEXT_ALWAYS_CHAR(NET_CLIENT_UI_FILE);
@@ -137,14 +133,10 @@ do_printUsage (const std::string& programName_in)
             << path
             << ACE_TEXT_ALWAYS_CHAR ("\"] {\"\" --> no GUI}")
             << std::endl;
-  std::cout << ACE_TEXT_ALWAYS_CHAR ("-i [VALUE]   : client ping interval (ms) [")
-            << NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL
+  std::cout << ACE_TEXT_ALWAYS_CHAR ("-i [VALUE]   : peer ping interval (ms) [")
+            << NET_CLIENT_DEF_SERVER_PING_INTERVAL_MS
             << ACE_TEXT_ALWAYS_CHAR ("] {0 --> OFF})")
             << std::endl;
-//  std::cout << ACE_TEXT_ALWAYS_CHAR("-k [VALUE]  : client keep-alive timeout ([")
-//            << RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE
-//            << ACE_TEXT_ALWAYS_CHAR("] second(s) {0 --> no timeout})")
-//            << std::endl;
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-l           : log to a file [")
             << false
             << ACE_TEXT_ALWAYS_CHAR ("]")
@@ -188,9 +180,7 @@ do_printUsage (const std::string& programName_in)
 bool
 do_processArguments (int argc_in,
                      ACE_TCHAR** argv_in, // cannot be const...
-                     unsigned int& maxNumConnections_out,
-                     unsigned int& clientPingInterval_out,
-                     //unsigned int& keepAliveTimeout_out,
+                     unsigned int& peerPingInterval_out,
                      bool& logToFile_out,
                      bool& useUDP_out,
                      std::string& networkInterface_out,
@@ -211,11 +201,8 @@ do_processArguments (int argc_in,
                                                           ACE_TEXT_ALWAYS_CHAR (RPG_NET_CONFIGURATION_SUBDIRECTORY),
                                                           true);
 
-  // init results
-  maxNumConnections_out           =
-    RPG_NET_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS;
-  clientPingInterval_out          = NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL;
-//  keepAliveTimeout_out = RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE;
+  // initialize results
+  peerPingInterval_out            = NET_CLIENT_DEF_SERVER_PING_INTERVAL_MS;
   logToFile_out                   = false;
   useUDP_out                      = false;
   networkInterface_out            =
@@ -228,10 +215,6 @@ do_processArguments (int argc_in,
   traceInformation_out            = false;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-//  path += ACE_TEXT_ALWAYS_CHAR("net");
-//  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//#endif
   path += ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_FILE);
   UIFile_out                      = path;
   printVersionAndExit_out         = false;
@@ -241,7 +224,7 @@ do_processArguments (int argc_in,
 
   ACE_Get_Opt argumentParser (argc_in,
                               argv_in,
-                              ACE_TEXT ("c:g::i:k:lmn:op:rs:tvx:"));
+                              ACE_TEXT ("g::i:k:lmn:op:rs:tvx:"));
 
   int option = 0;
   std::stringstream converter;
@@ -249,14 +232,6 @@ do_processArguments (int argc_in,
   {
     switch (option)
     {
-      case 'c':
-      {
-        converter.clear ();
-        converter.str (ACE_TEXT_ALWAYS_CHAR (""));
-        converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
-        converter >> maxNumConnections_out;
-        break;
-      }
       case 'g':
       {
         ACE_TCHAR* opt_arg = argumentParser.opt_arg ();
@@ -271,17 +246,9 @@ do_processArguments (int argc_in,
         converter.clear ();
         converter.str (ACE_TEXT_ALWAYS_CHAR (""));
         converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
-        converter >> clientPingInterval_out;
+        converter >> peerPingInterval_out;
         break;
       }
-//      case 'k':
-//      {
-//        converter.clear();
-//        converter.str(ACE_TEXT_ALWAYS_CHAR(""));
-//        converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg());
-//        converter >> keepAliveTimeout_out;
-//        break;
-//      }
       case 'l':
       {
         logToFile_out = true;
@@ -444,9 +411,7 @@ do_initializeSignals (bool useReactor_in,
 }
 
 void
-do_work (unsigned int maxNumConnections_in,
-         unsigned int pingInterval_in,
-         //unsigned int keepAliveTimeout_in,
+do_work (unsigned int peerPingInterval_in,
          bool useUDP_in,
          const std::string& networkInterface_in,
          bool useLoopback_in,
@@ -484,42 +449,19 @@ do_work (unsigned int maxNumConnections_in,
   Net_EventHandler ui_message_handler (&CBData_in);
   RPG_Net_MessageHandler_Module message_handler (NULL,
                                                  ACE_TEXT_ALWAYS_CHAR ("MessageHandler"));
-  RPG_Net_MessageHandler* messageHandler_impl = NULL;
-  messageHandler_impl =
-    dynamic_cast<RPG_Net_MessageHandler*> (message_handler.writer ());
-  if (!messageHandler_impl)
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("dynamic_cast<RPG_Net_MessageHandler*> failed, returning\n")));
-    return;
-  } // end IF
-  //ACE_ASSERT (CBData_in.UIState);
-  //messageHandler_impl->initialize (&CBData_in.subscribers,
-  //                               &CBData_in.UIState->subscribersLock);
-  messageHandler_impl->subscribe (&ui_message_handler);
+  modulehandler_configuration.subscriber = &ui_message_handler;
 
   Stream_AllocatorHeap_T<ACE_MT_SYNCH,
                          struct Stream_AllocatorConfiguration> heap_allocator;
   RPG_Net_MessageAllocator_t message_allocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
                                                 &heap_allocator,
-                                                false);
+                                                true); // block ?
 
-  //ACE_OS::memset (&configuration, 0, sizeof (Net_Configuration_t));
   // ************ connection configuration data ************
-  //configuration.protocolConfiguration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
-  //configuration.protocolConfiguration.peerPingInterval = pingInterval_in;
-  //configuration.protocolConfiguration.pingAutoAnswer = true;
-  //configuration.protocolConfiguration.printPongMessages = true;
+  CBData_in.configuration->protocol_configuration.peerPingInterval.usec (peerPingInterval_in * 1000);
+  CBData_in.configuration->protocol_configuration.printPongMessages = true;
   // ************ socket / stream configuration data ************
-  //configuration.socketConfiguration.bufferSize =
-  // RPG_NET_DEFAULT_SOCKET_RECEIVE_BUFFER_SIZE;
-  //configuration.streamConfiguration.moduleConfiguration = &module_configuration;
-  //  config.useThreadPerConnection = false;
-  //  config.serializeOutput = false;
 
-  //  config.notificationStrategy = NULL;
-
-  //stream_configuration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
   stream_configuration.messageAllocator = &message_allocator;
   stream_configuration.module =
     (!UIDefinitionFile_in.empty () ? &message_handler
@@ -529,15 +471,6 @@ do_work (unsigned int maxNumConnections_in,
                                      stream_configuration);
   CBData_in.configuration->protocol_configuration.connectionConfiguration.streamConfiguration =
     &stream_configuration_2;
-
-  //  config.delete_module = false;
-  // *WARNING*: set at runtime, by the appropriate connection handler
-  //  config.sessionID = 0; // (== socket handle !)
-  //  config.statisticsReportingInterval = 0; // == off
-  //	config.printFinalReport = false;
-  // ************ runtime data ************
-  //	config.currentStatistics = {};
-  //	config.lastCollectionTimestamp = ACE_Time_Value::zero;
 
   // step0b: initialize event dispatch
   if (!Common_Event_Tools::initializeEventDispatch (CBData_in.configuration->dispatch_configuration))
@@ -555,8 +488,7 @@ do_work (unsigned int maxNumConnections_in,
   if (statisticsReportingInterval_in)
   {
     ACE_Event_Handler* handler_p = &statistics_handler;
-    ACE_Time_Value interval (statisticsReportingInterval_in,
-                             0);
+    ACE_Time_Value interval (statisticsReportingInterval_in, 0);
     timer_id =
       COMMON_TIMERMANAGER_SINGLETON::instance ()->schedule (handler_p,                  // event handler
                                                             NULL,                       // ACT
@@ -612,7 +544,7 @@ do_work (unsigned int maxNumConnections_in,
   } // end IF
 
   // step3: initialize connection manager
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (maxNumConnections_in,
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (NET_CONNECTION_MAXIMUM_NUMBER_OF_OPEN,
                                                                          ACE_Time_Value (0, NET_STATISTIC_DEFAULT_VISIT_INTERVAL_MS * 1000));
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->set (CBData_in.configuration->protocol_configuration.connectionConfiguration,
                                                                   NULL);
@@ -803,10 +735,7 @@ ACE_TMAIN (int argc_in,
                                                           true);
 
   // step1a set defaults
-  unsigned int max_num_connections =
-    RPG_NET_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS;
-  unsigned int ping_interval = NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL;
-  //  unsigned int keep_alive_timeout            = RPG_NET_SERVER_DEFAULT_TCP_KEEPALIVE;
+  unsigned int peer_ping_interval_ms = NET_CLIENT_DEF_SERVER_PING_INTERVAL_MS;
   bool log_to_file = false;
   bool use_udp = false;
   std::string network_interface =
@@ -830,9 +759,7 @@ ACE_TMAIN (int argc_in,
   // step1b: parse/process/validate configuration
   if (!do_processArguments (argc_in,
                             argv_in,
-                            max_num_connections,
-                            ping_interval,
-                            //keep_alive_timeout,
+                            peer_ping_interval_ms,
                             log_to_file,
                             use_udp,
                             network_interface,
@@ -1016,9 +943,7 @@ ACE_TMAIN (int argc_in,
   ACE_High_Res_Timer highres_timer;
   highres_timer.start ();
   // step2: do actual work
-  do_work (max_num_connections,
-           ping_interval,
-           //keep_alive_timeout,
+  do_work (peer_ping_interval_ms,
            use_udp,
            network_interface,
            use_loopback,

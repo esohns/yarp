@@ -54,6 +54,7 @@
 #define RPG_NET_STREAM_BUFFER_SIZE                    1024 // 1 kB
 
 // *** protocol-related ***
+#define RPG_NET_DEFAULT_TRANSPORTLAYER                NET_TRANSPORTLAYER_TCP
 #define RPG_NET_PING_AUTO_ANSWER                      true // auto-send "PONG"s
 
 // *** pro/reactor-related ***

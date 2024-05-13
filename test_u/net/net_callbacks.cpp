@@ -37,6 +37,8 @@
 
 #include "rpg_common_macros.h"
 
+#include "rpg_net_common.h"
+
 #include "rpg_net_protocol_network.h"
 
 #include "rpg_client_common.h"
@@ -138,7 +140,7 @@ idle_initialize_client_UI_cb (gpointer userData_in)
   { ACE_GUARD_RETURN (ACE_SYNCH_MUTEX, aGuard, data_p->UIState->lock, G_SOURCE_REMOVE);
     // schedule asynchronous updates of the info view
     guint event_source_id =
-      g_timeout_add (NET_UI_GTKEVENT_RESOLUTION,
+      g_timeout_add (NET_UI_GTKEVENT_RESOLUTION_MS,
                      idle_update_info_display_cb,
                      userData_in);
     if (event_source_id > 0)
@@ -310,7 +312,7 @@ idle_initialize_server_UI_cb (gpointer userData_in)
     return FALSE; // G_SOURCE_REMOVE
   } // end ELSE
   // schedule asynchronous updates of the info view
-  event_source_id = g_timeout_add (NET_UI_GTKEVENT_RESOLUTION,
+  event_source_id = g_timeout_add (NET_UI_GTKEVENT_RESOLUTION_MS,
                                    idle_update_info_display_cb,
                                    userData_in);
   if (event_source_id > 0)
@@ -665,6 +667,34 @@ extern "C"
 {
 #endif /* __cplusplus */
 gint
+button_connect_clicked_cb (GtkWidget* widget_in,
+                           gpointer userData_in)
+{
+  RPG_TRACE (ACE_TEXT ("::button_connect_clicked_cb"));
+
+  int result = -1;
+
+  ACE_UNUSED_ARG (widget_in);
+  ACE_UNUSED_ARG (userData_in);
+
+  // *PORTABILITY*: on Windows SIGUSRx are not defined
+  // --> use SIGBREAK (21) instead...
+  int signal = 0;
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  signal = SIGBREAK;
+#else
+  signal = SIGUSR1;
+#endif // ACE_WIN32 || ACE_WIN64
+  result = ACE_OS::raise (signal);
+  if (result == -1)
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE_OS::raise(%S): \"%m\", continuing\n"),
+                signal));
+
+  return FALSE;
+}
+
+gint
 button_close_clicked_cb (GtkWidget* widget_in,
                          gpointer userData_in)
 {
@@ -711,32 +741,100 @@ button_close_all_clicked_cb (GtkWidget* widget_in,
 } // button_close_all_clicked_cb
 
 gint
-button_connect_clicked_cb (GtkWidget* widget_in,
-                           gpointer userData_in)
+button_ping_clicked_cb (GtkWidget* widget_in,
+                        gpointer userData_in)
 {
-  RPG_TRACE (ACE_TEXT ("::button_connect_clicked_cb"));
-
-  int result = -1;
+  RPG_TRACE (ACE_TEXT ("::button_ping_clicked_cb"));
 
   ACE_UNUSED_ARG (widget_in);
-  ACE_UNUSED_ARG (userData_in);
+  // sanity check(s)
+  struct Net_Client_GTK_CBData* data_p =
+    static_cast<struct Net_Client_GTK_CBData*> (userData_in);
+  ACE_ASSERT (data_p);
+  ACE_ASSERT (data_p->configuration);
 
-  // *PORTABILITY*: on Windows SIGUSRx are not defined
-  // --> use SIGBREAK (21) instead...
-  int signal = 0;
+  unsigned int number_of_connections = 0;
+  switch (data_p->configuration->protocol_configuration.transportLayer)
+  {
+    case NET_TRANSPORTLAYER_TCP:
+    case NET_TRANSPORTLAYER_SSL:
+    {
+      number_of_connections =
+        RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->count ();
+      break;
+    }
+    case NET_TRANSPORTLAYER_UDP:
+    {
+      number_of_connections =
+        RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->count ();
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid/unknown transport layer (was: %d), aborting\n"),
+                  data_p->configuration->protocol_configuration.transportLayer));
+      return FALSE;
+    }
+  } // end SWITCH
+  // sanity check
+  if (!number_of_connections)
+    return FALSE;
+
+  // grab a (random) connection handler
+  int index = 0;
+  // *PORTABILITY*: outside glibc, this is not very portable
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-  signal = SIGBREAK;
+  // *NOTE*: use ACE_OS::rand_r() for improved thread safety !
+  // results_out.push_back((ACE_OS::rand() % range_in) + 1);
+  unsigned int usecs = static_cast<unsigned int> (COMMON_TIME_NOW.usec ());
+  index = ((ACE_OS::rand_r (&usecs) % number_of_connections) + 1);
 #else
-  signal = SIGUSR1;
+  index = ((::random () % number_of_connections) + 1);
 #endif // ACE_WIN32 || ACE_WIN64
-  result = ACE_OS::raise (signal);
-  if (result == -1)
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to ACE_OS::raise(%S): \"%m\", continuing\n"),
-                signal));
+
+  RPG_Net_Protocol_IStreamConnection_t* istream_connection_p = NULL;
+  switch (data_p->configuration->protocol_configuration.transportLayer)
+  {
+    case NET_TRANSPORTLAYER_TCP:
+    case NET_TRANSPORTLAYER_SSL:
+    {
+      RPG_Net_Protocol_Connection_Manager_t::ICONNECTION_T* connection_base_p =
+        RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->operator[] (index - 1);
+      ACE_ASSERT (connection_base_p);
+      istream_connection_p =
+        dynamic_cast<RPG_Net_Protocol_IStreamConnection_t*> (connection_base_p);
+      ACE_ASSERT (istream_connection_p);
+      break;
+    }
+    case NET_TRANSPORTLAYER_UDP:
+    {
+      RPG_Net_Protocol_Connection_Manager_t::ICONNECTION_T* connection_base_p =
+        RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->operator[] (index - 1);
+      ACE_ASSERT (connection_base_p);
+      istream_connection_p =
+        dynamic_cast<RPG_Net_Protocol_IStreamConnection_t*> (connection_base_p);
+      ACE_ASSERT (istream_connection_p);
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid/unknown transport layer (was: %d), aborting\n"),
+                  data_p->configuration->protocol_configuration.transportLayer));
+      return FALSE;
+    }
+  } // end SWITCH
+  ACE_ASSERT (istream_connection_p);
+  RPG_Net_Protocol_Stream& stream_r =
+    const_cast<RPG_Net_Protocol_Stream&> (istream_connection_p->stream ());
+  stream_r.ping ();
+
+  // clean up
+  istream_connection_p->decrease ();
 
   return FALSE;
-}
+} // button_ping_clicked_cb
 
 gint
 togglebutton_listen_toggled_cb (GtkWidget* widget_in,
@@ -744,10 +842,10 @@ togglebutton_listen_toggled_cb (GtkWidget* widget_in,
 {
   RPG_TRACE (ACE_TEXT ("::togglebutton_listen_toggled_cb"));
 
-  struct Net_Server_GTK_CBData* data_p = static_cast<struct Net_Server_GTK_CBData*> (userData_in);
-
   // sanity check(s)
   ACE_ASSERT (widget_in);
+  struct Net_Server_GTK_CBData* data_p =
+    static_cast<struct Net_Server_GTK_CBData*> (userData_in);
   ACE_ASSERT (data_p);
   ACE_ASSERT (data_p->listenerHandle);
 

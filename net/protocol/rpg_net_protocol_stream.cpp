@@ -120,26 +120,9 @@ RPG_Net_Protocol_Stream::initialize (const inherited::CONFIGURATION_T& configura
   configuration_p = (*iterator).second.second;
   ACE_ASSERT (configuration_p);
 
-  //session_data_p->targetFileName = configuration_p->fileIdentifier.identifier;
-  //session_data_p->formats.push_back (configuration_in.configuration_.format);
-  //session_data_r.size =
-  //  Common_File_Tools::size (configuration_in.moduleHandlerConfiguration->fileName);
-
   // ---------------------------------------------------------------------------
 
-  // ******************* Protocol Handler ************************
-  module_p =
-    const_cast<typename inherited::ISTREAM_T::MODULE_T*> (inherited::find (ACE_TEXT_ALWAYS_CHAR ("IOHandler")));
-  ACE_ASSERT (module_p);
-  head_impl_p = dynamic_cast<typename inherited::WRITER_T*> (module_p->writer ());
-  ACE_ASSERT (head_impl_p);
-  head_impl_p->setP (&(inherited::state_));
-  // *NOTE*: push()ing the module will open() it
-  //         --> set the argument that is passed along (head module expects a
-  //             handle to the session data)
-  module_p->arg (inherited::sessionData_);
-
-  if (!inherited::setup ())
+  if (!inherited::setup (configuration_in.configuration_->notificationStrategy))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("%s: failed to set up pipeline, aborting\n"),
@@ -151,7 +134,6 @@ RPG_Net_Protocol_Stream::initialize (const inherited::CONFIGURATION_T& configura
 
   // OK: all went well
   inherited::isInitialized_ = true;
-  //inherited::dump_state ();
 
   return true;
 

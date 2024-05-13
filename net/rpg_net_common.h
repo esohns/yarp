@@ -21,23 +21,10 @@
 #ifndef RPG_NET_COMMON_H
 #define RPG_NET_COMMON_H
 
-#include "ace/INET_Addr.h"
+#include "ace/Synch_Traits.h"
 
 #include "stream_common.h"
 #include "stream_messageallocatorheap_base.h"
-
-//#include "net_asynch_tcpsockethandler.h"
-//#include "net_configuration.h"
-//#include "net_connection_manager.h"
-//#include "net_stream_asynch_tcpsocket_base.h"
-//#include "net_stream_tcpsocket_base.h"
-//#include "net_tcpsockethandler.h"
-//#include "net_tcpconnection_base.h"
-
-//#include "net_client_asynchconnector.h"
-//#include "net_client_connector.h"
-
-//#include "rpg_net_stream.h"
 
 #include "rpg_net_protocol_message.h"
 #include "rpg_net_protocol_session_message.h"
@@ -47,31 +34,5 @@ typedef Stream_MessageAllocatorHeapBase_T<ACE_MT_SYNCH,
                                           Stream_ControlMessage_t,
                                           RPG_Net_Protocol_Message,
                                           RPG_Net_Protocol_SessionMessage> RPG_Net_MessageAllocator_t;
-
-//typedef Net_AsynchTCPConnectionBase_T<Net_Configuration_t,
-//                                      Net_UserData_t,
-//                                      Net_StreamSessionData_t,
-//                                      RPG_Net_AsynchTCPHandler_t> RPG_Net_AsynchTCPConnection_t;
-//typedef Net_TCPConnectionBase_T<Net_Configuration_t,
-//                                Net_UserData_t,
-//                                Net_StreamSessionData_t,
-//                                RPG_Net_TCPHandler_t> RPG_Net_TCPConnection_t;
-//
-//typedef Net_Client_AsynchConnector_T<ACE_INET_Addr,
-//                                     Net_SocketConfiguration_t,
-//                                     Net_Configuration_t,
-//                                     Net_SocketHandlerConfiguration_t,
-//                                     Net_UserData_t,
-//                                     Net_StreamSessionData_t,
-//                                     RPG_Net_AsynchTCPConnection_t> RPG_Net_Client_AsynchConnector_t;
-//typedef Net_Client_Connector_T<ACE_INET_Addr,
-//                               Net_SocketConfiguration_t,
-//                               Net_Configuration_t,
-//                               Net_SocketHandlerConfiguration_t,
-//                               Net_UserData_t,
-//                               Net_StreamSessionData_t,
-//                               RPG_Net_TCPConnection_t> RPG_Net_Client_Connector_t;
-//
-//typedef NET_CONNECTIONMANAGER_SINGLETON RPG_CONNECTIONMANAGER_SINGLETON;
 
 #endif

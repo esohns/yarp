@@ -21,13 +21,9 @@
 
 #include "net_eventhandler.h"
 
-//#include "ace/Synch_Traits.h"
-
 #include "common_ui_common.h"
 
 #include "stream_common.h"
-
-//#include "net_message.h"
 
 #include "rpg_common_macros.h"
 
@@ -53,7 +49,7 @@ Net_EventHandler::start (Stream_SessionId_t sessionId_in,
   ACE_ASSERT (CBData_);
   ACE_ASSERT (CBData_->UIState);
 
-  ACE_Guard<ACE_SYNCH_MUTEX> aGuard (CBData_->UIState->lock);
+  ACE_GUARD (ACE_SYNCH_MUTEX, aGuard, CBData_->UIState->lock);
 
   CBData_->UIState->eventStack.insert (COMMON_UI_EVENT_CONNECT);
 }
@@ -79,7 +75,7 @@ Net_EventHandler::end (Stream_SessionId_t sessionId_in)
   ACE_ASSERT (CBData_);
   ACE_ASSERT (CBData_->UIState);
 
-  ACE_Guard<ACE_SYNCH_MUTEX> aGuard (CBData_->UIState->lock);
+  ACE_GUARD (ACE_SYNCH_MUTEX, aGuard, CBData_->UIState->lock);
 
   CBData_->UIState->eventStack.insert (COMMON_UI_EVENT_DISCONNECT);
 }

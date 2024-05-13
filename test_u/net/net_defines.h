@@ -21,7 +21,7 @@
 #ifndef TEST_U_NET_DEFINES_H
 #define TEST_U_NET_DEFINES_H
 
-#define NET_UI_GTKEVENT_RESOLUTION                     200 // ms --> 5 FPS
+#define NET_UI_GTKEVENT_RESOLUTION_MS                  200 // ms --> 5 FPS
 #define NET_UI_GTK_SPINBUTTON_NUMCONNECTIONS_NAME      "spinbutton_connections"
 #define NET_UI_GTK_SPINBUTTON_NUMSESSIONMESSAGES_NAME  "spinbutton_session_messages"
 #define NET_UI_GTK_SPINBUTTON_NUMMESSAGES_NAME         "spinbutton_messages"
@@ -40,11 +40,8 @@
 
 // -----------------------------------------------------------------------------
 
-#define NET_CLIENT_DEF_MAX_NUM_OPEN_CONNECTIONS        0
 #define NET_CLIENT_DEF_SERVER_HOSTNAME                 ACE_LOCALHOST
-#define NET_CLIENT_DEF_SERVER_CONNECT_INTERVAL         0
-#define NET_CLIENT_DEF_SERVER_PING_INTERVAL            0 // ms {0 --> OFF}
-#define NET_CLIENT_DEF_SERVER_STRESS_INTERVAL          50 // ms
+#define NET_CLIENT_DEF_SERVER_PING_INTERVAL_MS         0 // ms {0 --> OFF}
 
 #if defined (GTK2_USE)
 #define NET_CLIENT_UI_FILE                             "net_client.gtk2"

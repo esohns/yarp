@@ -50,13 +50,13 @@ struct Net_Client_GTK_CBData
    : Common_UI_GTK_CBData ()
    , allowUserRuntimeStatistic (true)
    , configuration (NULL)
-   , subscribers ()
+   //, subscribers ()
    //, subscribersLock ()
   {}
 
   bool                             allowUserRuntimeStatistic;
   struct RPG_Client_Configuration* configuration;
-  RPG_Net_Protocol_Subscribers_t   subscribers;
+  //RPG_Net_Protocol_Subscribers_t   subscribers;
   //ACE_Recursive_Thread_Mutex     subscribersLock;
 };
 

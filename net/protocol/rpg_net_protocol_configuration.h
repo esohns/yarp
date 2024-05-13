@@ -33,7 +33,7 @@
 #include "net_common.h"
 #include "net_connection_configuration.h"
 
-//#include "rpg_net_protocol_common.h"
+#include "rpg_net_defines.h"
 #include "rpg_net_protocol_session_message.h"
 #include "rpg_net_protocol_message.h"
 
@@ -50,11 +50,11 @@ struct RPG_Net_Protocol_ModuleHandlerConfiguration
   RPG_Net_Protocol_ModuleHandlerConfiguration ()
    : Stream_ModuleHandlerConfiguration ()
    , subscriber (NULL)
-   , subscribers (NULL)
+   //, subscribers (NULL)
   {}
 
   RPG_Net_Protocol_ISessionNotify_t* subscriber;
-  RPG_Net_Protocol_Subscribers_t* subscribers;
+  //RPG_Net_Protocol_Subscribers_t* subscribers;
 };
 
 struct RPG_Net_Protocol_StreamConfiguration
@@ -108,6 +108,10 @@ struct RPG_Net_Protocol_Configuration
    , streamConfiguration ()
    , clientPingInterval (ACE_Time_Value::zero)
    , loginOptions ()
+   , peerPingInterval (ACE_Time_Value::zero)
+   , pingAutoAnswer (RPG_NET_PING_AUTO_ANSWER)
+   , printPongMessages (false)
+   , transportLayer (RPG_NET_DEFAULT_TRANSPORTLAYER)
   {}
   
   // **************************** dispatch data ********************************
@@ -122,6 +126,10 @@ struct RPG_Net_Protocol_Configuration
   // *************************** protocol data *********************************
   ACE_Time_Value                           clientPingInterval; // server only
   struct RPG_Net_Protocol_LoginOptions     loginOptions;
+  ACE_Time_Value                           peerPingInterval; // client only
+  bool                                     pingAutoAnswer; // auto-pong ?
+  bool                                     printPongMessages; // log pongs to console
+  enum Net_TransportLayerType              transportLayer;
 };
 
 #endif

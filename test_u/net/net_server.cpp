@@ -132,17 +132,13 @@ do_printUsage (const std::string& programName_in)
             << std::endl;
   std::string path = configuration_path;
   path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//#if defined(_DEBUG) && !defined(DEBUG_RELEASE)
-//  path += ACE_TEXT_ALWAYS_CHAR("net");
-//  path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-//#endif
   path += ACE_TEXT_ALWAYS_CHAR(NET_SERVER_UI_FILE);
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-g[[STRING]] : UI file [\"")
             << path
             << ACE_TEXT_ALWAYS_CHAR ("\"] {\"\" --> no GUI}")
             << std::endl;
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-i [VALUE]   : client ping interval (ms) [")
-            << NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL
+            << NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL_MS
             << ACE_TEXT_ALWAYS_CHAR ("] {0 --> OFF})")
             << std::endl;
 //  std::cout << ACE_TEXT_ALWAYS_CHAR("-k [VALUE]  : client keep-alive timeout ([")
@@ -218,7 +214,7 @@ do_processArguments (int argc_in,
   // init results
   maxNumConnections_out           =
       RPG_NET_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS;
-  clientPingInterval_out          = NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL;
+  clientPingInterval_out          = NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL_MS;
 //  keepAliveTimeout_out = RPG_NET_SERVER_DEF_CLIENT_KEEPALIVE;
   logToFile_out                   = false;
   useUDP_out                      = false;
@@ -904,7 +900,7 @@ ACE_TMAIN (int argc_in,
   // step1a set defaults
   unsigned int max_num_connections =
     RPG_NET_MAXIMUM_NUMBER_OF_OPEN_CONNECTIONS;
-  unsigned int ping_interval = NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL;
+  unsigned int ping_interval = NET_SERVER_DEFAULT_CLIENT_PING_INTERVAL_MS;
   //  unsigned int keep_alive_timeout            = RPG_NET_SERVER_DEFAULT_TCP_KEEPALIVE;
   bool log_to_file = false;
   bool use_udp = false;
