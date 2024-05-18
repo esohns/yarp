@@ -257,7 +257,8 @@ namespace yy {
     PATH_NEXT_XY = 262,            // "path_next_xy"
     PATH_NEXT_DIRECTION = 263,     // "path_next_direction"
     TARGET = 264,                  // "target"
-    END_OF_FRAME = 265             // "end_of_frame"
+    END_OF_COMMAND = 265,          // "end_of_command"
+    END_OF_FRAME = 266             // "end_of_frame"
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -274,7 +275,7 @@ namespace yy {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 11, ///< Number of tokens.
+        YYNTOKENS = 12, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
@@ -286,16 +287,18 @@ namespace yy {
         S_PATH_NEXT_XY = 7,                      // "path_next_xy"
         S_PATH_NEXT_DIRECTION = 8,               // "path_next_direction"
         S_TARGET = 9,                            // "target"
-        S_END_OF_FRAME = 10,                     // "end_of_frame"
-        S_YYACCEPT = 11,                         // $accept
-        S_frame = 12,                            // frame
-        S_13_1 = 13,                             // $@1
-        S_path = 14,                             // path
-        S_path_elem = 15,                        // path_elem
-        S_command = 16,                          // command
-        S_17_2 = 17,                             // $@2
-        S_18_3 = 18,                             // $@3
-        S_commands = 19                          // commands
+        S_END_OF_COMMAND = 10,                   // "end_of_command"
+        S_END_OF_FRAME = 11,                     // "end_of_frame"
+        S_YYACCEPT = 12,                         // $accept
+        S_frame = 13,                            // frame
+        S_14_1 = 14,                             // $@1
+        S_path = 15,                             // path
+        S_path_elem = 16,                        // path_elem
+        S_command = 17,                          // command
+        S_18_2 = 18,                             // $@2
+        S_19_3 = 19,                             // $@3
+        S_20_4 = 20,                             // $@4
+        S_commands = 21                          // commands
       };
     };
 
@@ -808,7 +811,7 @@ namespace yy {
     enum
     {
       yylast_ = 11,     ///< Last index in yytable_.
-      yynnts_ = 9,  ///< Number of nonterminal symbols.
+      yynnts_ = 10,  ///< Number of nonterminal symbols.
       yyfinal_ = 4 ///< Termination state number.
     };
 
@@ -817,6 +820,8 @@ namespace yy {
     RPG_Net_Protocol_IParser* driver;
     yyscan_t yyscanner;
 
+public:
+    inline void set (yyscan_t context_in) { yyscanner = context_in; }
   };
 
 

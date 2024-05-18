@@ -402,6 +402,45 @@ RPG_Net_Protocol_Handler::record (struct RPG_Net_Protocol_Command& record_in)
     delete message_p;
     return;
   } // end IF
+
+  // *NOTE*: free parsed data... Note that switchBuffer() will run cont() on
+  //         headFragment_ in yywrap(), so do NOT free it in the edge case
+  //         if length_i === bytes_to_release_i OR headFragment_->cont() == NULL
+  ACE_ASSERT (inherited::scannedBytes_ <= inherited::length_);
+  if (inherited::scannedBytes_ >= inherited::length_)
+  {
+    size_t bytes_to_release_i = inherited::scannedBytes_;
+    while (bytes_to_release_i)
+    {
+      size_t length_i = inherited::headFragment_->length ();
+      ACE_Message_Block* message_block_p = inherited::headFragment_->cont ();
+      if ((length_i < bytes_to_release_i) && message_block_p)
+      {
+        inherited::headFragment_->cont (NULL);
+        inherited::headFragment_->release (); inherited::headFragment_ = NULL;
+        inherited::headFragment_ =
+          static_cast<RPG_Net_Protocol_Message*> (message_block_p);
+        inherited::fragment_ = inherited::headFragment_;
+        bytes_to_release_i -= length_i ? length_i : bytes_to_release_i; // break if length_i == 0
+      } // end IF
+      else
+      {
+        if (length_i <= bytes_to_release_i)
+        { // *TODO*: "frame" messages instead ?
+          inherited::headFragment_->rd_ptr (length_i);
+          if (length_i == bytes_to_release_i)
+            inherited::PARSER_DRIVER_T::finished_ = true;
+          break;
+        } // end ELSE
+        else
+        { // *TODO*: "frame" messages instead ?
+          ACE_ASSERT (length_i > bytes_to_release_i);
+          inherited::headFragment_->rd_ptr (bytes_to_release_i);
+          break;
+        } // end ELSE
+      } // end ELSE
+    } // end WHILE
+  } // end IF
 }
 
 void

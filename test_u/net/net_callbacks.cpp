@@ -1007,7 +1007,8 @@ button_test_clicked_cb (GtkWidget* widget_in,
   struct RPG_Net_Protocol_Command command_s;
   command_s.command = COMMAND_SEARCH;
   command_s.position = std::make_pair (5, 7);
-  command_s.target = 2000;
+  static RPG_Engine_EntityID_t entity_id = 2000;
+  command_s.target = ++entity_id;
   message_p->initialize (command_s,
                          1,
                          NULL);

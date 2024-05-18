@@ -1,35 +1,35 @@
-include (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/scripts/PreUIFramework.cmake)
-include (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/scripts/SetUIFramework.cmake)
+#include (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/scripts/PreUIFramework.cmake)
+#include (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/scripts/SetUIFramework.cmake)
 
-if (CURSES_USE)
-elseif (GTK_USE)
- include (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/scripts/SetGTKVersion.cmake)
+#if (CURSES_USE)
+#elseif (GTK_USE)
+# include (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/scripts/SetGTKVersion.cmake)
 
- if (CMAKE_BUILD_TYPE STREQUAL Debug)
-  add_definitions (-DG_ERRORCHECK_MUTEXES)
- endif (CMAKE_BUILD_TYPE STREQUAL Debug)
-elseif (WXWIDGETS_USE)
- message (STATUS "wxWidgets_DEFINITIONS: ${wxWidgets_DEFINITIONS}")
- message (STATUS "wxWidgets_DEFINITIONS_DEBUG: ${wxWidgets_DEFINITIONS_DEBUG}")
- message (STATUS "wxWidgets_CXX_FLAGS: ${wxWidgets_CXX_FLAGS}")
- message (STATUS "wxWidgets_USE_FILE: ${wxWidgets_USE_FILE}")
-# # *NOTE*: re-enable ANSI mode, iff available
-# add_definitions (-DwxUSE_UNICODE=0)
- foreach (DEFINITION ${wxWidgets_DEFINITIONS})
-  add_definitions (-D${DEFINITION})
- endforeach ()
- if (WIN32)
-#  add_definitions (-D__WXMSW__)
-#  add_definitions (-DWXUSINGDLL)
-  if (MSVC)
-   add_definitions (-DwxMSVC_VERSION_AUTO)
-  endif (MSVC)
- endif (WIN32)
- add_definitions (-DwxUSE_GUI=1)
- if (CMAKE_BUILD_TYPE STREQUAL Debug)
-#   add_definitions (-D__WXDEBUG__)
- endif (CMAKE_BUILD_TYPE STREQUAL Debug)
-endif ()
+# if (CMAKE_BUILD_TYPE STREQUAL Debug)
+#  add_definitions (-DG_ERRORCHECK_MUTEXES)
+# endif (CMAKE_BUILD_TYPE STREQUAL Debug)
+#elseif (WXWIDGETS_USE)
+# message (STATUS "wxWidgets_DEFINITIONS: ${wxWidgets_DEFINITIONS}")
+# message (STATUS "wxWidgets_DEFINITIONS_DEBUG: ${wxWidgets_DEFINITIONS_DEBUG}")
+# message (STATUS "wxWidgets_CXX_FLAGS: ${wxWidgets_CXX_FLAGS}")
+# message (STATUS "wxWidgets_USE_FILE: ${wxWidgets_USE_FILE}")
+## # *NOTE*: re-enable ANSI mode, iff available
+## add_definitions (-DwxUSE_UNICODE=0)
+# foreach (DEFINITION ${wxWidgets_DEFINITIONS})
+#  add_definitions (-D${DEFINITION})
+# endforeach ()
+# if (WIN32)
+##  add_definitions (-D__WXMSW__)
+##  add_definitions (-DWXUSINGDLL)
+#  if (MSVC)
+#   add_definitions (-DwxMSVC_VERSION_AUTO)
+#  endif (MSVC)
+# endif (WIN32)
+# add_definitions (-DwxUSE_GUI=1)
+# if (CMAKE_BUILD_TYPE STREQUAL Debug)
+##   add_definitions (-D__WXDEBUG__)
+# endif (CMAKE_BUILD_TYPE STREQUAL Debug)
+#endif ()
 
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/xerces-c.cmake)
 
@@ -41,8 +41,6 @@ if (UNIX)
  pkg_check_modules (PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
 endif (UNIX)
 
-include_directories (${GTK_INCLUDE_DIRS}
-                     $ENV{LIB_ROOT}/gtkglarea)
 if (UNIX)
  include_directories (${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
 elseif (WIN32)
@@ -51,6 +49,10 @@ endif ()
 if (SDL_SUPPORT)
  include_directories (${SDL_INCLUDE_DIRS})
 endif (SDL_SUPPORT)
+if (GTK_SUPPORT)
+ include_directories (${GTK_INCLUDE_DIRS}
+                      $ENV{LIB_ROOT}/gtkglarea)
+endif (GTK_SUPPORT)
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/event)
@@ -72,24 +74,22 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../ACEStream/src/modules/
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../ACENetwork/src)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../ACENetwork/src/client_server)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../3rd_party/xsd)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../common
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../item
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../character
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../magic
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../combat
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../character/player
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../character/monster
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../map
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../engine
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../client
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../graphics
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../sound
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../net
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../net/protocol)
-
-#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../3rd_party/xsd)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../common
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../item
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../character
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../magic
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../combat
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../character/player
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../character/monster
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../map
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../engine
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../client
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../graphics
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../sound
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../net
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../net/protocol)
 
 ########### next target ###############
 set (EXECUTABLE client_gui)
@@ -98,12 +98,6 @@ set (${EXECUTABLE}_SRCS
      rpg_client_gui_callbacks.cpp
      rpg_client_gui_callbacks.h
      stdafx.h)
-
-if (UNIX)
-# set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"/usr/local/share/RPG\";RPG_GRAPHICS_HAS_DLL=1")
-elseif (WIN32)
-# set_source_files_properties(${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"\"")
-endif ()
 
 if (UNIX)
  if (CMAKE_COMPILER_IS_GNUCC)

@@ -72,13 +72,14 @@ typedef void* yyscan_t;
 %token <ival> PATH_NEXT_XY     "path_next_xy"
 %token <ival> PATH_NEXT_DIRECTION "path_next_direction"
 %token <ival> TARGET           "target"
+%token <ival> END_OF_COMMAND   "end_of_command"
 %token <ival> END_OF_FRAME     "end_of_frame"
 
 %type  <ival> frame
 %type         commands command path path_elem
 
-%printer    { debug_stream() << *$$; } <sval>
-%destructor { delete $$; $$ = NULL; } <sval>
+/*%printer    { debug_stream() << *$$; } <sval>*/
+/*%destructor { delete $$; $$ = NULL; } <sval>*/
 %printer    { debug_stream() << $$; } <ival>
 %destructor { $$ = 0; } <ival>
 /*%destructor { ACE_DEBUG((LM_DEBUG,
@@ -103,8 +104,13 @@ command:    "command"                                { driver->current ().comman
                                                        driver->current ().position.second = static_cast<unsigned int> ($4);
                                                      }
             path "target"                            { driver->current ().target = static_cast<RPG_Engine_EntityID_t> ($7);
+                                                     }
+            "end_of_command"                         { ACE_UNUSED_ARG ($9);
                                                        struct RPG_Net_Protocol_Command* current_p = &driver->current ();
-                                                       driver->record (current_p); };
+                                                       driver->record (current_p);
+                                                       if (driver->scannedBytes () == driver->length ())
+                                                         YYACCEPT; // *NOTE*: "end_of_frame" is currently never reached
+                                                     };
 commands:   commands command                         /* default */
             |                                 %empty /* empty */
 %%

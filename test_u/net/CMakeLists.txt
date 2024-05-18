@@ -1,62 +1,3 @@
-string (REPLACE ${CMAKE_SOURCE_DIR} "" BUILD_PATH_SUFFIX ${CMAKE_BINARY_DIR})
-string (SUBSTRING ${BUILD_PATH_SUFFIX} 1 -1 BUILD_PATH_SUFFIX)
-find_package (ACEStream
-              REQUIRED
-              CONFIG
-              PATHS ${CMAKE_CURRENT_SOURCE_DIR}/../../modules ${CMAKE_CURRENT_SOURCE_DIR}/../../..
-              PATH_SUFFIXES ACEStream/${BUILD_PATH_SUFFIX}
-              NO_DEFAULT_PATH)
-if (NOT EXISTS ${ACEStream_DIR})
- message (FATAL_ERROR "could not find package \"ACEStream\", aborting")
-else ()
- message (STATUS "found package \"ACEStream\": \"${ACEStream_DIR}\"")
-endif ()
-
-find_package (ACENetwork
-              REQUIRED
-              CONFIG
-              PATHS ${CMAKE_CURRENT_SOURCE_DIR}/../../modules ${CMAKE_CURRENT_SOURCE_DIR}/../../..
-              PATH_SUFFIXES ACENetwork/${BUILD_PATH_SUFFIX}
-              NO_DEFAULT_PATH)
-if (NOT EXISTS ${ACENetwork_DIR})
- message (FATAL_ERROR "could not find package \"ACENetwork\", aborting")
-else ()
- message (STATUS "found package \"ACENetwork\": \"${ACENetwork_DIR}\"")
-endif ()
-
-include (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/scripts/PreUIFramework.cmake)
-include (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/scripts/SetUIFramework.cmake)
-
-if (CURSES_USE)
-elseif (GTK_USE)
- include (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/scripts/SetGTKVersion.cmake)
-
- if (CMAKE_BUILD_TYPE STREQUAL Debug)
-  add_definitions (-DG_ERRORCHECK_MUTEXES)
- endif (CMAKE_BUILD_TYPE STREQUAL Debug)
-elseif (WXWIDGETS_USE)
- message (STATUS "wxWidgets_DEFINITIONS: ${wxWidgets_DEFINITIONS}")
- message (STATUS "wxWidgets_DEFINITIONS_DEBUG: ${wxWidgets_DEFINITIONS_DEBUG}")
- message (STATUS "wxWidgets_CXX_FLAGS: ${wxWidgets_CXX_FLAGS}")
- message (STATUS "wxWidgets_USE_FILE: ${wxWidgets_USE_FILE}")
-# # *NOTE*: re-enable ANSI mode, iff available
-# add_definitions (-DwxUSE_UNICODE=0)
- foreach (DEFINITION ${wxWidgets_DEFINITIONS})
-  add_definitions (-D${DEFINITION})
- endforeach ()
- if (WIN32)
-#  add_definitions (-D__WXMSW__)
-#  add_definitions (-DWXUSINGDLL)
-  if (MSVC)
-   add_definitions (-DwxMSVC_VERSION_AUTO)
-  endif (MSVC)
- endif (WIN32)
- add_definitions (-DwxUSE_GUI=1)
- if (CMAKE_BUILD_TYPE STREQUAL Debug)
-#   add_definitions (-D__WXDEBUG__)
- endif (CMAKE_BUILD_TYPE STREQUAL Debug)
-endif ()
-
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/xerces-c.cmake)
 
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/sdl.cmake)
@@ -179,11 +120,11 @@ add_executable (${EXECUTABLE_2}
                 ${${EXECUTABLE_2}_SRCS})
 
 if (SDL_SUPPORT)
- target_link_libraries (${EXECUTABLE_2}
+ target_link_libraries (${EXECUTABLE_2} PUBLIC
                         ${SDL_LIBRARIES})
 endif (SDL_SUPPORT)
 if (UNIX)
- target_link_libraries (${EXECUTABLE_2}
+ target_link_libraries (${EXECUTABLE_2} PUBLIC
                         ${GTK_LIBRARIES}
                         X11
                         xerces-c
@@ -197,7 +138,7 @@ if (UNIX)
 elseif (WIN32)
 # set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
- target_link_libraries (${EXECUTABLE_2}
+ target_link_libraries (${EXECUTABLE_2} PUBLIC
                         Opengl32.lib legacy_stdio_definitions.lib
                         ${GTK_LIBRARIES}
                         ${XERCESC_LIBRARIES}

@@ -61,13 +61,13 @@ void RPG_Net_Protocol_Scanner_set_column (int, yyscan_t);
 %option full backup perf-report verbose
 %option outfile="rpg_net_protocol_scanner.cpp" header-file="rpg_net_protocol_scanner.h" prefix="RPG_Net_Protocol_Scanner_"
 
-DIGIT          [:digit:]
-ALNUM          [:alnum:]
+DIGIT          [0-9]
+ALNUM          [a-zA-Z0-9]
 SPACE          [ ]
 COMMA          [,]
 SEMICOLON      [;]
 CRLF           \x0D\x0A
-OCTET          [\x00-\xFF]
+OCTET_NO_SPC   [\x00-\xFF]{-}[ ]
 
 %s             command
 %s             position_x
@@ -92,15 +92,16 @@ OCTET          [\x00-\xFF]
 %}
 
 <INITIAL>{
-{OCTET}{4}                 { iparser_p->scannedBytes (yyleng);
+{SPACE}                    { iparser_p->scannedBytes (yyleng);
+                             BEGIN(command);
+                             yylval->ival = 1; }
+{OCTET_NO_SPC}{4}/{SPACE}  { iparser_p->reset ();
+                             iparser_p->scannedBytes (yyleng);
                              ACE_UINT32 length_i = *reinterpret_cast<ACE_UINT32*> (yytext);
                              if (ACE_BYTE_ORDER == ACE_LITTLE_ENDIAN)
                                length_i = ACE_SWAP_LONG (length_i);
                              yylval->ival = static_cast<int> (length_i);
                              return yy::RPG_Net_Protocol_Parser::token::LENGTH; }
-{SPACE}                    { iparser_p->scannedBytes (yyleng);
-                             BEGIN(command);
-                             yylval->ival = 1; }
 } // end <INITIAL>
 <command>{
 {DIGIT}+                   { iparser_p->scannedBytes (yyleng);
@@ -183,14 +184,13 @@ OCTET          [\x00-\xFF]
                              converter >> yylval->ival;
                              return yy::RPG_Net_Protocol_Parser::token::TARGET; }
 {SPACE}                    { iparser_p->scannedBytes (yyleng);
+                             yylval->ival = 1;
                              if (iparser_p->scannedBytes () < iparser_p->length ())
                                BEGIN(command);
                              else
-                             {
                                BEGIN(INITIAL);
-                               return yy::RPG_Net_Protocol_Parser::token::END_OF_FRAME;
-                             } // end ELSE
-                             yylval->ival = 1; }
+                             return yy::RPG_Net_Protocol_Parser::token::END_OF_COMMAND;
+                           }
 } // end <entity_id>
 <<EOF>>                    { yyterminate(); }
 <*>(?s:.)                  { iparser_p->scannedBytes (yyleng);

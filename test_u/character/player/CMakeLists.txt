@@ -1,36 +1,3 @@
-include (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src/ui/scripts/PreUIFramework.cmake)
-include (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src/ui/scripts/SetUIFramework.cmake)
-
-if (CURSES_USE)
-elseif (GTK_USE)
- include (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src/ui/scripts/SetGTKVersion.cmake)
-
- if (CMAKE_BUILD_TYPE STREQUAL Debug)
-  add_definitions (-DG_ERRORCHECK_MUTEXES)
- endif (CMAKE_BUILD_TYPE STREQUAL Debug)
-elseif (WXWIDGETS_USE)
- message (STATUS "wxWidgets_DEFINITIONS: ${wxWidgets_DEFINITIONS}")
- message (STATUS "wxWidgets_DEFINITIONS_DEBUG: ${wxWidgets_DEFINITIONS_DEBUG}")
- message (STATUS "wxWidgets_CXX_FLAGS: ${wxWidgets_CXX_FLAGS}")
- message (STATUS "wxWidgets_USE_FILE: ${wxWidgets_USE_FILE}")
-# # *NOTE*: re-enable ANSI mode, iff available
-# add_definitions (-DwxUSE_UNICODE=0)
- foreach (DEFINITION ${wxWidgets_DEFINITIONS})
-  add_definitions (-D${DEFINITION})
- endforeach ()
- if (WIN32)
-#  add_definitions (-D__WXMSW__)
-#  add_definitions (-DWXUSINGDLL)
-  if (MSVC)
-   add_definitions (-DwxMSVC_VERSION_AUTO)
-  endif (MSVC)
- endif (WIN32)
- add_definitions (-DwxUSE_GUI=1)
- if (CMAKE_BUILD_TYPE STREQUAL Debug)
-#   add_definitions (-D__WXDEBUG__)
- endif (CMAKE_BUILD_TYPE STREQUAL Debug)
-endif ()
-
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../../scripts/xerces-c.cmake)
 
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../../scripts/sdl.cmake)
@@ -44,7 +11,9 @@ endif (UNIX)
 if (SDL_SUPPORT)
  include_directories (${SDL_INCLUDE_DIRS})
 endif (SDL_SUPPORT)
-include_directories (${GTK_INCLUDE_DIRS})
+if (GTK_SUPPORT)
+ include_directories (${GTK_INCLUDE_DIRS})
+endif (GTK_SUPPORT)
 if (UNIX)
  include_directories (${PKG_CONFIG_MODULE_SDL_MIXER_INCLUDE_DIRS}
                       ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
@@ -62,30 +31,26 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src/log)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src/ui)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../../Common/src/ui/gtk)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../3rd_party/xsd
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../chance/dice
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../common
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../item
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../character
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../magic
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../combat
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../character/player
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../character/monster
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../map
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../engine
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../client
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../graphics
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../sound)
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../3rd_party/xsd
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../chance/dice
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../common
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../item
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../character
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../magic
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../combat
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../character/player
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../character/monster
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../map
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../engine
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../client
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../graphics
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../sound)
 
 ########### next target ###############
 set (EXECUTABLE character_parser)
 set (${EXECUTABLE}_SRCS
      character_parser.cpp
      stdafx.h)
-
-set_source_files_properties (${${EXECUTABLE}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG\"")
-
-# add_definitions(-DDATADIR="/usr/local/share/RPG/config")
 
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
@@ -135,8 +100,6 @@ set (EXECUTABLE_2 character_generator)
 set (${EXECUTABLE_2}_SRCS
      character_generator.cpp
      stdafx.h)
-
-#set_source_files_properties (${${EXECUTABLE_2}_SRCS} PROPERTIES COMPILE_DEFINITIONS BASEDIR="/usr/local/share/RPG/config")
 
 add_executable (${EXECUTABLE_2}
                 ${${EXECUTABLE_2}_SRCS})
@@ -195,17 +158,11 @@ set (${EXECUTABLE_3}_SRCS
      test_u_main.h
      stdafx.h)
 
-#set_source_files_properties (${${EXECUTABLE_3}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"/usr/local/share/RPG\";CONFIGDIR=\".\"")
-
 add_executable (${EXECUTABLE_3}
                 ${${EXECUTABLE_3}_SRCS})
 
-#add_definitions (-D_WIN32_WINNT=0x0602)
-#add_definitions (-DWINVER=0x0602)
-
-include_directories (${GTK_INCLUDE_DIRS}
-#                     $ENV{LIB_ROOT}/gtkglarea
-                     ${PKG_CONFIG_MODULE_LIBGNOMEUI_INCLUDE_DIRS})
+#include_directories (${GTK_INCLUDE_DIRS}
+#                     ${PKG_CONFIG_MODULE_LIBGNOMEUI_INCLUDE_DIRS})
 
 if (SDL_SUPPORT)
  target_link_libraries (${EXECUTABLE_3}

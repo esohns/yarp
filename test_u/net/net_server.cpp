@@ -703,7 +703,7 @@ do_work (unsigned int maxNumConnections_in,
   CBData_in.configuration->protocol_configuration.connectionConfiguration.socketConfiguration.address.set (static_cast<u_short> (listeningPortNumber_in),
                                                                                                            static_cast<ACE_UINT32> (INADDR_ANY),
                                                                                                            1,        // encode port number ?
-                                                                                                           AF_INET);
+                                                                                                           0);       // map ?
   if (!CBData_in.listenerHandle->initialize (CBData_in.configuration->protocol_configuration.connectionConfiguration))
   {
     ACE_DEBUG ((LM_ERROR,
