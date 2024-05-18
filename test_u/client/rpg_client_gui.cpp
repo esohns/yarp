@@ -47,6 +47,8 @@
 
 #include "common_error_tools.h"
 
+#include "common_event_tools.h"
+
 #include "common_log_tools.h"
 
 #include "common_timer_tools.h"
@@ -1662,18 +1664,18 @@ do_parseIniFile (const std::string& iniFilename_in,
   config_out.video_configuration.double_buffer     =
       RPG_CLIENT_VIDEO_DEF_DOUBLEBUFFER;
 
-  config_out.protocol_configuration.loginOptions.server   = ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_SERVER);
-  config_out.protocol_configuration.loginOptions.port =
+  config_out.protocol_configuration.protocolOptions.loginOptions.server   = ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_SERVER);
+  config_out.protocol_configuration.protocolOptions.loginOptions.port =
     RPG_ENGINE_NETWORK_DEF_PORT;
-  config_out.protocol_configuration.loginOptions.password =
+  config_out.protocol_configuration.protocolOptions.loginOptions.password =
     ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_PASSWORD);
-  config_out.protocol_configuration.loginOptions.nick =
+  config_out.protocol_configuration.protocolOptions.loginOptions.nick =
     ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_NICKNAME);
-  config_out.protocol_configuration.loginOptions.user =
+  config_out.protocol_configuration.protocolOptions.loginOptions.user =
     ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_USERNAME);
-  config_out.protocol_configuration.loginOptions.realname =
+  config_out.protocol_configuration.protocolOptions.loginOptions.realname =
     ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_REALNAME);
-  config_out.protocol_configuration.loginOptions.channel =
+  config_out.protocol_configuration.protocolOptions.loginOptions.channel =
     ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_CHANNEL);
 
   ACE_Configuration_Heap config_heap;
@@ -1834,34 +1836,37 @@ do_parseIniFile (const std::string& iniFilename_in,
      // *TODO*: move these strings...
      if (val_name == ACE_TEXT ("server"))
      {
-       config_out.protocol_configuration.loginOptions.server = val_value.c_str ();
+       config_out.protocol_configuration.protocolOptions.loginOptions.server =
+         val_value.c_str ();
      }
      else if (val_name == ACE_TEXT ("port"))
      {
-       config_out.protocol_configuration.loginOptions.port =
+       config_out.protocol_configuration.protocolOptions.loginOptions.port =
          ::atoi (val_value.c_str ());
      }
      else if (val_name == ACE_TEXT ("password"))
      {
-       config_out.protocol_configuration.loginOptions.password =
+       config_out.protocol_configuration.protocolOptions.loginOptions.password =
          val_value.c_str ();
      }
      else if (val_name == ACE_TEXT ("nick"))
      {
-       config_out.protocol_configuration.loginOptions.nick = val_value.c_str ();
+       config_out.protocol_configuration.protocolOptions.loginOptions.nick =
+         val_value.c_str ();
      }
      else if (val_name == ACE_TEXT ("user"))
      {
-       config_out.protocol_configuration.loginOptions.user = val_value.c_str ();
+       config_out.protocol_configuration.protocolOptions.loginOptions.user =
+         val_value.c_str ();
      }
      else if (val_name == ACE_TEXT ("realname"))
      {
-       config_out.protocol_configuration.loginOptions.realname =
+       config_out.protocol_configuration.protocolOptions.loginOptions.realname =
          val_value.c_str ();
      }
      else if (val_name == ACE_TEXT ("channel"))
      {
-       config_out.protocol_configuration.loginOptions.channel =
+       config_out.protocol_configuration.protocolOptions.loginOptions.channel =
          val_value.c_str ();
      }
      else
@@ -2324,19 +2329,19 @@ ACE_TMAIN (int argc_in,
   configuration.graphics_dictionary  = graphics_dictionary;
 
   // *** network ***
-  configuration.protocol_configuration.loginOptions.server =
+  configuration.protocol_configuration.protocolOptions.loginOptions.server =
     ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_SERVER);
-  configuration.protocol_configuration.loginOptions.port =
+  configuration.protocol_configuration.protocolOptions.loginOptions.port =
     RPG_ENGINE_NETWORK_DEF_PORT;
-  configuration.protocol_configuration.loginOptions.password =
+  configuration.protocol_configuration.protocolOptions.loginOptions.password =
       ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_PASSWORD);
-  configuration.protocol_configuration.loginOptions.nick =
+  configuration.protocol_configuration.protocolOptions.loginOptions.nick =
     ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_NICKNAME);
-  configuration.protocol_configuration.loginOptions.user =
+  configuration.protocol_configuration.protocolOptions.loginOptions.user =
     ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_USERNAME);
-  configuration.protocol_configuration.loginOptions.realname =
+  configuration.protocol_configuration.protocolOptions.loginOptions.realname =
       ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_REALNAME);
-  configuration.protocol_configuration.loginOptions.channel =
+  configuration.protocol_configuration.protocolOptions.loginOptions.channel =
     ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_CHANNEL);
 
   // *** magic ***

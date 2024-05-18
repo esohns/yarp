@@ -37,6 +37,8 @@
 
 #include "common.h"
 
+#include "common_parser_common.h"
+
 #include "common_signal_common.h"
 
 #include "common_ui_common.h"
@@ -161,6 +163,7 @@ struct RPG_Client_Configuration
   std::string                                graphics_directory;
   std::string                                graphics_dictionary;
   // *** network ***
+  struct Common_FlexBisonParserConfiguration parser_configuration;
   struct RPG_Net_Protocol_Configuration      protocol_configuration;
   // *** magic ***
   std::string                                magic_dictionary;

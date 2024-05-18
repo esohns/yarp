@@ -21,15 +21,16 @@
 #ifndef RPG_NET_PROTOCOL_COMMON_MODULES_H
 #define RPG_NET_PROTOCOL_COMMON_MODULES_H
 
-#include "ace/Synch_Traits.h"
+// #include "ace/Synch_Traits.h"
 
-#include "common.h"
+// #include "common_time_common.h"
 
+#include "stream_common.h"
 #include "stream_streammodule_base.h"
 
-#include "rpg_net_protocol_session_message.h"
-#include "rpg_net_protocol_message.h"
-#include "rpg_net_protocol_stream_common.h"
+#include "rpg_net_protocol_configuration.h"
+#include "rpg_net_protocol_handler.h"
+#include "rpg_net_protocol_streamer.h"
 
 //typedef Net_Module_Statistic_ReaderTask_T<ACE_MT_SYNCH,
 //                                          Common_TimePolicy_t,
@@ -52,11 +53,13 @@
 //                          RPG_Net_Protocol_Module_Statistic_WriterTask_t, // writer type
 //                          RPG_Net_Protocol_Module_RuntimeStatistic);      // name
 
-//DATASTREAM_MODULE_DUPLEX (ACE_MT_SYNCH,                        // task synch type
-//                          Common_TimePolicy_t,                 // time policy
-//                          RPG_Net_Protocol_Configuration,      // configuration type
-//                          RPG_Net_Protocol_Module_IRCSplitter, // reader type
-//                          RPG_Net_Protocol_Module_IRCStreamer, // writer type
-//                          RPG_Net_Protocol_Module_IRCMarshal); // name
+DATASTREAM_MODULE_DUPLEX (struct RPG_Net_Protocol_SessionData,                // session data type
+                          enum Stream_SessionMessageType,                     // session event type
+                          struct RPG_Net_Protocol_ModuleHandlerConfiguration, // configuration type
+                          rpg_net_protocol_handler_module_name_string,
+                          Stream_INotify_t,
+                          RPG_Net_Protocol_Streamer,                          // reader type
+                          RPG_Net_Protocol_Handler,                           // writer type
+                          RPG_Net_Protocol_Marshal);                          // name
 
 #endif

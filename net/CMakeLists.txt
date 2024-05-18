@@ -10,12 +10,6 @@ set (${LIBRARY}_SRCS
      rpg_net_common_tools.cpp
      rpg_net_common_tools.h
      rpg_net_defines.h
-     rpg_net_eventhandler.cpp
-     rpg_net_eventhandler.h
-     rpg_net_module_eventhandler.cpp
-     rpg_net_module_eventhandler.h
-     rpg_net_module_protocolhandler.cpp
-     rpg_net_module_protocolhandler.h
      rpg_net_packet_headers.h
      rpg_net_remote_comm.h)
 
@@ -67,7 +61,8 @@ target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../chance/dice>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../common>)
-                     #${CMAKE_CURRENT_SOURCE_DIR}/stream)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/protocol>)
 
@@ -79,6 +74,8 @@ if (WIN32)
  target_link_libraries (${LIBRARY}
                         CommonError)
 endif (WIN32)
+target_link_libraries (${LIBRARY}
+                       ACEStream ACENetwork)
 
 # add PCH
 target_precompile_headers (${LIBRARY}
@@ -89,9 +86,6 @@ install (FILES
          rpg_net_common.h
          rpg_net_common_tools.h
          rpg_net_defines.h
-         rpg_net_eventhandler.h
-         rpg_net_module_eventhandler.h
-         rpg_net_module_protocolhandler.h
          rpg_net_packet_headers.h
          rpg_net_remote_comm.h
          DESTINATION include)

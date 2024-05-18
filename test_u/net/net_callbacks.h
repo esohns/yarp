@@ -29,9 +29,15 @@ gboolean idle_update_log_display_cb (gpointer);
 
 //////////////////////////////////////////
 
+gboolean idle_start_session_client_cb (gpointer);
+gboolean idle_end_session_client_cb (gpointer);
+
 gboolean idle_initialize_client_UI_cb (gpointer);
 
 //////////////////////////////////////////
+
+gboolean idle_start_session_server_cb (gpointer);
+gboolean idle_end_session_server_cb (gpointer);
 
 gboolean idle_initialize_server_UI_cb (gpointer);
 
@@ -45,7 +51,7 @@ extern "C"
 G_MODULE_EXPORT gint button_connect_clicked_cb (GtkWidget*, gpointer);
 G_MODULE_EXPORT gint button_close_clicked_cb (GtkWidget*, gpointer);
 G_MODULE_EXPORT gint button_close_all_clicked_cb (GtkWidget*, gpointer);
-G_MODULE_EXPORT gint button_ping_clicked_cb (GtkWidget*, gpointer);
+G_MODULE_EXPORT gint button_test_clicked_cb (GtkWidget*, gpointer);
 
 // -----------------------------------------------------------------------------
 

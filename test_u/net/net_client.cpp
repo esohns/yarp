@@ -47,6 +47,8 @@
 #include "common_file_tools.h"
 #include "common_os_tools.h"
 
+#include "common_event_tools.h"
+
 #include "common_logger_queue.h"
 #include "common_log_tools.h"
 
@@ -82,8 +84,8 @@
 
 #include "rpg_net_common.h"
 #include "rpg_net_defines.h"
-#include "rpg_net_module_eventhandler.h"
 
+#include "rpg_net_protocol_messagehandler.h"
 #include "rpg_net_protocol_network.h"
 
 #include "rpg_engine_defines.h"
@@ -92,9 +94,9 @@
 
 #include "net_callbacks.h"
 #include "net_client_common.h"
+#include "net_client_eventhandler.h"
 #include "net_client_signalhandler.h"
 #include "net_defines.h"
-#include "net_eventhandler.h"
 
 // ******* WORKAROUND *************
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -429,10 +431,14 @@ do_work (unsigned int peerPingInterval_in,
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
   // step0a: initialize stream configuration object
-  struct Common_Parser_FlexAllocatorConfiguration allocator_configuration;
   struct Stream_ModuleConfiguration module_configuration;
   struct RPG_Net_Protocol_ModuleHandlerConfiguration modulehandler_configuration;
-  modulehandler_configuration.allocatorConfiguration = &allocator_configuration;
+  modulehandler_configuration.allocatorConfiguration =
+    &CBData_in.allocatorConfiguration;
+  modulehandler_configuration.parserConfiguration =
+    &CBData_in.configuration->parser_configuration;
+  modulehandler_configuration.protocolOptions =
+    &CBData_in.configuration->protocol_configuration.protocolOptions;
   struct RPG_Net_Protocol_StreamConfiguration stream_configuration;
   RPG_Net_Protocol_StreamConfiguration_t stream_configuration_2;
 
@@ -446,31 +452,30 @@ do_work (unsigned int peerPingInterval_in,
     CBData_in.configuration->dispatch_configuration.numberOfProactorThreads =
       numDispatchThreads_in;
 
-  Net_EventHandler ui_message_handler (&CBData_in);
-  RPG_Net_MessageHandler_Module message_handler (NULL,
-                                                 ACE_TEXT_ALWAYS_CHAR ("MessageHandler"));
+  Net_Client_EventHandler ui_message_handler (&CBData_in);
+  RPG_Net_Protocol_MessageHandler_Module message_handler (NULL,
+                                                          ACE_TEXT_ALWAYS_CHAR ("MessageHandler"));
   modulehandler_configuration.subscriber = &ui_message_handler;
 
-  Stream_AllocatorHeap_T<ACE_MT_SYNCH,
-                         struct Stream_AllocatorConfiguration> heap_allocator;
-  RPG_Net_MessageAllocator_t message_allocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
-                                                &heap_allocator,
-                                                true); // block ?
-
   // ************ connection configuration data ************
-  CBData_in.configuration->protocol_configuration.peerPingInterval.usec (peerPingInterval_in * 1000);
-  CBData_in.configuration->protocol_configuration.printPongMessages = true;
+  CBData_in.configuration->protocol_configuration.protocolOptions.pingInterval.usec (peerPingInterval_in * 1000);
+  CBData_in.configuration->protocol_configuration.protocolOptions.printPongMessages =
+    true;
   // ************ socket / stream configuration data ************
 
-  stream_configuration.messageAllocator = &message_allocator;
+  stream_configuration.messageAllocator = &CBData_in.messageAllocator;
   stream_configuration.module =
     (!UIDefinitionFile_in.empty () ? &message_handler
                                    : NULL);
   stream_configuration_2.initialize (module_configuration,
                                      modulehandler_configuration,
                                      stream_configuration);
+  CBData_in.configuration->protocol_configuration.connectionConfiguration.allocatorConfiguration =
+    &CBData_in.allocatorConfiguration;
   CBData_in.configuration->protocol_configuration.connectionConfiguration.streamConfiguration =
     &stream_configuration_2;
+  CBData_in.configuration->protocol_configuration.connectionConfiguration.messageAllocator =
+    &CBData_in.messageAllocator;
 
   // step0b: initialize event dispatch
   if (!Common_Event_Tools::initializeEventDispatch (CBData_in.configuration->dispatch_configuration))

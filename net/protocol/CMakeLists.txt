@@ -1,5 +1,17 @@
 string (REPLACE ${CMAKE_SOURCE_DIR} "" BUILD_PATH_SUFFIX ${CMAKE_BINARY_DIR})
 string (SUBSTRING ${BUILD_PATH_SUFFIX} 1 -1 BUILD_PATH_SUFFIX)
+find_package (ACEStream
+              REQUIRED
+              CONFIG
+              PATHS ${CMAKE_CURRENT_SOURCE_DIR}/../../modules ${CMAKE_CURRENT_SOURCE_DIR}/../../..
+              PATH_SUFFIXES ACEStream/${BUILD_PATH_SUFFIX}
+              NO_DEFAULT_PATH)
+if (NOT EXISTS ${ACEStream_DIR})
+ message (FATAL_ERROR "could not find package \"ACEStream\", aborting")
+else ()
+ message (STATUS "found package \"ACEStream\": \"${ACEStream_DIR}\"")
+endif ()
+
 find_package (ACENetwork
               REQUIRED
               CONFIG
@@ -20,17 +32,32 @@ set (${LIBRARY}_SRCS
      rpg_net_protocol_common_modules.h
      rpg_net_protocol_configuration.h
      rpg_net_protocol_defines.h
-  #  rpg_net_protocol_exports.h
+     rpg_net_protocol_eventhandler.cpp
+     rpg_net_protocol_eventhandler.h
+#  rpg_net_protocol_exports.h
+     rpg_net_protocol_handler.cpp
+     rpg_net_protocol_handler.h
+     rpg_net_protocol_iparser.h
      rpg_net_protocol_message.cpp
      rpg_net_protocol_message.h
      rpg_net_protocol_messageallocator.cpp
      rpg_net_protocol_messageallocator.h
+     rpg_net_protocol_messagehandler.cpp
+     rpg_net_protocol_messagehandler.h
      rpg_net_protocol_network.h
+     rpg_net_protocol_parser.cpp
+     rpg_net_protocol_parser.h
+     rpg_net_protocol_parser_driver.cpp
+     rpg_net_protocol_parser_driver.h
+     rpg_net_protocol_scanner.cpp
+     rpg_net_protocol_scanner.h
      rpg_net_protocol_session_message.cpp
      rpg_net_protocol_session_message.h
      rpg_net_protocol_stream.cpp
      rpg_net_protocol_stream.h
      rpg_net_protocol_stream_common.h
+     rpg_net_protocol_streamer.cpp
+     rpg_net_protocol_streamer.h
      rpg_net_protocol_tools.cpp
      rpg_net_protocol_tools.h)
 
@@ -47,6 +74,10 @@ if (WIN32)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/error>)
 endif (WIN32)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/event>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/parser>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/signal>)
 target_include_directories (${LIBRARY} PUBLIC
@@ -74,10 +105,34 @@ target_include_directories (${LIBRARY} PUBLIC
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../ACENetwork/src/protocol/irc>)
 
+if (WIN32)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../include>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../3rd_party>)
+endif (WIN32)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../3rd_party/bison>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../chance/dice>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../common>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../character>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../magic>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../item>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../combat>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../character/player>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../character/monster>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../map>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../engine>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>)
 target_include_directories (${LIBRARY} PUBLIC
@@ -110,10 +165,10 @@ target_include_directories (${LIBRARY} PUBLIC
 add_dependencies (${LIBRARY} RPG_Net)
 #RPG_Stream)
 
-set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
+#set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
 target_link_libraries (${LIBRARY}
-                       ACENetwork)
+                       ACEStream_Network)
 
 # add PCH
 target_precompile_headers (${LIBRARY}
@@ -125,13 +180,21 @@ install (FILES
          rpg_net_protocol_common_modules.h
          rpg_net_protocol_configuration.h
          rpg_net_protocol_defines.h
+         rpg_net_protocol_eventhandler.h
 #         rpg_net_protocol_exports.h
+         rpg_net_protocol_handler.h
+         rpg_net_protocol_iparser.h
          rpg_net_protocol_message.h
          rpg_net_protocol_messageallocator.h
+         rpg_net_protocol_messagehandler.h
          rpg_net_protocol_network.h
+         rpg_net_protocol_parser.h
+         rpg_net_protocol_parser_driver.h
+         rpg_net_protocol_scanner.h
          rpg_net_protocol_session_message.h
          rpg_net_protocol_stream.h
          rpg_net_protocol_stream_common.h
+         rpg_net_protocol_streamer.h
          rpg_net_protocol_tools.h
          DESTINATION include)
 install (TARGETS ${LIBRARY} LIBRARY

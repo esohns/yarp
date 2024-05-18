@@ -53,7 +53,7 @@ RPG_Net_Protocol_Message::RPG_Net_Protocol_Message (Stream_SessionId_t sessionId
 }
 
 RPG_Net_Protocol_Message::RPG_Net_Protocol_Message (Stream_SessionId_t sessionId_in,
-                                                        ACE_Allocator* messageAllocator_in)
+                                                    ACE_Allocator* messageAllocator_in)
  : inherited (sessionId_in,
               messageAllocator_in) // message block allocator
 {

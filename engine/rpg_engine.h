@@ -38,8 +38,8 @@
 #include "rpg_map_common.h"
 #include "rpg_map_common_tools.h"
 
-#include "rpg_net_protocol_messageallocator.h"
-#include "rpg_net_protocol_network.h"
+// #include "rpg_net_protocol_messageallocator.h"
+// #include "rpg_net_protocol_network.h"
 
 #include "rpg_engine_common.h"
 #include "rpg_engine_entitymode.h"
@@ -50,9 +50,6 @@
 // forward declarations
 class RPG_Engine_IClient;
 
-/**
-        @author Erik Sohns <erik.sohns@web.de>
-*/
 class RPG_Engine
  : public ACE_Task<ACE_MT_SYNCH, Common_TimePolicy_t>
  , public RPG_Engine_Level
@@ -206,7 +203,7 @@ class RPG_Engine
                      const RPG_Engine_EntityID_t&);
   };
 
-  void clearEntityActions (RPG_Engine_EntityID_t = 0, // entity ID (default: ALL)
+  void clearEntityActions (RPG_Engine_EntityID_t = 0, // id (default: ALL)
                            bool = true);              // locked access ?
 
   // perform (one round of) actions
@@ -229,14 +226,14 @@ class RPG_Engine
   RPG_Engine_IClient*                             client_;
   //// implement blocking wait...
   //ACE_Condition<ACE_Recursive_Thread_Mutex>     condition_;
-  RPG_Net_Protocol_IConnector_t*                  connector_;
+  // RPG_Net_Protocol_IConnector_t*                  connector_;
   RPG_Engine_Entities_t                           entities_;
-  HEAP_ALLOCATOR_T                                heapAllocator_;
+  // HEAP_ALLOCATOR_T                                heapAllocator_;
   // make API re-entrant
   mutable ACE_SYNCH_MUTEX                         lock_;
-  struct Common_Parser_FlexAllocatorConfiguration allocatorConfiguration_;
-  RPG_Net_Protocol_MessageAllocator               messageAllocator_;
-  RPG_Net_Protocol_ConnectionConfiguration        netConfiguration_;
+  // struct Common_Parser_FlexAllocatorConfiguration allocatorConfiguration_;
+  // RPG_Net_Protocol_MessageAllocator               messageAllocator_;
+  // RPG_Net_Protocol_ConnectionConfiguration        netConfiguration_;
   // *IMPORTANT NOTE*: need this ONLY to handle control messages...
   RPG_Engine_MessageQueue                         queue_;
 

@@ -34,9 +34,6 @@
 
 #include "net_connection_manager.h"
 
-#include "rpg_net_module_eventhandler.h"
-#include "rpg_net_module_protocolhandler.h"
-
 #include "rpg_net_protocol_common_modules.h"
 #include "rpg_net_protocol_configuration.h"
 #include "rpg_net_protocol_session_message.h"
@@ -111,19 +108,16 @@ class RPG_Net_Protocol_Stream
   //virtual void report () const;
 
   // *TODO*: re-consider this API
-  void ping ();
+  // void ping ();
 
  private:
-//   ACE_UNIMPLEMENTED_FUNC(RPG_Net_Protocol_Stream())
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Stream (const RPG_Net_Protocol_Stream&))
   ACE_UNIMPLEMENTED_FUNC (RPG_Net_Protocol_Stream& operator= (const RPG_Net_Protocol_Stream&))
 
   // modules
-  //RPG_Net_HeaderParser_Module    headerParser_;
   //Net_Module_RuntimeStatistic_Module runtimeStatistic_;
   typename inherited::IO_MODULE_T IOHandler_;
-  RPG_Net_ProtocolHandler_Module  protocolHandler_;
-  //RPG_Net_EventHandler_Module     eventHandler_;
+  RPG_Net_Protocol_Marshal_Module protocolHandler_;
 };
 
 #endif

@@ -145,25 +145,25 @@ error:
   return false;
 }
 
-void
-RPG_Net_Protocol_Stream::ping ()
-{
-  RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Stream::ping"));
+// void
+// RPG_Net_Protocol_Stream::ping ()
+// {
+//   RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Stream::ping"));
 
-  // delegate to this module...
-  Common_ITimerHandler* timer_handler_p = NULL;
-  timer_handler_p =
-    dynamic_cast<Common_ITimerHandler*> (protocolHandler_.writer ());
-  ACE_ASSERT (timer_handler_p);
+//   // delegate to this module...
+//   Common_ITimerHandler* timer_handler_p = NULL;
+//   timer_handler_p =
+//     dynamic_cast<Common_ITimerHandler*> (protocolHandler_.writer ());
+//   ACE_ASSERT (timer_handler_p);
 
-  try {
-    timer_handler_p->handle (NULL);
-  } catch (...) {
-    ACE_DEBUG ((LM_CRITICAL,
-                ACE_TEXT ("%s: caught exception in Common_ITimerHandler::handle, continuing\n"),
-                ACE_TEXT (protocol_stream_name_string_)));
-  }
-}
+//   try {
+//     timer_handler_p->handle (NULL);
+//   } catch (...) {
+//     ACE_DEBUG ((LM_CRITICAL,
+//                 ACE_TEXT ("%s: caught exception in Common_ITimerHandler::handle, continuing\n"),
+//                 ACE_TEXT (protocol_stream_name_string_)));
+//   }
+// }
 
 //bool
 //RPG_Net_Protocol_Stream::collect (RPG_Net_Protocol_RuntimeStatistic& data_out)

@@ -28,7 +28,7 @@
 #include "stream_data_message_base.h"
 #include "stream_messageallocatorheap_base.h"
 
-//#include "rpg_net_protocol_common.h"
+#include "rpg_net_protocol_common.h"
 
 // forward declaration(s)
 class ACE_Allocator;
@@ -37,13 +37,13 @@ class ACE_Message_Block;
 class RPG_Net_Protocol_SessionMessage;
 
 class RPG_Net_Protocol_Message
- : public Stream_MessageBase_T<struct Stream_AllocatorConfiguration,
-                               enum Stream_MessageType,
-                               Stream_CommandType_t>
+ : public Stream_DataMessageBase_T<struct RPG_Net_Protocol_Command,
+                                   enum Stream_MessageType,
+                                   Stream_CommandType_t>
 {
-  typedef Stream_MessageBase_T<struct Stream_AllocatorConfiguration,
-                               enum Stream_MessageType,
-                               Stream_CommandType_t> inherited;
+  typedef Stream_DataMessageBase_T<struct RPG_Net_Protocol_Command,
+                                   enum Stream_MessageType,
+                                   Stream_CommandType_t> inherited;
 
   // grant access to specific private ctors
   friend class Stream_MessageAllocatorHeapBase_T<ACE_MT_SYNCH,

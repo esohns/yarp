@@ -1,3 +1,29 @@
+string (REPLACE ${CMAKE_SOURCE_DIR} "" BUILD_PATH_SUFFIX ${CMAKE_BINARY_DIR})
+string (SUBSTRING ${BUILD_PATH_SUFFIX} 1 -1 BUILD_PATH_SUFFIX)
+find_package (ACEStream
+              REQUIRED
+              CONFIG
+              PATHS ${CMAKE_CURRENT_SOURCE_DIR}/../../modules ${CMAKE_CURRENT_SOURCE_DIR}/../../..
+              PATH_SUFFIXES ACEStream/${BUILD_PATH_SUFFIX}
+              NO_DEFAULT_PATH)
+if (NOT EXISTS ${ACEStream_DIR})
+ message (FATAL_ERROR "could not find package \"ACEStream\", aborting")
+else ()
+ message (STATUS "found package \"ACEStream\": \"${ACEStream_DIR}\"")
+endif ()
+
+find_package (ACENetwork
+              REQUIRED
+              CONFIG
+              PATHS ${CMAKE_CURRENT_SOURCE_DIR}/../../modules ${CMAKE_CURRENT_SOURCE_DIR}/../../..
+              PATH_SUFFIXES ACENetwork/${BUILD_PATH_SUFFIX}
+              NO_DEFAULT_PATH)
+if (NOT EXISTS ${ACENetwork_DIR})
+ message (FATAL_ERROR "could not find package \"ACENetwork\", aborting")
+else ()
+ message (STATUS "found package \"ACENetwork\": \"${ACENetwork_DIR}\"")
+endif ()
+
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/scripts/PreUIFramework.cmake)
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/scripts/SetUIFramework.cmake)
 
@@ -48,15 +74,11 @@ set (${EXECUTABLE}_SRCS
      net_callbacks.h
      net_client.cpp
      net_client_common.h
+     net_client_eventhandler.cpp
+     net_client_eventhandler.h
      net_client_signalhandler.cpp
      net_client_signalhandler.h
-#    net_client_timeouthandler.cpp
-#    net_client_timeouthandler.h
-     net_defines.h
-     net_eventhandler.cpp
-     net_eventhandler.h)
-#     net_module_eventhandler.cpp
-#     net_module_eventhandler.h)
+     net_defines.h)
 
 add_executable (${EXECUTABLE}
                 ${${EXECUTABLE}_SRCS})
@@ -148,10 +170,10 @@ set (${EXECUTABLE_2}_SRCS
      net_defines.h
      net_server.cpp
      net_server_common.h
+     net_server_eventhandler.cpp
+     net_server_eventhandler.h
      net_server_signalhandler.cpp
-     net_server_signalhandler.h
-     net_eventhandler.cpp
-     net_eventhandler.h)
+     net_server_signalhandler.h)
 
 add_executable (${EXECUTABLE_2}
                 ${${EXECUTABLE_2}_SRCS})
@@ -199,7 +221,7 @@ file (TO_CMAKE_PATH "$ENV{LIB_ROOT}" LIB_ROOT)
 file (TO_CMAKE_PATH "${SDL_LIB_DIR}" SDL_LIB_PATH)
 file (TO_CMAKE_PATH "${GTK_LIB_DIRS}" GTK_LIB_PATH)
 if (UNIX)
- file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}" COMMAND)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE}" COMMAND)
 elseif (WIN32)
  file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}.exe" COMMAND)
  string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
@@ -218,7 +240,7 @@ create_target_launcher (${EXECUTABLE}
                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                         ENVIRONMENT foo=bar)
 if (UNIX)
- file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE_2}" COMMAND)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE_2}" COMMAND)
 elseif (WIN32)
  file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE_2}.exe" COMMAND)
  string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})

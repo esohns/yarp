@@ -34,6 +34,7 @@
 #include "net_connection_configuration.h"
 
 #include "rpg_net_defines.h"
+
 #include "rpg_net_protocol_session_message.h"
 #include "rpg_net_protocol_message.h"
 
@@ -44,17 +45,48 @@ typedef Stream_ISessionDataNotify_T<struct RPG_Net_Protocol_SessionData,
 typedef std::list<RPG_Net_Protocol_ISessionNotify_t*> RPG_Net_Protocol_Subscribers_t;
 typedef RPG_Net_Protocol_Subscribers_t::iterator RPG_Net_Protocol_SubscribersIterator_t;
 
+struct RPG_Net_Protocol_LoginOptions
+{
+  std::string server;
+  unsigned short port;
+  std::string password;
+  std::string nick;
+  std::string user;
+  std::string realname;
+  std::string channel;
+};
+
+struct RPG_Net_Protocol_ProtocolOptions
+{
+  RPG_Net_Protocol_ProtocolOptions ()
+   : pingInterval (ACE_Time_Value::zero)
+   , loginOptions ()
+   , pingAutoAnswer (RPG_NET_PING_AUTO_ANSWER)
+   , printPongMessages (false)
+   , transportLayer (RPG_NET_DEFAULT_TRANSPORTLAYER)
+  {}
+
+  // *************************** protocol data *********************************
+  ACE_Time_Value                       pingInterval; // client/server
+  struct RPG_Net_Protocol_LoginOptions loginOptions;
+  bool                                 pingAutoAnswer; // auto-pong ?
+  bool                                 printPongMessages; // log pongs to console
+  enum Net_TransportLayerType          transportLayer;
+};
+
 struct RPG_Net_Protocol_ModuleHandlerConfiguration
  : Stream_ModuleHandlerConfiguration
 {
   RPG_Net_Protocol_ModuleHandlerConfiguration ()
    : Stream_ModuleHandlerConfiguration ()
    , subscriber (NULL)
-   //, subscribers (NULL)
+   , parserConfiguration (NULL)
+   , protocolOptions (NULL)
   {}
 
-  RPG_Net_Protocol_ISessionNotify_t* subscriber;
-  //RPG_Net_Protocol_Subscribers_t* subscribers;
+  RPG_Net_Protocol_ISessionNotify_t*          subscriber;
+  struct Common_FlexBisonParserConfiguration* parserConfiguration;
+  struct RPG_Net_Protocol_ProtocolOptions*    protocolOptions;
 };
 
 struct RPG_Net_Protocol_StreamConfiguration
@@ -89,31 +121,15 @@ class RPG_Net_Protocol_ConnectionConfiguration
   {}
 };
 
-struct RPG_Net_Protocol_LoginOptions
-{
-  std::string server;
-  unsigned short port;
-  std::string password;
-  std::string nick;
-  std::string user;
-  std::string realname;
-  std::string channel;
-};
-
 struct RPG_Net_Protocol_Configuration
 {
   RPG_Net_Protocol_Configuration ()
    : dispatchConfiguration ()
    , connectionConfiguration ()
    , streamConfiguration ()
-   , clientPingInterval (ACE_Time_Value::zero)
-   , loginOptions ()
-   , peerPingInterval (ACE_Time_Value::zero)
-   , pingAutoAnswer (RPG_NET_PING_AUTO_ANSWER)
-   , printPongMessages (false)
-   , transportLayer (RPG_NET_DEFAULT_TRANSPORTLAYER)
+   , protocolOptions ()
   {}
-  
+
   // **************************** dispatch data ********************************
   struct Common_EventDispatchConfiguration dispatchConfiguration;
 
@@ -123,13 +139,8 @@ struct RPG_Net_Protocol_Configuration
   // **************************** stream data **********************************
   RPG_Net_Protocol_StreamConfiguration_t   streamConfiguration;
 
-  // *************************** protocol data *********************************
-  ACE_Time_Value                           clientPingInterval; // server only
-  struct RPG_Net_Protocol_LoginOptions     loginOptions;
-  ACE_Time_Value                           peerPingInterval; // client only
-  bool                                     pingAutoAnswer; // auto-pong ?
-  bool                                     printPongMessages; // log pongs to console
-  enum Net_TransportLayerType              transportLayer;
+  // **************************** protocol data **********************************
+  struct RPG_Net_Protocol_ProtocolOptions  protocolOptions;
 };
 
 #endif

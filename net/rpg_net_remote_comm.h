@@ -21,6 +21,7 @@
 #ifndef RPG_NET_REMOTE_COMM_H
 #define RPG_NET_REMOTE_COMM_H
 
+#include "ace/Basic_Types.h"
 #include "ace/Global_Macros.h"
 
 class RPG_Net_Remote_Comm

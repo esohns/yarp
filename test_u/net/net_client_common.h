@@ -23,12 +23,17 @@
 
 #include <list>
 
-#include "ace/Thread_Mutex.h"
+#include "ace/Synch_Traits.h"
+
+#include "common_parser_common.h"
 
 #include "common_ui_gtk_common.h"
 
+#include "stream_allocatorheap.h"
 #include "stream_common.h"
 #include "stream_isessionnotify.h"
+
+#include "rpg_net_defines.h"
 
 #include "rpg_net_protocol_message.h"
 #include "rpg_net_protocol_session_message.h"
@@ -48,16 +53,22 @@ struct Net_Client_GTK_CBData
 {
   Net_Client_GTK_CBData ()
    : Common_UI_GTK_CBData ()
+   , allocatorConfiguration ()
    , allowUserRuntimeStatistic (true)
    , configuration (NULL)
-   //, subscribers ()
-   //, subscribersLock ()
+   , heapAllocator ()
+   , messageAllocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
+                       &heapAllocator,
+                       true) // block ?
   {}
 
-  bool                             allowUserRuntimeStatistic;
-  struct RPG_Client_Configuration* configuration;
-  //RPG_Net_Protocol_Subscribers_t   subscribers;
-  //ACE_Recursive_Thread_Mutex     subscribersLock;
+  struct Common_Parser_FlexAllocatorConfiguration              allocatorConfiguration;
+  bool                                                         allowUserRuntimeStatistic;
+  struct RPG_Client_Configuration*                             configuration;
+  Stream_AllocatorHeap_T<ACE_MT_SYNCH,
+                         struct Stream_AllocatorConfiguration> heapAllocator;
+  RPG_Net_MessageAllocator_t                                   messageAllocator;
+
 };
 
 #endif

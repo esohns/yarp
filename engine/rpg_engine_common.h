@@ -60,10 +60,10 @@ typedef unsigned int RPG_Engine_EntityID_t;
 
 struct RPG_Engine_Action
 {
-  RPG_Engine_Command    command;
-  RPG_Map_Position_t    position;
-  RPG_Map_Path_t        path;
-  RPG_Engine_EntityID_t target;
+  enum RPG_Engine_Command command;
+  RPG_Map_Position_t      position;
+  RPG_Map_Path_t          path;
+  RPG_Engine_EntityID_t   target;
 };
 typedef std::deque<struct RPG_Engine_Action> RPG_Engine_Actions_t;
 typedef RPG_Engine_Actions_t::iterator RPG_Engine_ActionsIterator_t;

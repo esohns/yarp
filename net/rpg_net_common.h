@@ -21,18 +21,4 @@
 #ifndef RPG_NET_COMMON_H
 #define RPG_NET_COMMON_H
 
-#include "ace/Synch_Traits.h"
-
-#include "stream_common.h"
-#include "stream_messageallocatorheap_base.h"
-
-#include "rpg_net_protocol_message.h"
-#include "rpg_net_protocol_session_message.h"
-
-typedef Stream_MessageAllocatorHeapBase_T<ACE_MT_SYNCH,
-                                          struct Stream_AllocatorConfiguration,
-                                          Stream_ControlMessage_t,
-                                          RPG_Net_Protocol_Message,
-                                          RPG_Net_Protocol_SessionMessage> RPG_Net_MessageAllocator_t;
-
 #endif

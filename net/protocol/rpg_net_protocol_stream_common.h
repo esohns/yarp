@@ -24,6 +24,8 @@
 #include "ace/INET_Addr.h"
 
 #include "stream_common.h"
+#include "stream_control_message.h"
+#include "stream_messageallocatorheap_base.h"
 #include "stream_session_data.h"
 
 #include "stream_net_common.h"
@@ -31,7 +33,17 @@
 #include "net_common.h"
 #include "net_iconnection.h"
 
-//#include "rpg_net_protocol_network.h"
+#include "rpg_net_protocol_message.h"
+// #include "rpg_net_protocol_session_message.h"
+
+// forward declaration
+class RPG_Net_Protocol_SessionMessage;
+
+typedef Stream_MessageAllocatorHeapBase_T<ACE_MT_SYNCH,
+                                          struct Stream_AllocatorConfiguration,
+                                          Stream_ControlMessage_t,
+                                          RPG_Net_Protocol_Message,
+                                          RPG_Net_Protocol_SessionMessage> RPG_Net_MessageAllocator_t;
 
 typedef Net_IConnection_T<ACE_INET_Addr,
                           struct Net_StreamConnectionState,

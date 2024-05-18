@@ -52,7 +52,6 @@
 #endif // GTK2_USE || GTK3_USE
 #define NET_CLIENT_UI_GTK_BUTTON_CONNECT_NAME          "connect"
 #define NET_CLIENT_UI_GTK_BUTTON_CLOSE_NAME            "close"
-#define NET_CLIENT_UI_GTK_BUTTON_PING_NAME             "ping"
 #define NET_CLIENT_UI_GTK_BUTTON_TEST_NAME             "test"
 #define NET_CLIENT_UI_GTK_RADIOBUTTON_NORMAL_NAME      "radiobutton_normal"
 #define NET_CLIENT_UI_GTK_SPINBUTTON_PINGINTERVAL_NAME "spinbutton_ping_interval"

@@ -35,8 +35,8 @@
  ** Define the yy::location class.
  */
 
-#ifndef YY_RPG_MAP_SCANNER_LOCATION_HH_INCLUDED
-# define YY_RPG_MAP_SCANNER_LOCATION_HH_INCLUDED
+#ifndef YY_RPG_NET_PROTOCOL_SCANNER_LOCATION_HH_INCLUDED
+# define YY_RPG_NET_PROTOCOL_SCANNER_LOCATION_HH_INCLUDED
 
 # include <iostream>
 # include <string>
@@ -299,4 +299,4 @@ namespace yy {
 
 } // yy
 
-#endif // !YY_RPG_MAP_SCANNER_LOCATION_HH_INCLUDED
+#endif // !YY_RPG_NET_PROTOCOL_SCANNER_LOCATION_HH_INCLUDED

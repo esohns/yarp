@@ -43,7 +43,10 @@
 
 #include "common_log_tools.h"
 
+#include "common_timer_manager_common.h"
 #include "common_timer_tools.h"
+
+#include "net_client_defines.h"
 
 #if defined (HAVE_CONFIG_H)
 #include "rpg_config.h"

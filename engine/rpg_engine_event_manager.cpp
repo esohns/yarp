@@ -27,6 +27,7 @@
 #include "common.h"
 #include "common_timer_handler.h"
 #include "common_timer_manager.h"
+#include "common_timer_manager_common.h"
 
 #include "rpg_dice.h"
 
@@ -894,7 +895,7 @@ RPG_Engine_Event_Manager::handleEvent (const struct RPG_Engine_Event& event_in)
         default:
         {
           // the engine executes these...
-          ACE_DEFAULT_MESSAGE_QUEUE_TYPE* msg_queue_p = myEngine->msg_queue ();
+          ACE_Message_Queue_Base* msg_queue_p = myEngine->msg_queue ();
           ACE_ASSERT (msg_queue_p);
           msg_queue_p->pulse ();
 

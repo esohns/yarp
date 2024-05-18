@@ -21,10 +21,17 @@
 #ifndef RPG_NET_PROTOCOL_COMMON_H
 #define RPG_NET_PROTOCOL_COMMON_H
 
-#include <list>
+#include "rpg_map_common.h"
 
-#include "stream_common.h"
-#include "stream_isessionnotify.h"
-#include "stream_session_data.h"
+#include "rpg_engine_command.h"
+#include "rpg_engine_common.h"
+
+struct RPG_Net_Protocol_Command
+{
+  enum RPG_Engine_Command command;
+  RPG_Map_Position_t      position;
+  RPG_Map_Path_t          path;
+  RPG_Engine_EntityID_t   target;
+};
 
 #endif
