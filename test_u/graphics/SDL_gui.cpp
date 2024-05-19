@@ -1668,7 +1668,8 @@ do_work (mode_t mode_in,
       RPG_Engine_IClient* iclient_p =
         dynamic_cast<RPG_Engine_IClient*> (main_window.child (WINDOW_MAP));
       ACE_ASSERT (iclient_p);
-      level_engine.initialize (iclient_p);
+      level_engine.initialize (iclient_p, // client engine handle
+                               false);    // server session ?
       // initialize/add entity to the graphics cache
       RPG_Client_IWindowLevel* map_window =
         dynamic_cast<RPG_Client_IWindowLevel*> (main_window.child (WINDOW_MAP));

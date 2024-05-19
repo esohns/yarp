@@ -1088,11 +1088,12 @@ ACE_TMAIN (int argc_in,
 
   RPG_Client_Engine client_engine;
   RPG_Engine level_engine;
-  client_engine.initialize (&level_engine,
+  client_engine.initialize (&level_engine, // engine handle
                             NULL,          // map window handle
                             true,          // relay UI actions back to the client(s)
                             false);        // debug ?
-  level_engine.initialize (&client_engine);
+  level_engine.initialize (&client_engine, // client engine handle
+                           true);          // server session ?
 
   struct Net_Server_GTK_CBData gtk_cb_user_data;
   gtk_cb_user_data.allowUserRuntimeStatistic =

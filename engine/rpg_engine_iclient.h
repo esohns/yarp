@@ -21,14 +21,18 @@
 
 #include "rpg_engine_common.h"
 
-// engine --> UI client interface
+// engine --> local UI/remote client interface
 class RPG_Engine_IClient
 {
  public:
   // exposed interface
+  // notify (local) UI
   virtual void notify (enum RPG_Engine_Command,
                        const struct RPG_Engine_ClientNotificationParameters&,
                        bool = true) = 0; // lock (engine) ?
+
+  // notify (remote) client
+  virtual void notify (const struct RPG_Engine_Action&) = 0;
 };
 
 #endif // RPG_ENGINE_ICLIENT_H

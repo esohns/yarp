@@ -87,6 +87,7 @@ class RPG_Client_Engine
   virtual void notify (enum RPG_Engine_Command,
                        const struct RPG_Engine_ClientNotificationParameters&,
                        bool = true); // lock (engine) ?
+  virtual void notify (const struct RPG_Engine_Action&); // action
 
   // *WARNING*: window handle needs to be of WINDOW_MAP type !!!
   void initialize (RPG_Engine*,               // (level) state

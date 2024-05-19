@@ -47,29 +47,25 @@
 #include "rpg_client_network_manager.h"
 
 RPG_Client_Engine::RPG_Client_Engine ()
-//  : myQueue(RPG_CLIENT_MAX_QUEUE_SLOTS),
  : inherited (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_ENGINE_THREAD_NAME),
               RPG_CLIENT_ENGINE_THREAD_GROUP_ID,
               1,
               false,
-              NULL),
-   condition_ (lock_),
-   shutDown_ (false),
-   engine_ (NULL),
-   window_ (NULL),
-   //myWidgetInterface(NULL),
-   actions_ (),
-   state_ (),
-//   mySeenPositions(),
-   selectionMode_ (SELECTIONMODE_NORMAL),
-   centerOnActivePlayer_ (RPG_CLIENT_DEF_CENTER_ON_ACTIVE_PLAYER),
-   screenLock_ (),
-   debug_ (RPG_CLIENT_DEF_DEBUG)
+              NULL)
+ , condition_ (lock_)
+ , shutDown_ (false)
+ , engine_ (NULL)
+ , window_ (NULL)
+   //,myWidgetInterface(NULL)
+ , serverSession_ (false)
+ , actions_ ()
+ , state_ ()
+ , selectionMode_ (SELECTIONMODE_NORMAL)
+ , centerOnActivePlayer_ (RPG_CLIENT_DEF_CENTER_ON_ACTIVE_PLAYER)
+ , screenLock_ ()
+ , debug_ (RPG_CLIENT_DEF_DEBUG)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::RPG_Client_Engine"));
-
-  // use member message queue...
-//   inherited::msg_queue(&myQueue);
 
   state_.style.door = RPG_CLIENT_GRAPHICS_DEF_DOORSTYLE;
   state_.style.edge = RPG_CLIENT_GRAPHICS_DEF_EDGESTYLE;
@@ -833,6 +829,20 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
 
   if (do_action)
     action (client_action);
+}
+
+void
+RPG_Client_Engine::notify (const struct RPG_Engine_Action& action_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::notify"));
+
+  // sanity check(s)
+  ACE_ASSERT (serverSession_);
+
+  RPG_Client_Network_Manager* client_network_manager_p =
+    RPG_CLIENT_NETWORK_MANAGER_SINGLETON::instance ();
+  ACE_ASSERT (client_network_manager_p);
+  client_network_manager_p->action (action_in);
 }
 
 void

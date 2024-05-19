@@ -80,7 +80,8 @@ SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D (const RPG_Graphics_SDLWindowBase
 {
   RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D"));
 
-  myEngine->initialize (this);
+  myEngine->initialize (this,   // client engine handle
+                        false); // server session ?
 
 //  myEngine->lock ();
   RPG_Map_Size_t map_size = myEngine->getSize (true); // locked access ?

@@ -39,7 +39,8 @@ class RPG_Client_Network_Manager
                              ACE_SYNCH_MUTEX>;
 
  public:
-  void action (const struct RPG_Client_Action&);
+  void action (const struct RPG_Engine_Action&); // action
+  void action (const struct RPG_Client_Action&); // action
 
   // manage connections
   void add (RPG_Net_Protocol_IConnection_t*); // connection handle

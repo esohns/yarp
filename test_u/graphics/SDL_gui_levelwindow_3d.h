@@ -27,6 +27,7 @@
 #define SDL_main_h_
 #include "SDL.h"
 
+#include "ace/Basic_Types.h"
 #include "ace/Global_Macros.h"
 
 #include "common_ilock.h"
@@ -98,17 +99,15 @@ class SDL_GUI_LevelWindow_3D
                             struct SDL_Rect&);         // return value: "dirty" region
 
   // implement RPG_Engine_IClient
-  //virtual void redraw();
-  //// *NOTE*: this triggers a complete redraw !
-  //virtual void updateEntity(const RPG_Engine_EntityID_t&);
   virtual void notify (enum RPG_Engine_Command,
                        const struct RPG_Engine_ClientNotificationParameters&,
                        bool = true);
+  inline virtual void notify (const struct RPG_Engine_Action& action_in) { ACE_UNUSED_ARG (action_in); }
 
  private:
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow_3D())
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow_3D(const SDL_GUI_LevelWindow_3D&))
-  ACE_UNIMPLEMENTED_FUNC(SDL_GUI_LevelWindow_3D& operator=(const SDL_GUI_LevelWindow_3D&))
+  ACE_UNIMPLEMENTED_FUNC (SDL_GUI_LevelWindow_3D ())
+  ACE_UNIMPLEMENTED_FUNC (SDL_GUI_LevelWindow_3D (const SDL_GUI_LevelWindow_3D&))
+  ACE_UNIMPLEMENTED_FUNC (SDL_GUI_LevelWindow_3D& operator= (const SDL_GUI_LevelWindow_3D&))
 
   // helper types
   typedef std::pair<int, int> RPG_Position_t;

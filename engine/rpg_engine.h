@@ -78,7 +78,8 @@ class RPG_Engine
   inline void lock () const { int result = lock_.acquire (); ACE_ASSERT (result == 0); }
   inline void unlock () const { int result = lock_.release (); ACE_ASSERT (result == 0); }
 
-  void initialize (RPG_Engine_IClient*); // client interface handle
+  void initialize (RPG_Engine_IClient*, // client interface handle
+                   bool);               // server session ?
   // *WARNING*: DO NOT USE while the engine isRunning() !
   void set (const struct RPG_Engine_LevelData&); // level
 
@@ -230,5 +231,8 @@ class RPG_Engine
   RPG_Engine_MessageQueue                         queue_;
 
   RPG_Engine_SeenPositions_t                      seenPositions_;
+
+  bool                                            serverSession_;
 };
+
 #endif

@@ -50,6 +50,44 @@ RPG_Client_Network_Manager::~RPG_Client_Network_Manager ()
 }
 
 void
+RPG_Client_Network_Manager::action (const struct RPG_Engine_Action& action_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Network_Manager::action"));
+
+  // sanity check(s)
+  ACE_ASSERT (connection_);
+
+  // send command to client
+  RPG_Net_Protocol_Connection_Manager* connection_manager_p =
+    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ();
+  ACE_ASSERT (connection_manager_p);
+  RPG_Net_Protocol_ConnectionConfiguration* configuration_p = NULL;
+  struct Net_UserData* user_data_p = NULL;
+  connection_manager_p->get (configuration_p,
+                             user_data_p);
+  ACE_ASSERT (configuration_p);
+  ACE_ASSERT (configuration_p->allocatorConfiguration);
+  ACE_ASSERT (configuration_p->messageAllocator);
+
+  RPG_Net_Protocol_Message* message_p =
+    static_cast<RPG_Net_Protocol_Message*> (configuration_p->messageAllocator->malloc (configuration_p->allocatorConfiguration->defaultBufferSize));
+  ACE_ASSERT (message_p);
+
+  struct RPG_Net_Protocol_Command command_s;
+  command_s.command =
+    static_cast<enum RPG_Net_Protocol_Engine_Command> (action_in.command);
+  command_s.path = action_in.path;
+  command_s.position = action_in.position;
+  command_s.target = action_in.target;
+
+  message_p->initialize (command_s,
+                         1, // *TODO*
+                         NULL);
+  ACE_Message_Block* message_block_p = message_p;
+  connection_->send (message_block_p);
+}
+
+void
 RPG_Client_Network_Manager::action (const struct RPG_Client_Action& action_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Network_Manager::action"));

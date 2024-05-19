@@ -930,7 +930,8 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   // step2: initialize UI
   RPG_Client_Engine client_engine;
   RPG_Engine level_engine;
-  level_engine.initialize (&client_engine);
+  level_engine.initialize (&client_engine, // client engine handle
+                           false);         // server session ?
   GTKUserData_in.clientEngine      = &client_engine;
   GTKUserData_in.schemaRepository  = schemaRepository_in;
   GTKUserData_in.entity.position   =

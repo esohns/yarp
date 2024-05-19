@@ -234,8 +234,22 @@ Net_Server_EventHandler::notify (Stream_SessionId_t sessionId_in,
       return;
     }
     default:
-    {
-      ACE_ASSERT (false); // *TODO*
+    { ACE_ASSERT (CBData_->levelEngine);
+      ACE_ASSERT (!CBData_->entities.emtpy ());
+
+      RPG_Engine_EntityID_t id_i = (*CBData_->entities.begin ()).first;
+      ACE_ASSERT (id_i);
+
+      struct RPG_Engine_Action action_s;
+      action_s.command = static_cast<enum RPG_Engine_Command> (data_r.command);
+      action_s.path = data_r.path;
+      action_s.position = data_r.position;
+      action_s.target = data_r.target;
+
+      CBData_->levelEngine->action (id_i,     // entity id
+                                    action_s, // action
+                                    true);    // locked access ?
+
       break;
     }
   } // end SWITCH

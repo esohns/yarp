@@ -35,7 +35,6 @@
 
 #include "rpg_common_condition.h"
 #include "rpg_common_defines.h"
-// #include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
 #include "rpg_common_tools.h"
 #include "rpg_common_xsderrorhandler.h"
@@ -44,7 +43,6 @@
 
 #include "rpg_item_common_tools.h"
 #include "rpg_item_common_XML_tools.h"
-// #include "rpg_item_dictionary.h"
 
 #include "rpg_player.h"
 #include "rpg_player_common_tools.h"
@@ -53,12 +51,6 @@
 #include "rpg_monster.h"
 
 #include "rpg_map_common_tools.h"
-// #include "rpg_map_pathfinding_tools.h"
-
-// #include "rpg_net_common.h"
-// #include "rpg_net_defines.h"
-
-// #include "rpg_net_protocol_defines.h"
 
 #include "rpg_engine_common_tools.h"
 #include "rpg_engine_defines.h"
@@ -73,15 +65,11 @@ ACE_Atomic_Op<ACE_Thread_Mutex,
 RPG_Engine::RPG_Engine ()
  : activePlayer_ (0)
  , client_ (NULL)
- // , connector_ (NULL)
  , entities_ ()
- // , heapAllocator_ ()
  , lock_ ()
- // , allocatorConfiguration_ ()
- // , messageAllocator_ (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES)
- // , netConfiguration_ ()
  , queue_ (RPG_ENGINE_MAX_QUEUE_SLOTS)
  , seenPositions_ ()
+ , serverSession_ (false)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::RPG_Engine"));
 
@@ -91,34 +79,7 @@ RPG_Engine::RPG_Engine ()
   // set group ID for worker thread(s)
   inherited::grp_id (RPG_ENGINE_TASK_GROUP_ID);
 
-  // initialize network connector
-  // allocatorConfiguration_.defaultBufferSize = RPG_NET_PROTOCOL_BUFFER_SIZE;
-  // netConfiguration_.allocatorConfiguration = &allocatorConfiguration_;
-  // netConfiguration_.messageAllocator = &messageAllocator_;
-  // ******************* socket configuration data ****************************
-  //netConfiguration_.socketConfiguration.bufferSize =
-  //  NET_SOCKET_DEFAULT_RECEIVE_BUFFER_SIZE;
-  ////netConfiguration_.socketConfiguration.peerAddress = INADDR_ANY;
-  //netConfiguration_.socketConfiguration.useLoopbackDevice = false;
 
-  // if (RPG_ENGINE_USES_REACTOR)
-  //   ACE_NEW_NORETURN (connector_,
-  //                     RPG_Net_Protocol_Connector_t (true));
-  // else
-  //   ACE_NEW_NORETURN (connector_,
-  //                     RPG_Net_Protocol_AsynchConnector_t (true));
-  // if (!connector_)
-  // {
-  //   ACE_DEBUG ((LM_CRITICAL,
-  //               ACE_TEXT ("failed to allocate memory, returning\n")));
-  //   return;
-  // } // end IF
-  // if (!connector_->initialize (netConfiguration_))
-  // {
-  //   ACE_DEBUG ((LM_ERROR,
-  //               ACE_TEXT ("failed to initialize connector, returning\n")));
-  //   return;
-  // } // end IF
 }
 
 RPG_Engine::~RPG_Engine ()
@@ -139,8 +100,6 @@ RPG_Engine::~RPG_Engine ()
       delete (*iterator).second->character;
       delete (*iterator).second;
     } // end IF
-
-  // delete connector_;
 }
 
 int
@@ -532,7 +491,8 @@ RPG_Engine::dump_state () const
 }
 
 void
-RPG_Engine::initialize (RPG_Engine_IClient* client_in)
+RPG_Engine::initialize (RPG_Engine_IClient* client_in,
+                        bool serverSession_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::initialize"));
 
@@ -540,6 +500,7 @@ RPG_Engine::initialize (RPG_Engine_IClient* client_in)
   ACE_ASSERT (client_in);
 
   client_ = client_in;
+  serverSession_ = serverSession_in;
 
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance ()->initialize (this);
 }
@@ -751,6 +712,11 @@ RPG_Engine::action (RPG_Engine_EntityID_t id_in,
                     bool lockedAccess_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::action"));
+
+  if (serverSession_)
+  { ACE_ASSERT (client_);
+    client_->notify (action_in);
+  } // end IF
 
   if (lockedAccess_in)
     lock_.acquire ();

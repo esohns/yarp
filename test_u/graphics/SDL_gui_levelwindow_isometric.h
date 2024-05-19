@@ -103,12 +103,10 @@ class SDL_GUI_LevelWindow_Isometric
                             struct SDL_Rect&);         // return value: "dirty" region
 
   // implement RPG_Engine_IClient
-  //virtual void redraw();
-  //// *NOTE*: this triggers a complete redraw !
-  //virtual void updateEntity(const RPG_Engine_EntityID_t&);
   virtual void notify (enum RPG_Engine_Command,
                        const struct RPG_Engine_ClientNotificationParameters&,
                        bool = true); // lock (engine) ?
+  inline virtual void notify (const struct RPG_Engine_Action& action_in) { ACE_UNUSED_ARG (action_in); }
 
  private:
   ACE_UNIMPLEMENTED_FUNC (SDL_GUI_LevelWindow_Isometric ())
