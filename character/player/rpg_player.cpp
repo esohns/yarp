@@ -1281,7 +1281,7 @@ RPG_Player::save (const std::string& filename_in) const
   } // end IF
 
   std::ofstream ofs;
-  ofs.exceptions(std::ofstream::badbit | std::ofstream::failbit);
+  ofs.exceptions (std::ofstream::badbit | std::ofstream::failbit);
   try {
     ofs.open (filename.c_str (),
               (std::ios_base::out | std::ios_base::trunc));
@@ -1320,7 +1320,7 @@ RPG_Player::save (const std::string& filename_in) const
   ::xml_schema::namespace_infomap map;
   map[""].name = ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_XML_TARGET_NAMESPACE);
   map[""].schema = ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_SCHEMA_FILE);
-  std::string character_set (ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_XML_SCHEMA_CHARSET));
+  std::string character_set (ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_XML_SCHEMA_CHARSET_UTF8));
   //   ::xml_schema::flags = ::xml_schema::flags::dont_validate;
   ::xml_schema::flags flags = 0;
   try {

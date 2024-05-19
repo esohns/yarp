@@ -62,14 +62,6 @@
 #define RPG_ENGINE_STATE_EXT                        ".state"
 #define RPG_ENGINE_STATE_SUB                        "engine_state"
 
-// network-specific
-#define RPG_ENGINE_NETWORK_DEF_SERVER               "localhost"
-#define RPG_ENGINE_NETWORK_DEF_PORT                 6667
-#define RPG_ENGINE_NETWORK_DEF_PASSWORD             "secretpasswordhere"
-#define RPG_ENGINE_NETWORK_DEF_NICKNAME             "Wiz"
-#define RPG_ENGINE_NETWORK_DEF_USERNAME             "user"
-#define RPG_ENGINE_NETWORK_DEF_REALNAME             "Ronnie Reagan"
-#define RPG_ENGINE_NETWORK_DEF_CHANNEL              "#foobar"
 // *TODO*: move these to client
 #define RPG_ENGINE_USES_REACTOR                     false
 

@@ -421,7 +421,13 @@ RPG_Net_Protocol_Handler::record (struct RPG_Net_Protocol_Command& record_in)
         inherited::headFragment_ =
           static_cast<RPG_Net_Protocol_Message*> (message_block_p);
         inherited::fragment_ = inherited::headFragment_;
-        bytes_to_release_i -= length_i ? length_i : bytes_to_release_i; // break if length_i == 0
+        bytes_to_release_i -= length_i;
+        // break if length_i == 0
+        if (!length_i)
+        {
+          inherited::PARSER_DRIVER_T::finished_ = true;
+          break;
+        } // end IF
       } // end IF
       else
       {

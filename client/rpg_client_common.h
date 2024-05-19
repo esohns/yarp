@@ -68,8 +68,8 @@ typedef RPG_Client_Entities_t::const_iterator RPG_Client_EntitiesIterator_t;
 
 struct RPG_Client_State
 {
-  RPG_Graphics_Style    style;
-  RPG_Client_Entities_t entities;
+  struct RPG_Graphics_Style style;
+  RPG_Client_Entities_t     entities;
 };
 
 struct RPG_Client_GTK_CBData
@@ -219,7 +219,7 @@ typedef std::pair<unsigned int, unsigned int> RPG_Client_Position_t;
 
 struct RPG_Client_Action
 {
-  RPG_Client_Command        command;
+  enum RPG_Client_Command   command;
   RPG_Map_Position_t        previous;
   // *NOTE*: depending on the scenario, these could be map or screen coordinates !
   RPG_Client_Position_t     position;

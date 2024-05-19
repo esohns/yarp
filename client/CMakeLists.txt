@@ -54,6 +54,8 @@ set (${LIBRARY}_SRCS
      rpg_client_entity_manager.cpp
      rpg_client_iwindow.h
      rpg_client_iwindow_level.h
+     rpg_client_network_manager.h
+     rpg_client_network_manager.cpp
      rpg_client_ui_tools.h
      rpg_client_ui_tools.cpp
      rpg_client_window_level.cpp
@@ -147,8 +149,14 @@ target_include_directories (${LIBRARY} PUBLIC
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../ACENetwork/src/client_server>)
 
+if (WIN32)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
+endif (WIN32)
 target_include_directories (${LIBRARY} PUBLIC
-                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../3rd_party>)
+target_include_directories (${LIBRARY} PUBLIC
+                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../3rd_party/bison>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../3rd_party/xsd>)
 target_include_directories (${LIBRARY} PUBLIC
@@ -209,6 +217,7 @@ install (FILES
          rpg_client_entity_manager.h
          rpg_client_iwindow.h
          rpg_client_iwindow_level.h
+         rpg_client_network_manager.h
          rpg_client_ui_tools.h
          rpg_client_window_level.h
          rpg_client_window_main.h

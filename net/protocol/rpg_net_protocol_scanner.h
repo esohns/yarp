@@ -525,6 +525,7 @@ void yyfree ( void * , yyscan_t yyscanner );
 #define path_position_y 6
 #define path_direction 7
 #define entity_id 8
+#define xml 9
 
 #endif
 

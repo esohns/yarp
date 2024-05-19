@@ -39,7 +39,8 @@
 #include "rpg_common_macros.h"
 
 #include "rpg_net_defines.h"
-#include "rpg_net_protocol_common.h"
+
+#include "rpg_net_protocol_connection_manager.h"
 
 Net_Client_SignalHandler::Net_Client_SignalHandler (struct Common_EventDispatchConfiguration& dispatchConfiguration_in,
                                                     RPG_Net_Protocol_ConnectionConfiguration& connectionConfiguration_in)

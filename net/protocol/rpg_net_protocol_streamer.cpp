@@ -94,6 +94,8 @@ RPG_Net_Protocol_Streamer::handleDataMessage (RPG_Net_Protocol_Message*& message
   converter << data_r.target;
   text_string += converter.str ();
   text_string += ' ';
+  text_string += data_r.xml;
+  text_string += ACE_TEXT_ALWAYS_CHAR ("\r\n");
   length_i += static_cast<ACE_UINT32> (text_string.size ());
   if (ACE_BYTE_ORDER == ACE_LITTLE_ENDIAN)
     length_i = ACE_SWAP_LONG (length_i);

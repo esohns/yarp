@@ -23,6 +23,8 @@
 
 #include <list>
 
+#include "common_parser_common.h"
+
 #include "common_ui_common.h"
 
 #include "common_ui_gtk_common.h"
@@ -31,6 +33,8 @@
 
 #include "net_ilistener.h"
 
+#include "rpg_engine_common.h"
+
 #include "rpg_net_protocol_session_message.h"
 #include "rpg_net_protocol_configuration.h"
 #include "rpg_net_protocol_message.h"
@@ -38,7 +42,8 @@
 
 // forward declaration(s)
 struct RPG_Client_Configuration;
-class Net_Client_TimeoutHandler;
+class RPG_Engine_IClient;
+class RPG_Engine;
 
 typedef Net_IListener_T<RPG_Net_Protocol_ConnectionConfiguration> RPG_Net_Protocol_IListener_t;
 typedef Stream_ISessionDataNotify_T<struct RPG_Net_Protocol_SessionData,
@@ -53,30 +58,24 @@ struct Net_Server_GTK_CBData
 {
   Net_Server_GTK_CBData ()
    : Common_UI_GTK_CBData ()
+   , allocatorConfiguration ()
    , allowUserRuntimeStatistic (true)
    , configuration (NULL)
-    //, eventStack ()
-   //, GTKState ()
    , listenerHandle (NULL)
-   //, logStack ()
-   //, stackLock ()
-   , subscribers ()
-   //, subscribersLock ()
-   , timerId (-1)
-   , timeoutHandler (NULL)
+   , schemaRepository ()
+   , clientEngine (NULL)
+   , levelEngine (NULL)
+   , entities ()
  {}
 
-  bool                             allowUserRuntimeStatistic;
-  struct RPG_Client_Configuration* configuration;
-  //Net_GTK_Events_t           eventStack;
-  //Common_UI_GTK_State_t      GTKState;
-  RPG_Net_Protocol_IListener_t*    listenerHandle; // *NOTE*: server only !
-  //Common_MessageStack_t      logStack;
-  //ACE_Recursive_Thread_Mutex stackLock;
-  RPG_Net_Protocol_Subscribers_t   subscribers;
-  //ACE_Recursive_Thread_Mutex subscribersLock;
-  long                             timerId;        // *NOTE*: client only !
-  Net_Client_TimeoutHandler*       timeoutHandler; // *NOTE*: client only !
+  struct Common_Parser_FlexAllocatorConfiguration allocatorConfiguration;
+  bool                                            allowUserRuntimeStatistic;
+  struct RPG_Client_Configuration*                configuration;
+  RPG_Net_Protocol_IListener_t*                   listenerHandle;
+  std::string                                     schemaRepository;
+  RPG_Engine_IClient*                             clientEngine;
+  RPG_Engine*                                     levelEngine;
+  RPG_Engine_Entities_t                           entities;
 };
 
 #endif

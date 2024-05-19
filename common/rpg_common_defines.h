@@ -24,27 +24,30 @@
 #include "ace/config-lite.h"
 
 // combat rounds last 6 seconds
-#define RPG_COMMON_COMBAT_ROUND_INTERVAL_S 6 // s
+#define RPG_COMMON_COMBAT_ROUND_INTERVAL_S   6 // s
 
-#define RPG_COMMON_MAX_SPELL_LEVEL         9
-#define RPG_COMMON_MAX_CLASS_LEVEL         20
+#define RPG_COMMON_MAX_SPELL_LEVEL           9
+#define RPG_COMMON_MAX_CLASS_LEVEL           20
 
-#define RPG_COMMON_SKILL_DC_HEAL_FIRST_AID 15
+#define RPG_COMMON_SKILL_DC_HEAL_FIRST_AID   15
 
-#define RPG_COMMON_UNAIDED_STABILIZE_P     0.1f // 10%/round
+#define RPG_COMMON_UNAIDED_STABILIZE_P       0.1f // 10%/round
 
 // XML-specific
 // *NOTE*: refer to the XSD C++/Tree manual for details
-#define RPG_COMMON_XML_SCHEMA_CHARSET      "UTF-8"
-#define RPG_COMMON_XML_TARGET_NAMESPACE    "urn:rpg"
-#define RPG_COMMON_XML_SCHEMA_FILE_EXT     ".xsd"
+#define RPG_COMMON_XML_SCHEMA_CHARSET_UTF8   "UTF-8"
+//#define RPG_COMMON_XML_SCHEMA_CHARSET_ASCII "ASCII"
 
-#define RPG_COMMON_SUB_DIRECTORY_STRING    "common"
+#define RPG_COMMON_XML_TARGET_NAMESPACE      "urn:rpg"
+#define RPG_COMMON_XML_SCHEMA_FILE_EXT       ".xsd"
+#define RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR '%'
+
+#define RPG_COMMON_SUB_DIRECTORY_STRING      "common"
 
 #if defined (ACE_WIN32) && defined (ACE_WIN64)
-#define RPG_COMMON_DEF_USER_LOGIN_BASE     "USERNAME" // environment
+#define RPG_COMMON_DEF_USER_LOGIN_BASE       "USERNAME" // environment
 #else
-#define RPG_COMMON_DEF_USER_LOGIN_BASE     "LOGNAME" // environment
+#define RPG_COMMON_DEF_USER_LOGIN_BASE       "LOGNAME" // environment
 #endif // ACE_WIN32 || ACE_WIN64
 
 #endif // RPG_COMMON_DEFINES_H

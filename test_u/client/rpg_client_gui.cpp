@@ -100,7 +100,8 @@
 #include "rpg_net_defines.h"
 
 #include "rpg_net_protocol_configuration.h"
-#include "rpg_net_protocol_network.h"
+#include "rpg_net_protocol_connection_manager.h"
+#include "rpg_net_protocol_defines.h"
 
 #include "rpg_engine.h"
 #include "rpg_engine_common_tools.h"
@@ -1060,6 +1061,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   client_engine.initialize (&level_engine,
                             main_window.child (WINDOW_MAP),
                             //&UIDefinition_in,
+                            false, // not a server session
                             debug_in);
 
   // step4c: queue initial drawing
@@ -1664,19 +1666,20 @@ do_parseIniFile (const std::string& iniFilename_in,
   config_out.video_configuration.double_buffer     =
       RPG_CLIENT_VIDEO_DEF_DOUBLEBUFFER;
 
-  config_out.protocol_configuration.protocolOptions.loginOptions.server   = ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_SERVER);
+  config_out.protocol_configuration.protocolOptions.loginOptions.server   =
+    ACE_TEXT_ALWAYS_CHAR (RPG_NET_PROTOCOL_DEF_SERVER);
   config_out.protocol_configuration.protocolOptions.loginOptions.port =
-    RPG_ENGINE_NETWORK_DEF_PORT;
+    RPG_NET_PROTOCOL_DEF_PORT;
   config_out.protocol_configuration.protocolOptions.loginOptions.password =
-    ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_PASSWORD);
+    ACE_TEXT_ALWAYS_CHAR (RPG_NET_PROTOCOL_DEF_PASSWORD);
   config_out.protocol_configuration.protocolOptions.loginOptions.nick =
-    ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_NICKNAME);
+    ACE_TEXT_ALWAYS_CHAR (RPG_NET_PROTOCOL_DEF_NICKNAME);
   config_out.protocol_configuration.protocolOptions.loginOptions.user =
-    ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_USERNAME);
+    ACE_TEXT_ALWAYS_CHAR (RPG_NET_PROTOCOL_DEF_USERNAME);
   config_out.protocol_configuration.protocolOptions.loginOptions.realname =
-    ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_REALNAME);
+    ACE_TEXT_ALWAYS_CHAR (RPG_NET_PROTOCOL_DEF_REALNAME);
   config_out.protocol_configuration.protocolOptions.loginOptions.channel =
-    ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_CHANNEL);
+    ACE_TEXT_ALWAYS_CHAR (RPG_NET_PROTOCOL_DEF_CHANNEL);
 
   ACE_Configuration_Heap config_heap;
   if (config_heap.open ())
@@ -2330,19 +2333,19 @@ ACE_TMAIN (int argc_in,
 
   // *** network ***
   configuration.protocol_configuration.protocolOptions.loginOptions.server =
-    ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_SERVER);
+    ACE_TEXT_ALWAYS_CHAR (RPG_NET_PROTOCOL_DEF_SERVER);
   configuration.protocol_configuration.protocolOptions.loginOptions.port =
-    RPG_ENGINE_NETWORK_DEF_PORT;
+    RPG_NET_PROTOCOL_DEF_PORT;
   configuration.protocol_configuration.protocolOptions.loginOptions.password =
-      ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_PASSWORD);
+    ACE_TEXT_ALWAYS_CHAR (RPG_NET_PROTOCOL_DEF_PASSWORD);
   configuration.protocol_configuration.protocolOptions.loginOptions.nick =
-    ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_NICKNAME);
+    ACE_TEXT_ALWAYS_CHAR (RPG_NET_PROTOCOL_DEF_NICKNAME);
   configuration.protocol_configuration.protocolOptions.loginOptions.user =
-    ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_USERNAME);
+    ACE_TEXT_ALWAYS_CHAR (RPG_NET_PROTOCOL_DEF_USERNAME);
   configuration.protocol_configuration.protocolOptions.loginOptions.realname =
-      ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_REALNAME);
+    ACE_TEXT_ALWAYS_CHAR (RPG_NET_PROTOCOL_DEF_REALNAME);
   configuration.protocol_configuration.protocolOptions.loginOptions.channel =
-    ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_NETWORK_DEF_CHANNEL);
+    ACE_TEXT_ALWAYS_CHAR (RPG_NET_PROTOCOL_DEF_CHANNEL);
 
   // *** magic ***
   configuration.magic_dictionary     = magic_dictionary;

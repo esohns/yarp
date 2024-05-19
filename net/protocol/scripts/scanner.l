@@ -67,7 +67,8 @@ SPACE          [ ]
 COMMA          [,]
 SEMICOLON      [;]
 CRLF           \x0D\x0A
-OCTET_NO_SPC   [\x00-\xFF]{-}[ ]
+OCTET          [\x00-\xFF]
+OCTET_NO_CRLF  [\x00-\xFF]{-}[\x0D\x0A]
 
 %s             command
 %s             position_x
@@ -77,6 +78,7 @@ OCTET_NO_SPC   [\x00-\xFF]{-}[ ]
 %s             path_position_y
 %s             path_direction
 %s             entity_id
+%s             xml
 
 %{
 #define YY_USER_ACTION yylloc->columns(yyleng);
@@ -84,24 +86,23 @@ OCTET_NO_SPC   [\x00-\xFF]{-}[ ]
 
 %%
 %{
-  yylloc->step ();
 #if defined (_DEBUG)
-  yyset_debug (iparser_p->debug () ? 1 : 0, yyscanner);
+  //yyset_debug (iparser_p->debug () ? 1 : 0, yyscanner);
 #endif // _DEBUG
   std::stringstream converter;
 %}
 
 <INITIAL>{
-{SPACE}                    { iparser_p->scannedBytes (yyleng);
-                             BEGIN(command);
-                             yylval->ival = 1; }
-{OCTET_NO_SPC}{4}/{SPACE}  { iparser_p->reset ();
+{OCTET}{4}/{SPACE}         { iparser_p->reset ();
                              iparser_p->scannedBytes (yyleng);
                              ACE_UINT32 length_i = *reinterpret_cast<ACE_UINT32*> (yytext);
                              if (ACE_BYTE_ORDER == ACE_LITTLE_ENDIAN)
                                length_i = ACE_SWAP_LONG (length_i);
                              yylval->ival = static_cast<int> (length_i);
                              return yy::RPG_Net_Protocol_Parser::token::LENGTH; }
+{SPACE}                    { iparser_p->scannedBytes (yyleng);
+                             BEGIN(command);
+                             yylval->ival = 1; }
 } // end <INITIAL>
 <command>{
 {DIGIT}+                   { iparser_p->scannedBytes (yyleng);
@@ -184,14 +185,24 @@ OCTET_NO_SPC   [\x00-\xFF]{-}[ ]
                              converter >> yylval->ival;
                              return yy::RPG_Net_Protocol_Parser::token::TARGET; }
 {SPACE}                    { iparser_p->scannedBytes (yyleng);
-                             yylval->ival = 1;
+                             BEGIN(xml);
+                             yylval->ival = 1; }
+} // end <entity_id>
+<xml>{
+{OCTET_NO_CRLF}+           { iparser_p->scannedBytes (yyleng);
+                             ACE_NEW_NORETURN (yylval->sval,
+                                               std::string (yytext));
+                             ACE_ASSERT (yylval->sval);
+                             return yy::RPG_Net_Protocol_Parser::token::XML; }
+{CRLF}                     { iparser_p->scannedBytes (yyleng);
+                             yylval->ival = 2;
                              if (iparser_p->scannedBytes () < iparser_p->length ())
                                BEGIN(command);
                              else
                                BEGIN(INITIAL);
                              return yy::RPG_Net_Protocol_Parser::token::END_OF_COMMAND;
                            }
-} // end <entity_id>
+} // end <xml>
 <<EOF>>                    { yyterminate(); }
 <*>(?s:.)                  { iparser_p->scannedBytes (yyleng);
 

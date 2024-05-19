@@ -65,21 +65,22 @@ typedef void* yyscan_t;
 #include "rpg_net_protocol_scanner.h"
 }
 
-%token <ival> LENGTH           "length"
-%token <ival> COMMAND          "command"
-%token <ival> POSITION_X       "position_x"
-%token <ival> POSITION_Y       "position_y"
-%token <ival> PATH_NEXT_XY     "path_next_xy"
+%token <ival> LENGTH              "length"
+%token <ival> COMMAND             "command"
+%token <ival> POSITION_X          "position_x"
+%token <ival> POSITION_Y          "position_y"
+%token <ival> PATH_NEXT_XY        "path_next_xy"
 %token <ival> PATH_NEXT_DIRECTION "path_next_direction"
-%token <ival> TARGET           "target"
-%token <ival> END_OF_COMMAND   "end_of_command"
-%token <ival> END_OF_FRAME     "end_of_frame"
+%token <ival> TARGET              "target"
+%token <sval> XML                 "xml"
+%token <ival> END_OF_COMMAND      "end_of_command"
+%token <ival> END_OF_FRAME        "end_of_frame"
 
 %type  <ival> frame
 %type         commands command path path_elem
 
-/*%printer    { debug_stream() << *$$; } <sval>*/
-/*%destructor { delete $$; $$ = NULL; } <sval>*/
+%printer    { debug_stream() << *$$; } <sval>
+%destructor { delete $$; $$ = NULL; } <sval>
 %printer    { debug_stream() << $$; } <ival>
 %destructor { $$ = 0; } <ival>
 /*%destructor { ACE_DEBUG((LM_DEBUG,
@@ -98,14 +99,16 @@ path:       path path_elem                           /* default */
 path_elem:  "path_next_xy" "path_next_xy" "path_next_direction" {
                                                        driver->current ().path.push_back (std::make_pair (std::make_pair (static_cast<unsigned int> ($1), static_cast<unsigned int> ($2)), static_cast<enum RPG_Map_Direction> ($3)));
                                                      };
-command:    "command"                                { driver->current ().command = static_cast<enum RPG_Engine_Command> ($1);
+command:    "command"                                { driver->current ().command = static_cast<enum RPG_Net_Protocol_Engine_Command> ($1);
                                                      }
             "position_x" "position_y"                { driver->current ().position.first = static_cast<unsigned int> ($3);
                                                        driver->current ().position.second = static_cast<unsigned int> ($4);
                                                      }
             path "target"                            { driver->current ().target = static_cast<RPG_Engine_EntityID_t> ($7);
                                                      }
-            "end_of_command"                         { ACE_UNUSED_ARG ($9);
+            "xml"                                    { driver->current ().xml = *$9;
+                                                     }
+            "end_of_command"                         { ACE_UNUSED_ARG ($11);
                                                        struct RPG_Net_Protocol_Command* current_p = &driver->current ();
                                                        driver->record (current_p);
                                                        if (driver->scannedBytes () == driver->length ())

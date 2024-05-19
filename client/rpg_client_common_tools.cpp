@@ -151,8 +151,9 @@ RPG_Client_Common_Tools::initializeUserProfiles ()
                                                             ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILES_SUB),
                                                             false);
     default_profile += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    default_profile += RPG_Common_Tools::sanitize (RPG_PLAYER_DEF_NAME);
-    default_profile += RPG_PLAYER_PROFILE_EXT;
+    default_profile +=
+      RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
+    default_profile += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT);
     if (!Common_File_Tools::copyFile (default_profile,
                                       profiles_directory))
       ACE_DEBUG ((LM_ERROR,

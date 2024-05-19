@@ -1298,7 +1298,7 @@ RPG_Engine::save (const std::string& descriptor_in)
     ::engine_state_t (ofs,
                       level_state_model,
                       map,
-                      ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_XML_SCHEMA_CHARSET),
+                      ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_XML_SCHEMA_CHARSET_UTF8),
                       flags);
   } catch (std::ios_base::failure exception) {
     ACE_DEBUG ((LM_ERROR,

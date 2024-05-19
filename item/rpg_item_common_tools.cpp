@@ -275,7 +275,7 @@ RPG_Item_Common_Tools::itemToSlot (RPG_Item_ID_t id_in,
     {
       const RPG_Item_Armor* armor = static_cast<const RPG_Item_Armor*> (item_base);
       enum RPG_Item_ArmorType armor_type_e = armor->armorType_;
-      const RPG_Item_ArmorProperties& properties =
+      struct RPG_Item_ArmorProperties properties =
         RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties (armor_type_e);
       switch (properties.category)
       {
@@ -358,7 +358,7 @@ RPG_Item_Common_Tools::itemToSlot (RPG_Item_ID_t id_in,
     case ITEM_WEAPON:
     {
       const RPG_Item_Weapon* weapon = static_cast<const RPG_Item_Weapon*> (item_base);
-      const RPG_Item_WeaponProperties& properties =
+      struct RPG_Item_WeaponProperties properties =
         RPG_ITEM_DICTIONARY_SINGLETON::instance ()->getWeaponProperties (weapon->weaponType_);
 
       // *TODO*: consider single-handed use of double-handed weapons...

@@ -21,16 +21,9 @@
 #ifndef RPG_NET_PROTOCOL_DEFINES_H
 #define RPG_NET_PROTOCOL_DEFINES_H
 
-// "\0\0"
-#define YY_END_OF_BUFFER_CHAR                          0
-#define RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE     2
-// CRLF = "\r\n"
-#define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY            "\r\n"
-#define RPG_NET_PROTOCOL_IRC_FRAME_BOUNDARY_SIZE       2
-#define RPG_NET_PROTOCOL_IRC_FRAME_MAXSIZE             512
+#include "common_parser_defines.h"
 
-// seconds
-#define RPG_NET_PROTOCOL_IRC_MAX_WELCOME_DELAY         3
+#define RPG_NET_PROTOCOL_MAXIMUM_FRAME_SIZE            8192
 
 // *NOTE*: according to RFC1459, IRC messages SHALL not exceed 512 bytes.
 // - a size of 512 bytes will allow "crunching" messages into a single buffer
@@ -40,7 +33,9 @@
 // *WARNING*: be aware that a single read from the connected socket may well
 // cover MORE than one complete message at a time, so this value is just a
 // (somewhat qualified) suggestion...
-#define RPG_NET_PROTOCOL_BUFFER_SIZE                   (RPG_NET_PROTOCOL_IRC_FRAME_MAXSIZE + RPG_NET_PROTOCOL_FLEX_BUFFER_BOUNDARY_SIZE)
+//#define RPG_NET_PROTOCOL_BUFFER_SIZE                   (IRC_MAXIMUM_FRAME_SIZE + COMMON_PARSER_FLEX_BUFFER_BOUNDARY_SIZE)
+
+#define RPG_NET_PROTOCOL_BUFFER_SIZE                   (RPG_NET_PROTOCOL_MAXIMUM_FRAME_SIZE + COMMON_PARSER_FLEX_BUFFER_BOUNDARY_SIZE)
 
 // "crunch" messages for easier parsing ?
 // *NOTE*: comes at the cost of alloc/free, memcopy and locking per fragmented
@@ -54,7 +49,7 @@
 // *TODO*: write a (robust) flex-scanner/bison parser that can handle
 // switching of buffers/"backing-up" reliably and stress-test the application
 // to see which option proves to be better...
-#define RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES           true
+//#define RPG_NET_PROTOCOL_DEF_CRUNCH_MESSAGES           true
 
 // output more debugging information
 #define RPG_NET_PROTOCOL_DEF_TRACE_SCANNING            false
@@ -62,9 +57,18 @@
 
 // // default IRC configuration
 // *NOTE*: bitset: "1100" [2]: +w; [3]: +i (see rfc2812 3.1.3/3.1.5 and rfc1459 4.1.3)
-#define RPG_NET_PROTOCOL_DEF_IRC_USERMODE              0 // (!wallops && !invisible)
-// #define RPG_NET_PROTOCOL_DEF_IRC_HOSTNAME              "localhost"
-// #define RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME            "localhost"
-#define RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME            "*"
+//#define RPG_NET_PROTOCOL_DEF_IRC_USERMODE              0 // (!wallops && !invisible)
+//// #define RPG_NET_PROTOCOL_DEF_IRC_HOSTNAME              "localhost"
+//// #define RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME            "localhost"
+//#define RPG_NET_PROTOCOL_DEF_IRC_SERVERNAME            "*"
+
+// chat-specific
+#define RPG_NET_PROTOCOL_DEF_SERVER                    "localhost"
+#define RPG_NET_PROTOCOL_DEF_PORT                      6667
+#define RPG_NET_PROTOCOL_DEF_PASSWORD                  "secretpasswordhere"
+#define RPG_NET_PROTOCOL_DEF_NICKNAME                  "Wiz"
+#define RPG_NET_PROTOCOL_DEF_USERNAME                  "user"
+#define RPG_NET_PROTOCOL_DEF_REALNAME                  "Ronnie Reagan"
+#define RPG_NET_PROTOCOL_DEF_CHANNEL                   "#foobar"
 
 #endif

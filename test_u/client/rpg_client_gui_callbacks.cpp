@@ -1988,32 +1988,31 @@ load_files (enum RPG_Client_Repository repository_in,
                 ACE_TEXT ("failed to ACE_Dirent_Selector::close: \"%m\", continuing\n")));
 
   // debug info
-  GValue value;
-  ACE_OS::memset (&value, 0, sizeof (value));
+  struct _GValue value_s = G_VALUE_INIT;
   const gchar* text = NULL;
   if (!gtk_tree_model_get_iter_first (GTK_TREE_MODEL (listStore_in),
                                       &iter))
     return 0;
   gtk_tree_model_get_value (GTK_TREE_MODEL (listStore_in), &iter,
-                            0, &value);
-  text = g_value_get_string (&value);
+                            0, &value_s);
+  text = g_value_get_string (&value_s);
   extension.erase (0, 1);
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("%s[0]: %s\n"),
               ACE_TEXT (extension.c_str ()),
               ACE_TEXT (text)));
-  g_value_unset (&value);
+  g_value_unset (&value_s);
   for (unsigned int i = 1;
        gtk_tree_model_iter_next (GTK_TREE_MODEL (listStore_in),
                                  &iter);
        i++)
   {
-    ACE_OS::memset (&value, 0, sizeof (value));
+    value_s = G_VALUE_INIT;
     text = NULL;
 
     gtk_tree_model_get_value (GTK_TREE_MODEL (listStore_in), &iter,
-                              0, &value);
-    text = g_value_get_string (&value);
+                              0, &value_s);
+    text = g_value_get_string (&value_s);
     ACE_DEBUG ((LM_DEBUG,
                 ACE_TEXT ("%s[%u]: %s\n"),
                 ACE_TEXT (extension.c_str ()),
@@ -2021,7 +2020,7 @@ load_files (enum RPG_Client_Repository repository_in,
                 ACE_TEXT (text)));
 
     // clean up
-    g_value_unset (&value);
+    g_value_unset (&value_s);
   } // end FOR
 
   return return_value;
@@ -2908,17 +2907,15 @@ load_character_clicked_GTK_cb (GtkWidget* widget_in,
 {
   RPG_TRACE (ACE_TEXT ("::load_character_clicked_GTK_cb"));
 
+  ACE_UNUSED_ARG (widget_in);
+  // sanity check(s)
   struct RPG_Client_GTK_CBData* data_p =
     static_cast<struct RPG_Client_GTK_CBData*> (userData_in);
-
-  // sanity check(s)
   ACE_ASSERT (data_p);
   ACE_ASSERT (data_p->entityFilter);
   ACE_ASSERT (data_p->levelEngine);
-
   Common_UI_GTK_BuildersConstIterator_t iterator =
     data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DEFINITION_DESCRIPTOR_MAIN));
-  // sanity check(s)
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
 
   // step1a: retrieve file chooser dialog handle
@@ -3367,7 +3364,7 @@ create_map_clicked_GTK_cb (GtkWidget* widget_in,
                 ACE_TEXT (conversion_error->message)));
 
     // clean up
-    g_error_free(conversion_error);
+    g_error_free (conversion_error);
   } // end IF
   else
    data_p->levelMetadata.name = converted_text;
@@ -3387,7 +3384,7 @@ create_map_clicked_GTK_cb (GtkWidget* widget_in,
   data_p->levelEngine->start ();
 
   // make "this" insensitive
-  gtk_widget_set_sensitive(widget_in, FALSE);
+  gtk_widget_set_sensitive (widget_in, FALSE);
 
   // make drop button sensitive (if it's not already)
   GtkButton* button =
@@ -3538,7 +3535,7 @@ load_map_clicked_GTK_cb (GtkWidget* widget_in,
                                level))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Engine_Level::load(\"%s\"), aborting"),
+                ACE_TEXT ("failed to RPG_Engine_Level::load(\"%s\"), aborting\n"),
                 ACE_TEXT (filename.c_str ())));
     return FALSE;
   } // end IF

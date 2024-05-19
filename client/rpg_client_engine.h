@@ -61,10 +61,8 @@ class RPG_Client_Engine
   RPG_Client_Engine ();
   virtual ~RPG_Client_Engine ();
 
-//  // implement Common_IControl
-//  virtual void start (ACE_thread_t&) = 0; // return value: thread handle (if any)
+  // implement Common_IControl
   inline virtual void stop (bool waitForCompletion_in = true, bool = false) { shutDown_ = true; condition_.broadcast (); if (waitForCompletion_in) inherited::wait (false); }
-//  inline virtual bool isRunning () const { return (inherited::thr_count () > 0); }
   inline virtual bool isShuttingDown () const { return shutDown_; }
 
   // implement Common_IDumpState
@@ -76,20 +74,25 @@ class RPG_Client_Engine
 
   void redraw (bool = true); // refresh ?
   // *TODO* these need consideration/redesign
-  inline void setStyle (const RPG_Graphics_Style& style_in) { state_.style = style_in; }
-  inline RPG_Graphics_Style getStyle () const { return state_.style; }
+  inline void setStyle (const struct RPG_Graphics_Style& style_in) { state_.style = style_in; }
+  inline struct RPG_Graphics_Style getStyle () const { return state_.style; }
   void setView (const RPG_Map_Position_t&,
                 bool = true); // refresh ?
 
   // implement RPG_Engine_IClient
+  // *NOTE* this translates RPG_Engine_Command + parameters to one ore more
+  // RPG_Client_Action(s)
+  // *NOTE*: currently handles COMMAND_E2C_xxx types and
+  //         COMMAND_DOOR_OPEN|COMMAND_DOOR_CLOSE ONLY
   virtual void notify (enum RPG_Engine_Command,
                        const struct RPG_Engine_ClientNotificationParameters&,
                        bool = true); // lock (engine) ?
 
   // *WARNING*: window handle needs to be of WINDOW_MAP type !!!
   void initialize (RPG_Engine*,               // (level) state
-                   RPG_Graphics_IWindowBase*, // window handle
+                   RPG_Graphics_IWindowBase*, // window handle (may be NULL iff server session)
                    //RPG_Client_IWidgetUI_t*,   // widget UI interface handle
+                   bool,                      // server session ?
                    bool = false);             // debug ?
   void action (const RPG_Client_Action&); // action
 
@@ -105,15 +108,11 @@ class RPG_Client_Engine
   ACE_UNIMPLEMENTED_FUNC (RPG_Client_Engine& operator=(const RPG_Client_Engine&));
 
   // override task-based members
-//   virtual int open(void* = NULL);
   virtual int close (u_long = 0);
   virtual int svc (void);
 
   // process actions
   void handleActions ();
-
-  // *IMPORTANT NOTE*: need this ONLY to handle control messages...
-//   RPG_Engine_MessageQueue         myQueue;
 
   // make API re-entrant
   mutable ACE_Thread_Mutex        lock_;
@@ -125,6 +124,7 @@ class RPG_Client_Engine
   RPG_Engine*                     engine_;
   RPG_Graphics_IWindowBase*       window_;
   //RPG_Client_IWidgetUI_t*         myWidgetInterface;
+  bool                            serverSession_; // relay all actions to the session
 
   RPG_Client_Actions_t            actions_;
   struct RPG_Client_State         state_;

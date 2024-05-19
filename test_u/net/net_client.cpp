@@ -82,12 +82,16 @@
 #include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
 
+#include "rpg_player_defines.h"
+
 #include "rpg_net_common.h"
 #include "rpg_net_defines.h"
 
+#include "rpg_net_protocol_connection_manager.h"
+#include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_messagehandler.h"
-#include "rpg_net_protocol_network.h"
 
+#include "rpg_engine_common_tools.h"
 #include "rpg_engine_defines.h"
 
 #include "rpg_client_common.h"
@@ -429,6 +433,17 @@ do_work (unsigned int peerPingInterval_in,
          ACE_Sig_Set& previousSignalMask_inout)
 {
   RPG_TRACE (ACE_TEXT ("::do_work"));
+
+  // step-1: initialize engine
+  std::vector<std::string> schema_directories_a;
+  schema_directories_a.push_back (CBData_in.schemaRepository);
+  RPG_Engine_Common_Tools::initialize (schema_directories_a,
+                                       ACE_TEXT_ALWAYS_CHAR (""),
+                                       ACE_TEXT_ALWAYS_CHAR (""),
+                                       ACE_TEXT_ALWAYS_CHAR (""));
+
+  CBData_in.allocatorConfiguration.defaultBufferSize =
+    RPG_NET_PROTOCOL_MAXIMUM_FRAME_SIZE;
 
   // step0a: initialize stream configuration object
   struct Stream_ModuleConfiguration module_configuration;
@@ -863,6 +878,15 @@ ACE_TMAIN (int argc_in,
                                             // iff regular reporting
                                             // is off
   gtk_cb_user_data.configuration = &configuration;
+  gtk_cb_user_data.schemaRepository = Common_File_Tools::getWorkingDirectory ();
+#if (1)
+  gtk_cb_user_data.schemaRepository += ACE_DIRECTORY_SEPARATOR_STR;
+  gtk_cb_user_data.schemaRepository +=
+    ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_SUB_DIRECTORY_STRING);
+  gtk_cb_user_data.schemaRepository += ACE_DIRECTORY_SEPARATOR_STR;
+  gtk_cb_user_data.schemaRepository +=
+    ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+#endif // true
 
   // step1e: initialize logging and/or tracing
   //Common_Logger logger (&gtk_cb_user_data.logStack,

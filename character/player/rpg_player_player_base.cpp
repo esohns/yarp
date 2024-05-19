@@ -694,23 +694,29 @@ RPG_Player_Player_Base::defaultEquip ()
   // remove everything
   inherited::myEquipment.strip ();
 
-  RPG_Character_EquipmentSlots slots;
+  struct RPG_Character_EquipmentSlots slots_s;
   RPG_Item_Base* handle = NULL;
   RPG_Item_ID_t item_id = 0;
   for (RPG_Item_ListIterator_t iterator = inherited::myInventory.myItems.begin ();
        iterator != inherited::myInventory.myItems.end ();
        iterator++)
   {
-    slots.slots.clear ();
-    slots.is_inclusive = false;
+    slots_s.slots.clear ();
+    slots_s.is_inclusive = false;
     RPG_Item_Common_Tools::itemToSlot (*iterator,
                                        myOffHand,
-                                       slots);
-    ACE_ASSERT (!slots.slots.empty ());
+                                       slots_s);
+    if (slots_s.slots.empty ())
+    { // *NOTE*: perhaps the item dictionary has not been initialized (yet) ?
+      ACE_DEBUG ((LM_WARNING,
+                  ACE_TEXT ("failed to RPG_Item_Common_Tools::itemToSlot (id was: %d), continuing\n"),
+                  *iterator));
+      continue;
+    } // end IF
 
     handle = NULL;
-    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance()->get (*iterator,
-                                                               handle))
+    if (!RPG_ITEM_INSTANCE_MANAGER_SINGLETON::instance ()->get (*iterator,
+                                                                handle))
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("invalid item ID (was: %d), aborting\n"),
@@ -726,13 +732,13 @@ RPG_Player_Player_Base::defaultEquip ()
         RPG_Item_Armor* armor = static_cast<RPG_Item_Armor*> (handle);
 //         RPG_Item_ArmorProperties properties = RPG_ITEM_DICTIONARY_SINGLETON::instance()->getArmorProperties(armor_base->getArmorType());
 
-        if (myEquipment.isEquipped (slots.slots.front (),
+        if (myEquipment.isEquipped (slots_s.slots.front (),
                                     item_id))
           break; // cannot equip...
 
         myEquipment.equip (*iterator,
                            myOffHand,
-                           slots.slots.front ());
+                           slots_s.slots.front ());
         break;
       }
       case ITEM_COMMODITY:
@@ -748,7 +754,7 @@ RPG_Player_Player_Base::defaultEquip ()
 
         myEquipment.equip (*iterator,
                            myOffHand,
-                           slots.slots.front ());
+                           slots_s.slots.front ());
         break;
       }
       case ITEM_WEAPON:
@@ -759,13 +765,13 @@ RPG_Player_Player_Base::defaultEquip ()
         // *TODO*: what about other types of weapons ?
         if (!RPG_Item_Common_Tools::isMeleeWeapon (weapon->weaponType_))
           break;
-        if (myEquipment.isEquipped (slots.slots.front (),
+        if (myEquipment.isEquipped (slots_s.slots.front (),
                                     item_id))
           break; // cannot equip...
 
         myEquipment.equip (*iterator,
                            myOffHand,
-                           slots.slots.front ());
+                           slots_s.slots.front ());
         break;
       }
       default:

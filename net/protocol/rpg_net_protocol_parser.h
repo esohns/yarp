@@ -257,8 +257,9 @@ namespace yy {
     PATH_NEXT_XY = 262,            // "path_next_xy"
     PATH_NEXT_DIRECTION = 263,     // "path_next_direction"
     TARGET = 264,                  // "target"
-    END_OF_COMMAND = 265,          // "end_of_command"
-    END_OF_FRAME = 266             // "end_of_frame"
+    XML = 265,                     // "xml"
+    END_OF_COMMAND = 266,          // "end_of_command"
+    END_OF_FRAME = 267             // "end_of_frame"
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -275,7 +276,7 @@ namespace yy {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 12, ///< Number of tokens.
+        YYNTOKENS = 13, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
@@ -287,18 +288,20 @@ namespace yy {
         S_PATH_NEXT_XY = 7,                      // "path_next_xy"
         S_PATH_NEXT_DIRECTION = 8,               // "path_next_direction"
         S_TARGET = 9,                            // "target"
-        S_END_OF_COMMAND = 10,                   // "end_of_command"
-        S_END_OF_FRAME = 11,                     // "end_of_frame"
-        S_YYACCEPT = 12,                         // $accept
-        S_frame = 13,                            // frame
-        S_14_1 = 14,                             // $@1
-        S_path = 15,                             // path
-        S_path_elem = 16,                        // path_elem
-        S_command = 17,                          // command
-        S_18_2 = 18,                             // $@2
-        S_19_3 = 19,                             // $@3
-        S_20_4 = 20,                             // $@4
-        S_commands = 21                          // commands
+        S_XML = 10,                              // "xml"
+        S_END_OF_COMMAND = 11,                   // "end_of_command"
+        S_END_OF_FRAME = 12,                     // "end_of_frame"
+        S_YYACCEPT = 13,                         // $accept
+        S_frame = 14,                            // frame
+        S_15_1 = 15,                             // $@1
+        S_path = 16,                             // path
+        S_path_elem = 17,                        // path_elem
+        S_command = 18,                          // command
+        S_19_2 = 19,                             // $@2
+        S_20_3 = 20,                             // $@3
+        S_21_4 = 21,                             // $@4
+        S_22_5 = 22,                             // $@5
+        S_commands = 23                          // commands
       };
     };
 
@@ -810,8 +813,8 @@ namespace yy {
     /// Constants.
     enum
     {
-      yylast_ = 11,     ///< Last index in yytable_.
-      yynnts_ = 10,  ///< Number of nonterminal symbols.
+      yylast_ = 16,     ///< Last index in yytable_.
+      yynnts_ = 11,  ///< Number of nonterminal symbols.
       yyfinal_ = 4 ///< Termination state number.
     };
 

@@ -38,9 +38,6 @@
 #include "rpg_map_common.h"
 #include "rpg_map_common_tools.h"
 
-// #include "rpg_net_protocol_messageallocator.h"
-// #include "rpg_net_protocol_network.h"
-
 #include "rpg_engine_common.h"
 #include "rpg_engine_entitymode.h"
 #include "rpg_engine_event_manager.h"
@@ -51,11 +48,13 @@
 class RPG_Engine_IClient;
 
 class RPG_Engine
- : public ACE_Task<ACE_MT_SYNCH, Common_TimePolicy_t>
+ : public ACE_Task<ACE_MT_SYNCH,
+                   Common_TimePolicy_t>
  , public RPG_Engine_Level
  //, public Common_IControl
 {
-  typedef ACE_Task<ACE_MT_SYNCH, Common_TimePolicy_t> inherited;
+  typedef ACE_Task<ACE_MT_SYNCH,
+                   Common_TimePolicy_t> inherited;
   typedef RPG_Engine_Level inherited2;
 
   // AI thread(s) require access to the entity action queues...
@@ -224,16 +223,9 @@ class RPG_Engine
 
   RPG_Engine_EntityID_t                           activePlayer_;
   RPG_Engine_IClient*                             client_;
-  //// implement blocking wait...
-  //ACE_Condition<ACE_Recursive_Thread_Mutex>     condition_;
-  // RPG_Net_Protocol_IConnector_t*                  connector_;
   RPG_Engine_Entities_t                           entities_;
-  // HEAP_ALLOCATOR_T                                heapAllocator_;
   // make API re-entrant
   mutable ACE_SYNCH_MUTEX                         lock_;
-  // struct Common_Parser_FlexAllocatorConfiguration allocatorConfiguration_;
-  // RPG_Net_Protocol_MessageAllocator               messageAllocator_;
-  // RPG_Net_Protocol_ConnectionConfiguration        netConfiguration_;
   // *IMPORTANT NOTE*: need this ONLY to handle control messages...
   RPG_Engine_MessageQueue                         queue_;
 

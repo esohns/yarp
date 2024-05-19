@@ -31,6 +31,8 @@ set (${LIBRARY}_SRCS
      rpg_net_protocol_common.h
      rpg_net_protocol_common_modules.h
      rpg_net_protocol_configuration.h
+     rpg_net_protocol_connection_manager.cpp
+     rpg_net_protocol_connection_manager.h
      rpg_net_protocol_defines.h
      rpg_net_protocol_eventhandler.cpp
      rpg_net_protocol_eventhandler.h
@@ -179,6 +181,7 @@ install (FILES
          rpg_net_protocol_common.h
          rpg_net_protocol_common_modules.h
          rpg_net_protocol_configuration.h
+         rpg_net_protocol_connection_manager.h
          rpg_net_protocol_defines.h
          rpg_net_protocol_eventhandler.h
 #         rpg_net_protocol_exports.h

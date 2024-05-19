@@ -44,7 +44,6 @@
 #include "net_server_listener.h"
 
 #include "rpg_net_protocol_stream.h"
-//#include "rpg_net_protocol_stream_common.h"
 
 typedef Net_IConnection_T<ACE_INET_Addr,
                           struct Net_StreamConnectionState,
@@ -118,17 +117,11 @@ typedef Net_Connection_Manager_T<ACE_MT_SYNCH,
                                  RPG_Net_Protocol_ConnectionConfiguration,
                                  struct Net_StreamConnectionState,
                                  Net_StreamStatistic_t,
-                                 struct Net_UserData> RPG_Net_Protocol_Connection_Manager_t;
+                                 struct Net_UserData> RPG_Net_Protocol_Connection_ManagerBase_t;
 
 typedef ACE_Singleton<RPG_Net_Protocol_TCPListener_t,
                       ACE_SYNCH_MUTEX> RPG_NET_PROTOCOL_LISTENER_SINGLETON;
 typedef ACE_Singleton<RPG_Net_Protocol_AsynchTCPListener_t,
                       ACE_SYNCH_MUTEX> RPG_NET_PROTOCOL_ASYNCH_LISTENER_SINGLETON;
-
-//RPG_PROTOCOL_SINGLETON_DECLARE (ACE_Singleton,
-//                                RPG_Net_Protocol_Connection_Manager_t,
-//                                ACE_Recursive_Thread_Mutex);
-typedef ACE_Singleton<RPG_Net_Protocol_Connection_Manager_t,
-                      ACE_SYNCH_MUTEX> RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON;
 
 #endif

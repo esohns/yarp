@@ -79,15 +79,19 @@
 #include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
 
+#include "rpg_engine.h"
+#include "rpg_engine_common_tools.h"
 #include "rpg_engine_defines.h"
 
 #include "rpg_net_common.h"
 #include "rpg_net_defines.h"
 
+#include "rpg_net_protocol_connection_manager.h"
+#include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_messagehandler.h"
-#include "rpg_net_protocol_network.h"
 
 #include "rpg_client_common.h"
+#include "rpg_client_engine.h"
 
 #include "net_callbacks.h"
 #include "net_common.h"
@@ -462,14 +466,107 @@ do_work (unsigned int maxNumConnections_in,
 {
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
+    // step-1: initialize engine
+  std::vector<std::string> schema_directories_a;
+  if (Common_Error_Tools::inDebugSession ())
+  {
+    //std::string schema_path = schemaRepository_in;
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_CHANCE_SUB_DIRECTORY_STRING);
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_DICE_SUB_DIRECTORY_STRING);
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    //schema_directories_a.push_back (schema_path);
+
+    //schema_path = schemaRepository_in;
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_COMMON_SUB_DIRECTORY_STRING);
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    //schema_directories_a.push_back (schema_path);
+
+    //schema_path = schemaRepository_in;
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_CHARACTER_SUB_DIRECTORY_STRING);
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    //schema_directories_a.push_back (schema_path);
+
+    //schema_path = schemaRepository_in;
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_SUB_DIRECTORY_STRING);
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    //schema_directories_a.push_back (schema_path);
+
+    //schema_path = schemaRepository_in;
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_SUB_DIRECTORY_STRING);
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    //schema_directories_a.push_back (schema_path);
+
+    //schema_path = schemaRepository_in;
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_COMBAT_SUB_DIRECTORY_STRING);
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    //schema_directories_a.push_back (schema_path);
+
+    //schema_path = schemaRepository_in;
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_SUB_DIRECTORY_STRING);
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    //schema_directories_a.push_back (schema_path);
+
+    //schema_path = schemaRepository_in;
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_SUB_DIRECTORY_STRING);
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    //schema_directories_a.push_back (schema_path);
+
+    // *NOTE*: this one contains symlinks to all of the above
+    std::string schema_path = CBData_in.schemaRepository;
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
+    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    schema_directories_a.push_back (schema_path);
+
+    //schema_path = CBData_in.schemaRepository;
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_SUB_DIRECTORY_STRING);
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    //schema_directories_a.push_back (schema_path);
+
+    //schema_path = CBData_in.schemaRepository;
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING);
+    //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    //schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    //schema_directories_a.push_back (schema_path);
+  } // end IF
+  else
+    schema_directories_a.push_back (CBData_in.schemaRepository);
+  RPG_Engine_Common_Tools::initialize (schema_directories_a,
+                                       ACE_TEXT_ALWAYS_CHAR (""),
+                                       ACE_TEXT_ALWAYS_CHAR (""),
+                                       ACE_TEXT_ALWAYS_CHAR (""));
+
+  CBData_in.allocatorConfiguration.defaultBufferSize =
+    RPG_NET_PROTOCOL_MAXIMUM_FRAME_SIZE;
+
   CBData_in.configuration->parser_configuration.debugParser = true;
   CBData_in.configuration->parser_configuration.debugScanner = true;
 
   // step0a: initialize stream configuration object
-  struct Common_Parser_FlexAllocatorConfiguration allocator_configuration;
   struct Stream_ModuleConfiguration module_configuration;
   struct RPG_Net_Protocol_ModuleHandlerConfiguration modulehandler_configuration;
-  modulehandler_configuration.allocatorConfiguration = &allocator_configuration;
+  modulehandler_configuration.allocatorConfiguration = &CBData_in.allocatorConfiguration;
   modulehandler_configuration.parserConfiguration =
     &CBData_in.configuration->parser_configuration;
   modulehandler_configuration.protocolOptions =
@@ -496,7 +593,7 @@ do_work (unsigned int maxNumConnections_in,
                                      modulehandler_configuration,
                                      stream_configuration);
   CBData_in.configuration->protocol_configuration.connectionConfiguration.allocatorConfiguration =
-    &allocator_configuration;
+    &CBData_in.allocatorConfiguration;
   CBData_in.configuration->protocol_configuration.connectionConfiguration.streamConfiguration =
     &stream_configuration_2;
   CBData_in.configuration->protocol_configuration.connectionConfiguration.messageAllocator =
@@ -603,13 +700,13 @@ do_work (unsigned int maxNumConnections_in,
     Common_UI_GTK_Manager_t* gtk_manager_p =
       COMMON_UI_GTK_MANAGER_SINGLETON::instance ();
     ACE_ASSERT (gtk_manager_p);
-    Common_UI_GTK_State_t& state_r =
-      const_cast<Common_UI_GTK_State_t&> (gtk_manager_p->getR ());
+
     CBData_in.configuration->gtk_configuration.eventHooks.finiHook = idle_finalize_UI_cb;
     CBData_in.configuration->gtk_configuration.eventHooks.initHook = idle_initialize_server_UI_cb;
+
+    ACE_ASSERT (CBData_in.UIState);
     //CBData_in.GTKState.gladeXML[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN)] =
     //  std::make_pair (UIDefinitionFile_in, static_cast<GladeXML*> (NULL));
-    CBData_in.UIState = &state_r;
     CBData_in.UIState->builders[ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN)] =
       std::make_pair (UIDefinitionFile_in, static_cast<GtkBuilder*> (NULL));
     //CBData_in.GTKState.userData = &CBData_in;
@@ -989,29 +1086,48 @@ ACE_TMAIN (int argc_in,
     return EXIT_FAILURE;
   } // end IF
 
+  RPG_Client_Engine client_engine;
+  RPG_Engine level_engine;
+  client_engine.initialize (&level_engine,
+                            NULL,          // map window handle
+                            true,          // relay UI actions back to the client(s)
+                            false);        // debug ?
+  level_engine.initialize (&client_engine);
+
   struct Net_Server_GTK_CBData gtk_cb_user_data;
   gtk_cb_user_data.allowUserRuntimeStatistic =
       (statistics_reporting_interval == 0); // handle SIGUSR1/SIGBREAK
                                             // iff regular reporting
                                             // is off
   gtk_cb_user_data.configuration = &configuration;
+  gtk_cb_user_data.schemaRepository = Common_File_Tools::getWorkingDirectory ();
+  gtk_cb_user_data.clientEngine = &client_engine;
+  gtk_cb_user_data.levelEngine = &level_engine;
+  Common_Logger_Queue_T<ACE_MT_SYNCH> logger_queue;
+  if (!UI_file.empty ())
+  {
+    Common_UI_GTK_Manager_t* gtk_manager_p =
+      COMMON_UI_GTK_MANAGER_SINGLETON::instance ();
+    ACE_ASSERT (gtk_manager_p);
+    Common_UI_GTK_State_t& state_r =
+      const_cast<Common_UI_GTK_State_t&> (gtk_manager_p->getR ());
+    gtk_cb_user_data.UIState = &state_r;
+    logger_queue.initialize (&state_r.logQueue,
+                             &state_r.logQueueLock);
+  } // end IF
 
   // step1e: initialize logging and/or tracing
-  //Common_Logger logger (&gtk_cb_user_data.logStack,
-  //                      &gtk_cb_user_data.stackLock);
   std::string log_file;
   if (log_to_file)
     log_file =
       Net_Server_Common_Tools::getNextLogFileName (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                    ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
   if (!Common_Log_Tools::initializeLogging (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])), // program name
-                                            log_file,                      // logfile
-                                            true,                          // log to syslog ?
-                                            false,                         // trace messages ?
-                                            trace_information,             // debug messages ?
-                                            //(UI_file.empty () ? NULL
-                                            //                  : &logger))) // logger ?
-                                            NULL))
+                                            log_file,                                          // logfile
+                                            true,                                              // log to syslog ?
+                                            false,                                             // trace messages ?
+                                            trace_information,                                 // debug messages ?
+                                            (UI_file.empty () ? NULL : &logger_queue)))        // logger ?
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to Common_Tools::initializeLogging(), aborting\n")));

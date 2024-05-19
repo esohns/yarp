@@ -387,6 +387,10 @@ namespace yy {
                     { (yysym.value.ival) = 0; }
         break;
 
+      case symbol_kind::S_XML: // "xml"
+                    { delete (yysym.value.sval); (yysym.value.sval) = NULL; }
+        break;
+
       case symbol_kind::S_END_OF_COMMAND: // "end_of_command"
                     { (yysym.value.ival) = 0; }
         break;
@@ -447,6 +451,10 @@ namespace yy {
 
       case symbol_kind::S_TARGET: // "target"
                     { debug_stream() << (yysym.value.ival); }
+        break;
+
+      case symbol_kind::S_XML: // "xml"
+                    { debug_stream() << *(yysym.value.sval); }
         break;
 
       case symbol_kind::S_END_OF_COMMAND: // "end_of_command"
@@ -738,7 +746,7 @@ namespace yy {
     break;
 
   case 7: // $@2: %empty
-                                                     { driver->current ().command = static_cast<enum RPG_Engine_Command> ((yystack_[0].value.ival));
+                                                     { driver->current ().command = static_cast<enum RPG_Net_Protocol_Engine_Command> ((yystack_[0].value.ival));
                                                      }
     break;
 
@@ -753,7 +761,12 @@ namespace yy {
                                                      }
     break;
 
-  case 10: // command: "command" $@2 "position_x" "position_y" $@3 path "target" $@4 "end_of_command"
+  case 10: // $@5: %empty
+                                                     { driver->current ().xml = *(yystack_[0].value.sval);
+                                                     }
+    break;
+
+  case 11: // command: "command" $@2 "position_x" "position_y" $@3 path "target" $@4 "xml" $@5 "end_of_command"
                                                      { ACE_UNUSED_ARG ((yystack_[0].value.ival));
                                                        struct RPG_Net_Protocol_Command* current_p = &driver->current ();
                                                        driver->record (current_p);
@@ -1122,64 +1135,66 @@ namespace yy {
   RPG_Net_Protocol_Parser::yypact_[] =
   {
       -1,    -7,     4,    -7,    -7,    -4,    -7,    -7,    -7,     0,
-       2,    -7,    -7,    -6,     3,    -7,    -7,    -2,     1,    -7,
-      -7
+       1,    -7,    -7,    -6,     2,    -7,    -7,    -2,     3,    -7,
+      -7,     5,    -7
   };
 
   const signed char
   RPG_Net_Protocol_Parser::yydefact_[] =
   {
-       0,     2,     0,    12,     1,     0,     7,     3,    11,     0,
+       0,     2,     0,    13,     1,     0,     7,     3,    12,     0,
        0,     8,     5,     0,     0,     9,     4,     0,     0,     6,
-      10
+      10,     0,    11
   };
 
   const signed char
   RPG_Net_Protocol_Parser::yypgoto_[] =
   {
-      -7,    -7,    -7,    -7,    -7,    -7,    -7,    -7,    -7,    -7
+      -7,    -7,    -7,    -7,    -7,    -7,    -7,    -7,    -7,    -7,
+      -7
   };
 
   const signed char
   RPG_Net_Protocol_Parser::yydefgoto_[] =
   {
-       0,     2,     3,    13,    16,     8,     9,    12,    18,     5
+       0,     2,     3,    13,    16,     8,     9,    12,    18,    21,
+       5
   };
 
   const signed char
   RPG_Net_Protocol_Parser::yytable_[] =
   {
-       6,    14,     1,    15,     4,    10,    19,     7,    11,     0,
-      17,    20
+       6,    14,     1,    15,     4,    10,    19,    11,     7,    17,
+       0,     0,     0,    20,     0,     0,    22
   };
 
   const signed char
   RPG_Net_Protocol_Parser::yycheck_[] =
   {
-       4,     7,     3,     9,     0,     5,     8,    11,     6,    -1,
-       7,    10
+       4,     7,     3,     9,     0,     5,     8,     6,    12,     7,
+      -1,    -1,    -1,    10,    -1,    -1,    11
   };
 
   const signed char
   RPG_Net_Protocol_Parser::yystos_[] =
   {
-       0,     3,    13,    14,     0,    21,     4,    11,    17,    18,
-       5,     6,    19,    15,     7,     9,    16,     7,    20,     8,
-      10
+       0,     3,    14,    15,     0,    23,     4,    12,    18,    19,
+       5,     6,    20,    16,     7,     9,    17,     7,    21,     8,
+      10,    22,    11
   };
 
   const signed char
   RPG_Net_Protocol_Parser::yyr1_[] =
   {
-       0,    12,    14,    13,    15,    15,    16,    18,    19,    20,
-      17,    21,    21
+       0,    13,    15,    14,    16,    16,    17,    19,    20,    21,
+      22,    18,    23,    23
   };
 
   const signed char
   RPG_Net_Protocol_Parser::yyr2_[] =
   {
        0,     2,     0,     4,     2,     0,     3,     0,     0,     0,
-       9,     2,     0
+       0,    11,     2,     0
   };
 
 
@@ -1191,9 +1206,9 @@ namespace yy {
   {
   "\"end of file\"", "error", "\"invalid token\"", "\"length\"",
   "\"command\"", "\"position_x\"", "\"position_y\"", "\"path_next_xy\"",
-  "\"path_next_direction\"", "\"target\"", "\"end_of_command\"",
+  "\"path_next_direction\"", "\"target\"", "\"xml\"", "\"end_of_command\"",
   "\"end_of_frame\"", "$accept", "frame", "$@1", "path", "path_elem",
-  "command", "$@2", "$@3", "$@4", "commands", YY_NULLPTR
+  "command", "$@2", "$@3", "$@4", "$@5", "commands", YY_NULLPTR
   };
 #endif
 
@@ -1202,8 +1217,8 @@ namespace yy {
   const signed char
   RPG_Net_Protocol_Parser::yyrline_[] =
   {
-       0,    91,    91,    91,    96,    97,    98,   101,   103,   106,
-     101,   114,   115
+       0,    92,    92,    92,    97,    98,    99,   102,   104,   107,
+     109,   102,   117,   118
   };
 
   void
@@ -1268,10 +1283,10 @@ namespace yy {
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    10,    11
+       5,     6,     7,     8,     9,    10,    11,    12
     };
     // Last valid token kind.
-    const int code_max = 266;
+    const int code_max = 267;
 
     if (t <= 0)
       return symbol_kind::S_YYEOF;

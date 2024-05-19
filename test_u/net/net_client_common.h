@@ -22,6 +22,7 @@
 #define TEST_U_NET_CLIENT_COMMON_H
 
 #include <list>
+#include <string>
 
 #include "ace/Synch_Traits.h"
 
@@ -38,6 +39,8 @@
 #include "rpg_net_protocol_message.h"
 #include "rpg_net_protocol_session_message.h"
 #include "rpg_net_protocol_stream_common.h"
+
+#include "rpg_engine_common.h"
 
 // forward declaration(s)
 struct RPG_Client_Configuration;
@@ -60,6 +63,8 @@ struct Net_Client_GTK_CBData
    , messageAllocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
                        &heapAllocator,
                        true) // block ?
+   , entity ()
+   , schemaRepository ()
   {}
 
   struct Common_Parser_FlexAllocatorConfiguration              allocatorConfiguration;
@@ -68,7 +73,8 @@ struct Net_Client_GTK_CBData
   Stream_AllocatorHeap_T<ACE_MT_SYNCH,
                          struct Stream_AllocatorConfiguration> heapAllocator;
   RPG_Net_MessageAllocator_t                                   messageAllocator;
-
+  struct RPG_Engine_Entity                                     entity;
+  std::string                                                  schemaRepository;
 };
 
 #endif

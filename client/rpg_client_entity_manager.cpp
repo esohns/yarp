@@ -70,7 +70,7 @@ void
 RPG_Client_Entity_Manager::initialize (Common_ILock* screenLock_in,
                                        RPG_Graphics_IWindowBase* window_in)
 {
-  RPG_TRACE (ACE_TEXT ("RPG_Client_Entity_Manager::init"));
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Entity_Manager::initialize"));
 
   ACE_ASSERT (window_in);
 

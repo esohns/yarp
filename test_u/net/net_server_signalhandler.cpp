@@ -36,7 +36,7 @@
 #include "rpg_common_macros.h"
 
 #include "rpg_net_protocol_common.h"
-#include "rpg_net_protocol_network.h"
+#include "rpg_net_protocol_connection_manager.h"
 
 Net_Server_SignalHandler::Net_Server_SignalHandler (long timerId_in)
  : inherited (this) // event handler handle

@@ -44,6 +44,7 @@
 #include "rpg_client_entity_manager.h"
 #include "rpg_client_iwindow.h"
 #include "rpg_client_iwindow_level.h"
+#include "rpg_client_network_manager.h"
 
 RPG_Client_Engine::RPG_Client_Engine ()
 //  : myQueue(RPG_CLIENT_MAX_QUEUE_SLOTS),
@@ -360,6 +361,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
 
       break;
     }
+    case COMMAND_IDLE:
     case COMMAND_RUN:
     case COMMAND_SEARCH:
     case COMMAND_STEP:
@@ -837,18 +839,20 @@ void
 RPG_Client_Engine::initialize (RPG_Engine* engine_in,
                                RPG_Graphics_IWindowBase* window_in,
                                //RPG_Client_IWidgetUI_t* widgetInterface_in,
+                               bool serverSession_in,
                                bool debug_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::initialize"));
 
   // sanity check(s)
   ACE_ASSERT (engine_in);
-  ACE_ASSERT (window_in);
+  ACE_ASSERT (window_in || serverSession_in);
   //ACE_ASSERT (widgetInterface_in);
 
   engine_ = engine_in;
   window_ = window_in;
   //myWidgetInterface = widgetInterface_in;
+  serverSession_ = serverSession_in;
   debug_ = debug_in;
 }
 
@@ -856,6 +860,16 @@ void
 RPG_Client_Engine::action (const RPG_Client_Action& action_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::action"));
+
+  if (serverSession_)
+  {
+    RPG_Client_Network_Manager* client_network_manager_p =
+      RPG_CLIENT_NETWORK_MANAGER_SINGLETON::instance ();
+    ACE_ASSERT (client_network_manager_p);
+    client_network_manager_p->action (action_in);
+
+    return;
+  } // end IF
 
   ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);
 
