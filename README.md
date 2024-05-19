@@ -41,14 +41,10 @@ Existing funcionality has been grouped into modules (directories) reflecting
  special abilities)
 * *map*: structures, related algorithms and path-finding logic of area maps
 * *net*: common logic of the client/server architecture
-* *net/client*: client-side networking code
 * *net/protocol*: low-level specifics of networked interactions
-* *net/server*: server-side networking code
-* *net/stream*: low-level implementation of the pipes-and-filters pattern
 * *sound*: glue code/data realizing audio playback
 * *test_u*: unit-test code
 * *tools*: additional tooling
-* *Yarp*: meta-module, facilitates high-level project work
 
 **Overview of existing functionality**
 
@@ -57,23 +53,20 @@ The implemented unit test program names are self-describing:
 * chance_dice: simulate rolling dice
 * chance_rangeToRoll: convert a requested range of values (e.g. 2-12) to an
  (approximated) appropriate dice roll (e.g. 2d6)
-* monster_parser: load/dump monster library
 * character_generator[_gui]: generate a player character (text-based / UI)
 * character_parser: load/store a player character to/from a file
-* rpg_client_gui: client GUI (GTK/glade & SDL)
+* client_gui: client GUI (GTK/glade & SDL)
 * combat_simulator: simulate auto-combat (ATM text-based only)
 * graphics_parser: load graphics library
-* SDL_gui: SDL library integration unit-test
 * item_parser: load/dump item library
 * magic_parser: load/dump magic library
 * map_generator: generate area maps
 * map_parser: load/store area maps
-* map_vision[_ui]: line-of-sight (LOS) unit-test (text-based / UI)
-* path_finder[_ui]: path-finding (A*) unit-test (text-based / UI)
-* net_client: network client stub
-* net_server: network server stub
-* IRC_client_gui: network client UI (GTK/glade), currently implements the IRC
- protocol (incomplete)
+* monster_parser: load/dump monster library
+* net_client: network client
+* net_server: network server
+* path_finder: path-finding (A*) unit-test (text-based)
+* SDL_gui: SDL library integration unit-test
 * sound_parser: load/dump sound library
 
 The current client UI can load/display an area map using tiles in an isometric
