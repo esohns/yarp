@@ -49,6 +49,7 @@
 #include "rpg_net_protocol_connection_manager.h"
 
 #include "rpg_engine_defines.h"
+#include "rpg_engine_level.h"
 
 #include "rpg_client_common.h"
 #include "rpg_client_defines.h"
@@ -369,25 +370,38 @@ idle_initialize_client_UI_cb (gpointer userData_in)
   // step9: draw main dialog
   gtk_widget_show_all (dialog_p);
 
+  // load level
+  std::string filename = Common_File_Tools::getWorkingDirectory ();
+  filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  filename += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING); 
+  filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  filename += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_DATA_SUBDIRECTORY); 
+  filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  filename += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
+  filename += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
+  RPG_Engine_Level::load (filename,
+                          data_p->schemaRepository,
+                          data_p->level);
+
+  // load player profile
   // clean up
   if (data_p->entity.character)
   {
     delete data_p->entity.character;
     data_p->entity.character = NULL;
     data_p->entity.position =
-        std::make_pair (std::numeric_limits<unsigned int>::max (),
-                        std::numeric_limits<unsigned int>::max ());
+      std::make_pair (std::numeric_limits<unsigned int>::max (),
+                      std::numeric_limits<unsigned int>::max ());
     data_p->entity.modes.clear ();
     data_p->entity.actions.clear ();
     data_p->entity.is_spawned = false;
   } // end IF
 
-  // load player profile
   RPG_Character_Conditions_t condition;
   condition.insert (CONDITION_NORMAL);
   short int hitpoints = std::numeric_limits<short int>::max ();
   RPG_Magic_Spells_t spells;
-  std::string filename = Common_File_Tools::getWorkingDirectory ();
+  filename = Common_File_Tools::getWorkingDirectory ();
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING); 
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -1039,29 +1053,27 @@ button_test_clicked_cb (GtkWidget* widget_in,
     }
   } // end SWITCH
   ACE_ASSERT (istream_connection_p);
-  // RPG_Net_Protocol_Stream& stream_r =
-  //   const_cast<RPG_Net_Protocol_Stream&> (istream_connection_p->stream ());
-  // stream_r.ping ();
 
+  // send level
   RPG_Net_Protocol_Message* message_p =
     static_cast<RPG_Net_Protocol_Message*> (data_p->messageAllocator.malloc (data_p->allocatorConfiguration.defaultBufferSize));
+  ACE_ASSERT (message_p);
 
   struct RPG_Net_Protocol_Command command_s;
-  command_s.command = NET_COMMAND_PLAYER_LOAD;
-  command_s.position = std::make_pair (5, 7);
-  static RPG_Engine_EntityID_t entity_id = 2000;
-  command_s.target = ++entity_id;
+  command_s.command = NET_COMMAND_LEVEL_LOAD;
+  command_s.position =
+    std::make_pair (std::numeric_limits<unsigned int>::max (),
+                    std::numeric_limits<unsigned int>::max ());
+  command_s.target = 0;
   std::string temp_filename = Common_File_Tools::getTempDirectory ();
   temp_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  temp_filename += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
-  temp_filename += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT);
-  ACE_ASSERT (data_p->entity.character && data_p->entity.character->isPlayerCharacter ());
-  RPG_Player* player_p = static_cast<RPG_Player*> (data_p->entity.character);
-  ACE_ASSERT (player_p);
-  if (!player_p->save (temp_filename))
+  temp_filename += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
+  temp_filename += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
+  if (!RPG_Engine_Level::save (temp_filename,
+                               data_p->level))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Player::save(\"%s\"), returning\n"),
+                ACE_TEXT ("failed to RPG_Engine_Level::save(\"%s\"), returning\n"),
                 ACE_TEXT (temp_filename.c_str ())));
     return FALSE;
   } // end IF
@@ -1097,11 +1109,61 @@ button_test_clicked_cb (GtkWidget* widget_in,
   ACE_Message_Block* message_block_p = message_p;
   istream_connection_p->send (message_block_p);
 
+  // send player
+  message_p =
+    static_cast<RPG_Net_Protocol_Message*> (data_p->messageAllocator.malloc (data_p->allocatorConfiguration.defaultBufferSize));
+  ACE_ASSERT (message_p);
+
+  command_s.command = NET_COMMAND_PLAYER_LOAD;
+  temp_filename = Common_File_Tools::getTempDirectory ();
+  temp_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  temp_filename += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
+  temp_filename += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT);
+  ACE_ASSERT (data_p->entity.character && data_p->entity.character->isPlayerCharacter ());
+  RPG_Player* player_p = static_cast<RPG_Player*> (data_p->entity.character);
+  ACE_ASSERT (player_p);
+  if (!player_p->save (temp_filename))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Player::save(\"%s\"), returning\n"),
+                ACE_TEXT (temp_filename.c_str ())));
+    return FALSE;
+  } // end IF
+  if (!Common_File_Tools::load (temp_filename,
+                                data_2,
+                                file_size_i,
+                                0))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to Common_File_Tools::load(\"%s\"), returning\n"),
+                ACE_TEXT (temp_filename.c_str ())));
+    Common_File_Tools::deleteFile (temp_filename);
+    return FALSE;
+  } // end IF
+  Common_File_Tools::deleteFile (temp_filename);
+  command_s.xml.assign (reinterpret_cast<char*> (data_2),
+                        file_size_i);
+  // replace all crlf with RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR
+  position_i =
+    command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
+  while (position_i != std::string::npos)
+  {
+    command_s.xml.replace (position_i, 2, 1, RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR);
+    position_i = command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
+  } // end WHILE
+  delete [] data_2; data_2 = NULL;
+
+  message_p->initialize (command_s,
+                         1,
+                         NULL);
+  message_block_p = message_p;
+  istream_connection_p->send (message_block_p);
+
   // clean up
   istream_connection_p->decrease ();
 
   return FALSE;
-} // button_ping_clicked_cb
+} // button_test_clicked_cb
 
 gint
 togglebutton_listen_toggled_cb (GtkWidget* widget_in,

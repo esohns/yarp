@@ -64,6 +64,7 @@ struct Net_Client_GTK_CBData
                        &heapAllocator,
                        true) // block ?
    , entity ()
+   , level ()
    , schemaRepository ()
   {}
 
@@ -74,6 +75,7 @@ struct Net_Client_GTK_CBData
                          struct Stream_AllocatorConfiguration> heapAllocator;
   RPG_Net_MessageAllocator_t                                   messageAllocator;
   struct RPG_Engine_Entity                                     entity;
+  struct RPG_Engine_LevelData                                  level;
   std::string                                                  schemaRepository;
 };
 
