@@ -877,8 +877,6 @@ RPG_Client_Engine::action (const RPG_Client_Action& action_in)
       RPG_CLIENT_NETWORK_MANAGER_SINGLETON::instance ();
     ACE_ASSERT (client_network_manager_p);
     client_network_manager_p->action (action_in);
-
-    return;
   } // end IF
 
   ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);

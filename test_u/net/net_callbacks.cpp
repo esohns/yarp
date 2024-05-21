@@ -1064,7 +1064,7 @@ button_test_clicked_cb (GtkWidget* widget_in,
   command_s.position =
     std::make_pair (std::numeric_limits<unsigned int>::max (),
                     std::numeric_limits<unsigned int>::max ());
-  command_s.target = 0;
+  command_s.entity_id = 0;
   std::string temp_filename = Common_File_Tools::getTempDirectory ();
   temp_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   temp_filename += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));

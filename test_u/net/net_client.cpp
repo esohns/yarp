@@ -82,7 +82,13 @@
 #include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
 
+#include "rpg_magic_defines.h"
+
+#include "rpg_item_defines.h"
+
 #include "rpg_player_defines.h"
+
+#include "rpg_monster_defines.h"
 
 #include "rpg_net_common.h"
 #include "rpg_net_defines.h"
@@ -91,10 +97,24 @@
 #include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_messagehandler.h"
 
+#include "rpg_engine.h"
 #include "rpg_engine_common_tools.h"
 #include "rpg_engine_defines.h"
 
+#include "rpg_graphics_common_tools.h"
+#include "rpg_graphics_cursor_manager.h"
+#include "rpg_graphics_defines.h"
+#include "rpg_graphics_SDL_tools.h"
+
+#include "rpg_sound_defines.h"
+
 #include "rpg_client_common.h"
+#include "rpg_client_common_tools.h"
+#include "rpg_client_defines.h"
+#include "rpg_client_engine.h"
+#include "rpg_client_entity_manager.h"
+#include "rpg_client_network_manager.h"
+#include "rpg_client_window_main.h"
 
 #include "net_callbacks.h"
 #include "net_client_common.h"
@@ -434,13 +454,195 @@ do_work (unsigned int peerPingInterval_in,
 {
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
+  std::string monster_dictionary =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_SUB_DIRECTORY_STRING),
+                                                          true); // configuration-
+  monster_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  monster_dictionary += ACE_TEXT_ALWAYS_CHAR (RPG_MONSTER_DICTIONARY_FILE);
+
+  std::string item_dictionary =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_SUB_DIRECTORY_STRING),
+                                                          true); // configuration-
+
+  item_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  item_dictionary += ACE_TEXT_ALWAYS_CHAR (RPG_ITEM_DICTIONARY_FILE);
+
+  std::string magic_dictionary =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_SUB_DIRECTORY_STRING),
+                                                          true); // configuration-
+  magic_dictionary += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  magic_dictionary += ACE_TEXT_ALWAYS_CHAR (RPG_MAGIC_DICTIONARY_FILE);
+
   // step-1: initialize engine
   std::vector<std::string> schema_directories_a;
-  schema_directories_a.push_back (CBData_in.schemaRepository);
+  schema_directories_a.push_back (CBData_in.schemaRepository); // engine-
+
+  std::string schema_path = Common_File_Tools::getWorkingDirectory ();
+  schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_SUB_DIRECTORY_STRING);
+  schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+  schema_directories_a.push_back (schema_path);
+
+  schema_path = Common_File_Tools::getWorkingDirectory ();
+  schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING);
+  schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+  schema_directories_a.push_back (schema_path);
   RPG_Engine_Common_Tools::initialize (schema_directories_a,
-                                       ACE_TEXT_ALWAYS_CHAR (""),
-                                       ACE_TEXT_ALWAYS_CHAR (""),
-                                       ACE_TEXT_ALWAYS_CHAR (""));
+                                       magic_dictionary,
+                                       item_dictionary,
+                                       monster_dictionary);
+
+  CBData_in.configuration->graphics_dictionary =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
+                                                          true); // configuration-
+  CBData_in.configuration->graphics_dictionary +=
+    ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  CBData_in.configuration->graphics_dictionary +=
+    ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DICTIONARY_FILE);
+
+  CBData_in.configuration->audio_configuration.dictionary =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_SUB_DIRECTORY_STRING),
+                                                          true); // configuration-
+  CBData_in.configuration->audio_configuration.dictionary +=
+    ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  CBData_in.configuration->audio_configuration.dictionary +=
+    ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DICTIONARY_FILE);
+
+  CBData_in.configuration->audio_configuration.repository =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_SUB_DIRECTORY_STRING),
+                                                          false); // data-
+  CBData_in.configuration->graphics_directory =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
+                                                          false); // data-
+  RPG_Client_Common_Tools::initialize (CBData_in.configuration->input_configuration,
+                                       CBData_in.configuration->audio_configuration.SDL_configuration,
+                                       CBData_in.configuration->audio_configuration.repository,
+                                       CBData_in.configuration->audio_configuration.use_CD,
+                                       RPG_SOUND_DEF_CACHESIZE,
+                                       CBData_in.configuration->audio_configuration.mute,
+                                       CBData_in.configuration->audio_configuration.dictionary,
+                                       CBData_in.configuration->graphics_directory,
+                                       RPG_GRAPHICS_DEF_CACHESIZE,
+                                       CBData_in.configuration->graphics_dictionary,
+                                       false); // initialize SDL ?
+
+  CBData_in.configuration->video_configuration.screen_width =
+    RPG_CLIENT_VIDEO_DEF_WIDTH;
+  CBData_in.configuration->video_configuration.screen_height =
+    RPG_CLIENT_VIDEO_DEF_HEIGHT;
+  CBData_in.configuration->video_configuration.screen_colordepth =
+    RPG_CLIENT_VIDEO_DEF_BPP;
+  CBData_in.configuration->video_configuration.double_buffer =
+    RPG_CLIENT_VIDEO_DEF_DOUBLEBUFFER;
+  CBData_in.configuration->video_configuration.use_OpenGL =
+    RPG_CLIENT_VIDEO_DEF_OPENGL;
+  CBData_in.configuration->video_configuration.full_screen =
+    RPG_CLIENT_VIDEO_DEF_FULLSCREEN;
+  CBData_in.configuration->video_configuration.video_driver =
+    ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME);
+
+  RPG_Client_Engine client_engine;
+  RPG_Engine level_engine;
+  level_engine.initialize (&client_engine, // client engine handle
+                           true);          // server session ?
+  //CBData_in.clientEngine = &client_engine;
+  //CBData_in.levelEngine = &level_engine;
+
+  RPG_Graphics_SDL_Tools::initializeVideo (CBData_in.configuration->video_configuration,                     // configuration
+                                           ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE), // window/icon caption
+                                           CBData_in.screen,                                                 // window surface
+                                           CBData_in.renderer,                                               // renderer
+                                           CBData_in.GLContext,                                              // OpenGL context
+                                           true);                                                            // initialize window ?
+  RPG_Graphics_Common_Tools::initialize (CBData_in.configuration->graphics_directory,
+                                         RPG_CLIENT_GRAPHICS_DEF_CACHESIZE,
+                                         true); // initialize SDL ?
+  struct SDL_Rect dirty_region;
+  ACE_OS::memset (&dirty_region, 0, sizeof (struct SDL_Rect));
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->setCursor (CURSOR_NORMAL,
+                                                                 dirty_region,
+                                                                 true); // locked access ?
+
+  // step4a: setup main "window"
+  struct RPG_Graphics_GraphicTypeUnion type;
+  type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
+  type.image = RPG_CLIENT_GRAPHICS_DEF_WINDOWSTYLE_TYPE;
+  std::string title = ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);
+  SDL_Surface* surface_p = NULL;
+#if defined (SDL_USE)
+  surface_p = GTKUserData_in.screen;
+#elif defined (SDL2_USE)
+  surface_p = SDL_GetWindowSurface (CBData_in.screen);
+#endif // SDL_USE || SDL2_USE
+  ACE_ASSERT (surface_p);
+  RPG_Client_Window_Main main_window (RPG_Graphics_Size_t (surface_p->w,
+                                                           surface_p->h), // size
+                                      type,                               // interface elements
+                                      title,                              // title (== caption)
+                                      FONT_MAIN_LARGE);                   // title font
+  main_window.initializeSDL (NULL,
+                             CBData_in.screen,
+                             CBData_in.GLContext);
+  main_window.initialize (&client_engine,
+                          RPG_CLIENT_WINDOW_DEF_EDGE_AUTOSCROLL,
+                          &level_engine,
+                          false); // debug ?
+
+  // step4b: client engine
+  client_engine.initialize (&level_engine,
+                            main_window.child (WINDOW_MAP),
+                            //&UIDefinition_in,
+                            true,   // server session ?
+                            false); // debug ?
+
+  // step4c: queue initial drawing
+  struct RPG_Client_Action client_action;
+  client_action.command = COMMAND_WINDOW_DRAW;
+  client_action.previous =
+    std::make_pair (std::numeric_limits<unsigned int>::max (),
+                    std::numeric_limits<unsigned int>::max ());
+  client_action.position =
+    std::make_pair (std::numeric_limits<unsigned int>::max (),
+                    std::numeric_limits<unsigned int>::max ());
+  client_action.window = &main_window;
+  client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+  client_action.entity_id = 0;
+  client_action.sound = RPG_SOUND_EVENT_INVALID;
+  client_action.source =
+    std::make_pair (std::numeric_limits<unsigned int>::max (),
+                    std::numeric_limits<unsigned int>::max ());
+  client_action.radius = 0;
+  client_engine.action (client_action);
+  client_action.command = COMMAND_WINDOW_REFRESH;
+  client_engine.action (client_action);
+
+  RPG_Graphics_IWindowBase* level_window = main_window.child (WINDOW_MAP);
+  ACE_ASSERT (level_window);
+  // initialize/add entity to the graphics cache
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->initialize (NULL,
+                                                                  level_window);
+  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->initialize (NULL,
+                                                                level_window);
+
+  // start painting...
+  client_engine.start (NULL);
 
   CBData_in.allocatorConfiguration.defaultBufferSize =
     RPG_NET_PROTOCOL_MAXIMUM_FRAME_SIZE;
@@ -497,6 +699,7 @@ do_work (unsigned int peerPingInterval_in,
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to Common_Tools::initializeEventDispatch(), returning\n")));
+    RPG_Engine_Common_Tools::finalize ();
     return;
   } // end IF
 
@@ -521,6 +724,7 @@ do_work (unsigned int peerPingInterval_in,
 
       // clean up
       COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
+      RPG_Engine_Common_Tools::finalize ();
 
       return;
     } // end IF
@@ -559,15 +763,24 @@ do_work (unsigned int peerPingInterval_in,
                     timer_id));
     } // end IF
     COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
+    RPG_Engine_Common_Tools::finalize ();
 
     return;
   } // end IF
 
   // step3: initialize connection manager
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (NET_CONNECTION_MAXIMUM_NUMBER_OF_OPEN,
-                                                                         ACE_Time_Value (0, NET_STATISTIC_DEFAULT_VISIT_INTERVAL_MS * 1000));
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->set (CBData_in.configuration->protocol_configuration.connectionConfiguration,
-                                                                  NULL);
+  RPG_Client_Network_Manager* network_manager_p =
+    RPG_CLIENT_NETWORK_MANAGER_SINGLETON::instance ();
+  ACE_ASSERT (network_manager_p);
+  RPG_Net_Protocol_Connection_Manager* connection_manager_p =
+    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ();
+  ACE_ASSERT (connection_manager_p);
+  connection_manager_p->initialize (NET_CONNECTION_MAXIMUM_NUMBER_OF_OPEN,
+                                    ACE_Time_Value (0, NET_STATISTIC_DEFAULT_VISIT_INTERVAL_MS * 1000));
+  struct Net_UserData user_data_s;
+  connection_manager_p->set (CBData_in.configuration->protocol_configuration.connectionConfiguration,
+                             &user_data_s);
+  connection_manager_p->add (network_manager_p);
 
   // step4: handle events (signals, incoming connections/data, timers, ...)
   // reactor/proactor event loop:
@@ -616,6 +829,7 @@ do_work (unsigned int peerPingInterval_in,
       Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
                                      previousSignalActions_inout,
                                      previousSignalMask_inout);
+      RPG_Engine_Common_Tools::finalize ();
 
       return;
     } // end IF
@@ -656,6 +870,7 @@ do_work (unsigned int peerPingInterval_in,
     Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
                                    previousSignalActions_inout,
                                    previousSignalMask_inout);
+    RPG_Engine_Common_Tools::finalize ();
 
     return;
   } // end IF
@@ -664,13 +879,372 @@ do_work (unsigned int peerPingInterval_in,
 
   // *NOTE*: from this point on, clean up any remote connections !
 
-  Common_Event_Tools::dispatchEvents (dispatch_state_s);
+  // step6b: dispatch SDL events
+  union SDL_Event sdl_event;
+  bool done = false;
+  RPG_Graphics_IWindowBase* window = NULL;
+  RPG_Graphics_IWindowBase* previous_window = NULL;
+  RPG_Graphics_Position_t mouse_position;
+  do
+  {
+#if defined (SDL_USE)
+    sdl_event.type = SDL_NOEVENT;
+#elif defined (SDL2_USE)
+    sdl_event.type = SDL_FIRSTEVENT;
+#endif // SDL_USE || SDL2_USE
+    window = NULL;
+
+    client_action.command = RPG_CLIENT_COMMAND_INVALID;
+    client_action.position = std::make_pair (std::numeric_limits<unsigned int>::max (),
+                                             std::numeric_limits<unsigned int>::max ());
+    client_action.window = NULL;
+    client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
+    client_action.entity_id = 0;
+    client_action.path.clear ();
+
+    mouse_position = std::make_pair (std::numeric_limits<unsigned int>::max (),
+                                     std::numeric_limits<unsigned int>::max ());
+
+    ACE_OS::memset (&dirty_region, 0, sizeof (struct SDL_Rect));
+
+    // step6a: get next pending event
+//     if (SDL_PollEvent(&event) == -1)
+//     {
+//       ACE_DEBUG((LM_ERROR,
+//                  ACE_TEXT("failed to SDL_PollEvent(): \"%s\", aborting\n"),
+//                  SDL_GetError()));
+//       break;
+//     } // end IF
+    if (SDL_WaitEvent (&sdl_event) == 0)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_WaitEvent(): \"%s\", aborting\n"),
+                  ACE_TEXT (SDL_GetError ())));
+      break;
+    } // end IF
+
+    // if necessary, reset hover_time
+    if ((sdl_event.type != RPG_GRAPHICS_SDL_HOVEREVENT) &&
+        //(sdl_event.type != RPG_CLIENT_SDL_GTKEVENT) &&
+        (sdl_event.type != RPG_CLIENT_SDL_TIMEREVENT))
+    { ACE_GUARD (ACE_Thread_Mutex, aGuard, CBData_in.UIState->lock);
+      CBData_in.hoverTime = 0;
+    } // end IF
+
+    switch (sdl_event.type)
+    {
+      case SDL_KEYDOWN:
+      {
+        switch (sdl_event.key.keysym.sym)
+        {
+          //case SDLK_l:
+          //{
+          //  g_idle_add (idle_leave_game_cb,
+          //              &CBData_in);
+          //  break;
+          //}
+          //case SDLK_u:
+          //{
+          //  g_idle_add (idle_raise_UI_cb,
+          //              &CBData_in);
+          //  break;
+          //}
+          //case SDLK_y:
+          //{
+          //  CBData_in.subClass =
+          //      static_cast<enum RPG_Common_SubClass> (sdl_event.key.padding2);
+          //  g_idle_add (idle_level_up_cb,
+          //              &CBData_in);
+          //  break;
+          //}
+          //case SDLK_z:
+          //{
+          //  g_idle_add (idle_update_profile_cb,
+          //              &CBData_in);
+          //  break;
+          //}
+          default:
+            break;
+        } // end SWITCH
+
+        // *WARNING*: falls through !
+      }
+#if defined (SDL_USE)
+      case SDL_ACTIVEEVENT:
+      {
+        // *NOTE*: when the mouse leaves the window, it's NOT hovering
+        // --> stop generating any hover events !
+        if (sdl_event.active.state & SDL_APPMOUSEFOCUS)
+        {
+          if (sdl_event.active.gain & SDL_APPMOUSEFOCUS)
+          {
+//           ACE_DEBUG ((LM_DEBUG,
+//                       ACE_TEXT ("gained mouse coverage...\n")));
+
+            ACE_GUARD (ACE_Thread_Mutex, aGuard, GTKUserData_in.UIState->lock);
+            GTKUserData_in.doHover = true;
+          } // end IF
+          else
+          {
+//           ACE_DEBUG ((LM_DEBUG,
+//                       ACE_TEXT ("lost mouse coverage...\n")));
+
+            ACE_GUARD (ACE_Thread_Mutex, aGuard, GTKUserData_in.UIState->lock);
+            GTKUserData_in.doHover = false;
+          } // end ELSE
+        } // end IF
+
+        // *WARNING*: falls through !
+      }
+#endif // SDL_USE
+      case SDL_MOUSEMOTION:
+      case SDL_MOUSEBUTTONDOWN:
+      case RPG_GRAPHICS_SDL_HOVEREVENT: // hovering...
+      {
+        // find window
+        switch (sdl_event.type)
+        {
+          case SDL_MOUSEMOTION:
+          {
+            mouse_position = std::make_pair (sdl_event.motion.x,
+                                             sdl_event.motion.y);
+            break;
+          }
+          case SDL_MOUSEBUTTONDOWN:
+          {
+            mouse_position = std::make_pair (sdl_event.button.x,
+                                             sdl_event.button.y);
+            break;
+          }
+          default:
+          {
+            int x, y;
+            Uint8 button_state = SDL_GetMouseState (&x, &y);
+            ACE_UNUSED_ARG (button_state);
+            mouse_position = std::make_pair (x, y);
+            break;
+          }
+        } // end SWITCH
+        window = main_window.getWindow (mouse_position);
+        if (!window)
+          ACE_DEBUG ((LM_DEBUG,
+                      ACE_TEXT ("failed to RPG_Graphics_SDLWindowBase::getWindow(%u,%u), continuing\n"),
+                      mouse_position.first, mouse_position.second));
+
+        // first steps on mouse motion:
+        // 0. (re-)draw cursor (handled below)
+        // 1. notify previously "active" window upon losing "focus"
+        if ((window || previous_window) &&
+            (sdl_event.type == SDL_MOUSEMOTION))
+        {
+          // step1: notify previous window (if any)
+          if (previous_window &&
+//               (previous_window != mainWindow)
+              (previous_window != window))
+          {
+            sdl_event.type = RPG_GRAPHICS_SDL_MOUSEMOVEOUT;
+
+            try {
+              previous_window->handleEvent (sdl_event,
+                                            previous_window,
+                                            dirty_region);
+            } catch (...) {
+              ACE_DEBUG ((LM_ERROR,
+                          ACE_TEXT ("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
+            }
+
+            sdl_event.type = SDL_MOUSEMOTION;
+          } // end IF
+        } // end IF
+        // remember last "active" window
+        previous_window = window;
+
+        // 2. notify "active" window (if any)
+        if (window)
+        {
+          try {
+            window->handleEvent (sdl_event,
+                                 window,
+                                 dirty_region);
+          } catch (...) {
+            ACE_DEBUG ((LM_ERROR,
+                        ACE_TEXT ("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
+          }
+        } // end IF
+
+        break;
+      }
+      case SDL_QUIT:
+      {
+        // finished event processing
+        done = true;
+
+        break;
+      }
+#if defined (SDL2_USE)
+      case SDL_APP_TERMINATING:
+      case SDL_APP_LOWMEMORY:
+      case SDL_APP_WILLENTERBACKGROUND:
+      case SDL_APP_DIDENTERBACKGROUND:
+      case SDL_APP_WILLENTERFOREGROUND:
+      case SDL_APP_DIDENTERFOREGROUND:
+      case SDL_LOCALECHANGED:
+      case SDL_DISPLAYEVENT:
+      case SDL_WINDOWEVENT:
+      {
+        if (sdl_event.type != SDL_WINDOWEVENT)
+          goto continue_;
+        switch (sdl_event.window.event)
+        {
+          case SDL_WINDOWEVENT_EXPOSED:
+          case SDL_WINDOWEVENT_RESIZED:
+            break;
+          case SDL_WINDOWEVENT_ENTER:
+          {
+//           ACE_DEBUG ((LM_DEBUG,
+//                       ACE_TEXT ("gained mouse coverage...\n")));
+
+            ACE_GUARD (ACE_Thread_Mutex, aGuard, CBData_in.UIState->lock);
+            CBData_in.doHover = true;
+            break;
+          }
+          case SDL_WINDOWEVENT_LEAVE:
+          {
+//           ACE_DEBUG ((LM_DEBUG,
+//                       ACE_TEXT ("lost mouse coverage...\n")));
+
+            ACE_GUARD (ACE_Thread_Mutex, aGuard, CBData_in.UIState->lock);
+            CBData_in.doHover = false;
+            break;
+          }
+
+          default:
+            break;
+        } // end SWITCH
+
+        // *WARNING*: falls through !
+continue_:;
+      }
+#endif // SDL2_USE
+      case SDL_SYSWMEVENT:
+#if defined (SDL_USE)
+      case SDL_VIDEORESIZE:
+      case SDL_VIDEOEXPOSE:
+#endif // SDL_USE
+      case SDL_KEYUP:
+#if defined (SDL2_USE)
+      case SDL_TEXTEDITING:
+      case SDL_TEXTINPUT:
+      case SDL_KEYMAPCHANGED:
+      case SDL_TEXTEDITING_EXT:
+#endif // SDL2_USE
+      case SDL_MOUSEBUTTONUP:
+#if defined (SDL2_USE)
+      case SDL_MOUSEWHEEL:
+#endif // SDL2_USE
+      case SDL_JOYAXISMOTION:
+      case SDL_JOYBALLMOTION:
+      case SDL_JOYHATMOTION:
+      case SDL_JOYBUTTONDOWN:
+      case SDL_JOYBUTTONUP:
+#if defined (SDL2_USE)
+      case SDL_JOYDEVICEADDED:
+      case SDL_JOYDEVICEREMOVED:
+      case SDL_CONTROLLERAXISMOTION:
+      case SDL_CONTROLLERBUTTONDOWN:
+      case SDL_CONTROLLERBUTTONUP:
+      case SDL_CONTROLLERDEVICEADDED:
+      case SDL_CONTROLLERDEVICEREMOVED:
+      case SDL_CONTROLLERDEVICEREMAPPED:
+      case SDL_CONTROLLERTOUCHPADDOWN:
+      case SDL_CONTROLLERTOUCHPADMOTION:
+      case SDL_CONTROLLERTOUCHPADUP:
+      case SDL_CONTROLLERSENSORUPDATE:
+      case SDL_FINGERDOWN:
+      case SDL_FINGERUP:
+      case SDL_FINGERMOTION:
+      case SDL_DOLLARGESTURE:
+      case SDL_DOLLARRECORD:
+      case SDL_MULTIGESTURE:
+      case SDL_CLIPBOARDUPDATE:
+      case SDL_DROPFILE:
+      case SDL_DROPTEXT:
+      case SDL_DROPBEGIN:
+      case SDL_DROPCOMPLETE:
+      case SDL_AUDIODEVICEADDED:
+      case SDL_AUDIODEVICEREMOVED:
+      case SDL_SENSORUPDATE:
+      case SDL_RENDER_TARGETS_RESET:
+      case SDL_RENDER_DEVICE_RESET:
+      case SDL_POLLSENTINEL:
+#endif // SDL2_USE
+      case RPG_CLIENT_SDL_TIMEREVENT:
+      {
+        int x, y;
+        Uint8 button_state = SDL_GetMouseState (&x, &y);
+        ACE_UNUSED_ARG (button_state);
+        mouse_position = std::make_pair (x, y);
+        window = main_window.getWindow (mouse_position);
+        break;
+      }
+      default:
+      {
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("unknown/invalid SDL event type (was: %u: 0x%x), continuing\n"),
+                    sdl_event.type, sdl_event.type));
+        break;
+      }
+    } // end SWITCH
+
+    // update screen ?
+    if ((dirty_region.w != 0) || (dirty_region.h != 0))
+    { ACE_ASSERT (window);
+      client_action.command = COMMAND_WINDOW_REFRESH;
+      client_action.window = window;
+      client_engine.action (client_action);
+    } // end IF
+
+    // redraw cursor ?
+    switch (sdl_event.type)
+    {
+      case SDL_KEYDOWN:
+      case SDL_MOUSEBUTTONDOWN:
+      {
+        // map hasn't changed --> no need to redraw
+        if ((dirty_region.w == 0) && (dirty_region.h == 0))
+          break;
+
+        // *WARNING*: falls through !
+      }
+      case SDL_MOUSEMOTION:
+      case RPG_GRAPHICS_SDL_HOVEREVENT:
+      {
+        // sanity check
+        if (!window)
+          break; // nothing to do...
+
+        // map has changed, cursor MAY have been drawn over...
+        // --> redraw cursor ?
+        if ((sdl_event.type == SDL_MOUSEMOTION) ||
+            (dirty_region.w != 0) || (dirty_region.h != 0))
+        {
+          client_action.command = COMMAND_CURSOR_DRAW;
+          client_action.position = mouse_position;
+          client_action.window = window;
+          client_engine.action (client_action);
+        } // end IF
+
+        break;
+      }
+      default:
+        break;
+    } // end SWITCH
+  } while (!done);
+
   ACE_DEBUG ((LM_DEBUG,
-              ACE_TEXT ("finished event dispatch...\n")));
+              ACE_TEXT ("left SDL event loop...\n")));
 
   // clean up
-  // *NOTE*: listener has stopped, interval timer has been cancelled,
-  // and connections have been aborted...
   //		{ // synch access
   //			ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(CBData_in.lock);
 
@@ -679,14 +1253,28 @@ do_work (unsigned int peerPingInterval_in,
   //					 iterator++)
   //				g_source_remove(*iterator);
   //		} // end lock scope
+  connection_manager_p->stop (false,   // wait for completion ?
+                              false);  // N/A
+  connection_manager_p->abort (false); // wait for completion ?
+  connection_manager_p->wait (true);   // N/A
+  // *NOTE*: connections have been aborted...
   if (!UIDefinitionFile_in.empty ())
     COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop (true,
                                                         false);
+
+  Common_Event_Tools::finalizeEventDispatch (dispatch_state_s,
+                                             true,   // wait for completion ?
+                                             false); // release singletons ?
+
+  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("finished event dispatch...\n")));
+
   COMMON_TIMERMANAGER_SINGLETON::instance ()->stop (true,
                                                     false);
   Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
                                  previousSignalActions_inout,
                                  previousSignalMask_inout);
+  RPG_Client_Common_Tools::finalize ();
+  RPG_Engine_Common_Tools::finalize ();
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("finished working...\n")));
@@ -879,14 +1467,12 @@ ACE_TMAIN (int argc_in,
                                             // is off
   gtk_cb_user_data.configuration = &configuration;
   gtk_cb_user_data.schemaRepository = Common_File_Tools::getWorkingDirectory ();
-#if (1)
   gtk_cb_user_data.schemaRepository += ACE_DIRECTORY_SEPARATOR_STR;
   gtk_cb_user_data.schemaRepository +=
-    ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_SUB_DIRECTORY_STRING);
+    ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
   gtk_cb_user_data.schemaRepository += ACE_DIRECTORY_SEPARATOR_STR;
   gtk_cb_user_data.schemaRepository +=
     ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
-#endif // true
 
   // step1e: initialize logging and/or tracing
   //Common_Logger logger (&gtk_cb_user_data.logStack,
@@ -956,7 +1542,66 @@ ACE_TMAIN (int argc_in,
     return EXIT_FAILURE;
   } // end IF
 
-  // step1h: init GLIB / G(D|T)K[+] / GNOME ?
+  // step2a: initialize SDL
+  Uint32 SDL_init_flags = 0;
+  SDL_init_flags |= SDL_INIT_TIMER;                                            // timers
+  SDL_init_flags |= (configuration.audio_configuration.mute ? 0
+                                                            : SDL_INIT_AUDIO); // audio
+  SDL_init_flags |= SDL_INIT_VIDEO;                                            // video
+#if defined (SDL_USE)
+  SDL_init_flags |=
+      ((configuration.audio_configuration.mute ||
+        !configuration.audio_configuration.use_CD) ? 0
+                                                   : SDL_INIT_CDROM);          // audioCD playback
+#endif // SDL_USE
+//  SDL_init_flags |= SDL_INIT_JOYSTICK;                                         // joystick
+  SDL_init_flags |= SDL_INIT_NOPARACHUTE;                                        /**< Don't catch fatal signals */
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+#else
+#if defined (SDL_USE)
+  SDL_init_flags |= SDL_INIT_EVENTTHREAD;                                        /**< Not supported on all OS's */
+#elif defined (SDL2_USE)
+  SDL_init_flags |= SDL_INIT_EVENTS;
+#endif // SDL_USE || SL2_USE
+#endif // ACE_WIN32 || ACE_WIN64
+  if (SDL_Init (SDL_init_flags) < 0)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_Init(0x%x): \"%s\", aborting\n"),
+                SDL_init_flags,
+                ACE_TEXT (SDL_GetError ())));
+
+    // clean up
+  Common_Log_Tools::finalizeLogging ();
+  // *PORTABILITY*: on Windows, must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  if (ACE::fini () == -1)
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
+#endif // ACE_WIN32 || ACE_WIN64
+
+    return EXIT_FAILURE;
+  } // end IF
+  if (TTF_Init () == -1)
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to TTF_Init(): \"%s\", aborting\n"),
+                ACE_TEXT (TTF_GetError ())));
+
+    // clean up
+    Common_Log_Tools::finalizeLogging ();
+    SDL_Quit ();
+    // *PORTABILITY*: on Windows, must fini ACE...
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    if (ACE::fini () == -1)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to ACE::fini(): \"%m\", aborting\n")));
+#endif // ACE_WIN32 || ACE_WIN64
+
+    return EXIT_FAILURE;
+  } // end IF
+
+  // step1h: initialize GLIB / G(D|T)K[+] / GNOME ?
   //Common_UI_GladeDefinition ui_definition (argc_in,
   //                                         argv_in);
   Common_UI_GtkBuilderDefinition_t ui_definition;
@@ -996,6 +1641,10 @@ ACE_TMAIN (int argc_in,
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("total working time (h:m:s.us): \"%s\"...\n"),
               ACE_TEXT (working_time_string.c_str ())));
+
+  // step4: clean up
+  TTF_Quit ();
+  SDL_Quit ();
 
   // stop profile timer...
   process_profile.stop ();

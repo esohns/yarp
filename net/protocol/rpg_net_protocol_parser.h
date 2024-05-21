@@ -256,10 +256,20 @@ namespace yy {
     POSITION_Y = 261,              // "position_y"
     PATH_NEXT_XY = 262,            // "path_next_xy"
     PATH_NEXT_DIRECTION = 263,     // "path_next_direction"
-    TARGET = 264,                  // "target"
+    ENTITY_ID = 264,               // "entity_id"
     XML = 265,                     // "xml"
-    END_OF_COMMAND = 266,          // "end_of_command"
-    END_OF_FRAME = 267             // "end_of_frame"
+    CLIENT_COMMAND = 266,          // "client_command"
+    PREVIOUS_X = 267,              // "previous_x"
+    PREVIOUS_Y = 268,              // "previous_y"
+    CURSOR = 269,                  // "cursor"
+    SOUND = 270,                   // "sound"
+    MESSAGE = 271,                 // "message"
+    SOURCE_X = 272,                // "source_x"
+    SOURCE_Y = 273,                // "source_y"
+    POSITIONS_NEXT_XY = 274,       // "positions_next_xy"
+    RADIUS = 275,                  // "radius"
+    END_OF_COMMAND = 276,          // "end_of_command"
+    END_OF_FRAME = 277             // "end_of_frame"
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -276,7 +286,7 @@ namespace yy {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 13, ///< Number of tokens.
+        YYNTOKENS = 23, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
@@ -287,21 +297,40 @@ namespace yy {
         S_POSITION_Y = 6,                        // "position_y"
         S_PATH_NEXT_XY = 7,                      // "path_next_xy"
         S_PATH_NEXT_DIRECTION = 8,               // "path_next_direction"
-        S_TARGET = 9,                            // "target"
+        S_ENTITY_ID = 9,                         // "entity_id"
         S_XML = 10,                              // "xml"
-        S_END_OF_COMMAND = 11,                   // "end_of_command"
-        S_END_OF_FRAME = 12,                     // "end_of_frame"
-        S_YYACCEPT = 13,                         // $accept
-        S_frame = 14,                            // frame
-        S_15_1 = 15,                             // $@1
-        S_path = 16,                             // path
-        S_path_elem = 17,                        // path_elem
-        S_command = 18,                          // command
-        S_19_2 = 19,                             // $@2
-        S_20_3 = 20,                             // $@3
-        S_21_4 = 21,                             // $@4
-        S_22_5 = 22,                             // $@5
-        S_commands = 23                          // commands
+        S_CLIENT_COMMAND = 11,                   // "client_command"
+        S_PREVIOUS_X = 12,                       // "previous_x"
+        S_PREVIOUS_Y = 13,                       // "previous_y"
+        S_CURSOR = 14,                           // "cursor"
+        S_SOUND = 15,                            // "sound"
+        S_MESSAGE = 16,                          // "message"
+        S_SOURCE_X = 17,                         // "source_x"
+        S_SOURCE_Y = 18,                         // "source_y"
+        S_POSITIONS_NEXT_XY = 19,                // "positions_next_xy"
+        S_RADIUS = 20,                           // "radius"
+        S_END_OF_COMMAND = 21,                   // "end_of_command"
+        S_END_OF_FRAME = 22,                     // "end_of_frame"
+        S_YYACCEPT = 23,                         // $accept
+        S_frame = 24,                            // frame
+        S_25_1 = 25,                             // $@1
+        S_path = 26,                             // path
+        S_path_elem = 27,                        // path_elem
+        S_positions = 28,                        // positions
+        S_positions_elem = 29,                   // positions_elem
+        S_command = 30,                          // command
+        S_31_2 = 31,                             // $@2
+        S_32_3 = 32,                             // $@3
+        S_33_4 = 33,                             // $@4
+        S_34_5 = 34,                             // $@5
+        S_35_6 = 35,                             // $@6
+        S_36_7 = 36,                             // $@7
+        S_37_8 = 37,                             // $@8
+        S_38_9 = 38,                             // $@9
+        S_39_10 = 39,                            // $@10
+        S_40_11 = 40,                            // $@11
+        S_41_12 = 41,                            // $@12
+        S_commands = 42                          // commands
       };
     };
 
@@ -586,7 +615,7 @@ namespace yy {
 
 #if RPG_NET_PROTOCOL_SCANNER_DEBUG
     // YYRLINE[YYN] -- Source line where rule number YYN was defined.
-    static const signed char yyrline_[];
+    static const unsigned char yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
     virtual void yy_reduce_print_ (int r) const;
     /// Print the state stack on the debug stream.
@@ -813,8 +842,8 @@ namespace yy {
     /// Constants.
     enum
     {
-      yylast_ = 16,     ///< Last index in yytable_.
-      yynnts_ = 11,  ///< Number of nonterminal symbols.
+      yylast_ = 33,     ///< Last index in yytable_.
+      yynnts_ = 20,  ///< Number of nonterminal symbols.
       yyfinal_ = 4 ///< Termination state number.
     };
 

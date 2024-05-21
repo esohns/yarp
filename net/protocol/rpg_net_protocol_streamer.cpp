@@ -63,9 +63,11 @@ RPG_Net_Protocol_Streamer::handleDataMessage (RPG_Net_Protocol_Message*& message
   ACE_UINT32 length_i = sizeof (ACE_UINT32);
 
   text_string = ' ';
+
   converter << data_r.command;
   text_string += converter.str ();
   text_string += ' ';
+
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
   converter << data_r.position.first;
@@ -73,6 +75,7 @@ RPG_Net_Protocol_Streamer::handleDataMessage (RPG_Net_Protocol_Message*& message
   converter << data_r.position.second;
   text_string += converter.str ();
   text_string += ' ';
+
   for (RPG_Map_PathConstIterator_t iterator = data_r.path.begin ();
        iterator != data_r.path.end ();
        ++iterator)
@@ -89,13 +92,74 @@ RPG_Net_Protocol_Streamer::handleDataMessage (RPG_Net_Protocol_Message*& message
   } // end FOR
   text_string += ';';
   text_string += ' ';
+
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
-  converter << data_r.target;
+  converter << data_r.entity_id;
   text_string += converter.str ();
   text_string += ' ';
   text_string += data_r.xml;
   text_string += ACE_TEXT_ALWAYS_CHAR ("\r\n");
+
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
+  converter << data_r.clientCommand;
+  text_string += converter.str ();
+  text_string += ' ';
+
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
+  converter << data_r.previous.first;
+  converter << ',';
+  converter << data_r.previous.second;
+  text_string += converter.str ();
+  text_string += ' ';
+
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
+  converter << data_r.cursor;
+  text_string += converter.str ();
+  text_string += ' ';
+
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
+  converter << data_r.sound;
+  text_string += converter.str ();
+  text_string += ' ';
+
+  ACE_ASSERT (data_r.message.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0) == std::string::npos);
+  text_string += data_r.message;
+  text_string += ACE_TEXT_ALWAYS_CHAR ("\r\n");
+
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
+  converter << data_r.source.first;
+  converter << ',';
+  converter << data_r.source.second;
+  text_string += converter.str ();
+  text_string += ' ';
+
+  for (RPG_Map_PositionsConstIterator_t iterator = data_r.positions.begin ();
+       iterator != data_r.positions.end ();
+       ++iterator)
+  {
+    converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+    converter.clear ();
+    converter << (*iterator).first;
+    converter << ',';
+    converter << (*iterator).second;
+    text_string += converter.str ();
+    text_string += ' ';
+  } // end FOR
+  text_string += ';';
+  text_string += ' ';
+
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
+  converter << data_r.radius;
+  text_string += converter.str ();
+  text_string += ' ';
+
   length_i += static_cast<ACE_UINT32> (text_string.size ());
   if (ACE_BYTE_ORDER == ACE_LITTLE_ENDIAN)
     length_i = ACE_SWAP_LONG (length_i);

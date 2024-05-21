@@ -1139,15 +1139,15 @@ RPG_Player::load (const std::string& filename_in,
   ::xml_schema::properties props;
   std::string path;
   ACE_ASSERT (!schemaRepository_in.empty ());
-  if (Common_Error_Tools::inDebugSession ())
-  {
-    path = schemaRepository_in;
-    path += ACE_DIRECTORY_SEPARATOR_STR;
-    path += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_SUB_DIRECTORY_STRING);
-    path += ACE_DIRECTORY_SEPARATOR_STR;
-    path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
-  } // end IF
-  else
+  //if (Common_Error_Tools::inDebugSession ())
+  //{
+  //  path = schemaRepository_in;
+  //  path += ACE_DIRECTORY_SEPARATOR_STR;
+  //  path += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_SUB_DIRECTORY_STRING);
+  //  path += ACE_DIRECTORY_SEPARATOR_STR;
+  //  path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+  //} // end IF
+  //else
     path = schemaRepository_in;
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_SCHEMA_FILE);

@@ -79,6 +79,18 @@ OCTET_NO_CRLF  [\x00-\xFF]{-}[\x0D\x0A]
 %s             path_direction
 %s             entity_id
 %s             xml
+%s             clientCommand
+%s             previous_x
+%s             previous_y
+%s             cursor
+%s             sound
+%s             message
+%s             source_x
+%s             source_y
+%s             positions
+%s             positions_position_x
+%s             positions_position_y
+%s             radius
 
 %{
 #define YY_USER_ACTION yylloc->columns(yyleng);
@@ -183,7 +195,7 @@ OCTET_NO_CRLF  [\x00-\xFF]{-}[\x0D\x0A]
                              converter.clear ();
                              converter << yytext;
                              converter >> yylval->ival;
-                             return yy::RPG_Net_Protocol_Parser::token::TARGET; }
+                             return yy::RPG_Net_Protocol_Parser::token::ENTITY_ID; }
 {SPACE}                    { iparser_p->scannedBytes (yyleng);
                              BEGIN(xml);
                              yylval->ival = 1; }
@@ -203,6 +215,138 @@ OCTET_NO_CRLF  [\x00-\xFF]{-}[\x0D\x0A]
                              return yy::RPG_Net_Protocol_Parser::token::END_OF_COMMAND;
                            }
 } // end <xml>
+<clientCommand>{
+{DIGIT}+                   { iparser_p->scannedBytes (yyleng);
+                             converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+                             converter.clear ();
+                             converter << yytext;
+                             converter >> yylval->ival;
+                             return yy::RPG_Net_Protocol_Parser::token::CLIENT_COMMAND; }
+{SPACE}                    { iparser_p->scannedBytes (yyleng);
+                             BEGIN(previous_x);
+                             yylval->ival = 1; }
+} // end <clientCommand>
+<previous_x>{
+{DIGIT}+                   { iparser_p->scannedBytes (yyleng);
+                             converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+                             converter.clear ();
+                             converter << yytext;
+                             converter >> yylval->ival;
+                             return yy::RPG_Net_Protocol_Parser::token::PREVIOUS_X; }
+{COMMA}                    { iparser_p->scannedBytes (yyleng);
+                             BEGIN(previous_y);
+                             yylval->ival = 1; }
+} // end <previous_x>
+<previous_y>{
+{DIGIT}+                   { iparser_p->scannedBytes (yyleng);
+                             converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+                             converter.clear ();
+                             converter << yytext;
+                             converter >> yylval->ival;
+                             return yy::RPG_Net_Protocol_Parser::token::PREVIOUS_Y; }
+{SPACE}                    { iparser_p->scannedBytes (yyleng);
+                             BEGIN(cursor);
+                             yylval->ival = 1; }
+} // end <previous_y>
+<cursor>{
+{DIGIT}+                   { iparser_p->scannedBytes (yyleng);
+                             converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+                             converter.clear ();
+                             converter << yytext;
+                             converter >> yylval->ival;
+                             return yy::RPG_Net_Protocol_Parser::token::CURSOR; }
+{SPACE}                    { iparser_p->scannedBytes (yyleng);
+                             BEGIN(sound);
+                             yylval->ival = 1; }
+} // end <cursor>
+<sound>{
+{DIGIT}+                   { iparser_p->scannedBytes (yyleng);
+                             converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+                             converter.clear ();
+                             converter << yytext;
+                             converter >> yylval->ival;
+                             return yy::RPG_Net_Protocol_Parser::token::SOUND; }
+{SPACE}                    { iparser_p->scannedBytes (yyleng);
+                             BEGIN(message);
+                             yylval->ival = 1; }
+} // end <sound>
+<message>{
+{OCTET_NO_CRLF}+           { iparser_p->scannedBytes (yyleng);
+                             ACE_NEW_NORETURN (yylval->sval,
+                                               std::string (yytext));
+                             ACE_ASSERT (yylval->sval);
+                             return yy::RPG_Net_Protocol_Parser::token::MESSAGE; }
+{CRLF}                     { iparser_p->scannedBytes (yyleng);
+                             BEGIN(source_x);
+                             yylval->ival = 2; }
+} // end <message>
+<source_x>{
+{DIGIT}+                   { iparser_p->scannedBytes (yyleng);
+                             converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+                             converter.clear ();
+                             converter << yytext;
+                             converter >> yylval->ival;
+                             return yy::RPG_Net_Protocol_Parser::token::SOURCE_X; }
+{COMMA}                    { iparser_p->scannedBytes (yyleng);
+                             BEGIN(source_y);
+                             yylval->ival = 1; }
+} // end <source_x>
+<source_y>{
+{DIGIT}+                   { iparser_p->scannedBytes (yyleng);
+                             converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+                             converter.clear ();
+                             converter << yytext;
+                             converter >> yylval->ival;
+                             return yy::RPG_Net_Protocol_Parser::token::SOURCE_Y; }
+{SPACE}                    { iparser_p->scannedBytes (yyleng);
+                             BEGIN(positions);
+                             yylval->ival = 1; }
+} // end <source_y>
+<positions>{
+{DIGIT}{1}                 { yyless (0);
+                             BEGIN(positions_position_x); }
+{SEMICOLON}{SPACE}         { iparser_p->scannedBytes (yyleng);
+                             BEGIN(radius);
+                             yylval->ival = 1; }
+} // end <positions>
+<positions_position_x>{
+{DIGIT}+                   { iparser_p->scannedBytes (yyleng);
+                             converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+                             converter.clear ();
+                             converter << yytext;
+                             converter >> yylval->ival;
+                             return yy::RPG_Net_Protocol_Parser::token::POSITIONS_NEXT_XY; }
+{COMMA}                    { iparser_p->scannedBytes (yyleng);
+                             yylval->ival = 1;
+                             BEGIN(positions_position_y); }
+} // end <positions_position_x>
+<positions_position_y>{
+{DIGIT}+                   { iparser_p->scannedBytes (yyleng);
+                             converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+                             converter.clear ();
+                             converter << yytext;
+                             converter >> yylval->ival;
+                             return yy::RPG_Net_Protocol_Parser::token::POSITIONS_NEXT_XY; }
+{SPACE}                    { iparser_p->scannedBytes (yyleng);
+                             yylval->ival = 1;
+                             BEGIN(positions); }
+} // end <positions_position_y>
+<radius>{
+{DIGIT}+                   { iparser_p->scannedBytes (yyleng);
+                             converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+                             converter.clear ();
+                             converter << yytext;
+                             converter >> yylval->ival;
+                             return yy::RPG_Net_Protocol_Parser::token::RADIUS; }
+{SPACE}                    { iparser_p->scannedBytes (yyleng);
+                             yylval->ival = 1;
+                             if (iparser_p->scannedBytes () < iparser_p->length ())
+                               BEGIN(command);
+                             else
+                               BEGIN(INITIAL);
+                             return yy::RPG_Net_Protocol_Parser::token::END_OF_COMMAND;
+                           }
+} // end <radius>
 <<EOF>>                    { yyterminate(); }
 <*>(?s:.)                  { iparser_p->scannedBytes (yyleng);
 

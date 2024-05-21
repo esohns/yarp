@@ -135,6 +135,14 @@ struct RPG_Client_SDL_InputConfiguration
 
 struct RPG_Client_AudioConfiguration
 {
+  RPG_Client_AudioConfiguration ()
+   : SDL_configuration ()
+   , repository ()
+   , dictionary ()
+   , use_CD (false)
+   , mute (false)
+  {}
+
   struct RPG_Sound_SDLConfiguration SDL_configuration;
   std::string                       repository;
   std::string                       dictionary;

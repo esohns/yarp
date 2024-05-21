@@ -71,6 +71,15 @@ typedef RPG_Engine_Actions_t::const_iterator RPG_Engine_ActionsConstIterator_t;
 
 struct RPG_Engine_Entity
 {
+  RPG_Engine_Entity ()
+   : character (NULL)
+   , modes ()
+   , position (std::make_pair (std::numeric_limits<unsigned int>::max (),
+                               std::numeric_limits<unsigned int>::max ()))
+   , actions ()
+   , is_spawned (false)
+  {}
+
   RPG_Player_Base*        character;
   RPG_Engine_EntityMode_t modes;
   RPG_Map_Position_t      position;

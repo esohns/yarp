@@ -29,8 +29,6 @@
 
 #include "common_ui_common.h"
 
-#include "stream_common.h"
-
 #include "rpg_common_defines.h"
 #include "rpg_common_macros.h"
 #include "rpg_common_tools.h"
@@ -41,6 +39,9 @@
 #include "rpg_engine.h"
 #include "rpg_engine_defines.h"
 #include "rpg_engine_level.h"
+
+#include "rpg_client_common.h"
+#include "rpg_client_engine.h"
 
 #include "net_callbacks.h"
 
@@ -122,6 +123,10 @@ Net_Server_EventHandler::notify (Stream_SessionId_t sessionId_in,
   ACE_UNUSED_ARG (sessionId_in);
 
   const struct RPG_Net_Protocol_Command& data_r = message_in.getR ();
+
+  if (data_r.clientCommand != RPG_NET_PROTOCOL_CLIENT_COMMAND_INVALID)
+    goto client_command;
+
   switch (data_r.command)
   {
     case NET_COMMAND_LEVEL_LOAD:
@@ -223,32 +228,77 @@ Net_Server_EventHandler::notify (Stream_SessionId_t sessionId_in,
       CBData_->entities.insert (std::make_pair (id_i, entity_p));
       break;
     }
-    case NET_COMMAND_MAX:
-    case NET_COMMAND_INVALID:
-    case RPG_NET_PROTOCOL_COMMAND_MAX:
-    case RPG_NET_PROTOCOL_INVALID:
+    case NET_ENGINE_COMMAND_MAX:
+    case NET_ENGINE_COMMAND_INVALID:
+    case RPG_NET_PROTOCOL_ENGINE_COMMAND_MAX:
+    case RPG_NET_PROTOCOL_ENGINE_COMMAND_INVALID:
     {
       ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("received invalid command (was: %d), returning\n"),
+                  ACE_TEXT ("received invalid engine command (was: %d), returning\n"),
                   data_r.command));
       return;
     }
     default:
     { ACE_ASSERT (CBData_->levelEngine);
-      ACE_ASSERT (!CBData_->entities.emtpy ());
+      ACE_ASSERT (!CBData_->entities.empty ());
 
-      RPG_Engine_EntityID_t id_i = (*CBData_->entities.begin ()).first;
+      RPG_Engine_EntitiesConstIterator_t iterator = CBData_->entities.begin ();
+      RPG_Engine_EntityID_t id_i = (*iterator).first;
       ACE_ASSERT (id_i);
 
       struct RPG_Engine_Action action_s;
       action_s.command = static_cast<enum RPG_Engine_Command> (data_r.command);
       action_s.path = data_r.path;
       action_s.position = data_r.position;
-      action_s.target = data_r.target;
+      action_s.target = data_r.entity_id;
 
       CBData_->levelEngine->action (id_i,     // entity id
                                     action_s, // action
                                     true);    // locked access ?
+
+      break;
+    }
+  } // end SWITCH
+
+  return;
+
+client_command:
+  switch (data_r.clientCommand)
+  {
+    case NET_CLIENT_COMMAND_MAX:
+    case NET_CLIENT_COMMAND_INVALID:
+    case RPG_NET_PROTOCOL_CLIENT_COMMAND_MAX:
+    case RPG_NET_PROTOCOL_CLIENT_COMMAND_INVALID:
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("received invalid client command (was: %d), returning\n"),
+                  data_r.clientCommand));
+      return;
+    }
+    default:
+    {
+      ACE_ASSERT (CBData_->clientEngine);
+      ACE_ASSERT (!CBData_->entities.empty ());
+
+      RPG_Engine_EntitiesConstIterator_t iterator = CBData_->entities.begin ();
+      RPG_Engine_EntityID_t id_i = (*iterator).first;
+      ACE_ASSERT (id_i);
+
+      struct RPG_Client_Action action_s;
+      action_s.command = static_cast<enum RPG_Client_Command> (data_r.clientCommand);
+      action_s.previous = data_r.previous;
+      action_s.position = data_r.position;
+      action_s.window = NULL; // *TODO*
+      action_s.cursor = data_r.cursor;
+      action_s.entity_id = data_r.entity_id;
+      action_s.sound = data_r.sound;
+      action_s.message = data_r.message;
+      action_s.path = data_r.path;
+      action_s.source = data_r.source;
+      action_s.positions = data_r.positions;
+      action_s.radius = data_r.radius;
+
+      CBData_->clientEngine->action (action_s); // action
 
       break;
     }

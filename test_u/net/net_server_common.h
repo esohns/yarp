@@ -42,7 +42,7 @@
 
 // forward declaration(s)
 struct RPG_Client_Configuration;
-class RPG_Engine_IClient;
+class RPG_Client_Engine;
 class RPG_Engine;
 
 typedef Net_IListener_T<RPG_Net_Protocol_ConnectionConfiguration> RPG_Net_Protocol_IListener_t;
@@ -73,7 +73,7 @@ struct Net_Server_GTK_CBData
   struct RPG_Client_Configuration*                configuration;
   RPG_Net_Protocol_IListener_t*                   listenerHandle;
   std::string                                     schemaRepository;
-  RPG_Engine_IClient*                             clientEngine;
+  RPG_Client_Engine*                              clientEngine;
   RPG_Engine*                                     levelEngine;
   RPG_Engine_Entities_t                           entities;
 };

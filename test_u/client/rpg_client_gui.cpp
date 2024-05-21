@@ -932,6 +932,8 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   RPG_Engine level_engine;
   level_engine.initialize (&client_engine, // client engine handle
                            false);         // server session ?
+  //level_engine.start ();
+
   GTKUserData_in.clientEngine      = &client_engine;
   GTKUserData_in.schemaRepository  = schemaRepository_in;
   GTKUserData_in.entity.position   =
@@ -944,18 +946,13 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   GTKUserData_in.levelEngine       = &level_engine;
 
   // ***** window setup *****
-  std::string caption
-    //= ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);
-    ;
-//   caption += ACE_TEXT_ALWAYS_CHAR(" ");
-//   caption += RPG_VERSION;
   // ***** window/screen setup *****
-  if (!RPG_Graphics_SDL_Tools::initializeVideo (configuration_in.video_configuration, // configuration
-                                                caption,                              // window/icon caption
-                                                GTKUserData_in.screen,                // window surface
-                                                GTKUserData_in.renderer,              // renderer
-                                                GTKUserData_in.GLContext,             // OpenGL context
-                                                true))                                // initialize window ?
+  if (!RPG_Graphics_SDL_Tools::initializeVideo (configuration_in.video_configuration,                             // configuration
+                                                ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE), // window/icon caption
+                                                GTKUserData_in.screen,                                            // window surface
+                                                GTKUserData_in.renderer,                                          // renderer
+                                                GTKUserData_in.GLContext,                                         // OpenGL context
+                                                true))                                                            // initialize window ?
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Graphics_SDL_Tools::initializeVideo(), returning\n")));
@@ -1017,7 +1014,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   } // end IF
 
   // step4a: setup main "window"
-  RPG_Graphics_GraphicTypeUnion type;
+  struct RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::IMAGE;
   type.image = RPG_CLIENT_GRAPHICS_DEF_WINDOWSTYLE_TYPE;
   std::string title = ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);
@@ -1062,7 +1059,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   client_engine.initialize (&level_engine,
                             main_window.child (WINDOW_MAP),
                             //&UIDefinition_in,
-                            false, // not a server session
+                            false, // server session ?
                             debug_in);
 
   // step4c: queue initial drawing
@@ -1088,7 +1085,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 
   RPG_Graphics_IWindowBase* level_window = main_window.child (WINDOW_MAP);
   ACE_ASSERT (level_window);
-  // init/add entity to the graphics cache
+  // initialize/add entity to the graphics cache
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->initialize (NULL,
                                                                   level_window);
   RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->initialize (NULL,
@@ -1249,7 +1246,7 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   } // end IF
 
   // step6b: dispatch SDL events
-  SDL_Event sdl_event;
+  union SDL_Event sdl_event;
   bool done = false;
   RPG_Graphics_IWindowBase* window = NULL;
   RPG_Graphics_IWindowBase* previous_window = NULL;
@@ -2074,13 +2071,12 @@ ACE_TMAIN (int argc_in,
   UI_file += ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_UI_FILE);
 
   std::string schema_repository     = Common_File_Tools::getWorkingDirectory ();
-  if (Common_Error_Tools::inDebugSession ())
-  {} // end IF
-  else
-  {
-    schema_repository += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_repository += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_DATA_SUBDIRECTORY);
-  } // end ELSE
+  schema_repository += ACE_DIRECTORY_SEPARATOR_STR;
+  schema_repository +=
+    ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
+  schema_repository += ACE_DIRECTORY_SEPARATOR_STR;
+  schema_repository +=
+    ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
 
   std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -2270,7 +2266,7 @@ ACE_TMAIN (int argc_in,
     return EXIT_FAILURE;
   } // end IF
 
-  // step1da: init configuration object
+  // step1da: initialize configuration object
   struct RPG_Client_Configuration configuration;
   // *** reactor ***
   if (RPG_ENGINE_USES_REACTOR)
@@ -2361,27 +2357,12 @@ ACE_TMAIN (int argc_in,
   configuration.map_configuration    = GTK_user_data.mapConfiguration;
   configuration.map_file             = floor_plan;
 
-//   // step1db: populate configobject with default/collected data
-//   // ************ connection config data ************
-//   configuration.socketBufferSize = RPG_NET_DEF_SOCK_RECVBUF_SIZE;
-//   configuration.messageAllocator = &messageAllocator;
-//   configuration.defaultBufferSize = RPG_NET_PROTOCOL_DEF_NETWORK_BUFFER_SIZE;
-//   // ************ protocol config data **************
-//   configuration.clientPingInterval = 0; // servers do this...
-// //   configuration.loginOptions = userData.loginOptions;
-//   // ************ stream config data ****************
-//   configuration.debugParser = debugParser;
-//   configuration.module = &IRChandlerModule;
-//   // *WARNING*: set at runtime, by the appropriate connection handler
-//   configuration.sessionID = 0; // (== socket handle !)
-//   configuration.statisticsReportingInterval = 0; // == off
-
   // step1dc: parse .ini file (if any)
   if (!configuration_file.empty ())
     do_parseIniFile (configuration_file,
                      configuration);
 
-  // step2a: init SDL
+  // step2a: initialize SDL
   Uint32 SDL_init_flags = 0;
   SDL_init_flags |= SDL_INIT_TIMER;                                            // timers
   SDL_init_flags |= (configuration.audio_configuration.mute ? 0

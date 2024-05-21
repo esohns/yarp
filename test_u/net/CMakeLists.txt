@@ -83,7 +83,7 @@ if (UNIX)
                         RPG_Character RPG_Magic RPG_Item RPG_Combat RPG_Player RPG_Monster
                         RPG_Map RPG_Engine
                         RPG_Net RPG_Net_Protocol
-                        RPG_Client)
+                        RPG_Graphics RPG_Sound RPG_Client)
 elseif (WIN32)
 # set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
@@ -99,7 +99,7 @@ elseif (WIN32)
                         RPG_Character RPG_Magic RPG_Item RPG_Combat RPG_Player RPG_Monster
                         RPG_Map RPG_Engine
                         RPG_Net RPG_Net_Protocol
-                        RPG_Client)
+                        RPG_Graphics RPG_Sound RPG_Client)
 endif ()
 
 set_property (TARGET ${EXECUTABLE} PROPERTY FOLDER "test_u")

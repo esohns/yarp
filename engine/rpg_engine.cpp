@@ -194,21 +194,17 @@ RPG_Engine::svc (void)
 #endif // _WIN32_WINNT_WIN10
 #endif // ACE_WIN32 || ACE_WIN64
 
-  // sanity check(s)
-  MESSAGE_QUEUE_T* message_queue_p = inherited::msg_queue ();
-  ACE_ASSERT (message_queue_p);
-
   ACE_Message_Block* ace_mb = NULL;
   int result = -1;
   while (true)
   {
     // step1: wait for activity
     ace_mb = NULL;
-    result = message_queue_p->peek_dequeue_head (ace_mb,
-                                                 NULL); // block
+    result = inherited::msg_queue_->peek_dequeue_head (ace_mb,
+                                                       NULL); // block
     if (result == -1)
     {
-      if (message_queue_p->deactivated ())
+      if (inherited::msg_queue_->deactivated ())
       {
         ACE_DEBUG ((LM_WARNING,
                     ACE_TEXT ("message queue was deactivated, aborting\n")));

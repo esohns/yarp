@@ -526,6 +526,18 @@ void yyfree ( void * , yyscan_t yyscanner );
 #define path_direction 7
 #define entity_id 8
 #define xml 9
+#define clientCommand 10
+#define previous_x 11
+#define previous_y 12
+#define cursor 13
+#define sound 14
+#define message 15
+#define source_x 16
+#define source_y 17
+#define positions 18
+#define positions_position_x 19
+#define positions_position_y 20
+#define radius 21
 
 #endif
 

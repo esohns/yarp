@@ -24,6 +24,10 @@
 #include <list>
 #include <string>
 
+#define _SDL_main_h
+#define SDL_main_h_
+#include "SDL.h"
+
 #include "ace/Synch_Traits.h"
 
 #include "common_parser_common.h"
@@ -50,6 +54,8 @@ typedef Stream_ISessionDataNotify_T<struct RPG_Net_Protocol_SessionData,
                                     RPG_Net_Protocol_SessionMessage> RPG_Net_Protocol_ISessionNotify_t;
 typedef std::list<RPG_Net_Protocol_ISessionNotify_t*> RPG_Net_Protocol_Subscribers_t;
 typedef RPG_Net_Protocol_Subscribers_t::iterator RPG_Net_Protocol_SubscribersIterator_t;
+class RPG_Engine;
+class RPG_Client_Engine;
 
 struct Net_Client_GTK_CBData
  : Common_UI_GTK_CBData
@@ -66,6 +72,18 @@ struct Net_Client_GTK_CBData
    , entity ()
    , level ()
    , schemaRepository ()
+#if defined (SDL_USE)
+   , screen (NULL)
+#elif defined (SDL2_USE)
+   , renderer (NULL)
+   , screen (NULL)
+   , GLContext (NULL)
+#endif // SDL_USE || SDL2_USE
+   , doHover (true)
+   , hoverTime (0)
+   , levelEngine (NULL)
+   , clientEngine (NULL)
+   , entities ()
   {}
 
   struct Common_Parser_FlexAllocatorConfiguration              allocatorConfiguration;
@@ -77,6 +95,18 @@ struct Net_Client_GTK_CBData
   struct RPG_Engine_Entity                                     entity;
   struct RPG_Engine_LevelData                                  level;
   std::string                                                  schemaRepository;
+#if defined (SDL_USE)
+  SDL_Surface*                                                 screen;
+#elif defined (SDL2_USE)
+  SDL_Renderer*                                                renderer;
+  SDL_Window*                                                  screen;
+  SDL_GLContext                                                GLContext;
+#endif // SDL_USE || SDL2_USE
+  bool                                                         doHover;
+  unsigned int                                                 hoverTime;
+  RPG_Engine*                                                  levelEngine;
+  RPG_Client_Engine*                                           clientEngine;
+  RPG_Engine_Entities_t                                        entities;
 };
 
 #endif

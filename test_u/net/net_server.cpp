@@ -92,6 +92,7 @@
 
 #include "rpg_client_common.h"
 #include "rpg_client_engine.h"
+#include "rpg_client_network_manager.h"
 
 #include "net_callbacks.h"
 #include "net_common.h"
@@ -604,6 +605,7 @@ do_work (unsigned int maxNumConnections_in,
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to Common_Tools::initializeEventDispatch(), returning\n")));
+    RPG_Engine_Common_Tools::finalize ();
     return;
   } // end IF
 
@@ -629,6 +631,7 @@ do_work (unsigned int maxNumConnections_in,
 
       // clean up
       COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
+      RPG_Engine_Common_Tools::finalize ();
 
       return;
     } // end IF
@@ -675,15 +678,24 @@ do_work (unsigned int maxNumConnections_in,
                     timer_id));
     } // end IF
     COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
+    RPG_Engine_Common_Tools::finalize ();
 
     return;
   } // end IF
 
   // step3: initialize connection manager
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->initialize (maxNumConnections_in,
-                                                                         ACE_Time_Value (0, NET_STATISTIC_DEFAULT_VISIT_INTERVAL_MS * 1000));
-  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->set (CBData_in.configuration->protocol_configuration.connectionConfiguration,
-                                                                  NULL);
+  RPG_Client_Network_Manager* network_manager_p =
+    RPG_CLIENT_NETWORK_MANAGER_SINGLETON::instance ();
+  ACE_ASSERT (network_manager_p);
+  RPG_Net_Protocol_Connection_Manager* connection_manager_p =
+    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ();
+  ACE_ASSERT (connection_manager_p);
+  connection_manager_p->initialize (maxNumConnections_in,
+                                    ACE_Time_Value (0, NET_STATISTIC_DEFAULT_VISIT_INTERVAL_MS * 1000));
+  struct Net_UserData user_data_s;
+  connection_manager_p->set (CBData_in.configuration->protocol_configuration.connectionConfiguration,
+                             &user_data_s);
+  connection_manager_p->add (network_manager_p);
 
   // step4: handle events (signals, incoming connections/data, timers, ...)
   // reactor/proactor event loop:
@@ -733,6 +745,7 @@ do_work (unsigned int maxNumConnections_in,
       Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
                                      previousSignalActions_inout,
                                      previousSignalMask_inout);
+      RPG_Engine_Common_Tools::finalize ();
 
       return;
     } // end IF
@@ -771,6 +784,7 @@ do_work (unsigned int maxNumConnections_in,
     Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
                                    previousSignalActions_inout,
                                    previousSignalMask_inout);
+    RPG_Engine_Common_Tools::finalize ();
 
     return;
   } // end IF
@@ -779,24 +793,6 @@ do_work (unsigned int maxNumConnections_in,
               ACE_TEXT ("started event dispatch...\n")));
 
   // step4c: start listening
-  //Net_SocketHandlerConfiguration_t socket_handler_configuration;
-  ////ACE_OS::memset (&socket_handler_configuration, 0, sizeof (socket_handler_configuration));
-  //socket_handler_configuration.bufferSize = RPG_NET_STREAM_BUFFER_SIZE;
-  //socket_handler_configuration.messageAllocator = &message_allocator;
-  //socket_handler_configuration.socketConfiguration =
-  //    configuration.socketConfiguration;
-  //Net_ListenerConfiguration_t listener_configuration;
-  //ACE_OS::memset (&listener_configuration, 0, sizeof (listener_configuration));
-  //listener_configuration.addressFamily = ACE_ADDRESS_FAMILY_INET;
-  //listener_configuration.allocator = &message_allocator;
-  //listener_configuration.connectionManager =
-  //  NET_CONNECTIONMANAGER_SINGLETON::instance ();
-  //listener_configuration.portNumber = listeningPortNumber_in;
-  //listener_configuration.socketHandlerConfiguration =
-  //  &socket_handler_configuration;
-  //listener_configuration.statisticCollectionInterval =
-  //  statisticsReportingInterval_in;
-  //listener_configuration.useLoopbackDevice = useLoopback_in;
   CBData_in.configuration->protocol_configuration.connectionConfiguration.socketConfiguration.address.set (static_cast<u_short> (listeningPortNumber_in),
                                                                                                            static_cast<ACE_UINT32> (INADDR_ANY),
                                                                                                            1,        // encode port number ?
@@ -832,6 +828,7 @@ do_work (unsigned int maxNumConnections_in,
     Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
                                    previousSignalActions_inout,
                                    previousSignalMask_inout);
+    RPG_Engine_Common_Tools::finalize ();
 
     return;
   } // end IF
@@ -868,6 +865,7 @@ do_work (unsigned int maxNumConnections_in,
     Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
                                    previousSignalActions_inout,
                                    previousSignalMask_inout);
+    RPG_Engine_Common_Tools::finalize ();
 
     return;
   } // end IF
@@ -879,8 +877,6 @@ do_work (unsigned int maxNumConnections_in,
               ACE_TEXT ("finished event dispatch...\n")));
 
   // clean up
-  // *NOTE*: listener has stopped, interval timer has been cancelled,
-  // and connections have been aborted...
   //		{ // synch access
   //			ACE_Guard<ACE_Recursive_Thread_Mutex> aGuard(CBData_in.lock);
 
@@ -889,13 +885,21 @@ do_work (unsigned int maxNumConnections_in,
   //					 iterator++)
   //				g_source_remove(*iterator);
   //		} // end lock scope
+  CBData_in.listenerHandle->stop (true,   // N/A
+                                  false); // N/A
+  connection_manager_p->stop (false,  // wait for completion ?
+                              false); // N/A
+  connection_manager_p->abort (false); // wait for completion ?
+  connection_manager_p->wait (true); // N/A
+  // *NOTE*: listener has stopped, and connections have been aborted...
   if (!UIDefinitionFile_in.empty ())
-    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop (true,
-                                                        false);
+    COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop (true,   // wait for completion ?
+                                                        false); // N/A
   COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
   Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
                                  previousSignalActions_inout,
                                  previousSignalMask_inout);
+  RPG_Engine_Common_Tools::finalize ();
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("finished working...\n")));
@@ -1094,6 +1098,8 @@ ACE_TMAIN (int argc_in,
                             false);        // debug ?
   level_engine.initialize (&client_engine, // client engine handle
                            true);          // server session ?
+  client_engine.start (NULL);
+  level_engine.start ();
 
   struct Net_Server_GTK_CBData gtk_cb_user_data;
   gtk_cb_user_data.allowUserRuntimeStatistic =
@@ -1102,6 +1108,13 @@ ACE_TMAIN (int argc_in,
                                             // is off
   gtk_cb_user_data.configuration = &configuration;
   gtk_cb_user_data.schemaRepository = Common_File_Tools::getWorkingDirectory ();
+  gtk_cb_user_data.schemaRepository += ACE_DIRECTORY_SEPARATOR_STR;
+  gtk_cb_user_data.schemaRepository +=
+    ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
+  gtk_cb_user_data.schemaRepository += ACE_DIRECTORY_SEPARATOR_STR;
+  gtk_cb_user_data.schemaRepository +=
+    ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+
   gtk_cb_user_data.clientEngine = &client_engine;
   gtk_cb_user_data.levelEngine = &level_engine;
   Common_Logger_Queue_T<ACE_MT_SYNCH> logger_queue;
@@ -1214,6 +1227,12 @@ ACE_TMAIN (int argc_in,
            previous_signal_actions,
            previous_signal_mask);
   timer.stop ();
+
+  client_engine.stop (true,   // wait for completion ?
+                      false); // N/A
+  level_engine.stop (true); // wait for completion ?
+
+  Common_Log_Tools::finalizeLogging ();
 
   // debug info
   ACE_Time_Value working_time;

@@ -30,11 +30,19 @@
 #include "SDL.h"
 #include "SDL_mixer.h"
 
+#include "rpg_sound_defines.h"
 #include "rpg_sound_incl.h"
 
 // *NOTE* types as used by SDL
 struct RPG_Sound_SDLConfiguration
 {
+  RPG_Sound_SDLConfiguration ()
+   : frequency (RPG_SOUND_AUDIO_DEF_FREQUENCY)
+   , format (RPG_SOUND_AUDIO_DEF_FORMAT)
+   , channels (RPG_SOUND_AUDIO_DEF_CHANNELS)
+   , chunksize (RPG_SOUND_AUDIO_DEF_CHUNKSIZE)
+  {}
+
   int    frequency;
   Uint16 format;
   int    channels;
