@@ -341,15 +341,11 @@ test_u_main::do_work (struct GTK_CBData& userData_in,
   //RPG_Common_XML_Tools::init(schemaDirectory_in);
   // step0b: initialize RPG engine
   std::string schema_repository_string = schemaRepository_in;
-  schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_repository_string += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
-  schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_repository_string += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
-  std::string schema_repository_string_2 = schemaRepository_in;
-  schema_repository_string_2 += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_repository_string_2 += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING);
-  schema_repository_string_2 += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_repository_string_2 += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+  std::string schema_repository_string_2 =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
+                                                          true); // configuration-
   std::vector<std::string> schema_directories_a;
   schema_directories_a.push_back (schema_repository_string);
   schema_directories_a.push_back (schema_repository_string_2);
@@ -530,7 +526,11 @@ test_u_main::run_i (int argc_in,
   ui_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   ui_file += ACE_TEXT_ALWAYS_CHAR (CHARACTER_GENERATOR_GTK_GLADE_FILE);
 
-  std::string schema_repository = Common_File_Tools::getWorkingDirectory ();
+  std::string schema_repository =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
+                                                          true);
 
   std::string data_path =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
