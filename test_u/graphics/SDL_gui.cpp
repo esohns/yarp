@@ -1408,15 +1408,11 @@ do_work (mode_t mode_in,
 
   // step0: initialize: random seed, string conversion facilities, ...
   std::string schema_repository_string = schemaRepository_in;
-  schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_repository_string += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
-  schema_repository_string += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_repository_string += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
-  std::string schema_repository_string_2 = schemaRepository_in;
-  schema_repository_string_2 += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_repository_string_2 += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING);
-  schema_repository_string_2 += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  schema_repository_string_2 += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+  std::string schema_repository_string_2 =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
+                                                          true); // configuration-
   std::vector<std::string> schema_directories_a;
   schema_directories_a.push_back (schema_repository_string);
   schema_directories_a.push_back (schema_repository_string_2);
@@ -2008,7 +2004,11 @@ ACE_TMAIN (int argc_in,
   } // end IF
   mode = (slideshow_mode ? SDL_GUI_USERMODE_SLIDESHOW : mode);
 
-  std::string schema_repository = Common_File_Tools::getWorkingDirectory ();
+  std::string schema_repository =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
+                                                          true); // configuration-
 
   // step1c: handle specific program modes
   if (print_version_and_exit)
