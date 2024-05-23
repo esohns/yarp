@@ -156,7 +156,7 @@ RPG_Net_Protocol_Streamer::handleDataMessage (RPG_Net_Protocol_Message*& message
 
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
-  converter << data_r.radius;
+  converter << static_cast<unsigned int> (data_r.radius);
   text_string += converter.str ();
   text_string += ' ';
 

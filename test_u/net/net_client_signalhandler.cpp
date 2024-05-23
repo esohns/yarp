@@ -21,18 +21,12 @@
 
 #include "net_client_signalhandler.h"
 
-#include <sstream>
-#include <string>
+#define _SDL_main_h
+#define SDL_main_h_
+#include "SDL.h"
 
 #include "ace/Assert.h"
 #include "ace/Log_Msg.h"
-#include "ace/Proactor.h"
-#include "ace/Reactor.h"
-
-#include "common_timer_manager.h"
-#include "common_tools.h"
-
-#include "net_connection_manager.h"
 
 #include "net_client_common_tools.h"
 
@@ -40,7 +34,9 @@
 
 #include "rpg_net_defines.h"
 
-#include "rpg_net_protocol_connection_manager.h"
+#include "rpg_net_protocol_listener.h"
+
+#include "rpg_client_network_manager.h"
 
 Net_Client_SignalHandler::Net_Client_SignalHandler (struct Common_EventDispatchConfiguration& dispatchConfiguration_in,
                                                     RPG_Net_Protocol_ConnectionConfiguration& connectionConfiguration_in)
@@ -65,7 +61,7 @@ Net_Client_SignalHandler::handle (const struct Common_Signal& signal_in)
   ACE_ASSERT (connection_manager_p);
 
   bool connect = false;
-  bool stop_event_dispatching = false;
+  bool shutdown = false;
   bool report = false;
   switch (signal_in.signal)
   {
@@ -81,7 +77,7 @@ Net_Client_SignalHandler::handle (const struct Common_Signal& signal_in)
       //            ACE_TEXT ("shutting down...\n")));
 
       // shutdown...
-      stop_event_dispatching = true;
+      shutdown = true;
 
       break;
     }
@@ -155,27 +151,37 @@ Net_Client_SignalHandler::handle (const struct Common_Signal& signal_in)
                                                                         false, // wait for completion ?
                                                                         true); // peer address ?
     } // end ELSE
+    ACE_ASSERT (handle_);
+    RPG_Net_Protocol_IConnection_t* iconnection_p = connection_manager_p->get (handle_);
+    if (!iconnection_p)
+    {
+      ACE_DEBUG ((LM_WARNING,
+                  ACE_TEXT ("failed to retrieve connection handle (was: 0x%@), returning\n"),
+                  handle_));
+      return;
+    } // end IF
+
+    RPG_Client_Network_Manager* network_manager_p =
+      RPG_CLIENT_NETWORK_MANAGER_SINGLETON::instance ();
+    ACE_ASSERT (network_manager_p);
+    network_manager_p->add (iconnection_p);
+
+    iconnection_p->decrease ();
   } // end IF
 
   // ...shutdown ?
-  if (stop_event_dispatching)
+  if (shutdown)
   {
     // stop everything, i.e.
-    // - leave reactor event loop handling signals, sockets, (maintenance) timers...
-    // --> (try to) terminate in a well-behaved manner
+    // - leave SDL event loop
+    union SDL_Event sdl_event;
+    sdl_event.type = SDL_QUIT;
 
-    // step1: stop/abort/wait for connections
-    connection_manager_p->stop (false,  // wait for completion ?
-                                false);
-    connection_manager_p->abort ();
-    // *IMPORTANT NOTE*: as long as connections are inactive (i.e. events are
-    // dispatched by reactor thread(s), there is no real reason to wait here)
-    //RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
-
-    // step2: stop reactor (&& proactor, if applicable)
-    Common_Event_Tools::finalizeEventDispatch (*inherited::configuration_->dispatchState,
-                                               false,  // wait for completion ?
-                                               false); // release singletons ?
+    // push it onto the event queue
+    if (SDL_PushEvent (&sdl_event) < 0)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),
+                  ACE_TEXT (SDL_GetError ())));
   } // end IF
 
   // report ?

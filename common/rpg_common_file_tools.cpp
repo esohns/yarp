@@ -186,10 +186,20 @@ RPG_Common_File_Tools::getConfigurationDataDirectory (const std::string& package
     //  Common_String_Tools::tolower (Common_File_Tools::basename (Common_File_Tools::executable, true));
   } // end ELSE
 #else
+#if defined (_DEBUG)
+  return_value = Common_File_Tools::getWorkingDirectory ();
+  return_value += ACE_DIRECTORY_SEPARATOR_STR;
+  return_value += moduleName2_in;
+  return_value += ACE_DIRECTORY_SEPARATOR_STR;
+  return_value +=
+    (isConfiguration_in ? ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY)
+                        : ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_DATA_SUBDIRECTORY));
+#else
   return_value =
     Common_File_Tools::getSystemConfigurationDataDirectory (packageName_in,
                                                             moduleName_in,
                                                             isConfiguration_in);
+#endif // _DEBUG
 #endif // ACE_WIN32 || ACE_WIN64
 
   // sanity check(s)

@@ -4451,9 +4451,9 @@ static const flex_int16_t yy_rule_linenum[46] =
     {   0,
       109,  116,  121,  127,  132,  138,  143,  149,  154,  156,
       161,  167,  172,  178,  183,  189,  194,  200,  205,  210,
-      220,  226,  231,  237,  242,  248,  253,  259,  264,  270,
-      275,  280,  285,  291,  296,  302,  307,  309,  314,  320,
-      325,  331,  336,  342,  352
+      215,  221,  226,  232,  237,  243,  248,  254,  259,  265,
+      270,  275,  280,  286,  291,  297,  302,  304,  309,  315,
+      320,  326,  331,  337,  347
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -5075,13 +5075,8 @@ case 20:
 /* rule 20 can match eol */
 YY_RULE_SETUP
 { iparser_p->scannedBytes (yyleng);
-                             yylval->ival = 2;
-                             if (iparser_p->scannedBytes () < iparser_p->length ())
-                               BEGIN(command);
-                             else
-                               BEGIN(INITIAL);
-                             return yy::RPG_Net_Protocol_Parser::token::END_OF_COMMAND;
-                           }
+                             BEGIN(clientCommand);
+                             yylval->ival = 2; }
 	YY_BREAK
 // end <xml>
 

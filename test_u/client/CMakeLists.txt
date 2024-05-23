@@ -134,7 +134,7 @@ if (UNIX)
                         RPG_Combat RPG_Map RPG_Graphics RPG_Dice RPG_Common RPG_Sound
                         RPG_Engine RPG_Player RPG_Monster RPG_Player RPG_Item RPG_Map RPG_Common
                         RPG_Character RPG_Combat RPG_Magic RPG_Chance RPG_Dice
-                        RPG_Net RPG_Net_Protocol RPG_Net RPG_Client RPG_Graphics
+                        RPG_Net RPG_Net_Protocol RPG_Net RPG_Client RPG_Graphics RPG_Net_Protocol
                         ACEStream_Network)
 elseif (WIN32)
  set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)

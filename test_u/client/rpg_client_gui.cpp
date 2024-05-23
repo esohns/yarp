@@ -100,7 +100,7 @@
 #include "rpg_net_defines.h"
 
 #include "rpg_net_protocol_configuration.h"
-#include "rpg_net_protocol_connection_manager.h"
+#include "rpg_net_protocol_listener.h"
 #include "rpg_net_protocol_defines.h"
 
 #include "rpg_engine.h"

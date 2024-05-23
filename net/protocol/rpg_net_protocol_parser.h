@@ -318,18 +318,18 @@ namespace yy {
         S_path_elem = 27,                        // path_elem
         S_positions = 28,                        // positions
         S_positions_elem = 29,                   // positions_elem
-        S_command = 30,                          // command
-        S_31_2 = 31,                             // $@2
-        S_32_3 = 32,                             // $@3
-        S_33_4 = 33,                             // $@4
-        S_34_5 = 34,                             // $@5
-        S_35_6 = 35,                             // $@6
-        S_36_7 = 36,                             // $@7
-        S_37_8 = 37,                             // $@8
-        S_38_9 = 38,                             // $@9
-        S_39_10 = 39,                            // $@10
-        S_40_11 = 40,                            // $@11
-        S_41_12 = 41,                            // $@12
+        S_xml = 30,                              // xml
+        S_message = 31,                          // message
+        S_command = 32,                          // command
+        S_33_2 = 33,                             // $@2
+        S_34_3 = 34,                             // $@3
+        S_35_4 = 35,                             // $@4
+        S_36_5 = 36,                             // $@5
+        S_37_6 = 37,                             // $@6
+        S_38_7 = 38,                             // $@7
+        S_39_8 = 39,                             // $@8
+        S_40_9 = 40,                             // $@9
+        S_41_10 = 41,                            // $@10
         S_commands = 42                          // commands
       };
     };
@@ -852,7 +852,7 @@ namespace yy {
     RPG_Net_Protocol_IParser* driver;
     yyscan_t yyscanner;
 
-public:
+   public:
     inline void set (yyscan_t context_in) { yyscanner = context_in; }
   };
 

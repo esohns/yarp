@@ -47,6 +47,8 @@
 #include "common_file_tools.h"
 #include "common_os_tools.h"
 
+#include "common_error_tools.h"
+
 #include "common_event_tools.h"
 
 #include "common_logger_queue.h"
@@ -78,6 +80,7 @@
 
 #include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
+#include "rpg_common_tools.h"
 
 #include "rpg_engine.h"
 #include "rpg_engine_common_tools.h"
@@ -86,7 +89,7 @@
 #include "rpg_net_common.h"
 #include "rpg_net_defines.h"
 
-#include "rpg_net_protocol_connection_manager.h"
+#include "rpg_net_protocol_listener.h"
 #include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_messagehandler.h"
 
@@ -469,8 +472,8 @@ do_work (unsigned int maxNumConnections_in,
 
     // step-1: initialize engine
   std::vector<std::string> schema_directories_a;
-  if (Common_Error_Tools::inDebugSession ())
-  {
+  // if (Common_Error_Tools::inDebugSession ())
+  // {
     //std::string schema_path = schemaRepository_in;
     //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     //schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_CHANCE_SUB_DIRECTORY_STRING);
@@ -530,12 +533,12 @@ do_work (unsigned int maxNumConnections_in,
     //schema_directories_a.push_back (schema_path);
 
     // *NOTE*: this one contains symlinks to all of the above
-    std::string schema_path = CBData_in.schemaRepository;
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
-    schema_directories_a.push_back (schema_path);
+    // std::string schema_path = CBData_in.schemaRepository;
+    // schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    // schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
+    // schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    // schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    // schema_directories_a.push_back (schema_path);
 
     //schema_path = CBData_in.schemaRepository;
     //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
@@ -550,8 +553,8 @@ do_work (unsigned int maxNumConnections_in,
     //schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     //schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
     //schema_directories_a.push_back (schema_path);
-  } // end IF
-  else
+  // } // end IF
+  // else
     schema_directories_a.push_back (CBData_in.schemaRepository);
   RPG_Engine_Common_Tools::initialize (schema_directories_a,
                                        ACE_TEXT_ALWAYS_CHAR (""),
@@ -561,8 +564,22 @@ do_work (unsigned int maxNumConnections_in,
   CBData_in.allocatorConfiguration.defaultBufferSize =
     RPG_NET_PROTOCOL_MAXIMUM_FRAME_SIZE;
 
-  CBData_in.configuration->parser_configuration.debugParser = true;
-  CBData_in.configuration->parser_configuration.debugScanner = true;
+  // load level
+  std::string filename = RPG_Map_Common_Tools::getMapsDirectory ();
+  filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  filename +=
+    RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
+  filename += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
+  if (!RPG_Engine_Level::load (filename,
+                               CBData_in.schemaRepository,
+                               CBData_in.level))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Engine_Level::load(\"%s\"), returning"),
+                ACE_TEXT (filename.c_str ())));
+    RPG_Engine_Common_Tools::finalize ();
+    return;
+  } // end IF
 
   // step0a: initialize stream configuration object
   struct Stream_ModuleConfiguration module_configuration;
@@ -580,13 +597,7 @@ do_work (unsigned int maxNumConnections_in,
                                                           ACE_TEXT_ALWAYS_CHAR ("MessageHandler"));
   modulehandler_configuration.subscriber = &ui_message_handler;
 
-  Stream_AllocatorHeap_T<ACE_MT_SYNCH,
-                         struct Stream_AllocatorConfiguration> heap_allocator;
-  RPG_Net_MessageAllocator_t message_allocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
-                                                &heap_allocator,
-                                                true); // block ?
-
-  stream_configuration.messageAllocator = &message_allocator;
+  stream_configuration.messageAllocator = &CBData_in.messageAllocator;
   stream_configuration.module =
     (!UIDefinitionFile_in.empty () ? &message_handler
                                    : NULL);
@@ -598,7 +609,7 @@ do_work (unsigned int maxNumConnections_in,
   CBData_in.configuration->protocol_configuration.connectionConfiguration.streamConfiguration =
     &stream_configuration_2;
   CBData_in.configuration->protocol_configuration.connectionConfiguration.messageAllocator =
-    &message_allocator;
+    &CBData_in.messageAllocator;
 
   // step0b: initialize event dispatch
   if (!Common_Event_Tools::initializeEventDispatch (CBData_in.configuration->dispatch_configuration))
@@ -638,11 +649,27 @@ do_work (unsigned int maxNumConnections_in,
   } // end IF
 
   // step2: signal handling
+  RPG_Client_Network_Manager* network_manager_p =
+    RPG_CLIENT_NETWORK_MANAGER_SINGLETON::instance ();
+  ACE_ASSERT (network_manager_p);
   if (useReactor_in)
-    CBData_in.listenerHandle = RPG_NET_PROTOCOL_LISTENER_SINGLETON::instance ();
+  {
+    RPG_Net_Protocol_TCPListener* listener_p =
+      RPG_NET_PROTOCOL_TCP_LISTENER_SINGLETON::instance ();
+    ACE_ASSERT (listener_p);
+    listener_p->add (network_manager_p);
+
+    CBData_in.listenerHandle = listener_p;
+  } // end IF
   else
-    CBData_in.listenerHandle =
-      RPG_NET_PROTOCOL_ASYNCH_LISTENER_SINGLETON::instance ();
+  {
+    RPG_Net_Protocol_AsynchTCPListener* listener_p =
+      RPG_NET_PROTOCOL_ASYNCH_TCP_LISTENER_SINGLETON::instance ();
+    ACE_ASSERT (listener_p);
+    listener_p->add (network_manager_p);
+
+    CBData_in.listenerHandle = listener_p;
+  } // end ELSE
   // event handler for signals
   struct Common_EventDispatchState dispatch_state_s;
   CBData_in.configuration->signal_configuration.dispatchState =
@@ -684,10 +711,7 @@ do_work (unsigned int maxNumConnections_in,
   } // end IF
 
   // step3: initialize connection manager
-  RPG_Client_Network_Manager* network_manager_p =
-    RPG_CLIENT_NETWORK_MANAGER_SINGLETON::instance ();
-  ACE_ASSERT (network_manager_p);
-  RPG_Net_Protocol_Connection_Manager* connection_manager_p =
+  RPG_Net_Protocol_Connection_Manager_t* connection_manager_p =
     RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ();
   ACE_ASSERT (connection_manager_p);
   connection_manager_p->initialize (maxNumConnections_in,
@@ -695,7 +719,6 @@ do_work (unsigned int maxNumConnections_in,
   struct Net_UserData user_data_s;
   connection_manager_p->set (CBData_in.configuration->protocol_configuration.connectionConfiguration,
                              &user_data_s);
-  connection_manager_p->add (network_manager_p);
 
   // step4: handle events (signals, incoming connections/data, timers, ...)
   // reactor/proactor event loop:

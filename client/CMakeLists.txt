@@ -152,9 +152,9 @@ target_include_directories (${LIBRARY} PUBLIC
 if (WIN32)
  target_include_directories (${LIBRARY} PUBLIC
                              $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
+ target_include_directories (${LIBRARY} PUBLIC
+                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../3rd_party>)
 endif (WIN32)
-target_include_directories (${LIBRARY} PUBLIC
-                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../3rd_party>)
 target_include_directories (${LIBRARY} PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../3rd_party/bison>)
 target_include_directories (${LIBRARY} PUBLIC
@@ -193,9 +193,10 @@ target_include_directories (${LIBRARY} PUBLIC
 add_dependencies (${LIBRARY} RPG_Chance RPG_Dice RPG_Common
                              RPG_Character RPG_Magic RPG_Item
                              RPG_Combat RPG_Player RPG_Monster
-                             RPG_Map RPG_Engine RPG_Graphics)
+                             RPG_Map RPG_Engine RPG_Graphics RPG_Sound
+                             RPG_Net RPG_Net_Protocol)
 
-set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
+#set_target_properties (${LIBRARY} PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
 # add PCH
 target_precompile_headers (${LIBRARY}

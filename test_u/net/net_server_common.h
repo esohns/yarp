@@ -61,6 +61,11 @@ struct Net_Server_GTK_CBData
    , allocatorConfiguration ()
    , allowUserRuntimeStatistic (true)
    , configuration (NULL)
+   , heapAllocator ()
+   , messageAllocator (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES,
+                       &heapAllocator,
+                       true) // block ?
+   , level ()
    , listenerHandle (NULL)
    , schemaRepository ()
    , clientEngine (NULL)
@@ -68,14 +73,18 @@ struct Net_Server_GTK_CBData
    , entities ()
  {}
 
-  struct Common_Parser_FlexAllocatorConfiguration allocatorConfiguration;
-  bool                                            allowUserRuntimeStatistic;
-  struct RPG_Client_Configuration*                configuration;
-  RPG_Net_Protocol_IListener_t*                   listenerHandle;
-  std::string                                     schemaRepository;
-  RPG_Client_Engine*                              clientEngine;
-  RPG_Engine*                                     levelEngine;
-  RPG_Engine_Entities_t                           entities;
+  struct Common_Parser_FlexAllocatorConfiguration              allocatorConfiguration;
+  bool                                                         allowUserRuntimeStatistic;
+  struct RPG_Client_Configuration*                             configuration;
+  Stream_AllocatorHeap_T<ACE_MT_SYNCH,
+                         struct Stream_AllocatorConfiguration> heapAllocator;
+  RPG_Net_MessageAllocator_t                                   messageAllocator;
+  struct RPG_Engine_LevelData                                  level;
+  RPG_Net_Protocol_IListener_t*                                listenerHandle;
+  std::string                                                  schemaRepository;
+  RPG_Client_Engine*                                           clientEngine;
+  RPG_Engine*                                                  levelEngine;
+  RPG_Engine_Entities_t                                        entities;
 };
 
 #endif

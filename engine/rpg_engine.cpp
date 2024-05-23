@@ -884,13 +884,13 @@ RPG_Engine::load (const std::string& filename_in,
   ::xml_schema::properties props;
   ACE_ASSERT (!schemaRepository_in.empty ());
   std::string path = schemaRepository_in;
-  if (Common_Error_Tools::inDebugSession ())
-  {
-    path += ACE_DIRECTORY_SEPARATOR_STR;
-    path += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
-    path += ACE_DIRECTORY_SEPARATOR_STR;
-    path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
-  } // end IF
+  // if (Common_Error_Tools::inDebugSession ())
+  // {
+  //   path += ACE_DIRECTORY_SEPARATOR_STR;
+  //   path += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
+  //   path += ACE_DIRECTORY_SEPARATOR_STR;
+  //   path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+  // } // end IF
   path += ACE_DIRECTORY_SEPARATOR_STR;
   path += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SCHEMA_FILE);
   // sanity check(s)

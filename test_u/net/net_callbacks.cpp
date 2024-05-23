@@ -21,6 +21,8 @@
 
 #include "net_callbacks.h"
 
+#include <cstdint>
+
 #include "common_file_tools.h"
 
 #include "common_timer_manager.h"
@@ -46,10 +48,11 @@
 
 #include "rpg_net_common.h"
 
-#include "rpg_net_protocol_connection_manager.h"
+#include "rpg_net_protocol_listener.h"
 
+#include "rpg_engine.h"
 #include "rpg_engine_defines.h"
-#include "rpg_engine_level.h"
+// #include "rpg_engine_level.h"
 
 #include "rpg_client_common.h"
 #include "rpg_client_defines.h"
@@ -178,6 +181,149 @@ idle_start_session_server_cb (gpointer userData_in)
                                         ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
   ACE_ASSERT (button_p);
   gtk_widget_set_sensitive (GTK_WIDGET (button_p), TRUE);
+
+  unsigned int number_of_connections = 0;
+  switch (data_p->configuration->protocol_configuration.protocolOptions.transportLayer)
+  {
+    case NET_TRANSPORTLAYER_TCP:
+    case NET_TRANSPORTLAYER_SSL:
+    {
+      number_of_connections =
+        RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->count ();
+      break;
+    }
+    case NET_TRANSPORTLAYER_UDP:
+    {
+      number_of_connections =
+        RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->count ();
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid/unknown transport layer (was: %d), aborting\n"),
+                  data_p->configuration->protocol_configuration.protocolOptions.transportLayer));
+      return G_SOURCE_REMOVE;
+    }
+  } // end SWITCH
+  // sanity check
+  if (!number_of_connections)
+    return G_SOURCE_REMOVE;
+
+  // grab a (random) connection handler
+  int index = 0;
+  // *PORTABILITY*: outside glibc, this is not very portable
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  // *NOTE*: use ACE_OS::rand_r() for improved thread safety !
+  // results_out.push_back((ACE_OS::rand() % range_in) + 1);
+  unsigned int usecs = static_cast<unsigned int> (COMMON_TIME_NOW.usec ());
+  index = ((ACE_OS::rand_r (&usecs) % number_of_connections) + 1);
+#else
+  index = ((::random () % number_of_connections) + 1);
+#endif // ACE_WIN32 || ACE_WIN64
+
+  RPG_Net_Protocol_IStreamConnection_t* istream_connection_p = NULL;
+  switch (data_p->configuration->protocol_configuration.protocolOptions.transportLayer)
+  {
+    case NET_TRANSPORTLAYER_TCP:
+    case NET_TRANSPORTLAYER_SSL:
+    {
+      RPG_Net_Protocol_Connection_Manager_t::ICONNECTION_T* connection_base_p =
+        RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->operator[] (index - 1);
+      ACE_ASSERT (connection_base_p);
+      istream_connection_p =
+        dynamic_cast<RPG_Net_Protocol_IStreamConnection_t*> (connection_base_p);
+      ACE_ASSERT (istream_connection_p);
+      break;
+    }
+    case NET_TRANSPORTLAYER_UDP:
+    {
+      RPG_Net_Protocol_Connection_Manager_t::ICONNECTION_T* connection_base_p =
+        RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->operator[] (index - 1);
+      ACE_ASSERT (connection_base_p);
+      istream_connection_p =
+        dynamic_cast<RPG_Net_Protocol_IStreamConnection_t*> (connection_base_p);
+      ACE_ASSERT (istream_connection_p);
+      break;
+    }
+    default:
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid/unknown transport layer (was: %d), aborting\n"),
+                  data_p->configuration->protocol_configuration.protocolOptions.transportLayer));
+      return G_SOURCE_REMOVE;
+    }
+  } // end SWITCH
+  ACE_ASSERT (istream_connection_p);
+
+  // send level
+  RPG_Net_Protocol_Message* message_p =
+    static_cast<RPG_Net_Protocol_Message*> (data_p->messageAllocator.malloc (data_p->allocatorConfiguration.defaultBufferSize));
+  ACE_ASSERT (message_p);
+
+  struct RPG_Net_Protocol_Command command_s;
+  command_s.command = NET_COMMAND_LEVEL_LOAD;
+  command_s.position =
+    std::make_pair (std::numeric_limits<unsigned int>::max (),
+                    std::numeric_limits<unsigned int>::max ());
+  command_s.entity_id = 0;
+  std::string temp_filename = Common_File_Tools::getTempDirectory ();
+  temp_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+  temp_filename += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
+  temp_filename += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
+  if (!RPG_Engine_Level::save (temp_filename,
+                               data_p->level))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to RPG_Engine_Level::save(\"%s\"), returning\n"),
+                ACE_TEXT (temp_filename.c_str ())));
+    istream_connection_p->decrease ();
+    return G_SOURCE_REMOVE;
+  } // end IF
+  uint8_t* data_2 = NULL;
+  ACE_UINT64 file_size_i = 0;
+  if (!Common_File_Tools::load (temp_filename,
+                                data_2,
+                                file_size_i,
+                                0))
+  {
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to Common_File_Tools::load(\"%s\"), returning\n"),
+                ACE_TEXT (temp_filename.c_str ())));
+    Common_File_Tools::deleteFile (temp_filename);
+    istream_connection_p->decrease ();
+    return FALSE;
+  } // end IF
+  Common_File_Tools::deleteFile (temp_filename);
+    command_s.xml.assign (reinterpret_cast<char*> (data_2),
+                        file_size_i);
+  // replace all crlf with RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR
+  std::string::size_type position_i =
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+      command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
+#elif defined (ACE_LINUX)
+      command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0);
+#endif // ACE_WIN32 || ACE_WIN64 || ACE_LINUX
+  while (position_i != std::string::npos)
+  {
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+    command_s.xml.replace (position_i, 2, 1, RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR);
+    position_i = command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
+#elif defined (ACE_LINUX)
+    command_s.xml.replace (position_i, 1, 1, RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR);
+    position_i = command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0);
+#endif // ACE_WIN32 || ACE_WIN64 || ACE_LINUX
+  } // end WHILE
+  delete [] data_2; data_2 = NULL;
+
+  message_p->initialize (command_s,
+                         1,
+                         NULL);
+  ACE_Message_Block* message_block_p = message_p;
+  istream_connection_p->send (message_block_p);
+
+  // clean up
+  istream_connection_p->decrease ();
 
   return G_SOURCE_REMOVE;
 }
@@ -324,7 +470,7 @@ idle_initialize_client_UI_cb (gpointer userData_in)
     // schedule asynchronous updates of the info view
     guint event_source_id =
       g_timeout_add (NET_UI_GTKEVENT_RESOLUTION_MS,
-                     idle_update_info_display_cb,
+                     idle_update_info_display_client_cb,
                      userData_in);
     if (event_source_id > 0)
       data_p->UIState->eventSourceIds.insert (event_source_id);
@@ -542,7 +688,7 @@ idle_initialize_server_UI_cb (gpointer userData_in)
   // } // end ELSE
   // schedule asynchronous updates of the info view
   guint event_source_id = g_timeout_add (NET_UI_GTKEVENT_RESOLUTION_MS,
-                                         idle_update_info_display_cb,
+                                         idle_update_info_display_server_cb,
                                          userData_in);
   if (event_source_id > 0)
     data_p->UIState->eventSourceIds.insert (event_source_id);
@@ -767,26 +913,19 @@ idle_update_log_display_cb (gpointer userData_in)
 }
 
 gboolean
-idle_update_info_display_cb (gpointer userData_in)
+idle_update_info_display_client_cb (gpointer userData_in)
 {
-  RPG_TRACE (ACE_TEXT ("::idle_update_info_display_cb"));
-
-  struct Net_Server_GTK_CBData* data_p = static_cast<struct Net_Server_GTK_CBData*> (userData_in);
+  RPG_TRACE (ACE_TEXT ("::idle_update_info_display_client_cb"));
 
   // sanity check(s)
+  struct Net_Client_GTK_CBData* data_p =
+    static_cast<struct Net_Client_GTK_CBData*> (userData_in);
   ACE_ASSERT (data_p);
-
-  //Common_UI_GladeXMLsIterator_t iterator =
-  //  data_p->UIState->gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   Common_UI_GTK_BuildersIterator_t iterator =
     data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
-  // sanity check(s)
-  //ACE_ASSERT (iterator != data_p->UIState->gladeXML.end ());
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
 
   GtkSpinButton* spinbutton_p =
-    //GTK_SPIN_BUTTON (glade_xml_get_widget ((*iterator).second.second,
-    //                                       ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_SPINBUTTON_NUMCONNECTIONS_NAME)));
     GTK_SPIN_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                              ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_SPINBUTTON_NUMCONNECTIONS_NAME)));
   ACE_ASSERT (spinbutton_p);
@@ -839,30 +978,18 @@ idle_update_info_display_cb (gpointer userData_in)
       result = data_p->UIState->eventStack.pop (event_e);
       if (result == -1)
         ACE_DEBUG ((LM_ERROR,
-          ACE_TEXT ("failed to ACE_Unbounded_Stack::pop(): \"%m\", continuing\n")));
+                    ACE_TEXT ("failed to ACE_Unbounded_Stack::pop(): \"%m\", continuing\n")));
     } // end WHILE
   } // end lock scope
 
   // enable buttons ?
   gint current_value = gtk_spin_button_get_value_as_int (spinbutton_p);
-  GtkWidget* widget_p = NULL;
-  if (!data_p->listenerHandle) // <-- client
-  {
-    widget_p =
-      //GTK_WIDGET (glade_xml_get_widget ((*iterator).second.second,
-      //                                  ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_CLOSE_NAME)));
-      GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
-                                          ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_CLOSE_NAME)));
-    if (!widget_p)
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to gtk_builder_get_object(\"%s\"): \"%m\", continuing\n"),
-                  ACE_TEXT (NET_CLIENT_UI_GTK_BUTTON_CLOSE_NAME)));
-    else
-      gtk_widget_set_sensitive (widget_p, (current_value > 0));
-  } // end IF
+  GtkWidget* widget_p =
+    GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_CLOSE_NAME)));
+  ACE_ASSERT (widget_p);
+  gtk_widget_set_sensitive (widget_p, (current_value > 0));
   widget_p =
-    //GTK_WIDGET (glade_xml_get_widget ((*iterator).second.second,
-    //                                  ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
     GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
                                         ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
   if (!widget_p)
@@ -871,18 +998,92 @@ idle_update_info_display_cb (gpointer userData_in)
                 ACE_TEXT (NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
   else
     gtk_widget_set_sensitive (widget_p, (current_value > 0));
-  if (!data_p->listenerHandle) // <-- client
-  {
-    widget_p =
-      GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
-                                          ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_TEST_NAME)));
-    if (!widget_p)
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("failed to gtk_builder_get_object(\"%s\"): \"%m\", continuing\n"),
-                  ACE_TEXT (NET_CLIENT_UI_GTK_BUTTON_TEST_NAME)));
-    else
-      gtk_widget_set_sensitive (widget_p, (current_value > 0));
-  } // end IF
+  widget_p =
+    GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_TEST_NAME)));
+  ACE_ASSERT (widget_p);
+  gtk_widget_set_sensitive (widget_p, (current_value > 0));
+
+  return TRUE; // G_SOURCE_CONTINUE
+}
+
+gboolean
+idle_update_info_display_server_cb (gpointer userData_in)
+{
+  RPG_TRACE (ACE_TEXT ("::idle_update_info_display_server_cb"));
+
+  // sanity check(s)
+  struct Net_Server_GTK_CBData* data_p =
+    static_cast<struct Net_Server_GTK_CBData*> (userData_in);
+  ACE_ASSERT (data_p);
+  Common_UI_GTK_BuildersIterator_t iterator =
+    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
+  ACE_ASSERT (iterator != data_p->UIState->builders.end ());
+
+  GtkSpinButton* spinbutton_p =
+    GTK_SPIN_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                             ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_SPINBUTTON_NUMCONNECTIONS_NAME)));
+  ACE_ASSERT (spinbutton_p);
+
+  enum Common_UI_EventType* event_p = NULL;
+  { // synch access
+    ACE_Guard<ACE_SYNCH_MUTEX> aGuard (data_p->UIState->lock);
+    for (Common_UI_Events_t::ITERATOR iterator_2 (data_p->UIState->eventStack);
+         iterator_2.next (event_p);
+         iterator_2.advance ())
+    { ACE_ASSERT (event_p);
+      switch (*event_p)
+      {
+        case COMMON_UI_EVENT_CONNECT:
+        {
+          // update info label
+          gtk_spin_button_spin (spinbutton_p,
+                                GTK_SPIN_STEP_FORWARD,
+                                1.0);
+          break;
+        }
+        case COMMON_UI_EVENT_DISCONNECT:
+        {
+          // update info label
+          gtk_spin_button_spin (spinbutton_p,
+                                GTK_SPIN_STEP_BACKWARD,
+                                1.0);
+          break;
+        }
+        case COMMON_UI_EVENT_STATISTIC:
+        {
+          // *TODO*
+          break;
+        }
+        default:
+        {
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid/unknown event type (was: %d), continuing\n"),
+                      *event_p));
+          break;
+        }
+      } // end SWITCH
+    } // end FOR
+
+    // clean up
+    enum Common_UI_EventType event_e = COMMON_UI_EVENT_INVALID;
+    int result = -1;
+    while (!data_p->UIState->eventStack.is_empty ())
+    {
+      result = data_p->UIState->eventStack.pop (event_e);
+      if (result == -1)
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to ACE_Unbounded_Stack::pop(): \"%m\", continuing\n")));
+    } // end WHILE
+  } // end lock scope
+
+  // enable buttons ?
+  gint current_value = gtk_spin_button_get_value_as_int (spinbutton_p);
+  GtkWidget* widget_p =
+    GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
+  ACE_ASSERT (widget_p);
+  gtk_widget_set_sensitive (widget_p, (current_value > 0));
 
   return TRUE; // G_SOURCE_CONTINUE
 }
@@ -1054,26 +1255,24 @@ button_test_clicked_cb (GtkWidget* widget_in,
   } // end SWITCH
   ACE_ASSERT (istream_connection_p);
 
-  // send level
+  // send player
   RPG_Net_Protocol_Message* message_p =
     static_cast<RPG_Net_Protocol_Message*> (data_p->messageAllocator.malloc (data_p->allocatorConfiguration.defaultBufferSize));
   ACE_ASSERT (message_p);
 
   struct RPG_Net_Protocol_Command command_s;
-  command_s.command = NET_COMMAND_LEVEL_LOAD;
-  command_s.position =
-    std::make_pair (std::numeric_limits<unsigned int>::max (),
-                    std::numeric_limits<unsigned int>::max ());
-  command_s.entity_id = 0;
+  command_s.command = NET_COMMAND_PLAYER_LOAD;
   std::string temp_filename = Common_File_Tools::getTempDirectory ();
   temp_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  temp_filename += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
-  temp_filename += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
-  if (!RPG_Engine_Level::save (temp_filename,
-                               data_p->level))
+  temp_filename += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
+  temp_filename += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT);
+  ACE_ASSERT (data_p->entity.character && data_p->entity.character->isPlayerCharacter ());
+  RPG_Player* player_p = static_cast<RPG_Player*> (data_p->entity.character);
+  ACE_ASSERT (player_p);
+  if (!player_p->save (temp_filename))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Engine_Level::save(\"%s\"), returning\n"),
+                ACE_TEXT ("failed to RPG_Player::save(\"%s\"), returning\n"),
                 ACE_TEXT (temp_filename.c_str ())));
     return FALSE;
   } // end IF
@@ -1107,56 +1306,6 @@ button_test_clicked_cb (GtkWidget* widget_in,
                          1,
                          NULL);
   ACE_Message_Block* message_block_p = message_p;
-  istream_connection_p->send (message_block_p);
-
-  // send player
-  message_p =
-    static_cast<RPG_Net_Protocol_Message*> (data_p->messageAllocator.malloc (data_p->allocatorConfiguration.defaultBufferSize));
-  ACE_ASSERT (message_p);
-
-  command_s.command = NET_COMMAND_PLAYER_LOAD;
-  temp_filename = Common_File_Tools::getTempDirectory ();
-  temp_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  temp_filename += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
-  temp_filename += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT);
-  ACE_ASSERT (data_p->entity.character && data_p->entity.character->isPlayerCharacter ());
-  RPG_Player* player_p = static_cast<RPG_Player*> (data_p->entity.character);
-  ACE_ASSERT (player_p);
-  if (!player_p->save (temp_filename))
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Player::save(\"%s\"), returning\n"),
-                ACE_TEXT (temp_filename.c_str ())));
-    return FALSE;
-  } // end IF
-  if (!Common_File_Tools::load (temp_filename,
-                                data_2,
-                                file_size_i,
-                                0))
-  {
-    ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to Common_File_Tools::load(\"%s\"), returning\n"),
-                ACE_TEXT (temp_filename.c_str ())));
-    Common_File_Tools::deleteFile (temp_filename);
-    return FALSE;
-  } // end IF
-  Common_File_Tools::deleteFile (temp_filename);
-  command_s.xml.assign (reinterpret_cast<char*> (data_2),
-                        file_size_i);
-  // replace all crlf with RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR
-  position_i =
-    command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
-  while (position_i != std::string::npos)
-  {
-    command_s.xml.replace (position_i, 2, 1, RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR);
-    position_i = command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
-  } // end WHILE
-  delete [] data_2; data_2 = NULL;
-
-  message_p->initialize (command_s,
-                         1,
-                         NULL);
-  message_block_p = message_p;
   istream_connection_p->send (message_block_p);
 
   // clean up

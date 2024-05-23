@@ -24,11 +24,11 @@
 #include "gtk/gtk.h"
 
 gboolean idle_finalize_UI_cb (gpointer);
-gboolean idle_update_info_display_cb (gpointer);
 gboolean idle_update_log_display_cb (gpointer);
 
 //////////////////////////////////////////
 
+gboolean idle_update_info_display_client_cb (gpointer);
 gboolean idle_start_session_client_cb (gpointer);
 gboolean idle_end_session_client_cb (gpointer);
 
@@ -36,6 +36,7 @@ gboolean idle_initialize_client_UI_cb (gpointer);
 
 //////////////////////////////////////////
 
+gboolean idle_update_info_display_server_cb (gpointer);
 gboolean idle_start_session_server_cb (gpointer);
 gboolean idle_end_session_server_cb (gpointer);
 

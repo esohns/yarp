@@ -169,10 +169,15 @@ Net_Client_EventHandler::notify (Stream_SessionId_t sessionId_in,
       } // end IF
       Common_File_Tools::deleteFile (temp_filename);
       ACE_ASSERT (CBData_->levelEngine);
+      bool was_running_b = false;
       if (CBData_->levelEngine->isRunning ())
+      {
+        was_running_b = true;
         CBData_->levelEngine->stop ();
+      } // end IF
       CBData_->levelEngine->set (level);
-      CBData_->levelEngine->start ();
+      if (was_running_b)
+        CBData_->levelEngine->start ();
       break;
     }
     case NET_COMMAND_PLAYER_LOAD:

@@ -141,7 +141,7 @@ Net_Server_EventHandler::notify (Stream_SessionId_t sessionId_in,
         file_string.replace (position_i, 1, ACE_TEXT_ALWAYS_CHAR ("\r\n"));
         position_i = file_string.find (RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR, 0);
       } // end WHILE
-    
+
       std::string temp_filename = Common_File_Tools::getTempDirectory ();
       temp_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
       temp_filename +=

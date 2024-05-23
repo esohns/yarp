@@ -3676,7 +3676,7 @@ map_repository_combobox_changed_GTK_cb (GtkWidget* widget_in,
   std::string filename = RPG_Map_Common_Tools::getMapsDirectory ();
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += active_item;
-  filename += ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_FILE_EXT);
+  filename += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
 
   // load level
   struct RPG_Engine_LevelData level;

@@ -831,65 +831,63 @@ namespace yy {
                                                      }
     break;
 
-  case 10: // $@2: %empty
+  case 10: // xml: "xml"
+                                                     { driver->current ().xml = *(yystack_[0].value.sval); }
+    break;
+
+  case 12: // message: "message"
+                                                     { driver->current ().message = *(yystack_[0].value.sval); }
+    break;
+
+  case 14: // $@2: %empty
                                                      { driver->current ().command = static_cast<enum RPG_Net_Protocol_Engine_Command> ((yystack_[0].value.ival));
                                                      }
     break;
 
-  case 11: // $@3: %empty
+  case 15: // $@3: %empty
                                                      { driver->current ().position.first = static_cast<unsigned int> ((yystack_[1].value.ival));
                                                        driver->current ().position.second = static_cast<unsigned int> ((yystack_[0].value.ival));
                                                      }
     break;
 
-  case 12: // $@4: %empty
+  case 16: // $@4: %empty
                                                      { driver->current ().entity_id = static_cast<RPG_Engine_EntityID_t> ((yystack_[0].value.ival));
                                                      }
     break;
 
-  case 13: // $@5: %empty
-                                                     { driver->current ().xml = *(yystack_[0].value.sval);
-                                                     }
-    break;
-
-  case 14: // $@6: %empty
+  case 17: // $@5: %empty
                                                      { driver->current ().clientCommand = static_cast<enum RPG_Net_Protocol_Client_Command> ((yystack_[0].value.ival));
                                                      }
     break;
 
-  case 15: // $@7: %empty
+  case 18: // $@6: %empty
                                                      { driver->current ().previous.first = static_cast<unsigned int> ((yystack_[1].value.ival));
                                                        driver->current ().previous.second = static_cast<unsigned int> ((yystack_[0].value.ival));
                                                      }
     break;
 
-  case 16: // $@8: %empty
+  case 19: // $@7: %empty
                                                      { driver->current ().cursor = static_cast<enum RPG_Graphics_Cursor> ((yystack_[0].value.ival));
                                                      }
     break;
 
-  case 17: // $@9: %empty
+  case 20: // $@8: %empty
                                                      { driver->current ().sound = static_cast<enum RPG_Sound_Event> ((yystack_[0].value.ival));
                                                      }
     break;
 
-  case 18: // $@10: %empty
-                                                     { driver->current ().message = *(yystack_[0].value.sval);
-                                                     }
-    break;
-
-  case 19: // $@11: %empty
+  case 21: // $@9: %empty
                                                      { driver->current ().source.first = static_cast<unsigned int> ((yystack_[1].value.ival));
                                                        driver->current ().source.second = static_cast<unsigned int> ((yystack_[0].value.ival));
                                                      }
     break;
 
-  case 20: // $@12: %empty
+  case 22: // $@10: %empty
                                                      { driver->current ().radius = (yystack_[0].value.ival);
                                                      }
     break;
 
-  case 21: // command: "command" $@2 "position_x" "position_y" $@3 path "entity_id" $@4 "xml" $@5 "client_command" $@6 "previous_x" "previous_y" $@7 "cursor" $@8 "sound" $@9 "message" $@10 "source_x" "source_y" $@11 positions "radius" $@12 "end_of_command"
+  case 23: // command: "command" $@2 "position_x" "position_y" $@3 path "entity_id" $@4 xml "client_command" $@5 "previous_x" "previous_y" $@6 "cursor" $@7 "sound" $@8 message "source_x" "source_y" $@9 positions "radius" $@10 "end_of_command"
                                                      { ACE_UNUSED_ARG ((yystack_[0].value.ival));
                                                        struct RPG_Net_Protocol_Command* current_p = &driver->current ();
                                                        driver->record (current_p);
@@ -1267,11 +1265,11 @@ namespace yy {
   const signed char
   RPG_Net_Protocol_Parser::yydefact_[] =
   {
-       0,     2,     0,    23,     1,     0,    10,     3,    22,     0,
-       0,    11,     5,     0,     0,    12,     4,     0,     0,     6,
-      13,     0,    14,     0,     0,    15,     0,    16,     0,    17,
-       0,    18,     0,     0,    19,     8,     0,     0,    20,     7,
-       9,     0,    21
+       0,     2,     0,    25,     1,     0,    14,     3,    24,     0,
+       0,    15,     5,     0,     0,    16,     4,     0,    11,     6,
+      10,     0,    17,     0,     0,    18,     0,    19,     0,    20,
+      13,    12,     0,     0,    21,     8,     0,     0,    22,     7,
+       9,     0,    23
   };
 
   const signed char
@@ -1284,8 +1282,8 @@ namespace yy {
   const signed char
   RPG_Net_Protocol_Parser::yydefgoto_[] =
   {
-       0,     2,     3,    13,    16,    36,    39,     8,     9,    12,
-      18,    21,    23,    26,    28,    30,    32,    35,    41,     5
+       0,     2,     3,    13,    16,    36,    39,    21,    32,     8,
+       9,    12,    18,    23,    26,    28,    30,    35,    41,     5
   };
 
   const signed char
@@ -1309,10 +1307,10 @@ namespace yy {
   const signed char
   RPG_Net_Protocol_Parser::yystos_[] =
   {
-       0,     3,    24,    25,     0,    42,     4,    22,    30,    31,
-       5,     6,    32,    26,     7,     9,    27,     7,    33,     8,
-      10,    34,    11,    35,    12,    13,    36,    14,    37,    15,
-      38,    16,    39,    17,    18,    40,    28,    19,    20,    29,
+       0,     3,    24,    25,     0,    42,     4,    22,    32,    33,
+       5,     6,    34,    26,     7,     9,    27,     7,    35,     8,
+      10,    30,    11,    36,    12,    13,    37,    14,    38,    15,
+      39,    16,    31,    17,    18,    40,    28,    19,    20,    29,
       19,    41,    21
   };
 
@@ -1320,16 +1318,16 @@ namespace yy {
   RPG_Net_Protocol_Parser::yyr1_[] =
   {
        0,    23,    25,    24,    26,    26,    27,    28,    28,    29,
-      31,    32,    33,    34,    35,    36,    37,    38,    39,    40,
-      41,    30,    42,    42
+      30,    30,    31,    31,    33,    34,    35,    36,    37,    38,
+      39,    40,    41,    32,    42,    42
   };
 
   const signed char
   RPG_Net_Protocol_Parser::yyr2_[] =
   {
        0,     2,     0,     4,     2,     0,     3,     2,     0,     2,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,    28,     2,     0
+       1,     0,     1,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,    26,     2,     0
   };
 
 
@@ -1346,8 +1344,8 @@ namespace yy {
   "\"sound\"", "\"message\"", "\"source_x\"", "\"source_y\"",
   "\"positions_next_xy\"", "\"radius\"", "\"end_of_command\"",
   "\"end_of_frame\"", "$accept", "frame", "$@1", "path", "path_elem",
-  "positions", "positions_elem", "command", "$@2", "$@3", "$@4", "$@5",
-  "$@6", "$@7", "$@8", "$@9", "$@10", "$@11", "$@12", "commands", YY_NULLPTR
+  "positions", "positions_elem", "xml", "message", "command", "$@2", "$@3",
+  "$@4", "$@5", "$@6", "$@7", "$@8", "$@9", "$@10", "commands", YY_NULLPTR
   };
 #endif
 
@@ -1357,8 +1355,8 @@ namespace yy {
   RPG_Net_Protocol_Parser::yyrline_[] =
   {
        0,   102,   102,   102,   107,   108,   109,   112,   113,   114,
-     117,   119,   122,   124,   126,   128,   131,   133,   135,   137,
-     140,   117,   148,   149
+     117,   118,   119,   120,   121,   123,   126,   128,   130,   133,
+     135,   137,   140,   121,   148,   149
   };
 
   void

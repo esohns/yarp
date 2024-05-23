@@ -207,13 +207,8 @@ OCTET_NO_CRLF  [\x00-\xFF]{-}[\x0D\x0A]
                              ACE_ASSERT (yylval->sval);
                              return yy::RPG_Net_Protocol_Parser::token::XML; }
 {CRLF}                     { iparser_p->scannedBytes (yyleng);
-                             yylval->ival = 2;
-                             if (iparser_p->scannedBytes () < iparser_p->length ())
-                               BEGIN(command);
-                             else
-                               BEGIN(INITIAL);
-                             return yy::RPG_Net_Protocol_Parser::token::END_OF_COMMAND;
-                           }
+                             BEGIN(clientCommand);
+                             yylval->ival = 2; }
 } // end <xml>
 <clientCommand>{
 {DIGIT}+                   { iparser_p->scannedBytes (yyleng);

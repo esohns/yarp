@@ -72,18 +72,24 @@ if (SDL_SUPPORT)
 endif (SDL_SUPPORT)
 if (UNIX)
  target_link_libraries (${EXECUTABLE}
-                        ${GTK_LIBRARIES}
-                        X11
-                        xerces-c
-                        ${ACE_LIBRARY}
-                        Common CommonEvent CommonLog CommonSignal CommonTimer CommonUI_GTK
-                        ACEStream ACEStream_Miscellaneous ACEStream_Network
-                        ACENetwork ACENetwork_Client
-                        RPG_Dice RPG_Chance RPG_Common
-                        RPG_Character RPG_Magic RPG_Item RPG_Combat RPG_Player RPG_Monster
-                        RPG_Map RPG_Engine
-                        RPG_Net RPG_Net_Protocol
-                        RPG_Graphics RPG_Sound RPG_Client)
+                        ${GTK_LIBRARIES})
+ target_link_libraries (${EXECUTABLE}
+                        xerces-c)
+ target_link_libraries (${EXECUTABLE}
+                        ${ACE_LIBRARY})
+ target_link_libraries (${EXECUTABLE}
+                        Common CommonEvent CommonLog CommonSignal CommonTimer CommonUI_GTK)
+ target_link_libraries (${EXECUTABLE}
+                        ACEStream ACEStream_Miscellaneous ACEStream_Network)
+ target_link_libraries (${EXECUTABLE}
+                        ACENetwork ACENetwork_Client)
+ target_link_libraries (${EXECUTABLE}
+                        RPG_Chance RPG_Dice RPG_Common
+                        RPG_Character RPG_Magic RPG_Item RPG_Player RPG_Monster
+                        RPG_Combat RPG_Map RPG_Graphics RPG_Dice RPG_Common RPG_Sound
+                        RPG_Engine RPG_Player RPG_Monster RPG_Player RPG_Item RPG_Map RPG_Common
+                        RPG_Character RPG_Combat RPG_Magic RPG_Chance RPG_Dice
+                        RPG_Net RPG_Net_Protocol RPG_Net RPG_Client RPG_Graphics RPG_Sound RPG_Net_Protocol)
 elseif (WIN32)
 # set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
@@ -132,21 +138,25 @@ if (SDL_SUPPORT)
                         ${SDL_LIBRARIES})
 endif (SDL_SUPPORT)
 if (UNIX)
- target_link_libraries (${EXECUTABLE_2} PUBLIC
-                        ${GTK_LIBRARIES}
-                        X11
-                        xerces-c
-                        ${ACE_LIBRARY}
-                        Common CommonEvent CommonLog CommonSignal CommonTimer CommonUI_GTK
-                        ACEStream ACEStream_Miscellaneous ACEStream_Network
-                        ACENetwork ACENetwork_Server
-                        RPG_Dice RPG_Chance RPG_Common
-                        RPG_Character RPG_Magic RPG_Item RPG_Combat RPG_Player RPG_Monster
-                        RPG_Map RPG_Engine
-                        RPG_Net RPG_Net_Protocol
-                        RPG_Graphics RPG_Sound RPG_Client
-                        ACEStream_Network
-                        RPG_Net)
+ target_link_libraries (${EXECUTABLE_2}
+                        ${GTK_LIBRARIES})
+ target_link_libraries (${EXECUTABLE_2}
+                        xerces-c)
+ target_link_libraries (${EXECUTABLE_2}
+                        ${ACE_LIBRARY})
+ target_link_libraries (${EXECUTABLE_2}
+                        Common CommonEvent CommonLog CommonSignal CommonTimer CommonUI_GTK)
+ target_link_libraries (${EXECUTABLE_2}
+                        ACEStream ACEStream_Miscellaneous ACEStream_Network)
+ target_link_libraries (${EXECUTABLE_2}
+                        ACENetwork ACENetwork_Server)
+ target_link_libraries (${EXECUTABLE_2}
+                        RPG_Chance RPG_Dice RPG_Common
+                        RPG_Character RPG_Magic RPG_Item RPG_Player RPG_Monster
+                        RPG_Combat RPG_Map RPG_Graphics RPG_Dice RPG_Common RPG_Sound
+                        RPG_Engine RPG_Player RPG_Monster RPG_Player RPG_Item RPG_Map RPG_Common
+                        RPG_Character RPG_Combat RPG_Magic RPG_Chance RPG_Dice
+                        RPG_Net RPG_Net_Protocol RPG_Net RPG_Client RPG_Graphics RPG_Sound RPG_Net_Protocol)
 elseif (WIN32)
 # set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 

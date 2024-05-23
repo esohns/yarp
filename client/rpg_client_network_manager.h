@@ -21,6 +21,8 @@
 #ifndef RPG_CLIENT_NETWORK_MANAGER_H
 #define RPG_CLIENT_NETWORK_MANAGER_H
 
+#include <vector>
+
 #include "ace/Global_Macros.h"
 #include "ace/Singleton.h"
 #include "ace/Synch_Traits.h"
@@ -54,7 +56,7 @@ class RPG_Client_Network_Manager
 
   virtual void dispatch (void*); // user data
 
-  RPG_Net_Protocol_IConnection_t* connection_;
+  std::vector<RPG_Net_Protocol_IConnection_t*> connections_;
 };
 
 typedef ACE_Singleton<RPG_Client_Network_Manager,

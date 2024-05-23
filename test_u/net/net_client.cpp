@@ -19,12 +19,15 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-#include <fstream>
 #include <iostream>
 #include <limits>
 #include <sstream>
 #include <string>
 #include <vector>
+
+#define _SDL_main_h
+#define SDL_main_h_
+#include "SDL.h"
 
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
 #include "ace/Init_ACE.h"
@@ -93,7 +96,7 @@
 #include "rpg_net_common.h"
 #include "rpg_net_defines.h"
 
-#include "rpg_net_protocol_connection_manager.h"
+#include "rpg_net_protocol_listener.h"
 #include "rpg_net_protocol_defines.h"
 #include "rpg_net_protocol_messagehandler.h"
 
@@ -562,8 +565,8 @@ do_work (unsigned int peerPingInterval_in,
   RPG_Engine level_engine;
   level_engine.initialize (&client_engine, // client engine handle
                            true);          // server session ?
-  //CBData_in.clientEngine = &client_engine;
-  //CBData_in.levelEngine = &level_engine;
+  CBData_in.clientEngine = &client_engine;
+  CBData_in.levelEngine = &level_engine;
 
   RPG_Graphics_SDL_Tools::initializeVideo (CBData_in.configuration->video_configuration,                     // configuration
                                            ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE), // window/icon caption
@@ -604,6 +607,21 @@ do_work (unsigned int peerPingInterval_in,
                           RPG_CLIENT_WINDOW_DEF_EDGE_AUTOSCROLL,
                           &level_engine,
                           false); // debug ?
+
+  // step3: initialize connection manager
+  CBData_in.configuration->protocol_configuration.connectionConfiguration.allocatorConfiguration =
+    &CBData_in.allocatorConfiguration;
+  CBData_in.configuration->protocol_configuration.connectionConfiguration.messageAllocator =
+    &CBData_in.messageAllocator;
+
+  RPG_Net_Protocol_Connection_Manager_t* connection_manager_p =
+    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ();
+  ACE_ASSERT (connection_manager_p);
+  connection_manager_p->initialize (NET_CONNECTION_MAXIMUM_NUMBER_OF_OPEN,
+                                    ACE_Time_Value (0, NET_STATISTIC_DEFAULT_VISIT_INTERVAL_MS * 1000));
+  struct Net_UserData user_data_s;
+  connection_manager_p->set (CBData_in.configuration->protocol_configuration.connectionConfiguration,
+                             &user_data_s);
 
   // step4b: client engine
   client_engine.initialize (&level_engine,
@@ -675,6 +693,8 @@ do_work (unsigned int peerPingInterval_in,
   modulehandler_configuration.subscriber = &ui_message_handler;
 
   // ************ connection configuration data ************
+  CBData_in.configuration->protocol_configuration.connectionConfiguration.streamConfiguration =
+    &stream_configuration_2;
   CBData_in.configuration->protocol_configuration.protocolOptions.pingInterval.usec (peerPingInterval_in * 1000);
   CBData_in.configuration->protocol_configuration.protocolOptions.printPongMessages =
     true;
@@ -687,12 +707,6 @@ do_work (unsigned int peerPingInterval_in,
   stream_configuration_2.initialize (module_configuration,
                                      modulehandler_configuration,
                                      stream_configuration);
-  CBData_in.configuration->protocol_configuration.connectionConfiguration.allocatorConfiguration =
-    &CBData_in.allocatorConfiguration;
-  CBData_in.configuration->protocol_configuration.connectionConfiguration.streamConfiguration =
-    &stream_configuration_2;
-  CBData_in.configuration->protocol_configuration.connectionConfiguration.messageAllocator =
-    &CBData_in.messageAllocator;
 
   // step0b: initialize event dispatch
   if (!Common_Event_Tools::initializeEventDispatch (CBData_in.configuration->dispatch_configuration))
@@ -767,20 +781,6 @@ do_work (unsigned int peerPingInterval_in,
 
     return;
   } // end IF
-
-  // step3: initialize connection manager
-  RPG_Client_Network_Manager* network_manager_p =
-    RPG_CLIENT_NETWORK_MANAGER_SINGLETON::instance ();
-  ACE_ASSERT (network_manager_p);
-  RPG_Net_Protocol_Connection_Manager* connection_manager_p =
-    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ();
-  ACE_ASSERT (connection_manager_p);
-  connection_manager_p->initialize (NET_CONNECTION_MAXIMUM_NUMBER_OF_OPEN,
-                                    ACE_Time_Value (0, NET_STATISTIC_DEFAULT_VISIT_INTERVAL_MS * 1000));
-  struct Net_UserData user_data_s;
-  connection_manager_p->set (CBData_in.configuration->protocol_configuration.connectionConfiguration,
-                             &user_data_s);
-  connection_manager_p->add (network_manager_p);
 
   // step4: handle events (signals, incoming connections/data, timers, ...)
   // reactor/proactor event loop:
