@@ -374,10 +374,10 @@ do_printUsage (const std::string& programName_in)
             << ACE_TEXT_ALWAYS_CHAR ("\"]")
             << std::endl;
   configuration_path =
-      RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
-                                                            ACE_TEXT_ALWAYS_CHAR (""),
-                                                            ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
-                                                            true);
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
+                                                          true);
   path = configuration_path;
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-r [DIR]   : schema repository")
             << ACE_TEXT_ALWAYS_CHAR (" [\"")
@@ -523,14 +523,11 @@ do_processArguments (int argc_in,
 
   skipIntro_out           = false;
 
-  schemaRepository_out    = Common_File_Tools::getWorkingDirectory ();
-  if (Common_Error_Tools::inDebugSession ())
-  {} // end IF
-  else
-  {
-    schemaRepository_out += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schemaRepository_out += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_DATA_SUBDIRECTORY);
-  } // end ELSE
+  schemaRepository_out    =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
+                                                          true);
 
   configuration_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -880,24 +877,20 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 
     // *NOTE*: this one contains symlinks to all of the above
     std::string schema_path = schemaRepository_in;
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
     schema_directories_a.push_back (schema_path);
 
-    schema_path = schemaRepository_in;
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    schema_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                            ACE_TEXT_ALWAYS_CHAR (""),
+                                                            ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_SUB_DIRECTORY_STRING),
+                                                            true); // configuration-
     schema_directories_a.push_back (schema_path);
 
-    schema_path = schemaRepository_in;
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING);
-    schema_path += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-    schema_path += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+    schema_path =
+      RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                            ACE_TEXT_ALWAYS_CHAR (""),
+                                                            ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_SUB_DIRECTORY_STRING),
+                                                            true); // configuration-
     schema_directories_a.push_back (schema_path);
   } // end IF
   else
@@ -2070,13 +2063,11 @@ ACE_TMAIN (int argc_in,
   UI_file += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   UI_file += ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_UI_FILE);
 
-  std::string schema_repository     = Common_File_Tools::getWorkingDirectory ();
-  schema_repository += ACE_DIRECTORY_SEPARATOR_STR;
-  schema_repository +=
-    ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
-  schema_repository += ACE_DIRECTORY_SEPARATOR_STR;
-  schema_repository +=
-    ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_CONFIGURATION_SUBDIRECTORY);
+  std::string schema_repository     =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
+                                                          true);
 
   std::string data_path =
       RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
