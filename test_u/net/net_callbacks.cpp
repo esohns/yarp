@@ -1470,7 +1470,8 @@ button_quit_clicked_cb (GtkWidget* widget_in,
                 SIGINT));
 
   // step3: stop GTK event processing
-  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop ();
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop (false,  // wait for completion ?
+                                                      false); // N/A
 
   return FALSE;
 } // button_quit_clicked_cb

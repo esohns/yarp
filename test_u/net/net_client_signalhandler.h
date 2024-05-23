@@ -21,19 +21,16 @@
 #ifndef Net_Client_SignalHandler_H
 #define Net_Client_SignalHandler_H
 
+#include "ace/config-macros.h"
 #include "ace/Global_Macros.h"
 
-#include "common_istatistic.h"
-
 #include "common_configuration.h"
-#include "common_isignal.h"
+
+#include "common_signal_common.h"
 #include "common_signal_handler.h"
 
 #include "rpg_net_protocol_configuration.h"
 #include "rpg_net_protocol_network.h"
-
-// forward declarations
-class Common_IControl;
 
 class Net_Client_SignalHandler
  : public Common_SignalHandler_T<struct Common_SignalHandlerConfiguration>

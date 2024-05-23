@@ -51,7 +51,7 @@ Net_Server_SignalHandler::handle (const struct Common_Signal& signal_in)
 {
   RPG_TRACE (ACE_TEXT ("Net_Server_SignalHandler::handle"));
 
-  bool stop_event_dispatching = false;
+  bool shutdown = false;
   bool report = false;
   switch (signal_in.signal)
   {
@@ -68,7 +68,7 @@ Net_Server_SignalHandler::handle (const struct Common_Signal& signal_in)
       //           ACE_TEXT("shutting down...\n")));
 
       // shutdown...
-      stop_event_dispatching = true;
+      shutdown = true;
 
       break;
     }
@@ -95,66 +95,50 @@ Net_Server_SignalHandler::handle (const struct Common_Signal& signal_in)
   } // end SWITCH
 
   // report ?
-  //if (report && report_)
-  //{
-  //  try
-  //  {
-  //    report_->report ();
-  //  }
-  //  catch (...)
-  //  {
-  //    ACE_DEBUG ((LM_ERROR,
-  //                ACE_TEXT ("caught exception in Common_IStatistic::report(), returning\n")));
-  //    return;
-  //  }
-  //} // end IF
+  if (report)
+  {
+    RPG_Net_Protocol_Connection_Manager_t* connection_manager_p =
+      RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ();
+    ACE_ASSERT (connection_manager_p);
+    try {
+      connection_manager_p->report ();
+    } catch (...)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("caught exception in Common_IStatistic::report(), returning\n")));
+      return;
+    }
+  } // end IF
 
   // ...shutdown ?
-  if (stop_event_dispatching)
+  if (shutdown)
   {
     // stop everything, i.e.
     // - leave reactor event loop handling signals, sockets, (maintenance) timers...
     // --> (try to) terminate in a well-behaved manner
-
-    // step1: invoke controller (if any)
-    //if (control_)
-    //{
-    //  try
-    //  {
-    //    control_->stop ();
-    //  }
-    //  catch (...)
-    //  {
-    //    ACE_DEBUG ((LM_ERROR,
-    //                ACE_TEXT ("caught exception in Common_IControl::stop(), returning\n")));
-    //    return;
-    //  }
-    //} // end IF
 
     // step2: stop timer
     if (timerId_ >= 0)
     {
       if (COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timerId_,
                                                               NULL) <= 0)
-      {
         ACE_DEBUG ((LM_DEBUG,
-                    ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", returning\n"),
+                    ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                     timerId_));
-        timerId_ = -1;
-        return;
-      } // end IF
-      timerId_ = -1;
     } // end IF
 
     // step3: stop/abort/wait for connections
-    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->stop ();
-    RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abort ();
-    // *IMPORTANT NOTE*: as long as connections are inactive (i.e. events are
-    // dispatched by reactor thread(s), there is no real reason to wait here)
-    //RPG_NET_CONNECTIONMANAGER_SINGLETON::instance()->waitConnections();
+    RPG_Net_Protocol_Connection_Manager_t* connection_manager_p =
+      RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ();
+    ACE_ASSERT (connection_manager_p);
+    connection_manager_p->stop (false,  // wait ?
+                                false); // N/A
+    connection_manager_p->abort ();
+    //connection_manager_p->->wait ();
 
     // step4: stop reactor (&& proactor, if applicable)
     Common_Event_Tools::finalizeEventDispatch (*inherited::configuration_->dispatchState,
-                                               false); // wait ?
+                                               false,  // wait ?
+                                               false); // close reactor/proactor singletons ?
   } // end IF
 }

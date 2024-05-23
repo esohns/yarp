@@ -23,14 +23,8 @@
 
 #include "ace/Global_Macros.h"
 
-#include "common_istatistic.h"
-
+#include "common_signal_common.h"
 #include "common_signal_handler.h"
-
-#include "rpg_net_protocol_configuration.h"
-
-// forward declarations
-class Common_IControl;
 
 class Net_Server_SignalHandler
  : public Common_SignalHandler_T<struct Common_SignalHandlerConfiguration>
@@ -38,11 +32,7 @@ class Net_Server_SignalHandler
   typedef Common_SignalHandler_T<struct Common_SignalHandlerConfiguration> inherited;
 
  public:
-  Net_Server_SignalHandler (long);                                                   // timer id
-                            //Common_IControl*,                                        // controller handle
-                            //Common_IStatistic_T<RPG_Net_Protocol_RuntimeStatistic>*, // reporter handle
-                            // ---------------------------------------------------------------
-                            //bool = true);                                            // use reactor ?
+  Net_Server_SignalHandler (long); // timer id
   inline virtual ~Net_Server_SignalHandler () {}
 
   // implement Common_ISignal
@@ -53,10 +43,7 @@ class Net_Server_SignalHandler
   ACE_UNIMPLEMENTED_FUNC (Net_Server_SignalHandler (const Net_Server_SignalHandler&))
   ACE_UNIMPLEMENTED_FUNC (Net_Server_SignalHandler& operator= (const Net_Server_SignalHandler&))
 
-  //Common_IControl*                                        control_;
-  //Common_IStatistic_T<RPG_Net_Protocol_RuntimeStatistic>* report_;
-  long                                                    timerId_;
-  //bool                                                    useReactor_;
+  long timerId_;
 };
 
 #endif
