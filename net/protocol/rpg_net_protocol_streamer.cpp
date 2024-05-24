@@ -98,6 +98,12 @@ RPG_Net_Protocol_Streamer::handleDataMessage (RPG_Net_Protocol_Message*& message
   converter << data_r.entity_id;
   text_string += converter.str ();
   text_string += ' ';
+
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  ACE_ASSERT (data_r.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0) == std::string::npos);
+#elif defined (ACE_LINUX)
+  ACE_ASSERT (data_r.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0) == std::string::npos);
+#endif // ACE_WIN32 || ACE_WIN64 || ACE_LINUX
   text_string += data_r.xml;
   text_string += ACE_TEXT_ALWAYS_CHAR ("\r\n");
 
@@ -127,7 +133,11 @@ RPG_Net_Protocol_Streamer::handleDataMessage (RPG_Net_Protocol_Message*& message
   text_string += converter.str ();
   text_string += ' ';
 
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
   ACE_ASSERT (data_r.message.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0) == std::string::npos);
+#elif defined (ACE_LINUX)
+  ACE_ASSERT (data_r.message.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0) == std::string::npos);
+#endif // ACE_WIN32 || ACE_WIN64 || ACE_LINUX
   text_string += data_r.message;
   text_string += ACE_TEXT_ALWAYS_CHAR ("\r\n");
 

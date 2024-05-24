@@ -651,13 +651,14 @@ do_work (unsigned int peerPingInterval_in,
   client_action.command = COMMAND_WINDOW_REFRESH;
   client_engine.action (client_action);
 
-  RPG_Graphics_IWindowBase* level_window = main_window.child (WINDOW_MAP);
-  ACE_ASSERT (level_window);
+  RPG_Graphics_IWindowBase* map_window_p = main_window.child (WINDOW_MAP);
+  ACE_ASSERT (map_window_p);
+  CBData_in.mapWindow = map_window_p;
   // initialize/add entity to the graphics cache
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->initialize (NULL,
-                                                                  level_window);
+                                                                  map_window_p);
   RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->initialize (NULL,
-                                                                level_window);
+                                                                map_window_p);
 
   // start painting...
   client_engine.start (NULL);

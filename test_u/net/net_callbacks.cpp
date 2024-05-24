@@ -40,6 +40,7 @@
 #include "rpg_dice.h"
 
 #include "rpg_common_defines.h"
+#include "rpg_common_file_tools.h"
 #include "rpg_common_macros.h"
 #include "rpg_common_tools.h"
 
@@ -52,7 +53,6 @@
 
 #include "rpg_engine.h"
 #include "rpg_engine_defines.h"
-// #include "rpg_engine_level.h"
 
 #include "rpg_client_common.h"
 #include "rpg_client_defines.h"
@@ -72,9 +72,6 @@ idle_start_session_client_cb (gpointer userData_in)
   Common_UI_GTK_BuildersIterator_t iterator =
     data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
-
-  // synch access
-  ACE_GUARD_RETURN (ACE_SYNCH_MUTEX, aGuard, data_p->UIState->lock, G_SOURCE_REMOVE);
 
   GtkButton* button_p =
     GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
@@ -141,21 +138,18 @@ idle_end_session_client_cb (gpointer userData_in)
   GtkButton* button_p =
     GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                         ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_CLOSE_NAME)));
-  if (button_p) // client only
-    gtk_widget_set_sensitive (GTK_WIDGET (button_p),
-                              !idle_b);
+  ACE_ASSERT (button_p);
+  gtk_widget_set_sensitive (GTK_WIDGET (button_p), !idle_b);
   button_p =
     GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                         ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
   ACE_ASSERT (button_p);
-  gtk_widget_set_sensitive (GTK_WIDGET (button_p),
-                            !idle_b);
+  gtk_widget_set_sensitive (GTK_WIDGET (button_p), !idle_b);
   button_p =
     GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                         ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_TEST_NAME)));
-  if (button_p) // client only
-    gtk_widget_set_sensitive (GTK_WIDGET (button_p),
-                              !idle_b);
+  ACE_ASSERT (button_p);
+  gtk_widget_set_sensitive (GTK_WIDGET (button_p), !idle_b);
 
   return G_SOURCE_REMOVE;
 }
@@ -172,9 +166,6 @@ idle_start_session_server_cb (gpointer userData_in)
   Common_UI_GTK_BuildersIterator_t iterator =
     data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
-
-  // synch access
-  ACE_GUARD_RETURN (ACE_SYNCH_MUTEX, aGuard, data_p->UIState->lock, G_SOURCE_REMOVE);
 
   GtkButton* button_p =
     GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
@@ -303,6 +294,8 @@ idle_start_session_server_cb (gpointer userData_in)
       command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
 #elif defined (ACE_LINUX)
       command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0);
+#else
+#error *TODO*
 #endif // ACE_WIN32 || ACE_WIN64 || ACE_LINUX
   while (position_i != std::string::npos)
   {
@@ -338,6 +331,10 @@ idle_end_session_server_cb (gpointer userData_in)
     static_cast<struct Net_Server_GTK_CBData*> (userData_in);
   ACE_ASSERT (data_p);
   ACE_ASSERT (data_p->configuration);
+  ACE_ASSERT (data_p->UIState);
+  Common_UI_GTK_BuildersIterator_t iterator =
+    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
+  ACE_ASSERT (iterator != data_p->UIState->builders.end ());
 
   unsigned int number_of_connections = 0;
   switch (data_p->configuration->protocol_configuration.protocolOptions.transportLayer)
@@ -365,18 +362,12 @@ idle_end_session_server_cb (gpointer userData_in)
   } // end SWITCH
   bool idle_b = !number_of_connections;
 
-  // sanity check(s)
-  Common_UI_GTK_BuildersIterator_t iterator =
-    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
-  ACE_ASSERT (iterator != data_p->UIState->builders.end ());
-
   // step1: idle ?
   GtkButton* button_p =
     GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                         ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
   ACE_ASSERT (button_p);
-  gtk_widget_set_sensitive (GTK_WIDGET (button_p),
-                            !idle_b);
+  gtk_widget_set_sensitive (GTK_WIDGET (button_p), !idle_b);
 
   return G_SOURCE_REMOVE;
 }
@@ -517,11 +508,11 @@ idle_initialize_client_UI_cb (gpointer userData_in)
   gtk_widget_show_all (dialog_p);
 
   // load level
-  std::string filename = Common_File_Tools::getWorkingDirectory ();
-  filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  filename += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING); 
-  filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  filename += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_DATA_SUBDIRECTORY); 
+  std::string filename =
+    RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
+                                                          ACE_TEXT_ALWAYS_CHAR (""),
+                                                          ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING),
+                                                          false); // data-
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
   filename += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
@@ -570,18 +561,12 @@ idle_initialize_server_UI_cb (gpointer userData_in)
 {
   RPG_TRACE (ACE_TEXT ("::idle_initialize_server_UI_cb"));
 
+  // sanity check(s)
   struct Net_Server_GTK_CBData* data_p =
     static_cast<struct Net_Server_GTK_CBData*> (userData_in);
-
-  // sanity check(s)
   ACE_ASSERT (data_p);
-
-  //Common_UI_GladeXMLsIterator_t iterator =
-  //  data_p->UIState->gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   Common_UI_GTK_BuildersIterator_t iterator =
     data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
-  // sanity check(s)
-  //ACE_ASSERT (iterator != data_p->UIState->gladeXML.end ());
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
 
   // step1: initialize dialog window(s)
@@ -615,9 +600,7 @@ idle_initialize_server_UI_cb (gpointer userData_in)
   ACE_ASSERT (spinbutton_p);
   gtk_spin_button_set_range (spinbutton_p,
                              0.0,
-                             std::numeric_limits<unsigned int>::max ());
-  //  gtk_entry_set_editable (GTK_ENTRY(spinbutton_p),
-  //                          FALSE);
+                             static_cast<gdouble> (std::numeric_limits<unsigned int>::max ()));
 
   // step3: initialize text view, setup auto-scrolling
 //   GtkTextView* view_p =
@@ -853,7 +836,7 @@ idle_update_log_display_cb (gpointer userData_in)
                                 &text_iterator);
 
   gchar* converted_text = NULL;
-  { ACE_Guard<ACE_SYNCH_MUTEX> aGuard (data_p->UIState->logQueueLock);
+  { ACE_GUARD_RETURN (ACE_SYNCH_MUTEX, aGuard, data_p->UIState->logQueueLock, TRUE);
     // sanity check
     if (data_p->UIState->logQueue.empty ())
       return TRUE; // G_SOURCE_CONTINUE
@@ -924,15 +907,13 @@ idle_update_info_display_client_cb (gpointer userData_in)
   Common_UI_GTK_BuildersIterator_t iterator =
     data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
-
   GtkSpinButton* spinbutton_p =
     GTK_SPIN_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                              ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_SPINBUTTON_NUMCONNECTIONS_NAME)));
   ACE_ASSERT (spinbutton_p);
 
   enum Common_UI_EventType* event_p = NULL;
-  { // synch access
-    ACE_Guard<ACE_SYNCH_MUTEX> aGuard (data_p->UIState->lock);
+  { ACE_GUARD_RETURN (ACE_SYNCH_MUTEX, aGuard, data_p->UIState->lock, TRUE);
     for (Common_UI_Events_t::ITERATOR iterator_2 (data_p->UIState->eventStack);
          iterator_2.next (event_p);
          iterator_2.advance ())
@@ -1026,8 +1007,7 @@ idle_update_info_display_server_cb (gpointer userData_in)
   ACE_ASSERT (spinbutton_p);
 
   enum Common_UI_EventType* event_p = NULL;
-  { // synch access
-    ACE_Guard<ACE_SYNCH_MUTEX> aGuard (data_p->UIState->lock);
+  { ACE_GUARD_RETURN (ACE_SYNCH_MUTEX, aGuard, data_p->UIState->lock, TRUE);
     for (Common_UI_Events_t::ITERATOR iterator_2 (data_p->UIState->eventStack);
          iterator_2.next (event_p);
          iterator_2.advance ())
@@ -1130,14 +1110,11 @@ button_close_clicked_cb (GtkWidget* widget_in,
 
   ACE_UNUSED_ARG (widget_in);
   ACE_UNUSED_ARG (userData_in);
-  //struct Net_Server_GTK_CBData* data_p = static_cast<struct Net_Server_GTK_CBData*> (userData_in);
-
   //// sanity check(s)
+  //struct Net_Server_GTK_CBData* data_p = static_cast<struct Net_Server_GTK_CBData*> (userData_in);
   //ACE_ASSERT (data_p);
-
   //Common_UI_GladeXMLsIterator_t iterator =
   //  data_p->UIState->gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
-  //// sanity check(s)
   //ACE_ASSERT (iterator != data_p->UIState->gladeXML.end ());
 
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abort ();
@@ -1153,11 +1130,9 @@ button_close_all_clicked_cb (GtkWidget* widget_in,
 
   ACE_UNUSED_ARG (widget_in);
   ACE_UNUSED_ARG (userData_in);
-  //struct Net_Server_GTK_CBData* data_p = static_cast<struct Net_Server_GTK_CBData*> (userData_in);
-
   //// sanity check(s)
+  //struct Net_Server_GTK_CBData* data_p = static_cast<struct Net_Server_GTK_CBData*> (userData_in);
   //ACE_ASSERT (data_p);
-
   //Common_UI_GladeXMLsIterator_t iterator =
   //  data_p->UIState->gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   //// sanity check(s)
@@ -1294,11 +1269,20 @@ button_test_clicked_cb (GtkWidget* widget_in,
                         file_size_i);
   // replace all crlf with RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR
   std::string::size_type position_i =
-    command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
+#elif defined (ACE_LINUX)
+  command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0);
+#endif // ACE_WIN32 || ACE_WIN64 || ACE_LINUX
   while (position_i != std::string::npos)
   {
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
     command_s.xml.replace (position_i, 2, 1, RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR);
     position_i = command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
+#elif defined (ACE_LINUX)
+    command_s.xml.replace (position_i, 1, 1, RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR);
+    position_i = command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0);
+#endif // ACE_WIN32 || ACE_WIN64 || ACE_LINUX
   } // end WHILE
   delete [] data_2; data_2 = NULL;
 
@@ -1326,13 +1310,8 @@ togglebutton_listen_toggled_cb (GtkWidget* widget_in,
     static_cast<struct Net_Server_GTK_CBData*> (userData_in);
   ACE_ASSERT (data_p);
   ACE_ASSERT (data_p->listenerHandle);
-
-  ////Common_UI_GladeXMLsIterator_t iterator =
-  ////  data_p->UIState->gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   //Common_UI_GTK_BuildersIterator_t iterator =
   //  data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
-  //// sanity check(s)
-  ////ACE_ASSERT (iterator != data_p->UIState->gladeXML.end ());
   //ACE_ASSERT (iterator != data_p->UIState->builders.end ());
 
   if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget_in)))
@@ -1346,12 +1325,9 @@ togglebutton_listen_toggled_cb (GtkWidget* widget_in,
   } // end IF
   else
   {
-    try
-    {
+    try {
       data_p->listenerHandle->stop ();
-    }
-    catch (...)
-    {
+    } catch (...) {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("caught exception in RPG_Net_Server_IListener::stop(): \"%m\", continuing\n")));
     } // end catch
@@ -1394,32 +1370,24 @@ button_about_clicked_cb (GtkWidget* widget_in,
   RPG_TRACE (ACE_TEXT ("::button_about_clicked_cb"));
 
   ACE_UNUSED_ARG (widget_in);
-  struct Net_Server_GTK_CBData* data_p = static_cast<struct Net_Server_GTK_CBData*> (userData_in);
 
   // sanity check(s)
+  struct Common_UI_GTK_CBData* data_p =
+    static_cast<struct Common_UI_GTK_CBData*> (userData_in);
   ACE_ASSERT (data_p);
-
-  //Common_UI_GladeXMLsIterator_t iterator =
-  //  data_p->UIState->gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   Common_UI_GTK_BuildersIterator_t iterator =
     data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
-  // sanity check(s)
-  //ACE_ASSERT (iterator != data_p->UIState->gladeXML.end ());
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
 
   // retrieve about dialog handle
   GtkDialog* about_dialog =
-    //GTK_DIALOG (glade_xml_get_widget ((*iterator).second.second,
-    //                                  ACE_TEXT_ALWAYS_CHAR(RPG_CLIENT_GTK_DIALOG_ABOUT_NAME)));
     GTK_DIALOG (gtk_builder_get_object ((*iterator).second.second,
                                         ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_ABOUT_NAME)));
-  ACE_ASSERT(about_dialog);
   if (!about_dialog)
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to glade_xml_get_widget(\"%s\"): \"%m\", aborting\n"),
                 ACE_TEXT (RPG_CLIENT_GTK_DIALOG_ABOUT_NAME)));
-
     return TRUE; // propagate
   } // end IF
 
@@ -1445,14 +1413,9 @@ button_quit_clicked_cb (GtkWidget* widget_in,
 
   ACE_UNUSED_ARG (widget_in);
   ACE_UNUSED_ARG (userData_in);
-  //struct Net_Server_GTK_CBData* data_p = static_cast<struct Net_Server_GTK_CBData*> (userData_in);
-  //// sanity check(s)
-  //ACE_ASSERT (data_p);
 
   //// step1: remove event sources
-  //{
-  //  ACE_Guard<ACE_Thread_Mutex> aGuard (data_p->UIState->lock);
-
+  //{ ACE_Guard<ACE_Thread_Mutex> aGuard (data_p->UIState->lock);
   //  for (Common_UI_GTKEventSourceIdsIterator_t iterator = data_p->UIState->eventSourceIds.begin ();
   //       iterator != data_p->UIState->eventSourceIds.end ();
   //       iterator++)

@@ -295,7 +295,17 @@ client_command:
       action_s.cursor = data_r.cursor;
       action_s.entity_id = data_r.entity_id;
       action_s.sound = data_r.sound;
-      action_s.message = data_r.message;
+      // replace all RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR with crlf
+      std::string message_string = data_r.message;
+      std::string::size_type position_i =
+        message_string.find (RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR, 0);
+      while (position_i != std::string::npos)
+      {
+        message_string.replace (position_i, 1, ACE_TEXT_ALWAYS_CHAR ("\r\n"));
+        position_i =
+          message_string.find (RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR, 0);
+      } // end WHILE
+      action_s.message = message_string;
       action_s.path = data_r.path;
       action_s.source = data_r.source;
       action_s.positions = data_r.positions;
