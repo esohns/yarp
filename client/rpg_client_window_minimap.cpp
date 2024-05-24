@@ -314,6 +314,7 @@ continue_:
       ACE_ASSERT (color_name != RPG_GRAPHICS_COLORNAME_INVALID);
 
       // step2b: convert color
+      ACE_ASSERT (mySurface && mySurface->format);
       color =
         RPG_Graphics_SDL_Tools::getColor (color_name,
                                           *mySurface->format,

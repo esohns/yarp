@@ -522,7 +522,7 @@ RPG_Client_Common_Tools::initDoors (const RPG_Engine& engine_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Common_Tools::initDoors"));
 
-  // init return value(s)
+  // initialize return value(s)
   doorTiles_out.clear ();
 
   enum RPG_Map_DoorState door_state;
@@ -608,7 +608,6 @@ RPG_Client_Common_Tools::updateDoors (const struct RPG_Graphics_DoorTileSet& til
     orientation = RPG_Client_Common_Tools::getDoorOrientation ((*iterator).first,
                                                                engine_in,
                                                                false); // locked access ?
-    ACE_ASSERT (orientation != RPG_GRAPHICS_ORIENTATION_INVALID);
     switch (orientation)
     {
       case ORIENTATION_HORIZONTAL:

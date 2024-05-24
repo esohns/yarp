@@ -1780,10 +1780,17 @@ RPG_Graphics_Common_Tools::renderText (enum RPG_Graphics_Font font_in,
   } // end lock scope
   if (!result)
   {
+#if defined (SDL_USE)
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to TTF_RenderText_Blended(\"%s\"): %s, aborting\n"),
                 ACE_TEXT (textString_in.c_str ()),
                 ACE_TEXT (SDL_GetError ())));
+#elif defined (SDL2_USE)
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to TTF_RenderUTF8_Blended(\"%s\"): %s, aborting\n"),
+                ACE_TEXT (textString_in.c_str ()),
+                ACE_TEXT (SDL_GetError ())));
+#endif // SDL_USE || SDL2_USE
     return NULL;
   } // end IF
 

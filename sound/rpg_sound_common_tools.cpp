@@ -310,7 +310,7 @@ RPG_Sound_Common_Tools::play (enum RPG_Sound_Event event_in,
       RPG_Sound_t sound;
       sound.category = RPG_SOUND_CATEGORY_INVALID;
       sound.sound_event = RPG_SOUND_EVENT_INVALID;
-      sound.file.clear();
+      sound.file.clear ();
       sound.interval = 0;
       // retrieve event properties from the dictionary
       sound = RPG_SOUND_DICTIONARY_SINGLETON::instance ()->get (event_in);

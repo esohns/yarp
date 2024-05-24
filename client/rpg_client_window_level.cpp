@@ -493,7 +493,7 @@ RPG_Client_Window_Level::initialize (const RPG_Graphics_Style& style_in)
   ACE_GUARD (ACE_Thread_Mutex, aGuard, myLock);
 
   // initialize style
-  RPG_Graphics_StyleUnion style;
+  struct RPG_Graphics_StyleUnion style;
   style.discriminator = RPG_Graphics_StyleUnion::FLOORSTYLE;
   style.floorstyle = style_in.floor;
   if (!setStyle (style))
@@ -1560,6 +1560,7 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
             // *NOTE*: the cursor remains on the same map tile, so the highlight
             //         will not get redrawn --> do so manually
             myClientAction.command = COMMAND_TILE_HIGHLIGHT_DRAW;
+            myClientAction.window = this;
             myClient->action (myClientAction);
           } // end IF
 
@@ -1731,6 +1732,7 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
       {
         // step1: restore/clear old tile highlight background
         myClientAction.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
+        myClientAction.window = this;
         myClient->action (myClientAction);
 
         bool is_valid = myEngine->isValid (myClientAction.position,
@@ -1838,6 +1840,7 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
             is_valid)
         {
           myClientAction.command = COMMAND_TILE_HIGHLIGHT_DRAW;
+          myClientAction.window = this;
           myClient->action (myClientAction);
         } // end IF
       } // end IF
@@ -1948,6 +1951,7 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
             myClientAction.path.clear ();
             // restore/clear old tile highlight background
             myClientAction.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
+            myClientAction.window = this;
             myClient->action (myClientAction);
             myClientAction.command = COMMAND_TILE_HIGHLIGHT_DRAW;
             myClient->action (myClientAction);
@@ -2037,6 +2041,7 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
               myClientAction.path.clear ();
               // restore/clear old tile highlight background
               myClientAction.command = COMMAND_TILE_HIGHLIGHT_RESTORE_BG;
+              myClientAction.window = this;
               myClient->action (myClientAction);
               myClientAction.command = COMMAND_TILE_HIGHLIGHT_DRAW;
               myClient->action (myClientAction);
@@ -2305,7 +2310,15 @@ RPG_Client_Window_Level::setStyle (const struct RPG_Graphics_StyleUnion& style_i
         return false;
       } // end IF
 
-      // init door tiles / position
+      // initialize door tiles / position
+      myDoorTiles.clear ();
+      struct RPG_Graphics_TileElement current_tile;
+      RPG_Map_Positions_t doors = myEngine->getDoors (true); // locked access ?
+      for (RPG_Map_PositionsConstIterator_t iterator = doors.begin ();
+           iterator != doors.end ();
+           iterator++)
+        myDoorTiles.insert (std::make_pair (*iterator, current_tile));
+
       RPG_Client_Common_Tools::updateDoors (myCurrentDoorSet,
                                             *myEngine,
                                             myDoorTiles);

@@ -624,8 +624,10 @@ do_work (unsigned int peerPingInterval_in,
                              &user_data_s);
 
   // step4b: client engine
+  RPG_Graphics_IWindowBase* map_window_p = main_window.child (WINDOW_MAP);
+  ACE_ASSERT (map_window_p);
   client_engine.initialize (&level_engine,
-                            main_window.child (WINDOW_MAP),
+                            map_window_p,
                             //&UIDefinition_in,
                             true,   // server session ?
                             false); // debug ?
@@ -651,8 +653,6 @@ do_work (unsigned int peerPingInterval_in,
   client_action.command = COMMAND_WINDOW_REFRESH;
   client_engine.action (client_action);
 
-  RPG_Graphics_IWindowBase* map_window_p = main_window.child (WINDOW_MAP);
-  ACE_ASSERT (map_window_p);
   CBData_in.mapWindow = map_window_p;
   // initialize/add entity to the graphics cache
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->initialize (NULL,

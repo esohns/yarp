@@ -724,6 +724,27 @@ RPG_Graphics_Surface::put (const RPG_Graphics_Offset_t& offset_in,
   target_rectangle.y = static_cast<Sint16> (offset_in.second);
   target_rectangle.w = 0; // *NOTE*: ignored
   target_rectangle.h = 0; // *NOTE*: ignored
+
+  //// lock surface during pixel access
+  //if (SDL_MUSTLOCK ((&image_in)))
+  //  if (SDL_LockSurface (&const_cast<SDL_Surface&> (image_in)))
+  //  {
+  //    ACE_DEBUG ((LM_ERROR,
+  //                ACE_TEXT ("failed to SDL_LockSurface(): \"%s\", returning\n"),
+  //                ACE_TEXT (SDL_GetError ())));
+  //    return;
+  //  } // end IF
+  //if (SDL_MUSTLOCK ((targetSurface_in)))
+  //  if (SDL_LockSurface (targetSurface_in))
+  //  {
+  //    ACE_DEBUG ((LM_ERROR,
+  //                ACE_TEXT ("failed to SDL_LockSurface(): \"%s\", returning\n"),
+  //                ACE_TEXT (SDL_GetError ())));
+  //    if (SDL_MUSTLOCK ((&image_in)))
+  //      SDL_UnlockSurface (&const_cast<SDL_Surface&> (image_in));
+  //    return;
+  //  } // end IF
+
   if (SDL_BlitSurface (&const_cast<SDL_Surface&> (image_in), // source
                        NULL,                                 // aspect (--> everything)
                        targetSurface_in,                     // target
@@ -732,8 +753,17 @@ RPG_Graphics_Surface::put (const RPG_Graphics_Offset_t& offset_in,
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_BlitSurface(): \"%s\", returning\n"),
                 ACE_TEXT (SDL_GetError ())));
+    //if (SDL_MUSTLOCK ((&image_in)))
+    //  SDL_UnlockSurface (&const_cast<SDL_Surface&> (image_in));
+    //if (SDL_MUSTLOCK (targetSurface_in))
+    //  SDL_UnlockSurface (targetSurface_in);
     return;
   } // end IF
+
+  //if (SDL_MUSTLOCK ((&image_in)))
+  //  SDL_UnlockSurface (&const_cast<SDL_Surface&> (image_in));
+  //if (SDL_MUSTLOCK (targetSurface_in))
+  //  SDL_UnlockSurface (targetSurface_in);
 
   // compute dirty region
   dirtyRegion_out = target_rectangle;
@@ -991,6 +1021,26 @@ RPG_Graphics_Surface::copy (const SDL_Surface& sourceImage_in,
   // sanity check(s)
   ACE_ASSERT ((sourceImage_in.w == targetImage_in.w) && (sourceImage_in.h == targetImage_in.h));
 
+  //// lock surface during pixel access
+  //if (SDL_MUSTLOCK ((&sourceImage_in)))
+  //  if (SDL_LockSurface (&const_cast<SDL_Surface&> (sourceImage_in)))
+  //  {
+  //    ACE_DEBUG ((LM_ERROR,
+  //                ACE_TEXT ("failed to SDL_LockSurface(): \"%s\", returning\n"),
+  //                ACE_TEXT (SDL_GetError ())));
+  //    return;
+  //  } // end IF
+  //if (SDL_MUSTLOCK ((&targetImage_in)))
+  //  if (SDL_LockSurface (&targetImage_in))
+  //  {
+  //    ACE_DEBUG ((LM_ERROR,
+  //                ACE_TEXT ("failed to SDL_LockSurface(): \"%s\", returning\n"),
+  //                ACE_TEXT (SDL_GetError ())));
+  //    if (SDL_MUSTLOCK ((&sourceImage_in)))
+  //      SDL_UnlockSurface (&const_cast<SDL_Surface&> (sourceImage_in));
+  //    return;
+  //  } // end IF
+
   // *NOTE*: "...To copy a surface to another surface (or texture) without
   //          blending with the existing data, the blendmode of the SOURCE
   //          surface should be set to SDL_BLENDMODE_NONE. ..."
@@ -1011,12 +1061,21 @@ RPG_Graphics_Surface::copy (const SDL_Surface& sourceImage_in,
 
     SDL_SetSurfaceBlendMode (&const_cast<SDL_Surface&> (sourceImage_in),
                              previous_mode_e);
+    //if (SDL_MUSTLOCK ((&sourceImage_in)))
+    //  SDL_UnlockSurface (&const_cast<SDL_Surface&> (sourceImage_in));
+    //if (SDL_MUSTLOCK (&targetImage_in))
+    //  SDL_UnlockSurface (&targetImage_in);
 
     return;
   } // end IF
 
   SDL_SetSurfaceBlendMode (&const_cast<SDL_Surface&> (sourceImage_in),
                            previous_mode_e);
+
+  //if (SDL_MUSTLOCK ((&sourceImage_in)))
+  //  SDL_UnlockSurface (&const_cast<SDL_Surface&> (sourceImage_in));
+  //if (SDL_MUSTLOCK (&targetImage_in))
+  //  SDL_UnlockSurface (&targetImage_in);
 
   return;
 

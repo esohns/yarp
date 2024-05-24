@@ -150,6 +150,12 @@ typedef std::pair<unsigned int, unsigned int> RPG_Graphics_Size_t;
 // a set of (floor-, wall-, door-, ...) tiles
 struct RPG_Graphics_TileElement
 {
+  RPG_Graphics_TileElement ()
+   : offset_x (0)
+   , offset_y (0)
+   , surface (NULL)
+  {}
+
   int          offset_x;
   int          offset_y;
   SDL_Surface* surface;
