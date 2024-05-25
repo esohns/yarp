@@ -70,9 +70,11 @@ if (SDL_SUPPORT)
  target_link_libraries (${EXECUTABLE}
                         ${SDL_LIBRARIES})
 endif (SDL_SUPPORT)
-if (UNIX)
+if (GTK_SUPPORT)
  target_link_libraries (${EXECUTABLE}
                         ${GTK_LIBRARIES})
+endif (GTK_SUPPORT)
+if (UNIX)
  target_link_libraries (${EXECUTABLE}
                         xerces-c)
  target_link_libraries (${EXECUTABLE}
@@ -94,8 +96,7 @@ elseif (WIN32)
 # set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE}
-                        Opengl32.lib legacy_stdio_definitions.lib
-                        ${GTK_LIBRARIES}
+                        Opengl32.lib
                         ${XERCESC_LIBRARIES}
                         ${ACE_LIBRARY}
                         Common CommonEvent CommonLog CommonSignal CommonTimer CommonUI_GTK
@@ -137,9 +138,11 @@ if (SDL_SUPPORT)
  target_link_libraries (${EXECUTABLE_2} PUBLIC
                         ${SDL_LIBRARIES})
 endif (SDL_SUPPORT)
-if (UNIX)
+if (GTK_SUPPORT)
  target_link_libraries (${EXECUTABLE_2}
                         ${GTK_LIBRARIES})
+endif (GTK_SUPPORT)
+if (UNIX)
  target_link_libraries (${EXECUTABLE_2}
                         xerces-c)
  target_link_libraries (${EXECUTABLE_2}
@@ -158,16 +161,21 @@ if (UNIX)
                         RPG_Character RPG_Combat RPG_Magic RPG_Chance RPG_Dice
                         RPG_Net RPG_Net_Protocol RPG_Net RPG_Client RPG_Graphics RPG_Sound RPG_Net_Protocol)
 elseif (WIN32)
-# set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+# set_target_properties (${EXECUTABLE_2} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE_2} PUBLIC
-                        Opengl32.lib legacy_stdio_definitions.lib
-                        ${GTK_LIBRARIES}
-                        ${XERCESC_LIBRARIES}
-                        ${ACE_LIBRARY}
-                        Common CommonEvent CommonLog CommonSignal CommonTimer CommonUI_GTK
-                        ACEStream ACEStream_Miscellaneous ACEStream_Network
-                        ACENetwork ACENetwork_Server
+                        Opengl32.lib)
+ target_link_libraries (${EXECUTABLE_2} PUBLIC
+                        ${XERCESC_LIBRARIES})
+ target_link_libraries (${EXECUTABLE_2} PUBLIC
+                        ${ACE_LIBRARY})
+ target_link_libraries (${EXECUTABLE_2} PUBLIC
+                        Common CommonEvent CommonLog CommonSignal CommonTimer CommonUI_GTK)
+ target_link_libraries (${EXECUTABLE_2} PUBLIC
+                        ACEStream ACEStream_Miscellaneous ACEStream_Network)
+ target_link_libraries (${EXECUTABLE_2} PUBLIC
+                        ACENetwork ACENetwork_Server)
+ target_link_libraries (${EXECUTABLE_2} PUBLIC
                         RPG_Dice RPG_Chance RPG_Common
                         RPG_Character RPG_Magic RPG_Item RPG_Combat RPG_Player RPG_Monster
                         RPG_Map RPG_Engine
@@ -179,7 +187,7 @@ set_property (TARGET ${EXECUTABLE_2} PROPERTY FOLDER "test_u")
 
 # add PCH
 target_precompile_headers (${EXECUTABLE_2}
-                           PRIVATE stdafx.h)
+                           REUSE_FROM ${EXECUTABLE})
 
 install (TARGETS ${EXECUTABLE} RUNTIME DESTINATION bin)
 

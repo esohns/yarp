@@ -307,13 +307,9 @@ RPG_Sound_Common_Tools::play (enum RPG_Sound_Event event_in,
         break;
     if (iterator == mySoundCache.end ())
     {
-      RPG_Sound_t sound;
-      sound.category = RPG_SOUND_CATEGORY_INVALID;
-      sound.sound_event = RPG_SOUND_EVENT_INVALID;
-      sound.file.clear ();
-      sound.interval = 0;
       // retrieve event properties from the dictionary
-      sound = RPG_SOUND_DICTIONARY_SINGLETON::instance ()->get (event_in);
+      RPG_Sound_t sound =
+        RPG_SOUND_DICTIONARY_SINGLETON::instance ()->get (event_in);
       ACE_ASSERT (sound.sound_event == event_in);
       // load the file
       RPG_Sound_Common_Tools::soundToFile (sound,
@@ -345,7 +341,7 @@ RPG_Sound_Common_Tools::play (enum RPG_Sound_Event event_in,
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("failed to Mix_LoadWAV_RW(\"%s\"): \"%s\", aborting\n"),
                       ACE_TEXT (node.sound_file.c_str ()),
-                      ACE_TEXT (SDL_GetError ())));
+                      ACE_TEXT (Mix_GetError ())));
         return (myIsMuted ? 0 : result);
       } // end IF
 
