@@ -61,6 +61,35 @@
 #include "net_server_common.h"
 
 gboolean
+idle_new_level_client_cb (gpointer userData_in)
+{
+  RPG_TRACE (ACE_TEXT ("::idle_new_level_client_cb"));
+
+  // sanity check(s)
+  struct Net_Client_GTK_CBData* data_p =
+    static_cast<struct Net_Client_GTK_CBData*> (userData_in);
+  ACE_ASSERT (data_p);
+  Common_UI_GTK_BuildersIterator_t iterator =
+    data_p->UIState->builders.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
+  ACE_ASSERT (iterator != data_p->UIState->builders.end ());
+  ACE_ASSERT (data_p->levelEngine);
+  ACE_ASSERT (data_p->entity.character);
+
+  RPG_Engine_EntityID_t id_i = data_p->levelEngine->add (&data_p->entity,
+                                                         true); // locked access ?
+  ACE_ASSERT (id_i);
+  data_p->entities.insert (std::make_pair (id_i, &data_p->entity));
+
+  GtkButton* button_p =
+    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
+                                        ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_TEST_NAME)));
+  ACE_ASSERT (button_p);
+  gtk_widget_set_sensitive (GTK_WIDGET (button_p), TRUE);
+
+  return G_SOURCE_REMOVE;
+}
+
+gboolean
 idle_start_session_client_cb (gpointer userData_in)
 {
   RPG_TRACE (ACE_TEXT ("::idle_start_session_client_cb"));
@@ -81,11 +110,6 @@ idle_start_session_client_cb (gpointer userData_in)
   button_p =
     GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
                                         ACE_TEXT_ALWAYS_CHAR (NET_UI_GTK_BUTTON_CLOSEALL_NAME)));
-  ACE_ASSERT (button_p);
-  gtk_widget_set_sensitive (GTK_WIDGET (button_p), TRUE);
-  button_p =
-    GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
-                                        ACE_TEXT_ALWAYS_CHAR (NET_CLIENT_UI_GTK_BUTTON_TEST_NAME)));
   ACE_ASSERT (button_p);
   gtk_widget_set_sensitive (GTK_WIDGET (button_p), TRUE);
 
@@ -269,6 +293,7 @@ idle_start_session_server_cb (gpointer userData_in)
                 ACE_TEXT ("failed to RPG_Engine_Level::save(\"%s\"), returning\n"),
                 ACE_TEXT (temp_filename.c_str ())));
     istream_connection_p->decrease ();
+    delete message_p;
     return G_SOURCE_REMOVE;
   } // end IF
   uint8_t* data_2 = NULL;
@@ -282,8 +307,9 @@ idle_start_session_server_cb (gpointer userData_in)
                 ACE_TEXT ("failed to Common_File_Tools::load(\"%s\"), returning\n"),
                 ACE_TEXT (temp_filename.c_str ())));
     Common_File_Tools::deleteFile (temp_filename);
+    delete message_p;
     istream_connection_p->decrease ();
-    return FALSE;
+    return G_SOURCE_REMOVE;
   } // end IF
   Common_File_Tools::deleteFile (temp_filename);
     command_s.xml.assign (reinterpret_cast<char*> (data_2),
@@ -314,6 +340,75 @@ idle_start_session_server_cb (gpointer userData_in)
                          NULL);
   ACE_Message_Block* message_block_p = message_p;
   istream_connection_p->send (message_block_p);
+
+  // send current player entitie(s)
+  for (RPG_Engine_EntitiesConstIterator_t iterator = data_p->entities.begin ();
+       iterator != data_p->entities.end ();
+       ++iterator)
+  {
+    message_p =
+      static_cast<RPG_Net_Protocol_Message*> (data_p->messageAllocator.malloc (data_p->allocatorConfiguration.defaultBufferSize));
+    ACE_ASSERT (message_p);
+
+    command_s.command = NET_COMMAND_PLAYER_LOAD;
+    temp_filename = Common_File_Tools::getTempDirectory ();
+    temp_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
+    temp_filename += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
+    temp_filename += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT);
+    ACE_ASSERT ((*iterator).second->character && (*iterator).second->character->isPlayerCharacter ());
+    RPG_Player* player_p =
+      static_cast<RPG_Player*> ((*iterator).second->character);
+    ACE_ASSERT (player_p);
+    if (!player_p->save (temp_filename))
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to RPG_Player::save(\"%s\"), aborting\n"),
+                  ACE_TEXT (temp_filename.c_str ())));
+      delete message_p;
+      return G_SOURCE_REMOVE;
+    } // end IF
+    data_2 = NULL;
+    file_size_i = 0;
+    if (!Common_File_Tools::load (temp_filename,
+                                  data_2,
+                                  file_size_i,
+                                  0))
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to Common_File_Tools::load(\"%s\"), aborting\n"),
+                  ACE_TEXT (temp_filename.c_str ())));
+      Common_File_Tools::deleteFile (temp_filename);
+      delete message_p;
+      return G_SOURCE_REMOVE;
+    } // end IF
+    Common_File_Tools::deleteFile (temp_filename);
+    command_s.xml.assign (reinterpret_cast<char*> (data_2),
+                          file_size_i);
+    // replace all crlf with RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR
+    position_i =
+  #if defined (ACE_WIN32) || defined (ACE_WIN64)
+      command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
+  #elif defined (ACE_LINUX)
+      command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0);
+  #endif // ACE_WIN32 || ACE_WIN64 || ACE_LINUX
+    while (position_i != std::string::npos)
+    {
+  #if defined (ACE_WIN32) || defined (ACE_WIN64)
+      command_s.xml.replace (position_i, 2, 1, RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR);
+      position_i = command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
+  #elif defined (ACE_LINUX)
+      command_s.xml.replace (position_i, 1, 1, RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR);
+      position_i = command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0);
+  #endif // ACE_WIN32 || ACE_WIN64 || ACE_LINUX
+    } // end WHILE
+    delete [] data_2; data_2 = NULL;
+
+    message_p->initialize (command_s,
+                           1,
+                           NULL);
+    message_block_p = message_p;
+    istream_connection_p->send (message_block_p);
+  } // end FOR
 
   // clean up
   istream_connection_p->decrease ();
@@ -540,9 +635,9 @@ idle_initialize_client_UI_cb (gpointer userData_in)
   RPG_Magic_Spells_t spells;
   filename = Common_File_Tools::getWorkingDirectory ();
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  filename += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING); 
+  filename += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_SUB_DIRECTORY_STRING);
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-  filename += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_DATA_SUBDIRECTORY); 
+  filename += ACE_TEXT_ALWAYS_CHAR (COMMON_LOCATION_DATA_SUBDIRECTORY);
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
   filename += ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_PROFILE_EXT);

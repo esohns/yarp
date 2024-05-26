@@ -135,7 +135,7 @@ add_executable (${EXECUTABLE_2}
                 ${${EXECUTABLE_2}_SRCS})
 
 if (SDL_SUPPORT)
- target_link_libraries (${EXECUTABLE_2} PUBLIC
+ target_link_libraries (${EXECUTABLE_2}
                         ${SDL_LIBRARIES})
 endif (SDL_SUPPORT)
 if (GTK_SUPPORT)

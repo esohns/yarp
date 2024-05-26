@@ -111,61 +111,73 @@ SDL_GUI_LevelWindow_Isometric::~SDL_GUI_LevelWindow_Isometric ()
   for (RPG_Graphics_FloorTilesConstIterator_t iterator = myCurrentFloorSet.tiles.begin ();
        iterator != myCurrentFloorSet.tiles.end ();
        iterator++)
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface ((*iterator).surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface ((*iterator).surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
-  if (myCurrentFloorEdgeSet.east.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.east.surface);
-  if (myCurrentFloorEdgeSet.west.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.west.surface);
-  if (myCurrentFloorEdgeSet.north.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.north.surface);
-  if (myCurrentFloorEdgeSet.south.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.south.surface);
-  if (myCurrentFloorEdgeSet.south_east.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.south_east.surface);
-  if (myCurrentFloorEdgeSet.south_west.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.south_west.surface);
-  if (myCurrentFloorEdgeSet.north_east.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.north_east.surface);
-  if (myCurrentFloorEdgeSet.north_west.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.north_west.surface);
-  if (myCurrentFloorEdgeSet.top.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.top.surface);
-  if (myCurrentFloorEdgeSet.right.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.right.surface);
-  if (myCurrentFloorEdgeSet.left.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.left.surface);
-  if (myCurrentFloorEdgeSet.bottom.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.bottom.surface);
+#if defined (SDL_USE) || defined (SDL2_USE)
+  SDL_FreeSurface (myCurrentFloorEdgeSet.east.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.west.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.north.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.south.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.south_east.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.south_west.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.north_east.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.north_west.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.top.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.right.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.left.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.bottom.surface);
 
-  if (myCurrentWallSet.east.surface)
-    SDL_FreeSurface (myCurrentWallSet.east.surface);
-  if (myCurrentWallSet.west.surface)
-    SDL_FreeSurface (myCurrentWallSet.west.surface);
-  if (myCurrentWallSet.north.surface)
-    SDL_FreeSurface (myCurrentWallSet.north.surface);
-  if (myCurrentWallSet.south.surface)
-    SDL_FreeSurface (myCurrentWallSet.south.surface);
+  SDL_FreeSurface (myCurrentWallSet.east.surface);
+  SDL_FreeSurface (myCurrentWallSet.west.surface);
+  SDL_FreeSurface (myCurrentWallSet.north.surface);
+  SDL_FreeSurface (myCurrentWallSet.south.surface);
 
-  if (myWallBlend)
-    SDL_FreeSurface (myWallBlend);
+  SDL_FreeSurface (myWallBlend);
 
-  if (myCurrentDoorSet.horizontal_open.surface)
-    SDL_FreeSurface (myCurrentDoorSet.horizontal_open.surface);
-  if (myCurrentDoorSet.vertical_open.surface)
-    SDL_FreeSurface (myCurrentDoorSet.vertical_open.surface);
-  if (myCurrentDoorSet.horizontal_closed.surface)
-    SDL_FreeSurface (myCurrentDoorSet.horizontal_closed.surface);
-  if (myCurrentDoorSet.vertical_closed.surface)
-    SDL_FreeSurface (myCurrentDoorSet.vertical_closed.surface);
-  if (myCurrentDoorSet.broken.surface)
-    SDL_FreeSurface (myCurrentDoorSet.broken.surface);
+  SDL_FreeSurface (myCurrentDoorSet.horizontal_open.surface);
+  SDL_FreeSurface (myCurrentDoorSet.vertical_open.surface);
+  SDL_FreeSurface (myCurrentDoorSet.horizontal_closed.surface);
+  SDL_FreeSurface (myCurrentDoorSet.vertical_closed.surface);
+  SDL_FreeSurface (myCurrentDoorSet.broken.surface);
 
-  if (myCurrentCeilingTile)
-    SDL_FreeSurface (myCurrentCeilingTile);
+  SDL_FreeSurface (myCurrentCeilingTile);
 
-  if (myCurrentOffMapTile)
-    SDL_FreeSurface (myCurrentOffMapTile);
+  SDL_FreeSurface (myCurrentOffMapTile);
+#elif defined (SDL3_USE)
+  SDL_DestroySurface (myCurrentFloorEdgeSet.east.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.west.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.north.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.south.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.south_east.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.south_west.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.north_east.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.north_west.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.top.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.right.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.left.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.bottom.surface);
+
+  SDL_DestroySurface (myCurrentWallSet.east.surface);
+  SDL_DestroySurface (myCurrentWallSet.west.surface);
+  SDL_DestroySurface (myCurrentWallSet.north.surface);
+  SDL_DestroySurface (myCurrentWallSet.south.surface);
+
+  SDL_DestroySurface (myWallBlend);
+
+  SDL_DestroySurface (myCurrentDoorSet.horizontal_open.surface);
+  SDL_DestroySurface (myCurrentDoorSet.vertical_open.surface);
+  SDL_DestroySurface (myCurrentDoorSet.horizontal_closed.surface);
+  SDL_DestroySurface (myCurrentDoorSet.vertical_closed.surface);
+  SDL_DestroySurface (myCurrentDoorSet.broken.surface);
+
+  SDL_DestroySurface (myCurrentCeilingTile);
+
+  SDL_DestroySurface (myCurrentOffMapTile);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 }
 
 void
@@ -280,9 +292,9 @@ SDL_GUI_LevelWindow_Isometric::draw (SDL_Surface* targetSurface_in,
   ACE_ASSERT (inherited::screen_);
 #if defined (SDL_USE)
   SDL_Surface* surface_p = inherited::screen_;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
   SDL_Surface* target_surface =
     (targetSurface_in ? targetSurface_in : surface_p);
@@ -505,12 +517,20 @@ SDL_GUI_LevelWindow_Isometric::draw (SDL_Surface* targetSurface_in,
                              NULL,           // aspect (--> everything)
                              floor_tile_p,   // target
                              NULL);          // aspect
+#if defined (SDL_USE) || defined (SDL2_USE)
             SDL_FreeSurface (blend_tile_p);
+#elif defined (SDL3_USE)
+            SDL_DestroySurface (blend_tile_p);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
             RPG_Graphics_Surface::put (screen_position,
                                        *floor_tile_p,
                                        target_surface,
                                        dirty_region);
+#if defined (SDL_USE) || defined (SDL2_USE)
             SDL_FreeSurface (floor_tile_p);
+#elif defined (SDL3_USE)
+            SDL_DestroySurface (floor_tile_p);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
           } // end IF
           else
             RPG_Graphics_Surface::put (screen_position,
@@ -953,7 +973,11 @@ SDL_GUI_LevelWindow_Isometric::handleEvent (const SDL_Event& event_in,
   switch (event_in.type)
   {
     // *** keyboard ***
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_KEYDOWN:
+#elif defined (SDL3_USE)
+    case SDL_EVENT_KEY_DOWN:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     {
       switch (event_in.key.keysym.sym)
       {
@@ -988,7 +1012,11 @@ SDL_GUI_LevelWindow_Isometric::handleEvent (const SDL_Event& event_in,
             }
             case SDLK_UP:
             {
+#if defined (SDL_USE) || defined (SDL2_USE)
               if (event_in.key.keysym.mod & KMOD_SHIFT)
+#elif defined (SDL3_USE)
+              if (event_in.key.keysym.mod & SDL_KMOD_SHIFT)
+#endif // SDL_USE || SDL2_USE || SDL3_USE
                 setView (-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                          -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                          true); // locked access ?
@@ -999,7 +1027,11 @@ SDL_GUI_LevelWindow_Isometric::handleEvent (const SDL_Event& event_in,
             }
             case SDLK_DOWN:
             {
+#if defined (SDL_USE) || defined (SDL2_USE)
               if (event_in.key.keysym.mod & KMOD_SHIFT)
+#elif defined (SDL3_USE)
+              if (event_in.key.keysym.mod & SDL_KMOD_SHIFT)
+#endif // SDL_USE || SDL2_USE || SDL3_USE
                 setView (RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                          RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                          true); // locked access ?
@@ -1010,7 +1042,11 @@ SDL_GUI_LevelWindow_Isometric::handleEvent (const SDL_Event& event_in,
             }
             case SDLK_LEFT:
             {
+#if defined (SDL_USE) || defined (SDL2_USE)
               if (event_in.key.keysym.mod & KMOD_SHIFT)
+#elif defined (SDL3_USE)
+              if (event_in.key.keysym.mod & SDL_KMOD_SHIFT)
+#endif // SDL_USE || SDL2_USE || SDL3_USE
                 setView (-RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                          RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                          true); // locked access ?
@@ -1021,7 +1057,11 @@ SDL_GUI_LevelWindow_Isometric::handleEvent (const SDL_Event& event_in,
             }
             case SDLK_RIGHT:
             {
+#if defined (SDL_USE) || defined (SDL2_USE)
               if (event_in.key.keysym.mod & KMOD_SHIFT)
+#elif defined (SDL3_USE)
+              if (event_in.key.keysym.mod & SDL_KMOD_SHIFT)
+#endif // SDL_USE || SDL2_USE || SDL3_USE
                 setView (RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                          -RPG_GRAPHICS_WINDOW_SCROLL_OFFSET,
                          true); // locked access ?
@@ -1034,7 +1074,11 @@ SDL_GUI_LevelWindow_Isometric::handleEvent (const SDL_Event& event_in,
               break;
           } // end SWITCH
 
+#if defined (SDL_USE) || defined (SDL2_USE)
           if (!(event_in.key.keysym.mod & KMOD_SHIFT))
+#elif defined (SDL3_USE)
+          if (!(event_in.key.keysym.mod & SDL_KMOD_SHIFT))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
           {
             if (entity_id == 0)
               break; // nothing to do...
@@ -1117,7 +1161,11 @@ SDL_GUI_LevelWindow_Isometric::handleEvent (const SDL_Event& event_in,
         }
         case SDLK_f:
         {
+#if defined (SDL_USE) || defined (SDL2_USE)
           if (event_in.key.keysym.mod & KMOD_SHIFT)
+#elif defined (SDL3_USE)
+          if (event_in.key.keysym.mod & SDL_KMOD_SHIFT)
+#endif // SDL_USE || SDL2_USE || SDL3_USE
           {
             // toggle setting
             myHideFloor = !myHideFloor;
@@ -1131,7 +1179,11 @@ SDL_GUI_LevelWindow_Isometric::handleEvent (const SDL_Event& event_in,
 
             break;
           } // end IF
+#if defined (SDL_USE) || defined (SDL2_USE)
           else if (event_in.key.keysym.mod & KMOD_CTRL)
+#elif defined (SDL3_USE)
+          else if (event_in.key.keysym.mod & SDL_KMOD_CTRL)
+#endif // SDL_USE || SDL2_USE || SDL3_USE
           {
             toggleFloorBlend ();
 
@@ -1312,8 +1364,13 @@ SDL_GUI_LevelWindow_Isometric::handleEvent (const SDL_Event& event_in,
               if (switch_on)
               {
                 myState->selection_mode =
+#if defined (SDL_USE) || defined (SDL2_USE)
                   ((event_in.key.keysym.mod & KMOD_SHIFT) ? SELECTIONMODE_AIM_SQUARE
-                                                          : SELECTIONMODE_AIM_CIRCLE);
+                                                            : SELECTIONMODE_AIM_CIRCLE);
+#elif defined (SDL3_USE)
+                  ((event_in.key.keysym.mod & SDL_KMOD_SHIFT) ? SELECTIONMODE_AIM_SQUARE
+                                                              : SELECTIONMODE_AIM_CIRCLE);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
                 // retain source position
                 myState->source = map_position;
@@ -1344,8 +1401,13 @@ SDL_GUI_LevelWindow_Isometric::handleEvent (const SDL_Event& event_in,
             {
               // --> push fake mouse - move event
               union SDL_Event sdl_event;
+#if defined (SDL_USE) || defined (SDL2_USE)
               sdl_event.type = SDL_MOUSEMOTION;
-              sdl_event.motion.which = std::numeric_limits<unsigned char>::max (); // flag as fake
+#elif defined (SDL3_USE)
+              sdl_event.type = SDL_EVENT_MOUSE_MOTION;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+              sdl_event.motion.which =
+                std::numeric_limits<unsigned char>::max (); // flag as fake
               sdl_event.motion.x = cursor_position.first;
               sdl_event.motion.y = cursor_position.second;
               if (SDL_PushEvent (&sdl_event) < 0)
@@ -1414,7 +1476,11 @@ SDL_GUI_LevelWindow_Isometric::handleEvent (const SDL_Event& event_in,
         }
         case SDLK_w:
         {
+#if defined (SDL_USE) || defined (SDL2_USE)
           if (event_in.key.keysym.mod & KMOD_SHIFT)
+#elif defined (SDL3_USE)
+          if (event_in.key.keysym.mod & SDL_KMOD_SHIFT)
+#endif // SDL_USE || SDL2_USE || SDL3_USE
           {
             // toggle setting
             myHideWalls = !myHideWalls;
@@ -1454,7 +1520,11 @@ SDL_GUI_LevelWindow_Isometric::handleEvent (const SDL_Event& event_in,
       break;
     }
     // *** mouse ***
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_MOUSEMOTION:
+#elif defined (SDL3_USE)
+    case SDL_EVENT_MOUSE_MOTION:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     {
       RPG_Map_Positions_t positions;
       RPG_Graphics_Offsets_t screen_positions;
@@ -1730,7 +1800,11 @@ set_cursor:
 
       break;
     }
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_MOUSEBUTTONDOWN:
+#elif defined (SDL3_USE)
+    case SDL_EVENT_MOUSE_BUTTON_DOWN:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse button [%u,%u] pressed\n"),
@@ -1931,6 +2005,7 @@ set_cursor:
 
       break;
     }
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_KEYUP:
     case SDL_MOUSEBUTTONUP:
     case SDL_JOYAXISMOTION:
@@ -1940,6 +2015,16 @@ set_cursor:
     case SDL_JOYBUTTONUP:
     case SDL_QUIT:
     case SDL_SYSWMEVENT:
+#elif defined (SDL3_USE)
+    case SDL_EVENT_KEY_UP:
+    case SDL_EVENT_MOUSE_BUTTON_UP:
+    case SDL_EVENT_JOYSTICK_AXIS_MOTION:
+    case SDL_EVENT_JOYSTICK_BALL_MOTION:
+    case SDL_EVENT_JOYSTICK_HAT_MOTION:
+    case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
+    case SDL_EVENT_JOYSTICK_BUTTON_UP:
+    case SDL_EVENT_QUIT:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 #if defined (SDL_USE)
     case SDL_ACTIVEEVENT:
     case SDL_VIDEORESIZE:
@@ -2687,10 +2772,18 @@ SDL_GUI_LevelWindow_Isometric::setStyle (const RPG_Graphics_StyleUnion& style_in
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("failed to SDL_BlitSurface(): \"%s\", aborting\n"),
                     ACE_TEXT (SDL_GetError ())));
+#if defined (SDL_USE) || defined (SDL2_USE)
         SDL_FreeSurface (copy);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (copy);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
         return false;
       } // end IF
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (myCurrentWallSet.west.surface);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (myCurrentWallSet.west.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       myCurrentWallSet.west.surface = copy;
 
       // *NOTE*: NORTH is just a "darkened" version of SOUTH...
@@ -2709,10 +2802,18 @@ SDL_GUI_LevelWindow_Isometric::setStyle (const RPG_Graphics_StyleUnion& style_in
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("failed to SDL_BlitSurface(): \"%s\", aborting\n"),
                     ACE_TEXT (SDL_GetError ())));
+#if defined (SDL_USE) || defined (SDL2_USE)
         SDL_FreeSurface (copy);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (copy);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
         return false;
       } // end IF
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (myCurrentWallSet.north.surface);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (myCurrentWallSet.north.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       myCurrentWallSet.north.surface = copy;
 
        //dump_path = dump_path_base;
@@ -2748,7 +2849,11 @@ SDL_GUI_LevelWindow_Isometric::setStyle (const RPG_Graphics_StyleUnion& style_in
                     static_cast<Uint8> ((RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY * SDL_ALPHA_OPAQUE))));
         return false;
       } // end IF
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (myCurrentWallSet.east.surface);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (myCurrentWallSet.east.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       myCurrentWallSet.east.surface = shaded_wall;
 
       // adjust WEST wall opacity
@@ -2762,7 +2867,11 @@ SDL_GUI_LevelWindow_Isometric::setStyle (const RPG_Graphics_StyleUnion& style_in
                     static_cast<Uint8> ((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE))));
         return false;
       } // end IF
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (myCurrentWallSet.west.surface);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (myCurrentWallSet.west.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       myCurrentWallSet.west.surface = shaded_wall;
 
       // adjust SOUTH wall opacity
@@ -2776,7 +2885,11 @@ SDL_GUI_LevelWindow_Isometric::setStyle (const RPG_Graphics_StyleUnion& style_in
                     static_cast<Uint8> ((RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY * SDL_ALPHA_OPAQUE))));
         return false;
       } // end IF
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (myCurrentWallSet.south.surface);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (myCurrentWallSet.south.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       myCurrentWallSet.south.surface = shaded_wall;
 
       // adjust NORTH wall opacity
@@ -2790,7 +2903,11 @@ SDL_GUI_LevelWindow_Isometric::setStyle (const RPG_Graphics_StyleUnion& style_in
                     static_cast<Uint8> ((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE))));
         return false;
       } // end IF
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (myCurrentWallSet.north.surface);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (myCurrentWallSet.north.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       myCurrentWallSet.north.surface = shaded_wall;
 
        //dump_path = dump_path_base;
@@ -2868,7 +2985,12 @@ SDL_GUI_LevelWindow_Isometric::initCeiling ()
   // sanity check
   if (myCurrentCeilingTile)
   {
-    SDL_FreeSurface (myCurrentCeilingTile); myCurrentCeilingTile = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (myCurrentCeilingTile);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (myCurrentCeilingTile);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    myCurrentCeilingTile = NULL;
   } // end IF
 
   // load tile for ceiling
@@ -2896,11 +3018,20 @@ SDL_GUI_LevelWindow_Isometric::initCeiling ()
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Graphics_Surface::alpha(%u), returning\n"),
                 opacity));
-    SDL_FreeSurface (myCurrentCeilingTile); myCurrentCeilingTile = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (myCurrentCeilingTile);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (myCurrentCeilingTile);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    myCurrentCeilingTile = NULL;
     return;
   } // end IF
 
+#if defined (SDL_USE) || defined (SDL2_USE)
   SDL_FreeSurface (myCurrentCeilingTile);
+#elif defined (SDL3_USE)
+  SDL_DestroySurface (myCurrentCeilingTile);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   myCurrentCeilingTile = shaded_ceiling;
 }
 
@@ -2912,13 +3043,18 @@ SDL_GUI_LevelWindow_Isometric::initWallBlend (bool halfHeightWalls_in)
   // sanity check
   if (myWallBlend)
   {
-    SDL_FreeSurface (myWallBlend); myWallBlend = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (myWallBlend);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (myWallBlend);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    myWallBlend = NULL;
   } // end IF
 
   myWallBlend =
-      RPG_Graphics_Surface::create (RPG_GRAPHICS_TILE_WALL_WIDTH,
-                                    (halfHeightWalls_in ? RPG_GRAPHICS_TILE_WALL_HEIGHT_HALF
-                                                        : RPG_GRAPHICS_TILE_WALL_HEIGHT));
+    RPG_Graphics_Surface::create (RPG_GRAPHICS_TILE_WALL_WIDTH,
+                                  (halfHeightWalls_in ? RPG_GRAPHICS_TILE_WALL_HEIGHT_HALF
+                                                      : RPG_GRAPHICS_TILE_WALL_HEIGHT));
   if (!myWallBlend)
   {
     ACE_DEBUG ((LM_ERROR,
@@ -2929,16 +3065,29 @@ SDL_GUI_LevelWindow_Isometric::initWallBlend (bool halfHeightWalls_in)
     return;
   } // end IF
 
+#if defined (SDL_USE) || defined (SDL2_USE)
   if (SDL_FillRect (myWallBlend,
                     NULL,
                     RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK_A10,
                                                       *myWallBlend->format,
                                                       1.0f)))
+#elif defined (SDL3_USE)
+  if (SDL_FillSurfaceRect (myWallBlend,
+                           NULL,
+                           RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK_A10,
+                                                             *myWallBlend->format,
+                                                             1.0f)))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_FillRect(): \"%s\", returning\n"),
                 ACE_TEXT (SDL_GetError ())));
-    SDL_FreeSurface (myWallBlend); myWallBlend = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (myWallBlend);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (myWallBlend);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    myWallBlend = NULL;
     return;
   } // end IF
 

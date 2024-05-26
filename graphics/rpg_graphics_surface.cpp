@@ -107,7 +107,11 @@ RPG_Graphics_Surface::~RPG_Graphics_Surface()
   // clean up
   if (myOwnSurface &&
       mySurface)
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (mySurface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (mySurface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 }
 
 void
@@ -121,7 +125,11 @@ RPG_Graphics_Surface::init (const RPG_Graphics_GraphicTypeUnion& type_in,
   {
     if (myOwnSurface)
     {
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (mySurface);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (mySurface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       myOwnSurface = false;
     } // end IF
     mySurface = NULL;
@@ -157,7 +165,11 @@ RPG_Graphics_Surface::init (SDL_Surface* surface_in,
   {
     if (myOwnSurface)
     {
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (mySurface);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (mySurface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       myOwnSurface = false;
     } // end IF
     mySurface = NULL;
@@ -172,53 +184,59 @@ RPG_Graphics_Surface::init (SDL_Surface* surface_in,
 void
 #if defined (SDL_USE)
 RPG_Graphics_Surface::clip ()
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
 RPG_Graphics_Surface::clip (SDL_Window* window_in)
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::clip"));
 
   // sanity check(s)
 #if defined (SDL_USE)
   SDL_Surface* surface_p = SDL_GetVideoSurface ();
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   ACE_ASSERT (window_in);
   SDL_Surface* surface_p = SDL_GetWindowSurface (window_in);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
   if (((myClipRectangle.w == 0)  || (myClipRectangle.h == 0)) ||
       !surface_p)
     return; // nothing to do
 
-  SDL_SetClipRect (surface_p,
-                   &myClipRectangle);
+#if defined (SDL_USE) || defined (SDL2_USE)
+  SDL_SetClipRect (surface_p, &myClipRectangle);
+#elif defined (SDL3_USE)
+  SDL_SetSurfaceClipRect (surface_p, &myClipRectangle);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 }
 
 void
 #if defined (SDL_USE)
 RPG_Graphics_Surface::unclip ()
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
 RPG_Graphics_Surface::unclip (SDL_Window* window_in)
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::unclip"));
 
   // sanity check(s)
 #if defined (SDL_USE)
   SDL_Surface* surface_p = SDL_GetVideoSurface ();
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   ACE_ASSERT (window_in);
   SDL_Surface* surface_p = SDL_GetWindowSurface (window_in);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
   if (!surface_p)
     return; // nothing to do
 
   // cache previous entry
-  SDL_GetClipRect (surface_p,
-                   &myClipRectangle);
-
+#if defined (SDL_USE) || defined (SDL2_USE)
+  SDL_GetClipRect (surface_p, &myClipRectangle);
   SDL_SetClipRect (surface_p, NULL);
+#elif defined (SDL3_USE)
+  SDL_GetSurfaceClipRect (surface_p, &myClipRectangle);
+  SDL_SetSurfaceClipRect (surface_p, NULL);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 }
 
 SDL_Surface*
@@ -296,21 +314,37 @@ RPG_Graphics_Surface::load (const std::string& filename_in,
     } // end IF
 #elif defined (SDL2_USE)
     convert = SDL_ConvertSurfaceFormat (result,
-                                        SDL_PIXELFORMAT_RGBA8888,
+                                        SDL_PIXELFORMAT_BGRA8888,
                                         0);
     if (!convert)
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_ConvertSurfaceFormat(%d): \"%s\", aborting\n"),
-                  SDL_PIXELFORMAT_RGBA8888,
+                  SDL_PIXELFORMAT_BGRA8888,
                   ACE_TEXT (SDL_GetError ())));
       SDL_FreeSurface (result);
       return NULL;
     } // end IF
-#endif // SDL_USE || SDL2_USE
+#elif defined (SDL3_USE)
+    convert = SDL_ConvertSurfaceFormat (result,
+                                        SDL_PIXELFORMAT_BGRA8888);
+    if (!convert)
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_ConvertSurfaceFormat(%d): \"%s\", aborting\n"),
+                  SDL_PIXELFORMAT_BGRA8888,
+                  ACE_TEXT (SDL_GetError ())));
+      SDL_DestroySurface (result);
+      return NULL;
+    } // end IF
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
     // clean up
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (result);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (result);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
     result = convert;
   } // end IF
@@ -334,13 +368,23 @@ RPG_Graphics_Surface::savePNG (const SDL_Surface& surface_in,
                   ACE_TEXT (targetFile_in.c_str ())));
       return;
     } // end IF
+#if defined (SDL_USE) || defined (SDL2_USE)
   ACE_ASSERT (surface_in.format->BytesPerPixel == 4);
+#elif defined (SDL3_USE)
+  ACE_ASSERT (surface_in.format->bytes_per_pixel == 4);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
   unsigned char* output = NULL;
+  uint8_t bytes_per_pixel_i =
+#if defined (SDL_USE) || defined (SDL2_USE)
+    surface_in.format->BytesPerPixel;
+#elif defined (SDL3_USE)
+    surface_in.format->bytes_per_pixel;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   try {
     output =
-        new unsigned char[(surface_in.w * surface_in.h * (alpha_in ? surface_in.format->BytesPerPixel
-                                                                   : (surface_in.format->BytesPerPixel - 1)))];
+      new unsigned char[(surface_in.w * surface_in.h * (alpha_in ? bytes_per_pixel_i
+                                                                 : (bytes_per_pixel_i - 1)))];
   } catch (...) {
     output = NULL;
   }
@@ -348,9 +392,8 @@ RPG_Graphics_Surface::savePNG (const SDL_Surface& surface_in,
   {
     ACE_DEBUG ((LM_CRITICAL,
                 ACE_TEXT ("failed to allocate memory(%u): \"%m\", returning\n"),
-                (surface_in.w * surface_in.h * (alpha_in ? surface_in.format->BytesPerPixel
-                                                         : (surface_in.format->BytesPerPixel - 1)))));
-
+                (surface_in.w * surface_in.h * (alpha_in ? bytes_per_pixel_i
+                                                         : (bytes_per_pixel_i - 1)))));
     return;
   } // end IF
 
@@ -537,6 +580,7 @@ RPG_Graphics_Surface::create (unsigned int width_in,
 
   // *NOTE*: surface is initialized as transparent
   SDL_Surface* result =
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_CreateRGBSurface (RPG_Graphics_Surface::SDL_surface_flags,
                           static_cast<int> (width_in),
                           static_cast<int> (height_in),
@@ -545,6 +589,17 @@ RPG_Graphics_Surface::create (unsigned int width_in,
                           ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x0000FF00 : 0x00FF0000),  // Gmask
                           ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x00FF0000 : 0x0000FF00),  // Bmask
                           ((SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0xFF000000 : 0x000000FF)); // Amask
+#elif defined (SDL3_USE)
+    // *NOTE*: generates SDL_PIXELFORMAT_(ABGR8888 | RGBA8888) on (little | big
+    //         endian) systems
+    SDL_CreateSurface (static_cast<int> (width_in),
+                       static_cast<int> (height_in),
+                       SDL_GetPixelFormatEnumForMasks (32,
+                                                       (SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x000000FF : 0xFF000000,   // Rmask
+                                                       (SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x0000FF00 : 0x00FF0000,   // Gmask
+                                                       (SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0x00FF0000 : 0x0000FF00,   // Bmask
+                                                       (SDL_BYTEORDER == SDL_LIL_ENDIAN) ? 0xFF000000 : 0x000000FF)); // Amask
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   if (!result)
   {
     ACE_DEBUG ((LM_ERROR,
@@ -578,6 +633,7 @@ RPG_Graphics_Surface::get (const RPG_Graphics_Offset_t& offset_in,
 
   // init return value
   SDL_Surface* result =
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_CreateRGBSurface (RPG_Graphics_Surface::SDL_surface_flags,
                           width_in,
                           height_in,
@@ -586,6 +642,15 @@ RPG_Graphics_Surface::get (const RPG_Graphics_Offset_t& offset_in,
                           source_in.format->Gmask,
                           source_in.format->Bmask,
                           source_in.format->Amask);
+#elif defined (SDL3_USE)
+    SDL_CreateSurface (static_cast<int> (width_in),
+                       static_cast<int> (height_in),
+                       SDL_GetPixelFormatEnumForMasks (source_in.format->bits_per_pixel, // bpp
+                                                       source_in.format->Rmask,          // Rmask
+                                                       source_in.format->Gmask,          // Gmask
+                                                       source_in.format->Bmask,          // Bmask
+                                                       source_in.format->Amask));        // Amask
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   if (!result)
   {
     ACE_DEBUG ((LM_ERROR,
@@ -598,28 +663,35 @@ RPG_Graphics_Surface::get (const RPG_Graphics_Offset_t& offset_in,
 
   // lock surface during pixel access
   if (SDL_MUSTLOCK ((&source_in)))
-    if (SDL_LockSurface (&const_cast<SDL_Surface&>(source_in)))
+    if (SDL_LockSurface (&const_cast<SDL_Surface&> (source_in)))
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_LockSurface(): \"%s\", aborting\n"),
                 ACE_TEXT (SDL_GetError ())));
-
-    // clean up
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (result);
-
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (result);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     return NULL;
   } // end IF
 
+  uint8_t bytes_per_pixel_i =
+#if defined (SDL_USE) || defined (SDL2_USE)
+    result->format->BytesPerPixel;
+#elif defined (SDL3_USE)
+    result->format->bytes_per_pixel;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   for (unsigned int i = 0;
        i < clipped_height;
        i++)
-  ::memcpy ((static_cast<unsigned char*>(result->pixels) + (result->pitch * i)),
-            (static_cast<unsigned char*>(source_in.pixels) +
+  ::memcpy ((static_cast<unsigned char*> (result->pixels) + (result->pitch * i)),
+            (static_cast<unsigned char*> (source_in.pixels) +
              ((offset_in.second + i) * source_in.pitch) + (offset_in.first * 4)),
-            (clipped_width * result->format->BytesPerPixel)); // RGBA --> 4 bytes
+            (clipped_width * bytes_per_pixel_i)); // RGBA --> 4 bytes
 
   if (SDL_MUSTLOCK ((&source_in)))
-    SDL_UnlockSurface (&const_cast<SDL_Surface&>(source_in));
+    SDL_UnlockSurface (&const_cast<SDL_Surface&> (source_in));
 
   return result;
 }
@@ -691,12 +763,18 @@ RPG_Graphics_Surface::get (const RPG_Graphics_Offset_t& offset_in,
       return;
     } // end IF
 
+  uint8_t bytes_per_pixel_i =
+#if defined (SDL_USE) || defined (SDL2_USE)
+    target_inout.format->BytesPerPixel;
+#elif defined (SDL3_USE)
+    target_inout.format->bytes_per_pixel;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   for (unsigned int i = 0;
        i < clipped_height;
        i++)
     ::memcpy ((static_cast<unsigned char*> (target_inout.pixels) + (target_inout.pitch * i)),
-              (static_cast<unsigned char*> (source_in.pixels) + ((offset_in.second + i) * source_in.pitch) + (offset_in.first * source_in.format->BytesPerPixel)),
-              (clipped_width * target_inout.format->BytesPerPixel));
+              (static_cast<unsigned char*> (source_in.pixels) + ((offset_in.second + i) * source_in.pitch) + (offset_in.first * bytes_per_pixel_i)),
+              (clipped_width * bytes_per_pixel_i));
 
   if (SDL_MUSTLOCK ((&source_in)))
     SDL_UnlockSurface (&const_cast<SDL_Surface&> (source_in));
@@ -815,7 +893,11 @@ RPG_Graphics_Surface::putText (enum RPG_Graphics_Font font_in,
                                dirtyRegion_out);
 
     // clean up
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (rendered_text);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (rendered_text);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     rendered_text = NULL;
   } // end IF
 
@@ -839,7 +921,11 @@ RPG_Graphics_Surface::putText (enum RPG_Graphics_Font font_in,
                                                          dirtyRegion_out);
 
   // clean up
+#if defined (SDL_USE) || defined (SDL2_USE)
   SDL_FreeSurface (rendered_text);
+#elif defined (SDL3_USE)
+  SDL_DestroySurface (rendered_text);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
   return true;
 }
@@ -926,7 +1012,11 @@ RPG_Graphics_Surface::alpha (Uint8 opacity_in,
   // that way --> do it manually
 
   // sanity check(s)
+#if defined (SDL_USE) || defined (SDL2_USE)
   ACE_ASSERT (targetImage_in.format->BytesPerPixel == 4);
+#elif defined (SDL3_USE)
+  ACE_ASSERT (targetImage_in.format->bytes_per_pixel == 4);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
   // lock surface during pixel access
   if (SDL_MUSTLOCK ((&targetImage_in)))
@@ -1004,9 +1094,15 @@ RPG_Graphics_Surface::fill (Uint32 color_in,
   ACE_ASSERT (targetSurface_in);
 
   // fill with color
+#if defined (SDL_USE) || defined (SDL2_USE)
   if (SDL_FillRect (targetSurface_in,                                // target
                     const_cast<struct SDL_Rect*> (clipRectangle_in), // aspect
                     color_in))                                       // color
+#elif defined (SDL3_USE)
+  if (SDL_FillSurfaceRect (targetSurface_in,                                // target
+                           const_cast<struct SDL_Rect*> (clipRectangle_in), // aspect
+                           color_in))                                       // color
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_FillRect(): \"%s\", continuing\n"),
                 ACE_TEXT (SDL_GetError ())));
@@ -1102,12 +1198,18 @@ RPG_Graphics_Surface::copy (const SDL_Surface& sourceImage_in,
       return;
     } // end IF
 
+  uint8_t bytes_per_pixel_i =
+#if defined (SDL_USE) || defined (SDL2_USE)
+    sourceImage_in.format->BytesPerPixel;
+#elif defined (SDL3_USE)
+    sourceImage_in.format->bytes_per_pixel;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   for (unsigned int i = 0;
        i < static_cast<unsigned int> (sourceImage_in.h);
        i++)
     ::memcpy ((static_cast<ACE_UINT8*> (targetImage_in.pixels) + (targetImage_in.pitch * i)),
               (static_cast<ACE_UINT8*> (sourceImage_in.pixels) + (sourceImage_in.pitch * i)),
-              (sourceImage_in.w * sourceImage_in.format->BytesPerPixel));
+              (sourceImage_in.w * bytes_per_pixel_i));
 
   if (SDL_MUSTLOCK ((&sourceImage_in)))
     SDL_UnlockSurface (&const_cast<SDL_Surface&> (sourceImage_in));
@@ -1132,6 +1234,7 @@ RPG_Graphics_Surface::copy (const SDL_Surface& sourceImage_in)
 
   return result;
 
+#if defined (SDL_USE) || defined (SDL2_USE)
   result = SDL_CreateRGBSurface (RPG_Graphics_Surface::SDL_surface_flags,
                                  sourceImage_in.w,
                                  sourceImage_in.h,
@@ -1140,6 +1243,16 @@ RPG_Graphics_Surface::copy (const SDL_Surface& sourceImage_in)
                                  sourceImage_in.format->Gmask,
                                  sourceImage_in.format->Bmask,
                                  sourceImage_in.format->Amask);
+#elif defined (SDL3_USE)
+  result =
+    SDL_CreateSurface (sourceImage_in.w,
+                       sourceImage_in.h,
+                       SDL_GetPixelFormatEnumForMasks (sourceImage_in.format->bits_per_pixel, // bpp
+                                                       sourceImage_in.format->Rmask,          // Rmask
+                                                       sourceImage_in.format->Gmask,          // Gmask
+                                                       sourceImage_in.format->Bmask,          // Bmask
+                                                       sourceImage_in.format->Amask));        // Amask
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   if (!result)
   {
     ACE_DEBUG ((LM_ERROR,
@@ -1158,28 +1271,28 @@ void
 #if defined (SDL_USE)
 RPG_Graphics_Surface::update (const struct SDL_Rect& dirty_in,
                               SDL_Surface* targetSurface_in)
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
 RPG_Graphics_Surface::update (const struct SDL_Rect& dirty_in,
                               SDL_Window* targetWindow_in)
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Surface::update"));
 
   // sanity check
 #if defined (SDL_USE)
-  ACE_ASSERT (targetSurface_in);
-#elif defined (SDL2_USE)
+  SDL_Surface* surface_p = targetSurface_in;
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   ACE_ASSERT (targetWindow_in);
-#endif // SDL_USE || SDL2_USE
+  SDL_Surface* surface_p = SDL_GetWindowSurface (targetWindow_in);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+  ACE_ASSERT (surface_p);
 
   // handle clipping
-#if defined (SDL_USE)
   struct SDL_Rect intersection =
-      RPG_Graphics_SDL_Tools::intersect (targetSurface_in->clip_rect,
+      RPG_Graphics_SDL_Tools::intersect (surface_p->clip_rect,
                                          dirty_in);
   if ((intersection.w == 0) || (intersection.h == 0))
     return; // nothing to do...
-#endif // SDL_USE
 
 #if defined (SDL_USE)
   //SDL_UpdateRects(targetSurface_in,
@@ -1188,11 +1301,11 @@ RPG_Graphics_Surface::update (const struct SDL_Rect& dirty_in,
   SDL_UpdateRect (targetSurface_in,
                   intersection.x, intersection.y,
                   intersection.w, intersection.h);
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_UpdateWindowSurfaceRects (targetWindow_in,
                                 &dirty_in,
                                 1);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 }
 
 SDL_Surface*
@@ -1392,7 +1505,11 @@ RPG_Graphics_Surface::loadPNG (const std::string& filename_in,
     png_destroy_read_struct (&png_ptr,
                              &info_ptr,
                              NULL);
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (result);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (result);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
     return NULL;
   } // end IF
@@ -1415,7 +1532,11 @@ RPG_Graphics_Surface::loadPNG (const std::string& filename_in,
       png_destroy_read_struct (&png_ptr,
                                &info_ptr,
                                NULL);
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (result);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (result);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       delete [] row_pointers;
 
       return NULL;

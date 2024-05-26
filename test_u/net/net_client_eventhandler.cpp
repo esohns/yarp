@@ -68,7 +68,7 @@ Net_Client_EventHandler::start (Stream_SessionId_t sessionId_in,
   if (!event_source_id)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to g_idle_add(idle_start_session_cb): \"%m\", returning\n")));
+                ACE_TEXT ("failed to g_idle_add(idle_start_session_client_cb): \"%m\", returning\n")));
     return;
   } // end IF
 
@@ -103,7 +103,7 @@ Net_Client_EventHandler::end (Stream_SessionId_t sessionId_in)
   if (!event_source_id)
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to g_idle_add(idle_end_session_cb): \"%m\", returning\n")));
+                ACE_TEXT ("failed to g_idle_add(idle_end_session_client_cb): \"%m\", returning\n")));
     return;
   } // end IF
 
@@ -178,6 +178,16 @@ Net_Client_EventHandler::notify (Stream_SessionId_t sessionId_in,
       CBData_->levelEngine->set (level);
       if (was_running_b)
         CBData_->levelEngine->start ();
+
+      guint event_source_id = g_idle_add (idle_new_level_client_cb,
+                                          CBData_);
+      if (!event_source_id)
+      {
+        ACE_DEBUG ((LM_ERROR,
+                    ACE_TEXT ("failed to g_idle_add(idle_new_level_client_cb): \"%m\", returning\n")));
+        return;
+      } // end IF
+
       break;
     }
     case NET_COMMAND_PLAYER_LOAD:
@@ -279,19 +289,15 @@ client_command:
       return;
     }
     default:
-    {
-      ACE_ASSERT (CBData_->clientEngine);
-      ACE_ASSERT (!CBData_->entities.empty ());
-
-      RPG_Engine_EntitiesConstIterator_t iterator = CBData_->entities.begin ();
-      RPG_Engine_EntityID_t id_i = (*iterator).first;
-      ACE_ASSERT (id_i);
+    { ACE_ASSERT (CBData_->clientEngine);
+      ACE_ASSERT (CBData_->mapWindow);
 
       struct RPG_Client_Action action_s;
-      action_s.command = static_cast<enum RPG_Client_Command> (data_r.clientCommand);
+      action_s.command =
+        static_cast<enum RPG_Client_Command> (data_r.clientCommand);
       action_s.previous = data_r.previous;
       action_s.position = data_r.position;
-      action_s.window = NULL; // *TODO*
+      action_s.window = CBData_->mapWindow; // *TODO*
       action_s.cursor = data_r.cursor;
       action_s.entity_id = data_r.entity_id;
       action_s.sound = data_r.sound;

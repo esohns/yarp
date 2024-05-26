@@ -54,10 +54,6 @@ class RPG_Client_Window_Level
                            const RPG_Graphics_SDLWindowBase&); // parent
   virtual ~RPG_Client_Window_Level ();
 
-  bool initialize (RPG_Client_Engine*, // engine handle
-                   RPG_Engine*,        // (level) state handle
-                   bool = false);      // debug ?
-
   void toggleMiniMap ();
   bool showMiniMap () const;
   void toggleMessages ();
@@ -67,6 +63,9 @@ class RPG_Client_Window_Level
   inline virtual void drawBorder (SDL_Surface* = NULL,                      // target surface (default: screen)
                                   unsigned int = 0,                         // offset x (top-left = [0,0])
                                   unsigned int = 0) { ACE_ASSERT (false); } // offset y (top-left = [0,0])
+  virtual bool initialize (RPG_Client_Engine*, // engine handle
+                           RPG_Engine*,        // (level) state handle
+                           bool = false);      // debug ?
   virtual void initialize (const RPG_Graphics_Style&); // style
   virtual void setView (int,
                         int,          // view (relative map coordinates)

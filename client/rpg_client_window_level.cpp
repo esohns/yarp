@@ -87,38 +87,17 @@ RPG_Client_Window_Level::RPG_Client_Window_Level (const RPG_Graphics_SDLWindowBa
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::RPG_Client_Window_Level"));
 
-  // initialize client action
-  myClientAction.command = RPG_CLIENT_COMMAND_INVALID;
-  myClientAction.previous =
-      std::make_pair (std::numeric_limits<unsigned int>::max (),
-                      std::numeric_limits<unsigned int>::max ());
-  myClientAction.position =
-      std::make_pair (std::numeric_limits<unsigned int>::max (),
-                      std::numeric_limits<unsigned int>::max ());
-  myClientAction.window = this;
-  myClientAction.cursor = RPG_GRAPHICS_CURSOR_INVALID;
-  myClientAction.entity_id = 0;
-  myClientAction.path.clear ();
-  myClientAction.source =
-      std::make_pair (std::numeric_limits<unsigned int>::max (),
-                      std::numeric_limits<unsigned int>::max ());
-  myClientAction.positions.clear ();
-
-  ACE_OS::memset (&myCurrentFloorEdgeSet, 0, sizeof (struct RPG_Graphics_FloorEdgeTileSet));
-  ACE_OS::memset (&myCurrentWallSet, 0, sizeof (struct RPG_Graphics_WallTileSet));
-  ACE_OS::memset (&myCurrentDoorSet, 0, sizeof (struct RPG_Graphics_DoorTileSet));
-
-  // init ceiling tile
+  // initialize ceiling tile
   initCeiling ();
 
   // load tile for unmapped areas
-  RPG_Graphics_GraphicTypeUnion type;
+  struct RPG_Graphics_GraphicTypeUnion type;
   type.discriminator = RPG_Graphics_GraphicTypeUnion::TILEGRAPHIC;
   type.tilegraphic = TILE_OFF_MAP;
   myOffMapTile =
-      RPG_Graphics_Common_Tools::loadGraphic (type,   // tile
-                                              true,   // convert to display format
-                                              false); // don't cache
+    RPG_Graphics_Common_Tools::loadGraphic (type,   // tile
+                                            true,   // convert to display format
+                                            false); // don't cache
   if (!myOffMapTile)
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
@@ -127,9 +106,9 @@ RPG_Client_Window_Level::RPG_Client_Window_Level (const RPG_Graphics_SDLWindowBa
   // load tile for invisible areas
   type.tilegraphic = TILE_FLOOR_INVISIBLE;
   myInvisibleTile =
-      RPG_Graphics_Common_Tools::loadGraphic (type,   // tile
-                                              true,   // convert to display format
-                                              false); // don't cache
+    RPG_Graphics_Common_Tools::loadGraphic (type,   // tile
+                                            true,   // convert to display format
+                                            false); // don't cache
   if (!myInvisibleTile)
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Graphics_Common_Tools::loadGraphic(\"%s\"), continuing\n"),
@@ -146,6 +125,7 @@ RPG_Client_Window_Level::RPG_Client_Window_Level (const RPG_Graphics_SDLWindowBa
   } // end IF
   RPG_Graphics_Surface::alpha (static_cast<Uint8> ((RPG_GRAPHICS_TILE_PREVSEEN_DEF_OPACITY * SDL_ALPHA_OPAQUE)),
                                *myVisionBlendTile);
+
   myVisionTempTile =
       RPG_Graphics_Surface::create (RPG_GRAPHICS_TILE_FLOOR_WIDTH,
                                     RPG_GRAPHICS_TILE_FLOOR_HEIGHT);
@@ -167,74 +147,89 @@ RPG_Client_Window_Level::~RPG_Client_Window_Level ()
   for (RPG_Graphics_FloorTilesConstIterator_t iterator = myCurrentFloorSet.tiles.begin ();
        iterator != myCurrentFloorSet.tiles.end ();
        iterator++)
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface ((*iterator).surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface ((*iterator).surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
-  if (myCurrentFloorEdgeSet.east.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.east.surface);
-  if (myCurrentFloorEdgeSet.west.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.west.surface);
-  if (myCurrentFloorEdgeSet.north.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.north.surface);
-  if (myCurrentFloorEdgeSet.south.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.south.surface);
-  if (myCurrentFloorEdgeSet.south_east.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.south_east.surface);
-  if (myCurrentFloorEdgeSet.south_west.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.south_west.surface);
-  if (myCurrentFloorEdgeSet.north_east.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.north_east.surface);
-  if (myCurrentFloorEdgeSet.north_west.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.north_west.surface);
-  if (myCurrentFloorEdgeSet.top.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.top.surface);
-  if (myCurrentFloorEdgeSet.right.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.right.surface);
-  if (myCurrentFloorEdgeSet.left.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.left.surface);
-  if (myCurrentFloorEdgeSet.bottom.surface)
-    SDL_FreeSurface (myCurrentFloorEdgeSet.bottom.surface);
+#if defined (SDL_USE) || defined (SDL2_USE)
+  SDL_FreeSurface (myCurrentFloorEdgeSet.east.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.west.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.north.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.south.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.south_east.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.south_west.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.north_east.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.north_west.surface);
 
-  if (myCurrentWallSet.east.surface)
-    SDL_FreeSurface (myCurrentWallSet.east.surface);
-  if (myCurrentWallSet.west.surface)
-    SDL_FreeSurface (myCurrentWallSet.west.surface);
-  if (myCurrentWallSet.north.surface)
-    SDL_FreeSurface (myCurrentWallSet.north.surface);
-  if (myCurrentWallSet.south.surface)
-    SDL_FreeSurface (myCurrentWallSet.south.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.top.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.right.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.left.surface);
+  SDL_FreeSurface (myCurrentFloorEdgeSet.bottom.surface);
 
-  if (myWallBlend)
-    SDL_FreeSurface (myWallBlend);
+  SDL_FreeSurface (myCurrentWallSet.east.surface);
+  SDL_FreeSurface (myCurrentWallSet.west.surface);
+  SDL_FreeSurface (myCurrentWallSet.north.surface);
+  SDL_FreeSurface (myCurrentWallSet.south.surface);
+
+  SDL_FreeSurface (myWallBlend);
 
   for (RPG_Client_BlendingMaskCacheIterator_t iterator = myLightingCache.begin ();
        iterator != myLightingCache.end ();
        iterator++)
     SDL_FreeSurface (*iterator);
 
-  if (myCurrentDoorSet.horizontal_open.surface)
-    SDL_FreeSurface (myCurrentDoorSet.horizontal_open.surface);
-  if (myCurrentDoorSet.vertical_open.surface)
-    SDL_FreeSurface (myCurrentDoorSet.vertical_open.surface);
-  if (myCurrentDoorSet.horizontal_closed.surface)
-    SDL_FreeSurface (myCurrentDoorSet.horizontal_closed.surface);
-  if (myCurrentDoorSet.vertical_closed.surface)
-    SDL_FreeSurface (myCurrentDoorSet.vertical_closed.surface);
-  if (myCurrentDoorSet.broken.surface)
-    SDL_FreeSurface (myCurrentDoorSet.broken.surface);
+  SDL_FreeSurface (myCurrentDoorSet.horizontal_open.surface);
+  SDL_FreeSurface (myCurrentDoorSet.vertical_open.surface);
+  SDL_FreeSurface (myCurrentDoorSet.horizontal_closed.surface);
+  SDL_FreeSurface (myCurrentDoorSet.vertical_closed.surface);
+  SDL_FreeSurface (myCurrentDoorSet.broken.surface);
 
-  if (myCeilingTile)
-    SDL_FreeSurface (myCeilingTile);
+  SDL_FreeSurface (myCeilingTile);
+  SDL_FreeSurface (myOffMapTile);
+  SDL_FreeSurface (myInvisibleTile);
+  SDL_FreeSurface (myVisionBlendTile);
+  SDL_FreeSurface (myVisionTempTile);
+#elif defined (SDL3_USE)
+  SDL_DestroySurface (myCurrentFloorEdgeSet.east.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.west.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.north.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.south.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.south_east.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.south_west.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.north_east.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.north_west.surface);
 
-  if (myOffMapTile)
-    SDL_FreeSurface (myOffMapTile);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.top.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.right.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.left.surface);
+  SDL_DestroySurface (myCurrentFloorEdgeSet.bottom.surface);
 
-  if (myInvisibleTile)
-    SDL_FreeSurface (myInvisibleTile);
+  SDL_DestroySurface (myCurrentWallSet.east.surface);
+  SDL_DestroySurface (myCurrentWallSet.west.surface);
+  SDL_DestroySurface (myCurrentWallSet.north.surface);
+  SDL_DestroySurface (myCurrentWallSet.south.surface);
 
-  if (myVisionBlendTile)
-    SDL_FreeSurface (myVisionBlendTile);
-  if (myVisionTempTile)
-    SDL_FreeSurface (myVisionTempTile);
+  SDL_DestroySurface (myWallBlend);
+
+  for (RPG_Client_BlendingMaskCacheIterator_t iterator = myLightingCache.begin ();
+       iterator != myLightingCache.end ();
+       iterator++)
+    SDL_DestroySurface (*iterator);
+
+  SDL_DestroySurface (myCurrentDoorSet.horizontal_open.surface);
+  SDL_DestroySurface (myCurrentDoorSet.vertical_open.surface);
+  SDL_DestroySurface (myCurrentDoorSet.horizontal_closed.surface);
+  SDL_DestroySurface (myCurrentDoorSet.vertical_closed.surface);
+  SDL_DestroySurface (myCurrentDoorSet.broken.surface);
+
+  SDL_DestroySurface (myCeilingTile);
+  SDL_DestroySurface (myOffMapTile);
+  SDL_DestroySurface (myInvisibleTile);
+  SDL_DestroySurface (myVisionBlendTile);
+  SDL_DestroySurface (myVisionTempTile);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 }
 
 void
@@ -282,10 +277,11 @@ RPG_Client_Window_Level::getView () const
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::getView"));
 
-  RPG_Graphics_Position_t result;
+  RPG_Graphics_Position_t result =
+    std::make_pair (std::numeric_limits<unsigned int>::max (),
+                    std::numeric_limits<unsigned int>::max ());
 
-  { ACE_GUARD_RETURN (ACE_Thread_Mutex, aGuard, myLock, std::make_pair (std::numeric_limits<unsigned int>::max (),
-                                                                        std::numeric_limits<unsigned int>::max ()));
+  { ACE_GUARD_RETURN (ACE_Thread_Mutex, aGuard, myLock, result);
     result = myView;
   } // end lock scope
 
@@ -353,7 +349,7 @@ RPG_Client_Window_Level::showMessages () const
 
   bool result = false;
 
-  { ACE_GUARD_RETURN (ACE_Thread_Mutex, aGuard, myLock, myShowMessages);
+  { ACE_GUARD_RETURN (ACE_Thread_Mutex, aGuard, myLock, result); // *TODO*: avoid false negative
     result = myShowMessages;
   } // end lock scope
 
@@ -371,9 +367,9 @@ RPG_Client_Window_Level::toggleDoor (const RPG_Map_Position_t& position_in)
   enum RPG_Graphics_Orientation orientation =
     RPG_Client_Common_Tools::getDoorOrientation (position_in,
                                                  *myEngine,
-                                                 false);
-  bool is_open = (myEngine->state (position_in,
-                                   false) == DOORSTATE_OPEN);
+                                                 false); // locked access ?
+  bool is_open =
+    (myEngine->state (position_in, false) == DOORSTATE_OPEN); // locked access ?
   myEngine->unlock ();
 
   ACE_GUARD (ACE_Thread_Mutex, aGuard, myLock);
@@ -382,9 +378,8 @@ RPG_Client_Window_Level::toggleDoor (const RPG_Map_Position_t& position_in)
   {
     case ORIENTATION_HORIZONTAL:
     {
-      myDoorTiles[position_in] =
-          (is_open ? myCurrentDoorSet.horizontal_open
-                   : myCurrentDoorSet.horizontal_closed);
+      myDoorTiles[position_in] = (is_open ? myCurrentDoorSet.horizontal_open
+                                          : myCurrentDoorSet.horizontal_closed);
       break;
     }
     case ORIENTATION_VERTICAL:
@@ -448,9 +443,9 @@ RPG_Client_Window_Level::drawChild (enum RPG_Graphics_WindowType child_in,
   ACE_ASSERT (inherited::screen_);
 #if defined (SDL_USE)
   SDL_Surface* surface_p = inherited::screen_;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
   // sanity check(s)
   SDL_Surface* target_surface =
@@ -540,7 +535,11 @@ RPG_Client_Window_Level::setBlendRadius (ACE_UINT8 radius_in)
     for (RPG_Client_BlendingMaskCacheIterator_t iterator = myLightingCache.begin ();
          iterator != myLightingCache.end ();
          iterator++)
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (*iterator);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (*iterator);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     myLightingCache.clear ();
     return;
   } // end IF
@@ -553,7 +552,11 @@ RPG_Client_Window_Level::setBlendRadius (ACE_UINT8 radius_in)
          i > 0;
          i--)
     {
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (myLightingCache.back ());
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (myLightingCache.back ());
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       myLightingCache.pop_back ();
     } // end FOR
   } // end IF
@@ -571,7 +574,8 @@ RPG_Client_Window_Level::setBlendRadius (ACE_UINT8 radius_in)
   ACE_ASSERT (myLightingCache.size () == radius_in);
 
   // *NOTE*: quantum == (SDL_ALPHA_OPAQUE / (visible_radius + 1));
-  Uint8 quantum = static_cast<Uint8> (SDL_ALPHA_OPAQUE / (radius_in + 1));
+  Uint8 quantum =
+    static_cast<Uint8> (SDL_ALPHA_OPAQUE / static_cast<float> (radius_in + 1));
   RPG_Client_BlendingMaskCacheIterator_t iterator = myLightingCache.begin ();
   for (unsigned int i = 1;
        i <= radius_in;
@@ -658,11 +662,10 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
   ACE_ASSERT (inherited::screen_);
 #if defined (SDL_USE)
   SDL_Surface* surface_p = inherited::screen_;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
-  // sanity check(s)
   SDL_Surface* target_surface =
     (targetSurface_in ? targetSurface_in : surface_p);
   ACE_ASSERT (target_surface);
@@ -1302,8 +1305,12 @@ RPG_Client_Window_Level::draw (SDL_Surface* targetSurface_in,
   } // end FOR
 
   // whole viewport needs a refresh...
+#if defined (SDL_USE) || defined (SDL2_USE)
   SDL_GetClipRect (target_surface, &dirty_region);
-  invalidate (dirty_region);
+#elif defined (SDL3_USE)
+  SDL_GetSurfaceClipRect (target_surface, &dirty_region);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+  inherited::invalidate (dirty_region);
 
   // reset clipping area
   inherited::unclip (target_surface);
@@ -1331,8 +1338,12 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
   switch (event_in.type)
   {
     // *** keyboard ***
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_KEYDOWN:
-    {
+#elif defined (SDL3_USE)
+    case SDL_EVENT_KEY_DOWN:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+      {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("%s key\n%s\n"),
 //                  ((event_in.type == SDL_KEYDOWN) ? ACE_TEXT("pressed") : ACE_TEXT("released")),
@@ -1365,7 +1376,11 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
           myEngine->lock ();
           myClientAction.entity_id = myEngine->getActive (false); // locked access ?
           if ((myClientAction.entity_id == 0)        ||
+#if defined (SDL_USE) || defined (SDL2_USE)
               (event_in.key.keysym.mod & KMOD_SHIFT))
+#elif defined (SDL3_USE)
+              (event_in.key.keysym.mod & SDL_KMOD_SHIFT))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
           {
             // center view
             myClientAction.position = myEngine->getSize (false); // locked access ?
@@ -1390,7 +1405,11 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
         }
         case SDLK_r:
         {
+#if defined (SDL_USE) || defined (SDL2_USE)
           if (event_in.key.keysym.mod & KMOD_SHIFT)
+#elif defined (SDL3_USE)
+          if (event_in.key.keysym.mod & SDL_KMOD_SHIFT)
+#endif // SDL_USE || SDL2_USE || SDL3_USE
           {
             // (manual) refresh
             myClientAction.command = COMMAND_WINDOW_DRAW;
@@ -1421,7 +1440,11 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
         }
         case SDLK_s:
         {
+#if defined (SDL_USE) || defined (SDL2_USE)
           if (event_in.key.keysym.mod & KMOD_SHIFT)
+#elif defined (SDL3_USE)
+          if (event_in.key.keysym.mod & SDL_KMOD_SHIFT)
+#endif // SDL_USE || SDL2_USE || SDL3_USE
           {
 #if defined (_DEBUG)
             toggleShowCoordinates ();
@@ -1528,8 +1551,13 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
                 // initial radius == 0
                 myClientAction.positions.insert (myClientAction.position);
 
+#if defined (SDL_USE) || defined (SDL2_USE)
                 myClient->mode (((event_in.key.keysym.mod & KMOD_SHIFT) ? SELECTIONMODE_AIM_SQUARE
                                                                         : SELECTIONMODE_AIM_CIRCLE));
+#elif defined (SDL3_USE)
+                myClient->mode (((event_in.key.keysym.mod & SDL_KMOD_SHIFT) ? SELECTIONMODE_AIM_SQUARE
+                                                                            : SELECTIONMODE_AIM_CIRCLE));
+#endif // SDL_USE || SDL2_USE || SDL3_USE
               } // end ELSE
 
               break;
@@ -1549,7 +1577,11 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
           {
             // redraw highlight / cursor --> push fake mouse-move event
             SDL_Event sdl_event;
+#if defined (SDL_USE) || defined (SDL2_USE)
             sdl_event.type = SDL_MOUSEMOTION;
+#elif defined (SDL3_USE)
+            sdl_event.type = SDL_EVENT_MOUSE_MOTION;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
             sdl_event.motion.x = cursor_position.first;
             sdl_event.motion.y = cursor_position.second;
             if (SDL_PushEvent (&sdl_event))
@@ -1578,7 +1610,11 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
           {
             case SDLK_UP:
             {
+#if defined (SDL_USE) || defined (SDL2_USE)
               if (event_in.key.keysym.mod & KMOD_SHIFT)
+#elif defined (SDL3_USE)
+              if (event_in.key.keysym.mod & SDL_KMOD_SHIFT)
+#endif // SDL_USE || SDL2_USE || SDL3_USE
               {
                 myClientAction.position.first--;
                 myClientAction.position.second--;
@@ -1590,7 +1626,11 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
             }
             case SDLK_DOWN:
             {
+#if defined (SDL_USE) || defined (SDL2_USE)
               if (event_in.key.keysym.mod & KMOD_SHIFT)
+#elif defined (SDL3_USE)
+              if (event_in.key.keysym.mod & SDL_KMOD_SHIFT)
+#endif // SDL_USE || SDL2_USE || SDL3_USE
               {
                 myClientAction.position.first++;
                 myClientAction.position.second++;
@@ -1602,7 +1642,11 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
             }
             case SDLK_LEFT:
             {
+#if defined (SDL_USE) || defined (SDL2_USE)
               if (event_in.key.keysym.mod & KMOD_SHIFT)
+#elif defined (SDL3_USE)
+              if (event_in.key.keysym.mod & SDL_KMOD_SHIFT)
+#endif // SDL_USE || SDL2_USE || SDL3_USE
               {
                 myClientAction.position.first--;
                 myClientAction.position.second++;
@@ -1614,7 +1658,11 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
             }
             case SDLK_RIGHT:
             {
+#if defined (SDL_USE) || defined (SDL2_USE)
               if (event_in.key.keysym.mod & KMOD_SHIFT)
+#elif defined (SDL3_USE)
+              if (event_in.key.keysym.mod & SDL_KMOD_SHIFT)
+#endif // SDL_USE || SDL2_USE || SDL3_USE
               {
                 myClientAction.position.first++;
                 myClientAction.position.second--;
@@ -1633,7 +1681,11 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
             }
           } // end SWITCH
 
+#if defined (SDL_USE) || defined (SDL2_USE)
           if (!(event_in.key.keysym.mod & KMOD_SHIFT))
+#elif defined (SDL3_USE)
+          if (!(event_in.key.keysym.mod & SDL_KMOD_SHIFT))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
           {
             myEngine->lock ();
             myClientAction.entity_id = myEngine->getActive (false); // locked access ?
@@ -1698,7 +1750,11 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
       break;
     }
     // *** mouse ***
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_MOUSEMOTION:
+#elif defined (SDL3_USE)
+    case SDL_EVENT_MOUSE_MOTION:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     {
       // find map square
       struct SDL_Rect window_area;
@@ -1790,8 +1846,8 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
             break;
           case SELECTIONMODE_PATH:
           {
-            if (myClientAction.entity_id &&
-                is_valid,
+            if (myClientAction.entity_id > 0 &&
+                is_valid                     &&
                 has_seen)
             {
               RPG_Map_Position_t current_position =
@@ -1866,7 +1922,11 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
 
       break;
     }
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_MOUSEBUTTONDOWN:
+#elif defined (SDL3_USE)
+    case SDL_EVENT_MOUSE_BUTTON_DOWN:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse button [%u,%u] pressed\n"),
@@ -2082,24 +2142,6 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
 
       break;
     }
-    case SDL_KEYUP:
-    case SDL_MOUSEBUTTONUP:
-    case SDL_JOYAXISMOTION:
-    case SDL_JOYBALLMOTION:
-    case SDL_JOYHATMOTION:
-    case SDL_JOYBUTTONDOWN:
-    case SDL_JOYBUTTONUP:
-    case SDL_QUIT:
-    case SDL_SYSWMEVENT:
-#if defined (SDL_USE)
-    case SDL_ACTIVEEVENT:
-    case SDL_VIDEORESIZE:
-    case SDL_VIDEOEXPOSE:
-#elif defined (SDL2_USE)
-    case SDL_WINDOWEVENT_SHOWN:
-    case SDL_WINDOWEVENT_RESIZED:
-    case SDL_WINDOWEVENT_EXPOSED:
-#endif // SDL_USE || SDL2_USE
     default:
     {
       // delegate these to the parent...
@@ -2202,10 +2244,18 @@ RPG_Client_Window_Level::setStyle (const struct RPG_Graphics_StyleUnion& style_i
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("failed to SDL_BlitSurface(): %s, aborting\n"),
                     ACE_TEXT (SDL_GetError ())));
+#if defined (SDL_USE) || defined (SDL2_USE)
         SDL_FreeSurface (copy);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (copy);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
         return false;
       } // end IF
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (myCurrentWallSet.west.surface);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (myCurrentWallSet.west.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       myCurrentWallSet.west.surface = copy;
 
       // *NOTE*: north is just a "darkened" version of south...
@@ -2224,13 +2274,18 @@ RPG_Client_Window_Level::setStyle (const struct RPG_Graphics_StyleUnion& style_i
         ACE_DEBUG ((LM_ERROR,
                     ACE_TEXT ("failed to SDL_BlitSurface(): %s, aborting\n"),
                     ACE_TEXT (SDL_GetError ())));
-
-        // clean up
+#if defined (SDL_USE) || defined (SDL2_USE)
         SDL_FreeSurface (copy);
-
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (copy);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
         return false;
       } // end IF
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (myCurrentWallSet.north.surface);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (myCurrentWallSet.north.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       myCurrentWallSet.north.surface = copy;
 
       // set wall opacity
@@ -2245,7 +2300,11 @@ RPG_Client_Window_Level::setStyle (const struct RPG_Graphics_StyleUnion& style_i
                     static_cast<Uint8> ((RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY * SDL_ALPHA_OPAQUE))));
         return false;
       } // end IF
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (myCurrentWallSet.east.surface);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (myCurrentWallSet.east.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       myCurrentWallSet.east.surface = shaded_wall;
 
       shaded_wall =
@@ -2258,7 +2317,11 @@ RPG_Client_Window_Level::setStyle (const struct RPG_Graphics_StyleUnion& style_i
                     static_cast<Uint8> ((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE))));
         return false;
       } // end IF
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (myCurrentWallSet.west.surface);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (myCurrentWallSet.west.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       myCurrentWallSet.west.surface = shaded_wall;
 
       shaded_wall =
@@ -2271,7 +2334,11 @@ RPG_Client_Window_Level::setStyle (const struct RPG_Graphics_StyleUnion& style_i
                     static_cast<Uint8> ((RPG_GRAPHICS_TILE_WALL_DEF_SE_OPACITY * SDL_ALPHA_OPAQUE))));
         return false;
       } // end IF
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (myCurrentWallSet.south.surface);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (myCurrentWallSet.south.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       myCurrentWallSet.south.surface = shaded_wall;
 
       shaded_wall =
@@ -2284,7 +2351,11 @@ RPG_Client_Window_Level::setStyle (const struct RPG_Graphics_StyleUnion& style_i
                     static_cast<Uint8> ((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE))));
         return false;
       } // end IF
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (myCurrentWallSet.north.surface);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (myCurrentWallSet.north.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       myCurrentWallSet.north.surface = shaded_wall;
 
       // init wall tiles / position
@@ -2345,7 +2416,12 @@ RPG_Client_Window_Level::initCeiling()
   // sanity check
   if (myCeilingTile)
   {
-    SDL_FreeSurface (myCeilingTile); myCeilingTile = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (myCeilingTile);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (myCeilingTile);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    myCeilingTile = NULL;
   } // end IF
 
   // load tile for ceiling
@@ -2372,14 +2448,20 @@ RPG_Client_Window_Level::initCeiling()
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Graphics_Surface::alpha(%u), aborting\n"),
                 static_cast<Uint8> ((RPG_GRAPHICS_TILE_WALL_DEF_NW_OPACITY * SDL_ALPHA_OPAQUE))));
-
-    // clean up
-    SDL_FreeSurface (myCeilingTile); myCeilingTile = NULL;
-
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (myCeilingTile);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (myCeilingTile);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    myCeilingTile = NULL;
     return;
   } // end IF
 
+#if defined (SDL_USE) || defined (SDL2_USE)
   SDL_FreeSurface (myCeilingTile);
+#elif defined (SDL3_USE)
+  SDL_DestroySurface (myCeilingTile);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   myCeilingTile = shaded_ceiling;
 }
 
@@ -2391,7 +2473,12 @@ RPG_Client_Window_Level::initWallBlend (bool halfHeightWalls_in)
   // sanity check
   if (myWallBlend)
   {
-    SDL_FreeSurface (myWallBlend); myWallBlend = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (myWallBlend);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (myWallBlend);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    myWallBlend = NULL;
   } // end IF
 
   myWallBlend =
@@ -2408,16 +2495,29 @@ RPG_Client_Window_Level::initWallBlend (bool halfHeightWalls_in)
     return;
   } // end IF
 
+#if defined (SDL_USE) || defined (SDL2_USE)
   if (SDL_FillRect (myWallBlend,
                     NULL,
                     RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK_A10,
                                                       *myWallBlend->format,
-                                                      1.0F)))
+                                                      1.0f)))
+#elif defined (SDL3_USE)
+  if (SDL_FillSurfaceRect (myWallBlend,
+                           NULL,
+                           RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK_A10,
+                                                             *myWallBlend->format,
+                                                             1.0f)))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_FillRect(): %s, returning\n"),
                 ACE_TEXT (SDL_GetError ())));
-    SDL_FreeSurface (myWallBlend); myWallBlend = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (myWallBlend);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (myWallBlend);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    myWallBlend = NULL;
     return;
   } // end IF
 }
@@ -2449,7 +2549,7 @@ RPG_Client_Window_Level::initMiniMap (bool debug_in)
   } // end IF
   minimap_window->initialize (myClient,
                               myEngine);
-  minimap_window->initializeSDL (NULL,
+  minimap_window->initializeSDL (inherited::renderer_,
                                  inherited::screen_,
                                  inherited::GLContext_);
 
@@ -2475,10 +2575,10 @@ RPG_Client_Window_Level::initMessageWindow ()
                 sizeof (RPG_Client_Window_Message)));
     return false;
   } // end IF
-  message_window->initialize (NULL, // screen lock handle
+  message_window->initialize (inherited::screenLock_, // screen lock handle
                               RPG_CLIENT_MESSAGE_FONT,
                               RPG_CLIENT_MESSAGE_DEF_NUM_LINES);
-  message_window->initializeSDL (NULL,
+  message_window->initializeSDL (inherited::renderer_,
                                  inherited::screen_,
                                  inherited::GLContext_);
 

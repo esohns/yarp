@@ -26,13 +26,17 @@
 #include "rpg_map_common.h"
 
 #include "rpg_graphics_common.h"
-#include "rpg_graphics_doorstyle.h"
-#include "rpg_graphics_edgestyle.h"
-#include "rpg_graphics_floorstyle.h"
+// #include "rpg_graphics_doorstyle.h"
+// #include "rpg_graphics_edgestyle.h"
+// #include "rpg_graphics_floorstyle.h"
+// #include "rpg_graphics_wallstyle.h"
 #include "rpg_graphics_style.h"
-#include "rpg_graphics_wallstyle.h"
 
 #include "rpg_client_iwindow.h"
+
+// forward declarations
+class RPG_Client_Engine;
+class RPG_Engine;
 
 class RPG_Client_IWindowLevel
  : public RPG_Client_IWindow
@@ -40,7 +44,11 @@ class RPG_Client_IWindowLevel
  public:
   virtual ~RPG_Client_IWindowLevel () {}
 
+  virtual bool initialize (RPG_Client_Engine*, // engine handle
+                           RPG_Engine*,        // (level) state handle
+                           bool = false) = 0;  // debug ?
   virtual void initialize (const struct RPG_Graphics_Style&) = 0; // style
+
   virtual void setView (int,              // offset x (map coordinates !)
                         int,              // offset y (map coordinates !)
                         bool = true) = 0; // locked access ?
@@ -48,7 +56,9 @@ class RPG_Client_IWindowLevel
   virtual RPG_Graphics_Position_t getView () const = 0; // return value: view (map coordinates !)
 
   virtual void toggleDoor (const RPG_Map_Position_t&) = 0; // door position
+
   virtual void setBlendRadius (ACE_UINT8) = 0; // radius
+
   virtual void updateMinimap () = 0;
   virtual void updateMessageWindow (const std::string&) = 0; // message
 };

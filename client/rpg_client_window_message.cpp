@@ -48,7 +48,12 @@ RPG_Client_Window_Message::~RPG_Client_Window_Message ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Message::~RPG_Client_Window_Message"));
 
-  SDL_FreeSurface (BG_);
+  if (BG_)
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (BG_);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (BG_);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 }
 
 void
@@ -70,33 +75,6 @@ RPG_Client_Window_Message::handleEvent (const SDL_Event& event_in,
     // *** mouse ***
     case RPG_GRAPHICS_SDL_MOUSEMOVEOUT:
       break;
-    case SDL_MOUSEMOTION:
-    {
-
-      // *WARNING*: falls through !
-    }
-    case SDL_KEYDOWN:
-    case SDL_KEYUP:
-    case SDL_MOUSEBUTTONDOWN:
-    case SDL_MOUSEBUTTONUP:
-    case SDL_JOYAXISMOTION:
-    case SDL_JOYBALLMOTION:
-    case SDL_JOYHATMOTION:
-    case SDL_JOYBUTTONDOWN:
-    case SDL_JOYBUTTONUP:
-    case SDL_QUIT:
-    case SDL_SYSWMEVENT:
-#if defined (SDL_USE)
-    case SDL_ACTIVEEVENT:
-    case SDL_VIDEORESIZE:
-    case SDL_VIDEOEXPOSE:
-#elif defined (SDL2_USE)
-    case SDL_WINDOWEVENT_SHOWN:
-    case SDL_WINDOWEVENT_RESIZED:
-    case SDL_WINDOWEVENT_EXPOSED:
-#endif // SDL_USE || SDL2_USE
-    case SDL_USEREVENT:
-    case RPG_GRAPHICS_SDL_HOVEREVENT:
     default:
     {
       // delegate these to the parent...
@@ -129,9 +107,9 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
   ACE_ASSERT (inherited::screen_);
 #if defined (SDL_USE)
   SDL_Surface* surface_p = inherited::screen_;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
                                                   : surface_p);
@@ -181,7 +159,12 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
     // shade text area
     if (BG_)
     {
-      SDL_FreeSurface (BG_); BG_ = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+      SDL_FreeSurface (BG_);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (BG_);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+      BG_ = NULL;
     } // end IF
     BG_ = RPG_Graphics_Surface::create (inherited::clipRectangle_.w,
                                         inherited::clipRectangle_.h);
@@ -208,8 +191,13 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
     //     offsetX_in,
     //     offsetY_in);
     struct SDL_Rect clip_rect_orig;
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_GetClipRect (target_surface, &clip_rect_orig);
     if (!SDL_SetClipRect (target_surface, &(inherited::clipRectangle_)))
+#elif defined (SDL3_USE)
+    SDL_GetSurfaceClipRect (target_surface, &clip_rect_orig);
+    if (!SDL_SetSurfaceClipRect (target_surface, &(inherited::clipRectangle_)))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_SetClipRect(): %s, returning\n"),
@@ -260,8 +248,11 @@ RPG_Client_Window_Message::draw (SDL_Surface* targetSurface_in,
     } // end FOR
 
     // reset clipping
-//    unclip(targetSurface);
+#if defined (SDL_USE) || defined (SDL2_USE)
     if (!SDL_SetClipRect (target_surface, &clip_rect_orig))
+#elif defined (SDL3_USE)
+    if (!SDL_SetSurfaceClipRect (target_surface, &clip_rect_orig))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_SetClipRect(): %s, returning\n"),

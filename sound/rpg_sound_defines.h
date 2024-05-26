@@ -21,29 +21,47 @@
 #ifndef RPG_SOUND_DEFINES_H
 #define RPG_SOUND_DEFINES_H
 
+#include "ace/config-lite.h"
+
+#if defined (SDL_USE) || defined (SDL2_USE)
 #define RPG_SOUND_AUDIO_DEF_FREQUENCY       44100
 #define RPG_SOUND_AUDIO_DEF_FORMAT          AUDIO_S16SYS
+#elif defined (SDL3_USE)
+#define RPG_SOUND_AUDIO_DEF_FREQUENCY       48000
+#define RPG_SOUND_AUDIO_DEF_FORMAT          SDL_AUDIO_F32
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 #define RPG_SOUND_AUDIO_DEF_CHANNELS        2 // *NOTE*: 1: mono, 2: stereo
 #define RPG_SOUND_AUDIO_DEF_CHUNKSIZE       4096
-#define RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS   32 // #concurrent sounds
+#define RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS   16 // #concurrent sounds
 
 #define RPG_SOUND_AMBIENT_DEF_USE_CD        false
-#define RPG_SOUND_AMBIENT_DEF_VOLUME        8 // (0-128)
+#define RPG_SOUND_AMBIENT_DEF_VOLUME        64 // (0-128)
 
 #define RPG_SOUND_CDTRACK_DEF_PAD           3 // allow an extra 3 seconds between tracks
 #define RPG_SOUND_DEF_CACHESIZE             50
 
+#if defined (SDL_USE) || defined (SDL2_USE)
 #define RPG_SOUND_SDL_AUDIODRIVER_ENV_VAR   "SDL_AUDIODRIVER"
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#elif defined (SDL3_USE)
+#define RPG_SOUND_SDL_AUDIODRIVER_ENV_VAR   "SDL_AUDIO_DRIVER"
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
 #define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME "dsound"
 //#define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME "waveout"
-#elif defined(ACE_LINUX)
-//#define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME "dsp"
+
+#define RPG_SOUND_DEF_SDL_AUDIO_DEVICE_NAME ""
+#elif defined (ACE_LINUX)
+#define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME "pipewire"
+//#define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME "pulse"
 //#define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME "alsa"
-#define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME "pulse"
+//#define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME "dsp"
+
+#define RPG_SOUND_DEF_SDL_AUDIO_DEVICE_NAME "Built-in Audio Analog Stereo"
 #else
 #define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME ""
-#endif
+
+#define RPG_SOUND_DEF_SDL_AUDIO_DEVICE_NAME ""
+#endif // ACE_WIN32 || ACE_WIN64 || ACE_LINUX
 
 #define RPG_SOUND_DEF_FILE_EXT              ".ogg"
 

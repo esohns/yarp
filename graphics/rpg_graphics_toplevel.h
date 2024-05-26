@@ -21,18 +21,21 @@
 #ifndef RPG_GRAPHICS_TOPLEVEL_H
 #define RPG_GRAPHICS_TOPLEVEL_H
 
-#define _SDL_main_h
-#define SDL_main_h_
-#include "SDL.h"
+#include <string>
+
+// #define _SDL_main_h
+// #define SDL_main_h_
+// #include "SDL.h"
 
 #include "ace/Global_Macros.h"
 
-#include "rpg_graphics_cursor.h"
-#include "rpg_graphics_font.h"
-#include "rpg_graphics_image.h"
-#include "rpg_graphics_sprite.h"
-#include "rpg_graphics_tilegraphic.h"
-#include "rpg_graphics_tilesetgraphic.h"
+#include "rpg_graphics_common.h"
+// #include "rpg_graphics_cursor.h"
+// #include "rpg_graphics_font.h"
+// #include "rpg_graphics_image.h"
+// #include "rpg_graphics_sprite.h"
+// #include "rpg_graphics_tilegraphic.h"
+// #include "rpg_graphics_tilesetgraphic.h"
 #include "rpg_graphics_graphictypeunion.h"
 #include "rpg_graphics_SDL_window_base.h"
 
@@ -45,19 +48,7 @@ class RPG_Graphics_TopLevel
   RPG_Graphics_TopLevel (const RPG_Graphics_Size_t&,                  // size
                          const struct RPG_Graphics_GraphicTypeUnion&, // (element) type
                          const std::string&);                         // title
-//                         SDL_Surface* = NULL);                 // background
   virtual ~RPG_Graphics_TopLevel ();
-
-  // implement (part of) RPG_Graphics_IWindow
-  // *IMPORTANT NOTE*: dummy stub --> DO NOT CALL
-  inline virtual RPG_Graphics_Position_t getView () const { ACE_ASSERT (false); return std::make_pair (0, 0); }
-
-//   // realize child window
-//   void child(const RPG_Graphics_WindowSize_t&, // size
-//              const RPG_Graphics_WindowType&,   // type
-//              // *NOTE*: offset doesn't include any border(s) !
-//              const RPG_Graphics_Offset_t&,     // offset
-//              SDL_Surface* = NULL);             // background
 
  protected:
   // window element graphic(s)

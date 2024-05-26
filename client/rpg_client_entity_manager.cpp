@@ -61,8 +61,16 @@ RPG_Client_Entity_Manager::~RPG_Client_Entity_Manager ()
        iterator++)
   {
     if ((*iterator).second.free_on_remove)
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface ((*iterator).second.graphic);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface ((*iterator).second.graphic);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface ((*iterator).second.bg);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface ((*iterator).second.bg);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   } // end FOR
 }
 
@@ -115,7 +123,11 @@ RPG_Client_Entity_Manager::add (RPG_Engine_EntityID_t id_in,
 
     // clean up
     if (free_on_remove_in)
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (surface_in);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (surface_in);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
     return;
   } // end IF
@@ -161,8 +173,16 @@ RPG_Client_Entity_Manager::remove (RPG_Engine_EntityID_t id_in,
 
   // clean up
   if ((*iterator).second.free_on_remove)
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface ((*iterator).second.graphic);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface ((*iterator).second.graphic);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+#if defined (SDL_USE) || defined (SDL2_USE)
   SDL_FreeSurface ((*iterator).second.bg);
+#elif defined (SDL3_USE)
+  SDL_DestroySurface ((*iterator).second.bg);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
   myCache.erase ((*iterator).first);
 }
@@ -194,9 +214,9 @@ RPG_Client_Entity_Manager::put (RPG_Engine_EntityID_t id_in,
   ACE_ASSERT (myWindow);
 #if defined (SDL_USE)
   SDL_Surface* target_surface = myWindow->getScreen ();
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* target_surface = SDL_GetWindowSurface (myWindow->getScreen ());
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (target_surface);
   RPG_Client_EntityCacheIterator_t iterator = myCache.find (id_in);
   if (iterator == myCache.end ())
@@ -302,9 +322,9 @@ RPG_Client_Entity_Manager::put (RPG_Engine_EntityID_t id_in,
 
 #if defined (SDL_USE)
     RPG_Graphics_Surface::unclip ();
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
     RPG_Graphics_Surface::unclip (myWindow->getScreen ());
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     RPG_Graphics_Surface::put (std::make_pair ((target_surface->w - (*iterator).second.bg->w),
                                                (target_surface->h - (*iterator).second.bg->h)),
                                *(*iterator).second.bg,
@@ -312,9 +332,9 @@ RPG_Client_Entity_Manager::put (RPG_Engine_EntityID_t id_in,
                                dirty_region);
 #if defined (SDL_USE)
     RPG_Graphics_Surface::clip ();
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
     RPG_Graphics_Surface::clip (myWindow->getScreen ());
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
                                                            dirtyRegion_out);
   } // end IF
@@ -333,9 +353,9 @@ RPG_Client_Entity_Manager::restoreBG (RPG_Engine_EntityID_t id_in,
   ACE_ASSERT (myWindow);
 #if defined (SDL_USE)
   SDL_Surface* target_surface = myWindow->getScreen();
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* target_surface = SDL_GetWindowSurface (myWindow->getScreen ());
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (target_surface);
   RPG_Client_EntityCacheConstIterator_t iterator = myCache.find (id_in);
   if (iterator == myCache.end ())

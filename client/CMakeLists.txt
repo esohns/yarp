@@ -60,8 +60,12 @@ set (${LIBRARY}_SRCS
      rpg_client_ui_tools.cpp
      rpg_client_window_level.cpp
      rpg_client_window_level.h
+     rpg_client_window_level_stub.cpp
+     rpg_client_window_level_stub.h
      rpg_client_window_main.cpp
      rpg_client_window_main.h
+     rpg_client_window_main_stub.cpp
+     rpg_client_window_main_stub.h
      rpg_client_window_minimap.h
      rpg_client_window_minimap.cpp
      rpg_client_window_message.h
@@ -72,7 +76,9 @@ set (${LIBRARY}_SRCS
 
 #set_source_files_properties(${RPG_Client_LIB_SRCS} PROPERTIES COMPILE_DEFINITIONS "RPG_CLIENT_BUILD_DLL;RPG_ENGINE_HAS_DLL=1;RPG_GRAPHICS_HAS_DLL=1;RPG_SOUND_HAS_DLL=1")
 
-add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
+add_library (${LIBRARY} STATIC
+             ${${LIBRARY}_SRCS}
+             etc/rpg_client.ini)
 
 #if (UNIX)
 # set_source_files_properties(${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\";DATADIR=\"/usr/local/share/RPG/config\"")
@@ -221,7 +227,9 @@ install (FILES
          rpg_client_network_manager.h
          rpg_client_ui_tools.h
          rpg_client_window_level.h
+         rpg_client_window_level_stub.h
          rpg_client_window_main.h
+         rpg_client_window_main_stub.h
          rpg_client_window_minimap.h
          rpg_client_window_message.h
          rpg_client_XML_tree.h

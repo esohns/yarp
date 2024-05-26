@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "SDL_events.h"
 #include "stdafx.h"
 
 #include "rpg_graphics_SDL_window_base.h"
@@ -69,12 +70,13 @@ RPG_Graphics_SDLWindowBase::RPG_Graphics_SDLWindowBase (enum RPG_Graphics_Window
                                                         const RPG_Graphics_SDLWindowBase& parent_in,
                                                         const RPG_Graphics_Offset_t& offset_in,
                                                         const std::string& title_in)
-#if defined (SDL2_USE)
+#if defined (SDL2_USE) || defined (SDL3_USE)
  : renderer_ (parent_in.renderer_)
  , screen_ (parent_in.screen_)
+ , GLContext_ (parent_in.GLContext_)
 #elif defined (SDL_USE)
  : screen_ (parent_in.screen_)
-#endif // SDL2_USE || SDL_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
  , screenLock_ (NULL)
  , borderTop_ (0)
  , borderBottom_ (0)
@@ -357,9 +359,9 @@ RPG_Graphics_SDLWindowBase::clear (enum RPG_Graphics_ColorName color_in,
   ACE_ASSERT (screen_);
 #if defined (SDL_USE)
   SDL_Surface* surface_p = screen_;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* surface_p = SDL_GetWindowSurface (screen_);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
 
   // *NOTE*: SDL_FillRect may modify the dstrect argument --> save it first
@@ -371,11 +373,19 @@ RPG_Graphics_SDLWindowBase::clear (enum RPG_Graphics_ColorName color_in,
 
   if (screenLock_)
     screenLock_->lock ();
+#if defined (SDL_USE) || defined (SDL2_USE)
   if (SDL_FillRect (surface_p,                                    // target surface
                     &dstrect,                                     // fill area
                     RPG_Graphics_SDL_Tools::getColor (color_in,
                                                       *surface_p->format,
                                                       1.0f)))     // color
+#elif defined (SDL3_USE)
+  if (SDL_FillSurfaceRect (surface_p,                                    // target surface
+                           &dstrect,                                     // fill area
+                           RPG_Graphics_SDL_Tools::getColor (color_in,
+                                                             *surface_p->format,
+                                                             1.0f)))     // color
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_FillRect(): \"%s\", returning\n"),
@@ -437,9 +447,9 @@ RPG_Graphics_SDLWindowBase::update (SDL_Surface* targetSurface_in)
   ACE_ASSERT (screen_);
 #if defined (SDL_USE)
   SDL_Surface* surface_p = screen_;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* surface_p = SDL_GetWindowSurface (screen_);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
   SDL_Surface* target_surface_p = (targetSurface_in ? targetSurface_in
                                                     : surface_p);
@@ -455,13 +465,13 @@ RPG_Graphics_SDLWindowBase::update (SDL_Surface* targetSurface_in)
                   ACE_TEXT ("failed to SDL_Flip(%@): \"%s\", continuing\n"),
                   target_surface_p,
                   ACE_TEXT (SDL_GetError ())));
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
     if (SDL_UpdateWindowSurface (screen_) < 0)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_UpdateWindowSurface(%@): \"%s\", continuing\n"),
                   screen_,
                   ACE_TEXT (SDL_GetError ())));
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   } // end IF
   else
   {
@@ -494,8 +504,7 @@ RPG_Graphics_SDLWindowBase::update (SDL_Surface* targetSurface_in)
                     dirty_region.y,
                     dirty_region.w,
                     dirty_region.h);
-#elif defined (SDL2_USE)
-    // int result = SDL_GL_MakeCurrent (screen_, GLContext_);
+#elif defined (SDL2_USE) || defined (SDL3_USE)
     if (SDL_UpdateWindowSurfaceRects (screen_,
                                       &dirty_region,
                                       1) < 0)
@@ -503,7 +512,7 @@ RPG_Graphics_SDLWindowBase::update (SDL_Surface* targetSurface_in)
                   ACE_TEXT ("failed to SDL_UpdateWindowSurfaceRects(%@): \"%s\", continuing\n"),
                   screen_,
                   ACE_TEXT (SDL_GetError ())));
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   } // end ELSE
   if (screenLock_)
     screenLock_->unlock ();
@@ -669,17 +678,32 @@ RPG_Graphics_SDLWindowBase::handleEvent (const SDL_Event& event_in,
   RPG_Graphics_Position_t active_position;
   switch (event_in.type)
   {
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_MOUSEMOTION:
-      active_position = std::make_pair (event_in.motion.x,
-                                        event_in.motion.y); break;
+#elif defined (SDL3_USE)
+    case SDL_EVENT_MOUSE_MOTION:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    active_position = std::make_pair (event_in.motion.x,
+                                      event_in.motion.y); break;
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_MOUSEBUTTONDOWN:
+#elif defined (SDL3_USE)
+    case SDL_EVENT_MOUSE_BUTTON_DOWN:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       active_position = std::make_pair (event_in.button.x,
                                         event_in.button.y); break;
     default:
     {
+#if defined (SDL_USE) || defined (SDL2_USE)
       int x, y;
       SDL_GetMouseState (&x, &y);
       active_position = std::make_pair (x, y);
+#elif defined (SDL3_USE)
+      float x, y;
+      SDL_GetMouseState (&x, &y);
+      active_position =
+        std::make_pair (static_cast<unsigned int> (x), static_cast<unsigned int> (y));
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
       break;
     }
@@ -811,9 +835,9 @@ RPG_Graphics_SDLWindowBase::clip (SDL_Surface* targetSurface_in,
   ACE_ASSERT (screen_);
 #if defined (SDL_USE)
   SDL_Surface* surface_p = screen_;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* surface_p = SDL_GetWindowSurface (screen_);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
   SDL_Surface* target_surface_p = (targetSurface_in ? targetSurface_in
                                                     : surface_p);
@@ -822,9 +846,13 @@ RPG_Graphics_SDLWindowBase::clip (SDL_Surface* targetSurface_in,
 	struct SDL_Rect clip_rectangle = clipRectangle_;
 
   // retain previous clip rectangle
+#if defined (SDL_USE) || defined (SDL2_USE)
   SDL_GetClipRect (target_surface_p, &clipRectangle_);
-
   SDL_SetClipRect (target_surface_p, &clip_rectangle);
+#elif defined (SDL3_USE)
+  SDL_GetSurfaceClipRect (target_surface_p, &clipRectangle_);
+  SDL_SetSurfaceClipRect (target_surface_p, &clip_rectangle);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 }
 
 void
@@ -836,19 +864,23 @@ RPG_Graphics_SDLWindowBase::unclip (SDL_Surface* targetSurface_in)
   ACE_ASSERT (screen_);
 #if defined (SDL_USE)
   SDL_Surface* surface_p = screen_;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* surface_p = SDL_GetWindowSurface (screen_);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
   SDL_Surface* target_surface_p = (targetSurface_in ? targetSurface_in
                                                     : surface_p);
   ACE_ASSERT (target_surface_p);
 
   // restore previous clip rectangle
-	struct SDL_Rect clip_rectangle = clipRectangle_;
+  struct SDL_Rect clip_rectangle = clipRectangle_;
+#if defined (SDL_USE) || defined (SDL2_USE)
   SDL_GetClipRect (target_surface_p, &clipRectangle_);
-
   SDL_SetClipRect (target_surface_p, &clip_rectangle);
+#elif defined (SDL3_USE)
+  SDL_GetSurfaceClipRect (target_surface_p, &clipRectangle_);
+  SDL_SetSurfaceClipRect (target_surface_p, &clip_rectangle);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 }
 
 void

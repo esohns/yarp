@@ -23,6 +23,10 @@
 
 #include <list>
 
+#define _SDL_main_h
+#define SDL_main_h_
+#include "SDL.h"
+
 #include "common_parser_common.h"
 
 #include "common_ui_common.h"
@@ -68,9 +72,18 @@ struct Net_Server_GTK_CBData
    , level ()
    , listenerHandle (NULL)
    , schemaRepository ()
+#if defined (SDL_USE)
+   , screen (NULL)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
+   , renderer (NULL)
+   , screen (NULL)
+   , GLContext (NULL)
+#endif // SDL_USE || SDL2_USE || SDL3_USE
    , clientEngine (NULL)
    , levelEngine (NULL)
    , entities ()
+   , doHover (true)
+   , hoverTime (0)
  {}
 
   struct Common_Parser_FlexAllocatorConfiguration              allocatorConfiguration;
@@ -82,9 +95,18 @@ struct Net_Server_GTK_CBData
   struct RPG_Engine_LevelData                                  level;
   RPG_Net_Protocol_IListener_t*                                listenerHandle;
   std::string                                                  schemaRepository;
+#if defined (SDL_USE)
+  SDL_Surface*                                                 screen;
+#elif defined (SDL2_USE) || defined (SDL3_USE)
+  SDL_Renderer*                                                renderer;
+  SDL_Window*                                                  screen;
+  SDL_GLContext                                                GLContext;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   RPG_Client_Engine*                                           clientEngine;
   RPG_Engine*                                                  levelEngine;
   RPG_Engine_Entities_t                                        entities;
+  bool                                                         doHover;
+  unsigned int                                                 hoverTime;
 };
 
 #endif

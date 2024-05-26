@@ -1,20 +1,19 @@
 include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/xerces-c.cmake)
 
-if (UNIX)
- include (FindPkgConfig)
- pkg_check_modules (PKG_CONFIG_MODULE_SDL REQUIRED sdl)
- pkg_check_modules (PKG_CONFIG_MODULE_SDL_TTF REQUIRED SDL_ttf)
- pkg_check_modules (PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
-endif ()
+include (${CMAKE_CURRENT_SOURCE_DIR}/../../scripts/sdl.cmake)
 
 if (UNIX)
- include_directories (${PKG_CONFIG_MODULE_SDL_INCLUDE_DIRS}
-                      ${PKG_CONFIG_MODULE_SDL_TTF_INCLUDE_DIRS}
-                      ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
+ include (FindPkgConfig)
+ pkg_check_modules (PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
+endif (UNIX)
+
+if (SDL_SUPPORT)
+ include_directories (${SDL_INCLUDE_DIRS})
+endif (SDL_SUPPORT)
+if (UNIX)
+ include_directories (${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
 elseif (WIN32)
- include_directories ($ENV{LIB_ROOT}/SDL/include
-                      $ENV{LIB_ROOT}/SDL_ttf/include
-                      $ENV{LIB_ROOT}/libpng/include)
+ include_directories ($ENV{LIB_ROOT}/libpng/include)
 endif ()
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src)

@@ -237,11 +237,19 @@ do_SDL_waitForInput (unsigned int timeout_in,
       // what else can we do ?
       break;
     } // end IF
+#if defined (SDL_USE) || defined (SDL2_USE)
     if ((event_out.type == SDL_KEYDOWN)              ||
         (event_out.type == SDL_KEYUP)                ||
         (event_out.type == SDL_MOUSEMOTION)          ||
         (event_out.type == SDL_MOUSEBUTTONDOWN)      ||
         (event_out.type == SDL_QUIT)                 ||
+#elif defined (SDL3_USE)
+    if ((event_out.type == SDL_EVENT_KEY_DOWN)          ||
+        (event_out.type == SDL_EVENT_KEY_UP)            ||
+        (event_out.type == SDL_EVENT_MOUSE_MOTION)      ||
+        (event_out.type == SDL_EVENT_MOUSE_BUTTON_DOWN) ||
+        (event_out.type == SDL_EVENT_QUIT)              ||
+#endif // SDL_USE || SDL2_USE || SDL3_USE
         (event_out.type == RPG_CLIENT_SDL_TIMEREVENT))
       break;
   } while (true);
@@ -704,18 +712,18 @@ do_processArguments (int argc_in,
 bool
 #if defined (SDL_USE)
 do_runIntro (SDL_Surface* targetSurface_in)
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
 do_runIntro (SDL_Window* targetWindow_in)
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 {
   RPG_TRACE (ACE_TEXT ("::do_runIntro"));
 
   // sanity check(s)
 #if defined (SDL_USE)
   SDL_Surface* surface_p = targetSurface_in;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* surface_p = SDL_GetWindowSurface (targetWindow_in);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
 
   // step1: play intro music
@@ -760,7 +768,7 @@ do_runIntro (SDL_Window* targetWindow_in)
                                                                      1.0f),       // fade from black
                                    NULL,                                          // screen lock interface handle
                                    targetSurface_in);                             // target surface (e.g. screen)
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   RPG_Graphics_Common_Tools::fade (true,                                          // fade in
                                    5.0f,                                          // interval
                                    RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK,
@@ -768,7 +776,7 @@ do_runIntro (SDL_Window* targetWindow_in)
                                                                      1.0f),       // fade from black
                                    NULL,                                          // screen lock interface handle
                                    targetWindow_in);                              // target window (e.g. screen)
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   SDL_Event event;
   do_SDL_waitForInput (10,     // wait 10 seconds max
                        event);
@@ -781,7 +789,7 @@ do_runIntro (SDL_Window* targetWindow_in)
                                                                      1.0f),       // fade to black
                                    NULL,                                          // screen lock interface handle
                                    targetSurface_in);                             // target surface (e.g. screen)
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   RPG_Graphics_Common_Tools::fade (false,                                         // fade out
                                    3.0f,                                          // interval
                                    RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK,
@@ -789,10 +797,14 @@ do_runIntro (SDL_Window* targetWindow_in)
                                                                      1.0f),       // fade to black
                                    NULL,                                          // screen lock interface handle
                                    targetWindow_in);                              // target window (e.g. screen)
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
   // clean up
+#if defined (SDL_USE) || defined (SDL2_USE)
   SDL_FreeSurface (logo);
+#elif defined (SDL3_USE)
+  SDL_DestroySurface (logo);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
   return true;
 }
@@ -1014,19 +1026,9 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   SDL_Surface* surface_p = NULL;
 #if defined (SDL_USE)
   surface_p = GTKUserData_in.screen;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   surface_p = SDL_GetWindowSurface (GTKUserData_in.screen);
-//  GTKUserData_in.renderer = SDL_CreateSoftwareRenderer (surface_p);
-//  if (!GTKUserData_in.renderer)
-//  {
-//    ACE_DEBUG ((LM_ERROR,
-//                ACE_TEXT ("failed to SDL_CreateSoftwareRenderer(): \"%s\", aborting\n"),
-//                ACE_TEXT (SDL_GetError ())));
-//    RPG_Client_Common_Tools::finalize ();
-//    RPG_Engine_Common_Tools::finalize ();
-//    return;
-//  } // end IF
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
   RPG_Client_Window_Main main_window (RPG_Graphics_Size_t (surface_p->w,
                                                            surface_p->h), // size
@@ -1049,8 +1051,10 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   } // end IF
 
   // step4b: client engine
+  RPG_Graphics_IWindowBase* level_window = main_window.child (WINDOW_MAP);
+  ACE_ASSERT (level_window);
   client_engine.initialize (&level_engine,
-                            main_window.child (WINDOW_MAP),
+                            level_window,
                             //&UIDefinition_in,
                             false, // server session ?
                             debug_in);
@@ -1076,8 +1080,6 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   client_action.command = COMMAND_WINDOW_REFRESH;
   client_engine.action (client_action);
 
-  RPG_Graphics_IWindowBase* level_window = main_window.child (WINDOW_MAP);
-  ACE_ASSERT (level_window);
   // initialize/add entity to the graphics cache
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->initialize (NULL,
                                                                   level_window);
@@ -1250,7 +1252,9 @@ do_work (struct RPG_Client_Configuration& configuration_in,
     sdl_event.type = SDL_NOEVENT;
 #elif defined (SDL2_USE)
     sdl_event.type = SDL_FIRSTEVENT;
-#endif // SDL_USE || SDL2_USE
+#elif defined (SDL3_USE)
+    sdl_event.type = SDL_EVENT_FIRST;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     window = NULL;
 
     client_action.command = RPG_CLIENT_COMMAND_INVALID;
@@ -1292,7 +1296,11 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 
     switch (sdl_event.type)
     {
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_KEYDOWN:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_KEY_DOWN:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       {
         switch (sdl_event.key.keysym.sym)
         {
@@ -1356,20 +1364,33 @@ do_work (struct RPG_Client_Configuration& configuration_in,
         // *WARNING*: falls through !
       }
 #endif // SDL_USE
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_MOUSEMOTION:
       case SDL_MOUSEBUTTONDOWN:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_MOUSE_MOTION:
+      case SDL_EVENT_MOUSE_BUTTON_DOWN:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       case RPG_GRAPHICS_SDL_HOVEREVENT: // hovering...
       {
         // find window
         switch (sdl_event.type)
         {
+#if defined (SDL_USE) || defined (SDL2_USE)
           case SDL_MOUSEMOTION:
+#elif defined (SDL3_USE)
+          case SDL_EVENT_MOUSE_MOTION:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
           {
             mouse_position = std::make_pair (sdl_event.motion.x,
                                              sdl_event.motion.y);
             break;
           }
+#if defined (SDL_USE) || defined (SDL2_USE)
           case SDL_MOUSEBUTTONDOWN:
+#elif defined (SDL3_USE)
+          case SDL_EVENT_MOUSE_BUTTON_DOWN:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
           {
             mouse_position = std::make_pair (sdl_event.button.x,
                                              sdl_event.button.y);
@@ -1377,10 +1398,16 @@ do_work (struct RPG_Client_Configuration& configuration_in,
           }
           default:
           {
+#if defined (SDL_USE) || defined (SDL2_USE)
             int x, y;
             Uint8 button_state = SDL_GetMouseState (&x, &y);
+#elif defined (SDL3_USE)
+            float x, y;
+            Uint32 button_state = SDL_GetMouseState (&x, &y);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
             ACE_UNUSED_ARG (button_state);
-            mouse_position = std::make_pair (x, y);
+            mouse_position =
+              std::make_pair (static_cast<unsigned int> (x), static_cast<unsigned int> (y));
             break;
           }
         } // end SWITCH
@@ -1394,7 +1421,11 @@ do_work (struct RPG_Client_Configuration& configuration_in,
         // 0. (re-)draw cursor (handled below)
         // 1. notify previously "active" window upon losing "focus"
         if ((window || previous_window) &&
+#if defined (SDL_USE) || defined (SDL2_USE)
             (sdl_event.type == SDL_MOUSEMOTION))
+#elif defined (SDL3_USE)
+            (sdl_event.type == SDL_EVENT_MOUSE_MOTION))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
         {
           // step1: notify previous window (if any)
           if (previous_window &&
@@ -1412,7 +1443,11 @@ do_work (struct RPG_Client_Configuration& configuration_in,
                           ACE_TEXT ("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
             }
 
+#if defined (SDL_USE) || defined (SDL2_USE)
             sdl_event.type = SDL_MOUSEMOTION;
+#elif defined (SDL3_USE)
+            sdl_event.type = SDL_EVENT_MOUSE_MOTION;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
           } // end IF
         } // end IF
         // remember last "active" window
@@ -1433,7 +1468,11 @@ do_work (struct RPG_Client_Configuration& configuration_in,
 
         break;
       }
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_QUIT:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_QUIT:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       {
         // finished event processing
         done = true;
@@ -1484,28 +1523,119 @@ do_work (struct RPG_Client_Configuration& configuration_in,
         // *WARNING*: falls through !
 continue_:;
       }
-#endif // SDL2_USE
+#elif defined (SDL3_USE)
+      case SDL_EVENT_TERMINATING:
+      case SDL_EVENT_LOW_MEMORY:
+      case SDL_EVENT_WILL_ENTER_BACKGROUND:
+      case SDL_EVENT_DID_ENTER_BACKGROUND:
+      case SDL_EVENT_WILL_ENTER_FOREGROUND:
+      case SDL_EVENT_DID_ENTER_FOREGROUND:
+      case SDL_EVENT_LOCALE_CHANGED:
+      case SDL_EVENT_DISPLAY_ORIENTATION:
+      case SDL_EVENT_DISPLAY_ADDED:
+      case SDL_EVENT_DISPLAY_REMOVED:
+      case SDL_EVENT_DISPLAY_MOVED:
+      case SDL_EVENT_DISPLAY_CONTENT_SCALE_CHANGED:
+      case SDL_EVENT_DISPLAY_HDR_STATE_CHANGED:
+      case SDL_EVENT_WINDOW_SHOWN:
+      case SDL_EVENT_WINDOW_HIDDEN:
+      case SDL_EVENT_WINDOW_MOVED:
+      case SDL_EVENT_WINDOW_RESIZED:
+      case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
+      case SDL_EVENT_WINDOW_MINIMIZED:
+      case SDL_EVENT_WINDOW_MAXIMIZED:
+      case SDL_EVENT_WINDOW_RESTORED:
+      case SDL_EVENT_WINDOW_MOUSE_ENTER:
+      case SDL_EVENT_WINDOW_MOUSE_LEAVE:
+      case SDL_EVENT_WINDOW_FOCUS_GAINED:
+      case SDL_EVENT_WINDOW_FOCUS_LOST:
+      case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
+      case SDL_EVENT_WINDOW_TAKE_FOCUS:
+      case SDL_EVENT_WINDOW_HIT_TEST:
+      case SDL_EVENT_WINDOW_ICCPROF_CHANGED:
+      case SDL_EVENT_WINDOW_DISPLAY_CHANGED:
+      case SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED:
+      case SDL_EVENT_WINDOW_OCCLUDED:
+      case SDL_EVENT_WINDOW_ENTER_FULLSCREEN:
+      case SDL_EVENT_WINDOW_LEAVE_FULLSCREEN:
+      case SDL_EVENT_WINDOW_DESTROYED:
+      case SDL_EVENT_WINDOW_PEN_ENTER:
+      case SDL_EVENT_WINDOW_PEN_LEAVE:
+      {
+        if (sdl_event.type < SDL_EVENT_WINDOW_FIRST ||
+            sdl_event.type > SDL_EVENT_WINDOW_LAST)
+          goto continue_;
+        switch (sdl_event.window.type)
+        {
+          case SDL_EVENT_WINDOW_EXPOSED:
+          case SDL_EVENT_WINDOW_RESIZED:
+            break;
+          case SDL_EVENT_WINDOW_MOUSE_ENTER:
+          {
+            //           ACE_DEBUG ((LM_DEBUG,
+            //                       ACE_TEXT ("gained mouse coverage...\n")));
+
+            ACE_GUARD (ACE_Thread_Mutex, aGuard, GTKUserData_in.UIState->lock);
+            GTKUserData_in.doHover = true;
+            break;
+          }
+          case SDL_EVENT_WINDOW_MOUSE_LEAVE:
+          {
+            //           ACE_DEBUG ((LM_DEBUG,
+            //                       ACE_TEXT ("lost mouse coverage...\n")));
+
+            ACE_GUARD (ACE_Thread_Mutex, aGuard, GTKUserData_in.UIState->lock);
+            GTKUserData_in.doHover = false;
+            break;
+          }
+
+          default:
+            break;
+        } // end SWITCH
+
+       // *WARNING*: falls through !
+continue_:;
+      }
+#endif // SDL2_USE || SDL3_USE
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_SYSWMEVENT:
+#endif // SDL_USE || SDL2_USE
 #if defined (SDL_USE)
       case SDL_VIDEORESIZE:
       case SDL_VIDEOEXPOSE:
 #endif // SDL_USE
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_KEYUP:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_KEY_UP:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 #if defined (SDL2_USE)
       case SDL_TEXTEDITING:
       case SDL_TEXTINPUT:
       case SDL_KEYMAPCHANGED:
       case SDL_TEXTEDITING_EXT:
 #endif // SDL2_USE
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_MOUSEBUTTONUP:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_MOUSE_BUTTON_UP:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 #if defined (SDL2_USE)
       case SDL_MOUSEWHEEL:
 #endif // SDL2_USE
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_JOYAXISMOTION:
       case SDL_JOYBALLMOTION:
       case SDL_JOYHATMOTION:
       case SDL_JOYBUTTONDOWN:
       case SDL_JOYBUTTONUP:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_JOYSTICK_AXIS_MOTION:
+      case SDL_EVENT_JOYSTICK_BALL_MOTION:
+      case SDL_EVENT_JOYSTICK_HAT_MOTION:
+      case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
+      case SDL_EVENT_JOYSTICK_BUTTON_UP:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 #if defined (SDL2_USE)
       case SDL_JOYDEVICEADDED:
       case SDL_JOYDEVICEREMOVED:
@@ -1539,10 +1669,16 @@ continue_:;
 #endif // SDL2_USE
       case RPG_CLIENT_SDL_TIMEREVENT:
       {
+#if defined (SDL_USE) || defined (SDL2_USE)
         int x, y;
         Uint8 button_state = SDL_GetMouseState (&x, &y);
+#elif defined (SDL3_USE)
+        float x, y;
+        Uint32 button_state = SDL_GetMouseState (&x, &y);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
         ACE_UNUSED_ARG (button_state);
-        mouse_position = std::make_pair (x, y);
+        mouse_position =
+          std::make_pair (static_cast<unsigned int> (x), static_cast<unsigned int> (y));
         window = main_window.getWindow (mouse_position);
         break;
       }
@@ -1566,8 +1702,13 @@ continue_:;
     // redraw cursor ?
     switch (sdl_event.type)
     {
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_KEYDOWN:
       case SDL_MOUSEBUTTONDOWN:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_KEY_DOWN:
+      case SDL_EVENT_MOUSE_BUTTON_DOWN:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       {
         // map hasn't changed --> no need to redraw
         if ((dirty_region.w == 0) && (dirty_region.h == 0))
@@ -1575,7 +1716,11 @@ continue_:;
 
         // *WARNING*: falls through !
       }
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_MOUSEMOTION:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_MOUSE_MOTION:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       case RPG_GRAPHICS_SDL_HOVEREVENT:
       {
         // sanity check
@@ -1584,7 +1729,11 @@ continue_:;
 
         // map has changed, cursor MAY have been drawn over...
         // --> redraw cursor ?
+#if defined (SDL_USE) || defined (SDL2_USE)
         if ((sdl_event.type == SDL_MOUSEMOTION) ||
+#elif defined (SDL3_USE)
+        if ((sdl_event.type == SDL_EVENT_MOUSE_MOTION) ||
+#endif // SDL_USE || SDL2_USE || SDL3_USE
             (dirty_region.w != 0) || (dirty_region.h != 0))
         {
           client_action.command = COMMAND_CURSOR_DRAW;
@@ -1913,15 +2062,23 @@ do_printVersion (const std::string& programName_in)
             << std::endl;
 
   // step3: print SDL version(s)
-  SDL_version sdl_version_compiled;
-  SDL_VERSION (&sdl_version_compiled);
   version_number.str (ACE_TEXT_ALWAYS_CHAR (""));
   version_number.clear ();
+#if defined (SDL_USE) || defined (SDL2_USE)
+  SDL_version sdl_version_compiled;
+  SDL_VERSION (&sdl_version_compiled);
   version_number << sdl_version_compiled.major;
   version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << sdl_version_compiled.minor;
   version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << sdl_version_compiled.patch;
+#elif defined (SDL3_USE)
+  version_number << SDL_MAJOR_VERSION;
+  version_number << ACE_TEXT_ALWAYS_CHAR (".");
+  version_number << SDL_MINOR_VERSION;
+  version_number << ACE_TEXT_ALWAYS_CHAR (".");
+  version_number << SDL_MICRO_VERSION;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   std::cout << ACE_TEXT_ALWAYS_CHAR ("SDL (compiled against): ")
             << version_number.str ()
             << std::endl;
@@ -2354,6 +2511,17 @@ ACE_TMAIN (int argc_in,
                      configuration);
 
   // step2a: initialize SDL
+  // SDL_bool result =
+  //   SDL_SetHintWithPriority (ACE_TEXT_ALWAYS_CHAR (SDL_HINT_AUDIO_DRIVER),
+  //                            ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME),
+  //                            SDL_HINT_OVERRIDE);
+  // if (result == SDL_FALSE)
+  //   ACE_DEBUG ((LM_WARNING,
+  //               ACE_TEXT ("failed to SDL_SetHintWithPriority(\"%s\",\"%s\"): \"%s\", continuing\n"),
+  //               ACE_TEXT (SDL_HINT_AUDIO_DRIVER),
+  //               ACE_TEXT (RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME),
+  //               ACE_TEXT (SDL_GetError ())));
+
   Uint32 SDL_init_flags = 0;
   SDL_init_flags |= SDL_INIT_TIMER;                                            // timers
   SDL_init_flags |= (configuration.audio_configuration.mute ? 0
@@ -2366,7 +2534,9 @@ ACE_TMAIN (int argc_in,
                                                    : SDL_INIT_CDROM);          // audioCD playback
 #endif // SDL_USE
 //  SDL_init_flags |= SDL_INIT_JOYSTICK;                                         // joystick
+#if defined (SDL_USE) || defined (SDL2_USE)
   SDL_init_flags |= SDL_INIT_NOPARACHUTE;                                        /**< Don't catch fatal signals */
+#endif // SDL_USE || SL2_USE
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
 #else
 #if defined (SDL_USE)

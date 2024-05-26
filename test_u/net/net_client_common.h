@@ -76,11 +76,11 @@ struct Net_Client_GTK_CBData
    , schemaRepository ()
 #if defined (SDL_USE)
    , screen (NULL)
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
    , renderer (NULL)
    , screen (NULL)
    , GLContext (NULL)
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
    , doHover (true)
    , hoverTime (0)
    , levelEngine (NULL)
@@ -100,11 +100,11 @@ struct Net_Client_GTK_CBData
   std::string                                                  schemaRepository;
 #if defined (SDL_USE)
   SDL_Surface*                                                 screen;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Renderer*                                                renderer;
   SDL_Window*                                                  screen;
   SDL_GLContext                                                GLContext;
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   bool                                                         doHover;
   unsigned int                                                 hoverTime;
   RPG_Engine*                                                  levelEngine;

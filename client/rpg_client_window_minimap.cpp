@@ -101,8 +101,18 @@ RPG_Client_Window_MiniMap::~RPG_Client_Window_MiniMap ()
   RPG_TRACE (ACE_TEXT ("RPG_Client_Window_MiniMap::~RPG_Client_Window_MiniMap"));
 
   // clean up
-  SDL_FreeSurface (myBG);
-  SDL_FreeSurface (mySurface);
+  if (myBG)
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (myBG);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (myBG);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+  if (mySurface)
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (mySurface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (mySurface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 }
 
 void
@@ -120,33 +130,6 @@ RPG_Client_Window_MiniMap::handleEvent (const union SDL_Event& event_in,
     // *** mouse ***
     case RPG_GRAPHICS_SDL_MOUSEMOVEOUT:
       break;
-    case SDL_MOUSEMOTION:
-    {
-
-      // *WARNING*: falls through !
-    }
-    case SDL_KEYDOWN:
-    case SDL_KEYUP:
-    case SDL_MOUSEBUTTONDOWN:
-    case SDL_MOUSEBUTTONUP:
-    case SDL_JOYAXISMOTION:
-    case SDL_JOYBALLMOTION:
-    case SDL_JOYHATMOTION:
-    case SDL_JOYBUTTONDOWN:
-    case SDL_JOYBUTTONUP:
-    case SDL_QUIT:
-    case SDL_SYSWMEVENT:
-#if defined (SDL_USE)
-    case SDL_ACTIVEEVENT:
-    case SDL_VIDEORESIZE:
-    case SDL_VIDEOEXPOSE:
-#elif defined (SDL2_USE)
-    case SDL_WINDOWEVENT_SHOWN:
-    case SDL_WINDOWEVENT_RESIZED:
-    case SDL_WINDOWEVENT_EXPOSED:
-#endif // SDL_USE || SDL2_USE
-    case SDL_USEREVENT:
-    case RPG_GRAPHICS_SDL_HOVEREVENT:
     default:
     {
       // delegate these to the parent...
@@ -170,9 +153,9 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
   ACE_ASSERT (inherited::screen_);
 #if defined (SDL_USE)
   SDL_Surface* surface_p = inherited::screen_;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
   ACE_ASSERT (myClient);
   ACE_ASSERT (myEngine);
@@ -212,6 +195,12 @@ RPG_Client_Window_MiniMap::draw (SDL_Surface* targetSurface_in,
   myEngine->lock ();
   RPG_Engine_EntityID_t active_entity_id = myEngine->getActive (false); // locked access ?
   RPG_Map_Size_t map_size = myEngine->getSize (false); // locked access ?
+  uint8_t bytes_per_pixel_i =
+#if defined (SDL_USE) || defined (SDL2_USE)
+    mySurface->format->BytesPerPixel;
+#elif defined (SDL3_USE)
+    mySurface->format->bytes_per_pixel;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   for (unsigned int y = 0;
        y < map_size.second;
        y++)
@@ -324,21 +313,21 @@ continue_:
       // *NOTE*: a minimap symbol has this shape: _ C _
       //                                          C C C
       // where "_" is transparent and "C" is a colored pixel
-      ACE_ASSERT (mySurface->format->BytesPerPixel == 4);
+      ACE_ASSERT (bytes_per_pixel_i == 4);
 
       // step3a: row 1
       destrect.x = 40 + (2 * x) - (2 * y);
       destrect.y = x + y;
       pixels = reinterpret_cast<Uint32*> (static_cast<char*> (mySurface->pixels) +
                                           (mySurface->pitch * (destrect.y + 6)) +
-                                          ((destrect.x + 6) * mySurface->format->BytesPerPixel));
+                                          ((destrect.x + 6) * bytes_per_pixel_i));
 //       pixels[0] = transparent -> don't write
       pixels[1] = color;
 //       pixels[2] = transparent -> don't write
       // step3b: row 2
       pixels = reinterpret_cast<Uint32*> (static_cast<char*> (mySurface->pixels) +
                                           (mySurface->pitch * (destrect.y + 7)) +
-                                          ((destrect.x + 6) * mySurface->format->BytesPerPixel));
+                                          ((destrect.x + 6) * bytes_per_pixel_i));
       pixels[0] = color;
       pixels[1] = color;
       pixels[2] = color;

@@ -48,11 +48,11 @@ struct state_t
 {
 #if defined (SDL_USE)
   SDL_Surface*                  screen;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Window*                   screen;
   SDL_Renderer*                 renderer;
   SDL_GLContext                 GLContext;
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_Thread_Mutex              hover_lock;
   unsigned int                  hover_time;
   bool                          debug;

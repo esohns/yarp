@@ -67,22 +67,21 @@ class SDL_GUI_LevelWindow_3D
                    bool = RPG_GRAPHICS_DEF_FLIP); // flip ? : update dirty region(s)
 
   // implement (part of) RPG_Client_IWindowLevel
+  inline virtual bool initialize (RPG_Client_Engine*,            // engine handle
+                                  RPG_Engine*,                   // (level) state handle
+                                  bool = false) { return true; } // debug ?
   virtual void initialize (const RPG_Graphics_Style&); // style
   virtual void setView (int,          // offset x (map coordinates !)
                         int,          // offset x (map coordinates !)
                         bool = true); // locked access ?
   inline virtual void setView (const RPG_Map_Position_t& view_in) { myView = view_in; } // position
   inline virtual RPG_Graphics_Position_t getView () const { return myView; } // return value: view (map coordinates !)
-
-  void center ();
-
-  // (re-)init / set level properties
-  // implement (part of) RPG_Client_IWindowLevel
   virtual void toggleDoor (const RPG_Map_Position_t&); // door position
   virtual void setBlendRadius (ACE_UINT8); // radius
   virtual void updateMinimap ();
   virtual void updateMessageWindow (const std::string&); // message
 
+  void center ();
   bool setStyle (const struct RPG_Graphics_StyleUnion&);
 
   // implement RPG_Client_IWindow

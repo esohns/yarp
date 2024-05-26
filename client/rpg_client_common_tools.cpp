@@ -116,6 +116,7 @@ RPG_Client_Common_Tools::initializeSDLInput (const struct RPG_Client_SDL_InputCo
   //   SDL_SetEventFilter(event_filter_SDL_cb);
 
   // ***** mouse setup *****
+#if defined (SDL_USE) || defined (SDL2_USE)
   previous_state = SDL_ShowCursor (SDL_QUERY);
   if (previous_state < 0)
   {
@@ -132,6 +133,17 @@ RPG_Client_Common_Tools::initializeSDLInput (const struct RPG_Client_SDL_InputCo
                   ACE_TEXT ("failed to SDL_ShowCursor(SDL_DISABLE): \"%s\", continuing\n"),
                   ACE_TEXT (SDL_GetError ())));
   } // end IF
+#elif defined (SDL3_USE)
+  previous_state = SDL_CursorVisible ();
+  if (previous_state == SDL_TRUE)
+  {
+    int result = SDL_HideCursor (); // disable OS mouse cursor over SDL window
+    if (result < 0)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_HideCursor(): \"%s\", continuing\n"),
+                  ACE_TEXT (SDL_GetError ())));
+  } // end IF
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
   return true;
 }

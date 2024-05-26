@@ -52,7 +52,11 @@ RPG_Graphics_SDLWindowSub::~RPG_Graphics_SDLWindowSub ()
 
   // clean up
   if (BG_)
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (BG_);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (BG_);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 }
 
 void
@@ -146,9 +150,9 @@ RPG_Graphics_SDLWindowSub::saveBG (const struct SDL_Rect& area_in)
   ACE_ASSERT (inherited::screen_);
 #if defined (SDL_USE)
   SDL_Surface* surface_p = inherited::screen_;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
 
   if (!BGHasBeenSaved_)
@@ -191,9 +195,9 @@ RPG_Graphics_SDLWindowSub::restoreBG (struct SDL_Rect& dirtyRegion_out)
   ACE_ASSERT (inherited::screen_);
 #if defined (SDL_USE)
   SDL_Surface* surface_p = inherited::screen_;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
   ACE_ASSERT (BG_);
 

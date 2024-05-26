@@ -337,11 +337,11 @@ RPG_Player_Player_Base::getSpeed (bool isRunning_in,
   // sanity check(s)
   ACE_ASSERT (lighting_in != RPG_COMMON_AMBIENTLIGHTING_INVALID);
 
-  // init return value
-  unsigned char result = 0;
+  // initialize return value
+  ACE_UINT8 result = 0;
 
   // step1: retrieve base speed (race)
-  unsigned char base_speed = 0;
+  ACE_UINT8 base_speed = 0;
   unsigned int race_index = 1;
   for (unsigned int index = 0;
        index < myRace.size ();

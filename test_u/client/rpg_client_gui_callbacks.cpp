@@ -2568,14 +2568,17 @@ idle_raise_UI_cb (gpointer userData_in)
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
 
   // raise dialog window
-  GtkWidget* widget =
+  GtkWidget* widget_p =
       GTK_WIDGET (gtk_builder_get_object ((*iterator).second.second,
                                           ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GTK_DIALOG_MAIN_NAME)));
-  ACE_ASSERT (widget);
-  GdkWindow* toplevel = gtk_widget_get_window (widget);
-  ACE_ASSERT (toplevel);
-  gdk_window_deiconify (toplevel);
-  gdk_window_show (toplevel);
+  ACE_ASSERT (widget_p);
+  // if (!gtk_widget_get_visible (widget))
+  //     gtk_widget_show_all (widget);
+  GdkWindow* window_p = gtk_widget_get_window (widget_p);
+  ACE_ASSERT (window_p);
+  gdk_window_deiconify (window_p);
+  // gdk_window_raise (window_p);
+  gdk_window_show (window_p);
 
   return FALSE; // G_SOURCE_REMOVE
 }
@@ -2699,7 +2702,11 @@ quit_clicked_GTK_cb (GtkWidget* widget_in,
 
   // trigger SDL event loop
   union SDL_Event sdl_event;
+#if defined (SDL_USE) || defined (SDL2_USE)
   sdl_event.type = SDL_QUIT;
+#elif defined (SDL3_USE)
+  sdl_event.type = SDL_EVENT_QUIT;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   if (SDL_PushEvent (&sdl_event) < 0)
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),

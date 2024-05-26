@@ -84,11 +84,11 @@ struct RPG_Client_GTK_CBData
    , savedStateFilter (NULL)
 #if defined (SDL_USE)
    , screen (NULL)
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
    , renderer (NULL)
    , screen (NULL)
    , GLContext (NULL)
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
    , screenLock (NULL,
                  NULL)
    , eventTimer (0)
@@ -108,11 +108,11 @@ struct RPG_Client_GTK_CBData
   GtkFileFilter*                         savedStateFilter;
 #if defined (SDL_USE)
   SDL_Surface*                           screen;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Renderer*                          renderer;
   SDL_Window*                            screen;
   SDL_GLContext                          GLContext;
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_Thread_Mutex                       screenLock; // video access
   SDL_TimerID                            eventTimer;
   RPG_Client_Engine*                     clientEngine;
@@ -227,6 +227,24 @@ typedef std::pair<unsigned int, unsigned int> RPG_Client_Position_t;
 
 struct RPG_Client_Action
 {
+  RPG_Client_Action ()
+   : command (RPG_CLIENT_COMMAND_INVALID)
+   , previous (std::make_pair (std::numeric_limits<unsigned int>::max (),
+                               std::numeric_limits<unsigned int>::max ()))
+   , position (std::make_pair (std::numeric_limits<unsigned int>::max (),
+                               std::numeric_limits<unsigned int>::max ()))
+   , window (NULL)
+   , cursor (RPG_GRAPHICS_CURSOR_INVALID)
+   , entity_id (0)
+   , sound (RPG_SOUND_EVENT_INVALID)
+   , message ()
+   , path ()
+   , source (std::make_pair (std::numeric_limits<unsigned int>::max (),
+                             std::numeric_limits<unsigned int>::max ()))
+   , positions ()
+   , radius (0)
+  {}
+
   enum RPG_Client_Command   command;
   RPG_Map_Position_t        previous;
   // *NOTE*: depending on the scenario, these could be map or screen coordinates !

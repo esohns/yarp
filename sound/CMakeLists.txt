@@ -27,7 +27,7 @@ set (${LIBRARY}_SRCS
      rpg_sound_XML_types.cpp
      rpg_sound_XML_types.h)
 
-set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS BASEDIR=\"C:\\\")
+#set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS BASEDIR=\"C:\\\")
 #set_source_files_properties (${${LIBRARY}_SRCS} PROPERTIES COMPILE_DEFINITIONS RPG_SOUND_BUILD_DLL)
 
 add_library (${LIBRARY} STATIC ${${LIBRARY}_SRCS})
@@ -37,8 +37,9 @@ if (XERCESC_SUPPORT)
                              $<BUILD_INTERFACE:${XERCESC_INCLUDE_DIRS}>)
 endif (XERCESC_SUPPORT)
 if (SDL_SUPPORT)
+ message (STATUS "SDL_INCLUDE_DIRS: ${SDL_INCLUDE_DIRS}")
  target_include_directories (${LIBRARY} PUBLIC
-                             "$<BUILD_INTERFACE:${SDL_INCLUDE_DIRS}>")
+                             ${SDL_INCLUDE_DIRS})
 endif (SDL_SUPPORT)
 if (WIN32)
  add_compile_definitions (XSD_CXX11)

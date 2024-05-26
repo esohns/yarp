@@ -81,20 +81,36 @@ RPG_Graphics_Cursor_Manager::~RPG_Graphics_Cursor_Manager ()
 
   // clean up
   if (myBG)
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (myBG);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (myBG);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
   for (RPG_Graphics_Cursor_CacheConstIterator_t iterator = myCache.begin ();
        iterator != myCache.end ();
        iterator++)
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface ((*iterator).second);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface ((*iterator).second);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
   for (RPG_Graphics_TileCacheConstIterator_t iterator = myHighlightBGCache.begin ();
        iterator != myHighlightBGCache.end ();
        iterator++)
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface ((*iterator).second);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface ((*iterator).second);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
   if (myHighlightTile)
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (myHighlightTile);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (myHighlightTile);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 }
 
 void
@@ -175,9 +191,9 @@ RPG_Graphics_Cursor_Manager::area (const RPG_Graphics_Position_t& viewport_in) c
   struct SDL_Rect highlight_area = {0, 0, 0, 0};
 #if defined (SDL_USE)
   SDL_Surface* screen = myHighlightWindow->getScreen ();
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* screen = SDL_GetWindowSurface (myHighlightWindow->getScreen ());
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (screen);
   for (RPG_Graphics_TileCacheConstIterator_t iterator = myHighlightBGCache.begin ();
        iterator != myHighlightBGCache.end ();
@@ -207,8 +223,13 @@ RPG_Graphics_Cursor_Manager::position (bool highlight_in) const
   if (highlight_in)
     return myHighlightBGCache.front ().first;
 
+#if defined (SDL_USE) || defined (SDL2_USE)
   int x, y;
   Uint8 button_state = SDL_GetMouseState (&x, &y);
+#elif defined (SDL3_USE)
+  float x, y;
+  Uint32 button_state = SDL_GetMouseState (&x, &y);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_UNUSED_ARG (button_state);
 
   return std::make_pair (static_cast<unsigned int> (x),
@@ -344,7 +365,11 @@ RPG_Graphics_Cursor_Manager::setCursor (enum RPG_Graphics_Cursor type_in,
   // step3: create background surface
   if (myBG)
   {
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (myBG); myBG = NULL;
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (myBG); myBG = NULL;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   } // end IF
   myBG = RPG_Graphics_Surface::create ((*iterator).second->w,
                                        (*iterator).second->h);
@@ -380,10 +405,10 @@ RPG_Graphics_Cursor_Manager::putCursor (const RPG_Graphics_Offset_t& offset_in,
   ACE_ASSERT (myHighlightWindow);
 #if defined (SDL_USE)
   SDL_Surface* target_surface = myHighlightWindow->getScreen ();
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* target_surface =
     SDL_GetWindowSurface (myHighlightWindow->getScreen ());
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (target_surface);
   if ((offset_in.first  >= target_surface->w) || (offset_in.second >= target_surface->h))
     return; // nothing to do
@@ -540,10 +565,10 @@ RPG_Graphics_Cursor_Manager::restoreBG (struct SDL_Rect& dirtyRegion_out,
   ACE_ASSERT (myHighlightWindow);
 #if defined (SDL_USE)
   SDL_Surface* target_surface = myHighlightWindow->getScreen ();
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* target_surface =
     SDL_GetWindowSurface (myHighlightWindow->getScreen ());
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (target_surface);
 
   // initialize dirty region
@@ -598,10 +623,10 @@ RPG_Graphics_Cursor_Manager::updateBG (struct SDL_Rect& dirtyRegion_out,
   ACE_ASSERT (myHighlightWindow);
 #if defined (SDL_USE)
   SDL_Surface* target_surface = myHighlightWindow->getScreen ();
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* target_surface =
     SDL_GetWindowSurface (myHighlightWindow->getScreen ());
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (target_surface);
 
   // initialize return value(s)
@@ -687,16 +712,28 @@ RPG_Graphics_Cursor_Manager::updateBG (struct SDL_Rect& dirtyRegion_out,
                              *new_bg);
 
   // step5: mask the "dirty" bit of the cached bg
+#if defined (SDL_USE) || defined (SDL2_USE)
   if (SDL_FillRect (myBG,
                     &intersection,
                     RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK_A0, // transparent
                                                       *myBG->format,
                                                       1.0f)))
+#elif defined (SDL3_USE)
+  if (SDL_FillSurfaceRect (myBG,
+                           &intersection,
+                           RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK_A0, // transparent
+                                                             *myBG->format,
+                                                             1.0f)))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_FillRect(): \"%s\", returning\n"),
                 ACE_TEXT (SDL_GetError ())));
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (new_bg);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (new_bg);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     return;
   } // end IF
 
@@ -709,11 +746,19 @@ RPG_Graphics_Cursor_Manager::updateBG (struct SDL_Rect& dirtyRegion_out,
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_BlitSurface(): \"%s\", returning\n"),
                 ACE_TEXT (SDL_GetError ())));
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (new_bg);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (new_bg);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     return;
   } // end IF
 
+#if defined (SDL_USE) || defined (SDL2_USE)
   SDL_FreeSurface (myBG);
+#elif defined (SDL3_USE)
+  SDL_DestroySurface (myBG);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   myBG = new_bg;
 
   dirtyRegion_out.x = static_cast<int> (myBGPosition.first);
@@ -792,10 +837,10 @@ RPG_Graphics_Cursor_Manager::putHighlights (const RPG_Map_PositionList_t& mapPos
   ACE_ASSERT (myHighlightWindow);
 #if defined (SDL_USE)
   SDL_Surface* target_surface = myHighlightWindow->getScreen ();
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* target_surface =
     SDL_GetWindowSurface (myHighlightWindow->getScreen ());
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (target_surface);
 
   // step1: restore old backgrounds
@@ -965,10 +1010,10 @@ RPG_Graphics_Cursor_Manager::storeHighlightBG (const RPG_Map_PositionList_t& map
   ACE_ASSERT (myHighlightWindow);
 #if defined (SDL_USE)
   SDL_Surface* target_surface = myHighlightWindow->getScreen ();
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* target_surface =
     SDL_GetWindowSurface (myHighlightWindow->getScreen ());
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (target_surface);
   if (mapPositions_in.empty ())
     return; // nothing to do
@@ -985,7 +1030,11 @@ RPG_Graphics_Cursor_Manager::storeHighlightBG (const RPG_Map_PositionList_t& map
          i > 0;
          i--)
     {
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (myHighlightBGCache.back ().second);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (myHighlightBGCache.back ().second);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       myHighlightBGCache.pop_back ();
     } // end FOR
   } // end IF
@@ -1073,10 +1122,10 @@ RPG_Graphics_Cursor_Manager::restoreHighlightBG (const RPG_Graphics_Position_t& 
   ACE_ASSERT (myHighlightWindow);
 #if defined (SDL_USE)
   SDL_Surface* target_surface = myHighlightWindow->getScreen ();
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* target_surface =
     SDL_GetWindowSurface (myHighlightWindow->getScreen ());
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (target_surface);
   ACE_ASSERT (!myHighlightBGCache.empty ());
   if ((myHighlightBGCache.size () == 1) &&
@@ -1108,10 +1157,10 @@ RPG_Graphics_Cursor_Manager::restoreHighlightBG (const RPG_Graphics_Position_t& 
        iterator++)
   {
     screen_position =
-        RPG_Graphics_Common_Tools::mapToScreen ((*iterator).first,
-                                                std::make_pair (window_area.w,
-                                                                window_area.h),
-                                                viewPort_in);
+      RPG_Graphics_Common_Tools::mapToScreen ((*iterator).first,
+                                              std::make_pair (window_area.w,
+                                                              window_area.h),
+                                              viewPort_in);
 
     source_clip_rectangle.x = screen_position.first;
     source_clip_rectangle.y = screen_position.second;
@@ -1124,7 +1173,7 @@ RPG_Graphics_Cursor_Manager::restoreHighlightBG (const RPG_Graphics_Position_t& 
     source_clip_rectangle.x = clip_rectangle.x - screen_position.first;
     source_clip_rectangle.y = clip_rectangle.y - screen_position.second;
     if (!clip_rectangle.w || !clip_rectangle.h)
-        continue; // nothing to do...
+      continue; // nothing to do...
 
     temp_rectangle = clip_rectangle;
     // restore / clear background
@@ -1173,10 +1222,10 @@ RPG_Graphics_Cursor_Manager::updateHighlightBG (const RPG_Graphics_Position_t& v
   ACE_ASSERT (myHighlightWindow);
 #if defined (SDL_USE)
   SDL_Surface* target_surface = myHighlightWindow->getScreen ();
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* target_surface =
     SDL_GetWindowSurface (myHighlightWindow->getScreen ());
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (target_surface);
 
   // initialize return value(s)
@@ -1267,16 +1316,28 @@ RPG_Graphics_Cursor_Manager::updateHighlightBG (const RPG_Graphics_Position_t& v
     // --> adjust intersection coordinates (relative to cached bg surface)
     clip_rectangle.x -= screen_position.first;
     clip_rectangle.y -= screen_position.second;
+#if defined (SDL_USE) || defined (SDL2_USE)
     if (SDL_FillRect ((*iterator).second,
                       &clip_rectangle,
                       RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK_A0, // transparent
                                                         *(*iterator).second->format,
                                                         1.0f)))
+#elif defined (SDL3_USE)
+    if (SDL_FillSurfaceRect ((*iterator).second,
+                             &clip_rectangle,
+                             RPG_Graphics_SDL_Tools::getColor (COLOR_BLACK_A0, // transparent
+                                                               *(*iterator).second->format,
+                                                               1.0f)))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_FillRect(): \"%s\", continuing\n"),
                   ACE_TEXT (SDL_GetError ())));
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (new_background);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (new_background);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       continue;
     } // end IF
 
@@ -1289,12 +1350,20 @@ RPG_Graphics_Cursor_Manager::updateHighlightBG (const RPG_Graphics_Position_t& v
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_BlitSurface(): %s, continuing\n"),
                   ACE_TEXT (SDL_GetError ())));
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (new_background);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (new_background);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       continue;
     } // end IF
 
     // clean up
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface ((*iterator).second);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface ((*iterator).second);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
     (*iterator).second = new_background;
 
@@ -1333,7 +1402,11 @@ RPG_Graphics_Cursor_Manager::resetHighlightBG (const RPG_Graphics_Position_t& po
   // initialize/clear highlight BG cache
   while (myHighlightBGCache.size () > 1)
   {
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (myHighlightBGCache.back ().second);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (myHighlightBGCache.back ().second);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     myHighlightBGCache.pop_back ();
   } // end WHILE
   myHighlightBGCache.front ().first = position_in;

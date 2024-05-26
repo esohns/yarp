@@ -21,6 +21,10 @@
 
 #include "rpg_client_engine.h"
 
+#define _SDL_main_h
+#define SDL_main_h_
+#include "SDL.h"
+
 #include "ace/Log_Msg.h"
 
 #include "common_ui_gtk_tools.h"
@@ -144,24 +148,23 @@ RPG_Client_Engine::svc (void)
 
 // #if defined (ACE_WIN32) || defined (ACE_WIN64)
 // #else
-//   ACE_ASSERT (window_);
+  // ACE_ASSERT (window_);
 
-//   SDL_GLContext context_p = window_->getGLContext ();
-//   ACE_ASSERT (context_p);
-//   SDL_Window* window_p = window_->getScreen ();
-//   ACE_ASSERT (window_p);
+  // SDL_GLContext context_p = window_->getGLContext ();
+  // ACE_ASSERT (context_p);
+  // SDL_Window* window_p = window_->getScreen ();
+  // ACE_ASSERT (window_p);
 
   // SDL_GL_SetAttribute (SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
-
-  // SDL_GLContext context_p = SDL_GL_CreateContext (window_p);
-  // if (context_p == NULL)
+  // SDL_GLContext context_2 = SDL_GL_CreateContext (window_p);
+  // if (context_2 == NULL)
   // {
   //   ACE_DEBUG ((LM_ERROR,
   //               ACE_TEXT ("failed to SDL_GL_CreateContext(): \"%s\", aborting\n"),
   //               ACE_TEXT (SDL_GetError ())));
-  //   // return -1;
+  //   return -1;
   // } // end IF
-  // if (SDL_GL_MakeCurrent (window_p, context_p) < 0)
+  // if (SDL_GL_MakeCurrent (window_p, NULL) < 0)
   // {
   //   ACE_DEBUG ((LM_ERROR,
   //               ACE_TEXT ("failed to SDL_GL_MakeCurrent(): \"%s\", aborting\n"),
@@ -266,13 +269,10 @@ RPG_Client_Engine::setView (const RPG_Map_Position_t& position_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::setView"));
 
-  // sanity check
+  // sanity check(s)
   ACE_ASSERT (window_);
 
   struct RPG_Client_Action new_action;
-  new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
-  new_action.entity_id = 0;
-  new_action.radius = 0;
   new_action.window = window_;
 
   if (refresh_in)
@@ -309,22 +309,6 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
 
   bool do_action = true;
   struct RPG_Client_Action client_action;
-  client_action.command = RPG_CLIENT_COMMAND_INVALID;
-  client_action.previous =
-      std::make_pair (std::numeric_limits<unsigned int>::max (),
-                      std::numeric_limits<unsigned int>::max ());
-  client_action.position =
-      std::make_pair (std::numeric_limits<unsigned int>::max (),
-                      std::numeric_limits<unsigned int>::max ());
-  client_action.window = NULL;
-  client_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
-  client_action.entity_id = 0;
-  client_action.sound = RPG_SOUND_EVENT_INVALID;
-  client_action.source =
-      std::make_pair (std::numeric_limits<unsigned int>::max (),
-                      std::numeric_limits<unsigned int>::max ());
-  client_action.radius = 0;
-
   switch (command_in)
   {
     case COMMAND_ATTACK:
@@ -370,7 +354,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
     }
     case COMMAND_E2C_ENTITY_ADD:
     { ACE_ASSERT (engine_);
-      ACE_ASSERT (window_);
+      // ACE_ASSERT (window_);
       ACE_ASSERT (parameters_in.entity_id);
 
       // step1: load sprite graphics
@@ -432,9 +416,9 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
         engine_->getActive (false); // locked access ?
       bool active_entity_can_see_entity_b =
         (active_entity_id &&
-          engine_->canSee (active_entity_id,
-                           parameters_in.entity_id,
-                           false)); // locked access ?
+         engine_->canSee (active_entity_id,
+                          parameters_in.entity_id,
+                          false)); // locked access ?
       if (lockedAccess_in)
         engine_->unlock ();
 
@@ -539,7 +523,11 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       {
         // raise the UI
         union SDL_Event sdl_event_u;
+#if defined (SDL_USE) || defined (SDL2_USE)
         sdl_event_u.type = SDL_KEYDOWN;
+#elif defined (SDL3_USE)
+        sdl_event_u.type = SDL_EVENT_KEY_DOWN;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
         sdl_event_u.key.keysym.sym = SDLK_u;
         if (SDL_PushEvent (&sdl_event_u) < 0)
           ACE_DEBUG ((LM_ERROR,
@@ -753,7 +741,11 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
       // step2: raise the UI and notify level-up
       // step2a: raise the UI
       union SDL_Event sdl_event_u;
+#if defined (SDL_USE) || defined (SDL2_USE)
       sdl_event_u.type = SDL_KEYDOWN;
+#elif defined (SDL3_USE)
+      sdl_event_u.type = SDL_EVENT_KEY_DOWN;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       sdl_event_u.key.keysym.sym = SDLK_u;
       if (SDL_PushEvent (&sdl_event_u) < 0)
         ACE_DEBUG ((LM_ERROR,
@@ -774,7 +766,11 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
     {
       // step1: update the UI
       union SDL_Event sdl_event_u;
+#if defined (SDL_USE) || defined (SDL2_USE)
       sdl_event_u.type = SDL_KEYDOWN;
+#elif defined (SDL3_USE)
+      sdl_event_u.type = SDL_EVENT_KEY_DOWN;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       sdl_event_u.key.keysym.sym = SDLK_z;
       if (SDL_PushEvent (&sdl_event_u) < 0)
         ACE_DEBUG ((LM_ERROR,
@@ -787,7 +783,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
     }
     case COMMAND_E2C_INIT:
     { ACE_ASSERT (window_);
- 
+
       client_action.command = COMMAND_WINDOW_INIT;
       client_action.window = window_;
 
@@ -1319,10 +1315,10 @@ next:
       }
 #if defined (SDL_USE)
       SDL_Surface* surface_p = client_action.window->getScreen ();
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
       SDL_Surface* surface_p =
         SDL_GetWindowSurface (client_action.window->getScreen ());
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
       try {
         client_window->drawBorder (surface_p,
@@ -1385,6 +1381,21 @@ next:
     case COMMAND_WINDOW_INIT:
     { ACE_ASSERT (client_action.window);
 
+      // step0: reset bg caches
+      RPG_Graphics_Cursor_Manager* cursor_manager_p =
+        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ();
+      ACE_ASSERT (cursor_manager_p);
+      cursor_manager_p->invalidateBG ();
+      cursor_manager_p->resetHighlightBG (std::make_pair (std::numeric_limits<unsigned int>::max (),
+                                                          std::numeric_limits<unsigned int>::max ()));
+
+      engine_->lock ();
+      RPG_Map_Position_t center = engine_->getSize (false); // locked access ?
+      setStyle (RPG_Client_Common_Tools::environmentToStyle (engine_->getMetaData (false).environment)); // locked access ?
+      engine_->unlock ();
+      center.first >>= 1;
+      center.second >>= 1;
+
       RPG_Client_IWindowLevel* level_window_p = NULL;
       try {
         level_window_p =
@@ -1400,20 +1411,7 @@ next:
         goto continue_;
       } // end IF
 
-      // step0: reset bg caches
-      RPG_Graphics_Cursor_Manager* cursor_manager_p =
-        RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ();
-      ACE_ASSERT (cursor_manager_p);
-      cursor_manager_p->invalidateBG ();
-      cursor_manager_p->resetHighlightBG (std::make_pair (std::numeric_limits<unsigned int>::max (),
-                                                          std::numeric_limits<unsigned int>::max ()));
-
       // step1: initialize/(re)draw window
-      engine_->lock ();
-      RPG_Map_Position_t center = engine_->getSize (false); // locked access ?
-      setStyle (RPG_Client_Common_Tools::environmentToStyle (engine_->getMetaData (false).environment)); // locked access ?
-      engine_->unlock ();
-      center.first >>= 1; center.second >>= 1;
       try {
         level_window_p->initialize (state_.style);
       } catch (...) {
@@ -1422,11 +1420,14 @@ next:
                     level_window_p));
         goto continue_;
       }
+
+      // step2: center view
       setView (center,
                true); // refresh ?
 
-      // step2: (re)set window title caption/iconify
-      std::string caption = ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);
+      // step3: (re)set window title caption/iconify
+      std::string caption =
+        ACE_TEXT_ALWAYS_CHAR (RPG_CLIENT_GRAPHICS_WINDOW_MAIN_DEF_TITLE);
       std::string level_name = engine_->getMetaData (true).name;
       if (!level_name.empty ())
       {
@@ -1442,9 +1443,9 @@ next:
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("failed to SDL_WM_IconifyWindow(): \"%s\", continuing\n"),
                       ACE_TEXT (SDL_GetError ())));
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
         SDL_MinimizeWindow (client_action.window->getScreen ());
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || || SDL3_USE
       } // end IF
       gchar* caption_utf8 = Common_UI_GTK_Tools::localeToUTF8 (caption);
 // *TODO*: this will not return on VS2010...

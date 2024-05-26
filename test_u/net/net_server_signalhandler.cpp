@@ -114,8 +114,19 @@ Net_Server_SignalHandler::handle (const struct Common_Signal& signal_in)
   if (shutdown)
   {
     // stop everything, i.e.
-    // - leave reactor event loop handling signals, sockets, (maintenance) timers...
-    // --> (try to) terminate in a well-behaved manner
+    // - leave SDL event loop
+    union SDL_Event sdl_event;
+#if defined (SDL_USE) || defined (SDL2_USE)
+    sdl_event.type = SDL_QUIT;
+#elif defined (SDL3_USE)
+    sdl_event.type = SDL_EVENT_QUIT;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+
+    // push it onto the event queue
+    if (SDL_PushEvent (&sdl_event) < 0)
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),
+                  ACE_TEXT (SDL_GetError ())));
 
     // step2: stop timer
     if (timerId_ >= 0)
@@ -135,10 +146,5 @@ Net_Server_SignalHandler::handle (const struct Common_Signal& signal_in)
                                 false); // N/A
     connection_manager_p->abort ();
     //connection_manager_p->->wait ();
-
-    // step4: stop reactor (&& proactor, if applicable)
-    Common_Event_Tools::finalizeEventDispatch (*inherited::configuration_->dispatchState,
-                                               false,  // wait ?
-                                               false); // close reactor/proactor singletons ?
   } // end IF
 }

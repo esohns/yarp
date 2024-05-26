@@ -88,14 +88,14 @@ class RPG_Client_Window_Main
                 RPG_Engine*,        // (level) state handle
                 bool = false);      // debug ?
 
-  RPG_Client_Engine* myEngine;
+  RPG_Client_Engine*     myEngine;
 
   // counter
-  unsigned int       myScreenshotIndex;
+  unsigned int           myScreenshotIndex;
 
-  unsigned int       myLastHoverTime;
-  bool               myAutoEdgeScroll;
-  RPG_Graphics_Font  myTitleFont;
+  unsigned int           myLastHoverTime;
+  bool                   myAutoEdgeScroll;
+  enum RPG_Graphics_Font myTitleFont;
 };
 
 #endif

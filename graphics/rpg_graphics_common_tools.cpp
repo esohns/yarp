@@ -156,11 +156,11 @@ RPG_Graphics_Common_Tools::finalize ()
     for (RPG_Graphics_GraphicsCacheIterator_t iter = myGraphicsCache.begin ();
          iter != myGraphicsCache.end ();
          iter++)
-//#if defined (SDL_USE)
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface ((*iter).image);
-//#elif defined (SDL2_USE)
-//      SDL_DestroyTexture ((*iter).image);
-//#endif // SDL_USE || SDL2_USE
+#elif defined (SDL3_USE)
+     SDL_DestroySurface ((*iter).image);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     myGraphicsCache.clear ();
     myOldestCacheEntry = 0;
 
@@ -783,7 +783,7 @@ RPG_Graphics_Common_Tools::textSize (enum RPG_Graphics_Font font_in,
     if (TTF_SizeText ((*iterator).second,
                       textString_in.c_str (),
                       &width, &height))
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
     if (TTF_SizeUTF8 ((*iterator).second,
                       textString_in.c_str (),
                       &width, &height))
@@ -793,7 +793,7 @@ RPG_Graphics_Common_Tools::textSize (enum RPG_Graphics_Font font_in,
                   ACE_TEXT ("failed to TTF_SizeText(\"%s\", \"%s\"): %s, aborting\n"),
                   ACE_TEXT (RPG_Graphics_FontHelper::RPG_Graphics_FontToString (font_in).c_str ()),
                   ACE_TEXT (textString_in.c_str ()),
-                  ACE_TEXT (SDL_GetError ())));
+                  ACE_TEXT (TTF_GetError ())));
       return RPG_Graphics_TextSize_t (0, 0);
     } // end IF
   } // end lock scope
@@ -811,51 +811,112 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet (enum RPG_Graphics_EdgeStyle sty
   // initialize return value(s)
   if (tileSet_out.east.surface)
   {
-    SDL_FreeSurface (tileSet_out.east.surface); tileSet_out.east.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (tileSet_out.east.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.east.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    tileSet_out.east.surface = NULL;
   } // end IF
   if (tileSet_out.west.surface)
   {
-    SDL_FreeSurface (tileSet_out.west.surface); tileSet_out.west.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (tileSet_out.west.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.west.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    tileSet_out.west.surface = NULL;
   } // end IF
   if (tileSet_out.north.surface)
   {
-    SDL_FreeSurface (tileSet_out.north.surface); tileSet_out.north.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (tileSet_out.north.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.north.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    tileSet_out.north.surface = NULL;
   } // end IF
   if (tileSet_out.south.surface)
   {
-    SDL_FreeSurface (tileSet_out.south.surface); tileSet_out.south.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (tileSet_out.south.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.south.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    tileSet_out.south.surface = NULL;
   } // end IF
   if (tileSet_out.south_west.surface)
   {
-    SDL_FreeSurface (tileSet_out.south_west.surface); tileSet_out.south_west.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (tileSet_out.south_west.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.south_west.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    tileSet_out.south_west.surface = NULL;
   } // end IF
   if (tileSet_out.south_east.surface)
   {
-    SDL_FreeSurface (tileSet_out.south_east.surface); tileSet_out.south_east.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (tileSet_out.south_east.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.south_east.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    tileSet_out.south_east.surface = NULL;
   } // end IF
   if (tileSet_out.north_west.surface)
   {
-    SDL_FreeSurface (tileSet_out.north_west.surface); tileSet_out.north_west.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (tileSet_out.north_west.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.north_west.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    tileSet_out.north_west.surface = NULL;
   } // end IF
   if (tileSet_out.north_east.surface)
   {
-    SDL_FreeSurface (tileSet_out.north_east.surface); tileSet_out.north_east.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (tileSet_out.north_east.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.north_east.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    tileSet_out.north_east.surface = NULL;
   } // end IF
+
   if (tileSet_out.top.surface)
   {
-    SDL_FreeSurface (tileSet_out.top.surface); tileSet_out.top.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (tileSet_out.top.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.top.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    tileSet_out.top.surface = NULL;
   } // end IF
   if (tileSet_out.right.surface)
   {
-    SDL_FreeSurface (tileSet_out.right.surface); tileSet_out.right.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (tileSet_out.right.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.right.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    tileSet_out.right.surface = NULL;
   } // end IF
   if (tileSet_out.left.surface)
   {
-    SDL_FreeSurface (tileSet_out.left.surface); tileSet_out.left.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (tileSet_out.left.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.left.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    tileSet_out.left.surface = NULL;
   } // end IF
   if (tileSet_out.bottom.surface)
   {
-    SDL_FreeSurface (tileSet_out.bottom.surface); tileSet_out.bottom.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_FreeSurface (tileSet_out.bottom.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.bottom.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+    tileSet_out.bottom.surface = NULL;
   } // end IF
 
   // step0: retrieve appropriate graphic type
@@ -921,51 +982,112 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet (enum RPG_Graphics_EdgeStyle sty
       // clean up
       if (tileSet_out.east.surface)
       {
-        SDL_FreeSurface (tileSet_out.east.surface); tileSet_out.east.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.east.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.east.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.east.surface = NULL;
       } // end IF
       if (tileSet_out.west.surface)
       {
-        SDL_FreeSurface (tileSet_out.west.surface); tileSet_out.west.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.west.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.west.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.west.surface = NULL;
       } // end IF
       if (tileSet_out.north.surface)
       {
-        SDL_FreeSurface (tileSet_out.north.surface); tileSet_out.north.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.north.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.north.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.north.surface = NULL;
       } // end IF
       if (tileSet_out.south.surface)
       {
-        SDL_FreeSurface (tileSet_out.south.surface); tileSet_out.south.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.south.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.south.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.south.surface = NULL;
       } // end IF
       if (tileSet_out.south_west.surface)
       {
-        SDL_FreeSurface (tileSet_out.south_west.surface); tileSet_out.south_west.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.south_west.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.south_west.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.south_west.surface = NULL;
       } // end IF
       if (tileSet_out.south_east.surface)
       {
-        SDL_FreeSurface (tileSet_out.south_east.surface); tileSet_out.south_east.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.south_east.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.south_east.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.south_east.surface = NULL;
       } // end IF
       if (tileSet_out.north_west.surface)
       {
-        SDL_FreeSurface (tileSet_out.north_west.surface); tileSet_out.north_west.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.north_west.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.north_west.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.north_west.surface = NULL;
       } // end IF
       if (tileSet_out.north_east.surface)
       {
-        SDL_FreeSurface (tileSet_out.north_east.surface); tileSet_out.north_east.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.north_east.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.north_east.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.north_east.surface = NULL;
       } // end IF
+
       if (tileSet_out.top.surface)
       {
-        SDL_FreeSurface (tileSet_out.top.surface); tileSet_out.top.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.top.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.top.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.top.surface = NULL;
       } // end IF
       if (tileSet_out.right.surface)
       {
-        SDL_FreeSurface (tileSet_out.right.surface); tileSet_out.right.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.right.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.right.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.right.surface = NULL;
       } // end IF
       if (tileSet_out.left.surface)
       {
-        SDL_FreeSurface (tileSet_out.left.surface); tileSet_out.left.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.left.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.left.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.left.surface = NULL;
       } // end IF
       if (tileSet_out.bottom.surface)
       {
-        SDL_FreeSurface (tileSet_out.bottom.surface); tileSet_out.bottom.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.bottom.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.bottom.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.bottom.surface = NULL;
       } // end IF
 
       return;
@@ -984,51 +1106,112 @@ RPG_Graphics_Common_Tools::loadFloorEdgeTileSet (enum RPG_Graphics_EdgeStyle sty
       // clean up
       if (tileSet_out.east.surface)
       {
-        SDL_FreeSurface (tileSet_out.east.surface); tileSet_out.east.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.east.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.east.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.east.surface = NULL;
       } // end IF
       if (tileSet_out.west.surface)
       {
-        SDL_FreeSurface (tileSet_out.west.surface); tileSet_out.west.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.west.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.west.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.west.surface = NULL;
       } // end IF
       if (tileSet_out.north.surface)
       {
-        SDL_FreeSurface (tileSet_out.north.surface); tileSet_out.north.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.north.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.north.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.north.surface = NULL;
       } // end IF
       if (tileSet_out.south.surface)
       {
-        SDL_FreeSurface (tileSet_out.south.surface); tileSet_out.south.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.south.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.south.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.south.surface = NULL;
       } // end IF
       if (tileSet_out.south_west.surface)
       {
-        SDL_FreeSurface (tileSet_out.south_west.surface); tileSet_out.south_west.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.south_west.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.south_west.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.south_west.surface = NULL;
       } // end IF
       if (tileSet_out.south_east.surface)
       {
-        SDL_FreeSurface (tileSet_out.south_east.surface); tileSet_out.south_east.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.south_east.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.south_east.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.south_east.surface = NULL;
       } // end IF
       if (tileSet_out.north_west.surface)
       {
-        SDL_FreeSurface (tileSet_out.north_west.surface); tileSet_out.north_west.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.north_west.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.north_west.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.north_west.surface = NULL;
       } // end IF
       if (tileSet_out.north_east.surface)
       {
-        SDL_FreeSurface (tileSet_out.north_east.surface); tileSet_out.north_east.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.north_east.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.north_east.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.north_east.surface = NULL;
       } // end IF
+
       if (tileSet_out.top.surface)
       {
-        SDL_FreeSurface (tileSet_out.top.surface); tileSet_out.top.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.top.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.top.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.top.surface = NULL;
       } // end IF
       if (tileSet_out.right.surface)
       {
-        SDL_FreeSurface (tileSet_out.right.surface); tileSet_out.right.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.right.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.right.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.right.surface = NULL;
       } // end IF
       if (tileSet_out.left.surface)
       {
-        SDL_FreeSurface (tileSet_out.left.surface); tileSet_out.left.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.left.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.left.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.left.surface = NULL;
       } // end IF
       if (tileSet_out.bottom.surface)
       {
-        SDL_FreeSurface (tileSet_out.bottom.surface); tileSet_out.bottom.surface = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+        SDL_FreeSurface (tileSet_out.bottom.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.bottom.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.bottom.surface = NULL;
       } // end IF
 
       return;
@@ -1088,7 +1271,11 @@ RPG_Graphics_Common_Tools::loadFloorTileSet (enum RPG_Graphics_FloorStyle style_
   for (RPG_Graphics_FloorTilesConstIterator_t iterator = tileSet_out.tiles.begin ();
        iterator != tileSet_out.tiles.end ();
        iterator++)
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface ((*iterator).surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface ((*iterator).surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   tileSet_out.tiles.clear ();
   tileSet_out.columns = 0;
   tileSet_out.rows = 0;
@@ -1159,7 +1346,11 @@ RPG_Graphics_Common_Tools::loadFloorTileSet (enum RPG_Graphics_FloorStyle style_
       for (RPG_Graphics_FloorTilesConstIterator_t iterator = tileSet_out.tiles.begin ();
            iterator != tileSet_out.tiles.end ();
            iterator++)
+#if defined (SDL_USE) || defined (SDL2_USE)
         SDL_FreeSurface ((*iterator).surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface ((*iterator).surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       tileSet_out.tiles.clear ();
 
       return;
@@ -1201,27 +1392,43 @@ RPG_Graphics_Common_Tools::loadWallTileSet (enum RPG_Graphics_WallStyle style_in
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::loadWallTileSet"));
 
-  // init return value(s)
+  // initialize return value(s)
   if (tileSet_out.west.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (tileSet_out.west.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.west.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+  tileSet_out.west.surface = NULL;
   if (tileSet_out.east.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (tileSet_out.east.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.east.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+  tileSet_out.east.surface = NULL;
   if (tileSet_out.north.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (tileSet_out.north.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.north.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+  tileSet_out.north.surface = NULL;
   if (tileSet_out.south.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (tileSet_out.south.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.south.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+  tileSet_out.south.surface = NULL;
   tileSet_out.west.offset_x = 0;
   tileSet_out.west.offset_y = 0;
-  tileSet_out.west.surface = NULL;
   tileSet_out.east.offset_x = 0;
   tileSet_out.east.offset_y = 0;
-  tileSet_out.east.surface = NULL;
   tileSet_out.north.offset_x = 0;
   tileSet_out.north.offset_y = 0;
-  tileSet_out.north.surface = NULL;
   tileSet_out.south.offset_x = 0;
   tileSet_out.south.offset_y = 0;
-  tileSet_out.south.surface = NULL;
 
   // step0: retrieve appropriate graphic type
   RPG_Graphics_StyleUnion style;
@@ -1283,25 +1490,41 @@ RPG_Graphics_Common_Tools::loadWallTileSet (enum RPG_Graphics_WallStyle style_in
 
       // clean up
       if (tileSet_out.west.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
         SDL_FreeSurface (tileSet_out.west.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.west.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+      tileSet_out.west.surface = NULL;
       if (tileSet_out.east.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
         SDL_FreeSurface (tileSet_out.east.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.east.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+      tileSet_out.east.surface = NULL;
       if (tileSet_out.north.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
         SDL_FreeSurface (tileSet_out.north.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.north.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+      tileSet_out.north.surface = NULL;
       if (tileSet_out.south.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
         SDL_FreeSurface (tileSet_out.south.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.south.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+      tileSet_out.south.surface = NULL;
       tileSet_out.west.offset_x = 0;
       tileSet_out.west.offset_y = 0;
-      tileSet_out.west.surface = NULL;
       tileSet_out.east.offset_x = 0;
       tileSet_out.east.offset_y = 0;
-      tileSet_out.east.surface = NULL;
       tileSet_out.north.offset_x = 0;
       tileSet_out.north.offset_y = 0;
-      tileSet_out.north.surface = NULL;
       tileSet_out.south.offset_x = 0;
       tileSet_out.south.offset_y = 0;
-      tileSet_out.south.surface = NULL;
 
       return;
     } // end IF
@@ -1324,25 +1547,41 @@ RPG_Graphics_Common_Tools::loadWallTileSet (enum RPG_Graphics_WallStyle style_in
 
         // clean up
         if (tileSet_out.west.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
           SDL_FreeSurface (tileSet_out.west.surface);
+#elif defined (SDL3_USE)
+          SDL_DestroySurface (tileSet_out.west.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.west.surface = NULL;
         if (tileSet_out.east.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
           SDL_FreeSurface (tileSet_out.east.surface);
+#elif defined (SDL3_USE)
+          SDL_DestroySurface (tileSet_out.east.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.east.surface = NULL;
         if (tileSet_out.north.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
           SDL_FreeSurface (tileSet_out.north.surface);
+#elif defined (SDL3_USE)
+          SDL_DestroySurface (tileSet_out.north.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.north.surface = NULL;
         if (tileSet_out.south.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
           SDL_FreeSurface (tileSet_out.south.surface);
+#elif defined (SDL3_USE)
+          SDL_DestroySurface (tileSet_out.south.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+        tileSet_out.south.surface = NULL;
         tileSet_out.west.offset_x = 0;
         tileSet_out.west.offset_y = 0;
-        tileSet_out.west.surface = NULL;
         tileSet_out.east.offset_x = 0;
         tileSet_out.east.offset_y = 0;
-        tileSet_out.east.surface = NULL;
         tileSet_out.north.offset_x = 0;
         tileSet_out.north.offset_y = 0;
-        tileSet_out.north.surface = NULL;
         tileSet_out.south.offset_x = 0;
         tileSet_out.south.offset_y = 0;
-        tileSet_out.south.surface = NULL;
 
         return;
       }
@@ -1365,15 +1604,35 @@ RPG_Graphics_Common_Tools::loadDoorTileSet (enum RPG_Graphics_DoorStyle style_in
 
   // initialize return value(s)
   if (tileSet_out.horizontal_open.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (tileSet_out.horizontal_open.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.horizontal_open.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   if (tileSet_out.vertical_open.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (tileSet_out.vertical_open.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.vertical_open.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   if (tileSet_out.horizontal_closed.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (tileSet_out.horizontal_closed.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.horizontal_closed.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   if (tileSet_out.vertical_closed.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (tileSet_out.vertical_closed.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.vertical_closed.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   if (tileSet_out.broken.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (tileSet_out.broken.surface);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (tileSet_out.broken.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   tileSet_out.horizontal_open.offset_x = 0;
   tileSet_out.horizontal_open.offset_y = 0;
   tileSet_out.horizontal_open.surface = NULL;
@@ -1450,15 +1709,35 @@ RPG_Graphics_Common_Tools::loadDoorTileSet (enum RPG_Graphics_DoorStyle style_in
 
       // clean up
       if (tileSet_out.horizontal_open.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
         SDL_FreeSurface (tileSet_out.horizontal_open.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.horizontal_open.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       if (tileSet_out.vertical_open.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
         SDL_FreeSurface (tileSet_out.vertical_open.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.vertical_open.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       if (tileSet_out.horizontal_closed.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
         SDL_FreeSurface (tileSet_out.horizontal_closed.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.horizontal_closed.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       if (tileSet_out.vertical_closed.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
         SDL_FreeSurface (tileSet_out.vertical_closed.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.vertical_closed.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       if (tileSet_out.broken.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
         SDL_FreeSurface (tileSet_out.broken.surface);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (tileSet_out.broken.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       tileSet_out.horizontal_open.offset_x = 0;
       tileSet_out.horizontal_open.offset_y = 0;
       tileSet_out.horizontal_open.surface = NULL;
@@ -1516,15 +1795,35 @@ RPG_Graphics_Common_Tools::loadDoorTileSet (enum RPG_Graphics_DoorStyle style_in
 
         // clean up
         if (tileSet_out.horizontal_open.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
           SDL_FreeSurface (tileSet_out.horizontal_open.surface);
+#elif defined (SDL3_USE)
+          SDL_DestroySurface (tileSet_out.horizontal_open.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
         if (tileSet_out.vertical_open.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
           SDL_FreeSurface (tileSet_out.vertical_open.surface);
+#elif defined (SDL3_USE)
+          SDL_DestroySurface (tileSet_out.vertical_open.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
         if (tileSet_out.horizontal_closed.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
           SDL_FreeSurface (tileSet_out.horizontal_closed.surface);
+#elif defined (SDL3_USE)
+          SDL_DestroySurface (tileSet_out.horizontal_closed.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
         if (tileSet_out.vertical_closed.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
           SDL_FreeSurface (tileSet_out.vertical_closed.surface);
+#elif defined (SDL3_USE)
+          SDL_DestroySurface (tileSet_out.vertical_closed.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
         if (tileSet_out.broken.surface)
+#if defined (SDL_USE) || defined (SDL2_USE)
           SDL_FreeSurface (tileSet_out.broken.surface);
+#elif defined (SDL3_USE)
+          SDL_DestroySurface (tileSet_out.broken.surface);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
         tileSet_out.horizontal_open.offset_x = 0;
         tileSet_out.horizontal_open.offset_y = 0;
         tileSet_out.horizontal_open.surface = NULL;
@@ -1628,7 +1927,11 @@ RPG_Graphics_Common_Tools::loadGraphic (const struct RPG_Graphics_GraphicTypeUni
       ACE_ASSERT (myGraphicsCache.size () >= myOldestCacheEntry);
       std::advance (iter, myOldestCacheEntry);
       // *TODO*: what if it's still being used ?...
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface ((*iter).image);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface ((*iter).image);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       myGraphicsCache.erase (iter);
       myOldestCacheEntry++;
       if (myOldestCacheEntry == myCacheSize)
@@ -1640,7 +1943,7 @@ RPG_Graphics_Common_Tools::loadGraphic (const struct RPG_Graphics_GraphicTypeUni
 
   return node.image;
 }
-#if defined (SDL2_USE)
+#if defined (SDL2_USE) || defined (SDL3_USE)
 SDL_Texture*
 RPG_Graphics_Common_Tools::loadGraphic (SDL_Renderer* renderer_in,
                                         const struct RPG_Graphics_GraphicTypeUnion& type_in/*,
@@ -1744,14 +2047,23 @@ RPG_Graphics_Common_Tools::loadGraphic (SDL_Renderer* renderer_in,
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_CreateTextureFromSurface(): \"%s\", aborting\n"),
                 ACE_TEXT (SDL_GetError ())));
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface (surface_p);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface (surface_p);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     return NULL;
   } // end IF
-  SDL_FreeSurface (surface_p); surface_p = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+  SDL_FreeSurface (surface_p);
+#elif defined (SDL3_USE)
+  SDL_DestroySurface (surface_p);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+  surface_p = NULL;
 
   return result;
 }
-#endif // SDL2_USE
+#endif // SDL2_USE || SDL3_USE
 
 SDL_Surface*
 RPG_Graphics_Common_Tools::renderText (enum RPG_Graphics_Font font_in,
@@ -1772,11 +2084,11 @@ RPG_Graphics_Common_Tools::renderText (enum RPG_Graphics_Font font_in,
     result = TTF_RenderText_Blended ((*iterator).second,
                                      textString_in.c_str (),
                                      fgColor_in);
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
     result = TTF_RenderUTF8_Blended ((*iterator).second,
                                      textString_in.c_str (),
                                      fgColor_in);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   } // end lock scope
   if (!result)
   {
@@ -1785,12 +2097,12 @@ RPG_Graphics_Common_Tools::renderText (enum RPG_Graphics_Font font_in,
                 ACE_TEXT ("failed to TTF_RenderText_Blended(\"%s\"): %s, aborting\n"),
                 ACE_TEXT (textString_in.c_str ()),
                 ACE_TEXT (SDL_GetError ())));
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to TTF_RenderUTF8_Blended(\"%s\"): %s, aborting\n"),
                 ACE_TEXT (textString_in.c_str ()),
                 ACE_TEXT (SDL_GetError ())));
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     return NULL;
   } // end IF
 
@@ -1804,28 +2116,29 @@ RPG_Graphics_Common_Tools::fade (bool fadeIn_in,
                                  Uint32 color_in,
                                  Common_ILock* screenLock_in,
                                  SDL_Surface* targetSurface_in)
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
 void
 RPG_Graphics_Common_Tools::fade (bool fadeIn_in,
                                  float interval_in,
                                  Uint32 color_in,
                                  Common_ILock* screenLock_in,
                                  SDL_Window* targetWindow_in)
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::fade"));
 
   // sanity check(s)
 #if defined (SDL_USE)
   SDL_Surface* surface_p = targetSurface_in;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* surface_p = SDL_GetWindowSurface (targetWindow_in);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
 
-  SDL_Surface* target_image =
   // step1: create a screen-sized surface without an alpha-channel
   // --> i.e. (alpha mask == 0)
+  SDL_Surface* target_image =
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_CreateRGBSurface (RPG_Graphics_Surface::SDL_surface_flags,
                           surface_p->w,
                           surface_p->h,
@@ -1834,6 +2147,15 @@ RPG_Graphics_Common_Tools::fade (bool fadeIn_in,
                           surface_p->format->Gmask,
                           surface_p->format->Bmask,
                           0);
+#elif defined (SDL3_USE)
+    SDL_CreateSurface (surface_p->w,
+                       surface_p->h,
+                       SDL_GetPixelFormatEnumForMasks (surface_p->format->bits_per_pixel,
+                                                       surface_p->format->Rmask,
+                                                       surface_p->format->Gmask,
+                                                       surface_p->format->Bmask,
+                                                       surface_p->format->Amask));
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   if (!target_image)
   {
     ACE_DEBUG ((LM_ERROR,
@@ -1853,21 +2175,35 @@ RPG_Graphics_Common_Tools::fade (bool fadeIn_in,
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_BlitSurface(): %s, returning\n"),
                   ACE_TEXT (SDL_GetError ())));
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (target_image);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (target_image);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       return;
     } // end IF
 
     // set the screen to the background color (black ?)
     if (screenLock_in)
       screenLock_in->lock ();
+#if defined (SDL_USE) || defined (SDL2_USE)
     if (SDL_FillRect (surface_p, // target surface
                       NULL,      // fill screen
                       color_in)) // black ?
+#elif defined (SDL3_USE)
+    if (SDL_FillSurfaceRect (surface_p, // target surface
+                             NULL,      // fill screen
+                             color_in)) // black ?
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_FillRect(): %s, returning\n"),
                   ACE_TEXT (SDL_GetError ())));
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (target_image);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (target_image);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       return;
     } // end IF
     if (screenLock_in)
@@ -1882,25 +2218,35 @@ RPG_Graphics_Common_Tools::fade (bool fadeIn_in,
       SDL_FreeSurface (target_image);
       return;
     } // end IF
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
     if (SDL_UpdateWindowSurface (targetWindow_in) < 0)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_UpdateWindowSurface(%@): \"%s\", continuing\n"),
                   targetWindow_in,
                   ACE_TEXT (SDL_GetError ())));
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   } // end IF
   else
   {
     // fill the target image with the requested color
+#if defined (SDL_USE) || defined (SDL2_USE)
     if (SDL_FillRect (target_image, // target image
                       NULL,         // fill image
                       color_in))    // target color
+#elif defined (SDL3_USE)
+    if (SDL_FillSurfaceRect (target_image, // target image
+                             NULL,         // fill image
+                             color_in))    // target color
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_FillRect(): %s, returning\n"),
                   ACE_TEXT (SDL_GetError ())));
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (target_image);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (target_image);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       return;
     } // end IF
   } // end ELSE
@@ -1919,7 +2265,12 @@ RPG_Graphics_Common_Tools::fade (bool fadeIn_in,
 #endif // SDL_USE || SDL2_USE
 
   // clean up
-  SDL_FreeSurface (target_image); target_image = NULL;
+#if defined (SDL_USE) || defined (SDL2_USE)
+  SDL_FreeSurface (target_image);
+#elif defined (SDL3_USE)
+  SDL_DestroySurface (target_image);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+  target_image = NULL;
 }
 
 RPG_Graphics_Style
@@ -2224,22 +2575,22 @@ RPG_Graphics_Common_Tools::fade (float interval_in,
                                  SDL_Surface* targetImage_in,
                                  Common_ILock* screenLock_in,
                                  SDL_Surface* targetSurface_in)
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
 void
 RPG_Graphics_Common_Tools::fade (float interval_in,
                                  SDL_Surface* targetImage_in,
                                  Common_ILock* screenLock_in,
                                  SDL_Window* targetWindow_in)
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::fade"));
 
   // sanity check(s)
 #if defined (SDL_USE)
   SDL_Surface* surface_p = targetSurface_in;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* surface_p = SDL_GetWindowSurface (targetWindow_in);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
 
   // calculate the number of blends
@@ -2254,7 +2605,7 @@ RPG_Graphics_Common_Tools::fade (float interval_in,
                 ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   if (SDL_SetSurfaceAlphaMod (targetImage_in,
                               (SDL_ALPHA_OPAQUE / n_steps)) < 0)
   {
@@ -2263,7 +2614,7 @@ RPG_Graphics_Common_Tools::fade (float interval_in,
                 ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
   Uint32 cur_clock, end_clock, start_clock, sleeptime_ms, elapsed;
   start_clock = cur_clock = SDL_GetTicks ();
@@ -2296,13 +2647,13 @@ RPG_Graphics_Common_Tools::fade (float interval_in,
                   ACE_TEXT (SDL_GetError ())));
       return;
     } // end IF
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
     if (SDL_UpdateWindowSurface (targetWindow_in) < 0)
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_UpdateWindowSurface(%@): \"%s\", continuing\n"),
                   targetWindow_in,
                   ACE_TEXT (SDL_GetError ())));
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
     // delay a little while, to impress the blended image
     elapsed = SDL_GetTicks () - cur_clock;
@@ -2324,7 +2675,7 @@ RPG_Graphics_Common_Tools::fade (float interval_in,
                 ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   if (SDL_SetSurfaceAlphaMod (targetImage_in,
                               255) < 0)
   {
@@ -2333,7 +2684,7 @@ RPG_Graphics_Common_Tools::fade (float interval_in,
                 ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
   if (screenLock_in)
     screenLock_in->lock ();
@@ -2357,13 +2708,13 @@ RPG_Graphics_Common_Tools::fade (float interval_in,
                 ACE_TEXT (SDL_GetError ())));
     return;
   } // end IF
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   if (SDL_UpdateWindowSurface (targetWindow_in) < 0)
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_UpdateWindowSurface(%@): \"%s\", continuing\n"),
                 targetWindow_in,
                 ACE_TEXT (SDL_GetError ())));
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 }
 
 RPG_Graphics_Position_t

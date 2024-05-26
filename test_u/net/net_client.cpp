@@ -457,6 +457,12 @@ do_work (unsigned int peerPingInterval_in,
 {
   RPG_TRACE (ACE_TEXT ("::do_work"));
 
+  // step-2: initialize timer manager
+  Common_Timer_Manager_t* timer_manager_p =
+    COMMON_TIMERMANAGER_SINGLETON::instance ();
+  ACE_ASSERT (timer_manager_p);
+  timer_manager_p->initialize (CBData_in.configuration->timer_configuration);
+
   std::string monster_dictionary =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
                                                           ACE_TEXT_ALWAYS_CHAR (""),
@@ -591,16 +597,16 @@ do_work (unsigned int peerPingInterval_in,
   SDL_Surface* surface_p = NULL;
 #if defined (SDL_USE)
   surface_p = GTKUserData_in.screen;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   surface_p = SDL_GetWindowSurface (CBData_in.screen);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
   RPG_Client_Window_Main main_window (RPG_Graphics_Size_t (surface_p->w,
                                                            surface_p->h), // size
                                       type,                               // interface elements
                                       title,                              // title (== caption)
                                       FONT_MAIN_LARGE);                   // title font
-  main_window.initializeSDL (NULL,
+  main_window.initializeSDL (CBData_in.renderer,
                              CBData_in.screen,
                              CBData_in.GLContext);
   main_window.initialize (&client_engine,
@@ -728,17 +734,17 @@ do_work (unsigned int peerPingInterval_in,
     ACE_Event_Handler* handler_p = &statistics_handler;
     ACE_Time_Value interval (statisticsReportingInterval_in, 0);
     timer_id =
-      COMMON_TIMERMANAGER_SINGLETON::instance ()->schedule (handler_p,                  // event handler
-                                                            NULL,                       // ACT
-                                                            COMMON_TIME_NOW + interval, // first wakeup time
-                                                            interval);                  // interval
+      timer_manager_p->schedule (handler_p,                  // event handler
+                                 NULL,                       // ACT
+                                 COMMON_TIME_NOW + interval, // first wakeup time
+                                 interval);                  // interval
     if (timer_id == -1)
     {
       ACE_DEBUG ((LM_DEBUG,
                   ACE_TEXT ("failed to schedule timer: \"%m\", returning\n")));
 
       // clean up
-      COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
+      timer_manager_p->stop ();
       RPG_Engine_Common_Tools::finalize ();
 
       return;
@@ -770,14 +776,14 @@ do_work (unsigned int peerPingInterval_in,
     // clean up
     if (timer_id != -1)
     {
-      result = COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timer_id,
-                                                                   &act_p);
+      result = timer_manager_p->cancel (timer_id,
+                                        &act_p);
       if (result <= 0)
         ACE_DEBUG ((LM_DEBUG,
                     ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                     timer_id));
     } // end IF
-    COMMON_TIMERMANAGER_SINGLETON::instance ()->stop ();
+    timer_manager_p->stop ();
     RPG_Engine_Common_Tools::finalize ();
 
     return;
@@ -817,14 +823,14 @@ do_work (unsigned int peerPingInterval_in,
       // clean up
       if (timer_id != -1)
       {
-        result =
-          COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timer_id,
-                                                              &act_p);
+        result = timer_manager_p->cancel (timer_id,
+                                          &act_p);
         if (result <= 0)
           ACE_DEBUG ((LM_DEBUG,
                       ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
                       timer_id));
       } // end IF
+      timer_manager_p->stop ();
       gtk_manager_p->stop (true,
                            false);
       Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
@@ -848,8 +854,8 @@ do_work (unsigned int peerPingInterval_in,
     // clean up
     if (timer_id != -1)
     {
-      result = COMMON_TIMERMANAGER_SINGLETON::instance ()->cancel (timer_id,
-                                                                   &act_p);
+      result = timer_manager_p->cancel (timer_id,
+                                        &act_p);
       if (result <= 0)
         ACE_DEBUG ((LM_DEBUG,
                     ACE_TEXT ("failed to cancel timer (ID: %d): \"%m\", continuing\n"),
@@ -866,8 +872,8 @@ do_work (unsigned int peerPingInterval_in,
     if (!UIDefinitionFile_in.empty ())
       COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop (true,
                                                           false);
-    COMMON_TIMERMANAGER_SINGLETON::instance ()->stop (true,
-                                                      false);
+    timer_manager_p->stop (true,
+                           false);
     Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
                                    previousSignalActions_inout,
                                    previousSignalMask_inout);
@@ -892,7 +898,9 @@ do_work (unsigned int peerPingInterval_in,
     sdl_event.type = SDL_NOEVENT;
 #elif defined (SDL2_USE)
     sdl_event.type = SDL_FIRSTEVENT;
-#endif // SDL_USE || SDL2_USE
+#elif defined (SDL3_USE)
+    sdl_event.type = SDL_EVENT_FIRST;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     window = NULL;
 
     client_action.command = RPG_CLIENT_COMMAND_INVALID;
@@ -934,7 +942,11 @@ do_work (unsigned int peerPingInterval_in,
 
     switch (sdl_event.type)
     {
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_KEYDOWN:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_KEY_DOWN:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       {
         switch (sdl_event.key.keysym.sym)
         {
@@ -998,20 +1010,33 @@ do_work (unsigned int peerPingInterval_in,
         // *WARNING*: falls through !
       }
 #endif // SDL_USE
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_MOUSEMOTION:
       case SDL_MOUSEBUTTONDOWN:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_MOUSE_MOTION:
+      case SDL_EVENT_MOUSE_BUTTON_DOWN:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       case RPG_GRAPHICS_SDL_HOVEREVENT: // hovering...
       {
         // find window
         switch (sdl_event.type)
         {
+#if defined (SDL_USE) || defined (SDL2_USE)
           case SDL_MOUSEMOTION:
+#elif defined (SDL3_USE)
+          case SDL_EVENT_MOUSE_MOTION:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
           {
             mouse_position = std::make_pair (sdl_event.motion.x,
                                              sdl_event.motion.y);
             break;
           }
+#if defined (SDL_USE) || defined (SDL2_USE)
           case SDL_MOUSEBUTTONDOWN:
+#elif defined (SDL3_USE)
+          case SDL_EVENT_MOUSE_BUTTON_DOWN:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
           {
             mouse_position = std::make_pair (sdl_event.button.x,
                                              sdl_event.button.y);
@@ -1019,10 +1044,16 @@ do_work (unsigned int peerPingInterval_in,
           }
           default:
           {
+#if defined (SDL_USE) || defined (SDL2_USE)
             int x, y;
             Uint8 button_state = SDL_GetMouseState (&x, &y);
+#elif defined (SDL3_USE)
+            float x, y;
+            Uint32 button_state = SDL_GetMouseState (&x, &y);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
             ACE_UNUSED_ARG (button_state);
-            mouse_position = std::make_pair (x, y);
+            mouse_position =
+              std::make_pair (static_cast<unsigned int> (x), static_cast<unsigned int> (y));
             break;
           }
         } // end SWITCH
@@ -1036,7 +1067,11 @@ do_work (unsigned int peerPingInterval_in,
         // 0. (re-)draw cursor (handled below)
         // 1. notify previously "active" window upon losing "focus"
         if ((window || previous_window) &&
+#if defined (SDL_USE) || defined (SDL2_USE)
             (sdl_event.type == SDL_MOUSEMOTION))
+#elif defined (SDL3_USE)
+            (sdl_event.type == SDL_EVENT_MOUSE_MOTION))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
         {
           // step1: notify previous window (if any)
           if (previous_window &&
@@ -1054,7 +1089,11 @@ do_work (unsigned int peerPingInterval_in,
                           ACE_TEXT ("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
             }
 
+#if defined (SDL_USE) || defined (SDL2_USE)
             sdl_event.type = SDL_MOUSEMOTION;
+#elif defined (SDL3_USE)
+            sdl_event.type = SDL_EVENT_MOUSE_MOTION;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
           } // end IF
         } // end IF
         // remember last "active" window
@@ -1075,7 +1114,11 @@ do_work (unsigned int peerPingInterval_in,
 
         break;
       }
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_QUIT:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_QUIT:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       {
         // finished event processing
         done = true;
@@ -1127,27 +1170,45 @@ do_work (unsigned int peerPingInterval_in,
 continue_:;
       }
 #endif // SDL2_USE
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_SYSWMEVENT:
+#endif // SDL_USE || SDL2_USE
 #if defined (SDL_USE)
       case SDL_VIDEORESIZE:
       case SDL_VIDEOEXPOSE:
 #endif // SDL_USE
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_KEYUP:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_KEY_UP:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 #if defined (SDL2_USE)
       case SDL_TEXTEDITING:
       case SDL_TEXTINPUT:
       case SDL_KEYMAPCHANGED:
       case SDL_TEXTEDITING_EXT:
 #endif // SDL2_USE
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_MOUSEBUTTONUP:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_MOUSE_BUTTON_UP:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 #if defined (SDL2_USE)
       case SDL_MOUSEWHEEL:
 #endif // SDL2_USE
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_JOYAXISMOTION:
       case SDL_JOYBALLMOTION:
       case SDL_JOYHATMOTION:
       case SDL_JOYBUTTONDOWN:
       case SDL_JOYBUTTONUP:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_JOYSTICK_AXIS_MOTION:
+      case SDL_EVENT_JOYSTICK_BALL_MOTION:
+      case SDL_EVENT_JOYSTICK_HAT_MOTION:
+      case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
+      case SDL_EVENT_JOYSTICK_BUTTON_UP:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 #if defined (SDL2_USE)
       case SDL_JOYDEVICEADDED:
       case SDL_JOYDEVICEREMOVED:
@@ -1181,10 +1242,16 @@ continue_:;
 #endif // SDL2_USE
       case RPG_CLIENT_SDL_TIMEREVENT:
       {
+#if defined (SDL_USE) || defined (SDL2_USE)
         int x, y;
         Uint8 button_state = SDL_GetMouseState (&x, &y);
+#elif defined (SDL3_USE)
+        float x, y;
+        Uint32 button_state = SDL_GetMouseState (&x, &y);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
         ACE_UNUSED_ARG (button_state);
-        mouse_position = std::make_pair (x, y);
+        mouse_position =
+          std::make_pair (static_cast<unsigned int> (x), static_cast<unsigned int> (y));
         window = main_window.getWindow (mouse_position);
         break;
       }
@@ -1208,8 +1275,13 @@ continue_:;
     // redraw cursor ?
     switch (sdl_event.type)
     {
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_KEYDOWN:
       case SDL_MOUSEBUTTONDOWN:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_KEY_DOWN:
+      case SDL_EVENT_MOUSE_BUTTON_DOWN:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       {
         // map hasn't changed --> no need to redraw
         if ((dirty_region.w == 0) && (dirty_region.h == 0))
@@ -1217,7 +1289,11 @@ continue_:;
 
         // *WARNING*: falls through !
       }
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_MOUSEMOTION:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_MOUSE_MOTION:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       case RPG_GRAPHICS_SDL_HOVEREVENT:
       {
         // sanity check
@@ -1226,7 +1302,11 @@ continue_:;
 
         // map has changed, cursor MAY have been drawn over...
         // --> redraw cursor ?
+#if defined (SDL_USE) || defined (SDL2_USE)
         if ((sdl_event.type == SDL_MOUSEMOTION) ||
+#elif defined (SDL3_USE)
+        if ((sdl_event.type == SDL_EVENT_MOUSE_MOTION) ||
+#endif // SDL_USE || SDL2_USE || SDL3_USE
             (dirty_region.w != 0) || (dirty_region.h != 0))
         {
           client_action.command = COMMAND_CURSOR_DRAW;
@@ -1269,8 +1349,8 @@ continue_:;
 
   ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("finished event dispatch...\n")));
 
-  COMMON_TIMERMANAGER_SINGLETON::instance ()->stop (true,
-                                                    false);
+  timer_manager_p->stop (true,
+                         false);
   Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
                                  previousSignalActions_inout,
                                  previousSignalMask_inout);
@@ -1510,6 +1590,7 @@ ACE_TMAIN (int argc_in,
   {
     do_printVersion (ACE_TEXT_ALWAYS_CHAR (ACE::basename (argv_in[0])));
 
+    Common_Log_Tools::finalizeLogging ();
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
@@ -1533,6 +1614,7 @@ ACE_TMAIN (int argc_in,
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to Common_OS_Tools::setResourceLimits(), aborting\n")));
 
+    Common_Log_Tools::finalizeLogging ();
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
@@ -1556,7 +1638,9 @@ ACE_TMAIN (int argc_in,
                                                    : SDL_INIT_CDROM);          // audioCD playback
 #endif // SDL_USE
 //  SDL_init_flags |= SDL_INIT_JOYSTICK;                                         // joystick
+#if defined (SDL_USE) || defined (SDL2_USE)
   SDL_init_flags |= SDL_INIT_NOPARACHUTE;                                        /**< Don't catch fatal signals */
+#endif // SDL_USE || SL2_USE
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
 #else
 #if defined (SDL_USE)
@@ -1572,7 +1656,7 @@ ACE_TMAIN (int argc_in,
                 SDL_init_flags,
                 ACE_TEXT (SDL_GetError ())));
 
-    // clean up
+  // clean up
   Common_Log_Tools::finalizeLogging ();
   // *PORTABILITY*: on Windows, must fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
@@ -1660,6 +1744,7 @@ ACE_TMAIN (int argc_in,
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to ACE_Profile_Timer::elapsed_time: \"%m\", aborting\n")));
 
+    Common_Log_Tools::finalizeLogging ();
     // *PORTABILITY*: on Windows, need to fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
     if (ACE::fini () == -1)
@@ -1711,6 +1796,7 @@ ACE_TMAIN (int argc_in,
              elapsed_rusage.ru_nivcsw));
 #endif // ACE_WIN32 || ACE_WIN64
 
+  Common_Log_Tools::finalizeLogging ();
 // *PORTABILITY*: on Windows, must fini ACE...
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
   if (ACE::fini () == -1)

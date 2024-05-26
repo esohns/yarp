@@ -206,9 +206,15 @@ do_SDL_waitForInput (unsigned int timeout_in,
                   ACE_TEXT (SDL_GetError ())));
       break;
     } // end IF
+#if defined (SDL_USE) || defined (SDL2_USE)
     if ((event_out.type == SDL_KEYDOWN)         ||
         (event_out.type == SDL_MOUSEBUTTONDOWN) ||
         (event_out.type == SDL_QUIT)            ||
+#elif defined (SDL3_USE)
+    if ((event_out.type == SDL_EVENT_KEY_DOWN)          ||
+        (event_out.type == SDL_EVENT_MOUSE_BUTTON_DOWN) ||
+        (event_out.type == SDL_EVENT_QUIT)              ||
+#endif // SDL_USE || SDL2_USE || SDL3_USE
         (event_out.type == SDL_GUI_SDL_TIMEREVENT))
       break;
   } while (true);
@@ -755,7 +761,11 @@ do_slideshow (const std::string& graphicsDirectory_in,
           ACE_DEBUG ((LM_ERROR,
                       ACE_TEXT ("failed to RPG_Graphics_Surface::putText(%s), continuing\n"),
                       ACE_TEXT (RPG_Graphics_FontHelper::RPG_Graphics_FontToString (type.font).c_str ())));
+#if defined (SDL_USE) || defined (SDL2_USE)
           SDL_FreeSurface (image);
+#elif defined (SDL3_USE)
+          SDL_DestroySurface (image);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
           continue;
         } // end IF
         release_image = true;
@@ -844,9 +854,9 @@ do_slideshow (const std::string& graphicsDirectory_in,
     // step4: draw image to screen
 #if defined (SDL_USE)
     SDL_Surface* surface_p = state.screen;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
     SDL_Surface* surface_p = SDL_GetWindowSurface (state.screen);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     RPG_Graphics_Surface::put (std::make_pair (((surface_p->w - image->w) / 2),  // location x
                                                ((surface_p->h - image->h) / 2)), // location y
                                *image,                                           // image
@@ -862,7 +872,7 @@ do_slideshow (const std::string& graphicsDirectory_in,
         SDL_FreeSurface (image);
       return;
     } // end IF
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
     if (SDL_UpdateWindowSurface (state.screen) < 0)
     {
       ACE_DEBUG ((LM_ERROR,
@@ -870,17 +880,25 @@ do_slideshow (const std::string& graphicsDirectory_in,
                   state.screen,
                   ACE_TEXT (SDL_GetError ())));
       if (release_image)
+#if defined (SDL_USE) || defined (SDL2_USE)
         SDL_FreeSurface (image);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (image);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       return;
     } // end IF
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
     // step5: wait a little while
     do_SDL_waitForInput (SDL_GUI_DEF_SLIDESHOW_DELAY, // second(s)
                          sdl_event);                  // return value: event
     switch (sdl_event.type)
     {
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_KEYDOWN:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_KEY_DOWN:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       {
         switch (sdl_event.key.keysym.sym)
         {
@@ -899,7 +917,11 @@ do_slideshow (const std::string& graphicsDirectory_in,
           break;
         // *WARNING*: falls through !
       }
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_MOUSEBUTTONDOWN:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_MOUSE_BUTTON_DOWN:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       {
         // find window
         RPG_Graphics_Position_t mouse_position =
@@ -920,7 +942,11 @@ do_slideshow (const std::string& graphicsDirectory_in,
 
         break;
       }
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_QUIT:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_QUIT:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       {
         // finished event processing
         done = true;
@@ -941,7 +967,11 @@ do_slideshow (const std::string& graphicsDirectory_in,
 
     // clean up
     if (release_image)
+#if defined (SDL_USE) || defined (SDL2_USE)
       SDL_FreeSurface (image);
+#elif defined (SDL3_USE)
+      SDL_DestroySurface (image);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   } while (!done);
 }
 
@@ -997,7 +1027,11 @@ do_UI (struct RPG_Engine_Entity& entity_in,
     // step2: process current event
     switch (sdl_event.type)
     {
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_KEYDOWN:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_KEY_DOWN:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       {
         switch (sdl_event.key.keysym.sym)
         {
@@ -1095,9 +1129,15 @@ do_UI (struct RPG_Engine_Entity& entity_in,
                                                                        debug_in); // debug ?
 
             // draw "active" tile highlight
+#if defined (SDL_USE) || defined (SDL2_USE)
             int x, y;
             SDL_GetMouseState (&x, &y);
-            mouse_position = std::make_pair (x, y);
+#elif defined (SDL3_USE)
+            float x, y;
+            SDL_GetMouseState (&x, &y);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+            mouse_position =
+              std::make_pair (static_cast<unsigned int> (x), static_cast<unsigned int> (y));
             struct SDL_Rect window_area;
             map_window->getArea (window_area,
                                  true); // toplevel- ?
@@ -1193,32 +1233,56 @@ do_UI (struct RPG_Engine_Entity& entity_in,
 #elif defined (SDL2_USE)
       case SDL_WINDOWEVENT:
 #endif // SDL_USE || SDL2_USE
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_MOUSEBUTTONDOWN:
       case SDL_MOUSEMOTION:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_MOUSE_BUTTON_DOWN:
+      case SDL_EVENT_MOUSE_MOTION:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       case RPG_GRAPHICS_SDL_HOVEREVENT: // hovering...
       {
         // find window
         switch (sdl_event.type)
         {
+#if defined (SDL_USE) || defined (SDL2_USE)
           case SDL_MOUSEMOTION:
+#elif defined (SDL3_USE)
+          case SDL_EVENT_MOUSE_MOTION:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
             mouse_position = std::make_pair (sdl_event.motion.x,
-                                             sdl_event.motion.y); break;
+                                             sdl_event.motion.y);
+            break;
+#if defined (SDL_USE) || defined (SDL2_USE)
           case SDL_MOUSEBUTTONDOWN:
+#elif defined (SDL3_USE)
+          case SDL_EVENT_MOUSE_BUTTON_DOWN:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
             mouse_position = std::make_pair (sdl_event.button.x,
-                                             sdl_event.button.y); break;
+                                             sdl_event.button.y);
+            break;
           default:
           {
+#if defined (SDL_USE) || defined (SDL2_USE)
             int x, y;
             SDL_GetMouseState (&x, &y);
-            mouse_position = std::make_pair (x, y);
-
+#elif defined (SDL3_USE)
+            float x, y;
+            SDL_GetMouseState (&x, &y);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+            mouse_position =
+              std::make_pair (static_cast<unsigned int> (x), static_cast<unsigned int> (y));
             break;
           }
         } // end SWITCH
         window = mainWindow_in->getWindow (mouse_position);
         ACE_ASSERT (window);
 
+#if defined (SDL_USE) || defined (SDL2_USE)
         if (sdl_event.type == SDL_MOUSEMOTION)
+#elif defined (SDL3_USE)
+        if (sdl_event.type == SDL_EVENT_MOUSE_MOTION)
+#endif // SDL_USE || SDL2_USE || SDL3_USE
         {
           // notify previously "active" window upon losing "focus"
           if (previous_window &&
@@ -1234,7 +1298,11 @@ do_UI (struct RPG_Engine_Entity& entity_in,
               ACE_DEBUG ((LM_ERROR,
                           ACE_TEXT ("caught exception in RPG_Graphics_IWindow::handleEvent(), continuing\n")));
             }
+#if defined (SDL_USE) || defined (SDL2_USE)
             sdl_event.type = SDL_MOUSEMOTION;
+#elif defined (SDL3_USE)
+            sdl_event.type = SDL_EVENT_MOUSE_MOTION;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
           } // end IF
         } // end IF
         // remember last "active" window
@@ -1279,13 +1347,18 @@ do_UI (struct RPG_Engine_Entity& entity_in,
 
         break;
       }
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_QUIT:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_QUIT:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       {
         // finished event processing
         done = true;
 
         break;
       }
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_KEYUP:
       case SDL_MOUSEBUTTONUP:
       case SDL_JOYAXISMOTION:
@@ -1293,7 +1366,17 @@ do_UI (struct RPG_Engine_Entity& entity_in,
       case SDL_JOYHATMOTION:
       case SDL_JOYBUTTONDOWN:
       case SDL_JOYBUTTONUP:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_KEY_UP:
+      case SDL_EVENT_MOUSE_BUTTON_UP:
+      case SDL_EVENT_JOYSTICK_AXIS_MOTION:
+      case SDL_EVENT_JOYSTICK_BALL_MOTION:
+      case SDL_EVENT_JOYSTICK_HAT_MOTION:
+      case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
+      case SDL_EVENT_JOYSTICK_BUTTON_UP:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
         break;
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_SYSWMEVENT:
       {
 //        // debug info
@@ -1315,6 +1398,7 @@ do_UI (struct RPG_Engine_Entity& entity_in,
 
         break;
       }
+#endif // SDL_USE || SDL2_USE
 #if defined (SDL_USE)
       case SDL_VIDEOEXPOSE:
       case SDL_VIDEORESIZE:
@@ -1333,8 +1417,13 @@ do_UI (struct RPG_Engine_Entity& entity_in,
 #elif defined (SDL2_USE)
       case SDL_WINDOWEVENT:
 #endif // SDL_USE || SDL2_USE
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_KEYDOWN:
       case SDL_MOUSEBUTTONDOWN:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_KEY_DOWN:
+      case SDL_EVENT_MOUSE_BUTTON_DOWN:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       {
         // map hasn't changed --> no need to redraw
         if ((dirty_region.w == 0) &&
@@ -1343,7 +1432,11 @@ do_UI (struct RPG_Engine_Entity& entity_in,
 
         // *WARNING*: falls through !
       }
+#if defined (SDL_USE) || defined (SDL2_USE)
       case SDL_MOUSEMOTION:
+#elif defined (SDL3_USE)
+      case SDL_EVENT_MOUSE_MOTION:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       case RPG_GRAPHICS_SDL_HOVEREVENT:
       {
         // sanity check
@@ -1497,9 +1590,9 @@ do_work (mode_t mode_in,
 
 #if defined (SDL_USE)
   SDL_Surface* surface_p = state.screen;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* surface_p = SDL_GetWindowSurface (state.screen);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
   SDL_GUI_MainWindow main_window (std::make_pair (surface_p->w,
                                                   surface_p->h), // size
@@ -1647,9 +1740,9 @@ do_work (mode_t mode_in,
                                                                 : GRAPHICSMODE_2D_ISOMETRIC),
 #if defined (SDL_USE)
                               (state.screen->flags & SDL_DOUBLEBUF));
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
                               RPG_GRAPHICS_DEF_FLIP);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
       // step4a: draw main window borders...
       try {
@@ -1762,15 +1855,23 @@ do_printVersion (const std::string& programName_in)
             << std::endl;
 
   // step2: SDL version
+  std::ostringstream version_number;
+#if defined (SDL_USE) || defined (SDL2_USE)
   struct SDL_version sdl_version;
   ACE_OS::memset (&sdl_version, 0, sizeof (struct SDL_version));
   SDL_VERSION (&sdl_version);
-  std::ostringstream version_number;
   version_number << sdl_version.major;
   version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << sdl_version.minor;
   version_number << ACE_TEXT_ALWAYS_CHAR (".");
   version_number << sdl_version.patch;
+#elif defined (SDL3_USE)
+  version_number << SDL_MAJOR_VERSION;
+  version_number << ACE_TEXT_ALWAYS_CHAR (".");
+  version_number << SDL_MINOR_VERSION;
+  version_number << ACE_TEXT_ALWAYS_CHAR (".");
+  version_number << SDL_MICRO_VERSION;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   std::cout << ACE_TEXT_ALWAYS_CHAR ("SDL (compiled): ")
             << version_number.str ()
             << std::endl;
@@ -2051,10 +2152,15 @@ ACE_TMAIN (int argc_in,
     return EXIT_FAILURE;
   } // end IF
 
-  // step2: init SDL
+  // step2: initialize SDL
+#if defined (SDL_USE) || defined (SDL2_USE)
   if (SDL_Init (SDL_INIT_TIMER |
                 SDL_INIT_VIDEO |
                 SDL_INIT_NOPARACHUTE) == -1) // "...Prevents SDL from catching fatal signals..."
+#elif defined (SDL3_USE)
+  if (SDL_Init (SDL_INIT_TIMER |
+                SDL_INIT_VIDEO) == -1)
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_Init(): \"%s\", aborting\n"),

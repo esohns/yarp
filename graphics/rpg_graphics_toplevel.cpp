@@ -30,11 +30,9 @@
 RPG_Graphics_TopLevel::RPG_Graphics_TopLevel (const RPG_Graphics_Size_t& size_in,
                                               const struct RPG_Graphics_GraphicTypeUnion& elementType_in,
                                               const std::string& title_in)
-//                                              SDL_Surface* backGround_in)
  : inherited (WINDOW_MAIN,
               size_in,
               title_in)
-//              backGround_in),
  , myElementGraphicsType (elementType_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_TopLevel::RPG_Graphics_TopLevel"));
@@ -50,20 +48,20 @@ RPG_Graphics_TopLevel::RPG_Graphics_TopLevel (const RPG_Graphics_Size_t& size_in
   // set borders (if any)
   RPG_Graphics_InterfaceElementsConstIterator_t iterator =
     myElementGraphics.find (INTERFACEELEMENT_BORDER_TOP);
-  if (iterator != myElementGraphics.end ())
-    borderTop_ = (*iterator).second->h;
+  ACE_ASSERT (iterator != myElementGraphics.end ());
+  inherited::borderTop_ = (*iterator).second->h;
   iterator =
     myElementGraphics.find (INTERFACEELEMENT_BORDER_LEFT);
-  if (iterator != myElementGraphics.end ())
-    borderLeft_ = (*iterator).second->w;
+  ACE_ASSERT (iterator != myElementGraphics.end ());
+  inherited::borderLeft_ = (*iterator).second->w;
   iterator =
     myElementGraphics.find (INTERFACEELEMENT_BORDER_RIGHT);
-  if (iterator != myElementGraphics.end ())
-    borderRight_ = (*iterator).second->w;
+  ACE_ASSERT (iterator != myElementGraphics.end ());
+  inherited::borderRight_ = (*iterator).second->w;
   iterator =
     myElementGraphics.find (INTERFACEELEMENT_BORDER_BOTTOM);
-  if (iterator != myElementGraphics.end ())
-    borderBottom_ = (*iterator).second->h;
+  ACE_ASSERT (iterator != myElementGraphics.end ());
+  inherited::borderBottom_ = (*iterator).second->h;
 }
 
 RPG_Graphics_TopLevel::~RPG_Graphics_TopLevel()
@@ -74,18 +72,12 @@ RPG_Graphics_TopLevel::~RPG_Graphics_TopLevel()
   for (RPG_Graphics_InterfaceElementsConstIterator_t iterator = myElementGraphics.begin ();
        iterator != myElementGraphics.end ();
        iterator++)
+#if defined (SDL_USE) || defined (SDL2_USE)
     SDL_FreeSurface ((*iterator).second);
+#elif defined (SDL3_USE)
+    SDL_DestroySurface ((*iterator).second);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 }
-
-// void
-// RPG_Graphics_TopLevel::child(const RPG_Graphics_WindowSize_t& size_in,
-//                              const RPG_Graphics_WindowType& type_in,
-//                              const RPG_Graphics_Offset_t& offset_in,
-//                              SDL_Surface* backGround_in)
-// {
-//   RPG_TRACE(ACE_TEXT("RPG_Graphics_TopLevel::child"));
-//
-// }
 
 bool
 RPG_Graphics_TopLevel::loadGraphics (const struct RPG_Graphics_GraphicTypeUnion& type_in)
@@ -145,11 +137,19 @@ RPG_Graphics_TopLevel::loadGraphics (const struct RPG_Graphics_GraphicTypeUnion&
                     ACE_TEXT (RPG_Graphics_Common_Tools::toString (type_in).c_str ())));
 
         // clean up
+#if defined (SDL_USE) || defined (SDL2_USE)
         SDL_FreeSurface (interface_image);
+#elif defined (SDL3_USE)
+        SDL_DestroySurface (interface_image);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
         for (RPG_Graphics_InterfaceElementsConstIterator_t iterator = myElementGraphics.begin ();
              iterator != myElementGraphics.end ();
              iterator++)
+#if defined (SDL_USE) || defined (SDL2_USE)
           SDL_FreeSurface ((*iterator).second);
+#elif defined (SDL3_USE)
+          SDL_DestroySurface ((*iterator).second);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
         myElementGraphics.clear ();
 
         return false;
@@ -162,7 +162,11 @@ RPG_Graphics_TopLevel::loadGraphics (const struct RPG_Graphics_GraphicTypeUnion&
   } // end FOR
 
   // clean up
+#if defined (SDL_USE) || defined (SDL2_USE)
   SDL_FreeSurface (interface_image);
+#elif defined (SDL3_USE)
+  SDL_DestroySurface (interface_image);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("loaded %u interface element graphic(s) from \"%s\"...\n"),

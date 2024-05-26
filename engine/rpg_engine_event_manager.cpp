@@ -313,7 +313,7 @@ RPG_Engine_Event_Manager::start ()
     return;
 
   // initialize game clock
-  myGameClockStart = COMMON_TIME_POLICY ();
+  myGameClockStart = ACE_OS::gettimeofday ();
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("started game clock: \"%#D\"\n"),
               &myGameClockStart));
@@ -422,11 +422,11 @@ RPG_Engine_Event_Manager::stop (bool lockedAccess_in)
   cancel_all ();
 
   // stop/fini game clock
-  ACE_Time_Value elapsed = COMMON_TIME_POLICY () - myGameClockStart;
+  ACE_Time_Value elapsed = ACE_OS::gettimeofday () - myGameClockStart;
   // *TODO*: "%#T" doesn't work correctly 1.111111 --> " 01:00:01.111111"
   // --> that's OK for now...
   ACE_DEBUG ((LM_DEBUG,
-              ACE_TEXT ("stopped game clock: \"%#T\"\n"),
+              ACE_TEXT ("stopped game clock (elapsed: \"%#T\")\n"),
               &elapsed));
 
   // drop control message(s) into the queue...
@@ -559,7 +559,7 @@ RPG_Engine_Event_Manager::cancel (long id_in)
   { ACE_GUARD (ACE_Thread_Mutex, aGuard, myLock);
     RPG_Engine_EventTimersConstIterator_t iterator = myTimers.find (id_in);
     ACE_ASSERT (iterator != myTimers.end ());
-    ACE_ASSERT (act_p == (*iterator).second);
+    ACE_ASSERT (act_p && act_p == (*iterator).second);
     // *WARNING*: cannot free event here (it may be in use)
     (*iterator).second->free = true;
   } // end lock scope

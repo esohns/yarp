@@ -60,6 +60,14 @@ typedef unsigned int RPG_Engine_EntityID_t;
 
 struct RPG_Engine_Action
 {
+  RPG_Engine_Action ()
+   : command (RPG_ENGINE_COMMAND_INVALID)
+   , position (std::make_pair (std::numeric_limits<unsigned int>::max (),
+                               std::numeric_limits<unsigned int>::max ()))
+   , path ()
+   , target (0)
+  {}
+
   enum RPG_Engine_Command command;
   RPG_Map_Position_t      position;
   RPG_Map_Path_t          path;
@@ -228,6 +236,17 @@ typedef RPG_Engine_CombatantSequence_t::const_iterator RPG_Engine_CombatantSeque
 
 struct RPG_Engine_ClientNotificationParameters
 {
+  RPG_Engine_ClientNotificationParameters ()
+   : entity_id (0)
+   , condition (RPG_COMMON_CONDITION_INVALID)
+   , positions ()
+   , previous_position (std::make_pair (std::numeric_limits<unsigned int>::max (),
+                                        std::numeric_limits<unsigned int>::max ()))
+   , subclass (RPG_COMMON_SUBCLASS_INVALID)
+   , visible_radius (0)
+   , message ()
+  {}
+
   RPG_Engine_EntityID_t     entity_id;
   enum RPG_Common_Condition condition;
   RPG_Map_Positions_t       positions;

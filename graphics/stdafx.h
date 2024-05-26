@@ -17,13 +17,19 @@
 #include <map>
 #include <vector>
 
-// System Library Header Files
-#include "ace/OS.h"
-#include "ace/Log_Msg.h"
+// Local Library Header Files
+#define _SDL_main_h
+#define SDL_main_h_
+#include "SDL.h"
+#include "SDL_ttf.h"
 
 // Local Library Header Files
 #include "xsd/cxx/pre.hxx"
 #include "xsd/cxx/config.hxx"
+
+// System Library Header Files
+#include "ace/OS.h"
+#include "ace/Log_Msg.h"
 
 // Local Header Files
 #if defined (HAVE_CONFIG_H)

@@ -46,7 +46,7 @@ class RPG_Graphics_SDL_Tools
                                SDL_Surface*&,                                     // return value: window surface
                                bool = true);                                      // initialize window surface ?
   static SDL_Surface* initializeScreen (const struct RPG_Graphics_SDL_VideoConfiguration&); // configuration
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   static bool initializeVideo (const struct RPG_Graphics_SDL_VideoConfiguration&, // configuration
                                const std::string&,                                // window/icon caption
                                SDL_Window*&,                                      // return value: window handle
@@ -58,13 +58,13 @@ class RPG_Graphics_SDL_Tools
                                 SDL_Window*&,                                      // return value: main window handle
                                 SDL_Renderer*&,                                    // return value: renderer handle
                                 SDL_GLContext&);                                   // return value: main GL context handle
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
 #if defined (SDL_USE)
   static std::string keyToString (const SDL_keysym&);
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   static std::string keyToString (const SDL_Keysym&);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
   static struct SDL_Color colorToSDLColor (Uint32,                         // RGBA value (SDL format)
                                            const struct SDL_PixelFormat&); // (target) pixel format

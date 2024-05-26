@@ -65,10 +65,10 @@ class RPG_Graphics_Surface
 #if defined (SDL_USE)
   static void clip ();
   static void unclip ();
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   static void clip (SDL_Window*); // window handle
   static void unclip (SDL_Window*); // window handle
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
   // *NOTE*: results need to be SDL_FreeSurface()d !
   // *WARNING*: display format is not available until AFTER SDL_SetVideoMode() !
@@ -127,10 +127,10 @@ class RPG_Graphics_Surface
 #if defined (SDL_USE)
   static void update (const struct SDL_Rect&, // "dirty" rectangle
                       SDL_Surface*);          // target surface (e.g. screen)
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   static void update (const struct SDL_Rect&, // "dirty" rectangle
                       SDL_Window*);           // target window (e.g. screen)
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
  private:
   // helper methods

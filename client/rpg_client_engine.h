@@ -125,7 +125,7 @@ class RPG_Client_Engine
   RPG_Engine*                     engine_;
   RPG_Graphics_IWindowBase*       window_;
   //RPG_Client_IWidgetUI_t*         myWidgetInterface;
-  bool                            serverSession_; // relay all actions to the session
+  bool                            serverSession_; // relay all actions to the peer
 
   RPG_Client_Actions_t            actions_;
   struct RPG_Client_State         state_;

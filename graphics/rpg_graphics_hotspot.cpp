@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "SDL_events.h"
 #include "stdafx.h"
 
 #include "rpg_graphics_hotspot.h"
@@ -96,7 +97,11 @@ RPG_Graphics_HotSpot::handleEvent (const union SDL_Event& event_in,
 
       break;
     }
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_MOUSEMOTION:
+#elif defined (SDL3_USE)
+    case SDL_EVENT_MOUSE_MOTION:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     {
       // upon entry, set appropriate cursor
       if (!myCursorHasBeenSet)
@@ -113,6 +118,7 @@ RPG_Graphics_HotSpot::handleEvent (const union SDL_Event& event_in,
 
       // *WARNING*: falls through !
     }
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_KEYDOWN:
     case SDL_KEYUP:
     case SDL_MOUSEBUTTONDOWN:
@@ -124,6 +130,21 @@ RPG_Graphics_HotSpot::handleEvent (const union SDL_Event& event_in,
     case SDL_JOYBUTTONUP:
     case SDL_QUIT:
     case SDL_SYSWMEVENT:
+#elif defined (SDL3_USE)
+    case SDL_EVENT_KEY_DOWN:
+    case SDL_EVENT_KEY_UP:
+    case SDL_EVENT_MOUSE_BUTTON_DOWN:
+    case SDL_EVENT_MOUSE_BUTTON_UP:
+    case SDL_EVENT_MOUSE_WHEEL:
+    case SDL_EVENT_MOUSE_ADDED:
+    case SDL_EVENT_MOUSE_REMOVED:
+    case SDL_EVENT_JOYSTICK_AXIS_MOTION:
+    case SDL_EVENT_JOYSTICK_BALL_MOTION:
+    case SDL_EVENT_JOYSTICK_HAT_MOTION:
+    case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
+    case SDL_EVENT_JOYSTICK_BUTTON_UP:
+    case SDL_EVENT_QUIT:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 #if defined (SDL_USE)
     case SDL_ACTIVEEVENT:
     case SDL_VIDEORESIZE:
@@ -133,7 +154,11 @@ RPG_Graphics_HotSpot::handleEvent (const union SDL_Event& event_in,
     case SDL_WINDOWEVENT_RESIZED:
     case SDL_WINDOWEVENT_EXPOSED:
 #endif // SDL_USE || SDL2_USE
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_USEREVENT:
+#elif defined (SDL3_USE)
+    case SDL_EVENT_USER:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     case RPG_GRAPHICS_SDL_HOVEREVENT:
     default:
     {
@@ -163,9 +188,9 @@ RPG_Graphics_HotSpot::draw (SDL_Surface* targetSurface_in,
   ACE_ASSERT (inherited::screen_);
 #if defined (SDL_USE)
   SDL_Surface* surface_p = inherited::screen_;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
   // sanity check(s)
   SDL_Surface* target_surface =

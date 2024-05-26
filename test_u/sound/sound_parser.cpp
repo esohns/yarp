@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "SDL_events.h"
 #include "stdafx.h"
 
 #include <iomanip>
@@ -62,7 +63,11 @@
 #include "rpg_engine_defines.h"
 
 #define SOUNDPARSER_DEF_PLAY_RANDOM_SOUNDS false
+#if defined (SDL_USE) || defined (SDL2_USE)
 #define SDL_TIMEREVENT                     SDL_USEREVENT
+#elif defined (SDL3_USE)
+#define SDL_TIMEREVENT                     SDL_EVENT_USER
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
 //static SDL_CD* cdrom = NULL;
 
@@ -121,9 +126,15 @@ do_SDL_waitForInput (unsigned int timeout_in)
 
       break;
     } // end IF
+#if defined (SDL_USE) || defined (SDL2_USE)
     if (sdl_event.type == SDL_KEYDOWN         ||
         sdl_event.type == SDL_MOUSEBUTTONDOWN ||
         sdl_event.type == SDL_TIMEREVENT)
+#elif defined (SDL3_USE)
+    if (sdl_event.type == SDL_EVENT_KEY_DOWN          ||
+        sdl_event.type == SDL_EVENT_MOUSE_BUTTON_DOWN ||
+        sdl_event.type == SDL_TIMEREVENT)
+#endif // SDL_USE || SDL2_USE || SDL3_USE
       break;
   } while (true);
 
@@ -606,9 +617,14 @@ ACE_TMAIN (int argc_in,
   } // end IF
 
   // step2: initialize SDL
+#if defined (SDL_USE) || defined (SDL2_USE)
   Uint32 SDL_init_flags = SDL_INIT_TIMER |
                           SDL_INIT_AUDIO |
                           SDL_INIT_NOPARACHUTE; // "...Prevents SDL from catching fatal signals..."
+#elif defined (SDL3_USE)
+  Uint32 SDL_init_flags = SDL_INIT_TIMER |
+                          SDL_INIT_AUDIO;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 #if defined (SDL_USE)
   SDL_init_flags |= SDL_INIT_CDROM;
 #endif // SDL_USE

@@ -521,13 +521,6 @@ RPG_Engine::set (const struct RPG_Engine_LevelData& level_in)
 
   // notify client / window
   struct RPG_Engine_ClientNotificationParameters parameters;
-  parameters.entity_id = 0;
-  parameters.condition = RPG_COMMON_CONDITION_INVALID;
-  parameters.positions.insert (std::make_pair (std::numeric_limits<unsigned int>::max (),
-                                               std::numeric_limits<unsigned int>::max ()));
-  parameters.previous_position =
-    std::make_pair (std::numeric_limits<unsigned int>::max (),
-                    std::numeric_limits<unsigned int>::max ());
   try {
     client_->notify (COMMAND_E2C_INIT,
                      parameters,
@@ -589,11 +582,7 @@ RPG_Engine::add (struct RPG_Engine_Entity* entity_in,
   // notify client
   struct RPG_Engine_ClientNotificationParameters parameters;
   parameters.entity_id = id;
-  parameters.condition = RPG_COMMON_CONDITION_INVALID;
   parameters.positions.insert (entity_in->position);
-  parameters.previous_position =
-      std::make_pair (std::numeric_limits<unsigned int>::max (),
-                      std::numeric_limits<unsigned int>::max ());
   try {
     client_->notify (COMMAND_E2C_ENTITY_ADD,
                      parameters,

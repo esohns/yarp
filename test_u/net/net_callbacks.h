@@ -28,6 +28,7 @@ gboolean idle_update_log_display_cb (gpointer);
 
 //////////////////////////////////////////
 
+gboolean idle_new_level_client_cb (gpointer);
 gboolean idle_update_info_display_client_cb (gpointer);
 gboolean idle_start_session_client_cb (gpointer);
 gboolean idle_end_session_client_cb (gpointer);

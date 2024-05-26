@@ -80,11 +80,11 @@ class RPG_Graphics_Common_Tools
   static SDL_Surface* loadGraphic (const struct RPG_Graphics_GraphicTypeUnion&, // type
                                    bool,                                        // convert to display format ?
                                    bool);                                       // cache graphic ?
-#if defined (SDL2_USE)
+#if defined (SDL2_USE) || defined (SDL3_USE)
   static SDL_Texture* loadGraphic (SDL_Renderer*,                              // renderer handle
                                    const struct RPG_Graphics_GraphicTypeUnion&/*, // type
                                    bool*/);                                    // cache graphic ?
-#endif // SDL2_USE
+#endif // SDL2_USE || SDL3_USE
 
   static SDL_Surface* renderText (enum RPG_Graphics_Font,   // font
                                   const std::string&,       // string
@@ -97,13 +97,13 @@ class RPG_Graphics_Common_Tools
                     Uint32,        // fade to/from color
                     Common_ILock*, // lock interface handle
                     SDL_Surface*); // target surface (e.g. screen)
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   static void fade (bool,          // fade-in ? : -out
                     float,         // interval (seconds)
                     Uint32,        // fade to/from color
                     Common_ILock*, // lock interface handle
                     SDL_Window*);  // target window (e.g. screen)
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
   static RPG_Graphics_Style random(const RPG_Graphics_Style&); // graphics style
 
@@ -136,12 +136,12 @@ class RPG_Graphics_Common_Tools
                     SDL_Surface*,  // target image
                     Common_ILock*, // lock interface handle
                     SDL_Surface*); // target surface (e.g. screen)
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   static void fade (float,         // interval (seconds)
                     SDL_Surface*,  // target image
                     Common_ILock*, // lock interface handle
                     SDL_Window*);  // target window (e.g. screen)
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
   static std::string                  myGraphicsDirectory;
 

@@ -96,11 +96,10 @@ RPG_Client_Window_Main::draw (SDL_Surface* targetSurface_in,
   ACE_ASSERT (inherited::screen_);
 #if defined (SDL_USE)
   SDL_Surface* surface_p = inherited::screen_;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
-  // sanity check(s)
   SDL_Surface* target_surface =
     (targetSurface_in ? targetSurface_in : surface_p);
   ACE_ASSERT (target_surface);
@@ -122,7 +121,11 @@ RPG_Client_Window_Main::draw (SDL_Surface* targetSurface_in,
   clip_rect.h = static_cast<uint16_t> (target_surface->h -
                                        offsetY_in -
                                        (borderTop_ + borderBottom_));
+#if defined (SDL_USE) || defined (SDL2_USE)
   if (!SDL_SetClipRect (target_surface, &clip_rect))
+#elif defined (SDL3_USE)
+  if (!SDL_SetSurfaceClipRect (target_surface, &clip_rect))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_SetClipRect(): %s, returning\n"),
@@ -143,7 +146,11 @@ RPG_Client_Window_Main::draw (SDL_Surface* targetSurface_in,
                                  target_surface,
                                  dirty_region);
 
+#if defined (SDL_USE) || defined (SDL2_USE)
   if (!SDL_SetClipRect (target_surface, NULL))
+#elif defined (SDL3_USE)
+  if (!SDL_SetSurfaceClipRect (target_surface, NULL))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_SetClipRect(): %s, returning\n"),
@@ -159,7 +166,11 @@ RPG_Client_Window_Main::draw (SDL_Surface* targetSurface_in,
     clip_rect.w =
       static_cast<uint16_t> (target_surface->w - offsetX_in - (borderLeft_ + borderRight_));
     clip_rect.h = static_cast<uint16_t> (borderTop_);
+#if defined (SDL_USE) || defined (SDL2_USE)
     if (!SDL_SetClipRect (target_surface, &clip_rect))
+#elif defined (SDL3_USE)
+    if (!SDL_SetSurfaceClipRect (target_surface, &clip_rect))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_SetClipRect(): %s, returning\n"),
@@ -186,7 +197,11 @@ RPG_Client_Window_Main::draw (SDL_Surface* targetSurface_in,
                                    target_surface,
                                    dirty_region);
 
+#if defined (SDL_USE) || defined (SDL2_USE)
     if (!SDL_SetClipRect (target_surface, NULL))
+#elif defined (SDL3_USE)
+    if (!SDL_SetSurfaceClipRect (target_surface, NULL))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("failed to SDL_SetClipRect(): %s, returning\n"),
@@ -211,7 +226,11 @@ RPG_Client_Window_Main::draw (SDL_Surface* targetSurface_in,
   } // end FOR
 
   // whole window needs a refresh...
+#if defined (SDL_USE) || defined (SDL2_USE)
   SDL_GetClipRect (target_surface, &dirty_region);
+#elif defined (SDL3_USE)
+  SDL_GetSurfaceClipRect (target_surface, &dirty_region);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   inherited::invalidate (dirty_region);
 
   // remember position of last realization
@@ -312,7 +331,11 @@ RPG_Client_Window_Main::handleEvent (const SDL_Event& event_in,
       break;
     }
     // *** keyboard ***
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_KEYDOWN:
+#elif defined (SDL3_USE)
+    case SDL_EVENT_KEY_DOWN:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("%s key\n%s\n"),
@@ -349,9 +372,9 @@ RPG_Client_Window_Main::handleEvent (const SDL_Event& event_in,
           ACE_ASSERT (inherited::screen_);
 #if defined (SDL_USE)
           SDL_Surface* surface_p = inherited::screen_;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
           SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
           ACE_ASSERT (surface_p);
 
           std::ostringstream converter;
@@ -379,7 +402,11 @@ RPG_Client_Window_Main::handleEvent (const SDL_Event& event_in,
 
       break;
     }
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_KEYUP:
+#elif defined (SDL3_USE)
+    case SDL_EVENT_KEY_UP:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("key released...\n")));
@@ -387,14 +414,22 @@ RPG_Client_Window_Main::handleEvent (const SDL_Event& event_in,
       break;
     }
     // *** mouse ***
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_MOUSEMOTION:
+#elif defined (SDL3_USE)
+    case SDL_EVENT_MOUSE_MOTION:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse motion...\n")));
 
       break;
     }
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_MOUSEBUTTONDOWN:
+#elif defined (SDL3_USE)
+    case SDL_EVENT_MOUSE_BUTTON_DOWN:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse button [%u,%u] pressed\n"),
@@ -488,7 +523,11 @@ RPG_Client_Window_Main::handleEvent (const SDL_Event& event_in,
 
       break;
     }
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_MOUSEBUTTONUP:
+#elif defined (SDL3_USE)
+    case SDL_EVENT_MOUSE_BUTTON_UP:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("mouse button [%u,%u] released...\n"),
@@ -498,24 +537,37 @@ RPG_Client_Window_Main::handleEvent (const SDL_Event& event_in,
       break;
     }
     // *** joystick ***
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_JOYAXISMOTION:
     case SDL_JOYBALLMOTION:
     case SDL_JOYHATMOTION:
     case SDL_JOYBUTTONDOWN:
     case SDL_JOYBUTTONUP:
+#elif defined (SDL3_USE)
+    case SDL_EVENT_JOYSTICK_AXIS_MOTION:
+    case SDL_EVENT_JOYSTICK_BALL_MOTION:
+    case SDL_EVENT_JOYSTICK_HAT_MOTION:
+    case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
+    case SDL_EVENT_JOYSTICK_BUTTON_UP:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("joystick activity...\n")));
 
       break;
     }
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_QUIT:
+#elif defined (SDL3_USE)
+    case SDL_EVENT_QUIT:
+#endif // SDL_USE || SDL2_USE || SDL3_USE
     {
 //       ACE_DEBUG((LM_DEBUG,
 //                  ACE_TEXT("SDL_QUIT event...\n")));
 
       break;
     }
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_SYSWMEVENT:
     {
 //       ACE_DEBUG((LM_DEBUG,
@@ -523,6 +575,7 @@ RPG_Client_Window_Main::handleEvent (const SDL_Event& event_in,
 
       break;
     }
+#endif // SDL_USE || SDL2_USE
 #if defined (SDL_USE)
     case SDL_VIDEORESIZE:
     {
@@ -791,10 +844,10 @@ RPG_Client_Window_Main::initMap (RPG_Client_Engine* clientEngine_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Main::initMap"));
 
-  RPG_Client_Window_Level* map_window_p = NULL;
-  ACE_NEW_NORETURN (map_window_p,
+  RPG_Client_IWindowLevel* i_window_level_p = NULL;
+  ACE_NEW_NORETURN (i_window_level_p,
                     RPG_Client_Window_Level (*this));
-  if (!map_window_p)
+  if (!i_window_level_p)
   {
     ACE_DEBUG ((LM_CRITICAL,
                 ACE_TEXT ("failed to allocate memory: \"%m\", aborting\n")));
@@ -802,17 +855,21 @@ RPG_Client_Window_Main::initMap (RPG_Client_Engine* clientEngine_in,
   } // end IF
 
   // initialize window
-  if (!map_window_p->initialize (clientEngine_in,
-                                 engine_in,
-                                 debug_in))
+  if (!i_window_level_p->initialize (clientEngine_in,
+                                     engine_in,
+                                     debug_in))
   {
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to RPG_Client_Window_Level::initialize(): \"%m\", aborting\n")));
+                ACE_TEXT ("failed to RPG_Client_IWindowLevel::initialize(): \"%m\", aborting\n")));
     return false;
   } // end IF
-  map_window_p->initializeSDL (NULL,
-                               inherited::screen_,
-                               inherited::GLContext_);
+
+  RPG_Graphics_IWindowBase* i_window_base_p =
+    dynamic_cast<RPG_Graphics_IWindowBase*> (i_window_level_p);
+  ACE_ASSERT (i_window_base_p);
+  i_window_base_p->initializeSDL (inherited::renderer_,
+                                  inherited::screen_,
+                                  inherited::GLContext_);
 
   return true;
 }
@@ -828,11 +885,10 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
   ACE_ASSERT (inherited::screen_);
 #if defined (SDL_USE)
   SDL_Surface* surface_p = inherited::screen_;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
-  // sanity check(s)
   SDL_Surface* target_surface =
     (targetSurface_in ? targetSurface_in : surface_p);
   ACE_ASSERT (target_surface);
@@ -844,14 +900,21 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
   unsigned int i = 0;
 
   // step0: save previous clip rectangle
+#if defined (SDL_USE) || defined (SDL2_USE)
   SDL_GetClipRect (target_surface, &prev_clip_rect);
-
+#elif defined (SDL3_USE)
+  SDL_GetSurfaceClipRect (target_surface, &prev_clip_rect);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   // step1: draw borders
   clip_rect.x = static_cast<int16_t> (offsetX_in + borderLeft_);
   clip_rect.y = static_cast<int16_t> (offsetY_in);
   clip_rect.w = static_cast<uint16_t> (target_surface->w - (borderLeft_ + borderRight_));
   clip_rect.h = static_cast<uint16_t> (borderTop_);
+#if defined (SDL_USE) || defined (SDL2_USE)
   if (!SDL_SetClipRect (target_surface, &clip_rect))
+#elif defined (SDL3_USE)
+  if (!SDL_SetSurfaceClipRect (target_surface, &clip_rect))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_SetClipRect(): %s, returning\n"),
@@ -876,7 +939,11 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
   clip_rect.y = static_cast<int16_t> (offsetY_in + borderTop_);
   clip_rect.w = static_cast<uint16_t> (borderLeft_);
   clip_rect.h = static_cast<uint16_t> (target_surface->h - (borderTop_ + borderBottom_));
+#if defined (SDL_USE) || defined (SDL2_USE)
   if (!SDL_SetClipRect (target_surface, &clip_rect))
+#elif defined (SDL3_USE)
+  if (!SDL_SetSurfaceClipRect (target_surface, &clip_rect))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_SetClipRect(): %s, returning\n"),
@@ -901,7 +968,11 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
   clip_rect.y = static_cast<int16_t> (offsetY_in + borderTop_);
   clip_rect.w = static_cast<uint16_t> (borderRight_);
   clip_rect.h = static_cast<uint16_t> (target_surface->h - (borderTop_ + borderBottom_));
+#if defined (SDL_USE) || defined (SDL2_USE)
   if (!SDL_SetClipRect (target_surface, &clip_rect))
+#elif defined (SDL3_USE)
+  if (!SDL_SetSurfaceClipRect (target_surface, &clip_rect))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_SetClipRect(): %s, returning\n"),
@@ -926,7 +997,11 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
   clip_rect.y = static_cast<int16_t> (target_surface->h - borderBottom_);
   clip_rect.w = static_cast<uint16_t> (target_surface->w - (borderLeft_ + borderRight_));
   clip_rect.h = static_cast<uint16_t> (borderBottom_);
+#if defined (SDL_USE) || defined (SDL2_USE)
   if (!SDL_SetClipRect (target_surface, &clip_rect))
+#elif defined (SDL3_USE)
+  if (!SDL_SetSurfaceClipRect (target_surface, &clip_rect))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_SetClipRect(): %s, returning\n"),
@@ -956,7 +1031,11 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
   ACE_ASSERT (iterator != myElementGraphics.end ());
   clip_rect.w = static_cast<uint16_t> ((*iterator).second->w);
   clip_rect.h = static_cast<uint16_t> ((*iterator).second->h);
+#if defined (SDL_USE) || defined (SDL2_USE)
   if (!SDL_SetClipRect (target_surface, &clip_rect))
+#elif defined (SDL3_USE)
+  if (!SDL_SetSurfaceClipRect (target_surface, &clip_rect))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_SetClipRect(): %s, returning\n"),
@@ -977,7 +1056,11 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
   clip_rect.x = static_cast<int16_t> (target_surface->w - (*iterator).second->w);
   clip_rect.w = static_cast<uint16_t> ((*iterator).second->w);
   clip_rect.h = static_cast<uint16_t> ((*iterator).second->h);
+#if defined (SDL_USE) || defined (SDL2_USE)
   if (!SDL_SetClipRect (target_surface, &clip_rect))
+#elif defined (SDL3_USE)
+  if (!SDL_SetSurfaceClipRect (target_surface, &clip_rect))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_SetClipRect(): %s, returning\n"),
@@ -998,7 +1081,11 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
   clip_rect.y = static_cast<int16_t> (target_surface->h - (*iterator).second->h);
   clip_rect.w = static_cast<uint16_t> ((*iterator).second->w);
   clip_rect.h = static_cast<uint16_t> ((*iterator).second->h);
+#if defined (SDL_USE) || defined (SDL2_USE)
   if (!SDL_SetClipRect (target_surface, &clip_rect))
+#elif defined (SDL3_USE)
+  if (!SDL_SetSurfaceClipRect (target_surface, &clip_rect))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_SetClipRect(): %s, returning\n"),
@@ -1019,7 +1106,11 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
   clip_rect.y = static_cast<int16_t> (target_surface->h - (*iterator).second->h);
   clip_rect.w = static_cast<uint16_t> ((*iterator).second->w);
   clip_rect.h = static_cast<uint16_t> ((*iterator).second->h);
+#if defined (SDL_USE) || defined (SDL2_USE)
   if (!SDL_SetClipRect (target_surface, &clip_rect))
+#elif defined (SDL3_USE)
+  if (!SDL_SetSurfaceClipRect (target_surface, &clip_rect))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_SetClipRect(): %s, returning\n"),
@@ -1033,7 +1124,11 @@ RPG_Client_Window_Main::drawBorder (SDL_Surface* targetSurface_in,
                              dirty_region);
   inherited::invalidate (dirty_region);
 
+#if defined (SDL_USE) || defined (SDL2_USE)
   if (!SDL_SetClipRect (target_surface, &prev_clip_rect))
+#elif defined (SDL3_USE)
+  if (!SDL_SetSurfaceClipRect (target_surface, &prev_clip_rect))
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_SetClipRect(): %s, returning\n"),

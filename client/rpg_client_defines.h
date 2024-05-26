@@ -150,7 +150,6 @@
 #define RPG_CLIENT_VIDEO_DEF_OPENGL                       false
 #endif // ACE_WIN32 || ACE_WIN64
 #define RPG_CLIENT_VIDEO_DEF_FULLSCREEN                   false
-#define RPG_CLIENT_VIDEO_DEF_INIT                         false
 //#define RPG_CLIENT_VIDEO_DEF_FRAMERATE                    30
 
 #define RPG_CLIENT_MAP_DEF_MIN_ROOM_SIZE                  0 // 0: don't care
@@ -163,7 +162,11 @@
 #define RPG_CLIENT_MAP_DEF_SIZE_X                         80
 #define RPG_CLIENT_MAP_DEF_SIZE_Y                         40
 
+#if defined (SDL_USE) || defined (SDL2_USE)
 #define RPG_CLIENT_SDL_TIMEREVENT                         SDL_USEREVENT
+#elif defined (SDL3_USE)
+#define RPG_CLIENT_SDL_TIMEREVENT                         SDL_EVENT_USER
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 // *WARNING*: SDL_USEREVENT+1/2 are used by RPG_Graphics !!!
 //#define RPG_CLIENT_SDL_GTKEVENT                    SDL_USEREVENT+3
 // *NOTE*: this defines the input resolution or "interactivity"

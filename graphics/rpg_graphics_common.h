@@ -26,18 +26,32 @@
 #include <utility>
 #include <vector>
 
-#include "ace/Log_Msg.h"
-
 #define _SDL_main_h
 #define SDL_main_h_
 #include "SDL.h"
 #include "SDL_ttf.h"
 
+#include "ace/Log_Msg.h"
+
+#include "rpg_graphics_defines.h"
 #include "rpg_graphics_incl.h"
 
 // *NOTE* types as used by SDL
 struct RPG_Graphics_SDL_VideoConfiguration
 {
+  RPG_Graphics_SDL_VideoConfiguration ()
+   : screen_width (1024)
+   , screen_height (768)
+   , screen_colordepth (32)
+   , double_buffer (true)
+   , use_OpenGL (false)
+   , full_screen (false)
+   , video_driver (ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME))
+#if defined (_DEBUG)
+   , debug (false)
+#endif // _DEBUG
+  {}
+
   int         screen_width;
   int         screen_height;
   int         screen_colordepth; // bits/pixel
@@ -46,21 +60,23 @@ struct RPG_Graphics_SDL_VideoConfiguration
   bool        use_OpenGL;
   bool        full_screen;
   std::string video_driver; // [wayland|x11|directx|windib|...]
+#if defined (_DEBUG)
   bool        debug;
+#endif // _DEBUG
 };
 
-typedef RPG_Graphics_Graphic RPG_Graphics_t;
-typedef std::map<RPG_Graphics_Sprite, RPG_Graphics_t> RPG_Graphics_SpriteDictionary_t;
+typedef struct RPG_Graphics_Graphic RPG_Graphics_t;
+typedef std::map<enum RPG_Graphics_Sprite, RPG_Graphics_t> RPG_Graphics_SpriteDictionary_t;
 typedef RPG_Graphics_SpriteDictionary_t::const_iterator RPG_Graphics_SpriteDictionaryIterator_t;
-typedef std::map<RPG_Graphics_Cursor, RPG_Graphics_t> RPG_Graphics_CursorDictionary_t;
+typedef std::map<enum RPG_Graphics_Cursor, RPG_Graphics_t> RPG_Graphics_CursorDictionary_t;
 typedef RPG_Graphics_CursorDictionary_t::const_iterator RPG_Graphics_CursorDictionaryIterator_t;
-typedef std::map<RPG_Graphics_Font, RPG_Graphics_t> RPG_Graphics_FontDictionary_t;
+typedef std::map<enum RPG_Graphics_Font, RPG_Graphics_t> RPG_Graphics_FontDictionary_t;
 typedef RPG_Graphics_FontDictionary_t::const_iterator RPG_Graphics_FontDictionaryIterator_t;
-typedef std::map<RPG_Graphics_Image, RPG_Graphics_t> RPG_Graphics_ImageDictionary_t;
+typedef std::map<enum RPG_Graphics_Image, RPG_Graphics_t> RPG_Graphics_ImageDictionary_t;
 typedef RPG_Graphics_ImageDictionary_t::const_iterator RPG_Graphics_ImageDictionaryIterator_t;
-typedef std::map<RPG_Graphics_TileGraphic, RPG_Graphics_t> RPG_Graphics_TileDictionary_t;
+typedef std::map<enum RPG_Graphics_TileGraphic, RPG_Graphics_t> RPG_Graphics_TileDictionary_t;
 typedef RPG_Graphics_TileDictionary_t::const_iterator RPG_Graphics_TileDictionaryIterator_t;
-typedef std::map<RPG_Graphics_TileSetGraphic, RPG_Graphics_t> RPG_Graphics_TileSetDictionary_t;
+typedef std::map<enum RPG_Graphics_TileSetGraphic, RPG_Graphics_t> RPG_Graphics_TileSetDictionary_t;
 typedef RPG_Graphics_TileSetDictionary_t::const_iterator RPG_Graphics_TileSetDictionaryIterator_t;
 struct RPG_Graphics_Dictionary_t
 {
@@ -74,12 +90,12 @@ struct RPG_Graphics_Dictionary_t
 
 struct RPG_Graphics_GraphicsCacheNode
 {
-  RPG_Graphics_GraphicTypeUnion type;
+  struct RPG_Graphics_GraphicTypeUnion type;
 //#if defined (SDL_USE)
-  SDL_Surface*                  image;
-//#elif defined (SDL2_USE)
-//  SDL_Texture*                  image;
-//#endif // SDL_USE || SDL2_USE
+  SDL_Surface*                         image;
+//#elif defined (SDL2_USE) || defined (SDL3_USE)
+//  SDL_Texture*                         image;
+//#endif // SDL_USE || SDL2_USE || SDL3_USE
 
   bool operator== (const struct RPG_Graphics_GraphicsCacheNode& rhs_in) const
   {
@@ -131,7 +147,7 @@ struct RPG_Graphics_Font_t
   unsigned int           size;
   std::string            file;
 };
-typedef std::vector<RPG_Graphics_Font_t> RPG_Graphics_Fonts_t;
+typedef std::vector<struct RPG_Graphics_Font_t> RPG_Graphics_Fonts_t;
 typedef RPG_Graphics_Fonts_t::const_iterator RPG_Graphics_FontsConstIterator_t;
 
 typedef std::pair<unsigned int, unsigned int> RPG_Graphics_TextSize_t;

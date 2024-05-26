@@ -4,7 +4,6 @@ include (${CMAKE_CURRENT_SOURCE_DIR}/../../../scripts/sdl.cmake)
 
 if (UNIX)
  include (FindPkgConfig)
- pkg_check_modules (PKG_CONFIG_MODULE_SDL_MIXER REQUIRED SDL_mixer)
  pkg_check_modules (PKG_CONFIG_MODULE_LIBPNG REQUIRED libpng)
 endif (UNIX)
 
@@ -15,11 +14,9 @@ if (GTK_SUPPORT)
  include_directories (${GTK_INCLUDE_DIRS})
 endif (GTK_SUPPORT)
 if (UNIX)
- include_directories (${PKG_CONFIG_MODULE_SDL_MIXER_INCLUDE_DIRS}
-                      ${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
+ include_directories (${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
 elseif (WIN32)
- include_directories ($ENV{LIB_ROOT}/SDL_mixer/include
-                      $ENV{LIB_ROOT}/libpng/include)
+ include_directories ($ENV{LIB_ROOT}/libpng/include)
 endif ()
 
 if (WIN32)

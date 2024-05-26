@@ -92,8 +92,13 @@ SDL_GUI_MinimapWindow::~SDL_GUI_MinimapWindow ()
   RPG_TRACE(ACE_TEXT("SDL_GUI_MinimapWindow::~SDL_GUI_MinimapWindow"));
 
   // clean up
+#if defined (SDL_USE) || defined (SDL2_USE)
   SDL_FreeSurface (myBG);
   SDL_FreeSurface (mySurface);
+#elif defined (SDL3_USE)
+  SDL_DestroySurface (myBG);
+  SDL_DestroySurface (mySurface);
+#endif // SDL_USE || SL2_USE || SDL3_USE
 }
 
 RPG_Graphics_Position_t
@@ -119,50 +124,21 @@ SDL_GUI_MinimapWindow::handleEvent (const SDL_Event& event_in,
   switch (event_in.type)
   {
     // *** mouse ***
+#if defined (SDL_USE) || defined (SDL2_USE)
     case SDL_MOUSEBUTTONDOWN:
+#elif defined (SDL3_USE)
+    case SDL_EVENT_MOUSE_BUTTON_DOWN:
+#endif // SDL_USE || SL2_USE || SDL3_USE
     {
       // *WARNING*: falls through !
     }
-    case RPG_GRAPHICS_SDL_MOUSEMOVEOUT:
-    {
-
-      break;
-    }
-    case SDL_KEYDOWN:
-    case SDL_KEYUP:
-    case SDL_MOUSEBUTTONUP:
-    case SDL_MOUSEMOTION:
-    case SDL_JOYAXISMOTION:
-    case SDL_JOYBALLMOTION:
-    case SDL_JOYHATMOTION:
-    case SDL_JOYBUTTONDOWN:
-    case SDL_JOYBUTTONUP:
-    case SDL_QUIT:
-    case SDL_SYSWMEVENT:
-#if defined (SDL_USE)
-    case SDL_ACTIVEEVENT:
-    case SDL_VIDEORESIZE:
-    case SDL_VIDEOEXPOSE:
-#elif defined (SDL2_USE)
-    case SDL_WINDOWEVENT_SHOWN:
-    case SDL_WINDOWEVENT_RESIZED:
-    case SDL_WINDOWEVENT_EXPOSED:
-#endif // SDL_USE || SDL2_USE
-    case SDL_USEREVENT:
-    case RPG_GRAPHICS_SDL_HOVEREVENT:
+    default:
     {
       // delegate these to the parent...
       getParent ()->handleEvent (event_in,
                                  window_in,
                                  dirtyRegion_out);
 
-      break;
-    }
-    default:
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("received unknown event (was: %u)...\n"),
-                  static_cast<unsigned int> (event_in.type)));
       break;
     }
   } // end SWITCH
@@ -196,9 +172,9 @@ SDL_GUI_MinimapWindow::draw (SDL_Surface* targetSurface_in,
   ACE_ASSERT (inherited::screen_);
 #if defined (SDL_USE)
   SDL_Surface* surface_p = inherited::screen_;
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
   SDL_Surface* surface_p = SDL_GetWindowSurface (inherited::screen_);
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
   ACE_ASSERT (surface_p);
   SDL_Surface* target_surface = (targetSurface_in ? targetSurface_in
                                                   : surface_p);
@@ -359,7 +335,11 @@ SDL_GUI_MinimapWindow::draw (SDL_Surface* targetSurface_in,
       // *NOTE*: a minimap symbol has this shape: _ C _
       //                                          C C C
       // where "_" is transparent and "C" is a colored pixel
-      ACE_ASSERT(mySurface->format->BytesPerPixel == 4);
+#if defined (SDL_USE) || defined (SDL2_USE)
+      ACE_ASSERT (mySurface->format->BytesPerPixel == 4);
+#elif defined (SDL3_USE)
+      ACE_ASSERT (mySurface->format->bytes_per_pixel == 4);
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
       // step3a: row 1
       destination_rectangle.x = 40 + (2 * x) - (2 * y);

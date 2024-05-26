@@ -21,14 +21,6 @@
 #ifndef SDL_GUI_DEFINES_H
 #define SDL_GUI_DEFINES_H
 
-#include "rpg_graphics_colorname.h"
-#include "rpg_graphics_image.h"
-
-#include "rpg_client_defines.h"
-#include "rpg_client_graphicsmode.h"
-
-#include "SDL_gui_common.h"
-
 #define SDL_GUI_DEF_CAPTION                    "SDL_gui"
 
 #define SDL_GUI_DEF_MODE                       SDL_GUI_USERMODE_FLOOR_PLAN
@@ -55,7 +47,11 @@
 #define SDL_GUI_DEF_VIDEO_DOUBLEBUFFER         false
 #define SDL_GUI_DEF_VIDEO_FULLSCREEN           false
 
+#if defined (SDL_USE) || defined (SDL2_USE)
 #define SDL_GUI_SDL_TIMEREVENT                 SDL_USEREVENT
+#elif defined (SDL3_USE)
+#define SDL_GUI_SDL_TIMEREVENT                 SDL_EVENT_USER
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 // *NOTE*: this defines the input resolution or "interactivity"
 // *WARNING*: apparently, the maximum SDL timer resolution is 10 ms
 #define SDL_GUI_SDL_EVENT_TIMEOUT              RPG_CLIENT_SDL_EVENT_TIMEOUT // ms

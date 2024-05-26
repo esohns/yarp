@@ -175,7 +175,11 @@ Net_Client_SignalHandler::handle (const struct Common_Signal& signal_in)
     // stop everything, i.e.
     // - leave SDL event loop
     union SDL_Event sdl_event;
+#if defined (SDL_USE) || defined (SDL2_USE)
     sdl_event.type = SDL_QUIT;
+#elif defined (SDL3_USE)
+    sdl_event.type = SDL_EVENT_QUIT;
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
     // push it onto the event queue
     if (SDL_PushEvent (&sdl_event) < 0)

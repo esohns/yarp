@@ -87,7 +87,7 @@ if (XERCESC_SUPPORT)
 endif (XERCESC_SUPPORT)
 if (SDL_SUPPORT)
  target_include_directories (${LIBRARY} PUBLIC
-                             "$<BUILD_INTERFACE:${SDL_INCLUDE_DIRS}>")
+                             ${SDL_INCLUDE_DIRS})
 endif (SDL_SUPPORT)
 if (WIN32)
  add_compile_definitions (XSD_CXX11)

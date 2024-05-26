@@ -20,13 +20,13 @@
 #include "SDL.h"
 #include "SDL_mixer.h"
 
+// Local Library Header Files
+#include "xsd/cxx/pre.hxx"
+#include "xsd/cxx/config.hxx"
+
 // System Library Header Files
 #include "ace/OS.h"
 #include "ace/Log_Msg.h"
-
-#include "xsd/cxx/pre.hxx"
-#include "xsd/cxx/config.hxx"
-#include "xsd/cxx/xml/error-handler.hxx"
 
 // Local Header Files
 #if defined (HAVE_CONFIG_H)

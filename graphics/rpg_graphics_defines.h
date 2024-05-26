@@ -83,9 +83,9 @@
 
 #if defined (SDL_USE)
 #define RPG_GRAPHICS_SDL_VIDEO_DRIVER_ENV_VAR               "SDL_VIDEODRIVER"
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
 #define RPG_GRAPHICS_SDL_VIDEO_DRIVER_ENV_VAR               "SDL_VIDEO_DRIVER"
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
 #if defined (SDL_USE)
 #define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "windib"
@@ -95,10 +95,10 @@
 #elif defined (ACE_LINUX)
 #if defined (SDL_USE)
 #define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "x11"
-#elif defined (SDL2_USE)
+#elif defined (SDL2_USE) || defined (SDL3_USE)
 #define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "x11"
 //#define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              "wayland"
-#endif // SDL_USE || SDL2_USE
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 #else
 #define RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME              ""
 #endif // ACE_WINXX || ACE_LINUX
@@ -116,7 +116,12 @@
 
 // SDL event types
 // *WARNING*: make sure that these are used consistently !
+#if defined (SDL_USE) || defined (SDL2_USE)
 #define RPG_GRAPHICS_SDL_HOVEREVENT                         SDL_USEREVENT + 1
 #define RPG_GRAPHICS_SDL_MOUSEMOVEOUT                       SDL_USEREVENT + 2
+#elif defined (SDL3_USE)
+#define RPG_GRAPHICS_SDL_HOVEREVENT                         SDL_EVENT_USER + 1
+#define RPG_GRAPHICS_SDL_MOUSEMOVEOUT                       SDL_EVENT_USER + 2
+#endif // SDL_USE || SDL2_USE || SDL3_USE
 
 #endif
