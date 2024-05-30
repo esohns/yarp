@@ -31,6 +31,8 @@
 
 #include "rpg_net_remote_comm.h"
 
+#include "rpg_net_protocol_network.h"
+
 const char rpg_net_protocol_handler_module_name_string[] =
   ACE_TEXT_ALWAYS_CHAR ("ProtocolHandler");
 
@@ -43,8 +45,9 @@ RPG_Net_Protocol_Handler::RPG_Net_Protocol_Handler (typename inherited::ISTREAM_
  , pingHandler_ (this,  // dispatch ourselves
                  false) // ping peer at regular intervals...
  , timerId_ (-1)
- , sessionId_ (0)
+ , connectionId_ (ACE_INVALID_HANDLE)
  , counter_ (1)
+ , sessionId_ (0)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Handler::RPG_Net_Protocol_Handler"));
 
@@ -85,7 +88,7 @@ RPG_Net_Protocol_Handler::initialize (const struct RPG_Net_Protocol_ModuleHandle
 
   if (inherited::TASK_BASE_T::isInitialized_)
   {
-    ACE_DEBUG ((LM_WARNING,
+    ACE_DEBUG ((LM_DEBUG,
                 ACE_TEXT ("%s: re-initializing...\n"),
                 inherited::mod_->name ()));
 
@@ -108,8 +111,18 @@ RPG_Net_Protocol_Handler::initialize (const struct RPG_Net_Protocol_ModuleHandle
       timerId_ = -1;
     } // end IF
     counter_ = 1;
+
+//    result = parserQueue_.activate ();
+//    if (unlikely (result == -1))
+//    {
+//      ACE_DEBUG ((LM_ERROR,
+//                  ACE_TEXT ("%s: failed to ACE_Message_Queue::activate(): \"%m\", aborting\n"),
+//                  inherited::mod_->name ()));
+//      return false;
+//    } // end IF
   } // end IF
 
+  connectionId_ = ACE_INVALID_HANDLE;
   sessionId_ = 0;
 
   return inherited::initialize (configuration_in,
@@ -214,6 +227,25 @@ RPG_Net_Protocol_Handler::handleSessionMessage (RPG_Net_Protocol_SessionMessage*
   {
     case STREAM_SESSION_MESSAGE_BEGIN:
     {
+      const RPG_Net_Protocol_SessionData_t& session_data_container_r =
+        message_inout->getR ();
+      struct RPG_Net_Protocol_SessionData& session_data_r =
+        const_cast<struct RPG_Net_Protocol_SessionData&> (session_data_container_r.getR ());
+      ACE_ASSERT (!session_data_r.connection);
+      ACE_ASSERT (!session_data_r.connectionStates.empty ());
+      ACE_HANDLE handle_h =
+        (*session_data_r.connectionStates.begin ()).first;
+      ACE_ASSERT (handle_h != ACE_INVALID_HANDLE);
+      RPG_Net_Protocol_Connection_Manager_t* connection_manager_p =
+        RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ();
+      ACE_ASSERT (connection_manager_p);
+      session_data_r.connection = connection_manager_p->get (handle_h);
+      ACE_ASSERT (session_data_r.connection);
+
+      ACE_INET_Addr local_address, peer_address;
+      session_data_r.connection->info (connectionId_,
+                                       local_address,
+                                       peer_address);
       sessionId_ = message_inout->sessionId ();
 
       if (inherited::TASK_BASE_T::configuration_->protocolOptions->pingInterval != ACE_Time_Value::zero)
@@ -284,15 +316,12 @@ error:
         inherited::stop ();
         inherited::wait ();
       } // end IF
-      else
-      {
-        result = parserQueue_.deactivate ();
-        if (unlikely (result == -1))
-          ACE_DEBUG ((LM_ERROR,
-                      ACE_TEXT ("%s: failed to ACE_Message_Queue::deactivate(): \"%m\", continuing\n"),
-                      inherited::mod_->name ()));
-      } // end ELSE
 
+//      result = parserQueue_.deactivate ();
+//      if (unlikely (result == -1))
+//        ACE_DEBUG ((LM_ERROR,
+//                    ACE_TEXT ("%s: failed to ACE_Message_Queue::deactivate(): \"%m\", continuing\n"),
+//                    inherited::mod_->name ()));
       result = parserQueue_.flush ();
       if (result == -1)
         ACE_DEBUG ((LM_ERROR,
@@ -311,6 +340,15 @@ error:
 
       if (inherited::resetQueue_)
         inherited::TASK_BASE_T::configuration_->parserConfiguration->messageQueue = NULL;
+
+      const RPG_Net_Protocol_SessionData_t& session_data_container_r =
+        message_inout->getR ();
+      struct RPG_Net_Protocol_SessionData& session_data_r =
+        const_cast<struct RPG_Net_Protocol_SessionData&> (session_data_container_r.getR ());
+      if (session_data_r.connection)
+      {
+        session_data_r.connection->decrease (); session_data_r.connection = NULL;
+      } // end IF
 
       break;
     }
@@ -388,7 +426,10 @@ RPG_Net_Protocol_Handler::record (struct RPG_Net_Protocol_Command& record_in)
     return;
   } // end IF
 
-  message_p->initialize (record_in,
+  struct RPG_Net_Protocol_MessageData message_data_s;
+  message_data_s.connectionId = connectionId_;
+  message_data_s.command = record_in;
+  message_p->initialize (message_data_s,
                          sessionId_,
                          NULL);
 

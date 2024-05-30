@@ -62,7 +62,7 @@
 // *** stream-related ***
 // *IMPORTANT NOTE*: any of these COULD seriously affect performance
 #define RPG_NET_MAXIMUM_QUEUE_SLOTS                   1000
-#define RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES   100
+#define RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES   0 // do not limit
 
 #define RPG_NET_STATISTICS_COLLECTION_INTERVAL        60 // seconds [0 --> OFF]
 #define RPG_NET_DEFAULT_STATISTICS_REPORTING_INTERVAL 0  // seconds [0 --> OFF]

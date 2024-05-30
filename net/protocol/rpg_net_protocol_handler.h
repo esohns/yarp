@@ -105,8 +105,9 @@ class RPG_Net_Protocol_Handler
   Common_Timer_Handler pingHandler_;
   long                 timerId_;
 
-  unsigned int         sessionId_;
+  ACE_HANDLE           connectionId_;
   unsigned int         counter_;
+  Stream_SessionId_t   sessionId_;
 };
 
 #endif

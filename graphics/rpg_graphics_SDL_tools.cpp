@@ -98,8 +98,7 @@ RPG_Graphics_SDL_Tools::preInitializeVideo (const struct RPG_Graphics_SDL_VideoC
   result = SDL_VideoInit (video_driver.c_str ()); // driver name
   if (result < 0)
 #elif defined (SDL3_USE)
-  result = SDL_SetHint (ACE_TEXT_ALWAYS_CHAR (SDL_HINT_VIDEO_DRIVER),
-                        video_driver.c_str ());
+  result = SDL_TRUE;
   if (result == SDL_FALSE)
 #endif // SDL_USE || SDL2_USE || SDL3_USE
   {
@@ -119,12 +118,9 @@ RPG_Graphics_SDL_Tools::preInitializeVideo (const struct RPG_Graphics_SDL_VideoC
                 ACE_TEXT (SDL_GetError ())));
 #elif defined (SDL3_USE)
     ACE_DEBUG ((LM_ERROR,
-                ACE_TEXT ("failed to SDL_SetHint(\"%s\",\"%s\"): \"%s\", aborting\n"),
-                ACE_TEXT (SDL_HINT_VIDEO_DRIVER),
-                ACE_TEXT (video_driver.c_str ()),
-                ACE_TEXT (SDL_GetError ())));
+                ACE_TEXT ("failed to select video driver: \"%s\", aborting\n"),
+                ACE_TEXT (video_driver.c_str ())));
 #endif // SDL_USE || SDL2_USE || SDL3_USE
-    return false;
   } // end IF
 
   // debug info

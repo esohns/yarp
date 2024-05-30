@@ -23,7 +23,7 @@
 
 #include <string>
 
-#include "ace/Atomic_Op_T.h"
+#include "ace/Atomic_Op.h"
 #include "ace/Global_Macros.h"
 #include "ace/Message_Queue_T.h"
 #include "ace/Synch_Traits.h"
@@ -34,6 +34,8 @@
 #include "common_time_common.h"
 
 #include "stream_allocatorheap.h"
+
+#include "net_common.h"
 
 #include "rpg_map_common.h"
 #include "rpg_map_common_tools.h"
@@ -78,8 +80,10 @@ class RPG_Engine
   inline void lock () const { int result = lock_.acquire (); ACE_ASSERT (result == 0); }
   inline void unlock () const { int result = lock_.release (); ACE_ASSERT (result == 0); }
 
-  void initialize (RPG_Engine_IClient*, // client interface handle
-                   bool);               // server session ?
+  void initialize (RPG_Engine_IClient*,                           // client interface handle
+                   enum Net_ClientServerRole = NET_ROLE_INVALID); // role
+  inline enum Net_ClientServerRole role () { return role_; }
+
   // *WARNING*: DO NOT USE while the engine isRunning() !
   void set (const struct RPG_Engine_LevelData&); // level
 
@@ -92,6 +96,9 @@ class RPG_Engine
   void action (RPG_Engine_EntityID_t,           // id
                const struct RPG_Engine_Action&, // action
                bool = true);                    // locked access ?
+  inline void inject (RPG_Engine_EntityID_t id_in,
+                      const struct RPG_Engine_Action& action_in,
+                      bool lockedAccess_in) { action_impl (id_in, action_in, lockedAccess_in); }
 
   // state
   bool load (const std::string&,  // FQ filename
@@ -203,6 +210,9 @@ class RPG_Engine
                      const RPG_Engine_EntityID_t&);
   };
 
+  void action_impl (RPG_Engine_EntityID_t,           // id
+                    const struct RPG_Engine_Action&, // action
+                    bool = true);                    // locked access ?
   void clearEntityActions (RPG_Engine_EntityID_t = 0, // id (default: ALL)
                            bool = true);              // locked access ?
 
@@ -215,8 +225,8 @@ class RPG_Engine
   typedef RPG_Engine_ClientNotifications_t::const_iterator RPG_Engine_ClientNotificationsConstIterator_t;
   typedef ACE_Message_Queue<ACE_MT_SYNCH,
                             Common_TimePolicy_t> MESSAGE_QUEUE_T;
-  typedef Stream_AllocatorHeap_T<ACE_MT_SYNCH,
-                                 struct Common_Parser_FlexAllocatorConfiguration> HEAP_ALLOCATOR_T;
+  // typedef Stream_AllocatorHeap_T<ACE_MT_SYNCH,
+  //                                struct Common_Parser_FlexAllocatorConfiguration> HEAP_ALLOCATOR_T;
 
   // atomic ID generator
   static ACE_Atomic_Op<ACE_Thread_Mutex,
@@ -229,10 +239,8 @@ class RPG_Engine
   mutable ACE_SYNCH_MUTEX                         lock_;
   // *IMPORTANT NOTE*: need this ONLY to handle control messages...
   RPG_Engine_MessageQueue                         queue_;
-
+  enum Net_ClientServerRole                       role_;
   RPG_Engine_SeenPositions_t                      seenPositions_;
-
-  bool                                            serverSession_;
 };
 
 #endif

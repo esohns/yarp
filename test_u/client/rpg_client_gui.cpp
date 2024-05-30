@@ -935,8 +935,8 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   // step2: initialize UI
   RPG_Client_Engine client_engine;
   RPG_Engine level_engine;
-  level_engine.initialize (&client_engine, // client engine handle
-                           false);         // server session ?
+  level_engine.initialize (&client_engine,    // client engine handle
+                           NET_ROLE_INVALID); // role
   //level_engine.start ();
 
   GTKUserData_in.clientEngine      = &client_engine;
@@ -1056,7 +1056,6 @@ do_work (struct RPG_Client_Configuration& configuration_in,
   client_engine.initialize (&level_engine,
                             level_window,
                             //&UIDefinition_in,
-                            false, // server session ?
                             debug_in);
 
   // step4c: queue initial drawing
@@ -1753,28 +1752,34 @@ continue_:;
               ACE_TEXT ("left SDL event loop...\n")));
 
   // step7: clean up
-  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop (true,   // wait ?
-                                                      false); // N/A
   if (!SDL_RemoveTimer (GTKUserData_in.eventTimer))
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_RemoveTimer(): \"%s\", continuing\n"),
                 ACE_TEXT (SDL_GetError ())));
-  level_engine.stop ();
-  client_engine.stop ();
-  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::close ();
-  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::close ();
-  COMMON_TIMERMANAGER_SINGLETON::instance ()->stop (true,   // wait for completion ?
-                                                    false); // high priority ?
-  RPG_Client_Common_Tools::finalize ();
-  RPG_Engine_Common_Tools::finalize ();
+  COMMON_UI_GTK_MANAGER_SINGLETON::instance ()->stop (true,   // wait ?
+                                                      false); // N/A
   // done handling UI events
 
+  RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->stop (false,  // wait for completion ?
+                                                                   false); // N/A
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->abort ();
   RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->wait ();
   Common_Event_Tools::finalizeEventDispatch (dispatch_state_s,
-                                             true,  // wait for completion ?
-                                             true); // release event dispatch singleton(s) ?
+                                             true,   // wait for completion ?
+                                             false); // release event dispatch singleton(s) ?
+
+  COMMON_TIMERMANAGER_SINGLETON::instance ()->stop (true,   // wait for completion ?
+                                                    false); // high priority ?
+
   // no more data will arrive from here on...
+
+  client_engine.stop (true,   // wait for completion ?
+                      false); // N/A
+  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::close ();
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::close ();
+  level_engine.stop (true); // wait for completion ?
+  RPG_Client_Common_Tools::finalize ();
+  RPG_Engine_Common_Tools::finalize ();
 
   ACE_DEBUG ((LM_DEBUG,
               ACE_TEXT ("finished working...\n")));
@@ -2511,16 +2516,8 @@ ACE_TMAIN (int argc_in,
                      configuration);
 
   // step2a: initialize SDL
-  // SDL_bool result =
-  //   SDL_SetHintWithPriority (ACE_TEXT_ALWAYS_CHAR (SDL_HINT_AUDIO_DRIVER),
-  //                            ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME),
-  //                            SDL_HINT_OVERRIDE);
-  // if (result == SDL_FALSE)
-  //   ACE_DEBUG ((LM_WARNING,
-  //               ACE_TEXT ("failed to SDL_SetHintWithPriority(\"%s\",\"%s\"): \"%s\", continuing\n"),
-  //               ACE_TEXT (SDL_HINT_AUDIO_DRIVER),
-  //               ACE_TEXT (RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME),
-  //               ACE_TEXT (SDL_GetError ())));
+  // RPG_Graphics_Common_Tools::preInitialize ();
+  RPG_Sound_Common_Tools::preInitialize ();
 
   Uint32 SDL_init_flags = 0;
   SDL_init_flags |= SDL_INIT_TIMER;                                            // timers

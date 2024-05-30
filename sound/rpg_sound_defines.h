@@ -35,7 +35,7 @@
 #define RPG_SOUND_AUDIO_DEF_PLAY_CHANNELS   16 // #concurrent sounds
 
 #define RPG_SOUND_AMBIENT_DEF_USE_CD        false
-#define RPG_SOUND_AMBIENT_DEF_VOLUME        64 // (0-128)
+#define RPG_SOUND_AMBIENT_DEF_VOLUME        16 // (0-128)
 
 #define RPG_SOUND_CDTRACK_DEF_PAD           3 // allow an extra 3 seconds between tracks
 #define RPG_SOUND_DEF_CACHESIZE             50
@@ -51,12 +51,12 @@
 
 #define RPG_SOUND_DEF_SDL_AUDIO_DEVICE_NAME ""
 #elif defined (ACE_LINUX)
-#define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME "pipewire"
+//#define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME "pipewire"
 //#define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME "pulse"
-//#define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME "alsa"
+#define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME "alsa"
 //#define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME "dsp"
 
-#define RPG_SOUND_DEF_SDL_AUDIO_DEVICE_NAME "Built-in Audio Analog Stereo"
+#define RPG_SOUND_DEF_SDL_AUDIO_DEVICE_NAME "ALSA default output device"
 #else
 #define RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME ""
 

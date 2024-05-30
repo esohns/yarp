@@ -61,7 +61,6 @@ RPG_Client_Engine::RPG_Client_Engine ()
  , engine_ (NULL)
  , window_ (NULL)
    //,myWidgetInterface(NULL)
- , serverSession_ (false)
  , actions_ ()
  , state_ ()
  , selectionMode_ (SELECTIONMODE_NORMAL)
@@ -245,13 +244,7 @@ RPG_Client_Engine::redraw (bool refresh_in)
   // step1: draw map window
   struct RPG_Client_Action new_action;
   new_action.command = COMMAND_WINDOW_DRAW;
-  new_action.position =
-      std::make_pair (std::numeric_limits<unsigned int>::max (),
-                      std::numeric_limits<unsigned int>::max ());
   new_action.window = window_;
-  new_action.cursor = RPG_GRAPHICS_CURSOR_INVALID;
-  new_action.entity_id = 0;
-  new_action.radius = 0;
 
   action (new_action);
 
@@ -279,6 +272,9 @@ RPG_Client_Engine::setView (const RPG_Map_Position_t& position_in,
   {
     // *NOTE*: re-drawing the window will invalidate cursor/hightlight BG...
     new_action.command = COMMAND_TILE_HIGHLIGHT_INVALIDATE_BG;
+    new_action.position =
+      std::make_pair (std::numeric_limits<unsigned int>::max (),
+                      std::numeric_limits<unsigned int>::max ());
     action (new_action);
     new_action.command = COMMAND_CURSOR_INVALIDATE_BG;
     action (new_action);
@@ -389,11 +385,9 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
 
       // step3: draw the entity/redraw the minimap ? --> delegate to the engine
       client_action.window = window_;
-      if (lockedAccess_in)
-        engine_->lock ();
       client_action.position =
         engine_->getPosition (parameters_in.entity_id,
-                              false); // locked access ?
+                              lockedAccess_in); // locked access ?
 
       RPG_Graphics_Positions_t positions;
       positions.push_back (client_action.position);
@@ -412,6 +406,8 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
                                             window_p->getView (),
                                             map_area,
                                             false); // all
+      if (lockedAccess_in)
+        engine_->lock ();
       RPG_Engine_EntityID_t active_entity_id =
         engine_->getActive (false); // locked access ?
       bool active_entity_can_see_entity_b =
@@ -638,10 +634,10 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
                                                 map_area,
                                                 false)) // all
         {
-          //if (active_entity_can_see_position_b)
+          if (active_entity_can_see_position_b)
             client_action.command = COMMAND_ENTITY_DRAW;
-          //else
-          //  do_action = false;
+          else
+            do_action = false;
         } // end IF
         else
         {
@@ -686,7 +682,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
 
       // update blend radius ?
       RPG_Engine_EntityID_t active_entity_id =
-        engine_->getActive (true); // locked access ?
+        engine_->getActive (lockedAccess_in); // locked access ?
       bool is_active_entity_b = (active_entity_id &&
                                  (active_entity_id == parameters_in.entity_id));
       if (is_active_entity_b)
@@ -791,7 +787,7 @@ RPG_Client_Engine::notify (enum RPG_Engine_Command command_in,
     }
     case COMMAND_E2C_MESSAGE:
     { ACE_ASSERT (window_);
-      
+
       client_action.command = COMMAND_WINDOW_UPDATE_MESSAGEWINDOW;
       client_action.window = window_;
       client_action.message = parameters_in.message;
@@ -832,9 +828,6 @@ RPG_Client_Engine::notify (const struct RPG_Engine_Action& action_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::notify"));
 
-  // sanity check(s)
-  ACE_ASSERT (serverSession_);
-
   RPG_Client_Network_Manager* client_network_manager_p =
     RPG_CLIENT_NETWORK_MANAGER_SINGLETON::instance ();
   ACE_ASSERT (client_network_manager_p);
@@ -845,20 +838,18 @@ void
 RPG_Client_Engine::initialize (RPG_Engine* engine_in,
                                RPG_Graphics_IWindowBase* window_in,
                                //RPG_Client_IWidgetUI_t* widgetInterface_in,
-                               bool serverSession_in,
                                bool debug_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::initialize"));
 
   // sanity check(s)
   ACE_ASSERT (engine_in);
-  ACE_ASSERT (window_in || serverSession_in);
+  ACE_ASSERT (window_in);
   //ACE_ASSERT (widgetInterface_in);
 
   engine_ = engine_in;
   window_ = window_in;
   //myWidgetInterface = widgetInterface_in;
-  serverSession_ = serverSession_in;
   debug_ = debug_in;
 }
 
@@ -867,13 +858,33 @@ RPG_Client_Engine::action (const RPG_Client_Action& action_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::action"));
 
-  if (serverSession_)
+  // sanity check(s)
+  ACE_ASSERT (engine_);
+
+  enum Net_ClientServerRole role_e = engine_->role ();
+  if (role_e != NET_ROLE_INVALID)
   {
     RPG_Client_Network_Manager* client_network_manager_p =
       RPG_CLIENT_NETWORK_MANAGER_SINGLETON::instance ();
     ACE_ASSERT (client_network_manager_p);
     client_network_manager_p->action (action_in);
+
+    if (role_e == NET_ROLE_CLIENT)
+      return;
   } // end IF
+
+  ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);
+
+  actions_.push_back (action_in);
+
+  // wake up the (waiting) worker thread(s)
+  condition_.broadcast ();
+}
+
+void
+RPG_Client_Engine::inject (const RPG_Client_Action& action_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Client_Engine::inject"));
 
   ACE_GUARD (ACE_Thread_Mutex, aGuard, lock_);
 

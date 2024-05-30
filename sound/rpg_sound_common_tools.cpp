@@ -17,19 +17,21 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "SDL_audio.h"
 #include "stdafx.h"
 
 #include "rpg_sound_common_tools.h"
 
+#define _SDL_main_h
+#define SDL_main_h_
+#include "SDL.h"
 #include "SDL_mixer.h"
 
 #include "ace/Log_Msg.h"
 
 #include "common_file_tools.h"
 
-#include "rpg_dice.h"
-#include "rpg_dice_common.h"
+// #include "rpg_dice.h"
+// #include "rpg_dice_common.h"
 
 #include "rpg_common_macros.h"
 
@@ -53,6 +55,40 @@ RPG_Sound_SoundCache_t       RPG_Sound_Common_Tools::mySoundCache;
 bool                         RPG_Sound_Common_Tools::myInitialized = false;
 
 bool
+RPG_Sound_Common_Tools::preInitialize ()
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Sound_Common_Tools::preInitialize"));
+
+  SDL_bool result =
+#if defined (SDL_USE) || defined (SDL2_USE)
+    SDL_SetHint (ACE_TEXT_ALWAYS_CHAR (SDL_HINT_AUDIODRIVER),
+#elif defined (SDL3_USE)
+    SDL_SetHint (ACE_TEXT_ALWAYS_CHAR (SDL_HINT_AUDIO_DRIVER),
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+                 ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME));
+  if (result == SDL_FALSE)
+#if defined (SDL_USE) || defined (SDL2_USE)
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_SetHint(\"%s\",\"%s\"): \"%s\", aborting\n"),
+                ACE_TEXT (SDL_HINT_AUDIODRIVER),
+                ACE_TEXT (RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME),
+                ACE_TEXT (SDL_GetError ())));
+#elif defined (SDL3_USE)
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_SetHint(\"%s\",\"%s\"): \"%s\", aborting\n"),
+                ACE_TEXT (SDL_HINT_AUDIO_DRIVER),
+                ACE_TEXT (RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME),
+                ACE_TEXT (SDL_GetError ())));
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+  else
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("set audio driver to \"%s\"...\n"),
+                ACE_TEXT (RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME)));
+
+  return result == SDL_TRUE;
+}
+
+bool
 RPG_Sound_Common_Tools::initialize (const struct RPG_Sound_SDLConfiguration& config_in,
                                     const std::string& directory_in,
                                     bool useCD_in,
@@ -64,7 +100,7 @@ RPG_Sound_Common_Tools::initialize (const struct RPG_Sound_SDLConfiguration& con
   // initialize string conversion facilities
   RPG_Sound_Common_Tools::initializeStringConversionTables ();
 
-	myIsMuted = mute_in;
+  myIsMuted = mute_in;
   if (!directory_in.empty ())
   {
     // sanity check(s)
@@ -119,16 +155,6 @@ RPG_Sound_Common_Tools::initialize (const struct RPG_Sound_SDLConfiguration& con
                   ACE_TEXT ("failed to Mix_OpenAudio(): \"%s\", aborting\n"),
                   ACE_TEXT (Mix_GetError ())));
 #elif defined (SDL3_USE)
-    // SDL_bool result =
-    //   SDL_SetHint (ACE_TEXT_ALWAYS_CHAR (SDL_HINT_AUDIO_DRIVER),
-    //                ACE_TEXT_ALWAYS_CHAR (RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME));
-    // if (result == SDL_FALSE)
-    //   ACE_DEBUG ((LM_WARNING,
-    //               ACE_TEXT ("failed to SDL_SetHint(\"%s\",\"%s\"): \"%s\", continuing\n"),
-    //               ACE_TEXT (SDL_HINT_AUDIO_DRIVER),
-    //               ACE_TEXT (RPG_SOUND_DEF_SDL_AUDIO_DRIVER_NAME),
-    //               ACE_TEXT (SDL_GetError ())));
-
     int flags_i = MIX_INIT_FLAC   |
                   MIX_INIT_MOD    |
                   MIX_INIT_MP3    |
@@ -166,7 +192,9 @@ RPG_Sound_Common_Tools::initialize (const struct RPG_Sound_SDLConfiguration& con
     } // end FOR
     SDL_free (audio_device_ids_a);
 
-    SDL_AudioSpec audio_spec_s { config_in.format, config_in.channels, config_in.frequency };
+    SDL_AudioSpec audio_spec_s { config_in.format,
+                                 config_in.channels,
+                                 config_in.frequency };
     if (Mix_OpenAudio (device_id_i,
                        &audio_spec_s) < 0)
     {
@@ -421,7 +449,7 @@ RPG_Sound_Common_Tools::play (enum RPG_Sound_Event event_in,
                                    1); // free rw_ops
 #elif defined (SDL3_USE)
       node.chunk = Mix_LoadWAV_IO (rw_ops,
-                                   1); // close stream
+                                   SDL_TRUE); // close stream ?
 #endif // SDL_USE || SDL2_USE || SDL3_USE
       if (!node.chunk)
       {

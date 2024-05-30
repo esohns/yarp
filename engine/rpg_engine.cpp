@@ -68,8 +68,8 @@ RPG_Engine::RPG_Engine ()
  , entities_ ()
  , lock_ ()
  , queue_ (RPG_ENGINE_MAX_QUEUE_SLOTS)
+ , role_ (NET_ROLE_INVALID)
  , seenPositions_ ()
- , serverSession_ (false)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::RPG_Engine"));
 
@@ -78,8 +78,6 @@ RPG_Engine::RPG_Engine ()
 
   // set group ID for worker thread(s)
   inherited::grp_id (RPG_ENGINE_TASK_GROUP_ID);
-
-
 }
 
 RPG_Engine::~RPG_Engine ()
@@ -352,7 +350,7 @@ RPG_Engine::start ()
                     ACE_TEXT ("failed to schedule spawn event, continuing\n")));
 
       ACE_DEBUG ((LM_DEBUG,
-                  ACE_TEXT ("scheduled spawn event (ID: %d)...\n"),
+                  ACE_TEXT ("scheduled spawn event (id: %d)...\n"),
                   (*iterator).timer_id));
     } // end FOR
 }
@@ -488,7 +486,7 @@ RPG_Engine::dump_state () const
 
 void
 RPG_Engine::initialize (RPG_Engine_IClient* client_in,
-                        bool serverSession_in)
+                        enum Net_ClientServerRole role_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::initialize"));
 
@@ -496,7 +494,7 @@ RPG_Engine::initialize (RPG_Engine_IClient* client_in,
   ACE_ASSERT (client_in);
 
   client_ = client_in;
-  serverSession_ = serverSession_in;
+  role_ = role_in;
 
   RPG_ENGINE_EVENT_MANAGER_SINGLETON::instance ()->initialize (this);
 }
@@ -594,24 +592,31 @@ RPG_Engine::add (struct RPG_Engine_Entity* entity_in,
     return id;
   }
 
-  if (entity_in->character->isPlayerCharacter ())
+  if (!activePlayer_ &&
+      entity_in->character->isPlayerCharacter ())
   {
+    if (lockedAccess_in)
+      lock_.acquire ();
     setActive (id,
-               true); // locked access ?
+               false); // locked access ?
 
     parameters.positions = visible_positions;
     parameters.visible_radius = getVisibleRadius (id,
-                                                  lockedAccess_in);
+                                                  false); // locked access ?
     try {
       client_->notify (COMMAND_E2C_ENTITY_VISION,
                        parameters,
-                       lockedAccess_in);
+                       false); // locked access ?
     } catch (...) {
       ACE_DEBUG ((LM_ERROR,
                   ACE_TEXT ("caught exception in RPG_Engine_IClient::notify(\"%s\"), returning\n"),
                   ACE_TEXT (RPG_Engine_CommandHelper::RPG_Engine_CommandToString (COMMAND_E2C_ENTITY_VISION).c_str ())));
+      if (lockedAccess_in)
+        lock_.release ();
       return id;
     }
+    if (lockedAccess_in)
+      lock_.release ();
   } // end IF
 
   return id;
@@ -698,10 +703,25 @@ RPG_Engine::action (RPG_Engine_EntityID_t id_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Engine::action"));
 
-  if (serverSession_)
+  if (role_ != NET_ROLE_INVALID)
   { ACE_ASSERT (client_);
     client_->notify (action_in);
+
+    if (role_ == NET_ROLE_CLIENT)
+      return;
   } // end IF
+
+  action_impl (id_in,
+               action_in,
+               lockedAccess_in);
+}
+
+void
+RPG_Engine::action_impl (RPG_Engine_EntityID_t id_in,
+                         const struct RPG_Engine_Action& action_in,
+                         bool lockedAccess_in)
+{
+  RPG_TRACE (ACE_TEXT ("RPG_Engine::action"));
 
   if (lockedAccess_in)
     lock_.acquire ();

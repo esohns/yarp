@@ -40,6 +40,8 @@
 #include "rpg_engine_defines.h"
 #include "rpg_engine_level.h"
 
+#include "rpg_graphics_iwindow.h"
+
 #include "rpg_client_common.h"
 #include "rpg_client_engine.h"
 
@@ -47,9 +49,12 @@
 
 Net_Server_EventHandler::Net_Server_EventHandler (Net_Server_GTK_CBData* CBData_in)
  : CBData_ (CBData_in)
+ , ConnectionToIdMap_ ()
+ , sessionData_ (NULL)
 {
   RPG_TRACE (ACE_TEXT ("Net_Server_EventHandler::Net_Server_EventHandler"));
 
+  // sanity check(s)
   ACE_ASSERT (CBData_);
 }
 
@@ -60,10 +65,13 @@ Net_Server_EventHandler::start (Stream_SessionId_t sessionId_in,
   RPG_TRACE (ACE_TEXT ("Net_Server_EventHandler::start"));
 
   ACE_UNUSED_ARG (sessionId_in);
-  ACE_UNUSED_ARG (sessionData_in);
 
+  // sanity check(s)
   ACE_ASSERT (CBData_);
   ACE_ASSERT (CBData_->UIState);
+
+  sessionData_ =
+    &const_cast<struct RPG_Net_Protocol_SessionData&> (sessionData_in);
 
   guint event_source_id = g_idle_add (idle_start_session_server_cb,
                                       CBData_);
@@ -122,64 +130,16 @@ Net_Server_EventHandler::notify (Stream_SessionId_t sessionId_in,
 
   ACE_UNUSED_ARG (sessionId_in);
 
-  const struct RPG_Net_Protocol_Command& data_r = message_in.getR ();
+  const struct RPG_Net_Protocol_MessageData& data_r = message_in.getR ();
 
-  if (data_r.clientCommand != RPG_NET_PROTOCOL_CLIENT_COMMAND_INVALID)
-    goto client_command;
-
-  switch (data_r.command)
+  switch (data_r.command.type)
   {
-    case NET_COMMAND_LEVEL_LOAD:
-    { ACE_ASSERT (!data_r.xml.empty ());
-
-      std::string file_string = data_r.xml;
-      // replace all RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR with crlf
-      std::string::size_type position_i =
-        file_string.find (RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR, 0);
-      while (position_i != std::string::npos)
-      {
-        file_string.replace (position_i, 1, ACE_TEXT_ALWAYS_CHAR ("\r\n"));
-        position_i = file_string.find (RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR, 0);
-      } // end WHILE
-
-      std::string temp_filename = Common_File_Tools::getTempDirectory ();
-      temp_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
-      temp_filename +=
-        RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
-      temp_filename += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
-      if (!Common_File_Tools::store (temp_filename,
-                                     reinterpret_cast<const uint8_t*> (file_string.c_str ()),
-                                     file_string.size (),
-                                     false))
-      {
-        ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("failed to Common_File_Tools::store(\"%s\"), returning\n"),
-                    ACE_TEXT (temp_filename.c_str ())));
-        return;
-      } // end IF
-
-      struct RPG_Engine_LevelData level;
-      if (!RPG_Engine_Level::load (temp_filename,
-                                   CBData_->schemaRepository,
-                                   level))
-      {
-        ACE_DEBUG ((LM_ERROR,
-                    ACE_TEXT ("failed to RPG_Engine_Level::load(\"%s\"), returning\n"),
-                    ACE_TEXT (temp_filename.c_str ())));
-        Common_File_Tools::deleteFile (temp_filename);
-        return;
-      } // end IF
-      Common_File_Tools::deleteFile (temp_filename);
-      ACE_ASSERT (CBData_->levelEngine);
-      if (CBData_->levelEngine->isRunning ())
-        CBData_->levelEngine->stop ();
-      CBData_->levelEngine->set (level);
-      CBData_->levelEngine->start ();
+    case NET_MESSAGE_TYPE_INITIAL:
+    case NET_MESSAGE_TYPE_LEVEL:
       break;
-    }
-    case NET_COMMAND_PLAYER_LOAD:
-    { ACE_ASSERT (!data_r.xml.empty ());
-      std::string file_string = data_r.xml;
+    case NET_MESSAGE_TYPE_PLAYER:
+    { ACE_ASSERT (!data_r.command.xml.empty ());
+      std::string file_string = data_r.command.xml;
       // replace all RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR with crlf
       std::string::size_type position_i =
         file_string.find (RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR, 0);
@@ -226,74 +186,88 @@ Net_Server_EventHandler::notify (Stream_SessionId_t sessionId_in,
                                                               true); // locked access ?
       ACE_ASSERT (id_i);
       CBData_->entities.insert (std::make_pair (id_i, entity_p));
+
+      ConnectionToIdMap_.insert (std::make_pair (data_r.connectionId,
+                                                 id_i));
+
       break;
     }
-    case NET_ENGINE_COMMAND_MAX:
-    case NET_ENGINE_COMMAND_INVALID:
-    case RPG_NET_PROTOCOL_ENGINE_COMMAND_MAX:
-    case RPG_NET_PROTOCOL_ENGINE_COMMAND_INVALID:
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("received invalid engine command (was: %d), returning\n"),
-                  data_r.command));
-      return;
-    }
-    default:
+    case NET_MESSAGE_TYPE_ENGINE_COMMAND:
     { ACE_ASSERT (CBData_->levelEngine);
-      ACE_ASSERT (!CBData_->entities.empty ());
-
-      RPG_Engine_EntitiesConstIterator_t iterator = CBData_->entities.begin ();
-      RPG_Engine_EntityID_t id_i = (*iterator).first;
-      ACE_ASSERT (id_i);
+      CONNECTION_TO_ID_MAP_ITERATOR_T iterator =
+        ConnectionToIdMap_.find (data_r.connectionId);
+      ACE_ASSERT (iterator != ConnectionToIdMap_.end ());
 
       struct RPG_Engine_Action action_s;
-      action_s.command = static_cast<enum RPG_Engine_Command> (data_r.command);
-      action_s.path = data_r.path;
-      action_s.position = data_r.position;
-      action_s.target = data_r.entity_id;
+      action_s.command =
+        static_cast<enum RPG_Engine_Command> (data_r.command.command);
+      action_s.path = data_r.command.path;
+      action_s.position = data_r.command.position;
+      action_s.target = data_r.command.entity_id;
 
-      CBData_->levelEngine->action (id_i,     // entity id
-                                    action_s, // action
-                                    true);    // locked access ?
+      CBData_->levelEngine->action ((*iterator).second, // entity id
+                                    action_s,           // action
+                                    true);              // locked access ?
 
       break;
     }
-  } // end SWITCH
-
-  return;
-
-client_command:
-  switch (data_r.clientCommand)
-  {
-    case NET_CLIENT_COMMAND_MAX:
-    case NET_CLIENT_COMMAND_INVALID:
-    case RPG_NET_PROTOCOL_CLIENT_COMMAND_MAX:
-    case RPG_NET_PROTOCOL_CLIENT_COMMAND_INVALID:
-    {
-      ACE_DEBUG ((LM_ERROR,
-                  ACE_TEXT ("received invalid client command (was: %d), returning\n"),
-                  data_r.clientCommand));
-      return;
-    }
-    default:
-    {
-      ACE_ASSERT (CBData_->clientEngine);
-      ACE_ASSERT (!CBData_->entities.empty ());
-
-      RPG_Engine_EntitiesConstIterator_t iterator = CBData_->entities.begin ();
-      RPG_Engine_EntityID_t id_i = (*iterator).first;
-      ACE_ASSERT (id_i);
+    case NET_MESSAGE_TYPE_CLIENT_COMMAND:
+    { ACE_ASSERT (CBData_->clientEngine);
+      RPG_Graphics_IWindowBase* map_window_p = CBData_->clientEngine->window ();
+      ACE_ASSERT (map_window_p);
 
       struct RPG_Client_Action action_s;
-      action_s.command = static_cast<enum RPG_Client_Command> (data_r.clientCommand);
-      action_s.previous = data_r.previous;
-      action_s.position = data_r.position;
-      action_s.window = NULL; // *TODO*
-      action_s.cursor = data_r.cursor;
-      action_s.entity_id = data_r.entity_id;
-      action_s.sound = data_r.sound;
+      action_s.command =
+        static_cast<enum RPG_Client_Command> (data_r.command.command);
+      action_s.previous = data_r.command.previous;
+      action_s.position = data_r.command.position;
+      switch (data_r.command.window)
+      {
+        case WINDOW_MAIN:
+        {
+          action_s.window = map_window_p->getParent ();
+          ACE_ASSERT (action_s.window);
+          break;
+        }
+        case WINDOW_MAP:
+        {
+          action_s.window = map_window_p;
+          break;
+        }
+        case WINDOW_MESSAGE:
+        {
+          RPG_Graphics_IWindow* iwindow_p =
+            dynamic_cast<RPG_Graphics_IWindow*> (map_window_p);
+          ACE_ASSERT (iwindow_p);
+          action_s.window = iwindow_p->child (WINDOW_MESSAGE);
+          ACE_ASSERT (action_s.window);
+          break;
+        }
+        case WINDOW_MINIMAP:
+        {
+          RPG_Graphics_IWindow* iwindow_p =
+            dynamic_cast<RPG_Graphics_IWindow*> (map_window_p);
+          ACE_ASSERT (iwindow_p);
+          action_s.window = iwindow_p->child (WINDOW_MINIMAP);
+          ACE_ASSERT (action_s.window);
+        }
+        case WINDOW_HOTSPOT:
+        case WINDOW_MENU:
+        default:
+        {
+          ACE_DEBUG ((LM_ERROR,
+                      ACE_TEXT ("invalid/unknown window type (was: %d), continuing\n"),
+                      data_r.command.window));
+          break;
+        }
+        case RPG_GRAPHICS_WINDOWTYPE_INVALID:
+          break;
+      } // end SWITCH
+      action_s.cursor = data_r.command.cursor;
+      action_s.entity_id = data_r.command.entity_id;
+      action_s.sound = data_r.command.sound;
       // replace all RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR with crlf
-      std::string message_string = data_r.message;
+      std::string message_string = data_r.command.message;
       std::string::size_type position_i =
         message_string.find (RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR, 0);
       while (position_i != std::string::npos)
@@ -303,14 +277,21 @@ client_command:
           message_string.find (RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR, 0);
       } // end WHILE
       action_s.message = message_string;
-      action_s.path = data_r.path;
-      action_s.source = data_r.source;
-      action_s.positions = data_r.positions;
-      action_s.radius = data_r.radius;
+      action_s.path = data_r.command.path;
+      action_s.source = data_r.command.source;
+      action_s.positions = data_r.command.positions;
+      action_s.radius = data_r.command.radius;
 
       CBData_->clientEngine->action (action_s); // action
 
       break;
+    }
+    default:
+    {
+      ACE_DEBUG ((LM_ERROR,
+                  ACE_TEXT ("invalid/unknown message type (was: %d), returning\n"),
+                  data_r.command.type));
+      return;
     }
   } // end SWITCH
 }

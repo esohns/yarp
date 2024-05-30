@@ -29,8 +29,10 @@
 
 #include "common_ui_common.h"
 #include "common_ui_defines.h"
-#include "common_ui_gtk_manager.h"
 #include "common_ui_tools.h"
+
+#include "common_ui_gtk_defines.h"
+#include "common_ui_gtk_manager_common.h"
 
 #include "rpg_common_defines.h"
 #include "rpg_common_macros.h"
@@ -57,26 +59,26 @@
 #include "rpg_graphics_dictionary.h"
 #include "rpg_graphics_surface.h"
 
-#include "rpg_client_callbacks.h"
-#include "rpg_client_defines.h"
+//#include "rpg_client_callbacks.h"
+//#include "rpg_client_defines.h"
 
 #include "map_generator_gui_common.h"
 
 void
-reset_layout(GTK_cb_data_t& userData_in)
+reset_layout (struct GTK_CBData& userData_in)
 {
   RPG_TRACE(ACE_TEXT("::reset_layout"));
 
   Common_UI_GladeXMLsIterator_t iterator =
-    userData_in.GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    userData_in.GTKState->gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
-  ACE_ASSERT (iterator != userData_in.GTKState.gladeXML.end ());
+  ACE_ASSERT (iterator != userData_in.GTKState->gladeXML.end ());
 
   GtkComboBox* combobox =
-      GTK_COMBO_BOX(glade_xml_get_widget((*iterator).second.second,
-                                         ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENVIRONMENT_PLANE_COMBOBOX_NAME)));
-  ACE_ASSERT(combobox);
-  gtk_combo_box_set_active(combobox, -1);
+      GTK_COMBO_BOX (glade_xml_get_widget ((*iterator).second.second,
+                                           ACE_TEXT_ALWAYS_CHAR(MAP_GENERATOR_GNOME_ENVIRONMENT_PLANE_COMBOBOX_NAME)));
+  ACE_ASSERT (combobox);
+  gtk_combo_box_set_active (combobox, -1);
 
   combobox =
         GTK_COMBO_BOX(glade_xml_get_widget((*iterator).second.second,
@@ -177,14 +179,14 @@ reset_layout(GTK_cb_data_t& userData_in)
 }
 
 void
-update_layout(GTK_cb_data_t& userData_in)
+update_layout(struct GTK_CBData& userData_in)
 {
   RPG_TRACE(ACE_TEXT("::update_layout"));
 
   Common_UI_GladeXMLsIterator_t iterator =
-    userData_in.GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    userData_in.GTKState->gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
-  ACE_ASSERT (iterator != userData_in.GTKState.gladeXML.end ());
+  ACE_ASSERT (iterator != userData_in.GTKState->gladeXML.end ());
 
   GtkComboBox* combobox =
       GTK_COMBO_BOX(glade_xml_get_widget((*iterator).second.second,
@@ -301,14 +303,14 @@ update_layout(GTK_cb_data_t& userData_in)
 }
 
 void
-update_configuration(GTK_cb_data_t& userData_in)
+update_configuration(struct GTK_CBData& userData_in)
 {
   RPG_TRACE(ACE_TEXT("::update_configuration"));
 
   Common_UI_GladeXMLsIterator_t iterator =
-    userData_in.GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    userData_in.GTKState->gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
-  ACE_ASSERT (iterator != userData_in.GTKState.gladeXML.end ());
+  ACE_ASSERT (iterator != userData_in.GTKState->gladeXML.end ());
 
   GtkToggleButton* togglebutton =
       GTK_TOGGLE_BUTTON(glade_xml_get_widget((*iterator).second.second,
@@ -383,16 +385,16 @@ idle_initialize_UI_cb (gpointer userData_in)
 {
   RPG_TRACE(ACE_TEXT("::idle_initialize_UI_cb"));
 
-  GTK_cb_data_t* data_p =
-    static_cast<GTK_cb_data_t*> (userData_in);
+  struct GTK_CBData* data_p =
+    static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (data_p);
 
   Common_UI_GladeXMLsIterator_t iterator =
-    data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->GTKState->gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
-  ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
+  ACE_ASSERT (iterator != data_p->GTKState->gladeXML.end ());
 
   // step2: retrieve dialog handles
   GtkWidget* main_dialog = NULL;
@@ -925,16 +927,16 @@ about_clicked_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::about_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  GTK_cb_data_t* data_p =
-    static_cast<GTK_cb_data_t*> (userData_in);
+  struct GTK_CBData* data_p =
+    static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (data_p);
 
   Common_UI_GladeXMLsIterator_t iterator =
-    data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->GTKState->gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
-  ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
+  ACE_ASSERT (iterator != data_p->GTKState->gladeXML.end ());
 
   // retrieve about dialog handle
   GtkDialog* about_dialog =
@@ -971,16 +973,16 @@ create_map_clicked_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::create_map_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  GTK_cb_data_t* data_p =
-    static_cast<GTK_cb_data_t*> (userData_in);
+  struct GTK_CBData* data_p =
+    static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (data_p);
 
   Common_UI_GladeXMLsIterator_t iterator =
-    data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->GTKState->gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
-  ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
+  ACE_ASSERT (iterator != data_p->GTKState->gladeXML.end ());
 
   // read configuration
   GtkToggleButton* togglebutton =
@@ -1089,16 +1091,16 @@ drop_map_clicked_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::drop_map_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  GTK_cb_data_t* data_p =
-    static_cast<GTK_cb_data_t*> (userData_in);
+  struct GTK_CBData* data_p =
+    static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (data_p);
 
   Common_UI_GladeXMLsIterator_t iterator =
-    data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->GTKState->gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
-  ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
+  ACE_ASSERT (iterator != data_p->GTKState->gladeXML.end ());
 
   // delete file if non-transient ?
   if (!data_p->isTransient)
@@ -1240,16 +1242,16 @@ load_map_clicked_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::load_map_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  GTK_cb_data_t* data_p =
-    static_cast<GTK_cb_data_t*> (userData_in);
+  struct GTK_CBData* data_p =
+    static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (data_p);
 
   Common_UI_GladeXMLsIterator_t iterator =
-    data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->GTKState->gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
-  ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
+  ACE_ASSERT (iterator != data_p->GTKState->gladeXML.end ());
 
   // *NOTE*: this callback just presents the file picker
   // --> business logic happens in map_file_actived_GTK_cb
@@ -1276,16 +1278,16 @@ map_file_activated_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::map_file_activated_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  GTK_cb_data_t* data_p =
-    static_cast<GTK_cb_data_t*> (userData_in);
+  struct GTK_CBData* data_p =
+    static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (data_p);
 
   Common_UI_GladeXMLsIterator_t iterator =
-    data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->GTKState->gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
-  ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
+  ACE_ASSERT (iterator != data_p->GTKState->gladeXML.end ());
 
   // retrieve file chooser dialog handle
   GtkFileChooserDialog* filechooser_dialog =
@@ -1346,16 +1348,16 @@ save_map_clicked_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::save_map_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  GTK_cb_data_t* data_p =
-    static_cast<GTK_cb_data_t*> (userData_in);
+  struct GTK_CBData* data_p =
+    static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (data_p);
 
   Common_UI_GladeXMLsIterator_t iterator =
-    data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->GTKState->gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
-  ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
+  ACE_ASSERT (iterator != data_p->GTKState->gladeXML.end ());
 
   // get a name
   std::string name = ACE_TEXT_ALWAYS_CHAR(RPG_ENGINE_LEVEL_DEF_NAME);
@@ -1445,16 +1447,16 @@ map_repository_combobox_changed_GTK_cb(GtkWidget* widget_in,
 {
   RPG_TRACE(ACE_TEXT("::map_repository_combobox_changed_GTK_cb"));
 
-  GTK_cb_data_t* data_p = static_cast<GTK_cb_data_t*> (userData_in);
+  struct GTK_CBData* data_p = static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (widget_in);
   ACE_ASSERT (data_p);
 
   Common_UI_GladeXMLsIterator_t iterator =
-    data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->GTKState->gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
-  ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
+  ACE_ASSERT (iterator != data_p->GTKState->gladeXML.end ());
 
   // retrieve active item
   std::string active_item;
@@ -1527,16 +1529,16 @@ map_repository_button_clicked_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::map_repository_button_clicked_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  GTK_cb_data_t* data_p = static_cast<GTK_cb_data_t*> (userData_in);
+  struct GTK_CBData* data_p = static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (widget_in);
   ACE_ASSERT (data_p);
 
   Common_UI_GladeXMLsIterator_t iterator =
-    data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->GTKState->gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
-  ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
+  ACE_ASSERT (iterator != data_p->GTKState->gladeXML.end ());
 
   // retrieve tree model
   GtkComboBox* repository_combobox =
@@ -1565,15 +1567,15 @@ encounter_selection_changed_GTK_cb(GtkWidget* widget_in,
   RPG_TRACE(ACE_TEXT("::encounter_selection_changed_GTK_cb"));
 
   ACE_UNUSED_ARG(widget_in);
-  GTK_cb_data_t* data_p = static_cast<GTK_cb_data_t*> (userData_in);
+  struct GTK_CBData* data_p = static_cast<struct GTK_CBData*> (userData_in);
 
   // sanity check(s)
   ACE_ASSERT (data_p);
 
   Common_UI_GladeXMLsIterator_t iterator =
-    data_p->GTKState.gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_GTK_DEFINITION_DESCRIPTOR_MAIN));
+    data_p->GTKState->gladeXML.find (ACE_TEXT_ALWAYS_CHAR (COMMON_UI_DEFINITION_DESCRIPTOR_MAIN));
   // sanity check(s)
-  ACE_ASSERT (iterator != data_p->GTKState.gladeXML.end ());
+  ACE_ASSERT (iterator != data_p->GTKState->gladeXML.end ());
 
   GtkTreeView* treeview =
         GTK_TREE_VIEW(glade_xml_get_widget((*iterator).second.second,

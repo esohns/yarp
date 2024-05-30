@@ -49,8 +49,6 @@
 #include "rpg_client_window_minimap.h"
 #include "rpg_client_window_message.h"
 
-
-
 RPG_Client_Window_Level::RPG_Client_Window_Level (const RPG_Graphics_SDLWindowBase& parent_in)
  : inherited (WINDOW_MAP,                 // type
               parent_in,                  // parent
@@ -485,7 +483,7 @@ RPG_Client_Window_Level::initialize (const RPG_Graphics_Style& style_in)
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Window_Level::initialize"));
 
-  ACE_GUARD (ACE_Thread_Mutex, aGuard, myLock);
+  // ACE_GUARD (ACE_Thread_Mutex, aGuard, myLock);
 
   // initialize style
   struct RPG_Graphics_StyleUnion style;
@@ -1576,7 +1574,7 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
           if (push_mousemove_event)
           {
             // redraw highlight / cursor --> push fake mouse-move event
-            SDL_Event sdl_event;
+            union SDL_Event sdl_event;
 #if defined (SDL_USE) || defined (SDL2_USE)
             sdl_event.type = SDL_MOUSEMOTION;
 #elif defined (SDL3_USE)
@@ -1584,7 +1582,7 @@ RPG_Client_Window_Level::handleEvent (const union SDL_Event& event_in,
 #endif // SDL_USE || SDL2_USE || SDL3_USE
             sdl_event.motion.x = cursor_position.first;
             sdl_event.motion.y = cursor_position.second;
-            if (SDL_PushEvent (&sdl_event))
+            if (SDL_PushEvent (&sdl_event) < 0)
               ACE_DEBUG ((LM_ERROR,
                           ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),
                           ACE_TEXT (SDL_GetError ())));

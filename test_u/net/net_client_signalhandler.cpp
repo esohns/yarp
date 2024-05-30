@@ -121,7 +121,7 @@ Net_Client_SignalHandler::handle (const struct Common_Signal& signal_in)
       } // end IF
       else
         ACE_DEBUG ((LM_WARNING,
-                    ACE_TEXT ("failed to retrieve connection handle (was: 0x%@), continuing\n"),
+                    ACE_TEXT ("failed to retrieve connection handle (was: %@), continuing\n"),
                     handle_));
       handle_ = ACE_INVALID_HANDLE;
     } // end IF
@@ -151,13 +151,14 @@ Net_Client_SignalHandler::handle (const struct Common_Signal& signal_in)
                                                                         false, // wait for completion ?
                                                                         true); // peer address ?
     } // end ELSE
-    ACE_ASSERT (handle_);
+    ACE_ASSERT (handle_ != ACE_INVALID_HANDLE);
     RPG_Net_Protocol_IConnection_t* iconnection_p = connection_manager_p->get (handle_);
     if (!iconnection_p)
     {
       ACE_DEBUG ((LM_WARNING,
-                  ACE_TEXT ("failed to retrieve connection handle (was: 0x%@), returning\n"),
+                  ACE_TEXT ("failed to retrieve connection handle (was: %@), returning\n"),
                   handle_));
+      handle_ = ACE_INVALID_HANDLE;
       return;
     } // end IF
 
@@ -195,7 +196,7 @@ Net_Client_SignalHandler::handle (const struct Common_Signal& signal_in)
     if (!iconnection_p)
     {
       ACE_DEBUG ((LM_WARNING,
-                  ACE_TEXT ("failed to retrieve connection handle (was: 0x%@), returning\n"),
+                  ACE_TEXT ("failed to retrieve connection handle (was: %@), returning\n"),
                   handle_));
       return;
     } // end IF

@@ -19,39 +19,39 @@
  ***************************************************************************/
 #include "stdafx.h"
 
-#include "test_u_main.h"
-
 #include "ace/OS_main.h"
 
 #include "rpg_common_macros.h"
 
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
+#include "test_u_main.h"
+
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
 int
-SDL_main(int argc_in,
-         char** argv_in)
+SDL_main (int argc_in,
+          char** argv_in)
 #else
 int
-ACE_TMAIN(int argc_in,
-          ACE_TCHAR* argv_in[])
-#endif
+ACE_TMAIN (int argc_in,
+           ACE_TCHAR* argv_in[])
+#endif // ACE_WIN32 || ACE_WIN64
 {
-  RPG_TRACE(ACE_TEXT("::main"));
+  RPG_TRACE (ACE_TEXT ("::main"));
 
   test_u_main main_instance;
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
-  return main_instance.run(argc_in,
-                           argv_in);
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  return main_instance.run (argc_in,
+                            argv_in);
 #else
-  return main_instance.run_i(argc_in,
-                             argv_in);
-#endif
+  return main_instance.run_i (argc_in,
+                              argv_in);
+#endif // ACE_WIN32 || ACE_WIN64
 } // end main
 #if defined(ACE_WIN32) || defined(ACE_WIN64)
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
-#endif
+#endif // ACE_WIN32 || ACE_WIN64

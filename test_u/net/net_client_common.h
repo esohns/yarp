@@ -72,7 +72,6 @@ struct Net_Client_GTK_CBData
                        true) // block ?
    , entity ()
    , level ()
-   , mapWindow (NULL)
    , schemaRepository ()
 #if defined (SDL_USE)
    , screen (NULL)
@@ -96,7 +95,6 @@ struct Net_Client_GTK_CBData
   RPG_Net_MessageAllocator_t                                   messageAllocator;
   struct RPG_Engine_Entity                                     entity;
   struct RPG_Engine_LevelData                                  level;
-  class RPG_Graphics_IWindowBase*                              mapWindow;
   std::string                                                  schemaRepository;
 #if defined (SDL_USE)
   SDL_Surface*                                                 screen;

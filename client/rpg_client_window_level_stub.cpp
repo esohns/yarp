@@ -706,7 +706,7 @@ RPG_Client_Window_Level_Stub::handleEvent (const union SDL_Event& event_in,
 #endif // SDL_USE || SDL2_USE || SDL3_USE
             sdl_event.motion.x = cursor_position.first;
             sdl_event.motion.y = cursor_position.second;
-            if (SDL_PushEvent (&sdl_event))
+            if (SDL_PushEvent (&sdl_event) < 0)
               ACE_DEBUG ((LM_ERROR,
                           ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),
                           ACE_TEXT (SDL_GetError ())));

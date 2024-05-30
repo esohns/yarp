@@ -23,11 +23,9 @@
 
 #include <string>
 
-#if defined (SDL2_USE)
 #define _SDL_main_h
 #define SDL_main_h_
 #include "SDL.h"
-#endif // SDL2_USE
 
 #include "ace/Global_Macros.h"
 #include "ace/Synch_Traits.h"
@@ -43,6 +41,7 @@ class Common_ILock;
 class RPG_Graphics_Common_Tools
 {
  public:
+  // *WARNING*: needs to be called BEFORE SDL_Init() !
   static void preInitialize ();
   // *WARNING*: needs to be called AFTER SDL_SetVideoMode !
   // *NOTE*: not using SDL at all ? --> provide 'false' as last parameter...
@@ -105,7 +104,7 @@ class RPG_Graphics_Common_Tools
                     SDL_Window*);  // target window (e.g. screen)
 #endif // SDL_USE || SDL2_USE || SDL3_USE
 
-  static RPG_Graphics_Style random(const RPG_Graphics_Style&); // graphics style
+  static struct RPG_Graphics_Style random (const struct RPG_Graphics_Style&); // graphics style
 
   // coordinate transformations
   static RPG_Graphics_Position_t screenToMap (const RPG_Graphics_Position_t&,  // position (screen coordinates !)
@@ -128,8 +127,8 @@ class RPG_Graphics_Common_Tools
   static bool initializeFonts();
 
   // convert style (wall-, floor-, ...) to appropriate graphic (meta)type
-  static RPG_Graphics_GraphicTypeUnion styleToType(const struct RPG_Graphics_StyleUnion&, // style (generic)
-                                                   bool = false);                         // half-height (wallstyle only) ?
+  static struct RPG_Graphics_GraphicTypeUnion styleToType (const struct RPG_Graphics_StyleUnion&, // style (generic)
+                                                           bool = false);                         // half-height (wallstyle only) ?
 
 #if defined (SDL_USE)
   static void fade (float,         // interval (seconds)

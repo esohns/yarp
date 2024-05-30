@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "net_common.h"
 #include "stdafx.h"
 
 #include "SDL_gui_levelwindow_3d.h"
@@ -80,8 +81,8 @@ SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D (const RPG_Graphics_SDLWindowBase
 {
   RPG_TRACE (ACE_TEXT ("SDL_GUI_LevelWindow_3D::SDL_GUI_LevelWindow_3D"));
 
-  myEngine->initialize (this,   // client engine handle
-                        false); // server session ?
+  myEngine->initialize (this,              // client engine handle
+                        NET_ROLE_INVALID); // role
 
 //  myEngine->lock ();
   RPG_Map_Size_t map_size = myEngine->getSize (true); // locked access ?

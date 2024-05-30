@@ -21,6 +21,8 @@
 #ifndef NET_SERVER_EVENTHANDLER_H
 #define NET_SERVER_EVENTHANDLER_H
 
+#include <map>
+
 #include "stream_isessionnotify.h"
 
 #include "net_server_common.h"
@@ -58,7 +60,12 @@ class Net_Server_EventHandler
   ACE_UNIMPLEMENTED_FUNC (Net_Server_EventHandler (const Net_Server_EventHandler&))
   ACE_UNIMPLEMENTED_FUNC (Net_Server_EventHandler& operator=(const Net_Server_EventHandler&))
 
-  Net_Server_GTK_CBData* CBData_;
+  typedef std::map<ACE_HANDLE, RPG_Engine_EntityID_t> CONNECTION_TO_ID_MAP_T;
+  typedef CONNECTION_TO_ID_MAP_T::iterator CONNECTION_TO_ID_MAP_ITERATOR_T;
+
+  Net_Server_GTK_CBData*               CBData_;
+  CONNECTION_TO_ID_MAP_T               ConnectionToIdMap_;
+  struct RPG_Net_Protocol_SessionData* sessionData_;
 };
 
 #endif

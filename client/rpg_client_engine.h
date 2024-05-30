@@ -93,9 +93,13 @@ class RPG_Client_Engine
   void initialize (RPG_Engine*,               // (level) state
                    RPG_Graphics_IWindowBase*, // window handle (may be NULL iff server session)
                    //RPG_Client_IWidgetUI_t*,   // widget UI interface handle
-                   bool,                      // server session ?
                    bool = false);             // debug ?
+  inline RPG_Graphics_IWindowBase* window () { return window_; }
+
+  // local client|client
   void action (const RPG_Client_Action&); // action
+  // network
+  void inject (const RPG_Client_Action&); // action
 
   inline void mode (enum RPG_Client_SelectionMode mode_in) { selectionMode_ = mode_in; }
   inline void clear () { selectionMode_ = SELECTIONMODE_NORMAL; }
@@ -125,7 +129,6 @@ class RPG_Client_Engine
   RPG_Engine*                     engine_;
   RPG_Graphics_IWindowBase*       window_;
   //RPG_Client_IWidgetUI_t*         myWidgetInterface;
-  bool                            serverSession_; // relay all actions to the peer
 
   RPG_Client_Actions_t            actions_;
   struct RPG_Client_State         state_;

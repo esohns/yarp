@@ -66,16 +66,17 @@ typedef void* yyscan_t;
 }
 
 %token <ival> LENGTH              "length"
+%token <ival> TYPE                "type"
+%token <sval> XML                 "xml"
 %token <ival> COMMAND             "command"
 %token <ival> POSITION_X          "position_x"
 %token <ival> POSITION_Y          "position_y"
 %token <ival> PATH_NEXT_XY        "path_next_xy"
 %token <ival> PATH_NEXT_DIRECTION "path_next_direction"
 %token <ival> ENTITY_ID           "entity_id"
-%token <sval> XML                 "xml"
-%token <ival> CLIENT_COMMAND      "client_command"
 %token <ival> PREVIOUS_X          "previous_x"
 %token <ival> PREVIOUS_Y          "previous_y"
+%token <ival> WINDOW              "window"
 %token <ival> CURSOR              "cursor"
 %token <ival> SOUND               "sound"
 %token <sval> MESSAGE             "message"
@@ -118,28 +119,30 @@ xml:        "xml"                                    { driver->current ().xml = 
             |                                 %empty /* empty */
 message:    "message"                                { driver->current ().message = *$1; }
             |                                 %empty /* empty */
-command:    "command"                                { driver->current ().command = static_cast<enum RPG_Net_Protocol_Engine_Command> ($1);
+command:    "type"                                   { driver->current ().type = static_cast<enum RPG_Net_Protocol_MessageType> ($1);
                                                      }
-            "position_x" "position_y"                { driver->current ().position.first = static_cast<unsigned int> ($3);
-                                                       driver->current ().position.second = static_cast<unsigned int> ($4);
+            xml "command"                            { driver->current ().command = $4;
                                                      }
-            path "entity_id"                         { driver->current ().entity_id = static_cast<RPG_Engine_EntityID_t> ($7);
+            "position_x" "position_y"                { driver->current ().position.first = static_cast<unsigned int> ($6);
+                                                       driver->current ().position.second = static_cast<unsigned int> ($7);
                                                      }
-            xml "client_command"                     { driver->current ().clientCommand = static_cast<enum RPG_Net_Protocol_Client_Command> ($10);
+            path "entity_id"                         { driver->current ().entity_id = static_cast<RPG_Engine_EntityID_t> ($10);
                                                      }
             "previous_x" "previous_y"                { driver->current ().previous.first = static_cast<unsigned int> ($12);
                                                        driver->current ().previous.second = static_cast<unsigned int> ($13);
                                                      }
-            "cursor"                                 { driver->current ().cursor = static_cast<enum RPG_Graphics_Cursor> ($15);
+            "window"                                 { driver->current ().window = static_cast<enum RPG_Graphics_WindowType> ($15);
                                                      }
-            "sound"                                  { driver->current ().sound = static_cast<enum RPG_Sound_Event> ($17);
+            "cursor"                                 { driver->current ().cursor = static_cast<enum RPG_Graphics_Cursor> ($17);
                                                      }
-            message "source_x" "source_y"            { driver->current ().source.first = static_cast<unsigned int> ($20);
-                                                       driver->current ().source.second = static_cast<unsigned int> ($21);
+            "sound"                                  { driver->current ().sound = static_cast<enum RPG_Sound_Event> ($19);
                                                      }
-            positions "radius"                       { driver->current ().radius = $24;
+            message "source_x" "source_y"            { driver->current ().source.first = static_cast<unsigned int> ($22);
+                                                       driver->current ().source.second = static_cast<unsigned int> ($23);
                                                      }
-            "end_of_command"                         { ACE_UNUSED_ARG ($26);
+            positions "radius"                       { driver->current ().radius = $26;
+                                                     }
+            "end_of_command"                         { ACE_UNUSED_ARG ($28);
                                                        struct RPG_Net_Protocol_Command* current_p = &driver->current ();
                                                        driver->record (current_p);
                                                        if (driver->scannedBytes () == driver->length ())

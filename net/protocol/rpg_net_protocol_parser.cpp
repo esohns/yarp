@@ -363,6 +363,14 @@ namespace yy {
                     { (yysym.value.ival) = 0; }
         break;
 
+      case symbol_kind::S_TYPE: // "type"
+                    { (yysym.value.ival) = 0; }
+        break;
+
+      case symbol_kind::S_XML: // "xml"
+                    { delete (yysym.value.sval); (yysym.value.sval) = NULL; }
+        break;
+
       case symbol_kind::S_COMMAND: // "command"
                     { (yysym.value.ival) = 0; }
         break;
@@ -387,19 +395,15 @@ namespace yy {
                     { (yysym.value.ival) = 0; }
         break;
 
-      case symbol_kind::S_XML: // "xml"
-                    { delete (yysym.value.sval); (yysym.value.sval) = NULL; }
-        break;
-
-      case symbol_kind::S_CLIENT_COMMAND: // "client_command"
-                    { (yysym.value.ival) = 0; }
-        break;
-
       case symbol_kind::S_PREVIOUS_X: // "previous_x"
                     { (yysym.value.ival) = 0; }
         break;
 
       case symbol_kind::S_PREVIOUS_Y: // "previous_y"
+                    { (yysym.value.ival) = 0; }
+        break;
+
+      case symbol_kind::S_WINDOW: // "window"
                     { (yysym.value.ival) = 0; }
         break;
 
@@ -469,6 +473,14 @@ namespace yy {
                     { debug_stream() << (yysym.value.ival); }
         break;
 
+      case symbol_kind::S_TYPE: // "type"
+                    { debug_stream() << (yysym.value.ival); }
+        break;
+
+      case symbol_kind::S_XML: // "xml"
+                    { debug_stream() << *(yysym.value.sval); }
+        break;
+
       case symbol_kind::S_COMMAND: // "command"
                     { debug_stream() << (yysym.value.ival); }
         break;
@@ -493,19 +505,15 @@ namespace yy {
                     { debug_stream() << (yysym.value.ival); }
         break;
 
-      case symbol_kind::S_XML: // "xml"
-                    { debug_stream() << *(yysym.value.sval); }
-        break;
-
-      case symbol_kind::S_CLIENT_COMMAND: // "client_command"
-                    { debug_stream() << (yysym.value.ival); }
-        break;
-
       case symbol_kind::S_PREVIOUS_X: // "previous_x"
                     { debug_stream() << (yysym.value.ival); }
         break;
 
       case symbol_kind::S_PREVIOUS_Y: // "previous_y"
+                    { debug_stream() << (yysym.value.ival); }
+        break;
+
+      case symbol_kind::S_WINDOW: // "window"
                     { debug_stream() << (yysym.value.ival); }
         break;
 
@@ -840,23 +848,23 @@ namespace yy {
     break;
 
   case 14: // $@2: %empty
-                                                     { driver->current ().command = static_cast<enum RPG_Net_Protocol_Engine_Command> ((yystack_[0].value.ival));
+                                                     { driver->current ().type = static_cast<enum RPG_Net_Protocol_MessageType> ((yystack_[0].value.ival));
                                                      }
     break;
 
   case 15: // $@3: %empty
+                                                     { driver->current ().command = (yystack_[0].value.ival);
+                                                     }
+    break;
+
+  case 16: // $@4: %empty
                                                      { driver->current ().position.first = static_cast<unsigned int> ((yystack_[1].value.ival));
                                                        driver->current ().position.second = static_cast<unsigned int> ((yystack_[0].value.ival));
                                                      }
     break;
 
-  case 16: // $@4: %empty
-                                                     { driver->current ().entity_id = static_cast<RPG_Engine_EntityID_t> ((yystack_[0].value.ival));
-                                                     }
-    break;
-
   case 17: // $@5: %empty
-                                                     { driver->current ().clientCommand = static_cast<enum RPG_Net_Protocol_Client_Command> ((yystack_[0].value.ival));
+                                                     { driver->current ().entity_id = static_cast<RPG_Engine_EntityID_t> ((yystack_[0].value.ival));
                                                      }
     break;
 
@@ -867,27 +875,32 @@ namespace yy {
     break;
 
   case 19: // $@7: %empty
-                                                     { driver->current ().cursor = static_cast<enum RPG_Graphics_Cursor> ((yystack_[0].value.ival));
+                                                     { driver->current ().window = static_cast<enum RPG_Graphics_WindowType> ((yystack_[0].value.ival));
                                                      }
     break;
 
   case 20: // $@8: %empty
-                                                     { driver->current ().sound = static_cast<enum RPG_Sound_Event> ((yystack_[0].value.ival));
+                                                     { driver->current ().cursor = static_cast<enum RPG_Graphics_Cursor> ((yystack_[0].value.ival));
                                                      }
     break;
 
   case 21: // $@9: %empty
+                                                     { driver->current ().sound = static_cast<enum RPG_Sound_Event> ((yystack_[0].value.ival));
+                                                     }
+    break;
+
+  case 22: // $@10: %empty
                                                      { driver->current ().source.first = static_cast<unsigned int> ((yystack_[1].value.ival));
                                                        driver->current ().source.second = static_cast<unsigned int> ((yystack_[0].value.ival));
                                                      }
     break;
 
-  case 22: // $@10: %empty
+  case 23: // $@11: %empty
                                                      { driver->current ().radius = (yystack_[0].value.ival);
                                                      }
     break;
 
-  case 23: // command: "command" $@2 "position_x" "position_y" $@3 path "entity_id" $@4 xml "client_command" $@5 "previous_x" "previous_y" $@6 "cursor" $@7 "sound" $@8 message "source_x" "source_y" $@9 positions "radius" $@10 "end_of_command"
+  case 24: // command: "type" $@2 xml "command" $@3 "position_x" "position_y" $@4 path "entity_id" $@5 "previous_x" "previous_y" $@6 "window" $@7 "cursor" $@8 "sound" $@9 message "source_x" "source_y" $@10 positions "radius" $@11 "end_of_command"
                                                      { ACE_UNUSED_ARG ((yystack_[0].value.ival));
                                                        struct RPG_Net_Protocol_Command* current_p = &driver->current ();
                                                        driver->record (current_p);
@@ -1248,78 +1261,80 @@ namespace yy {
   }
 
 
-  const signed char RPG_Net_Protocol_Parser::yypact_ninf_ = -16;
+  const signed char RPG_Net_Protocol_Parser::yypact_ninf_ = -17;
 
   const signed char RPG_Net_Protocol_Parser::yytable_ninf_ = -1;
 
   const signed char
   RPG_Net_Protocol_Parser::yypact_[] =
   {
-      -1,   -16,     6,   -16,   -16,    -4,   -16,   -16,   -16,     2,
-       3,   -16,   -16,    -6,     1,   -16,   -16,     4,     0,   -16,
-     -16,     5,   -16,     7,    -2,   -16,     8,   -16,     9,   -16,
-      -3,   -16,    10,    11,   -16,   -16,   -15,    -5,   -16,   -16,
-     -16,    12,   -16
+      -1,   -17,     6,   -17,   -17,    -4,   -17,   -17,   -17,     2,
+     -17,     3,   -17,     1,     4,   -17,   -17,    -8,     5,   -17,
+     -17,     0,     8,   -17,    -2,   -17,     7,   -17,     9,   -17,
+      -3,   -17,    10,   -17,    11,    12,   -17,   -17,   -16,    -5,
+     -17,   -17,   -17,    -6,   -17
   };
 
   const signed char
   RPG_Net_Protocol_Parser::yydefact_[] =
   {
-       0,     2,     0,    25,     1,     0,    14,     3,    24,     0,
-       0,    15,     5,     0,     0,    16,     4,     0,    11,     6,
-      10,     0,    17,     0,     0,    18,     0,    19,     0,    20,
-      13,    12,     0,     0,    21,     8,     0,     0,    22,     7,
-       9,     0,    23
+       0,     2,     0,    26,     1,     0,    14,     3,    25,    11,
+      10,     0,    15,     0,     0,    16,     5,     0,     0,    17,
+       4,     0,     0,     6,     0,    18,     0,    19,     0,    20,
+       0,    21,    13,    12,     0,     0,    22,     8,     0,     0,
+      23,     7,     9,     0,    24
   };
 
   const signed char
   RPG_Net_Protocol_Parser::yypgoto_[] =
   {
-     -16,   -16,   -16,   -16,   -16,   -16,   -16,   -16,   -16,   -16,
-     -16,   -16,   -16,   -16,   -16,   -16,   -16,   -16,   -16,   -16
+     -17,   -17,   -17,   -17,   -17,   -17,   -17,   -17,   -17,   -17,
+     -17,   -17,   -17,   -17,   -17,   -17,   -17,   -17,   -17,   -17,
+     -17
   };
 
   const signed char
   RPG_Net_Protocol_Parser::yydefgoto_[] =
   {
-       0,     2,     3,    13,    16,    36,    39,    21,    32,     8,
-       9,    12,    18,    23,    26,    28,    30,    35,    41,     5
+       0,     2,     3,    17,    20,    38,    41,    11,    34,     8,
+       9,    13,    16,    22,    26,    28,    30,    32,    37,    43,
+       5
   };
 
   const signed char
   RPG_Net_Protocol_Parser::yytable_[] =
   {
-       6,    14,     1,    15,    37,    38,     4,    10,    17,    11,
-      20,    25,    19,    31,    40,     0,    22,     0,     7,    24,
-       0,     0,    27,     0,    29,     0,     0,    33,     0,    34,
-       0,     0,     0,    42
+       6,    18,     1,    19,    39,    40,     4,    10,    14,    12,
+      23,    25,    15,    31,    21,    42,    44,     0,     0,     7,
+      24,    27,     0,     0,    29,     0,     0,    33,     0,    35,
+       0,    36
   };
 
   const signed char
   RPG_Net_Protocol_Parser::yycheck_[] =
   {
-       4,     7,     3,     9,    19,    20,     0,     5,     7,     6,
-      10,    13,     8,    16,    19,    -1,    11,    -1,    22,    12,
-      -1,    -1,    14,    -1,    15,    -1,    -1,    17,    -1,    18,
-      -1,    -1,    -1,    21
+       4,     9,     3,    11,    20,    21,     0,     5,     7,     6,
+      10,    13,     8,    16,     9,    20,    22,    -1,    -1,    23,
+      12,    14,    -1,    -1,    15,    -1,    -1,    17,    -1,    18,
+      -1,    19
   };
 
   const signed char
   RPG_Net_Protocol_Parser::yystos_[] =
   {
-       0,     3,    24,    25,     0,    42,     4,    22,    32,    33,
-       5,     6,    34,    26,     7,     9,    27,     7,    35,     8,
-      10,    30,    11,    36,    12,    13,    37,    14,    38,    15,
-      39,    16,    31,    17,    18,    40,    28,    19,    20,    29,
-      19,    41,    21
+       0,     3,    25,    26,     0,    44,     4,    23,    33,    34,
+       5,    31,     6,    35,     7,     8,    36,    27,     9,    11,
+      28,     9,    37,    10,    12,    13,    38,    14,    39,    15,
+      40,    16,    41,    17,    32,    18,    19,    42,    29,    20,
+      21,    30,    20,    43,    22
   };
 
   const signed char
   RPG_Net_Protocol_Parser::yyr1_[] =
   {
-       0,    23,    25,    24,    26,    26,    27,    28,    28,    29,
-      30,    30,    31,    31,    33,    34,    35,    36,    37,    38,
-      39,    40,    41,    32,    42,    42
+       0,    24,    26,    25,    27,    27,    28,    29,    29,    30,
+      31,    31,    32,    32,    34,    35,    36,    37,    38,    39,
+      40,    41,    42,    43,    33,    44,    44
   };
 
   const signed char
@@ -1327,7 +1342,7 @@ namespace yy {
   {
        0,     2,     0,     4,     2,     0,     3,     2,     0,     2,
        1,     0,     1,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,    26,     2,     0
+       0,     0,     0,     0,    28,     2,     0
   };
 
 
@@ -1338,14 +1353,14 @@ namespace yy {
   const RPG_Net_Protocol_Parser::yytname_[] =
   {
   "\"end of file\"", "error", "\"invalid token\"", "\"length\"",
-  "\"command\"", "\"position_x\"", "\"position_y\"", "\"path_next_xy\"",
-  "\"path_next_direction\"", "\"entity_id\"", "\"xml\"",
-  "\"client_command\"", "\"previous_x\"", "\"previous_y\"", "\"cursor\"",
+  "\"type\"", "\"xml\"", "\"command\"", "\"position_x\"", "\"position_y\"",
+  "\"path_next_xy\"", "\"path_next_direction\"", "\"entity_id\"",
+  "\"previous_x\"", "\"previous_y\"", "\"window\"", "\"cursor\"",
   "\"sound\"", "\"message\"", "\"source_x\"", "\"source_y\"",
   "\"positions_next_xy\"", "\"radius\"", "\"end_of_command\"",
   "\"end_of_frame\"", "$accept", "frame", "$@1", "path", "path_elem",
   "positions", "positions_elem", "xml", "message", "command", "$@2", "$@3",
-  "$@4", "$@5", "$@6", "$@7", "$@8", "$@9", "$@10", "commands", YY_NULLPTR
+  "$@4", "$@5", "$@6", "$@7", "$@8", "$@9", "$@10", "$@11", "commands", YY_NULLPTR
   };
 #endif
 
@@ -1354,9 +1369,9 @@ namespace yy {
   const unsigned char
   RPG_Net_Protocol_Parser::yyrline_[] =
   {
-       0,   102,   102,   102,   107,   108,   109,   112,   113,   114,
-     117,   118,   119,   120,   121,   123,   126,   128,   130,   133,
-     135,   137,   140,   121,   148,   149
+       0,   103,   103,   103,   108,   109,   110,   113,   114,   115,
+     118,   119,   120,   121,   122,   124,   126,   129,   131,   134,
+     136,   138,   140,   143,   122,   151,   152
   };
 
   void
@@ -1422,10 +1437,10 @@ namespace yy {
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18,    19,    20,    21,    22
+      15,    16,    17,    18,    19,    20,    21,    22,    23
     };
     // Last valid token kind.
-    const int code_max = 277;
+    const int code_max = 278;
 
     if (t <= 0)
       return symbol_kind::S_YYEOF;

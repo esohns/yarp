@@ -30,38 +30,38 @@
 #include "map_generator_gui_common.h"
 
 class test_u_main
-#if defined(ACE_WIN32) || defined(ACE_WIN64)
- : public ACE_Main
-#endif
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+ : public ACE_Main_Base
+#endif // ACE_WIN32 || ACE_WIN64
 {
  public:
-  test_u_main(void);
-  virtual ~test_u_main(void);
+  test_u_main (void);
+  inline virtual ~test_u_main (void) {}
 
-  virtual int run_i(int,      // argc
-                    char*[]); // argv
+  virtual int run_i (int,      // argc
+                     char*[]); // argv
 
  private:
   // helper methods
-  void print_usage(const std::string&);
-  bool process_arguments(int,           // argc
-                         ACE_TCHAR*[],  // argv (*NOTE*: cannot be const)...
-                         std::string&,  // graphics dictionary
-                         std::string&,  // item dictionary,
-                         bool&,         // log to file ?
-                         std::string&,  // magic dictionary,
-                         bool&,         // trace information ?,
-                         std::string&,  // UI definition file,
-                         std::string&,  // graphics directory,
-                         bool&);        // print program version only ?
-  void do_work(GTK_cb_data_t&,      // GTK callback data
-               const std::string&,  // schema directory
-               const std::string&,  // magic dictionary
-               const std::string&,  // item dictionary
-               const std::string&,  // graphics dictionary
-               const std::string&,  // graphics directory
-               const std::string&); // UI definition file
-  void print_version(const std::string&); // program name
+  void print_usage (const std::string&);
+  bool process_arguments (int,           // argc
+                          ACE_TCHAR*[],  // argv (*NOTE*: cannot be const)...
+                          std::string&,  // graphics dictionary
+                          std::string&,  // item dictionary,
+                          bool&,         // log to file ?
+                          std::string&,  // magic dictionary,
+                          bool&,         // trace information ?,
+                          std::string&,  // UI definition file,
+                          std::string&,  // graphics directory,
+                          bool&);        // print program version only ?
+  void do_work (struct GTK_CBData&,  // GTK callback data
+                const std::string&,  // schema directory
+                const std::string&,  // magic dictionary
+                const std::string&,  // item dictionary
+                const std::string&,  // graphics dictionary
+                const std::string&,  // graphics directory
+                const std::string&); // UI definition file
+  void print_version (const std::string&); // program name
 };
 
 #endif

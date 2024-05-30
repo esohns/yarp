@@ -237,7 +237,7 @@ RPG_Engine_Event_Manager::add (RPG_Engine_EntityID_t id_in,
 
   // *NOTE*: "%#T" doesn't work correctly 1.111111 --> " 01:00:01.111111"; that's OK...
   ACE_DEBUG ((LM_DEBUG,
-              ACE_TEXT ("scheduled activation event (ID: %d [%#T]) for entity (ID: %u)\n"),
+              ACE_TEXT ("scheduled activation event (id: %d [%#T]) for entity (id: %u)\n"),
               timer_id,
               &activationInterval_in,
               id_in));

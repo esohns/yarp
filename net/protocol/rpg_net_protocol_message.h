@@ -37,11 +37,11 @@ class ACE_Message_Block;
 class RPG_Net_Protocol_SessionMessage;
 
 class RPG_Net_Protocol_Message
- : public Stream_DataMessageBase_T<struct RPG_Net_Protocol_Command,
+ : public Stream_DataMessageBase_T<struct RPG_Net_Protocol_MessageData,
                                    enum Stream_MessageType,
                                    Stream_CommandType_t>
 {
-  typedef Stream_DataMessageBase_T<struct RPG_Net_Protocol_Command,
+  typedef Stream_DataMessageBase_T<struct RPG_Net_Protocol_MessageData,
                                    enum Stream_MessageType,
                                    Stream_CommandType_t> inherited;
 

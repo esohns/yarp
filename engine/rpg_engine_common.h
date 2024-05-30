@@ -27,13 +27,7 @@
 #include <list>
 #include <map>
 
-#include "ace/INET_Addr.h"
 #include "ace/Log_Msg.h"
-#include "ace/Time_Value.h"
-
-//#include "net_configuration.h"
-
-//#include "net_client_iconnector.h"
 
 #include "rpg_common_condition.h"
 //#include "rpg_common_incl.h"

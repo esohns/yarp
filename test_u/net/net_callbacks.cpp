@@ -54,9 +54,11 @@
 #include "rpg_engine.h"
 #include "rpg_engine_defines.h"
 
+#include "rpg_sound_event_manager.h"
+
 #include "rpg_client_common.h"
 #include "rpg_client_defines.h"
-#include "rpg_client_ui_tools.h"
+#include "rpg_client_engine.h"
 
 #include "net_server_common.h"
 
@@ -74,11 +76,22 @@ idle_new_level_client_cb (gpointer userData_in)
   ACE_ASSERT (iterator != data_p->UIState->builders.end ());
   ACE_ASSERT (data_p->levelEngine);
   ACE_ASSERT (data_p->entity.character);
+  ACE_ASSERT (data_p->clientEngine);
+
+  if (data_p->entity.position == std::make_pair (std::numeric_limits<unsigned int>::max (),
+                                                 std::numeric_limits<unsigned int>::max ()))
+    data_p->entity.position = data_p->levelEngine->getStartPosition (true); // locked access ?
 
   RPG_Engine_EntityID_t id_i = data_p->levelEngine->add (&data_p->entity,
                                                          true); // locked access ?
   ACE_ASSERT (id_i);
   data_p->entities.insert (std::make_pair (id_i, &data_p->entity));
+
+  data_p->clientEngine->setView (data_p->entity.position,
+                                 true); // refresh ?
+
+  // play ambient sound
+  RPG_SOUND_EVENT_MANAGER_SINGLETON::instance ()->start ();
 
   GtkButton* button_p =
     GTK_BUTTON (gtk_builder_get_object ((*iterator).second.second,
@@ -237,28 +250,20 @@ idle_start_session_server_cb (gpointer userData_in)
   index = ((::random () % number_of_connections) + 1);
 #endif // ACE_WIN32 || ACE_WIN64
 
-  RPG_Net_Protocol_IStreamConnection_t* istream_connection_p = NULL;
+  RPG_Net_Protocol_IConnection_t* iconnection_p = NULL;
   switch (data_p->configuration->protocol_configuration.protocolOptions.transportLayer)
   {
     case NET_TRANSPORTLAYER_TCP:
     case NET_TRANSPORTLAYER_SSL:
     {
-      RPG_Net_Protocol_Connection_Manager_t::ICONNECTION_T* connection_base_p =
+      iconnection_p =
         RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->operator[] (index - 1);
-      ACE_ASSERT (connection_base_p);
-      istream_connection_p =
-        dynamic_cast<RPG_Net_Protocol_IStreamConnection_t*> (connection_base_p);
-      ACE_ASSERT (istream_connection_p);
       break;
     }
     case NET_TRANSPORTLAYER_UDP:
     {
-      RPG_Net_Protocol_Connection_Manager_t::ICONNECTION_T* connection_base_p =
+      iconnection_p =
         RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->operator[] (index - 1);
-      ACE_ASSERT (connection_base_p);
-      istream_connection_p =
-        dynamic_cast<RPG_Net_Protocol_IStreamConnection_t*> (connection_base_p);
-      ACE_ASSERT (istream_connection_p);
       break;
     }
     default:
@@ -269,19 +274,15 @@ idle_start_session_server_cb (gpointer userData_in)
       return G_SOURCE_REMOVE;
     }
   } // end SWITCH
-  ACE_ASSERT (istream_connection_p);
+  ACE_ASSERT (iconnection_p);
 
   // send level
   RPG_Net_Protocol_Message* message_p =
     static_cast<RPG_Net_Protocol_Message*> (data_p->messageAllocator.malloc (data_p->allocatorConfiguration.defaultBufferSize));
   ACE_ASSERT (message_p);
 
-  struct RPG_Net_Protocol_Command command_s;
-  command_s.command = NET_COMMAND_LEVEL_LOAD;
-  command_s.position =
-    std::make_pair (std::numeric_limits<unsigned int>::max (),
-                    std::numeric_limits<unsigned int>::max ());
-  command_s.entity_id = 0;
+  struct RPG_Net_Protocol_MessageData message_data_s;
+  message_data_s.command.type = NET_MESSAGE_TYPE_LEVEL;
   std::string temp_filename = Common_File_Tools::getTempDirectory ();
   temp_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   temp_filename += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
@@ -292,7 +293,7 @@ idle_start_session_server_cb (gpointer userData_in)
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Engine_Level::save(\"%s\"), returning\n"),
                 ACE_TEXT (temp_filename.c_str ())));
-    istream_connection_p->decrease ();
+    iconnection_p->decrease ();
     delete message_p;
     return G_SOURCE_REMOVE;
   } // end IF
@@ -308,40 +309,43 @@ idle_start_session_server_cb (gpointer userData_in)
                 ACE_TEXT (temp_filename.c_str ())));
     Common_File_Tools::deleteFile (temp_filename);
     delete message_p;
-    istream_connection_p->decrease ();
+    iconnection_p->decrease ();
     return G_SOURCE_REMOVE;
   } // end IF
   Common_File_Tools::deleteFile (temp_filename);
-    command_s.xml.assign (reinterpret_cast<char*> (data_2),
-                        file_size_i);
+    message_data_s.command.xml.assign (reinterpret_cast<char*> (data_2),
+                                       file_size_i);
   // replace all crlf with RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR
   std::string::size_type position_i =
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-      command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
+      message_data_s.command.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
 #elif defined (ACE_LINUX)
-      command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0);
+      message_data_s.command.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0);
 #else
 #error *TODO*
 #endif // ACE_WIN32 || ACE_WIN64 || ACE_LINUX
   while (position_i != std::string::npos)
   {
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-    command_s.xml.replace (position_i, 2, 1, RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR);
-    position_i = command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
+    message_data_s.command.xml.replace (position_i, 2, 1, RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR);
+    position_i =
+      message_data_s.command.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
 #elif defined (ACE_LINUX)
-    command_s.xml.replace (position_i, 1, 1, RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR);
-    position_i = command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0);
+    message_data_s.command.xml.replace (position_i, 1, 1, RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR);
+    position_i =
+      message_data_s.command.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0);
 #endif // ACE_WIN32 || ACE_WIN64 || ACE_LINUX
   } // end WHILE
   delete [] data_2; data_2 = NULL;
 
-  message_p->initialize (command_s,
+  message_p->initialize (message_data_s,
                          1,
                          NULL);
   ACE_Message_Block* message_block_p = message_p;
-  istream_connection_p->send (message_block_p);
+  iconnection_p->send (message_block_p);
 
   // send current player entitie(s)
+  message_data_s.command.type = NET_MESSAGE_TYPE_PLAYER;
   for (RPG_Engine_EntitiesConstIterator_t iterator = data_p->entities.begin ();
        iterator != data_p->entities.end ();
        ++iterator)
@@ -350,7 +354,6 @@ idle_start_session_server_cb (gpointer userData_in)
       static_cast<RPG_Net_Protocol_Message*> (data_p->messageAllocator.malloc (data_p->allocatorConfiguration.defaultBufferSize));
     ACE_ASSERT (message_p);
 
-    command_s.command = NET_COMMAND_PLAYER_LOAD;
     temp_filename = Common_File_Tools::getTempDirectory ();
     temp_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
     temp_filename += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
@@ -365,6 +368,7 @@ idle_start_session_server_cb (gpointer userData_in)
                   ACE_TEXT ("failed to RPG_Player::save(\"%s\"), aborting\n"),
                   ACE_TEXT (temp_filename.c_str ())));
       delete message_p;
+      iconnection_p->decrease ();
       return G_SOURCE_REMOVE;
     } // end IF
     data_2 = NULL;
@@ -379,39 +383,42 @@ idle_start_session_server_cb (gpointer userData_in)
                   ACE_TEXT (temp_filename.c_str ())));
       Common_File_Tools::deleteFile (temp_filename);
       delete message_p;
+      iconnection_p->decrease ();
       return G_SOURCE_REMOVE;
     } // end IF
     Common_File_Tools::deleteFile (temp_filename);
-    command_s.xml.assign (reinterpret_cast<char*> (data_2),
-                          file_size_i);
+    message_data_s.command.xml.assign (reinterpret_cast<char*> (data_2),
+                                       file_size_i);
     // replace all crlf with RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR
     position_i =
   #if defined (ACE_WIN32) || defined (ACE_WIN64)
-      command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
+      message_data_s.command.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
   #elif defined (ACE_LINUX)
-      command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0);
+      message_data_s.command.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0);
   #endif // ACE_WIN32 || ACE_WIN64 || ACE_LINUX
     while (position_i != std::string::npos)
     {
   #if defined (ACE_WIN32) || defined (ACE_WIN64)
-      command_s.xml.replace (position_i, 2, 1, RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR);
-      position_i = command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
+      message_data_s.command.xml.replace (position_i, 2, 1, RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR);
+      position_i =
+        message_data_s.command.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
   #elif defined (ACE_LINUX)
-      command_s.xml.replace (position_i, 1, 1, RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR);
-      position_i = command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0);
+      message_data_s.command.xml.replace (position_i, 1, 1, RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR);
+      position_i =
+        message_data_s.command.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0);
   #endif // ACE_WIN32 || ACE_WIN64 || ACE_LINUX
     } // end WHILE
     delete [] data_2; data_2 = NULL;
 
-    message_p->initialize (command_s,
+    message_p->initialize (message_data_s,
                            1,
                            NULL);
     message_block_p = message_p;
-    istream_connection_p->send (message_block_p);
+    iconnection_p->send (message_block_p);
   } // end FOR
 
   // clean up
-  istream_connection_p->decrease ();
+  iconnection_p->decrease ();
 
   return G_SOURCE_REMOVE;
 }
@@ -1291,28 +1298,20 @@ button_test_clicked_cb (GtkWidget* widget_in,
   index = ((::random () % number_of_connections) + 1);
 #endif // ACE_WIN32 || ACE_WIN64
 
-  RPG_Net_Protocol_IStreamConnection_t* istream_connection_p = NULL;
+  RPG_Net_Protocol_IConnection_t* iconnection_p = NULL;
   switch (data_p->configuration->protocol_configuration.protocolOptions.transportLayer)
   {
     case NET_TRANSPORTLAYER_TCP:
     case NET_TRANSPORTLAYER_SSL:
     {
-      RPG_Net_Protocol_Connection_Manager_t::ICONNECTION_T* connection_base_p =
+      iconnection_p =
         RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->operator[] (index - 1);
-      ACE_ASSERT (connection_base_p);
-      istream_connection_p =
-        dynamic_cast<RPG_Net_Protocol_IStreamConnection_t*> (connection_base_p);
-      ACE_ASSERT (istream_connection_p);
       break;
     }
     case NET_TRANSPORTLAYER_UDP:
     {
-      RPG_Net_Protocol_Connection_Manager_t::ICONNECTION_T* connection_base_p =
+      iconnection_p =
         RPG_NET_PROTOCOL_CONNECTIONMANAGER_SINGLETON::instance ()->operator[] (index - 1);
-      ACE_ASSERT (connection_base_p);
-      istream_connection_p =
-        dynamic_cast<RPG_Net_Protocol_IStreamConnection_t*> (connection_base_p);
-      ACE_ASSERT (istream_connection_p);
       break;
     }
     default:
@@ -1323,15 +1322,15 @@ button_test_clicked_cb (GtkWidget* widget_in,
       return FALSE;
     }
   } // end SWITCH
-  ACE_ASSERT (istream_connection_p);
+  ACE_ASSERT (iconnection_p);
 
   // send player
   RPG_Net_Protocol_Message* message_p =
     static_cast<RPG_Net_Protocol_Message*> (data_p->messageAllocator.malloc (data_p->allocatorConfiguration.defaultBufferSize));
   ACE_ASSERT (message_p);
 
-  struct RPG_Net_Protocol_Command command_s;
-  command_s.command = NET_COMMAND_PLAYER_LOAD;
+  struct RPG_Net_Protocol_MessageData message_data_s;
+  message_data_s.command.type = NET_MESSAGE_TYPE_PLAYER;
   std::string temp_filename = Common_File_Tools::getTempDirectory ();
   temp_filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   temp_filename += RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_PLAYER_DEF_NAME));
@@ -1344,6 +1343,8 @@ button_test_clicked_cb (GtkWidget* widget_in,
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Player::save(\"%s\"), returning\n"),
                 ACE_TEXT (temp_filename.c_str ())));
+    delete message_p;
+    iconnection_p->decrease ();
     return FALSE;
   } // end IF
   uint8_t* data_2 = NULL;
@@ -1357,38 +1358,42 @@ button_test_clicked_cb (GtkWidget* widget_in,
                 ACE_TEXT ("failed to Common_File_Tools::load(\"%s\"), returning\n"),
                 ACE_TEXT (temp_filename.c_str ())));
     Common_File_Tools::deleteFile (temp_filename);
+    delete message_p;
+    iconnection_p->decrease ();
     return FALSE;
   } // end IF
   Common_File_Tools::deleteFile (temp_filename);
-  command_s.xml.assign (reinterpret_cast<char*> (data_2),
-                        file_size_i);
+  message_data_s.command.xml.assign (reinterpret_cast<char*> (data_2),
+                                     file_size_i);
   // replace all crlf with RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR
   std::string::size_type position_i =
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-  command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
+  message_data_s.command.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
 #elif defined (ACE_LINUX)
-  command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0);
+  message_data_s.command.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0);
 #endif // ACE_WIN32 || ACE_WIN64 || ACE_LINUX
   while (position_i != std::string::npos)
   {
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-    command_s.xml.replace (position_i, 2, 1, RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR);
-    position_i = command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
+    message_data_s.command.xml.replace (position_i, 2, 1, RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR);
+    position_i =
+      message_data_s.command.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0);
 #elif defined (ACE_LINUX)
-    command_s.xml.replace (position_i, 1, 1, RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR);
-    position_i = command_s.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0);
+    message_data_s.command.xml.replace (position_i, 1, 1, RPG_COMMON_XML_CRLF_REPLACEMENT_CHAR);
+    position_i =
+      message_data_s.command.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0);
 #endif // ACE_WIN32 || ACE_WIN64 || ACE_LINUX
   } // end WHILE
   delete [] data_2; data_2 = NULL;
 
-  message_p->initialize (command_s,
+  message_p->initialize (message_data_s,
                          1,
                          NULL);
   ACE_Message_Block* message_block_p = message_p;
-  istream_connection_p->send (message_block_p);
+  iconnection_p->send (message_block_p);
 
   // clean up
-  istream_connection_p->decrease ();
+  iconnection_p->decrease ();
 
   return FALSE;
 } // button_test_clicked_cb

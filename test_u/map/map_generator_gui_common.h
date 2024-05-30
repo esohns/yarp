@@ -23,11 +23,11 @@
 
 #include <string>
 
-#include "common_ui_common.h"
+#include "common_ui_gtk_common.h"
 
 #include "rpg_map_common.h"
 
-#include "rpg_engine_common.h"
+#include "rpg_engine_level.h"
 
 // gtk widget names
 #define MAP_GENERATOR_GNOME_CONFIGURATION_DOORS_CHECKBUTTON_NAME          "doors_checkbutton"
@@ -61,13 +61,13 @@
 #define MAP_GENERATOR_GNOME_TEXTVIEW_BASE                                 "#000000" // black
 #define MAP_GENERATOR_GNOME_TEXTVIEW_TEXT                                 "#FFFFFF" // white
 
-struct GTK_cb_data_t
+struct GTK_CBData
 {
-  Common_UI_GTKState                GTKState;
-  std::string                       schemaRepository;
-  RPG_Map_FloorPlan_Configuration_t mapConfiguration;
-  RPG_Engine_Level_t                currentLevel;
-  bool                              isTransient;
+  RPG_Engine_Level*                      currentLevel;
+  bool                                   isTransient;
+  Common_UI_GTK_State_t*                 GTKState;
+  struct RPG_Map_FloorPlan_Configuration mapConfiguration;
+  std::string                            schemaRepository;
 };
 
 #endif

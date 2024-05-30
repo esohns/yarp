@@ -109,6 +109,7 @@
 #include "rpg_graphics_defines.h"
 #include "rpg_graphics_SDL_tools.h"
 
+#include "rpg_sound_common_tools.h"
 #include "rpg_sound_defines.h"
 
 #include "rpg_client_common.h"
@@ -183,10 +184,6 @@ do_printUsage (const std::string& programName_in)
             << false
             << ACE_TEXT_ALWAYS_CHAR ("]")
             << std::endl;
-  std::cout << ACE_TEXT_ALWAYS_CHAR ("-p [VALUE]   : listening port [")
-            << RPG_NET_DEFAULT_PORT
-            << ACE_TEXT_ALWAYS_CHAR ("]")
-            << std::endl;
   std::cout << ACE_TEXT_ALWAYS_CHAR ("-r           : use reactor [")
             << RPG_ENGINE_USES_REACTOR
             << ACE_TEXT_ALWAYS_CHAR ("]")
@@ -214,7 +211,6 @@ do_processArguments (int argc_in,
                      bool& useUDP_out,
                      std::string& networkInterface_out,
                      bool& useLoopback_out,
-                     unsigned short& listeningPortNumber_out,
                      bool& useReactor_out,
                      unsigned int& statisticsReportingInterval_out,
                      bool& traceInformation_out,
@@ -237,7 +233,6 @@ do_processArguments (int argc_in,
   networkInterface_out            =
     ACE_TEXT_ALWAYS_CHAR (RPG_NET_DEFAULT_NETWORK_INTERFACE);
   useLoopback_out                 = false;
-  listeningPortNumber_out         = RPG_NET_DEFAULT_PORT;
   useReactor_out                  = RPG_ENGINE_USES_REACTOR;
   statisticsReportingInterval_out =
     RPG_NET_DEFAULT_STATISTICS_REPORTING_INTERVAL;
@@ -253,7 +248,7 @@ do_processArguments (int argc_in,
 
   ACE_Get_Opt argumentParser (argc_in,
                               argv_in,
-                              ACE_TEXT ("g::i:k:lmn:op:rs:tvx:"));
+                              ACE_TEXT ("g::i:k:lmn:ors:tvx:"));
 
   int option = 0;
   std::stringstream converter;
@@ -297,14 +292,6 @@ do_processArguments (int argc_in,
       case 'o':
       {
         useLoopback_out = true;
-        break;
-      }
-      case 'p':
-      {
-        converter.clear ();
-        converter.str (ACE_TEXT_ALWAYS_CHAR (""));
-        converter << ACE_TEXT_ALWAYS_CHAR (argumentParser.opt_arg ());
-        converter >> listeningPortNumber_out;
         break;
       }
       case 'r':
@@ -444,7 +431,6 @@ do_work (unsigned int peerPingInterval_in,
          bool useUDP_in,
          const std::string& networkInterface_in,
          bool useLoopback_in,
-         unsigned short listeningPortNumber_in,
          bool useReactor_in,
          unsigned int statisticsReportingInterval_in,
          unsigned int numDispatchThreads_in,
@@ -462,6 +448,7 @@ do_work (unsigned int peerPingInterval_in,
     COMMON_TIMERMANAGER_SINGLETON::instance ();
   ACE_ASSERT (timer_manager_p);
   timer_manager_p->initialize (CBData_in.configuration->timer_configuration);
+  timer_manager_p->start (NULL);
 
   std::string monster_dictionary =
     RPG_Common_File_Tools::getConfigurationDataDirectory (ACE_TEXT_ALWAYS_CHAR (yarp_PACKAGE_NAME),
@@ -569,8 +556,8 @@ do_work (unsigned int peerPingInterval_in,
 
   RPG_Client_Engine client_engine;
   RPG_Engine level_engine;
-  level_engine.initialize (&client_engine, // client engine handle
-                           true);          // server session ?
+  level_engine.initialize (&client_engine,   // client engine handle
+                           NET_ROLE_CLIENT); // role
   CBData_in.clientEngine = &client_engine;
   CBData_in.levelEngine = &level_engine;
 
@@ -635,7 +622,6 @@ do_work (unsigned int peerPingInterval_in,
   client_engine.initialize (&level_engine,
                             map_window_p,
                             //&UIDefinition_in,
-                            true,   // server session ?
                             false); // debug ?
 
   // step4c: queue initial drawing
@@ -659,11 +645,10 @@ do_work (unsigned int peerPingInterval_in,
   client_action.command = COMMAND_WINDOW_REFRESH;
   client_engine.action (client_action);
 
-  CBData_in.mapWindow = map_window_p;
   // initialize/add entity to the graphics cache
-  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->initialize (NULL,
+  RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->initialize (NULL, // screen lock handle
                                                                   map_window_p);
-  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->initialize (NULL,
+  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->initialize (NULL, // screen lock handle
                                                                 map_window_p);
 
   // start painting...
@@ -1349,6 +1334,11 @@ continue_:;
 
   ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("finished event dispatch...\n")));
 
+  RPG_CLIENT_NETWORK_MANAGER_SINGLETON::close ();
+  client_engine.stop (true,  // wait for completion ?
+                      false);
+  level_engine.stop (true); // locked access ?
+  RPG_ENGINE_EVENT_MANAGER_SINGLETON::close ();
   timer_manager_p->stop (true,
                          false);
   Common_Signal_Tools::finalize (COMMON_SIGNAL_DISPATCH_SIGNAL,
@@ -1430,7 +1420,6 @@ ACE_TMAIN (int argc_in,
   std::string network_interface =
     ACE_TEXT_ALWAYS_CHAR (RPG_NET_DEFAULT_NETWORK_INTERFACE);
   bool use_loopback = false;
-  unsigned short listening_port_number = RPG_NET_DEFAULT_PORT;
   bool use_reactor = RPG_ENGINE_USES_REACTOR;
   unsigned int statistics_reporting_interval =
     RPG_NET_DEFAULT_STATISTICS_REPORTING_INTERVAL;
@@ -1453,7 +1442,6 @@ ACE_TMAIN (int argc_in,
                             use_udp,
                             network_interface,
                             use_loopback,
-                            listening_port_number,
                             use_reactor,
                             statistics_reporting_interval,
                             trace_information,
@@ -1475,17 +1463,12 @@ ACE_TMAIN (int argc_in,
   } // end IF
 
   // step1c: validate arguments
-  // *NOTE*: probably requires CAP_NET_BIND_SERVICE
-  if (listening_port_number <= 1023)
-    ACE_DEBUG ((LM_WARNING,
-                ACE_TEXT ("using (privileged) port #: %d...\n"),
-                listening_port_number));
   // *IMPORTANT NOTE*: iff the number of message buffers is limited, the
   //                   reactor/proactor thread could (dead)lock on the
   //                   allocator lock, as it cannot dispatch events that would
   //                   free slots
-  if (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES <=
-      std::numeric_limits<unsigned int>::max ())
+  if (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES &&
+      RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES <= std::numeric_limits<unsigned int>::max ())
     ACE_DEBUG ((LM_WARNING,
                 ACE_TEXT ("limiting the number of message buffers could lead to deadlocks...\n")));
   if (!UI_file.empty () &&
@@ -1626,6 +1609,9 @@ ACE_TMAIN (int argc_in,
   } // end IF
 
   // step2a: initialize SDL
+  // RPG_Graphics_Common_Tools::preInitialize ();
+  RPG_Sound_Common_Tools::preInitialize ();
+
   Uint32 SDL_init_flags = 0;
   SDL_init_flags |= SDL_INIT_TIMER;                                            // timers
   SDL_init_flags |= (configuration.audio_configuration.mute ? 0
@@ -1706,7 +1692,6 @@ ACE_TMAIN (int argc_in,
            use_udp,
            network_interface,
            use_loopback,
-           listening_port_number,
            use_reactor,
            statistics_reporting_interval,
            num_dispatch_threads,

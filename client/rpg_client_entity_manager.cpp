@@ -113,8 +113,9 @@ RPG_Client_Entity_Manager::add (RPG_Engine_EntityID_t id_in,
   struct RPG_Client_EntityCacheEntry new_entry;
   new_entry.graphic = surface_in;
   new_entry.free_on_remove = free_on_remove_in;
-  new_entry.bg = RPG_Graphics_Surface::create (static_cast<unsigned int> (surface_in->w),
-                                               static_cast<unsigned int> (surface_in->h));
+  new_entry.bg =
+    RPG_Graphics_Surface::create (static_cast<unsigned int> (surface_in->w),
+                                  static_cast<unsigned int> (surface_in->h));
   if (!new_entry.bg)
   {
     ACE_DEBUG ((LM_ERROR,
@@ -132,8 +133,8 @@ RPG_Client_Entity_Manager::add (RPG_Engine_EntityID_t id_in,
     return;
   } // end IF
   new_entry.bg_position =
-      std::make_pair (std::numeric_limits<unsigned int>::max (),
-                      std::numeric_limits<unsigned int>::max ());
+    std::make_pair (std::numeric_limits<unsigned int>::max (),
+                    std::numeric_limits<unsigned int>::max ());
 
   myCache[id_in] = new_entry;
 }
@@ -166,7 +167,7 @@ RPG_Client_Entity_Manager::remove (RPG_Engine_EntityID_t id_in,
   restoreBG (id_in,
              dirtyRegion_out,
              true, // clip window ?
-             false, // locked access ?
+             false, // locked access ? (screen lock)
              debug_in); // debug ?
   if (myScreenLock && lockedAccess_in)
     myScreenLock->unlock ();
@@ -207,7 +208,7 @@ RPG_Client_Entity_Manager::put (RPG_Engine_EntityID_t id_in,
 {
   RPG_TRACE (ACE_TEXT ("RPG_Client_Entity_Manager::put"));
 
-  // step0: initialize return value(s)
+  // initialize return value(s)
   ACE_OS::memset (&dirtyRegion_out, 0, sizeof (struct SDL_Rect));
 
   // sanity check(s)
@@ -221,9 +222,9 @@ RPG_Client_Entity_Manager::put (RPG_Engine_EntityID_t id_in,
   RPG_Client_EntityCacheIterator_t iterator = myCache.find (id_in);
   if (iterator == myCache.end ())
   {
-    ACE_DEBUG((LM_ERROR,
-               ACE_TEXT("invalid entity ID (was: %u), returning\n"),
-               id_in));
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("invalid entity ID (was: %u), returning\n"),
+                id_in));
     return;
   } // end IF
 
@@ -248,7 +249,7 @@ RPG_Client_Entity_Manager::put (RPG_Engine_EntityID_t id_in,
                       (*iterator).second.graphic->h);
   clip_rectangle.w = (*iterator).second.graphic->w;
   clip_rectangle.h = (*iterator).second.graphic->h;
-  RPG_Client_IWindowLevel* window;
+  RPG_Client_IWindowLevel* window = NULL;
   try {
     window = dynamic_cast<RPG_Client_IWindowLevel*> (myWindow);
   } catch (...) {
@@ -291,12 +292,12 @@ RPG_Client_Entity_Manager::put (RPG_Engine_EntityID_t id_in,
                              *(*iterator).second.graphic,
                              target_surface,
                              dirty_region);
-  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
-                                                         dirtyRegion_out);
   if (lockedAccess_in && myScreenLock)
     myScreenLock->unlock ();
   if (clipWindow_in)
     myWindow->unclip (target_surface);
+  dirtyRegion_out = RPG_Graphics_SDL_Tools::boundingBox (dirty_region,
+                                                         dirtyRegion_out);
 
   // update cursor / highlight(s)
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->updateBG (dirty_region,

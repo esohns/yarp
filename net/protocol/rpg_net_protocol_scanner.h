@@ -517,27 +517,28 @@ void yyfree ( void * , yyscan_t yyscanner );
 
 #ifdef YY_HEADER_EXPORT_START_CONDITIONS
 #define INITIAL 0
-#define command 1
-#define position_x 2
-#define position_y 3
-#define path 4
-#define path_position_x 5
-#define path_position_y 6
-#define path_direction 7
-#define entity_id 8
-#define xml 9
-#define clientCommand 10
+#define type 1
+#define xml 2
+#define command 3
+#define position_x 4
+#define position_y 5
+#define path 6
+#define path_position_x 7
+#define path_position_y 8
+#define path_direction 9
+#define entity_id 10
 #define previous_x 11
 #define previous_y 12
-#define cursor 13
-#define sound 14
-#define message 15
-#define source_x 16
-#define source_y 17
-#define positions 18
-#define positions_position_x 19
-#define positions_position_y 20
-#define radius 21
+#define window 13
+#define cursor 14
+#define sound 15
+#define message 16
+#define source_x 17
+#define source_y 18
+#define positions 19
+#define positions_position_x 20
+#define positions_position_y 21
+#define radius 22
 
 #endif
 

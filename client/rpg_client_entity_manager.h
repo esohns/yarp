@@ -34,7 +34,7 @@
 #include "common_ilock.h"
 
 #include "rpg_graphics_common.h"
-#include "rpg_graphics_iwindow.h"
+#include "rpg_graphics_iwindow_base.h"
 
 #include "rpg_engine_common.h"
 
@@ -54,7 +54,7 @@ class RPG_Client_Entity_Manager
             bool = false);         // free on remove() ?
   void remove (RPG_Engine_EntityID_t, // id
                struct SDL_Rect&,      // return value: "dirty" region
-               bool = true,           // locked access ?
+               bool = true,           // locked access ? (screen lock)
                bool = false);         // debug ?
   bool cached (RPG_Engine_EntityID_t) const; // id
 
@@ -63,7 +63,7 @@ class RPG_Client_Entity_Manager
             const RPG_Graphics_Position_t&, // position (screen coordinates !)
             struct SDL_Rect&,               // return value: "dirty" region
             bool,                           // clip window ?
-            bool = true,                    // locked access ?
+            bool = true,                    // locked access ? (screen lock)
             bool = false);                  // debug ?
 
   // clear the stored BG
@@ -72,7 +72,7 @@ class RPG_Client_Entity_Manager
   void restoreBG (RPG_Engine_EntityID_t, // id
                   struct SDL_Rect&,      // return value: "dirty" region
                   bool,                  // clip window ?
-                  bool = true,           // locked access ?
+                  bool = true,           // locked access ? (screen lock)
                   bool = false);         // debug ?
 
  private:

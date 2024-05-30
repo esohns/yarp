@@ -62,7 +62,7 @@ void RPG_Net_Protocol_Scanner_set_column (int, yyscan_t);
 %option outfile="rpg_net_protocol_scanner.cpp" header-file="rpg_net_protocol_scanner.h" prefix="RPG_Net_Protocol_Scanner_"
 
 DIGIT          [0-9]
-ALNUM          [a-zA-Z0-9]
+DIGIT_MINUS    [0-9]{+}[-]
 SPACE          [ ]
 COMMA          [,]
 SEMICOLON      [;]
@@ -70,6 +70,8 @@ CRLF           \x0D\x0A
 OCTET          [\x00-\xFF]
 OCTET_NO_CRLF  [\x00-\xFF]{-}[\x0D\x0A]
 
+%s             type
+%s             xml
 %s             command
 %s             position_x
 %s             position_y
@@ -78,10 +80,9 @@ OCTET_NO_CRLF  [\x00-\xFF]{-}[\x0D\x0A]
 %s             path_position_y
 %s             path_direction
 %s             entity_id
-%s             xml
-%s             clientCommand
 %s             previous_x
 %s             previous_y
+%s             window
 %s             cursor
 %s             sound
 %s             message
@@ -113,11 +114,32 @@ OCTET_NO_CRLF  [\x00-\xFF]{-}[\x0D\x0A]
                              yylval->ival = static_cast<int> (length_i);
                              return yy::RPG_Net_Protocol_Parser::token::LENGTH; }
 {SPACE}                    { iparser_p->scannedBytes (yyleng);
-                             BEGIN(command);
+                             BEGIN(type);
                              yylval->ival = 1; }
 } // end <INITIAL>
-<command>{
+<type>{
 {DIGIT}+                   { iparser_p->scannedBytes (yyleng);
+                             converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+                             converter.clear ();
+                             converter << yytext;
+                             converter >> yylval->ival;
+                             return yy::RPG_Net_Protocol_Parser::token::TYPE; }
+{SPACE}                    { iparser_p->scannedBytes (yyleng);
+                             BEGIN(xml);
+                             yylval->ival = 1; }
+} // end <type>
+<xml>{
+{OCTET_NO_CRLF}+           { iparser_p->scannedBytes (yyleng);
+                             ACE_NEW_NORETURN (yylval->sval,
+                                               std::string (yytext));
+                             ACE_ASSERT (yylval->sval);
+                             return yy::RPG_Net_Protocol_Parser::token::XML; }
+{CRLF}                     { iparser_p->scannedBytes (yyleng);
+                             BEGIN(command);
+                             yylval->ival = 2; }
+} // end <xml>
+<command>{
+{DIGIT_MINUS}+             { iparser_p->scannedBytes (yyleng);
                              converter.str (ACE_TEXT_ALWAYS_CHAR (""));
                              converter.clear ();
                              converter << yytext;
@@ -197,30 +219,9 @@ OCTET_NO_CRLF  [\x00-\xFF]{-}[\x0D\x0A]
                              converter >> yylval->ival;
                              return yy::RPG_Net_Protocol_Parser::token::ENTITY_ID; }
 {SPACE}                    { iparser_p->scannedBytes (yyleng);
-                             BEGIN(xml);
-                             yylval->ival = 1; }
-} // end <entity_id>
-<xml>{
-{OCTET_NO_CRLF}+           { iparser_p->scannedBytes (yyleng);
-                             ACE_NEW_NORETURN (yylval->sval,
-                                               std::string (yytext));
-                             ACE_ASSERT (yylval->sval);
-                             return yy::RPG_Net_Protocol_Parser::token::XML; }
-{CRLF}                     { iparser_p->scannedBytes (yyleng);
-                             BEGIN(clientCommand);
-                             yylval->ival = 2; }
-} // end <xml>
-<clientCommand>{
-{DIGIT}+                   { iparser_p->scannedBytes (yyleng);
-                             converter.str (ACE_TEXT_ALWAYS_CHAR (""));
-                             converter.clear ();
-                             converter << yytext;
-                             converter >> yylval->ival;
-                             return yy::RPG_Net_Protocol_Parser::token::CLIENT_COMMAND; }
-{SPACE}                    { iparser_p->scannedBytes (yyleng);
                              BEGIN(previous_x);
                              yylval->ival = 1; }
-} // end <clientCommand>
+} // end <entity_id>
 <previous_x>{
 {DIGIT}+                   { iparser_p->scannedBytes (yyleng);
                              converter.str (ACE_TEXT_ALWAYS_CHAR (""));
@@ -240,9 +241,20 @@ OCTET_NO_CRLF  [\x00-\xFF]{-}[\x0D\x0A]
                              converter >> yylval->ival;
                              return yy::RPG_Net_Protocol_Parser::token::PREVIOUS_Y; }
 {SPACE}                    { iparser_p->scannedBytes (yyleng);
-                             BEGIN(cursor);
+                             BEGIN(window);
                              yylval->ival = 1; }
 } // end <previous_y>
+<window>{
+{DIGIT}+                   { iparser_p->scannedBytes (yyleng);
+                             converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+                             converter.clear ();
+                             converter << yytext;
+                             converter >> yylval->ival;
+                             return yy::RPG_Net_Protocol_Parser::token::WINDOW; }
+{SPACE}                    { iparser_p->scannedBytes (yyleng);
+                             BEGIN(cursor);
+                             yylval->ival = 1; }
+} // end <window>
 <cursor>{
 {DIGIT}+                   { iparser_p->scannedBytes (yyleng);
                              converter.str (ACE_TEXT_ALWAYS_CHAR (""));

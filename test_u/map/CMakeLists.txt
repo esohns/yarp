@@ -148,33 +148,70 @@ install (TARGETS ${EXECUTABLE_2}
          RUNTIME DESTINATION bin)
 
 ########### next target ###############
-set (EXECUTABLE_3 path_finder)
+set (EXECUTABLE_3 map_generator_gui)
 set (${EXECUTABLE_3}_SRCS
-     path_finder.cpp
+     map_generator_gui.cpp
+     map_generator_gui_callbacks.cpp
+     map_generator_gui_callbacks.h
+     map_generator_gui_common.h
      stdafx.h)
 
 #set_source_files_properties (${${EXECUTABLE_3}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
 
+if (UNIX)
+ include_directories (${PKG_CONFIG_MODULE_LIBPNG_INCLUDE_DIRS})
+elseif (WIN32)
+ include_directories ($ENV{LIB_ROOT}/libpng)
+endif ()
+if (SDL_SUPPORT)
+ include_directories (${SDL_INCLUDE_DIRS})
+endif (SDL_SUPPORT)
+
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../../Common/src/ui/gtk)
+
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../3rd_party/xsd)
+
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/../../graphics)
+
 add_executable (${EXECUTABLE_3}
                 ${${EXECUTABLE_3}_SRCS})
 
-add_dependencies (${EXECUTABLE_3} RPG_Dice RPG_Common RPG_Map)
+add_dependencies (${EXECUTABLE_3}
+                  RPG_Dice RPG_Common RPG_Character RPG_Magic RPG_Item
+                  RPG_Monster RPG_Player RPG_Combat RPG_Map RPG_Graphics RPG_Engine)
 
+if (SDL_SUPPORT)
+ target_link_libraries (${EXECUTABLE_3}
+                        ${SDL_LIBRARIES})
+endif (SDL_SUPPORT)
 if (UNIX)
  target_link_libraries (${EXECUTABLE_3}
+                        ${PKG_CONFIG_MODULE_LIBPNG_LIBRARIES}
                         xerces-c
                         ${ACE_LIBRARY}
                         Common CommonError CommonLog CommonTimer
-                        RPG_Dice RPG_Common RPG_Map)
+                        ACEStream ACEStream_Network
+                        ACENetwork
+                        RPG_Chance RPG_Dice RPG_Common
+                        RPG_Character RPG_Magic RPG_Item
+                        RPG_Player RPG_Monster RPG_Combat
+                        RPG_Map RPG_Graphics RPG_Net RPG_Net_Protocol RPG_Engine
+                        RPG_Common RPG_Player RPG_Monster RPG_Map RPG_Graphics
+                        RPG_Dice RPG_Character RPG_Magic RPG_Item
+                        RPG_Common RPG_Combat RPG_Player RPG_Chance)
 elseif (WIN32)
-# set_target_properties (${EXECUTABLE} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+# set_target_properties (${EXECUTABLE_3} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
 
  target_link_libraries (${EXECUTABLE_3}
-                        Userenv.lib
                         ${XERCESC_LIBRARIES}
                         ${ACE_LIBRARY}
                         Common CommonError CommonLog CommonTimer
-                        RPG_Dice RPG_Common RPG_Map)
+                        ACEStream ACEStream_Network
+                        ACENetwork
+                        RPG_Chance RPG_Dice RPG_Common
+                        RPG_Character RPG_Magic RPG_Item
+                        RPG_Player RPG_Monster RPG_Combat
+                        RPG_Map RPG_Graphics RPG_Net RPG_Net_Protocol RPG_Engine)
 endif ()
 
 set_property (TARGET ${EXECUTABLE_3} PROPERTY FOLDER "test_u")
@@ -185,6 +222,46 @@ target_precompile_headers (${EXECUTABLE_3}
 
 #----------- install files ---------------
 install (TARGETS ${EXECUTABLE_3}
+         RUNTIME DESTINATION bin)
+
+########### next target ###############
+set (EXECUTABLE_4 path_finder)
+set (${EXECUTABLE_4}_SRCS
+     path_finder.cpp
+     stdafx.h)
+
+#set_source_files_properties (${${EXECUTABLE_4}_SRCS} PROPERTIES COMPILE_DEFINITIONS "BASEDIR=\"C:\\\\\"")
+
+add_executable (${EXECUTABLE_4}
+                ${${EXECUTABLE_4}_SRCS})
+
+add_dependencies (${EXECUTABLE_4} RPG_Dice RPG_Common RPG_Map)
+
+if (UNIX)
+ target_link_libraries (${EXECUTABLE_4}
+                        xerces-c
+                        ${ACE_LIBRARY}
+                        Common CommonError CommonLog CommonTimer
+                        RPG_Dice RPG_Common RPG_Map)
+elseif (WIN32)
+# set_target_properties (${EXECUTABLE_4} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE)
+
+ target_link_libraries (${EXECUTABLE_4}
+                        Userenv.lib
+                        ${XERCESC_LIBRARIES}
+                        ${ACE_LIBRARY}
+                        Common CommonError CommonLog CommonTimer
+                        RPG_Dice RPG_Common RPG_Map)
+endif ()
+
+set_property (TARGET ${EXECUTABLE_4} PROPERTY FOLDER "test_u")
+
+# add PCH
+target_precompile_headers (${EXECUTABLE_4}
+                           REUSE_FROM ${EXECUTABLE})
+
+#----------- install files ---------------
+install (TARGETS ${EXECUTABLE_4}
          RUNTIME DESTINATION bin)
 
 ########### launcher ###############
@@ -231,6 +308,23 @@ elseif (WIN32)
  string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
 endif ()
 create_target_launcher (${EXECUTABLE_3}
+                        COMMAND ${COMMAND}
+                        ARGS "-l -p -t"
+                        FORWARD_ARGS
+                        RUNTIME_LIBRARY_DIRS ${LIB_ROOT}/zlib/build/Debug
+                                             ${LIB_ROOT}/libpng/build/Debug
+                                             ${XERCESC_LIB_DIR}
+                                             ${LIB_ROOT}/ACE_TAO/ACE/lib
+                                             ${SDL_LIB_PATH}
+                        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                        ENVIRONMENT foo=bar)
+if (UNIX)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE_4}" COMMAND)
+elseif (WIN32)
+ file (TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${EXECUTABLE_4}.exe" COMMAND)
+ string (REPLACE "\\" "\\\\" COMMAND ${COMMAND})
+endif ()
+create_target_launcher (${EXECUTABLE_4}
                         COMMAND ${COMMAND}
                         ARGS "-l -t"
                         FORWARD_ARGS

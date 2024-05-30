@@ -93,7 +93,7 @@ timer_SDL_cb (Uint32 interval_in,
   sdl_event.user.data1 = argument_in;
 
   // push it onto the event queue
-  if (SDL_PushEvent (&sdl_event))
+  if (SDL_PushEvent (&sdl_event) < 0)
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to SDL_PushEvent(): \"%s\", continuing\n"),
                 ACE_TEXT (SDL_GetError ())));

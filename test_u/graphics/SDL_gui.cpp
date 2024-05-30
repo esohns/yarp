@@ -1758,8 +1758,8 @@ do_work (mode_t mode_in,
       RPG_Engine_IClient* iclient_p =
         dynamic_cast<RPG_Engine_IClient*> (main_window.child (WINDOW_MAP));
       ACE_ASSERT (iclient_p);
-      level_engine.initialize (iclient_p, // client engine handle
-                               false);    // server session ?
+      level_engine.initialize (iclient_p,         // client engine handle
+                               NET_ROLE_INVALID); // role
       // initialize/add entity to the graphics cache
       RPG_Client_IWindowLevel* map_window =
         dynamic_cast<RPG_Client_IWindowLevel*> (main_window.child (WINDOW_MAP));
@@ -2153,6 +2153,8 @@ ACE_TMAIN (int argc_in,
   } // end IF
 
   // step2: initialize SDL
+  // RPG_Graphics_Common_Tools::preInitialize ();
+
 #if defined (SDL_USE) || defined (SDL2_USE)
   if (SDL_Init (SDL_INIT_TIMER |
                 SDL_INIT_VIDEO |

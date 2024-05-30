@@ -2713,7 +2713,7 @@ quit_clicked_GTK_cb (GtkWidget* widget_in,
                 ACE_TEXT (SDL_GetError ())));
 
   ACE_DEBUG ((LM_DEBUG,
-              ACE_TEXT ("leaving GTK...\n")));
+              ACE_TEXT ("leaving SDL...\n")));
 
   return FALSE;
 }

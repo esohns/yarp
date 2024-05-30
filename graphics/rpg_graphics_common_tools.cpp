@@ -84,8 +84,34 @@ RPG_Graphics_Common_Tools::preInitialize ()
 {
   RPG_TRACE (ACE_TEXT ("RPG_Graphics_Common_Tools::preInitialize"));
 
-  // init string conversion facilities
+  // initialize string conversion facilities
   RPG_Graphics_Common_Tools::initializeStringConversionTables ();
+
+  SDL_bool result =
+#if defined(SDL_USE) || defined(SDL2_USE)
+    SDL_SetHint (ACE_TEXT_ALWAYS_CHAR (SDL_HINT_VIDEODRIVER),
+#elif defined(SDL3_USE)
+    SDL_SetHint (ACE_TEXT_ALWAYS_CHAR (SDL_HINT_VIDEO_DRIVER),
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+                 ACE_TEXT_ALWAYS_CHAR (RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME));
+  if (result == SDL_FALSE)
+#if defined (SDL_USE) || defined (SDL2_USE)
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_SetHint(\"%s\",\"%s\"): \"%s\", aborting\n"),
+                ACE_TEXT (SDL_HINT_VIDEODRIVER),
+                ACE_TEXT (RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME),
+                ACE_TEXT (SDL_GetError ())));
+#elif defined (SDL3_USE)
+    ACE_DEBUG ((LM_ERROR,
+                ACE_TEXT ("failed to SDL_SetHint(\"%s\",\"%s\"): \"%s\", aborting\n"),
+                ACE_TEXT (SDL_HINT_VIDEO_DRIVER),
+                ACE_TEXT (RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME),
+                ACE_TEXT (SDL_GetError ())));
+#endif // SDL_USE || SDL2_USE || SDL3_USE
+  else
+    ACE_DEBUG ((LM_DEBUG,
+                ACE_TEXT ("set video driver to \"%s\"...\n"),
+                ACE_TEXT (RPG_GRAPHICS_DEF_SDL_VIDEO_DRIVER_NAME)));
 
   myPreInitialized = true;
 }

@@ -29,6 +29,7 @@
 #include "SDL.h"
 #endif // SDL_USE
 
+#include "ace/Basic_Types.h"
 #include "ace/Global_Macros.h"
 #include "ace/Thread_Mutex.h"
 #include "ace/Time_Value.h"
@@ -36,11 +37,12 @@
 #include "rpg_sound_defines.h"
 #include "rpg_sound_event.h"
 #include "rpg_sound_common.h"
-//#include "rpg_sound_incl.h"
 
 class RPG_Sound_Common_Tools
 {
  public:
+  // *WARNING*: needs to be called BEFORE SDL_Init() !
+  static bool preInitialize ();
   static bool initialize (const struct RPG_Sound_SDLConfiguration&, // SDL config parameters
                           const std::string&,                       // sound directory
                           bool = RPG_SOUND_AMBIENT_DEF_USE_CD,      // use CD ?

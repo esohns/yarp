@@ -50,12 +50,12 @@ RPG_Net_Protocol_Streamer::handleDataMessage (RPG_Net_Protocol_Message*& message
   RPG_TRACE (ACE_TEXT ("RPG_Net_Protocol_Streamer::handleDataMessage"));
 
   // don't care (implies yes per default, if part of a stream)
-  // *NOTE*: as this is an "upstream" module, the "wording" is wrong
-  //         --> the logic remains the same, though
+  // *NOTE*: as this is an "upstream" module, the "wording" is wrong (the logic
+  //         still aplies, though)
   passMessageDownstream_out = true;
 
   const typename RPG_Net_Protocol_Message::DATA_T& data_r =
-      message_inout->getR ();
+    message_inout->getR ();
 
   int result = -1;
   std::string text_string;
@@ -64,20 +64,34 @@ RPG_Net_Protocol_Streamer::handleDataMessage (RPG_Net_Protocol_Message*& message
 
   text_string = ' ';
 
-  converter << data_r.command;
+  converter << data_r.command.type;
+  text_string += converter.str ();
+  text_string += ' ';
+
+#if defined (ACE_WIN32) || defined (ACE_WIN64)
+  ACE_ASSERT (data_r.command.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0) == std::string::npos);
+#elif defined (ACE_LINUX)
+  ACE_ASSERT (data_r.command.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0) == std::string::npos);
+#endif // ACE_WIN32 || ACE_WIN64 || ACE_LINUX
+  text_string += data_r.command.xml;
+  text_string += ACE_TEXT_ALWAYS_CHAR ("\r\n");
+
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
+  converter << data_r.command.command;
   text_string += converter.str ();
   text_string += ' ';
 
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
-  converter << data_r.position.first;
+  converter << data_r.command.position.first;
   converter << ',';
-  converter << data_r.position.second;
+  converter << data_r.command.position.second;
   text_string += converter.str ();
   text_string += ' ';
 
-  for (RPG_Map_PathConstIterator_t iterator = data_r.path.begin ();
-       iterator != data_r.path.end ();
+  for (RPG_Map_PathConstIterator_t iterator = data_r.command.path.begin ();
+       iterator != data_r.command.path.end ();
        ++iterator)
   {
     converter.str (ACE_TEXT_ALWAYS_CHAR (""));
@@ -95,62 +109,54 @@ RPG_Net_Protocol_Streamer::handleDataMessage (RPG_Net_Protocol_Message*& message
 
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
-  converter << data_r.entity_id;
+  converter << data_r.command.entity_id;
+  text_string += converter.str ();
+  text_string += ' ';
+
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
+  converter << data_r.command.previous.first;
+  converter << ',';
+  converter << data_r.command.previous.second;
+  text_string += converter.str ();
+  text_string += ' ';
+
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
+  converter << data_r.command.window;
+  text_string += converter.str ();
+  text_string += ' ';
+
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
+  converter << data_r.command.cursor;
+  text_string += converter.str ();
+  text_string += ' ';
+
+  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
+  converter.clear ();
+  converter << data_r.command.sound;
   text_string += converter.str ();
   text_string += ' ';
 
 #if defined (ACE_WIN32) || defined (ACE_WIN64)
-  ACE_ASSERT (data_r.xml.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0) == std::string::npos);
+  ACE_ASSERT (data_r.command.message.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0) == std::string::npos);
 #elif defined (ACE_LINUX)
-  ACE_ASSERT (data_r.xml.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0) == std::string::npos);
+  ACE_ASSERT (data_r.command.message.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0) == std::string::npos);
 #endif // ACE_WIN32 || ACE_WIN64 || ACE_LINUX
-  text_string += data_r.xml;
+  text_string += data_r.command.message;
   text_string += ACE_TEXT_ALWAYS_CHAR ("\r\n");
 
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
-  converter << data_r.clientCommand;
-  text_string += converter.str ();
-  text_string += ' ';
-
-  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
-  converter.clear ();
-  converter << data_r.previous.first;
+  converter << data_r.command.source.first;
   converter << ',';
-  converter << data_r.previous.second;
+  converter << data_r.command.source.second;
   text_string += converter.str ();
   text_string += ' ';
 
-  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
-  converter.clear ();
-  converter << data_r.cursor;
-  text_string += converter.str ();
-  text_string += ' ';
-
-  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
-  converter.clear ();
-  converter << data_r.sound;
-  text_string += converter.str ();
-  text_string += ' ';
-
-#if defined (ACE_WIN32) || defined (ACE_WIN64)
-  ACE_ASSERT (data_r.message.find (ACE_TEXT_ALWAYS_CHAR ("\r\n"), 0) == std::string::npos);
-#elif defined (ACE_LINUX)
-  ACE_ASSERT (data_r.message.find (ACE_TEXT_ALWAYS_CHAR ("\n"), 0) == std::string::npos);
-#endif // ACE_WIN32 || ACE_WIN64 || ACE_LINUX
-  text_string += data_r.message;
-  text_string += ACE_TEXT_ALWAYS_CHAR ("\r\n");
-
-  converter.str (ACE_TEXT_ALWAYS_CHAR (""));
-  converter.clear ();
-  converter << data_r.source.first;
-  converter << ',';
-  converter << data_r.source.second;
-  text_string += converter.str ();
-  text_string += ' ';
-
-  for (RPG_Map_PositionsConstIterator_t iterator = data_r.positions.begin ();
-       iterator != data_r.positions.end ();
+  for (RPG_Map_PositionsConstIterator_t iterator = data_r.command.positions.begin ();
+       iterator != data_r.command.positions.end ();
        ++iterator)
   {
     converter.str (ACE_TEXT_ALWAYS_CHAR (""));
@@ -166,7 +172,7 @@ RPG_Net_Protocol_Streamer::handleDataMessage (RPG_Net_Protocol_Message*& message
 
   converter.str (ACE_TEXT_ALWAYS_CHAR (""));
   converter.clear ();
-  converter << static_cast<unsigned int> (data_r.radius);
+  converter << static_cast<unsigned int> (data_r.command.radius);
   text_string += converter.str ();
   text_string += ' ';
 

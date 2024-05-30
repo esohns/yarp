@@ -104,12 +104,14 @@
 #include "rpg_graphics_defines.h"
 #include "rpg_graphics_SDL_tools.h"
 
+#include "rpg_sound_common_tools.h"
 #include "rpg_sound_defines.h"
 
 #include "rpg_client_common.h"
 #include "rpg_client_common_tools.h"
 #include "rpg_client_defines.h"
 #include "rpg_client_engine.h"
+#include "rpg_client_entity_manager.h"
 #include "rpg_client_network_manager.h"
 #include "rpg_client_window_main_stub.h"
 
@@ -491,6 +493,7 @@ do_work (unsigned int maxNumConnections_in,
     COMMON_TIMERMANAGER_SINGLETON::instance ();
   ACE_ASSERT (timer_manager_p);
   timer_manager_p->initialize (CBData_in.configuration->timer_configuration);
+  timer_manager_p->start (NULL);
 
   // step-1: initialize engine
   std::string monster_dictionary =
@@ -618,6 +621,7 @@ do_work (unsigned int maxNumConnections_in,
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Client_Window_Main_Stub::initialize (), returning\n")));
+    timer_manager_p->stop ();
     RPG_Engine_Common_Tools::finalize ();
     return;
   } // end IF
@@ -641,10 +645,12 @@ do_work (unsigned int maxNumConnections_in,
   ACE_ASSERT (map_window_p);
   CBData_in.clientEngine->initialize (CBData_in.levelEngine, // engine handle
                                       map_window_p,          // map window handle
-                                      true,                  // relay UI actions back to peer(s)
                                       false);                // debug ?
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->initialize (NULL, // screen lock handle
                                                                   map_window_p);
+  RPG_CLIENT_ENTITY_MANAGER_SINGLETON::instance ()->initialize (NULL, // screen lock handle
+                                                                map_window_p);
+
   struct SDL_Rect dirty_region;
   ACE_OS::memset (&dirty_region, 0, sizeof (struct SDL_Rect));
   RPG_GRAPHICS_CURSOR_MANAGER_SINGLETON::instance ()->setCursor (CURSOR_NORMAL,
@@ -655,7 +661,7 @@ do_work (unsigned int maxNumConnections_in,
   std::string filename = RPG_Map_Common_Tools::getMapsDirectory ();
   filename += ACE_DIRECTORY_SEPARATOR_CHAR_A;
   filename +=
-    RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_DEF_NAME));
+    RPG_Common_Tools::sanitize (ACE_TEXT_ALWAYS_CHAR ("default_arena"));
   filename += ACE_TEXT_ALWAYS_CHAR (RPG_ENGINE_LEVEL_FILE_EXT);
   if (!RPG_Engine_Level::load (filename,
                                CBData_in.schemaRepository,
@@ -664,6 +670,7 @@ do_work (unsigned int maxNumConnections_in,
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to RPG_Engine_Level::load(\"%s\"), returning"),
                 ACE_TEXT (filename.c_str ())));
+    timer_manager_p->stop ();
     RPG_Engine_Common_Tools::finalize ();
     return;
   } // end IF
@@ -711,6 +718,7 @@ do_work (unsigned int maxNumConnections_in,
   {
     ACE_DEBUG ((LM_ERROR,
                 ACE_TEXT ("failed to Common_Tools::initializeEventDispatch(), returning\n")));
+    timer_manager_p->stop ();
     RPG_Engine_Common_Tools::finalize ();
     return;
   } // end IF
@@ -1593,8 +1601,8 @@ ACE_TMAIN (int argc_in,
   //                   reactor/proactor thread could (dead)lock on the
   //                   allocator lock, as it cannot dispatch events that would
   //                   free slots
-  if (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES <=
-      std::numeric_limits<unsigned int>::max ())
+  if (RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES &&
+      RPG_NET_MAXIMUM_NUMBER_OF_INFLIGHT_MESSAGES <= std::numeric_limits<unsigned int>::max ())
     ACE_DEBUG ((LM_WARNING,
                 ACE_TEXT ("limiting the number of message buffers could lead to deadlocks...\n")));
   if (!UI_file.empty() &&
@@ -1652,8 +1660,8 @@ ACE_TMAIN (int argc_in,
 
   RPG_Client_Engine client_engine;
   RPG_Engine level_engine;
-  level_engine.initialize (&client_engine, // client engine handle
-                           true);          // server session ?
+  level_engine.initialize (&client_engine,   // client engine handle
+                           NET_ROLE_SERVER); // role
   client_engine.start (NULL);
 
   struct Net_Server_GTK_CBData gtk_cb_user_data;
@@ -1752,6 +1760,9 @@ ACE_TMAIN (int argc_in,
   } // end IF
 
   // step2a: initialize SDL
+  // RPG_Graphics_Common_Tools::preInitialize ();
+  RPG_Sound_Common_Tools::preInitialize ();
+
   Uint32 SDL_init_flags = 0;
   SDL_init_flags |= SDL_INIT_TIMER;                                            // timers
   SDL_init_flags |= (configuration.audio_configuration.mute ? 0

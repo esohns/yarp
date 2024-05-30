@@ -25,9 +25,9 @@
 
 #include "map_generator_gui_common.h"
 
-void reset_layout(GTK_cb_data_t&);
-void update_configuration(GTK_cb_data_t&);
-void update_layout(GTK_cb_data_t&);
+void reset_layout (struct GTK_CBData&);
+void update_configuration (struct GTK_CBData&);
+void update_layout (struct GTK_CBData&);
 
 #ifdef __cplusplus
 extern "C"
